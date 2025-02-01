@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=4 format=3 uid="uid://c5gk2kf6r2v5y"]
+
+[ext_resource type="Resource" uid="uid://72ii58ggku6y" path="res://Source/Entities/Tiles/ActivationResources/3_activation.tres" id="1_2kka0"]
+[ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_08vmm"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="3_tyb5i"]
+
+[resource]
+script = ExtResource("3_tyb5i")
+tile_name = "Shield Generator"
+description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the [color=purple]targeted[/color] enemy."
+base_texture = ExtResource("2_08vmm")
+activation = ExtResource("1_2kka0")
+effect_chain = Array[PackedScene]([])
+metadata/_custom_type_script = ExtResource("3_tyb5i")

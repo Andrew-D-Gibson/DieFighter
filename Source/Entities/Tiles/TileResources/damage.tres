@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=5 format=3 uid="uid://hgsmejq8gdrl"]
+
+[ext_resource type="Resource" uid="uid://buedjg2qud21j" path="res://Source/Entities/Tiles/ActivationResources/accept_all_activation.tres" id="1_5l1p3"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="1_qon23"]
+[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="2_cb0ou"]
+[ext_resource type="PackedScene" uid="uid://sbtma6alpnti" path="res://Source/Systems/Effects/AttributeChangers/damage_effect.tscn" id="3_16eq4"]
+
+[resource]
+script = ExtResource("1_qon23")
+tile_name = "Dice Cannon"
+description = "Deals [color=red]damage[/color] to the [color=purple]targeted[/color] enemy equivalent to the [color=yellow]activating[/color] die's value then gives them the die"
+base_texture = ExtResource("2_cb0ou")
+activation = ExtResource("1_5l1p3")
+effect_chain = Dictionary[PackedScene, int]({
+ExtResource("3_16eq4"): 0
+})
+metadata/_custom_type_script = ExtResource("1_qon23")

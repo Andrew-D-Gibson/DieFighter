@@ -1,0 +1,66 @@
+[gd_scene load_steps=8 format=3 uid="uid://37usdgvegncp"]
+
+[ext_resource type="Script" uid="uid://dwtmux4vpkp7e" path="res://Source/Entities/Enemies/EnemyHealthBar/enemy_health_bar.gd" id="1_xmwdm"]
+[ext_resource type="Texture2D" uid="uid://ciy0xiwu25jqq" path="res://Assets/Textures/Enemies/EnemyHealthBar/bar_under.png" id="2_6xma5"]
+[ext_resource type="Texture2D" uid="uid://b1sx1nhdhqs73" path="res://Assets/Textures/Enemies/EnemyHealthBar/Health_under.png" id="3_15202"]
+[ext_resource type="Texture2D" uid="uid://brgdvb0psmyie" path="res://Assets/Textures/Enemies/EnemyHealthBar/Shield_under.png" id="3_a8y0g"]
+[ext_resource type="Texture2D" uid="uid://du6m84ww3qom3" path="res://Assets/Textures/Enemies/EnemyHealthBar/health_change.png" id="4_a8y0g"]
+[ext_resource type="Texture2D" uid="uid://dd2n0ygx4cd8m" path="res://Assets/Textures/Enemies/EnemyHealthBar/Health fill.png" id="5_4clo8"]
+[ext_resource type="Texture2D" uid="uid://cpt07rjx3fdiq" path="res://Assets/Textures/Enemies/EnemyHealthBar/bar_over.png" id="6_eq3o7"]
+
+[node name="EnemyHealthBar" type="Node2D"]
+script = ExtResource("1_xmwdm")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("2_6xma5")
+
+[node name="Shields" type="Sprite2D" parent="."]
+texture = ExtResource("3_a8y0g")
+
+[node name="HealthUpdateBar" type="TextureProgressBar" parent="."]
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 73.0
+offset_bottom = 78.0
+max_value = 1.0
+step = 0.025
+value = 1.0
+fill_mode = 4
+texture_under = ExtResource("3_15202")
+texture_progress = ExtResource("4_a8y0g")
+
+[node name="HealthBar" type="TextureProgressBar" parent="."]
+offset_left = -32.0
+offset_top = -32.0
+offset_right = 73.0
+offset_bottom = 78.0
+max_value = 1.0
+step = 0.025
+value = 1.0
+fill_mode = 4
+texture_progress = ExtResource("5_4clo8")
+
+[node name="Over" type="Sprite2D" parent="."]
+texture = ExtResource("6_eq3o7")
+
+[node name="HealthLabel" type="RichTextLabel" parent="."]
+offset_left = -22.0
+offset_top = -6.0
+offset_right = 18.0
+offset_bottom = 34.0
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+bbcode_enabled = true
+text = "10
+"
+horizontal_alignment = 1
+
+[node name="ShieldsLabel" type="RichTextLabel" parent="."]
+offset_left = -36.0
+offset_top = 8.0
+offset_right = 4.0
+offset_bottom = 48.0
+theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
+bbcode_enabled = true
+text = "10
+"
+horizontal_alignment = 1

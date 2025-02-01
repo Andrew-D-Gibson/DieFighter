@@ -1,0 +1,26 @@
+[gd_scene load_steps=6 format=3 uid="uid://cf2seb35hnl52"]
+
+[ext_resource type="Script" uid="uid://d0qn1tyjsj7l6" path="res://Source/Systems/Player/player.gd" id="1_86t7d"]
+[ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Player/TileGrid/tile_grid.tscn" id="2_m7hmg"]
+[ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Components/DiceQueue/dice_queue.tscn" id="3_fnkf6"]
+[ext_resource type="PackedScene" uid="uid://0nffy7i5aty4" path="res://Source/Components/Health/health.tscn" id="4_da5gb"]
+[ext_resource type="PackedScene" uid="uid://skeakddxfvao" path="res://Source/Systems/Player/PlayerHealthBar/player_health_bar.tscn" id="5_83hls"]
+
+[node name="Player" type="Node2D" node_paths=PackedStringArray("tile_grid", "dice_queue", "health")]
+script = ExtResource("1_86t7d")
+dice_queue_offset = Vector2(16, 160)
+tile_grid = NodePath("TileGrid")
+dice_queue = NodePath("DiceQueue")
+health = NodePath("Health")
+
+[node name="TileGrid" parent="." instance=ExtResource("2_m7hmg")]
+
+[node name="DiceQueue" parent="." instance=ExtResource("3_fnkf6")]
+
+[node name="Health" parent="." instance=ExtResource("4_da5gb")]
+max_health = 16
+starting_health = 16
+
+[node name="PlayerHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
+position = Vector2(-101, 12)
+health_component = NodePath("../Health")

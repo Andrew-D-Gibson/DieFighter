@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bljmx610i58dj"]
+
+[ext_resource type="Texture2D" uid="uid://dc5yfy1l3h5ls" path="res://Assets/Textures/Enemies/Attacker/attacker.png" id="1_h6mwl"]
+
+[node name="AttackerShipGraphics" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_h6mwl")

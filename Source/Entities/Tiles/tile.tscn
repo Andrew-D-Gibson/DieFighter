@@ -1,0 +1,30 @@
+[gd_scene load_steps=7 format=3 uid="uid://delq7kb5loqt2"]
+
+[ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Entities/Tiles/tile.gd" id="1_71op4"]
+[ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Components/Draggable/draggable.tscn" id="2_b16ti"]
+[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="3_o6mit"]
+[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Components/Clickable/clickable.tscn" id="4_rngaw"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
+size = Vector2(30, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rngaw"]
+size = Vector2(30, 32)
+
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable") groups=["Tiles"]]
+script = ExtResource("1_71op4")
+draggable = NodePath("Draggable")
+clickable = NodePath("Clickable")
+
+[node name="Draggable" parent="." instance=ExtResource("2_b16ti")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
+shape = SubResource("RectangleShape2D_jkiuv")
+
+[node name="Clickable" parent="." instance=ExtResource("4_rngaw")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+shape = SubResource("RectangleShape2D_rngaw")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("3_o6mit")

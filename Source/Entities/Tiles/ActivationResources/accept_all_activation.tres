@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ActivationResource" load_steps=3 format=3 uid="uid://buedjg2qud21j"]
+
+[ext_resource type="Texture2D" uid="uid://cavdkj2v4mgrd" path="res://Assets/Textures/Tiles/Activations/Any.png" id="1_17j18"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Entities/Tiles/ActivationResources/activation_resource.gd" id="2_t4vxf"]
+
+[resource]
+script = ExtResource("2_t4vxf")
+description = "[color=yellow]Activates[/color] with any value die (die_blank)"
+activation_texture = ExtResource("1_17j18")
+acceptable_values = Array[int]([1, 2, 3, 4, 5, 6])
+metadata/_custom_type_script = ExtResource("2_t4vxf")

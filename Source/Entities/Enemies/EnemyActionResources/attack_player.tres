@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=5 format=3 uid="uid://ddh4rqo4x116u"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Entities/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_86x0f"]
+[ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="1_y1f7p"]
+[ext_resource type="PackedScene" uid="uid://sbtma6alpnti" path="res://Source/Systems/Effects/AttributeChangers/damage_effect.tscn" id="2_ca2d5"]
+[ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="3_ca2d5"]
+
+[resource]
+script = ExtResource("1_86x0f")
+intent_indicator = ExtResource("3_ca2d5")
+effect_chain = Dictionary[PackedScene, int]({
+ExtResource("1_y1f7p"): 0,
+ExtResource("2_ca2d5"): 5
+})
+metadata/_custom_type_script = ExtResource("1_86x0f")
