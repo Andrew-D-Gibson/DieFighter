@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="StellaRoller_Refactor"
+config/name="StellaRoller"
 run/main_scene="uid://deisauteocrjl"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/bg_color=Color(0.027451, 0.0117647, 0.14902, 1)

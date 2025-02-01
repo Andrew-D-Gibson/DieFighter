@@ -3,8 +3,8 @@
 [ext_resource type="Script" uid="uid://dibocqhoikh50" path="res://Source/Entities/Enemies/enemy.gd" id="1_ljdua"]
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Components/DiceQueue/dice_queue.tscn" id="2_7lcrs"]
 [ext_resource type="PackedScene" uid="uid://0nffy7i5aty4" path="res://Source/Components/Health/health.tscn" id="3_cwfht"]
-[ext_resource type="PackedScene" uid="uid://37usdgvegncp" path="res://Source/Entities/Enemies/EnemyHealthBar/enemy_health_bar.tscn" id="4_tvtxf"]
-[ext_resource type="PackedScene" uid="uid://dx6jiqlaydg88" path="res://Source/Entities/Enemies/IntentIndicator/intent_indicator.tscn" id="5_cwfht"]
+[ext_resource type="PackedScene" uid="uid://37usdgvegncp" path="res://Source/Entities/Enemies/Components/EnemyHealthBar/enemy_health_bar.tscn" id="4_tvtxf"]
+[ext_resource type="PackedScene" uid="uid://dx6jiqlaydg88" path="res://Source/Entities/Enemies/Components/IntentIndicator/intent_indicator.tscn" id="5_cwfht"]
 
 [node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_queue", "health", "intent_indicator")]
 script = ExtResource("1_ljdua")

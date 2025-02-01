@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Entities/Dice/dice.tscn" id="3_xmabb"]
 [ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Player/player.tscn" id="5_xmabb"]
 [ext_resource type="PackedScene" uid="uid://bwwirc58smer1" path="res://Source/Entities/Enemies/enemy.tscn" id="7_4hlf6"]
-[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="8_16ycl"]
+[ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/EnemyManager/enemy_manager.tscn" id="9_vgvo4"]
 
 [node name="Main" type="Node2D"]
 
@@ -22,14 +22,15 @@ visible = false
 [node name="DevConsole" parent="UI" instance=ExtResource("2_5god3")]
 visible = false
 
-[node name="SetupManager" parent="." node_paths=PackedStringArray("player") instance=ExtResource("1_4opui")]
+[node name="SetupManager" parent="." node_paths=PackedStringArray("player", "enemy_manager") instance=ExtResource("1_4opui")]
 game_state = ExtResource("2_uyedr")
 player = NodePath("../Player")
+enemy_manager = NodePath("../EnemyManager")
 dice_scene = ExtResource("3_xmabb")
 
 [node name="Player" parent="." instance=ExtResource("5_xmabb")]
 position = Vector2(-113, -4)
 
-[node name="Enemy" parent="." instance=ExtResource("7_4hlf6")]
-position = Vector2(2, -93)
-enemy_resource = ExtResource("8_16ycl")
+[node name="EnemyManager" parent="." instance=ExtResource("9_vgvo4")]
+enemy_base_scene = ExtResource("7_4hlf6")
+enemy_spacing = 720

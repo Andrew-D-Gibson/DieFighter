@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="GameStateResource" load_steps=5 format=3 uid="uid://ce3o8s68mgtlu"]
+[gd_resource type="Resource" script_class="GameStateResource" load_steps=7 format=3 uid="uid://ce3o8s68mgtlu"]
 
 [ext_resource type="Script" uid="uid://dl0t6n0q32xls" path="res://Source/Systems/SetupManager/GameStateResources/game_state.gd" id="1_0sj0l"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="1_isrhx"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="2_dwst2"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="2_ri8kt"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Entities/Tiles/TileResources/damage.tres" id="3_ri8kt"]
 [ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Entities/Tiles/TileResources/shield.tres" id="4_e4q7w"]
@@ -15,4 +17,5 @@ tile_locations = Dictionary[ExtResource("2_ri8kt"), Vector2i]({
 ExtResource("3_ri8kt"): Vector2i(0, 0),
 ExtResource("4_e4q7w"): Vector2i(0, 1)
 })
+enemies_to_spawn = Array[ExtResource("1_isrhx")]([ExtResource("2_dwst2"), ExtResource("2_dwst2")])
 metadata/_custom_type_script = ExtResource("1_0sj0l")

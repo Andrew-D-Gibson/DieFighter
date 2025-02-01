@@ -1,6 +1,6 @@
 [gd_scene load_steps=8 format=3 uid="uid://37usdgvegncp"]
 
-[ext_resource type="Script" uid="uid://dwtmux4vpkp7e" path="res://Source/Entities/Enemies/EnemyHealthBar/enemy_health_bar.gd" id="1_xmwdm"]
+[ext_resource type="Script" uid="uid://dwtmux4vpkp7e" path="res://Source/Entities/Enemies/Components/EnemyHealthBar/enemy_health_bar.gd" id="1_xmwdm"]
 [ext_resource type="Texture2D" uid="uid://ciy0xiwu25jqq" path="res://Assets/Textures/Enemies/EnemyHealthBar/bar_under.png" id="2_6xma5"]
 [ext_resource type="Texture2D" uid="uid://b1sx1nhdhqs73" path="res://Assets/Textures/Enemies/EnemyHealthBar/Health_under.png" id="3_15202"]
 [ext_resource type="Texture2D" uid="uid://brgdvb0psmyie" path="res://Assets/Textures/Enemies/EnemyHealthBar/Shield_under.png" id="3_a8y0g"]

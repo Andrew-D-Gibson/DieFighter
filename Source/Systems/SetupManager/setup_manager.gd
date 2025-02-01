@@ -6,6 +6,7 @@ extends Node
 
 @export_category('Components')
 @export var player: Player
+@export var enemy_manager: EnemyManager
 
 @export_category('')
 @export var dice_scene: PackedScene
@@ -16,7 +17,11 @@ func _ready() -> void:
 	if player and player.tile_grid:
 		player.tile_grid.setup_tiles(game_state.tile_locations)
 
+	# Add the required number of dice
 	_spawn_dice(game_state.num_of_dice)
+	
+	# Spawn enemies (temporary)
+	enemy_manager.spawn_enemies(game_state.enemies_to_spawn)
 		
 		
 func _spawn_dice(num_of_dice: int) -> void:

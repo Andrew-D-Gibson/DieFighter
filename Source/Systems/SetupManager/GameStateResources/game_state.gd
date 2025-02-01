@@ -7,3 +7,6 @@ extends Resource
 @export var player_defense: int
 @export var num_of_dice: int
 @export var tile_locations: Dictionary[TileResource, Vector2i]
+
+# Temporary
+@export var enemies_to_spawn: Array[EnemyResource]

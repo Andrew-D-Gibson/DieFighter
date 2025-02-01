@@ -38,10 +38,10 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 					#
 		#'enemies_invulnerable':
 			#_enemies_invulnerable()
-			#
-		#'kill_enemies':
-			#_kill_enemies()
-			#
+			
+		'kill_enemies':
+			_kill_enemies()
+			
 		#'game_state':
 			#_game_state(command.slice(1))
 			
@@ -120,14 +120,13 @@ func _shield(command_args: Array[String] = []) -> void:
 			#command_history.append_text('\n[center]Returned all enemies to vulnerable.[/center]')
 	#else:
 		#command_history.append_text('\n[center]No enemies alive.[/center]')
-#
-#
-#func _kill_enemies(command_args: Array[String] = []) -> void:
-	#for enemy in get_tree().get_nodes_in_group('enemies'):
-		#enemy.take_damage(1_000_000)
-	#command_history.append_text('\n[center]Killed all enemies![/center]')
-#
-#
+
+
+func _kill_enemies(command_args: Array[String] = []) -> void:
+	Globals.enemy_manager.kill_all_enemies()
+	command_history.append_text('\n[center]Killed all enemies![/center]')
+
+
 #func _game_state(command_args: Array[String] = []) -> void:
 	#if len(command_args) > 0 and command_args[0].is_valid_int():
 		#Events.load_game_state.emit(int(command_args[0]))

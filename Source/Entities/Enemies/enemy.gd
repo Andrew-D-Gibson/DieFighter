@@ -15,7 +15,8 @@ var turn_actions: Array[EnemyActionResource]
 func _ready() -> void:
 	assert(enemy_resource)
 	_update_resource()
-	print(turn_actions)
+	
+	health.death.connect(queue_free)
 
 
 func _update_resource() -> void:

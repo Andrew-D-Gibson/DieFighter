@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://dx6jiqlaydg88"]
 
-[ext_resource type="Script" uid="uid://ceawh6jy557xc" path="res://Source/Entities/Enemies/IntentIndicator/intent_indicator.gd" id="1_rp46g"]
+[ext_resource type="Script" uid="uid://ceawh6jy557xc" path="res://Source/Entities/Enemies/Components/IntentIndicator/intent_indicator.gd" id="1_rp46g"]
 [ext_resource type="Texture2D" uid="uid://hehncej5h8w4" path="res://Assets/Textures/Enemies/IntentIndicator/reroll_guide.png" id="2_8lmpe"]
 
 [node name="IntentIndicator" type="Node2D" node_paths=PackedStringArray("intent_sprites")]

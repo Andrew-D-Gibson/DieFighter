@@ -21,6 +21,10 @@ func _ready() -> void:
 # Update the dice desired locations in the world
 func _update_dice_queue_locations() -> void:
 	for i in range(len(dice_queue.queue)):
+		# Make sure we can move tiles within our queue
+		if dice_queue.queue[i].draggable.state == Draggable.DragState.MOVING_WITH_CODE:
+			dice_queue.queue[i].draggable.state = Draggable.DragState.DEFAULT
+			
 		dice_queue.queue[i].draggable.home_position = global_position + dice_queue_offset + Vector2(i * dice_queue_spacing, 0)
 
 
