@@ -64,7 +64,7 @@ func _on_line_edit_text_changed(current_text: String) -> void:
 
 func _test(_command_args: Array[String] = []) -> void:
 	print('Test called!')
-	Globals.player.health.take_damage(4)
+	Globals.player._check_for_ending_turn()
 	
 
 func _heal(command_args: Array[String] = []) -> void:

@@ -6,9 +6,13 @@ var enemies: Array[Enemy]
 @export var enemy_base_scene: PackedScene
 @export var enemy_spacing: int
 
+signal enemy_turn_ended()
+
 
 func _ready() -> void:
 	Globals.enemy_manager = self
+	
+	Globals.player.player_turn_over.connect(_run_enemy_turn)
 	
 
 func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
@@ -35,3 +39,10 @@ func _remove_dead_enemies() -> void:
 	for i in range(len(enemies)-1, -1, -1):
 		if not enemies[i] or enemies[i].health.health == 0:
 			enemies.remove_at(i)
+			
+			
+func _run_enemy_turn() -> void:
+	for enemy in enemies:
+		while len(enemy.dice_queue.queue) > 0:
+			enemy.act_with_first_die()
+	enemy_turn_ended.emit()

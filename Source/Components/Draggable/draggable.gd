@@ -6,6 +6,7 @@ signal drag_ended(draggable: Draggable, end_position: Vector2)
 
 enum DragState {
 	DEFAULT,
+	ENEMY_HOLDING,
 	MOVING_WITH_CODE,
 	DRAGGING
 }
@@ -22,33 +23,30 @@ func _ready() -> void:
 		
 		
 func _process(delta: float) -> void:
-	match state:
-		# Move towards the recorded home position
-		DragState.DEFAULT:
-			get_parent().global_position = lerp(global_position, home_position, follow_strength * delta)
-			
-			
-		# Handle moving the object with the mouse
-		DragState.DRAGGING:
-			get_parent().global_position = lerp(global_position, get_global_mouse_position(), follow_strength * delta)
-			
-			# Handle dropping this object if the mouse is no longer down
-			if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-				state = DragState.DEFAULT
-				dragging_an_object = false
-				
-				# Move the parent's render index back to its original
-				get_parent().z_index -= 1
-				
-				# Reset the parent's scale
-				get_parent().scale = Vector2(1, 1)
-				
-				drag_ended.emit(self, get_global_mouse_position())
-				
-				
-		# Don't handle moving the draggable object if it's being moved with code
-		DragState.MOVING_WITH_CODE:
+	# Don't handle moving the draggable object if it's being moved with code
+	if state == DragState.MOVING_WITH_CODE:
 			return
+						
+	# Handle moving the object with the mouse
+	if state == DragState.DRAGGING:
+		get_parent().global_position = lerp(global_position, get_global_mouse_position(), follow_strength * delta)
+		
+		# Handle dropping this object if the mouse is no longer down
+		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			state = DragState.DEFAULT
+			dragging_an_object = false
+			
+			# Move the parent's render index back to its original
+			get_parent().z_index -= 1
+			
+			# Reset the parent's scale
+			get_parent().scale = Vector2(1, 1)
+			
+			drag_ended.emit(self, get_global_mouse_position())
+		return
+		
+	get_parent().global_position = lerp(global_position, home_position, follow_strength * delta)
+	
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:

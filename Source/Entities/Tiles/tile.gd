@@ -45,6 +45,7 @@ func _get_tile_info() -> InfoResource:
 
 func try_to_activate(activator_die: Dice) -> void:
 	if tile_resource.activation.criteria_satisfied(activator_die):
+		Globals.player.dice_queue.remove(activator_die)
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		_activate(activator_die)
 		
@@ -52,7 +53,7 @@ func try_to_activate(activator_die: Dice) -> void:
 func _activate(activator_die: Dice = null) -> void:
 	# Set up the effects variables for chaining effects
 	var effect_variables = EffectVariables.new()
-	effect_variables.source = self
+	effect_variables.source = Globals.player
 	effect_variables.activator_die = activator_die
 		
 	for effect_scene in tile_resource.effect_chain.keys():
