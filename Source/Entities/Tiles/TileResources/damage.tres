@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cyrmhmhlhbp0i" path="res://Source/Systems/Effects/Targeters/target_random_enemy_effect.tscn" id="3_lc4ex"]
 [ext_resource type="PackedScene" uid="uid://jt77tja7wi1i" path="res://Source/Systems/Effects/DiceMovers/attack_target_tween_effect.tscn" id="4_8be25"]
 [ext_resource type="PackedScene" uid="uid://dp6nb4nkkua0r" path="res://Source/Systems/Effects/Utilities/wait_for_milliseconds_effect.tscn" id="5_13icv"]
-[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/Utilities/give_die_to_target_effect.tscn" id="7_e261g"]
+[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_3s8sb"]
 
 [resource]
 script = ExtResource("1_qon23")
@@ -18,8 +18,8 @@ activation = ExtResource("1_5l1p3")
 effect_chain = Dictionary[PackedScene, int]({
 ExtResource("3_lc4ex"): 0,
 ExtResource("4_8be25"): 0,
-ExtResource("5_13icv"): 750,
 ExtResource("3_16eq4"): 0,
-ExtResource("7_e261g"): 0
+ExtResource("5_13icv"): 100,
+ExtResource("6_3s8sb"): 0
 })
 metadata/_custom_type_script = ExtResource("1_qon23")

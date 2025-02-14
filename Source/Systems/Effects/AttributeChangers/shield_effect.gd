@@ -10,4 +10,4 @@ func play(effect_variables: EffectVariables) -> void:
 	if amount == 0 and effect_variables.activator_die:
 		amount = effect_variables.activator_die.value
 	
-	effect_variables.targets[0].health.change_shield(amount)
+	effect_variables.targets[0].health.change_shields(amount)

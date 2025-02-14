@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://sbtma6alpnti" path="res://Source/Systems/Effects/AttributeChangers/damage_effect.tscn" id="2_ca2d5"]
 [ext_resource type="PackedScene" uid="uid://jt77tja7wi1i" path="res://Source/Systems/Effects/DiceMovers/attack_target_tween_effect.tscn" id="2_p1c30"]
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="3_ca2d5"]
-[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/Utilities/give_die_to_target_effect.tscn" id="4_k68wh"]
+[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="4_k68wh"]
 
 [resource]
 script = ExtResource("1_86x0f")

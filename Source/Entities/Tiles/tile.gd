@@ -21,16 +21,18 @@ func _ready() -> void:
 	
 	
 func _update_texture() -> void:
-	var base_image: Image = tile_resource.base_texture.get_image()
-	var activation_image: Image = tile_resource.activation.activation_texture.get_image()
-	
-	# Blend the overlay image onto the base at position (0, 0)
-	base_image.blend_rect(activation_image, Rect2i(Vector2i(0, 0), activation_image.get_size()), Vector2i(0, 0))
-	
-	# Create a new texture from the modified image
-	var result_texture = ImageTexture.create_from_image(base_image)
-	
-	$Sprite2D.texture = result_texture
+	# OLD CODE FOR BLENDING ACTIVATION IMAGE
+	#var base_image: Image = tile_resource.base_texture.get_image()
+	#var activation_image: Image = tile_resource.activation.activation_texture.get_image()
+	#
+	## Blend the overlay image onto the base at position (0, 0)
+	#base_image.blend_rect(activation_image, Rect2i(Vector2i(0, 0), activation_image.get_size()), Vector2i(0, 0))
+	#
+	## Create a new texture from the modified image
+	#var result_texture = ImageTexture.create_from_image(base_image)
+	#
+	#$Sprite2D.texture = result_texture
+	$Sprite2D.texture = tile_resource.base_texture
 
 
 func _get_tile_info() -> InfoResource:

@@ -12,7 +12,7 @@
 [node name="Main" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(3, 3)
+zoom = Vector2(4, 4)
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -29,8 +29,8 @@ enemy_manager = NodePath("../EnemyManager")
 dice_scene = ExtResource("3_xmabb")
 
 [node name="Player" parent="." instance=ExtResource("5_xmabb")]
-position = Vector2(-113, -4)
+position = Vector2(-72, 1)
 
 [node name="EnemyManager" parent="." instance=ExtResource("9_vgvo4")]
 enemy_base_scene = ExtResource("7_4hlf6")
-enemy_spacing = 720
+enemy_spacing = 540

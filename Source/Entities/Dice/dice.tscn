@@ -11,7 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://3s6vwfbgjb6m" path="res://Assets/Textures/Dice/dice6.png" id="8_xkydj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_md6qd"]
-size = Vector2(24, 24)
+size = Vector2(18, 18)
 
 [node name="Dice" type="Node2D" node_paths=PackedStringArray("draggable")]
 script = ExtResource("1_ipsek")

@@ -1,8 +1,13 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=4 format=3 uid="uid://c5gk2kf6r2v5y"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=9 format=3 uid="uid://c5gk2kf6r2v5y"]
 
 [ext_resource type="Resource" uid="uid://72ii58ggku6y" path="res://Source/Entities/Tiles/ActivationResources/3_activation.tres" id="1_2kka0"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_08vmm"]
+[ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="3_0abqg"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="3_tyb5i"]
+[ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Systems/Effects/AttributeChangers/shield_effect.tscn" id="4_fmymq"]
+[ext_resource type="PackedScene" uid="uid://cyrmhmhlhbp0i" path="res://Source/Systems/Effects/Targeters/target_random_enemy_effect.tscn" id="5_06byu"]
+[ext_resource type="PackedScene" uid="uid://dp6nb4nkkua0r" path="res://Source/Systems/Effects/Utilities/wait_for_milliseconds_effect.tscn" id="5_fmymq"]
+[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_moiwb"]
 
 [resource]
 script = ExtResource("3_tyb5i")
@@ -10,5 +15,11 @@ tile_name = "Shield Generator"
 description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the [color=purple]targeted[/color] enemy."
 base_texture = ExtResource("2_08vmm")
 activation = ExtResource("1_2kka0")
-effect_chain = Array[PackedScene]([])
+effect_chain = Dictionary[PackedScene, int]({
+ExtResource("3_0abqg"): 0,
+ExtResource("4_fmymq"): 3,
+ExtResource("5_fmymq"): 100,
+ExtResource("5_06byu"): 0,
+ExtResource("6_moiwb"): 0
+})
 metadata/_custom_type_script = ExtResource("3_tyb5i")

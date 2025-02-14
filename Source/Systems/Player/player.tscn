@@ -8,7 +8,8 @@
 
 [node name="Player" type="Node2D" node_paths=PackedStringArray("tile_grid", "dice_queue", "health")]
 script = ExtResource("1_86t7d")
-dice_queue_offset = Vector2(16, 160)
+dice_queue_offset = Vector2(12, 110)
+dice_queue_spacing = 24
 tile_grid = NodePath("TileGrid")
 dice_queue = NodePath("DiceQueue")
 health = NodePath("Health")

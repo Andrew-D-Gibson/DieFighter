@@ -21,7 +21,7 @@ func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 	for i in range(len(enemy_resources)):
 		var enemy = enemy_base_scene.instantiate()
 		enemy.enemy_resource = enemy_resources[i]
-		enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), -80)
+		enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), -60)
 		
 		enemy.health.death.connect(_remove_dead_enemies)
 		
@@ -45,4 +45,5 @@ func _run_enemy_turn() -> void:
 	for enemy in enemies:
 		while len(enemy.dice_queue.queue) > 0:
 			enemy.act_with_first_die()
+			await get_tree().create_timer(1).timeout
 	enemy_turn_ended.emit()

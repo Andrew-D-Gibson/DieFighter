@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_t4vxf")
-description = "[color=yellow]Activates[/color] with any value die (die_blank)"
+description = "[color=yellow]Activates[/color] with any value die."
 activation_texture = ExtResource("1_17j18")
 acceptable_values = Array[int]([1, 2, 3, 4, 5, 6])
 metadata/_custom_type_script = ExtResource("2_t4vxf")

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bc3ccd16sh4lv"]
+
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.gd" id="1_dtr05"]
+
+[node name="GiveDieToTargetEffect" type="Node2D"]
+script = ExtResource("1_dtr05")

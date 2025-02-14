@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Entities/Tiles/tile.gd" id="1_71op4"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Components/Draggable/draggable.tscn" id="2_b16ti"]
-[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="3_o6mit"]
+[ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="4_fc656"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Components/Clickable/clickable.tscn" id="4_rngaw"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
-size = Vector2(30, 32)
+size = Vector2(22, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rngaw"]
-size = Vector2(30, 32)
+size = Vector2(22, 24)
 
 [node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable") groups=["Tiles"]]
 script = ExtResource("1_71op4")
@@ -27,4 +27,4 @@ shape = SubResource("RectangleShape2D_jkiuv")
 shape = SubResource("RectangleShape2D_rngaw")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_o6mit")
+texture = ExtResource("4_fc656")
