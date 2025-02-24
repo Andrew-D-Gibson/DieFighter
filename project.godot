@@ -23,12 +23,11 @@ Events="*res://Source/Autoloads/events.gd"
 
 [display]
 
-window/size/viewport_width=1920
-window/size/viewport_height=1080
+window/size/viewport_width=320
+window/size/viewport_height=180
 window/size/window_width_override=1920
 window/size/window_height_override=1080
 window/stretch/mode="viewport"
-window/stretch/aspect="keep_height"
 
 [global_group]
 
@@ -36,8 +35,9 @@ Tiles=""
 
 [gui]
 
+common/snap_controls_to_pixels=false
 theme/custom="uid://fjvgoxquxqqr"
-theme/custom_font="uid://bekus7kljl5ap"
+theme/custom_font="uid://d18mhx31l6gjo"
 
 [input]
 
@@ -58,3 +58,5 @@ textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.027451, 0.0117647, 0.14902, 1)
+2d/snap/snap_2d_transforms_to_pixel=true
+2d/snap/snap_2d_vertices_to_pixel=true

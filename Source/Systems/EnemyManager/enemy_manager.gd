@@ -21,7 +21,7 @@ func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 	for i in range(len(enemy_resources)):
 		var enemy = enemy_base_scene.instantiate()
 		enemy.enemy_resource = enemy_resources[i]
-		enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), -60)
+		enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), 0)
 		
 		enemy.health.death.connect(_remove_dead_enemies)
 		

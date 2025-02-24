@@ -6,7 +6,6 @@ extends Node2D
 @export_category('Components')
 @export var dice_queue: DiceQueue
 @export var health: Health
-@export var intent_indicator: IntentIndicator
 
 var ship_graphics: Node2D
 var turn_actions: Array[EnemyActionResource]
@@ -42,9 +41,6 @@ func _update_resource() -> void:
 	# Create new actions for the coming turn
 	_generate_turn_actions()
 	
-	# Move the intent indicators as needed
-	$IntentIndicator.position = enemy_resource.intent_indicator_position
-	
 	
 func _generate_turn_actions() -> void:
 	# Clear the previous turn's actions
@@ -69,14 +65,12 @@ func _generate_turn_actions() -> void:
 				break
 				
 	turn_actions.shuffle()
-	
-	intent_indicator.update_intent_indicators(turn_actions)
 
 
 func _update_dice_queue_locations() -> void:
 	for i in range(len(dice_queue.queue)):
 		dice_queue.queue[i].draggable.state = Draggable.DragState.ENEMY_HOLDING
-		dice_queue.queue[i].draggable.home_position = global_position + enemy_resource.dice_queue_position + Vector2(0, -i * 32)
+		dice_queue.queue[i].draggable.home_position = global_position + enemy_resource.dice_queue_position + Vector2(0, -i * 14)
 
 
 func act_with_first_die() -> void:

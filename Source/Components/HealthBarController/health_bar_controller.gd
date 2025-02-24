@@ -7,6 +7,7 @@ var need_to_update_health_white: bool = false
 var time_since_health_change: float = 0
 
 @export var text_shake_time: float = 0.25
+@export var text_shake_level: int = 8
 var health_label_shake_time: float = 0
 var shields_label_shake_time: float = 0
 
@@ -83,7 +84,7 @@ func _set_health() -> void:
 
 
 func _start_health_text_shake() -> void:
-	$HealthLabel.text = '[shake rate=75, level=12]' + _get_health_string() + '[/shake]'
+	$HealthLabel.text = '[shake rate=75, level=' + str(text_shake_level) + ']' + _get_health_string() + '[/shake]'
 	health_label_shake_time = text_shake_time
 	
 
@@ -98,5 +99,5 @@ func _set_shields() -> void:
 
 
 func _start_shield_text_shake() -> void:
-	$ShieldsLabel.text = '[shake rate=75, level=18]' + _get_shield_string() + '[/shake]'
+	$ShieldsLabel.text = '[shake rate=75, level=' + str(text_shake_level + 2) + ']' + _get_shield_string() + '[/shake]'
 	shields_label_shake_time = text_shake_time

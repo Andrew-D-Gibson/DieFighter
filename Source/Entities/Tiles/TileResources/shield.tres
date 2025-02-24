@@ -17,7 +17,7 @@ base_texture = ExtResource("2_08vmm")
 activation = ExtResource("1_2kka0")
 effect_chain = Dictionary[PackedScene, int]({
 ExtResource("3_0abqg"): 0,
-ExtResource("4_fmymq"): 3,
+ExtResource("4_fmymq"): 8,
 ExtResource("5_fmymq"): 100,
 ExtResource("5_06byu"): 0,
 ExtResource("6_moiwb"): 0

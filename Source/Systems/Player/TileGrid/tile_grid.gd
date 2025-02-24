@@ -2,8 +2,8 @@
 class_name TileGrid
 extends Node2D
 
-var grid_width: int = 6
-var grid_height: int = 4
+var grid_width: int = 5
+var grid_height: int = 3
 var grid_spacing: int = 24
 
 var tile_locations: Dictionary[Tile, Vector2i]

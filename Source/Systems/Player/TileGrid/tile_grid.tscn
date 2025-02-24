@@ -12,5 +12,5 @@ empty_cell_texture = ExtResource("3_41rks")
 
 [node name="Background" type="Sprite2D" parent="."]
 z_index = -2
-position = Vector2(72, 48)
+position = Vector2(60, 36)
 texture = ExtResource("3_lrjyx")

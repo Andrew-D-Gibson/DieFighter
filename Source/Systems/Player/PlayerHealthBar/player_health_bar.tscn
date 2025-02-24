@@ -1,36 +1,36 @@
 [gd_scene load_steps=12 format=3 uid="uid://skeakddxfvao"]
 
-[ext_resource type="Texture2D" uid="uid://k7win6xjltgg" path="res://Assets/Textures/Player/PlayerHealthBar/background.png" id="1_gt1ml"]
+[ext_resource type="Texture2D" uid="uid://6k7aho8456jn" path="res://Assets/Textures/Player/PlayerHealthBar/background.png" id="1_gt1ml"]
 [ext_resource type="Script" uid="uid://bbu4dfly113kv" path="res://Source/Systems/Player/PlayerHealthBar/player_health_bar.gd" id="1_p4fc1"]
-[ext_resource type="Texture2D" uid="uid://ce0yswbebwgca" path="res://Assets/Textures/Player/PlayerHealthBar/Shields-Sheet.png" id="2_cvf0c"]
-[ext_resource type="Texture2D" uid="uid://cwdhir11tvfhx" path="res://Assets/Textures/Player/PlayerHealthBar/health_under.png" id="3_c4lmh"]
-[ext_resource type="Texture2D" uid="uid://dpwvudfxcn2kd" path="res://Assets/Textures/Player/PlayerHealthBar/health_change.png" id="4_qyssx"]
-[ext_resource type="Texture2D" uid="uid://b7nxevwjocxul" path="res://Assets/Textures/Player/PlayerHealthBar/health.png" id="5_w3cee"]
-[ext_resource type="Texture2D" uid="uid://ju0ru8p1i1g5" path="res://Assets/Textures/Player/PlayerHealthBar/over.png" id="6_rivm1"]
+[ext_resource type="Texture2D" uid="uid://bggaq10wpcli5" path="res://Assets/Textures/Player/PlayerHealthBar/Shields-Sheet.png" id="2_cvf0c"]
+[ext_resource type="Texture2D" uid="uid://b3cfmrcn8xnsb" path="res://Assets/Textures/Player/PlayerHealthBar/health_under.png" id="3_c4lmh"]
+[ext_resource type="Texture2D" uid="uid://cwoldjm4pubml" path="res://Assets/Textures/Player/PlayerHealthBar/health_change.png" id="4_qyssx"]
+[ext_resource type="Texture2D" uid="uid://ccpalueq6vrr2" path="res://Assets/Textures/Player/PlayerHealthBar/health.png" id="5_w3cee"]
+[ext_resource type="Texture2D" uid="uid://dwyeeyvjor44w" path="res://Assets/Textures/Player/PlayerHealthBar/over.png" id="6_rivm1"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_puobp"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_p4fc1"]
 atlas = ExtResource("2_cvf0c")
-region = Rect2(0, 0, 105, 110)
+region = Rect2(0, 0, 58, 58)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_lnalw"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_bhlmh"]
 atlas = ExtResource("2_cvf0c")
-region = Rect2(105, 0, 105, 110)
+region = Rect2(58, 0, 58, 58)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_s8os8"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_5o3e1"]
 atlas = ExtResource("2_cvf0c")
-region = Rect2(210, 0, 105, 110)
+region = Rect2(116, 0, 58, 58)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_es4b2"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_puobp")
+"texture": SubResource("AtlasTexture_p4fc1")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_lnalw")
+"texture": SubResource("AtlasTexture_bhlmh")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_s8os8")
+"texture": SubResource("AtlasTexture_5o3e1")
 }],
 "loop": true,
 "name": &"default",
@@ -47,10 +47,10 @@ texture = ExtResource("1_gt1ml")
 sprite_frames = SubResource("SpriteFrames_es4b2")
 
 [node name="HealthUpdateBar" type="TextureProgressBar" parent="."]
-offset_left = -52.0
-offset_top = -55.0
-offset_right = 53.0
-offset_bottom = 55.0
+offset_left = -29.0
+offset_top = -29.0
+offset_right = 76.0
+offset_bottom = 81.0
 max_value = 1.0
 step = 0.025
 value = 1.0
@@ -59,10 +59,10 @@ texture_under = ExtResource("3_c4lmh")
 texture_progress = ExtResource("4_qyssx")
 
 [node name="HealthBar" type="TextureProgressBar" parent="."]
-offset_left = -52.0
-offset_top = -55.0
-offset_right = 53.0
-offset_bottom = 55.0
+offset_left = -29.0
+offset_top = -29.0
+offset_right = 76.0
+offset_bottom = 81.0
 max_value = 1.0
 step = 0.025
 value = 1.0
@@ -73,24 +73,26 @@ texture_progress = ExtResource("5_w3cee")
 texture = ExtResource("6_rivm1")
 
 [node name="HealthLabel" type="RichTextLabel" parent="."]
-offset_left = -15.0
-offset_top = -22.0
-offset_right = 25.0
-offset_bottom = 18.0
+offset_left = -14.0
+offset_top = -17.0
+offset_right = 26.0
+offset_bottom = 23.0
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+theme_override_constants/line_separation = -6
 bbcode_enabled = true
 text = "HULL
-100/100
+99/99
 "
 horizontal_alignment = 1
 
 [node name="ShieldsLabel" type="RichTextLabel" parent="."]
-offset_left = -48.0
-offset_top = 23.0
-offset_right = -8.0
-offset_bottom = 63.0
+offset_left = -23.0
+offset_top = 6.0
+offset_right = -5.0
+offset_bottom = 22.0
 theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
 bbcode_enabled = true
-text = "100
-"
+text = "10"
+fit_content = true
+scroll_active = false
 horizontal_alignment = 1

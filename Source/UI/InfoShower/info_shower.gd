@@ -26,13 +26,13 @@ func _format_text(text: String) -> String:
 	text = text.replace("purple", "#c552f1")
 	
 	# Add dice images to replace numbers
-	text = text.replace('(die_blank)', '[img={72}x{72}]' + dice_image_paths[0] + '[/img]')
-	text = text.replace('(die_1)', '[img={72}x{72}]' + dice_image_paths[1] + '[/img]')
-	text = text.replace('(die_2)', '[img={72}x{72}]' + dice_image_paths[2] + '[/img]')
-	text = text.replace('(die_3)', '[img={72}x{72}]' + dice_image_paths[3] + '[/img]')
-	text = text.replace('(die_4)', '[img={72}x{72}]' + dice_image_paths[4] + '[/img]')
-	text = text.replace('(die_5)', '[img={72}x{72}]' + dice_image_paths[5] + '[/img]')
-	text = text.replace('(die_6)', '[img={72}x{72}]' + dice_image_paths[6] + '[/img]')
+	text = text.replace('(die_blank)', '[img={12}x{12}]' + dice_image_paths[0] + '[/img]')
+	text = text.replace('(die_1)', '[img={12}x{12}]' + dice_image_paths[1] + '[/img]')
+	text = text.replace('(die_2)', '[img={12}x{12}]' + dice_image_paths[2] + '[/img]')
+	text = text.replace('(die_3)', '[img={12}x{12}]' + dice_image_paths[3] + '[/img]')
+	text = text.replace('(die_4)', '[img={12}x{12}]' + dice_image_paths[4] + '[/img]')
+	text = text.replace('(die_5)', '[img={12}x{12}]' + dice_image_paths[5] + '[/img]')
+	text = text.replace('(die_6)', '[img={12}x{12}]' + dice_image_paths[6] + '[/img]')
 	
 	return text
 

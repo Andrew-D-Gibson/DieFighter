@@ -29,7 +29,7 @@ func _spawn_dice(num_of_dice: int) -> void:
 		await get_tree().create_timer(time_between_die_spawns).timeout
 		
 		var new_die = dice_scene.instantiate()
-		new_die.position = player.position + player.dice_queue_offset + Vector2(600, 0)
+		new_die.position = player.position + player.dice_queue.position + Vector2(600, 0)
 
 		add_child(new_die)
 		Globals.player.dice_queue.add(new_die)
