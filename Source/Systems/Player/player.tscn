@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://c3kgofs4sp451" path="res://Assets/Textures/Player/DiceQueue/DiceQueueBackground.png" id="4_83hls"]
 [ext_resource type="PackedScene" uid="uid://0nffy7i5aty4" path="res://Source/Components/Health/health.tscn" id="4_da5gb"]
 [ext_resource type="PackedScene" uid="uid://skeakddxfvao" path="res://Source/Systems/Player/PlayerHealthBar/player_health_bar.tscn" id="5_83hls"]
-[ext_resource type="Texture2D" uid="uid://dn06kov6nfnf7" path="res://Assets/Textures/Player/TargetingComputer/targeting_computer.png" id="7_vokxg"]
+[ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/Systems/Player/TargetingComputer/targeting_computer.tscn" id="7_vokxg"]
 
 [node name="Player" type="Node2D" node_paths=PackedStringArray("tile_grid", "dice_queue", "health")]
 script = ExtResource("1_86t7d")
@@ -20,6 +20,7 @@ health = NodePath("Health")
 position = Vector2(6, 81)
 
 [node name="Sprite2D" type="Sprite2D" parent="DiceQueue"]
+z_index = -1
 position = Vector2(54, 0)
 texture = ExtResource("4_83hls")
 
@@ -31,16 +32,5 @@ starting_health = 16
 position = Vector2(-46, 35)
 health_component = NodePath("../Health")
 
-[node name="TargetingComputer" type="Node2D" parent="."]
+[node name="TargetingComputer" parent="." instance=ExtResource("7_vokxg")]
 position = Vector2(161, 30)
-
-[node name="Sprite2D" type="Sprite2D" parent="TargetingComputer"]
-texture = ExtResource("7_vokxg")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="TargetingComputer"]
-offset_left = -16.0
-offset_top = -28.0
-offset_right = 24.0
-offset_bottom = 12.0
-theme_override_colors/default_color = Color(0.772549, 0.321569, 0.945098, 1)
-text = "TARGET"

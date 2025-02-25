@@ -10,15 +10,29 @@ extends Node2D
 var ship_graphics: Node2D
 var turn_actions: Array[EnemyActionResource]
 
+signal enemy_died()
+
 
 func _ready() -> void:
 	assert(enemy_resource)
 	_update_resource()
 	
-	health.death.connect(queue_free)
+	health.death.connect(_on_death)
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
+	
+	# Set the sprite to bob
+	var tween_time = randf_range(2, 4)
+	var tween = get_tree().create_tween()
+	tween.tween_property(ship_graphics, 'global_position', ship_graphics.global_position + Vector2(0, 8), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(ship_graphics, 'global_position', ship_graphics.global_position, tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.set_loops()
 
+
+func _on_death() -> void:
+	enemy_died.emit()
+	queue_free()
+	
 
 func _update_resource() -> void:
 	# Set the ship's graphics

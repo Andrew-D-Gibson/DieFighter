@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 @export_category('Behavior')
 @export var game_state: GameStateResource

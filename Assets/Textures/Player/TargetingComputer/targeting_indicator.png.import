@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3audf7oa12dn"
-path="res://.godot/imported/intent_indicator.png-8e3ad788f530c5fb9b608feee3e6c6ea.ctex"
+uid="uid://c63xwfnkq3vun"
+path="res://.godot/imported/targeting_indicator.png-7fa608001741d5a81e93e8f7671bdc18.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/TargetingComputer/intent_indicator.png"
-dest_files=["res://.godot/imported/intent_indicator.png-8e3ad788f530c5fb9b608feee3e6c6ea.ctex"]
+source_file="res://Assets/Textures/Player/TargetingComputer/targeting_indicator.png"
+dest_files=["res://.godot/imported/targeting_indicator.png-7fa608001741d5a81e93e8f7671bdc18.ctex"]
 
 [params]
 

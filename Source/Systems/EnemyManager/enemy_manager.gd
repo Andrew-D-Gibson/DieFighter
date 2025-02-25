@@ -12,8 +12,6 @@ signal enemy_turn_ended()
 func _ready() -> void:
 	Globals.enemy_manager = self
 	
-	Globals.player.player_turn_over.connect(_run_enemy_turn)
-	
 
 func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 	var spacing = enemy_spacing / float(len(enemy_resources) + 1)
@@ -33,6 +31,11 @@ func kill_all_enemies() -> void:
 	for enemy in enemies:
 		enemy.queue_free()
 	enemies = []
+	
+	
+func get_alive_enemies() -> Array[Enemy]:
+	_remove_dead_enemies()
+	return enemies
 	
 
 func _remove_dead_enemies() -> void:

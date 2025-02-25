@@ -12,4 +12,4 @@ effect_chain = Dictionary[PackedScene, int]({
 ExtResource("1_fmd3i"): 0,
 ExtResource("2_su07i"): 3
 })
-metadata/_custom_type_script = ExtResource("1_12xyc")
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

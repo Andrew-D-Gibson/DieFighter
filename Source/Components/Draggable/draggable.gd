@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 			dragging_an_object = false
 			
 			# Move the parent's render index back to its original
-			get_parent().z_index -= 1
+			get_parent().z_index -= 3
 			
 			drag_ended.emit(self, get_global_mouse_position())
 		return
@@ -53,6 +53,6 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		dragging_an_object = true
 		
 		# Move the parent's render index to be above where it usually sits
-		get_parent().z_index += 1
+		get_parent().z_index += 3
 		
 		drag_started.emit()

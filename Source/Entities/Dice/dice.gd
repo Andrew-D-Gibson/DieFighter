@@ -20,9 +20,6 @@ func _ready() -> void:
 		
 	draggable.drag_ended.connect(_check_for_tile_activation)
 	
-	print('Dice ready')
-	print(draggable.state)
-	
 
 func _check_for_tile_activation(_draggable: Draggable, end_position: Vector2) -> void:
 	var tile = _get_overlapping_tile(end_position)

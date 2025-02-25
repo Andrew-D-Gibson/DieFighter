@@ -10,10 +10,11 @@
 [resource]
 script = ExtResource("1_86x0f")
 intent_indicator = ExtResource("3_ca2d5")
+intent_amount = ""
 effect_chain = Dictionary[PackedScene, int]({
 ExtResource("1_y1f7p"): 0,
 ExtResource("2_p1c30"): 0,
 ExtResource("2_ca2d5"): 0,
 ExtResource("4_k68wh"): 0
 })
-metadata/_custom_type_script = ExtResource("1_86x0f")
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"
