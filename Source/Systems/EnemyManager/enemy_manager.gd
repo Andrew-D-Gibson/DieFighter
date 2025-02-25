@@ -44,7 +44,7 @@ func _remove_dead_enemies() -> void:
 			enemies.remove_at(i)
 			
 			
-func _run_enemy_turn() -> void:
+func run_enemy_turn() -> void:
 	for enemy in enemies:
 		while len(enemy.dice_queue.queue) > 0:
 			enemy.act_with_first_die()

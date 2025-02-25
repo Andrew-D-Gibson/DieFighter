@@ -21,8 +21,14 @@ func _ready() -> void:
 	_spawn_dice(game_state.num_of_dice)
 	
 	# Spawn enemies (temporary)
-	enemy_manager.spawn_enemies(game_state.enemies_to_spawn)
-		
+	if enemy_manager:
+		enemy_manager.spawn_enemies(game_state.enemies_to_spawn)
+	
+	# Hook up the signals for turn management
+	if player and enemy_manager:
+		player.player_turn_over.connect(enemy_manager.run_enemy_turn)
+		enemy_manager.enemy_turn_ended.connect(player.start_player_turn)
+	
 		
 func _spawn_dice(num_of_dice: int) -> void:
 	for i in range(num_of_dice):

@@ -11,6 +11,8 @@ var tile_locations: Dictionary[Tile, Vector2i]
 
 @export var empty_cell_texture: Texture2D
 
+signal tile_activation_complete()
+
 
 func _ready() -> void:
 	_setup_grid_graphics()
@@ -52,6 +54,7 @@ func setup_tiles(_tile_locations: Dictionary[TileResource, Vector2i]) -> void:
 		
 		# Connect the tile's drag ended signal to the function to snap it to the grid
 		tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
+		tile.tile_activation_complete.connect(self.tile_activation_complete.emit)
 		
 		add_child(tile)
 

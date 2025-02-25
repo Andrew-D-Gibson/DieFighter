@@ -94,7 +94,7 @@ func act_with_first_die() -> void:
 		
 	# Get the first die from the queue
 	var die := dice_queue.queue[0]
-	dice_queue.remove(die)
+	#dice_queue.remove(die)
 	
 	# Get the action for the chosen die
 	var action := turn_actions[die.value - 1]

@@ -10,6 +10,8 @@ extends Node2D
 @export var draggable: Draggable
 @export var clickable: Clickable
 
+signal tile_activation_complete()
+
 
 func _ready() -> void:
 	assert(tile_resource)
@@ -47,7 +49,7 @@ func _get_tile_info() -> InfoResource:
 
 func try_to_activate(activator_die: Dice) -> void:
 	if tile_resource.activation.criteria_satisfied(activator_die):
-		Globals.player.dice_queue.remove(activator_die)
+		#Globals.player.dice_queue.remove(activator_die)
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		_activate(activator_die)
 		
@@ -69,3 +71,5 @@ func _activate(activator_die: Dice = null) -> void:
 		
 		# Remove the effect node from the scene
 		effect.queue_free()
+		
+	tile_activation_complete.emit()
