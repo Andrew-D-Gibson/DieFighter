@@ -56,15 +56,13 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_46m13"]
-size = Vector2(8, 18)
+size = Vector2(8, 22)
 
 [node name="TargetingComputer" type="Node2D"]
 script = ExtResource("1_8ig5e")
 
 [node name="Screen" type="AnimatedSprite2D" parent="."]
-visible = false
 sprite_frames = SubResource("SpriteFrames_1tf01")
-animation = &"static"
 
 [node name="TargetText" type="RichTextLabel" parent="Screen"]
 z_index = 1
@@ -109,15 +107,16 @@ offset_left = -3.0
 offset_top = -1.0
 offset_right = 5.0
 offset_bottom = 12.0
-text = "52"
+mouse_filter = 2
 horizontal_alignment = 1
 
 [node name="Clickable" type="Area2D" parent="Intents/1"]
+z_index = 1
 script = ExtResource("4_exnvl")
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/1/Clickable"]
-position = Vector2(0, 1)
+position = Vector2(0, -1)
 shape = SubResource("RectangleShape2D_46m13")
 
 [node name="2" type="Sprite2D" parent="Intents"]
@@ -128,8 +127,17 @@ offset_left = -3.0
 offset_top = -1.0
 offset_right = 5.0
 offset_bottom = 12.0
-text = "0"
+mouse_filter = 2
 horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="Intents/2"]
+z_index = 1
+script = ExtResource("4_exnvl")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/2/Clickable"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_46m13")
 
 [node name="3" type="Sprite2D" parent="Intents"]
 position = Vector2(-5, 17)
@@ -139,8 +147,17 @@ offset_left = -3.0
 offset_top = -1.0
 offset_right = 5.0
 offset_bottom = 12.0
-text = "0"
+mouse_filter = 2
 horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="Intents/3"]
+z_index = 1
+script = ExtResource("4_exnvl")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/3/Clickable"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_46m13")
 
 [node name="4" type="Sprite2D" parent="Intents"]
 position = Vector2(4, 17)
@@ -150,8 +167,17 @@ offset_left = -3.0
 offset_top = -1.0
 offset_right = 5.0
 offset_bottom = 12.0
-text = "0"
+mouse_filter = 2
 horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="Intents/4"]
+z_index = 1
+script = ExtResource("4_exnvl")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/4/Clickable"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_46m13")
 
 [node name="5" type="Sprite2D" parent="Intents"]
 position = Vector2(13, 17)
@@ -161,8 +187,17 @@ offset_left = -3.0
 offset_top = -1.0
 offset_right = 5.0
 offset_bottom = 12.0
-text = "0"
+mouse_filter = 2
 horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="Intents/5"]
+z_index = 1
+script = ExtResource("4_exnvl")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/5/Clickable"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_46m13")
 
 [node name="6" type="Sprite2D" parent="Intents"]
 position = Vector2(22, 17)
@@ -172,8 +207,23 @@ offset_left = -3.0
 offset_top = -1.0
 offset_right = 5.0
 offset_bottom = 12.0
-text = "0"
+mouse_filter = 2
 horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="Intents/6"]
+z_index = 1
+script = ExtResource("4_exnvl")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/6/Clickable"]
+position = Vector2(0, -1)
+shape = SubResource("RectangleShape2D_46m13")
 
 [connection signal="input_event" from="LeftButton" to="." method="_on_left_button_input_event"]
 [connection signal="input_event" from="RightButton" to="." method="_on_right_button_input_event"]
+[connection signal="input_event" from="Intents/1/Clickable" to="Intents/1/Clickable" method="_on_input_event"]
+[connection signal="input_event" from="Intents/2/Clickable" to="Intents/2/Clickable" method="_on_input_event"]
+[connection signal="input_event" from="Intents/3/Clickable" to="Intents/3/Clickable" method="_on_input_event"]
+[connection signal="input_event" from="Intents/4/Clickable" to="Intents/4/Clickable" method="_on_input_event"]
+[connection signal="input_event" from="Intents/5/Clickable" to="Intents/5/Clickable" method="_on_input_event"]
+[connection signal="input_event" from="Intents/6/Clickable" to="Intents/6/Clickable" method="_on_input_event"]

@@ -88,12 +88,15 @@ func _set_target_image_and_intents() -> void:
 
 	if targeted_enemy.turn_actions:
 		for i in range(6):
-			$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].intent_indicator
+			$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
 			$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
+			$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)
 	else:
 		for i in range(6):
 			$Intents.get_child(i).texture = null
 			$Intents.get_child(i).get_child(0).text = ''
+			if $Intents.get_child(i).get_child(1).clicked.is_connected(targeted_enemy.turn_actions[i].show_info):
+				$Intents.get_child(i).get_child(1).clicked.disconnect(targeted_enemy.turn_actions[i].show_info)
 
 
 func _move_indicator() -> void:

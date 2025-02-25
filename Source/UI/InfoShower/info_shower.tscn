@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuyjuwunjxclv"]
+[gd_scene load_steps=3 format=3 uid="uid://cuyjuwunjxclv"]
 
 [ext_resource type="Script" uid="uid://qbi5qg8wxs8a" path="res://Source/UI/InfoShower/info_shower.gd" id="1_6im3a"]
+[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_74257"]
 
 [node name="InfoShower" type="Control"]
 layout_mode = 3
@@ -43,6 +44,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("2_74257")
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
 text = "Title!"
@@ -54,6 +56,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("2_74257")
 theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 text = "Activates with a number!"
@@ -76,6 +79,7 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("2_74257")
 theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
 text = "Does a thing!"

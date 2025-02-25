@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=7 format=3 uid="uid://ddh4rqo4x116u"]
+[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=8 format=3 uid="uid://ddh4rqo4x116u"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Entities/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_86x0f"]
 [ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="1_y1f7p"]
@@ -6,15 +6,19 @@
 [ext_resource type="PackedScene" uid="uid://jt77tja7wi1i" path="res://Source/Systems/Effects/DiceMovers/attack_target_tween_effect.tscn" id="2_p1c30"]
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="3_ca2d5"]
 [ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="4_k68wh"]
+[ext_resource type="Texture2D" uid="uid://b5mm0ibc4n8hu" path="res://Assets/Textures/Enemies/IntentIndicator/attack_info.png" id="6_k68wh"]
 
 [resource]
 script = ExtResource("1_86x0f")
-intent_indicator = ExtResource("3_ca2d5")
-intent_amount = ""
+name = "Basic Cannon"
+description = "Deals 5 [color=red]damage[/color]"
+indicator_texture = ExtResource("3_ca2d5")
+info_texture = ExtResource("6_k68wh")
+intent_amount = "5"
 effect_chain = Dictionary[PackedScene, int]({
 ExtResource("1_y1f7p"): 0,
 ExtResource("2_p1c30"): 0,
-ExtResource("2_ca2d5"): 0,
+ExtResource("2_ca2d5"): 5,
 ExtResource("4_k68wh"): 0
 })
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"
