@@ -1,12 +1,6 @@
 class_name Health
 extends Node2D
 
-signal health_damaged()
-signal health_healed()
-signal shields_damaged()
-signal shields_reinforced()
-signal death() 
-
 @export var invulnerable: bool = false
 
 @export_category("Health")
@@ -17,7 +11,13 @@ signal death()
 @export_category("Shields")
 @export var starting_shields: int
 @onready var shields: int = starting_shields
-	
+		
+signal health_damaged()
+signal health_healed()
+signal shields_damaged()
+signal shields_reinforced()
+signal death() 
+
 
 func take_damage(amount: int) -> void:
 	if invulnerable:

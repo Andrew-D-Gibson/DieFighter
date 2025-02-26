@@ -21,7 +21,10 @@ func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 		enemy.enemy_resource = enemy_resources[i]
 		enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), 0)
 		
-		enemy.health.death.connect(_remove_dead_enemies)
+		enemy.health.death.connect(func():
+			_remove_dead_enemies()
+			Events.enemy_died.emit()
+		)
 		
 		enemies.append(enemy)
 		add_child(enemy)

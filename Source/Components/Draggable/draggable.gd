@@ -38,6 +38,7 @@ func _process(delta: float) -> void:
 			
 			# Move the parent's render index back to its original
 			get_parent().z_index -= 3
+			get_parent().scale = Vector2(1, 1)
 			
 			drag_ended.emit(self, get_global_mouse_position())
 		return
@@ -54,5 +55,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		
 		# Move the parent's render index to be above where it usually sits
 		get_parent().z_index += 3
+		
+		get_parent().scale = Vector2(1.25,1.25)
 		
 		drag_started.emit()

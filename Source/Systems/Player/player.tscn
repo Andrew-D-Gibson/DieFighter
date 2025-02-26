@@ -13,10 +13,11 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lwstl"]
 size = Vector2(48, 12)
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("tile_grid", "dice_queue", "health", "end_turn_button")]
+[node name="Player" type="Node2D" node_paths=PackedStringArray("tile_grid", "dice_queue", "targeting_computer", "health", "end_turn_button")]
 script = ExtResource("1_86t7d")
 tile_grid = NodePath("TileGrid")
 dice_queue = NodePath("DiceQueue")
+targeting_computer = NodePath("TargetingComputer")
 health = NodePath("Health")
 end_turn_button = NodePath("DiceQueue/EndTurnButton")
 
@@ -31,6 +32,7 @@ position = Vector2(54, 0)
 texture = ExtResource("4_83hls")
 
 [node name="EndTurnButton" type="TextureRect" parent="DiceQueue"]
+visible = false
 offset_left = 26.0
 offset_top = -20.0
 offset_right = 74.0
@@ -40,6 +42,7 @@ texture = ExtResource("5_7etns")
 stretch_mode = 5
 
 [node name="RichTextLabel" type="RichTextLabel" parent="DiceQueue/EndTurnButton"]
+layout_mode = 0
 offset_left = 8.0
 offset_top = 12.0
 offset_right = 48.0

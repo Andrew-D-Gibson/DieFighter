@@ -10,8 +10,6 @@ extends Node2D
 var ship_graphics: Node2D
 var turn_actions: Array[EnemyActionResource]
 
-signal enemy_died()
-
 
 func _ready() -> void:
 	assert(enemy_resource)
@@ -30,7 +28,17 @@ func _ready() -> void:
 
 
 func _on_death() -> void:
-	enemy_died.emit()
+	# Give our dice away, either to other enemies if possible or the player if not
+	var other_enemies = Globals.enemy_manager.get_alive_enemies()
+	for i in range(len(dice_queue.queue)-1, -1, -1):
+		var die = dice_queue.queue[i]
+		dice_queue.remove(die)
+		
+		if len(other_enemies) == 0:
+			Globals.player.dice_queue.add(die, true)
+		else:
+			other_enemies.pick_random().dice_queue.add(die, true)
+
 	queue_free()
 	
 

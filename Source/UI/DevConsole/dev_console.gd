@@ -30,9 +30,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'shield':
 			_shield(command.slice(1))
 			
-		#'reroll':
-			#_reroll()
-			#
+		'reroll':
+			_reroll()
+			
 		#'player_invulnerable':
 			#_player_invulnerable()
 					#
@@ -64,7 +64,6 @@ func _on_line_edit_text_changed(current_text: String) -> void:
 
 func _test(_command_args: Array[String] = []) -> void:
 	print('Test called!')
-	Globals.player._check_for_ending_turn()
 	
 
 func _heal(command_args: Array[String] = []) -> void:
@@ -92,11 +91,12 @@ func _shield(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Shielded player![/center]')
 
 
-#func _reroll(command_args: Array[String] = []) -> void:
-	#for dice in Globals.player.dice_queue:
-		#dice.reroll_tween()
-#
-#
+func _reroll(command_args: Array[String] = []) -> void:
+	for die in Globals.player.dice_queue.queue:
+		die.reroll_with_tween()
+		await get_tree().create_timer(0.1).timeout
+
+
 #func _player_invulnerable(command_args: Array[String] = []) -> void:
 	#Globals.player.hp_and_def.invulnerable = !Globals.player.hp_and_def.invulnerable
 	#if Globals.player.hp_and_def.invulnerable:

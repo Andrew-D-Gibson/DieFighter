@@ -12,7 +12,7 @@ script = ExtResource("1_0sj0l")
 player_health = 16
 player_max_health = 16
 player_defense = 0
-num_of_dice = 3
+num_of_dice = 5
 tile_locations = Dictionary[ExtResource("2_ri8kt"), Vector2i]({
 ExtResource("3_ri8kt"): Vector2i(0, 0),
 ExtResource("4_e4q7w"): Vector2i(0, 1)

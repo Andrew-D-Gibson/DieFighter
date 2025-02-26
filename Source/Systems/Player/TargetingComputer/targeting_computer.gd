@@ -8,6 +8,8 @@ var targeted_enemy: Enemy
 func _ready() -> void:
 	targeted_enemy_index = 0
 	check_target_is_valid()
+	
+	Events.enemy_died.connect(check_target_is_valid)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -67,36 +69,28 @@ func check_target_is_valid() -> void:
 func _update_ui() -> void:
 	if !targeted_enemy:
 		$TargetingIndicator.visible = false
+		
 		$TargetImage.texture = null
+		for i in range(6):
+			$Intents.get_child(i).texture = null
+			$Intents.get_child(i).get_child(0).text = ''
+
 		$Screen.play('static')
 		
 	else:
 		_move_indicator()
 		
+		$TargetImage.texture = targeted_enemy.enemy_resource.targeting_computer_image
+		for i in range(6):
+			$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
+			$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
+			$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)
+	
 		$Screen.z_index += 1
 		$Screen.play('static')
 		await $Screen.animation_looped
 		$Screen.z_index -= 1
 		$Screen.play('default')
-		
-		_set_target_image_and_intents()
-
-
-func _set_target_image_and_intents() -> void:
-	if targeted_enemy.enemy_resource.targeting_computer_image:
-			$TargetImage.texture = targeted_enemy.enemy_resource.targeting_computer_image
-
-	if targeted_enemy.turn_actions:
-		for i in range(6):
-			$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
-			$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
-			$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)
-	else:
-		for i in range(6):
-			$Intents.get_child(i).texture = null
-			$Intents.get_child(i).get_child(0).text = ''
-			if $Intents.get_child(i).get_child(1).clicked.is_connected(targeted_enemy.turn_actions[i].show_info):
-				$Intents.get_child(i).get_child(1).clicked.disconnect(targeted_enemy.turn_actions[i].show_info)
 
 
 func _move_indicator() -> void:

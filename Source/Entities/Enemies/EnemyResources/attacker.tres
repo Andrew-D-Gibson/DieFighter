@@ -19,4 +19,4 @@ starting_shields = 0
 actions_and_likelihoods = Dictionary[ExtResource("1_126q5"), float]({
 ExtResource("3_03vjk"): 2.0
 })
-metadata/_custom_type_script = ExtResource("2_mo0f0")
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

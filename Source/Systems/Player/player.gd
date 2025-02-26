@@ -7,6 +7,7 @@ extends Node2D
 @export_category('Components')
 @export var tile_grid: TileGrid
 @export var dice_queue: DiceQueue
+@export var targeting_computer: TargetingComputer
 @export var health: Health
 @export var end_turn_button: Control
 
@@ -21,6 +22,8 @@ func _ready() -> void:
 		_make_newest_die_draggable()
 	)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
+	
+	health.death.connect(Events.game_over.emit)
 	
 	tile_grid.tile_activation_complete.connect(_check_for_end_of_turn)
 	
@@ -82,5 +85,7 @@ func _check_for_end_of_turn() -> void:
 
 func start_player_turn() -> void:
 	for die in dice_queue.queue:
-		die.value = randi_range(1,6)
+		die.reroll_with_tween()
 		die.draggable.state = Draggable.DragState.DEFAULT
+		
+		await get_tree().create_timer(0.1).timeout

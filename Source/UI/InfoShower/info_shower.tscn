@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cuyjuwunjxclv"]
+[gd_scene load_steps=4 format=3 uid="uid://cuyjuwunjxclv"]
 
 [ext_resource type="Script" uid="uid://qbi5qg8wxs8a" path="res://Source/UI/InfoShower/info_shower.gd" id="1_6im3a"]
 [ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_74257"]
+[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="3_4644n"]
 
 [node name="InfoShower" type="Control"]
 layout_mode = 3
@@ -30,10 +31,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
-theme_override_constants/margin_left = 24
-theme_override_constants/margin_top = 12
-theme_override_constants/margin_right = 24
-theme_override_constants/margin_bottom = 12
+theme_override_constants/margin_left = 96
+theme_override_constants/margin_top = 128
+theme_override_constants/margin_right = 128
+theme_override_constants/margin_bottom = 96
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -45,7 +46,7 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_fonts/normal_font = ExtResource("2_74257")
-theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/normal_font_size = 192
 bbcode_enabled = true
 text = "Title!"
 fit_content = true
@@ -57,11 +58,12 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_fonts/normal_font = ExtResource("2_74257")
-theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/normal_font_size = 96
 bbcode_enabled = true
 text = "Activates with a number!"
 fit_content = true
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -69,9 +71,10 @@ mouse_filter = 2
 
 [node name="TextureDisplay" type="TextureRect" parent="MarginContainer/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(48, 48)
+custom_minimum_size = Vector2(288, 288)
 layout_mode = 2
 mouse_filter = 2
+texture = ExtResource("3_4644n")
 stretch_mode = 5
 
 [node name="BottomLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
@@ -80,10 +83,11 @@ layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
 theme_override_fonts/normal_font = ExtResource("2_74257")
-theme_override_font_sizes/normal_font_size = 16
+theme_override_font_sizes/normal_font_size = 96
 bbcode_enabled = true
 text = "Does a thing!"
 fit_content = true
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="gui_input" from="ScreenDim" to="." method="_on_screen_dim_gui_input"]

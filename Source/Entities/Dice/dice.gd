@@ -36,3 +36,20 @@ func _get_overlapping_tile(drag_end_pos: Vector2) -> Tile:
 			return tile
 			
 	return null
+
+
+func reroll_with_tween() -> void:
+	var tween_time = 0.2
+		
+	var tween = get_tree().create_tween().set_parallel()
+	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(self, 'global_position', global_position + Vector2(0,-8), tween_time).set_trans(Tween.TRANS_SINE)
+	
+	tween.chain().tween_callback(func():
+		value = randi_range(1,6)
+	)
+	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, 'global_position', global_position, tween_time).set_trans(Tween.TRANS_SINE)
+	
+	
+	await tween.finished
