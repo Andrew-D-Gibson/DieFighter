@@ -10,7 +10,7 @@ extends Node2D
 
 var value: int = 0:
 	set(new_value):
-		value = new_value
+		value = 3 #new_value
 		$Sprite2D.texture = value_textures[value]
 		
 

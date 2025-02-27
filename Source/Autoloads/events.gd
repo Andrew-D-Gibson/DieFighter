@@ -6,3 +6,4 @@ signal game_over()
 
 # Game Events
 signal enemy_died()
+signal encounter_finished()

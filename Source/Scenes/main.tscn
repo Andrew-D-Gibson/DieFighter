@@ -10,7 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/EnemyManager/enemy_manager.tscn" id="5_vgvo4"]
 [ext_resource type="PackedScene" uid="uid://bwwirc58smer1" path="res://Source/Entities/Enemies/enemy.tscn" id="6_ictcg"]
 [ext_resource type="PackedScene" uid="uid://dq2g134vgp4vv" path="res://Source/Systems/SetupManager/setup_manager.tscn" id="7_5dqmj"]
-[ext_resource type="Resource" uid="uid://ce3o8s68mgtlu" path="res://Source/Systems/SetupManager/GameStateResources/game_start.tres" id="8_w56kp"]
+[ext_resource type="Resource" uid="uid://ce3o8s68mgtlu" path="res://Source/Systems/GameStateResources/game_start.tres" id="8_w56kp"]
 [ext_resource type="AudioStream" uid="uid://cpl0kg1g3ecd3" path="res://Assets/Music/Battle Themes/Battle_Theme_1/Battle_Theme_1.wav" id="10_ictcg"]
 
 [node name="Main" type="Node2D"]
@@ -29,6 +29,8 @@ visible = false
 
 [node name="SpaceParticles" parent="Graphics" instance=ExtResource("3_w56kp")]
 position = Vector2(160, 46)
+amount = 18
+lifetime = 2.0
 
 [node name="Cockpit Walls" type="Sprite2D" parent="Graphics"]
 z_index = -10

@@ -10,6 +10,7 @@ extends Node2D
 var ship_graphics: Node2D
 var turn_actions: Array[EnemyActionResource]
 
+signal death()
 
 func _ready() -> void:
 	assert(enemy_resource)
@@ -39,6 +40,7 @@ func _on_death() -> void:
 		else:
 			other_enemies.pick_random().dice_queue.add(die, true)
 
+	death.emit()
 	queue_free()
 	
 

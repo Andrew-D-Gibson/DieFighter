@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dt85e23ufxcxc"
-path="res://.godot/imported/cockpit_small.png-fb29dae6bc2dd84a3ab5b96b29d61084.ctex"
+uid="uid://dnwusu6ggylod"
+path="res://.godot/imported/test_timeline.png-55172f97b5f0657556138c866e2640a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/Cockpit/cockpit_small.png"
-dest_files=["res://.godot/imported/cockpit_small.png-fb29dae6bc2dd84a3ab5b96b29d61084.ctex"]
+source_file="res://Assets/Textures/Player/Map/test_timeline.png"
+dest_files=["res://.godot/imported/test_timeline.png-55172f97b5f0657556138c866e2640a2.ctex"]
 
 [params]
 

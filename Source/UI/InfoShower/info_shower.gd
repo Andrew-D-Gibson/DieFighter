@@ -19,11 +19,12 @@ func _show_info(info: InfoResource) -> void:
 
 func _format_text(text: String) -> String:
 	# Change colors to match the palette
-	text = text.replace("red", "#d03656")
-	text = text.replace("blue", "#43a6fc")
-	text = text.replace("green", "#7abd33")
-	text = text.replace("yellow", "#eed35d")
-	text = text.replace("purple", "#c552f1")
+	text = text.replace('red', '#' + Globals.red.to_html(false))
+	text = text.replace('blue', '#' + Globals.blue.to_html(false))
+	text = text.replace('green', '#' + Globals.green.to_html(false))
+	text = text.replace('yellow', '#' + Globals.yellow.to_html(false))
+	text = text.replace('purple', '#' + Globals.purple.to_html(false))
+	text = text.replace('orange', '#' + Globals.orange.to_html(false))
 	
 	# Add dice images to replace numbers
 	var dice_image_size = 72

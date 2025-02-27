@@ -9,4 +9,4 @@ extends Resource
 @export var tile_locations: Dictionary[TileResource, Vector2i]
 
 # Temporary
-@export var enemies_to_spawn: Array[EnemyResource]
+@export var current_encounter: EncounterResource

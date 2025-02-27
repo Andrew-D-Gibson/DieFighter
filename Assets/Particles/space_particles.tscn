@@ -3,8 +3,8 @@
 [ext_resource type="Texture2D" uid="uid://dxt4n66ly4acv" path="res://Assets/Particles/dust_particle.png" id="1_7cv2c"]
 
 [sub_resource type="Gradient" id="Gradient_dg77c"]
-offsets = PackedFloat32Array(0, 0.490196, 1)
-colors = PackedColorArray(1, 1, 1, 0.227451, 0.8075, 0.94525, 0.95, 0.6, 0.8075, 0.94525, 0.95, 0)
+offsets = PackedFloat32Array(0, 0.487936, 1)
+colors = PackedColorArray(1, 1, 1, 0.227451, 0.807843, 0.945098, 0.94902, 1, 0.807843, 0.945098, 0.94902, 0.690196)
 
 [sub_resource type="Gradient" id="Gradient_w48qg"]
 colors = PackedColorArray(0.8075, 0.94525, 0.95, 0, 0.8075, 0.94525, 0.95, 0.333333)

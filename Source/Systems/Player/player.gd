@@ -6,6 +6,7 @@ extends Node2D
 
 @export_category('Components')
 @export var tile_grid: TileGrid
+@export var map: Map
 @export var dice_queue: DiceQueue
 @export var targeting_computer: TargetingComputer
 @export var health: Health
@@ -32,6 +33,8 @@ func _ready() -> void:
 		player_turn_over.emit()
 	)
 	end_turn_button.visible = false
+	
+	Events.encounter_finished.connect(_show_map)
 
 
 # Update the dice desired locations in the world
@@ -83,9 +86,22 @@ func _check_for_end_of_turn() -> void:
 		end_turn_button.visible = true
 
 
-func start_player_turn() -> void:
+func reroll_dice() -> void:
 	for die in dice_queue.queue:
-		die.reroll_with_tween()
+		die.reroll_with_tween()		
+		await get_tree().create_timer(0.1).timeout
+
+
+func start_player_turn() -> void:
+	reroll_dice()
+	
+	for die in dice_queue.queue:
+		die.draggable.state = Draggable.DragState.DEFAULT
+
+
+func _show_map() -> void:
+	for die in dice_queue.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
 		
-		await get_tree().create_timer(0.1).timeout
+	tile_grid.visible = false
+	map.visible = true

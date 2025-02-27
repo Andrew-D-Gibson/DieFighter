@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ba2f6fer064ah"
-path="res://.godot/imported/cockpit_mid.png-bdfd77d705a62019ef685dd5bf59ea1c.ctex"
+uid="uid://dhitrpxcdtnwd"
+path="res://.godot/imported/unknown_encounter.png-c7a0bf563862bae84106db5ff6520785.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/Cockpit/cockpit_mid.png"
-dest_files=["res://.godot/imported/cockpit_mid.png-bdfd77d705a62019ef685dd5bf59ea1c.ctex"]
+source_file="res://Assets/Textures/Player/Map/EncounterIcons/unknown_encounter.png"
+dest_files=["res://.godot/imported/unknown_encounter.png-c7a0bf563862bae84106db5ff6520785.ctex"]
 
 [params]
 

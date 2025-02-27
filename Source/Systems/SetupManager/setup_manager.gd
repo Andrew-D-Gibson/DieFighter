@@ -22,7 +22,7 @@ func _ready() -> void:
 	
 	# Spawn enemies (temporary)
 	if enemy_manager:
-		enemy_manager.spawn_enemies(game_state.enemies_to_spawn)
+		enemy_manager.spawn_enemies(game_state.current_encounter.enemies_to_spawn)
 	
 	# Hook up the signals for turn management
 	if player and enemy_manager:

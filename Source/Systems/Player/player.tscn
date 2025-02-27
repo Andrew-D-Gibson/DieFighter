@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cf2seb35hnl52"]
+[gd_scene load_steps=12 format=3 uid="uid://cf2seb35hnl52"]
 
 [ext_resource type="Script" uid="uid://d0qn1tyjsj7l6" path="res://Source/Systems/Player/player.gd" id="1_86t7d"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Player/TileGrid/tile_grid.tscn" id="2_m7hmg"]
@@ -9,13 +9,15 @@
 [ext_resource type="PackedScene" uid="uid://skeakddxfvao" path="res://Source/Systems/Player/PlayerHealthBar/player_health_bar.tscn" id="5_83hls"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Components/Clickable/clickable.tscn" id="6_2ib0s"]
 [ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/Systems/Player/TargetingComputer/targeting_computer.tscn" id="7_vokxg"]
+[ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/Systems/Player/Map/map.tscn" id="10_lwstl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lwstl"]
 size = Vector2(48, 12)
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("tile_grid", "dice_queue", "targeting_computer", "health", "end_turn_button")]
+[node name="Player" type="Node2D" node_paths=PackedStringArray("tile_grid", "map", "dice_queue", "targeting_computer", "health", "end_turn_button")]
 script = ExtResource("1_86t7d")
 tile_grid = NodePath("TileGrid")
+map = NodePath("Map")
 dice_queue = NodePath("DiceQueue")
 targeting_computer = NodePath("TargetingComputer")
 health = NodePath("Health")
@@ -69,3 +71,7 @@ health_component = NodePath("../Health")
 
 [node name="TargetingComputer" parent="." instance=ExtResource("7_vokxg")]
 position = Vector2(161, 30)
+
+[node name="Map" parent="." instance=ExtResource("10_lwstl")]
+visible = false
+position = Vector2(60, 36)

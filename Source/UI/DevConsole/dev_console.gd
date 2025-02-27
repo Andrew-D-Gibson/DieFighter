@@ -92,9 +92,7 @@ func _shield(command_args: Array[String] = []) -> void:
 
 
 func _reroll(command_args: Array[String] = []) -> void:
-	for die in Globals.player.dice_queue.queue:
-		die.reroll_with_tween()
-		await get_tree().create_timer(0.1).timeout
+	Globals.player.reroll_dice()
 
 
 #func _player_invulnerable(command_args: Array[String] = []) -> void:

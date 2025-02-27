@@ -1,0 +1,77 @@
+[gd_scene load_steps=11 format=3 uid="uid://7jvm8tkovhwj"]
+
+[ext_resource type="Texture2D" uid="uid://17fug30idbx8" path="res://Assets/Textures/Player/Map/background.png" id="1_ek2ds"]
+[ext_resource type="Script" uid="uid://bab7mdt2366us" path="res://Source/Systems/Player/Map/map.gd" id="1_kiwga"]
+[ext_resource type="Texture2D" uid="uid://b3unbckviuej6" path="res://Assets/Textures/Player/Map/arrow.png" id="2_4plkk"]
+[ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/EncounterResources/encounter_resource.gd" id="2_hbp1f"]
+[ext_resource type="Texture2D" uid="uid://dyit8f5b2773k" path="res://Assets/Textures/Player/Map/dice_receptacle.png" id="3_7gfdh"]
+[ext_resource type="Resource" uid="uid://24b2kuik8hbw" path="res://Source/Systems/EncounterResources/attacker_1.tres" id="3_x51rx"]
+[ext_resource type="Texture2D" uid="uid://ctq4jy6b220uj" path="res://Assets/Textures/Player/Map/timeline.png" id="4_7gfdh"]
+[ext_resource type="Resource" uid="uid://hansiqqtgqeb" path="res://Source/Systems/EncounterResources/attacker_2.tres" id="4_o7siu"]
+[ext_resource type="Texture2D" uid="uid://rs23xch8otdw" path="res://Assets/Textures/Player/Map/EncounterIcons/current_encounter.png" id="5_hbp1f"]
+[ext_resource type="Texture2D" uid="uid://da2m2sxof8kg3" path="res://Assets/Textures/Player/Map/EncounterIcons/connector_white.png" id="7_x51rx"]
+
+[node name="Map" type="Node2D" node_paths=PackedStringArray("map_viewport")]
+script = ExtResource("1_kiwga")
+map_viewport = NodePath("SubViewportContainer/SubViewport")
+encounter_list = Array[ExtResource("2_hbp1f")]([ExtResource("3_x51rx"), ExtResource("4_o7siu"), ExtResource("3_x51rx"), ExtResource("3_x51rx"), ExtResource("4_o7siu"), ExtResource("4_o7siu"), ExtResource("3_x51rx")])
+current_encounter_icon = ExtResource("5_hbp1f")
+timeline_icon = ExtResource("4_7gfdh")
+connector_sprite = ExtResource("7_x51rx")
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -61.0
+offset_top = -37.0
+offset_right = 61.0
+offset_bottom = 37.0
+mouse_filter = 2
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_ek2ds")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Background"]
+offset_left = -16.0
+offset_top = -40.0
+offset_right = 16.0
+offset_bottom = -21.0
+theme_override_colors/default_color = Color(0.94902, 0.611765, 0.364706, 1)
+text = "MAP"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+clip_contents = true
+offset_left = -60.0
+offset_top = -5.0
+offset_right = 60.0
+offset_bottom = 34.0
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(120, 39)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewportContainer/SubViewport"]
+
+[node name="LeftArrow" type="Sprite2D" parent="."]
+position = Vector2(-45, -28)
+texture = ExtResource("2_4plkk")
+
+[node name="DiceReceptacle" type="Sprite2D" parent="LeftArrow"]
+position = Vector2(6, 15)
+texture = ExtResource("3_7gfdh")
+
+[node name="RightArrow" type="Sprite2D" parent="."]
+position = Vector2(45, -28)
+rotation = 3.14159
+texture = ExtResource("2_4plkk")
+
+[node name="DiceReceptacle" type="Sprite2D" parent="RightArrow"]
+position = Vector2(6, -15)
+texture = ExtResource("3_7gfdh")

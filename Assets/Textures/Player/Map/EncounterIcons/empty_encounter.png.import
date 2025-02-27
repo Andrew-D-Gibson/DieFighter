@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b5743833uvfuo"
-path="res://.godot/imported/m3x6 test.png-3eb9b33a1ac70410673b5427ec0dba14.ctex"
+uid="uid://sisf28rp3pdm"
+path="res://.godot/imported/empty_encounter.png-176a5b1565c3ee7cd5caf81c43229353.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/Cockpit/m3x6 test.png"
-dest_files=["res://.godot/imported/m3x6 test.png-3eb9b33a1ac70410673b5427ec0dba14.ctex"]
+source_file="res://Assets/Textures/Player/Map/EncounterIcons/empty_encounter.png"
+dest_files=["res://.godot/imported/empty_encounter.png-176a5b1565c3ee7cd5caf81c43229353.ctex"]
 
 [params]
 

@@ -71,7 +71,7 @@ offset_top = -32.0
 offset_right = 24.0
 offset_bottom = 8.0
 theme_override_colors/default_color = Color(0.772549, 0.321569, 0.945098, 1)
-text = "TARGET"
+text = "TARGET?"
 
 [node name="TargetImage" type="Sprite2D" parent="."]
 position = Vector2(0, -4)
