@@ -9,7 +9,7 @@ func play(effect_variables: EffectVariables) -> void:
 	effect_variables.source.dice_queue.remove(effect_variables.activator_die)
 		
 	# If there's no target give the die to the player as a failsafe measure
-	if len(effect_variables.targets) == 0:
+	if len(effect_variables.targets) == 0 or not effect_variables.targets[0]:
 		Globals.player.dice_queue.add(effect_variables.activator_die, true)
 		return
 		

@@ -18,24 +18,32 @@ func _ready() -> void:
 	if value == 0:
 		value = randi_range(1,6)
 		
-	draggable.drag_ended.connect(_check_for_tile_activation)
+	draggable.drag_ended.connect(_check_for_acceptor)
 	
 
-func _check_for_tile_activation(_draggable: Draggable, end_position: Vector2) -> void:
-	var tile = _get_overlapping_tile(end_position)
-	if tile:
-		tile.try_to_activate(self)
-	
-	
-func _get_overlapping_tile(drag_end_pos: Vector2) -> Tile:
-	var tiles = get_tree().get_nodes_in_group('Tiles')
-	for tile in tiles:
-		var tile_top_left_corner = tile.global_position - Vector2(16,16)
-		var bounding_rect: Rect2 = Rect2(tile_top_left_corner, Vector2(32, 32))
-		if bounding_rect.has_point(drag_end_pos):
-			return tile
+func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
+	var dice_acceptors = get_tree().get_nodes_in_group('CanAcceptDice')
+
+	for acceptor in dice_acceptors:
+		if not acceptor.is_currently_accepting:
+			continue
+
+		var bounding_rect: Rect2 = Rect2(acceptor.global_position, Vector2(acceptor.width, acceptor.height))
+		
+		print(acceptor.get_parent().get_script().resource_path.get_file())
+		print(bounding_rect)
+		print(end_position)
+		print('---')
+		
+		if bounding_rect.has_point(end_position):
+			var acceptor_node = acceptor.get_parent()
 			
-	return null
+			if acceptor_node is Tile:
+				acceptor_node.try_to_activate(self)
+				
+			elif acceptor_node is DiceReceptacle:
+				Globals.player.dice_queue.remove(self)
+				acceptor_node.dice_queue.add(self)
 
 
 func reroll_with_tween() -> void:

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bv4270e4ryfij"]
+
+[ext_resource type="Script" uid="uid://cb3ideptaj1hg" path="res://Source/Components/CanAcceptDice/can_accept_dice.gd" id="1_lgtih"]
+
+[node name="CanAcceptDice" type="Node2D" groups=["CanAcceptDice"]]
+script = ExtResource("1_lgtih")

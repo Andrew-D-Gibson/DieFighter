@@ -2,7 +2,7 @@ extends Effect
 
 func play(effect_variables: EffectVariables) -> void:
 	# Don't do anything if there's no target
-	if len(effect_variables.targets) == 0:
+	if len(effect_variables.targets) == 0 or not effect_variables.targets[0]:
 		return
 		
 	# If not given an amount (amount is 0),

@@ -27,6 +27,9 @@ func _ready() -> void:
 	health.death.connect(Events.game_over.emit)
 	
 	tile_grid.tile_activation_complete.connect(_check_for_end_of_turn)
+	tile_grid.propagate_call("set_accepting_dice", [true])
+	
+	map.propagate_call("set_accepting_dice", [false])
 	
 	end_turn_button.get_child(1).clicked.connect(func():
 		end_turn_button.visible = false
@@ -101,7 +104,11 @@ func start_player_turn() -> void:
 
 func _show_map() -> void:
 	for die in dice_queue.queue:
-		die.draggable.state = Draggable.DragState.DEFAULT
+		if die.draggable.state == Draggable.DragState.MOVING_WITH_CODE:
+			die.draggable.state = Draggable.DragState.DEFAULT
 		
 	tile_grid.visible = false
+	tile_grid.propagate_call("set_accepting_dice", [false])
+	
 	map.visible = true
+	map.propagate_call("set_accepting_dice", [true])

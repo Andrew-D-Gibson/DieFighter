@@ -33,6 +33,7 @@ func _on_death() -> void:
 	var other_enemies = Globals.enemy_manager.get_alive_enemies()
 	for i in range(len(dice_queue.queue)-1, -1, -1):
 		var die = dice_queue.queue[i]
+		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		dice_queue.remove(die)
 		
 		if len(other_enemies) == 0:

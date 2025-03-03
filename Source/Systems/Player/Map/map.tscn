@@ -4,12 +4,12 @@
 [ext_resource type="Script" uid="uid://bab7mdt2366us" path="res://Source/Systems/Player/Map/map.gd" id="1_kiwga"]
 [ext_resource type="Texture2D" uid="uid://b3unbckviuej6" path="res://Assets/Textures/Player/Map/arrow.png" id="2_4plkk"]
 [ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/EncounterResources/encounter_resource.gd" id="2_hbp1f"]
-[ext_resource type="Texture2D" uid="uid://dyit8f5b2773k" path="res://Assets/Textures/Player/Map/dice_receptacle.png" id="3_7gfdh"]
 [ext_resource type="Resource" uid="uid://24b2kuik8hbw" path="res://Source/Systems/EncounterResources/attacker_1.tres" id="3_x51rx"]
 [ext_resource type="Texture2D" uid="uid://ctq4jy6b220uj" path="res://Assets/Textures/Player/Map/timeline.png" id="4_7gfdh"]
 [ext_resource type="Resource" uid="uid://hansiqqtgqeb" path="res://Source/Systems/EncounterResources/attacker_2.tres" id="4_o7siu"]
 [ext_resource type="Texture2D" uid="uid://rs23xch8otdw" path="res://Assets/Textures/Player/Map/EncounterIcons/current_encounter.png" id="5_hbp1f"]
 [ext_resource type="Texture2D" uid="uid://da2m2sxof8kg3" path="res://Assets/Textures/Player/Map/EncounterIcons/connector_white.png" id="7_x51rx"]
+[ext_resource type="PackedScene" uid="uid://751pc74qkdf0" path="res://Source/Systems/Player/Map/DiceReceptacle/dice_receptacle.tscn" id="10_hxf68"]
 
 [node name="Map" type="Node2D" node_paths=PackedStringArray("map_viewport")]
 script = ExtResource("1_kiwga")
@@ -63,15 +63,13 @@ render_target_update_mode = 4
 position = Vector2(-45, -28)
 texture = ExtResource("2_4plkk")
 
-[node name="DiceReceptacle" type="Sprite2D" parent="LeftArrow"]
+[node name="DiceReceptacle" parent="LeftArrow" instance=ExtResource("10_hxf68")]
 position = Vector2(6, 15)
-texture = ExtResource("3_7gfdh")
 
 [node name="RightArrow" type="Sprite2D" parent="."]
 position = Vector2(45, -28)
 rotation = 3.14159
 texture = ExtResource("2_4plkk")
 
-[node name="DiceReceptacle" type="Sprite2D" parent="RightArrow"]
-position = Vector2(6, -15)
-texture = ExtResource("3_7gfdh")
+[node name="DiceReceptacle" parent="RightArrow" instance=ExtResource("10_hxf68")]
+position = Vector2(6.00004, -15)
