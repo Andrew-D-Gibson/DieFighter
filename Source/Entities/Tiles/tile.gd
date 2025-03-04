@@ -49,7 +49,6 @@ func _get_tile_info() -> InfoResource:
 
 func try_to_activate(activator_die: Dice) -> void:
 	if tile_resource.activation.criteria_satisfied(activator_die):
-		#Globals.player.dice_queue.remove(activator_die)
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		_activate(activator_die)
 		

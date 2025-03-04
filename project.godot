@@ -32,6 +32,7 @@ window/stretch/mode="viewport"
 [global_group]
 
 CanAcceptDice=""
+Dice=""
 
 [gui]
 

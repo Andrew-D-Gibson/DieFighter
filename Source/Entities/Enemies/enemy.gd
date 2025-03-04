@@ -34,7 +34,6 @@ func _on_death() -> void:
 	for i in range(len(dice_queue.queue)-1, -1, -1):
 		var die = dice_queue.queue[i]
 		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-		dice_queue.remove(die)
 		
 		if len(other_enemies) == 0:
 			Globals.player.dice_queue.add(die, true)
@@ -105,7 +104,6 @@ func act_with_first_die() -> void:
 		
 	# Get the first die from the queue
 	var die := dice_queue.queue[0]
-	#dice_queue.remove(die)
 	
 	# Get the action for the chosen die
 	var action := turn_actions[die.value - 1]

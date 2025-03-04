@@ -1,9 +1,8 @@
 class_name DiceReceptacle
 extends Sprite2D
 
-@export var dice_queue_spacing: int = 14
+@export var dice_queue_spacing: int = 13
 @export var dice_queue: DiceQueue
-
 
 func _ready() -> void:
 	dice_queue.die_added.connect(_update_dice_queue_locations)

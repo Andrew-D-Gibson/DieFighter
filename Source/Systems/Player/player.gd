@@ -53,11 +53,16 @@ func _make_newest_die_draggable() -> void:
 
 func _process(delta: float) -> void:
 	# Handle rearranging dice in the queue
-	for die in dice_queue.queue:
+	for die in get_tree().get_nodes_in_group('Dice'):
 		if die.draggable.state == Draggable.DragState.DRAGGING:
-			var relative_mouse_pos = get_global_mouse_position() - global_position
 			var current_queue_position = dice_queue.queue.find(die)
 			
+			if current_queue_position == -1:
+				dice_queue.add(die, true)
+			
+			var relative_mouse_pos = get_global_mouse_position() - global_position
+			
+
 			# Create a rectangle that encompasses the current displayed dice queue
 			var dice_queue_bounding_rect: Rect2 = Rect2(
 				dice_queue.position.x - (dice_queue_spacing/2), # x

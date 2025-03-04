@@ -8,6 +8,11 @@ signal die_removed()
 
 
 func add(die: Dice, preserve_value: bool = false) -> void:
+	# Remove the die from it's previous host
+	if die.host_queue:
+		die.host_queue.remove(die)
+		
+	# Randomize the value if required
 	if not preserve_value:
 		die.value = randi_range(1,6)
 		
@@ -16,6 +21,7 @@ func add(die: Dice, preserve_value: bool = false) -> void:
 	if die not in queue:
 		queue.append(die)
 	
+	die.host_queue = self
 	die.draggable.home_position = global_position
 	die_added.emit()
 

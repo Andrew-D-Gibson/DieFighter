@@ -10,9 +10,12 @@ extends Node2D
 
 var value: int = 0:
 	set(new_value):
-		value = 3 #new_value
+		value = new_value
 		$Sprite2D.texture = value_textures[value]
 		
+var host_queue: DiceQueue
+
+
 
 func _ready() -> void:
 	if value == 0:
@@ -29,12 +32,6 @@ func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 			continue
 
 		var bounding_rect: Rect2 = Rect2(acceptor.global_position, Vector2(acceptor.width, acceptor.height))
-		
-		print(acceptor.get_parent().get_script().resource_path.get_file())
-		print(bounding_rect)
-		print(end_position)
-		print('---')
-		
 		if bounding_rect.has_point(end_position):
 			var acceptor_node = acceptor.get_parent()
 			
@@ -42,8 +39,7 @@ func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 				acceptor_node.try_to_activate(self)
 				
 			elif acceptor_node is DiceReceptacle:
-				Globals.player.dice_queue.remove(self)
-				acceptor_node.dice_queue.add(self)
+				acceptor_node.dice_queue.add(self, true)
 
 
 func reroll_with_tween() -> void:

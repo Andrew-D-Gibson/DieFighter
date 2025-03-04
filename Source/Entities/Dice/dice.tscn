@@ -13,7 +13,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_md6qd"]
 size = Vector2(12, 12)
 
-[node name="Dice" type="Node2D" node_paths=PackedStringArray("draggable")]
+[node name="Dice" type="Node2D" node_paths=PackedStringArray("draggable") groups=["Dice"]]
 z_index = 1
 script = ExtResource("1_ipsek")
 draggable = NodePath("Draggable")
