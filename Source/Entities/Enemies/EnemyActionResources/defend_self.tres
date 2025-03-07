@@ -14,10 +14,10 @@ name = "Shield Burst"
 description = "[color=blue]Shields[/color] for 8"
 indicator_texture = ExtResource("1_0w3us")
 info_texture = ExtResource("4_su07i")
-intent_amount = "8"
+intent_amount = "2"
 effect_chain = Dictionary[PackedScene, int]({
 ExtResource("1_fmd3i"): 0,
-ExtResource("2_su07i"): 8,
+ExtResource("2_su07i"): 2,
 ExtResource("3_1t7gd"): 0,
 ExtResource("4_spnlc"): 0
 })

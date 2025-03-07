@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dq2g134vgp4vv"]
 
-[ext_resource type="Script" uid="uid://gn846k55v8mt" path="res://Source/Systems/SetupManager/setup_manager.gd" id="1_x4lk3"]
+[ext_resource type="Script" uid="uid://gn846k55v8mt" path="res://Source/Systems/GameStateManager/game_state_manager.gd" id="1_x4lk3"]
 
 [node name="SetupManager" type="Node2D"]
 script = ExtResource("1_x4lk3")

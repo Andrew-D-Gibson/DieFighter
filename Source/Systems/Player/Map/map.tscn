@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://7jvm8tkovhwj"]
+[gd_scene load_steps=15 format=3 uid="uid://7jvm8tkovhwj"]
 
 [ext_resource type="Texture2D" uid="uid://17fug30idbx8" path="res://Assets/Textures/Player/Map/background.png" id="1_ek2ds"]
 [ext_resource type="Script" uid="uid://bab7mdt2366us" path="res://Source/Systems/Player/Map/map.gd" id="1_kiwga"]
@@ -9,15 +9,20 @@
 [ext_resource type="Resource" uid="uid://hansiqqtgqeb" path="res://Source/Systems/EncounterResources/attacker_2.tres" id="4_o7siu"]
 [ext_resource type="Texture2D" uid="uid://rs23xch8otdw" path="res://Assets/Textures/Player/Map/EncounterIcons/current_encounter.png" id="5_hbp1f"]
 [ext_resource type="Texture2D" uid="uid://da2m2sxof8kg3" path="res://Assets/Textures/Player/Map/EncounterIcons/connector_white.png" id="7_x51rx"]
+[ext_resource type="Resource" uid="uid://c5qbspiea82bn" path="res://Source/Systems/EncounterResources/empty.tres" id="8_6o5qg"]
+[ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Components/Clickable/clickable.gd" id="9_o7siu"]
 [ext_resource type="PackedScene" uid="uid://751pc74qkdf0" path="res://Source/Systems/Player/Map/DiceReceptacle/dice_receptacle.tscn" id="10_hxf68"]
 
-[sub_resource type="ViewportTexture" id="ViewportTexture_6o5qg"]
-viewport_path = NodePath("SubViewport")
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6o5qg"]
+size = Vector2(32, 16)
 
-[node name="Map" type="Node2D" node_paths=PackedStringArray("map_viewport", "map_camera", "LeftDiceReceptacle", "RightDiceReceptacle")]
+[sub_resource type="ViewportTexture" id="ViewportTexture_6o5qg"]
+viewport_path = NodePath("MapViewport")
+
+[node name="Map" type="Node2D" node_paths=PackedStringArray("map_viewport", "map_camera", "LeftDiceReceptacle", "RightDiceReceptacle", "map_button_label", "map_button")]
 script = ExtResource("1_kiwga")
-map_viewport = NodePath("SubViewport")
-map_camera = NodePath("SubViewport/Camera2D")
+map_viewport = NodePath("MapViewport")
+map_camera = NodePath("MapViewport/Camera2D")
 encounter_list = Array[ExtResource("2_hbp1f")]([ExtResource("3_x51rx"), ExtResource("4_o7siu"), ExtResource("3_x51rx"), ExtResource("3_x51rx"), ExtResource("4_o7siu"), ExtResource("4_o7siu"), ExtResource("3_x51rx")])
 current_encounter_index = 1
 current_encounter_icon = ExtResource("5_hbp1f")
@@ -25,26 +30,31 @@ timeline_icon = ExtResource("4_7gfdh")
 connector_sprite = ExtResource("7_x51rx")
 LeftDiceReceptacle = NodePath("LeftDiceReceptacle")
 RightDiceReceptacle = NodePath("RightDiceReceptacle")
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_left = -61.0
-offset_top = -37.0
-offset_right = 61.0
-offset_bottom = 37.0
-mouse_filter = 2
+map_button_label = NodePath("Background/RichTextLabel")
+map_button = NodePath("Background/Clickable")
+empty_encounter = ExtResource("8_6o5qg")
 
 [node name="Background" type="Sprite2D" parent="."]
 texture = ExtResource("1_ek2ds")
+
+[node name="Clickable" type="Area2D" parent="Background"]
+position = Vector2(-16, -40)
+script = ExtResource("9_o7siu")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Background/Clickable"]
+position = Vector2(16, 11)
+shape = SubResource("RectangleShape2D_6o5qg")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Background"]
 offset_left = -16.0
 offset_top = -40.0
 offset_right = 16.0
 offset_bottom = -21.0
+mouse_filter = 2
 theme_override_colors/default_color = Color(0.94902, 0.611765, 0.364706, 1)
-text = "MAP"
+bbcode_enabled = true
+text = "CHOOSE:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -57,7 +67,7 @@ position = Vector2(45, -28)
 rotation = 3.14159
 texture = ExtResource("2_4plkk")
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="MapViewport" type="SubViewport" parent="."]
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
 size = Vector2i(720, 258)
@@ -65,9 +75,9 @@ size_2d_override = Vector2i(120, 43)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
-[node name="Camera2D" type="Camera2D" parent="SubViewport"]
+[node name="Camera2D" type="Camera2D" parent="MapViewport"]
 
-[node name="MapViewport" type="TextureRect" parent="."]
+[node name="ViewportTexture" type="TextureRect" parent="."]
 offset_left = -60.0
 offset_top = -9.0
 offset_right = 60.0
@@ -80,3 +90,5 @@ position = Vector2(-39, -13)
 
 [node name="RightDiceReceptacle" parent="." instance=ExtResource("10_hxf68")]
 position = Vector2(39, -13)
+
+[connection signal="input_event" from="Background/Clickable" to="Background/Clickable" method="_on_input_event"]

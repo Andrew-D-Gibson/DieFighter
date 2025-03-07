@@ -6,11 +6,14 @@ extends Node2D
 @export_category('Components')
 @export var dice_queue: DiceQueue
 @export var health: Health
+@export var action_popup: PackedScene
 
 var ship_graphics: Node2D
 var turn_actions: Array[EnemyActionResource]
 
 signal death()
+signal action_completed()
+
 
 func _ready() -> void:
 	assert(enemy_resource)
@@ -63,10 +66,10 @@ func _update_resource() -> void:
 	$EnemyHealthBar._set_shields()
 	
 	# Create new actions for the coming turn
-	_generate_turn_actions()
+	generate_turn_actions()
 	
 	
-func _generate_turn_actions() -> void:
+func generate_turn_actions() -> void:
 	# Clear the previous turn's actions
 	turn_actions = []
 	
@@ -104,6 +107,7 @@ func act_with_first_die() -> void:
 		
 	# Get the first die from the queue
 	var die := dice_queue.queue[0]
+	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	
 	# Get the action for the chosen die
 	var action := turn_actions[die.value - 1]
@@ -112,6 +116,24 @@ func act_with_first_die() -> void:
 	var effect_variables = EffectVariables.new()
 	effect_variables.source = self
 	effect_variables.activator_die = die
+	
+	
+	# Move the die to in front of the enemy
+	var tween_time = 0.25
+	var tween = get_tree().create_tween()
+	tween.tween_property(die, "global_position", global_position + Vector2(0,12), tween_time).set_ease(Tween.EASE_IN_OUT)
+	await tween.finished
+	
+	await get_tree().create_timer(0.25).timeout
+	
+	# Make an action indicator popup
+	var popup_time = 0.75
+	var action_indicator = action_popup.instantiate()
+	add_child(action_indicator)
+	action_indicator.sprite.texture = action.info_texture
+	action_indicator.popup_time = popup_time
+	action_indicator.global_position = die.global_position + Vector2(0,12)
+		
 		
 	for effect_scene in action.effect_chain.keys():
 		# Add the effect node to the scene
@@ -124,3 +146,5 @@ func act_with_first_die() -> void:
 		
 		# Remove the effect node from the scene
 		effect.queue_free()
+		
+	action_completed.emit()

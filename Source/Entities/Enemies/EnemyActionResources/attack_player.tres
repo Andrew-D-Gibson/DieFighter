@@ -14,11 +14,11 @@ name = "Basic Cannon"
 description = "Deals 5 [color=red]damage[/color]"
 indicator_texture = ExtResource("3_ca2d5")
 info_texture = ExtResource("6_k68wh")
-intent_amount = "5"
+intent_amount = "2"
 effect_chain = Dictionary[PackedScene, int]({
 ExtResource("1_y1f7p"): 0,
 ExtResource("2_p1c30"): 0,
-ExtResource("2_ca2d5"): 5,
+ExtResource("2_ca2d5"): 2,
 ExtResource("4_k68wh"): 0
 })
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

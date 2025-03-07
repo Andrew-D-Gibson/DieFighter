@@ -54,5 +54,10 @@ func run_enemy_turn() -> void:
 	for enemy in enemies:
 		while len(enemy.dice_queue.queue) > 0:
 			enemy.act_with_first_die()
-			await get_tree().create_timer(1).timeout
+			await enemy.action_completed
+			await get_tree().create_timer(0.5).timeout
+			
+		# Now that this enemy is done this turn, generate a new list of actions
+		enemy.generate_turn_actions()
+	
 	enemy_turn_ended.emit()

@@ -6,11 +6,15 @@ var targeted_enemy_index: int
 var targeted_enemy: Enemy
 
 func _ready() -> void:
+	_initial_target()
+	Events.enemy_died.connect(check_target_is_valid)
+	Events.start_encounter.connect(_initial_target)
+
+
+func _initial_target() -> void:
 	targeted_enemy_index = 0
 	check_target_is_valid()
 	
-	Events.enemy_died.connect(check_target_is_valid)
-
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed('target_left'):
@@ -81,7 +85,7 @@ func _update_ui() -> void:
 		_move_indicator()
 		
 		$TargetImage.texture = targeted_enemy.enemy_resource.targeting_computer_image
-		for i in range(6):
+		for i in range(len(targeted_enemy.turn_actions)): # Should be a loop to 0 or 6
 			$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
 			$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
 			$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)

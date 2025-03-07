@@ -1,6 +1,8 @@
 class_name Player
 extends Node2D
 
+@export var time_between_die_spawns: float = 0.2
+
 @export_category('Graphics')
 @export var dice_queue_spacing: int = 14
 
@@ -11,6 +13,10 @@ extends Node2D
 @export var targeting_computer: TargetingComputer
 @export var health: Health
 @export var end_turn_button: Control
+@export var main_view_switcher: MainViewSwitcher
+
+var num_of_dice: int
+@export var dice_scene: PackedScene
 
 signal player_turn_over()
 
@@ -27,17 +33,21 @@ func _ready() -> void:
 	health.death.connect(Events.game_over.emit)
 	
 	tile_grid.tile_activation_complete.connect(_check_for_end_of_turn)
-	tile_grid.propagate_call("set_accepting_dice", [true])
 	
-	map.propagate_call("set_accepting_dice", [false])
-	
-	end_turn_button.get_child(1).clicked.connect(func():
-		end_turn_button.visible = false
-		player_turn_over.emit()
-	)
+	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false
 	
-	Events.encounter_finished.connect(_show_map)
+	Events.encounter_finished.connect(func():
+		for die in dice_queue.queue:
+			if die.draggable.state == Draggable.DragState.MOVING_WITH_CODE:
+				die.draggable.state = Draggable.DragState.DEFAULT
+			
+		_show_map()
+	)
+	Events.start_encounter.connect(_start_encounter)
+	
+	main_view_switcher.show_map.connect(_show_map)
+	main_view_switcher.show_systems.connect(_show_tile_grid)
 
 
 # Update the dice desired locations in the world
@@ -96,24 +106,60 @@ func _check_for_end_of_turn() -> void:
 
 func reroll_dice() -> void:
 	for die in dice_queue.queue:
-		die.reroll_with_tween()		
-		await get_tree().create_timer(0.1).timeout
+		if die:
+			die.reroll_with_tween()		
+			await get_tree().create_timer(0.1).timeout
 
 
 func start_player_turn() -> void:
-	reroll_dice()
+	if len(dice_queue.queue) == 0:
+		spawn_dice()
+	else:
+		reroll_dice()
 	
 	for die in dice_queue.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
 
 
-func _show_map() -> void:
+func _delete_existing_dice() -> void:
 	for die in dice_queue.queue:
-		if die.draggable.state == Draggable.DragState.MOVING_WITH_CODE:
-			die.draggable.state = Draggable.DragState.DEFAULT
+		die.queue_free()
+	dice_queue.queue = []
+	
+
+func spawn_dice(num_to_spawn: int = num_of_dice) -> void:
+	for i in range(num_to_spawn):
+		await get_tree().create_timer(time_between_die_spawns).timeout
 		
+		var new_die = dice_scene.instantiate()
+		new_die.global_position = global_position + Vector2(600, 0)
+		add_child(new_die)
+		dice_queue.add(new_die)
+	_update_dice_queue_locations()
+
+
+func _show_map() -> void:
 	tile_grid.visible = false
 	tile_grid.propagate_call("set_accepting_dice", [false])
 	
 	map.visible = true
 	map.propagate_call("set_accepting_dice", [true])
+	
+
+func _show_tile_grid() -> void:
+	tile_grid.visible = true
+	tile_grid.propagate_call("set_accepting_dice", [true])
+	
+	map.visible = false
+	map.propagate_call("set_accepting_dice", [false])
+	
+
+func _start_encounter():
+	_delete_existing_dice()
+	_show_tile_grid()
+	start_player_turn()
+
+
+func end_turn() -> void:
+	end_turn_button.visible = false
+	player_turn_over.emit()

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="GameStateResource" load_steps=6 format=3 uid="uid://ce3o8s68mgtlu"]
 
 [ext_resource type="Resource" uid="uid://hansiqqtgqeb" path="res://Source/Systems/EncounterResources/attacker_2.tres" id="1_o1kwv"]
-[ext_resource type="Script" uid="uid://dl0t6n0q32xls" path="res://Source/Systems/GameStateResources/game_state.gd" id="2_gym0r"]
+[ext_resource type="Script" uid="uid://dl0t6n0q32xls" path="res://Source/Systems/GameStateManager/GameStateResources/game_state.gd" id="2_gym0r"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="3_fqtv4"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Entities/Tiles/TileResources/damage.tres" id="4_pcnr8"]
 [ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Entities/Tiles/TileResources/shield.tres" id="5_0k6m6"]

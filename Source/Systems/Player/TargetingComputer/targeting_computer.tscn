@@ -40,15 +40,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_s8swp")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_exnvl")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_1tf01")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_s8swp")
 }],
 "loop": true,
 "name": &"static",
@@ -63,6 +54,7 @@ script = ExtResource("1_8ig5e")
 
 [node name="Screen" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_1tf01")
+animation = &"static"
 
 [node name="TargetText" type="RichTextLabel" parent="Screen"]
 z_index = 1
@@ -71,7 +63,7 @@ offset_top = -32.0
 offset_right = 24.0
 offset_bottom = 8.0
 theme_override_colors/default_color = Color(0.772549, 0.321569, 0.945098, 1)
-text = "TARGET?"
+text = "TARGET"
 
 [node name="TargetImage" type="Sprite2D" parent="."]
 position = Vector2(0, -4)
