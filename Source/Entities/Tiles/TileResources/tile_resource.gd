@@ -9,5 +9,5 @@ extends Resource
 @export var base_texture: Texture2D
 
 @export_category('Behavior')
-@export var activation: ActivationResource
+@export var activation_checks: Array[ActivationResource]
 @export var effect_chain: Dictionary[PackedScene, int]

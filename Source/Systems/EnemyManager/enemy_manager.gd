@@ -26,6 +26,7 @@ func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 			Events.enemy_died.emit()
 			
 			if len(enemies) == 0:
+				Globals.state_manager.state = GameStateManager.GameState.OUT_OF_COMBAT
 				Events.encounter_finished.emit()
 		)
 		

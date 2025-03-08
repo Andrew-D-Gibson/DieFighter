@@ -1,4 +1,4 @@
-class_name GameStateResource
+class_name GameSaveResource
 extends Resource
 
 @export_category('Player Info')

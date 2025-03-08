@@ -1,11 +1,9 @@
-[gd_resource type="Resource" script_class="ActivationResource" load_steps=3 format=3 uid="uid://72ii58ggku6y"]
+[gd_resource type="Resource" script_class="ValueActivationResource" load_steps=2 format=3 uid="uid://cy6vuvps1w4a"]
 
-[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Entities/Tiles/ActivationResources/activation_resource.gd" id="1_w8cx0"]
-[ext_resource type="Texture2D" uid="uid://c60jeijw3tu16" path="res://Assets/Textures/Tiles/Activations/3.png" id="1_xaq1q"]
+[ext_resource type="Script" uid="uid://df4lmjl3e3clt" path="res://Source/Entities/Tiles/ActivationResources/ResourceDefinitions/value_activation_resource.gd" id="1_w8cx0"]
 
 [resource]
 script = ExtResource("1_w8cx0")
-description = "[color=yellow]Activates[/color] with a (die_3)"
-activation_texture = ExtResource("1_xaq1q")
 acceptable_values = Array[int]([3])
-metadata/_custom_type_script = ExtResource("1_w8cx0")
+description = "[color=yellow]Activates[/color] with a (die_3)"
+metadata/_custom_type_script = "uid://df4lmjl3e3clt"

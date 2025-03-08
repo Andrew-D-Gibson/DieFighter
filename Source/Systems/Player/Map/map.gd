@@ -77,6 +77,26 @@ func _create_encounter_sprites() -> void:
 	_update_desired_encounter()
 
 
+func show_map(show: bool) -> void:
+	self.visible = show
+	propagate_call("set_dice_visibility", [show])
+	
+	if not show:
+		propagate_call("set_accepting_dice", [false])
+		return
+	
+	if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
+		$Background/LeftArrow.frame = 1
+		$Background/RightArrow.frame = 1
+		propagate_call("set_accepting_dice", [false])
+	elif Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
+		$Background/LeftArrow.frame = 0
+		$Background/RightArrow.frame = 0
+		propagate_call("set_accepting_dice", [true])
+		
+	_update_desired_encounter()
+		
+
 func _update_desired_encounter() -> void:
 	# Sum the dice values in the left selector
 	var left_offset = 0
@@ -108,11 +128,12 @@ func _update_desired_encounter() -> void:
 		# in case we killed the tween midway
 		for sprite in encounter_sprites:
 			sprite.scale = Vector2(1,1)
-			
-	tween = get_tree().create_tween()
-	tween.tween_property(encounter_sprites[desired_encounter], 'scale', Vector2(1.5,1.5), tween_time).from(Vector2(1,1))
-	tween.tween_property(encounter_sprites[desired_encounter], 'scale', Vector2(1,1), tween_time)
-	tween.set_loops()
+	
+	if desired_encounter != current_encounter_index:
+		tween = get_tree().create_tween()
+		tween.tween_property(encounter_sprites[desired_encounter], 'scale', Vector2(1.5,1.5), tween_time).from(Vector2(1,1))
+		tween.tween_property(encounter_sprites[desired_encounter], 'scale', Vector2(1,1), tween_time)
+		tween.set_loops()
 	
 	_update_map_button()
 

@@ -1,8 +1,7 @@
-[gd_scene load_steps=15 format=3 uid="uid://7jvm8tkovhwj"]
+[gd_scene load_steps=18 format=3 uid="uid://7jvm8tkovhwj"]
 
 [ext_resource type="Texture2D" uid="uid://17fug30idbx8" path="res://Assets/Textures/Player/Map/background.png" id="1_ek2ds"]
 [ext_resource type="Script" uid="uid://bab7mdt2366us" path="res://Source/Systems/Player/Map/map.gd" id="1_kiwga"]
-[ext_resource type="Texture2D" uid="uid://b3unbckviuej6" path="res://Assets/Textures/Player/Map/arrow.png" id="2_4plkk"]
 [ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/EncounterResources/encounter_resource.gd" id="2_hbp1f"]
 [ext_resource type="Resource" uid="uid://24b2kuik8hbw" path="res://Source/Systems/EncounterResources/attacker_1.tres" id="3_x51rx"]
 [ext_resource type="Texture2D" uid="uid://ctq4jy6b220uj" path="res://Assets/Textures/Player/Map/timeline.png" id="4_7gfdh"]
@@ -12,9 +11,32 @@
 [ext_resource type="Resource" uid="uid://c5qbspiea82bn" path="res://Source/Systems/EncounterResources/empty.tres" id="8_6o5qg"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Components/Clickable/clickable.gd" id="9_o7siu"]
 [ext_resource type="PackedScene" uid="uid://751pc74qkdf0" path="res://Source/Systems/Player/Map/DiceReceptacle/dice_receptacle.tscn" id="10_hxf68"]
+[ext_resource type="Texture2D" uid="uid://c1yetmupno47e" path="res://Assets/Textures/Player/Map/arrow-Sheet.png" id="11_6o5qg"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6o5qg"]
 size = Vector2(32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hxf68"]
+atlas = ExtResource("11_6o5qg")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3318k"]
+atlas = ExtResource("11_6o5qg")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nuc5t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hxf68")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3318k")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_6o5qg"]
 viewport_path = NodePath("MapViewport")
@@ -58,14 +80,14 @@ text = "CHOOSE:"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="LeftArrow" type="Sprite2D" parent="Background"]
-position = Vector2(-45, -28)
-texture = ExtResource("2_4plkk")
+[node name="LeftArrow" type="AnimatedSprite2D" parent="Background"]
+position = Vector2(-27, -28)
+sprite_frames = SubResource("SpriteFrames_nuc5t")
 
-[node name="RightArrow" type="Sprite2D" parent="Background"]
-position = Vector2(45, -28)
+[node name="RightArrow" type="AnimatedSprite2D" parent="Background"]
+position = Vector2(27, -28)
 rotation = 3.14159
-texture = ExtResource("2_4plkk")
+sprite_frames = SubResource("SpriteFrames_nuc5t")
 
 [node name="MapViewport" type="SubViewport" parent="."]
 handle_input_locally = false

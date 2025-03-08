@@ -5,7 +5,7 @@ func play(effect_variables: EffectVariables) -> void:
 	if not effect_variables.activator_die:
 		return
 		
-	# Make the die in the "holding" state
+	# Put the die in the "holding" state
 	effect_variables.activator_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
 		
 	# If there's no target give the die to the player as a failsafe measure
@@ -21,6 +21,12 @@ func play(effect_variables: EffectVariables) -> void:
 		else:
 			enemies.pick_random().dice_queue.add(effect_variables.activator_die, true)
 		return
+	
+	
+	# If the player is giving the dice back to itself, re-roll the dice then go
+	if effect_variables.activator_die.host_queue == Globals.player.dice_queue\
+	and effect_variables.targets[0] is Player:
+		await effect_variables.activator_die.reroll_with_tween()
 	
 	# Give the die to the target's dice queue, and don't randomize
 	# Enemies don't randomize dice, and the player will handle that at 

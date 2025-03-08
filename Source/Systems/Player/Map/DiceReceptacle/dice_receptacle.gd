@@ -13,3 +13,8 @@ func _ready() -> void:
 func _update_dice_queue_locations() -> void:
 	for i in range(len(dice_queue.queue)):
 		dice_queue.queue[i].draggable.home_position = global_position + dice_queue.position + Vector2(i * dice_queue_spacing, 0)
+
+
+func set_dice_visibility(is_visible: bool) -> void:
+	for die in dice_queue.queue:
+		die.visible = is_visible

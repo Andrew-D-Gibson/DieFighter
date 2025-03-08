@@ -1,10 +1,12 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=8 format=3 uid="uid://hgsmejq8gdrl"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=10 format=3 uid="uid://hgsmejq8gdrl"]
 
-[ext_resource type="Resource" uid="uid://buedjg2qud21j" path="res://Source/Entities/Tiles/ActivationResources/accept_all_activation.tres" id="1_5l1p3"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Entities/Tiles/ActivationResources/ResourceDefinitions/activation_resource.gd" id="1_e261g"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="1_qon23"]
 [ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="2_cb0ou"]
+[ext_resource type="Resource" uid="uid://fm6xm8pwh1xl" path="res://Source/Entities/Tiles/ActivationResources/accept_all_values_activation.tres" id="2_qliob"]
 [ext_resource type="PackedScene" uid="uid://b1aahr2uu2421" path="res://Source/Systems/Effects/Targeters/target_with_targeting_computer_effect.tscn" id="3_3s8sb"]
 [ext_resource type="PackedScene" uid="uid://sbtma6alpnti" path="res://Source/Systems/Effects/AttributeChangers/damage_effect.tscn" id="3_16eq4"]
+[ext_resource type="Resource" uid="uid://dyx5jsf4r6q7o" path="res://Source/Entities/Tiles/ActivationResources/in_combat_activation.tres" id="3_l0fjt"]
 [ext_resource type="PackedScene" uid="uid://jt77tja7wi1i" path="res://Source/Systems/Effects/DiceMovers/attack_target_tween_effect.tscn" id="4_8be25"]
 [ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_3s8sb"]
 
@@ -13,7 +15,7 @@ script = ExtResource("1_qon23")
 tile_name = "Dice Cannon"
 description = "Deals [color=red]damage[/color] to the [color=purple]targeted[/color] enemy equivalent to the [color=yellow]activating[/color] die's value then gives them the die."
 base_texture = ExtResource("2_cb0ou")
-activation = ExtResource("1_5l1p3")
+activation_checks = Array[ExtResource("1_e261g")]([ExtResource("2_qliob"), ExtResource("3_l0fjt")])
 effect_chain = Dictionary[PackedScene, int]({
 ExtResource("3_3s8sb"): 0,
 ExtResource("4_8be25"): 0,

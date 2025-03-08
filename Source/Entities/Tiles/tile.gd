@@ -40,7 +40,11 @@ func _update_texture() -> void:
 func _get_tile_info() -> InfoResource:
 	var info = InfoResource.new()
 	info.title_label_text = tile_resource.tile_name
-	info.top_label_text = tile_resource.activation.description
+	
+	info.top_label_text = ''
+	for activation in tile_resource.activation_checks:
+		info.top_label_text += activation.description + ' '
+	
 	info.texture = $Sprite2D.texture
 	info.bottom_label_text = tile_resource.description
 	
@@ -48,9 +52,12 @@ func _get_tile_info() -> InfoResource:
 
 
 func try_to_activate(activator_die: Dice) -> void:
-	if tile_resource.activation.criteria_satisfied(activator_die):
-		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-		_activate(activator_die)
+	for check in tile_resource.activation_checks:
+		if not check.criteria_satisfied(activator_die):
+			return
+			
+	activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+	_activate(activator_die)
 		
 
 func _activate(activator_die: Dice = null) -> void:

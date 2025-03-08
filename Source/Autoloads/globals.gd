@@ -3,7 +3,7 @@ extends Node
 # Singletons
 var player: Player
 var enemy_manager: EnemyManager
-
+var state_manager: GameStateManager
 
 # Colors
 var red: Color = Color.html('#d03656')

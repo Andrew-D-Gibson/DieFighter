@@ -7,11 +7,11 @@
 [ext_resource type="PackedScene" uid="uid://brc5ax0i3wo0x" path="res://Assets/Particles/space_particles.tscn" id="3_w56kp"]
 [ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Player/player.tscn" id="4_16ycl"]
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/EnemyManager/enemy_manager.tscn" id="5_vgvo4"]
+[ext_resource type="PackedScene" uid="uid://dq2g134vgp4vv" path="res://Source/Systems/SaveSetupManager/save_setup_manager.tscn" id="6_5dqmj"]
 [ext_resource type="PackedScene" uid="uid://bwwirc58smer1" path="res://Source/Entities/Enemies/enemy.tscn" id="6_ictcg"]
-[ext_resource type="PackedScene" uid="uid://dq2g134vgp4vv" path="res://Source/Systems/GameStateManager/game_state_manager.tscn" id="7_5dqmj"]
-[ext_resource type="Resource" uid="uid://ce3o8s68mgtlu" path="res://Source/Systems/GameStateManager/GameStateResources/game_start.tres" id="8_w56kp"]
+[ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/Systems/SaveSetupManager/SaveResources/game_start.tres" id="7_w56kp"]
 [ext_resource type="AudioStream" uid="uid://cpl0kg1g3ecd3" path="res://Assets/Music/Battle Themes/Battle_Theme_1/Battle_Theme_1.wav" id="10_ictcg"]
-[ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/GameFlowManager/game_flow_manager.tscn" id="12_w56kp"]
+[ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/GameStateManager/game_state_manager.tscn" id="12_w56kp"]
 
 [node name="Main" type="Node2D"]
 
@@ -39,8 +39,8 @@ texture = ExtResource("3_vgvo4")
 
 [node name="Systems" type="Node2D" parent="."]
 
-[node name="GameStateManager" parent="Systems" node_paths=PackedStringArray("player", "enemy_manager") instance=ExtResource("7_5dqmj")]
-game_state = ExtResource("8_w56kp")
+[node name="SaveSetupManager" parent="Systems" node_paths=PackedStringArray("player", "enemy_manager") instance=ExtResource("6_5dqmj")]
+current_save = ExtResource("7_w56kp")
 player = NodePath("../Player")
 enemy_manager = NodePath("../EnemyManager")
 
@@ -54,9 +54,10 @@ position = Vector2(100, 91)
 
 [node name="MusicPlayer" type="AudioStreamPlayer" parent="Systems"]
 stream = ExtResource("10_ictcg")
+autoplay = true
 
 [node name="Camera2D" type="Camera2D" parent="Systems"]
 position = Vector2(160, 90)
 zoom = Vector2(6, 6)
 
-[node name="GameFlowManager" parent="Systems" instance=ExtResource("12_w56kp")]
+[node name="GameStateManager" parent="Systems" instance=ExtResource("12_w56kp")]

@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="InCombatActivation" load_steps=2 format=3 uid="uid://dyx5jsf4r6q7o"]
+
+[ext_resource type="Script" uid="uid://d2cvx2smry1gy" path="res://Source/Entities/Tiles/ActivationResources/ResourceDefinitions/in_combat_activation.gd" id="1_15a8s"]
+
+[resource]
+script = ExtResource("1_15a8s")
+description = "Can only be [color=yellow]activated[/color] in combat."
+metadata/_custom_type_script = "uid://d2cvx2smry1gy"

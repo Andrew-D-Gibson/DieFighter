@@ -37,13 +37,7 @@ func _ready() -> void:
 	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false
 	
-	Events.encounter_finished.connect(func():
-		for die in dice_queue.queue:
-			if die.draggable.state == Draggable.DragState.MOVING_WITH_CODE:
-				die.draggable.state = Draggable.DragState.DEFAULT
-			
-		_show_map()
-	)
+	Events.encounter_finished.connect(_show_map)
 	Events.start_encounter.connect(_start_encounter)
 	
 	main_view_switcher.show_map.connect(_show_map)
@@ -57,7 +51,7 @@ func _update_dice_queue_locations() -> void:
 
 
 func _make_newest_die_draggable() -> void:
-	if dice_queue.queue[-1].draggable.state == Draggable.DragState.MOVING_WITH_CODE:
+	if dice_queue.queue[-1].draggable.state != Draggable.DragState.DRAGGING:
 		dice_queue.queue[-1].draggable.state = Draggable.DragState.DEFAULT
 		
 
@@ -141,17 +135,17 @@ func spawn_dice(num_to_spawn: int = num_of_dice) -> void:
 func _show_map() -> void:
 	tile_grid.visible = false
 	tile_grid.propagate_call("set_accepting_dice", [false])
-	
-	map.visible = true
-	map.propagate_call("set_accepting_dice", [true])
+
+	map.show_map(true)
+	main_view_switcher.display.frame = 1
 	
 
 func _show_tile_grid() -> void:
 	tile_grid.visible = true
 	tile_grid.propagate_call("set_accepting_dice", [true])
 	
-	map.visible = false
-	map.propagate_call("set_accepting_dice", [false])
+	map.show_map(false)
+	main_view_switcher.display.frame = 0
 	
 
 func _start_encounter():

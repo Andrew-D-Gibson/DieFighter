@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dq2g134vgp4vv"]
+
+[ext_resource type="Script" uid="uid://gn846k55v8mt" path="res://Source/Systems/SaveSetupManager/save_setup_manager.gd" id="1_7e6xb"]
+
+[node name="SaveSetupManager" type="Node2D"]
+script = ExtResource("1_7e6xb")
