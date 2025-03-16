@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://delq7kb5loqt2"]
+[gd_scene load_steps=9 format=3 uid="uid://delq7kb5loqt2"]
 
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Entities/Tiles/tile.gd" id="1_71op4"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Components/Draggable/draggable.tscn" id="2_b16ti"]
@@ -10,6 +10,9 @@
 size = Vector2(22, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rngaw"]
+size = Vector2(22, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
 size = Vector2(22, 24)
 
 [node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable")]
@@ -30,7 +33,12 @@ shape = SubResource("RectangleShape2D_rngaw")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("4_fc656")
 
-[node name="CanAcceptDice" parent="." instance=ExtResource("5_fc656")]
+[node name="CanAcceptDice" parent="." node_paths=PackedStringArray("collision") instance=ExtResource("5_fc656")]
 position = Vector2(-11, -12)
-width = 24
-height = 24
+collision = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanAcceptDice"]
+position = Vector2(11, 12)
+shape = SubResource("RectangleShape2D_fc656")
+
+[connection signal="die_accepted" from="CanAcceptDice" to="." method="try_to_activate"]

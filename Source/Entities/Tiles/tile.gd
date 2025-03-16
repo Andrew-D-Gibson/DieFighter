@@ -66,10 +66,10 @@ func _activate(activator_die: Dice = null) -> void:
 	effect_variables.source = Globals.player
 	effect_variables.activator_die = activator_die
 		
-	for effect_scene in tile_resource.effect_chain.keys():
+	for effect_resource in tile_resource.effect_chain:
 		# Add the effect node to the scene
-		var effect = effect_scene.instantiate()
-		effect.amount = tile_resource.effect_chain[effect_scene]
+		var effect = effect_resource.effect_scene.instantiate()
+		effect.amount = effect_resource.amount
 		add_child(effect)
 		
 		# Play the effect, recording the change in variables

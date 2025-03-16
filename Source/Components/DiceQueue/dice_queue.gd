@@ -7,7 +7,7 @@ signal die_added()
 signal die_removed()
 
 
-func add(die: Dice, preserve_value: bool = false) -> void:
+func add(die: Dice, preserve_value: bool = true) -> void:
 	# Remove the die from it's previous host
 	if die.host_queue:
 		die.host_queue.remove(die)

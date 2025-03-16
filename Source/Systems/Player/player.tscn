@@ -28,9 +28,10 @@ main_view_switcher = NodePath("MainViewSwitcher")
 dice_scene = ExtResource("2_lwstl")
 
 [node name="TileGrid" parent="." instance=ExtResource("2_m7hmg")]
+position = Vector2(34, -24)
 
 [node name="DiceQueue" parent="." instance=ExtResource("3_fnkf6")]
-position = Vector2(6, 81)
+position = Vector2(40, 57)
 
 [node name="Sprite2D" type="Sprite2D" parent="DiceQueue"]
 z_index = -1
@@ -67,18 +68,19 @@ shape = SubResource("RectangleShape2D_lwstl")
 
 [node name="Map" parent="." instance=ExtResource("10_lwstl")]
 visible = false
-position = Vector2(60, 36)
+position = Vector2(94, 12)
 
 [node name="MainViewSwitcher" parent="." instance=ExtResource("9_ip1by")]
-position = Vector2(67, -5)
+position = Vector2(101, -29)
 
 [node name="Health" parent="." instance=ExtResource("4_da5gb")]
+position = Vector2(34, -24)
 max_health = 16
 starting_health = 16
 
 [node name="PlayerHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
-position = Vector2(-46, 35)
+position = Vector2(-12, 11)
 health_component = NodePath("../Health")
 
 [node name="TargetingComputer" parent="." instance=ExtResource("7_vokxg")]
-position = Vector2(161, 30)
+position = Vector2(195, 6)

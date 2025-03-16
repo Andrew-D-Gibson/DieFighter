@@ -39,9 +39,9 @@ func _on_death() -> void:
 		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		
 		if len(other_enemies) == 0:
-			Globals.player.dice_queue.add(die, true)
+			Globals.player.dice_queue.add(die)
 		else:
-			other_enemies.pick_random().dice_queue.add(die, true)
+			other_enemies.pick_random().dice_queue.add(die)
 
 	death.emit()
 	queue_free()
@@ -135,10 +135,10 @@ func act_with_first_die() -> void:
 	action_indicator.global_position = die.global_position + Vector2(0,12)
 		
 		
-	for effect_scene in action.effect_chain.keys():
+	for effect_resource in action.effect_chain:
 		# Add the effect node to the scene
-		var effect = effect_scene.instantiate()
-		effect.amount = action.effect_chain[effect_scene]
+		var effect = effect_resource.effect_scene.instantiate()
+		effect.amount = effect_resource.amount
 		add_child(effect)
 		
 		# Play the effect, recording the change in variables

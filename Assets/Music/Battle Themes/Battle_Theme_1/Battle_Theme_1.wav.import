@@ -2,7 +2,7 @@
 
 importer="wav"
 type="AudioStreamWAV"
-uid="uid://cpl0kg1g3ecd3"
+uid="uid://skdgb0lmgn4v"
 path="res://.godot/imported/Battle_Theme_1.wav-e544646803a4b3580b03f9a8e028af98.sample"
 
 [deps]
@@ -18,7 +18,7 @@ force/max_rate=false
 force/max_rate_hz=44100
 edit/trim=false
 edit/normalize=false
-edit/loop_mode=2
+edit/loop_mode=0
 edit/loop_begin=0
 edit/loop_end=-1
 compress/mode=2

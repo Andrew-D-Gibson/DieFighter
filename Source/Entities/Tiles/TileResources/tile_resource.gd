@@ -10,4 +10,4 @@ extends Resource
 
 @export_category('Behavior')
 @export var activation_checks: Array[ActivationResource]
-@export var effect_chain: Dictionary[PackedScene, int]
+@export var effect_chain: Array[EffectResource]

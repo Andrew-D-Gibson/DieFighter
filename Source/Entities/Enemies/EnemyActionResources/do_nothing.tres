@@ -1,18 +1,33 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=5 format=3 uid="uid://dh6y87rwpxmh2"]
+[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=9 format=3 uid="uid://dh6y87rwpxmh2"]
 
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Systems/Effects/effect_resource.gd" id="1_4cggc"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Entities/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_6upn5"]
 [ext_resource type="PackedScene" uid="uid://bsh4idgma75om" path="res://Source/Systems/Effects/DiceMovers/shake_dice_tween_effect.tscn" id="1_27xr2"]
 [ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="1_mfbsr"]
 [ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="2_27xr2"]
+
+[sub_resource type="Resource" id="Resource_n16us"]
+script = ExtResource("1_4cggc")
+amount = 0
+effect_scene = ExtResource("1_27xr2")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_1li4p"]
+script = ExtResource("1_4cggc")
+amount = 0
+effect_scene = ExtResource("1_mfbsr")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_f87ea"]
+script = ExtResource("1_4cggc")
+amount = 0
+effect_scene = ExtResource("2_27xr2")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
 
 [resource]
 script = ExtResource("1_6upn5")
 name = ""
 description = ""
 intent_amount = ""
-effect_chain = Dictionary[PackedScene, int]({
-ExtResource("1_27xr2"): 0,
-ExtResource("1_mfbsr"): 0,
-ExtResource("2_27xr2"): 0
-})
+effect_chain = Array[ExtResource("1_4cggc")]([SubResource("Resource_n16us"), SubResource("Resource_1li4p"), SubResource("Resource_f87ea")])
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

@@ -18,11 +18,11 @@ extends Node2D
 var num_of_dice: int
 @export var dice_scene: PackedScene
 
-signal player_turn_over()
-
 
 func _ready() -> void:
 	Globals.player = self
+	num_of_dice = Globals.game_save.num_of_dice
+	tile_grid.setup_tiles(Globals.game_save.tile_locations)
 	
 	dice_queue.die_added.connect(func():
 		_update_dice_queue_locations()
@@ -39,6 +39,7 @@ func _ready() -> void:
 	
 	Events.encounter_finished.connect(_show_map)
 	Events.start_encounter.connect(_start_encounter)
+	Events.enemy_turn_over.connect(_start_player_turn)
 	
 	main_view_switcher.show_map.connect(_show_map)
 	main_view_switcher.show_systems.connect(_show_tile_grid)
@@ -55,29 +56,29 @@ func _make_newest_die_draggable() -> void:
 		dice_queue.queue[-1].draggable.state = Draggable.DragState.DEFAULT
 		
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# Handle rearranging dice in the queue
 	for die in get_tree().get_nodes_in_group('Dice'):
 		if die.draggable.state == Draggable.DragState.DRAGGING:
 			var current_queue_position = dice_queue.queue.find(die)
 			
 			if current_queue_position == -1:
-				dice_queue.add(die, true)
+				dice_queue.add(die)
 			
 			var relative_mouse_pos = get_global_mouse_position() - global_position
 			
 
 			# Create a rectangle that encompasses the current displayed dice queue
 			var dice_queue_bounding_rect: Rect2 = Rect2(
-				dice_queue.position.x - (dice_queue_spacing/2), # x
-				dice_queue.position.y - (dice_queue_spacing/2), # y
+				dice_queue.position.x - (dice_queue_spacing/2.0), # x
+				dice_queue.position.y - (dice_queue_spacing/2.0), # y
 				(len(dice_queue.queue) - 1) * dice_queue_spacing, # width
 				dice_queue_spacing, # height
 			)
 
 			if dice_queue_bounding_rect.has_point(relative_mouse_pos):
 				# Determine which queue position the mouse is hovering over
-				var hovered_queue_position = int((relative_mouse_pos.x + dice_queue.position.x - (dice_queue_spacing/2)) / dice_queue_spacing)
+				var hovered_queue_position = int((relative_mouse_pos.x + dice_queue.position.x - (dice_queue_spacing/2.0)) / dice_queue_spacing)
 				
 				# Make sure we limit the hovered location to the end of the queue
 				hovered_queue_position = min(hovered_queue_position, len(dice_queue.queue)-1)
@@ -90,7 +91,7 @@ func _process(delta: float) -> void:
 			
 			elif current_queue_position != len(dice_queue.queue)-1:
 				dice_queue.remove(die)
-				dice_queue.add(die, true)
+				dice_queue.add(die)
 
 
 func _check_for_end_of_turn() -> void:
@@ -105,7 +106,7 @@ func reroll_dice() -> void:
 			await get_tree().create_timer(0.1).timeout
 
 
-func start_player_turn() -> void:
+func _start_player_turn() -> void:
 	if len(dice_queue.queue) == 0:
 		spawn_dice()
 	else:
@@ -116,7 +117,7 @@ func start_player_turn() -> void:
 
 
 func _delete_existing_dice() -> void:
-	for die in dice_queue.queue:
+	for die in get_tree().get_nodes_in_group('Dice'):
 		die.queue_free()
 	dice_queue.queue = []
 	
@@ -134,26 +135,22 @@ func spawn_dice(num_to_spawn: int = num_of_dice) -> void:
 
 func _show_map() -> void:
 	tile_grid.visible = false
-	tile_grid.propagate_call("set_accepting_dice", [false])
-
-	map.show_map(true)
+	map.visible = true
 	main_view_switcher.display.frame = 1
 	
 
 func _show_tile_grid() -> void:
 	tile_grid.visible = true
-	tile_grid.propagate_call("set_accepting_dice", [true])
-	
-	map.show_map(false)
+	map.visible = false
 	main_view_switcher.display.frame = 0
 	
 
 func _start_encounter():
 	_delete_existing_dice()
 	_show_tile_grid()
-	start_player_turn()
+	_start_player_turn()
 
 
 func end_turn() -> void:
 	end_turn_button.visible = false
-	player_turn_over.emit()
+	Events.player_turn_over.emit()

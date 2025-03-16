@@ -77,22 +77,17 @@ func _create_encounter_sprites() -> void:
 	_update_desired_encounter()
 
 
-func show_map(show: bool) -> void:
-	self.visible = show
-	propagate_call("set_dice_visibility", [show])
-	
-	if not show:
-		propagate_call("set_accepting_dice", [false])
+func _on_visibility_changed() -> void:	
+	if not visible:
 		return
 	
 	if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
 		$Background/LeftArrow.frame = 1
 		$Background/RightArrow.frame = 1
-		propagate_call("set_accepting_dice", [false])
+
 	elif Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
 		$Background/LeftArrow.frame = 0
 		$Background/RightArrow.frame = 0
-		propagate_call("set_accepting_dice", [true])
 		
 	_update_desired_encounter()
 		
@@ -153,4 +148,3 @@ func _jump() -> void:
 		# Move to the new encounter
 		current_encounter_index = desired_encounter
 		Events.load_encounter.emit(encounter_list[desired_encounter])
-	

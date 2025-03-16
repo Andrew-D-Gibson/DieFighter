@@ -24,23 +24,26 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 	# Handle commands
 	var command = console_command.split(' ')
 	match command[0]:
+		'clear':
+			_clear()
+			
 		'heal':
 			_heal(command.slice(1))
 			
-		'shield':
-			_shield(command.slice(1))
+		'kill_enemies':
+			_kill_enemies()
 			
 		'reroll':
 			_reroll()
+			
+		'shield':
+			_shield(command.slice(1))
 			
 		#'player_invulnerable':
 			#_player_invulnerable()
 					#
 		#'enemies_invulnerable':
 			#_enemies_invulnerable()
-			
-		'kill_enemies':
-			_kill_enemies()
 			
 		#'game_state':
 			#_game_state(command.slice(1))
@@ -65,33 +68,30 @@ func _on_line_edit_text_changed(current_text: String) -> void:
 func _test(_command_args: Array[String] = []) -> void:
 	print('Test called!')
 	
+	
+func _clear() -> void:
+	command_history.text = ''
+	
 
 func _heal(command_args: Array[String] = []) -> void:
-	var amount: int
-	if len(command_args) > 0:
-		if command_args[0].is_valid_int():
-			Globals.player.health.change_health(int(command_args[0]))
-		else:
-			command_history.append_text('\t\tInvalid command.')
-			return
-	else:
-		Globals.player.change_health(1000)
-		
+	var amount: int = Globals.player.health.max_health
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+	
+	Globals.player.health.change_health(amount)	
 	command_history.append_text('\n[center]Healed player![/center]')
 	
 
 func _shield(command_args: Array[String] = []) -> void:
-	var amount: int
-	if len(command_args) > 0 and command_args[0].is_valid_int():
-		Globals.player.health.change_shields(int(command_args[0]))
-	else:
-		command_history.append_text('\t\tInvalid command.')
-		return
-		
+	var amount: int = Globals.player.health.max_health
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+	
+	Globals.player.health.change_shields(amount)	
 	command_history.append_text('\n[center]Shielded player![/center]')
 
 
-func _reroll(command_args: Array[String] = []) -> void:
+func _reroll() -> void:
 	Globals.player.reroll_dice()
 
 
@@ -120,7 +120,7 @@ func _reroll(command_args: Array[String] = []) -> void:
 		#command_history.append_text('\n[center]No enemies alive.[/center]')
 
 
-func _kill_enemies(command_args: Array[String] = []) -> void:
+func _kill_enemies() -> void:
 	Globals.enemy_manager.kill_all_enemies()
 	command_history.append_text('\n[center]Killed all enemies![/center]')
 

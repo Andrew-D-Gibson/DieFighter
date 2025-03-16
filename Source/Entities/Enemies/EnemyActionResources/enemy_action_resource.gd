@@ -6,7 +6,7 @@ extends Resource
 @export var indicator_texture: Texture2D
 @export var info_texture: Texture2D
 @export var intent_amount: String
-@export var effect_chain: Dictionary[PackedScene, int]
+@export var effect_chain: Array[EffectResource]
 
 
 func show_info() -> void:

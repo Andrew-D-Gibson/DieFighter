@@ -1,14 +1,38 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=10 format=3 uid="uid://c5gk2kf6r2v5y"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=14 format=3 uid="uid://c5gk2kf6r2v5y"]
 
 [ext_resource type="Resource" uid="uid://cy6vuvps1w4a" path="res://Source/Entities/Tiles/ActivationResources/3_activation.tres" id="1_2kka0"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Entities/Tiles/ActivationResources/ResourceDefinitions/activation_resource.gd" id="1_06byu"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_08vmm"]
 [ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="3_0abqg"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="3_tyb5i"]
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Systems/Effects/effect_resource.gd" id="4_06byu"]
 [ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Systems/Effects/AttributeChangers/shield_effect.tscn" id="4_fmymq"]
-[ext_resource type="PackedScene" uid="uid://dp6nb4nkkua0r" path="res://Source/Systems/Effects/Utilities/wait_for_milliseconds_effect.tscn" id="5_fmymq"]
 [ext_resource type="PackedScene" uid="uid://b1aahr2uu2421" path="res://Source/Systems/Effects/Targeters/target_with_targeting_computer_effect.tscn" id="6_fmymq"]
 [ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_moiwb"]
+
+[sub_resource type="Resource" id="Resource_moiwb"]
+script = ExtResource("4_06byu")
+amount = 0
+effect_scene = ExtResource("3_0abqg")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_wq5ts"]
+script = ExtResource("4_06byu")
+amount = 8
+effect_scene = ExtResource("4_fmymq")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_kihue"]
+script = ExtResource("4_06byu")
+amount = 0
+effect_scene = ExtResource("6_fmymq")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_oo560"]
+script = ExtResource("4_06byu")
+amount = 0
+effect_scene = ExtResource("6_moiwb")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
 
 [resource]
 script = ExtResource("3_tyb5i")
@@ -16,11 +40,5 @@ tile_name = "Shield Generator"
 description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the [color=purple]targeted[/color] enemy."
 base_texture = ExtResource("2_08vmm")
 activation_checks = Array[ExtResource("1_06byu")]([ExtResource("1_2kka0")])
-effect_chain = Dictionary[PackedScene, int]({
-ExtResource("3_0abqg"): 0,
-ExtResource("4_fmymq"): 8,
-ExtResource("5_fmymq"): 100,
-ExtResource("6_fmymq"): 0,
-ExtResource("6_moiwb"): 0
-})
+effect_chain = Array[ExtResource("4_06byu")]([SubResource("Resource_moiwb"), SubResource("Resource_wq5ts"), SubResource("Resource_kihue"), SubResource("Resource_oo560")])
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

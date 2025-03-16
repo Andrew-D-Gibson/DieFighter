@@ -6,12 +6,15 @@ var enemies: Array[Enemy]
 @export var enemy_base_scene: PackedScene
 @export var enemy_spacing: int
 
-signal enemy_turn_ended()
-
 
 func _ready() -> void:
 	Globals.enemy_manager = self
+	spawn_enemies(Globals.game_save.current_encounter.enemies_to_spawn)
 	
+	Events.load_encounter.connect(func(encounter: EncounterResource):
+		spawn_enemies(encounter.enemies_to_spawn)	
+	)
+	Events.player_turn_over.connect(_run_enemy_turn)
 
 func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 	var spacing = enemy_spacing / float(len(enemy_resources) + 1)
@@ -35,9 +38,8 @@ func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 
 
 func kill_all_enemies() -> void:
-	for enemy in enemies:
-		enemy.queue_free()
-	enemies = []
+	for i in range(len(enemies)-1, -1, -1):
+		enemies[i].health.take_damage(1000000)
 	
 	
 func get_alive_enemies() -> Array[Enemy]:
@@ -51,7 +53,7 @@ func _remove_dead_enemies() -> void:
 			enemies.remove_at(i)
 			
 			
-func run_enemy_turn() -> void:
+func _run_enemy_turn() -> void:
 	for enemy in enemies:
 		while len(enemy.dice_queue.queue) > 0:
 			enemy.act_with_first_die()
@@ -61,4 +63,4 @@ func run_enemy_turn() -> void:
 		# Now that this enemy is done this turn, generate a new list of actions
 		enemy.generate_turn_actions()
 	
-	enemy_turn_ended.emit()
+	Events.enemy_turn_over.emit()

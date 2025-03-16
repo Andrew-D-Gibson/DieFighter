@@ -1,24 +1,44 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=8 format=3 uid="uid://dfpviimqj18jr"]
+[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=13 format=3 uid="uid://dfpviimqj18jr"]
 
 [ext_resource type="Texture2D" uid="uid://boetxyf3w4oel" path="res://Assets/Textures/Enemies/IntentIndicator/defend.png" id="1_0w3us"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Entities/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_12xyc"]
 [ext_resource type="PackedScene" uid="uid://b7npf5ea314i7" path="res://Source/Systems/Effects/Targeters/target_self_effect.tscn" id="1_fmd3i"]
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Systems/Effects/effect_resource.gd" id="1_spnlc"]
 [ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Systems/Effects/AttributeChangers/shield_effect.tscn" id="2_su07i"]
 [ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="3_1t7gd"]
 [ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="4_spnlc"]
 [ext_resource type="Texture2D" uid="uid://cibgrd0mhsrw0" path="res://Assets/Textures/Enemies/IntentIndicator/defend_info.png" id="4_su07i"]
 
+[sub_resource type="Resource" id="Resource_nnlxn"]
+script = ExtResource("1_spnlc")
+amount = 0
+effect_scene = ExtResource("1_fmd3i")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_r3nfb"]
+script = ExtResource("1_spnlc")
+amount = 2
+effect_scene = ExtResource("2_su07i")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_p12ff"]
+script = ExtResource("1_spnlc")
+amount = 0
+effect_scene = ExtResource("3_1t7gd")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_p8rpd"]
+script = ExtResource("1_spnlc")
+amount = 0
+effect_scene = ExtResource("4_spnlc")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
 [resource]
 script = ExtResource("1_12xyc")
 name = "Shield Burst"
-description = "[color=blue]Shields[/color] for 8"
+description = "[color=blue]Shields[/color] for 2"
 indicator_texture = ExtResource("1_0w3us")
 info_texture = ExtResource("4_su07i")
 intent_amount = "2"
-effect_chain = Dictionary[PackedScene, int]({
-ExtResource("1_fmd3i"): 0,
-ExtResource("2_su07i"): 2,
-ExtResource("3_1t7gd"): 0,
-ExtResource("4_spnlc"): 0
-})
+effect_chain = Array[ExtResource("1_spnlc")]([SubResource("Resource_nnlxn"), SubResource("Resource_r3nfb"), SubResource("Resource_p12ff"), SubResource("Resource_p8rpd")])
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

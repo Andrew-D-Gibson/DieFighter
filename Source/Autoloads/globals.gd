@@ -1,5 +1,9 @@
 extends Node
 
+var game_save: GameSaveResource = preload(
+	"res://Source/Systems/SaveResources/game_start.tres"
+)
+
 # Singletons
 var player: Player
 var enemy_manager: EnemyManager

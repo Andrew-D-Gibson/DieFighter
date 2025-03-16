@@ -9,6 +9,7 @@ func _ready() -> void:
 	_initial_target()
 	Events.enemy_died.connect(check_target_is_valid)
 	Events.start_encounter.connect(_initial_target)
+	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
 
 
 func _initial_target() -> void:
@@ -27,14 +28,14 @@ func _unhandled_input(event: InputEvent) -> void:
 		check_target_is_valid()
 		
 
-func _on_left_button_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+func _on_left_button_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	# Check for the left mouse pressed event
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
 		targeted_enemy_index -= 1
 		check_target_is_valid()
 
 
-func _on_right_button_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
+func _on_right_button_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	# Check for the left mouse pressed event
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
 		targeted_enemy_index += 1
@@ -108,6 +109,9 @@ func _move_indicator() -> void:
 	
 	
 func _indicator_bob() -> void:
+	if not targeted_enemy:
+		return
+		
 	var bob_time = 1.5
 	var bob_tween = get_tree().create_tween()
 	bob_tween.tween_property($TargetingIndicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset + Vector2(4, 4), bob_time/2.0).from(targeted_enemy.global_position + targeting_indicator_offset).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)

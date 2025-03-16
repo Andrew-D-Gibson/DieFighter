@@ -26,20 +26,8 @@ func _ready() -> void:
 
 func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 	var dice_acceptors = get_tree().get_nodes_in_group('CanAcceptDice')
-
 	for acceptor in dice_acceptors:
-		if not acceptor.is_currently_accepting:
-			continue
-
-		var bounding_rect: Rect2 = Rect2(acceptor.global_position, Vector2(acceptor.width, acceptor.height))
-		if bounding_rect.has_point(end_position):
-			var acceptor_node = acceptor.get_parent()
-			
-			if acceptor_node is Tile:
-				acceptor_node.try_to_activate(self)
-				
-			elif acceptor_node is DiceReceptacle:
-				acceptor_node.dice_queue.add(self, true)
+		acceptor.check_die_drop(self, end_position)
 
 
 func reroll_with_tween() -> void:

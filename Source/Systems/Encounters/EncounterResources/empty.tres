@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="EncounterResource" load_steps=4 format=3 uid="uid://c5qbspiea82bn"]
+
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="1_5otk5"]
+[ext_resource type="Texture2D" uid="uid://sisf28rp3pdm" path="res://Assets/Textures/Player/Map/EncounterIcons/empty_encounter.png" id="2_1nh4y"]
+[ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/Encounters/EncounterResources/encounter_resource.gd" id="2_udpb8"]
+
+[resource]
+script = ExtResource("2_udpb8")
+enemies_to_spawn = Array[ExtResource("1_5otk5")]([])
+map_icon = ExtResource("2_1nh4y")
+metadata/_custom_type_script = "uid://c1cbjt3v68mw"
