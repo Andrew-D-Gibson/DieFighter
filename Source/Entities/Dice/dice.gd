@@ -45,3 +45,8 @@ func reroll_with_tween() -> void:
 	
 	
 	await tween.finished
+
+
+func _on_tree_exiting() -> void:
+	if host_queue:
+		host_queue.remove(self)

@@ -37,7 +37,7 @@ func _ready() -> void:
 	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false
 	
-	Events.encounter_finished.connect(_show_map)
+	Events.reward_picked.connect(_show_map)
 	Events.start_encounter.connect(_start_encounter)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	
@@ -58,7 +58,10 @@ func _make_newest_die_draggable() -> void:
 
 func _process(_delta: float) -> void:
 	# Handle rearranging dice in the queue
-	for die in get_tree().get_nodes_in_group('Dice'):
+	for die in get_children():
+		if die is not Dice:
+			continue
+			
 		if die.draggable.state == Draggable.DragState.DRAGGING:
 			var current_queue_position = dice_queue.queue.find(die)
 			

@@ -26,3 +26,5 @@ shape = SubResource("RectangleShape2D_md6qd")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("3_4gkos")
+
+[connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]

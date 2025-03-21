@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="1_8g8st"]
 [ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="2_xl1dm"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Player/Map/EncounterIcons/enemy_encounter.png" id="3_70wrm"]
-[ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/Encounters/EncounterResources/encounter_resource.gd" id="4_m1fvn"]
+[ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/EncounterResources/encounter_resource.gd" id="4_m1fvn"]
 
 [resource]
 script = ExtResource("4_m1fvn")

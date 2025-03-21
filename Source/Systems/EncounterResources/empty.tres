@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="1_5otk5"]
 [ext_resource type="Texture2D" uid="uid://sisf28rp3pdm" path="res://Assets/Textures/Player/Map/EncounterIcons/empty_encounter.png" id="2_1nh4y"]
-[ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/Encounters/EncounterResources/encounter_resource.gd" id="2_udpb8"]
+[ext_resource type="Script" uid="uid://c1cbjt3v68mw" path="res://Source/Systems/EncounterResources/encounter_resource.gd" id="2_udpb8"]
 
 [resource]
 script = ExtResource("2_udpb8")

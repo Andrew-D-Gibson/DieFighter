@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://c8n32fs0k8j52"]
+
+[ext_resource type="Script" uid="uid://da1rm3q0kh158" path="res://Source/Systems/RewardManager/reward_manager.gd" id="1_usyhp"]
+[ext_resource type="Texture2D" uid="uid://cc5pg8b823n1s" path="res://Assets/Textures/Player/RewardUI/reward_background.png" id="2_ft0n2"]
+[ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Entities/Dice/dice.tscn" id="3_t66vk"]
+[ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Entities/Tiles/tile.tscn" id="5_vgya7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ft0n2"]
+size = Vector2(122, 74)
+
+[node name="RewardManager" type="Node2D" node_paths=PackedStringArray("bounding_box")]
+script = ExtResource("1_usyhp")
+tile_scene = ExtResource("5_vgya7")
+dice_scene = ExtResource("3_t66vk")
+bounding_box = NodePath("BoundingBox")
+
+[node name="BoundingBox" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_ft0n2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_ft0n2")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -21.5
+offset_top = -40.0
+offset_right = 21.5
+grow_horizontal = 2
+grow_vertical = 0
+text = "CHOOSE ONE:"

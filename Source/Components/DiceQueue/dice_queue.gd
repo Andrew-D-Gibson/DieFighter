@@ -2,7 +2,7 @@ class_name DiceQueue
 extends Node2D
 
 var queue: Array[Dice]
-
+		
 signal die_added()
 signal die_removed()
 

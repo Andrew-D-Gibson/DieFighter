@@ -12,6 +12,7 @@ var tile_locations: Dictionary[Tile, Vector2i]
 @export var empty_cell_texture: Texture2D
 
 signal tile_activation_complete()
+signal tile_moved()
 
 
 func _ready() -> void:
@@ -87,22 +88,40 @@ func _is_grid_pos_open(grid_pos: Vector2i) -> bool:
 	return not tile_locations.values().has(grid_pos)
 
 
-func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_pos: Vector2) -> void:
-	# Get the grid position
-	var grid_pos: Vector2i = _global_pos_to_grid(global_pos)
-	
-	# Check that the position is within the grid
-	if grid_pos.x < 0 or grid_pos.x >= grid_width\
-	or grid_pos.y < 0 or grid_pos.y >= grid_height:
-		return
-		
+func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2) -> void:
+	# Get the grid position of the drop
+	var grid_drop_pos: Vector2i = _global_pos_to_grid(global_drop_pos)
 	var tile_to_move: Tile = tile_draggable.get_parent()
 	
+	# Check that the position is within the grid
+	if grid_drop_pos.x < 0 or grid_drop_pos.x >= grid_width\
+	or grid_drop_pos.y < 0 or grid_drop_pos.y >= grid_height:
+		if not tile_locations.has(tile_to_move):
+			_assign_tile_to_grid_pos(tile_to_move, find_available_grid_pos())
+		return
+		
 	# If the grid position is full, switch with the existing tile
-	if not _is_grid_pos_open(grid_pos):
-		var existing_tile = tile_locations.find_key(grid_pos)
-		var old_grid_pos = tile_locations[tile_to_move]
+	if not _is_grid_pos_open(grid_drop_pos):
+		var old_grid_pos: Vector2i
+		
+		# If we're putting in a new tile, put the tile in the dropped location
+		# and move the old tile to an open slot
+		if not tile_locations.has(tile_to_move):
+			old_grid_pos = find_available_grid_pos()
+		else:
+			old_grid_pos = tile_locations[tile_to_move]
+			
+		var existing_tile = tile_locations.find_key(grid_drop_pos)
 		_assign_tile_to_grid_pos(existing_tile, old_grid_pos)
 		
 	# Move the tile to the desired grid position
-	_assign_tile_to_grid_pos(tile_to_move, grid_pos)
+	_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos)
+	tile_moved.emit()
+	
+
+func find_available_grid_pos() -> Vector2i:
+	for y in range(grid_height):
+		for x in range(grid_width):
+			if _is_grid_pos_open(Vector2i(x,y)):
+				return Vector2i(x,y)
+	return Vector2i(-1, -1)
