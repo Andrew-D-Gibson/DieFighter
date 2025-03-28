@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://c8n32fs0k8j52"]
 
 [ext_resource type="Script" uid="uid://da1rm3q0kh158" path="res://Source/Systems/RewardManager/reward_manager.gd" id="1_usyhp"]
-[ext_resource type="Texture2D" uid="uid://cc5pg8b823n1s" path="res://Assets/Textures/Player/RewardUI/reward_background.png" id="2_ft0n2"]
+[ext_resource type="Texture2D" uid="uid://cc5pg8b823n1s" path="res://Assets/Textures/RewardManager/reward_background.png" id="2_ft0n2"]
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Entities/Dice/dice.tscn" id="3_t66vk"]
 [ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Entities/Tiles/tile.tscn" id="5_vgya7"]
 

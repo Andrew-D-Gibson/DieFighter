@@ -14,7 +14,7 @@ var rewards: Array[Node2D]
 
 func _ready() -> void:
 	visible = false
-	Events.encounter_finished.connect(_show_reward)
+	Events.combat_finished.connect(_show_reward)
 	
 
 func _show_reward() -> void:
@@ -24,7 +24,7 @@ func _show_reward() -> void:
 		var reward: Node2D
 		
 		# Make a dice reward if we can't fit another tile or randomly otherwise
-		if Globals.player.tile_grid.find_available_grid_pos() == Vector2i(-1,-1)\
+		if Globals.tile_grid.find_available_grid_pos() == Vector2i(-1,-1)\
 		or randf() <= dice_reward_probability:
 			reward = dice_scene.instantiate()
 			
@@ -38,7 +38,7 @@ func _show_reward() -> void:
 		reward.draggable.drag_ended.connect(_end_reward)
 		reward.position = global_position + Vector2((i - 1) * 32, 16)
 		reward.draggable.home_position = reward.global_position
-		
+		reward.draggable.emit_reached_new_home = false
 		
 		rewards.append(reward)
 		
@@ -59,11 +59,11 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	rewards = []
 	
 	if chosen_reward is Tile:
-		chosen_reward.draggable.drag_ended.connect(Globals.player.tile_grid._drop_tile_on_grid_pos)
-		chosen_reward.tile_activation_complete.connect(Globals.player.tile_grid.tile_activation_complete.emit)
-		chosen_reward.reparent(Globals.player.tile_grid, true)
+		chosen_reward.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
+		chosen_reward.tile_activation_complete.connect(Globals.tile_grid.tile_activation_complete.emit)
+		chosen_reward.reparent(Globals.tile_grid, true)
 		
-		Globals.player.tile_grid._drop_tile_on_grid_pos(draggable, end_position)
+		Globals.tile_grid._drop_tile_on_grid_pos(draggable, end_position)
 	elif chosen_reward is Dice:
 		chosen_reward.reparent(Globals.player, true)
 		Globals.player.dice_queue.add(chosen_reward)

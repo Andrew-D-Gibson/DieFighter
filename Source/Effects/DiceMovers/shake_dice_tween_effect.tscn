@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bsh4idgma75om"]
+
+[ext_resource type="Script" uid="uid://bkxrabyoax0ru" path="res://Source/Effects/DiceMovers/shake_dice_tween_effect.gd" id="1_svadw"]
+
+[node name="ShakeDiceTweenEffect" type="Node2D"]
+script = ExtResource("1_svadw")

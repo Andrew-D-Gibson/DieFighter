@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=8 format=3 uid="uid://biawl3820xfte"]
+
+[ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/SaveResources/game_save.gd" id="1_78gow"]
+[ext_resource type="Resource" uid="uid://ck7h8qsddwnn1" path="res://Source/ScenarioResources/empty_scenario.tres" id="1_lg172"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource.gd" id="2_ad6ny"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="2_lg172"]
+[ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Entities/Tiles/TileResources/damage.tres" id="3_ad6ny"]
+[ext_resource type="Resource" uid="uid://bdlak4jm517u0" path="res://Source/ScenarioResources/1_attacker.tres" id="4_8qr57"]
+[ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Entities/Tiles/TileResources/shield.tres" id="4_ettjp"]
+
+[resource]
+script = ExtResource("1_78gow")
+player_health = 16
+player_max_health = 16
+player_defense = 0
+num_of_dice = 3
+tile_locations = Dictionary[ExtResource("2_lg172"), Vector2i]({
+ExtResource("3_ad6ny"): Vector2i(0, 0),
+ExtResource("4_ettjp"): Vector2i(0, 1)
+})
+current_scenario_index = 0
+sector_scenarios = Array[ExtResource("2_ad6ny")]([ExtResource("1_lg172"), ExtResource("4_8qr57"), ExtResource("4_8qr57")])
+metadata/_custom_type_script = "uid://dxkqfdmh8psqp"

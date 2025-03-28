@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=18 format=3 uid="uid://bdlak4jm517u0"]
+
+[ext_resource type="Script" uid="uid://1n6wflr3hvh" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource_base.gd" id="1_833ih"]
+[ext_resource type="Script" uid="uid://7gnvljkgfh1r" path="res://Source/ScenarioResources/ScenarioResourceScripts/text_scenario_resource.gd" id="2_238a2"]
+[ext_resource type="Script" uid="uid://m37ej5nkcspq" path="res://Source/ScenarioResources/ScenarioResourceScripts/combat_scenario.gd" id="2_gh4bo"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="2_tmtf5"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="3_b6yhm"]
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="6_o800x"]
+[ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Effects/Targeters/target_player_effect.tscn" id="7_70iiw"]
+[ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Effects/AttributeChangers/shield_effect.tscn" id="8_r3yiq"]
+[ext_resource type="Script" uid="uid://vxdrk2h715qi" path="res://Source/ScenarioResources/ScenarioResourceScripts/reward_scenario_resource.gd" id="9_s57ua"]
+[ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="10_2wpmv"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource.gd" id="11_yu3d1"]
+
+[sub_resource type="Resource" id="Resource_ys3xd"]
+script = ExtResource("2_238a2")
+text = "You're under attack!"
+metadata/_custom_type_script = "uid://7gnvljkgfh1r"
+
+[sub_resource type="Resource" id="Resource_3ppsy"]
+script = ExtResource("2_gh4bo")
+enemies_to_spawn = Array[ExtResource("3_b6yhm")]([ExtResource("2_tmtf5")])
+metadata/_custom_type_script = "uid://m37ej5nkcspq"
+
+[sub_resource type="Resource" id="Resource_wokft"]
+script = ExtResource("6_o800x")
+amount = 0
+effect_scene = ExtResource("7_70iiw")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_iuy0d"]
+script = ExtResource("6_o800x")
+amount = 10
+effect_scene = ExtResource("8_r3yiq")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[sub_resource type="Resource" id="Resource_606vi"]
+script = ExtResource("9_s57ua")
+reward_effects = Array[ExtResource("6_o800x")]([SubResource("Resource_wokft"), SubResource("Resource_iuy0d")])
+metadata/_custom_type_script = "uid://vxdrk2h715qi"
+
+[sub_resource type="Resource" id="Resource_p81uk"]
+script = ExtResource("2_238a2")
+text = "Shielded you for 10!"
+metadata/_custom_type_script = "uid://7gnvljkgfh1r"
+
+[resource]
+script = ExtResource("11_yu3d1")
+map_icon = ExtResource("10_2wpmv")
+component_scenarios = Array[ExtResource("1_833ih")]([SubResource("Resource_ys3xd"), SubResource("Resource_3ppsy"), SubResource("Resource_606vi"), SubResource("Resource_p81uk")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

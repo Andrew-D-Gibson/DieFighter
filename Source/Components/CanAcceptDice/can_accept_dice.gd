@@ -1,3 +1,4 @@
+class_name CanAcceptDice
 extends Node2D
 
 ## Intended to work only with a RectangleShape2D

@@ -7,13 +7,9 @@ extends Node2D
 @export var dice_queue_spacing: int = 14
 
 @export_category('Components')
-@export var tile_grid: TileGrid
-@export var map: Map
 @export var dice_queue: DiceQueue
-@export var targeting_computer: TargetingComputer
 @export var health: Health
 @export var end_turn_button: Control
-@export var main_view_switcher: MainViewSwitcher
 
 var num_of_dice: int
 @export var dice_scene: PackedScene
@@ -21,8 +17,7 @@ var num_of_dice: int
 
 func _ready() -> void:
 	Globals.player = self
-	num_of_dice = Globals.game_save.num_of_dice
-	tile_grid.setup_tiles(Globals.game_save.tile_locations)
+	health.death.connect(Events.game_over.emit)
 	
 	dice_queue.die_added.connect(func():
 		_update_dice_queue_locations()
@@ -30,19 +25,22 @@ func _ready() -> void:
 	)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
 	
-	health.death.connect(Events.game_over.emit)
-	
-	tile_grid.tile_activation_complete.connect(_check_for_end_of_turn)
+	Globals.tile_grid.tile_activation_complete.connect(_check_for_end_of_turn)
 	
 	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false
-	
-	Events.reward_picked.connect(_show_map)
-	Events.start_encounter.connect(_start_encounter)
+
+	Events.start_scenario.connect(_start_scenario)
+	Events.start_combat.connect(_start_player_turn)
 	Events.enemy_turn_over.connect(_start_player_turn)
-	
-	main_view_switcher.show_map.connect(_show_map)
-	main_view_switcher.show_systems.connect(_show_tile_grid)
+	Events.load_game_save.connect(_load_game_save)
+
+
+func _load_game_save(game_save: GameSaveResource) -> void:
+	health.max_health = game_save.player_max_health
+	health.health = game_save.player_health
+	health.shields = game_save.player_defense
+	num_of_dice = game_save.num_of_dice
 
 
 # Update the dice desired locations in the world
@@ -68,21 +66,21 @@ func _process(_delta: float) -> void:
 			if current_queue_position == -1:
 				dice_queue.add(die)
 			
-			var relative_mouse_pos = get_global_mouse_position() - global_position
+			var dice_queue_mouse_pos = get_global_mouse_position() - dice_queue.global_position
 			
 
 			# Create a rectangle that encompasses the current displayed dice queue
 			var dice_queue_bounding_rect: Rect2 = Rect2(
-				dice_queue.position.x - (dice_queue_spacing/2.0), # x
-				dice_queue.position.y - (dice_queue_spacing/2.0), # y
+				-dice_queue_spacing/2.0, # x
+				-dice_queue_spacing/2.0, # y
 				(len(dice_queue.queue) - 1) * dice_queue_spacing, # width
 				dice_queue_spacing, # height
 			)
 
-			if dice_queue_bounding_rect.has_point(relative_mouse_pos):
+			if dice_queue_bounding_rect.has_point(dice_queue_mouse_pos):
 				# Determine which queue position the mouse is hovering over
-				var hovered_queue_position = int((relative_mouse_pos.x + dice_queue.position.x - (dice_queue_spacing/2.0)) / dice_queue_spacing)
-				
+				var hovered_queue_position = int(dice_queue_mouse_pos.x / dice_queue_spacing)
+
 				# Make sure we limit the hovered location to the end of the queue
 				hovered_queue_position = min(hovered_queue_position, len(dice_queue.queue)-1)
 				
@@ -110,10 +108,7 @@ func reroll_dice() -> void:
 
 
 func _start_player_turn() -> void:
-	if len(dice_queue.queue) == 0:
-		spawn_dice()
-	else:
-		reroll_dice()
+	reroll_dice()
 	
 	for die in dice_queue.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
@@ -133,25 +128,13 @@ func spawn_dice(num_to_spawn: int = num_of_dice) -> void:
 		new_die.global_position = global_position + Vector2(600, 0)
 		add_child(new_die)
 		dice_queue.add(new_die)
+		
 	_update_dice_queue_locations()
-
-
-func _show_map() -> void:
-	tile_grid.visible = false
-	map.visible = true
-	main_view_switcher.display.frame = 1
 	
-
-func _show_tile_grid() -> void:
-	tile_grid.visible = true
-	map.visible = false
-	main_view_switcher.display.frame = 0
 	
-
-func _start_encounter():
+func _start_scenario() -> void:
 	_delete_existing_dice()
-	_show_tile_grid()
-	_start_player_turn()
+	spawn_dice()
 
 
 func end_turn() -> void:

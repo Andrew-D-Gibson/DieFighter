@@ -7,9 +7,11 @@ extends Node2D
 @export var dice_queue: DiceQueue
 @export var health: Health
 @export var action_popup: PackedScene
+@export var shakeable: Shakeable
 
 var ship_graphics: Node2D
 var turn_actions: Array[EnemyActionResource]
+var tween: Tween
 
 signal death()
 signal action_completed()
@@ -18,16 +20,39 @@ signal action_completed()
 func _ready() -> void:
 	assert(enemy_resource)
 	_update_resource()
+	_start_bob_tween()
 	
 	health.death.connect(_on_death)
+	health.shields_damaged.connect(func():
+		_stop_bob_tween()
+		shakeable.small_shake()
+		await shakeable.shake_ended
+		_start_bob_tween()
+	)
+	health.health_damaged.connect(func():
+		_stop_bob_tween()
+		shakeable.large_shake()
+		await shakeable.shake_ended
+		_start_bob_tween()
+	)
+	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
 	
-	# Set the sprite to bob
+
+func _stop_bob_tween() -> void:
+	if tween:
+		tween.kill()
+		
+
+func _start_bob_tween() -> void:
+	if tween:
+		tween.kill()
+		
 	var tween_time = randf_range(2, 4)
-	var tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, 'global_position', ship_graphics.global_position + Vector2(0, 8), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(ship_graphics, 'global_position', ship_graphics.global_position, tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween = get_tree().create_tween()
+	tween.tween_property(ship_graphics, 'global_position', self.global_position + Vector2(0, 8), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(ship_graphics, 'global_position', self.global_position, tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	tween.set_loops()
 
 
@@ -53,6 +78,9 @@ func _update_resource() -> void:
 		ship_graphics.queue_free()
 	ship_graphics = enemy_resource.ship_graphics_scene.instantiate()
 	add_child(ship_graphics)
+	
+	# Set up shaking the graphics
+	shakeable.node_to_shake = ship_graphics
 	
 	# Set up the health component
 	health.max_health = enemy_resource.max_health

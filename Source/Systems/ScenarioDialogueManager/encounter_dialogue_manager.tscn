@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://cxssny1jb1tlo"]
+
+[ext_resource type="Texture2D" uid="uid://cc5pg8b823n1s" path="res://Assets/Textures/RewardManager/reward_background.png" id="1_13ftu"]
+[ext_resource type="Script" uid="uid://ve3vmyserw5x" path="res://Source/Systems/ScenarioDialogueManager/encounter_dialogue_manager.gd" id="1_dxebk"]
+[ext_resource type="Texture2D" uid="uid://c7grl17fo778o" path="res://Assets/Textures/EncounterDialogueManager/choice_background.png" id="2_qy0ld"]
+[ext_resource type="PackedScene" uid="uid://rjg86p5tfggc" path="res://Source/Systems/ScenarioDialogueManager/choice_option.tscn" id="4_xtg7j"]
+
+[node name="EncounterDialogueManager" type="Node2D" node_paths=PackedStringArray("main_text")]
+script = ExtResource("1_dxebk")
+main_text = NodePath("MainTextBackground/MainText")
+
+[node name="MainTextBackground" type="Sprite2D" parent="."]
+texture = ExtResource("1_13ftu")
+
+[node name="MainText" type="RichTextLabel" parent="MainTextBackground"]
+offset_left = -58.0
+offset_top = -37.0
+offset_right = 58.0
+offset_bottom = 37.0
+bbcode_enabled = true
+text = "This is a test of how [color=#d03656][shake rate=10.0 level=3 connected=1]scary dialogue[/shake][/color] might appear in game describing a scenario where enemies are making you choose an option!
+"
+
+[node name="ChoiceBackground" type="Sprite2D" parent="."]
+position = Vector2(88, 0)
+texture = ExtResource("2_qy0ld")
+
+[node name="ChoiceOption1" parent="ChoiceBackground" instance=ExtResource("4_xtg7j")]
+position = Vector2(0, -30)
+choice_number = 1
+
+[node name="ChoiceOption2" parent="ChoiceBackground" instance=ExtResource("4_xtg7j")]
+position = Vector2(0, -18)
+choice_number = 2
+
+[node name="ChoiceOption3" parent="ChoiceBackground" instance=ExtResource("4_xtg7j")]
+position = Vector2(0, -6)
+choice_number = 3
+
+[node name="ChoiceOption4" parent="ChoiceBackground" instance=ExtResource("4_xtg7j")]
+position = Vector2(0, 6)
+choice_number = 4
+
+[node name="ChoiceOption5" parent="ChoiceBackground" instance=ExtResource("4_xtg7j")]
+position = Vector2(0, 18)
+choice_number = 5
+
+[node name="ChoiceOption6" parent="ChoiceBackground" instance=ExtResource("4_xtg7j")]
+position = Vector2(0, 30)
+choice_number = 6
+
+[connection signal="choice_selected" from="ChoiceBackground/ChoiceOption1" to="." method="_dice_dropped_on_choice" binds= [1]]
+[connection signal="choice_selected" from="ChoiceBackground/ChoiceOption2" to="." method="_dice_dropped_on_choice" binds= [2]]
+[connection signal="choice_selected" from="ChoiceBackground/ChoiceOption3" to="." method="_dice_dropped_on_choice" binds= [3]]
+[connection signal="choice_selected" from="ChoiceBackground/ChoiceOption4" to="." method="_dice_dropped_on_choice" binds= [4]]
+[connection signal="choice_selected" from="ChoiceBackground/ChoiceOption5" to="." method="_dice_dropped_on_choice" binds= [5]]
+[connection signal="choice_selected" from="ChoiceBackground/ChoiceOption6" to="." method="_dice_dropped_on_choice" binds= [6]]

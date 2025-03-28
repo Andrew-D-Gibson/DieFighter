@@ -1,25 +1,24 @@
 class_name GameStateManager
 extends Node2D
 
+@export var current_game_save: GameSaveResource
+
 enum GameState {
 	IN_COMBAT,
 	OUT_OF_COMBAT
 }
 
-var state: GameState
+var state: GameState = GameState.OUT_OF_COMBAT
 
-# This node has to be the last thing loaded in our game, so it can depend
-# on all the other components having had their "_ready" called!
+# This node has to be the last thing loaded in our game
 func _ready() -> void:
 	Globals.state_manager = self
-	
-	Events.load_encounter.connect(func(encounter: EncounterResource):
-		if len(encounter.enemies_to_spawn) > 0:
-			state = GameState.IN_COMBAT
-		else:
-			state = GameState.OUT_OF_COMBAT
-		Events.start_encounter.emit()
+	Events.combat_finished.connect(func():
+		state = GameState.OUT_OF_COMBAT
 	)
 	
-	Events.start_encounter.emit()
 	
+	Events.load_game_save.emit(current_game_save)
+	current_game_save.sector_scenarios[
+			current_game_save.current_scenario_index
+		].play()

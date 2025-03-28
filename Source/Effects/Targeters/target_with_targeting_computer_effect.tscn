@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1aahr2uu2421"]
+
+[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Effects/Targeters/target_with_targeting_computer_effect.gd" id="1_m7s7u"]
+
+[node name="TargetWithTargetingComputerEffect" type="Node2D"]
+script = ExtResource("1_m7s7u")

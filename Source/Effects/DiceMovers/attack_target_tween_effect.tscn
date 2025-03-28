@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://jt77tja7wi1i"]
+
+[ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Effects/DiceMovers/attack_target_tween_effect.gd" id="1_cqvfr"]
+
+[node name="AttackTargetTweenEffect" type="Node2D"]
+script = ExtResource("1_cqvfr")

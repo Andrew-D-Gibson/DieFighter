@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://syi03k05n86n"]
+
+[ext_resource type="Script" uid="uid://dl3x4ek6t4j8y" path="res://Source/Components/Shakeable/shakeable.gd" id="1_sx13e"]
+
+[node name="Shakeable" type="Node2D"]
+script = ExtResource("1_sx13e")

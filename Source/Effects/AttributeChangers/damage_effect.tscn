@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://sbtma6alpnti"]
+
+[ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Effects/AttributeChangers/damage_effect.gd" id="1_briwu"]
+
+[node name="DamageEffect" type="Node2D"]
+script = ExtResource("1_briwu")

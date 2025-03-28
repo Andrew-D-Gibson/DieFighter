@@ -1,0 +1,33 @@
+[gd_scene load_steps=5 format=3 uid="uid://rjg86p5tfggc"]
+
+[ext_resource type="Script" uid="uid://dctfurqw82hum" path="res://Source/Systems/ScenarioDialogueManager/choice_option.gd" id="1_pv4ag"]
+[ext_resource type="Texture2D" uid="uid://clbn40bnl5afw" path="res://Assets/Textures/EncounterDialogueManager/RedChoices/red_choice_1.png" id="2_6cbb7"]
+[ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Components/CanAcceptDice/can_accept_dice.tscn" id="3_6cbb7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yoxod"]
+size = Vector2(46, 12)
+
+[node name="ChoiceOption" type="Node2D" node_paths=PackedStringArray("sprite", "text", "can_accept_dice")]
+script = ExtResource("1_pv4ag")
+sprite = NodePath("Sprite2D")
+text = NodePath("RichTextLabel")
+can_accept_dice = NodePath("CanAcceptDice")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_6cbb7")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = -11.0
+offset_top = -7.0
+offset_right = 29.0
+offset_bottom = 33.0
+text = "ATTACK"
+
+[node name="CanAcceptDice" parent="." node_paths=PackedStringArray("collision") instance=ExtResource("3_6cbb7")]
+collision = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanAcceptDice"]
+shape = SubResource("RectangleShape2D_yoxod")
+debug_color = Color(0, 0.6, 0.701961, 0)
+
+[connection signal="die_accepted" from="CanAcceptDice" to="." method="_check_dice_drop"]

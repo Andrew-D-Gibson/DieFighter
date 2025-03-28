@@ -4,38 +4,28 @@ extends Node2D
 @export var tile_resource: TileResource:
 	set(new_resource):
 		tile_resource = new_resource
-		_update_texture()
+		$Sprite2D.texture = tile_resource.base_texture
 		
 @export_category('Components')
 @export var draggable: Draggable
 @export var clickable: Clickable
+@export var shakeable: Shakeable
 
 signal tile_activation_complete()
 
 
 func _ready() -> void:
 	assert(tile_resource)
-	_update_texture()
+	$Sprite2D.texture = tile_resource.base_texture
 	
 	clickable.clicked.connect(func(): 
 		Events.show_info.emit(_get_tile_info())
 	)
+	draggable.reached_new_home.connect(func():
+		shakeable.small_shake()
+		Events.tile_dropped.emit()
+	)
 	
-	
-func _update_texture() -> void:
-	# OLD CODE FOR BLENDING ACTIVATION IMAGE
-	#var base_image: Image = tile_resource.base_texture.get_image()
-	#var activation_image: Image = tile_resource.activation.activation_texture.get_image()
-	#
-	## Blend the overlay image onto the base at position (0, 0)
-	#base_image.blend_rect(activation_image, Rect2i(Vector2i(0, 0), activation_image.get_size()), Vector2i(0, 0))
-	#
-	## Create a new texture from the modified image
-	#var result_texture = ImageTexture.create_from_image(base_image)
-	#
-	#$Sprite2D.texture = result_texture
-	$Sprite2D.texture = tile_resource.base_texture
-
 
 func _get_tile_info() -> InfoResource:
 	var info = InfoResource.new()

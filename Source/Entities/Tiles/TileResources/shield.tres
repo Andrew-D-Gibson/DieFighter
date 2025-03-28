@@ -3,12 +3,12 @@
 [ext_resource type="Resource" uid="uid://cy6vuvps1w4a" path="res://Source/Entities/Tiles/ActivationResources/3_activation.tres" id="1_2kka0"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Entities/Tiles/ActivationResources/ResourceDefinitions/activation_resource.gd" id="1_06byu"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_08vmm"]
-[ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="3_0abqg"]
+[ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Effects/Targeters/target_player_effect.tscn" id="3_0abqg"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="3_tyb5i"]
-[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Systems/Effects/effect_resource.gd" id="4_06byu"]
-[ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Systems/Effects/AttributeChangers/shield_effect.tscn" id="4_fmymq"]
-[ext_resource type="PackedScene" uid="uid://b1aahr2uu2421" path="res://Source/Systems/Effects/Targeters/target_with_targeting_computer_effect.tscn" id="6_fmymq"]
-[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_moiwb"]
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="4_06byu"]
+[ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Effects/AttributeChangers/shield_effect.tscn" id="4_fmymq"]
+[ext_resource type="PackedScene" uid="uid://b1aahr2uu2421" path="res://Source/Effects/Targeters/target_with_targeting_computer_effect.tscn" id="6_fmymq"]
+[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_moiwb"]
 
 [sub_resource type="Resource" id="Resource_moiwb"]
 script = ExtResource("4_06byu")

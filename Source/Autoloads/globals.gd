@@ -1,13 +1,15 @@
 extends Node
 
-var game_save: GameSaveResource = preload(
-	"res://Source/Systems/SaveResources/game_start.tres"
-)
-
-# Singletons
+# Game System Singletons
 var player: Player
+var tile_grid: TileGrid
+var map: Map
+var targeting_computer: TargetingComputer
 var enemy_manager: EnemyManager
 var state_manager: GameStateManager
+
+# Audio Singletons
+var sfx_player: SFXPlayer
 
 # Colors
 var red: Color = Color.html('#d03656')

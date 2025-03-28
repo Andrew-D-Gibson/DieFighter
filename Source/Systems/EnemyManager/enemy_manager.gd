@@ -9,12 +9,8 @@ var enemies: Array[Enemy]
 
 func _ready() -> void:
 	Globals.enemy_manager = self
-	spawn_enemies(Globals.game_save.current_encounter.enemies_to_spawn)
-	
-	Events.load_encounter.connect(func(encounter: EncounterResource):
-		spawn_enemies(encounter.enemies_to_spawn)	
-	)
 	Events.player_turn_over.connect(_run_enemy_turn)
+	
 
 func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 	var spacing = enemy_spacing / float(len(enemy_resources) + 1)
@@ -29,8 +25,7 @@ func spawn_enemies(enemy_resources: Array[EnemyResource]) -> void:
 			Events.enemy_died.emit()
 			
 			if len(enemies) == 0:
-				Globals.state_manager.state = GameStateManager.GameState.OUT_OF_COMBAT
-				Events.encounter_finished.emit()
+				Events.combat_finished.emit()
 		)
 		
 		enemies.append(enemy)

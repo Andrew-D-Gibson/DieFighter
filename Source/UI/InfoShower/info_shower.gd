@@ -38,6 +38,7 @@ func _format_text(text: String) -> String:
 	
 	return text
 
+
 func _on_screen_dim_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
 		self.visible = false

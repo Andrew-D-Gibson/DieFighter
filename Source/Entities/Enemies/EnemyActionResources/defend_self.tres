@@ -2,11 +2,11 @@
 
 [ext_resource type="Texture2D" uid="uid://boetxyf3w4oel" path="res://Assets/Textures/Enemies/IntentIndicator/defend.png" id="1_0w3us"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Entities/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_12xyc"]
-[ext_resource type="PackedScene" uid="uid://b7npf5ea314i7" path="res://Source/Systems/Effects/Targeters/target_self_effect.tscn" id="1_fmd3i"]
-[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Systems/Effects/effect_resource.gd" id="1_spnlc"]
-[ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Systems/Effects/AttributeChangers/shield_effect.tscn" id="2_su07i"]
-[ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Systems/Effects/Targeters/target_player_effect.tscn" id="3_1t7gd"]
-[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="4_spnlc"]
+[ext_resource type="PackedScene" uid="uid://b7npf5ea314i7" path="res://Source/Effects/Targeters/target_self_effect.tscn" id="1_fmd3i"]
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="1_spnlc"]
+[ext_resource type="PackedScene" uid="uid://c53oyihg2mmwg" path="res://Source/Effects/AttributeChangers/shield_effect.tscn" id="2_su07i"]
+[ext_resource type="PackedScene" uid="uid://yy0isg8x3mc2" path="res://Source/Effects/Targeters/target_player_effect.tscn" id="3_1t7gd"]
+[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Effects/DiceMovers/give_die_to_target_effect.tscn" id="4_spnlc"]
 [ext_resource type="Texture2D" uid="uid://cibgrd0mhsrw0" path="res://Assets/Textures/Enemies/IntentIndicator/defend_info.png" id="4_su07i"]
 
 [sub_resource type="Resource" id="Resource_nnlxn"]

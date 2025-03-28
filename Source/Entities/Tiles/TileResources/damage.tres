@@ -4,12 +4,12 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/TileResources/tile_resource.gd" id="1_qon23"]
 [ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="2_cb0ou"]
 [ext_resource type="Resource" uid="uid://fm6xm8pwh1xl" path="res://Source/Entities/Tiles/ActivationResources/accept_all_values_activation.tres" id="2_qliob"]
-[ext_resource type="PackedScene" uid="uid://b1aahr2uu2421" path="res://Source/Systems/Effects/Targeters/target_with_targeting_computer_effect.tscn" id="3_3s8sb"]
-[ext_resource type="PackedScene" uid="uid://sbtma6alpnti" path="res://Source/Systems/Effects/AttributeChangers/damage_effect.tscn" id="3_16eq4"]
+[ext_resource type="PackedScene" uid="uid://b1aahr2uu2421" path="res://Source/Effects/Targeters/target_with_targeting_computer_effect.tscn" id="3_3s8sb"]
+[ext_resource type="PackedScene" uid="uid://sbtma6alpnti" path="res://Source/Effects/AttributeChangers/damage_effect.tscn" id="3_16eq4"]
 [ext_resource type="Resource" uid="uid://dyx5jsf4r6q7o" path="res://Source/Entities/Tiles/ActivationResources/in_combat_activation.tres" id="3_l0fjt"]
-[ext_resource type="PackedScene" uid="uid://jt77tja7wi1i" path="res://Source/Systems/Effects/DiceMovers/attack_target_tween_effect.tscn" id="4_8be25"]
-[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Systems/Effects/effect_resource.gd" id="5_qliob"]
-[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Systems/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_3s8sb"]
+[ext_resource type="PackedScene" uid="uid://jt77tja7wi1i" path="res://Source/Effects/DiceMovers/attack_target_tween_effect.tscn" id="4_8be25"]
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="5_qliob"]
+[ext_resource type="PackedScene" uid="uid://bc3ccd16sh4lv" path="res://Source/Effects/DiceMovers/give_die_to_target_effect.tscn" id="6_3s8sb"]
 
 [sub_resource type="Resource" id="Resource_l0fjt"]
 script = ExtResource("5_qliob")

@@ -4,6 +4,10 @@ extends Control
 @onready var command_history := $PanelContainer/VBoxContainer/RichTextLabel
 
 
+func _test(_command_args: Array[String] = []) -> void:
+	print('Test called!')
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed('DevConsole'):
 		_toggle_dev_console()
@@ -65,8 +69,7 @@ func _on_line_edit_text_changed(current_text: String) -> void:
 		visible = !visible
 
 
-func _test(_command_args: Array[String] = []) -> void:
-	print('Test called!')
+
 	
 	
 func _clear() -> void:

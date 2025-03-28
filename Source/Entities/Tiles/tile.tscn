@@ -1,9 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://delq7kb5loqt2"]
+[gd_scene load_steps=10 format=3 uid="uid://delq7kb5loqt2"]
 
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Entities/Tiles/tile.gd" id="1_71op4"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Components/Draggable/draggable.tscn" id="2_b16ti"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="4_fc656"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Components/Clickable/clickable.tscn" id="4_rngaw"]
+[ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Components/Shakeable/shakeable.tscn" id="4_vr4ys"]
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Components/CanAcceptDice/can_accept_dice.tscn" id="5_fc656"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
@@ -15,10 +16,11 @@ size = Vector2(22, 24)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
 size = Vector2(22, 24)
 
-[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable")]
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable")]
 script = ExtResource("1_71op4")
 draggable = NodePath("Draggable")
 clickable = NodePath("Clickable")
+shakeable = NodePath("Shakeable")
 
 [node name="Draggable" parent="." instance=ExtResource("2_b16ti")]
 
@@ -29,6 +31,10 @@ shape = SubResource("RectangleShape2D_jkiuv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
 shape = SubResource("RectangleShape2D_rngaw")
+
+[node name="Shakeable" parent="." node_paths=PackedStringArray("node_to_shake") instance=ExtResource("4_vr4ys")]
+node_to_shake = NodePath("../Sprite2D")
+small_shake_duration = 0.05
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("4_fc656")

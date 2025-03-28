@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b7npf5ea314i7"]
+
+[ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Effects/Targeters/target_self_effect.gd" id="1_jsh11"]
+
+[node name="TargetSelfEffect" type="Node2D"]
+script = ExtResource("1_jsh11")

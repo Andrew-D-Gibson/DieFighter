@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cyrmhmhlhbp0i"]
-
-[ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Systems/Effects/Targeters/target_random_enemy_effect.gd" id="1_du170"]
-
-[node name="TargetRandomEnemyEffect" type="Node2D"]
-script = ExtResource("1_du170")

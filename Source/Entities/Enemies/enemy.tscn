@@ -1,16 +1,21 @@
-[gd_scene load_steps=6 format=3 uid="uid://bwwirc58smer1"]
+[gd_scene load_steps=7 format=3 uid="uid://bwwirc58smer1"]
 
 [ext_resource type="Script" uid="uid://dibocqhoikh50" path="res://Source/Entities/Enemies/enemy.gd" id="1_ljdua"]
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Components/DiceQueue/dice_queue.tscn" id="2_7lcrs"]
 [ext_resource type="PackedScene" uid="uid://b8gjt5a2dcrbn" path="res://Source/Entities/Enemies/action_popup.tscn" id="2_cwfht"]
 [ext_resource type="PackedScene" uid="uid://0nffy7i5aty4" path="res://Source/Components/Health/health.tscn" id="3_cwfht"]
+[ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Components/Shakeable/shakeable.tscn" id="3_tvtxf"]
 [ext_resource type="PackedScene" uid="uid://37usdgvegncp" path="res://Source/Entities/Enemies/Components/EnemyHealthBar/enemy_health_bar.tscn" id="4_tvtxf"]
 
-[node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_queue", "health")]
+[node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_queue", "health", "shakeable")]
 script = ExtResource("1_ljdua")
 dice_queue = NodePath("DiceQueue")
 health = NodePath("Health")
 action_popup = ExtResource("2_cwfht")
+shakeable = NodePath("Shakeable")
+
+[node name="Shakeable" parent="." node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
+node_to_shake = NodePath("..")
 
 [node name="DiceQueue" parent="." instance=ExtResource("2_7lcrs")]
 

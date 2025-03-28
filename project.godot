@@ -20,6 +20,7 @@ boot_splash/bg_color=Color(0.027451, 0.0117647, 0.14902, 1)
 InputManager="*res://Source/Autoloads/input_manager.gd"
 Globals="*res://Source/Autoloads/globals.gd"
 Events="*res://Source/Autoloads/events.gd"
+SoundEffectsPlayer="*res://Source/Autoloads/sound_effects_player.gd"
 
 [display]
 

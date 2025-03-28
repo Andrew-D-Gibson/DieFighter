@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c53oyihg2mmwg"]
+
+[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Effects/AttributeChangers/shield_effect.gd" id="1_awgud"]
+
+[node name="ShieldEffect" type="Node2D"]
+script = ExtResource("1_awgud")
