@@ -43,6 +43,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'shield':
 			_shield(command.slice(1))
 			
+		'shield_enemies':
+			_shield_enemies(command.slice(1))
+			
 		#'player_invulnerable':
 			#_player_invulnerable()
 					#
@@ -84,7 +87,11 @@ func _heal(command_args: Array[String] = []) -> void:
 	Globals.player.health.change_health(amount)	
 	command_history.append_text('\n[center]Healed player![/center]')
 	
-
+	
+func _reroll() -> void:
+	Globals.player.reroll_dice()
+	
+	
 func _shield(command_args: Array[String] = []) -> void:
 	var amount: int = Globals.player.health.max_health
 	if len(command_args) == 1 and command_args[0].is_valid_int():
@@ -92,11 +99,15 @@ func _shield(command_args: Array[String] = []) -> void:
 	
 	Globals.player.health.change_shields(amount)	
 	command_history.append_text('\n[center]Shielded player![/center]')
+	
 
-
-func _reroll() -> void:
-	Globals.player.reroll_dice()
-
+func _shield_enemies(command_args: Array[String] = []) -> void:
+	var amount: int = 10
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+	
+	Globals.enemy_manager.shield_all_enemies(amount)
+	command_history.append_text('\n[center]Shielded enemies![/center]')
 
 #func _player_invulnerable(command_args: Array[String] = []) -> void:
 	#Globals.player.hp_and_def.invulnerable = !Globals.player.hp_and_def.invulnerable

@@ -22,9 +22,7 @@ func _ready() -> void:
 	
 	for effect in sound_effects:
 		sound_effects_dict[effect.name] = effect
-		
-	print(sound_effects_dict)
-		
+
 	_hookup_audio_signals()
 
 

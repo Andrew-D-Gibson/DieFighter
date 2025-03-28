@@ -16,6 +16,7 @@ shakeable = NodePath("Shakeable")
 
 [node name="Shakeable" parent="." node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
 node_to_shake = NodePath("..")
+small_shake_duration = 0.2
 
 [node name="DiceQueue" parent="." instance=ExtResource("2_7lcrs")]
 

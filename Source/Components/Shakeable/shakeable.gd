@@ -28,7 +28,7 @@ signal shake_ended()
 func _ready() -> void:
 	if not node_to_shake:
 		node_to_shake = get_parent()
-	original_position = node_to_shake.global_position
+	original_position = node_to_shake.position
 		
 		
 func _process(delta: float) -> void:
@@ -37,13 +37,13 @@ func _process(delta: float) -> void:
 		
 	if shake_time_remaining <= 0:
 		shaking = false
-		node_to_shake.global_position = original_position
+		node_to_shake.position = original_position
 		shake_ended.emit()
 		return
 		
 	shake_time_remaining -= delta
 	var shake_offset = _random_offset(shake_intensity)
-	node_to_shake.global_position = node_to_shake.global_position.lerp(
+	node_to_shake.position = node_to_shake.position.lerp(
 		original_position + shake_offset,
 		0.5
 	)
@@ -66,10 +66,10 @@ func large_shake() -> void:
 	
 
 func _start_shake() -> void:
-	# Prevent multiple shakes from messing up the original position
-	if not shaking:
-		original_position = node_to_shake.global_position
-		
+	if shaking:
+		node_to_shake.position = original_position
+
+	original_position = node_to_shake.position
 	shaking = true
 	shake_started.emit()
 	

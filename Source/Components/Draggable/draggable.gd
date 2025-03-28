@@ -75,18 +75,18 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		
 		var parent_node: Node2D = get_parent()
 		
-		# Set the parent to wiggle back and forth
+		# Move the parent's render index to be above where it usually sits
+		parent_node.z_index += 3
+		parent_node.scale = Vector2(1.25,1.25)
+		
+		# Set the parent to wiggle a bit
+		parent_node.rotation_degrees = 0
 		if tween:
 			tween.kill()
 		var tween_time: float = 0.75
 		tween = get_tree().create_tween()
-		tween.tween_property(parent_node, "global_rotation_degrees", 7.5, tween_time)
-		tween.tween_property(parent_node, "global_rotation_degrees", -7.5, tween_time)
+		tween.tween_property(parent_node, "global_rotation_degrees", 2, tween_time)
+		tween.tween_property(parent_node, "global_rotation_degrees", -2, tween_time)
 		tween.set_loops()
-		
-		
-		# Move the parent's render index to be above where it usually sits
-		parent_node.z_index += 3
-		parent_node.scale = Vector2(1.25,1.25)
 		
 		drag_started.emit()
