@@ -67,7 +67,7 @@ theme_override_colors/default_color = Color(0.772549, 0.321569, 0.945098, 1)
 text = "TARGET"
 
 [node name="TargetImage" type="Sprite2D" parent="."]
-position = Vector2(0, -4)
+position = Vector2(0, -7)
 
 [node name="TargetingIndicator" type="Sprite2D" parent="."]
 visible = false

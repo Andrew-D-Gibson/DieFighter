@@ -23,4 +23,5 @@ small_shake_duration = 0.2
 [node name="Health" parent="." instance=ExtResource("3_cwfht")]
 
 [node name="EnemyHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_tvtxf")]
+z_index = 1
 health_component = NodePath("../Health")

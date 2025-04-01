@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bljmx610i58dj"]
 
-[ext_resource type="Texture2D" uid="uid://bl5yre57aviwk" path="res://Assets/Textures/Enemies/Attacker/Attacker_outlined.png" id="1_hx235"]
+[ext_resource type="Texture2D" uid="uid://cg27kht5p2kw1" path="res://Assets/Textures/Enemies/Attacker/attacker.png" id="1_hx235"]
 [ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_hx235"]
 
 [node name="AttackerShipGraphics" type="Node2D"]

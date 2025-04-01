@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bl5yre57aviwk"
-path="res://.godot/imported/Attacker_outlined.png-dfe1a0d1fd91801bd8e925e50fc1cec7.ctex"
+uid="uid://dqpup3u788s5b"
+path="res://.godot/imported/blue_choice_5.png-42c9e3a55b9f350b98c0bdc6f17916dd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Enemies/Attacker/Attacker_outlined.png"
-dest_files=["res://.godot/imported/Attacker_outlined.png-dfe1a0d1fd91801bd8e925e50fc1cec7.ctex"]
+source_file="res://Assets/Textures/EncounterDialogueManager/BlueChoices/blue_choice_5.png"
+dest_files=["res://.godot/imported/blue_choice_5.png-42c9e3a55b9f350b98c0bdc6f17916dd.ctex"]
 
 [params]
 

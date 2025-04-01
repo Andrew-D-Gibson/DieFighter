@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=8 format=3 uid="uid://d05ihd7m63anw"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Entities/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_ksdb5"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="2_62y4q"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Entities/Enemies/EnemyActionResources/attack_player.tres" id="2_m81yx"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Entities/Enemies/EnemyActionResources/defend_self.tres" id="3_2qgp6"]
+[ext_resource type="Texture2D" uid="uid://cwqnylao1rdub" path="res://Assets/Textures/Enemies/Defender/Defender_targeting_image.png" id="3_62y4q"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Entities/Enemies/EnemyActionResources/do_nothing.tres" id="4_jikpo"]
+[ext_resource type="PackedScene" uid="uid://dueij0vemaxof" path="res://Source/Entities/Enemies/EnemyShipGraphicScenes/defender_ship_graphics.tscn" id="6_o11wk"]
+
+[resource]
+script = ExtResource("2_62y4q")
+enemy_name = "Defender"
+description = "Gonna defend against ya boi"
+ship_graphics_scene = ExtResource("6_o11wk")
+targeting_computer_image = ExtResource("3_62y4q")
+health_bar_position = Vector2(-21, -28)
+dice_queue_position = Vector2(24, 8)
+max_health = 10
+starting_shields = 2
+actions_and_likelihoods = Dictionary[ExtResource("1_ksdb5"), float]({
+ExtResource("2_m81yx"): 1.0,
+ExtResource("3_2qgp6"): 3.0,
+ExtResource("4_jikpo"): 1.0
+})
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

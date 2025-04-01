@@ -6,7 +6,7 @@
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Entities/Enemies/EnemyActionResources/defend_self.tres" id="3_7a4d7"]
 [ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Entities/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="3_sf3u5"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Entities/Enemies/EnemyActionResources/do_nothing.tres" id="4_7a4d7"]
-[ext_resource type="Texture2D" uid="uid://dig1r6ndk45ou" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="7_7a4d7"]
+[ext_resource type="Texture2D" uid="uid://deoaj6bxuv4i4" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="7_7a4d7"]
 
 [resource]
 script = ExtResource("2_mo0f0")

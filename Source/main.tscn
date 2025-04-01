@@ -77,8 +77,7 @@ position = Vector2(161, 41)
 possible_tile_rewards = Array[ExtResource("14_o33d5")]([ExtResource("15_aaucc"), ExtResource("16_r6ma6")])
 
 [node name="EncounterDialogueManager" parent="Systems" instance=ExtResource("17_dacno")]
-visible = false
-position = Vector2(138, 42)
+position = Vector2(138, 38)
 
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")

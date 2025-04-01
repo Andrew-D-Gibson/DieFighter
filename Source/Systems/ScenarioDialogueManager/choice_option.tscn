@@ -1,17 +1,51 @@
-[gd_scene load_steps=5 format=3 uid="uid://rjg86p5tfggc"]
+[gd_scene load_steps=34 format=3 uid="uid://rjg86p5tfggc"]
 
 [ext_resource type="Script" uid="uid://dctfurqw82hum" path="res://Source/Systems/ScenarioDialogueManager/choice_option.gd" id="1_pv4ag"]
 [ext_resource type="Texture2D" uid="uid://clbn40bnl5afw" path="res://Assets/Textures/EncounterDialogueManager/RedChoices/red_choice_1.png" id="2_6cbb7"]
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Components/CanAcceptDice/can_accept_dice.tscn" id="3_6cbb7"]
+[ext_resource type="Texture2D" uid="uid://c0hblp24vnqv6" path="res://Assets/Textures/EncounterDialogueManager/RedChoices/red_choice_2.png" id="3_nmjie"]
+[ext_resource type="Texture2D" uid="uid://bwmide6joh2bw" path="res://Assets/Textures/EncounterDialogueManager/RedChoices/red_choice_3.png" id="4_2fyfp"]
+[ext_resource type="Texture2D" uid="uid://dfjuh0rno4hh0" path="res://Assets/Textures/EncounterDialogueManager/RedChoices/red_choice_4.png" id="5_tgwga"]
+[ext_resource type="Texture2D" uid="uid://c68rd2j7y463x" path="res://Assets/Textures/EncounterDialogueManager/RedChoices/red_choice_5.png" id="6_sn3ij"]
+[ext_resource type="Texture2D" uid="uid://bpjy2gjgujhlp" path="res://Assets/Textures/EncounterDialogueManager/RedChoices/red_choice_6.png" id="7_f0kqb"]
+[ext_resource type="Texture2D" uid="uid://ddr3q4purth3r" path="res://Assets/Textures/EncounterDialogueManager/YellowChoices/yellow_choice_1.png" id="8_ovnho"]
+[ext_resource type="Texture2D" uid="uid://d0vokre0b1r4j" path="res://Assets/Textures/EncounterDialogueManager/YellowChoices/yellow_choice_2.png" id="9_n7jgl"]
+[ext_resource type="Texture2D" uid="uid://dxcaxvwrlmgre" path="res://Assets/Textures/EncounterDialogueManager/YellowChoices/yellow_choice_3.png" id="10_tau3w"]
+[ext_resource type="Texture2D" uid="uid://y5ca7alx4kys" path="res://Assets/Textures/EncounterDialogueManager/YellowChoices/yellow_choice_4.png" id="11_nb5vc"]
+[ext_resource type="Texture2D" uid="uid://d24g7d6wcw3e6" path="res://Assets/Textures/EncounterDialogueManager/YellowChoices/yellow_choice_5.png" id="12_87v1w"]
+[ext_resource type="Texture2D" uid="uid://dvan3desihbiy" path="res://Assets/Textures/EncounterDialogueManager/YellowChoices/yellow_choice_6.png" id="13_lwa7n"]
+[ext_resource type="Texture2D" uid="uid://cbomrnsbstcad" path="res://Assets/Textures/EncounterDialogueManager/GreenChoices/green_choice_1.png" id="14_2vv64"]
+[ext_resource type="Texture2D" uid="uid://ci1w14l6sdwi1" path="res://Assets/Textures/EncounterDialogueManager/GreenChoices/green_choice_2.png" id="15_pins7"]
+[ext_resource type="Texture2D" uid="uid://cmx7yvyebug6q" path="res://Assets/Textures/EncounterDialogueManager/GreenChoices/green_choice_3.png" id="16_yy7qi"]
+[ext_resource type="Texture2D" uid="uid://laisgfafo8w7" path="res://Assets/Textures/EncounterDialogueManager/GreenChoices/green_choice_4.png" id="17_bautt"]
+[ext_resource type="Texture2D" uid="uid://cv05lyygllbu4" path="res://Assets/Textures/EncounterDialogueManager/GreenChoices/green_choice_5.png" id="18_qxxjk"]
+[ext_resource type="Texture2D" uid="uid://cgscdqi26qrq2" path="res://Assets/Textures/EncounterDialogueManager/GreenChoices/green_choice_6.png" id="19_xo8qw"]
+[ext_resource type="Texture2D" uid="uid://cvw0sb00l6mrt" path="res://Assets/Textures/EncounterDialogueManager/BlueChoices/blue_choice_1.png" id="20_kwhms"]
+[ext_resource type="Texture2D" uid="uid://djkf2t1yd3vrn" path="res://Assets/Textures/EncounterDialogueManager/BlueChoices/blue_choice_2.png" id="21_o8omo"]
+[ext_resource type="Texture2D" uid="uid://c8cftjhk7c6d" path="res://Assets/Textures/EncounterDialogueManager/BlueChoices/blue_choice_3.png" id="22_sesmg"]
+[ext_resource type="Texture2D" uid="uid://xjv8e0hdpyno" path="res://Assets/Textures/EncounterDialogueManager/BlueChoices/blue_choice_4.png" id="23_6cdly"]
+[ext_resource type="Texture2D" uid="uid://dqpup3u788s5b" path="res://Assets/Textures/EncounterDialogueManager/BlueChoices/blue_choice_5.png" id="24_a206l"]
+[ext_resource type="Texture2D" uid="uid://cy0wrioin226x" path="res://Assets/Textures/EncounterDialogueManager/BlueChoices/blue_choice_6.png" id="25_eeiq3"]
+[ext_resource type="Texture2D" uid="uid://gnquamba18ra" path="res://Assets/Textures/EncounterDialogueManager/PurpleChoices/purple_choice_1.png" id="26_3et6g"]
+[ext_resource type="Texture2D" uid="uid://bxk1inpgogq6p" path="res://Assets/Textures/EncounterDialogueManager/PurpleChoices/purple_choice_2.png" id="27_4l74q"]
+[ext_resource type="Texture2D" uid="uid://cnrgsbjebm3n3" path="res://Assets/Textures/EncounterDialogueManager/PurpleChoices/purple_choice_3.png" id="28_ubhie"]
+[ext_resource type="Texture2D" uid="uid://7ypr0gc3bxif" path="res://Assets/Textures/EncounterDialogueManager/PurpleChoices/purple_choice_4.png" id="29_c6yck"]
+[ext_resource type="Texture2D" uid="uid://baavloqp0idby" path="res://Assets/Textures/EncounterDialogueManager/PurpleChoices/purple_choice_5.png" id="30_aje2c"]
+[ext_resource type="Texture2D" uid="uid://dv1mcr3ajic3g" path="res://Assets/Textures/EncounterDialogueManager/PurpleChoices/purple_choice_6.png" id="31_vtsjh"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yoxod"]
 size = Vector2(46, 12)
 
-[node name="ChoiceOption" type="Node2D" node_paths=PackedStringArray("sprite", "text", "can_accept_dice")]
+[node name="ChoiceOption" type="Node2D" node_paths=PackedStringArray("text_label", "sprite", "can_accept_dice")]
 script = ExtResource("1_pv4ag")
+text_label = NodePath("RichTextLabel")
 sprite = NodePath("Sprite2D")
-text = NodePath("RichTextLabel")
 can_accept_dice = NodePath("CanAcceptDice")
+red_choice_sprites = Array[Texture2D]([ExtResource("2_6cbb7"), ExtResource("3_nmjie"), ExtResource("4_2fyfp"), ExtResource("5_tgwga"), ExtResource("6_sn3ij"), ExtResource("7_f0kqb")])
+yellow_choice_sprites = Array[Texture2D]([ExtResource("8_ovnho"), ExtResource("9_n7jgl"), ExtResource("10_tau3w"), ExtResource("11_nb5vc"), ExtResource("12_87v1w"), ExtResource("13_lwa7n")])
+green_choice_sprites = Array[Texture2D]([ExtResource("14_2vv64"), ExtResource("15_pins7"), ExtResource("16_yy7qi"), ExtResource("17_bautt"), ExtResource("18_qxxjk"), ExtResource("19_xo8qw")])
+blue_choice_sprites = Array[Texture2D]([ExtResource("20_kwhms"), ExtResource("21_o8omo"), ExtResource("22_sesmg"), ExtResource("23_6cdly"), ExtResource("24_a206l"), ExtResource("25_eeiq3")])
+purple_choice_sprites = Array[Texture2D]([ExtResource("26_3et6g"), ExtResource("27_4l74q"), ExtResource("28_ubhie"), ExtResource("29_c6yck"), ExtResource("30_aje2c"), ExtResource("31_vtsjh")])
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_6cbb7")

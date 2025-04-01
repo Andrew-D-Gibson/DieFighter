@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ckowgfmiffc4v"
-path="res://.godot/imported/attacker_large.png-31bfbb0b265985b7e3c12afb90fa2dfa.ctex"
+uid="uid://ddr3q4purth3r"
+path="res://.godot/imported/yellow_choice_1.png-d5b9058253dbb1a4196dcb81c81640aa.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Enemies/Attacker/attacker_large.png"
-dest_files=["res://.godot/imported/attacker_large.png-31bfbb0b265985b7e3c12afb90fa2dfa.ctex"]
+source_file="res://Assets/Textures/EncounterDialogueManager/YellowChoices/yellow_choice_1.png"
+dest_files=["res://.godot/imported/yellow_choice_1.png-d5b9058253dbb1a4196dcb81c81640aa.ctex"]
 
 [params]
 

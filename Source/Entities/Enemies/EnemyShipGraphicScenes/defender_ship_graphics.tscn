@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://dueij0vemaxof"]
+
+[ext_resource type="Texture2D" uid="uid://dmby000i3wqa0" path="res://Assets/Textures/Enemies/Defender/Defender.png" id="1_mit2i"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_86hdk"]
+
+[node name="DefenderShipGraphics" type="Sprite2D"]
+texture = ExtResource("1_mit2i")
+
+[node name="EngineParticles" parent="." instance=ExtResource("2_86hdk")]
+position = Vector2(-3, -13)
+
+[node name="EngineParticles2" parent="." instance=ExtResource("2_86hdk")]
+position = Vector2(3, -13)

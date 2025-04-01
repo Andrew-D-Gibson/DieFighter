@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=9 format=3 uid="uid://dyapkiqbvjl7r"]
+
+[ext_resource type="Script" uid="uid://1n6wflr3hvh" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource_base.gd" id="1_p6k7w"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="3_air85"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="4_2rexi"]
+[ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Entities/Enemies/EnemyResources/defender.tres" id="4_u6jam"]
+[ext_resource type="Script" uid="uid://m37ej5nkcspq" path="res://Source/ScenarioResources/ScenarioResourceScripts/combat_scenario.gd" id="5_oq3la"]
+[ext_resource type="Texture2D" uid="uid://c8n5rlrs468on" path="res://Assets/Textures/Map/EncounterIcons/boss_encounter.png" id="6_u6jam"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource.gd" id="11_hsf2t"]
+
+[sub_resource type="Resource" id="Resource_3ppsy"]
+script = ExtResource("5_oq3la")
+enemies_to_spawn = Array[ExtResource("3_air85")]([ExtResource("4_2rexi"), ExtResource("4_u6jam")])
+metadata/_custom_type_script = "uid://m37ej5nkcspq"
+
+[resource]
+script = ExtResource("11_hsf2t")
+map_icon = ExtResource("6_u6jam")
+component_scenarios = Array[ExtResource("1_p6k7w")]([SubResource("Resource_3ppsy")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"
