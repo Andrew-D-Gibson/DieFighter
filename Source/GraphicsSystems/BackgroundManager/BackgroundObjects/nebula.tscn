@@ -1,0 +1,24 @@
+[gd_scene load_steps=5 format=3 uid="uid://bqnr0itscotaw"]
+
+[ext_resource type="Shader" uid="uid://bo7q4qcfw0qo2" path="res://Assets/Shaders/sprite_nebula.gdshader" id="1_v8qsw"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cshgf"]
+shader = ExtResource("1_v8qsw")
+shader_parameter/speed = Vector2(0, -0.02)
+shader_parameter/nebula_color = Vector4(0, 0, 0, 0)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_a6pqk"]
+noise_type = 4
+frequency = 0.005
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_rir3g"]
+width = 320
+height = 1080
+seamless = true
+noise = SubResource("FastNoiseLite_a6pqk")
+
+[node name="Nebula" type="Sprite2D"]
+z_index = 2
+texture_repeat = 2
+material = SubResource("ShaderMaterial_cshgf")
+texture = SubResource("NoiseTexture2D_rir3g")

@@ -1,6 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://sbtma6alpnti"]
+[gd_scene load_steps=3 format=3 uid="uid://sbtma6alpnti"]
 
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Effects/AttributeChangers/damage_effect.gd" id="1_briwu"]
+[ext_resource type="PackedScene" uid="uid://doi43icsr46q0" path="res://Assets/Particles/hit_particles.tscn" id="2_r1p2a"]
 
 [node name="DamageEffect" type="Node2D"]
 script = ExtResource("1_briwu")
+hit_particles = ExtResource("2_r1p2a")

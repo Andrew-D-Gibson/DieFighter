@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=5 format=3 uid="uid://buuo25g5cvqtw"]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state.gd" id="1_mrval"]
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="1_wh111"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state_base.gd" id="2_8jaqc"]
+[ext_resource type="Resource" uid="uid://b255a2f6vsdhk" path="res://Source/ScenarioResources/ScenarioShipStates/civilian_hopeful.tres" id="4_5bd8b"]
+
+[resource]
+script = ExtResource("1_mrval")
+dialogue = "Please help us!"
+attitude = 1
+effects_on_enter = Array[ExtResource("1_wh111")]([])
+transitions = Dictionary[int, ExtResource("2_8jaqc")]({
+0: ExtResource("4_5bd8b")
+})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

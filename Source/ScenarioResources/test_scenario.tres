@@ -1,51 +1,43 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=17 format=3 uid="uid://c5emhs8cjxcyw"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=13 format=3 uid="uid://c5emhs8cjxcyw"]
 
-[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource.gd" id="1_ox83h"]
-[ext_resource type="Script" uid="uid://1n6wflr3hvh" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource_base.gd" id="1_uajy4"]
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/GraphicsSystems/BackgroundManager/BackgroundResources/red_nebula.tres" id="1_6x6o1"]
 [ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="1_v6grk"]
-[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Entities/Enemies/EnemyResources/enemy_resource.gd" id="2_qtsaf"]
-[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="3_eiuxx"]
-[ext_resource type="Script" uid="uid://m37ej5nkcspq" path="res://Source/ScenarioResources/ScenarioResourceScripts/combat_scenario.gd" id="4_87h2o"]
-[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="5_b2bik"]
-[ext_resource type="Script" uid="uid://vxdrk2h715qi" path="res://Source/ScenarioResources/ScenarioResourceScripts/reward_scenario_resource.gd" id="6_l0esy"]
-[ext_resource type="Script" uid="uid://ceybhcudmwcfy" path="res://Source/ScenarioResources/ScenarioResourceScripts/choice_scenario_resource.gd" id="7_mkgi4"]
-[ext_resource type="Script" uid="uid://7gnvljkgfh1r" path="res://Source/ScenarioResources/ScenarioResourceScripts/text_scenario_resource.gd" id="7_qtsaf"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/scenario_resource.gd" id="3_m7xdc"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/ScenarioResources/enemy_state_reward_resource.gd" id="4_qktrf"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="5_vvmli"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/GameSystems/RewardManager/reward_resource.gd" id="6_shcas"]
+[ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Entities/Enemies/EnemyResources/defender.tres" id="7_qktrf"]
+[ext_resource type="Resource" uid="uid://ddx65mho5lv6x" path="res://Source/ScenarioResources/ScenarioShipStates/normal_combatant.tres" id="7_shcas"]
 
-[sub_resource type="Resource" id="Resource_eiuxx"]
-script = ExtResource("4_87h2o")
-enemies_to_spawn = Array[ExtResource("2_qtsaf")]([ExtResource("3_eiuxx"), ExtResource("3_eiuxx")])
-metadata/_custom_type_script = "uid://m37ej5nkcspq"
+[sub_resource type="Resource" id="Resource_6x6o1"]
+script = ExtResource("6_shcas")
+dice_probability = 0.215
+money = 20
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
-[sub_resource type="Resource" id="Resource_87h2o"]
-script = ExtResource("6_l0esy")
-rewards = Array[ExtResource("5_b2bik")]([])
-metadata/_custom_type_script = "uid://vxdrk2h715qi"
+[sub_resource type="Resource" id="Resource_m7xdc"]
+script = ExtResource("4_qktrf")
+enemy_resource = ExtResource("5_vvmli")
+starting_state = ExtResource("7_shcas")
+reward_resource = SubResource("Resource_6x6o1")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
-[sub_resource type="Resource" id="Resource_b2bik"]
-script = ExtResource("7_qtsaf")
-text = "You won!"
-metadata/_custom_type_script = "uid://7gnvljkgfh1r"
+[sub_resource type="Resource" id="Resource_shcas"]
+script = ExtResource("6_shcas")
+dice_probability = 0.8
+money = 10
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
-[sub_resource type="Resource" id="Resource_l0esy"]
-script = ExtResource("1_ox83h")
-component_scenarios = Array[ExtResource("1_uajy4")]([SubResource("Resource_eiuxx"), SubResource("Resource_87h2o"), SubResource("Resource_b2bik")])
-metadata/_custom_type_script = "uid://bidpx7urxb1md"
-
-[sub_resource type="Resource" id="Resource_fdfcp"]
-script = ExtResource("6_l0esy")
-rewards = Array[ExtResource("5_b2bik")]([])
-metadata/_custom_type_script = "uid://vxdrk2h715qi"
-
-[sub_resource type="Resource" id="Resource_ix47e"]
-script = ExtResource("7_mkgi4")
-choices = Dictionary[String, ExtResource("1_uajy4")]({
-"ATTACK": SubResource("Resource_l0esy"),
-"FLEE": SubResource("Resource_fdfcp")
-})
-metadata/_custom_type_script = "uid://ceybhcudmwcfy"
+[sub_resource type="Resource" id="Resource_a0ea6"]
+script = ExtResource("4_qktrf")
+enemy_resource = ExtResource("7_qktrf")
+starting_state = ExtResource("7_shcas")
+reward_resource = SubResource("Resource_shcas")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
-script = ExtResource("1_ox83h")
+script = ExtResource("3_m7xdc")
 map_icon = ExtResource("1_v6grk")
-component_scenarios = Array[ExtResource("1_uajy4")]([SubResource("Resource_ix47e")])
+background_resource = ExtResource("1_6x6o1")
+starting_enemies = Array[ExtResource("4_qktrf")]([SubResource("Resource_m7xdc"), SubResource("Resource_a0ea6")])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

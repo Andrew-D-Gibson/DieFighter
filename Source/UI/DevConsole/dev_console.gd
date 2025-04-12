@@ -31,6 +31,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'clear':
 			_clear()
 			
+		'damage':
+			_damage(command.slice(1))
+			
 		'heal':
 			_heal(command.slice(1))
 			
@@ -77,6 +80,15 @@ func _on_line_edit_text_changed(current_text: String) -> void:
 	
 func _clear() -> void:
 	command_history.text = ''
+	
+
+func _damage(command_args: Array[String] = []) -> void:
+	var amount: int = 0
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+	
+	Globals.player.health.take_damage(amount)	
+	command_history.append_text('\n[center]Damaged player![/center]')
 	
 
 func _heal(command_args: Array[String] = []) -> void:

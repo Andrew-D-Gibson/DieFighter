@@ -1,0 +1,56 @@
+[gd_scene load_steps=7 format=3 uid="uid://cxssny1jb1tlo"]
+
+[ext_resource type="Script" uid="uid://ve3vmyserw5x" path="res://Source/GameSystems/CommsManager/comms_manager.gd" id="1_dxebk"]
+[ext_resource type="Texture2D" uid="uid://kikeiswwaeke" path="res://Assets/Textures/Map/tab.png" id="3_65bde"]
+[ext_resource type="Texture2D" uid="uid://dgbjmrpgdmv7q" path="res://Assets/Textures/EncounterDialogueManager/background.png" id="3_oslex"]
+[ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Components/Clickable/clickable.gd" id="4_6yskd"]
+[ext_resource type="PackedScene" uid="uid://rjg86p5tfggc" path="res://Source/GameSystems/CommsManager/choice_option.tscn" id="4_xtg7j"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d3drn"]
+size = Vector2(32, 8)
+
+[node name="CommsManager" type="Node2D" node_paths=PackedStringArray("speaker_sprite", "main_text")]
+script = ExtResource("1_dxebk")
+speaker_sprite = NodePath("MainTextBackground/SpeakerSprite")
+main_text = NodePath("MainTextBackground/MainText")
+choice_scene = ExtResource("4_xtg7j")
+
+[node name="Tab" type="Sprite2D" parent="."]
+position = Vector2(32, -41)
+texture = ExtResource("3_65bde")
+offset = Vector2(0.5, 0)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Tab"]
+offset_left = -14.0
+offset_top = -7.0
+offset_right = 26.0
+offset_bottom = 33.0
+mouse_filter = 1
+text = "COMMS"
+
+[node name="Clickable" type="Area2D" parent="Tab"]
+position = Vector2(-7, 0)
+script = ExtResource("4_6yskd")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tab/Clickable"]
+position = Vector2(4, 0)
+shape = SubResource("RectangleShape2D_d3drn")
+
+[node name="MainTextBackground" type="Sprite2D" parent="."]
+texture = ExtResource("3_oslex")
+
+[node name="SpeakerSprite" type="Sprite2D" parent="MainTextBackground"]
+position = Vector2(-50, -27)
+
+[node name="MainText" type="RichTextLabel" parent="MainTextBackground"]
+offset_left = -40.0
+offset_top = -39.0
+offset_right = 59.0
+offset_bottom = 27.0
+bbcode_enabled = true
+text = "This is a test of how [color=#d03656][shake rate=10.0 level=3 connected=1]scary dialogue[/shake][/color] might appear in game describing a scenario!
+"
+
+[connection signal="clicked" from="Tab/Clickable" to="." method="on_tab_clicked"]
+[connection signal="input_event" from="Tab/Clickable" to="Tab/Clickable" method="_on_input_event"]

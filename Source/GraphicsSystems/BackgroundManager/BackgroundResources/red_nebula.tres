@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="BackgroundResource" load_steps=2 format=3 uid="uid://hmsqg8qxbitq"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/GraphicsSystems/BackgroundManager/BackgroundResources/background_resource.gd" id="1_owkot"]
+
+[resource]
+script = ExtResource("1_owkot")
+background_color = Color(0.027451, 0.0117647, 0.14902, 1)
+nebula = true
+nebula_color = Color(0.68, 0.1768, 0.27744, 0.12549)
+stars = true
+num_of_stars = 40
+num_of_twinkling_stars = 10
+metadata/_custom_type_script = "uid://c0mcptxevxdde"

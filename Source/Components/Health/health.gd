@@ -28,9 +28,7 @@ func take_damage(amount: int) -> void:
 	else:
 		if shields > 0:
 			amount -= shields	# Decrease the damage by the shields
-			
-			shields = 0 # Deplete shields from attack
-			shields_damaged.emit()
+			change_shields(-shields)
 			
 		change_health(-amount)
 

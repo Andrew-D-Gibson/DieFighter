@@ -1,16 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://bljmx610i58dj"]
+[gd_scene load_steps=5 format=3 uid="uid://bljmx610i58dj"]
 
 [ext_resource type="Texture2D" uid="uid://cg27kht5p2kw1" path="res://Assets/Textures/Enemies/Attacker/attacker.png" id="1_hx235"]
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_oknjr"]
 [ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_hx235"]
 
-[node name="AttackerShipGraphics" type="Node2D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oknjr"]
+shader = ExtResource("1_oknjr")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, 4)
+[node name="AttackerShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_oknjr")
 texture = ExtResource("1_hx235")
 
 [node name="EngineParticles" parent="." instance=ExtResource("2_hx235")]
-position = Vector2(-5, -7)
+position = Vector2(-5, -11)
 
 [node name="EngineParticles2" parent="." instance=ExtResource("2_hx235")]
-position = Vector2(5, -7)
+position = Vector2(5, -11)

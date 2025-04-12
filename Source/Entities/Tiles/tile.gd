@@ -30,11 +30,7 @@ func _ready() -> void:
 func _get_tile_info() -> InfoResource:
 	var info = InfoResource.new()
 	info.title_label_text = tile_resource.tile_name
-	
-	info.top_label_text = ''
-	for activation in tile_resource.activation_checks:
-		info.top_label_text += activation.description + ' '
-	
+	info.top_label_text = tile_resource.activation_description
 	info.texture = $Sprite2D.texture
 	info.bottom_label_text = tile_resource.description
 	

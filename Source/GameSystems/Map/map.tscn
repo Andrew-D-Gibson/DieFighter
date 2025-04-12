@@ -1,0 +1,136 @@
+[gd_scene load_steps=15 format=3 uid="uid://7jvm8tkovhwj"]
+
+[ext_resource type="Texture2D" uid="uid://17fug30idbx8" path="res://Assets/Textures/Map/background.png" id="1_ek2ds"]
+[ext_resource type="Script" uid="uid://bab7mdt2366us" path="res://Source/GameSystems/Map/map.gd" id="1_kiwga"]
+[ext_resource type="Texture2D" uid="uid://ctq4jy6b220uj" path="res://Assets/Textures/Map/timeline.png" id="4_7gfdh"]
+[ext_resource type="Texture2D" uid="uid://da2m2sxof8kg3" path="res://Assets/Textures/Map/EncounterIcons/connector_white.png" id="7_x51rx"]
+[ext_resource type="Texture2D" uid="uid://kikeiswwaeke" path="res://Assets/Textures/Map/tab.png" id="8_5udop"]
+[ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Components/Clickable/clickable.gd" id="9_o7siu"]
+[ext_resource type="PackedScene" uid="uid://751pc74qkdf0" path="res://Source/GameSystems/Map/DiceReceptacle/dice_receptacle.tscn" id="10_hxf68"]
+[ext_resource type="Texture2D" uid="uid://c1yetmupno47e" path="res://Assets/Textures/Map/arrow-Sheet.png" id="11_6o5qg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_5udop"]
+size = Vector2(32, 8)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6o5qg"]
+size = Vector2(32, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hxf68"]
+atlas = ExtResource("11_6o5qg")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3318k"]
+atlas = ExtResource("11_6o5qg")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nuc5t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hxf68")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3318k")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_6o5qg"]
+viewport_path = NodePath("ViewportTexture/MapViewport")
+
+[node name="Map" type="Node2D" node_paths=PackedStringArray("LeftDiceReceptacle", "RightDiceReceptacle", "map_button_label", "map_button", "map_viewport", "map_camera")]
+script = ExtResource("1_kiwga")
+timeline_icon = ExtResource("4_7gfdh")
+connector_sprite = ExtResource("7_x51rx")
+LeftDiceReceptacle = NodePath("LeftDiceReceptacle")
+RightDiceReceptacle = NodePath("RightDiceReceptacle")
+map_button_label = NodePath("Background/RichTextLabel")
+map_button = NodePath("Background/Clickable")
+map_viewport = NodePath("ViewportTexture/MapViewport")
+map_camera = NodePath("ViewportTexture/MapViewport/Camera2D")
+
+[node name="Tab" type="Sprite2D" parent="."]
+position = Vector2(-4, -41)
+texture = ExtResource("8_5udop")
+offset = Vector2(0.5, 0)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Tab"]
+offset_left = -9.0
+offset_top = -7.0
+offset_right = 31.0
+offset_bottom = 33.0
+mouse_filter = 1
+text = "MAP"
+
+[node name="Clickable" type="Area2D" parent="Tab"]
+position = Vector2(-7, 0)
+script = ExtResource("9_o7siu")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Tab/Clickable"]
+position = Vector2(4, 0)
+shape = SubResource("RectangleShape2D_5udop")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_ek2ds")
+
+[node name="Clickable" type="Area2D" parent="Background"]
+position = Vector2(-16, -40)
+script = ExtResource("9_o7siu")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Background/Clickable"]
+position = Vector2(16, 11)
+shape = SubResource("RectangleShape2D_6o5qg")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Background"]
+offset_left = -16.0
+offset_top = -40.0
+offset_right = 16.0
+offset_bottom = -21.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.94902, 0.611765, 0.364706, 1)
+bbcode_enabled = true
+text = "CHOOSE:"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="LeftArrow" type="AnimatedSprite2D" parent="Background"]
+position = Vector2(-27, -28)
+sprite_frames = SubResource("SpriteFrames_nuc5t")
+
+[node name="RightArrow" type="AnimatedSprite2D" parent="Background"]
+position = Vector2(27, -28)
+rotation = 3.14159
+sprite_frames = SubResource("SpriteFrames_nuc5t")
+
+[node name="ViewportTexture" type="TextureRect" parent="."]
+offset_left = -60.0
+offset_top = -6.0
+offset_right = 60.0
+offset_bottom = 34.0
+texture = SubResource("ViewportTexture_6o5qg")
+expand_mode = 1
+
+[node name="MapViewport" type="SubViewport" parent="ViewportTexture"]
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(720, 240)
+size_2d_override = Vector2i(120, 40)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="ViewportTexture/MapViewport"]
+
+[node name="LeftDiceReceptacle" parent="." instance=ExtResource("10_hxf68")]
+position = Vector2(-39, -13)
+
+[node name="RightDiceReceptacle" parent="." instance=ExtResource("10_hxf68")]
+position = Vector2(39, -13)
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="clicked" from="Tab/Clickable" to="." method="_on_tab_clicked"]
+[connection signal="input_event" from="Tab/Clickable" to="Tab/Clickable" method="_on_input_event"]
+[connection signal="input_event" from="Background/Clickable" to="Background/Clickable" method="_on_input_event"]

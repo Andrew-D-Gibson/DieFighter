@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="StellaRoller"
+config/name="DieFighter"
 run/main_scene="uid://deisauteocrjl"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/bg_color=Color(0.027451, 0.0117647, 0.14902, 1)
@@ -21,6 +21,12 @@ InputManager="*res://Source/Autoloads/input_manager.gd"
 Globals="*res://Source/Autoloads/globals.gd"
 Events="*res://Source/Autoloads/events.gd"
 SoundEffectsPlayer="*res://Source/Autoloads/sound_effects_player.gd"
+
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/inferred_declaration=1
+gdscript/warnings/confusable_local_declaration=2
 
 [display]
 

@@ -1,9 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://dueij0vemaxof"]
+[gd_scene load_steps=5 format=3 uid="uid://dueij0vemaxof"]
 
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_86hdk"]
 [ext_resource type="Texture2D" uid="uid://dmby000i3wqa0" path="res://Assets/Textures/Enemies/Defender/Defender.png" id="1_mit2i"]
 [ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_86hdk"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cglea"]
+shader = ExtResource("1_86hdk")
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
 [node name="DefenderShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_cglea")
 texture = ExtResource("1_mit2i")
 
 [node name="EngineParticles" parent="." instance=ExtResource("2_86hdk")]

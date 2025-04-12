@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="ValueActivationResource" load_steps=2 format=3 uid="uid://cy6vuvps1w4a"]
-
-[ext_resource type="Script" uid="uid://df4lmjl3e3clt" path="res://Source/Entities/Tiles/ActivationResources/ResourceDefinitions/value_activation_resource.gd" id="1_w8cx0"]
-
-[resource]
-script = ExtResource("1_w8cx0")
-acceptable_values = Array[int]([3])
-description = "[color=yellow]Activates[/color] with a (die_3)"
-metadata/_custom_type_script = "uid://df4lmjl3e3clt"

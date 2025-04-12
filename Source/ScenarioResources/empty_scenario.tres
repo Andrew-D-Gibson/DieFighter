@@ -1,17 +1,13 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=6 format=3 uid="uid://ck7h8qsddwnn1"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=5 format=3 uid="uid://ck7h8qsddwnn1"]
 
-[ext_resource type="Script" uid="uid://1n6wflr3hvh" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource_base.gd" id="1_lrkwq"]
-[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/ScenarioResourceScripts/scenario_resource.gd" id="2_c2u5j"]
-[ext_resource type="Script" uid="uid://7gnvljkgfh1r" path="res://Source/ScenarioResources/ScenarioResourceScripts/text_scenario_resource.gd" id="2_s07xh"]
+[ext_resource type="Resource" uid="uid://nsgwcit8douq" path="res://Source/GraphicsSystems/BackgroundManager/BackgroundResources/empty_space.tres" id="1_s07xh"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/scenario_resource.gd" id="2_c2u5j"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/ScenarioResources/enemy_state_reward_resource.gd" id="3_c2u5j"]
 [ext_resource type="Texture2D" uid="uid://sisf28rp3pdm" path="res://Assets/Textures/Map/EncounterIcons/empty_encounter.png" id="3_o81o4"]
-
-[sub_resource type="Resource" id="Resource_6xpuo"]
-script = ExtResource("2_s07xh")
-text = "Empty Scenario!"
-metadata/_custom_type_script = "uid://7gnvljkgfh1r"
 
 [resource]
 script = ExtResource("2_c2u5j")
 map_icon = ExtResource("3_o81o4")
-component_scenarios = Array[ExtResource("1_lrkwq")]([SubResource("Resource_6xpuo")])
+background_resource = ExtResource("1_s07xh")
+starting_enemies = Array[ExtResource("3_c2u5j")]([])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

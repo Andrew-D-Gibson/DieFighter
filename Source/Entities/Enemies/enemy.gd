@@ -2,6 +2,11 @@ class_name Enemy
 extends Node2D
 
 @export var enemy_resource: EnemyResource
+
+var reward_resource: RewardResource
+
+enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
+var attitude: Attitude
 		
 @export_category('Components')
 @export var dice_queue: DiceQueue
@@ -10,6 +15,7 @@ extends Node2D
 @export var shakeable: Shakeable
 
 var ship_graphics: Node2D
+@export var hit_flash_time: float = 0.5
 var turn_actions: Array[EnemyActionResource]
 var tween: Tween
 
@@ -23,21 +29,27 @@ func _ready() -> void:
 	_start_bob_tween()
 	
 	health.death.connect(_on_death)
-	health.shields_damaged.connect(func():
-		_stop_bob_tween()
-		shakeable.small_shake()
-		await shakeable.shake_ended
-		_start_bob_tween()
-	)
-	health.health_damaged.connect(func():
-		_stop_bob_tween()
-		shakeable.large_shake()
-		await shakeable.shake_ended
-		_start_bob_tween()
-	)
+	health.shields_damaged.connect(_on_shields_hit)
+	health.health_damaged.connect(_on_health_hit)
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
+	
+	
+func _on_shields_hit() -> void:
+	_stop_bob_tween()
+	shakeable.small_shake()
+	_shields_hit_flash()
+	await shakeable.shake_ended
+	_start_bob_tween()
+
+
+func _on_health_hit() -> void:
+	_stop_bob_tween()
+	shakeable.large_shake()
+	_health_hit_flash()
+	await shakeable.shake_ended
+	_start_bob_tween()
 	
 
 func _stop_bob_tween() -> void:
@@ -176,3 +188,23 @@ func act_with_first_die() -> void:
 		effect.queue_free()
 		
 	action_completed.emit()
+
+
+func _health_hit_flash() -> void:
+	ship_graphics.material.set_shader_parameter('color', Globals.red)
+	
+	var tween = get_tree().create_tween()
+	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+	
+func _shields_hit_flash() -> void:
+	ship_graphics.material.set_shader_parameter('color', Globals.blue)
+	
+	var tween = get_tree().create_tween()
+	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+	
+func get_dialogue() -> String:
+	return "[color=gray]NOT ACCEPTING HAILS[/color]"

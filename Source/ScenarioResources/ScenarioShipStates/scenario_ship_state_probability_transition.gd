@@ -1,0 +1,4 @@
+class_name ScenarioShipStateProbabilityTransition
+extends ScenarioShipStateBase
+
+@export var weighted_possibilities: Dictionary[ScenarioShipState, float]

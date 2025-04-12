@@ -9,5 +9,5 @@ func play() -> void:
 	Events.show_choice_dialogue.emit(text, choices.keys())
 	var choice: int = await Events.choice_made
 	
-	var scenario = choices[choices.keys()[choice]]
+	var scenario = choices[choices.keys()[choice-1]]
 	scenario.play()
