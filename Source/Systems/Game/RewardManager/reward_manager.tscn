@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://c8n32fs0k8j52"]
+
+[ext_resource type="Script" uid="uid://da1rm3q0kh158" path="res://Source/Systems/Game/RewardManager/reward_manager.gd" id="1_usyhp"]
+[ext_resource type="PackedScene" uid="uid://cbug1dlqx1rba" path="res://Source/Systems/Game/RewardManager/reward.tscn" id="2_t66vk"]
+
+[node name="RewardManager" type="Node2D"]
+script = ExtResource("1_usyhp")
+reward_scene = ExtResource("2_t66vk")

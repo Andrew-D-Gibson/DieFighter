@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cs2q2kjpckwb0"]
+
+[ext_resource type="Script" uid="uid://rytyjuniumym" path="res://Source/Systems/Components/Draggable/draggable.gd" id="1_46vev"]
+
+[node name="Draggable" type="Area2D"]
+script = ExtResource("1_46vev")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

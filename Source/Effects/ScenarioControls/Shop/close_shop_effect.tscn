@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://b67t2nopo3py"]
-
-[ext_resource type="Script" uid="uid://dhgkx07lsso63" path="res://Source/Effects/ScenarioControls/Shop/close_shop.gd" id="1_miqm2"]
-
-[node name="CloseShopEffect" type="Node2D"]
-script = ExtResource("1_miqm2")

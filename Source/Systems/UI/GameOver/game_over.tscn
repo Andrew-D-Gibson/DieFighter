@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://b4bhqmwyiaq22"]
+
+[ext_resource type="Script" uid="uid://bs4wmdp5e1fwu" path="res://Source/Systems/UI/GameOver/game_over.gd" id="1_i78pc"]
+[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="1_p6ygr"]
+
+[node name="GameOver" type="Control"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i78pc")
+
+[node name="ScreenDim" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.027451, 0.0117647, 0.054902, 0.752941)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/normal_font = ExtResource("1_p6ygr")
+theme_override_font_sizes/normal_font_size = 256
+bbcode_enabled = true
+text = "[color=#d03656][wave amp=30.0 freq=5.0 connected=1]GAME OVER[/wave][/color]"
+horizontal_alignment = 1
+vertical_alignment = 1

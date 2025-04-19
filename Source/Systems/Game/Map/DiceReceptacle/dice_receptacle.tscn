@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://751pc74qkdf0"]
+
+[ext_resource type="Texture2D" uid="uid://dyit8f5b2773k" path="res://Assets/Textures/Map/dice_receptacle.png" id="1_jmae1"]
+[ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.tscn" id="2_0cbue"]
+[ext_resource type="Script" uid="uid://cely3i5mnqe4t" path="res://Source/Systems/Game/Map/DiceReceptacle/dice_receptacle.gd" id="2_e2kof"]
+[ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="3_e2kof"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_0cbue"]
+size = Vector2(40, 14)
+
+[node name="DiceReceptacle" type="Sprite2D" node_paths=PackedStringArray("dice_queue")]
+texture = ExtResource("1_jmae1")
+script = ExtResource("2_e2kof")
+dice_queue = NodePath("DiceQueue")
+
+[node name="CanAcceptDice" parent="." node_paths=PackedStringArray("collision") instance=ExtResource("2_0cbue")]
+position = Vector2(-20, -7)
+collision = NodePath("CollisionShape2D")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanAcceptDice"]
+position = Vector2(20, 7)
+shape = SubResource("RectangleShape2D_0cbue")
+
+[node name="DiceQueue" parent="." instance=ExtResource("3_e2kof")]
+position = Vector2(-13, 0)
+
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
+[connection signal="die_accepted" from="CanAcceptDice" to="." method="_add_die"]

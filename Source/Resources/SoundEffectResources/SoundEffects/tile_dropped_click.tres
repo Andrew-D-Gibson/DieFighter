@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://dmov75b4snh4y"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_qcvhd"]
+[ext_resource type="AudioStream" uid="uid://3ndcad6svi02" path="res://Assets/Sounds/Tiles/tile_dropped_click.wav" id="2_nltqo"]
+
+[resource]
+script = ExtResource("1_qcvhd")
+name = "tile_dropped_click"
+limit = 5
+sound_effect = ExtResource("2_nltqo")
+volume = 0.0
+pitch_scale = 0.75
+pitch_randomness = 0.2
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

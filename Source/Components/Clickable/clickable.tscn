@@ -1,9 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bpbvdoq4n7bvj"]
-
-[ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Components/Clickable/clickable.gd" id="1_oqlvr"]
-
-[node name="Clickable" type="Area2D"]
-z_index = 10
-script = ExtResource("1_oqlvr")
-
-[connection signal="input_event" from="." to="." method="_on_input_event"]

@@ -1,0 +1,4 @@
+[16:15:15] Debug logger initialized
+[16:15:15] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/NormalCombat/pirate_combat_scenario.tres
+[16:15:15] Starting scenario
+[16:15:15] Starting combat

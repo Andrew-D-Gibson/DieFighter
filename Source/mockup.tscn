@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://b5nvlayr86v2h"]
 
-[ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/GraphicsSystems/BackgroundManager/background_manager.tscn" id="1_pimjx"]
-[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/GraphicsSystems/BackgroundManager/BackgroundResources/red_nebula.tres" id="2_r7my1"]
-[ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Entities/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="3_byica"]
-[ext_resource type="PackedScene" uid="uid://dueij0vemaxof" path="res://Source/Entities/Enemies/EnemyShipGraphicScenes/defender_ship_graphics.tscn" id="4_ti4xr"]
-[ext_resource type="PackedScene" uid="uid://g1dgcnfkwlci" path="res://Source/Entities/Enemies/EnemyShipGraphicScenes/shop_ship_graphics.tscn" id="5_ti4xr"]
+[ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="1_pimjx"]
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="2_r7my1"]
+[ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="3_byica"]
+[ext_resource type="PackedScene" uid="uid://dueij0vemaxof" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/defender_ship_graphics.tscn" id="4_ti4xr"]
+[ext_resource type="PackedScene" uid="uid://g1dgcnfkwlci" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/shop_ship_graphics.tscn" id="5_ti4xr"]
 
 [node name="Mockup" type="Node2D"]
 

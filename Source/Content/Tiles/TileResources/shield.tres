@@ -1,0 +1,53 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=15 format=3 uid="uid://c5gk2kf6r2v5y"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_854mr"]
+[ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_7qkaa"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="3_854mr"]
+[ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="4_7qkaa"]
+[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="5_p7d6s"]
+[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="6_bwi3v"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="7_vpgxx"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_8vpcq"]
+
+[sub_resource type="Resource" id="Resource_06byu"]
+script = ExtResource("1_854mr")
+type = 2
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_ujj64"]
+script = ExtResource("1_854mr")
+type = 0
+acceptable_values = Array[int]([3])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_77b16"]
+script = ExtResource("4_7qkaa")
+primary_effect = false
+metadata/_custom_type_script = "uid://na20gyl0jdks"
+
+[sub_resource type="Resource" id="Resource_534nq"]
+script = ExtResource("5_p7d6s")
+amount = 8
+primary_effect = true
+metadata/_custom_type_script = "uid://bllibq0iu6bwk"
+
+[sub_resource type="Resource" id="Resource_8vpcq"]
+script = ExtResource("6_bwi3v")
+primary_effect = false
+metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
+
+[sub_resource type="Resource" id="Resource_q67gt"]
+script = ExtResource("7_vpgxx")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[resource]
+script = ExtResource("8_8vpcq")
+tile_name = "Shield Generator"
+activation_description = "[color=yellow]Activates[/color] only with a (die_3)"
+description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the [color=purple]targeted[/color] enemy."
+base_texture = ExtResource("2_7qkaa")
+activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_06byu"), SubResource("Resource_ujj64")])
+effect_chain = Array[ExtResource("3_854mr")]([SubResource("Resource_77b16"), SubResource("Resource_534nq"), SubResource("Resource_8vpcq"), SubResource("Resource_q67gt")])
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

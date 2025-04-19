@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://dp6nb4nkkua0r"]
-
-[ext_resource type="Script" uid="uid://bxuudvb6cerq1" path="res://Source/Effects/Utilities/wait_for_milliseconds_effect.gd" id="1_13rxb"]
-
-[node name="WaitForMillisecondsEffect" type="Node2D"]
-script = ExtResource("1_13rxb")

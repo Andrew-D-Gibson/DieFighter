@@ -1,26 +1,36 @@
-[gd_scene load_steps=22 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=26 format=3 uid="uid://deisauteocrjl"]
 
-[ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
-[ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/UI/DevConsole/dev_console.tscn" id="2_3g417"]
-[ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/UI/GameOver/game_over.tscn" id="3_flage"]
-[ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Components/Shakeable/shakeable.tscn" id="4_flage"]
+[ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
+[ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
+[ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
+[ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/Player/Cockpit/walls.png" id="5_a6pqk"]
-[ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/GraphicsSystems/BackgroundManager/background_manager.tscn" id="5_flage"]
-[ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/GraphicsSystems/Vignette/vignette.tscn" id="6_hd7px"]
-[ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/GameSystems/Player/player.tscn" id="6_rir3g"]
-[ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/SaveResources/game_start.tres" id="7_3g417"]
-[ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/GameSystems/Map/map.tscn" id="7_ealw0"]
-[ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/GameSystems/TargetingComputer/targeting_computer.tscn" id="8_okrb4"]
-[ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/GameSystems/TileGrid/tile_grid.tscn" id="9_grfux"]
+[ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
+[ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
+[ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Game/Player/player.tscn" id="6_rir3g"]
+[ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/Resources/SaveResources/game_start.tres" id="7_3g417"]
+[ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/Systems/Game/Map/map.tscn" id="7_ealw0"]
+[ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.tscn" id="8_okrb4"]
+[ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="9_grfux"]
 [ext_resource type="Texture2D" uid="uid://rs23xch8otdw" path="res://Assets/Textures/Map/EncounterIcons/current_encounter.png" id="10_flage"]
-[ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/GameSystems/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
-[ext_resource type="Resource" uid="uid://ck7h8qsddwnn1" path="res://Source/ScenarioResources/Scenarios/empty_scenario.tres" id="11_cshgf"]
-[ext_resource type="PackedScene" uid="uid://bwwirc58smer1" path="res://Source/Entities/Enemies/enemy.tscn" id="11_tfyry"]
-[ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/GameSystems/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
-[ext_resource type="PackedScene" uid="uid://c8n32fs0k8j52" path="res://Source/GameSystems/RewardManager/reward_manager.tscn" id="13_7iud4"]
-[ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/GameSystems/MoneyIndicator/money_indicator.tscn" id="15_cshgf"]
-[ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/GameSystems/CommsManager/comms_manager.tscn" id="17_dacno"]
-[ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/GameSystems/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
+[ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/Game/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
+[ext_resource type="PackedScene" uid="uid://bwwirc58smer1" path="res://Source/Content/Enemies/enemy.tscn" id="11_tfyry"]
+[ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/Game/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
+[ext_resource type="PackedScene" uid="uid://c8n32fs0k8j52" path="res://Source/Systems/Game/RewardManager/reward_manager.tscn" id="13_7iud4"]
+[ext_resource type="Resource" uid="uid://nsgwcit8douq" path="res://Source/Resources/BackgroundResources/empty_space.tres" id="13_ealw0"]
+[ext_resource type="Texture2D" uid="uid://sisf28rp3pdm" path="res://Assets/Textures/Map/EncounterIcons/empty_encounter.png" id="14_okrb4"]
+[ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/Systems/Game/MoneyIndicator/money_indicator.tscn" id="15_cshgf"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="15_grfux"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="16_oai2y"]
+[ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/Systems/Game/CommsManager/comms_manager.tscn" id="17_dacno"]
+[ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/Systems/Game/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
+
+[sub_resource type="Resource" id="Resource_tfyry"]
+script = ExtResource("15_grfux")
+map_icon = ExtResource("14_okrb4")
+background_resource = ExtResource("13_ealw0")
+starting_enemies = Array[ExtResource("16_oai2y")]([])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"
 
 [node name="Main" type="Node2D"]
 
@@ -69,7 +79,7 @@ position = Vector2(33, -29)
 [node name="Map" parent="Systems/Player" instance=ExtResource("7_ealw0")]
 position = Vector2(93, 7)
 current_scenario_icon = ExtResource("10_flage")
-empty_scenario = ExtResource("11_cshgf")
+empty_scenario = SubResource("Resource_tfyry")
 
 [node name="CommsManager" parent="Systems/Player" instance=ExtResource("17_dacno")]
 position = Vector2(93, 7)

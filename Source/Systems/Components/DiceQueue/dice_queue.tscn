@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0mn2ue4tpohs"]
+
+[ext_resource type="Script" uid="uid://de1jogpglh211" path="res://Source/Systems/Components/DiceQueue/dice_queue.gd" id="1_e3yhm"]
+
+[node name="DiceQueue" type="Node2D"]
+script = ExtResource("1_e3yhm")

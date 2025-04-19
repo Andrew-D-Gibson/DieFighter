@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=7 format=3 uid="uid://biawl3820xfte"]
+
+[ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
+[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/pirate_combat_scenario.tres" id="3_r67hd"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_8qr57"]
+[ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xm1st"]
+[ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Content/Tiles/TileResources/shield.tres" id="8_7vrqj"]
+
+[resource]
+script = ExtResource("1_78gow")
+player_health = 16
+player_max_health = 16
+player_defense = 0
+num_of_dice = 3
+money = 0
+tile_locations = Dictionary[ExtResource("6_8qr57"), Vector2i]({
+ExtResource("7_xm1st"): Vector2i(0, 0),
+ExtResource("8_7vrqj"): Vector2i(0, 1)
+})
+current_scenario_index = 0
+sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_r67hd")])
+metadata/_custom_type_script = "uid://dxkqfdmh8psqp"

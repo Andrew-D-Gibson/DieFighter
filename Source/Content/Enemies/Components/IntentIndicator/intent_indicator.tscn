@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://dx6jiqlaydg88"]
+
+[ext_resource type="Script" uid="uid://ceawh6jy557xc" path="res://Source/Content/Enemies/Components/IntentIndicator/intent_indicator.gd" id="1_rp46g"]
+[ext_resource type="Texture2D" uid="uid://hehncej5h8w4" path="res://Assets/Textures/Enemies/IntentIndicator/reroll_guide.png" id="2_8lmpe"]
+
+[node name="IntentIndicator" type="Node2D" node_paths=PackedStringArray("intent_sprites")]
+script = ExtResource("1_rp46g")
+intent_sprites = [NodePath("DiceIndicator/1"), NodePath("DiceIndicator/2"), NodePath("DiceIndicator/3"), NodePath("DiceIndicator/4"), NodePath("DiceIndicator/5"), NodePath("DiceIndicator/6")]
+
+[node name="DiceIndicator" type="Sprite2D" parent="."]
+texture = ExtResource("2_8lmpe")
+
+[node name="1" type="Sprite2D" parent="DiceIndicator"]
+position = Vector2(-30, -11)
+
+[node name="2" type="Sprite2D" parent="DiceIndicator"]
+position = Vector2(-18, -11)
+
+[node name="3" type="Sprite2D" parent="DiceIndicator"]
+position = Vector2(-6, -11)
+
+[node name="4" type="Sprite2D" parent="DiceIndicator"]
+position = Vector2(6, -11)
+
+[node name="5" type="Sprite2D" parent="DiceIndicator"]
+position = Vector2(18, -11)
+
+[node name="6" type="Sprite2D" parent="DiceIndicator"]
+position = Vector2(30, -11)

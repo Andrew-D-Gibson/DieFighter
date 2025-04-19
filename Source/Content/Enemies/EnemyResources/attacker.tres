@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=8 format=3 uid="uid://cpjv635fppvg"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_126q5"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_mo0f0"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActionResources/attack_player.tres" id="3_03vjk"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActionResources/defend_self.tres" id="3_7a4d7"]
+[ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="3_sf3u5"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActionResources/do_nothing.tres" id="4_7a4d7"]
+[ext_resource type="Texture2D" uid="uid://deoaj6bxuv4i4" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="7_7a4d7"]
+
+[resource]
+script = ExtResource("2_mo0f0")
+enemy_name = "Venom Fighter"
+description = "Gonna mess you up bruh"
+ship_graphics_scene = ExtResource("3_sf3u5")
+targeting_computer_image = ExtResource("7_7a4d7")
+health_bar_position = Vector2(-20, -28)
+dice_queue_position = Vector2(24, 8)
+max_health = 4
+starting_shields = 0
+actions_and_likelihoods = Dictionary[ExtResource("1_126q5"), float]({
+ExtResource("3_03vjk"): 2.0,
+ExtResource("3_7a4d7"): 1.0,
+ExtResource("4_7a4d7"): 1.0
+})
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

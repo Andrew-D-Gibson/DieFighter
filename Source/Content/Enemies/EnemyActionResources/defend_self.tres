@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=13 format=3 uid="uid://dfpviimqj18jr"]
+
+[ext_resource type="Texture2D" uid="uid://boetxyf3w4oel" path="res://Assets/Textures/Enemies/IntentIndicator/defend.png" id="1_0w3us"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_12xyc"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_wmlxi"]
+[ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="2_muunn"]
+[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="3_8mnha"]
+[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="4_70y6l"]
+[ext_resource type="Texture2D" uid="uid://cibgrd0mhsrw0" path="res://Assets/Textures/Enemies/IntentIndicator/defend_info.png" id="4_su07i"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="5_74aj1"]
+
+[sub_resource type="Resource" id="Resource_qp6u3"]
+script = ExtResource("2_muunn")
+primary_effect = false
+metadata/_custom_type_script = "uid://na20gyl0jdks"
+
+[sub_resource type="Resource" id="Resource_5kode"]
+script = ExtResource("3_8mnha")
+amount = 2
+primary_effect = true
+metadata/_custom_type_script = "uid://bllibq0iu6bwk"
+
+[sub_resource type="Resource" id="Resource_kqqps"]
+script = ExtResource("4_70y6l")
+primary_effect = false
+metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
+
+[sub_resource type="Resource" id="Resource_q6txw"]
+script = ExtResource("5_74aj1")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[resource]
+script = ExtResource("1_12xyc")
+name = "Shield Burst"
+description = "[color=blue]Shields[/color] for 2"
+indicator_texture = ExtResource("1_0w3us")
+info_texture = ExtResource("4_su07i")
+intent_amount = "2"
+effect_chain = Array[ExtResource("1_wmlxi")]([SubResource("Resource_qp6u3"), SubResource("Resource_5kode"), SubResource("Resource_kqqps"), SubResource("Resource_q6txw")])
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"
