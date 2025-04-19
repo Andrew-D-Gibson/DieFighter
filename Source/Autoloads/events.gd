@@ -42,6 +42,16 @@ signal combat_finished()
 signal spawn_reward(pos: Vector2, money: int, dice_probability: float)
 signal reward_picked()
 
+signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.faction)
+signal scenario_event(event: ScenarioManager.scenario_event)
+
+signal set_money(value: int)
+
+
+# Scenario Events
+signal open_shop()
+signal close_shop()
+
 
 # Audio Events
 signal tile_dropped()

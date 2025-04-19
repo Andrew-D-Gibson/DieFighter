@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=7 format=3 uid="uid://cqyap64rscxdk"]
+
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="1_2hi2i"]
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state.gd" id="2_r55ka"]
+[ext_resource type="PackedScene" uid="uid://0htqtualw8mp" path="res://Source/Effects/ScenarioControls/Shop/open_shop_effect.tscn" id="2_vq2e6"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state_base.gd" id="3_vq2e6"]
+[ext_resource type="Resource" uid="uid://csn4r05qutmke" path="res://Source/ScenarioResources/Scenarios/Shop/shop_angry.tres" id="4_r55ka"]
+
+[sub_resource type="Resource" id="Resource_o7vky"]
+script = ExtResource("1_2hi2i")
+amount = 0
+effect_scene = ExtResource("2_vq2e6")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[resource]
+script = ExtResource("2_r55ka")
+dialogue = "Take a look, my prices are fair!"
+faction = 1
+attitude = 0
+effects_on_enter = Array[ExtResource("1_2hi2i")]([SubResource("Resource_o7vky")])
+transitions = Dictionary[int, ExtResource("3_vq2e6")]({
+1: ExtResource("4_r55ka")
+})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

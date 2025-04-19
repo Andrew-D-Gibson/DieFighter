@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://pt7daun04sgd"]
+
+[ext_resource type="Script" uid="uid://lxeyxahlkpg5" path="res://Source/GameSystems/MoneyIndicator/money_indicator.gd" id="1_837oe"]
+[ext_resource type="Texture2D" uid="uid://cupbueng6dl25" path="res://Assets/Textures/Money/MoneyIndicator/money_indicator.png" id="2_lc17p"]
+
+[node name="MoneyIndicator" type="Node2D" node_paths=PackedStringArray("money_label")]
+script = ExtResource("1_837oe")
+money_label = NodePath("RichTextLabel")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_lc17p")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = -9.0
+offset_top = -8.0
+offset_right = 17.0
+offset_bottom = 5.0
+text = "10000"
+horizontal_alignment = 2

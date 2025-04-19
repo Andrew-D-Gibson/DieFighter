@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=5 format=3 uid="uid://b4i6jmud2v3pe"]
+
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="1_6mll1"]
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state.gd" id="2_4n8mn"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state_base.gd" id="3_qoo5b"]
+[ext_resource type="Resource" uid="uid://1odt3w7p5imj" path="res://Source/ScenarioResources/Scenarios/PiratesAttackingCivilian/civilian_betrayed.tres" id="4_6mll1"]
+
+[resource]
+script = ExtResource("2_4n8mn")
+dialogue = "Thank you so much!  It's not much, but here, take this!"
+faction = 1
+attitude = 1
+effects_on_enter = Array[ExtResource("1_6mll1")]([])
+transitions = Dictionary[int, ExtResource("3_qoo5b")]({
+1: ExtResource("4_6mll1")
+})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

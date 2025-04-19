@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=22 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -14,10 +14,11 @@
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/GameSystems/TileGrid/tile_grid.tscn" id="9_grfux"]
 [ext_resource type="Texture2D" uid="uid://rs23xch8otdw" path="res://Assets/Textures/Map/EncounterIcons/current_encounter.png" id="10_flage"]
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/GameSystems/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
-[ext_resource type="Resource" uid="uid://ck7h8qsddwnn1" path="res://Source/ScenarioResources/empty_scenario.tres" id="11_cshgf"]
+[ext_resource type="Resource" uid="uid://ck7h8qsddwnn1" path="res://Source/ScenarioResources/Scenarios/empty_scenario.tres" id="11_cshgf"]
 [ext_resource type="PackedScene" uid="uid://bwwirc58smer1" path="res://Source/Entities/Enemies/enemy.tscn" id="11_tfyry"]
 [ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/GameSystems/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
 [ext_resource type="PackedScene" uid="uid://c8n32fs0k8j52" path="res://Source/GameSystems/RewardManager/reward_manager.tscn" id="13_7iud4"]
+[ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/GameSystems/MoneyIndicator/money_indicator.tscn" id="15_cshgf"]
 [ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/GameSystems/CommsManager/comms_manager.tscn" id="17_dacno"]
 [ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/GameSystems/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
 
@@ -72,6 +73,9 @@ empty_scenario = ExtResource("11_cshgf")
 
 [node name="CommsManager" parent="Systems/Player" instance=ExtResource("17_dacno")]
 position = Vector2(93, 7)
+
+[node name="MoneyIndicator" parent="Systems/Player" instance=ExtResource("15_cshgf")]
+position = Vector2(-47, -108)
 
 [node name="EnemyManager" parent="Systems" instance=ExtResource("10_oai2y")]
 position = Vector2(160, 46)

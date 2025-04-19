@@ -16,17 +16,22 @@ func play(effect_variables: EffectVariables) -> void:
 	
 	# Create hit particles
 	var particles = hit_particles.instantiate()
-	
 	if effect_variables.targets[0].health.shields >= amount:
 		particles.color = Globals.blue
 	else:
 		particles.color = Globals.red
 		
 	particles.amount = 6 * amount
-		
 	particles.global_position = effect_variables.targets[0].global_position
 	particles.rotation = (PI/2) + global_position.angle_to_point(effect_variables.targets[0].global_position)
-
 	get_tree().get_root().add_child(particles)
+	
+	
+	# Trigger scenario events as necessary
+	if effect_variables.source is Player\
+	and effect_variables.targets[0] is Enemy:
+		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
+		Events.player_attacked_ship.emit(effect_variables.targets[0], effect_variables.targets[0].scenario_state.faction)
+	
 	
 	effect_variables.targets[0].health.take_damage(amount)

@@ -10,7 +10,14 @@ var enemies: Array[Enemy]
 func _ready() -> void:
 	Globals.enemy_manager = self
 	Events.player_turn_over.connect(_run_enemy_turn)
-	Events.start_scenario.connect(_check_combat_state)
+	Events.enemy_died.connect(_remove_dead_enemies)
+	Events.load_scenario.connect(func(_scenario: ScenarioResource):
+		# Needs to be queue_free'ed, not health reduced to 0
+		# so we don't spawn rewards
+		for i in range(len(enemies)-1, -1, -1):
+			enemies[i].queue_free()
+		enemies = []
+	)
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
@@ -20,38 +27,11 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 		var enemy = enemy_base_scene.instantiate()
 		enemy.enemy_resource = enemies_to_spawn[i].enemy_resource
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
-		enemy.attitude = enemies_to_spawn[i].starting_state.attitude
+		enemy.scenario_state = enemies_to_spawn[i].starting_state
 		enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), 0)
-		
-		enemy.death.connect(func():
-			Events.spawn_reward.emit(
-				enemy.global_position, 
-				enemy.reward_resource.money, 
-				enemy.reward_resource.dice_probability
-			)
-			
-			_remove_dead_enemies()
-			Events.enemy_died.emit()
-			
-			if len(enemies) == 0:
-				Events.combat_finished.emit()
-		)
 		
 		enemies.append(enemy)
 		add_child(enemy)
-	
-	
-func _check_combat_state() -> void:
-	print('Check combat state')
-
-	var in_combat: bool = false
-	for enemy in enemies:
-		if enemy.attitude == Enemy.Attitude.AGGRESSIVE:
-			in_combat = true
-			break
-	if in_combat and Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
-		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
-		Events.start_combat.emit()
 	
 	
 func get_alive_enemies() -> Array[Enemy]:
@@ -81,6 +61,7 @@ func _run_enemy_turn() -> void:
 func kill_all_enemies() -> void:
 	for i in range(len(enemies)-1, -1, -1):
 		enemies[i].health.take_damage(1000000)
+	enemies = []
 		
 		
 func shield_all_enemies(amount: int) -> void:

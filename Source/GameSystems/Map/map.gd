@@ -185,4 +185,8 @@ func _jump() -> void:
 
 		# Move to the new encounter
 		current_scenario_index = desired_scenario_index
-		scenario_list[desired_scenario_index].play()
+		
+		Events.load_scenario.emit(
+			scenario_list[desired_scenario_index]
+		)
+		Events.start_scenario.emit()

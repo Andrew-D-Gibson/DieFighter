@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=6 format=3 uid="uid://csn4r05qutmke"]
+
+[ext_resource type="Script" uid="uid://jaxhnuadclxm" path="res://Source/Effects/effect_resource.gd" id="1_bqkvt"]
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state.gd" id="2_5vwsi"]
+[ext_resource type="PackedScene" uid="uid://b67t2nopo3py" path="res://Source/Effects/ScenarioControls/Shop/close_shop_effect.tscn" id="2_v84qq"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/ScenarioResources/ScenarioShipStates/scenario_ship_state_base.gd" id="3_v84qq"]
+
+[sub_resource type="Resource" id="Resource_fbhef"]
+script = ExtResource("1_bqkvt")
+amount = 0
+effect_scene = ExtResource("2_v84qq")
+metadata/_custom_type_script = "uid://jaxhnuadclxm"
+
+[resource]
+script = ExtResource("2_5vwsi")
+dialogue = "How dare you!?"
+faction = 1
+attitude = 2
+effects_on_enter = Array[ExtResource("1_bqkvt")]([SubResource("Resource_fbhef")])
+transitions = Dictionary[int, ExtResource("3_v84qq")]({})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

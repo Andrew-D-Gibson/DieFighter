@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://0htqtualw8mp"]
+
+[ext_resource type="Script" uid="uid://d2k38tg7rrlgo" path="res://Source/Effects/ScenarioControls/Shop/open_shop.gd" id="1_1xode"]
+
+[node name="OpenShopEffect" type="Node2D"]
+script = ExtResource("1_1xode")

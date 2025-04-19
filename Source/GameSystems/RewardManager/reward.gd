@@ -7,6 +7,12 @@ extends Node2D
 var rewards: Array[Node2D]
 
 
+func _ready() -> void:
+	Events.load_scenario.connect(func(_scenario: ScenarioResource):
+		queue_free()
+	)
+	
+
 func give_reward(money: int, dice_probability: float) -> void:
 	Globals.player.money += money
 
@@ -40,13 +46,7 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 		return
 		
 	var chosen_reward = draggable.get_parent()
-			
-	for reward in rewards:
-		reward.draggable.drag_ended.disconnect(_end_reward)
-		if reward != chosen_reward:
-			reward.queue_free()
-			continue
-	rewards = []
+	chosen_reward.draggable.drag_ended.disconnect(_end_reward)
 	
 	if chosen_reward is Tile:
 		chosen_reward.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)

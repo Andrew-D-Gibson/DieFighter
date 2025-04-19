@@ -14,7 +14,11 @@ extends Node2D
 var num_of_dice: int
 @export var dice_scene: PackedScene
 
-var money: int
+@export var money_indicator: MoneyIndicator
+var money: int:
+	set(value):
+		money = value
+		Events.set_money.emit(money)
 
 
 func _ready() -> void:
@@ -23,7 +27,7 @@ func _ready() -> void:
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
 	
-	dice_queue.die_added.connect(func():
+	dice_queue.die_added.connect(func() -> void:
 		_update_dice_queue_locations()
 		_make_newest_die_draggable()
 		_check_for_end_of_turn()
@@ -36,7 +40,6 @@ func _ready() -> void:
 	end_turn_button.visible = false
 
 	Events.start_scenario.connect(_start_scenario)
-	Events.start_combat.connect(_start_player_turn)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
 
@@ -51,7 +54,7 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 
 # Update the dice desired locations in the world
 func _update_dice_queue_locations() -> void:
-	for i in range(len(dice_queue.queue)):
+	for i: int in range(len(dice_queue.queue)):
 		dice_queue.queue[i].draggable.home_position = global_position + dice_queue.position + Vector2(i * dice_queue_spacing, 0)
 
 

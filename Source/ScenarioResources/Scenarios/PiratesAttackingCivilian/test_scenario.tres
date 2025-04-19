@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=13 format=3 uid="uid://c5emhs8cjxcyw"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=14 format=3 uid="uid://c5emhs8cjxcyw"]
 
 [ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/GraphicsSystems/BackgroundManager/BackgroundResources/red_nebula.tres" id="1_6x6o1"]
 [ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="1_v6grk"]
@@ -7,20 +7,8 @@
 [ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Entities/Enemies/EnemyResources/attacker.tres" id="5_vvmli"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/GameSystems/RewardManager/reward_resource.gd" id="6_shcas"]
 [ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Entities/Enemies/EnemyResources/defender.tres" id="7_qktrf"]
-[ext_resource type="Resource" uid="uid://ddx65mho5lv6x" path="res://Source/ScenarioResources/ScenarioShipStates/normal_combatant.tres" id="7_shcas"]
-
-[sub_resource type="Resource" id="Resource_6x6o1"]
-script = ExtResource("6_shcas")
-dice_probability = 0.215
-money = 20
-metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
-
-[sub_resource type="Resource" id="Resource_m7xdc"]
-script = ExtResource("4_qktrf")
-enemy_resource = ExtResource("5_vvmli")
-starting_state = ExtResource("7_shcas")
-reward_resource = SubResource("Resource_6x6o1")
-metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+[ext_resource type="Resource" uid="uid://buuo25g5cvqtw" path="res://Source/ScenarioResources/Scenarios/PiratesAttackingCivilian/civilian_distress.tres" id="9_6x6o1"]
+[ext_resource type="Resource" uid="uid://cqc8s5l1gqfho" path="res://Source/ScenarioResources/Scenarios/PiratesAttackingCivilian/pirate_warning.tres" id="9_gagkh"]
 
 [sub_resource type="Resource" id="Resource_shcas"]
 script = ExtResource("6_shcas")
@@ -31,13 +19,26 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 [sub_resource type="Resource" id="Resource_a0ea6"]
 script = ExtResource("4_qktrf")
 enemy_resource = ExtResource("7_qktrf")
-starting_state = ExtResource("7_shcas")
+starting_state = ExtResource("9_6x6o1")
 reward_resource = SubResource("Resource_shcas")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_6x6o1"]
+script = ExtResource("6_shcas")
+dice_probability = 0.215
+money = 20
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_m7xdc"]
+script = ExtResource("4_qktrf")
+enemy_resource = ExtResource("5_vvmli")
+starting_state = ExtResource("9_gagkh")
+reward_resource = SubResource("Resource_6x6o1")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
 script = ExtResource("3_m7xdc")
 map_icon = ExtResource("1_v6grk")
 background_resource = ExtResource("1_6x6o1")
-starting_enemies = Array[ExtResource("4_qktrf")]([SubResource("Resource_m7xdc"), SubResource("Resource_a0ea6")])
+starting_enemies = Array[ExtResource("4_qktrf")]([SubResource("Resource_a0ea6"), SubResource("Resource_m7xdc")])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

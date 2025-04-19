@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://dpo2d7u1xytuv"]
+
+[ext_resource type="Resource" uid="uid://dx0lfddfuacuv" path="res://Source/GraphicsSystems/BackgroundManager/BackgroundResources/blue_nebula.tres" id="1_3a21m"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/scenario_resource.gd" id="1_6m8h2"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/ScenarioResources/enemy_state_reward_resource.gd" id="2_l51ed"]
+[ext_resource type="Texture2D" uid="uid://c6ltm4ylf42ka" path="res://Assets/Textures/Map/EncounterIcons/shop.png" id="2_runkq"]
+[ext_resource type="Resource" uid="uid://lxupqxmk1she" path="res://Source/Entities/Enemies/EnemyResources/shop.tres" id="5_cil85"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/GameSystems/RewardManager/reward_resource.gd" id="6_cil85"]
+[ext_resource type="Resource" uid="uid://cqyap64rscxdk" path="res://Source/ScenarioResources/Scenarios/Shop/shop_initial.tres" id="7_3ab4w"]
+
+[sub_resource type="Resource" id="Resource_jycj1"]
+script = ExtResource("6_cil85")
+dice_probability = 0.0
+money = 10
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_3ab4w"]
+script = ExtResource("2_l51ed")
+enemy_resource = ExtResource("5_cil85")
+starting_state = ExtResource("7_3ab4w")
+reward_resource = SubResource("Resource_jycj1")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("1_6m8h2")
+map_icon = ExtResource("2_runkq")
+background_resource = ExtResource("1_3a21m")
+starting_enemies = Array[ExtResource("2_l51ed")]([SubResource("Resource_3ab4w")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://g1dgcnfkwlci"]
+
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_ascx5"]
+[ext_resource type="Texture2D" uid="uid://5qg7rrmf3k5w" path="res://Assets/Textures/Enemies/Shop/shop.png" id="1_coraq"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_ascx5"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fmcg0"]
+shader = ExtResource("1_ascx5")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
+[node name="ShopShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_fmcg0")
+texture = ExtResource("1_coraq")
+
+[node name="EngineParticles" parent="." instance=ExtResource("2_ascx5")]
+position = Vector2(0, -14)

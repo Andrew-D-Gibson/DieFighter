@@ -2,6 +2,9 @@
 class_name BackgroundManager
 extends Sprite2D
 
+@export var starting_background: BackgroundResource
+
+@export_category("Managed Scenes")
 @export var nebula_scene: PackedScene
 @export var star_pixel_scene: PackedScene
 @export var star_twinkle_scene: PackedScene
@@ -13,6 +16,9 @@ var stars: Array[Node2D]
 func _ready() -> void:
 	Globals.background_manager = self
 	_clear_children()
+	
+	if starting_background:
+		_set_background(starting_background)
 	
 	Events.set_background.connect(_set_background)
 	

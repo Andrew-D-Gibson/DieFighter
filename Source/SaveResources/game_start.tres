@@ -1,11 +1,12 @@
-[gd_resource type="Resource" script_class="GameSaveResource" load_steps=8 format=3 uid="uid://biawl3820xfte"]
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=9 format=3 uid="uid://biawl3820xfte"]
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/SaveResources/game_save.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Entities/Tiles/tile_resource.gd" id="2_lg172"]
+[ext_resource type="Resource" uid="uid://dpo2d7u1xytuv" path="res://Source/ScenarioResources/Scenarios/Shop/shop.tres" id="3_8qr57"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Entities/Tiles/TileResources/damage.tres" id="3_ad6ny"]
-[ext_resource type="Resource" uid="uid://c5emhs8cjxcyw" path="res://Source/ScenarioResources/test_scenario.tres" id="3_ettjp"]
-[ext_resource type="Resource" uid="uid://ck7h8qsddwnn1" path="res://Source/ScenarioResources/empty_scenario.tres" id="4_8qr57"]
+[ext_resource type="Resource" uid="uid://c5emhs8cjxcyw" path="res://Source/ScenarioResources/Scenarios/PiratesAttackingCivilian/test_scenario.tres" id="3_ettjp"]
+[ext_resource type="Resource" uid="uid://ck7h8qsddwnn1" path="res://Source/ScenarioResources/Scenarios/empty_scenario.tres" id="4_8qr57"]
 [ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Entities/Tiles/TileResources/shield.tres" id="4_ettjp"]
 
 [resource]
@@ -19,6 +20,6 @@ tile_locations = Dictionary[ExtResource("2_lg172"), Vector2i]({
 ExtResource("3_ad6ny"): Vector2i(0, 0),
 ExtResource("4_ettjp"): Vector2i(0, 1)
 })
-current_scenario_index = 0
-sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_ettjp"), ExtResource("4_8qr57")])
+current_scenario_index = 1
+sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_8qr57"), ExtResource("3_ettjp"), ExtResource("4_8qr57")])
 metadata/_custom_type_script = "uid://dxkqfdmh8psqp"

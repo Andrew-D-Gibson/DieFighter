@@ -1,25 +1,28 @@
 class_name Enemy
 extends Node2D
 
-@export var enemy_resource: EnemyResource
-
-var reward_resource: RewardResource
-
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
-var attitude: Attitude
+
+@export var enemy_resource: EnemyResource
+@export var scenario_state: ScenarioShipState
+@export var reward_resource: RewardResource
+
 		
 @export_category('Components')
 @export var dice_queue: DiceQueue
 @export var health: Health
 @export var action_popup: PackedScene
 @export var shakeable: Shakeable
+@export var attitude_indicator: AnimatedSprite2D
 
-var ship_graphics: Node2D
+
+@export_category('Graphics')
+@export var ship_graphics: Node2D
 @export var hit_flash_time: float = 0.5
+@export var death_explosion: PackedScene
 var turn_actions: Array[EnemyActionResource]
 var tween: Tween
 
-signal death()
 signal action_completed()
 
 
@@ -35,7 +38,20 @@ func _ready() -> void:
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
 	
+	$EnemyHealthBar.set_attitude_indicator(scenario_state.attitude)
+	Events.scenario_event.connect(func(event: ScenarioManager.scenario_event):
+		scenario_state = scenario_state.handle_scenario_event(event)
+		$EnemyHealthBar.set_attitude_indicator(scenario_state.attitude)
+		trigger_state_effects()
+	)
+	Events.start_scenario.connect(trigger_state_effects)
 	
+	Events.combat_finished.connect(func():
+		await get_tree().process_frame
+		_give_away_dice()
+	)
+
+
 func _on_shields_hit() -> void:
 	_stop_bob_tween()
 	shakeable.small_shake()
@@ -69,8 +85,42 @@ func _start_bob_tween() -> void:
 
 
 func _on_death() -> void:
-	# Give our dice away, either to other enemies if possible or the player if not
-	var other_enemies = Globals.enemy_manager.get_alive_enemies()
+	_give_away_dice()
+	Events.enemy_died.emit()
+	
+	$EnemyHealthBar.visible = false
+	
+	# Fade out the ship graphics
+	var tween_time: float = 0.75
+	var tween = get_tree().create_tween()
+	tween.tween_property(ship_graphics, "modulate", Color(1,1,1,0), tween_time)
+	
+	
+	# Spawn the death explosion and wait
+	var explosion = death_explosion.instantiate()
+	add_sibling(explosion)
+	explosion.global_position = self.global_position
+	
+	await explosion.animation_finished
+
+	# Spawn rewards
+	Events.spawn_reward.emit(
+		global_position, 
+		reward_resource.money, 
+		reward_resource.dice_probability
+	)
+			
+	queue_free()
+	
+	
+# Give dice away to other enemies if possible or the player if not	
+func _give_away_dice() -> void:
+	var enemies = Globals.enemy_manager.get_alive_enemies()
+	var other_enemies = []
+	for enemy in enemies:
+		if enemy != self:
+			other_enemies.append(enemy)
+
 	for i in range(len(dice_queue.queue)-1, -1, -1):
 		var die = dice_queue.queue[i]
 		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
@@ -80,9 +130,6 @@ func _on_death() -> void:
 		else:
 			other_enemies.pick_random().dice_queue.add(die)
 
-	death.emit()
-	queue_free()
-	
 
 func _update_resource() -> void:
 	# Set the ship's graphics
@@ -207,4 +254,25 @@ func _shields_hit_flash() -> void:
 
 	
 func get_dialogue() -> String:
+	var dialogue: String = scenario_state.dialogue
+	if dialogue != '':
+		return dialogue
 	return "[color=gray]NOT ACCEPTING HAILS[/color]"
+
+
+func trigger_state_effects() -> void:
+	# Set up the effects variables for chaining effects
+	var effect_variables = EffectVariables.new()
+	effect_variables.source = self
+	
+	for effect_resource in scenario_state.effects_on_enter:
+		# Add the effect node to the scene
+		var effect = effect_resource.effect_scene.instantiate()
+		effect.amount = effect_resource.amount
+		add_child(effect)
+		
+		# Play the effect, recording the change in variables
+		await effect.play(effect_variables)
+		
+		# Remove the effect node from the scene
+		effect.queue_free()
