@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=14 format=3 uid="uid://hgsmejq8gdrl"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=16 format=3 uid="uid://hgsmejq8gdrl"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_q4v50"]
 [ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="2_mkcsn"]
@@ -11,7 +11,7 @@
 
 [sub_resource type="Resource" id="Resource_e261g"]
 script = ExtResource("1_q4v50")
-type = 2
+type = 3
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
@@ -36,12 +36,28 @@ script = ExtResource("7_ugtd2")
 primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_q4v50"]
+atlas = ExtResource("2_mkcsn")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_mkcsn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q4v50")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [resource]
 script = ExtResource("8_2fv8l")
 tile_name = "Dice Cannon"
 activation_description = "[color=yellow]Activates[/color] with any value die when a valid target exists"
 description = "Deals [color=red]damage[/color] to the [color=purple]targeted[/color] enemy equivalent to the [color=yellow]activating[/color] die's value then gives them the die."
-base_texture = ExtResource("2_mkcsn")
+textures = SubResource("SpriteFrames_mkcsn")
+uses_per_turn = -1
 activation_checks = Array[ExtResource("1_q4v50")]([SubResource("Resource_e261g")])
 effect_chain = Array[ExtResource("3_lbtrd")]([SubResource("Resource_gjhi3"), SubResource("Resource_v0xsr"), SubResource("Resource_28674"), SubResource("Resource_2fv8l")])
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -7,8 +7,10 @@ extends Resource
 @export_multiline var description: String
 
 @export_category('Graphics')
-@export var base_texture: Texture2D
+@export var textures: SpriteFrames
 
 @export_category('Behavior')
+## Set to -1 for infinite uses per turn
+@export var uses_per_turn: int
 @export var activation_checks: Array[ActivationResource]
 @export var effect_chain: Array[Effect]

@@ -12,13 +12,13 @@ var state: GameState = GameState.OUT_OF_COMBAT:
 	set(new_state):
 		if state == GameState.OUT_OF_COMBAT\
 		and new_state == GameState.IN_COMBAT:
+			state = new_state
 			Events.start_combat.emit()
 			
 		elif state == GameState.IN_COMBAT\
 		and new_state == GameState.OUT_OF_COMBAT:
+			state = new_state
 			Events.combat_finished.emit()
-			
-		state = new_state
 
 
 # This node has to be the last thing loaded in our game

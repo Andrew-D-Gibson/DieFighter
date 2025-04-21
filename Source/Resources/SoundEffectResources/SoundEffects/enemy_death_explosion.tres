@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://bfbrn52omcd8r"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_fgsev"]
+[ext_resource type="AudioStream" uid="uid://btdg6ik0ive48" path="res://Assets/Sounds/Enemies/EnemyDeathExplosion/EnemyDeathExplosion.wav" id="2_j071a"]
+
+[resource]
+script = ExtResource("1_fgsev")
+name = "enemy_death_explosion"
+limit = 3
+sound_effect = ExtResource("2_j071a")
+volume = -5.0
+pitch_scale = 1.0
+pitch_randomness = 0.2
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=16 format=3 uid="uid://cmcttgw25qx0t"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_cuubr"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_tley7"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_1nta3"]
+[ext_resource type="Script" uid="uid://b3ihx7drnjhux" path="res://Source/Content/Effects/DiceValueChangers/reroll_activator_die_effect.gd" id="3_ybruh"]
+[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="4_ecbfa"]
+[ext_resource type="Texture2D" uid="uid://cuk1fxtfqcuff" path="res://Assets/Textures/Tiles/reroll-Sheet.png" id="4_tley7"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="5_jet8y"]
+
+[sub_resource type="Resource" id="Resource_jet8y"]
+script = ExtResource("1_cuubr")
+type = 4
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_ecbfa"]
+script = ExtResource("3_ybruh")
+primary_effect = false
+metadata/_custom_type_script = "uid://b3ihx7drnjhux"
+
+[sub_resource type="Resource" id="Resource_8dutl"]
+script = ExtResource("4_ecbfa")
+primary_effect = false
+metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
+
+[sub_resource type="Resource" id="Resource_ifduw"]
+script = ExtResource("5_jet8y")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ecbfa"]
+atlas = ExtResource("4_tley7")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jet8y"]
+atlas = ExtResource("4_tley7")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8dutl"]
+atlas = ExtResource("4_tley7")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ecbfa"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ecbfa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jet8y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8dutl")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("3_1nta3")
+tile_name = "Re-Roll"
+activation_description = "Cannot be [color=yellow]activated[/color] with holographic dice.  Can be used once per turn"
+description = "Re-rolls the [color=yellow]activator die[/color]"
+textures = SubResource("SpriteFrames_ecbfa")
+uses_per_turn = 2
+activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_jet8y")])
+effect_chain = Array[ExtResource("2_tley7")]([SubResource("Resource_ecbfa"), SubResource("Resource_8dutl"), SubResource("Resource_ifduw")])
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

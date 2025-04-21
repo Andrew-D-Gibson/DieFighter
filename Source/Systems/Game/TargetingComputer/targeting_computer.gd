@@ -1,6 +1,7 @@
 class_name TargetingComputer
 extends Node2D
 
+@export var unknown_intent_indicator: Texture2D
 @export var targeting_indicator_offset: Vector2 = Vector2(20, 18)
 var targeted_enemy_index: int
 var targeted_enemy: Enemy
@@ -12,6 +13,7 @@ func _ready() -> void:
 		await get_tree().process_frame
 		check_target_is_valid()
 	)
+	Events.start_combat.connect(check_target_is_valid)
 	Events.start_scenario.connect(_initial_target)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
 
@@ -94,13 +96,19 @@ func _update_ui() -> void:
 		
 		$TargetImage.texture = targeted_enemy.enemy_resource.targeting_computer_image
 		for i in range(len(targeted_enemy.turn_actions)): # Should be a loop to 0 or 6
-			$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
-			$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
-			
-			# Change over the info on clicking this particular action indicator 
-			Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
-			$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)
-	
+			if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
+				$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
+				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
+				
+				# Change over the info on clicking this particular action indicator 
+				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
+				$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)
+			else:
+				$Intents.get_child(i).texture = unknown_intent_indicator
+				$Intents.get_child(i).get_child(0).text = ''
+				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
+				
+				
 		$Screen.z_index += 1
 		$Screen.play('static')
 		await $Screen.animation_looped

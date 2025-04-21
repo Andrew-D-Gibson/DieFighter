@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=6 format=3 uid="uid://ck6sl4lr1jqa8"]
+
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_0n5q3"]
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="2_tyfvd"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_kf7lg"]
+[ext_resource type="Resource" uid="uid://dmanmtu3cgxkk" path="res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/civilian_grateful.tres" id="4_kf7lg"]
+[ext_resource type="Resource" uid="uid://qo10lvm3ond" path="res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/civilian_betrayed.tres" id="5_7x0hr"]
+
+[resource]
+script = ExtResource("2_tyfvd")
+dialogue = "Keep it up!"
+faction = 1
+attitude = 0
+effects_on_enter = Array[ExtResource("1_0n5q3")]([])
+transitions = Dictionary[int, ExtResource("3_kf7lg")]({
+1: ExtResource("5_7x0hr"),
+2: ExtResource("5_7x0hr"),
+4: ExtResource("4_kf7lg")
+})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

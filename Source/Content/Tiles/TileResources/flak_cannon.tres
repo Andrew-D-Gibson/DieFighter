@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=17 format=3 uid="uid://ifs6q4iqtbfe"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=19 format=3 uid="uid://ifs6q4iqtbfe"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_71286"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_3abs0"]
@@ -50,12 +50,28 @@ script = ExtResource("8_w3f31")
 primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_h3tty"]
+atlas = ExtResource("2_mywar")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_m1j0p"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h3tty")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [resource]
 script = ExtResource("3_mywar")
 tile_name = "Flak Cannon"
-activation_description = ""
-description = ""
-base_texture = ExtResource("2_mywar")
+activation_description = "[color=yellow]Activates[/color] with a (die_5) when a valid target exists"
+description = "Deals 1 [color=red]damage[/color] plus 1 additional [color=red]damage[/color] for every tile surrounding the Flak Cannon to the [color=purple]targeted[/color] enemy, then gives them the (die_5)"
+textures = SubResource("SpriteFrames_m1j0p")
+uses_per_turn = -1
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi")])
 effect_chain = Array[ExtResource("2_3abs0")]([SubResource("Resource_a1g78"), SubResource("Resource_cdns8"), SubResource("Resource_4kv0t"), SubResource("Resource_y24nt"), SubResource("Resource_8q7m7")])
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

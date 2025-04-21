@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://cpqd13acuxpx"]
+[gd_scene load_steps=12 format=3 uid="uid://cpqd13acuxpx"]
 
 [ext_resource type="Script" uid="uid://bkn6faehi2i4w" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.gd" id="1_8ig5e"]
 [ext_resource type="Texture2D" uid="uid://bpffsct1c4xuy" path="res://Assets/Textures/TargetingComputer/targeting_computer-Sheet.png" id="2_ewmvk"]
+[ext_resource type="Texture2D" uid="uid://d053aff6muvev" path="res://Assets/Textures/Enemies/IntentIndicator/UnknownEnemyIntent.png" id="2_g8xi5"]
 [ext_resource type="Texture2D" uid="uid://c63xwfnkq3vun" path="res://Assets/Textures/TargetingComputer/targeting_indicator.png" id="3_ewmvk"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_exnvl"]
 
@@ -51,6 +52,7 @@ size = Vector2(8, 22)
 
 [node name="TargetingComputer" type="Node2D"]
 script = ExtResource("1_8ig5e")
+unknown_intent_indicator = ExtResource("2_g8xi5")
 
 [node name="Screen" type="AnimatedSprite2D" parent="."]
 sprite_frames = SubResource("SpriteFrames_1tf01")

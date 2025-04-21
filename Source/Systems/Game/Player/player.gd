@@ -38,11 +38,24 @@ func _ready() -> void:
 	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false
 
+	Events.load_scenario.connect(_show_starting_screen)
 	Events.start_scenario.connect(_start_scenario)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
 
 
+func _show_starting_screen(scenario: ScenarioResource) -> void:
+	match scenario.starting_screen:
+		ScenarioResource.StartingScreen.SYSTEMS:
+			Events.show_tile_grid.emit()
+			
+		ScenarioResource.StartingScreen.MAP:
+			Events.show_map.emit()
+			
+		ScenarioResource.StartingScreen.COMMS:
+			Events.show_comms.emit()
+			
+			
 func _load_game_save(game_save: GameSaveResource) -> void:
 	health.max_health = game_save.player_max_health
 	health.health = game_save.player_health

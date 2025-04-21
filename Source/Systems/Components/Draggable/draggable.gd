@@ -83,10 +83,14 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		parent_node.rotation_degrees = 0
 		if tween:
 			tween.kill()
-		var tween_time: float = 0.75
+		var tween_time: float = 0.5
 		tween = get_tree().create_tween()
-		tween.tween_property(parent_node, "global_rotation_degrees", 2, tween_time)
-		tween.tween_property(parent_node, "global_rotation_degrees", -2, tween_time)
+		tween.tween_property(parent_node, "global_rotation_degrees", 3, tween_time).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(parent_node, "global_rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		tween.tween_interval(tween_time)
+		tween.tween_property(parent_node, "global_rotation_degrees", -3, tween_time).set_trans(Tween.TRANS_SINE)
+		tween.tween_property(parent_node, "global_rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+		tween.tween_interval(tween_time)
 		tween.set_loops()
 		
 		drag_started.emit()

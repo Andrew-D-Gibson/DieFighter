@@ -12,7 +12,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6im3a")
-dice_image_paths = Array[String](["res://Assets/Textures/Dice/dice_blank.png", "res://Assets/Textures/Dice/dice1.png", "res://Assets/Textures/Dice/dice2.png", "res://Assets/Textures/Dice/dice3.png", "res://Assets/Textures/Dice/dice4.png", "res://Assets/Textures/Dice/dice5.png", "res://Assets/Textures/Dice/dice6.png"])
+dice_image_paths = Array[String](["res://Assets/Textures/Dice/Regular/dice_blank.png", "res://Assets/Textures/Dice/Regular/dice1.png", "res://Assets/Textures/Dice/Regular/dice2.png", "res://Assets/Textures/Dice/Regular/dice3.png", "res://Assets/Textures/Dice/Regular/dice4.png", "res://Assets/Textures/Dice/Regular/dice5.png", "res://Assets/Textures/Dice/Regular/dice6.png"])
 
 [node name="ScreenDim" type="ColorRect" parent="."]
 layout_mode = 1

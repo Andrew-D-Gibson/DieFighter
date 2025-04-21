@@ -10,3 +10,4 @@ shader_parameter/max_alpha = 0.75
 shader_parameter/target_color = Color(0.552941, 0.945098, 0.956863, 1)
 shader_parameter/color_tolerance = 0.05
 shader_parameter/line_width = 0.2
+shader_parameter/seed = 0.0

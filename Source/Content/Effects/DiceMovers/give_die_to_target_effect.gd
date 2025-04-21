@@ -25,9 +25,9 @@ func play(effect_variables: EffectVariables) -> void:
 	
 	
 	# If the player is giving the dice back to itself, re-roll the dice then go
-	if effect_variables.activator_die.host_queue == Globals.player.dice_manager\
-	and effect_variables.targets[0] is Player:
-		await effect_variables.activator_die.reroll_with_tween()
+	#if effect_variables.activator_die.host_queue == Globals.player.dice_manager\
+	#and effect_variables.targets[0] is Player:
+		#await effect_variables.activator_die.reroll_with_tween()
 	
 	# Give the die to the target's dice queue, and don't randomize
 	# Enemies don't randomize dice, and the player will handle that at 

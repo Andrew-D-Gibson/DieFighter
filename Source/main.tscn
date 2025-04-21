@@ -28,6 +28,7 @@
 [sub_resource type="Resource" id="Resource_tfyry"]
 script = ExtResource("15_grfux")
 map_icon = ExtResource("14_okrb4")
+starting_screen = 0
 background_resource = ExtResource("13_ealw0")
 starting_enemies = Array[ExtResource("16_oai2y")]([])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

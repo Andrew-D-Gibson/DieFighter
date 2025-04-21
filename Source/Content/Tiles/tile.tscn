@@ -1,11 +1,12 @@
-[gd_scene load_steps=10 format=3 uid="uid://delq7kb5loqt2"]
+[gd_scene load_steps=15 format=3 uid="uid://delq7kb5loqt2"]
 
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Content/Tiles/tile.gd" id="1_71op4"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_b16ti"]
-[ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="4_fc656"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="4_rngaw"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_vr4ys"]
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.tscn" id="5_fc656"]
+[ext_resource type="Texture2D" uid="uid://cuk1fxtfqcuff" path="res://Assets/Textures/Tiles/reroll-Sheet.png" id="5_rpwpc"]
+[ext_resource type="Shader" uid="uid://cpjpl07bibay0" path="res://Assets/Shaders/tile_no_uses_remaining.gdshader" id="6_ppiw2"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
 size = Vector2(22, 24)
@@ -15,6 +16,34 @@ size = Vector2(22, 24)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
 size = Vector2(22, 24)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lccd0"]
+resource_local_to_scene = true
+shader = ExtResource("6_ppiw2")
+shader_parameter/outer_radius = 5.0
+shader_parameter/strength = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ppiw2"]
+atlas = ExtResource("5_rpwpc")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lccd0"]
+atlas = ExtResource("5_rpwpc")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_u74ai"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ppiw2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lccd0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable")]
 script = ExtResource("1_71op4")
@@ -33,11 +62,8 @@ shape = SubResource("RectangleShape2D_jkiuv")
 shape = SubResource("RectangleShape2D_rngaw")
 
 [node name="Shakeable" parent="." node_paths=PackedStringArray("node_to_shake") instance=ExtResource("4_vr4ys")]
-node_to_shake = NodePath("../Sprite2D")
+node_to_shake = NodePath("")
 small_shake_duration = 0.05
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("4_fc656")
 
 [node name="CanAcceptDice" parent="." node_paths=PackedStringArray("collision") instance=ExtResource("5_fc656")]
 position = Vector2(-11, -12)
@@ -46,5 +72,9 @@ collision = NodePath("CollisionShape2D")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CanAcceptDice"]
 position = Vector2(11, 12)
 shape = SubResource("RectangleShape2D_fc656")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_lccd0")
+sprite_frames = SubResource("SpriteFrames_u74ai")
 
 [connection signal="die_accepted" from="CanAcceptDice" to="." method="try_to_activate"]
