@@ -1,0 +1,12 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dibev0u6b8v1v"]
+
+[ext_resource type="Shader" uid="uid://bk68h8t4gcyqc" path="res://Assets/Shaders/holographic_dice_highlight.gdshader" id="1_b7fhw"]
+
+[resource]
+shader = ExtResource("1_b7fhw")
+shader_parameter/pixel_size = Vector2(0.083, 0.083)
+shader_parameter/min_alpha = 0.4
+shader_parameter/max_alpha = 0.75
+shader_parameter/target_color = Color(0.552941, 0.945098, 0.956863, 1)
+shader_parameter/color_tolerance = 0.05
+shader_parameter/line_width = 0.2

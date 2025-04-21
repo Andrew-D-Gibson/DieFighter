@@ -1,17 +1,28 @@
 class_name Dice
 extends Node2D
 
+@export var holographic: bool = false
+@export var holographic_shader: ShaderMaterial
+
 @export_category('Components')
 @export var draggable: Draggable
 
 @export_category('Graphics')
 # This array must have 7 values, a blank then 1-6
 @export var value_textures: Array[Texture2D]
+@export var holographic_textures: Array[Texture2D]
 
 var value: int = 0:
 	set(new_value):
 		value = new_value
-		$Sprite2D.texture = value_textures[value]
+		
+		if holographic:
+			$Sprite2D.texture = holographic_textures[value]
+			var mat: ShaderMaterial = holographic_shader.duplicate()
+			mat.set_shader_parameter("seed", randi() % 1000 / 100.0)
+			$Sprite2D.material = mat
+		else:
+			$Sprite2D.texture = value_textures[value]
 		
 var host_queue: DiceQueue
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3s6vwfbgjb6m"
-path="res://.godot/imported/dice6.png-739585c3d21422ec1e3cbb1ee57d96c7.ctex"
+uid="uid://ccobig2n6feie"
+path="res://.godot/imported/flee_info.png-24341e0f1634f25d705135157dda406a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Dice/dice6.png"
-dest_files=["res://.godot/imported/dice6.png-739585c3d21422ec1e3cbb1ee57d96c7.ctex"]
+source_file="res://Assets/Textures/Enemies/IntentIndicator/flee_info.png"
+dest_files=["res://.godot/imported/flee_info.png-24341e0f1634f25d705135157dda406a.ctex"]
 
 [params]
 

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://bx5ngnm1m720p"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=13 format=3 uid="uid://bx5ngnm1m720p"]
 
 [ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="1_cvtp3"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_oywwm"]
@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Content/Enemies/EnemyResources/defender.tres" id="5_cvtp3"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_u8e0s"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/pirate_combatant.tres" id="7_f5r4q"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="8_knxbd"]
 
 [sub_resource type="Resource" id="Resource_g2f83"]
 script = ExtResource("6_u8e0s")
@@ -21,9 +22,22 @@ starting_state = ExtResource("7_f5r4q")
 reward_resource = SubResource("Resource_g2f83")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
+[sub_resource type="Resource" id="Resource_xwlvx"]
+script = ExtResource("6_u8e0s")
+dice_probability = 0.145
+money = 6
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_u8e0s"]
+script = ExtResource("2_c8503")
+enemy_resource = ExtResource("8_knxbd")
+starting_state = ExtResource("7_f5r4q")
+reward_resource = SubResource("Resource_xwlvx")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
 [resource]
 script = ExtResource("1_oywwm")
 map_icon = ExtResource("2_knxbd")
 background_resource = ExtResource("1_cvtp3")
-starting_enemies = Array[ExtResource("2_c8503")]([SubResource("Resource_1othr")])
+starting_enemies = Array[ExtResource("2_c8503")]([SubResource("Resource_1othr"), SubResource("Resource_u8e0s")])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

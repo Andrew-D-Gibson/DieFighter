@@ -39,7 +39,7 @@ metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 [resource]
 script = ExtResource("8_2fv8l")
 tile_name = "Dice Cannon"
-activation_description = "[color=yellow]Activates[/color] with any value die"
+activation_description = "[color=yellow]Activates[/color] with any value die when a valid target exists"
 description = "Deals [color=red]damage[/color] to the [color=purple]targeted[/color] enemy equivalent to the [color=yellow]activating[/color] die's value then gives them the die."
 base_texture = ExtResource("2_mkcsn")
 activation_checks = Array[ExtResource("1_q4v50")]([SubResource("Resource_e261g")])

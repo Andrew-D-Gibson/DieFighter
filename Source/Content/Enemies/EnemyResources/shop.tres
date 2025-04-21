@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="EnemyResource" load_steps=7 format=3 uid="uid://lxupqxmk1she"]
 
-[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_3dlhr"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_3dlhr"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_00gar"]
-[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActionResources/attack_player.tres" id="2_s7ieb"]
-[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActionResources/defend_self.tres" id="3_k3uht"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="2_s7ieb"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/defend_self.tres" id="3_k3uht"]
 [ext_resource type="PackedScene" uid="uid://g1dgcnfkwlci" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/shop_ship_graphics.tscn" id="5_35j5s"]
 [ext_resource type="Texture2D" uid="uid://0sj4d82kvgkl" path="res://Assets/Textures/Enemies/Shop/shop_targeting_image.png" id="6_03d4b"]
 

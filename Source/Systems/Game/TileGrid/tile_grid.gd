@@ -154,3 +154,10 @@ func find_available_grid_pos() -> Vector2i:
 			if _is_grid_pos_open(Vector2i(x,y)):
 				return Vector2i(x,y)
 	return Vector2i(-1, -1)
+
+
+func is_grid_pos_valid(pos: Vector2i) -> bool:
+	return pos.x >= 0\
+		and pos.x < grid_width\
+		and pos.y >= 0\
+		and pos.y < grid_height

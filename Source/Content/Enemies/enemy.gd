@@ -1,107 +1,77 @@
 class_name Enemy
 extends Node2D
 
+## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 
+## The resource containing the enemy's base stats and behavior
 @export var enemy_resource: EnemyResource
+
+## The current state of the enemy in the scenario
 @export var scenario_state: ScenarioShipState
+
+## The resource containing the rewards for defeating this enemy
 @export var reward_resource: RewardResource
 
-		
 @export_category('Components')
-@export var dice_queue: DiceQueue
+## Manages the enemy's dice queue
+@export var dice_manager: EnemyDiceManager
+
+## Manages all visual aspects of the enemy
+@export var graphics_manager: EnemyGraphicsManager
+
+## Tracks the enemy's health and shields
 @export var health: Health
+
+## The scene to instantiate when showing action popups
 @export var action_popup: PackedScene
-@export var shakeable: Shakeable
-@export var attitude_indicator: AnimatedSprite2D
 
-
-@export_category('Graphics')
-@export var ship_graphics: Node2D
-@export var hit_flash_time: float = 0.5
-@export var death_explosion: PackedScene
+## The actions the enemy will take this turn
 var turn_actions: Array[EnemyActionResource]
-var tween: Tween
-
-signal action_completed()
 
 
+## Initializes the enemy and connects all necessary signals
 func _ready() -> void:
 	assert(enemy_resource)
 	_update_resource()
-	_start_bob_tween()
 	
+	_connect_health_signals()
+	_connect_scenario_signals()
+	_connect_combat_signals()
+
+
+## Connects all health-related signals
+func _connect_health_signals() -> void:
 	health.death.connect(_on_death)
-	health.shields_damaged.connect(_on_shields_hit)
-	health.health_damaged.connect(_on_health_hit)
-	
-	dice_queue.die_added.connect(_update_dice_queue_locations)
-	dice_queue.die_removed.connect(_update_dice_queue_locations)
-	
-	$EnemyHealthBar.set_attitude_indicator(scenario_state.attitude)
+	health.shields_damaged.connect(graphics_manager.on_shields_hit)
+	health.health_damaged.connect(graphics_manager.on_health_hit)
+
+
+## Connects all scenario-related signals
+func _connect_scenario_signals() -> void:
 	Events.scenario_event.connect(func(event: ScenarioManager.ScenarioEvent):
 		scenario_state = scenario_state.handle_scenario_event(event)
-		$EnemyHealthBar.set_attitude_indicator(scenario_state.attitude)
+		graphics_manager.set_health_bar_attitude(scenario_state.attitude)
 		trigger_state_effects()
 	)
-	Events.start_scenario.connect(trigger_state_effects)
 	
+	Events.start_scenario.connect(trigger_state_effects)
+
+
+## Connects all combat-related signals
+func _connect_combat_signals() -> void:
 	Events.combat_finished.connect(func():
 		await get_tree().process_frame
-		_give_away_dice()
+		dice_manager.give_away_dice()
 	)
 
 
-func _on_shields_hit() -> void:
-	_stop_bob_tween()
-	shakeable.small_shake()
-	_shields_hit_flash()
-	await shakeable.shake_ended
-	_start_bob_tween()
-
-
-func _on_health_hit() -> void:
-	_stop_bob_tween()
-	shakeable.large_shake()
-	_health_hit_flash()
-	await shakeable.shake_ended
-	_start_bob_tween()
-	
-
-func _stop_bob_tween() -> void:
-	if tween:
-		tween.kill()
-		
-
-func _start_bob_tween() -> void:
-	if tween:
-		tween.kill()
-		
-	var tween_time = randf_range(2, 4)
-	tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, 'global_position', self.global_position + Vector2(0, 8), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.tween_property(ship_graphics, 'global_position', self.global_position, tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tween.set_loops()
-
-
+## Called when the enemy dies
 func _on_death() -> void:
-	_give_away_dice()
-	Events.enemy_died.emit(self.scenario_state.faction)
+	dice_manager.give_away_dice()
+	Events.enemy_left.emit(self, scenario_state.faction)
 	
-	$EnemyHealthBar.visible = false
-	
-	# Fade out the ship graphics
-	var tween_time: float = 0.75
-	var tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, "modulate", Color(1,1,1,0), tween_time)
-	
-	
-	# Spawn the death explosion and wait
-	var explosion = death_explosion.instantiate()
-	add_sibling(explosion)
-	explosion.global_position = self.global_position
-	
-	await explosion.animation_finished
+	await graphics_manager.play_death_animation()
 
 	# Spawn rewards
 	Events.spawn_reward.emit(
@@ -111,89 +81,78 @@ func _on_death() -> void:
 	)
 			
 	queue_free()
-	
-	
-# Give dice away to other enemies if possible or the player if not	
-func _give_away_dice() -> void:
-	var enemies = Globals.enemy_manager.get_alive_enemies()
-	var other_enemies = []
-	for enemy in enemies:
-		if enemy != self:
-			other_enemies.append(enemy)
-
-	for i in range(len(dice_queue.queue)-1, -1, -1):
-		var die = dice_queue.queue[i]
-		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-		
-		if len(other_enemies) == 0:
-			Globals.player.dice_queue.add(die)
-		else:
-			other_enemies.pick_random().dice_queue.add(die)
 
 
+## Updates the enemy's components based on the enemy resource
 func _update_resource() -> void:
-	# Set the ship's graphics
-	if ship_graphics:
-		ship_graphics.queue_free()
-	ship_graphics = enemy_resource.ship_graphics_scene.instantiate()
-	add_child(ship_graphics)
-	
-	# Set up shaking the graphics
-	shakeable.node_to_shake = ship_graphics
-	
-	# Set up the health component
+	_update_graphics()
+	_update_dice_queue()
+	_update_health_from_resource()
+	_update_health_bar()
+	generate_turn_actions()
+
+
+## Updates the enemy's graphics
+func _update_graphics() -> void:
+	graphics_manager.update_ship_graphics(enemy_resource.ship_graphics_scene)
+
+
+## Updates the dice queue position
+func _update_dice_queue() -> void:
+	dice_manager.position = enemy_resource.dice_queue_position
+
+
+## Updates the health component's values
+func _update_health_from_resource() -> void:
 	health.max_health = enemy_resource.max_health
 	health.health = health.max_health
 	health.starting_shields = enemy_resource.starting_shields
 	health.shields = enemy_resource.starting_shields
-	
-	# Move and update the health bar as needed
-	$EnemyHealthBar.position = enemy_resource.health_bar_position
-	$EnemyHealthBar._set_health()
-	$EnemyHealthBar._set_shields()
-	
-	# Create new actions for the coming turn
-	generate_turn_actions()
-	
-	
+
+
+## Updates the health bar's position and values
+func _update_health_bar() -> void:
+	graphics_manager.set_health_bar_attitude(scenario_state.attitude)
+	graphics_manager.set_health_bar_position(enemy_resource.health_bar_position)
+	graphics_manager.set_health_bar_health(health)
+
+
+## Generates the actions the enemy will take this turn
 func generate_turn_actions() -> void:
 	# Clear the previous turn's actions
 	turn_actions = []
 	
 	# Grab at least one of every listed action
 	# Also sum up the likelihoods for later
-	var action_likelihood_sum: float = 0
-	for action in enemy_resource.actions_and_likelihoods.keys():
-		turn_actions.append(action)
-		action_likelihood_sum += enemy_resource.actions_and_likelihoods[action]
+	var action_weights_sum: float = 0
+	for option in enemy_resource.action_options:
+		if option.force_include:
+			turn_actions.append(option.get_action())
+		action_weights_sum += option.weight
 		
 	# Randomly fill the rest of the list using the action likelihoods
 	# Randomly choose 6 actions picking from our weighted list
 	for i in range(6 - len(turn_actions)):
-		var choice_threshold = randf_range(0, action_likelihood_sum)
-		for action in enemy_resource.actions_and_likelihoods.keys():
-			if choice_threshold > enemy_resource.actions_and_likelihoods[action]:
-				choice_threshold -= enemy_resource.actions_and_likelihoods[action]
+		var choice_threshold = randf_range(0, action_weights_sum)
+		for option in enemy_resource.action_options:
+			if choice_threshold > option.weight:
+				choice_threshold -= option.weight
 			else:
-				turn_actions.append(action)
+				turn_actions.append(option.get_action())
 				break
 				
 	turn_actions.shuffle()
 
 
-func _update_dice_queue_locations() -> void:
-	for i in range(len(dice_queue.queue)):
-		dice_queue.queue[i].draggable.state = Draggable.DragState.ENEMY_HOLDING
-		dice_queue.queue[i].draggable.home_position = global_position + enemy_resource.dice_queue_position + Vector2(0, -i * 14)
-
-
+## Uses the value of the first die in the queue to perform the 
+## pre-chosen action
 func act_with_first_die() -> void:
 	# Don't act if there's no dice in the queue
-	if len(dice_queue.queue) == 0:
+	if len(dice_manager.queue) == 0:
 		return
 		
 	# Get the first die from the queue
-	var die := dice_queue.queue[0]
+	var die := dice_manager.queue[0]
 	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	
 	# Get the action for the chosen die
@@ -226,27 +185,21 @@ func act_with_first_die() -> void:
 	for effect in action.effect_chain:
 		# Play the effect, recording the change in variables
 		await effect.play(effect_variables)
-
 		
-	action_completed.emit()
-
-
-func _health_hit_flash() -> void:
-	ship_graphics.material.set_shader_parameter('color', Globals.red)
+	Events.enemy_acted.emit(enemy_resource.enemy_name, action.name)
 	
-	var tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
+## Runs a full turn using all the dice in the queue,
+## executing their actions sequentially 
+func run_turn() -> void:
+	while len(dice_manager.queue) > 0:
+		await act_with_first_die()
 	
-func _shields_hit_flash() -> void:
-	ship_graphics.material.set_shader_parameter('color', Globals.blue)
+	# Only generate new actions if we're still valid
+	generate_turn_actions()
 	
-	var tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
-	
+## Returns the enemy's current dialogue
 func get_dialogue() -> String:
 	var dialogue: String = scenario_state.dialogue
 	if dialogue != '':
@@ -254,6 +207,7 @@ func get_dialogue() -> String:
 	return "[color=gray]NOT ACCEPTING HAILS[/color]"
 
 
+## Triggers any effects associated with the current scenario state
 func trigger_state_effects() -> void:
 	# Set up the effects variables for chaining effects
 	var effect_variables = EffectVariables.new()

@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=12 format=3 uid="uid://dlexy5taui2xx"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_ltqic"]
+[ext_resource type="Texture2D" uid="uid://0dql3dxgk68m" path="res://Assets/Textures/Tiles/Holographic Duplicator.png" id="2_m4gsi"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_tn0tj"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_uekf7"]
+[ext_resource type="Script" uid="uid://biyjxcklnu50s" path="res://Source/Content/Effects/HolographicDice/spawn_holographic_dice_effect.gd" id="4_nrdn6"]
+[ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="5_03xhp"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="6_2vvbj"]
+
+[sub_resource type="Resource" id="Resource_nrdn6"]
+script = ExtResource("1_ltqic")
+type = 4
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_oymyf"]
+script = ExtResource("4_nrdn6")
+amount = 2
+primary_effect = true
+metadata/_custom_type_script = "uid://biyjxcklnu50s"
+
+[sub_resource type="Resource" id="Resource_87uef"]
+script = ExtResource("5_03xhp")
+primary_effect = false
+metadata/_custom_type_script = "uid://wmvgjnwdtv3h"
+
+[sub_resource type="Resource" id="Resource_nlurd"]
+script = ExtResource("6_2vvbj")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[resource]
+script = ExtResource("3_uekf7")
+tile_name = "Holographic Duplicator"
+activation_description = "[color=yellow]Activates[/color] with any value die, but can't be activated by holographic dice"
+description = "Spawns two holographic die with the same value as the [color=yellow]activator die[/color], and gives the [color=yellow]activator die[/color] to a random enemy"
+base_texture = ExtResource("2_m4gsi")
+activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6")])
+effect_chain = Array[ExtResource("2_tn0tj")]([SubResource("Resource_oymyf"), SubResource("Resource_87uef"), SubResource("Resource_nlurd")])
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -41,7 +41,7 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 			_kill_enemies()
 			
 		'reroll':
-			_reroll()
+			_reroll(command.slice(1))
 			
 		'shield':
 			_shield(command.slice(1))
@@ -100,8 +100,15 @@ func _heal(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Healed player![/center]')
 	
 	
-func _reroll() -> void:
-	Globals.player.reroll_dice()
+func _reroll(command_args: Array[String] = []) -> void:
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		var amount: int = int(command_args[0])
+		amount = clampi(amount, 1, 6)
+		for die in Globals.player.dice_manager.queue:
+			die.value = amount
+		
+	else:
+		Globals.player.reroll_dice()
 	
 	
 func _shield(command_args: Array[String] = []) -> void:

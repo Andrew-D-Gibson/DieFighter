@@ -27,7 +27,8 @@ func _ready() -> void:
 	Globals.state_manager = self
 
 	Events.start_scenario.connect(_check_combat_state)
-	Events.enemy_died.connect(func(_faction: ScenarioManager.Faction) -> void:
+	Events.enemy_turn_over.connect(_check_combat_state)
+	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_check_combat_state()
 	)
 	

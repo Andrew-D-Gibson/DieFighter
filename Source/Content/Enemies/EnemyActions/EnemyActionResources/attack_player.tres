@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" load_steps=13 format=3 uid="uid://ddh4rqo4x116u"]
 
-[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActionResources/enemy_action_resource.gd" id="1_86x0f"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_86x0f"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_n6gav"]
 [ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="2_lx43e"]
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="3_ca2d5"]
@@ -32,10 +32,9 @@ metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [resource]
 script = ExtResource("1_86x0f")
-name = "Basic Cannon"
-description = "Deals 2 [color=red]damage[/color]"
+name = "Dice Cannon"
+description = "Deals (amount) [color=red]damage[/color] to the Player"
 indicator_texture = ExtResource("3_ca2d5")
 info_texture = ExtResource("6_k68wh")
-intent_amount = "2"
 effect_chain = Array[ExtResource("1_n6gav")]([SubResource("Resource_bryoj"), SubResource("Resource_5hgsk"), SubResource("Resource_7rb1v"), SubResource("Resource_f0mls")])
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

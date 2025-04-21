@@ -7,14 +7,13 @@ extends Node2D
 @export var dice_queue_spacing: int = 14
 
 @export_category('Components')
-@export var dice_queue: DiceQueue
+@export var dice_manager: DiceQueue
 @export var health: Health
 @export var end_turn_button: Control
 
 var num_of_dice: int
 @export var dice_scene: PackedScene
 
-@export var money_indicator: MoneyIndicator
 var money: int:
 	set(value):
 		money = value
@@ -27,12 +26,12 @@ func _ready() -> void:
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
 	
-	dice_queue.die_added.connect(func() -> void:
+	dice_manager.die_added.connect(func() -> void:
 		_update_dice_queue_locations()
 		_make_newest_die_draggable()
 		_check_for_end_of_turn()
 	)
-	dice_queue.die_removed.connect(_update_dice_queue_locations)
+	dice_manager.die_removed.connect(_update_dice_queue_locations)
 	
 	Globals.tile_grid.tile_activation_complete.connect(_check_for_end_of_turn)
 	
@@ -54,13 +53,13 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 
 # Update the dice desired locations in the world
 func _update_dice_queue_locations() -> void:
-	for i: int in range(len(dice_queue.queue)):
-		dice_queue.queue[i].draggable.home_position = global_position + dice_queue.position + Vector2(i * dice_queue_spacing, 0)
+	for i: int in range(len(dice_manager.queue)):
+		dice_manager.queue[i].draggable.home_position = global_position + dice_manager.position + Vector2(i * dice_queue_spacing, 0)
 
 
 func _make_newest_die_draggable() -> void:
-	if dice_queue.queue[-1].draggable.state != Draggable.DragState.DRAGGING:
-		dice_queue.queue[-1].draggable.state = Draggable.DragState.DEFAULT
+	if dice_manager.queue[-1].draggable.state != Draggable.DragState.DRAGGING:
+		dice_manager.queue[-1].draggable.state = Draggable.DragState.DEFAULT
 		
 
 func _process(_delta: float) -> void:
@@ -70,19 +69,19 @@ func _process(_delta: float) -> void:
 			continue
 			
 		if die.draggable.state == Draggable.DragState.DRAGGING:
-			var current_queue_position = dice_queue.queue.find(die)
+			var current_queue_position = dice_manager.queue.find(die)
 			
 			if current_queue_position == -1:
-				dice_queue.add(die)
+				dice_manager.add(die, true, false)
 			
-			var dice_queue_mouse_pos = get_global_mouse_position() - dice_queue.global_position
+			var dice_queue_mouse_pos = get_global_mouse_position() - dice_manager.global_position
 			
 
 			# Create a rectangle that encompasses the current displayed dice queue
 			var dice_queue_bounding_rect: Rect2 = Rect2(
 				-dice_queue_spacing/2.0, # x
 				-dice_queue_spacing/2.0, # y
-				(len(dice_queue.queue) - 1) * dice_queue_spacing, # width
+				(len(dice_manager.queue) - 1) * dice_queue_spacing, # width
 				dice_queue_spacing, # height
 			)
 
@@ -91,28 +90,28 @@ func _process(_delta: float) -> void:
 				var hovered_queue_position = int(dice_queue_mouse_pos.x / dice_queue_spacing)
 
 				# Make sure we limit the hovered location to the end of the queue
-				hovered_queue_position = min(hovered_queue_position, len(dice_queue.queue)-1)
+				hovered_queue_position = min(hovered_queue_position, len(dice_manager.queue)-1)
 				
 				# Switch the positions of the two dice, then update their locations
 				if current_queue_position != hovered_queue_position:
-					dice_queue.remove(die)
-					dice_queue.queue.insert(hovered_queue_position, die)
+					dice_manager.remove(die)
+					dice_manager.queue.insert(hovered_queue_position, die)
 					_update_dice_queue_locations()
 			
-			elif current_queue_position != len(dice_queue.queue)-1:
-				dice_queue.remove(die)
-				dice_queue.add(die)
+			elif current_queue_position != len(dice_manager.queue)-1:
+				dice_manager.remove(die)
+				dice_manager.add(die, true, false)
 
 
 func _check_for_end_of_turn() -> void:
-	if len(dice_queue.queue) == 0:
+	if len(dice_manager.queue) == 0:
 		end_turn_button.visible = true
 	else:
 		end_turn_button.visible = false
 
 
 func reroll_dice() -> void:
-	for die in dice_queue.queue:
+	for die in dice_manager.queue:
 		if die:
 			die.reroll_with_tween()		
 			await get_tree().create_timer(0.1).timeout
@@ -121,24 +120,27 @@ func reroll_dice() -> void:
 func _start_player_turn() -> void:
 	reroll_dice()
 	
-	for die in dice_queue.queue:
+	for die in dice_manager.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
 
 
 func _delete_existing_dice() -> void:
 	for die in get_tree().get_nodes_in_group('Dice'):
 		die.queue_free()
-	dice_queue.queue = []
+	dice_manager.queue = []
 	
 
-func spawn_dice(num_to_spawn: int = num_of_dice) -> void:
+func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bool = false) -> void:
 	for i in range(num_to_spawn):
 		await get_tree().create_timer(time_between_die_spawns).timeout
 		
 		var new_die = dice_scene.instantiate()
 		new_die.global_position = global_position + Vector2(600, 0)
+		new_die.holographic = holographic
+		if value != 0:
+			new_die.value = value
 		add_child(new_die)
-		dice_queue.add(new_die)
+		dice_manager.add(new_die, true, false)
 		
 	_update_dice_queue_locations()
 	

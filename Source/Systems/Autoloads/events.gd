@@ -25,7 +25,7 @@ signal targeting_computer_retargeted()
 
 
 # Game Events
-signal enemy_died(faction: ScenarioManager.Faction)
+signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)
 signal game_over()
 signal player_health_hit()
 signal player_shields_hit()
@@ -42,6 +42,7 @@ signal combat_finished()
 signal spawn_reward(pos: Vector2, money: int, dice_probability: float)
 signal reward_picked()
 
+signal enemy_acted(enemy_name: String, action_name: String)
 signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction)
 signal scenario_event(event: ScenarioManager.ScenarioEvent)
 

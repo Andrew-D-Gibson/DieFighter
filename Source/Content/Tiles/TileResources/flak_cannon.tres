@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=17 format=3 uid="uid://ifs6q4iqtbfe"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_71286"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_3abs0"]
+[ext_resource type="Texture2D" uid="uid://up1lduwwygjq" path="res://Assets/Textures/Tiles/flak_cannon.png" id="2_mywar"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_mywar"]
+[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="4_h3tty"]
+[ext_resource type="Script" uid="uid://ckbh5m14lawn4" path="res://Source/Content/Effects/AmountModifiers/adjacent_tiles_amount_modifier_effect.gd" id="5_m1j0p"]
+[ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/DiceMovers/attack_target_tween_effect.gd" id="6_sndgu"]
+[ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="7_vg00i"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="8_w3f31"]
+
+[sub_resource type="Resource" id="Resource_44pq3"]
+script = ExtResource("1_71286")
+type = 0
+acceptable_values = Array[int]([5])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_v7uoi"]
+script = ExtResource("1_71286")
+type = 3
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_a1g78"]
+script = ExtResource("4_h3tty")
+primary_effect = false
+metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
+
+[sub_resource type="Resource" id="Resource_cdns8"]
+script = ExtResource("5_m1j0p")
+base_amount = 1
+amount_per_adjacent = 1
+primary_effect = false
+metadata/_custom_type_script = "uid://ckbh5m14lawn4"
+
+[sub_resource type="Resource" id="Resource_4kv0t"]
+script = ExtResource("6_sndgu")
+primary_effect = false
+metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
+
+[sub_resource type="Resource" id="Resource_y24nt"]
+script = ExtResource("7_vg00i")
+amount = 0
+primary_effect = false
+metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
+
+[sub_resource type="Resource" id="Resource_8q7m7"]
+script = ExtResource("8_w3f31")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[resource]
+script = ExtResource("3_mywar")
+tile_name = "Flak Cannon"
+activation_description = ""
+description = ""
+base_texture = ExtResource("2_mywar")
+activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi")])
+effect_chain = Array[ExtResource("2_3abs0")]([SubResource("Resource_a1g78"), SubResource("Resource_cdns8"), SubResource("Resource_4kv0t"), SubResource("Resource_y24nt"), SubResource("Resource_8q7m7")])
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

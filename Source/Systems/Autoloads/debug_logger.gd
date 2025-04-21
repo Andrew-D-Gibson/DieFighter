@@ -13,7 +13,8 @@ func _ready() -> void:
 	# Connect to scenario events
 	Events.scenario_event.connect(_on_scenario_event)
 	Events.player_attacked_ship.connect(_on_player_attacked_ship)
-	Events.enemy_died.connect(_on_enemy_died)
+	Events.enemy_acted.connect(_on_enemy_acted)
+	Events.enemy_left.connect(_on_enemy_left)
 	Events.combat_finished.connect(_on_combat_finished)
 	
 	# Connect to global events
@@ -45,8 +46,11 @@ func _on_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
 func _on_player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction) -> void:
 	_log("Player attacked ship: %s (Faction: %s)" % [ship.name, ScenarioManager.Faction.keys()[ship_faction]])
 
-func _on_enemy_died(faction: ScenarioManager.Faction) -> void:
-	_log("Enemy died: %s" % ScenarioManager.Faction.keys()[faction])
+func _on_enemy_acted(enemy_name: String, action_name: String) -> void:
+	_log("Enemy %s performed action: %s" % [enemy_name, action_name])
+
+func _on_enemy_left(ship: Enemy, faction: ScenarioManager.Faction) -> void:
+	_log("Enemy left: %s" % ScenarioManager.Faction.keys()[faction])
 
 func _on_combat_finished() -> void:
 	_log("Combat finished")

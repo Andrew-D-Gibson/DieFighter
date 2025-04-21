@@ -12,9 +12,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lwstl"]
 size = Vector2(48, 12)
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("dice_queue", "health", "end_turn_button")]
+[node name="Player" type="Node2D" node_paths=PackedStringArray("dice_manager", "health", "end_turn_button")]
 script = ExtResource("1_86t7d")
-dice_queue = NodePath("DiceQueue")
+dice_manager = NodePath("DiceQueue")
 health = NodePath("Health")
 end_turn_button = NodePath("DiceQueue/EndTurnButton")
 dice_scene = ExtResource("2_lwstl")

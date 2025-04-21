@@ -23,7 +23,7 @@ func _ready() -> void:
 	
 	Events.load_scenario.connect(_load_scenario)
 	Events.player_attacked_ship.connect(_handle_attack)
-	Events.enemy_died.connect(_handle_enemy_death)
+	Events.enemy_left.connect(_handle_enemy_leaving)
 	
 	Events.combat_finished.connect(func() -> void:
 		Events.scenario_event.emit(ScenarioEvent.COMBAT_ENDED)
@@ -51,8 +51,11 @@ func _handle_attack(ship: Enemy, ship_faction: ScenarioManager.Faction):
 
 ## Checks if a faction has been completely wiped out,
 ## then emits the corresponding signal if necessary
-func _handle_enemy_death(faction: Faction) -> void:
+func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
 	var other_faction_ships: Array[Enemy] = Globals.enemy_manager.get_faction_ships(faction)
+	if ship in other_faction_ships:
+		other_faction_ships.erase(ship)
+		
 	if len(other_faction_ships) == 0:
 		match faction:
 			Faction.PIRATE:

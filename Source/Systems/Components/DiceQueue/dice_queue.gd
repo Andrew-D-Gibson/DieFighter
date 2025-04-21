@@ -7,10 +7,15 @@ signal die_added()
 signal die_removed()
 
 
-func add(die: Dice, preserve_value: bool = true) -> void:
+func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = true) -> void:
 	# Remove the die from it's previous host
 	if die.host_queue:
 		die.host_queue.remove(die)
+		
+	# Check if we it's holographic and we need to destroy it
+	if die.holographic and destroy_holographic:
+		die.queue_free()
+		return
 		
 	# Randomize the value if required
 	if not preserve_value:

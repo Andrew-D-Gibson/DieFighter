@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7mleyvjusuto"
-path="res://.godot/imported/dice2.png-f5e7d585197aad1f14e24a69d0fe7681.ctex"
+uid="uid://bs03bt5v8sawh"
+path="res://.godot/imported/dice_6.png-fcafdbba25cb46912e91a8a482d0bf51.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Dice/dice2.png"
-dest_files=["res://.godot/imported/dice2.png-f5e7d585197aad1f14e24a69d0fe7681.ctex"]
+source_file="res://Assets/Textures/Dice/Holographic/dice_6.png"
+dest_files=["res://.godot/imported/dice_6.png-fcafdbba25cb46912e91a8a482d0bf51.ctex"]
 
 [params]
 

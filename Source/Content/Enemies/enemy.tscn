@@ -1,29 +1,34 @@
-[gd_scene load_steps=8 format=3 uid="uid://bwwirc58smer1"]
+[gd_scene load_steps=9 format=3 uid="uid://bwwirc58smer1"]
 
 [ext_resource type="Script" uid="uid://dibocqhoikh50" path="res://Source/Content/Enemies/enemy.gd" id="1_ljdua"]
-[ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="2_7lcrs"]
 [ext_resource type="PackedScene" uid="uid://b8gjt5a2dcrbn" path="res://Source/Content/Enemies/action_popup.tscn" id="2_cwfht"]
-[ext_resource type="PackedScene" uid="uid://b5qwpdwbg4isw" path="res://Assets/Particles/enemy_death_explosion.tscn" id="3_0vv3a"]
 [ext_resource type="PackedScene" uid="uid://0nffy7i5aty4" path="res://Source/Systems/Components/Health/health.tscn" id="3_cwfht"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="3_tvtxf"]
 [ext_resource type="PackedScene" uid="uid://37usdgvegncp" path="res://Source/Content/Enemies/Components/EnemyHealthBar/enemy_health_bar.tscn" id="4_tvtxf"]
+[ext_resource type="PackedScene" uid="uid://b5qwpdwbg4isw" path="res://Assets/Particles/enemy_death_explosion.tscn" id="8_dycj8"]
+[ext_resource type="PackedScene" uid="uid://cunuv8hg5d8gc" path="res://Source/Content/Enemies/Components/EnemyDiceManager/enemy_dice_manager.tscn" id="8_fjj67"]
+[ext_resource type="PackedScene" uid="uid://bs2us7nioax1u" path="res://Source/Content/Enemies/Components/EnemyGraphicsManager/enemy_graphics_manager.tscn" id="8_sfiwu"]
 
-[node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_queue", "health", "shakeable")]
+[node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_manager", "graphics_manager", "health")]
 script = ExtResource("1_ljdua")
-dice_queue = NodePath("DiceQueue")
+dice_manager = NodePath("EnemyDiceManager")
+graphics_manager = NodePath("EnemyGraphicsManager")
 health = NodePath("Health")
 action_popup = ExtResource("2_cwfht")
-shakeable = NodePath("Shakeable")
-death_explosion = ExtResource("3_0vv3a")
-
-[node name="Shakeable" parent="." node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
-node_to_shake = NodePath("..")
-small_shake_duration = 0.2
-
-[node name="DiceQueue" parent="." instance=ExtResource("2_7lcrs")]
 
 [node name="Health" parent="." instance=ExtResource("3_cwfht")]
 
-[node name="EnemyHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("4_tvtxf")]
+[node name="EnemyDiceManager" parent="." instance=ExtResource("8_fjj67")]
+
+[node name="EnemyGraphicsManager" parent="." node_paths=PackedStringArray("shakeable", "health_bar") instance=ExtResource("8_sfiwu")]
+shakeable = NodePath("Shakeable")
+death_explosion = ExtResource("8_dycj8")
+health_bar = NodePath("EnemyHealthBar")
+
+[node name="EnemyHealthBar" parent="EnemyGraphicsManager" node_paths=PackedStringArray("health_component") instance=ExtResource("4_tvtxf")]
 z_index = 1
-health_component = NodePath("../Health")
+health_component = NodePath("../../Health")
+
+[node name="Shakeable" parent="EnemyGraphicsManager" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
+node_to_shake = NodePath("../..")
+small_shake_duration = 0.2

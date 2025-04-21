@@ -10,8 +10,9 @@ var enemies: Array[Enemy]
 func _ready() -> void:
 	Globals.enemy_manager = self
 	Events.player_turn_over.connect(_run_enemy_turn)
-	Events.enemy_died.connect(func(_faction: ScenarioManager.Faction) -> void:
-		_remove_dead_enemies()
+	Events.enemy_left.connect(func(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
+		if ship in enemies:
+			enemies.erase(ship)
 	)
 	Events.load_scenario.connect(func(_scenario: ScenarioResource):
 		# Needs to be queue_free'ed, not health reduced to 0
@@ -57,15 +58,24 @@ func _remove_dead_enemies() -> void:
 			
 			
 func _run_enemy_turn() -> void:
-	for enemy in enemies:
-		while len(enemy.dice_queue.queue) > 0:
-			enemy.act_with_first_die()
-			await enemy.action_completed
-			await get_tree().create_timer(0.5).timeout
-			
-		# Now that this enemy is done this turn, generate a new list of actions
-		enemy.generate_turn_actions()
+	# Create a copy of the enemies array to iterate over
+	# This prevents issues if enemies are removed during iteration
+	var current_enemies = enemies.duplicate()
 	
+	while true:
+		var dice_left: bool = false
+		for enemy in current_enemies:
+			# Skip if enemy was removed
+			if not enemy or not is_instance_valid(enemy):
+				continue
+				
+			if len(enemy.dice_manager.queue) != 0:
+				dice_left = true
+				await enemy.run_turn()
+		
+		if not dice_left:
+			break
+			
 	Events.enemy_turn_over.emit()
 
 
