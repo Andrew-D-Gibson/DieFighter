@@ -1,6 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://2orsjyat3nl"]
+[gd_scene load_steps=4 format=3 uid="uid://2orsjyat3nl"]
 
 [ext_resource type="Script" uid="uid://bmpsg4iqxr17j" path="res://Source/Systems/Game/EnemyManager/enemy_manager.gd" id="1_1mojd"]
+[ext_resource type="PackedScene" uid="uid://bwwirc58smer1" path="res://Source/Content/Enemies/enemy.tscn" id="2_t8u6h"]
 
-[node name="EnemyManager" type="Node2D"]
+[sub_resource type="Curve2D" id="Curve2D_t8u6h"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, 16, 100, -18, 10, 18, -10, 52, 60, 0, 0, 0, 0, 160, 54, -18, -10, 18, 10, 268, 60, 0, 0, 0, 0, 304, 100)
+}
+point_count = 5
+
+[node name="EnemyManager" type="Node2D" node_paths=PackedStringArray("spawning_path")]
 script = ExtResource("1_1mojd")
+enemy_base_scene = ExtResource("2_t8u6h")
+spawning_path = NodePath("SpawningPath")
+
+[node name="SpawningPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_t8u6h")

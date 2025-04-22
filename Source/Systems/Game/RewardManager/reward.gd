@@ -13,10 +13,17 @@ func _ready() -> void:
 	)
 	
 
-func give_reward(money: int, dice_probability: float) -> void:
+func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> void:
 	Globals.player.money += money
+	
+	if num_of_rewards == 0:
+		queue_free()
+		return
+	
+	var reward_spacing = 100
+	var spacing = 100 / float(num_of_rewards + 1)
 
-	for i in range(3):
+	for i in range(num_of_rewards):
 		var reward: Node2D
 		
 		# Make a dice reward if we can't fit another tile or randomly otherwise
@@ -32,7 +39,7 @@ func give_reward(money: int, dice_probability: float) -> void:
 		
 		add_child(reward)
 		reward.draggable.drag_ended.connect(_end_reward)
-		reward.global_position = global_position + Vector2((i - 1) * 26, 0)
+		reward.global_position = global_position + Vector2(-(reward_spacing / float(2)) + (spacing * (i+1)), 0)
 		reward.draggable.home_position = reward.global_position
 		reward.draggable.emit_reached_new_home = false
 		

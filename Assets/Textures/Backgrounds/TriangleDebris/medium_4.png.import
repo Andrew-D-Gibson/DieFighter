@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cioo5v3vt0tid"
-path="res://.godot/imported/twinkling_star-Sheet.png-8323230b6d14a8e2c0a9872f7ba43c2b.ctex"
+uid="uid://d4e7t8i1ia0at"
+path="res://.godot/imported/medium_4.png-7892550ce05733819604e13d4d66b295.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/twinkling_star-Sheet.png"
-dest_files=["res://.godot/imported/twinkling_star-Sheet.png-8323230b6d14a8e2c0a9872f7ba43c2b.ctex"]
+source_file="res://Assets/Textures/Backgrounds/TriangleDebris/medium_4.png"
+dest_files=["res://.godot/imported/medium_4.png-7892550ce05733819604e13d4d66b295.ctex"]
 
 [params]
 

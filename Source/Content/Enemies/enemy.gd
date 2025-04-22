@@ -77,6 +77,7 @@ func _on_death() -> void:
 	Events.spawn_reward.emit(
 		global_position, 
 		reward_resource.money, 
+		reward_resource.num_of_rewards,
 		reward_resource.dice_probability
 	)
 			

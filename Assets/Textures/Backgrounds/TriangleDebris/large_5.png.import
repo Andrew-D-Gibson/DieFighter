@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cu6iucjotndxl"
-path="res://.godot/imported/triangle_debris.png-ac6cf383ac3c9576a0e288a93fafc85e.ctex"
+uid="uid://df2gmx3lqmoo5"
+path="res://.godot/imported/large_5.png-7c7c2755301a53386f4685e95ff56e16.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/triangle_debris.png"
-dest_files=["res://.godot/imported/triangle_debris.png-ac6cf383ac3c9576a0e288a93fafc85e.ctex"]
+source_file="res://Assets/Textures/Backgrounds/TriangleDebris/large_5.png"
+dest_files=["res://.godot/imported/large_5.png-7c7c2755301a53386f4685e95ff56e16.ctex"]
 
 [params]
 

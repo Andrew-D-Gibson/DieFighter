@@ -5,10 +5,15 @@ var enemies: Array[Enemy]
 
 @export var enemy_base_scene: PackedScene
 @export var enemy_spacing: int
+@export var spawning_path: Path2D
 
 
 func _ready() -> void:
 	Globals.enemy_manager = self
+	
+	# Force the baking on the curve where we spawn enemies
+	spawning_path.curve.get_baked_points()
+	
 	Events.player_turn_over.connect(_run_enemy_turn)
 	Events.enemy_left.connect(func(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		if ship in enemies:
@@ -29,12 +34,18 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 	for i in range(len(enemies_to_spawn)):
 		var enemy = enemy_base_scene.instantiate()
 		enemy.enemy_resource = enemies_to_spawn[i].enemy_resource
+		enemy.position = get_point_along_path(enemies_to_spawn[i].spawning_path_location)
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
 		enemy.scenario_state = enemies_to_spawn[i].starting_state
-		enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), 0)
+		#enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), 0)
 		
 		enemies.append(enemy)
 		add_child(enemy)
+	
+	
+func get_point_along_path(proportion: float) -> Vector2:
+	var total_length: float = spawning_path.curve.get_baked_length()
+	return spawning_path.curve.sample_baked(proportion * total_length)
 	
 	
 func get_alive_enemies() -> Array[Enemy]:

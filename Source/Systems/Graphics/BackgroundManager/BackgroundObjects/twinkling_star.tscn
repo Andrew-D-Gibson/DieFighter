@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://db30o2mgvg8ay"]
 
-[ext_resource type="Texture2D" uid="uid://cioo5v3vt0tid" path="res://Assets/Textures/Backgrounds/twinkling_star-Sheet.png" id="1_j58qa"]
+[ext_resource type="Texture2D" uid="uid://cioo5v3vt0tid" path="res://Assets/Textures/Backgrounds/Stars/twinkling_star-Sheet.png" id="1_j58qa"]
 [ext_resource type="Script" uid="uid://mudvhxb7v722" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.gd" id="2_ue0pm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ue0pm"]

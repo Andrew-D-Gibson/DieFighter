@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d2fgjh4cwmsn8"
-path="res://.godot/imported/star_pixel.png-aa40b74742d2251e93574b478dddedcf.ctex"
+uid="uid://bxkaejbrxscld"
+path="res://.godot/imported/large_2.png-c8027b9edebe60107a04dab02c5ef80c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/star_pixel.png"
-dest_files=["res://.godot/imported/star_pixel.png-aa40b74742d2251e93574b478dddedcf.ctex"]
+source_file="res://Assets/Textures/Backgrounds/TriangleDebris/large_2.png"
+dest_files=["res://.godot/imported/large_2.png-c8027b9edebe60107a04dab02c5ef80c.ctex"]
 
 [params]
 

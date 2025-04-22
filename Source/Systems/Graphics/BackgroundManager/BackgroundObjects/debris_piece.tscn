@@ -1,0 +1,37 @@
+[gd_scene load_steps=21 format=3 uid="uid://dhh3wbvm6lsew"]
+
+[ext_resource type="Script" uid="uid://c6wnkl67p3kio" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/debris_piece.gd" id="1_f12lg"]
+[ext_resource type="Shader" uid="uid://c22oi8xwgg22p" path="res://Assets/Shaders/debris_piece.gdshader" id="1_ixvbi"]
+[ext_resource type="Texture2D" uid="uid://cgmw628l0gtc0" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_1.png" id="2_mamfj"]
+[ext_resource type="Texture2D" uid="uid://bcsk17j84q6lf" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_2.png" id="3_ixvbi"]
+[ext_resource type="Texture2D" uid="uid://ddf8xe7dpv18n" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_3.png" id="4_aktdh"]
+[ext_resource type="Texture2D" uid="uid://d4e7t8i1ia0at" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_4.png" id="5_khwvx"]
+[ext_resource type="Texture2D" uid="uid://dbi3ghiq7tist" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_5.png" id="6_g3xmo"]
+[ext_resource type="Texture2D" uid="uid://br3vskb5nl2kt" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_6.png" id="7_3ejgy"]
+[ext_resource type="Texture2D" uid="uid://vin6au3jy74j" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_7.png" id="8_46yjq"]
+[ext_resource type="Texture2D" uid="uid://dm4ctwy8r2wje" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_8.png" id="9_hhxlm"]
+[ext_resource type="Texture2D" uid="uid://cy10pf3d5msrt" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_9.png" id="10_ttfat"]
+[ext_resource type="Texture2D" uid="uid://bx85elircs7yh" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_10.png" id="11_6umw4"]
+[ext_resource type="Texture2D" uid="uid://v2hi1v2ukn72" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_11.png" id="12_3gpka"]
+[ext_resource type="Texture2D" uid="uid://dwbnwvf6evqk7" path="res://Assets/Textures/Backgrounds/TriangleDebris/large_1.png" id="13_1ie5k"]
+[ext_resource type="Texture2D" uid="uid://bxkaejbrxscld" path="res://Assets/Textures/Backgrounds/TriangleDebris/large_2.png" id="14_dmtcq"]
+[ext_resource type="Texture2D" uid="uid://n0r8208q7mj2" path="res://Assets/Textures/Backgrounds/TriangleDebris/large_3.png" id="15_dt4xr"]
+[ext_resource type="Texture2D" uid="uid://demdiub8lf7wv" path="res://Assets/Textures/Backgrounds/TriangleDebris/large_4.png" id="16_pwii4"]
+[ext_resource type="Texture2D" uid="uid://df2gmx3lqmoo5" path="res://Assets/Textures/Backgrounds/TriangleDebris/large_5.png" id="17_a75bj"]
+[ext_resource type="Texture2D" uid="uid://ckhlwarcdhcim" path="res://Assets/Textures/Backgrounds/TriangleDebris/large_6.png" id="18_acq8h"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aktdh"]
+resource_local_to_scene = true
+shader = ExtResource("1_ixvbi")
+shader_parameter/color = Color(0.388235, 0.376471, 0.360784, 1)
+shader_parameter/background_color = Color(0, 0, 0, 1)
+shader_parameter/velocity_level = 0.0
+shader_parameter/blend_jump = 0.1
+
+[node name="DebrisPiece" type="Sprite2D"]
+z_index = 1
+material = SubResource("ShaderMaterial_aktdh")
+texture = ExtResource("14_dmtcq")
+script = ExtResource("1_f12lg")
+medium_piece_textures = Array[Texture2D]([ExtResource("2_mamfj"), ExtResource("3_ixvbi"), ExtResource("4_aktdh"), ExtResource("5_khwvx"), ExtResource("6_g3xmo"), ExtResource("7_3ejgy"), ExtResource("8_46yjq"), ExtResource("9_hhxlm"), ExtResource("10_ttfat"), ExtResource("11_6umw4"), ExtResource("12_3gpka")])
+large_piece_textures = Array[Texture2D]([ExtResource("13_1ie5k"), ExtResource("14_dmtcq"), ExtResource("15_dt4xr"), ExtResource("16_pwii4"), ExtResource("17_a75bj"), ExtResource("18_acq8h")])

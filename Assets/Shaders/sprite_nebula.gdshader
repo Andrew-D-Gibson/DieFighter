@@ -1,6 +1,6 @@
 shader_type canvas_item;
 
-uniform vec2 speed = vec2(0.0, -0.02); // Speed of first layer
+uniform vec2 speed = vec2(0.0, -0.02);
 uniform vec4 nebula_color; // = vec4(0.2, 0.4, 1.0, 0.1); // Blueish nebula color
 
 void fragment() {

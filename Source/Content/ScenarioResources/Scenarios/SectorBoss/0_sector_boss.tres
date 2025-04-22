@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://dn8q8cchon3n6"]
+
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="1_xxtqm"]
+[ext_resource type="Texture2D" uid="uid://c8n5rlrs468on" path="res://Assets/Textures/Map/EncounterIcons/boss_encounter.png" id="2_1djmd"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="3_664ej"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="4_f4n7r"]
+[ext_resource type="Resource" uid="uid://bqtyawtjnq4j1" path="res://Source/Content/Enemies/EnemyResources/sector_boss.tres" id="5_8etcm"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_msmmn"]
+[ext_resource type="Resource" uid="uid://kfnsjk3tjcr0" path="res://Source/Content/ScenarioResources/Scenarios/SectorBoss/sector_boss.tres" id="7_k6gms"]
+
+[sub_resource type="Resource" id="Resource_j621h"]
+script = ExtResource("6_msmmn")
+money = 100
+num_of_rewards = 5
+dice_probability = 0.0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_4dr6h"]
+script = ExtResource("4_f4n7r")
+enemy_resource = ExtResource("5_8etcm")
+spawning_path_location = 0.5
+starting_state = ExtResource("7_k6gms")
+reward_resource = SubResource("Resource_j621h")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("3_664ej")
+map_icon = ExtResource("2_1djmd")
+starting_screen = 0
+background_resource = ExtResource("1_xxtqm")
+starting_enemies = Array[ExtResource("4_f4n7r")]([SubResource("Resource_4dr6h")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

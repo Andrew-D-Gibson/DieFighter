@@ -25,8 +25,8 @@ func _load_tile_resources() -> void:
 					possible_tile_rewards.append(res)
 	
 
-func _spawn_reward(pos: Vector2, money: int, dice_probability: float) -> void:
+func _spawn_reward(pos: Vector2, money: int, num_of_rewards: int, dice_probability: float) -> void:
 	var reward := reward_scene.instantiate()
 	add_child(reward)
 	reward.global_position = pos
-	reward.give_reward(money, dice_probability)
+	reward.give_reward(money, num_of_rewards, dice_probability)

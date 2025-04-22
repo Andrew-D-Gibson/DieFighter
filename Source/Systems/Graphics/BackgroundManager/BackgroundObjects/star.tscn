@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://dxv134k8wnksc"]
 
-[ext_resource type="Texture2D" uid="uid://d2fgjh4cwmsn8" path="res://Assets/Textures/Backgrounds/star_pixel.png" id="1_j0xyd"]
+[ext_resource type="Texture2D" uid="uid://d2fgjh4cwmsn8" path="res://Assets/Textures/Backgrounds/Stars/star_pixel.png" id="1_j0xyd"]
 
 [node name="Star" type="Sprite2D"]
 z_index = 1

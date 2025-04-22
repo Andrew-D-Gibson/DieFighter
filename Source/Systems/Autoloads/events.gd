@@ -39,7 +39,7 @@ signal player_turn_over()
 signal enemy_turn_over()
 signal combat_finished()
 
-signal spawn_reward(pos: Vector2, money: int, dice_probability: float)
+signal spawn_reward(pos: Vector2, money: int, num_of_rewards: int, dice_probability: float)
 signal reward_picked()
 
 signal enemy_acted(enemy_name: String, action_name: String)
