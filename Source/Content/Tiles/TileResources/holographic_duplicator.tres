@@ -16,7 +16,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_m4gsi"]
 script = ExtResource("1_ltqic")
-type = 2
+type = 1
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 

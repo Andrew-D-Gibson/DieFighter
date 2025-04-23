@@ -1,0 +1,68 @@
+[gd_scene load_steps=8 format=3 uid="uid://c5lgcsetsx3lq"]
+
+[ext_resource type="Script" uid="uid://c3ihhv3xtt8ib" path="res://Source/Systems/Game/Shop/shop.gd" id="1_shop"]
+[ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="2_bsm0f"]
+[ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="3_0o0y8"]
+[ext_resource type="Script" uid="uid://cb3ideptaj1hg" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.gd" id="4_uu5u6"]
+[ext_resource type="Texture2D" uid="uid://r1v1dd5n2g6f" path="res://Assets/Textures/Shop/selling_panel.png" id="5_18pwj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_yjpg7"]
+size = Vector2(117, 56)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_uu5u6"]
+size = Vector2(14, 14)
+
+[node name="Shop" type="Node2D" node_paths=PackedStringArray("bounding_box", "dice_sell_area", "dice_sell_price_label")]
+script = ExtResource("1_shop")
+tile_scene = ExtResource("2_bsm0f")
+dice_scene = ExtResource("3_0o0y8")
+bounding_box = NodePath("CollisionShape2D2")
+dice_sell_area = NodePath("SellPanel/DiceSellArea")
+dice_sell_price_label = NodePath("SellPanel/DiceSellPriceLabel")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+position = Vector2(16.5, 14)
+shape = SubResource("RectangleShape2D_yjpg7")
+
+[node name="SellPanel" type="Sprite2D" parent="."]
+position = Vector2(99, 14)
+texture = ExtResource("5_18pwj")
+
+[node name="SellPanelLabel" type="RichTextLabel" parent="SellPanel"]
+offset_left = -24.0
+offset_top = -30.0
+offset_right = 24.0
+offset_bottom = -17.0
+mouse_filter = 2
+text = "SELL"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DiceSellArea" type="Node2D" parent="SellPanel" node_paths=PackedStringArray("collision") groups=["CanAcceptDice"]]
+position = Vector2(-11, -8)
+script = ExtResource("4_uu5u6")
+collision = NodePath("CollisionShape2D")
+metadata/_custom_type_script = "uid://cb3ideptaj1hg"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SellPanel/DiceSellArea"]
+shape = SubResource("RectangleShape2D_uu5u6")
+
+[node name="DiceSellPriceLabel" type="RichTextLabel" parent="SellPanel"]
+offset_left = -7.0
+offset_top = -16.0
+offset_right = 13.0
+offset_bottom = -2.0
+mouse_filter = 2
+text = "24"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="TileSellPriceLabel" type="RichTextLabel" parent="SellPanel"]
+offset_left = -7.0
+offset_top = 6.0
+offset_right = 13.0
+offset_bottom = 20.0
+mouse_filter = 2
+text = "10"
+horizontal_alignment = 2
+vertical_alignment = 1

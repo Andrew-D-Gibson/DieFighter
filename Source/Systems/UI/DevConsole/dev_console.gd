@@ -28,6 +28,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 	# Handle commands
 	var command = console_command.split(' ')
 	match command[0]:
+		'add_money':
+			_add_money(command.slice(1))
+			
 		'clear':
 			_clear()
 			
@@ -76,6 +79,13 @@ func _on_line_edit_text_changed(current_text: String) -> void:
 
 
 
+func _add_money(command_args: Array[String] = []) -> void:
+	var amount: int = 0
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+	
+	Globals.player.money += amount
+	command_history.append_text('\n[center]Gave money to player[/center]')
 	
 	
 func _clear() -> void:

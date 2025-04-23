@@ -1,58 +1,50 @@
-[23:00:32] Debug logger initialized
-[23:00:32] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres
-[23:00:32] Starting scenario
-[23:00:32] Starting combat
-[23:00:36] Player attacked ship: Enemy (Faction: PIRATE)
-[23:00:36] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:00:37] Player attacked ship: Enemy (Faction: PIRATE)
-[23:00:37] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:00:37] Enemy left: PIRATE
-[23:00:40] Player attacked ship: @Node2D@212 (Faction: PIRATE)
-[23:00:40] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:00:40] Enemy left: PIRATE
-[23:00:40] Scenario Event: PIRATES_DEFEATED
-[23:00:40] Combat finished
-[23:00:40] Scenario Event: COMBAT_ENDED
-[23:00:48] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SectorBoss/0_sector_boss.tres
-[23:00:48] Starting scenario
-[23:00:48] Starting combat
-[23:02:19] Player attacked ship: Enemy (Faction: PIRATE)
-[23:02:19] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:02:21] Player attacked ship: Enemy (Faction: PIRATE)
-[23:02:21] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:02:22] Player turn over
-[23:02:23] Enemy Pirate Daimyo performed action: Dice Cannon
-[23:02:24] Enemy Pirate Daimyo performed action: Dice Cannon
-[23:02:25] Enemy Pirate Daimyo performed action: Dice Cannon
-[23:02:25] Enemy turn over
-[23:03:10] Player attacked ship: Enemy (Faction: PIRATE)
-[23:03:10] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:03:11] Player attacked ship: Enemy (Faction: PIRATE)
-[23:03:11] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:03:12] Player turn over
-[23:03:13] Enemy Pirate Daimyo performed action: Dice Cannon
-[23:03:14] Enemy Pirate Daimyo performed action: Dice Cannon
-[23:03:15] Enemy Pirate Daimyo performed action: Dice Cannon
-[23:03:15] Enemy turn over
-[23:03:45] Player attacked ship: Enemy (Faction: PIRATE)
-[23:03:45] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:03:46] Player attacked ship: Enemy (Faction: PIRATE)
-[23:03:46] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:03:47] Player attacked ship: Enemy (Faction: PIRATE)
-[23:03:47] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:03:47] Player turn over
-[23:03:48] Enemy Pirate Daimyo performed action: Shield Burst
-[23:03:48] Enemy Pirate Daimyo performed action: Shield Burst
-[23:03:49] Enemy Pirate Daimyo performed action: Shield Burst
-[23:03:49] Enemy turn over
-[23:04:14] Player attacked ship: Enemy (Faction: PIRATE)
-[23:04:14] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:04:15] Player attacked ship: Enemy (Faction: PIRATE)
-[23:04:15] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:04:19] Player attacked ship: Enemy (Faction: PIRATE)
-[23:04:19] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:04:23] Player attacked ship: Enemy (Faction: PIRATE)
-[23:04:23] Scenario Event: PLAYER_ATTACKED_PIRATE
-[23:04:24] Player turn over
-[23:04:25] Game over
-[23:04:25] Enemy Pirate Daimyo performed action: Dice Cannon
+[18:38:59] Debug logger initialized
+[18:38:59] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres
+[18:38:59] Starting scenario
+[18:39:37] Starting combat
+[18:39:37] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:39:37] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:39:40] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:39:40] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:39:41] Player turn over
+[18:39:41] Enemy Shop performed action: Shield Burst
+[18:39:42] Enemy Shop performed action: 
+[18:39:43] Enemy Shop performed action: Shield Burst
+[18:39:43] Enemy turn over
+[18:39:59] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:39:59] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:00] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:00] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:01] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:01] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:02] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:02] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:02] Player turn over
+[18:40:03] Enemy Shop performed action: 
+[18:40:05] Enemy Shop performed action: 
+[18:40:06] Enemy Shop performed action: 
+[18:40:06] Enemy turn over
+[18:40:33] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:33] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:33] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:33] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:34] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:34] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:35] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:35] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:36] Player turn over
+[18:40:36] Enemy Shop performed action: Shield Burst
+[18:40:37] Enemy Shop performed action: 
+[18:40:38] Enemy Shop performed action: 
+[18:40:39] Enemy turn over
+[18:40:44] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:44] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:45] Player attacked ship: Enemy (Faction: CIVILIAN)
+[18:40:45] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[18:40:45] Enemy left: CIVILIAN
+[18:40:45] Scenario Event: CIVILIANS_DEFEATED
+[18:40:45] Combat finished
+[18:40:45] Scenario Event: COMBAT_ENDED
+[18:41:16] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SectorBoss/0_sector_boss.tres
+[18:41:16] Starting scenario
+[18:41:16] Starting combat

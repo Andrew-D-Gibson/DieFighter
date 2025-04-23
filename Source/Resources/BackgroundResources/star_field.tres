@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="BackgroundResource" load_steps=2 format=3 uid="uid://cplvgr0ytavt0"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_fu3ps"]
+
+[resource]
+script = ExtResource("1_fu3ps")
+background_color = Color(0.04496, 0.0192, 0.24, 1)
+nebula = false
+nebula_color = Color(0, 0, 0, 1)
+stars = true
+num_of_stars = 100
+num_of_twinkling_stars = 25
+debris = false
+num_of_med_pieces = 0
+num_of_large_pieces = 0
+metadata/_custom_type_script = "uid://c0mcptxevxdde"

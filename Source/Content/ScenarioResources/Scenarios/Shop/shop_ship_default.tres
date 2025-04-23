@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=7 format=3 uid="uid://br2onlc8mhgxr"]
+
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_0v0br"]
+[ext_resource type="Script" uid="uid://d2k38tg7rrlgo" path="res://Source/Content/Effects/ScenarioControls/Shop/open_shop.gd" id="2_pvm2e"]
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="2_yqrsh"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_pvm2e"]
+[ext_resource type="Resource" uid="uid://cfo3u3h67qvi3" path="res://Source/Content/ScenarioResources/Scenarios/Shop/shop_ship_angry.tres" id="5_nr054"]
+
+[sub_resource type="Resource" id="Resource_45pdf"]
+script = ExtResource("2_pvm2e")
+primary_effect = false
+metadata/_custom_type_script = "uid://d2k38tg7rrlgo"
+
+[resource]
+script = ExtResource("2_yqrsh")
+dialogue = "Take a look at my wares!"
+faction = 1
+attitude = 0
+effects_on_enter = Array[ExtResource("1_0v0br")]([SubResource("Resource_45pdf")])
+transitions = Dictionary[int, ExtResource("3_pvm2e")]({
+1: ExtResource("5_nr054")
+})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

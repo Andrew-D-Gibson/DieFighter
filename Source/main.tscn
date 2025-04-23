@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=26 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -23,6 +23,7 @@
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="16_oai2y"]
 [ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/Systems/Game/CommsManager/comms_manager.tscn" id="17_dacno"]
 [ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/Systems/Game/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
+[ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
 
 [sub_resource type="Resource" id="Resource_tfyry"]
 script = ExtResource("15_grfux")
@@ -71,7 +72,7 @@ z_index = 1
 position = Vector2(67, 115)
 
 [node name="TargetingComputer" parent="Systems/Player" instance=ExtResource("8_okrb4")]
-position = Vector2(192, -3)
+position = Vector2(205, 14)
 
 [node name="TileGrid" parent="Systems/Player" instance=ExtResource("9_grfux")]
 position = Vector2(33, -29)
@@ -92,6 +93,10 @@ z_index = -3
 enemy_spacing = 432
 
 [node name="RewardManager" parent="Systems" instance=ExtResource("13_7iud4")]
+
+[node name="Shop" parent="Systems" instance=ExtResource("24_ealw0")]
+visible = false
+position = Vector2(84, 21)
 
 [node name="ScenarioManager" parent="Systems" instance=ExtResource("19_3g417")]
 

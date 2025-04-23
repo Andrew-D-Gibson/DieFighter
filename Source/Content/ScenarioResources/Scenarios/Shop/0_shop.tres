@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://dp6euwvjd2ren"]
+
+[ext_resource type="Texture2D" uid="uid://c6ltm4ylf42ka" path="res://Assets/Textures/Map/EncounterIcons/shop.png" id="1_7qv0j"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_36yx3"]
+[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_wh6f6"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="2_7qv0j"]
+[ext_resource type="Resource" uid="uid://lxupqxmk1she" path="res://Source/Content/Enemies/EnemyResources/shop.tres" id="5_nta17"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_6w0ix"]
+[ext_resource type="Resource" uid="uid://br2onlc8mhgxr" path="res://Source/Content/ScenarioResources/Scenarios/Shop/shop_ship_default.tres" id="7_fi5fr"]
+
+[sub_resource type="Resource" id="Resource_x5p0h"]
+script = ExtResource("6_6w0ix")
+money = 100
+num_of_rewards = 4
+dice_probability = 0.5
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_fly3e"]
+script = ExtResource("2_7qv0j")
+enemy_resource = ExtResource("5_nta17")
+spawning_path_location = 0.85
+starting_state = ExtResource("7_fi5fr")
+reward_resource = SubResource("Resource_x5p0h")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("1_36yx3")
+map_icon = ExtResource("1_7qv0j")
+starting_screen = 2
+background_resource = ExtResource("1_wh6f6")
+starting_enemies = Array[ExtResource("2_7qv0j")]([SubResource("Resource_fly3e")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

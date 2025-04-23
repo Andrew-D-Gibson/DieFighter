@@ -1,11 +1,49 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=7 format=3 uid="uid://lxupqxmk1she"]
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=13 format=3 uid="uid://lxupqxmk1she"]
 
-[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_3dlhr"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_2n4kh"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_00gar"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="2_s7ieb"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/defend_self.tres" id="3_k3uht"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="4_42u7s"]
 [ext_resource type="PackedScene" uid="uid://g1dgcnfkwlci" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/shop_ship_graphics.tscn" id="5_35j5s"]
+[ext_resource type="Resource" uid="uid://cesjiwhhl5hh0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/flee.tres" id="5_itnwa"]
 [ext_resource type="Texture2D" uid="uid://0sj4d82kvgkl" path="res://Assets/Textures/Enemies/Shop/shop_targeting_image.png" id="6_03d4b"]
+
+[sub_resource type="Resource" id="Resource_amb7e"]
+script = ExtResource("1_2n4kh")
+base_action = ExtResource("2_s7ieb")
+weight = 1.0
+min_amount = 4
+max_amount = 8
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_ohrlf"]
+script = ExtResource("1_2n4kh")
+base_action = ExtResource("3_k3uht")
+weight = 2.0
+min_amount = 5
+max_amount = 10
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_imo8o"]
+script = ExtResource("1_2n4kh")
+base_action = ExtResource("4_42u7s")
+weight = 1.0
+min_amount = 0
+max_amount = 0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_e5koc"]
+script = ExtResource("1_2n4kh")
+base_action = ExtResource("5_itnwa")
+weight = 0.0
+min_amount = 0
+max_amount = 0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [resource]
 script = ExtResource("2_00gar")
@@ -17,8 +55,5 @@ health_bar_position = Vector2(-27, -20)
 dice_queue_position = Vector2(27, 8)
 max_health = 32
 starting_shields = 0
-actions_and_likelihoods = Dictionary[ExtResource("1_3dlhr"), float]({
-ExtResource("2_s7ieb"): 1.0,
-ExtResource("3_k3uht"): 2.0
-})
+action_options = Array[ExtResource("1_2n4kh")]([SubResource("Resource_amb7e"), SubResource("Resource_ohrlf"), SubResource("Resource_imo8o"), SubResource("Resource_e5koc")])
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"
