@@ -4,7 +4,8 @@ extends Node2D
 @export var tile_resource: TileResource:
 	set(new_resource):
 		tile_resource = new_resource
-		_set_up_resource()
+		if sprite_frames:
+			_set_up_resource()
 		
 var _saturation_tween: Tween
 @export var uses_remaining: int = -1:
@@ -26,13 +27,13 @@ var _saturation_tween: Tween
 		var tween_time: float = 0.75
 		_saturation_tween = create_tween()
 		_saturation_tween.tween_property(
-			$AnimatedSprite2D.material, 
+			sprite_frames.material, 
 			'shader_parameter/strength',
 			strength,
 			0.1
 		)
 		_saturation_tween.tween_property(
-			$AnimatedSprite2D.material, 
+			sprite_frames.material, 
 			'shader_parameter/outer_radius',
 			outer_radius,
 			tween_time
@@ -40,15 +41,17 @@ var _saturation_tween: Tween
 		
 				
 		if uses_remaining == -1:
-			$AnimatedSprite2D.frame = 0
+			sprite_frames.frame = 0
 		else:
-			$AnimatedSprite2D.frame = uses_remaining
+			sprite_frames.frame = uses_remaining
 
 		
 @export_category('Components')
 @export var draggable: Draggable
 @export var clickable: Clickable
 @export var shakeable: Shakeable
+@export var sprite_frames: AnimatedSprite2D
+
 
 signal tile_activation_complete()
 
@@ -57,19 +60,21 @@ func _ready() -> void:
 	assert(tile_resource)
 	_set_up_resource()
 	
-	clickable.clicked.connect(func(): 
-		Events.show_info.emit(_get_tile_info())
-	)
-	draggable.reached_new_home.connect(func():
-		shakeable.small_shake()
-		Events.tile_dropped.emit()
-	)
+	if clickable:
+		clickable.clicked.connect(func(): 
+			Events.show_info.emit(_get_tile_info())
+		)
+	if draggable:
+		draggable.reached_new_home.connect(func():
+			shakeable.small_shake()
+			Events.tile_dropped.emit()
+		)
 	Events.enemy_turn_over.connect(reset_uses_remaining)
 	Events.start_scenario.connect(reset_uses_remaining)
 	
 
 func _set_up_resource() -> void:
-	$AnimatedSprite2D.sprite_frames = tile_resource.textures
+	sprite_frames.sprite_frames = tile_resource.textures
 	uses_remaining = tile_resource.uses_per_turn
 
 

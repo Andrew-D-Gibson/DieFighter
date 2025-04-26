@@ -13,7 +13,7 @@ signal show_info(info: InfoResource)
 
 # Control Events
 signal show_map()
-signal show_tile_grid()
+signal show_systems()
 signal show_comms()
 
 signal show_dialogue(text: String)
@@ -29,7 +29,7 @@ signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)
 signal game_over()
 signal player_health_hit()
 signal player_shields_hit()
-
+signal engine_charge_changed()
 
 # Game Sequencing Events
 signal set_background(background_resource: BackgroundResource)

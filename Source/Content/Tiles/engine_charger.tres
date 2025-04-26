@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=13 format=3 uid="uid://bsaq6udi1wjln"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_8mym4"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_1ow5n"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_ar2wr"]
+[ext_resource type="Script" uid="uid://cymd6kmfhbghm" path="res://Source/Content/Effects/AttributeChangers/change_engine_charge_effect.gd" id="3_uhn3f"]
+[ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="4_7mo4q"]
+[ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="4_uhn3f"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="5_dd8hj"]
+
+[sub_resource type="Resource" id="Resource_2r3c1"]
+script = ExtResource("3_uhn3f")
+amount = 0
+primary_effect = true
+metadata/_custom_type_script = "uid://cymd6kmfhbghm"
+
+[sub_resource type="Resource" id="Resource_wsm3a"]
+script = ExtResource("4_7mo4q")
+primary_effect = false
+metadata/_custom_type_script = "uid://wmvgjnwdtv3h"
+
+[sub_resource type="Resource" id="Resource_4bhlh"]
+script = ExtResource("5_dd8hj")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7mo4q"]
+atlas = ExtResource("4_uhn3f")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dd8hj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7mo4q")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("3_ar2wr")
+tile_name = "Engine Charger"
+activation_description = "[color=yellow]Activates[/color] with any die, and gives the [color=yellow]activator die[/color] to the targeted enemy"
+description = "Adds the value of the [color=yellow]activator die[/color] to the engine charge.  The engine can be used to jump to another location when fully charged."
+textures = SubResource("SpriteFrames_dd8hj")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_8mym4")]([])
+effect_chain = Array[ExtResource("2_1ow5n")]([SubResource("Resource_2r3c1"), SubResource("Resource_wsm3a"), SubResource("Resource_4bhlh")])
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

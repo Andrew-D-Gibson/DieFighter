@@ -7,7 +7,10 @@ var click_down_location: Vector2
 @export var click_time_window: float = 0.3
 var click_time_remaining: float = 0
 
+var hovered: bool = false
+
 signal clicked()
+signal is_hovered(_hovered: bool)
 
 
 func _process(delta: float) -> void:
@@ -26,3 +29,13 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		elif click_time_remaining > 0 \
 		and click_down_location.distance_to(get_global_mouse_position()) <= click_movement_radius:
 			clicked.emit()
+
+
+func _on_mouse_entered() -> void:
+	hovered = true
+	is_hovered.emit(true)
+	
+	
+func _on_mouse_exited() -> void:
+	hovered = false
+	is_hovered.emit(false)

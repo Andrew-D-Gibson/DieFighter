@@ -50,6 +50,7 @@ script = ExtResource("2_00gar")
 enemy_name = "Shop"
 description = "Buy your desires!"
 ship_graphics_scene = ExtResource("5_35j5s")
+graphics_scene_offset = Vector2(0, 0)
 targeting_computer_image = ExtResource("6_03d4b")
 health_bar_position = Vector2(-27, -20)
 dice_queue_position = Vector2(27, 8)

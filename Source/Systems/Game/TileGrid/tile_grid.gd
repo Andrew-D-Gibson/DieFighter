@@ -16,35 +16,14 @@ signal tile_activation_complete()
 func _ready() -> void:
 	Globals.tile_grid = self
 	
-	Events.show_tile_grid.connect(_show)
-	Events.show_map.connect(_hide)
-	Events.show_comms.connect(_hide)
-	
 	Events.load_game_save.connect(_load_game_save)
-	Events.start_combat.connect(Events.show_tile_grid.emit)
+	Events.start_combat.connect(Events.show_systems.emit)
 	
 	_setup_grid_graphics()
 	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
 	_setup_tiles(game_save.tile_locations)
-	
-	
-func _show() -> void:
-	var children = get_children()
-	for i in range(1, len(children)):
-		children[i].visible = true
-		
-	
-
-func _hide() -> void:
-	var children = get_children()
-	for i in range(1, len(children)):
-		children[i].visible = false
-	
-	
-func _on_tab_clicked() -> void:
-	Events.show_tile_grid.emit()
 	
 	
 func _setup_grid_graphics() -> void:

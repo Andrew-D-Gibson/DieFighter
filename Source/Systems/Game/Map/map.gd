@@ -2,8 +2,8 @@ class_name Map
 extends Node2D
 
 @export_category('Game Data')
-@export var scenario_list: Array[ScenarioResource]
-@export var current_scenario_index: int
+var scenario_list: Array[ScenarioResource]
+var current_scenario_index: int
 
 @export_category('Map Textures')
 @export var current_scenario_icon: Texture2D
@@ -17,6 +17,8 @@ extends Node2D
 @export var map_button: Clickable
 @export var map_viewport: SubViewport
 @export var map_camera: Camera2D
+@export var error_text: RichTextLabel
+
 
 @export_category('Behavior')
 @export var empty_scenario: ScenarioResource
@@ -29,7 +31,6 @@ var tween: Tween
 
 func _ready() -> void:
 	Globals.map = self
-	_hide()
 	
 	LeftDiceReceptacle.dice_queue.die_added.connect(_update_desired_scenario)
 	LeftDiceReceptacle.dice_queue.die_removed.connect(_update_desired_scenario)
@@ -37,13 +38,10 @@ func _ready() -> void:
 	RightDiceReceptacle.dice_queue.die_removed.connect(_update_desired_scenario)
 	
 	map_button.clicked.connect(_jump)
-
-	Events.show_tile_grid.connect(_hide)
-	Events.show_comms.connect(_hide)
-	Events.show_map.connect(_show)
 	
 	Events.load_game_save.connect(_load_game_save)
 	Events.start_scenario.connect(_update_map_sprites)
+	Events.engine_charge_changed.connect(_update_ui)
 	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
@@ -53,32 +51,30 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	_update_map_sprites()
 	
 	
-func _show() -> void:
-	var children = get_children()
-	for i in range(1, len(children)):
-		children[i].visible = true
+func _on_visibility_changed() -> void:
+	_update_ui()
 	
-	if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
-		$Background/LeftArrow.frame = 1
-		$Background/RightArrow.frame = 1
-
-	elif Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
-		$Background/LeftArrow.frame = 0
-		$Background/RightArrow.frame = 0
+	
+func _update_ui() -> void:
+	_update_desired_scenario()
+	
+	if not Globals.player:
+		return
+	
+	if Globals.player.engine_charge != Globals.player.max_engine_charge:
+		error_text.text = '[pulse freq=1.0 color=#d0365640 ease=-2.0][color=#d03656]CHARGE ENGINES[/color][/pulse]'
+		$LeftArrow.frame = 0
+		$RightArrow.frame = 0
+		return
 		
-	_update_desired_scenario()	
+	$LeftArrow.frame = 1
+	$RightArrow.frame = 1
+		
+	if desired_scenario_index == current_scenario_index:
+		error_text.text = '[color=#c552f1]CHOOSE DESTINATION[/color]'
 	
 
-func _hide() -> void:
-	var children = get_children()
-	for i in range(1, len(children)):
-		children[i].visible = false
-	
-	
-func _on_tab_clicked() -> void:
-	Events.show_map.emit()
 
-	
 func _update_map_sprites() -> void:
 	# Delete any old map
 	for child in map_viewport.get_children():
@@ -138,6 +134,10 @@ func _update_desired_scenario() -> void:
 	for die in RightDiceReceptacle.dice_queue.queue:
 		right_offset += die.value
 	
+	
+	if len(scenario_list) == 0:
+		return
+	
 	# Sum the values to find the new desired encounter's index
 	desired_scenario_index = current_scenario_index + right_offset - left_offset
 	
@@ -173,9 +173,9 @@ func _update_desired_scenario() -> void:
 
 func _update_map_button() -> void:
 	if desired_scenario_index != current_scenario_index:
-		map_button_label.text = '[color=#eed35d][wave amp=15.0 freq=5.0 connected=1]JUMP![/wave][/color]'
+		map_button_label.text = '[color=#c552f1][wave amp=15.0 freq=5.0 connected=1]JUMP[/wave][/color]'
 	else:
-		map_button_label.text = '[color=#f29c5d]CHOOSE:[/color]'
+		map_button_label.text = '[color=#171615]JUMP[/color]'
 
 
 func _jump() -> void:

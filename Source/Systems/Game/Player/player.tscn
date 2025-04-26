@@ -20,7 +20,7 @@ end_turn_button = NodePath("DiceQueue/EndTurnButton")
 dice_scene = ExtResource("2_lwstl")
 
 [node name="DiceQueue" parent="." instance=ExtResource("3_fnkf6")]
-position = Vector2(40, 57)
+position = Vector2(40, 58)
 
 [node name="Sprite2D" type="Sprite2D" parent="DiceQueue"]
 z_index = -1
@@ -28,7 +28,6 @@ position = Vector2(54, 0)
 texture = ExtResource("4_83hls")
 
 [node name="EndTurnButton" type="TextureRect" parent="DiceQueue"]
-visible = false
 offset_left = 26.0
 offset_top = -20.0
 offset_right = 74.0
@@ -61,5 +60,5 @@ max_health = 16
 starting_health = 16
 
 [node name="PlayerHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
-position = Vector2(-12, 11)
+position = Vector2(-23, 18)
 health_component = NodePath("../Health")

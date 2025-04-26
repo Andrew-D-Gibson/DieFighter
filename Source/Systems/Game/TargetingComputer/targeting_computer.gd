@@ -1,10 +1,13 @@
 class_name TargetingComputer
 extends Node2D
 
+@export var targeting_indicator: Sprite2D
 @export var unknown_intent_indicator: Texture2D
 @export var targeting_indicator_offset: Vector2 = Vector2(20, 18)
 var targeted_enemy_index: int
 var targeted_enemy: Enemy
+var indicator_bob_tween: Tween
+
 
 func _ready() -> void:
 	Globals.targeting_computer = self
@@ -80,9 +83,8 @@ func check_target_is_valid() -> void:
 	
 	
 func _update_ui() -> void:
-	#print(targeted_enemy)
 	if !targeted_enemy:
-		$TargetingIndicator.visible = false
+		targeting_indicator.visible = false
 		
 		$TargetImage.texture = null
 		for i in range(6):
@@ -117,11 +119,11 @@ func _update_ui() -> void:
 
 
 func _move_indicator() -> void:
-	$TargetingIndicator.visible = true
+	targeting_indicator.visible = true
 		
 	var tween_time = 0.3
 	var tween = get_tree().create_tween()
-	tween.tween_property($TargetingIndicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, tween_time).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, tween_time).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 
 	tween.tween_callback(_indicator_bob)
 	
@@ -131,7 +133,11 @@ func _indicator_bob() -> void:
 		return
 		
 	var bob_time = 1.5
-	var bob_tween = get_tree().create_tween()
-	bob_tween.tween_property($TargetingIndicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset + Vector2(4, 4), bob_time/2.0).from(targeted_enemy.global_position + targeting_indicator_offset).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	bob_tween.tween_property($TargetingIndicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, bob_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	bob_tween.set_loops()
+	
+	if indicator_bob_tween:
+		indicator_bob_tween.kill()
+		
+	indicator_bob_tween = get_tree().create_tween()
+	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset + Vector2(4, 4), bob_time/2.0).from(targeted_enemy.global_position + targeting_indicator_offset).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, bob_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	indicator_bob_tween.set_loops()

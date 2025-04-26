@@ -29,7 +29,6 @@ func _ready() -> void:
 
 
 func _open_shop() -> void:
-	print('shop opened')
 	# Create shop layout
 	_create_shop_tiles()
 	_create_dice_buy_zone()
@@ -53,6 +52,7 @@ func _create_shop_tiles() -> void:
 			
 			var pos = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
 			tile.global_position = global_position + pos
+			tile.draggable.drag_started.connect(Events.show_systems.emit)
 			tile.draggable.home_position = tile.global_position
 			tile.draggable.emit_reached_new_home = false
 			tile.draggable.drag_ended.connect(_on_shop_tile_dragged)
@@ -66,6 +66,7 @@ func _create_dice_buy_zone() -> void:
 	dice.global_position = global_position + Vector2(-24, 12)
 	dice.draggable.home_position = dice.global_position
 	dice.draggable.emit_reached_new_home = false
+	dice.draggable.drag_started.connect(Events.show_systems.emit)
 	dice.draggable.drag_ended.connect(_on_dice_bought)
 	
 	shop_dice.append(dice)
@@ -79,6 +80,7 @@ func _on_shop_tile_dragged(draggable: Draggable, end_position: Vector2) -> void:
 		var tile = draggable.get_parent()
 		if Globals.player.money >= DICE_COST:
 			Globals.player.money -= DICE_COST
+			tile.draggable.drag_started.disconnect(Events.show_systems.emit)
 			tile.draggable.drag_ended.disconnect(_on_shop_tile_dragged)
 			tile.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
 			tile.tile_activation_complete.connect(Globals.tile_grid.tile_activation_complete.emit)

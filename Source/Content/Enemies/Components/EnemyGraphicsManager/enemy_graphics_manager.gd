@@ -28,7 +28,7 @@ func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 	add_child(ship_graphics)
 	
 	shakeable.node_to_shake = ship_graphics
-	_start_bob_tween()
+	start_bob_tween()
 
 
 ## Plays the death animation sequence
@@ -68,32 +68,38 @@ func set_health_bar_health(health: Health) -> void:
 
 ## Called when the enemy's shields are hit
 func on_shields_hit() -> void:
-	_stop_bob_tween()
+	stop_bob_tween()
 	shakeable.small_shake()
 	_shields_hit_flash()
 	await shakeable.shake_ended
-	_start_bob_tween()
+	start_bob_tween()
 
 
 ## Called when the enemy's health is hit
 func on_health_hit() -> void:
-	_stop_bob_tween()
+	stop_bob_tween()
 	shakeable.large_shake()
 	_health_hit_flash()
 	await shakeable.shake_ended
-	_start_bob_tween()
+	start_bob_tween()
 
 
 ## Stops the current bobbing animation
-func _stop_bob_tween() -> void:
+func stop_bob_tween() -> void:
 	if _bob_tween:
 		_bob_tween.kill()
 
 
 ## Starts a new bobbing animation
-func _start_bob_tween() -> void:
+func start_bob_tween() -> void:
 	if _bob_tween:
 		_bob_tween.kill()
+		
+	# Don't start bobbing if we're translating in space, 
+	# like tweening to enter the scene or tweening to another 
+	# position on the spawn curve
+	if get_parent().moving_in_world:
+		return
 		
 	var tween_time = randf_range(2, 4)
 	_bob_tween = get_tree().create_tween()

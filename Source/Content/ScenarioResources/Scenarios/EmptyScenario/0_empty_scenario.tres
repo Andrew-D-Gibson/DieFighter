@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=5 format=3 uid="uid://f2rm5hk1yt2q"]
+
+[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_8b01s"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_uydqo"]
+[ext_resource type="Texture2D" uid="uid://sisf28rp3pdm" path="res://Assets/Textures/Map/EncounterIcons/empty_encounter.png" id="2_conha"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="2_xksp1"]
+
+[resource]
+script = ExtResource("1_uydqo")
+map_icon = ExtResource("2_conha")
+starting_screen = 2
+background_resource = ExtResource("1_8b01s")
+starting_enemies = Array[ExtResource("2_xksp1")]([])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

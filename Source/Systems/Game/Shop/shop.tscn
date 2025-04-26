@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://c5lgcsetsx3lq"]
+[gd_scene load_steps=9 format=3 uid="uid://c5lgcsetsx3lq"]
 
 [ext_resource type="Script" uid="uid://c3ihhv3xtt8ib" path="res://Source/Systems/Game/Shop/shop.gd" id="1_shop"]
 [ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="2_bsm0f"]
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="3_0o0y8"]
 [ext_resource type="Script" uid="uid://cb3ideptaj1hg" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.gd" id="4_uu5u6"]
 [ext_resource type="Texture2D" uid="uid://r1v1dd5n2g6f" path="res://Assets/Textures/Shop/selling_panel.png" id="5_18pwj"]
+[ext_resource type="Texture2D" uid="uid://dlthcmym312qj" path="res://Assets/Textures/Shop/mockup.png" id="6_18pwj"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yjpg7"]
 size = Vector2(117, 56)
@@ -66,3 +67,7 @@ mouse_filter = 2
 text = "10"
 horizontal_alignment = 2
 vertical_alignment = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(47, 19)
+texture = ExtResource("6_18pwj")

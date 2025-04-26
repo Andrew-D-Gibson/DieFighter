@@ -10,13 +10,12 @@ func _ready() -> void:
 	
 	
 func _add_die(die: Dice) -> void:
-	# Make sure we're out of combat
-	# This is probably bad for extensibility, but who knows what I'll need later
-	if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
+	# Make sure the engine is charged
+	if Globals.player.engine_charge != Globals.player.max_engine_charge:
 		return
 		
-	# Limit the dice in the queue to 3
-	if len(dice_queue.queue) >= 3:
+	# Limit the dice in the queue to 1 (for now this is silly, but w/e)
+	if len(dice_queue.queue) >= 1:
 		return
 	
 	dice_queue.add(die)

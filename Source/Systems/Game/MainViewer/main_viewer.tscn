@@ -1,0 +1,403 @@
+[gd_scene load_steps=40 format=3 uid="uid://bq0eop4cxspu2"]
+
+[ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
+[ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
+[ext_resource type="Texture2D" uid="uid://bcipcbo1s7ad2" path="res://Assets/Textures/MainViewer/tab_background-Sheet.png" id="3_f3ea6"]
+[ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_sgr5l"]
+[ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Content/Tiles/tile.gd" id="5_dq04t"]
+[ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/engine_charger.tres" id="6_uglmk"]
+[ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="7_hyorp"]
+[ext_resource type="Script" uid="uid://dl3x4ek6t4j8y" path="res://Source/Systems/Components/Shakeable/shakeable.gd" id="7_p0pmq"]
+[ext_resource type="Script" uid="uid://cb3ideptaj1hg" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.gd" id="8_bkkgo"]
+[ext_resource type="Shader" uid="uid://cpjpl07bibay0" path="res://Assets/Shaders/tile_no_uses_remaining.gdshader" id="9_p0pmq"]
+[ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
+[ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="11_foiuu"]
+[ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/Systems/Game/CommsManager/comms_manager.tscn" id="12_ctpxn"]
+[ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/Systems/Game/Map/map.tscn" id="13_l0r2u"]
+[ext_resource type="Texture2D" uid="uid://b06bwfbiw2rcm" path="res://Assets/Textures/MainViewer/map_arrow-Sheet.png" id="14_eo4kl"]
+[ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres" id="14_mm1jt"]
+[ext_resource type="PackedScene" uid="uid://751pc74qkdf0" path="res://Source/Systems/Game/MainViewer/DiceReceptacle/dice_receptacle.tscn" id="15_mm1jt"]
+[ext_resource type="Texture2D" uid="uid://bo66e1kj2f37w" path="res://Assets/Textures/MainViewer/EngineCharger/under.png" id="17_fa2si"]
+[ext_resource type="Texture2D" uid="uid://dxkhg5oasm2mr" path="res://Assets/Textures/MainViewer/EngineCharger/fill.png" id="18_foiuu"]
+[ext_resource type="Texture2D" uid="uid://bmnlxtlwmxtue" path="res://Assets/Textures/MainViewer/EngineCharger/charged.png" id="19_geq53"]
+[ext_resource type="Texture2D" uid="uid://dcp4x2igagi4m" path="res://Assets/Textures/MainViewer/EngineCharger/fill_head.png" id="20_35tnh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3ea6"]
+atlas = ExtResource("2_q6tn0")
+region = Rect2(0, 0, 157, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sgr5l"]
+atlas = ExtResource("2_q6tn0")
+region = Rect2(157, 0, 157, 90)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_kxrxf"]
+atlas = ExtResource("2_q6tn0")
+region = Rect2(314, 0, 157, 90)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dq04t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f3ea6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sgr5l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_kxrxf")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dq04t"]
+atlas = ExtResource("3_f3ea6")
+region = Rect2(0, 0, 43, 10)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uglmk"]
+atlas = ExtResource("3_f3ea6")
+region = Rect2(43, 0, 43, 10)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hyorp"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dq04t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uglmk")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_p0pmq"]
+size = Vector2(43, 10)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_tmld6"]
+viewport_path = NodePath("Map/ViewportTexture2/MapViewport")
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_niw3m"]
+atlas = ExtResource("14_eo4kl")
+region = Rect2(0, 0, 9, 12)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7x3t1"]
+atlas = ExtResource("14_eo4kl")
+region = Rect2(9, 0, 9, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fa2si"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_niw3m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7x3t1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eo4kl"]
+size = Vector2(44, 11)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_bkkgo"]
+shader = ExtResource("9_p0pmq")
+shader_parameter/outer_radius = 10.0
+shader_parameter/strength = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pplg4"]
+atlas = ExtResource("7_hyorp")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_eo4kl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pplg4")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ctpxn"]
+size = Vector2(22, 24)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_l0r2u"]
+size = Vector2(22, 24)
+
+[node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "comms", "tile_grid", "map", "engine_charger", "comms_button_background", "comms_button_label", "systems_button_background", "systems_button_label", "map_button_background", "map_button_label")]
+script = ExtResource("1_v7j4o")
+background = NodePath("Background")
+comms = NodePath("CommsManager")
+tile_grid = NodePath("TileGrid")
+map = NodePath("Map")
+engine_charger = NodePath("EngineCharger")
+comms_button_background = NodePath("TabButtons/CommsButton")
+comms_button_label = NodePath("TabButtons/CommsButton/RichTextLabel")
+systems_button_background = NodePath("TabButtons/SystemsButton")
+systems_button_label = NodePath("TabButtons/SystemsButton/RichTextLabel")
+map_button_background = NodePath("TabButtons/MapButton")
+map_button_label = NodePath("TabButtons/MapButton/RichTextLabel")
+
+[node name="Background" type="AnimatedSprite2D" parent="."]
+position = Vector2(-0.5, 0)
+sprite_frames = SubResource("SpriteFrames_dq04t")
+frame = 2
+
+[node name="TabButtons" type="Node2D" parent="."]
+
+[node name="CommsButton" type="AnimatedSprite2D" parent="TabButtons"]
+position = Vector2(-51.5, -37)
+sprite_frames = SubResource("SpriteFrames_hyorp")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TabButtons/CommsButton"]
+offset_left = -20.5
+offset_top = -7.5
+offset_right = 22.5
+offset_bottom = 4.5
+mouse_filter = 2
+text = "COMMS"
+horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="TabButtons/CommsButton"]
+script = ExtResource("4_sgr5l")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/CommsButton/Clickable"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_p0pmq")
+
+[node name="SystemsButton" type="AnimatedSprite2D" parent="TabButtons"]
+position = Vector2(-0.5, -37)
+sprite_frames = SubResource("SpriteFrames_hyorp")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TabButtons/SystemsButton"]
+offset_left = -20.5
+offset_top = -7.5
+offset_right = 22.5
+offset_bottom = 4.5
+mouse_filter = 2
+text = "SYSTEMS"
+horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="TabButtons/SystemsButton"]
+script = ExtResource("4_sgr5l")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/SystemsButton/Clickable"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_p0pmq")
+
+[node name="MapButton" type="AnimatedSprite2D" parent="TabButtons"]
+position = Vector2(50.5, -37)
+sprite_frames = SubResource("SpriteFrames_hyorp")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TabButtons/MapButton"]
+offset_left = -20.5
+offset_top = -7.5
+offset_right = 22.5
+offset_bottom = 4.5
+mouse_filter = 2
+text = "MAP
+"
+horizontal_alignment = 1
+
+[node name="Clickable" type="Area2D" parent="TabButtons/MapButton"]
+script = ExtResource("4_sgr5l")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/MapButton/Clickable"]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_p0pmq")
+
+[node name="TileGrid" parent="." instance=ExtResource("11_bkkgo")]
+position = Vector2(-73, -31)
+
+[node name="CommsManager" parent="." node_paths=PackedStringArray("speaker_sprite", "main_text") instance=ExtResource("12_ctpxn")]
+visible = false
+speaker_sprite = NodePath("Sprite2D")
+main_text = NodePath("RichTextLabel")
+
+[node name="Sprite2D" type="Sprite2D" parent="CommsManager"]
+position = Vector2(-61, -21)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CommsManager"]
+offset_left = -48.0
+offset_top = -32.0
+offset_right = 69.0
+offset_bottom = 38.0
+bbcode_enabled = true
+text = "Main text box for describing scenarios and dialogues from other ships etc. [color=red]damage[/color] and stuff"
+
+[node name="Map" parent="." node_paths=PackedStringArray("LeftDiceReceptacle", "RightDiceReceptacle", "map_button_label", "map_button", "map_viewport", "map_camera", "error_text") instance=ExtResource("13_l0r2u")]
+LeftDiceReceptacle = NodePath("LeftDiceReceptacle")
+RightDiceReceptacle = NodePath("RightDiceReceptacle")
+map_button_label = NodePath("JumpButton/RichTextLabel")
+map_button = NodePath("JumpButton/Clickable")
+map_viewport = NodePath("ViewportTexture2/MapViewport")
+map_camera = NodePath("ViewportTexture2/MapViewport/Camera2D")
+error_text = NodePath("RichTextLabel")
+empty_scenario = ExtResource("14_mm1jt")
+
+[node name="ViewportTexture2" type="TextureRect" parent="Map"]
+offset_left = -73.0
+offset_top = -17.0
+offset_right = 47.0
+offset_bottom = 42.0
+mouse_filter = 2
+texture = SubResource("ViewportTexture_tmld6")
+expand_mode = 1
+
+[node name="MapViewport" type="SubViewport" parent="Map/ViewportTexture2"]
+handle_input_locally = false
+canvas_item_default_texture_filter = 0
+size = Vector2i(720, 354)
+size_2d_override = Vector2i(120, 59)
+size_2d_override_stretch = true
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="Map/ViewportTexture2/MapViewport"]
+
+[node name="RightArrow" type="AnimatedSprite2D" parent="Map"]
+position = Vector2(40.5, -25)
+sprite_frames = SubResource("SpriteFrames_fa2si")
+frame = 1
+
+[node name="LeftArrow" type="AnimatedSprite2D" parent="Map"]
+position = Vector2(-66.5, -25)
+rotation = 3.14159
+sprite_frames = SubResource("SpriteFrames_fa2si")
+frame = 1
+
+[node name="RightDiceReceptacle" parent="Map" instance=ExtResource("15_mm1jt")]
+position = Vector2(29, -25)
+
+[node name="LeftDiceReceptacle" parent="Map" instance=ExtResource("15_mm1jt")]
+position = Vector2(-55, -25)
+
+[node name="JumpButton" type="Sprite2D" parent="Map"]
+position = Vector2(-14, -24)
+
+[node name="Clickable" type="Area2D" parent="Map/JumpButton"]
+script = ExtResource("4_sgr5l")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Map/JumpButton/Clickable"]
+position = Vector2(1, -0.5)
+shape = SubResource("RectangleShape2D_eo4kl")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Map/JumpButton"]
+offset_left = -20.0
+offset_top = -8.0
+offset_right = 23.0
+offset_bottom = 5.0
+mouse_filter = 2
+bbcode_enabled = true
+text = "JUMP"
+horizontal_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Map"]
+offset_left = -73.0
+offset_top = -20.0
+offset_right = 47.0
+offset_bottom = 10.0
+bbcode_enabled = true
+text = "[pulse freq=1.0 color=#d0365640 ease=-2.0][color=#d03656]CHARGE ENGINES[/color][/pulse]
+"
+horizontal_alignment = 1
+
+[node name="EngineCharger" type="Node2D" parent="." node_paths=PackedStringArray("progress_bar", "fill_head", "charged_indicator", "display_text")]
+script = ExtResource("11_foiuu")
+progress_bar = NodePath("TextureProgressBar")
+fill_head = NodePath("FillHead")
+charged_indicator = NodePath("ChargedIndicator")
+display_text = NodePath("RichTextLabel")
+
+[node name="EngineChargerTile" type="Node2D" parent="EngineCharger" node_paths=PackedStringArray("clickable", "shakeable", "sprite_frames")]
+position = Vector2(60, 29)
+script = ExtResource("5_dq04t")
+tile_resource = ExtResource("6_uglmk")
+clickable = NodePath("Clickable")
+shakeable = NodePath("Shakeable")
+sprite_frames = NodePath("AnimatedSprite2D")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="EngineCharger/EngineChargerTile"]
+material = SubResource("ShaderMaterial_bkkgo")
+sprite_frames = SubResource("SpriteFrames_eo4kl")
+
+[node name="Clickable" type="Area2D" parent="EngineCharger/EngineChargerTile"]
+script = ExtResource("4_sgr5l")
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EngineCharger/EngineChargerTile/Clickable"]
+shape = SubResource("RectangleShape2D_ctpxn")
+
+[node name="Shakeable" type="Node2D" parent="EngineCharger/EngineChargerTile" node_paths=PackedStringArray("node_to_shake")]
+script = ExtResource("7_p0pmq")
+node_to_shake = NodePath("..")
+small_shake_duration = 0.05
+metadata/_custom_type_script = "uid://dl3x4ek6t4j8y"
+
+[node name="CanAcceptDice" type="Node2D" parent="EngineCharger/EngineChargerTile" node_paths=PackedStringArray("collision") groups=["CanAcceptDice"]]
+script = ExtResource("8_bkkgo")
+collision = NodePath("CollisionShape2D")
+metadata/_custom_type_script = "uid://cb3ideptaj1hg"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="EngineCharger/EngineChargerTile/CanAcceptDice"]
+shape = SubResource("RectangleShape2D_l0r2u")
+
+[node name="TextureProgressBar" type="TextureProgressBar" parent="EngineCharger"]
+z_index = -2
+offset_left = 52.0
+offset_top = -31.0
+offset_right = 68.0
+offset_bottom = 3.0
+max_value = 1.0
+step = 0.01
+fill_mode = 3
+texture_under = ExtResource("17_fa2si")
+texture_progress = ExtResource("18_foiuu")
+
+[node name="ChargedIndicator" type="Sprite2D" parent="EngineCharger"]
+z_index = -1
+position = Vector2(60, -14)
+texture = ExtResource("19_geq53")
+
+[node name="FillHead" type="Sprite2D" parent="EngineCharger"]
+position = Vector2(60, 2)
+texture = ExtResource("20_35tnh")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="EngineCharger"]
+offset_left = 49.0
+offset_top = 2.0
+offset_right = 73.0
+offset_bottom = 15.0
+text = "21/25"
+horizontal_alignment = 1
+
+[connection signal="clicked" from="TabButtons/CommsButton/Clickable" to="." method="_show_comms"]
+[connection signal="input_event" from="TabButtons/CommsButton/Clickable" to="TabButtons/CommsButton/Clickable" method="_on_input_event"]
+[connection signal="is_hovered" from="TabButtons/CommsButton/Clickable" to="." method="_comms_hovered"]
+[connection signal="mouse_entered" from="TabButtons/CommsButton/Clickable" to="TabButtons/CommsButton/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="TabButtons/CommsButton/Clickable" to="TabButtons/CommsButton/Clickable" method="_on_mouse_exited"]
+[connection signal="clicked" from="TabButtons/SystemsButton/Clickable" to="." method="_show_systems"]
+[connection signal="input_event" from="TabButtons/SystemsButton/Clickable" to="TabButtons/SystemsButton/Clickable" method="_on_input_event"]
+[connection signal="is_hovered" from="TabButtons/SystemsButton/Clickable" to="." method="_systems_hovered"]
+[connection signal="mouse_entered" from="TabButtons/SystemsButton/Clickable" to="TabButtons/SystemsButton/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="TabButtons/SystemsButton/Clickable" to="TabButtons/SystemsButton/Clickable" method="_on_mouse_exited"]
+[connection signal="clicked" from="TabButtons/MapButton/Clickable" to="." method="_show_map"]
+[connection signal="input_event" from="TabButtons/MapButton/Clickable" to="TabButtons/MapButton/Clickable" method="_on_input_event"]
+[connection signal="is_hovered" from="TabButtons/MapButton/Clickable" to="." method="_map_hovered"]
+[connection signal="mouse_entered" from="TabButtons/MapButton/Clickable" to="TabButtons/MapButton/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="TabButtons/MapButton/Clickable" to="TabButtons/MapButton/Clickable" method="_on_mouse_exited"]
+[connection signal="clicked" from="Map/JumpButton/Clickable" to="Map" method="_jump"]
+[connection signal="input_event" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_mouse_exited"]
+[connection signal="input_event" from="EngineCharger/EngineChargerTile/Clickable" to="EngineCharger/EngineChargerTile/Clickable" method="_on_input_event"]
+[connection signal="die_accepted" from="EngineCharger/EngineChargerTile/CanAcceptDice" to="EngineCharger/EngineChargerTile" method="try_to_activate"]

@@ -12,11 +12,10 @@ shader_parameter/flash_amount = 0.0
 
 [node name="SectorBossShipGraphics" type="Sprite2D"]
 material = SubResource("ShaderMaterial_3pfgn")
-position = Vector2(0, -16)
 texture = ExtResource("1_5hy1v")
 
 [node name="LargeEngineParticles" parent="." instance=ExtResource("2_oby0r")]
-position = Vector2(-18, -20)
+position = Vector2(-18, -21)
 
 [node name="LargeEngineParticles2" parent="." instance=ExtResource("2_oby0r")]
-position = Vector2(18, -20)
+position = Vector2(18, -21)

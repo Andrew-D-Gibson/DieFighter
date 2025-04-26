@@ -28,6 +28,7 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 
 ## The actions the enemy will take this turn
 var turn_actions: Array[EnemyActionResource]
+var moving_in_world: bool = false
 
 
 ## Initializes the enemy and connects all necessary signals
@@ -40,6 +41,11 @@ func _ready() -> void:
 	_connect_combat_signals()
 
 
+func _process(_delta: float) -> void:
+	if moving_in_world:
+		dice_manager._update_dice_queue_locations()
+		
+
 ## Connects all health-related signals
 func _connect_health_signals() -> void:
 	health.death.connect(_on_death)
@@ -50,9 +56,13 @@ func _connect_health_signals() -> void:
 ## Connects all scenario-related signals
 func _connect_scenario_signals() -> void:
 	Events.scenario_event.connect(func(event: ScenarioManager.ScenarioEvent):
-		scenario_state = scenario_state.handle_scenario_event(event)
-		graphics_manager.set_health_bar_attitude(scenario_state.attitude)
-		trigger_state_effects()
+		var new_state: ScenarioShipState = scenario_state.handle_scenario_event(event)
+		graphics_manager.set_health_bar_attitude(new_state.attitude)
+		
+		if new_state != scenario_state:
+			scenario_state = new_state
+			trigger_state_effects()
+		scenario_state = new_state
 	)
 	
 	Events.start_scenario.connect(trigger_state_effects)

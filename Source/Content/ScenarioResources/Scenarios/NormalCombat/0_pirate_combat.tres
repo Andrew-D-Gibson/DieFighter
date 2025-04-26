@@ -42,7 +42,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 [resource]
 script = ExtResource("3_yk72u")
 map_icon = ExtResource("2_jot7b")
-starting_screen = 0
+starting_screen = 1
 background_resource = ExtResource("1_mgmru")
 starting_enemies = Array[ExtResource("4_wrhgd")]([SubResource("Resource_1othr"), SubResource("Resource_u8e0s")])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

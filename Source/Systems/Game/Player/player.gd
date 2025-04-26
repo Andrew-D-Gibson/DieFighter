@@ -3,6 +3,13 @@ extends Node2D
 
 @export var time_between_die_spawns: float = 0.2
 
+@export var max_engine_charge: int = 24
+@export var engine_charge: int = 0:
+	set(new_value):
+		engine_charge = clampi(new_value, 0, max_engine_charge)
+		Events.engine_charge_changed.emit()
+		
+
 @export_category('Graphics')
 @export var dice_queue_spacing: int = 14
 
@@ -13,6 +20,7 @@ extends Node2D
 
 var num_of_dice: int
 @export var dice_scene: PackedScene
+
 
 var money: int:
 	set(value):
@@ -38,22 +46,9 @@ func _ready() -> void:
 	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false
 
-	Events.load_scenario.connect(_show_starting_screen)
 	Events.start_scenario.connect(_start_scenario)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
-
-
-func _show_starting_screen(scenario: ScenarioResource) -> void:
-	match scenario.starting_screen:
-		ScenarioResource.StartingScreen.SYSTEMS:
-			Events.show_tile_grid.emit()
-			
-		ScenarioResource.StartingScreen.MAP:
-			Events.show_map.emit()
-			
-		ScenarioResource.StartingScreen.COMMS:
-			Events.show_comms.emit()
 			
 			
 func _load_game_save(game_save: GameSaveResource) -> void:
@@ -87,7 +82,7 @@ func _process(_delta: float) -> void:
 			if current_queue_position == -1:
 				dice_manager.add(die, true, false)
 			
-			var dice_queue_mouse_pos = get_global_mouse_position() - dice_manager.global_position
+			var dice_queue_mouse_pos = get_global_mouse_position() - dice_manager.global_position + Vector2(6, 0)
 			
 
 			# Create a rectangle that encompasses the current displayed dice queue
@@ -101,7 +96,6 @@ func _process(_delta: float) -> void:
 			if dice_queue_bounding_rect.has_point(dice_queue_mouse_pos):
 				# Determine which queue position the mouse is hovering over
 				var hovered_queue_position = int(dice_queue_mouse_pos.x / dice_queue_spacing)
-
 				# Make sure we limit the hovered location to the end of the queue
 				hovered_queue_position = min(hovered_queue_position, len(dice_manager.queue)-1)
 				
@@ -147,8 +141,6 @@ func _delete_existing_dice() -> void:
 
 func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bool = false) -> void:
 	for i in range(num_to_spawn):
-		await get_tree().create_timer(time_between_die_spawns).timeout
-		
 		var new_die = dice_scene.instantiate()
 		new_die.global_position = global_position + Vector2(600, 0)
 		new_die.holographic = holographic
@@ -157,11 +149,14 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 		add_child(new_die)
 		dice_manager.add(new_die, true, false)
 		
+		await get_tree().create_timer(time_between_die_spawns).timeout
+		
 	_update_dice_queue_locations()
 	
 	
 func _start_scenario() -> void:
 	_delete_existing_dice()
+	await get_tree().create_timer(time_between_die_spawns).timeout
 	spawn_dice()
 
 

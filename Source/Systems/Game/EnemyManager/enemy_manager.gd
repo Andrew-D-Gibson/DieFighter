@@ -34,7 +34,7 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 	for i in range(len(enemies_to_spawn)):
 		var enemy = enemy_base_scene.instantiate()
 		enemy.enemy_resource = enemies_to_spawn[i].enemy_resource
-		enemy.position = get_point_along_path(enemies_to_spawn[i].spawning_path_location)
+		enemy.position = enemy.enemy_resource.graphics_scene_offset + get_point_along_path(enemies_to_spawn[i].spawning_path_location)
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
 		enemy.scenario_state = enemies_to_spawn[i].starting_state
 		#enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), 0)
@@ -46,6 +46,21 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 func get_point_along_path(proportion: float) -> Vector2:
 	var total_length: float = spawning_path.curve.get_baked_length()
 	return spawning_path.curve.sample_baked(proportion * total_length)
+	
+	
+func move_ship_to_point_on_path(ship: Enemy, proportion: float) -> void:
+	var tween_time = 0.75
+	var tween = get_tree().create_tween()
+	tween.tween_property(
+		ship, 
+		'global_position', 
+		get_point_along_path(proportion),
+		tween_time
+	)\
+	.set_trans(Tween.TRANS_QUAD)\
+	.set_ease(Tween.EASE_IN_OUT)
+	
+	await tween.finished
 	
 	
 func get_alive_enemies() -> Array[Enemy]:

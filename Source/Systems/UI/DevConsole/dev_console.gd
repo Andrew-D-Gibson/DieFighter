@@ -31,6 +31,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'add_money':
 			_add_money(command.slice(1))
 			
+		'charge_engines':
+			_charge_engines(command.slice(1))
+			
 		'clear':
 			_clear()
 			
@@ -86,6 +89,15 @@ func _add_money(command_args: Array[String] = []) -> void:
 	
 	Globals.player.money += amount
 	command_history.append_text('\n[center]Gave money to player[/center]')
+	
+	
+func _charge_engines(command_args: Array[String] = []) -> void:
+	var amount: int = Globals.player.max_engine_charge
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+		
+	Globals.player.engine_charge += amount
+	command_history.append_text("\n[center]Charged player's engines![/center]")
 	
 	
 func _clear() -> void:

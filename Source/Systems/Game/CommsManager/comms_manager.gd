@@ -6,33 +6,10 @@ extends Node2D
 @export var choice_scene: PackedScene
 
 func _ready() -> void:
-	_hide()
-	Events.show_comms.connect(_show)
-	Events.show_map.connect(_hide)
-	Events.show_tile_grid.connect(_hide)
-	
-	Events.targeting_computer_retargeted.connect(_update_speaker)
-	
-	
-func on_tab_clicked() -> void:
-	Events.show_comms.emit()
-	
-	
-func _show() -> void:
-	var children = get_children()
-	for i in range(1, len(children)):
-		children[i].visible = true
-		
-	_update_speaker()
-	
+	Events.targeting_computer_retargeted.connect(update_speaker)
 
-func _hide() -> void:
-	var children = get_children()
-	for i in range(1, len(children)):
-		children[i].visible = false
 	
-	
-func _update_speaker() -> void:
+func update_speaker() -> void:
 	if Globals.targeting_computer:
 		if Globals.targeting_computer.targeted_enemy:
 			main_text.text = Globals.targeting_computer.targeted_enemy.get_dialogue()

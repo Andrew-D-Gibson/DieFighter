@@ -50,6 +50,7 @@ script = ExtResource("2_62y4q")
 enemy_name = "Defender"
 description = "Gonna defend against ya boi"
 ship_graphics_scene = ExtResource("6_o11wk")
+graphics_scene_offset = Vector2(0, 0)
 targeting_computer_image = ExtResource("3_62y4q")
 health_bar_position = Vector2(-21, -28)
 dice_queue_position = Vector2(24, 8)

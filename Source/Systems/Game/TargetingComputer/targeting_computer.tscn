@@ -50,8 +50,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_46m13"]
 size = Vector2(8, 22)
 
-[node name="TargetingComputer" type="Node2D"]
+[node name="TargetingComputer" type="Node2D" node_paths=PackedStringArray("targeting_indicator")]
 script = ExtResource("1_8ig5e")
+targeting_indicator = NodePath("TargetingIndicator")
 unknown_intent_indicator = ExtResource("2_g8xi5")
 
 [node name="Screen" type="AnimatedSprite2D" parent="."]

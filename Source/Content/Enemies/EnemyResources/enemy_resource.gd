@@ -7,6 +7,7 @@ extends Resource
 
 @export_category('Graphics')
 @export var ship_graphics_scene: PackedScene
+@export var graphics_scene_offset: Vector2 = Vector2(0,0)
 @export var targeting_computer_image: Texture2D
 @export var health_bar_position: Vector2
 @export var dice_queue_position: Vector2

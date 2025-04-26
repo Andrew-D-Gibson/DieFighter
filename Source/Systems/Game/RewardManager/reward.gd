@@ -20,8 +20,10 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 		queue_free()
 		return
 	
-	var reward_spacing = 100
-	var spacing = 100 / float(num_of_rewards + 1)
+	var reward_spacing: int = 26
+	
+	var total_length := reward_spacing * (num_of_rewards - 1)
+	var start_offset := -total_length / 2
 
 	for i in range(num_of_rewards):
 		var reward: Node2D
@@ -38,8 +40,9 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 			
 		
 		add_child(reward)
+		reward.draggable.drag_started.connect(Events.show_systems.emit)
 		reward.draggable.drag_ended.connect(_end_reward)
-		reward.global_position = global_position + Vector2(-(reward_spacing / float(2)) + (spacing * (i+1)), 0)
+		reward.global_position = global_position + Vector2(start_offset,0) + Vector2(i * reward_spacing, 0)
 		reward.draggable.home_position = reward.global_position
 		reward.draggable.emit_reached_new_home = false
 		
@@ -53,6 +56,7 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 		return
 		
 	var chosen_reward = draggable.get_parent()
+	chosen_reward.draggable.drag_started.disconnect(Events.show_systems.emit)
 	chosen_reward.draggable.drag_ended.disconnect(_end_reward)
 	
 	if chosen_reward is Tile:
