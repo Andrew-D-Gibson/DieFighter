@@ -8,7 +8,7 @@
 
 [resource]
 script = ExtResource("2_tyfvd")
-dialogue = "Keep it up!"
+dialogue = "Please help us fend off these pirate thugs!"
 faction = 1
 attitude = 0
 effects_on_enter = Array[ExtResource("1_0n5q3")]([])

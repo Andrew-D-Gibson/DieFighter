@@ -7,5 +7,5 @@ func _set_shields() -> void:
 		$Shields.frame = 2
 	elif health_component.shields < health_component.max_health:
 		$Shields.frame = 1
-	else:
+	else:\
 		$Shields.frame = 0

@@ -6,12 +6,21 @@ extends Node2D
 @export_category("Health")
 @export var max_health: int
 @export var starting_health: int
-@onready var health: int = starting_health
+@onready var health: int = starting_health:
+	set(new_value):
+		health = new_value
+		health_set.emit()
 
 @export_category("Shields")
 @export var starting_shields: int
-@onready var shields: int = starting_shields
+@onready var shields: int = starting_shields:
+	set(new_value):
+		shields = new_value
+		shields_set.emit()
 		
+
+signal health_set()
+signal shields_set()
 signal health_damaged()
 signal health_healed()
 signal shields_damaged()

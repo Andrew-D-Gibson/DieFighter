@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://bf2p4youiejta"]
+
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_n0owd"]
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="1_xibkc"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="2_nencf"]
+[ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_u3vcg"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="5_nuryf"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_57squ"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/pirate_combatant.tres" id="7_0nwix"]
+
+[sub_resource type="Resource" id="Resource_vrd8y"]
+script = ExtResource("6_57squ")
+money = 10
+num_of_rewards = 3
+dice_probability = 0.0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_wdgmr"]
+script = ExtResource("2_nencf")
+enemy_resource = ExtResource("5_nuryf")
+spawning_path_location = 0.5
+starting_state = ExtResource("7_0nwix")
+reward_resource = SubResource("Resource_vrd8y")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("1_n0owd")
+map_icon = ExtResource("2_u3vcg")
+starting_screen = 1
+background_resource = ExtResource("1_xibkc")
+starting_enemies = Array[ExtResource("2_nencf")]([SubResource("Resource_wdgmr")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

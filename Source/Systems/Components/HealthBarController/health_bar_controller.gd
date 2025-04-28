@@ -21,6 +21,7 @@ func _ready() -> void:
 	_set_health()
 	
 	# Connect health signals
+	health_component.health_set.connect(_set_health)
 	health_component.health_damaged.connect(func():
 		_set_health()
 		_start_health_text_shake()
@@ -28,6 +29,7 @@ func _ready() -> void:
 	health_component.health_healed.connect(_set_health)
 	
 	# Connect shield signals
+	health_component.shields_set.connect(_set_shields)
 	health_component.shields_damaged.connect(func():
 		_set_shields()
 		_start_shield_text_shake()

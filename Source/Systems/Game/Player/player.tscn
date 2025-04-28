@@ -60,5 +60,5 @@ max_health = 16
 starting_health = 16
 
 [node name="PlayerHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
-position = Vector2(-23, 18)
+position = Vector2(-19, 23)
 health_component = NodePath("../Health")

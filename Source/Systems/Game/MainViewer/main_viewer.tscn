@@ -216,6 +216,7 @@ position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_p0pmq")
 
 [node name="TileGrid" parent="." instance=ExtResource("11_bkkgo")]
+visible = false
 position = Vector2(-73, -31)
 
 [node name="CommsManager" parent="." node_paths=PackedStringArray("speaker_sprite", "main_text") instance=ExtResource("12_ctpxn")]
@@ -231,6 +232,7 @@ offset_left = -48.0
 offset_top = -32.0
 offset_right = 69.0
 offset_bottom = 38.0
+theme_override_colors/default_color = Color(0.94902, 0.611765, 0.364706, 1)
 bbcode_enabled = true
 text = "Main text box for describing scenarios and dialogues from other ships etc. [color=red]damage[/color] and stuff"
 

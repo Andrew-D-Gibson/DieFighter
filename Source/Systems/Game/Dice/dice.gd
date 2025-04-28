@@ -12,7 +12,7 @@ extends Node2D
 @export var value_textures: Array[Texture2D]
 @export var holographic_textures: Array[Texture2D]
 
-var value: int = 0:
+@export var value: int = 0:
 	set(new_value):
 		value = new_value
 		

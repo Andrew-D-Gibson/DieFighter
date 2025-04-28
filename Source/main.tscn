@@ -1,9 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=19 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
 [ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
+[ext_resource type="Script" uid="uid://bqx08ggc7jojk" path="res://Source/Systems/UI/Screenshots/screenshots.gd" id="4_hd7px"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/Player/Cockpit/walls.png" id="5_a6pqk"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
 [ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
@@ -36,6 +37,7 @@ z_index = -2
 [node name="Camera2D" type="Camera2D" parent="Graphics"]
 position = Vector2(160, 90)
 zoom = Vector2(6, 6)
+script = ExtResource("4_hd7px")
 
 [node name="Shakeable" parent="Graphics/Camera2D" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("4_flage")]
 node_to_shake = NodePath("..")
@@ -55,10 +57,10 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" instance=ExtResource("6_rir3g")]
 z_index = 1
-position = Vector2(67, 115)
+position = Vector2(64, 115)
 
 [node name="TargetingComputer" parent="Systems/Player" instance=ExtResource("8_okrb4")]
-position = Vector2(217, 15)
+position = Vector2(211, 19)
 
 [node name="MoneyIndicator" parent="Systems/Player" instance=ExtResource("15_cshgf")]
 position = Vector2(-47, -108)

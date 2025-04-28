@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://dn8q8cchon3n6"]
 
-[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="1_xxtqm"]
+[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_xxtqm"]
 [ext_resource type="Texture2D" uid="uid://c8n5rlrs468on" path="res://Assets/Textures/Map/EncounterIcons/boss_encounter.png" id="2_1djmd"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="3_664ej"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="4_f4n7r"]

@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
 
 [resource]
+resource_local_to_scene = true
 script = ExtResource("1_u7gdh")
 background_color = Color(0.027451, 0.0117647, 0.14902, 1)
 nebula = false
@@ -12,5 +13,5 @@ num_of_stars = 75
 num_of_twinkling_stars = 15
 debris = true
 num_of_med_pieces = 64
-num_of_large_pieces = 8
+num_of_large_pieces = 12
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

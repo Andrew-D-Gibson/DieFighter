@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="GameSaveResource" load_steps=13 format=3 uid="uid://biawl3820xfte"]
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=14 format=3 uid="uid://biawl3820xfte"]
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
 [ext_resource type="Resource" uid="uid://dp6euwvjd2ren" path="res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres" id="3_3eajj"]
+[ext_resource type="Resource" uid="uid://bf2p4youiejta" path="res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres" id="3_cyk0s"]
 [ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres" id="3_e1utd"]
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/0_pirate_attacking_civilian.tres" id="4_3eajj"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/SectorBoss/0_sector_boss.tres" id="5_cyk0s"]
@@ -15,18 +16,18 @@
 
 [resource]
 script = ExtResource("1_78gow")
-player_health = 16
-player_max_health = 16
-player_defense = 0
-num_of_dice = 3
-money = 0
+player_health = 35
+player_max_health = 48
+player_defense = 4
+num_of_dice = 8
+money = 97
 tile_locations = Dictionary[ExtResource("6_8qr57"), Vector2i]({
 ExtResource("7_xm1st"): Vector2i(0, 0),
 ExtResource("8_7vrqj"): Vector2i(0, 1),
-ExtResource("7_5y8et"): Vector2i(1, 0),
-ExtResource("8_4a3cr"): Vector2i(1, 1),
-ExtResource("10_f1kbi"): Vector2i(2, 0)
+ExtResource("7_5y8et"): Vector2i(2, 0),
+ExtResource("8_4a3cr"): Vector2i(3, 0),
+ExtResource("10_f1kbi"): Vector2i(4, 2)
 })
 current_scenario_index = 0
-sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_3eajj"), ExtResource("3_e1utd"), ExtResource("4_3eajj"), ExtResource("5_cyk0s")])
+sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_cyk0s"), ExtResource("3_e1utd"), ExtResource("3_3eajj"), ExtResource("4_3eajj"), ExtResource("5_cyk0s")])
 metadata/_custom_type_script = "uid://dxkqfdmh8psqp"
