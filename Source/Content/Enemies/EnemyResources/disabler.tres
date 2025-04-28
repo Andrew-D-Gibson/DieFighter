@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=9 format=3 uid="uid://b5tqiiiyrjy0b"]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_hbxdm"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_7wyve"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="2_v8aec"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/defend_self.tres" id="3_t8kfg"]
+[ext_resource type="PackedScene" uid="uid://sxp7koeaaan5" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/disabler_ship_graphics.tscn" id="5_5pxhh"]
+[ext_resource type="Texture2D" uid="uid://35lb5bt8fxo1" path="res://Assets/Textures/Enemies/Disabler/Disabler_targeting_image.png" id="6_1ll6j"]
+
+[sub_resource type="Resource" id="Resource_od4nw"]
+script = ExtResource("1_hbxdm")
+base_action = ExtResource("2_v8aec")
+weight = 1.0
+min_amount = 2
+max_amount = 6
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pprml"]
+script = ExtResource("1_hbxdm")
+base_action = ExtResource("3_t8kfg")
+weight = 2.0
+min_amount = 3
+max_amount = 6
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[resource]
+script = ExtResource("2_7wyve")
+enemy_name = "Disabler Drone"
+description = "Gonna disable ya"
+ship_graphics_scene = ExtResource("5_5pxhh")
+graphics_scene_offset = Vector2(0, -16)
+targeting_computer_image = ExtResource("6_1ll6j")
+health_bar_position = Vector2(-20, -4)
+dice_queue_position = Vector2(24, 8)
+max_health = 8
+starting_shields = 8
+action_options = Array[ExtResource("1_hbxdm")]([SubResource("Resource_od4nw"), SubResource("Resource_pprml")])
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://caiex36ge3q8v"
-path="res://.godot/imported/test.png-0cb90768e8c604da39200e1dad32c028.ctex"
+uid="uid://bvtglou4t7dwx"
+path="res://.godot/imported/Shields-Sheet.png-ea8ed3b121b3b262390bbcc98d8893cd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Enemies/EnemyHealthBar/test.png"
-dest_files=["res://.godot/imported/test.png-0cb90768e8c604da39200e1dad32c028.ctex"]
+source_file="res://Assets/Textures/Player/PlayerHealthBar/OLD/Shields-Sheet.png"
+dest_files=["res://.godot/imported/Shields-Sheet.png-ea8ed3b121b3b262390bbcc98d8893cd.ctex"]
 
 [params]
 

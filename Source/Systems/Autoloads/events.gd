@@ -15,6 +15,7 @@ signal show_info(info: InfoResource)
 signal show_map()
 signal show_systems()
 signal show_comms()
+signal hide_comms()
 
 signal show_dialogue(text: String)
 signal dialogue_closed()

@@ -52,6 +52,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'shield':
 			_shield(command.slice(1))
 			
+		'spawn_dice':
+			_spawn_dice(command.slice(1))
+			
 		'shield_enemies':
 			_shield_enemies(command.slice(1))
 			
@@ -141,6 +144,14 @@ func _shield(command_args: Array[String] = []) -> void:
 	Globals.player.health.change_shields(amount)	
 	command_history.append_text('\n[center]Shielded player![/center]')
 	
+	
+func _spawn_dice(command_args: Array[String] = []) -> void:
+	var amount: int = 1
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+	
+	Globals.player.spawn_dice(amount)
+	command_history.append_text('\n[center]Spawned ' + str(amount) + ' dice[/center]')
 
 func _shield_enemies(command_args: Array[String] = []) -> void:
 	var amount: int = 10

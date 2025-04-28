@@ -7,10 +7,20 @@ func _ready() -> void:
 	die_removed.connect(_update_dice_queue_locations)
 	
 	
+func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = true) -> void:
+	super(die, preserve_value, destroy_holographic)
+	die.scale = Vector2(0.75, 0.75)
+		
+		
+func remove(die: Dice) -> void:
+	super(die)
+	die.scale = Vector2(1.0, 1.0)
+	
+	
 func _update_dice_queue_locations() -> void:
 	for i in range(len(queue)):
 		queue[i].draggable.state = Draggable.DragState.ENEMY_HOLDING
-		queue[i].draggable.home_position = global_position + Vector2(0, -i * 14)
+		queue[i].draggable.home_position = global_position + Vector2(0, -i * 10)
 
 
 ## Give dice away to other enemies if possible or the player if not	

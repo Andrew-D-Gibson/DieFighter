@@ -22,29 +22,29 @@
 [ext_resource type="Texture2D" uid="uid://bmnlxtlwmxtue" path="res://Assets/Textures/MainViewer/EngineCharger/charged.png" id="19_geq53"]
 [ext_resource type="Texture2D" uid="uid://dcp4x2igagi4m" path="res://Assets/Textures/MainViewer/EngineCharger/fill_head.png" id="20_35tnh"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_f3ea6"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_foiuu"]
 atlas = ExtResource("2_q6tn0")
-region = Rect2(0, 0, 157, 90)
+region = Rect2(0, 0, 153, 88)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_sgr5l"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_geq53"]
 atlas = ExtResource("2_q6tn0")
-region = Rect2(157, 0, 157, 90)
+region = Rect2(153, 0, 153, 88)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_kxrxf"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_35tnh"]
 atlas = ExtResource("2_q6tn0")
-region = Rect2(314, 0, 157, 90)
+region = Rect2(306, 0, 153, 88)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_dq04t"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_f3ea6")
+"texture": SubResource("AtlasTexture_foiuu")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_sgr5l")
+"texture": SubResource("AtlasTexture_geq53")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_kxrxf")
+"texture": SubResource("AtlasTexture_35tnh")
 }],
 "loop": true,
 "name": &"default",
@@ -161,6 +161,7 @@ offset_top = -7.5
 offset_right = 22.5
 offset_bottom = 4.5
 mouse_filter = 2
+bbcode_enabled = true
 text = "COMMS"
 horizontal_alignment = 1
 
@@ -182,6 +183,7 @@ offset_top = -7.5
 offset_right = 22.5
 offset_bottom = 4.5
 mouse_filter = 2
+bbcode_enabled = true
 text = "SYSTEMS"
 horizontal_alignment = 1
 
@@ -203,6 +205,7 @@ offset_top = -7.5
 offset_right = 22.5
 offset_bottom = 4.5
 mouse_filter = 2
+bbcode_enabled = true
 text = "MAP
 "
 horizontal_alignment = 1

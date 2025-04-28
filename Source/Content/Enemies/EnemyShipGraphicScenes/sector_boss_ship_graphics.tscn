@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c4k1vin370av2" path="res://Assets/Textures/Enemies/SectorBoss/sector_boss.png" id="1_5hy1v"]
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_oby0r"]
-[ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/large_engine_particles.tscn" id="2_oby0r"]
+[ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="2_oby0r"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3pfgn"]
 resource_local_to_scene = true

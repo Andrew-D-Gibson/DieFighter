@@ -1,18 +1,25 @@
-[gd_scene load_steps=10 format=3 uid="uid://cf2seb35hnl52"]
+[gd_scene load_steps=11 format=3 uid="uid://cf2seb35hnl52"]
 
 [ext_resource type="Script" uid="uid://d0qn1tyjsj7l6" path="res://Source/Systems/Game/Player/player.gd" id="1_86t7d"]
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_k7v53"]
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="2_lwstl"]
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="3_fnkf6"]
-[ext_resource type="Texture2D" uid="uid://c3kgofs4sp451" path="res://Assets/Textures/Player/DiceQueue/DiceQueueBackground.png" id="4_83hls"]
 [ext_resource type="PackedScene" uid="uid://0nffy7i5aty4" path="res://Source/Systems/Components/Health/health.tscn" id="4_da5gb"]
 [ext_resource type="Texture2D" uid="uid://c4ftyoeqhinpu" path="res://Assets/Textures/Player/DiceQueue/end_turn_button_background.png" id="5_7etns"]
 [ext_resource type="PackedScene" uid="uid://skeakddxfvao" path="res://Source/Systems/Game/Player/PlayerHealthBar/player_health_bar.tscn" id="5_83hls"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="6_2ib0s"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0xxso"]
+resource_local_to_scene = true
+shader = ExtResource("1_k7v53")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lwstl"]
 size = Vector2(48, 12)
 
 [node name="Player" type="Node2D" node_paths=PackedStringArray("dice_manager", "health", "end_turn_button")]
+material = SubResource("ShaderMaterial_0xxso")
 script = ExtResource("1_86t7d")
 dice_manager = NodePath("DiceQueue")
 health = NodePath("Health")
@@ -20,17 +27,12 @@ end_turn_button = NodePath("DiceQueue/EndTurnButton")
 dice_scene = ExtResource("2_lwstl")
 
 [node name="DiceQueue" parent="." instance=ExtResource("3_fnkf6")]
-position = Vector2(40, 58)
-
-[node name="Sprite2D" type="Sprite2D" parent="DiceQueue"]
-z_index = -1
-position = Vector2(54, 0)
-texture = ExtResource("4_83hls")
+position = Vector2(26, 58)
 
 [node name="EndTurnButton" type="TextureRect" parent="DiceQueue"]
-offset_left = 26.0
+offset_left = 45.0
 offset_top = -20.0
-offset_right = 74.0
+offset_right = 93.0
 offset_bottom = 20.0
 mouse_filter = 2
 texture = ExtResource("5_7etns")
@@ -60,5 +62,5 @@ max_health = 16
 starting_health = 16
 
 [node name="PlayerHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
-position = Vector2(-19, 23)
+position = Vector2(-24, 21)
 health_component = NodePath("../Health")

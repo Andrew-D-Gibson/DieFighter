@@ -49,16 +49,18 @@ animations = [{
 script = ExtResource("1_xmwdm")
 
 [node name="Background" type="Sprite2D" parent="."]
+position = Vector2(-12, -12)
 texture = ExtResource("2_6xma5")
 
 [node name="Shields" type="Sprite2D" parent="."]
+visible = false
 texture = ExtResource("3_a8y0g")
 
 [node name="HealthUpdateBar" type="TextureProgressBar" parent="."]
-offset_left = -32.0
-offset_top = -32.0
-offset_right = 73.0
-offset_bottom = 78.0
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 93.0
+offset_bottom = 98.0
 max_value = 1.0
 step = 0.025
 value = 1.0
@@ -67,10 +69,10 @@ texture_under = ExtResource("3_15202")
 texture_progress = ExtResource("4_a8y0g")
 
 [node name="HealthBar" type="TextureProgressBar" parent="."]
-offset_left = -32.0
-offset_top = -32.0
-offset_right = 73.0
-offset_bottom = 78.0
+offset_left = -12.0
+offset_top = -12.0
+offset_right = 93.0
+offset_bottom = 98.0
 max_value = 1.0
 step = 0.025
 value = 1.0
@@ -81,10 +83,9 @@ texture_progress = ExtResource("5_4clo8")
 texture = ExtResource("6_eq3o7")
 
 [node name="HealthLabel" type="RichTextLabel" parent="."]
-offset_left = -22.0
-offset_top = -6.0
-offset_right = 18.0
-offset_bottom = 34.0
+offset_left = -1.0
+offset_top = -11.0
+offset_right = 10.0
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 bbcode_enabled = true
 text = "10
@@ -92,10 +93,10 @@ text = "10
 horizontal_alignment = 1
 
 [node name="ShieldsLabel" type="RichTextLabel" parent="."]
-offset_left = -36.0
-offset_top = 8.0
-offset_right = 4.0
-offset_bottom = 48.0
+offset_left = -11.0
+offset_top = -2.0
+offset_right = 1.0
+offset_bottom = 10.0
 theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
 bbcode_enabled = true
 text = "10
@@ -104,6 +105,6 @@ horizontal_alignment = 1
 
 [node name="AttitudeIndicator" type="AnimatedSprite2D" parent="."]
 z_index = 1
-position = Vector2(-23, 2)
+position = Vector2(-13, -7)
 sprite_frames = SubResource("SpriteFrames_updgl")
 frame = 1

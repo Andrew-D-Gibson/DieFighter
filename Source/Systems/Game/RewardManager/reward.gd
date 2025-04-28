@@ -69,6 +69,7 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	elif chosen_reward is Dice:
 		chosen_reward.reparent(Globals.player, true)
 		Globals.player.dice_manager.add(chosen_reward)
+		chosen_reward.draggable.drag_started.connect(Events.hide_comms.emit)
 		Globals.player.num_of_dice += 1
 		
 	Events.reward_picked.emit()

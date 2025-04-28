@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cuhv1ryqpeuml"
-path="res://.godot/imported/test_walls.png-d8e662391d8857a7d0519284e566d483.ctex"
+uid="uid://d3v78yd4a7w5d"
+path="res://.godot/imported/Shield_under.png-3758e78a97e1c39ce008b67cfd475fe9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/Cockpit/test_walls.png"
-dest_files=["res://.godot/imported/test_walls.png-d8e662391d8857a7d0519284e566d483.ctex"]
+source_file="res://Assets/Textures/Enemies/EnemyHealthBar/Big/Shield_under.png"
+dest_files=["res://.godot/imported/Shield_under.png-3758e78a97e1c39ce008b67cfd475fe9.ctex"]
 
 [params]
 

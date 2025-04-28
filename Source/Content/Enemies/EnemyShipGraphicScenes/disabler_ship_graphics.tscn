@@ -1,0 +1,39 @@
+[gd_scene load_steps=9 format=3 uid="uid://sxp7koeaaan5"]
+
+[ext_resource type="Texture2D" uid="uid://uo61r0scdli7" path="res://Assets/Textures/Enemies/Disabler/disabler_main.png" id="1_6vgks"]
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_y2fps"]
+[ext_resource type="Script" uid="uid://dkyl3coxy1f3m" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/disabler_graphics_manager.gd" id="2_4jcby"]
+[ext_resource type="Texture2D" uid="uid://boc3nmgwdq301" path="res://Assets/Textures/Enemies/Disabler/disabler_left_x.png" id="3_oojs0"]
+[ext_resource type="PackedScene" uid="uid://ckli2hvssie5n" path="res://Assets/Particles/engine_particles_small.tscn" id="4_oojs0"]
+[ext_resource type="Texture2D" uid="uid://cwd13s75e80jh" path="res://Assets/Textures/Enemies/Disabler/disabler_right_x.png" id="4_y2fps"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="5_4jcby"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c07d7"]
+resource_local_to_scene = true
+shader = ExtResource("1_y2fps")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
+[node name="DisablerShipGraphics" type="Sprite2D" node_paths=PackedStringArray("left_x", "right_x")]
+material = SubResource("ShaderMaterial_c07d7")
+texture = ExtResource("1_6vgks")
+script = ExtResource("2_4jcby")
+left_x = NodePath("LeftX")
+right_x = NodePath("RightX")
+
+[node name="EngineParticles" parent="." instance=ExtResource("5_4jcby")]
+position = Vector2(0, -5)
+
+[node name="LeftX" type="Sprite2D" parent="."]
+position = Vector2(-8, 12)
+texture = ExtResource("3_oojs0")
+
+[node name="EngineParticles" parent="LeftX" instance=ExtResource("4_oojs0")]
+position = Vector2(0, -2)
+
+[node name="RightX" type="Sprite2D" parent="."]
+position = Vector2(8, 12)
+texture = ExtResource("4_y2fps")
+
+[node name="EngineParticles" parent="RightX" instance=ExtResource("4_oojs0")]
+position = Vector2(0, -2)

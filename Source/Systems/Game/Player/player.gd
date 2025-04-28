@@ -146,7 +146,10 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 		new_die.holographic = holographic
 		if value != 0:
 			new_die.value = value
-		add_child(new_die)
+		
+		new_die.draggable.drag_started.connect(Events.hide_comms.emit)
+			
+		add_child(new_die)		
 		dice_manager.add(new_die, true, false)
 		
 		await get_tree().create_timer(time_between_die_spawns).timeout

@@ -1,7 +1,7 @@
 class_name Clickable
 extends Area2D
 
-@export var click_movement_radius: float = 8
+@export var click_movement_radius: float = 4
 var click_down_location: Vector2
 
 @export var click_time_window: float = 0.3

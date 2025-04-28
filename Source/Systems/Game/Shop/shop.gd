@@ -98,6 +98,7 @@ func _on_dice_bought(draggable: Draggable, end_position: Vector2) -> void:
 			Globals.player.money -= DICE_COST
 			dice.reparent(Globals.player, true)
 			Globals.player.dice_manager.add(dice)
+			dice.draggable.drag_started.connect(Events.hide_comms.emit)
 			Globals.player.num_of_dice += 1
 
 

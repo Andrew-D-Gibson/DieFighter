@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=22 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Game/Player/player.tscn" id="6_rir3g"]
 [ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/Resources/SaveResources/game_start.tres" id="7_3g417"]
 [ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.tscn" id="8_okrb4"]
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="10_3g417"]
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/Game/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
 [ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/Game/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
 [ext_resource type="PackedScene" uid="uid://c8n32fs0k8j52" path="res://Source/Systems/Game/RewardManager/reward_manager.tscn" id="13_7iud4"]
@@ -19,7 +20,23 @@
 [ext_resource type="PackedScene" uid="uid://bq0eop4cxspu2" path="res://Source/Systems/Game/MainViewer/main_viewer.tscn" id="19_okrb4"]
 [ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
 
+[sub_resource type="Environment" id="Environment_hd7px"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 0.75
+glow_bloom = 0.3
+adjustment_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_flage"]
+resource_local_to_scene = true
+shader = ExtResource("10_3g417")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
 [node name="Main" type="Node2D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_hd7px")
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -57,7 +74,8 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" instance=ExtResource("6_rir3g")]
 z_index = 1
-position = Vector2(64, 115)
+material = SubResource("ShaderMaterial_flage")
+position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" instance=ExtResource("8_okrb4")]
 position = Vector2(211, 19)
