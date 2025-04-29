@@ -144,7 +144,7 @@ void fragment()
     text.r = texture(SCREEN_TEXTURE, text_uv + roll_uv * 0.8 + vec2(aberration, 0.0) * .1).r;
     text.g = texture(SCREEN_TEXTURE, text_uv + roll_uv * 1.2 - vec2(aberration, 0.0) * .1 ).g;
     text.b = texture(SCREEN_TEXTURE, text_uv + roll_uv).b;
-    text.a = 1.0;
+    text.a = COLOR.a;
 
 
     float r = text.r;
@@ -213,6 +213,6 @@ void fragment()
         float midpoint = pow(0.5, 2.2);
         text.rgb = (text.rgb - vec3(midpoint)) * 1.2 + midpoint; // contrast = 1.2
     }
-
+	
     COLOR = text;
 }

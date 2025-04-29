@@ -56,4 +56,4 @@ signal close_shop()
 
 
 # Audio Events
-signal tile_dropped()
+signal play_sound(sound_name: String)

@@ -11,6 +11,8 @@ extends Node2D
 # This array must have 7 values, a blank then 1-6
 @export var value_textures: Array[Texture2D]
 @export var holographic_textures: Array[Texture2D]
+@export var holographic_particles: PackedScene
+
 
 @export var value: int = 0:
 	set(new_value):
@@ -34,6 +36,10 @@ func _ready() -> void:
 		
 	draggable.drag_ended.connect(_check_for_acceptor)
 	
+	if holographic:
+		var particles = holographic_particles.instantiate()
+		particles.position = Vector2(0, -5)
+		add_child(particles)
 
 func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 	var dice_acceptors = get_tree().get_nodes_in_group('CanAcceptDice')

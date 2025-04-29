@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://c3ut4labfcb1p"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_f5c5w"]
+[ext_resource type="AudioStream" uid="uid://os037iwtc4v0" path="res://Assets/Sounds/Enemies/EnemyHealthHit/EnemyHealthHit.wav" id="2_wldto"]
+
+[resource]
+script = ExtResource("1_f5c5w")
+name = "enemy_health_hit"
+limit = 3
+sound_effect = ExtResource("2_wldto")
+volume = -20.0
+pitch_scale = 0.6
+pitch_randomness = 0.2
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

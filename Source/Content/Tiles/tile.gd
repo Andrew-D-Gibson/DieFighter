@@ -67,7 +67,7 @@ func _ready() -> void:
 	if draggable:
 		draggable.reached_new_home.connect(func():
 			shakeable.small_shake()
-			Events.tile_dropped.emit()
+			Events.play_sound.emit('tile_dropped')
 		)
 	Events.enemy_turn_over.connect(reset_uses_remaining)
 	Events.start_scenario.connect(reset_uses_remaining)

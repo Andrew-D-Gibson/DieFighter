@@ -5,7 +5,6 @@ extends Sprite2D
 
 
 func _ready() -> void:
-	print('ready')
 	var tween_time = 6
 	var _left_bob_tween = get_tree().create_tween()
 	_left_bob_tween.tween_property(left_x, 'position', Vector2(-8, 17), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)

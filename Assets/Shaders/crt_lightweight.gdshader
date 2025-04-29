@@ -32,5 +32,5 @@ void fragment() {
     color *= vignette * brightness_boost;
 
     COLOR.rgb = color;
-    COLOR.a = 1.0;
+    //COLOR.a = 1.0;
 }

@@ -50,7 +50,14 @@ func _process(_delta: float) -> void:
 func _connect_health_signals() -> void:
 	health.death.connect(_on_death)
 	health.shields_damaged.connect(graphics_manager.on_shields_hit)
+	health.shields_damaged.connect(func():
+		Events.play_sound.emit('enemy_shields_hit')
+	)
+	
 	health.health_damaged.connect(graphics_manager.on_health_hit)
+	health.health_damaged.connect(func():
+		Events.play_sound.emit('enemy_health_hit')
+	)
 
 
 ## Connects all scenario-related signals
@@ -81,6 +88,7 @@ func _on_death() -> void:
 	dice_manager.give_away_dice()
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
+	Events.play_sound.emit('enemy_death_explosion')
 	await graphics_manager.play_death_animation()
 
 	# Spawn rewards

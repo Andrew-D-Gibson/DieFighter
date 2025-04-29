@@ -228,7 +228,7 @@ speaker_sprite = NodePath("Sprite2D")
 main_text = NodePath("RichTextLabel")
 
 [node name="Sprite2D" type="Sprite2D" parent="CommsManager"]
-position = Vector2(-61, -21)
+position = Vector2(-61, -20)
 
 [node name="RichTextLabel" type="RichTextLabel" parent="CommsManager"]
 offset_left = -48.0

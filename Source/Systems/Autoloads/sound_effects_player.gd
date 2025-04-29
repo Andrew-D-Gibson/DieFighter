@@ -7,11 +7,7 @@ var sound_effects_dict: Dictionary[String, SoundEffectResource]
 
 
 func _hookup_audio_signals() -> void:
-	Events.tile_dropped.connect(func(): play_sound('tile_dropped_click'))
-	Events.enemy_left.connect(func(ship: Enemy, faction: ScenarioManager.Faction):
-		if ship.health.health == 0:
-			play_sound('enemy_death_explosion')	
-	)
+	Events.play_sound.connect(play_sound)
 
 
 func _ready() -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b8ppehbls7stu"]
+[gd_scene load_steps=20 format=3 uid="uid://b8ppehbls7stu"]
 
 [ext_resource type="Script" uid="uid://pye0kuafp80x" path="res://Source/Systems/Game/Dice/dice.gd" id="1_ipsek"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_3tvvj"]
@@ -17,6 +17,7 @@
 [ext_resource type="Texture2D" uid="uid://c7mly0cpixv7n" path="res://Assets/Textures/Dice/Holographic/dice_4.png" id="13_6ouv6"]
 [ext_resource type="Texture2D" uid="uid://povaulqxxwqv" path="res://Assets/Textures/Dice/Holographic/dice_5.png" id="14_wnwk4"]
 [ext_resource type="Texture2D" uid="uid://bs03bt5v8sawh" path="res://Assets/Textures/Dice/Holographic/dice_6.png" id="15_yv42b"]
+[ext_resource type="PackedScene" uid="uid://086kavsnqyj5" path="res://Assets/Particles/holographic_dice_particles.tscn" id="17_fvf7s"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_md6qd"]
 size = Vector2(12, 12)
@@ -28,6 +29,7 @@ holographic_shader = ExtResource("2_apkgm")
 draggable = NodePath("Draggable")
 value_textures = Array[Texture2D]([ExtResource("3_4gkos"), ExtResource("3_md6qd"), ExtResource("4_msjmr"), ExtResource("5_ntp1c"), ExtResource("6_svydr"), ExtResource("7_xrny6"), ExtResource("8_xkydj")])
 holographic_textures = Array[Texture2D]([ExtResource("9_tfeny"), ExtResource("10_apkgm"), ExtResource("11_fvf7s"), ExtResource("12_gfpxv"), ExtResource("13_6ouv6"), ExtResource("14_wnwk4"), ExtResource("15_yv42b")])
+holographic_particles = ExtResource("17_fvf7s")
 
 [node name="Draggable" parent="." instance=ExtResource("2_3tvvj")]
 

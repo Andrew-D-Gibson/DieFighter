@@ -23,8 +23,9 @@
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
 glow_enabled = true
-glow_intensity = 0.75
+glow_intensity = 0.6
 glow_bloom = 0.3
+glow_hdr_threshold = 0.5
 adjustment_enabled = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flage"]
@@ -78,10 +79,10 @@ material = SubResource("ShaderMaterial_flage")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" instance=ExtResource("8_okrb4")]
-position = Vector2(211, 19)
+position = Vector2(216, 12)
 
 [node name="MoneyIndicator" parent="Systems/Player" instance=ExtResource("15_cshgf")]
-position = Vector2(-47, -108)
+position = Vector2(-44, -106)
 
 [node name="MainViewer" parent="Systems/Player" instance=ExtResource("19_okrb4")]
 position = Vector2(96, 7)

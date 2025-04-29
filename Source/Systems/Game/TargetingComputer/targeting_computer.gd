@@ -90,8 +90,8 @@ func _update_ui() -> void:
 		for i in range(6):
 			$Intents.get_child(i).texture = null
 			$Intents.get_child(i).get_child(0).text = ''
-
-		$Screen.play('static')
+		
+		$TargetImageFill.z_index = 1
 		
 	else:
 		_move_indicator()
@@ -111,11 +111,10 @@ func _update_ui() -> void:
 				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
 				
 				
-		$Screen.z_index += 1
-		$Screen.play('static')
-		await $Screen.animation_looped
-		$Screen.z_index -= 1
-		$Screen.play('default')
+		$TargetImageFill.z_index = 1
+		$TargetImageFill.frame = 0
+		await $TargetImageFill.animation_looped
+		$TargetImageFill.z_index = -1
 
 
 func _move_indicator() -> void:
@@ -141,3 +140,7 @@ func _indicator_bob() -> void:
 	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset + Vector2(4, 4), bob_time/2.0).from(targeted_enemy.global_position + targeting_indicator_offset).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, bob_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	indicator_bob_tween.set_loops()
+
+
+func _show_ship_info() -> void:
+	print('ship info requested')

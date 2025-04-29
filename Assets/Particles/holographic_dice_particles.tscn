@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://086kavsnqyj5"]
+
+[ext_resource type="Texture2D" uid="uid://cickkmemxemqu" path="res://Assets/Particles/hit_particle_pixel.png" id="1_ghvb3"]
+
+[sub_resource type="Gradient" id="Gradient_3ywxx"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.0156863)
+
+[sub_resource type="Gradient" id="Gradient_umjne"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.505882)
+
+[node name="HolographicDiceParticles" type="CPUParticles2D"]
+z_index = -1
+amount = 2
+texture = ExtResource("1_ghvb3")
+lifetime = 0.5
+explosiveness = 0.1
+emission_shape = 3
+emission_rect_extents = Vector2(6, 1)
+direction = Vector2(0, -1)
+spread = 0.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 8.0
+initial_velocity_max = 16.0
+linear_accel_min = -20.34
+linear_accel_max = -16.0
+scale_amount_min = 2.0
+scale_amount_max = 2.0
+color = Color(0.552941, 0.945098, 0.956863, 1)
+color_ramp = SubResource("Gradient_3ywxx")
+color_initial_ramp = SubResource("Gradient_umjne")

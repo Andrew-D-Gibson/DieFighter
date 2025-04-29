@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://b815uyx4vrotb"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_4g33r"]
+[ext_resource type="AudioStream" uid="uid://bdcfoc87okn5a" path="res://Assets/Sounds/Enemies/EnemyShieldsHit/EnemyShieldsHit.wav" id="2_qkb6u"]
+
+[resource]
+script = ExtResource("1_4g33r")
+name = "enemy_shields_hit"
+limit = 3
+sound_effect = ExtResource("2_qkb6u")
+volume = -10.0
+pitch_scale = 0.85
+pitch_randomness = 0.2
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"
