@@ -41,7 +41,7 @@ func _ready() -> void:
 	)
 	dice_manager.die_removed.connect(_update_dice_queue_locations)
 	
-	Globals.tile_grid.tile_activation_complete.connect(_check_for_end_of_turn)
+	Events.tile_activation_complete.connect(_check_for_end_of_turn)
 	
 	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false

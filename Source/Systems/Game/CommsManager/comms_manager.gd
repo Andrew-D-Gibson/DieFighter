@@ -5,6 +5,9 @@ extends Node2D
 @export var main_text: RichTextLabel
 @export var choice_scene: PackedScene
 
+var characters_shown: int = 0
+
+
 func _ready() -> void:
 	Events.targeting_computer_retargeted.connect(update_speaker)
 
@@ -12,11 +15,34 @@ func _ready() -> void:
 func update_speaker() -> void:
 	if Globals.targeting_computer:
 		if Globals.targeting_computer.targeted_enemy:
-			main_text.text = Globals.targeting_computer.targeted_enemy.get_dialogue()
+			show_text(Globals.targeting_computer.targeted_enemy.get_dialogue())
 			speaker_sprite.texture = Globals.targeting_computer.targeted_enemy.enemy_resource.targeting_computer_image
 		else:
 			main_text.text = ''
 			speaker_sprite.texture = null
+			
+			
+func show_text(dialogue: String) -> void:
+	if dialogue.begins_with('[color=gray]'):
+		main_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		main_text.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		
+		main_text.text = dialogue
+		return
+	else:
+		main_text.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT
+		main_text.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	
+	characters_shown = 0
+	while characters_shown < len(dialogue):
+		characters_shown += 1
+		main_text.text = dialogue.substr(0, characters_shown)
+		
+		# Just skip ahead if we only added a space (bit of polish here)
+		if dialogue.substr(characters_shown-1, 1) == ' ':
+			continue
+			
+		await get_tree().create_timer(0.02).timeout
 			
 
 func _dice_dropped_on_choice(choice_number: int) -> void:

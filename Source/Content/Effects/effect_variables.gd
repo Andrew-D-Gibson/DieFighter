@@ -6,7 +6,7 @@ var effect_source: Node = null
 var targets = []
 var activator_die: Dice = null
 
-# Damage calculation system
+# Amount (damage/shields etc.) calculation system
 var base_amount: int = 0
 var amount_modifiers: Array[Callable] = []
 

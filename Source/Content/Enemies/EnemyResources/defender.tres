@@ -39,10 +39,10 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_id1ge"]
 script = ExtResource("1_6pw6j")
 base_action = ExtResource("5_qfn37")
-weight = 1.0
+weight = 0.5
 min_amount = 0
 max_amount = 0
-force_include = true
+force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [resource]

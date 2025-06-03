@@ -1,4 +1,4 @@
-class_name ShieldEffect
+class_name HealEffect
 extends Effect
 
 @export var amount: int = 0
@@ -18,5 +18,5 @@ func play(effect_variables: EffectVariables) -> void:
 		
 	# Calculate final amount after all modifiers
 	var final_amount = effect_variables.calculate_final_amount()
-	
-	effect_variables.targets[0].health.change_shields(final_amount)
+
+	effect_variables.targets[0].health.change_health(final_amount)

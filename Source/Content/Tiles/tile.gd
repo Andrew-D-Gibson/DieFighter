@@ -115,7 +115,7 @@ func _activate(activator_die: Dice = null) -> void:
 		# Play the effect, recording the change in variables
 		await effect.play(effect_variables)
 		
-	tile_activation_complete.emit()
+	Events.tile_activation_complete.emit()
 
 
 func reset_uses_remaining() -> void:

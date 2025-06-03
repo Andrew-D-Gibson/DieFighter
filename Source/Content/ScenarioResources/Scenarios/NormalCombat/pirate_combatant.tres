@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("2_l54ud")
-dialogue = "Fuck this shit"
+dialogue = ""
 faction = 0
 attitude = 2
 effects_on_enter = Array[ExtResource("1_0qfyl")]([])

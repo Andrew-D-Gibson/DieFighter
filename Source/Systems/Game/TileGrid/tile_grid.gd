@@ -5,7 +5,7 @@ var grid_width: int = 5
 var grid_height: int = 3
 var grid_spacing: int = 24
 
-var tile_locations: Dictionary[Tile, Vector2i]
+var tile_locations: Dictionary[Vector2i, Tile] = {}
 @export var tile_scene: PackedScene
 
 @export var empty_cell_texture: Texture2D
@@ -41,43 +41,60 @@ func _setup_grid_graphics() -> void:
 			add_child(empty_cell)
 	
 	
-func _setup_tiles(_tile_locations: Dictionary[TileResource, Vector2i]) -> void:
-	for tile_resource in _tile_locations.keys():
+func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:
+	# Clear existing tiles before setting up new ones, if any
+	for pos in tile_locations.keys():
+		if is_instance_valid(tile_locations[pos]):
+			tile_locations[pos].queue_free()
+	tile_locations.clear()
+
+	for tile_grid_pos in _tile_locations.keys():
+		var tile_resource = _tile_locations[tile_grid_pos]
+
 		# Create a tile scene and give it the proper resource
 		var tile = tile_scene.instantiate()
 		tile.tile_resource = tile_resource
 		add_child(tile)
-		
-		# Find the tile's position in the grid and the world
-		var tile_grid_pos: Vector2i = _tile_locations[tile_resource]
-		var tile_world_pos: Vector2 = Vector2(
-			(tile_grid_pos.x + 0.5) * grid_spacing,
-			(tile_grid_pos.y + 0.5) * grid_spacing
-		)
-		
+
+		# Find the tile's world position (already have grid pos)
+		var tile_world_pos: Vector2 = _grid_to_global_pos(tile_grid_pos)
+
 		# Set up the tile's initial position
-		tile.global_position = _grid_to_global_pos(tile_grid_pos)
-		
+		tile.global_position = tile_world_pos
+
 		# Set the tile within the grid representation
 		_assign_tile_to_grid_pos(tile as Tile, tile_grid_pos)
-		
+
 		# Disable the first sound effect of the tile being dropped
 		tile.draggable.emit_reached_new_home = false
 
 		# Connect the tile's drag ended signal to the function to snap it to the grid
 		tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
 		tile.tile_activation_complete.connect(self.tile_activation_complete.emit)
-		
+
 
 func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i) -> void:
-	if tile in tile_locations.keys():
-		tile_locations.erase(tile)
-		
-	tile_locations[tile] = grid_pos
-	
+	# Find the tile's current position, if it exists
+	var old_pos: Vector2i = find_tile_pos(tile)
+
+	# If the tile was already in the grid, remove its old entry
+	if is_grid_pos_valid(old_pos):
+		tile_locations.erase(old_pos)
+
+	# If the target position is already occupied by a different tile, handle it
+	# (This case is mainly handled by _drop_tile_on_grid_pos, but added defensively)
+	if tile_locations.has(grid_pos) and tile_locations[grid_pos] != tile:
+		# In a simple assignment, we might just overwrite or log an error.
+		# The drop logic handles swaps. Here, we'll just overwrite for simplicity
+		# assuming _drop_tile_on_grid_pos manages swaps correctly before calling this.
+		print("Warning: _assign_tile_to_grid_pos overwriting tile at ", grid_pos)
+
+
+	# Place the tile at the new position
+	tile_locations[grid_pos] = tile
 	tile.draggable.home_position = _grid_to_global_pos(grid_pos)
-	
-		
+
+
 func _global_pos_to_grid(global_pos: Vector2) -> Vector2i:
 	var local_pos: Vector2 = global_pos - global_position
 	return Vector2i(
@@ -94,38 +111,61 @@ func _grid_to_global_pos(grid_pos: Vector2i) -> Vector2:
 
 
 func _is_grid_pos_open(grid_pos: Vector2i) -> bool:
-	return not tile_locations.values().has(grid_pos)
+	return not tile_locations.has(grid_pos)
 
 
 func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2) -> void:
 	# Get the grid position of the drop
 	var grid_drop_pos: Vector2i = _global_pos_to_grid(global_drop_pos)
 	var tile_to_move: Tile = tile_draggable.get_parent()
-	
-	# Check that the position is within the grid
-	if grid_drop_pos.x < 0 or grid_drop_pos.x >= grid_width\
-	or grid_drop_pos.y < 0 or grid_drop_pos.y >= grid_height:
-		if not tile_locations.has(tile_to_move):
-			_assign_tile_to_grid_pos(tile_to_move, find_available_grid_pos())
-		return
-		
-	# If the grid position is full, switch with the existing tile
-	if not _is_grid_pos_open(grid_drop_pos):
-		var old_grid_pos: Vector2i
-		
-		# If we're putting in a new tile, put the tile in the dropped location
-		# and move the old tile to an open slot
-		if not tile_locations.has(tile_to_move):
-			old_grid_pos = find_available_grid_pos()
+	var old_grid_pos: Vector2i = find_tile_pos(tile_to_move) # Find where the tile was, if anywhere
+
+	# Check that the position is within the grid boundaries
+	if not is_grid_pos_valid(grid_drop_pos):
+		# If dropped outside the grid:
+		if not is_grid_pos_valid(old_grid_pos):
+			# Tile was not in the grid before, find a new empty spot
+			var available_pos = find_available_grid_pos()
+			if is_grid_pos_valid(available_pos):
+				_assign_tile_to_grid_pos(tile_to_move, available_pos)
+			else:
+				# No space left, snap back to origin (or handle error)
+				tile_draggable.snap_back()
 		else:
-			old_grid_pos = tile_locations[tile_to_move]
-			
-		var existing_tile = tile_locations.find_key(grid_drop_pos)
-		_assign_tile_to_grid_pos(existing_tile, old_grid_pos)
-		
-	# Move the tile to the desired grid position
-	_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos)
-	
+			# Tile was already in the grid, snap it back to its old position
+			tile_draggable.snap_back() # Draggable handles snapping back to home_position
+		return
+
+	# If the target grid position is occupied
+	if not _is_grid_pos_open(grid_drop_pos):
+		var existing_tile: Tile = tile_locations[grid_drop_pos]
+
+		# Don't swap with self
+		if existing_tile == tile_to_move:
+			_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos) # Just reaffirm position
+			return
+
+		# Determine where the existing tile should go
+		var target_pos_for_existing_tile: Vector2i
+		if is_grid_pos_valid(old_grid_pos):
+			# If the moving tile came from a valid grid spot, swap them
+			target_pos_for_existing_tile = old_grid_pos
+		else:
+			# If the moving tile came from outside, find a new spot for the existing tile
+			target_pos_for_existing_tile = find_available_grid_pos()
+
+		# Check if we found a place for the existing tile
+		if is_grid_pos_valid(target_pos_for_existing_tile):
+			_assign_tile_to_grid_pos(existing_tile, target_pos_for_existing_tile)
+			_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos)
+		else:
+			# No valid spot to move the existing tile, snap the moving tile back
+			tile_draggable.snap_back()
+
+	else:
+		# Target position is open, just move the tile there
+		_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos)
+
 
 func find_available_grid_pos() -> Vector2i:
 	for y in range(grid_height):
@@ -140,3 +180,10 @@ func is_grid_pos_valid(pos: Vector2i) -> bool:
 		and pos.x < grid_width\
 		and pos.y >= 0\
 		and pos.y < grid_height
+
+
+func find_tile_pos(tile_to_find: Tile) -> Vector2i:
+	for pos in tile_locations.keys():
+		if tile_locations[pos] == tile_to_find:
+			return pos
+	return Vector2i(-1, -1) # Return invalid position if not found

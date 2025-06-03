@@ -1,0 +1,80 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=20 format=3 uid="uid://dcduuaflkbl3p"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u0h2o"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_5xqwv"]
+[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="3_4l56y"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_cy0vr"]
+[ext_resource type="Texture2D" uid="uid://hy0m1lwpojv4" path="res://Assets/Textures/Tiles/leeching_shot.png" id="4_5xqwv"]
+[ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/DiceMovers/attack_target_tween_effect.gd" id="4_k21vw"]
+[ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="5_yteeg"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="6_r5f85"]
+[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="7_r2sor"]
+[ext_resource type="Script" uid="uid://l0ptnkc15dl0" path="res://Source/Content/Effects/AttributeChangers/heal_effect.gd" id="8_c7e3k"]
+
+[sub_resource type="Resource" id="Resource_r5f85"]
+script = ExtResource("1_u0h2o")
+type = 3
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_r2sor"]
+script = ExtResource("1_u0h2o")
+type = 0
+acceptable_values = Array[int]([1, 2])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_c7e3k"]
+script = ExtResource("3_4l56y")
+primary_effect = false
+metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
+
+[sub_resource type="Resource" id="Resource_y0stg"]
+script = ExtResource("4_k21vw")
+primary_effect = false
+metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
+
+[sub_resource type="Resource" id="Resource_nhjdj"]
+script = ExtResource("5_yteeg")
+amount = 2
+inherit_die_amount = false
+primary_effect = false
+metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
+
+[sub_resource type="Resource" id="Resource_uauxn"]
+script = ExtResource("6_r5f85")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[sub_resource type="Resource" id="Resource_xm7fs"]
+script = ExtResource("7_r2sor")
+primary_effect = false
+metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
+
+[sub_resource type="Resource" id="Resource_qp02v"]
+script = ExtResource("8_c7e3k")
+amount = 2
+inherit_die_value = false
+primary_effect = false
+metadata/_custom_type_script = "uid://l0ptnkc15dl0"
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_cy0vr"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_5xqwv")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("3_cy0vr")
+tile_name = "Leeching Shot"
+activation_description = "[color=yellow]Activates[/color] with a (die_1) or (die_2)"
+description = "[color=red]Damages[/color] the targeted enemy for 2 and heals your hull for 2."
+textures = SubResource("SpriteFrames_cy0vr")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r5f85"), SubResource("Resource_r2sor")])
+effect_chain = Array[ExtResource("2_5xqwv")]([SubResource("Resource_c7e3k"), SubResource("Resource_y0stg"), SubResource("Resource_nhjdj"), SubResource("Resource_uauxn"), SubResource("Resource_xm7fs"), SubResource("Resource_qp02v")])
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -47,7 +47,7 @@ func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 		acceptor.check_die_drop(self, end_position)
 
 
-func reroll_with_tween() -> void:
+func reroll_with_tween(new_value: int = 0) -> void:
 	var tween_time = 0.2
 		
 	var tween = get_tree().create_tween().set_parallel()
@@ -55,7 +55,10 @@ func reroll_with_tween() -> void:
 	tween.tween_property(self, 'global_position', global_position + Vector2(0,-8), tween_time).set_trans(Tween.TRANS_SINE)
 	
 	tween.chain().tween_callback(func():
-		value = randi_range(1,6)
+		if new_value == 0:
+			value = randi_range(1,6)
+		else:
+			value = new_value
 	)
 	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, 'global_position', global_position, tween_time).set_trans(Tween.TRANS_SINE)

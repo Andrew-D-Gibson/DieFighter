@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bfcjp1es1sv0l"
-path="res://.godot/imported/palette_potential.png-ef2812c6dfb16003162a807b37456691.ctex"
+uid="uid://byqs5assi1nq"
+path="res://.godot/imported/tactical_boomerang.png-c6196b5a2c298086e67839cdd2319bfd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://palette_potential.png"
-dest_files=["res://.godot/imported/palette_potential.png-ef2812c6dfb16003162a807b37456691.ctex"]
+source_file="res://Assets/Textures/Tiles/TO_MAKE/tactical_boomerang.png"
+dest_files=["res://.godot/imported/tactical_boomerang.png-c6196b5a2c298086e67839cdd2319bfd.ctex"]
 
 [params]
 

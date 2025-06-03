@@ -147,7 +147,6 @@ map_button_label = NodePath("TabButtons/MapButton/RichTextLabel")
 [node name="Background" type="AnimatedSprite2D" parent="."]
 position = Vector2(-0.5, 0)
 sprite_frames = SubResource("SpriteFrames_dq04t")
-frame = 2
 
 [node name="TabButtons" type="Node2D" parent="."]
 
@@ -231,13 +230,13 @@ main_text = NodePath("RichTextLabel")
 position = Vector2(-61, -20)
 
 [node name="RichTextLabel" type="RichTextLabel" parent="CommsManager"]
-offset_left = -48.0
+offset_left = -46.0
 offset_top = -32.0
 offset_right = 69.0
-offset_bottom = 38.0
+offset_bottom = 1.0
 theme_override_colors/default_color = Color(0.94902, 0.611765, 0.364706, 1)
 bbcode_enabled = true
-text = "Main text box for describing scenarios and dialogues from other ships etc. [color=red]damage[/color] and stuff"
+text = "Main text box for describing scenarios and discussing [color=red]damage[/color] and stuff!"
 
 [node name="Map" parent="." node_paths=PackedStringArray("LeftDiceReceptacle", "RightDiceReceptacle", "map_button_label", "map_button", "map_viewport", "map_camera", "error_text") instance=ExtResource("13_l0r2u")]
 LeftDiceReceptacle = NodePath("LeftDiceReceptacle")

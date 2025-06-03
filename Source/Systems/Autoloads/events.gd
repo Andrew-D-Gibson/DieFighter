@@ -23,6 +23,7 @@ signal show_choice_dialogue(text: String, choices: Array[ChoiceResource])
 signal choice_made(choice_index: int)
 
 signal targeting_computer_retargeted()
+signal tile_activation_complete()
 
 
 # Game Events

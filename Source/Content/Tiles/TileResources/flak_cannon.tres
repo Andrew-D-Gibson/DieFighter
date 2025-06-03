@@ -42,6 +42,7 @@ metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 [sub_resource type="Resource" id="Resource_y24nt"]
 script = ExtResource("7_vg00i")
 amount = 0
+inherit_die_amount = false
 primary_effect = false
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
 
