@@ -25,18 +25,26 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 	var total_length := reward_spacing * (num_of_rewards - 1)
 	var start_offset := -total_length / 2
 
+	var possible_tile_rewards = Globals.reward_manager.get_possible_tile_rewards()
+
 	for i in range(num_of_rewards):
 		var reward: Node2D
 		
-		# Make a dice reward if we can't fit another tile or randomly otherwise
+		# Give the player a dice instead of a tile if we can't fit another tile, 
+		# we can't give the player a tile they don't already have,
+		# or randomly otherwise
 		if Globals.tile_grid.find_available_grid_pos() == Vector2i(-1,-1)\
+		or len(possible_tile_rewards) == 0\
 		or randf() <= dice_probability:
 			reward = dice_scene.instantiate()
 			
 		# Make a tile reward
 		else:
 			reward = tile_scene.instantiate()
-			reward.tile_resource = Globals.reward_manager.possible_tile_rewards.pick_random()
+			reward.tile_resource = possible_tile_rewards.pick_random()
+			
+			# Remove the chosen resource from the "possible" list so there's no repeats
+			possible_tile_rewards.erase(reward.tile_resource)
 			
 		
 		add_child(reward)

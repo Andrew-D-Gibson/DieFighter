@@ -94,3 +94,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		tween.set_loops()
 		
 		drag_started.emit()
+
+
+func snap_back() -> void:
+	return

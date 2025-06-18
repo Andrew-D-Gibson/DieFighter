@@ -47,7 +47,7 @@ func _create_shop_tiles() -> void:
 	for row in range(2):
 		for col in range(3):
 			var tile = tile_scene.instantiate()
-			tile.tile_resource = Globals.reward_manager.possible_tile_rewards.pick_random()
+			tile.tile_resource = Globals.reward_manager.get_possible_tile_rewards().pick_random()
 			add_child(tile)
 			
 			var pos = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
