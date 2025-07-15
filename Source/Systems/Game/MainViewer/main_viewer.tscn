@@ -355,7 +355,6 @@ z_index = -1
 position = Vector2(11, 10)
 
 [node name="Clickable" type="Area2D" parent="EngineCharger/EngineChargerTile"]
-visible = false
 script = ExtResource("4_sgr5l")
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
@@ -363,14 +362,12 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 shape = SubResource("RectangleShape2D_ctpxn")
 
 [node name="Shakeable" type="Node2D" parent="EngineCharger/EngineChargerTile" node_paths=PackedStringArray("node_to_shake")]
-visible = false
 script = ExtResource("7_p0pmq")
 node_to_shake = NodePath("..")
 small_shake_duration = 0.05
 metadata/_custom_type_script = "uid://dl3x4ek6t4j8y"
 
 [node name="CanAcceptDice" type="Node2D" parent="EngineCharger/EngineChargerTile" node_paths=PackedStringArray("collision") groups=["CanAcceptDice"]]
-visible = false
 script = ExtResource("8_bkkgo")
 collision = NodePath("CollisionShape2D")
 metadata/_custom_type_script = "uid://cb3ideptaj1hg"

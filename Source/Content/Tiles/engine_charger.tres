@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://cymd6kmfhbghm" path="res://Source/Content/Effects/AttributeChangers/change_engine_charge_effect.gd" id="3_uhn3f"]
 [ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="4_7mo4q"]
 [ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="4_uhn3f"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="5_dd8hj"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_dd8hj"]
 
 [sub_resource type="Resource" id="Resource_2r3c1"]
 script = ExtResource("3_uhn3f")

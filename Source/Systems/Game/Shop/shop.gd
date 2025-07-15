@@ -17,6 +17,7 @@ var shop_dice: Array[Node2D]
 func _ready() -> void:
 	Events.open_shop.connect(_open_shop)
 	Events.close_shop.connect(_close_shop)
+	Events.jump.connect(_close_shop)
 
 
 func _open_shop() -> void:
@@ -27,7 +28,7 @@ func _open_shop() -> void:
 
 
 func _close_shop() -> void:
-	queue_free()
+	hide()
 
 
 func _get_possible_shop_tiles() -> Array[TileResource]:
@@ -53,7 +54,6 @@ func _get_randomized_price(rarity: TileResource.Rarity) -> int:
 			return randi_range(25, 35)
 		_:
 			return 0
-		
 
 
 func _create_shop_tiles() -> void:
@@ -65,8 +65,11 @@ func _create_shop_tiles() -> void:
 	
 	for row in range(2):
 		for col in range(2):
+			var shop_index = (col*2) + row
+			
 			var possible_shop_tiles = _get_possible_shop_tiles()
 			if len(possible_shop_tiles) == 0:
+				prices[shop_index].visible = false
 				break
 			
 			var tile = tile_scene.instantiate()
@@ -82,7 +85,7 @@ func _create_shop_tiles() -> void:
 			
 			shop_tiles.append(tile)
 			
-			var shop_index = (col*2) + row
+			
 			tile_to_shop_index[tile as Tile] = shop_index
 			var price = _get_randomized_price(tile.tile_resource.rarity)
 			prices[shop_index].visible = true

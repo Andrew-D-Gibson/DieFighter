@@ -34,6 +34,7 @@ signal player_shields_hit()
 signal engine_charge_changed()
 
 # Game Sequencing Events
+signal jump()
 signal set_background(background_resource: BackgroundResource)
 signal start_scenario()
 signal start_combat()

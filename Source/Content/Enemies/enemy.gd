@@ -62,7 +62,16 @@ func _connect_health_signals() -> void:
 
 ## Connects all scenario-related signals
 func _connect_scenario_signals() -> void:
-	Events.scenario_event.connect(func(event: ScenarioManager.ScenarioEvent):
+	Events.scenario_event.connect(_handle_scenario_event)
+	Events.start_scenario.connect(trigger_state_effects)
+
+
+func disconnect_scenario_signals() -> void:
+	Events.scenario_event.disconnect(_handle_scenario_event)
+	Events.start_scenario.disconnect(trigger_state_effects)
+	
+
+func _handle_scenario_event(event: ScenarioManager.ScenarioEvent):
 		var new_state: ScenarioShipState = scenario_state.handle_scenario_event(event)
 		graphics_manager.set_health_bar_attitude(new_state.attitude)
 		
@@ -70,10 +79,7 @@ func _connect_scenario_signals() -> void:
 			scenario_state = new_state
 			trigger_state_effects()
 		scenario_state = new_state
-	)
-	
-	Events.start_scenario.connect(trigger_state_effects)
-
+		
 
 ## Connects all combat-related signals
 func _connect_combat_signals() -> void:

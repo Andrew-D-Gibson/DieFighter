@@ -36,9 +36,7 @@ func _ready() -> void:
 	LeftDiceReceptacle.dice_queue.die_removed.connect(_update_desired_scenario)
 	RightDiceReceptacle.dice_queue.die_added.connect(_update_desired_scenario)
 	RightDiceReceptacle.dice_queue.die_removed.connect(_update_desired_scenario)
-	
-	map_button.clicked.connect(_jump)
-	
+
 	Events.load_game_save.connect(_load_game_save)
 	Events.start_scenario.connect(_update_map_sprites)
 	Events.engine_charge_changed.connect(_update_ui)
@@ -180,6 +178,8 @@ func _update_map_button() -> void:
 
 func _jump() -> void:
 	if desired_scenario_index != current_scenario_index:
+		Events.jump.emit()
+		
 		# Set the current index scenario to empty
 		scenario_list[current_scenario_index] = empty_scenario
 

@@ -57,7 +57,7 @@ func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:
 		add_child(tile)
 
 		# Find the tile's world position (already have grid pos)
-		var tile_world_pos: Vector2 = _grid_to_global_pos(tile_grid_pos)
+		var tile_world_pos: Vector2 = grid_to_global_pos(tile_grid_pos)
 
 		# Set up the tile's initial position
 		tile.global_position = tile_world_pos
@@ -87,15 +87,48 @@ func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i) -> void:
 		# In a simple assignment, we might just overwrite or log an error.
 		# The drop logic handles swaps. Here, we'll just overwrite for simplicity
 		# assuming _drop_tile_on_grid_pos manages swaps correctly before calling this.
-		print("Warning: _assign_tile_to_grid_pos overwriting tile at ", grid_pos)
+		printerr("Warning: _assign_tile_to_grid_pos overwriting tile at ", grid_pos)
 
 
 	# Place the tile at the new position
 	tile_locations[grid_pos] = tile
-	tile.draggable.home_position = _grid_to_global_pos(grid_pos)
+	tile.draggable.home_position = grid_to_global_pos(grid_pos)
 
 
-func _global_pos_to_grid(global_pos: Vector2) -> Vector2i:
+func move_tile(tile: Tile, new_pos: Vector2i) -> void:
+	# Find the tile's current position
+	var old_pos: Vector2i = find_tile_pos(tile)
+
+	# Only allow moving tiles that are already in the grid
+	if not is_grid_pos_valid(old_pos):
+		return
+
+	# Check that the new position is within the grid boundaries
+	if not is_grid_pos_valid(new_pos):
+		return
+
+	# If the new position is the same as the current, do nothing
+	if old_pos == new_pos:
+		return
+
+	# If the target grid position is occupied
+	if not _is_grid_pos_open(new_pos):
+		var existing_tile: Tile = tile_locations[new_pos]
+
+		# Don't swap with self
+		if existing_tile == tile:
+			_assign_tile_to_grid_pos(tile, new_pos) # Just reaffirm position
+			return
+
+		# Swap the tiles
+		_assign_tile_to_grid_pos(existing_tile, old_pos)
+		_assign_tile_to_grid_pos(tile, new_pos)
+	else:
+		# Target position is open, just move the tile there
+		_assign_tile_to_grid_pos(tile, new_pos)
+
+
+func global_pos_to_grid(global_pos: Vector2) -> Vector2i:
 	var local_pos: Vector2 = global_pos - global_position
 	return Vector2i(
 		floor(local_pos.x / grid_spacing),
@@ -103,7 +136,7 @@ func _global_pos_to_grid(global_pos: Vector2) -> Vector2i:
 	)
 	
 	
-func _grid_to_global_pos(grid_pos: Vector2i) -> Vector2:
+func grid_to_global_pos(grid_pos: Vector2i) -> Vector2:
 	return Vector2(
 		((grid_pos.x + 0.5) * grid_spacing) + global_position.x,
 		((grid_pos.y + 0.5) * grid_spacing) + global_position.y
@@ -116,7 +149,7 @@ func _is_grid_pos_open(grid_pos: Vector2i) -> bool:
 
 func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2) -> void:
 	# Get the grid position of the drop
-	var grid_drop_pos: Vector2i = _global_pos_to_grid(global_drop_pos)
+	var grid_drop_pos: Vector2i = global_pos_to_grid(global_drop_pos)
 	var tile_to_move: Tile = tile_draggable.get_parent()
 	var old_grid_pos: Vector2i = find_tile_pos(tile_to_move) # Find where the tile was, if anywhere
 
@@ -187,3 +220,39 @@ func find_tile_pos(tile_to_find: Tile) -> Vector2i:
 		if tile_locations[pos] == tile_to_find:
 			return pos
 	return Vector2i(-1, -1) # Return invalid position if not found
+
+
+func push_tile(tile: Tile, direction: Vector2i) -> void:
+	# Only allow cardinal directions
+	var allowed_directions = [Vector2i(-1,0), Vector2i(1,0), Vector2i(0,-1), Vector2i(0,1)]
+	if not direction in allowed_directions:
+		printerr("TileGrid is trying to push a tile not in a cardinal direction!")
+		return
+
+	# Find the tile's current position
+	var start_pos: Vector2i = find_tile_pos(tile)
+	if not is_grid_pos_valid(start_pos):
+		return
+
+	# Gather all tiles in the push line
+	var positions: Array = []
+	var pos = start_pos
+	while is_grid_pos_valid(pos) and tile_locations.has(pos):
+		positions.append(pos)
+		pos += direction
+
+	# The next position after the last tile in the line
+	var end_pos: Vector2i = positions[-1] + direction
+
+	# Check if the end position is valid and open
+	if not is_grid_pos_valid(end_pos):
+		return
+	if not _is_grid_pos_open(end_pos):
+		return
+
+	# Move all tiles in the line, starting from the end
+	for i in range(positions.size() - 1, -1, -1):
+		var from_pos = positions[i]
+		var to_pos = from_pos + direction
+		var t = tile_locations[from_pos]
+		_assign_tile_to_grid_pos(t, to_pos)

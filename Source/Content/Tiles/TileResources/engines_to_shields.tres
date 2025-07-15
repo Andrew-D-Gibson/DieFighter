@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://djgfuy5re3k6t" path="res://Source/Content/Effects/AmountModifiers/negative_amount_effect.gd" id="5_dtoei"]
 [ext_resource type="Script" uid="uid://cymd6kmfhbghm" path="res://Source/Content/Effects/AttributeChangers/change_engine_charge_effect.gd" id="6_c0x8g"]
 [ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="7_2bwjp"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="8_yhkpl"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_yhkpl"]
 
 [sub_resource type="Resource" id="Resource_r846u"]
 script = ExtResource("1_wsqrt")

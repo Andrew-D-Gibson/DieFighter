@@ -6,9 +6,9 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_mywar"]
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="4_h3tty"]
 [ext_resource type="Script" uid="uid://ckbh5m14lawn4" path="res://Source/Content/Effects/AmountModifiers/adjacent_tiles_amount_modifier_effect.gd" id="5_m1j0p"]
-[ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/DiceMovers/attack_target_tween_effect.gd" id="6_sndgu"]
+[ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="6_sndgu"]
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="7_vg00i"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="8_w3f31"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_w3f31"]
 
 [sub_resource type="Resource" id="Resource_44pq3"]
 script = ExtResource("1_71286")

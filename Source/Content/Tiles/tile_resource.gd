@@ -17,3 +17,5 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 @export var uses_per_turn: int
 @export var activation_checks: Array[ActivationResource]
 @export var effect_chain: Array[Effect]
+
+@export var event_responses: Dictionary[TileEvent.EventType, Array]

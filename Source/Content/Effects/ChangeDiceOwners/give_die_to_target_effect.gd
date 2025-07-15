@@ -4,6 +4,7 @@ extends Effect
 func play(effect_variables: EffectVariables) -> void:
 	# Don't do anything if there's no activator die
 	if not effect_variables.activator_die:
+		printerr("GiveDieToTargetEffect doesn't have an activator die!")
 		return
 		
 	# Put the die in the "holding" state

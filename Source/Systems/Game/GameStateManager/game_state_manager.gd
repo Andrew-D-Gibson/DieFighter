@@ -3,6 +3,9 @@ extends Node2D
 
 @export var current_game_save: GameSaveResource
 
+## Minimum of 3 (?)
+@export var sector_size: int = 18
+
 @export_category('Scenario Resources')
 @export var empty_scenario: ScenarioResource
 @export var shop_scenario: ScenarioResource
@@ -70,7 +73,7 @@ func _randomize_sector_scenarios() -> void:
 		current_game_save.sector_scenarios.append(shop_scenario)
 		
 	# Add the blend of combat and question scenarios
-	for i in range(18 - len(current_game_save.sector_scenarios)):
+	for i in range(sector_size - len(current_game_save.sector_scenarios)):
 		var question_scenario_options = Utils.array_while_excluding(
 			question_scenarios, 
 			current_game_save.sector_scenarios
@@ -100,7 +103,7 @@ func _randomize_sector_scenarios() -> void:
 	# Shuffle the array, then place the player's starting scenario in the middle
 	current_game_save.sector_scenarios.shuffle()
 	
-	current_game_save.current_scenario_index = 9
+	current_game_save.current_scenario_index = floor(sector_size / 2.0)
 	current_game_save.sector_scenarios.insert(current_game_save.current_scenario_index, empty_scenario)
 	
 	

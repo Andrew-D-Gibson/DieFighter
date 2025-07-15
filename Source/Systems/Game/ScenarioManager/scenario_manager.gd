@@ -21,23 +21,12 @@ enum Faction {
 func _ready() -> void:
 	Globals.scenario_manager = self
 	
-	Events.load_scenario.connect(_load_scenario)
 	Events.player_attacked_ship.connect(_handle_attack)
 	Events.enemy_left.connect(_handle_enemy_leaving)
 	
 	Events.combat_finished.connect(func() -> void:
 		Events.scenario_event.emit(ScenarioEvent.COMBAT_ENDED)
 	)
-	
-	
-func _load_scenario(scenario: ScenarioResource) -> void:
-	# Set the background
-	if scenario.background_resource:
-		Events.set_background.emit(scenario.background_resource)
-		
-	# Spawn the starting ships
-	if len(scenario.starting_enemies) > 0:
-		Globals.enemy_manager.spawn_enemies(scenario.starting_enemies)
 
 
 func _handle_attack(ship: Enemy, ship_faction: ScenarioManager.Faction):

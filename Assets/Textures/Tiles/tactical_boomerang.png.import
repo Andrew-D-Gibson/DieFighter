@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://byqs5assi1nq"
-path="res://.godot/imported/tactical_boomerang.png-c6196b5a2c298086e67839cdd2319bfd.ctex"
+path="res://.godot/imported/tactical_boomerang.png-f7fbdd8b4adfd290708f86b59b7d2ef4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/TO_MAKE/tactical_boomerang.png"
-dest_files=["res://.godot/imported/tactical_boomerang.png-c6196b5a2c298086e67839cdd2319bfd.ctex"]
+source_file="res://Assets/Textures/Tiles/tactical_boomerang.png"
+dest_files=["res://.godot/imported/tactical_boomerang.png-f7fbdd8b4adfd290708f86b59b7d2ef4.ctex"]
 
 [params]
 

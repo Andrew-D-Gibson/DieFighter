@@ -19,12 +19,11 @@ func _ready() -> void:
 		if ship in enemies:
 			enemies.erase(ship)
 	)
-	Events.load_scenario.connect(func(_scenario: ScenarioResource):
-		# Needs to be queue_free'ed, not health reduced to 0
-		# so we don't spawn rewards
-		for i in range(len(enemies)-1, -1, -1):
-			enemies[i].queue_free()
-		enemies = []
+	Events.jump.connect(delete_all_enemies)
+	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
+		# Spawn the starting ships
+		if len(scenario.starting_enemies) > 0:
+			spawn_enemies(scenario.starting_enemies)
 	)
 	
 	
@@ -37,8 +36,7 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 		enemy.position = enemy.enemy_resource.graphics_scene_offset + get_point_along_path(enemies_to_spawn[i].spawning_path_location)
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
 		enemy.scenario_state = enemies_to_spawn[i].starting_state
-		#enemy.position = Vector2(-(enemy_spacing / float(2)) + (spacing * (i+1)), 0)
-		
+
 		enemies.append(enemy)
 		add_child(enemy)
 	
@@ -103,6 +101,15 @@ func _run_enemy_turn() -> void:
 			break
 			
 	Events.enemy_turn_over.emit()
+
+
+func delete_all_enemies() -> void:
+	# Needs to be queue_free'ed, not health reduced to 0
+	# so we don't spawn rewards
+	for i in range(len(enemies)-1, -1, -1):
+		enemies[i].disconnect_scenario_signals()
+		enemies[i].queue_free()
+	enemies = []
 
 
 func kill_all_enemies() -> void:

@@ -89,6 +89,7 @@ func _get_tile_info() -> InfoResource:
 
 
 func try_to_activate(activator_die: Dice) -> void:
+	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
 		return
 		
