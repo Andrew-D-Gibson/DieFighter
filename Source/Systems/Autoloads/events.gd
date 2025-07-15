@@ -58,6 +58,7 @@ signal close_shop()
 
 
 # Tile Events
+signal tile_manually_moved(tile: Tile)
 signal tile_pushed(tile: Tile)
 
 

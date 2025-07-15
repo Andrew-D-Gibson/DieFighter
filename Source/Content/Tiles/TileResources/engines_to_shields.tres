@@ -21,7 +21,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_u10cf"]
 script = ExtResource("1_wsqrt")
-type = 0
+type = 1
 acceptable_values = Array[int]([6])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
@@ -84,7 +84,7 @@ animations = [{
 script = ExtResource("3_r846u")
 tile_name = "Emergency Transfer"
 activation_description = "[color=yellow]Activates[/color] with a (die_6)"
-description = "Transfers all power stored in the color=purple]engines[/color] to the [color=blue]shields[/color].  Gives the [color=yellow]activator[/color] die to a random enemy."
+description = "Transfers all power stored in the color=purple]engines[/color] to the [color=blue]shields[/color].  Gives the [color=yellow]activator[/color] die to a random ship"
 rarity = 0
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_turn = -1

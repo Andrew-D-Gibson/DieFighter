@@ -45,6 +45,10 @@ var _saturation_tween: Tween
 		else:
 			sprite_frames.frame = uses_remaining
 
+## tile_data holds any necessary data that a tile's effects might need
+## e.g. "turns_since_last_activation", "last_activator_value", etc.
+var effect_data: Dictionary[String, int]
+		
 		
 @export_category('Components')
 @export var draggable: Draggable
@@ -78,6 +82,9 @@ func _connect_tile_event_signals() -> void:
 	Events.tile_pushed.connect(func(tile: Tile):
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_PUSHED)
 	)	
+	Events.tile_manually_moved.connect(func(tile: Tile):
+		handle_tile_event(tile, TileEvent.EventType.ON_TILE_MANUALLY_MOVED)
+	)
 
 
 func _set_up_resource() -> void:
@@ -96,13 +103,18 @@ func _get_tile_info() -> InfoResource:
 
 
 func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
-	if tile_resource.event_responses.has(event):
-		var effect_variables = _generate_effect_variables()
-		effect_variables.targets.append(tile)
-		await tile_resource.event_responses[event].play(effect_variables)
+	for event_check in tile_resource.event_responses.keys():
+		if event_check.event == event:
+			# We can do the response if we don't care about listening for this tile
+			if not event_check.listen_only_for_self\
+			
+			# Or if we are this tile!
+			or (event_check.listen_only_for_self == (tile == self)):
+				var effect_variables = _generate_effect_variables()
+				await tile_resource.event_responses[event_check].play(effect_variables)
 
 
-func try_to_activate(activator_die: Dice) -> void:
+func try_to_activate(activator_die: Dice = null) -> void:
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
 		return
@@ -115,7 +127,8 @@ func try_to_activate(activator_die: Dice) -> void:
 	if uses_remaining != -1:
 		uses_remaining -= 1
 		
-	activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+	if activator_die:
+		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	_activate(activator_die)
 		
 		

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=20 format=3 uid="uid://c5gk2kf6r2v5y"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=18 format=3 uid="uid://c5gk2kf6r2v5y"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_854mr"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_7qkaa"]
@@ -10,22 +10,10 @@
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_vpgxx"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_8vpcq"]
 
-[sub_resource type="Resource" id="Resource_ujj64"]
-script = ExtResource("1_854mr")
-type = 0
-acceptable_values = Array[int]([3])
-metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
 [sub_resource type="Resource" id="Resource_p7d6s"]
 script = ExtResource("1_854mr")
 type = 1
-acceptable_values = Array[int]([])
-metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_7qkaa"]
-script = ExtResource("1_854mr")
-type = 3
-acceptable_values = Array[int]([])
+acceptable_values = Array[int]([3])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_bwi3v"]
@@ -78,7 +66,7 @@ description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the 
 rarity = 0
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_ujj64"), SubResource("Resource_p7d6s"), SubResource("Resource_7qkaa")])
+activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])
 effect_chain = SubResource("Resource_8vpcq")
 event_responses = Dictionary[int, ExtResource("7_7qkaa")]({})
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

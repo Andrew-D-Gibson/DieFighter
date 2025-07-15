@@ -5,6 +5,4 @@ extends Resource
 
 func play(effect_variables: EffectVariables) -> void:
 	for effect in effects:
-		var should_continue = await effect.play(effect_variables)
-		if should_continue == false:
-			break
+		await effect.play(effect_variables)

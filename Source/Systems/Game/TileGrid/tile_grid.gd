@@ -81,15 +81,6 @@ func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i) -> void:
 	if is_grid_pos_valid(old_pos):
 		tile_locations.erase(old_pos)
 
-	# If the target position is already occupied by a different tile, handle it
-	# (This case is mainly handled by _drop_tile_on_grid_pos, but added defensively)
-	if tile_locations.has(grid_pos) and tile_locations[grid_pos] != tile:
-		# In a simple assignment, we might just overwrite or log an error.
-		# The drop logic handles swaps. Here, we'll just overwrite for simplicity
-		# assuming _drop_tile_on_grid_pos manages swaps correctly before calling this.
-		printerr("Warning: _assign_tile_to_grid_pos overwriting tile at ", grid_pos)
-
-
 	# Place the tile at the new position
 	tile_locations[grid_pos] = tile
 	tile.draggable.home_position = grid_to_global_pos(grid_pos)
@@ -191,6 +182,9 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 		if is_grid_pos_valid(target_pos_for_existing_tile):
 			_assign_tile_to_grid_pos(existing_tile, target_pos_for_existing_tile)
 			_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos)
+			
+			Events.tile_manually_moved.emit(existing_tile)
+			Events.tile_manually_moved.emit(tile_to_move)
 		else:
 			# No valid spot to move the existing tile, snap the moving tile back
 			tile_draggable.snap_back()
@@ -198,6 +192,7 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 	else:
 		# Target position is open, just move the tile there
 		_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos)
+		Events.tile_manually_moved.emit(tile_to_move)
 
 
 func find_available_grid_pos() -> Vector2i:

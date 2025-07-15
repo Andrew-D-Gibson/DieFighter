@@ -2,11 +2,13 @@ class_name ActivationResource
 extends Resource
 
 enum ActivationType {
+	REQUIRES_ACTIVATOR_DIE,
 	VALUE, 
 	IN_COMBAT, 
 	OTHER_SHIPS_EXIST,
 	SHIP_TARGETED,
 	ACTIVATOR_DIE_NOT_HOLOGRAPHIC,
+	CANT_BE_ACTIVATED_WITH_DIE,
 }
 
 @export var type: ActivationType
@@ -18,8 +20,15 @@ enum ActivationType {
 
 var activation_functions: Dictionary[ActivationType, Callable] = {
 	
+	ActivationType.REQUIRES_ACTIVATOR_DIE: 
+		func(die: Dice): 
+			return die != null,
+			
 	ActivationType.VALUE: 
 		func(die: Dice): 
+			if not die:
+				# We're being activated without a die
+				return true
 			return die.value in acceptable_values,
 	
 	ActivationType.IN_COMBAT: 
@@ -36,7 +45,15 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			
 	ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC: 
 		func(die: Dice):
-			return not die.holographic
+			if not die:
+				# We're being activated without a die,
+				# so it's technically not holographic 
+				return true
+			return not die.holographic,
+			
+	ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
+		func(die: Dice):
+			return not die
 }
 
 

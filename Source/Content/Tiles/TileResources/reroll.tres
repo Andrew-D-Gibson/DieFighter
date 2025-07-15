@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=16 format=3 uid="uid://cmcttgw25qx0t"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=17 format=3 uid="uid://cmcttgw25qx0t"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_cuubr"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_tley7"]
@@ -8,9 +8,15 @@
 [ext_resource type="Texture2D" uid="uid://cuk1fxtfqcuff" path="res://Assets/Textures/Tiles/reroll-Sheet.png" id="4_tley7"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="5_jet8y"]
 
+[sub_resource type="Resource" id="Resource_ecbfa"]
+script = ExtResource("1_cuubr")
+type = 0
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [sub_resource type="Resource" id="Resource_jet8y"]
 script = ExtResource("1_cuubr")
-type = 4
+type = 5
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
@@ -61,12 +67,12 @@ animations = [{
 [resource]
 script = ExtResource("3_1nta3")
 tile_name = "Re-Roll"
-activation_description = "Cannot be [color=yellow]activated[/color] with holographic dice.  Can be used once per turn"
-description = "Re-rolls the [color=yellow]activator die[/color]"
+activation_description = "Can't be used with holographic die"
+description = "Re-rolls the [color=yellow]activator[/color] die"
 rarity = 0
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 2
-activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_jet8y")])
+activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa"), SubResource("Resource_jet8y")])
 effect_chain = SubResource("Resource_mwp2x")
 event_responses = Dictionary[int, ExtResource("5_jet8y")]({})
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

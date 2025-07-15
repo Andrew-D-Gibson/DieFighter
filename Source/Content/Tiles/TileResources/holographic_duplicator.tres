@@ -11,13 +11,13 @@
 
 [sub_resource type="Resource" id="Resource_nrdn6"]
 script = ExtResource("1_ltqic")
-type = 4
+type = 0
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
-[sub_resource type="Resource" id="Resource_m4gsi"]
+[sub_resource type="Resource" id="Resource_87uef"]
 script = ExtResource("1_ltqic")
-type = 1
+type = 5
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
@@ -72,7 +72,7 @@ description = "Spawns two holographic die with the same value as the [color=yell
 rarity = 0
 textures = SubResource("SpriteFrames_2vvbj")
 uses_per_turn = 1
-activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6"), SubResource("Resource_m4gsi")])
+activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6"), SubResource("Resource_87uef")])
 effect_chain = SubResource("Resource_oymyf")
 event_responses = Dictionary[int, ExtResource("6_nrdn6")]({})
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

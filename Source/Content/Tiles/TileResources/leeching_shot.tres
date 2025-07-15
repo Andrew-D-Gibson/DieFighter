@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=22 format=3 uid="uid://dcduuaflkbl3p"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=23 format=3 uid="uid://dcduuaflkbl3p"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u0h2o"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_5xqwv"]
@@ -12,16 +12,22 @@
 [ext_resource type="Script" uid="uid://l0ptnkc15dl0" path="res://Source/Content/Effects/AttributeChangers/heal_effect.gd" id="8_c7e3k"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="9_r2sor"]
 
-[sub_resource type="Resource" id="Resource_r5f85"]
-script = ExtResource("1_u0h2o")
-type = 3
-acceptable_values = Array[int]([])
-metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
 [sub_resource type="Resource" id="Resource_r2sor"]
 script = ExtResource("1_u0h2o")
 type = 0
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_0lgwc"]
+script = ExtResource("1_u0h2o")
+type = 1
 acceptable_values = Array[int]([1, 2])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_swlve"]
+script = ExtResource("1_u0h2o")
+type = 4
+acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_c7e3k"]
@@ -82,7 +88,7 @@ description = "[color=red]Damages[/color] the targeted enemy for 2 and heals you
 rarity = 1
 textures = SubResource("SpriteFrames_cy0vr")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r5f85"), SubResource("Resource_r2sor")])
+activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r2sor"), SubResource("Resource_0lgwc"), SubResource("Resource_swlve")])
 effect_chain = SubResource("Resource_bu7s0")
 event_responses = Dictionary[int, ExtResource("9_r2sor")]({})
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

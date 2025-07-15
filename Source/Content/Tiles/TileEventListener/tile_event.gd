@@ -3,7 +3,9 @@ extends Resource
 
 enum EventType {
 	ON_TURN_START,
-	ON_TILE_PUSHED
+	ON_TILE_PUSHED,
+	ON_TILE_MANUALLY_MOVED,
 }
 
-var event: EventType
+@export var event: EventType
+@export var listen_only_for_self: bool = true
