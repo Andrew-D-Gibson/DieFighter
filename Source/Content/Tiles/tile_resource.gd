@@ -6,6 +6,9 @@ extends Resource
 @export_multiline var activation_description: String
 @export_multiline var description: String
 
+enum Rarity {COMMON, UNCOMMON, RARE}
+@export var rarity: Rarity = Rarity.COMMON
+
 @export_category('Graphics')
 @export var textures: SpriteFrames
 

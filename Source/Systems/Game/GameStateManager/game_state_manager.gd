@@ -3,6 +3,14 @@ extends Node2D
 
 @export var current_game_save: GameSaveResource
 
+@export_category('Scenario Resources')
+@export var empty_scenario: ScenarioResource
+@export var shop_scenario: ScenarioResource
+@export var combat_scenarios: Array[ScenarioResource]
+@export var question_scenarios: Array[ScenarioResource]
+@export var boss_combat_scenarios: Array[ScenarioResource]
+
+
 enum GameState {
 	IN_COMBAT,
 	OUT_OF_COMBAT
@@ -24,7 +32,11 @@ var state: GameState = GameState.OUT_OF_COMBAT:
 # This node has to be the last thing loaded in our game
 func _ready() -> void:
 	assert(current_game_save)
+	
 	Globals.state_manager = self
+	
+	if len(current_game_save.sector_scenarios) == 0:
+		_randomize_sector_scenarios()
 
 	Events.start_scenario.connect(_check_combat_state)
 	Events.enemy_turn_over.connect(_check_combat_state)
@@ -39,6 +51,58 @@ func _ready() -> void:
 		]
 	)
 	Events.start_scenario.emit()
+	
+	
+func _randomize_sector_scenarios() -> void:
+	# A sector has 19 scenarios, including:
+	# 1 empty scenario at the middle where the player starts
+	# 1 Boss scenario that teleports the player to the next sector
+	# 1 or 2 shop scenarios
+	# and a blend of combat and question scenarios
+	
+	current_game_save.sector_scenarios = []
+	
+	# Add the boss scenario
+	current_game_save.sector_scenarios.append(boss_combat_scenarios.pick_random())
+	
+	# Add the shop(s)
+	for i in range(randi_range(1,2)):
+		current_game_save.sector_scenarios.append(shop_scenario)
+		
+	# Add the blend of combat and question scenarios
+	for i in range(18 - len(current_game_save.sector_scenarios)):
+		var question_scenario_options = Utils.array_while_excluding(
+			question_scenarios, 
+			current_game_save.sector_scenarios
+		)
+			
+		var combat_scenario_options = Utils.array_while_excluding(
+			combat_scenarios,
+			current_game_save.sector_scenarios
+		)
+		
+		# 30% chance of a new question scenario
+		if len(question_scenario_options) > 0 and randf() <= 0.3:
+			current_game_save.sector_scenarios.append(question_scenario_options.pick_random())
+			
+		# Otherwise pick a combat scenario
+		elif len(combat_scenario_options) > 0:
+			current_game_save.sector_scenarios.append(combat_scenario_options.pick_random())
+			
+		# If we ever make it here (we really shouldn't but still), 
+		# just add a random question or combat scenario
+		else:
+			var combat_and_question_scenarios: Array[ScenarioResource] = combat_scenarios + question_scenarios
+			current_game_save.sector_scenarios.append(combat_and_question_scenarios.pick_random())
+			
+			
+	# Now we have an array of 18 scenarios, with 1 boss and either 1 or 2 shops
+	# Shuffle the array, then place the player's starting scenario in the middle
+	current_game_save.sector_scenarios.shuffle()
+	
+	current_game_save.current_scenario_index = 9
+	current_game_save.sector_scenarios.insert(current_game_save.current_scenario_index, empty_scenario)
+	
 	
 	
 func _check_combat_state() -> void:

@@ -1,0 +1,142 @@
+[gd_scene load_steps=8 format=3 uid="uid://ccvtlre5vhj7d"]
+
+[ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_5pv2g"]
+[ext_resource type="Script" uid="uid://dfqo2lhkhal5l" path="res://Source/Systems/UI/MainMenu/main_menu.gd" id="1_otgxl"]
+[ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="3_y6sr5"]
+[ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="4_5v1c7"]
+
+[sub_resource type="Animation" id="Animation_y6sr5"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeIn:self_modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera2D:offset:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_5pv2g"]
+resource_name = "on_application_start"
+length = 6.0
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeIn:self_modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 2)
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera2D:offset:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0, 270, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(2, 5)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_5v1c7"]
+_data = {
+&"RESET": SubResource("Animation_y6sr5"),
+&"on_application_start": SubResource("Animation_5pv2g")
+}
+
+[node name="MainMenu" type="Sprite2D" node_paths=PackedStringArray("fade_in_sprite", "camera", "animation_player")]
+self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
+texture = ExtResource("1_5pv2g")
+offset = Vector2(160, 90)
+script = ExtResource("1_otgxl")
+num_of_twinkling_stars = 50
+background_color = Color(0.027451, 0.0117647, 0.14902, 1)
+star_pixel_scene = ExtResource("3_y6sr5")
+star_twinkle_scene = ExtResource("4_5v1c7")
+fade_in_sprite = NodePath("FadeIn")
+camera = NodePath("Camera2D")
+animation_player = NodePath("AnimationPlayer")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+offset = Vector2(160, 90)
+zoom = Vector2(6, 6)
+
+[node name="FadeIn" type="Sprite2D" parent="."]
+visible = false
+self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
+z_index = 5
+texture = ExtResource("1_5pv2g")
+offset = Vector2(160, 90)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+&"": SubResource("AnimationLibrary_5v1c7")
+}
+autoplay = "on_application_start"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 12.0
+offset_top = 94.0
+offset_right = 90.0
+offset_bottom = 180.0
+grow_vertical = 0
+
+[node name="PlayButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
+theme_override_colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
+theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_font_sizes/font_size = 32
+text = "PLAY"
+flat = true
+alignment = 0
+
+[node name="OptionsButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
+theme_override_colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
+theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_font_sizes/font_size = 32
+text = "OPTIONS"
+flat = true
+alignment = 0
+
+[node name="QuitButton" type="Button" parent="VBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
+theme_override_colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
+theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_font_sizes/font_size = 32
+text = "QUIT"
+flat = true
+alignment = 0

@@ -71,6 +71,7 @@ script = ExtResource("3_mywar")
 tile_name = "Flak Cannon"
 activation_description = "[color=yellow]Activates[/color] with a (die_5) when a valid target exists"
 description = "Deals 1 [color=red]damage[/color] plus 1 additional [color=red]damage[/color] for every tile surrounding the Flak Cannon to the [color=purple]targeted[/color] enemy, then gives them the (die_5)"
+rarity = 0
 textures = SubResource("SpriteFrames_m1j0p")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi")])

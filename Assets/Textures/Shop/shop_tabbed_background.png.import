@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2mo72opur4fv"
-path="res://.godot/imported/value_exchange.png-d99b469066e0e53406c17feccdb45a60.ctex"
+uid="uid://d33kyk4uuloux"
+path="res://.godot/imported/shop_tabbed_background.png-d3ed7cacaac294bba5fd9fa9b3dfcd6e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/TO_MAKE/value_exchange.png"
-dest_files=["res://.godot/imported/value_exchange.png-d99b469066e0e53406c17feccdb45a60.ctex"]
+source_file="res://Assets/Textures/Shop/shop_tabbed_background.png"
+dest_files=["res://.godot/imported/shop_tabbed_background.png-d3ed7cacaac294bba5fd9fa9b3dfcd6e.ctex"]
 
 [params]
 

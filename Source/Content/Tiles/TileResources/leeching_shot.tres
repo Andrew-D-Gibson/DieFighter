@@ -73,6 +73,7 @@ script = ExtResource("3_cy0vr")
 tile_name = "Leeching Shot"
 activation_description = "[color=yellow]Activates[/color] with a (die_1) or (die_2)"
 description = "[color=red]Damages[/color] the targeted enemy for 2 and heals your hull for 2."
+rarity = 1
 textures = SubResource("SpriteFrames_cy0vr")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r5f85"), SubResource("Resource_r2sor")])

@@ -14,6 +14,9 @@ config/name="DieFighter"
 run/main_scene="uid://deisauteocrjl"
 config/features=PackedStringArray("4.4", "GL Compatibility")
 boot_splash/bg_color=Color(0.027451, 0.0117647, 0.14902, 1)
+boot_splash/show_image=false
+boot_splash/fullsize=false
+boot_splash/use_filter=false
 
 [autoload]
 
@@ -33,7 +36,6 @@ gdscript/warnings/confusable_local_declaration=2
 
 window/size/viewport_width=1920
 window/size/viewport_height=1080
-window/size/mode=3
 window/size/window_width_override=1920
 window/size/window_height_override=1080
 window/stretch/mode="viewport"

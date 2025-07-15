@@ -32,11 +32,7 @@ func get_possible_tile_rewards() -> Array[TileResource]:
 	for tile in player_tiles:
 		player_tile_resources.append(tile.tile_resource)
 		
-	var possible_tile_rewards = _all_tile_resources.filter(
-		func(tile_resource) -> bool:
-			return not player_tile_resources.has(tile_resource)
-	)
-	return possible_tile_rewards
+	return Utils.array_while_excluding(_all_tile_resources, player_tile_resources)
 		
 
 func _spawn_reward(pos: Vector2, money: int, num_of_rewards: int, dice_probability: float) -> void:

@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="4_e82b4"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/DiceMovers/give_die_to_target_effect.gd" id="5_y57nh"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_ctsso"]
-[ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/TO_MAKE/value_exchange.png" id="7_jubjl"]
+[ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/value_exchange.png" id="7_jubjl"]
 
 [sub_resource type="Resource" id="Resource_qxxw2"]
 script = ExtResource("1_hoi4y")
@@ -45,6 +45,7 @@ script = ExtResource("6_ctsso")
 tile_name = "Value Exchange"
 activation_description = "[color=yellow]Activates[/color] with any value die"
 description = "Flips the values of all (die_1) and (die_6) and gives the [color=yellow]activator[/color] die to the targeted enemy"
+rarity = 0
 textures = SubResource("SpriteFrames_pgax4")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_hoi4y")]([SubResource("Resource_qxxw2")])

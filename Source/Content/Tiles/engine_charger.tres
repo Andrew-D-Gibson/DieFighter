@@ -45,6 +45,7 @@ script = ExtResource("3_ar2wr")
 tile_name = "Engine Charger"
 activation_description = "[color=yellow]Activates[/color] with any die, and gives the [color=yellow]activator die[/color] to the targeted enemy"
 description = "Adds the value of the [color=yellow]activator die[/color] to the engine charge.  The engine can be used to jump to another location when fully charged."
+rarity = 0
 textures = SubResource("SpriteFrames_dd8hj")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_8mym4")]([])

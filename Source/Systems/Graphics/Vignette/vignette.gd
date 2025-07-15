@@ -5,6 +5,7 @@ extends ColorRect
 
 
 func _ready() -> void:
+	visible = true
 	Events.player_health_hit.connect(_health_hit_vignette)
 	Events.player_shields_hit.connect(_shield_hit_vignette)
 	

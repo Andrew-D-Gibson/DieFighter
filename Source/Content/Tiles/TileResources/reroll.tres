@@ -63,6 +63,7 @@ script = ExtResource("3_1nta3")
 tile_name = "Re-Roll"
 activation_description = "Cannot be [color=yellow]activated[/color] with holographic dice.  Can be used once per turn"
 description = "Re-rolls the [color=yellow]activator die[/color]"
+rarity = 0
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_jet8y")])

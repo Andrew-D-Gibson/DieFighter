@@ -1,13 +1,9 @@
-[gd_resource type="Resource" script_class="GameSaveResource" load_steps=11 format=3 uid="uid://biawl3820xfte"]
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=7 format=3 uid="uid://biawl3820xfte"]
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
-[ext_resource type="Resource" uid="uid://dp6euwvjd2ren" path="res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres" id="3_3eajj"]
-[ext_resource type="Resource" uid="uid://bf2p4youiejta" path="res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres" id="3_cyk0s"]
-[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres" id="3_e1utd"]
-[ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/0_pirate_attacking_civilian.tres" id="4_3eajj"]
-[ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/SectorBoss/0_sector_boss.tres" id="5_cyk0s"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_8qr57"]
+[ext_resource type="Resource" uid="uid://diw5cai3jhpm" path="res://Source/Content/Tiles/TileResources/flip_1s_and_6s.tres" id="6_r67hd"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xm1st"]
 [ext_resource type="Resource" uid="uid://cmcttgw25qx0t" path="res://Source/Content/Tiles/TileResources/reroll.tres" id="13_cyk0s"]
 
@@ -20,8 +16,9 @@ num_of_dice = 5
 money = 0
 tile_locations = Dictionary[Vector2i, ExtResource("6_8qr57")]({
 Vector2i(0, 0): ExtResource("7_xm1st"),
+Vector2i(1, 1): ExtResource("6_r67hd"),
 Vector2i(2, 0): ExtResource("13_cyk0s")
 })
-current_scenario_index = 4
-sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_cyk0s"), ExtResource("3_e1utd"), ExtResource("3_3eajj"), ExtResource("4_3eajj"), ExtResource("5_cyk0s")])
+current_scenario_index = 0
+sector_scenarios = Array[ExtResource("2_ettjp")]([])
 metadata/_custom_type_script = "uid://dxkqfdmh8psqp"
