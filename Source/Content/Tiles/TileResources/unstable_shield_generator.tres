@@ -101,7 +101,8 @@ animations = [{
 script = ExtResource("3_eq5vj")
 tile_name = "Unstable Shield Generator"
 activation_description = "[color=yellow]Activates[/color] when pushed by another tile"
-description = "Generates 2 [color=blue]shields[/color] when pushed, increasing by 1 each time it's pushed without being moved manually"
+description = "Generates 2 [color=blue]shields[/color] when pushed by another tile, increasing by 1 each time it's pushed without being moved manually
+(Currently at [data]activation_count + 2[/data] [color=blue]shields[/color])"
 rarity = 1
 textures = SubResource("SpriteFrames_nb58w")
 uses_per_turn = -1

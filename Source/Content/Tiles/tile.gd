@@ -97,7 +97,7 @@ func _get_tile_info() -> InfoResource:
 	info.title_label_text = tile_resource.tile_name
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
-	info.bottom_label_text = tile_resource.description
+	info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
 	
 	return info
 
@@ -152,3 +152,39 @@ func _activate(activator_die: Dice = null) -> void:
 
 func reset_uses_remaining() -> void:
 	uses_remaining = tile_resource.uses_per_turn
+
+
+func _replace_event_data_in_string(text: String) -> String:
+	var pattern = r"\[data\](.+?)\[/data\]"
+	var regex = RegEx.new()
+	regex.compile(pattern)
+
+	var result = text
+
+	for match in regex.search_all(text):
+		var full_match := match.get_string(0)
+		var expression := match.get_string(1)
+
+		# Replace unknown identifiers with 0
+		# Tokenize the expression and rebuild it with known values
+		var tokens = expression.split(" ", false)
+		var rebuilt_expression = ""
+		for token in tokens:
+			if token.is_valid_identifier():
+				if effect_data.has(token):
+					rebuilt_expression += str(effect_data[token]) + " "
+				else:
+					rebuilt_expression += "0 "
+			else:
+				rebuilt_expression += token + " "
+
+		# Evaluate the safe expression
+		var safe_result := Expression.new()
+		var err := safe_result.parse(rebuilt_expression.strip_edges())
+		if err == OK:
+			var value = safe_result.execute()
+			result = result.replace(full_match, str(value))
+		else:
+			result = result.replace(full_match, "0") # fallback in case of parse error
+
+	return result
