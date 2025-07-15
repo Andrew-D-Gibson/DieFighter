@@ -21,7 +21,6 @@ script = ExtResource("2_vxs5e")
 dialogue = "This is our kill, back off!"
 faction = 0
 attitude = 1
-effects_on_enter = Array[ExtResource("1_cw6mm")]([])
 transitions = Dictionary[int, ExtResource("3_fhktm")]({
 0: ExtResource("4_tclhq"),
 5: SubResource("Resource_8wwsw")

@@ -1,8 +1,12 @@
-[12:59:54] Debug logger initialized
-[12:59:54] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres
-[12:59:54] Starting scenario
-[12:59:54] Starting combat
-[12:59:57] Player attacked ship: Enemy (Faction: PIRATE)
-[12:59:57] Scenario Event: PLAYER_ATTACKED_PIRATE
-[13:00:09] Player attacked ship: Enemy (Faction: PIRATE)
-[13:00:09] Scenario Event: PLAYER_ATTACKED_PIRATE
+[15:07:58] Debug logger initialized
+[15:07:58] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres
+[15:07:58] Starting scenario
+[15:08:09] Starting combat
+[15:08:09] Player attacked ship: Enemy (Faction: CIVILIAN)
+[15:08:09] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[15:08:15] Player attacked ship: Enemy (Faction: CIVILIAN)
+[15:08:15] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[15:08:17] Player attacked ship: Enemy (Faction: CIVILIAN)
+[15:08:17] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[15:08:21] Player attacked ship: Enemy (Faction: CIVILIAN)
+[15:08:21] Scenario Event: PLAYER_ATTACKED_CIVILIAN

@@ -11,7 +11,6 @@ script = ExtResource("2_tyfvd")
 dialogue = "Please help us fend off these pirate thugs!"
 faction = 1
 attitude = 0
-effects_on_enter = Array[ExtResource("1_0n5q3")]([])
 transitions = Dictionary[int, ExtResource("3_kf7lg")]({
 1: ExtResource("5_7x0hr"),
 2: ExtResource("5_7x0hr"),

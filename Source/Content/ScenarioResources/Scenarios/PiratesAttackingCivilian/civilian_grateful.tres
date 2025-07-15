@@ -10,7 +10,6 @@ script = ExtResource("2_1cg12")
 dialogue = "Thanks for your help!"
 faction = 1
 attitude = 0
-effects_on_enter = Array[ExtResource("1_jjlt0")]([])
 transitions = Dictionary[int, ExtResource("3_4o1nx")]({
 1: ExtResource("4_1cg12")
 })

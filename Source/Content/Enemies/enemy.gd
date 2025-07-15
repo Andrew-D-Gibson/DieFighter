@@ -206,10 +206,7 @@ func act_with_first_die() -> void:
 	action_indicator.popup_time = popup_time
 	action_indicator.global_position = die.global_position + Vector2(0,12)
 		
-		
-	for effect in action.effect_chain:
-		# Play the effect, recording the change in variables
-		await effect.play(effect_variables)
+	await action.effect_chain.play(effect_variables)
 		
 	Events.enemy_acted.emit(enemy_resource.enemy_name, action.name)
 	
@@ -234,11 +231,12 @@ func get_dialogue() -> String:
 
 ## Triggers any effects associated with the current scenario state
 func trigger_state_effects() -> void:
+	if not scenario_state.effects_on_enter:
+		return
+		
 	# Set up the effects variables for chaining effects
 	var effect_variables = EffectVariables.new()
 	effect_variables.actor = self
 	effect_variables.effect_source = self
 	
-	for effect in scenario_state.effects_on_enter:
-		# Play the effect, recording the change in variables
-		await effect.play(effect_variables)
+	await scenario_state.effects_on_enter.play(effect_variables)

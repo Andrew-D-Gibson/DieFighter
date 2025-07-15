@@ -17,16 +17,12 @@ func get_action() -> EnemyActionResource:
 	amount = randi_range(min_amount, max_amount)
 	action.intent_amount = str(amount) if amount != 0 else ''
 	
-	# Create a new array for the effect chain
-	action.effect_chain = []
+	# Duplicate the EffectChain resource
+	action.effect_chain = base_action.effect_chain.duplicate()
 	
-	# Duplicate each effect and add it to the new chain
-	# This is needed due to how Godot handles duplicating Arrays of Resources
-	for effect in base_action.effect_chain:
-		var new_effect = effect.duplicate()
-		if new_effect.primary_effect:
-			new_effect.amount = amount
-			
-		action.effect_chain.append(new_effect)
-			
+	# Set amount for primary effects in the duplicated chain
+	for effect in action.effect_chain.effects:
+		if effect.primary_effect:
+			effect.amount = amount
+	
 	return action

@@ -1,4 +1,4 @@
-class_name ChangeEngineChargeEffect
+class_name ChargeEngineEffect
 extends Effect
 
 @export var amount: int = 0

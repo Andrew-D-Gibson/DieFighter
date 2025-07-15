@@ -5,7 +5,7 @@ extends Resource
 @export var description: String
 @export var indicator_texture: Texture2D
 @export var info_texture: Texture2D
-@export var effect_chain: Array[Effect]
+@export var effect_chain: EffectChain
 
 ## Set by the EnemyActionOptionResource who creates this action
 ## Used by the targeting computer to display the amount

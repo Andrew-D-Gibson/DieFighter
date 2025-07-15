@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=23 format=3 uid="uid://gfr4eel8gocp"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=25 format=3 uid="uid://gfr4eel8gocp"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_0sqhf"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_yq2rj"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://davfiolrth182" path="res://Source/Content/Effects/TileMovers/push_tile_in_direction_effect.gd" id="7_qed76"]
 [ext_resource type="Script" uid="uid://cyyaosauc8fk" path="res://Source/Content/Effects/DiceValueChangers/change_activator_to_value_effect.gd" id="7_xfdie"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="8_qed76"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="10_qed76"]
 
 [sub_resource type="Resource" id="Resource_xfdie"]
 script = ExtResource("1_0sqhf")
@@ -24,24 +25,24 @@ type = 0
 acceptable_values = Array[int]([3])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
-[sub_resource type="Resource" id="Resource_qed76"]
+[sub_resource type="Resource" id="Resource_04xam"]
 script = ExtResource("3_372r4")
 primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
-[sub_resource type="Resource" id="Resource_04xam"]
+[sub_resource type="Resource" id="Resource_7xao1"]
 script = ExtResource("4_vh6gp")
 primary_effect = false
 metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 
-[sub_resource type="Resource" id="Resource_7xao1"]
+[sub_resource type="Resource" id="Resource_gndob"]
 script = ExtResource("5_5ea37")
 amount = 4
 inherit_die_amount = false
 primary_effect = true
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
 
-[sub_resource type="Resource" id="Resource_e3v07"]
+[sub_resource type="Resource" id="Resource_eqci4"]
 script = ExtResource("6_5ea37")
 offset_from_source_tile = Vector2i(0, 0)
 primary_effect = false
@@ -53,16 +54,21 @@ direction = Vector2i(0, 1)
 primary_effect = false
 metadata/_custom_type_script = "uid://davfiolrth182"
 
-[sub_resource type="Resource" id="Resource_gndob"]
+[sub_resource type="Resource" id="Resource_pef2i"]
 script = ExtResource("7_xfdie")
 new_value = 1
 primary_effect = false
 metadata/_custom_type_script = "uid://cyyaosauc8fk"
 
-[sub_resource type="Resource" id="Resource_eqci4"]
+[sub_resource type="Resource" id="Resource_o61i6"]
 script = ExtResource("8_qed76")
 primary_effect = false
 metadata/_custom_type_script = "uid://bscm2msup3lwk"
+
+[sub_resource type="Resource" id="Resource_g26hj"]
+script = ExtResource("10_qed76")
+effects = Array[ExtResource("2_yq2rj")]([SubResource("Resource_04xam"), SubResource("Resource_7xao1"), SubResource("Resource_gndob"), SubResource("Resource_eqci4"), SubResource("Resource_7uhu8"), SubResource("Resource_pef2i"), SubResource("Resource_o61i6")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gndob"]
 atlas = ExtResource("7_e3v07")
@@ -88,6 +94,6 @@ rarity = 1
 textures = SubResource("SpriteFrames_eqci4")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_0sqhf")]([SubResource("Resource_xfdie"), SubResource("Resource_stnu5")])
-effect_chain = Array[ExtResource("2_yq2rj")]([SubResource("Resource_qed76"), SubResource("Resource_04xam"), SubResource("Resource_7xao1"), SubResource("Resource_e3v07"), SubResource("Resource_7uhu8"), SubResource("Resource_gndob"), SubResource("Resource_eqci4")])
-event_responses = Dictionary[int, Array]({})
+effect_chain = SubResource("Resource_g26hj")
+event_responses = Dictionary[int, ExtResource("10_qed76")]({})
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

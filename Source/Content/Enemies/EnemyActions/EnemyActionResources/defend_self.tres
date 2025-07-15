@@ -6,30 +6,30 @@
 [ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="2_muunn"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="3_8mnha"]
 [ext_resource type="Texture2D" uid="uid://cibgrd0mhsrw0" path="res://Assets/Textures/Enemies/IntentIndicator/defend_info.png" id="4_su07i"]
-[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="4_ykk5h"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_74aj1"]
+[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="4_ykk5h"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="5_4xxfa"]
 
-[sub_resource type="Resource" id="Resource_qp6u3"]
+[sub_resource type="Resource" id="Resource_vrksl"]
 script = ExtResource("2_muunn")
 primary_effect = false
 metadata/_custom_type_script = "uid://na20gyl0jdks"
 
-[sub_resource type="Resource" id="Resource_5kode"]
+[sub_resource type="Resource" id="Resource_qw5kx"]
 script = ExtResource("3_8mnha")
 amount = 2
 inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
-[sub_resource type="Resource" id="Resource_4xxfa"]
+[sub_resource type="Resource" id="Resource_3ow3x"]
 script = ExtResource("4_ykk5h")
 primary_effect = false
-metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
+metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
-[sub_resource type="Resource" id="Resource_vrksl"]
-script = ExtResource("5_74aj1")
-primary_effect = false
-metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+[sub_resource type="Resource" id="Resource_w5k3u"]
+script = ExtResource("5_4xxfa")
+effects = Array[ExtResource("1_wmlxi")]([SubResource("Resource_vrksl"), SubResource("Resource_qw5kx"), SubResource("Resource_3ow3x")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [resource]
 script = ExtResource("1_12xyc")
@@ -37,5 +37,5 @@ name = "Shield Burst"
 description = "[color=blue]Shields[/color] this ship for (amount)"
 indicator_texture = ExtResource("1_0w3us")
 info_texture = ExtResource("4_su07i")
-effect_chain = Array[ExtResource("1_wmlxi")]([SubResource("Resource_qp6u3"), SubResource("Resource_5kode"), SubResource("Resource_4xxfa"), SubResource("Resource_vrksl")])
+effect_chain = SubResource("Resource_w5k3u")
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

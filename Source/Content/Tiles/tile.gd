@@ -88,6 +88,12 @@ func _get_tile_info() -> InfoResource:
 	return info
 
 
+func handle_tile_event(event: TileEvent.EventType) -> void:
+	if tile_resource.event_responses.has(event):
+		var effect_variables = _generate_effect_variables()
+		await tile_resource.event_responses[event].play(effect_variables)
+
+
 func try_to_activate(activator_die: Dice) -> void:
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
@@ -104,18 +110,22 @@ func try_to_activate(activator_die: Dice) -> void:
 	activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	_activate(activator_die)
 		
-
-func _activate(activator_die: Dice = null) -> void:
-	# Set up the effects variables for chaining effects
+		
+func _generate_effect_variables() -> EffectVariables:
 	var effect_variables = EffectVariables.new()
 	effect_variables.actor = Globals.player
 	effect_variables.effect_source = self
+	
+	return effect_variables
+	
+
+func _activate(activator_die: Dice = null) -> void:
+	# Set up the effects variables for chaining effects
+	var effect_variables = _generate_effect_variables()
 	effect_variables.activator_die = activator_die
-		
-	for effect in tile_resource.effect_chain:
-		# Play the effect, recording the change in variables
-		await effect.play(effect_variables)
-		
+	
+	await tile_resource.effect_chain.play(effect_variables)
+	
 	Events.tile_activation_complete.emit()
 
 

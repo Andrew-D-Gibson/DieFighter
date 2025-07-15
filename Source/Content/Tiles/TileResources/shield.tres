@@ -4,9 +4,9 @@
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_7qkaa"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="3_854mr"]
 [ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="4_7qkaa"]
-[ext_resource type="Script" uid="uid://bxuudvb6cerq1" path="res://Source/Content/Effects/Utilities/wait_for_milliseconds_effect.gd" id="4_p7d6s"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="5_p7d6s"]
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="6_bwi3v"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="7_7qkaa"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_vpgxx"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_8vpcq"]
 
@@ -29,32 +29,31 @@ acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_bwi3v"]
-script = ExtResource("4_p7d6s")
-milliseconds_to_wait = 100
-primary_effect = false
-metadata/_custom_type_script = "uid://bxuudvb6cerq1"
-
-[sub_resource type="Resource" id="Resource_77b16"]
 script = ExtResource("4_7qkaa")
 primary_effect = false
 metadata/_custom_type_script = "uid://na20gyl0jdks"
 
-[sub_resource type="Resource" id="Resource_534nq"]
+[sub_resource type="Resource" id="Resource_vpgxx"]
 script = ExtResource("5_p7d6s")
 amount = 8
 inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
-[sub_resource type="Resource" id="Resource_8vpcq"]
+[sub_resource type="Resource" id="Resource_77b16"]
 script = ExtResource("6_bwi3v")
 primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
-[sub_resource type="Resource" id="Resource_q67gt"]
+[sub_resource type="Resource" id="Resource_534nq"]
 script = ExtResource("7_vpgxx")
 primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[sub_resource type="Resource" id="Resource_8vpcq"]
+script = ExtResource("7_7qkaa")
+effects = Array[ExtResource("3_854mr")]([SubResource("Resource_bwi3v"), SubResource("Resource_vpgxx"), SubResource("Resource_77b16"), SubResource("Resource_534nq")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7qkaa"]
 atlas = ExtResource("2_7qkaa")
@@ -76,8 +75,10 @@ script = ExtResource("8_8vpcq")
 tile_name = "Shield Generator"
 activation_description = "[color=yellow]Activates[/color] with a (die_3)"
 description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the [color=purple]targeted[/color] enemy."
+rarity = 0
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_ujj64"), SubResource("Resource_p7d6s"), SubResource("Resource_7qkaa")])
-effect_chain = Array[ExtResource("3_854mr")]([SubResource("Resource_bwi3v"), SubResource("Resource_77b16"), SubResource("Resource_534nq"), SubResource("Resource_8vpcq"), SubResource("Resource_q67gt")])
+effect_chain = SubResource("Resource_8vpcq")
+event_responses = Dictionary[int, ExtResource("7_7qkaa")]({})
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
