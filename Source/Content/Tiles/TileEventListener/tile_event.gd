@@ -3,7 +3,7 @@ extends Resource
 
 enum EventType {
 	ON_TURN_START,
-	ON_TILE_MOVED
+	ON_TILE_PUSHED
 }
 
 var event: EventType

@@ -245,9 +245,7 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 	var end_pos: Vector2i = positions[-1] + direction
 
 	# Check if the end position is valid and open
-	if not is_grid_pos_valid(end_pos):
-		return
-	if not _is_grid_pos_open(end_pos):
+	if not (is_grid_pos_valid(end_pos) and _is_grid_pos_open(end_pos)):
 		return
 
 	# Move all tiles in the line, starting from the end
@@ -256,3 +254,5 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 		var to_pos = from_pos + direction
 		var t = tile_locations[from_pos]
 		_assign_tile_to_grid_pos(t, to_pos)
+		
+		Events.tile_pushed.emit(t)

@@ -57,5 +57,9 @@ signal open_shop()
 signal close_shop()
 
 
+# Tile Events
+signal tile_pushed(tile: Tile)
+
+
 # Audio Events
 signal play_sound(sound_name: String)

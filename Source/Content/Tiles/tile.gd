@@ -71,7 +71,14 @@ func _ready() -> void:
 		)
 	Events.enemy_turn_over.connect(reset_uses_remaining)
 	Events.start_scenario.connect(reset_uses_remaining)
-	
+	_connect_tile_event_signals()
+
+
+func _connect_tile_event_signals() -> void:
+	Events.tile_pushed.connect(func(tile: Tile):
+		handle_tile_event(tile, TileEvent.EventType.ON_TILE_PUSHED)
+	)	
+
 
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
@@ -88,9 +95,10 @@ func _get_tile_info() -> InfoResource:
 	return info
 
 
-func handle_tile_event(event: TileEvent.EventType) -> void:
+func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 	if tile_resource.event_responses.has(event):
 		var effect_variables = _generate_effect_variables()
+		effect_variables.targets.append(tile)
 		await tile_resource.event_responses[event].play(effect_variables)
 
 
