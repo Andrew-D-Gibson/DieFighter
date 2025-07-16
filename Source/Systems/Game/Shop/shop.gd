@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var prices: Array[Node2D]
-var tile_to_shop_index: Dictionary[Tile, int]
+var item_to_shop_index: Dictionary[Node, int]
 
 @export var tile_scene: PackedScene
 @export var dice_scene: PackedScene
@@ -10,8 +10,6 @@ var tile_to_shop_index: Dictionary[Tile, int]
 const DICE_PRICE := 25
 
 var shop_tiles: Array[Node2D]
-var shop_dice: Array[Node2D]
-
 
 
 func _ready() -> void:
@@ -57,85 +55,79 @@ func _get_randomized_price(rarity: TileResource.Rarity) -> int:
 
 
 func _create_shop_tiles() -> void:
-	var tile_spacing_x := 46
-	var tile_spacing_y := 27
-	var start_pos := Vector2(-50,-13.5)
+	var tile_spacing_x: int = 46
+	var tile_spacing_y: int = 27
+	var start_pos: Vector2 = Vector2(-50,-13.5)
 	
-	tile_to_shop_index = {}
+	item_to_shop_index = {}
 	
-	for row in range(2):
-		for col in range(2):
-			var shop_index = (col*2) + row
+	for row: int in range(2):
+		for col: int in range(2):
+			var shop_index: int = (col*2) + row
 			
-			var possible_shop_tiles = _get_possible_shop_tiles()
+			var possible_shop_tiles: Array[TileResource] = _get_possible_shop_tiles()
 			if len(possible_shop_tiles) == 0:
 				prices[shop_index].visible = false
 				break
 			
-			var tile = tile_scene.instantiate()
+			var tile: Tile = tile_scene.instantiate()
 			tile.tile_resource = possible_shop_tiles.pick_random()
 			add_child(tile)
 			
-			var pos = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
+			var pos: Vector2 = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
 			tile.global_position = global_position + pos
 			tile.draggable.drag_started.connect(Events.show_systems.emit)
 			tile.draggable.home_position = tile.global_position
 			tile.draggable.emit_reached_new_home = false
-			tile.draggable.drag_ended.connect(_on_shop_tile_dragged)
+			tile.draggable.drag_ended.connect(_on_shop_item_dragged)
 			
 			shop_tiles.append(tile)
 			
 			
-			tile_to_shop_index[tile as Tile] = shop_index
-			var price = _get_randomized_price(tile.tile_resource.rarity)
+			item_to_shop_index[tile] = shop_index
+			var price: int = _get_randomized_price(tile.tile_resource.rarity)
 			prices[shop_index].visible = true
 			prices[shop_index].get_child(0).text = str(price)
 
 
 func _create_dice_buy_zone() -> void:
-	var dice = dice_scene.instantiate()
+	var dice: Dice = dice_scene.instantiate()
 	add_child(dice)
 	dice.global_position = global_position + Vector2(46, -16)
 	dice.draggable.home_position = dice.global_position
 	dice.draggable.emit_reached_new_home = false
 	dice.draggable.drag_started.connect(Events.show_systems.emit)
-	dice.draggable.drag_ended.connect(_on_dice_bought)
+	dice.draggable.drag_ended.connect(_on_shop_item_dragged)
+	
+	item_to_shop_index[dice] = 4
 	
 	prices[4].visible = true
 	prices[4].get_child(0).text = str(DICE_PRICE)
-	
-	shop_dice.append(dice)
 
 
-func _on_shop_tile_dragged(draggable: Draggable, end_position: Vector2) -> void:
-	var local_end_position = end_position - bounding_box.global_position
+func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
+	var local_end_position: Vector2 = end_position - bounding_box.global_position
 	
 	if not bounding_box.shape.get_rect().has_point(local_end_position):
-		var tile = draggable.get_parent()
-		var price = int(prices[tile_to_shop_index[tile as Tile]].get_child(0).text)
+		var item: Node = draggable.get_parent()
+		var price = int(prices[item_to_shop_index[item]].get_child(0).text)
 		
 		if Globals.player.money >= price:
 			Globals.player.money -= price
-			tile.draggable.drag_started.disconnect(Events.show_systems.emit)
-			tile.draggable.drag_ended.disconnect(_on_shop_tile_dragged)
-			tile.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
-			tile.tile_activation_complete.connect(Globals.tile_grid.tile_activation_complete.emit)
-			tile.reparent(Globals.tile_grid, true)
-			Globals.tile_grid._drop_tile_on_grid_pos(draggable, end_position)
 			
-			prices[tile_to_shop_index[tile as Tile]].visible = false
-
-
-func _on_dice_bought(draggable: Draggable, end_position: Vector2) -> void:
-	var local_end_position = end_position - bounding_box.global_position
-	
-	if not bounding_box.shape.get_rect().has_point(local_end_position):
-		var dice = draggable.get_parent()
-		if Globals.player.money >= DICE_PRICE:
-			Globals.player.money -= DICE_PRICE
-			dice.reparent(Globals.player, true)
-			Globals.player.dice_manager.add(dice)
-			dice.draggable.drag_started.connect(Events.hide_comms.emit)
-			Globals.player.num_of_dice += 1
+			item.draggable.drag_started.disconnect(Events.show_systems.emit)
+			item.draggable.drag_ended.disconnect(_on_shop_item_dragged)
 			
-			prices[4].visible = false
+			if item is Tile:
+				item.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
+				item.tile_activation_complete.connect(Globals.tile_grid.tile_activation_complete.emit)
+				item.reparent(Globals.tile_grid, true)
+				Globals.tile_grid._drop_tile_on_grid_pos(draggable, end_position)
+				
+			elif item is Dice:
+				item.reparent(Globals.player, true)
+				Globals.player.dice_manager.add(item)
+				item.draggable.drag_started.connect(Events.hide_comms.emit)
+				Globals.player.num_of_dice += 1
+			
+			prices[item_to_shop_index[item]].visible = false

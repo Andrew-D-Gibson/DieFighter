@@ -1,4 +1,3 @@
-[18:57:27] Debug logger initialized
-[18:57:27] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres
-[18:57:27] Starting scenario
-[18:57:27] Starting combat
+[16:27:02] Debug logger initialized
+[16:27:02] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres
+[16:27:02] Starting scenario

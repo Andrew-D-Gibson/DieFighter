@@ -7,7 +7,7 @@ var hit_particles: PackedScene = load("uid://doi43icsr46q0")
 
 func play(effect_variables: EffectVariables) -> void:
 	# Don't do anything if there's no target
-	if len(effect_variables.targets) == 0 or not effect_variables.targets[0]:
+	if len(effect_variables.targets) <= 0:
 		return
 		
 	# Set base damage
@@ -19,25 +19,31 @@ func play(effect_variables: EffectVariables) -> void:
 	# Calculate final damage after all modifiers
 	var final_amount = effect_variables.calculate_final_amount()
 	
-	# Create hit particles
-	var particles = hit_particles.instantiate()
-	if effect_variables.targets[0].health.shields >= final_amount:
-		particles.color = Globals.blue
-	else:
-		particles.color = Globals.red
+	for i in range(len(effect_variables.targets)):
+		if not effect_variables.targets[i]:
+			continue
 		
-	particles.amount = 6 * final_amount
-	particles.rotation = (PI/2) + effect_variables.effect_source.global_position.\
-		angle_to_point(effect_variables.targets[0].global_position)
-	effect_variables.targets[0].add_child(particles)
+		# Create hit particles
+		var particles = hit_particles.instantiate()
+		if effect_variables.targets[i].health.shields >= final_amount:
+			particles.color = Globals.blue
+		else:
+			particles.color = Globals.red
+			
+		particles.amount = 6 * final_amount
+		particles.rotation = (PI/2) +\
+			effect_variables.effect_source.global_position.\
+			angle_to_point(effect_variables.targets[i].global_position)
+		effect_variables.targets[i].add_child(particles)
+		
+		# Trigger scenario events as necessary
+		if effect_variables.actor is Player\
+		and effect_variables.targets[i] is Enemy:
+			Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
+			Events.player_attacked_ship.emit(
+				effect_variables.targets[i], 
+				effect_variables.targets[i].scenario_state.faction
+			)
+		
+		effect_variables.targets[i].health.take_damage(final_amount)
 	
-	# Trigger scenario events as necessary
-	if effect_variables.actor is Player\
-	and effect_variables.targets[0] is Enemy:
-		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
-		Events.player_attacked_ship.emit(effect_variables.targets[0], effect_variables.targets[0].scenario_state.faction)
-	
-	effect_variables.targets[0].health.take_damage(final_amount)
-	
-	# Clear modifiers
-	effect_variables.clear_amount_modifiers()

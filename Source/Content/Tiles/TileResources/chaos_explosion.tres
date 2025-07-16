@@ -1,0 +1,79 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=21 format=3 uid="uid://fvyrur7iway6"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_q8v5r"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_5a1es"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_asido"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_asido"]
+[ext_resource type="Script" uid="uid://bwfflspw3732k" path="res://Source/Content/Effects/Targeters/target_all_ships_effect.gd" id="3_il8a7"]
+[ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="4_6u12h"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_rsbqf"]
+[ext_resource type="Script" uid="uid://dfw5ioetwloty" path="res://Source/Content/Effects/DiceValueChangers/reroll_all_dice_effect.gd" id="5_iesjq"]
+[ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="6_1rls6"]
+[ext_resource type="Texture2D" uid="uid://crj0u38nbo77y" path="res://Assets/Textures/Tiles/chaos_explosion.png" id="6_rsbqf"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_gneyo"]
+
+[sub_resource type="Resource" id="Resource_il8a7"]
+script = ExtResource("1_q8v5r")
+type = 1
+acceptable_values = Array[int]([5, 6])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_h48ea"]
+script = ExtResource("3_il8a7")
+primary_effect = false
+metadata/_custom_type_script = "uid://bwfflspw3732k"
+
+[sub_resource type="Resource" id="Resource_iesjq"]
+script = ExtResource("4_6u12h")
+amount = 1
+inherit_die_amount = false
+primary_effect = true
+metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
+
+[sub_resource type="Resource" id="Resource_iso42"]
+script = ExtResource("5_iesjq")
+primary_effect = false
+metadata/_custom_type_script = "uid://dfw5ioetwloty"
+
+[sub_resource type="Resource" id="Resource_2itrs"]
+script = ExtResource("6_1rls6")
+primary_effect = false
+metadata/_custom_type_script = "uid://wmvgjnwdtv3h"
+
+[sub_resource type="Resource" id="Resource_c732t"]
+script = ExtResource("7_gneyo")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[sub_resource type="Resource" id="Resource_6u12h"]
+script = ExtResource("3_asido")
+effects = Array[ExtResource("2_asido")]([SubResource("Resource_h48ea"), SubResource("Resource_iesjq"), SubResource("Resource_iso42"), SubResource("Resource_2itrs"), SubResource("Resource_c732t")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h48ea"]
+atlas = ExtResource("6_rsbqf")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_iesjq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h48ea")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_rsbqf")
+tile_name = "Chaotic Explosion"
+activation_description = "[color=yellow]Activates[/color] with a (die_5) or (die_6)"
+description = "Deals 10 [color=red]damage[/color] to all ships, and [color=green]re-rolls[/color] all dice.  Gives the [color=yellow]activator[/color] die to a random enemy."
+rarity = 2
+textures = SubResource("SpriteFrames_iesjq")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_q8v5r")]([SubResource("Resource_il8a7")])
+effect_chain = SubResource("Resource_6u12h")
+event_responses = Dictionary[ExtResource("2_5a1es"), ExtResource("3_asido")]({})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -18,9 +18,13 @@ func remove(die: Dice) -> void:
 	
 	
 func _update_dice_queue_locations() -> void:
+	var dice_spacing: int = 10
 	for i in range(len(queue)):
 		queue[i].draggable.state = Draggable.DragState.ENEMY_HOLDING
-		queue[i].draggable.home_position = global_position + Vector2(0, -i * 10)
+		queue[i].draggable.home_position = global_position + Vector2(
+			floor(i / 5.0) * dice_spacing, 
+			-(i % 5) * dice_spacing
+		)
 
 
 ## Give dice away to other enemies if possible or the player if not	

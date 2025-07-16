@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=14 format=3 uid="uid://diw5cai3jhpm"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=15 format=3 uid="uid://diw5cai3jhpm"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_hoi4y"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_nqfdy"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_y57nh"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_ctsso"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_fdhil"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_fdhil"]
 [ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/value_exchange.png" id="7_jubjl"]
 
 [sub_resource type="Resource" id="Resource_e82b4"]
@@ -50,5 +51,5 @@ textures = SubResource("SpriteFrames_pgax4")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_hoi4y")]([])
 effect_chain = SubResource("Resource_jubjl")
-event_responses = Dictionary[int, ExtResource("6_fdhil")]({})
+event_responses = Dictionary[ExtResource("7_fdhil"), ExtResource("6_fdhil")]({})
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
