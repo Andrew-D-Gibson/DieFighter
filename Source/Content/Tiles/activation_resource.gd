@@ -9,6 +9,7 @@ enum ActivationType {
 	SHIP_TARGETED,
 	ACTIVATOR_DIE_NOT_HOLOGRAPHIC,
 	CANT_BE_ACTIVATED_WITH_DIE,
+	TARGETED_SHIP_HAS_SHIELDS,
 }
 
 @export var type: ActivationType
@@ -33,14 +34,23 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 	
 	ActivationType.IN_COMBAT: 
 		func(_die: Dice): 
+			if not Globals.state_manager:
+				return false
+				
 			return Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT,
 
 	ActivationType.OTHER_SHIPS_EXIST: 
-		func(_die: Dice): 
+		func(_die: Dice):
+			if not Globals.enemy_manager:
+				return false
+				
 			return len(Globals.enemy_manager.enemies) > 0,
 
 	ActivationType.SHIP_TARGETED: 
 		func(_die: Dice):
+			if not Globals.targeting_computer:
+				return false
+				
 			return Globals.targeting_computer.targeted_enemy != null,
 			
 	ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC: 
@@ -53,7 +63,17 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			
 	ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
 		func(die: Dice):
-			return not die
+			return not die,
+			
+	ActivationType.TARGETED_SHIP_HAS_SHIELDS:
+		func(_die:Dice):
+			if not Globals.targeting_computer:
+				return false
+				
+			if not Globals.targeting_computer.targeted_enemy:
+				return false
+			
+			return Globals.targeting_computer.targeted_enemy.health.shields > 0
 }
 
 
