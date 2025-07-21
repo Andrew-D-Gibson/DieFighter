@@ -103,7 +103,7 @@ func move_tile(tile: Tile, new_pos: Vector2i) -> void:
 		return
 
 	# If the target grid position is occupied
-	if not _is_grid_pos_open(new_pos):
+	if not is_grid_pos_open(new_pos):
 		var existing_tile: Tile = tile_locations[new_pos]
 
 		# Don't swap with self
@@ -134,7 +134,7 @@ func grid_to_global_pos(grid_pos: Vector2i) -> Vector2:
 	)
 
 
-func _is_grid_pos_open(grid_pos: Vector2i) -> bool:
+func is_grid_pos_open(grid_pos: Vector2i) -> bool:
 	return not tile_locations.has(grid_pos)
 
 
@@ -161,7 +161,7 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 		return
 
 	# If the target grid position is occupied
-	if not _is_grid_pos_open(grid_drop_pos):
+	if not is_grid_pos_open(grid_drop_pos):
 		var existing_tile: Tile = tile_locations[grid_drop_pos]
 
 		# Don't swap with self
@@ -198,7 +198,7 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 func find_available_grid_pos() -> Vector2i:
 	for y in range(grid_height):
 		for x in range(grid_width):
-			if _is_grid_pos_open(Vector2i(x,y)):
+			if is_grid_pos_open(Vector2i(x,y)):
 				return Vector2i(x,y)
 	return Vector2i(-1, -1)
 
@@ -240,7 +240,7 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 	var end_pos: Vector2i = positions[-1] + direction
 
 	# Check if the end position is valid and open
-	if not (is_grid_pos_valid(end_pos) and _is_grid_pos_open(end_pos)):
+	if not (is_grid_pos_valid(end_pos) and is_grid_pos_open(end_pos)):
 		return
 
 	# Move all tiles in the line, starting from the end

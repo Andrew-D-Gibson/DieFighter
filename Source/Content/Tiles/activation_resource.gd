@@ -77,5 +77,37 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 }
 
 
+var failed_activation_messages: Dictionary[ActivationType, String] = {
+	
+	ActivationType.REQUIRES_ACTIVATOR_DIE: 
+		"REQUIRES DIE",
+			
+	ActivationType.VALUE: 
+		"REQUIRES CORRECT VALUE DIE",
+	
+	ActivationType.IN_COMBAT: 
+		"MUST BE IN COMBAT",
+		
+	ActivationType.OTHER_SHIPS_EXIST: 
+		"OTHER SHIPS MUST BE PRESENT",
+
+	ActivationType.SHIP_TARGETED: 
+		"NO VALID TARGET IN COMPUTER",
+			
+	ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC: 
+		"CAN'T BE ACTIVATED WITH HOLOGRAPHIC DIE",
+			
+	ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
+		"CAN'T BE ACTIVATED WITH DIE",
+			
+	ActivationType.TARGETED_SHIP_HAS_SHIELDS:
+		"TARGETED SHIP HAS NO SHIELDS",
+}
+
+
 func criteria_satisfied(die: Dice) -> bool:
 	return activation_functions[type].call(die)
+	
+
+func get_criteria_fail_text() -> String:
+	return failed_activation_messages[type]

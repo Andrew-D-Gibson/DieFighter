@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckr62x5ur3m8g"]
+
+[ext_resource type="Script" uid="uid://c4kh6wtj032wq" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.gd" id="1_crojl"]
+[ext_resource type="PackedScene" uid="uid://d0a5ylqp64b1d" path="res://Source/Systems/UI/ErrorPopupManager/ErrorTextPopup/error_text_popup.tscn" id="2_6ogp4"]
+
+[node name="ErrorPopupManager" type="Node"]
+script = ExtResource("1_crojl")
+error_text_popup_scene = ExtResource("2_6ogp4")

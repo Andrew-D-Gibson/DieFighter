@@ -55,6 +55,7 @@ var effect_data: Dictionary[String, int]
 @export var clickable: Clickable
 @export var shakeable: Shakeable
 @export var sprite_frames: AnimatedSprite2D
+@export var error_text_scene: PackedScene
 
 
 signal tile_activation_complete()
@@ -117,10 +118,12 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 func try_to_activate(activator_die: Dice = null) -> void:
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
+		Events.error_text_popup.emit("NO USES REMAINING", self.global_position)
 		return
 		
 	for check in tile_resource.activation_checks:
 		if not check.criteria_satisfied(activator_die):
+			Events.error_text_popup.emit(check.get_criteria_fail_text(), self.global_position)
 			return
 	
 	# We're cleared hot to activate!

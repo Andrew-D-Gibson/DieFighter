@@ -32,6 +32,7 @@ signal game_over()
 signal player_health_hit()
 signal player_shields_hit()
 signal engine_charge_changed()
+signal error_text_popup(text: String, global_pos: Vector2)
 
 # Game Sequencing Events
 signal jump()
