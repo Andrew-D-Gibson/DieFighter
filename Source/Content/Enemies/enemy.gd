@@ -26,6 +26,9 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 ## The scene to instantiate when showing action popups
 @export var action_popup: PackedScene
 
+## The clickable region to target this enemy
+@export var clickable_region: CollisionShape2D
+
 ## The actions the enemy will take this turn
 var turn_actions: Array[EnemyActionResource]
 var moving_in_world: bool = false
@@ -240,3 +243,8 @@ func trigger_state_effects() -> void:
 	effect_variables.effect_source = self
 	
 	await scenario_state.effects_on_enter.play(effect_variables)
+
+
+## Re-targets the computer for this enemy
+func _on_clicked() -> void:
+	Globals.targeting_computer.target_enemy(self)

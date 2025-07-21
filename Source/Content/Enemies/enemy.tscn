@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://bwwirc58smer1"]
+[gd_scene load_steps=11 format=3 uid="uid://bwwirc58smer1"]
 
 [ext_resource type="Script" uid="uid://dibocqhoikh50" path="res://Source/Content/Enemies/enemy.gd" id="1_ljdua"]
 [ext_resource type="PackedScene" uid="uid://b8gjt5a2dcrbn" path="res://Source/Content/Enemies/action_popup.tscn" id="2_cwfht"]
@@ -8,13 +8,18 @@
 [ext_resource type="PackedScene" uid="uid://b5qwpdwbg4isw" path="res://Assets/Particles/enemy_death_explosion.tscn" id="8_dycj8"]
 [ext_resource type="PackedScene" uid="uid://cunuv8hg5d8gc" path="res://Source/Content/Enemies/Components/EnemyDiceManager/enemy_dice_manager.tscn" id="8_fjj67"]
 [ext_resource type="PackedScene" uid="uid://bs2us7nioax1u" path="res://Source/Content/Enemies/Components/EnemyGraphicsManager/enemy_graphics_manager.tscn" id="8_sfiwu"]
+[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="9_sfiwu"]
 
-[node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_manager", "graphics_manager", "health")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dycj8"]
+size = Vector2(70, 50)
+
+[node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_manager", "graphics_manager", "health", "clickable_region")]
 script = ExtResource("1_ljdua")
 dice_manager = NodePath("EnemyDiceManager")
 graphics_manager = NodePath("EnemyGraphicsManager")
 health = NodePath("Health")
 action_popup = ExtResource("2_cwfht")
+clickable_region = NodePath("Clickable/CollisionShape2D")
 
 [node name="Health" parent="." instance=ExtResource("3_cwfht")]
 
@@ -32,3 +37,10 @@ health_component = NodePath("../../Health")
 [node name="Shakeable" parent="EnemyGraphicsManager" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
 node_to_shake = NodePath("../..")
 small_shake_duration = 0.2
+
+[node name="Clickable" parent="." instance=ExtResource("9_sfiwu")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+shape = SubResource("RectangleShape2D_dycj8")
+
+[connection signal="clicked" from="Clickable" to="." method="_on_clicked"]

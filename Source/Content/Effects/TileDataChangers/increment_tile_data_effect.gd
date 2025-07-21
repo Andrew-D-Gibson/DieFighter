@@ -18,5 +18,3 @@ func play(effect_variables: EffectVariables) -> void:
 		tile.effect_data[tile_data_key] = 1
 	else:
 		tile.effect_data[tile_data_key] += 1
-		
-	print(tile_data_key, ' ', tile.effect_data[tile_data_key])

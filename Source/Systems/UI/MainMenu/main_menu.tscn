@@ -1,9 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://ccvtlre5vhj7d"]
+[gd_scene load_steps=10 format=3 uid="uid://ccvtlre5vhj7d"]
 
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_5pv2g"]
 [ext_resource type="Script" uid="uid://dfqo2lhkhal5l" path="res://Source/Systems/UI/MainMenu/main_menu.gd" id="1_otgxl"]
+[ext_resource type="PackedScene" uid="uid://deisauteocrjl" path="res://Source/main.tscn" id="3_5v1c7"]
 [ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="3_y6sr5"]
 [ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="4_5v1c7"]
+[ext_resource type="PackedScene" uid="uid://c7hyjenhhnsah" path="res://Source/Systems/UI/OptionsMenu/options_menu.tscn" id="4_bcx7i"]
 
 [sub_resource type="Animation" id="Animation_y6sr5"]
 length = 0.001
@@ -67,6 +69,8 @@ self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
 texture = ExtResource("1_5pv2g")
 offset = Vector2(160, 90)
 script = ExtResource("1_otgxl")
+main_game_scene = ExtResource("3_5v1c7")
+options_menu_scene = ExtResource("4_bcx7i")
 num_of_twinkling_stars = 50
 background_color = Color(0.027451, 0.0117647, 0.14902, 1)
 star_pixel_scene = ExtResource("3_y6sr5")
@@ -140,3 +144,10 @@ theme_override_font_sizes/font_size = 32
 text = "QUIT"
 flat = true
 alignment = 0
+
+[connection signal="mouse_entered" from="VBoxContainer/PlayButton" to="." method="_on_button_hover"]
+[connection signal="pressed" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/OptionsButton" to="." method="_on_button_hover"]
+[connection signal="pressed" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/QuitButton" to="." method="_on_button_hover"]
+[connection signal="pressed" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -82,6 +82,23 @@ func check_target_is_valid() -> void:
 	Events.targeting_computer_retargeted.emit()
 	
 	
+func target_enemy(enemy: Enemy) -> void:
+	if not enemy:
+		return
+		
+	if not Globals.enemy_manager:
+		_update_ui()
+		return
+		
+	var enemies = Globals.enemy_manager.get_alive_enemies()
+	
+	var enemy_index: int = enemies.find(enemy)
+	if enemy_index != -1: # We found the enemy
+		targeted_enemy_index = enemy_index
+	
+	check_target_is_valid()
+
+	
 func _update_ui() -> void:
 	if !targeted_enemy:
 		targeting_indicator.visible = false

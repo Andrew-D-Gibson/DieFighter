@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
-[ext_resource type="Resource" uid="uid://dp6euwvjd2ren" path="res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres" id="3_prmjb"]
+[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres" id="3_prmjb"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_8qr57"]
 [ext_resource type="Resource" uid="uid://gfr4eel8gocp" path="res://Source/Content/Tiles/TileResources/tactical_boomerang.tres" id="7_5y8et"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xm1st"]

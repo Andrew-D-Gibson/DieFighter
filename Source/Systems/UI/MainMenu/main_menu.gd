@@ -1,5 +1,10 @@
 extends Sprite2D
 
+@export_category('Menu')
+@export var main_game_scene: PackedScene
+@export var options_menu_scene: PackedScene
+
+@export_category('Background Components')
 @export var num_of_stars: int = 100
 @export var num_of_twinkling_stars: int = 25
 @export var background_color: Color = Globals.purple
@@ -54,3 +59,23 @@ func _input(event: InputEvent) -> void:
 			animation_player.stop()
 			fade_in_sprite.visible = false
 			camera.offset.y = 270
+
+
+func _on_play_button_pressed() -> void:
+	get_tree().change_scene_to_packed(main_game_scene)
+	
+	
+func _on_options_button_pressed() -> void:
+	var options_menu: Node = options_menu_scene.instantiate()
+	add_child(options_menu)
+	options_menu.global_position = camera.offset
+	
+	print('Options opened')
+	
+	
+func _on_quit_button_pressed() -> void:
+	get_tree().quit()
+
+
+func _on_button_hover() -> void:
+	Events.play_sound.emit('tile_dropped')
