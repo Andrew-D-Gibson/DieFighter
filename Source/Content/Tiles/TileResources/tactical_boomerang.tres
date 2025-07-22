@@ -64,6 +64,7 @@ metadata/_custom_type_script = "uid://davfiolrth182"
 [sub_resource type="Resource" id="Resource_pef2i"]
 script = ExtResource("7_xfdie")
 new_value = 1
+offset_from_original_value = false
 primary_effect = false
 metadata/_custom_type_script = "uid://cyyaosauc8fk"
 

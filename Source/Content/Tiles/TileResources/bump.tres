@@ -1,0 +1,97 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=21 format=3 uid="uid://dy6ykhsava6f4"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u36sv"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_m7a5a"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_rp1c6"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_5xcxx"]
+[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_8xact"]
+[ext_resource type="Script" uid="uid://cyyaosauc8fk" path="res://Source/Content/Effects/DiceValueChangers/change_activator_to_value_effect.gd" id="4_8xact"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_m7a5a"]
+[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_0ono8"]
+[ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/bump-Sheet.png" id="7_0ono8"]
+
+[sub_resource type="Resource" id="Resource_7xmxb"]
+script = ExtResource("1_u36sv")
+type = 0
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_c3unh"]
+script = ExtResource("1_u36sv")
+type = 1
+acceptable_values = Array[int]([1, 2, 3, 4, 5])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_pmkt1"]
+script = ExtResource("3_8xact")
+color = Color(0.396078, 0.611765, 0.164706, 1)
+amount = 36
+location = 1
+primary_effect = false
+metadata/_custom_type_script = "uid://5vw5tu23ayfk"
+
+[sub_resource type="Resource" id="Resource_0ono8"]
+script = ExtResource("4_8xact")
+new_value = 1
+offset_from_original_value = true
+primary_effect = true
+metadata/_custom_type_script = "uid://cyyaosauc8fk"
+
+[sub_resource type="Resource" id="Resource_gm6wk"]
+script = ExtResource("5_0ono8")
+primary_effect = false
+metadata/_custom_type_script = "uid://bscm2msup3lwk"
+
+[sub_resource type="Resource" id="Resource_u271i"]
+script = ExtResource("3_5xcxx")
+effects = Array[ExtResource("2_m7a5a")]([SubResource("Resource_pmkt1"), SubResource("Resource_0ono8"), SubResource("Resource_gm6wk")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gm6wk"]
+atlas = ExtResource("7_0ono8")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8ixi3"]
+atlas = ExtResource("7_0ono8")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4ge7v"]
+atlas = ExtResource("7_0ono8")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0lpjh"]
+atlas = ExtResource("7_0ono8")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_j21c8"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gm6wk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8ixi3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4ge7v")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0lpjh")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_m7a5a")
+tile_name = "Bump"
+activation_description = "[color=yellow]Activates[/color] with any die lower than a (die_6)"
+description = "Adds 1 to the value of the [color=yellow]activator[/color] die"
+rarity = 0
+textures = SubResource("SpriteFrames_j21c8")
+uses_per_turn = 3
+activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])
+effect_chain = SubResource("Resource_u271i")
+event_responses = Dictionary[ExtResource("2_rp1c6"), ExtResource("3_5xcxx")]({})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
