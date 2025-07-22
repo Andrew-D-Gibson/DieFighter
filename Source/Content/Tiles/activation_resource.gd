@@ -10,6 +10,7 @@ enum ActivationType {
 	ACTIVATOR_DIE_NOT_HOLOGRAPHIC,
 	CANT_BE_ACTIVATED_WITH_DIE,
 	TARGETED_SHIP_HAS_SHIELDS,
+	ENGINE_NOT_CHARGED,
 }
 
 @export var type: ActivationType
@@ -73,7 +74,11 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			if not Globals.targeting_computer.targeted_enemy:
 				return false
 			
-			return Globals.targeting_computer.targeted_enemy.health.shields > 0
+			return Globals.targeting_computer.targeted_enemy.health.shields > 0,
+			
+	ActivationType.ENGINE_NOT_CHARGED:
+		func(_die: Dice):
+			return Globals.player.engine_charge < Globals.player.max_engine_charge,
 }
 
 
@@ -102,6 +107,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 			
 	ActivationType.TARGETED_SHIP_HAS_SHIELDS:
 		"TARGETED SHIP HAS NO SHIELDS",
+		
+	ActivationType.ENGINE_NOT_CHARGED:
+		"ENGINE IS FULLY CHARGED",
 }
 
 

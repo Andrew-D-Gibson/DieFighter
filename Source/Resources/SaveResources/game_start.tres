@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GameSaveResource" load_steps=13 format=3 uid="uid://biawl3820xfte"]
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=14 format=3 uid="uid://biawl3820xfte"]
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
@@ -12,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://bpskb4vc2vfxm" path="res://Source/Content/Tiles/TileResources/shielded_attractor.tres" id="10_f1kbi"]
 [ext_resource type="Resource" uid="uid://dy6ykhsava6f4" path="res://Source/Content/Tiles/TileResources/bump.tres" id="12_3eajj"]
 [ext_resource type="Resource" uid="uid://cmcttgw25qx0t" path="res://Source/Content/Tiles/TileResources/reroll.tres" id="13_cyk0s"]
+[ext_resource type="Resource" uid="uid://b864u5yojhw1v" path="res://Source/Content/Tiles/TileResources/inertial_feedback.tres" id="13_geshu"]
 
 [resource]
 script = ExtResource("1_78gow")
@@ -27,6 +28,7 @@ Vector2i(1, 0): ExtResource("12_3eajj"),
 Vector2i(1, 1): ExtResource("8_4a3cr"),
 Vector2i(2, 1): ExtResource("9_f1kbi"),
 Vector2i(2, 2): ExtResource("13_cyk0s"),
+Vector2i(3, 1): ExtResource("13_geshu"),
 Vector2i(3, 2): ExtResource("7_5y8et"),
 Vector2i(4, 1): ExtResource("10_f1kbi")
 })

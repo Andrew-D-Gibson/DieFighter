@@ -1,15 +1,36 @@
-[08:50:14] Debug logger initialized
-[08:50:14] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres
-[08:50:14] Starting scenario
-[08:50:14] Starting combat
-[08:51:03] Player attacked ship: @Node2D@221 (Faction: PIRATE)
-[08:51:03] Scenario Event: PLAYER_ATTACKED_PIRATE
-[08:51:50] Player attacked ship: Enemy (Faction: PIRATE)
-[08:51:50] Scenario Event: PLAYER_ATTACKED_PIRATE
-[08:51:50] Enemy left: PIRATE
-[08:51:50] Player attacked ship: @Node2D@221 (Faction: PIRATE)
-[08:51:50] Scenario Event: PLAYER_ATTACKED_PIRATE
-[08:51:50] Enemy left: PIRATE
-[08:51:50] Scenario Event: PIRATES_DEFEATED
-[08:51:50] Combat finished
-[08:51:50] Scenario Event: COMBAT_ENDED
+[09:54:49] Debug logger initialized
+[09:54:49] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres
+[09:54:49] Starting scenario
+[09:54:49] Starting combat
+[09:55:01] Player attacked ship: Enemy (Faction: PIRATE)
+[09:55:01] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:01] Player attacked ship: @Node2D@222 (Faction: PIRATE)
+[09:55:01] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:08] Player attacked ship: Enemy (Faction: PIRATE)
+[09:55:08] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:08] Player attacked ship: @Node2D@222 (Faction: PIRATE)
+[09:55:08] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:09] Player attacked ship: Enemy (Faction: PIRATE)
+[09:55:09] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:09] Player attacked ship: @Node2D@222 (Faction: PIRATE)
+[09:55:09] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:10] Player attacked ship: Enemy (Faction: PIRATE)
+[09:55:10] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:10] Player attacked ship: @Node2D@222 (Faction: PIRATE)
+[09:55:10] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:17] Player turn over
+[09:55:17] Enemy Bamba Defender performed action: Shield Burst
+[09:55:18] Enemy Bamba Defender performed action: 
+[09:55:19] Enemy Bamba Defender performed action: 
+[09:55:20] Enemy Bamba Defender performed action: 
+[09:55:21] Enemy Disabler Drone performed action: 
+[09:55:21] Enemy turn over
+[09:55:32] Player attacked ship: Enemy (Faction: PIRATE)
+[09:55:32] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:32] Enemy left: PIRATE
+[09:55:32] Player attacked ship: @Node2D@222 (Faction: PIRATE)
+[09:55:32] Scenario Event: PLAYER_ATTACKED_PIRATE
+[09:55:32] Enemy left: PIRATE
+[09:55:32] Scenario Event: PIRATES_DEFEATED
+[09:55:32] Combat finished
+[09:55:32] Scenario Event: COMBAT_ENDED

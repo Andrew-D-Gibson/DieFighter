@@ -8,7 +8,7 @@ texture = ExtResource("2_3nvjd")
 
 [node name="ErrorTextPopup" type="RichTextLabel"]
 z_index = 10
-custom_minimum_size = Vector2(96, 36)
+custom_minimum_size = Vector2(72, 24)
 offset_right = 100.0
 offset_bottom = 22.0
 size_flags_horizontal = 4
