@@ -85,7 +85,7 @@ animations = [{
 script = ExtResource("4_6evea")
 tile_name = "Shielded Attractor"
 activation_description = "[color=yellow]Activates[/color] with a (die_4)"
-description = "Depletes the [color=blue]shields[/color] of the [color=purple]targeted[/color] enemy by 6 to pull all tiles one space toward this tile's column.  Gives the [color=yellow]activator[/color] die to the targeted enemy"
+description = "Depletes 6 [color=blue]shields[/color] from the [color=purple]targeted[/color] enemy to pull all tiles one space toward this tile's column.  Gives the [color=yellow]activator[/color] die to the targeted enemy"
 rarity = 1
 textures = SubResource("SpriteFrames_lvigf")
 uses_per_turn = -1

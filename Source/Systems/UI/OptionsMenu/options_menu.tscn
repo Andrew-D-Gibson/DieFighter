@@ -1,10 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://c7hyjenhhnsah"]
+[gd_scene load_steps=17 format=3 uid="uid://c7hyjenhhnsah"]
 
 [ext_resource type="Script" uid="uid://b3278n4xjt53b" path="res://Source/Systems/UI/OptionsMenu/options_menu.gd" id="1_c6430"]
 [ext_resource type="Texture2D" uid="uid://cyvsute3rdn06" path="res://Assets/Textures/OptionsMenu/music_volume_knob_dark.png" id="2_bv108"]
 [ext_resource type="Texture2D" uid="uid://con6g3t6bp21i" path="res://Assets/Textures/OptionsMenu/options_background-Sheet.png" id="2_c6430"]
 [ext_resource type="Texture2D" uid="uid://cphbhatw48fco" path="res://Assets/Textures/OptionsMenu/music_volume_knob_light.png" id="3_c6430"]
-[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="3_smy8a"]
 [ext_resource type="Texture2D" uid="uid://b5t67qqtpu483" path="res://Assets/Textures/OptionsMenu/sfx_volume_knob_dark.png" id="4_smy8a"]
 [ext_resource type="Texture2D" uid="uid://d110vl5lf12kr" path="res://Assets/Textures/OptionsMenu/sfx_volume_knob_light.png" id="5_okq5w"]
 
@@ -37,9 +36,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_okq5w"]
-size = Vector2(45, 10)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6430"]
 bg_color = Color(0.564706, 0.14902, 0.235294, 1)
 
@@ -65,6 +61,15 @@ _game_options = NodePath("GameOptions")
 _graphics_options = NodePath("GraphicsOptions")
 _audio_options = NodePath("AudioOptions")
 
+[node name="ScreenDim" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(320, 180)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.027451, 0.0117647, 0.054902, 0.827451)
+
 [node name="Background" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_ywcti")
@@ -76,84 +81,105 @@ offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="GameOptionsButton" type="RichTextLabel" parent="TabButtons"]
+[node name="GameOptionsButton" type="Button" parent="TabButtons"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = -95.0
-offset_top = -56.0
+offset_top = -60.0
 offset_right = -50.0
-offset_bottom = -43.0
+offset_bottom = -39.0
+focus_mode = 0
+flat = true
+
+[node name="GameOptionsLabel" type="RichTextLabel" parent="TabButtons/GameOptionsButton"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 bbcode_enabled = true
 text = "GAME"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Clickable" parent="TabButtons/GameOptionsButton" instance=ExtResource("3_smy8a")]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/GameOptionsButton/Clickable"]
-position = Vector2(22.5, 8)
-shape = SubResource("RectangleShape2D_okq5w")
-
-[node name="GraphicsOptionsButton" type="RichTextLabel" parent="TabButtons"]
+[node name="GraphicsOptionsButton" type="Button" parent="TabButtons"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = -23.0
-offset_top = -56.0
+offset_top = -60.0
 offset_right = 22.0
-offset_bottom = -43.0
+offset_bottom = -39.0
+focus_mode = 0
+flat = true
+
+[node name="GraphicsOptionsLabel" type="RichTextLabel" parent="TabButtons/GraphicsOptionsButton"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 bbcode_enabled = true
 text = "GRAPHICS"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Clickable" parent="TabButtons/GraphicsOptionsButton" instance=ExtResource("3_smy8a")]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/GraphicsOptionsButton/Clickable"]
-position = Vector2(22.5, 8)
-shape = SubResource("RectangleShape2D_okq5w")
-
-[node name="AudioOptionsButton" type="RichTextLabel" parent="TabButtons"]
+[node name="AudioOptionsButton" type="Button" parent="TabButtons"]
 unique_name_in_owner = true
+layout_mode = 0
 offset_left = 50.0
-offset_top = -56.0
+offset_top = -60.0
 offset_right = 95.0
-offset_bottom = -43.0
+offset_bottom = -39.0
+focus_mode = 0
+flat = true
+
+[node name="AudioOptionsLabel" type="RichTextLabel" parent="TabButtons/AudioOptionsButton"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 mouse_filter = 2
 bbcode_enabled = true
 text = "AUDIO"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Clickable" parent="TabButtons/AudioOptionsButton" instance=ExtResource("3_smy8a")]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/AudioOptionsButton/Clickable"]
-position = Vector2(22.5, 8)
-shape = SubResource("RectangleShape2D_okq5w")
-
 [node name="GameOptions" type="VBoxContainer" parent="."]
-offset_left = -95.0
+offset_left = -93.0
 offset_top = -42.0
-offset_right = 91.0
+offset_right = 93.0
 offset_bottom = 54.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="GameOptions"]
 layout_mode = 2
-text = "GAME STUFF
-Animation speed
-Language"
+size_flags_vertical = 3
+text = "Animation speed
+Language
+Controls
+Credits
+"
 fit_content = true
 
 [node name="GraphicsOptions" type="VBoxContainer" parent="."]
 visible = false
-offset_left = -95.0
+offset_left = -93.0
 offset_top = -42.0
-offset_right = 91.0
+offset_right = 93.0
 offset_bottom = 54.0
 
 [node name="RichTextLabel" type="RichTextLabel" parent="GraphicsOptions"]
 layout_mode = 2
-text = "GRAPHICS STUFF
-Screenshake
+size_flags_vertical = 3
+text = "Screenshake
 V-Sync
 Resolution/Windowed mode
 "
@@ -161,9 +187,9 @@ fit_content = true
 
 [node name="AudioOptions" type="VBoxContainer" parent="."]
 visible = false
-offset_left = -95.0
+offset_left = -93.0
 offset_top = -42.0
-offset_right = 91.0
+offset_right = 93.0
 offset_bottom = 54.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="AudioOptions"]
@@ -301,14 +327,20 @@ theme_override_font_sizes/font_size = 24
 text = "CLOSE"
 flat = true
 
-[connection signal="clicked" from="TabButtons/GameOptionsButton/Clickable" to="." method="_on_game_button_pressed"]
-[connection signal="is_hovered" from="TabButtons/GameOptionsButton/Clickable" to="." method="_on_game_button_hovered"]
-[connection signal="clicked" from="TabButtons/GraphicsOptionsButton/Clickable" to="." method="_on_graphics_button_pressed"]
-[connection signal="is_hovered" from="TabButtons/GraphicsOptionsButton/Clickable" to="." method="_on_graphics_button_hovered"]
-[connection signal="clicked" from="TabButtons/AudioOptionsButton/Clickable" to="." method="_on_audio_button_pressed"]
-[connection signal="is_hovered" from="TabButtons/AudioOptionsButton/Clickable" to="." method="_on_audio_button_hovered"]
+[connection signal="mouse_entered" from="TabButtons/GameOptionsButton" to="." method="_on_game_button_mouse_entered"]
+[connection signal="mouse_exited" from="TabButtons/GameOptionsButton" to="." method="_on_game_button_mouse_exited"]
+[connection signal="pressed" from="TabButtons/GameOptionsButton" to="." method="_on_game_button_pressed"]
+[connection signal="mouse_entered" from="TabButtons/GraphicsOptionsButton" to="." method="_on_graphics_button_mouse_entered"]
+[connection signal="mouse_exited" from="TabButtons/GraphicsOptionsButton" to="." method="_on_graphics_button_mouse_exited"]
+[connection signal="pressed" from="TabButtons/GraphicsOptionsButton" to="." method="_on_graphics_button_pressed"]
+[connection signal="mouse_entered" from="TabButtons/AudioOptionsButton" to="." method="_on_audio_button_mouse_entered"]
+[connection signal="mouse_exited" from="TabButtons/AudioOptionsButton" to="." method="_on_audio_button_mouse_exited"]
+[connection signal="pressed" from="TabButtons/AudioOptionsButton" to="." method="_on_audio_button_pressed"]
+[connection signal="mouse_entered" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_item_hover"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_game_volume_slider_value_changed"]
+[connection signal="mouse_entered" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_item_hover"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]
+[connection signal="mouse_entered" from="AudioOptions/HBoxContainer3/SFXVolumeSlider" to="." method="_on_item_hover"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer3/SFXVolumeSlider" to="." method="_on_sfx_volume_slider_value_changed"]
 [connection signal="mouse_entered" from="CloseButton" to="." method="_on_item_hover"]
 [connection signal="pressed" from="CloseButton" to="." method="_on_close_button_pressed"]

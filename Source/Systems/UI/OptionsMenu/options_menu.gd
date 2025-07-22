@@ -48,18 +48,20 @@ func _on_game_button_pressed() -> void:
 	%Background.frame = 0
 	screen_showing = ScreenShowing.GAME
 	
-	%GameOptionsButton.add_theme_color_override('default_color', Globals.white)
-	%GameOptionsButton.text = 'GAME'
+	_on_game_button_mouse_exited()
 	
-	
-func _on_game_button_hovered(is_hovered: bool) -> void:
-	if is_hovered and screen_showing != ScreenShowing.GAME:
-		%GameOptionsButton.add_theme_color_override('default_color', Globals.orange)
-		%GameOptionsButton.text = '[wave amp=8.0 freq=5.0 connected=1]GAME[/wave]'
 
-	else:
-		%GameOptionsButton.add_theme_color_override('default_color', Globals.white)
-		%GameOptionsButton.text = 'GAME'
+func _on_game_button_mouse_entered() -> void:
+	if screen_showing != ScreenShowing.GAME:
+		_on_item_hover()
+		%GameOptionsLabel.add_theme_color_override('default_color', Globals.orange)
+		%GameOptionsLabel.text = '[wave amp=8.0 freq=5.0 connected=1]GAME[/wave]'
+
+
+func _on_game_button_mouse_exited() -> void:
+	%GameOptionsLabel.add_theme_color_override('default_color', Globals.white)
+	%GameOptionsLabel.text = 'GAME'
+	
 
 
 func _on_graphics_button_pressed() -> void:
@@ -70,18 +72,19 @@ func _on_graphics_button_pressed() -> void:
 	%Background.frame = 1
 	screen_showing = ScreenShowing.GRAPHICS
 	
-	%GraphicsOptionsButton.add_theme_color_override('default_color', Globals.white)
-	%GraphicsOptionsButton.text = 'GRAPHICS'
+	_on_graphics_button_mouse_exited()
 
 
-func _on_graphics_button_hovered(is_hovered: bool) -> void:
-	if is_hovered and screen_showing != ScreenShowing.GRAPHICS:
-		%GraphicsOptionsButton.add_theme_color_override('default_color', Globals.green)
-		%GraphicsOptionsButton.text = '[wave amp=8.0 freq=5.0 connected=1]GRAPHICS[/wave]'
+func _on_graphics_button_mouse_entered() -> void:
+	if screen_showing != ScreenShowing.GRAPHICS:
+		_on_item_hover()
+		%GraphicsOptionsLabel.add_theme_color_override('default_color', Globals.green)
+		%GraphicsOptionsLabel.text = '[wave amp=8.0 freq=5.0 connected=1]GRAPHICS[/wave]'
 
-	else:
-		%GraphicsOptionsButton.add_theme_color_override('default_color', Globals.white)
-		%GraphicsOptionsButton.text = 'GRAPHICS'
+
+func _on_graphics_button_mouse_exited() -> void:
+	%GraphicsOptionsLabel.add_theme_color_override('default_color', Globals.white)
+	%GraphicsOptionsLabel.text = 'GRAPHICS'
 
 
 func _on_audio_button_pressed() -> void:
@@ -92,15 +95,16 @@ func _on_audio_button_pressed() -> void:
 	%Background.frame = 2
 	screen_showing = ScreenShowing.AUDIO
 	
-	%AudioOptionsButton.add_theme_color_override('default_color', Globals.white)
-	%AudioOptionsButton.text = 'AUDIO'
+	_on_audio_button_mouse_exited()
 
 
-func _on_audio_button_hovered(is_hovered: bool) -> void:
-	if is_hovered and screen_showing != ScreenShowing.AUDIO:
-		%AudioOptionsButton.add_theme_color_override('default_color', Globals.purple)
-		%AudioOptionsButton.text = '[wave amp=8.0 freq=5.0 connected=1]AUDIO[/wave]'
+func _on_audio_button_mouse_entered() -> void:
+	if screen_showing != ScreenShowing.AUDIO:
+		_on_item_hover()
+		%AudioOptionsLabel.add_theme_color_override('default_color', Globals.purple)
+		%AudioOptionsLabel.text = '[wave amp=8.0 freq=5.0 connected=1]AUDIO[/wave]'
 
-	else:
-		%AudioOptionsButton.add_theme_color_override('default_color', Globals.white)
-		%AudioOptionsButton.text = 'AUDIO'
+
+func _on_audio_button_mouse_exited() -> void:
+	%AudioOptionsLabel.add_theme_color_override('default_color', Globals.white)
+	%AudioOptionsLabel.text = 'AUDIO'

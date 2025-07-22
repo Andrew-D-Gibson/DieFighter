@@ -76,9 +76,9 @@ animations = [{
 
 [resource]
 script = ExtResource("4_rsbqf")
-tile_name = "Chaotic Explosion"
+tile_name = "Chaos Explosion"
 activation_description = "[color=yellow]Activates[/color] with a (die_5) or (die_6)"
-description = "Deals [b]10[/b] [color=red]damage[/color] to all ships, and [color=green]re-rolls[/color] all dice.  Gives the [color=yellow]activator[/color] die to a random enemy."
+description = "Deals 10 [color=red]damage[/color] to all ships, and [color=green]re-rolls[/color] all dice.  Gives the [color=yellow]activator[/color] die to a random enemy."
 rarity = 2
 textures = SubResource("SpriteFrames_iesjq")
 uses_per_turn = -1
