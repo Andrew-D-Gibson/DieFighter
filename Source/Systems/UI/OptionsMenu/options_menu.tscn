@@ -1,72 +1,314 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7hyjenhhnsah"]
+[gd_scene load_steps=19 format=3 uid="uid://c7hyjenhhnsah"]
 
-[ext_resource type="Texture2D" uid="uid://bdtdyoicviptw" path="res://Assets/Textures/OptionsMenu/options_background.png" id="1_l3u4o"]
+[ext_resource type="Script" uid="uid://b3278n4xjt53b" path="res://Source/Systems/UI/OptionsMenu/options_menu.gd" id="1_c6430"]
+[ext_resource type="Texture2D" uid="uid://cyvsute3rdn06" path="res://Assets/Textures/OptionsMenu/music_volume_knob_dark.png" id="2_bv108"]
+[ext_resource type="Texture2D" uid="uid://con6g3t6bp21i" path="res://Assets/Textures/OptionsMenu/options_background-Sheet.png" id="2_c6430"]
+[ext_resource type="Texture2D" uid="uid://cphbhatw48fco" path="res://Assets/Textures/OptionsMenu/music_volume_knob_light.png" id="3_c6430"]
+[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="3_smy8a"]
+[ext_resource type="Texture2D" uid="uid://b5t67qqtpu483" path="res://Assets/Textures/OptionsMenu/sfx_volume_knob_dark.png" id="4_smy8a"]
+[ext_resource type="Texture2D" uid="uid://d110vl5lf12kr" path="res://Assets/Textures/OptionsMenu/sfx_volume_knob_light.png" id="5_okq5w"]
 
-[node name="OptionsMenu" type="Node2D"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_smy8a"]
+atlas = ExtResource("2_c6430")
+region = Rect2(0, 0, 192, 108)
 
-[node name="Background" type="Sprite2D" parent="."]
-texture = ExtResource("1_l3u4o")
+[sub_resource type="AtlasTexture" id="AtlasTexture_okq5w"]
+atlas = ExtResource("2_c6430")
+region = Rect2(192, 0, 192, 108)
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[sub_resource type="AtlasTexture" id="AtlasTexture_k3iob"]
+atlas = ExtResource("2_c6430")
+region = Rect2(384, 0, 192, 108)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ywcti"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_smy8a")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_okq5w")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k3iob")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_okq5w"]
+size = Vector2(45, 10)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6430"]
+bg_color = Color(0.564706, 0.14902, 0.235294, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nleqt"]
+bg_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_smy8a"]
+bg_color = Color(0.172549, 0.443137, 0.666667, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_okq5w"]
+bg_color = Color(0.262745, 0.65098, 0.988235, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_k3iob"]
+bg_color = Color(0.298039, 0.458824, 0.12549, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ywcti"]
+bg_color = Color(0.478431, 0.741176, 0.2, 1)
+
+[node name="OptionsMenu" type="Node2D" node_paths=PackedStringArray("_game_options", "_graphics_options", "_audio_options")]
+z_index = 15
+script = ExtResource("1_c6430")
+_game_options = NodePath("GameOptions")
+_graphics_options = NodePath("GraphicsOptions")
+_audio_options = NodePath("AudioOptions")
+
+[node name="Background" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
+sprite_frames = SubResource("SpriteFrames_ywcti")
+
+[node name="TabButtons" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+
+[node name="GameOptionsButton" type="RichTextLabel" parent="TabButtons"]
+unique_name_in_owner = true
 offset_left = -95.0
 offset_top = -56.0
 offset_right = -50.0
 offset_bottom = -43.0
-theme_override_colors/default_color = Color(0.772549, 0.321569, 0.945098, 1)
-text = "OPTIONS"
+mouse_filter = 2
+bbcode_enabled = true
+text = "GAME"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-offset_left = -94.0
-offset_top = -43.0
-offset_right = 94.0
-offset_bottom = 53.0
+[node name="Clickable" parent="TabButtons/GameOptionsButton" instance=ExtResource("3_smy8a")]
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/GameOptionsButton/Clickable"]
+position = Vector2(22.5, 8)
+shape = SubResource("RectangleShape2D_okq5w")
+
+[node name="GraphicsOptionsButton" type="RichTextLabel" parent="TabButtons"]
+unique_name_in_owner = true
+offset_left = -23.0
+offset_top = -56.0
+offset_right = 22.0
+offset_bottom = -43.0
+mouse_filter = 2
+bbcode_enabled = true
+text = "GRAPHICS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Clickable" parent="TabButtons/GraphicsOptionsButton" instance=ExtResource("3_smy8a")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/GraphicsOptionsButton/Clickable"]
+position = Vector2(22.5, 8)
+shape = SubResource("RectangleShape2D_okq5w")
+
+[node name="AudioOptionsButton" type="RichTextLabel" parent="TabButtons"]
+unique_name_in_owner = true
+offset_left = 50.0
+offset_top = -56.0
+offset_right = 95.0
+offset_bottom = -43.0
+mouse_filter = 2
+bbcode_enabled = true
+text = "AUDIO"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Clickable" parent="TabButtons/AudioOptionsButton" instance=ExtResource("3_smy8a")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/AudioOptionsButton/Clickable"]
+position = Vector2(22.5, 8)
+shape = SubResource("RectangleShape2D_okq5w")
+
+[node name="GameOptions" type="VBoxContainer" parent="."]
+offset_left = -95.0
+offset_top = -42.0
+offset_right = 91.0
+offset_bottom = 54.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GameOptions"]
+layout_mode = 2
+text = "GAME STUFF
+Animation speed
+Language"
+fit_content = true
+
+[node name="GraphicsOptions" type="VBoxContainer" parent="."]
+visible = false
+offset_left = -95.0
+offset_top = -42.0
+offset_right = 91.0
+offset_bottom = 54.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="GraphicsOptions"]
+layout_mode = 2
+text = "GRAPHICS STUFF
+Screenshake
+V-Sync
+Resolution/Windowed mode
+"
+fit_content = true
+
+[node name="AudioOptions" type="VBoxContainer" parent="."]
+visible = false
+offset_left = -95.0
+offset_top = -42.0
+offset_right = 91.0
+offset_bottom = 54.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="AudioOptions"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer"]
+[node name="GameVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 bbcode_enabled = true
 text = "Game Volume"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/HBoxContainer"]
+[node name="GameVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_c6430")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_nleqt")
 value = 50.0
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+[node name="GameVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer/GameVolumeSlider"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_top = -8.0
+offset_right = 13.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "50%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="AudioOptions"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer2"]
+[node name="MusicVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer2"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
 bbcode_enabled = true
 text = "Music Volume"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/HBoxContainer2"]
+[node name="MusicVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer2"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
+theme_override_icons/grabber = ExtResource("2_bv108")
+theme_override_icons/grabber_highlight = ExtResource("3_c6430")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_smy8a")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_okq5w")
 value = 50.0
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+[node name="MusicVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer2/MusicVolumeSlider"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_top = -8.0
+offset_right = 13.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "50%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="AudioOptions"]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer3"]
+[node name="SFXVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer3"]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
+theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
 bbcode_enabled = true
 text = "SFX Volume"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HSlider" type="HSlider" parent="VBoxContainer/HBoxContainer3"]
+[node name="SFXVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer3"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
+focus_mode = 0
+theme_override_icons/grabber = ExtResource("4_smy8a")
+theme_override_icons/grabber_highlight = ExtResource("5_okq5w")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_k3iob")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_ywcti")
 value = 50.0
+
+[node name="SFXVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer3/SFXVolumeSlider"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -11.0
+offset_top = -8.0
+offset_right = 13.0
+offset_bottom = 5.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+text = "50%"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="."]
+offset_left = 57.0
+offset_top = 25.0
+offset_right = 95.0
+offset_bottom = 53.0
+size_flags_horizontal = 10
+focus_mode = 0
+theme_override_font_sizes/font_size = 24
+text = "CLOSE"
+flat = true
+
+[connection signal="clicked" from="TabButtons/GameOptionsButton/Clickable" to="." method="_on_game_button_pressed"]
+[connection signal="is_hovered" from="TabButtons/GameOptionsButton/Clickable" to="." method="_on_game_button_hovered"]
+[connection signal="clicked" from="TabButtons/GraphicsOptionsButton/Clickable" to="." method="_on_graphics_button_pressed"]
+[connection signal="is_hovered" from="TabButtons/GraphicsOptionsButton/Clickable" to="." method="_on_graphics_button_hovered"]
+[connection signal="clicked" from="TabButtons/AudioOptionsButton/Clickable" to="." method="_on_audio_button_pressed"]
+[connection signal="is_hovered" from="TabButtons/AudioOptionsButton/Clickable" to="." method="_on_audio_button_hovered"]
+[connection signal="value_changed" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_game_volume_slider_value_changed"]
+[connection signal="value_changed" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]
+[connection signal="value_changed" from="AudioOptions/HBoxContainer3/SFXVolumeSlider" to="." method="_on_sfx_volume_slider_value_changed"]
+[connection signal="mouse_entered" from="CloseButton" to="." method="_on_item_hover"]
+[connection signal="pressed" from="CloseButton" to="." method="_on_close_button_pressed"]

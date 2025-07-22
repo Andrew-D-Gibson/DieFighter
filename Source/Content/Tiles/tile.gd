@@ -144,6 +144,8 @@ func _generate_effect_variables() -> EffectVariables:
 	
 
 func _activate(activator_die: Dice = null) -> void:
+	shakeable.large_shake()
+	
 	# Set up the effects variables for chaining effects
 	var effect_variables = _generate_effect_variables()
 	effect_variables.activator_die = activator_die

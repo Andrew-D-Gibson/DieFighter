@@ -1,8 +1,7 @@
-[gd_scene load_steps=42 format=3 uid="uid://bq0eop4cxspu2"]
+[gd_scene load_steps=38 format=3 uid="uid://bq0eop4cxspu2"]
 
 [ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
 [ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
-[ext_resource type="Texture2D" uid="uid://bcipcbo1s7ad2" path="res://Assets/Textures/MainViewer/tab_background-Sheet.png" id="3_f3ea6"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_sgr5l"]
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Content/Tiles/tile.gd" id="5_dq04t"]
 [ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/engine_charger.tres" id="6_uglmk"]
@@ -47,28 +46,6 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_35tnh")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dq04t"]
-atlas = ExtResource("3_f3ea6")
-region = Rect2(0, 0, 43, 10)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_uglmk"]
-atlas = ExtResource("3_f3ea6")
-region = Rect2(43, 0, 43, 10)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_hyorp"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dq04t")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_uglmk")
 }],
 "loop": true,
 "name": &"default",
@@ -132,19 +109,16 @@ size = Vector2(22, 24)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_l0r2u"]
 size = Vector2(22, 24)
 
-[node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "comms", "tile_grid", "map", "engine_charger", "comms_button_background", "comms_button_label", "systems_button_background", "systems_button_label", "map_button_background", "map_button_label")]
+[node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "comms", "tile_grid", "map", "engine_charger", "comms_button_label", "systems_button_label", "map_button_label")]
 script = ExtResource("1_v7j4o")
 background = NodePath("Background")
 comms = NodePath("CommsManager")
 tile_grid = NodePath("TileGrid")
 map = NodePath("Map")
 engine_charger = NodePath("EngineCharger")
-comms_button_background = NodePath("TabButtons/CommsButton")
-comms_button_label = NodePath("TabButtons/CommsButton/RichTextLabel")
-systems_button_background = NodePath("TabButtons/SystemsButton")
-systems_button_label = NodePath("TabButtons/SystemsButton/RichTextLabel")
-map_button_background = NodePath("TabButtons/MapButton")
-map_button_label = NodePath("TabButtons/MapButton/RichTextLabel")
+comms_button_label = NodePath("TabButtons/CommsButton")
+systems_button_label = NodePath("TabButtons/SystemsButton")
+map_button_label = NodePath("TabButtons/MapButton")
 
 [node name="Background" type="AnimatedSprite2D" parent="."]
 position = Vector2(-0.5, 0)
@@ -153,21 +127,18 @@ frame = 2
 
 [node name="TabButtons" type="Node2D" parent="."]
 
-[node name="CommsButton" type="AnimatedSprite2D" parent="TabButtons"]
-position = Vector2(-51.5, -37)
-sprite_frames = SubResource("SpriteFrames_hyorp")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="TabButtons/CommsButton"]
-offset_left = -20.5
-offset_top = -7.5
-offset_right = 22.5
-offset_bottom = 4.5
+[node name="CommsButton" type="RichTextLabel" parent="TabButtons"]
+offset_left = -72.0
+offset_top = -44.5
+offset_right = -29.0
+offset_bottom = -32.5
 mouse_filter = 2
 bbcode_enabled = true
 text = "COMMS"
 horizontal_alignment = 1
 
 [node name="Clickable" type="Area2D" parent="TabButtons/CommsButton"]
+position = Vector2(20.5, 7.5)
 script = ExtResource("4_sgr5l")
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
@@ -175,21 +146,18 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_p0pmq")
 
-[node name="SystemsButton" type="AnimatedSprite2D" parent="TabButtons"]
-position = Vector2(-0.5, -37)
-sprite_frames = SubResource("SpriteFrames_hyorp")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="TabButtons/SystemsButton"]
-offset_left = -20.5
-offset_top = -7.5
-offset_right = 22.5
-offset_bottom = 4.5
+[node name="SystemsButton" type="RichTextLabel" parent="TabButtons"]
+offset_left = -21.0
+offset_top = -44.5
+offset_right = 22.0
+offset_bottom = -32.5
 mouse_filter = 2
 bbcode_enabled = true
 text = "SYSTEMS"
 horizontal_alignment = 1
 
 [node name="Clickable" type="Area2D" parent="TabButtons/SystemsButton"]
+position = Vector2(20.5, 7.5)
 script = ExtResource("4_sgr5l")
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
@@ -197,15 +165,11 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_p0pmq")
 
-[node name="MapButton" type="AnimatedSprite2D" parent="TabButtons"]
-position = Vector2(50.5, -37)
-sprite_frames = SubResource("SpriteFrames_hyorp")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="TabButtons/MapButton"]
-offset_left = -20.5
-offset_top = -7.5
-offset_right = 22.5
-offset_bottom = 4.5
+[node name="MapButton" type="RichTextLabel" parent="TabButtons"]
+offset_left = 30.0
+offset_top = -44.5
+offset_right = 73.0
+offset_bottom = -32.5
 mouse_filter = 2
 bbcode_enabled = true
 text = "MAP
@@ -213,6 +177,7 @@ text = "MAP
 horizontal_alignment = 1
 
 [node name="Clickable" type="Area2D" parent="TabButtons/MapButton"]
+position = Vector2(20.5, 7.5)
 script = ExtResource("4_sgr5l")
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
@@ -253,9 +218,9 @@ empty_scenario = ExtResource("14_mm1jt")
 
 [node name="ViewportTexture2" type="TextureRect" parent="Map"]
 offset_left = -73.0
-offset_top = -17.0
+offset_top = -16.0
 offset_right = 47.0
-offset_bottom = 42.0
+offset_bottom = 41.0
 mouse_filter = 2
 texture = SubResource("ViewportTexture_tmld6")
 expand_mode = 1
@@ -263,8 +228,8 @@ expand_mode = 1
 [node name="MapViewport" type="SubViewport" parent="Map/ViewportTexture2"]
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
-size = Vector2i(720, 354)
-size_2d_override = Vector2i(120, 59)
+size = Vector2i(720, 342)
+size_2d_override = Vector2i(120, 57)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 

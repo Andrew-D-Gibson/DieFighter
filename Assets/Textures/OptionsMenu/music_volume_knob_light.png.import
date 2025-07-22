@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdtdyoicviptw"
-path="res://.godot/imported/options_background.png-732c3de577c1f8ccbb7f85fe7746d700.ctex"
+uid="uid://cphbhatw48fco"
+path="res://.godot/imported/music_volume_knob_light.png-70be645607a5ea0bc665f3dae8b5119f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/OptionsMenu/options_background.png"
-dest_files=["res://.godot/imported/options_background.png-732c3de577c1f8ccbb7f85fe7746d700.ctex"]
+source_file="res://Assets/Textures/OptionsMenu/music_volume_knob_light.png"
+dest_files=["res://.godot/imported/music_volume_knob_light.png-70be645607a5ea0bc665f3dae8b5119f.ctex"]
 
 [params]
 

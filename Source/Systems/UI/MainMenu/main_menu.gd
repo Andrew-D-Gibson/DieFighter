@@ -70,12 +70,10 @@ func _on_options_button_pressed() -> void:
 	add_child(options_menu)
 	options_menu.global_position = camera.offset
 	
-	print('Options opened')
-	
 	
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
 
-func _on_button_hover() -> void:
+func _on_item_hover() -> void:
 	Events.play_sound.emit('tile_dropped')

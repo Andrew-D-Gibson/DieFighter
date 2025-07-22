@@ -1,10 +1,25 @@
-[gd_resource type="Theme" load_steps=3 format=3 uid="uid://fjvgoxquxqqr"]
+[gd_resource type="Theme" load_steps=6 format=3 uid="uid://fjvgoxquxqqr"]
 
 [ext_resource type="FontFile" uid="uid://d18mhx31l6gjo" path="res://Assets/Fonts/m3x6/m3x6.ttf" id="1_02yda"]
+[ext_resource type="Texture2D" uid="uid://bgovmklqjf6yv" path="res://Assets/Textures/OptionsMenu/game_volume_knob_dark.png" id="1_7ev38"]
+[ext_resource type="Texture2D" uid="uid://cxetdiu43pqai" path="res://Assets/Textures/OptionsMenu/game_volume_knob_light.png" id="2_slk4v"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ev38"]
+content_margin_top = 1.0
+content_margin_bottom = 1.0
+bg_color = Color(0.203922, 0.2, 0.188235, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_limub"]
 
 [resource]
+Button/colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
+Button/colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
+Button/colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+Button/colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+Button/colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
+HSlider/icons/grabber = ExtResource("1_7ev38")
+HSlider/icons/grabber_highlight = ExtResource("2_slk4v")
+HSlider/styles/slider = SubResource("StyleBoxFlat_7ev38")
 Label/colors/font_color = Color(1, 1, 1, 1)
 Label/colors/font_outline_color = Color(0, 0, 0, 1)
 Label/colors/font_shadow_color = Color(0, 0, 0, 0)
@@ -15,4 +30,5 @@ Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 1
 Label/fonts/font = ExtResource("1_02yda")
 Label/styles/normal = SubResource("StyleBoxEmpty_limub")
+RichTextLabel/colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
 RichTextLabel/constants/line_separation = -4

@@ -13,13 +13,8 @@ var screen_showing: ScreenShowing = ScreenShowing.SYSTEMS
 
 
 @export_category('Tab Buttons')
-@export var comms_button_background: AnimatedSprite2D
 @export var comms_button_label: RichTextLabel
-
-@export var systems_button_background: AnimatedSprite2D
 @export var systems_button_label: RichTextLabel
-
-@export var map_button_background: AnimatedSprite2D
 @export var map_button_label: RichTextLabel
 
 
@@ -60,11 +55,11 @@ func _comms_hovered(is_hovered: bool) -> void:
 	if is_hovered and screen_showing != ScreenShowing.COMMS:
 		comms_button_label.add_theme_color_override('default_color', Globals.orange)
 		comms_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]COMMS[/wave]'
-		#comms_button_background.frame = 1
+
 	else:
 		comms_button_label.add_theme_color_override('default_color', Globals.white)
 		comms_button_label.text = 'COMMS'
-		#comms_button_background.frame = 0
+
 
 
 func _show_systems() -> void:
@@ -84,11 +79,11 @@ func _systems_hovered(is_hovered: bool) -> void:
 	if is_hovered and screen_showing != ScreenShowing.SYSTEMS:
 		systems_button_label.add_theme_color_override('default_color', Globals.green)
 		systems_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]SYSTEMS[/wave]'
-		#systems_button_background.frame = 1
+
 	else:
 		systems_button_label.add_theme_color_override('default_color', Globals.white)
 		systems_button_label.text = 'SYSTEMS'
-		#systems_button_background.frame = 0
+
 	
 	
 func _show_map() -> void:
@@ -108,11 +103,11 @@ func _map_hovered(is_hovered: bool) -> void:
 	if is_hovered and screen_showing != ScreenShowing.MAP:
 		map_button_label.add_theme_color_override('default_color', Globals.purple)
 		map_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]MAP[/wave]'
-		#map_button_background.frame = 1
+
 	else:
 		map_button_label.add_theme_color_override('default_color', Globals.white)
 		map_button_label.text = 'MAP'
-		#map_button_background.frame = 0
+
 		
 		
 func _hide_comms() -> void:
