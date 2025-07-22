@@ -24,7 +24,7 @@ func play(effect_variables: EffectVariables) -> void:
 		column = source_tile_pos.x
 	
 	# Move every tile in the proper direction
-	for direction in [-1, 1]:
+	for direction in [1, -1]:
 		var tiles_to_move = []
 		for tile_location in Globals.tile_grid.tile_locations.keys():
 			if sign(column - tile_location.x) == direction:

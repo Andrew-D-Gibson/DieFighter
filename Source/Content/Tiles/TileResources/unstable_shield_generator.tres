@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=27 format=3 uid="uid://bpy3rce6clni3"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://bpy3rce6clni3"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_smaey"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="2_4hwog"]
@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://c8y8dwpvor27" path="res://Assets/Textures/Tiles/unstable_shield_generator.png" id="4_4hwog"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_hgoyq"]
 [ext_resource type="Script" uid="uid://cttcer3sti4mw" path="res://Source/Content/Effects/AmountModifiers/add_tile_data_to_amount_effect.gd" id="4_vno0r"]
+[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="6_p6ekm"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_hgoyq"]
 [ext_resource type="Script" uid="uid://d4edpqpkkx8nt" path="res://Source/Content/Effects/Activators/activate_self_effect.gd" id="8_um1gg"]
 [ext_resource type="Script" uid="uid://oi6ed2m5o7hj" path="res://Source/Content/Effects/TileDataChangers/increment_tile_data_effect.gd" id="9_vy2tg"]
@@ -37,9 +38,17 @@ inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
+[sub_resource type="Resource" id="Resource_7g1xc"]
+script = ExtResource("6_p6ekm")
+color = Color(0.313726, 0.705882, 1, 1)
+amount = 24
+location = 1
+primary_effect = false
+metadata/_custom_type_script = "uid://5vw5tu23ayfk"
+
 [sub_resource type="Resource" id="Resource_vy2tg"]
 script = ExtResource("2_4hwog")
-effects = Array[ExtResource("2_nb58w")]([SubResource("Resource_vno0r"), SubResource("Resource_sryqk"), SubResource("Resource_um1gg")])
+effects = Array[ExtResource("2_nb58w")]([SubResource("Resource_vno0r"), SubResource("Resource_sryqk"), SubResource("Resource_um1gg"), SubResource("Resource_7g1xc")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_p6ekm"]

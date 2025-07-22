@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=19 format=3 uid="uid://c5gk2kf6r2v5y"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=21 format=3 uid="uid://c5gk2kf6r2v5y"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_854mr"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/shield.png" id="2_7qkaa"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="3_854mr"]
 [ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="4_7qkaa"]
+[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_bwi3v"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="5_p7d6s"]
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="6_bwi3v"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="7_7qkaa"]
@@ -29,6 +30,14 @@ inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
+[sub_resource type="Resource" id="Resource_q67gt"]
+script = ExtResource("5_bwi3v")
+color = Color(0.309804, 0.705882, 1, 1)
+amount = 36
+location = 1
+primary_effect = false
+metadata/_custom_type_script = "uid://5vw5tu23ayfk"
+
 [sub_resource type="Resource" id="Resource_77b16"]
 script = ExtResource("6_bwi3v")
 primary_effect = false
@@ -41,7 +50,7 @@ metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_8vpcq"]
 script = ExtResource("7_7qkaa")
-effects = Array[ExtResource("3_854mr")]([SubResource("Resource_bwi3v"), SubResource("Resource_vpgxx"), SubResource("Resource_77b16"), SubResource("Resource_534nq")])
+effects = Array[ExtResource("3_854mr")]([SubResource("Resource_bwi3v"), SubResource("Resource_vpgxx"), SubResource("Resource_q67gt"), SubResource("Resource_77b16"), SubResource("Resource_534nq")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7qkaa"]
