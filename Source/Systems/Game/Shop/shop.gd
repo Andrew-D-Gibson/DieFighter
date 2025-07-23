@@ -68,7 +68,7 @@ func _create_shop_tiles() -> void:
 			var possible_shop_tiles: Array[TileResource] = _get_possible_shop_tiles()
 			if len(possible_shop_tiles) == 0:
 				prices[shop_index].visible = false
-				break
+				continue
 			
 			var tile: Tile = tile_scene.instantiate()
 			tile.tile_resource = possible_shop_tiles.pick_random()

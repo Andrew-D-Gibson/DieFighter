@@ -8,6 +8,7 @@ extends Node2D
 enum ScreenShowing {GAME, GRAPHICS, AUDIO}
 var screen_showing: ScreenShowing = ScreenShowing.GAME
 
+
 func _on_close_button_pressed() -> void:
 	queue_free()
 

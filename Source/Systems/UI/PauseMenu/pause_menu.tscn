@@ -1,0 +1,38 @@
+[gd_scene load_steps=3 format=3 uid="uid://ch8tnilu0m0y2"]
+
+[ext_resource type="Script" uid="uid://box16f7bwvjdq" path="res://Source/Systems/UI/PauseMenu/pause_menu.gd" id="1_v5isj"]
+[ext_resource type="Texture2D" uid="uid://b1pexc43hpyj6" path="res://Assets/Textures/PauseMenu/pause_menu_background.png" id="2_47dr1"]
+
+[node name="PauseMenu" type="Node2D"]
+script = ExtResource("1_v5isj")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("2_47dr1")
+
+[node name="OptionsButton" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = -22.0
+offset_top = -57.0
+offset_right = 23.0
+offset_bottom = -36.0
+focus_mode = 0
+flat = true
+
+[node name="OptionsLabel" type="RichTextLabel" parent="OptionsButton"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme_override_font_sizes/normal_font_size = 24
+bbcode_enabled = true
+text = "OPTIONS"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[connection signal="mouse_entered" from="OptionsButton" to="." method="_on_options_button_mouse_entered"]
+[connection signal="mouse_exited" from="OptionsButton" to="." method="_on_options_button_mouse_exited"]
+[connection signal="pressed" from="OptionsButton" to="." method="_on_options_button_pressed"]
