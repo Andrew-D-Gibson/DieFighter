@@ -94,7 +94,7 @@ animations = [{
 script = ExtResource("3_r846u")
 tile_name = "Emergency Transfer"
 activation_description = "[color=yellow]Activates[/color] with a (die_6)"
-description = "Transfers all power stored in the color=purple]engines[/color] to the [color=blue]shields[/color].  Gives the [color=yellow]activator[/color] die to a random ship"
+description = "Transfers all power stored in the [color=purple]engines[/color] to the [color=blue]shields[/color].  Gives the [color=yellow]activator[/color] die to a random ship"
 rarity = 0
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_turn = -1

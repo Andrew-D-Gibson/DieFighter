@@ -9,24 +9,47 @@ enum ScreenShowing {GAME, GRAPHICS, AUDIO}
 var screen_showing: ScreenShowing = ScreenShowing.GAME
 
 
+func _ready() -> void:
+	%OptionsSavingManager.load_options_settings()
+	
+	_setup_audio_sliders()
+	
+	
 func _on_close_button_pressed() -> void:
-	queue_free()
+	%OptionsSavingManager.save_options_settings()
+	hide()
 
 
 func _on_item_hover() -> void:
 	Events.play_sound.emit('tile_dropped')
 
 
+func _setup_audio_sliders() -> void:
+	var master_bus_index: int = AudioServer.get_bus_index("Master")
+	var music_bus_index: int = AudioServer.get_bus_index("Music")
+	var sfx_bus_index: int = AudioServer.get_bus_index("SFX")
+	
+	%GameVolumeSlider.value = AudioServer.get_bus_volume_linear(master_bus_index)
+	%MusicVolumeSlider.value = AudioServer.get_bus_volume_linear(music_bus_index)
+	%SFXVolumeSlider.value = AudioServer.get_bus_volume_linear(sfx_bus_index)
+	
+	
 func _on_game_volume_slider_value_changed(value: float) -> void:
-	%GameVolumeKnobLabel.text = str(int(%GameVolumeSlider.value)) + '%'
+	var master_bus_index: int = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_linear(master_bus_index, %GameVolumeSlider.value)
+	
+	%GameVolumeKnobLabel.text = str(int(%GameVolumeSlider.value * 100)) + '%'
 	%GameVolumeKnobLabel.global_position.x = \
 		%GameVolumeSlider.global_position.x + \
 		(%GameVolumeSlider.value / %GameVolumeSlider.max_value) * \
 		(%GameVolumeSlider.size.x - 24)
-
+		
 
 func _on_music_volume_slider_value_changed(value: float) -> void:
-	%MusicVolumeKnobLabel.text = str(int(%MusicVolumeSlider.value)) + '%'
+	var music_bus_index: int = AudioServer.get_bus_index("Music")
+	AudioServer.set_bus_volume_linear(music_bus_index, %MusicVolumeSlider.value)
+	
+	%MusicVolumeKnobLabel.text = str(int(%MusicVolumeSlider.value * 100)) + '%'
 	%MusicVolumeKnobLabel.global_position.x = \
 		%MusicVolumeSlider.global_position.x + \
 		(%MusicVolumeSlider.value / %MusicVolumeSlider.max_value) * \
@@ -34,11 +57,14 @@ func _on_music_volume_slider_value_changed(value: float) -> void:
 
 
 func _on_sfx_volume_slider_value_changed(value: float) -> void:
-	%SFXVolumeKnobLabel.text = str(int(%SFXVolumeSlider.value)) + '%'
+	var sfx_bus_index: int = AudioServer.get_bus_index("SFX")
+	AudioServer.set_bus_volume_linear(sfx_bus_index, %SFXVolumeSlider.value)
+	
+	%SFXVolumeKnobLabel.text = str(int(%SFXVolumeSlider.value * 100)) + '%'
 	%SFXVolumeKnobLabel.global_position.x = \
 		%SFXVolumeSlider.global_position.x + \
 		(%SFXVolumeSlider.value / %SFXVolumeSlider.max_value) * \
-		(%SFXVolumeSlider.size.x - 24)
+		(%SFXVolumeSlider.size.x - 24)		
 
 
 func _on_game_button_pressed() -> void:
@@ -48,21 +74,6 @@ func _on_game_button_pressed() -> void:
 	
 	%Background.frame = 0
 	screen_showing = ScreenShowing.GAME
-	
-	_on_game_button_mouse_exited()
-	
-
-func _on_game_button_mouse_entered() -> void:
-	if screen_showing != ScreenShowing.GAME:
-		_on_item_hover()
-		%GameOptionsLabel.add_theme_color_override('default_color', Globals.orange)
-		%GameOptionsLabel.text = '[wave amp=8.0 freq=5.0 connected=1]GAME[/wave]'
-
-
-func _on_game_button_mouse_exited() -> void:
-	%GameOptionsLabel.add_theme_color_override('default_color', Globals.white)
-	%GameOptionsLabel.text = 'GAME'
-	
 
 
 func _on_graphics_button_pressed() -> void:
@@ -73,20 +84,6 @@ func _on_graphics_button_pressed() -> void:
 	%Background.frame = 1
 	screen_showing = ScreenShowing.GRAPHICS
 	
-	_on_graphics_button_mouse_exited()
-
-
-func _on_graphics_button_mouse_entered() -> void:
-	if screen_showing != ScreenShowing.GRAPHICS:
-		_on_item_hover()
-		%GraphicsOptionsLabel.add_theme_color_override('default_color', Globals.green)
-		%GraphicsOptionsLabel.text = '[wave amp=8.0 freq=5.0 connected=1]GRAPHICS[/wave]'
-
-
-func _on_graphics_button_mouse_exited() -> void:
-	%GraphicsOptionsLabel.add_theme_color_override('default_color', Globals.white)
-	%GraphicsOptionsLabel.text = 'GRAPHICS'
-
 
 func _on_audio_button_pressed() -> void:
 	_game_options.hide()
@@ -95,17 +92,3 @@ func _on_audio_button_pressed() -> void:
 	
 	%Background.frame = 2
 	screen_showing = ScreenShowing.AUDIO
-	
-	_on_audio_button_mouse_exited()
-
-
-func _on_audio_button_mouse_entered() -> void:
-	if screen_showing != ScreenShowing.AUDIO:
-		_on_item_hover()
-		%AudioOptionsLabel.add_theme_color_override('default_color', Globals.purple)
-		%AudioOptionsLabel.text = '[wave amp=8.0 freq=5.0 connected=1]AUDIO[/wave]'
-
-
-func _on_audio_button_mouse_exited() -> void:
-	%AudioOptionsLabel.add_theme_color_override('default_color', Globals.white)
-	%AudioOptionsLabel.text = 'AUDIO'

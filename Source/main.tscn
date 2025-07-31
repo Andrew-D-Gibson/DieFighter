@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=31 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -6,12 +6,13 @@
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
 [ext_resource type="Script" uid="uid://bqx08ggc7jojk" path="res://Source/Systems/UI/Screenshots/screenshots.gd" id="4_hd7px"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
-[ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/Player/Cockpit/walls.png" id="5_a6pqk"]
+[ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
 [ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
 [ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Game/Player/player.tscn" id="6_rir3g"]
 [ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/Resources/SaveResources/game_start.tres" id="7_3g417"]
 [ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.tscn" id="8_okrb4"]
+[ext_resource type="AudioStream" uid="uid://skdgb0lmgn4v" path="res://Assets/Music/Battle Themes/Battle_Theme_1/Battle_Theme_1.wav" id="9_tfyry"]
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="10_3g417"]
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/Game/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
 [ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/Game/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
@@ -79,6 +80,11 @@ position = Vector2(160, 90)
 visible = false
 vignette_flash_time = 0.75
 vignette_alpha = 0.5
+
+[node name="Music" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_tfyry")
+autoplay = true
+bus = &"Music"
 
 [node name="Systems" type="Node2D" parent="."]
 

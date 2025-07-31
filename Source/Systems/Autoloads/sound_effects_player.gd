@@ -34,12 +34,15 @@ func play_sound(name: String) -> void:
 			
 			var player: AudioStreamPlayer = AudioStreamPlayer.new()
 			add_child(player)
+			
+			player.bus = 'SFX'
 			player.stream = sound_effect.sound_effect
 			player.volume_db = sound_effect.volume
 			player.pitch_scale = sound_effect.pitch_scale
 			player.pitch_scale += randf_range(-sound_effect.pitch_randomness, sound_effect.pitch_randomness)
 			player.finished.connect(sound_effect.on_audio_finished)
 			player.finished.connect(player.queue_free)
+			
 			player.play()
 	else:
 		push_error('No sound effect with name ', name)
