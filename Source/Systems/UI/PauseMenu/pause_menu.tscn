@@ -1,10 +1,117 @@
-[gd_scene load_steps=3 format=3 uid="uid://ch8tnilu0m0y2"]
+[gd_scene load_steps=6 format=3 uid="uid://ch8tnilu0m0y2"]
 
 [ext_resource type="Script" uid="uid://box16f7bwvjdq" path="res://Source/Systems/UI/PauseMenu/pause_menu.gd" id="1_v5isj"]
 [ext_resource type="Texture2D" uid="uid://b1pexc43hpyj6" path="res://Assets/Textures/UI/PauseMenu/pause_menu_background.png" id="2_47dr1"]
+[ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="3_47dr1"]
+[ext_resource type="PackedScene" uid="uid://c7hyjenhhnsah" path="res://Source/Systems/UI/OptionsMenu/options_menu.tscn" id="5_o4gq4"]
+[ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="6_je6uh"]
 
 [node name="PauseMenu" type="Node2D"]
+process_mode = 3
+z_index = 15
 script = ExtResource("1_v5isj")
 
 [node name="Background" type="Sprite2D" parent="."]
 texture = ExtResource("2_47dr1")
+
+[node name="ScreenDim" type="ColorRect" parent="."]
+z_index = -1
+custom_minimum_size = Vector2(320, 180)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.027451, 0.0117647, 0.054902, 0.827451)
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -34.0
+offset_top = -63.0
+offset_right = 36.0
+offset_bottom = -38.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.772549, 0.321569, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 32
+text = "PAUSED"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+z_index = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -7.0
+offset_right = 24.0
+offset_bottom = 7.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+
+[node name="MainMenuButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="RichTextLabel" parent="VBoxContainer/MainMenuButton" index="1"]
+offset_left = 1.0
+offset_right = 1.0
+text = "MAIN MENU"
+
+[node name="OptionsButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="1"]
+offset_left = 0.5
+offset_right = 0.5
+text = "OPTIONS"
+
+[node name="SaveAndQuitButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="RichTextLabel" parent="VBoxContainer/SaveAndQuitButton" index="1"]
+text = "SAVE & QUIT"
+
+[node name="CloseButton" parent="." instance=ExtResource("6_je6uh")]
+z_index = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -17.0
+offset_top = 44.0
+offset_right = 18.0
+offset_bottom = 56.0
+grow_horizontal = 2
+grow_vertical = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="RichTextLabel" parent="CloseButton" index="1"]
+text = "CLOSE"
+
+[node name="OptionsMenu" parent="." instance=ExtResource("5_o4gq4")]
+unique_name_in_owner = true
+visible = false
+
+[connection signal="pressed_within_window" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+[connection signal="pressed_within_window" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
+[connection signal="pressed_within_window" from="VBoxContainer/SaveAndQuitButton" to="." method="_on_save_and_quit_button_pressed"]
+[connection signal="pressed_within_window" from="CloseButton" to="." method="_toggle_pause_menu"]
+
+[editable path="VBoxContainer/MainMenuButton"]
+[editable path="VBoxContainer/OptionsButton"]
+[editable path="VBoxContainer/SaveAndQuitButton"]
+[editable path="CloseButton"]

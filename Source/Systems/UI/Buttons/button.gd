@@ -6,7 +6,8 @@ extends Button
 
 enum ButtonSize {
 	SMALL,
-	LARGE
+	LARGE,
+	MEDIUM,
 }
 @export var button_size: ButtonSize = ButtonSize.SMALL
 
@@ -27,13 +28,20 @@ signal pressed_within_window()
 func _on_mouse_entered() -> void:
 	Events.play_sound.emit('tile_dropped')
 	
-	var amp: float = 12.0 if button_size == ButtonSize.LARGE else 6
+	var amp: float
+	if button_size == ButtonSize.LARGE:
+		amp = 12.0
+	elif button_size == ButtonSize.MEDIUM:
+		amp = 9.0
+	elif button_size == ButtonSize.SMALL:
+		amp = 6.0
+		
 	var freq: float = 5.0
 	
 	$RichTextLabel.text = '[wave '\
 		+ 'amp=' + str(amp) \
 		+ 'freq=' + str(freq) \
-		+ 'connected=0]'\
+		+ 'connected=1]'\
 		+ _text_on_ready \
 		+ '[/wave]'
 	$RichTextLabel.add_theme_color_override('default_color', hover_text_color)

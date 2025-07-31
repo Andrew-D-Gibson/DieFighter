@@ -1,24 +1,39 @@
 class_name PauseMenu
 extends Node2D
 
-@export var main_menu_scene: PackedScene
+var main_menu_file: String = "uid://ccvtlre5vhj7d"
 
 
-func _on_item_hover() -> void:
-	Events.play_sound.emit('tile_dropped')
+func _ready() -> void:
+	Events.toggle_pause_menu.connect(_toggle_pause_menu)
 
+
+func _toggle_pause_menu() -> void:
+	%OptionsMenu.hide()
+	
+	if visible:
+		hide()
+		get_tree().paused = false
+	else:
+		show()
+		get_tree().paused = true
+
+
+func _on_main_menu_button_pressed() -> void:
+	_save_game()
+	
+	get_tree().paused = false
+	get_tree().change_scene_to_file(main_menu_file)
+	
 
 func _on_options_button_pressed() -> void:
-	pass
+	%OptionsMenu.show()
+
+
+func _on_save_and_quit_button_pressed() -> void:
+	_save_game()
+	get_tree().quit()
 	
-	
-func _on_options_button_mouse_entered() -> void:
-	_on_item_hover()
-	%OptionsLabel.add_theme_color_override('default_color', Globals.purple)
-	%OptionsLabel.text = '[wave amp=8.0 freq=5.0 connected=1]OPTIONS[/wave]'
 
-
-
-func _on_options_button_mouse_exited() -> void:
-	%OptionsLabel.add_theme_color_override('default_color', Globals.purple)
-	%OptionsLabel.text = 'OPTIONS'
+func _save_game() -> void:
+	print('Saving game!')

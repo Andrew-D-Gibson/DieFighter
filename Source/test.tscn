@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcif2n2fxduje"]
+
+[ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="1_gbv07"]
+
+[node name="Test" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(6, 6)
+
+[node name="PauseMenu" parent="." instance=ExtResource("1_gbv07")]

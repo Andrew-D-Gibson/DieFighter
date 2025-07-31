@@ -9,6 +9,7 @@ signal load_scenario(scenario: ScenarioResource)
 
 # UI Events
 signal show_info(info: InfoResource)
+signal toggle_pause_menu()
 
 
 # Control Events

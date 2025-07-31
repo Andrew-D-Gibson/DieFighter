@@ -50,7 +50,6 @@ func _show_comms() -> void:
 	map.visible = false
 	
 	
-	
 func _comms_hovered(is_hovered: bool) -> void:
 	if is_hovered and screen_showing != ScreenShowing.COMMS:
 		comms_button_label.add_theme_color_override('default_color', Globals.orange)

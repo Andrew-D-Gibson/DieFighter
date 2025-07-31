@@ -6,9 +6,8 @@ func _ready() -> void:
 	
 	
 func _unhandled_input(event: InputEvent) -> void:
-	# Handle application quiting on "Esc"
 	if event.is_action_pressed('PauseMenu'):
-		get_tree().quit()
+		Events.toggle_pause_menu.emit()
 	elif event.is_action_pressed('EndTurn'):
 		if len(Globals.player.dice_manager.queue) == 0:
 			Globals.player.end_turn()

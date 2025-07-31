@@ -1,25 +1,25 @@
-[gd_scene load_steps=5 format=3 uid="uid://fpxgv5lkm1f0"]
+[gd_scene load_steps=5 format=3 uid="uid://7ssdo2r7vrek"]
 
-[ext_resource type="Script" uid="uid://b3gfadyybvn41" path="res://Source/Systems/UI/Buttons/button.gd" id="1_1ynw3"]
-[ext_resource type="Texture2D" uid="uid://svuulyrlsebx" path="res://Assets/Textures/UI/button_small_red.png" id="2_1ynw3"]
+[ext_resource type="Script" uid="uid://b3gfadyybvn41" path="res://Source/Systems/UI/Buttons/button.gd" id="1_njnp2"]
+[ext_resource type="Texture2D" uid="uid://bmw7ahbjskxea" path="res://Assets/Textures/UI/button_medium_red.png" id="2_njnp2"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_hmoac"]
-atlas = ExtResource("2_1ynw3")
-region = Rect2(0, 0, 35, 12)
+[sub_resource type="AtlasTexture" id="AtlasTexture_njnp2"]
+atlas = ExtResource("2_njnp2")
+region = Rect2(0, 0, 56, 14)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_1ynw3"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_8hi34"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_hmoac")
+"texture": SubResource("AtlasTexture_njnp2")
 }],
 "loop": true,
 "name": &"default",
 "speed": 5.0
 }]
 
-[node name="SmallButton" type="Button"]
-custom_minimum_size = Vector2(35, 12)
+[node name="MediumButton" type="Button"]
+custom_minimum_size = Vector2(56, 14)
 size_flags_vertical = 3
 focus_mode = 0
 theme_override_colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
@@ -29,21 +29,19 @@ theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
 theme_override_colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
 theme_override_font_sizes/font_size = 24
 flat = true
-script = ExtResource("1_1ynw3")
+script = ExtResource("1_njnp2")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-position = Vector2(17.5, 6)
-sprite_frames = SubResource("SpriteFrames_1ynw3")
+position = Vector2(28, 7)
+sprite_frames = SubResource("SpriteFrames_8hi34")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
-offset_top = -2.6
-offset_right = 1.0
-offset_bottom = -1.6
+offset_top = -2.1
+offset_bottom = -2.1
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
