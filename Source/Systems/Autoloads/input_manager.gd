@@ -6,6 +6,12 @@ func _ready() -> void:
 	
 	
 func _unhandled_input(event: InputEvent) -> void:
+	if not Globals.state_manager:
+		return
+		
+	if Globals.state_manager.state == GameStateManager.GameState.GAME_OVER:
+		return
+
 	if event.is_action_pressed('PauseMenu'):
 		Events.toggle_pause_menu.emit()
 	elif event.is_action_pressed('EndTurn'):

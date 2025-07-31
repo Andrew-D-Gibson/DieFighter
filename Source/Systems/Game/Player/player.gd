@@ -37,6 +37,7 @@ func _ready() -> void:
 	dice_manager.die_added.connect(func() -> void:
 		_update_dice_queue_locations()
 		_make_newest_die_draggable()
+		_reset_newest_die_transform()
 		_check_for_end_of_turn()
 	)
 	dice_manager.die_removed.connect(_update_dice_queue_locations)
@@ -69,6 +70,11 @@ func _make_newest_die_draggable() -> void:
 	if dice_manager.queue[-1].draggable.state != Draggable.DragState.DRAGGING:
 		dice_manager.queue[-1].draggable.state = Draggable.DragState.DEFAULT
 		
+		
+func _reset_newest_die_transform() -> void:
+	dice_manager.queue[-1].scale = Vector2(1,1)
+	dice_manager.queue[-1].rotation_degrees = 0
+	
 
 func _process(_delta: float) -> void:
 	# Handle rearranging dice in the queue

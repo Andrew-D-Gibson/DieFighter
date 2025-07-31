@@ -15,6 +15,8 @@ var _stars: Array[Node2D]
 
 
 func _ready() -> void:
+	get_tree().paused = false
+	
 	# Set up the initial state of needed components
 	%FadeIn.self_modulate = background_color
 	%FadeIn.show()

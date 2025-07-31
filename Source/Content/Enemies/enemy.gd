@@ -34,6 +34,9 @@ var turn_actions: Array[EnemyActionResource]
 var moving_in_world: bool = false
 
 
+var explosion_particles: PackedScene = preload("uid://566ykra4buin")
+
+
 ## Initializes the enemy and connects all necessary signals
 func _ready() -> void:
 	assert(enemy_resource)
@@ -98,6 +101,13 @@ func _on_death() -> void:
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
 	Events.play_sound.emit('enemy_death_explosion')
+	
+	# Create explosion particles
+	var explosion = explosion_particles.instantiate()
+	explosion.color = Globals.red
+	explosion.amount = health.max_health * 5
+	add_child(explosion)
+	
 	await graphics_manager.play_death_animation()
 
 	# Spawn rewards

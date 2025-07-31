@@ -46,7 +46,7 @@ _data = {
 [node name="HitParticles" type="CPUParticles2D"]
 z_index = 1
 emitting = false
-amount = 12
+amount = 20
 texture = ExtResource("1_2e8d0")
 lifetime = 0.5
 one_shot = true
@@ -59,7 +59,7 @@ initial_velocity_max = 128.0
 linear_accel_min = -20.34
 linear_accel_max = -16.0
 scale_amount_min = 2.0
-scale_amount_max = 2.0
+scale_amount_max = 4.0
 color_ramp = SubResource("Gradient_3ywxx")
 color_initial_ramp = SubResource("Gradient_umjne")
 

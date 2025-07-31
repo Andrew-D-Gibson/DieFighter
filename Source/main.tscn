@@ -57,6 +57,7 @@ visible = false
 visible = false
 
 [node name="GameOver" parent="UI" instance=ExtResource("3_flage")]
+visible = false
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false
@@ -115,6 +116,7 @@ position = Vector2(134, 41)
 
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")
+sector_size = 8
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4")])

@@ -1,10 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://b4bhqmwyiaq22"]
+[gd_scene load_steps=4 format=3 uid="uid://b4bhqmwyiaq22"]
 
 [ext_resource type="Script" uid="uid://bs4wmdp5e1fwu" path="res://Source/Systems/UI/GameOver/game_over.gd" id="1_i78pc"]
 [ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="1_p6ygr"]
+[ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="3_ah4je"]
 
 [node name="GameOver" type="Control"]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -14,6 +14,7 @@ grow_vertical = 2
 script = ExtResource("1_i78pc")
 
 [node name="ScreenDim" type="ColorRect" parent="."]
+z_index = -1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,3 +36,25 @@ bbcode_enabled = true
 text = "[color=#d03656][wave amp=30.0 freq=5.0 connected=1]GAME OVER[/wave][/color]"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="MainMenuButton" parent="." instance=ExtResource("3_ah4je")]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -198.0
+offset_top = -245.0
+offset_right = -142.0
+offset_bottom = -231.0
+grow_horizontal = 2
+grow_vertical = 0
+scale = Vector2(6, 6)
+
+[node name="RichTextLabel" parent="MainMenuButton" index="1"]
+text = "MAIN MENU"
+
+[connection signal="pressed_within_window" from="MainMenuButton" to="." method="_on_main_menu_button_pressed"]
+
+[editable path="MainMenuButton"]

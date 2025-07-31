@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ccvtlre5vhj7d"]
+[gd_scene load_steps=11 format=3 uid="uid://ccvtlre5vhj7d"]
 
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_5pv2g"]
 [ext_resource type="Script" uid="uid://dfqo2lhkhal5l" path="res://Source/Systems/UI/MainMenu/main_menu.gd" id="1_otgxl"]
@@ -7,7 +7,6 @@
 [ext_resource type="PackedScene" uid="uid://c7hyjenhhnsah" path="res://Source/Systems/UI/OptionsMenu/options_menu.tscn" id="4_bcx7i"]
 [ext_resource type="FontFile" uid="uid://dls51kaiai4t8" path="res://Assets/Fonts/Jersey_25/Jersey25-Regular.ttf" id="6_vm02d"]
 [ext_resource type="PackedScene" uid="uid://pagumreni25k" path="res://Source/Systems/UI/Buttons/large_button.tscn" id="7_n0c18"]
-[ext_resource type="AudioStream" uid="uid://csotqmu21pfy4" path="res://Assets/Music/Trailer/Trailer_1/Trailer_1.wav" id="9_n0c18"]
 
 [sub_resource type="Animation" id="Animation_y6sr5"]
 length = 0.001
@@ -169,11 +168,6 @@ text = "QUIT"
 unique_name_in_owner = true
 visible = false
 position = Vector2(160, 90)
-
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("9_n0c18")
-autoplay = true
-bus = &"Music"
 
 [connection signal="pressed_within_window" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]

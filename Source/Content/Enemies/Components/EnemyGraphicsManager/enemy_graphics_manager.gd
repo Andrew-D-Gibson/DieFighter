@@ -8,7 +8,7 @@ extends Node2D
 @export var ship_graphics: Node2D
 
 ## The time in seconds for hit flash effects to complete
-@export var hit_flash_time: float = 0.5
+@export var hit_flash_time: float = 1.0
 
 ## The scene to instantiate when the enemy dies
 @export var death_explosion: PackedScene

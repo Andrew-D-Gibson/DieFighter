@@ -16,7 +16,8 @@ extends Node2D
 
 enum GameState {
 	IN_COMBAT,
-	OUT_OF_COMBAT
+	OUT_OF_COMBAT,
+	GAME_OVER
 }
 
 var state: GameState = GameState.OUT_OF_COMBAT:
@@ -30,6 +31,9 @@ var state: GameState = GameState.OUT_OF_COMBAT:
 		and new_state == GameState.OUT_OF_COMBAT:
 			state = new_state
 			Events.combat_finished.emit()
+			
+		else:
+			state = new_state
 
 
 # This node has to be the last thing loaded in our game
@@ -46,7 +50,10 @@ func _ready() -> void:
 	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_check_combat_state()
 	)
-	
+	Events.game_over.connect(func() -> void:
+		state = GameState.GAME_OVER
+	)
+
 	Events.load_game_save.emit(current_game_save)
 	Events.load_scenario.emit(
 		current_game_save.sector_scenarios[
@@ -56,7 +63,9 @@ func _ready() -> void:
 	Events.start_scenario.emit()
 	
 	
+	
 func _randomize_sector_scenarios() -> void:
+	## THESE COMMENTS ARE OLD, BUT MAYBE I'LL GO BACK LATER
 	# A sector has 19 scenarios, including:
 	# 1 empty scenario at the middle where the player starts
 	# 1 Boss scenario that teleports the player to the next sector
@@ -65,11 +74,8 @@ func _randomize_sector_scenarios() -> void:
 	
 	current_game_save.sector_scenarios = []
 	
-	# Add the boss scenario
-	current_game_save.sector_scenarios.append(boss_combat_scenarios.pick_random())
-	
 	# Add the shop(s)
-	for i in range(randi_range(1,2)):
+	for i in range(randi_range(2,3)):
 		current_game_save.sector_scenarios.append(shop_scenario)
 		
 	# Add the blend of combat and question scenarios
@@ -98,12 +104,15 @@ func _randomize_sector_scenarios() -> void:
 			var combat_and_question_scenarios: Array[ScenarioResource] = combat_scenarios + question_scenarios
 			current_game_save.sector_scenarios.append(combat_and_question_scenarios.pick_random())
 			
-			
+
 	# Now we have an array of 18 scenarios, with 1 boss and either 1 or 2 shops
-	# Shuffle the array, then place the player's starting scenario in the middle
+	# Shuffle the array, then place 5the player's starting scenario in the middle
 	current_game_save.sector_scenarios.shuffle()
 	
-	current_game_save.current_scenario_index = floor(sector_size / 2.0)
+	# Add the boss scenario
+	current_game_save.sector_scenarios.append(boss_combat_scenarios.pick_random())
+		
+	current_game_save.current_scenario_index = 0 #floor(sector_size / 2.0)
 	current_game_save.sector_scenarios.insert(current_game_save.current_scenario_index, empty_scenario)
 	
 	

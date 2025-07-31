@@ -40,6 +40,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'damage':
 			_damage(command.slice(1))
 			
+		'damage_enemies':
+			_damage_enemies(command.slice(1))
+			
 		'heal':
 			_heal(command.slice(1))
 			
@@ -115,6 +118,15 @@ func _damage(command_args: Array[String] = []) -> void:
 	Globals.player.health.take_damage(amount)	
 	command_history.append_text('\n[center]Damaged player![/center]')
 	
+	
+func _damage_enemies(command_args: Array[String] = []) -> void:
+	var amount: int = 0
+	if len(command_args) == 1 and command_args[0].is_valid_int():
+		amount = int(command_args[0])
+	
+	Globals.enemy_manager.damage_all_enemies(amount)
+	command_history.append_text('\n[center]Damaged enemies![/center]')
+	
 
 func _heal(command_args: Array[String] = []) -> void:
 	var amount: int = Globals.player.health.max_health
@@ -152,6 +164,7 @@ func _spawn_dice(command_args: Array[String] = []) -> void:
 	
 	Globals.player.spawn_dice(amount)
 	command_history.append_text('\n[center]Spawned ' + str(amount) + ' dice[/center]')
+
 
 func _shield_enemies(command_args: Array[String] = []) -> void:
 	var amount: int = 10

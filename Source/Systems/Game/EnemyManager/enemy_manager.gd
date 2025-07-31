@@ -113,11 +113,14 @@ func delete_all_enemies() -> void:
 
 
 func kill_all_enemies() -> void:
-	for i in range(len(enemies)-1, -1, -1):
-		enemies[i].health.take_damage(1000000)
-	enemies = []
+	damage_all_enemies(10000)
 		
 		
 func shield_all_enemies(amount: int) -> void:
 	for enemy in enemies:
 		enemy.health.change_shields(amount)
+		
+		
+func damage_all_enemies(amount: int) -> void:
+	for i in range(len(enemies)-1, -1, -1):
+		enemies[i].health.take_damage(amount)

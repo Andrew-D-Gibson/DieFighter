@@ -144,6 +144,26 @@ func _generate_effect_variables() -> EffectVariables:
 	
 
 func _activate(activator_die: Dice = null) -> void:
+	# Tween the activating die to the slot 
+	if activator_die:
+		var tween_time = 0.2
+		var tween = create_tween().set_parallel(true)
+		tween.tween_property(
+			activator_die, 
+			'global_position', 
+			global_position + Vector2(0, 6), 
+			tween_time
+		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		
+		tween.tween_property(
+			activator_die,
+			'scale',
+			Vector2(0.75, 0.75),
+			tween_time
+		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		
+		await tween.finished
+	
 	shakeable.large_shake()
 	
 	# Set up the effects variables for chaining effects

@@ -22,6 +22,8 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 	
 	var reward_spacing: int = 26
 	
+	bounding_box.shape.size.x = reward_spacing * num_of_rewards
+	
 	var total_length := reward_spacing * (num_of_rewards - 1)
 	var start_offset := -total_length / 2
 

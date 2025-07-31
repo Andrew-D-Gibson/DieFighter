@@ -3,7 +3,9 @@ extends Effect
 
 @export var amount: int = 0
 @export var inherit_die_amount: bool = false
-var hit_particles: PackedScene = load("uid://doi43icsr46q0")
+var hit_particles: PackedScene = preload("uid://doi43icsr46q0")
+var explosion_particles: PackedScene = preload("uid://566ykra4buin")
+
 
 func play(effect_variables: EffectVariables) -> void:
 	# Don't do anything if there's no target
@@ -30,11 +32,21 @@ func play(effect_variables: EffectVariables) -> void:
 		else:
 			particles.color = Globals.red
 			
-		particles.amount = 6 * final_amount
+		particles.amount = 10 * final_amount
 		particles.rotation = (PI/2) +\
 			effect_variables.effect_source.global_position.\
 			angle_to_point(effect_variables.targets[i].global_position)
 		effect_variables.targets[i].add_child(particles)
+		
+		# Create explosion particles
+		var explosion = explosion_particles.instantiate()
+		if effect_variables.targets[i].health.shields >= final_amount:
+			explosion.color = Globals.blue
+		else:
+			explosion.color = Globals.red
+		explosion.amount = 2 * final_amount
+		effect_variables.targets[i].add_child(explosion)
+		
 		
 		# Trigger scenario events as necessary
 		if effect_variables.actor is Player\
