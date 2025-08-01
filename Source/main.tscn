@@ -1,9 +1,10 @@
-[gd_scene load_steps=31 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=32 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
 [ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
 [ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="4_6ebjm"]
+[ext_resource type="Script" uid="uid://by2nuppu48mrd" path="res://Source/Systems/UI/DebugItems/fps_counter.gd" id="4_7iud4"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
 [ext_resource type="Script" uid="uid://bqx08ggc7jojk" path="res://Source/Systems/UI/Screenshots/screenshots.gd" id="4_hd7px"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
@@ -62,6 +63,16 @@ visible = false
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false
 position = Vector2(160, 90)
+
+[node name="FPSCounter" type="RichTextLabel" parent="."]
+offset_left = 278.0
+offset_top = 2.0
+offset_right = 317.0
+offset_bottom = 15.0
+bbcode_enabled = true
+text = "FPS: 10000"
+fit_content = true
+script = ExtResource("4_7iud4")
 
 [node name="Graphics" type="Node2D" parent="."]
 z_index = -2

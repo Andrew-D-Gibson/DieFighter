@@ -10,6 +10,7 @@ enum ScenarioEvent {
 	COMBAT_ENDED,
 	PIRATES_DEFEATED,
 	CIVILIANS_DEFEATED,
+	BOSS_DEFEATED,
 }
 
 enum Faction {
@@ -48,7 +49,11 @@ func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
 	if len(other_faction_ships) == 0:
 		match faction:
 			Faction.PIRATE:
-				Events.scenario_event.emit(ScenarioEvent.PIRATES_DEFEATED)
+				# TODO: This is super hacky, but for my playtest this is fine for now
+				if ship.enemy_resource.enemy_name == "Boss":
+					Events.scenario_event.emit(ScenarioEvent.BOSS_DEFEATED)
+				else:
+					Events.scenario_event.emit(ScenarioEvent.PIRATES_DEFEATED)
 				
 			Faction.CIVILIAN:
 				Events.scenario_event.emit(ScenarioEvent.CIVILIANS_DEFEATED)

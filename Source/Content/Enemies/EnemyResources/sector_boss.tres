@@ -46,7 +46,7 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [resource]
 script = ExtResource("2_sstjk")
-enemy_name = "Pirate Daimyo"
+enemy_name = "Boss"
 description = "Holy mama"
 ship_graphics_scene = ExtResource("5_3rjdu")
 graphics_scene_offset = Vector2(0, -6)
