@@ -9,10 +9,11 @@ func play(effect_variables: EffectVariables) -> void:
 		
 	# Put the die in the "holding" state
 	effect_variables.activator_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
-		
+
 	# If there's no target give the die to the player as a failsafe measure
 	if len(effect_variables.targets) == 0 or not effect_variables.targets[0]:
-		Globals.player.dice_manager.add(effect_variables.activator_die, false)
+		await effect_variables.activator_die.reroll_with_tween()
+		Globals.player.dice_manager.add(effect_variables.activator_die)
 		return
 		
 	# If the target is dead, try to give it to a random enemy

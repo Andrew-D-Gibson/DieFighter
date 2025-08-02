@@ -164,6 +164,7 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 	
 	
 func _start_scenario() -> void:
+	health.shields = 0
 	_delete_existing_dice()
 	await get_tree().create_timer(time_between_die_spawns).timeout
 	spawn_dice()

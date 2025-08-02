@@ -74,7 +74,7 @@ func _ready() -> void:
 			shakeable.small_shake()
 			Events.play_sound.emit('tile_dropped')
 		)
-	Events.enemy_turn_over.connect(reset_uses_remaining)
+	
 	Events.start_scenario.connect(reset_uses_remaining)
 	_connect_tile_event_signals()
 
