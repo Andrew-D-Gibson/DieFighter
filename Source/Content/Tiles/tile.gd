@@ -77,6 +77,9 @@ func _ready() -> void:
 	
 	Events.start_scenario.connect(reset_uses_remaining)
 	_connect_tile_event_signals()
+	
+	#%DiceQueue.die_added.connect(_update_dice_queue_locations)
+	#%DiceQueue.die_removed.connect(_update_dice_queue_locations)
 
 
 func _connect_tile_event_signals() -> void:
@@ -116,24 +119,33 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 
 
 func try_to_activate(activator_die: Dice = null) -> void:
+	if not _clears_activation_criteria(activator_die):
+		return
+		
+	# Add the dice to this tile's queue
+	#if activator_die:
+		#%DiceQueue.add(activator_die)
+	
+	# Add this to the activation queue
+	
+	
+	# We're cleared hot to activate!
+	_activate(activator_die)
+		
+		
+func _clears_activation_criteria(activator_die: Dice = null) -> bool:
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
 		Events.error_text_popup.emit("NO USES REMAINING", self.global_position)
-		return
+		return false
 		
 	for check in tile_resource.activation_checks:
 		if not check.criteria_satisfied(activator_die):
 			Events.error_text_popup.emit(check.get_criteria_fail_text(), self.global_position)
-			return
-	
-	# We're cleared hot to activate!
-	if uses_remaining != -1:
-		uses_remaining -= 1
-		
-	if activator_die:
-		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-	_activate(activator_die)
-		
+			return false
+			
+	return true
+			
 		
 func _generate_effect_variables() -> EffectVariables:
 	var effect_variables = EffectVariables.new()
@@ -144,8 +156,13 @@ func _generate_effect_variables() -> EffectVariables:
 	
 
 func _activate(activator_die: Dice = null) -> void:
+	if uses_remaining != -1:
+		uses_remaining -= 1
+		
 	# Tween the activating die to the slot 
 	if activator_die:
+		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+	
 		var tween_time = 0.2
 		var tween = create_tween().set_parallel(true)
 		tween.tween_property(
@@ -213,3 +230,11 @@ func _replace_event_data_in_string(text: String) -> String:
 			result = result.replace(full_match, "0") # fallback in case of parse error
 
 	return result
+
+
+func _update_dice_queue_locations() -> void:
+	var dice_queue_spacing: int = 12
+	for i in range(len(%DiceQueue.queue)):
+		%DiceQueue.queue[i].draggable.home_position = \
+		%DiceQueue.global_position +\
+		Vector2(0, i * dice_queue_spacing)

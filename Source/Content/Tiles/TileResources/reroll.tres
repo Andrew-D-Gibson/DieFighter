@@ -73,6 +73,7 @@ description = "[color=green]Re-rolls[/color] the [color=yellow]activator[/color]
 rarity = 0
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 2
+activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa"), SubResource("Resource_jet8y")])
 effect_chain = SubResource("Resource_mwp2x")
 event_responses = Dictionary[ExtResource("6_jet8y"), ExtResource("5_jet8y")]({})

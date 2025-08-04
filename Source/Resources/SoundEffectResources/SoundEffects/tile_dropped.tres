@@ -6,9 +6,9 @@
 [resource]
 script = ExtResource("1_6gwom")
 name = "tile_dropped"
-limit = 5
+limit = 10
 sound_effect = ExtResource("2_x3khs")
-volume = -10.0
+volume = 0.0
 pitch_scale = 0.75
 pitch_randomness = 0.2
 metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

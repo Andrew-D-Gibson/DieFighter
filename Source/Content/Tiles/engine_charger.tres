@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=18 format=3 uid="uid://bsaq6udi1wjln"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=20 format=3 uid="uid://bsaq6udi1wjln"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_8mym4"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_1ow5n"]
+[ext_resource type="Script" uid="uid://b3ihx7drnjhux" path="res://Source/Content/Effects/DiceValueChangers/reroll_activator_die_effect.gd" id="3_2r3c1"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_ar2wr"]
 [ext_resource type="Script" uid="uid://cymd6kmfhbghm" path="res://Source/Content/Effects/AttributeChangers/charge_engine_effect.gd" id="3_uhn3f"]
 [ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="4_7mo4q"]
@@ -22,6 +23,11 @@ type = 8
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
+[sub_resource type="Resource" id="Resource_igctb"]
+script = ExtResource("3_2r3c1")
+primary_effect = false
+metadata/_custom_type_script = "uid://b3ihx7drnjhux"
+
 [sub_resource type="Resource" id="Resource_2r3c1"]
 script = ExtResource("3_uhn3f")
 amount = 0
@@ -41,7 +47,7 @@ metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_3jpq8"]
 script = ExtResource("6_7mo4q")
-effects = Array[ExtResource("2_1ow5n")]([SubResource("Resource_2r3c1"), SubResource("Resource_wsm3a"), SubResource("Resource_4bhlh")])
+effects = Array[ExtResource("2_1ow5n")]([SubResource("Resource_igctb"), SubResource("Resource_2r3c1"), SubResource("Resource_wsm3a"), SubResource("Resource_4bhlh")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7mo4q"]
@@ -67,6 +73,7 @@ description = "Adds the value of the [color=yellow]activator die[/color] to the 
 rarity = 0
 textures = SubResource("SpriteFrames_dd8hj")
 uses_per_turn = -1
+activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_8mym4")]([SubResource("Resource_dd8hj"), SubResource("Resource_qyxqd")])
 effect_chain = SubResource("Resource_3jpq8")
 event_responses = Dictionary[ExtResource("6_dd8hj"), ExtResource("6_7mo4q")]({})

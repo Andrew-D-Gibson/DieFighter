@@ -21,6 +21,9 @@ extends Node2D
 var num_of_dice: int
 @export var dice_scene: PackedScene
 
+@onready var tile_activation_queue: Array[Tile] = []
+@onready var tile_currently_activating: bool = false
+
 
 var money: int:
 	set(value):
@@ -33,6 +36,14 @@ func _ready() -> void:
 	health.death.connect(Events.game_over.emit)
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
+	
+	health.health_damaged.connect(func():
+		Events.play_sound.emit('player_health_hit')
+	)
+	health.shields_damaged.connect(func():
+		Events.play_sound.emit('player_shields_hit')
+	)
+	
 	
 	dice_manager.die_added.connect(func() -> void:
 		_update_dice_queue_locations()
@@ -126,8 +137,9 @@ func _check_for_end_of_turn() -> void:
 func reroll_dice() -> void:
 	for die in dice_manager.queue:
 		if die:
-			die.reroll_with_tween()		
-			await get_tree().create_timer(0.1).timeout
+			die.reroll_with_tween()
+			Events.play_sound.emit("dice_reroll_blip")		
+			await get_tree().create_timer(0.2).timeout
 
 
 func _start_player_turn() -> void:
@@ -159,6 +171,7 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 		dice_manager.add(new_die, true, false)
 		
 		await get_tree().create_timer(time_between_die_spawns).timeout
+		Events.play_sound.emit("dice_reroll_blip")
 		
 	_update_dice_queue_locations()
 	

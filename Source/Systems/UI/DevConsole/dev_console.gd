@@ -28,6 +28,12 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 	# Handle commands
 	var command = console_command.split(' ')
 	match command[0]:
+		's':
+			_play_test_sound()
+			
+		'd':
+			_play_comparison_test_sound()
+			
 		'add_money':
 			_add_money(command.slice(1))
 			
@@ -135,6 +141,18 @@ func _heal(command_args: Array[String] = []) -> void:
 	
 	Globals.player.health.change_health(amount)	
 	command_history.append_text('\n[center]Healed player![/center]')
+	
+	
+func _play_test_sound() -> void:
+	var test_sound: String = 'dice_cannon'
+	print('Playing test sound: ', test_sound)
+	Events.play_sound.emit(test_sound)
+	
+
+func _play_comparison_test_sound() -> void:
+	var test_sound: String = 'enemy_health_hit'
+	print('Playing test sound: ', test_sound)
+	Events.play_sound.emit(test_sound)
 	
 	
 func _reroll(command_args: Array[String] = []) -> void:

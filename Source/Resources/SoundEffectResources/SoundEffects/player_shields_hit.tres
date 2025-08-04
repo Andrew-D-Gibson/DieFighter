@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://45tw4x0ypf2j"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_tay7w"]
+[ext_resource type="AudioStream" uid="uid://c8fpqbxehailg" path="res://Assets/Sounds/Player/PlayerShieldsHit/PlayerShieldsHit.wav" id="2_0t38k"]
+
+[resource]
+script = ExtResource("1_tay7w")
+name = "player_shields_hit"
+limit = 5
+sound_effect = ExtResource("2_0t38k")
+volume = 0.0
+pitch_scale = 0.8
+pitch_randomness = 0.2
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

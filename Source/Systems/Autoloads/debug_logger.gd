@@ -4,6 +4,9 @@ var _log_file: FileAccess
 var _log_path: String = "res://debug_log.txt"
 
 func _ready() -> void:
+	# Make this unpausable
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	# Clear the log file at startup
 	_log_file = FileAccess.open(_log_path, FileAccess.WRITE)
 	if _log_file == null:

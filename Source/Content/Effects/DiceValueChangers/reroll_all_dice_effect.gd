@@ -22,4 +22,4 @@ func play(effect_variables: EffectVariables) -> void:
 	
 	for die in all_dice:
 		die.reroll_with_tween()
-		await effect_variables.actor.get_tree().create_timer(0.15).timeout
+		await effect_variables.actor.get_tree().create_timer(0.2).timeout

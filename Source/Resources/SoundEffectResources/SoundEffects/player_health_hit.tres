@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://dgkot5o7brafr"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_2rfq1"]
+[ext_resource type="AudioStream" uid="uid://dwhtt3s2wv6yx" path="res://Assets/Sounds/Player/PlayerHealthHit/PlayerHealthHit.wav" id="2_trnk4"]
+
+[resource]
+script = ExtResource("1_2rfq1")
+name = "player_health_hit"
+limit = 3
+sound_effect = ExtResource("2_trnk4")
+volume = 0.0
+pitch_scale = 0.8
+pitch_randomness = 0.2
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

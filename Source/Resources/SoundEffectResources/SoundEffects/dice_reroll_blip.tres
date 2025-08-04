@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://dlyq377oa6gb3"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_4nspg"]
+[ext_resource type="AudioStream" uid="uid://21c1t5r458h5" path="res://Assets/Sounds/Dice/Reroll/Reroll.wav" id="2_lgrru"]
+
+[resource]
+script = ExtResource("1_4nspg")
+name = "dice_reroll_blip"
+limit = 10
+sound_effect = ExtResource("2_lgrru")
+volume = -5.0
+pitch_scale = 0.25
+pitch_randomness = 0.0
+enable_pitch_escalation = true
+max_pitch_escalation = 8.0
+pitch_escalation_step = 0.1
+quick_play_threshold = 0.5
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

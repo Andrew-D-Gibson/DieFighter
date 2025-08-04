@@ -15,6 +15,7 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 @export_category('Behavior')
 ## Set to -1 for infinite uses per turn
 @export var uses_per_turn: int
+@export var activated_on_dice_drop: bool = true
 @export var activation_checks: Array[ActivationResource]
 @export var effect_chain: EffectChain
 

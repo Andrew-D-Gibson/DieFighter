@@ -11,6 +11,9 @@ func _hookup_audio_signals() -> void:
 
 
 func _ready() -> void:
+	# Make this unpausable
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	var sound_effects: Array[SoundEffectResource]
 	
 	for file in DirAccess.get_files_at(sound_effects_folder):
@@ -39,7 +42,13 @@ func play_sound(name: String) -> void:
 			player.stream = sound_effect.sound_effect
 			player.volume_db = sound_effect.volume
 			player.pitch_scale = sound_effect.pitch_scale
+			
+			# Apply pitch escalation
+			player.pitch_scale += sound_effect.get_pitch_escalation()
+			
+			# Apply random pitch variation
 			player.pitch_scale += randf_range(-sound_effect.pitch_randomness, sound_effect.pitch_randomness)
+			
 			player.finished.connect(sound_effect.on_audio_finished)
 			player.finished.connect(player.queue_free)
 			

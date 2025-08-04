@@ -76,6 +76,7 @@ description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the 
 rarity = 0
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_turn = -1
+activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])
 effect_chain = SubResource("Resource_8vpcq")
 event_responses = Dictionary[ExtResource("8_p7d6s"), ExtResource("7_7qkaa")]({})

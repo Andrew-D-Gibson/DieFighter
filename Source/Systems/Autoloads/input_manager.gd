@@ -1,7 +1,7 @@
 extends Node
 
 func _ready() -> void:
-	# Make this unpausable so we can always quit out
+	# Make this unpausable 
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	
