@@ -38,11 +38,11 @@ func play_death_animation() -> void:
 	
 	# Fade out the ship graphics
 	var tween_time: float = 0.75
-	var tween = get_tree().create_tween()
+	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(ship_graphics, "modulate", Color(1,1,1,0), tween_time)
 	
 	# Spawn the death explosion and wait
-	var explosion = death_explosion.instantiate()
+	var explosion: AnimatedSprite2D = death_explosion.instantiate()
 	add_sibling(explosion)
 	explosion.global_position = self.global_position
 	
@@ -50,8 +50,8 @@ func play_death_animation() -> void:
 
 
 ## Sets the position of the health bar
-func set_health_bar_position(position: Vector2) -> void:
-	health_bar.position = position
+func set_health_bar_position(pos: Vector2) -> void:
+	health_bar.position = pos
 
 
 ## Updates the health bar's attitude indicator
@@ -101,7 +101,7 @@ func start_bob_tween() -> void:
 	if get_parent().moving_in_world:
 		return
 		
-	var tween_time = randf_range(2, 4)
+	var tween_time: float = randf_range(2, 4)
 	_bob_tween = get_tree().create_tween()
 	_bob_tween.tween_property(ship_graphics, 'global_position', self.global_position + Vector2(0, 8), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_bob_tween.tween_property(ship_graphics, 'global_position', self.global_position, tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
@@ -112,7 +112,7 @@ func start_bob_tween() -> void:
 func _health_hit_flash() -> void:
 	ship_graphics.material.set_shader_parameter('color', Globals.red)
 	
-	var tween = get_tree().create_tween()
+	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
 	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 

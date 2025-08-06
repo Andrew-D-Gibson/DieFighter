@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=33 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
+[ext_resource type="Script" uid="uid://tw7lpv214pfl" path="res://Source/Systems/UI/Camera/camera.gd" id="6_7iud4"]
 [ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
 [ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Game/Player/player.tscn" id="6_rir3g"]
 [ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/Resources/SaveResources/game_start.tres" id="7_3g417"]
@@ -80,10 +81,17 @@ z_index = -2
 [node name="Camera2D" type="Camera2D" parent="Graphics"]
 position = Vector2(160, 90)
 zoom = Vector2(6, 6)
-script = ExtResource("4_hd7px")
+script = ExtResource("6_7iud4")
 
 [node name="Shakeable" parent="Graphics/Camera2D" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("4_flage")]
 node_to_shake = NodePath("..")
+small_shake_intensity = 1.5
+small_shake_duration = 0.175
+large_shake_intensity = 3.0
+large_shake_duration = 0.25
+
+[node name="Screenshots" type="Node2D" parent="Graphics/Camera2D"]
+script = ExtResource("4_hd7px")
 
 [node name="Cockpit Walls" type="Sprite2D" parent="Graphics"]
 position = Vector2(160, 90)

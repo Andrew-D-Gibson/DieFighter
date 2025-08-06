@@ -30,13 +30,13 @@ func _update_dice_queue_locations() -> void:
 ## Give dice away to other enemies if possible or the player if not	
 func give_away_dice() -> void:
 	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
-	var other_enemies = Array([], TYPE_OBJECT, "Node", Enemy)
-	for enemy in enemies:
+	var other_enemies: Array[Enemy] = []
+	for enemy: Enemy in enemies:
 		if enemy != get_parent():
 			other_enemies.append(enemy)
 
-	for i in range(len(queue)-1, -1, -1):
-		var die = queue[i]
+	for i: int in range(len(queue)-1, -1, -1):
+		var die: Dice = queue[i]
 		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		
 		if len(other_enemies) == 0:

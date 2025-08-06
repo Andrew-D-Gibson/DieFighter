@@ -1,0 +1,125 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://bpy3rce6clni3"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_dl748"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_dooug"]
+[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="3_er2tk"]
+[ext_resource type="Script" uid="uid://cttcer3sti4mw" path="res://Source/Content/Effects/AmountModifiers/add_tile_data_to_amount_effect.gd" id="4_84stt"]
+[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="5_sat5j"]
+[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="6_u65dq"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="7_2uk52"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_krkdr"]
+[ext_resource type="Script" uid="uid://d4edpqpkkx8nt" path="res://Source/Content/Effects/Activators/activate_self_effect.gd" id="9_xpqp5"]
+[ext_resource type="Script" uid="uid://oi6ed2m5o7hj" path="res://Source/Content/Effects/TileDataChangers/increment_tile_data_effect.gd" id="10_jmh68"]
+[ext_resource type="Script" uid="uid://diu3gmqfwq03x" path="res://Source/Content/Effects/TileDataChangers/set_tile_data_effect.gd" id="11_hw6hl"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="12_5u4xb"]
+[ext_resource type="Texture2D" uid="uid://c8y8dwpvor27" path="res://Assets/Textures/Tiles/unstable_shield_generator.png" id="13_qsfcr"]
+
+[sub_resource type="Resource" id="Resource_eq5vj"]
+script = ExtResource("1_dl748")
+type = 6
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_vno0r"]
+script = ExtResource("3_er2tk")
+primary_effect = false
+metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
+
+[sub_resource type="Resource" id="Resource_sryqk"]
+script = ExtResource("4_84stt")
+tile_data_key = "activation_count"
+primary_effect = false
+metadata/_custom_type_script = "uid://cttcer3sti4mw"
+
+[sub_resource type="Resource" id="Resource_um1gg"]
+script = ExtResource("5_sat5j")
+amount = 2
+inherit_die_value = false
+primary_effect = true
+metadata/_custom_type_script = "uid://bllibq0iu6bwk"
+
+[sub_resource type="Resource" id="Resource_7g1xc"]
+script = ExtResource("6_u65dq")
+color = Color(0.313726, 0.705882, 1, 1)
+amount = 24
+location = 1
+primary_effect = false
+metadata/_custom_type_script = "uid://5vw5tu23ayfk"
+
+[sub_resource type="Resource" id="Resource_vy2tg"]
+script = ExtResource("7_2uk52")
+effects = Array[ExtResource("2_dooug")]([SubResource("Resource_vno0r"), SubResource("Resource_sryqk"), SubResource("Resource_um1gg"), SubResource("Resource_7g1xc")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="Resource" id="Resource_p6ekm"]
+script = ExtResource("8_krkdr")
+event = 1
+listen_only_for_self = true
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_0sl63"]
+script = ExtResource("9_xpqp5")
+primary_effect = true
+metadata/_custom_type_script = "uid://d4edpqpkkx8nt"
+
+[sub_resource type="Resource" id="Resource_htfaj"]
+script = ExtResource("10_jmh68")
+tile_data_key = "activation_count"
+primary_effect = false
+metadata/_custom_type_script = "uid://oi6ed2m5o7hj"
+
+[sub_resource type="Resource" id="Resource_jbg2i"]
+script = ExtResource("7_2uk52")
+effects = Array[ExtResource("2_dooug")]([SubResource("Resource_0sl63"), SubResource("Resource_htfaj")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="Resource" id="Resource_5crca"]
+script = ExtResource("8_krkdr")
+event = 2
+listen_only_for_self = true
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_6e2xl"]
+script = ExtResource("11_hw6hl")
+tile_data_key = "activation_count"
+value = 0
+primary_effect = false
+metadata/_custom_type_script = "uid://diu3gmqfwq03x"
+
+[sub_resource type="Resource" id="Resource_4o71b"]
+script = ExtResource("7_2uk52")
+effects = Array[ExtResource("2_dooug")]([SubResource("Resource_6e2xl")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iy1wd"]
+atlas = ExtResource("13_qsfcr")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_nb58w"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iy1wd")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("12_5u4xb")
+tile_name = "Unstable Shield Array"
+activation_description = ""
+description = "[color=yellow]Moved by tile[/color] -> Gain [color=blue]2 shields[/color], +1 each time. Resets if moved manually.
+(Currently at [color=blue][data]activation_count + 2[/data] shields[/color])"
+rarity = 1
+textures = SubResource("SpriteFrames_nb58w")
+uses_per_turn = -1
+activated_on_dice_drop = true
+activation_checks = Array[ExtResource("1_dl748")]([SubResource("Resource_eq5vj")])
+effect_chain = SubResource("Resource_vy2tg")
+event_responses = Dictionary[ExtResource("8_krkdr"), ExtResource("7_2uk52")]({
+SubResource("Resource_p6ekm"): SubResource("Resource_jbg2i"),
+SubResource("Resource_5crca"): SubResource("Resource_4o71b")
+})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

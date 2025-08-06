@@ -93,8 +93,8 @@ animations = [{
 [resource]
 script = ExtResource("4_m7a5a")
 tile_name = "Bump"
-activation_description = "[color=yellow]Activates[/color] with any die lower than a (die_6)"
-description = "Adds 1 to the value of the [color=yellow]activator[/color] die"
+activation_description = ""
+description = "[color=yellow]Die smaller than[/color] (die_6) -> Adds 1 to the die's value"
 rarity = 0
 textures = SubResource("SpriteFrames_j21c8")
 uses_per_turn = 3

@@ -22,7 +22,7 @@ func _ready() -> void:
 	
 	# Connect health signals
 	health_component.health_set.connect(_set_health)
-	health_component.health_damaged.connect(func():
+	health_component.health_damaged.connect(func() -> void:
 		_set_health()
 		_start_health_text_shake()
 	)
@@ -30,7 +30,7 @@ func _ready() -> void:
 	
 	# Connect shield signals
 	health_component.shields_set.connect(_set_shields)
-	health_component.shields_damaged.connect(func():
+	health_component.shields_damaged.connect(func() -> void:
 		_set_shields()
 		_start_shield_text_shake()
 	)
@@ -41,8 +41,8 @@ func _process(delta: float) -> void:
 	# Handle updating the white damage indicator after hull damage
 	if need_to_update_health_white:
 		if time_since_health_change > damage_update_time:
-			var tween_time = 0.5
-			var tween = get_tree().create_tween()
+			var tween_time: float = 0.5
+			var tween: Tween = get_tree().create_tween()
 			tween.tween_property($HealthUpdateBar, 'value', float(health_component.health) / health_component.max_health, tween_time).from_current().set_trans(Tween.TRANS_QUAD)
 			
 			need_to_update_health_white = false
@@ -75,8 +75,8 @@ func _get_shield_string() -> String:
 	
 	
 func _set_health() -> void:
-	var tween_time = 0.1
-	var tween = get_tree().create_tween()
+	var tween_time: float = 0.1
+	var tween: Tween = get_tree().create_tween()
 	tween.tween_property($HealthBar, 'value', float(health_component.health) / health_component.max_health, tween_time).from_current().set_trans(Tween.TRANS_QUAD)
 	
 	need_to_update_health_white = true

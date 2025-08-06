@@ -17,4 +17,6 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed('EndTurn'):
 		if len(Globals.player.dice_manager.queue) == 0:
 			Globals.player.end_turn()
+	elif event.is_action_pressed("screenshot"):
+		Events.take_screenshot.emit()
 			

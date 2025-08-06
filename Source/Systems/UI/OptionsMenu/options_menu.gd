@@ -12,7 +12,12 @@ var screen_showing: ScreenShowing = ScreenShowing.GAME
 func _ready() -> void:
 	%OptionsSavingManager.load_options_settings()
 	
+	# Set up the UI elements to reflect the loaded settings
+	_setup_graphics_options()
 	_setup_audio_sliders()
+	
+	# Start the options menu on the Game tab
+	_on_game_button_pressed()
 	
 	
 func _on_close_button_pressed() -> void:
@@ -23,6 +28,14 @@ func _on_close_button_pressed() -> void:
 func _on_item_hover() -> void:
 	Events.play_sound.emit('tile_dropped')
 
+
+func _setup_graphics_options() -> void:
+	%ScreenshakeCheckBox.button_pressed = Globals.screenshake_enabled
+
+
+func _on_screenshake_check_box_toggled(toggled_on: bool) -> void:
+	Globals.screenshake_enabled = toggled_on
+	
 
 func _setup_audio_sliders() -> void:
 	var master_bus_index: int = AudioServer.get_bus_index("Master")

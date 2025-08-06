@@ -12,6 +12,12 @@ signal show_info(info: InfoResource)
 signal toggle_pause_menu()
 
 
+# Misc.
+signal take_screenshot()
+signal camera_shake_small()
+signal camera_shake_large()
+
+
 # Control Events
 signal show_map()
 signal show_systems()
@@ -43,6 +49,7 @@ signal start_combat()
 signal player_turn_over()
 signal enemy_turn_over()
 signal combat_finished()
+signal die_added()
 
 signal spawn_reward(pos: Vector2, money: int, num_of_rewards: int, dice_probability: float)
 signal reward_picked()

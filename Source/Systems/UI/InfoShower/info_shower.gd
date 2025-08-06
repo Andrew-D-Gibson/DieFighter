@@ -27,7 +27,7 @@ func _format_text(text: String) -> String:
 	text = text.replace('orange', '#' + Globals.orange.to_html(false))
 	
 	# Add dice images to replace numbers
-	var dice_image_size = 58
+	var dice_image_size = 64
 	text = text.replace('(die_blank)', '[img={' + str(dice_image_size) + '}x{' + str(dice_image_size) + '}]' + dice_image_paths[0] + '[/img]')
 	text = text.replace('(die_1)', '[img={' + str(dice_image_size) + '}x{' + str(dice_image_size) + '}]' + dice_image_paths[1] + '[/img]')
 	text = text.replace('(die_2)', '[img={' + str(dice_image_size) + '}x{' + str(dice_image_size) + '}]' + dice_image_paths[2] + '[/img]')

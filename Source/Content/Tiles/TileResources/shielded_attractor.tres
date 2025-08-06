@@ -84,11 +84,12 @@ animations = [{
 [resource]
 script = ExtResource("4_6evea")
 tile_name = "Shielded Attractor"
-activation_description = "[color=yellow]Activates[/color] with a (die_4)"
-description = "Depletes 6 [color=blue]shields[/color] from the [color=purple]targeted[/color] enemy to pull all tiles one space toward this tile's column.  Gives the [color=yellow]activator[/color] die to the targeted enemy"
+activation_description = ""
+description = "(die_4) -> Drain up to [color=blue]6 shields[/color] from [color=purple]target[/color], pull all tiles toward this column, then [color=orange]give[/color] them the die"
 rarity = 1
 textures = SubResource("SpriteFrames_lvigf")
 uses_per_turn = -1
+activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_letam")]([SubResource("Resource_mt052"), SubResource("Resource_6evea"), SubResource("Resource_kgopb")])
 effect_chain = SubResource("Resource_8u76x")
 event_responses = Dictionary[ExtResource("2_w6idm"), ExtResource("3_mt052")]({})

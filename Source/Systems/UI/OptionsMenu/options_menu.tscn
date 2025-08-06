@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://c7hyjenhhnsah"]
+[gd_scene load_steps=22 format=3 uid="uid://c7hyjenhhnsah"]
 
 [ext_resource type="Script" uid="uid://b3278n4xjt53b" path="res://Source/Systems/UI/OptionsMenu/options_menu.gd" id="1_c6430"]
 [ext_resource type="PackedScene" uid="uid://6l4ixooaa16q" path="res://Source/Systems/UI/OptionsMenu/options_saving_manager.tscn" id="2_okq5w"]
@@ -6,8 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://cyvsute3rdn06" path="res://Assets/Textures/UI/OptionsMenu/music_volume_knob_dark.png" id="3_c6430"]
 [ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="3_smy8a"]
 [ext_resource type="Texture2D" uid="uid://cphbhatw48fco" path="res://Assets/Textures/UI/OptionsMenu/music_volume_knob_light.png" id="4_smy8a"]
+[ext_resource type="Texture2D" uid="uid://7j8pfvk537px" path="res://Assets/Textures/UI/CheckBox/check_box_checked.png" id="5_nleqt"]
 [ext_resource type="Texture2D" uid="uid://b5t67qqtpu483" path="res://Assets/Textures/UI/OptionsMenu/sfx_volume_knob_dark.png" id="5_okq5w"]
 [ext_resource type="Texture2D" uid="uid://d110vl5lf12kr" path="res://Assets/Textures/UI/OptionsMenu/sfx_volume_knob_light.png" id="6_k3iob"]
+[ext_resource type="Texture2D" uid="uid://clp8rg2rk1thv" path="res://Assets/Textures/UI/CheckBox/check_box_unchecked.png" id="6_oqkfw"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="9_k3iob"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6wqyq"]
@@ -130,6 +132,7 @@ sprite_frames = null
 text = "AUDIO"
 
 [node name="GameOptions" type="VBoxContainer" parent="."]
+visible = false
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
@@ -147,17 +150,40 @@ Credits
 fit_content = true
 
 [node name="GraphicsOptions" type="VBoxContainer" parent="."]
-visible = false
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
 offset_bottom = 54.0
 
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="GraphicsOptions/HBoxContainer"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="ScreenshakeLabel" type="RichTextLabel" parent="GraphicsOptions/HBoxContainer"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+text = "Screenshake"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="ScreenshakeCheckBox" type="CheckBox" parent="GraphicsOptions/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_icons/checked = ExtResource("5_nleqt")
+theme_override_icons/unchecked = ExtResource("6_oqkfw")
+flat = true
+
 [node name="RichTextLabel" type="RichTextLabel" parent="GraphicsOptions"]
 layout_mode = 2
 size_flags_vertical = 3
 mouse_filter = 2
-text = "Screenshake
+text = "
 V-Sync
 Resolution/Windowed mode
 "
@@ -323,6 +349,8 @@ text = "CLOSE"
 [connection signal="pressed_within_window" from="TabButtons/GameTabButton" to="." method="_on_game_button_pressed"]
 [connection signal="pressed_within_window" from="TabButtons/GraphicsTabButton" to="." method="_on_graphics_button_pressed"]
 [connection signal="pressed_within_window" from="TabButtons/AudioTabButton" to="." method="_on_audio_button_pressed"]
+[connection signal="pressed" from="GraphicsOptions/HBoxContainer/ScreenshakeCheckBox" to="." method="_on_item_hover"]
+[connection signal="toggled" from="GraphicsOptions/HBoxContainer/ScreenshakeCheckBox" to="." method="_on_screenshake_check_box_toggled"]
 [connection signal="mouse_entered" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_item_hover"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_game_volume_slider_value_changed"]
 [connection signal="mouse_entered" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_item_hover"]

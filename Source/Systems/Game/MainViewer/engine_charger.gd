@@ -13,6 +13,11 @@ func _ready() -> void:
 	Events.combat_finished.connect(func():
 		Globals.player.engine_charge = Globals.player.max_engine_charge	
 	)
+	Events.die_added.connect(func() -> void:
+		if Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
+			Globals.player.engine_charge = Globals.player.max_engine_charge
+		_update_ui()
+	)
 
 
 func _check_for_combat_scenario(scenario: ScenarioResource) -> void:

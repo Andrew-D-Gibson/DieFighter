@@ -3,7 +3,7 @@ extends Node2D
 
 @export var time_between_die_spawns: float = 0.2
 
-@export var max_engine_charge: int = 24
+var max_engine_charge: int = 24
 @export var engine_charge: int = 0:
 	set(new_value):
 		engine_charge = clampi(new_value, 0, max_engine_charge)
@@ -18,7 +18,15 @@ extends Node2D
 @export var health: Health
 @export var end_turn_button: Control
 
-var num_of_dice: int
+var num_of_dice: int:
+	set(new_num):
+		num_of_dice = new_num
+		
+		max_engine_charge = (6*num_of_dice) - floor(1.7078 * sqrt(num_of_dice))
+		
+		Events.die_added.emit()
+		
+		
 @export var dice_scene: PackedScene
 
 @onready var tile_activation_queue: Array[Tile] = []
@@ -39,9 +47,11 @@ func _ready() -> void:
 	
 	health.health_damaged.connect(func() -> void:
 		Events.play_sound.emit('player_health_hit')
+		Events.camera_shake_large.emit()
 	)
 	health.shields_damaged.connect(func() -> void:
 		Events.play_sound.emit('player_shields_hit')
+		Events.camera_shake_small.emit()
 	)
 	
 	

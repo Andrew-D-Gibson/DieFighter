@@ -1,21 +1,23 @@
-extends Camera2D
+extends Node2D
 
-var ssCount = 1
+var ssCount: int = 1
 
 func _ready() -> void:
-	var dir := DirAccess.open("res://screenshots")
+	Events.take_screenshot.connect(screenshot)
+	
+	var dir: DirAccess = DirAccess.open("user://screenshots")
 	if dir == null:
-		dir = DirAccess.open("res://")
+		dir = DirAccess.open("user://")
 		dir.make_dir("screenshots")
 	else:
 		dir.list_dir_begin()
-		var file_name = dir.get_next()
-		var max_num = 0
+		var file_name: String = dir.get_next()
+		var max_num: int = 0
 		
 		while file_name != "":
 			if not dir.current_is_dir() and file_name.begins_with("ss") and file_name.ends_with(".png"):
-				var num_text = file_name.substr(2, file_name.length() - 6) # Remove "ss" and ".png"
-				var num = int(num_text)
+				var num_text: String = file_name.substr(2, file_name.length() - 6) # Remove "ss" and ".png"
+				var num: int = int(num_text)
 				if num > max_num:
 					max_num = num
 			file_name = dir.get_next()
@@ -28,12 +30,8 @@ func _ready() -> void:
 func screenshot() -> void:
 	await RenderingServer.frame_post_draw
 	
-	var viewport := get_viewport()
-	var img := viewport.get_texture().get_image()
-	img.save_png("res://screenshots/ss" + str(ssCount) + ".png")
+	var viewport: Viewport = get_viewport()
+	var img: Image = viewport.get_texture().get_image()
+	img.save_png("user://screenshots/ss" + str(ssCount) + ".png")
+	print("Saved screenshot #", str(ssCount))
 	ssCount += 1
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("screenshot"):
-		screenshot()

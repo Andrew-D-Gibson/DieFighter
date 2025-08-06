@@ -96,11 +96,12 @@ animations = [{
 [resource]
 script = ExtResource("3_won78")
 tile_name = "Tactical Boomerang"
-activation_description = "[color=yellow]Activates[/color] with a (die_3)"
-description = "Deals 4 [color=red]damage[/color] to the [color=purple]targeted[/color] enemy. The [color=yellow]activating[/color] die returns as a (die_1), pushing this tile (and any beside it) to the right if possible"
+activation_description = ""
+description = "(die_3) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color], return (die_3) as (die_1), push this tile right"
 rarity = 1
 textures = SubResource("SpriteFrames_eqci4")
 uses_per_turn = -1
+activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_0sqhf")]([SubResource("Resource_qed76"), SubResource("Resource_stnu5"), SubResource("Resource_vakuo")])
 effect_chain = SubResource("Resource_g26hj")
 event_responses = Dictionary[ExtResource("11_04xam"), ExtResource("10_qed76")]({})

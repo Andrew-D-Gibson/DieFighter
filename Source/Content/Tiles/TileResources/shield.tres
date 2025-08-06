@@ -71,8 +71,8 @@ animations = [{
 [resource]
 script = ExtResource("8_8vpcq")
 tile_name = "Shield Generator"
-activation_description = "[color=yellow]Activates[/color] with a (die_3)"
-description = "Adds 8 [color=blue]shields[/color] then gives the (die_3) to the [color=purple]targeted[/color] enemy."
+activation_description = ""
+description = "(die_3) -> Add [color=blue]8 shields[/color], then [color=orange]give[/color] it to the [color=purple]target[/color]"
 rarity = 0
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_turn = -1

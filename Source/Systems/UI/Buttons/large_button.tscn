@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://pagumreni25k"]
 
-[ext_resource type="Texture2D" uid="uid://cs2mfw6hbovs1" path="res://Assets/Textures/UI/button_large_red.png" id="1_3vyje"]
+[ext_resource type="Texture2D" uid="uid://cs2mfw6hbovs1" path="res://Assets/Textures/UI/Buttons/button_large_red.png" id="1_3vyje"]
 [ext_resource type="Script" uid="uid://b3gfadyybvn41" path="res://Source/Systems/UI/Buttons/button.gd" id="1_fcuwd"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fcuwd"]
