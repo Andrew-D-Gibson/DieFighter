@@ -21,7 +21,7 @@ func get_action() -> EnemyActionResource:
 	action.effect_chain = base_action.effect_chain.duplicate()
 	
 	# Set amount for primary effects in the duplicated chain
-	for effect in action.effect_chain.effects:
+	for effect: Effect in action.effect_chain.effects:
 		if effect.primary_effect:
 			effect.amount = amount
 	

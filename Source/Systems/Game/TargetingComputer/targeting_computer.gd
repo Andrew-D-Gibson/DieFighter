@@ -57,7 +57,7 @@ func check_target_is_valid() -> void:
 		_update_ui()
 		return
 		
-	var enemies = Globals.enemy_manager.get_alive_enemies()
+	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
 	
 	# Check that there even are enemies to target
 	if len(enemies) == 0:
@@ -90,7 +90,7 @@ func target_enemy(enemy: Enemy) -> void:
 		_update_ui()
 		return
 		
-	var enemies = Globals.enemy_manager.get_alive_enemies()
+	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
 	
 	var enemy_index: int = enemies.find(enemy)
 	if enemy_index != -1: # We found the enemy
@@ -104,7 +104,7 @@ func _update_ui() -> void:
 		targeting_indicator.visible = false
 		
 		$TargetImage.texture = null
-		for i in range(6):
+		for i: int in range(6):
 			$Intents.get_child(i).texture = null
 			$Intents.get_child(i).get_child(0).text = ''
 		
@@ -114,7 +114,7 @@ func _update_ui() -> void:
 		_move_indicator()
 		
 		$TargetImage.texture = targeted_enemy.enemy_resource.targeting_computer_image
-		for i in range(len(targeted_enemy.turn_actions)): # Should be a loop to 0 or 6
+		for i: int in range(len(targeted_enemy.turn_actions)): # Should be a loop to 0 or 6
 			if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
 				$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
 				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
@@ -137,8 +137,8 @@ func _update_ui() -> void:
 func _move_indicator() -> void:
 	targeting_indicator.visible = true
 		
-	var tween_time = 0.3
-	var tween = get_tree().create_tween()
+	var tween_time: float = 0.3
+	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, tween_time).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
 
 	tween.tween_callback(_indicator_bob)
@@ -148,7 +148,7 @@ func _indicator_bob() -> void:
 	if not targeted_enemy:
 		return
 		
-	var bob_time = 1.5
+	var bob_time: float = 1.5
 	
 	if indicator_bob_tween:
 		indicator_bob_tween.kill()

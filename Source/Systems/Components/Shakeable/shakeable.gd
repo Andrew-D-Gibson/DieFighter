@@ -21,8 +21,8 @@ var shaking: bool = false
 signal shake_started()
 signal shake_ended()
 
-@export_tool_button("Small Shake", "Callable") var small_shake_action = small_shake
-@export_tool_button("Large Shake", "Callable") var large_shake_action = large_shake
+@export_tool_button("Small Shake", "Callable") var small_shake_action: Callable = small_shake
+@export_tool_button("Large Shake", "Callable") var large_shake_action: Callable = large_shake
 
 
 func _ready() -> void:
@@ -42,7 +42,7 @@ func _process(delta: float) -> void:
 		return
 		
 	shake_time_remaining -= delta
-	var shake_offset = _random_offset(shake_intensity)
+	var shake_offset: Vector2 = _random_offset(shake_intensity)
 	node_to_shake.position = node_to_shake.position.lerp(
 		original_position + shake_offset,
 		0.5

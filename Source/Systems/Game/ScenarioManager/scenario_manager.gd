@@ -30,7 +30,7 @@ func _ready() -> void:
 	)
 
 
-func _handle_attack(ship: Enemy, ship_faction: ScenarioManager.Faction):
+func _handle_attack(_ship: Enemy, ship_faction: ScenarioManager.Faction) -> void:
 	match ship_faction:
 		Faction.PIRATE:
 			Events.scenario_event.emit(ScenarioEvent.PLAYER_ATTACKED_PIRATE)

@@ -8,7 +8,7 @@ func play(effect_variables: EffectVariables) -> void:
 		enemies.erase(effect_variables.actor)
 		
 	if len(enemies) == 0:
-		effect_variables.targets = Array([])
+		effect_variables.targets.clear()
 		return
 			
-	effect_variables.targets = Array([enemies.pick_random()])
+	effect_variables.targets = Array([enemies.pick_random()], TYPE_OBJECT, "Node", null)

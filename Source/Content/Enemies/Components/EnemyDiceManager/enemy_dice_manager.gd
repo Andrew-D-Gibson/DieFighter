@@ -19,7 +19,7 @@ func remove(die: Dice) -> void:
 	
 func _update_dice_queue_locations() -> void:
 	var dice_spacing: int = 10
-	for i in range(len(queue)):
+	for i: int in range(len(queue)):
 		queue[i].draggable.state = Draggable.DragState.ENEMY_HOLDING
 		queue[i].draggable.home_position = global_position + Vector2(
 			floor(i / 5.0) * dice_spacing, 
@@ -29,8 +29,8 @@ func _update_dice_queue_locations() -> void:
 
 ## Give dice away to other enemies if possible or the player if not	
 func give_away_dice() -> void:
-	var enemies = Globals.enemy_manager.get_alive_enemies()
-	var other_enemies = []
+	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
+	var other_enemies = Array([], TYPE_OBJECT, "Node", Enemy)
 	for enemy in enemies:
 		if enemy != get_parent():
 			other_enemies.append(enemy)

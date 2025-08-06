@@ -120,7 +120,6 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			
 			if item is Tile:
 				item.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
-				item.tile_activation_complete.connect(Globals.tile_grid.tile_activation_complete.emit)
 				item.reparent(Globals.tile_grid, true)
 				Globals.tile_grid._drop_tile_on_grid_pos(draggable, end_position)
 				

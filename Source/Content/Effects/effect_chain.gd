@@ -4,5 +4,5 @@ extends Resource
 @export var effects: Array[Effect]
 
 func play(effect_variables: EffectVariables) -> void:
-	for effect in effects:
+	for effect: Effect in effects:
 		await effect.play(effect_variables)

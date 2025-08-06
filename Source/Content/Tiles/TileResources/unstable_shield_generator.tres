@@ -115,6 +115,7 @@ description = "Generates 2 [color=blue]shields[/color] when moved by another til
 rarity = 1
 textures = SubResource("SpriteFrames_nb58w")
 uses_per_turn = -1
+activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_smaey")]([SubResource("Resource_eq5vj")])
 effect_chain = SubResource("Resource_vy2tg")
 event_responses = Dictionary[ExtResource("7_hgoyq"), ExtResource("2_4hwog")]({

@@ -37,24 +37,25 @@ func _ready() -> void:
 	draggable.drag_ended.connect(_check_for_acceptor)
 	
 	if holographic:
-		var particles = holographic_particles.instantiate()
+		var particles: CPUParticles2D = holographic_particles.instantiate()
 		particles.position = Vector2(0, -5)
 		add_child(particles)
 
 func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
-	var dice_acceptors = get_tree().get_nodes_in_group('CanAcceptDice')
-	for acceptor in dice_acceptors:
+	var dice_acceptors: Array[Node] = get_tree().get_nodes_in_group('CanAcceptDice')
+	for acceptor: CanAcceptDice  in dice_acceptors:
 		acceptor.check_die_drop(self, end_position)
 
 
 func reroll_with_tween(new_value: int = 0) -> void:
-	var tween_time = 0.2
+	var tween_time: float = 0.2
 		
-	var tween = get_tree().create_tween().set_parallel()
+	var tween: Tween = get_tree().create_tween().set_parallel()
 	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(self, 'global_position', global_position + Vector2(0,-8), tween_time).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(self, 'scale', Vector2(0.75, 0.75), tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	
-	tween.chain().tween_callback(func():
+	tween.chain().tween_callback(func() -> void:
 		if new_value == 0:
 			value = randi_range(1,6)
 		else:
@@ -62,7 +63,7 @@ func reroll_with_tween(new_value: int = 0) -> void:
 	)
 	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, 'global_position', global_position, tween_time).set_trans(Tween.TRANS_SINE)
-	
+	tween.tween_property(self, 'scale', Vector2(1, 1), tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
 	await tween.finished
 

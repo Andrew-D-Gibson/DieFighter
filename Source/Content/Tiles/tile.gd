@@ -58,19 +58,16 @@ var effect_data: Dictionary[String, int]
 @export var error_text_scene: PackedScene
 
 
-signal tile_activation_complete()
-
-
 func _ready() -> void:
 	assert(tile_resource)
 	_set_up_resource()
 	
 	if clickable:
-		clickable.clicked.connect(func(): 
+		clickable.clicked.connect(func() -> void: 
 			Events.show_info.emit(_get_tile_info())
 		)
 	if draggable:
-		draggable.reached_new_home.connect(func():
+		draggable.reached_new_home.connect(func() -> void:
 			shakeable.small_shake()
 			Events.play_sound.emit('tile_dropped')
 		)
@@ -83,10 +80,10 @@ func _ready() -> void:
 
 
 func _connect_tile_event_signals() -> void:
-	Events.tile_pushed.connect(func(tile: Tile):
+	Events.tile_pushed.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_PUSHED)
 	)	
-	Events.tile_manually_moved.connect(func(tile: Tile):
+	Events.tile_manually_moved.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_MANUALLY_MOVED)
 	)
 
@@ -97,7 +94,7 @@ func _set_up_resource() -> void:
 
 
 func _get_tile_info() -> InfoResource:
-	var info = InfoResource.new()
+	var info: InfoResource = InfoResource.new()
 	info.title_label_text = tile_resource.tile_name
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
@@ -107,14 +104,14 @@ func _get_tile_info() -> InfoResource:
 
 
 func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
-	for event_check in tile_resource.event_responses.keys():
+	for event_check: TileEvent in tile_resource.event_responses.keys():
 		if event_check.event == event:
 			# We can do the response if we don't care about listening for this tile
 			if not event_check.listen_only_for_self\
 			
 			# Or if we are this tile!
 			or (event_check.listen_only_for_self == (tile == self)):
-				var effect_variables = _generate_effect_variables()
+				var effect_variables: EffectVariables = _generate_effect_variables()
 				await tile_resource.event_responses[event_check].play(effect_variables)
 
 
@@ -139,7 +136,7 @@ func _clears_activation_criteria(activator_die: Dice = null) -> bool:
 		Events.error_text_popup.emit("NO USES REMAINING", self.global_position)
 		return false
 		
-	for check in tile_resource.activation_checks:
+	for check: ActivationResource in tile_resource.activation_checks:
 		if not check.criteria_satisfied(activator_die):
 			Events.error_text_popup.emit(check.get_criteria_fail_text(), self.global_position)
 			return false
@@ -148,7 +145,7 @@ func _clears_activation_criteria(activator_die: Dice = null) -> bool:
 			
 		
 func _generate_effect_variables() -> EffectVariables:
-	var effect_variables = EffectVariables.new()
+	var effect_variables: EffectVariables = EffectVariables.new()
 	effect_variables.actor = Globals.player
 	effect_variables.effect_source = self
 	
@@ -163,8 +160,8 @@ func _activate(activator_die: Dice = null) -> void:
 	if activator_die:
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	
-		var tween_time = 0.2
-		var tween = create_tween().set_parallel(true)
+		var tween_time: float = 0.2
+		var tween: Tween = create_tween().set_parallel(true)
 		tween.tween_property(
 			activator_die, 
 			'global_position', 
@@ -184,7 +181,7 @@ func _activate(activator_die: Dice = null) -> void:
 	shakeable.large_shake()
 	
 	# Set up the effects variables for chaining effects
-	var effect_variables = _generate_effect_variables()
+	var effect_variables: EffectVariables = _generate_effect_variables()
 	effect_variables.activator_die = activator_die
 	
 	await tile_resource.effect_chain.play(effect_variables)
@@ -197,21 +194,21 @@ func reset_uses_remaining() -> void:
 
 
 func _replace_event_data_in_string(text: String) -> String:
-	var pattern = r"\[data\](.+?)\[/data\]"
-	var regex = RegEx.new()
+	var pattern: String = r"\[data\](.+?)\[/data\]"
+	var regex: RegEx = RegEx.new()
 	regex.compile(pattern)
 
-	var result = text
+	var result: String = text
 
-	for match in regex.search_all(text):
-		var full_match := match.get_string(0)
-		var expression := match.get_string(1)
+	for match: RegExMatch in regex.search_all(text):
+		var full_match: String = match.get_string(0)
+		var expression: String = match.get_string(1)
 
 		# Replace unknown identifiers with 0
 		# Tokenize the expression and rebuild it with known values
-		var tokens = expression.split(" ", false)
-		var rebuilt_expression = ""
-		for token in tokens:
+		var tokens: PackedStringArray = expression.split(" ", false)
+		var rebuilt_expression: String = ""
+		for token: String in tokens:
 			if token.is_valid_identifier():
 				if effect_data.has(token):
 					rebuilt_expression += str(effect_data[token]) + " "
@@ -221,10 +218,10 @@ func _replace_event_data_in_string(text: String) -> String:
 				rebuilt_expression += token + " "
 
 		# Evaluate the safe expression
-		var safe_result := Expression.new()
-		var err := safe_result.parse(rebuilt_expression.strip_edges())
+		var safe_result: Expression = Expression.new()
+		var err: Error = safe_result.parse(rebuilt_expression.strip_edges())
 		if err == OK:
-			var value = safe_result.execute()
+			var value: int = safe_result.execute()
 			result = result.replace(full_match, str(value))
 		else:
 			result = result.replace(full_match, "0") # fallback in case of parse error
@@ -234,7 +231,7 @@ func _replace_event_data_in_string(text: String) -> String:
 
 func _update_dice_queue_locations() -> void:
 	var dice_queue_spacing: int = 12
-	for i in range(len(%DiceQueue.queue)):
+	for i: int in range(len(%DiceQueue.queue)):
 		%DiceQueue.queue[i].draggable.home_position = \
 		%DiceQueue.global_position +\
 		Vector2(0, i * dice_queue_spacing)

@@ -37,10 +37,10 @@ func _ready() -> void:
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
 	
-	health.health_damaged.connect(func():
+	health.health_damaged.connect(func() -> void:
 		Events.play_sound.emit('player_health_hit')
 	)
-	health.shields_damaged.connect(func():
+	health.shields_damaged.connect(func() -> void:
 		Events.play_sound.emit('player_shields_hit')
 	)
 	
@@ -89,17 +89,20 @@ func _reset_newest_die_transform() -> void:
 
 func _process(_delta: float) -> void:
 	# Handle rearranging dice in the queue
-	for die in get_children():
+	for die: Node in get_children():
 		if die is not Dice:
 			continue
 			
 		if die.draggable.state == Draggable.DragState.DRAGGING:
-			var current_queue_position = dice_manager.queue.find(die)
+			var current_queue_position: int = dice_manager.queue.find(die)
 			
 			if current_queue_position == -1:
 				dice_manager.add(die, true, false)
 			
-			var dice_queue_mouse_pos = get_global_mouse_position() - dice_manager.global_position + Vector2(6, 0)
+			var dice_queue_mouse_pos: Vector2 = \
+				get_global_mouse_position() \
+				- dice_manager.global_position \
+				+ Vector2(6, 0)
 			
 
 			# Create a rectangle that encompasses the current displayed dice queue
@@ -112,7 +115,7 @@ func _process(_delta: float) -> void:
 
 			if dice_queue_bounding_rect.has_point(dice_queue_mouse_pos):
 				# Determine which queue position the mouse is hovering over
-				var hovered_queue_position = int(dice_queue_mouse_pos.x / dice_queue_spacing)
+				var hovered_queue_position: int = int(dice_queue_mouse_pos.x / dice_queue_spacing)
 				# Make sure we limit the hovered location to the end of the queue
 				hovered_queue_position = min(hovered_queue_position, len(dice_manager.queue)-1)
 				
@@ -135,7 +138,7 @@ func _check_for_end_of_turn() -> void:
 
 
 func reroll_dice() -> void:
-	for die in dice_manager.queue:
+	for die: Dice in dice_manager.queue:
 		if die:
 			die.reroll_with_tween()
 			Events.play_sound.emit("dice_reroll_blip")		
@@ -147,19 +150,19 @@ func _start_player_turn() -> void:
 	await get_tree().create_timer(0.5).timeout
 	reroll_dice()
 	
-	for die in dice_manager.queue:
+	for die: Dice in dice_manager.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
 
 
 func _delete_existing_dice() -> void:
-	for die in get_tree().get_nodes_in_group('Dice'):
+	for die: Dice in get_tree().get_nodes_in_group('Dice'):
 		die.queue_free()
 	dice_manager.queue = []
 	
 
 func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bool = false) -> void:
-	for i in range(num_to_spawn):
-		var new_die = dice_scene.instantiate()
+	for i: int in range(num_to_spawn):
+		var new_die: Dice = dice_scene.instantiate()
 		new_die.global_position = global_position + Vector2(600, 0)
 		new_die.holographic = holographic
 		if value != 0:

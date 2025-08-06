@@ -28,10 +28,8 @@ func _ready() -> void:
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
-	var spacing = enemy_spacing / float(len(enemies_to_spawn) + 1)
-	
-	for i in range(len(enemies_to_spawn)):
-		var enemy = enemy_base_scene.instantiate()
+	for i: int in range(len(enemies_to_spawn)):
+		var enemy: Enemy = enemy_base_scene.instantiate()
 		enemy.enemy_resource = enemies_to_spawn[i].enemy_resource
 		enemy.position = enemy.enemy_resource.graphics_scene_offset + get_point_along_path(enemies_to_spawn[i].spawning_path_location)
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
@@ -47,8 +45,8 @@ func get_point_along_path(proportion: float) -> Vector2:
 	
 	
 func move_ship_to_point_on_path(ship: Enemy, proportion: float) -> void:
-	var tween_time = 0.75
-	var tween = get_tree().create_tween()
+	var tween_time: float = 0.75
+	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(
 		ship, 
 		'global_position', 
@@ -69,14 +67,14 @@ func get_alive_enemies() -> Array[Enemy]:
 func get_faction_ships(faction: ScenarioManager.Faction) -> Array[Enemy]:
 	var faction_ships: Array[Enemy] = []
 	_remove_dead_enemies()
-	for enemy in enemies:
+	for enemy: Enemy in enemies:
 		if enemy.scenario_state.faction == faction:
 			faction_ships.append(enemy)
 	return faction_ships
 	
 
 func _remove_dead_enemies() -> void:
-	for i in range(len(enemies)-1, -1, -1):
+	for i: int in range(len(enemies)-1, -1, -1):
 		if not enemies[i] or enemies[i].health.health == 0:
 			enemies.remove_at(i)
 			
@@ -84,11 +82,11 @@ func _remove_dead_enemies() -> void:
 func _run_enemy_turn() -> void:
 	# Create a copy of the enemies array to iterate over
 	# This prevents issues if enemies are removed during iteration
-	var current_enemies = enemies.duplicate()
+	var current_enemies: Array[Enemy] = enemies.duplicate()
 	
 	while true:
 		var dice_left: bool = false
-		for enemy in current_enemies:
+		for enemy: Enemy in current_enemies:
 			# Skip if enemy was removed
 			if not enemy or not is_instance_valid(enemy):
 				continue
@@ -106,7 +104,7 @@ func _run_enemy_turn() -> void:
 func delete_all_enemies() -> void:
 	# Needs to be queue_free'ed, not health reduced to 0
 	# so we don't spawn rewards
-	for i in range(len(enemies)-1, -1, -1):
+	for i: int in range(len(enemies)-1, -1, -1):
 		enemies[i].disconnect_scenario_signals()
 		enemies[i].queue_free()
 	enemies = []
@@ -117,10 +115,10 @@ func kill_all_enemies() -> void:
 		
 		
 func shield_all_enemies(amount: int) -> void:
-	for enemy in enemies:
+	for enemy: Enemy in enemies:
 		enemy.health.change_shields(amount)
 		
 		
 func damage_all_enemies(amount: int) -> void:
-	for i in range(len(enemies)-1, -1, -1):
+	for i: int in range(len(enemies)-1, -1, -1):
 		enemies[i].health.take_damage(amount)

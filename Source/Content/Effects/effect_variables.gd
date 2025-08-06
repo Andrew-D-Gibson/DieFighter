@@ -9,7 +9,7 @@ var actor: Node = null
 ## using the die
 var effect_source: Node = null
 
-var targets = []
+var targets: Array[Node] = []
 var activator_die: Dice = null
 
 # Amount (damage/shields etc.) calculation system
@@ -18,8 +18,8 @@ var amount_modifiers: Array[Callable] = []
 
 
 func calculate_final_amount() -> int:
-	var final_amount = base_amount
-	for modifier in amount_modifiers:
+	var final_amount: int = base_amount
+	for modifier: Callable in amount_modifiers:
 		final_amount = modifier.call(final_amount)
 	return final_amount
 

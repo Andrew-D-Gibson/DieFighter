@@ -1,4 +1,40 @@
-[16:49:24] Debug logger initialized
-[16:49:24] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres
-[16:49:24] Starting scenario
-[16:49:24] Starting combat
+[23:23:07] Debug logger initialized
+[23:23:07] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres
+[23:23:07] Starting scenario
+[23:23:14] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres
+[23:23:14] Starting scenario
+[23:23:14] Starting combat
+[23:23:17] Player attacked ship: Enemy (Faction: PIRATE)
+[23:23:17] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:23:21] Player attacked ship: Enemy (Faction: PIRATE)
+[23:23:21] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:23:22] Player attacked ship: Enemy (Faction: PIRATE)
+[23:23:22] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:23:22] Enemy left: PIRATE
+[23:23:22] Scenario Event: PIRATES_DEFEATED
+[23:23:22] Combat finished
+[23:23:22] Scenario Event: COMBAT_ENDED
+[23:23:32] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres
+[23:23:32] Starting scenario
+[23:23:32] Starting combat
+[23:23:45] Player attacked ship: Enemy (Faction: PIRATE)
+[23:23:45] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:23:49] Player attacked ship: Enemy (Faction: PIRATE)
+[23:23:49] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:23:55] Player attacked ship: Enemy (Faction: PIRATE)
+[23:23:55] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:23:55] Player attacked ship: Enemy (Faction: PIRATE)
+[23:23:55] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:23:56] Player turn over
+[23:23:57] Enemy Venom Fighter performed action: Shield Burst
+[23:23:58] Enemy Venom Fighter performed action: 
+[23:23:58] Enemy Venom Fighter performed action: Shield Burst
+[23:23:58] Enemy turn over
+[23:24:03] Player attacked ship: Enemy (Faction: PIRATE)
+[23:24:03] Scenario Event: PLAYER_ATTACKED_PIRATE
+[23:24:03] Enemy left: PIRATE
+[23:24:03] Scenario Event: PIRATES_DEFEATED
+[23:24:03] Combat finished
+[23:24:03] Scenario Event: COMBAT_ENDED
+[23:24:14] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres
+[23:24:14] Starting scenario

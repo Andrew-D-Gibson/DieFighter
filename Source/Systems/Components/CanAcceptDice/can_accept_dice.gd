@@ -11,7 +11,7 @@ func _contains_point(point: Vector2) -> bool:
 	if not collision or not collision.shape:
 		return false
 	
-	var local_point = point - collision.global_position
+	var local_point: Vector2 = point - collision.global_position
 	return collision.shape.get_rect().has_point(local_point)
 
 

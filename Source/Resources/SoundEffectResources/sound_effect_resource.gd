@@ -14,7 +14,8 @@ extends Resource
 @export_range(0.1, 2.0, 0.1) var pitch_escalation_step: float = 0.1 ## How much to increase pitch per quick play
 @export_range(0.1, 5.0, 0.1) var quick_play_threshold: float = 0.5 ## Time in seconds to consider a "quick play"
 
-static var audio_count: int = 0 
+# Track audio counts per sound effect name
+static var audio_counts: Dictionary[String, int] = {}
 
 # Track recent play times for pitch escalation
 var recent_play_times: Array[int] = []
@@ -22,16 +23,23 @@ var current_escalation_level: int = 0
 
 
 func on_audio_start() -> void:
-	audio_count += 1
+	if not audio_counts.has(name):
+		audio_counts[name] = 0
+	audio_counts[name] += 1
 	_update_play_times()
 
 
 func has_open_limit() -> bool:
-	return audio_count < limit
+	if not audio_counts.has(name):
+		audio_counts[name] = 0
+	return audio_counts[name] < limit
 
 
 func on_audio_finished() -> void:
-	audio_count -= 1
+	if audio_counts.has(name):
+		audio_counts[name] -= 1
+		if audio_counts[name] <= 0:
+			audio_counts.erase(name)
 
 
 func _update_play_times() -> void:
