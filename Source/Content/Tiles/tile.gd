@@ -58,6 +58,9 @@ var effect_data: Dictionary[String, int]
 @export var error_text_scene: PackedScene
 
 
+static var dice_activation_queue: Array[Dice] = []
+
+
 func _ready() -> void:
 	assert(tile_resource)
 	_set_up_resource()
@@ -75,8 +78,10 @@ func _ready() -> void:
 	Events.start_scenario.connect(reset_uses_remaining)
 	_connect_tile_event_signals()
 	
-	#%DiceQueue.die_added.connect(_update_dice_queue_locations)
-	#%DiceQueue.die_removed.connect(_update_dice_queue_locations)
+	$DiceQueue.die_added.connect(_update_dice_queue_locations)
+	$DiceQueue.die_removed.connect(_update_dice_queue_locations)
+	
+	Events.tile_activation_complete.connect(_check_for_next_in_tile_activation_queue)
 
 
 func _connect_tile_event_signals() -> void:
@@ -91,6 +96,7 @@ func _connect_tile_event_signals() -> void:
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
 	uses_remaining = tile_resource.uses_per_turn
+	$Draggable.dragging_allowed = tile_resource.dragging_allowed
 
 
 func _get_tile_info() -> InfoResource:
@@ -115,18 +121,23 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 				await tile_resource.event_responses[event_check].play(effect_variables)
 
 
-func try_to_activate(activator_die: Dice = null) -> void:
-	if not _clears_activation_criteria(activator_die):
-		return
+func try_to_activate() -> void:
+	var activator_die: Dice = null
+	if len($DiceQueue.queue) > 0:
+		activator_die = $DiceQueue.queue[0]
 		
-	# Add the dice to this tile's queue
-	#if activator_die:
-		#%DiceQueue.add(activator_die)
-	
-	# Add this to the activation queue
-	
-	
+	if not _clears_activation_criteria(activator_die):
+		# Something didn't go how the player expected,
+		# so clear out the queue of tile activations
+		for die: Dice in dice_activation_queue:
+			Globals.player.dice_manager.add(die, true, false)
+			
+		dice_activation_queue.clear()
+		
+		return
+
 	# We're cleared hot to activate!
+	$DiceQueue.remove(activator_die)
 	_activate(activator_die)
 		
 		
@@ -186,6 +197,11 @@ func _activate(activator_die: Dice = null) -> void:
 	
 	await tile_resource.effect_chain.play(effect_variables)
 	
+	if len(dice_activation_queue) > 0 and \
+	dice_activation_queue[0] and \
+	dice_activation_queue[0] == activator_die:
+		dice_activation_queue.remove_at(0)
+
 	Events.tile_activation_complete.emit()
 
 
@@ -231,7 +247,24 @@ func _replace_event_data_in_string(text: String) -> String:
 
 func _update_dice_queue_locations() -> void:
 	var dice_queue_spacing: int = 12
-	for i: int in range(len(%DiceQueue.queue)):
-		%DiceQueue.queue[i].draggable.home_position = \
-		%DiceQueue.global_position +\
-		Vector2(0, i * dice_queue_spacing)
+	for i: int in range(len($DiceQueue.queue)):
+		$DiceQueue.queue[i].draggable.home_position = \
+		$DiceQueue.global_position +\
+		Vector2(0, (i-1) * dice_queue_spacing)
+
+
+func _on_die_accepted(die: Dice) -> void:
+	$DiceQueue.add(die, true, false)
+	dice_activation_queue.append(die)
+	
+	if len(dice_activation_queue) == 1:
+		try_to_activate()
+	
+		
+func _check_for_next_in_tile_activation_queue() -> void:
+	if len(dice_activation_queue) > 0 and \
+	len($DiceQueue.queue) > 0 and\
+	dice_activation_queue[0] and \
+	$DiceQueue.queue[0] and \
+	dice_activation_queue[0] == $DiceQueue.queue[0]:
+		try_to_activate()

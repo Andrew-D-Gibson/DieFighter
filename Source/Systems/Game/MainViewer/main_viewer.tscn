@@ -1,22 +1,17 @@
-[gd_scene load_steps=38 format=3 uid="uid://bq0eop4cxspu2"]
+[gd_scene load_steps=28 format=3 uid="uid://bq0eop4cxspu2"]
 
 [ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
 [ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_sgr5l"]
-[ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Content/Tiles/tile.gd" id="5_dq04t"]
 [ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/engine_charger.tres" id="6_uglmk"]
-[ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="7_hyorp"]
-[ext_resource type="Script" uid="uid://dl3x4ek6t4j8y" path="res://Source/Systems/Components/Shakeable/shakeable.gd" id="7_p0pmq"]
-[ext_resource type="Script" uid="uid://cb3ideptaj1hg" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.gd" id="8_bkkgo"]
-[ext_resource type="Shader" uid="uid://cpjpl07bibay0" path="res://Assets/Shaders/tile_no_uses_remaining.gdshader" id="9_p0pmq"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
 [ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="11_foiuu"]
+[ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="11_mm1jt"]
 [ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/Systems/Game/CommsManager/comms_manager.tscn" id="12_ctpxn"]
 [ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/Systems/Game/Map/map.tscn" id="13_l0r2u"]
 [ext_resource type="Texture2D" uid="uid://b06bwfbiw2rcm" path="res://Assets/Textures/MainViewer/map_arrow-Sheet.png" id="14_eo4kl"]
 [ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres" id="14_mm1jt"]
 [ext_resource type="PackedScene" uid="uid://751pc74qkdf0" path="res://Source/Systems/Game/MainViewer/DiceReceptacle/dice_receptacle.tscn" id="15_mm1jt"]
-[ext_resource type="Texture2D" uid="uid://bb1wayvid1qy5" path="res://Assets/Textures/Tiles/engine_charger_background.png" id="16_35tnh"]
 [ext_resource type="Texture2D" uid="uid://bo66e1kj2f37w" path="res://Assets/Textures/MainViewer/EngineCharger/under.png" id="17_fa2si"]
 [ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="17_xbbhg"]
 [ext_resource type="Texture2D" uid="uid://dxkhg5oasm2mr" path="res://Assets/Textures/MainViewer/EngineCharger/fill.png" id="18_foiuu"]
@@ -82,32 +77,6 @@ animations = [{
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_eo4kl"]
 size = Vector2(44, 11)
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_bkkgo"]
-shader = ExtResource("9_p0pmq")
-shader_parameter/outer_radius = 10.0
-shader_parameter/strength = 0.0
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_pplg4"]
-atlas = ExtResource("7_hyorp")
-region = Rect2(0, 0, 24, 24)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_eo4kl"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_pplg4")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ctpxn"]
-size = Vector2(22, 24)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_l0r2u"]
-size = Vector2(22, 24)
 
 [node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "comms", "tile_grid", "map", "engine_charger", "comms_button_label", "systems_button_label", "map_button_label")]
 script = ExtResource("1_v7j4o")
@@ -292,55 +261,23 @@ fill_head = NodePath("FillHead")
 charged_indicator = NodePath("ChargedIndicator")
 display_text = NodePath("RichTextLabel")
 
-[node name="EngineChargerTile" type="Node2D" parent="EngineCharger" node_paths=PackedStringArray("clickable", "shakeable", "sprite_frames")]
+[node name="EngineChargerTile" parent="EngineCharger" instance=ExtResource("11_mm1jt")]
 z_index = 1
 position = Vector2(60, 29)
-script = ExtResource("5_dq04t")
 tile_resource = ExtResource("6_uglmk")
-clickable = NodePath("Clickable")
-shakeable = NodePath("Shakeable")
-sprite_frames = NodePath("AnimatedSprite2D")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="EngineCharger/EngineChargerTile"]
-z_index = 1
-material = SubResource("ShaderMaterial_bkkgo")
-sprite_frames = SubResource("SpriteFrames_eo4kl")
-
-[node name="Background" type="Sprite2D" parent="EngineCharger/EngineChargerTile/AnimatedSprite2D"]
-z_index = -8
-texture = ExtResource("16_35tnh")
-
-[node name="PanelContainer" type="Container" parent="EngineCharger/EngineChargerTile/AnimatedSprite2D"]
+[node name="ParticleMask" type="Control" parent="EngineCharger/EngineChargerTile"]
 clip_contents = true
+layout_mode = 3
+anchors_preset = 0
 offset_left = -11.0
 offset_top = -12.0
 offset_right = 11.0
 offset_bottom = 12.0
 
-[node name="LargeEngineParticles" parent="EngineCharger/EngineChargerTile/AnimatedSprite2D/PanelContainer" instance=ExtResource("17_xbbhg")]
+[node name="LargeEngineParticles" parent="EngineCharger/EngineChargerTile/ParticleMask" instance=ExtResource("17_xbbhg")]
 z_index = -1
-position = Vector2(11, 10)
-
-[node name="Clickable" type="Area2D" parent="EngineCharger/EngineChargerTile"]
-script = ExtResource("4_sgr5l")
-metadata/_custom_type_script = "uid://hts4ayfgd5jk"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EngineCharger/EngineChargerTile/Clickable"]
-shape = SubResource("RectangleShape2D_ctpxn")
-
-[node name="Shakeable" type="Node2D" parent="EngineCharger/EngineChargerTile" node_paths=PackedStringArray("node_to_shake")]
-script = ExtResource("7_p0pmq")
-node_to_shake = NodePath("..")
-small_shake_duration = 0.05
-metadata/_custom_type_script = "uid://dl3x4ek6t4j8y"
-
-[node name="CanAcceptDice" type="Node2D" parent="EngineCharger/EngineChargerTile" node_paths=PackedStringArray("collision") groups=["CanAcceptDice"]]
-script = ExtResource("8_bkkgo")
-collision = NodePath("CollisionShape2D")
-metadata/_custom_type_script = "uid://cb3ideptaj1hg"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EngineCharger/EngineChargerTile/CanAcceptDice"]
-shape = SubResource("RectangleShape2D_l0r2u")
+position = Vector2(11, 9)
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="EngineCharger"]
 z_index = -2
@@ -391,5 +328,3 @@ horizontal_alignment = 1
 [connection signal="input_event" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_input_event"]
 [connection signal="mouse_entered" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_mouse_exited"]
-[connection signal="input_event" from="EngineCharger/EngineChargerTile/Clickable" to="EngineCharger/EngineChargerTile/Clickable" method="_on_input_event"]
-[connection signal="die_accepted" from="EngineCharger/EngineChargerTile/CanAcceptDice" to="EngineCharger/EngineChargerTile" method="try_to_activate"]

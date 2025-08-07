@@ -93,4 +93,5 @@ activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_q4v50")]([SubResource("Resource_mkcsn"), SubResource("Resource_e261g")])
 effect_chain = SubResource("Resource_28674")
 event_responses = Dictionary[ExtResource("8_wqepc"), ExtResource("7_mkcsn")]({})
+dragging_allowed = true
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

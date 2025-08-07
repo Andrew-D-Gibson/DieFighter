@@ -20,3 +20,5 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 @export var effect_chain: EffectChain
 
 @export var event_responses: Dictionary[TileEvent, EffectChain]
+
+@export var dragging_allowed: bool = true

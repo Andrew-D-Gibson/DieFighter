@@ -13,6 +13,8 @@ enum DragState {
 }
 var state: DragState = DragState.DEFAULT
 
+var dragging_allowed: bool = true
+
 var follow_strength: float = 20
 var home_position: Vector2 :
 	set(new_home):
@@ -69,7 +71,7 @@ func _process(delta: float) -> void:
 
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if state == DragState.DEFAULT and event is InputEventMouseButton \
+	if dragging_allowed and state == DragState.DEFAULT and event is InputEventMouseButton \
 	and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		state = DragState.DRAGGING
 		
