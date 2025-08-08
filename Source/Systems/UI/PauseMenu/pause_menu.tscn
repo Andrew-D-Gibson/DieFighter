@@ -1,10 +1,26 @@
-[gd_scene load_steps=6 format=3 uid="uid://ch8tnilu0m0y2"]
+[gd_scene load_steps=9 format=3 uid="uid://ch8tnilu0m0y2"]
 
 [ext_resource type="Script" uid="uid://box16f7bwvjdq" path="res://Source/Systems/UI/PauseMenu/pause_menu.gd" id="1_v5isj"]
 [ext_resource type="Texture2D" uid="uid://b1pexc43hpyj6" path="res://Assets/Textures/UI/PauseMenu/pause_menu_background.png" id="2_47dr1"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="3_47dr1"]
+[ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="4_o4gq4"]
 [ext_resource type="PackedScene" uid="uid://c7hyjenhhnsah" path="res://Source/Systems/UI/OptionsMenu/options_menu.tscn" id="5_o4gq4"]
 [ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="6_je6uh"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_je6uh"]
+atlas = ExtResource("4_o4gq4")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t55r5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_je6uh")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="PauseMenu" type="Node2D"]
 process_mode = 3
@@ -84,6 +100,21 @@ hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 [node name="RichTextLabel" parent="VBoxContainer/SaveAndQuitButton" index="1"]
 text = "SAVE & QUIT"
 
+[node name="Control" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 6)
+layout_mode = 2
+
+[node name="WishlistButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+z_index = 5
+layout_mode = 2
+hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
+
+[node name="AnimatedSprite2D" parent="VBoxContainer/WishlistButton" index="0"]
+sprite_frames = SubResource("SpriteFrames_t55r5")
+
+[node name="RichTextLabel" parent="VBoxContainer/WishlistButton" index="1"]
+text = "WISHLIST"
+
 [node name="CloseButton" parent="." instance=ExtResource("6_je6uh")]
 z_index = 1
 anchors_preset = 8
@@ -109,9 +140,11 @@ visible = false
 [connection signal="pressed_within_window" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/SaveAndQuitButton" to="." method="_on_save_and_quit_button_pressed"]
+[connection signal="pressed_within_window" from="VBoxContainer/WishlistButton" to="." method="_on_wishlist_button_pressed"]
 [connection signal="pressed_within_window" from="CloseButton" to="." method="_toggle_pause_menu"]
 
 [editable path="VBoxContainer/MainMenuButton"]
 [editable path="VBoxContainer/OptionsButton"]
 [editable path="VBoxContainer/SaveAndQuitButton"]
+[editable path="VBoxContainer/WishlistButton"]
 [editable path="CloseButton"]

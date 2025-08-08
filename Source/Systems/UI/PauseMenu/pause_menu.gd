@@ -37,3 +37,8 @@ func _on_save_and_quit_button_pressed() -> void:
 
 func _save_game() -> void:
 	print('Saving game!')
+
+
+func _on_wishlist_button_pressed() -> void:
+	var url: String = "https://store.steampowered.com/app/3689280/Die_Fighter/"
+	OS.shell_open(url)

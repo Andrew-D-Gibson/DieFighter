@@ -11,6 +11,7 @@ enum ActivationType {
 	CANT_BE_ACTIVATED_WITH_DIE,
 	TARGETED_SHIP_HAS_SHIELDS,
 	ENGINE_NOT_CHARGED,
+	ENGINE_CHARGED,
 }
 
 @export var type: ActivationType
@@ -79,6 +80,10 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 	ActivationType.ENGINE_NOT_CHARGED:
 		func(_die: Dice) -> bool:
 			return Globals.player.engine_charge < Globals.player.max_engine_charge,
+			
+	ActivationType.ENGINE_CHARGED:
+		func(_die: Dice) -> bool:
+			return Globals.player.engine_charge == Globals.player.max_engine_charge,
 }
 
 
@@ -110,6 +115,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 		
 	ActivationType.ENGINE_NOT_CHARGED:
 		"ENGINE IS FULLY CHARGED",
+		
+	ActivationType.ENGINE_CHARGED:
+		"ENGINE IS NOT CHARGED",
 }
 
 

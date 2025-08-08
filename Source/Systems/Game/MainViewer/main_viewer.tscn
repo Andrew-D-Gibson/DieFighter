@@ -3,15 +3,17 @@
 [ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
 [ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_sgr5l"]
-[ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/engine_charger.tres" id="6_uglmk"]
+[ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/MapTileResources/engine_charger.tres" id="6_uglmk"]
+[ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="8_mm1jt"]
+[ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="9_7x3t1"]
+[ext_resource type="Resource" uid="uid://crph25pv1d7aa" path="res://Source/Content/Tiles/MapTileResources/map_arrow_left.tres" id="10_tmld6"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
 [ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="11_foiuu"]
 [ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="11_mm1jt"]
+[ext_resource type="Resource" uid="uid://bh2rvyv5qga4w" path="res://Source/Content/Tiles/MapTileResources/map_arrow_right.tres" id="11_niw3m"]
 [ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/Systems/Game/CommsManager/comms_manager.tscn" id="12_ctpxn"]
 [ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/Systems/Game/Map/map.tscn" id="13_l0r2u"]
-[ext_resource type="Texture2D" uid="uid://b06bwfbiw2rcm" path="res://Assets/Textures/MainViewer/map_arrow-Sheet.png" id="14_eo4kl"]
 [ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres" id="14_mm1jt"]
-[ext_resource type="PackedScene" uid="uid://751pc74qkdf0" path="res://Source/Systems/Game/MainViewer/DiceReceptacle/dice_receptacle.tscn" id="15_mm1jt"]
 [ext_resource type="Texture2D" uid="uid://bo66e1kj2f37w" path="res://Assets/Textures/MainViewer/EngineCharger/under.png" id="17_fa2si"]
 [ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="17_xbbhg"]
 [ext_resource type="Texture2D" uid="uid://dxkhg5oasm2mr" path="res://Assets/Textures/MainViewer/EngineCharger/fill.png" id="18_foiuu"]
@@ -53,30 +55,20 @@ size = Vector2(43, 10)
 [sub_resource type="ViewportTexture" id="ViewportTexture_tmld6"]
 viewport_path = NodePath("Map/ViewportTexture2/MapViewport")
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_niw3m"]
-atlas = ExtResource("14_eo4kl")
-region = Rect2(0, 0, 9, 12)
+[sub_resource type="AtlasTexture" id="AtlasTexture_fa2si"]
+atlas = ExtResource("9_7x3t1")
+region = Rect2(0, 0, 56, 14)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7x3t1"]
-atlas = ExtResource("14_eo4kl")
-region = Rect2(9, 0, 9, 12)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_fa2si"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_foiuu"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_niw3m")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_7x3t1")
+"texture": SubResource("AtlasTexture_fa2si")
 }],
 "loop": true,
 "name": &"default",
 "speed": 5.0
 }]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_eo4kl"]
-size = Vector2(44, 11)
 
 [node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "comms", "tile_grid", "map", "engine_charger", "comms_button_label", "systems_button_label", "map_button_label")]
 script = ExtResource("1_v7j4o")
@@ -176,21 +168,19 @@ theme_override_colors/default_color = Color(0.94902, 0.611765, 0.364706, 1)
 bbcode_enabled = true
 text = "Main text box for describing scenarios and discussing [color=red]damage[/color] and stuff!"
 
-[node name="Map" parent="." node_paths=PackedStringArray("LeftDiceReceptacle", "RightDiceReceptacle", "map_button_label", "map_button", "map_viewport", "map_camera", "error_text") instance=ExtResource("13_l0r2u")]
-LeftDiceReceptacle = NodePath("LeftDiceReceptacle")
-RightDiceReceptacle = NodePath("RightDiceReceptacle")
-map_button_label = NodePath("JumpButton/RichTextLabel")
-map_button = NodePath("JumpButton/Clickable")
+[node name="Map" parent="." node_paths=PackedStringArray("map_viewport", "map_camera", "left_arrow_tile", "right_arrow_tile") instance=ExtResource("13_l0r2u")]
 map_viewport = NodePath("ViewportTexture2/MapViewport")
 map_camera = NodePath("ViewportTexture2/MapViewport/Camera2D")
-error_text = NodePath("RichTextLabel")
+left_arrow_tile = NodePath("LeftArrowTile")
+right_arrow_tile = NodePath("RightArrowTile")
 empty_scenario = ExtResource("14_mm1jt")
 
 [node name="ViewportTexture2" type="TextureRect" parent="Map"]
+z_index = -1
 offset_left = -73.0
-offset_top = -16.0
+offset_top = -10.0
 offset_right = 47.0
-offset_bottom = 41.0
+offset_bottom = 47.0
 mouse_filter = 2
 texture = SubResource("ViewportTexture_tmld6")
 expand_mode = 1
@@ -205,54 +195,26 @@ render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="Map/ViewportTexture2/MapViewport"]
 
-[node name="RightArrow" type="AnimatedSprite2D" parent="Map"]
-position = Vector2(40.5, -25)
-sprite_frames = SubResource("SpriteFrames_fa2si")
-frame = 1
+[node name="JumpButton" parent="Map" instance=ExtResource("8_mm1jt")]
+offset_left = -41.0
+offset_top = -27.0
+offset_right = 15.0
+offset_bottom = -13.0
+hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
-[node name="LeftArrow" type="AnimatedSprite2D" parent="Map"]
-position = Vector2(-66.5, -25)
-rotation = 3.14159
-sprite_frames = SubResource("SpriteFrames_fa2si")
-frame = 1
+[node name="AnimatedSprite2D" parent="Map/JumpButton" index="0"]
+sprite_frames = SubResource("SpriteFrames_foiuu")
 
-[node name="RightDiceReceptacle" parent="Map" instance=ExtResource("15_mm1jt")]
-position = Vector2(29, -25)
-
-[node name="LeftDiceReceptacle" parent="Map" instance=ExtResource("15_mm1jt")]
-position = Vector2(-55, -25)
-
-[node name="JumpButton" type="Sprite2D" parent="Map"]
-position = Vector2(-14, -24)
-
-[node name="Clickable" type="Area2D" parent="Map/JumpButton"]
-script = ExtResource("4_sgr5l")
-metadata/_custom_type_script = "uid://hts4ayfgd5jk"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Map/JumpButton/Clickable"]
-position = Vector2(1, -0.5)
-shape = SubResource("RectangleShape2D_eo4kl")
-
-[node name="RichTextLabel" type="RichTextLabel" parent="Map/JumpButton"]
-offset_left = -20.0
-offset_top = -8.0
-offset_right = 23.0
-offset_bottom = 5.0
-mouse_filter = 2
-bbcode_enabled = true
+[node name="RichTextLabel" parent="Map/JumpButton" index="1"]
 text = "JUMP"
-horizontal_alignment = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Map"]
-offset_left = -73.0
-offset_top = -20.0
-offset_right = 47.0
-offset_bottom = -6.0
-mouse_filter = 2
-bbcode_enabled = true
-text = "[pulse freq=1.0 color=#d0365640 ease=-2.0][color=#d03656]CHARGE ENGINES[/color][/pulse]
-"
-horizontal_alignment = 1
+[node name="LeftArrowTile" parent="Map" instance=ExtResource("11_mm1jt")]
+position = Vector2(-60, -18)
+tile_resource = ExtResource("10_tmld6")
+
+[node name="RightArrowTile" parent="Map" instance=ExtResource("11_mm1jt")]
+position = Vector2(34, -18)
+tile_resource = ExtResource("11_niw3m")
 
 [node name="EngineCharger" type="Node2D" parent="." node_paths=PackedStringArray("progress_bar", "fill_head", "charged_indicator", "display_text")]
 script = ExtResource("11_foiuu")
@@ -274,10 +236,11 @@ offset_left = -11.0
 offset_top = -12.0
 offset_right = 11.0
 offset_bottom = 12.0
+mouse_filter = 2
 
 [node name="LargeEngineParticles" parent="EngineCharger/EngineChargerTile/ParticleMask" instance=ExtResource("17_xbbhg")]
 z_index = -1
-position = Vector2(11, 9)
+position = Vector2(11, 10)
 
 [node name="TextureProgressBar" type="TextureProgressBar" parent="EngineCharger"]
 z_index = -2
@@ -324,7 +287,6 @@ horizontal_alignment = 1
 [connection signal="is_hovered" from="TabButtons/MapButton/Clickable" to="." method="_map_hovered"]
 [connection signal="mouse_entered" from="TabButtons/MapButton/Clickable" to="TabButtons/MapButton/Clickable" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="TabButtons/MapButton/Clickable" to="TabButtons/MapButton/Clickable" method="_on_mouse_exited"]
-[connection signal="clicked" from="Map/JumpButton/Clickable" to="Map" method="_jump"]
-[connection signal="input_event" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_input_event"]
-[connection signal="mouse_entered" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="Map/JumpButton/Clickable" to="Map/JumpButton/Clickable" method="_on_mouse_exited"]
+[connection signal="pressed_within_window" from="Map/JumpButton" to="Map" method="_jump"]
+
+[editable path="Map/JumpButton"]

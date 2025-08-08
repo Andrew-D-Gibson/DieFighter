@@ -110,6 +110,8 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 	
 	if not bounding_box.shape.get_rect().has_point(local_end_position):
 		var item: Node = draggable.get_parent()
+		
+		## TODO: there is a bug here with accessing stuff, and a visual bug too
 		var price = int(prices[item_to_shop_index[item]].get_child(0).text)
 		
 		if Globals.player.money >= price:

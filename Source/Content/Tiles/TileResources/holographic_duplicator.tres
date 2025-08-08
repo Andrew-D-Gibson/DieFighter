@@ -67,8 +67,8 @@ description = "[color=yellow]Any die[/color] -> Spawn 2 holograms (same value), 
 rarity = 0
 textures = SubResource("SpriteFrames_2vvbj")
 uses_per_turn = 1
-activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6")])
 effect_chain = SubResource("Resource_oymyf")
 event_responses = Dictionary[ExtResource("7_03xhp"), ExtResource("6_nrdn6")]({})
+dragging_allowed = true
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

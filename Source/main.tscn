@@ -61,10 +61,6 @@ visible = false
 [node name="GameOver" parent="UI" instance=ExtResource("3_flage")]
 visible = false
 
-[node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
-visible = false
-position = Vector2(160, 90)
-
 [node name="FPSCounter" type="RichTextLabel" parent="."]
 offset_left = 278.0
 offset_top = 2.0
@@ -143,3 +139,7 @@ question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 
 [node name="ErrorPopupManager" parent="Systems" instance=ExtResource("4_oai2y")]
+
+[node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
+visible = false
+position = Vector2(160, 90)

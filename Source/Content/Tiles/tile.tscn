@@ -1,8 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://delq7kb5loqt2"]
+[gd_scene load_steps=15 format=3 uid="uid://delq7kb5loqt2"]
 
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Content/Tiles/tile.gd" id="1_71op4"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_b16ti"]
-[ext_resource type="PackedScene" uid="uid://d0a5ylqp64b1d" path="res://Source/Systems/UI/ErrorPopupManager/ErrorTextPopup/error_text_popup.tscn" id="2_lccd0"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="4_rngaw"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_vr4ys"]
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.tscn" id="5_fc656"]
@@ -40,13 +39,13 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames")]
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue")]
 script = ExtResource("1_71op4")
 draggable = NodePath("Draggable")
 clickable = NodePath("Clickable")
 shakeable = NodePath("Shakeable")
 sprite_frames = NodePath("AnimatedSprite2D")
-error_text_scene = ExtResource("2_lccd0")
+dice_queue = NodePath("DiceQueue")
 
 [node name="Draggable" parent="." instance=ExtResource("2_b16ti")]
 
@@ -77,4 +76,5 @@ sprite_frames = SubResource("SpriteFrames_u2tyi")
 [node name="DiceQueue" parent="." instance=ExtResource("9_u74ai")]
 position = Vector2(0, 6)
 
+[connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="die_accepted" from="CanAcceptDice" to="." method="_on_die_accepted"]

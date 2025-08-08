@@ -101,8 +101,8 @@ description = "(die_3) -> Deal [color=red]4 damage[/color] to [color=purple]targ
 rarity = 1
 textures = SubResource("SpriteFrames_eqci4")
 uses_per_turn = -1
-activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_0sqhf")]([SubResource("Resource_qed76"), SubResource("Resource_stnu5"), SubResource("Resource_vakuo")])
 effect_chain = SubResource("Resource_g26hj")
 event_responses = Dictionary[ExtResource("11_04xam"), ExtResource("10_qed76")]({})
+dragging_allowed = true
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=14 format=3 uid="uid://crph25pv1d7aa"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_axjj4"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_3qev1"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_kfeuv"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_6pw46"]
+[ext_resource type="Script" uid="uid://c8sdkcodta3vs" path="res://Source/Content/Effects/ChangeDiceOwners/keep_die_with_tile_effect.gd" id="3_yt0m3"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_3qev1"]
+[ext_resource type="Texture2D" uid="uid://cq7ei8swstn5b" path="res://Assets/Textures/Map/left_arrow_tile.png" id="5_kfeuv"]
+
+[sub_resource type="Resource" id="Resource_kfeuv"]
+script = ExtResource("1_axjj4")
+type = 0
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_6pw46"]
+script = ExtResource("1_axjj4")
+type = 9
+acceptable_values = Array[int]([])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_sjnhy"]
+script = ExtResource("3_yt0m3")
+primary_effect = false
+metadata/_custom_type_script = "uid://c8sdkcodta3vs"
+
+[sub_resource type="Resource" id="Resource_j67x6"]
+script = ExtResource("3_6pw46")
+effects = Array[ExtResource("2_3qev1")]([SubResource("Resource_sjnhy")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6pw46"]
+atlas = ExtResource("5_kfeuv")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3qev1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6pw46")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_3qev1")
+tile_name = "Left Controls"
+activation_description = ""
+description = "[color=yellow]Any die[/color] -> Moves the [color=purple]map destination[/color] left by [color=purple]X[/color]"
+rarity = 0
+textures = SubResource("SpriteFrames_3qev1")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_axjj4")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46")])
+effect_chain = SubResource("Resource_j67x6")
+event_responses = Dictionary[ExtResource("2_kfeuv"), ExtResource("3_6pw46")]({})
+dragging_allowed = false
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

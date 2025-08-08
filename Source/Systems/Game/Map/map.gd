@@ -11,13 +11,10 @@ var current_scenario_index: int
 @export var connector_sprite: Texture2D
 
 @export_category('Components')
-@export var LeftDiceReceptacle: DiceReceptacle
-@export var RightDiceReceptacle: DiceReceptacle
-@export var map_button_label: RichTextLabel
-@export var map_button: Clickable
 @export var map_viewport: SubViewport
 @export var map_camera: Camera2D
-@export var error_text: RichTextLabel
+@export var left_arrow_tile: Tile
+@export var right_arrow_tile: Tile
 
 
 @export_category('Behavior')
@@ -32,14 +29,14 @@ var tween: Tween
 func _ready() -> void:
 	Globals.map = self
 	
-	LeftDiceReceptacle.dice_queue.die_added.connect(_update_desired_scenario)
-	LeftDiceReceptacle.dice_queue.die_removed.connect(_update_desired_scenario)
-	RightDiceReceptacle.dice_queue.die_added.connect(_update_desired_scenario)
-	RightDiceReceptacle.dice_queue.die_removed.connect(_update_desired_scenario)
-
 	Events.load_game_save.connect(_load_game_save)
 	Events.start_scenario.connect(_update_map_sprites)
 	Events.engine_charge_changed.connect(_update_ui)
+	
+	left_arrow_tile.dice_queue.die_added.connect(_update_ui)
+	left_arrow_tile.dice_queue.die_removed.connect(_update_ui)
+	right_arrow_tile.dice_queue.die_added.connect(_update_ui)
+	right_arrow_tile.dice_queue.die_removed.connect(_update_ui)
 	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
@@ -60,17 +57,10 @@ func _update_ui() -> void:
 		return
 	
 	if Globals.player.engine_charge != Globals.player.max_engine_charge:
-		error_text.text = '[pulse freq=1.0 color=#d0365640 ease=-2.0][color=#d03656]CHARGE ENGINES[/color][/pulse]'
-		$LeftArrow.frame = 0
-		$RightArrow.frame = 0
 		return
 		
-	$LeftArrow.frame = 1
-	$RightArrow.frame = 1
-		
-	if desired_scenario_index == current_scenario_index:
-		error_text.text = '[color=#c552f1]CHOOSE DESTINATION[/color]'
-	
+	#if desired_scenario_index == current_scenario_index:
+		#error_text.text = '[color=#c552f1]CHOOSE DESTINATION[/color]'
 
 
 func _update_map_sprites() -> void:
@@ -123,14 +113,14 @@ func _update_map_sprites() -> void:
 
 func _update_desired_scenario() -> void:
 	# Sum the dice values in the left selector
-	var left_offset = 0
-	for die in LeftDiceReceptacle.dice_queue.queue:
-		left_offset += die.value
+	var left_offset: int = 0
+	if len(left_arrow_tile.dice_queue.queue) > 0:
+		left_offset += left_arrow_tile.dice_queue.queue[0].value
 		
 	# Sum the dice values in the right selector
-	var right_offset = 0
-	for die in RightDiceReceptacle.dice_queue.queue:
-		right_offset += die.value
+	var right_offset: int = 0
+	if len(right_arrow_tile.dice_queue.queue) > 0:
+		right_offset += right_arrow_tile.dice_queue.queue[0].value
 	
 	
 	if len(scenario_list) == 0:
@@ -171,22 +161,31 @@ func _update_desired_scenario() -> void:
 
 func _update_map_button() -> void:
 	if desired_scenario_index != current_scenario_index:
-		map_button_label.text = '[color=#c552f1][wave amp=15.0 freq=5.0 connected=1]JUMP[/wave][/color]'
+		pass
+		#map_button_label.text = '[color=#c552f1][wave amp=15.0 freq=5.0 connected=1]JUMP[/wave][/color]'
 	else:
-		map_button_label.text = '[color=#171615]JUMP[/color]'
+		pass
+		#map_button_label.text = '[color=#171615]JUMP[/color]'
 
 
 func _jump() -> void:
-	if desired_scenario_index != current_scenario_index:
-		Events.jump.emit()
-		
-		# Set the current index scenario to empty
-		scenario_list[current_scenario_index] = empty_scenario
+	if Globals.player.engine_charge < Globals.player.max_engine_charge:
+		Events.error_text_popup.emit("CHARGE ENGINE", $JumpButton.global_position + Vector2($JumpButton.size.x/2, 0))
+		return
+	
+	if desired_scenario_index == current_scenario_index:
+		Events.error_text_popup.emit("CHOOSE DESTINATION", $JumpButton.global_position + Vector2($JumpButton.size.x/2, 0))
+		return
 
-		# Move to the new encounter
-		current_scenario_index = desired_scenario_index
-		
-		Events.load_scenario.emit(
-			scenario_list[desired_scenario_index]
-		)
-		Events.start_scenario.emit()
+	Events.jump.emit()
+	
+	# Set the current index scenario to empty
+	scenario_list[current_scenario_index] = empty_scenario
+
+	# Move to the new encounter
+	current_scenario_index = desired_scenario_index
+	
+	Events.load_scenario.emit(
+		scenario_list[desired_scenario_index]
+	)
+	Events.start_scenario.emit()

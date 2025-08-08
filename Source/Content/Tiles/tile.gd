@@ -1,3 +1,4 @@
+@tool
 class_name Tile
 extends Node2D
 
@@ -55,8 +56,7 @@ var effect_data: Dictionary[String, int]
 @export var clickable: Clickable
 @export var shakeable: Shakeable
 @export var sprite_frames: AnimatedSprite2D
-@export var error_text_scene: PackedScene
-
+@export var dice_queue: DiceQueue
 
 static var dice_activation_queue: Array[Dice] = []
 
@@ -78,8 +78,8 @@ func _ready() -> void:
 	Events.start_scenario.connect(reset_uses_remaining)
 	_connect_tile_event_signals()
 	
-	$DiceQueue.die_added.connect(_update_dice_queue_locations)
-	$DiceQueue.die_removed.connect(_update_dice_queue_locations)
+	dice_queue.die_added.connect(_update_dice_queue_locations)
+	dice_queue.die_removed.connect(_update_dice_queue_locations)
 	
 	Events.tile_activation_complete.connect(_check_for_next_in_tile_activation_queue)
 
@@ -123,8 +123,8 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 
 func try_to_activate() -> void:
 	var activator_die: Dice = null
-	if len($DiceQueue.queue) > 0:
-		activator_die = $DiceQueue.queue[0]
+	if len(dice_queue.queue) > 0:
+		activator_die = dice_queue.queue[0]
 		
 	if not _clears_activation_criteria(activator_die):
 		# Something didn't go how the player expected,
@@ -137,7 +137,7 @@ func try_to_activate() -> void:
 		return
 
 	# We're cleared hot to activate!
-	$DiceQueue.remove(activator_die)
+	dice_queue.remove(activator_die)
 	_activate(activator_die)
 		
 		
@@ -247,14 +247,14 @@ func _replace_event_data_in_string(text: String) -> String:
 
 func _update_dice_queue_locations() -> void:
 	var dice_queue_spacing: int = 12
-	for i: int in range(len($DiceQueue.queue)):
-		$DiceQueue.queue[i].draggable.home_position = \
-		$DiceQueue.global_position +\
-		Vector2(0, (i-1) * dice_queue_spacing)
+	for i: int in range(len(dice_queue.queue)):
+		dice_queue.queue[i].draggable.home_position = \
+		dice_queue.global_position +\
+		Vector2(0, i * dice_queue_spacing)
 
 
 func _on_die_accepted(die: Dice) -> void:
-	$DiceQueue.add(die, true, false)
+	dice_queue.add(die, true, false)
 	dice_activation_queue.append(die)
 	
 	if len(dice_activation_queue) == 1:
@@ -263,8 +263,13 @@ func _on_die_accepted(die: Dice) -> void:
 		
 func _check_for_next_in_tile_activation_queue() -> void:
 	if len(dice_activation_queue) > 0 and \
-	len($DiceQueue.queue) > 0 and\
+	len(dice_queue.queue) > 0 and\
 	dice_activation_queue[0] and \
-	$DiceQueue.queue[0] and \
-	dice_activation_queue[0] == $DiceQueue.queue[0]:
+	dice_queue.queue[0] and \
+	dice_activation_queue[0] == dice_queue.queue[0]:
 		try_to_activate()
+
+
+func _on_visibility_changed() -> void:	
+	for die: Dice in dice_queue.queue:
+		die.visible = self.is_visible_in_tree()

@@ -80,3 +80,8 @@ func _on_options_button_pressed() -> void:
 	
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
+
+
+func _on_wishlist_button_pressed() -> void:
+	var url: String = "https://store.steampowered.com/app/3689280/Die_Fighter/"
+	OS.shell_open(url)

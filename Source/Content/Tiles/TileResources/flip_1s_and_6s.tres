@@ -49,8 +49,8 @@ description = "[color=yellow]Any die[/color] -> Flip all (die_1)/(die_6), then [
 rarity = 0
 textures = SubResource("SpriteFrames_pgax4")
 uses_per_turn = -1
-activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_hoi4y")]([])
 effect_chain = SubResource("Resource_jubjl")
 event_responses = Dictionary[ExtResource("7_fdhil"), ExtResource("6_fdhil")]({})
+dragging_allowed = true
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

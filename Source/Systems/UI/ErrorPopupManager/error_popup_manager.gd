@@ -10,6 +10,7 @@ func _ready() -> void:
 	
 	
 func _create_error_popup(text: String, global_pos: Vector2) -> void:
+	Events.play_sound.emit("error")
 	_clear_current_popups()
 	
 	var error_text: ErrorTextPopup = error_text_popup_scene.instantiate()
