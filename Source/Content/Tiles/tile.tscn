@@ -40,6 +40,7 @@ animations = [{
 }]
 
 [node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue")]
+z_index = 6
 script = ExtResource("1_71op4")
 draggable = NodePath("Draggable")
 clickable = NodePath("Clickable")

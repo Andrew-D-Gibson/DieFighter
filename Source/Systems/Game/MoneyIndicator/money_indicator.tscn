@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://pt7daun04sgd"]
+[gd_scene load_steps=4 format=3 uid="uid://pt7daun04sgd"]
 
 [ext_resource type="Script" uid="uid://lxeyxahlkpg5" path="res://Source/Systems/Game/MoneyIndicator/money_indicator.gd" id="1_837oe"]
 [ext_resource type="Texture2D" uid="uid://cupbueng6dl25" path="res://Assets/Textures/Money/MoneyIndicator/money_indicator.png" id="2_lc17p"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qyfr0"]
+size = Vector2(38, 12)
 
 [node name="MoneyIndicator" type="Node2D" node_paths=PackedStringArray("money_label")]
 script = ExtResource("1_837oe")
@@ -17,3 +20,10 @@ offset_right = 17.0
 offset_bottom = 5.0
 text = "10000"
 horizontal_alignment = 2
+
+[node name="MoneyParticleCollisionArea" type="Area2D" parent="."]
+collision_layer = 512
+collision_mask = 512
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="MoneyParticleCollisionArea"]
+shape = SubResource("RectangleShape2D_qyfr0")

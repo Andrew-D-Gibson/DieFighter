@@ -107,8 +107,6 @@ func _on_death() -> void:
 	explosion.color = Globals.red
 	explosion.amount = health.max_health * 5
 	add_child(explosion)
-	
-	await graphics_manager.play_death_animation()
 
 	# Spawn rewards
 	Events.spawn_reward.emit(
@@ -117,7 +115,8 @@ func _on_death() -> void:
 		reward_resource.num_of_rewards,
 		reward_resource.dice_probability
 	)
-			
+	
+	await graphics_manager.play_death_animation()
 	queue_free()
 
 

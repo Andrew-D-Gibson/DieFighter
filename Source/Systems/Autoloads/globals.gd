@@ -6,13 +6,12 @@ var tile_grid: TileGrid
 var map: Map
 var targeting_computer: TargetingComputer
 var reward_manager: RewardManager
+var money_indicator: MoneyIndicator
 
 var enemy_manager: EnemyManager
 var scenario_manager: ScenarioManager
 var state_manager: GameStateManager
-
 var background_manager: BackgroundManager
-
 # Audio Singletons
 var sfx_player: SFXPlayer
 

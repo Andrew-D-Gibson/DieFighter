@@ -2,23 +2,31 @@ extends Node2D
 
 @export var dice_scene: PackedScene
 @export var tile_scene: PackedScene
+@export var money_particle_scene: PackedScene
 @export var bounding_box: CollisionShape2D
 
 var rewards: Array[Node2D]
 
 
 func _ready() -> void:
+	hide()
+	
 	Events.load_scenario.connect(func(_scenario: ScenarioResource):
 		queue_free()
 	)
 	
 
 func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> void:
-	Globals.player.money += money
+	#Globals.player.money += money
+	_spawn_money_particles(money)
+	
+	await get_tree().create_timer(2).timeout
 	
 	if num_of_rewards == 0:
 		queue_free()
 		return
+		
+	show()
 	
 	var reward_spacing: int = 26
 	
@@ -83,3 +91,19 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 		
 	Events.reward_picked.emit()
 	queue_free()
+
+
+func _spawn_money_particles(amount: int) -> void:
+	var num_of_large_particles: int = floor(amount / MoneyParticle.money_amount.LARGE)
+	var num_of_small_particles: int = amount % MoneyParticle.money_amount.LARGE
+	
+	print('For amount: ', amount)
+	print('Spawning ', num_of_large_particles, ' large particles')
+	print('Spawning ', num_of_small_particles, ' small particles')
+	
+	for i: int in range(num_of_large_particles + num_of_small_particles):
+		var particle: MoneyParticle = money_particle_scene.instantiate()
+		particle.amount = MoneyParticle.money_amount.LARGE if i < num_of_large_particles else MoneyParticle.money_amount.SMALL
+		
+		add_sibling(particle)
+		particle.global_position = global_position
