@@ -26,7 +26,16 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 		queue_free()
 		return
 		
+	# Fade in
 	show()
+	var tween_time: float = 0.5
+	var tween: Tween = get_tree().create_tween()
+	tween.tween_property(
+		self, 
+		"modulate:a", 
+		1.0, 
+		tween_time
+	).from(0.0)
 	
 	var reward_spacing: int = 26
 	

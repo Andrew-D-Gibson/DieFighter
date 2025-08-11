@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=17 format=3 uid="uid://bsaq6udi1wjln"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=21 format=3 uid="uid://bsaq6udi1wjln"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_8mym4"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_1ow5n"]
@@ -6,9 +6,11 @@
 [ext_resource type="Script" uid="uid://cymd6kmfhbghm" path="res://Source/Content/Effects/AttributeChangers/charge_engine_effect.gd" id="3_uhn3f"]
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="4_tjjvc"]
 [ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="4_uhn3f"]
+[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_6lmqw"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_dd8hj"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_7mo4q"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_dd8hj"]
+[ext_resource type="Script" uid="uid://b8kdirxf6fdvb" path="res://Source/Content/Effects/Conditionals/if_enemy_targeted_effect.gd" id="7_2utoq"]
 
 [sub_resource type="Resource" id="Resource_dd8hj"]
 script = ExtResource("1_8mym4")
@@ -28,14 +30,26 @@ script = ExtResource("4_tjjvc")
 primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
+[sub_resource type="Resource" id="Resource_r84pn"]
+script = ExtResource("5_6lmqw")
+primary_effect = false
+metadata/_custom_type_script = "uid://bscm2msup3lwk"
+
 [sub_resource type="Resource" id="Resource_4bhlh"]
 script = ExtResource("5_dd8hj")
 primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
+[sub_resource type="Resource" id="Resource_3fymx"]
+script = ExtResource("7_2utoq")
+if_true_effect = SubResource("Resource_4bhlh")
+if_false_effect = SubResource("Resource_r84pn")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8kdirxf6fdvb"
+
 [sub_resource type="Resource" id="Resource_3jpq8"]
 script = ExtResource("6_7mo4q")
-effects = Array[ExtResource("2_1ow5n")]([SubResource("Resource_2r3c1"), SubResource("Resource_trxre"), SubResource("Resource_4bhlh")])
+effects = Array[ExtResource("2_1ow5n")]([SubResource("Resource_2r3c1"), SubResource("Resource_trxre"), SubResource("Resource_3fymx")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_7mo4q"]

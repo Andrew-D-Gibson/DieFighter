@@ -6,7 +6,7 @@ extends Node2D
 @export var _audio_options: Control
 
 enum ScreenShowing {GAME, GRAPHICS, AUDIO}
-var screen_showing: ScreenShowing = ScreenShowing.GAME
+var screen_showing: ScreenShowing
 
 
 func _ready() -> void:
@@ -17,7 +17,7 @@ func _ready() -> void:
 	_setup_audio_sliders()
 	
 	# Start the options menu on the Game tab
-	_on_game_button_pressed()
+	_on_audio_button_pressed()
 	
 	
 func _on_close_button_pressed() -> void:

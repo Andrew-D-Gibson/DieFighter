@@ -131,7 +131,7 @@ func _update_ui() -> void:
 		$TargetImageFill.z_index = 1
 		$TargetImageFill.frame = 0
 		await $TargetImageFill.animation_looped
-		$TargetImageFill.z_index = -1
+		$TargetImageFill.z_index = -2
 
 
 func _move_indicator() -> void:

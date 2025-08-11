@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=38 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -7,8 +7,10 @@
 [ext_resource type="Script" uid="uid://by2nuppu48mrd" path="res://Source/Systems/UI/DebugItems/fps_counter.gd" id="4_7iud4"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
 [ext_resource type="Script" uid="uid://bqx08ggc7jojk" path="res://Source/Systems/UI/Screenshots/screenshots.gd" id="4_hd7px"]
+[ext_resource type="Shader" uid="uid://b325sq1hvbhpv" path="res://Assets/Shaders/glitch.gdshader" id="4_o33d5"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
+[ext_resource type="Script" uid="uid://chphrqxy6veu0" path="res://Source/Systems/UI/Glitch/glitch_controller.gd" id="5_aaucc"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
 [ext_resource type="Script" uid="uid://tw7lpv214pfl" path="res://Source/Systems/UI/Camera/camera.gd" id="6_7iud4"]
 [ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
@@ -19,6 +21,8 @@
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/Game/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
 [ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/Game/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
 [ext_resource type="PackedScene" uid="uid://c8n32fs0k8j52" path="res://Source/Systems/Game/RewardManager/reward_manager.tscn" id="13_7iud4"]
+[ext_resource type="Texture2D" uid="uid://dm4or0suv2f7l" path="res://Assets/Textures/UI/MouseCursors/default_cursor_raw.png" id="13_dacno"]
+[ext_resource type="Script" uid="uid://dadh0h1qi45h8" path="res://Source/Systems/UI/MouseCursor/mouse_cursor.gd" id="14_ql5sb"]
 [ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/Systems/Game/MoneyIndicator/money_indicator.tscn" id="15_cshgf"]
 [ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/Systems/Game/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
 [ext_resource type="PackedScene" uid="uid://bq0eop4cxspu2" path="res://Source/Systems/Game/MainViewer/main_viewer.tscn" id="19_okrb4"]
@@ -38,6 +42,14 @@ glow_intensity = 0.6
 glow_bloom = 0.3
 glow_hdr_threshold = 0.5
 adjustment_enabled = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_aaucc"]
+shader = ExtResource("4_o33d5")
+shader_parameter/shake_power = 0.01
+shader_parameter/shake_rate = 1.0
+shader_parameter/shake_speed = 5.0
+shader_parameter/shake_block_size = 30.5
+shader_parameter/shake_color_rate = 0.01
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flage"]
 resource_local_to_scene = true
@@ -61,7 +73,26 @@ visible = false
 [node name="GameOver" parent="UI" instance=ExtResource("3_flage")]
 visible = false
 
+[node name="GlitchShader" type="ColorRect" parent="UI"]
+visible = false
+material = SubResource("ShaderMaterial_aaucc")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("5_aaucc")
+
+[node name="MouseCursor" type="Sprite2D" parent="UI"]
+visible = false
+z_index = 1000
+scale = Vector2(6, 6)
+texture = ExtResource("13_dacno")
+centered = false
+script = ExtResource("14_ql5sb")
+
 [node name="FPSCounter" type="RichTextLabel" parent="."]
+visible = false
 offset_left = 278.0
 offset_top = 2.0
 offset_right = 317.0

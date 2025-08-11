@@ -1,10 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccvtlre5vhj7d"]
+[gd_scene load_steps=18 format=3 uid="uid://ccvtlre5vhj7d"]
 
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_5pv2g"]
 [ext_resource type="Script" uid="uid://dfqo2lhkhal5l" path="res://Source/Systems/UI/MainMenu/main_menu.gd" id="1_otgxl"]
 [ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="3_y6sr5"]
 [ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="4_5v1c7"]
 [ext_resource type="PackedScene" uid="uid://c7hyjenhhnsah" path="res://Source/Systems/UI/OptionsMenu/options_menu.tscn" id="4_bcx7i"]
+[ext_resource type="Texture2D" uid="uid://dm4or0suv2f7l" path="res://Assets/Textures/UI/MouseCursors/default_cursor_raw.png" id="5_3xxk1"]
+[ext_resource type="Script" uid="uid://dadh0h1qi45h8" path="res://Source/Systems/UI/MouseCursor/mouse_cursor.gd" id="6_jl4pw"]
 [ext_resource type="FontFile" uid="uid://dls51kaiai4t8" path="res://Assets/Fonts/Jersey_25/Jersey25-Regular.ttf" id="6_vm02d"]
 [ext_resource type="Script" uid="uid://dejwpip3qhauo" path="res://Source/Systems/UI/button_rotator.gd" id="7_m0vyx"]
 [ext_resource type="PackedScene" uid="uid://pagumreni25k" path="res://Source/Systems/UI/Buttons/large_button.tscn" id="7_n0c18"]
@@ -89,9 +91,16 @@ texture = ExtResource("1_5pv2g")
 offset = Vector2(160, 90)
 script = ExtResource("1_otgxl")
 num_of_twinkling_stars = 50
-background_color = Color(0.027451, 0.0117647, 0.14902, 1)
+background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 star_pixel_scene = ExtResource("3_y6sr5")
 star_twinkle_scene = ExtResource("4_5v1c7")
+
+[node name="MouseCursor" type="Sprite2D" parent="."]
+visible = false
+z_index = 1000
+texture = ExtResource("5_3xxk1")
+centered = false
+script = ExtResource("6_jl4pw")
 
 [node name="TitleText" type="RichTextLabel" parent="."]
 anchors_preset = 3

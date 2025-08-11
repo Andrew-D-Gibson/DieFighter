@@ -10,13 +10,13 @@
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="9_u74ai"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
-size = Vector2(22, 24)
+size = Vector2(20, 22)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rngaw"]
-size = Vector2(22, 24)
+size = Vector2(20, 22)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
-size = Vector2(22, 24)
+size = Vector2(20, 22)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lccd0"]
 resource_local_to_scene = true

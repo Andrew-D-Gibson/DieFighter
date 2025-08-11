@@ -21,16 +21,20 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.027451, 0.0117647, 0.054902, 0.752941)
+color = Color(0.027451, 0.0117647, 0.054902, 0.913725)
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="EndStateLabel" type="RichTextLabel" parent="."]
 unique_name_in_owner = true
+custom_minimum_size = Vector2(1920, 360)
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -960.0
+offset_top = 123.0
+offset_right = 960.0
+offset_bottom = 483.0
 grow_horizontal = 2
-grow_vertical = 2
 mouse_filter = 2
 theme_override_fonts/normal_font = ExtResource("1_p6ygr")
 theme_override_font_sizes/normal_font_size = 256

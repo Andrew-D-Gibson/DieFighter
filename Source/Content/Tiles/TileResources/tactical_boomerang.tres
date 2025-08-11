@@ -1,18 +1,20 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=27 format=3 uid="uid://gfr4eel8gocp"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=34 format=3 uid="uid://gfr4eel8gocp"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_0sqhf"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_yq2rj"]
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="3_372r4"]
+[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_gndob"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_won78"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="4_eqci4"]
 [ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="4_vh6gp"]
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="5_5ea37"]
 [ext_resource type="Script" uid="uid://ykpulcdqf0lb" path="res://Source/Content/Effects/Tweens/move_die_to_tile.gd" id="6_5ea37"]
-[ext_resource type="Texture2D" uid="uid://byqs5assi1nq" path="res://Assets/Textures/Tiles/tactical_boomerang.png" id="7_e3v07"]
 [ext_resource type="Script" uid="uid://davfiolrth182" path="res://Source/Content/Effects/TileMovers/push_tile_in_direction_effect.gd" id="7_qed76"]
-[ext_resource type="Script" uid="uid://cyyaosauc8fk" path="res://Source/Content/Effects/DiceValueChangers/change_activator_to_value_effect.gd" id="7_xfdie"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="8_qed76"]
+[ext_resource type="Script" uid="uid://cp4hjqv21lk6s" path="res://Source/Content/Effects/Conditionals/if_activator_odd_effect.gd" id="9_gndob"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="10_qed76"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="11_04xam"]
+[ext_resource type="Texture2D" uid="uid://drfstx7yqxiso" path="res://Assets/Textures/Tiles/tactical_boomerang-Sheet.png" id="14_7xao1"]
 
 [sub_resource type="Resource" id="Resource_qed76"]
 script = ExtResource("1_0sqhf")
@@ -23,7 +25,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 [sub_resource type="Resource" id="Resource_stnu5"]
 script = ExtResource("1_0sqhf")
 type = 1
-acceptable_values = Array[int]([3])
+acceptable_values = Array[int]([3, 4])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_vakuo"]
@@ -31,6 +33,20 @@ script = ExtResource("1_0sqhf")
 type = 4
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_t30n7"]
+script = ExtResource("3_gndob")
+color = Color(0.317647, 0.0823529, 0.129412, 1)
+amount = 6
+location = 1
+primary_effect = false
+metadata/_custom_type_script = "uid://5vw5tu23ayfk"
+
+[sub_resource type="Resource" id="Resource_nptic"]
+script = ExtResource("4_eqci4")
+sound_effect_name = "dice_cannon"
+primary_effect = false
+metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_04xam"]
 script = ExtResource("3_372r4")
@@ -44,7 +60,7 @@ metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 
 [sub_resource type="Resource" id="Resource_gndob"]
 script = ExtResource("5_5ea37")
-amount = 4
+amount = 5
 inherit_die_amount = false
 primary_effect = true
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
@@ -61,12 +77,18 @@ direction = Vector2i(1, 0)
 primary_effect = false
 metadata/_custom_type_script = "uid://davfiolrth182"
 
-[sub_resource type="Resource" id="Resource_pef2i"]
-script = ExtResource("7_xfdie")
-new_value = 1
-offset_from_original_value = false
+[sub_resource type="Resource" id="Resource_r4xk4"]
+script = ExtResource("7_qed76")
+direction = Vector2i(-1, 0)
 primary_effect = false
-metadata/_custom_type_script = "uid://cyyaosauc8fk"
+metadata/_custom_type_script = "uid://davfiolrth182"
+
+[sub_resource type="Resource" id="Resource_pef2i"]
+script = ExtResource("9_gndob")
+if_true_effect = SubResource("Resource_r4xk4")
+if_false_effect = SubResource("Resource_7uhu8")
+primary_effect = false
+metadata/_custom_type_script = "uid://cp4hjqv21lk6s"
 
 [sub_resource type="Resource" id="Resource_o61i6"]
 script = ExtResource("8_qed76")
@@ -75,18 +97,32 @@ metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
 [sub_resource type="Resource" id="Resource_g26hj"]
 script = ExtResource("10_qed76")
-effects = Array[ExtResource("2_yq2rj")]([SubResource("Resource_04xam"), SubResource("Resource_7xao1"), SubResource("Resource_gndob"), SubResource("Resource_eqci4"), SubResource("Resource_7uhu8"), SubResource("Resource_pef2i"), SubResource("Resource_o61i6")])
+effects = Array[ExtResource("2_yq2rj")]([SubResource("Resource_t30n7"), SubResource("Resource_nptic"), SubResource("Resource_04xam"), SubResource("Resource_7xao1"), SubResource("Resource_gndob"), SubResource("Resource_eqci4"), SubResource("Resource_pef2i"), SubResource("Resource_o61i6")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gndob"]
-atlas = ExtResource("7_e3v07")
+atlas = ExtResource("14_7xao1")
 region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_eqci4"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_eqci4"]
+atlas = ExtResource("14_7xao1")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_stnu5"]
+atlas = ExtResource("14_7xao1")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_7uhu8"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_gndob")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_eqci4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_stnu5")
 }],
 "loop": true,
 "name": &"default",
@@ -97,10 +133,10 @@ animations = [{
 script = ExtResource("3_won78")
 tile_name = "Tactical Boomerang"
 activation_description = ""
-description = "(die_3) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color], return (die_3) as (die_1), push this tile right"
+description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=purple]target[/color], push this tile [color=green]left[/color] if (die_3) and right if [color=green](die_4)[/color]"
 rarity = 1
-textures = SubResource("SpriteFrames_eqci4")
-uses_per_turn = -1
+textures = SubResource("SpriteFrames_7uhu8")
+uses_per_turn = 2
 activation_checks = Array[ExtResource("1_0sqhf")]([SubResource("Resource_qed76"), SubResource("Resource_stnu5"), SubResource("Resource_vakuo")])
 effect_chain = SubResource("Resource_g26hj")
 event_responses = Dictionary[ExtResource("11_04xam"), ExtResource("10_qed76")]({})

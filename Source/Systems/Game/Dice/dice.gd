@@ -29,7 +29,6 @@ extends Node2D
 var host_queue: DiceQueue
 
 
-
 func _ready() -> void:
 	if value == 0:
 		value = randi_range(1,6)
@@ -40,6 +39,7 @@ func _ready() -> void:
 		var particles: CPUParticles2D = holographic_particles.instantiate()
 		particles.position = Vector2(0, -5)
 		add_child(particles)
+
 
 func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 	var dice_acceptors: Array[Node] = get_tree().get_nodes_in_group('CanAcceptDice')

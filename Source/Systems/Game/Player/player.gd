@@ -95,8 +95,9 @@ func _make_newest_die_draggable() -> void:
 		
 		
 func _reset_newest_die_transform() -> void:
-	dice_manager.queue[-1].scale = Vector2(1,1)
-	dice_manager.queue[-1].rotation_degrees = 0
+	if dice_manager.queue[-1].draggable.state != Draggable.DragState.DRAGGING:
+		dice_manager.queue[-1].scale = Vector2(1,1)
+		dice_manager.queue[-1].rotation_degrees = 0
 	
 
 func _process(_delta: float) -> void:

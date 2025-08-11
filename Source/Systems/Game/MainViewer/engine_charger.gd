@@ -10,6 +10,9 @@ func _ready() -> void:
 	Events.engine_charge_changed.connect(_update_ui)
 	Events.start_scenario.connect(_update_ui)
 	Events.load_scenario.connect(_check_for_combat_scenario)
+	Events.start_combat.connect(func():
+		Globals.player.engine_charge = 0
+	)
 	Events.combat_finished.connect(func():
 		Globals.player.engine_charge = Globals.player.max_engine_charge	
 	)

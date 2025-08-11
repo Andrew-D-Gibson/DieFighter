@@ -19,7 +19,7 @@ func show_info() -> void:
 		
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = name
-	info.top_label_text = description.replace('(amount)', intent_amount)
+	info.bottom_label_text = description.replace('(amount)', intent_amount)
 	info.texture = info_texture
 	
 	Events.show_info.emit(info)

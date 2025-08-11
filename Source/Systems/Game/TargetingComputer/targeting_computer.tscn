@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cpqd13acuxpx"]
+[gd_scene load_steps=23 format=3 uid="uid://cpqd13acuxpx"]
 
 [ext_resource type="Script" uid="uid://bkn6faehi2i4w" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.gd" id="1_8ig5e"]
 [ext_resource type="Texture2D" uid="uid://d053aff6muvev" path="res://Assets/Textures/Enemies/IntentIndicator/UnknownEnemyIntent.png" id="2_g8xi5"]
@@ -9,6 +9,35 @@
 [ext_resource type="Texture2D" uid="uid://kb0qo5n5y0xa" path="res://Assets/Textures/TargetingComputer/info_indicator-Sheet.png" id="5_hbs2t"]
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="5_vfg6m"]
 [ext_resource type="Texture2D" uid="uid://vf8jg262swbo" path="res://Assets/Textures/TargetingComputer/targeting_image_static-Sheet.png" id="9_hbs2t"]
+[ext_resource type="Shader" uid="uid://ba0o5ds647y54" path="res://Assets/Shaders/targeting_computer_crt_shader.gdshader" id="10_chiev"]
+[ext_resource type="Texture2D" uid="uid://crep0ra8xjfw0" path="res://Assets/Textures/TargetingComputer/targeting_computer_shader_mask.png" id="11_ysc67"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_du4uj"]
+shader = ExtResource("10_chiev")
+shader_parameter/overlay = true
+shader_parameter/scanlines_opacity = 0.0
+shader_parameter/scanlines_width = 0.25
+shader_parameter/grille_opacity = 0.1
+shader_parameter/resolution = Vector2(64, 64)
+shader_parameter/pixelate = false
+shader_parameter/roll = true
+shader_parameter/time_offset = 120.0
+shader_parameter/roll_speed = 8.0
+shader_parameter/roll_size = 15.0
+shader_parameter/roll_variation = 1.8
+shader_parameter/distort_intensity = 0.05
+shader_parameter/roll_frequency = 1.0
+shader_parameter/roll_threshold = 0.7
+shader_parameter/noise_opacity = 0.4
+shader_parameter/noise_speed = 5.0
+shader_parameter/static_noise_intensity = 0.04
+shader_parameter/aberration = 4.75e-08
+shader_parameter/brightness = 1.0
+shader_parameter/discolor = false
+shader_parameter/warp_amount = 0.0
+shader_parameter/clip_warp = false
+shader_parameter/vignette_intensity = -0.2
+shader_parameter/vignette_opacity = 0.8
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_8grxf"]
 atlas = ExtResource("5_hbs2t")
@@ -80,6 +109,7 @@ targeting_indicator = NodePath("TargetingIndicator")
 unknown_intent_indicator = ExtResource("2_g8xi5")
 
 [node name="Background" type="Sprite2D" parent="."]
+z_index = -1
 texture = ExtResource("3_oioga")
 offset = Vector2(0, 0.6)
 
@@ -91,6 +121,12 @@ offset_right = 17.0
 offset_bottom = -20.0
 mouse_filter = 2
 text = "TARGET"
+
+[node name="CRTShader" type="Sprite2D" parent="Background"]
+z_index = 1
+material = SubResource("ShaderMaterial_du4uj")
+position = Vector2(0, 0.6)
+texture = ExtResource("11_ysc67")
 
 [node name="TargetImage" type="Sprite2D" parent="."]
 position = Vector2(-5, -7)
@@ -260,7 +296,7 @@ position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
 [node name="TargetImageFill" type="AnimatedSprite2D" parent="."]
-z_index = -1
+z_index = -2
 position = Vector2(0, 0.6)
 sprite_frames = SubResource("SpriteFrames_0asw0")
 animation = &"static"

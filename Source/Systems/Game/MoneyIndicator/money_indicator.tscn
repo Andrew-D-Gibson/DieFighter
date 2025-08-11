@@ -28,7 +28,6 @@ offset_left = 20.0
 offset_top = -8.0
 offset_right = 46.0
 offset_bottom = 5.0
-theme_override_colors/default_color = Color(0.647059, 0.635294, 0.615686, 1)
 text = "+10"
 
 [node name="MoneyParticleCollisionArea" type="Area2D" parent="."]

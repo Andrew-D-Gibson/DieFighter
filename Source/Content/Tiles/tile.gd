@@ -75,6 +75,9 @@ func _ready() -> void:
 			Events.play_sound.emit('tile_dropped')
 		)
 	
+	Events.jump.connect(func() -> void:
+		dice_activation_queue.clear()	
+	)
 	Events.start_scenario.connect(reset_uses_remaining)
 	_connect_tile_event_signals()
 	

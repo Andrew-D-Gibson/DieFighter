@@ -10,7 +10,7 @@ var click_time_remaining: float = 0
 var hovered: bool = false
 
 signal clicked()
-signal is_hovered(_hovered: bool)
+signal is_hovered(hovered: bool)
 
 
 func _process(delta: float) -> void:

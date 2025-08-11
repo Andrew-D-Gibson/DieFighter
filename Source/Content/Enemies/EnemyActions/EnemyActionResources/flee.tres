@@ -26,7 +26,7 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 [resource]
 script = ExtResource("2_dly4w")
 name = "Flee"
-description = "This ship will flee from combat and return all dice to the player"
+description = "Flees from combat!  Returns dice to you"
 indicator_texture = ExtResource("2_qaw31")
 info_texture = ExtResource("3_38s5a")
 effect_chain = SubResource("Resource_j02qh")

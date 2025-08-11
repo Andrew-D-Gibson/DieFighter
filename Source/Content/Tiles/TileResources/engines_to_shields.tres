@@ -98,8 +98,8 @@ description = "(die_6) -> Turn all [color=purple]engine charge[/color] into [col
 rarity = 0
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_turn = -1
-activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_wsqrt")]([SubResource("Resource_r846u"), SubResource("Resource_u10cf")])
 effect_chain = SubResource("Resource_admec")
 event_responses = Dictionary[ExtResource("11_yhkpl"), ExtResource("8_c0x8g")]({})
+dragging_allowed = true
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
