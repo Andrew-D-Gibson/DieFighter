@@ -184,6 +184,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="Intents/1"]
 z_index = 1
 script = ExtResource("4_exnvl")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/1/Clickable"]
@@ -205,6 +206,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="Intents/2"]
 z_index = 1
 script = ExtResource("4_exnvl")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/2/Clickable"]
@@ -226,6 +228,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="Intents/3"]
 z_index = 1
 script = ExtResource("4_exnvl")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/3/Clickable"]
@@ -247,6 +250,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="Intents/4"]
 z_index = 1
 script = ExtResource("4_exnvl")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/4/Clickable"]
@@ -268,6 +272,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="Intents/5"]
 z_index = 1
 script = ExtResource("4_exnvl")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/5/Clickable"]
@@ -289,6 +294,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="Intents/6"]
 z_index = 1
 script = ExtResource("4_exnvl")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/6/Clickable"]
@@ -310,8 +316,20 @@ frame_progress = 0.302846
 [connection signal="input_event" from="LeftButton" to="." method="_on_left_button_input_event"]
 [connection signal="input_event" from="RightButton" to="." method="_on_right_button_input_event"]
 [connection signal="input_event" from="Intents/1/Clickable" to="Intents/1/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Intents/1/Clickable" to="Intents/1/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Intents/1/Clickable" to="Intents/1/Clickable" method="_on_mouse_exited"]
 [connection signal="input_event" from="Intents/2/Clickable" to="Intents/2/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Intents/2/Clickable" to="Intents/2/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Intents/2/Clickable" to="Intents/2/Clickable" method="_on_mouse_exited"]
 [connection signal="input_event" from="Intents/3/Clickable" to="Intents/3/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Intents/3/Clickable" to="Intents/3/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Intents/3/Clickable" to="Intents/3/Clickable" method="_on_mouse_exited"]
 [connection signal="input_event" from="Intents/4/Clickable" to="Intents/4/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Intents/4/Clickable" to="Intents/4/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Intents/4/Clickable" to="Intents/4/Clickable" method="_on_mouse_exited"]
 [connection signal="input_event" from="Intents/5/Clickable" to="Intents/5/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Intents/5/Clickable" to="Intents/5/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Intents/5/Clickable" to="Intents/5/Clickable" method="_on_mouse_exited"]
 [connection signal="input_event" from="Intents/6/Clickable" to="Intents/6/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Intents/6/Clickable" to="Intents/6/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Intents/6/Clickable" to="Intents/6/Clickable" method="_on_mouse_exited"]

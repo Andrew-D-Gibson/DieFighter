@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://delq7kb5loqt2"]
+[gd_scene load_steps=16 format=3 uid="uid://delq7kb5loqt2"]
 
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Content/Tiles/tile.gd" id="1_71op4"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_b16ti"]
@@ -7,15 +7,13 @@
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.tscn" id="5_fc656"]
 [ext_resource type="Shader" uid="uid://cpjpl07bibay0" path="res://Assets/Shaders/tile_no_uses_remaining.gdshader" id="6_ppiw2"]
 [ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="8_u74ai"]
+[ext_resource type="PackedScene" uid="uid://cj08om2cet17r" path="res://Source/Systems/Components/FloatingBehavior/floating_behavior.tscn" id="9_gdpre"]
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="9_u74ai"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
 size = Vector2(20, 22)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rngaw"]
-size = Vector2(20, 22)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
 size = Vector2(20, 22)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lccd0"]
@@ -39,7 +37,10 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
+size = Vector2(20, 22)
+
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue", "floating_behavior")]
 z_index = 6
 script = ExtResource("1_71op4")
 draggable = NodePath("Draggable")
@@ -47,8 +48,10 @@ clickable = NodePath("Clickable")
 shakeable = NodePath("Shakeable")
 sprite_frames = NodePath("AnimatedSprite2D")
 dice_queue = NodePath("DiceQueue")
+floating_behavior = NodePath("FloatingBehavior")
 
 [node name="Draggable" parent="." instance=ExtResource("2_b16ti")]
+unique_name_in_owner = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
 shape = SubResource("RectangleShape2D_jkiuv")
@@ -57,6 +60,10 @@ shape = SubResource("RectangleShape2D_jkiuv")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
 shape = SubResource("RectangleShape2D_rngaw")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_lccd0")
+sprite_frames = SubResource("SpriteFrames_u2tyi")
 
 [node name="Shakeable" parent="." node_paths=PackedStringArray("node_to_shake") instance=ExtResource("4_vr4ys")]
 node_to_shake = NodePath("../AnimatedSprite2D")
@@ -70,12 +77,18 @@ collision = NodePath("CollisionShape2D")
 position = Vector2(11, 12)
 shape = SubResource("RectangleShape2D_fc656")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-material = SubResource("ShaderMaterial_lccd0")
-sprite_frames = SubResource("SpriteFrames_u2tyi")
-
 [node name="DiceQueue" parent="." instance=ExtResource("9_u74ai")]
 position = Vector2(0, 6)
+
+[node name="FloatingBehavior" parent="." instance=ExtResource("9_gdpre")]
+target_node_path = NodePath("..")
+enabled = false
+bob_amplitude = 2.0
+bob_speed = 0.5
+drift_amplitude = 1.5
+drift_speed = 0.25
+rotation_amplitude = 1.5
+rotation_speed = 0.15
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="die_accepted" from="CanAcceptDice" to="." method="_on_die_accepted"]

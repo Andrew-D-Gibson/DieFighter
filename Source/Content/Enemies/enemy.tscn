@@ -39,6 +39,7 @@ node_to_shake = NodePath("../..")
 small_shake_duration = 0.2
 
 [node name="Clickable" parent="." instance=ExtResource("9_sfiwu")]
+hover_for_info = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
 shape = SubResource("RectangleShape2D_dycj8")

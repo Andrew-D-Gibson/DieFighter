@@ -6,6 +6,7 @@ extends Node2D
 
 @export_category('Components')
 @export var draggable: Draggable
+@export var floating_behavior: FloatingBehavior
 
 @export_category('Graphics')
 # This array must have 7 values, a blank then 1-6

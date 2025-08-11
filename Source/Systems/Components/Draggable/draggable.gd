@@ -77,6 +77,10 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		
 		var parent_node: Node2D = get_parent()
 		
+		# Reset the info cursor if needed
+		if parent_node.has_node("Clickable") and parent_node.clickable:
+			parent_node.clickable.reset_hover_state()
+		
 		# Move the parent's render index to be above where it usually sits
 		parent_node.z_index += 3
 		parent_node.scale = Vector2(1.25,1.25)

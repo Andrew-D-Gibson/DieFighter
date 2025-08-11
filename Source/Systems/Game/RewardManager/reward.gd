@@ -67,11 +67,13 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 			
 		
 		add_child(reward)
+		
 		reward.draggable.drag_started.connect(Events.show_systems.emit)
 		reward.draggable.drag_ended.connect(_end_reward)
 		reward.global_position = global_position + Vector2(start_offset,0) + Vector2(i * reward_spacing, 0)
 		reward.draggable.home_position = reward.global_position
 		reward.draggable.emit_reached_new_home = false
+		reward.floating_behavior.enabled = true
 		
 		rewards.append(reward)
 		
@@ -85,6 +87,7 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	var chosen_reward = draggable.get_parent()
 	chosen_reward.draggable.drag_started.disconnect(Events.show_systems.emit)
 	chosen_reward.draggable.drag_ended.disconnect(_end_reward)
+	chosen_reward.floating_behavior.enabled = false
 	
 	if chosen_reward is Tile:
 		chosen_reward.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)

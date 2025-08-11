@@ -57,6 +57,7 @@ var effect_data: Dictionary[String, int]
 @export var shakeable: Shakeable
 @export var sprite_frames: AnimatedSprite2D
 @export var dice_queue: DiceQueue
+@export var floating_behavior: FloatingBehavior
 
 static var dice_activation_queue: Array[Dice] = []
 
@@ -99,7 +100,7 @@ func _connect_tile_event_signals() -> void:
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
 	uses_remaining = tile_resource.uses_per_turn
-	$Draggable.dragging_allowed = tile_resource.dragging_allowed
+	%Draggable.dragging_allowed = tile_resource.dragging_allowed
 
 
 func _get_tile_info() -> InfoResource:

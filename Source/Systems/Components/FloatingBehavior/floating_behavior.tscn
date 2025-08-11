@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cj08om2cet17r"]
+
+[ext_resource type="Script" uid="uid://dq2qo721us3ta" path="res://Source/Systems/Components/FloatingBehavior/floating_behavior.gd" id="1_hmqcp"]
+
+[node name="FloatingBehavior" type="Node"]
+script = ExtResource("1_hmqcp")

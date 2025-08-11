@@ -122,10 +122,14 @@ func _update_ui() -> void:
 				# Change over the info on clicking this particular action indicator 
 				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
 				$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)
+				
+				if targeted_enemy.turn_actions[i].name != "":
+					$Intents.get_child(i).get_child(1).hover_for_info = true
 			else:
 				$Intents.get_child(i).texture = unknown_intent_indicator
-				$Intents.get_child(i).get_child(0).text = ''
+				$Intents.get_child(i).get_child(0).text = ""
 				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
+				$Intents.get_child(i).get_child(1).hover_for_info = false
 				
 				
 		$TargetImageFill.z_index = 1

@@ -128,6 +128,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="TabButtons/CommsButton"]
 position = Vector2(20.5, 7.5)
 script = ExtResource("4_sgr5l")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/CommsButton/Clickable"]
@@ -147,6 +148,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="TabButtons/SystemsButton"]
 position = Vector2(20.5, 7.5)
 script = ExtResource("4_sgr5l")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/SystemsButton/Clickable"]
@@ -167,6 +169,7 @@ horizontal_alignment = 1
 [node name="Clickable" type="Area2D" parent="TabButtons/MapButton"]
 position = Vector2(20.5, 7.5)
 script = ExtResource("4_sgr5l")
+hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/MapButton/Clickable"]
