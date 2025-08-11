@@ -33,6 +33,8 @@ var collision_radius: Dictionary[money_amount, int] = {
 	money_amount.LARGE: 6
 }
 
+var _money_added_particle_scene: PackedScene = preload("uid://cf7c6vnmskqff")
+
 
 func _ready() -> void:
 	_set_up_particle()
@@ -45,14 +47,14 @@ func _process(delta: float) -> void:
 		if _floating:
 			_floating = false
 			
-			var tween_time: float = 1
+			var tween_time: float = 0.75
 			var tween: Tween = get_tree().create_tween()
 			tween.tween_property(
 				self, 
 				"global_position", 
 				Globals.money_indicator.global_position, 
 				tween_time
-			).set_trans(Tween.TRANS_SPRING)\
+			).set_trans(Tween.TRANS_QUART)\
 			.set_ease(Tween.EASE_IN)
 		
 		return
@@ -90,5 +92,11 @@ func _set_up_float() -> void:
 func _on_area_2d_area_entered(area: Area2D) -> void:
 	if area.get_parent() == Globals.money_indicator:
 		Globals.player.money += amount
+		
+		var particles: CPUParticles2D = _money_added_particle_scene.instantiate()
+		particles.global_position = global_position
+		add_sibling(particles)
+		
+		Events.play_sound.emit("money_tick")
 		
 		queue_free()

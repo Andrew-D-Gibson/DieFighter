@@ -71,6 +71,8 @@ func _ready() -> void:
 	Events.start_scenario.connect(_start_scenario)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
+	
+	money = 0
 			
 			
 func _load_game_save(game_save: GameSaveResource) -> void:

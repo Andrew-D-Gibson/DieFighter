@@ -6,20 +6,30 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qyfr0"]
 size = Vector2(38, 12)
 
-[node name="MoneyIndicator" type="Node2D" node_paths=PackedStringArray("money_label")]
+[node name="MoneyIndicator" type="Node2D" node_paths=PackedStringArray("money_label", "money_change_label")]
 script = ExtResource("1_837oe")
-money_label = NodePath("RichTextLabel")
+money_label = NodePath("MoneyLabel")
+money_change_label = NodePath("MoneyChangeLabel")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_lc17p")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="MoneyLabel" type="RichTextLabel" parent="."]
 offset_left = -9.0
 offset_top = -8.0
 offset_right = 17.0
 offset_bottom = 5.0
 text = "10000"
 horizontal_alignment = 2
+
+[node name="MoneyChangeLabel" type="RichTextLabel" parent="."]
+visible = false
+offset_left = 20.0
+offset_top = -8.0
+offset_right = 46.0
+offset_bottom = 5.0
+theme_override_colors/default_color = Color(0.647059, 0.635294, 0.615686, 1)
+text = "+10"
 
 [node name="MoneyParticleCollisionArea" type="Area2D" parent="."]
 collision_layer = 512
