@@ -12,6 +12,8 @@ func save_options_settings() -> void:
 	# Graphics settings
 	var graphics_settings: Dictionary[String, bool] = _get_current_graphics_settings()
 	config.set_value("Graphics", "screenshake", graphics_settings["screenshake"])
+	config.set_value("Graphics", "vsync", graphics_settings["vsync"])
+	config.set_value("Graphics", "fullscreen", graphics_settings["fullscreen"])
 	
 	# Audio settings
 	var audio_settings: Dictionary[String, float] = _get_current_audio_settings()
@@ -34,6 +36,8 @@ func load_options_settings() -> void:
 	# Graphics
 	var graphics_settings: Dictionary[String, bool] = {}
 	graphics_settings["screenshake"] = config.get_value("Graphics", "screenshake", true)
+	graphics_settings["vsync"] = config.get_value("Graphics", "vsync", true)
+	graphics_settings["fullscreen"] = config.get_value("Graphics", "fullscreen", false)
 	_set_graphics_settings(graphics_settings)
 
 	# Audio
@@ -46,13 +50,26 @@ func load_options_settings() -> void:
 
 func _get_current_graphics_settings() -> Dictionary[String, bool]:
 	var graphics_settings: Dictionary[String, bool] = {}
+	
 	graphics_settings["screenshake"] = Globals.screenshake_enabled
+	graphics_settings["vsync"] = (DisplayServer.window_get_vsync_mode() == DisplayServer.VSyncMode.VSYNC_ENABLED)
+	graphics_settings["fullscreen"] = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
 	
 	return graphics_settings
 	
 	
 func _set_graphics_settings(graphics_settings: Dictionary[String, bool]) -> void:
 	Globals.screenshake_enabled = graphics_settings["screenshake"]
+	
+	if graphics_settings["vsync"]:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
+	else:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
+		
+	if graphics_settings["fullscreen"]:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	
 	
 func _get_current_audio_settings() -> Dictionary[String, float]:

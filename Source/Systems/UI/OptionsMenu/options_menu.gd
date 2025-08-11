@@ -13,7 +13,7 @@ func _ready() -> void:
 	%OptionsSavingManager.load_options_settings()
 	
 	# Set up the UI elements to reflect the loaded settings
-	_setup_graphics_options()
+	_setup_graphics_options_UI()
 	_setup_audio_sliders()
 	
 	# Start the options menu on the Game tab
@@ -29,12 +29,30 @@ func _on_item_hover() -> void:
 	Events.play_sound.emit('tile_dropped')
 
 
-func _setup_graphics_options() -> void:
+func _setup_graphics_options_UI() -> void:
 	%ScreenshakeCheckBox.button_pressed = Globals.screenshake_enabled
+
+	%VSyncCheckBox.button_pressed = (DisplayServer.window_get_vsync_mode() == DisplayServer.VSyncMode.VSYNC_ENABLED)
+	
+	%FullscreenCheckBox.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
 
 
 func _on_screenshake_check_box_toggled(toggled_on: bool) -> void:
 	Globals.screenshake_enabled = toggled_on
+	
+	
+func _on_v_sync_check_box_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSyncMode.VSYNC_ENABLED)
+	else:
+		DisplayServer.window_set_vsync_mode(DisplayServer.VSyncMode.VSYNC_DISABLED)
+	
+	
+func _on_fullscreen_check_box_toggled(toggled_on: bool) -> void:
+	if toggled_on:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	
 
 func _setup_audio_sliders() -> void:

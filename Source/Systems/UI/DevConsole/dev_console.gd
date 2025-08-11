@@ -5,6 +5,7 @@ extends Control
 
 
 func _test(_command_args: Array[String] = []) -> void:
+	print(DisplayServer.window_get_vsync_mode())
 	print('Test called!')
 	
 
