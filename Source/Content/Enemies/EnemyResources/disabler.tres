@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_hbxdm"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_7wyve"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="2_v8aec"]
-[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/defend_self.tres" id="3_t8kfg"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="3_t8kfg"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="4_t8kfg"]
 [ext_resource type="PackedScene" uid="uid://sxp7koeaaan5" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/disabler_ship_graphics.tscn" id="5_5pxhh"]
 [ext_resource type="Texture2D" uid="uid://35lb5bt8fxo1" path="res://Assets/Textures/Enemies/Disabler/Disabler_targeting_image.png" id="6_1ll6j"]

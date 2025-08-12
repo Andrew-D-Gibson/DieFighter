@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=27 format=3 uid="uid://b2ewisub2832j"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://b2ewisub2832j"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_wsqrt"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_23tjy"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="3_4h3ei"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_r846u"]
 [ext_resource type="Script" uid="uid://ddrix6gyj2wqb" path="res://Source/Content/Effects/AmountModifiers/set_amount_to_engines.gd" id="3_u10cf"]
 [ext_resource type="Texture2D" uid="uid://xjta3od7oc61" path="res://Assets/Textures/Tiles/emergency_transfer.png" id="4_23tjy"]
@@ -26,6 +27,12 @@ script = ExtResource("1_wsqrt")
 type = 1
 acceptable_values = Array[int]([6])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_slehp"]
+script = ExtResource("3_4h3ei")
+sound_effect_name = "player_shield"
+primary_effect = false
+metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_2bwjp"]
 script = ExtResource("3_u10cf")
@@ -76,7 +83,7 @@ metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_admec"]
 script = ExtResource("8_c0x8g")
-effects = Array[ExtResource("2_23tjy")]([SubResource("Resource_2bwjp"), SubResource("Resource_yhkpl"), SubResource("Resource_2h6rw"), SubResource("Resource_ubmp7"), SubResource("Resource_4h3ei"), SubResource("Resource_ougyd"), SubResource("Resource_dymuh"), SubResource("Resource_wggto")])
+effects = Array[ExtResource("2_23tjy")]([SubResource("Resource_slehp"), SubResource("Resource_2bwjp"), SubResource("Resource_yhkpl"), SubResource("Resource_2h6rw"), SubResource("Resource_ubmp7"), SubResource("Resource_4h3ei"), SubResource("Resource_ougyd"), SubResource("Resource_dymuh"), SubResource("Resource_wggto")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_lpymo"]

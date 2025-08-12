@@ -71,7 +71,7 @@ animations = [{
 script = ExtResource("3_ar2wr")
 tile_name = "Engine Charger"
 activation_description = ""
-description = "[color=yellow]Any die[/color] -> Adds [color=purple]X[/color] to the [color=purple]engine[/color] charge, then [color=orange]give[/color] die to [color=purple]target[/color]"
+description = "[color=yellow]Any die[/color] -> Adds [color=purple]X engine charge[/color], then [color=orange]gives[/color] die to [color=purple]target[/color]"
 rarity = 0
 textures = SubResource("SpriteFrames_dd8hj")
 uses_per_turn = -1

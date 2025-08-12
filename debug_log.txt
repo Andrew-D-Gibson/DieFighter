@@ -1,27 +1,16 @@
-[21:04:33] Debug logger initialized
-[21:04:33] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres
-[21:04:33] Starting scenario
-[21:04:50] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/0_pirate_attacking_civilian.tres
-[21:04:50] Starting scenario
-[21:04:56] Starting combat
-[21:04:56] Player attacked ship: @Node2D@444 (Faction: PIRATE)
-[21:04:56] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:04:58] Player attacked ship: @Node2D@444 (Faction: PIRATE)
-[21:04:58] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:04:59] Player attacked ship: @Node2D@444 (Faction: PIRATE)
-[21:04:59] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:04:59] Enemy left: PIRATE
-[21:04:59] Scenario Event: PIRATES_DEFEATED
-[21:04:59] Combat finished
-[21:04:59] Scenario Event: COMBAT_ENDED
-[21:05:10] Starting combat
-[21:05:10] Player attacked ship: Enemy (Faction: CIVILIAN)
-[21:05:10] Scenario Event: PLAYER_ATTACKED_CIVILIAN
-[21:05:12] Player attacked ship: Enemy (Faction: CIVILIAN)
-[21:05:12] Scenario Event: PLAYER_ATTACKED_CIVILIAN
-[21:05:13] Player attacked ship: Enemy (Faction: CIVILIAN)
-[21:05:13] Scenario Event: PLAYER_ATTACKED_CIVILIAN
-[21:05:13] Enemy left: CIVILIAN
-[21:05:13] Scenario Event: CIVILIANS_DEFEATED
-[21:05:13] Combat finished
-[21:05:13] Scenario Event: COMBAT_ENDED
+[14:52:29] Debug logger initialized
+[14:52:29] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres
+[14:52:29] Starting scenario
+[14:52:35] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres
+[14:52:35] Starting scenario
+[14:52:35] Starting combat
+[14:52:40] Player attacked ship: Enemy (Faction: PIRATE)
+[14:52:40] Scenario Event: PLAYER_ATTACKED_PIRATE
+[14:52:44] Player attacked ship: Enemy (Faction: PIRATE)
+[14:52:44] Scenario Event: PLAYER_ATTACKED_PIRATE
+[14:52:44] Player attacked ship: Enemy (Faction: PIRATE)
+[14:52:44] Scenario Event: PLAYER_ATTACKED_PIRATE
+[14:52:44] Enemy left: PIRATE
+[14:52:44] Scenario Event: PIRATES_DEFEATED
+[14:52:44] Combat finished
+[14:52:44] Scenario Event: COMBAT_ENDED

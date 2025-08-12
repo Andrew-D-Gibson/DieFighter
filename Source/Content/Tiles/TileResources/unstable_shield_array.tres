@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://bpy3rce6clni3"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=31 format=3 uid="uid://bpy3rce6clni3"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_dl748"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_dooug"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="3_dooug"]
 [ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="3_er2tk"]
 [ext_resource type="Script" uid="uid://cttcer3sti4mw" path="res://Source/Content/Effects/AmountModifiers/add_tile_data_to_amount_effect.gd" id="4_84stt"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="5_sat5j"]
@@ -19,6 +20,12 @@ script = ExtResource("1_dl748")
 type = 6
 acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_er2tk"]
+script = ExtResource("3_dooug")
+sound_effect_name = "player_shield"
+primary_effect = false
+metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_vno0r"]
 script = ExtResource("3_er2tk")
@@ -48,7 +55,7 @@ metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_vy2tg"]
 script = ExtResource("7_2uk52")
-effects = Array[ExtResource("2_dooug")]([SubResource("Resource_vno0r"), SubResource("Resource_sryqk"), SubResource("Resource_um1gg"), SubResource("Resource_7g1xc")])
+effects = Array[ExtResource("2_dooug")]([SubResource("Resource_er2tk"), SubResource("Resource_vno0r"), SubResource("Resource_sryqk"), SubResource("Resource_um1gg"), SubResource("Resource_7g1xc")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_p6ekm"]
@@ -115,11 +122,11 @@ description = "[color=yellow]Moved by tile[/color] -> Gain [color=blue]2 shields
 rarity = 1
 textures = SubResource("SpriteFrames_nb58w")
 uses_per_turn = -1
-activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_dl748")]([SubResource("Resource_eq5vj")])
 effect_chain = SubResource("Resource_vy2tg")
 event_responses = Dictionary[ExtResource("8_krkdr"), ExtResource("7_2uk52")]({
 SubResource("Resource_p6ekm"): SubResource("Resource_jbg2i"),
 SubResource("Resource_5crca"): SubResource("Resource_4o71b")
 })
+dragging_allowed = true
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

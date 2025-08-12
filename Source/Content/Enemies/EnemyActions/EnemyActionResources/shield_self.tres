@@ -1,0 +1,48 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=15 format=3 uid="uid://dfpviimqj18jr"]
+
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_rs7xq"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="2_h8kdw"]
+[ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="3_702ir"]
+[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_uik6c"]
+[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_vvfhd"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_56cv0"]
+[ext_resource type="Texture2D" uid="uid://boetxyf3w4oel" path="res://Assets/Textures/Enemies/IntentIndicator/defend.png" id="7_rwj3p"]
+[ext_resource type="Texture2D" uid="uid://cibgrd0mhsrw0" path="res://Assets/Textures/Enemies/IntentIndicator/defend_info.png" id="8_2xd6c"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="9_u6mql"]
+
+[sub_resource type="Resource" id="Resource_arbeq"]
+script = ExtResource("2_h8kdw")
+sound_effect_name = "player_shield"
+primary_effect = false
+metadata/_custom_type_script = "uid://rmwtkvywl4yw"
+
+[sub_resource type="Resource" id="Resource_vrksl"]
+script = ExtResource("3_702ir")
+primary_effect = false
+metadata/_custom_type_script = "uid://na20gyl0jdks"
+
+[sub_resource type="Resource" id="Resource_qw5kx"]
+script = ExtResource("4_uik6c")
+amount = 2
+inherit_die_value = false
+primary_effect = true
+metadata/_custom_type_script = "uid://bllibq0iu6bwk"
+
+[sub_resource type="Resource" id="Resource_3ow3x"]
+script = ExtResource("5_vvfhd")
+primary_effect = false
+metadata/_custom_type_script = "uid://bscm2msup3lwk"
+
+[sub_resource type="Resource" id="Resource_w5k3u"]
+script = ExtResource("6_56cv0")
+effects = Array[ExtResource("1_rs7xq")]([SubResource("Resource_arbeq"), SubResource("Resource_vrksl"), SubResource("Resource_qw5kx"), SubResource("Resource_3ow3x")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[resource]
+script = ExtResource("9_u6mql")
+name = "Shield Burst"
+description = "[color=blue]Shields[/color] itself for [color=blue](amount)[/color]"
+indicator_texture = ExtResource("7_rwj3p")
+info_texture = ExtResource("8_2xd6c")
+effect_chain = SubResource("Resource_w5k3u")
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"
