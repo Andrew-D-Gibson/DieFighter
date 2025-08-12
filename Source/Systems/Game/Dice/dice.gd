@@ -49,6 +49,10 @@ func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 
 
 func reroll_with_tween(new_value: int = 0) -> void:
+	var final_scale: Vector2 = Vector2(1,1)
+	if host_queue.get_parent() is Enemy or host_queue.get_parent() is Tile:
+		final_scale = Vector2(0.75, 0.75)
+	
 	var tween_time: float = 0.2
 		
 	var tween: Tween = get_tree().create_tween().set_parallel()
@@ -64,7 +68,7 @@ func reroll_with_tween(new_value: int = 0) -> void:
 	)
 	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, 'global_position', global_position, tween_time).set_trans(Tween.TRANS_SINE)
-	tween.tween_property(self, 'scale', Vector2(1, 1), tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, 'scale', final_scale, tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
 	await tween.finished
 

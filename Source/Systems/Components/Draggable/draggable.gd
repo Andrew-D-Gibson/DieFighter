@@ -31,6 +31,9 @@ func _ready() -> void:
 	if not home_position:
 		home_position = global_position
 	
+	# Connect mouse enter/exit signals for hover scaling
+	mouse_entered.connect(_on_mouse_entered)
+	mouse_exited.connect(_on_mouse_exited)
 		
 func _process(delta: float) -> void:
 	# Don't handle moving the draggable object if it's being moved with code
@@ -44,6 +47,7 @@ func _process(delta: float) -> void:
 		# Handle dropping this object if the mouse is no longer down
 		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			state = DragState.DEFAULT
+			Globals.mouse_is_dragging_something = false
 			
 			var parent_node: Node2D = get_parent()
 			
@@ -74,6 +78,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if dragging_allowed and state == DragState.DEFAULT and event is InputEventMouseButton \
 	and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		state = DragState.DRAGGING
+		Globals.mouse_is_dragging_something = true
 		
 		var parent_node: Node2D = get_parent()
 		
@@ -83,7 +88,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		
 		# Move the parent's render index to be above where it usually sits
 		parent_node.z_index += 3
-		parent_node.scale = Vector2(1.25,1.25)
+		parent_node.scale = Vector2(1.3,1.3)
 		
 		# Set the parent to wiggle a bit
 		parent_node.rotation_degrees = 0
@@ -100,6 +105,28 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		tween.set_loops()
 		
 		drag_started.emit()
+
+
+func _on_mouse_entered() -> void:
+	# Only scale on hover if not currently dragging
+	if dragging_allowed and state == DragState.DEFAULT and not Globals.mouse_is_dragging_something:
+		Events.play_sound.emit("hover_thump")
+		
+		var parent: Node = get_parent()
+		if parent is Dice and parent.host_queue and parent.host_queue.get_parent() is Tile:
+			return
+			
+		get_parent().scale = Vector2(1.15, 1.15)
+
+
+func _on_mouse_exited() -> void:
+	# Reset scale when mouse exits, but only if not dragging
+	if state == DragState.DEFAULT:
+		var parent: Node = get_parent()
+		if parent is Dice and parent.host_queue and parent.host_queue.get_parent() is Tile:
+			return
+			
+		get_parent().scale = Vector2(1, 1)
 
 
 func snap_back() -> void:

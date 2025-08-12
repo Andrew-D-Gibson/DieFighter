@@ -43,6 +43,11 @@ texture = ExtResource("3_4gkos")
 
 [node name="FloatingBehavior" parent="." instance=ExtResource("19_gfpxv")]
 target_node_path = NodePath("..")
-enabled = false
+bob_amplitude = 2.0
+bob_speed = 0.5
+drift_amplitude = 1.5
+drift_speed = 0.25
+rotation_amplitude = 1.5
+rotation_speed = 0.15
 
 [connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]

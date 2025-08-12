@@ -4,7 +4,6 @@ var default_cursor_texture: Texture2D = preload("uid://dm4or0suv2f7l")
 var info_cursor_texture: Texture2D = preload("uid://p42b6jtcwu2x")
 
 var current_clickable: Clickable = null
-var cursor_state: String = "default"  # "default" or "info"
 
 func _ready() -> void:
 	# Make this unpausable
@@ -16,21 +15,11 @@ func _ready() -> void:
 	show()
 	
 	# Connect to the existing events system
-	Events.mouse_clickable_for_info.connect(_set_cursor_icon)
 	Events.set_current_clickable.connect(set_current_clickable)
 	
 	
 func _process(_delta: float) -> void:
 	global_position = get_global_mouse_position()
-
-
-func _set_cursor_icon(clickable_for_info: bool) -> void:
-	if clickable_for_info:
-		texture = info_cursor_texture
-		cursor_state = "info"
-	else:
-		texture = default_cursor_texture
-		cursor_state = "default"
 
 
 func set_current_clickable(clickable: Clickable) -> void:
@@ -66,12 +55,11 @@ func _disconnect_from_clickable(clickable: Clickable) -> void:
 
 
 func _on_hover_delay_completed() -> void:
-	texture = info_cursor_texture
-	offset = Vector2(-3,-3)
-	cursor_state = "info"
+	if not Globals.mouse_is_dragging_something:
+		texture = info_cursor_texture
+		offset = Vector2(-3,-3)
 
 
 func _on_hover_delay_reset() -> void:
 	texture = default_cursor_texture
 	offset = Vector2(0,0)
-	cursor_state = "default"
