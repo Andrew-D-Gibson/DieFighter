@@ -1,0 +1,2 @@
+class_name TileDeckManager
+extends Node2D

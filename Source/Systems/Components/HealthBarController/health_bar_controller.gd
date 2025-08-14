@@ -43,7 +43,7 @@ func _process(delta: float) -> void:
 		if time_since_health_change > damage_update_time:
 			var tween_time: float = 0.5
 			var tween: Tween = get_tree().create_tween()
-			tween.tween_property($HealthUpdateBar, 'value', float(health_component.health) / health_component.max_health, tween_time).from_current().set_trans(Tween.TRANS_QUAD)
+			tween.tween_property(%HealthUpdateBar, 'value', float(health_component.health) / health_component.max_health, tween_time).from_current().set_trans(Tween.TRANS_QUAD)
 			
 			need_to_update_health_white = false
 		else:
@@ -55,7 +55,7 @@ func _process(delta: float) -> void:
 		
 		# Check if we need to end the shake
 		if health_label_shake_time < 0:
-			$HealthLabel.text = _get_health_string()
+			%HealthLabel.text = _get_health_string()
 		
 	# Wait for the shield shake to stop
 	if shields_label_shake_time > 0:
@@ -63,12 +63,11 @@ func _process(delta: float) -> void:
 		
 		# Check if we need to end the shake
 		if shields_label_shake_time < 0:
-			$ShieldsLabel.text = _get_shield_string()
+			%ShieldsLabel.text = _get_shield_string()
 
 
 func _get_health_string() -> String:
-	return 'HULL\n' + str(health_component.health) + '/' + str(health_component.max_health)
-
+	return str(health_component.health)
 
 func _get_shield_string() -> String:
 	return str(health_component.shields)
@@ -77,29 +76,29 @@ func _get_shield_string() -> String:
 func _set_health() -> void:
 	var tween_time: float = 0.1
 	var tween: Tween = get_tree().create_tween()
-	tween.tween_property($HealthBar, 'value', float(health_component.health) / health_component.max_health, tween_time).from_current().set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(%HealthBar, 'value', float(health_component.health) / health_component.max_health, tween_time).from_current().set_trans(Tween.TRANS_QUAD)
 	
 	need_to_update_health_white = true
 	time_since_health_change = 0
 	
-	$HealthLabel.text = _get_health_string()
+	%HealthLabel.text = _get_health_string()
 
 
 func _start_health_text_shake() -> void:
-	$HealthLabel.text = '[shake rate=75, level=' + str(text_shake_level) + ']' + _get_health_string() + '[/shake]'
+	%HealthLabel.text = '[shake rate=75, level=' + str(text_shake_level) + ']' + _get_health_string() + '[/shake]'
 	health_label_shake_time = text_shake_time
 	
 
 func _set_shields() -> void:
-	$ShieldsLabel.text = _get_shield_string()
+	%ShieldsLabel.text = _get_shield_string()
 	
 	if health_component.shields <= 0:
-		$Shields.visible = false
+		%Shields.visible = false
 		return
 	
-	$Shields.visible = true
+	%Shields.visible = true
 
 
 func _start_shield_text_shake() -> void:
-	$ShieldsLabel.text = '[shake rate=75, level=' + str(text_shake_level + 2) + ']' + _get_shield_string() + '[/shake]'
+	%ShieldsLabel.text = '[shake rate=75, level=' + str(text_shake_level + 2) + ']' + _get_shield_string() + '[/shake]'
 	shields_label_shake_time = text_shake_time

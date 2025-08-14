@@ -12,6 +12,8 @@ enum ButtonSize {
 @export var button_size: ButtonSize = ButtonSize.SMALL
 
 @export var hover_text_color: Color = Globals.white
+@export var disabled_text_color: Color = Globals.purple
+@onready var text_position: Vector2 = $RichTextLabel.position
 
 ## The length of time between the button going down and back up
 ## that will still emit the 'pressed_within_window' signal.
@@ -25,7 +27,21 @@ var _button_down_time: int
 signal pressed_within_window()
 
 
+func update_ui() -> void:
+	if disabled:
+		$AnimatedSprite2D.frame = 1
+		$RichTextLabel.position = text_position + Vector2(0, 2)
+		$RichTextLabel.add_theme_color_override('default_color', disabled_text_color)
+	else: 
+		$AnimatedSprite2D.frame = 0
+		$RichTextLabel.position = text_position
+		$RichTextLabel.remove_theme_color_override('default_color')
+		
+
 func _on_mouse_entered() -> void:
+	if disabled:
+		return
+		
 	Events.play_sound.emit('tile_dropped')
 	
 	var amp: float
@@ -50,6 +66,7 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	$RichTextLabel.text = _text_on_ready
 	$RichTextLabel.remove_theme_color_override('default_color')
+	update_ui()
 
 
 func _on_button_down() -> void:

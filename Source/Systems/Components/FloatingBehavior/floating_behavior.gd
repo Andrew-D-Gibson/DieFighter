@@ -41,7 +41,11 @@ func _start_floating() -> void:
 		
 	if _target_node.has_node("Draggable"):
 		_target_node.draggable.drag_started.connect(func() -> void:
-			enabled = false	
+			enabled = false
+		)
+		_target_node.draggable.drag_ended.connect(
+			func(_draggable: Draggable, _end_position: Vector2) -> void:
+				enabled = true
 		)
 	
 	# Store starting position and randomize motion phase

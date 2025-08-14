@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://hdt1pqaoa4fq"]
+
+[ext_resource type="Texture2D" uid="uid://cwbitvpcwnka1" path="res://Assets/Textures/Enemies/ParticleTextures/engine_ring_rotated.png" id="1_ghse6"]
+
+[sub_resource type="Gradient" id="Gradient_g5akg"]
+offsets = PackedFloat32Array(0, 0.619335)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="EngineParticlesRotatedLeft" type="CPUParticles2D"]
+z_index = -10
+amount = 6
+texture = ExtResource("1_ghse6")
+preprocess = 3.0
+direction = Vector2(-1, 0)
+spread = 30.0
+gravity = Vector2(-20, 0)
+initial_velocity_min = 10.0
+initial_velocity_max = 10.0
+color_ramp = SubResource("Gradient_g5akg")

@@ -1,11 +1,13 @@
-[gd_scene load_steps=30 format=3 uid="uid://bq0eop4cxspu2"]
+[gd_scene load_steps=34 format=3 uid="uid://bq0eop4cxspu2"]
 
 [ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
 [ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_sgr5l"]
 [ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/MapTileResources/engine_charger.tres" id="6_uglmk"]
+[ext_resource type="Shader" uid="uid://fbcxr03he6iu" path="res://Assets/Shaders/dice_area_highlight_shader.gdshader" id="7_geq53"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="8_mm1jt"]
 [ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="9_7x3t1"]
+[ext_resource type="Texture2D" uid="uid://cf21ufj3oos4n" path="res://Assets/Textures/UI/Buttons/button_medium_purple_disabled.png" id="10_foiuu"]
 [ext_resource type="Resource" uid="uid://crph25pv1d7aa" path="res://Source/Content/Tiles/MapTileResources/map_arrow_left.tres" id="10_tmld6"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
 [ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="11_foiuu"]
@@ -53,6 +55,12 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p0pmq"]
 size = Vector2(43, 10)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_35tnh"]
+shader = ExtResource("7_geq53")
+shader_parameter/pulse_speed = 2.0
+shader_parameter/pulse_strength = 1.5
+shader_parameter/base_strength = 1.0
+
 [sub_resource type="ViewportTexture" id="ViewportTexture_tmld6"]
 viewport_path = NodePath("Map/ViewportTexture/MapViewport")
 
@@ -60,11 +68,18 @@ viewport_path = NodePath("Map/ViewportTexture/MapViewport")
 atlas = ExtResource("9_7x3t1")
 region = Rect2(0, 0, 56, 14)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_xbbhg"]
+atlas = ExtResource("10_foiuu")
+region = Rect2(0, 0, 56, 14)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_foiuu"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fa2si")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xbbhg")
 }],
 "loop": true,
 "name": &"default",
@@ -203,6 +218,7 @@ map_viewport = NodePath("ViewportTexture/MapViewport")
 map_camera = NodePath("ViewportTexture/MapViewport/Camera2D")
 left_arrow_tile = NodePath("LeftArrowTile")
 right_arrow_tile = NodePath("RightArrowTile")
+button_highlight_shader = SubResource("ShaderMaterial_35tnh")
 empty_scenario = ExtResource("14_mm1jt")
 
 [node name="ViewportTexture" type="TextureRect" parent="Map"]
@@ -231,6 +247,7 @@ offset_top = -27.0
 offset_right = 15.0
 offset_bottom = -13.0
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
+disabled_text_color = Color(0.501961, 0.207843, 0.615686, 1)
 
 [node name="AnimatedSprite2D" parent="Map/JumpButton" index="0"]
 sprite_frames = SubResource("SpriteFrames_foiuu")

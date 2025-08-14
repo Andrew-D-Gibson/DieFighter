@@ -25,6 +25,29 @@ var home_position: Vector2 :
 var emit_reached_new_home: bool = false
 var tween: Tween
 
+# --- Floating Behavior ---
+@export var floating_enabled: bool = true:
+	set(new_enabled_state):
+		floating_enabled = new_enabled_state
+		
+		if not floating_enabled and get_parent():
+			get_parent().rotation = 0
+			
+		if floating_enabled:
+			_floating_time = randf() * TAU
+
+# --- Adjustable floating parameters ---
+@export var bob_amplitude: float = 4.0   # Max vertical movement in pixels
+@export var bob_speed: float = 1.0       # How fast it bobs up and down
+@export var drift_amplitude: float = 3.0 # Max horizontal drift in pixels
+@export var drift_speed: float = 0.5     # How fast it drifts left/right
+@export var rotation_amplitude: float = 3.0 # Max rotation in degrees
+@export var rotation_speed: float = 0.3     # Rotation oscillation speed
+
+# --- Internal floating variables ---
+var _floating_time: float = 0.0
+var _floating_start_pos: Vector2
+
 
 func _ready() -> void:
 	emit_reached_new_home = false
@@ -35,10 +58,11 @@ func _ready() -> void:
 	mouse_entered.connect(_on_mouse_entered)
 	mouse_exited.connect(_on_mouse_exited)
 		
+		
 func _process(delta: float) -> void:
 	# Don't handle moving the draggable object if it's being moved with code
 	if state == DragState.MOVING_WITH_CODE:
-			return
+		return
 						
 	# Handle moving the object with the mouse
 	if state == DragState.DRAGGING:
@@ -66,13 +90,24 @@ func _process(delta: float) -> void:
 	if emit_reached_new_home \
 	and state == DragState.DEFAULT \
 	and get_parent().global_position.distance_to(home_position) < 0.75:
-		get_parent().global_position = home_position
+		if not floating_enabled:
+			get_parent().global_position = home_position
 		emit_reached_new_home = false
+		
 		reached_new_home.emit()
+		
+	if state == DragState.DEFAULT and global_position.distance_to(home_position) < 4 and floating_enabled:
+		_floating_time += delta
 	
-	get_parent().global_position = lerp(global_position, home_position, follow_strength * delta)
-	
+		var bob_offset = sin(_floating_time * bob_speed) * bob_amplitude
+		var drift_offset = sin(_floating_time * drift_speed + 1.5) * drift_amplitude
+		var rot_offset = sin(_floating_time * rotation_speed + 0.8) * deg_to_rad(rotation_amplitude)
 
+		#get_parent().rotation = rot_offset
+		get_parent().global_position = lerp(global_position, home_position + Vector2(drift_offset, bob_offset), follow_strength * delta * 0.2)
+	else:
+		get_parent().global_position = lerp(global_position, home_position, follow_strength * delta)
+	
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if dragging_allowed and state == DragState.DEFAULT and event is InputEventMouseButton \

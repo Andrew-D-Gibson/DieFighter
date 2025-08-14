@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=43 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -22,6 +22,9 @@
 [ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/Game/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
 [ext_resource type="PackedScene" uid="uid://c8n32fs0k8j52" path="res://Source/Systems/Game/RewardManager/reward_manager.tscn" id="13_7iud4"]
 [ext_resource type="Texture2D" uid="uid://dm4or0suv2f7l" path="res://Assets/Textures/UI/MouseCursors/default_cursor_raw.png" id="13_dacno"]
+[ext_resource type="Shader" uid="uid://fbcxr03he6iu" path="res://Assets/Shaders/dice_area_highlight_shader.gdshader" id="13_jblvd"]
+[ext_resource type="Texture2D" uid="uid://y7qaivofieux" path="res://Assets/Textures/UI/Cockpit/dice_area_highlight.png" id="13_nfx0x"]
+[ext_resource type="Script" uid="uid://b16yw1mkocqnu" path="res://Source/Systems/UI/dice_area_highlight.gd" id="14_jblvd"]
 [ext_resource type="Script" uid="uid://dadh0h1qi45h8" path="res://Source/Systems/UI/MouseCursor/mouse_cursor.gd" id="14_ql5sb"]
 [ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/Systems/Game/MoneyIndicator/money_indicator.tscn" id="15_cshgf"]
 [ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/Systems/Game/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
@@ -34,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/0_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/SectorBoss/0_sector_boss.tres" id="26_aaucc"]
+[ext_resource type="PackedScene" uid="uid://cwrxiwoj45qqh" path="res://Source/Systems/Game/TileDeckManager/tile_deck_manager.tscn" id="34_ql5sb"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -50,6 +54,12 @@ shader_parameter/shake_rate = 1.0
 shader_parameter/shake_speed = 5.0
 shader_parameter/shake_block_size = 30.5
 shader_parameter/shake_color_rate = 0.01
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_efjlt"]
+shader = ExtResource("13_jblvd")
+shader_parameter/pulse_speed = 1.0
+shader_parameter/pulse_strength = 1.5
+shader_parameter/base_strength = 1.0
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_flage"]
 resource_local_to_scene = true
@@ -124,6 +134,12 @@ script = ExtResource("4_hd7px")
 position = Vector2(160, 90)
 texture = ExtResource("5_a6pqk")
 
+[node name="DiceAreaHighlight" type="Sprite2D" parent="Graphics/Cockpit Walls"]
+material = SubResource("ShaderMaterial_efjlt")
+position = Vector2(0.5, 82.5)
+texture = ExtResource("13_nfx0x")
+script = ExtResource("14_jblvd")
+
 [node name="BackgroundManager" parent="Graphics" instance=ExtResource("5_flage")]
 position = Vector2(160, 90)
 
@@ -170,6 +186,8 @@ question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 
 [node name="ErrorPopupManager" parent="Systems" instance=ExtResource("4_oai2y")]
+
+[node name="TileDeckManager" parent="Systems" instance=ExtResource("34_ql5sb")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

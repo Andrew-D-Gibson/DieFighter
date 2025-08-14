@@ -41,12 +41,15 @@ animations = [{
 script = ExtResource("1_p4fc1")
 
 [node name="Background" type="Sprite2D" parent="."]
+z_index = -1
 texture = ExtResource("1_gt1ml")
 
 [node name="Shields" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_es4b2")
 
 [node name="HealthUpdateBar" type="TextureProgressBar" parent="."]
+unique_name_in_owner = true
 offset_left = -29.0
 offset_top = -29.0
 offset_right = 29.0
@@ -60,6 +63,7 @@ texture_under = ExtResource("3_c4lmh")
 texture_progress = ExtResource("4_qyssx")
 
 [node name="HealthBar" type="TextureProgressBar" parent="."]
+unique_name_in_owner = true
 offset_left = -29.0
 offset_top = -29.0
 offset_right = 29.0
@@ -75,6 +79,7 @@ texture_progress = ExtResource("5_w3cee")
 texture = ExtResource("6_rivm1")
 
 [node name="HealthLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
 offset_left = -14.0
 offset_top = -17.0
 offset_right = 26.0
@@ -83,12 +88,13 @@ mouse_filter = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 theme_override_constants/line_separation = -6
 bbcode_enabled = true
-text = "HULL
-99/99
+text = "[wave amp=2.0 freq=1.0 connected=0]HULL
+99/99[/wave]
 "
 horizontal_alignment = 1
 
 [node name="ShieldsLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
 offset_left = -23.0
 offset_top = 6.0
 offset_right = -5.0
@@ -96,7 +102,8 @@ offset_bottom = 22.0
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
 bbcode_enabled = true
-text = "10"
+text = "[wave amp=2.0 freq=1.0 connected=0]10[/wave]
+"
 fit_content = true
 scroll_active = false
 horizontal_alignment = 1

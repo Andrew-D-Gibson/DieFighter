@@ -53,10 +53,12 @@ position = Vector2(-12, -12)
 texture = ExtResource("2_6xma5")
 
 [node name="Shields" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 visible = false
 texture = ExtResource("3_a8y0g")
 
 [node name="HealthUpdateBar" type="TextureProgressBar" parent="."]
+unique_name_in_owner = true
 offset_left = -12.0
 offset_top = -12.0
 offset_right = 13.0
@@ -71,6 +73,7 @@ texture_under = ExtResource("3_15202")
 texture_progress = ExtResource("4_a8y0g")
 
 [node name="HealthBar" type="TextureProgressBar" parent="."]
+unique_name_in_owner = true
 offset_left = -12.0
 offset_top = -12.0
 offset_right = 12.0
@@ -87,6 +90,7 @@ texture_progress = ExtResource("5_4clo8")
 texture = ExtResource("6_eq3o7")
 
 [node name="HealthLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
 offset_left = -1.0
 offset_top = -11.0
 offset_right = 10.0
@@ -98,6 +102,7 @@ text = "10
 horizontal_alignment = 1
 
 [node name="ShieldsLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
 offset_left = -11.0
 offset_top = -2.0
 offset_right = 1.0

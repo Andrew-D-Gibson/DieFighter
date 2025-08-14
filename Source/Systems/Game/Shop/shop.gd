@@ -60,6 +60,7 @@ func _create_shop_tiles() -> void:
 	var start_pos: Vector2 = Vector2(-50,-13.5)
 	
 	item_to_shop_index = {}
+	shop_tiles.clear()  # Clear the shop tiles array to prevent accumulation from previous sessions
 	
 	for row: int in range(2):
 		for col: int in range(2):

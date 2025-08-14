@@ -163,6 +163,8 @@ func _start_player_turn() -> void:
 	await get_tree().create_timer(0.5).timeout
 	reroll_dice()
 	
+	Events.player_turn_start.emit()
+	
 	for die: Dice in dice_manager.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
 

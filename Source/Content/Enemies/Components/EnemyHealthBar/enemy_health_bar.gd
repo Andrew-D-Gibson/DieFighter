@@ -122,9 +122,3 @@ func _start_aggressive_tween() -> void:
 	)\
 	.set_trans(Tween.TRANS_QUAD)\
 	.set_ease(Tween.EASE_OUT)
-
-
-## Formatter for how we display the enemy's health via text
-## Overrides a function in the parent 'HealthBarController'
-func _get_health_string() -> String:
-	return str(health_component.health)

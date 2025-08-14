@@ -57,7 +57,6 @@ var effect_data: Dictionary[String, int]
 @export var shakeable: Shakeable
 @export var sprite_frames: AnimatedSprite2D
 @export var dice_queue: DiceQueue
-@export var floating_behavior: FloatingBehavior
 
 static var dice_activation_queue: Array[Dice] = []
 
@@ -277,3 +276,7 @@ func _check_for_next_in_tile_activation_queue() -> void:
 func _on_visibility_changed() -> void:	
 	for die: Dice in dice_queue.queue:
 		die.visible = self.is_visible_in_tree()
+		
+		
+func set_highlight(highlight: bool) -> void:
+	sprite_frames.material.set_shader_parameter('highlight_enabled', highlight)

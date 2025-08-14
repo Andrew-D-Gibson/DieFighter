@@ -1,13 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://delq7kb5loqt2"]
+[gd_scene load_steps=19 format=3 uid="uid://delq7kb5loqt2"]
 
 [ext_resource type="Script" uid="uid://vw0p058oas5b" path="res://Source/Content/Tiles/tile.gd" id="1_71op4"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_b16ti"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="4_rngaw"]
+[ext_resource type="Shader" uid="uid://bri5htw7mbdjy" path="res://Assets/Shaders/tile.gdshader" id="4_u74ai"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_vr4ys"]
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.tscn" id="5_fc656"]
-[ext_resource type="Shader" uid="uid://cpjpl07bibay0" path="res://Assets/Shaders/tile_no_uses_remaining.gdshader" id="6_ppiw2"]
 [ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="8_u74ai"]
-[ext_resource type="PackedScene" uid="uid://cj08om2cet17r" path="res://Source/Systems/Components/FloatingBehavior/floating_behavior.tscn" id="9_gdpre"]
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="9_u74ai"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
@@ -16,11 +15,36 @@ size = Vector2(20, 22)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rngaw"]
 size = Vector2(20, 22)
 
+[sub_resource type="Gradient" id="Gradient_u74ai"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.807843, 0.941176, 0.945098, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gdpre"]
+gradient = SubResource("Gradient_u74ai")
+
+[sub_resource type="Gradient" id="Gradient_u2tyi"]
+offsets = PackedFloat32Array(0, 0.51141, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fb7d0"]
+gradient = SubResource("Gradient_u2tyi")
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_lccd0"]
 resource_local_to_scene = true
-shader = ExtResource("6_ppiw2")
-shader_parameter/outer_radius = 5.0
+shader = ExtResource("4_u74ai")
+shader_parameter/outer_radius = 10.0
 shader_parameter/strength = 0.0
+shader_parameter/highlight_enabled = false
+shader_parameter/vertical_gradient = SubResource("GradientTexture1D_fb7d0")
+shader_parameter/color_gradient = SubResource("GradientTexture1D_gdpre")
+shader_parameter/size_effect = 3.0
+shader_parameter/speed = 1.0
+shader_parameter/highlight_strength = 0.5
+shader_parameter/pause_duration = 2.0
+shader_parameter/texture_size = Vector2(24, 24)
+shader_parameter/brightness_max = 1.4
+shader_parameter/brightness_period = 3.0
+shader_parameter/time_offset = 0.0
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gdpre"]
 atlas = ExtResource("8_u74ai")
@@ -40,7 +64,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
 size = Vector2(20, 22)
 
-[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue", "floating_behavior")]
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue")]
 z_index = 6
 script = ExtResource("1_71op4")
 draggable = NodePath("Draggable")
@@ -48,17 +72,23 @@ clickable = NodePath("Clickable")
 shakeable = NodePath("Shakeable")
 sprite_frames = NodePath("AnimatedSprite2D")
 dice_queue = NodePath("DiceQueue")
-floating_behavior = NodePath("FloatingBehavior")
 
 [node name="Draggable" parent="." instance=ExtResource("2_b16ti")]
 unique_name_in_owner = true
+floating_enabled = false
+bob_amplitude = 2.0
+drift_amplitude = 1.5
+rotation_amplitude = 1.5
+rotation_speed = 0.15
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
+visible = false
 shape = SubResource("RectangleShape2D_jkiuv")
 
 [node name="Clickable" parent="." instance=ExtResource("4_rngaw")]
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+visible = false
 shape = SubResource("RectangleShape2D_rngaw")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
@@ -74,21 +104,12 @@ position = Vector2(-11, -12)
 collision = NodePath("CollisionShape2D")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CanAcceptDice"]
+visible = false
 position = Vector2(11, 12)
 shape = SubResource("RectangleShape2D_fc656")
 
 [node name="DiceQueue" parent="." instance=ExtResource("9_u74ai")]
 position = Vector2(0, 6)
-
-[node name="FloatingBehavior" parent="." instance=ExtResource("9_gdpre")]
-target_node_path = NodePath("..")
-enabled = false
-bob_amplitude = 2.0
-bob_speed = 0.5
-drift_amplitude = 1.5
-drift_speed = 0.25
-rotation_amplitude = 1.5
-rotation_speed = 0.15
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="die_accepted" from="CanAcceptDice" to="." method="_on_die_accepted"]

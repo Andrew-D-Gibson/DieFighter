@@ -15,6 +15,7 @@ var current_scenario_index: int
 @export var map_camera: Camera2D
 @export var left_arrow_tile: Tile
 @export var right_arrow_tile: Tile
+@export var button_highlight_shader: ShaderMaterial
 
 
 @export_category('Behavior')
@@ -56,8 +57,22 @@ func _update_ui() -> void:
 	if not Globals.player:
 		return
 	
-	if Globals.player.engine_charge != Globals.player.max_engine_charge:
-		return
+	if Globals.player.engine_charge >= Globals.player.max_engine_charge:
+		left_arrow_tile.set_highlight(true)
+		right_arrow_tile.set_highlight(true)
+	else:
+		left_arrow_tile.set_highlight(false)
+		right_arrow_tile.set_highlight(false)
+		
+	if desired_scenario_index != current_scenario_index:
+		$JumpButton.disabled = false
+		$JumpButton.update_ui()
+		var mat: ShaderMaterial = button_highlight_shader.duplicate()
+		$JumpButton/AnimatedSprite2D.material = mat
+	else:
+		$JumpButton.disabled = true
+		$JumpButton.update_ui()
+		$JumpButton/AnimatedSprite2D.material = null
 		
 	#if desired_scenario_index == current_scenario_index:
 		#error_text.text = '[color=#c552f1]CHOOSE DESTINATION[/color]'
@@ -153,8 +168,8 @@ func _update_desired_scenario() -> void:
 	if desired_scenario_index != current_scenario_index:
 		tween = get_tree().create_tween()
 		tween.tween_property(scenario_sprites[desired_scenario_index], 'scale', Vector2(1.5,1.5), tween_time).from(Vector2(1,1))
-		tween.tween_property(scenario_sprites[desired_scenario_index], 'scale', Vector2(1,1), tween_time)
-		tween.set_loops()
+		#tween.tween_property(scenario_sprites[desired_scenario_index], 'scale', Vector2(1,1), tween_time)
+		#tween.set_loops()
 	
 	_update_map_button()
 

@@ -1,0 +1,34 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://d0un3jo7bryut"]
+
+[ext_resource type="Shader" uid="uid://bri5htw7mbdjy" path="res://Assets/Shaders/tile.gdshader" id="1_nrtxv"]
+
+[sub_resource type="Gradient" id="Gradient_wnwk4"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.0156863, 0.00784314, 0.0901961, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yv42b"]
+gradient = SubResource("Gradient_wnwk4")
+
+[sub_resource type="Gradient" id="Gradient_ca5cv"]
+offsets = PackedFloat32Array(0, 0.500403, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8r4ay"]
+gradient = SubResource("Gradient_ca5cv")
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_nrtxv")
+shader_parameter/outer_radius = 10.0
+shader_parameter/strength = 0.0
+shader_parameter/highlight_enabled = true
+shader_parameter/vertical_gradient = SubResource("GradientTexture1D_8r4ay")
+shader_parameter/color_gradient = SubResource("GradientTexture1D_yv42b")
+shader_parameter/size_effect = 1.0
+shader_parameter/speed = 1.0
+shader_parameter/highlight_strength = 0.5
+shader_parameter/pause_duration = 3.0
+shader_parameter/texture_size = Vector2(12, 12)
+shader_parameter/brightness_max = 1.5
+shader_parameter/brightness_period = 2.0
+shader_parameter/time_offset = 0.0

@@ -3,10 +3,10 @@ extends Node2D
 
 @export var holographic: bool = false
 @export var holographic_shader: ShaderMaterial
+@export var default_shader: ShaderMaterial
 
 @export_category('Components')
 @export var draggable: Draggable
-@export var floating_behavior: FloatingBehavior
 
 @export_category('Graphics')
 # This array must have 7 values, a blank then 1-6
@@ -26,6 +26,9 @@ extends Node2D
 			$Sprite2D.material = mat
 		else:
 			$Sprite2D.texture = value_textures[value]
+			var mat: ShaderMaterial = default_shader.duplicate()
+			mat.set_shader_parameter("time_offset", randf() * 10.0)
+			$Sprite2D.material = mat
 		
 var host_queue: DiceQueue
 

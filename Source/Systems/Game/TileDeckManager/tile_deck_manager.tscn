@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwrxiwoj45qqh"]
+
+[ext_resource type="Script" uid="uid://dmchbqr57gjxy" path="res://Source/Systems/Game/TileDeckManager/tile_deck_manager.gd" id="1_84gb1"]
+
+[node name="TileDeckManager" type="Node2D"]
+script = ExtResource("1_84gb1")
