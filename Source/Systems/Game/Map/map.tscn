@@ -5,16 +5,10 @@
 [ext_resource type="Texture2D" uid="uid://ctq4jy6b220uj" path="res://Assets/Textures/Map/timeline.png" id="4_7gfdh"]
 [ext_resource type="Texture2D" uid="uid://da2m2sxof8kg3" path="res://Assets/Textures/Map/EncounterIcons/connector_white.png" id="7_x51rx"]
 
-[node name="Map" type="Node2D" node_paths=PackedStringArray("LeftDiceReceptacle", "RightDiceReceptacle", "map_button_label", "map_button", "map_viewport", "map_camera")]
+[node name="Map" type="Node2D"]
 script = ExtResource("1_kiwga")
 current_scenario_icon = ExtResource("2_ryh8x")
 timeline_icon = ExtResource("4_7gfdh")
 connector_sprite = ExtResource("7_x51rx")
-LeftDiceReceptacle = NodePath("")
-RightDiceReceptacle = NodePath("")
-map_button_label = NodePath("")
-map_button = NodePath("")
-map_viewport = NodePath("")
-map_camera = NodePath("")
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

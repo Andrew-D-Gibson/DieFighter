@@ -19,7 +19,7 @@ func _ready() -> void:
 	Events.start_combat.connect(check_target_is_valid)
 	Events.start_scenario.connect(_initial_target)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
-
+	_initial_target()
 	
 
 func _initial_target() -> void:

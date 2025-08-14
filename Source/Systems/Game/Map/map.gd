@@ -4,11 +4,14 @@ extends Node2D
 @export_category('Game Data')
 var scenario_list: Array[ScenarioResource]
 var current_scenario_index: int
+@onready var scenarios_in_danger: int = 1
 
 @export_category('Map Textures')
 @export var current_scenario_icon: Texture2D
 @export var timeline_icon: Texture2D
 @export var connector_sprite: Texture2D
+@export var fate_animated_sprite: PackedScene
+@export var danger_area: PackedScene
 
 @export_category('Components')
 @export var map_viewport: SubViewport
@@ -64,7 +67,7 @@ func _update_ui() -> void:
 		left_arrow_tile.set_highlight(false)
 		right_arrow_tile.set_highlight(false)
 		
-	if desired_scenario_index != current_scenario_index:
+	if desired_scenario_index != current_scenario_index and desired_scenario_index > scenarios_in_danger-1:
 		$JumpButton.disabled = false
 		$JumpButton.update_ui()
 		var mat: ShaderMaterial = button_highlight_shader.duplicate()
@@ -88,6 +91,17 @@ func _update_map_sprites() -> void:
 	# Shouldn't ever return here, but still
 	if len(scenario_list) == 0:
 		return
+		
+	# Add the fate sprite
+	var fate: AnimatedSprite2D = fate_animated_sprite.instantiate()
+	fate.position = Vector2(-45, 0)
+	map_viewport.add_child(fate)
+	
+	# Show and move the danger area as needed
+	var danger: Sprite2D = danger_area.instantiate()
+	danger.position = Vector2(-81 + (sprite_spacing * scenarios_in_danger), 0)
+	map_viewport.add_child(danger)
+	
 		
 	for i in range(len(scenario_list)):
 		# Create a timeline bar to the next location
@@ -199,6 +213,15 @@ func _jump() -> void:
 
 	# Move to the new encounter
 	current_scenario_index = desired_scenario_index
+	
+	
+	# Destroy the scenarios in danger
+	scenario_list = scenario_list.slice(scenarios_in_danger)
+	current_scenario_index -= scenarios_in_danger
+	
+	# Set up which scenarios are in danger next
+	scenarios_in_danger = min(randi_range(1,6), current_scenario_index + 1)
+	
 	
 	Events.load_scenario.emit(
 		scenario_list[desired_scenario_index]

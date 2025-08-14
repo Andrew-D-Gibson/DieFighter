@@ -60,8 +60,10 @@ func _ready() -> void:
 			current_game_save.current_scenario_index
 		]
 	)
-	Events.start_scenario.emit()
 	
+	
+func start_game() -> void:
+	Events.start_scenario.emit()
 	
 	
 func _randomize_sector_scenarios() -> void:
