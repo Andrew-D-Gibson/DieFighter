@@ -257,11 +257,13 @@ func _update_dice_queue_locations() -> void:
 
 
 func _on_die_accepted(die: Dice) -> void:
-	dice_queue.add(die, true, false)
-	dice_activation_queue.append(die)
-	
-	if len(dice_activation_queue) == 1:
-		try_to_activate()
+	if tile_resource.max_dice_in_queue == -1 or \
+	len(dice_queue.queue) < tile_resource.max_dice_in_queue:
+		dice_queue.add(die, true, false)
+		dice_activation_queue.append(die)
+		
+		if len(dice_activation_queue) == 1:
+			try_to_activate()
 	
 		
 func _check_for_next_in_tile_activation_queue() -> void:

@@ -21,3 +21,6 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 @export var event_responses: Dictionary[TileEvent, EffectChain]
 
 @export var dragging_allowed: bool = true
+
+## This limit is ignored when the max dice allowed in queue is -1
+@export var max_dice_in_queue: int = -1

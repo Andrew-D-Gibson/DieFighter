@@ -99,7 +99,7 @@ func _update_map_sprites() -> void:
 	
 	# Show and move the danger area as needed
 	var danger: Sprite2D = danger_area.instantiate()
-	danger.position = Vector2(-81 + (sprite_spacing * scenarios_in_danger), 0)
+	danger.position = Vector2(-82 + (sprite_spacing * scenarios_in_danger), 0)
 	map_viewport.add_child(danger)
 	
 		
@@ -213,8 +213,10 @@ func _jump() -> void:
 
 	# Move to the new encounter
 	current_scenario_index = desired_scenario_index
-	
-	
+	Events.load_scenario.emit(
+		scenario_list[desired_scenario_index]
+	)
+
 	# Destroy the scenarios in danger
 	scenario_list = scenario_list.slice(scenarios_in_danger)
 	current_scenario_index -= scenarios_in_danger
@@ -222,8 +224,4 @@ func _jump() -> void:
 	# Set up which scenarios are in danger next
 	scenarios_in_danger = min(randi_range(1,6), current_scenario_index + 1)
 	
-	
-	Events.load_scenario.emit(
-		scenario_list[desired_scenario_index]
-	)
 	Events.start_scenario.emit()
