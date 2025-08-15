@@ -77,6 +77,7 @@ func _ready() -> void:
 			
 func _load_game_save(game_save: GameSaveResource) -> void:
 	health.max_health = game_save.player_max_health
+	health.starting_health = game_save.player_health
 	health.health = game_save.player_health
 	health.shields = game_save.player_defense
 	num_of_dice = game_save.num_of_dice

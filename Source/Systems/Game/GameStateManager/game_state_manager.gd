@@ -66,6 +66,14 @@ func start_game() -> void:
 	Events.start_scenario.emit()
 	
 	
+func trigger_startup_sequence() -> void:
+	await get_tree().create_timer(2).timeout
+	
+	Events.health_bar_startup.emit()
+	
+	start_game()
+	
+	
 func _randomize_sector_scenarios() -> void:
 	## THESE COMMENTS ARE OLD, BUT MAYBE I'LL GO BACK LATER
 	# A sector has 19 scenarios, including:

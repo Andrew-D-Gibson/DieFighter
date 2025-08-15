@@ -77,3 +77,7 @@ signal tile_pushed(tile: Tile)
 
 # Audio Events
 signal play_sound(sound_name: String)
+
+
+# Startup Events
+signal health_bar_startup()

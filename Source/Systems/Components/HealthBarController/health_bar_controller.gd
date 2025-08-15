@@ -82,6 +82,7 @@ func _set_health() -> void:
 	time_since_health_change = 0
 	
 	%HealthLabel.text = _get_health_string()
+	
 
 
 func _start_health_text_shake() -> void:
