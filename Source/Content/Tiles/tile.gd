@@ -12,35 +12,12 @@ var _saturation_tween: Tween
 @export var uses_remaining: int = -1:
 	set(new_value):
 		uses_remaining = new_value
-		
-		var outer_radius: float
-		var strength: float
+
 		if uses_remaining == 0:
-			outer_radius = 0.0
-			strength = 1.0
+			set_gray_out(true)
 		else:
-			outer_radius = 10.0
-			strength = 0.0
-			
-		if _saturation_tween:
-			_saturation_tween.kill()
-			
-		var tween_time: float = 0.75
-		_saturation_tween = create_tween()
-		_saturation_tween.tween_property(
-			sprite_frames.material, 
-			'shader_parameter/strength',
-			strength,
-			0.1
-		)
-		_saturation_tween.tween_property(
-			sprite_frames.material, 
-			'shader_parameter/outer_radius',
-			outer_radius,
-			tween_time
-		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		
-				
+			set_gray_out(false)
+
 		if uses_remaining == -1:
 			sprite_frames.frame = 0
 		else:
@@ -282,3 +259,34 @@ func _on_visibility_changed() -> void:
 		
 func set_highlight(highlight: bool) -> void:
 	sprite_frames.material.set_shader_parameter('highlight_enabled', highlight)
+
+
+func set_gray_out(gray_out: bool) -> void:
+	var outer_radius: float
+	var strength: float
+	
+	if gray_out:
+		outer_radius = 0.0
+		strength = 1.0
+	else:
+		outer_radius = 10.0
+		strength = 0.0
+		
+
+	if _saturation_tween:
+		_saturation_tween.kill()
+			
+	var tween_time: float = 0.75
+	_saturation_tween = create_tween()
+	_saturation_tween.tween_property(
+		sprite_frames.material, 
+		'shader_parameter/strength',
+		strength,
+		0.1
+	)
+	_saturation_tween.tween_property(
+		sprite_frames.material, 
+		'shader_parameter/outer_radius',
+		outer_radius,
+		tween_time
+	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

@@ -1,6 +1,30 @@
-[gd_scene load_steps=2 format=3 uid="uid://cwrxiwoj45qqh"]
+[gd_scene load_steps=4 format=3 uid="uid://cwrxiwoj45qqh"]
 
 [ext_resource type="Script" uid="uid://dmchbqr57gjxy" path="res://Source/Systems/Game/TileDeckManager/tile_deck_manager.gd" id="1_84gb1"]
+[ext_resource type="Texture2D" uid="uid://dtwy78w4g63cp" path="res://Assets/Textures/DeckManager/background_full.png" id="2_1ba4y"]
+[ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="3_vjin1"]
 
 [node name="TileDeckManager" type="Node2D"]
 script = ExtResource("1_84gb1")
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(0, 1)
+texture = ExtResource("2_1ba4y")
+
+[node name="SmallButton" parent="." instance=ExtResource("3_vjin1")]
+offset_left = -17.0
+offset_top = -66.0
+offset_right = 18.0
+offset_bottom = -54.0
+hover_text_color = Color(0.94902, 0.611765, 0.364706, 1)
+disabled_text_color = Color(0.741176, 0.345098, 0.0588235, 1)
+
+[node name="AnimatedSprite2D" parent="SmallButton" index="0"]
+sprite_frames = null
+
+[node name="RichTextLabel" parent="SmallButton" index="1"]
+text = "DECK"
+
+[connection signal="pressed_within_window" from="SmallButton" to="." method="_toggle_raised"]
+
+[editable path="SmallButton"]

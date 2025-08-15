@@ -278,6 +278,8 @@ boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")]
 [node name="ErrorPopupManager" parent="Systems" instance=ExtResource("4_oai2y")]
 
 [node name="TileDeckManager" parent="Systems" instance=ExtResource("34_ql5sb")]
+z_index = 1
+position = Vector2(36, 235)
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

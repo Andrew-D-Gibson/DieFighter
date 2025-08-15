@@ -42,6 +42,8 @@ func _ready() -> void:
 	right_arrow_tile.dice_queue.die_added.connect(_update_ui)
 	right_arrow_tile.dice_queue.die_removed.connect(_update_ui)
 	
+	_update_ui()
+	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
 	scenario_list = game_save.sector_scenarios
@@ -65,7 +67,9 @@ func _update_ui() -> void:
 		right_arrow_tile.set_highlight(true)
 	else:
 		left_arrow_tile.set_highlight(false)
+		left_arrow_tile.set_gray_out(true)
 		right_arrow_tile.set_highlight(false)
+		right_arrow_tile.set_gray_out(true)
 		
 	if desired_scenario_index != current_scenario_index and desired_scenario_index > scenarios_in_danger-1:
 		$JumpButton.disabled = false
