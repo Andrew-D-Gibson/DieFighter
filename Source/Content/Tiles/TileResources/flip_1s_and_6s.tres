@@ -69,4 +69,5 @@ activation_checks = Array[ExtResource("1_hoi4y")]([])
 effect_chain = SubResource("Resource_jubjl")
 event_responses = Dictionary[ExtResource("7_fdhil"), ExtResource("6_fdhil")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
