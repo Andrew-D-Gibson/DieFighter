@@ -1,8 +1,7 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=27 format=3 uid="uid://ifs6q4iqtbfe"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=30 format=3 uid="uid://ifs6q4iqtbfe"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_71286"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_3abs0"]
-[ext_resource type="Texture2D" uid="uid://up1lduwwygjq" path="res://Assets/Textures/Tiles/flak_cannon.png" id="2_mywar"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_mywar"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_w3f31"]
 [ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="4_a1g78"]
@@ -13,6 +12,7 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_m1j0p"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_w3f31"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="9_sndgu"]
+[ext_resource type="Texture2D" uid="uid://c1dxps1hmkyxv" path="res://Assets/Textures/Tiles/RedTiles/flak_cannon-Sheet.png" id="13_w3f31"]
 
 [sub_resource type="Resource" id="Resource_44pq3"]
 script = ExtResource("1_71286")
@@ -80,15 +80,36 @@ script = ExtResource("8_m1j0p")
 effects = Array[ExtResource("2_3abs0")]([SubResource("Resource_y24nt"), SubResource("Resource_8q7m7"), SubResource("Resource_sndgu"), SubResource("Resource_vg00i"), SubResource("Resource_w3f31"), SubResource("Resource_a1g78"), SubResource("Resource_cdns8")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_h3tty"]
-atlas = ExtResource("2_mywar")
+[sub_resource type="AtlasTexture" id="AtlasTexture_a1g78"]
+atlas = ExtResource("13_w3f31")
 region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_m1j0p"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_cdns8"]
+atlas = ExtResource("13_w3f31")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4kv0t"]
+atlas = ExtResource("13_w3f31")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y24nt"]
+atlas = ExtResource("13_w3f31")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8q7m7"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_h3tty")
+"texture": SubResource("AtlasTexture_a1g78")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_cdns8")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4kv0t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y24nt")
 }],
 "loop": true,
 "name": &"default",
@@ -101,10 +122,11 @@ tile_name = "Flak Cannon"
 activation_description = ""
 description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]target[/color], +1 for every surrounding tile, then [color=orange]give[/color] them the die"
 rarity = 0
-textures = SubResource("SpriteFrames_m1j0p")
-uses_per_turn = -1
+textures = SubResource("SpriteFrames_8q7m7")
+uses_per_turn = 3
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi"), SubResource("Resource_m1j0p")])
 effect_chain = SubResource("Resource_4kv0t")
 event_responses = Dictionary[ExtResource("9_sndgu"), ExtResource("8_m1j0p")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

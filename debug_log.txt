@@ -1,4 +1,13 @@
-[14:13:24] Debug logger initialized
-[14:13:24] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres
-[14:13:24] Starting scenario
-[14:13:24] Starting combat
+[21:27:59] Debug logger initialized
+[21:27:59] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres
+[21:27:59] Starting scenario
+[21:28:09] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres
+[21:28:09] Starting scenario
+[21:28:09] Starting combat
+[21:28:21] Player turn over
+[21:28:22] Enemy Disabler Drone performed action: 
+[21:28:22] Enemy Disabler Drone performed action: Shield Burst
+[21:28:23] Enemy Disabler Drone performed action: 
+[21:28:24] Enemy Disabler Drone performed action: Shield Burst
+[21:28:25] Enemy Disabler Drone performed action: 
+[21:28:25] Enemy turn over

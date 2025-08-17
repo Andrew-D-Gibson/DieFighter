@@ -11,7 +11,7 @@ enum DragState {
 	MOVING_WITH_CODE,
 	DRAGGING
 }
-var state: DragState = DragState.DEFAULT
+@export var state: DragState = DragState.DEFAULT
 
 var dragging_allowed: bool = true
 

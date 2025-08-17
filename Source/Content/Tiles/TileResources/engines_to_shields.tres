@@ -1,11 +1,10 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://b2ewisub2832j"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=31 format=3 uid="uid://b2ewisub2832j"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_wsqrt"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_23tjy"]
 [ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="3_4h3ei"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_r846u"]
 [ext_resource type="Script" uid="uid://ddrix6gyj2wqb" path="res://Source/Content/Effects/AmountModifiers/set_amount_to_engines.gd" id="3_u10cf"]
-[ext_resource type="Texture2D" uid="uid://xjta3od7oc61" path="res://Assets/Textures/Tiles/emergency_transfer.png" id="4_23tjy"]
 [ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="4_c0x8g"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_lpymo"]
 [ext_resource type="Script" uid="uid://djgfuy5re3k6t" path="res://Source/Content/Effects/AmountModifiers/negative_amount_effect.gd" id="5_dtoei"]
@@ -15,6 +14,7 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_c0x8g"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_yhkpl"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="11_yhkpl"]
+[ext_resource type="Texture2D" uid="uid://blp5toagotc5x" path="res://Assets/Textures/Tiles/BlueTiles/emergency_transfer-Sheet.png" id="15_4h3ei"]
 
 [sub_resource type="Resource" id="Resource_r846u"]
 script = ExtResource("1_wsqrt")
@@ -86,11 +86,22 @@ script = ExtResource("8_c0x8g")
 effects = Array[ExtResource("2_23tjy")]([SubResource("Resource_slehp"), SubResource("Resource_2bwjp"), SubResource("Resource_yhkpl"), SubResource("Resource_2h6rw"), SubResource("Resource_ubmp7"), SubResource("Resource_4h3ei"), SubResource("Resource_ougyd"), SubResource("Resource_dymuh"), SubResource("Resource_wggto")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_lpymo"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_ougyd"]
+atlas = ExtResource("15_4h3ei")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_admec"]
+atlas = ExtResource("15_4h3ei")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dymuh"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_23tjy")
+"texture": SubResource("AtlasTexture_ougyd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_admec")
 }],
 "loop": true,
 "name": &"default",
@@ -103,10 +114,11 @@ tile_name = "Emergency Transfer"
 activation_description = ""
 description = "(die_6) -> Turn all [color=purple]engine charge[/color] into [color=blue]shields[/color], then [color=orange]give[/color] die to [color=purple]random enemy[/color]"
 rarity = 0
-textures = SubResource("SpriteFrames_lpymo")
-uses_per_turn = -1
+textures = SubResource("SpriteFrames_dymuh")
+uses_per_turn = 1
 activation_checks = Array[ExtResource("1_wsqrt")]([SubResource("Resource_r846u"), SubResource("Resource_u10cf")])
 effect_chain = SubResource("Resource_admec")
 event_responses = Dictionary[ExtResource("11_yhkpl"), ExtResource("8_c0x8g")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

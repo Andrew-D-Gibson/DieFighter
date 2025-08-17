@@ -10,6 +10,7 @@ extends Resource
 @export var money: int
 
 @export var tile_locations: Dictionary[Vector2i, TileResource]
+@export var deck_of_tiles: Array[TileResource]
 
 @export_category('Map Info')
 @export var current_scenario_index: int

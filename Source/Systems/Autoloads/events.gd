@@ -35,6 +35,8 @@ signal choice_made(choice_index: int)
 signal targeting_computer_retargeted()
 signal tile_activation_complete()
 
+signal hand_option_unlock(option_num: int)
+signal add_tile_to_discard(tile: Tile)
 
 # Game Events
 signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)
@@ -43,6 +45,7 @@ signal player_health_hit()
 signal player_shields_hit()
 signal engine_charge_changed()
 signal error_text_popup(text: String, global_pos: Vector2)
+signal player_out_of_dice()
 
 # Game Sequencing Events
 signal jump()

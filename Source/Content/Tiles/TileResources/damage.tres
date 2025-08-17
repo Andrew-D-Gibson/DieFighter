@@ -1,7 +1,6 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=24 format=3 uid="uid://hgsmejq8gdrl"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=27 format=3 uid="uid://hgsmejq8gdrl"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_q4v50"]
-[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="2_mkcsn"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_gjhi3"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="3_lbtrd"]
 [ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="3_ugtd2"]
@@ -12,6 +11,7 @@
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_ugtd2"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_2fv8l"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_wqepc"]
+[ext_resource type="Texture2D" uid="uid://ol4twtia37vf" path="res://Assets/Textures/Tiles/RedTiles/damage-Sheet.png" id="12_gjhi3"]
 
 [sub_resource type="Resource" id="Resource_mkcsn"]
 script = ExtResource("1_q4v50")
@@ -66,15 +66,36 @@ script = ExtResource("7_mkcsn")
 effects = Array[ExtResource("3_lbtrd")]([SubResource("Resource_oji76"), SubResource("Resource_2fv8l"), SubResource("Resource_wqepc"), SubResource("Resource_ugtd2"), SubResource("Resource_gjhi3"), SubResource("Resource_v0xsr")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_q4v50"]
-atlas = ExtResource("2_mkcsn")
+[sub_resource type="AtlasTexture" id="AtlasTexture_v0xsr"]
+atlas = ExtResource("12_gjhi3")
 region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_mkcsn"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_28674"]
+atlas = ExtResource("12_gjhi3")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2fv8l"]
+atlas = ExtResource("12_gjhi3")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oji76"]
+atlas = ExtResource("12_gjhi3")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_a2kih"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_q4v50")
+"texture": SubResource("AtlasTexture_v0xsr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_28674")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2fv8l")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oji76")
 }],
 "loop": true,
 "name": &"default",
@@ -87,8 +108,8 @@ tile_name = "Dice Cannon"
 activation_description = ""
 description = "[color=yellow]Any die[/color] -> Deal [color=red]X damage[/color] to [color=purple]target[/color], then [color=orange]give[/color] them the die"
 rarity = 1
-textures = SubResource("SpriteFrames_mkcsn")
-uses_per_turn = -1
+textures = SubResource("SpriteFrames_a2kih")
+uses_per_turn = 3
 activation_checks = Array[ExtResource("1_q4v50")]([SubResource("Resource_mkcsn"), SubResource("Resource_e261g")])
 effect_chain = SubResource("Resource_28674")
 event_responses = Dictionary[ExtResource("8_wqepc"), ExtResource("7_mkcsn")]({})

@@ -61,6 +61,7 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 		else:
 			reward = tile_scene.instantiate()
 			reward.tile_resource = possible_tile_rewards.pick_random()
+			reward.can_accept_dice.enabled = false
 			
 			# Remove the chosen resource from the "possible" list so there's no repeats
 			possible_tile_rewards.erase(reward.tile_resource)
@@ -90,7 +91,9 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	
 	
 	if chosen_reward is Tile:
+		chosen_reward.draggable.dragging_allowed = false
 		chosen_reward.draggable.floating_enabled = false
+		chosen_reward.can_accept_dice.enabled = true
 		chosen_reward.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
 		chosen_reward.reparent(Globals.tile_grid, true)
 		

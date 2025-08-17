@@ -5,6 +5,7 @@ enum EventType {
 	ON_TURN_START,
 	ON_TILE_PUSHED,
 	ON_TILE_MANUALLY_MOVED,
+	ON_JUMP,
 }
 
 @export var event: EventType

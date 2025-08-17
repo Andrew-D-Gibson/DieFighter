@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=23 format=3 uid="uid://fvyrur7iway6"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=25 format=3 uid="uid://fvyrur7iway6"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_q8v5r"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_5a1es"]
@@ -10,8 +10,8 @@
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_1rls6"]
 [ext_resource type="Script" uid="uid://dfw5ioetwloty" path="res://Source/Content/Effects/DiceValueChangers/reroll_all_dice_effect.gd" id="5_iesjq"]
 [ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="6_1rls6"]
-[ext_resource type="Texture2D" uid="uid://crj0u38nbo77y" path="res://Assets/Textures/Tiles/chaos_explosion.png" id="6_rsbqf"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_gneyo"]
+[ext_resource type="Texture2D" uid="uid://cnuq1lr0k28xm" path="res://Assets/Textures/Tiles/GreenTiles/chaos_explosion-Sheet.png" id="12_1rls6"]
 
 [sub_resource type="Resource" id="Resource_il8a7"]
 script = ExtResource("1_q8v5r")
@@ -59,15 +59,29 @@ script = ExtResource("3_asido")
 effects = Array[ExtResource("2_asido")]([SubResource("Resource_h48ea"), SubResource("Resource_iesjq"), SubResource("Resource_gneyo"), SubResource("Resource_iso42"), SubResource("Resource_2itrs"), SubResource("Resource_c732t")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_h48ea"]
-atlas = ExtResource("6_rsbqf")
+[sub_resource type="AtlasTexture" id="AtlasTexture_gneyo"]
+atlas = ExtResource("12_1rls6")
 region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_iesjq"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_iso42"]
+atlas = ExtResource("12_1rls6")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2itrs"]
+atlas = ExtResource("12_1rls6")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_c732t"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_h48ea")
+"texture": SubResource("AtlasTexture_gneyo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_iso42")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2itrs")
 }],
 "loop": true,
 "name": &"default",
@@ -80,10 +94,11 @@ tile_name = "Chaos Explosion"
 activation_description = ""
 description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to all ships, [color=green]re-roll[/color] all dice, then [color=orange]give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
-textures = SubResource("SpriteFrames_iesjq")
-uses_per_turn = -1
+textures = SubResource("SpriteFrames_c732t")
+uses_per_turn = 2
 activation_checks = Array[ExtResource("1_q8v5r")]([SubResource("Resource_il8a7")])
 effect_chain = SubResource("Resource_6u12h")
 event_responses = Dictionary[ExtResource("2_5a1es"), ExtResource("3_asido")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

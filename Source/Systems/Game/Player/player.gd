@@ -147,6 +147,7 @@ func _process(_delta: float) -> void:
 func _check_for_end_of_turn() -> void:
 	if len(dice_manager.queue) == 0:
 		end_turn_button.visible = true
+		Events.player_out_of_dice.emit()
 	else:
 		end_turn_button.visible = false
 
@@ -200,6 +201,8 @@ func _start_scenario() -> void:
 	_delete_existing_dice()
 	await get_tree().create_timer(time_between_die_spawns).timeout
 	spawn_dice()
+	
+	_start_player_turn()
 
 
 func end_turn() -> void:

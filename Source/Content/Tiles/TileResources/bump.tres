@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://cyyaosauc8fk" path="res://Source/Content/Effects/DiceValueChangers/change_activator_to_value_effect.gd" id="4_8xact"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_m7a5a"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_0ono8"]
-[ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/bump-Sheet.png" id="7_0ono8"]
+[ext_resource type="Texture2D" uid="uid://4yt3bqsgt5ls" path="res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png" id="10_7xmxb"]
 
 [sub_resource type="Resource" id="Resource_7xmxb"]
 script = ExtResource("1_u36sv")
@@ -54,36 +54,36 @@ script = ExtResource("3_5xcxx")
 effects = Array[ExtResource("2_m7a5a")]([SubResource("Resource_pmkt1"), SubResource("Resource_8ixi3"), SubResource("Resource_0ono8"), SubResource("Resource_gm6wk")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_gm6wk"]
-atlas = ExtResource("7_0ono8")
+[sub_resource type="AtlasTexture" id="AtlasTexture_c3unh"]
+atlas = ExtResource("10_7xmxb")
 region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_8ixi3"]
-atlas = ExtResource("7_0ono8")
+[sub_resource type="AtlasTexture" id="AtlasTexture_pmkt1"]
+atlas = ExtResource("10_7xmxb")
 region = Rect2(24, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_4ge7v"]
-atlas = ExtResource("7_0ono8")
+[sub_resource type="AtlasTexture" id="AtlasTexture_u271i"]
+atlas = ExtResource("10_7xmxb")
 region = Rect2(48, 0, 24, 24)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_0lpjh"]
-atlas = ExtResource("7_0ono8")
+[sub_resource type="AtlasTexture" id="AtlasTexture_gm6wk"]
+atlas = ExtResource("10_7xmxb")
 region = Rect2(72, 0, 24, 24)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_j21c8"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_8ixi3"]
 animations = [{
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_c3unh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pmkt1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_u271i")
+}, {
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_gm6wk")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_8ixi3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4ge7v")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_0lpjh")
 }],
 "loop": true,
 "name": &"default",
@@ -96,7 +96,7 @@ tile_name = "Bump"
 activation_description = ""
 description = "[color=yellow]Die smaller than[/color] (die_6) -> Adds 1 to the die's value"
 rarity = 0
-textures = SubResource("SpriteFrames_j21c8")
+textures = SubResource("SpriteFrames_8ixi3")
 uses_per_turn = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])
 effect_chain = SubResource("Resource_u271i")

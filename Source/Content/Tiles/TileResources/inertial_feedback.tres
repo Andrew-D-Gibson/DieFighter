@@ -10,10 +10,10 @@
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="5_gc5g0"]
 [ext_resource type="Script" uid="uid://diu3gmqfwq03x" path="res://Source/Content/Effects/TileDataChangers/set_tile_data_effect.gd" id="6_abjp1"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="6_gc5g0"]
-[ext_resource type="Texture2D" uid="uid://b3m2kwdglr6qg" path="res://Assets/Textures/Tiles/inertial_feedback.png" id="7_4jmui"]
 [ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="7_vnj2y"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_5agfu"]
-[ext_resource type="Script" uid="uid://oi6ed2m5o7hj" path="res://Source/Content/Effects/TileDataChangers/increment_tile_data_effect.gd" id="11_pg0qx"]
+[ext_resource type="Script" uid="uid://oi6ed2m5o7hj" path="res://Source/Content/Effects/TileDataChangers/add_to_tile_data_effect.gd" id="11_pg0qx"]
+[ext_resource type="Texture2D" uid="uid://ca1da602bbk0o" path="res://Assets/Textures/Tiles/RedTiles/inertial_feedback.png" id="14_gc5g0"]
 
 [sub_resource type="Resource" id="Resource_g6dxp"]
 script = ExtResource("1_gewqt")
@@ -92,15 +92,15 @@ script = ExtResource("3_573qy")
 effects = Array[ExtResource("2_v6rtc")]([SubResource("Resource_2qpsl")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_gc5g0"]
-atlas = ExtResource("7_4jmui")
+[sub_resource type="AtlasTexture" id="AtlasTexture_abjp1"]
+atlas = ExtResource("14_gc5g0")
 region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_abjp1"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_vnj2y"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_gc5g0")
+"texture": SubResource("AtlasTexture_abjp1")
 }],
 "loop": true,
 "name": &"default",
@@ -113,7 +113,7 @@ tile_name = "Inertial Feedback"
 activation_description = ""
 description = "(die_6) -> Deal [color=red]1 damage[/color] to [color=purple]all other ships[/color] per tile moved ([data]tiles_moved[/data]), then reset. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
-textures = SubResource("SpriteFrames_abjp1")
+textures = SubResource("SpriteFrames_vnj2y")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_gewqt")]([SubResource("Resource_g6dxp"), SubResource("Resource_fql6y")])
 effect_chain = SubResource("Resource_ioiq2")
@@ -121,4 +121,5 @@ event_responses = Dictionary[ExtResource("2_vn5ol"), ExtResource("3_573qy")]({
 SubResource("Resource_ypikh"): SubResource("Resource_sjv0n")
 })
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

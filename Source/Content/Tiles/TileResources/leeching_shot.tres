@@ -1,10 +1,9 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=24 format=3 uid="uid://dcduuaflkbl3p"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://dcduuaflkbl3p"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u0h2o"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_5xqwv"]
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="3_4l56y"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_cy0vr"]
-[ext_resource type="Texture2D" uid="uid://hy0m1lwpojv4" path="res://Assets/Textures/Tiles/leeching_shot.png" id="4_5xqwv"]
 [ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="4_k21vw"]
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="5_yteeg"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="6_r5f85"]
@@ -12,6 +11,7 @@
 [ext_resource type="Script" uid="uid://l0ptnkc15dl0" path="res://Source/Content/Effects/AttributeChangers/heal_effect.gd" id="8_c7e3k"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="9_r2sor"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="10_c7e3k"]
+[ext_resource type="Texture2D" uid="uid://b3wyxbw8xnqg5" path="res://Assets/Textures/Tiles/RedTiles/leeching_shot-Sheet.png" id="12_c7e3k"]
 
 [sub_resource type="Resource" id="Resource_r2sor"]
 script = ExtResource("1_u0h2o")
@@ -70,11 +70,43 @@ script = ExtResource("9_r2sor")
 effects = Array[ExtResource("2_5xqwv")]([SubResource("Resource_c7e3k"), SubResource("Resource_y0stg"), SubResource("Resource_nhjdj"), SubResource("Resource_uauxn"), SubResource("Resource_xm7fs"), SubResource("Resource_qp02v")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_cy0vr"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_y0stg"]
+atlas = ExtResource("12_c7e3k")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nhjdj"]
+atlas = ExtResource("12_c7e3k")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_uauxn"]
+atlas = ExtResource("12_c7e3k")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xm7fs"]
+atlas = ExtResource("12_c7e3k")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qp02v"]
+atlas = ExtResource("12_c7e3k")
+region = Rect2(96, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_bu7s0"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("4_5xqwv")
+"texture": SubResource("AtlasTexture_y0stg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nhjdj")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_uauxn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xm7fs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qp02v")
 }],
 "loop": true,
 "name": &"default",
@@ -87,10 +119,11 @@ tile_name = "Leeching Shot"
 activation_description = ""
 description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color] to [color=purple]target[/color] and [color=green]repair 2 hull[/color], then [color=orange]give[/color] them the die"
 rarity = 1
-textures = SubResource("SpriteFrames_cy0vr")
-uses_per_turn = -1
+textures = SubResource("SpriteFrames_bu7s0")
+uses_per_turn = 4
 activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r2sor"), SubResource("Resource_0lgwc"), SubResource("Resource_swlve")])
 effect_chain = SubResource("Resource_bu7s0")
 event_responses = Dictionary[ExtResource("10_c7e3k"), ExtResource("9_r2sor")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

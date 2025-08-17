@@ -13,11 +13,6 @@ var _saturation_tween: Tween
 	set(new_value):
 		uses_remaining = new_value
 
-		if uses_remaining == 0:
-			set_gray_out(true)
-		else:
-			set_gray_out(false)
-
 		if uses_remaining == -1:
 			sprite_frames.frame = 0
 		else:
@@ -34,6 +29,7 @@ var effect_data: Dictionary[String, int]
 @export var shakeable: Shakeable
 @export var sprite_frames: AnimatedSprite2D
 @export var dice_queue: DiceQueue
+@export var can_accept_dice: CanAcceptDice
 
 static var dice_activation_queue: Array[Dice] = []
 
@@ -55,7 +51,15 @@ func _ready() -> void:
 	Events.jump.connect(func() -> void:
 		dice_activation_queue.clear()	
 	)
-	Events.start_scenario.connect(reset_uses_remaining)
+	#Events.start_scenario.connect(reset_uses_remaining)
+	Events.player_turn_start.connect(func() -> void:
+		if uses_remaining != -1:
+			uses_remaining -= 1	
+			
+		if uses_remaining == 0:
+			await set_gray_out(true)
+			Events.add_tile_to_discard.emit(self)
+	)
 	_connect_tile_event_signals()
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
@@ -71,6 +75,9 @@ func _connect_tile_event_signals() -> void:
 	Events.tile_manually_moved.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_MANUALLY_MOVED)
 	)
+	Events.jump.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_JUMP)	
+	)	
 
 
 func _set_up_resource() -> void:
@@ -143,10 +150,7 @@ func _generate_effect_variables() -> EffectVariables:
 	return effect_variables
 	
 
-func _activate(activator_die: Dice = null) -> void:
-	if uses_remaining != -1:
-		uses_remaining -= 1
-		
+func _activate(activator_die: Dice = null) -> void:		
 	# Tween the activating die to the slot 
 	if activator_die:
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
@@ -181,8 +185,15 @@ func _activate(activator_die: Dice = null) -> void:
 	dice_activation_queue[0] and \
 	dice_activation_queue[0] == activator_die:
 		dice_activation_queue.remove_at(0)
-
+			
+	#if uses_remaining != -1:
+		#uses_remaining -= 1
+		
 	Events.tile_activation_complete.emit()
+		
+	#if uses_remaining == 0:
+		#await set_gray_out(true)
+		#Events.add_tile_to_discard.emit(self)
 
 
 func reset_uses_remaining() -> void:
@@ -290,3 +301,5 @@ func set_gray_out(gray_out: bool) -> void:
 		outer_radius,
 		tween_time
 	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	
+	await _saturation_tween.finished

@@ -26,13 +26,8 @@ func _load_tile_resources() -> void:
 	
 	
 func get_possible_tile_rewards() -> Array[TileResource]:
-	var player_tiles = Globals.tile_grid.tile_locations.values()
-	
-	var player_tile_resources = []
-	for tile in player_tiles:
-		player_tile_resources.append(tile.tile_resource)
-		
-	return Utils.array_while_excluding(_all_tile_resources, player_tile_resources)
+	var player_tiles = Globals.deck_manager.deck_at_start_of_scenario
+	return Utils.array_while_excluding(_all_tile_resources, player_tiles)
 		
 
 func _spawn_reward(pos: Vector2, money: int, num_of_rewards: int, dice_probability: float) -> void:

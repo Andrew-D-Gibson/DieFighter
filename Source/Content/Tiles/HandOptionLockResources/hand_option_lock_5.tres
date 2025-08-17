@@ -1,0 +1,74 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=19 format=3 uid="uid://bp1kmi1mq5arc"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_0hjpc"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_grg4t"]
+[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="3_cs7op"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="4_xiwiu"]
+[ext_resource type="Script" uid="uid://c1d050s65bu13" path="res://Source/Content/Effects/Misc/hand_option_unlock_effect.gd" id="5_vucli"]
+[ext_resource type="Script" uid="uid://co5jmx068j48c" path="res://Source/Content/Effects/Misc/destroy_parent_effect.gd" id="6_0hjpc"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="7_1bonu"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_im750"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="9_y5j6h"]
+[ext_resource type="Texture2D" uid="uid://b8th331es6mcx" path="res://Assets/Textures/TileDeckManager/HandOptionLocks/hand_option_lock-Sheet.png" id="10_8rt8y"]
+
+[sub_resource type="Resource" id="Resource_mlmom"]
+script = ExtResource("1_0hjpc")
+type = 1
+acceptable_values = Array[int]([5])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_lnkum"]
+script = ExtResource("3_cs7op")
+primary_effect = false
+metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
+
+[sub_resource type="Resource" id="Resource_22845"]
+script = ExtResource("4_xiwiu")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[sub_resource type="Resource" id="Resource_oeunn"]
+script = ExtResource("5_vucli")
+option_to_unlock = 5
+primary_effect = false
+metadata/_custom_type_script = "uid://c1d050s65bu13"
+
+[sub_resource type="Resource" id="Resource_grg4t"]
+script = ExtResource("6_0hjpc")
+primary_effect = false
+metadata/_custom_type_script = "uid://co5jmx068j48c"
+
+[sub_resource type="Resource" id="Resource_gq44x"]
+script = ExtResource("7_1bonu")
+effects = Array[ExtResource("2_grg4t")]([SubResource("Resource_lnkum"), SubResource("Resource_22845"), SubResource("Resource_oeunn"), SubResource("Resource_grg4t")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0hjpc"]
+atlas = ExtResource("10_8rt8y")
+region = Rect2(160, 0, 40, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hmeuc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0hjpc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("9_y5j6h")
+tile_name = "LOCKED"
+activation_description = ""
+description = "(die_5) -> [color=green]Unlock[/color] this tile, then [color=orange]give[/color] die to [color=purple]target[/color]"
+rarity = 0
+textures = SubResource("SpriteFrames_hmeuc")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_0hjpc")]([SubResource("Resource_mlmom")])
+effect_chain = SubResource("Resource_gq44x")
+event_responses = Dictionary[ExtResource("8_im750"), ExtResource("7_1bonu")]({})
+dragging_allowed = false
+max_dice_in_queue = 1
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -1,0 +1,86 @@
+[gd_scene load_steps=19 format=3 uid="uid://4cq11kckae42"]
+
+[ext_resource type="Script" uid="uid://dm60y6aht2xot" path="res://Source/Systems/Game/TileDeckManager/HandOptionLock/hand_option_lock.gd" id="1_kicuj"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_o6y4m"]
+[ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="2_oy6ou"]
+[ext_resource type="Resource" uid="uid://bx4odpsdcvp76" path="res://Source/Content/Tiles/HandOptionLockResources/hand_option_lock_1.tres" id="3_h0jbv"]
+[ext_resource type="Shader" uid="uid://bri5htw7mbdjy" path="res://Assets/Shaders/tile.gdshader" id="4_0c803"]
+[ext_resource type="Resource" uid="uid://dnc4fmct61nhc" path="res://Source/Content/Tiles/HandOptionLockResources/hand_option_lock_2.tres" id="4_re51x"]
+[ext_resource type="Texture2D" uid="uid://b8th331es6mcx" path="res://Assets/Textures/TileDeckManager/HandOptionLocks/hand_option_lock-Sheet.png" id="5_i8n3y"]
+[ext_resource type="Resource" uid="uid://d2iiq2pdhjdl" path="res://Source/Content/Tiles/HandOptionLockResources/hand_option_lock_3.tres" id="5_lv42u"]
+[ext_resource type="Resource" uid="uid://b84xvos305wt" path="res://Source/Content/Tiles/HandOptionLockResources/hand_option_lock_4.tres" id="6_edlrl"]
+[ext_resource type="Resource" uid="uid://bp1kmi1mq5arc" path="res://Source/Content/Tiles/HandOptionLockResources/hand_option_lock_5.tres" id="7_0dtxr"]
+[ext_resource type="Resource" uid="uid://d0n8yftvldu5d" path="res://Source/Content/Tiles/HandOptionLockResources/hand_option_lock_6.tres" id="8_freky"]
+
+[sub_resource type="Gradient" id="Gradient_u74ai"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.807843, 0.941176, 0.945098, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gdpre"]
+gradient = SubResource("Gradient_u74ai")
+
+[sub_resource type="Gradient" id="Gradient_u2tyi"]
+offsets = PackedFloat32Array(0, 0.51141, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fb7d0"]
+gradient = SubResource("Gradient_u2tyi")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nvs5i"]
+resource_local_to_scene = true
+shader = ExtResource("4_0c803")
+shader_parameter/outer_radius = 10.0
+shader_parameter/strength = 0.0
+shader_parameter/highlight_enabled = false
+shader_parameter/vertical_gradient = SubResource("GradientTexture1D_fb7d0")
+shader_parameter/color_gradient = SubResource("GradientTexture1D_gdpre")
+shader_parameter/size_effect = 3.0
+shader_parameter/speed = 1.0
+shader_parameter/highlight_strength = 0.5
+shader_parameter/pause_duration = 2.0
+shader_parameter/texture_size = Vector2(24, 24)
+shader_parameter/brightness_max = 1.4
+shader_parameter/brightness_period = 3.0
+shader_parameter/time_offset = 0.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oeunn"]
+atlas = ExtResource("5_i8n3y")
+region = Rect2(0, 0, 40, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hmeuc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oeunn")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="HandOptionLock" type="Node2D"]
+z_index = 2
+script = ExtResource("1_kicuj")
+hand_option_lock_tile_resources = Array[ExtResource("2_o6y4m")]([ExtResource("3_h0jbv"), ExtResource("4_re51x"), ExtResource("5_lv42u"), ExtResource("6_edlrl"), ExtResource("7_0dtxr"), ExtResource("8_freky")])
+
+[node name="Tile" parent="." instance=ExtResource("2_oy6ou")]
+tile_resource = ExtResource("3_h0jbv")
+
+[node name="Draggable" parent="Tile" index="0"]
+state = 2
+
+[node name="CollisionShape2D" parent="Tile/Draggable" index="0"]
+visible = true
+
+[node name="CollisionShape2D" parent="Tile/Clickable" index="0"]
+visible = true
+
+[node name="AnimatedSprite2D" parent="Tile" index="2"]
+material = SubResource("ShaderMaterial_nvs5i")
+position = Vector2(-12, -1)
+sprite_frames = SubResource("SpriteFrames_hmeuc")
+
+[node name="CollisionShape2D" parent="Tile/CanAcceptDice" index="0"]
+visible = true
+
+[editable path="Tile"]
