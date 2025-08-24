@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b7bjam8qmm6xu"
-path="res://.godot/imported/tile_blank.png-5f9089df0d77629e122eacfb23faa1ed.ctex"
+uid="uid://cv6klxk0knbg2"
+path="res://.godot/imported/lockout_vortex.png-b5785b28948be06dcca9e213bf7a4b98.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/DeckManager/tile_blank.png"
-dest_files=["res://.godot/imported/tile_blank.png-5f9089df0d77629e122eacfb23faa1ed.ctex"]
+source_file="res://Assets/SpriteMancer/Lockout/lockout_vortex.png"
+dest_files=["res://.godot/imported/lockout_vortex.png-b5785b28948be06dcca9e213bf7a4b98.ctex"]
 
 [params]
 

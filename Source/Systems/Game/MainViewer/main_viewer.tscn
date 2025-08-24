@@ -18,7 +18,7 @@
 [ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/Systems/Game/CommsManager/comms_manager.tscn" id="12_ctpxn"]
 [ext_resource type="Shader" uid="uid://87xg1k4wv3ob" path="res://Assets/Shaders/map_crt_shader.gdshader" id="13_fa2si"]
 [ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/Systems/Game/Map/map.tscn" id="13_l0r2u"]
-[ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres" id="14_mm1jt"]
+[ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/empty_scenario.tres" id="14_mm1jt"]
 [ext_resource type="Texture2D" uid="uid://bo66e1kj2f37w" path="res://Assets/Textures/MainViewer/EngineCharger/under.png" id="17_fa2si"]
 [ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="17_xbbhg"]
 [ext_resource type="Texture2D" uid="uid://dxkhg5oasm2mr" path="res://Assets/Textures/MainViewer/EngineCharger/fill.png" id="18_foiuu"]

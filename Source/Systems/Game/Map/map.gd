@@ -64,7 +64,9 @@ func _update_ui() -> void:
 	
 	if Globals.player.engine_charge >= Globals.player.max_engine_charge:
 		left_arrow_tile.set_highlight(true)
+		left_arrow_tile.set_gray_out(false)
 		right_arrow_tile.set_highlight(true)
+		right_arrow_tile.set_gray_out(false)
 	else:
 		left_arrow_tile.set_highlight(false)
 		left_arrow_tile.set_gray_out(true)

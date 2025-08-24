@@ -10,7 +10,8 @@
 
 [sub_resource type="Resource" id="Resource_x5p0h"]
 script = ExtResource("6_6w0ix")
-money = 100
+min_money = 36
+max_money = 48
 num_of_rewards = 4
 dice_probability = 0.5
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
@@ -29,4 +30,5 @@ map_icon = ExtResource("1_7qv0j")
 starting_screen = 0
 background_resource = ExtResource("1_wh6f6")
 starting_enemies = Array[ExtResource("2_7qv0j")]([SubResource("Resource_fly3e")])
+rewards = Dictionary[int, ExtResource("6_6w0ix")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

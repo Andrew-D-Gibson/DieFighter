@@ -35,8 +35,8 @@ func get_possible_tile_rewards() -> Array[TileResource]:
 	return Utils.array_while_excluding(_all_tile_resources, player_tile_resources)
 		
 
-func _spawn_reward(pos: Vector2, money: int, num_of_rewards: int, dice_probability: float) -> void:
+func _spawn_reward(pos: Vector2, reward_resource: RewardResource) -> void:
 	var reward := reward_scene.instantiate()
 	add_child(reward)
 	reward.global_position = pos
-	reward.give_reward(money, num_of_rewards, dice_probability)
+	reward.give_reward(reward_resource)

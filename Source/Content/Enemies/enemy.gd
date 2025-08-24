@@ -111,9 +111,7 @@ func _on_death() -> void:
 	# Spawn rewards
 	Events.spawn_reward.emit(
 		global_position, 
-		reward_resource.money, 
-		reward_resource.num_of_rewards,
-		reward_resource.dice_probability
+		reward_resource
 	)
 	
 	await graphics_manager.play_death_animation()
@@ -184,8 +182,6 @@ func generate_turn_actions() -> void:
 ## Uses the value of the first die in the queue to perform the 
 ## pre-chosen action
 func act_with_first_die() -> void:
-	print(turn_actions)
-	
 	# Don't act if there's no dice in the queue
 	if len(dice_manager.queue) == 0:
 		return
@@ -193,14 +189,6 @@ func act_with_first_die() -> void:
 	# Get the first die from the queue
 	var die := dice_manager.queue[0]
 	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-	
-	print(die.value)
-	print(turn_actions[die.value - 1])
-	print('Effects: ')
-	for effect in turn_actions[die.value - 1].effect_chain.effects:
-		if effect.primary_effect:
-			print(effect.amount)
-	print('----')
 	
 	# Get the action for the chosen die
 	var action := turn_actions[die.value - 1]

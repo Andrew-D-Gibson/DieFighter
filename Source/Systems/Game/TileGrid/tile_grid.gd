@@ -1,14 +1,18 @@
 class_name TileGrid
 extends Node2D
 
-var grid_width: int = 5
-var grid_height: int = 3
-var grid_spacing: int = 24
+@export var grid_width: int = 5
+@export var grid_height: int = 3
+@export var grid_spacing: int = 24
 
+var tile_scene: PackedScene = preload("uid://delq7kb5loqt2")
 var tile_locations: Dictionary[Vector2i, Tile] = {}
-@export var tile_scene: PackedScene
+
+var lockout_status_scene: PackedScene = preload("uid://be4hfdy3e3xfw")
+var lockout_locations: Dictionary[Vector2i, LockoutStatus] = {}
 
 @export var empty_cell_texture: Texture2D
+
 
 func _ready() -> void:
 	Globals.tile_grid = self

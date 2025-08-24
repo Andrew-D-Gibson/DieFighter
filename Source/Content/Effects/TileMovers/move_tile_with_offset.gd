@@ -18,7 +18,6 @@ func play(effect_variables: EffectVariables) -> void:
 
 	var new_pos: Vector2i = source_tile_pos + offset
 	if not Globals.tile_grid.is_grid_pos_valid(new_pos):
-		print(new_pos)
 		printerr("MoveTileWithOffsetEffect trying to move to an invalid position!")
 		return
 		

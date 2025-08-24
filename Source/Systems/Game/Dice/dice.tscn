@@ -24,7 +24,7 @@
 size = Vector2(12, 12)
 
 [node name="Dice" type="Node2D" node_paths=PackedStringArray("draggable") groups=["Dice"]]
-z_index = 7
+z_index = 10
 script = ExtResource("1_ipsek")
 holographic_shader = ExtResource("2_apkgm")
 default_shader = ExtResource("3_6ouv6")

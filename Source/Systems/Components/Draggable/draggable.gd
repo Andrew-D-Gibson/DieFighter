@@ -13,7 +13,7 @@ enum DragState {
 }
 var state: DragState = DragState.DEFAULT
 
-var dragging_allowed: bool = true
+@export var dragging_allowed: bool = true
 
 var follow_strength: float = 20
 var home_position: Vector2 :

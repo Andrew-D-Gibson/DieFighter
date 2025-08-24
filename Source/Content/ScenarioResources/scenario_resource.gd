@@ -5,3 +5,5 @@ extends Resource
 @export var starting_screen: MainViewer.ScreenShowing
 @export var background_resource: BackgroundResource
 @export var starting_enemies: Array[EnemyStateRewardResource]
+
+@export var rewards: Dictionary[ScenarioManager.Faction, RewardResource]

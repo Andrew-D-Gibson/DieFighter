@@ -16,13 +16,14 @@ func _ready() -> void:
 	)
 	
 
-func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> void:
+func give_reward(reward_resource: RewardResource) -> void:
 	#Globals.player.money += money
+	var money: int = randi_range(reward_resource.min_money, reward_resource.max_money)
 	_spawn_money_particles(money)
 	
 	await get_tree().create_timer(2).timeout
 	
-	if num_of_rewards == 0:
+	if reward_resource.num_of_rewards == 0:
 		queue_free()
 		return
 		
@@ -39,14 +40,14 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 	
 	var reward_spacing: int = 26
 	
-	bounding_box.shape.size.x = reward_spacing * num_of_rewards
+	bounding_box.shape.size.x = reward_spacing * reward_resource.num_of_rewards
 	
-	var total_length := reward_spacing * (num_of_rewards - 1)
+	var total_length := reward_spacing * (reward_resource.num_of_rewards - 1)
 	var start_offset := -total_length / 2
 
 	var possible_tile_rewards = Globals.reward_manager.get_possible_tile_rewards()
 
-	for i in range(num_of_rewards):
+	for i in range(reward_resource.num_of_rewards):
 		var reward: Node2D
 		
 		# Give the player a dice instead of a tile if we can't fit another tile, 
@@ -54,7 +55,7 @@ func give_reward(money: int, num_of_rewards: int, dice_probability: float) -> vo
 		# or randomly otherwise
 		if Globals.tile_grid.find_available_grid_pos() == Vector2i(-1,-1)\
 		or len(possible_tile_rewards) == 0\
-		or randf() <= dice_probability:
+		or randf() <= reward_resource.dice_probability:
 			reward = dice_scene.instantiate()
 			
 		# Make a tile reward
@@ -109,10 +110,6 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 func _spawn_money_particles(amount: int) -> void:
 	var num_of_large_particles: int = floor(amount / MoneyParticle.money_amount.LARGE)
 	var num_of_small_particles: int = amount % MoneyParticle.money_amount.LARGE
-	
-	print('For amount: ', amount)
-	print('Spawning ', num_of_large_particles, ' large particles')
-	print('Spawning ', num_of_small_particles, ' small particles')
 	
 	for i: int in range(num_of_large_particles + num_of_small_particles):
 		var particle: MoneyParticle = money_particle_scene.instantiate()

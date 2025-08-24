@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ccde1iudy08ex"
-path="res://.godot/imported/background.png-cdbc59dbb6097ed17243740abec16b7f.ctex"
+uid="uid://ds47omiwgwwmj"
+path="res://.godot/imported/lockout.png-e14c90fcb1404005af7aa721d624281b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/DeckManager/background.png"
-dest_files=["res://.godot/imported/background.png-cdbc59dbb6097ed17243740abec16b7f.ctex"]
+source_file="res://Assets/Textures/Tiles/lockout.png"
+dest_files=["res://.godot/imported/lockout.png-e14c90fcb1404005af7aa721d624281b.ctex"]
 
 [params]
 

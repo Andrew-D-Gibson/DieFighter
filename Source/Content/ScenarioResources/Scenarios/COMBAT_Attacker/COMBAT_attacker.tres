@@ -6,11 +6,12 @@
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_u3vcg"]
 [ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="5_xibkc"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_57squ"]
-[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/pirate_combatant.tres" id="7_0nwix"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="7_xibkc"]
 
 [sub_resource type="Resource" id="Resource_vrd8y"]
 script = ExtResource("6_57squ")
-money = 14
+min_money = 12
+max_money = 16
 num_of_rewards = 3
 dice_probability = 0.0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
@@ -19,7 +20,7 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 script = ExtResource("2_nencf")
 enemy_resource = ExtResource("5_xibkc")
 spawning_path_location = 0.5
-starting_state = ExtResource("7_0nwix")
+starting_state = ExtResource("7_xibkc")
 reward_resource = SubResource("Resource_vrd8y")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
@@ -29,4 +30,5 @@ map_icon = ExtResource("2_u3vcg")
 starting_screen = 1
 background_resource = ExtResource("1_xibkc")
 starting_enemies = Array[ExtResource("2_nencf")]([SubResource("Resource_wdgmr")])
+rewards = Dictionary[int, ExtResource("6_57squ")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

@@ -1,6 +1,9 @@
 extends Control
 
 func _ready() -> void:
+	# Make this unpausable
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	
 	var angle_amount: int = 7
 	var tween_time: float = 1.5
 	

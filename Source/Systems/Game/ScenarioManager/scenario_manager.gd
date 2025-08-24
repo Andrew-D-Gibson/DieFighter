@@ -15,7 +15,8 @@ enum ScenarioEvent {
 
 enum Faction {
 	PIRATE,
-	CIVILIAN
+	CIVILIAN,
+	BOSS
 }
 
 
@@ -24,7 +25,7 @@ func _ready() -> void:
 	
 	Events.player_attacked_ship.connect(_handle_attack)
 	Events.enemy_left.connect(_handle_enemy_leaving)
-	
+
 	Events.combat_finished.connect(func() -> void:
 		Events.scenario_event.emit(ScenarioEvent.COMBAT_ENDED)
 	)
@@ -47,13 +48,21 @@ func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
 		other_faction_ships.erase(ship)
 		
 	if len(other_faction_ships) == 0:
+		var current_scenario: ScenarioResource = Globals.state_manager.get_current_scenario()
+		if current_scenario.rewards.keys().has(faction):
+			Events.spawn_reward.emit(
+				ship.global_position, 
+				current_scenario.rewards[faction]
+			)
+			
 		match faction:
 			Faction.PIRATE:
-				# TODO: This is super hacky, but for my playtest this is fine for now
-				if ship.enemy_resource.enemy_name == "Boss":
-					Events.scenario_event.emit(ScenarioEvent.BOSS_DEFEATED)
-				else:
-					Events.scenario_event.emit(ScenarioEvent.PIRATES_DEFEATED)
-				
+				Events.scenario_event.emit(ScenarioEvent.PIRATES_DEFEATED)
+					
 			Faction.CIVILIAN:
 				Events.scenario_event.emit(ScenarioEvent.CIVILIANS_DEFEATED)
+				
+			Faction.BOSS:
+				Events.scenario_event.emit(ScenarioEvent.BOSS_DEFEATED)
+				
+		

@@ -12,7 +12,6 @@ func _ready() -> void:
 	Events.load_scenario.connect(_check_for_combat_scenario)
 	Events.start_combat.connect(func():
 		Globals.player.engine_charge = 0
-		print('test')
 		_update_ui()
 	)
 	Events.combat_finished.connect(func():
@@ -59,9 +58,6 @@ func _update_ui() -> void:
 		
 	# The bar is 32 long and the head bar's maximum y is 2
 	var desired_head_ypos: float = 2 - (charge_proportion * 32)
-	print(desired_head_ypos)
-	print(fill_head.position) 
-	print('---')
 	if fill_head.position != Vector2(60, desired_head_ypos):
 		var tween_time: float = 0.25
 		var head_tween: Tween = get_tree().create_tween()

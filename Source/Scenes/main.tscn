@@ -1,4 +1,4 @@
-[gd_scene load_steps=46 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=45 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -29,15 +29,14 @@
 [ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/Systems/Game/MoneyIndicator/money_indicator.tscn" id="15_cshgf"]
 [ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/Systems/Game/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
 [ext_resource type="PackedScene" uid="uid://bq0eop4cxspu2" path="res://Source/Systems/Game/MainViewer/main_viewer.tscn" id="19_okrb4"]
-[ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/0_empty_scenario.tres" id="20_grfux"]
-[ext_resource type="Resource" uid="uid://dp6euwvjd2ren" path="res://Source/Content/ScenarioResources/Scenarios/Shop/0_shop.tres" id="21_oai2y"]
+[ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/empty_scenario.tres" id="20_grfux"]
+[ext_resource type="Resource" uid="uid://dp6euwvjd2ren" path="res://Source/Content/ScenarioResources/Scenarios/Shop/shop.tres" id="21_oai2y"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="22_tfyry"]
-[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/NormalCombat/0_pirate_combat.tres" id="23_6ebjm"]
-[ext_resource type="Resource" uid="uid://bf2p4youiejta" path="res://Source/Content/ScenarioResources/Scenarios/SingleCombat/0_single_combat.tres" id="24_7iud4"]
+[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres" id="23_6ebjm"]
+[ext_resource type="Resource" uid="uid://bf2p4youiejta" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres" id="24_7iud4"]
 [ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
-[ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/0_pirate_attacking_civilian.tres" id="25_o33d5"]
-[ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/SectorBoss/0_sector_boss.tres" id="26_aaucc"]
-[ext_resource type="PackedScene" uid="uid://cwrxiwoj45qqh" path="res://Source/Systems/Game/TileDeckManager/tile_deck_manager.tscn" id="34_ql5sb"]
+[ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
+[ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres" id="26_aaucc"]
 
 [sub_resource type="Animation" id="Animation_ooshj"]
 length = 0.001
@@ -145,6 +144,7 @@ shader_parameter/flash_amount = 0.0
 [node name="Main" type="Node2D"]
 
 [node name="GameStartAnimationPlayer" type="AnimationPlayer" parent="."]
+process_mode = 3
 libraries = {
 &"": SubResource("AnimationLibrary_xwceq")
 }
@@ -276,10 +276,6 @@ question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 
 [node name="ErrorPopupManager" parent="Systems" instance=ExtResource("4_oai2y")]
-
-[node name="TileDeckManager" parent="Systems" instance=ExtResource("34_ql5sb")]
-z_index = 1
-position = Vector2(36, 235)
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

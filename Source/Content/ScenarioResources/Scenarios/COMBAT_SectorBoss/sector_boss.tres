@@ -7,8 +7,7 @@
 [resource]
 script = ExtResource("2_73txg")
 dialogue = ""
-faction = 0
+faction = 2
 attitude = 2
-effects_on_enter = Array[ExtResource("1_rtubc")]([])
 transitions = Dictionary[int, ExtResource("3_8jyd4")]({})
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

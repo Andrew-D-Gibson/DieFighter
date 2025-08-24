@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="2_1cg12"]
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_4o1nx"]
-[ext_resource type="Resource" uid="uid://qo10lvm3ond" path="res://Source/Content/ScenarioResources/Scenarios/PiratesAttackingCivilian/civilian_betrayed.tres" id="4_1cg12"]
+[ext_resource type="Resource" uid="uid://qo10lvm3ond" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/civilian_betrayed.tres" id="4_1cg12"]
 
 [resource]
 script = ExtResource("2_1cg12")

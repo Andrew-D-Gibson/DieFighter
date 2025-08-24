@@ -1,8 +1,25 @@
-[gd_scene load_steps=4 format=3 uid="uid://b4bhqmwyiaq22"]
+[gd_scene load_steps=8 format=3 uid="uid://b4bhqmwyiaq22"]
 
 [ext_resource type="Script" uid="uid://bs4wmdp5e1fwu" path="res://Source/Systems/UI/GameOver/game_over.gd" id="1_i78pc"]
 [ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="1_p6ygr"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="3_ah4je"]
+[ext_resource type="Script" uid="uid://dejwpip3qhauo" path="res://Source/Systems/UI/button_rotator.gd" id="4_t5hyd"]
+[ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="5_64ib7"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e7dir"]
+atlas = ExtResource("5_64ib7")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_t5hyd"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e7dir")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="GameOver" type="Control"]
 layout_mode = 3
@@ -51,9 +68,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -158.0
-offset_top = -325.0
+offset_top = -536.0
 offset_right = -102.0
-offset_bottom = -293.0
+offset_bottom = -504.0
 grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(6, 6)
@@ -72,8 +89,34 @@ hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 [node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1"]
 text = "QUIT"
 
+[node name="ButtonRotator" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 964.0
+offset_top = 895.0
+offset_right = 1004.0
+offset_bottom = 935.0
+scale = Vector2(6, 6)
+script = ExtResource("4_t5hyd")
+
+[node name="WishlistButton" parent="ButtonRotator" instance=ExtResource("3_ah4je")]
+z_index = 5
+layout_mode = 0
+offset_left = -27.0
+offset_top = -6.0
+offset_right = 29.0
+offset_bottom = 8.0
+hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
+
+[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="0"]
+sprite_frames = SubResource("SpriteFrames_t5hyd")
+
+[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1"]
+text = "WISHLIST"
+
 [connection signal="pressed_within_window" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
 
 [editable path="VBoxContainer/MainMenuButton"]
 [editable path="VBoxContainer/QuitButton"]
+[editable path="ButtonRotator/WishlistButton"]
