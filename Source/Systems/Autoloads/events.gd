@@ -75,6 +75,10 @@ signal tile_manually_moved(tile: Tile)
 signal tile_pushed(tile: Tile)
 
 
+# Tile Grid Events
+signal add_status_to_grid_pos(grid_loc: Vector2i, status: GridStatusEffect)
+
+
 # Audio Events
 signal play_sound(sound_name: String)
 

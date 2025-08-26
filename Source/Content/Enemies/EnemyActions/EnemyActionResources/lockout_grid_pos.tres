@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=13 format=3 uid="uid://6v0r054iqknm"]
+
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_2l8m7"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_6sgwv"]
+[ext_resource type="Texture2D" uid="uid://bvf0ism3pjtjx" path="res://Assets/Textures/Enemies/IntentIndicator/lockout.png" id="1_354nc"]
+[ext_resource type="Script" uid="uid://dnojdkjmfs5ys" path="res://Source/Content/Effects/Targeters/target_random_tile_effect.gd" id="2_eqowd"]
+[ext_resource type="Texture2D" uid="uid://ds47omiwgwwmj" path="res://Assets/Textures/TileGrid/GridStatusEffects/lockout.png" id="2_m2445"]
+[ext_resource type="Script" uid="uid://bmoytp7geekem" path="res://Source/Content/Effects/TileStatusEffects/lockout_target_tile_effect.gd" id="3_xhhwy"]
+[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="4_p2vtv"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="5_x88kk"]
+
+[sub_resource type="Resource" id="Resource_n7vlf"]
+script = ExtResource("2_eqowd")
+primary_effect = false
+metadata/_custom_type_script = "uid://dnojdkjmfs5ys"
+
+[sub_resource type="Resource" id="Resource_bk53e"]
+script = ExtResource("3_xhhwy")
+primary_effect = false
+metadata/_custom_type_script = "uid://bmoytp7geekem"
+
+[sub_resource type="Resource" id="Resource_6tpj6"]
+script = ExtResource("4_p2vtv")
+primary_effect = false
+metadata/_custom_type_script = "uid://bscm2msup3lwk"
+
+[sub_resource type="Resource" id="Resource_kxkj5"]
+script = ExtResource("5_x88kk")
+effects = Array[ExtResource("1_2l8m7")]([SubResource("Resource_n7vlf"), SubResource("Resource_bk53e"), SubResource("Resource_6tpj6")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[resource]
+script = ExtResource("1_6sgwv")
+name = "Grid Lockout"
+description = "[color=orange]Locks[/color] a grid location"
+indicator_texture = ExtResource("1_354nc")
+info_texture = ExtResource("2_m2445")
+effect_chain = SubResource("Resource_kxkj5")
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

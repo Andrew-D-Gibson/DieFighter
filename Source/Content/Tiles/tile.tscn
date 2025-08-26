@@ -6,7 +6,7 @@
 [ext_resource type="Shader" uid="uid://bri5htw7mbdjy" path="res://Assets/Shaders/tile.gdshader" id="4_u74ai"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_vr4ys"]
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.tscn" id="5_fc656"]
-[ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/engine_charger.png" id="8_u74ai"]
+[ext_resource type="Texture2D" uid="uid://b8xjhym8tip4t" path="res://Assets/Textures/Tiles/PurpleTiles/engine_charger.png" id="8_u74ai"]
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="9_u74ai"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jkiuv"]
@@ -76,8 +76,8 @@ dice_queue = NodePath("DiceQueue")
 [node name="Draggable" parent="." instance=ExtResource("2_b16ti")]
 unique_name_in_owner = true
 floating_enabled = false
-bob_amplitude = 2.0
-drift_amplitude = 1.5
+bob_amplitude = 1.0
+drift_amplitude = 0.75
 rotation_amplitude = 1.5
 rotation_speed = 0.15
 

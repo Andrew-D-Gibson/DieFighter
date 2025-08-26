@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="6_2vvbj"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_nrdn6"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_03xhp"]
-[ext_resource type="Texture2D" uid="uid://d0lwrx5nkd17y" path="res://Assets/Textures/Tiles/holographic_duplicator-Sheet.png" id="7_m4gsi"]
+[ext_resource type="Texture2D" uid="uid://d0lwrx5nkd17y" path="res://Assets/Textures/Tiles/GreenTiles/holographic_duplicator-Sheet.png" id="7_m4gsi"]
 
 [sub_resource type="Resource" id="Resource_nrdn6"]
 script = ExtResource("1_ltqic")

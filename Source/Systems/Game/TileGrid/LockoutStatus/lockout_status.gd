@@ -1,2 +1,0 @@
-class_name LockoutStatus
-extends Node2D

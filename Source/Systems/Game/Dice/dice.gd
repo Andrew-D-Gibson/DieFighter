@@ -17,7 +17,7 @@ extends Node2D
 
 @export var value: int = 0:
 	set(new_value):
-		value = new_value
+		value = clampi(new_value, 1, 6)
 		
 		if holographic:
 			$Sprite2D.texture = holographic_textures[value]

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://qbi5qg8wxs8a" path="res://Source/Systems/UI/InfoShower/info_shower.gd" id="1_6im3a"]
 [ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_74257"]
-[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/damage.png" id="3_4644n"]
+[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/RedTiles/damage.png" id="3_4644n"]
 
 [node name="InfoShower" type="Control"]
 layout_mode = 3

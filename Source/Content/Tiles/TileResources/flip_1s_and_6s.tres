@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_ctsso"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_fdhil"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_fdhil"]
-[ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/value_exchange.png" id="7_jubjl"]
+[ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/GreenTiles/value_exchange.png" id="7_jubjl"]
 
 [sub_resource type="Resource" id="Resource_yik4x"]
 script = ExtResource("3_y57nh")

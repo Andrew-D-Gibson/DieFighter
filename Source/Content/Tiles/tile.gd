@@ -11,7 +11,7 @@ extends Node2D
 var _saturation_tween: Tween
 @export var uses_remaining: int = -1:
 	set(new_value):
-		uses_remaining = new_value
+		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_turn)
 
 		if uses_remaining == 0:
 			set_gray_out(true)
@@ -56,6 +56,15 @@ func _ready() -> void:
 		dice_activation_queue.clear()	
 	)
 	Events.start_scenario.connect(reset_uses_remaining)
+	Events.start_combat.connect(func() -> void:
+		draggable.dragging_allowed = false
+		draggable.floating_enabled = false
+	)
+	Events.combat_finished.connect(func() -> void:
+		if tile_resource.dragging_allowed:
+			draggable.dragging_allowed = true
+			draggable.floating_enabled = true
+	)
 	_connect_tile_event_signals()
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
@@ -65,6 +74,9 @@ func _ready() -> void:
 
 
 func _connect_tile_event_signals() -> void:
+	Events.player_turn_start.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_TURN_START)
+	)	
 	Events.tile_pushed.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_PUSHED)
 	)	
@@ -76,16 +88,34 @@ func _connect_tile_event_signals() -> void:
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
 	uses_remaining = tile_resource.uses_per_turn
-	%Draggable.dragging_allowed = tile_resource.dragging_allowed
+
+	if tile_resource.dragging_allowed and \
+	Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
+		draggable.dragging_allowed = true
+		draggable.floating_enabled = true
+	else:
+		draggable.dragging_allowed = false
+		draggable.floating_enabled = false
 
 
 func _get_tile_info() -> InfoResource:
+	# Don't show the tile's info if there's status effects
+	if Globals.tile_grid.tile_locations.values().has(self):
+		var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
+		
+		var grid_status_effects: Array[GridStatusEffect] = \
+			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
+			
+		for status: GridStatusEffect in grid_status_effects:
+			if status.get_status_info():
+				return
+				
+	
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = tile_resource.tile_name
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
 	info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
-	
 	return info
 
 
@@ -106,6 +136,19 @@ func try_to_activate() -> void:
 	if len(dice_queue.queue) > 0:
 		activator_die = dice_queue.queue[0]
 		
+		
+	# Check for and handle grid status activation criteria
+	if Globals.tile_grid.tile_locations.values().has(self):
+		var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
+		
+		var grid_status_effects: Array[GridStatusEffect] = \
+			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
+			
+		for status_effect: GridStatusEffect in grid_status_effects:
+			if not await status_effect.clears_status_activation_criteria(activator_die):
+				return
+		
+	# Handle tile activation criteria
 	if not _clears_activation_criteria(activator_die):
 		# Something didn't go how the player expected,
 		# so clear out the queue of tile activations
@@ -121,12 +164,13 @@ func try_to_activate() -> void:
 	_activate(activator_die)
 		
 		
-func _clears_activation_criteria(activator_die: Dice = null) -> bool:
+func _clears_activation_criteria(activator_die: Dice = null) -> bool:	
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
 		Events.error_text_popup.emit("NO USES REMAINING", self.global_position)
 		return false
 		
+	# Check the tile's activation criteria
 	for check: ActivationResource in tile_resource.activation_checks:
 		if not check.criteria_satisfied(activator_die):
 			Events.error_text_popup.emit(check.get_criteria_fail_text(), self.global_position)
@@ -175,8 +219,23 @@ func _activate(activator_die: Dice = null) -> void:
 	var effect_variables: EffectVariables = _generate_effect_variables()
 	effect_variables.activator_die = activator_die
 	
+	
+	# Change the effect variables based on grid status effects
+	if Globals.tile_grid.tile_locations.values().has(self):
+		var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
+		
+		var grid_status_effects: Array[GridStatusEffect] = \
+			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
+			
+		for status_effect: GridStatusEffect in grid_status_effects:
+			effect_variables = status_effect.manipulate_effect_variables(effect_variables)
+	
+	
+	# Play the tile's effect chain
 	await tile_resource.effect_chain.play(effect_variables)
 	
+	# Remove the activator die that was just used from the
+	# Tile static dice activation queue
 	if len(dice_activation_queue) > 0 and \
 	dice_activation_queue[0] and \
 	dice_activation_queue[0] == activator_die:

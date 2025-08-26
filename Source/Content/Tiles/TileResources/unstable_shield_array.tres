@@ -13,7 +13,7 @@
 [ext_resource type="Script" uid="uid://oi6ed2m5o7hj" path="res://Source/Content/Effects/TileDataChangers/increment_tile_data_effect.gd" id="10_jmh68"]
 [ext_resource type="Script" uid="uid://diu3gmqfwq03x" path="res://Source/Content/Effects/TileDataChangers/set_tile_data_effect.gd" id="11_hw6hl"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="12_5u4xb"]
-[ext_resource type="Texture2D" uid="uid://c8y8dwpvor27" path="res://Assets/Textures/Tiles/unstable_shield_generator.png" id="13_qsfcr"]
+[ext_resource type="Texture2D" uid="uid://c8y8dwpvor27" path="res://Assets/Textures/Tiles/BlueTiles/unstable_shield_generator.png" id="13_qsfcr"]
 
 [sub_resource type="Resource" id="Resource_eq5vj"]
 script = ExtResource("1_dl748")

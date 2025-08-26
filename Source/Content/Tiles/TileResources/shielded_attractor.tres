@@ -9,7 +9,7 @@
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_lk0f0"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_kgopb"]
 [ext_resource type="Script" uid="uid://dgucdxpklniph" path="res://Source/Content/Effects/TileMovers/pull_all_tiles_toward_column_effect.gd" id="5_lk0f0"]
-[ext_resource type="Texture2D" uid="uid://sudv2d02cc5b" path="res://Assets/Textures/Tiles/shielded_attractor.png" id="5_w6idm"]
+[ext_resource type="Texture2D" uid="uid://sudv2d02cc5b" path="res://Assets/Textures/Tiles/YellowTiles/shielded_attractor.png" id="5_w6idm"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="6_kgopb"]
 
 [sub_resource type="Resource" id="Resource_mt052"]

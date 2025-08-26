@@ -28,6 +28,7 @@ func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = tru
 	
 	die.host_queue = self
 	die.draggable.home_position = global_position
+
 	die_added.emit()
 
 

@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="5_gc5g0"]
 [ext_resource type="Script" uid="uid://diu3gmqfwq03x" path="res://Source/Content/Effects/TileDataChangers/set_tile_data_effect.gd" id="6_abjp1"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="6_gc5g0"]
-[ext_resource type="Texture2D" uid="uid://b3m2kwdglr6qg" path="res://Assets/Textures/Tiles/inertial_feedback.png" id="7_4jmui"]
+[ext_resource type="Texture2D" uid="uid://b3m2kwdglr6qg" path="res://Assets/Textures/Tiles/RedTiles/inertial_feedback.png" id="7_4jmui"]
 [ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="7_vnj2y"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_5agfu"]
 [ext_resource type="Script" uid="uid://oi6ed2m5o7hj" path="res://Source/Content/Effects/TileDataChangers/increment_tile_data_effect.gd" id="11_pg0qx"]

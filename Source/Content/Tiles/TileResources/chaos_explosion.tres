@@ -10,7 +10,7 @@
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_1rls6"]
 [ext_resource type="Script" uid="uid://dfw5ioetwloty" path="res://Source/Content/Effects/DiceValueChangers/reroll_all_dice_effect.gd" id="5_iesjq"]
 [ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="6_1rls6"]
-[ext_resource type="Texture2D" uid="uid://crj0u38nbo77y" path="res://Assets/Textures/Tiles/chaos_explosion.png" id="6_rsbqf"]
+[ext_resource type="Texture2D" uid="uid://crj0u38nbo77y" path="res://Assets/Textures/Tiles/GreenTiles/chaos_explosion.png" id="6_rsbqf"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_gneyo"]
 
 [sub_resource type="Resource" id="Resource_il8a7"]

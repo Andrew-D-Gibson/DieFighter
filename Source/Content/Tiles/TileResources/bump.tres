@@ -6,10 +6,10 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_5xcxx"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_8xact"]
 [ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="4_7xmxb"]
-[ext_resource type="Script" uid="uid://cyyaosauc8fk" path="res://Source/Content/Effects/DiceValueChangers/change_activator_to_value_effect.gd" id="4_8xact"]
+[ext_resource type="Script" uid="uid://cyyaosauc8fk" path="res://Source/Content/Effects/DiceValueChangers/change_activator_value_effect.gd" id="4_8xact"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_m7a5a"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_0ono8"]
-[ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/bump-Sheet.png" id="7_0ono8"]
+[ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png" id="7_0ono8"]
 
 [sub_resource type="Resource" id="Resource_7xmxb"]
 script = ExtResource("1_u36sv")
