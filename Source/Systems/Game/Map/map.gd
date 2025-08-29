@@ -228,6 +228,6 @@ func _jump() -> void:
 	current_scenario_index -= scenarios_in_danger
 	
 	# Set up which scenarios are in danger next
-	scenarios_in_danger = min(randi_range(1,6), current_scenario_index + 1)
+	scenarios_in_danger = min(randi_range(1,3), current_scenario_index + 1)
 	
 	Events.start_scenario.emit()

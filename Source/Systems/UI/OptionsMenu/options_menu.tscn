@@ -383,11 +383,8 @@ text = "CLOSE"
 [connection signal="toggled" from="GraphicsOptions/HBoxContainer2/VSyncCheckBox" to="." method="_on_v_sync_check_box_toggled"]
 [connection signal="pressed" from="GraphicsOptions/HBoxContainer3/FullscreenCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GraphicsOptions/HBoxContainer3/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
-[connection signal="mouse_entered" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_item_hover"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_game_volume_slider_value_changed"]
-[connection signal="mouse_entered" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_item_hover"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]
-[connection signal="mouse_entered" from="AudioOptions/HBoxContainer3/SFXVolumeSlider" to="." method="_on_item_hover"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer3/SFXVolumeSlider" to="." method="_on_sfx_volume_slider_value_changed"]
 [connection signal="pressed_within_window" from="CloseButton" to="." method="_on_close_button_pressed"]
 

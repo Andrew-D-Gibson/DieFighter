@@ -2,7 +2,6 @@ class_name LockoutStatus
 extends GridStatusEffect
 
 @export var on_lockout_disabled_effects: EffectChain
-@export var lockout_info: InfoResource
 
 func clears_status_activation_criteria(activator_die: Dice = null) -> bool:
 	if not activator_die:
@@ -27,9 +26,3 @@ func clears_status_activation_criteria(activator_die: Dice = null) -> bool:
 	# The lockout should have been cleared, but that still
 	# consumes the die, preventing activation
 	return false
-		
-
-
-func show_info() -> void:
-	if lockout_info:
-		Events.show_info.emit(lockout_info)

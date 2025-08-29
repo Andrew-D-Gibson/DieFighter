@@ -19,6 +19,8 @@ enum Faction {
 	BOSS
 }
 
+var current_scenario: ScenarioResource
+
 
 func _ready() -> void:
 	Globals.scenario_manager = self
@@ -28,6 +30,10 @@ func _ready() -> void:
 
 	Events.combat_finished.connect(func() -> void:
 		Events.scenario_event.emit(ScenarioEvent.COMBAT_ENDED)
+	)
+	Events.load_scenario.connect(
+		func(scenario: ScenarioResource) -> void:
+			current_scenario = scenario
 	)
 
 
@@ -48,7 +54,6 @@ func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
 		other_faction_ships.erase(ship)
 		
 	if len(other_faction_ships) == 0:
-		var current_scenario: ScenarioResource = Globals.state_manager.get_current_scenario()
 		if current_scenario.rewards.keys().has(faction):
 			Events.spawn_reward.emit(
 				ship.global_position, 

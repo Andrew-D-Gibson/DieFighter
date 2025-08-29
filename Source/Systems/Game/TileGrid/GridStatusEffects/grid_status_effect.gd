@@ -1,6 +1,9 @@
 class_name GridStatusEffect
 extends Node2D
 
+## A description of the info to show
+@export var status_info: InfoResource = null
+
 ## Just like z-order, higher numbers are considered first
 @export var status_effect_priority: int = 0
 
@@ -16,9 +19,10 @@ func manipulate_effect_chain(effect_chain: EffectChain) -> EffectChain:
 	return effect_chain
 	
 	
-func get_status_info() -> InfoResource:
-	return null
-	
+func show_info() -> void:
+	if status_info:
+		Events.show_info.emit(status_info)
+		
 	
 func _exit_tree() -> void:
 	# Remove itself from the tile_grid's dictionary

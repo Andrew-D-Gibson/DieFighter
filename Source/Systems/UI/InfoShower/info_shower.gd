@@ -13,7 +13,7 @@ func _show_info(info: InfoResource) -> void:
 	if not info:
 		return
 		
-	%TitleLabel.text = info.title_label_text
+	%TitleLabel.text = _format_text(info.title_label_text)
 	%TopLabel.text = _format_text(info.top_label_text)
 	%TextureDisplay.texture = info.texture
 	%BottomLabel.text = _format_text(info.bottom_label_text)

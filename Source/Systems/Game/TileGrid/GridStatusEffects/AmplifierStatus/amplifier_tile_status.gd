@@ -11,12 +11,16 @@ var amplifier_statuses: Array[AmplifierStatus] = []
 ## The scene for the actual amplifier status effects
 var amplfier_status_scene: PackedScene = preload("uid://c37hnomb8a6x1")
 
+## The amplifier amount modifier function:
+var amplifier_amount_modifier: Callable
+
 
 func _ready() -> void:	
 	# Connect to tile movement events so we 
 	# can track the amplifier tile
 	Events.tile_manually_moved.connect(_on_tile_moved)
 	Events.tile_pushed.connect(_on_tile_moved)
+	Events.player_turn_start.connect(queue_free)
 	
 	_add_self_to_grid()
 	_apply_amplification()
@@ -54,6 +58,7 @@ func _apply_amplification() -> void:
 
 func _add_amplifier_status_at_position(grid_pos: Vector2i, flip: bool = false) -> void:
 	var amplifier_status: AmplifierStatus = amplfier_status_scene.instantiate()
+	amplifier_status.amplifier_amount_modifier = amplifier_amount_modifier
 	amplifier_statuses.append(amplifier_status)
 	
 	if flip:

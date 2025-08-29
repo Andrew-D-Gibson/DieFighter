@@ -3,6 +3,7 @@ extends Node
 # Game System Singletons
 var player: Player
 var tile_grid: TileGrid
+var activation_queue_manager: ActivationQueueManager
 var map: Map
 var targeting_computer: TargetingComputer
 var reward_manager: RewardManager

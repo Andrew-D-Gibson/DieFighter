@@ -50,6 +50,7 @@ enemy_name = "Venom Fighter"
 description = "Gonna mess you up bruh"
 ship_graphics_scene = ExtResource("3_sf3u5")
 graphics_scene_offset = Vector2(0, 0)
+dialogue_offset = Vector2(18, -8)
 targeting_computer_image = ExtResource("7_7a4d7")
 health_bar_position = Vector2(-20, -17)
 dice_queue_position = Vector2(24, 8)

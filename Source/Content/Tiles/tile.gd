@@ -52,9 +52,6 @@ func _ready() -> void:
 			Events.play_sound.emit('tile_dropped')
 		)
 	
-	Events.jump.connect(func() -> void:
-		dice_activation_queue.clear()	
-	)
 	Events.start_scenario.connect(reset_uses_remaining)
 	Events.start_combat.connect(func() -> void:
 		draggable.dragging_allowed = false
@@ -70,13 +67,11 @@ func _ready() -> void:
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
 	
-	Events.tile_activation_complete.connect(_check_for_next_in_tile_activation_queue)
-
 
 func _connect_tile_event_signals() -> void:
 	Events.player_turn_start.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_TURN_START)
-	)	
+	)
 	Events.tile_pushed.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_PUSHED)
 	)	
@@ -107,9 +102,9 @@ func _get_tile_info() -> InfoResource:
 			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
 			
 		for status: GridStatusEffect in grid_status_effects:
-			if status.get_status_info():
-				return
-				
+			if status.status_info:
+				return null
+
 	
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = tile_resource.tile_name
@@ -129,14 +124,9 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 			or (event_check.listen_only_for_self == (tile == self)):
 				var effect_variables: EffectVariables = _generate_effect_variables()
 				await tile_resource.event_responses[event_check].play(effect_variables)
-
-
-func try_to_activate() -> void:
-	var activator_die: Dice = null
-	if len(dice_queue.queue) > 0:
-		activator_die = dice_queue.queue[0]
 		
-		
+
+func can_activate(activator_die: Dice) -> bool:
 	# Check for and handle grid status activation criteria
 	if Globals.tile_grid.tile_locations.values().has(self):
 		var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
@@ -146,7 +136,7 @@ func try_to_activate() -> void:
 			
 		for status_effect: GridStatusEffect in grid_status_effects:
 			if not await status_effect.clears_status_activation_criteria(activator_die):
-				return
+				return false
 		
 	# Handle tile activation criteria
 	if not _clears_activation_criteria(activator_die):
@@ -157,11 +147,10 @@ func try_to_activate() -> void:
 			
 		dice_activation_queue.clear()
 		
-		return
-
+		return false
+		
 	# We're cleared hot to activate!
-	dice_queue.remove(activator_die)
-	_activate(activator_die)
+	return true
 		
 		
 func _clears_activation_criteria(activator_die: Dice = null) -> bool:	
@@ -187,7 +176,7 @@ func _generate_effect_variables() -> EffectVariables:
 	return effect_variables
 	
 
-func _activate(activator_die: Dice = null) -> void:
+func activate(activator_die: Dice = null) -> void:
 	if uses_remaining != -1:
 		uses_remaining -= 1
 		
@@ -236,10 +225,8 @@ func _activate(activator_die: Dice = null) -> void:
 	
 	# Remove the activator die that was just used from the
 	# Tile static dice activation queue
-	if len(dice_activation_queue) > 0 and \
-	dice_activation_queue[0] and \
-	dice_activation_queue[0] == activator_die:
-		dice_activation_queue.remove_at(0)
+	if activator_die and dice_activation_queue.has(activator_die):
+		dice_activation_queue.erase(activator_die)
 
 	Events.tile_activation_complete.emit()
 
@@ -293,22 +280,12 @@ func _update_dice_queue_locations() -> void:
 
 
 func _on_die_accepted(die: Dice) -> void:
-	if tile_resource.max_dice_in_queue == -1 or \
-	len(dice_queue.queue) < tile_resource.max_dice_in_queue:
-		dice_queue.add(die, true, false)
-		dice_activation_queue.append(die)
+	if not die:
+		return
 		
-		if len(dice_activation_queue) == 1:
-			try_to_activate()
-	
-		
-func _check_for_next_in_tile_activation_queue() -> void:
-	if len(dice_activation_queue) > 0 and \
-	len(dice_queue.queue) > 0 and\
-	dice_activation_queue[0] and \
-	dice_queue.queue[0] and \
-	dice_activation_queue[0] == dice_queue.queue[0]:
-		try_to_activate()
+	dice_queue.add(die, true, false)
+	if Globals.activation_queue_manager:
+		Globals.activation_queue_manager.add_die_to_queue(die)
 
 
 func _on_visibility_changed() -> void:	

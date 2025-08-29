@@ -2,13 +2,11 @@ class_name AmplifierStatus
 extends GridStatusEffect
 
 ## The amount modifier function
-var amount_modifier: Callable = \
-	func(base_amount: int) -> int:
-		return base_amount + 2
+var amplifier_amount_modifier: Callable
 
 
 func manipulate_effect_variables(effect_variables: EffectVariables) -> EffectVariables:
-	effect_variables.amount_modifiers.push_front(amount_modifier)
+	effect_variables.amount_modifiers.push_front(amplifier_amount_modifier)
 	return effect_variables
 
 

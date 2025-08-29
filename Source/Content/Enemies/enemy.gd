@@ -17,6 +17,9 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 ## Manages the enemy's dice queue
 @export var dice_manager: EnemyDiceManager
 
+## Manages showing the enemy's dialogue
+@export var dialogue_manager: EnemyDialogueManager
+
 ## Manages all visual aspects of the enemy
 @export var graphics_manager: EnemyGraphicsManager
 
@@ -124,6 +127,7 @@ func _update_resource() -> void:
 	_update_dice_queue()
 	_update_health_from_resource()
 	_update_health_bar()
+	_update_dialogue()
 	generate_turn_actions()
 
 
@@ -150,6 +154,11 @@ func _update_health_bar() -> void:
 	graphics_manager.set_health_bar_attitude(scenario_state.attitude)
 	graphics_manager.set_health_bar_position(enemy_resource.health_bar_position)
 	graphics_manager.set_health_bar_health(health)
+
+
+## Updates the position and color of the dialogue manager
+func _update_dialogue() -> void:
+	dialogue_manager.position = enemy_resource.dialogue_offset
 
 
 ## Generates the actions the enemy will take this turn
@@ -241,6 +250,8 @@ func get_dialogue() -> String:
 
 ## Triggers any effects associated with the current scenario state
 func trigger_state_effects() -> void:
+	dialogue_manager.show_dialogue(scenario_state.dialogue, scenario_state.faction)
+	
 	if not scenario_state.effects_on_enter:
 		return
 		

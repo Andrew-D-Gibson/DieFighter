@@ -1,9 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://ccvtlre5vhj7d"]
+[gd_scene load_steps=28 format=3 uid="uid://ccvtlre5vhj7d"]
 
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_5pv2g"]
 [ext_resource type="Script" uid="uid://dfqo2lhkhal5l" path="res://Source/Systems/UI/MainMenu/main_menu.gd" id="1_otgxl"]
 [ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="3_y6sr5"]
 [ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="4_5v1c7"]
+[ext_resource type="Texture2D" uid="uid://j1w7icim4eh6" path="res://Assets/Textures/UI/MainMenu/main_menu_background.png" id="4_6qnrd"]
 [ext_resource type="PackedScene" uid="uid://c7hyjenhhnsah" path="res://Source/Systems/UI/OptionsMenu/options_menu.tscn" id="4_bcx7i"]
 [ext_resource type="Texture2D" uid="uid://dm4or0suv2f7l" path="res://Assets/Textures/UI/MouseCursors/default_cursor_raw.png" id="5_3xxk1"]
 [ext_resource type="Script" uid="uid://dadh0h1qi45h8" path="res://Source/Systems/UI/MouseCursor/mouse_cursor.gd" id="6_jl4pw"]
@@ -12,6 +13,19 @@
 [ext_resource type="PackedScene" uid="uid://pagumreni25k" path="res://Source/Systems/UI/Buttons/large_button.tscn" id="7_n0c18"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="7_vm02d"]
 [ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="9_m0vyx"]
+[ext_resource type="Texture2D" uid="uid://3s6vwfbgjb6m" path="res://Assets/Textures/Dice/Regular/dice6.png" id="12_dn166"]
+[ext_resource type="Shader" uid="uid://o1yk10s2h13n" path="res://Assets/Shaders/pixel_planet.gdshader" id="14_862i1"]
+[ext_resource type="Texture2D" uid="uid://nx8xinrkpv3s" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_atmo_palette.png" id="15_6qnrd"]
+[ext_resource type="Texture2D" uid="uid://4krr0rymcm65" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_bump_map.png" id="16_dn166"]
+[ext_resource type="Texture2D" uid="uid://dpgitv7aac1gi" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_palette.png" id="17_sd3hn"]
+
+[sub_resource type="Environment" id="Environment_6qnrd"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 0.6
+glow_bloom = 0.3
+glow_hdr_threshold = 0.5
+adjustment_enabled = true
 
 [sub_resource type="Animation" id="Animation_y6sr5"]
 length = 0.001
@@ -61,7 +75,7 @@ tracks/1/loop_wrap = true
 tracks/1/keys = {
 "handle_modes": PackedInt32Array(0, 0),
 "points": PackedFloat32Array(-90, -0.25, 0, 0.687001, 9.5, 90, -0.612999, -0.5, 0.25, 0),
-"times": PackedFloat32Array(1, 3)
+"times": PackedFloat32Array(1.56667, 3.56667)
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_5v1c7"]
@@ -85,15 +99,88 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="MainMenu" type="Sprite2D"]
-self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
-texture = ExtResource("1_5pv2g")
-offset = Vector2(160, 90)
+[sub_resource type="Gradient" id="Gradient_23fm2"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.478431, 0.741176, 0.2, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_gvo48"]
+gradient = SubResource("Gradient_23fm2")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6qnrd"]
+shader = ExtResource("14_862i1")
+shader_parameter/pixel_scale = 180.0
+shader_parameter/surface_radius = 0.383
+shader_parameter/surface_palette = ExtResource("17_sd3hn")
+shader_parameter/background_colour = Color(0, 0, 0, 1)
+shader_parameter/surface_base_rotation = 1.0
+shader_parameter/surface_rotation_speed = 0.038
+shader_parameter/surface_primary_cell_amount = 6
+shader_parameter/surface_primary_strength = 0.51
+shader_parameter/surface_primary_period = Vector3(9.5, 9.5, 9.5)
+shader_parameter/surface_secondary_enabled = true
+shader_parameter/surface_secondary_cell_amount = 13
+shader_parameter/surface_secondary_strength = 0.39
+shader_parameter/surface_secondary_period = Vector3(9.5, 9.5, 9.5)
+shader_parameter/surface_secondary_rotation = 0.4
+shader_parameter/surface_secondary_rotation_speed = 4.75e-08
+shader_parameter/surface_tertiary_enabled = true
+shader_parameter/surface_tertiary_cell_amount = 30
+shader_parameter/surface_tertiary_strength = 0.3
+shader_parameter/surface_tertiary_period = Vector3(9.5, 9.5, 9.5)
+shader_parameter/surface_tertiary_rotation = 0.0
+shader_parameter/surface_tertiary_rotation_speed = 0.0
+shader_parameter/surface_bump_map = ExtResource("16_dn166")
+shader_parameter/surface_bump_strength = -0.67
+shader_parameter/display_cloud_shadows = false
+shader_parameter/cloud_shadow_darkness = 0.25
+shader_parameter/cloud_1_cover = 0.0
+shader_parameter/cloud_1_radius = 0.395
+shader_parameter/cloud_1_palette = SubResource("GradientTexture1D_gvo48")
+shader_parameter/cloud_1_cell_amount = 8
+shader_parameter/cloud_1_rotation_speed = -0.111
+shader_parameter/cloud_1_fluctuation_speed = 0.03
+shader_parameter/cloud_1_period = Vector3(9.5, 9.5, 9.5)
+shader_parameter/cloud_1_secondary_period = Vector3(9.5, 9.5, 9.5)
+shader_parameter/cloud_1_secondary_cell_amount = -10
+shader_parameter/cloud_1_secondary_strength = 1.0
+shader_parameter/cloud_2_cover = 0.0
+shader_parameter/cloud_2_radius = 0.32
+shader_parameter/cloud_2_cell_amount = 10
+shader_parameter/cloud_2_rotation_speed = 0.03
+shader_parameter/cloud_2_fluctuation_speed = 0.03
+shader_parameter/cloud_2_period = Vector3(9.5, 9.5, 9.5)
+shader_parameter/cloud_2_secondary_period = Vector3(9.5, 9.5, 9.5)
+shader_parameter/cloud_2_secondary_cell_amount = 10
+shader_parameter/cloud_2_secondary_strength = 0.3
+shader_parameter/atmosphere_radius = 0.4
+shader_parameter/atmosphere_palette = ExtResource("15_6qnrd")
+shader_parameter/posterise = false
+shader_parameter/shading_mode = 2
+shader_parameter/maximum_brightness = 1.0
+shader_parameter/sun_strength = 1.285
+shader_parameter/shade_transition = 10.0
+shader_parameter/shade_step = 8.0
+shader_parameter/sun_direction = Vector3(0.665, 1.145, -0.59)
+shader_parameter/dither_levels = 0
+shader_parameter/shading_noise_cell_amount = 30
+shader_parameter/shading_noise_strength = 0.13
+shader_parameter/shading_noise_period = Vector3(9.5, 9.5, 9.5)
+
+[node name="MainMenu" type="Node2D"]
+self_modulate = Color(0.0156863, 0.00784314, 0.0901961, 1)
 script = ExtResource("1_otgxl")
 num_of_twinkling_stars = 50
 background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 star_pixel_scene = ExtResource("3_y6sr5")
 star_twinkle_scene = ExtResource("4_5v1c7")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_6qnrd")
+
+[node name="Background" type="Sprite2D" parent="."]
+z_index = -3
+position = Vector2(160, 0)
+texture = ExtResource("4_6qnrd")
 
 [node name="MouseCursor" type="Sprite2D" parent="."]
 visible = false
@@ -108,10 +195,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -248.0
-offset_top = -59.0
-offset_right = -5.0
-offset_bottom = -8.0
+offset_left = 74.0
+offset_top = 120.0
+offset_right = 317.0
+offset_bottom = 171.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
@@ -129,9 +216,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -26.0
-offset_top = -16.0
-offset_right = -4.0
+offset_left = 296.0
+offset_top = 163.0
+offset_right = 318.0
+offset_bottom = 179.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "v0.0.1"
@@ -147,7 +235,7 @@ zoom = Vector2(6, 6)
 [node name="FadeIn" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 visible = false
-self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
+self_modulate = Color(0.0745098, 0.0588235, 0.219608, 1)
 z_index = 10
 texture = ExtResource("1_5pv2g")
 offset = Vector2(160, -90)
@@ -163,10 +251,10 @@ z_index = 5
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 11.0
-offset_top = -89.0
-offset_right = 77.0
-offset_bottom = -18.0
+offset_left = 8.0
+offset_top = 92.0
+offset_right = 74.0
+offset_bottom = 163.0
 grow_vertical = 0
 alignment = 1
 
@@ -194,10 +282,10 @@ text = "QUIT"
 [node name="ButtonRotator" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 268.0
-offset_top = 111.0
-offset_right = 308.0
-offset_bottom = 151.0
+offset_left = 40.0
+offset_top = 54.0
+offset_right = 80.0
+offset_bottom = 94.0
 script = ExtResource("7_m0vyx")
 
 [node name="WishlistButton" parent="ButtonRotator" instance=ExtResource("7_vm02d")]
@@ -209,16 +297,30 @@ offset_right = 29.0
 offset_bottom = 8.0
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
-[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="0"]
+[node name="Sprite2D" type="Sprite2D" parent="ButtonRotator/WishlistButton"]
+position = Vector2(1, 0)
+rotation = -0.189669
+texture = ExtResource("12_dn166")
+
+[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="1"]
 sprite_frames = SubResource("SpriteFrames_3xxk1")
 
-[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1"]
+[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="2"]
 text = "WISHLIST"
 
 [node name="OptionsMenu" parent="." instance=ExtResource("4_bcx7i")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(160, 90)
+
+[node name="Planet" type="ColorRect" parent="."]
+z_index = -1
+material = SubResource("ShaderMaterial_6qnrd")
+offset_left = 184.0
+offset_top = -1.0
+offset_right = 364.0
+offset_bottom = 179.0
+mouse_filter = 2
 
 [connection signal="pressed_within_window" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]

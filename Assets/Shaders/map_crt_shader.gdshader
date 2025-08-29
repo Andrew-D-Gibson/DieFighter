@@ -2,14 +2,14 @@
 Shader from Godot Shaders - the free shader library.
 godotshaders.com/shader/VHS-and-CRT-monitor-effect
 
-This shader is under CC0 license. Feel free to use, improve and 
-change this shader according to your needs and consider sharing 
+This shader is under CC0 license. Feel free to use, improve and
+change this shader according to your needs and consider sharing
 the modified result to godotshaders.com.
 */
 
 shader_type canvas_item;
 
-//*** IMPORTANT! ***/ 
+//*** IMPORTANT! ***/
 // - If you are using this shader to affect the node it is applied to set 'overlay' to false (unchecked in the instepctor).
 // - If you are using this shader as an overlay, and want the shader to affect the nodes below in the Scene hierarchy,
 //   set 'overlay' to true (checked in the inspector).
@@ -32,7 +32,7 @@ uniform float roll_variation : hint_range(0.1, 5.0) = 1.8; // This valie is not 
 uniform float distort_intensity : hint_range(0.0, 0.2) = 0.05; // The distortion created by the rolling effect.
 uniform float roll_frequency : hint_range(0.1, 10.0) = 1.0; // Lower values mean less frequent rolls
     uniform float roll_threshold : hint_range(0.0, 1.0) = 0.7; // Noise threshold to trigger a roll (higher means less frequent)
-	
+
 uniform float noise_opacity : hint_range(0.0, 1.0) = 0.4;
 uniform float noise_speed = 5.0; // There is a movement in the noise pattern that can be hard to see first. This sets the speed of that movement.
 
@@ -78,7 +78,7 @@ vec2 warp(vec2 uv){
 	float delta2 = dot(delta.xy, delta.xy);
 	float delta4 = delta2 * delta2;
 	float delta_offset = delta4 * warp_amount;
-	
+
 	return uv + delta * delta_offset;
 }
 
@@ -213,6 +213,6 @@ void fragment()
         float midpoint = pow(0.5, 2.2);
         text.rgb = (text.rgb - vec3(midpoint)) * 1.2 + midpoint; // contrast = 1.2
     }
-	
+
     COLOR = text;
 }

@@ -46,3 +46,21 @@ func _startup() -> void:
 	%HealthBar.value = 0
 	%HealthUpdateBar.value = 0
 	Globals.player.health.health = Globals.player.health.starting_health
+	
+	
+func _show_hull_info() -> void:
+	var info: InfoResource = InfoResource.new()
+	info.title_label_text = "[color=red]Hull[/color]"
+	info.texture = load("uid://cdul5hb8yotks")
+	info.bottom_label_text = "If [color=red]Hull[/color] reaches 0, your ship is destroyed"
+	
+	Events.show_info.emit(info)
+	
+	
+func _show_shield_info() -> void:
+	var info: InfoResource = InfoResource.new()
+	info.title_label_text = "[color=blue]Shields[/color]"
+	info.texture = load("uid://cm0dbq7jogf17")
+	info.bottom_label_text = "[color=blue]Shields[/color] absorb [color=red]damage[/color] before it reaches your [color=red]Hull[/color]. Resets after jumping"
+	
+	Events.show_info.emit(info)

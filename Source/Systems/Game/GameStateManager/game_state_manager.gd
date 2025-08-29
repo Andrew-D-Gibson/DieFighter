@@ -60,7 +60,7 @@ func _ready() -> void:
 	Events.load_scenario.emit(
 		current_game_save.sector_scenarios[
 			current_game_save.current_scenario_index
-		]
+		] 
 	)
 	
 	
@@ -72,10 +72,6 @@ func trigger_startup_sequence() -> void:
 	#await get_tree().create_timer(2).timeout
 	Events.health_bar_startup.emit()
 	start_game()
-	
-	
-func get_current_scenario() -> ScenarioResource:
-	return current_game_save.sector_scenarios[current_game_save.current_scenario_index]
 	
 	
 func _randomize_sector_scenarios() -> void:

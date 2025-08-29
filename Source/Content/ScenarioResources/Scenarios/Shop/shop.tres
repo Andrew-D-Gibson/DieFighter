@@ -19,7 +19,7 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 [sub_resource type="Resource" id="Resource_fly3e"]
 script = ExtResource("2_7qv0j")
 enemy_resource = ExtResource("5_nta17")
-spawning_path_location = 0.85
+spawning_path_location = 0.7
 starting_state = ExtResource("7_fi5fr")
 reward_resource = SubResource("Resource_x5p0h")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"

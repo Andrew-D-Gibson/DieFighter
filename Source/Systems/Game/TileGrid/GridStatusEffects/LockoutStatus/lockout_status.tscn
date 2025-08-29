@@ -34,10 +34,10 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_ej6cm"]
 script = ExtResource("7_v32d7")
-title_label_text = "LOCATION LOCKED"
+title_label_text = "Grid Lockout"
 top_label_text = ""
 texture = ExtResource("4_p13k7")
-bottom_label_text = "Release lock with [color=yellow]any die[/color].  Gives the die to the [color=purple]target[/color]"
+bottom_label_text = "[color=orange]Locks[/color] a grid location"
 metadata/_custom_type_script = "uid://c6ldtha2c8w0x"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e3rgw"]
@@ -469,13 +469,13 @@ animations = [{
 }]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4i5sk"]
-size = Vector2(20, 22)
+size = Vector2(22, 24)
 
 [node name="LockoutStatus" type="Node2D"]
 z_index = 8
 script = ExtResource("1_aran3")
 on_lockout_disabled_effects = SubResource("Resource_sjsqf")
-lockout_info = SubResource("Resource_ej6cm")
+status_info = SubResource("Resource_ej6cm")
 status_effect_priority = 10
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]

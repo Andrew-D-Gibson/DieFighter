@@ -1,4 +1,4 @@
-extends Sprite2D
+extends Node2D
 
 @export_category('Background Components')
 @export var num_of_stars: int = 100
@@ -18,12 +18,12 @@ func _ready() -> void:
 	get_tree().paused = false
 	
 	# Set up the initial state of needed components
-	%FadeIn.self_modulate = background_color
+	#%FadeIn.self_modulate = background_color
 	%FadeIn.show()
 	%OptionsMenu.hide()
 	
 	# Set up the background
-	self.self_modulate = background_color
+	#self.self_modulate = background_color
 	
 	# Get rid of any pre-existing stars
 	_clear_stars()
@@ -50,6 +50,7 @@ func _clear_stars() -> void:
 
 func _add_star(star_scene: PackedScene) -> void:
 	var star = star_scene.instantiate()
+	star.z_index = -2
 	add_child(star)
 	star.global_position = Vector2(
 		randf_range(0, _screen_size.x),
