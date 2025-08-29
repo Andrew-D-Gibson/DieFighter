@@ -129,7 +129,6 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			elif item is Dice:
 				item.reparent(Globals.player, true)
 				Globals.player.dice_manager.add(item)
-				item.draggable.drag_started.connect(Events.hide_comms.emit)
 				Globals.player.num_of_dice += 1
 			
 			prices[item_to_shop_index[item]].visible = false

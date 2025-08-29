@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_nqfdy"]
 [ext_resource type="Script" uid="uid://1iq61ppbhjtg" path="res://Source/Content/Effects/DiceValueChangers/flip_1s_and_6s_effect.gd" id="3_fdhil"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_y57nh"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="4_ctsso"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="4_ctsso"]
 [ext_resource type="Script" uid="uid://dkxkkts7q82xj" path="res://Source/Content/Effects/Targeters/target_random_ship_effect.gd" id="4_fdhil"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_y57nh"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_ctsso"]
@@ -59,7 +59,7 @@ animations = [{
 
 [resource]
 script = ExtResource("6_ctsso")
-tile_name = "Value Exchange"
+tile_name = "[color=green]Value Exchange[/color]"
 activation_description = ""
 description = "[color=yellow]Any die[/color] -> Flip all (die_1)/(die_6), then [color=orange]give[/color] die to [color=purple]random ship[/color]"
 rarity = 0

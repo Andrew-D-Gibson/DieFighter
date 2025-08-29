@@ -48,6 +48,7 @@ func _ready() -> void:
 	_connect_health_signals()
 	_connect_scenario_signals()
 	_connect_combat_signals()
+	_connect_dialogue_signals()
 
 
 func _process(_delta: float) -> void:
@@ -96,6 +97,11 @@ func _connect_combat_signals() -> void:
 		await get_tree().process_frame
 		dice_manager.give_away_dice()
 	)
+	
+
+## Connects all dialogue-related signals
+func _connect_dialogue_signals() -> void:
+	dice_manager.die_added.connect(dialogue_manager.hide_dialogue)
 
 
 ## Called when the enemy dies
@@ -239,14 +245,6 @@ func run_turn() -> void:
 	# Only generate new actions if we're still valid
 	generate_turn_actions()
 	
-
-## Returns the enemy's current dialogue
-func get_dialogue() -> String:
-	var dialogue: String = scenario_state.dialogue
-	if dialogue != '':
-		return dialogue
-	return "[color=gray]NOT ACCEPTING HAILS[/color]"
-
 
 ## Triggers any effects associated with the current scenario state
 func trigger_state_effects() -> void:

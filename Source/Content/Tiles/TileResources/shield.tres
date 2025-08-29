@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_854mr"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/BlueTiles/shield.png" id="2_7qkaa"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="3_854mr"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="3_vpgxx"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="3_vpgxx"]
 [ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="4_7qkaa"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_bwi3v"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="5_p7d6s"]
@@ -77,7 +77,7 @@ animations = [{
 
 [resource]
 script = ExtResource("8_8vpcq")
-tile_name = "Shield Generator"
+tile_name = "[color=blue]Shield Generator[/color]"
 activation_description = ""
 description = "(die_3) -> Add [color=blue]8 shields[/color], then [color=orange]give[/color] it to the [color=purple]target[/color]"
 rarity = 0

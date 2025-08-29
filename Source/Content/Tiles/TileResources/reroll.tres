@@ -61,14 +61,15 @@ animations = [{
 
 [resource]
 script = ExtResource("3_1nta3")
-tile_name = "Re-Roll"
+tile_name = "[color=green]Re-Roll[/color]"
 activation_description = ""
 description = "[color=yellow]Any die[/color] -> [color=green]Re-rolls[/color] the die"
 rarity = 0
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 2
-activated_on_dice_drop = true
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa")])
 effect_chain = SubResource("Resource_mwp2x")
 event_responses = Dictionary[ExtResource("6_jet8y"), ExtResource("5_jet8y")]({})
+dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

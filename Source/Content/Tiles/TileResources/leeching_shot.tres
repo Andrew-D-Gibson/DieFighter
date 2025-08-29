@@ -83,7 +83,7 @@ animations = [{
 
 [resource]
 script = ExtResource("3_cy0vr")
-tile_name = "Leeching Shot"
+tile_name = "[color=red]Leeching Shot[/color]"
 activation_description = ""
 description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color] to [color=purple]target[/color] and [color=green]repair 2 hull[/color], then [color=orange]give[/color] them the die"
 rarity = 1
@@ -93,4 +93,5 @@ activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r2sor")
 effect_chain = SubResource("Resource_bu7s0")
 event_responses = Dictionary[ExtResource("10_c7e3k"), ExtResource("9_r2sor")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

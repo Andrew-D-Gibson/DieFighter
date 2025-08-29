@@ -109,7 +109,7 @@ animations = [{
 
 [resource]
 script = ExtResource("4_v6rtc")
-tile_name = "Inertial Feedback"
+tile_name = "[color=red]Inertial Feedback[/color]"
 activation_description = ""
 description = "(die_6) -> Deal [color=red]1 damage[/color] to [color=purple]all other ships[/color] per tile moved ([data]tiles_moved[/data]), then reset. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
@@ -121,4 +121,5 @@ event_responses = Dictionary[ExtResource("2_vn5ol"), ExtResource("3_573qy")]({
 SubResource("Resource_ypikh"): SubResource("Resource_sjv0n")
 })
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

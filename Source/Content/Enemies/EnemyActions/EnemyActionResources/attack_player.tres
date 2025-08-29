@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="2_lx43e"]
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="3_ca2d5"]
 [ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="3_kvn21"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="3_r4sth"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="3_r4sth"]
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="4_t6ib4"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_hx6b7"]
 [ext_resource type="Texture2D" uid="uid://b5mm0ibc4n8hu" path="res://Assets/Textures/Enemies/IntentIndicator/attack_info.png" id="6_k68wh"]

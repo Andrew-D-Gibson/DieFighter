@@ -18,6 +18,9 @@ var amount_modifiers: Array[Callable] = []
 
 
 func calculate_final_amount() -> int:
+	if not base_amount:
+		base_amount = 0
+		
 	var final_amount: int = base_amount
 	for modifier: Callable in amount_modifiers:
 		final_amount = modifier.call(final_amount)

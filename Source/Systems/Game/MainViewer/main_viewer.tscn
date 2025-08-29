@@ -1,23 +1,20 @@
-[gd_scene load_steps=36 format=3 uid="uid://bq0eop4cxspu2"]
+[gd_scene load_steps=30 format=3 uid="uid://bq0eop4cxspu2"]
 
 [ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
 [ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_sgr5l"]
 [ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/MapTileResources/engine_charger.tres" id="6_uglmk"]
 [ext_resource type="PackedScene" uid="uid://bwpi06v2hllam" path="res://Source/Systems/Game/Map/fate_animated_sprite.tscn" id="7_35tnh"]
-[ext_resource type="Shader" uid="uid://fbcxr03he6iu" path="res://Assets/Shaders/dice_area_highlight_shader.gdshader" id="7_geq53"]
-[ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="8_mm1jt"]
 [ext_resource type="PackedScene" uid="uid://duqlasjukaoyh" path="res://Source/Systems/Game/Map/danger_area.tscn" id="8_xbbhg"]
-[ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="9_7x3t1"]
-[ext_resource type="Texture2D" uid="uid://cf21ufj3oos4n" path="res://Assets/Textures/UI/Buttons/button_medium_purple_disabled.png" id="10_foiuu"]
 [ext_resource type="Resource" uid="uid://crph25pv1d7aa" path="res://Source/Content/Tiles/MapTileResources/map_arrow_left.tres" id="10_tmld6"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
 [ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="11_foiuu"]
 [ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="11_mm1jt"]
 [ext_resource type="Resource" uid="uid://bh2rvyv5qga4w" path="res://Source/Content/Tiles/MapTileResources/map_arrow_right.tres" id="11_niw3m"]
-[ext_resource type="PackedScene" uid="uid://cxssny1jb1tlo" path="res://Source/Systems/Game/CommsManager/comms_manager.tscn" id="12_ctpxn"]
 [ext_resource type="Shader" uid="uid://87xg1k4wv3ob" path="res://Assets/Shaders/map_crt_shader.gdshader" id="13_fa2si"]
+[ext_resource type="Texture2D" uid="uid://c3fellqhci7lo" path="res://Assets/Textures/Map/scroll_bar_dark.png" id="13_foiuu"]
 [ext_resource type="PackedScene" uid="uid://7jvm8tkovhwj" path="res://Source/Systems/Game/Map/map.tscn" id="13_l0r2u"]
+[ext_resource type="Texture2D" uid="uid://dxgrxe65eepfs" path="res://Assets/Textures/Map/scroll_bar_light.png" id="14_geq53"]
 [ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/empty_scenario.tres" id="14_mm1jt"]
 [ext_resource type="Texture2D" uid="uid://bo66e1kj2f37w" path="res://Assets/Textures/MainViewer/EngineCharger/under.png" id="17_fa2si"]
 [ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="17_xbbhg"]
@@ -25,29 +22,22 @@
 [ext_resource type="Texture2D" uid="uid://bmnlxtlwmxtue" path="res://Assets/Textures/MainViewer/EngineCharger/charged.png" id="19_geq53"]
 [ext_resource type="Texture2D" uid="uid://dcp4x2igagi4m" path="res://Assets/Textures/MainViewer/EngineCharger/fill_head.png" id="20_35tnh"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_foiuu"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_4s628"]
 atlas = ExtResource("2_q6tn0")
 region = Rect2(0, 0, 153, 88)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_geq53"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_5ksti"]
 atlas = ExtResource("2_q6tn0")
 region = Rect2(153, 0, 153, 88)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_35tnh"]
-atlas = ExtResource("2_q6tn0")
-region = Rect2(306, 0, 153, 88)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_dq04t"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_84a1l"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_foiuu")
+"texture": SubResource("AtlasTexture_4s628")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_geq53")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_35tnh")
+"texture": SubResource("AtlasTexture_5ksti")
 }],
 "loop": true,
 "name": &"default",
@@ -57,36 +47,8 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p0pmq"]
 size = Vector2(43, 10)
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_35tnh"]
-shader = ExtResource("7_geq53")
-shader_parameter/pulse_speed = 2.0
-shader_parameter/pulse_strength = 1.5
-shader_parameter/base_strength = 1.0
-
 [sub_resource type="ViewportTexture" id="ViewportTexture_tmld6"]
 viewport_path = NodePath("Map/ViewportTexture/MapViewport")
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_fa2si"]
-atlas = ExtResource("9_7x3t1")
-region = Rect2(0, 0, 56, 14)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_xbbhg"]
-atlas = ExtResource("10_foiuu")
-region = Rect2(0, 0, 56, 14)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_foiuu"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_fa2si")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xbbhg")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_foiuu"]
 shader = ExtResource("13_fa2si")
@@ -114,49 +76,32 @@ shader_parameter/clip_warp = false
 shader_parameter/vignette_intensity = -0.2
 shader_parameter/vignette_opacity = 0.8
 
-[node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "comms", "tile_grid", "map", "engine_charger", "comms_button_label", "systems_button_label", "map_button_label")]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_35tnh"]
+bg_color = Color(0.501961, 0.207843, 0.615686, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbbhg"]
+bg_color = Color(0.772549, 0.321569, 0.945098, 1)
+
+[node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "tile_grid", "map", "systems_button_label", "map_button_label")]
 script = ExtResource("1_v7j4o")
 background = NodePath("Background")
-comms = NodePath("CommsManager")
 tile_grid = NodePath("TileGrid")
 map = NodePath("Map")
-engine_charger = NodePath("EngineCharger")
-comms_button_label = NodePath("TabButtons/CommsButton")
 systems_button_label = NodePath("TabButtons/SystemsButton")
 map_button_label = NodePath("TabButtons/MapButton")
 
 [node name="Background" type="AnimatedSprite2D" parent="."]
 position = Vector2(-0.5, 0)
-sprite_frames = SubResource("SpriteFrames_dq04t")
-frame = 2
+sprite_frames = SubResource("SpriteFrames_84a1l")
+frame = 1
 
 [node name="TabButtons" type="Node2D" parent="."]
 
-[node name="CommsButton" type="RichTextLabel" parent="TabButtons"]
-offset_left = -72.0
-offset_top = -44.5
-offset_right = -29.0
-offset_bottom = -32.5
-mouse_filter = 2
-bbcode_enabled = true
-text = "COMMS"
-horizontal_alignment = 1
-
-[node name="Clickable" type="Area2D" parent="TabButtons/CommsButton"]
-position = Vector2(20.5, 7.5)
-script = ExtResource("4_sgr5l")
-hover_for_info = false
-metadata/_custom_type_script = "uid://hts4ayfgd5jk"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="TabButtons/CommsButton/Clickable"]
-position = Vector2(0, -0.5)
-shape = SubResource("RectangleShape2D_p0pmq")
-
 [node name="SystemsButton" type="RichTextLabel" parent="TabButtons"]
-offset_left = -21.0
-offset_top = -44.5
-offset_right = 22.0
-offset_bottom = -32.5
+offset_left = -73.0
+offset_top = -45.0
+offset_right = -30.0
+offset_bottom = -33.0
 mouse_filter = 2
 bbcode_enabled = true
 text = "SYSTEMS"
@@ -197,24 +142,6 @@ shape = SubResource("RectangleShape2D_p0pmq")
 visible = false
 position = Vector2(-73, -31)
 
-[node name="CommsManager" parent="." node_paths=PackedStringArray("speaker_sprite", "main_text") instance=ExtResource("12_ctpxn")]
-visible = false
-speaker_sprite = NodePath("Sprite2D")
-main_text = NodePath("RichTextLabel")
-
-[node name="Sprite2D" type="Sprite2D" parent="CommsManager"]
-position = Vector2(-61, -20)
-
-[node name="RichTextLabel" type="RichTextLabel" parent="CommsManager"]
-offset_left = -46.0
-offset_top = -32.0
-offset_right = 69.0
-offset_bottom = 1.0
-mouse_filter = 2
-theme_override_colors/default_color = Color(0.94902, 0.611765, 0.364706, 1)
-bbcode_enabled = true
-text = "Main text box for describing scenarios and discussing [color=red]damage[/color] and stuff!"
-
 [node name="Map" parent="." node_paths=PackedStringArray("map_viewport", "map_camera", "left_arrow_tile", "right_arrow_tile") instance=ExtResource("13_l0r2u")]
 fate_animated_sprite = ExtResource("7_35tnh")
 danger_area = ExtResource("8_xbbhg")
@@ -222,7 +149,6 @@ map_viewport = NodePath("ViewportTexture/MapViewport")
 map_camera = NodePath("ViewportTexture/MapViewport/Camera2D")
 left_arrow_tile = NodePath("LeftArrowTile")
 right_arrow_tile = NodePath("RightArrowTile")
-button_highlight_shader = SubResource("ShaderMaterial_35tnh")
 empty_scenario = ExtResource("14_mm1jt")
 
 [node name="ViewportTexture" type="TextureRect" parent="Map"]
@@ -245,20 +171,6 @@ render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="Map/ViewportTexture/MapViewport"]
 
-[node name="JumpButton" parent="Map" instance=ExtResource("8_mm1jt")]
-offset_left = -41.0
-offset_top = -27.0
-offset_right = 15.0
-offset_bottom = -13.0
-hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
-disabled_text_color = Color(0.501961, 0.207843, 0.615686, 1)
-
-[node name="AnimatedSprite2D" parent="Map/JumpButton" index="0"]
-sprite_frames = SubResource("SpriteFrames_foiuu")
-
-[node name="RichTextLabel" parent="Map/JumpButton" index="1"]
-text = "JUMP"
-
 [node name="LeftArrowTile" parent="Map" instance=ExtResource("11_mm1jt")]
 position = Vector2(-60, -18)
 tile_resource = ExtResource("10_tmld6")
@@ -280,6 +192,22 @@ offset_right = 47.0
 offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="MapViewSlider" type="HSlider" parent="Map"]
+unique_name_in_owner = true
+offset_left = -48.0
+offset_top = -25.0
+offset_right = 22.0
+offset_bottom = -13.0
+size_flags_horizontal = 3
+focus_mode = 0
+theme_override_icons/grabber = ExtResource("13_foiuu")
+theme_override_icons/grabber_highlight = ExtResource("14_geq53")
+theme_override_styles/grabber_area = SubResource("StyleBoxFlat_35tnh")
+theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_xbbhg")
+max_value = 1.0
+step = 0.01
+value = 0.5
 
 [node name="EngineCharger" type="Node2D" parent="." node_paths=PackedStringArray("progress_bar", "fill_head", "charged_indicator", "display_text")]
 script = ExtResource("11_foiuu")
@@ -337,11 +265,6 @@ mouse_filter = 2
 text = "21/25"
 horizontal_alignment = 1
 
-[connection signal="clicked" from="TabButtons/CommsButton/Clickable" to="." method="_show_comms"]
-[connection signal="input_event" from="TabButtons/CommsButton/Clickable" to="TabButtons/CommsButton/Clickable" method="_on_input_event"]
-[connection signal="is_hovered" from="TabButtons/CommsButton/Clickable" to="." method="_comms_hovered"]
-[connection signal="mouse_entered" from="TabButtons/CommsButton/Clickable" to="TabButtons/CommsButton/Clickable" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="TabButtons/CommsButton/Clickable" to="TabButtons/CommsButton/Clickable" method="_on_mouse_exited"]
 [connection signal="clicked" from="TabButtons/SystemsButton/Clickable" to="." method="_show_systems"]
 [connection signal="input_event" from="TabButtons/SystemsButton/Clickable" to="TabButtons/SystemsButton/Clickable" method="_on_input_event"]
 [connection signal="is_hovered" from="TabButtons/SystemsButton/Clickable" to="." method="_systems_hovered"]
@@ -352,6 +275,4 @@ horizontal_alignment = 1
 [connection signal="is_hovered" from="TabButtons/MapButton/Clickable" to="." method="_map_hovered"]
 [connection signal="mouse_entered" from="TabButtons/MapButton/Clickable" to="TabButtons/MapButton/Clickable" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="TabButtons/MapButton/Clickable" to="TabButtons/MapButton/Clickable" method="_on_mouse_exited"]
-[connection signal="pressed_within_window" from="Map/JumpButton" to="Map" method="_jump"]
-
-[editable path="Map/JumpButton"]
+[connection signal="value_changed" from="Map/MapViewSlider" to="Map" method="_on_map_view_slider_value_changed"]

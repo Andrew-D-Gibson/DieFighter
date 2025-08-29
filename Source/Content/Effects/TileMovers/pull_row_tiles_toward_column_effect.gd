@@ -1,12 +1,14 @@
-class_name PullAllTilesTowardColumnEffect
+class_name PullRowTilesTowardColumnEffect
 extends Effect
 
 ## A column of -1 inherits the column of the activating tile
-@export_range(-1,4) var target_column: int
+@export_range(-1,4) var target_column: int = -1
+
+## A column of -1 inherits the row of the activating tile
+@export_range(-1,2) var target_row: int = -1
 
 func play(effect_variables: EffectVariables) -> void:
 	var column: int = target_column
-	
 	# If the column is set to -1 inherit the column from the activating tile
 	if column == -1:
 		if not effect_variables.effect_source:
@@ -22,11 +24,31 @@ func play(effect_variables: EffectVariables) -> void:
 		)
 		
 		column = source_tile_pos.x
+		
+	var row: int = target_row
+	# If the column is set to -1 inherit the column from the activating tile
+	if row == -1:
+		if not effect_variables.effect_source:
+			printerr("PullAllTilesTowardColumnEffect is trying to inherit the row from a non-existent Tile!")
+			return
+			
+		if effect_variables.effect_source is not Tile:
+			printerr("PullAllTilesTowardColumnEffect is trying to inherit the row from something other than a Tile!")
+			return
+		
+		var source_tile_pos: Vector2i = Globals.tile_grid.find_tile_pos(
+			effect_variables.effect_source as Tile
+		)
+		
+		row = source_tile_pos.y
 	
 	# Move every tile in the proper direction
 	for direction in [1, -1]:
 		var tiles_to_move = []
 		for tile_location in Globals.tile_grid.tile_locations.keys():
+			if tile_location.y != row:
+				continue
+				
 			if sign(column - tile_location.x) == direction:
 				tiles_to_move.append(tile_location)
 

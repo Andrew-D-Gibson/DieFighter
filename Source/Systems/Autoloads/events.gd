@@ -24,13 +24,6 @@ signal set_current_clickable(clickable: Clickable)
 # Control Events
 signal show_map()
 signal show_systems()
-signal show_comms()
-signal hide_comms()
-
-signal show_dialogue(text: String)
-signal dialogue_closed()
-signal show_choice_dialogue(text: String, choices: Array[ChoiceResource])
-signal choice_made(choice_index: int)
 
 signal targeting_computer_retargeted()
 signal tile_activation_complete()

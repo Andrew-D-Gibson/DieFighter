@@ -184,8 +184,6 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 		if value != 0:
 			new_die.value = value
 		
-		new_die.draggable.drag_started.connect(Events.hide_comms.emit)
-			
 		add_child(new_die)		
 		dice_manager.add(new_die, true, false)
 		

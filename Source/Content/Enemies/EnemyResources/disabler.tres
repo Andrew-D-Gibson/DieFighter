@@ -51,6 +51,7 @@ enemy_name = "Disabler Drone"
 description = "Gonna disable ya"
 ship_graphics_scene = ExtResource("5_5pxhh")
 graphics_scene_offset = Vector2(0, -16)
+dialogue_offset = Vector2(16, 0)
 targeting_computer_image = ExtResource("6_1ll6j")
 health_bar_position = Vector2(-20, -4)
 dice_queue_position = Vector2(24, 8)

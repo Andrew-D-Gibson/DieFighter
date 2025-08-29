@@ -18,7 +18,6 @@ var current_scenario_index: int
 @export var map_camera: Camera2D
 @export var left_arrow_tile: Tile
 @export var right_arrow_tile: Tile
-@export var button_highlight_shader: ShaderMaterial
 
 
 @export_category('Behavior')
@@ -26,21 +25,16 @@ var current_scenario_index: int
 @export var sprite_spacing: int = 14
 
 var scenario_sprites: Array[Sprite2D]
-var desired_scenario_index: int
-var tween: Tween
-
 
 func _ready() -> void:
 	Globals.map = self
 	
 	Events.load_game_save.connect(_load_game_save)
-	Events.start_scenario.connect(_update_map_sprites)
+	Events.start_scenario.connect(func() -> void:
+		_update_map_sprites()
+		_update_ui()
+	)
 	Events.engine_charge_changed.connect(_update_ui)
-	
-	left_arrow_tile.dice_queue.die_added.connect(_update_ui)
-	left_arrow_tile.dice_queue.die_removed.connect(_update_ui)
-	right_arrow_tile.dice_queue.die_added.connect(_update_ui)
-	right_arrow_tile.dice_queue.die_removed.connect(_update_ui)
 	
 	_update_ui()
 	
@@ -57,8 +51,6 @@ func _on_visibility_changed() -> void:
 	
 	
 func _update_ui() -> void:
-	_update_desired_scenario()
-	
 	if not Globals.player:
 		return
 	
@@ -72,19 +64,6 @@ func _update_ui() -> void:
 		left_arrow_tile.set_gray_out(true)
 		right_arrow_tile.set_highlight(false)
 		right_arrow_tile.set_gray_out(true)
-		
-	if desired_scenario_index != current_scenario_index and desired_scenario_index > scenarios_in_danger-1:
-		$JumpButton.disabled = false
-		$JumpButton.update_ui()
-		var mat: ShaderMaterial = button_highlight_shader.duplicate()
-		$JumpButton/AnimatedSprite2D.material = mat
-	else:
-		$JumpButton.disabled = true
-		$JumpButton.update_ui()
-		$JumpButton/AnimatedSprite2D.material = null
-		
-	#if desired_scenario_index == current_scenario_index:
-		#error_text.text = '[color=#c552f1]CHOOSE DESTINATION[/color]'
 
 
 func _update_map_sprites() -> void:
@@ -143,75 +122,48 @@ func _update_map_sprites() -> void:
 		map_viewport.add_child(scenario_sprite)
 		scenario_sprites.append(scenario_sprite)
 		
-	_update_desired_scenario()
-	
+	# Reset the map view slider
+	var max_position: int = len(scenario_list) * sprite_spacing
+	%MapViewSlider.value = map_camera.position.x / max_position
 
-func _update_desired_scenario() -> void:
-	# Sum the dice values in the left selector
-	var left_offset: int = 0
-	if len(left_arrow_tile.dice_queue.queue) > 0:
-		left_offset += left_arrow_tile.dice_queue.queue[0].value
+
+func is_valid_destination(desired_scenario_index: int) -> bool:
+	return len(scenario_list) > 0 and \
+	desired_scenario_index >= 0 and \
+	desired_scenario_index < len(scenario_list) and \
+	desired_scenario_index != current_scenario_index
 		
-	# Sum the dice values in the right selector
-	var right_offset: int = 0
-	if len(right_arrow_tile.dice_queue.queue) > 0:
-		right_offset += right_arrow_tile.dice_queue.queue[0].value
-	
-	
-	if len(scenario_list) == 0:
-		return
-	
-	# Sum the values to find the new desired encounter's index
-	desired_scenario_index = current_scenario_index + right_offset - left_offset
-	
-	# Clamp the desired location to within the map
-	desired_scenario_index = clampi(desired_scenario_index, 0, len(scenario_list) - 1)
-	
+		
+func _tween_map_to_index(index: int) -> void:
 	# Tween the camera to center on the desired encounter
 	var camera_tween_time = 0.5
-	var camera_tween = get_tree().create_tween()
-	camera_tween.tween_property(map_camera, 'position', \
-		Vector2(desired_scenario_index * sprite_spacing, 0), camera_tween_time)\
+	var camera_movement_tween: Tween = get_tree().create_tween()
+	camera_movement_tween.tween_property(map_camera, 'position', \
+		Vector2(index * sprite_spacing, 0), camera_tween_time)\
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_IN_OUT)
 
 	# Use the map's tween to animate the desired encounter's sprite
 	# We use a singular tween to make sure only one tween is running at a time
-	var tween_time = 0.75
-	if tween:
-		tween.kill()
-		# Make sure the other sprites are scaled properly,
-		# in case we killed the tween midway
-		for sprite in scenario_sprites:
-			sprite.scale = Vector2(1,1)
+	var tween_time = 1
+	var scenario_zoom_tween: Tween = get_tree().create_tween()
+	scenario_zoom_tween.tween_property(
+		scenario_sprites[index], 
+		'scale', 
+		Vector2(1.5,1.5), 
+		tween_time
+	).from(Vector2(1,1))
 	
-	if desired_scenario_index != current_scenario_index:
-		tween = get_tree().create_tween()
-		tween.tween_property(scenario_sprites[desired_scenario_index], 'scale', Vector2(1.5,1.5), tween_time).from(Vector2(1,1))
-		#tween.tween_property(scenario_sprites[desired_scenario_index], 'scale', Vector2(1,1), tween_time)
-		#tween.set_loops()
-	
-	_update_map_button()
+	await scenario_zoom_tween.finished
 
 
-func _update_map_button() -> void:
-	if desired_scenario_index != current_scenario_index:
-		pass
-		#map_button_label.text = '[color=#c552f1][wave amp=15.0 freq=5.0 connected=1]JUMP[/wave][/color]'
-	else:
-		pass
-		#map_button_label.text = '[color=#171615]JUMP[/color]'
-
-
-func _jump() -> void:
-	if Globals.player.engine_charge < Globals.player.max_engine_charge:
-		Events.error_text_popup.emit("CHARGE ENGINE", $JumpButton.global_position + Vector2($JumpButton.size.x/2, 0))
+func jump(desired_scenario_index: int) -> void:
+	if not is_valid_destination(desired_scenario_index):
+		printerr("Attempted to jump to an invalid destination: ", desired_scenario_index)
 		return
-	
-	if desired_scenario_index == current_scenario_index:
-		Events.error_text_popup.emit("CHOOSE DESTINATION", $JumpButton.global_position + Vector2($JumpButton.size.x/2, 0))
-		return
-
+		
+	await _tween_map_to_index(desired_scenario_index)
+		
 	Events.jump.emit()
 	
 	# Set the current index scenario to empty
@@ -231,3 +183,11 @@ func _jump() -> void:
 	scenarios_in_danger = min(randi_range(1,3), current_scenario_index + 1)
 	
 	Events.start_scenario.emit()
+	
+
+
+func _on_map_view_slider_value_changed(value: float) -> void:
+	var max_position: int = len(scenario_list) * sprite_spacing
+	var desired_camera_position: int = max_position * value
+
+	map_camera.position = Vector2(desired_camera_position, 0)

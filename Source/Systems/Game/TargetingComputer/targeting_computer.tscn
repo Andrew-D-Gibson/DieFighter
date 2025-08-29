@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://cpqd13acuxpx"]
+[gd_scene load_steps=18 format=3 uid="uid://cpqd13acuxpx"]
 
 [ext_resource type="Script" uid="uid://bkn6faehi2i4w" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.gd" id="1_8ig5e"]
 [ext_resource type="Texture2D" uid="uid://d053aff6muvev" path="res://Assets/Textures/Enemies/IntentIndicator/UnknownEnemyIntent.png" id="2_g8xi5"]
@@ -6,7 +6,6 @@
 [ext_resource type="Texture2D" uid="uid://dn06kov6nfnf7" path="res://Assets/Textures/TargetingComputer/targeting_computer.png" id="3_oioga"]
 [ext_resource type="Texture2D" uid="uid://dx1hbv18y88tv" path="res://Assets/Textures/Enemies/SectorBoss/sector_boss_targeting_image.png" id="4_8uv0v"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_exnvl"]
-[ext_resource type="Texture2D" uid="uid://kb0qo5n5y0xa" path="res://Assets/Textures/TargetingComputer/info_indicator-Sheet.png" id="5_hbs2t"]
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="5_vfg6m"]
 [ext_resource type="Texture2D" uid="uid://vf8jg262swbo" path="res://Assets/Textures/TargetingComputer/targeting_image_static-Sheet.png" id="9_hbs2t"]
 [ext_resource type="Shader" uid="uid://ba0o5ds647y54" path="res://Assets/Shaders/targeting_computer_crt_shader.gdshader" id="10_chiev"]
@@ -38,34 +37,6 @@ shader_parameter/warp_amount = 0.0
 shader_parameter/clip_warp = false
 shader_parameter/vignette_intensity = -0.2
 shader_parameter/vignette_opacity = 0.8
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_8grxf"]
-atlas = ExtResource("5_hbs2t")
-region = Rect2(0, 0, 9, 9)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_chiev"]
-atlas = ExtResource("5_hbs2t")
-region = Rect2(9, 0, 9, 9)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_ysc67"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_8grxf")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_chiev")
-}],
-"loop": false,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_hbs2t"]
-size = Vector2(9, 10)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_46m13"]
-size = Vector2(7, 23)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ysc67"]
 atlas = ExtResource("9_hbs2t")
@@ -103,6 +74,9 @@ animations = [{
 "speed": 16.0
 }]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_46m13"]
+size = Vector2(7, 23)
+
 [node name="TargetingComputer" type="Node2D" node_paths=PackedStringArray("targeting_indicator")]
 script = ExtResource("1_8ig5e")
 targeting_indicator = NodePath("TargetingIndicator")
@@ -129,21 +103,16 @@ position = Vector2(0, 0.6)
 texture = ExtResource("11_ysc67")
 
 [node name="TargetImage" type="Sprite2D" parent="."]
-position = Vector2(-5, -7)
+position = Vector2(0, -7.5)
 texture = ExtResource("4_8uv0v")
 
-[node name="InfoIndicator" type="AnimatedSprite2D" parent="."]
-position = Vector2(11, -7)
-sprite_frames = SubResource("SpriteFrames_ysc67")
-offset = Vector2(-0.5, 0)
-
-[node name="Clickable" type="Area2D" parent="InfoIndicator"]
-position = Vector2(-0.5, 0)
-script = ExtResource("4_exnvl")
-metadata/_custom_type_script = "uid://hts4ayfgd5jk"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="InfoIndicator/Clickable"]
-shape = SubResource("RectangleShape2D_hbs2t")
+[node name="TargetImageFill" type="AnimatedSprite2D" parent="."]
+z_index = -2
+position = Vector2(5, 0.5)
+sprite_frames = SubResource("SpriteFrames_0asw0")
+animation = &"static"
+autoplay = "static"
+frame_progress = 0.489481
 
 [node name="TargetingIndicator" type="Sprite2D" parent="."]
 visible = false
@@ -156,7 +125,7 @@ position = Vector2(-24, -14)
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="LeftButton"]
 position = Vector2(-4, 1)
 scale = Vector2(0.6, 1.4)
-polygon = PackedVector2Array(11.6667, -12.1429, -5, 0, 11.6667, 10.7143)
+polygon = PackedVector2Array(11.6667, -12.1429, -5, -5, -5, 2.14286, 11.6667, 9.28571)
 
 [node name="RightButton" type="Area2D" parent="."]
 position = Vector2(24, -14)
@@ -164,7 +133,7 @@ position = Vector2(24, -14)
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="RightButton"]
 position = Vector2(-4, 1)
 scale = Vector2(0.6, 1.4)
-polygon = PackedVector2Array(1.66667, -12.1429, 18.3333, 0, 1.66667, 10.7143)
+polygon = PackedVector2Array(1.66667, -12.1429, 18.3333, -5, 18.3333, 2.14286, 1.66667, 9.28571)
 
 [node name="Intents" type="Node2D" parent="."]
 position = Vector2(0.5, 0)
@@ -301,18 +270,6 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
-[node name="TargetImageFill" type="AnimatedSprite2D" parent="."]
-z_index = -2
-position = Vector2(0, 0.6)
-sprite_frames = SubResource("SpriteFrames_0asw0")
-animation = &"static"
-autoplay = "static"
-frame_progress = 0.302846
-
-[connection signal="clicked" from="InfoIndicator/Clickable" to="." method="_show_ship_info"]
-[connection signal="input_event" from="InfoIndicator/Clickable" to="InfoIndicator/Clickable" method="_on_input_event"]
-[connection signal="mouse_entered" from="InfoIndicator/Clickable" to="InfoIndicator/Clickable" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="InfoIndicator/Clickable" to="InfoIndicator/Clickable" method="_on_mouse_exited"]
 [connection signal="input_event" from="LeftButton" to="." method="_on_left_button_input_event"]
 [connection signal="input_event" from="RightButton" to="." method="_on_right_button_input_event"]
 [connection signal="input_event" from="Intents/1/Clickable" to="Intents/1/Clickable" method="_on_input_event"]

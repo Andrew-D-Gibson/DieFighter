@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ds47omiwgwwmj" path="res://Assets/Textures/TileGrid/GridStatusEffects/lockout.png" id="4_p13k7"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="4_vtk50"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="5_ej6cm"]
-[ext_resource type="Script" uid="uid://bmhft7xkxwabt" path="res://Source/Content/Effects/Utilities/destroy_source_effect.gd" id="5_v32d7"]
+[ext_resource type="Script" uid="uid://bmhft7xkxwabt" path="res://Source/Content/Effects/MiscUtilities/destroy_source_effect.gd" id="5_v32d7"]
 [ext_resource type="Script" uid="uid://c6ldtha2c8w0x" path="res://Source/Systems/UI/InfoShower/InfoResource.gd" id="7_v32d7"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="11_vtk50"]
 

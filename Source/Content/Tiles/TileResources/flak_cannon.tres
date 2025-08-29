@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://up1lduwwygjq" path="res://Assets/Textures/Tiles/RedTiles/flak_cannon.png" id="2_mywar"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_mywar"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_w3f31"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="4_a1g78"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="4_a1g78"]
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="4_h3tty"]
 [ext_resource type="Script" uid="uid://ckbh5m14lawn4" path="res://Source/Content/Effects/AmountModifiers/adjacent_tiles_amount_modifier_effect.gd" id="5_m1j0p"]
 [ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="6_sndgu"]
@@ -97,7 +97,7 @@ animations = [{
 
 [resource]
 script = ExtResource("3_mywar")
-tile_name = "Flak Cannon"
+tile_name = "[color=red]Flak Cannon[/color]"
 activation_description = ""
 description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]target[/color], +1 for every surrounding tile, then [color=orange]give[/color] them the die"
 rarity = 0
@@ -107,4 +107,5 @@ activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3")
 effect_chain = SubResource("Resource_4kv0t")
 event_responses = Dictionary[ExtResource("9_sndgu"), ExtResource("8_m1j0p")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

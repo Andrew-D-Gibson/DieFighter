@@ -5,7 +5,7 @@
 [ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="3_372r4"]
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_gndob"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_won78"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="4_eqci4"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="4_eqci4"]
 [ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="4_vh6gp"]
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="5_5ea37"]
 [ext_resource type="Script" uid="uid://ykpulcdqf0lb" path="res://Source/Content/Effects/Tweens/move_die_to_tile.gd" id="6_5ea37"]
@@ -131,7 +131,7 @@ animations = [{
 
 [resource]
 script = ExtResource("3_won78")
-tile_name = "Tactical Boomerang"
+tile_name = "[color=red]Tactical Boomerang[/color]"
 activation_description = ""
 description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=purple]target[/color], push this tile [color=green]left[/color] if (die_3) and right if [color=green](die_4)[/color]"
 rarity = 1

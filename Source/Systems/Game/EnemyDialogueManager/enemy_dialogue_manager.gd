@@ -4,7 +4,9 @@ extends Node2D
 @export var character_reveal_time: float = 0.02
 
 var current_dialogue: String
-var reveal_tween: Tween
+var character_reveal_tween: Tween
+var fade_tween: Tween
+var fade_time: float = 1
 
 var red_dialogue_box: Texture2D = preload("uid://dt1r6m0xqqoe7")
 var green_dialogue_box: Texture2D = preload("uid://csw1kfx56jn5i")
@@ -19,20 +21,20 @@ var faction_textures: Dictionary[ScenarioManager.Faction, Texture2D] = {
 
 func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:
 	# Reset if we just showed another dialogue
-	if reveal_tween:
-		reveal_tween.kill()
+	if character_reveal_tween:
+		character_reveal_tween.kill()
 	%RichTextLabel.text = ""
 	
 	if dialogue == "":
-		hide()
+		hide_dialogue()
 		return
-		
+
 	_start_fade_in()
 	%Sprite2D.texture = faction_textures[faction]
 	current_dialogue = dialogue
 		
-	reveal_tween = get_tree().create_tween()
-	reveal_tween.tween_method(
+	character_reveal_tween = get_tree().create_tween()
+	character_reveal_tween.tween_method(
 		_show_characters, 
 		0, 
 		len(current_dialogue), 
@@ -40,16 +42,35 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 	).set_trans(Tween.TRANS_LINEAR)
 	
 	
+func hide_dialogue() -> void:
+	if fade_tween:
+		fade_tween.kill()
+
+	fade_tween = get_tree().create_tween()
+	fade_tween.tween_property(
+		self,
+		"modulate:a",
+		0,
+		fade_time
+	).from_current()\
+	.set_trans(Tween.TRANS_LINEAR)\
+	.set_ease(Tween.EASE_IN_OUT)
+	
+	await fade_tween.finished
+	hide()
+	
+	
 func _start_fade_in() -> void:
+	if fade_tween:
+		fade_tween.kill()
 	show()
 	
-	var fade_in_time: float = 1
-	var fade_in_tween: Tween = get_tree().create_tween()
-	fade_in_tween.tween_property(
+	fade_tween = get_tree().create_tween()
+	fade_tween.tween_property(
 		self,
 		"modulate:a",
 		1,
-		fade_in_time
+		fade_time
 	).from(0)\
 	.set_trans(Tween.TRANS_LINEAR)\
 	.set_ease(Tween.EASE_IN_OUT)

@@ -76,7 +76,7 @@ animations = [{
 
 [resource]
 script = ExtResource("4_rsbqf")
-tile_name = "Chaos Explosion"
+tile_name = "[color=green]Chaos Explosion[/color]"
 activation_description = ""
 description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to all ships, [color=green]re-roll[/color] all dice, then [color=orange]give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
@@ -86,4 +86,5 @@ activation_checks = Array[ExtResource("1_q8v5r")]([SubResource("Resource_il8a7")
 effect_chain = SubResource("Resource_6u12h")
 event_responses = Dictionary[ExtResource("2_5a1es"), ExtResource("3_asido")]({})
 dragging_allowed = true
+max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

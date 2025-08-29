@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" load_steps=15 format=3 uid="uid://dfpviimqj18jr"]
 
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_rs7xq"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/Utilities/play_sound_effect.gd" id="2_h8kdw"]
+[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="2_h8kdw"]
 [ext_resource type="Script" uid="uid://na20gyl0jdks" path="res://Source/Content/Effects/Targeters/target_self_effect.gd" id="3_702ir"]
 [ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_uik6c"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_vvfhd"]
