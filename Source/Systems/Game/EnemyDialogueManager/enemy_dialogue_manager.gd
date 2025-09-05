@@ -1,7 +1,7 @@
 class_name EnemyDialogueManager
 extends Node2D
 
-@export var character_reveal_time: float = 0.02
+@export var character_reveal_time: float = 0.08
 
 var current_dialogue: String
 var character_reveal_tween: Tween
@@ -18,9 +18,20 @@ var faction_textures: Dictionary[ScenarioManager.Faction, Texture2D] = {
 	ScenarioManager.Faction.BOSS: red_dialogue_box,
 }
 
+static var time_last_dialogue_was_shown: int
+@export var time_between_dialogues: float = 3
+
 
 func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:
-	# Reset if we just showed another dialogue
+	# Check if we just showed a dialogue, and if so, just wait
+	var current_time: int = Time.get_ticks_msec()
+	if time_last_dialogue_was_shown and \
+	current_time < time_last_dialogue_was_shown + (time_between_dialogues * 1000):
+		var time_remaining: int = (time_last_dialogue_was_shown + (time_between_dialogues * 1000)) - current_time
+		print(time_remaining)
+		await get_tree().create_timer(float(time_remaining) / 1000).timeout
+	
+	# Reset if we this was just called for another line of dialogue
 	if character_reveal_tween:
 		character_reveal_tween.kill()
 	%RichTextLabel.text = ""
@@ -28,6 +39,9 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 	if dialogue == "":
 		hide_dialogue()
 		return
+
+	# Record the time this dialogue was shown
+	time_last_dialogue_was_shown = Time.get_ticks_msec()
 
 	_start_fade_in()
 	%Sprite2D.texture = faction_textures[faction]

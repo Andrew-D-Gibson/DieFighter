@@ -14,6 +14,13 @@ extends Node2D
 @export var holographic_textures: Array[Texture2D]
 @export var holographic_particles: PackedScene
 
+# Randomness
+# Static RNG instance shared across all rolls
+static var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
+# Optional: force specific rolls (used by tutorial)
+static var forced_rolls: Array[int] = []
+
 
 @export var value: int = 0:
 	set(new_value):
@@ -35,7 +42,7 @@ var host_queue: DiceQueue
 
 func _ready() -> void:
 	if value == 0:
-		value = randi_range(1,6)
+		value = get_random_die_value()
 		
 	draggable.drag_ended.connect(_check_for_acceptor)
 	
@@ -43,6 +50,19 @@ func _ready() -> void:
 		var particles: CPUParticles2D = holographic_particles.instantiate()
 		particles.position = Vector2(0, -5)
 		add_child(particles)
+		
+
+static func get_random_die_value() -> int:
+	# If tutorial has forced values, use them first
+	if forced_rolls.size() > 0:
+		return forced_rolls.pop_front()
+
+	# Normal roll
+	return _rng.randi_range(1, 6)
+	
+	
+static func seed(seed_value: int) -> void:
+	_rng.seed = seed_value
 
 
 func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
@@ -65,7 +85,7 @@ func reroll_with_tween(new_value: int = 0) -> void:
 	
 	tween.chain().tween_callback(func() -> void:
 		if new_value == 0:
-			value = randi_range(1,6)
+			value = get_random_die_value()
 		else:
 			value = new_value
 	)

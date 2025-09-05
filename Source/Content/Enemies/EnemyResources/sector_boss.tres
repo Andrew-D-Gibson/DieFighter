@@ -50,6 +50,7 @@ enemy_name = "Boss"
 description = "Holy mama"
 ship_graphics_scene = ExtResource("5_3rjdu")
 graphics_scene_offset = Vector2(0, -6)
+dialogue_offset = Vector2(0, 0)
 targeting_computer_image = ExtResource("6_m8qf6")
 health_bar_position = Vector2(-78, -5)
 dice_queue_position = Vector2(72, 16)

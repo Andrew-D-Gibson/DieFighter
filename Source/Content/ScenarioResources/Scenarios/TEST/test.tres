@@ -1,0 +1,220 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=39 format=3 uid="uid://b6jekkxw6dd0f"]
+
+[ext_resource type="Resource" uid="uid://dx0lfddfuacuv" path="res://Source/Resources/BackgroundResources/blue_nebula.tres" id="1_0gm4d"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_3ac8l"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_4dalc"]
+[ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="2_kl5h5"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="3_wd86h"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="6_nhdkr"]
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="7_fq5ss"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="8_r3x3f"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="9_2gr8v"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="10_e4gai"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="11_b7bun"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="12_gyw8y"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="13_yhofi"]
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="14_h6xoo"]
+[ext_resource type="Texture2D" uid="uid://cg27kht5p2kw1" path="res://Assets/Textures/Enemies/Attacker/attacker.png" id="15_tgmyb"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="16_m0naq"]
+
+[sub_resource type="Resource" id="Resource_1h1ka"]
+script = ExtResource("7_fq5ss")
+dialogue = ""
+faction = 0
+attitude = 2
+transitions = Dictionary[int, ExtResource("8_r3x3f")]({})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"
+
+[sub_resource type="Resource" id="Resource_pnywb"]
+script = ExtResource("3_wd86h")
+enemy_resource = ExtResource("6_nhdkr")
+spawning_path_location = 0.15
+starting_state = SubResource("Resource_1h1ka")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_0pkcg"]
+script = ExtResource("9_2gr8v")
+base_action = ExtResource("10_e4gai")
+weight = 1.0
+min_amount = 4
+max_amount = 8
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_81dy1"]
+script = ExtResource("9_2gr8v")
+base_action = ExtResource("11_b7bun")
+weight = 1.0
+min_amount = 0
+max_amount = 0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_sx08h"]
+script = ExtResource("9_2gr8v")
+base_action = ExtResource("10_e4gai")
+weight = 3.0
+min_amount = 2
+max_amount = 2
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_i4wka"]
+script = ExtResource("9_2gr8v")
+base_action = ExtResource("12_gyw8y")
+weight = 2.0
+min_amount = 1
+max_amount = 3
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oknjr"]
+shader = ExtResource("14_h6xoo")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
+[sub_resource type="PackedScene" id="PackedScene_jehlm"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("AttackerShipGraphics", "Sprite2D", "material", "texture", "EngineParticles", "position", "EngineParticles2", "position"),
+"node_count": 3,
+"node_paths": [NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 2, 2, 0, 3, 1, 0, 1073741824, 0, 2147483647, 4, 2, 1, 5, 3, 0, 1073741825, 0, 2147483647, 6, 4, 1, 7, 5, 0),
+"variants": [SubResource("ShaderMaterial_oknjr"), ExtResource("15_tgmyb"), ExtResource("16_m0naq"), Vector2(-5, -11), ExtResource("16_m0naq"), Vector2(5, -11)],
+"version": 3
+}
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_c6ost"]
+load_path = "res://.godot/imported/Attacker_targeting_image.png-25ad10f01a518da13fddb24976122f1b.ctex"
+
+[sub_resource type="Resource" id="Resource_km0xj"]
+script = ExtResource("13_yhofi")
+enemy_name = "Venom Fighter"
+description = "Gonna mess you up bruh"
+ship_graphics_scene = SubResource("PackedScene_jehlm")
+graphics_scene_offset = Vector2(0, 0)
+dialogue_offset = Vector2(18, -8)
+targeting_computer_image = SubResource("CompressedTexture2D_c6ost")
+health_bar_position = Vector2(-20, -17)
+dice_queue_position = Vector2(24, 8)
+max_health = 12
+starting_shields = 0
+action_options = Array[ExtResource("9_2gr8v")]([SubResource("Resource_0pkcg"), SubResource("Resource_81dy1"), SubResource("Resource_sx08h"), SubResource("Resource_i4wka")])
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"
+
+[sub_resource type="Resource" id="Resource_1mpwq"]
+script = ExtResource("7_fq5ss")
+dialogue = ""
+faction = 0
+attitude = 2
+transitions = Dictionary[int, ExtResource("8_r3x3f")]({})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"
+
+[sub_resource type="Resource" id="Resource_qh20m"]
+script = ExtResource("3_wd86h")
+enemy_resource = SubResource("Resource_km0xj")
+spawning_path_location = 0.4
+starting_state = SubResource("Resource_1mpwq")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="PackedScene" id="PackedScene_77ydp"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("AttackerShipGraphics", "Sprite2D", "material", "texture", "EngineParticles", "position", "EngineParticles2", "position"),
+"node_count": 3,
+"node_paths": [NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 2, 2, 0, 3, 1, 0, 1073741824, 0, 2147483647, 4, 2, 1, 5, 3, 0, 1073741825, 0, 2147483647, 6, 4, 1, 7, 5, 0),
+"variants": [SubResource("ShaderMaterial_oknjr"), ExtResource("15_tgmyb"), ExtResource("16_m0naq"), Vector2(-5, -11), ExtResource("16_m0naq"), Vector2(5, -11)],
+"version": 3
+}
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_i2pf1"]
+load_path = "res://.godot/imported/Attacker_targeting_image.png-25ad10f01a518da13fddb24976122f1b.ctex"
+
+[sub_resource type="Resource" id="Resource_xlgyd"]
+script = ExtResource("13_yhofi")
+enemy_name = "Venom Fighter"
+description = "Gonna mess you up bruh"
+ship_graphics_scene = SubResource("PackedScene_77ydp")
+graphics_scene_offset = Vector2(0, 0)
+dialogue_offset = Vector2(18, -8)
+targeting_computer_image = SubResource("CompressedTexture2D_i2pf1")
+health_bar_position = Vector2(-20, -17)
+dice_queue_position = Vector2(24, 8)
+max_health = 12
+starting_shields = 0
+action_options = Array[ExtResource("9_2gr8v")]([SubResource("Resource_0pkcg"), SubResource("Resource_81dy1"), SubResource("Resource_sx08h"), SubResource("Resource_i4wka")])
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"
+
+[sub_resource type="Resource" id="Resource_ur4fs"]
+script = ExtResource("7_fq5ss")
+dialogue = ""
+faction = 0
+attitude = 2
+transitions = Dictionary[int, ExtResource("8_r3x3f")]({})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"
+
+[sub_resource type="Resource" id="Resource_ansyq"]
+script = ExtResource("3_wd86h")
+enemy_resource = SubResource("Resource_xlgyd")
+spawning_path_location = 0.7
+starting_state = SubResource("Resource_ur4fs")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="PackedScene" id="PackedScene_0gm4d"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"names": PackedStringArray("AttackerShipGraphics", "Sprite2D", "material", "texture", "EngineParticles", "position", "EngineParticles2", "position"),
+"node_count": 3,
+"node_paths": [NodePath("."), NodePath(".")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 2, 2, 0, 3, 1, 0, 1073741824, 0, 2147483647, 4, 2, 1, 5, 3, 0, 1073741825, 0, 2147483647, 6, 4, 1, 7, 5, 0),
+"variants": [SubResource("ShaderMaterial_oknjr"), ExtResource("15_tgmyb"), ExtResource("16_m0naq"), Vector2(-5, -11), ExtResource("16_m0naq"), Vector2(5, -11)],
+"version": 3
+}
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_kl5h5"]
+load_path = "res://.godot/imported/Attacker_targeting_image.png-25ad10f01a518da13fddb24976122f1b.ctex"
+
+[sub_resource type="Resource" id="Resource_nhdkr"]
+script = ExtResource("13_yhofi")
+enemy_name = "Venom Fighter"
+description = "Gonna mess you up bruh"
+ship_graphics_scene = SubResource("PackedScene_0gm4d")
+graphics_scene_offset = Vector2(0, 0)
+dialogue_offset = Vector2(18, -8)
+targeting_computer_image = SubResource("CompressedTexture2D_kl5h5")
+health_bar_position = Vector2(-20, -17)
+dice_queue_position = Vector2(24, 8)
+max_health = 12
+starting_shields = 0
+action_options = Array[ExtResource("9_2gr8v")]([SubResource("Resource_0pkcg"), SubResource("Resource_81dy1"), SubResource("Resource_sx08h"), SubResource("Resource_i4wka")])
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"
+
+[sub_resource type="Resource" id="Resource_fq5ss"]
+script = ExtResource("7_fq5ss")
+dialogue = ""
+faction = 0
+attitude = 2
+transitions = Dictionary[int, ExtResource("8_r3x3f")]({})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"
+
+[sub_resource type="Resource" id="Resource_r3x3f"]
+script = ExtResource("3_wd86h")
+enemy_resource = SubResource("Resource_nhdkr")
+spawning_path_location = 0.9
+starting_state = SubResource("Resource_fq5ss")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("2_4dalc")
+map_icon = ExtResource("2_kl5h5")
+background_resource = ExtResource("1_0gm4d")
+starting_enemies = Array[ExtResource("3_wd86h")]([SubResource("Resource_pnywb"), SubResource("Resource_qh20m"), SubResource("Resource_ansyq"), SubResource("Resource_r3x3f")])
+rewards = Dictionary[int, ExtResource("1_3ac8l")]({})
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

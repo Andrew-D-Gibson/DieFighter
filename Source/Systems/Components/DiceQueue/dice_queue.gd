@@ -36,3 +36,10 @@ func remove(die: Dice) -> void:
 	if die in queue:
 		queue.erase(die)
 		die_removed.emit()
+		
+
+func has_value(value: int) -> bool:
+	for die: Dice in queue:
+		if die.value == value:
+			return true
+	return false

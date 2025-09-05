@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cpqd13acuxpx"]
+[gd_scene load_steps=33 format=3 uid="uid://cpqd13acuxpx"]
 
 [ext_resource type="Script" uid="uid://bkn6faehi2i4w" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.gd" id="1_8ig5e"]
 [ext_resource type="Texture2D" uid="uid://d053aff6muvev" path="res://Assets/Textures/Enemies/IntentIndicator/UnknownEnemyIntent.png" id="2_g8xi5"]
@@ -9,7 +9,9 @@
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="5_vfg6m"]
 [ext_resource type="Texture2D" uid="uid://vf8jg262swbo" path="res://Assets/Textures/TargetingComputer/targeting_image_static-Sheet.png" id="9_hbs2t"]
 [ext_resource type="Shader" uid="uid://ba0o5ds647y54" path="res://Assets/Shaders/targeting_computer_crt_shader.gdshader" id="10_chiev"]
+[ext_resource type="Texture2D" uid="uid://je3ilyc604a3" path="res://Assets/Textures/TargetingComputer/intent_dice_indicator_default-Sheet.png" id="11_du4uj"]
 [ext_resource type="Texture2D" uid="uid://crep0ra8xjfw0" path="res://Assets/Textures/TargetingComputer/targeting_computer_shader_mask.png" id="11_ysc67"]
+[ext_resource type="Texture2D" uid="uid://bn2wtbh44umub" path="res://Assets/Textures/TargetingComputer/intent_dice_indicator_held-Sheet.png" id="12_y72xu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_du4uj"]
 shader = ExtResource("10_chiev")
@@ -76,6 +78,98 @@ animations = [{
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_46m13"]
 size = Vector2(7, 23)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0asw0"]
+atlas = ExtResource("11_du4uj")
+region = Rect2(0, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ejbf5"]
+atlas = ExtResource("11_du4uj")
+region = Rect2(7, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_55b7o"]
+atlas = ExtResource("11_du4uj")
+region = Rect2(14, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_hp0t2"]
+atlas = ExtResource("11_du4uj")
+region = Rect2(21, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_l4n7f"]
+atlas = ExtResource("11_du4uj")
+region = Rect2(28, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2hddi"]
+atlas = ExtResource("11_du4uj")
+region = Rect2(35, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3demr"]
+atlas = ExtResource("12_y72xu")
+region = Rect2(0, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fh1i2"]
+atlas = ExtResource("12_y72xu")
+region = Rect2(7, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_klqc4"]
+atlas = ExtResource("12_y72xu")
+region = Rect2(14, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_pol1c"]
+atlas = ExtResource("12_y72xu")
+region = Rect2(21, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_05ox4"]
+atlas = ExtResource("12_y72xu")
+region = Rect2(28, 0, 7, 7)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_w6ds7"]
+atlas = ExtResource("12_y72xu")
+region = Rect2(35, 0, 7, 7)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_f4ln3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0asw0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ejbf5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_55b7o")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_hp0t2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_l4n7f")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2hddi")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3demr")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fh1i2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_klqc4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_pol1c")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_05ox4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_w6ds7")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="TargetingComputer" type="Node2D" node_paths=PackedStringArray("targeting_indicator")]
 script = ExtResource("1_8ig5e")
@@ -160,6 +254,11 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
+[node name="DieSprite1" type="AnimatedSprite2D" parent="Intents/1"]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_f4ln3")
+
 [node name="2" type="Sprite2D" parent="Intents"]
 position = Vector2(-14, 17)
 texture = ExtResource("5_vfg6m")
@@ -181,6 +280,12 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/2/Clickable"]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
+
+[node name="DieSprite2" type="AnimatedSprite2D" parent="Intents/2"]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_f4ln3")
+frame = 1
 
 [node name="3" type="Sprite2D" parent="Intents"]
 position = Vector2(-5, 17)
@@ -204,6 +309,12 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
+[node name="DieSprite3" type="AnimatedSprite2D" parent="Intents/3"]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_f4ln3")
+frame = 2
+
 [node name="4" type="Sprite2D" parent="Intents"]
 position = Vector2(4, 17)
 texture = ExtResource("5_vfg6m")
@@ -225,6 +336,12 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/4/Clickable"]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
+
+[node name="DieSprite4" type="AnimatedSprite2D" parent="Intents/4"]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_f4ln3")
+frame = 3
 
 [node name="5" type="Sprite2D" parent="Intents"]
 position = Vector2(13, 17)
@@ -248,6 +365,12 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
+[node name="DieSprite5" type="AnimatedSprite2D" parent="Intents/5"]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_f4ln3")
+frame = 4
+
 [node name="6" type="Sprite2D" parent="Intents"]
 position = Vector2(22, 17)
 texture = ExtResource("5_vfg6m")
@@ -269,6 +392,12 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/6/Clickable"]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
+
+[node name="DieSprite6" type="AnimatedSprite2D" parent="Intents/6"]
+unique_name_in_owner = true
+position = Vector2(0, -8)
+sprite_frames = SubResource("SpriteFrames_f4ln3")
+frame = 5
 
 [connection signal="input_event" from="LeftButton" to="." method="_on_left_button_input_event"]
 [connection signal="input_event" from="RightButton" to="." method="_on_right_button_input_event"]

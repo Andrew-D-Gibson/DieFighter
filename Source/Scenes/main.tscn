@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=44 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -6,7 +6,6 @@
 [ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="4_6ebjm"]
 [ext_resource type="Script" uid="uid://by2nuppu48mrd" path="res://Source/Systems/UI/DebugItems/fps_counter.gd" id="4_7iud4"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
-[ext_resource type="Script" uid="uid://bqx08ggc7jojk" path="res://Source/Systems/UI/Screenshots/screenshots.gd" id="4_hd7px"]
 [ext_resource type="Shader" uid="uid://b325sq1hvbhpv" path="res://Assets/Shaders/glitch.gdshader" id="4_o33d5"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
@@ -216,9 +215,6 @@ small_shake_intensity = 1.5
 small_shake_duration = 0.175
 large_shake_intensity = 3.0
 large_shake_duration = 0.25
-
-[node name="Screenshots" type="Node2D" parent="Graphics/Camera2D"]
-script = ExtResource("4_hd7px")
 
 [node name="Cockpit Walls" type="Sprite2D" parent="Graphics"]
 position = Vector2(160, 90)

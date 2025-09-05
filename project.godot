@@ -25,6 +25,7 @@ Globals="*res://Source/Systems/Autoloads/globals.gd"
 Events="*res://Source/Systems/Autoloads/events.gd"
 SoundEffectsPlayer="*res://Source/Systems/Autoloads/sound_effects_player.gd"
 DebugLogger="*res://Source/Systems/Autoloads/debug_logger.gd"
+Screenshotter="*res://Source/Systems/Autoloads/screenshotter.gd"
 
 [debug]
 

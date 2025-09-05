@@ -21,6 +21,8 @@ func _ready() -> void:
 	)
 	Events.jump.connect(delete_all_enemies)
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
+		Enemy.seed(scenario.seed)
+
 		# Spawn the starting ships
 		if len(scenario.starting_enemies) > 0:
 			spawn_enemies(scenario.starting_enemies)
@@ -93,7 +95,10 @@ func _run_enemy_turn() -> void:
 				
 			if len(enemy.dice_manager.queue) != 0:
 				dice_left = true
+				Globals.targeting_computer.target_enemy(enemy)
+				await get_tree().create_timer(1).timeout
 				await enemy.run_turn()
+				
 		
 		if not dice_left:
 			break

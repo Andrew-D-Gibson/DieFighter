@@ -14,7 +14,7 @@ func get_action() -> EnemyActionResource:
 	var action: EnemyActionResource = base_action.duplicate(true)
 	
 	# Randomly set the strength of the effect
-	amount = randi_range(min_amount, max_amount)
+	amount = Enemy.rng.randi_range(min_amount, max_amount)
 	action.intent_amount = str(amount) if amount != 0 else ''
 	
 	# Duplicate the EffectChain resource

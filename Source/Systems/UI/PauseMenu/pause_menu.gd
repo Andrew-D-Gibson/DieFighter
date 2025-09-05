@@ -15,6 +15,7 @@ func _toggle_pause_menu() -> void:
 		hide()
 		get_tree().paused = false
 	else:
+		Events.close_info.emit()
 		show()
 		get_tree().paused = true
 

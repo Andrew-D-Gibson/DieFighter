@@ -5,6 +5,7 @@ extends Resource
 @export var tile_name: String
 @export_multiline var activation_description: String
 @export_multiline var description: String
+@export_multiline var hint_text: String
 
 enum Rarity {COMMON, UNCOMMON, RARE}
 @export var rarity: Rarity = Rarity.COMMON

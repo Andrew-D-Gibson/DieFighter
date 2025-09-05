@@ -6,3 +6,5 @@ extends Resource
 @export var starting_enemies: Array[EnemyStateRewardResource]
 
 @export var rewards: Dictionary[ScenarioManager.Faction, RewardResource]
+
+var seed: int = 0

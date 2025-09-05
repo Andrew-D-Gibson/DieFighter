@@ -67,7 +67,8 @@ func _ready() -> void:
 	
 	end_turn_button.get_child(1).clicked.connect(end_turn)
 	end_turn_button.visible = false
-
+	
+	Events.load_scenario.connect(_load_scenario)
 	Events.start_scenario.connect(_start_scenario)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
@@ -162,7 +163,7 @@ func reroll_dice() -> void:
 func _start_player_turn() -> void:
 	# Wait for any dice to get back to the dice queue before rerolling them
 	await get_tree().create_timer(0.5).timeout
-	reroll_dice()
+	await reroll_dice()
 	
 	Events.player_turn_start.emit()
 	
@@ -192,6 +193,10 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 		
 	_update_dice_queue_locations()
 	
+	
+func _load_scenario(scenario: ScenarioResource) -> void:
+		Dice.seed(scenario.seed)
+
 	
 func _start_scenario() -> void:
 	health.shields = 0

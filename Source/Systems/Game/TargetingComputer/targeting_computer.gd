@@ -7,17 +7,33 @@ extends Node2D
 var targeted_enemy_index: int
 var targeted_enemy: Enemy
 var indicator_bob_tween: Tween
+var intent_scale_tweens: Array[Tween] = []
 
+@onready var die_sprites: Array[AnimatedSprite2D] = [
+	%DieSprite1, 
+	%DieSprite2, 
+	%DieSprite3, 
+	%DieSprite4, 
+	%DieSprite5, 
+	%DieSprite6, 
+]
 
 func _ready() -> void:
 	Globals.targeting_computer = self
+	intent_scale_tweens.resize(6)
 	
 	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		await get_tree().process_frame
 		check_target_is_valid()
 	)
+	Events.enemy_used_die.connect(_on_enemy_used_die)
 	Events.start_combat.connect(check_target_is_valid)
 	Events.start_scenario.connect(_initial_target)
+	Events.enemy_received_die.connect(_update_ui)
+	Events.player_turn_start.connect(func() -> void:
+		await get_tree().create_timer(0.5).timeout
+		_update_ui()
+	)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
 	_initial_target()
 	
@@ -82,6 +98,30 @@ func check_target_is_valid() -> void:
 	Events.targeting_computer_retargeted.emit()
 	
 	
+func _on_enemy_used_die(enemy: Enemy, die_value: int) -> void:
+	# Only animate for the currently targeted enemy
+	if enemy != targeted_enemy:
+		return
+	
+	# Convert die value (1-6) to intents index (0-5)
+	var intent_index: int = clamp(die_value - 1, 0, 5)
+	var intent_node: Node2D = $Intents.get_child(intent_index)
+	
+	# If a previous tween exists for this intent, stop it
+	if intent_scale_tweens[intent_index]:
+		intent_scale_tweens[intent_index].kill()
+	
+	# Pulse the intent scale up then back down
+	var up_scale: Vector2 = Vector2(1.4, 1.4)
+	var base_scale: Vector2 = Vector2.ONE
+	var tween_time: float = 0.5
+	
+	var tween: Tween = get_tree().create_tween()
+	intent_scale_tweens[intent_index] = tween
+	tween.tween_property(intent_node, 'scale', up_scale, tween_time).from(base_scale).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(intent_node, 'scale', base_scale, tween_time).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN)
+	
+	
 func target_enemy(enemy: Enemy) -> void:
 	if not enemy:
 		return
@@ -114,11 +154,20 @@ func _update_ui() -> void:
 		_move_indicator()
 		
 		$TargetImage.texture = targeted_enemy.enemy_resource.targeting_computer_image
-		for i: int in range(len(targeted_enemy.turn_actions)): # Should be a loop to 0 or 6
+		for i: int in range(len(targeted_enemy.turn_actions)): # Should always loop 0 to 5
 			if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
+				# Set up the intent die properly
+				if targeted_enemy.dice_manager.has_value(i+1):
+					die_sprites[i].frame = i + 6
+				else:
+					die_sprites[i].frame = i
+					
+				# Set up the action texture
 				$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
-				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
 				
+				# Set up the action amount text
+				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
+
 				# Change over the info on clicking this particular action indicator 
 				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
 				$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)

@@ -36,6 +36,12 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 var turn_actions: Array[EnemyActionResource]
 var moving_in_world: bool = false
 
+## Static RNG instance for choosing actions
+static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
+## Optional: force specific actions (used by tutorial)
+static var forced_actions: Array[EnemyActionResource] = []
+
 
 var explosion_particles: PackedScene = preload("uid://566ykra4buin")
 
@@ -49,6 +55,7 @@ func _ready() -> void:
 	_connect_scenario_signals()
 	_connect_combat_signals()
 	_connect_dialogue_signals()
+	_connect_dice_manager_signals()
 
 
 func _process(_delta: float) -> void:
@@ -98,11 +105,24 @@ func _connect_combat_signals() -> void:
 		dice_manager.give_away_dice()
 	)
 	
+	Events.player_turn_start.connect(generate_turn_actions)
+	
 
 ## Connects all dialogue-related signals
 func _connect_dialogue_signals() -> void:
 	dice_manager.die_added.connect(dialogue_manager.hide_dialogue)
 
+
+## Connects the signals for the dice manager
+func _connect_dice_manager_signals() -> void:
+	dice_manager.die_added.connect(Events.enemy_received_die.emit)
+	
+
+## Seeds the rng at the start of the scenario
+## (Called by the enemy manager)
+static func seed(seed_value: int) -> void:
+	rng.seed = seed_value
+	
 
 ## Called when the enemy dies
 func _on_death() -> void:
@@ -172,8 +192,8 @@ func generate_turn_actions() -> void:
 	# Clear the previous turn's actions
 	turn_actions = []
 	
-	# Grab at least one of every listed action
-	# Also sum up the likelihoods for later
+	# Grab at least one of every action that has "force_include"
+	# and sum up the likelihoods for later
 	var action_weights_sum: float = 0
 	for option in enemy_resource.action_options:
 		if option.force_include:
@@ -183,15 +203,14 @@ func generate_turn_actions() -> void:
 	# Randomly fill the rest of the list using the action likelihoods
 	# Randomly choose 6 actions picking from our weighted list
 	for i in range(6 - len(turn_actions)):
-		var choice_threshold = randf_range(0, action_weights_sum)
+		var rand_float: float = rng.randf_range(0, action_weights_sum)
+		var choice_threshold = rand_float
 		for option in enemy_resource.action_options:
 			if choice_threshold > option.weight:
 				choice_threshold -= option.weight
 			else:
 				turn_actions.append(option.get_action())
 				break
-				
-	turn_actions.shuffle()
 
 
 ## Uses the value of the first die in the queue to perform the 
@@ -231,6 +250,8 @@ func act_with_first_die() -> void:
 	action_indicator.popup_time = popup_time
 	action_indicator.global_position = die.global_position + Vector2(0,12)
 		
+	Events.enemy_used_die.emit(self, die.value)
+		
 	await action.effect_chain.play(effect_variables)
 		
 	Events.enemy_acted.emit(enemy_resource.enemy_name, action.name)
@@ -241,9 +262,6 @@ func act_with_first_die() -> void:
 func run_turn() -> void:
 	while len(dice_manager.queue) > 0:
 		await act_with_first_die()
-	
-	# Only generate new actions if we're still valid
-	generate_turn_actions()
 	
 
 ## Triggers any effects associated with the current scenario state

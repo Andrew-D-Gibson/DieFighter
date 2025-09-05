@@ -134,7 +134,7 @@ func select_random_action() -> EnemyActionResource:
 	for weight in action_weights.values():
 		total_weight += weight
 		
-	var choice = randf_range(0, total_weight)
+	var choice = Enemy.rng.randf_range(0, total_weight)
 	var current_sum = 0.0
 	
 	for action in available_actions:

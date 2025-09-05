@@ -7,6 +7,7 @@ func _ready() -> void:
 	self.visible = false
 	
 	Events.show_info.connect(_show_info)
+	Events.close_info.connect(hide)
 	
 
 func _show_info(info: InfoResource) -> void:
@@ -17,6 +18,7 @@ func _show_info(info: InfoResource) -> void:
 	%TopLabel.text = _format_text(info.top_label_text)
 	%TextureDisplay.texture = info.texture
 	%BottomLabel.text = _format_text(info.bottom_label_text)
+	%SideLabel.text = _format_text(info.side_label_text)
 	self.visible = true
 
 
@@ -44,4 +46,4 @@ func _format_text(text: String) -> String:
 
 func _on_screen_dim_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
-		self.visible = false
+		hide()

@@ -297,16 +297,16 @@ offset_right = 29.0
 offset_bottom = 8.0
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
+[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="0"]
+sprite_frames = SubResource("SpriteFrames_3xxk1")
+
+[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1"]
+text = "WISHLIST"
+
 [node name="Sprite2D" type="Sprite2D" parent="ButtonRotator/WishlistButton"]
 position = Vector2(1, 0)
 rotation = -0.189669
 texture = ExtResource("12_dn166")
-
-[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="1"]
-sprite_frames = SubResource("SpriteFrames_3xxk1")
-
-[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="2"]
-text = "WISHLIST"
 
 [node name="OptionsMenu" parent="." instance=ExtResource("4_bcx7i")]
 unique_name_in_owner = true

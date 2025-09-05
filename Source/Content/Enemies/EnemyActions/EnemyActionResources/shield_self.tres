@@ -41,7 +41,7 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 [resource]
 script = ExtResource("9_u6mql")
 name = "Shield Burst"
-description = "[color=blue]Shields[/color] itself for [color=blue](amount)[/color]"
+description = "[color=blue]Shields[/color] for [color=blue](amount)[/color]"
 indicator_texture = ExtResource("7_rwj3p")
 info_texture = ExtResource("8_2xd6c")
 effect_chain = SubResource("Resource_w5k3u")

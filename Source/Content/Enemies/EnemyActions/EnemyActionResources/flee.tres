@@ -26,7 +26,7 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 [resource]
 script = ExtResource("2_dly4w")
 name = "Flee"
-description = "Flees from combat!  Returns dice to you"
+description = "Flees from combat.  Gives dice away randomly"
 indicator_texture = ExtResource("2_qaw31")
 info_texture = ExtResource("3_38s5a")
 effect_chain = SubResource("Resource_j02qh")

@@ -57,7 +57,8 @@ animations = [{
 script = ExtResource("4_seowo")
 tile_name = "[color=yellow]Amplifier[/color]"
 activation_description = ""
-description = "[color=yellow]Any die[/color] → [color=yellow]+2[/color] to the effects of tiles above and below this turn. Gives [color=yellow]die[/color] to [color=purple]target[/color]"
+description = "[color=yellow]Any die[/color] → [color=yellow]+2[/color] to the effects of tiles above and below this turn. [color=orange]Gives[/color] die to [color=purple]target[/color]"
+hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_f1pqj")
 uses_per_turn = 1

@@ -1,14 +1,25 @@
-[17:55:14] Debug logger initialized
-[17:55:14] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/empty_scenario.tres
-[17:55:14] Starting scenario
-[17:55:20] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[17:55:20] Starting scenario
-[17:56:14] Starting combat
-[17:56:14] Player attacked ship: Enemy (Faction: PIRATE)
-[17:56:14] Scenario Event: PLAYER_ATTACKED_PIRATE
-[17:56:28] Player attacked ship: Enemy (Faction: PIRATE)
-[17:56:28] Scenario Event: PLAYER_ATTACKED_PIRATE
-[17:56:28] Enemy left: PIRATE
-[17:56:28] Scenario Event: PIRATES_DEFEATED
-[17:56:28] Combat finished
-[17:56:28] Scenario Event: COMBAT_ENDED
+[03:03:03] Debug logger initialized
+[03:03:03] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres
+[03:03:03] Starting scenario
+[03:03:03] Starting combat
+[03:03:58] Player attacked ship: Enemy (Faction: PIRATE)
+[03:03:58] Scenario Event: PLAYER_ATTACKED_PIRATE
+[03:04:05] Player attacked ship: @Node2D@243 (Faction: PIRATE)
+[03:04:05] Scenario Event: PLAYER_ATTACKED_PIRATE
+[03:04:06] Player attacked ship: @Node2D@243 (Faction: PIRATE)
+[03:04:06] Scenario Event: PLAYER_ATTACKED_PIRATE
+[03:04:08] Player turn over
+[03:04:10] Enemy Bamba Defender performed action: Dice Cannon
+[03:04:12] Enemy Disabler Drone performed action: Dice Cannon
+[03:04:12] Enemy turn over
+[03:04:27] Player attacked ship: Enemy (Faction: PIRATE)
+[03:04:27] Scenario Event: PLAYER_ATTACKED_PIRATE
+[03:04:28] Player turn over
+[03:04:30] Enemy Bamba Defender performed action: 
+[03:04:31] Enemy Bamba Defender performed action: 
+[03:04:31] Enemy turn over
+[03:04:38] Player attacked ship: Enemy (Faction: PIRATE)
+[03:04:38] Scenario Event: PLAYER_ATTACKED_PIRATE
+[03:04:38] Enemy left: PIRATE
+[03:04:40] Player attacked ship: @Node2D@243 (Faction: PIRATE)
+[03:04:40] Scenario Event: PLAYER_ATTACKED_PIRATE

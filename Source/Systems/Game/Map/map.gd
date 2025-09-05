@@ -177,6 +177,7 @@ func jump(desired_scenario_index: int) -> void:
 
 	# Destroy the scenarios in danger
 	scenario_list = scenario_list.slice(scenarios_in_danger)
+	
 	current_scenario_index -= scenarios_in_danger
 	
 	# Set up which scenarios are in danger next

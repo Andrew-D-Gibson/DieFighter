@@ -5,3 +5,4 @@ extends Resource
 @export var top_label_text: String = ''
 @export var texture: Texture2D = null
 @export var bottom_label_text: String = ''
+@export var side_label_text: String = ''

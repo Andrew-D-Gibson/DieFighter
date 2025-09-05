@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cbjnjconlgt6"]
+
+[ext_resource type="Shader" uid="uid://648u4hecibjb" path="res://Assets/Shaders/jump_hyperspace.gdshader" id="1_b43g6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5rk5m"]
+shader = ExtResource("1_b43g6")
+shader_parameter/ring_center = Vector2(0.5, 0.5)
+shader_parameter/ring_radius = 0.3
+shader_parameter/ring_thickness = 0.016
+shader_parameter/noise_strength = 0.05
+shader_parameter/fade_distance = 0.115
+shader_parameter/distortion_speed = 4.202
+shader_parameter/color_inside = Color(0.2, 0.6, 1, 1)
+shader_parameter/color_outside = Color(1, 0, 0, 1)
+
+[node name="JumpTransition" type="Node2D"]
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_5rk5m")
+offset_right = 1933.0
+offset_bottom = 1085.0

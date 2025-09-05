@@ -13,7 +13,7 @@ texture = ExtResource("2_qgcp3")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 unique_name_in_owner = true
-offset_left = 9.0
+offset_left = 11.0
 offset_top = -23.0
 offset_right = 59.0
 offset_bottom = 21.0
@@ -21,5 +21,4 @@ mouse_filter = 2
 bbcode_enabled = true
 text = "DIALOGUE"
 fit_content = true
-horizontal_alignment = 1
 vertical_alignment = 1

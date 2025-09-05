@@ -54,6 +54,7 @@ hint_underlined = false
 position = Vector2(24, 20)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DiceQueue/EndTurnButton/Clickable"]
+visible = false
 shape = SubResource("RectangleShape2D_lwstl")
 
 [node name="Health" parent="." instance=ExtResource("4_da5gb")]

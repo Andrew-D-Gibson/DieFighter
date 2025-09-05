@@ -9,6 +9,7 @@ signal load_scenario(scenario: ScenarioResource)
 
 # UI Events
 signal show_info(info: InfoResource)
+signal close_info()
 signal toggle_pause_menu()
 
 
@@ -44,6 +45,8 @@ signal start_scenario()
 signal start_combat()
 signal player_turn_start()
 signal player_turn_over()
+signal enemy_received_die()
+signal enemy_used_die(enemy: Enemy, die_value: int)
 signal enemy_turn_over()
 signal combat_finished()
 signal die_added()

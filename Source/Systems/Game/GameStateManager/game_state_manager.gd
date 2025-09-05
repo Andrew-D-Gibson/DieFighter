@@ -42,7 +42,7 @@ func _ready() -> void:
 	
 	Globals.state_manager = self
 	
-	#seed('Die Fighter'.hash())
+	seed('Die Fighter'.hash())
 	
 	if len(current_game_save.sector_scenarios) == 0:
 		_randomize_sector_scenarios()
@@ -124,6 +124,10 @@ func _randomize_sector_scenarios() -> void:
 		
 	current_game_save.current_scenario_index = 0 #floor(sector_size / 2.0)
 	current_game_save.sector_scenarios.insert(current_game_save.current_scenario_index, empty_scenario)
+	
+	# Seed all the scenarios
+	for scenario: ScenarioResource in current_game_save.sector_scenarios:
+		scenario.seed = randi()
 	
 	
 	
