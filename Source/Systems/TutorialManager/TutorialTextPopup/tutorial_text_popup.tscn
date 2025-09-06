@@ -39,3 +39,13 @@ animation = &"talking"
 autoplay = "talking"
 frame = 1
 frame_progress = 0.404775
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -23.0
+offset_top = -17.0
+offset_right = 47.0
+offset_bottom = 17.0
+bbcode_enabled = true
+text = "This is test tutorial dialogue for stuff"
+visible_characters_behavior = 1

@@ -21,6 +21,15 @@ var faction_textures: Dictionary[ScenarioManager.Faction, Texture2D] = {
 static var time_last_dialogue_was_shown: int
 @export var time_between_dialogues: float = 3
 
+var fadeout_timer: Timer
+@export var dialogue_time_shown: float = 5
+
+
+func _ready() -> void:
+	fadeout_timer = Timer.new()
+	fadeout_timer.one_shot = true
+	fadeout_timer.timeout.connect(hide_dialogue)
+	
 
 func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:
 	# Check if we just showed a dialogue, and if so, just wait
@@ -28,13 +37,13 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 	if time_last_dialogue_was_shown and \
 	current_time < time_last_dialogue_was_shown + (time_between_dialogues * 1000):
 		var time_remaining: int = (time_last_dialogue_was_shown + (time_between_dialogues * 1000)) - current_time
-		print(time_remaining)
 		await get_tree().create_timer(float(time_remaining) / 1000).timeout
 	
 	# Reset if we this was just called for another line of dialogue
 	if character_reveal_tween:
 		character_reveal_tween.kill()
-	%RichTextLabel.text = ""
+	%RichTextLabel.visible_characters = 0
+	%RichTextLabel.text = dialogue
 	
 	if dialogue == "":
 		hide_dialogue()
@@ -45,15 +54,16 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 
 	_start_fade_in()
 	%Sprite2D.texture = faction_textures[faction]
-	current_dialogue = dialogue
 		
 	character_reveal_tween = get_tree().create_tween()
 	character_reveal_tween.tween_method(
 		_show_characters, 
 		0, 
-		len(current_dialogue), 
-		character_reveal_time * len(current_dialogue)
+		len(dialogue), 
+		character_reveal_time * len(dialogue)
 	).set_trans(Tween.TRANS_LINEAR)
+	
+	fadeout_timer.start(dialogue_time_shown)
 	
 	
 func hide_dialogue() -> void:
@@ -91,7 +101,7 @@ func _start_fade_in() -> void:
 	
 	
 func _show_characters(num: int) -> void:
-	_set_text(current_dialogue.substr(0, num))
+	%RichTextLabel.visible_characters = num
 
 
 func _set_text(text: String) -> void:

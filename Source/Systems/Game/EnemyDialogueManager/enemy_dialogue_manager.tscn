@@ -21,4 +21,6 @@ mouse_filter = 2
 bbcode_enabled = true
 text = "DIALOGUE"
 fit_content = true
+horizontal_alignment = 1
 vertical_alignment = 1
+visible_characters_behavior = 1

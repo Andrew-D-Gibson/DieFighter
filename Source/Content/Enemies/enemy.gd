@@ -57,7 +57,6 @@ func _ready() -> void:
 	_connect_health_signals()
 	_connect_scenario_signals()
 	_connect_combat_signals()
-	_connect_dialogue_signals()
 	_connect_dice_manager_signals()
 
 
@@ -110,11 +109,6 @@ func _connect_combat_signals() -> void:
 	
 	Events.player_turn_start.connect(generate_turn_actions)
 	
-
-## Connects all dialogue-related signals
-func _connect_dialogue_signals() -> void:
-	dice_manager.die_added.connect(dialogue_manager.hide_dialogue)
-
 
 ## Connects the signals for the dice manager
 func _connect_dice_manager_signals() -> void:

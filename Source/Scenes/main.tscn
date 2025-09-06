@@ -266,6 +266,8 @@ position = Vector2(122, 43)
 [node name="ScenarioManager" parent="Systems" instance=ExtResource("19_3g417")]
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
+z_index = 10
+position = Vector2(156, 37)
 
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")
