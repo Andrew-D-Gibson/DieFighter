@@ -36,4 +36,5 @@ description = "[color=orange]Locks[/color] a grid location"
 indicator_texture = ExtResource("1_354nc")
 info_texture = ExtResource("2_m2445")
 effect_chain = SubResource("Resource_kxkj5")
+intent_amount = ""
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

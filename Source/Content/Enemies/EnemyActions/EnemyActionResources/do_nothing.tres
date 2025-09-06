@@ -33,4 +33,5 @@ script = ExtResource("1_6upn5")
 name = ""
 description = ""
 effect_chain = SubResource("Resource_60flf")
+intent_amount = ""
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

@@ -1,0 +1,41 @@
+[gd_scene load_steps=7 format=3 uid="uid://dauuk425cis74"]
+
+[ext_resource type="Texture2D" uid="uid://m8bm3myhsf8y" path="res://Assets/Textures/TutorialManager/background.png" id="1_lfeum"]
+[ext_resource type="Script" uid="uid://dnesg2o2ft6ba" path="res://Source/Systems/TutorialManager/TutorialTextPopup/tutorial_text_popup.gd" id="1_wosuk"]
+[ext_resource type="Texture2D" uid="uid://boc0aisvic5k2" path="res://Assets/Textures/TutorialManager/computer_head-Sheet.png" id="2_wosuk"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3rr6s"]
+atlas = ExtResource("2_wosuk")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_b0n3t"]
+atlas = ExtResource("2_wosuk")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5wl13"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3rr6s")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_b0n3t")
+}],
+"loop": true,
+"name": &"talking",
+"speed": 8.0
+}]
+
+[node name="TutorialTextPopup" type="Node2D"]
+script = ExtResource("1_wosuk")
+
+[node name="Background" type="Sprite2D" parent="."]
+texture = ExtResource("1_lfeum")
+
+[node name="ComputerTalking" type="AnimatedSprite2D" parent="."]
+position = Vector2(-35, 0)
+sprite_frames = SubResource("SpriteFrames_5wl13")
+animation = &"talking"
+autoplay = "talking"
+frame = 1
+frame_progress = 0.404775

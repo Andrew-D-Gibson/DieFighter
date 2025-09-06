@@ -93,19 +93,19 @@ func _update_map_sprites() -> void:
 		if i < len(scenario_list) - 1:
 			var timeline_bar_sprite = Sprite2D.new()
 			timeline_bar_sprite.texture = timeline_icon
-			timeline_bar_sprite.position = Vector2((i * sprite_spacing) + 7, 0)
+			timeline_bar_sprite.position = Vector2((i * sprite_spacing) + 7, 4)
 			map_viewport.add_child(timeline_bar_sprite)
 			
 			
 		# Add the sprite for this encounter
 		var scenario_sprite: Sprite2D = Sprite2D.new()
-		scenario_sprite.position = Vector2(i * sprite_spacing, 0)
+		scenario_sprite.position = Vector2(i * sprite_spacing, 4)
 		
 		# Mark the encounter as either our present location or 
 		# a possible destination with a map icon
 		if current_scenario_index == i:
 			scenario_sprite.texture = current_scenario_icon
-			map_camera.position = scenario_sprite.position
+			map_camera.position = scenario_sprite.position + Vector2(0, -4)
 		else:
 			scenario_sprite.texture = scenario_list[i].map_icon
 			
@@ -115,7 +115,7 @@ func _update_map_sprites() -> void:
 			# Add the connector sprite
 			# Add the timeline connector sprite
 			var timeline_connector_sprite: Sprite2D = Sprite2D.new()
-			timeline_connector_sprite.position = Vector2(i * sprite_spacing, -4 if i%2==0 else 4)
+			timeline_connector_sprite.position = Vector2(i * sprite_spacing, 0 if i%2==0 else 8)
 			timeline_connector_sprite.texture = connector_sprite
 			map_viewport.add_child(timeline_connector_sprite)
 			
@@ -188,7 +188,7 @@ func jump(desired_scenario_index: int) -> void:
 
 
 func _on_map_view_slider_value_changed(value: float) -> void:
-	var max_position: int = len(scenario_list) * sprite_spacing
+	var max_position: int = (len(scenario_list)-4) * sprite_spacing
 	var desired_camera_position: int = max_position * value
 
 	map_camera.position = Vector2(desired_camera_position, 0)

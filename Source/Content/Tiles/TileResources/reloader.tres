@@ -1,0 +1,76 @@
+[gd_resource type="Resource" script_class="TileResource" load_steps=19 format=3 uid="uid://3rxn3yavv66d"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_8t5yt"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_kcoha"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_wddxj"]
+[ext_resource type="Script" uid="uid://c6wneoxuynbyn" path="res://Source/Content/Effects/Targeters/target_surrounding_tiles_effect.gd" id="3_3p6ad"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_tgna7"]
+[ext_resource type="Script" uid="uid://cjenih5k267dy" path="res://Source/Content/Effects/TileUsesRemainingChangers/add_uses_remaining_to_target_tiles_effect.gd" id="4_2ai2v"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_ymfbh"]
+[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="5_gicjh"]
+[ext_resource type="Texture2D" uid="uid://ikbhhkyv3dl2" path="res://Assets/Textures/Tiles/YellowTiles/reloader-Sheet.png" id="5_wddxj"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="6_ioum8"]
+
+[sub_resource type="Resource" id="Resource_rqtwu"]
+script = ExtResource("3_3p6ad")
+primary_effect = false
+metadata/_custom_type_script = "uid://c6wneoxuynbyn"
+
+[sub_resource type="Resource" id="Resource_sibxe"]
+script = ExtResource("4_2ai2v")
+uses_to_add = 1
+primary_effect = true
+metadata/_custom_type_script = "uid://cjenih5k267dy"
+
+[sub_resource type="Resource" id="Resource_b14a4"]
+script = ExtResource("5_gicjh")
+primary_effect = false
+metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
+
+[sub_resource type="Resource" id="Resource_kwjd2"]
+script = ExtResource("6_ioum8")
+primary_effect = false
+metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+
+[sub_resource type="Resource" id="Resource_5y267"]
+script = ExtResource("3_tgna7")
+effects = Array[ExtResource("2_kcoha")]([SubResource("Resource_rqtwu"), SubResource("Resource_sibxe"), SubResource("Resource_b14a4"), SubResource("Resource_kwjd2")])
+metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tgna7"]
+atlas = ExtResource("5_wddxj")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ymfbh"]
+atlas = ExtResource("5_wddxj")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0qwli"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tgna7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ymfbh")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_ymfbh")
+tile_name = "[color=yellow]Reloader[/color]"
+activation_description = ""
+description = "[color=yellow]Any die[/color] -> Add one use to every surrounding tile. [color=orange]Gives[/color] die to [color=purple]target[/color]"
+hint_text = ""
+rarity = 2
+textures = SubResource("SpriteFrames_0qwli")
+uses_per_turn = 1
+activation_checks = Array[ExtResource("1_8t5yt")]([])
+effect_chain = SubResource("Resource_5y267")
+event_responses = Dictionary[ExtResource("2_wddxj"), ExtResource("3_tgna7")]({})
+dragging_allowed = true
+max_dice_in_queue = -1
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

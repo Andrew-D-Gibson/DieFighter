@@ -36,6 +36,9 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 var turn_actions: Array[EnemyActionResource]
 var moving_in_world: bool = false
 
+## The number of turns this enemy has lived
+@onready var turns_alive: int = 0
+
 ## Static RNG instance for choosing actions
 static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -192,20 +195,38 @@ func generate_turn_actions() -> void:
 	# Clear the previous turn's actions
 	turn_actions = []
 	
+	# Add any forced actions
+	if len(forced_actions) > 0:
+		var last_action_index_to_grab: int = min(6, len(forced_actions))
+		turn_actions.append_array(forced_actions.slice(0, last_action_index_to_grab))
+		
+		forced_actions = forced_actions.slice(last_action_index_to_grab)
+	
+	var this_turns_action_options: EnemyTurnActionList = \
+		enemy_resource.action_options[
+			turns_alive % len(enemy_resource.action_options)
+		]
+	
 	# Grab at least one of every action that has "force_include"
-	# and sum up the likelihoods for later
+	# and sum up the likelihoods of all actions for later
 	var action_weights_sum: float = 0
-	for option in enemy_resource.action_options:
+	for option: EnemyActionOptionResource in this_turns_action_options.actions_possible:
 		if option.force_include:
 			turn_actions.append(option.get_action())
 		action_weights_sum += option.weight
+		
+	# With the forced actions and the "force_include" options, 
+	# we might be over the required 6 actions
+	if len(turn_actions) >= 6:
+		turn_actions = turn_actions.slice(0,6)
+		return
 		
 	# Randomly fill the rest of the list using the action likelihoods
 	# Randomly choose 6 actions picking from our weighted list
 	for i in range(6 - len(turn_actions)):
 		var rand_float: float = rng.randf_range(0, action_weights_sum)
 		var choice_threshold = rand_float
-		for option in enemy_resource.action_options:
+		for option: EnemyActionOptionResource in this_turns_action_options.actions_possible:
 			if choice_threshold > option.weight:
 				choice_threshold -= option.weight
 			else:
@@ -262,6 +283,7 @@ func act_with_first_die() -> void:
 func run_turn() -> void:
 	while len(dice_manager.queue) > 0:
 		await act_with_first_die()
+	turns_alive += 1
 	
 
 ## Triggers any effects associated with the current scenario state

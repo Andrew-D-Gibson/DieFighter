@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=45 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -36,6 +36,7 @@
 [ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres" id="26_aaucc"]
+[ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
 
 [sub_resource type="Animation" id="Animation_ooshj"]
 length = 0.001
@@ -236,6 +237,8 @@ vignette_alpha = 0.5
 
 [node name="Systems" type="Node2D" parent="."]
 
+[node name="ErrorPopupManager" parent="Systems" instance=ExtResource("4_oai2y")]
+
 [node name="Player" parent="Systems" instance=ExtResource("6_rir3g")]
 z_index = 1
 material = SubResource("ShaderMaterial_flage")
@@ -262,6 +265,8 @@ position = Vector2(122, 43)
 
 [node name="ScenarioManager" parent="Systems" instance=ExtResource("19_3g417")]
 
+[node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
+
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")
 sector_size = 8
@@ -270,8 +275,6 @@ shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
-
-[node name="ErrorPopupManager" parent="Systems" instance=ExtResource("4_oai2y")]
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

@@ -136,7 +136,7 @@ func can_activate(activator_die: Dice) -> bool:
 			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
 			
 		for status_effect: GridStatusEffect in grid_status_effects:
-			if not await status_effect.clears_status_activation_criteria(activator_die):
+			if not status_effect.clears_status_activation_criteria(activator_die):
 				return false
 		
 	# Handle tile activation criteria
@@ -287,6 +287,9 @@ func _on_die_accepted(die: Dice) -> void:
 	dice_queue.add(die, true, false)
 	if Globals.activation_queue_manager:
 		Globals.activation_queue_manager.add_die_to_queue(die)
+	
+	# Emit tutorial event for die placement
+	Events.die_placed_on_tile.emit(die, self)
 
 
 func _on_visibility_changed() -> void:	

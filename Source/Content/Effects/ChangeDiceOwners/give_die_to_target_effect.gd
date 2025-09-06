@@ -2,6 +2,12 @@ class_name GiveDieToTargetEffect
 extends Effect
 
 func play(effect_variables: EffectVariables) -> void:
+	# Don't do anything if we're repeating this effect since
+	# the dice is only relinquished on the last repetition
+	if effect_variables.repetitions > 0:
+		print('not giving die to target b/c of repetitions')
+		return
+	
 	# Don't do anything if there's no activator die
 	if not effect_variables.activator_die:
 		printerr("GiveDieToTargetEffect doesn't have an activator die!")

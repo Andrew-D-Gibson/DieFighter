@@ -53,6 +53,7 @@ script = ExtResource("4_3qev1")
 tile_name = "Left Controls"
 activation_description = ""
 description = "[color=yellow]Any die[/color] -> Jump [color=purple]X[/color] locations left"
+hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_3qev1")
 uses_per_turn = -1

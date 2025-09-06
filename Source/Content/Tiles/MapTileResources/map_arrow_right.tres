@@ -53,6 +53,7 @@ script = ExtResource("6_b8mwn")
 tile_name = "Right Controls"
 activation_description = ""
 description = "[color=yellow]Any die[/color] -> Jump [color=purple]X[/color] locations right"
+hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_u4eem")
 uses_per_turn = -1

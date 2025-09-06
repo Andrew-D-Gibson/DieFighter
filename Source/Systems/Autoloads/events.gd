@@ -36,7 +36,17 @@ signal game_over()
 signal player_health_hit()
 signal player_shields_hit()
 signal engine_charge_changed()
+
 signal error_text_popup(text: String, global_pos: Vector2)
+signal show_tutorial_text(text: String, global_pos: Vector2)
+
+# Tutorial Events
+signal tutorial_highlight_elements(elements: Array[String])
+signal tutorial_disable_interactions(interactions: Array[String])
+signal tutorial_step_completed()
+signal tutorial_completed()
+signal tutorial_skipped()
+signal die_placed_on_tile(die: Dice, tile: Tile)
 
 # Game Sequencing Events
 signal jump()

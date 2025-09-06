@@ -1,25 +1,26 @@
-[03:03:03] Debug logger initialized
-[03:03:03] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres
-[03:03:03] Starting scenario
-[03:03:03] Starting combat
-[03:03:58] Player attacked ship: Enemy (Faction: PIRATE)
-[03:03:58] Scenario Event: PLAYER_ATTACKED_PIRATE
-[03:04:05] Player attacked ship: @Node2D@243 (Faction: PIRATE)
-[03:04:05] Scenario Event: PLAYER_ATTACKED_PIRATE
-[03:04:06] Player attacked ship: @Node2D@243 (Faction: PIRATE)
-[03:04:06] Scenario Event: PLAYER_ATTACKED_PIRATE
-[03:04:08] Player turn over
-[03:04:10] Enemy Bamba Defender performed action: Dice Cannon
-[03:04:12] Enemy Disabler Drone performed action: Dice Cannon
-[03:04:12] Enemy turn over
-[03:04:27] Player attacked ship: Enemy (Faction: PIRATE)
-[03:04:27] Scenario Event: PLAYER_ATTACKED_PIRATE
-[03:04:28] Player turn over
-[03:04:30] Enemy Bamba Defender performed action: 
-[03:04:31] Enemy Bamba Defender performed action: 
-[03:04:31] Enemy turn over
-[03:04:38] Player attacked ship: Enemy (Faction: PIRATE)
-[03:04:38] Scenario Event: PLAYER_ATTACKED_PIRATE
-[03:04:38] Enemy left: PIRATE
-[03:04:40] Player attacked ship: @Node2D@243 (Faction: PIRATE)
-[03:04:40] Scenario Event: PLAYER_ATTACKED_PIRATE
+[10:06:52] Debug logger initialized
+[10:06:52] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres
+[10:06:52] Starting scenario
+[10:06:52] Starting combat
+[10:07:08] Player attacked ship: Enemy (Faction: PIRATE)
+[10:07:08] Scenario Event: PLAYER_ATTACKED_PIRATE
+[10:07:16] Player turn over
+[10:07:18] Enemy Venom Fighter performed action: 
+[10:07:19] Enemy Venom Fighter performed action: 
+[10:07:19] Enemy turn over
+[10:07:29] Player attacked ship: Enemy (Faction: PIRATE)
+[10:07:29] Scenario Event: PLAYER_ATTACKED_PIRATE
+[10:07:29] Player attacked ship: Enemy (Faction: PIRATE)
+[10:07:29] Scenario Event: PLAYER_ATTACKED_PIRATE
+[10:07:29] Player turn over
+[10:07:31] Enemy Venom Fighter performed action: 
+[10:07:32] Enemy Venom Fighter performed action: 
+[10:07:32] Enemy turn over
+[10:07:39] Player attacked ship: Enemy (Faction: PIRATE)
+[10:07:39] Scenario Event: PLAYER_ATTACKED_PIRATE
+[10:07:39] Player attacked ship: Enemy (Faction: PIRATE)
+[10:07:39] Scenario Event: PLAYER_ATTACKED_PIRATE
+[10:07:41] Player turn over
+[10:07:43] Enemy Venom Fighter performed action: Dice Cannon
+[10:07:44] Enemy Venom Fighter performed action: Dice Cannon
+[10:07:44] Enemy turn over

@@ -95,6 +95,7 @@ script = ExtResource("4_m7a5a")
 tile_name = "[color=green]Bump[/color]"
 activation_description = ""
 description = "[color=yellow]Die smaller than[/color] (die_6) -> Adds 1 to the die's value"
+hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_j21c8")
 uses_per_turn = 3

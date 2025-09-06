@@ -12,6 +12,9 @@ var effect_source: Node = null
 var targets: Array[Node] = []
 var activator_die: Dice = null
 
+## The number of times to trigger the whole effect chain
+var repetitions: int = 1
+
 # Amount (damage/shields etc.) calculation system
 var base_amount: int = 0
 var amount_modifiers: Array[Callable] = []

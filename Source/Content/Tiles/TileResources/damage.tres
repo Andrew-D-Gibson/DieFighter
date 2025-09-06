@@ -51,7 +51,7 @@ metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 
 [sub_resource type="Resource" id="Resource_gjhi3"]
 script = ExtResource("6_wqepc")
-amount = 0
+amount = 4
 inherit_die_amount = true
 primary_effect = true
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
@@ -86,6 +86,7 @@ script = ExtResource("8_2fv8l")
 tile_name = "[color=red]Dice Cannon[/color]"
 activation_description = ""
 description = "[color=yellow]Any die[/color] -> Deal [color=red]X damage[/color] to [color=purple]target[/color], then [color=orange]give[/color] them the die"
+hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_mkcsn")
 uses_per_turn = -1

@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://c7oubps738mwn"]
+
+[ext_resource type="Script" uid="uid://cr0hwfd4megka" path="res://Source/Systems/TutorialManager/tutorial_manager.gd" id="1_ar8v4"]
+[ext_resource type="PackedScene" uid="uid://dauuk425cis74" path="res://Source/Systems/TutorialManager/TutorialTextPopup/tutorial_text_popup.tscn" id="2_ofuvn"]
+
+[node name="TutorialManager" type="Node2D"]
+script = ExtResource("1_ar8v4")
+
+[node name="TutorialTextPopup" parent="." instance=ExtResource("2_ofuvn")]

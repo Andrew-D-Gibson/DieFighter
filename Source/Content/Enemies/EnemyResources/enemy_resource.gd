@@ -16,4 +16,4 @@ extends Resource
 @export_category('Behavior')
 @export var max_health: int
 @export var starting_shields: int
-@export var action_options: Array[EnemyActionOptionResource]
+@export var action_options: Array[EnemyTurnActionList]

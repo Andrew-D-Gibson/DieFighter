@@ -196,9 +196,9 @@ grow_vertical = 2
 [node name="MapViewSlider" type="HSlider" parent="Map"]
 unique_name_in_owner = true
 offset_left = -48.0
-offset_top = -25.0
+offset_top = -9.0
 offset_right = 22.0
-offset_bottom = -13.0
+offset_bottom = 3.0
 size_flags_horizontal = 3
 focus_mode = 0
 theme_override_icons/grabber = ExtResource("13_foiuu")

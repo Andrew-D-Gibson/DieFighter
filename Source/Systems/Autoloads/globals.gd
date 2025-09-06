@@ -13,6 +13,7 @@ var enemy_manager: EnemyManager
 var scenario_manager: ScenarioManager
 var state_manager: GameStateManager
 var background_manager: BackgroundManager
+var tutorial_manager: TutorialManager
 
 # Audio Singletons
 var sfx_player: SFXPlayer

@@ -42,7 +42,7 @@ func _ready() -> void:
 	
 	Globals.state_manager = self
 	
-	seed('Die Fighter'.hash())
+	#seed('Die Fighter'.hash())
 	
 	if len(current_game_save.sector_scenarios) == 0:
 		_randomize_sector_scenarios()

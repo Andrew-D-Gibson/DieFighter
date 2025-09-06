@@ -1,0 +1,21 @@
+[gd_resource type="Array[TutorialStep]" format=3]
+
+[resource]
+Array[resource] = Array[SubResource("TutorialStep_1"), SubResource("TutorialStep_2"), SubResource("TutorialStep_3")]
+
+[sub_resource type="TutorialStep" id="TutorialStep_1"]
+description = "Welcome to Stella Roller! This is your dice queue. Drag dice from here to tiles to activate them."
+text_position = Vector2(100, 200)
+wait_for_action = "die_placed_on_tile"
+highlight_elements = Array["dice_queue"]
+
+[sub_resource type="TutorialStep" id="TutorialStep_2"]
+description = "Great! You placed a die on a tile. Now watch as the tile activates and uses the die's value."
+text_position = Vector2(300, 200)
+wait_for_action = "tile_activation_complete"
+
+[sub_resource type="TutorialStep" id="TutorialStep_3"]
+description = "Perfect! When you're out of dice, click the End Turn button to let the enemies take their turn."
+text_position = Vector2(200, 100)
+wait_for_action = "player_turn_over"
+highlight_elements = Array["end_turn_button"]

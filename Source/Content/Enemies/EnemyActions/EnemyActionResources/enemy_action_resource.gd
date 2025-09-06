@@ -9,7 +9,7 @@ extends Resource
 
 ## Set by the EnemyActionOptionResource who creates this action
 ## Used by the targeting computer to display the amount
-var intent_amount: String
+@export var intent_amount: String
 
 
 func show_info() -> void:

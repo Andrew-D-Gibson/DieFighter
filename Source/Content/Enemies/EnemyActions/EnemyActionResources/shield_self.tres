@@ -21,7 +21,8 @@ script = ExtResource("3_702ir")
 primary_effect = false
 metadata/_custom_type_script = "uid://na20gyl0jdks"
 
-[sub_resource type="Resource" id="Resource_qw5kx"]
+[sub_resource type="Resource" id="Resource_rs7xq"]
+resource_local_to_scene = true
 script = ExtResource("4_uik6c")
 amount = 2
 inherit_die_value = false
@@ -33,9 +34,9 @@ script = ExtResource("5_vvfhd")
 primary_effect = false
 metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
-[sub_resource type="Resource" id="Resource_w5k3u"]
+[sub_resource type="Resource" id="Resource_h8kdw"]
 script = ExtResource("6_56cv0")
-effects = Array[ExtResource("1_rs7xq")]([SubResource("Resource_arbeq"), SubResource("Resource_vrksl"), SubResource("Resource_qw5kx"), SubResource("Resource_3ow3x")])
+effects = Array[ExtResource("1_rs7xq")]([SubResource("Resource_arbeq"), SubResource("Resource_vrksl"), SubResource("Resource_rs7xq"), SubResource("Resource_3ow3x")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [resource]
@@ -44,5 +45,6 @@ name = "Shield Burst"
 description = "[color=blue]Shields[/color] for [color=blue](amount)[/color]"
 indicator_texture = ExtResource("7_rwj3p")
 info_texture = ExtResource("8_2xd6c")
-effect_chain = SubResource("Resource_w5k3u")
+effect_chain = SubResource("Resource_h8kdw")
+intent_amount = "2"
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

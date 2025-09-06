@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="GameSaveResource" load_steps=10 format=3 uid="uid://biawl3820xfte"]
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=12 format=3 uid="uid://biawl3820xfte"]
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
-[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres" id="3_prmjb"]
+[ext_resource type="Resource" uid="uid://bf2p4youiejta" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres" id="3_e1utd"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_8qr57"]
 [ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Content/Tiles/TileResources/shield.tres" id="6_r67hd"]
 [ext_resource type="Resource" uid="uid://dy6ykhsava6f4" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_4a3cr"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xm1st"]
 [ext_resource type="Resource" uid="uid://dlexy5taui2xx" path="res://Source/Content/Tiles/TileResources/holographic_duplicator.tres" id="8_4a3cr"]
+[ext_resource type="Resource" uid="uid://3rxn3yavv66d" path="res://Source/Content/Tiles/TileResources/reloader.tres" id="10_3eajj"]
+[ext_resource type="Resource" uid="uid://dn78mt3vyk5tm" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="10_e1utd"]
 [ext_resource type="Resource" uid="uid://dkvqal8qwxrww" path="res://Source/Content/Tiles/TileResources/amplifier.tres" id="10_f1kbi"]
 
 [resource]
@@ -22,8 +24,10 @@ Vector2i(0, 0): ExtResource("6_r67hd"),
 Vector2i(0, 1): ExtResource("10_f1kbi"),
 Vector2i(0, 2): ExtResource("7_xm1st"),
 Vector2i(1, 1): ExtResource("7_4a3cr"),
-Vector2i(2, 2): ExtResource("8_4a3cr")
+Vector2i(2, 2): ExtResource("8_4a3cr"),
+Vector2i(3, 2): ExtResource("10_e1utd"),
+Vector2i(4, 2): ExtResource("10_3eajj")
 })
 current_scenario_index = 0
-sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_prmjb")])
+sector_scenarios = Array[ExtResource("2_ettjp")]([ExtResource("3_e1utd")])
 metadata/_custom_type_script = "uid://dxkqfdmh8psqp"

@@ -61,7 +61,8 @@ animations = [{
 script = ExtResource("6_ctsso")
 tile_name = "[color=green]Value Exchange[/color]"
 activation_description = ""
-description = "[color=yellow]Any die[/color] -> Flip all (die_1)/(die_6), then [color=orange]give[/color] die to [color=purple]random ship[/color]"
+description = "[color=yellow]Any die[/color] -> Flip all (die_1) and (die_6), then [color=orange]give[/color] die to [color=purple]random ship[/color]"
+hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_pgax4")
 uses_per_turn = -1

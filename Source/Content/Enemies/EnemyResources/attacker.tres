@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=12 format=3 uid="uid://cpjv635fppvg"]
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=17 format=3 uid="uid://cpjv635fppvg"]
 
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_0pkcg"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_apn3a"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_mo0f0"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="3_03vjk"]
@@ -8,16 +9,25 @@
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="4_7a4d7"]
 [ext_resource type="Texture2D" uid="uid://deoaj6bxuv4i4" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="7_7a4d7"]
 
-[sub_resource type="Resource" id="Resource_0pkcg"]
+[sub_resource type="Resource" id="Resource_81dy1"]
 script = ExtResource("1_apn3a")
 base_action = ExtResource("3_03vjk")
 weight = 1.0
-min_amount = 4
-max_amount = 8
+min_amount = 2
+max_amount = 4
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
-[sub_resource type="Resource" id="Resource_81dy1"]
+[sub_resource type="Resource" id="Resource_sx08h"]
+script = ExtResource("1_apn3a")
+base_action = ExtResource("3_03vjk")
+weight = 0.0
+min_amount = 6
+max_amount = 6
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_i4wka"]
 script = ExtResource("1_apn3a")
 base_action = ExtResource("4_7a4d7")
 weight = 1.0
@@ -26,23 +36,42 @@ max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
-[sub_resource type="Resource" id="Resource_sx08h"]
+[sub_resource type="Resource" id="Resource_l7vxx"]
+script = ExtResource("1_0pkcg")
+actions_possible = Array[ExtResource("1_apn3a")]([SubResource("Resource_81dy1"), SubResource("Resource_sx08h"), SubResource("Resource_i4wka")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[sub_resource type="Resource" id="Resource_xwk11"]
 script = ExtResource("1_apn3a")
 base_action = ExtResource("3_03vjk")
-weight = 3.0
-min_amount = 2
-max_amount = 2
+weight = 1.0
+min_amount = 1
+max_amount = 1
 force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
-[sub_resource type="Resource" id="Resource_i4wka"]
+[sub_resource type="Resource" id="Resource_n68fv"]
 script = ExtResource("1_apn3a")
 base_action = ExtResource("3_7a4d7")
-weight = 2.0
-min_amount = 1
+weight = 1.0
+min_amount = 2
 max_amount = 3
 force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_r4xab"]
+script = ExtResource("1_apn3a")
+base_action = ExtResource("4_7a4d7")
+weight = 1.0
+min_amount = 0
+max_amount = 0
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_ej0m4"]
+script = ExtResource("1_0pkcg")
+actions_possible = Array[ExtResource("1_apn3a")]([SubResource("Resource_xwk11"), SubResource("Resource_n68fv"), SubResource("Resource_r4xab")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [resource]
 script = ExtResource("2_mo0f0")
@@ -56,5 +85,5 @@ health_bar_position = Vector2(-20, -17)
 dice_queue_position = Vector2(24, 8)
 max_health = 12
 starting_shields = 0
-action_options = Array[ExtResource("1_apn3a")]([SubResource("Resource_0pkcg"), SubResource("Resource_81dy1"), SubResource("Resource_sx08h"), SubResource("Resource_i4wka")])
+action_options = Array[ExtResource("1_0pkcg")]([SubResource("Resource_l7vxx"), SubResource("Resource_ej0m4")])
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"
