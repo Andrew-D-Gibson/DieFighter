@@ -13,6 +13,7 @@ extends Node2D
 @export var question_scenarios: Array[ScenarioResource]
 @export var boss_combat_scenarios: Array[ScenarioResource]
 
+@export var starting_combat_scenario: ScenarioResource
 
 enum GameState {
 	IN_COMBAT,
@@ -123,7 +124,11 @@ func _randomize_sector_scenarios() -> void:
 	current_game_save.sector_scenarios.append(boss_combat_scenarios.pick_random())
 		
 	current_game_save.current_scenario_index = 0 #floor(sector_size / 2.0)
-	current_game_save.sector_scenarios.insert(current_game_save.current_scenario_index, empty_scenario)
+	#current_game_save.sector_scenarios.insert(current_game_save.current_scenario_index, empty_scenario)
+	current_game_save.sector_scenarios.insert(
+		current_game_save.current_scenario_index, 
+		starting_combat_scenario
+	)
 	
 	# Seed all the scenarios
 	for scenario: ScenarioResource in current_game_save.sector_scenarios:

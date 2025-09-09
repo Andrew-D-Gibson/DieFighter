@@ -26,6 +26,9 @@ func _ready() -> void:
 	add_child(grace_timer)
 	
 	Events.set_money.connect(_on_money_changed)
+	Events.combat_finished.connect(_fade_in)
+	
+	hide()
 	
 
 func _on_money_changed(new_value: int) -> void:
@@ -118,3 +121,25 @@ func _update_change_display(value: int) -> void:
 
 func _update_money_display(value: int) -> void:
 	money_label.text = str(value)
+	
+
+func _fade_in() -> void:
+	# This should only ever be called once,
+	# so disconnect the triggering signal
+	if Events.combat_finished.is_connected(_fade_in):
+		Events.combat_finished.disconnect(_fade_in)
+		
+	self_modulate.a = 0
+	show()
+	
+	var fade_time: float = 2
+	
+	var tween: Tween = get_tree().create_tween()
+	tween.tween_property(
+		self,
+		"modulate:a",
+		1,
+		fade_time
+	).from(0)\
+	.set_trans(Tween.TRANS_LINEAR)\
+	.set_ease(Tween.EASE_IN_OUT)

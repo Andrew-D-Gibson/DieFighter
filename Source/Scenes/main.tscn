@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=47 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -37,6 +37,8 @@
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres" id="26_aaucc"]
 [ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
+[ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
+[ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
 
 [sub_resource type="Animation" id="Animation_ooshj"]
 length = 0.001
@@ -266,6 +268,7 @@ position = Vector2(122, 43)
 [node name="ScenarioManager" parent="Systems" instance=ExtResource("19_3g417")]
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
+visible = false
 z_index = 10
 position = Vector2(156, 37)
 
@@ -274,9 +277,10 @@ current_game_save = ExtResource("7_3g417")
 sector_size = 8
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
-combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4")])
-question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5")])
+combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj")])
+question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
+starting_combat_scenario = ExtResource("24_7iud4")
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

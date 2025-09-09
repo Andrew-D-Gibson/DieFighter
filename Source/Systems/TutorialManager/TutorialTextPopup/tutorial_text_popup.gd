@@ -10,23 +10,23 @@ extends Node2D
 var character_reveal_tween: Tween
 var tween: Tween
 
-func _ready() -> void:
-	_fade_in()
-
-
 func setup(text: String, global_pos: Vector2) -> void:
 	global_position = global_pos
+	
+	await _fade_in()
 	
 	%RichTextLabel.text = text
 	%RichTextLabel.visible_characters = 0
 	
 	character_reveal_tween = get_tree().create_tween()
+	character_reveal_tween.set_parallel(false)
 	character_reveal_tween.tween_method(
 		_show_characters, 
 		0, 
 		len(text), 
 		character_reveal_time * len(text)
 	).set_trans(Tween.TRANS_LINEAR)
+	character_reveal_tween.tween_callback(stop_talking_animation)
 	
 	# Auto-close if delay is set
 	if auto_close_delay > 0:
@@ -57,3 +57,7 @@ func close() -> void:
 	
 	await tween.finished
 	queue_free()
+
+
+func stop_talking_animation() -> void:
+	%ComputerTalking.stop()

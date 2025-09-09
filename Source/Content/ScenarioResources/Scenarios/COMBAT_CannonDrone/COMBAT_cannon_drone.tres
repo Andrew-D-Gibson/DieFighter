@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://cbrbbyg645at3"]
+
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_3d2pu"]
+[ext_resource type="Resource" uid="uid://sk166eerw6ax" path="res://Source/Resources/BackgroundResources/debris_field.tres" id="1_j02j7"]
+[ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_0qdiy"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_qmptm"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="3_osxv8"]
+[ext_resource type="Resource" uid="uid://c8kw8h1mjtmml" path="res://Source/Content/Enemies/EnemyResources/cannon_drone.tres" id="6_ru81j"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="7_vbqq8"]
+
+[sub_resource type="Resource" id="Resource_xrbtu"]
+script = ExtResource("1_3d2pu")
+min_money = 5
+max_money = 15
+num_of_rewards = 3
+dice_probability = 0.3
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_xegmr"]
+script = ExtResource("3_osxv8")
+enemy_resource = ExtResource("6_ru81j")
+spawning_path_location = 0.5
+starting_state = ExtResource("7_vbqq8")
+reward_resource = SubResource("Resource_xrbtu")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("2_qmptm")
+map_icon = ExtResource("2_0qdiy")
+background_resource = ExtResource("1_j02j7")
+starting_enemies = Array[ExtResource("3_osxv8")]([SubResource("Resource_xegmr")])
+rewards = Dictionary[int, ExtResource("1_3d2pu")]({})
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

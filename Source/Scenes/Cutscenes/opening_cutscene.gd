@@ -92,7 +92,6 @@ func _player_ship_hit() -> void:
 	
 	
 func _switch_to_next_scene() -> void:
-	print('switch to next scene called')
 	var status := ResourceLoader.load_threaded_get_status(entering_cockpit_scene)
 	if status == ResourceLoader.THREAD_LOAD_LOADED:
 		var resource := ResourceLoader.load_threaded_get(entering_cockpit_scene)

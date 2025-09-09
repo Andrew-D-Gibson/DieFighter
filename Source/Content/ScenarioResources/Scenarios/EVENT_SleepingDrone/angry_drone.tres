@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=3 format=3 uid="uid://vplql3yri1ri"]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="1_2jsga"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="2_iywbx"]
+
+[resource]
+script = ExtResource("1_2jsga")
+dialogue = "!!! THREAT DETECTED !!!"
+faction = 0
+attitude = 2
+transitions = Dictionary[int, ExtResource("2_iywbx")]({})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

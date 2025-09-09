@@ -188,7 +188,10 @@ func jump(desired_scenario_index: int) -> void:
 
 
 func _on_map_view_slider_value_changed(value: float) -> void:
-	var max_position: int = (len(scenario_list)-4) * sprite_spacing
+	var max_position: int = max(
+			(len(scenario_list)-4) * sprite_spacing,
+			0
+		)
 	var desired_camera_position: int = max_position * value
 
 	map_camera.position = Vector2(desired_camera_position, 0)

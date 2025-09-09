@@ -1,0 +1,57 @@
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=13 format=3 uid="uid://pqoge57fe72d"]
+
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_tshki"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="2_fsqg3"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_km2sg"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="3_nek1j"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="4_t4thw"]
+[ext_resource type="Resource" uid="uid://cesjiwhhl5hh0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/flee.tres" id="5_ttvyx"]
+[ext_resource type="PackedScene" uid="uid://bdj8yu1245tuj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/civilian_transport_ship_graphics.tscn" id="7_wi75o"]
+[ext_resource type="Texture2D" uid="uid://d1xh70cpc1d0t" path="res://Assets/Textures/Enemies/CivilianTransport/civilian_transport_targeting_image.png" id="8_6eevq"]
+
+[sub_resource type="Resource" id="Resource_u5gnh"]
+script = ExtResource("2_fsqg3")
+base_action = ExtResource("3_nek1j")
+weight = 1.0
+min_amount = 0
+max_amount = 0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_7mngp"]
+script = ExtResource("2_fsqg3")
+base_action = ExtResource("4_t4thw")
+weight = 1.0
+min_amount = 2
+max_amount = 6
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_po2a8"]
+script = ExtResource("2_fsqg3")
+base_action = ExtResource("5_ttvyx")
+weight = 0.5
+min_amount = 0
+max_amount = 0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pjw7f"]
+script = ExtResource("1_tshki")
+actions_possible = Array[ExtResource("2_fsqg3")]([SubResource("Resource_u5gnh"), SubResource("Resource_7mngp"), SubResource("Resource_po2a8")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("2_km2sg")
+enemy_name = "Civilian Transport"
+description = ""
+ship_graphics_scene = ExtResource("7_wi75o")
+graphics_scene_offset = Vector2(0, 0)
+dialogue_offset = Vector2(17, -8)
+targeting_computer_image = ExtResource("8_6eevq")
+health_bar_position = Vector2(-24, -14)
+dice_queue_position = Vector2(24, 8)
+max_health = 8
+starting_shields = 8
+action_options = Array[ExtResource("1_tshki")]([SubResource("Resource_pjw7f")])
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

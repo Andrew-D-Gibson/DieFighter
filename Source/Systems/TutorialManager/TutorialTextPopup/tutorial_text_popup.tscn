@@ -33,6 +33,7 @@ script = ExtResource("1_wosuk")
 texture = ExtResource("1_lfeum")
 
 [node name="ComputerTalking" type="AnimatedSprite2D" parent="."]
+unique_name_in_owner = true
 position = Vector2(-35, 0)
 sprite_frames = SubResource("SpriteFrames_5wl13")
 animation = &"talking"

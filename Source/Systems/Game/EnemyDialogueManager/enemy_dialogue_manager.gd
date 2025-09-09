@@ -22,13 +22,14 @@ static var time_last_dialogue_was_shown: int
 @export var time_between_dialogues: float = 3
 
 var fadeout_timer: Timer
-@export var dialogue_time_shown: float = 5
+@export var dialogue_time_shown: float = 8
 
 
 func _ready() -> void:
 	fadeout_timer = Timer.new()
 	fadeout_timer.one_shot = true
 	fadeout_timer.timeout.connect(hide_dialogue)
+	add_child(fadeout_timer)
 	
 
 func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:

@@ -4,10 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="2_3prfu"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="3_4ofoe"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="4_0qfbq"]
-[ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Content/Enemies/EnemyResources/defender.tres" id="5_hj52p"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_rqx5v"]
 [ext_resource type="Resource" uid="uid://bs8jwdilshf2n" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/civilian_distress.tres" id="7_bh7eb"]
 [ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="8_26ng0"]
+[ext_resource type="Resource" uid="uid://pqoge57fe72d" path="res://Source/Content/Enemies/EnemyResources/civilian_transport.tres" id="8_hi8qk"]
 [ext_resource type="Resource" uid="uid://bv7qyqlhl4prh" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/pirate_warning.tres" id="9_rjncu"]
 
 [sub_resource type="Resource" id="Resource_6f72w"]
@@ -36,7 +36,7 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_jmxcg"]
 script = ExtResource("4_0qfbq")
-enemy_resource = ExtResource("5_hj52p")
+enemy_resource = ExtResource("8_hi8qk")
 spawning_path_location = 0.3
 starting_state = ExtResource("7_bh7eb")
 reward_resource = SubResource("Resource_gtj44")

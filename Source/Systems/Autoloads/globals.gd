@@ -28,6 +28,9 @@ var orange: Color = Color.html('#f29c5d')
 var dark_gray: Color = Color.html('#343330')
 var white: Color = Color.html('#cef0f1')
 
+var medium_purple: Color = Color.html('#a846ce')
+var dark_purple: Color = Color.html('#80359d')
+
 var mouse_is_dragging_something: bool = false
 
 

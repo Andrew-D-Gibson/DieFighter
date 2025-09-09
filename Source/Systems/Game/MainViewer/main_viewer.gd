@@ -15,7 +15,19 @@ var screen_showing: ScreenShowing = ScreenShowing.SYSTEMS
 
 
 func _ready() -> void:
-	Events.start_scenario.connect(_show_systems)
+	Events.start_scenario.connect(func() -> void:
+		_check_for_engine_charge()
+		_show_systems()
+	)
+	Events.engine_charge_changed.connect(_check_for_engine_charge)
+	Events.start_combat.connect(func() -> void:
+		map_button_label.add_theme_color_override('default_color', Globals.white)
+		map_button_label.text = 'MAP'	
+	)
+	Events.combat_finished.connect(func() -> void:
+		map_button_label.add_theme_color_override('default_color', Globals.medium_purple)
+		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
+	)
 	Events.show_map.connect(_show_map)
 	Events.show_systems.connect(_show_systems)
 	
@@ -63,3 +75,10 @@ func _map_hovered(is_hovered: bool) -> void:
 	else:
 		map_button_label.add_theme_color_override('default_color', Globals.white)
 		map_button_label.text = 'MAP'
+
+
+func _check_for_engine_charge() -> void:
+	if Globals.player.engine_charge >= Globals.player.max_engine_charge:
+		map_button_label.add_theme_color_override('default_color', Globals.medium_purple)
+		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
+		

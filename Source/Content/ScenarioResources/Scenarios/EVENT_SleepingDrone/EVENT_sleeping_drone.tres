@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://bhn1i4c5k1ttu"]
+
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_0add4"]
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="1_rmdsx"]
+[ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="2_u62bd"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_xv7ur"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="3_uv8gl"]
+[ext_resource type="Resource" uid="uid://c8kw8h1mjtmml" path="res://Source/Content/Enemies/EnemyResources/cannon_drone.tres" id="6_d730b"]
+[ext_resource type="Resource" uid="uid://bovab5k77ityi" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/sleeping_drone.tres" id="7_u62bd"]
+
+[sub_resource type="Resource" id="Resource_rmdsx"]
+script = ExtResource("1_0add4")
+min_money = 10
+max_money = 25
+num_of_rewards = 4
+dice_probability = 0.0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_rblqv"]
+script = ExtResource("3_uv8gl")
+enemy_resource = ExtResource("6_d730b")
+spawning_path_location = 0.5
+starting_state = ExtResource("7_u62bd")
+reward_resource = SubResource("Resource_rmdsx")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("2_xv7ur")
+map_icon = ExtResource("2_u62bd")
+background_resource = ExtResource("1_rmdsx")
+starting_enemies = Array[ExtResource("3_uv8gl")]([SubResource("Resource_rblqv")])
+rewards = Dictionary[int, ExtResource("1_0add4")]({})
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

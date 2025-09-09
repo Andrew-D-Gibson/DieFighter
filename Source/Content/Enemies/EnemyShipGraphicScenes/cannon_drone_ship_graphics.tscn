@@ -1,0 +1,17 @@
+[gd_scene load_steps=5 format=3 uid="uid://4ec761o38waj"]
+
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_pwmp8"]
+[ext_resource type="Texture2D" uid="uid://cufbs5t3apcrq" path="res://Assets/Textures/Enemies/CannonDrone/CannonDrone.png" id="2_pwmp8"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="3_bxw78"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cglea"]
+shader = ExtResource("1_pwmp8")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
+[node name="CannonDroneShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_cglea")
+texture = ExtResource("2_pwmp8")
+
+[node name="EngineParticles" parent="." instance=ExtResource("3_bxw78")]
+position = Vector2(0, -12)

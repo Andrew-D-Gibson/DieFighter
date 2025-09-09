@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://bdj8yu1245tuj"]
+
+[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_2gs0y"]
+[ext_resource type="Texture2D" uid="uid://r7jj0htf313h" path="res://Assets/Textures/Enemies/CivilianTransport/civilian_transport.png" id="2_vmu68"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="3_d66sl"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cglea"]
+shader = ExtResource("1_2gs0y")
+shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0
+
+[node name="CivilianTransportShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_cglea")
+texture = ExtResource("2_vmu68")
+
+[node name="EngineParticles" parent="." instance=ExtResource("3_d66sl")]
+position = Vector2(-7, -13)
+
+[node name="EngineParticles2" parent="." instance=ExtResource("3_d66sl")]
+position = Vector2(7, -13)
