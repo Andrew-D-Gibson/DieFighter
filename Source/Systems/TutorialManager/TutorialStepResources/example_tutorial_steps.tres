@@ -19,3 +19,4 @@ description = "Perfect! When you're out of dice, click the End Turn button to le
 text_position = Vector2(200, 100)
 wait_for_action = "player_turn_over"
 highlight_elements = Array["end_turn_button"]
+

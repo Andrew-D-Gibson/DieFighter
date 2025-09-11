@@ -31,7 +31,9 @@ func _ready() -> void:
 	Events.show_map.connect(_show_map)
 	Events.show_systems.connect(_show_systems)
 	
-	_show_map()
+	Events.main_viewer_startup.connect(_startup)
+	
+	%RevealOverlay.material.set_shader_parameter("progress", 0)
 
 
 func _show_systems() -> void:
@@ -82,3 +84,22 @@ func _check_for_engine_charge() -> void:
 		map_button_label.add_theme_color_override('default_color', Globals.medium_purple)
 		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
 		
+		
+func _startup() -> void:
+	_reveal_tween()
+	
+	
+func _reveal_tween() -> void:
+	# 76.5, 44
+	var tween: Tween = get_tree().create_tween()
+	var reveal_time: float = 6
+	var max_progress: int = 50.48
+	
+	tween.tween_property(
+		%RevealOverlay, 
+		"material:shader_parameter/progress", 
+		max_progress, 
+		reveal_time
+	).from(0)\
+	.set_trans(Tween.TRANS_QUAD)\
+	.set_ease(Tween.EASE_OUT)

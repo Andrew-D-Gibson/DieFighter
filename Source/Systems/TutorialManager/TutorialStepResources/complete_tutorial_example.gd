@@ -105,3 +105,4 @@ func setup_conditional_tutorial() -> void:
 	else:
 		# Skip tutorial for returning players
 		Globals.tutorial_manager.skip_tutorial()
+

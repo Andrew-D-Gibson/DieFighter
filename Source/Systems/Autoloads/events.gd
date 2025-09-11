@@ -91,3 +91,4 @@ signal play_sound(sound_name: String)
 
 # Startup Events
 signal health_bar_startup()
+signal main_viewer_startup()

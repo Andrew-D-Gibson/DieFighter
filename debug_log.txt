@@ -1,16 +1,4 @@
-[13:05:05] Debug logger initialized
-[13:05:05] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres
-[13:05:05] Starting scenario
-[13:05:05] Starting combat
-[13:05:08] Enemy left: PIRATE
-[13:05:08] Scenario Event: PIRATES_DEFEATED
-[13:05:08] Combat finished
-[13:05:08] Scenario Event: COMBAT_ENDED
-[13:05:16] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres
-[13:05:16] Starting scenario
-[13:05:16] Starting combat
-[13:05:20] Enemy left: PIRATE
-[13:05:20] Enemy left: PIRATE
-[13:05:20] Scenario Event: PIRATES_DEFEATED
-[13:05:20] Combat finished
-[13:05:20] Scenario Event: COMBAT_ENDED
+[10:47:58] Debug logger initialized
+[10:47:58] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres
+[10:48:02] Starting scenario
+[10:48:02] Starting combat

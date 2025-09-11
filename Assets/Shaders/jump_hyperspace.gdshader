@@ -14,15 +14,15 @@ void fragment() {
     // Collapse toward center
     vec2 uv = UV;
 	uv -= vec2(0.5, 0.5);
-	
+
 	// Shrink
 	uv = uv + (normalize(uv) * shrink_progress);
 	float dist = length(uv);
-	
+
 	// Bulge
 	float displacement = 1.0 + bulge * bulge_function(uv.y);
 	uv.x /= displacement;
-	
+
 	uv += vec2(0.5, 0.5);
 
     // Sample screen or show black outside

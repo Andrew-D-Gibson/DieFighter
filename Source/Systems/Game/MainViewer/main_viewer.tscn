@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=3 uid="uid://bq0eop4cxspu2"]
+[gd_scene load_steps=33 format=3 uid="uid://bq0eop4cxspu2"]
 
 [ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
 [ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
@@ -21,6 +21,8 @@
 [ext_resource type="Texture2D" uid="uid://dxkhg5oasm2mr" path="res://Assets/Textures/MainViewer/EngineCharger/fill.png" id="18_foiuu"]
 [ext_resource type="Texture2D" uid="uid://bmnlxtlwmxtue" path="res://Assets/Textures/MainViewer/EngineCharger/charged.png" id="19_geq53"]
 [ext_resource type="Texture2D" uid="uid://dcp4x2igagi4m" path="res://Assets/Textures/MainViewer/EngineCharger/fill_head.png" id="20_35tnh"]
+[ext_resource type="Shader" uid="uid://kk23eef65mco" path="res://Assets/Shaders/main_viewer_reveal_shader.gdshader" id="22_35tnh"]
+[ext_resource type="Texture2D" uid="uid://dy20l3fkqik2j" path="res://Assets/Textures/MainViewer/reveal_overlay.png" id="23_xbbhg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4s628"]
 atlas = ExtResource("2_q6tn0")
@@ -81,6 +83,28 @@ bg_color = Color(0.501961, 0.207843, 0.615686, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xbbhg"]
 bg_color = Color(0.772549, 0.321569, 0.945098, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_4s628"]
+shader = ExtResource("22_35tnh")
+shader_parameter/use_sprite_alpha = true
+shader_parameter/use_transition_texture = false
+shader_parameter/transition_type = 0
+shader_parameter/position = Vector2(0.5, 0.5)
+shader_parameter/invert = false
+shader_parameter/grid_size = Vector2(38.25, 22)
+shader_parameter/rotation_angle = 0.0
+shader_parameter/stagger = Vector2(0, 0)
+shader_parameter/stagger_frequency = Vector2i(2, 2)
+shader_parameter/flip_frequency = Vector2i(1, 1)
+shader_parameter/basic_feather = 0.0
+shader_parameter/use_mask_size = false
+shader_parameter/mask_size = Vector2(100, 100)
+shader_parameter/edges = 6
+shader_parameter/shape_feather = 0.1
+shader_parameter/sectors = 1
+shader_parameter/clock_feather = 0.0
+shader_parameter/progress = 50.48
+shader_parameter/progress_bias = Vector2(10, 10)
 
 [node name="MainViewer" type="Node2D" node_paths=PackedStringArray("background", "tile_grid", "map", "systems_button_label", "map_button_label")]
 script = ExtResource("1_v7j4o")
@@ -264,6 +288,13 @@ offset_bottom = 15.0
 mouse_filter = 2
 text = "21/25"
 horizontal_alignment = 1
+
+[node name="RevealOverlay" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 10
+material = SubResource("ShaderMaterial_4s628")
+position = Vector2(-0.5, 0)
+texture = ExtResource("23_xbbhg")
 
 [connection signal="clicked" from="TabButtons/SystemsButton/Clickable" to="." method="_show_systems"]
 [connection signal="input_event" from="TabButtons/SystemsButton/Clickable" to="TabButtons/SystemsButton/Clickable" method="_on_input_event"]

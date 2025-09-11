@@ -10,6 +10,8 @@ func _ready() -> void:
 	%HealthLabel.visible = false
 	%ShieldsLabel.visible = false
 	
+	%RevealOverlay.material.set_shader_parameter("progress", 0)
+	
 	Events.health_bar_startup.connect(_startup)
 	
 	
@@ -47,6 +49,8 @@ func _startup() -> void:
 	%HealthUpdateBar.value = 0
 	Globals.player.health.health = Globals.player.health.starting_health
 	
+	_reveal_tween()
+	
 	
 func _show_hull_info() -> void:
 	var info: InfoResource = InfoResource.new()
@@ -64,3 +68,18 @@ func _show_shield_info() -> void:
 	info.bottom_label_text = "[color=blue]Shields[/color] absorb [color=red]damage[/color] before it reaches your [color=red]Hull[/color]. Resets after jumping"
 	
 	Events.show_info.emit(info)
+
+
+func _reveal_tween() -> void:
+	var tween: Tween = get_tree().create_tween()
+	var reveal_time: float = 2
+	var max_progress: int = 45
+	
+	tween.tween_property(
+		%RevealOverlay, 
+		"material:shader_parameter/progress", 
+		max_progress, 
+		reveal_time
+	).from(0)\
+	.set_trans(Tween.TRANS_QUAD)\
+	.set_ease(Tween.EASE_OUT)

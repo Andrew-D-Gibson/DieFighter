@@ -175,3 +175,4 @@ Tutorials can be created dynamically at runtime based on game state, player prog
 ### Multiple Tutorial Sequences
 
 Different scenarios or game modes can have their own tutorial sequences by creating separate `TutorialManager` instances or managing different step arrays.
+

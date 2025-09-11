@@ -70,8 +70,12 @@ func start_game() -> void:
 	
 	
 func trigger_startup_sequence() -> void:
-	#await get_tree().create_timer(2).timeout
+	await get_tree().create_timer(2).timeout
 	Events.health_bar_startup.emit()
+	
+	await get_tree().create_timer(2).timeout
+	Events.main_viewer_startup.emit()
+	
 	start_game()
 	
 	
