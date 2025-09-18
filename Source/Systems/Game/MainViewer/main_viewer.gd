@@ -33,7 +33,8 @@ func _ready() -> void:
 	
 	Events.main_viewer_startup.connect(_startup)
 	
-	%RevealOverlay.material.set_shader_parameter("progress", 0)
+	%RevealOverlay.material = %RevealOverlay.material.duplicate()
+	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
 
 
 func _show_systems() -> void:
@@ -93,13 +94,11 @@ func _reveal_tween() -> void:
 	# 76.5, 44
 	var tween: Tween = get_tree().create_tween()
 	var reveal_time: float = 6
-	var max_progress: int = 50.48
+	var max_progress: float = 60
 	
 	tween.tween_property(
 		%RevealOverlay, 
 		"material:shader_parameter/progress", 
 		max_progress, 
 		reveal_time
-	).from(0)\
-	.set_trans(Tween.TRANS_QUAD)\
-	.set_ease(Tween.EASE_OUT)
+	).from(0)

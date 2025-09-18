@@ -4,13 +4,9 @@ extends HealthBarController
 
 func _ready() -> void:
 	super()
-	%Shields.visible = false
-	%HealthUpdateBar.visible = false
-	%HealthBar.visible = false
-	%HealthLabel.visible = false
-	%ShieldsLabel.visible = false
 	
-	%RevealOverlay.material.set_shader_parameter("progress", 0)
+	%RevealOverlay.material = %RevealOverlay.material.duplicate()
+	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
 	
 	Events.health_bar_startup.connect(_startup)
 	
@@ -39,14 +35,6 @@ func _get_shield_string() -> String:
 
 
 func _startup() -> void:
-	%Shields.visible = true
-	%HealthUpdateBar.visible = true
-	%HealthBar.visible = true
-	%HealthLabel.visible = true
-	%ShieldsLabel.visible = true
-	
-	%HealthBar.value = 0
-	%HealthUpdateBar.value = 0
 	Globals.player.health.health = Globals.player.health.starting_health
 	
 	_reveal_tween()
@@ -72,14 +60,12 @@ func _show_shield_info() -> void:
 
 func _reveal_tween() -> void:
 	var tween: Tween = get_tree().create_tween()
-	var reveal_time: float = 2
-	var max_progress: int = 45
+	var reveal_time: float = 4
+	var max_progress: float = 22
 	
 	tween.tween_property(
 		%RevealOverlay, 
 		"material:shader_parameter/progress", 
 		max_progress, 
 		reveal_time
-	).from(0)\
-	.set_trans(Tween.TRANS_QUAD)\
-	.set_ease(Tween.EASE_OUT)
+	).from(0)

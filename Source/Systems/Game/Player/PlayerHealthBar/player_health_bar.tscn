@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://ccpalueq6vrr2" path="res://Assets/Textures/Player/PlayerHealthBar/health.png" id="5_w3cee"]
 [ext_resource type="Texture2D" uid="uid://dwyeeyvjor44w" path="res://Assets/Textures/Player/PlayerHealthBar/over.png" id="6_rivm1"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="8_857e5"]
-[ext_resource type="Shader" uid="uid://kk23eef65mco" path="res://Assets/Shaders/main_viewer_reveal_shader.gdshader" id="9_8pnmy"]
+[ext_resource type="Shader" uid="uid://dvldteer6nvsf" path="res://Assets/Shaders/player_health_bar_reveal_shader.gdshader" id="9_8pnmy"]
 [ext_resource type="Texture2D" uid="uid://d0pblx6g25msy" path="res://Assets/Textures/Player/PlayerHealthBar/startup_overlay.png" id="10_siqsm"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_p4fc1"]
@@ -53,7 +53,7 @@ shader_parameter/use_transition_texture = false
 shader_parameter/transition_type = 0
 shader_parameter/position = Vector2(0.5, 0.5)
 shader_parameter/invert = false
-shader_parameter/grid_size = Vector2(29, 29)
+shader_parameter/grid_size = Vector2(14.5, 14.5)
 shader_parameter/rotation_angle = 0.0
 shader_parameter/stagger = Vector2(0, 0)
 shader_parameter/stagger_frequency = Vector2i(2, 2)
@@ -65,7 +65,7 @@ shader_parameter/edges = 6
 shader_parameter/shape_feather = 0.1
 shader_parameter/sectors = 1
 shader_parameter/clock_feather = 0.0
-shader_parameter/progress = 0.0
+shader_parameter/progress = 22.0
 shader_parameter/progress_bias = Vector2(10, 10)
 
 [node name="PlayerHealthBar" type="Node2D"]
