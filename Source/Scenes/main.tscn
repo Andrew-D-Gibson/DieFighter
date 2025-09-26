@@ -268,7 +268,6 @@ position = Vector2(122, 43)
 [node name="ScenarioManager" parent="Systems" instance=ExtResource("19_3g417")]
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
-visible = false
 z_index = 10
 position = Vector2(156, 37)
 
@@ -280,7 +279,7 @@ shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
-starting_combat_scenario = ExtResource("24_7iud4")
+starting_combat_scenario = ExtResource("23_6ebjm")
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

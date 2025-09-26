@@ -7,6 +7,9 @@ var enemies: Array[Enemy]
 @export var enemy_spacing: int
 @export var spawning_path: Path2D
 
+@export var fly_in_range: int = 100
+@export var fly_in_time: float = 1.5
+
 
 func _ready() -> void:
 	Globals.enemy_manager = self
@@ -27,18 +30,38 @@ func _ready() -> void:
 		if len(scenario.starting_enemies) > 0:
 			spawn_enemies(scenario.starting_enemies)
 	)
+	Events.start_scenario.connect(_start_enemy_fly_in)
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 	for i: int in range(len(enemies_to_spawn)):
 		var enemy: Enemy = enemy_base_scene.instantiate()
 		enemy.enemy_resource = enemies_to_spawn[i].enemy_resource
-		enemy.position = enemy.enemy_resource.graphics_scene_offset + get_point_along_path(enemies_to_spawn[i].spawning_path_location)
+		enemy.position = enemy.enemy_resource.graphics_scene_offset \
+			+ Vector2(0, -fly_in_range) \
+			+ get_point_along_path(enemies_to_spawn[i].spawning_path_location)
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
 		enemy.scenario_state = enemies_to_spawn[i].starting_state
 
 		enemies.append(enemy)
 		add_child(enemy)
+
+
+func _start_enemy_fly_in() -> void:
+	for enemy: Enemy in enemies:
+		var fly_in_tween: Tween = get_tree().create_tween()
+		fly_in_tween.tween_property(
+			enemy,
+			"position",
+			enemy.position + Vector2(0, fly_in_range),
+			fly_in_time
+		).set_trans(Tween.TRANS_CUBIC)\
+		.set_ease(Tween.EASE_OUT)
+		
+		# Re-enable bobbing animation after spawn tween completes
+		await fly_in_tween.finished
+		Events.enemy_flew_in.emit()
+		enemy.graphics_manager.start_bob_tween()
 	
 	
 func get_point_along_path(proportion: float) -> Vector2:

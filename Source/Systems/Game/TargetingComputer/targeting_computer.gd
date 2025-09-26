@@ -27,20 +27,27 @@ func _ready() -> void:
 		check_target_is_valid()
 	)
 	Events.enemy_used_die.connect(_on_enemy_used_die)
-	Events.start_combat.connect(check_target_is_valid)
-	Events.start_scenario.connect(_initial_target)
+	Events.enemy_flew_in.connect(_initial_target)
 	Events.enemy_received_die.connect(_update_ui)
 	Events.player_turn_start.connect(func() -> void:
 		await get_tree().create_timer(0.5).timeout
 		_update_ui()
 	)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
+
+	Events.targeting_computer_startup.connect(_startup)
+
+	%RevealOverlay.material = %RevealOverlay.material.duplicate()
+	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
+
 	_initial_target()
+	
 	
 
 func _initial_target() -> void:
-	targeted_enemy_index = 0
-	check_target_is_valid()
+	if !targeted_enemy:
+		targeted_enemy_index = 0
+		check_target_is_valid()
 	
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -212,5 +219,18 @@ func _indicator_bob() -> void:
 	indicator_bob_tween.set_loops()
 
 
-func _show_ship_info() -> void:
-	print('ship info requested')
+func _startup() -> void:
+	_reveal_tween()
+	
+	
+func _reveal_tween() -> void:
+	var tween: Tween = get_tree().create_tween()
+	var reveal_time: float = 4
+	var max_progress: float = 29
+	
+	tween.tween_property(
+		%RevealOverlay, 
+		"material:shader_parameter/progress", 
+		max_progress, 
+		reveal_time
+	).from(0)

@@ -24,6 +24,23 @@ func _ready() -> void:
 	# Auto-start if enabled
 	if auto_start and tutorial_steps.size() > 0:
 		start_tutorial()
+		
+	
+	Events.start_scenario.connect(
+		func() -> void:
+			create_tutorial_popup(
+				"This is a test tutorial popup!", 
+				Vector2(160, 45)
+			)
+	)
+		
+
+func create_tutorial_popup(text: String, global_pos: Vector2) -> void:
+	var popup: TutorialTextPopup = tutorial_text_popup_scene.instantiate()
+	add_child(popup)
+	
+	popup.setup(text, global_pos)
+	
 
 func _connect_game_events() -> void:
 	# Game sequencing events

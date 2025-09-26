@@ -11,9 +11,17 @@ var character_reveal_tween: Tween
 var tween: Tween
 
 func setup(text: String, global_pos: Vector2) -> void:
+	print('popup setup function called')
 	global_position = global_pos
 	
 	await _fade_in()
+	
+	## Bob the computer head
+	#var _bob_tween: Tween = get_tree().create_tween()
+	#var tween_time: float = 2
+	#_bob_tween.tween_property(%ComputerTalking, 'position', position + Vector2(0, 2), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	#_bob_tween.tween_property(%ComputerTalking, 'position', position - Vector2(0, 2), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	#_bob_tween.set_loops()
 	
 	%RichTextLabel.text = text
 	%RichTextLabel.visible_characters = 0

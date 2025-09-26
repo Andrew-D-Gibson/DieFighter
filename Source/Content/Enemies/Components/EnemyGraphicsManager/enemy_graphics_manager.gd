@@ -28,7 +28,6 @@ func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 	add_child(ship_graphics)
 	
 	shakeable.node_to_shake = ship_graphics
-	start_bob_tween()
 
 
 ## Plays the death animation sequence

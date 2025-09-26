@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://cpqd13acuxpx"]
+[gd_scene load_steps=36 format=3 uid="uid://cpqd13acuxpx"]
 
 [ext_resource type="Script" uid="uid://bkn6faehi2i4w" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.gd" id="1_8ig5e"]
 [ext_resource type="Texture2D" uid="uid://d053aff6muvev" path="res://Assets/Textures/Enemies/IntentIndicator/UnknownEnemyIntent.png" id="2_g8xi5"]
@@ -12,6 +12,8 @@
 [ext_resource type="Texture2D" uid="uid://je3ilyc604a3" path="res://Assets/Textures/TargetingComputer/intent_dice_indicator_default-Sheet.png" id="11_du4uj"]
 [ext_resource type="Texture2D" uid="uid://crep0ra8xjfw0" path="res://Assets/Textures/TargetingComputer/targeting_computer_shader_mask.png" id="11_ysc67"]
 [ext_resource type="Texture2D" uid="uid://bn2wtbh44umub" path="res://Assets/Textures/TargetingComputer/intent_dice_indicator_held-Sheet.png" id="12_y72xu"]
+[ext_resource type="Texture2D" uid="uid://brya2gd3t851s" path="res://Assets/Textures/TargetingComputer/reveal_overlay.png" id="13_du4uj"]
+[ext_resource type="Shader" uid="uid://4sn3gy37h8dt" path="res://Assets/Shaders/targeting_computer_reveal_shader.gdshader" id="13_y72xu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_du4uj"]
 shader = ExtResource("10_chiev")
@@ -170,6 +172,28 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_up1nx"]
+shader = ExtResource("13_y72xu")
+shader_parameter/use_sprite_alpha = true
+shader_parameter/use_transition_texture = false
+shader_parameter/transition_type = 0
+shader_parameter/position = Vector2(0.5, 0.5)
+shader_parameter/invert = false
+shader_parameter/grid_size = Vector2(15, 15)
+shader_parameter/rotation_angle = 0.0
+shader_parameter/stagger = Vector2(0, 0)
+shader_parameter/stagger_frequency = Vector2i(2, 2)
+shader_parameter/flip_frequency = Vector2i(1, 1)
+shader_parameter/basic_feather = 0.0
+shader_parameter/use_mask_size = false
+shader_parameter/mask_size = Vector2(100, 100)
+shader_parameter/edges = 6
+shader_parameter/shape_feather = 0.1
+shader_parameter/sectors = 1
+shader_parameter/clock_feather = 0.0
+shader_parameter/progress = 29.0
+shader_parameter/progress_bias = Vector2(10, 10)
 
 [node name="TargetingComputer" type="Node2D" node_paths=PackedStringArray("targeting_indicator")]
 script = ExtResource("1_8ig5e")
@@ -398,6 +422,12 @@ unique_name_in_owner = true
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_f4ln3")
 frame = 5
+
+[node name="RevealOverlay" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+z_index = 10
+material = SubResource("ShaderMaterial_up1nx")
+texture = ExtResource("13_du4uj")
 
 [connection signal="input_event" from="LeftButton" to="." method="_on_left_button_input_event"]
 [connection signal="input_event" from="RightButton" to="." method="_on_right_button_input_event"]

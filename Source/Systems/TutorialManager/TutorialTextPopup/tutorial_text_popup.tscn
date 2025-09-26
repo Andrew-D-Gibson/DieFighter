@@ -1,8 +1,9 @@
-[gd_scene load_steps=7 format=3 uid="uid://dauuk425cis74"]
+[gd_scene load_steps=8 format=3 uid="uid://dauuk425cis74"]
 
 [ext_resource type="Texture2D" uid="uid://m8bm3myhsf8y" path="res://Assets/Textures/TutorialManager/background.png" id="1_lfeum"]
 [ext_resource type="Script" uid="uid://dnesg2o2ft6ba" path="res://Source/Systems/TutorialManager/TutorialTextPopup/tutorial_text_popup.gd" id="1_wosuk"]
 [ext_resource type="Texture2D" uid="uid://boc0aisvic5k2" path="res://Assets/Textures/TutorialManager/computer_head-Sheet.png" id="2_wosuk"]
+[ext_resource type="PackedScene" uid="uid://cygxk6obb46wn" path="res://Assets/Particles/computer_hologram_particles.tscn" id="4_s002k"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_3rr6s"]
 atlas = ExtResource("2_wosuk")
@@ -34,12 +35,17 @@ texture = ExtResource("1_lfeum")
 
 [node name="ComputerTalking" type="AnimatedSprite2D" parent="."]
 unique_name_in_owner = true
+z_index = 1
 position = Vector2(-35, 0)
 sprite_frames = SubResource("SpriteFrames_5wl13")
 animation = &"talking"
 autoplay = "talking"
 frame = 1
 frame_progress = 0.404775
+
+[node name="ComputerHologramParticles" parent="ComputerTalking" instance=ExtResource("4_s002k")]
+z_index = -1
+position = Vector2(0, -4)
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 unique_name_in_owner = true

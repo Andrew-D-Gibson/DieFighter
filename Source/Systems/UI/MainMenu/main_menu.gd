@@ -36,7 +36,6 @@ func _ready() -> void:
 	for i in range(num_of_twinkling_stars):
 		_add_star(star_twinkle_scene)
 		
-		
 	%AnimationPlayer.play("on_application_start")
 	
 	ResourceLoader.load_threaded_request(opening_cutscene)
