@@ -147,6 +147,7 @@ uniform sampler2D dither_texture : filter_nearest;
 uniform int dither_levels = 0;
 
 // Noise specification for the shading.
+uniform vec3 shade_colour : source_color = vec3(0.0, 0.0, 0.0);
 uniform int shading_noise_cell_amount = 40;
 uniform float shading_noise_strength : hint_range(-1.0, 1.0, 0.01) = 0.3;
 uniform vec3 shading_noise_period = vec3(9.5, 9.5, 9.5);
@@ -537,7 +538,8 @@ vec4 surface(vec2 uv, mat3 rot_p, mat3 rot_p2,  mat3 rot_p3){
 	}
 
 	float light = calculate_light(uv, surface_radius);
-	color.rgb = color.rgb * light;
+	//color.rgb = color.rgb * light;
+	color.rgb = mix(shade_colour, color.rgb, light);
 	return color;
 }
 
