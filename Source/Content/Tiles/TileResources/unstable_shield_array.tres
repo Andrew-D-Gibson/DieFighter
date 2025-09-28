@@ -119,6 +119,7 @@ tile_name = "[color=blue]Unstable Shield Array[/color]"
 activation_description = ""
 description = "[color=yellow]Moved by tile[/color] -> Gain [color=blue]2 shields[/color], +1 each time. Resets if moved manually.
 (Currently at [color=blue][data]activation_count + 2[/data] shields[/color])"
+hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_nb58w")
 uses_per_turn = -1

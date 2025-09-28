@@ -112,6 +112,7 @@ script = ExtResource("4_v6rtc")
 tile_name = "[color=red]Inertial Feedback[/color]"
 activation_description = ""
 description = "(die_6) -> Deal [color=red]1 damage[/color] to [color=purple]all other ships[/color] per tile moved ([data]tiles_moved[/data]), then reset. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
+hint_text = ""
 rarity = 2
 textures = SubResource("SpriteFrames_abjp1")
 uses_per_turn = -1

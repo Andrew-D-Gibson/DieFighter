@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://1a2qug857hne"]
+[gd_scene load_steps=29 format=3 uid="uid://1a2qug857hne"]
 
 [ext_resource type="Script" uid="uid://bvt3igyfnhtau" path="res://Source/Systems/UI/Capsule/capsule_mockup.gd" id="1_5ptp1"]
 [ext_resource type="Texture2D" uid="uid://j1w7icim4eh6" path="res://Assets/Textures/UI/MainMenu/main_menu_background.png" id="1_xl7cj"]
@@ -698,7 +698,7 @@ vec4 atmosphere(vec2 uv) {
 		if (w < 1.0) {
 			float light = calculate_light(uv, radius);
 			result = get_colour(atmosphere_palette, palette_size, column, 0);
-			result.rgb = result.rgb * light;
+			result.rgb = mix(shade_colour, result.rgb, light);
 		}
 	}
 	return result;
@@ -841,7 +841,7 @@ shader_parameter/pixel_scale = 480.0
 shader_parameter/surface_radius = 0.403
 shader_parameter/surface_palette = ExtResource("4_tylsk")
 shader_parameter/background_colour = Color(0, 0, 0, 1)
-shader_parameter/surface_base_rotation = 1.6
+shader_parameter/surface_base_rotation = 2.5
 shader_parameter/surface_rotation_speed = 4.75e-08
 shader_parameter/surface_primary_cell_amount = 6
 shader_parameter/surface_primary_strength = 0.51
@@ -915,11 +915,11 @@ shader_parameter/background_colour = Color(0, 0, 0, 1)
 shader_parameter/surface_base_rotation = 0.0
 shader_parameter/surface_rotation_speed = 4.75e-08
 shader_parameter/surface_primary_cell_amount = 6
-shader_parameter/surface_primary_strength = 1.21
+shader_parameter/surface_primary_strength = 2.69
 shader_parameter/surface_primary_period = Vector3(9.5, 9.5, 9.5)
 shader_parameter/surface_secondary_enabled = true
 shader_parameter/surface_secondary_cell_amount = 13
-shader_parameter/surface_secondary_strength = 0.48
+shader_parameter/surface_secondary_strength = 0.19
 shader_parameter/surface_secondary_period = Vector3(9.5, 9.5, 9.5)
 shader_parameter/surface_secondary_rotation = 1.2
 shader_parameter/surface_secondary_rotation_speed = 0.0
@@ -997,6 +997,23 @@ shader_parameter/brightness_max = 1.5
 shader_parameter/brightness_period = 2.0
 shader_parameter/time_offset = 0.0
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tq8xn"]
+resource_local_to_scene = true
+shader = ExtResource("12_tq8xn")
+shader_parameter/outer_radius = 10.0
+shader_parameter/strength = 0.0
+shader_parameter/highlight_enabled = true
+shader_parameter/vertical_gradient = SubResource("GradientTexture1D_8r4ay")
+shader_parameter/color_gradient = SubResource("GradientTexture1D_yv42b")
+shader_parameter/size_effect = 1.0
+shader_parameter/speed = 1.0
+shader_parameter/highlight_strength = 0.5
+shader_parameter/pause_duration = 3.0
+shader_parameter/texture_size = Vector2(12, 12)
+shader_parameter/brightness_max = 1.5
+shader_parameter/brightness_period = 2.0
+shader_parameter/time_offset = 0.0
+
 [node name="Control" type="Control"]
 layout_mode = 3
 anchors_preset = 15
@@ -1027,30 +1044,36 @@ offset_right = 401.0
 offset_bottom = 123.0
 mouse_filter = 2
 
+[node name="DistantAttacker" type="Sprite2D" parent="Planet"]
+position = Vector2(257, 429)
+texture = ExtResource("13_tq8xn")
+offset = Vector2(0, 0.5)
+
 [node name="Moon" type="ColorRect" parent="."]
 material = SubResource("ShaderMaterial_dpfv4")
-offset_left = 2.0
-offset_right = 92.0
-offset_bottom = 90.0
+layout_mode = 0
+offset_left = 33.0
+offset_top = -23.0
+offset_right = 123.0
+offset_bottom = 67.0
 mouse_filter = 2
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(160, 90)
 zoom = Vector2(6, 6)
 
-[node name="TitleText" type="RichTextLabel" parent="."]
+[node name="TitleText" type="RichTextLabel" parent="Camera2D"]
 unique_name_in_owner = true
-z_index = 2
-layout_mode = 1
+z_index = 4
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -1915.0
-offset_top = -966.0
-offset_right = -1672.0
-offset_bottom = -915.0
+offset_left = -87.0
+offset_top = 14.0
+offset_right = 156.0
+offset_bottom = 112.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
@@ -1059,9 +1082,9 @@ theme_override_constants/outline_size = 8
 theme_override_fonts/normal_font = ExtResource("7_838bs")
 theme_override_font_sizes/normal_font_size = 50
 bbcode_enabled = true
-text = "DIE FIGHTER"
+text = "DIE 
+FIGHTER"
 fit_content = true
-horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Dice" type="Sprite2D" parent="."]
@@ -1070,20 +1093,15 @@ position = Vector2(283, 134)
 texture = ExtResource("10_rxdb5")
 
 [node name="Dice2" parent="." instance=ExtResource("11_02nsj")]
-position = Vector2(265, 131)
-rotation = 0.419879
-scale = Vector2(2.675, 2.675)
+position = Vector2(163, 125)
+rotation = 0.785398
+scale = Vector2(2, 2)
 holographic = true
 default_shader = SubResource("ShaderMaterial_yyxxf")
 value = 3
 
 [node name="Dice3" parent="." instance=ExtResource("11_02nsj")]
-position = Vector2(293, 146)
-scale = Vector2(2.675, 2.675)
-default_shader = SubResource("ShaderMaterial_yyxxf")
+position = Vector2(183, 139)
+scale = Vector2(2, 2)
+default_shader = SubResource("ShaderMaterial_tq8xn")
 value = 4
-
-[node name="DistantAttacker" type="Sprite2D" parent="."]
-position = Vector2(178, 72)
-texture = ExtResource("13_tq8xn")
-offset = Vector2(0, 0.5)

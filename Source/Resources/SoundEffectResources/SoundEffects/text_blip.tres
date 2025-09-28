@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://bcrhemdsprnxd"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_bopk6"]
+[ext_resource type="AudioStream" uid="uid://cylmnd206f824" path="res://Assets/Sounds/UI/TextBlip/TextBlip.wav" id="2_l4a6g"]
+
+[resource]
+script = ExtResource("1_bopk6")
+name = "text_blip"
+limit = 2
+sound_effect = ExtResource("2_l4a6g")
+volume = 0.0
+pitch_scale = 0.8
+pitch_randomness = 0.0
+enable_pitch_escalation = false
+max_pitch_escalation = 2.0
+pitch_escalation_step = 0.1
+quick_play_threshold = 0.5
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

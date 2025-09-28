@@ -89,6 +89,7 @@ script = ExtResource("10_0yqim")
 tile_name = "[color=yellow]Shield Attractor[/color]"
 activation_description = ""
 description = "(die_4) -> Drains [color=blue]6 shields[/color] from [color=purple]target[/color] and [color=orange]gives[/color] them the die.  [color=yellow]Pulls[/color] all tiles in this row toward itself"
+hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_nt0b2")
 uses_per_turn = 2

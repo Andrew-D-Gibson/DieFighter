@@ -102,6 +102,9 @@ func _start_fade_in() -> void:
 	
 	
 func _show_characters(num: int) -> void:
+	if %RichTextLabel.visible_characters != num and randi_range(1,5) == 1:
+		Events.play_sound.emit("text_blip")
+		
 	%RichTextLabel.visible_characters = num
 
 

@@ -134,6 +134,7 @@ script = ExtResource("3_won78")
 tile_name = "[color=red]Tactical Boomerang[/color]"
 activation_description = ""
 description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=purple]target[/color], push this tile [color=green]left[/color] if (die_3) and right if [color=green](die_4)[/color]"
+hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_7uhu8")
 uses_per_turn = 2
