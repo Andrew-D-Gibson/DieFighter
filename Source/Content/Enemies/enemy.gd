@@ -226,6 +226,8 @@ func generate_turn_actions() -> void:
 			else:
 				turn_actions.append(option.get_action())
 				break
+				
+	turn_actions.shuffle()
 
 
 ## Uses the value of the first die in the queue to perform the 

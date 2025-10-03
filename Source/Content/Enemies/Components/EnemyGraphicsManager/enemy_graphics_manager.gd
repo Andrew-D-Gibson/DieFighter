@@ -109,7 +109,7 @@ func start_bob_tween() -> void:
 
 ## Plays a red flash effect when health is damaged
 func _health_hit_flash() -> void:
-	ship_graphics.material.set_shader_parameter('color', Globals.red)
+	ship_graphics.material.set_shader_parameter('flash_color', Globals.red)
 	
 	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
@@ -118,7 +118,7 @@ func _health_hit_flash() -> void:
 
 ## Plays a blue flash effect when shields are damaged
 func _shields_hit_flash() -> void:
-	ship_graphics.material.set_shader_parameter('color', Globals.blue)
+	ship_graphics.material.set_shader_parameter('flash_color', Globals.blue)
 	
 	var tween = get_tree().create_tween()
 	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=16 format=3 uid="uid://c8kw8h1mjtmml"]
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=17 format=3 uid="uid://c8kw8h1mjtmml"]
 
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_p6u8t"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_kfsut"]
@@ -9,28 +9,37 @@
 [ext_resource type="PackedScene" uid="uid://4ec761o38waj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/cannon_drone_ship_graphics.tscn" id="7_fpnel"]
 [ext_resource type="Texture2D" uid="uid://cetem4ymcj6um" path="res://Assets/Textures/Enemies/CannonDrone/CannonDrone_targeting_image.png" id="8_nuult"]
 
-[sub_resource type="Resource" id="Resource_ondvb"]
-script = ExtResource("2_pxhb4")
-base_action = ExtResource("3_8e1or")
-weight = 1.0
-min_amount = 4
-max_amount = 8
-force_include = false
-metadata/_custom_type_script = "uid://cn6juw5whtujy"
-
 [sub_resource type="Resource" id="Resource_637ed"]
 script = ExtResource("2_pxhb4")
 base_action = ExtResource("3_8e1or")
 weight = 0.0
-min_amount = 16
-max_amount = 16
+min_amount = 12
+max_amount = 12
 force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pxhb4"]
+script = ExtResource("2_pxhb4")
+base_action = ExtResource("3_8e1or")
+weight = 0.0
+min_amount = 10
+max_amount = 10
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_ondvb"]
+script = ExtResource("2_pxhb4")
+base_action = ExtResource("3_8e1or")
+weight = 1.0
+min_amount = 1
+max_amount = 2
+force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_dlmmu"]
 script = ExtResource("2_pxhb4")
 base_action = ExtResource("4_asiqi")
-weight = 0.5
+weight = 1.0
 min_amount = 0
 max_amount = 0
 force_include = true
@@ -38,7 +47,7 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_lpi6w"]
 script = ExtResource("1_p6u8t")
-actions_possible = Array[ExtResource("2_pxhb4")]([SubResource("Resource_ondvb"), SubResource("Resource_637ed"), SubResource("Resource_dlmmu")])
+actions_possible = Array[ExtResource("2_pxhb4")]([SubResource("Resource_637ed"), SubResource("Resource_pxhb4"), SubResource("Resource_ondvb"), SubResource("Resource_dlmmu")])
 metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [sub_resource type="Resource" id="Resource_dpf5f"]
@@ -47,13 +56,13 @@ base_action = ExtResource("4_asiqi")
 weight = 1.0
 min_amount = 0
 max_amount = 0
-force_include = true
+force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_ildgx"]
 script = ExtResource("2_pxhb4")
 base_action = ExtResource("5_c211h")
-weight = 1.0
+weight = 2.0
 min_amount = 1
 max_amount = 6
 force_include = false
@@ -68,13 +77,13 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 script = ExtResource("2_kfsut")
 enemy_name = "Cannon Drone"
 description = ""
+max_health = 32
+starting_shields = 0
+action_options = Array[ExtResource("1_p6u8t")]([SubResource("Resource_lpi6w"), SubResource("Resource_l8i2t")])
 ship_graphics_scene = ExtResource("7_fpnel")
 graphics_scene_offset = Vector2(0, 0)
 dialogue_offset = Vector2(16, -8)
 targeting_computer_image = ExtResource("8_nuult")
 health_bar_position = Vector2(-23, -14)
 dice_queue_position = Vector2(24, 8)
-max_health = 16
-starting_shields = 0
-action_options = Array[ExtResource("1_p6u8t")]([SubResource("Resource_lpi6w"), SubResource("Resource_l8i2t")])
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"

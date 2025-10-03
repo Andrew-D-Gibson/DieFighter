@@ -1,13 +1,18 @@
 [gd_scene load_steps=5 format=3 uid="uid://bdj8yu1245tuj"]
 
-[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_2gs0y"]
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_vmu68"]
 [ext_resource type="Texture2D" uid="uid://r7jj0htf313h" path="res://Assets/Textures/Enemies/CivilianTransport/civilian_transport.png" id="2_vmu68"]
 [ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="3_d66sl"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cglea"]
-shader = ExtResource("1_2gs0y")
-shader_parameter/color = Color(1, 1, 1, 1)
+shader = ExtResource("1_vmu68")
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(1, 1, 1, 1)
+shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
+shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
+shader_parameter/cloak_tolerance = 0.1
 
 [node name="CivilianTransportShipGraphics" type="Sprite2D"]
 material = SubResource("ShaderMaterial_cglea")

@@ -10,8 +10,8 @@
 
 [sub_resource type="Resource" id="Resource_vrd8y"]
 script = ExtResource("6_57squ")
-min_money = 12
-max_money = 16
+min_money = 0
+max_money = 0
 num_of_rewards = 3
 dice_probability = 0.0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"

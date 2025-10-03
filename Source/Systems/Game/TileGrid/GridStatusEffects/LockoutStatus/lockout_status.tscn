@@ -37,7 +37,8 @@ script = ExtResource("7_v32d7")
 title_label_text = "Grid Lockout"
 top_label_text = ""
 texture = ExtResource("4_p13k7")
-bottom_label_text = "[color=orange]Locks[/color] a grid location"
+bottom_label_text = "[color=yellow]Any die[/color] -> Remove [color=orange]lock[/color] from grid location"
+side_label_text = ""
 metadata/_custom_type_script = "uid://c6ldtha2c8w0x"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e3rgw"]

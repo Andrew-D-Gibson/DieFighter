@@ -154,6 +154,9 @@ func _update_ui() -> void:
 		for i: int in range(6):
 			$Intents.get_child(i).texture = null
 			$Intents.get_child(i).get_child(0).text = ''
+			
+			# De-highlight the die sprites
+			die_sprites[i].frame = i
 		
 		$TargetImageFill.z_index = 1
 		

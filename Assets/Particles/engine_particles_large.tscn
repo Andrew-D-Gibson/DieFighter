@@ -1,19 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://c8hhukq5cxc44"]
+[gd_scene load_steps=5 format=3 uid="uid://c8hhukq5cxc44"]
 
 [ext_resource type="Texture2D" uid="uid://n1r0uxtjrxd6" path="res://Assets/Textures/Enemies/ParticleTextures/engine_ring_large.png" id="1_b657r"]
 
-[sub_resource type="Gradient" id="Gradient_g5akg"]
-offsets = PackedFloat32Array(0, 0.619335)
+[sub_resource type="Gradient" id="Gradient_0e347"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="LargeEngineParticles" type="CPUParticles2D"]
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_jpks5"]
+gradient = SubResource("Gradient_0e347")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4tb8l"]
+lifetime_randomness = 0.2
+particle_flag_disable_z = true
+direction = Vector3(0, -1, 0)
+spread = 30.0
+initial_velocity_min = 14.0
+initial_velocity_max = 14.0
+gravity = Vector3(0, 0, 0)
+color_ramp = SubResource("GradientTexture1D_jpks5")
+
+[node name="LargeEngineParticles" type="GPUParticles2D"]
 z_index = -10
 amount = 4
 texture = ExtResource("1_b657r")
 preprocess = 3.0
-direction = Vector2(0, -1)
-spread = 30.0
-gravity = Vector2(0, -10)
-initial_velocity_min = 8.0
-initial_velocity_max = 8.0
-color_ramp = SubResource("Gradient_g5akg")
+process_material = SubResource("ParticleProcessMaterial_4tb8l")

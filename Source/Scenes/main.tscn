@@ -194,7 +194,6 @@ mouse_filter = 2
 color = Color(0, 0, 0.0941176, 1)
 
 [node name="FPSCounter" type="RichTextLabel" parent="."]
-visible = false
 offset_left = 278.0
 offset_top = 2.0
 offset_right = 317.0
@@ -274,13 +273,13 @@ position = Vector2(156, 37)
 
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")
-sector_size = 8
+sector_size = 16
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
-starting_combat_scenario = ExtResource("21_oai2y")
+starting_combat_scenario = ExtResource("24_7iud4")
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

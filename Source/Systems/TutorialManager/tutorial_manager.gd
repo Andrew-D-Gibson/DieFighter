@@ -29,6 +29,7 @@ func _ready() -> void:
 	Events.start_scenario.connect(
 		func() -> void:
 			create_tutorial_popup(
+				#"这是一个测试",
 				"This is a test tutorial popup!", 
 				Vector2(160, 45)
 			)

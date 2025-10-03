@@ -49,6 +49,10 @@ func _handle_attack(_ship: Enemy, ship_faction: ScenarioManager.Faction) -> void
 ## Checks if a faction has been completely wiped out,
 ## then emits the corresponding signal if necessary
 func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
+	# Just as an edge case, if the player destroys the shop in a single turn
+	# it won't close the normal way, so we close it here
+	Events.close_shop.emit()
+	
 	var other_faction_ships: Array[Enemy] = Globals.enemy_manager.get_faction_ships(faction)
 	if ship in other_faction_ships:
 		other_faction_ships.erase(ship)

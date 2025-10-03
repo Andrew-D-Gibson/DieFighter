@@ -26,7 +26,11 @@ func _ready() -> void:
 	add_child(grace_timer)
 	
 	Events.set_money.connect(_on_money_changed)
-	Events.combat_finished.connect(_fade_in)
+	Events.spawn_reward.connect(
+		func(_pos: Vector2, reward_resource: RewardResource) -> void:
+			if reward_resource.max_money > 0:
+				_fade_in()
+	)
 	
 	hide()
 	

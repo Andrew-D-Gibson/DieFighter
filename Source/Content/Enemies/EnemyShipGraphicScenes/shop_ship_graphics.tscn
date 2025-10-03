@@ -1,13 +1,18 @@
 [gd_scene load_steps=5 format=3 uid="uid://g1dgcnfkwlci"]
 
-[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_ascx5"]
 [ext_resource type="Texture2D" uid="uid://5qg7rrmf3k5w" path="res://Assets/Textures/Enemies/Shop/shop.png" id="1_coraq"]
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_o6bwc"]
 [ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_ascx5"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_fmcg0"]
-shader = ExtResource("1_ascx5")
-shader_parameter/color = Color(1, 1, 1, 1)
+shader = ExtResource("1_o6bwc")
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(1, 1, 1, 1)
+shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
+shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
+shader_parameter/cloak_tolerance = 0.1
 
 [node name="ShopShipGraphics" type="Sprite2D"]
 material = SubResource("ShaderMaterial_fmcg0")

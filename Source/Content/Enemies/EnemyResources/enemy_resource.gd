@@ -5,6 +5,12 @@ extends Resource
 @export var enemy_name: String
 @export_multiline var description: String
 
+@export_category('Behavior')
+@export var max_health: int
+@export var starting_shields: int
+@export var action_options: Array[EnemyTurnActionList]
+
+
 @export_category('Graphics')
 @export var ship_graphics_scene: PackedScene
 @export var graphics_scene_offset: Vector2 = Vector2(0,0)
@@ -12,8 +18,3 @@ extends Resource
 @export var targeting_computer_image: Texture2D
 @export var health_bar_position: Vector2
 @export var dice_queue_position: Vector2
-
-@export_category('Behavior')
-@export var max_health: int
-@export var starting_shields: int
-@export var action_options: Array[EnemyTurnActionList]
