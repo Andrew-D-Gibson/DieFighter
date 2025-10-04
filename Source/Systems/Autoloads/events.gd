@@ -13,6 +13,7 @@ signal info_graphic_closed()
 signal tile_clicked_for_info()
 signal close_info()
 signal toggle_pause_menu()
+signal highlight_dice_area()
 
 
 # Misc.

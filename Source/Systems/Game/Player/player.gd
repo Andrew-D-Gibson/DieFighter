@@ -158,7 +158,9 @@ func reroll_dice() -> void:
 			die.reroll_with_tween()
 			Events.play_sound.emit("dice_reroll_blip")		
 			await get_tree().create_timer(0.2).timeout
-
+	
+	Events.highlight_dice_area.emit()
+	
 
 func _start_player_turn() -> void:
 	# Wait for any dice to get back to the dice queue before rerolling them
@@ -192,6 +194,7 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 		Events.play_sound.emit("dice_reroll_blip")
 		
 	_update_dice_queue_locations()
+	Events.highlight_dice_area.emit()
 	
 	
 func _load_scenario(scenario: ScenarioResource) -> void:

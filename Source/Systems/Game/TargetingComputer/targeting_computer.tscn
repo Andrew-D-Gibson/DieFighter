@@ -429,6 +429,14 @@ z_index = 10
 material = SubResource("ShaderMaterial_up1nx")
 texture = ExtResource("13_du4uj")
 
+[node name="Control" type="Control" parent="RevealOverlay"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -32.0
+offset_top = -31.0
+offset_right = 32.0
+offset_bottom = 33.0
+
 [connection signal="input_event" from="LeftButton" to="." method="_on_left_button_input_event"]
 [connection signal="input_event" from="RightButton" to="." method="_on_right_button_input_event"]
 [connection signal="input_event" from="Intents/1/Clickable" to="Intents/1/Clickable" method="_on_input_event"]

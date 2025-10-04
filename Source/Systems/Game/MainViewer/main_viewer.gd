@@ -95,7 +95,7 @@ func _startup() -> void:
 func _reveal_tween() -> void:
 	# 76.5, 44
 	var tween: Tween = get_tree().create_tween()
-	var reveal_time: float = 6
+	var reveal_time: float = 4
 	var max_progress: float = 60
 	
 	tween.tween_property(
@@ -104,3 +104,6 @@ func _reveal_tween() -> void:
 		max_progress, 
 		reveal_time
 	).from(0)
+	
+	await tween.finished
+	%RevealOverlay.hide()

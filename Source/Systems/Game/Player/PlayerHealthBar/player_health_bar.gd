@@ -60,7 +60,7 @@ func _show_shield_info() -> void:
 
 func _reveal_tween() -> void:
 	var tween: Tween = get_tree().create_tween()
-	var reveal_time: float = 4
+	var reveal_time: float = 2
 	var max_progress: float = 22
 	
 	tween.tween_property(
@@ -69,3 +69,6 @@ func _reveal_tween() -> void:
 		max_progress, 
 		reveal_time
 	).from(0)
+	
+	await tween.finished
+	%RevealOverlay.hide()

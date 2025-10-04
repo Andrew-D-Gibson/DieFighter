@@ -298,6 +298,14 @@ material = SubResource("ShaderMaterial_4s628")
 position = Vector2(-0.5, 0)
 texture = ExtResource("23_xbbhg")
 
+[node name="Control" type="Control" parent="RevealOverlay"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -73.0
+offset_top = -43.0
+offset_right = 73.0
+offset_bottom = 43.0
+
 [connection signal="clicked" from="TabButtons/SystemsButton/Clickable" to="." method="_show_systems"]
 [connection signal="input_event" from="TabButtons/SystemsButton/Clickable" to="TabButtons/SystemsButton/Clickable" method="_on_input_event"]
 [connection signal="is_hovered" from="TabButtons/SystemsButton/Clickable" to="." method="_systems_hovered"]

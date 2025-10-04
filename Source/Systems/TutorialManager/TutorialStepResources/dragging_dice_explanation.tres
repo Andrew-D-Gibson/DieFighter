@@ -5,8 +5,8 @@
 
 [resource]
 script = ExtResource("2_tfpdm")
-tutorial_text = "Dice represent unstable power.
-Drag dice onto subsystems to activate. Proceed."
+tutorial_text = "Dice are unstable power.
+Drag dice onto subsystems to activate:"
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_ylcsr")]([])

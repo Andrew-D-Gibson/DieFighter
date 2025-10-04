@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_wcvbr")
-tutorial_text = "Use all dice to end your turn."
+tutorial_text = "Use all dice to end your turn:"
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_ojprg")]([])
