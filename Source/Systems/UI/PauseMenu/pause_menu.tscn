@@ -24,7 +24,7 @@ animations = [{
 
 [node name="PauseMenu" type="Node2D"]
 process_mode = 3
-z_index = 15
+z_index = 25
 script = ExtResource("1_v5isj")
 
 [node name="Background" type="Sprite2D" parent="."]

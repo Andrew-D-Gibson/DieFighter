@@ -45,6 +45,7 @@ func _ready() -> void:
 	if clickable:
 		clickable.clicked.connect(func() -> void: 
 			Events.show_info.emit(_get_tile_info())
+			Events.tile_clicked_for_info.emit()
 		)
 	if draggable:
 		draggable.reached_new_home.connect(func() -> void:

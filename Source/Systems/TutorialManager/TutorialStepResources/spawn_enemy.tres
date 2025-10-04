@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://bw31id713nu18"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_fgpwc"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_r4b43"]
+
+[resource]
+script = ExtResource("2_r4b43")
+tutorial_text = "[shake rate=15.0 level=2 connected=1][color=red]Warning:[/color][/shake] Enemy signature detected!"
+text_position = Vector2(160, 90)
+forced_dice = Array[int]([])
+forced_enemy_actions = Array[ExtResource("1_fgpwc")]([])
+open_on_signal = 0
+close_on_signal = 2
+tutorial_function = 4
+time_to_auto_close = 2.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

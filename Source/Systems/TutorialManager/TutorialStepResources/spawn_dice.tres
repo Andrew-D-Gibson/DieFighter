@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://cooy3vvww8cn"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_wgpyx"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_jooo7"]
+
+[resource]
+script = ExtResource("2_jooo7")
+tutorial_text = "Unlocking probability cuboids..."
+text_position = Vector2(220, 40)
+forced_dice = Array[int]([])
+forced_enemy_actions = Array[ExtResource("1_wgpyx")]([])
+open_on_signal = 4
+close_on_signal = 2
+tutorial_function = 5
+time_to_auto_close = 4.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

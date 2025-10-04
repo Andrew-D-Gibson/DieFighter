@@ -50,9 +50,10 @@ var _floating_start_pos: Vector2
 
 
 func _ready() -> void:
-	emit_reached_new_home = false
 	if not home_position:
 		home_position = global_position
+		
+	emit_reached_new_home = false
 	
 	# Connect mouse enter/exit signals for hover scaling
 	mouse_entered.connect(_on_mouse_entered)
@@ -89,7 +90,7 @@ func _process(delta: float) -> void:
 	
 	if emit_reached_new_home \
 	and state == DragState.DEFAULT \
-	and get_parent().global_position.distance_to(home_position) < 0.75:
+	and get_parent().global_position.distance_to(home_position) < 2:
 		if not floating_enabled:
 			get_parent().global_position = home_position
 		emit_reached_new_home = false

@@ -26,7 +26,7 @@ func _on_close_button_pressed() -> void:
 
 
 func _on_item_hover() -> void:
-	Events.play_sound.emit('tile_dropped')
+	Events.play_sound.emit('hover_thump')
 
 
 func _setup_graphics_options_UI() -> void:

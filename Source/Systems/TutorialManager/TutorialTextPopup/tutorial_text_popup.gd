@@ -3,17 +3,32 @@ extends Node2D
 
 @export var fade_in_duration: float = 0.3
 @export var fade_out_duration: float = 0.2
-@export var auto_close_delay: float = 0.0 # 0 means don't auto-close
 
-@export var character_reveal_time: float = 0.08
+@export var character_reveal_time: float = 0.05
+@export var max_reveal_time: float = 5
+
+var display_close_button: bool = true
+var time_to_wait_after_text_shown: float = 0
 
 var character_reveal_tween: Tween
 var tween: Tween
 
-func setup(text: String, global_pos: Vector2) -> void:
-	print('popup setup function called')
-	global_position = global_pos
+signal all_text_displayed()
+signal popup_closed()
+
+
+func setup(text: String, global_pos: Vector2, close_button: bool = true, auto_close_time: float = 0) -> void:
+	Events.close_tutorial_text_popup.connect(close)
 	
+	global_position = global_pos
+	display_close_button = close_button
+	time_to_wait_after_text_shown = auto_close_time
+	
+	if close_button:
+		%CloseButton.show()
+	else:
+		%CloseButton.hide()
+
 	await _fade_in()
 	
 	## Bob the computer head
@@ -23,27 +38,29 @@ func setup(text: String, global_pos: Vector2) -> void:
 	#_bob_tween.tween_property(%ComputerTalking, 'position', position - Vector2(0, 2), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	#_bob_tween.set_loops()
 	
-	%RichTextLabel.text = text
+	%RichTextLabel.text = Utils.format_text(text)
 	%RichTextLabel.visible_characters = 0
+	
+	var raw_text: String = Utils.strip_bbcode_tags(text)
+	
+	var time_to_reveal: float = min(
+		character_reveal_time * len(raw_text),
+		max_reveal_time
+	)
 	
 	character_reveal_tween = get_tree().create_tween()
 	character_reveal_tween.set_parallel(false)
 	character_reveal_tween.tween_method(
 		_show_characters, 
 		0, 
-		len(text), 
-		character_reveal_time * len(text)
+		len(raw_text), 
+		time_to_reveal
 	).set_trans(Tween.TRANS_LINEAR)
-	character_reveal_tween.tween_callback(stop_talking_animation)
-	
-	# Auto-close if delay is set
-	if auto_close_delay > 0:
-		await get_tree().create_timer(auto_close_delay).timeout
-		close()
+	character_reveal_tween.tween_callback(when_text_shown)
 		
 		
 func _show_characters(num: int) -> void:
-	if %RichTextLabel.visible_characters != num and randi_range(1,5) == 1:
+	if %RichTextLabel.visible_characters != num and num%2 == 0:
 		Events.play_sound.emit("text_blip")
 		
 	%RichTextLabel.visible_characters = num
@@ -68,7 +85,28 @@ func close() -> void:
 	
 	await tween.finished
 	queue_free()
+	
+	popup_closed.emit()
+	
 
-
-func stop_talking_animation() -> void:
+func when_text_shown() -> void:
 	%ComputerTalking.stop()
+	all_text_displayed.emit()
+	if display_close_button:
+		%CloseButton.show()
+		
+		# Auto-close if delay is set
+	if time_to_wait_after_text_shown > 0:
+		await get_tree().create_timer(time_to_wait_after_text_shown).timeout
+		close()
+	
+	
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and \
+		event.button_index == MOUSE_BUTTON_LEFT and \
+		event.pressed and \
+		character_reveal_tween:
+			character_reveal_tween.kill()
+			%RichTextLabel.visible_characters = -1
+			when_text_shown()
+			

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://bxs2t7bs36rih"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_ojprg"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_wcvbr"]
+
+[resource]
+script = ExtResource("2_wcvbr")
+tutorial_text = "Use all dice to end your turn."
+text_position = Vector2(220, 40)
+forced_dice = Array[int]([])
+forced_enemy_actions = Array[ExtResource("1_ojprg")]([])
+open_on_signal = 0
+close_on_signal = 6
+tutorial_function = 0
+time_to_auto_close = 0.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

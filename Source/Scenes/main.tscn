@@ -1,4 +1,4 @@
-[gd_scene load_steps=47 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=59 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -37,8 +37,20 @@
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres" id="26_aaucc"]
 [ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="28_lejlh"]
+[ext_resource type="Resource" uid="uid://b7lui2g85snby" path="res://Source/Systems/TutorialManager/TutorialStepResources/intro_1.tres" id="29_c0hk8"]
+[ext_resource type="Resource" uid="uid://dkfjnp0eh6jb2" path="res://Source/Systems/TutorialManager/TutorialStepResources/intro_2.tres" id="30_k3fls"]
+[ext_resource type="Resource" uid="uid://cysqmdrkphgi8" path="res://Source/Systems/TutorialManager/TutorialStepResources/health_bar_reveal.tres" id="31_s8v7r"]
+[ext_resource type="Resource" uid="uid://deq8x1n2udg5r" path="res://Source/Systems/TutorialManager/TutorialStepResources/health_bar_explanation.tres" id="32_k3fls"]
+[ext_resource type="Resource" uid="uid://bw31id713nu18" path="res://Source/Systems/TutorialManager/TutorialStepResources/spawn_enemy.tres" id="33_s8v7r"]
+[ext_resource type="Resource" uid="uid://6qryj83dsu" path="res://Source/Systems/TutorialManager/TutorialStepResources/main_viewer_reveal.tres" id="34_s8v7r"]
+[ext_resource type="Resource" uid="uid://cytyumo1yx88e" path="res://Source/Systems/TutorialManager/TutorialStepResources/main_viewer_explanation.tres" id="35_7yw3t"]
 [ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
+[ext_resource type="Resource" uid="uid://cooy3vvww8cn" path="res://Source/Systems/TutorialManager/TutorialStepResources/spawn_dice.tres" id="36_d6h8w"]
+[ext_resource type="Resource" uid="uid://oe3aethqnc7b" path="res://Source/Systems/TutorialManager/TutorialStepResources/dragging_dice_explanation.tres" id="37_0b58v"]
 [ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
+[ext_resource type="Resource" uid="uid://bxs2t7bs36rih" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_turn_explanation.tres" id="38_5rg43"]
+[ext_resource type="Resource" uid="uid://cujs3pocag3jh" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres" id="45_s8v7r"]
 
 [sub_resource type="Animation" id="Animation_ooshj"]
 length = 0.001
@@ -194,6 +206,7 @@ mouse_filter = 2
 color = Color(0, 0, 0.0941176, 1)
 
 [node name="FPSCounter" type="RichTextLabel" parent="."]
+visible = false
 offset_left = 278.0
 offset_top = 2.0
 offset_right = 317.0
@@ -267,9 +280,8 @@ position = Vector2(122, 43)
 [node name="ScenarioManager" parent="Systems" instance=ExtResource("19_3g417")]
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
-visible = false
-z_index = 10
 position = Vector2(156, 37)
+tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtResource("30_k3fls"), ExtResource("31_s8v7r"), ExtResource("32_k3fls"), ExtResource("33_s8v7r"), ExtResource("34_s8v7r"), ExtResource("35_7yw3t"), ExtResource("36_d6h8w"), ExtResource("37_0b58v"), ExtResource("38_5rg43")])
 
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")
@@ -279,7 +291,7 @@ shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
-starting_combat_scenario = ExtResource("24_7iud4")
+starting_scenario = ExtResource("45_s8v7r")
 
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false

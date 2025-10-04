@@ -42,7 +42,7 @@ func _on_mouse_entered() -> void:
 	if disabled:
 		return
 		
-	Events.play_sound.emit('tile_dropped')
+	Events.play_sound.emit('hover_thump')
 	
 	var amp: float
 	if button_size == ButtonSize.LARGE:
@@ -75,4 +75,5 @@ func _on_button_down() -> void:
 
 func _on_button_up() -> void:
 	if Time.get_ticks_msec() < _button_down_time + (button_click_window_sec * 1000):
+		Events.play_sound.emit('tile_dropped')
 		pressed_within_window.emit()

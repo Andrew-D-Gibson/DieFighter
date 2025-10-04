@@ -13,7 +13,7 @@ extends Node2D
 @export var question_scenarios: Array[ScenarioResource]
 @export var boss_combat_scenarios: Array[ScenarioResource]
 
-@export var starting_combat_scenario: ScenarioResource
+@export var starting_scenario: ScenarioResource
 
 enum GameState {
 	IN_COMBAT,
@@ -65,20 +65,17 @@ func _ready() -> void:
 	)
 	
 	
-func start_game() -> void:
-	Events.start_scenario.emit()
-	
-	
 func trigger_startup_sequence() -> void:
-	Events.health_bar_startup.emit()
-	
-	await get_tree().create_timer(1).timeout
-	Events.main_viewer_startup.emit()
-	
-	await get_tree().create_timer(1).timeout
-	Events.targeting_computer_startup.emit()
-	
-	start_game()
+	pass
+	#Events.health_bar_startup.emit()
+	#
+	#await get_tree().create_timer(1).timeout
+	#Events.main_viewer_startup.emit()
+	#
+	#await get_tree().create_timer(1).timeout
+	#Events.targeting_computer_startup.emit()
+	#
+	#start_game()
 	
 	
 func _randomize_sector_scenarios() -> void:
@@ -133,7 +130,7 @@ func _randomize_sector_scenarios() -> void:
 	#current_game_save.sector_scenarios.insert(current_game_save.current_scenario_index, empty_scenario)
 	current_game_save.sector_scenarios.insert(
 		current_game_save.current_scenario_index, 
-		starting_combat_scenario
+		starting_scenario
 	)
 	
 	# Seed all the scenarios

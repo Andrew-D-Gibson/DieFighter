@@ -12,6 +12,11 @@ extends Resource
 @export var intent_amount: String
 
 
+var activating_die_number: int:
+	set(new_num):
+		activating_die_number = clampi(new_num, 1, 6)
+
+
 func show_info() -> void:
 	# Don't show info if this is a blank action
 	if name == '':
@@ -19,7 +24,15 @@ func show_info() -> void:
 		
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = name
-	info.bottom_label_text = description.replace('(amount)', intent_amount)
+	
+	if activating_die_number:
+		info.bottom_label_text = "[color=yellow]Enemy uses (die_" + \
+									str(activating_die_number) + \
+									") -> " + \
+									description.replace('(amount)', intent_amount)
+	else:
+		info.bottom_label_text = description.replace('(amount)', intent_amount)
+		
 	info.texture = info_texture
 	
 	Events.show_info.emit(info)

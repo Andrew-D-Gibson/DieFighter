@@ -1,13 +1,18 @@
 [gd_scene load_steps=5 format=3 uid="uid://dueij0vemaxof"]
 
-[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_86hdk"]
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_gpvwa"]
 [ext_resource type="Texture2D" uid="uid://dmby000i3wqa0" path="res://Assets/Textures/Enemies/Defender/Defender.png" id="1_mit2i"]
 [ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_86hdk"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cglea"]
-shader = ExtResource("1_86hdk")
-shader_parameter/color = Color(1, 1, 1, 1)
+shader = ExtResource("1_gpvwa")
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(1, 1, 1, 1)
+shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
+shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
+shader_parameter/cloak_tolerance = 0.1
 
 [node name="DefenderShipGraphics" type="Sprite2D"]
 material = SubResource("ShaderMaterial_cglea")

@@ -30,7 +30,7 @@ func _ready() -> void:
 		if len(scenario.starting_enemies) > 0:
 			spawn_enemies(scenario.starting_enemies)
 	)
-	Events.start_scenario.connect(_start_enemy_fly_in)
+	Events.start_scenario.connect(start_enemy_fly_in)
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
@@ -47,7 +47,7 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 		add_child(enemy)
 
 
-func _start_enemy_fly_in() -> void:
+func start_enemy_fly_in() -> void:
 	for enemy: Enemy in enemies:
 		var fly_in_tween: Tween = get_tree().create_tween()
 		fly_in_tween.tween_property(

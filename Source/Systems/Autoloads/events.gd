@@ -9,6 +9,8 @@ signal load_scenario(scenario: ScenarioResource)
 
 # UI Events
 signal show_info(info: InfoResource)
+signal info_graphic_closed()
+signal tile_clicked_for_info()
 signal close_info()
 signal toggle_pause_menu()
 
@@ -38,14 +40,9 @@ signal player_shields_hit()
 signal engine_charge_changed()
 
 signal error_text_popup(text: String, global_pos: Vector2)
-signal show_tutorial_text(text: String, global_pos: Vector2)
+signal tutorial_text_popup(text: String, global_pos: Vector2)
+signal close_tutorial_text_popup()
 
-# Tutorial Events
-signal tutorial_highlight_elements(elements: Array[String])
-signal tutorial_disable_interactions(interactions: Array[String])
-signal tutorial_step_completed()
-signal tutorial_completed()
-signal tutorial_skipped()
 signal die_placed_on_tile(die: Dice, tile: Tile)
 
 # Game Sequencing Events

@@ -1,14 +1,19 @@
 [gd_scene load_steps=5 format=3 uid="uid://n023djl8w8fy"]
 
 [ext_resource type="Texture2D" uid="uid://c4k1vin370av2" path="res://Assets/Textures/Enemies/SectorBoss/sector_boss.png" id="1_5hy1v"]
-[ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_oby0r"]
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_oby0r"]
 [ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="2_oby0r"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3pfgn"]
 resource_local_to_scene = true
 shader = ExtResource("1_oby0r")
-shader_parameter/color = Color(1, 1, 1, 1)
+shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
+shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
+shader_parameter/cloak_tolerance = 0.1
 
 [node name="SectorBossShipGraphics" type="Sprite2D"]
 material = SubResource("ShaderMaterial_3pfgn")

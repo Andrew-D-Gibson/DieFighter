@@ -228,7 +228,12 @@ func generate_turn_actions() -> void:
 				break
 				
 	turn_actions.shuffle()
-
+	
+	# Make sure every action knows what dice activates it,
+	# so it can display the correct hint text when clicked
+	for i: int in range(6):
+		turn_actions[i].activating_die_number = i+1
+	
 
 ## Uses the value of the first die in the queue to perform the 
 ## pre-chosen action

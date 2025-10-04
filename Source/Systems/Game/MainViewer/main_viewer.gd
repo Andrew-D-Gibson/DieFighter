@@ -87,6 +87,8 @@ func _check_for_engine_charge() -> void:
 		
 		
 func _startup() -> void:
+	_check_for_engine_charge()
+	_show_systems()
 	_reveal_tween()
 	
 	
