@@ -17,7 +17,12 @@ func _ready() -> void:
 	# Force the baking on the curve where we spawn enemies
 	spawning_path.curve.get_baked_points()
 	
-	Events.player_turn_over.connect(_run_enemy_turn)
+	Events.player_turn_over.connect(func() -> void:
+		# Don't automatically run the turn if the tutorial is handling it
+		if Globals.tutorial_manager.tutorial_will_trigger_enemy_turns:
+			return
+		run_enemy_turn()
+	)
 	Events.enemy_left.connect(func(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		if ship in enemies:
 			enemies.erase(ship)
@@ -49,6 +54,9 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 
 func start_enemy_fly_in() -> void:
 	for enemy: Enemy in enemies:
+		if len(Enemy.forced_actions) > 0:
+			enemy.generate_turn_actions()
+			
 		var fly_in_tween: Tween = get_tree().create_tween()
 		fly_in_tween.tween_property(
 			enemy,
@@ -104,7 +112,7 @@ func _remove_dead_enemies() -> void:
 			enemies.remove_at(i)
 			
 			
-func _run_enemy_turn() -> void:
+func run_enemy_turn() -> void:
 	# Create a copy of the enemies array to iterate over
 	# This prevents issues if enemies are removed during iteration
 	var current_enemies: Array[Enemy] = enemies.duplicate()

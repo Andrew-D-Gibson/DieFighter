@@ -38,7 +38,7 @@ func setup(text: String, global_pos: Vector2, close_button: bool = true, auto_cl
 	#_bob_tween.tween_property(%ComputerTalking, 'position', position - Vector2(0, 2), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	#_bob_tween.set_loops()
 	
-	%RichTextLabel.text = Utils.format_text(text)
+	%RichTextLabel.text = Utils.format_text(text, 9)
 	%RichTextLabel.visible_characters = 0
 	
 	var raw_text: String = Utils.strip_bbcode_tags(text)
@@ -101,12 +101,12 @@ func when_text_shown() -> void:
 		close()
 	
 	
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and \
-		event.button_index == MOUSE_BUTTON_LEFT and \
-		event.pressed and \
-		character_reveal_tween:
-			character_reveal_tween.kill()
-			%RichTextLabel.visible_characters = -1
-			when_text_shown()
+#func _unhandled_input(event: InputEvent) -> void:
+	#if event is InputEventMouseButton and \
+		#event.button_index == MOUSE_BUTTON_LEFT and \
+		#event.pressed and \
+		#character_reveal_tween:
+			#character_reveal_tween.kill()
+			#%RichTextLabel.visible_characters = -1
+			#when_text_shown()
 			

@@ -4,14 +4,15 @@ extends Node2D
 @export var time_to_wait_before_tutorial: float = 3
 @export var tutorial_steps: Array[TutorialStep] = []
 @export var auto_start: bool = true
-@export var can_skip: bool = true
+@export var skip_to_step: int = 0
 
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
 var current_step_index: int = -1
 var current_popup: TutorialTextPopup
 var is_active: bool = false
-var is_paused: bool = false
+
+var tutorial_will_trigger_enemy_turns: bool = false
 
 
 var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
@@ -19,14 +20,37 @@ var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.TRIGGER_ENEMY_SPAWN: _spawn_enemy,
 	TutorialStep.TutorialFunctions.REVEAL_MAIN_VIEWER: _reveal_main_viewer,
 	TutorialStep.TutorialFunctions.SPAWN_DICE: _spawn_dice,
+	TutorialStep.TutorialFunctions.ALLOW_DICE_DRAGGING: _allow_dice_dragging,
+	TutorialStep.TutorialFunctions.REVEAL_TARGETING_COMPUTER: _reveal_targeting_computer,
+	TutorialStep.TutorialFunctions.RUN_ENEMY_TURN: _run_enemy_turn,
+	TutorialStep.TutorialFunctions.ALLOW_NORMAL_COMBAT: _allow_normal_combat,
 }
 
 
 func _ready() -> void:
 	Globals.tutorial_manager = self
+	
+	await get_tree().create_timer(time_to_wait_before_tutorial).timeout
 
 	if auto_start and tutorial_steps.size() > 0:
-		await get_tree().create_timer(time_to_wait_before_tutorial).timeout
+		is_active = true
+		tutorial_will_trigger_enemy_turns = true
+		
+		for skipped_step: int in range(skip_to_step):
+			var step: TutorialStep = tutorial_steps.pop_front()
+			
+			# Apply forced dice if specified
+			if step.forced_dice.size() > 0:
+				Dice.forced_rolls = step.forced_dice
+				
+			# Apply forced enemy actions if specified
+			if step.forced_enemy_actions.size() > 0:
+				Enemy.forced_actions = step.forced_enemy_actions
+			
+			if step.tutorial_function in tutorial_functions:
+				print("Step: ", skipped_step, " -> ", step.tutorial_function)
+				tutorial_functions[step.tutorial_function].call()
+			
 		start_tutorial()
 
 
@@ -41,26 +65,30 @@ func create_tutorial_popup(text: String, global_pos: Vector2, close_button: bool
 	
 
 func start_tutorial() -> void:
-	for step: TutorialStep in tutorial_steps:
-		await play_step(step)
+	for i: int in range(len(tutorial_steps)):
+		var step: TutorialStep = tutorial_steps[i]
+		if i == 0:
+			await play_step(step, true)
+		else:
+			await play_step(step)
 		await current_popup.popup_closed
-
-
-func play_step(step: TutorialStep) -> void:
-	print('playing step: ')
-	print(step.tutorial_text)
 	
-	match step.open_on_signal:
-		TutorialStep.TutorialSignals.CLICKED_OUT_OF_INFO:
-			await Events.info_graphic_closed
+	is_active  = false
+
+
+func play_step(step: TutorialStep, force_open: bool = false) -> void:
+	if not force_open:
+		match step.open_on_signal:
+			TutorialStep.TutorialSignals.CLICKED_OUT_OF_INFO:
+				await Events.info_graphic_closed
 	
 	# Apply forced dice if specified
 	if step.forced_dice.size() > 0:
-		Dice.forced_rolls = step.forced_dice
+		Dice.forced_rolls.append_array(step.forced_dice)
 		
 	# Apply forced enemy actions if specified
 	if step.forced_enemy_actions.size() > 0:
-		Enemy.forced_actions = step.forced_enemy_actions
+		Enemy.forced_actions.append_array(step.forced_enemy_actions)
 	
 	# Handle highlighting
 	if step.highlight_texture:
@@ -85,6 +113,9 @@ func play_step(step: TutorialStep) -> void:
 			TutorialStep.TutorialSignals.PLAYER_TURN_OVER:
 				Events.player_turn_over.connect(current_popup.close)
 				
+			TutorialStep.TutorialSignals.ENEMY_DEFEATED:
+				Events.combat_finished.connect(current_popup.close)
+				
 				
 	# Handle calling tutorial functions
 	if step.tutorial_function in tutorial_functions:
@@ -107,4 +138,23 @@ func _reveal_main_viewer() -> void:
 	
 	
 func _spawn_dice() -> void:
-	Globals.player.spawn_dice()
+	await Globals.player.spawn_dice()
+	for die: Dice in Globals.player.dice_manager.queue:
+		die.draggable.dragging_allowed = false
+		
+
+func _allow_dice_dragging() -> void:
+	for die: Dice in Globals.player.dice_manager.queue:
+		die.draggable.dragging_allowed = true
+		
+		
+func _reveal_targeting_computer() -> void:
+	Events.targeting_computer_startup.emit()
+
+
+func _run_enemy_turn() -> void:
+	Globals.enemy_manager.run_enemy_turn()
+	
+	
+func _allow_normal_combat() -> void:
+	tutorial_will_trigger_enemy_turns = false

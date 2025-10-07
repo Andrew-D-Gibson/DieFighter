@@ -29,7 +29,10 @@ enum TutorialFunctions {
 	REVEAL_MAIN_VIEWER,
 	REVEAL_TARGETING_COMPUTER,
 	TRIGGER_ENEMY_SPAWN,
-	SPAWN_DICE
+	SPAWN_DICE,
+	ALLOW_DICE_DRAGGING,
+	RUN_ENEMY_TURN,
+	ALLOW_NORMAL_COMBAT,
 }
 @export var tutorial_function: TutorialFunctions 
 

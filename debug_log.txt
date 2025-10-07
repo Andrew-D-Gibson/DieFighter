@@ -1,48 +1,26 @@
-[00:31:57] Debug logger initialized
-[00:31:57] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
-[00:32:25] Starting combat
-[00:32:59] Starting combat
-[00:32:59] Player attacked ship: Enemy (Faction: PIRATE)
-[00:32:59] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:08] Player attacked ship: Enemy (Faction: PIRATE)
-[00:33:08] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:12] Player attacked ship: Enemy (Faction: PIRATE)
-[00:33:12] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:19] Player turn over
-[00:33:21] Enemy Venom Fighter performed action: Dice Cannon
-[00:33:22] Enemy Venom Fighter performed action: Dice Cannon
-[00:33:23] Enemy Venom Fighter performed action: Dice Cannon
-[00:33:23] Enemy turn over
-[00:33:36] Player attacked ship: Enemy (Faction: PIRATE)
-[00:33:36] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:38] Player attacked ship: Enemy (Faction: PIRATE)
-[00:33:38] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:43] Player attacked ship: Enemy (Faction: PIRATE)
-[00:33:43] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:43] Player turn over
-[00:33:45] Enemy Venom Fighter performed action: Shield Burst
-[00:33:46] Enemy Venom Fighter performed action: 
-[00:33:47] Enemy Venom Fighter performed action: Shield Burst
-[00:33:47] Enemy turn over
-[00:33:50] Player attacked ship: Enemy (Faction: PIRATE)
-[00:33:50] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:51] Player attacked ship: Enemy (Faction: PIRATE)
-[00:33:51] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:33:51] Enemy left: PIRATE
-[00:33:51] Scenario Event: PIRATES_DEFEATED
-[00:33:51] Combat finished
-[00:33:51] Scenario Event: COMBAT_ENDED
-[00:34:40] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres
-[00:34:40] Starting scenario
-[00:34:40] Starting combat
-[00:34:53] Player attacked ship: Enemy (Faction: PIRATE)
-[00:34:53] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:34:55] Player attacked ship: Enemy (Faction: PIRATE)
-[00:34:55] Scenario Event: PLAYER_ATTACKED_PIRATE
-[00:34:58] Player turn over
-[00:35:00] Game over
-[00:35:00] Enemy Cannon Drone performed action: Dice Cannon
-[00:35:01] Enemy Cannon Drone performed action: 
-[00:35:02] Enemy Cannon Drone performed action: 
-[00:35:02] Enemy turn over
-[00:37:40] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
+[01:40:34] Debug logger initialized
+[01:40:34] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
+[01:40:34] Starting combat
+[01:40:43] Starting combat
+[01:40:43] Player attacked ship: Enemy (Faction: PIRATE)
+[01:40:43] Scenario Event: PLAYER_ATTACKED_PIRATE
+[01:40:44] Player attacked ship: Enemy (Faction: PIRATE)
+[01:40:44] Scenario Event: PLAYER_ATTACKED_PIRATE
+[01:40:45] Player turn over
+[01:40:51] Enemy Venom Fighter performed action: 
+[01:40:52] Enemy Venom Fighter performed action: Dice Cannon
+[01:40:52] Enemy turn over
+[01:40:56] Player attacked ship: Enemy (Faction: PIRATE)
+[01:40:56] Scenario Event: PLAYER_ATTACKED_PIRATE
+[01:40:57] Player attacked ship: Enemy (Faction: PIRATE)
+[01:40:57] Scenario Event: PLAYER_ATTACKED_PIRATE
+[01:40:57] Player turn over
+[01:40:59] Enemy Venom Fighter performed action: 
+[01:41:00] Enemy Venom Fighter performed action: Dice Cannon
+[01:41:00] Enemy turn over
+[01:41:03] Player attacked ship: Enemy (Faction: PIRATE)
+[01:41:03] Scenario Event: PLAYER_ATTACKED_PIRATE
+[01:41:03] Enemy left: PIRATE
+[01:41:03] Scenario Event: PIRATES_DEFEATED
+[01:41:03] Combat finished
+[01:41:03] Scenario Event: COMBAT_ENDED

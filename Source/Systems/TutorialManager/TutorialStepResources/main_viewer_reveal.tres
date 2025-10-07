@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_ciigv")
-tutorial_text = "Combat subsystems initializing..."
+tutorial_text = "Initializing combat subsystems..."
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_fpe6h")]([])

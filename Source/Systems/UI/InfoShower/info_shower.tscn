@@ -12,7 +12,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_6im3a")
-dice_image_paths = Array[String](["res://Assets/Textures/Dice/Regular/dice_blank.png", "res://Assets/Textures/Dice/Regular/dice1.png", "res://Assets/Textures/Dice/Regular/dice2.png", "res://Assets/Textures/Dice/Regular/dice3.png", "res://Assets/Textures/Dice/Regular/dice4.png", "res://Assets/Textures/Dice/Regular/dice5.png", "res://Assets/Textures/Dice/Regular/dice6.png"])
 
 [node name="ScreenDim" type="ColorRect" parent="."]
 layout_mode = 1
@@ -123,5 +122,18 @@ text = "Hint text if needed!"
 fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="TweenableTextureDisplay" type="TextureRect" parent="."]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(288, 288)
+layout_mode = 2
+offset_left = 816.0
+offset_top = 324.0
+offset_right = 1104.0
+offset_bottom = 612.0
+mouse_filter = 2
+texture = ExtResource("3_4644n")
+stretch_mode = 5
 
 [connection signal="gui_input" from="ScreenDim" to="." method="_on_screen_dim_gui_input"]

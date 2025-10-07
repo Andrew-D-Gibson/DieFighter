@@ -1,0 +1,89 @@
+[gd_resource type="Resource" script_class="EnemyResource" load_steps=17 format=3 uid="uid://df6wvblwp3imy"]
+
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_lyngv"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="2_j2ctd"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="3_w8ajc"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="4_w452i"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="5_own6t"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="6_ypepa"]
+[ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="7_ijcrn"]
+[ext_resource type="Texture2D" uid="uid://deoaj6bxuv4i4" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="8_a5qkj"]
+
+[sub_resource type="Resource" id="Resource_81dy1"]
+script = ExtResource("2_j2ctd")
+base_action = ExtResource("3_w8ajc")
+weight = 1.0
+min_amount = 2
+max_amount = 4
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_sx08h"]
+script = ExtResource("2_j2ctd")
+base_action = ExtResource("3_w8ajc")
+weight = 0.0
+min_amount = 6
+max_amount = 6
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_i4wka"]
+script = ExtResource("2_j2ctd")
+base_action = ExtResource("4_w452i")
+weight = 1.0
+min_amount = 0
+max_amount = 0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_l7vxx"]
+script = ExtResource("1_lyngv")
+actions_possible = Array[ExtResource("2_j2ctd")]([SubResource("Resource_81dy1"), SubResource("Resource_sx08h"), SubResource("Resource_i4wka")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[sub_resource type="Resource" id="Resource_xwk11"]
+script = ExtResource("2_j2ctd")
+base_action = ExtResource("3_w8ajc")
+weight = 1.0
+min_amount = 1
+max_amount = 1
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_n68fv"]
+script = ExtResource("2_j2ctd")
+base_action = ExtResource("5_own6t")
+weight = 1.0
+min_amount = 2
+max_amount = 3
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_r4xab"]
+script = ExtResource("2_j2ctd")
+base_action = ExtResource("4_w452i")
+weight = 1.0
+min_amount = 0
+max_amount = 0
+force_include = false
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_ej0m4"]
+script = ExtResource("1_lyngv")
+actions_possible = Array[ExtResource("2_j2ctd")]([SubResource("Resource_xwk11"), SubResource("Resource_n68fv"), SubResource("Resource_r4xab")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("6_ypepa")
+enemy_name = "Venom Fighter"
+description = "Gonna mess you up bruh"
+max_health = 18
+starting_shields = 0
+action_options = Array[ExtResource("1_lyngv")]([SubResource("Resource_l7vxx"), SubResource("Resource_ej0m4")])
+ship_graphics_scene = ExtResource("7_ijcrn")
+graphics_scene_offset = Vector2(0, 0)
+dialogue_offset = Vector2(18, -8)
+targeting_computer_image = ExtResource("8_a5qkj")
+health_bar_position = Vector2(-20, -17)
+dice_queue_position = Vector2(24, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

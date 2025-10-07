@@ -66,16 +66,14 @@ func _ready() -> void:
 	
 	
 func trigger_startup_sequence() -> void:
-	pass
-	#Events.health_bar_startup.emit()
-	#
-	#await get_tree().create_timer(1).timeout
-	#Events.main_viewer_startup.emit()
-	#
-	#await get_tree().create_timer(1).timeout
-	#Events.targeting_computer_startup.emit()
-	#
-	#start_game()
+	if Globals.tutorial_manager.auto_start:
+		return
+		
+	Events.health_bar_startup.emit()
+	Events.main_viewer_startup.emit()
+	Events.targeting_computer_startup.emit()
+	
+	Events.start_scenario.emit()
 	
 	
 func _randomize_sector_scenarios() -> void:

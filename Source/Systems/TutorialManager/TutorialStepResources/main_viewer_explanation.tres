@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_dyile")
-tutorial_text = "Only two subsystems survived, [color=red]Dice Cannon[/color] and [color=green]Bump[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] on a tile to view specifications:"
+tutorial_text = "Only two subsystems survived, [color=red]Dice Cannon[/color] and [color=blue]Shield Burst[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] on a tile to view specifications:"
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_is6iw")]([])

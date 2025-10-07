@@ -51,5 +51,5 @@ description = "Attacks for [color=red](amount) damage[/color]"
 indicator_texture = ExtResource("3_ca2d5")
 info_texture = ExtResource("6_k68wh")
 effect_chain = SubResource("Resource_oguca")
-intent_amount = ""
+intent_amount = "2"
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

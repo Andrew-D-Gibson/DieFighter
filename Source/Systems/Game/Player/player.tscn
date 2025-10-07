@@ -1,13 +1,14 @@
-[gd_scene load_steps=11 format=3 uid="uid://cf2seb35hnl52"]
+[gd_scene load_steps=14 format=3 uid="uid://cf2seb35hnl52"]
 
 [ext_resource type="Script" uid="uid://d0qn1tyjsj7l6" path="res://Source/Systems/Game/Player/player.gd" id="1_86t7d"]
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_k7v53"]
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="2_lwstl"]
 [ext_resource type="PackedScene" uid="uid://c0mn2ue4tpohs" path="res://Source/Systems/Components/DiceQueue/dice_queue.tscn" id="3_fnkf6"]
 [ext_resource type="PackedScene" uid="uid://0nffy7i5aty4" path="res://Source/Systems/Components/Health/health.tscn" id="4_da5gb"]
-[ext_resource type="Texture2D" uid="uid://c4ftyoeqhinpu" path="res://Assets/Textures/Player/DiceQueue/end_turn_button_background.png" id="5_7etns"]
+[ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="5_0xxso"]
 [ext_resource type="PackedScene" uid="uid://skeakddxfvao" path="res://Source/Systems/Game/Player/PlayerHealthBar/player_health_bar.tscn" id="5_83hls"]
-[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="6_2ib0s"]
+[ext_resource type="Texture2D" uid="uid://d32kfgfc7nejp" path="res://Assets/Textures/UI/Buttons/button_small_blue_longer.png" id="6_0xxso"]
+[ext_resource type="Texture2D" uid="uid://o3hohympgf3q" path="res://Assets/Textures/UI/Buttons/button_small_blue_longer_disabled.png" id="7_vc188"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0xxso"]
 resource_local_to_scene = true
@@ -15,47 +16,54 @@ shader = ExtResource("1_k7v53")
 shader_parameter/color = Color(1, 1, 1, 1)
 shader_parameter/flash_amount = 0.0
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lwstl"]
-size = Vector2(48, 12)
+[sub_resource type="AtlasTexture" id="AtlasTexture_r1jev"]
+atlas = ExtResource("6_0xxso")
+region = Rect2(0, 0, 47, 12)
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("dice_manager", "health", "end_turn_button")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_fwbvc"]
+atlas = ExtResource("7_vc188")
+region = Rect2(0, 0, 47, 12)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jbhgu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r1jev")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fwbvc")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Player" type="Node2D" node_paths=PackedStringArray("dice_manager", "health")]
 material = SubResource("ShaderMaterial_0xxso")
 script = ExtResource("1_86t7d")
 dice_manager = NodePath("DiceQueue")
 health = NodePath("Health")
-end_turn_button = NodePath("DiceQueue/EndTurnButton")
 dice_scene = ExtResource("2_lwstl")
 
 [node name="DiceQueue" parent="." instance=ExtResource("3_fnkf6")]
 position = Vector2(26, 58)
 
-[node name="EndTurnButton" type="TextureRect" parent="DiceQueue"]
-offset_left = 45.0
-offset_top = -20.0
-offset_right = 93.0
-offset_bottom = 20.0
-mouse_filter = 2
-texture = ExtResource("5_7etns")
-stretch_mode = 5
+[node name="EndTurnButton" parent="DiceQueue" instance=ExtResource("5_0xxso")]
+unique_name_in_owner = true
+offset_left = 47.0
+offset_top = -6.0
+offset_right = 94.0
+offset_bottom = 6.0
+hover_text_color = Color(0.807843, 0.941176, 0.945098, 1)
+disabled_text_color = Color(0.145098, 0.109804, 0.419608, 1)
 
-[node name="RichTextLabel" type="RichTextLabel" parent="DiceQueue/EndTurnButton"]
-layout_mode = 0
-offset_left = 8.0
-offset_top = 12.0
-offset_right = 48.0
-offset_bottom = 52.0
-mouse_filter = 2
-bbcode_enabled = true
-text = "[color=#eed35d][wave amp=15.0 freq=5.0 connected=1]END TURN[/wave][/color]"
-meta_underlined = false
-hint_underlined = false
+[node name="AnimatedSprite2D" parent="DiceQueue/EndTurnButton" index="0"]
+position = Vector2(23.5, 6)
+sprite_frames = SubResource("SpriteFrames_jbhgu")
 
-[node name="Clickable" parent="DiceQueue/EndTurnButton" instance=ExtResource("6_2ib0s")]
-position = Vector2(24, 20)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="DiceQueue/EndTurnButton/Clickable"]
-visible = false
-shape = SubResource("RectangleShape2D_lwstl")
+[node name="RichTextLabel" parent="DiceQueue/EndTurnButton" index="1"]
+theme_override_colors/default_color = Color(0.27451, 0.235294, 0.568627, 1)
+text = "END TURN"
 
 [node name="Health" parent="." instance=ExtResource("4_da5gb")]
 position = Vector2(34, -24)
@@ -65,3 +73,7 @@ starting_health = 16
 [node name="PlayerHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
 position = Vector2(-22, 21)
 health_component = NodePath("../Health")
+
+[connection signal="pressed_within_window" from="DiceQueue/EndTurnButton" to="." method="end_turn"]
+
+[editable path="DiceQueue/EndTurnButton"]

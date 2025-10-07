@@ -16,7 +16,6 @@ var max_engine_charge: int = 24
 @export_category('Components')
 @export var dice_manager: DiceQueue
 @export var health: Health
-@export var end_turn_button: Control
 
 var num_of_dice: int:
 	set(new_num):
@@ -65,8 +64,8 @@ func _ready() -> void:
 	
 	Events.tile_activation_complete.connect(_check_for_end_of_turn)
 	
-	end_turn_button.get_child(1).clicked.connect(end_turn)
-	end_turn_button.visible = false
+	%EndTurnButton.disabled = true
+	%EndTurnButton.update_ui()
 	
 	Events.load_scenario.connect(_load_scenario)
 	Events.start_scenario.connect(_start_scenario)
@@ -147,9 +146,11 @@ func _process(_delta: float) -> void:
 
 func _check_for_end_of_turn() -> void:
 	if len(dice_manager.queue) == 0:
-		end_turn_button.visible = true
+		%EndTurnButton.disabled = false
+		%EndTurnButton.update_ui()
 	else:
-		end_turn_button.visible = false
+		%EndTurnButton.disabled = true
+		%EndTurnButton.update_ui()
 
 
 func reroll_dice() -> void:
@@ -209,5 +210,6 @@ func _start_scenario() -> void:
 
 
 func end_turn() -> void:
-	end_turn_button.visible = false
+	%EndTurnButton.disabled = true
+	%EndTurnButton.update_ui()
 	Events.player_turn_over.emit()
