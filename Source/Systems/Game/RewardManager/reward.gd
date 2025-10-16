@@ -1,3 +1,4 @@
+class_name Reward
 extends Node2D
 
 @export var dice_scene: PackedScene
@@ -6,6 +7,9 @@ extends Node2D
 @export var bounding_box: CollisionShape2D
 
 var rewards: Array[Node2D]
+
+## Optional: force specific rewards (used by tutorial)
+static var forced_rewards: Array[TileResource] = []
 
 
 func _ready() -> void:
@@ -61,7 +65,10 @@ func give_reward(reward_resource: RewardResource) -> void:
 		# Make a tile reward
 		else:
 			reward = tile_scene.instantiate()
-			reward.tile_resource = possible_tile_rewards.pick_random()
+			if len(forced_rewards) > 0:
+				reward.tile_resource = forced_rewards.pop_front()
+			else:
+				reward.tile_resource = possible_tile_rewards.pick_random()
 			
 			# Remove the chosen resource from the "possible" list so there's no repeats
 			possible_tile_rewards.erase(reward.tile_resource)

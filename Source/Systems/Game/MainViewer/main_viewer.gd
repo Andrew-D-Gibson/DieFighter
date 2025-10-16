@@ -15,6 +15,11 @@ var screen_showing: ScreenShowing = ScreenShowing.SYSTEMS
 
 
 func _ready() -> void:
+	%SystemsRevealOverlay.show()
+	%SystemsRevealOverlay.material.set_shader_parameter("progress", 0.0)
+	%MapRevealOverlay.show()
+	%MapRevealOverlay.material.set_shader_parameter("progress", 0.0)
+	
 	Events.start_scenario.connect(func() -> void:
 		_check_for_engine_charge()
 		_show_systems()
@@ -31,10 +36,8 @@ func _ready() -> void:
 	Events.show_map.connect(_show_map)
 	Events.show_systems.connect(_show_systems)
 	
-	Events.main_viewer_startup.connect(_startup)
-	
-	%RevealOverlay.material = %RevealOverlay.material.duplicate()
-	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
+	Events.systems_startup.connect(_systems_startup)
+	Events.map_startup.connect(_map_startup)
 
 
 func _show_systems() -> void:
@@ -46,6 +49,8 @@ func _show_systems() -> void:
 
 	tile_grid.visible = true
 	map.visible = false
+	
+	Events.systems_shown.emit()
 	
 	
 func _systems_hovered(is_hovered: bool) -> void:
@@ -69,6 +74,8 @@ func _show_map() -> void:
 	tile_grid.visible = false
 	map.visible = true
 	
+	Events.map_shown.emit()
+	
 
 func _map_hovered(is_hovered: bool) -> void:
 	if is_hovered and screen_showing != ScreenShowing.MAP:
@@ -86,24 +93,43 @@ func _check_for_engine_charge() -> void:
 		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
 		
 		
-func _startup() -> void:
-	_check_for_engine_charge()
+func _systems_startup() -> void:
 	_show_systems()
-	_reveal_tween()
+	_systems_reveal_tween()
+	
+		
+func _map_startup() -> void:
+	_check_for_engine_charge()
+	_map_reveal_tween()
 	
 	
-func _reveal_tween() -> void:
-	# 76.5, 44
-	var tween: Tween = get_tree().create_tween()
-	var reveal_time: float = 4
-	var max_progress: float = 60
+func _systems_reveal_tween() -> void:
+	var reveal_tween: Tween = get_tree().create_tween()
+	var reveal_time: float = 3
+	var max_progress: int = 54
 	
-	tween.tween_property(
-		%RevealOverlay, 
+	reveal_tween.tween_property(
+		%SystemsRevealOverlay, 
 		"material:shader_parameter/progress", 
 		max_progress, 
 		reveal_time
 	).from(0)
+
+	await reveal_tween.finished
+	%SystemsRevealOverlay.hide()
 	
-	await tween.finished
-	%RevealOverlay.hide()
+	
+func _map_reveal_tween() -> void:
+	var reveal_tween: Tween = get_tree().create_tween()
+	var reveal_time: float = 3
+	var max_progress: int = 60
+	
+	reveal_tween.tween_property(
+		%MapRevealOverlay, 
+		"material:shader_parameter/progress", 
+		max_progress, 
+		reveal_time
+	).from(25)
+
+	await reveal_tween.finished
+	%MapRevealOverlay.hide()

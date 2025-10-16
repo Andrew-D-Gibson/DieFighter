@@ -33,7 +33,7 @@ func _on_options_button_pressed() -> void:
 
 func _on_save_and_quit_button_pressed() -> void:
 	_save_game()
-	get_tree().quit()
+	QuitManager.request_quit()
 	
 
 func _save_game() -> void:

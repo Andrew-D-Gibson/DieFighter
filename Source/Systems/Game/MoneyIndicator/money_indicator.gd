@@ -128,10 +128,8 @@ func _update_money_display(value: int) -> void:
 	
 
 func _fade_in() -> void:
-	# This should only ever be called once,
-	# so disconnect the triggering signal
-	if Events.combat_finished.is_connected(_fade_in):
-		Events.combat_finished.disconnect(_fade_in)
+	if self.is_visible_in_tree():
+		return
 		
 	self_modulate.a = 0
 	show()

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1wxf3402tl54"
-path="res://.godot/imported/button_small_white_longer_disabled.png-a1956a0a847a629add9061cb52da520f.ctex"
+uid="uid://cpmfii8fls0me"
+path="res://.godot/imported/option_button_red_background_.png-4c34ae694082a956260ca61ae9717af9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/UI/Buttons/button_small_white_longer_disabled.png"
-dest_files=["res://.godot/imported/button_small_white_longer_disabled.png-a1956a0a847a629add9061cb52da520f.ctex"]
+source_file="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_red_background_.png"
+dest_files=["res://.godot/imported/option_button_red_background_.png-4c34ae694082a956260ca61ae9717af9.ctex"]
 
 [params]
 

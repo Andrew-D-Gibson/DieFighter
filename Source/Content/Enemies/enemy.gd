@@ -257,15 +257,16 @@ func act_with_first_die() -> void:
 	
 	
 	# Move the die to in front of the enemy
-	var tween_time = 0.25
+	var tween_time: float = 0.75
+	var adjusted_tween_time: float = tween_time / Globals.animation_speed
 	var tween = get_tree().create_tween()
-	tween.tween_property(die, "global_position", global_position + Vector2(0,12), tween_time).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(die, "global_position", global_position + Vector2(0,12), adjusted_tween_time).set_ease(Tween.EASE_IN_OUT)
 	await tween.finished
 	
 	await get_tree().create_timer(0.25).timeout
 	
 	# Make an action indicator popup
-	var popup_time = 0.75
+	var popup_time: float = 0.75
 	var action_indicator = action_popup.instantiate()
 	add_child(action_indicator)
 	action_indicator.sprite.texture = action.info_texture

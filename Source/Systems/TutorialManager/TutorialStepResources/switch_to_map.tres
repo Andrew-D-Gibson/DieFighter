@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://cdqu7flv8i1eq"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_2h8ef"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_kmiel"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="3_tyxjb"]
+
+[resource]
+script = ExtResource("3_tyxjb")
+tutorial_text = "Engines charge fully after combat, or can be charged manually.  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] on the [color=purple]MAP[/color] tab:"
+text_position = Vector2(160, 40)
+forced_dice = Array[int]([])
+forced_enemy_actions = Array[ExtResource("1_2h8ef")]([])
+forced_rewards = Array[ExtResource("2_kmiel")]([])
+open_on_signal = 0
+close_on_signal = 10
+tutorial_function = 0
+time_to_auto_close = 0.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

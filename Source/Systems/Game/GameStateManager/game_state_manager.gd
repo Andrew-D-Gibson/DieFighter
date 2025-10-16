@@ -70,7 +70,8 @@ func trigger_startup_sequence() -> void:
 		return
 		
 	Events.health_bar_startup.emit()
-	Events.main_viewer_startup.emit()
+	Events.systems_startup.emit()
+	Events.map_startup.emit()
 	Events.targeting_computer_startup.emit()
 	
 	Events.start_scenario.emit()

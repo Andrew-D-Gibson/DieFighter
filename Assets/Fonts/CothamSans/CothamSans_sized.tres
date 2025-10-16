@@ -1,0 +1,10 @@
+[gd_resource type="FontVariation" load_steps=2 format=3 uid="uid://3mlhnao8tp3l"]
+
+[ext_resource type="FontFile" uid="uid://buarfjgb8ybfr" path="res://Assets/Fonts/CothamSans/CothamSans.otf" id="1_udmsi"]
+
+[resource]
+base_font = ExtResource("1_udmsi")
+opentype_features = {
+1667329140: 0
+}
+spacing_top = 5

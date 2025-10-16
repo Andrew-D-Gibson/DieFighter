@@ -217,6 +217,7 @@ text = "DIE FIGHTER"
 fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
+metadata/_edit_group_ = true
 
 [node name="VersionText" type="RichTextLabel" parent="."]
 anchors_preset = 3

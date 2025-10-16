@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=71 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -43,8 +43,8 @@
 [ext_resource type="Resource" uid="uid://cysqmdrkphgi8" path="res://Source/Systems/TutorialManager/TutorialStepResources/health_bar_reveal.tres" id="31_s8v7r"]
 [ext_resource type="Resource" uid="uid://deq8x1n2udg5r" path="res://Source/Systems/TutorialManager/TutorialStepResources/health_bar_explanation.tres" id="32_k3fls"]
 [ext_resource type="Resource" uid="uid://bw31id713nu18" path="res://Source/Systems/TutorialManager/TutorialStepResources/spawn_enemy.tres" id="33_s8v7r"]
-[ext_resource type="Resource" uid="uid://6qryj83dsu" path="res://Source/Systems/TutorialManager/TutorialStepResources/main_viewer_reveal.tres" id="34_s8v7r"]
-[ext_resource type="Resource" uid="uid://cytyumo1yx88e" path="res://Source/Systems/TutorialManager/TutorialStepResources/main_viewer_explanation.tres" id="35_7yw3t"]
+[ext_resource type="Resource" uid="uid://6qryj83dsu" path="res://Source/Systems/TutorialManager/TutorialStepResources/systems_reveal.tres" id="34_s8v7r"]
+[ext_resource type="Resource" uid="uid://cytyumo1yx88e" path="res://Source/Systems/TutorialManager/TutorialStepResources/systems_explanation.tres" id="35_7yw3t"]
 [ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
 [ext_resource type="Resource" uid="uid://cooy3vvww8cn" path="res://Source/Systems/TutorialManager/TutorialStepResources/spawn_dice.tres" id="36_d6h8w"]
 [ext_resource type="Resource" uid="uid://oe3aethqnc7b" path="res://Source/Systems/TutorialManager/TutorialStepResources/dragging_dice_explanation.tres" id="37_0b58v"]
@@ -56,7 +56,13 @@
 [ext_resource type="Resource" uid="uid://bdtn84danaqk0" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_turn_explanation_3.tres" id="42_h1v2j"]
 [ext_resource type="Resource" uid="uid://ceruh36kfjrl2" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_turn_run.tres" id="42_o2el7"]
 [ext_resource type="Resource" uid="uid://c07y7hi4fusk2" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_combat_prompt.tres" id="44_h1v2j"]
+[ext_resource type="Resource" uid="uid://bpwf4s4ak2icf" path="res://Source/Systems/TutorialManager/TutorialStepResources/reward_explanation.tres" id="45_gp2ob"]
 [ext_resource type="Resource" uid="uid://cujs3pocag3jh" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres" id="45_s8v7r"]
+[ext_resource type="Resource" uid="uid://bdbd1rtmat50j" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_reveal.tres" id="46_1gi3i"]
+[ext_resource type="Resource" uid="uid://w20v8satrhj" path="res://Source/Systems/TutorialManager/TutorialStepResources/rearrange_systems.tres" id="46_p3tcj"]
+[ext_resource type="Resource" uid="uid://cdqu7flv8i1eq" path="res://Source/Systems/TutorialManager/TutorialStepResources/switch_to_map.tres" id="47_7ku7q"]
+[ext_resource type="Resource" uid="uid://bcutac2qknefg" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_anomaly_explanation.tres" id="48_qd85q"]
+[ext_resource type="Resource" uid="uid://cjs5pb8b7yx5b" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_explanation.tres" id="49_p3tcj"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -206,7 +212,6 @@ mouse_filter = 2
 color = Color(0, 0, 0.0941176, 1)
 
 [node name="FPSCounter" type="RichTextLabel" parent="."]
-visible = false
 offset_left = 278.0
 offset_top = 2.0
 offset_right = 317.0
@@ -236,6 +241,7 @@ position = Vector2(160, 90)
 texture = ExtResource("5_a6pqk")
 
 [node name="DiceAreaHighlight" type="Sprite2D" parent="Graphics/Cockpit Walls"]
+visible = false
 material = SubResource("ShaderMaterial_efjlt")
 position = Vector2(0.5, 82.5)
 texture = ExtResource("13_nfx0x")
@@ -281,9 +287,9 @@ position = Vector2(122, 43)
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
+auto_start = false
 time_to_wait_before_tutorial = 0.5
-tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtResource("30_k3fls"), ExtResource("31_s8v7r"), ExtResource("32_k3fls"), ExtResource("33_s8v7r"), ExtResource("34_s8v7r"), ExtResource("35_7yw3t"), ExtResource("36_d6h8w"), ExtResource("37_0b58v"), ExtResource("38_5rg43"), ExtResource("39_5rg43"), ExtResource("40_6c5u4"), ExtResource("41_kbsha"), ExtResource("42_h1v2j"), ExtResource("42_o2el7"), ExtResource("44_h1v2j")])
-skip_to_step = 7
+tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtResource("30_k3fls"), ExtResource("31_s8v7r"), ExtResource("32_k3fls"), ExtResource("33_s8v7r"), ExtResource("34_s8v7r"), ExtResource("35_7yw3t"), ExtResource("36_d6h8w"), ExtResource("37_0b58v"), ExtResource("38_5rg43"), ExtResource("39_5rg43"), ExtResource("40_6c5u4"), ExtResource("41_kbsha"), ExtResource("42_h1v2j"), ExtResource("42_o2el7"), ExtResource("44_h1v2j"), ExtResource("45_gp2ob"), ExtResource("46_p3tcj"), ExtResource("46_1gi3i"), ExtResource("47_7ku7q"), ExtResource("48_qd85q"), ExtResource("49_p3tcj")])
 
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://c7hyjenhhnsah"]
+[gd_scene load_steps=33 format=3 uid="uid://c7hyjenhhnsah"]
 
 [ext_resource type="Script" uid="uid://b3278n4xjt53b" path="res://Source/Systems/UI/OptionsMenu/options_menu.gd" id="1_c6430"]
 [ext_resource type="PackedScene" uid="uid://6l4ixooaa16q" path="res://Source/Systems/UI/OptionsMenu/options_saving_manager.tscn" id="2_okq5w"]
@@ -6,10 +6,15 @@
 [ext_resource type="Texture2D" uid="uid://cyvsute3rdn06" path="res://Assets/Textures/UI/OptionsMenu/music_volume_knob_dark.png" id="3_c6430"]
 [ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="3_smy8a"]
 [ext_resource type="Texture2D" uid="uid://cphbhatw48fco" path="res://Assets/Textures/UI/OptionsMenu/music_volume_knob_light.png" id="4_smy8a"]
-[ext_resource type="Texture2D" uid="uid://7j8pfvk537px" path="res://Assets/Textures/UI/CheckBox/check_box_checked.png" id="5_nleqt"]
+[ext_resource type="Texture2D" uid="uid://7j8pfvk537px" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_checked.png" id="5_nleqt"]
 [ext_resource type="Texture2D" uid="uid://b5t67qqtpu483" path="res://Assets/Textures/UI/OptionsMenu/sfx_volume_knob_dark.png" id="5_okq5w"]
 [ext_resource type="Texture2D" uid="uid://d110vl5lf12kr" path="res://Assets/Textures/UI/OptionsMenu/sfx_volume_knob_light.png" id="6_k3iob"]
-[ext_resource type="Texture2D" uid="uid://clp8rg2rk1thv" path="res://Assets/Textures/UI/CheckBox/check_box_unchecked.png" id="6_oqkfw"]
+[ext_resource type="Texture2D" uid="uid://clp8rg2rk1thv" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_unchecked.png" id="6_oqkfw"]
+[ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="6_vuhip"]
+[ext_resource type="Texture2D" uid="uid://c6d5q3q1hj51t" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_checked_green.png" id="7_go7dx"]
+[ext_resource type="Texture2D" uid="uid://cpmfii8fls0me" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_red_background_.png" id="7_ivkwq"]
+[ext_resource type="Texture2D" uid="uid://h41o4yjhxxxi" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_unchecked_green.png" id="8_7mi2c"]
+[ext_resource type="Texture2D" uid="uid://cem8wob33btto" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_red_arrow.png" id="8_vuhip"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="9_k3iob"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6wqyq"]
@@ -35,6 +40,49 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bv108")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ajqpr"]
+texture = ExtResource("7_ivkwq")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p11be"]
+texture = ExtResource("7_ivkwq")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0bdbe"]
+texture = ExtResource("7_ivkwq")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_efhff"]
+texture = ExtResource("7_ivkwq")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ajqpr"]
+atlas = ExtResource("6_vuhip")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_p11be"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ajqpr")
 }],
 "loop": true,
 "name": &"default",
@@ -132,90 +180,335 @@ sprite_frames = null
 text = "AUDIO"
 
 [node name="GameOptions" type="VBoxContainer" parent="."]
-offset_left = -93.0
-offset_top = -42.0
-offset_right = 93.0
-offset_bottom = 54.0
-
-[node name="RichTextLabel" type="RichTextLabel" parent="GameOptions"]
-layout_mode = 2
-size_flags_vertical = 3
-mouse_filter = 2
-text = "Animation speed
-Language
-Controls
-"
-fit_content = true
-
-[node name="GraphicsOptions" type="VBoxContainer" parent="."]
 visible = false
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
 offset_bottom = 54.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions"]
-custom_minimum_size = Vector2(0, 24)
+[node name="MarginContainer" type="MarginContainer" parent="GameOptions"]
 layout_mode = 2
-alignment = 1
+size_flags_vertical = 3
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
 
-[node name="ScreenshakeLabel" type="RichTextLabel" parent="GraphicsOptions/HBoxContainer"]
-custom_minimum_size = Vector2(48, 0)
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOptions/MarginContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="AnimationSpeedLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(60, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
-text = "Screenshake"
-horizontal_alignment = 1
+text = "Animation Speed"
 vertical_alignment = 1
 
-[node name="ScreenshakeCheckBox" type="CheckBox" parent="GraphicsOptions/HBoxContainer"]
+[node name="AnimationSpeedOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
-theme_override_icons/checked = ExtResource("5_nleqt")
-theme_override_icons/unchecked = ExtResource("6_oqkfw")
-flat = true
+theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_icons/arrow = ExtResource("8_vuhip")
+alignment = 2
+selected = 1
+allow_reselect = true
+item_count = 4
+popup/item_0/text = "0.5x"
+popup/item_0/id = 3
+popup/item_1/text = "1x"
+popup/item_1/id = 0
+popup/item_2/text = "2x"
+popup/item_2/id = 1
+popup/item_3/text = "4x"
+popup/item_3/id = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions"]
-custom_minimum_size = Vector2(0, 24)
+[node name="HBoxContainer2" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer"]
 layout_mode = 2
-alignment = 1
+size_flags_vertical = 4
 
-[node name="VSyncLabel" type="RichTextLabel" parent="GraphicsOptions/HBoxContainer2"]
-custom_minimum_size = Vector2(48, 0)
+[node name="LanguageLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(32, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
-text = "V-Sync"
-horizontal_alignment = 1
+text = "Language"
 vertical_alignment = 1
 
-[node name="VSyncCheckBox" type="CheckBox" parent="GraphicsOptions/HBoxContainer2"]
-unique_name_in_owner = true
+[node name="LanguageOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
 layout_mode = 2
 focus_mode = 0
-theme_override_icons/checked = ExtResource("5_nleqt")
-theme_override_icons/unchecked = ExtResource("6_oqkfw")
-flat = true
+theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_icons/arrow = ExtResource("8_vuhip")
+alignment = 2
+selected = 0
+allow_reselect = true
+item_count = 1
+popup/item_0/text = "English"
+popup/item_0/id = 2
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="GraphicsOptions"]
-custom_minimum_size = Vector2(0, 24)
+[node name="Control" type="Control" parent="GameOptions/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 28.785)
+layout_mode = 2
+
+[node name="ResetDataButton" parent="GameOptions/MarginContainer/VBoxContainer" instance=ExtResource("9_k3iob")]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+button_size = 2
+hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
+
+[node name="AnimatedSprite2D" parent="GameOptions/MarginContainer/VBoxContainer/ResetDataButton" index="0"]
+sprite_frames = SubResource("SpriteFrames_p11be")
+
+[node name="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/ResetDataButton" index="1"]
+text = "RESET DATA"
+
+[node name="GraphicsOptions" type="VBoxContainer" parent="."]
+offset_left = -93.0
+offset_top = -42.0
+offset_right = 93.0
+offset_bottom = 54.0
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_top = 2
+theme_override_constants/margin_bottom = -13
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="FullscreenLabel" type="RichTextLabel" parent="GraphicsOptions/HBoxContainer3"]
-custom_minimum_size = Vector2(48, 0)
+[node name="FullscreenLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(48, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 text = "Fullscreen"
-horizontal_alignment = 1
+horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="FullscreenCheckBox" type="CheckBox" parent="GraphicsOptions/HBoxContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = -4
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -4
+
+[node name="FullscreenCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_icons/checked = ExtResource("5_nleqt")
 theme_override_icons/unchecked = ExtResource("6_oqkfw")
 flat = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="ScaleLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(48, 16)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+text = "Scale"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="ScaleOptionButton" type="OptionButton" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_icons/arrow = ExtResource("8_vuhip")
+alignment = 2
+selected = 2
+allow_reselect = true
+item_count = 5
+popup/item_0/text = "2x"
+popup/item_0/id = 1
+popup/item_1/text = "4x"
+popup/item_1/id = 2
+popup/item_2/text = "6x"
+popup/item_2/id = 3
+popup/item_3/text = "9x"
+popup/item_3/id = 5
+popup/item_4/text = "12x"
+popup/item_4/id = 4
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="VSyncLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(48, 16)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+text = "V-Sync"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+theme_override_constants/margin_left = -4
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -4
+
+[node name="VSyncCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_icons/checked = ExtResource("5_nleqt")
+theme_override_icons/unchecked = ExtResource("6_oqkfw")
+flat = true
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
+visible = false
+layout_mode = 2
+alignment = 1
+
+[node name="PixelFontLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(48, 16)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+text = "Pixel Font"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = -4
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -4
+
+[node name="PixelFontCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_icons/checked = ExtResource("5_nleqt")
+theme_override_icons/unchecked = ExtResource("6_oqkfw")
+flat = true
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2"]
+layout_mode = 2
+alignment = 2
+
+[node name="ScreenshakeLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(48, 0)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
+text = "Screenshake"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = -4
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -4
+
+[node name="ScreenshakeCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_icons/checked = ExtResource("7_go7dx")
+theme_override_icons/unchecked = ExtResource("8_7mi2c")
+flat = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2"]
+visible = false
+layout_mode = 2
+alignment = 2
+
+[node name="PostProcessingLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(56.49, 0)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
+text = "Postprocessing"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2"]
+layout_mode = 2
+theme_override_constants/margin_left = -4
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -4
+
+[node name="PostProcessingCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_icons/checked = ExtResource("7_go7dx")
+theme_override_icons/unchecked = ExtResource("8_7mi2c")
+flat = true
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2"]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+alignment = 2
+
+[node name="FPSLimitLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3"]
+custom_minimum_size = Vector2(34.97, 0)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
+text = "FPS Limit"
+horizontal_alignment = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3"]
+layout_mode = 2
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 4
+theme_override_constants/margin_bottom = 4
+
+[node name="FPSLimitOptions" type="OptionButton" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3/MarginContainer"]
+unique_name_in_owner = true
+clip_contents = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.478431, 0.741176, 0.2, 1)
+theme_override_font_sizes/font_size = 16
+alignment = 1
+selected = 1
+allow_reselect = true
+item_count = 4
+popup/item_0/text = "30"
+popup/item_0/id = 0
+popup/item_1/text = "60"
+popup/item_1/id = 1
+popup/item_2/text = "120"
+popup/item_2/id = 2
+popup/item_3/text = "Unlimited"
+popup/item_3/id = 3
 
 [node name="AudioOptions" type="VBoxContainer" parent="."]
 visible = false
@@ -225,7 +518,9 @@ offset_right = 93.0
 offset_bottom = 54.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="AudioOptions"]
+custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="GameVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer"]
 custom_minimum_size = Vector2(60, 0)
@@ -233,14 +528,14 @@ layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 bbcode_enabled = true
 text = "Game Volume"
-horizontal_alignment = 1
-vertical_alignment = 1
+horizontal_alignment = 2
 
 [node name="GameVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(122, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 focus_mode = 0
 theme_override_styles/grabber_area = SubResource("StyleBoxFlat_c6430")
 theme_override_styles/grabber_area_highlight = SubResource("StyleBoxFlat_nleqt")
@@ -268,7 +563,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="AudioOptions"]
+custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="MusicVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer2"]
 custom_minimum_size = Vector2(60, 0)
@@ -276,14 +573,14 @@ layout_mode = 2
 theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
 bbcode_enabled = true
 text = "Music Volume"
-horizontal_alignment = 1
-vertical_alignment = 1
+horizontal_alignment = 2
 
 [node name="MusicVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer2"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(122, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 focus_mode = 0
 theme_override_icons/grabber = ExtResource("3_c6430")
 theme_override_icons/grabber_highlight = ExtResource("4_smy8a")
@@ -313,7 +610,9 @@ horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="AudioOptions"]
+custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
+size_flags_vertical = 0
 
 [node name="SFXVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer3"]
 custom_minimum_size = Vector2(60, 0)
@@ -321,14 +620,14 @@ layout_mode = 2
 theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
 bbcode_enabled = true
 text = "SFX Volume"
-horizontal_alignment = 1
-vertical_alignment = 1
+horizontal_alignment = 2
 
 [node name="SFXVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer3"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(122, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 focus_mode = 0
 theme_override_icons/grabber = ExtResource("5_okq5w")
 theme_override_icons/grabber_highlight = ExtResource("6_k3iob")
@@ -357,6 +656,34 @@ text = "50%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="HBoxContainer4" type="HBoxContainer" parent="AudioOptions"]
+layout_mode = 2
+
+[node name="Control" type="Control" parent="AudioOptions/HBoxContainer4"]
+custom_minimum_size = Vector2(6, 0)
+layout_mode = 2
+
+[node name="MuteAllLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer4"]
+custom_minimum_size = Vector2(64, 0)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+bbcode_enabled = true
+text = "Mute All Sounds"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="AudioOptions/HBoxContainer4"]
+layout_mode = 2
+theme_override_constants/margin_left = -4
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -4
+
+[node name="MuteAllSoundsCheckBox" type="CheckBox" parent="AudioOptions/HBoxContainer4/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+
 [node name="CloseButton" parent="." instance=ExtResource("9_k3iob")]
 anchors_preset = 8
 anchor_left = 0.5
@@ -377,18 +704,27 @@ text = "CLOSE"
 [connection signal="pressed_within_window" from="TabButtons/GameTabButton" to="." method="_on_game_button_pressed"]
 [connection signal="pressed_within_window" from="TabButtons/GraphicsTabButton" to="." method="_on_graphics_button_pressed"]
 [connection signal="pressed_within_window" from="TabButtons/AudioTabButton" to="." method="_on_audio_button_pressed"]
-[connection signal="pressed" from="GraphicsOptions/HBoxContainer/ScreenshakeCheckBox" to="." method="_on_item_hover"]
-[connection signal="toggled" from="GraphicsOptions/HBoxContainer/ScreenshakeCheckBox" to="." method="_on_screenshake_check_box_toggled"]
-[connection signal="pressed" from="GraphicsOptions/HBoxContainer2/VSyncCheckBox" to="." method="_on_item_hover"]
-[connection signal="toggled" from="GraphicsOptions/HBoxContainer2/VSyncCheckBox" to="." method="_on_v_sync_check_box_toggled"]
-[connection signal="pressed" from="GraphicsOptions/HBoxContainer3/FullscreenCheckBox" to="." method="_on_item_hover"]
-[connection signal="toggled" from="GraphicsOptions/HBoxContainer3/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
+[connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer/AnimationSpeedOptionButton" to="." method="_on_animation_speed_option_button_item_selected"]
+[connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_item_hover"]
+[connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
+[connection signal="item_selected" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/ScaleOptionButton" to="." method="_on_scale_option_button_item_selected"]
+[connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/MarginContainer/VSyncCheckBox" to="." method="_on_item_hover"]
+[connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/MarginContainer/VSyncCheckBox" to="." method="_on_v_sync_check_box_toggled"]
+[connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer/PixelFontCheckBox" to="." method="_on_item_hover"]
+[connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer/PixelFontCheckBox" to="." method="_on_v_sync_check_box_toggled"]
+[connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer/ScreenshakeCheckBox" to="." method="_on_item_hover"]
+[connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer/ScreenshakeCheckBox" to="." method="_on_screenshake_check_box_toggled"]
+[connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer/PostProcessingCheckBox" to="." method="_on_item_hover"]
+[connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer/PostProcessingCheckBox" to="." method="_on_screenshake_check_box_toggled"]
+[connection signal="item_selected" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3/MarginContainer/FPSLimitOptions" to="." method="_on_fps_limit_options_item_selected"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_game_volume_slider_value_changed"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer3/SFXVolumeSlider" to="." method="_on_sfx_volume_slider_value_changed"]
+[connection signal="toggled" from="AudioOptions/HBoxContainer4/MarginContainer/MuteAllSoundsCheckBox" to="." method="_on_mute_all_sounds_check_box_toggled"]
 [connection signal="pressed_within_window" from="CloseButton" to="." method="_on_close_button_pressed"]
 
 [editable path="TabButtons/GameTabButton"]
 [editable path="TabButtons/GraphicsTabButton"]
 [editable path="TabButtons/AudioTabButton"]
+[editable path="GameOptions/MarginContainer/VBoxContainer/ResetDataButton"]
 [editable path="CloseButton"]

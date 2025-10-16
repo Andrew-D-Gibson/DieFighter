@@ -21,7 +21,7 @@ var num_of_dice: int:
 	set(new_num):
 		num_of_dice = new_num
 		
-		max_engine_charge = (6*num_of_dice) - floor(1.7078 * sqrt(num_of_dice))
+		max_engine_charge = (6*(num_of_dice-1)) - floor(1.7078 * sqrt(num_of_dice))
 		
 		Events.die_added.emit()
 		
@@ -148,6 +148,7 @@ func _check_for_end_of_turn() -> void:
 	if len(dice_manager.queue) == 0:
 		%EndTurnButton.disabled = false
 		%EndTurnButton.update_ui()
+		%EndTurnButton.soft_highlight()
 	else:
 		%EndTurnButton.disabled = true
 		%EndTurnButton.update_ui()

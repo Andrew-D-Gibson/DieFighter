@@ -29,7 +29,7 @@ clickable_region = NodePath("Clickable/CollisionShape2D")
 
 [node name="EnemyDialogueManager" parent="." instance=ExtResource("5_dycj8")]
 modulate = Color(1, 1, 1, 0)
-z_index = 2
+z_index = 4
 
 [node name="EnemyGraphicsManager" parent="." node_paths=PackedStringArray("shakeable", "health_bar") instance=ExtResource("8_sfiwu")]
 shakeable = NodePath("Shakeable")

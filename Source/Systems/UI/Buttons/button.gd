@@ -13,6 +13,7 @@ enum ButtonSize {
 
 @export var hover_text_color: Color = Globals.white
 @export var disabled_text_color: Color = Globals.purple
+@export var soft_highlight_color: Color = Globals.purple
 @onready var text_position: Vector2 = $RichTextLabel.position
 
 ## The length of time between the button going down and back up
@@ -77,3 +78,26 @@ func _on_button_up() -> void:
 	if Time.get_ticks_msec() < _button_down_time + (button_click_window_sec * 1000):
 		Events.play_sound.emit('tile_dropped')
 		pressed_within_window.emit()
+		
+
+func soft_highlight() -> void:
+	if disabled:
+		return
+		
+	var amp: float
+	if button_size == ButtonSize.LARGE:
+		amp = 9.0
+	elif button_size == ButtonSize.MEDIUM:
+		amp = 6.0
+	elif button_size == ButtonSize.SMALL:
+		amp = 4.0
+		
+	var freq: float = 5.0
+	
+	$RichTextLabel.text = '[wave '\
+		+ 'amp=' + str(amp) \
+		+ 'freq=' + str(freq) \
+		+ 'connected=1]'\
+		+ _text_on_ready \
+		+ '[/wave]'
+	$RichTextLabel.add_theme_color_override('default_color', soft_highlight_color)

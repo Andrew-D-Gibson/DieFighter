@@ -1,9 +1,17 @@
-[gd_resource type="Theme" load_steps=9 format=3 uid="uid://fjvgoxquxqqr"]
+[gd_resource type="Theme" load_steps=21 format=3 uid="uid://fjvgoxquxqqr"]
 
 [ext_resource type="FontFile" uid="uid://d18mhx31l6gjo" path="res://Assets/Fonts/m3x6/m3x6.ttf" id="1_02yda"]
 [ext_resource type="Texture2D" uid="uid://bgovmklqjf6yv" path="res://Assets/Textures/UI/OptionsMenu/game_volume_knob_dark.png" id="1_7ev38"]
+[ext_resource type="Texture2D" uid="uid://7j8pfvk537px" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_checked.png" id="1_v1ss2"]
+[ext_resource type="Texture2D" uid="uid://clp8rg2rk1thv" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_unchecked.png" id="2_bfypc"]
 [ext_resource type="Texture2D" uid="uid://cxetdiu43pqai" path="res://Assets/Textures/UI/OptionsMenu/game_volume_knob_light.png" id="2_slk4v"]
+[ext_resource type="Texture2D" uid="uid://m8bm3myhsf8y" path="res://Assets/Textures/TutorialManager/background.png" id="4_kwyn7"]
 [ext_resource type="Texture2D" uid="uid://o2eb2umnr1tr" path="res://Assets/Textures/ErrorTextPopup/background.png" id="4_slk4v"]
+[ext_resource type="Texture2D" uid="uid://bcfmuahtcadle" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_green_arrow.png" id="6_cmqry"]
+[ext_resource type="Texture2D" uid="uid://bqmjf6x8eu8ko" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_green_background_.png" id="7_cmqry"]
+[ext_resource type="FontFile" uid="uid://bkb6j6i7pp2l0" path="res://Assets/Fonts/m3x6/m3x6_LARGE.ttf" id="10_lvkrn"]
+[ext_resource type="Texture2D" uid="uid://b1ddwysx2g5o2" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/radio_green_checked.png" id="10_r3l6x"]
+[ext_resource type="Texture2D" uid="uid://cabvjpp2knad6" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/radio_green_unchecked.png" id="11_lvkrn"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7ev38"]
 content_margin_top = 1.0
@@ -12,12 +20,33 @@ bg_color = Color(0.203922, 0.2, 0.188235, 1)
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_limub"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kwyn7"]
-texture = ExtResource("4_slk4v")
-texture_margin_left = 4.0
-texture_margin_top = 4.0
-texture_margin_right = 4.0
-texture_margin_bottom = 4.0
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jl683"]
+texture = ExtResource("7_cmqry")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cmqry"]
+texture = ExtResource("7_cmqry")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_r3l6x"]
+texture = ExtResource("7_cmqry")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qth60"]
+texture = ExtResource("4_kwyn7")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_slk4v"]
 texture = ExtResource("4_slk4v")
@@ -26,12 +55,21 @@ texture_margin_top = 4.0
 texture_margin_right = 4.0
 texture_margin_bottom = 4.0
 
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lvkrn"]
+texture = ExtResource("7_cmqry")
+texture_margin_left = 2.0
+texture_margin_top = 2.0
+texture_margin_right = 2.0
+texture_margin_bottom = 2.0
+
 [resource]
 Button/colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
 Button/colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
 Button/colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
 Button/colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
 Button/colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
+CheckBox/icons/checked = ExtResource("1_v1ss2")
+CheckBox/icons/unchecked = ExtResource("2_bfypc")
 HSlider/icons/grabber = ExtResource("1_7ev38")
 HSlider/icons/grabber_highlight = ExtResource("2_slk4v")
 HSlider/styles/slider = SubResource("StyleBoxFlat_7ev38")
@@ -45,7 +83,16 @@ Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 1
 Label/fonts/font = ExtResource("1_02yda")
 Label/styles/normal = SubResource("StyleBoxEmpty_limub")
-Panel/styles/panel = SubResource("StyleBoxTexture_kwyn7")
+OptionButton/icons/arrow = ExtResource("6_cmqry")
+OptionButton/styles/hover = SubResource("StyleBoxTexture_jl683")
+OptionButton/styles/normal = SubResource("StyleBoxTexture_cmqry")
+OptionButton/styles/pressed = SubResource("StyleBoxTexture_r3l6x")
+Panel/styles/panel = SubResource("StyleBoxTexture_qth60")
 PanelContainer/styles/panel = SubResource("StyleBoxTexture_slk4v")
+PopupMenu/font_sizes/font_size = 96
+PopupMenu/fonts/font = ExtResource("10_lvkrn")
+PopupMenu/icons/radio_checked = ExtResource("10_r3l6x")
+PopupMenu/icons/radio_unchecked = ExtResource("11_lvkrn")
+PopupMenu/styles/panel = SubResource("StyleBoxTexture_lvkrn")
 RichTextLabel/colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
 RichTextLabel/constants/line_separation = -4

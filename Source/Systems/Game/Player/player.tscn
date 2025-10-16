@@ -56,6 +56,7 @@ offset_right = 94.0
 offset_bottom = 6.0
 hover_text_color = Color(0.807843, 0.941176, 0.945098, 1)
 disabled_text_color = Color(0.145098, 0.109804, 0.419608, 1)
+soft_highlight_color = Color(0.768627, 0.756863, 0.737255, 1)
 
 [node name="AnimatedSprite2D" parent="DiceQueue/EndTurnButton" index="0"]
 position = Vector2(23.5, 6)

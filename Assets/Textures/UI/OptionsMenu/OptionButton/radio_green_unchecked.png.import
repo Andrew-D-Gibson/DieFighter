@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://fgeemclhf26b"
-path="res://.godot/imported/button_small_white_longer.png-998c5646159dd02b5f0e7f83a5cfc0a3.ctex"
+uid="uid://cabvjpp2knad6"
+path="res://.godot/imported/radio_green_unchecked.png-5a2b22454fe4e0dfa15676ed495e1568.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/UI/Buttons/button_small_white_longer.png"
-dest_files=["res://.godot/imported/button_small_white_longer.png-998c5646159dd02b5f0e7f83a5cfc0a3.ctex"]
+source_file="res://Assets/Textures/UI/OptionsMenu/OptionButton/radio_green_unchecked.png"
+dest_files=["res://.godot/imported/radio_green_unchecked.png-5a2b22454fe4e0dfa15676ed495e1568.ctex"]
 
 [params]
 

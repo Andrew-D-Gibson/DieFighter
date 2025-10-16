@@ -1,10 +1,11 @@
 class_name TutorialManager
 extends Node2D
 
-@export var time_to_wait_before_tutorial: float = 3
-@export var tutorial_steps: Array[TutorialStep] = []
 @export var auto_start: bool = true
 @export var skip_to_step: int = 0
+@export var time_to_wait_before_tutorial: float = 3
+@export var tutorial_steps: Array[TutorialStep] = []
+
 
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
@@ -18,12 +19,13 @@ var tutorial_will_trigger_enemy_turns: bool = false
 var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.REVEAL_HEALTH_BAR: _reveal_health_bar,
 	TutorialStep.TutorialFunctions.TRIGGER_ENEMY_SPAWN: _spawn_enemy,
-	TutorialStep.TutorialFunctions.REVEAL_MAIN_VIEWER: _reveal_main_viewer,
+	TutorialStep.TutorialFunctions.REVEAL_SYSTEMS: _reveal_systems,
 	TutorialStep.TutorialFunctions.SPAWN_DICE: _spawn_dice,
 	TutorialStep.TutorialFunctions.ALLOW_DICE_DRAGGING: _allow_dice_dragging,
 	TutorialStep.TutorialFunctions.REVEAL_TARGETING_COMPUTER: _reveal_targeting_computer,
 	TutorialStep.TutorialFunctions.RUN_ENEMY_TURN: _run_enemy_turn,
 	TutorialStep.TutorialFunctions.ALLOW_NORMAL_COMBAT: _allow_normal_combat,
+	TutorialStep.TutorialFunctions.REVEAL_MAP: _reveal_map,
 }
 
 
@@ -41,11 +43,15 @@ func _ready() -> void:
 			
 			# Apply forced dice if specified
 			if step.forced_dice.size() > 0:
-				Dice.forced_rolls = step.forced_dice
-				
+				Dice.forced_rolls.append_array(step.forced_dice)
+		
 			# Apply forced enemy actions if specified
 			if step.forced_enemy_actions.size() > 0:
-				Enemy.forced_actions = step.forced_enemy_actions
+				Enemy.forced_actions.append_array(step.forced_enemy_actions)
+				
+			# Apply forced rewards from enemies if specified
+			if step.forced_rewards.size() > 0:
+				Reward.forced_rewards.append_array(step.forced_rewards)
 			
 			if step.tutorial_function in tutorial_functions:
 				print("Step: ", skipped_step, " -> ", step.tutorial_function)
@@ -89,6 +95,10 @@ func play_step(step: TutorialStep, force_open: bool = false) -> void:
 	# Apply forced enemy actions if specified
 	if step.forced_enemy_actions.size() > 0:
 		Enemy.forced_actions.append_array(step.forced_enemy_actions)
+		
+	# Apply forced rewards from enemies if specified
+	if step.forced_rewards.size() > 0:
+		Reward.forced_rewards.append_array(step.forced_rewards)
 	
 	# Handle highlighting
 	if step.highlight_texture:
@@ -116,6 +126,15 @@ func play_step(step: TutorialStep, force_open: bool = false) -> void:
 			TutorialStep.TutorialSignals.ENEMY_DEFEATED:
 				Events.combat_finished.connect(current_popup.close)
 				
+			TutorialStep.TutorialSignals.REWARD_CLAIMED:
+				Events.reward_picked.connect(current_popup.close)
+				
+			TutorialStep.TutorialSignals.MAP_OPENED:
+				Events.map_shown.connect(current_popup.close)
+				
+			TutorialStep.TutorialSignals.ON_JUMP:
+				Events.jump.connect(current_popup.close)
+				
 				
 	# Handle calling tutorial functions
 	if step.tutorial_function in tutorial_functions:
@@ -133,8 +152,8 @@ func _spawn_enemy() -> void:
 	Events.start_combat.emit()
 	
 	
-func _reveal_main_viewer() -> void:
-	Events.main_viewer_startup.emit()
+func _reveal_systems() -> void:
+	Events.systems_startup.emit()
 	
 	
 func _spawn_dice() -> void:
@@ -158,3 +177,7 @@ func _run_enemy_turn() -> void:
 	
 func _allow_normal_combat() -> void:
 	tutorial_will_trigger_enemy_turns = false
+	
+	
+func _reveal_map() -> void:
+	Events.map_startup.emit()

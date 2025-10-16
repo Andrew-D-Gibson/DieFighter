@@ -2,7 +2,7 @@ class_name MoveDieToTileEffect
 extends Effect
 
 @export var offset_from_source_tile: Vector2i = Vector2i(0,0)
-var tween_time: float = 0.3
+var tween_time: float = 0.9
 
 func play(effect_variables: EffectVariables) -> void:
 	if not effect_variables.activator_die:
@@ -28,7 +28,9 @@ func play(effect_variables: EffectVariables) -> void:
 	var die: Dice = effect_variables.activator_die
 	var target_global_pos: Vector2 = Globals.tile_grid.grid_to_global_pos(target_grid_pos)
 	
+	var adjusted_tween_time: float = tween_time / Globals.animation_speed
+	
 	var tween = effect_variables.actor.create_tween()
-	tween.tween_property(die, 'global_position', target_global_pos, tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(die, 'global_position', target_global_pos, adjusted_tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
 
 	await tween.finished

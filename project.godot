@@ -26,6 +26,7 @@ Events="*res://Source/Systems/Autoloads/events.gd"
 SoundEffectsPlayer="*res://Source/Systems/Autoloads/sound_effects_player.gd"
 DebugLogger="*res://Source/Systems/Autoloads/debug_logger.gd"
 Screenshotter="*res://Source/Systems/Autoloads/screenshotter.gd"
+QuitManager="*res://Source/Systems/Autoloads/quit_manager.gd"
 
 [debug]
 

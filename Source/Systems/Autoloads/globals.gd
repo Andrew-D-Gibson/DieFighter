@@ -36,3 +36,5 @@ var mouse_is_dragging_something: bool = false
 
 # Game Settings
 var screenshake_enabled: bool = true
+var animation_speed: float = 1
+var times_run: int = 0 

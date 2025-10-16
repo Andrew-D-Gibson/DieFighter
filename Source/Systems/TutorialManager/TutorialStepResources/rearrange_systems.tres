@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://w20v8satrhj"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_uy4bw"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_p415e"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="3_v2grw"]
+
+[resource]
+script = ExtResource("3_v2grw")
+tutorial_text = "Systems can be rearranged when outside of combat."
+text_position = Vector2(160, 40)
+forced_dice = Array[int]([])
+forced_enemy_actions = Array[ExtResource("1_uy4bw")]([])
+forced_rewards = Array[ExtResource("2_p415e")]([])
+open_on_signal = 0
+close_on_signal = 1
+tutorial_function = 0
+time_to_auto_close = 0.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

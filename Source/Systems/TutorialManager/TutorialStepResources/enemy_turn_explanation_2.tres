@@ -1,14 +1,18 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://bp0jjli4esf66"]
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://bp0jjli4esf66"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_8e7of"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_hpaci"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_rljbn"]
 
 [resource]
 script = ExtResource("2_hpaci")
-tutorial_text = "This enemy will retaliate with their (die_3), and do nothing with the (die_6)"
+tutorial_text = "This enemy will:
+Retaliate with their (die_3)
+Do nothing with their (die_6)"
 text_position = Vector2(220, 65)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_8e7of")]([])
+forced_rewards = Array[ExtResource("2_rljbn")]([])
 open_on_signal = 0
 close_on_signal = 1
 tutorial_function = 0

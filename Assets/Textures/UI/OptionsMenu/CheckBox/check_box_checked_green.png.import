@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dy20l3fkqik2j"
-path="res://.godot/imported/reveal_overlay.png-afef26c52f92619c2f54975602036bc2.ctex"
+uid="uid://c6d5q3q1hj51t"
+path="res://.godot/imported/check_box_checked_green.png-201543568836dec5d12ba51ffa49fe08.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/MainViewer/reveal_overlay.png"
-dest_files=["res://.godot/imported/reveal_overlay.png-afef26c52f92619c2f54975602036bc2.ctex"]
+source_file="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_checked_green.png"
+dest_files=["res://.godot/imported/check_box_checked_green.png-201543568836dec5d12ba51ffa49fe08.ctex"]
 
 [params]
 

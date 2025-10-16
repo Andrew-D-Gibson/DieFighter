@@ -29,6 +29,7 @@ func _ready() -> void:
 	Events.enemy_used_die.connect(_on_enemy_used_die)
 	Events.enemy_flew_in.connect(_initial_target)
 	Events.enemy_received_die.connect(_update_ui)
+	Events.start_scenario.connect(_update_ui)
 	Events.player_turn_start.connect(func() -> void:
 		await get_tree().create_timer(0.5).timeout
 		_update_ui()

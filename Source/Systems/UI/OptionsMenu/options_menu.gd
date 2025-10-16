@@ -13,12 +13,13 @@ func _ready() -> void:
 	%OptionsSavingManager.load_options_settings()
 	
 	# Set up the UI elements to reflect the loaded settings
+	_setup_game_options_UI()
 	_setup_graphics_options_UI()
 	_setup_audio_sliders()
 	
 	# Start the options menu on the Game tab
 	_on_audio_button_pressed()
-	
+		
 	
 func _on_close_button_pressed() -> void:
 	%OptionsSavingManager.save_options_settings()
@@ -27,6 +28,33 @@ func _on_close_button_pressed() -> void:
 
 func _on_item_hover() -> void:
 	Events.play_sound.emit('hover_thump')
+
+
+func _setup_game_options_UI() -> void:
+	match Globals.animation_speed:
+		0.5:
+			%AnimationSpeedOptionButton.select(0)
+		1.0:
+			%AnimationSpeedOptionButton.select(1)
+		2.0:
+			%AnimationSpeedOptionButton.select(2)
+		4.0:
+			%AnimationSpeedOptionButton.select(3)
+			
+	match Engine.max_fps:
+		30:
+			%FPSLimitOptions.select(0)
+		60:
+			%FPSLimitOptions.select(1)
+		120:
+			%FPSLimitOptions.select(2)
+		0:
+			%FPSLimitOptions.select(3)
+		_:
+			%FPSLimitOptions.select(1)
+			
+	var bus_idx: int = AudioServer.get_bus_index("Master")
+	%MuteAllSoundsCheckBox.button_pressed = AudioServer.is_bus_mute(bus_idx)
 
 
 func _setup_graphics_options_UI() -> void:
@@ -123,3 +151,59 @@ func _on_audio_button_pressed() -> void:
 	
 	%Background.frame = 2
 	screen_showing = ScreenShowing.AUDIO
+
+
+func _on_animation_speed_option_button_item_selected(index: int) -> void:
+	var option_selected: String = %AnimationSpeedOptionButton.get_item_text(index)
+	match option_selected:
+		"0.5x":
+			Globals.animation_speed = 0.5
+		"1x":
+			Globals.animation_speed = 1
+		"2x":
+			Globals.animation_speed = 2
+		"4x":
+			Globals.animation_speed = 4
+
+
+func _on_fps_limit_options_item_selected(index: int) -> void:
+	var option_selected: String = %FPSLimitOptions.get_item_text(index)
+	match option_selected:
+		"30":
+			Engine.max_fps = 30
+		"60":
+			Engine.max_fps = 60
+		"120":
+			Engine.max_fps = 120
+		"Unlimited":
+			Engine.max_fps = 0 # 0 means unlimited
+
+
+func _on_mute_all_sounds_check_box_toggled(toggled_on: bool) -> void:
+	var bus_idx: int = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_mute(bus_idx, toggled_on)
+
+
+func _on_scale_option_button_item_selected(index: int) -> void:
+	var base_resolution: Vector2 = Vector2(320, 180)
+	var scale: int = 2
+	
+	var option_selected: String = %ScaleOptionButton.get_item_text(index)
+	match option_selected:
+		"2x":
+			scale = 2
+		"4x":
+			scale = 4
+		"6x":
+			scale = 6
+		"9x":
+			scale = 9
+		"12x":
+			scale = 12
+		
+	var window_size: Vector2 = base_resolution * scale
+	DisplayServer.window_set_size(window_size)	
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	
+	var display_size: Vector2 = DisplayServer.screen_get_size()
+	DisplayServer.window_set_position((display_size - window_size) / 2)

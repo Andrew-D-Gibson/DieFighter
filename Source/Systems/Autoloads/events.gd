@@ -28,6 +28,8 @@ signal set_current_clickable(clickable: Clickable)
 # Control Events
 signal show_map()
 signal show_systems()
+signal systems_shown()
+signal map_shown()
 
 signal targeting_computer_retargeted()
 signal tile_activation_complete()
@@ -90,5 +92,6 @@ signal play_sound(sound_name: String)
 
 # Startup Events
 signal health_bar_startup()
-signal main_viewer_startup()
+signal systems_startup()
 signal targeting_computer_startup()
+signal map_startup()

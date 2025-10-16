@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("2_xh582")
-tutorial_text = "Dice are returned to you after enemy use. [color=yellow]Click[/color] on enemy intentions in the [color=purple]targeting computer[/color] for additional information."
+tutorial_text = "[color=yellow]Click[/color] on enemy intentions in the [color=purple]targeting computer[/color] for additional information."
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_1p5le")]([])
