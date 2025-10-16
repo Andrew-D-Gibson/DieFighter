@@ -4,12 +4,15 @@ extends Node
 var _settings_path: String = "user://options_settings.cfg"
 
 
-func save_options_settings() -> void:	
+func _ready() -> void:
+	Events.save_options_config.connect(save_options_settings)
+	
+
+func save_options_settings() -> void:
 	var config = ConfigFile.new()
 	
 	# Game settings
 	var game_settings: Dictionary = _get_current_game_settings()
-	print(game_settings)
 	config.set_value("Game", "animation_speed", game_settings["animation_speed"])
 	
 	# Graphics settings
@@ -17,6 +20,8 @@ func save_options_settings() -> void:
 	config.set_value("Graphics", "screenshake", graphics_settings["screenshake"])
 	config.set_value("Graphics", "vsync", graphics_settings["vsync"])
 	config.set_value("Graphics", "fullscreen", graphics_settings["fullscreen"])
+	config.set_value("Graphics", "window_size", graphics_settings["window_size"])
+	config.set_value("Graphics", "window_pos", graphics_settings["window_pos"])
 	config.set_value("Graphics", "max_fps", graphics_settings["max_fps"])
 	
 	# Audio settings
@@ -39,7 +44,6 @@ func load_options_settings() -> void:
 	# If the file didn't load, ignore it
 	if err != OK:
 		printerr("Error loading settings file: ", _settings_path)
-		return
 		
 	# Game
 	var game_settings: Dictionary = {}
@@ -52,6 +56,12 @@ func load_options_settings() -> void:
 	graphics_settings["screenshake"] = config.get_value("Graphics", "screenshake", true)
 	graphics_settings["vsync"] = config.get_value("Graphics", "vsync", true)
 	graphics_settings["fullscreen"] = config.get_value("Graphics", "fullscreen", false)
+	
+	var recommended_scale: int = _get_recommended_scale()
+	var display_size: Vector2 = DisplayServer.screen_get_size()
+	graphics_settings["window_size"] = config.get_value("Graphics", "window_size", recommended_scale * Vector2(320, 180))
+	graphics_settings["window_pos"] = config.get_value("Graphics", "window_pos", (display_size - (recommended_scale * Vector2(320, 180))) / 2)
+	
 	graphics_settings["max_fps"] = config.get_value("Graphics", "max_fps", "60")
 	_set_graphics_settings(graphics_settings)
 
@@ -106,6 +116,9 @@ func _get_current_graphics_settings() -> Dictionary:
 	graphics_settings["vsync"] = (DisplayServer.window_get_vsync_mode() == DisplayServer.VSyncMode.VSYNC_ENABLED)
 	graphics_settings["fullscreen"] = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
 	
+	graphics_settings["window_size"] = DisplayServer.window_get_size()
+	graphics_settings["window_pos"] = DisplayServer.window_get_position()
+	
 	match Engine.max_fps:
 		30:
 			graphics_settings["max_fps"] = "30"
@@ -122,6 +135,7 @@ func _get_current_graphics_settings() -> Dictionary:
 	
 	
 func _set_graphics_settings(graphics_settings: Dictionary) -> void:
+	print(graphics_settings)
 	# Screenshake
 	Globals.screenshake_enabled = graphics_settings["screenshake"]
 	
@@ -136,6 +150,8 @@ func _set_graphics_settings(graphics_settings: Dictionary) -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_size(graphics_settings["window_size"])	
+		DisplayServer.window_set_position(graphics_settings["window_pos"])
 	
 	# FPS Limit
 	match graphics_settings["max_fps"]:
@@ -176,3 +192,17 @@ func _set_audio_settings(audio_settings: Dictionary) -> void:
 	AudioServer.set_bus_volume_linear(sfx_bus_index, audio_settings["sfx_volume"])
 
 	AudioServer.set_bus_mute(master_bus_index, audio_settings["mute_all"])
+	
+	
+func _get_recommended_scale() -> int:
+	var base_resolution: Vector2 = Vector2(320, 180)
+	var display_size: Vector2 = DisplayServer.screen_get_size()
+	var best_scale = 2
+
+	for scale in [4, 6, 8, 9, 10, 12]:
+		if (base_resolution * scale).x <= display_size.x and (base_resolution * scale).y <= display_size.y:
+			best_scale = scale
+		else:
+			break
+			
+	return best_scale

@@ -6,10 +6,6 @@ var sound_effects_folder = 'res://Source/Resources/SoundEffectResources/SoundEff
 var sound_effects_dict: Dictionary[String, SoundEffectResource]
 
 
-func _hookup_audio_signals() -> void:
-	Events.play_sound.connect(play_sound)
-
-
 func _ready() -> void:
 	# Make this unpausable
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -17,16 +13,23 @@ func _ready() -> void:
 	var sound_effects: Array[SoundEffectResource]
 	
 	for file in DirAccess.get_files_at(sound_effects_folder):
-		var file_path: String = sound_effects_folder + '/' + file 
+		var file_path: String
+		if file.ends_with(".tres"):
+			file_path = sound_effects_folder + "/" + file
+		elif file.ends_with(".tres.remap"):
+			file_path = sound_effects_folder + "/" + file.trim_suffix(".remap")
+		else:
+			continue
+			
 		var resource: Resource = load(file_path)
-		# Check if the resource is valid and not already in the array
 		if resource != null and resource is SoundEffectResource:
 			sound_effects.append(resource)
+
 	
 	for effect in sound_effects:
 		sound_effects_dict[effect.name] = effect
 
-	_hookup_audio_signals()
+	Events.play_sound.connect(play_sound)
 
 
 func play_sound(name: String) -> void:

@@ -63,7 +63,7 @@ func _ready() -> void:
 			current_game_save.current_scenario_index
 		] 
 	)
-	
+
 	
 func trigger_startup_sequence() -> void:
 	if Globals.tutorial_manager.auto_start:

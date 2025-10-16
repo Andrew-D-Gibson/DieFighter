@@ -212,6 +212,7 @@ mouse_filter = 2
 color = Color(0, 0, 0.0941176, 1)
 
 [node name="FPSCounter" type="RichTextLabel" parent="."]
+visible = false
 offset_left = 278.0
 offset_top = 2.0
 offset_right = 317.0

@@ -23,6 +23,7 @@ signal camera_shake_large()
 signal set_glitch(glitch_state: bool)
 signal mouse_clickable_for_info(clickable_for_info: bool)
 signal set_current_clickable(clickable: Clickable)
+signal save_options_config()
 
 
 # Control Events

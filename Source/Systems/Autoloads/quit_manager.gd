@@ -25,4 +25,4 @@ func request_quit():
 
 func _cleanup_before_quit():
 	Globals.times_run += 1
-	%OptionsSavingManager.save_options_settings()
+	Events.save_options_config.emit()

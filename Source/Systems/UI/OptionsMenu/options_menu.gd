@@ -79,8 +79,11 @@ func _on_v_sync_check_box_toggled(toggled_on: bool) -> void:
 func _on_fullscreen_check_box_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
+		%ScaleLabel.add_theme_color_override("default_color", Globals.dark_gray)
+		%ScaleOptionButton.select(5)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		%ScaleLabel.add_theme_color_override("default_color", Globals.red)
 	
 
 func _setup_audio_sliders() -> void:
@@ -196,14 +199,22 @@ func _on_scale_option_button_item_selected(index: int) -> void:
 			scale = 4
 		"6x":
 			scale = 6
+		"8x":
+			scale = 8
 		"9x":
 			scale = 9
+		"10x":
+			scale = 10
 		"12x":
 			scale = 12
 		
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	
 	var window_size: Vector2 = base_resolution * scale
 	DisplayServer.window_set_size(window_size)	
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	
 	var display_size: Vector2 = DisplayServer.screen_get_size()
 	DisplayServer.window_set_position((display_size - window_size) / 2)
+	
+	%ScaleLabel.add_theme_color_override("default_color", Globals.red)
+	%FullscreenCheckBox.button_pressed = false
