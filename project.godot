@@ -17,6 +17,8 @@ boot_splash/bg_color=Color(0.0745098, 0.0588235, 0.219608, 1)
 boot_splash/show_image=false
 boot_splash/fullsize=false
 boot_splash/use_filter=false
+config/icon="uid://cg27kht5p2kw1"
+config/windows_native_icon="res://Assets/diefighter.ico"
 
 [autoload]
 

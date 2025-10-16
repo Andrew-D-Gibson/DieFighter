@@ -63,7 +63,38 @@ func _setup_graphics_options_UI() -> void:
 	%VSyncCheckBox.button_pressed = (DisplayServer.window_get_vsync_mode() == DisplayServer.VSyncMode.VSYNC_ENABLED)
 	
 	%FullscreenCheckBox.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
+	
+	_reduce_scale_options()
+	_set_scale_choice_label()
+	
+	
+func _reduce_scale_options() -> void:
+	var base_resolution: Vector2 = Vector2(320, 180)
+	var display_size: Vector2 = DisplayServer.screen_get_size()
+	var max_scale: int = 2
 
+	for scale in [4, 6, 8, 9, 10, 12]:
+		if (base_resolution * scale).x <= display_size.x and (base_resolution * scale).y <= display_size.y:
+			max_scale = scale
+		else:
+			break
+	
+	var max_scale_index: int = Array([2, 4, 6, 8, 9, 10, 12]).find(max_scale)
+
+	for idx: int in range(6, max_scale_index, -1):
+		%ScaleOptionButton.remove_item(idx)
+	
+	
+func _set_scale_choice_label() -> void:
+	var screen_scale: int = 1
+	var current_window_size: Vector2 = DisplayServer.window_get_size() 
+	var base_resolution: Vector2 = Vector2(320, 180)
+	if current_window_size.x / base_resolution.x == current_window_size.y / base_resolution.y:
+		screen_scale = floor(current_window_size.x / base_resolution.x)
+		
+	var scale_index: int = Array([2, 4, 6, 8, 9, 10, 12]).find(screen_scale)
+	%ScaleOptionButton.select(scale_index)
+	
 
 func _on_screenshake_check_box_toggled(toggled_on: bool) -> void:
 	Globals.screenshake_enabled = toggled_on
@@ -80,10 +111,11 @@ func _on_fullscreen_check_box_toggled(toggled_on: bool) -> void:
 	if toggled_on:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 		%ScaleLabel.add_theme_color_override("default_color", Globals.dark_gray)
-		%ScaleOptionButton.select(5)
+		%ScaleOptionButton.select(-1)
 	else:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		%ScaleLabel.add_theme_color_override("default_color", Globals.red)
+		_set_scale_choice_label()
 	
 
 func _setup_audio_sliders() -> void:

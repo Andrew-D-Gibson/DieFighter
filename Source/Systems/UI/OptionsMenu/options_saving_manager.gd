@@ -135,7 +135,6 @@ func _get_current_graphics_settings() -> Dictionary:
 	
 	
 func _set_graphics_settings(graphics_settings: Dictionary) -> void:
-	print(graphics_settings)
 	# Screenshake
 	Globals.screenshake_enabled = graphics_settings["screenshake"]
 	
