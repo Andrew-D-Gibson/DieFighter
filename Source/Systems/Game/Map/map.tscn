@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://7jvm8tkovhwj"]
+[gd_scene load_steps=6 format=3 uid="uid://7jvm8tkovhwj"]
 
 [ext_resource type="Script" uid="uid://bab7mdt2366us" path="res://Source/Systems/Game/Map/map.gd" id="1_kiwga"]
 [ext_resource type="Texture2D" uid="uid://rs23xch8otdw" path="res://Assets/Textures/Map/EncounterIcons/current_encounter.png" id="2_ryh8x"]
 [ext_resource type="Texture2D" uid="uid://ctq4jy6b220uj" path="res://Assets/Textures/Map/timeline.png" id="4_7gfdh"]
+[ext_resource type="PackedScene" uid="uid://cqj4opd6wph2m" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole_map.tscn" id="5_n5gpr"]
 [ext_resource type="Texture2D" uid="uid://da2m2sxof8kg3" path="res://Assets/Textures/Map/EncounterIcons/connector_white.png" id="7_x51rx"]
 
 [node name="Map" type="Node2D"]
@@ -10,5 +11,6 @@ script = ExtResource("1_kiwga")
 current_scenario_icon = ExtResource("2_ryh8x")
 timeline_icon = ExtResource("4_7gfdh")
 connector_sprite = ExtResource("7_x51rx")
+fate = ExtResource("5_n5gpr")
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]

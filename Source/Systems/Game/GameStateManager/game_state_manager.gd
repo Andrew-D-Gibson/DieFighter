@@ -118,8 +118,8 @@ func _randomize_sector_scenarios() -> void:
 			current_game_save.sector_scenarios.append(combat_and_question_scenarios.pick_random())
 			
 
-	# Now we have an array of 18 scenarios, with 1 boss and either 1 or 2 shops
-	# Shuffle the array, then place 5the player's starting scenario in the middle
+	# Now we have an array of scenarios, with 1 boss and either 1 or 2 shops
+	# Shuffle the array, then place the player's starting scenario in the middle
 	current_game_save.sector_scenarios.shuffle()
 	
 	# Add the boss scenario

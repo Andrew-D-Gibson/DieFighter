@@ -1,0 +1,57 @@
+[gd_scene load_steps=6 format=3 uid="uid://cqj4opd6wph2m"]
+
+[ext_resource type="Script" uid="uid://e3pbuhao442y" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.gd" id="1_b5y8e"]
+[ext_resource type="Shader" uid="uid://c58hmssqhtxd" path="res://Assets/Shaders/black_hole_ring.gdshader" id="2_1ymb6"]
+[ext_resource type="Shader" uid="uid://l3pl6juo75w3" path="res://Assets/Shaders/black_hole.gdshader" id="3_btdr2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7ecb8"]
+shader = ExtResource("2_1ymb6")
+shader_parameter/pixels = 96.0
+shader_parameter/rotation = 5.203
+shader_parameter/light_origin = Vector2(0.39, 0.39)
+shader_parameter/time_speed = 0.4
+shader_parameter/disk_width = 0.031
+shader_parameter/ring_perspective = 10.22
+shader_parameter/should_dither = true
+shader_parameter/colors = PackedColorArray(0.501961, 0.207843, 0.615686, 1, 0.658824, 0.27451, 0.807843, 1, 0.772549, 0.321569, 0.945098, 1)
+shader_parameter/n_colors = 3
+shader_parameter/size = -1.09
+shader_parameter/OCTAVES = 3
+shader_parameter/seed = 1.0
+shader_parameter/time = 21544.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_orf8c"]
+shader = ExtResource("3_btdr2")
+shader_parameter/pixels = 32.0
+shader_parameter/colors = PackedColorArray(0.0156863, 0.00784314, 0.0901961, 1, 0.0745098, 0.0588235, 0.219608, 1, 0.501961, 0.207843, 0.615686, 1)
+shader_parameter/radius = 0.265
+shader_parameter/light_width = 0.065
+
+[node name="BlackHoleMap" type="Node2D"]
+script = ExtResource("1_b5y8e")
+
+[node name="Disk" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_7ecb8")
+custom_minimum_size = Vector2(96, 96)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="BlackHole" type="ColorRect" parent="."]
+material = SubResource("ShaderMaterial_orf8c")
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 4
+mouse_filter = 2

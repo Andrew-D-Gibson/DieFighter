@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=5 format=3 uid="uid://di36ampkuhkyk"]
+
+[ext_resource type="Texture2D" uid="uid://b4am2o0ati2av" path="res://Assets/Textures/Map/EncounterIcons/fate_encounter.png" id="1_sphwn"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_whll6"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_sphwn"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="3_70wql"]
+
+[resource]
+script = ExtResource("2_sphwn")
+map_icon = ExtResource("1_sphwn")
+starting_enemies = Array[ExtResource("3_70wql")]([])
+rewards = Dictionary[int, ExtResource("1_whll6")]({})
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

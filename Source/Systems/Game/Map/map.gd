@@ -4,13 +4,17 @@ extends Node2D
 @export_category('Game Data')
 var scenario_list: Array[ScenarioResource]
 var current_scenario_index: int
-@onready var scenarios_in_danger: int = 1
+
+var left_fate_index: int
+var right_fate_index: int
+var left_scenarios_in_danger: int 
+var right_scenarios_in_danger: int
 
 @export_category('Map Textures')
 @export var current_scenario_icon: Texture2D
 @export var timeline_icon: Texture2D
 @export var connector_sprite: Texture2D
-@export var fate_animated_sprite: PackedScene
+@export var fate: PackedScene
 @export var danger_area: PackedScene
 
 @export_category('Components')
@@ -36,6 +40,7 @@ func _ready() -> void:
 	)
 	Events.engine_charge_changed.connect(_update_ui)
 	
+	_on_map_view_slider_value_changed(0)
 	_update_ui()
 	
 	
@@ -43,6 +48,12 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	scenario_list = game_save.sector_scenarios
 	
 	current_scenario_index = game_save.current_scenario_index
+	
+	left_fate_index = -1
+	right_fate_index = len(scenario_list)
+	left_scenarios_in_danger = randi_range(1,3)
+	right_scenarios_in_danger = randi_range(1,3)
+	
 	_update_map_sprites()
 	
 	
@@ -77,15 +88,27 @@ func _update_map_sprites() -> void:
 	if len(scenario_list) == 0:
 		return
 		
-	# Add the fate sprite
-	var fate: AnimatedSprite2D = fate_animated_sprite.instantiate()
-	fate.position = Vector2(-45, 0)
-	map_viewport.add_child(fate)
+	# Add the fate sprites
+	var left_fate: Node2D = fate.instantiate()
+	var right_fate: Node2D = fate.instantiate()
+	right_fate.scale = Vector2(-1, 1)
+	left_fate.position = Vector2((left_fate_index-1) * sprite_spacing, 0)
+	right_fate.position = Vector2((right_fate_index+1) * sprite_spacing, 0)
+	left_fate.z_index = -1
+	right_fate.z_index = -1
+	map_viewport.add_child(left_fate)
+	map_viewport.add_child(right_fate)
 	
 	# Show and move the danger area as needed
-	var danger: Sprite2D = danger_area.instantiate()
-	danger.position = Vector2(-82 + (sprite_spacing * scenarios_in_danger), 0)
-	map_viewport.add_child(danger)
+	var left_danger: Sprite2D = danger_area.instantiate()
+	var right_danger: Sprite2D = danger_area.instantiate()
+	right_danger.flip_h = true
+	left_danger.position = Vector2(-82 + (sprite_spacing * (left_fate_index + left_scenarios_in_danger)), 0)
+	right_danger.position = Vector2(82 + (sprite_spacing * (right_fate_index - right_scenarios_in_danger)), 0)
+	left_danger.z_index = -2
+	right_danger.z_index = -2
+	map_viewport.add_child(left_danger)
+	map_viewport.add_child(right_danger)
 	
 		
 	for i in range(len(scenario_list)):
@@ -105,7 +128,7 @@ func _update_map_sprites() -> void:
 		# a possible destination with a map icon
 		if current_scenario_index == i:
 			scenario_sprite.texture = current_scenario_icon
-			map_camera.position = scenario_sprite.position + Vector2(0, -4)
+			_look_at_scenario_index(i)
 		else:
 			scenario_sprite.texture = scenario_list[i].map_icon
 			
@@ -122,9 +145,8 @@ func _update_map_sprites() -> void:
 		map_viewport.add_child(scenario_sprite)
 		scenario_sprites.append(scenario_sprite)
 		
-	# Reset the map view slider
-	var max_position: int = len(scenario_list) * sprite_spacing
-	%MapViewSlider.value = map_camera.position.x / max_position
+	# Reset the map view slider to match the camera position
+	_update_slider_from_camera_position()
 
 
 func is_valid_destination(desired_scenario_index: int) -> bool:
@@ -135,11 +157,19 @@ func is_valid_destination(desired_scenario_index: int) -> bool:
 		
 		
 func _tween_map_to_index(index: int) -> void:
+	# Calculate the desired camera position with bounds
+	var max_position: int = max(
+			(len(scenario_list)-5) * sprite_spacing,
+			0
+		)
+	var min_position: int = 2 * sprite_spacing
+	var desired_camera_position: int = clamp(index * sprite_spacing, min_position, max_position)
+	
 	# Tween the camera to center on the desired encounter
 	var camera_tween_time = 0.5
 	var camera_movement_tween: Tween = get_tree().create_tween()
 	camera_movement_tween.tween_property(map_camera, 'position', \
-		Vector2(index * sprite_spacing, 0), camera_tween_time)\
+		Vector2(desired_camera_position, 0), camera_tween_time)\
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_IN_OUT)
 
@@ -155,6 +185,9 @@ func _tween_map_to_index(index: int) -> void:
 	).from(Vector2(1,1))
 	
 	await scenario_zoom_tween.finished
+	
+	# Update slider to match final camera position
+	_update_slider_from_camera_position()
 
 
 func jump(desired_scenario_index: int) -> void:
@@ -175,13 +208,19 @@ func jump(desired_scenario_index: int) -> void:
 		scenario_list[desired_scenario_index]
 	)
 
-	# Destroy the scenarios in danger
-	scenario_list = scenario_list.slice(scenarios_in_danger)
+	# OLD: Destroy scenarios in danger	
+	#scenario_list = scenario_list.slice(scenarios_in_danger)
+	#current_scenario_index -= scenarios_in_danger
 	
-	current_scenario_index -= scenarios_in_danger
+	# Have "Fate" empty the scenarios in danger
+	for idx: int in range(left_fate_index, left_fate_index + left_scenarios_in_danger):
+		scenario_list[idx] = empty_scenario
+	for idx: int in range(right_fate_index, right_fate_index + right_scenarios_in_danger):
+		scenario_list[idx] = empty_scenario
 	
 	# Set up which scenarios are in danger next
-	scenarios_in_danger = min(randi_range(1,3), current_scenario_index + 1)
+	left_scenarios_in_danger = randi_range(1,3)
+	right_scenarios_in_danger = randi_range(1,3)
 	
 	Events.start_scenario.emit()
 	
@@ -189,9 +228,42 @@ func jump(desired_scenario_index: int) -> void:
 
 func _on_map_view_slider_value_changed(value: float) -> void:
 	var max_position: int = max(
-			(len(scenario_list)-4) * sprite_spacing,
+			(len(scenario_list)-5) * sprite_spacing,
 			0
 		)
-	var desired_camera_position: int = max_position * value
+	var min_position: int = 2 * sprite_spacing
+	var desired_camera_position: int = min_position + int(max_position * value)
 
 	map_camera.position = Vector2(desired_camera_position, 0)
+
+
+func _look_at_scenario_index(idx: int) -> void:
+	print('looking at index ', idx)
+	var max_position: int = max(
+			(len(scenario_list)-5) * sprite_spacing,
+			0
+		)
+	var min_position: int = 2 * sprite_spacing
+	var desired_camera_position: int = clamp(idx * sprite_spacing, min_position, max_position)
+
+	map_camera.position = Vector2(desired_camera_position, 0)
+	_update_slider_from_camera_position()
+
+
+func _update_slider_from_camera_position() -> void:
+	if len(scenario_list) == 0:
+		return
+		
+	var max_position: int = max(
+			(len(scenario_list)-5) * sprite_spacing,
+			0
+		)
+	var min_position: int = 2 * sprite_spacing
+	
+	# Calculate slider value based on camera position within bounds
+	var slider_value: float = 0.0
+	if max_position > min_position:
+		slider_value = float(map_camera.position.x - min_position) / float(max_position - min_position)
+		slider_value = clampf(slider_value, 0.0, 1.0)
+	
+	%MapViewSlider.value = slider_value
