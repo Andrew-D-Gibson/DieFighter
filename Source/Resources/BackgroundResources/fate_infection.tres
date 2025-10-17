@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="BackgroundResource" load_steps=5 format=3 uid="uid://c440n0q257p8h"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_tbvtb"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_v0oo0"]
+[ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="3_5u8kd"]
+
+[sub_resource type="Resource" id="Resource_um1v6"]
+script = ExtResource("2_v0oo0")
+scene = ExtResource("3_5u8kd")
+position = Vector2(240, 30)
+scale = Vector2(1, 1)
+rotation = 0.0
+modulate = Color(1, 1, 1, 1)
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[resource]
+script = ExtResource("1_tbvtb")
+background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+nebula = false
+nebula_color = Color(0.388235, 0.376471, 0.360784, 0.168627)
+stars = true
+num_of_stars = 16
+num_of_twinkling_stars = 4
+debris = true
+num_of_med_pieces = 20
+num_of_large_pieces = 4
+static_objects = Array[ExtResource("2_v0oo0")]([SubResource("Resource_um1v6")])
+metadata/_custom_type_script = "uid://c0mcptxevxdde"

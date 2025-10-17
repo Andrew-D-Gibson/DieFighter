@@ -30,9 +30,9 @@ func pick_random_velocity_delta() -> void:
 	var velocity_level: int 
 	
 	if is_medium:
-		velocity_level = randi_range(1,3)
+		velocity_level = randi_range(2,4)
 	else:
-		velocity_level = randi_range(0,2)
+		velocity_level = randi_range(1,2)
 		
 	velocity_delta = velocity_level * min_velocity_delta
 	

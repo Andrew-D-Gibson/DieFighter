@@ -1,4 +1,4 @@
-[gd_scene load_steps=72 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=71 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -57,13 +57,12 @@
 [ext_resource type="Resource" uid="uid://ceruh36kfjrl2" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_turn_run.tres" id="42_o2el7"]
 [ext_resource type="Resource" uid="uid://c07y7hi4fusk2" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_combat_prompt.tres" id="44_h1v2j"]
 [ext_resource type="Resource" uid="uid://bpwf4s4ak2icf" path="res://Source/Systems/TutorialManager/TutorialStepResources/reward_explanation.tres" id="45_gp2ob"]
-[ext_resource type="Resource" uid="uid://cujs3pocag3jh" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres" id="45_s8v7r"]
 [ext_resource type="Resource" uid="uid://bdbd1rtmat50j" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_reveal.tres" id="46_1gi3i"]
 [ext_resource type="Resource" uid="uid://w20v8satrhj" path="res://Source/Systems/TutorialManager/TutorialStepResources/rearrange_systems.tres" id="46_p3tcj"]
 [ext_resource type="Resource" uid="uid://cdqu7flv8i1eq" path="res://Source/Systems/TutorialManager/TutorialStepResources/switch_to_map.tres" id="47_7ku7q"]
 [ext_resource type="Resource" uid="uid://bcutac2qknefg" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_anomaly_explanation.tres" id="48_qd85q"]
 [ext_resource type="Resource" uid="uid://cjs5pb8b7yx5b" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_explanation.tres" id="49_p3tcj"]
-[ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="64_nwhv6"]
+[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="62_p3tcj"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -301,7 +300,7 @@ shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
-starting_scenario = ExtResource("45_s8v7r")
+starting_scenario = ExtResource("62_p3tcj")
 
 [node name="GameStartAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager"]
 process_mode = 3
@@ -314,6 +313,3 @@ autoplay = "game_start"
 [node name="PauseMenu" parent="." instance=ExtResource("4_6ebjm")]
 visible = false
 position = Vector2(160, 90)
-
-[node name="BlackHole" parent="." instance=ExtResource("64_nwhv6")]
-position = Vector2(163, 63)

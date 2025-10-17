@@ -1,13 +1,42 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=5 format=3 uid="uid://di36ampkuhkyk"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=13 format=3 uid="uid://di36ampkuhkyk"]
 
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_8iss7"]
+[ext_resource type="Resource" uid="uid://c440n0q257p8h" path="res://Source/Resources/BackgroundResources/fate_infection.tres" id="1_l10eu"]
 [ext_resource type="Texture2D" uid="uid://b4am2o0ati2av" path="res://Assets/Textures/Map/EncounterIcons/fate_encounter.png" id="1_sphwn"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_whll6"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_sphwn"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="3_70wql"]
+[ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="4_dgdaw"]
+[ext_resource type="Resource" uid="uid://cjnui7le0auy3" path="res://Source/Content/Enemies/EnemyResources/fate_attacker.tres" id="9_8iss7"]
+[ext_resource type="Resource" uid="uid://dhov6epk1r2c0" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_attacker_combat.tres" id="9_aad1g"]
+
+[sub_resource type="Resource" id="Resource_aad1g"]
+script = ExtResource("4_dgdaw")
+eligible_backgrounds = Array[ExtResource("1_8iss7")]([ExtResource("1_l10eu")])
+reselect_on_scenario_load = true
+reselect_on_manual_background_change = false
+metadata/_custom_type_script = "uid://3roroso3mo17"
+
+[sub_resource type="Resource" id="Resource_8iss7"]
+script = ExtResource("1_whll6")
+min_money = 1
+max_money = 1
+num_of_rewards = 0
+dice_probability = 0.0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_n804a"]
+script = ExtResource("3_70wql")
+enemy_resource = ExtResource("9_8iss7")
+spawning_path_location = 0.5
+starting_state = ExtResource("9_aad1g")
+reward_resource = SubResource("Resource_8iss7")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
 script = ExtResource("2_sphwn")
 map_icon = ExtResource("1_sphwn")
-starting_enemies = Array[ExtResource("3_70wql")]([])
+background_resource = SubResource("Resource_aad1g")
+starting_enemies = Array[ExtResource("3_70wql")]([SubResource("Resource_n804a")])
 rewards = Dictionary[int, ExtResource("1_whll6")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

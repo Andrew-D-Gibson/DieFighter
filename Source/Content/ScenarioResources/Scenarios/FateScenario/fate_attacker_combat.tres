@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=3 format=3 uid="uid://dhov6epk1r2c0"]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="1_7f861"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="2_u1rk4"]
+
+[resource]
+script = ExtResource("1_7f861")
+dialogue = "[shake rate=15.0 level=2 connected=1][color=purple]YOU CAN'T ESCAPE[/color][/shake]"
+faction = 0
+attitude = 2
+transitions = Dictionary[int, ExtResource("2_u1rk4")]({})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

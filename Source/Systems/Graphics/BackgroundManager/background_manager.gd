@@ -1,7 +1,7 @@
 class_name BackgroundManager
 extends Sprite2D
 
-@export var starting_background: BackgroundResource
+@export var starting_background: Resource
 
 @export_category("Managed Scenes")
 @export var nebula_scene: PackedScene
@@ -13,6 +13,7 @@ var screen_size: Vector2 = Vector2(320, 180)
 
 var stars: Array[Node2D]
 var debris: Array[Node2D]
+var static_objects: Array[Node2D]
 
 
 func _ready() -> void:
@@ -49,6 +50,7 @@ func _process(delta: float) -> void:
 func _clear_children() -> void:
 	stars = []
 	debris = []
+	static_objects = []
 	
 	var children = get_children()
 	for i in range(len(children)-1, -1, -1):
@@ -56,19 +58,35 @@ func _clear_children() -> void:
 	
 	
 	
-func _set_background(background_resource: BackgroundResource) -> void:
+func _set_background(background_resource: Resource) -> void:
 	_clear_children()
-
-	self.self_modulate = background_resource.background_color
 	
-	if background_resource.nebula:
-		_set_nebula(background_resource.nebula_color)
+	# Handle RandomBackgroundResource
+	if background_resource.has_method("get_random_background"):
+		var selected_bg = background_resource.get_random_background()
+		if selected_bg:
+			_set_background(selected_bg)
+		return
+	
+	# Handle regular BackgroundResource
+	if not background_resource is BackgroundResource:
+		push_error("BackgroundManager: Invalid background resource type!")
+		return
+	
+	var bg_resource = background_resource as BackgroundResource
+	self.self_modulate = bg_resource.background_color
+	
+	if bg_resource.nebula:
+		_set_nebula(bg_resource.nebula_color)
 		
-	if background_resource.stars:
-		_set_stars(background_resource.num_of_stars, background_resource.num_of_twinkling_stars)
+	if bg_resource.stars:
+		_set_stars(bg_resource.num_of_stars, bg_resource.num_of_twinkling_stars)
 
-	if background_resource.debris:
-		_set_debris(background_resource.num_of_med_pieces, background_resource.num_of_large_pieces, background_resource.background_color)
+	if bg_resource.debris:
+		_set_debris(bg_resource.num_of_med_pieces, bg_resource.num_of_large_pieces, bg_resource.background_color)
+	
+	if bg_resource.static_objects.size() > 0:
+		_set_static_objects(bg_resource.static_objects)
 
 
 func _set_nebula(nebula_color: Color) -> void:
@@ -125,4 +143,19 @@ func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_co
 		)
 		
 		debris.append(piece)
+
+
+func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResource]) -> void:
+	for object_data in static_object_data:
+		if object_data.scene:
+			var static_object = object_data.scene.instantiate()
+			add_child(static_object)
+			
+			# Set position, scale, rotation, and modulate
+			static_object.global_position = object_data.position
+			static_object.scale = object_data.scale
+			static_object.rotation = object_data.rotation
+			static_object.modulate = object_data.modulate
+			
+			static_objects.append(static_object)
 	

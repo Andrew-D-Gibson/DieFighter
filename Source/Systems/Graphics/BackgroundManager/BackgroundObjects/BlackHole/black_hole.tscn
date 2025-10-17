@@ -19,7 +19,7 @@ shader_parameter/n_colors = 3
 shader_parameter/size = -1.09
 shader_parameter/OCTAVES = 3
 shader_parameter/seed = 1.0
-shader_parameter/time = 1259.63
+shader_parameter/time = 1336.7
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_orf8c"]
 shader = ExtResource("1_o5rjf")
@@ -84,7 +84,7 @@ turbulence_influence_min = 0.022
 viewport_path = NodePath("SubViewport")
 
 [node name="BlackHole" type="Node2D"]
-z_index = -5
+z_index = 1
 script = ExtResource("1_kn5v7")
 
 [node name="Disk" type="ColorRect" parent="."]

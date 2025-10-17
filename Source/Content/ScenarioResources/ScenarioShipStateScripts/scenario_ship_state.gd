@@ -1,7 +1,7 @@
 class_name ScenarioShipState
 extends ScenarioShipStateBase
 
-@export var dialogue: String
+@export_multiline var dialogue: String
 @export var faction: ScenarioManager.Faction
 @export var attitude: Enemy.Attitude
 @export var effects_on_enter: EffectChain

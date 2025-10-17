@@ -16,3 +16,6 @@ extends Resource
 @export var debris: bool
 @export var num_of_med_pieces: int
 @export var num_of_large_pieces: int
+
+@export_category('Static Objects')
+@export var static_objects: Array[StaticBackgroundObjectResource] = []

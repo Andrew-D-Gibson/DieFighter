@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://ds03fs4txnc1c"]
+
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_0cble"]
+[ext_resource type="Texture2D" uid="uid://7dsr0uxuyb6q" path="res://Assets/Textures/Enemies/Attacker/fate_attacker.png" id="2_6kq45"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="3_1g7le"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jir27"]
+shader = ExtResource("1_0cble")
+shader_parameter/flash_color = Color(0.815686, 0.211765, 0.337255, 1)
+shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(1, 1, 1, 1)
+shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
+shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
+shader_parameter/cloak_tolerance = 0.1
+
+[node name="FateEnemyGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_jir27")
+texture = ExtResource("2_6kq45")
+
+[node name="EngineParticles" parent="." instance=ExtResource("3_1g7le")]
+position = Vector2(-5, -11)
+
+[node name="EngineParticles2" parent="." instance=ExtResource("3_1g7le")]
+position = Vector2(4, -11)

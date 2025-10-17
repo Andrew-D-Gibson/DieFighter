@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="BackgroundResource" load_steps=2 format=3 uid="uid://sk166eerw6ax"]
+[gd_resource type="Resource" script_class="BackgroundResource" load_steps=3 format=3 uid="uid://sk166eerw6ax"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_8nfou"]
 
 [resource]
 resource_local_to_scene = true
@@ -14,4 +15,5 @@ num_of_twinkling_stars = 15
 debris = true
 num_of_med_pieces = 64
 num_of_large_pieces = 12
+static_objects = Array[ExtResource("2_8nfou")]([])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

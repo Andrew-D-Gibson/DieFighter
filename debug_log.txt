@@ -1,4 +1,10 @@
-[19:08:09] Debug logger initialized
-[19:08:09] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
-[19:08:09] Starting scenario
-[19:08:09] Starting combat
+[00:24:19] Debug logger initialized
+[00:24:19] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres
+[00:24:20] Starting scenario
+[00:24:20] Starting combat
+[00:24:40] Player attacked ship: Enemy (Faction: PIRATE)
+[00:24:40] Scenario Event: PLAYER_ATTACKED_PIRATE
+[00:24:40] Enemy left: PIRATE
+[00:24:40] Scenario Event: PIRATES_DEFEATED
+[00:24:40] Combat finished
+[00:24:40] Scenario Event: COMBAT_ENDED
