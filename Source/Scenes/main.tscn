@@ -62,7 +62,7 @@
 [ext_resource type="Resource" uid="uid://cdqu7flv8i1eq" path="res://Source/Systems/TutorialManager/TutorialStepResources/switch_to_map.tres" id="47_7ku7q"]
 [ext_resource type="Resource" uid="uid://bcutac2qknefg" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_anomaly_explanation.tres" id="48_qd85q"]
 [ext_resource type="Resource" uid="uid://cjs5pb8b7yx5b" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_explanation.tres" id="49_p3tcj"]
-[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="62_p3tcj"]
+[ext_resource type="Resource" uid="uid://cujs3pocag3jh" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres" id="62_p3tcj"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3

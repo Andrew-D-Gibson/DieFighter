@@ -26,6 +26,7 @@ var right_scenarios_in_danger: int
 
 @export_category('Behavior')
 @export var empty_scenario: ScenarioResource
+@export var fate_scenario: ScenarioResource
 @export var sprite_spacing: int = 14
 
 var scenario_sprites: Array[Sprite2D]
@@ -80,7 +81,7 @@ func _update_ui() -> void:
 func _update_map_sprites() -> void:
 	# Delete any old map
 	for child in map_viewport.get_children():
-		if child is Sprite2D:
+		if child is not Camera2D:
 			child.queue_free()
 	scenario_sprites = []
 	
@@ -238,7 +239,6 @@ func _on_map_view_slider_value_changed(value: float) -> void:
 
 
 func _look_at_scenario_index(idx: int) -> void:
-	print('looking at index ', idx)
 	var max_position: int = max(
 			(len(scenario_list)-5) * sprite_spacing,
 			0
@@ -248,6 +248,7 @@ func _look_at_scenario_index(idx: int) -> void:
 
 	map_camera.position = Vector2(desired_camera_position, 0)
 	_update_slider_from_camera_position()
+	
 
 
 func _update_slider_from_camera_position() -> void:
@@ -266,4 +267,4 @@ func _update_slider_from_camera_position() -> void:
 		slider_value = float(map_camera.position.x - min_position) / float(max_position - min_position)
 		slider_value = clampf(slider_value, 0.0, 1.0)
 	
-	%MapViewSlider.value = slider_value
+	%MapViewSlider.set_value_no_signal(slider_value)

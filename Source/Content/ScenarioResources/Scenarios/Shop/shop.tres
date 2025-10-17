@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://c6ltm4ylf42ka" path="res://Assets/Textures/Map/EncounterIcons/shop.png" id="1_7qv0j"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_36yx3"]
-[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_wh6f6"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="1_vppj1"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="2_7qv0j"]
 [ext_resource type="Resource" uid="uid://lxupqxmk1she" path="res://Source/Content/Enemies/EnemyResources/shop.tres" id="5_nta17"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_6w0ix"]
@@ -27,7 +27,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 [resource]
 script = ExtResource("1_36yx3")
 map_icon = ExtResource("1_7qv0j")
-background_resource = ExtResource("1_wh6f6")
+background_resource = ExtResource("1_vppj1")
 starting_enemies = Array[ExtResource("2_7qv0j")]([SubResource("Resource_fly3e")])
 rewards = Dictionary[int, ExtResource("6_6w0ix")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

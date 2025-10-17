@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://bf2p4youiejta"]
 
-[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="1_imak8"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="1_imak8"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_n0owd"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="2_nencf"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_u3vcg"]

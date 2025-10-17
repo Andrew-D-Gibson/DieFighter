@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" load_steps=14 format=3 uid="uid://b5fsugdeu2q82"]
 
-[ext_resource type="Resource" uid="uid://dx0lfddfuacuv" path="res://Source/Resources/BackgroundResources/blue_nebula.tres" id="1_e3kvy"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="1_hi8qk"]
 [ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="2_3prfu"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="3_4ofoe"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="4_0qfbq"]
@@ -45,7 +45,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 [resource]
 script = ExtResource("3_4ofoe")
 map_icon = ExtResource("2_3prfu")
-background_resource = ExtResource("1_e3kvy")
+background_resource = ExtResource("1_hi8qk")
 starting_enemies = Array[ExtResource("4_0qfbq")]([SubResource("Resource_5v5ce"), SubResource("Resource_jmxcg")])
 rewards = Dictionary[int, ExtResource("6_rqx5v")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

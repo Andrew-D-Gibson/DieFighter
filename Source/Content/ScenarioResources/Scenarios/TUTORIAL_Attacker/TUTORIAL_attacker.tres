@@ -1,12 +1,21 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://cujs3pocag3jh"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=13 format=3 uid="uid://cujs3pocag3jh"]
 
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_0f1ft"]
 [ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_282it"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_c6gmy"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="3_0f1ft"]
+[ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="3_fai4t"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="4_fai4t"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="5_cabnm"]
 [ext_resource type="Resource" uid="uid://df6wvblwp3imy" path="res://Source/Content/Enemies/EnemyResources/tutorial_attacker.tres" id="6_282it"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="7_er4eg"]
+
+[sub_resource type="Resource" id="Resource_cabnm"]
+script = ExtResource("3_fai4t")
+eligible_backgrounds = Array[ExtResource("1_0f1ft")]([ExtResource("1_282it")])
+reselect_on_scenario_load = true
+reselect_on_manual_background_change = false
+metadata/_custom_type_script = "uid://3roroso3mo17"
 
 [sub_resource type="Resource" id="Resource_if8fm"]
 script = ExtResource("3_0f1ft")
@@ -27,7 +36,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 [resource]
 script = ExtResource("4_fai4t")
 map_icon = ExtResource("2_c6gmy")
-background_resource = ExtResource("1_282it")
+background_resource = SubResource("Resource_cabnm")
 starting_enemies = Array[ExtResource("5_cabnm")]([SubResource("Resource_jfns0")])
 rewards = Dictionary[int, ExtResource("3_0f1ft")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"
