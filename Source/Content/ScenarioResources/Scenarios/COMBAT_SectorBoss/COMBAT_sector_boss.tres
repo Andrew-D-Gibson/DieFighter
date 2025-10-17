@@ -28,6 +28,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("3_664ej")
 map_icon = ExtResource("2_1djmd")
 background_resource = ExtResource("1_86g1y")
+sector_gate_scenario = true
 starting_enemies = Array[ExtResource("4_f4n7r")]([SubResource("Resource_4dr6h")])
 rewards = Dictionary[int, ExtResource("6_msmmn")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

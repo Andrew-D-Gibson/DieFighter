@@ -1,4 +1,27 @@
-[14:45:14] Debug logger initialized
-[14:45:14] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
-[14:45:15] Starting scenario
-[14:45:15] Starting combat
+[16:59:25] Debug logger initialized
+[16:59:25] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
+[16:59:26] Starting scenario
+[16:59:26] Starting combat
+[16:59:36] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres
+[16:59:37] Starting scenario
+[16:59:53] Enemy left: PIRATE
+[16:59:53] Enemy left: PIRATE
+[16:59:53] Scenario Event: PIRATES_DEFEATED
+[16:59:53] Combat finished
+[16:59:53] Scenario Event: COMBAT_ENDED
+[17:00:02] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres
+[17:00:02] Starting scenario
+[17:00:02] Starting combat
+[17:00:16] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres
+[17:00:16] Starting scenario
+[17:00:31] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres
+[17:00:31] Starting scenario
+[17:00:41] Player attacked ship: Enemy (Faction: PIRATE)
+[17:00:41] Scenario Event: PLAYER_ATTACKED_PIRATE
+[17:00:41] Enemy left: PIRATE
+[17:00:41] Scenario Event: PIRATES_DEFEATED
+[17:00:41] Combat finished
+[17:00:41] Scenario Event: COMBAT_ENDED
+[17:01:15] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres
+[17:01:15] Starting scenario
+[17:01:15] Starting combat

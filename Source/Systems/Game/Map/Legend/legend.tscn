@@ -1,0 +1,101 @@
+[gd_scene load_steps=5 format=3 uid="uid://blp14n64j3va4"]
+
+[ext_resource type="Texture2D" uid="uid://ei1amc0hd7mp" path="res://Assets/Textures/Map/Legend/legend_popup.png" id="1_jlgf1"]
+[ext_resource type="Script" uid="uid://ccnfxifnxw115" path="res://Source/Systems/Game/Map/Legend/legend.gd" id="2_s1hfy"]
+[ext_resource type="Texture2D" uid="uid://bfigtsjnh5xbr" path="res://Assets/Textures/Map/Legend/legend_arrow.png" id="3_xtims"]
+[ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="4_xwhjq"]
+
+[node name="Legend" type="Sprite2D"]
+z_index = -2
+texture = ExtResource("1_jlgf1")
+script = ExtResource("2_s1hfy")
+
+[node name="OpenCloseButton" type="Button" parent="."]
+offset_left = -30.0
+offset_top = -45.0
+offset_right = -16.0
+offset_bottom = -37.0
+focus_mode = 0
+flat = true
+
+[node name="ButtonSprite" type="Sprite2D" parent="OpenCloseButton"]
+unique_name_in_owner = true
+position = Vector2(7, 4)
+texture = ExtResource("3_xtims")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = -4.0
+offset_top = -47.0
+offset_right = 20.0
+offset_bottom = -35.0
+mouse_filter = 2
+text = "LEGEND"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+offset_left = -27.0
+offset_top = -33.0
+offset_right = 27.0
+offset_bottom = 39.0
+mouse_filter = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer"]
+layout_mode = 2
+texture = ExtResource("4_xwhjq")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(36.115, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=#d03656]ENEMY[/color]"
+horizontal_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+texture = ExtResource("4_xwhjq")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(36.115, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=#d03656]ENEMY[/color]"
+horizontal_alignment = 1
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer3"]
+layout_mode = 2
+texture = ExtResource("4_xwhjq")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(36.115, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=#d03656]ENEMY[/color]"
+horizontal_alignment = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer/HBoxContainer4"]
+layout_mode = 2
+texture = ExtResource("4_xwhjq")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="VBoxContainer/HBoxContainer4"]
+custom_minimum_size = Vector2(36.115, 0)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=#d03656]ENEMY[/color]"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="OpenCloseButton" to="." method="_on_button_pressed"]

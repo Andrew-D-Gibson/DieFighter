@@ -1,9 +1,10 @@
-[gd_scene load_steps=36 format=3 uid="uid://bq0eop4cxspu2"]
+[gd_scene load_steps=37 format=3 uid="uid://bq0eop4cxspu2"]
 
 [ext_resource type="Script" uid="uid://cvrol7xf2a7co" path="res://Source/Systems/Game/MainViewer/main_viewer.gd" id="1_v7j4o"]
 [ext_resource type="Texture2D" uid="uid://bg440mkt2sgd6" path="res://Assets/Textures/MainViewer/MainViewer-Sheet.png" id="2_q6tn0"]
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_sgr5l"]
 [ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/MapTileResources/engine_charger.tres" id="6_uglmk"]
+[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="8_5ksti"]
 [ext_resource type="PackedScene" uid="uid://duqlasjukaoyh" path="res://Source/Systems/Game/Map/danger_area.tscn" id="8_xbbhg"]
 [ext_resource type="Resource" uid="uid://crph25pv1d7aa" path="res://Source/Content/Tiles/MapTileResources/map_arrow_left.tres" id="10_tmld6"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
@@ -197,6 +198,7 @@ map_camera = NodePath("ViewportTexture/MapViewport/Camera2D")
 left_arrow_tile = NodePath("LeftArrowTile")
 right_arrow_tile = NodePath("RightArrowTile")
 empty_scenario = ExtResource("14_mm1jt")
+fate_scenario = ExtResource("8_5ksti")
 
 [node name="ViewportTexture" type="TextureRect" parent="Map"]
 z_index = -1
