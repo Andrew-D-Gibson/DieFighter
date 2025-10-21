@@ -13,8 +13,9 @@ func _ready() -> void:
 func _jump_to_scenario(scenario: ScenarioResource) -> void:
 	Events.jump.emit()
 	
-	await Globals.background_manager.play_jump_animation()
-	
+	await Globals.background_manager.play_jump_intro()
+	await get_tree().create_timer(2).timeout
 	Events.load_scenario.emit(scenario)
+	await Globals.background_manager.play_jump_outro()
 	
 	Events.start_scenario.emit()

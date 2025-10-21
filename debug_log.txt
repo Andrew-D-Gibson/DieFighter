@@ -1,8 +1,6 @@
-[16:30:57] Debug logger initialized
-[16:30:57] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
-[16:30:58] Starting scenario
-[16:30:58] Starting combat
-[16:31:05] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[16:31:05] Starting scenario
-[16:31:05] Combat finished
-[16:31:05] Scenario Event: COMBAT_ENDED
+[19:23:24] Debug logger initialized
+[19:23:24] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
+[19:23:24] Starting scenario
+[19:23:24] Starting combat
+[19:23:35] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres
+[19:23:36] Starting scenario

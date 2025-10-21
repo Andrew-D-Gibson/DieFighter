@@ -80,9 +80,9 @@ func _update_nebula_motion(_delta: float) -> void:
 		
 		# Calculate the effective speed for this frame
 		var speed_multiplier: float = global_speed * get_parallax_speed(parallax_level)
-		var base_speed: Vector2 = Vector2(0, -0.005)  # Base nebula speed
-		var effective_speed: Vector2 = base_speed * speed_multiplier
-		nebula.material.set_shader_parameter("speed", effective_speed)
+		var base_speed: float = -0.005  # Base nebula speed
+		var effective_speed: float = base_speed * speed_multiplier
+		nebula.speed = effective_speed
 
 
 func _update_static_objects_motion(delta: float) -> void:
@@ -261,6 +261,47 @@ func make_static_objects_movable() -> void:
 			static_object.set_meta("parallax_level", 1)
 	
 
-func play_jump_animation() -> void:	
-	await %JumpTransition.fade_in()
-	await %JumpTransition.fade_out()
+func play_jump_intro() -> void:
+	# Set up timings
+	var speed_ramp_up_time: float = 4
+
+	# Speed up the background object speed by half
+	await tween_speed(320, speed_ramp_up_time/2)
+	
+	# Start fading in particles
+	%JumpTransition.set_background_transparency(0)
+	%JumpTransition.set_particles_transparency(0)
+	%JumpTransition.show()
+	%JumpTransition.tween_particles(1.0, speed_ramp_up_time/2)
+	
+	# Finish speeding up background objects
+	await tween_speed(480, speed_ramp_up_time/2)
+	
+	# Punch in the jump background
+	%JumpTransition.tween_background(1.0, 0.5)
+	
+	# Shake the camera
+	Events.camera_shake_large.emit()
+	
+	
+func play_jump_outro() -> void:
+	var speed_ramp_down_time: float = 1
+	
+	# Drop the jump background
+	%JumpTransition.set_background_transparency(0)
+	
+	# Quickly slow down and fade the particles
+	%JumpTransition.tween_particles(0, speed_ramp_down_time)
+	await tween_speed(16, speed_ramp_down_time)
+	%JumpTransition.hide()
+	
+	
+func tween_speed(final_speed: int, time: float) -> void:
+	var speed_tween: Tween = get_tree().create_tween()
+	speed_tween.tween_property(
+		self,
+		"global_speed",
+		final_speed,
+		time
+	)
+	await speed_tween.finished

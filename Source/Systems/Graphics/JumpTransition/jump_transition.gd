@@ -4,52 +4,48 @@ extends Control
 @export var fade_in_time: float = 2
 @export var fade_out_time: float = 2
 
+#var particle_sprites:
+
 var fade_tween: Tween
 
 func set_transparency(alpha: float) -> void:
+	set_background_transparency(alpha)
+	set_particles_transparency(alpha)
+	
+	
+func set_background_transparency(alpha: float) -> void:
 	%JumpTexture.material.set_shader_parameter("alpha", alpha)
+	
+	
+func set_particles_transparency(alpha: float) -> void:
 	%ParticleSheet.modulate = Color(1,1,1,alpha)
 	
 	
 func _ready() -> void:
+	set_background_transparency(0)
+	set_particles_transparency(0)
 	hide()
-	
-
-func fade_in() -> void:
-	show()
-	return
-	
-	set_transparency(0)
-	if fade_tween:
-		fade_tween.kill()
-	
-	fade_tween = get_tree().create_tween()
-	fade_tween.tween_method(
-		set_transparency,
-		0,
-		1,
-		fade_in_time
-	).set_trans(Tween.TRANS_LINEAR)\
-	.set_ease(Tween.EASE_IN_OUT)
-	
-	await fade_tween.finished
 
 
-func fade_out() -> void:
-	hide()
-	return
+func tween_particles(alpha: float, time: float) -> void:
+	var current_alpha: float = %ParticleSheet.modulate.a
 	
-	if fade_tween:
-		fade_tween.kill()
+	var particle_tween: Tween = get_tree().create_tween()
+	particle_tween.tween_method(
+		set_particles_transparency,
+		current_alpha,
+		alpha,
+		time
+	)
 	
-	fade_tween = get_tree().create_tween()
-	fade_tween.tween_method(
-		set_transparency,
-		1,
-		0,
-		fade_out_time
-	).set_trans(Tween.TRANS_LINEAR)\
-	.set_ease(Tween.EASE_IN_OUT)
 	
-	await fade_tween.finished
-	hide()
+func tween_background(alpha: float, time: float) -> void:
+	var current_alpha: float = %JumpTexture.material.get_shader_parameter("alpha")
+	
+	var background_tween: Tween = get_tree().create_tween()
+	background_tween.tween_method(
+		set_background_transparency,
+		current_alpha,
+		alpha,
+		time
+	)

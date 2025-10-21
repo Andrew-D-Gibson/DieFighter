@@ -1,12 +1,12 @@
 shader_type canvas_item;
 
-uniform vec2 speed = vec2(0.0, -0.02);
+uniform float uv_offset = 0.0;
 uniform vec4 nebula_color; // = vec4(0.2, 0.4, 1.0, 0.1); // Blueish nebula color
 
 void fragment() {
     //vec2 uv = UV + TIME * speed;
 
-    float noise = texture(TEXTURE, UV + (speed * TIME)).r;
+    float noise = texture(TEXTURE, UV + vec2(0.0, uv_offset)).r;
 	float low_step = step(0.4, noise);
 	float mid_step = step(0.6, noise);
 	float high_step = step(0.8, noise);

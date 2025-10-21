@@ -870,6 +870,7 @@ animations = [{
 }]
 
 [node name="JumpTransition" type="Control"]
+visible = false
 clip_contents = true
 custom_minimum_size = Vector2(320, 180)
 layout_mode = 3

@@ -1,10 +1,11 @@
-[gd_scene load_steps=5 format=3 uid="uid://bqnr0itscotaw"]
+[gd_scene load_steps=6 format=3 uid="uid://bqnr0itscotaw"]
 
 [ext_resource type="Shader" uid="uid://bo7q4qcfw0qo2" path="res://Assets/Shaders/sprite_nebula.gdshader" id="1_v8qsw"]
+[ext_resource type="Script" uid="uid://d3qhi416w1kq5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/nebula.gd" id="2_h11pt"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cshgf"]
 shader = ExtResource("1_v8qsw")
-shader_parameter/speed = Vector2(0, -0.01)
+shader_parameter/uv_offset = 0.0
 shader_parameter/nebula_color = Vector4(0, 0, 0, 0)
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_a6pqk"]
@@ -22,3 +23,4 @@ z_index = 2
 texture_repeat = 2
 material = SubResource("ShaderMaterial_cshgf")
 texture = SubResource("NoiseTexture2D_rir3g")
+script = ExtResource("2_h11pt")
