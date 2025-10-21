@@ -11,6 +11,7 @@ position = Vector2(240, 30)
 scale = Vector2(1, 1)
 rotation = 0.0
 modulate = Color(1, 1, 1, 1)
+parallax_level = 0
 metadata/_custom_type_script = "uid://cgosy7gnhi58w"
 
 [resource]

@@ -2,6 +2,11 @@ class_name BackgroundManager
 extends Sprite2D
 
 @export var starting_background: Resource
+@export var jump_animation_time: float = 5
+
+@export_category("Parallax System")
+@export var global_speed: float = 16
+@export var parallax_levels: Array[float] = [0.1, 0.2, 0.3, 0.7, 1.0]  # Speed multipliers for each parallax level
 
 @export_category("Managed Scenes")
 @export var nebula_scene: PackedScene
@@ -14,6 +19,7 @@ var screen_size: Vector2 = Vector2(320, 180)
 var stars: Array[Node2D]
 var debris: Array[Node2D]
 var static_objects: Array[Node2D]
+var nebula: Node2D
 
 ## Static RNG instance for choosing backgrounds from the random list
 static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -34,31 +40,94 @@ func _ready() -> void:
 	
 	
 func _process(delta: float) -> void:
-	for star in stars:
-		star.global_position.y += delta * 3
+	# Update all moving objects with parallax-based motion
+	_update_stars_motion(delta)
+	_update_debris_motion(delta)
+	_update_nebula_motion(delta)
+	_update_static_objects_motion(delta)
+
+
+func _update_stars_motion(delta: float) -> void:
+	for star: Node2D in stars:
+		var parallax_level: int = star.get_meta("parallax_level", 0)
+		
+		var speed: float = global_speed * get_parallax_speed(parallax_level) * 3.0
+		star.global_position.y += delta * speed
 		
 		if star.global_position.y > screen_size.y + 5:
 			star.global_position.y = -5
 			star.global_position.x = randf_range(0, screen_size.x)
-			
-	for piece in debris:
-		piece.global_position.y += delta * (5 + piece.velocity_delta)
+
+
+func _update_debris_motion(delta: float) -> void:
+	for piece: Node2D in debris:
+		var parallax_level: int = piece.get_meta("parallax_level", 2)
+		
+		var base_speed: float = 2.0 + piece.velocity_delta
+		var speed: float = (global_speed * get_parallax_speed(parallax_level)) + base_speed
+		piece.global_position.y += delta * speed
 		
 		if piece.global_position.y > screen_size.y + piece.texture.get_height():
 			piece.pick_random_texture()
 			piece.pick_random_velocity_delta()
 			piece.global_position.y = -5 - piece.texture.get_height()
 			piece.global_position.x = randf_range(0, screen_size.x)
+
+
+func _update_nebula_motion(_delta: float) -> void:
+	if nebula and nebula.material:
+		var parallax_level: int = nebula.get_meta("parallax_level", 1)
+		
+		# Calculate the effective speed for this frame
+		var speed_multiplier: float = global_speed * get_parallax_speed(parallax_level)
+		var base_speed: Vector2 = Vector2(0, -0.005)  # Base nebula speed
+		var effective_speed: Vector2 = base_speed * speed_multiplier
+		nebula.material.set_shader_parameter("speed", effective_speed)
+
+
+func _update_static_objects_motion(delta: float) -> void:
+	for obj: Node2D in static_objects:
+		var parallax_level: int = obj.get_meta("parallax_level")
+		if parallax_level != null and parallax_level > 0:  # Only move if parallax level is set
+			var speed: float = global_speed * get_parallax_speed(parallax_level) * 2.0
+			obj.global_position.y += delta * speed
+			
+			# Reset position if it goes off screen
+			if obj.global_position.y > screen_size.y + 50:
+				obj.global_position.y = -50
+				obj.global_position.x = randf_range(0, screen_size.x)
+
+
+## Get the speed multiplier for a given parallax level
+func get_parallax_speed(level: int) -> float:
+	if level < 0 or level >= parallax_levels.size():
+		return 1.0
+	return parallax_levels[level]
+
+
+## Set the global speed and update all objects
+func set_global_speed(new_speed: float) -> void:
+	global_speed = new_speed
+	# Update nebula speed immediately
+	if nebula and nebula.material:
+		var parallax_level: int = nebula.get_meta("parallax_level", 1)
+
+		var speed_multiplier: float = global_speed * get_parallax_speed(parallax_level)
+		var base_speed: Vector2 = Vector2(0, -0.01)
+		var effective_speed: Vector2 = base_speed * speed_multiplier
+		nebula.material.set_shader_parameter("speed", effective_speed)
 	
 	
 func _clear_children() -> void:
 	stars = []
 	debris = []
 	static_objects = []
+	nebula = null
 	
-	var children = get_children()
-	for i in range(len(children)-1, -1, -1):
-		children[i].queue_free()
+	var children: Array[Node] = get_children()
+	for i: int in range(len(children)-1, -1, -1):
+		if children[i] is not Control:
+			children[i].queue_free()
 	
 	
 ## Seeds the rng at the start of the scenario
@@ -72,7 +141,7 @@ func _set_background(background_resource: Resource) -> void:
 	
 	# Handle RandomBackgroundResource
 	if background_resource.has_method("get_random_background"):
-		var selected_bg = background_resource.get_random_background(rng)
+		var selected_bg: Resource = background_resource.get_random_background(rng)
 		if selected_bg:
 			_set_background(selected_bg)
 		return
@@ -82,7 +151,7 @@ func _set_background(background_resource: Resource) -> void:
 		push_error("BackgroundManager: Invalid background resource type!")
 		return
 	
-	var bg_resource = background_resource as BackgroundResource
+	var bg_resource: BackgroundResource = background_resource as BackgroundResource
 	self.self_modulate = bg_resource.background_color
 	
 	if bg_resource.nebula:
@@ -99,20 +168,22 @@ func _set_background(background_resource: Resource) -> void:
 
 
 func _set_nebula(nebula_color: Color) -> void:
-	var nebula = nebula_scene.instantiate()
-	var nebula_color_vec4 = Vector4(
+	nebula = nebula_scene.instantiate()
+	var nebula_color_vec4: Vector4 = Vector4(
 		nebula_color.r,
 		nebula_color.g,
 		nebula_color.b,
 		nebula_color.a
 	)
 	nebula.material.set_shader_parameter('nebula_color',nebula_color_vec4)
+	# Set default parallax level for nebula
+	nebula.set_meta("parallax_level", 1)
 	add_child(nebula)
 
 
 func _set_stars(num_of_stars: int, num_of_twinkling_stars: int) -> void:
-	for i in range(num_of_stars):
-		var star = star_pixel_scene.instantiate()
+	for i: int in range(num_of_stars):
+		var star: Node2D = star_pixel_scene.instantiate()
 		add_child(star)
 		star.global_position = Vector2(
 			randf_range(0, screen_size.x),
@@ -121,12 +192,14 @@ func _set_stars(num_of_stars: int, num_of_twinkling_stars: int) -> void:
 		
 		# Randomize the opacity of the star to simulate distance
 		star.modulate = Color(1, 1, 1, randf_range(0.25, 0.75))
+		
+		star.set_meta("parallax_level", 0)
 		
 		stars.append(star)
 		
 		
-	for i in range(num_of_twinkling_stars):
-		var star = star_twinkle_scene.instantiate()
+	for i: int in range(num_of_twinkling_stars):
+		var star: Node2D = star_twinkle_scene.instantiate()
 		add_child(star)
 		star.global_position = Vector2(
 			randf_range(0, screen_size.x),
@@ -135,16 +208,23 @@ func _set_stars(num_of_stars: int, num_of_twinkling_stars: int) -> void:
 		
 		# Randomize the opacity of the star to simulate distance
 		star.modulate = Color(1, 1, 1, randf_range(0.25, 0.75))
+		
+		star.set_meta("parallax_level", 0)
 		
 		stars.append(star)
 		
 
 func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_color: Color) -> void:
-	for i in range(num_of_med_pieces + num_of_large_pieces):
-		var piece = debris_scene.instantiate()
+	for i: int in range(num_of_med_pieces + num_of_large_pieces):
+		var piece: Node2D = debris_scene.instantiate()
 		piece.is_medium = (i < num_of_med_pieces)
 		piece.randomize()
 		piece.background_color = background_color
+		
+		# Set parallax level based on size (medium = level 2, large = level 3)
+		var parallax_level: int = 2 if piece.is_medium else 1
+		piece.set_meta("parallax_level", parallax_level)
+		
 		add_child(piece)
 		piece.global_position = Vector2(
 			randf_range(0, screen_size.x),
@@ -155,9 +235,9 @@ func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_co
 
 
 func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResource]) -> void:
-	for object_data in static_object_data:
+	for object_data: StaticBackgroundObjectResource in static_object_data:
 		if object_data.scene:
-			var static_object = object_data.scene.instantiate()
+			var static_object: Node2D = object_data.scene.instantiate()
 			add_child(static_object)
 			
 			# Set position, scale, rotation, and modulate
@@ -166,5 +246,21 @@ func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResourc
 			static_object.rotation = object_data.rotation
 			static_object.modulate = object_data.modulate
 			
+			# Set parallax level if specified in the resource
+			if object_data.has_method("get_parallax_level"):
+				static_object.set_meta("parallax_level", object_data.get_parallax_level())
+			else:
+				static_object.set_meta("parallax_level", 0)  # Default to no movement
+			
 			static_objects.append(static_object)
+			
+			
+func make_static_objects_movable() -> void:
+	for static_object: Node2D in static_objects:
+		if static_object.get_meta("parallax_level") == 0:
+			static_object.set_meta("parallax_level", 1)
 	
+
+func play_jump_animation() -> void:	
+	await %JumpTransition.fade_in()
+	await %JumpTransition.fade_out()

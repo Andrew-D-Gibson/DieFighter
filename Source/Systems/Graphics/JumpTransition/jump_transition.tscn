@@ -1,11 +1,12 @@
-[gd_scene load_steps=128 format=3 uid="uid://cbjnjconlgt6"]
+[gd_scene load_steps=128 format=3 uid="uid://d1eqq3hswo3d6"]
 
-[ext_resource type="Texture2D" uid="uid://4ex0iqhvg161" path="res://screenshots_OLD/ss14.png" id="1_5rk5m"]
 [ext_resource type="Shader" uid="uid://648u4hecibjb" path="res://Assets/Shaders/jump_hyperspace.gdshader" id="1_b43g6"]
+[ext_resource type="Script" uid="uid://di4iru0rg55gy" path="res://Source/Systems/Graphics/JumpTransition/jump_transition.gd" id="2_ehwye"]
 [ext_resource type="Texture2D" uid="uid://0c52uikiwgrt" path="res://Assets/SpriteMancer/JumpTransition/jump_particles.png" id="3_bs8hi"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5rk5m"]
 shader = ExtResource("1_b43g6")
+shader_parameter/alpha = 1.0
 shader_parameter/tint_color = Color(0.262745, 0.65098, 0.988235, 1)
 shader_parameter/speed = Vector2(0, -0.02)
 shader_parameter/pixel_resolution = Vector2(320, 180)
@@ -868,9 +869,10 @@ animations = [{
 "speed": 24.0
 }]
 
-[node name="JumpTransition" type="Node2D"]
-
-[node name="ExampleBackground" type="TextureRect" parent="."]
+[node name="JumpTransition" type="Control"]
+clip_contents = true
+custom_minimum_size = Vector2(320, 180)
+layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -878,26 +880,25 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -160.0
 offset_top = -90.0
-offset_right = 1760.0
-offset_bottom = 990.0
+offset_right = 160.0
+offset_bottom = 90.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.167, 0.167)
-texture = ExtResource("1_5rk5m")
+script = ExtResource("2_ehwye")
 
 [node name="JumpTexture" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 material = SubResource("ShaderMaterial_5rk5m")
+position = Vector2(160, 90)
 scale = Vector2(1, 40)
 texture = SubResource("NoiseTexture2D_ehwye")
 offset = Vector2(0, 45)
 
 [node name="ParticleSheet" type="AnimatedSprite2D" parent="JumpTexture"]
+unique_name_in_owner = true
 position = Vector2(0, 0.0125)
 rotation = 1.5708
 scale = Vector2(0.025, 1)
 sprite_frames = SubResource("SpriteFrames_ja7yx")
 autoplay = "default"
 frame_progress = 0.927563
-
-[node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(6, 6)

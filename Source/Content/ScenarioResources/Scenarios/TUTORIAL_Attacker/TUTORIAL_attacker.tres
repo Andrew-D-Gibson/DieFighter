@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ScenarioResource" load_steps=13 format=3 uid="uid://cujs3pocag3jh"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_0f1ft"]
-[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_282it"]
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="2_0f1ft"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_c6gmy"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="3_0f1ft"]
 [ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="3_fai4t"]
@@ -12,7 +12,7 @@
 
 [sub_resource type="Resource" id="Resource_cabnm"]
 script = ExtResource("3_fai4t")
-eligible_backgrounds = Array[ExtResource("1_0f1ft")]([ExtResource("1_282it")])
+eligible_backgrounds = Array[ExtResource("1_0f1ft")]([ExtResource("2_0f1ft")])
 reselect_on_scenario_load = true
 reselect_on_manual_background_change = false
 metadata/_custom_type_script = "uid://3roroso3mo17"

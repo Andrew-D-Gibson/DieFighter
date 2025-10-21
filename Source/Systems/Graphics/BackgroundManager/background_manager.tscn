@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://cwh85ruy5f5pl"]
+[gd_scene load_steps=8 format=3 uid="uid://cwh85ruy5f5pl"]
 
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_dtbxu"]
 [ext_resource type="Script" uid="uid://c5cpp1intb61y" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.gd" id="2_e2ils"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="4_hcsrv"]
 [ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="5_jjrua"]
 [ext_resource type="PackedScene" uid="uid://dhh3wbvm6lsew" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/debris_piece.tscn" id="6_vmxgm"]
+[ext_resource type="PackedScene" uid="uid://d1eqq3hswo3d6" path="res://Source/Systems/Graphics/JumpTransition/jump_transition.tscn" id="7_mwyp7"]
 
 [node name="BackgroundManager" type="Sprite2D"]
 self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
@@ -16,3 +17,11 @@ nebula_scene = ExtResource("3_j7lqu")
 star_pixel_scene = ExtResource("4_hcsrv")
 star_twinkle_scene = ExtResource("5_jjrua")
 debris_scene = ExtResource("6_vmxgm")
+
+[node name="JumpTransition" parent="." instance=ExtResource("7_mwyp7")]
+unique_name_in_owner = true
+offset_left = -320.0
+offset_top = -180.0
+offset_right = 0.0
+offset_bottom = 0.0
+mouse_filter = 2

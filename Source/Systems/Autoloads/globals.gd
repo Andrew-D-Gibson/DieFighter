@@ -8,6 +8,7 @@ var map: Map
 var targeting_computer: TargetingComputer
 var reward_manager: RewardManager
 var money_indicator: MoneyIndicator
+var jump_manager: JumpManager
 
 var enemy_manager: EnemyManager
 var scenario_manager: ScenarioManager

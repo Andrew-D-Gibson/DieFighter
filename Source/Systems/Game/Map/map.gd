@@ -31,16 +31,17 @@ var right_scenarios_in_danger: int
 
 var scenario_sprites: Array[Sprite2D]
 
+signal request_jump_to_scenario(scenario: ScenarioResource)
+
 # Camera bounds constants
-const MIN_CAMERA_POSITION: int = 2
-const MAX_VISIBLE_SCENARIOS: int = 3
+const MIN_CAMERA_INDEX: int = 2
+const MAX_CAMERA_INDEX: int = 3
 
 # Helper functions for camera positioning
-
 ##Returns min and max camera positions in world coordinates
 func _get_camera_bounds() -> Dictionary:
-	var min_pos: int = MIN_CAMERA_POSITION * sprite_spacing
-	var max_pos: int = max((len(scenario_list) - MAX_VISIBLE_SCENARIOS) * sprite_spacing, min_pos)
+	var min_pos: int = MIN_CAMERA_INDEX * sprite_spacing
+	var max_pos: int = max((len(scenario_list) - MAX_CAMERA_INDEX) * sprite_spacing, min_pos)
 	return {"min": min_pos, "max": max_pos}
 
 
@@ -107,9 +108,6 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	right_fate_index = len(scenario_list)
 	
 	_pick_new_danger_ranges()
-	
-	print("left in danger: ", left_scenarios_in_danger)
-	print("right in danger: ", right_scenarios_in_danger)
 	
 	_update_map_sprites()
 	
@@ -283,24 +281,12 @@ func jump(desired_scenario_index: int) -> void:
 		
 	await _tween_map_to_index(desired_scenario_index)
 		
-	Events.jump.emit()
-	
 	# Set the current index scenario to empty
 	if not scenario_list[current_scenario_index].sector_gate_scenario:
 		if current_scenario_index <= left_fate_index or current_scenario_index >= right_fate_index:
 			scenario_list[current_scenario_index] = fate_scenario
 		else:
 			scenario_list[current_scenario_index] = empty_scenario
-
-	# Move to the new encounter
-	current_scenario_index = desired_scenario_index
-	Events.load_scenario.emit(
-		scenario_list[desired_scenario_index]
-	)
-
-	# OLD: Destroy scenarios in danger	
-	#scenario_list = scenario_list.slice(scenarios_in_danger)
-	#current_scenario_index -= scenarios_in_danger
 	
 	# Have "Fate" infect the scenarios in danger
 	for idx: int in range(left_fate_index + 1, left_fate_index + 1 + left_scenarios_in_danger):
@@ -316,7 +302,9 @@ func jump(desired_scenario_index: int) -> void:
 	# Set up which scenarios are in danger next
 	_pick_new_danger_ranges()
 	
-	Events.start_scenario.emit()
+	# Request a jump with the new index
+	current_scenario_index = desired_scenario_index
+	request_jump_to_scenario.emit(scenario_list[current_scenario_index])
 	
 
 func _on_map_view_slider_value_changed(value: float) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=71 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=72 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
@@ -37,6 +37,7 @@
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres" id="26_aaucc"]
 [ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
+[ext_resource type="PackedScene" uid="uid://c2hbku8vgrm4f" path="res://Source/Systems/Game/JumpManager/jump_manager.tscn" id="27_nwhv6"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="28_lejlh"]
 [ext_resource type="Resource" uid="uid://b7lui2g85snby" path="res://Source/Systems/TutorialManager/TutorialStepResources/intro_1.tres" id="29_c0hk8"]
 [ext_resource type="Resource" uid="uid://dkfjnp0eh6jb2" path="res://Source/Systems/TutorialManager/TutorialStepResources/intro_2.tres" id="30_k3fls"]
@@ -212,7 +213,6 @@ mouse_filter = 2
 color = Color(0, 0, 0.0941176, 1)
 
 [node name="FPSCounter" type="RichTextLabel" parent="."]
-visible = false
 offset_left = 278.0
 offset_top = 2.0
 offset_right = 317.0
@@ -285,6 +285,8 @@ visible = false
 position = Vector2(122, 43)
 
 [node name="ScenarioManager" parent="Systems" instance=ExtResource("19_3g417")]
+
+[node name="JumpManager" parent="Systems" instance=ExtResource("27_nwhv6")]
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
