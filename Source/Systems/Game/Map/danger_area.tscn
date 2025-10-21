@@ -1,8 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://duqlasjukaoyh"]
-
-[ext_resource type="Texture2D" uid="uid://bgiy403junp40" path="res://Assets/Textures/Map/danger_area.png" id="1_dx07s"]
-
-[node name="DangerArea" type="Sprite2D"]
-self_modulate = Color(1, 1, 1, 0.615686)
-position = Vector2(-75, 0)
-texture = ExtResource("1_dx07s")

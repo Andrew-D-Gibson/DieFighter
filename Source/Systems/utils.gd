@@ -57,3 +57,24 @@ static func strip_bbcode_tags(text: String) -> String:
 	# This regex matches anything like [tag] or [tag=param]
 	regex.compile(r"\[/?[^\]]+\]")
 	return regex.sub(text, "", true)
+
+
+static func slice_texture_right(sprite: Texture2D, pixels: int) -> Texture2D:
+	if not sprite:
+		push_error("No sprite provided")
+		return null
+	
+	# Get the sprite's image data
+	var image: Image = sprite.get_image()
+	var width := image.get_width()
+	var height := image.get_height()
+
+	# Clamp N to valid range
+	pixels = clamp(pixels, 0, width)
+
+	# Crop to the rightmost N pixels
+	var cropped_image := image.get_region(Rect2(width - pixels, 0, pixels, height))
+
+	# Convert cropped Image back to Texture2D
+	var new_texture := ImageTexture.create_from_image(cropped_image)
+	return new_texture

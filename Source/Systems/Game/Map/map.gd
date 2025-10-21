@@ -15,7 +15,8 @@ var right_scenarios_in_danger: int
 @export var timeline_icon: Texture2D
 @export var connector_sprite: Texture2D
 @export var fate: PackedScene
-@export var danger_area: PackedScene
+@export var danger_area: Texture2D
+@export var corrupted_area: Texture2D
 
 @export_category('Components')
 @export var map_viewport: SubViewport
@@ -155,12 +156,37 @@ func _update_map_sprites() -> void:
 	map_viewport.add_child(left_fate)
 	map_viewport.add_child(right_fate)
 	
+	# Add the fate background sprites
+	var left_fate_background: Sprite2D = Sprite2D.new()
+	var right_fate_background: Sprite2D = Sprite2D.new()
+	
+	left_fate_background.texture = corrupted_area
+	right_fate_background.texture = corrupted_area
+	right_fate_background.flip_h = true
+	
+	left_fate_background.position = Vector2(-232 + (sprite_spacing * (left_fate_index + 1)), 0)
+	right_fate_background.position = Vector2(232 + (sprite_spacing * (right_fate_index - 1)), 0)
+	
+	left_fate_background.z_index = -2
+	right_fate_background.z_index = -2
+	map_viewport.add_child(left_fate_background)
+	map_viewport.add_child(right_fate_background)
+	
+	
 	# Show and move the danger area as needed
-	var left_danger: Sprite2D = danger_area.instantiate()
-	var right_danger: Sprite2D = danger_area.instantiate()
+	var left_danger: Sprite2D = Sprite2D.new()
+	var right_danger: Sprite2D = Sprite2D.new()
+	
+	left_danger.texture = Utils.slice_texture_right(danger_area, left_scenarios_in_danger * sprite_spacing)
+	right_danger.texture = Utils.slice_texture_right(danger_area, right_scenarios_in_danger * sprite_spacing)
 	right_danger.flip_h = true
-	left_danger.position = Vector2(-82 + (sprite_spacing * (left_fate_index + left_scenarios_in_danger + 1)), 0)
-	right_danger.position = Vector2(82 + (sprite_spacing * (right_fate_index - right_scenarios_in_danger - 1)), 0)
+	
+	left_danger.centered = false
+	right_danger.centered = false
+	
+	left_danger.position = Vector2((sprite_spacing * (left_fate_index + 0.5)), -25)
+	right_danger.position = Vector2((sprite_spacing * (right_fate_index - right_scenarios_in_danger - 0.5)), -25)
+	
 	left_danger.z_index = -2
 	right_danger.z_index = -2
 	map_viewport.add_child(left_danger)
@@ -242,6 +268,15 @@ func _tween_map_to_index(index: int) -> void:
 
 
 func jump(desired_scenario_index: int) -> void:
+	# Bound the target scenarios to within the map
+	# e.g. moving "off the map" just moves you to the farthest possible sector
+	# This should never actually happen due to the tile implementation, 
+	# but for safety it's here
+	if desired_scenario_index < 0:
+		desired_scenario_index = 0
+	elif desired_scenario_index >= len(scenario_list):
+		desired_scenario_index = len(scenario_list) - 1
+		
 	if not is_valid_destination(desired_scenario_index):
 		printerr("Attempted to jump to an invalid destination: ", desired_scenario_index)
 		return
@@ -251,7 +286,11 @@ func jump(desired_scenario_index: int) -> void:
 	Events.jump.emit()
 	
 	# Set the current index scenario to empty
-	scenario_list[current_scenario_index] = empty_scenario
+	if not scenario_list[current_scenario_index].sector_gate_scenario:
+		if current_scenario_index <= left_fate_index or current_scenario_index >= right_fate_index:
+			scenario_list[current_scenario_index] = fate_scenario
+		else:
+			scenario_list[current_scenario_index] = empty_scenario
 
 	# Move to the new encounter
 	current_scenario_index = desired_scenario_index
@@ -292,5 +331,22 @@ func _look_at_scenario_index(idx: int) -> void:
 	
 	
 func _pick_new_danger_ranges() -> void:
-	left_scenarios_in_danger = randi_range(1,2)
-	right_scenarios_in_danger = randi_range(1,2)
+	# Handle the left-danger zone running into the right corrupted zone
+	# This will usually be 2, except when the two danger zones close in on each other
+	var max_left_scenarios_in_danger: int = min(2, right_fate_index - left_fate_index - 1)
+	
+	if max_left_scenarios_in_danger <= 0:
+		left_scenarios_in_danger = 0
+	else:
+		left_scenarios_in_danger = randi_range(1,max_left_scenarios_in_danger)
+	
+	# Handle the right-danger zone running into the left danger zone
+	# The left gets priority if both are going to corrupt a scenario
+	var max_right_scenarios_in_danger: int = min(2, right_fate_index - left_fate_index - left_scenarios_in_danger - 1)
+	
+	if max_right_scenarios_in_danger <= 0:
+		right_scenarios_in_danger = 0
+	else:
+		right_scenarios_in_danger = randi_range(1,max_left_scenarios_in_danger)
+	
+	

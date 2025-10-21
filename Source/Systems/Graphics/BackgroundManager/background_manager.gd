@@ -15,6 +15,9 @@ var stars: Array[Node2D]
 var debris: Array[Node2D]
 var static_objects: Array[Node2D]
 
+## Static RNG instance for choosing backgrounds from the random list
+static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+
 
 func _ready() -> void:
 	Globals.background_manager = self
@@ -24,6 +27,7 @@ func _ready() -> void:
 		_set_background(starting_background)
 	
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
+		seed(scenario.seed)
 		_set_background(scenario.background_resource)
 	)
 	Events.set_background.connect(_set_background)
@@ -57,13 +61,18 @@ func _clear_children() -> void:
 		children[i].queue_free()
 	
 	
+## Seeds the rng at the start of the scenario
+## (Called by the enemy manager)
+static func seed(seed_value: int) -> void:
+	rng.seed = seed_value
+	
 	
 func _set_background(background_resource: Resource) -> void:
 	_clear_children()
 	
 	# Handle RandomBackgroundResource
 	if background_resource.has_method("get_random_background"):
-		var selected_bg = background_resource.get_random_background()
+		var selected_bg = background_resource.get_random_background(rng)
 		if selected_bg:
 			_set_background(selected_bg)
 		return

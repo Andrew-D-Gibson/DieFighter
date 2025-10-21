@@ -1,35 +1,15 @@
 shader_type canvas_item;
-
-uniform float bulge : hint_range(-1, 1);
-uniform float shrink_progress : hint_range(0.0, 1.0) = 0.0; // 0 = no pull, 1 = fully collapsed
-uniform vec4 shift_color : source_color;
-
-uniform sampler2D SCREEN_TEXTURE : hint_screen_texture, filter_linear_mipmap;
-
-float bulge_function(float y) {
-	return sqrt(1.0 - y*y);
-}
+uniform vec4 tint_color : source_color = vec4(1.0, 0.5, 0.2, 1.0); // Color tint
+uniform vec2 speed = vec2(0.0, -0.02);
+uniform vec2 pixel_resolution = vec2(320.0, 180.0); // pixelation grid resolution
 
 void fragment() {
-    // Collapse toward center
-    vec2 uv = UV;
-	uv -= vec2(0.5, 0.5);
+	// Pixelate UVs to the target resolution
+	vec2 pixelated_uv = floor(UV * pixel_resolution) / pixel_resolution;
 
-	// Shrink
-	uv = uv + (normalize(uv) * shrink_progress);
-	float dist = length(uv);
+	// Sample the noise texture & tint it
+	vec4 noise_col = texture(TEXTURE, pixelated_uv + (speed * TIME)) * tint_color;
 
-	// Bulge
-	float displacement = 1.0 + bulge * bulge_function(uv.y);
-	uv.x /= displacement;
-
-	uv += vec2(0.5, 0.5);
-
-    // Sample screen or show black outside
-    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-        COLOR = vec4(0.0, 0.0, 0.0, 1.0);
-    } else {
-		vec4 color = texture(SCREEN_TEXTURE, uv);
-        COLOR = mix(color, shift_color, max(shrink_progress / (2.0 * dist), 0.0));
-    }
+	// Blend background → noise texture
+	COLOR = noise_col;
 }

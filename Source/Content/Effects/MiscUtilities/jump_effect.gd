@@ -21,6 +21,13 @@ func play(effect_variables: EffectVariables) -> void:
 	var current_scenario_index: int = Globals.map.current_scenario_index
 	var desired_scenario_index: int = current_scenario_index + final_amount
 	
+	# Bound the target scenarios to within the map
+	# e.g. moving "off the map" just moves you to the farthest possible sector
+	if desired_scenario_index < 0:
+		desired_scenario_index = 0
+	elif desired_scenario_index >= len(Globals.map.scenario_list):
+		desired_scenario_index = len(Globals.map.scenario_list) - 1
+	
 	if not Globals.map.is_valid_destination(desired_scenario_index):
 		if effect_variables.activator_die:
 			Globals.player.dice_manager.add(effect_variables.activator_die, true, false)

@@ -10,19 +10,22 @@ extends Resource
 
 var current_selected_background: BackgroundResource
 
-func get_random_background() -> BackgroundResource:
+
+func get_random_background(rng: RandomNumberGenerator) -> BackgroundResource:
 	if eligible_backgrounds.size() == 0:
 		push_error("RandomBackgroundResource: No eligible backgrounds defined!")
 		return null
 	
 	# Select a random background from the pool
-	var random_index: int = randi() % eligible_backgrounds.size()
+	var random_index: int = rng.randi() % eligible_backgrounds.size()
 	current_selected_background = eligible_backgrounds[random_index]
 	
 	return current_selected_background
 
+
 func get_current_background() -> BackgroundResource:
 	return current_selected_background
+
 
 func has_selected_background() -> bool:
 	return current_selected_background != null
