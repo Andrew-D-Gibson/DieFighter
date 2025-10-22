@@ -46,7 +46,7 @@ func _ready() -> void:
 	
 	health.health_damaged.connect(func() -> void:
 		Events.play_sound.emit('player_health_hit')
-		Events.camera_shake_large.emit()
+		Events.camera_shake_large.emit(true)
 	)
 	health.shields_damaged.connect(func() -> void:
 		Events.play_sound.emit('player_shields_hit')
@@ -63,6 +63,8 @@ func _ready() -> void:
 	dice_manager.die_removed.connect(_update_dice_queue_locations)
 	
 	Events.tile_activation_complete.connect(_check_for_end_of_turn)
+	
+	Events.jump.connect(_delete_existing_dice)
 	
 	%EndTurnButton.disabled = true
 	%EndTurnButton.update_ui()

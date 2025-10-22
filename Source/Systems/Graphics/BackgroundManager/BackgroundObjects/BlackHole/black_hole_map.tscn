@@ -18,7 +18,7 @@ shader_parameter/n_colors = 3
 shader_parameter/size = -1.09
 shader_parameter/OCTAVES = 3
 shader_parameter/seed = 1.0
-shader_parameter/time = 21544.0
+shader_parameter/time = 1506.59
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_orf8c"]
 shader = ExtResource("3_btdr2")

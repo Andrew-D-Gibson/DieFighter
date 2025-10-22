@@ -15,9 +15,7 @@ static var forced_rewards: Array[TileResource] = []
 func _ready() -> void:
 	hide()
 	
-	Events.load_scenario.connect(func(_scenario: ScenarioResource):
-		queue_free()
-	)
+	Events.jump.connect(queue_free)
 	
 
 func give_reward(reward_resource: RewardResource) -> void:

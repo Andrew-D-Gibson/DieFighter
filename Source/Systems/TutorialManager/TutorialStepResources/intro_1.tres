@@ -1,14 +1,16 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://b7lui2g85snby"]
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://b7lui2g85snby"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_voof4"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_a1icy"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_pxccn"]
 
 [resource]
 script = ExtResource("2_a1icy")
-tutorial_text = "System reboot complete. Pilot vital signs: [color=green]stable[/color]."
+tutorial_text = "System reboot complete. Pilot vital signs:(delay=1.0) [color=green]stable[/color]"
 text_position = Vector2(160, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_voof4")]([])
+forced_rewards = Array[ExtResource("2_pxccn")]([])
 open_on_signal = 0
 close_on_signal = 1
 tutorial_function = 0

@@ -10,26 +10,41 @@ extends Node2D
 var display_close_button: bool = true
 var time_to_wait_after_text_shown: float = 0
 
-var character_reveal_tween: Tween
 var tween: Tween
+var delay_positions: Dictionary = {}
+var current_character: int = 0
+var target_character: int = 0
+
+var popup_completed: bool = false
 
 signal all_text_displayed()
 signal popup_closed()
 
 
-func setup(text: String, global_pos: Vector2, close_button: bool = true, auto_close_time: float = 0) -> void:
+func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:
 	Events.close_tutorial_text_popup.connect(close)
 	
 	global_position = global_pos
 	display_close_button = close_button
 	time_to_wait_after_text_shown = auto_close_time
 	
-	if close_button:
+	# Handle highlighting
+	if highlight_texture:
+		var highlight_sprite: Sprite2D = Sprite2D.new()
+		highlight_sprite.texture = highlight_texture
+		highlight_sprite.z_index = -1
+		add_child(highlight_sprite)
+		highlight_sprite.global_position = Vector2(160, 90)
+
+	
+	if close_button:		
+		%CloseButton.disabled = true
+		%CloseButton.update_ui()
 		%CloseButton.show()
 	else:
 		%CloseButton.hide()
 
-	await _fade_in()
+	_fade_in()
 	
 	## Bob the computer head
 	#var _bob_tween: Tween = get_tree().create_tween()
@@ -38,27 +53,48 @@ func setup(text: String, global_pos: Vector2, close_button: bool = true, auto_cl
 	#_bob_tween.tween_property(%ComputerTalking, 'position', position - Vector2(0, 2), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	#_bob_tween.set_loops()
 	
-	%RichTextLabel.text = Utils.format_text(text, 9)
+	# Parse delay tags before formatting
+	delay_positions = Utils.parse_delay_tags(text)
+	var text_without_delays: String = Utils.remove_delay_tags(text)
+	
+	%RichTextLabel.text = Utils.format_text(text_without_delays, 9)
 	%RichTextLabel.visible_characters = 0
 	
-	var raw_text: String = Utils.strip_bbcode_tags(text)
+	var raw_text: String = Utils.strip_bbcode_tags(text_without_delays)
+	target_character = len(raw_text)
+	current_character = 0
 	
-	var time_to_reveal: float = min(
-		character_reveal_time * len(raw_text),
-		max_reveal_time
-	)
-	
-	character_reveal_tween = get_tree().create_tween()
-	character_reveal_tween.set_parallel(false)
-	character_reveal_tween.tween_method(
-		_show_characters, 
-		0, 
-		len(raw_text), 
-		time_to_reveal
-	).set_trans(Tween.TRANS_LINEAR)
-	character_reveal_tween.tween_callback(when_text_shown)
+	# Start the custom character reveal
+	_reveal_next_character()
 		
 		
+func _reveal_next_character() -> void:
+	if current_character >= target_character:
+		when_text_shown()
+		return
+	
+	if popup_completed:
+		return
+	
+	# Check if there's a delay at this position
+	if delay_positions.has(current_character):
+		var delay_time: float = delay_positions[current_character]
+		await get_tree().create_timer(delay_time).timeout
+	
+	# Reveal the next character
+	current_character += 1
+	%RichTextLabel.visible_characters = current_character
+	
+	# Play sound effect
+	if current_character % 2 == 0:
+		Events.play_sound.emit("text_blip")
+	
+	# Schedule next character reveal
+	var time_to_next: float = min(character_reveal_time, max_reveal_time / target_character)
+	await get_tree().create_timer(time_to_next).timeout
+	_reveal_next_character()
+
+
 func _show_characters(num: int) -> void:
 	if %RichTextLabel.visible_characters != num and num%2 == 0:
 		Events.play_sound.emit("text_blip")
@@ -78,7 +114,7 @@ func _fade_in() -> void:
 func close() -> void:
 	if tween:
 		tween.kill()
-	
+
 	tween = create_tween().set_parallel(true)
 	tween.tween_property(self, "modulate:a", 0.0, fade_out_duration)
 	tween.tween_property(self, "scale", Vector2(0.8, 0.8), fade_out_duration).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
@@ -90,10 +126,14 @@ func close() -> void:
 	
 
 func when_text_shown() -> void:
+	popup_completed = true
+	
 	%ComputerTalking.stop()
 	all_text_displayed.emit()
-	if display_close_button:
-		%CloseButton.show()
+
+	%CloseButton.disabled = false
+	%CloseButton.update_ui()
+	%CloseButton.soft_highlight()
 		
 		# Auto-close if delay is set
 	if time_to_wait_after_text_shown > 0:
@@ -101,12 +141,11 @@ func when_text_shown() -> void:
 		close()
 	
 	
-#func _unhandled_input(event: InputEvent) -> void:
-	#if event is InputEventMouseButton and \
-		#event.button_index == MOUSE_BUTTON_LEFT and \
-		#event.pressed and \
-		#character_reveal_tween:
-			#character_reveal_tween.kill()
-			#%RichTextLabel.visible_characters = -1
-			#when_text_shown()
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and \
+		event.button_index == MOUSE_BUTTON_LEFT and \
+		event.pressed and \
+		not popup_completed:
+			%RichTextLabel.visible_characters = -1
+			when_text_shown()
 			

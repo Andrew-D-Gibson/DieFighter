@@ -5,12 +5,13 @@ func _ready() -> void:
 		if Globals.screenshake_enabled:
 			$Shakeable.small_shake()
 	)
-	Events.camera_shake_large.connect(func() -> void:
+	Events.camera_shake_large.connect(func(glitch: bool = false) -> void:
 		if Globals.screenshake_enabled:
 			$Shakeable.large_shake()
 			
-			Events.set_glitch.emit(true)
-			await $Shakeable.shake_ended
-			Events.set_glitch.emit(false)
+			if glitch:
+				Events.set_glitch.emit(true)
+				await $Shakeable.shake_ended
+				Events.set_glitch.emit(false)
 			
 	)

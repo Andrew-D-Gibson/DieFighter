@@ -1,14 +1,16 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://cytyumo1yx88e"]
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://cytyumo1yx88e"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_is6iw"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_55fyv"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_dyile"]
 
 [resource]
 script = ExtResource("2_dyile")
-tutorial_text = "Only two subsystems survived, [color=red]Dice Cannon[/color] and [color=blue]Shield Burst[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] on a tile to view specifications:"
+tutorial_text = "Surviving subsystems: (delay=0.5)[color=red]Dice Cannon[/color] and [color=blue]Shield Burst[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) on a tile to view specifications:"
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_is6iw")]([])
+forced_rewards = Array[ExtResource("2_55fyv")]([])
 open_on_signal = 0
 close_on_signal = 3
 tutorial_function = 0

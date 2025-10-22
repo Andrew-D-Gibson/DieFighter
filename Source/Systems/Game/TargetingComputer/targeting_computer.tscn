@@ -192,7 +192,7 @@ shader_parameter/edges = 6
 shader_parameter/shape_feather = 0.1
 shader_parameter/sectors = 1
 shader_parameter/clock_feather = 0.0
-shader_parameter/progress = 29.0
+shader_parameter/progress = 26.0
 shader_parameter/progress_bias = Vector2(10, 10)
 
 [node name="TargetingComputer" type="Node2D" node_paths=PackedStringArray("targeting_indicator")]
@@ -427,6 +427,7 @@ frame = 5
 unique_name_in_owner = true
 z_index = 10
 material = SubResource("ShaderMaterial_up1nx")
+position = Vector2(0, 0.5)
 texture = ExtResource("13_du4uj")
 
 [node name="Control" type="Control" parent="RevealOverlay"]

@@ -6,8 +6,8 @@
 
 [resource]
 script = ExtResource("3_4vcby")
-tutorial_text = "Unknown anomaly expanding across sector.
-All contacted systems will be corrupted."
+tutorial_text = "Unknown [color=purple]anomalies[/color] (fate) expanding across sector.
+All contacted systems will be [color=purple]corrupted[/color] (fate_scenario)"
 text_position = Vector2(160, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_fq4b7")]([])

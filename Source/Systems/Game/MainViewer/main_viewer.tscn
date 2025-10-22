@@ -319,8 +319,7 @@ horizontal_alignment = 1
 
 [node name="SystemsRevealOverlay" type="Sprite2D" parent="."]
 unique_name_in_owner = true
-visible = false
-z_index = 10
+z_index = 6
 material = SubResource("ShaderMaterial_4s628")
 position = Vector2(-0.5, 0)
 texture = ExtResource("23_5ksti")
@@ -336,7 +335,7 @@ offset_bottom = 43.0
 [node name="MapRevealOverlay" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 visible = false
-z_index = 10
+z_index = 6
 material = SubResource("ShaderMaterial_5ksti")
 position = Vector2(-0.5, 0)
 texture = ExtResource("25_4s628")

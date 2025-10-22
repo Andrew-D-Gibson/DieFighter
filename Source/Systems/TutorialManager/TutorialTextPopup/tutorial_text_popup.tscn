@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://dauuk425cis74"]
+[gd_scene load_steps=15 format=3 uid="uid://dauuk425cis74"]
 
 [ext_resource type="Script" uid="uid://dnesg2o2ft6ba" path="res://Source/Systems/TutorialManager/TutorialTextPopup/tutorial_text_popup.gd" id="1_wosuk"]
 [ext_resource type="Texture2D" uid="uid://m8bm3myhsf8y" path="res://Assets/Textures/TutorialManager/background.png" id="2_cjyxc"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="4_aaaot"]
 [ext_resource type="PackedScene" uid="uid://cygxk6obb46wn" path="res://Assets/Particles/computer_hologram_particles.tscn" id="4_s002k"]
 [ext_resource type="Texture2D" uid="uid://hclp4lke0uuu" path="res://Assets/Textures/UI/Buttons/button_small_blue.png" id="6_cjyxc"]
+[ext_resource type="Texture2D" uid="uid://c265tonvt4uft" path="res://Assets/Textures/UI/Buttons/button_small_blue_disabled.png" id="7_dqf6j"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dqf6j"]
 texture = ExtResource("2_cjyxc")
@@ -40,11 +41,18 @@ animations = [{
 atlas = ExtResource("6_cjyxc")
 region = Rect2(0, 0, 35, 12)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_yykkj"]
+atlas = ExtResource("7_dqf6j")
+region = Rect2(0, 0, 35, 12)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_yykkj"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_dqf6j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yykkj")
 }],
 "loop": true,
 "name": &"default",
@@ -52,7 +60,7 @@ animations = [{
 }]
 
 [node name="TutorialTextPopup" type="Node2D"]
-z_index = 20
+z_index = 10
 script = ExtResource("1_wosuk")
 
 [node name="Panel" type="PanelContainer" parent="."]
@@ -69,10 +77,12 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_dqf6j")
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 4
@@ -80,9 +90,11 @@ theme_override_constants/margin_bottom = 5
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer"]
 layout_mode = 2
+mouse_filter = 2
 
 [node name="MarginContainer" type="MarginContainer" parent="Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
+mouse_filter = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = -8
 theme_override_constants/margin_right = 0
@@ -93,6 +105,7 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 3
+mouse_filter = 2
 theme_override_colors/default_color = Color(0.215686, 0.537255, 0.8, 1)
 bbcode_enabled = true
 text = "Only two subsystems survived, [color=red]Dice Cannon[/color] and [color=green]Bump[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] on a tile to view specifications:"
@@ -104,6 +117,7 @@ visible_characters_behavior = 1
 [node name="MarginContainer2" type="MarginContainer" parent="Panel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
+mouse_filter = 2
 theme_override_constants/margin_left = -2
 theme_override_constants/margin_top = -2
 theme_override_constants/margin_right = -1
@@ -111,6 +125,7 @@ theme_override_constants/margin_bottom = -4
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
+mouse_filter = 2
 alignment = 1
 
 [node name="TextureRect" type="TextureRect" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer"]
@@ -119,6 +134,7 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 6
 size_flags_stretch_ratio = 20.0
+mouse_filter = 2
 
 [node name="ComputerHologramParticles" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/TextureRect" instance=ExtResource("4_s002k")]
 position = Vector2(8, 4)
@@ -139,6 +155,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 10
 hover_text_color = Color(0.262745, 0.65098, 0.988235, 1)
 disabled_text_color = Color(0.172549, 0.443137, 0.666667, 1)
+soft_highlight_color = Color(0.807843, 0.941176, 0.945098, 1)
 
 [node name="AnimatedSprite2D" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/CloseButton" index="0"]
 sprite_frames = SubResource("SpriteFrames_yykkj")

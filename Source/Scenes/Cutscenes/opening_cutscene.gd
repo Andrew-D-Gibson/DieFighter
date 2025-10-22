@@ -68,7 +68,7 @@ func _play_dice_cannon_fire_sound() -> void:
 
 func _player_ship_hit() -> void:
 	Events.play_sound.emit("player_health_hit")
-	Events.camera_shake_large.emit()
+	Events.camera_shake_large.emit(true)
 	
 	var hit_flash_time: float = 1.5
 	$PlayerShip.material.set_shader_parameter('color', Globals.red)

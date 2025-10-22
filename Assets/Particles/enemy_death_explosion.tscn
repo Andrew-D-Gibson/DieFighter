@@ -427,7 +427,7 @@ animations = [{
 }],
 "loop": false,
 "name": &"default",
-"speed": 60.0
+"speed": 24.0
 }]
 
 [sub_resource type="Animation" id="Animation_5m3w0"]

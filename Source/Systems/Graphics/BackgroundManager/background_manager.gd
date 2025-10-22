@@ -281,7 +281,7 @@ func play_jump_intro() -> void:
 	%JumpTransition.tween_background(1.0, 0.5)
 	
 	# Shake the camera
-	Events.camera_shake_large.emit()
+	Events.camera_shake_large.emit(false)
 	
 	
 func play_jump_outro() -> void:

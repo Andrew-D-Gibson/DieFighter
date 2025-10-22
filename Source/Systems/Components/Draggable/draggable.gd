@@ -82,7 +82,7 @@ func _process(delta: float) -> void:
 			parent_node.rotation_degrees = 0
 
 			# Move the parent's render index back to its original
-			parent_node.z_index -= 3
+			parent_node.z_index -= 10
 			parent_node.scale = Vector2(1, 1)
 			
 			drag_ended.emit(self, get_global_mouse_position())
@@ -123,7 +123,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 			parent_node.clickable.reset_hover_state()
 		
 		# Move the parent's render index to be above where it usually sits
-		parent_node.z_index += 3
+		parent_node.z_index += 10
 		parent_node.scale = Vector2(1.3,1.3)
 		
 		# Set the parent to wiggle a bit

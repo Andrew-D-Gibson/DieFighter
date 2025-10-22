@@ -1,14 +1,16 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://bxs2t7bs36rih"]
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://bxs2t7bs36rih"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_ojprg"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_glgu8"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_wcvbr"]
 
 [resource]
 script = ExtResource("2_wcvbr")
-tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Use[/color][/wave] all dice to end your turn:"
+tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Use[/color][/wave] dice, then end turn:"
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_ojprg")]([])
+forced_rewards = Array[ExtResource("2_glgu8")]([])
 open_on_signal = 0
 close_on_signal = 6
 tutorial_function = 0

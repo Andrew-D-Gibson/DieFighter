@@ -1,5 +1,6 @@
 shader_type canvas_item;
 
+uniform float alpha : hint_range(0.0, 1.0) = 0;
 uniform vec4 flash_color : source_color = vec4(1.0, 0.0, 0.0, 1.0);
 uniform float flash_amount : hint_range(0.0, 1.0) = 0.0;
 
@@ -25,6 +26,9 @@ void fragment() {
 
 	// Mix uncloaked vs cloaked
 	vec4 final_color = mix(flash_color_mix, cloaked_color, cloak_amount);
+	
+	// Apply global alpha override
+    final_color.a *= alpha;
 
 	COLOR = final_color;
 }

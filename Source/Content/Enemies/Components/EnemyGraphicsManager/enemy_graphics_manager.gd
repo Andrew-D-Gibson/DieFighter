@@ -19,13 +19,14 @@ extends Node2D
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
 
-
 ## Sets up the ship graphics and associated components
 func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 	if ship_graphics:
 		ship_graphics.queue_free()
 	ship_graphics = ship_graphics_scene.instantiate()
 	add_child(ship_graphics)
+	
+	_set_transparency(1)
 	
 	shakeable.node_to_shake = ship_graphics
 
@@ -38,7 +39,13 @@ func play_death_animation() -> void:
 	# Fade out the ship graphics
 	var tween_time: float = 0.75
 	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, "modulate", Color(1,1,1,0), tween_time)
+	tween.tween_method(
+		_set_transparency, 
+		1.0,
+		0.0,
+		tween_time
+	).set_trans(Tween.TRANS_CUBIC)\
+	.set_ease(Tween.EASE_IN)
 	
 	# Spawn the death explosion and wait
 	var explosion: AnimatedSprite2D = death_explosion.instantiate()
@@ -123,3 +130,8 @@ func _shields_hit_flash() -> void:
 	var tween = get_tree().create_tween()
 	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
 	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+func _set_transparency(alpha: float) -> void:
+	ship_graphics.modulate.a = alpha
+	ship_graphics.material.set_shader_parameter("alpha", alpha)

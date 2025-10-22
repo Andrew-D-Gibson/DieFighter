@@ -60,14 +60,14 @@ func _ready() -> void:
 		start_tutorial()
 
 
-func create_tutorial_popup(text: String, global_pos: Vector2, close_button: bool = true, auto_close_time: float = 0) -> void:
+func create_tutorial_popup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:
 	if current_popup and is_instance_valid(current_popup):
 		current_popup.close()
 		
 	current_popup = tutorial_text_popup_scene.instantiate()
 	add_child(current_popup)
 
-	current_popup.setup(text, global_pos, close_button, auto_close_time)
+	current_popup.setup(text, global_pos, highlight_texture, close_button, auto_close_time)
 	
 
 func start_tutorial() -> void:
@@ -99,19 +99,14 @@ func play_step(step: TutorialStep, force_open: bool = false) -> void:
 	# Apply forced rewards from enemies if specified
 	if step.forced_rewards.size() > 0:
 		Reward.forced_rewards.append_array(step.forced_rewards)
-	
-	# Handle highlighting
-	if step.highlight_texture:
-		# Tween in the highlight sprite
-		pass
 		
 	# Create the text popup
 	if step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_MANUALLY:
-		create_tutorial_popup(step.tutorial_text, step.text_position, true)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, true)
 	elif step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_AFTER_TIME:
-		create_tutorial_popup(step.tutorial_text, step.text_position, false, step.time_to_auto_close)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false, step.time_to_auto_close)
 	else:
-		create_tutorial_popup(step.tutorial_text, step.text_position, false)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false)
 		
 		match step.close_on_signal:
 			TutorialStep.TutorialSignals.TILE_CLICKED_FOR_INFO:
