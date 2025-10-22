@@ -297,7 +297,7 @@ tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtRes
 
 [node name="GameStateManager" parent="Systems" instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")
-sector_size = 24
+sector_size = 16
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj")])

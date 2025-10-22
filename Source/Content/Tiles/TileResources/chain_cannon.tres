@@ -65,7 +65,7 @@ metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 
 [sub_resource type="Resource" id="Resource_gjhi3"]
 script = ExtResource("7_f7e78")
-amount = 4
+amount = 3
 inherit_die_amount = false
 primary_effect = true
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
@@ -120,11 +120,11 @@ animations = [{
 script = ExtResource("4_x5guy")
 tile_name = "[color=red]Chain Cannon[/color]"
 activation_description = ""
-description = "(die_4) -> Deals [color=red]4 damage[/color] twice, then [color=orange]gives[/color] die to [color=purple]target[/color]"
+description = "(die_4) -> Deals [color=red]3 damage[/color] twice, then [color=orange]gives[/color] die to [color=purple]target[/color]"
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_ha28q")
-uses_per_turn = 3
+uses_per_combat = 0
 activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])
 effect_chain = SubResource("Resource_ob6pq")
 event_responses = Dictionary[ExtResource("2_og7ys"), ExtResource("3_0it3x")]({})
