@@ -64,7 +64,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
 size = Vector2(20, 22)
 
-[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue")]
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue", "can_accept_dice")]
 z_index = 6
 script = ExtResource("1_71op4")
 draggable = NodePath("Draggable")
@@ -72,6 +72,7 @@ clickable = NodePath("Clickable")
 shakeable = NodePath("Shakeable")
 sprite_frames = NodePath("AnimatedSprite2D")
 dice_queue = NodePath("DiceQueue")
+can_accept_dice = NodePath("CanAcceptDice")
 
 [node name="Draggable" parent="." instance=ExtResource("2_b16ti")]
 unique_name_in_owner = true

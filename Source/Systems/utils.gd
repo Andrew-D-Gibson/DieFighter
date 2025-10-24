@@ -30,6 +30,9 @@ static var fate_image_path: String = "res://Assets/Textures/Fate/fate_image.png"
 static var mouse_indicator_path: String = "res://Assets/Textures/TutorialManager/mouse_indicator.png"
 static var attack_indicator_path: String = "res://Assets/Textures/Enemies/IntentIndicator/attack.png"
 static var fate_scenario_image_path: String = "res://Assets/Textures/Map/EncounterIcons/fate_encounter.png"
+static var targeting_arrows_image_path: String = "res://Assets/Textures/TutorialManager/targeting_computer_arrows_icon.png"
+static var arrow_keys_image_path: String = "res://Assets/Textures/TutorialManager/arrow_keys_icon.png"
+
 
 static func format_text(text: String, scale: int = 6) -> String:
 	# Change colors to match the palette
@@ -56,6 +59,8 @@ static func format_text(text: String, scale: int = 6) -> String:
 	text = text.replace('(left_mouse)', '[img={' + str(8) + '}x{' + str(8) + '}]' + mouse_indicator_path + '[/img]')
 	text = text.replace('(attack_indicator)', '[img={' + str(8) + '}x{' + str(8) + '}]' + attack_indicator_path + '[/img]')
 	text = text.replace('(fate_scenario)', '[img={' + str(8) + '}x{' + str(8) + '}]' + fate_scenario_image_path + '[/img]')
+	text = text.replace('(targeting_arrows)', '[img={' + str(11) + '}x{' + str(15) + '}]' + targeting_arrows_image_path + '[/img]')
+	text = text.replace('(arrow_keys)', '[img={' + str(16) + '}x{' + str(8) + '}]' + arrow_keys_image_path + '[/img]')
 
 	return text
 

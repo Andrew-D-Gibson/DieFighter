@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://6ti1by7f8gps"]
+
+[ext_resource type="Script" uid="uid://cr53bvoqcnxv6" path="res://Source/Systems/Game/GlobalModifierManager/global_modifier_manager.gd" id="1_rxgri"]
+
+[node name="GlobalModifierManager" type="Node2D"]
+script = ExtResource("1_rxgri")

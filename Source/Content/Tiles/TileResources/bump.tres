@@ -98,7 +98,7 @@ description = "[color=yellow]Die smaller than[/color] (die_6) -> Adds 1 to the d
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_j21c8")
-uses_per_turn = 3
+uses_per_combat = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])
 effect_chain = SubResource("Resource_u271i")
 event_responses = Dictionary[ExtResource("2_rp1c6"), ExtResource("3_5xcxx")]({})

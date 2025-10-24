@@ -75,7 +75,7 @@ description = "[color=yellow]Any die[/color] -> Adds [color=purple]X engine char
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_dd8hj")
-uses_per_turn = -1
+uses_per_combat = -1
 activation_checks = Array[ExtResource("1_8mym4")]([SubResource("Resource_dd8hj")])
 effect_chain = SubResource("Resource_3jpq8")
 event_responses = Dictionary[ExtResource("6_dd8hj"), ExtResource("6_7mo4q")]({})

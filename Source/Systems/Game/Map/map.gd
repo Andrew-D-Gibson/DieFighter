@@ -338,3 +338,11 @@ func _pick_new_danger_ranges() -> void:
 		right_scenarios_in_danger = randi_range(1,max_left_scenarios_in_danger)
 	
 	
+func disable_controls() -> void:
+	left_arrow_tile.can_accept_dice.enabled = false
+	right_arrow_tile.can_accept_dice.enabled = false
+	
+		
+func enable_controls() -> void:
+	left_arrow_tile.can_accept_dice.enabled = true
+	right_arrow_tile.can_accept_dice.enabled = true

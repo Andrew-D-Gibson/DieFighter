@@ -319,6 +319,7 @@ horizontal_alignment = 1
 
 [node name="SystemsRevealOverlay" type="Sprite2D" parent="."]
 unique_name_in_owner = true
+visible = false
 z_index = 6
 material = SubResource("ShaderMaterial_4s628")
 position = Vector2(-0.5, 0)

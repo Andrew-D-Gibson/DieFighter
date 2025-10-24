@@ -3,6 +3,7 @@ extends Resource
 
 @export_multiline var tutorial_text: String
 @export var text_position: Vector2 = Vector2(160, 40)
+@export var time_delay: float = 0
 @export var forced_dice: Array[int]
 @export var forced_enemy_actions: Array[EnemyActionResource]
 @export var forced_rewards: Array[TileResource]
@@ -21,6 +22,8 @@ enum TutorialSignals {
 	REWARD_CLAIMED,
 	MAP_OPENED,
 	ON_JUMP,
+	ON_ENEMY_FLY_IN,
+	ON_TARGET_SWITCH,
 }
 @export var open_on_signal: TutorialSignals
 @export var close_on_signal: TutorialSignals 
@@ -38,6 +41,7 @@ enum TutorialFunctions {
 	RUN_ENEMY_TURN,
 	ALLOW_NORMAL_COMBAT,
 	REVEAL_MAP,
+	ENABLE_CONTROLS,
 }
 @export var tutorial_function: TutorialFunctions 
 

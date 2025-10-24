@@ -21,6 +21,9 @@ var debris: Array[Node2D]
 var static_objects: Array[Node2D]
 var nebula: Node2D
 
+## Current background name for modifier system
+var current_background_name: String = ""
+
 ## Static RNG instance for choosing backgrounds from the random list
 static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
@@ -152,6 +155,10 @@ func _set_background(background_resource: Resource) -> void:
 		return
 	
 	var bg_resource: BackgroundResource = background_resource as BackgroundResource
+	
+	# Set background name for modifier system
+	current_background_name = _determine_background_name(bg_resource)
+	
 	self.self_modulate = bg_resource.background_color
 	
 	if bg_resource.nebula:
@@ -294,6 +301,21 @@ func play_jump_outro() -> void:
 	%JumpTransition.tween_particles(0, speed_ramp_down_time)
 	await tween_speed(16, speed_ramp_down_time)
 	%JumpTransition.hide()
+
+
+## Determine background name based on background resource properties
+func _determine_background_name(bg_resource: BackgroundResource) -> String:
+	# Simple heuristic to determine background type
+	if bg_resource.nebula:
+		return "nebula"
+	elif bg_resource.stars and bg_resource.num_of_stars > 10:
+		return "starfield"
+	elif bg_resource.debris and bg_resource.num_of_large_pieces > 5:
+		return "debris_field"
+	elif bg_resource.static_objects.size() > 0:
+		return "complex"
+	else:
+		return "empty_space"
 	
 	
 func tween_speed(final_speed: int, time: float) -> void:

@@ -163,6 +163,23 @@ sprite_frames = SubResource("SpriteFrames_yykkj")
 [node name="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/CloseButton" index="1"]
 text = "CLOSE"
 
+[node name="CompleteTextButton" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(640, 360)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -320.0
+offset_top = -180.0
+offset_right = 320.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+flat = true
+
 [connection signal="pressed_within_window" from="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/CloseButton" to="." method="close"]
+[connection signal="pressed" from="CompleteTextButton" to="." method="_finish_showing_text"]
 
 [editable path="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/CloseButton"]

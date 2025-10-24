@@ -122,7 +122,7 @@ description = "[color=yellow]Moved by tile[/color] -> Gain [color=blue]2 shields
 hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_nb58w")
-uses_per_turn = -1
+uses_per_combat = 0
 activation_checks = Array[ExtResource("1_dl748")]([SubResource("Resource_eq5vj")])
 effect_chain = SubResource("Resource_vy2tg")
 event_responses = Dictionary[ExtResource("8_krkdr"), ExtResource("7_2uk52")]({

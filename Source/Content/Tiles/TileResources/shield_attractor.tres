@@ -92,7 +92,7 @@ description = "(die_4) -> Drains [color=blue]6 shields[/color] from [color=purpl
 hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_nt0b2")
-uses_per_turn = 2
+uses_per_combat = 2
 activation_checks = Array[ExtResource("1_eijxs")]([SubResource("Resource_6evea")])
 effect_chain = SubResource("Resource_8u76x")
 event_responses = Dictionary[ExtResource("9_2nbty"), ExtResource("8_2v11i")]({})

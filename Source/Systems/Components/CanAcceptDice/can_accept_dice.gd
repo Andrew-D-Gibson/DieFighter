@@ -3,6 +3,7 @@ extends Node2D
 
 ## Intended to work only with a RectangleShape2D
 @export var collision: CollisionShape2D
+@export var enabled: bool = true
 
 signal die_accepted(die: Dice)
 
@@ -16,6 +17,6 @@ func _contains_point(point: Vector2) -> bool:
 
 
 func check_die_drop(die: Dice, drop_pos: Vector2) -> void:
-	if is_visible_in_tree() and _contains_point(drop_pos):
+	if enabled and is_visible_in_tree() and _contains_point(drop_pos):
 		die_accepted.emit(die)
 	

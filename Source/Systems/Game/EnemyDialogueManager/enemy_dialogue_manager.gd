@@ -22,7 +22,7 @@ static var time_last_dialogue_was_shown: int
 @export var time_between_dialogues: float = 3
 
 var fadeout_timer: Timer
-@export var dialogue_time_shown: float = 8
+@export var dialogue_time_shown: float = 4
 
 
 func _ready() -> void:
@@ -63,6 +63,10 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 		len(dialogue), 
 		character_reveal_time * len(dialogue)
 	).set_trans(Tween.TRANS_LINEAR)
+	
+	await character_reveal_tween.finished
+	
+	
 	
 	fadeout_timer.start(dialogue_time_shown)
 	

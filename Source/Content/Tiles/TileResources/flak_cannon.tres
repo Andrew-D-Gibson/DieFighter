@@ -103,7 +103,7 @@ description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]targ
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_m1j0p")
-uses_per_turn = -1
+uses_per_combat = -1
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi"), SubResource("Resource_m1j0p")])
 effect_chain = SubResource("Resource_4kv0t")
 event_responses = Dictionary[ExtResource("9_sndgu"), ExtResource("8_m1j0p")]({})

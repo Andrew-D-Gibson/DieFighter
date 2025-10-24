@@ -18,8 +18,8 @@ func play(effect_variables: EffectVariables) -> void:
 	elif amount != 0:
 		effect_variables.base_amount = amount
 	
-	# Calculate final damage after all modifiers
-	var final_amount = effect_variables.calculate_final_amount()
+	# Calculate final damage after all modifiers (including global modifiers)
+	var final_amount = effect_variables.calculate_final_amount_with_global_modifiers(1)  # DAMAGE
 	
 	for i in range(len(effect_variables.targets)):
 		if not effect_variables.targets[i]:

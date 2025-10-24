@@ -124,7 +124,7 @@ description = "(die_4) -> Deals [color=red]3 damage[/color] twice, then [color=o
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_ha28q")
-uses_per_combat = 0
+uses_per_combat = 3
 activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])
 effect_chain = SubResource("Resource_ob6pq")
 event_responses = Dictionary[ExtResource("2_og7ys"), ExtResource("3_0it3x")]({})

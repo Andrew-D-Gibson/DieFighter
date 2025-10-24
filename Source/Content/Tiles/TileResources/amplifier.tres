@@ -61,7 +61,7 @@ description = "[color=yellow]Any die[/color] → [color=yellow]+2[/color] to the
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_f1pqj")
-uses_per_turn = 1
+uses_per_combat = 1
 activation_checks = Array[ExtResource("1_5kmcs")]([])
 effect_chain = SubResource("Resource_rj18t")
 event_responses = Dictionary[ExtResource("2_xicoq"), ExtResource("3_l521o")]({})

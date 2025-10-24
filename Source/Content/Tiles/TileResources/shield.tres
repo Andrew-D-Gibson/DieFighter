@@ -83,7 +83,7 @@ description = "(die_3) -> Add [color=blue]8 shields[/color], then [color=orange]
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_p7d6s")
-uses_per_turn = -1
+uses_per_combat = -1
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])
 effect_chain = SubResource("Resource_8vpcq")
 event_responses = Dictionary[ExtResource("8_p7d6s"), ExtResource("7_7qkaa")]({})

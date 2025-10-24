@@ -4,7 +4,7 @@ extends Node2D
 @export var fade_in_duration: float = 0.3
 @export var fade_out_duration: float = 0.2
 
-@export var character_reveal_time: float = 0.05
+@export var character_reveal_time: float = 0.025
 @export var max_reveal_time: float = 5
 
 var display_close_button: bool = true
@@ -21,7 +21,7 @@ signal all_text_displayed()
 signal popup_closed()
 
 
-func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:
+func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, time_delay: float = 0, close_button: bool = true, auto_close_time: float = 0) -> void:
 	Events.close_tutorial_text_popup.connect(close)
 	
 	global_position = global_pos
@@ -56,11 +56,12 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 	# Parse delay tags before formatting
 	delay_positions = Utils.parse_delay_tags(text)
 	var text_without_delays: String = Utils.remove_delay_tags(text)
+	var bb_code_text: String = Utils.format_text(text_without_delays, 9)
+	var raw_text: String = Utils.strip_bbcode_tags(bb_code_text)
 	
-	%RichTextLabel.text = Utils.format_text(text_without_delays, 9)
+	%RichTextLabel.text = bb_code_text
 	%RichTextLabel.visible_characters = 0
 	
-	var raw_text: String = Utils.strip_bbcode_tags(text_without_delays)
 	target_character = len(raw_text)
 	current_character = 0
 	
@@ -70,7 +71,7 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 		
 func _reveal_next_character() -> void:
 	if current_character >= target_character:
-		when_text_shown()
+		_finish_showing_text()
 		return
 	
 	if popup_completed:
@@ -146,6 +147,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		event.button_index == MOUSE_BUTTON_LEFT and \
 		event.pressed and \
 		not popup_completed:
-			%RichTextLabel.visible_characters = -1
-			when_text_shown()
+			_finish_showing_text()
+			
+			
+func _finish_showing_text() -> void:
+	%CompleteTextButton.hide()
+	%RichTextLabel.visible_characters = -1
+	when_text_shown()
 			

@@ -56,7 +56,7 @@ description = "[color=yellow]Any die[/color] -> Jump [color=purple]X[/color] loc
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_3qev1")
-uses_per_turn = -1
+uses_per_combat = -1
 activation_checks = Array[ExtResource("1_axjj4")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46")])
 effect_chain = SubResource("Resource_j67x6")
 event_responses = Dictionary[ExtResource("2_kfeuv"), ExtResource("3_6pw46")]({})

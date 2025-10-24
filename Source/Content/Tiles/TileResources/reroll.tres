@@ -64,9 +64,10 @@ script = ExtResource("3_1nta3")
 tile_name = "[color=green]Re-Roll[/color]"
 activation_description = ""
 description = "[color=yellow]Any die[/color] -> [color=green]Re-rolls[/color] the die"
+hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_ecbfa")
-uses_per_turn = 2
+uses_per_combat = 2
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa")])
 effect_chain = SubResource("Resource_mwp2x")
 event_responses = Dictionary[ExtResource("6_jet8y"), ExtResource("5_jet8y")]({})

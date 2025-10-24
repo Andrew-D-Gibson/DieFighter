@@ -3,8 +3,8 @@ extends Node2D
 
 @export var auto_start: bool = true
 @export var skip_to_step: int = 0
-@export var time_to_wait_before_tutorial: float = 3
 @export var tutorial_steps: Array[TutorialStep] = []
+@export var tutorial_sector: Array[ScenarioResource]
 
 
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
@@ -26,17 +26,18 @@ var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.RUN_ENEMY_TURN: _run_enemy_turn,
 	TutorialStep.TutorialFunctions.ALLOW_NORMAL_COMBAT: _allow_normal_combat,
 	TutorialStep.TutorialFunctions.REVEAL_MAP: _reveal_map,
+	TutorialStep.TutorialFunctions.ENABLE_CONTROLS: _enable_controls,
 }
 
 
 func _ready() -> void:
 	Globals.tutorial_manager = self
-	
-	await get_tree().create_timer(time_to_wait_before_tutorial).timeout
 
 	if auto_start and tutorial_steps.size() > 0:
 		is_active = true
 		tutorial_will_trigger_enemy_turns = true
+		
+		Globals.map.disable_controls()
 		
 		for skipped_step: int in range(skip_to_step):
 			var step: TutorialStep = tutorial_steps.pop_front()
@@ -60,33 +61,33 @@ func _ready() -> void:
 		start_tutorial()
 
 
-func create_tutorial_popup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:
+func create_tutorial_popup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, time_delay: float = 0, close_button: bool = true, auto_close_time: float = 0) -> void:
 	if current_popup and is_instance_valid(current_popup):
 		current_popup.close()
 		
 	current_popup = tutorial_text_popup_scene.instantiate()
 	add_child(current_popup)
 
-	current_popup.setup(text, global_pos, highlight_texture, close_button, auto_close_time)
+	current_popup.setup(text, global_pos, highlight_texture, time_delay, close_button, auto_close_time)
 	
 
 func start_tutorial() -> void:
+	Globals.map
 	for i: int in range(len(tutorial_steps)):
 		var step: TutorialStep = tutorial_steps[i]
-		if i == 0:
-			await play_step(step, true)
-		else:
-			await play_step(step)
+		await play_step(step)
 		await current_popup.popup_closed
 	
 	is_active  = false
 
 
 func play_step(step: TutorialStep, force_open: bool = false) -> void:
-	if not force_open:
-		match step.open_on_signal:
-			TutorialStep.TutorialSignals.CLICKED_OUT_OF_INFO:
-				await Events.info_graphic_closed
+	match step.open_on_signal:
+		TutorialStep.TutorialSignals.CLICKED_OUT_OF_INFO:
+			await Events.info_graphic_closed
+			
+		TutorialStep.TutorialSignals.ON_ENEMY_FLY_IN:
+			await Events.enemy_flew_in
 	
 	# Apply forced dice if specified
 	if step.forced_dice.size() > 0:
@@ -102,11 +103,11 @@ func play_step(step: TutorialStep, force_open: bool = false) -> void:
 		
 	# Create the text popup
 	if step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_MANUALLY:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, true)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, step.time_delay, true)
 	elif step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_AFTER_TIME:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false, step.time_to_auto_close)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, step.time_delay, false, step.time_to_auto_close)
 	else:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, step.time_delay, false)
 		
 		match step.close_on_signal:
 			TutorialStep.TutorialSignals.TILE_CLICKED_FOR_INFO:
@@ -129,6 +130,9 @@ func play_step(step: TutorialStep, force_open: bool = false) -> void:
 				
 			TutorialStep.TutorialSignals.ON_JUMP:
 				Events.jump.connect(current_popup.close)
+				
+			TutorialStep.TutorialSignals.ON_TARGET_SWITCH:
+				Events.targeting_computer_retargeted.connect(current_popup.close)
 				
 				
 	# Handle calling tutorial functions
@@ -176,3 +180,7 @@ func _allow_normal_combat() -> void:
 	
 func _reveal_map() -> void:
 	Events.map_startup.emit()
+	
+	
+func _enable_controls() -> void:
+	Globals.map.enable_controls()

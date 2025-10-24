@@ -10,6 +10,7 @@
 script = ExtResource("2_r4b43")
 tutorial_text = "[shake rate=15.0 level=2 connected=1][color=red]Warning:[/color][/shake] Enemy signature detected!"
 text_position = Vector2(160, 90)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_fgpwc")]([ExtResource("2_w2qmu"), ExtResource("3_qd31m"), ExtResource("3_qd31m"), ExtResource("2_w2qmu"), ExtResource("3_qd31m"), ExtResource("2_w2qmu")])
 forced_rewards = Array[ExtResource("4_qd31m")]([])

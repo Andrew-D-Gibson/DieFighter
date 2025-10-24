@@ -16,7 +16,7 @@ func play(effect_variables: EffectVariables) -> void:
 	elif amount != 0:
 		effect_variables.base_amount = amount
 		
-	# Calculate final amount after all modifiers
-	var final_amount = effect_variables.calculate_final_amount()
+	# Calculate final amount after all modifiers (including global modifiers)
+	var final_amount = effect_variables.calculate_final_amount_with_global_modifiers(0)  # SHIELD
 	
 	effect_variables.targets[0].health.change_shields(final_amount)

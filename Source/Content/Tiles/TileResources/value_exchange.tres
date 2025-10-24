@@ -65,7 +65,7 @@ description = "[color=yellow]Any die[/color] -> Flip all (die_1) and (die_6), th
 hint_text = ""
 rarity = 0
 textures = SubResource("SpriteFrames_pgax4")
-uses_per_turn = -1
+uses_per_combat = -1
 activation_checks = Array[ExtResource("1_hoi4y")]([])
 effect_chain = SubResource("Resource_jubjl")
 event_responses = Dictionary[ExtResource("7_fdhil"), ExtResource("6_fdhil")]({})

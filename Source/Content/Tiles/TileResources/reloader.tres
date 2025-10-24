@@ -67,7 +67,7 @@ description = "[color=yellow]Any die[/color] -> Add one use to every surrounding
 hint_text = ""
 rarity = 2
 textures = SubResource("SpriteFrames_0qwli")
-uses_per_combat = 0
+uses_per_combat = -1
 activation_checks = Array[ExtResource("1_8t5yt")]([])
 effect_chain = SubResource("Resource_5y267")
 event_responses = Dictionary[ExtResource("2_wddxj"), ExtResource("3_tgna7")]({})

@@ -11,7 +11,7 @@ extends Node2D
 var _saturation_tween: Tween
 @export var uses_remaining: int = -1:
 	set(new_value):
-		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_turn)
+		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_combat)
 
 		if uses_remaining == 0:
 			set_gray_out(true)
@@ -34,6 +34,7 @@ var effect_data: Dictionary[String, int]
 @export var shakeable: Shakeable
 @export var sprite_frames: AnimatedSprite2D
 @export var dice_queue: DiceQueue
+@export var can_accept_dice: CanAcceptDice
 
 static var dice_activation_queue: Array[Dice] = []
 
@@ -83,7 +84,7 @@ func _connect_tile_event_signals() -> void:
 
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
-	uses_remaining = tile_resource.uses_per_turn
+	uses_remaining = tile_resource.uses_per_combat
 
 	if tile_resource.dragging_allowed and \
 	Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
@@ -236,7 +237,7 @@ func activate(activator_die: Dice = null) -> void:
 
 
 func reset_uses_remaining() -> void:
-	uses_remaining = tile_resource.uses_per_turn
+	uses_remaining = tile_resource.uses_per_combat
 
 
 func _replace_event_data_in_string(text: String) -> String:

@@ -30,6 +30,16 @@ func calculate_final_amount() -> int:
 	return final_amount
 
 
+## Calculate final amount with global modifiers applied
+func calculate_final_amount_with_global_modifiers(category: int) -> int:
+	var base = calculate_final_amount()
+	
+	if Globals.modifier_manager:
+		return Globals.modifier_manager.apply_modifiers_to_amount(category, base, self)
+	
+	return base
+
+
 func add_amount_modifier(modifier: Callable) -> void:
 	amount_modifiers.append(modifier)
 

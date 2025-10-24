@@ -46,7 +46,11 @@ func _ready() -> void:
 	#seed('Die Fighter'.hash())
 	
 	if len(current_game_save.sector_scenarios) == 0:
-		_randomize_sector_scenarios()
+		if Globals.tutorial_manager.auto_start:
+			current_game_save.sector_scenarios = Globals.tutorial_manager.tutorial_sector
+			current_game_save.current_scenario_index = 8
+		else:
+			_randomize_sector_scenarios()
 
 	Events.start_scenario.connect(_check_combat_state)
 	Events.enemy_turn_over.connect(_check_combat_state)
@@ -78,13 +82,6 @@ func trigger_startup_sequence() -> void:
 	
 	
 func _randomize_sector_scenarios() -> void:
-	## THESE COMMENTS ARE OLD, BUT MAYBE I'LL GO BACK LATER
-	# A sector has 19 scenarios, including:
-	# 1 empty scenario at the middle where the player starts
-	# 1 Boss scenario that teleports the player to the next sector
-	# 1 or 2 shop scenarios
-	# and a blend of combat and question scenarios
-	
 	current_game_save.sector_scenarios = []
 	
 	# Add the shop(s)

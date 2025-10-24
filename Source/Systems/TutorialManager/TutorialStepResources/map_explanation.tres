@@ -10,12 +10,13 @@ script = ExtResource("3_ey2sw")
 tutorial_text = "[color=purple]Engines[/color] fully charged.
 Insert [color=white]dice[/color] into control systems to initiate jump:"
 text_position = Vector2(160, 40)
-forced_dice = Array[int]([])
+time_delay = 0.0
+forced_dice = Array[int]([4, 1])
 forced_enemy_actions = Array[ExtResource("1_ysw3k")]([])
 forced_rewards = Array[ExtResource("2_q8o51")]([])
 open_on_signal = 0
 close_on_signal = 11
-tutorial_function = 0
+tutorial_function = 10
 time_to_auto_close = 0.0
 highlight_texture = ExtResource("3_q8o51")
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

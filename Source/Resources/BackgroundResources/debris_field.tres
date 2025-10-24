@@ -1,13 +1,12 @@
-[gd_resource type="Resource" script_class="BackgroundResource" load_steps=3 format=3 uid="uid://sk166eerw6ax"]
+[gd_resource type="Resource" script_class="BackgroundResource" load_steps=2 format=3 uid="uid://sk166eerw6ax"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
-[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_8nfou"]
 
 [resource]
 resource_local_to_scene = true
 script = ExtResource("1_u7gdh")
 background_color = Color(0.027451, 0.0117647, 0.14902, 1)
-nebula = false
+nebula = null
 nebula_color = Color(0.82, 0.2132, 0.33456, 0.286275)
 stars = true
 num_of_stars = 75
@@ -15,5 +14,5 @@ num_of_twinkling_stars = 15
 debris = true
 num_of_med_pieces = 64
 num_of_large_pieces = 12
-static_objects = Array[ExtResource("2_8nfou")]([])
+static_objects = null
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

@@ -137,7 +137,7 @@ description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=
 hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_7uhu8")
-uses_per_turn = 2
+uses_per_combat = 2
 activation_checks = Array[ExtResource("1_0sqhf")]([SubResource("Resource_qed76"), SubResource("Resource_stnu5"), SubResource("Resource_vakuo")])
 effect_chain = SubResource("Resource_g26hj")
 event_responses = Dictionary[ExtResource("11_04xam"), ExtResource("10_qed76")]({})
