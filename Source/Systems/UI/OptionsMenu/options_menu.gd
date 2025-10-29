@@ -250,3 +250,7 @@ func _on_scale_option_button_item_selected(index: int) -> void:
 	
 	%ScaleLabel.add_theme_color_override("default_color", Globals.red)
 	%FullscreenCheckBox.button_pressed = false
+
+
+func _on_text_speed_option_button_item_selected(index: int) -> void:
+	pass # Replace with function body.

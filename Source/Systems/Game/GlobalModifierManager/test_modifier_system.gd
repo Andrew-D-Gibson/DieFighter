@@ -107,3 +107,4 @@ static func test_conditional_modifiers() -> void:
 		print("Final repetitions with dice value 6: ", final_repetitions_no_trigger)
 	
 	print("=== Conditional Test Complete ===")
+

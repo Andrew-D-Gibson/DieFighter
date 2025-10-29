@@ -189,3 +189,4 @@ The system is designed to be easily extensible:
 - Create new modifier types for specialized behavior
 - Implement modifier stacking rules for complex interactions
 - Add visual indicators for active modifiers in the UI
+

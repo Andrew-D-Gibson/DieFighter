@@ -43,8 +43,8 @@ func on_audio_finished() -> void:
 
 
 func _update_play_times() -> void:
-	var current_time = Time.get_ticks_msec()
-	var cutoff_time = current_time - (quick_play_threshold * 1000)
+	var current_time: int = Time.get_ticks_msec()
+	var cutoff_time: int = current_time - (quick_play_threshold * 1000)
 	
 	# Remove the previous play times if too much time has passed 
 	# since the last play

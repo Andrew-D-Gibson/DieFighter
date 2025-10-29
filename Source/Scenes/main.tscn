@@ -1,5 +1,6 @@
-[gd_scene load_steps=77 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=78 format=3 uid="uid://deisauteocrjl"]
 
+[ext_resource type="AudioStream" uid="uid://ib50atokqp2u" path="res://Assets/Music/Battle Themes/Game_Start_Theme/GameStartTheme.wav" id="1_3phsw"]
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
 [ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
@@ -178,6 +179,11 @@ _data = {
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_hd7px")
 
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_3phsw")
+autoplay = true
+bus = &"Music"
+
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="InfoShower" parent="UI" instance=ExtResource("1_hd7px")]
@@ -296,7 +302,6 @@ position = Vector2(122, 43)
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
-auto_start = null
 skip_to_step = null
 tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtResource("30_k3fls"), ExtResource("31_s8v7r"), ExtResource("32_k3fls"), ExtResource("33_s8v7r"), ExtResource("34_s8v7r"), ExtResource("35_7yw3t"), ExtResource("36_d6h8w"), ExtResource("37_0b58v"), ExtResource("38_5rg43"), ExtResource("39_5rg43"), ExtResource("40_6c5u4"), ExtResource("41_kbsha"), ExtResource("42_h1v2j"), ExtResource("42_o2el7"), ExtResource("44_h1v2j"), ExtResource("45_gp2ob"), ExtResource("46_p3tcj"), ExtResource("46_1gi3i"), ExtResource("47_7ku7q"), ExtResource("48_qd85q"), ExtResource("49_p3tcj"), ExtResource("52_1kud3"), ExtResource("53_qtm42")])
 tutorial_sector = Array[ExtResource("22_tfyry")]([ExtResource("53_vhu6u"), ExtResource("37_ooshj"), ExtResource("66_f3imi"), ExtResource("23_6ebjm"), ExtResource("37_ooshj"), ExtResource("21_oai2y"), ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("62_p3tcj"), ExtResource("25_o33d5"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("26_aaucc"), ExtResource("21_oai2y"), ExtResource("66_f3imi"), ExtResource("25_o33d5"), ExtResource("53_vhu6u")])

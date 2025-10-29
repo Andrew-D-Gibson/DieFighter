@@ -17,6 +17,9 @@ var target_character: int = 0
 
 var popup_completed: bool = false
 
+var time_between_blip_sounds: float = 0.1
+var last_blip_time: int = 0
+
 signal all_text_displayed()
 signal popup_closed()
 
@@ -87,20 +90,15 @@ func _reveal_next_character() -> void:
 	%RichTextLabel.visible_characters = current_character
 	
 	# Play sound effect
-	if current_character % 2 == 0:
+	var current_time: int = Time.get_ticks_msec()
+	if (current_time - last_blip_time) > time_between_blip_sounds * 1000:
 		Events.play_sound.emit("text_blip")
+		last_blip_time = current_time
 	
 	# Schedule next character reveal
 	var time_to_next: float = min(character_reveal_time, max_reveal_time / target_character)
 	await get_tree().create_timer(time_to_next).timeout
 	_reveal_next_character()
-
-
-func _show_characters(num: int) -> void:
-	if %RichTextLabel.visible_characters != num and num%2 == 0:
-		Events.play_sound.emit("text_blip")
-		
-	%RichTextLabel.visible_characters = num
 	
 
 func _fade_in() -> void:

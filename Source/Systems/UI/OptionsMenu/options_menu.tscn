@@ -180,7 +180,6 @@ sprite_frames = null
 text = "AUDIO"
 
 [node name="GameOptions" type="VBoxContainer" parent="."]
-visible = false
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
@@ -232,17 +231,53 @@ popup/item_3/text = "4x"
 popup/item_3/id = 2
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="LanguageLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
-custom_minimum_size = Vector2(32, 16)
+[node name="TextSpeedLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
+custom_minimum_size = Vector2(46, 16)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+text = "Text Speed"
+vertical_alignment = 1
+
+[node name="TextSpeedOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_icons/arrow = ExtResource("8_vuhip")
+alignment = 1
+selected = 1
+allow_reselect = true
+item_count = 4
+popup/item_0/text = "0.5x"
+popup/item_0/id = 3
+popup/item_1/text = "1x"
+popup/item_1/id = 0
+popup/item_2/text = "2x"
+popup/item_2/id = 1
+popup/item_3/text = "Instant"
+popup/item_3/id = 2
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="LanguageLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3"]
+custom_minimum_size = Vector2(49.44, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 text = "Language"
 vertical_alignment = 1
 
-[node name="LanguageOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="LanguageOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3"]
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
@@ -278,6 +313,7 @@ sprite_frames = SubResource("SpriteFrames_p11be")
 text = "RESET DATA"
 
 [node name="GraphicsOptions" type="VBoxContainer" parent="."]
+visible = false
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
@@ -710,6 +746,7 @@ text = "CLOSE"
 [connection signal="pressed_within_window" from="TabButtons/GraphicsTabButton" to="." method="_on_graphics_button_pressed"]
 [connection signal="pressed_within_window" from="TabButtons/AudioTabButton" to="." method="_on_audio_button_pressed"]
 [connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer/AnimationSpeedOptionButton" to="." method="_on_animation_speed_option_button_item_selected"]
+[connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2/TextSpeedOptionButton" to="." method="_on_text_speed_option_button_item_selected"]
 [connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
 [connection signal="item_selected" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/ScaleOptionButton" to="." method="_on_scale_option_button_item_selected"]
