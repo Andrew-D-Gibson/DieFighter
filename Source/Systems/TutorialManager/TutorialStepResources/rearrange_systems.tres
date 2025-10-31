@@ -6,8 +6,9 @@
 
 [resource]
 script = ExtResource("3_v2grw")
-tutorial_text = "Systems can be rearranged when outside of combat."
+tutorial_text = "Systems may be rearranged outside combat."
 text_position = Vector2(160, 40)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_uy4bw")]([])
 forced_rewards = Array[ExtResource("2_p415e")]([])

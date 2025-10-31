@@ -6,8 +6,9 @@
 
 [resource]
 script = ExtResource("3_tyxjb")
-tutorial_text = "[color=purple]Engines[/color] charge after combat, or can be charged with [color=white]dice[/color] to retreat from superior forces.  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) on the [color=purple]MAP[/color] tab:"
+tutorial_text = "[color=purple]Engines[/color] charge after combat, or may be charged with [color=white]dice[/color] to retreat.  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) the [color=purple]MAP[/color] tab:"
 text_position = Vector2(160, 40)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_2h8ef")]([])
 forced_rewards = Array[ExtResource("2_kmiel")]([])

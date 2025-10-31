@@ -4,8 +4,7 @@ extends Node2D
 @export var auto_start: bool = true
 @export var skip_to_step: int = 0
 @export var tutorial_steps: Array[TutorialStep] = []
-@export var tutorial_sector: Array[ScenarioResource]
-
+@export var tutorial_game_save: GameSaveResource
 
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
@@ -26,7 +25,11 @@ var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.RUN_ENEMY_TURN: _run_enemy_turn,
 	TutorialStep.TutorialFunctions.ALLOW_NORMAL_COMBAT: _allow_normal_combat,
 	TutorialStep.TutorialFunctions.REVEAL_MAP: _reveal_map,
-	TutorialStep.TutorialFunctions.ENABLE_CONTROLS: _enable_controls,
+	TutorialStep.TutorialFunctions.ENABLE_RIGHT_CONTROL: _enable_right_control,
+	TutorialStep.TutorialFunctions.ENABLE_ALL_CONTROLS: _enable_controls,
+	TutorialStep.TutorialFunctions.LOCK_DICE: _lock_dice,
+	TutorialStep.TutorialFunctions.UNLOCK_DICE: _unlock_dice,
+	TutorialStep.TutorialFunctions.LOAD_MAIN_GAME: _load_main_game,
 }
 
 
@@ -72,9 +75,11 @@ func create_tutorial_popup(text: String, global_pos: Vector2, highlight_texture:
 	
 
 func start_tutorial() -> void:
-	Globals.map
 	for i: int in range(len(tutorial_steps)):
 		var step: TutorialStep = tutorial_steps[i]
+			
+		await get_tree().create_timer(step.time_delay).timeout
+	
 		await play_step(step)
 		await current_popup.popup_closed
 	
@@ -88,6 +93,9 @@ func play_step(step: TutorialStep, force_open: bool = false) -> void:
 			
 		TutorialStep.TutorialSignals.ON_ENEMY_FLY_IN:
 			await Events.enemy_flew_in
+			
+		TutorialStep.TutorialSignals.REWARD_CLAIMED:
+			await Events.reward_picked
 	
 	# Apply forced dice if specified
 	if step.forced_dice.size() > 0:
@@ -182,5 +190,25 @@ func _reveal_map() -> void:
 	Events.map_startup.emit()
 	
 	
+func _enable_right_control() -> void:
+	Globals.map.right_arrow_tile.can_accept_dice.enabled = true
+	
+	
 func _enable_controls() -> void:
 	Globals.map.enable_controls()
+	Events.show_map.emit()
+	
+	
+func _lock_dice() -> void:
+	for die: Dice in Globals.player.dice_manager.queue:
+		die.draggable.dragging_allowed = false
+		
+		
+func _unlock_dice() -> void:
+	for die: Dice in Globals.player.dice_manager.queue:
+		die.draggable.dragging_allowed = true
+		
+		
+func _load_main_game() -> void:
+	await get_tree().create_timer(4).timeout
+	Globals.state_manager.fade_out_to_main_menu()

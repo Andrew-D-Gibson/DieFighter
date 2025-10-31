@@ -8,6 +8,7 @@
 script = ExtResource("2_wcvbr")
 tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Use[/color][/wave] dice, then end turn:"
 text_position = Vector2(220, 40)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_ojprg")]([])
 forced_rewards = Array[ExtResource("2_glgu8")]([])

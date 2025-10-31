@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=14 format=3 uid="uid://c5jyv6pxbbm24"]
+
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_7px4k"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="1_q8im0"]
+[ext_resource type="Texture2D" uid="uid://e4r8pfc36ryf" path="res://Assets/Textures/Map/EncounterIcons/jump_gate.png" id="2_4aw1u"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ttv5t"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="3_q8im0"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="6_4pcrl"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="7_d4iej"]
+[ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Content/Enemies/EnemyResources/defender.tres" id="8_13w64"]
+
+[sub_resource type="Resource" id="Resource_kblek"]
+script = ExtResource("1_7px4k")
+min_money = 0
+max_money = 0
+num_of_rewards = 3
+dice_probability = 0.2
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_iq1es"]
+script = ExtResource("1_7px4k")
+min_money = 5
+max_money = 25
+num_of_rewards = 0
+dice_probability = 0.0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_evwsq"]
+script = ExtResource("3_q8im0")
+enemy_resource = ExtResource("6_4pcrl")
+spawning_path_location = 0.3
+starting_state = ExtResource("7_d4iej")
+reward_resource = SubResource("Resource_iq1es")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_x2sm1"]
+script = ExtResource("1_7px4k")
+min_money = 3
+max_money = 12
+num_of_rewards = 0
+dice_probability = 0.0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_s4c7p"]
+script = ExtResource("3_q8im0")
+enemy_resource = ExtResource("8_13w64")
+spawning_path_location = 0.7
+starting_state = ExtResource("7_d4iej")
+reward_resource = SubResource("Resource_x2sm1")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("2_ttv5t")
+map_icon = ExtResource("2_4aw1u")
+background_resource = ExtResource("1_q8im0")
+sector_gate_scenario = true
+starting_enemies = Array[ExtResource("3_q8im0")]([SubResource("Resource_evwsq"), SubResource("Resource_s4c7p")])
+rewards = Dictionary[int, ExtResource("1_7px4k")]({
+0: SubResource("Resource_kblek")
+})
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

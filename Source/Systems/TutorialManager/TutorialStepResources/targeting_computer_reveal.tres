@@ -8,6 +8,7 @@
 script = ExtResource("2_0nufp")
 tutorial_text = "Bringing [color=purple]targeting computer[/color] online. Enemy actions will be displayed before execution."
 text_position = Vector2(220, 65)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_2b1hk")]([])
 forced_rewards = Array[ExtResource("2_i8jhr")]([])

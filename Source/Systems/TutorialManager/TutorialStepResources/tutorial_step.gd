@@ -41,7 +41,11 @@ enum TutorialFunctions {
 	RUN_ENEMY_TURN,
 	ALLOW_NORMAL_COMBAT,
 	REVEAL_MAP,
-	ENABLE_CONTROLS,
+	ENABLE_RIGHT_CONTROL,
+	ENABLE_ALL_CONTROLS,
+	LOCK_DICE,
+	UNLOCK_DICE,
+	LOAD_MAIN_GAME,
 }
 @export var tutorial_function: TutorialFunctions 
 

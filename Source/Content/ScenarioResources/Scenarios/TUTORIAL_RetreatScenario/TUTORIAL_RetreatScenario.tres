@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=15 format=3 uid="uid://bj1qqoua2m1ih"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=14 format=3 uid="uid://bj1qqoua2m1ih"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_fcs48"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_qjk6t"]
@@ -8,7 +8,6 @@
 [ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="3_x6nfn"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="4_bysdh"]
 [ext_resource type="Resource" uid="uid://c8kw8h1mjtmml" path="res://Source/Content/Enemies/EnemyResources/cannon_drone.tres" id="8_n3e4f"]
-[ext_resource type="Resource" uid="uid://dm1yhib4n4lg6" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_RetreatScenario/tutorial_drone_1.tres" id="9_wkuf8"]
 [ext_resource type="Resource" uid="uid://deik0ym46rlu4" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_RetreatScenario/tutorial_drone_2.tres" id="10_fig73"]
 
 [sub_resource type="Resource" id="Resource_ui88j"]
@@ -29,14 +28,14 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 [sub_resource type="Resource" id="Resource_0qrpr"]
 script = ExtResource("3_hdjva")
 enemy_resource = ExtResource("8_n3e4f")
-spawning_path_location = 0.12
-starting_state = ExtResource("9_wkuf8")
+spawning_path_location = 0.3
+starting_state = ExtResource("10_fig73")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [sub_resource type="Resource" id="Resource_yikhs"]
 script = ExtResource("3_hdjva")
 enemy_resource = ExtResource("8_n3e4f")
-spawning_path_location = 0.3
+spawning_path_location = 0.6
 starting_state = ExtResource("10_fig73")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 

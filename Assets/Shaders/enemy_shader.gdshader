@@ -14,10 +14,10 @@ uniform float cloak_tolerance : hint_range(0.0, 0.5) = 0.1;
 void fragment() {
 	// Sample sprite texture
 	vec4 tex_color = texture(TEXTURE, UV);
-	
+
 	// Apply flash effect
 	vec4 flash_color_mix = mix(tex_color, vec4(flash_color.rgb, tex_color.a), flash_amount);
-	
+
 	// Cloak mapping
 	float diff = distance(tex_color.rgb, cloak_key_color.rgb);
 	vec4 cloaked_color = (diff < cloak_tolerance)
@@ -26,7 +26,7 @@ void fragment() {
 
 	// Mix uncloaked vs cloaked
 	vec4 final_color = mix(flash_color_mix, cloaked_color, cloak_amount);
-	
+
 	// Apply global alpha override
     final_color.a *= alpha;
 

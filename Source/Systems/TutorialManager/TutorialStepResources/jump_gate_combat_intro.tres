@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://8a2ay3ot6gnn"]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_e2s5r"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_25mdx"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="3_qgjbm"]
+
+[resource]
+script = ExtResource("3_qgjbm")
+tutorial_text = "[shake rate=15.0 level=2 connected=1][color=red]Enemies[/color][/shake] guarding [color=blue]jump gate[/color].  Defeat to escape."
+text_position = Vector2(230, 40)
+time_delay = 4.0
+forced_dice = Array[int]([])
+forced_enemy_actions = Array[ExtResource("1_e2s5r")]([])
+forced_rewards = Array[ExtResource("2_25mdx")]([])
+open_on_signal = 12
+close_on_signal = 1
+tutorial_function = 0
+time_to_auto_close = 0.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

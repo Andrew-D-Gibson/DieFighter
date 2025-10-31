@@ -6,14 +6,14 @@
 
 [resource]
 script = ExtResource("3_im6xf")
-tutorial_text = "Outmatched by enemy capabilities; [color=purple]retreat[/color] advised!  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Charge[/color][/wave] [color=purple]engines[/color] and jump to safety:"
+tutorial_text = "Outmatched - [color=purple]retreat[/color] advised.  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Charge[/color][/wave] [color=purple]engines[/color] and escape to [color=blue]jump gate[/color] (jump_gate_scenario)"
 text_position = Vector2(230, 40)
-time_delay = 0.0
+time_delay = 2.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_lfr4f")]([])
 forced_rewards = Array[ExtResource("2_c45qt")]([])
 open_on_signal = 0
 close_on_signal = 11
-tutorial_function = 0
+tutorial_function = 11
 time_to_auto_close = 0.0
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

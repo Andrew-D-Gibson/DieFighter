@@ -6,8 +6,9 @@
 
 [resource]
 script = ExtResource("2_6req8")
-tutorial_text = "[color=red]Hull[/color] integrity compromised. Bringing status readouts online:"
+tutorial_text = "[color=red]Hull[/color] integrity compromised. Initializing status readouts..."
 text_position = Vector2(83, 78)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_0wagu")]([])
 forced_rewards = Array[ExtResource("2_vcw3u")]([])

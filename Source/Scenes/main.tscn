@@ -1,4 +1,4 @@
-[gd_scene load_steps=78 format=3 uid="uid://deisauteocrjl"]
+[gd_scene load_steps=80 format=3 uid="uid://deisauteocrjl"]
 
 [ext_resource type="AudioStream" uid="uid://ib50atokqp2u" path="res://Assets/Music/Battle Themes/Game_Start_Theme/GameStartTheme.wav" id="1_3phsw"]
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
@@ -67,9 +67,10 @@
 [ext_resource type="Resource" uid="uid://dwx00amrb3m7m" path="res://Source/Systems/TutorialManager/TutorialStepResources/multiple_targets_explanation.tres" id="52_1kud3"]
 [ext_resource type="PackedScene" uid="uid://6ti1by7f8gps" path="res://Source/Systems/Game/GlobalModifierManager/global_modifier_manager.tscn" id="52_olve7"]
 [ext_resource type="Resource" uid="uid://6w4fbk3trbgl" path="res://Source/Systems/TutorialManager/TutorialStepResources/retreat_advised.tres" id="53_qtm42"]
-[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="53_vhu6u"]
+[ext_resource type="Resource" uid="uid://8a2ay3ot6gnn" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_gate_combat_intro.tres" id="55_j6chx"]
+[ext_resource type="Resource" uid="uid://byo6vhmyxihg6" path="res://Source/Resources/SaveResources/tutorial_start.tres" id="55_qtm42"]
+[ext_resource type="Resource" uid="uid://mla8luh6twhs" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_gate_explanation.tres" id="56_x81fm"]
 [ext_resource type="Resource" uid="uid://cujs3pocag3jh" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres" id="62_p3tcj"]
-[ext_resource type="Resource" uid="uid://bj1qqoua2m1ih" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_RetreatScenario/TUTORIAL_RetreatScenario.tres" id="66_f3imi"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -168,9 +169,52 @@ tracks/2/keys = {
 }]
 }
 
+[sub_resource type="Animation" id="Animation_qtm42"]
+resource_name = "fade_out_to_main_menu"
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("UI/FadeIn:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("UI/FadeIn:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Systems/GameStateManager")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"load_main_menu"
+}]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_xwceq"]
 _data = {
 &"RESET": SubResource("Animation_ooshj"),
+&"fade_out_to_main_menu": SubResource("Animation_qtm42"),
 &"game_start": SubResource("Animation_s48jj")
 }
 
@@ -302,9 +346,8 @@ position = Vector2(122, 43)
 
 [node name="TutorialManager" parent="Systems" instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
-skip_to_step = null
-tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtResource("30_k3fls"), ExtResource("31_s8v7r"), ExtResource("32_k3fls"), ExtResource("33_s8v7r"), ExtResource("34_s8v7r"), ExtResource("35_7yw3t"), ExtResource("36_d6h8w"), ExtResource("37_0b58v"), ExtResource("38_5rg43"), ExtResource("39_5rg43"), ExtResource("40_6c5u4"), ExtResource("41_kbsha"), ExtResource("42_h1v2j"), ExtResource("42_o2el7"), ExtResource("44_h1v2j"), ExtResource("45_gp2ob"), ExtResource("46_p3tcj"), ExtResource("46_1gi3i"), ExtResource("47_7ku7q"), ExtResource("48_qd85q"), ExtResource("49_p3tcj"), ExtResource("52_1kud3"), ExtResource("53_qtm42")])
-tutorial_sector = Array[ExtResource("22_tfyry")]([ExtResource("53_vhu6u"), ExtResource("37_ooshj"), ExtResource("66_f3imi"), ExtResource("23_6ebjm"), ExtResource("37_ooshj"), ExtResource("21_oai2y"), ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("62_p3tcj"), ExtResource("25_o33d5"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("26_aaucc"), ExtResource("21_oai2y"), ExtResource("66_f3imi"), ExtResource("25_o33d5"), ExtResource("53_vhu6u")])
+tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtResource("30_k3fls"), ExtResource("31_s8v7r"), ExtResource("32_k3fls"), ExtResource("33_s8v7r"), ExtResource("34_s8v7r"), ExtResource("35_7yw3t"), ExtResource("36_d6h8w"), ExtResource("37_0b58v"), ExtResource("38_5rg43"), ExtResource("39_5rg43"), ExtResource("40_6c5u4"), ExtResource("41_kbsha"), ExtResource("42_h1v2j"), ExtResource("42_o2el7"), ExtResource("44_h1v2j"), ExtResource("45_gp2ob"), ExtResource("46_p3tcj"), ExtResource("46_1gi3i"), ExtResource("47_7ku7q"), ExtResource("48_qd85q"), ExtResource("49_p3tcj"), ExtResource("52_1kud3"), ExtResource("53_qtm42"), ExtResource("55_j6chx"), ExtResource("56_x81fm")])
+tutorial_game_save = ExtResource("55_qtm42")
 
 [node name="GlobalModifierManager" parent="Systems" instance=ExtResource("52_olve7")]
 
@@ -318,7 +361,8 @@ question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), Ex
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 starting_scenario = ExtResource("62_p3tcj")
 
-[node name="GameStartAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager"]
+[node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager"]
+unique_name_in_owner = true
 process_mode = 3
 root_node = NodePath("../../..")
 libraries = {

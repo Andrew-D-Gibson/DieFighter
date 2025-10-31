@@ -26,7 +26,7 @@ signal popup_closed()
 
 func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, time_delay: float = 0, close_button: bool = true, auto_close_time: float = 0) -> void:
 	Events.close_tutorial_text_popup.connect(close)
-	
+
 	global_position = global_pos
 	display_close_button = close_button
 	time_to_wait_after_text_shown = auto_close_time
@@ -61,6 +61,8 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 	var text_without_delays: String = Utils.remove_delay_tags(text)
 	var bb_code_text: String = Utils.format_text(text_without_delays, 9)
 	var raw_text: String = Utils.strip_bbcode_tags(bb_code_text)
+	
+	print(raw_text)
 	
 	%RichTextLabel.text = bb_code_text
 	%RichTextLabel.visible_characters = 0

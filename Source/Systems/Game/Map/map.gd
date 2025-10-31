@@ -104,8 +104,8 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	scenario_list = game_save.sector_scenarios
 	current_scenario_index = game_save.current_scenario_index
 	
-	left_fate_index = -1
-	right_fate_index = len(scenario_list)
+	left_fate_index = 0
+	right_fate_index = len(scenario_list)-1
 	
 	_pick_new_danger_ranges()
 	

@@ -8,6 +8,7 @@
 script = ExtResource("2_7x0hf")
 tutorial_text = "Unknown [color=purple]anomalies[/color] (fate) continue pursuit. Threat level: [shake rate=15.0 level=2 connected=1][color=red]critical[/color][/shake]"
 text_position = Vector2(160, 40)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_236yp")]([])
 forced_rewards = Array[ExtResource("2_tvela")]([])

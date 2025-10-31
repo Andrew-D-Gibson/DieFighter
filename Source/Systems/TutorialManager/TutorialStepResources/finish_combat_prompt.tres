@@ -9,9 +9,9 @@
 
 [resource]
 script = ExtResource("2_4ehtm")
-tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Delete[/color][/wave] enemy signature"
+tutorial_text = "Now, [wave amp=10.0 freq=3.0 connected=1][color=yellow]delete[/color][/wave] enemy signature"
 text_position = Vector2(220, 40)
-time_delay = 0.0
+time_delay = 1.5
 forced_dice = Array[int]([6, 6])
 forced_enemy_actions = Array[ExtResource("1_hps7v")]([ExtResource("2_kb2pq"), ExtResource("2_kb2pq"), ExtResource("3_72pcb"), ExtResource("3_72pcb"), ExtResource("2_kb2pq"), ExtResource("2_kb2pq")])
 forced_rewards = Array[ExtResource("4_83exb")]([ExtResource("5_cf17y")])

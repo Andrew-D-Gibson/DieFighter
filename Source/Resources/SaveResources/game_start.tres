@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="GameSaveResource" load_steps=6 format=3 uid="uid://biawl3820xfte"]
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=7 format=3 uid="uid://biawl3820xfte"]
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
 [ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Content/Tiles/TileResources/shield.tres" id="5_5doxy"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_8qr57"]
+[ext_resource type="Resource" uid="uid://dy6ykhsava6f4" path="res://Source/Content/Tiles/TileResources/bump.tres" id="6_r67hd"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xm1st"]
 
 [resource]
@@ -11,11 +12,12 @@ script = ExtResource("1_78gow")
 player_health = 20
 player_max_health = 32
 player_defense = 0
-num_of_dice = 2
+num_of_dice = 3
 money = 0
 tile_locations = Dictionary[Vector2i, ExtResource("6_8qr57")]({
 Vector2i(0, 0): ExtResource("7_xm1st"),
-Vector2i(0, 1): ExtResource("5_5doxy")
+Vector2i(0, 1): ExtResource("5_5doxy"),
+Vector2i(1, 0): ExtResource("6_r67hd")
 })
 current_scenario_index = 0
 sector_scenarios = Array[ExtResource("2_ettjp")]([])

@@ -1,0 +1,40 @@
+[gd_scene load_steps=2 format=3 uid="uid://dt6a8lgxcnjve"]
+
+[ext_resource type="Script" uid="uid://qy7xyquee3nh" path="res://Source/Systems/UI/BackgroundModifierLabel/background_modifier_label.gd" id="1_q6fvw"]
+
+[node name="BackgroundModifierLabel" type="Node2D"]
+script = ExtResource("1_q6fvw")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+offset_right = 8.0
+offset_bottom = 8.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = -2
+theme_override_constants/margin_top = -6
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -3
+
+[node name="BackgroundNameLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(60, 12)
+layout_mode = 2
+bbcode_enabled = true
+text = "[color=red]RED NEBULA[/color]"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(128, 32)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
+bbcode_enabled = true
+text = "Doubles attack values.  This is more text just in case I need to."
+horizontal_alignment = 1
+vertical_alignment = 1

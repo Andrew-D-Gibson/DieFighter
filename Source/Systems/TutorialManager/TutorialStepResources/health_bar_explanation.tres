@@ -7,8 +7,9 @@
 
 [resource]
 script = ExtResource("2_8aqel")
-tutorial_text = "[color=red]Hull[/color] integrity below optimal threshold. Sustained [color=red]damage[/color] will result in mission failure."
+tutorial_text = "[color=red]Hull[/color] below optimal threshold. Sustained [color=red]damage[/color] will trigger mission failure."
 text_position = Vector2(88, 78)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_t2d1g")]([])
 forced_rewards = Array[ExtResource("2_eidie")]([])

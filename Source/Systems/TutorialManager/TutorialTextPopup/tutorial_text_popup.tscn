@@ -86,7 +86,7 @@ mouse_filter = 2
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_right = 4
-theme_override_constants/margin_bottom = 5
+theme_override_constants/margin_bottom = 8
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Panel/MarginContainer"]
 layout_mode = 2
@@ -96,9 +96,9 @@ mouse_filter = 2
 layout_mode = 2
 mouse_filter = 2
 theme_override_constants/margin_left = 0
-theme_override_constants/margin_top = -8
+theme_override_constants/margin_top = -10
 theme_override_constants/margin_right = 0
-theme_override_constants/margin_bottom = -4
+theme_override_constants/margin_bottom = -10
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/MarginContainer"]
 unique_name_in_owner = true

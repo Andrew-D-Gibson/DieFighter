@@ -6,8 +6,9 @@
 
 [resource]
 script = ExtResource("3_hro6c")
-tutorial_text = "Initializing engines..."
+tutorial_text = "Initializing [color=purple]engines[/color]..."
 text_position = Vector2(160, 40)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_teoao")]([])
 forced_rewards = Array[ExtResource("2_rqde2")]([])

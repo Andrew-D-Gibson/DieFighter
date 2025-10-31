@@ -15,6 +15,8 @@ extends Node2D
 
 @export var starting_scenario: ScenarioResource
 
+var main_menu_file: String = "uid://ccvtlre5vhj7d"
+
 enum GameState {
 	IN_COMBAT,
 	OUT_OF_COMBAT,
@@ -47,8 +49,7 @@ func _ready() -> void:
 	
 	if len(current_game_save.sector_scenarios) == 0:
 		if Globals.tutorial_manager.auto_start:
-			current_game_save.sector_scenarios = Globals.tutorial_manager.tutorial_sector
-			current_game_save.current_scenario_index = 8
+			current_game_save = Globals.tutorial_manager.tutorial_game_save
 		else:
 			_randomize_sector_scenarios()
 
@@ -151,3 +152,11 @@ func _in_combat() -> bool:
 		and enemy.scenario_state.attitude == Enemy.Attitude.AGGRESSIVE:
 			return true
 	return false
+
+
+func load_main_menu() -> void:
+	get_tree().change_scene_to_file(main_menu_file)
+	
+	
+func fade_out_to_main_menu() -> void:
+	%GameAnimationPlayer.play("fade_out_to_main_menu")

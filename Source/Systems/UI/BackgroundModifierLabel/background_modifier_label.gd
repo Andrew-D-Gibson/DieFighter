@@ -1,0 +1,2 @@
+class_name BackgroundModifierLabel
+extends Node2D

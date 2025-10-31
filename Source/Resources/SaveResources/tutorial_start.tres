@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=16 format=3 uid="uid://byo6vhmyxihg6"]
+
+[ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_dmamr"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_g4y0l"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_0kjck"]
+[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="3_uevqr"]
+[ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="4_0kjck"]
+[ext_resource type="Resource" uid="uid://cujs3pocag3jh" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres" id="4_wdhst"]
+[ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="5_22jl4"]
+[ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Content/Tiles/TileResources/shield.tres" id="5_a17s8"]
+[ext_resource type="Resource" uid="uid://bf2p4youiejta" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres" id="6_bbt7b"]
+[ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="7_jjqhh"]
+[ext_resource type="Resource" uid="uid://c5jyv6pxbbm24" path="res://Source/Content/ScenarioResources/Scenarios/JumpGate/jump_gate.tres" id="8_22jl4"]
+[ext_resource type="Resource" uid="uid://dp6euwvjd2ren" path="res://Source/Content/ScenarioResources/Scenarios/Shop/shop.tres" id="9_04ytu"]
+[ext_resource type="Resource" uid="uid://bj1qqoua2m1ih" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_RetreatScenario/TUTORIAL_RetreatScenario.tres" id="10_w771n"]
+[ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="11_22jl4"]
+[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres" id="12_bbt7b"]
+
+[resource]
+script = ExtResource("1_dmamr")
+player_health = 20
+player_max_health = 32
+player_defense = 0
+num_of_dice = 2
+money = 0
+tile_locations = Dictionary[Vector2i, ExtResource("3_0kjck")]({
+Vector2i(0, 0): ExtResource("4_0kjck"),
+Vector2i(0, 1): ExtResource("5_a17s8")
+})
+current_scenario_index = 1
+sector_scenarios = Array[ExtResource("2_g4y0l")]([ExtResource("3_uevqr"), ExtResource("4_wdhst"), ExtResource("5_22jl4"), ExtResource("6_bbt7b"), ExtResource("7_jjqhh"), ExtResource("8_22jl4"), ExtResource("9_04ytu"), ExtResource("10_w771n"), ExtResource("5_22jl4"), ExtResource("11_22jl4"), ExtResource("12_bbt7b"), ExtResource("3_uevqr")])
+metadata/_custom_type_script = "uid://dxkqfdmh8psqp"

@@ -6,9 +6,9 @@
 
 [resource]
 script = ExtResource("2_a1icy")
-tutorial_text = "System reboot complete. Pilot vital signs:(delay=0.4) [color=green]stable[/color]"
+tutorial_text = "System reboot complete. Pilot vitals:(delay=0.3) [color=green]stable[/color]"
 text_position = Vector2(160, 40)
-time_delay = 3.0
+time_delay = 2.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_voof4")]([])
 forced_rewards = Array[ExtResource("2_pxccn")]([])

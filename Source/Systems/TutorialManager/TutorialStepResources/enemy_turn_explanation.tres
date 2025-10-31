@@ -1,14 +1,17 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://bprdg1u1oixs4"]
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://bprdg1u1oixs4"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_0vx1l"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_4fm3y"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_ak7bt"]
 
 [resource]
 script = ExtResource("2_4fm3y")
-tutorial_text = "Notice: [color=yellow]Enemies maintain the values of dice received, and act accordingly.[/color]"
+tutorial_text = "Notice: [color=yellow]Enemies retain the values of dice they receive and act accordingly.[/color]"
 text_position = Vector2(220, 40)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_0vx1l")]([])
+forced_rewards = Array[ExtResource("2_ak7bt")]([])
 open_on_signal = 0
 close_on_signal = 1
 tutorial_function = 0

@@ -1,14 +1,17 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=3 format=3 uid="uid://bdtn84danaqk0"]
+[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://bdtn84danaqk0"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_1p5le"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_1ko3o"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_xh582"]
 
 [resource]
 script = ExtResource("2_xh582")
-tutorial_text = "[color=yellow]Click[/color] on enemy intentions in the [color=purple]targeting computer[/color] for additional information."
+tutorial_text = "[color=yellow]Click[/color] enemy intentions in the [color=purple]targeting computer[/color] for details."
 text_position = Vector2(220, 40)
+time_delay = 0.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_1p5le")]([])
+forced_rewards = Array[ExtResource("2_1ko3o")]([])
 open_on_signal = 0
 close_on_signal = 1
 tutorial_function = 0
