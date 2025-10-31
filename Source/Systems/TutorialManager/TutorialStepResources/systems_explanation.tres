@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("2_dyile")
-tutorial_text = "Active subsystems: (delay=0.3)[color=red]Dice Cannon[/color] and [color=blue]Shield Burst[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) subsystem for specifications:"
+tutorial_text = "Active subsystems: (delay=0.3)[color=red]Dice Cannon[/color] and [color=blue]Shield Burst[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) a subsystem for specifications:"
 text_position = Vector2(220, 40)
 time_delay = 0.0
 forced_dice = Array[int]([])

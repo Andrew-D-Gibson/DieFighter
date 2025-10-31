@@ -1,7 +1,7 @@
 class_name AttackTargetTweenEffect
 extends Effect
 
-var tween_time: float = 1.5
+var tween_time: float = 1.25
 
 func play(effect_variables: EffectVariables) -> void:
 	# Don't do anything if there's no target

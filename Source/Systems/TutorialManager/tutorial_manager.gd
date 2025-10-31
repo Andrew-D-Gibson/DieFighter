@@ -210,5 +210,5 @@ func _unlock_dice() -> void:
 		
 		
 func _load_main_game() -> void:
-	await get_tree().create_timer(4).timeout
+	await get_tree().create_timer(3).timeout
 	Globals.state_manager.fade_out_to_main_menu()

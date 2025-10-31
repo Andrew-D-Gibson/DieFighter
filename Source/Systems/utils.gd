@@ -59,7 +59,7 @@ static func format_text(text: String, scale: int = 6) -> String:
 	text = text.replace('(left_mouse)', '[img={' + str(8) + '}x{' + str(8) + '}]' + mouse_indicator_path + '[/img]')
 	text = text.replace('(attack_indicator)', '[img={' + str(8) + '}x{' + str(8) + '}]' + attack_indicator_path + '[/img]')
 	text = text.replace('(fate_scenario)', '[img={' + str(8) + '}x{' + str(8) + '}]' + fate_scenario_image_path + '[/img]')
-	text = text.replace('(targeting_arrows)', '[img={' + str(11) + '}x{' + str(15) + '}]' + targeting_arrows_image_path + '[/img]')
+	text = text.replace('(targeting_arrows)', '[img={' + str(8) + '}x{' + str(11) + '}]' + targeting_arrows_image_path + '[/img]')
 	text = text.replace('(arrow_keys)', '[img={' + str(16) + '}x{' + str(8) + '}]' + arrow_keys_image_path + '[/img]')
 	text = text.replace('(jump_gate_scenario)', '[img={' + str(8) + '}x{' + str(8) + '}]' + jump_gate_scenario_image_path + '[/img]')
 
@@ -95,7 +95,16 @@ static func remove_delay_tags(text: String) -> String:
 
 static func strip_bbcode_tags(text: String) -> String:
 	var regex: RegEx = RegEx.new()
-	# This regex matches anything like [tag] or [tag=param]
+	# First, remove [img ...]...[/img] blocks entirely (including the file paths inside)
+	# Example: [img={8}x{8}]res://Assets/Textures/.../icon.png[/img]
+	regex.compile(r"\[img[^\]]*\][\s\S]*?\[/img\]")
+	text = regex.sub(text, "", true)
+
+	# As a safety net, remove any standalone engine-style resource paths like res://... or user://...
+	regex.compile(r"(?:res|user)://[^\s\]]+")
+	text = regex.sub(text, "", true)
+
+	# Finally, remove any remaining BBCode tags like [b], [color=#...], [/b], etc.
 	regex.compile(r"\[/?[^\]]+\]")
 	return regex.sub(text, "", true)
 
