@@ -220,14 +220,15 @@ vertical_alignment = 1
 metadata/_edit_group_ = true
 
 [node name="VersionText" type="RichTextLabel" parent="."]
+custom_minimum_size = Vector2(28, 0)
 anchors_preset = 3
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 296.0
-offset_top = 163.0
-offset_right = 318.0
+offset_left = 294.0
+offset_top = 157.0
+offset_right = 316.0
 offset_bottom = 179.0
 grow_horizontal = 0
 grow_vertical = 0
@@ -325,7 +326,7 @@ position = Vector2(160, 90)
 [node name="CPUParticles2D" type="CPUParticles2D" parent="."]
 z_index = -2
 position = Vector2(160, 90)
-amount = 32
+amount = 64
 lifetime = 30.0
 preprocess = 180.0
 explosiveness = 0.2

@@ -8,7 +8,7 @@
 script = ExtResource("3_n13y1")
 tutorial_text = "After destruction, salvage wreckage for systems and [color=green]credits[/color].  [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave] the reward to claim it:"
 text_position = Vector2(220, 40)
-time_delay = 0.0
+time_delay = 2.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_8f0c0")]([])
 forced_rewards = Array[ExtResource("2_bdd5v")]([])

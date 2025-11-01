@@ -1,15 +1,25 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=6 format=3 uid="uid://f2rm5hk1yt2q"]
+[gd_resource type="Resource" script_class="ScenarioResource" load_steps=9 format=3 uid="uid://f2rm5hk1yt2q"]
 
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="1_f3gao"]
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg6rt"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_uydqo"]
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="2_48pqo"]
 [ext_resource type="Texture2D" uid="uid://sisf28rp3pdm" path="res://Assets/Textures/Map/EncounterIcons/empty_encounter.png" id="2_conha"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="2_xksp1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="3_86fhb"]
+[ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="3_sjqqc"]
+
+[sub_resource type="Resource" id="Resource_qa3ib"]
+script = ExtResource("3_sjqqc")
+eligible_backgrounds = Array[ExtResource("1_bg6rt")]([ExtResource("2_48pqo")])
+reselect_on_scenario_load = true
+reselect_on_manual_background_change = false
+metadata/_custom_type_script = "uid://3roroso3mo17"
 
 [resource]
 script = ExtResource("1_uydqo")
 map_icon = ExtResource("2_conha")
-background_resource = ExtResource("1_f3gao")
+background_resource = SubResource("Resource_qa3ib")
+sector_gate_scenario = false
 starting_enemies = Array[ExtResource("2_xksp1")]([])
 rewards = Dictionary[int, ExtResource("3_86fhb")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

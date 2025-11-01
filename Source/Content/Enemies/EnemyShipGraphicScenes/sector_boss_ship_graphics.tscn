@@ -7,6 +7,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_3pfgn"]
 resource_local_to_scene = true
 shader = ExtResource("1_oby0r")
+shader_parameter/alpha = 0.0
 shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
 shader_parameter/cloak_amount = 0.0

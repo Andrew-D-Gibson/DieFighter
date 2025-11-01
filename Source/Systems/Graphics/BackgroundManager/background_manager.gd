@@ -1,7 +1,7 @@
 class_name BackgroundManager
 extends Sprite2D
 
-@export var starting_background: Resource
+@export var starting_background: RandomBackgroundResource
 @export var jump_animation_time: float = 5
 
 @export_category("Parallax System")

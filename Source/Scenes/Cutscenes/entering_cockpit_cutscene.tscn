@@ -1,10 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://2htmp8viygbt"]
+[gd_scene load_steps=14 format=3 uid="uid://2htmp8viygbt"]
 
 [ext_resource type="Script" uid="uid://cjt60q55be4l2" path="res://Source/Scenes/Cutscenes/entering_cockpit_cutscene.gd" id="1_gps8f"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="1_pmj2g"]
-[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="2_espg0"]
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="3_vtw8f"]
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="3_yd0cl"]
 [ext_resource type="Texture2D" uid="uid://dmby000i3wqa0" path="res://Assets/Textures/Enemies/Defender/Defender.png" id="4_gps8f"]
+[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="4_icuno"]
+[ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="5_bfawc"]
 [ext_resource type="PackedScene" uid="uid://ct6jo26ujhw4d" path="res://Assets/Particles/engine_particles_rotated_down.tscn" id="5_qn6rl"]
 
 [sub_resource type="Environment" id="Environment_sjdfe"]
@@ -14,6 +16,83 @@ glow_intensity = 0.6
 glow_bloom = 0.3
 glow_hdr_threshold = 0.5
 adjustment_enabled = true
+
+[sub_resource type="Resource" id="Resource_dybqf"]
+script = ExtResource("5_bfawc")
+eligible_backgrounds = Array[ExtResource("3_yd0cl")]([ExtResource("4_icuno")])
+reselect_on_scenario_load = true
+reselect_on_manual_background_change = false
+metadata/_custom_type_script = "uid://3roroso3mo17"
+
+[sub_resource type="Animation" id="Animation_icuno"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("FadeIn:self_modulate:a")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("FadeIn:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PlayerShip:position:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(180, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Camera2D:offset:y")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/4/type = "bezier"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Camera2D:zoom:x")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/5/type = "bezier"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Camera2D:zoom:y")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
 
 [sub_resource type="Animation" id="Animation_yd0cl"]
 resource_name = "entering_cockpit_cutscene"
@@ -100,76 +179,6 @@ tracks/6/keys = {
 }]
 }
 
-[sub_resource type="Animation" id="Animation_icuno"]
-length = 0.001
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("FadeIn:self_modulate:a")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("FadeIn:visible")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("PlayerShip:position:y")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(180, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/3/type = "bezier"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Camera2D:offset:y")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/4/type = "bezier"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Camera2D:zoom:x")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/5/type = "bezier"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Camera2D:zoom:y")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_bfawc"]
 _data = {
 &"RESET": SubResource("Animation_icuno"),
@@ -188,7 +197,7 @@ zoom = Vector2(6, 6)
 
 [node name="BackgroundManager" parent="." instance=ExtResource("1_pmj2g")]
 position = Vector2(160, 90)
-starting_background = ExtResource("2_espg0")
+starting_background = SubResource("Resource_dybqf")
 
 [node name="FadeIn" type="Sprite2D" parent="."]
 unique_name_in_owner = true

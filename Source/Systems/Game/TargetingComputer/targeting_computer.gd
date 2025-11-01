@@ -36,6 +36,11 @@ func _ready() -> void:
 	)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
 
+	Events.jump.connect(func() -> void:
+		targeted_enemy_index = -1
+		_update_ui()	
+	)
+
 	Events.targeting_computer_startup.connect(_startup)
 
 	%RevealOverlay.material = %RevealOverlay.material.duplicate()

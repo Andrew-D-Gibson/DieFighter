@@ -1,7 +1,7 @@
 class_name ShakeDiceTweenEffect
 extends Effect
 
-var tween_time: float = 1.2
+var tween_time: float = 2.4
 
 func play(effect_variables: EffectVariables) -> void:
 	# Don't do anything if there's no die to move

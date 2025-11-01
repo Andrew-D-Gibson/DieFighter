@@ -425,7 +425,7 @@ frame = 5
 
 [node name="RevealOverlay" type="Sprite2D" parent="."]
 unique_name_in_owner = true
-z_index = 10
+z_index = 9
 material = SubResource("ShaderMaterial_up1nx")
 position = Vector2(0, 0.5)
 texture = ExtResource("13_du4uj")

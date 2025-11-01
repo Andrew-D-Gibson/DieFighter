@@ -1,37 +1,17 @@
-[13:34:11] Debug logger initialized
-[13:34:11] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
-[13:34:22] Starting combat
-[13:34:38] Starting combat
-[13:34:38] Player attacked ship: Enemy (Faction: PIRATE)
-[13:34:38] Scenario Event: PLAYER_ATTACKED_PIRATE
-[13:34:39] Player turn over
-[13:35:20] Enemy Venom Fighter performed action: Dice Cannon
-[13:35:21] Enemy Venom Fighter performed action: 
-[13:35:21] Enemy turn over
-[13:35:27] Player attacked ship: Enemy (Faction: PIRATE)
-[13:35:27] Scenario Event: PLAYER_ATTACKED_PIRATE
-[13:35:27] Player turn over
-[13:35:30] Enemy Venom Fighter performed action: Dice Cannon
-[13:35:30] Enemy Venom Fighter performed action: 
-[13:35:30] Enemy turn over
-[13:35:34] Player attacked ship: Enemy (Faction: PIRATE)
-[13:35:34] Scenario Event: PLAYER_ATTACKED_PIRATE
-[13:35:34] Player attacked ship: Enemy (Faction: PIRATE)
-[13:35:34] Scenario Event: PLAYER_ATTACKED_PIRATE
-[13:35:34] Enemy left: PIRATE
-[13:35:34] Scenario Event: PIRATES_DEFEATED
-[13:35:34] Combat finished
-[13:35:35] Scenario Event: COMBAT_ENDED
-[13:36:20] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_RetreatScenario/TUTORIAL_RetreatScenario.tres
-[13:36:21] Starting scenario
-[13:36:21] Starting combat
-[13:37:51] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/JumpGate/jump_gate.tres
-[13:37:52] Starting scenario
-[13:38:04] Player attacked ship: @Node2D@993 (Faction: PIRATE)
-[13:38:04] Scenario Event: PLAYER_ATTACKED_PIRATE
-[13:38:06] Player attacked ship: Enemy (Faction: PIRATE)
-[13:38:06] Scenario Event: PLAYER_ATTACKED_PIRATE
-[13:38:07] Player turn over
-[13:38:09] Enemy Venom Fighter performed action: 
-[13:38:11] Enemy Bamba Defender performed action: 
-[13:38:11] Enemy turn over
+[14:26:00] Debug logger initialized
+[14:26:01] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[14:26:01] Starting scenario
+[14:26:07] Starting combat
+[14:26:07] Player attacked ship: Enemy (Faction: PIRATE)
+[14:26:07] Scenario Event: PLAYER_ATTACKED_PIRATE
+[14:26:12] Player attacked ship: @Node2D@271 (Faction: CIVILIAN)
+[14:26:12] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[14:27:31] Player attacked ship: Enemy (Faction: PIRATE)
+[14:27:31] Scenario Event: PLAYER_ATTACKED_PIRATE
+[14:27:33] Player turn over
+[14:27:35] Enemy Venom Fighter performed action: 
+[14:27:36] Enemy Venom Fighter performed action: 
+[14:27:38] Enemy Civilian Transport performed action: 
+[14:27:38] Enemy turn over
+[14:27:41] Player attacked ship: @Node2D@271 (Faction: CIVILIAN)
+[14:27:41] Scenario Event: PLAYER_ATTACKED_CIVILIAN

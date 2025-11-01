@@ -62,8 +62,6 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 	var bb_code_text: String = Utils.format_text(text_without_delays, 9)
 	var raw_text: String = Utils.strip_bbcode_tags(bb_code_text)
 	
-	print(raw_text)
-	
 	%RichTextLabel.text = bb_code_text
 	%RichTextLabel.visible_characters = 0
 	
