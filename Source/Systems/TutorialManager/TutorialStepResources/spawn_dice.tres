@@ -8,6 +8,7 @@
 script = ExtResource("2_jooo7")
 tutorial_text = "Unlocking probability [color=white]cuboids[/color]..."
 text_position = Vector2(220, 40)
+time_delay = 0.0
 forced_dice = Array[int]([6, 3])
 forced_enemy_actions = Array[ExtResource("1_wgpyx")]([])
 forced_rewards = Array[ExtResource("2_xfnx1")]([])

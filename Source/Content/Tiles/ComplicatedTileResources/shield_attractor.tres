@@ -1,37 +1,37 @@
 [gd_resource type="Resource" script_class="TileResource" load_steps=23 format=3 uid="uid://bpskb4vc2vfxm"]
 
-[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_eijxs"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_g2lqo"]
-[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="3_dnmwd"]
-[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_2ccth"]
-[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_nt0b2"]
-[ext_resource type="Script" uid="uid://dgucdxpklniph" path="res://Source/Content/Effects/TileMovers/pull_row_tiles_toward_column_effect.gd" id="6_eijxs"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_hl5sa"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_2v11i"]
-[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="9_2nbty"]
-[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="10_0yqim"]
-[ext_resource type="Texture2D" uid="uid://b6od4rrkvtsg4" path="res://Assets/Textures/Tiles/YellowTiles/shielded_attractor-Sheet.png" id="11_eijxs"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_0hix8"]
+[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_1ackw"]
+[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="3_l2ayk"]
+[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_hg5yi"]
+[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_c2wpq"]
+[ext_resource type="Script" uid="uid://dgucdxpklniph" path="res://Source/Content/Effects/TileMovers/pull_row_tiles_toward_column_effect.gd" id="6_ermea"]
+[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_n0ai7"]
+[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_xgthl"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="9_gp5p5"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="10_oc42i"]
+[ext_resource type="Texture2D" uid="uid://b6od4rrkvtsg4" path="res://Assets/Textures/Tiles/YellowTiles/shielded_attractor-Sheet.png" id="11_05w1a"]
 
 [sub_resource type="Resource" id="Resource_6evea"]
-script = ExtResource("1_eijxs")
+script = ExtResource("1_0hix8")
 type = 1
 acceptable_values = Array[int]([4])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_amjtu"]
-script = ExtResource("3_dnmwd")
+script = ExtResource("3_l2ayk")
 primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_yg82r"]
-script = ExtResource("4_2ccth")
+script = ExtResource("4_hg5yi")
 amount = -6
 inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
 [sub_resource type="Resource" id="Resource_h5cel"]
-script = ExtResource("5_nt0b2")
+script = ExtResource("5_c2wpq")
 color = Color(0.317647, 0.717647, 1, 1)
 amount = 36
 location = 0
@@ -39,32 +39,32 @@ primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_8e5ky"]
-script = ExtResource("6_eijxs")
+script = ExtResource("6_ermea")
 target_column = -1
 target_row = -1
 primary_effect = false
 metadata/_custom_type_script = "uid://dgucdxpklniph"
 
 [sub_resource type="Resource" id="Resource_fm5k0"]
-script = ExtResource("7_hl5sa")
+script = ExtResource("7_n0ai7")
 primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_8u76x"]
-script = ExtResource("8_2v11i")
-effects = Array[ExtResource("2_g2lqo")]([SubResource("Resource_amjtu"), SubResource("Resource_yg82r"), SubResource("Resource_h5cel"), SubResource("Resource_8e5ky"), SubResource("Resource_fm5k0")])
+script = ExtResource("8_xgthl")
+effects = Array[ExtResource("2_1ackw")]([SubResource("Resource_amjtu"), SubResource("Resource_yg82r"), SubResource("Resource_h5cel"), SubResource("Resource_8e5ky"), SubResource("Resource_fm5k0")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_g2lqo"]
-atlas = ExtResource("11_eijxs")
+atlas = ExtResource("11_05w1a")
 region = Rect2(0, 0, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dnmwd"]
-atlas = ExtResource("11_eijxs")
+atlas = ExtResource("11_05w1a")
 region = Rect2(24, 0, 24, 24)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2ccth"]
-atlas = ExtResource("11_eijxs")
+atlas = ExtResource("11_05w1a")
 region = Rect2(48, 0, 24, 24)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_nt0b2"]
@@ -85,7 +85,7 @@ animations = [{
 }]
 
 [resource]
-script = ExtResource("10_0yqim")
+script = ExtResource("10_oc42i")
 tile_name = "[color=yellow]Shield Attractor[/color]"
 activation_description = ""
 description = "(die_4) -> Drains [color=blue]6 shields[/color] from [color=purple]target[/color] and [color=orange]gives[/color] them the die.  [color=yellow]Pulls[/color] all tiles in this row toward itself"
@@ -93,9 +93,9 @@ hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_nt0b2")
 uses_per_combat = 2
-activation_checks = Array[ExtResource("1_eijxs")]([SubResource("Resource_6evea")])
+activation_checks = Array[ExtResource("1_0hix8")]([SubResource("Resource_6evea")])
 effect_chain = SubResource("Resource_8u76x")
-event_responses = Dictionary[ExtResource("9_2nbty"), ExtResource("8_2v11i")]({})
+event_responses = Dictionary[ExtResource("9_gp5p5"), ExtResource("8_xgthl")]({})
 dragging_allowed = true
 max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -35,7 +35,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 [sub_resource type="Resource" id="Resource_yikhs"]
 script = ExtResource("3_hdjva")
 enemy_resource = ExtResource("8_n3e4f")
-spawning_path_location = 0.6
+spawning_path_location = 0.7
 starting_state = ExtResource("10_fig73")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 

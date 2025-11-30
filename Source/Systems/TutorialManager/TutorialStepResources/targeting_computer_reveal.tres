@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("2_0nufp")
-tutorial_text = "Bringing [color=purple]targeting computer[/color] online. Enemy actions will be displayed before execution."
+tutorial_text = "Bringing [color=purple]targeting computer[/color] online.(delay=0.5) Enemy actions will be displayed before execution."
 text_position = Vector2(220, 65)
 time_delay = 0.0
 forced_dice = Array[int]([])

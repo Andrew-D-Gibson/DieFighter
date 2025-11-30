@@ -9,7 +9,7 @@
 
 [resource]
 script = ExtResource("2_4ehtm")
-tutorial_text = "Now, [wave amp=10.0 freq=3.0 connected=1][color=yellow]destroy[/color][/wave] enemy:"
+tutorial_text = "Now, [wave amp=10.0 freq=3.0 connected=1][color=yellow]destroy[/color][/wave] the enemy:"
 text_position = Vector2(220, 40)
 time_delay = 1.5
 forced_dice = Array[int]([6, 6])

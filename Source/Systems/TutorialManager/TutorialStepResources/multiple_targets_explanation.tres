@@ -7,7 +7,7 @@
 [resource]
 script = ExtResource("3_x47tp")
 tutorial_text = "Multiple enemy signatures.  [color=purple]Target[/color] individual craft with [color=purple]computer[/color] controls (targeting_arrows) or with [color=yellow]arrow keys[/color] (arrow_keys):"
-text_position = Vector2(230, 40)
+text_position = Vector2(160, 120)
 time_delay = 6.0
 forced_dice = Array[int]([])
 forced_enemy_actions = Array[ExtResource("1_00lnd")]([])

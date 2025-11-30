@@ -33,6 +33,12 @@ static var fate_scenario_image_path: String = "res://Assets/Textures/Map/Encount
 static var targeting_arrows_image_path: String = "res://Assets/Textures/TutorialManager/targeting_computer_arrows_icon.png"
 static var arrow_keys_image_path: String = "res://Assets/Textures/TutorialManager/arrow_keys_icon.png"
 static var jump_gate_scenario_image_path: String = "res://Assets/Textures/Map/EncounterIcons/jump_gate.png"
+static var dice_cannon_image_path: String = "res://Assets/Textures/Tiles/RedTiles/damage.png"
+static var shield_burst_image_path: String = "res://Assets/Textures/Tiles/BlueTiles/shield.png"
+static var credits_image_path: String = "res://Assets/Textures/Money/money_symbol.png"
+static var right_controls_image_path: String = "res://Assets/Textures/Map/right_arrow_tile.png"
+static var left_controls_image_path: String = "res://Assets/Textures/Map/left_arrow_tile.png"
+
 
 static func format_text(text: String, scale: int = 6) -> String:
 	# Change colors to match the palette
@@ -62,11 +68,21 @@ static func format_text(text: String, scale: int = 6) -> String:
 	text = text.replace('(targeting_arrows)', '[img={' + str(8) + '}x{' + str(11) + '}]' + targeting_arrows_image_path + '[/img]')
 	text = text.replace('(arrow_keys)', '[img={' + str(16) + '}x{' + str(8) + '}]' + arrow_keys_image_path + '[/img]')
 	text = text.replace('(jump_gate_scenario)', '[img={' + str(8) + '}x{' + str(8) + '}]' + jump_gate_scenario_image_path + '[/img]')
-
+	
+	text = text.replace('(dice_cannon)', '[img={' + str(8) + '}x{' + str(8) + '}]' + dice_cannon_image_path + '[/img]')
+	text = text.replace('(shield_burst)', '[img={' + str(8) + '}x{' + str(8) + '}]' + shield_burst_image_path + '[/img]')
+	
+	text = text.replace('(credits)', '[img={' + str(8) + '}x{' + str(8) + '}]' + credits_image_path + '[/img]')
+	
+	text = text.replace('(right_controls)', '[img={' + str(8) + '}x{' + str(8) + '}]' + right_controls_image_path + '[/img]')
+	text = text.replace('(left_controls)', '[img={' + str(8) + '}x{' + str(8) + '}]' + left_controls_image_path + '[/img]')
+	
+	
 	return text
 
 
 ## Parses delay tags from text and returns a dictionary of character positions and their delays
+## Returns positions in the original text
 static func parse_delay_tags(text: String) -> Dictionary:
 	var delay_positions: Dictionary = {}
 	var regex: RegEx = RegEx.new()
@@ -84,6 +100,101 @@ static func parse_delay_tags(text: String) -> Dictionary:
 		search_start = result.get_end()
 	
 	return delay_positions
+
+
+## Maps delay positions from original text (with delay tags) to processed text (without delay tags, formatted, BBCode stripped)
+## Returns a dictionary mapping positions in the processed text to delay times
+static func map_delay_positions(original_text: String, text_without_delays: String, bb_code_text: String, processed_text: String, delay_positions: Dictionary) -> Dictionary:
+	if delay_positions.is_empty():
+		return {}
+	
+	# Find all delay tag positions in original text
+	var regex: RegEx = RegEx.new()
+	regex.compile(r"\(delay=[0-9.]+\)")
+	
+	var search_start: int = 0
+	var delay_matches: Array = []
+	while true:
+		var result: RegExMatch = regex.search(original_text, search_start)
+		if not result:
+			break
+		delay_matches.append(result)
+		search_start = result.get_end()
+	
+	# Map delay positions from original text to processed text
+	# We do this by:
+	# 1. Finding the position in text_without_delays (accounting for removed delay tags)
+	# 2. Finding the corresponding position in processed_text by character alignment
+	#    (accounting for formatting changes and BBCode removal)
+	var mapped_delays: Dictionary = {}
+	
+	for original_pos in delay_positions.keys():
+		# Find which delay tag this position corresponds to
+		var delay_tag_index: int = -1
+		for i in range(delay_matches.size()):
+			var match: RegExMatch = delay_matches[i]
+			if original_pos == match.get_start():
+				delay_tag_index = i
+				break
+		
+		if delay_tag_index == -1:
+			continue
+		
+		# Calculate cumulative length of delay tags before this one
+		var cumulative_delay_length: int = 0
+		for i in range(delay_tag_index):
+			cumulative_delay_length += delay_matches[i].get_string().length()
+		
+		# Position in text_without_delays (before the delay tag)
+		var no_delays_pos: int = original_pos - cumulative_delay_length
+		
+		# Map from text_without_delays to processed_text by aligning visible characters
+		# This accounts for both formatting changes (die_1 -> image tags) and BBCode removal
+		var processed_pos: int = _find_corresponding_position(text_without_delays, processed_text, no_delays_pos)
+		if processed_pos != -1:
+			mapped_delays[processed_pos] = delay_positions[original_pos]
+	
+	return mapped_delays
+
+
+## Helper function to find corresponding position in processed text
+## Uses character alignment accounting for BBCode tags and formatting changes
+static func _find_corresponding_position(source_text: String, target_text: String, source_pos: int) -> int:
+	if source_pos < 0 or source_pos > source_text.length():
+		return -1
+	
+	# Simple approach: align by matching characters character-by-character
+	# This handles cases where format_text might have replaced some characters (like die_1 -> image tag -> removed)
+	var source_index: int = 0
+	var target_index: int = 0
+	
+	# Align characters up to source_pos
+	while source_index < source_pos and source_index < source_text.length():
+		if target_index >= target_text.length():
+			# Target text is shorter - return current position
+			break
+		
+		if source_text[source_index] == target_text[target_index]:
+			# Characters match - advance both
+			source_index += 1
+			target_index += 1
+		else:
+			# Characters don't match - this might be due to formatting changes
+			# Try to find the next matching character in target_text
+			var found: bool = false
+			for lookahead in range(1, min(20, target_text.length() - target_index)):  # Look ahead up to 20 chars
+				if target_index + lookahead < target_text.length() and source_text[source_index] == target_text[target_index + lookahead]:
+					# Found a match ahead - skip the mismatched characters in target
+					target_index += lookahead + 1
+					source_index += 1
+					found = true
+					break
+			
+			if not found:
+				# No match found ahead - skip this character in source (it was removed by formatting)
+				source_index += 1
+	
+	return target_index
 
 
 ## Removes delay tags from text for display

@@ -7,7 +7,7 @@
 
 [resource]
 script = ExtResource("3_ey2sw")
-tutorial_text = "[color=purple]Engines[/color] fully charged. Insert [color=white]dice[/color] into controls to jump:
+tutorial_text = "[color=purple]Engines[/color] fully charged. Insert [color=white]dice[/color] into controls (right_controls) to jump:
 "
 text_position = Vector2(160, 40)
 time_delay = 0.0

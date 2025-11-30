@@ -57,10 +57,13 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 	#_bob_tween.set_loops()
 	
 	# Parse delay tags before formatting
-	delay_positions = Utils.parse_delay_tags(text)
+	var original_delay_positions: Dictionary = Utils.parse_delay_tags(text)
 	var text_without_delays: String = Utils.remove_delay_tags(text)
 	var bb_code_text: String = Utils.format_text(text_without_delays, 9)
 	var raw_text: String = Utils.strip_bbcode_tags(bb_code_text)
+	
+	# Map delay positions from original text to processed text positions
+	delay_positions = Utils.map_delay_positions(text, text_without_delays, bb_code_text, raw_text, original_delay_positions)
 	
 	%RichTextLabel.text = bb_code_text
 	%RichTextLabel.visible_characters = 0
