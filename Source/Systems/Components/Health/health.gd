@@ -25,6 +25,8 @@ signal health_damaged()
 signal health_healed()
 signal shields_damaged()
 signal shields_reinforced()
+
+signal fatal_damage()
 signal death() 
 
 
@@ -47,7 +49,13 @@ func change_health(amount: int) -> void:
 	health = clampi(health, 0, max_health)
 	
 	if health <= 0:
-		death.emit()
+		# Alert the world for fatal damage
+		fatal_damage.emit()
+		
+		# Check again in case we've been saved
+		if health <= 0:
+			death.emit()
+			
 	if amount > 0:
 		health_healed.emit()
 	else:

@@ -143,52 +143,30 @@ func _update_map_sprites() -> void:
 	if len(scenario_list) == 0:
 		return
 		
-	# Add the fate sprites
+	# Add the fate sprite
 	var left_fate: Node2D = fate.instantiate()
-	var right_fate: Node2D = fate.instantiate()
-	right_fate.scale = Vector2(-1, 1)
 	left_fate.position = Vector2(-2 * sprite_spacing, 0)
-	right_fate.position = Vector2((len(scenario_list) + 1) * sprite_spacing, 0)
 	left_fate.z_index = -1
-	right_fate.z_index = -1
 	map_viewport.add_child(left_fate)
-	map_viewport.add_child(right_fate)
 	
-	# Add the fate background sprites
+	# Add the fate background sprite
 	var left_fate_background: Sprite2D = Sprite2D.new()
-	var right_fate_background: Sprite2D = Sprite2D.new()
-	
 	left_fate_background.texture = corrupted_area
-	right_fate_background.texture = corrupted_area
-	right_fate_background.flip_h = true
-	
 	left_fate_background.position = Vector2(-232 + (sprite_spacing * (left_fate_index + 1)), 0)
-	right_fate_background.position = Vector2(232 + (sprite_spacing * (right_fate_index - 1)), 0)
-	
+
 	left_fate_background.z_index = -2
-	right_fate_background.z_index = -2
 	map_viewport.add_child(left_fate_background)
-	map_viewport.add_child(right_fate_background)
 	
 	
 	# Show and move the danger area as needed
 	var left_danger: Sprite2D = Sprite2D.new()
-	var right_danger: Sprite2D = Sprite2D.new()
-	
+
 	left_danger.texture = Utils.slice_texture_right(danger_area, left_scenarios_in_danger * sprite_spacing)
-	right_danger.texture = Utils.slice_texture_right(danger_area, right_scenarios_in_danger * sprite_spacing)
-	right_danger.flip_h = true
-	
 	left_danger.centered = false
-	right_danger.centered = false
-	
 	left_danger.position = Vector2((sprite_spacing * (left_fate_index + 0.5)), -25)
-	right_danger.position = Vector2((sprite_spacing * (right_fate_index - right_scenarios_in_danger - 0.5)), -25)
-	
+
 	left_danger.z_index = -2
-	right_danger.z_index = -2
 	map_viewport.add_child(left_danger)
-	map_viewport.add_child(right_danger)
 	
 		
 	for i: int in range(len(scenario_list)):
@@ -292,12 +270,8 @@ func jump(desired_scenario_index: int) -> void:
 	for idx: int in range(left_fate_index + 1, left_fate_index + 1 + left_scenarios_in_danger):
 		if not scenario_list[idx].sector_gate_scenario:
 			scenario_list[idx] = fate_scenario
-	for idx: int in range(right_fate_index-1, right_fate_index - 1 - right_scenarios_in_danger, -1):
-		if not scenario_list[idx].sector_gate_scenario:
-			scenario_list[idx] = fate_scenario
 			
 	left_fate_index += left_scenarios_in_danger
-	right_fate_index -= right_scenarios_in_danger
 	
 	# Set up which scenarios are in danger next
 	_pick_new_danger_ranges()
@@ -321,21 +295,12 @@ func _look_at_scenario_index(idx: int) -> void:
 func _pick_new_danger_ranges() -> void:
 	# Handle the left-danger zone running into the right corrupted zone
 	# This will usually be 2, except when the two danger zones close in on each other
-	var max_left_scenarios_in_danger: int = min(2, right_fate_index - left_fate_index - 1)
+	var max_left_scenarios_in_danger: int = min(2, len(scenario_list) - left_fate_index - 1)
 	
 	if max_left_scenarios_in_danger <= 0:
 		left_scenarios_in_danger = 0
 	else:
 		left_scenarios_in_danger = randi_range(1,max_left_scenarios_in_danger)
-	
-	# Handle the right-danger zone running into the left danger zone
-	# The left gets priority if both are going to corrupt a scenario
-	var max_right_scenarios_in_danger: int = min(2, right_fate_index - left_fate_index - left_scenarios_in_danger - 1)
-	
-	if max_right_scenarios_in_danger <= 0:
-		right_scenarios_in_danger = 0
-	else:
-		right_scenarios_in_danger = randi_range(1,max_left_scenarios_in_danger)
 	
 	
 func disable_controls() -> void:

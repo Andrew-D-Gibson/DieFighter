@@ -12,6 +12,7 @@ extends Node2D
 @export var combat_scenarios: Array[ScenarioResource]
 @export var question_scenarios: Array[ScenarioResource]
 @export var boss_combat_scenarios: Array[ScenarioResource]
+@export var fate_scenarios: Array[ScenarioResource]
 
 @export var starting_scenario: ScenarioResource
 
@@ -115,16 +116,17 @@ func _randomize_sector_scenarios() -> void:
 			var combat_and_question_scenarios: Array[ScenarioResource] = combat_scenarios + question_scenarios
 			current_game_save.sector_scenarios.append(combat_and_question_scenarios.pick_random())
 			
+	current_game_save.sector_scenarios.shuffle()
+	
 	# Add the boss scenario
 	current_game_save.sector_scenarios.append(boss_combat_scenarios.pick_random())
 
-	# Now we have an array of scenarios, with 1 boss and either 1 or 2 shops
-	# Shuffle the array, then place the player's starting scenario 
-	# somewhere in the middle third
-	current_game_save.sector_scenarios.shuffle()
-	
+	# Add a leading "corrupted" scenario
+	current_game_save.sector_scenarios.insert(0, fate_scenarios.pick_random())
+
+	# Place the player's starting scenario somewhere in the beginning third
 	var sector_length: int = len(current_game_save.sector_scenarios)
-	var starting_scenario_index: int = randi_range(floor(0.33 * sector_length), ceil(0.66 * sector_length))
+	var starting_scenario_index: int = randi_range(2, ceil(0.33 * sector_length))
 	
 	current_game_save.current_scenario_index = starting_scenario_index
 	current_game_save.sector_scenarios.insert(

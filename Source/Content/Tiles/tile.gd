@@ -80,6 +80,9 @@ func _connect_tile_event_signals() -> void:
 	Events.tile_manually_moved.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_MANUALLY_MOVED)
 	)
+	Events.player_fatal_damage.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE)
+	)
 
 
 func _set_up_resource() -> void:
@@ -120,11 +123,9 @@ func _get_tile_info() -> InfoResource:
 func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 	for event_check: TileEvent in tile_resource.event_responses.keys():
 		if event_check.event == event:
-			# We can do the response if we don't care about listening for this tile
-			if not event_check.listen_only_for_self\
-			
-			# Or if we are this tile!
-			or (event_check.listen_only_for_self == (tile == self)):
+			# Trigger the response if the tile is affected by the event
+			# or if the tile doesn't care which tile is affected by the event
+			if (tile == self) or (not event_check.listen_only_for_self):
 				var effect_variables: EffectVariables = _generate_effect_variables()
 				await tile_resource.event_responses[event_check].play(effect_variables)
 		

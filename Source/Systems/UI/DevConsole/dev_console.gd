@@ -49,6 +49,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'damage_enemies':
 			_damage_enemies(command.slice(1))
 			
+		'fps':
+			_toggle_fps_display()
+			
 		'heal':
 			_heal(command.slice(1))
 			
@@ -132,6 +135,10 @@ func _damage_enemies(command_args: Array[String] = []) -> void:
 	
 	Globals.enemy_manager.damage_all_enemies(amount)
 	command_history.append_text('\n[center]Damaged enemies![/center]')
+	
+	
+func _toggle_fps_display() -> void:
+	Events.toggle_fps_display.emit()
 	
 
 func _heal(command_args: Array[String] = []) -> void:

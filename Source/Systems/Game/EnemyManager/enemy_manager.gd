@@ -10,6 +10,9 @@ var enemies: Array[Enemy]
 @export var fly_in_range: int = 100
 @export var fly_in_time: float = 1.5
 
+var enemies_jumping: bool = false
+var screen_size: Vector2 = Vector2(320, 180)
+
 
 func _ready() -> void:
 	Globals.enemy_manager = self
@@ -27,8 +30,12 @@ func _ready() -> void:
 		if ship in enemies:
 			enemies.erase(ship)
 	)
-	Events.jump.connect(delete_all_enemies)
+	Events.jump.connect(start_enemy_jump_animation)
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
+		# Clean up any remaining jumping enemies before loading new scenario
+		if enemies_jumping:
+			delete_all_enemies()
+		
 		Enemy.seed(scenario.seed)
 
 		# Spawn the starting ships
@@ -36,6 +43,11 @@ func _ready() -> void:
 			spawn_enemies(scenario.starting_enemies)
 	)
 	Events.start_scenario.connect(start_enemy_fly_in)
+	
+	
+func _process(delta: float) -> void:
+	if enemies_jumping:
+		_update_jumping_enemies(delta)
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
@@ -137,6 +149,44 @@ func run_enemy_turn() -> void:
 	Events.enemy_turn_over.emit()
 
 
+func start_enemy_jump_animation() -> void:
+	enemies_jumping = true
+	for enemy: Enemy in enemies:
+		if not enemy or not is_instance_valid(enemy):
+			continue
+		enemy.moving_in_world = true
+		enemy.graphics_manager.stop_bob_tween()
+		# Disable clickable region
+		if enemy.clickable_region:
+			enemy.clickable_region.disabled = true
+
+
+func _update_jumping_enemies(delta: float) -> void:
+	if not Globals.background_manager:
+		return
+		
+	var parallax_level: int = 1  # Match medium debris
+	var speed: float = Globals.background_manager.global_speed * \
+					  Globals.background_manager.get_parallax_speed(parallax_level)
+	
+	for i: int in range(len(enemies) - 1, -1, -1):
+		var enemy: Enemy = enemies[i]
+		if not enemy or not is_instance_valid(enemy):
+			enemies.remove_at(i)
+			continue
+			
+		enemy.global_position.y += delta * speed
+		
+		if enemy.global_position.y > screen_size.y + 50:  # Off-screen offset
+			enemy.disconnect_scenario_signals()
+			enemy.queue_free()
+			enemies.remove_at(i)
+	
+	# Reset flag when all enemies are gone
+	if len(enemies) == 0:
+		enemies_jumping = false
+
+
 func delete_all_enemies() -> void:
 	# Needs to be queue_free'ed, not health reduced to 0
 	# so we don't spawn rewards
@@ -144,6 +194,7 @@ func delete_all_enemies() -> void:
 		enemies[i].disconnect_scenario_signals()
 		enemies[i].queue_free()
 	enemies = []
+	enemies_jumping = false
 
 
 func kill_all_enemies() -> void:

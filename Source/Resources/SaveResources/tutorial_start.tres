@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="GameSaveResource" load_steps=16 format=3 uid="uid://byo6vhmyxihg6"]
+[gd_resource type="Resource" script_class="GameSaveResource" load_steps=15 format=3 uid="uid://byo6vhmyxihg6"]
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_dmamr"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_g4y0l"]
@@ -14,7 +14,6 @@
 [ext_resource type="Resource" uid="uid://dp6euwvjd2ren" path="res://Source/Content/ScenarioResources/Scenarios/Shop/shop.tres" id="9_04ytu"]
 [ext_resource type="Resource" uid="uid://bj1qqoua2m1ih" path="res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_RetreatScenario/TUTORIAL_RetreatScenario.tres" id="10_w771n"]
 [ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="11_22jl4"]
-[ext_resource type="Resource" uid="uid://bx5ngnm1m720p" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres" id="12_bbt7b"]
 
 [resource]
 script = ExtResource("1_dmamr")
@@ -28,5 +27,5 @@ Vector2i(0, 0): ExtResource("4_0kjck"),
 Vector2i(0, 1): ExtResource("5_a17s8")
 })
 current_scenario_index = 1
-sector_scenarios = Array[ExtResource("2_g4y0l")]([ExtResource("3_uevqr"), ExtResource("4_wdhst"), ExtResource("5_22jl4"), ExtResource("6_bbt7b"), ExtResource("7_jjqhh"), ExtResource("8_22jl4"), ExtResource("9_04ytu"), ExtResource("10_w771n"), ExtResource("5_22jl4"), ExtResource("11_22jl4"), ExtResource("12_bbt7b"), ExtResource("3_uevqr")])
+sector_scenarios = Array[ExtResource("2_g4y0l")]([ExtResource("3_uevqr"), ExtResource("4_wdhst"), ExtResource("5_22jl4"), ExtResource("6_bbt7b"), ExtResource("7_jjqhh"), ExtResource("9_04ytu"), ExtResource("5_22jl4"), ExtResource("10_w771n"), ExtResource("11_22jl4"), ExtResource("8_22jl4")])
 metadata/_custom_type_script = "uid://dxkqfdmh8psqp"

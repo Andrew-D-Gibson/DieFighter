@@ -1,27 +1,4 @@
-[21:28:59] Debug logger initialized
-[21:28:59] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_Attacker/TUTORIAL_attacker.tres
-[21:29:19] Starting combat
-[21:29:45] Starting combat
-[21:29:45] Player attacked ship: Enemy (Faction: PIRATE)
-[21:29:45] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:29:45] Player turn over
-[21:30:01] Enemy Venom Fighter performed action: Dice Cannon
-[21:30:02] Enemy Venom Fighter performed action: 
-[21:30:02] Enemy turn over
-[21:30:07] Player attacked ship: Enemy (Faction: PIRATE)
-[21:30:07] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:30:08] Player attacked ship: Enemy (Faction: PIRATE)
-[21:30:08] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:30:08] Player turn over
-[21:30:11] Enemy Venom Fighter performed action: Dice Cannon
-[21:30:12] Enemy Venom Fighter performed action: 
-[21:30:12] Enemy turn over
-[21:30:15] Player attacked ship: Enemy (Faction: PIRATE)
-[21:30:15] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:30:15] Enemy left: PIRATE
-[21:30:15] Scenario Event: PIRATES_DEFEATED
-[21:30:15] Combat finished
-[21:30:15] Scenario Event: COMBAT_ENDED
-[21:32:52] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/TUTORIAL_RetreatScenario/TUTORIAL_RetreatScenario.tres
-[21:32:53] Starting scenario
-[21:32:53] Starting combat
+[21:36:24] Debug logger initialized
+[21:36:24] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres
+[21:36:24] Starting scenario
+[21:36:24] Starting combat

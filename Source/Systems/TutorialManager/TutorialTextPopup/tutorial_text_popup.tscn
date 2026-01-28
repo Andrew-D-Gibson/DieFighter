@@ -60,7 +60,7 @@ animations = [{
 }]
 
 [node name="TutorialTextPopup" type="Node2D"]
-z_index = 11
+z_index = 12
 script = ExtResource("1_wosuk")
 
 [node name="Panel" type="PanelContainer" parent="."]

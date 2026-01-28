@@ -36,10 +36,7 @@ func _ready() -> void:
 	)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
 
-	Events.jump.connect(func() -> void:
-		targeted_enemy_index = -1
-		_update_ui()	
-	)
+	Events.jump.connect(_target_nothing)
 
 	Events.targeting_computer_startup.connect(_startup)
 
@@ -54,6 +51,12 @@ func _initial_target() -> void:
 	if !targeted_enemy:
 		targeted_enemy_index = 0
 		check_target_is_valid()
+		
+
+func _target_nothing() -> void:
+	targeted_enemy = null
+	targeted_enemy_index = -1
+	_update_ui()
 	
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -153,7 +156,7 @@ func target_enemy(enemy: Enemy) -> void:
 
 	
 func _update_ui() -> void:
-	if !targeted_enemy:
+	if !targeted_enemy or targeted_enemy_index == -1:
 		targeting_indicator.visible = false
 		
 		$TargetImage.texture = null

@@ -38,14 +38,13 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Player" type="Node2D" node_paths=PackedStringArray("dice_manager", "health")]
+[node name="Player" type="Node2D"]
 material = SubResource("ShaderMaterial_0xxso")
 script = ExtResource("1_86t7d")
-dice_manager = NodePath("DiceQueue")
-health = NodePath("Health")
 dice_scene = ExtResource("2_lwstl")
 
 [node name="DiceQueue" parent="." instance=ExtResource("3_fnkf6")]
+unique_name_in_owner = true
 position = Vector2(26, 58)
 
 [node name="EndTurnButton" parent="DiceQueue" instance=ExtResource("5_0xxso")]
@@ -67,6 +66,7 @@ theme_override_colors/default_color = Color(0.27451, 0.235294, 0.568627, 1)
 text = "END TURN"
 
 [node name="Health" parent="." instance=ExtResource("4_da5gb")]
+unique_name_in_owner = true
 position = Vector2(34, -24)
 max_health = 16
 starting_health = 16
