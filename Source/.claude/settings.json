@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Glob",
+      "Grep",
+      "Read_file",
+      "Search",
+      "List_dir"
+    ],
+    "ask": [
+      "Write_file",
+      "Bash"
+    ]
+  }
+}

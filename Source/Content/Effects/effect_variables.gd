@@ -1,12 +1,10 @@
 class_name EffectVariables
 extends RefCounted
 
-## Actor should be the player or the enemy ship triggering
-## the effect
+## Actor should be the player or the enemy ship triggering the effect
 var actor: Node = null
 
-## Effect source should be the tile activated, or the enemy ship
-## using the die
+## Effect source should be the tile activated, or the enemy ship using the die
 var effect_source: Node = null
 
 var targets: Array[Node] = []

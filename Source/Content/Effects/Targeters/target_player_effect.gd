@@ -2,4 +2,4 @@ class_name TargetPlayerEffect
 extends Effect
 
 func play(effect_variables: EffectVariables) -> void:
-	effect_variables.targets = Array([Globals.player], TYPE_OBJECT, "Node", null)
+	effect_variables.targets = [Globals.player]
