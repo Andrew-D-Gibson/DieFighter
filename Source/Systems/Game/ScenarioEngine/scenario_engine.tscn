@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccv04abb5xv1m"]
+
+[ext_resource type="Script" uid="uid://bkt5t6iqd7qw5" path="res://Source/Systems/Game/ScenarioEngine/scenario_engine.gd" id="1_svm5t"]
+
+[node name="ScenarioEngine" type="Node"]
+script = ExtResource("1_svm5t")

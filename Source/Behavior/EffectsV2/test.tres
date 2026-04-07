@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="EffectData" load_steps=2 format=3 uid="uid://cyap4u6x3k8qc"]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="1_1skj7"]
+
+[resource]
+script = ExtResource("1_1skj7")
+category = 1
+subtype = 0
+amount = 0
+inherit_die_amount = false
+multiplier = 1.0
+data_key = ""
+string_param = ""
+grid_offset = Vector2i(0, 0)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"

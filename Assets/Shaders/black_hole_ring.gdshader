@@ -24,7 +24,7 @@ float rand(vec2 coord) {
 float noise(vec2 coord){
 	vec2 i = floor(coord);
 	vec2 f = fract(coord);
-	
+
 	float a = rand(i);
 	float b = rand(i + vec2(1.0, 0.0));
 	float c = rand(i + vec2(0.0, 1.0));
@@ -78,38 +78,38 @@ vec2 rotate(vec2 coord, float angle){
 void fragment() {
 	// pixelize uv
 	vec2 uv = floor(UV*pixels)/pixels;
-	
+
 	// we use this value later to dither between colors
 	bool dith = dither(UV, uv);
-	
+
 	uv = rotate(uv, rotation);
-	
+
 	// keep an undistored version of the current uvs
 	vec2 uv2 = uv;
-	
+
 	// compress uv along the x axis, or the accretion disk will look to stretched out
 	uv.x -= 0.5;
 	uv.x *= 1.3;
 	uv.x += 0.5;
-	
+
 	// add a bit of movement to the accretion disk by wobbling it, completely optional and can be disabled.
 	uv = rotate(uv, sin(time * time_speed * 2.0) * 0.01);
-	
+
 	// l_origin will be used to determine how to color the pixels
 	vec2 l_origin = vec2(0.5);
 	// d_width will be the final width of the accretion disk
 	float d_width = disk_width;
-	
+
 	// here we distort the uvs to achieve the shape of the accretion disk
-	if (uv.y < 0.5) { 
+	if (uv.y < 0.5) {
 		// if we are in the top half of the image, then add to the uv.y based on how close we are to the center
 		uv.y += smoothstep(distance(vec2(0.5), uv), 0.5, 0.2);
 		// and also the ring width has to be adjusted or it will look to stretched out
 		d_width += smoothstep(distance(vec2(0.5), uv), 0.5, 0.3);
-		
+
 		// another optional thing that changes the color distribution, I like it, but can be disabled.
 		l_origin.y -= smoothstep(distance(vec2(0.5), uv), 0.5, 0.2);
-	} 
+	}
 	// we don't check for exactly uv.y > 0.5 because we want a small area where the ring
 	// is unaffected by stretching, the middle part that goes over the black hole.
 	else if (uv.y > 0.53) {
@@ -119,7 +119,7 @@ void fragment() {
 		d_width += smoothstep(distance(vec2(0.5), uv), 0.5, 0.2);
 		l_origin.y += smoothstep(distance(vec2(0.5), uv), 0.5, 0.2);
 	}
-	
+
 	// get distance to light origin based on unaltered uv's we saved earlier, some math to account for perspective
 	float light_d = distance(uv2 * vec2(1.0, ring_perspective), l_origin * vec2(1.0, ring_perspective)) * 0.3;
 
@@ -129,36 +129,36 @@ void fragment() {
 	// tilt ring
 	uv_center *= vec2(1.0, ring_perspective);
 	float center_d = distance(uv_center,vec2(0.5, 0.0));
-	
+
 	// cut out 2 circles of different sizes and only intersection of the 2.
 	// this actually makes the disk
 	float disk = smoothstep(0.1-d_width*2.0, 0.5-d_width, center_d);
 	disk *= smoothstep(center_d-d_width, center_d, 0.4);
-	
+
 	// rotate noise in the disk
 	uv_center = rotate(uv_center+vec2(0, 0.5), time*time_speed*3.0);
-	
+
 	// some noise
 	disk *= pow(fbm(uv_center*size), 0.5);
-	
+
 	// apply dithering
 	if (dith || !should_dither) {
 		disk *= 1.2;
 	}
-	
+
 	// apply some colors based on final value
 	float n_posterized = float(n_colors - 1);
 	float posterized = floor((disk+light_d)*n_posterized);
 	posterized = min(posterized, n_posterized);
 	vec4 col = colors[int(posterized)];
-	
+
 	// this can be toggled on to achieve a more "realistic" black hole, with red and blue shifting. This was just me messing around so can probably be more optimized and done cleaner
 	//col.rgb *= 1.0 - pow(uv.x, 1.0);
 	//col.gb *= 1.0 - pow(uv.x, 2.0);
 	//col.b *= 3.0 - pow(uv.x, 4.0);
 	//col.gb *= 2.0 - pow(uv.x, 2.0);
 	//col.rgb *= pow(uv.x, 0.15);
-	
+
 	float disk_a = step(0.15, disk);
 	COLOR = vec4(col.rgb, disk_a * col.a);
 	//COLOR = vec4(col.rgb, 1.0);

@@ -184,7 +184,7 @@ func activate(activator_die: Dice = null) -> void:
 	if uses_remaining != -1:
 		uses_remaining -= 1
 		
-	# Tween the activating die to the slot 
+	# Tween the activating diechat to the slot 
 	if activator_die:
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	
@@ -293,7 +293,7 @@ func _on_die_accepted(die: Dice) -> void:
 	if Globals.activation_queue_manager:
 		Globals.activation_queue_manager.add_die_to_queue(die)
 	
-	# Emit tutorial event for die placement
+	# Emit event for die placement for tutorial use
 	Events.die_placed_on_tile.emit(die, self)
 
 

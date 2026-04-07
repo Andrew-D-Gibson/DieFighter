@@ -10,6 +10,6 @@ void fragment() {
 	float blend_factor = blend_jump * velocity_level;
 
 	vec4 final_color = mix(background_color, color, blend_factor);
-	
+
 	COLOR = vec4(final_color.rgb, COLOR.a);
 }
