@@ -4,8 +4,8 @@
 
 [resource]
 script = ExtResource("1_1skj7")
-category = 1
-subtype = 0
+category = 3
+subtype = 8
 amount = 0
 inherit_die_amount = false
 multiplier = 1.0

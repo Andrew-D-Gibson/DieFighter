@@ -17,9 +17,7 @@
 ##   context.activator_die = activator_die
 ##   await tile_resource.effect_chain_v2.play(context, scenario_engine)
 ##   await scenario_engine.process_events()
-##
-## NOTE: play() is async because handlers can await animations (tweens, etc.).
-## ============================================================
+
 
 class_name EffectChainV2
 extends Resource
@@ -53,7 +51,11 @@ func play(context: EffectContext, engine: ScenarioEngine) -> void:
 			var handler: EffectHandler = EffectRegistry.get_handler(data.category, data.subtype)
 			if handler == null:
 				push_error(
-					"EffectChainV2: no handler for category=%d subtype=%d" % [data.category, data.subtype]
+					"EffectChainV2: no handler registered for category=" + 
+					EffectEnums.Category.find_key(data.category) +
+					" subtype=" + 
+					str(data.subtype) +
+					"\nAdd a _register() call in effect_registry.gd._ready()."
 				)
 				continue
 			await handler.apply(data, context, engine)

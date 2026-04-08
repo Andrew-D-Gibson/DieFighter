@@ -3,24 +3,15 @@ extends Node2D
 @onready var engine: ScenarioEngine = $ScenarioEngine
 
 func _ready() -> void:
-		# Register test modifiers.
-		engine.add_modifier(DoubleDamageModifier.new())
-		engine.add_modifier(ShieldAfterDealingDamageModifier.new(2))  # +2 shields
+	var test_effect_data = EffectData.new()
+	test_effect_data.category = EffectEnums.Category.UTILITY
+	test_effect_data.subtype = EffectEnums.UtilitySubtype.PRINT_DEBUG
+	test_effect_data.string_param = "Hello Effect Chain V2!"
+	
+	var context := EffectContext.new()
+	
+	var chain = EffectChainV2.new()
+	chain.effects = [test_effect_data] as Array[EffectData]
 
-		# Create a fake DamageEvent (target = player for easy testing).
-		var dmg := DamageEvent.new()
-		dmg.actor   = Globals.player       # or any valid node
-		dmg.targets = [Globals.player]     # targeting self, fine for testing
-		dmg.amount  = 5
-
-		engine.event_resolved.connect(func(event):
-			if event is DamageEvent:
-				print("Damage resolved. Final amount was: ", event.amount)
-				# Should print 10 (5 * 2 from DoubleDamageModifier)
-			elif event is ShieldEvent:
-				print("Shield follow-up resolved. Amount: ", event.amount)
-				# Should print 2 (from ShieldAfterDealingDamageModifier)
-		)
-
-		engine.queue_event(dmg)
-		await engine.process_event_queue()
+	await chain.play(context, engine)
+	await engine.process_event_queue()

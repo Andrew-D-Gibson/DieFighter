@@ -1,3 +1,4 @@
+@tool
 ## EffectData
 ## A single "step" in a data-driven effect chain.
 ## "Target all enemies", Deal 3 damage", "Play the dice roll sound"
@@ -92,7 +93,10 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 				EffectEnums.Category.ATTRIBUTE_CHANGE:
 					return true
 				EffectEnums.Category.DICE_CONTROL:
-					return sub == EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE
+					return sub in [
+						EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE,
+						EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE,
+					]
 				EffectEnums.Category.AUDIO_VISUAL:
 					return sub == EffectEnums.AudioVisualSubtype.WAIT
 				EffectEnums.Category.TILE_CONTROL:
