@@ -47,26 +47,24 @@ func _register(category: int, subtype: int, handler: EffectHandler) -> void:
 func _register_all() -> void:
 	var T := EffectEnums  # Shorthand alias
 	
-	_register(T.Category.UTILITY, T.UtilitySubtype.PRINT_DEBUG, PrintDebugHandler.new())
-
 	# ── TARGETING ─────────────────────────────────────────────────────────────
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_ENEMIES,                 TargetEnemiesHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_PLAYER,                  TargetPlayerHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_ENEMY,            TargetRandomEnemyHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_ALL_SHIPS,               TargetAllShipsHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_ALL_OTHER_SHIPS,         TargetAllOtherShipsHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_SHIP,             TargetRandomShipHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_TILE,             TargetRandomTileHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SURROUNDING_TILES,       TargetSurroundingTilesHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_WITH_TARGETING_COMPUTER, TargetWithTargetingComputerHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_EFFECT_SOURCE,           TargetEffectSourceHandler.new())
-	#_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SELF,                    TargetSelfHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_ENEMIES,                 TargetEnemiesHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_PLAYER,                  TargetPlayerHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_ENEMY,            TargetRandomEnemyHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_ALL_SHIPS,               TargetAllShipsHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_ALL_OTHER_SHIPS,         TargetAllOtherShipsHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_SHIP,             TargetRandomShipHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_TILE,             TargetRandomTileHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SURROUNDING_TILES,       TargetSurroundingTilesHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_WITH_TARGETING_COMPUTER, TargetWithTargetingComputerHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_EFFECT_SOURCE,           TargetEffectSourceHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SELF,                    TargetSelfHandler.new())
 
 	# ── ATTRIBUTE CHANGE ───────────────────────────────────────────────────────
-	#_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.DAMAGE,               DealDamageHandler.new())
-	#_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.HEAL,                 HealHandler.new())
-	#_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.SHIELD,               GainShieldsHandler.new())
-	#_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.CHANGE_ENGINE_CHARGE, ChangeEngineChargeHandler.new())
+	_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.DAMAGE,               DealDamageHandler.new())
+	_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.HEAL,                 HealHandler.new())
+	_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.SHIELD,               GainShieldsHandler.new())
+	_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.CHANGE_ENGINE_CHARGE, ChangeEngineChargeHandler.new())
 
 	# ── AUDIO_VISUAL ──────────────────────────────────────────────────────────
 	#_register(T.Category.AUDIO_VISUAL, T.AudioVisualSubtype.SPAWN_HIT_PARTICLES,       SpawnHitParticlesHandler.new())
@@ -100,21 +98,21 @@ func _register_all() -> void:
 	#_register(T.Category.DICE_CONTROL, T.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE,   SpawnHolographicDieHandler.new())
 
 	# ── SCENARIO CONTROL ───────────────────────────────────────────────────────
-	#_register(T.Category.SCENARIO_CONTROL, T.ScenarioControlSubtype.OPEN_SHOP,  OpenShopHandler.new())
+	_register(T.Category.SCENARIO_CONTROL, T.ScenarioControlSubtype.OPEN_SHOP,  OpenShopHandler.new())
 	#_register(T.Category.SCENARIO_CONTROL, T.ScenarioControlSubtype.CLOSE_SHOP, CloseShopHandler.new())
 	#_register(T.Category.SCENARIO_CONTROL, T.ScenarioControlSubtype.JUMP,       JumpHandler.new())
 	#_register(T.Category.SCENARIO_CONTROL, T.ScenarioControlSubtype.FLEE,       FleeHandler.new())
 	#_register(T.Category.SCENARIO_CONTROL, T.ScenarioControlSubtype.MOVE_SHIP,  MoveShipHandler.new())
 
 	# ── CONDITIONAL ───────────────────────────────────────────────────────────
-	#_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ACTIVATOR_ODD,      ConditionalHandler.new())
-	#_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ENEMY_TARGETED,     ConditionalHandler.new())
-	#_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ENGINE_CHARGED,     ConditionalHandler.new())
-	#_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_DIE_VALUE_IN_RANGE, ConditionalHandler.new())
+	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ACTIVATOR_ODD,      ConditionalHandler.new())
+	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ENEMY_TARGETED,     ConditionalHandler.new())
+	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ENGINE_CHARGED,     ConditionalHandler.new())
+	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_DIE_VALUE_IN_RANGE, ConditionalHandler.new())
 
 	# ── REPETITION ─────────────────────────────────────────────────────────────
 	#_register(T.Category.REPETITION, T.RepetitionSubtype.ADD_REPETITIONS, AddRepetitionsHandler.new())
 
 	# ── UTILITY ────────────────────────────────────────────────────────────────
 	#_register(T.Category.UTILITY, T.UtilitySubtype.DESTROY_SOURCE, DestroySourceHandler.new())
-	#_register(T.Category.UTILITY, T.UtilitySubtype.PRINT_DEBUG,    PrintDebugHandler.new())
+	_register(T.Category.UTILITY, T.UtilitySubtype.PRINT_DEBUG, PrintDebugHandler.new())
