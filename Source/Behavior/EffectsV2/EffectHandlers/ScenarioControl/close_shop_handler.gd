@@ -1,0 +1,6 @@
+class_name CloseShopHandler
+extends EffectHandler
+
+
+func apply(_data: EffectData, _context: EffectContext, engine: ScenarioEngine) -> void:
+	engine.queue_event(CloseShopEvent.new())

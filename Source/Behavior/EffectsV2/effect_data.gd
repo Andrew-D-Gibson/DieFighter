@@ -45,12 +45,10 @@ extends Resource
 @export var multiplier: float = 1.0
 
 # ── String / Key Parameters ────────────────────────────────────────────────────
-## A string key used to look up or set named data on a tile.
-## Example: tile.effect_data["charge_counter"]
-@export var data_key: String = ""
-
-## For PRINT_DEBUG: the message to print.
-## For other uses: freeform string parameter.
+## General-purpose string parameter.
+## Used as the tile data key for INCREMENT_TILE_DATA and SET_TILE_DATA.
+## Used as the message text for PRINT_DEBUG.
+## Used as the key name for AMOUNT_MODIFIER subtypes that read tile data.
 @export var string_param: String = ""
 
 
@@ -61,7 +59,10 @@ extends Resource
 
 # ── Resource Parameters ────────────────────────────────────────────────────────
 ## The SFX resource to play. Used by AudioVisualSubtype.PLAY_SOUND.
-@export var sound_resource: Resource = null  # Type: SoundEffectResource
+@export var sound_resource: SoundEffectResource = null
+
+## Particle tint color. Used by SPAWN_HIT_PARTICLES and SPAWN_EXPLOSION_PARTICLES.
+@export var color: Color = Color.WHITE
 
 
 # ── Range Parameters ───────────────────────────────────────────────────────────
@@ -77,8 +78,8 @@ extends Resource
 func _validate_property(property: Dictionary) -> void:
 	const CONDITIONAL_FIELDS := [
 		"amount", "inherit_die_amount", "multiplier",
-		"data_key", "string_param", "grid_offset",
-		"sound_resource", "range_min", "range_max",
+		"string_param", "grid_offset",
+		"sound_resource", "color", "range_min", "range_max",
 	]
 	if property.name not in CONDITIONAL_FIELDS:
 		return
@@ -98,11 +99,16 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 						EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE,
 					]
 				EffectEnums.Category.AUDIO_VISUAL:
-					return sub == EffectEnums.AudioVisualSubtype.WAIT
+					return sub in [
+						EffectEnums.AudioVisualSubtype.WAIT,
+						EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES,
+						EffectEnums.AudioVisualSubtype.SPAWN_EXPLOSION_PARTICLES,
+					]
 				EffectEnums.Category.TILE_CONTROL:
 					return sub in [
 						EffectEnums.TileControlSubtype.ADD_USES_REMAINING,
 						EffectEnums.TileControlSubtype.INCREMENT_TILE_DATA,
+						EffectEnums.TileControlSubtype.SET_TILE_DATA,
 					]
 				EffectEnums.Category.REPETITION:
 					return true
@@ -113,7 +119,7 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 		"multiplier":
 			return (cat == EffectEnums.Category.AMOUNT_MODIFIER
 					and sub == EffectEnums.AmountModifierSubtype.MULTIPLY)
-		"data_key":
+		"string_param":
 			match cat:
 				EffectEnums.Category.AMOUNT_MODIFIER:
 					return sub in [
@@ -125,25 +131,28 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 						EffectEnums.TileControlSubtype.INCREMENT_TILE_DATA,
 						EffectEnums.TileControlSubtype.SET_TILE_DATA,
 					]
-				_:
-					return false
-		"string_param":
-			match cat:
-				EffectEnums.Category.TILE_CONTROL:
-					return sub == EffectEnums.TileControlSubtype.SET_TILE_DATA
 				EffectEnums.Category.UTILITY:
 					return sub == EffectEnums.UtilitySubtype.PRINT_DEBUG
 				_:
 					return false
 		"grid_offset":
-			return (cat == EffectEnums.Category.TILE_CONTROL and sub in [
-				EffectEnums.TileControlSubtype.MOVE_TILE_WITH_OFFSET,
-				EffectEnums.TileControlSubtype.PUSH_TILE_IN_DIRECTION,
-				EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN,
-			])
+			if cat == EffectEnums.Category.TILE_CONTROL:
+				return sub in [
+					EffectEnums.TileControlSubtype.MOVE_TILE_WITH_OFFSET,
+					EffectEnums.TileControlSubtype.PUSH_TILE_IN_DIRECTION,
+					EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN,
+				]
+			if cat == EffectEnums.Category.AUDIO_VISUAL:
+				return sub == EffectEnums.AudioVisualSubtype.ANIMATE_DIE_TO_TILE
+			return false
 		"sound_resource":
 			return (cat == EffectEnums.Category.AUDIO_VISUAL
 					and sub == EffectEnums.AudioVisualSubtype.PLAY_SOUND)
+		"color":
+			return (cat == EffectEnums.Category.AUDIO_VISUAL and sub in [
+				EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES,
+				EffectEnums.AudioVisualSubtype.SPAWN_EXPLOSION_PARTICLES,
+			])
 		"range_min", "range_max":
 			return (cat == EffectEnums.Category.CONDITIONAL
 					and sub == EffectEnums.ConditionalSubtype.IF_DIE_VALUE_IN_RANGE)

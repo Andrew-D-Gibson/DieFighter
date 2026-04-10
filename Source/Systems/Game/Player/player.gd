@@ -1,6 +1,10 @@
 class_name Player
 extends Node2D
 
+const _HEALTH_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/player_health_hit.tres")
+const _SHIELDS_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/player_shields_hit.tres")
+const _DICE_REROLL_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres")
+
 @export var _time_between_die_spawns: float = 0.2
 @export var _dice_queue_spacing: int = 14
 
@@ -43,11 +47,11 @@ func _ready() -> void:
 	health.fatal_damage.connect(Events.player_fatal_damage.emit)
 	
 	health.health_damaged.connect(func() -> void:
-		Events.play_sound.emit('player_health_hit')
+		Events.play_sound.emit(_HEALTH_HIT_SFX)
 		Events.camera_shake_large.emit(true)
 	)
 	health.shields_damaged.connect(func() -> void:
-		Events.play_sound.emit('player_shields_hit')
+		Events.play_sound.emit(_SHIELDS_HIT_SFX)
 		Events.camera_shake_small.emit()
 	)
 	
@@ -158,7 +162,7 @@ func reroll_dice() -> void:
 	for die: Dice in dice_manager.queue:
 		if die:
 			die.reroll_with_tween()
-			Events.play_sound.emit("dice_reroll_blip")		
+			Events.play_sound.emit(_DICE_REROLL_SFX)		
 			await get_tree().create_timer(0.2).timeout
 	
 	Events.highlight_dice_area.emit()
@@ -193,7 +197,7 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 		dice_manager.add(new_die, true, false)
 		
 		await get_tree().create_timer(_time_between_die_spawns).timeout
-		Events.play_sound.emit("dice_reroll_blip")
+		Events.play_sound.emit(_DICE_REROLL_SFX)
 		
 	_update_dice_queue_locations()
 	Events.highlight_dice_area.emit()

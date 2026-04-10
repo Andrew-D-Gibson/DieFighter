@@ -2,7 +2,8 @@
   "permissions": {
     "allow": [
       "Bash(xargs grep:*)",
-      "Bash(grep -E \"\\\\.\\(gd|tscn\\)$\")"
+      "Bash(grep -E \"\\\\.\\(gd|tscn\\)$\")",
+      "Bash(grep \"\\\\.gd$\")"
     ]
   }
 }

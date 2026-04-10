@@ -1,6 +1,10 @@
 class_name Enemy
 extends Node2D
 
+const _SHIELDS_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_shields_hit.tres")
+const _HEALTH_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_health_hit.tres")
+const _DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_death_explosion.tres")
+
 ## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 
@@ -70,12 +74,12 @@ func _connect_health_signals() -> void:
 	health.death.connect(_on_death)
 	health.shields_damaged.connect(graphics_manager.on_shields_hit)
 	health.shields_damaged.connect(func():
-		Events.play_sound.emit('enemy_shields_hit')
+		Events.play_sound.emit(_SHIELDS_HIT_SFX)
 	)
 	
 	health.health_damaged.connect(graphics_manager.on_health_hit)
 	health.health_damaged.connect(func():
-		Events.play_sound.emit('enemy_health_hit')
+		Events.play_sound.emit(_HEALTH_HIT_SFX)
 	)
 
 
@@ -126,7 +130,7 @@ func _on_death() -> void:
 	dice_manager.give_away_dice()
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
-	Events.play_sound.emit('enemy_death_explosion')
+	Events.play_sound.emit(_DEATH_SFX)
 	
 	# Create explosion particles
 	var explosion = explosion_particles.instantiate()

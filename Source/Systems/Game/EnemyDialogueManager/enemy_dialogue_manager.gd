@@ -1,6 +1,8 @@
 class_name EnemyDialogueManager
 extends Node2D
 
+const _TEXT_BLIP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/text_blip.tres")
+
 @export var character_reveal_time: float = 0.08
 
 var current_dialogue: String
@@ -107,7 +109,7 @@ func _start_fade_in() -> void:
 	
 func _show_characters(num: int) -> void:
 	if %RichTextLabel.visible_characters != num and randi_range(1,5) == 1:
-		Events.play_sound.emit("text_blip")
+		Events.play_sound.emit(_TEXT_BLIP_SFX)
 		
 	%RichTextLabel.visible_characters = num
 

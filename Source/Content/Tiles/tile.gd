@@ -2,6 +2,8 @@
 class_name Tile
 extends Node2D
 
+const _TILE_DROPPED_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
+
 @export var tile_resource: TileResource:
 	set(new_resource):
 		tile_resource = new_resource
@@ -51,7 +53,7 @@ func _ready() -> void:
 	if draggable:
 		draggable.reached_new_home.connect(func() -> void:
 			shakeable.small_shake()
-			Events.play_sound.emit('tile_dropped')
+			Events.play_sound.emit(_TILE_DROPPED_SFX)
 		)
 	
 	Events.start_scenario.connect(reset_uses_remaining)

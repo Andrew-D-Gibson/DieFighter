@@ -150,16 +150,17 @@ func _heal(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Healed player![/center]')
 	
 	
+const _TEST_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres")
+const _TEST_COMPARISON_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_health_hit.tres")
+
 func _play_test_sound() -> void:
-	var test_sound: String = 'dice_cannon'
-	print('Playing test sound: ', test_sound)
-	Events.play_sound.emit(test_sound)
-	
+	print('Playing test sound: dice_cannon')
+	Events.play_sound.emit(_TEST_SFX)
+
 
 func _play_comparison_test_sound() -> void:
-	var test_sound: String = 'enemy_health_hit'
-	print('Playing test sound: ', test_sound)
-	Events.play_sound.emit(test_sound)
+	print('Playing test sound: enemy_health_hit')
+	Events.play_sound.emit(_TEST_COMPARISON_SFX)
 	
 	
 func _reroll(command_args: Array[String] = []) -> void:

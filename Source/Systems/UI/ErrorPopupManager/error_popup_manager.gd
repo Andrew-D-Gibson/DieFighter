@@ -1,6 +1,8 @@
 class_name ErrorPopupManager
 extends Node
 
+const _ERROR_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/error.tres")
+
 @export var error_text_popup_scene: PackedScene
 
 var _current_popups: Array[ErrorTextPopup]
@@ -10,7 +12,7 @@ func _ready() -> void:
 	
 	
 func _create_error_popup(text: String, global_pos: Vector2) -> void:
-	Events.play_sound.emit("error")
+	Events.play_sound.emit(_ERROR_SFX)
 	_clear_current_popups()
 	
 	var error_text: ErrorTextPopup = error_text_popup_scene.instantiate()

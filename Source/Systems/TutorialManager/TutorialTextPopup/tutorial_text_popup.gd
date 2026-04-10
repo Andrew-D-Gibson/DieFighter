@@ -1,6 +1,8 @@
 class_name TutorialTextPopup
 extends Node2D
 
+const _TEXT_BLIP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/text_blip.tres")
+
 @export var fade_in_duration: float = 0.3
 @export var fade_out_duration: float = 0.2
 
@@ -95,7 +97,7 @@ func _reveal_next_character() -> void:
 	# Play sound effect
 	var current_time: int = Time.get_ticks_msec()
 	if (current_time - last_blip_time) > time_between_blip_sounds * 1000:
-		Events.play_sound.emit("text_blip")
+		Events.play_sound.emit(_TEXT_BLIP_SFX)
 		last_blip_time = current_time
 	
 	# Schedule next character reveal

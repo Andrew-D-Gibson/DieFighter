@@ -10,6 +10,9 @@ extends Node2D
 var hit_particles: PackedScene = preload("uid://doi43icsr46q0")
 var explosion_particles: PackedScene = preload("uid://566ykra4buin")
 
+const _DICE_CANNON_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres")
+const _PLAYER_HEALTH_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/player_health_hit.tres")
+
 var stars: Array[Node2D] = []
 @export var star_speed: float = 25
 var screen_size: Vector2 = Vector2(320, 180)
@@ -63,11 +66,11 @@ func _set_stars() -> void:
 
 
 func _play_dice_cannon_fire_sound() -> void:
-	Events.play_sound.emit("dice_cannon")
+	Events.play_sound.emit(_DICE_CANNON_SFX)
 
 
 func _player_ship_hit() -> void:
-	Events.play_sound.emit("player_health_hit")
+	Events.play_sound.emit(_PLAYER_HEALTH_HIT_SFX)
 	Events.camera_shake_large.emit(true)
 	
 	var hit_flash_time: float = 1.5

@@ -1,6 +1,8 @@
 class_name MoneyParticle
 extends Node2D
 
+const _MONEY_TICK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/money_tick.tres")
+
 
 enum money_amount {
 	SMALL = 1,
@@ -97,6 +99,6 @@ func _on_area_2d_area_entered(area: Area2D) -> void:
 		particles.global_position = global_position
 		add_sibling(particles)
 		
-		Events.play_sound.emit("money_tick")
+		Events.play_sound.emit(_MONEY_TICK_SFX)
 		
 		queue_free()

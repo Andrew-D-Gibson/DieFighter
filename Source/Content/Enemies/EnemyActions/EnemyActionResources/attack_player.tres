@@ -18,7 +18,6 @@ metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
 
 [sub_resource type="Resource" id="Resource_2qjt7"]
 script = ExtResource("3_r4sth")
-sound_effect_name = "dice_cannon"
 primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 

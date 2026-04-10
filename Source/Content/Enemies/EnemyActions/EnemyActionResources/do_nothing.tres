@@ -9,7 +9,6 @@
 
 [sub_resource type="Resource" id="Resource_uiyg5"]
 script = ExtResource("2_llu0j")
-sound_effect_name = "error"
 primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 

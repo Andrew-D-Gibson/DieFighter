@@ -99,7 +99,7 @@ signal set_glitch(glitch_state: bool)
 
 
 # Audio Events
-signal play_sound(sound_name: String)
+signal play_sound(sfx: SoundEffectResource)
 
 
 # Configuration Events

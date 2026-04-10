@@ -1,6 +1,8 @@
 class_name OptionsMenu
 extends Node2D
 
+const _HOVER_THUMP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/hover_thump.tres")
+
 @export var _game_options: Control
 @export var _graphics_options: Control
 @export var _audio_options: Control
@@ -27,7 +29,7 @@ func _on_close_button_pressed() -> void:
 
 
 func _on_item_hover() -> void:
-	Events.play_sound.emit('hover_thump')
+	Events.play_sound.emit(_HOVER_THUMP_SFX)
 
 
 func _setup_game_options_UI() -> void:

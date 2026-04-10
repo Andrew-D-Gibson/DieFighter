@@ -1,6 +1,8 @@
 class_name Draggable
 extends Area2D
 
+const _HOVER_THUMP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/hover_thump.tres")
+
 signal drag_started()
 signal drag_ended(draggable: Draggable, end_position: Vector2)
 signal reached_new_home()
@@ -146,7 +148,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 func _on_mouse_entered() -> void:
 	# Only scale on hover if not currently dragging
 	if dragging_allowed and state == DragState.DEFAULT and not Globals.mouse_is_dragging_something:
-		Events.play_sound.emit("hover_thump")
+		Events.play_sound.emit(_HOVER_THUMP_SFX)
 		
 		var parent: Node = get_parent()
 		if parent is Dice and parent.host_queue and parent.host_queue.get_parent() is Tile:

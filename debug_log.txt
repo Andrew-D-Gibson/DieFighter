@@ -1,1 +1,6 @@
-[13:53:03] Debug logger initialized
+[15:02:56] Debug logger initialized
+[15:03:41] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres
+[15:03:41] Starting scenario
+[15:03:41] Starting combat
+[15:03:49] Player attacked ship: Enemy (Faction: PIRATE)
+[15:03:49] Scenario Event: PLAYER_ATTACKED_PIRATE
