@@ -41,7 +41,9 @@ func process_event_queue() -> void:
 	began_processing_queue.emit()
 	currently_processing_queue = true
 	
-	for event in event_queue:
+	while not event_queue.is_empty():
+		var event: EffectEvent = event_queue.pop_front()
+		
 		# Handle any changes that need to happen BEFORE we 
 		# process the event
 		for mod in modifiers:

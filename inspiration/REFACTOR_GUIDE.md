@@ -791,3 +791,194 @@ SCENARIO_CONTROL subtypes:
 6. **Modifiers sort by priority on insertion** — if you add two modifiers with the same priority, their relative order is insertion order. Assign distinct priorities to avoid surprises.
 
 7. **Temporary status modifiers** — if a status should expire after one turn, connect to `Events.player_turn_start` and call `engine.remove_modifier(mod)` from there. The engine doesn't manage modifier expiry automatically.
+
+
+---
+
+Singleton Cleanup
+
+On the ScenarioEngine Placement Plan
+
+  Your instinct is right, and the reasoning is solid. ScenarioManager is the
+  correct owner. It already listens to load_scenario and start_scenario,
+  holds current_scenario, and is the natural "what's happening right now"
+  authority. The lifecycle you described — create on load_scenario, inject
+  into tiles on start_scenario, destroy on jump — fits the existing event
+  sequence in JumpManager cleanly:
+
+  Events.jump.emit()           → engine can be cleared here
+  Events.load_scenario.emit()  → new engine created, added as child
+  Events.start_scenario.emit() → engine injected into tiles
+
+  One small note: scenario_engine.gd:40 currently iterates over event_queue
+  with a for loop rather than popping from the front. Events queued by
+  handlers during resolution won't be picked up in the current pass. That
+  will need to be a while not event_queue.is_empty(): var event =
+  event_queue.pop_front() before you wire it to real tiles.
+
+  ---
+  Manager Reduction Suggestions
+
+  Here's how I'd categorize the managers by how much work they're actually
+  doing:
+
+  Can be eliminated entirely:
+
+  - JumpManager — it's a single 4-line method (_jump_to_scenario) wired to
+  one signal. Move it into ScenarioManager and delete the file.
+  ScenarioManager is already the scenario lifecycle owner; jump is just a
+  transition between scenarios.
+
+  Have unnecessary coupling that should be cleaned up:
+
+  - TutorialManager → EnemyManager: The tutorial_will_trigger_enemy_turns
+  flag in TutorialManager bleeds into EnemyManager's player_turn_over handler
+   (enemy_manager.gd:23). EnemyManager has to know about the tutorial to
+  decide whether to run its own turn — that's backwards. A cleaner model:
+  EnemyManager listens to a new Events.enemy_turn_requested signal instead of
+   player_turn_over directly. The default wiring connects player_turn_over →
+  enemy_turn_requested. TutorialManager disconnects that default and fires
+  enemy_turn_requested itself when it wants to. EnemyManager becomes ignorant
+   of tutorials entirely.
+
+  Doing two unrelated jobs:
+
+  - GameStateManager has three distinct responsibilities:
+    a. Tracking IN_COMBAT / OUT_OF_COMBAT / GAME_OVER state
+    b. Generating randomized sector scenarios (_randomize_sector_scenarios)
+    c. Bootstrapping the initial game load
+
+  The state-tracking logic (_check_combat_state, _in_combat()) is essentially
+   "does the current scenario have alive aggressive enemies" — that's a
+  ScenarioManager concern. If you merged JumpManager into ScenarioManager and
+   moved combat-state tracking there too, GameStateManager slims down to just
+   scenario generation + initial boot, which is a more coherent
+  responsibility (it does need to be a Node for @export on the save file and
+  scenario arrays).
+
+  Fine as-is:
+
+  - EnemyManager — genuine complexity: spawning paths, fly-in tweens, turn
+  execution, jump animation. Worth keeping.
+  - RewardManager — small but its tile-resource-loading cache is shared by
+  the shop. Low priority.
+  - Player — not really a "manager", just the player node.
+
+  ---
+  Suggested Refactor Plan
+
+  In rough priority order:
+
+  1. Wire ScenarioEngine into ScenarioManager — create/destroy with each
+  scenario, expose via Globals.scenario_engine, inject into tiles on
+  start_scenario. This is the core unblocking step for the whole refactor.
+  2. Merge JumpManager into ScenarioManager — purely mechanical, no design
+  decisions involved.
+  3. Decouple TutorialManager from EnemyManager via the enemy_turn_requested
+  signal pattern above.
+  4. Move combat-state tracking from GameStateManager into ScenarioManager —
+  ScenarioManager already knows about enemies and the current scenario;
+  IN_COMBAT is a derived property of that. Then GameStateManager becomes a
+  leaner "boot and scenario generation" node.
+  5. Long-term: consider whether EnemyManager should live inside a combat
+  scene rather than always-loaded. Currently it listens to load_scenario to
+  handle clean-up before a new scenario. If scenario transitions are cleanly
+  managed through ScenarioManager, EnemyManager could be a child of whatever
+  combat scene is active rather than a persistent global — but this is a
+  bigger structural change and lower priority.
+
+  The first two are low-risk and could be done now as part of wiring up
+  ScenarioEngine. The rest are medium-term cleanup once the effects refactor
+  is further along.
+
+
+  Is there a more fundamental change in engineering I should consider for
+  future projects?  Should I be avoiding manager classes and reducing
+  singletons as much as possible?  Any tips for future building on this
+  project?
+
+● Yes — and the pattern you're running into has a name: implicit global
+  dependency creep. Here's the honest assessment:
+
+  ---
+  The Root Issue: Your Events Bus
+
+  The managers are a symptom. The deeper problem is Events.gd with 107
+  signals. When any node can emit any signal and any other node can hear it,
+  nothing has a clear owner. You end up needing managers because the signals
+  live nowhere, so you need a place to put the reactions.
+
+  The signal bus is great for truly cross-cutting concerns (game_over, jump).
+   But when you have Events.player_health_hit, Events.shields_damaged, and
+  Events.player_attacked_ship — those signals belong on the objects that own
+  the state:
+
+  # Instead of listening to Events.player_health_hit:
+  Globals.player.health.health_damaged.connect(...)
+
+  # Instead of Events.enemy_left:
+  enemy_manager.enemy_removed.connect(...)
+
+  When signals live on their natural owners, you don't need managers to
+  receive them — you listen to the node directly.
+
+  ---
+  The Fundamental Principle: Let the Scene Tree Be Your Architecture
+
+  The best organizing principle for Godot specifically is: if a system should
+   die when a scene changes, make it a child of that scene. Right now
+  EnemyManager is always-loaded and has to manually clean up on jump. If it
+  were a child of the combat scene, it would just free itself. No cleanup
+  code needed.
+
+  This naturally limits how much persistent global state you accumulate.
+
+  Rule of thumb: aim for 3 or fewer autoloads. Something like:
+  - Globals — references to key scene nodes (player, etc.)
+  - Events — small, only genuinely cross-cutting signals (game over, scene
+  transitions)
+  - AudioManager or SaveManager if needed
+
+  Everything else: scene-local nodes passed via explicit dependency injection
+   (exactly what you're doing with set_scenario_engine()).
+
+  ---
+  Practical Tips for This Project Going Forward
+
+  1. Don't add new signals to Events. When you need a new signal, ask which
+  node owns the state that changes. Put it there. The Events bus should
+  shrink over time, not grow.
+
+  2. The ScenarioEngine pattern is your template. Explicit injection,
+  scene-local lifetime, no Globals.scenario_engine if you can avoid it. When
+  wiring tiles, the set_scenario_engine() call is the right model for all
+  future cross-system dependencies.
+
+  3. Separate data from behavior more aggressively. Your EffectData resources
+   are a good example — pure data, no node references. When resources know
+  about nodes, you get tight coupling that's hard to untangle. The refactor
+  is already heading in this direction.
+
+  4. TutorialManager is a warning sign for future features. Whenever you find
+   a boolean like tutorial_will_trigger_enemy_turns leaking into an unrelated
+   system, that's a flag that the dependent system is doing too much. The fix
+   is almost always "emit a signal from the right place, let the system that
+  cares respond."
+
+  5. Pure GDScript classes (not extending Node) for logic that doesn't need a
+   scene presence. Handlers, modifiers, events — these are all extends
+  RefCounted or plain GDScript objects. They're easy to instantiate, test,
+  and reason about. Reserve Node for things that actually need to exist in
+  the scene tree and respond to _ready/_process.
+
+  ---
+  The One-Sentence Version
+
+  Make dependencies explicit, let scenes manage their own lifetimes, and
+  treat the global event bus as a last resort rather than the default
+  communication channel.
+
+  The ScenarioEngine refactor is already pushing in this direction. The main
+  thing to preserve going forward is the instinct you showed in this
+  conversation: question every new manager before adding it, ask whether it
+  should be scene-local, and prefer injection over globals.
