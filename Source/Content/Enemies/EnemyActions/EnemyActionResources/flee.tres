@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=11 format=3 uid="uid://cesjiwhhl5hh0"]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://cesjiwhhl5hh0"]
 
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_av7rw"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="2_dly4w"]
@@ -10,12 +10,10 @@
 
 [sub_resource type="Resource" id="Resource_c6725"]
 script = ExtResource("2_hfnye")
-primary_effect = false
 metadata/_custom_type_script = "uid://bevx3pi3cf3mm"
 
 [sub_resource type="Resource" id="Resource_ewju3"]
 script = ExtResource("3_hfnye")
-primary_effect = false
 metadata/_custom_type_script = "uid://c8lqyi367m7t0"
 
 [sub_resource type="Resource" id="Resource_j02qh"]
@@ -30,5 +28,4 @@ description = "Flees from combat.  Gives dice away randomly"
 indicator_texture = ExtResource("2_qaw31")
 info_texture = ExtResource("3_38s5a")
 effect_chain = SubResource("Resource_j02qh")
-intent_amount = ""
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

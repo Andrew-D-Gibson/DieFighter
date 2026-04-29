@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=17 format=3 uid="uid://c8kw8h1mjtmml"]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://c8kw8h1mjtmml"]
 
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_p6u8t"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_kfsut"]
@@ -30,18 +30,13 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_ondvb"]
 script = ExtResource("2_pxhb4")
 base_action = ExtResource("3_8e1or")
-weight = 1.0
 min_amount = 1
 max_amount = 2
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_dlmmu"]
 script = ExtResource("2_pxhb4")
 base_action = ExtResource("4_asiqi")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
@@ -53,10 +48,6 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [sub_resource type="Resource" id="Resource_dpf5f"]
 script = ExtResource("2_pxhb4")
 base_action = ExtResource("4_asiqi")
-weight = 1.0
-min_amount = 0
-max_amount = 0
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_ildgx"]
@@ -65,7 +56,6 @@ base_action = ExtResource("5_c211h")
 weight = 2.0
 min_amount = 1
 max_amount = 6
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_l8i2t"]
@@ -76,12 +66,9 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("2_kfsut")
 enemy_name = "Cannon Drone"
-description = ""
 max_health = 32
-starting_shields = 0
 action_options = Array[ExtResource("1_p6u8t")]([SubResource("Resource_lpi6w"), SubResource("Resource_l8i2t")])
 ship_graphics_scene = ExtResource("7_fpnel")
-graphics_scene_offset = Vector2(0, 0)
 dialogue_offset = Vector2(16, -8)
 targeting_computer_image = ExtResource("8_nuult")
 health_bar_position = Vector2(-23, -14)

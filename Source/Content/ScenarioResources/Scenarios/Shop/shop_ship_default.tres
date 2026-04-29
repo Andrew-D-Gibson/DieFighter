@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=9 format=3 uid="uid://br2onlc8mhgxr"]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://br2onlc8mhgxr"]
 
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_0v0br"]
 [ext_resource type="Script" uid="uid://d2k38tg7rrlgo" path="res://Source/Content/Effects/ScenarioControls/Shop/open_shop.gd" id="2_pvm2e"]
@@ -9,7 +9,6 @@
 
 [sub_resource type="Resource" id="Resource_45pdf"]
 script = ExtResource("2_pvm2e")
-primary_effect = false
 metadata/_custom_type_script = "uid://d2k38tg7rrlgo"
 
 [sub_resource type="Resource" id="Resource_5fqud"]
@@ -21,7 +20,6 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 script = ExtResource("2_yqrsh")
 dialogue = "Take a look at my wares!"
 faction = 1
-attitude = 0
 effects_on_enter = SubResource("Resource_5fqud")
 transitions = Dictionary[int, ExtResource("3_pvm2e")]({
 1: ExtResource("5_nr054")

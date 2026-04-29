@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=14 format=3 uid="uid://d05ihd7m63anw"]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://d05ihd7m63anw"]
 
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_6pw6j"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_qfn37"]
@@ -12,10 +12,8 @@
 [sub_resource type="Resource" id="Resource_xua28"]
 script = ExtResource("1_6pw6j")
 base_action = ExtResource("3_2qgp6")
-weight = 1.0
 min_amount = 2
 max_amount = 5
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_4x72i"]
@@ -30,9 +28,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_id1ge"]
 script = ExtResource("1_6pw6j")
 base_action = ExtResource("4_jikpo")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
@@ -58,7 +53,6 @@ max_health = 8
 starting_shields = 8
 action_options = Array[ExtResource("1_qfn37")]([SubResource("Resource_ufue1")])
 ship_graphics_scene = ExtResource("6_o11wk")
-graphics_scene_offset = Vector2(0, 0)
 dialogue_offset = Vector2(16, -8)
 targeting_computer_image = ExtResource("3_62y4q")
 health_bar_position = Vector2(-21, -9)

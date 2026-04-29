@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=35 format=3 uid="uid://hgsmejq8gdrl"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://hgsmejq8gdrl"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_q4v50"]
 [ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/RedTiles/damage.png" id="2_mkcsn"]
@@ -18,14 +18,11 @@
 
 [sub_resource type="Resource" id="Resource_mkcsn"]
 script = ExtResource("1_q4v50")
-type = 0
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_e261g"]
 script = ExtResource("1_q4v50")
 type = 4
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_oji76"]
@@ -33,23 +30,19 @@ script = ExtResource("3_gjhi3")
 color = Color(0.317647, 0.0823529, 0.129412, 1)
 amount = 6
 location = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_2fv8l"]
 script = ExtResource("3_ugtd2")
 sound_effect = ExtResource("5_v0xsr")
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_wqepc"]
 script = ExtResource("4_q4v50")
-primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_ugtd2"]
 script = ExtResource("5_mkcsn")
-primary_effect = false
 metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 
 [sub_resource type="Resource" id="Resource_gjhi3"]
@@ -61,7 +54,6 @@ metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
 
 [sub_resource type="Resource" id="Resource_v0xsr"]
 script = ExtResource("7_ugtd2")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_28674"]
@@ -74,98 +66,44 @@ script = ExtResource("11_2fv8l")
 category = 4
 subtype = 1
 amount = 6
-inherit_die_amount = false
-multiplier = 1.0
-string_param = ""
-grid_offset = Vector2i(0, 0)
 color = Color(0.317647, 0.0823529, 0.129412, 1)
-range_min = 1
-range_max = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_1sbbd"]
 script = ExtResource("11_2fv8l")
 category = 4
 subtype = 5
-amount = 0
-inherit_die_amount = false
-multiplier = 1.0
-string_param = ""
-grid_offset = Vector2i(0, 0)
 sound_resource = ExtResource("5_v0xsr")
-color = Color(1, 1, 1, 1)
-range_min = 1
-range_max = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_vclj8"]
 script = ExtResource("11_2fv8l")
-category = 0
 subtype = 8
-amount = 0
-inherit_die_amount = false
-multiplier = 1.0
-string_param = ""
-grid_offset = Vector2i(0, 0)
-color = Color(1, 1, 1, 1)
-range_min = 1
-range_max = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_cpfwt"]
 script = ExtResource("11_2fv8l")
 category = 4
 subtype = 3
-amount = 0
-inherit_die_amount = false
-multiplier = 1.0
-string_param = ""
-grid_offset = Vector2i(0, 0)
-color = Color(1, 1, 1, 1)
-range_min = 1
-range_max = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_l4qc3"]
 script = ExtResource("11_2fv8l")
 category = 1
-subtype = 0
-amount = 0
 inherit_die_amount = true
-multiplier = 1.0
-string_param = ""
-grid_offset = Vector2i(0, 0)
-color = Color(1, 1, 1, 1)
-range_min = 1
-range_max = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_8isrd"]
 script = ExtResource("11_2fv8l")
 category = 3
 subtype = 5
-amount = 0
-inherit_die_amount = false
-multiplier = 1.0
-string_param = ""
-grid_offset = Vector2i(0, 0)
-color = Color(1, 1, 1, 1)
-range_min = 1
-range_max = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_gua1k"]
 script = ExtResource("11_2fv8l")
 category = 9
 subtype = 1
-amount = 0
-inherit_die_amount = false
-multiplier = 1.0
 string_param = "EffectChainV2 worked!"
-grid_offset = Vector2i(0, 0)
-color = Color(1, 1, 1, 1)
-range_min = 1
-range_max = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_p5sws"]
@@ -183,7 +121,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_q4v50")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -191,17 +129,11 @@ animations = [{
 [resource]
 script = ExtResource("8_2fv8l")
 tile_name = "[color=red]Dice Cannon[/color]"
-activation_description = ""
 description = "[color=yellow]Any die[/color] -> Deal [color=red]X damage[/color] to [color=purple]target[/color], then [color=orange]give[/color] them the die"
-hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_mkcsn")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_q4v50")]([SubResource("Resource_mkcsn"), SubResource("Resource_e261g")])
 effect_chain = SubResource("Resource_28674")
-event_responses = Dictionary[ExtResource("8_wqepc"), ExtResource("7_mkcsn")]({})
 effect_chain_v2 = SubResource("Resource_p5sws")
-event_responses_v2 = Dictionary[ExtResource("8_wqepc"), ExtResource("12_28674")]({})
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

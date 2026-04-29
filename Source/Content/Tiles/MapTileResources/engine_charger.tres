@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=22 format=3 uid="uid://bsaq6udi1wjln"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bsaq6udi1wjln"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_8mym4"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_1ow5n"]
@@ -15,37 +15,30 @@
 
 [sub_resource type="Resource" id="Resource_dd8hj"]
 script = ExtResource("1_8mym4")
-type = 0
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_2r3c1"]
 script = ExtResource("3_uhn3f")
-amount = 0
 inherit_die_amount = true
 primary_effect = true
 metadata/_custom_type_script = "uid://cymd6kmfhbghm"
 
 [sub_resource type="Resource" id="Resource_trxre"]
 script = ExtResource("4_tjjvc")
-primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_r84pn"]
 script = ExtResource("5_6lmqw")
-primary_effect = false
 metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
 [sub_resource type="Resource" id="Resource_4bhlh"]
 script = ExtResource("5_dd8hj")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_3fymx"]
 script = ExtResource("7_2utoq")
 if_true_effect = SubResource("Resource_4bhlh")
 if_false_effect = SubResource("Resource_r84pn")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8kdirxf6fdvb"
 
 [sub_resource type="Resource" id="Resource_3jpq8"]
@@ -63,7 +56,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7mo4q")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -71,16 +64,10 @@ animations = [{
 [resource]
 script = ExtResource("3_ar2wr")
 tile_name = "Engine Charger"
-activation_description = ""
 description = "[color=yellow]Any die[/color] -> Adds [color=purple]X engine charge[/color], then [color=orange]gives[/color] die to [color=purple]target[/color]"
-hint_text = ""
-rarity = 0
 textures = SubResource("SpriteFrames_dd8hj")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_8mym4")]([SubResource("Resource_dd8hj")])
 effect_chain = SubResource("Resource_3jpq8")
-event_responses = Dictionary[ExtResource("6_dd8hj"), ExtResource("6_7mo4q")]({})
-event_responses_v2 = Dictionary[ExtResource("6_dd8hj"), ExtResource("10_2utoq")]({})
 dragging_allowed = false
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

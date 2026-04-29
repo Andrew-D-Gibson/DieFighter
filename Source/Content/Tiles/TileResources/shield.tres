@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=25 format=3 uid="uid://c5gk2kf6r2v5y"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://c5gk2kf6r2v5y"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_854mr"]
 [ext_resource type="Texture2D" uid="uid://ontg5o7orq17" path="res://Assets/Textures/Tiles/BlueTiles/shield.png" id="2_7qkaa"]
@@ -24,37 +24,30 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 [sub_resource type="Resource" id="Resource_cnb1i"]
 script = ExtResource("3_vpgxx")
 sound_effect = ExtResource("4_77b16")
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_bwi3v"]
 script = ExtResource("4_7qkaa")
-primary_effect = false
 metadata/_custom_type_script = "uid://na20gyl0jdks"
 
 [sub_resource type="Resource" id="Resource_vpgxx"]
 script = ExtResource("5_p7d6s")
 amount = 8
-inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
 [sub_resource type="Resource" id="Resource_q67gt"]
 script = ExtResource("5_bwi3v")
 color = Color(0.309804, 0.705882, 1, 1)
-amount = 36
 location = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_77b16"]
 script = ExtResource("6_bwi3v")
-primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_534nq"]
 script = ExtResource("7_vpgxx")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_8vpcq"]
@@ -72,7 +65,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7qkaa")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -80,16 +73,9 @@ animations = [{
 [resource]
 script = ExtResource("8_8vpcq")
 tile_name = "[color=blue]Shield Burst[/color]"
-activation_description = ""
 description = "(die_3) -> Add [color=blue]8 shields[/color], then [color=orange]give[/color] die to the [color=purple]target[/color]"
-hint_text = ""
-rarity = 0
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])
 effect_chain = SubResource("Resource_8vpcq")
-event_responses = Dictionary[ExtResource("8_p7d6s"), ExtResource("7_7qkaa")]({})
-event_responses_v2 = Dictionary[ExtResource("8_p7d6s"), ExtResource("12_534nq")]({})
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

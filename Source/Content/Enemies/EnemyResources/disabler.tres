@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=13 format=3 uid="uid://b5tqiiiyrjy0b"]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://b5tqiiiyrjy0b"]
 
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_5pxhh"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_hbxdm"]
@@ -12,18 +12,12 @@
 [sub_resource type="Resource" id="Resource_1ll6j"]
 script = ExtResource("1_hbxdm")
 base_action = ExtResource("5_1ll6j")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_od4nw"]
 script = ExtResource("1_hbxdm")
 base_action = ExtResource("4_t8kfg")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 

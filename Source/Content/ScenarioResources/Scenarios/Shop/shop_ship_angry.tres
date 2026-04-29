@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=10 format=3 uid="uid://cfo3u3h67qvi3"]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://cfo3u3h67qvi3"]
 
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_x41b6"]
 [ext_resource type="Script" uid="uid://dhgkx07lsso63" path="res://Source/Content/Effects/ScenarioControls/Shop/close_shop.gd" id="2_5prt1"]
@@ -9,13 +9,10 @@
 
 [sub_resource type="Resource" id="Resource_62o55"]
 script = ExtResource("2_5prt1")
-primary_effect = false
 metadata/_custom_type_script = "uid://dhgkx07lsso63"
 
 [sub_resource type="Resource" id="Resource_4ncg3"]
 script = ExtResource("3_k3543")
-new_position_proportion = 0.5
-primary_effect = false
 metadata/_custom_type_script = "uid://duv7sw0xcjx15"
 
 [sub_resource type="Resource" id="Resource_14acg"]
@@ -29,5 +26,4 @@ dialogue = "How dare you?!"
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("Resource_14acg")
-transitions = Dictionary[int, ExtResource("3_5prt1")]({})
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

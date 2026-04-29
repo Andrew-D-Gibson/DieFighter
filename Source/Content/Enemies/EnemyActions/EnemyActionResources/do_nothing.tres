@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=11 format=3 uid="uid://dh6y87rwpxmh2"]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://dh6y87rwpxmh2"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_6upn5"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_nu4jr"]
@@ -9,17 +9,14 @@
 
 [sub_resource type="Resource" id="Resource_uiyg5"]
 script = ExtResource("2_llu0j")
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_jr25w"]
 script = ExtResource("2_6c310")
-primary_effect = false
 metadata/_custom_type_script = "uid://bkxrabyoax0ru"
 
 [sub_resource type="Resource" id="Resource_rgoyr"]
 script = ExtResource("3_8ls1d")
-primary_effect = false
 metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
 [sub_resource type="Resource" id="Resource_60flf"]
@@ -29,8 +26,5 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [resource]
 script = ExtResource("1_6upn5")
-name = ""
-description = ""
 effect_chain = SubResource("Resource_60flf")
-intent_amount = ""
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

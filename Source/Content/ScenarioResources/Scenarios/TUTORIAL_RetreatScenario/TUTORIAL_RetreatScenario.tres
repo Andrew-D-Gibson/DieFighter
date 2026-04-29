@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=14 format=3 uid="uid://bj1qqoua2m1ih"]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://bj1qqoua2m1ih"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_fcs48"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="1_qjk6t"]
@@ -13,8 +13,6 @@
 [sub_resource type="Resource" id="Resource_ui88j"]
 script = ExtResource("3_x6nfn")
 eligible_backgrounds = Array[ExtResource("1_fcs48")]([ExtResource("2_xf77p")])
-reselect_on_scenario_load = true
-reselect_on_manual_background_change = false
 metadata/_custom_type_script = "uid://3roroso3mo17"
 
 [sub_resource type="Resource" id="Resource_mpuxo"]
@@ -43,7 +41,6 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("2_6cswr")
 map_icon = ExtResource("4_bysdh")
 background_resource = SubResource("Resource_ui88j")
-sector_gate_scenario = false
 starting_enemies = Array[ExtResource("3_hdjva")]([SubResource("Resource_0qrpr"), SubResource("Resource_yikhs")])
 rewards = Dictionary[int, ExtResource("1_qjk6t")]({
 0: SubResource("Resource_mpuxo")

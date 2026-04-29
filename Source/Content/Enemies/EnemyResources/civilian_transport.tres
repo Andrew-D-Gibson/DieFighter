@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=13 format=3 uid="uid://pqoge57fe72d"]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://pqoge57fe72d"]
 
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_tshki"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="2_fsqg3"]
@@ -12,16 +12,12 @@
 [sub_resource type="Resource" id="Resource_u5gnh"]
 script = ExtResource("2_fsqg3")
 base_action = ExtResource("3_nek1j")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_7mngp"]
 script = ExtResource("2_fsqg3")
 base_action = ExtResource("4_t4thw")
-weight = 1.0
 min_amount = 2
 max_amount = 6
 force_include = true
@@ -31,8 +27,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 script = ExtResource("2_fsqg3")
 base_action = ExtResource("5_ttvyx")
 weight = 0.5
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
@@ -44,12 +38,10 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("2_km2sg")
 enemy_name = "Civilian Transport"
-description = ""
 max_health = 8
 starting_shields = 8
 action_options = Array[ExtResource("1_tshki")]([SubResource("Resource_pjw7f")])
 ship_graphics_scene = ExtResource("7_wi75o")
-graphics_scene_offset = Vector2(0, 0)
 dialogue_offset = Vector2(17, -8)
 targeting_computer_image = ExtResource("8_6eevq")
 health_bar_position = Vector2(-24, -14)

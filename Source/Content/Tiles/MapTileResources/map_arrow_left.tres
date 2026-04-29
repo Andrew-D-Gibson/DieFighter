@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=15 format=3 uid="uid://crph25pv1d7aa"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://crph25pv1d7aa"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_axjj4"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_3qev1"]
@@ -11,22 +11,16 @@
 
 [sub_resource type="Resource" id="Resource_kfeuv"]
 script = ExtResource("1_axjj4")
-type = 0
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_6pw46"]
 script = ExtResource("1_axjj4")
 type = 9
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_yt0m3"]
 script = ExtResource("3_3qev1")
-amount = 0
-inherit_die_amount = true
 jumping_right = false
-primary_effect = false
 metadata/_custom_type_script = "uid://crt8abcwxtsi7"
 
 [sub_resource type="Resource" id="Resource_j67x6"]
@@ -44,7 +38,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_6pw46")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -52,16 +46,11 @@ animations = [{
 [resource]
 script = ExtResource("4_3qev1")
 tile_name = "Left Controls"
-activation_description = ""
 description = "[color=yellow]Any die[/color] -> Jump [color=purple]X[/color] locations left"
-hint_text = ""
-rarity = 0
 textures = SubResource("SpriteFrames_3qev1")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_axjj4")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46")])
 effect_chain = SubResource("Resource_j67x6")
-event_responses = Dictionary[ExtResource("2_kfeuv"), ExtResource("3_6pw46")]({})
-event_responses_v2 = Dictionary[ExtResource("2_kfeuv"), ExtResource("6_yt0m3")]({})
 dragging_allowed = false
 max_dice_in_queue = 1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

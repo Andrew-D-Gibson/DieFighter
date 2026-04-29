@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=14 format=3 uid="uid://bx5ngnm1m720p"]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://bx5ngnm1m720p"]
 
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="1_pogl1"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_a001n"]
@@ -11,9 +11,6 @@
 
 [sub_resource type="Resource" id="Resource_f8swe"]
 script = ExtResource("3_jn6yr")
-min_money = 0
-max_money = 0
-num_of_rewards = 3
 dice_probability = 0.2
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
@@ -22,7 +19,6 @@ script = ExtResource("3_jn6yr")
 min_money = 10
 max_money = 20
 num_of_rewards = 0
-dice_probability = 0.0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_1othr"]
@@ -53,7 +49,6 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("4_k38ow")
 map_icon = ExtResource("2_a001n")
 background_resource = ExtResource("1_pogl1")
-sector_gate_scenario = false
 starting_enemies = Array[ExtResource("5_76ikn")]([SubResource("Resource_1othr"), SubResource("Resource_u8e0s")])
 rewards = Dictionary[int, ExtResource("3_jn6yr")]({
 0: SubResource("Resource_f8swe")

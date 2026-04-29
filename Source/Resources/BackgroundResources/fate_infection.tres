@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BackgroundResource" load_steps=5 format=3 uid="uid://c440n0q257p8h"]
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://c440n0q257p8h"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_tbvtb"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_v0oo0"]
@@ -8,10 +8,6 @@
 script = ExtResource("2_v0oo0")
 scene = ExtResource("3_5u8kd")
 position = Vector2(240, 30)
-scale = Vector2(1, 1)
-rotation = 0.0
-modulate = Color(1, 1, 1, 1)
-parallax_level = 0
 metadata/_custom_type_script = "uid://cgosy7gnhi58w"
 
 [resource]

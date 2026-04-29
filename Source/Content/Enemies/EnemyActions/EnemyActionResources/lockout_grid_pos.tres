@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=13 format=3 uid="uid://6v0r054iqknm"]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://6v0r054iqknm"]
 
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_2l8m7"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_6sgwv"]
@@ -11,17 +11,14 @@
 
 [sub_resource type="Resource" id="Resource_n7vlf"]
 script = ExtResource("2_eqowd")
-primary_effect = false
 metadata/_custom_type_script = "uid://dnojdkjmfs5ys"
 
 [sub_resource type="Resource" id="Resource_bk53e"]
 script = ExtResource("3_xhhwy")
-primary_effect = false
 metadata/_custom_type_script = "uid://bmoytp7geekem"
 
 [sub_resource type="Resource" id="Resource_6tpj6"]
 script = ExtResource("4_p2vtv")
-primary_effect = false
 metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
 [sub_resource type="Resource" id="Resource_kxkj5"]
@@ -36,5 +33,4 @@ description = "[color=orange]Locks[/color] a grid location"
 indicator_texture = ExtResource("1_354nc")
 info_texture = ExtResource("2_m2445")
 effect_chain = SubResource("Resource_kxkj5")
-intent_amount = ""
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

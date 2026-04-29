@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=13 format=3 uid="uid://lxupqxmk1she"]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://lxupqxmk1she"]
 
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_2n4kh"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_42u7s"]
@@ -12,28 +12,20 @@
 [sub_resource type="Resource" id="Resource_itnwa"]
 script = ExtResource("1_2n4kh")
 base_action = ExtResource("4_42u7s")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_amb7e"]
 script = ExtResource("1_2n4kh")
 base_action = ExtResource("5_itnwa")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_ohrlf"]
 script = ExtResource("1_2n4kh")
 base_action = ExtResource("2_s7ieb")
-weight = 1.0
 min_amount = 4
 max_amount = 12
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_imo8o"]
@@ -46,10 +38,8 @@ script = ExtResource("2_00gar")
 enemy_name = "Shop"
 description = "Buy your desires!"
 max_health = 32
-starting_shields = 0
 action_options = Array[ExtResource("1_42u7s")]([SubResource("Resource_imo8o")])
 ship_graphics_scene = ExtResource("5_35j5s")
-graphics_scene_offset = Vector2(0, 0)
 dialogue_offset = Vector2(20, -6)
 targeting_computer_image = ExtResource("6_03d4b")
 health_bar_position = Vector2(-18, -22)

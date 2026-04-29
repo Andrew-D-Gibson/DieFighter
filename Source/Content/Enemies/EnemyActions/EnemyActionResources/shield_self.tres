@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" load_steps=15 format=3 uid="uid://dfpviimqj18jr"]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://dfpviimqj18jr"]
 
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_rs7xq"]
 [ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="2_h8kdw"]
@@ -12,25 +12,21 @@
 
 [sub_resource type="Resource" id="Resource_arbeq"]
 script = ExtResource("2_h8kdw")
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_vrksl"]
 script = ExtResource("3_702ir")
-primary_effect = false
 metadata/_custom_type_script = "uid://na20gyl0jdks"
 
 [sub_resource type="Resource" id="Resource_rs7xq"]
 resource_local_to_scene = true
 script = ExtResource("4_uik6c")
 amount = 2
-inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
 [sub_resource type="Resource" id="Resource_3ow3x"]
 script = ExtResource("5_vvfhd")
-primary_effect = false
 metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
 [sub_resource type="Resource" id="Resource_h8kdw"]

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioResource" load_steps=10 format=3 uid="uid://dp6euwvjd2ren"]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://dp6euwvjd2ren"]
 
 [ext_resource type="Texture2D" uid="uid://c6ltm4ylf42ka" path="res://Assets/Textures/Map/EncounterIcons/shop.png" id="1_7qv0j"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_36yx3"]
@@ -28,7 +28,5 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("1_36yx3")
 map_icon = ExtResource("1_7qv0j")
 background_resource = ExtResource("1_vppj1")
-sector_gate_scenario = false
 starting_enemies = Array[ExtResource("2_7qv0j")]([SubResource("Resource_fly3e")])
-rewards = Dictionary[int, ExtResource("6_6w0ix")]({})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

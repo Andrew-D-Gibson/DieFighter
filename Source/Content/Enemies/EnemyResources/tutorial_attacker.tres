@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyResource" load_steps=17 format=3 uid="uid://df6wvblwp3imy"]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://df6wvblwp3imy"]
 
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_lyngv"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="2_j2ctd"]
@@ -12,7 +12,6 @@
 [sub_resource type="Resource" id="Resource_81dy1"]
 script = ExtResource("2_j2ctd")
 base_action = ExtResource("3_w8ajc")
-weight = 1.0
 min_amount = 2
 max_amount = 4
 force_include = true
@@ -30,9 +29,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_i4wka"]
 script = ExtResource("2_j2ctd")
 base_action = ExtResource("4_w452i")
-weight = 1.0
-min_amount = 0
-max_amount = 0
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
@@ -44,28 +40,20 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [sub_resource type="Resource" id="Resource_xwk11"]
 script = ExtResource("2_j2ctd")
 base_action = ExtResource("3_w8ajc")
-weight = 1.0
 min_amount = 1
 max_amount = 1
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_n68fv"]
 script = ExtResource("2_j2ctd")
 base_action = ExtResource("5_own6t")
-weight = 1.0
 min_amount = 2
 max_amount = 3
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_r4xab"]
 script = ExtResource("2_j2ctd")
 base_action = ExtResource("4_w452i")
-weight = 1.0
-min_amount = 0
-max_amount = 0
-force_include = false
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_ej0m4"]
@@ -78,10 +66,8 @@ script = ExtResource("6_ypepa")
 enemy_name = "Venom Fighter"
 description = "Gonna mess you up bruh"
 max_health = 18
-starting_shields = 0
 action_options = Array[ExtResource("1_lyngv")]([SubResource("Resource_l7vxx"), SubResource("Resource_ej0m4")])
 ship_graphics_scene = ExtResource("7_ijcrn")
-graphics_scene_offset = Vector2(0, 0)
 dialogue_offset = Vector2(18, -8)
 targeting_computer_image = ExtResource("8_a5qkj")
 health_bar_position = Vector2(-20, -17)

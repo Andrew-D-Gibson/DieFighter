@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=8 format=3 uid="uid://bv7qyqlhl4prh"]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://bv7qyqlhl4prh"]
 
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="2_vxs5e"]
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_fhktm"]
@@ -18,7 +18,6 @@ metadata/_custom_type_script = "uid://meeikumym0ie"
 [resource]
 script = ExtResource("2_vxs5e")
 dialogue = "This is our kill, back off!"
-faction = 0
 attitude = 1
 transitions = Dictionary[int, ExtResource("3_fhktm")]({
 0: ExtResource("4_tclhq"),
