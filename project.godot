@@ -53,6 +53,7 @@ enabled=PackedStringArray("res://addons/effect_data_inspector/plugin.cfg")
 
 CanAcceptDice=""
 Dice=""
+Tile="The group of all tiles, including those in the tile grid, map arrows, and engine charger"
 
 [gui]
 

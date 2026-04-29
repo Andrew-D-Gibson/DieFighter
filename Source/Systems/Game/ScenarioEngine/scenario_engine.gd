@@ -14,6 +14,7 @@ var modifiers: Array[Modifier]
 ## Event functions
 func queue_event(event: EffectEvent) -> void:
 	event_queue.append(event)
+	process_event_queue()
 	
 	
 func clear_events() -> void:
@@ -38,6 +39,10 @@ func clear_modifiers() -> void:
 	
 ## Main Process Function
 func process_event_queue() -> void:
+	# Allow for multiple calls to happen without breaking
+	if currently_processing_queue:
+		return
+		
 	began_processing_queue.emit()
 	currently_processing_queue = true
 	
@@ -51,7 +56,7 @@ func process_event_queue() -> void:
 			
 		# Check for cancelation
 		if event.canceled:
-			break
+			continue
 			
 		# Handle the event itself
 		await event.resolve(self)

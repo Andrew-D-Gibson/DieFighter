@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=25 format=3 uid="uid://hgsmejq8gdrl"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=35 format=3 uid="uid://hgsmejq8gdrl"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_q4v50"]
 [ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/RedTiles/damage.png" id="2_mkcsn"]
@@ -13,6 +13,8 @@
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_ugtd2"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_2fv8l"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_wqepc"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_2fv8l"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_28674"]
 
 [sub_resource type="Resource" id="Resource_mkcsn"]
 script = ExtResource("1_q4v50")
@@ -67,6 +69,110 @@ script = ExtResource("7_mkcsn")
 effects = Array[ExtResource("3_lbtrd")]([SubResource("Resource_oji76"), SubResource("Resource_2fv8l"), SubResource("Resource_wqepc"), SubResource("Resource_ugtd2"), SubResource("Resource_gjhi3"), SubResource("Resource_v0xsr")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_a2kih"]
+script = ExtResource("11_2fv8l")
+category = 4
+subtype = 1
+amount = 6
+inherit_die_amount = false
+multiplier = 1.0
+string_param = ""
+grid_offset = Vector2i(0, 0)
+color = Color(0.317647, 0.0823529, 0.129412, 1)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_1sbbd"]
+script = ExtResource("11_2fv8l")
+category = 4
+subtype = 5
+amount = 0
+inherit_die_amount = false
+multiplier = 1.0
+string_param = ""
+grid_offset = Vector2i(0, 0)
+sound_resource = ExtResource("5_v0xsr")
+color = Color(1, 1, 1, 1)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_vclj8"]
+script = ExtResource("11_2fv8l")
+category = 0
+subtype = 8
+amount = 0
+inherit_die_amount = false
+multiplier = 1.0
+string_param = ""
+grid_offset = Vector2i(0, 0)
+color = Color(1, 1, 1, 1)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cpfwt"]
+script = ExtResource("11_2fv8l")
+category = 4
+subtype = 3
+amount = 0
+inherit_die_amount = false
+multiplier = 1.0
+string_param = ""
+grid_offset = Vector2i(0, 0)
+color = Color(1, 1, 1, 1)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_l4qc3"]
+script = ExtResource("11_2fv8l")
+category = 1
+subtype = 0
+amount = 0
+inherit_die_amount = true
+multiplier = 1.0
+string_param = ""
+grid_offset = Vector2i(0, 0)
+color = Color(1, 1, 1, 1)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_8isrd"]
+script = ExtResource("11_2fv8l")
+category = 3
+subtype = 5
+amount = 0
+inherit_die_amount = false
+multiplier = 1.0
+string_param = ""
+grid_offset = Vector2i(0, 0)
+color = Color(1, 1, 1, 1)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_gua1k"]
+script = ExtResource("11_2fv8l")
+category = 9
+subtype = 1
+amount = 0
+inherit_die_amount = false
+multiplier = 1.0
+string_param = "EffectChainV2 worked!"
+grid_offset = Vector2i(0, 0)
+color = Color(1, 1, 1, 1)
+range_min = 1
+range_max = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p5sws"]
+script = ExtResource("12_28674")
+effects = Array[ExtResource("11_2fv8l")]([SubResource("Resource_a2kih"), SubResource("Resource_1sbbd"), SubResource("Resource_vclj8"), SubResource("Resource_cpfwt"), SubResource("Resource_l4qc3"), SubResource("Resource_8isrd"), SubResource("Resource_gua1k")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_q4v50"]
 atlas = ExtResource("2_mkcsn")
 region = Rect2(0, 0, 24, 24)
@@ -94,6 +200,8 @@ uses_per_combat = -1
 activation_checks = Array[ExtResource("1_q4v50")]([SubResource("Resource_mkcsn"), SubResource("Resource_e261g")])
 effect_chain = SubResource("Resource_28674")
 event_responses = Dictionary[ExtResource("8_wqepc"), ExtResource("7_mkcsn")]({})
+effect_chain_v2 = SubResource("Resource_p5sws")
+event_responses_v2 = Dictionary[ExtResource("8_wqepc"), ExtResource("12_28674")]({})
 dragging_allowed = true
 max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

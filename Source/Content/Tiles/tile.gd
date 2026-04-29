@@ -30,6 +30,10 @@ var _saturation_tween: Tween
 var effect_data: Dictionary[String, int]
 		
 		
+var scenario_engine: ScenarioEngine = null:
+	set = set_scenario_engine
+		
+		
 @export_category('Components')
 @export var draggable: Draggable
 @export var clickable: Clickable
@@ -145,7 +149,7 @@ func can_activate(activator_die: Dice) -> bool:
 				return false
 		
 	# Handle tile activation criteria
-	if not _clears_activation_criteria(activator_die):
+	if not clears_activation_criteria(activator_die):
 		# Something didn't go how the player expected,
 		# so clear out the queue of tile activations
 		for die: Dice in dice_activation_queue:
@@ -159,7 +163,7 @@ func can_activate(activator_die: Dice) -> bool:
 	return true
 		
 		
-func _clears_activation_criteria(activator_die: Dice = null) -> bool:	
+func clears_activation_criteria(activator_die: Dice = null) -> bool:	
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
 		Events.error_text_popup.emit("NO USES REMAINING", self.global_position)
@@ -186,7 +190,7 @@ func activate(activator_die: Dice = null) -> void:
 	if uses_remaining != -1:
 		uses_remaining -= 1
 		
-	# Tween the activating diechat to the slot 
+	# Tween the activating die to the slot 
 	if activator_die:
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	
@@ -212,24 +216,33 @@ func activate(activator_die: Dice = null) -> void:
 	
 	shakeable.large_shake()
 	
-	# Set up the effects variables for chaining effects
-	var effect_variables: EffectVariables = _generate_effect_variables()
-	effect_variables.activator_die = activator_die
+	if tile_resource.effect_chain_v2 and scenario_engine:
+		var context: EffectContext = EffectContext.new()
+		context.actor = Globals.player    # or whoever owns this tile
+		context.effect_source = self
+		context.activator_die = activator_die
+
+		# play() enqueues events; process_events() resolves them all.
+		await tile_resource.effect_chain_v2.play(context, scenario_engine)
+		await scenario_engine.process_event_queue()
 	
-	
-	# Change the effect variables based on grid status effects
-	if Globals.tile_grid.tile_locations.values().has(self):
-		var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
+	elif tile_resource.effect_chain:
+		# Set up the effects variables for chaining effects
+		var effect_variables: EffectVariables = _generate_effect_variables()
+		effect_variables.activator_die = activator_die
 		
-		var grid_status_effects: Array[GridStatusEffect] = \
-			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
+		# Change the effect variables based on grid status effects
+		if Globals.tile_grid.tile_locations.values().has(self):
+			var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
 			
-		for status_effect: GridStatusEffect in grid_status_effects:
-			effect_variables = status_effect.manipulate_effect_variables(effect_variables)
-	
-	
-	# Play the tile's effect chain
-	await tile_resource.effect_chain.play(effect_variables)
+			var grid_status_effects: Array[GridStatusEffect] = \
+				Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
+				
+			for status_effect: GridStatusEffect in grid_status_effects:
+				effect_variables = status_effect.manipulate_effect_variables(effect_variables)
+		
+		# Play the tile's effect chain
+		await tile_resource.effect_chain.play(effect_variables)
 	
 	# Remove the activator die that was just used from the
 	# Tile static dice activation queue
@@ -292,12 +305,19 @@ func _on_die_accepted(die: Dice) -> void:
 		return
 		
 	dice_queue.add(die, true, false)
-	if Globals.activation_queue_manager:
-		Globals.activation_queue_manager.add_die_to_queue(die)
 	
 	# Emit event for die placement for tutorial use
 	Events.die_placed_on_tile.emit(die, self)
-
+	
+	if scenario_engine:
+		var event := TileActivationEvent.new()
+		event.tile = self
+		event.activator_die = die
+		scenario_engine.queue_event(event)
+	
+	elif Globals.activation_queue_manager:
+		Globals.activation_queue_manager.add_die_to_queue(die)
+	
 
 func _on_visibility_changed() -> void:	
 	for die: Dice in dice_queue.queue:
@@ -337,3 +357,7 @@ func set_gray_out(gray_out: bool) -> void:
 		outer_radius,
 		tween_time
 	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	
+	
+func set_scenario_engine(engine: ScenarioEngine) -> void:
+	scenario_engine = engine

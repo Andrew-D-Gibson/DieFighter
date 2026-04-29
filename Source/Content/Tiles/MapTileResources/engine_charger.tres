@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=21 format=3 uid="uid://bsaq6udi1wjln"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=22 format=3 uid="uid://bsaq6udi1wjln"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_8mym4"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_1ow5n"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_7mo4q"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_dd8hj"]
 [ext_resource type="Script" uid="uid://b8kdirxf6fdvb" path="res://Source/Content/Effects/Conditionals/if_enemy_targeted_effect.gd" id="7_2utoq"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_2utoq"]
 
 [sub_resource type="Resource" id="Resource_dd8hj"]
 script = ExtResource("1_8mym4")
@@ -79,6 +80,7 @@ uses_per_combat = -1
 activation_checks = Array[ExtResource("1_8mym4")]([SubResource("Resource_dd8hj")])
 effect_chain = SubResource("Resource_3jpq8")
 event_responses = Dictionary[ExtResource("6_dd8hj"), ExtResource("6_7mo4q")]({})
+event_responses_v2 = Dictionary[ExtResource("6_dd8hj"), ExtResource("10_2utoq")]({})
 dragging_allowed = false
 max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

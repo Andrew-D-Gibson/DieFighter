@@ -20,6 +20,9 @@ enum Faction {
 }
 
 var current_scenario: ScenarioResource
+var engine: ScenarioEngine
+
+var engine_scene: PackedScene = load("uid://ccv04abb5xv1m")
 
 
 func _ready() -> void:
@@ -31,11 +34,31 @@ func _ready() -> void:
 	Events.combat_finished.connect(func() -> void:
 		Events.scenario_event.emit(ScenarioEvent.COMBAT_ENDED)
 	)
-	Events.load_scenario.connect(
-		func(scenario: ScenarioResource) -> void:
-			current_scenario = scenario
-	)
+	Events.load_scenario.connect(_load_scenario)
+	Events.start_scenario.connect(_start_scenario)
+	Events.jump.connect(_jump)
 
+
+func _load_scenario(scenario: ScenarioResource) -> void:
+	current_scenario = scenario
+	
+	engine = engine_scene.instantiate()
+	add_child(engine)
+	
+	
+func _start_scenario() -> void:
+	# Grab all tiles
+	var tiles: Array[Node] = get_tree().get_nodes_in_group('Tile')
+	
+	for tile in tiles:
+		tile.set_scenario_engine(engine)
+	
+	
+func _jump() -> void:
+	if is_instance_valid(engine):
+		engine.queue_free()
+		engine = null
+	
 
 func _handle_attack(_ship: Enemy, ship_faction: ScenarioManager.Faction) -> void:
 	match ship_faction:

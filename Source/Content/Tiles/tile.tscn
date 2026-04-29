@@ -64,7 +64,7 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fc656"]
 size = Vector2(20, 22)
 
-[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue", "can_accept_dice")]
+[node name="Tile" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "shakeable", "sprite_frames", "dice_queue", "can_accept_dice") groups=["Tile"]]
 z_index = 6
 script = ExtResource("1_71op4")
 draggable = NodePath("Draggable")

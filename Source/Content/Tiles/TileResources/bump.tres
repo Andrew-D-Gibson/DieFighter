@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=24 format=3 uid="uid://dy6ykhsava6f4"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=25 format=3 uid="uid://dy6ykhsava6f4"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u36sv"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_m7a5a"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_0ono8"]
 [ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="5_c3unh"]
 [ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png" id="7_0ono8"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_pmkt1"]
 
 [sub_resource type="Resource" id="Resource_7xmxb"]
 script = ExtResource("1_u36sv")
@@ -103,6 +104,7 @@ uses_per_combat = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])
 effect_chain = SubResource("Resource_u271i")
 event_responses = Dictionary[ExtResource("2_rp1c6"), ExtResource("3_5xcxx")]({})
+event_responses_v2 = Dictionary[ExtResource("2_rp1c6"), ExtResource("10_pmkt1")]({})
 dragging_allowed = true
 max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

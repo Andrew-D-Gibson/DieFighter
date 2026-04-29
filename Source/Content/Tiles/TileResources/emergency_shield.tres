@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://b1awwqwkacfu6"]
+[gd_resource type="Resource" script_class="TileResource" load_steps=30 format=3 uid="uid://b1awwqwkacfu6"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_wphb4"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_ejtl7"]
@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://bmhft7xkxwabt" path="res://Source/Content/Effects/MiscUtilities/destroy_source_effect.gd" id="6_3vaod"]
 [ext_resource type="Script" uid="uid://bxuudvb6cerq1" path="res://Source/Content/Effects/MiscUtilities/wait_for_milliseconds_effect.gd" id="8_qio35"]
 [ext_resource type="Texture2D" uid="uid://b20hbpbd0v7jl" path="res://Assets/Textures/Tiles/BlueTiles/emergency_shield.png" id="10_rg6sh"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="11_55lg7"]
 
 [sub_resource type="Resource" id="Resource_4tha5"]
 script = ExtResource("1_wphb4")
@@ -132,6 +133,7 @@ activation_checks = Array[ExtResource("1_wphb4")]([SubResource("Resource_4tha5")
 event_responses = Dictionary[ExtResource("2_k5jac"), ExtResource("3_unvpn")]({
 SubResource("Resource_ejtl7"): SubResource("Resource_rg6sh")
 })
+event_responses_v2 = Dictionary[ExtResource("2_k5jac"), ExtResource("11_55lg7")]({})
 dragging_allowed = true
 max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
