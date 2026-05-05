@@ -62,7 +62,6 @@
 [ext_resource type="Resource" uid="uid://bcutac2qknefg" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_anomaly_explanation.tres" id="48_qd85q"]
 [ext_resource type="Resource" uid="uid://cjs5pb8b7yx5b" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_explanation.tres" id="49_p3tcj"]
 [ext_resource type="Resource" uid="uid://dwx00amrb3m7m" path="res://Source/Systems/TutorialManager/TutorialStepResources/multiple_targets_explanation.tres" id="52_1kud3"]
-[ext_resource type="PackedScene" uid="uid://6ti1by7f8gps" path="res://Source/Systems/Game/GlobalModifierManager/global_modifier_manager.tscn" id="52_olve7"]
 [ext_resource type="Resource" uid="uid://6w4fbk3trbgl" path="res://Source/Systems/TutorialManager/TutorialStepResources/retreat_advised.tres" id="53_qtm42"]
 [ext_resource type="Resource" uid="uid://8a2ay3ot6gnn" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_gate_combat_intro.tres" id="55_j6chx"]
 [ext_resource type="Resource" uid="uid://byo6vhmyxihg6" path="res://Source/Resources/SaveResources/tutorial_start.tres" id="55_qtm42"]
@@ -91,7 +90,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1kud3"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f3imi"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -319,7 +318,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_1kud3")
+material = SubResource("ShaderMaterial_f3imi")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]
@@ -350,8 +349,6 @@ position = Vector2(156, 37)
 auto_start = false
 tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtResource("30_k3fls"), ExtResource("31_s8v7r"), ExtResource("32_k3fls"), ExtResource("33_s8v7r"), ExtResource("34_s8v7r"), ExtResource("35_7yw3t"), ExtResource("36_d6h8w"), ExtResource("37_0b58v"), ExtResource("38_5rg43"), ExtResource("39_5rg43"), ExtResource("40_6c5u4"), ExtResource("41_kbsha"), ExtResource("42_o2el7"), ExtResource("44_h1v2j"), ExtResource("45_gp2ob"), ExtResource("46_1gi3i"), ExtResource("47_7ku7q"), ExtResource("48_qd85q"), ExtResource("49_p3tcj"), ExtResource("52_1kud3"), ExtResource("53_qtm42"), ExtResource("55_j6chx"), ExtResource("56_x81fm")])
 tutorial_game_save = ExtResource("55_qtm42")
-
-[node name="GlobalModifierManager" parent="Systems" unique_id=1253754001 instance=ExtResource("52_olve7")]
 
 [node name="GameStateManager" parent="Systems" unique_id=1522777559 instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("7_3g417")

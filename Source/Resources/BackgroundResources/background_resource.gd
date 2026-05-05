@@ -1,8 +1,6 @@
 class_name BackgroundResource
 extends Resource
 
-@export var modifier: GlobalModifier
-
 @export var background_color: Color
 
 @export_category('Nebula')
