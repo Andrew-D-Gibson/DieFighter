@@ -239,7 +239,7 @@ queue → `DamageEvent.resolve()` in a real game session, with no errors.
 **Goal:** Delete the old activation manager entirely. The `ScenarioEngine` now owns the
 activation queue. Remove all related static state from `tile.gd`.
 
----
+--
 
 ### Step 9.1 — Audit All Usages First
 
@@ -1087,3 +1087,46 @@ encounters. Watch the output and confirm:
    new events simply join the queue and are resolved by the running loop. This is the
    correct behavior — do not add a separate `process_event_queue()` call after
    `handle_tile_event`.
+
+
+Cleanup / Step #19:
+- Move PauseMenu under UI, not under Main
+- Phase 1: Architectural Decoupling
+
+The goal is to move away from the "junk drawer" Events.gd and implement a domain-specific bus.  
+
+    Create UIEvents.gd Autoload:
+
+        Define a new script and register it as an Autoload in Project Settings.
+
+        Migrate the error_text_popup signal from Events.gd to UIEvents.gd.  
+
+        Benefit: Restricts UI logic to a dedicated namespace, making the "Events" bus cleaner.  
+
+    Update Signal Calls:
+
+        Search and replace all instances of Events.error_text_popup.emit() with UIEvents.error_text_popup.emit().
+
+Phase 2: Script Logic Refactor (error_popup_manager.gd)
+
+Simplify the internal state and fix the timing issue where popups are misaligned.  
+
+    Simplify Storage:
+
+        Remove var _current_popups: Array[ErrorTextPopup].  
+
+        Replace it with var _current_popup: ErrorTextPopup to reflect that only one exists at a time.  
+
+    Fix Layout Timing:
+
+        Insert await get_tree().process_frame immediately after add_child(error_text).  
+
+        This ensures error_text.size is calculated before setting the global_position.  
+
+    Modernize the API:
+
+        Rename the internal _create_error_popup to a public-facing show_error.
+
+        Ensure it still connects to UIEvents.error_text_popup in _ready().
+
+Instead of doing math like Vector2(-popup.size.x / 2, -popup.size.y) in the manager, try to set up your ErrorTextPopup scene with its Pivot Offset centered and use Top-Center anchors. If you do that, you can just set popup.global_position = global_pos and let Godot's UI system handle the centering automatically.

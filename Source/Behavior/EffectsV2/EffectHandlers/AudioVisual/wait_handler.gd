@@ -9,4 +9,4 @@ func apply(data: EffectData, _context: EffectContext, engine: ScenarioEngine) ->
 
 	var event := WaitEvent.new()
 	event.amount = data.amount
-	engine.queue_event(event)
+	engine.inject_event(event)

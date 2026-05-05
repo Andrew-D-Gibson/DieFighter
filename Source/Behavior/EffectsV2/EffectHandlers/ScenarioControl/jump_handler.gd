@@ -16,4 +16,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.effect_source = context.effect_source
 	event.activator_die = context.activator_die
 	event.jump_delta    = jump_delta
-	engine.queue_event(event)
+	engine.inject_event(event)

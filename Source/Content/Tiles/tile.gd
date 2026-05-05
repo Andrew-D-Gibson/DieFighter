@@ -42,8 +42,6 @@ var scenario_engine: ScenarioEngine = null:
 @export var dice_queue: DiceQueue
 @export var can_accept_dice: CanAcceptDice
 
-static var dice_activation_queue: Array[Dice] = []
-
 
 func _ready() -> void:
 	assert(tile_resource)
@@ -127,40 +125,15 @@ func _get_tile_info() -> InfoResource:
 
 
 func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
-	for event_check: TileEvent in tile_resource.event_responses.keys():
-		if event_check.event == event:
-			# Trigger the response if the tile is affected by the event
-			# or if the tile doesn't care which tile is affected by the event
-			if (tile == self) or (not event_check.listen_only_for_self):
-				var effect_variables: EffectVariables = _generate_effect_variables()
-				await tile_resource.event_responses[event_check].play(effect_variables)
-		
-
-func can_activate(activator_die: Dice) -> bool:
-	# Check for and handle grid status activation criteria
-	if Globals.tile_grid.tile_locations.values().has(self):
-		var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
-		
-		var grid_status_effects: Array[GridStatusEffect] = \
-			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
-			
-		for status_effect: GridStatusEffect in grid_status_effects:
-			if not status_effect.clears_status_activation_criteria(activator_die):
-				return false
-		
-	# Handle tile activation criteria
-	if not clears_activation_criteria(activator_die):
-		# Something didn't go how the player expected,
-		# so clear out the queue of tile activations
-		for die: Dice in dice_activation_queue:
-			Globals.player.dice_manager.add(die, true, false)
-			
-		dice_activation_queue.clear()
-		
-		return false
-		
-	# We're cleared hot to activate!
-	return true
+	# TODO: Needs to implement new effect chain v2 logic
+	pass
+	#for event_check: TileEvent in tile_resource.event_responses.keys():
+		#if event_check.event == event:
+			## Trigger the response if the tile is affected by the event
+			## or if the tile doesn't care which tile is affected by the event
+			#if (tile == self) or (not event_check.listen_only_for_self):
+				#var effect_variables: EffectVariables = _generate_effect_variables()
+				#await tile_resource.event_responses[event_check].play(effect_variables)
 		
 		
 func clears_activation_criteria(activator_die: Dice = null) -> bool:	
@@ -176,81 +149,7 @@ func clears_activation_criteria(activator_die: Dice = null) -> bool:
 			return false
 			
 	return true
-			
-		
-func _generate_effect_variables() -> EffectVariables:
-	var effect_variables: EffectVariables = EffectVariables.new()
-	effect_variables.actor = Globals.player
-	effect_variables.effect_source = self
 	
-	return effect_variables
-	
-
-func activate(activator_die: Dice = null) -> void:
-	if uses_remaining != -1:
-		uses_remaining -= 1
-		
-	# Tween the activating die to the slot 
-	if activator_die:
-		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-	
-		var tween_time: float = 0.2
-		var adjusted_tween_time: float = tween_time / Globals.animation_speed
-		
-		var tween: Tween = create_tween().set_parallel(true)
-		tween.tween_property(
-			activator_die, 
-			'global_position', 
-			global_position + Vector2(0, 6), 
-			adjusted_tween_time
-		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		
-		tween.tween_property(
-			activator_die,
-			'scale',
-			Vector2(0.75, 0.75),
-			adjusted_tween_time
-		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-		
-		await tween.finished
-	
-	shakeable.large_shake()
-	
-	if tile_resource.effect_chain_v2 and scenario_engine:
-		var context: EffectContext = EffectContext.new()
-		context.actor = Globals.player    # or whoever owns this tile
-		context.effect_source = self
-		context.activator_die = activator_die
-
-		# play() enqueues events; process_events() resolves them all.
-		await tile_resource.effect_chain_v2.play(context, scenario_engine)
-		await scenario_engine.process_event_queue()
-	
-	elif tile_resource.effect_chain:
-		# Set up the effects variables for chaining effects
-		var effect_variables: EffectVariables = _generate_effect_variables()
-		effect_variables.activator_die = activator_die
-		
-		# Change the effect variables based on grid status effects
-		if Globals.tile_grid.tile_locations.values().has(self):
-			var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
-			
-			var grid_status_effects: Array[GridStatusEffect] = \
-				Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
-				
-			for status_effect: GridStatusEffect in grid_status_effects:
-				effect_variables = status_effect.manipulate_effect_variables(effect_variables)
-		
-		# Play the tile's effect chain
-		await tile_resource.effect_chain.play(effect_variables)
-	
-	# Remove the activator die that was just used from the
-	# Tile static dice activation queue
-	if activator_die and dice_activation_queue.has(activator_die):
-		dice_activation_queue.erase(activator_die)
-
-	Events.tile_activation_complete.emit()
-
 
 func reset_uses_remaining() -> void:
 	uses_remaining = tile_resource.uses_per_combat
@@ -310,14 +209,11 @@ func _on_die_accepted(die: Dice) -> void:
 	Events.die_placed_on_tile.emit(die, self)
 	
 	if scenario_engine:
-		var event := TileActivationEvent.new()
+		var event: TileActivationEvent = TileActivationEvent.new()
 		event.tile = self
 		event.activator_die = die
 		scenario_engine.queue_event(event)
-	
-	elif Globals.activation_queue_manager:
-		Globals.activation_queue_manager.add_die_to_queue(die)
-	
+		
 
 func _on_visibility_changed() -> void:	
 	for die: Dice in dice_queue.queue:

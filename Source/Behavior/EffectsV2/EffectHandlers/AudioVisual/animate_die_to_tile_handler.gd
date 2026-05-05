@@ -28,4 +28,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.effect_source     = context.effect_source
 	event.activator_die     = context.activator_die
 	event.target_global_pos = Globals.tile_grid.grid_to_global_pos(target_pos)
-	engine.queue_event(event)
+	engine.inject_event(event)

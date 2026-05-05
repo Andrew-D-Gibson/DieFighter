@@ -60,7 +60,6 @@ func _ready() -> void:
 		_update_dice_queue_locations()
 		_make_newest_die_draggable()
 		_reset_newest_die_transform()
-		_check_for_end_of_turn()
 	)
 	dice_manager.die_removed.connect(_update_dice_queue_locations)
 	
@@ -149,6 +148,7 @@ func _process(_delta: float) -> void:
 
 
 func _check_for_end_of_turn() -> void:
+	print('tile activation complete emitted')
 	if len(dice_manager.queue) == 0:
 		%EndTurnButton.disabled = false
 		%EndTurnButton.update_ui()

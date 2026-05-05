@@ -5,6 +5,8 @@ signal event_resolved(event: EffectEvent)
 signal began_processing_queue()
 signal finished_processing_queue()
 
+var _inject_index: int = 0
+
 var currently_processing_queue: bool = false
 var event_queue: Array[EffectEvent]
 
@@ -16,6 +18,11 @@ func queue_event(event: EffectEvent) -> void:
 	event_queue.append(event)
 	process_event_queue()
 	
+	
+func inject_event(event: EffectEvent) -> void:
+	event_queue.insert(_inject_index, event)
+	_inject_index += 1
+
 	
 func clear_events() -> void:
 	event_queue.clear()
@@ -47,11 +54,13 @@ func process_event_queue() -> void:
 	currently_processing_queue = true
 	
 	while not event_queue.is_empty():
+		_inject_index = 0
+		
 		var event: EffectEvent = event_queue.pop_front()
 		
 		# Handle any changes that need to happen BEFORE we 
 		# process the event
-		for mod in modifiers:
+		for mod: Modifier in modifiers:
 			await mod.on_before_event(event, self)
 			
 		# Check for cancelation
@@ -63,7 +72,7 @@ func process_event_queue() -> void:
 		
 		# Handle any changes that need to happen AFTER we 
 		# process the event
-		for mod in modifiers:
+		for mod: Modifier in modifiers:
 			await mod.on_after_event(event, self)
 			
 		# Tell everyone we're done!

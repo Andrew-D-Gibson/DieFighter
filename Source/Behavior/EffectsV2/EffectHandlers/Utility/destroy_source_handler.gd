@@ -8,4 +8,4 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 
 	var event := DestroySourceEvent.new()
 	event.effect_source = context.effect_source
-	engine.queue_event(event)
+	engine.inject_event(event)

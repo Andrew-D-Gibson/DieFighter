@@ -10,4 +10,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.targets        = context.targets.duplicate()
 	event.color          = data.color
 	event.amount         = data.amount
-	engine.queue_event(event)
+	engine.inject_event(event)

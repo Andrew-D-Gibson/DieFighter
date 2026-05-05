@@ -30,6 +30,6 @@ extends RefCounted
 ##
 ## 'data'    — the EffectData resource (may be a subclass like ConditionalEffectData)
 ## 'context' — mutable context; targeting handlers will write to context.targets
-## 'engine'  — the live ScenarioEngine; call engine.queue_event() to queue work
+## 'engine'  — the live ScenarioEngine; call engine.inject_event() to queue work
 func apply(_data: EffectData, _context: EffectContext, _engine: ScenarioEngine) -> void:
 	pass  # Override in subclass.

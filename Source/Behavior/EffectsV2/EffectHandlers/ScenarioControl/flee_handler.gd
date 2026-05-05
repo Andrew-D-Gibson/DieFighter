@@ -8,4 +8,4 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 
 	var event := FleeEvent.new()
 	event.actor = context.actor
-	engine.queue_event(event)
+	engine.inject_event(event)

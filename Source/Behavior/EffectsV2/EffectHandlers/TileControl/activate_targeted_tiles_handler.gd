@@ -11,4 +11,4 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 	event.effect_source = context.effect_source
 	event.activator_die = context.activator_die
 	event.targets       = context.targets.duplicate()
-	engine.queue_event(event)
+	engine.inject_event(event)

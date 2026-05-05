@@ -11,4 +11,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	var event := MoveShipEvent.new()
 	event.actor               = context.actor
 	event.position_proportion = data.multiplier
-	engine.queue_event(event)
+	engine.inject_event(event)

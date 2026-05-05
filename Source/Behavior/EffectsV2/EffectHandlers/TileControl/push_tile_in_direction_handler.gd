@@ -11,4 +11,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.actor         = context.actor
 	event.effect_source = context.effect_source
 	event.direction     = data.grid_offset
-	engine.queue_event(event)
+	engine.inject_event(event)

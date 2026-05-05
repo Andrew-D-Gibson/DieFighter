@@ -26,4 +26,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	damage_event.die_value     = context.activator_die.value if context.activator_die else 0
 	damage_event.targets       = context.targets.duplicate()  # snapshot, not a live reference
 	
-	engine.queue_event(damage_event)
+	engine.inject_event(damage_event)

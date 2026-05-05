@@ -25,5 +25,4 @@ func on_after_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	shield_event.targets       = [Globals.player]
 	shield_event.amount        = shield_amount
 
-	# Queue it — will be processed after all after-hooks for this event finish.
-	engine.queue_event(shield_event)
+	engine.inject_event(shield_event)

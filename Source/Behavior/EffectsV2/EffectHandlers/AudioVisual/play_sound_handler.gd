@@ -8,4 +8,4 @@ func apply(data: EffectData, _context: EffectContext, engine: ScenarioEngine) ->
 
 	var event := PlaySoundEvent.new()
 	event.sfx = data.sound_resource
-	engine.queue_event(event)
+	engine.inject_event(event)

@@ -4,4 +4,4 @@ extends EffectHandler
 
 func apply(_data: EffectData, _context: EffectContext, engine: ScenarioEngine) -> void:
 	var event: OpenShopEvent = OpenShopEvent.new()
-	engine.queue_event(event)
+	engine.inject_event(event)

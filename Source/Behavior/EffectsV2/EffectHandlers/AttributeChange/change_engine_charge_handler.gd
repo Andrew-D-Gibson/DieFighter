@@ -16,4 +16,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.activator_die = context.activator_die
 	event.die_value     = context.activator_die.value if context.activator_die else 0
 
-	engine.queue_event(event)
+	engine.inject_event(event)

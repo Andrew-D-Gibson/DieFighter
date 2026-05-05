@@ -14,4 +14,4 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.effect_source = context.effect_source
 	event.data_key      = data.string_param
 	event.amount        = data.amount
-	engine.queue_event(event)
+	engine.inject_event(event)

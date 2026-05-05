@@ -22,7 +22,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	# Remove die from the visual stacking queue — it's about to fly to tile center
 	tile.dice_queue.remove(activator_die)
 
-	# Tween the die to the tile center (identical to old Tile.activate() tween)
+	# Tween the die to the tile center
 	if activator_die:
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		var tween_time: float = 0.2 / Globals.animation_speed
@@ -53,5 +53,5 @@ func resolve(engine: ScenarioEngine) -> void:
 	# picks them up automatically because they're appended to the same event_queue.
 	if tile.tile_resource.effect_chain_v2:
 		await tile.tile_resource.effect_chain_v2.play(context, engine)
-
-	Events.tile_activation_complete.emit()
+		
+	engine.inject_event(TileActivationCompleteEvent.new())

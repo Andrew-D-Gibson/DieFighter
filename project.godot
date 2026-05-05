@@ -24,6 +24,10 @@ boot_splash/use_filter=false
 config/icon="uid://cg27kht5p2kw1"
 config/windows_native_icon="res://Assets/Icon/diefighter.ico"
 
+[audio]
+
+buses/default_bus_layout="uid://bfw33lm7dfih8"
+
 [autoload]
 
 InputManager="*res://Source/Systems/Autoloads/input_manager.gd"
