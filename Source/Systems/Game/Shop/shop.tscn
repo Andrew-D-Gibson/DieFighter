@@ -1,7 +1,6 @@
-[gd_scene load_steps=7 format=3 uid="uid://c5lgcsetsx3lq"]
+[gd_scene format=3 uid="uid://c5lgcsetsx3lq"]
 
 [ext_resource type="Script" uid="uid://c3ihhv3xtt8ib" path="res://Source/Systems/Game/Shop/shop.gd" id="1_shop"]
-[ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="2_bsm0f"]
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="3_0o0y8"]
 [ext_resource type="Texture2D" uid="uid://d33kyk4uuloux" path="res://Assets/Textures/Shop/shop_tabbed_background.png" id="4_uu5u6"]
 [ext_resource type="Texture2D" uid="uid://b41a3gdbfjgrk" path="res://Assets/Textures/Money/money_symbol.png" id="5_uu5u6"]
@@ -9,25 +8,24 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yjpg7"]
 size = Vector2(126, 56)
 
-[node name="Shop" type="Node2D" node_paths=PackedStringArray("prices", "bounding_box")]
+[node name="Shop" type="Node2D" unique_id=468732449 node_paths=PackedStringArray("prices", "bounding_box")]
 script = ExtResource("1_shop")
 prices = [NodePath("Price1"), NodePath("Price2"), NodePath("Price3"), NodePath("Price4"), NodePath("Price5")]
-tile_scene = ExtResource("2_bsm0f")
 dice_scene = ExtResource("3_0o0y8")
 bounding_box = NodePath("CollisionShape2D2")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=1821342925]
 shape = SubResource("RectangleShape2D_yjpg7")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=98571029]
 position = Vector2(0, -5)
 texture = ExtResource("4_uu5u6")
 
-[node name="Price1" type="Sprite2D" parent="."]
+[node name="Price1" type="Sprite2D" parent="." unique_id=1872731673]
 position = Vector2(-22, -13)
 texture = ExtResource("5_uu5u6")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Price1"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Price1" unique_id=552404917]
 offset_left = -17.0
 offset_top = -14.0
 offset_right = -4.0
@@ -38,11 +36,11 @@ horizontal_alignment = 2
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Price2" type="Sprite2D" parent="."]
+[node name="Price2" type="Sprite2D" parent="." unique_id=1705278449]
 position = Vector2(-22, 14)
 texture = ExtResource("5_uu5u6")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Price2"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Price2" unique_id=319746809]
 offset_left = -17.0
 offset_top = -14.0
 offset_right = -4.0
@@ -52,11 +50,11 @@ text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Price3" type="Sprite2D" parent="."]
+[node name="Price3" type="Sprite2D" parent="." unique_id=1685775363]
 position = Vector2(24, -13)
 texture = ExtResource("5_uu5u6")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Price3"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Price3" unique_id=1150755078]
 offset_left = -17.0
 offset_top = -14.0
 offset_right = -4.0
@@ -67,11 +65,11 @@ horizontal_alignment = 2
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Price4" type="Sprite2D" parent="."]
+[node name="Price4" type="Sprite2D" parent="." unique_id=2119209048]
 position = Vector2(24, 14)
 texture = ExtResource("5_uu5u6")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Price4"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Price4" unique_id=1143576875]
 offset_left = -17.0
 offset_top = -14.0
 offset_right = -4.0
@@ -81,11 +79,11 @@ text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Price5" type="Sprite2D" parent="."]
+[node name="Price5" type="Sprite2D" parent="." unique_id=1858895159]
 position = Vector2(53, 10)
 texture = ExtResource("5_uu5u6")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="Price5"]
+[node name="RichTextLabel" type="RichTextLabel" parent="Price5" unique_id=1026898877]
 offset_left = -17.0
 offset_top = -14.0
 offset_right = -4.0
@@ -95,7 +93,7 @@ text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1278372073]
 offset_left = -63.0
 offset_top = -38.0
 offset_right = -16.0

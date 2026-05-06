@@ -30,10 +30,10 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	
 	
 func _setup_grid_graphics() -> void:
-	for x in range(grid_width):
-		for y in range(grid_height):
+	for x: int in range(grid_width):
+		for y: int in range(grid_height):
 			# Add an empty cell sprite
-			var empty_cell = Sprite2D.new()
+			var empty_cell: Sprite2D = Sprite2D.new()
 			empty_cell.texture = empty_cell_texture
 			empty_cell.z_index = -1
 			empty_cell.position = Vector2(
@@ -46,17 +46,15 @@ func _setup_grid_graphics() -> void:
 	
 func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:
 	# Clear existing tiles before setting up new ones, if any
-	for pos in tile_locations.keys():
+	for pos: Vector2i in tile_locations.keys():
 		if is_instance_valid(tile_locations[pos]):
 			tile_locations[pos].queue_free()
 	tile_locations.clear()
 
-	for tile_grid_pos in _tile_locations.keys():
-		var tile_resource = _tile_locations[tile_grid_pos]
-
-		# Create a tile scene and give it the proper resource
-		var tile = tile_scene.instantiate()
-		tile.tile_resource = tile_resource
+	for tile_grid_pos: Vector2i in _tile_locations.keys():
+		var tile_resource: TileResource = _tile_locations[tile_grid_pos]
+		
+		var tile: Tile = create_tile(tile_resource)
 		add_child(tile)
 
 		# Find the tile's world position (already have grid pos)
@@ -73,6 +71,19 @@ func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:
 
 		# Connect the tile's drag ended signal to the function to snap it to the grid
 		tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
+
+
+func create_tile(tile_resource: TileResource) -> Tile:
+	var tile: Tile = tile_scene.instantiate()
+	tile.tile_resource = tile_resource
+	return tile
+
+
+func receive_tile(tile: Tile, drop_position: Vector2) -> void:
+	tile.draggable.floating_enabled = false
+	tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
+	tile.reparent(self, true)
+	_drop_tile_on_grid_pos(tile.draggable, drop_position)
 
 
 func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i) -> void:
@@ -158,7 +169,7 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 		# If dropped outside the grid:
 		if not is_grid_pos_valid(old_grid_pos):
 			# Tile was not in the grid before, find a new empty spot
-			var available_pos = find_available_grid_pos()
+			var available_pos: Vector2i = find_available_grid_pos()
 			if is_grid_pos_valid(available_pos):
 				_assign_tile_to_grid_pos(tile_to_move, available_pos)
 			else:
@@ -205,8 +216,8 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 
 
 func find_available_grid_pos() -> Vector2i:
-	for y in range(grid_height):
-		for x in range(grid_width):
+	for y: int in range(grid_height):
+		for x: int in range(grid_width):
 			if is_grid_pos_open(Vector2i(x,y)):
 				return Vector2i(x,y)
 	return Vector2i(-1, -1)
@@ -220,7 +231,7 @@ func is_grid_pos_valid(pos: Vector2i) -> bool:
 
 
 func find_tile_pos(tile_to_find: Tile) -> Vector2i:
-	for pos in tile_locations.keys():
+	for pos: Vector2i in tile_locations.keys():
 		if tile_locations[pos] == tile_to_find:
 			return pos
 	return Vector2i(-1, -1) # Return invalid position if not found
@@ -228,7 +239,7 @@ func find_tile_pos(tile_to_find: Tile) -> Vector2i:
 
 func push_tile(tile: Tile, direction: Vector2i) -> void:
 	# Only allow cardinal directions
-	var allowed_directions = [Vector2i(-1,0), Vector2i(1,0), Vector2i(0,-1), Vector2i(0,1)]
+	var allowed_directions: Array[Vector2i] = [Vector2i(-1,0), Vector2i(1,0), Vector2i(0,-1), Vector2i(0,1)]
 	if not direction in allowed_directions:
 		printerr("TileGrid is trying to push a tile not in a cardinal direction!")
 		return
@@ -240,7 +251,7 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 
 	# Gather all tiles in the push line
 	var positions: Array = []
-	var pos = start_pos
+	var pos: Vector2i = start_pos
 	while is_grid_pos_valid(pos) and tile_locations.has(pos):
 		positions.append(pos)
 		pos += direction
@@ -253,10 +264,10 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 		return
 
 	# Move all tiles in the line, starting from the end
-	for i in range(positions.size() - 1, -1, -1):
-		var from_pos = positions[i]
-		var to_pos = from_pos + direction
-		var t = tile_locations[from_pos]
+	for i: int in range(positions.size() - 1, -1, -1):
+		var from_pos: Vector2i = positions[i]
+		var to_pos: Vector2i = from_pos + direction
+		var t: Tile = tile_locations[from_pos]
 		_assign_tile_to_grid_pos(t, to_pos)
 		
 		Events.tile_pushed.emit(t)
@@ -287,7 +298,7 @@ func get_status_effects_at_grid_pos(grid_pos: Vector2i) -> Array[GridStatusEffec
 			status_effects.append(status_effect)
 			
 	# Sort the status effects by priority (highest priority first)
-	status_effects.sort_custom(func(a, b): return a.status_effect_priority > b.status_effect_priority)
+	status_effects.sort_custom(func(a, b) -> bool: return a.status_effect_priority > b.status_effect_priority)
 			
 	return status_effects
 	

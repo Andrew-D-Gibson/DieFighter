@@ -3,11 +3,10 @@ extends Node2D
 @export var prices: Array[Node2D]
 var item_to_shop_index: Dictionary[Node, int]
 
-@export var tile_scene: PackedScene
 @export var dice_scene: PackedScene
 @export var bounding_box: CollisionShape2D
 
-const DICE_PRICE := 25
+const DICE_PRICE: int = 25
 
 var shop_tiles: Array[Node2D]
 
@@ -31,7 +30,7 @@ func _close_shop() -> void:
 
 func _get_possible_shop_tiles() -> Array[TileResource]:
 	# Get an array of tile resources already in the shop
-	var shop_tile_resources = []
+	var shop_tile_resources: Array[TileResource] = []
 	for tile in shop_tiles:
 		shop_tile_resources.append(tile.tile_resource)
 		
@@ -71,8 +70,8 @@ func _create_shop_tiles() -> void:
 				prices[shop_index].visible = false
 				continue
 			
-			var tile: Tile = tile_scene.instantiate()
-			tile.tile_resource = possible_shop_tiles.pick_random()
+			var chosen_resource: TileResource = possible_shop_tiles.pick_random()
+			var tile: Tile = Globals.tile_grid.create_tile(chosen_resource)
 			add_child(tile)
 			
 			var pos: Vector2 = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
@@ -122,9 +121,7 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			item.draggable.drag_ended.disconnect(_on_shop_item_dragged)
 			
 			if item is Tile:
-				item.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
-				item.reparent(Globals.tile_grid, true)
-				Globals.tile_grid._drop_tile_on_grid_pos(draggable, end_position)
+				Globals.tile_grid.receive_tile(item, end_position)
 				
 			elif item is Dice:
 				item.reparent(Globals.player, true)

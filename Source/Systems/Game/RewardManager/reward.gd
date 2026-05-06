@@ -2,7 +2,6 @@ class_name Reward
 extends Node2D
 
 @export var dice_scene: PackedScene
-@export var tile_scene: PackedScene
 @export var money_particle_scene: PackedScene
 @export var bounding_box: CollisionShape2D
 
@@ -62,14 +61,13 @@ func give_reward(reward_resource: RewardResource) -> void:
 			
 		# Make a tile reward
 		else:
-			reward = tile_scene.instantiate()
+			var chosen_resource: TileResource
 			if len(forced_rewards) > 0:
-				reward.tile_resource = forced_rewards.pop_front()
+				chosen_resource = forced_rewards.pop_front()
 			else:
-				reward.tile_resource = possible_tile_rewards.pick_random()
-			
-			# Remove the chosen resource from the "possible" list so there's no repeats
-			possible_tile_rewards.erase(reward.tile_resource)
+				chosen_resource = possible_tile_rewards.pick_random()
+			possible_tile_rewards.erase(chosen_resource)
+			reward = Globals.tile_grid.create_tile(chosen_resource)
 			
 		
 		add_child(reward)
@@ -96,11 +94,7 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	
 	
 	if chosen_reward is Tile:
-		chosen_reward.draggable.floating_enabled = false
-		chosen_reward.draggable.drag_ended.connect(Globals.tile_grid._drop_tile_on_grid_pos)
-		chosen_reward.reparent(Globals.tile_grid, true)
-		
-		Globals.tile_grid._drop_tile_on_grid_pos(draggable, end_position)
+		Globals.tile_grid.receive_tile(chosen_reward, end_position)
 		
 	elif chosen_reward is Dice:
 		chosen_reward.reparent(Globals.player, true)

@@ -14,21 +14,26 @@ func _ready() -> void:
 	
 func _load_tile_resources() -> void:
 	_all_tile_resources = []
-	
-	var dir_location := "res://Source/Content/Tiles/TileResources/"
-	var dir := DirAccess.open(dir_location)
-	if dir:
-		for file_name in dir.get_files():
-			if file_name.ends_with(".tres"):
-				var res = ResourceLoader.load(dir_location + file_name)
-				if res is TileResource:
-					_all_tile_resources.append(res)
+
+	var dir_locations: Array[String] = [
+		"res://Source/Content/Tiles/TileResources/",
+		"res://Source/Content/Tiles/ComplicatedTileResources/",
+	]
+
+	for dir_location: String in dir_locations:
+		var dir := DirAccess.open(dir_location)
+		if dir:
+			for file_name: String in dir.get_files():
+				if file_name.ends_with(".tres"):
+					var res = ResourceLoader.load(dir_location + file_name)
+					if res is TileResource:
+						_all_tile_resources.append(res)
 	
 	
 func get_possible_tile_rewards() -> Array[TileResource]:
 	var player_tiles = Globals.tile_grid.tile_locations.values()
 	
-	var player_tile_resources = []
+	var player_tile_resources: Array[TileResource] = []
 	for tile in player_tiles:
 		player_tile_resources.append(tile.tile_resource)
 		

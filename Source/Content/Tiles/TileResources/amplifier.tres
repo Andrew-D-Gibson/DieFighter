@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=17 format=3 uid="uid://dkvqal8qwxrww"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dkvqal8qwxrww"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_5kmcs"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_seowo"]
@@ -9,21 +9,19 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_seowo"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_rj18t"]
 [ext_resource type="Texture2D" uid="uid://1e767ya4c7na" path="res://Assets/Textures/Tiles/YellowTiles/amplifier-Sheet.png" id="5_xicoq"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="8_rj18t"]
 
 [sub_resource type="Resource" id="Resource_pcp6p"]
 script = ExtResource("3_b26dk")
-amplify_amount = 2
 primary_effect = true
 metadata/_custom_type_script = "uid://l3mlf342hahq"
 
 [sub_resource type="Resource" id="Resource_f1pqj"]
 script = ExtResource("4_pcp6p")
-primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_v1b2w"]
 script = ExtResource("5_rj18t")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_rj18t"]
@@ -48,7 +46,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_rj18t")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -56,15 +54,8 @@ animations = [{
 [resource]
 script = ExtResource("4_seowo")
 tile_name = "[color=yellow]Amplifier[/color]"
-activation_description = ""
 description = "[color=yellow]Any die[/color] → [color=yellow]+2[/color] to the effects of tiles above and below this turn. [color=orange]Gives[/color] die to [color=purple]target[/color]"
-hint_text = ""
-rarity = 0
 textures = SubResource("SpriteFrames_f1pqj")
 uses_per_combat = 1
-activation_checks = Array[ExtResource("1_5kmcs")]([])
 effect_chain = SubResource("Resource_rj18t")
-event_responses = Dictionary[ExtResource("2_xicoq"), ExtResource("3_l521o")]({})
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
