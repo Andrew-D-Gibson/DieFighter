@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://2htmp8viygbt"]
+[gd_scene format=3 uid="uid://2htmp8viygbt"]
 
 [ext_resource type="Script" uid="uid://cjt60q55be4l2" path="res://Source/Scenes/Cutscenes/entering_cockpit_cutscene.gd" id="1_gps8f"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="1_pmj2g"]
@@ -20,8 +20,6 @@ adjustment_enabled = true
 [sub_resource type="Resource" id="Resource_dybqf"]
 script = ExtResource("5_bfawc")
 eligible_backgrounds = Array[ExtResource("3_yd0cl")]([ExtResource("4_icuno")])
-reselect_on_scenario_load = true
-reselect_on_manual_background_change = false
 metadata/_custom_type_script = "uid://3roroso3mo17"
 
 [sub_resource type="Animation" id="Animation_icuno"]
@@ -185,21 +183,21 @@ _data = {
 &"entering_cockpit_cutscene": SubResource("Animation_yd0cl")
 }
 
-[node name="EnteringCockpitCutscene" type="Node2D"]
+[node name="EnteringCockpitCutscene" type="Node2D" unique_id=1191038953]
 script = ExtResource("1_gps8f")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1062116152]
 environment = SubResource("Environment_sjdfe")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1590269061]
 offset = Vector2(160, 90)
 zoom = Vector2(6, 6)
 
-[node name="BackgroundManager" parent="." instance=ExtResource("1_pmj2g")]
+[node name="BackgroundManager" parent="." unique_id=1164258731 instance=ExtResource("1_pmj2g")]
 position = Vector2(160, 90)
 starting_background = SubResource("Resource_dybqf")
 
-[node name="FadeIn" type="Sprite2D" parent="."]
+[node name="FadeIn" type="Sprite2D" parent="." unique_id=1312378088]
 unique_name_in_owner = true
 visible = false
 self_modulate = Color(0, 0, 0.0941176, 0)
@@ -207,21 +205,19 @@ z_index = 20
 position = Vector2(160, 90)
 texture = ExtResource("3_vtw8f")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_bfawc")
-}
-autoplay = "entering_cockpit_cutscene"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=564198935]
+libraries/ = SubResource("AnimationLibrary_bfawc")
+autoplay = &"entering_cockpit_cutscene"
 
-[node name="PlayerShip" type="Sprite2D" parent="."]
+[node name="PlayerShip" type="Sprite2D" parent="." unique_id=1662764127]
 position = Vector2(160, 180)
 rotation = 3.14159
 texture = ExtResource("4_gps8f")
 
-[node name="EngineParticlesRotatedDown" parent="PlayerShip" instance=ExtResource("5_qn6rl")]
+[node name="EngineParticlesRotatedDown" parent="PlayerShip" unique_id=321737036 instance=ExtResource("5_qn6rl")]
 position = Vector2(3, -11)
 rotation = 3.14159
 
-[node name="EngineParticlesRotatedDown2" parent="PlayerShip" instance=ExtResource("5_qn6rl")]
+[node name="EngineParticlesRotatedDown2" parent="PlayerShip" unique_id=1539258073 instance=ExtResource("5_qn6rl")]
 position = Vector2(-3, -11)
 rotation = 3.14159

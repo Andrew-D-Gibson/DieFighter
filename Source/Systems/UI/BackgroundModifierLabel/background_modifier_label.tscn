@@ -1,25 +1,25 @@
-[gd_scene load_steps=2 format=3 uid="uid://dt6a8lgxcnjve"]
+[gd_scene format=3 uid="uid://dt6a8lgxcnjve"]
 
 [ext_resource type="Script" uid="uid://qy7xyquee3nh" path="res://Source/Systems/UI/BackgroundModifierLabel/background_modifier_label.gd" id="1_q6fvw"]
 
-[node name="BackgroundModifierLabel" type="Node2D"]
+[node name="BackgroundModifierLabel" type="Node2D" unique_id=1247794592]
 script = ExtResource("1_q6fvw")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="." unique_id=1695516660]
 offset_right = 8.0
 offset_bottom = 8.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer" unique_id=1364353522]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer" unique_id=121441584]
 layout_mode = 2
 theme_override_constants/margin_left = -2
 theme_override_constants/margin_top = -6
 theme_override_constants/margin_right = -4
 theme_override_constants/margin_bottom = -3
 
-[node name="BackgroundNameLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/MarginContainer"]
+[node name="BackgroundNameLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/MarginContainer" unique_id=1367171530]
 custom_minimum_size = Vector2(60, 12)
 layout_mode = 2
 bbcode_enabled = true
@@ -27,10 +27,10 @@ text = "[color=red]RED NEBULA[/color]"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/VBoxContainer" unique_id=1047197982]
 layout_mode = 2
 
-[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/MarginContainer2"]
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/VBoxContainer/MarginContainer2" unique_id=1652354974]
 custom_minimum_size = Vector2(128, 32)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)

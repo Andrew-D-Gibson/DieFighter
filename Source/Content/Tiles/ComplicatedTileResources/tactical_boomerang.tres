@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=34 format=3 uid="uid://gfr4eel8gocp"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://gfr4eel8gocp"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_0sqhf"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_yq2rj"]
@@ -15,11 +15,10 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="10_qed76"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="11_04xam"]
 [ext_resource type="Texture2D" uid="uid://drfstx7yqxiso" path="res://Assets/Textures/Tiles/RedTiles/tactical_boomerang-Sheet.png" id="14_7xao1"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="14_xm5th"]
 
 [sub_resource type="Resource" id="Resource_qed76"]
 script = ExtResource("1_0sqhf")
-type = 0
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_stnu5"]
@@ -31,7 +30,6 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 [sub_resource type="Resource" id="Resource_vakuo"]
 script = ExtResource("1_0sqhf")
 type = 4
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_t30n7"]
@@ -39,60 +37,48 @@ script = ExtResource("3_gndob")
 color = Color(0.317647, 0.0823529, 0.129412, 1)
 amount = 6
 location = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_nptic"]
 script = ExtResource("4_eqci4")
-sound_effect_name = "dice_cannon"
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_04xam"]
 script = ExtResource("3_372r4")
-primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_7xao1"]
 script = ExtResource("4_vh6gp")
-primary_effect = false
 metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 
 [sub_resource type="Resource" id="Resource_gndob"]
 script = ExtResource("5_5ea37")
 amount = 5
-inherit_die_amount = false
 primary_effect = true
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
 
 [sub_resource type="Resource" id="Resource_eqci4"]
 script = ExtResource("6_5ea37")
-offset_from_source_tile = Vector2i(0, 0)
-primary_effect = false
 metadata/_custom_type_script = "uid://ykpulcdqf0lb"
 
 [sub_resource type="Resource" id="Resource_7uhu8"]
 script = ExtResource("7_qed76")
 direction = Vector2i(1, 0)
-primary_effect = false
 metadata/_custom_type_script = "uid://davfiolrth182"
 
 [sub_resource type="Resource" id="Resource_r4xk4"]
 script = ExtResource("7_qed76")
 direction = Vector2i(-1, 0)
-primary_effect = false
 metadata/_custom_type_script = "uid://davfiolrth182"
 
 [sub_resource type="Resource" id="Resource_pef2i"]
 script = ExtResource("9_gndob")
 if_true_effect = SubResource("Resource_r4xk4")
 if_false_effect = SubResource("Resource_7uhu8")
-primary_effect = false
 metadata/_custom_type_script = "uid://cp4hjqv21lk6s"
 
 [sub_resource type="Resource" id="Resource_o61i6"]
 script = ExtResource("8_qed76")
-primary_effect = false
 metadata/_custom_type_script = "uid://bscm2msup3lwk"
 
 [sub_resource type="Resource" id="Resource_g26hj"]
@@ -124,7 +110,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_stnu5")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -132,15 +118,10 @@ animations = [{
 [resource]
 script = ExtResource("3_won78")
 tile_name = "[color=red]Tactical Boomerang[/color]"
-activation_description = ""
 description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=purple]target[/color], push this tile [color=green]left[/color] if (die_3) and right if [color=green](die_4)[/color]"
-hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_7uhu8")
 uses_per_combat = 2
 activation_checks = Array[ExtResource("1_0sqhf")]([SubResource("Resource_qed76"), SubResource("Resource_stnu5"), SubResource("Resource_vakuo")])
 effect_chain = SubResource("Resource_g26hj")
-event_responses = Dictionary[ExtResource("11_04xam"), ExtResource("10_qed76")]({})
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

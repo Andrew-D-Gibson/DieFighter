@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=29 format=3 uid="uid://b2ewisub2832j"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://b2ewisub2832j"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_wsqrt"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_23tjy"]
@@ -15,11 +15,11 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_c0x8g"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_yhkpl"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="11_yhkpl"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="14_ougyd"]
 
 [sub_resource type="Resource" id="Resource_r846u"]
 script = ExtResource("1_wsqrt")
 type = 2
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_u10cf"]
@@ -30,25 +30,18 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_slehp"]
 script = ExtResource("3_4h3ei")
-sound_effect_name = "player_shield"
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_2bwjp"]
 script = ExtResource("3_u10cf")
-primary_effect = false
 metadata/_custom_type_script = "uid://ddrix6gyj2wqb"
 
 [sub_resource type="Resource" id="Resource_yhkpl"]
 script = ExtResource("4_c0x8g")
-primary_effect = false
 metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
 
 [sub_resource type="Resource" id="Resource_2h6rw"]
 script = ExtResource("4_lpymo")
-amount = 0
-inherit_die_value = false
-primary_effect = false
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
 [sub_resource type="Resource" id="Resource_ubmp7"]
@@ -56,29 +49,22 @@ script = ExtResource("6_2h6rw")
 color = Color(0.317647, 0.713726, 1, 1)
 amount = 48
 location = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_4h3ei"]
 script = ExtResource("5_dtoei")
-primary_effect = false
 metadata/_custom_type_script = "uid://djgfuy5re3k6t"
 
 [sub_resource type="Resource" id="Resource_ougyd"]
 script = ExtResource("7_dtoei")
-amount = 0
-inherit_die_amount = false
-primary_effect = false
 metadata/_custom_type_script = "uid://cymd6kmfhbghm"
 
 [sub_resource type="Resource" id="Resource_dymuh"]
 script = ExtResource("7_2bwjp")
-primary_effect = false
 metadata/_custom_type_script = "uid://wmvgjnwdtv3h"
 
 [sub_resource type="Resource" id="Resource_wggto"]
 script = ExtResource("8_yhkpl")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_admec"]
@@ -92,7 +78,7 @@ animations = [{
 "duration": 1.0,
 "texture": ExtResource("4_23tjy")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -100,15 +86,9 @@ animations = [{
 [resource]
 script = ExtResource("3_r846u")
 tile_name = "[color=purple]Emergency Transfer[/color]"
-activation_description = ""
 description = "(die_6) -> Turn all [color=purple]engine charge[/color] into [color=blue]shields[/color], then [color=orange]give[/color] die to [color=purple]random enemy[/color]"
-hint_text = ""
-rarity = 0
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_wsqrt")]([SubResource("Resource_r846u"), SubResource("Resource_u10cf")])
 effect_chain = SubResource("Resource_admec")
-event_responses = Dictionary[ExtResource("11_yhkpl"), ExtResource("8_c0x8g")]({})
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

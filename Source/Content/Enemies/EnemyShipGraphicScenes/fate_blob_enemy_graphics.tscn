@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://ddl182von1u8s"]
+[gd_scene format=3 uid="uid://ddl182von1u8s"]
 
 [ext_resource type="Shader" uid="uid://b8aymu4rqehp1" path="res://Assets/Shaders/fate_blob_shader.gdshader" id="1_28dvv"]
 
@@ -10,9 +10,9 @@ shader_parameter/time_scale = 0.5
 shader_parameter/scale = 1.9
 shader_parameter/pixel_size = 17.175
 
-[node name="FateBlobEnemyGraphics" type="Node2D"]
+[node name="FateBlobEnemyGraphics" type="Node2D" unique_id=2104599128]
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="." unique_id=1502517635]
 material = SubResource("ShaderMaterial_rkqlr")
 custom_minimum_size = Vector2(32, 32)
 anchors_preset = 8

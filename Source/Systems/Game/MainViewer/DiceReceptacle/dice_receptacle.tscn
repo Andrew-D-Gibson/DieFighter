@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://751pc74qkdf0"]
+[gd_scene format=3 uid="uid://751pc74qkdf0"]
 
 [ext_resource type="Texture2D" uid="uid://c23k2hskyyb6l" path="res://Assets/Textures/MainViewer/dice_receptacle.png" id="1_ucd2b"]
 [ext_resource type="PackedScene" uid="uid://bv4270e4ryfij" path="res://Source/Systems/Components/CanAcceptDice/can_accept_dice.tscn" id="2_0cbue"]
@@ -8,18 +8,18 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0cbue"]
 size = Vector2(12, 12)
 
-[node name="DiceReceptacle" type="Sprite2D" node_paths=PackedStringArray("dice_queue")]
+[node name="DiceReceptacle" type="Sprite2D" unique_id=1065376475 node_paths=PackedStringArray("dice_queue")]
 texture = ExtResource("1_ucd2b")
 script = ExtResource("2_e2kof")
 dice_queue = NodePath("DiceQueue")
 
-[node name="CanAcceptDice" parent="." node_paths=PackedStringArray("collision") instance=ExtResource("2_0cbue")]
+[node name="CanAcceptDice" parent="." unique_id=603789114 node_paths=PackedStringArray("collision") instance=ExtResource("2_0cbue")]
 collision = NodePath("CollisionShape2D")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CanAcceptDice"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CanAcceptDice" unique_id=963584489]
 shape = SubResource("RectangleShape2D_0cbue")
 
-[node name="DiceQueue" parent="." instance=ExtResource("3_e2kof")]
+[node name="DiceQueue" parent="." unique_id=377089123 instance=ExtResource("3_e2kof")]
 
 [connection signal="visibility_changed" from="." to="." method="_on_visibility_changed"]
 [connection signal="die_accepted" from="CanAcceptDice" to="." method="_add_die"]

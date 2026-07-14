@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://086kavsnqyj5"]
+[gd_scene format=3 uid="uid://086kavsnqyj5"]
 
 [ext_resource type="Texture2D" uid="uid://cickkmemxemqu" path="res://Assets/Particles/hit_particle_pixel.png" id="1_ghvb3"]
 
@@ -8,7 +8,7 @@ colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.0156863)
 [sub_resource type="Gradient" id="Gradient_umjne"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.505882)
 
-[node name="HolographicDiceParticles" type="CPUParticles2D"]
+[node name="HolographicDiceParticles" type="CPUParticles2D" unique_id=1168183614]
 z_index = -1
 amount = 2
 texture = ExtResource("1_ghvb3")

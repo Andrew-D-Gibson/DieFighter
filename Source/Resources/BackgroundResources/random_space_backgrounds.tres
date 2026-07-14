@@ -1,13 +1,7 @@
-[gd_resource type="Resource" script_class="RandomBackgroundResource" load_steps=6 format=3 uid="uid://b8x7k2nan4p5q"]
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://bwa4yjq6bbm7q"]
 
-[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="1_random_bg"]
-[ext_resource type="Resource" uid="uid://dx0lfddfuacuv" path="res://Source/Resources/BackgroundResources/blue_nebula.tres" id="2_blue_nebula"]
-[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="3_star_field"]
-[ext_resource type="Resource" uid="uid://sk166eerw6ax" path="res://Source/Resources/BackgroundResources/debris_field.tres" id="4_debris_field"]
-[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="5_red_nebula"]
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_random_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_ibx42"]
 
 [resource]
 script = ExtResource("1_random_bg")
-eligible_backgrounds = Array[BackgroundResource]([ExtResource("2_blue_nebula"), ExtResource("3_star_field"), ExtResource("4_debris_field"), ExtResource("5_red_nebula")])
-reselect_on_scenario_load = true
-reselect_on_manual_background_change = false

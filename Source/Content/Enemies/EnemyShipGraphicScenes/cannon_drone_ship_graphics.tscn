@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://4ec761o38waj"]
+[gd_scene format=3 uid="uid://4ec761o38waj"]
 
 [ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_pwmp8"]
 [ext_resource type="Texture2D" uid="uid://cufbs5t3apcrq" path="res://Assets/Textures/Enemies/CannonDrone/CannonDrone.png" id="2_pwmp8"]
@@ -6,6 +6,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_cglea"]
 shader = ExtResource("1_pwmp8")
+shader_parameter/alpha = 0.0
 shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
 shader_parameter/cloak_amount = 0.0
@@ -14,9 +15,9 @@ shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
 shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
 shader_parameter/cloak_tolerance = 0.1
 
-[node name="CannonDroneShipGraphics" type="Sprite2D"]
+[node name="CannonDroneShipGraphics" type="Sprite2D" unique_id=1124603253]
 material = SubResource("ShaderMaterial_cglea")
 texture = ExtResource("2_pwmp8")
 
-[node name="EngineParticles" parent="." instance=ExtResource("3_bxw78")]
+[node name="EngineParticles" parent="." unique_id=5765050 instance=ExtResource("3_bxw78")]
 position = Vector2(0, -12)

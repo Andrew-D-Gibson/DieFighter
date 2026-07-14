@@ -21,6 +21,7 @@ msdf_pixel_range=4
 msdf_size=16
 allow_system_fallback=true
 force_autohinter=true
+modulate_color_glyphs=false
 hinting=0
 subpixel_positioning=4
 keep_rounding_remainders=true

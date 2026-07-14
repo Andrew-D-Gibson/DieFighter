@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://mtf5i14nphib"]
+[gd_scene format=3 uid="uid://mtf5i14nphib"]
 
 [ext_resource type="Script" uid="uid://b5j1fkfgvqmui" path="res://Source/Systems/Game/TileGrid/GridStatusEffects/AmplifierStatus/amplifier_tile_status.gd" id="1_jp78e"]
 
-[node name="AmplifierTileStatus" type="Node2D"]
+[node name="AmplifierTileStatus" type="Node2D" unique_id=1247391452]
 script = ExtResource("1_jp78e")

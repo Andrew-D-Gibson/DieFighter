@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://n023djl8w8fy"]
+[gd_scene format=3 uid="uid://n023djl8w8fy"]
 
 [ext_resource type="Texture2D" uid="uid://c4k1vin370av2" path="res://Assets/Textures/Enemies/SectorBoss/sector_boss.png" id="1_5hy1v"]
 [ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_oby0r"]
@@ -16,12 +16,12 @@ shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
 shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
 shader_parameter/cloak_tolerance = 0.1
 
-[node name="SectorBossShipGraphics" type="Sprite2D"]
+[node name="SectorBossShipGraphics" type="Sprite2D" unique_id=708955661]
 material = SubResource("ShaderMaterial_3pfgn")
 texture = ExtResource("1_5hy1v")
 
-[node name="LargeEngineParticles" parent="." instance=ExtResource("2_oby0r")]
+[node name="LargeEngineParticles" parent="." unique_id=6161523 instance=ExtResource("2_oby0r")]
 position = Vector2(-18, -21)
 
-[node name="LargeEngineParticles2" parent="." instance=ExtResource("2_oby0r")]
+[node name="LargeEngineParticles2" parent="." unique_id=1332277557 instance=ExtResource("2_oby0r")]
 position = Vector2(18, -21)

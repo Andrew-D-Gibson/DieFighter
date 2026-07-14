@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=5 format=3 uid="uid://ceruh36kfjrl2"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://ceruh36kfjrl2"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_raom6"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_bjj1f"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="2_gwwtc"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="3_gol2q"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_gol2q"]
 
 [resource]
 script = ExtResource("2_bjj1f")
@@ -11,7 +12,6 @@ tutorial_text = "Observe:"
 text_position = Vector2(220, 40)
 forced_dice = Array[int]([5, 3])
 forced_enemy_actions = Array[ExtResource("1_raom6")]([ExtResource("2_gwwtc"), ExtResource("3_gol2q"), ExtResource("2_gwwtc"), ExtResource("2_gwwtc"), ExtResource("3_gol2q"), ExtResource("3_gol2q")])
-open_on_signal = 0
 close_on_signal = 2
 tutorial_function = 7
 time_to_auto_close = 2.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://d0a5ylqp64b1d"]
+[gd_scene format=3 uid="uid://d0a5ylqp64b1d"]
 
 [ext_resource type="Script" uid="uid://rbnh2n0dj0n0" path="res://Source/Systems/UI/ErrorPopupManager/ErrorTextPopup/error_text_popup.gd" id="1_0e5t4"]
 [ext_resource type="Texture2D" uid="uid://o2eb2umnr1tr" path="res://Assets/Textures/ErrorTextPopup/background.png" id="2_3nvjd"]
@@ -6,7 +6,7 @@
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_6y2te"]
 texture = ExtResource("2_3nvjd")
 
-[node name="ErrorTextPopup" type="RichTextLabel"]
+[node name="ErrorTextPopup" type="RichTextLabel" unique_id=829044685]
 z_index = 10
 custom_minimum_size = Vector2(72, 24)
 offset_right = 100.0
@@ -24,7 +24,7 @@ full_opacity_time = 1.5
 fade_time = 0.5
 movement_velocity = Vector2(0, -2)
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=2033348069]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15

@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://b8ppehbls7stu"]
+[gd_scene format=3 uid="uid://b8ppehbls7stu"]
 
 [ext_resource type="Script" uid="uid://pye0kuafp80x" path="res://Source/Systems/Game/Dice/dice.gd" id="1_ipsek"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_3tvvj"]
@@ -23,7 +23,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_md6qd"]
 size = Vector2(12, 12)
 
-[node name="Dice" type="Node2D" node_paths=PackedStringArray("draggable") groups=["Dice"]]
+[node name="Dice" type="Node2D" unique_id=968947422 node_paths=PackedStringArray("draggable") groups=["Dice"]]
 z_index = 10
 script = ExtResource("1_ipsek")
 holographic_shader = ExtResource("2_apkgm")
@@ -33,17 +33,17 @@ value_textures = Array[Texture2D]([ExtResource("3_4gkos"), ExtResource("3_md6qd"
 holographic_textures = Array[Texture2D]([ExtResource("9_tfeny"), ExtResource("10_apkgm"), ExtResource("11_fvf7s"), ExtResource("12_gfpxv"), ExtResource("13_6ouv6"), ExtResource("14_wnwk4"), ExtResource("15_yv42b")])
 holographic_particles = ExtResource("17_fvf7s")
 
-[node name="Draggable" parent="." instance=ExtResource("2_3tvvj")]
+[node name="Draggable" parent="." unique_id=1082615630 instance=ExtResource("2_3tvvj")]
 bob_amplitude = 0.75
 drift_amplitude = 0.5
 drift_speed = 0.25
 rotation_amplitude = 1.5
 rotation_speed = 0.15
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable" unique_id=220190355]
 shape = SubResource("RectangleShape2D_md6qd")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=454949063]
 material = ExtResource("3_6ouv6")
 texture = ExtResource("3_4gkos")
 

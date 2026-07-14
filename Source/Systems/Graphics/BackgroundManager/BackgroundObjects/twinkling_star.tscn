@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://db30o2mgvg8ay"]
+[gd_scene format=3 uid="uid://db30o2mgvg8ay"]
 
 [ext_resource type="Texture2D" uid="uid://cioo5v3vt0tid" path="res://Assets/Textures/Backgrounds/Stars/twinkling_star-Sheet.png" id="1_j58qa"]
 [ext_resource type="Script" uid="uid://mudvhxb7v722" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.gd" id="2_ue0pm"]
@@ -17,7 +17,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ue0pm")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }, {
@@ -25,12 +25,12 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_xk2j3")
 }],
-"loop": false,
+"loop": 0,
 "name": &"twinkle",
 "speed": 0.5
 }]
 
-[node name="TwinklingStar" type="AnimatedSprite2D"]
+[node name="TwinklingStar" type="AnimatedSprite2D" unique_id=1159812622]
 z_index = 1
 sprite_frames = SubResource("SpriteFrames_jmt2o")
 script = ExtResource("2_ue0pm")

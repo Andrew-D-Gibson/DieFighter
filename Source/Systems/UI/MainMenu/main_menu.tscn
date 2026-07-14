@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://ccvtlre5vhj7d"]
+[gd_scene format=3 uid="uid://ccvtlre5vhj7d"]
 
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_5pv2g"]
 [ext_resource type="Script" uid="uid://dfqo2lhkhal5l" path="res://Source/Systems/UI/MainMenu/main_menu.gd" id="1_otgxl"]
@@ -94,7 +94,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e7dir")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -171,7 +171,7 @@ shader_parameter/shading_noise_cell_amount = 30
 shader_parameter/shading_noise_strength = 0.13
 shader_parameter/shading_noise_period = Vector3(9.5, 9.5, 9.5)
 
-[node name="MainMenu" type="Node2D"]
+[node name="MainMenu" type="Node2D" unique_id=1901252289]
 self_modulate = Color(0.0156863, 0.00784314, 0.0901961, 1)
 script = ExtResource("1_otgxl")
 num_of_twinkling_stars = 50
@@ -179,22 +179,22 @@ background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 star_pixel_scene = ExtResource("3_y6sr5")
 star_twinkle_scene = ExtResource("4_5v1c7")
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=703009751]
 environment = SubResource("Environment_6qnrd")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=574993473]
 z_index = -3
 position = Vector2(160, 0)
 texture = ExtResource("4_6qnrd")
 
-[node name="MouseCursor" type="Sprite2D" parent="."]
+[node name="MouseCursor" type="Sprite2D" parent="." unique_id=607365636]
 visible = false
 z_index = 1000
 texture = ExtResource("5_3xxk1")
 centered = false
 script = ExtResource("6_jl4pw")
 
-[node name="TitleText" type="RichTextLabel" parent="."]
+[node name="TitleText" type="RichTextLabel" parent="." unique_id=205089365]
 unique_name_in_owner = true
 anchors_preset = 3
 anchor_left = 1.0
@@ -219,7 +219,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_group_ = true
 
-[node name="VersionText" type="RichTextLabel" parent="."]
+[node name="VersionText" type="RichTextLabel" parent="." unique_id=1440847413]
 custom_minimum_size = Vector2(28, 0)
 anchors_preset = 3
 anchor_left = 1.0
@@ -237,12 +237,12 @@ fit_content = true
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1559232188]
 unique_name_in_owner = true
 offset = Vector2(160, 90)
 zoom = Vector2(6, 6)
 
-[node name="FadeIn" type="Sprite2D" parent="."]
+[node name="FadeIn" type="Sprite2D" parent="." unique_id=586284729]
 unique_name_in_owner = true
 visible = false
 self_modulate = Color(0.0745098, 0.0588235, 0.219608, 1)
@@ -250,13 +250,11 @@ z_index = 10
 texture = ExtResource("1_5pv2g")
 offset = Vector2(160, -90)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1598558546]
 unique_name_in_owner = true
-libraries = {
-&"": SubResource("AnimationLibrary_5v1c7")
-}
+libraries/ = SubResource("AnimationLibrary_5v1c7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1127495814]
 z_index = 5
 anchors_preset = 2
 anchor_top = 1.0
@@ -268,28 +266,28 @@ offset_bottom = 163.0
 grow_vertical = 0
 alignment = 1
 
-[node name="PlayButton" parent="VBoxContainer" instance=ExtResource("7_n0c18")]
+[node name="PlayButton" parent="VBoxContainer" unique_id=1161367933 instance=ExtResource("7_n0c18")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/PlayButton" index="0"]
+[node name="RichTextLabel" parent="VBoxContainer/PlayButton" index="0" unique_id=1229508524]
 text = "PLAY"
 
-[node name="OptionsButton" parent="VBoxContainer" instance=ExtResource("7_n0c18")]
+[node name="OptionsButton" parent="VBoxContainer" unique_id=964819615 instance=ExtResource("7_n0c18")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="0"]
+[node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="0" unique_id=1229508524]
 text = "OPTIONS"
 
-[node name="QuitButton" parent="VBoxContainer" instance=ExtResource("7_n0c18")]
+[node name="QuitButton" parent="VBoxContainer" unique_id=1830899854 instance=ExtResource("7_n0c18")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="0"]
+[node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="0" unique_id=1229508524]
 text = "QUIT"
 
-[node name="ButtonRotator" type="Control" parent="."]
+[node name="ButtonRotator" type="Control" parent="." unique_id=507446324]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 40.0
@@ -298,7 +296,7 @@ offset_right = 80.0
 offset_bottom = 94.0
 script = ExtResource("7_m0vyx")
 
-[node name="WishlistButton" parent="ButtonRotator" instance=ExtResource("7_vm02d")]
+[node name="WishlistButton" parent="ButtonRotator" unique_id=486649048 instance=ExtResource("7_vm02d")]
 z_index = 5
 layout_mode = 0
 offset_left = -27.0
@@ -307,23 +305,23 @@ offset_right = 29.0
 offset_bottom = 8.0
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
-[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="0"]
+[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="0" unique_id=937158098]
 sprite_frames = SubResource("SpriteFrames_3xxk1")
 
-[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1"]
+[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1" unique_id=604948362]
 text = "WISHLIST"
 
-[node name="Sprite2D" type="Sprite2D" parent="ButtonRotator/WishlistButton"]
+[node name="Sprite2D" type="Sprite2D" parent="ButtonRotator/WishlistButton" unique_id=1706546795]
 position = Vector2(1, 0)
 rotation = -0.189669
 texture = ExtResource("12_dn166")
 
-[node name="OptionsMenu" parent="." instance=ExtResource("4_bcx7i")]
+[node name="OptionsMenu" parent="." unique_id=168307019 instance=ExtResource("4_bcx7i")]
 unique_name_in_owner = true
 visible = false
 position = Vector2(160, 90)
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="."]
+[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=952747932]
 z_index = -2
 position = Vector2(160, 90)
 amount = 64
@@ -342,7 +340,7 @@ initial_velocity_max = 4.0
 color = Color(0.203922, 0.2, 0.188235, 0.737255)
 color_ramp = SubResource("Gradient_dn166")
 
-[node name="Planet" type="ColorRect" parent="."]
+[node name="Planet" type="ColorRect" parent="." unique_id=845202068]
 z_index = -1
 material = SubResource("ShaderMaterial_6qnrd")
 offset_left = 184.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://d1fvplfx4vjm5"]
+[gd_scene format=3 uid="uid://d1fvplfx4vjm5"]
 
 [ext_resource type="Script" uid="uid://e3pbuhao442y" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.gd" id="1_kn5v7"]
 [ext_resource type="Shader" uid="uid://l3pl6juo75w3" path="res://Assets/Shaders/black_hole.gdshader" id="1_o5rjf"]
@@ -83,11 +83,11 @@ turbulence_influence_min = 0.022
 [sub_resource type="ViewportTexture" id="ViewportTexture_sb0ss"]
 viewport_path = NodePath("SubViewport")
 
-[node name="BlackHole" type="Node2D"]
+[node name="BlackHole" type="Node2D" unique_id=558583811]
 z_index = 1
 script = ExtResource("1_kn5v7")
 
-[node name="Disk" type="ColorRect" parent="."]
+[node name="Disk" type="ColorRect" parent="." unique_id=1398162322]
 material = SubResource("ShaderMaterial_7ecb8")
 custom_minimum_size = Vector2(300, 300)
 anchors_preset = 15
@@ -97,7 +97,7 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 
-[node name="BlackHole" type="ColorRect" parent="."]
+[node name="BlackHole" type="ColorRect" parent="." unique_id=637875062]
 material = SubResource("ShaderMaterial_orf8c")
 anchors_preset = 8
 anchor_left = 0.5
@@ -113,12 +113,12 @@ grow_vertical = 2
 size_flags_horizontal = 4
 mouse_filter = 2
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="SubViewport" type="SubViewport" parent="." unique_id=1193473879]
 transparent_bg = true
 size = Vector2i(320, 320)
 render_target_update_mode = 4
 
-[node name="GPUParticles2D" type="GPUParticles2D" parent="SubViewport"]
+[node name="GPUParticles2D" type="GPUParticles2D" parent="SubViewport" unique_id=1889332544]
 visible = false
 z_index = -1
 position = Vector2(160, 160)
@@ -129,7 +129,7 @@ preprocess = 3.0
 fixed_fps = 60
 process_material = SubResource("ParticleProcessMaterial_nioje")
 
-[node name="TextureRect" type="TextureRect" parent="."]
+[node name="TextureRect" type="TextureRect" parent="." unique_id=1490914263]
 z_index = -1
 texture_filter = 1
 anchors_preset = 8

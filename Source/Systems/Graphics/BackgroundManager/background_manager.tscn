@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cwh85ruy5f5pl"]
+[gd_scene format=3 uid="uid://cwh85ruy5f5pl"]
 
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="1_dtbxu"]
 [ext_resource type="Script" uid="uid://c5cpp1intb61y" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.gd" id="2_e2ils"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dhh3wbvm6lsew" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/debris_piece.tscn" id="6_vmxgm"]
 [ext_resource type="PackedScene" uid="uid://d1eqq3hswo3d6" path="res://Source/Systems/Graphics/JumpTransition/jump_transition.tscn" id="7_mwyp7"]
 
-[node name="BackgroundManager" type="Sprite2D"]
+[node name="BackgroundManager" type="Sprite2D" unique_id=175737585]
 self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
 z_index = -16
 texture = ExtResource("1_dtbxu")
@@ -18,7 +18,7 @@ star_pixel_scene = ExtResource("4_hcsrv")
 star_twinkle_scene = ExtResource("5_jjrua")
 debris_scene = ExtResource("6_vmxgm")
 
-[node name="JumpTransition" parent="." instance=ExtResource("7_mwyp7")]
+[node name="JumpTransition" parent="." unique_id=1059039291 instance=ExtResource("7_mwyp7")]
 unique_name_in_owner = true
 z_index = 8
 offset_left = -320.0

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=31 format=3 uid="uid://bpy3rce6clni3"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bpy3rce6clni3"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_dl748"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_dooug"]
@@ -14,34 +14,29 @@
 [ext_resource type="Script" uid="uid://diu3gmqfwq03x" path="res://Source/Content/Effects/TileDataChangers/set_tile_data_effect.gd" id="11_hw6hl"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="12_5u4xb"]
 [ext_resource type="Texture2D" uid="uid://c8y8dwpvor27" path="res://Assets/Textures/Tiles/BlueTiles/unstable_shield_generator.png" id="13_qsfcr"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="13_tqpk6"]
 
 [sub_resource type="Resource" id="Resource_eq5vj"]
 script = ExtResource("1_dl748")
 type = 6
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_er2tk"]
 script = ExtResource("3_dooug")
-sound_effect_name = "player_shield"
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_vno0r"]
 script = ExtResource("3_er2tk")
-primary_effect = false
 metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
 
 [sub_resource type="Resource" id="Resource_sryqk"]
 script = ExtResource("4_84stt")
 tile_data_key = "activation_count"
-primary_effect = false
 metadata/_custom_type_script = "uid://cttcer3sti4mw"
 
 [sub_resource type="Resource" id="Resource_um1gg"]
 script = ExtResource("5_sat5j")
 amount = 2
-inherit_die_value = false
 primary_effect = true
 metadata/_custom_type_script = "uid://bllibq0iu6bwk"
 
@@ -50,7 +45,6 @@ script = ExtResource("6_u65dq")
 color = Color(0.313726, 0.705882, 1, 1)
 amount = 24
 location = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_vy2tg"]
@@ -61,7 +55,6 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 [sub_resource type="Resource" id="Resource_p6ekm"]
 script = ExtResource("8_krkdr")
 event = 1
-listen_only_for_self = true
 metadata/_custom_type_script = "uid://cfken75wevu1a"
 
 [sub_resource type="Resource" id="Resource_0sl63"]
@@ -72,7 +65,6 @@ metadata/_custom_type_script = "uid://d4edpqpkkx8nt"
 [sub_resource type="Resource" id="Resource_htfaj"]
 script = ExtResource("10_jmh68")
 tile_data_key = "activation_count"
-primary_effect = false
 metadata/_custom_type_script = "uid://oi6ed2m5o7hj"
 
 [sub_resource type="Resource" id="Resource_jbg2i"]
@@ -83,14 +75,11 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 [sub_resource type="Resource" id="Resource_5crca"]
 script = ExtResource("8_krkdr")
 event = 2
-listen_only_for_self = true
 metadata/_custom_type_script = "uid://cfken75wevu1a"
 
 [sub_resource type="Resource" id="Resource_6e2xl"]
 script = ExtResource("11_hw6hl")
 tile_data_key = "activation_count"
-value = 0
-primary_effect = false
 metadata/_custom_type_script = "uid://diu3gmqfwq03x"
 
 [sub_resource type="Resource" id="Resource_4o71b"]
@@ -108,7 +97,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_iy1wd")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -116,10 +105,8 @@ animations = [{
 [resource]
 script = ExtResource("12_5u4xb")
 tile_name = "[color=blue]Unstable Shield Array[/color]"
-activation_description = ""
 description = "[color=yellow]Moved by tile[/color] -> Gain [color=blue]2 shields[/color], +1 each time. Resets if moved manually.
 (Currently at [color=blue][data]activation_count + 2[/data] shields[/color])"
-hint_text = ""
 rarity = 1
 textures = SubResource("SpriteFrames_nb58w")
 uses_per_combat = -1
@@ -129,6 +116,4 @@ event_responses = Dictionary[ExtResource("8_krkdr"), ExtResource("7_2uk52")]({
 SubResource("Resource_p6ekm"): SubResource("Resource_jbg2i"),
 SubResource("Resource_5crca"): SubResource("Resource_4o71b")
 })
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

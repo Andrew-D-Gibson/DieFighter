@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://oe3aethqnc7b"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://oe3aethqnc7b"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_ylcsr"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_7x2sk"]
@@ -8,12 +8,6 @@
 script = ExtResource("2_tfpdm")
 tutorial_text = "[color=white]Dice[/color] are unstable power sources. [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave](left_mouse) [color=white]dice[/color] onto a subsystem to activate it:"
 text_position = Vector2(220, 40)
-time_delay = 0.0
-forced_dice = Array[int]([])
-forced_enemy_actions = Array[ExtResource("1_ylcsr")]([])
-forced_rewards = Array[ExtResource("2_7x2sk")]([])
-open_on_signal = 0
 close_on_signal = 5
 tutorial_function = 6
-time_to_auto_close = 0.0
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

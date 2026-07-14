@@ -1,10 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://b28uqgp5asybj"]
+[gd_scene format=3 uid="uid://b28uqgp5asybj"]
 
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="1_eicng"]
 [ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="2_smrc7"]
 [ext_resource type="FontFile" uid="uid://c1naj1x2hng80" path="res://Assets/Fonts/Bladerunner/BLADRMF_.TTF" id="3_ag104"]
 [ext_resource type="Script" uid="uid://bqx08ggc7jojk" path="res://Source/Systems/Autoloads/screenshotter.gd" id="3_vb0vt"]
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="5_nhdos"]
+[ext_resource type="Shader" uid="uid://bri5htw7mbdjy" path="res://Assets/Shaders/tile.gdshader" id="6_151ff"]
 [ext_resource type="PackedScene" uid="uid://n023djl8w8fy" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/sector_boss_ship_graphics.tscn" id="6_vb0vt"]
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="7_nhdos"]
 
@@ -16,27 +17,75 @@ glow_bloom = 0.19
 adjustment_enabled = true
 adjustment_saturation = 1.08
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_gopfn"]
+[sub_resource type="Gradient" id="Gradient_wnwk4"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(0.0156863, 0.00784314, 0.0901961, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_yv42b"]
+gradient = SubResource("Gradient_wnwk4")
+
+[sub_resource type="Gradient" id="Gradient_ca5cv"]
+offsets = PackedFloat32Array(0, 0.500403, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_8r4ay"]
+gradient = SubResource("Gradient_ca5cv")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2yfrh"]
+resource_local_to_scene = true
+shader = ExtResource("6_151ff")
+shader_parameter/outer_radius = 10.0
+shader_parameter/strength = 0.0
+shader_parameter/highlight_enabled = true
+shader_parameter/vertical_gradient = SubResource("GradientTexture1D_8r4ay")
+shader_parameter/color_gradient = SubResource("GradientTexture1D_yv42b")
+shader_parameter/size_effect = 1.0
+shader_parameter/speed = 1.0
+shader_parameter/highlight_strength = 0.5
+shader_parameter/pause_duration = 3.0
+shader_parameter/texture_size = Vector2(12, 12)
+shader_parameter/brightness_max = 1.5
+shader_parameter/brightness_period = 2.0
+shader_parameter/time_offset = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_07yyn"]
+resource_local_to_scene = true
+shader = ExtResource("6_151ff")
+shader_parameter/outer_radius = 10.0
+shader_parameter/strength = 0.0
+shader_parameter/highlight_enabled = true
+shader_parameter/vertical_gradient = SubResource("GradientTexture1D_8r4ay")
+shader_parameter/color_gradient = SubResource("GradientTexture1D_yv42b")
+shader_parameter/size_effect = 1.0
+shader_parameter/speed = 1.0
+shader_parameter/highlight_strength = 0.5
+shader_parameter/pause_duration = 3.0
+shader_parameter/texture_size = Vector2(12, 12)
+shader_parameter/brightness_max = 1.5
+shader_parameter/brightness_period = 2.0
+shader_parameter/time_offset = 0.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_2dhxe"]
 resource_local_to_scene = true
 shader = ExtResource("7_nhdos")
 shader_parameter/color = Color(1, 1, 1, 1)
 shader_parameter/flash_amount = 0.0
 
-[node name="TitleScreen" type="Node2D"]
+[node name="TitleScreen" type="Node2D" unique_id=929805987]
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1552144189]
 environment = SubResource("Environment_vb0vt")
 
-[node name="BackgroundManager" parent="." instance=ExtResource("1_eicng")]
+[node name="BackgroundManager" parent="." unique_id=61716328 instance=ExtResource("1_eicng")]
 position = Vector2(160, 90)
 starting_background = ExtResource("2_smrc7")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=2047123330]
 position = Vector2(160, 90)
 zoom = Vector2(8, 8)
 script = ExtResource("3_vb0vt")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=425371003]
 visible = false
 z_index = 4
 offset_left = 35.0
@@ -52,7 +101,7 @@ text = "Die"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RichTextLabel2" type="RichTextLabel" parent="."]
+[node name="RichTextLabel2" type="RichTextLabel" parent="." unique_id=487428064]
 visible = false
 z_index = 4
 offset_left = 64.0
@@ -68,25 +117,27 @@ text = "Fighter"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="Dice" parent="." instance=ExtResource("5_nhdos")]
+[node name="Dice" parent="." unique_id=2020768354 instance=ExtResource("5_nhdos")]
 visible = false
 position = Vector2(63, 86)
 rotation = -0.183994
 scale = Vector2(3, 3)
 holographic = true
+default_shader = SubResource("ShaderMaterial_2yfrh")
 value = 6
 
-[node name="Dice2" parent="." instance=ExtResource("5_nhdos")]
+[node name="Dice2" parent="." unique_id=1719293813 instance=ExtResource("5_nhdos")]
 visible = false
 position = Vector2(98, 82)
 rotation = 0.0439579
 scale = Vector2(3, 3)
+default_shader = SubResource("ShaderMaterial_07yyn")
 value = 6
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1716238318]
 scale = Vector2(8, 8)
 transform = Transform2D(8, 0, 0, 8, 0, 0)
 
-[node name="SectorBossShipGraphics" parent="CanvasLayer" instance=ExtResource("6_vb0vt")]
-material = SubResource("ShaderMaterial_gopfn")
+[node name="SectorBossShipGraphics" parent="CanvasLayer" unique_id=1142584759 instance=ExtResource("6_vb0vt")]
+material = SubResource("ShaderMaterial_2dhxe")
 position = Vector2(164.125, 38.5)

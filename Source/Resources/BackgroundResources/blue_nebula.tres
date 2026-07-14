@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="BackgroundResource" load_steps=2 format=3 uid="uid://dx0lfddfuacuv"]
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://dx0lfddfuacuv"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_ow0l5"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_807x5"]
 
 [resource]
 script = ExtResource("1_ow0l5")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=7 format=3 uid="uid://bs8jwdilshf2n"]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://bs8jwdilshf2n"]
 
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_puol5"]
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="2_pg8o7"]
@@ -12,7 +12,6 @@ script = ExtResource("2_pg8o7")
 dialogue = "Please help us!"
 faction = 1
 attitude = 1
-effects_on_enter = Array[ExtResource("1_puol5")]([])
 transitions = Dictionary[int, ExtResource("3_o6elf")]({
 0: ExtResource("4_odsja"),
 1: ExtResource("5_c1435"),

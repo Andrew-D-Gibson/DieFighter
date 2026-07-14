@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://ct6jo26ujhw4d"]
+[gd_scene format=3 uid="uid://ct6jo26ujhw4d"]
 
 [ext_resource type="Texture2D" uid="uid://x57e8fu4w4u1" path="res://Assets/Textures/Enemies/ParticleTextures/engine_ring.png" id="1_dsl8y"]
 
@@ -6,7 +6,7 @@
 offsets = PackedFloat32Array(0, 0.619335)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
 
-[node name="EngineParticlesRotatedDown" type="CPUParticles2D"]
+[node name="EngineParticlesRotatedDown" type="CPUParticles2D" unique_id=650331556]
 z_index = -10
 amount = 6
 texture = ExtResource("1_dsl8y")

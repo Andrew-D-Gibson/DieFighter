@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://c8hhukq5cxc44"]
+[gd_scene format=3 uid="uid://c8hhukq5cxc44"]
 
 [ext_resource type="Texture2D" uid="uid://n1r0uxtjrxd6" path="res://Assets/Textures/Enemies/ParticleTextures/engine_ring_large.png" id="1_b657r"]
 
@@ -18,7 +18,7 @@ initial_velocity_max = 14.0
 gravity = Vector3(0, 0, 0)
 color_ramp = SubResource("GradientTexture1D_jpks5")
 
-[node name="LargeEngineParticles" type="GPUParticles2D"]
+[node name="LargeEngineParticles" type="GPUParticles2D" unique_id=1481388790]
 z_index = -10
 amount = 4
 texture = ExtResource("1_b657r")

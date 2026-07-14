@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://6l4ixooaa16q"]
+[gd_scene format=3 uid="uid://6l4ixooaa16q"]
 
 [ext_resource type="Script" uid="uid://cg2jonlrc1syd" path="res://Source/Systems/UI/OptionsMenu/options_saving_manager.gd" id="1_r7v21"]
 
-[node name="OptionsSavingManager" type="Node"]
+[node name="OptionsSavingManager" type="Node" unique_id=446994590]
 script = ExtResource("1_r7v21")

@@ -1,6 +1,6 @@
-[gd_scene load_steps=2 format=3 uid="uid://c7oubps738mwn"]
+[gd_scene format=3 uid="uid://c7oubps738mwn"]
 
 [ext_resource type="Script" uid="uid://cr0hwfd4megka" path="res://Source/Systems/TutorialManager/tutorial_manager.gd" id="1_ar8v4"]
 
-[node name="TutorialManager" type="Node2D"]
+[node name="TutorialManager" type="Node2D" unique_id=258830401]
 script = ExtResource("1_ar8v4")

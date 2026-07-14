@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://bljmx610i58dj"]
+[gd_scene format=3 uid="uid://bljmx610i58dj"]
 
 [ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_7k31k"]
 [ext_resource type="Texture2D" uid="uid://cg27kht5p2kw1" path="res://Assets/Textures/Enemies/Attacker/attacker.png" id="1_hx235"]
@@ -16,12 +16,12 @@ shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
 shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
 shader_parameter/cloak_tolerance = 0.1
 
-[node name="AttackerShipGraphics" type="Sprite2D"]
+[node name="AttackerShipGraphics" type="Sprite2D" unique_id=1361866345]
 material = SubResource("ShaderMaterial_oknjr")
 texture = ExtResource("1_hx235")
 
-[node name="EngineParticles" parent="." instance=ExtResource("2_hx235")]
+[node name="EngineParticles" parent="." unique_id=1542671433 instance=ExtResource("2_hx235")]
 position = Vector2(-5, -11)
 
-[node name="EngineParticles2" parent="." instance=ExtResource("2_hx235")]
+[node name="EngineParticles2" parent="." unique_id=1615275938 instance=ExtResource("2_hx235")]
 position = Vector2(5, -11)

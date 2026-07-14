@@ -1,17 +1,17 @@
-[gd_scene load_steps=3 format=3 uid="uid://bs48yn7ct8e55"]
+[gd_scene format=3 uid="uid://bs48yn7ct8e55"]
 
 [ext_resource type="Script" uid="uid://byvhufn3jrmhp" path="res://Source/Systems/Game/EnemyDialogueManager/enemy_dialogue_manager.gd" id="1_35u2v"]
 [ext_resource type="Texture2D" uid="uid://dt1r6m0xqqoe7" path="res://Assets/Textures/Enemies/Dialogue/red_dialogue_box.png" id="2_qgcp3"]
 
-[node name="EnemyDialogueManager" type="Node2D"]
+[node name="EnemyDialogueManager" type="Node2D" unique_id=2033550156]
 script = ExtResource("1_35u2v")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=339951186]
 unique_name_in_owner = true
 position = Vector2(30, 0)
 texture = ExtResource("2_qgcp3")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=610015917]
 unique_name_in_owner = true
 offset_left = 11.0
 offset_top = -23.0

@@ -1,26 +1,40 @@
-[gd_scene load_steps=6 format=3 uid="uid://b5nvlayr86v2h"]
+[gd_scene format=3 uid="uid://b5nvlayr86v2h"]
 
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="1_pimjx"]
 [ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="2_r7my1"]
 [ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="3_byica"]
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="4_cvlo8"]
 [ext_resource type="PackedScene" uid="uid://dueij0vemaxof" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/defender_ship_graphics.tscn" id="4_ti4xr"]
 [ext_resource type="PackedScene" uid="uid://g1dgcnfkwlci" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/shop_ship_graphics.tscn" id="5_ti4xr"]
 
-[node name="Mockup" type="Node2D"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_524yg"]
+resource_local_to_scene = true
+shader = ExtResource("4_cvlo8")
+shader_parameter/alpha = 1.0
+shader_parameter/flash_color = Color(1, 0, 0, 1)
+shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
+shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
+shader_parameter/cloak_tolerance = 0.1
 
-[node name="BackgroundManager" parent="." instance=ExtResource("1_pimjx")]
+[node name="Mockup" type="Node2D" unique_id=98554075]
+
+[node name="BackgroundManager" parent="." unique_id=1879623661 instance=ExtResource("1_pimjx")]
 position = Vector2(160, 90)
 starting_background = ExtResource("2_r7my1")
 
-[node name="AttackerShipGraphics" parent="." instance=ExtResource("3_byica")]
+[node name="AttackerShipGraphics" parent="." unique_id=1338481791 instance=ExtResource("3_byica")]
+material = SubResource("ShaderMaterial_524yg")
 position = Vector2(114, 91)
 
-[node name="DefenderShipGraphics" parent="." instance=ExtResource("4_ti4xr")]
+[node name="DefenderShipGraphics" parent="." unique_id=1585180056 instance=ExtResource("4_ti4xr")]
 position = Vector2(160, 90)
 
-[node name="ShopShipGraphics" parent="." instance=ExtResource("5_ti4xr")]
+[node name="ShopShipGraphics" parent="." unique_id=1014858184 instance=ExtResource("5_ti4xr")]
 position = Vector2(204, 90)
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1183116572]
 position = Vector2(160, 90)
 zoom = Vector2(10, 10)

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=5 format=3 uid="uid://dwx00amrb3m7m"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://dwx00amrb3m7m"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_00lnd"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_gp0vs"]
@@ -10,12 +10,7 @@ script = ExtResource("3_x47tp")
 tutorial_text = "Multiple enemy signatures.  [color=purple]Target[/color] individual craft with [color=purple]computer[/color] controls (targeting_arrows) or with [color=yellow]arrow keys[/color] (arrow_keys):"
 text_position = Vector2(160, 120)
 time_delay = 6.0
-forced_dice = Array[int]([])
-forced_enemy_actions = Array[ExtResource("1_00lnd")]([])
-forced_rewards = Array[ExtResource("2_gp0vs")]([])
 open_on_signal = 12
 close_on_signal = 13
-tutorial_function = 0
-time_to_auto_close = 0.0
 highlight_texture = ExtResource("3_gp0vs")
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

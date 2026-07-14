@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://sxp7koeaaan5"]
+[gd_scene format=3 uid="uid://sxp7koeaaan5"]
 
 [ext_resource type="Texture2D" uid="uid://uo61r0scdli7" path="res://Assets/Textures/Enemies/Disabler/disabler_main.png" id="1_6vgks"]
 [ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_y2fps"]
@@ -11,6 +11,7 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_c07d7"]
 resource_local_to_scene = true
 shader = ExtResource("1_y2fps")
+shader_parameter/alpha = 0.0
 shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
 shader_parameter/cloak_amount = 0.0
@@ -19,26 +20,26 @@ shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
 shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
 shader_parameter/cloak_tolerance = 0.1
 
-[node name="DisablerShipGraphics" type="Sprite2D" node_paths=PackedStringArray("left_x", "right_x")]
+[node name="DisablerShipGraphics" type="Sprite2D" unique_id=781244611 node_paths=PackedStringArray("left_x", "right_x")]
 material = SubResource("ShaderMaterial_c07d7")
 texture = ExtResource("1_6vgks")
 script = ExtResource("2_4jcby")
 left_x = NodePath("LeftX")
 right_x = NodePath("RightX")
 
-[node name="EngineParticles" parent="." instance=ExtResource("5_4jcby")]
+[node name="EngineParticles" parent="." unique_id=110715446 instance=ExtResource("5_4jcby")]
 position = Vector2(0, -5)
 
-[node name="LeftX" type="Sprite2D" parent="."]
+[node name="LeftX" type="Sprite2D" parent="." unique_id=1921214751]
 position = Vector2(-8, 12)
 texture = ExtResource("3_oojs0")
 
-[node name="EngineParticles" parent="LeftX" instance=ExtResource("4_oojs0")]
+[node name="EngineParticles" parent="LeftX" unique_id=1941611227 instance=ExtResource("4_oojs0")]
 position = Vector2(0, -2)
 
-[node name="RightX" type="Sprite2D" parent="."]
+[node name="RightX" type="Sprite2D" parent="." unique_id=1357740581]
 position = Vector2(8, 12)
 texture = ExtResource("4_y2fps")
 
-[node name="EngineParticles" parent="RightX" instance=ExtResource("4_oojs0")]
+[node name="EngineParticles" parent="RightX" unique_id=1205386177 instance=ExtResource("4_oojs0")]
 position = Vector2(0, -2)

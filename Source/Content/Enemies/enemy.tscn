@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://bwwirc58smer1"]
+[gd_scene format=3 uid="uid://bwwirc58smer1"]
 
 [ext_resource type="Script" uid="uid://dibocqhoikh50" path="res://Source/Content/Enemies/enemy.gd" id="1_ljdua"]
 [ext_resource type="PackedScene" uid="uid://b8gjt5a2dcrbn" path="res://Source/Content/Enemies/action_popup.tscn" id="2_cwfht"]
@@ -14,7 +14,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dycj8"]
 size = Vector2(70, 50)
 
-[node name="Enemy" type="Node2D" node_paths=PackedStringArray("dice_manager", "dialogue_manager", "graphics_manager", "health", "clickable_region")]
+[node name="Enemy" type="Node2D" unique_id=1520216917 node_paths=PackedStringArray("dice_manager", "dialogue_manager", "graphics_manager", "health", "clickable_region")]
 script = ExtResource("1_ljdua")
 dice_manager = NodePath("EnemyDiceManager")
 dialogue_manager = NodePath("EnemyDialogueManager")
@@ -23,31 +23,31 @@ health = NodePath("Health")
 action_popup = ExtResource("2_cwfht")
 clickable_region = NodePath("Clickable/CollisionShape2D")
 
-[node name="Health" parent="." instance=ExtResource("3_cwfht")]
+[node name="Health" parent="." unique_id=981838323 instance=ExtResource("3_cwfht")]
 
-[node name="EnemyDiceManager" parent="." instance=ExtResource("8_fjj67")]
+[node name="EnemyDiceManager" parent="." unique_id=2028701004 instance=ExtResource("8_fjj67")]
 
-[node name="EnemyDialogueManager" parent="." instance=ExtResource("5_dycj8")]
+[node name="EnemyDialogueManager" parent="." unique_id=886488119 instance=ExtResource("5_dycj8")]
 modulate = Color(1, 1, 1, 0)
 z_index = 4
 
-[node name="EnemyGraphicsManager" parent="." node_paths=PackedStringArray("shakeable", "health_bar") instance=ExtResource("8_sfiwu")]
+[node name="EnemyGraphicsManager" parent="." unique_id=363905657 node_paths=PackedStringArray("shakeable", "health_bar") instance=ExtResource("8_sfiwu")]
 shakeable = NodePath("Shakeable")
 death_explosion = ExtResource("8_dycj8")
 health_bar = NodePath("EnemyHealthBar")
 
-[node name="EnemyHealthBar" parent="EnemyGraphicsManager" node_paths=PackedStringArray("health_component") instance=ExtResource("4_tvtxf")]
+[node name="EnemyHealthBar" parent="EnemyGraphicsManager" unique_id=1158956667 node_paths=PackedStringArray("health_component") instance=ExtResource("4_tvtxf")]
 z_index = 1
 health_component = NodePath("../../Health")
 
-[node name="Shakeable" parent="EnemyGraphicsManager" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
+[node name="Shakeable" parent="EnemyGraphicsManager" unique_id=1669626425 node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
 node_to_shake = NodePath("../..")
 small_shake_duration = 0.2
 
-[node name="Clickable" parent="." instance=ExtResource("9_sfiwu")]
+[node name="Clickable" parent="." unique_id=1691613791 instance=ExtResource("9_sfiwu")]
 hover_for_info = false
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable" unique_id=1981457148]
 shape = SubResource("RectangleShape2D_dycj8")
 
 [connection signal="clicked" from="Clickable" to="." method="_on_clicked"]

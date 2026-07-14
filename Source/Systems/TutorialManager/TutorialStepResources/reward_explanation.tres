@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://bpwf4s4ak2icf"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://bpwf4s4ak2icf"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_8f0c0"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_bdd5v"]
@@ -10,11 +10,5 @@ tutorial_text = "After destruction, salvage wreckage for systems and [color=gree
 [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave] the reward to claim it:"
 text_position = Vector2(220, 40)
 time_delay = 2.0
-forced_dice = Array[int]([])
-forced_enemy_actions = Array[ExtResource("1_8f0c0")]([])
-forced_rewards = Array[ExtResource("2_bdd5v")]([])
-open_on_signal = 0
 close_on_signal = 9
-tutorial_function = 0
-time_to_auto_close = 0.0
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

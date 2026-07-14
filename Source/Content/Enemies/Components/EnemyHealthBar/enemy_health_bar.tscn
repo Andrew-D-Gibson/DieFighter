@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://37usdgvegncp"]
+[gd_scene format=3 uid="uid://37usdgvegncp"]
 
 [ext_resource type="Script" uid="uid://dwtmux4vpkp7e" path="res://Source/Content/Enemies/Components/EnemyHealthBar/enemy_health_bar.gd" id="1_xmwdm"]
 [ext_resource type="Texture2D" uid="uid://ciy0xiwu25jqq" path="res://Assets/Textures/Enemies/EnemyHealthBar/bar_under.png" id="2_6xma5"]
@@ -40,24 +40,24 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_cn5vf")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
 
-[node name="EnemyHealthBar" type="Node2D"]
+[node name="EnemyHealthBar" type="Node2D" unique_id=781179634]
 script = ExtResource("1_xmwdm")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=932578153]
 position = Vector2(-12, -12)
 texture = ExtResource("2_6xma5")
 
-[node name="Shields" type="Sprite2D" parent="."]
+[node name="Shields" type="Sprite2D" parent="." unique_id=1197467291]
 unique_name_in_owner = true
 visible = false
 texture = ExtResource("3_a8y0g")
 
-[node name="HealthUpdateBar" type="TextureProgressBar" parent="."]
+[node name="HealthUpdateBar" type="TextureProgressBar" parent="." unique_id=681638022]
 unique_name_in_owner = true
 offset_left = -12.0
 offset_top = -12.0
@@ -72,7 +72,7 @@ radial_center_offset = Vector2(3.5, -3.5)
 texture_under = ExtResource("3_15202")
 texture_progress = ExtResource("4_a8y0g")
 
-[node name="HealthBar" type="TextureProgressBar" parent="."]
+[node name="HealthBar" type="TextureProgressBar" parent="." unique_id=1427954920]
 unique_name_in_owner = true
 offset_left = -12.0
 offset_top = -12.0
@@ -86,10 +86,10 @@ fill_mode = 4
 radial_center_offset = Vector2(3.5, -3.5)
 texture_progress = ExtResource("5_4clo8")
 
-[node name="Over" type="Sprite2D" parent="."]
+[node name="Over" type="Sprite2D" parent="." unique_id=1445924103]
 texture = ExtResource("6_eq3o7")
 
-[node name="HealthLabel" type="RichTextLabel" parent="."]
+[node name="HealthLabel" type="RichTextLabel" parent="." unique_id=796042088]
 unique_name_in_owner = true
 offset_left = -1.0
 offset_top = -11.0
@@ -101,7 +101,7 @@ text = "10
 "
 horizontal_alignment = 1
 
-[node name="ShieldsLabel" type="RichTextLabel" parent="."]
+[node name="ShieldsLabel" type="RichTextLabel" parent="." unique_id=949152270]
 unique_name_in_owner = true
 offset_left = -11.0
 offset_top = -2.0
@@ -114,7 +114,7 @@ text = "10
 "
 horizontal_alignment = 1
 
-[node name="AttitudeIndicator" type="AnimatedSprite2D" parent="."]
+[node name="AttitudeIndicator" type="AnimatedSprite2D" parent="." unique_id=797070171]
 z_index = 1
 position = Vector2(-13, -7)
 sprite_frames = SubResource("SpriteFrames_updgl")

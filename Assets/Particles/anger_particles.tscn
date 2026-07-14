@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://bbd1v62t300ic"]
+[gd_scene format=3 uid="uid://bbd1v62t300ic"]
 
 [ext_resource type="Texture2D" uid="uid://cickkmemxemqu" path="res://Assets/Particles/hit_particle_pixel.png" id="1_ojtxw"]
 
@@ -43,7 +43,7 @@ _data = {
 &"default": SubResource("Animation_2e8d0")
 }
 
-[node name="HitParticles" type="CPUParticles2D"]
+[node name="HitParticles" type="CPUParticles2D" unique_id=1844638290]
 z_index = 1
 emitting = false
 amount = 12
@@ -63,8 +63,6 @@ scale_amount_max = 2.0
 color_ramp = SubResource("Gradient_3ywxx")
 color_initial_ramp = SubResource("Gradient_umjne")
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_28ibw")
-}
-autoplay = "default"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=99924494]
+libraries/ = SubResource("AnimationLibrary_28ibw")
+autoplay = &"default"

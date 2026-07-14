@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://dhh3wbvm6lsew"]
+[gd_scene format=3 uid="uid://dhh3wbvm6lsew"]
 
 [ext_resource type="Script" uid="uid://c6wnkl67p3kio" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/debris_piece.gd" id="1_f12lg"]
 [ext_resource type="Shader" uid="uid://c22oi8xwgg22p" path="res://Assets/Shaders/debris_piece.gdshader" id="1_ixvbi"]
@@ -28,7 +28,7 @@ shader_parameter/background_color = Color(0, 0, 0, 1)
 shader_parameter/velocity_level = 0.0
 shader_parameter/blend_jump = 0.1
 
-[node name="DebrisPiece" type="Sprite2D"]
+[node name="DebrisPiece" type="Sprite2D" unique_id=1006073785]
 z_index = 1
 material = SubResource("ShaderMaterial_aktdh")
 texture = ExtResource("14_dmtcq")

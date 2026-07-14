@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://ci0v2biwfoxaw"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://ci0v2biwfoxaw"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_2b1hk"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_0nufp"]
@@ -8,11 +8,6 @@
 script = ExtResource("2_0nufp")
 tutorial_text = "Bringing [color=purple]targeting computer[/color] online.(delay=0.5) Enemy actions will be displayed before execution."
 text_position = Vector2(220, 65)
-time_delay = 0.0
-forced_dice = Array[int]([])
-forced_enemy_actions = Array[ExtResource("1_2b1hk")]([])
-forced_rewards = Array[ExtResource("2_i8jhr")]([])
-open_on_signal = 0
 close_on_signal = 2
 tutorial_function = 3
 time_to_auto_close = 4.0

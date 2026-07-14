@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=5 format=3 uid="uid://bcutac2qknefg"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://bcutac2qknefg"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_fq4b7"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_vkwha"]
@@ -9,14 +9,6 @@
 script = ExtResource("3_4vcby")
 tutorial_text = "Dangerous [color=purple]anomaly[/color] (fate) expanding across sector. All contacted systems will become [color=purple]corrupted[/color] (fate_scenario)
 "
-text_position = Vector2(160, 40)
-time_delay = 0.0
-forced_dice = Array[int]([])
-forced_enemy_actions = Array[ExtResource("1_fq4b7")]([])
-forced_rewards = Array[ExtResource("2_vkwha")]([])
-open_on_signal = 0
 close_on_signal = 1
-tutorial_function = 0
-time_to_auto_close = 0.0
 highlight_texture = ExtResource("3_vkwha")
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=3 uid="uid://cpqd13acuxpx"]
+[gd_scene format=3 uid="uid://cpqd13acuxpx"]
 
 [ext_resource type="Script" uid="uid://bkn6faehi2i4w" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.gd" id="1_8ig5e"]
 [ext_resource type="Texture2D" uid="uid://d053aff6muvev" path="res://Assets/Textures/Enemies/IntentIndicator/UnknownEnemyIntent.png" id="2_g8xi5"]
@@ -73,7 +73,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_up1nx")
 }],
-"loop": true,
+"loop": 1,
 "name": &"static",
 "speed": 16.0
 }]
@@ -168,7 +168,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_w6ds7")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -195,17 +195,17 @@ shader_parameter/clock_feather = 0.0
 shader_parameter/progress = 26.0
 shader_parameter/progress_bias = Vector2(10, 10)
 
-[node name="TargetingComputer" type="Node2D" node_paths=PackedStringArray("targeting_indicator")]
+[node name="TargetingComputer" type="Node2D" unique_id=466305210 node_paths=PackedStringArray("targeting_indicator")]
 script = ExtResource("1_8ig5e")
 targeting_indicator = NodePath("TargetingIndicator")
 unknown_intent_indicator = ExtResource("2_g8xi5")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=1820618632]
 z_index = -1
 texture = ExtResource("3_oioga")
 offset = Vector2(0, 0.6)
 
-[node name="TargetText" type="RichTextLabel" parent="Background"]
+[node name="TargetText" type="RichTextLabel" parent="Background" unique_id=254710064]
 z_index = 1
 offset_left = -17.0
 offset_top = -33.0
@@ -214,17 +214,17 @@ offset_bottom = -20.0
 mouse_filter = 2
 text = "TARGET"
 
-[node name="CRTShader" type="Sprite2D" parent="Background"]
+[node name="CRTShader" type="Sprite2D" parent="Background" unique_id=500653232]
 z_index = 1
 material = SubResource("ShaderMaterial_du4uj")
 position = Vector2(0, 0.6)
 texture = ExtResource("11_ysc67")
 
-[node name="TargetImage" type="Sprite2D" parent="."]
+[node name="TargetImage" type="Sprite2D" parent="." unique_id=1311294319]
 position = Vector2(0, -7.5)
 texture = ExtResource("4_8uv0v")
 
-[node name="TargetImageFill" type="AnimatedSprite2D" parent="."]
+[node name="TargetImageFill" type="AnimatedSprite2D" parent="." unique_id=72504211]
 z_index = -2
 position = Vector2(5, 0.5)
 sprite_frames = SubResource("SpriteFrames_0asw0")
@@ -232,35 +232,35 @@ animation = &"static"
 autoplay = "static"
 frame_progress = 0.489481
 
-[node name="TargetingIndicator" type="Sprite2D" parent="."]
+[node name="TargetingIndicator" type="Sprite2D" parent="." unique_id=1175290674]
 visible = false
 position = Vector2(16, -22)
 texture = ExtResource("3_ewmvk")
 
-[node name="LeftButton" type="Area2D" parent="."]
+[node name="LeftButton" type="Area2D" parent="." unique_id=842985110]
 position = Vector2(-24, -14)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="LeftButton"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="LeftButton" unique_id=880057195]
 position = Vector2(-4, 1)
 scale = Vector2(0.6, 1.4)
 polygon = PackedVector2Array(11.6667, -12.1429, -5, -5, -5, 2.14286, 11.6667, 9.28571)
 
-[node name="RightButton" type="Area2D" parent="."]
+[node name="RightButton" type="Area2D" parent="." unique_id=1898836835]
 position = Vector2(24, -14)
 
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="RightButton"]
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="RightButton" unique_id=2134963818]
 position = Vector2(-4, 1)
 scale = Vector2(0.6, 1.4)
 polygon = PackedVector2Array(1.66667, -12.1429, 18.3333, -5, 18.3333, 2.14286, 1.66667, 9.28571)
 
-[node name="Intents" type="Node2D" parent="."]
+[node name="Intents" type="Node2D" parent="." unique_id=768132844]
 position = Vector2(0.5, 0)
 
-[node name="1" type="Sprite2D" parent="Intents"]
+[node name="1" type="Sprite2D" parent="Intents" unique_id=1807121573]
 position = Vector2(-23, 17)
 texture = ExtResource("5_vfg6m")
 
-[node name="AmountLabel" type="RichTextLabel" parent="Intents/1"]
+[node name="AmountLabel" type="RichTextLabel" parent="Intents/1" unique_id=1600302194]
 offset_left = -3.5
 offset_right = 4.5
 offset_bottom = 13.0
@@ -268,26 +268,26 @@ mouse_filter = 2
 text = "19"
 horizontal_alignment = 1
 
-[node name="Clickable" type="Area2D" parent="Intents/1"]
+[node name="Clickable" type="Area2D" parent="Intents/1" unique_id=513609907]
 z_index = 1
 script = ExtResource("4_exnvl")
 hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/1/Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/1/Clickable" unique_id=269296310]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
-[node name="DieSprite1" type="AnimatedSprite2D" parent="Intents/1"]
+[node name="DieSprite1" type="AnimatedSprite2D" parent="Intents/1" unique_id=156391206]
 unique_name_in_owner = true
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_f4ln3")
 
-[node name="2" type="Sprite2D" parent="Intents"]
+[node name="2" type="Sprite2D" parent="Intents" unique_id=761679753]
 position = Vector2(-14, 17)
 texture = ExtResource("5_vfg6m")
 
-[node name="AmountLabel" type="RichTextLabel" parent="Intents/2"]
+[node name="AmountLabel" type="RichTextLabel" parent="Intents/2" unique_id=2052081366]
 offset_left = -3.5
 offset_right = 4.5
 offset_bottom = 13.0
@@ -295,27 +295,27 @@ mouse_filter = 2
 text = "19"
 horizontal_alignment = 1
 
-[node name="Clickable" type="Area2D" parent="Intents/2"]
+[node name="Clickable" type="Area2D" parent="Intents/2" unique_id=1878995376]
 z_index = 1
 script = ExtResource("4_exnvl")
 hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/2/Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/2/Clickable" unique_id=255601484]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
-[node name="DieSprite2" type="AnimatedSprite2D" parent="Intents/2"]
+[node name="DieSprite2" type="AnimatedSprite2D" parent="Intents/2" unique_id=54875071]
 unique_name_in_owner = true
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_f4ln3")
 frame = 1
 
-[node name="3" type="Sprite2D" parent="Intents"]
+[node name="3" type="Sprite2D" parent="Intents" unique_id=721655339]
 position = Vector2(-5, 17)
 texture = ExtResource("5_vfg6m")
 
-[node name="AmountLabel" type="RichTextLabel" parent="Intents/3"]
+[node name="AmountLabel" type="RichTextLabel" parent="Intents/3" unique_id=1684673518]
 offset_left = -3.5
 offset_right = 4.5
 offset_bottom = 13.0
@@ -323,27 +323,27 @@ mouse_filter = 2
 text = "19"
 horizontal_alignment = 1
 
-[node name="Clickable" type="Area2D" parent="Intents/3"]
+[node name="Clickable" type="Area2D" parent="Intents/3" unique_id=1119144375]
 z_index = 1
 script = ExtResource("4_exnvl")
 hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/3/Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/3/Clickable" unique_id=1300440958]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
-[node name="DieSprite3" type="AnimatedSprite2D" parent="Intents/3"]
+[node name="DieSprite3" type="AnimatedSprite2D" parent="Intents/3" unique_id=411463376]
 unique_name_in_owner = true
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_f4ln3")
 frame = 2
 
-[node name="4" type="Sprite2D" parent="Intents"]
+[node name="4" type="Sprite2D" parent="Intents" unique_id=413161270]
 position = Vector2(4, 17)
 texture = ExtResource("5_vfg6m")
 
-[node name="AmountLabel" type="RichTextLabel" parent="Intents/4"]
+[node name="AmountLabel" type="RichTextLabel" parent="Intents/4" unique_id=1087918144]
 offset_left = -3.5
 offset_right = 4.5
 offset_bottom = 13.0
@@ -351,27 +351,27 @@ mouse_filter = 2
 text = "19"
 horizontal_alignment = 1
 
-[node name="Clickable" type="Area2D" parent="Intents/4"]
+[node name="Clickable" type="Area2D" parent="Intents/4" unique_id=926560211]
 z_index = 1
 script = ExtResource("4_exnvl")
 hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/4/Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/4/Clickable" unique_id=226667512]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
-[node name="DieSprite4" type="AnimatedSprite2D" parent="Intents/4"]
+[node name="DieSprite4" type="AnimatedSprite2D" parent="Intents/4" unique_id=1081084881]
 unique_name_in_owner = true
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_f4ln3")
 frame = 3
 
-[node name="5" type="Sprite2D" parent="Intents"]
+[node name="5" type="Sprite2D" parent="Intents" unique_id=1541260302]
 position = Vector2(13, 17)
 texture = ExtResource("5_vfg6m")
 
-[node name="AmountLabel" type="RichTextLabel" parent="Intents/5"]
+[node name="AmountLabel" type="RichTextLabel" parent="Intents/5" unique_id=1896043244]
 offset_left = -3.5
 offset_right = 4.5
 offset_bottom = 13.0
@@ -379,27 +379,27 @@ mouse_filter = 2
 text = "19"
 horizontal_alignment = 1
 
-[node name="Clickable" type="Area2D" parent="Intents/5"]
+[node name="Clickable" type="Area2D" parent="Intents/5" unique_id=1839773169]
 z_index = 1
 script = ExtResource("4_exnvl")
 hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/5/Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/5/Clickable" unique_id=1915412333]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
-[node name="DieSprite5" type="AnimatedSprite2D" parent="Intents/5"]
+[node name="DieSprite5" type="AnimatedSprite2D" parent="Intents/5" unique_id=940225041]
 unique_name_in_owner = true
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_f4ln3")
 frame = 4
 
-[node name="6" type="Sprite2D" parent="Intents"]
+[node name="6" type="Sprite2D" parent="Intents" unique_id=931726108]
 position = Vector2(22, 17)
 texture = ExtResource("5_vfg6m")
 
-[node name="AmountLabel" type="RichTextLabel" parent="Intents/6"]
+[node name="AmountLabel" type="RichTextLabel" parent="Intents/6" unique_id=288437183]
 offset_left = -3.5
 offset_right = 4.5
 offset_bottom = 13.0
@@ -407,30 +407,30 @@ mouse_filter = 2
 text = "19"
 horizontal_alignment = 1
 
-[node name="Clickable" type="Area2D" parent="Intents/6"]
+[node name="Clickable" type="Area2D" parent="Intents/6" unique_id=138564383]
 z_index = 1
 script = ExtResource("4_exnvl")
 hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/6/Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Intents/6/Clickable" unique_id=889571675]
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_46m13")
 
-[node name="DieSprite6" type="AnimatedSprite2D" parent="Intents/6"]
+[node name="DieSprite6" type="AnimatedSprite2D" parent="Intents/6" unique_id=1453324546]
 unique_name_in_owner = true
 position = Vector2(0, -8)
 sprite_frames = SubResource("SpriteFrames_f4ln3")
 frame = 5
 
-[node name="RevealOverlay" type="Sprite2D" parent="."]
+[node name="RevealOverlay" type="Sprite2D" parent="." unique_id=1311843832]
 unique_name_in_owner = true
 z_index = 9
 material = SubResource("ShaderMaterial_up1nx")
 position = Vector2(0, 0.5)
 texture = ExtResource("13_du4uj")
 
-[node name="Control" type="Control" parent="RevealOverlay"]
+[node name="Control" type="Control" parent="RevealOverlay" unique_id=2019216845]
 layout_mode = 3
 anchors_preset = 0
 offset_left = -32.0

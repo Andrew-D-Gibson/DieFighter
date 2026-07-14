@@ -1,4 +1,4 @@
-[gd_scene load_steps=128 format=3 uid="uid://d1eqq3hswo3d6"]
+[gd_scene format=3 uid="uid://d1eqq3hswo3d6"]
 
 [ext_resource type="Shader" uid="uid://648u4hecibjb" path="res://Assets/Shaders/jump_hyperspace.gdshader" id="1_b43g6"]
 [ext_resource type="Script" uid="uid://di4iru0rg55gy" path="res://Source/Systems/Graphics/JumpTransition/jump_transition.gd" id="2_ehwye"]
@@ -6,7 +6,7 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_5rk5m"]
 shader = ExtResource("1_b43g6")
-shader_parameter/alpha = 1.0
+shader_parameter/alpha = 0.0
 shader_parameter/tint_color = Color(0.262745, 0.65098, 0.988235, 1)
 shader_parameter/speed = Vector2(0, -0.02)
 shader_parameter/pixel_resolution = Vector2(320, 180)
@@ -18,8 +18,8 @@ frequency = 0.0345
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ehwye"]
 width = 320
 height = 1080
-seamless = true
 noise = SubResource("FastNoiseLite_bs8hi")
+seamless = true
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bs8hi"]
 atlas = ExtResource("3_bs8hi")
@@ -864,15 +864,15 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_68j5n")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 24.0
 }]
 
-[node name="JumpTransition" type="Control"]
+[node name="JumpTransition" type="Control" unique_id=880301558]
 visible = false
-clip_contents = true
 custom_minimum_size = Vector2(320, 180)
+clip_contents = true
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -887,7 +887,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_ehwye")
 
-[node name="JumpTexture" type="Sprite2D" parent="."]
+[node name="JumpTexture" type="Sprite2D" parent="." unique_id=1752148318]
 unique_name_in_owner = true
 material = SubResource("ShaderMaterial_5rk5m")
 position = Vector2(160, 90)
@@ -895,8 +895,9 @@ scale = Vector2(1, 40)
 texture = SubResource("NoiseTexture2D_ehwye")
 offset = Vector2(0, 45)
 
-[node name="ParticleSheet" type="AnimatedSprite2D" parent="JumpTexture"]
+[node name="ParticleSheet" type="AnimatedSprite2D" parent="JumpTexture" unique_id=1847159405]
 unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
 position = Vector2(0, 0.0125)
 rotation = 1.5708
 scale = Vector2(0.025, 1)

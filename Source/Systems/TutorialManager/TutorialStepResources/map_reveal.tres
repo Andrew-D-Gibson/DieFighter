@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=4 format=3 uid="uid://bdbd1rtmat50j"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://bdbd1rtmat50j"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_teoao"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_rqde2"]
@@ -7,12 +7,6 @@
 [resource]
 script = ExtResource("3_hro6c")
 tutorial_text = "Initializing [color=purple]engines[/color]..."
-text_position = Vector2(160, 40)
-time_delay = 0.0
-forced_dice = Array[int]([])
-forced_enemy_actions = Array[ExtResource("1_teoao")]([])
-forced_rewards = Array[ExtResource("2_rqde2")]([])
-open_on_signal = 0
 close_on_signal = 2
 tutorial_function = 9
 time_to_auto_close = 2.0

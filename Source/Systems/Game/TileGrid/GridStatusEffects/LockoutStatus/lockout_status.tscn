@@ -1,4 +1,4 @@
-[gd_scene load_steps=79 format=3 uid="uid://be4hfdy3e3xfw"]
+[gd_scene format=3 uid="uid://be4hfdy3e3xfw"]
 
 [ext_resource type="Script" uid="uid://jvwl7yl747qc" path="res://Source/Systems/Game/TileGrid/GridStatusEffects/LockoutStatus/lockout_status.gd" id="1_aran3"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_e8f1h"]
@@ -14,17 +14,14 @@
 
 [sub_resource type="Resource" id="Resource_cblf1"]
 script = ExtResource("3_v32d7")
-primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_kijno"]
 script = ExtResource("4_vtk50")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_vtk50"]
 script = ExtResource("5_v32d7")
-primary_effect = false
 metadata/_custom_type_script = "uid://bmhft7xkxwabt"
 
 [sub_resource type="Resource" id="Resource_sjsqf"]
@@ -35,10 +32,8 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 [sub_resource type="Resource" id="Resource_ej6cm"]
 script = ExtResource("7_v32d7")
 title_label_text = "Grid Lockout"
-top_label_text = ""
 texture = ExtResource("4_p13k7")
 bottom_label_text = "[color=yellow]Any die[/color] -> Remove [color=orange]lock[/color] from grid location"
-side_label_text = ""
 metadata/_custom_type_script = "uid://c6ldtha2c8w0x"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_e3rgw"]
@@ -464,7 +459,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hnksu")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 32.0
 }]
@@ -472,41 +467,41 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4i5sk"]
 size = Vector2(22, 24)
 
-[node name="LockoutStatus" type="Node2D"]
+[node name="LockoutStatus" type="Node2D" unique_id=253451447]
 z_index = 8
 script = ExtResource("1_aran3")
 on_lockout_disabled_effects = SubResource("Resource_sjsqf")
 status_info = SubResource("Resource_ej6cm")
 status_effect_priority = 10
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1115263158]
 position = Vector2(0.5, 2)
 sprite_frames = SubResource("SpriteFrames_k7eit")
 autoplay = "default"
 frame_progress = 0.034234
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=156150294]
 self_modulate = Color(1, 1, 1, 0.964706)
 position = Vector2(0.5, 0)
 texture = ExtResource("4_p13k7")
 
-[node name="Draggable" type="Area2D" parent="Sprite2D"]
+[node name="Draggable" type="Area2D" parent="Sprite2D" unique_id=1282123185]
 script = ExtResource("3_fm2hp")
 dragging_allowed = false
 bob_amplitude = 1.0
 drift_amplitude = 1.5
 metadata/_custom_type_script = "uid://rytyjuniumym"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/Draggable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sprite2D/Draggable" unique_id=1576286961]
 position = Vector2(-0.5, 0)
 shape = SubResource("RectangleShape2D_4i5sk")
 
-[node name="Clickable" type="Area2D" parent="."]
+[node name="Clickable" type="Area2D" parent="." unique_id=1724079074]
 z_index = 5
 script = ExtResource("11_vtk50")
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable" unique_id=1106217618]
 shape = SubResource("RectangleShape2D_4i5sk")
 
 [connection signal="clicked" from="Clickable" to="." method="show_info"]

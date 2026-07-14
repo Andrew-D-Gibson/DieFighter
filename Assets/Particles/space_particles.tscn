@@ -1,4 +1,4 @@
-[gd_scene load_steps=4 format=3 uid="uid://brc5ax0i3wo0x"]
+[gd_scene format=3 uid="uid://brc5ax0i3wo0x"]
 
 [ext_resource type="Texture2D" uid="uid://dxt4n66ly4acv" path="res://Assets/Particles/dust_particle.png" id="1_7cv2c"]
 
@@ -9,7 +9,7 @@ colors = PackedColorArray(1, 1, 1, 0.227451, 0.807843, 0.945098, 0.94902, 1, 0.8
 [sub_resource type="Gradient" id="Gradient_w48qg"]
 colors = PackedColorArray(0.8075, 0.94525, 0.95, 0, 0.8075, 0.94525, 0.95, 0.333333)
 
-[node name="SpaceParticles" type="CPUParticles2D"]
+[node name="SpaceParticles" type="CPUParticles2D" unique_id=245391716]
 z_index = -100
 amount = 24
 texture = ExtResource("1_7cv2c")

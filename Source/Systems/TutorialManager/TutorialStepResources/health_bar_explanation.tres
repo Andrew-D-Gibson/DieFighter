@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" load_steps=5 format=3 uid="uid://deq8x1n2udg5r"]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://deq8x1n2udg5r"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_t2d1g"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_8aqel"]
@@ -9,13 +9,6 @@
 script = ExtResource("2_8aqel")
 tutorial_text = "[color=red]Hull[/color] below optimal threshold. Sustained [color=red]damage[/color] will trigger mission failure."
 text_position = Vector2(88, 78)
-time_delay = 0.0
-forced_dice = Array[int]([])
-forced_enemy_actions = Array[ExtResource("1_t2d1g")]([])
-forced_rewards = Array[ExtResource("2_eidie")]([])
-open_on_signal = 0
 close_on_signal = 1
-tutorial_function = 0
-time_to_auto_close = 0.0
 highlight_texture = ExtResource("3_eidie")
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

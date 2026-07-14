@@ -1,6 +1,6 @@
-[gd_scene load_steps=9 format=3 uid="uid://c8g3ud6esb1yp"]
+[gd_scene format=3 uid="uid://c8g3ud6esb1yp"]
 
-[ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/EngineCharger/engine_charger.gd" id="1_ptjxd"]
+[ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="1_ptjxd"]
 [ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="2_d5a6q"]
 [ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/MapTileResources/engine_charger.tres" id="3_3l03o"]
 [ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="4_srypw"]
@@ -9,19 +9,19 @@
 [ext_resource type="Texture2D" uid="uid://bmnlxtlwmxtue" path="res://Assets/Textures/MainViewer/EngineCharger/charged.png" id="7_g071x"]
 [ext_resource type="Texture2D" uid="uid://dcp4x2igagi4m" path="res://Assets/Textures/MainViewer/EngineCharger/fill_head.png" id="8_5fisp"]
 
-[node name="EngineCharger" type="Node2D" node_paths=PackedStringArray("progress_bar", "fill_head", "charged_indicator", "display_text")]
+[node name="EngineCharger" type="Node2D" unique_id=1166741441 node_paths=PackedStringArray("progress_bar", "fill_head", "charged_indicator", "display_text")]
 script = ExtResource("1_ptjxd")
 progress_bar = NodePath("TextureProgressBar")
 fill_head = NodePath("FillHead")
 charged_indicator = NodePath("ChargedIndicator")
 display_text = NodePath("RichTextLabel")
 
-[node name="EngineChargerTile" parent="." instance=ExtResource("2_d5a6q")]
+[node name="EngineChargerTile" parent="." unique_id=1490902661 instance=ExtResource("2_d5a6q")]
 z_index = 1
 position = Vector2(60, 29)
 tile_resource = ExtResource("3_3l03o")
 
-[node name="ParticleMask" type="Control" parent="EngineChargerTile"]
+[node name="ParticleMask" type="Control" parent="EngineChargerTile" unique_id=1795459174]
 clip_contents = true
 layout_mode = 3
 anchors_preset = 0
@@ -31,11 +31,11 @@ offset_right = 11.0
 offset_bottom = 12.0
 mouse_filter = 2
 
-[node name="LargeEngineParticles" parent="EngineChargerTile/ParticleMask" instance=ExtResource("4_srypw")]
+[node name="LargeEngineParticles" parent="EngineChargerTile/ParticleMask" unique_id=777707371 instance=ExtResource("4_srypw")]
 z_index = -1
 position = Vector2(11, 10)
 
-[node name="TextureProgressBar" type="TextureProgressBar" parent="."]
+[node name="TextureProgressBar" type="TextureProgressBar" parent="." unique_id=1512065573]
 z_index = -2
 offset_left = 52.0
 offset_top = -31.0
@@ -47,16 +47,16 @@ fill_mode = 3
 texture_under = ExtResource("5_gal8c")
 texture_progress = ExtResource("6_o4bhs")
 
-[node name="ChargedIndicator" type="Sprite2D" parent="."]
+[node name="ChargedIndicator" type="Sprite2D" parent="." unique_id=983400561]
 z_index = -1
 position = Vector2(60, -14)
 texture = ExtResource("7_g071x")
 
-[node name="FillHead" type="Sprite2D" parent="."]
+[node name="FillHead" type="Sprite2D" parent="." unique_id=1727511662]
 position = Vector2(60, 2)
 texture = ExtResource("8_5fisp")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=470088481]
 offset_left = 49.0
 offset_top = 2.0
 offset_right = 73.0

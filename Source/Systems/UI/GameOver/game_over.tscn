@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b4bhqmwyiaq22"]
+[gd_scene format=3 uid="uid://b4bhqmwyiaq22"]
 
 [ext_resource type="Script" uid="uid://bs4wmdp5e1fwu" path="res://Source/Systems/UI/GameOver/game_over.gd" id="1_i78pc"]
 [ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="1_p6ygr"]
@@ -16,12 +16,12 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e7dir")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
 
-[node name="GameOver" type="Control"]
+[node name="GameOver" type="Control" unique_id=663341466]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -30,7 +30,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_i78pc")
 
-[node name="ScreenDim" type="ColorRect" parent="."]
+[node name="ScreenDim" type="ColorRect" parent="." unique_id=1175379789]
 z_index = -1
 layout_mode = 1
 anchors_preset = 15
@@ -40,7 +40,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.0156863, 0.00784314, 0.0901961, 0.913725)
 
-[node name="EndStateLabel" type="RichTextLabel" parent="."]
+[node name="EndStateLabel" type="RichTextLabel" parent="." unique_id=970167373]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(1920, 360)
 layout_mode = 1
@@ -60,7 +60,7 @@ text = "[color=#d03656][wave amp=30.0 freq=5.0 connected=1]GAME OVER[/wave][/col
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=520586657]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -75,22 +75,21 @@ grow_horizontal = 2
 grow_vertical = 0
 scale = Vector2(6, 6)
 
-[node name="MainMenuButton" parent="VBoxContainer" instance=ExtResource("3_ah4je")]
+[node name="MainMenuButton" parent="VBoxContainer" unique_id=485168376 instance=ExtResource("3_ah4je")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/MainMenuButton" index="1"]
+[node name="RichTextLabel" parent="VBoxContainer/MainMenuButton" index="1" unique_id=604948362]
 text = "MAIN MENU"
 
-[node name="QuitButton" parent="VBoxContainer" instance=ExtResource("3_ah4je")]
+[node name="QuitButton" parent="VBoxContainer" unique_id=1031918727 instance=ExtResource("3_ah4je")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1"]
+[node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1" unique_id=604948362]
 text = "QUIT"
 
-[node name="ButtonRotator" type="Control" parent="."]
-layout_mode = 3
+[node name="ButtonRotator" type="Control" parent="." unique_id=2120935718]
 anchors_preset = 0
 offset_left = 964.0
 offset_top = 895.0
@@ -99,7 +98,7 @@ offset_bottom = 935.0
 scale = Vector2(6, 6)
 script = ExtResource("4_t5hyd")
 
-[node name="WishlistButton" parent="ButtonRotator" instance=ExtResource("3_ah4je")]
+[node name="WishlistButton" parent="ButtonRotator" unique_id=271333247 instance=ExtResource("3_ah4je")]
 z_index = 5
 layout_mode = 0
 offset_left = -27.0
@@ -108,10 +107,10 @@ offset_right = 29.0
 offset_bottom = 8.0
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
-[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="0"]
+[node name="AnimatedSprite2D" parent="ButtonRotator/WishlistButton" index="0" unique_id=937158098]
 sprite_frames = SubResource("SpriteFrames_t5hyd")
 
-[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1"]
+[node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1" unique_id=604948362]
 text = "WISHLIST"
 
 [connection signal="pressed_within_window" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]

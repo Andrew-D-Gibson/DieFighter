@@ -1,4 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://dibev0u6b8v1v"]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://dibev0u6b8v1v"]
 
 [ext_resource type="Shader" uid="uid://bk68h8t4gcyqc" path="res://Assets/Shaders/holographic_dice_highlight.gdshader" id="1_b7fhw"]
 

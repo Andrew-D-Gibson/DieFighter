@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://7ssdo2r7vrek"]
+[gd_scene format=3 uid="uid://7ssdo2r7vrek"]
 
 [ext_resource type="Script" uid="uid://b3gfadyybvn41" path="res://Source/Systems/UI/Buttons/button.gd" id="1_njnp2"]
 [ext_resource type="Texture2D" uid="uid://bmw7ahbjskxea" path="res://Assets/Textures/UI/Buttons/button_medium_red.png" id="2_njnp2"]
@@ -13,29 +13,29 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_njnp2")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
 
-[node name="MediumButton" type="Button"]
+[node name="MediumButton" type="Button" unique_id=1154003470]
 custom_minimum_size = Vector2(56, 14)
 size_flags_vertical = 3
 focus_mode = 0
-theme_override_colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
-theme_override_colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
-theme_override_colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
 theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
 theme_override_colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
+theme_override_colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+theme_override_colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
 theme_override_font_sizes/font_size = 24
 flat = true
 script = ExtResource("1_njnp2")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=937158098]
 position = Vector2(28, 7)
 sprite_frames = SubResource("SpriteFrames_8hi34")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=604948362]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

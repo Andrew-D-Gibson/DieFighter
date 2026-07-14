@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="RandomBackgroundResource" load_steps=7 format=3 uid="uid://cqfp1oeq0ptls"]
+[gd_resource type="Resource" script_class="RandomBackgroundResource" format=3 uid="uid://cqfp1oeq0ptls"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_3s5r3"]
 [ext_resource type="Resource" uid="uid://dx0lfddfuacuv" path="res://Source/Resources/BackgroundResources/blue_nebula.tres" id="2_1uew3"]
@@ -10,6 +10,4 @@
 [resource]
 script = ExtResource("2_pi16q")
 eligible_backgrounds = Array[ExtResource("1_3s5r3")]([ExtResource("2_1uew3"), ExtResource("3_dm83u"), ExtResource("4_oym7p"), ExtResource("5_b2ggj")])
-reselect_on_scenario_load = true
-reselect_on_manual_background_change = false
 metadata/_custom_type_script = "uid://3roroso3mo17"

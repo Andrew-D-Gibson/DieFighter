@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=30 format=3 uid="uid://b864u5yojhw1v"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://b864u5yojhw1v"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_lhf16"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_il266"]
@@ -13,12 +13,12 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="11_rf4wt"]
 [ext_resource type="Script" uid="uid://oi6ed2m5o7hj" path="res://Source/Content/Effects/TileDataChangers/increment_tile_data_effect.gd" id="12_bfst3"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="13_eqpeb"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="13_il266"]
 [ext_resource type="Texture2D" uid="uid://b3m2kwdglr6qg" path="res://Assets/Textures/Tiles/RedTiles/inertial_feedback.png" id="14_yie10"]
 
 [sub_resource type="Resource" id="Resource_g6dxp"]
 script = ExtResource("1_lhf16")
 type = 3
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_fql6y"]
@@ -30,18 +30,14 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 [sub_resource type="Resource" id="Resource_ofxoy"]
 script = ExtResource("3_by82y")
 tile_data_key = "tiles_moved"
-primary_effect = false
 metadata/_custom_type_script = "uid://cttcer3sti4mw"
 
 [sub_resource type="Resource" id="Resource_la8x5"]
 script = ExtResource("4_on7qy")
-primary_effect = false
 metadata/_custom_type_script = "uid://dqn400nan6csk"
 
 [sub_resource type="Resource" id="Resource_nau2i"]
 script = ExtResource("5_2lbuo")
-amount = 0
-inherit_die_amount = false
 primary_effect = true
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
 
@@ -50,24 +46,19 @@ script = ExtResource("6_re5a2")
 color = Color(0.886275, 0.262745, 0.419608, 1)
 amount = 48
 location = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_42vy7"]
 script = ExtResource("7_x7733")
 tile_data_key = "tiles_moved"
-value = 0
-primary_effect = false
 metadata/_custom_type_script = "uid://diu3gmqfwq03x"
 
 [sub_resource type="Resource" id="Resource_0k58p"]
 script = ExtResource("8_5lqqr")
-primary_effect = false
 metadata/_custom_type_script = "uid://wmvgjnwdtv3h"
 
 [sub_resource type="Resource" id="Resource_le350"]
 script = ExtResource("9_sdffa")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_ioiq2"]
@@ -84,7 +75,6 @@ metadata/_custom_type_script = "uid://cfken75wevu1a"
 [sub_resource type="Resource" id="Resource_2qpsl"]
 script = ExtResource("12_bfst3")
 tile_data_key = "tiles_moved"
-primary_effect = false
 metadata/_custom_type_script = "uid://oi6ed2m5o7hj"
 
 [sub_resource type="Resource" id="Resource_sjv0n"]
@@ -102,7 +92,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_gc5g0")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -110,9 +100,7 @@ animations = [{
 [resource]
 script = ExtResource("13_eqpeb")
 tile_name = "[color=red]Inertial Feedback[/color]"
-activation_description = ""
 description = "(die_6) -> Deal [color=red]1 damage[/color] to [color=purple]all other ships[/color] per tile moved ([data]tiles_moved[/data]), then reset. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
-hint_text = ""
 rarity = 2
 textures = SubResource("SpriteFrames_abjp1")
 uses_per_combat = -1
@@ -121,6 +109,4 @@ effect_chain = SubResource("Resource_ioiq2")
 event_responses = Dictionary[ExtResource("11_rf4wt"), ExtResource("10_mv5lu")]({
 SubResource("Resource_ypikh"): SubResource("Resource_sjv0n")
 })
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

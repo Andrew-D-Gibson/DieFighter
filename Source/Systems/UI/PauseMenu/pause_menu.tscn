@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ch8tnilu0m0y2"]
+[gd_scene format=3 uid="uid://ch8tnilu0m0y2"]
 
 [ext_resource type="Script" uid="uid://box16f7bwvjdq" path="res://Source/Systems/UI/PauseMenu/pause_menu.gd" id="1_v5isj"]
 [ext_resource type="Texture2D" uid="uid://b1pexc43hpyj6" path="res://Assets/Textures/UI/PauseMenu/pause_menu_background.png" id="2_47dr1"]
@@ -17,20 +17,20 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_je6uh")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
 
-[node name="PauseMenu" type="Node2D"]
+[node name="PauseMenu" type="Node2D" unique_id=1268070452]
 process_mode = 3
 z_index = 25
 script = ExtResource("1_v5isj")
 
-[node name="Background" type="Sprite2D" parent="."]
+[node name="Background" type="Sprite2D" parent="." unique_id=1312989740]
 texture = ExtResource("2_47dr1")
 
-[node name="ScreenDim" type="ColorRect" parent="."]
+[node name="ScreenDim" type="ColorRect" parent="." unique_id=2092294944]
 z_index = -1
 custom_minimum_size = Vector2(320, 180)
 anchors_preset = 15
@@ -40,7 +40,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.027451, 0.0117647, 0.054902, 0.827451)
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1135446353]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -58,7 +58,7 @@ text = "PAUSED"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1440311107]
 z_index = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -75,47 +75,47 @@ size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 
-[node name="MainMenuButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+[node name="MainMenuButton" parent="VBoxContainer" unique_id=225309671 instance=ExtResource("3_47dr1")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/MainMenuButton" index="1"]
+[node name="RichTextLabel" parent="VBoxContainer/MainMenuButton" index="1" unique_id=604948362]
 offset_left = 1.0
 offset_right = 1.0
 text = "MAIN MENU"
 
-[node name="OptionsButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+[node name="OptionsButton" parent="VBoxContainer" unique_id=432747201 instance=ExtResource("3_47dr1")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="1"]
+[node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="1" unique_id=604948362]
 offset_left = 0.5
 offset_right = 0.5
 text = "OPTIONS"
 
-[node name="SaveAndQuitButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+[node name="SaveAndQuitButton" parent="VBoxContainer" unique_id=1734373014 instance=ExtResource("3_47dr1")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/SaveAndQuitButton" index="1"]
+[node name="RichTextLabel" parent="VBoxContainer/SaveAndQuitButton" index="1" unique_id=604948362]
 text = "SAVE & QUIT"
 
-[node name="Control" type="Control" parent="VBoxContainer"]
+[node name="Control" type="Control" parent="VBoxContainer" unique_id=760457039]
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
 
-[node name="WishlistButton" parent="VBoxContainer" instance=ExtResource("3_47dr1")]
+[node name="WishlistButton" parent="VBoxContainer" unique_id=517660034 instance=ExtResource("3_47dr1")]
 z_index = 5
 layout_mode = 2
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
-[node name="AnimatedSprite2D" parent="VBoxContainer/WishlistButton" index="0"]
+[node name="AnimatedSprite2D" parent="VBoxContainer/WishlistButton" index="0" unique_id=937158098]
 sprite_frames = SubResource("SpriteFrames_t55r5")
 
-[node name="RichTextLabel" parent="VBoxContainer/WishlistButton" index="1"]
+[node name="RichTextLabel" parent="VBoxContainer/WishlistButton" index="1" unique_id=604948362]
 text = "WISHLIST"
 
-[node name="CloseButton" parent="." instance=ExtResource("6_je6uh")]
+[node name="CloseButton" parent="." unique_id=1858079244 instance=ExtResource("6_je6uh")]
 z_index = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -130,10 +130,10 @@ grow_horizontal = 2
 grow_vertical = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="CloseButton" index="1"]
+[node name="RichTextLabel" parent="CloseButton" index="1" unique_id=736292026]
 text = "CLOSE"
 
-[node name="OptionsMenu" parent="." instance=ExtResource("5_o4gq4")]
+[node name="OptionsMenu" parent="." unique_id=888101751 instance=ExtResource("5_o4gq4")]
 unique_name_in_owner = true
 visible = false
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=65 format=3 uid="uid://b5qwpdwbg4isw"]
+[gd_scene format=3 uid="uid://b5qwpdwbg4isw"]
 
 [ext_resource type="Texture2D" uid="uid://dx8j15amhhjla" path="res://Assets/SpriteMancer/EnemyDeathExplosion/explosion_37x37.png" id="1_5m3w0"]
 
@@ -425,7 +425,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_7y1a0")
 }],
-"loop": false,
+"loop": 0,
 "name": &"default",
 "speed": 24.0
 }]
@@ -452,14 +452,12 @@ _data = {
 &"destroy_after_playing": SubResource("Animation_5m3w0")
 }
 
-[node name="EnemyDeathExplosion" type="AnimatedSprite2D"]
+[node name="EnemyDeathExplosion" type="AnimatedSprite2D" unique_id=1952869326]
 sprite_frames = SubResource("SpriteFrames_c3rim")
 autoplay = "default"
 frame = 59
 frame_progress = 1.0
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_amhix")
-}
-autoplay = "destroy_after_playing"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=863743913]
+libraries/ = SubResource("AnimationLibrary_amhix")
+autoplay = &"destroy_after_playing"

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="BackgroundResource" load_steps=2 format=3 uid="uid://sk166eerw6ax"]
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://sk166eerw6ax"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
 

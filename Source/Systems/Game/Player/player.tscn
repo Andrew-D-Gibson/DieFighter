@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cf2seb35hnl52"]
+[gd_scene format=3 uid="uid://cf2seb35hnl52"]
 
 [ext_resource type="Script" uid="uid://d0qn1tyjsj7l6" path="res://Source/Systems/Game/Player/player.gd" id="1_86t7d"]
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="1_k7v53"]
@@ -33,21 +33,21 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fwbvc")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
 
-[node name="Player" type="Node2D"]
+[node name="Player" type="Node2D" unique_id=1138495770]
 material = SubResource("ShaderMaterial_0xxso")
 script = ExtResource("1_86t7d")
 dice_scene = ExtResource("2_lwstl")
 
-[node name="DiceQueue" parent="." instance=ExtResource("3_fnkf6")]
+[node name="DiceQueue" parent="." unique_id=1927871002 instance=ExtResource("3_fnkf6")]
 unique_name_in_owner = true
 position = Vector2(26, 58)
 
-[node name="EndTurnButton" parent="DiceQueue" instance=ExtResource("5_0xxso")]
+[node name="EndTurnButton" parent="DiceQueue" unique_id=1668475781 instance=ExtResource("5_0xxso")]
 unique_name_in_owner = true
 offset_left = 47.0
 offset_top = -6.0
@@ -65,13 +65,13 @@ sprite_frames = SubResource("SpriteFrames_jbhgu")
 theme_override_colors/default_color = Color(0.27451, 0.235294, 0.568627, 1)
 text = "END TURN"
 
-[node name="Health" parent="." instance=ExtResource("4_da5gb")]
+[node name="Health" parent="." unique_id=214905144 instance=ExtResource("4_da5gb")]
 unique_name_in_owner = true
 position = Vector2(34, -24)
 max_health = 16
 starting_health = 16
 
-[node name="PlayerHealthBar" parent="." node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
+[node name="PlayerHealthBar" parent="." unique_id=924294972 node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
 position = Vector2(-22, 21)
 health_component = NodePath("../Health")
 

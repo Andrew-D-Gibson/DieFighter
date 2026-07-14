@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="SoundEffectResource" load_steps=3 format=3 uid="uid://dmov75b4snh4y"]
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3 uid="uid://dmov75b4snh4y"]
 
 [ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_6gwom"]
 [ext_resource type="AudioStream" uid="uid://3ndcad6svi02" path="res://Assets/Sounds/Tiles/tile_dropped_click.wav" id="2_x3khs"]
@@ -11,8 +11,4 @@ sound_effect = ExtResource("2_x3khs")
 volume = -5.0
 pitch_scale = 0.7
 pitch_randomness = 0.05
-enable_pitch_escalation = false
-max_pitch_escalation = 2.0
-pitch_escalation_step = 0.1
-quick_play_threshold = 0.5
 metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

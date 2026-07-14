@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" load_steps=5 format=3 uid="uid://ck6sl4lr1jqa8"]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://ck6sl4lr1jqa8"]
 
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="2_tyfvd"]
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_kf7lg"]
@@ -9,7 +9,6 @@
 script = ExtResource("2_tyfvd")
 dialogue = "Thanks for the assist!"
 faction = 1
-attitude = 0
 transitions = Dictionary[int, ExtResource("3_kf7lg")]({
 1: ExtResource("5_7x0hr"),
 2: ExtResource("5_7x0hr"),

@@ -1,4 +1,4 @@
-[gd_scene load_steps=73 format=3 uid="uid://bwpi06v2hllam"]
+[gd_scene format=3 uid="uid://bwpi06v2hllam"]
 
 [ext_resource type="Texture2D" uid="uid://b2lirw6ocg6yq" path="res://Assets/SpriteMancer/FateOrbParticles/fate_orb_particles_map.png" id="1_xppuj"]
 [ext_resource type="Texture2D" uid="uid://gtjwupp5ahvo" path="res://Assets/Textures/Fate/fate_blackness_map-Sheet.png" id="2_asjyg"]
@@ -426,7 +426,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_pitu7")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 30.0
 }]
@@ -490,18 +490,18 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_sqc4y")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 12.0
 }]
 
-[node name="FateAnimatedSprite" type="AnimatedSprite2D"]
+[node name="FateAnimatedSprite" type="AnimatedSprite2D" unique_id=1069254216]
 z_index = 4
 sprite_frames = SubResource("SpriteFrames_u27r5")
 autoplay = "default"
 frame_progress = 0.142846
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1284525966]
 z_index = -1
 position = Vector2(-2, 1)
 sprite_frames = SubResource("SpriteFrames_f7p8m")

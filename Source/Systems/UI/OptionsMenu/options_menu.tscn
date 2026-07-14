@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://c7hyjenhhnsah"]
+[gd_scene format=3 uid="uid://c7hyjenhhnsah"]
 
 [ext_resource type="Script" uid="uid://b3278n4xjt53b" path="res://Source/Systems/UI/OptionsMenu/options_menu.gd" id="1_c6430"]
 [ext_resource type="PackedScene" uid="uid://6l4ixooaa16q" path="res://Source/Systems/UI/OptionsMenu/options_saving_manager.tscn" id="2_okq5w"]
@@ -41,19 +41,19 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_bv108")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ajqpr"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_efhff"]
 texture = ExtResource("7_ivkwq")
 texture_margin_left = 2.0
 texture_margin_top = 2.0
 texture_margin_right = 2.0
 texture_margin_bottom = 2.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p11be"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ajqpr"]
 texture = ExtResource("7_ivkwq")
 texture_margin_left = 2.0
 texture_margin_top = 2.0
@@ -67,7 +67,7 @@ texture_margin_top = 2.0
 texture_margin_right = 2.0
 texture_margin_bottom = 2.0
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_efhff"]
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_p11be"]
 texture = ExtResource("7_ivkwq")
 texture_margin_left = 2.0
 texture_margin_top = 2.0
@@ -84,7 +84,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_ajqpr")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -107,17 +107,17 @@ bg_color = Color(0.298039, 0.458824, 0.12549, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ywcti"]
 bg_color = Color(0.478431, 0.741176, 0.2, 1)
 
-[node name="OptionsMenu" type="Node2D" node_paths=PackedStringArray("_game_options", "_graphics_options", "_audio_options")]
+[node name="OptionsMenu" type="Node2D" unique_id=514917683 node_paths=PackedStringArray("_game_options", "_graphics_options", "_audio_options")]
 z_index = 15
 script = ExtResource("1_c6430")
 _game_options = NodePath("GameOptions")
 _graphics_options = NodePath("GraphicsOptions")
 _audio_options = NodePath("AudioOptions")
 
-[node name="OptionsSavingManager" parent="." instance=ExtResource("2_okq5w")]
+[node name="OptionsSavingManager" parent="." unique_id=70754641 instance=ExtResource("2_okq5w")]
 unique_name_in_owner = true
 
-[node name="ScreenDim" type="ColorRect" parent="."]
+[node name="ScreenDim" type="ColorRect" parent="." unique_id=1659694118]
 custom_minimum_size = Vector2(320, 180)
 anchors_preset = 15
 anchor_right = 1.0
@@ -126,18 +126,18 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.027451, 0.0117647, 0.054902, 0.827451)
 
-[node name="Background" type="AnimatedSprite2D" parent="."]
+[node name="Background" type="AnimatedSprite2D" parent="." unique_id=711186457]
 unique_name_in_owner = true
 sprite_frames = SubResource("SpriteFrames_c6430")
 
-[node name="TabButtons" type="Control" parent="."]
+[node name="TabButtons" type="Control" parent="." unique_id=1807695642]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 mouse_filter = 2
 
-[node name="GameTabButton" parent="TabButtons" instance=ExtResource("3_smy8a")]
+[node name="GameTabButton" parent="TabButtons" unique_id=1774172196 instance=ExtResource("3_smy8a")]
 layout_mode = 0
 offset_left = -91.0
 offset_top = -54.0
@@ -145,13 +145,13 @@ offset_right = -56.0
 offset_bottom = -42.0
 hover_text_color = Color(0.94902, 0.611765, 0.364706, 1)
 
-[node name="AnimatedSprite2D" parent="TabButtons/GameTabButton" index="0"]
+[node name="AnimatedSprite2D" parent="TabButtons/GameTabButton" index="0" unique_id=1965609641]
 sprite_frames = null
 
-[node name="RichTextLabel" parent="TabButtons/GameTabButton" index="1"]
+[node name="RichTextLabel" parent="TabButtons/GameTabButton" index="1" unique_id=736292026]
 text = "GAME"
 
-[node name="GraphicsTabButton" parent="TabButtons" instance=ExtResource("3_smy8a")]
+[node name="GraphicsTabButton" parent="TabButtons" unique_id=737660482 instance=ExtResource("3_smy8a")]
 layout_mode = 0
 offset_left = -18.0
 offset_top = -54.0
@@ -159,13 +159,13 @@ offset_right = 17.0
 offset_bottom = -42.0
 hover_text_color = Color(0.478431, 0.741176, 0.2, 1)
 
-[node name="AnimatedSprite2D" parent="TabButtons/GraphicsTabButton" index="0"]
+[node name="AnimatedSprite2D" parent="TabButtons/GraphicsTabButton" index="0" unique_id=1965609641]
 sprite_frames = null
 
-[node name="RichTextLabel" parent="TabButtons/GraphicsTabButton" index="1"]
+[node name="RichTextLabel" parent="TabButtons/GraphicsTabButton" index="1" unique_id=736292026]
 text = "GRAPHICS"
 
-[node name="AudioTabButton" parent="TabButtons" instance=ExtResource("3_smy8a")]
+[node name="AudioTabButton" parent="TabButtons" unique_id=1905924503 instance=ExtResource("3_smy8a")]
 layout_mode = 0
 offset_left = 55.0
 offset_top = -54.0
@@ -173,49 +173,49 @@ offset_right = 90.0
 offset_bottom = -42.0
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
-[node name="AnimatedSprite2D" parent="TabButtons/AudioTabButton" index="0"]
+[node name="AnimatedSprite2D" parent="TabButtons/AudioTabButton" index="0" unique_id=1965609641]
 sprite_frames = null
 
-[node name="RichTextLabel" parent="TabButtons/AudioTabButton" index="1"]
+[node name="RichTextLabel" parent="TabButtons/AudioTabButton" index="1" unique_id=736292026]
 text = "AUDIO"
 
-[node name="GameOptions" type="VBoxContainer" parent="."]
+[node name="GameOptions" type="VBoxContainer" parent="." unique_id=87589770]
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
 offset_bottom = 54.0
 
-[node name="MarginContainer" type="MarginContainer" parent="GameOptions"]
+[node name="MarginContainer" type="MarginContainer" parent="GameOptions" unique_id=678890410]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 4
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GameOptions/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOptions/MarginContainer" unique_id=1550412093]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=636573899]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="AnimationSpeedLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="AnimationSpeedLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer" unique_id=569465265]
 custom_minimum_size = Vector2(60, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 text = "Animation Speed"
 vertical_alignment = 1
 
-[node name="AnimationSpeedOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="AnimationSpeedOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer" unique_id=752752917]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
-theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
-theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
 theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
 theme_override_icons/arrow = ExtResource("8_vuhip")
 alignment = 2
 selected = 1
@@ -230,28 +230,28 @@ popup/item_2/id = 1
 popup/item_3/text = "4x"
 popup/item_3/id = 2
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=1391445222]
 visible = false
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="TextSpeedLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="TextSpeedLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1106876605]
 custom_minimum_size = Vector2(46, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 text = "Text Speed"
 vertical_alignment = 1
 
-[node name="TextSpeedOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2"]
+[node name="TextSpeedOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=729985805]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
-theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
-theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
 theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
 theme_override_icons/arrow = ExtResource("8_vuhip")
 alignment = 1
 selected = 1
@@ -266,26 +266,26 @@ popup/item_2/id = 1
 popup/item_3/text = "Instant"
 popup/item_3/id = 2
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=660029667]
 layout_mode = 2
 size_flags_vertical = 4
 
-[node name="LanguageLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3"]
+[node name="LanguageLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=918371576]
 custom_minimum_size = Vector2(49.44, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 text = "Language"
 vertical_alignment = 1
 
-[node name="LanguageOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3"]
+[node name="LanguageOptionButton" type="OptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=902666919]
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
-theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
-theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
 theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
 theme_override_icons/arrow = ExtResource("8_vuhip")
 alignment = 2
 selected = 0
@@ -294,11 +294,11 @@ item_count = 1
 popup/item_0/text = "English"
 popup/item_0/id = 2
 
-[node name="Control" type="Control" parent="GameOptions/MarginContainer/VBoxContainer"]
+[node name="Control" type="Control" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=1407712527]
 custom_minimum_size = Vector2(0, 28.785)
 layout_mode = 2
 
-[node name="ResetDataButton" parent="GameOptions/MarginContainer/VBoxContainer" instance=ExtResource("9_k3iob")]
+[node name="ResetDataButton" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=1389959839 instance=ExtResource("9_k3iob")]
 visible = false
 layout_mode = 2
 size_flags_horizontal = 0
@@ -306,38 +306,38 @@ size_flags_vertical = 8
 button_size = 2
 hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
-[node name="AnimatedSprite2D" parent="GameOptions/MarginContainer/VBoxContainer/ResetDataButton" index="0"]
+[node name="AnimatedSprite2D" parent="GameOptions/MarginContainer/VBoxContainer/ResetDataButton" index="0" unique_id=937158098]
 sprite_frames = SubResource("SpriteFrames_p11be")
 
-[node name="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/ResetDataButton" index="1"]
+[node name="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/ResetDataButton" index="1" unique_id=604948362]
 text = "RESET DATA"
 
-[node name="GraphicsOptions" type="VBoxContainer" parent="."]
+[node name="GraphicsOptions" type="VBoxContainer" parent="." unique_id=1430400615]
 visible = false
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
 offset_bottom = 54.0
 
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions" unique_id=501420052]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_top = 2
 theme_override_constants/margin_bottom = -13
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer" unique_id=2071541625]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer" unique_id=1575313112]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1657045710]
 layout_mode = 2
 alignment = 1
 
-[node name="FullscreenLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="FullscreenLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1527266874]
 custom_minimum_size = Vector2(48, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
@@ -345,14 +345,14 @@ text = "Fullscreen"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer" unique_id=1945016812]
 layout_mode = 2
 theme_override_constants/margin_left = -4
 theme_override_constants/margin_top = -4
 theme_override_constants/margin_right = -4
 theme_override_constants/margin_bottom = -4
 
-[node name="FullscreenCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer"]
+[node name="FullscreenCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer" unique_id=1636645160]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
@@ -360,10 +360,10 @@ theme_override_icons/checked = ExtResource("5_nleqt")
 theme_override_icons/unchecked = ExtResource("6_oqkfw")
 flat = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1298998385]
 layout_mode = 2
 
-[node name="ScaleLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="ScaleLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1929873369]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(48, 16)
 layout_mode = 2
@@ -372,16 +372,16 @@ text = "Scale"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="ScaleOptionButton" type="OptionButton" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+[node name="ScaleOptionButton" type="OptionButton" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2" unique_id=1667188204]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 theme_override_colors/font_color = Color(0.815686, 0.211765, 0.337255, 1)
-theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
-theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
 theme_override_styles/normal = SubResource("StyleBoxTexture_efhff")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_ajqpr")
+theme_override_styles/hover = SubResource("StyleBoxTexture_0bdbe")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_p11be")
+theme_override_styles/focus = SubResource("StyleBoxTexture_ajqpr")
 theme_override_icons/arrow = ExtResource("8_vuhip")
 alignment = 2
 selected = 2
@@ -402,11 +402,11 @@ popup/item_5/id = 6
 popup/item_6/text = "12x"
 popup/item_6/id = 4
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer" unique_id=1744608176]
 layout_mode = 2
 alignment = 1
 
-[node name="VSyncLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3"]
+[node name="VSyncLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3" unique_id=2053071300]
 custom_minimum_size = Vector2(48, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
@@ -414,14 +414,14 @@ text = "V-Sync"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3" unique_id=966956117]
 layout_mode = 2
 theme_override_constants/margin_left = -4
 theme_override_constants/margin_top = -4
 theme_override_constants/margin_right = -4
 theme_override_constants/margin_bottom = -4
 
-[node name="VSyncCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/MarginContainer"]
+[node name="VSyncCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/MarginContainer" unique_id=1254335448]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
@@ -429,12 +429,12 @@ theme_override_icons/checked = ExtResource("5_nleqt")
 theme_override_icons/unchecked = ExtResource("6_oqkfw")
 flat = true
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer" unique_id=80156892]
 visible = false
 layout_mode = 2
 alignment = 1
 
-[node name="PixelFontLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
+[node name="PixelFontLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4" unique_id=418755946]
 custom_minimum_size = Vector2(48, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
@@ -442,28 +442,28 @@ text = "Pixel Font"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4" unique_id=1608518441]
 layout_mode = 2
 theme_override_constants/margin_left = -4
 theme_override_constants/margin_top = -4
 theme_override_constants/margin_right = -4
 theme_override_constants/margin_bottom = -4
 
-[node name="PixelFontCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer"]
+[node name="PixelFontCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer" unique_id=670009408]
 layout_mode = 2
 focus_mode = 0
 theme_override_icons/checked = ExtResource("5_nleqt")
 theme_override_icons/unchecked = ExtResource("6_oqkfw")
 flat = true
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer"]
+[node name="VBoxContainer2" type="VBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer" unique_id=472978437]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=123971541]
 layout_mode = 2
 alignment = 2
 
-[node name="ScreenshakeLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="ScreenshakeLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer" unique_id=2077889004]
 custom_minimum_size = Vector2(48, 0)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
@@ -471,14 +471,14 @@ text = "Screenshake"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer" unique_id=1505974283]
 layout_mode = 2
 theme_override_constants/margin_left = -4
 theme_override_constants/margin_top = -4
 theme_override_constants/margin_right = -4
 theme_override_constants/margin_bottom = -4
 
-[node name="ScreenshakeCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer"]
+[node name="ScreenshakeCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer" unique_id=1687580562]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
@@ -486,12 +486,12 @@ theme_override_icons/checked = ExtResource("7_go7dx")
 theme_override_icons/unchecked = ExtResource("8_7mi2c")
 flat = true
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=2023584860]
 visible = false
 layout_mode = 2
 alignment = 2
 
-[node name="PostProcessingLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2"]
+[node name="PostProcessingLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2" unique_id=1189254305]
 custom_minimum_size = Vector2(56.49, 0)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
@@ -499,39 +499,39 @@ text = "Postprocessing"
 horizontal_alignment = 2
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2" unique_id=1243409542]
 layout_mode = 2
 theme_override_constants/margin_left = -4
 theme_override_constants/margin_top = -4
 theme_override_constants/margin_right = -4
 theme_override_constants/margin_bottom = -4
 
-[node name="PostProcessingCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer"]
+[node name="PostProcessingCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer" unique_id=939475073]
 layout_mode = 2
 focus_mode = 0
 theme_override_icons/checked = ExtResource("7_go7dx")
 theme_override_icons/unchecked = ExtResource("8_7mi2c")
 flat = true
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=1895989177]
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 alignment = 2
 
-[node name="FPSLimitLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3"]
+[node name="FPSLimitLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3" unique_id=951251895]
 custom_minimum_size = Vector2(34.97, 0)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
 text = "FPS Limit"
 horizontal_alignment = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3"]
+[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3" unique_id=1737093705]
 layout_mode = 2
 theme_override_constants/margin_left = 0
 theme_override_constants/margin_top = 4
 theme_override_constants/margin_bottom = 4
 
-[node name="FPSLimitOptions" type="OptionButton" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3/MarginContainer"]
+[node name="FPSLimitOptions" type="OptionButton" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3/MarginContainer" unique_id=318360369]
 unique_name_in_owner = true
 clip_contents = true
 layout_mode = 2
@@ -551,19 +551,19 @@ popup/item_2/id = 2
 popup/item_3/text = "Unlimited"
 popup/item_3/id = 3
 
-[node name="AudioOptions" type="VBoxContainer" parent="."]
+[node name="AudioOptions" type="VBoxContainer" parent="." unique_id=1984659999]
 visible = false
 offset_left = -93.0
 offset_top = -42.0
 offset_right = 93.0
 offset_bottom = 54.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="AudioOptions"]
+[node name="HBoxContainer" type="HBoxContainer" parent="AudioOptions" unique_id=547964556]
 custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="GameVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer"]
+[node name="GameVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer" unique_id=817352307]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
@@ -571,7 +571,7 @@ bbcode_enabled = true
 text = "Game Volume"
 horizontal_alignment = 2
 
-[node name="GameVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer"]
+[node name="GameVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer" unique_id=202823635]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(122, 0)
 layout_mode = 2
@@ -584,7 +584,7 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
-[node name="GameVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer/GameVolumeSlider"]
+[node name="GameVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer/GameVolumeSlider" unique_id=1906159048]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -603,12 +603,12 @@ text = "50%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="AudioOptions"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="AudioOptions" unique_id=406371405]
 custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="MusicVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer2"]
+[node name="MusicVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer2" unique_id=723063502]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.262745, 0.65098, 0.988235, 1)
@@ -616,7 +616,7 @@ bbcode_enabled = true
 text = "Music Volume"
 horizontal_alignment = 2
 
-[node name="MusicVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer2"]
+[node name="MusicVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer2" unique_id=298341442]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(122, 0)
 layout_mode = 2
@@ -631,7 +631,7 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
-[node name="MusicVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer2/MusicVolumeSlider"]
+[node name="MusicVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer2/MusicVolumeSlider" unique_id=1746108324]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -650,12 +650,12 @@ text = "50%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="AudioOptions"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="AudioOptions" unique_id=736512123]
 custom_minimum_size = Vector2(0, 18)
 layout_mode = 2
 size_flags_vertical = 0
 
-[node name="SFXVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer3"]
+[node name="SFXVolumeLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer3" unique_id=668576046]
 custom_minimum_size = Vector2(60, 0)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
@@ -663,7 +663,7 @@ bbcode_enabled = true
 text = "SFX Volume"
 horizontal_alignment = 2
 
-[node name="SFXVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer3"]
+[node name="SFXVolumeSlider" type="HSlider" parent="AudioOptions/HBoxContainer3" unique_id=1662397422]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(122, 0)
 layout_mode = 2
@@ -678,7 +678,7 @@ max_value = 1.0
 step = 0.01
 value = 0.5
 
-[node name="SFXVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer3/SFXVolumeSlider"]
+[node name="SFXVolumeKnobLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer3/SFXVolumeSlider" unique_id=722545193]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -697,14 +697,14 @@ text = "50%"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="AudioOptions"]
+[node name="HBoxContainer4" type="HBoxContainer" parent="AudioOptions" unique_id=166923310]
 layout_mode = 2
 
-[node name="Control" type="Control" parent="AudioOptions/HBoxContainer4"]
+[node name="Control" type="Control" parent="AudioOptions/HBoxContainer4" unique_id=1357813291]
 custom_minimum_size = Vector2(6, 0)
 layout_mode = 2
 
-[node name="MuteAllLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer4"]
+[node name="MuteAllLabel" type="RichTextLabel" parent="AudioOptions/HBoxContainer4" unique_id=1538166187]
 custom_minimum_size = Vector2(64, 0)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
@@ -713,19 +713,19 @@ text = "Mute All Sounds"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="AudioOptions/HBoxContainer4"]
+[node name="MarginContainer" type="MarginContainer" parent="AudioOptions/HBoxContainer4" unique_id=66452461]
 layout_mode = 2
 theme_override_constants/margin_left = -4
 theme_override_constants/margin_top = -4
 theme_override_constants/margin_right = -4
 theme_override_constants/margin_bottom = -4
 
-[node name="MuteAllSoundsCheckBox" type="CheckBox" parent="AudioOptions/HBoxContainer4/MarginContainer"]
+[node name="MuteAllSoundsCheckBox" type="CheckBox" parent="AudioOptions/HBoxContainer4/MarginContainer" unique_id=1822870648]
 unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 
-[node name="CloseButton" parent="." instance=ExtResource("9_k3iob")]
+[node name="CloseButton" parent="." unique_id=1503886482 instance=ExtResource("9_k3iob")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -739,7 +739,7 @@ grow_horizontal = 2
 grow_vertical = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="CloseButton" index="1"]
+[node name="RichTextLabel" parent="CloseButton" index="1" unique_id=604948362]
 text = "CLOSE"
 
 [connection signal="pressed_within_window" from="TabButtons/GameTabButton" to="." method="_on_game_button_pressed"]

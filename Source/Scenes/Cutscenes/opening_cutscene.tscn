@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b1j8blia5iw65"]
+[gd_scene format=3 uid="uid://b1j8blia5iw65"]
 
 [ext_resource type="Script" uid="uid://dm76x4thoi7rc" path="res://Source/Scenes/Cutscenes/opening_cutscene.gd" id="1_wfho2"]
 [ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="2_p2uiq"]
@@ -21,7 +21,7 @@ glow_bloom = 0.3
 glow_hdr_threshold = 0.5
 adjustment_enabled = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_mglk2"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m2fiu"]
 resource_local_to_scene = true
 shader = ExtResource("9_vj2dl")
 shader_parameter/alpha = 1.0
@@ -33,7 +33,7 @@ shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
 shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
 shader_parameter/cloak_tolerance = 0.1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_jenbv"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tpj7u"]
 resource_local_to_scene = true
 shader = ExtResource("9_vj2dl")
 shader_parameter/alpha = 1.0
@@ -818,106 +818,104 @@ _data = {
 &"cutscene_anim": SubResource("Animation_7e3e1")
 }
 
-[node name="OpeningCutscene" type="Node2D"]
+[node name="OpeningCutscene" type="Node2D" unique_id=1882302225]
 script = ExtResource("1_wfho2")
 star_pixel_scene = ExtResource("2_p2uiq")
 star_twinkle_scene = ExtResource("3_6lqss")
 star_speed = 50.0
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1973160382]
 environment = SubResource("Environment_m2fiu")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=918582820]
 unique_name_in_owner = true
 offset = Vector2(100, 90)
 zoom = Vector2(10, 10)
 script = ExtResource("6_drddh")
 
-[node name="Shakeable" parent="Camera2D" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("7_66qfi")]
+[node name="Shakeable" parent="Camera2D" unique_id=324408128 node_paths=PackedStringArray("node_to_shake") instance=ExtResource("7_66qfi")]
 node_to_shake = NodePath("..")
 
-[node name="PlayerShip" parent="." instance=ExtResource("6_5gc3m")]
+[node name="PlayerShip" parent="." unique_id=408596952 instance=ExtResource("6_5gc3m")]
 z_index = 2
 position = Vector2(62, 91)
 rotation = -1.5708
 
-[node name="EngineParticles" parent="PlayerShip" index="0"]
+[node name="EngineParticles" parent="PlayerShip" index="0" unique_id=140859516]
 visible = false
 
-[node name="EngineParticlesRotated" parent="PlayerShip" instance=ExtResource("5_7e3e1")]
+[node name="EngineParticlesRotated" parent="PlayerShip" unique_id=758515 instance=ExtResource("5_7e3e1")]
 position = Vector2(3, -12.9577)
 rotation = 1.5708
 
-[node name="EngineParticlesRotated2" parent="PlayerShip" instance=ExtResource("5_7e3e1")]
+[node name="EngineParticlesRotated2" parent="PlayerShip" unique_id=1488562512 instance=ExtResource("5_7e3e1")]
 position = Vector2(-3, -12.9577)
 rotation = 1.5708
 
-[node name="AttackerShip1" parent="." instance=ExtResource("5_740k5")]
+[node name="AttackerShip1" parent="." unique_id=1344236527 instance=ExtResource("5_740k5")]
 z_index = 2
-material = SubResource("ShaderMaterial_mglk2")
+material = SubResource("ShaderMaterial_m2fiu")
 position = Vector2(-17, 54)
 rotation = -1.5708
 scale = Vector2(0.1, 0.1)
 
-[node name="EngineParticles" parent="AttackerShip1" index="0"]
+[node name="EngineParticles" parent="AttackerShip1" index="0" unique_id=1542671433]
 visible = false
 
-[node name="EngineParticles2" parent="AttackerShip1" index="1"]
+[node name="EngineParticles2" parent="AttackerShip1" index="1" unique_id=1615275938]
 visible = false
 
-[node name="DiceShot" type="Sprite2D" parent="AttackerShip1"]
+[node name="DiceShot" type="Sprite2D" parent="AttackerShip1" unique_id=1852326283]
 position = Vector2(-37, 70)
 texture = ExtResource("6_1dh7u")
 
-[node name="EngineParticlesRotated" parent="AttackerShip1" instance=ExtResource("5_7e3e1")]
+[node name="EngineParticlesRotated" parent="AttackerShip1" unique_id=2085308165 instance=ExtResource("5_7e3e1")]
 position = Vector2(3, -12.9577)
 rotation = 1.5708
 
-[node name="EngineParticlesRotated2" parent="AttackerShip1" instance=ExtResource("5_7e3e1")]
+[node name="EngineParticlesRotated2" parent="AttackerShip1" unique_id=1373588152 instance=ExtResource("5_7e3e1")]
 position = Vector2(-3, -12.9577)
 rotation = 1.5708
 
-[node name="AttackerShip2" parent="." instance=ExtResource("5_740k5")]
+[node name="AttackerShip2" parent="." unique_id=378331966 instance=ExtResource("5_740k5")]
 z_index = 2
-material = SubResource("ShaderMaterial_jenbv")
+material = SubResource("ShaderMaterial_tpj7u")
 position = Vector2(-20, 143)
 rotation = -1.5708
 
-[node name="EngineParticles" parent="AttackerShip2" index="0"]
+[node name="EngineParticles" parent="AttackerShip2" index="0" unique_id=1542671433]
 visible = false
 
-[node name="EngineParticles2" parent="AttackerShip2" index="1"]
+[node name="EngineParticles2" parent="AttackerShip2" index="1" unique_id=1615275938]
 visible = false
 
-[node name="DiceShot2" type="Sprite2D" parent="AttackerShip2"]
+[node name="DiceShot2" type="Sprite2D" parent="AttackerShip2" unique_id=559100646]
 position = Vector2(52, 73)
 texture = ExtResource("6_1dh7u")
 
-[node name="EngineParticlesRotated" parent="AttackerShip2" instance=ExtResource("5_7e3e1")]
+[node name="EngineParticlesRotated" parent="AttackerShip2" unique_id=1295154556 instance=ExtResource("5_7e3e1")]
 position = Vector2(3, -12.9577)
 rotation = 1.5708
 
-[node name="EngineParticlesRotated2" parent="AttackerShip2" instance=ExtResource("5_7e3e1")]
+[node name="EngineParticlesRotated2" parent="AttackerShip2" unique_id=1685857163 instance=ExtResource("5_7e3e1")]
 position = Vector2(-3, -12.9577)
 rotation = 1.5708
 
-[node name="Fate" type="AnimatedSprite2D" parent="."]
+[node name="Fate" type="AnimatedSprite2D" parent="." unique_id=1100738687]
 z_index = 5
 position = Vector2(-36, 90)
 autoplay = "default"
 speed_scale = 12.0
 
-[node name="BlackHole" parent="Fate" instance=ExtResource("11_m2fiu")]
+[node name="BlackHole" parent="Fate" unique_id=1991253877 instance=ExtResource("11_m2fiu")]
 position = Vector2(-19, -1)
 scale = Vector2(1.4, 1.4)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
-libraries = {
-&"": SubResource("AnimationLibrary_1dh7u")
-}
-autoplay = "cutscene_anim"
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1806033259]
+libraries/ = SubResource("AnimationLibrary_1dh7u")
+autoplay = &"cutscene_anim"
 
-[node name="FadeIn" type="Sprite2D" parent="."]
+[node name="FadeIn" type="Sprite2D" parent="." unique_id=1292651175]
 unique_name_in_owner = true
 visible = false
 self_modulate = Color(0.0156863, 0.00784314, 0.0901961, 0)

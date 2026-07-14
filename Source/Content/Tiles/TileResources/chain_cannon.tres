@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" load_steps=30 format=3 uid="uid://dn78mt3vyk5tm"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dn78mt3vyk5tm"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_g62jg"]
 [ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_l1l1p"]
@@ -12,18 +12,16 @@
 [ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="6_5tyjx"]
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="7_f7e78"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_k8ihr"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_26nv3"]
 [ext_resource type="Texture2D" uid="uid://bajiqlioyp6wv" path="res://Assets/Textures/Tiles/RedTiles/chain_cannon-Sheet.png" id="12_na2wt"]
 
 [sub_resource type="Resource" id="Resource_istkj"]
 script = ExtResource("1_g62jg")
 type = 4
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_en0w8"]
 script = ExtResource("1_g62jg")
-type = 0
-acceptable_values = Array[int]([])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_uqnk8"]
@@ -34,9 +32,6 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_ceyw7"]
 script = ExtResource("3_26nv3")
-repititions_to_add = 1
-times_this_can_activate = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://dvix5r7ykn666"
 
 [sub_resource type="Resource" id="Resource_oji76"]
@@ -44,35 +39,28 @@ script = ExtResource("3_tvul2")
 color = Color(0.317647, 0.0823529, 0.129412, 1)
 amount = 6
 location = 1
-primary_effect = false
 metadata/_custom_type_script = "uid://5vw5tu23ayfk"
 
 [sub_resource type="Resource" id="Resource_2fv8l"]
 script = ExtResource("4_26nv3")
-sound_effect_name = "dice_cannon"
-primary_effect = false
 metadata/_custom_type_script = "uid://rmwtkvywl4yw"
 
 [sub_resource type="Resource" id="Resource_wqepc"]
 script = ExtResource("5_ceyw7")
-primary_effect = false
 metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
 
 [sub_resource type="Resource" id="Resource_ugtd2"]
 script = ExtResource("6_5tyjx")
-primary_effect = false
 metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
 
 [sub_resource type="Resource" id="Resource_gjhi3"]
 script = ExtResource("7_f7e78")
 amount = 3
-inherit_die_amount = false
 primary_effect = true
 metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
 
 [sub_resource type="Resource" id="Resource_v0xsr"]
 script = ExtResource("8_k8ihr")
-primary_effect = false
 metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
 
 [sub_resource type="Resource" id="Resource_ob6pq"]
@@ -111,7 +99,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_equ74")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]
@@ -119,15 +107,9 @@ animations = [{
 [resource]
 script = ExtResource("4_x5guy")
 tile_name = "[color=red]Chain Cannon[/color]"
-activation_description = ""
 description = "(die_4) -> Deals [color=red]3 damage[/color] twice, then [color=orange]gives[/color] die to [color=purple]target[/color]"
-hint_text = ""
-rarity = 0
 textures = SubResource("SpriteFrames_ha28q")
 uses_per_combat = 3
 activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])
 effect_chain = SubResource("Resource_ob6pq")
-event_responses = Dictionary[ExtResource("2_og7ys"), ExtResource("3_0it3x")]({})
-dragging_allowed = true
-max_dice_in_queue = -1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
