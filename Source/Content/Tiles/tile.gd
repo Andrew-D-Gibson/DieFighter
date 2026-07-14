@@ -61,12 +61,10 @@ func _ready() -> void:
 	Events.start_scenario.connect(reset_uses_remaining)
 	Events.start_combat.connect(func() -> void:
 		draggable.dragging_allowed = false
-		draggable.floating_enabled = false
 	)
 	Events.combat_finished.connect(func() -> void:
 		if tile_resource.dragging_allowed:
 			draggable.dragging_allowed = true
-			draggable.floating_enabled = true
 	)
 	_connect_tile_event_signals()
 	
@@ -93,28 +91,11 @@ func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
 	uses_remaining = tile_resource.uses_per_combat
 
-	if tile_resource.dragging_allowed and \
-	Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
-		draggable.dragging_allowed = true
-		draggable.floating_enabled = true
-	else:
-		draggable.dragging_allowed = false
-		draggable.floating_enabled = false
+	draggable.dragging_allowed = tile_resource.dragging_allowed and \
+		Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT
 
 
-func _get_tile_info() -> InfoResource:
-	# Don't show the tile's info if there's status effects
-	if Globals.tile_grid.tile_locations.values().has(self):
-		var grid_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(self)
-		
-		var grid_status_effects: Array[GridStatusEffect] = \
-			Globals.tile_grid.get_status_effects_at_grid_pos(grid_pos)
-			
-		for status: GridStatusEffect in grid_status_effects:
-			if status.status_info:
-				return null
-
-	
+func _get_tile_info() -> InfoResource:	
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = tile_resource.tile_name
 	info.top_label_text = tile_resource.activation_description

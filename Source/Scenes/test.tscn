@@ -1,10 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dcif2n2fxduje"]
+[gd_scene format=3 uid="uid://dcif2n2fxduje"]
 
 [ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="1_gbv07"]
 
-[node name="Test" type="Node2D"]
+[node name="Test" type="Node2D" unique_id=897164132]
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=464411745]
 zoom = Vector2(6, 6)
 
-[node name="PauseMenu" parent="." instance=ExtResource("1_gbv07")]
+[node name="PauseMenu" parent="." unique_id=1883100308 instance=ExtResource("1_gbv07")]

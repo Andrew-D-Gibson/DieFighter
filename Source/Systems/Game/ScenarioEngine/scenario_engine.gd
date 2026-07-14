@@ -4,6 +4,8 @@ extends Node
 signal event_resolved(event: EffectEvent)
 signal began_processing_queue()
 signal finished_processing_queue()
+signal modifier_added(mod: Modifier)
+signal modifier_removed(mod: Modifier)
 
 var _inject_index: int = 0
 
@@ -11,6 +13,10 @@ var currently_processing_queue: bool = false
 var event_queue: Array[EffectEvent]
 
 var modifiers: Array[Modifier]
+
+
+func _ready() -> void:
+	Events.player_turn_start.connect(clear_temporary_modifiers)
 
 	
 ## Event functions
@@ -32,6 +38,14 @@ func clear_events() -> void:
 func add_modifier(mod: Modifier) -> void:
 	modifiers.append(mod)
 	sort_modifiers()
+	mod.on_registered(self)   # modifier spawns its visual here
+	modifier_added.emit(mod)  # for any other listeners (HUD, tutorial, etc.)
+	
+	
+func remove_modifier(mod: Modifier) -> void:
+	modifiers.erase(mod)
+	mod.on_unregistered(self)   # modifier frees its visual here
+	modifier_removed.emit(mod)
 	
 	
 func sort_modifiers() -> void:
@@ -39,9 +53,19 @@ func sort_modifiers() -> void:
 		return a.priority < b.priority
 	)
 	
+
+func clear_temporary_modifiers() -> void:
+	var to_remove: Array[Modifier] = []
+	for mod: Modifier in modifiers:
+		if mod.is_temporary:
+			to_remove.append(mod)
+	for mod: Modifier in to_remove:
+		remove_modifier(mod)
+	
 	
 func clear_modifiers() -> void:
-	modifiers.clear()
+	for mod: Modifier in modifiers:
+		remove_modifier(mod)
 	
 	
 ## Main Process Function

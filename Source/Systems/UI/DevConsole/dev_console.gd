@@ -112,6 +112,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 
 		'load_grid':
 			_load_grid(command.slice(1))
+			
+		'lock_tiles':
+			_lock_tiles()
 
 		'reroll':
 			_reroll(command.slice(1))
@@ -142,6 +145,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 
 		'spawn_enemy':
 			_spawn_enemy(command.slice(1))
+			
+		'unlock_tiles':
+			_unlock_tiles()
 
 		'test':
 			_test(command.slice(1))
@@ -202,12 +208,12 @@ func _give_tile(command_args: Array[String] = []) -> void:
 		command_history.append_text('\n\t\tUsage: give_tile <name>')
 		return
 
-	var available_pos := Globals.tile_grid.find_available_grid_pos()
+	var available_pos: Vector2i = Globals.tile_grid.find_available_grid_pos()
 	if not Globals.tile_grid.is_grid_pos_valid(available_pos):
 		command_history.append_text('\n\t\tNo space in the grid.')
 		return
 
-	var search_name := ' '.join(command_args).strip_edges().to_lower()
+	var search_name: String = ' '.join(command_args).strip_edges().to_lower()
 	var found_resource: TileResource = null
 
 	var search_dirs: Array[String] = [
@@ -215,7 +221,7 @@ func _give_tile(command_args: Array[String] = []) -> void:
 		"res://Source/Content/Tiles/ComplicatedTileResources/",
 	]
 	for dir_location: String in search_dirs:
-		var dir := DirAccess.open(dir_location)
+		var dir: DirAccess = DirAccess.open(dir_location)
 		if not dir:
 			continue
 		for file_name: String in dir.get_files():
@@ -342,6 +348,11 @@ func _heal(command_args: Array[String] = []) -> void:
 
 	Globals.player.health.change_health(amount)
 	command_history.append_text('\n[center]Healed player.[/center]')
+	
+	
+func _lock_tiles() -> void:
+	for tile: Tile in Globals.tile_grid.tile_locations.values():
+		tile.draggable.dragging_allowed = false
 
 
 func _reroll(command_args: Array[String] = []) -> void:
@@ -429,6 +440,11 @@ func _shield_enemies(command_args: Array[String] = []) -> void:
 
 func _spawn_enemy(_command_args: Array[String] = []) -> void:
 	command_history.append_text('\n\t\tspawn_enemy is not yet implemented.')
+	
+
+func _unlock_tiles() -> void:
+	for tile: Tile in Globals.tile_grid.tile_locations.values():
+		tile.draggable.dragging_allowed = true
 
 
 # ── Misc ─────────────────────────────────────────────────────────────────────
@@ -468,14 +484,16 @@ func _help() -> void:
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')
 	command_history.append_text('\n[b]kill_enemies[/b]                  kill all enemies')
-	command_history.append_text('\n[b]load_grid[/b] <a|b|c>            load saved grid layout from file')
-	command_history.append_text('\n[b]reroll[/b] [value]               reroll dice, or set all to value')
-	command_history.append_text('\n[b]save_grid[/b] <a|b|c>            save grid layout to file (persists across runs)')
-	command_history.append_text('\n[b]set_dice[/b] <v1> [v2] ...       set die values (1-6, left to right)')
+	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
+	command_history.append_text('\n[b]lock_tiles[/b] <a|b|c>            stop tiles from being moved')
+	command_history.append_text('\n[b]reroll[/b] [value]                reroll dice, or set all to value')
+	command_history.append_text('\n[b]save_grid[/b] <a|b|c>             save grid layout to file (persists across runs)')
+	command_history.append_text('\n[b]set_dice[/b] <v1> [v2] ...        set die values (1-6, left to right)')
 	command_history.append_text('\n[b]set_health[/b] <amount>           set player health to exact value')
 	command_history.append_text('\n[b]set_money[/b] <amount>            set money to exact amount')
 	command_history.append_text('\n[b]shield[/b] [amount]               add shields to player')
 	command_history.append_text('\n[b]shield_enemies[/b] [amount]       add shields to all enemies')
 	command_history.append_text('\n[b]spawn_dice[/b] [amount]           spawn extra dice')
 	command_history.append_text('\n[b]spawn_enemy[/b] <type>            (not yet implemented)')
+	command_history.append_text('\n[b]unlock_tiles[/b] <a|b|c>          allow tiles to be moved')
 	command_history.append_text('\n[color=gray]Up/Down arrows cycle command history.[/color]')

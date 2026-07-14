@@ -9,7 +9,7 @@ Dice values determine the strength of abilities. After the player uses dice, ene
 
 # Technology
 
-Engine: Godot 4.4  
+Engine: Godot 4.7
 Language: GDScript  
 Resolution: 480x270 base resolution scaled to 1920x1080.
 

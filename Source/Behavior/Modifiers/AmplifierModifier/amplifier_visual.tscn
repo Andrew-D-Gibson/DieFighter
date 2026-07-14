@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://gqptast4ha57"]
+
+[ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/RedTiles/damage.png" id="1_odibp"]
+[ext_resource type="Texture2D" uid="uid://ym6cpb4y01gh" path="res://Assets/Textures/Modifiers/amplifier_base.png" id="2_4f46n"]
+
+[node name="AmplifierVisual" type="Node2D" unique_id=348996871]
+
+[node name="TileTest" type="Sprite2D" parent="." unique_id=1392977764]
+texture = ExtResource("1_odibp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2110227410]
+modulate = Color(1, 1, 1, 0.94509804)
+texture = ExtResource("2_4f46n")

@@ -52,36 +52,36 @@ var _visual: Node2D = null  # tracks the live instance for cleanup
 ## Called by ScenarioEngine.add_modifier(). Override to add extra setup logic,
 ## but always call super.on_registered(engine) to ensure the visual spawns.
 func on_registered(_engine: ScenarioEngine) -> void:
-    _spawn_visual()
+	_spawn_visual()
 
 
 ## Called by ScenarioEngine.remove_modifier(). Override for extra cleanup,
 ## but always call super.on_unregistered(engine) to ensure the visual is freed.
 func on_unregistered(_engine: ScenarioEngine) -> void:
-    if is_instance_valid(_visual):
-        _visual.queue_free()
-        _visual = null
+	if is_instance_valid(_visual):
+		_visual.queue_free()
+		_visual = null
 
 
 func _spawn_visual() -> void:
-    if not is_instance_valid(affected_node):
-        return
-    var scene: PackedScene = _get_visual_for_host(affected_node)
-    if not scene:
-        return
-    _visual = scene.instantiate()
-    # Optional: visual can implement configure(host) to adjust itself per host type
-    if _visual.has_method("configure"):
-        _visual.configure(affected_node)
-    affected_node.add_child(_visual)
+	if not is_instance_valid(affected_node):
+		return
+	var scene: PackedScene = _get_visual_for_host(affected_node)
+	if not scene:
+		return
+	_visual = scene.instantiate()
+	# Optional: visual can implement configure(host) to adjust itself per host type
+	if _visual.has_method("configure"):
+		_visual.configure(affected_node)
+	affected_node.add_child(_visual)
 
 
 func _get_visual_for_host(host: Node2D) -> PackedScene:
-    if host.get_script() != null:
-        var key: StringName = host.get_script().get_global_name()
-        if not key.is_empty() and status_visual_scenes.has(key):
-            return status_visual_scenes[key]
-    return status_visual_scene  # null is fine — no visual spawns
+	if host.get_script() != null:
+		var key: StringName = host.get_script().get_global_name()
+		if not key.is_empty() and status_visual_scenes.has(key):
+			return status_visual_scenes[key]
+	return status_visual_scene  # null is fine — no visual spawns
 ```
 
 ---
@@ -101,38 +101,38 @@ signal modifier_removed(mod: Modifier)
 
 ```gdscript
 func add_modifier(mod: Modifier) -> void:
-    modifiers.append(mod)
-    sort_modifiers()
-    mod.on_registered(self)   # modifier spawns its visual here
-    modifier_added.emit(mod)  # for any other listeners (HUD, tutorial, etc.)
+	modifiers.append(mod)
+	sort_modifiers()
+	mod.on_registered(self)   # modifier spawns its visual here
+	modifier_added.emit(mod)  # for any other listeners (HUD, tutorial, etc.)
 ```
 
 ### 2c — Add `remove_modifier()`
 
 ```gdscript
 func remove_modifier(mod: Modifier) -> void:
-    modifiers.erase(mod)
-    mod.on_unregistered(self)   # modifier frees its visual here
-    modifier_removed.emit(mod)
+	modifiers.erase(mod)
+	mod.on_unregistered(self)   # modifier frees its visual here
+	modifier_removed.emit(mod)
 ```
 
 ### 2d — Add `clear_temporary_modifiers()`
 
 ```gdscript
 func clear_temporary_modifiers() -> void:
-    var to_remove: Array[Modifier] = []
-    for mod: Modifier in modifiers:
-        if mod.is_temporary:
-            to_remove.append(mod)
-    for mod: Modifier in to_remove:
-        remove_modifier(mod)
+	var to_remove: Array[Modifier] = []
+	for mod: Modifier in modifiers:
+		if mod.is_temporary:
+			to_remove.append(mod)
+	for mod: Modifier in to_remove:
+		remove_modifier(mod)
 ```
 
 ### 2e — Wire to turn start in `_ready()`
 
 ```gdscript
 func _ready() -> void:
-    Events.player_turn_start.connect(clear_temporary_modifiers)
+	Events.player_turn_start.connect(clear_temporary_modifiers)
 ```
 
 ---
@@ -151,13 +151,13 @@ block — the method should always construct and return the `InfoResource`:
 
 ```gdscript
 func _get_tile_info() -> InfoResource:
-    var info: InfoResource = InfoResource.new()
-    info.title_label_text = tile_resource.tile_name
-    info.top_label_text = tile_resource.activation_description
-    info.texture = tile_resource.textures.get_frame_texture('default', 0)
-    info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
-    info.side_label_text = tile_resource.hint_text
-    return info
+	var info: InfoResource = InfoResource.new()
+	info.title_label_text = tile_resource.tile_name
+	info.top_label_text = tile_resource.activation_description
+	info.texture = tile_resource.textures.get_frame_texture('default', 0)
+	info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
+	info.side_label_text = tile_resource.hint_text
+	return info
 ```
 
 ---
@@ -176,11 +176,11 @@ extends Node2D
 
 
 func _ready() -> void:
-    var tween: Tween = create_tween().set_loops()
-    tween.tween_property(self, "modulate:a", 0.4, 1.0)\
-        .set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-    tween.tween_property(self, "modulate:a", 0.1, 1.0)\
-        .set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	var tween: Tween = create_tween().set_loops()
+	tween.tween_property(self, "modulate:a", 0.4, 1.0)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(self, "modulate:a", 0.1, 1.0)\
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 ```
 
 Add whatever sprite/polygon geometry the old `amplifier_status.tscn` had as children. The
@@ -231,17 +231,17 @@ var amplify_amount: int
 
 
 func _init(tile: Tile, amount: int) -> void:
-    affected_node = tile
-    amplify_amount = amount
-    priority = 20        # flat additive; runs before multipliers
-    is_temporary = true
-    modifier_name = "Amplifier"
-    status_visual_scene = preload("res://Source/Content/Tiles/StatusVisuals/amplifier_visual.tscn")
+	affected_node = tile
+	amplify_amount = amount
+	priority = 20        # flat additive; runs before multipliers
+	is_temporary = true
+	modifier_name = "Amplifier"
+	status_visual_scene = preload("res://Source/Content/Tiles/StatusVisuals/amplifier_visual.tscn")
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
-    if event is DamageEvent and event.effect_source == affected_node:
-        event.amount += amplify_amount
+	if event is DamageEvent and event.effect_source == affected_node:
+		event.amount += amplify_amount
 ```
 
 **Note:** `affected_node` is the **neighbor tile** (the one being amplified), not the source
@@ -262,20 +262,20 @@ extends EffectEvent
 
 
 func resolve(engine: ScenarioEngine) -> void:
-    if not is_instance_valid(effect_source):
-        return
-    if effect_source is not Tile:
-        return
+	if not is_instance_valid(effect_source):
+		return
+	if effect_source is not Tile:
+		return
 
-    var source_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(effect_source)
-    if not Globals.tile_grid.is_grid_pos_valid(source_pos):
-        return
+	var source_pos: Vector2i = Globals.tile_grid.tile_locations.find_key(effect_source)
+	if not Globals.tile_grid.is_grid_pos_valid(source_pos):
+		return
 
-    for offset: Vector2i in [Vector2i(0, -1), Vector2i(0, 1)]:
-        var neighbor_pos: Vector2i = source_pos + offset
-        if Globals.tile_grid.tile_locations.has(neighbor_pos):
-            var neighbor_tile: Tile = Globals.tile_grid.tile_locations[neighbor_pos]
-            engine.add_modifier(AmplifierModifier.new(neighbor_tile, amount))
+	for offset: Vector2i in [Vector2i(0, -1), Vector2i(0, 1)]:
+		var neighbor_pos: Vector2i = source_pos + offset
+		if Globals.tile_grid.tile_locations.has(neighbor_pos):
+			var neighbor_tile: Tile = Globals.tile_grid.tile_locations[neighbor_pos]
+			engine.add_modifier(AmplifierModifier.new(neighbor_tile, amount))
 ```
 
 `engine.add_modifier()` calls `mod.on_registered()` which spawns the visual on the neighbor
@@ -297,30 +297,30 @@ extends Modifier
 
 
 func _init(node: Node2D) -> void:
-    affected_node = node
-    priority = 0         # cancellation runs first, before any value adjustments
-    is_temporary = true
-    modifier_name = "Lockout"
-    status_visual_scenes = {
-        &"Tile":  preload("res://Source/Content/Tiles/StatusVisuals/lockout_tile_visual.tscn"),
-        # &"Enemy": preload("res://Source/Content/Tiles/StatusVisuals/lockout_enemy_visual.tscn"),
-        # Uncomment above when lockout_enemy_visual.tscn exists (Block 14)
-    }
+	affected_node = node
+	priority = 0         # cancellation runs first, before any value adjustments
+	is_temporary = true
+	modifier_name = "Lockout"
+	status_visual_scenes = {
+		&"Tile":  preload("res://Source/Content/Tiles/StatusVisuals/lockout_tile_visual.tscn"),
+		# &"Enemy": preload("res://Source/Content/Tiles/StatusVisuals/lockout_enemy_visual.tscn"),
+		# Uncomment above when lockout_enemy_visual.tscn exists (Block 14)
+	}
 
 
 func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
-    # Tile lockout
-    if event is TileActivationEvent and (event as TileActivationEvent).tile == affected_node:
-        event.canceled = true
-        var lockout_event := LockoutEffectEvent.new()
-        lockout_event.effect_source = affected_node
-        lockout_event.activator_die = (event as TileActivationEvent).activator_die
-        engine.inject_event(lockout_event)
+	# Tile lockout
+	if event is TileActivationEvent and (event as TileActivationEvent).tile == affected_node:
+		event.canceled = true
+		var lockout_event := LockoutEffectEvent.new()
+		lockout_event.effect_source = affected_node
+		lockout_event.activator_die = (event as TileActivationEvent).activator_die
+		engine.inject_event(lockout_event)
 
-    # Enemy lockout (Block 14: uncomment when EnemyActionEvent exists)
-    # elif event is EnemyActionEvent and event.actor == affected_node:
-    #     event.canceled = true
-    #     # Handle die or other enemy lockout consequences here
+	# Enemy lockout (Block 14: uncomment when EnemyActionEvent exists)
+	# elif event is EnemyActionEvent and event.actor == affected_node:
+	#     event.canceled = true
+	#     # Handle die or other enemy lockout consequences here
 ```
 
 ---
@@ -340,16 +340,16 @@ var activator_die: Dice
 
 
 func resolve(_engine: ScenarioEngine) -> void:
-    if effect_source is not Tile:
-        return
+	if effect_source is not Tile:
+		return
 
-    var tile := effect_source as Tile
+	var tile := effect_source as Tile
 
-    # Die is still in the visual queue — TileActivationEvent never got to remove it
-    if is_instance_valid(activator_die):
-        tile.dice_queue.remove(activator_die)
-        Events.error_text_popup.emit("LOCATION LOCKED", tile.global_position)
-        Globals.player.dice_manager.add(activator_die, true, false)
+	# Die is still in the visual queue — TileActivationEvent never got to remove it
+	if is_instance_valid(activator_die):
+		tile.dice_queue.remove(activator_die)
+		Events.error_text_popup.emit("LOCATION LOCKED", tile.global_position)
+		Globals.player.dice_manager.add(activator_die, true, false)
 ```
 
 ---
@@ -366,12 +366,12 @@ extends EffectEvent
 
 
 func resolve(engine: ScenarioEngine) -> void:
-    for target: Node in targets:
-        if not is_instance_valid(target):
-            continue
-        if target is not Tile:
-            continue
-        engine.add_modifier(LockoutModifier.new(target as Tile))
+	for target: Node in targets:
+		if not is_instance_valid(target):
+			continue
+		if target is not Tile:
+			continue
+		engine.add_modifier(LockoutModifier.new(target as Tile))
 ```
 
 ---
@@ -390,7 +390,7 @@ Work through these in order. Run the game after each deletion and fix any remain
 8. **Search** for any remaining `GridStatusEffect` type annotations in `tile.gd` and remove them.
 9. **Search** for `Events.add_status_to_grid_pos` — should be zero calls left. Remove any found.
 10. **Search** for `Globals.tile_grid.grid_status_effects` — remove remaining references.
-    The dictionary itself can be removed from `TileGrid` once nothing uses it.
+	The dictionary itself can be removed from `TileGrid` once nothing uses it.
 
 ---
 
@@ -426,21 +426,21 @@ design issue, the fix is to remove and re-register the amplifier modifiers in re
 
 1. **Amplifier tile:**
    - Activate an amplifier tile. The pulsing visual appears on the tiles above and below it
-     (not on the amplifier source tile itself).
+	 (not on the amplifier source tile itself).
    - Activate a neighbor. Damage is boosted by the correct amount.
    - Start the next turn. Visuals disappear, boost is gone.
 
 2. **Lockout tile:**
    - Activate a tile that locks a target. Lockout visual appears on the target tile.
    - Drop a die on the locked tile. "LOCATION LOCKED" popup appears, die is returned to player,
-     tile does not activate.
+	 tile does not activate.
    - Start the next turn. Lockout visual disappears.
 
 3. **Modifier lifecycle smoke test:**
    - Temporarily add `print("registered: ", mod.modifier_name)` in `Modifier.on_registered()`
-     and `print("unregistered: ", mod.modifier_name)` in `Modifier.on_unregistered()`.
+	 and `print("unregistered: ", mod.modifier_name)` in `Modifier.on_unregistered()`.
    - Confirm "registered" prints when the amplifier/lockout fires, and "unregistered" prints
-     at `player_turn_start`.
+	 at `player_turn_start`.
 
 4. **No `GridStatusEffect` references remain** — search for `GridStatusEffect`,
    `add_status_to_grid_pos`, and `grid_status_effects`. All should return zero results.

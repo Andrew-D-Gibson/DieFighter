@@ -1,11 +1,23 @@
 {
   "permissions": {
+    "defaultMode": "acceptEdits",
     "allow": [
       "Glob",
       "Grep",
       "Read_file",
       "Search",
-      "List_dir"
+      "List_dir",
+      "Read(**/*.gd)",
+      "Write(**/*.gd)",
+      "Bash(git diff*)",
+      "Bash(git status*)",
+      "Bash(git add*)",
+      "Bash(git commit*)"
+    ],
+    "deny": [
+      "Bash(rm *)",
+      "Bash(sudo *)",
+      "Bash(git push*)"
     ],
     "ask": [
       "Write_file",
