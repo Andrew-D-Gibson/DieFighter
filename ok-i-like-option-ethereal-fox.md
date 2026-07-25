@@ -186,33 +186,6 @@ func _ready() -> void:
 Add whatever sprite/polygon geometry the old `amplifier_status.tscn` had as children. The
 tween operates on `modulate.a` of the root node so the entire visual pulses together.
 
----
-
-## Step A.5 — Create the Lockout Visual Scenes
-
-Create one scene per node type you want to support. Start with just the tile version; add the
-enemy version when you reach Block 14.
-
-**Tile lockout visual:**
-- **New scene:** `Source/Content/Tiles/StatusVisuals/lockout_tile_visual.tscn`
-- **New script:** `Source/Content/Tiles/StatusVisuals/lockout_tile_visual.gd`
-
-```gdscript
-class_name LockoutTileVisual
-extends Node2D
-# Pure visual — port sprite/label from the old lockout_status.tscn.
-# Add animation in _ready() as desired.
-```
-
-**Enemy lockout visual (add when ready in Block 14):**
-- **New scene:** `Source/Content/Tiles/StatusVisuals/lockout_enemy_visual.tscn`
-- **New script:** `Source/Content/Tiles/StatusVisuals/lockout_enemy_visual.gd`
-
-```gdscript
-class_name LockoutEnemyVisual
-extends Node2D
-# Scale or offset differently from the tile version as needed.
-```
 
 ---
 
@@ -280,6 +253,35 @@ func resolve(engine: ScenarioEngine) -> void:
 
 `engine.add_modifier()` calls `mod.on_registered()` which spawns the visual on the neighbor
 tile automatically. No separate signal handling required.
+
+---
+
+
+## Step A.5 — Create the Lockout Visual Scenes
+
+Create one scene per node type you want to support. Start with just the tile version; add the
+enemy version when you reach Block 14.
+
+**Tile lockout visual:**
+- **New scene:** `Source/Content/Tiles/StatusVisuals/lockout_tile_visual.tscn`
+- **New script:** `Source/Content/Tiles/StatusVisuals/lockout_tile_visual.gd`
+
+```gdscript
+class_name LockoutTileVisual
+extends Node2D
+# Pure visual — port sprite/label from the old lockout_status.tscn.
+# Add animation in _ready() as desired.
+```
+
+**Enemy lockout visual (add when ready in Block 14):**
+- **New scene:** `Source/Content/Tiles/StatusVisuals/lockout_enemy_visual.tscn`
+- **New script:** `Source/Content/Tiles/StatusVisuals/lockout_enemy_visual.gd`
+
+```gdscript
+class_name LockoutEnemyVisual
+extends Node2D
+# Scale or offset differently from the tile version as needed.
+```
 
 ---
 
