@@ -106,6 +106,7 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 					]
 				EffectEnums.Category.TILE_CONTROL:
 					return sub in [
+						EffectEnums.TileControlSubtype.ADD_AMPLIFIER_MODIFIER,
 						EffectEnums.TileControlSubtype.ADD_USES_REMAINING,
 						EffectEnums.TileControlSubtype.INCREMENT_TILE_DATA,
 						EffectEnums.TileControlSubtype.SET_TILE_DATA,
