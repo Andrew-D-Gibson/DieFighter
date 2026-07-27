@@ -87,17 +87,17 @@ func _randomize_sector_scenarios() -> void:
 	current_game_save.sector_scenarios = []
 	
 	# Add the shop(s)
-	for i in range(randi_range(2,3)):
+	for i: int in range(randi_range(2,3)):
 		current_game_save.sector_scenarios.append(shop_scenario)
 		
 	# Add the blend of combat and question scenarios
-	for i in range(sector_size - len(current_game_save.sector_scenarios)):
-		var question_scenario_options = Utils.array_while_excluding(
+	for i: int in range(sector_size - len(current_game_save.sector_scenarios)):
+		var question_scenario_options: Array[ScenarioResource] = Utils.array_while_excluding(
 			question_scenarios, 
 			current_game_save.sector_scenarios
 		)
 			
-		var combat_scenario_options = Utils.array_while_excluding(
+		var combat_scenario_options: Array[ScenarioResource] = Utils.array_while_excluding(
 			combat_scenarios,
 			current_game_save.sector_scenarios
 		)

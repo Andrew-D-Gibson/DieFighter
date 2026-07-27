@@ -1,33 +1,57 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dkvqal8qwxrww"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_5kmcs"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_seowo"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="2_seowo"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_xicoq"]
-[ext_resource type="Script" uid="uid://l3mlf342hahq" path="res://Source/Content/Effects/TileStatusEffects/add_amplifier_status_effect.gd" id="3_b26dk"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_l521o"]
-[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="4_pcp6p"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_seowo"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_rj18t"]
 [ext_resource type="Texture2D" uid="uid://1e767ya4c7na" path="res://Assets/Textures/Tiles/YellowTiles/amplifier-Sheet.png" id="5_xicoq"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="8_rj18t"]
 
-[sub_resource type="Resource" id="Resource_pcp6p"]
-script = ExtResource("3_b26dk")
-primary_effect = true
-metadata/_custom_type_script = "uid://l3mlf342hahq"
+[sub_resource type="Resource" id="Resource_f3imi"]
+script = ExtResource("2_seowo")
+subtype = 9
+grid_offset = Vector2i(0, -1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_f1pqj"]
-script = ExtResource("4_pcp6p")
-metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
+[sub_resource type="Resource" id="Resource_5y8et"]
+script = ExtResource("2_seowo")
+category = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_v1b2w"]
-script = ExtResource("5_rj18t")
-metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
+[sub_resource type="Resource" id="Resource_j3pel"]
+script = ExtResource("2_seowo")
+category = 5
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_rj18t"]
-script = ExtResource("3_l521o")
-effects = Array[ExtResource("2_seowo")]([SubResource("Resource_pcp6p"), SubResource("Resource_f1pqj"), SubResource("Resource_v1b2w")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+[sub_resource type="Resource" id="Resource_g28q7"]
+script = ExtResource("2_seowo")
+subtype = 9
+grid_offset = Vector2i(0, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_n8wo2"]
+script = ExtResource("2_seowo")
+category = 5
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_5t1r3"]
+script = ExtResource("2_seowo")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cenje"]
+script = ExtResource("2_seowo")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_seowo"]
+script = ExtResource("8_rj18t")
+effects = Array[ExtResource("2_seowo")]([SubResource("Resource_f3imi"), SubResource("Resource_5y8et"), SubResource("Resource_j3pel"), SubResource("Resource_g28q7"), SubResource("Resource_n8wo2"), SubResource("Resource_5t1r3"), SubResource("Resource_cenje")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pcp6p"]
 atlas = ExtResource("5_xicoq")
@@ -57,5 +81,5 @@ tile_name = "[color=yellow]Amplifier[/color]"
 description = "[color=yellow]Any die[/color] → [color=yellow]+2[/color] to the effects of tiles above and below this turn. [color=orange]Gives[/color] die to [color=purple]target[/color]"
 textures = SubResource("SpriteFrames_f1pqj")
 uses_per_combat = 1
-effect_chain = SubResource("Resource_rj18t")
+effect_chain_v2 = SubResource("Resource_seowo")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

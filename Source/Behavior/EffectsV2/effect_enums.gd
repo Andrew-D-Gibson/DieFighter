@@ -33,17 +33,18 @@ enum Category {
 
 # ── Targeting Subtypes ─────────────────────────────────────────────────────────
 enum TargetingSubtype {
-	TARGET_ENEMIES,                ## All living enemies
-	TARGET_PLAYER,                 ## The player ship
-	TARGET_RANDOM_ENEMY,           ## One random living enemy
-	TARGET_ALL_SHIPS,              ## Player + all living enemies
-	TARGET_ALL_OTHER_SHIPS,        ## All ships except the actor
-	TARGET_RANDOM_SHIP,            ## One random ship (player or enemy)
-	TARGET_RANDOM_TILE,            ## One random tile on the grid
-	TARGET_SURROUNDING_TILES,      ## Tiles adjacent to the effect source tile
-	TARGET_WITH_TARGETING_COMPUTER,## Uses the player's targeting computer selection
-	TARGET_EFFECT_SOURCE,          ## The tile or entity that owns this chain
-	TARGET_SELF,                   ## The actor itself (e.g. enemy targets itself)
+	TARGET_ENEMIES,                	## All living enemies
+	TARGET_PLAYER,                 	## The player ship
+	TARGET_RANDOM_ENEMY,           	## One random living enemy
+	TARGET_ALL_SHIPS,              	## Player + all living enemies
+	TARGET_ALL_OTHER_SHIPS,        	## All ships except the actor
+	TARGET_RANDOM_SHIP,            	## One random ship (player or enemy)
+	TARGET_RANDOM_TILE,            	## One random tile on the grid
+	TARGET_SURROUNDING_TILES,      	## Tiles adjacent to the effect source tile
+	TARGET_WITH_TARGETING_COMPUTER,	## Uses the player's targeting computer selection
+	TARGET_TILE_WITH_OFFSET,		## Targets a tile that is offset from the source tile
+	TARGET_EFFECT_SOURCE,          	## The tile or entity that owns this chain
+	TARGET_SELF,                   	## The actor itself (e.g. enemy targets itself)
 }
 
 

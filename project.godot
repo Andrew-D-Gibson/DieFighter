@@ -34,6 +34,7 @@ DebugLogger="*res://Source/Systems/Autoloads/debug_logger.gd"
 Screenshotter="*res://Source/Systems/Autoloads/screenshotter.gd"
 QuitManager="*res://Source/Systems/Autoloads/quit_manager.gd"
 EffectRegistry="*res://Source/Systems/Autoloads/effect_registry.gd"
+McpInteractionServer="*uid://coajxxari555t"
 
 [debug]
 

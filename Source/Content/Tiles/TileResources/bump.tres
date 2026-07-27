@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_0ono8"]
 [ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="5_c3unh"]
 [ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png" id="7_0ono8"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_u271i"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_pmkt1"]
 
 [sub_resource type="Resource" id="Resource_7xmxb"]
@@ -49,6 +50,33 @@ metadata/_custom_type_script = "uid://bscm2msup3lwk"
 script = ExtResource("3_5xcxx")
 effects = Array[ExtResource("2_m7a5a")]([SubResource("Resource_pmkt1"), SubResource("Resource_8ixi3"), SubResource("Resource_0ono8"), SubResource("Resource_gm6wk")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="Resource" id="Resource_n8wo2"]
+script = ExtResource("9_u271i")
+subtype = 7
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_g28q7"]
+script = ExtResource("9_u271i")
+category = 5
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_prmjb"]
+script = ExtResource("9_u271i")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_5t1r3"]
+script = ExtResource("9_u271i")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_j3pel"]
+script = ExtResource("10_pmkt1")
+effects = Array[ExtResource("9_u271i")]([SubResource("Resource_n8wo2"), SubResource("Resource_g28q7"), SubResource("Resource_prmjb"), SubResource("Resource_5t1r3")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gm6wk"]
 atlas = ExtResource("7_0ono8")
@@ -94,4 +122,5 @@ textures = SubResource("SpriteFrames_j21c8")
 uses_per_combat = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])
 effect_chain = SubResource("Resource_u271i")
+effect_chain_v2 = SubResource("Resource_j3pel")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

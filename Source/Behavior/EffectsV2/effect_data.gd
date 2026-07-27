@@ -76,7 +76,7 @@ extends Resource
 # Called automatically by Godot whenever notify_property_list_changed() fires.
 
 func _validate_property(property: Dictionary) -> void:
-	const CONDITIONAL_FIELDS := [
+	const CONDITIONAL_FIELDS: Array[String] = [
 		"amount", "inherit_die_amount", "multiplier",
 		"string_param", "grid_offset",
 		"sound_resource", "color", "range_min", "range_max",
@@ -136,11 +136,15 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 				_:
 					return false
 		"grid_offset":
+			if cat == EffectEnums.Category.TARGETING:
+				return sub in [
+					EffectEnums.TargetingSubtype.TARGET_TILE_WITH_OFFSET
+				]
 			if cat == EffectEnums.Category.TILE_CONTROL:
 				return sub in [
 					EffectEnums.TileControlSubtype.MOVE_TILE_WITH_OFFSET,
 					EffectEnums.TileControlSubtype.PUSH_TILE_IN_DIRECTION,
-					EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN,
+					EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN
 				]
 			if cat == EffectEnums.Category.AUDIO_VISUAL:
 				return sub == EffectEnums.AudioVisualSubtype.ANIMATE_DIE_TO_TILE

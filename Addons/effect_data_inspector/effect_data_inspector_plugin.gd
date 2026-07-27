@@ -51,6 +51,7 @@ class SubtypeProperty extends EditorProperty:
 			"Target Random Tile",
 			"Target Surrounding Tiles",
 			"Target With Targeting Computer",
+			"Target Tile With Offset",
 			"Target Effect Source",
 			"Target Self",
 		],

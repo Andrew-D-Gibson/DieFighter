@@ -57,6 +57,7 @@ func _register_all() -> void:
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_TILE,             TargetRandomTileHandler.new())
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SURROUNDING_TILES,       TargetSurroundingTilesHandler.new())
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_WITH_TARGETING_COMPUTER, TargetWithTargetingComputerHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_TILE_WITH_OFFSET,        TargetTileWithOffsetHandler.new())
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_EFFECT_SOURCE,           TargetEffectSourceHandler.new())
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SELF,                    TargetSelfHandler.new())
 
