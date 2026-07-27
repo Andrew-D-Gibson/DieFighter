@@ -15,7 +15,7 @@ func _test(_command_args: Array[String] = []) -> void:
 	if Globals.scenario_manager.engine:
 		var tile: Tile = Globals.tile_grid.tile_locations[Vector2i(0,0)]
 		
-		Globals.scenario_manager.engine.add_modifier(AmplifierModifier.new(tile, 2))
+		Globals.scenario_manager.engine.add_modifier(LockoutModifier.new(tile))
 
 
 func _on_line_edit_gui_input(event: InputEvent) -> void:

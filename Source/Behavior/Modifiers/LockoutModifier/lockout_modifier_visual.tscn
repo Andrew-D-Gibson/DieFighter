@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bmigs3ltcqtec"]
+
+[ext_resource type="Texture2D" uid="uid://devcbbtmrh7id" path="res://Assets/Textures/Modifiers/lockout.png" id="1_la5i5"]
+
+[node name="Node2D" type="Node2D" unique_id=584588811]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1766844325]
+texture = ExtResource("1_la5i5")

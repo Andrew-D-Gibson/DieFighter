@@ -1,3 +1,4 @@
+@tool
 class_name AmplifierVisual
 extends Node2D
 

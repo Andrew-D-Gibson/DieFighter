@@ -6,7 +6,7 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 	if context.targets.is_empty():
 		return
 
-	var event := LockoutTileEvent.new()
+	var event: AddLockoutModifierEvent = AddLockoutModifierEvent.new()
 	event.actor    = context.actor
 	event.targets  = context.targets.duplicate()
 	engine.inject_event(event)

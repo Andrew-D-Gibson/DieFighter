@@ -81,7 +81,7 @@ func _register_all() -> void:
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.MOVE_TILE_WITH_OFFSET,      MoveTileWithOffsetHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.PUSH_TILE_IN_DIRECTION,     PushTileInDirectionHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN,   PullRowTilesToColumnHandler.new())
-	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.ADD_AMPLIFIER_STATUS,       AddAmplifierStatusHandler.new())
+	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.ADD_AMPLIFIER_MODIFIER,       AddAmplifierModifierHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.LOCKOUT_TILE,               LockoutTileHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.ADD_USES_REMAINING,         AddUsesRemainingHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.INCREMENT_TILE_DATA,        IncrementTileDataHandler.new())

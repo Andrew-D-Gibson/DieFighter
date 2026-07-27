@@ -204,7 +204,7 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 	
 	
 func _load_scenario(scenario: ScenarioResource) -> void:
-		Dice.seed(scenario.seed)
+		Dice.seed(scenario.scenario_seed)
 
 	
 func _start_scenario() -> void:

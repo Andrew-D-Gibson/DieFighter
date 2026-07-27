@@ -103,7 +103,7 @@ enum TileControlSubtype {
 	MOVE_TILE_WITH_OFFSET,      ## Move a tile by a grid offset (x, y)
 	PUSH_TILE_IN_DIRECTION,     ## Push a tile one step in a cardinal direction
 	PULL_ROW_TILES_TO_COLUMN,   ## Shift all tiles in a row toward a column
-	ADD_AMPLIFIER_STATUS,       ## Add an amplifier status to a grid position
+	ADD_AMPLIFIER_MODIFIER,       ## Add an amplifier status to a grid position
 	LOCKOUT_TILE,               ## Lock a tile so it can't be activated this turn
 	ADD_USES_REMAINING,         ## Add N uses to targeted tiles
 	INCREMENT_TILE_DATA,        ## Increment a named int stored on a tile

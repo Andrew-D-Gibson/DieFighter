@@ -86,6 +86,8 @@ func trigger_startup_sequence() -> void:
 func _randomize_sector_scenarios() -> void:
 	current_game_save.sector_scenarios = []
 	
+	print(len(combat_scenarios))
+	
 	# Add the shop(s)
 	for i in range(randi_range(2,3)):
 		current_game_save.sector_scenarios.append(shop_scenario)
@@ -113,9 +115,14 @@ func _randomize_sector_scenarios() -> void:
 		# If we ever make it here (we really shouldn't but still), 
 		# just add a random question or combat scenario
 		else:
-			var combat_and_question_scenarios: Array[ScenarioResource] = combat_scenarios + question_scenarios
-			current_game_save.sector_scenarios.append(combat_and_question_scenarios.pick_random())
-			
+			var all_scenarios: Array[ScenarioResource] = []
+			all_scenarios.append_array(combat_scenarios)
+			all_scenarios.append_array(question_scenarios)
+			if all_scenarios.size() > 0:
+				current_game_save.sector_scenarios.append(all_scenarios.pick_random())
+			else:
+				current_game_save.sector_scenarios.append(empty_scenario)
+
 	current_game_save.sector_scenarios.shuffle()
 	
 	# Add the boss scenario
@@ -136,7 +143,7 @@ func _randomize_sector_scenarios() -> void:
 	
 	# Seed all the scenarios
 	for scenario: ScenarioResource in current_game_save.sector_scenarios:
-		scenario.seed = randi()
+		scenario.scenario_seed = randi()
 	
 	
 	
@@ -148,7 +155,7 @@ func _check_combat_state() -> void:
 	
 	
 func _in_combat() -> bool:
-	for enemy in Globals.enemy_manager.get_alive_enemies():
+	for enemy: Enemy in Globals.enemy_manager.get_alive_enemies():
 		if enemy.scenario_state\
 		and enemy.scenario_state.attitude\
 		and enemy.scenario_state.attitude == Enemy.Attitude.AGGRESSIVE:

@@ -1,4 +1,4 @@
-class_name AddAmplifierStatusHandler
+class_name AddAmplifierModifierHandler
 extends EffectHandler
 
 
@@ -6,7 +6,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	if not is_instance_valid(context.effect_source):
 		return
 
-	var event := AddAmplifierStatusEvent.new()
+	var event: AddAmplifierModifierEvent = AddAmplifierModifierEvent.new()
 	event.actor         = context.actor
 	event.effect_source = context.effect_source
 	event.amount        = data.amount

@@ -1,4 +1,4 @@
-class_name AddAmplifierStatusEvent
+class_name AddAmplifierModifierEvent
 extends EffectEvent
 
 

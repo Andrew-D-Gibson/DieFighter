@@ -36,7 +36,7 @@ func _ready() -> void:
 		_set_background(starting_background)
 	
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
-		seed(scenario.seed)
+		seed(scenario.scenario_seed)
 		_set_background(scenario.background_resource)
 	)
 	Events.set_background.connect(_set_background)

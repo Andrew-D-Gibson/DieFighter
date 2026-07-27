@@ -36,7 +36,7 @@ func _ready() -> void:
 		if enemies_jumping:
 			delete_all_enemies()
 		
-		Enemy.seed(scenario.seed)
+		Enemy.seed(scenario.scenario_seed)
 
 		# Spawn the starting ships
 		if len(scenario.starting_enemies) > 0:

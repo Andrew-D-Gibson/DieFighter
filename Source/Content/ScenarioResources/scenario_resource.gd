@@ -8,4 +8,4 @@ extends Resource
 
 @export var rewards: Dictionary[ScenarioManager.Faction, RewardResource]
 
-var seed: int = 0
+var scenario_seed: int = 0

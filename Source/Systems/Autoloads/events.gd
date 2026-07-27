@@ -54,7 +54,6 @@ signal tile_manually_moved(tile: Tile)
 signal tile_pushed(tile: Tile)
 signal tile_activation_complete()
 signal tile_clicked_for_info()
-signal add_status_to_grid_pos(grid_loc: Vector2i, status: GridStatusEffect)
 
 
 # Reward/Economy Events

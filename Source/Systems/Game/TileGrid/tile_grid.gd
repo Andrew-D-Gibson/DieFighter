@@ -8,9 +8,6 @@ extends Node2D
 var tile_scene: PackedScene = preload("uid://delq7kb5loqt2")
 var tile_locations: Dictionary[Vector2i, Tile] = {}
 
-var lockout_status_scene: PackedScene = preload("uid://be4hfdy3e3xfw")
-var grid_status_effects: Dictionary[GridStatusEffect, Vector2i] = {}
-
 @export var empty_cell_texture: Texture2D
 
 
@@ -19,9 +16,7 @@ func _ready() -> void:
 	
 	Events.load_game_save.connect(_load_game_save)
 	Events.start_combat.connect(Events.show_systems.emit)
-	Events.combat_finished.connect(clear_status_effects)
-	Events.add_status_to_grid_pos.connect(_add_status_to_grid_pos)
-	
+
 	_setup_grid_graphics()
 	
 	
@@ -271,41 +266,3 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 		_assign_tile_to_grid_pos(t, to_pos)
 		
 		Events.tile_pushed.emit(t)
-
-
-func _add_status_to_grid_pos(grid_pos: Vector2i, status: GridStatusEffect) -> void:
-	for status_effect: GridStatusEffect in grid_status_effects.keys():
-		if status_effect.get_script() == status.get_script() and \
-		grid_status_effects[status_effect] == grid_pos:
-			print("status already affects this grid pos: ", status.get_script())
-			return
-			
-	if not is_grid_pos_valid(grid_pos):
-		printerr("Attempting to add a status to an invalid grid position: ", grid_pos)
-		return
-	
-	status.position = grid_to_local_pos(grid_pos)
-	add_child(status)
-	
-	grid_status_effects[status] = grid_pos
-
-
-func get_status_effects_at_grid_pos(grid_pos: Vector2i) -> Array[GridStatusEffect]:
-	var status_effects: Array[GridStatusEffect] = []
-	
-	for status_effect: GridStatusEffect in grid_status_effects.keys():
-		if grid_status_effects[status_effect] == grid_pos:
-			status_effects.append(status_effect)
-			
-	# Sort the status effects by priority (highest priority first)
-	status_effects.sort_custom(func(a, b) -> bool: return a.status_effect_priority > b.status_effect_priority)
-			
-	return status_effects
-	
-	
-func clear_status_effects() -> void:
-	for status_effect: GridStatusEffect in grid_status_effects.keys():
-		if status_effect and is_instance_valid(status_effect):
-			status_effect.queue_free()
-		
-	grid_status_effects.clear()
