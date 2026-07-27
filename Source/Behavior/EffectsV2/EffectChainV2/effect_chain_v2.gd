@@ -46,6 +46,9 @@ func play(context: EffectContext, engine: ScenarioEngine) -> void:
 		if context.activator_die:
 			context.activator_die.global_position = die_start_position
 
+		# Reset running amount for this repetition.
+		context.running_amount = 0
+
 		# Execute each effect in order.
 		for data: EffectData in effects:
 			var handler: EffectHandler = EffectRegistry.get_handler(data.category, data.subtype)

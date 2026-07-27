@@ -4,14 +4,12 @@ extends EffectHandler
 func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	if context.targets.is_empty():
 		return
-		
+
 	# Instantiate a new event
 	var shield_event: ShieldEvent = ShieldEvent.new()
-		
-	# Determine the base amount
-	# This can be changed by modifiers later
-	if data.inherit_die_amount:
-		shield_event.amount = context.activator_die.value
+
+	# Read the amount from the running amount (set by prior AMOUNT_MODIFIER steps)
+	shield_event.amount = context.running_amount
 		
 	
 	# Build out the event

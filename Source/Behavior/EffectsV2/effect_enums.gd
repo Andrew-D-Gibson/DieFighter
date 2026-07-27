@@ -58,15 +58,17 @@ enum AttributeChangeSubtype {
 
 
 # ── Amount Modifier Subtypes ───────────────────────────────────────────────────
-## These push an AmountModifierEvent that modifies the next ATTRIBUTE_CHANGE
-## amount in the same chain. Alternatively, represent these as Modifier objects
-## if they are persistent upgrades rather than one-shot chain effects.
+## These mutate context.running_amount directly, synchronously. Each step in the chain
+## can add/multiply/set the running amount, and any ATTRIBUTE_CHANGE handler (or other
+## consumer) later in the same repetition reads the final value.
 enum AmountModifierSubtype {
-	MULTIPLY,             ## Multiply amount by a float multiplier
-	ADD_ADJACENT_TILES,   ## Add count of adjacent tiles of a type to amount
-	ADD_TILE_DATA,        ## Add a tile's stored data value to amount
-	NEGATE,               ## Negate the amount (multiply by -1)
-	SET_TO_ENGINE_CHARGE, ## Replace amount with current engine charge value
+	SET,                  ## Set running_amount to a fixed value
+	ADD,                  ## Add a fixed value to running_amount
+	MULTIPLY,             ## Multiply running_amount by a float multiplier
+	ADD_ADJACENT_TILES,   ## Add count of adjacent tiles to running_amount
+	ADD_TILE_DATA,        ## Add a tile's stored data value to running_amount
+	SET_TO_ENGINE_CHARGE, ## Set running_amount to current engine charge value
+	SET_TO_DIE_VALUE,     ## Set running_amount to the activator die's face value
 }
 
 

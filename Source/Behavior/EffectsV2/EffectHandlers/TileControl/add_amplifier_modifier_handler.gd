@@ -10,7 +10,5 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.actor         = context.actor
 	event.effect_source = context.effect_source
 	event.targets       = context.targets.duplicate()
-	event.amount        = data.amount
-	if data.inherit_die_amount and is_instance_valid(context.activator_die):
-		event.amount = context.activator_die.value
+	event.amount        = context.running_amount
 	engine.inject_event(event)

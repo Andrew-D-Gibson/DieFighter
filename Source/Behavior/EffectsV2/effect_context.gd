@@ -27,3 +27,7 @@ var targets: Array[Node] = []
 ## How many times to loop the full effect chain.
 ## EffectChainV2 decrements this each loop; handlers should not touch it.
 var repetitions: int = 1
+
+## Running amount value, mutated by AMOUNT_MODIFIER handlers and consumed by ATTRIBUTE_CHANGE handlers.
+## Reset to 0 at the start of each chain repetition.
+var running_amount: int = 0

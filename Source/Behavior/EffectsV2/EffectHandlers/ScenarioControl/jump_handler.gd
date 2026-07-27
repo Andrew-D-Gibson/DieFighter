@@ -1,15 +1,11 @@
 class_name JumpHandler
 extends EffectHandler
 
-## Encodes jump direction in data.amount's sign:
-##   positive amount = jump forward
-##   negative amount = jump backward
-## data.inherit_die_amount = true uses the die's value (always jumps forward).
+## Reads jump_delta from context.running_amount.
+## Positive = jump forward, negative = jump backward.
 
 func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
-	var jump_delta: int = data.amount
-	if data.inherit_die_amount and is_instance_valid(context.activator_die):
-		jump_delta = context.activator_die.value
+	var jump_delta: int = context.running_amount
 
 	var event := JumpEvent.new()
 	event.actor         = context.actor

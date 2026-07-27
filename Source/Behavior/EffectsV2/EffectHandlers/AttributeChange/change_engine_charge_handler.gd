@@ -4,11 +4,9 @@ extends EffectHandler
 func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	# Instantiate a new event
 	var event: ChangeEngineChargeEvent = ChangeEngineChargeEvent.new()
-		
-	# Determine the base amount
-	# This can be changed by modifiers later
-	if data.inherit_die_amount:
-		event.amount = context.activator_die.value
+
+	# Read the amount from the running amount (set by prior AMOUNT_MODIFIER steps)
+	event.amount = context.running_amount
 			
 	# Build out the event
 	event.actor = context.actor

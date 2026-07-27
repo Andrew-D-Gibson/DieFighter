@@ -5,15 +5,12 @@ extends EffectHandler
 func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	if context.targets.is_empty():
 		return
-		
+
 	# Instantiate a new event
 	var heal_event: HealEvent = HealEvent.new()
-		
-	# Determine the base amount
-	# This can be changed by modifiers later
-	heal_event.amount = data.amount
-	if data.inherit_die_amount:
-		heal_event.amount = context.activator_die.value
+
+	# Read the amount from the running amount (set by prior AMOUNT_MODIFIER steps)
+	heal_event.amount = context.running_amount
 	
 	# Build out the event
 	heal_event.actor = context.actor

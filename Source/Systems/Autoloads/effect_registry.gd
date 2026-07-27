@@ -61,6 +61,15 @@ func _register_all() -> void:
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_EFFECT_SOURCE,           TargetEffectSourceHandler.new())
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SELF,                    TargetSelfHandler.new())
 
+	# ── AMOUNT_MODIFIER ────────────────────────────────────────────────────────────
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET,                 SetAmountHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD,                 AddAmountHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.MULTIPLY,            MultiplyAmountHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD_ADJACENT_TILES,  AddAdjacentTilesAmountHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD_TILE_DATA,       AddTileDataAmountHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET_TO_ENGINE_CHARGE, SetAmountToEngineChargeHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET_TO_DIE_VALUE,    SetAmountToDieValueHandler.new())
+
 	# ── ATTRIBUTE CHANGE ───────────────────────────────────────────────────────
 	_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.DAMAGE,               DealDamageHandler.new())
 	_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.HEAL,                 HealHandler.new())

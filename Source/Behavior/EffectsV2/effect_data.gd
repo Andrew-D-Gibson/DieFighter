@@ -37,10 +37,6 @@ extends Resource
 ## The base numeric amount for this effect.
 @export var amount: int = 0
 
-## If true, the amount is taken from the activator die's face value at
-## activation time instead of the fixed 'amount' field above.
-@export var inherit_die_amount: bool = false
-
 ## Floating-point multiplier. Used by AMOUNT_MODIFIER/MULTIPLY.
 @export var multiplier: float = 1.0
 
@@ -77,7 +73,7 @@ extends Resource
 
 func _validate_property(property: Dictionary) -> void:
 	const CONDITIONAL_FIELDS: Array[String] = [
-		"amount", "inherit_die_amount", "multiplier",
+		"amount", "multiplier",
 		"string_param", "grid_offset",
 		"sound_resource", "color", "range_min", "range_max",
 	]
@@ -91,8 +87,11 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 	match prop:
 		"amount":
 			match cat:
-				EffectEnums.Category.ATTRIBUTE_CHANGE:
-					return true
+				EffectEnums.Category.AMOUNT_MODIFIER:
+					return sub in [
+						EffectEnums.AmountModifierSubtype.SET,
+						EffectEnums.AmountModifierSubtype.ADD,
+					]
 				EffectEnums.Category.DICE_CONTROL:
 					return sub in [
 						EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE,
@@ -106,7 +105,6 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 					]
 				EffectEnums.Category.TILE_CONTROL:
 					return sub in [
-						EffectEnums.TileControlSubtype.ADD_AMPLIFIER_MODIFIER,
 						EffectEnums.TileControlSubtype.ADD_USES_REMAINING,
 						EffectEnums.TileControlSubtype.INCREMENT_TILE_DATA,
 						EffectEnums.TileControlSubtype.SET_TILE_DATA,
@@ -115,8 +113,6 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 					return true
 				_:
 					return false
-		"inherit_die_amount":
-			return cat == EffectEnums.Category.ATTRIBUTE_CHANGE
 		"multiplier":
 			return (cat == EffectEnums.Category.AMOUNT_MODIFIER
 					and sub == EffectEnums.AmountModifierSubtype.MULTIPLY)

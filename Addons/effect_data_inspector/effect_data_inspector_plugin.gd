@@ -62,11 +62,13 @@ class SubtypeProperty extends EditorProperty:
 			"Change Engine Charge",
 		],
 		EffectEnums.Category.AMOUNT_MODIFIER: [
+			"Set",
+			"Add",
 			"Multiply",
 			"Add Adjacent Tiles",
 			"Add Tile Data",
-			"Negate",
 			"Set to Engine Charge",
+			"Set to Die Value",
 		],
 		EffectEnums.Category.DICE_CONTROL: [
 			"Change Activator Value",
