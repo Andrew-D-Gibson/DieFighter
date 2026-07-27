@@ -44,6 +44,8 @@ var state: GameState = GameState.OUT_OF_COMBAT:
 func _ready() -> void:
 	assert(current_game_save)
 	
+	print(len(combat_scenarios))
+	
 	Globals.state_manager = self
 	
 	#seed('Die Fighter'.hash())
