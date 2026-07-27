@@ -44,8 +44,6 @@ var state: GameState = GameState.OUT_OF_COMBAT:
 func _ready() -> void:
 	assert(current_game_save)
 	
-	print(len(combat_scenarios))
-	
 	Globals.state_manager = self
 	
 	#seed('Die Fighter'.hash())
@@ -87,8 +85,6 @@ func trigger_startup_sequence() -> void:
 	
 func _randomize_sector_scenarios() -> void:
 	current_game_save.sector_scenarios = []
-	
-	print(len(combat_scenarios))
 	
 	# Add the shop(s)
 	for i in range(randi_range(2,3)):
