@@ -10,7 +10,9 @@
 [ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_1rls6"]
 [ext_resource type="Script" uid="uid://dfw5ioetwloty" path="res://Source/Content/Effects/DiceValueChangers/reroll_all_dice_effect.gd" id="5_iesjq"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="7_iesjq"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_iso42"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_1rls6"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_2itrs"]
 [ext_resource type="Texture2D" uid="uid://nbot7n72yi2" path="res://Assets/Textures/Tiles/GreenTiles/chaos_explosion-Sheet.png" id="12_1rls6"]
 
 [sub_resource type="Resource" id="Resource_il8a7"]
@@ -49,6 +51,64 @@ script = ExtResource("3_asido")
 effects = Array[ExtResource("2_asido")]([SubResource("Resource_h48ea"), SubResource("Resource_iesjq"), SubResource("Resource_gneyo"), SubResource("Resource_iso42"), SubResource("Resource_1rls6")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_nmiuw"]
+script = ExtResource("9_iso42")
+category = 2
+amount = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_1l13j"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 1
+color = Color(0.8156863, 0.21176471, 0.3372549, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_ntcm6"]
+script = ExtResource("9_iso42")
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_k21bt"]
+script = ExtResource("9_iso42")
+category = 2
+amount = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_dvljf"]
+script = ExtResource("9_iso42")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_qtm42"]
+script = ExtResource("9_iso42")
+category = 2
+amount = 1000
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_k4xy2"]
+script = ExtResource("9_iso42")
+category = 3
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_1kud3"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_gn824"]
+script = ExtResource("9_iso42")
+category = 3
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_xliol"]
+script = ExtResource("10_1rls6")
+effects = Array[ExtResource("9_iso42")]([SubResource("Resource_nmiuw"), SubResource("Resource_1l13j"), SubResource("Resource_ntcm6"), SubResource("Resource_k21bt"), SubResource("Resource_dvljf"), SubResource("Resource_qtm42"), SubResource("Resource_k4xy2"), SubResource("Resource_1kud3"), SubResource("Resource_gn824")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_gneyo"]
 atlas = ExtResource("12_1rls6")
 region = Rect2(0, 0, 24, 24)
@@ -74,10 +134,11 @@ animations = [{
 [resource]
 script = ExtResource("4_rsbqf")
 tile_name = "[color=green]Chaos Explosion[/color]"
-description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to all ships and [color=green]re-roll[/color] all dice"
+description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to all ships then [color=green]re-roll[/color] all dice"
 rarity = 2
 textures = SubResource("SpriteFrames_2itrs")
 uses_per_combat = 1
 activation_checks = Array[ExtResource("1_q8v5r")]([SubResource("Resource_il8a7")])
 effect_chain = SubResource("Resource_6u12h")
+effect_chain_v2 = SubResource("Resource_xliol")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
