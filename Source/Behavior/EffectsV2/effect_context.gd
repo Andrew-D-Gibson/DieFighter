@@ -24,8 +24,14 @@ var activator_die: Node = null  # Type: Dice
 ## Each handler may replace or append to this list.
 var targets: Array[Node] = []
 
-## How many times to loop the full effect chain.
-## EffectChainV2 decrements this each loop; handlers should not touch it.
+## Before the chain's loop starts: how many times to loop the full effect
+## chain (set by the caller, e.g. TileActivationEvent, then multiplied by
+## EffectChainV2.base_repetitions and any repetition_conditions).
+## Once the loop is running, EffectChainV2 keeps this updated as an
+## INFORMATIONAL "repetitions remaining after this one" counter only —
+## the loop's actual iteration count is fixed before it starts and does NOT
+## read this field back. Handlers may read it (e.g. "am I on the last
+## repetition?") but must not rely on writing it to affect looping.
 var repetitions: int = 1
 
 ## Running amount value, mutated by AMOUNT_MODIFIER handlers and consumed by ATTRIBUTE_CHANGE handlers.

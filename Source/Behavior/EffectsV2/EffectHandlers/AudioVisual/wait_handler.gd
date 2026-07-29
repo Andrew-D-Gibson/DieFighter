@@ -1,12 +1,12 @@
 class_name WaitHandler
 extends EffectHandler
 
-## data.amount: milliseconds to wait.
+## context.running_amount: milliseconds to wait.
 
-func apply(data: EffectData, _context: EffectContext, engine: ScenarioEngine) -> void:
-	if data.amount <= 0:
+func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
+	if context.running_amount <= 0:
 		return
 
 	var event := WaitEvent.new()
-	event.amount = data.amount
+	event.amount = context.running_amount
 	engine.inject_event(event)

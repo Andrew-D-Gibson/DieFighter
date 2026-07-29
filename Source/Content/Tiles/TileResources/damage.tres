@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_wqepc"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_2fv8l"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_28674"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="12_oji76"]
 
 [sub_resource type="Resource" id="Resource_mkcsn"]
 script = ExtResource("1_q4v50")
@@ -61,11 +62,16 @@ script = ExtResource("7_mkcsn")
 effects = Array[ExtResource("3_lbtrd")]([SubResource("Resource_oji76"), SubResource("Resource_2fv8l"), SubResource("Resource_wqepc"), SubResource("Resource_ugtd2"), SubResource("Resource_gjhi3"), SubResource("Resource_v0xsr")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_set_particles"]
+script = ExtResource("11_2fv8l")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_a2kih"]
 script = ExtResource("11_2fv8l")
 category = 4
 subtype = 1
-amount = 6
 color = Color(0.317647, 0.0823529, 0.129412, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -106,7 +112,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_p5sws"]
 script = ExtResource("12_28674")
-effects = Array[ExtResource("11_2fv8l")]([SubResource("Resource_a2kih"), SubResource("Resource_1sbbd"), SubResource("Resource_vclj8"), SubResource("Resource_cpfwt"), SubResource("Resource_set_die"), SubResource("Resource_l4qc3"), SubResource("Resource_8isrd")])
+effects = Array[ExtResource("11_2fv8l")]([SubResource("Resource_set_particles"), SubResource("Resource_a2kih"), SubResource("Resource_1sbbd"), SubResource("Resource_vclj8"), SubResource("Resource_cpfwt"), SubResource("Resource_set_die"), SubResource("Resource_l4qc3"), SubResource("Resource_8isrd")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_q4v50"]

@@ -51,31 +51,20 @@ script = ExtResource("3_5xcxx")
 effects = Array[ExtResource("2_m7a5a")]([SubResource("Resource_pmkt1"), SubResource("Resource_8ixi3"), SubResource("Resource_0ono8"), SubResource("Resource_gm6wk")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
-[sub_resource type="Resource" id="Resource_n8wo2"]
+[sub_resource type="Resource" id="Resource_f3imi"]
 script = ExtResource("9_u271i")
-subtype = 7
+category = 2
+amount = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_g28q7"]
-script = ExtResource("9_u271i")
-category = 5
-subtype = 6
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_prmjb"]
-script = ExtResource("9_u271i")
-subtype = 8
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_5t1r3"]
+[sub_resource type="Resource" id="Resource_1kud3"]
 script = ExtResource("9_u271i")
 category = 3
-subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_j3pel"]
 script = ExtResource("10_pmkt1")
-effects = Array[ExtResource("9_u271i")]([SubResource("Resource_n8wo2"), SubResource("Resource_g28q7"), SubResource("Resource_prmjb"), SubResource("Resource_5t1r3")])
+effects = Array[ExtResource("9_u271i")]([SubResource("Resource_f3imi"), SubResource("Resource_1kud3")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gm6wk"]

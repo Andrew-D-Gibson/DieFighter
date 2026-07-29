@@ -86,33 +86,13 @@ func _validate_property(property: Dictionary) -> void:
 static func _should_show(prop: String, cat: int, sub: int) -> bool:
 	match prop:
 		"amount":
-			match cat:
-				EffectEnums.Category.AMOUNT_MODIFIER:
-					return sub in [
+			# Every other amount-consuming handler now reads context.running_amount
+			# instead of this local field. Only SET/ADD feed the pipeline from here.
+			return (cat == EffectEnums.Category.AMOUNT_MODIFIER
+					and sub in [
 						EffectEnums.AmountModifierSubtype.SET,
 						EffectEnums.AmountModifierSubtype.ADD,
-					]
-				EffectEnums.Category.DICE_CONTROL:
-					return sub in [
-						EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE,
-						EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE,
-					]
-				EffectEnums.Category.AUDIO_VISUAL:
-					return sub in [
-						EffectEnums.AudioVisualSubtype.WAIT,
-						EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES,
-						EffectEnums.AudioVisualSubtype.SPAWN_EXPLOSION_PARTICLES,
-					]
-				EffectEnums.Category.TILE_CONTROL:
-					return sub in [
-						EffectEnums.TileControlSubtype.ADD_USES_REMAINING,
-						EffectEnums.TileControlSubtype.INCREMENT_TILE_DATA,
-						EffectEnums.TileControlSubtype.SET_TILE_DATA,
-					]
-				EffectEnums.Category.REPETITION:
-					return true
-				_:
-					return false
+					])
 		"multiplier":
 			return (cat == EffectEnums.Category.AMOUNT_MODIFIER
 					and sub == EffectEnums.AmountModifierSubtype.MULTIPLY)

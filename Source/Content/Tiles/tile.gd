@@ -193,6 +193,7 @@ func _on_die_accepted(die: Dice) -> void:
 		var event: TileActivationEvent = TileActivationEvent.new()
 		event.tile = self
 		event.activator_die = die
+		event.die_value = die.value
 		scenario_engine.queue_event(event)
 		
 

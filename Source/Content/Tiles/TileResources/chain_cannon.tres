@@ -12,8 +12,11 @@
 [ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="6_5tyjx"]
 [ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="7_f7e78"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_k8ihr"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_5tyjx"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_26nv3"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="12_f7e78"]
 [ext_resource type="Texture2D" uid="uid://bajiqlioyp6wv" path="res://Assets/Textures/Tiles/RedTiles/chain_cannon-Sheet.png" id="12_na2wt"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="13_f7e78"]
 
 [sub_resource type="Resource" id="Resource_istkj"]
 script = ExtResource("1_g62jg")
@@ -68,6 +71,60 @@ script = ExtResource("3_0it3x")
 effects = Array[ExtResource("2_l1l1p")]([SubResource("Resource_ceyw7"), SubResource("Resource_oji76"), SubResource("Resource_2fv8l"), SubResource("Resource_wqepc"), SubResource("Resource_ugtd2"), SubResource("Resource_gjhi3"), SubResource("Resource_v0xsr")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_5t1r3"]
+script = ExtResource("11_5tyjx")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cenje"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 1
+color = Color(0.31764707, 0.08235294, 0.13333334, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_dqt2m"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 5
+sound_resource = ExtResource("12_f7e78")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_7kkex"]
+script = ExtResource("11_5tyjx")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_k2ilm"]
+script = ExtResource("11_5tyjx")
+category = 2
+amount = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_2g6t7"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_y2dp7"]
+script = ExtResource("11_5tyjx")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_dapn3"]
+script = ExtResource("11_5tyjx")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_j3pel"]
+script = ExtResource("12_26nv3")
+effects = Array[ExtResource("11_5tyjx")]([SubResource("Resource_5t1r3"), SubResource("Resource_cenje"), SubResource("Resource_dqt2m"), SubResource("Resource_7kkex"), SubResource("Resource_k2ilm"), SubResource("Resource_2g6t7"), SubResource("Resource_y2dp7"), SubResource("Resource_dapn3")])
+base_repetitions = 2
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_fl5br"]
 atlas = ExtResource("12_na2wt")
 region = Rect2(0, 0, 24, 24)
@@ -112,4 +169,5 @@ textures = SubResource("SpriteFrames_ha28q")
 uses_per_combat = 3
 activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])
 effect_chain = SubResource("Resource_ob6pq")
+effect_chain_v2 = SubResource("Resource_j3pel")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

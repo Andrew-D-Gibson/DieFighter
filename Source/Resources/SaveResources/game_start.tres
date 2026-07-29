@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_8qr57"]
 [ext_resource type="Resource" uid="uid://dy6ykhsava6f4" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_4a3cr"]
-[ext_resource type="Resource" uid="uid://b1awwqwkacfu6" path="res://Source/Content/Tiles/TileResources/emergency_shield.tres" id="7_5y8et"]
+[ext_resource type="Resource" uid="uid://dn78mt3vyk5tm" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="7_5y8et"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xm1st"]
 [ext_resource type="Resource" uid="uid://dkvqal8qwxrww" path="res://Source/Content/Tiles/TileResources/amplifier.tres" id="8_4a3cr"]
 

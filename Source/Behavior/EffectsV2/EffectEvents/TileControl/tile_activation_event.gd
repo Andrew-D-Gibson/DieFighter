@@ -3,6 +3,11 @@ extends EffectEvent
 
 var tile: Tile
 
+## How many times the full effect chain plays for this single activation.
+## Defaults to 1; modifiers may multiply this in on_before_event() (e.g.
+## "tiles activated by a 4 activate twice").
+var activation_repetitions: int = 1
+
 func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(tile):
 		return
@@ -48,6 +53,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.actor = Globals.player
 	context.effect_source = tile
 	context.activator_die = activator_die
+	context.repetitions = activation_repetitions
 
 	# Play the v2 effect chain — this enqueues more events; the engine's while-loop
 	# picks them up automatically because they're appended to the same event_queue.

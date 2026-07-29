@@ -690,6 +690,8 @@ Once confirmed working:
 
 ## Block 13 — Migrate More Tiles (~2 hrs, split into two sessions)
 
+---- **GET CLAUDE TO UPDATE ALL EffectData.amount USES TO EffectContext.running_amount AND UPDATE INSPECTOR**
+
 **Goal:** All common tile types migrated to `EffectChainV2`.
 
 *(Corresponds to original Block 10.)*

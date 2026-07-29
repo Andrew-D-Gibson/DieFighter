@@ -39,7 +39,6 @@ McpInteractionServer="*uid://coajxxari555t"
 [debug]
 
 gdscript/warnings/untyped_declaration=1
-gdscript/warnings/inferred_declaration=1
 gdscript/warnings/confusable_local_declaration=2
 
 [display]

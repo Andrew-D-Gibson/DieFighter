@@ -9,5 +9,5 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.activator_die  = context.activator_die
 	event.targets        = context.targets.duplicate()
 	event.color          = data.color
-	event.amount         = data.amount
+	event.amount         = context.running_amount
 	engine.inject_event(event)

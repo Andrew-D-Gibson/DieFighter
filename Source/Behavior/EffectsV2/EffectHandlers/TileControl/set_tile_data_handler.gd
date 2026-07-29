@@ -2,7 +2,7 @@ class_name SetTileDataHandler
 extends EffectHandler
 
 ## data.string_param: the dictionary key to set on the tile.
-## data.amount: the integer value to store.
+## context.running_amount: the integer value to store.
 
 func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	if data.string_param.is_empty():
@@ -13,5 +13,5 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.actor         = context.actor
 	event.effect_source = context.effect_source
 	event.data_key      = data.string_param
-	event.amount        = data.amount
+	event.amount        = context.running_amount
 	engine.inject_event(event)
