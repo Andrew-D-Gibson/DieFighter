@@ -116,4 +116,4 @@ func play(context: EffectContext, engine: ScenarioEngine) -> void:
 					"\nAdd a _register() call in effect_registry.gd._ready()."
 				)
 				continue
-			await handler.apply(data, context, engine)
+			handler.apply(data, context, engine)

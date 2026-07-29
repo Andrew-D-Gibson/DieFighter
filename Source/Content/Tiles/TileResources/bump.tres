@@ -12,6 +12,7 @@
 [ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="5_c3unh"]
 [ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png" id="7_0ono8"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_u271i"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_gm6wk"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_pmkt1"]
 
 [sub_resource type="Resource" id="Resource_7xmxb"]
@@ -54,6 +55,14 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 [sub_resource type="Resource" id="Resource_f3imi"]
 script = ExtResource("9_u271i")
 category = 2
+subtype = 6
+amount = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_4ge7v"]
+script = ExtResource("9_u271i")
+category = 2
+subtype = 1
 amount = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -62,9 +71,15 @@ script = ExtResource("9_u271i")
 category = 3
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_xliol"]
+script = ExtResource("9_u271i")
+category = 3
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_j3pel"]
 script = ExtResource("10_pmkt1")
-effects = Array[ExtResource("9_u271i")]([SubResource("Resource_f3imi"), SubResource("Resource_1kud3")])
+effects = Array[ExtResource("9_u271i")]([SubResource("Resource_f3imi"), SubResource("Resource_4ge7v"), SubResource("Resource_1kud3"), SubResource("Resource_xliol")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gm6wk"]
