@@ -69,6 +69,7 @@ enum AmountModifierSubtype {
 	ADD_TILE_DATA,        ## Add a tile's stored data value to running_amount
 	SET_TO_ENGINE_CHARGE, ## Set running_amount to current engine charge value
 	SET_TO_DIE_VALUE,     ## Set running_amount to the activator die's face value
+	SET_TO_ENEMY_INTENT,  ## Set running_amount to the enemy action's rolled intent amount
 }
 
 

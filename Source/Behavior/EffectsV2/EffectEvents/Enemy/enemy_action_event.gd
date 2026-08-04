@@ -51,6 +51,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.effect_source = enemy
 	context.activator_die = activator_die
 	context.repetitions = activation_repetitions
+	context.enemy_intent_amount = action.intent_amount
 	
 	
 	# Play the v2 effect chain — this enqueues more events; the engine's while-loop

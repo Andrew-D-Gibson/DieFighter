@@ -185,7 +185,7 @@ func _update_ui() -> void:
 				$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
 				
 				# Set up the action amount text
-				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].intent_amount
+				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].get_intent_amount_text()
 
 				# Change over the info on clicking this particular action indicator 
 				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)

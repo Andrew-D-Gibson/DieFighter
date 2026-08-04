@@ -41,5 +41,5 @@ description = "[color=blue]Shields[/color] for [color=blue](amount)[/color]"
 indicator_texture = ExtResource("7_rwj3p")
 info_texture = ExtResource("8_2xd6c")
 effect_chain = SubResource("Resource_h8kdw")
-intent_amount = "2"
+intent_amount = 2
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

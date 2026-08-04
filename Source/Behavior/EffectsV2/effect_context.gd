@@ -37,3 +37,6 @@ var repetitions: int = 1
 ## Running amount value, mutated by AMOUNT_MODIFIER handlers and consumed by ATTRIBUTE_CHANGE handlers.
 ## Reset to 0 at the start of each chain repetition.
 var running_amount: int = 0
+
+## Enemy intention, set by the enemy with an intent amount
+var enemy_intent_amount: int = 0 

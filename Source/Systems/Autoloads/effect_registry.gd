@@ -69,6 +69,7 @@ func _register_all() -> void:
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD_TILE_DATA,       AddTileDataAmountHandler.new())
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET_TO_ENGINE_CHARGE, SetAmountToEngineChargeHandler.new())
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET_TO_DIE_VALUE,    SetAmountToDieValueHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET_TO_ENEMY_INTENT, SetAmountToEnemyIntentHandler.new())
 
 	# ── ATTRIBUTE CHANGE ───────────────────────────────────────────────────────
 	_register(T.Category.ATTRIBUTE_CHANGE, T.AttributeChangeSubtype.DAMAGE,               DealDamageHandler.new())

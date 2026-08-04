@@ -76,6 +76,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_u74ai"]
 script = ExtResource("8_enj8n")
 category = 2
+subtype = 7
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_gdpre"]
@@ -102,5 +103,5 @@ indicator_texture = ExtResource("3_ca2d5")
 info_texture = ExtResource("6_k68wh")
 effect_chain = SubResource("Resource_oguca")
 effect_chain_v2 = SubResource("Resource_0pkcg")
-intent_amount = "2"
+intent_amount = 2
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

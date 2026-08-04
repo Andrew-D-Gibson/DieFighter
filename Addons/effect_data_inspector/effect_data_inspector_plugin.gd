@@ -69,6 +69,7 @@ class SubtypeProperty extends EditorProperty:
 			"Add Tile Data",
 			"Set to Engine Charge",
 			"Set to Die Value",
+			"Set to Enemy Intent",
 		],
 		EffectEnums.Category.DICE_CONTROL: [
 			"Change Activator Value",
