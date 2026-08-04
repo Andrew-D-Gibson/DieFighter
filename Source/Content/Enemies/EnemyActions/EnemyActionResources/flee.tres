@@ -7,6 +7,9 @@
 [ext_resource type="Texture2D" uid="uid://ccobig2n6feie" path="res://Assets/Textures/Enemies/IntentIndicator/flee_info.png" id="3_38s5a"]
 [ext_resource type="Script" uid="uid://c8lqyi367m7t0" path="res://Source/Content/Effects/EnemyShipControls/flee_effect.gd" id="3_hfnye"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="4_c6725"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="5_ewju3"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="6_j02qh"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="7_drqkg"]
 
 [sub_resource type="Resource" id="Resource_c6725"]
 script = ExtResource("2_hfnye")
@@ -21,6 +24,23 @@ script = ExtResource("4_c6725")
 effects = Array[ExtResource("1_av7rw")]([SubResource("Resource_c6725"), SubResource("Resource_ewju3")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_bdgkf"]
+script = ExtResource("5_ewju3")
+category = 3
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_0rpmg"]
+script = ExtResource("5_ewju3")
+category = 6
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_nkp0x"]
+script = ExtResource("7_drqkg")
+effects = Array[ExtResource("5_ewju3")]([SubResource("Resource_bdgkf"), SubResource("Resource_0rpmg")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [resource]
 script = ExtResource("2_dly4w")
 name = "Flee"
@@ -28,4 +48,5 @@ description = "Flees from combat.  Gives dice away randomly"
 indicator_texture = ExtResource("2_qaw31")
 info_texture = ExtResource("3_38s5a")
 effect_chain = SubResource("Resource_j02qh")
+effect_chain_v2 = SubResource("Resource_nkp0x")
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

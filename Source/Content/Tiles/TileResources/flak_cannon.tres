@@ -13,7 +13,10 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_m1j0p"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_w3f31"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="9_sndgu"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_y24nt"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="12_8q7m7"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_a1g78"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="13_0ntbc"]
 
 [sub_resource type="Resource" id="Resource_44pq3"]
 script = ExtResource("1_71286")
@@ -67,6 +70,65 @@ script = ExtResource("8_m1j0p")
 effects = Array[ExtResource("2_3abs0")]([SubResource("Resource_y24nt"), SubResource("Resource_8q7m7"), SubResource("Resource_sndgu"), SubResource("Resource_vg00i"), SubResource("Resource_w3f31"), SubResource("Resource_a1g78"), SubResource("Resource_cdns8")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_5sovj"]
+script = ExtResource("11_y24nt")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_l2ir2"]
+script = ExtResource("11_y24nt")
+category = 4
+subtype = 1
+color = Color(0.34509805, 0.12156863, 0.16862746, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_kxjic"]
+script = ExtResource("11_y24nt")
+category = 4
+subtype = 5
+sound_resource = ExtResource("12_8q7m7")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_d5k4g"]
+script = ExtResource("11_y24nt")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_ovvog"]
+script = ExtResource("11_y24nt")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_o0tpk"]
+script = ExtResource("11_y24nt")
+category = 2
+amount = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_1nxe3"]
+script = ExtResource("11_y24nt")
+category = 2
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_hwq30"]
+script = ExtResource("11_y24nt")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_pi78s"]
+script = ExtResource("11_y24nt")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_0ntbc"]
+script = ExtResource("12_a1g78")
+effects = Array[ExtResource("11_y24nt")]([SubResource("Resource_5sovj"), SubResource("Resource_l2ir2"), SubResource("Resource_kxjic"), SubResource("Resource_d5k4g"), SubResource("Resource_ovvog"), SubResource("Resource_o0tpk"), SubResource("Resource_1nxe3"), SubResource("Resource_hwq30"), SubResource("Resource_pi78s")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_h3tty"]
 atlas = ExtResource("2_mywar")
 region = Rect2(0, 0, 24, 24)
@@ -85,9 +147,11 @@ animations = [{
 [resource]
 script = ExtResource("3_mywar")
 tile_name = "[color=red]Flak Cannon[/color]"
-description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]target[/color], +1 for every surrounding tile, then [color=orange]give[/color] them the die"
+description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]target[/color], +1 for every surrounding tile.
+[color=orange]Give[/color] them the die"
 textures = SubResource("SpriteFrames_m1j0p")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi"), SubResource("Resource_m1j0p")])
 effect_chain = SubResource("Resource_4kv0t")
+effect_chain_v2 = SubResource("Resource_0ntbc")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

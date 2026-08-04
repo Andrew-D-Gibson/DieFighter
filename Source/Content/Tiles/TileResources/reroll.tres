@@ -8,7 +8,9 @@
 [ext_resource type="Texture2D" uid="uid://cuk1fxtfqcuff" path="res://Assets/Textures/Tiles/GreenTiles/reroll-Sheet.png" id="4_tley7"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="5_jet8y"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_jet8y"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="6_mwp2x"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="7_8dutl"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="7_i7nom"]
 
 [sub_resource type="Resource" id="Resource_ecbfa"]
 script = ExtResource("1_cuubr")
@@ -26,6 +28,23 @@ metadata/_custom_type_script = "uid://bscm2msup3lwk"
 script = ExtResource("5_jet8y")
 effects = Array[ExtResource("2_tley7")]([SubResource("Resource_8dutl"), SubResource("Resource_ifduw")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="Resource" id="Resource_1kud3"]
+script = ExtResource("6_mwp2x")
+category = 3
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_qtm42"]
+script = ExtResource("6_mwp2x")
+category = 3
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_f3imi"]
+script = ExtResource("7_8dutl")
+effects = Array[ExtResource("6_mwp2x")]([SubResource("Resource_1kud3"), SubResource("Resource_qtm42")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ecbfa"]
 atlas = ExtResource("4_tley7")
@@ -64,4 +83,5 @@ textures = SubResource("SpriteFrames_ecbfa")
 uses_per_combat = 2
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa")])
 effect_chain = SubResource("Resource_mwp2x")
+effect_chain_v2 = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

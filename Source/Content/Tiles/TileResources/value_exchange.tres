@@ -11,7 +11,9 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_fdhil"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_fdhil"]
 [ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/GreenTiles/value_exchange.png" id="7_jubjl"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_wohu7"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_86yy8"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_ino2a"]
 
 [sub_resource type="Resource" id="Resource_yik4x"]
 script = ExtResource("3_y57nh")
@@ -40,6 +42,53 @@ script = ExtResource("6_fdhil")
 effects = Array[ExtResource("2_nqfdy")]([SubResource("Resource_yik4x"), SubResource("Resource_g133g"), SubResource("Resource_e82b4"), SubResource("Resource_y57nh"), SubResource("Resource_ctsso")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_qtm42"]
+script = ExtResource("9_wohu7")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_1kud3"]
+script = ExtResource("9_wohu7")
+category = 4
+subtype = 1
+color = Color(0.32156864, 0.47843137, 0.16078432, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_j6chx"]
+script = ExtResource("9_wohu7")
+category = 3
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_wohu7"]
+script = ExtResource("9_wohu7")
+category = 2
+amount = 200
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_f3imi"]
+script = ExtResource("9_wohu7")
+category = 4
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_x81fm"]
+script = ExtResource("9_wohu7")
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_f06cv"]
+script = ExtResource("9_wohu7")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_ino2a"]
+script = ExtResource("10_86yy8")
+effects = Array[ExtResource("9_wohu7")]([SubResource("Resource_qtm42"), SubResource("Resource_1kud3"), SubResource("Resource_j6chx"), SubResource("Resource_wohu7"), SubResource("Resource_f3imi"), SubResource("Resource_x81fm"), SubResource("Resource_f06cv")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_pgax4"]
 animations = [{
 "frames": [{
@@ -58,4 +107,5 @@ description = "[color=yellow]Any die[/color] -> Flip all (die_1) and (die_6), th
 textures = SubResource("SpriteFrames_pgax4")
 uses_per_combat = -1
 effect_chain = SubResource("Resource_jubjl")
+effect_chain_v2 = SubResource("Resource_ino2a")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

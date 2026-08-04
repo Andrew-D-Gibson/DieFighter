@@ -19,7 +19,7 @@ func resolve(engine: ScenarioEngine) -> void:
 			Globals.player.dice_manager.add(activator_die, true, false)
 		tile.dice_queue.remove(activator_die)
 		return
-
+		
 	# Decrement uses now that we're committed to activating
 	if tile.uses_remaining != -1:
 		tile.uses_remaining -= 1

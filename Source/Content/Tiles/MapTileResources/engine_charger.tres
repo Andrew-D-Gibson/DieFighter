@@ -11,7 +11,9 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_7mo4q"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_dd8hj"]
 [ext_resource type="Script" uid="uid://b8kdirxf6fdvb" path="res://Source/Content/Effects/Conditionals/if_enemy_targeted_effect.gd" id="7_2utoq"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_3fymx"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_2utoq"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_ahu5x"]
 
 [sub_resource type="Resource" id="Resource_dd8hj"]
 script = ExtResource("1_8mym4")
@@ -46,6 +48,46 @@ script = ExtResource("6_7mo4q")
 effects = Array[ExtResource("2_1ow5n")]([SubResource("Resource_2r3c1"), SubResource("Resource_trxre"), SubResource("Resource_3fymx")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_slehp"]
+script = ExtResource("9_3fymx")
+category = 2
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_e2rem"]
+script = ExtResource("9_3fymx")
+category = 4
+subtype = 1
+color = Color(0.78431374, 0.34117648, 0.9490196, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_4nsdf"]
+script = ExtResource("9_3fymx")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_iur0g"]
+script = ExtResource("9_3fymx")
+category = 1
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_jippl"]
+script = ExtResource("9_3fymx")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_k4fy2"]
+script = ExtResource("9_3fymx")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_ubmp7"]
+script = ExtResource("10_2utoq")
+effects = Array[ExtResource("9_3fymx")]([SubResource("Resource_slehp"), SubResource("Resource_e2rem"), SubResource("Resource_4nsdf"), SubResource("Resource_iur0g"), SubResource("Resource_jippl"), SubResource("Resource_k4fy2")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_7mo4q"]
 atlas = ExtResource("4_uhn3f")
 region = Rect2(0, 0, 24, 24)
@@ -69,5 +111,6 @@ textures = SubResource("SpriteFrames_dd8hj")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_8mym4")]([SubResource("Resource_dd8hj")])
 effect_chain = SubResource("Resource_3jpq8")
+effect_chain_v2 = SubResource("Resource_ubmp7")
 dragging_allowed = false
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

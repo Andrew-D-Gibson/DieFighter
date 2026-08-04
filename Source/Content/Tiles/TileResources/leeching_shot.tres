@@ -12,6 +12,9 @@
 [ext_resource type="Script" uid="uid://l0ptnkc15dl0" path="res://Source/Content/Effects/AttributeChangers/heal_effect.gd" id="8_c7e3k"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="9_r2sor"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="10_c7e3k"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="10_uauxn"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="11_qp02v"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="11_xm7fs"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="11_y0stg"]
 
 [sub_resource type="Resource" id="Resource_r2sor"]
@@ -62,6 +65,75 @@ script = ExtResource("9_r2sor")
 effects = Array[ExtResource("2_5xqwv")]([SubResource("Resource_c7e3k"), SubResource("Resource_y0stg"), SubResource("Resource_nhjdj"), SubResource("Resource_uauxn"), SubResource("Resource_xm7fs"), SubResource("Resource_qp02v")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_lqu6b"]
+script = ExtResource("10_uauxn")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_66uas"]
+script = ExtResource("10_uauxn")
+category = 4
+subtype = 1
+color = Color(0.34509805, 0.12156863, 0.16862746, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_efjhi"]
+script = ExtResource("10_uauxn")
+category = 4
+subtype = 5
+sound_resource = ExtResource("11_qp02v")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_afhn3"]
+script = ExtResource("10_uauxn")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_hbnnx"]
+script = ExtResource("10_uauxn")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s5uk5"]
+script = ExtResource("10_uauxn")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_jdjaw"]
+script = ExtResource("10_uauxn")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_g2gj0"]
+script = ExtResource("10_uauxn")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_5tcq3"]
+script = ExtResource("10_uauxn")
+category = 1
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_iakvh"]
+script = ExtResource("10_uauxn")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_c0det"]
+script = ExtResource("10_uauxn")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_f3imi"]
+script = ExtResource("11_y0stg")
+effects = Array[ExtResource("10_uauxn")]([SubResource("Resource_lqu6b"), SubResource("Resource_66uas"), SubResource("Resource_efjhi"), SubResource("Resource_afhn3"), SubResource("Resource_hbnnx"), SubResource("Resource_s5uk5"), SubResource("Resource_jdjaw"), SubResource("Resource_g2gj0"), SubResource("Resource_5tcq3"), SubResource("Resource_iakvh"), SubResource("Resource_c0det")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_cy0vr"]
 animations = [{
 "frames": [{
@@ -76,10 +148,11 @@ animations = [{
 [resource]
 script = ExtResource("3_cy0vr")
 tile_name = "[color=red]Leeching Shot[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color] to [color=purple]target[/color] and [color=green]repair 2 hull[/color], then [color=orange]give[/color] them the die"
+description = "(die_1) or (die_2) -> Steal [color=red]2 hull[/color] from the [color=purple]target[/color] then [color=orange]give[/color] them the die"
 rarity = 1
 textures = SubResource("SpriteFrames_cy0vr")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r2sor"), SubResource("Resource_0lgwc"), SubResource("Resource_swlve")])
 effect_chain = SubResource("Resource_bu7s0")
+effect_chain_v2 = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

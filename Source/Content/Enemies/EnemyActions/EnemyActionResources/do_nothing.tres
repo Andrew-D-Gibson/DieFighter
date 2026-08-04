@@ -6,6 +6,10 @@
 [ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="2_llu0j"]
 [ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="3_8ls1d"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="4_llu0j"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="6_uiyg5"]
+[ext_resource type="Resource" uid="uid://b1ojv70l21glb" path="res://Source/Resources/SoundEffectResources/SoundEffects/error.tres" id="7_kheda"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="8_tih48"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="9_q575a"]
 
 [sub_resource type="Resource" id="Resource_uiyg5"]
 script = ExtResource("2_llu0j")
@@ -24,7 +28,32 @@ script = ExtResource("4_llu0j")
 effects = Array[ExtResource("1_nu4jr")]([SubResource("Resource_uiyg5"), SubResource("Resource_jr25w"), SubResource("Resource_rgoyr")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_oguca"]
+script = ExtResource("6_uiyg5")
+category = 4
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_2qjt7"]
+script = ExtResource("6_uiyg5")
+category = 4
+subtype = 5
+sound_resource = ExtResource("7_kheda")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_803as"]
+script = ExtResource("6_uiyg5")
+category = 3
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_enj8n"]
+script = ExtResource("9_q575a")
+effects = Array[ExtResource("6_uiyg5")]([SubResource("Resource_oguca"), SubResource("Resource_2qjt7"), SubResource("Resource_803as")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [resource]
 script = ExtResource("1_6upn5")
 effect_chain = SubResource("Resource_60flf")
+effect_chain_v2 = SubResource("Resource_enj8n")
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

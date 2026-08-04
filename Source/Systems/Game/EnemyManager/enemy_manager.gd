@@ -13,7 +13,10 @@ var enemies: Array[Enemy]
 var enemies_jumping: bool = false
 var screen_size: Vector2 = Vector2(320, 180)
 
-
+var scenario_engine: ScenarioEngine = null:
+	set = set_scenario_engine
+	
+	
 func _ready() -> void:
 	Globals.enemy_manager = self
 	
@@ -59,6 +62,8 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 			+ get_point_along_path(enemies_to_spawn[i].spawning_path_location)
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
 		enemy.scenario_state = enemies_to_spawn[i].starting_state
+
+		enemy.scenario_engine = scenario_engine
 
 		enemies.append(enemy)
 		add_child(enemy)
@@ -129,23 +134,16 @@ func run_enemy_turn() -> void:
 	# This prevents issues if enemies are removed during iteration
 	var current_enemies: Array[Enemy] = enemies.duplicate()
 	
-	while true:
-		var dice_left: bool = false
-		for enemy: Enemy in current_enemies:
-			# Skip if enemy was removed
-			if not enemy or not is_instance_valid(enemy):
-				continue
-				
-			if len(enemy.dice_manager.queue) != 0:
-				dice_left = true
-				Globals.targeting_computer.target_enemy(enemy)
-				await get_tree().create_timer(1).timeout
-				await enemy.run_turn()
-				
-		
-		if not dice_left:
-			break
+	for enemy: Enemy in current_enemies:
+		if not enemy or not is_instance_valid(enemy):
+			continue
 			
+		if len(enemy.dice_manager.queue) <= 0:
+			continue
+			
+		enemy.run_turn()
+		
+	await scenario_engine.finished_processing_queue
 	Events.enemy_turn_over.emit()
 
 
@@ -209,3 +207,10 @@ func shield_all_enemies(amount: int) -> void:
 func damage_all_enemies(amount: int) -> void:
 	for i: int in range(len(enemies)-1, -1, -1):
 		enemies[i].health.take_damage(amount)
+		
+		
+func set_scenario_engine(engine: ScenarioEngine) -> void:
+	scenario_engine = engine
+	
+	for enemy: Enemy in get_alive_enemies():
+		enemy.scenario_engine = engine

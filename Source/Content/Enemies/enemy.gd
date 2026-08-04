@@ -49,7 +49,9 @@ static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 ## Optional: force specific actions (used by tutorial)
 static var forced_actions: Array[EnemyActionResource] = []
 
-
+var scenario_engine: ScenarioEngine = null:
+	set = set_scenario_engine
+	
 var explosion_particles: PackedScene = preload("uid://566ykra4buin")
 
 
@@ -239,56 +241,30 @@ func generate_turn_actions() -> void:
 		turn_actions[i].activating_die_number = i+1
 	
 
-## Uses the value of the first die in the queue to perform the 
-## pre-chosen action
-func act_with_first_die() -> void:
-	# Don't act if there's no dice in the queue
-	if len(dice_manager.queue) == 0:
-		return
-		
-	# Get the first die from the queue
-	var die := dice_manager.queue[0]
-	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-	
-	# Get the action for the chosen die
-	var action := turn_actions[die.value - 1]
-	
-	# Set up the effects variables for chaining effects
-	var effect_variables = EffectVariables.new()
-	effect_variables.actor = self
-	effect_variables.effect_source = self
-	effect_variables.activator_die = die
-	
-	
-	# Move the die to in front of the enemy
-	var tween_time: float = 0.75
-	var adjusted_tween_time: float = tween_time / Globals.animation_speed
-	var tween = get_tree().create_tween()
-	tween.tween_property(die, "global_position", global_position + Vector2(0,12), adjusted_tween_time).set_ease(Tween.EASE_IN_OUT)
-	await tween.finished
-	
-	await get_tree().create_timer(0.25).timeout
-	
-	# Make an action indicator popup
-	var popup_time: float = 0.75
-	var action_indicator = action_popup.instantiate()
-	add_child(action_indicator)
-	action_indicator.sprite.texture = action.info_texture
-	action_indicator.popup_time = popup_time
-	action_indicator.global_position = die.global_position + Vector2(0,12)
-		
-	Events.enemy_used_die.emit(self, die.value)
-		
-	await action.effect_chain.play(effect_variables)
-		
-	Events.enemy_acted.emit(enemy_resource.enemy_name, action.name)
-	
-
 ## Runs a full turn using all the dice in the queue,
 ## executing their actions sequentially 
 func run_turn() -> void:
-	while len(dice_manager.queue) > 0:
-		await act_with_first_die()
+	var enemy_action_events: Array[EnemyActionEvent] = []
+	
+	for i in range(len(dice_manager.queue)):
+		if not is_instance_valid(dice_manager.queue[i]):
+			continue
+		
+		var die := dice_manager.queue[i]
+		
+		# Get the action for the chosen die
+		var action := turn_actions[die.value - 1]
+
+		var event := EnemyActionEvent.new()
+		event.enemy = self
+		event.activator_die = die
+		event.die_value = die.value
+		event.action = action
+		
+		enemy_action_events.append(event)
+		
+	for event: EnemyActionEvent in enemy_action_events:
+		scenario_engine.queue_event(event)
 	turns_alive += 1
 	
 
@@ -310,3 +286,7 @@ func trigger_state_effects() -> void:
 ## Re-targets the computer for this enemy
 func _on_clicked() -> void:
 	Globals.targeting_computer.target_enemy(self)
+	
+	
+func set_scenario_engine(engine: ScenarioEngine) -> void:
+	scenario_engine = engine

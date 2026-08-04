@@ -15,7 +15,7 @@ func _test(_command_args: Array[String] = []) -> void:
 	if Globals.scenario_manager.engine:
 		var tile: Tile = Globals.tile_grid.tile_locations[Vector2i(0,0)]
 		
-		Globals.scenario_manager.engine.add_modifier(ActivatesTwiceOnValueModifier.new())
+		Globals.scenario_manager.engine.add_modifier(ActivatesTwiceOnValueModifier.new(5))
 
 
 func _on_line_edit_gui_input(event: InputEvent) -> void:
@@ -121,6 +121,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 
 		'reroll':
 			_reroll(command.slice(1))
+			
+		'reset_uses':
+			_reset_uses()
 
 		's':
 			_play_test_sound()
@@ -395,6 +398,11 @@ func _reroll(command_args: Array[String] = []) -> void:
 			die.value = amount
 	else:
 		Globals.player.reroll_dice()
+		
+		
+func _reset_uses() -> void:
+	for tile: Tile in Globals.tile_grid.tile_locations.values():
+		tile.uses_remaining = tile.tile_resource.uses_per_combat
 
 
 func _set_dice(command_args: Array[String] = []) -> void:
@@ -520,6 +528,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
 	command_history.append_text('\n[b]lock_tiles[/b]		            stop tiles from being moved')
 	command_history.append_text('\n[b]reroll[/b] [value]                reroll dice, or set all to value')
+	command_history.append_text('\n[b]reset_uses[/b] 					reset the number of times a tile can be used')
 	command_history.append_text('\n[b]save_grid[/b] <a|b|c>             save grid layout to file (persists across runs)')
 	command_history.append_text('\n[b]set_dice[/b] <v1> [v2] ...        set die values (1-6, left to right)')
 	command_history.append_text('\n[b]set_health[/b] <amount>           set player health to exact value')

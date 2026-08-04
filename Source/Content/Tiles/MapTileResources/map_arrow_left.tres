@@ -6,7 +6,9 @@
 [ext_resource type="Script" uid="uid://crt8abcwxtsi7" path="res://Source/Content/Effects/MiscUtilities/jump_effect.gd" id="3_3qev1"]
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_6pw46"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_3qev1"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="5_j67x6"]
 [ext_resource type="Texture2D" uid="uid://cq7ei8swstn5b" path="res://Assets/Textures/Map/left_arrow_tile.png" id="5_kfeuv"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="6_p2hx3"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="6_yt0m3"]
 
 [sub_resource type="Resource" id="Resource_kfeuv"]
@@ -27,6 +29,30 @@ metadata/_custom_type_script = "uid://crt8abcwxtsi7"
 script = ExtResource("3_6pw46")
 effects = Array[ExtResource("2_3qev1")]([SubResource("Resource_yt0m3")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+
+[sub_resource type="Resource" id="Resource_1kud3"]
+script = ExtResource("5_j67x6")
+category = 2
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_j6chx"]
+script = ExtResource("5_j67x6")
+category = 2
+subtype = 2
+multiplier = -1.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_3phsw"]
+script = ExtResource("5_j67x6")
+category = 6
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_f3imi"]
+script = ExtResource("6_yt0m3")
+effects = Array[ExtResource("5_j67x6")]([SubResource("Resource_1kud3"), SubResource("Resource_j6chx"), SubResource("Resource_3phsw")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_6pw46"]
 atlas = ExtResource("5_kfeuv")
@@ -51,6 +77,7 @@ textures = SubResource("SpriteFrames_3qev1")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_axjj4")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46")])
 effect_chain = SubResource("Resource_j67x6")
+effect_chain_v2 = SubResource("Resource_f3imi")
 dragging_allowed = false
 max_dice_in_queue = 1
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

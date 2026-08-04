@@ -13,7 +13,9 @@
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="7_vpgxx"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_8vpcq"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_p7d6s"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_q67gt"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_534nq"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="12_cnb1i"]
 
 [sub_resource type="Resource" id="Resource_p7d6s"]
 script = ExtResource("1_854mr")
@@ -55,6 +57,59 @@ script = ExtResource("7_7qkaa")
 effects = Array[ExtResource("3_854mr")]([SubResource("Resource_cnb1i"), SubResource("Resource_bwi3v"), SubResource("Resource_vpgxx"), SubResource("Resource_q67gt"), SubResource("Resource_77b16"), SubResource("Resource_534nq")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_3phsw"]
+script = ExtResource("11_q67gt")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cefd1"]
+script = ExtResource("11_q67gt")
+category = 4
+subtype = 1
+color = Color(0.24705882, 0.5568628, 0.80784315, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_5line"]
+script = ExtResource("11_q67gt")
+category = 4
+subtype = 5
+sound_resource = ExtResource("4_77b16")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_pqxiy"]
+script = ExtResource("11_q67gt")
+category = 2
+amount = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_dva43"]
+script = ExtResource("11_q67gt")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_prfmf"]
+script = ExtResource("11_q67gt")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_e0xis"]
+script = ExtResource("11_q67gt")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_24nbl"]
+script = ExtResource("11_q67gt")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_m0r4a"]
+script = ExtResource("12_534nq")
+effects = Array[ExtResource("11_q67gt")]([SubResource("Resource_3phsw"), SubResource("Resource_cefd1"), SubResource("Resource_5line"), SubResource("Resource_pqxiy"), SubResource("Resource_dva43"), SubResource("Resource_prfmf"), SubResource("Resource_e0xis"), SubResource("Resource_24nbl")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_7qkaa"]
 atlas = ExtResource("2_7qkaa")
 region = Rect2(0, 0, 24, 24)
@@ -78,4 +133,5 @@ textures = SubResource("SpriteFrames_p7d6s")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])
 effect_chain = SubResource("Resource_8vpcq")
+effect_chain_v2 = SubResource("Resource_m0r4a")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

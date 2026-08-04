@@ -9,7 +9,7 @@ var _hit_particles_scene: PackedScene = preload("uid://doi43icsr46q0")
 
 func resolve(_engine: ScenarioEngine) -> void:
 	var spawn_nodes: Array[Node] = targets if not targets.is_empty() else (
-		[effect_source] if is_instance_valid(effect_source) else []
+		[effect_source] as Array[Node] if is_instance_valid(effect_source) else [] as Array[Node]
 	)
 	for node: Node in spawn_nodes:
 		if not is_instance_valid(node):

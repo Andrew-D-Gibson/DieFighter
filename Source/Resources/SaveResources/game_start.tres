@@ -7,7 +7,10 @@
 [ext_resource type="Resource" uid="uid://dn78mt3vyk5tm" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="7_5y8et"]
 [ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xm1st"]
 [ext_resource type="Resource" uid="uid://dkvqal8qwxrww" path="res://Source/Content/Tiles/TileResources/amplifier.tres" id="8_4a3cr"]
-[ext_resource type="Resource" uid="uid://fvyrur7iway6" path="res://Source/Content/Tiles/TileResources/chaos_explosion.tres" id="8_prmjb"]
+[ext_resource type="Resource" uid="uid://cmcttgw25qx0t" path="res://Source/Content/Tiles/TileResources/reroll.tres" id="9_f1kbi"]
+[ext_resource type="Resource" uid="uid://b2ewisub2832j" path="res://Source/Content/Tiles/TileResources/engines_to_shields.tres" id="9_prmjb"]
+[ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Content/Tiles/TileResources/shield.tres" id="10_f1kbi"]
+[ext_resource type="Resource" uid="uid://diw5cai3jhpm" path="res://Source/Content/Tiles/TileResources/value_exchange.tres" id="11_e1utd"]
 
 [resource]
 script = ExtResource("1_78gow")
@@ -17,9 +20,11 @@ num_of_dice = 3
 tile_locations = Dictionary[Vector2i, ExtResource("6_8qr57")]({
 Vector2i(0, 0): ExtResource("7_xm1st"),
 Vector2i(0, 1): ExtResource("8_4a3cr"),
-Vector2i(0, 2): ExtResource("8_4a3cr"),
+Vector2i(0, 2): ExtResource("10_f1kbi"),
 Vector2i(1, 1): ExtResource("7_4a3cr"),
 Vector2i(2, 2): ExtResource("7_5y8et"),
-Vector2i(3, 2): ExtResource("8_prmjb")
+Vector2i(3, 1): ExtResource("11_e1utd"),
+Vector2i(3, 2): ExtResource("9_f1kbi"),
+Vector2i(4, 2): ExtResource("9_prmjb")
 })
 metadata/_custom_type_script = "uid://dxkqfdmh8psqp"

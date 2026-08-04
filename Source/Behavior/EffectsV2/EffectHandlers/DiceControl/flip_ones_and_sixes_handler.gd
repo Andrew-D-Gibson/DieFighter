@@ -2,5 +2,8 @@ class_name FlipOnesAndSixesHandler
 extends EffectHandler
 
 
-func apply(_data: EffectData, _context: EffectContext, engine: ScenarioEngine) -> void:
-	engine.inject_event(FlipOnesAndSixesEvent.new())
+func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
+	var flip_event := FlipOnesAndSixesEvent.new()
+	flip_event.actor = context.actor
+	
+	engine.inject_event(flip_event)

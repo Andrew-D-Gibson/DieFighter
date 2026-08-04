@@ -15,7 +15,9 @@
 [ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_c0x8g"]
 [ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_yhkpl"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="11_yhkpl"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="13_dymuh"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="14_ougyd"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="14_wggto"]
 
 [sub_resource type="Resource" id="Resource_r846u"]
 script = ExtResource("1_wsqrt")
@@ -25,7 +27,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 [sub_resource type="Resource" id="Resource_u10cf"]
 script = ExtResource("1_wsqrt")
 type = 1
-acceptable_values = Array[int]([6])
+acceptable_values = Array[int]([1])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_slehp"]
@@ -72,6 +74,65 @@ script = ExtResource("8_c0x8g")
 effects = Array[ExtResource("2_23tjy")]([SubResource("Resource_slehp"), SubResource("Resource_2bwjp"), SubResource("Resource_yhkpl"), SubResource("Resource_2h6rw"), SubResource("Resource_ubmp7"), SubResource("Resource_4h3ei"), SubResource("Resource_ougyd"), SubResource("Resource_dymuh"), SubResource("Resource_wggto")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_4nsdf"]
+script = ExtResource("13_dymuh")
+category = 2
+amount = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_iur0g"]
+script = ExtResource("13_dymuh")
+category = 4
+subtype = 1
+color = Color(0.29803923, 0.6666667, 0.9882353, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_jippl"]
+script = ExtResource("13_dymuh")
+category = 2
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_k4fy2"]
+script = ExtResource("13_dymuh")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_sy1le"]
+script = ExtResource("13_dymuh")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_ranjh"]
+script = ExtResource("13_dymuh")
+category = 2
+subtype = 2
+multiplier = -1.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_vqfph"]
+script = ExtResource("13_dymuh")
+category = 1
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_sjank"]
+script = ExtResource("13_dymuh")
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_hg50f"]
+script = ExtResource("13_dymuh")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_e2rem"]
+script = ExtResource("14_ougyd")
+effects = Array[ExtResource("13_dymuh")]([SubResource("Resource_4nsdf"), SubResource("Resource_iur0g"), SubResource("Resource_jippl"), SubResource("Resource_k4fy2"), SubResource("Resource_sy1le"), SubResource("Resource_ranjh"), SubResource("Resource_vqfph"), SubResource("Resource_sjank"), SubResource("Resource_hg50f")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_lpymo"]
 animations = [{
 "frames": [{
@@ -86,9 +147,10 @@ animations = [{
 [resource]
 script = ExtResource("3_r846u")
 tile_name = "[color=purple]Emergency Transfer[/color]"
-description = "(die_6) -> Turn all [color=purple]engine charge[/color] into [color=blue]shields[/color], then [color=orange]give[/color] die to [color=purple]random enemy[/color]"
+description = "(die_1) -> Turn all [color=purple]engine charge[/color] into [color=blue]shields[/color], then [color=orange]give[/color] die to [color=purple]random enemy[/color]"
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_wsqrt")]([SubResource("Resource_r846u"), SubResource("Resource_u10cf")])
 effect_chain = SubResource("Resource_admec")
+effect_chain_v2 = SubResource("Resource_e2rem")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
