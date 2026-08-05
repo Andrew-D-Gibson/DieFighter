@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://bxuudvb6cerq1" path="res://Source/Content/Effects/MiscUtilities/wait_for_milliseconds_effect.gd" id="8_qio35"]
 [ext_resource type="Texture2D" uid="uid://b20hbpbd0v7jl" path="res://Assets/Textures/Tiles/BlueTiles/emergency_shield.png" id="10_rg6sh"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="11_55lg7"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="12_esdata"]
 
 [sub_resource type="Resource" id="Resource_4tha5"]
 script = ExtResource("1_wphb4")
@@ -93,6 +94,107 @@ metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 atlas = ExtResource("10_rg6sh")
 region = Rect2(0, 0, 24, 24)
 
+[sub_resource type="Resource" id="Resource_esv2tgt"]
+script = ExtResource("12_esdata")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2set1"]
+script = ExtResource("12_esdata")
+category = 2
+amount = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2heal"]
+script = ExtResource("12_esdata")
+category = 1
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2set2"]
+script = ExtResource("12_esdata")
+category = 2
+amount = 250
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2wait1"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2set3"]
+script = ExtResource("12_esdata")
+category = 2
+amount = 96
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2fx1"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 1
+color = Color(0.905882, 0.258824, 0.411765, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2set4"]
+script = ExtResource("12_esdata")
+category = 2
+amount = 500
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2wait2"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2set5"]
+script = ExtResource("12_esdata")
+category = 2
+amount = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2shield"]
+script = ExtResource("12_esdata")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2set6"]
+script = ExtResource("12_esdata")
+category = 2
+amount = 96
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2fx2"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 1
+color = Color(0.309804, 0.717647, 1, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2set7"]
+script = ExtResource("12_esdata")
+category = 2
+amount = 1000
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2wait3"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2destroy"]
+script = ExtResource("12_esdata")
+category = 9
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2chain"]
+script = ExtResource("11_55lg7")
+effects = Array[ExtResource("12_esdata")]([SubResource("Resource_esv2tgt"), SubResource("Resource_esv2set1"), SubResource("Resource_esv2heal"), SubResource("Resource_esv2set2"), SubResource("Resource_esv2wait1"), SubResource("Resource_esv2set3"), SubResource("Resource_esv2fx1"), SubResource("Resource_esv2set4"), SubResource("Resource_esv2wait2"), SubResource("Resource_esv2set5"), SubResource("Resource_esv2shield"), SubResource("Resource_esv2set6"), SubResource("Resource_esv2fx2"), SubResource("Resource_esv2set7"), SubResource("Resource_esv2wait3"), SubResource("Resource_esv2destroy")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_6btq7"]
 animations = [{
 "frames": [{
@@ -114,5 +216,8 @@ uses_per_combat = -1
 activation_checks = Array[ExtResource("1_wphb4")]([SubResource("Resource_4tha5")])
 event_responses = Dictionary[ExtResource("2_k5jac"), ExtResource("3_unvpn")]({
 SubResource("Resource_ejtl7"): SubResource("Resource_rg6sh")
+})
+event_responses_v2 = Dictionary[ExtResource("2_k5jac"), ExtResource("11_55lg7")]({
+SubResource("Resource_ejtl7"): SubResource("Resource_esv2chain")
 })
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

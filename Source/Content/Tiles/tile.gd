@@ -106,15 +106,24 @@ func _get_tile_info() -> InfoResource:
 
 
 func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
-	# TODO: Needs to implement new effect chain v2 logic
-	pass
-	#for event_check: TileEvent in tile_resource.event_responses.keys():
-		#if event_check.event == event:
-			## Trigger the response if the tile is affected by the event
-			## or if the tile doesn't care which tile is affected by the event
-			#if (tile == self) or (not event_check.listen_only_for_self):
-				#var effect_variables: EffectVariables = _generate_effect_variables()
-				#await tile_resource.event_responses[event_check].play(effect_variables)
+	var event_check: TileEvent = _find_matching_event_response(tile, event)
+	if event_check == null or not scenario_engine:
+		return
+
+	var trigger_event: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
+	trigger_event.responder = self
+	trigger_event.chain = tile_resource.event_responses_v2[event_check]
+	scenario_engine.queue_event(trigger_event)
+
+
+## Finds the TileEvent key matching this event type whose response should
+## fire, respecting listen_only_for_self (self-only vs. any tile).
+func _find_matching_event_response(tile: Tile, event: TileEvent.EventType) -> TileEvent:
+	for event_check: TileEvent in tile_resource.event_responses_v2.keys():
+		if event_check.event == event:
+			if (tile == self) or (not event_check.listen_only_for_self):
+				return event_check
+	return null
 		
 		
 func clears_activation_criteria(activator_die: Dice = null) -> bool:	
@@ -170,6 +179,16 @@ func _replace_event_data_in_string(text: String) -> String:
 			result = result.replace(full_match, "0") # fallback in case of parse error
 
 	return result
+
+
+## Re-activates this tile with no activator die (e.g. TILE_CONTROL.ACTIVATE_SELF).
+func try_to_activate() -> void:
+	if not scenario_engine:
+		return
+
+	var event: TileActivationEvent = TileActivationEvent.new()
+	event.tile = self
+	scenario_engine.queue_event(event)
 
 
 func _update_dice_queue_locations() -> void:

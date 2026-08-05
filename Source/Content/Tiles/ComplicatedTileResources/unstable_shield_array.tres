@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="12_5u4xb"]
 [ext_resource type="Texture2D" uid="uid://c8y8dwpvor27" path="res://Assets/Textures/Tiles/BlueTiles/unstable_shield_generator.png" id="13_qsfcr"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="13_tqpk6"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="14_usadata"]
 
 [sub_resource type="Resource" id="Resource_eq5vj"]
 script = ExtResource("1_dl748")
@@ -87,6 +88,35 @@ script = ExtResource("7_2uk52")
 effects = Array[ExtResource("2_dooug")]([SubResource("Resource_6e2xl")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_usav2activate"]
+script = ExtResource("14_usadata")
+category = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_usav2increment"]
+script = ExtResource("14_usadata")
+category = 5
+subtype = 8
+string_param = "activation_count"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_usav2pushedchain"]
+script = ExtResource("13_tqpk6")
+effects = Array[ExtResource("14_usadata")]([SubResource("Resource_usav2activate"), SubResource("Resource_usav2increment")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_usav2reset"]
+script = ExtResource("14_usadata")
+category = 5
+subtype = 9
+string_param = "activation_count"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_usav2movedchain"]
+script = ExtResource("13_tqpk6")
+effects = Array[ExtResource("14_usadata")]([SubResource("Resource_usav2reset")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_iy1wd"]
 atlas = ExtResource("13_qsfcr")
 region = Rect2(0, 0, 24, 24)
@@ -115,5 +145,9 @@ effect_chain = SubResource("Resource_vy2tg")
 event_responses = Dictionary[ExtResource("8_krkdr"), ExtResource("7_2uk52")]({
 SubResource("Resource_p6ekm"): SubResource("Resource_jbg2i"),
 SubResource("Resource_5crca"): SubResource("Resource_4o71b")
+})
+event_responses_v2 = Dictionary[ExtResource("8_krkdr"), ExtResource("13_tqpk6")]({
+SubResource("Resource_p6ekm"): SubResource("Resource_usav2pushedchain"),
+SubResource("Resource_5crca"): SubResource("Resource_usav2movedchain")
 })
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="13_eqpeb"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="13_il266"]
 [ext_resource type="Texture2D" uid="uid://b3m2kwdglr6qg" path="res://Assets/Textures/Tiles/RedTiles/inertial_feedback.png" id="14_yie10"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="15_ifdata"]
 
 [sub_resource type="Resource" id="Resource_g6dxp"]
 script = ExtResource("1_lhf16")
@@ -82,6 +83,18 @@ script = ExtResource("10_mv5lu")
 effects = Array[ExtResource("2_il266")]([SubResource("Resource_2qpsl")])
 metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
+[sub_resource type="Resource" id="Resource_ifv2reset"]
+script = ExtResource("15_ifdata")
+category = 5
+subtype = 9
+string_param = "tiles_moved"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_ifv2chain"]
+script = ExtResource("13_il266")
+effects = Array[ExtResource("15_ifdata")]([SubResource("Resource_ifv2reset")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_gc5g0"]
 atlas = ExtResource("14_yie10")
 region = Rect2(0, 0, 24, 24)
@@ -108,5 +121,8 @@ activation_checks = Array[ExtResource("1_lhf16")]([SubResource("Resource_g6dxp")
 effect_chain = SubResource("Resource_ioiq2")
 event_responses = Dictionary[ExtResource("11_rf4wt"), ExtResource("10_mv5lu")]({
 SubResource("Resource_ypikh"): SubResource("Resource_sjv0n")
+})
+event_responses_v2 = Dictionary[ExtResource("11_rf4wt"), ExtResource("13_il266")]({
+SubResource("Resource_ypikh"): SubResource("Resource_ifv2chain")
 })
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
