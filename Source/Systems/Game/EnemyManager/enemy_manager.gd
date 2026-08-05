@@ -63,8 +63,6 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
 		enemy.scenario_state = enemies_to_spawn[i].starting_state
 
-		enemy.scenario_engine = scenario_engine
-
 		enemies.append(enemy)
 		add_child(enemy)
 

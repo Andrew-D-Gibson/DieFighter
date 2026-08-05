@@ -3,17 +3,17 @@
 ./Source/Scenes/Cutscenes/opening_cutscene.gd
 ./Source/Scenes/Cutscenes/entering_cockpit_cutscene.gd
 ./Source/Resources/BackgroundResources/random_background_resource.gd
-./Source/Resources/BackgroundResources/static_background_object_resource.gd
-./Source/Resources/BackgroundResources/background_resource.gd
-./Source/Resources/SoundEffectResources/sound_effect_resource.gd
-./Source/Resources/SaveResources/game_save.gd
-./Source/Content/ScenarioResources/enemy_state_reward_resource.gd
-./Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd
-./Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd
-./Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_probability_transition.gd
-./Source/Content/ScenarioResources/scenario_resource.gd
-./Source/Content/Tiles/TileEventListener/tile_event.gd
-./Source/Content/Tiles/tile.gd
+./Source/Resources/BackgroundResources/static_background_object_resource.gd -- ANALYZED
+./Source/Resources/BackgroundResources/background_resource.gd -- ANALYZED
+./Source/Resources/SoundEffectResources/sound_effect_resource.gd -- ANALYZED
+./Source/Resources/SaveResources/game_save.gd -- ANALYZED
+./Source/Content/ScenarioResources/enemy_state_reward_resource.gd -- ANALYZED
+./Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd -- ANALYZED
+./Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd -- ANALYZED
+./Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_probability_transition.gd -- ANALYZED
+./Source/Content/ScenarioResources/scenario_resource.gd -- ANALYZED
+./Source/Content/Tiles/TileEventListener/tile_event.gd -- ANALYZED
+./Source/Content/Tiles/tile.gd -- ANALYZED
 ./Source/Content/Tiles/tile_resource.gd
 ./Source/Content/Tiles/activation_resource.gd
 ./Source/Content/Enemies/faction_system.gd

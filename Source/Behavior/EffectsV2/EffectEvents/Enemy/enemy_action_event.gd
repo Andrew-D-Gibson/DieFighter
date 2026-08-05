@@ -12,7 +12,7 @@ var activation_repetitions: int = 1
 
 
 func resolve(engine: ScenarioEngine) -> void:
-	if not is_instance_valid(enemy):
+	if not enemy and is_instance_valid(enemy):
 		return
 
 	# Remove die from the visual stacking queue
@@ -34,6 +34,12 @@ func resolve(engine: ScenarioEngine) -> void:
 	).set_ease(Tween.EASE_IN_OUT)
 	await tween.finished
 	
+	# Just in case.
+	# This only happens when an enemy flees with multiple dice I think,
+	# and I don't love this but it's fine.
+	if not enemy and is_instance_valid(enemy):
+		return
+		
 	await enemy.get_tree().create_timer(0.25).timeout
 	
 	# Make an action indicator popup

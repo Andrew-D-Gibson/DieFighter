@@ -359,7 +359,7 @@ combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtR
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3")])
-starting_scenario = ExtResource("24_7iud4")
+starting_scenario = ExtResource("23_6ebjm")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]
 unique_name_in_owner = true

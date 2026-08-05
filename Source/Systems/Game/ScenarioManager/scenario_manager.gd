@@ -42,6 +42,7 @@ func _ready() -> void:
 func _load_scenario(scenario: ScenarioResource) -> void:
 	current_scenario = scenario
 	
+	# Make a new engine
 	engine = engine_scene.instantiate()
 	add_child(engine)
 	
@@ -58,6 +59,7 @@ func _start_scenario() -> void:
 	
 	
 func _jump() -> void:
+	# Get rid of the old engine
 	if is_instance_valid(engine):
 		engine.queue_free()
 		engine = null

@@ -1,14 +1,18 @@
-[22:41:40] Debug logger initialized
-[22:41:40] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_Attacker/COMBAT_attacker.tres
-[22:41:40] Starting scenario
-[22:41:40] Starting combat
-[22:41:45] Player attacked ship: Enemy (Faction: PIRATE)
-[22:41:45] Scenario Event: PLAYER_ATTACKED_PIRATE
-[22:41:46] Player attacked ship: Enemy (Faction: PIRATE)
-[22:41:46] Scenario Event: PLAYER_ATTACKED_PIRATE
-[22:41:48] Player attacked ship: Enemy (Faction: PIRATE)
-[22:41:48] Scenario Event: PLAYER_ATTACKED_PIRATE
-[22:41:50] Player attacked ship: Enemy (Faction: PIRATE)
-[22:41:50] Scenario Event: PLAYER_ATTACKED_PIRATE
-[22:41:51] Player turn over
-[22:42:00] Enemy turn over
+[20:24:36] Debug logger initialized
+[20:24:36] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_DefenderDisabler/COMBAT_defender_disabler.tres
+[20:24:36] Starting scenario
+[20:24:36] Starting combat
+[20:24:48] Player attacked ship: @Node2D@349 (Faction: PIRATE)
+[20:24:48] Scenario Event: PLAYER_ATTACKED_PIRATE
+[20:24:51] Player attacked ship: @Node2D@349 (Faction: PIRATE)
+[20:24:51] Scenario Event: PLAYER_ATTACKED_PIRATE
+[20:24:52] Player turn over
+[20:24:59] Enemy turn over
+[20:25:18] Player attacked ship: Enemy (Faction: PIRATE)
+[20:25:18] Scenario Event: PLAYER_ATTACKED_PIRATE
+[20:25:20] Player attacked ship: Enemy (Faction: PIRATE)
+[20:25:20] Scenario Event: PLAYER_ATTACKED_PIRATE
+[20:25:21] Player attacked ship: Enemy (Faction: PIRATE)
+[20:25:21] Scenario Event: PLAYER_ATTACKED_PIRATE
+[20:25:22] Player turn over
+[20:25:26] Enemy turn over
