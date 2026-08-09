@@ -12,9 +12,11 @@ func _ready() -> void:
 	Events.load_scenario.connect(_check_for_combat_scenario)
 	Events.start_combat.connect(func():
 		Globals.player.engine_charge = 0
+		_update_ui()
 	)
 	Events.combat_finished.connect(func():
-		Globals.player.engine_charge = Globals.player.max_engine_charge	
+		Globals.player.engine_charge = Globals.player.max_engine_charge
+		_update_ui()	
 	)
 	Events.die_added.connect(func() -> void:
 		if Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
@@ -38,11 +40,13 @@ func _check_for_combat_scenario(scenario: ScenarioResource) -> void:
 	
 
 func _update_ui() -> void:
+	if not Globals.player:
+		return
+		
 	var charge_proportion: float = Globals.player.engine_charge / float(Globals.player.max_engine_charge)
-	
 	if charge_proportion != progress_bar.value:
-		var tween_time = 0.25
-		var bar_tween = get_tree().create_tween()
+		var tween_time: float = 0.25
+		var bar_tween: Tween = get_tree().create_tween()
 		bar_tween.tween_property(
 			progress_bar, 
 			'value', 
@@ -52,11 +56,11 @@ func _update_ui() -> void:
 		.from_current()\
 		.set_trans(Tween.TRANS_QUAD)
 		
-		
-		# The bar is 32 long and the head bar's maximum y is 2
-		var desired_head_ypos: float = 2 - (charge_proportion * 32) 
-			
-		var head_tween = get_tree().create_tween()
+	# The bar is 32 long and the head bar's maximum y is 2
+	var desired_head_ypos: float = 2 - (charge_proportion * 32)
+	if fill_head.position != Vector2(60, desired_head_ypos):
+		var tween_time: float = 0.25
+		var head_tween: Tween = get_tree().create_tween()
 		head_tween.tween_property(
 			fill_head, 
 			'position', 

@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://c8g3ud6esb1yp"]
 
-[ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="1_ptjxd"]
+[ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/EngineCharger/engine_charger.gd" id="1_ptjxd"]
 [ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="2_d5a6q"]
 [ext_resource type="Resource" uid="uid://bsaq6udi1wjln" path="res://Source/Content/Tiles/MapTileResources/engine_charger.tres" id="3_3l03o"]
 [ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="4_srypw"]

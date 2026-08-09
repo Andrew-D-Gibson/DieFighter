@@ -9,7 +9,7 @@
 [ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="8_5ksti"]
 [ext_resource type="Resource" uid="uid://crph25pv1d7aa" path="res://Source/Content/Tiles/MapTileResources/map_arrow_left.tres" id="10_tmld6"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
-[ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/MainViewer/engine_charger.gd" id="11_foiuu"]
+[ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/EngineCharger/engine_charger.gd" id="11_foiuu"]
 [ext_resource type="PackedScene" uid="uid://delq7kb5loqt2" path="res://Source/Content/Tiles/tile.tscn" id="11_mm1jt"]
 [ext_resource type="Resource" uid="uid://bh2rvyv5qga4w" path="res://Source/Content/Tiles/MapTileResources/map_arrow_right.tres" id="11_niw3m"]
 [ext_resource type="Shader" uid="uid://87xg1k4wv3ob" path="res://Assets/Shaders/map_crt_shader.gdshader" id="13_fa2si"]

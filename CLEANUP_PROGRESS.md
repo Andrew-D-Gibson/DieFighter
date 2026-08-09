@@ -25,13 +25,13 @@ them. This phase alone fixes the single most impactful bug in the whole review.
 - [X] **`opening_cutscene.gd` particle bug** — `_player_ship_hit()` adds `particles` to the tree
       twice instead of adding the `explosion` node; `explosion` leaks. (`CLEAN_UP_PLAN.md` →
       `opening_cutscene.gd`)
-- [ ] **Fix `Addons/` casing** — rename folder to lowercase `addons/` to match `project.godot`
+- [X] **Fix `Addons/` casing** — rename folder to lowercase `addons/` to match `project.godot`
       and the plugin's own preload path (works today only because macOS is case-insensitive).
       *(GLOBAL_CLEANUP_PLAN.md #6)*
-- [ ] **Delete dead duplicate `engine_charger.gd`** at `Source/Systems/Game/EngineCharger/` +
+- [X] **Delete dead duplicate `engine_charger.gd`** at `Source/Systems/Game/EngineCharger/` +
       its orphaned `.tscn`; move the real one in from `MainViewer/` and update
       `main_viewer.tscn`'s ext_resource path. *(GLOBAL_CLEANUP_PLAN.md #7)*
-- [ ] **Delete dead `FactionSystem`** (`Source/Content/Enemies/faction_system.gd`) — confirmed
+- [X] **Delete dead `FactionSystem`** (`Source/Content/Enemies/faction_system.gd`) — confirmed
       unreferenced anywhere; `ScenarioManager.Faction` is the real one in use.
       *(GLOBAL_CLEANUP_PLAN.md #10)*
 - [ ] **Remove dead `Globals.jump_manager` singleton registration** — confirmed 0 external reads.
