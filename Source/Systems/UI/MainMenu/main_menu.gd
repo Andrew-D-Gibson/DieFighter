@@ -28,8 +28,7 @@ func _ready() -> void:
 	# Get rid of any pre-existing stars
 	_clear_stars()
 
-	# Create new stars 
-	seed('Die Fighter'.hash())
+	# Create new stars
 	for i in range(num_of_stars):
 		_add_star(star_pixel_scene)
 
@@ -52,12 +51,12 @@ func _add_star(star_scene: PackedScene) -> void:
 	star.z_index = -2
 	add_child(star)
 	star.global_position = Vector2(
-		randf_range(0, _screen_size.x),
-		randf_range(0, (_screen_size.y * 2)) - 180
+		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, _screen_size.x),
+		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, (_screen_size.y * 2)) - 180
 	)
 
 	# Randomize the opacity of the star to simulate brightness/distance
-	star.modulate = Color(1, 1, 1, randf_range(0.25, 0.75))
+	star.modulate = Color(1, 1, 1, RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.25, 0.75))
 	
 	_stars.append(star)
 

@@ -19,20 +19,20 @@ func randomize() -> void:
 		
 func pick_random_texture() -> void:
 	if is_medium:
-		texture = medium_piece_textures.pick_random()
+		texture = RNGManager.pick_random(RNGManager.Bucket.BACKGROUND, medium_piece_textures)
 	else:
-		texture = large_piece_textures.pick_random()
-		
-	rotation_degrees = Array([0, 90, 180, 270]).pick_random()
+		texture = RNGManager.pick_random(RNGManager.Bucket.BACKGROUND, large_piece_textures)
+
+	rotation_degrees = RNGManager.pick_random(RNGManager.Bucket.BACKGROUND, [0, 90, 180, 270])
 
 
 func pick_random_velocity_delta() -> void:
-	var velocity_level: int 
-	
+	var velocity_level: int
+
 	if is_medium:
-		velocity_level = randi_range(2,4)
+		velocity_level = RNGManager.randi_range(RNGManager.Bucket.BACKGROUND, 2, 4)
 	else:
-		velocity_level = randi_range(1,2)
+		velocity_level = RNGManager.randi_range(RNGManager.Bucket.BACKGROUND, 1, 2)
 		
 	velocity_delta = velocity_level * min_velocity_delta
 	

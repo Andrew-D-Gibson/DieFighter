@@ -39,7 +39,7 @@ var tween: Tween
 			get_parent().rotation = 0
 			
 		if floating_enabled:
-			_floating_time = randf() * TAU
+			_floating_time = RNGManager.randf(RNGManager.Bucket.COSMETIC) * TAU
 
 # --- Adjustable floating parameters ---
 @export var bob_amplitude: float = 4.0   # Max vertical movement in pixels

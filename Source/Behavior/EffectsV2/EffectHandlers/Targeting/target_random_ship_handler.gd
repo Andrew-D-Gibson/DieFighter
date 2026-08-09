@@ -11,4 +11,4 @@ func apply(_data: EffectData, context: EffectContext, _engine: ScenarioEngine) -
 		context.targets = []
 		return
 		
-	context.targets = [all_ships.pick_random()]
+	context.targets = [RNGManager.pick_random(RNGManager.Bucket.TARGETING, all_ships)]

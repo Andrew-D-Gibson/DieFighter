@@ -38,4 +38,4 @@ func give_away_dice() -> void:
 		if len(enemies) == 0:
 			Globals.player.dice_manager.add(die, false, true)
 		else:
-			enemies.pick_random().dice_manager.add(die, true, true)
+			RNGManager.pick_random(RNGManager.Bucket.TARGETING, enemies).dice_manager.add(die, true, true)

@@ -44,11 +44,11 @@ func _get_possible_shop_tiles() -> Array[TileResource]:
 func _get_randomized_price(rarity: TileResource.Rarity) -> int:
 	match rarity:
 		TileResource.Rarity.COMMON:
-			return randi_range(10, 20)
+			return RNGManager.randi_range(RNGManager.Bucket.RUN, 10, 20)
 		TileResource.Rarity.UNCOMMON:
-			return randi_range(15, 25)
+			return RNGManager.randi_range(RNGManager.Bucket.RUN, 15, 25)
 		TileResource.Rarity.RARE:
-			return randi_range(25, 35)
+			return RNGManager.randi_range(RNGManager.Bucket.RUN, 25, 35)
 		_:
 			return 0
 
@@ -70,7 +70,9 @@ func _create_shop_tiles() -> void:
 				prices[shop_index].visible = false
 				continue
 			
-			var chosen_resource: TileResource = possible_shop_tiles.pick_random()
+			var chosen_resource: TileResource = RNGManager.pick_random(
+				RNGManager.Bucket.RUN, possible_shop_tiles
+			)
 			var tile: Tile = Globals.tile_grid.create_tile(chosen_resource)
 			add_child(tile)
 			

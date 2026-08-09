@@ -1,16 +1,8 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://b1awwqwkacfu6"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_wphb4"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_ejtl7"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_k5jac"]
-[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="3_ln60l"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_unvpn"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_k7gdr"]
-[ext_resource type="Script" uid="uid://l0ptnkc15dl0" path="res://Source/Content/Effects/AttributeChangers/heal_effect.gd" id="4_qio35"]
-[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="5_55lg7"]
-[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_ln60l"]
-[ext_resource type="Script" uid="uid://bmhft7xkxwabt" path="res://Source/Content/Effects/MiscUtilities/destroy_source_effect.gd" id="6_3vaod"]
-[ext_resource type="Script" uid="uid://bxuudvb6cerq1" path="res://Source/Content/Effects/MiscUtilities/wait_for_milliseconds_effect.gd" id="8_qio35"]
 [ext_resource type="Texture2D" uid="uid://b20hbpbd0v7jl" path="res://Assets/Textures/Tiles/BlueTiles/emergency_shield.png" id="10_rg6sh"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="11_55lg7"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="12_esdata"]
@@ -24,71 +16,6 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("2_k5jac")
 event = 100
 metadata/_custom_type_script = "uid://cfken75wevu1a"
-
-[sub_resource type="Resource" id="Resource_ln60l"]
-script = ExtResource("3_ln60l")
-metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
-
-[sub_resource type="Resource" id="Resource_qio35"]
-script = ExtResource("4_qio35")
-amount = 1
-primary_effect = true
-metadata/_custom_type_script = "uid://l0ptnkc15dl0"
-
-[sub_resource type="Resource" id="Resource_6btq7"]
-script = ExtResource("8_qio35")
-milliseconds_to_wait = 250
-metadata/_custom_type_script = "uid://bxuudvb6cerq1"
-
-[sub_resource type="Resource" id="Resource_e1x5s"]
-script = ExtResource("5_ln60l")
-color = Color(0.905882, 0.258824, 0.411765, 1)
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_tc5cw"]
-script = ExtResource("5_ln60l")
-color = Color(0.898039, 0.270588, 0.427451, 1)
-amount = 72
-location = 1
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_ratuj"]
-script = ExtResource("8_qio35")
-milliseconds_to_wait = 500
-metadata/_custom_type_script = "uid://bxuudvb6cerq1"
-
-[sub_resource type="Resource" id="Resource_55lg7"]
-script = ExtResource("5_55lg7")
-amount = 12
-primary_effect = true
-metadata/_custom_type_script = "uid://bllibq0iu6bwk"
-
-[sub_resource type="Resource" id="Resource_5xgfc"]
-script = ExtResource("5_ln60l")
-color = Color(0.294118, 0.662745, 0.988235, 1)
-amount = 72
-location = 1
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_6jq4r"]
-script = ExtResource("5_ln60l")
-color = Color(0.309804, 0.717647, 1, 1)
-amount = 144
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_iyog3"]
-script = ExtResource("8_qio35")
-milliseconds_to_wait = 1000
-metadata/_custom_type_script = "uid://bxuudvb6cerq1"
-
-[sub_resource type="Resource" id="Resource_3vaod"]
-script = ExtResource("6_3vaod")
-metadata/_custom_type_script = "uid://bmhft7xkxwabt"
-
-[sub_resource type="Resource" id="Resource_rg6sh"]
-script = ExtResource("3_unvpn")
-effects = Array[ExtResource("2_ejtl7")]([SubResource("Resource_ln60l"), SubResource("Resource_qio35"), SubResource("Resource_6btq7"), SubResource("Resource_e1x5s"), SubResource("Resource_tc5cw"), SubResource("Resource_ratuj"), SubResource("Resource_55lg7"), SubResource("Resource_5xgfc"), SubResource("Resource_6jq4r"), SubResource("Resource_iyog3"), SubResource("Resource_3vaod")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_iyog3"]
 atlas = ExtResource("10_rg6sh")
@@ -214,9 +141,6 @@ rarity = 1
 textures = SubResource("SpriteFrames_6btq7")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_wphb4")]([SubResource("Resource_4tha5")])
-event_responses = Dictionary[ExtResource("2_k5jac"), ExtResource("3_unvpn")]({
-SubResource("Resource_ejtl7"): SubResource("Resource_rg6sh")
-})
 event_responses_v2 = Dictionary[ExtResource("2_k5jac"), ExtResource("11_55lg7")]({
 SubResource("Resource_ejtl7"): SubResource("Resource_esv2chain")
 })

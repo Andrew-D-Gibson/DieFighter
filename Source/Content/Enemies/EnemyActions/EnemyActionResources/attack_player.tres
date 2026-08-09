@@ -1,46 +1,12 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://ddh4rqo4x116u"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_86x0f"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_n6gav"]
-[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="2_lx43e"]
 [ext_resource type="Texture2D" uid="uid://bup3n6lxij7cn" path="res://Assets/Textures/Enemies/IntentIndicator/attack.png" id="3_ca2d5"]
-[ext_resource type="Script" uid="uid://d4n1r7mdhge0s" path="res://Source/Content/Effects/Tweens/attack_target_tween_effect.gd" id="3_kvn21"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="3_r4sth"]
-[ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="4_t6ib4"]
-[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_hx6b7"]
 [ext_resource type="Texture2D" uid="uid://b5mm0ibc4n8hu" path="res://Assets/Textures/Enemies/IntentIndicator/attack_info.png" id="6_k68wh"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_r4sth"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="8_enj8n"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="9_oguca"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_2qjt7"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="11_803as"]
-
-[sub_resource type="Resource" id="Resource_5yrti"]
-script = ExtResource("2_lx43e")
-metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
-
-[sub_resource type="Resource" id="Resource_2qjt7"]
-script = ExtResource("3_r4sth")
-metadata/_custom_type_script = "uid://rmwtkvywl4yw"
-
-[sub_resource type="Resource" id="Resource_vfyi3"]
-script = ExtResource("3_kvn21")
-metadata/_custom_type_script = "uid://d4n1r7mdhge0s"
-
-[sub_resource type="Resource" id="Resource_eqm5h"]
-script = ExtResource("4_t6ib4")
-amount = 2
-primary_effect = true
-metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
-
-[sub_resource type="Resource" id="Resource_enj8n"]
-script = ExtResource("5_hx6b7")
-metadata/_custom_type_script = "uid://bscm2msup3lwk"
-
-[sub_resource type="Resource" id="Resource_oguca"]
-script = ExtResource("6_r4sth")
-effects = Array[ExtResource("1_n6gav")]([SubResource("Resource_5yrti"), SubResource("Resource_2qjt7"), SubResource("Resource_vfyi3"), SubResource("Resource_eqm5h"), SubResource("Resource_enj8n")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_81dy1"]
 script = ExtResource("8_enj8n")
@@ -101,7 +67,6 @@ name = "Dice Cannon"
 description = "Attacks for [color=red](amount) damage[/color]"
 indicator_texture = ExtResource("3_ca2d5")
 info_texture = ExtResource("6_k68wh")
-effect_chain = SubResource("Resource_oguca")
 effect_chain_v2 = SubResource("Resource_0pkcg")
 intent_amount = 2
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

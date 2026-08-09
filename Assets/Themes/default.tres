@@ -9,7 +9,6 @@
 [ext_resource type="Texture2D" uid="uid://o2eb2umnr1tr" path="res://Assets/Textures/ErrorTextPopup/background.png" id="4_slk4v"]
 [ext_resource type="Texture2D" uid="uid://bcfmuahtcadle" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_green_arrow.png" id="6_cmqry"]
 [ext_resource type="Texture2D" uid="uid://bqmjf6x8eu8ko" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_green_background_.png" id="7_cmqry"]
-[ext_resource type="FontFile" uid="uid://bkb6j6i7pp2l0" path="res://Assets/Fonts/m3x6/m3x6_LARGE.ttf" id="10_lvkrn"]
 [ext_resource type="Texture2D" uid="uid://b1ddwysx2g5o2" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/radio_green_checked.png" id="10_r3l6x"]
 [ext_resource type="Texture2D" uid="uid://cabvjpp2knad6" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/radio_green_unchecked.png" id="11_lvkrn"]
 
@@ -89,8 +88,8 @@ OptionButton/styles/normal = SubResource("StyleBoxTexture_cmqry")
 OptionButton/styles/pressed = SubResource("StyleBoxTexture_r3l6x")
 Panel/styles/panel = SubResource("StyleBoxTexture_qth60")
 PanelContainer/styles/panel = SubResource("StyleBoxTexture_slk4v")
-PopupMenu/font_sizes/font_size = 96
-PopupMenu/fonts/font = ExtResource("10_lvkrn")
+PopupMenu/font_sizes/font_size = 16
+PopupMenu/fonts/font = ExtResource("1_02yda")
 PopupMenu/icons/radio_checked = ExtResource("10_r3l6x")
 PopupMenu/icons/radio_unchecked = ExtResource("11_lvkrn")
 PopupMenu/styles/panel = SubResource("StyleBoxTexture_lvkrn")

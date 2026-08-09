@@ -76,18 +76,16 @@ func _set_up_particle() -> void:
 	
 
 func _set_up_float() -> void:
-	_time_to_float = randf_range(
-		min_time_to_float,
-		max_time_to_float
+	_time_to_float = RNGManager.randf_range(
+		RNGManager.Bucket.COSMETIC, min_time_to_float, max_time_to_float
 	)
-	
-	var vel_magnitude: float = randf_range(
-		min_float_velocity, 
-		max_float_velocity
+
+	var vel_magnitude: float = RNGManager.randf_range(
+		RNGManager.Bucket.COSMETIC, min_float_velocity, max_float_velocity
 	)
-	
+
 	_starting_float_velocity = (vel_magnitude * Vector2(1, 1)).rotated(
-		randf_range(0, 2*PI)
+		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, 2*PI)
 	)
 
 

@@ -1,32 +1,10 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://dh6y87rwpxmh2"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_6upn5"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_nu4jr"]
-[ext_resource type="Script" uid="uid://bkxrabyoax0ru" path="res://Source/Content/Effects/Tweens/shake_dice_tween_effect.gd" id="2_6c310"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="2_llu0j"]
-[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="3_8ls1d"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="4_llu0j"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="6_uiyg5"]
 [ext_resource type="Resource" uid="uid://b1ojv70l21glb" path="res://Source/Resources/SoundEffectResources/SoundEffects/error.tres" id="7_kheda"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="8_tih48"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="9_q575a"]
-
-[sub_resource type="Resource" id="Resource_uiyg5"]
-script = ExtResource("2_llu0j")
-metadata/_custom_type_script = "uid://rmwtkvywl4yw"
-
-[sub_resource type="Resource" id="Resource_jr25w"]
-script = ExtResource("2_6c310")
-metadata/_custom_type_script = "uid://bkxrabyoax0ru"
-
-[sub_resource type="Resource" id="Resource_rgoyr"]
-script = ExtResource("3_8ls1d")
-metadata/_custom_type_script = "uid://bscm2msup3lwk"
-
-[sub_resource type="Resource" id="Resource_60flf"]
-script = ExtResource("4_llu0j")
-effects = Array[ExtResource("1_nu4jr")]([SubResource("Resource_uiyg5"), SubResource("Resource_jr25w"), SubResource("Resource_rgoyr")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_oguca"]
 script = ExtResource("6_uiyg5")
@@ -54,6 +32,5 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
 script = ExtResource("1_6upn5")
-effect_chain = SubResource("Resource_60flf")
 effect_chain_v2 = SubResource("Resource_enj8n")
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

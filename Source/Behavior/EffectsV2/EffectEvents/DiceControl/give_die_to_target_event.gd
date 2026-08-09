@@ -24,7 +24,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 			if is_instance_valid(Globals.player):
 				Globals.player.dice_manager.add(activator_die)
 		else:
-			alive_enemies.pick_random().dice_manager.add(activator_die)
+			RNGManager.pick_random(RNGManager.Bucket.TARGETING, alive_enemies).dice_manager.add(activator_die)
 		return
 
 	target.dice_manager.add(activator_die)

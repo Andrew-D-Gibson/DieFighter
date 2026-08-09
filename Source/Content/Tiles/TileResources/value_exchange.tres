@@ -1,46 +1,12 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://diw5cai3jhpm"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_hoi4y"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_nqfdy"]
-[ext_resource type="Script" uid="uid://1iq61ppbhjtg" path="res://Source/Content/Effects/DiceValueChangers/flip_1s_and_6s_effect.gd" id="3_fdhil"]
-[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_y57nh"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="4_ctsso"]
-[ext_resource type="Script" uid="uid://dkxkkts7q82xj" path="res://Source/Content/Effects/Targeters/target_random_ship_effect.gd" id="4_fdhil"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="5_y57nh"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_ctsso"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_fdhil"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_fdhil"]
 [ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/GreenTiles/value_exchange.png" id="7_jubjl"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_wohu7"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_86yy8"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_ino2a"]
-
-[sub_resource type="Resource" id="Resource_yik4x"]
-script = ExtResource("3_y57nh")
-color = Color(0.478431, 0.741176, 0.2, 1)
-location = 1
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_g133g"]
-script = ExtResource("4_ctsso")
-metadata/_custom_type_script = "uid://rmwtkvywl4yw"
-
-[sub_resource type="Resource" id="Resource_e82b4"]
-script = ExtResource("3_fdhil")
-metadata/_custom_type_script = "uid://1iq61ppbhjtg"
-
-[sub_resource type="Resource" id="Resource_y57nh"]
-script = ExtResource("4_fdhil")
-metadata/_custom_type_script = "uid://dkxkkts7q82xj"
-
-[sub_resource type="Resource" id="Resource_ctsso"]
-script = ExtResource("5_y57nh")
-metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
-
-[sub_resource type="Resource" id="Resource_jubjl"]
-script = ExtResource("6_fdhil")
-effects = Array[ExtResource("2_nqfdy")]([SubResource("Resource_yik4x"), SubResource("Resource_g133g"), SubResource("Resource_e82b4"), SubResource("Resource_y57nh"), SubResource("Resource_ctsso")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_qtm42"]
 script = ExtResource("9_wohu7")
@@ -106,6 +72,5 @@ tile_name = "[color=green]Value Exchange[/color]"
 description = "[color=yellow]Any die[/color] -> Flip all (die_1) and (die_6), then [color=orange]give[/color] die to [color=purple]random ship[/color]"
 textures = SubResource("SpriteFrames_pgax4")
 uses_per_combat = -1
-effect_chain = SubResource("Resource_jubjl")
 effect_chain_v2 = SubResource("Resource_ino2a")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

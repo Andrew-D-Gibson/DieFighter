@@ -70,7 +70,6 @@ func _ready() -> void:
 	%EndTurnButton.disabled = true
 	%EndTurnButton.update_ui()
 	
-	Events.load_scenario.connect(_load_scenario)
 	Events.start_scenario.connect(_start_scenario)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
@@ -202,10 +201,6 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 	_update_dice_queue_locations()
 	Events.highlight_dice_area.emit()
 	
-	
-func _load_scenario(scenario: ScenarioResource) -> void:
-		Dice.seed(scenario.scenario_seed)
-
 	
 func _start_scenario() -> void:
 	health.shields = 0

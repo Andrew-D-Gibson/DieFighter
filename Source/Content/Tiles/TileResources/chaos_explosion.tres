@@ -2,14 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_q8v5r"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_5a1es"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_asido"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_asido"]
-[ext_resource type="Script" uid="uid://bwfflspw3732k" path="res://Source/Content/Effects/Targeters/target_all_ships_effect.gd" id="3_il8a7"]
-[ext_resource type="Script" uid="uid://ch00tyfgo3nvf" path="res://Source/Content/Effects/AttributeChangers/damage_effect.gd" id="4_6u12h"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_rsbqf"]
-[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="5_1rls6"]
-[ext_resource type="Script" uid="uid://dfw5ioetwloty" path="res://Source/Content/Effects/DiceValueChangers/reroll_all_dice_effect.gd" id="5_iesjq"]
-[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="7_iesjq"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_iso42"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_1rls6"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_2itrs"]
@@ -20,36 +13,6 @@ script = ExtResource("1_q8v5r")
 type = 1
 acceptable_values = Array[int]([5, 6])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_h48ea"]
-script = ExtResource("3_il8a7")
-metadata/_custom_type_script = "uid://bwfflspw3732k"
-
-[sub_resource type="Resource" id="Resource_iesjq"]
-script = ExtResource("4_6u12h")
-amount = 10
-primary_effect = true
-metadata/_custom_type_script = "uid://ch00tyfgo3nvf"
-
-[sub_resource type="Resource" id="Resource_gneyo"]
-script = ExtResource("5_1rls6")
-color = Color(0.882353, 0.239216, 0.388235, 1)
-amount = 64
-location = 1
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_iso42"]
-script = ExtResource("5_iesjq")
-metadata/_custom_type_script = "uid://dfw5ioetwloty"
-
-[sub_resource type="Resource" id="Resource_1rls6"]
-script = ExtResource("7_iesjq")
-metadata/_custom_type_script = "uid://bscm2msup3lwk"
-
-[sub_resource type="Resource" id="Resource_6u12h"]
-script = ExtResource("3_asido")
-effects = Array[ExtResource("2_asido")]([SubResource("Resource_h48ea"), SubResource("Resource_iesjq"), SubResource("Resource_gneyo"), SubResource("Resource_iso42"), SubResource("Resource_1rls6")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_nmiuw"]
 script = ExtResource("9_iso42")
@@ -139,6 +102,5 @@ rarity = 2
 textures = SubResource("SpriteFrames_2itrs")
 uses_per_combat = 1
 activation_checks = Array[ExtResource("1_q8v5r")]([SubResource("Resource_il8a7")])
-effect_chain = SubResource("Resource_6u12h")
 effect_chain_v2 = SubResource("Resource_xliol")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

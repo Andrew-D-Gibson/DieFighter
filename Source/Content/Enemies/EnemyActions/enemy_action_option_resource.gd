@@ -17,23 +17,7 @@ func get_action() -> EnemyActionResource:
 	var action: EnemyActionResource = base_action.duplicate(true)
 
 	# Randomly set the strength of the effect
-	amount = Enemy.rng.randi_range(min_amount, max_amount)
+	amount = RNGManager.randi_range(RNGManager.Bucket.ENEMY_AI, min_amount, max_amount)
 	action.intent_amount = amount
-
-	# Legacy v1 EffectChain support: patch primary effect amounts.
-	# Skipped for actions that only use effect_chain_v2.
-	if base_action.effect_chain:
-		action.effect_chain = base_action.effect_chain.duplicate(true)
-
-		# Create a new effects array with duplicated Effect objects
-		var duplicated_effects: Array[Effect] = []
-		for effect: Effect in base_action.effect_chain.effects:
-			var duplicated_effect: Effect = effect.duplicate(true)
-			if duplicated_effect.primary_effect:
-				duplicated_effect.amount = amount
-			duplicated_effects.append(duplicated_effect)
-
-		# Assign the duplicated effects to the new chain
-		action.effect_chain.effects = duplicated_effects
 
 	return action

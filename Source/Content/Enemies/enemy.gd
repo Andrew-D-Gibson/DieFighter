@@ -43,9 +43,6 @@ var moving_in_world: bool = false
 ## The number of turns this enemy has lived
 @onready var turns_alive: int = 0
 
-## Static RNG instance for choosing actions
-static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-
 ## Optional: force specific actions (used by tutorial)
 static var forced_actions: Array[EnemyActionResource] = []
 
@@ -119,12 +116,6 @@ func _connect_combat_signals() -> void:
 ## Connects the signals for the dice manager
 func _connect_dice_manager_signals() -> void:
 	dice_manager.die_added.connect(Events.enemy_received_die.emit)
-	
-
-## Seeds the rng at the start of the scenario
-## (Called by the enemy manager)
-static func seed(seed_value: int) -> void:
-	rng.seed = seed_value
 	
 
 ## Called when the enemy dies
@@ -224,7 +215,7 @@ func generate_turn_actions() -> void:
 	# Randomly fill the rest of the list using the action likelihoods
 	# Randomly choose 6 actions picking from our weighted list
 	for i in range(6 - len(turn_actions)):
-		var rand_float: float = rng.randf_range(0, action_weights_sum)
+		var rand_float: float = RNGManager.randf_range(RNGManager.Bucket.ENEMY_AI, 0, action_weights_sum)
 		var choice_threshold = rand_float
 		for option: EnemyActionOptionResource in this_turns_action_options.actions_possible:
 			if choice_threshold > option.weight:
@@ -233,7 +224,7 @@ func generate_turn_actions() -> void:
 				turn_actions.append(option.get_action())
 				break
 				
-	turn_actions.shuffle()
+	RNGManager.shuffle_array(RNGManager.Bucket.ENEMY_AI, turn_actions)
 	
 	# Make sure every action knows what dice activates it,
 	# so it can display the correct hint text when clicked
@@ -271,16 +262,14 @@ func run_turn() -> void:
 ## Triggers any effects associated with the current scenario state
 func trigger_state_effects() -> void:
 	dialogue_manager.show_dialogue(scenario_state.dialogue, scenario_state.faction)
-	
-	if not scenario_state.effects_on_enter:
+
+	if not scenario_state.effects_on_enter_v2 or not scenario_engine:
 		return
-		
-	# Set up the effects variables for chaining effects
-	var effect_variables = EffectVariables.new()
-	effect_variables.actor = self
-	effect_variables.effect_source = self
-	
-	await scenario_state.effects_on_enter.play(effect_variables)
+
+	var event: ScenarioStateEffectsEvent = ScenarioStateEffectsEvent.new()
+	event.enemy = self
+	event.chain = scenario_state.effects_on_enter_v2
+	scenario_engine.queue_event(event)
 
 
 ## Re-targets the computer for this enemy

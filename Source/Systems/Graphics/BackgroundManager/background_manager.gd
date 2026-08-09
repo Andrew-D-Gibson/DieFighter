@@ -24,19 +24,15 @@ var nebula: Node2D
 ## Current background name for modifier system
 var current_background_name: String = ""
 
-## Static RNG instance for choosing backgrounds from the random list
-static var rng: RandomNumberGenerator = RandomNumberGenerator.new()
-
 
 func _ready() -> void:
 	Globals.background_manager = self
 	_clear_children()
-	
+
 	if starting_background:
 		_set_background(starting_background)
-	
+
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
-		seed(scenario.scenario_seed)
 		_set_background(scenario.background_resource)
 	)
 	Events.set_background.connect(_set_background)
@@ -76,19 +72,19 @@ func _update_objects_motion(
 
 func _wrap_star_position(star: Node2D) -> void:
 	star.global_position.y = -5
-	star.global_position.x = randf_range(0, screen_size.x)
+	star.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x)
 
 
 func _wrap_debris_position(piece: Node2D) -> void:
 	piece.pick_random_texture()
 	piece.pick_random_velocity_delta()
 	piece.global_position.y = -5 - piece.texture.get_height()
-	piece.global_position.x = randf_range(0, screen_size.x)
+	piece.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x)
 
 
 func _wrap_static_object_position(obj: Node2D) -> void:
 	obj.global_position.y = -50
-	obj.global_position.x = randf_range(0, screen_size.x)
+	obj.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x)
 
 
 func _get_debris_base_speed(piece: Node2D) -> float:
@@ -135,17 +131,13 @@ func _clear_children() -> void:
 			children[i].queue_free()
 	
 	
-## Seeds the rng at the start of the scenario
-## (Called by the enemy manager)
-static func seed(seed_value: int) -> void:
-	rng.seed = seed_value
-	
-	
 func _set_background(background_resource: Resource) -> void:
 	_clear_children()
-	
+
 	if background_resource.has_method("get_random_background"):
-		var selected_bg: Resource = background_resource.get_random_background(rng)
+		var selected_bg: Resource = background_resource.get_random_background(
+			RNGManager.get_rng(RNGManager.Bucket.BACKGROUND)
+		)
 		if selected_bg:
 			_set_background(selected_bg)
 		return
@@ -185,13 +177,16 @@ func _create_stars(star_scene: PackedScene, count: int) -> void:
 		var star: Node2D = star_scene.instantiate()
 		add_child(star)
 		star.global_position = _random_screen_position()
-		star.modulate = Color(1, 1, 1, randf_range(0.25, 0.75))
+		star.modulate = Color(1, 1, 1, RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.25, 0.75))
 		star.set_meta("parallax_level", 0)
 		stars.append(star)
 
 
 func _random_screen_position() -> Vector2:
-	return Vector2(randf_range(0, screen_size.x), randf_range(0, screen_size.y))
+	return Vector2(
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x),
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.y)
+	)
 		
 
 func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_color: Color) -> void:
@@ -201,7 +196,10 @@ func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_co
 		piece.randomize()
 		piece.background_color = background_color
 		piece.set_meta("parallax_level", 2 if piece.is_medium else 1)
-		piece.global_position = Vector2(randf_range(0, screen_size.x), randf_range(-50, screen_size.y))
+		piece.global_position = Vector2(
+			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x),
+			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, -50, screen_size.y)
+		)
 		add_child(piece)
 		debris.append(piece)
 

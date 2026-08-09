@@ -1,9 +1,6 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bh2rvyv5qga4w"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_mv2dx"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_s2jao"]
-[ext_resource type="Script" uid="uid://crt8abcwxtsi7" path="res://Source/Content/Effects/MiscUtilities/jump_effect.gd" id="3_mv2dx"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="4_0dj7c"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="5_0dj7c"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_vvtgt"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_b8mwn"]
@@ -19,15 +16,6 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("1_mv2dx")
 type = 9
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_s2jao"]
-script = ExtResource("3_mv2dx")
-metadata/_custom_type_script = "uid://crt8abcwxtsi7"
-
-[sub_resource type="Resource" id="Resource_j67x6"]
-script = ExtResource("4_0dj7c")
-effects = Array[ExtResource("2_s2jao")]([SubResource("Resource_s2jao")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_eh387"]
 script = ExtResource("5_0dj7c")
@@ -68,7 +56,6 @@ description = "[color=yellow]Any die[/color] -> Jump [color=purple]X[/color] loc
 textures = SubResource("SpriteFrames_u4eem")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_mv2dx")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46")])
-effect_chain = SubResource("Resource_j67x6")
 effect_chain_v2 = SubResource("Resource_7c16k")
 dragging_allowed = false
 max_dice_in_queue = 1

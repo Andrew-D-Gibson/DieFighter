@@ -1,15 +1,11 @@
 Read @ARCHITECTURE_OVERVIEW.md and @STYLE_GUIDE.md.
 
-I'm mid-refactor. Analyze every unanalyzed file listed in @ANALYZE.md and add
-to "CLEAN_UP_PLAN.md" — one section per file, in the same format as the files
-already there. This is a single pass now: there's no separate local-model
-draft to verify afterward, so get each judgment right the first time rather
-than asserting things that need correcting later. The file's existing
-"## Cross-File Findings & Low-Hanging Fruit" and "## Recommended for Fable
-Review" sections came from reviewing the first 11 files this way; you'll be
-extending both once this batch is done (see Output below).
+Analyze every unanalyzed file listed in @ANALYZE.md and add
+to "CLEAN_UP_PLAN.md" — one section per file. Do your best to
+get each judgment right the first time rather than asserting things that need 
+correcting later.
 
---- Known about this codebase already (from the first 11 files) ---
+--- Known about this codebase already ---
 
 Carry these forward. They'll keep recurring, and a fresh single-file read
 won't surface them on its own:
@@ -157,28 +153,6 @@ Add to "CLEAN_UP_PLAN.md". For each file, use this exact structure:
   dependency direction, or reverse-dependencies you can't verify from the
   code alone
 
---- Output: after all files in this batch are analyzed ---
-
-Update the existing "## Cross-File Findings & Low-Hanging Fruit" and
-"## Recommended for Fable Review" sections at the end of CLEAN_UP_PLAN.md so
-they reflect ALL analyzed files — the original 11 plus everything from this
-pass. Don't just append below them: check whether the new files surfaced
-more instances of patterns already documented there (Events/Globals
-mis-flags, EffectChain migration debt, Resource-naming mismatches, etc.) and
-fold those into the existing bullets, then add any genuinely new cross-file
-patterns you found, covering:
-1. Cross-file patterns invisible to a single-file view: repeated mistakes,
-   logic duplicated across files, two split candidates that are really the
-   same underlying problem, inconsistent folder placement between similar
-   scripts.
-2. Low-hanging fruit: shared-utility opportunities, naming inconsistencies,
-   dead code, a system that could absorb 2-3 proposed new scripts instead of
-   each existing separately.
-
-Keep "Recommended for Fable Review" short and prioritized — it protects a
-limited, expiring model budget. Only include what genuinely needs
-whole-codebase architectural judgment, not more per-file review.
-
 --- Process ---
 
 Do not make any code changes yourself — only edit "CLEAN_UP_PLAN.md" and
@@ -187,6 +161,6 @@ order, inserting a new section for each *before* the existing "## Cross-File
 Findings & Low-Hanging Fruit" heading. This is a single autonomous pass —
 don't stop for confirmation between files; run through the full remaining
 list. Mark each file `-- ANALYZED` in ANALYZE.md as you finish it, so
-progress survives if this gets interrupted.
+progress survives if this gets interrupted. Write files as you go, don't wait.
 
 Ask me any clarifying questions before starting.

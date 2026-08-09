@@ -1,12 +1,8 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://cmcttgw25qx0t"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_cuubr"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_tley7"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_1nta3"]
-[ext_resource type="Script" uid="uid://b3ihx7drnjhux" path="res://Source/Content/Effects/DiceValueChangers/reroll_activator_die_effect.gd" id="3_ybruh"]
-[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="4_ecbfa"]
 [ext_resource type="Texture2D" uid="uid://cuk1fxtfqcuff" path="res://Assets/Textures/Tiles/GreenTiles/reroll-Sheet.png" id="4_tley7"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="5_jet8y"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_jet8y"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="6_mwp2x"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="7_8dutl"]
@@ -15,19 +11,6 @@
 [sub_resource type="Resource" id="Resource_ecbfa"]
 script = ExtResource("1_cuubr")
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_8dutl"]
-script = ExtResource("3_ybruh")
-metadata/_custom_type_script = "uid://b3ihx7drnjhux"
-
-[sub_resource type="Resource" id="Resource_ifduw"]
-script = ExtResource("4_ecbfa")
-metadata/_custom_type_script = "uid://bscm2msup3lwk"
-
-[sub_resource type="Resource" id="Resource_mwp2x"]
-script = ExtResource("5_jet8y")
-effects = Array[ExtResource("2_tley7")]([SubResource("Resource_8dutl"), SubResource("Resource_ifduw")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_1kud3"]
 script = ExtResource("6_mwp2x")
@@ -82,6 +65,5 @@ description = "[color=yellow]Any die[/color] -> [color=green]Re-rolls[/color] th
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_combat = 2
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa")])
-effect_chain = SubResource("Resource_mwp2x")
 effect_chain_v2 = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

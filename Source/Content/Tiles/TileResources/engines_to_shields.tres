@@ -1,19 +1,8 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://b2ewisub2832j"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_wsqrt"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_23tjy"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="3_4h3ei"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_r846u"]
-[ext_resource type="Script" uid="uid://ddrix6gyj2wqb" path="res://Source/Content/Effects/AmountModifiers/set_amount_to_engines.gd" id="3_u10cf"]
 [ext_resource type="Texture2D" uid="uid://xjta3od7oc61" path="res://Assets/Textures/Tiles/PurpleTiles/emergency_transfer.png" id="4_23tjy"]
-[ext_resource type="Script" uid="uid://3aj5hdxqkrqk" path="res://Source/Content/Effects/Targeters/target_player_effect.gd" id="4_c0x8g"]
-[ext_resource type="Script" uid="uid://bllibq0iu6bwk" path="res://Source/Content/Effects/AttributeChangers/shield_effect.gd" id="4_lpymo"]
-[ext_resource type="Script" uid="uid://djgfuy5re3k6t" path="res://Source/Content/Effects/AmountModifiers/negative_amount_effect.gd" id="5_dtoei"]
-[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="6_2h6rw"]
-[ext_resource type="Script" uid="uid://wmvgjnwdtv3h" path="res://Source/Content/Effects/Targeters/target_random_enemy_effect.gd" id="7_2bwjp"]
-[ext_resource type="Script" uid="uid://cymd6kmfhbghm" path="res://Source/Content/Effects/AttributeChangers/charge_engine_effect.gd" id="7_dtoei"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="8_c0x8g"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="8_yhkpl"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="11_yhkpl"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="13_dymuh"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="14_ougyd"]
@@ -29,50 +18,6 @@ script = ExtResource("1_wsqrt")
 type = 1
 acceptable_values = Array[int]([1])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_slehp"]
-script = ExtResource("3_4h3ei")
-metadata/_custom_type_script = "uid://rmwtkvywl4yw"
-
-[sub_resource type="Resource" id="Resource_2bwjp"]
-script = ExtResource("3_u10cf")
-metadata/_custom_type_script = "uid://ddrix6gyj2wqb"
-
-[sub_resource type="Resource" id="Resource_yhkpl"]
-script = ExtResource("4_c0x8g")
-metadata/_custom_type_script = "uid://3aj5hdxqkrqk"
-
-[sub_resource type="Resource" id="Resource_2h6rw"]
-script = ExtResource("4_lpymo")
-metadata/_custom_type_script = "uid://bllibq0iu6bwk"
-
-[sub_resource type="Resource" id="Resource_ubmp7"]
-script = ExtResource("6_2h6rw")
-color = Color(0.317647, 0.713726, 1, 1)
-amount = 48
-location = 1
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_4h3ei"]
-script = ExtResource("5_dtoei")
-metadata/_custom_type_script = "uid://djgfuy5re3k6t"
-
-[sub_resource type="Resource" id="Resource_ougyd"]
-script = ExtResource("7_dtoei")
-metadata/_custom_type_script = "uid://cymd6kmfhbghm"
-
-[sub_resource type="Resource" id="Resource_dymuh"]
-script = ExtResource("7_2bwjp")
-metadata/_custom_type_script = "uid://wmvgjnwdtv3h"
-
-[sub_resource type="Resource" id="Resource_wggto"]
-script = ExtResource("8_yhkpl")
-metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
-
-[sub_resource type="Resource" id="Resource_admec"]
-script = ExtResource("8_c0x8g")
-effects = Array[ExtResource("2_23tjy")]([SubResource("Resource_slehp"), SubResource("Resource_2bwjp"), SubResource("Resource_yhkpl"), SubResource("Resource_2h6rw"), SubResource("Resource_ubmp7"), SubResource("Resource_4h3ei"), SubResource("Resource_ougyd"), SubResource("Resource_dymuh"), SubResource("Resource_wggto")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_4nsdf"]
 script = ExtResource("13_dymuh")
@@ -151,6 +96,5 @@ description = "(die_1) -> Turn all [color=purple]engine charge[/color] into [col
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_wsqrt")]([SubResource("Resource_r846u"), SubResource("Resource_u10cf")])
-effect_chain = SubResource("Resource_admec")
 effect_chain_v2 = SubResource("Resource_e2rem")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

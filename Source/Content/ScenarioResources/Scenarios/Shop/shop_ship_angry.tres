@@ -1,29 +1,33 @@
 [gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://cfo3u3h67qvi3"]
 
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="1_x41b6"]
-[ext_resource type="Script" uid="uid://dhgkx07lsso63" path="res://Source/Content/Effects/ScenarioControls/Shop/close_shop.gd" id="2_5prt1"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="2_5prt1"]
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="2_86o65"]
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_5prt1"]
-[ext_resource type="Script" uid="uid://duv7sw0xcjx15" path="res://Source/Content/Effects/EnemyShipControls/move_actor_ship_effect.gd" id="3_k3543"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="4_k3543"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="4_esdata"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="5_eschain"]
 
-[sub_resource type="Resource" id="Resource_62o55"]
-script = ExtResource("2_5prt1")
-metadata/_custom_type_script = "uid://dhgkx07lsso63"
+[sub_resource type="Resource" id="Resource_closeshop"]
+script = ExtResource("4_esdata")
+category = 6
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_4ncg3"]
-script = ExtResource("3_k3543")
-metadata/_custom_type_script = "uid://duv7sw0xcjx15"
+[sub_resource type="Resource" id="Resource_moveship"]
+script = ExtResource("4_esdata")
+category = 6
+subtype = 4
+multiplier = 0.5
+metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_14acg"]
-script = ExtResource("4_k3543")
-effects = Array[ExtResource("1_x41b6")]([SubResource("Resource_62o55"), SubResource("Resource_4ncg3")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
+script = ExtResource("5_eschain")
+effects = Array[ExtResource("4_esdata")]([SubResource("Resource_closeshop"), SubResource("Resource_moveship")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
 script = ExtResource("2_86o65")
 dialogue = "How dare you?!"
 faction = 1
 attitude = 2
-effects_on_enter = SubResource("Resource_14acg")
+effects_on_enter_v2 = SubResource("Resource_14acg")
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

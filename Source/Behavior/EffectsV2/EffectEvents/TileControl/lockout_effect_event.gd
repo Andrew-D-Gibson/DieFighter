@@ -23,7 +23,7 @@ func resolve(engine: ScenarioEngine) -> void:
 			if alive_enemies.is_empty():
 				Globals.player.dice_manager.add(activator_die, true, false)
 			else:
-				alive_enemies.pick_random().dice_manager.add(activator_die)
+				RNGManager.pick_random(RNGManager.Bucket.TARGETING, alive_enemies).dice_manager.add(activator_die)
 			
 	else:
 		# Enforce the Lockout

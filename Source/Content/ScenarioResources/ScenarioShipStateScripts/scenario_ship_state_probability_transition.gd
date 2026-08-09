@@ -14,7 +14,7 @@ func get_next_state_from_probabilities() -> ScenarioShipState:
 		
 	# Randomly choose a value between 0 and the sum, then 
 	# grab the state that corresponds to that value
-	var random_value: float = randf_range(0, prob_sum)
+	var random_value: float = RNGManager.randf_range(RNGManager.Bucket.ENEMY_AI, 0, prob_sum)
 	for state: ScenarioShipState in weighted_probabilities.keys():
 		if random_value <= weighted_probabilities[state]:
 			return state
@@ -24,6 +24,6 @@ func get_next_state_from_probabilities() -> ScenarioShipState:
 	# This function will never return here, 
 	# but to make the compiler happy:
 	print('Your weighted scenario transition bonked genius')
-	return weighted_probabilities.keys().pick_random()
+	return RNGManager.pick_random(RNGManager.Bucket.ENEMY_AI, weighted_probabilities.keys())
 		
 	

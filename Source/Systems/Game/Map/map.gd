@@ -300,7 +300,7 @@ func _pick_new_danger_ranges() -> void:
 	if max_left_scenarios_in_danger <= 0:
 		left_scenarios_in_danger = 0
 	else:
-		left_scenarios_in_danger = randi_range(1,max_left_scenarios_in_danger)
+		left_scenarios_in_danger = RNGManager.randi_range(RNGManager.Bucket.RUN, 1, max_left_scenarios_in_danger)
 	
 	
 func disable_controls() -> void:

@@ -17,8 +17,6 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 ## Set to -1 for infinite uses per turn
 @export var uses_per_combat: int
 @export var activation_checks: Array[ActivationResource]
-@export var effect_chain: EffectChain
-@export var event_responses: Dictionary[TileEvent, EffectChain]
 
 @export var effect_chain_v2: EffectChainV2
 @export var event_responses_v2: Dictionary[TileEvent, EffectChainV2]

@@ -76,6 +76,6 @@ func _start_shake() -> void:
 
 func _random_offset(intensity: float) -> Vector2:
 	return Vector2(
-		randf_range(-intensity, intensity),
-		randf_range(-intensity, intensity)
+		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -intensity, intensity),
+		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -intensity, intensity)
 	)

@@ -1,12 +1,7 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dlexy5taui2xx"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_ltqic"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_tn0tj"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_uekf7"]
-[ext_resource type="Script" uid="uid://ccm6r6wlkx7lr" path="res://Source/Content/Effects/Targeters/target_with_targeting_computer_effect.gd" id="4_03xhp"]
-[ext_resource type="Script" uid="uid://biyjxcklnu50s" path="res://Source/Content/Effects/HolographicDice/spawn_holographic_dice_effect.gd" id="4_nrdn6"]
-[ext_resource type="Script" uid="uid://b8x2m7e6fxd07" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_target_effect.gd" id="6_2vvbj"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="6_nrdn6"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_03xhp"]
 [ext_resource type="Texture2D" uid="uid://d0lwrx5nkd17y" path="res://Assets/Textures/Tiles/GreenTiles/holographic_duplicator-Sheet.png" id="7_m4gsi"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="7_oymyf"]
@@ -16,25 +11,6 @@
 [sub_resource type="Resource" id="Resource_nrdn6"]
 script = ExtResource("1_ltqic")
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_03xhp"]
-script = ExtResource("4_nrdn6")
-amount = 2
-primary_effect = true
-metadata/_custom_type_script = "uid://biyjxcklnu50s"
-
-[sub_resource type="Resource" id="Resource_2vvbj"]
-script = ExtResource("4_03xhp")
-metadata/_custom_type_script = "uid://ccm6r6wlkx7lr"
-
-[sub_resource type="Resource" id="Resource_lijj8"]
-script = ExtResource("6_2vvbj")
-metadata/_custom_type_script = "uid://b8x2m7e6fxd07"
-
-[sub_resource type="Resource" id="Resource_oymyf"]
-script = ExtResource("6_nrdn6")
-effects = Array[ExtResource("2_tn0tj")]([SubResource("Resource_03xhp"), SubResource("Resource_2vvbj"), SubResource("Resource_lijj8")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_1kud3"]
 script = ExtResource("7_oymyf")
@@ -97,6 +73,5 @@ hint_text = "[color=blue]Holograms[/color] are destroyed if given to another shi
 textures = SubResource("SpriteFrames_2vvbj")
 uses_per_combat = 1
 activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6")])
-effect_chain = SubResource("Resource_oymyf")
 effect_chain_v2 = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

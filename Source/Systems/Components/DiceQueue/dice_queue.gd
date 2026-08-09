@@ -19,7 +19,7 @@ func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = tru
 		
 	# Randomize the value if required
 	if not preserve_value:
-		die.value = randi_range(1,6)
+		die.value = RNGManager.randi_range(RNGManager.Bucket.DICE, 1, 6)
 		
 	# Just in case we send a die back that's already in the queue, 
 	# don't add it again

@@ -15,6 +15,28 @@ static func array_while_excluding(array: Array, elements_to_exclude: Array) -> A
 	return array_without_excluded_elements
 
 
+## Sorts dice by position (x, then y), optionally pinning one die (e.g. the activator) to the front
+static func sort_dice_by_position(dice: Array[Node], front_die: Node = null) -> Array[Node]:
+	var sorted_dice: Array[Node] = dice.duplicate()
+
+	if front_die:
+		sorted_dice.erase(front_die)
+
+	sorted_dice.sort_custom(func(a: Node, b: Node) -> bool:
+		var ax: float = a.global_position.x
+		var bx: float = b.global_position.x
+		if ax != bx:
+			return ax < bx
+		else:
+			return a.global_position.y < b.global_position.y
+	)
+
+	if front_die:
+		sorted_dice.insert(0, front_die)
+
+	return sorted_dice
+
+
 static var dice_image_paths: Array[String] = [
 	"res://Assets/Textures/Dice/Holographic/dice_blank.png",
 	"res://Assets/Textures/Dice/Holographic/dice_1.png",

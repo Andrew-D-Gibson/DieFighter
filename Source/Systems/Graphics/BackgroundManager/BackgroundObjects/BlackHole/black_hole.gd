@@ -66,8 +66,16 @@ func _generate_new_colorscheme(n_colors, hue_diff = 0.9, saturation = 0.5):
 	var a = Vector3(0.5,0.5,0.5)
 #	var b = Vector3(rand_range(0.1, 0.6), rand_range(0.1, 0.6), rand_range(0.1, 0.6))
 	var b = Vector3(0.5,0.5,0.5) * saturation
-	var c = Vector3(randf_range(0.5, 1.5), randf_range(0.5, 1.5), randf_range(0.5, 1.5)) * hue_diff
-	var d = Vector3(randf_range(0.0, 1.0), randf_range(0.0, 1.0), randf_range(0.0, 1.0)) * randf_range(1.0, 3.0)
+	var c = Vector3(
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.5, 1.5),
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.5, 1.5),
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.5, 1.5)
+	) * hue_diff
+	var d = Vector3(
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.0, 1.0),
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.0, 1.0),
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.0, 1.0)
+	) * RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 1.0, 3.0)
 
 	var cols = PackedColorArray()
 	var n = float(n_colors - 1.0)
@@ -84,7 +92,11 @@ func _generate_new_colorscheme(n_colors, hue_diff = 0.9, saturation = 0.5):
 
 
 func randomize_colors():
-	var seed_colors = _generate_new_colorscheme(5 + randi()%2, randf_range(0.3, 0.5), 2.0)
+	var seed_colors = _generate_new_colorscheme(
+		5 + RNGManager.randi(RNGManager.Bucket.BACKGROUND) % 2,
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0.3, 0.5),
+		2.0
+	)
 	var cols= []
 	for i in 5:
 		var new_col = seed_colors[i].darkened((i/5.0) * 0.7)

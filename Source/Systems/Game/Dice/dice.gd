@@ -14,10 +14,6 @@ extends Node2D
 @export var holographic_textures: Array[Texture2D]
 @export var holographic_particles: PackedScene
 
-# Randomness
-# Static RNG instance shared across all rolls
-static var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
-
 # Optional: force specific rolls (used by tutorial)
 static var forced_rolls: Array[int] = []
 
@@ -29,12 +25,16 @@ static var forced_rolls: Array[int] = []
 		if holographic:
 			$Sprite2D.texture = holographic_textures[value]
 			var mat: ShaderMaterial = holographic_shader.duplicate()
-			mat.set_shader_parameter("seed", randi() % 1000 / 100.0)
+			mat.set_shader_parameter(
+				"seed", RNGManager.randi(RNGManager.Bucket.COSMETIC) % 1000 / 100.0
+			)
 			$Sprite2D.material = mat
 		else:
 			$Sprite2D.texture = value_textures[value]
 			var mat: ShaderMaterial = default_shader.duplicate()
-			mat.set_shader_parameter("time_offset", randf() * 10.0)
+			mat.set_shader_parameter(
+				"time_offset", RNGManager.randf(RNGManager.Bucket.COSMETIC) * 10.0
+			)
 			$Sprite2D.material = mat
 		
 var host_queue: DiceQueue
@@ -58,11 +58,7 @@ static func get_random_die_value() -> int:
 		return forced_rolls.pop_front()
 
 	# Normal roll
-	return _rng.randi_range(1, 6)
-	
-	
-static func seed(seed_value: int) -> void:
-	_rng.seed = seed_value
+	return RNGManager.randi_range(RNGManager.Bucket.DICE, 1, 6)
 
 
 func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:

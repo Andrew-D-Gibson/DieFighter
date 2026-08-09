@@ -1,6 +1,5 @@
 {
   "permissions": {
-    "defaultMode": "acceptEdits",
     "allow": [
       "Glob",
       "Grep",
@@ -9,10 +8,7 @@
       "List_dir",
       "Read(**/*.gd)",
       "Write(**/*.gd)",
-      "Bash(git diff*)",
-      "Bash(git status*)",
-      "Bash(git add*)",
-      "Bash(git commit*)"
+      "Bash"
     ],
     "deny": [
       "Bash(rm *)",
@@ -20,8 +16,8 @@
       "Bash(git push*)"
     ],
     "ask": [
-      "Write_file",
-      "Bash"
-    ]
+      "Write_file"
+    ],
+    "defaultMode": "acceptEdits"
   }
 }

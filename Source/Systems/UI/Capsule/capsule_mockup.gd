@@ -10,25 +10,24 @@ var _stars: Array[Node2D]
 
 
 func _ready() -> void:
-	# Create new stars 
-	seed('Die Fighter 42'.hash())
+	# Create new stars
 	for i in range(num_of_stars):
 		_add_star(star_pixel_scene)
 
 	for i in range(num_of_twinkling_stars):
 		_add_star(star_twinkle_scene)
-		
-		
+
+
 func _add_star(star_scene: PackedScene) -> void:
 	var star = star_scene.instantiate()
 	star.z_index = -2
 	add_child(star)
 	star.global_position = Vector2(
-		randi_range(0, _screen_size.x),
-		randi_range(0, (_screen_size.y * 2)) - 180
+		RNGManager.randi_range(RNGManager.Bucket.COSMETIC, 0, _screen_size.x),
+		RNGManager.randi_range(RNGManager.Bucket.COSMETIC, 0, (_screen_size.y * 2)) - 180
 	)
 
 	# Randomize the opacity of the star to simulate brightness/distance
-	star.modulate = Color(1, 1, 1, randf_range(0.25, 0.75))
+	star.modulate = Color(1, 1, 1, RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.25, 0.75))
 	
 	_stars.append(star)

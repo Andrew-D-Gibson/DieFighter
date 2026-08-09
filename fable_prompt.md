@@ -1,7 +1,5 @@
 Read @ARCHITECTURE_OVERVIEW.md, @STYLE_GUIDE.md, and the fully populated
-@CLEAN_UP_PLAN.md (now including a local LLM's per-file pass and a Sonnet
-sanity-check layer with cross-file findings and a "Recommended for Fable
-Review" list).
+@CLEAN_UP_PLAN.md.
 
 This is the final, most expensive pass in a three-stage review. Don't repeat
 the first two stages' work — assume the per-file analysis and cross-file

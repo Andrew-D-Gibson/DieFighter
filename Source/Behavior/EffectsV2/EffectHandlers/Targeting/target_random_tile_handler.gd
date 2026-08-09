@@ -8,4 +8,4 @@ func apply(_data: EffectData, context: EffectContext, _engine: ScenarioEngine) -
 		context.targets = []
 		return
 		
-	context.targets = [all_tiles.pick_random() as Node]
+	context.targets = [RNGManager.pick_random(RNGManager.Bucket.TARGETING, all_tiles) as Node]

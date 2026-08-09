@@ -19,7 +19,9 @@ func _ready() -> void:
 
 func give_reward(reward_resource: RewardResource) -> void:
 	#Globals.player.money += money
-	var money: int = randi_range(reward_resource.min_money, reward_resource.max_money)
+	var money: int = RNGManager.randi_range(
+		RNGManager.Bucket.REWARDS, reward_resource.min_money, reward_resource.max_money
+	)
 	_spawn_money_particles(money)
 	
 	await get_tree().create_timer(2).timeout
@@ -56,7 +58,7 @@ func give_reward(reward_resource: RewardResource) -> void:
 		# or randomly otherwise
 		if Globals.tile_grid.find_available_grid_pos() == Vector2i(-1,-1)\
 		or len(possible_tile_rewards) == 0\
-		or randf() <= reward_resource.dice_probability:
+		or RNGManager.randf(RNGManager.Bucket.REWARDS) <= reward_resource.dice_probability:
 			reward = dice_scene.instantiate()
 			
 		# Make a tile reward
@@ -65,7 +67,7 @@ func give_reward(reward_resource: RewardResource) -> void:
 			if len(forced_rewards) > 0:
 				chosen_resource = forced_rewards.pop_front()
 			else:
-				chosen_resource = possible_tile_rewards.pick_random()
+				chosen_resource = RNGManager.pick_random(RNGManager.Bucket.REWARDS, possible_tile_rewards)
 			possible_tile_rewards.erase(chosen_resource)
 			reward = Globals.tile_grid.create_tile(chosen_resource)
 			

@@ -33,35 +33,35 @@ func _process(delta: float) -> void:
 		
 		if star.global_position.x < 0:
 			star.global_position.x = screen_size.x + 5
-			star.global_position.y = randf_range(0, screen_size.y)
+			star.global_position.y = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, screen_size.y)
 			
 			
 func _set_stars() -> void:
 	for i in range(num_of_stars):
-		var star = star_pixel_scene.instantiate()
+		var star: Node2D = star_pixel_scene.instantiate()
 		add_child(star)
 		star.global_position = Vector2(
-			randf_range(0, screen_size.x),
-			randf_range(0, screen_size.y)
+			RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, screen_size.x),
+			RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, screen_size.y)
 		)
-		
+
 		# Randomize the opacity of the star to simulate distance
-		star.modulate = Color(1, 1, 1, randf_range(0.25, 0.75))
-		
+		star.modulate = Color(1, 1, 1, RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.25, 0.75))
+
 		stars.append(star)
-		
-		
+
+
 	for i in range(num_of_twinkling_stars):
-		var star = star_twinkle_scene.instantiate()
+		var star: Node2D = star_twinkle_scene.instantiate()
 		add_child(star)
 		star.global_position = Vector2(
-			randf_range(0, screen_size.x),
-			randf_range(0, screen_size.y)
+			RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, screen_size.x),
+			RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, screen_size.y)
 		)
-		
+
 		# Randomize the opacity of the star to simulate distance
-		star.modulate = Color(1, 1, 1, randf_range(0.25, 0.75))
-		
+		star.modulate = Color(1, 1, 1, RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.25, 0.75))
+
 		stars.append(star)
 
 
@@ -80,7 +80,7 @@ func _player_ship_hit() -> void:
 	tween.tween_property($PlayerShip, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 	# Create hit particles
-	var particles = hit_particles.instantiate()
+	var particles: CPUParticles2D = hit_particles.instantiate()
 	particles.color = Globals.red
 		
 	particles.amount = 30
@@ -88,10 +88,10 @@ func _player_ship_hit() -> void:
 	$PlayerShip.add_child(particles)
 	
 	# Create explosion particles
-	var explosion = explosion_particles.instantiate()
+	var explosion: CPUParticles2D = explosion_particles.instantiate()
 	explosion.color = Globals.red
 	explosion.amount = 20
-	$PlayerShip.add_child(particles)
+	$PlayerShip.add_child(explosion)
 	
 	
 func _switch_to_next_scene() -> void:

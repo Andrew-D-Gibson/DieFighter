@@ -25,7 +25,7 @@ func play_sound(sfx: SoundEffectResource) -> void:
 	player.volume_db = sfx.volume
 	player.pitch_scale = sfx.pitch_scale
 	player.pitch_scale += sfx.get_pitch_escalation()
-	player.pitch_scale += randf_range(-sfx.pitch_randomness, sfx.pitch_randomness)
+	player.pitch_scale += RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -sfx.pitch_randomness, sfx.pitch_randomness)
 
 	player.finished.connect(sfx.on_audio_finished)
 	player.finished.connect(player.queue_free)

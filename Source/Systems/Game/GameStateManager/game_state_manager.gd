@@ -45,13 +45,12 @@ func _ready() -> void:
 	assert(current_game_save)
 	
 	Globals.state_manager = self
-	
-	#seed('Die Fighter'.hash())
-	
+
 	if len(current_game_save.sector_scenarios) == 0:
 		if Globals.tutorial_manager.auto_start:
 			current_game_save = Globals.tutorial_manager.tutorial_game_save
 		else:
+			RNGManager.start_new_run()
 			_randomize_sector_scenarios()
 
 	Events.start_scenario.connect(_check_combat_state)
@@ -87,7 +86,7 @@ func _randomize_sector_scenarios() -> void:
 	current_game_save.sector_scenarios = []
 	
 	# Add the shop(s)
-	for i: int in range(randi_range(2,3)):
+	for i: int in range(RNGManager.randi_range(RNGManager.Bucket.RUN, 2, 3)):
 		current_game_save.sector_scenarios.append(shop_scenario)
 		
 	# Add the blend of combat and question scenarios
@@ -103,45 +102,57 @@ func _randomize_sector_scenarios() -> void:
 		)
 		
 		# 30% chance of a new question scenario
-		if len(question_scenario_options) > 0 and randf() <= 0.3:
-			current_game_save.sector_scenarios.append(question_scenario_options.pick_random())
-			
+		if len(question_scenario_options) > 0 and RNGManager.randf(RNGManager.Bucket.RUN) <= 0.3:
+			current_game_save.sector_scenarios.append(
+				RNGManager.pick_random(RNGManager.Bucket.RUN, question_scenario_options)
+			)
+
 		# Otherwise pick a combat scenario
 		elif len(combat_scenario_options) > 0:
-			current_game_save.sector_scenarios.append(combat_scenario_options.pick_random())
-			
-		# If we ever make it here (we really shouldn't but still), 
+			current_game_save.sector_scenarios.append(
+				RNGManager.pick_random(RNGManager.Bucket.RUN, combat_scenario_options)
+			)
+
+		# If we ever make it here (we really shouldn't but still),
 		# just add a random question or combat scenario
 		else:
 			var all_scenarios: Array[ScenarioResource] = []
 			all_scenarios.append_array(combat_scenarios)
 			all_scenarios.append_array(question_scenarios)
 			if all_scenarios.size() > 0:
-				current_game_save.sector_scenarios.append(all_scenarios.pick_random())
+				current_game_save.sector_scenarios.append(
+					RNGManager.pick_random(RNGManager.Bucket.RUN, all_scenarios)
+				)
 			else:
 				current_game_save.sector_scenarios.append(empty_scenario)
 
-	current_game_save.sector_scenarios.shuffle()
-	
+	RNGManager.shuffle_array(RNGManager.Bucket.RUN, current_game_save.sector_scenarios)
+
 	# Add the boss scenario
-	current_game_save.sector_scenarios.append(boss_combat_scenarios.pick_random())
+	current_game_save.sector_scenarios.append(
+		RNGManager.pick_random(RNGManager.Bucket.RUN, boss_combat_scenarios)
+	)
 
 	# Add a leading "corrupted" scenario
-	current_game_save.sector_scenarios.insert(0, fate_scenarios.pick_random())
+	current_game_save.sector_scenarios.insert(
+		0, RNGManager.pick_random(RNGManager.Bucket.RUN, fate_scenarios)
+	)
 
 	# Place the player's starting scenario somewhere in the beginning third
 	var sector_length: int = len(current_game_save.sector_scenarios)
-	var starting_scenario_index: int = randi_range(2, ceil(0.33 * sector_length))
-	
+	var starting_scenario_index: int = RNGManager.randi_range(
+		RNGManager.Bucket.RUN, 2, ceil(0.33 * sector_length)
+	)
+
 	current_game_save.current_scenario_index = starting_scenario_index
 	current_game_save.sector_scenarios.insert(
-		current_game_save.current_scenario_index, 
+		current_game_save.current_scenario_index,
 		starting_scenario
 	)
-	
+
 	# Seed all the scenarios
 	for scenario: ScenarioResource in current_game_save.sector_scenarios:
-		scenario.scenario_seed = randi()
+		scenario.scenario_seed = RNGManager.randi(RNGManager.Bucket.RUN)
 	
 	
 	

@@ -1,15 +1,8 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dy6ykhsava6f4"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u36sv"]
-[ext_resource type="Script" uid="uid://6fx5oi433uif" path="res://Source/Content/Effects/effect.gd" id="2_m7a5a"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_rp1c6"]
-[ext_resource type="Script" uid="uid://ceiaq86a66mmb" path="res://Source/Content/Effects/effect_chain.gd" id="3_5xcxx"]
-[ext_resource type="Script" uid="uid://5vw5tu23ayfk" path="res://Source/Content/Effects/Particles/spawn_particle_explosion.gd" id="3_8xact"]
-[ext_resource type="Script" uid="uid://rmwtkvywl4yw" path="res://Source/Content/Effects/MiscUtilities/play_sound_effect.gd" id="4_7xmxb"]
-[ext_resource type="Script" uid="uid://cyyaosauc8fk" path="res://Source/Content/Effects/DiceValueChangers/change_activator_value_effect.gd" id="4_8xact"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_m7a5a"]
-[ext_resource type="Script" uid="uid://bscm2msup3lwk" path="res://Source/Content/Effects/ChangeDiceOwners/give_die_to_player_effect.gd" id="5_0ono8"]
-[ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="5_c3unh"]
 [ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png" id="7_0ono8"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_u271i"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_gm6wk"]
@@ -24,33 +17,6 @@ script = ExtResource("1_u36sv")
 type = 1
 acceptable_values = Array[int]([1, 2, 3, 4, 5])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_pmkt1"]
-script = ExtResource("3_8xact")
-color = Color(0.396078, 0.611765, 0.164706, 1)
-location = 1
-metadata/_custom_type_script = "uid://5vw5tu23ayfk"
-
-[sub_resource type="Resource" id="Resource_8ixi3"]
-script = ExtResource("4_7xmxb")
-sound_effect = ExtResource("5_c3unh")
-metadata/_custom_type_script = "uid://rmwtkvywl4yw"
-
-[sub_resource type="Resource" id="Resource_0ono8"]
-script = ExtResource("4_8xact")
-new_value = 1
-offset_from_original_value = true
-primary_effect = true
-metadata/_custom_type_script = "uid://cyyaosauc8fk"
-
-[sub_resource type="Resource" id="Resource_gm6wk"]
-script = ExtResource("5_0ono8")
-metadata/_custom_type_script = "uid://bscm2msup3lwk"
-
-[sub_resource type="Resource" id="Resource_u271i"]
-script = ExtResource("3_5xcxx")
-effects = Array[ExtResource("2_m7a5a")]([SubResource("Resource_pmkt1"), SubResource("Resource_8ixi3"), SubResource("Resource_0ono8"), SubResource("Resource_gm6wk")])
-metadata/_custom_type_script = "uid://ceiaq86a66mmb"
 
 [sub_resource type="Resource" id="Resource_f3imi"]
 script = ExtResource("9_u271i")
@@ -125,6 +91,5 @@ description = "[color=yellow]Die smaller than[/color] (die_6) -> Adds 1 to the d
 textures = SubResource("SpriteFrames_j21c8")
 uses_per_combat = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])
-effect_chain = SubResource("Resource_u271i")
 effect_chain_v2 = SubResource("Resource_j3pel")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

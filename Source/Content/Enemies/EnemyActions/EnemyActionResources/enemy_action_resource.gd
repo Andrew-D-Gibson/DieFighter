@@ -5,7 +5,6 @@ extends Resource
 @export var description: String
 @export var indicator_texture: Texture2D
 @export var info_texture: Texture2D
-@export var effect_chain: EffectChain
 @export var effect_chain_v2: EffectChainV2
 
 ## Set by the EnemyActionOptionResource who creates this action.

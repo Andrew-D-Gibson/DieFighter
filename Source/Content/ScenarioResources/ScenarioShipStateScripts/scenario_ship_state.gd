@@ -4,7 +4,7 @@ extends ScenarioShipStateBase
 @export_multiline var dialogue: String
 @export var faction: ScenarioManager.Faction
 @export var attitude: Enemy.Attitude
-@export var effects_on_enter: EffectChain
+@export var effects_on_enter_v2: EffectChainV2
 
 @export var transitions: Dictionary[ScenarioManager.ScenarioEvent, ScenarioShipStateBase]
 
