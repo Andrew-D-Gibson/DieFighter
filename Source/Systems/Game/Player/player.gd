@@ -83,6 +83,7 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	health.health = game_save.player_health
 	health.shields = game_save.player_defense
 	num_of_dice = game_save.num_of_dice
+	engine_charge = game_save.player_engine_charge
 	money = game_save.money
 
 
@@ -147,7 +148,6 @@ func _process(_delta: float) -> void:
 
 
 func _check_for_end_of_turn() -> void:
-	print('tile activation complete emitted')
 	if len(dice_manager.queue) == 0:
 		%EndTurnButton.disabled = false
 		%EndTurnButton.update_ui()

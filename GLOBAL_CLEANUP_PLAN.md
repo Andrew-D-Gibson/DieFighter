@@ -9,30 +9,6 @@ consolidation of things already known, for later action.
 
 ---
 
-## 1. Split a `UIEvents` Autoload out of `Events.gd`
-
-**Source:** Refactor Plan NEW.md, Step #19, Phase 1.
-
-**Why:** `Events.gd` is a single "junk drawer" bus for all 35+ signals in the game
-(combat, player, enemy, tile, UI, tutorial, etc.). Splitting UI-only signals into a
-dedicated namespace keeps the central bus focused on gameplay events.
-
-**Steps:**
-1. Create `Source/Systems/Autoloads/ui_events.gd`, register it as an Autoload in
-   Project Settings (alongside `Events`, `Globals`, etc.).
-2. Migrate the `error_text_popup` signal from `Events.gd` to `UIEvents.gd`.
-3. Search and replace every `Events.error_text_popup.emit(...)` call site with
-   `UIEvents.error_text_popup.emit(...)`. Known call sites include `tile.gd`
-   (`clears_activation_criteria`) and `dev_console.gd`'s various command handlers
-   that report usage errors.
-4. Update `error_popup_manager.gd`'s `_ready()` to connect to
-   `UIEvents.error_text_popup` instead of `Events.error_text_popup`.
-5. Decide whether this is the start of a broader split (e.g. a future
-   `CombatEvents`/`TutorialEvents`) or a one-off carve-out — scope this pass to just
-   `error_text_popup` unless there's appetite to do more at once.
-
----
-
 ## 2. Simplify `error_popup_manager.gd`
 
 **Source:** Refactor Plan NEW.md, Step #19, Phase 2. Also touches the "worth

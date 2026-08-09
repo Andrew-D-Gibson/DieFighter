@@ -21,23 +21,16 @@ func _toggle_pause_menu() -> void:
 
 
 func _on_main_menu_button_pressed() -> void:
-	_save_game()
-	
 	get_tree().paused = false
 	get_tree().change_scene_to_file(main_menu_file)
-	
+
 
 func _on_options_button_pressed() -> void:
 	%OptionsMenu.show()
 
 
-func _on_save_and_quit_button_pressed() -> void:
-	_save_game()
+func _on_quit_button_pressed() -> void:
 	QuitManager.request_quit()
-	
-
-func _save_game() -> void:
-	print('Saving game!')
 
 
 func _on_wishlist_button_pressed() -> void:

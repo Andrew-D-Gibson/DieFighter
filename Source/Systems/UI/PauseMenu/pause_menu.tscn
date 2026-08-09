@@ -93,12 +93,12 @@ offset_left = 0.5
 offset_right = 0.5
 text = "OPTIONS"
 
-[node name="SaveAndQuitButton" parent="VBoxContainer" unique_id=1734373014 instance=ExtResource("3_47dr1")]
+[node name="QuitButton" parent="VBoxContainer" unique_id=1734373014 instance=ExtResource("3_47dr1")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/SaveAndQuitButton" index="1" unique_id=604948362]
-text = "SAVE & QUIT"
+[node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1" unique_id=604948362]
+text = "QUIT"
 
 [node name="Control" type="Control" parent="VBoxContainer" unique_id=760457039]
 custom_minimum_size = Vector2(0, 6)
@@ -139,12 +139,12 @@ visible = false
 
 [connection signal="pressed_within_window" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
-[connection signal="pressed_within_window" from="VBoxContainer/SaveAndQuitButton" to="." method="_on_save_and_quit_button_pressed"]
+[connection signal="pressed_within_window" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/WishlistButton" to="." method="_on_wishlist_button_pressed"]
 [connection signal="pressed_within_window" from="CloseButton" to="." method="_toggle_pause_menu"]
 
 [editable path="VBoxContainer/MainMenuButton"]
 [editable path="VBoxContainer/OptionsButton"]
-[editable path="VBoxContainer/SaveAndQuitButton"]
+[editable path="VBoxContainer/QuitButton"]
 [editable path="VBoxContainer/WishlistButton"]
 [editable path="CloseButton"]

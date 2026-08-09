@@ -93,19 +93,18 @@ func disconnect_scenario_signals() -> void:
 	Events.start_scenario.disconnect(trigger_state_effects)
 	
 
-func _handle_scenario_event(event: ScenarioManager.ScenarioEvent):
+func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
 		var new_state: ScenarioShipState = scenario_state.handle_scenario_event(event)
 		graphics_manager.set_health_bar_attitude(new_state.attitude)
 		
 		if new_state != scenario_state:
 			scenario_state = new_state
 			trigger_state_effects()
-		scenario_state = new_state
 		
 
 ## Connects all combat-related signals
 func _connect_combat_signals() -> void:
-	Events.combat_finished.connect(func():
+	Events.combat_finished.connect(func() -> void:
 		await get_tree().process_frame
 		dice_manager.give_away_dice()
 	)

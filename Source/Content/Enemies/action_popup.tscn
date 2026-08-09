@@ -3,9 +3,8 @@
 [ext_resource type="Script" uid="uid://dm4ubv6iy0pt7" path="res://Source/Content/Enemies/action_popup.gd" id="1_grkkw"]
 [ext_resource type="Texture2D" uid="uid://b5mm0ibc4n8hu" path="res://Assets/Textures/Enemies/IntentIndicator/attack_info.png" id="2_s22jv"]
 
-[node name="ActionPopup" type="Node2D" unique_id=1732654783 node_paths=PackedStringArray("sprite")]
+[node name="ActionPopup" type="Node2D" unique_id=1732654783]
 script = ExtResource("1_grkkw")
-sprite = NodePath("Sprite2D")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1598584675]
 z_index = 5

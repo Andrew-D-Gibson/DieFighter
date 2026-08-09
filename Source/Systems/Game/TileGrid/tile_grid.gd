@@ -167,12 +167,6 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 			var available_pos: Vector2i = find_available_grid_pos()
 			if is_grid_pos_valid(available_pos):
 				_assign_tile_to_grid_pos(tile_to_move, available_pos)
-			else:
-				# No space left, snap back to origin (or handle error)
-				tile_draggable.snap_back()
-		else:
-			# Tile was already in the grid, snap it back to its old position
-			tile_draggable.snap_back() # Draggable handles snapping back to home_position
 		return
 
 	# If the target grid position is occupied
@@ -200,9 +194,6 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 			
 			Events.tile_manually_moved.emit(existing_tile)
 			Events.tile_manually_moved.emit(tile_to_move)
-		else:
-			# No valid spot to move the existing tile, snap the moving tile back
-			tile_draggable.snap_back()
 
 	else:
 		# Target position is open, just move the tile there

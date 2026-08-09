@@ -103,3 +103,7 @@ signal play_sound(sfx: SoundEffectResource)
 
 # Configuration Events
 signal save_options_config()
+
+
+# Save/Load Events
+signal game_saved()

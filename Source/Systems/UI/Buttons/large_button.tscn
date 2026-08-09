@@ -5,9 +5,9 @@
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fcuwd"]
 atlas = ExtResource("1_3vyje")
-region = Rect2(0, 0, 66, 21)
+region = Rect2(0, 0, 82, 21)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_twlns"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_sd3hn"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -20,7 +20,8 @@ animations = [{
 
 [node name="LargeButton" type="Button" unique_id=1005549941]
 custom_minimum_size = Vector2(66, 21)
-size_flags_vertical = 3
+offset_right = 82.0
+offset_bottom = 21.0
 focus_mode = 0
 theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
 theme_override_colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
@@ -37,24 +38,23 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 1.0
+offset_left = 2.0
 offset_top = -6.0
-offset_right = 1.0
 offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 theme_override_font_sizes/normal_font_size = 32
 bbcode_enabled = true
-text = "BUTTON"
+text = "PLAY"
 fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=2000301335]
 z_index = -1
-position = Vector2(33, 10.7)
-sprite_frames = SubResource("SpriteFrames_twlns")
+position = Vector2(41, 10.7)
+sprite_frames = SubResource("SpriteFrames_sd3hn")
 
 [connection signal="button_down" from="." to="." method="_on_button_down"]
 [connection signal="button_up" from="." to="." method="_on_button_up"]

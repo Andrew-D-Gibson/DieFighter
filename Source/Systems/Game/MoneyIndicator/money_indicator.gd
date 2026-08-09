@@ -31,7 +31,13 @@ func _ready() -> void:
 			if reward_resource.max_money > 0:
 				_fade_in()
 	)
-	
+	Events.load_game_save.connect(
+		func(game_save: GameSaveResource) -> void:
+			_update_money_display(game_save.money)
+			if game_save.money > 0:
+				_fade_in()
+	)
+
 	hide()
 	
 

@@ -1,0 +1,75 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/UI/ConfirmDialog/confirm_dialog.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="2_button"]
+
+[node name="ConfirmDialog" type="Node2D"]
+process_mode = 3
+z_index = 30
+visible = false
+script = ExtResource("1_script")
+
+[node name="ScreenDim" type="ColorRect" parent="."]
+z_index = -1
+custom_minimum_size = Vector2(320, 180)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.027451, 0.0117647, 0.054902, 0.827451)
+
+[node name="MessageLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -70.0
+offset_top = -30.0
+offset_right = 70.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+fit_content = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -60.0
+offset_top = 16.0
+offset_right = 60.0
+offset_bottom = 30.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="CancelButton" parent="HBoxContainer" instance=ExtResource("2_button")]
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="RichTextLabel" parent="HBoxContainer/CancelButton" index="1"]
+text = "CANCEL"
+
+[node name="ConfirmButton" parent="HBoxContainer" instance=ExtResource("2_button")]
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="RichTextLabel" parent="HBoxContainer/ConfirmButton" index="1"]
+text = "CONFIRM"
+
+[connection signal="pressed_within_window" from="HBoxContainer/ConfirmButton" to="." method="_on_confirm_button_pressed"]
+[connection signal="pressed_within_window" from="HBoxContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
+
+[editable path="HBoxContainer/CancelButton"]
+[editable path="HBoxContainer/ConfirmButton"]

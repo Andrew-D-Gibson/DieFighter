@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cs2mfw6hbovs1"
-path="res://.godot/imported/button_large_red.png-5d436a9249f028bafab160d534ff9d98.ctex"
+uid="uid://bj64rhc483fe1"
+path="res://.godot/imported/save_symbol.png-a6e1022ead0d7a17a0f0bccd247298e6.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/UI/Buttons/button_large_red.png"
-dest_files=["res://.godot/imported/button_large_red.png-5d436a9249f028bafab160d534ff9d98.ctex"]
+source_file="res://Assets/Textures/UI/save_symbol.png"
+dest_files=["res://.godot/imported/save_symbol.png-a6e1022ead0d7a17a0f0bccd247298e6.ctex"]
 
 [params]
 

@@ -46,6 +46,10 @@ func _ready() -> void:
 	
 	Globals.state_manager = self
 
+	if Globals.pending_load_save:
+		current_game_save = Globals.pending_load_save
+		Globals.pending_load_save = null
+
 	if len(current_game_save.sector_scenarios) == 0:
 		if Globals.tutorial_manager.auto_start:
 			current_game_save = Globals.tutorial_manager.tutorial_game_save
@@ -54,6 +58,9 @@ func _ready() -> void:
 			_randomize_sector_scenarios()
 
 	Events.start_scenario.connect(_check_combat_state)
+	Events.start_scenario.connect(_checkpoint_game_save)
+	Events.combat_finished.connect(_checkpoint_after_combat)
+	Events.reward_picked.connect(_checkpoint_game_save)
 	Events.enemy_turn_over.connect(_check_combat_state)
 	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_check_combat_state()
@@ -156,6 +163,62 @@ func _randomize_sector_scenarios() -> void:
 	
 	
 	
+## Snapshots live run state into current_game_save and writes it to disk.
+## Runs on scenario start (new run / after a jump), right after combat ends
+## (via _checkpoint_after_combat), and whenever a dice/tile reward is claimed
+## (Events.reward_picked, also emitted by shop purchases) so those aren't
+## lost if the player quits before their next jump.
+func _checkpoint_game_save() -> void:
+	if Globals.tutorial_manager.auto_start:
+		return
+
+	# Let other start_scenario listeners (e.g. Player resetting shields to 0)
+	# finish first, so we snapshot settled state rather than racing them.
+	await get_tree().process_frame
+
+	current_game_save.player_health = Globals.player.health.health
+	current_game_save.player_max_health = Globals.player.health.max_health
+	current_game_save.player_defense = Globals.player.health.shields
+	current_game_save.player_engine_charge = Globals.player.engine_charge
+	current_game_save.num_of_dice = Globals.player.num_of_dice
+	
+	# Check for loose money and make sure it gets saved
+	var loose_money: Array[Node] = get_tree().get_nodes_in_group('Money')
+	var loose_money_total: int = 0
+	for money_particle: Node in loose_money:
+		loose_money_total += money_particle.amount
+		
+	current_game_save.money = Globals.player.money + loose_money_total
+	
+
+	current_game_save.current_scenario_index = Globals.map.current_scenario_index
+	current_game_save.sector_scenarios = Globals.map.scenario_list
+
+	var tile_locations: Dictionary[Vector2i, TileResource] = {}
+	for pos: Vector2i in Globals.tile_grid.tile_locations:
+		tile_locations[pos] = Globals.tile_grid.tile_locations[pos].tile_resource
+	current_game_save.tile_locations = tile_locations
+
+	SaveManager.write_save(current_game_save)
+
+
+## Checkpoints right after a won fight, so "I won this scenario" is a valid
+## stopping point rather than only "I just started the next one". Clears the
+## just-fought tile first (same as jump() does when leaving it) so a reload
+## doesn't re-spawn the enemies. Skipped for sector-gate scenarios (boss
+## fights, jump gates), which are never safe to clear early — those keep
+## checkpointing only at the next start_scenario/jump.
+func _checkpoint_after_combat() -> void:
+	if Globals.tutorial_manager.auto_start:
+		return
+
+	if Globals.map.scenario_list[Globals.map.current_scenario_index].sector_gate_scenario:
+		return
+
+	Globals.map.clear_current_scenario_slot()
+	_checkpoint_game_save()
+
+
 func _check_combat_state() -> void:
 	if _in_combat():
 		state = GameState.IN_COMBAT

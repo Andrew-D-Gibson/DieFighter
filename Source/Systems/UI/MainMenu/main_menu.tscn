@@ -18,6 +18,7 @@
 [ext_resource type="Texture2D" uid="uid://nx8xinrkpv3s" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_atmo_palette.png" id="15_6qnrd"]
 [ext_resource type="Texture2D" uid="uid://4krr0rymcm65" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_bump_map.png" id="16_dn166"]
 [ext_resource type="Texture2D" uid="uid://dpgitv7aac1gi" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_palette.png" id="17_sd3hn"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/ConfirmDialog/confirm_dialog.tscn" id="18_confirm"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -201,10 +202,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 80.0
-offset_top = 122.0
-offset_right = 323.0
-offset_bottom = 173.0
+offset_left = 79.0
+offset_top = 121.0
+offset_right = 322.0
+offset_bottom = 172.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
@@ -226,10 +227,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = 294.0
-offset_top = 157.0
-offset_right = 316.0
-offset_bottom = 179.0
+offset_left = 284.0
+offset_top = 158.0
+offset_right = 312.0
+offset_bottom = 180.0
 grow_horizontal = 0
 grow_vertical = 0
 text = "v0.0.0.1"
@@ -259,19 +260,25 @@ z_index = 5
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_left = 8.0
-offset_top = 92.0
-offset_right = 74.0
-offset_bottom = 163.0
+offset_left = 6.0
+offset_top = 29.0
+offset_right = 88.0
+offset_bottom = 125.0
 grow_vertical = 0
 alignment = 1
 
-[node name="PlayButton" parent="VBoxContainer" unique_id=1161367933 instance=ExtResource("7_n0c18")]
+[node name="ContinueButton" parent="VBoxContainer" unique_id=1267357697 instance=ExtResource("7_n0c18")]
+unique_name_in_owner = true
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/PlayButton" index="0" unique_id=1229508524]
-text = "PLAY"
+[node name="RichTextLabel" parent="VBoxContainer/ContinueButton" index="0" unique_id=1229508524]
+text = "CONTINUE"
+
+[node name="PlayButton" parent="VBoxContainer" unique_id=1161367933 instance=ExtResource("7_n0c18")]
+unique_name_in_owner = true
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
 [node name="OptionsButton" parent="VBoxContainer" unique_id=964819615 instance=ExtResource("7_n0c18")]
 layout_mode = 2
@@ -290,10 +297,11 @@ text = "QUIT"
 [node name="ButtonRotator" type="Control" parent="." unique_id=507446324]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 40.0
-offset_top = 54.0
-offset_right = 80.0
-offset_bottom = 94.0
+offset_left = 47.0
+offset_top = 155.0
+offset_right = 47.0
+offset_bottom = 155.0
+mouse_filter = 2
 script = ExtResource("7_m0vyx")
 
 [node name="WishlistButton" parent="ButtonRotator" unique_id=486649048 instance=ExtResource("7_vm02d")]
@@ -319,6 +327,10 @@ texture = ExtResource("12_dn166")
 [node name="OptionsMenu" parent="." unique_id=168307019 instance=ExtResource("4_bcx7i")]
 unique_name_in_owner = true
 visible = false
+position = Vector2(160, 90)
+
+[node name="ConfirmDialog" parent="." unique_id=330426674 instance=ExtResource("18_confirm")]
+unique_name_in_owner = true
 position = Vector2(160, 90)
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=952747932]
@@ -349,11 +361,13 @@ offset_right = 364.0
 offset_bottom = 179.0
 mouse_filter = 2
 
+[connection signal="pressed_within_window" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed_within_window" from="ButtonRotator/WishlistButton" to="." method="_on_wishlist_button_pressed"]
 
+[editable path="VBoxContainer/ContinueButton"]
 [editable path="VBoxContainer/PlayButton"]
 [editable path="VBoxContainer/OptionsButton"]
 [editable path="VBoxContainer/QuitButton"]

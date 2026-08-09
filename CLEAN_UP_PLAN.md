@@ -17,19 +17,6 @@ This pass covered all 106 entries in ANALYZE.md (101 analyzed, 5 stale/missing �
 
 ---
 
-## Stale ANALYZE.md entries (files not found on disk)
-
-The following 5 files listed in ANALYZE.md do not exist on disk and were skipped rather than analyzed:
-- `Source/Content/Enemies/EnemyActions/EnemyActionFilters/enemy_action_filter.gd` — staged for deletion in current git status (`git status` shows `D`)
-- `Source/Systems/Game/TileGrid/GridStatusEffects/grid_status_effect.gd` — not present, no matching git deletion either (folder doesn't exist under `Source/`)
-- `Source/Systems/Game/TileGrid/GridStatusEffects/LockoutStatus/lockout_status.gd` — same as above
-- `Source/Systems/Game/TileGrid/GridStatusEffects/AmplifierStatus/amplifier_status.gd` — same as above
-- `Source/Systems/Game/TileGrid/GridStatusEffects/AmplifierStatus/amplifier_tile_status.gd` — same as above
-
-Recommend removing these 5 lines from ANALYZE.md once confirmed intentional (the GridStatusEffects logic may have been renamed/relocated already — worth a quick `grep -r "GridStatusEffect\|LockoutStatus\|AmplifierStatus"` to confirm nothing still references these class names before treating them as dead entries).
-
----
-
 ## opening_cutscene.gd
 **Current responsibilities:**
 - Procedurally spawns and animates a parallax starfield (regular + twinkling stars) for the opening cutscene

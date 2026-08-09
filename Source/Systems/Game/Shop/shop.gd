@@ -124,10 +124,12 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			
 			if item is Tile:
 				Globals.tile_grid.receive_tile(item, end_position)
-				
+
 			elif item is Dice:
 				item.reparent(Globals.player, true)
 				Globals.player.dice_manager.add(item)
 				Globals.player.num_of_dice += 1
-			
+
+			Events.reward_picked.emit()
+
 			prices[item_to_shop_index[item]].visible = false

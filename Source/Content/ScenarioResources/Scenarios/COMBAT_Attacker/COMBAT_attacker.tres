@@ -10,6 +10,8 @@
 
 [sub_resource type="Resource" id="Resource_vrd8y"]
 script = ExtResource("6_57squ")
+min_money = 1
+max_money = 5
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_wdgmr"]

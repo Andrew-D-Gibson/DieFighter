@@ -1,9 +1,7 @@
 class_name JumpManager
 extends Node2D
 
-
 func _ready() -> void:
-	Globals.jump_manager = self
 	Globals.map.request_jump_to_scenario.connect(_jump_to_scenario)
 	
 	

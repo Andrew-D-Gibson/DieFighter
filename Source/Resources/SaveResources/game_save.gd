@@ -5,6 +5,7 @@ extends Resource
 @export var player_health: int
 @export var player_max_health: int
 @export var player_defense: int
+@export var player_engine_charge: int
 
 @export var num_of_dice: int
 @export var money: int

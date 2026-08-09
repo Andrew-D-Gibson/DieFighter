@@ -243,6 +243,19 @@ func _tween_map_to_index(index: int) -> void:
 	_sync_slider_to_camera()
 
 
+## Marks the scenario at current_scenario_index as cleared — empty, or
+## fate-infected if within an active danger range — mirroring what jump()
+## does to the tile you're leaving. No-ops for sector-gate scenarios
+## (boss fights, jump gates), which must never be overwritten.
+func clear_current_scenario_slot() -> void:
+	if scenario_list[current_scenario_index].sector_gate_scenario:
+		return
+	if current_scenario_index <= left_fate_index or current_scenario_index >= right_fate_index:
+		scenario_list[current_scenario_index] = fate_scenario
+	else:
+		scenario_list[current_scenario_index] = empty_scenario
+
+
 func jump(desired_scenario_index: int) -> void:
 	# Bound the target scenarios to within the map
 	# e.g. moving "off the map" just moves you to the farthest possible sector
@@ -258,14 +271,10 @@ func jump(desired_scenario_index: int) -> void:
 		return
 		
 	await _tween_map_to_index(desired_scenario_index)
-		
+
 	# Set the current index scenario to empty
-	if not scenario_list[current_scenario_index].sector_gate_scenario:
-		if current_scenario_index <= left_fate_index or current_scenario_index >= right_fate_index:
-			scenario_list[current_scenario_index] = fate_scenario
-		else:
-			scenario_list[current_scenario_index] = empty_scenario
-	
+	clear_current_scenario_slot()
+
 	# Have "Fate" infect the scenarios in danger
 	for idx: int in range(left_fate_index + 1, left_fate_index + 1 + left_scenarios_in_danger):
 		if not scenario_list[idx].sector_gate_scenario:

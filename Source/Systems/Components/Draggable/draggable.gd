@@ -168,7 +168,3 @@ func _on_mouse_exited() -> void:
 			return
 			
 		get_parent().scale = Vector2(1, 1)
-
-
-func snap_back() -> void:
-	return

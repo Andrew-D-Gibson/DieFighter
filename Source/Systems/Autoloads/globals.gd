@@ -7,13 +7,16 @@ var map: Map
 var targeting_computer: TargetingComputer
 var reward_manager: RewardManager
 var money_indicator: MoneyIndicator
-var jump_manager: JumpManager
 
 var enemy_manager: EnemyManager
 var scenario_manager: ScenarioManager
 var state_manager: GameStateManager
 var background_manager: BackgroundManager
 var tutorial_manager: TutorialManager
+
+# Set by MainMenu's Continue button before switching to the main game scene,
+# and consumed by GameStateManager._ready() in place of its scene-baked default.
+var pending_load_save: GameSaveResource = null
 
 # Audio Singletons
 var sfx_player: SFXPlayer

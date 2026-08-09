@@ -34,19 +34,19 @@ them. This phase alone fixes the single most impactful bug in the whole review.
 - [X] **Delete dead `FactionSystem`** (`Source/Content/Enemies/faction_system.gd`) — confirmed
       unreferenced anywhere; `ScenarioManager.Faction` is the real one in use.
       *(GLOBAL_CLEANUP_PLAN.md #10)*
-- [ ] **Remove dead `Globals.jump_manager` singleton registration** — confirmed 0 external reads.
+- [X] **Remove dead `Globals.jump_manager` singleton registration** — confirmed 0 external reads.
       *(GLOBAL_CLEANUP_PLAN.md #19)*
-- [ ] **Remove redundant `scenario_state = new_state` line** in `enemy.gd` (`_handle_scenario_event`,
+- [X] **Remove redundant `scenario_state = new_state` line** in `enemy.gd` (`_handle_scenario_event`,
       ~line 106) — dead reassignment.
-- [ ] **`action_popup.gd`** — either wire the unused `@export var sprite` into the tween code, or
+- [X] **`action_popup.gd`** — either wire the unused `@export var sprite` into the tween code, or
       delete it; currently the tween hardcodes `$Sprite2D` and the export does nothing.
 - [ ] **Register or remove the "Receive Die from Target" dropdown option** — `effect_registry.gd`
       has 9 handlers for `DICE_CONTROL` but the inspector plugin lists 10; check
       `effect_enums.gd`'s `DiceControlSubtype` to see which one is missing a handler.
       *(GLOBAL_CLEANUP_PLAN.md #13)*
-- [ ] **Implement `pause_menu.gd`'s `_save_game()`** — currently just `print('Saving game!')`
+- [X] **Implement `pause_menu.gd`'s `_save_game()`** — currently just `print('Saving game!')`
       despite being wired to a "Save and Quit" button. *(GLOBAL_CLEANUP_PLAN.md #14)*
-- [ ] **Implement or delete `Draggable.snap_back()`** — currently an empty stub; a passive
+- [X] **Implement or delete `Draggable.snap_back()`** — currently an empty stub; a passive
       per-frame homing lerp elsewhere may already cover this, confirm before implementing.
       *(GLOBAL_CLEANUP_PLAN.md #12)*
 - [ ] **`enemy.gd` `activating_die_number` bug** — the early-return path in
@@ -64,7 +64,7 @@ them. This phase alone fixes the single most impactful bug in the whole review.
 Bigger than Phase 0 but still scoped and independent of each other. Do in roughly this order —
 earlier items unblock or simplify later ones.
 
-- [ ] **#16 — Centralize scenario RNG seeding.** Root-cause fix for the class of bug #4 was an
+- [X] **#16 — Centralize scenario RNG seeding.** Root-cause fix for the class of bug #4 was an
       instance of. One call site (`ScenarioManager._load_scenario()`, or a small `ScenarioRNG`
       service) seeds `Dice`/`Enemy`/`BackgroundManager` instead of three independent call sites.
 - [ ] **#1 — Split `UIEvents` autoload out of `Events.gd`.** Start with just `error_text_popup`;
@@ -104,6 +104,8 @@ earlier items unblock or simplify later ones.
       `reward_resource.gd`).
 - [ ] **#5 — Clarity-only:** `health.gd:67` — replace `clampi(shields, 0, shields)` with
       `maxi(shields, 0)`. Not a bug, just a misreadable expression.
+- [ ] Clean up logic in draggable.gd -- the removal of Draggable.snap_back() means lots of old logic
+      is poorly constructed.
 
 ---
 

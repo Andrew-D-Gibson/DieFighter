@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
 [ext_resource type="Shader" uid="uid://b325sq1hvbhpv" path="res://Assets/Shaders/glitch.gdshader" id="4_o33d5"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
+[ext_resource type="PackedScene" uid="uid://c6xh4tyxli6ko" path="res://Source/Systems/UI/SaveIndicator/save_indicator.tscn" id="4_svind"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
 [ext_resource type="Script" uid="uid://chphrqxy6veu0" path="res://Source/Systems/UI/Glitch/glitch_controller.gd" id="5_aaucc"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
@@ -90,7 +91,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_f3imi"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1kud3"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -234,6 +235,9 @@ visible = false
 [node name="GameOver" parent="UI" unique_id=1344297921 instance=ExtResource("3_flage")]
 visible = false
 
+[node name="SaveIndicator" parent="UI" unique_id=1121636869 instance=ExtResource("4_svind")]
+layout_mode = 3
+
 [node name="GlitchShader" type="ColorRect" parent="UI" unique_id=2111896328]
 visible = false
 material = SubResource("ShaderMaterial_aaucc")
@@ -318,7 +322,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_f3imi")
+material = SubResource("ShaderMaterial_1kud3")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]
@@ -359,7 +363,7 @@ combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtR
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3")])
-starting_scenario = ExtResource("23_6ebjm")
+starting_scenario = ExtResource("25_o33d5")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]
 unique_name_in_owner = true

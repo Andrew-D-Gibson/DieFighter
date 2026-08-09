@@ -12,16 +12,26 @@ var _screen_size: Vector2 = Vector2(320, 180)
 var _stars: Array[Node2D]
 
 var opening_cutscene: String = "uid://b1j8blia5iw65"
+var main_game_scene: String = "uid://deisauteocrjl"
 
 
 func _ready() -> void:
 	get_tree().paused = false
-	
+
 	# Set up the initial state of needed components
 	#%FadeIn.self_modulate = background_color
 	%FadeIn.show()
 	%OptionsMenu.hide()
-	
+	%ConfirmDialog.hide()
+	%ConfirmDialog.confirmed.connect(_on_new_game_confirmed)
+
+	if SaveManager.has_save():
+		%ContinueButton.visible = true
+		%PlayButton.set_button_text("NEW GAME")
+	else:
+		%ContinueButton.visible = false
+		%PlayButton.set_button_text("PLAY")
+
 	# Set up the background
 	#self.self_modulate = background_color
 	
@@ -72,7 +82,19 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_play_button_pressed() -> void:
-	#get_tree().change_scene_to_file(main_game_file)
+	if SaveManager.has_save():
+		%ConfirmDialog.open("Starting a new game will overwrite your existing save. Continue?")
+		return
+	_start_new_game()
+
+
+func _on_new_game_confirmed() -> void:
+	SaveManager.delete_save()
+	%ContinueButton.hide()
+	_start_new_game()
+
+
+func _start_new_game() -> void:
 	var status := ResourceLoader.load_threaded_get_status(opening_cutscene)
 	if status == ResourceLoader.THREAD_LOAD_LOADED:
 		var resource := ResourceLoader.load_threaded_get(opening_cutscene)
@@ -82,7 +104,15 @@ func _on_play_button_pressed() -> void:
 	elif status == ResourceLoader.THREAD_LOAD_FAILED:
 		push_error("Failed to load opening cutscene")
 
-	
+
+func _on_continue_button_pressed() -> void:
+	var loaded_save: GameSaveResource = SaveManager.read_save()
+	if not loaded_save:
+		push_error("Failed to load save file")
+		return
+	Globals.pending_load_save = loaded_save
+	get_tree().change_scene_to_file(main_game_scene)
+
 
 func _on_options_button_pressed() -> void:
 	%OptionsMenu.show()
