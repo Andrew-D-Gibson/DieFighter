@@ -1,7 +1,7 @@
 # AGENTS.md — Godot Development Conventions
 
 ## Context
-- Godot dev build: 4.8dev1. APIs may have changed from stable docs — treat any
+- Godot dev build: 4.7.1_stable. APIs may have changed from stable docs — treat any
   doc result as "probably true," not "definitely true," when it touches something
   new or edge-case.
 - This file governs all Godot projects, not just game jams. Default to maintainable,

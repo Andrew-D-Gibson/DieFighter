@@ -64,7 +64,7 @@ func change_health(amount: int) -> void:
 	
 func change_shields(amount: int) -> void:
 	shields += amount
-	shields = clampi(shields, 0, shields)
+	shields = maxi(0, shields)
 	
 	if amount > 0:
 		shields_reinforced.emit()

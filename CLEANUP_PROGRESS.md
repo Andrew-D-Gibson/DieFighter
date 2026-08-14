@@ -67,8 +67,6 @@ earlier items unblock or simplify later ones.
 - [X] **#16 — Centralize scenario RNG seeding.** Root-cause fix for the class of bug #4 was an
       instance of. One call site (`ScenarioManager._load_scenario()`, or a small `ScenarioRNG`
       service) seeds `Dice`/`Enemy`/`BackgroundManager` instead of three independent call sites.
-- [ ] **#1 — Split `UIEvents` autoload out of `Events.gd`.** Start with just `error_text_popup`;
-      decide later whether to keep splitting further.
 - [ ] **#2 — Simplify `error_popup_manager.gd`** (single-popup storage, layout-timing fix,
       `show_error` rename, centering-math cleanup). Natural follow-on to #1.
 - [ ] **#3 — Move `PauseMenu` into the `UI` CanvasLayer** instead of being a `Main`-level sibling
@@ -102,7 +100,7 @@ earlier items unblock or simplify later ones.
 - [ ] **#9 — Relocate data-only Resource classes into `Source/Content/`** (`BackgroundResources/`
       group, `sound_effect_resource.gd` after deciding Content-vs-Libraries, `game_save_resource.gd`,
       `reward_resource.gd`).
-- [ ] **#5 — Clarity-only:** `health.gd:67` — replace `clampi(shields, 0, shields)` with
+- [X] **#5 — Clarity-only:** `health.gd:67` — replace `clampi(shields, 0, shields)` with
       `maxi(shields, 0)`. Not a bug, just a misreadable expression.
 - [ ] Clean up logic in draggable.gd -- the removal of Draggable.snap_back() means lots of old logic
       is poorly constructed.
@@ -184,11 +182,3 @@ scattered through the per-file entries. Treat this phase as "read CLEAN_UP_PLAN.
 Phases 0-3 are done and see what's left that still bugs you" rather than a fixed list — most of
 it is genuinely optional polish.
 
----
-
-## Notes / decisions log
-
-*(Add a line here whenever you deliberately skip or defer something, so it doesn't look like an
-oversight later.)*
-
--

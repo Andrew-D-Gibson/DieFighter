@@ -59,43 +59,6 @@ the `UI` `CanvasLayer` so it doesn't depend on that staying true.
 
 ---
 
-## 4. Fix the global RNG determinism bug
-
-**Source:** `CLEAN_UP_PLAN.md` — Top Cross-Cutting Finding #1 (highest priority).
-
-**File:** `Source/Systems/UI/MainMenu/main_menu.gd`, line 32.
-
-Remove the line `seed('Die Fighter'.hash())`. `game_state_manager.gd` has the exact
-same line already commented out, which is strong evidence this fix was applied
-there but missed here. Confirmed downstream effects if left in place: sector
-layout, enemy behavior, dice rolls, and background selection are all deterministic
-across every playthrough, since `main_menu.gd` runs before any of those systems
-draw from the global RNG.
-
----
-
-## 5. Clarity pass on `Health.change_shields()`'s clamp (not a bug — confirmed)
-
-**Source:** `CLEAN_UP_PLAN.md` — originally flagged as a bug, retracted after
-developer confirmation. Kept here only as a low-priority readability nit.
-
-**File:** `Source/Systems/Components/Health/health.gd`, line 67.
-
-`shields = clampi(shields, 0, shields)` was flagged as a no-op clamp that should
-cap shields at some maximum (by analogy with `change_health()`'s
-`clampi(health, 0, max_health)` immediately above it). The developer confirmed
-shields are **intentionally uncapped** — floor at 0, no maximum — and this
-expression already does exactly that: Godot's `clampi(value, min, max)` returns
-`min` when `value < min` and `value` unchanged otherwise, so with `max` set to
-`shields` itself, the ceiling branch can never trigger. No behavior change needed.
-
-Optional clarity-only change: replace with `shields = maxi(shields, 0)`, which
-expresses "floor at 0, no ceiling" unambiguously — the self-referential `clampi`
-call is what caused this to be misread as a bug in the first place, and the next
-reader (including future-you) will hit the same confusion without more context.
-
----
-
 ## 6. Fix the `Addons/` folder casing mismatch
 
 **Source:** `CLEAN_UP_PLAN.md` — Top Cross-Cutting Finding #3.
@@ -107,20 +70,6 @@ filesystem is case-insensitive. Recommend renaming the folder to lowercase
 `addons/` to match Godot's own convention and every existing reference to it
 (rather than updating the references, since lowercase is the standard Godot
 plugin-folder convention).
-
----
-
-## 7. Delete the dead duplicate `engine_charger.gd`
-
-**Source:** `CLEAN_UP_PLAN.md` — Top Cross-Cutting Finding #5.
-
-- **Delete:** `Source/Systems/Game/EngineCharger/engine_charger.gd` (dead — verified
-  via `.tscn` UID cross-reference that nothing points at it) and
-  `Source/Systems/Game/EngineCharger/engine_charger.tscn` (also orphaned).
-- **Move:** `Source/Systems/Game/MainViewer/engine_charger.gd` (the live copy) into
-  `Source/Systems/Game/EngineCharger/`, alongside its already-live sibling
-  `engine_particles_controller.gd`.
-- **Update:** `main_viewer.tscn`'s `ext_resource` path for the script after the move.
 
 ---
 
