@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="GameSaveResource" format=3 uid="uid://biawl3820xfte"]
 
-[ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save.gd" id="1_78gow"]
+[ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save_resource.gd" id="1_78gow"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_ettjp"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_8qr57"]
 [ext_resource type="Resource" uid="uid://dy6ykhsava6f4" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_4a3cr"]
