@@ -632,7 +632,7 @@ Source/
 
 ## Migration Status
 
-### Legacy Pipeline (Still Active)
+### Legacy Pipeline (No longer active)
 
 1. Tile activation → `EffectChain.play(effect_variables)`
 2. Direct node execution within chain

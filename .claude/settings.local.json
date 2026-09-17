@@ -19,5 +19,10 @@
       "Write_file"
     ],
     "defaultMode": "acceptEdits"
-  }
+  },
+  "enabledMcpjsonServers": [
+    "godot-mcp-docs",
+    "godot",
+    "aseprite"
+  ]
 }

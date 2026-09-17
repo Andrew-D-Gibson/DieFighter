@@ -15,8 +15,21 @@
         "/Users/drew/Documents/Godot/tools/godot-mcp/build/index.js"
       ],
       "env": {
-        "GODOT_PATH": "/Users/drew/Documents/Godot/Godot_4.8_dev1.app/Contents/MacOS/Godot",
+        "GODOT_PATH": "/Users/drew/Documents/Godot/Godot_4.7_stable.app/Contents/MacOS/Godot",
         "DEBUG": "true"
+      }
+    },
+    "aseprite": {
+      "command": "/Users/drew/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/drew/Documents/Godot/aseprite-mcp",
+        "run",
+        "-m",
+        "aseprite_mcp"
+      ],
+      "env": {
+        "ASEPRITE_PATH": "/Applications/Aseprite.app/Contents/MacOS/aseprite"
       }
     }
   }
