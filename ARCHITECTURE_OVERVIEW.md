@@ -24,6 +24,10 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `Screenshotter` | `Autoloads/screenshotter.gd` | Screenshot capture |
 | `QuitManager` | `Autoloads/quit_manager.gd` | Graceful application quit |
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
+| `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs to `res://` paths so saves survive `.tres` renames/moves; stores IDs in save instead of raw paths |
+| `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
+| `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 1`); deletes save on `game_over`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
+| `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (mirrored at repo root) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS` |
 
 **Core Game Systems** (Scene-organized with singleton references)
 
@@ -267,6 +271,21 @@ class_name TileResource extends Resource
    - Contains array of `EffectData` nodes
    - Calls EffectRegistry to resolve handlers
    - Integrates with ScenarioEngine modifiers
+
+---
+
+## Save System
+
+### Autosave Slot
+
+**Autoload:** `SaveManager` (`Autoloads/save_manager.gd`)
+
+Single autosave slot serialized to JSON at `user://save_game.json` (`SAVE_VERSION = 1`). `GameStateManager` keeps a current `GameSaveResource` in sync and calls `write_save()` at checkpoints; `SaveManager` deletes the save on `game_over`.
+
+| Resource | Location | Responsibility |
+|----------|----------|----------------|
+| `GameSaveResource` | `Resources/game_save_resource.gd` | Serializable game state (renamed from `game_save.gd`) |
+| Slot resources | `Resources/SaveResources/*.tres` | Per-slot save templates (`game_start.tres`, `tutorial_start.tres`) |
 
 ---
 
@@ -542,14 +561,18 @@ func run_turn() -> void                            # Use all dice in queue seque
 ```
 Source/
 ├── Autoloads/                 # Global singletons
-│   ├── input_manager.gd
-│   ├── events.gd              # Central signal bus
-│   ├── globals.gd             # Registry + color constants
-│   ├── sound_effects_player.gd
-│   ├── debug_logger.gd
-│   ├── screenshotter.gd
-│   ├── quit_manager.gd
-│   └── effect_registry.gd
+│    ├── input_manager.gd
+│    ├── events.gd               # Central signal bus
+│    ├── globals.gd              # Registry + color constants
+│    ├── sound_effects_player.gd
+│    ├── debug_logger.gd
+│    ├── screenshotter.gd
+│    ├── quit_manager.gd
+│    ├── effect_registry.gd
+│    ├── content_registry.gd
+│    ├── rng_manager.gd
+│    ├── save_manager.gd
+│    └── mcp_interaction_server.gd    # also mirrored at repo root
 │
 ├── Content/
 │   ├── Tiles/                 # Tile resources & behavior

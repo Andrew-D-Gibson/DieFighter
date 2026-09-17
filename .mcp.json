@@ -1,0 +1,23 @@
+{
+  "mcpServers": {
+    "godot-mcp-docs": {
+      "command": "docker",
+      "args": [
+        "run",
+        "--rm",
+        "-i",
+        "godot-mcp-docs:local"
+      ]
+    },
+    "godot": {
+      "command": "node",
+      "args": [
+        "/Users/drew/Documents/Godot/tools/godot-mcp/build/index.js"
+      ],
+      "env": {
+        "GODOT_PATH": "/Users/drew/Documents/Godot/Godot_4.8_dev1.app/Contents/MacOS/Godot",
+        "DEBUG": "true"
+      }
+    }
+  }
+}
