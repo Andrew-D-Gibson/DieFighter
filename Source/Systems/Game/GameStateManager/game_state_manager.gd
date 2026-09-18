@@ -11,6 +11,8 @@ extends Node2D
 @export var shop_scenario: ScenarioResource
 @export var combat_scenarios: Array[ScenarioResource]
 @export var question_scenarios: Array[ScenarioResource]
+## One boss encounter per sector, in order. The last entry is reused if a run
+## outlasts the list, so this can be shorter than demo_sector_count.
 @export var boss_combat_scenarios: Array[ScenarioResource]
 @export var fate_scenarios: Array[ScenarioResource]
 
@@ -161,10 +163,14 @@ func _randomize_sector_scenarios() -> void:
 
 	RNGManager.shuffle_array(RNGManager.Bucket.RUN, current_game_save.sector_scenarios)
 
-	# Add the boss scenario
-	current_game_save.sector_scenarios.append(
-		RNGManager.pick_random(RNGManager.Bucket.RUN, boss_combat_scenarios)
-	)
+	# Add this sector's boss. Indexed rather than random: the boss is the one
+	# encounter the player is guaranteed to meet once per sector, so it's the
+	# clearest place to show a run getting harder.
+	if not boss_combat_scenarios.is_empty():
+		var boss_index: int = clampi(
+			current_game_save.sector_index, 0, len(boss_combat_scenarios) - 1
+		)
+		current_game_save.sector_scenarios.append(boss_combat_scenarios[boss_index])
 
 	# The gate, not the boss, is the last tile — clearing it ends the sector.
 	if jump_gate_scenario:

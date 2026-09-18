@@ -41,6 +41,8 @@
 [ext_resource type="Script" path="res://Source/Systems/Game/RunStats/run_stats.gd" id="93_runstats"]
 [ext_resource type="Script" path="res://Source/Systems/UI/HazardIndicator/hazard_indicator.gd" id="92_hazui"]
 [ext_resource type="Resource" uid="uid://c5jyv6pxbbm24" path="res://Source/Content/ScenarioResources/Scenarios/JumpGate/jump_gate.tres" id="26_jgate"]
+[ext_resource type="Resource" uid="uid://ctncgtd731m3y" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_escorted.tres" id="94_boss2"]
+[ext_resource type="Resource" uid="uid://b5v4bhmin2332" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_wing.tres" id="95_boss3"]
 [ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
 [ext_resource type="PackedScene" uid="uid://c2hbku8vgrm4f" path="res://Source/Systems/Game/JumpManager/jump_manager.tscn" id="27_nwhv6"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="28_lejlh"]
@@ -396,7 +398,7 @@ empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
-boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
+boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("94_boss2"), ExtResource("95_boss3")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3")])
 starting_scenario = ExtResource("25_o33d5")
 jump_gate_scenario = ExtResource("26_jgate")

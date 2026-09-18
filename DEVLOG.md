@@ -4,6 +4,36 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — One boss kit, three escalating fights
+
+**Built:** The sector boss is now picked *by sector index* rather than at
+random, clamped so the list can be shorter than `demo_sector_count`. Two new
+encounters built from the same Sector Warden, per DEMO_PLAN's "1 kit, 2–3
+escalation variants":
+
+- **Sector 1** — the Warden alone, Solar Flare overhead.
+- **Sector 2** — Warden + Field Tender. The Warden's own turtle phase (66–34%)
+  shields but doesn't heal; the Tender does. That window can now genuinely stall
+  out if you don't deal with the barge first.
+- **Sector 3** — Warden + two Ion Lances. The enraged phase eats your dice while
+  the Lances drain the engine charge you would have fled on. And killing one
+  Lance flips the other into its vengeance pool — so the escort escalates too.
+
+Everything here is reuse: same boss enemy, same phases, same hazard, new
+compositions. The only code change is four lines choosing `[sector]` instead of
+`pick_random`.
+
+**Why indexed rather than random:** the boss is the one encounter a player is
+guaranteed to meet exactly once per sector. That makes it the clearest possible
+place to show a run getting harder — a random pick would have made sector 3
+sometimes easier than sector 1, which is the opposite of the point.
+
+**Verified live:** generated sectors 1–4 and confirmed boss/gate ordering with
+correct clamping past the end of the list, then jumped into the sector-3
+variant: 64 HP Warden flanked by two Lances with the flare counting down.
+
+---
+
 ## 2026-09-17 — Tiles that react instead of consuming dice
 
 **Built:** Two new `TileEvent.EventType` hooks and the first tiles that take no
