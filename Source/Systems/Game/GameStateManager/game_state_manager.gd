@@ -14,6 +14,8 @@ extends Node2D
 @export var boss_combat_scenarios: Array[ScenarioResource]
 @export var fate_scenarios: Array[ScenarioResource]
 
+## Where the player arrives in the very first sector. Authored rather than
+## random, so a new run always opens on the same deliberate first impression.
 @export var starting_scenario: ScenarioResource
 
 ## Guards the exit of every sector. Cleared -> the sector is over.
@@ -173,7 +175,7 @@ func _randomize_sector_scenarios() -> void:
 		0, RNGManager.pick_random(RNGManager.Bucket.RUN, fate_scenarios)
 	)
 
-	# Place the player's starting scenario somewhere in the beginning third
+	# Place the player's arrival scenario somewhere in the beginning third
 	var sector_length: int = len(current_game_save.sector_scenarios)
 	var starting_scenario_index: int = RNGManager.randi_range(
 		RNGManager.Bucket.RUN, 2, ceil(0.33 * sector_length)
@@ -182,7 +184,7 @@ func _randomize_sector_scenarios() -> void:
 	current_game_save.current_scenario_index = starting_scenario_index
 	current_game_save.sector_scenarios.insert(
 		current_game_save.current_scenario_index,
-		starting_scenario
+		_pick_arrival_scenario()
 	)
 
 	# Seed all the scenarios
@@ -191,6 +193,26 @@ func _randomize_sector_scenarios() -> void:
 	
 	
 	
+## Where the player drops out of hyperspace when a sector begins.
+##
+## Sector 1 always uses the authored starting_scenario so a new run opens the
+## same way every time. Later sectors arrive somewhere else entirely — landing
+## on the identical encounter three times in one run makes the jump gate feel
+## like a reset rather than progress.
+func _pick_arrival_scenario() -> ScenarioResource:
+	if current_game_save.sector_index == 0 or question_scenarios.is_empty():
+		return starting_scenario
+
+	var unused: Array[ScenarioResource] = Utils.array_while_excluding(
+		question_scenarios,
+		current_game_save.sector_scenarios
+	)
+	if unused.is_empty():
+		unused = question_scenarios
+
+	return RNGManager.pick_random(RNGManager.Bucket.RUN, unused)
+
+
 ## Enemy health and shields are multiplied by this at spawn time
 ## (see Enemy._update_health_from_resource).
 func get_difficulty_multiplier() -> float:

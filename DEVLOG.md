@@ -4,6 +4,30 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Later sectors don't open on the same encounter every time
+
+**Built:** `GameStateManager._pick_arrival_scenario()`. Sector 1 still uses the
+authored `starting_scenario`, so a new run always opens on the same deliberate
+first impression. Sectors 2 and 3 now arrive at a random question scenario
+that isn't already somewhere in that sector.
+
+**How I found it:** while testing the new events I saw
+`EVENT_pirate_attacking_civilian` appear twice in one generated sector and
+assumed `Utils.array_while_excluding` was broken. It isn't — the arrival
+scenario is `insert()`ed separately after the shuffle, with no exclusion check,
+and it happens to *be* that event. Not a duplication bug.
+
+The real problem it exposed was worse and quieter: with sectors chained, the
+player now drops out of hyperspace into the *identical* encounter at the start
+of all three sectors. That makes a jump gate feel like a reset rather than
+progress — exactly the opposite of what the gate is for.
+
+**Verified live:** generated sector 1 (authored start) then sampled 12 sector-2
+generations; arrivals spread across mercy call / sleeping drone / tollkeeper,
+and never landed on an encounter already placed in that same sector.
+
+---
+
 ## 2026-09-17 — Three new event encounters, built on state-entry effects
 
 **Built:** Event scenarios went 2 → 5. DEMO_PLAN wants 4–6, and two was very

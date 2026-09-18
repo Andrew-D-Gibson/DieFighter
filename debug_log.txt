@@ -1,7 +1,3 @@
-[21:36:30] Debug logger initialized
-[21:36:30] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[21:36:31] Starting scenario
-[21:37:05] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_MercyCall/EVENT_mercy_call.tres
-[21:37:06] Starting scenario
-[21:37:40] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/EVENT_tollkeeper.tres
-[21:37:41] Starting scenario
+[21:39:17] Debug logger initialized
+[21:39:17] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[21:39:17] Starting scenario
