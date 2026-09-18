@@ -4,6 +4,36 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Two tiles that charge you for the privilege
+
+**Built:** Tiles 24 → 26. Both are archetypes the game had none of: effects
+that cost you something other than a die.
+
+- **Ablative Charge** (red, die 6, 2 uses, rare) — 12 damage to your target,
+  and your own hull takes 3. The biggest single hit available to the player.
+  The self-damage runs through shields like any other damage, so a defensive
+  turn can fire it for free — which quietly gives the shield tiles an
+  *offensive* use they didn't have before.
+- **Overdraw Coil** (purple, die 1, 1 use, rare) — deals damage equal to your
+  current engine charge, then drains the engine to zero. Engine charge was
+  purely a gate for jumping and fleeing; this is the only tile that makes it
+  ammunition. Activating on a **1** is the point: it turns the worst die in your
+  hand into your biggest hit, and takes your ability to leave with it.
+
+Both drawn in the established tile chrome; the Overdraw Coil is the first tile
+in the purple (engine) family that isn't the engine charger itself.
+
+**Verified live:** engine 9 → 0 dealing exactly 9 damage (18 → 9 on a Venom
+Fighter). Then Ablative Charge finished that 9 HP fighter with its 12 and took
+the player 20 → 17.
+
+**Design note on the "1" activation:** the game rolls dice you can't choose, so
+a hand of low values is the standard bad turn. A rare, expensive tile that only
+eats 1s converts that bad luck into the turn's best play — which is a much more
+interesting answer to variance than a reroll.
+
+---
+
 ## 2026-09-17 — The Siege Mortar: a gun with a ship attached
 
 **Built:** Two new actions, a new enemy, a new fight, and the art for all of it.
