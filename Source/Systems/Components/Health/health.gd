@@ -25,6 +25,10 @@ signal health_damaged()
 signal health_healed()
 signal shields_damaged()
 signal shields_reinforced()
+## The last point of shielding just went. Distinct from shields_damaged because
+## the transition from protected to exposed is the dramatic beat, not the chip
+## damage on either side of it.
+signal shields_broken()
 
 signal fatal_damage()
 signal death() 
@@ -63,6 +67,8 @@ func change_health(amount: int) -> void:
 	
 	
 func change_shields(amount: int) -> void:
+	var had_shields: bool = shields > 0
+
 	shields += amount
 	shields = maxi(0, shields)
 	
@@ -70,3 +76,5 @@ func change_shields(amount: int) -> void:
 		shields_reinforced.emit()
 	else:
 		shields_damaged.emit()
+		if had_shields and shields == 0:
+			shields_broken.emit()

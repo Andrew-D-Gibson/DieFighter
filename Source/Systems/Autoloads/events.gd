@@ -35,6 +35,9 @@ signal combat_finished()
 # Player Events
 signal player_health_hit()
 signal player_shields_hit()
+## The player's shields just dropped to zero. Worth its own signal — going from
+## protected to exposed is a bigger moment than any single point of chip damage.
+signal player_shields_broken()
 signal engine_charge_changed()
 signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction)
 signal player_fatal_damage()

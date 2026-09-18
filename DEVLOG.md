@@ -4,6 +4,49 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Juice: the handover has weight, and a shield break is a moment
+
+Two feel changes, both aimed at things BRAINSTORMING §8 calls underplayed.
+
+**1. The handover is weighted by die value.** The die flying out in front of an
+enemy before it acts is the most repeated moment in the game and the whole
+thesis of it — you armed them, now watch what you armed them with. It was a
+flat 0.75s float regardless of what you'd handed over.
+
+Now a 1 skips across in 0.45s and shrinks slightly; a 6 drags for 0.95s and
+grows as it arrives; the beat before the action fires scales the same way
+(0.15s → 0.45s). A turn's worth of handovers now has a felt threat-texture
+before the player re-reads a single intent. Two constants and a `lerpf`.
+
+**2. Shield break got its own signal.** `Health.shields_broken` fires only on
+the transition from protected to exposed — `shields_damaged` was covering both
+the chip damage and the moment the floor drops out, which flattened the more
+dramatic of the two.
+
+- Player: escalates from the small shake to the large one.
+- Vignette: cyan instead of blue, nearly double the brightness, and a 1.4s fade
+  instead of 0.75s, so the screen stays lit while it sinks in.
+
+Enemies get the signal too; nothing listens yet, but the hook is there.
+
+**Verified live:** ran an enemy turn with a 1 and a 6 handed over, and
+triggered a shield break directly — the screenshot shows the cyan wash across
+the whole frame with the camera visibly kicked.
+
+**Also did a full QA pass** on a real fight rather than synthetic calls: spent
+three dice through the actual drop handler, ended the turn, let the enemy act,
+and confirmed damage, die handover, the return of dice, and an idle engine with
+an empty queue afterwards. Zero game errors in the log (everything in there is
+warnings from my own eval snippets).
+
+**A design thing I hadn't appreciated until watching it play:** dice only reach
+an enemy through `GIVE_DIE_TO_TARGET`, which follows the targeting computer. So
+*whoever you attack is who attacks you back*, and an enemy you ignore does
+nothing at all. That makes the Field Tender better than I designed it — you
+cannot kill the medic without handing it the dice it heals with.
+
+---
+
 ## 2026-09-17 — Relay tiles, and a circuit breaker so they can't freeze the game
 
 **Built two things, in this order on purpose.**

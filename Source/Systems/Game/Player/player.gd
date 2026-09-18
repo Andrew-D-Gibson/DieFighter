@@ -44,6 +44,7 @@ func _ready() -> void:
 	health.death.connect(Events.game_over.emit)
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
+	health.shields_broken.connect(Events.player_shields_broken.emit)
 	health.fatal_damage.connect(Events.player_fatal_damage.emit)
 	
 	health.health_damaged.connect(func() -> void:
@@ -53,6 +54,12 @@ func _ready() -> void:
 	health.shields_damaged.connect(func() -> void:
 		Events.play_sound.emit(_SHIELDS_HIT_SFX)
 		Events.camera_shake_small.emit()
+	)
+	# The moment the last shield goes, the next hit is on the hull. Escalate to
+	# the big shake so the player feels the floor drop out rather than reading
+	# a number change.
+	health.shields_broken.connect(func() -> void:
+		Events.camera_shake_large.emit(false)
 	)
 	
 	

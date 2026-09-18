@@ -1,14 +1,6 @@
-[21:55:41] Debug logger initialized
-[21:55:41] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[21:55:41] Starting scenario
-[21:56:14] Starting combat
-[21:56:14] Player attacked ship: Enemy (Faction: PIRATE)
-[21:56:14] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:56:14] Player attacked ship: Enemy (Faction: PIRATE)
-[21:56:14] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:56:15] Player attacked ship: Enemy (Faction: PIRATE)
-[21:56:15] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:56:16] Player attacked ship: Enemy (Faction: PIRATE)
-[21:56:16] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:56:45] Player attacked ship: Enemy (Faction: PIRATE)
-[21:56:45] Scenario Event: PLAYER_ATTACKED_PIRATE
+[22:00:52] Debug logger initialized
+[22:00:52] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[22:00:53] Starting scenario
+[22:01:20] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wolfpack/COMBAT_wolfpack.tres
+[22:01:21] Starting scenario
+[22:01:21] Starting combat

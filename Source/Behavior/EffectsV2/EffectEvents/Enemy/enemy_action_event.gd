@@ -5,6 +5,21 @@ var enemy: Enemy
 var action: EnemyActionResource
 var action_popup: PackedScene = preload("uid://b8gjt5a2dcrbn")
 
+## How long the die takes to travel out in front of the enemy, by face value.
+##
+## This is the most repeated moment in the game and the whole thesis of it —
+## you armed them, and now you watch what you armed them with. A 1 should skip
+## over weightlessly; a 6 should drag. Making the *value* legible in pure body
+## language means a turn's worth of handovers has a felt threat-texture before
+## the player re-reads a single intent.
+const _LIGHT_HANDOVER_SECONDS: float = 0.45
+const _HEAVY_HANDOVER_SECONDS: float = 0.95
+
+## Beat between the die arriving and the action firing. Scales the same way, so
+## a heavy die also hangs there a moment longer before it goes off.
+const _LIGHT_HOLD_SECONDS: float = 0.15
+const _HEAVY_HOLD_SECONDS: float = 0.45
+
 ## How many times the full effect chain plays for this single activation.
 ## Defaults to 1; modifiers may multiply this in on_before_event() (e.g.
 ## "tiles activated by a 4 activate twice").
@@ -22,8 +37,9 @@ func resolve(engine: ScenarioEngine) -> void:
 
 	Globals.targeting_computer.target_enemy(enemy)
 
-	# Tween the die to in front of the enemy
-	var tween_time: float = 0.75
+	# Tween the die to in front of the enemy, weighted by its face value.
+	var weight: float = (clampf(die_value, 1, 6) - 1.0) / 5.0
+	var tween_time: float = lerpf(_LIGHT_HANDOVER_SECONDS, _HEAVY_HANDOVER_SECONDS, weight)
 	var adjusted_tween_time: float = tween_time / Globals.animation_speed
 	var tween: Tween = enemy.get_tree().create_tween()
 	tween.tween_property(
@@ -32,6 +48,14 @@ func resolve(engine: ScenarioEngine) -> void:
 		enemy.global_position + Vector2(0,12), 
 		adjusted_tween_time
 	).set_ease(Tween.EASE_IN_OUT)
+	# A heavy die also grows slightly as it arrives, so the value reads even
+	# with the screen shaking.
+	tween.parallel().tween_property(
+		activator_die,
+		"scale",
+		Vector2.ONE * lerpf(0.8, 1.15, weight),
+		adjusted_tween_time
+	).set_ease(Tween.EASE_OUT)
 	await tween.finished
 	
 	# Just in case.
@@ -40,7 +64,9 @@ func resolve(engine: ScenarioEngine) -> void:
 	if not enemy and is_instance_valid(enemy):
 		return
 		
-	await enemy.get_tree().create_timer(0.25).timeout
+	await enemy.get_tree().create_timer(
+		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight)
+	).timeout
 	
 	# Make an action indicator popup
 	var popup_time: float = 0.75
