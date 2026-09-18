@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_s"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_s"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_s"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="4_s"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="5_s"]
+[ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Content/Tiles/TileResources/shield.tres" id="6_s"]
+
+[resource]
+script = ExtResource("2_s")
+tutorial_text = "Hull holding. Now [wave amp=10.0 freq=3.0 connected=1][color=yellow]finish it[/color][/wave]:"
+time_delay = 1.5
+forced_enemy_actions = Array[ExtResource("1_s")]([ExtResource("4_s"), ExtResource("4_s"), ExtResource("4_s"), ExtResource("4_s"), ExtResource("5_s"), ExtResource("5_s")])
+forced_rewards = Array[ExtResource("3_s")]([ExtResource("6_s")])
+text_position = Vector2(220, 40)
+close_on_signal = 7
+tutorial_function = 8
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

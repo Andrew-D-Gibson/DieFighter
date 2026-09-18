@@ -25,7 +25,7 @@ func _ready() -> void:
 	
 	Events.player_turn_over.connect(func() -> void:
 		# Don't automatically run the turn if the tutorial is handling it
-		if Globals.tutorial_manager.tutorial_will_trigger_enemy_turns:
+		if Globals.tutorial_controls_enemy_turns:
 			return
 		run_enemy_turn()
 	)

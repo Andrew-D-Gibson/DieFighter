@@ -45,11 +45,21 @@ enum TutorialFunctions {
 	ENABLE_ALL_CONTROLS,
 	LOCK_DICE,
 	UNLOCK_DICE,
-	LOAD_MAIN_GAME,
+	## Hands the run back to the player: unlocks everything the tutorial held
+	## and leaves them mid-run rather than returning to a menu.
+	FINISH_TUTORIAL,
+	## Re-rolls live enemies' intent tables so this step's forced_enemy_actions
+	## apply to the turn already telegraphed, not the one after.
+	REROLL_ENEMY_INTENTS,
 }
 @export var tutorial_function: TutorialFunctions 
 
 @export var time_to_auto_close: float = 0
+
+## Seconds to wait for close_on_signal before the tutorial gives up on this step
+## and advances anyway, so a missed gameplay event can't soft-lock the game.
+## 0 falls back to TutorialManager.default_step_timeout.
+@export var max_wait_time: float = 0
 
 # Optional: Highlight specific UI elements
 @export var highlight_texture: Texture2D

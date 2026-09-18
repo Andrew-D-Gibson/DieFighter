@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+
+[resource]
+script = ExtResource("1_s")
+tutorial_text = "Reactor online.(delay=0.3) [color=red]Hull[/color] at 14 of 32.(delay=0.3) The [shake rate=15.0 level=2 connected=1][color=red]raider[/color][/shake] took a beating too."
+text_position = Vector2(215, 42)
+time_delay = 1.4
+close_on_signal = 1
+tutorial_function = 12
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

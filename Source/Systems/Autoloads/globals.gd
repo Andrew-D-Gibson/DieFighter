@@ -17,6 +17,14 @@ var hazard_manager: HazardManager
 var run_stats: RunStats
 var tutorial_manager: TutorialManager
 
+## True while the onboarding tutorial is narrating the run. Gameplay systems ask
+## this rather than reaching into TutorialManager's own fields.
+var tutorial_active: bool = false
+
+## While true, the tutorial decides when enemy turns run, so EnemyManager should
+## not fire one off the back of player_turn_over.
+var tutorial_controls_enemy_turns: bool = false
+
 # Set by MainMenu's Continue button before switching to the main game scene,
 # and consumed by GameStateManager._ready() in place of its scene-baked default.
 var pending_load_save: GameSaveResource = null

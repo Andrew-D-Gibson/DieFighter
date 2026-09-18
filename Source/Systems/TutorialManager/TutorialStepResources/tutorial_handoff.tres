@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+
+[resource]
+script = ExtResource("1_s")
+tutorial_text = "Navigation unlocked. Three sectors to the rendezvous.(delay=0.3) [wave amp=10.0 freq=3.0 connected=1][color=yellow]Good luck, pilot[/color][/wave]."
+time_delay = 3.0
+close_on_signal = 2
+tutorial_function = 14
+time_to_auto_close = 5.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

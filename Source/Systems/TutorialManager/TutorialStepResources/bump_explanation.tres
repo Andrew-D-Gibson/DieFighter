@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+
+[resource]
+script = ExtResource("1_s")
+tutorial_text = "[color=green]Bump[/color] raises a die by 1.(delay=0.3) Feed it the small rolls before they reach the cannon."
+text_position = Vector2(220, 40)
+close_on_signal = 1
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+[ext_resource type="Texture2D" uid="uid://dncbs6gicdtdk" path="res://Assets/Textures/TutorialManager/Highlights/highlight_enemy_and_targeting_computer.png" id="2_s"]
+
+[resource]
+script = ExtResource("1_s")
+tutorial_text = "The [color=purple]targeting computer[/color] shows what each value buys them.(delay=0.3) Hand over the ones they [color=yellow]waste[/color]."
+text_position = Vector2(220, 65)
+close_on_signal = 1
+highlight_texture = ExtResource("2_s")
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

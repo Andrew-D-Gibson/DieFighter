@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+
+[resource]
+script = ExtResource("1_s")
+tutorial_text = "Incoming:"
+text_position = Vector2(220, 40)
+close_on_signal = 2
+forced_dice = Array[int]([5, 6, 4])
+tutorial_function = 7
+time_to_auto_close = 2.0
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+
+[resource]
+script = ExtResource("1_s")
+tutorial_text = "[color=white]Dice[/color] are unstable power cores. [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave](left_mouse) one onto a subsystem to fire it:"
+text_position = Vector2(220, 40)
+close_on_signal = 5
+tutorial_function = 13
+metadata/_custom_type_script = "uid://eyoqrls6ero4"
