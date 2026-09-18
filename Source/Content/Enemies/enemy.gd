@@ -43,6 +43,10 @@ var moving_in_world: bool = false
 ## The number of turns this enemy has lived
 @onready var turns_alive: int = 0
 
+## How many ships of this enemy's own faction have died since it arrived.
+## Drives PoolSelection.SQUAD_LOSSES.
+var squad_losses: int = 0
+
 ## Optional: force specific actions (used by tutorial)
 static var forced_actions: Array[EnemyActionResource] = []
 
@@ -110,7 +114,22 @@ func _connect_combat_signals() -> void:
 	)
 	
 	Events.player_turn_start.connect(generate_turn_actions)
+	Events.enemy_left.connect(_on_other_enemy_left)
 	
+
+## Counts losses among this enemy's own faction. Only actual deaths count — the
+## same signal fires when a ship flees or when combat ends peacefully, and
+## neither of those is something to get angry about.
+func _on_other_enemy_left(ship: Enemy, faction: ScenarioManager.Faction) -> void:
+	if ship == self or not is_instance_valid(ship):
+		return
+	if not scenario_state or faction != scenario_state.faction:
+		return
+	if ship.health.health > 0:
+		return
+
+	squad_losses += 1
+
 
 ## Connects the signals for the dice manager
 func _connect_dice_manager_signals() -> void:
@@ -195,14 +214,19 @@ func _current_pool_index() -> int:
 	if pool_count <= 1:
 		return 0
 
-	if enemy_resource.pool_selection == EnemyResource.PoolSelection.HEALTH_THRESHOLD:
-		if health.max_health <= 0:
-			return 0
-		# Full health lands in the first pool, near-death in the last.
-		var hurt: float = 1.0 - (float(health.health) / float(health.max_health))
-		return clampi(int(hurt * pool_count), 0, pool_count - 1)
+	match enemy_resource.pool_selection:
+		EnemyResource.PoolSelection.HEALTH_THRESHOLD:
+			if health.max_health <= 0:
+				return 0
+			# Full health lands in the first pool, near-death in the last.
+			var hurt: float = 1.0 - (float(health.health) / float(health.max_health))
+			return clampi(int(hurt * pool_count), 0, pool_count - 1)
 
-	return turns_alive % pool_count
+		EnemyResource.PoolSelection.SQUAD_LOSSES:
+			return clampi(squad_losses, 0, pool_count - 1)
+
+		_:
+			return turns_alive % pool_count
 
 
 ## Generates the actions the enemy will take this turn

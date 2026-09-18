@@ -1,3 +1,7 @@
-[21:41:13] Debug logger initialized
-[21:41:13] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[21:41:13] Starting scenario
+[21:43:12] Debug logger initialized
+[21:43:12] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[21:43:12] Starting scenario
+[21:43:39] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_IonLances/COMBAT_ion_lances.tres
+[21:43:40] Starting scenario
+[21:43:40] Starting combat
+[21:43:58] Enemy left: PIRATE

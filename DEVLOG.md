@@ -4,6 +4,44 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Squads notice when one of them dies
+
+**Built:** A third `PoolSelection` mode, `SQUAD_LOSSES`. `Enemy.squad_losses`
+counts ships of its own faction that have died since it arrived, and the pool
+index follows that count — intact squad draws from the first pool, sole
+survivor from the last.
+
+Careful about what counts: `Events.enemy_left` also fires when a ship flees or
+when combat ends peacefully, so only ships actually at 0 HP increment it.
+Nothing to get angry about otherwise.
+
+Authored on the **Ion Lance**, which now has two pools:
+- **Wing intact** — measured. One siphon (3–5), one quake, some pressure, and a
+  wasted face.
+- **Wingman down** — no wasted faces at all, siphons deepen to 5–8, attacks to
+  4–7, and a second quake enters the pool.
+
+**Why:** BRAINSTORMING calls enemy reactivity the biggest opportunity in the
+codebase, and this is the cheapest honest version of it. It costs nothing from
+the perfect-information pillar — the six slots are still fully resolved and
+visible before you commit a die — but it makes *kill order* matter in the
+two-Lance fight. Leaving one alive on low HP is now worse than it looks.
+
+It's also pure `PoolSelection` reuse: one enum value, one counter, one match
+arm. Any enemy can opt in by authoring a second pool.
+
+**Verified live:** jumped into the two-Lance fight, recorded the survivor's
+intents (Siphon 5 / Quake / Cannon 3,3,2,3 — pool 0 ranges, with a gap), killed
+its wingman, regenerated: 3× Quake / Cannon 6,6 / Siphon 6 — pool 1 ranges, no
+blank face.
+
+**Test I got wrong first:** read `_current_pool_index()` inside the same return
+dictionary that also contained the kill, so the "before" value was measured
+after. GDScript evaluates dictionary values in order — capture comparison state
+into a variable *before* the mutating line, not in the same expression.
+
+---
+
 ## 2026-09-17 — Runs end with something to say about themselves
 
 **Built:** `RunStats` (`Systems/RunStats`) — a small tracker listening to four

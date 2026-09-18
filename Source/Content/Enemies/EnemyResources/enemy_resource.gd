@@ -13,6 +13,10 @@ enum PoolSelection {
 	## By how hurt it is: the first pool at full health, the last near death.
 	## Makes a long fight escalate visibly instead of staying flat.
 	HEALTH_THRESHOLD,
+	## By how many of its own faction have died in this fight: the first pool
+	## while the squad is intact, the last once it's alone. Turns a group fight
+	## into something that reacts to the order you kill things in.
+	SQUAD_LOSSES,
 }
 
 @export_category('Behavior')

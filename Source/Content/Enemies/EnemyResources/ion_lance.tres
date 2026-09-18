@@ -45,13 +45,49 @@ script = ExtResource("script_1")
 actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2"), SubResource("Resource_opt3")])
 metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
+[sub_resource type="Resource" id="Resource_opt4"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_5")
+weight = 0.0
+min_amount = 5
+max_amount = 8
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt5"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_6")
+weight = 0.0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt6"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_6")
+weight = 2.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt7"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_7")
+weight = 4.0
+min_amount = 4
+max_amount = 7
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool1"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt4"), SubResource("Resource_opt5"), SubResource("Resource_opt6"), SubResource("Resource_opt7")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
 [resource]
 script = ExtResource("script_2")
 enemy_name = "Ion Lance"
-description = "Fast interceptor. Goes for the engines, not the hull."
+description = "Fast interceptor. Goes for the engines, not the hull. Flies in pairs, badly alone."
 max_health = 9
 starting_shields = 0
-action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1")])
+pool_selection = 2
 ship_graphics_scene = ExtResource("gfx_3")
 dialogue_offset = Vector2(16, -8)
 targeting_computer_image = ExtResource("tex_4")
