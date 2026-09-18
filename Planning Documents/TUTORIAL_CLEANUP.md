@@ -1,5 +1,33 @@
 # Tutorial System Cleanup
 
+> **Status (2026-09-18): done, and overtaken by a larger change.** All four
+> items below are implemented. They landed alongside a rebuild of the tutorial
+> itself: the game now opens mid-ambush (see DEVLOG 2026-09-18) and the tutorial
+> narrates that first encounter instead of running on its own save with its own
+> scenario list. So the "don't touch the .tres content, don't change behaviour
+> for players" scope note no longer holds — the step resources were rewritten.
+>
+> What shipped against each item:
+> 1. **Decoupled** — `Globals.tutorial_active` and
+>    `Globals.tutorial_controls_enemy_turns` replace the direct field reads. The
+>    `auto_start` reads in `game_state_manager.gd` are gone entirely rather than
+>    renamed: the tutorial now runs on an ordinary save, so save checkpointing
+>    and sector-clear detection apply to it like any other run.
+> 2. **Dead state / duplicate logic** — `is_active` guards re-entry,
+>    `current_step_index` is maintained, and the forcing block is one
+>    `_apply_step_forcing()` helper called from both places.
+> 3. **Dispatch guarded** — `_ready()` asserts every `TutorialFunctions` value
+>    has a Callable. Signal lookup also moved out of `play_step()` into
+>    `_closing_signal_for()`.
+> 4. **Stall safety net** — `TutorialStep.max_wait_time` plus
+>    `TutorialManager.default_step_timeout` (120s). On timeout the step warns and
+>    auto-closes rather than soft-locking.
+>
+> Still open: ~25 step resources from the old sequence are now unreferenced.
+> Several teach things the new sequence doesn't cover (Fate corruption, multiple
+> targets, retreating, the jump gate) and are worth re-introducing as contextual
+> tips rather than deleting.
+
 ## Context
 
 `TutorialManager` (`Source/Systems/TutorialManager/tutorial_manager.gd`) drives the onboarding tutorial via a queue of data-driven `TutorialStep` resources (`.tres` files authored in the editor). That data-driven split is good and stays as-is. The manager itself, though, has accumulated several issues from organic growth: gameplay code outside the tutorial system reaches directly into tutorial-only state, some fields are dead, forcing logic is duplicated, and there's no way to recover if a step's closing signal never fires. This plan cleans up the `TutorialManager`/`TutorialStep`/`TutorialTextPopup` trio without touching the `.tres` content or changing tutorial behavior for players.

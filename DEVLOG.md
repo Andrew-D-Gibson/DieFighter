@@ -4,6 +4,62 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-18 — The game starts in the middle of a fight
+
+**Built:** A cold open, and a tutorial rebuilt on top of it.
+
+**The opening.** A new run used to fade up from black onto an empty encounter
+and boot the cockpit panel by panel — roughly three seconds of nothing, with no
+stakes on screen. Now it cuts straight in: the cockpit snaps on fully lit, a
+klaxon sounds, the vignette pulses red, and the player is already under fire.
+One raider at 12 of 18 hull, the player at 14 of 32, holding a Dice Cannon and a
+Bump and nothing else. The ambush is just sector one's arrival encounter, so
+everything after it — the map, the sectors, the jump gates — runs exactly as
+before.
+
+- `EnemyStateRewardResource.starting_health_fraction` lets a scenario author a
+  ship that arrives already hurt. Max health is untouched, so the damage reads
+  on its health bar rather than looking like a weak enemy.
+- `Events.cockpit_snap_online` finishes every reveal overlay instantly;
+  `Events.red_alert` drives a sustained vignette pulse, distinct from the
+  one-shot flashes damage already triggers.
+- The alarm is a two-tone square-wave klaxon generated to match the sfxr
+  palette the rest of the game uses.
+
+**The tutorial.** It used to run on its own save, with its own hand-authored
+sector list, and end by fading back to the main menu — so finishing the tutorial
+meant starting over. Six of its steps were spent booting the cockpit, a sequence
+that no longer exists. Now it narrates the ambush the game already opens on and
+then hands the run back: when the last step closes, the player is in sector one
+of a real run with the hull, tiles and credits they just earned.
+
+Four beats, each one something the first encounter actually contains: fire a
+tile, watch the enemy spend the die you just handed it, claim the salvage, jump
+out. The opening is scripted so none of them can be skipped — a new
+`opening_setup` step seeds the player's hand and the raider's intent table
+before anything spawns, which an ordinary step can't do because both are
+generated during scene setup. The hand is 4/2/1 and Bump caps at three uses per
+combat, so turn one tops out at 10 damage against 12 hull: the raider always
+survives to answer. Turn two deals 5/6/4 against a raider that wastes 5s and
+6s, so "hand over the values they can't use" has something to pay off on.
+
+**Found while testing:** `EnemyManager.run_enemy_turn()` awaited
+`finished_processing_queue` unconditionally, but that signal only fires at the
+end of a queue drain. An enemy turn where nobody was handed a die queues
+nothing, so the await never resumed — and `enemy_turn_over` is what starts the
+player's next turn. Ending a turn without firing a Dice Cannon hung the game,
+silently, with no way forward. Long-standing; the new tutorial just made it a
+button press away, since its first prompt is "use your dice, then end turn."
+
+**Also folded in the TutorialManager cleanup plan:** gameplay code no longer
+reads tutorial internals (`Globals.tutorial_active` and
+`Globals.tutorial_controls_enemy_turns` replace the direct field reads), the
+duplicated forced-dice/actions/rewards block is one helper, `_ready()` asserts
+every `TutorialFunctions` value is actually wired, and a step whose closing
+signal never arrives now times out and advances instead of hanging forever.
+
+---
+
 ## 2026-09-17 — Two tiles that charge you for the privilege
 
 **Built:** Tiles 24 → 26. Both are archetypes the game had none of: effects
