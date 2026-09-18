@@ -19,6 +19,9 @@ signal start_scenario()
 signal start_combat()
 signal jump()
 signal game_over()
+signal victory()
+## Emitted once a new sector has been generated. sector_index is zero-based.
+signal sector_advanced(sector_index: int)
 signal scenario_event(event: ScenarioManager.ScenarioEvent)
 
 

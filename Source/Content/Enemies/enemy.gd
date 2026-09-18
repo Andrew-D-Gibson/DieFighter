@@ -160,12 +160,18 @@ func _update_dice_queue() -> void:
 	dice_manager.position = enemy_resource.dice_queue_position
 
 
-## Updates the health component's values
+## Updates the health component's values, scaled by how deep into the run the
+## player is. This is the single choke point every spawned enemy passes through,
+## so it's the one place run difficulty needs to be applied.
 func _update_health_from_resource() -> void:
-	health.max_health = enemy_resource.max_health
+	var scale_factor: float = 1.0
+	if Globals.state_manager:
+		scale_factor = Globals.state_manager.get_difficulty_multiplier()
+
+	health.max_health = ceili(enemy_resource.max_health * scale_factor)
 	health.health = health.max_health
-	health.starting_shields = enemy_resource.starting_shields
-	health.shields = enemy_resource.starting_shields
+	health.starting_shields = ceili(enemy_resource.starting_shields * scale_factor)
+	health.shields = health.starting_shields
 
 
 ## Updates the health bar's position and values

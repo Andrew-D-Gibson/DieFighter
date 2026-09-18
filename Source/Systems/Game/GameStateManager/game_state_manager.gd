@@ -16,12 +16,26 @@ extends Node2D
 
 @export var starting_scenario: ScenarioResource
 
+## Guards the exit of every sector. Cleared -> the sector is over.
+@export var jump_gate_scenario: ScenarioResource
+
+@export_category('Run Difficulty')
+## How many sectors a full run lasts. Clearing the last sector's jump gate wins.
+@export var demo_sector_count: int = 3
+
+## Added to the enemy stat multiplier for each sector past the first.
+@export var difficulty_scale_per_sector: float = 0.35
+
+## Beat between the final kill and the victory screen taking over.
+const _VICTORY_DELAY_SECONDS: float = 1.5
+
 var main_menu_file: String = "uid://ccvtlre5vhj7d"
 
 enum GameState {
 	IN_COMBAT,
 	OUT_OF_COMBAT,
-	GAME_OVER
+	GAME_OVER,
+	VICTORY
 }
 
 var state: GameState = GameState.OUT_OF_COMBAT:
@@ -59,6 +73,7 @@ func _ready() -> void:
 
 	Events.start_scenario.connect(_check_combat_state)
 	Events.start_scenario.connect(_checkpoint_game_save)
+	Events.combat_finished.connect(_check_sector_cleared)
 	Events.combat_finished.connect(_checkpoint_after_combat)
 	Events.reward_picked.connect(_checkpoint_game_save)
 	Events.enemy_turn_over.connect(_check_combat_state)
@@ -67,6 +82,9 @@ func _ready() -> void:
 	)
 	Events.game_over.connect(func() -> void:
 		state = GameState.GAME_OVER
+	)
+	Events.victory.connect(func() -> void:
+		state = GameState.VICTORY
 	)
 
 	Events.load_game_save.emit(current_game_save)
@@ -140,6 +158,10 @@ func _randomize_sector_scenarios() -> void:
 		RNGManager.pick_random(RNGManager.Bucket.RUN, boss_combat_scenarios)
 	)
 
+	# The gate, not the boss, is the last tile — clearing it ends the sector.
+	if jump_gate_scenario:
+		current_game_save.sector_scenarios.append(jump_gate_scenario)
+
 	# Add a leading "corrupted" scenario
 	current_game_save.sector_scenarios.insert(
 		0, RNGManager.pick_random(RNGManager.Bucket.RUN, fate_scenarios)
@@ -163,6 +185,51 @@ func _randomize_sector_scenarios() -> void:
 	
 	
 	
+## Enemy stats are multiplied by this at spawn time, so one number carries
+## all of the run's difficulty scaling (see Enemy._update_health_from_resource).
+func get_difficulty_multiplier() -> float:
+	return 1.0 + current_game_save.sector_index * difficulty_scale_per_sector
+
+
+## Fires after every won fight. The sector's last tile is always its jump gate,
+## so winning there means the sector itself is done.
+func _check_sector_cleared() -> void:
+	if Globals.tutorial_manager.auto_start:
+		return
+
+	var index: int = Globals.map.current_scenario_index
+	if index != len(Globals.map.scenario_list) - 1:
+		return
+	if not Globals.map.scenario_list[index].sector_gate_scenario:
+		return
+
+	_advance_to_next_sector()
+
+
+## Generates the next, harder sector and jumps the player into it — or ends the
+## run in victory if that was the last sector.
+func _advance_to_next_sector() -> void:
+	current_game_save.sector_index += 1
+
+	if current_game_save.sector_index >= demo_sector_count:
+		# Let the last kill land before the run's end takes over the screen.
+		await get_tree().create_timer(_VICTORY_DELAY_SECONDS).timeout
+		Events.victory.emit()
+		return
+
+	_randomize_sector_scenarios()
+	Globals.map.load_sector(
+		current_game_save.sector_scenarios,
+		current_game_save.current_scenario_index
+	)
+	Events.sector_advanced.emit(current_game_save.sector_index)
+
+	# Reuse the normal between-tiles jump so a sector change reads as one too.
+	await Globals.jump_manager.jump_to_scenario(
+		current_game_save.sector_scenarios[current_game_save.current_scenario_index]
+	)
+
+
 ## Snapshots live run state into current_game_save and writes it to disk.
 ## Runs on scenario start (new run / after a jump), right after combat ends
 ## (via _checkpoint_after_combat), and whenever a dice/tile reward is claimed

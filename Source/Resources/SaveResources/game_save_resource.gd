@@ -15,3 +15,8 @@ extends Resource
 @export_category('Map Info')
 @export var current_scenario_index: int
 @export var sector_scenarios: Array[ScenarioResource]
+
+## Which sector of the run the player is in, zero-based. Drives enemy stat
+## scaling (see GameStateManager.get_difficulty_multiplier) and the run's
+## win condition.
+@export var sector_index: int = 0

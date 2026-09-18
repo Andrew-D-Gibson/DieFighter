@@ -101,8 +101,15 @@ func _sync_slider_to_camera() -> void:
 	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
-	scenario_list = game_save.sector_scenarios
-	current_scenario_index = game_save.current_scenario_index
+	load_sector(game_save.sector_scenarios, game_save.current_scenario_index)
+
+
+## Points the map at a whole new list of scenarios, resetting Fate's
+## encroachment back to the sector edges. Used both when loading a save and
+## when GameStateManager generates the next sector mid-run.
+func load_sector(new_scenario_list: Array[ScenarioResource], start_index: int) -> void:
+	scenario_list = new_scenario_list
+	current_scenario_index = start_index
 	
 	left_fate_index = 0
 	right_fate_index = len(scenario_list)-1

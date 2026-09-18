@@ -6,11 +6,9 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	
 	Events.game_over.connect(_on_game_over)
-	Events.scenario_event.connect(func(event: ScenarioManager.ScenarioEvent) -> void:
-		if event == ScenarioManager.ScenarioEvent.BOSS_DEFEATED:
-			_on_game_win()
-	)
-	
+	# Keyed off victory, not BOSS_DEFEATED — there's a boss in every sector,
+	# but only one end of the run.
+	Events.victory.connect(_on_game_win)
 
 
 func _on_main_menu_button_pressed() -> void:

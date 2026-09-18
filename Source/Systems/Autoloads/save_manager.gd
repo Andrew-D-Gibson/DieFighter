@@ -9,7 +9,9 @@ const SAVE_VERSION: int = 1
 
 
 func _ready() -> void:
+	# A run ends either way — a finished save is not a resumable one.
 	Events.game_over.connect(delete_save)
+	Events.victory.connect(delete_save)
 
 
 func has_save() -> bool:
@@ -46,6 +48,7 @@ func write_save(game_save: GameSaveResource) -> void:
 		"num_of_dice": game_save.num_of_dice,
 		"money": game_save.money,
 		"current_scenario_index": game_save.current_scenario_index,
+		"sector_index": game_save.sector_index,
 		"sector_scenarios": sector_scenarios_data,
 		"tile_locations": tile_locations_data,
 	}
@@ -85,6 +88,7 @@ func read_save() -> GameSaveResource:
 	game_save.num_of_dice = int(data.get("num_of_dice", 0))
 	game_save.money = int(data.get("money", 0))
 	game_save.current_scenario_index = int(data.get("current_scenario_index", 0))
+	game_save.sector_index = int(data.get("sector_index", 0))
 
 	var sector_scenarios: Array[ScenarioResource] = []
 	for entry: Variant in data.get("sector_scenarios", []):

@@ -12,6 +12,7 @@ var enemy_manager: EnemyManager
 var scenario_manager: ScenarioManager
 var state_manager: GameStateManager
 var background_manager: BackgroundManager
+var jump_manager: JumpManager
 var tutorial_manager: TutorialManager
 
 # Set by MainMenu's Continue button before switching to the main game scene,

@@ -37,6 +37,7 @@
 [ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres" id="26_aaucc"]
+[ext_resource type="Resource" uid="uid://c5jyv6pxbbm24" path="res://Source/Content/ScenarioResources/Scenarios/JumpGate/jump_gate.tres" id="26_jgate"]
 [ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
 [ext_resource type="PackedScene" uid="uid://c2hbku8vgrm4f" path="res://Source/Systems/Game/JumpManager/jump_manager.tscn" id="27_nwhv6"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="28_lejlh"]
@@ -364,6 +365,7 @@ question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), Ex
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3")])
 starting_scenario = ExtResource("25_o33d5")
+jump_gate_scenario = ExtResource("26_jgate")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]
 unique_name_in_owner = true

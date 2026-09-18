@@ -2,10 +2,13 @@ class_name JumpManager
 extends Node2D
 
 func _ready() -> void:
-	Globals.map.request_jump_to_scenario.connect(_jump_to_scenario)
+	Globals.jump_manager = self
+	Globals.map.request_jump_to_scenario.connect(jump_to_scenario)
 	
 	
-func _jump_to_scenario(scenario: ScenarioResource) -> void:
+## Plays the full hyperspace transition into a scenario: intro animation,
+## scenario load, outro, then scenario start.
+func jump_to_scenario(scenario: ScenarioResource) -> void:
 	Events.jump.emit()
 	
 	await Globals.background_manager.play_jump_intro()
