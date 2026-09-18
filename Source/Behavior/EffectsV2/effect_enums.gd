@@ -119,6 +119,7 @@ enum TileControlSubtype {
 	INCREMENT_TILE_DATA,        ## Increment a named int stored on a tile
 	SET_TILE_DATA,              ## Set a named value stored on a tile
 	PUSH_TARGETED_TILES,        ## Push each targeted tile one cell (zero offset = random)
+	PASS_DIE_TO_TILE,           ## Hand the activator die to a targeted tile and activate it
 }
 
 

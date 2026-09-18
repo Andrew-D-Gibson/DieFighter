@@ -100,6 +100,7 @@ func _register_all() -> void:
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.INCREMENT_TILE_DATA,        IncrementTileDataHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.SET_TILE_DATA,              SetTileDataHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.PUSH_TARGETED_TILES,        PushTargetedTilesHandler.new())
+	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.PASS_DIE_TO_TILE,           PassDieToTileHandler.new())
 
 	# ── DICE CONTROL ───────────────────────────────────────────────────────────
 	_register(T.Category.DICE_CONTROL, T.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE,  ChangeActivatorValueHandler.new())

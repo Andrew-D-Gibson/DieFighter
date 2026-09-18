@@ -4,6 +4,46 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Relay tiles, and a circuit breaker so they can't freeze the game
+
+**Built two things, in this order on purpose.**
+
+**1. `ScenarioEngine` event ceiling.** `process_event_queue()` drains until the
+queue is empty, and nothing stopped a chain from refilling it forever — two
+tiles activating each other would hard-freeze the game with no error anywhere.
+Added `_MAX_EVENTS_PER_RUN = 2000`: past that, the queue is dropped and a
+`push_error` names the likely cause. Nothing legitimate comes near it (a full
+three-enemy turn is a few hundred events; one tile activation a couple of
+dozen), so this only ever fires on a genuine runaway. This is worth having
+whether or not relays exist — I may well have hit an unguarded version of it
+earlier tonight.
+
+**2. `TILE_CONTROL/PASS_DIE_TO_TILE` + the Signal Relay.** `ACTIVATE_TARGETED_TILES`
+fires the next tile with *no* die, so anything carrying `REQUIRES_ACTIVATOR_DIE`
+— most of the game's tiles — silently refuses. The new verb passes the die
+itself, which is what makes a relay actually able to feed a cannon.
+
+**Signal Relay** (green, any die): deal 2 damage, then pass the die one cell
+right; that tile activates with it. Chain them and a single die walks the row,
+firing everything it lands on. This is the closest the game gets to letting the
+player build a *machine* rather than pick a loadout.
+
+**Verified live:** three relays in a row feeding a Damage tile — one 4 fed in at
+the left end dealt 2+2+2 from the relays and 4 from the cannon, 10 total, engine
+idle and queue empty afterwards. Then a relay at the right edge with nowhere to
+pass to: 2 damage dealt and the die handed to the targeted ship, **0 orphaned
+dice** on the board.
+
+**That orphan case is the whole reason the fallback exists.** `TileActivationEvent`
+pulls the die out of the source tile's queue before the chain runs, so a relay
+that simply found no target would leave a die floating in open space owned by
+nobody. `PassDieToTileEvent._hand_die_off()` gives it to the targeted ship
+instead, exactly like a normal tile would. Same class of bug as the earlier
+`KEEP_DIE_WITH_ACTOR` one — worth remembering that *every* chain ending has to
+account for where the die goes.
+
+---
+
 ## 2026-09-17 — One boss kit, three escalating fights
 
 **Built:** The sector boss is now picked *by sector index* rather than at
