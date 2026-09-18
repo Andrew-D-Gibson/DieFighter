@@ -39,6 +39,9 @@ func _ready() -> void:
 	Events.jump.connect(_target_nothing)
 
 	Events.targeting_computer_startup.connect(_startup)
+	Events.cockpit_snap_online.connect(func() -> void:
+		%RevealOverlay.hide()
+	)
 
 	%RevealOverlay.material = %RevealOverlay.material.duplicate()
 	%RevealOverlay.material.set_shader_parameter("progress", 0.0)

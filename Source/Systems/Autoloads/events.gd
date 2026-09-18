@@ -12,6 +12,10 @@ signal health_bar_startup()
 signal systems_startup()
 signal targeting_computer_startup()
 signal map_startup()
+## The cockpit comes up all at once instead of revealing panel by panel. A run
+## opens mid-fight, so there's no calm moment for a staggered boot sequence —
+## every listener that owns a reveal overlay should snap it to fully revealed.
+signal cockpit_snap_online()
 
 
 # Game State/Sequencing Events
@@ -105,6 +109,9 @@ signal hazard_triggered(hazard: ScenarioHazardResource)
 
 
 # Visual/Effects Events
+## Sustained red vignette pulse — the ship is in trouble in a way that outlasts
+## a single hit. Distinct from the one-shot flashes driven by damage signals.
+signal red_alert(duration: float)
 signal set_background(background_resource: BackgroundResource)
 signal take_screenshot()
 signal camera_shake_small()

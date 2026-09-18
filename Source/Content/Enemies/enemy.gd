@@ -59,6 +59,10 @@ var rounds_in_combat: int = 0
 ## Optional: force specific actions (used by tutorial)
 static var forced_actions: Array[EnemyActionResource] = []
 
+## Set by EnemyManager from the scenario's EnemyStateRewardResource before this
+## node enters the tree. See that resource for why it exists.
+var starting_health_fraction: float = 1.0
+
 var scenario_engine: ScenarioEngine = null:
 	set = set_scenario_engine
 	
@@ -200,7 +204,11 @@ func _update_health_from_resource() -> void:
 		scale_factor = Globals.state_manager.get_difficulty_multiplier()
 
 	health.max_health = ceili(enemy_resource.max_health * scale_factor)
-	health.health = health.max_health
+	# Clamped to at least 1: a ship authored as badly damaged should still need
+	# one more hit, never spawn already dead.
+	health.health = clampi(
+		ceili(health.max_health * starting_health_fraction), 1, health.max_health
+	)
 	health.starting_shields = ceili(enemy_resource.starting_shields * scale_factor)
 	health.shields = health.starting_shields
 

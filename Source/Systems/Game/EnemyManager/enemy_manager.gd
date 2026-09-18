@@ -60,6 +60,8 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 			+ get_point_along_path(enemies_to_spawn[i].spawning_path_location)
 		enemy.reward_resource = enemies_to_spawn[i].reward_resource
 		enemy.scenario_state = enemies_to_spawn[i].starting_state
+		# Set before add_child: Enemy._ready() bakes health off this.
+		enemy.starting_health_fraction = enemies_to_spawn[i].starting_health_fraction
 
 		enemies.append(enemy)
 		add_child(enemy)

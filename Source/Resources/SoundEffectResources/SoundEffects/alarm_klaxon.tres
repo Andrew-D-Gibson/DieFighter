@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_alarm"]
+[ext_resource type="AudioStream" uid="uid://cxm2fdhbpsxiu" path="res://Assets/Sounds/UI/Alarm/alarm_klaxon.wav" id="2_alarm"]
+
+[resource]
+script = ExtResource("1_alarm")
+name = "alarm_klaxon"
+limit = 2
+sound_effect = ExtResource("2_alarm")
+volume = -6.0
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

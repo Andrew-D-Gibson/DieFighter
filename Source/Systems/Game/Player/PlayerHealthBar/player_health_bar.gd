@@ -9,6 +9,7 @@ func _ready() -> void:
 	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
 	
 	Events.health_bar_startup.connect(_startup)
+	Events.cockpit_snap_online.connect(_snap_online)
 	
 	
 func _set_shields() -> void:		
@@ -38,6 +39,14 @@ func _startup() -> void:
 	Globals.player.health.health = Globals.player.health.starting_health
 	
 	_reveal_tween()
+	
+	
+## Same end state as _startup(), reached instantly. The cold open has no room
+## for a two-second wipe — the bar needs to already be reading damage when the
+## player's eyes land on it.
+func _snap_online() -> void:
+	Globals.player.health.health = Globals.player.health.starting_health
+	%RevealOverlay.hide()
 	
 	
 func _show_hull_info() -> void:

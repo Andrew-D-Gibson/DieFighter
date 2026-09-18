@@ -16,6 +16,8 @@
 [ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
 [ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Game/Player/player.tscn" id="6_rir3g"]
 [ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/Resources/SaveResources/game_start.tres" id="7_3g417"]
+[ext_resource type="Resource" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="99_ambush"]
 [ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.tscn" id="8_okrb4"]
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="10_3g417"]
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/Game/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
@@ -186,7 +188,7 @@ tracks/2/keys = {
 
 [sub_resource type="Animation" id="Animation_s48jj"]
 resource_name = "game_start"
-length = 2.0
+length = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -194,30 +196,18 @@ tracks/0/path = NodePath("UI/FadeIn:visible")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 2),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [true, false]
+"values": [false]
 }
-tracks/1/type = "value"
+tracks/1/type = "method"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("UI/FadeIn:self_modulate")
+tracks/1/path = NodePath("Systems/GameStateManager")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 1.98),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Systems/GameStateManager")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -395,7 +385,7 @@ tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("29_c0hk8"), ExtRes
 tutorial_game_save = ExtResource("55_qtm42")
 
 [node name="GameStateManager" parent="Systems" unique_id=1522777559 instance=ExtResource("12_6ebjm")]
-current_game_save = ExtResource("7_3g417")
+current_game_save = ExtResource("99_runstart")
 sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
@@ -403,7 +393,7 @@ combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtR
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("94_boss2"), ExtResource("95_boss3")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
-starting_scenario = ExtResource("25_o33d5")
+starting_scenario = ExtResource("99_ambush")
 jump_gate_scenario = ExtResource("26_jgate")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]

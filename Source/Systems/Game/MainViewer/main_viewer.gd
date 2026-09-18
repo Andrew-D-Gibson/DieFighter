@@ -38,6 +38,7 @@ func _ready() -> void:
 	
 	Events.systems_startup.connect(_systems_startup)
 	Events.map_startup.connect(_map_startup)
+	Events.cockpit_snap_online.connect(_snap_online)
 
 
 func _show_systems() -> void:
@@ -96,6 +97,15 @@ func _check_for_engine_charge() -> void:
 func _systems_startup() -> void:
 	_show_systems()
 	_systems_reveal_tween()
+	
+	
+## Both panels come up already lit. Skips the reveal wipes for the cold open,
+## where the player is mid-fight before the first frame finishes drawing.
+func _snap_online() -> void:
+	_show_systems()
+	_check_for_engine_charge()
+	%SystemsRevealOverlay.hide()
+	%MapRevealOverlay.hide()
 	
 		
 func _map_startup() -> void:

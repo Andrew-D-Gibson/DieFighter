@@ -30,16 +30,36 @@ extends Node2D
 ## Added to the enemy health/shield multiplier for each sector past the first.
 @export var difficulty_scale_per_sector: float = 0.35
 
+## Hull repaired on clearing a sector's jump gate.
+##
+## Nothing else in the game reliably heals — only two of 26 tiles do, and the
+## player may never be offered either. That was survivable when a run was one
+## sector; across three it makes attrition, not skill, the thing that ends most
+## runs. Clearing a gate is the hardest milestone in a sector, so it's the right
+## place to pay hull back.
+@export var sector_clear_repair: int = 12
+
 ## Added to the enemy damage multiplier for each sector past the first. Kept
 ## lower than the health scale on purpose: tankier enemies just lengthen a
 ## fight, but harder-hitting ones can invalidate a defensive build outright, and
 ## the player's own damage grows faster than their max health does.
 @export var damage_scale_per_sector: float = 0.2
 
+@export_category('Cold Open')
+## How long the arrival klaxon and red vignette run. Long enough to register as
+## an emergency, short enough to be over before the player's first die lands.
+@export var cold_open_alert_time: float = 2.2
+
 ## Beat between the final kill and the victory screen taking over.
 const _VICTORY_DELAY_SECONDS: float = 1.5
 
+const _ALARM_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/alarm_klaxon.tres")
+
 var main_menu_file: String = "uid://ccvtlre5vhj7d"
+
+## True when this is a brand new run rather than a loaded save. Only a new run
+## gets the alarm: a continued save is resuming a fight it already knows about.
+var _is_fresh_run: bool = true
 
 enum GameState {
 	IN_COMBAT,
@@ -73,13 +93,11 @@ func _ready() -> void:
 	if Globals.pending_load_save:
 		current_game_save = Globals.pending_load_save
 		Globals.pending_load_save = null
+		_is_fresh_run = false
 
 	if len(current_game_save.sector_scenarios) == 0:
-		if Globals.tutorial_manager.auto_start:
-			current_game_save = Globals.tutorial_manager.tutorial_game_save
-		else:
-			RNGManager.start_new_run()
-			_randomize_sector_scenarios()
+		RNGManager.start_new_run()
+		_randomize_sector_scenarios()
 
 	Events.start_scenario.connect(_check_combat_state)
 	Events.start_scenario.connect(_checkpoint_game_save)
@@ -105,16 +123,25 @@ func _ready() -> void:
 	)
 
 	
+## Called one frame into the game_start animation, once every system's _ready()
+## has run. There is no fade and no boot sequence: a run opens in the middle of
+## an ambush, so the cockpit snaps on already lit and already screaming.
 func trigger_startup_sequence() -> void:
-	if Globals.tutorial_manager.auto_start:
-		return
-		
-	Events.health_bar_startup.emit()
-	Events.systems_startup.emit()
-	Events.map_startup.emit()
-	Events.targeting_computer_startup.emit()
-	
+	Events.cockpit_snap_online.emit()
+	_sound_the_alarm()
 	Events.start_scenario.emit()
+
+
+## The cold open's whole job: tell the player they are in trouble before any
+## text does. Skipped when continuing a save — re-alarming every load would
+## teach the player that the alarm means nothing.
+func _sound_the_alarm() -> void:
+	if not _is_fresh_run:
+		return
+
+	Events.play_sound.emit(_ALARM_SFX)
+	Events.red_alert.emit(cold_open_alert_time)
+	Events.camera_shake_large.emit(true)
 	
 	
 func _randomize_sector_scenarios() -> void:
@@ -199,6 +226,15 @@ func _randomize_sector_scenarios() -> void:
 	
 	
 	
+## Patches the hull for surviving a sector. Health.change_health() clamps to
+## max_health, so this is safe to call at any damage level.
+func _repair_after_sector() -> void:
+	if sector_clear_repair <= 0 or not is_instance_valid(Globals.player):
+		return
+
+	Globals.player.health.change_health(sector_clear_repair)
+
+
 ## Where the player drops out of hyperspace when a sector begins.
 ##
 ## Sector 1 always uses the authored starting_scenario so a new run opens the
@@ -235,9 +271,6 @@ func get_damage_multiplier() -> float:
 ## Fires after every won fight. The sector's last tile is always its jump gate,
 ## so winning there means the sector itself is done.
 func _check_sector_cleared() -> void:
-	if Globals.tutorial_manager.auto_start:
-		return
-
 	var index: int = Globals.map.current_scenario_index
 	if index != len(Globals.map.scenario_list) - 1:
 		return
@@ -258,6 +291,8 @@ func _advance_to_next_sector() -> void:
 		Events.victory.emit()
 		return
 
+	_repair_after_sector()
+
 	_randomize_sector_scenarios()
 	Globals.map.load_sector(
 		current_game_save.sector_scenarios,
@@ -277,9 +312,6 @@ func _advance_to_next_sector() -> void:
 ## (Events.reward_picked, also emitted by shop purchases) so those aren't
 ## lost if the player quits before their next jump.
 func _checkpoint_game_save() -> void:
-	if Globals.tutorial_manager.auto_start:
-		return
-
 	# Let other start_scenario listeners (e.g. Player resetting shields to 0)
 	# finish first, so we snapshot settled state rather than racing them.
 	await get_tree().process_frame
@@ -317,9 +349,6 @@ func _checkpoint_game_save() -> void:
 ## fights, jump gates), which are never safe to clear early — those keep
 ## checkpointing only at the next start_scenario/jump.
 func _checkpoint_after_combat() -> void:
-	if Globals.tutorial_manager.auto_start:
-		return
-
 	if Globals.map.scenario_list[Globals.map.current_scenario_index].sector_gate_scenario:
 		return
 
