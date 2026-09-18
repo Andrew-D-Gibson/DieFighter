@@ -4,6 +4,30 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Runs end with something to say about themselves
+
+**Built:** `RunStats` (`Systems/RunStats`) — a small tracker listening to four
+signals that already existed:
+- `sector_advanced` → sectors reached
+- `combat_finished` → encounters cleared
+- `enemy_left` → ships destroyed (only counting ones actually at 0 HP; that
+  signal also fires when a ship flees or when combat ends peacefully)
+- `set_money` → credits *earned*, counting increases only so shop spending
+  doesn't erase the total
+
+One arcade-style line on both end screens, under the big label:
+`SECTOR 2/3   11 ENCOUNTERS   19 SHIPS DOWN   142 CREDITS`
+
+**Why:** DEMO_PLAN lists "no post-run loop" as a must-fix. Four numbers is the
+right size — a player can read them in one glance and compare against their
+last attempt. A run that ends with nothing to say about it doesn't invite
+another one, and until tonight this game's runs didn't even end.
+
+**Verified live:** seeded the tracker, fired `Events.victory`, and the line
+renders correctly between the VICTORY label and the buttons.
+
+---
+
 ## 2026-09-17 — Later sectors don't open on the same encounter every time
 
 **Built:** `GameStateManager._pick_arrival_scenario()`. Sector 1 still uses the

@@ -60,6 +60,25 @@ text = "[color=#d03656][wave amp=30.0 freq=5.0 connected=1]GAME OVER[/wave][/col
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="RunSummaryLabel" type="RichTextLabel" parent="." unique_id=904210004]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(1920, 70)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -960.0
+offset_top = 470.0
+offset_right = 960.0
+offset_bottom = 540.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("1_p6ygr")
+theme_override_font_sizes/normal_font_size = 52
+bbcode_enabled = true
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=520586657]
 layout_mode = 1
 anchors_preset = 7

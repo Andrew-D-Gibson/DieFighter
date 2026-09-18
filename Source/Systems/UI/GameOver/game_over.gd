@@ -25,6 +25,7 @@ func _on_game_over() -> void:
 	+ "GAME OVER"\
 	+ "[/wave][/color]"
 
+	_show_run_summary(Globals.red)
 	show()
 	
 	
@@ -33,5 +34,17 @@ func _on_game_win() -> void:
 	+ "[wave amp=60.0 freq=10.0 connected=1]"\
 	+ "VICTORY!"\
 	+ "[/wave][/color]"
-	
+
+	_show_run_summary(Globals.blue)
 	show()
+
+
+## A run with nothing to say about it doesn't invite another one.
+func _show_run_summary(tint: Color) -> void:
+	if not Globals.run_stats:
+		%RunSummaryLabel.text = ""
+		return
+
+	%RunSummaryLabel.text = "[center][color=%s]%s[/color][/center]" % [
+		tint.darkened(0.25).to_html(false), Globals.run_stats.get_summary_text()
+	]

@@ -14,6 +14,7 @@ var state_manager: GameStateManager
 var background_manager: BackgroundManager
 var jump_manager: JumpManager
 var hazard_manager: HazardManager
+var run_stats: RunStats
 var tutorial_manager: TutorialManager
 
 # Set by MainMenu's Continue button before switching to the main game scene,
