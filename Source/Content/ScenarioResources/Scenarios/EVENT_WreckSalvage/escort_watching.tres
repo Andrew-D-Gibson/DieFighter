@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://y2yjng3hst20"]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="script_1"]
+[ext_resource type="Resource" uid="uid://c7lf32sl5vliu" path="Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/escort_avenging.tres" id="state_2"]
+
+
+[resource]
+script = ExtResource("script_0")
+dialogue = "Salvage what's venting. Touch the hull and we have a problem."
+attitude = 1
+transitions = Dictionary[int, ExtResource("script_1")]({
+1: ExtResource("state_2"),
+0: ExtResource("state_2")
+})
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

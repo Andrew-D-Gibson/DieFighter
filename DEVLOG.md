@@ -4,6 +4,43 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Three new event encounters, built on state-entry effects
+
+**Built:** Event scenarios went 2 → 5. DEMO_PLAN wants 4–6, and two was very
+thin across ~54 tile-pulls in a three-sector run.
+
+The interesting discovery: `ScenarioShipState.effects_on_enter_v2` was only ever
+used by the shop (to open the shop UI). It's a full `EffectChainV2` that fires
+the instant a ship enters a state — which means an encounter can *do* something
+to you on arrival, before a single die is placed. All three new events are built
+on that.
+
+- **Mercy Call** — a civilian Field Tender patches your hull for 6 the moment
+  you drop out of hyperspace, for free. Then it just sits there, friendly, worth
+  25–45 credits and three rewards if you shoot it. The heal is already banked;
+  the game is only asking whether you'll take the gift and then take the ship.
+- **The Tollkeeper** — a pirate Ion Lance deducts 6 engine charge on arrival and
+  waves you through. Refusing means a fight you could have walked away from —
+  except engine charge is exactly what lets you walk away from anything.
+- **Wreck Salvage** — a venting hauler hands you two holographic dice and is
+  genuinely harmless. Its escort watches, neutral, and treats an attack on
+  *either* ship as an attack on itself.
+
+**Verified live:** Mercy Call healed 12 → 18 on arrival with a friendly (green)
+attitude indicator and a hidden intent row. Tollkeeper drained engine charge
+10 → 4 and left the game out of combat with a neutral ship on screen.
+
+**Noted, not fixed:** `ScenarioEvent.PLAYER_LEFT_SCENARIO` is declared in
+`ScenarioManager` and never emitted anywhere. Any event that wants to pay out
+for *leaving peacefully* needs that hook wired up first — worth doing, since
+"the reward for not shooting" is currently unexpressible.
+
+Also visible while testing: the sector generator rolled
+`EVENT_pirate_attacking_civilian` twice into one sector. `Utils.array_while_excluding`
+is meant to prevent that; worth a look separately.
+
+---
+
 ## 2026-09-17 — The Field Tender, and a fight that's a decision instead of a race
 
 **Built:** `repair_ally` and `aegis_ally` were authored earlier tonight and had
