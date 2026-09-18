@@ -186,6 +186,25 @@ func _update_dialogue() -> void:
 	dialogue_manager.position = enemy_resource.dialogue_offset
 
 
+## Which of the enemy's action pools this turn's six slots are drawn from.
+## The pool only changes which table the slots come from — the resolved slots
+## are still shown in full before the player commits a die, so the telegraph
+## stays honest either way.
+func _current_pool_index() -> int:
+	var pool_count: int = len(enemy_resource.action_options)
+	if pool_count <= 1:
+		return 0
+
+	if enemy_resource.pool_selection == EnemyResource.PoolSelection.HEALTH_THRESHOLD:
+		if health.max_health <= 0:
+			return 0
+		# Full health lands in the first pool, near-death in the last.
+		var hurt: float = 1.0 - (float(health.health) / float(health.max_health))
+		return clampi(int(hurt * pool_count), 0, pool_count - 1)
+
+	return turns_alive % pool_count
+
+
 ## Generates the actions the enemy will take this turn
 func generate_turn_actions() -> void:
 	# Clear the previous turn's actions
@@ -199,9 +218,7 @@ func generate_turn_actions() -> void:
 		forced_actions = forced_actions.slice(last_action_index_to_grab)
 	
 	var this_turns_action_options: EnemyTurnActionList = \
-		enemy_resource.action_options[
-			turns_alive % len(enemy_resource.action_options)
-		]
+		enemy_resource.action_options[_current_pool_index()]
 	
 	# Grab at least one of every action that has "force_include"
 	# and sum up the likelihoods of all actions for later

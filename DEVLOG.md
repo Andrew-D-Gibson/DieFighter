@@ -4,6 +4,38 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — The boss now fights differently as it loses
+
+**Built:** `EnemyResource.pool_selection`, a two-value enum deciding how an
+enemy picks which of its action pools to draw this turn's six slots from:
+`TURN_CYCLE` (the old `turns_alive % len(pools)` behaviour, still the default)
+or `HEALTH_THRESHOLD`, which maps its health bar onto its pools — full health
+lands in the first, near-death in the last.
+
+Rebuilt the sector boss around it. "Boss / Holy mama" is now the **Sector
+Warden** with three phases across thirds of its 64 HP:
+- **100–67% Guns Hot** — straightforward attacks, one guaranteed wasted face.
+- **66–34% Turtle** — a guaranteed 8–12 shield, plus lockouts and grid quakes
+  to break up your board while it hides behind it.
+- **33–0% Enraged** — no wasted faces at all, attacks jump to 8–15, and it
+  starts impounding your dice and siphoning your engine.
+
+**Why:** Every enemy in the game behaves identically at full health and at one
+hit from death — BRAINSTORMING calls this out as the biggest opportunity in the
+codebase and it's right, especially for a boss you fight once per sector and
+three times per run.
+
+The important part is that this costs *nothing* from the game's
+perfect-information pillar. The phase only changes which table the six slots are
+drawn from; the resolved slots are still shown in full before the player commits
+a die. You always know exactly what a 4 will do. You just might not like it.
+
+**Verified live:** set the boss's HP to 64 / 40 / 20 / 5 and regenerated its
+turn each time — pools 0, 1, 2, 2, with the enraged pool producing Engine Siphon
++ Impound + four heavy Dice Cannons and no blank face.
+
+---
+
 ## 2026-09-17 — Two new enemies, five new enemy actions, five new fights
 
 **Built:** Content on top of this morning's new verbs.
