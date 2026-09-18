@@ -1,0 +1,143 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://cwahxu0hfcyg3"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://bknrvqiu2elud" path="res://Assets/Textures/Tiles/RedTiles/overclock_coil.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_3"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_4"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_5"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act2"]
+script = ExtResource("script_1")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f2_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames3"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f2_0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("script_3")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_3")
+category = 4
+subtype = 1
+color = Color(0.317647, 0.082353, 0.133333, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step6"]
+script = ExtResource("script_3")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_4")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_3")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step8"]
+script = ExtResource("script_3")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step9"]
+script = ExtResource("script_3")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step10"]
+script = ExtResource("script_3")
+category = 2
+subtype = 4
+string_param = "overclock"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step11"]
+script = ExtResource("script_3")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step12"]
+script = ExtResource("script_3")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step13"]
+script = ExtResource("script_3")
+category = 5
+subtype = 8
+string_param = "overclock"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step14"]
+script = ExtResource("script_3")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain15"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_evt16"]
+script = ExtResource("script_6")
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_step17"]
+script = ExtResource("script_3")
+category = 2
+amount = 0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step18"]
+script = ExtResource("script_3")
+category = 5
+subtype = 9
+string_param = "overclock"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain19"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step17"), SubResource("Resource_step18")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=red]Overclock Coil[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], [color=red]+2[/color] for every time this tile already fired this turn ([data]overclock[/data]). Resets each turn"
+hint_text = "Runs hot. Cools off between turns."
+rarity = 2
+textures = SubResource("Resource_frames3")
+uses_per_combat = -1
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2")])
+effect_chain_v2 = SubResource("Resource_chain15")
+event_responses_v2 = Dictionary[ExtResource("script_6"), ExtResource("script_5")]({
+SubResource("Resource_evt16"): SubResource("Resource_chain19")
+})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

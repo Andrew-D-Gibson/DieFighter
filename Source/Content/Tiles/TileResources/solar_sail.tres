@@ -1,0 +1,117 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://76jh147utru7"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://ce2us2s32ip8f" path="res://Assets/Textures/Tiles/BlueTiles/solar_sail.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_3"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_4"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_5"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act2"]
+script = ExtResource("script_1")
+type = 1
+acceptable_values = Array[int]([2])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act3"]
+script = ExtResource("script_1")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f3_0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_3")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step6"]
+script = ExtResource("script_3")
+category = 4
+subtype = 1
+color = Color(0.263, 0.651, 0.988, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_3")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_4")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step8"]
+script = ExtResource("script_3")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step9"]
+script = ExtResource("script_3")
+category = 2
+amount = 0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step10"]
+script = ExtResource("script_3")
+category = 2
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step11"]
+script = ExtResource("script_3")
+category = 2
+subtype = 2
+multiplier = 2.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step12"]
+script = ExtResource("script_3")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step13"]
+script = ExtResource("script_3")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step14"]
+script = ExtResource("script_3")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain15"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=blue]Solar Sail[/color]"
+description = "(die_2) -> Gain [color=blue]2 shields[/color] for every [color=yellow]empty cell[/color] touching this tile"
+hint_text = "Sails need room to unfold."
+rarity = 1
+textures = SubResource("Resource_frames4")
+uses_per_combat = -1
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
+effect_chain_v2 = SubResource("Resource_chain15")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

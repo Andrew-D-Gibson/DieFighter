@@ -67,6 +67,7 @@ func _register_all() -> void:
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD,                 AddAmountHandler.new())
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.MULTIPLY,            MultiplyAmountHandler.new())
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD_ADJACENT_TILES,  AddAdjacentTilesAmountHandler.new())
+	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD_EMPTY_ADJACENT_CELLS, AddEmptyAdjacentCellsAmountHandler.new())
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.ADD_TILE_DATA,       AddTileDataAmountHandler.new())
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET_TO_ENGINE_CHARGE, SetAmountToEngineChargeHandler.new())
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET_TO_DIE_VALUE,    SetAmountToDieValueHandler.new())
@@ -124,6 +125,7 @@ func _register_all() -> void:
 	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ENEMY_TARGETED,     ConditionalHandler.new())
 	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_ENGINE_CHARGED,     ConditionalHandler.new())
 	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_DIE_VALUE_IN_RANGE, ConditionalHandler.new())
+	_register(T.Category.CONDITIONAL, T.ConditionalSubtype.IF_TARGET_HOLDS_MATCHING_DIE, ConditionalHandler.new())
 
 	# ── REPETITION ─────────────────────────────────────────────────────────────
 	_register(T.Category.REPETITION, T.RepetitionSubtype.ADD_REPETITIONS, AddRepetitionsHandler.new())

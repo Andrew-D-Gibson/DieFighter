@@ -4,6 +4,52 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Three new player tiles (and a near-miss that would have broken every .tres)
+
+**Built:** The player side hadn't gained anything all session, so: two new
+effect verbs and three tiles that need them. Tile count 18 → 21.
+
+New verbs:
+- `AMOUNT_MODIFIER/ADD_EMPTY_ADJACENT_CELLS` — the exact inverse of
+  `ADD_ADJACENT_TILES`.
+- `CONDITIONAL/IF_TARGET_HOLDS_MATCHING_DIE` — true when the target is already
+  holding a die showing the activator's value.
+
+Tiles (art drawn to match the existing chrome exactly — frame, dark icon panel,
+chamfered plate, activation die face):
+- **Solar Sail** (blue, die 2) — 2 shields per *empty* cell touching it. Every
+  adjacency effect in the game so far rewards packing the grid; this one pays
+  for clearance, so a sparse board becomes a build rather than an unfinished
+  one, and the two philosophies now compete for the same cells.
+- **Overclock Coil** (red, any die) — 2 damage, +2 for every time it already
+  fired *this turn*, reset at turn start. The counterweight to every
+  spread-your-dice-around synergy tile: this one wants the whole hand dumped
+  into one cell.
+- **Grudge Cannon** (green, die 5) — 4 damage, or **9** if the target is already
+  holding a 5. Then it gives them the die. So feeding it one 5 sets up the next
+  5 for more than double, in the same turn, by your own hand. This is the most
+  on-theme thing in the game: it pays you for tracking which numbers you've
+  already handed away.
+
+**Verified live:** Solar Sail with 1 empty neighbour gave exactly 2 shields.
+Grudge Cannon dealt 4 (18 → 14), handed over the die, then dealt 9 (14 → 5) on
+the follow-up 5. Overclock dealt 2 then 4 with its counter at 2 then 4, and
+`Events.player_turn_start` zeroed it.
+
+**The near-miss, and the rule that comes out of it:** I first added
+`ADD_EMPTY_ADJACENT_CELLS` in the *middle* of `AmountModifierSubtype`, right
+after `ADD_ADJACENT_TILES`. `.tres` files store `subtype` as a raw int, so that
+one line silently renumbered `ADD_TILE_DATA` 4 → 5, `SET_TO_ENGINE_CHARGE`
+5 → 6, `SET_TO_DIE_VALUE` 6 → 7 and `SET_TO_ENEMY_INTENT` 7 → 8 — which would
+have quietly rewired every enemy attack and half the tiles in the game into the
+wrong effect, with no error anywhere. Caught it while authoring the next tile.
+
+Moved it to the end and wrote the rule into `effect_enums.gd`'s header so the
+next person hits it as documentation instead of as a bug: **append new subtypes,
+never insert.** Same applies to `Category` itself.
+
+---
+
 ## 2026-09-17 — Scenario hazards: the environment gets a turn too
 
 **Built:** A new system for recurring environmental events attached to a

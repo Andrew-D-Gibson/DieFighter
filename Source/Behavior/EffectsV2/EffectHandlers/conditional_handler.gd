@@ -44,6 +44,9 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext) ->
 		EffectEnums.ConditionalSubtype.IF_DIE_VALUE_IN_RANGE:
 			return _is_die_in_range(data, context)
 
+		EffectEnums.ConditionalSubtype.IF_TARGET_HOLDS_MATCHING_DIE:
+			return _target_holds_matching_die(context)
+
 		_:
 			push_error("ConditionalHandler: unhandled subtype %d" % data.subtype)
 			return false
@@ -71,3 +74,20 @@ func _is_die_in_range(data: ConditionalEffectData, context: EffectContext) -> bo
 		return false
 	var v: int = context.activator_die.value
 	return v >= data.range_min and v <= data.range_max
+
+
+## True when the first target is already holding a die showing the same value as
+## the one being spent. The most on-theme condition the game can ask: it makes
+## the player track which numbers they've already handed away and stack
+## punishment onto them.
+func _target_holds_matching_die(context: EffectContext) -> bool:
+	if context.activator_die == null:
+		return false
+	if context.targets.is_empty() or not is_instance_valid(context.targets[0]):
+		return false
+
+	var queue: DiceQueue = context.targets[0].get("dice_manager") as DiceQueue
+	if queue == null:
+		return false
+
+	return queue.has_value(context.activator_die.value)

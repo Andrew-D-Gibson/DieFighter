@@ -6,7 +6,10 @@
 ##
 ## HOW TO ADD A NEW EFFECT TYPE:
 ##   1. Decide which Category it belongs to (or add a new one).
-##   2. Add a value to that category's subtype enum.
+##   2. APPEND a value to the END of that category's subtype enum. Never insert
+##      one in the middle: .tres files store 'subtype' as a raw int, so every
+##      authored effect below the insertion point silently becomes a different
+##      effect. Same goes for Category itself.
 ##   3. Implement a corresponding EffectHandler subclass.
 ##   4. Register it in EffectRegistry._ready().
 
@@ -71,6 +74,7 @@ enum AmountModifierSubtype {
 	SET_TO_ENGINE_CHARGE, ## Set running_amount to current engine charge value
 	SET_TO_DIE_VALUE,     ## Set running_amount to the activator die's face value
 	SET_TO_ENEMY_INTENT,  ## Set running_amount to the enemy action's rolled intent amount
+	ADD_EMPTY_ADJACENT_CELLS, ## Add count of empty cells around the source tile
 }
 
 
@@ -136,6 +140,7 @@ enum ConditionalSubtype {
 	IF_ENEMY_TARGETED,   ## True if context.targets[0] is an Enemy
 	IF_ENGINE_CHARGED,   ## True if the player's engine is charged
 	IF_DIE_VALUE_IN_RANGE, ## True if die value is between min and max (inclusive)
+	IF_TARGET_HOLDS_MATCHING_DIE, ## True if the first target already holds a die of the activator's value
 }
 
 
