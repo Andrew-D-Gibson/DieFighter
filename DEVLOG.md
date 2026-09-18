@@ -4,6 +4,40 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Architecture overview brought up to date
+
+**Built:** Documentation, not code. `ARCHITECTURE_OVERVIEW.md` is the file
+that explains this project to someone arriving cold, and a night of systems
+work had left it describing a game that no longer exists.
+
+Added or corrected:
+- `JumpManager`, `HazardManager`, `RunStats` in the systems table; the two new
+  UI readouts in the UI table; `ScenarioHazardResource` in the content table.
+- A new **Run Progression** section — sector layout, the gate-not-boss trigger,
+  the advance/win path, and the two difficulty multipliers with a note on *why*
+  damage scales slower than health.
+- A new **Scenario Hazards** section, including why the countdown banner is the
+  feature's justification rather than decoration.
+- Save system: `sector_index`, deletion on victory, and the fact that nothing
+  writes during a sector transition (so quitting mid-jump reloads at the gate
+  with its fight intact).
+- Signal tables: `sector_advanced`, `victory`, the three hazard signals,
+  `player_shields_broken`, and the two new `TileEvent` hooks.
+- `EnemyResource.pool_selection` documented as a table, with the note that none
+  of the three modes costs anything from the perfect-information pillar.
+
+Two warnings written in as blockquotes because both are silent-failure traps I
+hit or nearly hit tonight:
+- **Subtype numbering is load-bearing** — `.tres` stores category/subtype as
+  raw ints, so inserting mid-enum rewires authored content with no error.
+- **Runaway chains** — the new `_MAX_EVENTS_PER_RUN` ceiling and what it's for.
+
+**Why now rather than at the end:** the reasoning behind a decision is only
+cheap to write down while it's still in your head. A list of what changed is
+recoverable from git; *why damage scales at 0.20 and health at 0.35* is not.
+
+---
+
 ## 2026-09-17 — Juice: the handover has weight, and a shield break is a moment
 
 Two feel changes, both aimed at things BRAINSTORMING §8 calls underplayed.

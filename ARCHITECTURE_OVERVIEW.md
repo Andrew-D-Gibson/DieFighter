@@ -33,13 +33,16 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | File | Responsibility |
 |--------|-----------|------|----------------|
-| `GameStateManager` | `Systems/GameStateManager` | `GameStateManager/game_state_manager.gd` | State machine: OUT_OF_COMBAT → IN_COMBAT → GAME_OVER; triggers combat start/end signals |
+| `GameStateManager` | `Systems/GameStateManager` | `GameStateManager/game_state_manager.gd` | State machine: OUT_OF_COMBAT → IN_COMBAT → GAME_OVER / VICTORY; generates each sector, detects a cleared jump gate and advances to the next sector, owns the run's difficulty multipliers |
 | `Player` | `Systems/Player` | `Systems/Game/Player/player.gd` | Player ship with health/shields/dice queue; manages turn flow: spawn dice, reroll, end turn |
 | `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, status effects per cell |
 | `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
 | `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy |
+| `JumpManager` | `Systems/JumpManager` | `Systems/Game/JumpManager/jump_manager.gd` | Plays the hyperspace transition (intro → load scenario → outro → start). Public `jump_to_scenario()`, used both by map jumps and sector advances |
+| `HazardManager` | `Systems/HazardManager` | `Systems/Game/HazardManager/hazard_manager.gd` | Runs the current scenario's `ScenarioHazardResource`: counts down in player turns, queues its chain onto the engine, broadcasts the countdown |
+| `RunStats` | `Systems/RunStats` | `Systems/Game/RunStats/run_stats.gd` | Tallies sectors reached / encounters cleared / ships destroyed / credits earned for the end-of-run summary |
 
 **UI Systems**
 
@@ -50,7 +53,9 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `PlayerHealthBar` | `Systems/Player/PlayerHealthBar` | HP/shields UI with reveal animations |
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
 | `PauseMenu` | `UI/PauseMenu` | Pause state toggle, save/quit, option screen |
-| `GameOver` | `UI/GameOver` | Game over sequence |
+| `GameOver` | `UI/GameOver` | Game over **and** victory sequence, with the run summary line |
+| `SectorIndicator` | `Systems/Player/MainViewer/TabButtons` | `SECTOR n/3` readout; pulses on `sector_advanced` |
+| `HazardIndicator` | `UI/HazardIndicator` | Countdown banner for the active scenario hazard |
 | `MainMenu` | Root scene (title_screen) | Start game, options, wishlist link |
 | `TutorialManager` | `Systems/TutorialManager` | Tutorial step progression with popups |
 
@@ -232,6 +237,7 @@ scenario_engine.queue_event(event)
 | Resource | Location Pattern | Purpose |
 |----------|------------------|---------|
 | `TileResource` | `Source/Content/Tiles/TileResources/*.tres` | Defines tile behavior, textures, uses per turn, activation criteria, effect chains |
+| `ScenarioHazardResource` | `Source/Content/ScenarioResources/Hazards/*.tres` | A recurring environmental event on a scenario (solar flare, ion storm, asteroid impact): timing plus an `EffectChainV2` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | In TileResource fields | Legacy effect chain (deprecated, see refactoring) |
 | `EffectChainV2` | In TileResource fields | Data-driven effect chain (refactored) |
@@ -280,12 +286,72 @@ class_name TileResource extends Resource
 
 **Autoload:** `SaveManager` (`Autoloads/save_manager.gd`)
 
-Single autosave slot serialized to JSON at `user://save_game.json` (`SAVE_VERSION = 1`). `GameStateManager` keeps a current `GameSaveResource` in sync and calls `write_save()` at checkpoints; `SaveManager` deletes the save on `game_over`.
+Single autosave slot serialized to JSON at `user://save_game.json` (`SAVE_VERSION = 1`). `GameStateManager` keeps a current `GameSaveResource` in sync and calls `write_save()` at checkpoints; `SaveManager` deletes the save on `game_over` **and** on `victory` — a run ends either way.
+
+`GameSaveResource.sector_index` (zero-based) persists how deep the run is. It's read with a default, so pre-sector saves load as sector 1 without a version bump.
+
+Nothing writes to disk during a sector transition — the next checkpoint is the `start_scenario` at the far end of the jump — so quitting mid-transition reloads at the jump gate with its fight intact rather than in a half-advanced state.
 
 | Resource | Location | Responsibility |
 |----------|----------|----------------|
 | `GameSaveResource` | `Resources/game_save_resource.gd` | Serializable game state (renamed from `game_save.gd`) |
 | Slot resources | `Resources/SaveResources/*.tres` | Per-slot save templates (`game_start.tres`, `tutorial_start.tres`) |
+
+---
+
+## Run Progression
+
+A run is `demo_sector_count` sectors long (3 by default). Each sector is
+generated by `GameStateManager._randomize_sector_scenarios()` and laid out as:
+
+```
+[fate] ... [shops / combat / event mix] ... [boss] [jump gate]
+```
+
+The **jump gate**, not the boss, is the last tile and the actual sector-end
+trigger. Both are flagged `sector_gate_scenario`, which protects them from
+being cleared or overwritten by `Map.clear_current_scenario_slot()`.
+
+| Step | Where |
+|------|-------|
+| Gate cleared → advance or win | `GameStateManager._check_sector_cleared()` on `combat_finished` |
+| Generate the next sector | `_randomize_sector_scenarios()` (safe to call repeatedly — it resets its own state) |
+| Repoint the map | `Map.load_sector()` |
+| Play the transition | `JumpManager.jump_to_scenario()` — the same animation as a normal map jump |
+| Run ends | `Events.victory` → `GameState.VICTORY`, save deleted, summary shown |
+
+**Difficulty** is two numbers, deliberately separate:
+
+| Multiplier | Applied at | Default per sector |
+|---|---|---|
+| `get_difficulty_multiplier()` — enemy health & shields | `Enemy._update_health_from_resource()` | +0.35 |
+| `get_damage_multiplier()` — enemy intent amounts | `EnemyActionOptionResource.get_action()` | +0.20 |
+
+Damage scales slower than health on purpose: tankier enemies lengthen a fight,
+harder-hitting ones can invalidate a defensive build outright.
+
+The **boss is indexed by sector** rather than picked at random
+(`boss_combat_scenarios[sector]`, clamped), so the one encounter a player is
+guaranteed to meet each sector is also the clearest place to show escalation.
+Sector 1 arrives at the authored `starting_scenario`; later sectors arrive at a
+random question scenario not already placed in that sector.
+
+---
+
+## Scenario Hazards
+
+A `ScenarioResource` may carry a `ScenarioHazardResource`: a recurring
+environmental event with a first-trigger delay, a repeat interval, and an
+`EffectChainV2`. `HazardManager` counts down in player turns and queues a
+`HazardEvent` onto the live scenario engine, so hazard damage passes the same
+modifier pipeline as everything else.
+
+The countdown banner (`HazardIndicator`) is not decoration — it's the feature's
+justification. An unannounced board-wide flare is a dice roll; one the player
+watched approach for two turns while deciding whether to spend on shields is a
+decision. Same rule the enemy intent telegraph follows.
+
+Authored hazards live in `Source/Content/ScenarioResources/Hazards/`.
 
 ---
 
@@ -306,16 +372,25 @@ Single autosave slot serialized to JSON at `user://save_game.json` (`SAVE_VERSIO
 
 | Category | Subtypes |
 |----------|----------|
-| TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, etc. |
+| TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, etc. |
 | ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE |
-| AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, SET_TO_ENGINE_CHARGE |
-| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE |
+| AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE |
+| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND |
-| TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, ADD_AMPLIFIER_STATUS |
+| TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, ADD_AMPLIFIER_STATUS |
 | SCENARIO_CONTROL | OPEN_SHOP, CLOSE_SHOP, JUMP, FLEE |
-| CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED |
+| CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED, IF_TARGET_HOLDS_MATCHING_DIE |
 | REPETITION | ADD_REPETITIONS |
 | UTILITY | DESTROY_SOURCE, PRINT_DEBUG |
+
+> **Subtype numbering is load-bearing.** `.tres` files store `category` and
+> `subtype` as raw ints, so a new value inserted mid-enum silently rewires every
+> authored effect below it — with no error anywhere. Always append.
+
+> **Runaway chains.** `ScenarioEngine.process_event_queue()` aborts after
+> `_MAX_EVENTS_PER_RUN` (2000) events in one drain and logs the likely cause.
+> Without it, two tiles activating each other hard-freezes the game silently.
+> Relevant to anything using `ACTIVATE_TARGETED_TILES` or `PASS_DIE_TO_TILE`.
 
 **Flow when EffectChainV2 executes:**
 
@@ -457,8 +532,22 @@ func run_turn() -> void                            # Use all dice in queue seque
 
 - 6 action slots per enemy per turn
 - Action options with weights (likelihood)
-- `force_include` forces specific actions (used by tutorials)
+- `force_include` forces specific actions (used by tutorials, and to guarantee
+  exactly one of a signature verb appears — weight 0 plus `force_include` means
+  "one and only one")
 - Weighted random fill remaining slots
+
+**Which pool a turn draws from** is set by `EnemyResource.pool_selection`:
+
+| Mode | Index |
+|---|---|
+| `TURN_CYCLE` (default) | `turns_alive % pool_count` — rhythms like charge/fire |
+| `HEALTH_THRESHOLD` | health bar mapped onto the pools; full HP → first, near death → last |
+| `SQUAD_LOSSES` | how many of its own faction have died this fight |
+
+None of these cost anything from the perfect-information pillar: the six
+resolved slots are still shown in full before the player commits a die. Only
+the *table they were drawn from* changes.
 
 ---
 
@@ -475,6 +564,10 @@ func run_turn() -> void                            # Use all dice in queue seque
 | `start_combat` | Enter combat state | Disable map switch, update UI colors |
 | `combat_finished` | Combat ends (all enemies gone) | Re-enable grid dragging, unlock engine charge |
 | `jump` | Hyperspace jump begins | Clear dice, reset player state |
+| `sector_advanced` | A new sector has been generated (zero-based index) | SectorIndicator, RunStats |
+| `victory` | Final sector's jump gate cleared | GameOver screen, SaveManager (deletes save), GameStateManager |
+| `hazard_armed` / `hazard_countdown_changed` | Scenario hazard set up / ticked | HazardIndicator |
+| `hazard_triggered` | Hazard fired | HazardIndicator, camera shake |
 
 ### 9.2 Player Signals
 
@@ -484,6 +577,7 @@ func run_turn() -> void                            # Use all dice in queue seque
 | `set_money` | Money changed | Update UI display |
 | `player_health_hit` | HP damage taken | SFX + large shake + glitch (if critical) |
 | `player_shields_hit` | Shield damage taken | SFX + small shake |
+| `player_shields_broken` | Shields hit zero (protected → exposed) | Large shake + long cyan vignette |
 | `player_fatal_damage` | Hull reaches 0 | Emit GAME_OVER |
 | `engine_charge_changed` | Engine charge changed | Update engine bar, map unlock indicators |
 
@@ -495,6 +589,12 @@ func run_turn() -> void                            # Use all dice in queue seque
 | `tile_pushed` | Grid push mechanic | Tile activation event |
 | `die_placed_on_tile` | Die accepted on tile | Tutorial logging |
 | `tile_activation_complete` | Tile effect chain finished | Check end of turn (dice queue empty) |
+
+Tiles also respond to `TileEvent.EventType` hooks via `event_responses_v2`:
+`ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`,
+`ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_PLAYER_FATAL_DAMAGE`. The
+last two enable tiles that take **no dice at all** and pay out reactively —
+they cost a grid cell instead of a die.
 
 ### 9.4 Enemy Signals
 
@@ -586,7 +686,9 @@ Source/
 │   │   └── ... action/resource files ...
 │   │
 │   └── ScenarioResources/
-│       └── scenario_resource.gd                   # Per-scenario data
+│       ├── scenario_resource.gd                   # Per-scenario data
+│       ├── scenario_hazard_resource.gd            # Recurring environmental event
+│       └── Hazards/*.tres                         # Solar flare, ion storm, ...
 │
 ├── Systems/
 │   ├── Game/
@@ -614,8 +716,12 @@ Source/
 │   │   ├── Mainmenu/main_menu.gd               # Title screen
 │   │   └── ... other UI files ...
 │   │
+│   │   ├── JumpManager/jump_manager.gd          # Hyperspace transition
+│   │   ├── HazardManager/hazard_manager.gd      # Scenario hazard countdown
+│   │   ├── RunStats/run_stats.gd                # End-of-run tally
+│   │
 │   ├── TutorialManager/tutorial_manager.gd     # Tutorial state machine
-│   ├── GameStateManager/game_state_manager.gd  # State transitions
+│   ├── GameStateManager/game_state_manager.gd  # State transitions, sectors
 │   └── Background/
 │       └── background_manager.gd               # Parallax layers
 │
