@@ -250,7 +250,6 @@ func _get_available_tile_names() -> Array[String]:
 	var names := []
 	var search_dirs: Array[String] = [
 		"res://Source/Content/Tiles/TileResources/",
-		"res://Source/Content/Tiles/ComplicatedTileResources/",
 	]
 	for dir_location: String in search_dirs:
 		var dir: DirAccess = DirAccess.open(dir_location)
@@ -267,7 +266,6 @@ func _get_available_tile_names() -> Array[String]:
 func _load_tile_by_name(tile_name: String) -> TileResource:
 	var search_dirs: Array[String] = [
 		"res://Source/Content/Tiles/TileResources/",
-		"res://Source/Content/Tiles/ComplicatedTileResources/",
 	]
 	for dir_location: String in search_dirs:
 		var dir: DirAccess = DirAccess.open(dir_location)

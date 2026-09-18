@@ -17,7 +17,6 @@ func _load_tile_resources() -> void:
 
 	var dir_locations: Array[String] = [
 		"res://Source/Content/Tiles/TileResources/",
-		"res://Source/Content/Tiles/ComplicatedTileResources/",
 	]
 
 	for dir_location: String in dir_locations:

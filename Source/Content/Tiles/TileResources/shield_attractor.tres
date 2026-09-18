@@ -1,0 +1,118 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bpskb4vc2vfxm"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://b6od4rrkvtsg4" path="res://Assets/Textures/Tiles/YellowTiles/shielded_attractor-Sheet.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_3"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_4"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_5"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act2"]
+script = ExtResource("script_1")
+type = 1
+acceptable_values = Array[int]([4])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act3"]
+script = ExtResource("script_1")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3_1"]
+atlas = ExtResource("tex_2")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f3_2"]
+atlas = ExtResource("tex_2")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames4"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f3_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f3_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f3_2")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_3")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step6"]
+script = ExtResource("script_3")
+category = 2
+amount = -6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_3")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step8"]
+script = ExtResource("script_3")
+category = 2
+amount = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step9"]
+script = ExtResource("script_3")
+category = 4
+color = Color(0.317647, 0.717647, 1, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step10"]
+script = ExtResource("script_3")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_4")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step11"]
+script = ExtResource("script_3")
+category = 5
+subtype = 4
+grid_offset = Vector2i(-1, -1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step12"]
+script = ExtResource("script_3")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain13"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_step12")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=yellow]Shield Attractor[/color]"
+description = "(die_4) -> Tear [color=blue]6 shields[/color] off [color=purple]target[/color] and [color=orange]give[/color] them the die. [color=yellow]Drags[/color] every tile in this row toward itself"
+rarity = 1
+textures = SubResource("Resource_frames4")
+uses_per_combat = 2
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
+effect_chain_v2 = SubResource("Resource_chain13")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

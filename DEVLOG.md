@@ -4,6 +4,50 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Revived the four dead tiles, and killed every boot error with them
+
+**Built:** `ComplicatedTileResources/` held four fully-designed tiles —
+Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array
+— that still referenced the deleted pre-V2 effect system. They had finished
+art, finished descriptions, and were completely unloadable. Ported all four to
+EffectChainV2, moved them into `TileResources/`, and deleted the broken
+originals. Tile count 14 → 18.
+
+- **Tactical Boomerang** (2 uses) — 5 damage to your target, then kicks *itself*
+  one cell: left on a 3, right on a 4. Using it twice in a row means planning
+  where it lands.
+- **Shield Attractor** (2 uses) — tears 6 shields off the target instead of
+  dealing damage, hands them the die as payment, and drags every tile in its row
+  toward itself.
+- **Inertial Feedback** — counts every tile that moved anywhere on the grid this
+  combat and dumps that number into *every other ship* at once, then resets.
+  Listens for both pushes and manual moves now, not just pushes.
+- **Unstable Shield Array** — takes no dice at all. It pays out only when
+  something else shoves it: 2 shields, +1 per push since you last picked it up.
+  Repositioning it by hand wipes the stack.
+
+**Why the errors mattered:** `RewardManager`, `ContentRegistry`, and the dev
+console all scanned that directory on startup, so every single boot logged ~184
+errors trying to load four files. Real problems had nowhere to hide in that
+noise. Boot is now zero errors — only the project's pre-existing untyped-var
+warnings remain.
+
+**Bug I authored and caught:** the shield array's stack grew 0 → 2 → 6 → 14 → 30
+instead of 0 → 1 → 2 → 3. `IncrementTileDataHandler` uses `context.running_amount`
+as the step size (falling back to 1 only when it's zero), and running_amount was
+still holding the shield total from two steps earlier. Needed an explicit
+`AMOUNT/SET 0` before the increment. Verified the fix live: pushes gave +2, +3,
++4 shields with the stack at 1, 2, 3, and a manual move reset it to 0.
+
+**Snag:** a live eval that set `Globals.player.health.shields` directly wedged
+the game's main thread — second time an eval has done that tonight (the first
+was constructing `EffectData` by hand). Both times normal gameplay was
+unaffected. Rule of thumb going forward: drive tests through signals and public
+methods (`Events.tile_pushed.emit(t)`, `enemy.run_turn()`), never by poking
+component state directly.
+
+---
+
 ## 2026-09-17 — The boss now fights differently as it loses
 
 **Built:** `EnemyResource.pool_selection`, a two-value enum deciding how an

@@ -6,7 +6,6 @@ extends Node
 
 const _TILE_DIRS: Array[String] = [
 	"res://Source/Content/Tiles/TileResources/",
-	"res://Source/Content/Tiles/ComplicatedTileResources/",
 ]
 const _SCENARIO_DIR: String = "res://Source/Content/ScenarioResources/Scenarios/"
 

@@ -1,6 +1,3 @@
-[21:06:46] Debug logger initialized
-[21:06:46] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[21:06:46] Starting scenario
-[21:07:11] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres
-[21:07:12] Starting scenario
-[21:07:12] Starting combat
+[21:14:50] Debug logger initialized
+[21:14:50] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[21:14:51] Starting scenario
