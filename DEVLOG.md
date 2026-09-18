@@ -4,6 +4,31 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Enemy damage scales with the run, not just enemy health
+
+**Built:** `GameStateManager.get_damage_multiplier()`, applied in
+`EnemyActionOptionResource.get_action()` — the single place a turn's intent
+amounts are rolled.
+
+Two separate knobs now:
+- `difficulty_scale_per_sector` = 0.35 → health/shields ×1.0 / ×1.35 / ×1.70
+- `damage_scale_per_sector` = 0.20 → intent amounts ×1.0 / ×1.20 / ×1.40
+
+Damage scales *slower* than health on purpose. A tankier enemy only lengthens a
+fight; a harder-hitting one can invalidate a defensive build outright, and the
+player's damage output grows faster over a run than their max health does.
+
+**Why:** DEMO_PLAN lists this as a must-fix blindspot, and it's the right call —
+with only health scaling, sector 3 was strictly *longer* than sector 1, not
+harder, while the player's deck got better the whole way. Fights that take more
+turns without being more dangerous are the worst version of difficulty.
+
+**Verified live:** regenerated the same enemy's turn at sector_index 0/1/2 and
+confirmed the multipliers land at 1.0 / 1.2 / 1.4 against 1.0 / 1.35 / 1.7 for
+health.
+
+---
+
 ## 2026-09-17 — Three new player tiles (and a near-miss that would have broken every .tres)
 
 **Built:** The player side hadn't gained anything all session, so: two new

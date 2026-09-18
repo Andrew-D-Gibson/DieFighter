@@ -1,12 +1,3 @@
-[21:26:36] Debug logger initialized
-[21:26:36] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[21:26:36] Starting scenario
-[21:27:33] Starting combat
-[21:27:33] Player attacked ship: Enemy (Faction: PIRATE)
-[21:27:33] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:27:43] Player attacked ship: Enemy (Faction: PIRATE)
-[21:27:43] Scenario Event: PLAYER_ATTACKED_PIRATE
-[21:28:01] Player attacked ship: @Node2D@421 (Faction: CIVILIAN)
-[21:28:01] Scenario Event: PLAYER_ATTACKED_CIVILIAN
-[21:28:09] Player attacked ship: @Node2D@421 (Faction: CIVILIAN)
-[21:28:09] Scenario Event: PLAYER_ATTACKED_CIVILIAN
+[21:29:27] Debug logger initialized
+[21:29:27] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[21:29:27] Starting scenario

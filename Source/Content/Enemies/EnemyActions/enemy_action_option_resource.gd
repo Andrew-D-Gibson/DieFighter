@@ -16,8 +16,12 @@ func get_action() -> EnemyActionResource:
 	# their amount is applied at play-time via context.enemy_intent_amount.
 	var action: EnemyActionResource = base_action.duplicate(true)
 
-	# Randomly set the strength of the effect
+	# Randomly set the strength of the effect, then scale it by how deep into
+	# the run the player is. This is the only place a turn's amounts are rolled,
+	# so it's the one place run difficulty needs to touch enemy damage.
 	amount = RNGManager.randi_range(RNGManager.Bucket.ENEMY_AI, min_amount, max_amount)
+	if amount != 0 and Globals.state_manager:
+		amount = maxi(1, ceili(amount * Globals.state_manager.get_damage_multiplier()))
 	action.intent_amount = amount
 
 	return action

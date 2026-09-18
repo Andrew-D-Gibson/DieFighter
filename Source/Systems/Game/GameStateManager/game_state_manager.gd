@@ -23,8 +23,14 @@ extends Node2D
 ## How many sectors a full run lasts. Clearing the last sector's jump gate wins.
 @export var demo_sector_count: int = 3
 
-## Added to the enemy stat multiplier for each sector past the first.
+## Added to the enemy health/shield multiplier for each sector past the first.
 @export var difficulty_scale_per_sector: float = 0.35
+
+## Added to the enemy damage multiplier for each sector past the first. Kept
+## lower than the health scale on purpose: tankier enemies just lengthen a
+## fight, but harder-hitting ones can invalidate a defensive build outright, and
+## the player's own damage grows faster than their max health does.
+@export var damage_scale_per_sector: float = 0.2
 
 ## Beat between the final kill and the victory screen taking over.
 const _VICTORY_DELAY_SECONDS: float = 1.5
@@ -185,10 +191,17 @@ func _randomize_sector_scenarios() -> void:
 	
 	
 	
-## Enemy stats are multiplied by this at spawn time, so one number carries
-## all of the run's difficulty scaling (see Enemy._update_health_from_resource).
+## Enemy health and shields are multiplied by this at spawn time
+## (see Enemy._update_health_from_resource).
 func get_difficulty_multiplier() -> float:
 	return 1.0 + current_game_save.sector_index * difficulty_scale_per_sector
+
+
+## Enemy action amounts are multiplied by this when a turn's actions are rolled
+## (see EnemyActionOptionResource.get_action). Without it, later sectors are
+## only longer, not harder — the player out-scales flat hand-authored damage.
+func get_damage_multiplier() -> float:
+	return 1.0 + current_game_save.sector_index * damage_scale_per_sector
 
 
 ## Fires after every won fight. The sector's last tile is always its jump gate,
