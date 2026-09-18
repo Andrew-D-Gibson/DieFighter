@@ -4,6 +4,27 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Sector progress indicator
+
+**Built:** A `SECTOR n/3` readout in the Systems/Map tab strip
+(`Source/Systems/UI/SectorIndicator/`). Dimmed at rest so it sits behind the
+two tab buttons in the reading order, and pulses purple for 2.5s on
+`Events.sector_advanced` — the one moment in a run where the entire map is
+replaced deserves to be noticed.
+
+**Why:** Sectors only started meaning something an hour ago, and DEMO_PLAN
+lists "no run-progress UI" as a must-fix. The tab strip had ~60px of dead
+space between SYSTEMS and MAP; sector depth is run-level info, so it belongs
+where it's readable from either view rather than inside the map panel.
+
+**Snag:** First attempt put the new `ext_resource` line after the scene's
+`sub_resource` block, which Godot rejects with "Unknown tag 'ext_resource'" —
+the whole scene failed to load and took `main.tscn` down with it. `.tscn`
+section order is load-bearing: all `ext_resource` first. Fixed by moving it
+into the header block.
+
+---
+
 ## 2026-09-17 — Multi-sector runs, jump gates, and a real victory condition
 
 **Built:** The whole DEMO_PLAN progression spine. A run is now three sectors
