@@ -82,6 +82,12 @@ func _connect_tile_event_signals() -> void:
 	Events.tile_manually_moved.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_MANUALLY_MOVED)
 	)
+	Events.enemy_turn_over.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_ENEMY_TURN_OVER)
+	)
+	Events.player_health_hit.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_HEALTH_HIT)
+	)
 	Events.player_fatal_damage.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE)
 	)

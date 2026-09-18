@@ -4,6 +4,48 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Tiles that react instead of consuming dice
+
+**Built:** Two new `TileEvent.EventType` hooks and the first tiles that take no
+dice at all. Tile count 21 → 23.
+
+New hooks (appended; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` so the gap
+absorbs additions safely):
+- `ON_ENEMY_TURN_OVER` — every enemy has finished acting.
+- `ON_PLAYER_HEALTH_HIT` — the hull, not the shields, just took damage.
+
+Both wire straight to `Events` signals that already existed; `tile.gd` just had
+to listen.
+
+- **Counterweight Battery** (blue) — at the end of every enemy turn, gain 3
+  shields. Takes no dice, ever.
+- **Spite Coil** (red) — whenever your hull is hit, deal 3 damage to a random
+  enemy. Takes no dice, and pairs *badly* with shields on purpose: it only pays
+  out once damage is actually reaching the hull, so it rewards a build that
+  stops trying to block everything.
+
+**Why this is a new class, not two more tiles:** every tile in the game until
+now converts dice into effects. These convert *board space* into effects. The
+3×5 grid is the scarcest thing the player owns, so "a whole cell that never
+takes a die" is a real cost paid in a currency nothing else charges. It also
+gives the game somewhere to put passive/reactive design that doesn't compete
+for the dice economy.
+
+Their plate art carries a crossed-out die instead of an activation face — one
+glance says "don't bother dragging anything here."
+
+**Verified live:** `Events.enemy_turn_over` gave +3 shields; player hull damage
+14 → 12 on a Venom Fighter via the Spite Coil.
+
+**Testing note:** the Spite Coil appeared not to fire on my first attempt. It
+had fired — the engine was still mid-`await` on the Battery's chain from the
+previous eval, so the retaliation was queued but unresolved when I read the HP
+one eval later. Chained effects need a beat before you measure them; reading
+engine state (`currently_processing_queue`, `event_queue.size()`) is the way to
+tell "didn't happen" from "hasn't happened yet."
+
+---
+
 ## 2026-09-17 — Squads notice when one of them dies
 
 **Built:** A third `PoolSelection` mode, `SQUAD_LOSSES`. `Enemy.squad_losses`
