@@ -4,6 +4,46 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — The Bounty Runner, and a timer that actually ticks
+
+**Built:** `PoolSelection.COMBAT_ROUNDS` — a fourth mode, indexing the action
+pool by how many combat rounds have elapsed *whether or not this ship got to
+act*.
+
+This was necessary rather than nice: `TURN_CYCLE` advances on
+`turns_alive`, which only increments inside `Enemy.run_turn()` — and
+`EnemyManager` skips `run_turn()` entirely for an enemy with no dice. So a ship
+the player ignores never leaves pool 0, which makes `TURN_CYCLE` unusable for
+any real timer. `rounds_in_combat` increments on `enemy_turn_over` instead
+(deliberately *not* `player_turn_start`, because `generate_turn_actions` also
+runs off that signal and relying on connection order for correctness is a trap).
+
+**Bounty Runner** (24 HP / 6 shields) — a smuggler with three pools:
+- **Round 1** — evasive. A guaranteed 4–7 shield, mostly blank faces.
+- **Round 2** — engines spooling. Shields harder, shoots a bit.
+- **Round 3** — *every one of its six faces is Flee.* Any die at all sends it out.
+
+The encounter is: put 24 HP through a shielded hull in two rounds, knowing the
+dice you spend on it are the dice it shields with, while an Ion Lance escort
+competes for those same dice. And the clock runs whether you engage or not.
+
+**Bug caught before committing:** I first put the 60–95 credit bounty on the
+scenario's `rewards` dictionary. `ScenarioManager._handle_enemy_leaving()` pays
+faction rewards out when a faction *leaves the fight by any means* — including
+fleeing. The player would have collected the full payday for failing to stop
+the escape, which inverts the entire encounter. Moved it to the Runner's own
+`reward_resource`, which `Enemy._on_death()` only spawns on an actual kill.
+
+Worth generalising: **scenario faction rewards are for clearing a faction;
+per-enemy reward resources are for killing a specific ship.** They are not
+interchangeable, and the difference only shows up in encounters where something
+can leave alive.
+
+**Verified live:** jumped in, stepped `rounds_in_combat` 0→3 and regenerated
+the turn each time — pools 0, 1, 2, 2, with round 3 producing six Flees.
+
+---
+
 ## 2026-09-17 — Rarity actually means something now
 
 **Found while auditing tonight's content:** `TileResource.rarity` only affected

@@ -1,0 +1,93 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://dmk0hnr4gauyj"]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="PackedScene" uid="uid://bdj8yu1245tuj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/civilian_transport_ship_graphics.tscn" id="gfx_3"]
+[ext_resource type="Texture2D" uid="uid://d1xh70cpc1d0t" path="res://Assets/Textures/Enemies/CivilianTransport/civilian_transport_targeting_image.png" id="tex_4"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_5"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_6"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_7"]
+[ext_resource type="Resource" uid="uid://cesjiwhhl5hh0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/flee.tres" id="act_8"]
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_5")
+weight = 0.0
+min_amount = 4
+max_amount = 7
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt1"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_6")
+weight = 3.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt2"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_7")
+weight = 1.5
+min_amount = 1
+max_amount = 3
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[sub_resource type="Resource" id="Resource_opt3"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_5")
+weight = 0.0
+min_amount = 5
+max_amount = 9
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt4"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_7")
+weight = 2.5
+min_amount = 2
+max_amount = 4
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt5"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_6")
+weight = 1.5
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool1"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt3"), SubResource("Resource_opt4"), SubResource("Resource_opt5")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[sub_resource type="Resource" id="Resource_opt6"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_8")
+weight = 1.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool2"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt6")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Bounty Runner"
+description = "Smuggler hauling something worth more than the ship. Not interested in a fight — interested in leaving."
+max_health = 24
+starting_shields = 6
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1"), SubResource("Resource_pool2")])
+pool_selection = 3
+ship_graphics_scene = ExtResource("gfx_3")
+dialogue_offset = Vector2(17, -8)
+targeting_computer_image = ExtResource("tex_4")
+health_bar_position = Vector2(-24, -14)
+dice_queue_position = Vector2(24, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

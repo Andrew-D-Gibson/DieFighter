@@ -47,6 +47,15 @@ var moving_in_world: bool = false
 ## Drives PoolSelection.SQUAD_LOSSES.
 var squad_losses: int = 0
 
+## How many full combat rounds have elapsed since this enemy arrived, counted
+## whether or not it was given any dice. Drives PoolSelection.COMBAT_ROUNDS.
+##
+## Incremented on enemy_turn_over rather than player_turn_start so it's already
+## settled by the time generate_turn_actions() reads it — the latter also runs
+## off player_turn_start, and depending on signal connection order for
+## correctness is a trap.
+var rounds_in_combat: int = 0
+
 ## Optional: force specific actions (used by tutorial)
 static var forced_actions: Array[EnemyActionResource] = []
 
@@ -114,6 +123,9 @@ func _connect_combat_signals() -> void:
 	)
 	
 	Events.player_turn_start.connect(generate_turn_actions)
+	Events.enemy_turn_over.connect(func() -> void:
+		rounds_in_combat += 1
+	)
 	Events.enemy_left.connect(_on_other_enemy_left)
 	
 
@@ -224,6 +236,9 @@ func _current_pool_index() -> int:
 
 		EnemyResource.PoolSelection.SQUAD_LOSSES:
 			return clampi(squad_losses, 0, pool_count - 1)
+
+		EnemyResource.PoolSelection.COMBAT_ROUNDS:
+			return clampi(rounds_in_combat, 0, pool_count - 1)
 
 		_:
 			return turns_alive % pool_count

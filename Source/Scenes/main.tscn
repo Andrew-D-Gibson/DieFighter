@@ -60,6 +60,7 @@
 [ext_resource type="Resource" uid="uid://cg864or4c5wv8" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wolfpack/COMBAT_wolfpack.tres" id="83_wolf"]
 [ext_resource type="Resource" uid="uid://b00imj4aargrb" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_DroneBattery/COMBAT_drone_battery.tres" id="84_battery"]
 [ext_resource type="Resource" uid="uid://3q350k3vjama" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TenderEscort/COMBAT_tender_escort.tres" id="85_tender"]
+[ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
 [ext_resource type="Resource" uid="uid://cooy3vvww8cn" path="res://Source/Systems/TutorialManager/TutorialStepResources/spawn_dice.tres" id="36_d6h8w"]
 [ext_resource type="Resource" uid="uid://oe3aethqnc7b" path="res://Source/Systems/TutorialManager/TutorialStepResources/dragging_dice_explanation.tres" id="37_0b58v"]
 [ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
@@ -397,7 +398,7 @@ current_game_save = ExtResource("7_3g417")
 sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
-combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender")])
+combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("94_boss2"), ExtResource("95_boss3")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])

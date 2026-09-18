@@ -17,6 +17,10 @@ enum PoolSelection {
 	## while the squad is intact, the last once it's alone. Turns a group fight
 	## into something that reacts to the order you kill things in.
 	SQUAD_LOSSES,
+	## By how many combat rounds have elapsed, whether or not this ship got to
+	## act. The only mode that can express a real timer — TURN_CYCLE advances
+	## on turns the ship was *fed*, so an ignored ship never moves off pool 0.
+	COMBAT_ROUNDS,
 }
 
 @export_category('Behavior')
