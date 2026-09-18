@@ -121,7 +121,8 @@ static func _should_show(prop: String, cat: int, sub: int) -> bool:
 				return sub in [
 					EffectEnums.TileControlSubtype.MOVE_TILE_WITH_OFFSET,
 					EffectEnums.TileControlSubtype.PUSH_TILE_IN_DIRECTION,
-					EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN
+					EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN,
+					EffectEnums.TileControlSubtype.PUSH_TARGETED_TILES
 				]
 			if cat == EffectEnums.Category.AUDIO_VISUAL:
 				return sub == EffectEnums.AudioVisualSubtype.ANIMATE_DIE_TO_TILE

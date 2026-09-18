@@ -4,6 +4,47 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Three new effect verbs, and icons for five new enemy actions
+
+**Built:** Plumbing for enemy actions the engine couldn't previously express,
+plus the art they'll be seen through.
+
+New EffectsV2 subtypes + handlers:
+- `TARGETING/TARGET_RANDOM_OTHER_ENEMY` — `TARGET_RANDOM_ENEMY` can (and
+  usually does) pick the actor itself, so a medic ship was impossible to author.
+  Falls back to the actor when nobody else is alive.
+- `DICE_CONTROL/KEEP_DIE_WITH_ACTOR` — the enemy holds onto your die instead of
+  handing it back. Every existing enemy action ends in `GIVE_DIE_TO_PLAYER`, so
+  "I'm keeping this" is a genuinely new verb — and because `Enemy.run_turn()`
+  iterates whatever is in its queue, a kept die becomes an *extra action* for
+  that enemy next turn. That escalation is emergent, not authored, and it's
+  honest: you can see the die sitting in its queue.
+- `TILE_CONTROL/PUSH_TARGETED_TILES` — `PUSH_TILE_IN_DIRECTION` pushes the
+  chain's own `effect_source`, which only works for a tile shoving itself.
+  This reads `context.targets`, so an enemy can shove *your* grid around. A
+  zero `grid_offset` means "random cardinal", rolled per target.
+
+Art: 7×7 intent indicators + 24×24 info textures for impound / siphon / quake /
+repair / aegis, all on the project palette. Reused the existing colour grammar —
+orange for denial (matching the padlock), blue for shields, green for repair.
+
+**Why:** The whole game has five enemy verbs: attack, shield, flee, lock a tile,
+do nothing. BRAINSTORMING calls this the highest-leverage content gap and it's
+right — intent telegraphing is the game's best system and it has almost nothing
+to say.
+
+**Snags:**
+- First drafts of the siphon and aegis icons were outline-only and dissolved
+  into the dark cockpit background at 7×7. Redrew both with solid fills.
+- New `.gd` files written outside the editor aren't in
+  `.godot/global_script_class_cache.cfg`, so `validate_script` reports every
+  new `class_name` as undeclared — including in files that merely reference
+  them. `Godot --headless --path . --import` refreshes the cache. Worth
+  remembering: a wall of "Identifier not declared" after adding files is a
+  stale cache, not a real error.
+
+---
+
 ## 2026-09-17 — Sector progress indicator
 
 **Built:** A `SECTOR n/3` readout in the Systems/Map tab strip

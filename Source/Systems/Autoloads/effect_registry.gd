@@ -60,6 +60,7 @@ func _register_all() -> void:
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_TILE_WITH_OFFSET,        TargetTileWithOffsetHandler.new())
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_EFFECT_SOURCE,           TargetEffectSourceHandler.new())
 	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_SELF,                    TargetSelfHandler.new())
+	_register(T.Category.TARGETING, T.TargetingSubtype.TARGET_RANDOM_OTHER_ENEMY,      TargetRandomOtherEnemyHandler.new())
 
 	# ── AMOUNT_MODIFIER ────────────────────────────────────────────────────────────
 	_register(T.Category.AMOUNT_MODIFIER, T.AmountModifierSubtype.SET,                 SetAmountHandler.new())
@@ -97,6 +98,7 @@ func _register_all() -> void:
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.ADD_USES_REMAINING,         AddUsesRemainingHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.INCREMENT_TILE_DATA,        IncrementTileDataHandler.new())
 	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.SET_TILE_DATA,              SetTileDataHandler.new())
+	_register(T.Category.TILE_CONTROL, T.TileControlSubtype.PUSH_TARGETED_TILES,        PushTargetedTilesHandler.new())
 
 	# ── DICE CONTROL ───────────────────────────────────────────────────────────
 	_register(T.Category.DICE_CONTROL, T.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE,  ChangeActivatorValueHandler.new())
@@ -108,6 +110,7 @@ func _register_all() -> void:
 	_register(T.Category.DICE_CONTROL, T.DiceControlSubtype.GIVE_DIE_AWAY,           GiveDieAwayHandler.new())
 	_register(T.Category.DICE_CONTROL, T.DiceControlSubtype.KEEP_DIE_WITH_TILE,      KeepDieWithTileHandler.new())
 	_register(T.Category.DICE_CONTROL, T.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE,   SpawnHolographicDieHandler.new())
+	_register(T.Category.DICE_CONTROL, T.DiceControlSubtype.KEEP_DIE_WITH_ACTOR,     KeepDieWithActorHandler.new())
 
 	# ── SCENARIO CONTROL ───────────────────────────────────────────────────────
 	_register(T.Category.SCENARIO_CONTROL, T.ScenarioControlSubtype.OPEN_SHOP,  OpenShopHandler.new())

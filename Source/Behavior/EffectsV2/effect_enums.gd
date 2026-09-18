@@ -45,6 +45,7 @@ enum TargetingSubtype {
 	TARGET_TILE_WITH_OFFSET,		## Targets a tile that is offset from the source tile
 	TARGET_EFFECT_SOURCE,          	## The tile or entity that owns this chain
 	TARGET_SELF,                   	## The actor itself (e.g. enemy targets itself)
+	TARGET_RANDOM_OTHER_ENEMY,     	## One random living enemy that isn't the actor
 }
 
 
@@ -85,6 +86,7 @@ enum DiceControlSubtype {
 	KEEP_DIE_WITH_TILE,      ## Retain the activator die on this tile after use
 	SPAWN_HOLOGRAPHIC_DIE,   ## Spawn a holographic (one-use) die
 	RECEIVE_DIE_FROM_TARGET, ## Enemy action: take a die from a target
+	KEEP_DIE_WITH_ACTOR,     ## The actor holds onto the activator die instead of returning it
 }
 
 
@@ -112,6 +114,7 @@ enum TileControlSubtype {
 	ADD_USES_REMAINING,         ## Add N uses to targeted tiles
 	INCREMENT_TILE_DATA,        ## Increment a named int stored on a tile
 	SET_TILE_DATA,              ## Set a named value stored on a tile
+	PUSH_TARGETED_TILES,        ## Push each targeted tile one cell (zero offset = random)
 }
 
 
