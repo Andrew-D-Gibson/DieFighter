@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state_4"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="tex_5"]
 [ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="enemy_6"]
+[ext_resource type="Resource" uid="uid://dbjkv27qxwp4x" path="res://Source/Content/ScenarioResources/Hazards/solar_flare.tres" id="haz_flare"]
 
 [sub_resource type="Resource" id="Resource_reward0"]
 script = ExtResource("script_2")
@@ -40,5 +41,6 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_0")
 map_icon = ExtResource("tex_5")
 background_resource = ExtResource("bg_3")
+hazard = ExtResource("haz_flare")
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

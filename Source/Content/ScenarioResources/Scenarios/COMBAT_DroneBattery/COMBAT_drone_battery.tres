@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="tex_5"]
 [ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Content/Enemies/EnemyResources/defender.tres" id="enemy_6"]
 [ext_resource type="Resource" uid="uid://c8kw8h1mjtmml" path="res://Source/Content/Enemies/EnemyResources/cannon_drone.tres" id="enemy_7"]
+[ext_resource type="Resource" uid="uid://b1vjawhxysmae" path="res://Source/Content/ScenarioResources/Hazards/asteroid_field.tres" id="haz_rocks"]
 
 [sub_resource type="Resource" id="Resource_reward0"]
 script = ExtResource("script_2")
@@ -55,5 +56,6 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_0")
 map_icon = ExtResource("tex_5")
 background_resource = ExtResource("bg_3")
+hazard = ExtResource("haz_rocks")
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1"), SubResource("Resource_spawn2")])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

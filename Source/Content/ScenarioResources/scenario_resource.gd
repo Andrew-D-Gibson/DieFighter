@@ -8,4 +8,8 @@ extends Resource
 
 @export var rewards: Dictionary[ScenarioManager.Faction, RewardResource]
 
+## Optional recurring environmental event for this encounter (solar flare, ion
+## storm, ...). Null means a plain, quiet fight.
+@export var hazard: ScenarioHazardResource
+
 var scenario_seed: int = 0

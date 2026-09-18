@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://bqtyawtjnq4j1" path="res://Source/Content/Enemies/EnemyResources/sector_boss.tres" id="5_8etcm"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_msmmn"]
 [ext_resource type="Resource" uid="uid://kfnsjk3tjcr0" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/sector_boss.tres" id="7_k6gms"]
+[ext_resource type="Resource" uid="uid://dbjkv27qxwp4x" path="res://Source/Content/ScenarioResources/Hazards/solar_flare.tres" id="haz_flare"]
 
 [sub_resource type="Resource" id="Resource_j621h"]
 script = ExtResource("6_msmmn")
@@ -27,5 +28,6 @@ script = ExtResource("3_664ej")
 map_icon = ExtResource("2_1djmd")
 background_resource = ExtResource("1_86g1y")
 sector_gate_scenario = true
+hazard = ExtResource("haz_flare")
 starting_enemies = Array[ExtResource("4_f4n7r")]([SubResource("Resource_4dr6h")])
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

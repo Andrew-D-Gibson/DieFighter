@@ -1,0 +1,51 @@
+[gd_resource type="Resource" script_class="ScenarioHazardResource" format=3 uid="uid://b1vjawhxysmae"]
+
+[ext_resource type="Script" uid="uid://bpcwym2qynvqs" path="res://Source/Content/ScenarioResources/scenario_hazard_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_1"]
+[ext_resource type="Resource" uid="uid://dmov75b4snh4y" path="res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres" id="sfx_2"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_3"]
+
+[sub_resource type="Resource" id="Resource_step1"]
+script = ExtResource("script_1")
+category = 2
+amount = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step2"]
+script = ExtResource("script_1")
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("script_1")
+category = 4
+color = Color(0.949, 0.612, 0.365, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("script_1")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_2")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_1")
+category = 5
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain6"]
+script = ExtResource("script_3")
+effects = Array[ExtResource("script_1")]([SubResource("Resource_step1"), SubResource("Resource_step2"), SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+hazard_name = "Asteroid Impact"
+description = "[color=orange]Locks[/color] a random tile for the turn"
+color = Color(0.949, 0.612, 0.365, 1)
+turns_until_first = 2
+turns_between = 2
+effect_chain_v2 = SubResource("Resource_chain6")
+metadata/_custom_type_script = "uid://bpcwym2qynvqs"

@@ -1,3 +1,1 @@
-[21:14:50] Debug logger initialized
-[21:14:50] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[21:14:51] Starting scenario
+[21:20:27] Debug logger initialized

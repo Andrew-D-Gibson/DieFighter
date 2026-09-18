@@ -92,6 +92,15 @@ signal set_current_clickable(clickable: Clickable)
 signal targeting_computer_retargeted()
 
 
+# Hazard Events
+## A scenario's hazard is set up (or cleared, when the hazard is null).
+signal hazard_armed(hazard: ScenarioHazardResource, turns_remaining: int)
+## The countdown ticked. Emitted every player turn while a hazard is active.
+signal hazard_countdown_changed(hazard: ScenarioHazardResource, turns_remaining: int)
+## The hazard just went off.
+signal hazard_triggered(hazard: ScenarioHazardResource)
+
+
 # Visual/Effects Events
 signal set_background(background_resource: BackgroundResource)
 signal take_screenshot()

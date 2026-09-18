@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="ScenarioHazardResource" format=3 uid="uid://dbjkv27qxwp4x"]
+
+[ext_resource type="Script" uid="uid://bpcwym2qynvqs" path="res://Source/Content/ScenarioResources/scenario_hazard_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_1"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_2"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_3"]
+
+[sub_resource type="Resource" id="Resource_step1"]
+script = ExtResource("script_1")
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step2"]
+script = ExtResource("script_1")
+category = 2
+amount = -99
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("script_1")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("script_1")
+category = 2
+amount = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_1")
+category = 4
+color = Color(0.808, 0.941, 0.945, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step6"]
+script = ExtResource("script_1")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_2")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_1")
+category = 2
+amount = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step8"]
+script = ExtResource("script_1")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain9"]
+script = ExtResource("script_3")
+effects = Array[ExtResource("script_1")]([SubResource("Resource_step1"), SubResource("Resource_step2"), SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+hazard_name = "Solar Flare"
+description = "Wipes [color=blue]all shields[/color] from every ship, then deals [color=red]3 damage[/color] to each"
+color = Color(0.808, 0.941, 0.945, 1)
+turns_until_first = 3
+turns_between = 3
+effect_chain_v2 = SubResource("Resource_chain9")
+metadata/_custom_type_script = "uid://bpcwym2qynvqs"

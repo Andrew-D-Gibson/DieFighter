@@ -4,6 +4,42 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Scenario hazards: the environment gets a turn too
+
+**Built:** A new system for recurring environmental events attached to a
+scenario.
+
+- `ScenarioHazardResource` — name, description, colour, a first-trigger delay,
+  a repeat interval, and an `EffectChainV2`. Hangs off `ScenarioResource.hazard`
+  (null = a plain quiet fight).
+- `HazardManager` (`Systems/HazardManager`) — arms on `Events.load_scenario`,
+  counts down on `Events.player_turn_start`, and queues a `HazardEvent` onto the
+  live scenario engine when it lands. Because it goes through the engine, a
+  flare's damage passes the same modifier pipeline as everything else.
+- `HazardIndicator` — a countdown banner across the top of the sky, red at one
+  turn out, shaking when it fires.
+
+Three hazards, attached to four encounters:
+- **Solar Flare** (Wolfpack, boss fight) — every 3 turns, wipes *all* shields on
+  the board and burns every ship for 3. It hits the enemies too, which is the
+  interesting part: the strongest play is timing your big swing for the turn
+  right after the flare, when nothing on screen has any shields left.
+- **Ion Storm** (Ion Lances) — every 2 turns, rerolls every die on the board.
+  Damages nobody, and is far worse for a carefully-planned turn than 3 damage.
+- **Asteroid Impact** (Drone Battery) — every 2 turns, locks a random tile.
+
+**Why the countdown matters:** the banner isn't decoration, it's the entire
+justification for the feature. A flare that wipes the board without warning is
+a dice roll. One you watched count down for two turns while deciding whether to
+spend on shields is a decision. Same rule the intent telegraph already follows.
+
+**Verified live:** jumped into the Wolfpack fight, gave both Venom Fighters 6
+shields, ran three player turns. Shields 6 → 0 on both, HP 18 → 15 on both,
+player 20 → 17, countdown reset to 3. Banner read "SOLAR FLARE IN 3 TURNS"
+throughout.
+
+---
+
 ## 2026-09-17 — Revived the four dead tiles, and killed every boot error with them
 
 **Built:** `ComplicatedTileResources/` held four fully-designed tiles —
