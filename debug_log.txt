@@ -1,6 +1,6 @@
-[22:12:10] Debug logger initialized
-[22:12:10] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[22:12:10] Starting scenario
-[22:12:38] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres
-[22:12:39] Starting scenario
-[22:12:39] Starting combat
+[22:17:33] Debug logger initialized
+[22:17:33] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[22:17:33] Starting scenario
+[22:18:01] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres
+[22:18:02] Starting scenario
+[22:18:02] Starting combat

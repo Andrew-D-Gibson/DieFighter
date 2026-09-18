@@ -4,6 +4,44 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — The Siege Mortar: a gun with a ship attached
+
+**Built:** Two new actions, a new enemy, a new fight, and the art for all of it.
+
+- **Charge Bore** (new intent icon + info art) — spools up, gains 3–5 shields,
+  and telegraphs that it fires next turn.
+- **Siege Shot** (new intent icon + info art) — 8–13 damage, the biggest single
+  hit any non-boss enemy has.
+- **Siege Mortar** (22 HP, new 32×32 sprite) — a squat braced artillery
+  platform with orange charge capacitors on its shoulders and a bore aimed
+  straight down at the player. Two pools on `TURN_CYCLE`: loading (mostly blank
+  faces, one guaranteed Charge Bore) then loaded (two of six faces are the big
+  shot).
+- **COMBAT_SiegeBattery** — Mortar + Defender.
+
+**Why `TURN_CYCLE` and not the new `COMBAT_ROUNDS`:** `turns_alive` only
+advances on turns the mortar was actually *fed*, which turns out to be the
+better mechanic. The loaded shot just sits there waiting for you — you can see
+it's charged and choose not to hand it a die, but that's also a turn you didn't
+spend killing it, and it's wearing the shields it gained while charging. The
+Defender escort exists to make that choice expensive: it soaks the dice you'd
+rather be spending on the Mortar.
+
+Using the "wrong" mode gave a better fight than the obvious one. Worth
+remembering that `TURN_CYCLE` means *turns acted*, not rounds elapsed — that
+distinction is a design lever, not just a gotcha.
+
+**Verified live:** stepped `turns_alive` 0→3 — pools alternate 0, 1, 0, 1, with
+the loading pool producing four blanks and a Charge Bore, and the loaded pool
+producing two Siege Shots at 8 then 12.
+
+**Content targets from DEMO_PLAN, now met:** combat scenario templates 3 → 11
+(target 6–8), combat-capable enemies 5 → 10 (target 8–10), event scenarios
+2 → 5 (target 4–6), tiles 14 → 24 (target ~21), bosses 1 kit with 3 sector
+variants.
+
+---
+
 ## 2026-09-17 — The Bounty Runner, and a timer that actually ticks
 
 **Built:** `PoolSelection.COMBAT_ROUNDS` — a fourth mode, indexing the action
