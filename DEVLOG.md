@@ -4,6 +4,31 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — The Field Tender, and a fight that's a decision instead of a race
+
+**Built:** `repair_ally` and `aegis_ally` were authored earlier tonight and had
+no owner. They do now.
+
+**Field Tender** (12 HP / 8 shields) — a repair barge, drawn from scratch: a
+boxy utility hull with a green sensor band, a repair cross stencilled on its
+face, and two emitter pods on side arms. Against two gray Venom Fighters it
+reads as "the medic" from across the screen with no UI help at all.
+
+Two of its six faces are *always* support (Repair Beam 4–8, Aegis Link 4–8,
+both `force_include` at weight 0). It barely attacks — 1–3 damage. The point
+isn't the Tender's threat, it's that killing it first is a real decision rather
+than an obvious one: every turn you spend on a soft 12 HP barge is a free turn
+for the two ships that actually hurt you.
+
+New fight: **COMBAT_TenderEscort** — Venom Fighter / Tender / Venom Fighter.
+Combat templates now 8 → 9.
+
+**Verified live:** dropped an ally to 5 HP, fed the Tender a 1 and a 5. Ally
+healed 5 → 13, a *different* ally gained 4 shields, and the Tender's own 12/8
+never moved. `TARGET_RANDOM_OTHER_ENEMY` correctly refuses to pick the actor.
+
+---
+
 ## 2026-09-17 — Enemy damage scales with the run, not just enemy health
 
 **Built:** `GameStateManager.get_damage_multiplier()`, applied in

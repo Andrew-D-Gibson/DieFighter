@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://bfqg4bqueelwx"]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="PackedScene" uid="uid://cuqq8i1t2wkwg" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/tender_ship_graphics.tscn" id="gfx_3"]
+[ext_resource type="Texture2D" uid="uid://cu56brsxbsafc" path="res://Assets/Textures/Enemies/Tender/tender_targeting_image.png" id="tex_4"]
+[ext_resource type="Resource" uid="uid://brr01wenpqywh" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/repair_ally.tres" id="act_5"]
+[ext_resource type="Resource" uid="uid://cnsicvupexlcv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/aegis_ally.tres" id="act_6"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_7"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_8"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_9"]
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_5")
+weight = 0.0
+min_amount = 4
+max_amount = 8
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt1"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_6")
+weight = 0.0
+min_amount = 4
+max_amount = 8
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt2"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_7")
+weight = 2.0
+min_amount = 3
+max_amount = 6
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt3"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_8")
+weight = 1.5
+min_amount = 1
+max_amount = 3
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt4"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_9")
+weight = 1.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2"), SubResource("Resource_opt3"), SubResource("Resource_opt4")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Field Tender"
+description = "Repair barge. Keeps the dangerous ships dangerous."
+max_health = 12
+starting_shields = 8
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+ship_graphics_scene = ExtResource("gfx_3")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex_4")
+health_bar_position = Vector2(-22, -9)
+dice_queue_position = Vector2(26, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"
