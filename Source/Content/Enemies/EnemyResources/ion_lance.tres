@@ -1,0 +1,60 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://x46nmdaxwrnm"]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="PackedScene" uid="uid://dx6ohmackmhwg" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/ion_lance_ship_graphics.tscn" id="gfx_3"]
+[ext_resource type="Texture2D" uid="uid://dmwvhly1a8jbt" path="res://Assets/Textures/Enemies/FighterJet/fighter_jet_targeting_image.png" id="tex_4"]
+[ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_5"]
+[ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_6"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_7"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_8"]
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_5")
+weight = 0.0
+min_amount = 3
+max_amount = 5
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt1"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_6")
+weight = 0.0
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt2"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_7")
+weight = 3.0
+min_amount = 2
+max_amount = 4
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt3"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_8")
+weight = 1.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2"), SubResource("Resource_opt3")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Ion Lance"
+description = "Fast interceptor. Goes for the engines, not the hull."
+max_health = 9
+starting_shields = 0
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+ship_graphics_scene = ExtResource("gfx_3")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex_4")
+health_bar_position = Vector2(-24, -8)
+dice_queue_position = Vector2(28, 6)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

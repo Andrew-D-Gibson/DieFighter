@@ -4,6 +4,59 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Two new enemies, five new enemy actions, five new fights
+
+**Built:** Content on top of this morning's new verbs.
+
+Actions (`EnemyActions/EnemyActionResources/`): Impound, Engine Siphon, Grid
+Quake, Repair Beam, Aegis Link.
+
+Enemies:
+- **Tithe Collector** (16 HP / 4 shields) — a customs hull that taxes your dice
+  economy instead of your hull. Exactly one of its six faces impounds: weight 0
+  plus `force_include` guarantees one and only one, so the threat is a specific
+  *number* you can route around rather than a coin flip. Uses the previously
+  unused `viper.png`.
+- **Ion Lance** (9 HP / 0 shields) — fragile interceptor that goes after the two
+  things the rest of the game treats as safe: engine charge and grid layout. One
+  guaranteed siphon face, one guaranteed quake face. Uses the unused
+  `fighter_jet.png`.
+
+Fights (combat templates 3 → 8): Tithe Collector solo, two Ion Lances, Tithe +
+Ion escort, Wolfpack (2 Venom Fighters), Drone Battery (Defender + 2 Cannon
+Drones). DEMO_PLAN flagged "~8 combat slots pulling from only 3 templates" as
+the single biggest repetition risk; this roughly halves it.
+
+Targeting-computer silhouettes for both new ships are generated from the ship
+sprites by majority-downsample to 16×16 flat `#cef0f1`, matching how the
+existing ones look.
+
+**Fixed along the way:** Grid Quake picked a random cardinal direction and then
+silently did nothing whenever the tile was against a wall or boxed in — a
+telegraphed "your grid gets shoved" that doesn't shove is a broken promise, not
+an interesting outcome. Added `TileGrid.can_push_tile()` (extracted from
+`push_tile`'s own validation, which now calls it) and made the handler shuffle
+the cardinals and take the first direction that actually moves something.
+
+**Verified in a live session:** jumped into the Tithe+Ion fight, fed the
+Collector a 5 (Impound) and the Lance a 1 (Grid Quake). Hull 20 → 18, a tile
+slid from (3,1) to (4,1), and the Collector ended the turn visibly holding the
+die — one fewer die in the player's hand, and an extra action for it next turn.
+
+**Two things worth knowing:**
+- `.tres` files written by hand need a real UID in the header; invented strings
+  like `uid://ct1thcollectr1` aren't valid base-31 and won't resolve. Generated
+  a batch with `ResourceUID.create_id()` from a throwaway headless script.
+  Round-tripping a `.tres` through `ResourceSaver.save()` to get a UID does NOT
+  work — it strips `script_class` and adds no UID. Don't do that.
+- A hand-built `EffectData.new()` + direct `handler.apply()` from an MCP eval
+  hung the game hard (main thread wedged, no further evals). Real gameplay
+  paths are fine. Not chased — `EffectData` is a `@tool` script whose setters
+  call `notify_property_list_changed()`, which is the obvious suspect outside
+  the editor. Test effects through actions, not by constructing EffectData live.
+
+---
+
 ## 2026-09-17 — Three new effect verbs, and icons for five new enemy actions
 
 **Built:** Plumbing for enemy actions the engine couldn't previously express,

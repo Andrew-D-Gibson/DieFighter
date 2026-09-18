@@ -1,1 +1,6 @@
-[20:14:19] Debug logger initialized
+[21:03:31] Debug logger initialized
+[21:03:31] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[21:03:31] Starting scenario
+[21:03:56] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheEscort/COMBAT_tithe_escort.tres
+[21:03:57] Starting scenario
+[21:03:57] Starting combat

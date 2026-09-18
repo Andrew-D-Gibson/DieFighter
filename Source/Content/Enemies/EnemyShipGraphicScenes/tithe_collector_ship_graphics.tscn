@@ -1,0 +1,27 @@
+[gd_scene format=3 uid="uid://bny00luqxewkt"]
+
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_shader"]
+[ext_resource type="Texture2D" uid="uid://bmsl0xuub1wjn" path="res://Assets/Textures/Enemies/Viper/viper.png" id="2_hull"]
+[ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="3_engine"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tithe"]
+resource_local_to_scene = true
+shader = ExtResource("1_shader")
+shader_parameter/alpha = 1.0
+shader_parameter/flash_color = Color(1, 0, 0, 1)
+shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
+shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
+shader_parameter/cloak_tolerance = 0.1
+
+[node name="TitheCollectorShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_tithe")
+texture = ExtResource("2_hull")
+
+[node name="EngineParticles" parent="." instance=ExtResource("3_engine")]
+position = Vector2(-11, -15)
+
+[node name="EngineParticles2" parent="." instance=ExtResource("3_engine")]
+position = Vector2(11, -15)

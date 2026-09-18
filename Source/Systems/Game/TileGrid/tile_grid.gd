@@ -1,6 +1,11 @@
 class_name TileGrid
 extends Node2D
 
+## The only directions a tile can be pushed.
+const CARDINAL_DIRECTIONS: Array[Vector2i] = [
+	Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)
+]
+
 @export var grid_width: int = 5
 @export var grid_height: int = 3
 @export var grid_spacing: int = 24
@@ -223,31 +228,40 @@ func find_tile_pos(tile_to_find: Tile) -> Vector2i:
 	return Vector2i(-1, -1) # Return invalid position if not found
 
 
+## Whether pushing this tile that way would actually move anything: the whole
+## line of tiles being shoved needs an open cell to slide into. Callers that get
+## to choose a direction (a random shove, say) can use this to pick one that
+## isn't a silent no-op.
+func can_push_tile(tile: Tile, direction: Vector2i) -> bool:
+	if not direction in CARDINAL_DIRECTIONS:
+		return false
+
+	var start_pos: Vector2i = find_tile_pos(tile)
+	if not is_grid_pos_valid(start_pos):
+		return false
+
+	var pos: Vector2i = start_pos
+	while is_grid_pos_valid(pos) and tile_locations.has(pos):
+		pos += direction
+
+	return is_grid_pos_valid(pos) and is_grid_pos_open(pos)
+
+
 func push_tile(tile: Tile, direction: Vector2i) -> void:
-	# Only allow cardinal directions
-	var allowed_directions: Array[Vector2i] = [Vector2i(-1,0), Vector2i(1,0), Vector2i(0,-1), Vector2i(0,1)]
-	if not direction in allowed_directions:
+	if not direction in CARDINAL_DIRECTIONS:
 		printerr("TileGrid is trying to push a tile not in a cardinal direction!")
 		return
 
-	# Find the tile's current position
-	var start_pos: Vector2i = find_tile_pos(tile)
-	if not is_grid_pos_valid(start_pos):
+	if not can_push_tile(tile, direction):
 		return
 
 	# Gather all tiles in the push line
+	var start_pos: Vector2i = find_tile_pos(tile)
 	var positions: Array = []
 	var pos: Vector2i = start_pos
 	while is_grid_pos_valid(pos) and tile_locations.has(pos):
 		positions.append(pos)
 		pos += direction
-
-	# The next position after the last tile in the line
-	var end_pos: Vector2i = positions[-1] + direction
-
-	# Check if the end position is valid and open
-	if not (is_grid_pos_valid(end_pos) and is_grid_pos_open(end_pos)):
-		return
 
 	# Move all tiles in the line, starting from the end
 	for i: int in range(positions.size() - 1, -1, -1):

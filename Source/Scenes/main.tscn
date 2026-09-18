@@ -49,6 +49,11 @@
 [ext_resource type="Resource" uid="uid://6qryj83dsu" path="res://Source/Systems/TutorialManager/TutorialStepResources/systems_reveal.tres" id="34_s8v7r"]
 [ext_resource type="Resource" uid="uid://cytyumo1yx88e" path="res://Source/Systems/TutorialManager/TutorialStepResources/systems_explanation.tres" id="35_7yw3t"]
 [ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
+[ext_resource type="Resource" uid="uid://v82d83vwmjmq" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheCollector/COMBAT_tithe_collector.tres" id="80_tithe"]
+[ext_resource type="Resource" uid="uid://1afnq5aul5tn" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_IonLances/COMBAT_ion_lances.tres" id="81_ion"]
+[ext_resource type="Resource" uid="uid://s3hfdf1gooad" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheEscort/COMBAT_tithe_escort.tres" id="82_escort"]
+[ext_resource type="Resource" uid="uid://cg864or4c5wv8" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wolfpack/COMBAT_wolfpack.tres" id="83_wolf"]
+[ext_resource type="Resource" uid="uid://b00imj4aargrb" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_DroneBattery/COMBAT_drone_battery.tres" id="84_battery"]
 [ext_resource type="Resource" uid="uid://cooy3vvww8cn" path="res://Source/Systems/TutorialManager/TutorialStepResources/spawn_dice.tres" id="36_d6h8w"]
 [ext_resource type="Resource" uid="uid://oe3aethqnc7b" path="res://Source/Systems/TutorialManager/TutorialStepResources/dragging_dice_explanation.tres" id="37_0b58v"]
 [ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
@@ -360,7 +365,7 @@ current_game_save = ExtResource("7_3g417")
 sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
-combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj")])
+combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3")])
