@@ -70,9 +70,14 @@ func _create_shop_tiles() -> void:
 				prices[shop_index].visible = false
 				continue
 			
-			var chosen_resource: TileResource = RNGManager.pick_random(
-				RNGManager.Bucket.RUN, possible_shop_tiles
-			)
+			# Rarity-weighted here too, so a shop's four slots aren't a
+			# uniformly random slice of the whole tile list. Price still scales
+			# with rarity on top of this.
+			var chosen_resource: TileResource = \
+				Globals.reward_manager.pick_weighted_tile_reward(possible_shop_tiles)
+			if chosen_resource == null:
+				prices[shop_index].visible = false
+				continue
 			var tile: Tile = Globals.tile_grid.create_tile(chosen_resource)
 			add_child(tile)
 			

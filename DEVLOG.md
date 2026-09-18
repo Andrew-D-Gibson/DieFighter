@@ -4,6 +4,30 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Rarity actually means something now
+
+**Found while auditing tonight's content:** `TileResource.rarity` only affected
+**shop pricing**. Both combat rewards and shop stock were picked with a flat
+`pick_random`, so a Grudge Cannon showed up exactly as often as a plain Shield
+— it just cost more when it did. With 24 tiles now split 9 common / 8 uncommon
+/ 7 rare, that meant a rare tile was a ~29% draw.
+
+**Built:** `RewardManager.pick_weighted_tile_reward()` — rarity-weighted
+selection (common 1.0, uncommon 0.45, rare 0.18), used by both combat rewards
+and shop stock. Price still scales with rarity on top of it.
+
+Measured over 3000 draws against the live pool: 65% common / 26% uncommon / 8%
+rare. Finding an Overclock Coil is now an event.
+
+**Why this mattered enough to stop and fix:** I spent the night adding tiles
+and marking the strong ones rare, on the assumption rarity gated availability.
+It didn't. Every powerful thing I'd built was as common as the baseline ones,
+which quietly flattens the reward curve *and* makes the deliberately-strong
+tiles feel unremarkable. Worth checking that a data field is actually read
+before authoring content that depends on it.
+
+---
+
 ## 2026-09-17 — Fate finally does something
 
 **Built:** Fate is the game's story hook and had almost no encounter content —

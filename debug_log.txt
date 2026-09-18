@@ -1,6 +1,3 @@
-[22:06:29] Debug logger initialized
-[22:06:29] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
-[22:06:29] Starting scenario
-[22:06:56] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres
-[22:06:57] Starting scenario
-[22:06:57] Starting combat
+[22:09:24] Debug logger initialized
+[22:09:25] Loading scenario: res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres
+[22:09:25] Starting scenario

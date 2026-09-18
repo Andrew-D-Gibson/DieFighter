@@ -29,6 +29,38 @@ func _load_tile_resources() -> void:
 						_all_tile_resources.append(res)
 	
 	
+## Relative likelihood a tile of each rarity is offered. Rarity previously only
+## affected shop *pricing*, so a Grudge Cannon dropped exactly as often as a
+## plain Shield — which flattens the whole rarity axis and makes finding a
+## strong tile feel like nothing.
+const _RARITY_WEIGHTS: Dictionary[TileResource.Rarity, float] = {
+	TileResource.Rarity.COMMON: 1.0,
+	TileResource.Rarity.UNCOMMON: 0.45,
+	TileResource.Rarity.RARE: 0.18,
+}
+
+
+## Picks one tile out of a pool, biased by rarity. Returns null for an empty
+## pool so callers can fall back to a dice reward.
+func pick_weighted_tile_reward(pool: Array[TileResource]) -> TileResource:
+	if pool.is_empty():
+		return null
+
+	var total_weight: float = 0.0
+	for tile_resource: TileResource in pool:
+		total_weight += _RARITY_WEIGHTS.get(tile_resource.rarity, 1.0)
+
+	var roll: float = RNGManager.randf_range(RNGManager.Bucket.REWARDS, 0.0, total_weight)
+	for tile_resource: TileResource in pool:
+		var weight: float = _RARITY_WEIGHTS.get(tile_resource.rarity, 1.0)
+		if roll <= weight:
+			return tile_resource
+		roll -= weight
+
+	# Float drift only; the loop above almost always returns.
+	return pool[-1]
+
+
 func get_possible_tile_rewards() -> Array[TileResource]:
 	var player_tiles = Globals.tile_grid.tile_locations.values()
 	

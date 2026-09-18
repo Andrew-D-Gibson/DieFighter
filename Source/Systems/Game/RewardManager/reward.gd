@@ -67,7 +67,7 @@ func give_reward(reward_resource: RewardResource) -> void:
 			if len(forced_rewards) > 0:
 				chosen_resource = forced_rewards.pop_front()
 			else:
-				chosen_resource = RNGManager.pick_random(RNGManager.Bucket.REWARDS, possible_tile_rewards)
+				chosen_resource = Globals.reward_manager.pick_weighted_tile_reward(possible_tile_rewards)
 			possible_tile_rewards.erase(chosen_resource)
 			reward = Globals.tile_grid.create_tile(chosen_resource)
 			
