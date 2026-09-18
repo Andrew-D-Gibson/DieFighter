@@ -132,6 +132,7 @@ func run_enemy_turn() -> void:
 	# This prevents issues if enemies are removed during iteration
 	var current_enemies: Array[Enemy] = enemies.duplicate()
 	
+	var queued_anything: bool = false
 	for enemy: Enemy in current_enemies:
 		if not enemy or not is_instance_valid(enemy):
 			continue
@@ -140,8 +141,18 @@ func run_enemy_turn() -> void:
 			continue
 			
 		enemy.run_turn()
-		
-	await scenario_engine.finished_processing_queue
+		queued_anything = true
+
+	# finished_processing_queue only fires if there was a queue to finish. An
+	# enemy turn where nobody was handed a die queues nothing, and a turn that
+	# resolves without ever yielding is already done by the time we get here —
+	# awaiting the signal in either case hangs the game, because the player's
+	# next turn is started by enemy_turn_over and it would never be emitted.
+	if queued_anything and scenario_engine.currently_processing_queue:
+		await scenario_engine.finished_processing_queue
+	else:
+		await get_tree().process_frame
+
 	Events.enemy_turn_over.emit()
 
 

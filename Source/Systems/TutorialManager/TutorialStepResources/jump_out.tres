@@ -6,7 +6,6 @@
 [resource]
 script = ExtResource("1_s")
 tutorial_text = "Each marker is an encounter. Insert [color=white]dice[/color] into the controls (right_controls) to jump:"
-forced_dice = Array[int]([4, 2, 5])
 close_on_signal = 11
 tutorial_function = 10
 highlight_texture = ExtResource("2_s")
