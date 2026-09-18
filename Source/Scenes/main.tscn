@@ -83,6 +83,7 @@
 [ext_resource type="Resource" uid="uid://byo6vhmyxihg6" path="res://Source/Resources/SaveResources/tutorial_start.tres" id="55_qtm42"]
 [ext_resource type="Resource" uid="uid://mla8luh6twhs" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_gate_explanation.tres" id="56_x81fm"]
 [ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="67_1kud3"]
+[ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -399,7 +400,7 @@ shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("94_boss2"), ExtResource("95_boss3")])
-fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3")])
+fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
 starting_scenario = ExtResource("25_o33d5")
 jump_gate_scenario = ExtResource("26_jgate")
 

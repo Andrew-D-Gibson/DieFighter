@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://c2vce0wgp2aet"]
+
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg_3"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state_4"]
+[ext_resource type="Texture2D" uid="uid://b4am2o0ati2av" path="res://Assets/Textures/Map/EncounterIcons/fate_encounter.png" id="tex_5"]
+[ext_resource type="Resource" uid="uid://cjnui7le0auy3" path="res://Source/Content/Enemies/EnemyResources/fate_attacker.tres" id="enemy_6"]
+[ext_resource type="Resource" uid="uid://dhov6epk1r2c0" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_attacker_combat.tres" id="state_7"]
+[ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="script_rbg"]
+[ext_resource type="Resource" uid="uid://c440n0q257p8h" path="res://Source/Resources/BackgroundResources/fate_infection.tres" id="bg_fate"]
+[ext_resource type="Resource" uid="uid://wte5e085jmyd" path="res://Source/Content/ScenarioResources/Hazards/fate_rift.tres" id="haz_rift"]
+
+[sub_resource type="Resource" id="Resource_reward0"]
+script = ExtResource("script_2")
+min_money = 1
+max_money = 4
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_spawn0"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_6")
+spawning_path_location = 0.2
+starting_state = ExtResource("state_7")
+reward_resource = SubResource("Resource_reward0")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_reward1"]
+script = ExtResource("script_2")
+min_money = 1
+max_money = 4
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_spawn1"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_6")
+spawning_path_location = 0.4
+starting_state = ExtResource("state_7")
+reward_resource = SubResource("Resource_reward1")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_reward2"]
+script = ExtResource("script_2")
+min_money = 1
+max_money = 4
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_spawn2"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_6")
+spawning_path_location = 0.6
+starting_state = ExtResource("state_7")
+reward_resource = SubResource("Resource_reward2")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_reward3"]
+script = ExtResource("script_2")
+min_money = 1
+max_money = 4
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_spawn3"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_6")
+spawning_path_location = 0.8
+starting_state = ExtResource("state_7")
+reward_resource = SubResource("Resource_reward3")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_fatebg"]
+script = ExtResource("script_rbg")
+eligible_backgrounds = Array[ExtResource("bg_fate")]([ExtResource("bg_fate")])
+metadata/_custom_type_script = "uid://3roroso3mo17"
+
+[resource]
+script = ExtResource("script_0")
+map_icon = ExtResource("tex_5")
+background_resource = SubResource("Resource_fatebg")
+hazard = ExtResource("haz_rift")
+starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1"), SubResource("Resource_spawn2"), SubResource("Resource_spawn3")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

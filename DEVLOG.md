@@ -4,6 +4,36 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-17 — Fate finally does something
+
+**Built:** Fate is the game's story hook and had almost no encounter content —
+one 1-HP ship that attacks for 1, plus a map-corruption mechanic that eats
+tiles. It now has a set piece.
+
+- **Fate Rift** (hazard) — every 2 turns, inverts every 1 and 6 on the board and
+  tears 3 out of your hull. Reuses the existing `FLIP_ONES_AND_SIXES` verb,
+  which was previously only a player tile effect.
+- **FATE_Rift** (encounter) — four 1-HP Fate Echoes under the Rift, on the
+  fate-infection background. Added to `fate_scenarios`, so it can be the
+  corrupted tile that opens a sector.
+
+**The design, and why it needed the hazard to work:** dice only reach an enemy
+through the targeting computer, so an enemy you aren't attacking does nothing.
+That makes a swarm useless as a *damage* threat — it's a pile of HP that only
+ever acts one ship at a time. But it's an excellent *time* threat, and the Rift
+is what makes time cost something. Bring AOE (Chaos Explosion finally has a
+reason to exist) or bleed for three turns while reality scrambles your hand.
+
+Flipping 1s and 6s is also the most on-theme thing Fate can do: unlike damage
+it can't be shielded against, only routed around, and it specifically punishes
+a turn that was already carefully planned.
+
+**Verified live:** jumped in — four glitching echoes, "FATE RIFT IN 2 TURNS" in
+purple over the infection background. Ran two player turns: dice went
+[1, 6, 3] → [6, 1, 3] (the 3 untouched), hull 20 → 17, countdown reset to 2.
+
+---
+
 ## 2026-09-17 — Architecture overview brought up to date
 
 **Built:** Documentation, not code. `ARCHITECTURE_OVERVIEW.md` is the file
