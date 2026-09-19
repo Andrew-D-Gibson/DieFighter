@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://brr01wenpqywh"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="script_0"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_1"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_2"]
 [ext_resource type="Texture2D" uid="uid://b5xp4wfd2ymcp" path="res://Assets/Textures/Enemies/IntentIndicator/repair.png" id="tex_3"]
 [ext_resource type="Texture2D" uid="uid://ciigkvfon6f3n" path="res://Assets/Textures/Enemies/IntentIndicator/repair_info.png" id="tex_4"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_5"]
@@ -60,6 +60,6 @@ name = "Repair Beam"
 description = "[color=green]Repairs[/color] another ship for [color=green](amount)[/color]"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
-effect_chain_v2 = SubResource("Resource_chain")
+effect_chain = SubResource("Resource_chain")
 intent_amount = 4
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

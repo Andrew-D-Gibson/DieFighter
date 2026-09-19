@@ -79,7 +79,7 @@ Numbers below are a starting point to check your own instincts against, not a ha
 | Enemy base actions/verbs | 5 | 8 (+3, from 2.0) |
 | Location modifiers | 0 | 6 (1 per background, from 2.1) |
 
-- [ ] **Port the 4 legacy tiles first** (Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array) to EffectChainV2 — the designs already exist, they're the cheapest tiles on this list, and BRAINSTORMING §3 notes they already hint at push/pull and stacking archetypes worth reusing elsewhere
+- [ ] **Port the 4 legacy tiles first** (Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array) to EffectChain — the designs already exist, they're the cheapest tiles on this list, and BRAINSTORMING §3 notes they already hint at push/pull and stacking archetypes worth reusing elsewhere
 - [ ] New basic tile #1: ___
 - [ ] New basic tile #2: ___
 - [ ] New basic tile #3: ___
@@ -105,7 +105,7 @@ Numbers below are a starting point to check your own instincts against, not a ha
 
 Curated from BRAINSTORMING §8 (which has ~40 ideas across 10 subsections) — this is the subset I'd actually spend a month's remaining time on, roughly in order:
 
-- [ ] **§8.0 — Data-driven `AUDIO_VISUAL` subtypes** (`HITSTOP`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SLOW_MO`, `SPAWN_DAMAGE_NUMBER`, `SCREEN_SHAKE`, `VIGNETTE_PULSE`). Do this **first** even though it's not itself a "feel" moment — it's a week of plumbing that turns every item below into inspector-authorable content instead of one-off code, same payoff pattern as EffectChainV2 itself.
+- [ ] **§8.0 — Data-driven `AUDIO_VISUAL` subtypes** (`HITSTOP`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SLOW_MO`, `SPAWN_DAMAGE_NUMBER`, `SCREEN_SHAKE`, `VIGNETTE_PULSE`). Do this **first** even though it's not itself a "feel" moment — it's a week of plumbing that turns every item below into inspector-authorable content instead of one-off code, same payoff pattern as EffectChain itself.
 - [ ] **§8.3 — The impact trio** (flash + hitstop + shake, scaled to damage). The brainstorm's own #1 highest-impact-per-hour pick — touches every single hit in every fight.
 - [ ] **§8.2 — Combo pitch ladder** on tile activations. Nearly free (`SFXPlayer.get_pitch_escalation()` already exists), and it's the Balatro trick — climbing pitch as a turn's activations cascade.
 - [ ] **§8.1 — Staggered roll cascade + per-die clatter.** Cheapest perceived-quality win in the whole list; dice currently all move at once.

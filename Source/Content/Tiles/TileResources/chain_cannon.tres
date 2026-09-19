@@ -3,11 +3,11 @@
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_g62jg"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_og7ys"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_x5guy"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_5tyjx"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_26nv3"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="11_5tyjx"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="12_26nv3"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="12_f7e78"]
 [ext_resource type="Texture2D" uid="uid://bajiqlioyp6wv" path="res://Assets/Textures/Tiles/RedTiles/chain_cannon-Sheet.png" id="12_na2wt"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="13_f7e78"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="13_f7e78"]
 
 [sub_resource type="Resource" id="Resource_istkj"]
 script = ExtResource("1_g62jg")
@@ -121,5 +121,5 @@ description = "(die_4) -> Deals [color=red]3 damage[/color] twice, then [color=o
 textures = SubResource("SpriteFrames_ha28q")
 uses_per_combat = 3
 activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])
-effect_chain_v2 = SubResource("Resource_j3pel")
+effect_chain = SubResource("Resource_j3pel")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

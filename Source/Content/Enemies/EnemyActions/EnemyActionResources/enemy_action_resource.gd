@@ -5,11 +5,11 @@ extends Resource
 @export var description: String
 @export var indicator_texture: Texture2D
 @export var info_texture: Texture2D
-@export var effect_chain_v2: EffectChainV2
+@export var effect_chain: EffectChain
 
 ## Set by the EnemyActionOptionResource who creates this action.
 ## The raw rolled amount — used both for display (via get_intent_amount_text())
-## and by effect_chain_v2's "Set to Enemy Intent" amount modifier.
+## and by effect_chain's "Set to Enemy Intent" amount modifier.
 @export var intent_amount: int = 0
 
 

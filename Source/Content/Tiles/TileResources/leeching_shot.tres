@@ -4,10 +4,10 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_cy0vr"]
 [ext_resource type="Texture2D" uid="uid://hy0m1lwpojv4" path="res://Assets/Textures/Tiles/RedTiles/leeching_shot.png" id="4_5xqwv"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="10_c7e3k"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="10_uauxn"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="10_uauxn"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="11_qp02v"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="11_xm7fs"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="11_y0stg"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="11_xm7fs"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="11_y0stg"]
 
 [sub_resource type="Resource" id="Resource_r2sor"]
 script = ExtResource("1_u0h2o")
@@ -112,5 +112,5 @@ rarity = 1
 textures = SubResource("SpriteFrames_cy0vr")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r2sor"), SubResource("Resource_0lgwc"), SubResource("Resource_swlve")])
-effect_chain_v2 = SubResource("Resource_f3imi")
+effect_chain = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

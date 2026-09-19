@@ -63,11 +63,11 @@ func _fire() -> void:
 	Events.camera_shake_large.emit(true)
 
 	var engine: ScenarioEngine = Globals.scenario_manager.engine
-	if engine == null or current_hazard.effect_chain_v2 == null:
+	if engine == null or current_hazard.effect_chain == null:
 		return
 
 	var event: HazardEvent = HazardEvent.new()
 	event.actor = Globals.player
 	event.effect_source = Globals.player
-	event.chain = current_hazard.effect_chain_v2
+	event.chain = current_hazard.effect_chain
 	engine.queue_event(event)

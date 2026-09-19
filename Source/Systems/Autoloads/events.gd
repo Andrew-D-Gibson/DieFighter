@@ -78,6 +78,9 @@ signal info_graphic_closed()
 signal close_info()
 signal toggle_pause_menu()
 signal toggle_fps_display()
+## The dev console was opened or closed. Dev-only UI that lives outside the
+## console's own scene follows this rather than watching for the key itself.
+signal dev_console_toggled(is_open: bool)
 signal highlight_dice_area()
 signal show_map()
 signal show_systems()
@@ -106,6 +109,18 @@ signal hazard_armed(hazard: ScenarioHazardResource, turns_remaining: int)
 signal hazard_countdown_changed(hazard: ScenarioHazardResource, turns_remaining: int)
 ## The hazard just went off.
 signal hazard_triggered(hazard: ScenarioHazardResource)
+
+
+# Background Modifier Events
+## The background on screen has finished changing, with any random pool
+## already resolved to a concrete resource. Listeners that care about which
+## background is actually up should use this rather than 'set_background',
+## which fires before the pick is made.
+signal background_changed(background: BackgroundResource)
+## The background the player just arrived in carries a permanent rule (or
+## none, when the resource is null). Emitted once per scenario, after the
+## rule has been registered on that scenario's engine.
+signal background_modifier_applied(modifier: BackgroundModifierResource)
 
 
 # Visual/Effects Events

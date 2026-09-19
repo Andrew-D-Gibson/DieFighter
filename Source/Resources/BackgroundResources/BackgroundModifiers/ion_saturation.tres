@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BackgroundModifierResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_modifier_resource.gd" id="script_0"]
+
+[resource]
+script = ExtResource("script_0")
+modifier_name = "Ion Saturation"
+description = "No ship can raise [color=blue]shields[/color]"
+color = Color(0.262745, 0.65098, 0.988235, 1)
+effect = 0

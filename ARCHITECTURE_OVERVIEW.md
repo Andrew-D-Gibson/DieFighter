@@ -130,7 +130,7 @@ For each event in `event_queue`:
 
 ### 4.2 EffectEvent Base Class
 
-**Location:** `Source/Behavior/EffectsV2/EffectEvents/effect_event.gd`
+**Location:** `Source/Behavior/Effects/EffectEvents/effect_event.gd`
 
 All combat actions flow through typed subclass instances of `EffectEvent`:
 
@@ -237,10 +237,10 @@ scenario_engine.queue_event(event)
 | Resource | Location Pattern | Purpose |
 |----------|------------------|---------|
 | `TileResource` | `Source/Content/Tiles/TileResources/*.tres` | Defines tile behavior, textures, uses per turn, activation criteria, effect chains |
-| `ScenarioHazardResource` | `Source/Content/ScenarioResources/Hazards/*.tres` | A recurring environmental event on a scenario (solar flare, ion storm, asteroid impact): timing plus an `EffectChainV2` |
+| `ScenarioHazardResource` | `Source/Content/ScenarioResources/Hazards/*.tres` | A recurring environmental event on a scenario (solar flare, ion storm, asteroid impact): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | In TileResource fields | Legacy effect chain (deprecated, see refactoring) |
-| `EffectChainV2` | In TileResource fields | Data-driven effect chain (refactored) |
+| `EffectChain` | In TileResource fields | Data-driven effect chain (refactored) |
 | `ActivationResource` | In TileResource.activation_checks | Dice criteria checks (value range, odd/even, same die value) |
 
 ### 5.2 Tile Resource Fields
@@ -257,9 +257,9 @@ class_name TileResource extends Resource
 @export var uses_per_combat: int = -1                # -1 = unlimited uses
 @export var activation_checks: Array[ActivationResource]
 @export var effect_chain: EffectChain                  # Legacy (to be removed)
-@export var effect_chain_v2: EffectChainV2             # Refactored (active)
+@export var effect_chain: EffectChain             # Refactored (active)
 @export var event_responses: Dictionary[TileEvent, EffectChain]      # Legacy
-@export var event_responses_v2: Dictionary[TileEvent, EffectChainV2] # Refactored
+@export var event_responses: Dictionary[TileEvent, EffectChain] # Refactored
 ```
 
 ### 5.3 Effect Chains
@@ -272,8 +272,8 @@ class_name TileResource extends Resource
    - No modifier interaction
    - Being phased out
 
-2. **EffectChainV2 (Refactored)**
-   - Located in `Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd`
+2. **EffectChain (Refactored)**
+   - Located in `Source/Behavior/Effects/EffectChain/effect_chain.gd`
    - Contains array of `EffectData` nodes
    - Calls EffectRegistry to resolve handlers
    - Integrates with ScenarioEngine modifiers
@@ -342,7 +342,7 @@ random question scenario not already placed in that sector.
 
 A `ScenarioResource` may carry a `ScenarioHazardResource`: a recurring
 environmental event with a first-trigger delay, a repeat interval, and an
-`EffectChainV2`. `HazardManager` counts down in player turns and queues a
+`EffectChain`. `HazardManager` counts down in player turns and queues a
 `HazardEvent` onto the live scenario engine, so hazard damage passes the same
 modifier pipeline as everything else.
 
@@ -355,18 +355,26 @@ Authored hazards live in `Source/Content/ScenarioResources/Hazards/`.
 
 ---
 
-## Refactoring Status (EffectsV2)
+## Data-Driven Effect System
 
-### 6.1 Data-Driven Effect System
-
-**New architecture in progress:**
+### 6.1 Components
 
 | Component | Location | Description |
 |-----------|----------|-------------|
-| `EffectContext` | `Source/Behavior/EffectsV2/effect_context.gd` | "Who and what" for effect execution: actor, effect_source, activator_die, targets, repetitions |
-| `EffectEnums` | `Source/Behavior/EffectsV2/effect_enums.gd` | Central category/subtype enums for effect classification |
-| `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps Category/Subtype to handler GDScript classes |
-| `EffectEvents/*` | `Source/Behavior/EffectsV2/EffectEvents/` | Event subclasses per subtype (50+ concrete event types) |
+| `EffectCatalog` | `Source/Behavior/Effects/effect_catalog.gd` | **The single source of truth for effect types.** One row per effect: label, handler class, and the EffectData fields that effect actually reads. The registry, the inspector dropdown and field visibility are all derived from it |
+| `EffectContext` | `Source/Behavior/Effects/effect_context.gd` | "Who and what" for effect execution: actor, effect_source, activator_die, targets, repetitions |
+| `EffectEnums` | `Source/Behavior/Effects/effect_enums.gd` | Owns the category/subtype **ordinals only** — authored `.tres` files store `subtype` as a raw int, so values are append-only |
+| `EffectRegistry` | `Autoloads/effect_registry.gd` | Builds its Category/Subtype → handler table from `EffectCatalog`, and runs `EffectCatalog.validate()` at startup |
+| `EffectEvents/*` | `Source/Behavior/Effects/EffectEvents/` | Event subclasses per subtype (50+ concrete event types) |
+
+**Adding an effect:** append the enum value, write the handler, add the catalog
+row. `EffectCatalog.validate()` fails loudly at startup if those three ever
+disagree — previously they could drift silently, and did: six effects existed in
+code but were unreachable from the inspector.
+
+A row may set `reserved = true` to hold an ordinal that is deliberately not
+implemented. Reserved rows get no handler and are not offered in the dropdown,
+so they cannot be authored by mistake, while the ordinals below them stay put.
 
 **Effect Categories**
 
@@ -392,7 +400,7 @@ Authored hazards live in `Source/Content/ScenarioResources/Hazards/`.
 > Without it, two tiles activating each other hard-freezes the game silently.
 > Relevant to anything using `ACTIVATE_TARGETED_TILES` or `PASS_DIE_TO_TILE`.
 
-**Flow when EffectChainV2 executes:**
+**Flow when EffectChain executes:**
 
 1. Caller builds `EffectContext` (actor, source, die, targets)
 2. Iterates through `EffectData` nodes
@@ -590,7 +598,7 @@ the *table they were drawn from* changes.
 | `die_placed_on_tile` | Die accepted on tile | Tutorial logging |
 | `tile_activation_complete` | Tile effect chain finished | Check end of turn (dice queue empty) |
 
-Tiles also respond to `TileEvent.EventType` hooks via `event_responses_v2`:
+Tiles also respond to `TileEvent.EventType` hooks via `event_responses`:
 `ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`,
 `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_PLAYER_FATAL_DAMAGE`. The
 last two enable tiles that take **no dice at all** and pay out reactively —
@@ -640,7 +648,7 @@ they cost a grid cell instead of a die.
                                                       ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                      EFFECT EXECUTION LAYER                          │
-│  EffectChain (Legacy)      EffectChainV2 (Refactored)              │
+│  EffectChain (Legacy)      EffectChain (Refactored)              │
 │  Direct Method Calls       → EffectContext                         │
 │                            → EffectRegistry                        │
 │                            → EffectEvent Subclasses                │
@@ -725,12 +733,12 @@ Source/
 │   └── Background/
 │       └── background_manager.gd               # Parallax layers
 │
-└── Behavior/EffectsV2/                        # Refactored effect system
+└── Behavior/Effects/                          # Data-driven effect system
     ├── EffectEvents/                          # Event subclasses (50+)
     │   ├── AttributeChange/damage_event.gd
     │   ├── TileControl/tile_activation_event.gd
     │   └── ...
-    ├── EffectChainV2/effect_chain_v2.gd       # New chain runner
+    ├── EffectChain/effect_chain.gd       # New chain runner
     └── effect_context.gd                      # Context for effect execution
 ```
 
@@ -755,5 +763,5 @@ Source/
 
 **Migration Strategy**
 
-- NewTileResource fields use `effect_chain_v2` + `event_responses_v2`
+- NewTileResource fields use `effect_chain` + `event_responses`
 - Legacy fields retained but not called by default

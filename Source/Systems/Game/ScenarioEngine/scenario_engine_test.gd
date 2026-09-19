@@ -21,7 +21,7 @@ func _ready() -> void:
    false_step.string_param = "Die was even!"
    cond_data.if_false_effects = [false_step]
 
-   var chain := EffectChainV2.new()
+   var chain := EffectChain.new()
    chain.effects = [cond_data]
 
    var my_die: Dice = load("res://Source/Systems/Game/Dice/dice.tscn").instantiate()

@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dkvqal8qwxrww"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_5kmcs"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="2_seowo"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_seowo"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_xicoq"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="3_b26dk"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_b26dk"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_seowo"]
 [ext_resource type="Texture2D" uid="uid://1e767ya4c7na" path="res://Assets/Textures/Tiles/YellowTiles/amplifier-Sheet.png" id="5_xicoq"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="8_rj18t"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="8_rj18t"]
 
 [sub_resource type="Resource" id="Resource_f3imi"]
 script = ExtResource("2_seowo")
@@ -88,5 +88,5 @@ tile_name = "[color=yellow]Amplifier[/color]"
 description = "[color=yellow]Any die[/color] → [color=yellow]+2[/color] to the effects of tiles above and below this turn. [color=orange]Gives[/color] die to [color=purple]target[/color]"
 textures = SubResource("SpriteFrames_f1pqj")
 uses_per_combat = 1
-effect_chain_v2 = SubResource("Resource_seowo")
+effect_chain = SubResource("Resource_seowo")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

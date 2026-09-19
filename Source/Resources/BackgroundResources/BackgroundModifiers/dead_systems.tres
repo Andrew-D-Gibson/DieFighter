@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BackgroundModifierResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_modifier_resource.gd" id="script_0"]
+
+[resource]
+script = ExtResource("script_0")
+modifier_name = "Dead Systems"
+description = "Tiles cannot activate [color=green]more than once[/color]"
+color = Color(0.478431, 0.741176, 0.2, 1)
+effect = 5

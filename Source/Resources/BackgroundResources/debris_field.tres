@@ -1,10 +1,12 @@
 [gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://sk166eerw6ax"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/shrapnel_wake.tres" id="mod_0"]
 
 [resource]
 resource_local_to_scene = true
 script = ExtResource("1_u7gdh")
+global_modifier = ExtResource("mod_0")
 background_color = Color(0.027451, 0.0117647, 0.14902, 1)
 nebula = null
 nebula_color = Color(0.82, 0.2132, 0.33456, 0.286275)

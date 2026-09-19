@@ -278,10 +278,10 @@ todos:
     content: Create CombatEngine, EffectEvent/DamageEvent, and Modifier base classes and wire them into the combat scene without changing existing tile/effect usage yet.
     status: pending
   - id: implement-effectdata-and-handlers
-    content: Add EffectData Resource, EffectContext, handlers, and registry (EffectChainV2) to mirror the data-driven design from conversation.md.
+    content: Add EffectData Resource, EffectContext, handlers, and registry (EffectChain) to mirror the data-driven design from conversation.md.
     status: pending
   - id: wire-tiles-to-engine
-    content: Update Tile.activate and handle_tile_event to use the new EffectChainV2 and CombatEngine instead of calling EffectChain.play directly.
+    content: Update Tile.activate and handle_tile_event to use the new EffectChain and CombatEngine instead of calling EffectChain.play directly.
     status: pending
   - id: migrate-damageeffect
     content: Port DamageEffect behavior into DamageEvent resolution and DealDamageHandler, and start authoring new damage tiles using EffectData/handlers.
@@ -496,7 +496,7 @@ You don’t delete everything at once; instead, you introduce the new system alo
 4. **Create an effect handler registry** (e.g., `[Source/Content/EffectsV2/effect_registry.gd]`):
   - Map `(category, subtype)` to a handler instance.
   - Used by the new `EffectChain` to look up handlers.
-5. **Implement `EffectChainV2`** (e.g., `[Source/Content/EffectsV2/effect_chain_v2.gd]`):
+5. **Implement `EffectChain`** (e.g., `[Source/Content/EffectsV2/effect_chain.gd]`):
   - Holds `@export var effects: Array[EffectData]`.
     - Has `func play(context: EffectContext, engine: CombatEngine) -> void` that:
       - Optionally handles repetitions / die reset like the old `EffectChain`.
@@ -516,10 +516,10 @@ You don’t delete everything at once; instead, you introduce the new system alo
     - Replace `EffectVariables` with `EffectContext`, or
     - Wrap `EffectVariables` so handlers and engine see only what they need.
     - Ensure context includes actor, tile, activator die, and any grid-status adjustments.
-3. **Update `Tile.activate()` to use `CombatEngine` + `EffectChainV2`**:
+3. **Update `Tile.activate()` to use `CombatEngine` + `EffectChain`**:
   - Instead of `await tile_resource.effect_chain.play(effect_variables)`, do:
     - Build `EffectContext` (including grid status modifications).
-    - Call `tile_resource.effect_chain_v2.play(context, combat_engine)`.
+    - Call `tile_resource.effect_chain.play(context, combat_engine)`.
     - Separately, ensure the combat loop is running `await combat_engine.process_events()` somewhere in the turn flow.
     - Keep the old `effect_chain` field around for tiles you haven’t migrated yet, behind a feature flag or an if/else.
 4. **Update `handle_tile_event()` in `Tile` similarly**:
@@ -546,7 +546,7 @@ You don’t delete everything at once; instead, you introduce the new system alo
     - “When the player deals damage, gain shield”:
       - A `Modifier` that listens in `on_after_event()` and enqueues a `GainShieldEvent`.
 4. **Stop using `DamageEffect` in new content**:
-  - For new tiles/abilities, author `EffectData` + `EffectChainV2` entries instead of `DamageEffect` resources.
+  - For new tiles/abilities, author `EffectData` + `EffectChain` entries instead of `DamageEffect` resources.
 5. **Gradually replace existing `DamageEffect` resources**:
   - For each tile or event that uses a `DamageEffect` in its old `EffectChain`:
     - Create equivalent `EffectData` entries (targeting + damage) in a v2 chain.
@@ -575,6 +575,6 @@ You don’t delete everything at once; instead, you introduce the new system alo
 
 - **Keep the old system running** while you build `CombatEngine`, events, and modifiers.
 - First wire up **one simple tile** (e.g., a basic “damage enemy” tile) to the new pipeline:
-  - Tile → `EffectChainV2` → handlers → `CombatEngine` → `DamageEvent`.
+  - Tile → `EffectChain` → handlers → `CombatEngine` → `DamageEvent`.
 - Once that works with a couple of modifiers, **clone the pattern** for other effect types (shields, status, particles-only, etc.).
 - Only after the majority of combat flows through `CombatEngine` should you start deleting old `Effect`/`EffectChain`-based code.

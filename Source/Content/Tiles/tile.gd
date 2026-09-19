@@ -118,14 +118,14 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 
 	var trigger_event: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
 	trigger_event.responder = self
-	trigger_event.chain = tile_resource.event_responses_v2[event_check]
+	trigger_event.chain = tile_resource.event_responses[event_check]
 	scenario_engine.queue_event(trigger_event)
 
 
 ## Finds the TileEvent key matching this event type whose response should
 ## fire, respecting listen_only_for_self (self-only vs. any tile).
 func _find_matching_event_response(tile: Tile, event: TileEvent.EventType) -> TileEvent:
-	for event_check: TileEvent in tile_resource.event_responses_v2.keys():
+	for event_check: TileEvent in tile_resource.event_responses.keys():
 		if event_check.event == event:
 			if (tile == self) or (not event_check.listen_only_for_self):
 				return event_check

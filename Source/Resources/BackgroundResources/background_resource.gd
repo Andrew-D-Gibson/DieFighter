@@ -3,6 +3,11 @@ extends Resource
 
 @export var background_color: Color
 
+@export_category('Global Modifier')
+## A rule that holds for as long as the player occupies this background, e.g.
+## "no ship can raise shields". Leave null for plain, unmodified space.
+@export var global_modifier: BackgroundModifierResource
+
 @export_category('Nebula')
 @export var nebula: bool
 @export var nebula_color: Color

@@ -24,6 +24,10 @@ var nebula: Node2D
 ## Current background name for modifier system
 var current_background_name: String = ""
 
+## The concrete background currently on screen, after any random pool has been
+## resolved. BackgroundModifierManager reads this to find the rule in force.
+var current_background: BackgroundResource = null
+
 
 func _ready() -> void:
 	Globals.background_manager = self
@@ -147,6 +151,7 @@ func _set_background(background_resource: Resource) -> void:
 		return
 	
 	var bg_resource: BackgroundResource = background_resource as BackgroundResource
+	current_background = bg_resource
 	current_background_name = _determine_background_name(bg_resource)
 	self.self_modulate = bg_resource.background_color
 	
@@ -158,6 +163,8 @@ func _set_background(background_resource: Resource) -> void:
 		_set_debris(bg_resource.num_of_med_pieces, bg_resource.num_of_large_pieces, bg_resource.background_color)
 	if bg_resource.static_objects.size() > 0:
 		_set_static_objects(bg_resource.static_objects)
+
+	Events.background_changed.emit(bg_resource)
 
 
 func _set_nebula(nebula_color: Color) -> void:
@@ -196,11 +203,13 @@ func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_co
 		piece.randomize()
 		piece.background_color = background_color
 		piece.set_meta("parallax_level", 2 if piece.is_medium else 1)
+		add_child(piece)
+		# Same ordering trap as the static objects below; debris only hid it by
+		# self-correcting the first time it wrapped.
 		piece.global_position = Vector2(
 			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x),
 			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, -50, screen_size.y)
 		)
-		add_child(piece)
 		debris.append(piece)
 
 
@@ -210,12 +219,17 @@ func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResourc
 			continue
 		
 		var static_object: Node2D = object_data.scene.instantiate()
-		static_object.global_position = object_data.position
 		static_object.scale = object_data.scale
 		static_object.rotation = object_data.rotation
 		static_object.modulate = object_data.modulate
 		static_object.set_meta("parallax_level", object_data.get_parallax_level() if object_data.has_method("get_parallax_level") else 0)
 		add_child(static_object)
+
+		# Must come after add_child: on a node outside the tree global_position
+		# just writes the local one, which this manager's own transform then
+		# shifts again, landing the object a screen away from where it was
+		# authored. Objects that never wrap (parallax 0) stay lost there.
+		static_object.global_position = object_data.position
 		static_objects.append(static_object)
 			
 			

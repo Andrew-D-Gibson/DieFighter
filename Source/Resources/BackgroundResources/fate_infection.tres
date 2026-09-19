@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_tbvtb"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_v0oo0"]
 [ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="3_5u8kd"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/fates_tithe.tres" id="mod_0"]
 
 [sub_resource type="Resource" id="Resource_um1v6"]
 script = ExtResource("2_v0oo0")
@@ -12,6 +13,7 @@ metadata/_custom_type_script = "uid://cgosy7gnhi58w"
 
 [resource]
 script = ExtResource("1_tbvtb")
+global_modifier = ExtResource("mod_0")
 background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 nebula = null
 nebula_color = Color(0.388235, 0.376471, 0.360784, 0.168627)

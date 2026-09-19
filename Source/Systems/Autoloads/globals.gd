@@ -14,6 +14,7 @@ var state_manager: GameStateManager
 var background_manager: BackgroundManager
 var jump_manager: JumpManager
 var hazard_manager: HazardManager
+var background_modifier_manager: BackgroundModifierManager
 var run_stats: RunStats
 var tutorial_manager: TutorialManager
 

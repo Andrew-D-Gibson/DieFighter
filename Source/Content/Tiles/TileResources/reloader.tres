@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_wddxj"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_ymfbh"]
 [ext_resource type="Texture2D" uid="uid://ikbhhkyv3dl2" path="res://Assets/Textures/Tiles/YellowTiles/reloader-Sheet.png" id="5_wddxj"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="8_gicjh"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="9_3p6ad"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="9_ioum8"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="8_gicjh"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="9_3p6ad"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="9_ioum8"]
 
 [sub_resource type="Resource" id="Resource_1kud3"]
 script = ExtResource("8_gicjh")
@@ -70,5 +70,5 @@ description = "[color=yellow]Any die[/color] -> Add one use to every surrounding
 rarity = 2
 textures = SubResource("SpriteFrames_0qwli")
 uses_per_combat = 1
-effect_chain_v2 = SubResource("Resource_f3imi")
+effect_chain = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

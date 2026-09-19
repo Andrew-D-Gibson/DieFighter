@@ -1,8 +1,8 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://b708v5177epip"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="script_0"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_1"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_2"]
 [ext_resource type="Texture2D" uid="uid://v76llcscasy5" path="res://Assets/Textures/Enemies/IntentIndicator/siphon.png" id="tex_3"]
 [ext_resource type="Texture2D" uid="uid://cx6g0arpt67ic" path="res://Assets/Textures/Enemies/IntentIndicator/siphon_info.png" id="tex_4"]
 [ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="sfx_5"]
@@ -74,6 +74,6 @@ name = "Engine Siphon"
 description = "Drains [color=purple](amount) engine charge[/color]"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
-effect_chain_v2 = SubResource("Resource_chain")
+effect_chain = SubResource("Resource_chain")
 intent_amount = 3
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

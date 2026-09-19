@@ -2,9 +2,11 @@
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_ow0l5"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_807x5"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/ion_saturation.tres" id="mod_0"]
 
 [resource]
 script = ExtResource("1_ow0l5")
+global_modifier = ExtResource("mod_0")
 background_color = Color(0.10595, 0.0581038, 0.349306, 1)
 nebula = true
 nebula_color = Color(0.2673, 0.65274, 0.99, 0.164706)

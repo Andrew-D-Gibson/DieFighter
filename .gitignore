@@ -1,6 +1,10 @@
 # General ignores
 Exports/
 
+# Rewritten from scratch on every launch by DebugLogger (res://debug_log.txt),
+# so tracking it means every run shows up as a local change.
+debug_log.txt
+
 
 # Godot-specific ignores
 .godot/

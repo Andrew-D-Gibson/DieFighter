@@ -4,8 +4,8 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_k5jac"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_k7gdr"]
 [ext_resource type="Texture2D" uid="uid://b20hbpbd0v7jl" path="res://Assets/Textures/Tiles/BlueTiles/emergency_shield.png" id="10_rg6sh"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="11_55lg7"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="12_esdata"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="11_55lg7"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="12_esdata"]
 
 [sub_resource type="Resource" id="Resource_4tha5"]
 script = ExtResource("1_wphb4")
@@ -141,7 +141,7 @@ rarity = 1
 textures = SubResource("SpriteFrames_6btq7")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_wphb4")]([SubResource("Resource_4tha5")])
-event_responses_v2 = Dictionary[ExtResource("2_k5jac"), ExtResource("11_55lg7")]({
+event_responses = Dictionary[ExtResource("2_k5jac"), ExtResource("11_55lg7")]({
 SubResource("Resource_ejtl7"): SubResource("Resource_esv2chain")
 })
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

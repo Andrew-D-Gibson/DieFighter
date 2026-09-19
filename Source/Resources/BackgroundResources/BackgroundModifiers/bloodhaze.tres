@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="BackgroundModifierResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_modifier_resource.gd" id="script_0"]
+
+[resource]
+script = ExtResource("script_0")
+modifier_name = "Bloodhaze"
+description = "All [color=red]damage[/color] is doubled"
+color = Color(0.815686, 0.211765, 0.337255, 1)
+effect = 1

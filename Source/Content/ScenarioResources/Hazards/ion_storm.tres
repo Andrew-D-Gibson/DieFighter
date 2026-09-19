@@ -1,9 +1,9 @@
 [gd_resource type="Resource" script_class="ScenarioHazardResource" format=3 uid="uid://bksbsmdcc4wo"]
 
 [ext_resource type="Script" uid="uid://bpcwym2qynvqs" path="res://Source/Content/ScenarioResources/scenario_hazard_resource.gd" id="script_0"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_1"]
 [ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="sfx_2"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="script_3"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_3"]
 
 [sub_resource type="Resource" id="Resource_step1"]
 script = ExtResource("script_1")
@@ -47,5 +47,5 @@ description = "[color=yellow]Rerolls[/color] every die on the board"
 color = Color(0.553, 0.945, 0.957, 1)
 turns_until_first = 2
 turns_between = 2
-effect_chain_v2 = SubResource("Resource_chain6")
+effect_chain = SubResource("Resource_chain6")
 metadata/_custom_type_script = "uid://bpcwym2qynvqs"

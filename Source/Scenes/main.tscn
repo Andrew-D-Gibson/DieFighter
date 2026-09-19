@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/DevConsole/TilePalette/tile_palette.tscn" id="2_tpal"]
 [ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
 [ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="4_6ebjm"]
 [ext_resource type="Script" uid="uid://by2nuppu48mrd" path="res://Source/Systems/UI/DebugItems/fps_counter.gd" id="4_7iud4"]
@@ -42,6 +43,8 @@
 [ext_resource type="Script" path="res://Source/Systems/Game/HazardManager/hazard_manager.gd" id="91_hazmgr"]
 [ext_resource type="Script" path="res://Source/Systems/Game/RunStats/run_stats.gd" id="93_runstats"]
 [ext_resource type="Script" path="res://Source/Systems/UI/HazardIndicator/hazard_indicator.gd" id="92_hazui"]
+[ext_resource type="Script" path="res://Source/Systems/Game/BackgroundModifierManager/background_modifier_manager.gd" id="96_bgmodmgr"]
+[ext_resource type="PackedScene" uid="uid://dt6a8lgxcnjve" path="res://Source/Systems/UI/BackgroundModifierLabel/background_modifier_label.tscn" id="97_bgmodui"]
 [ext_resource type="Resource" uid="uid://c5jyv6pxbbm24" path="res://Source/Content/ScenarioResources/Scenarios/JumpGate/jump_gate.tres" id="26_jgate"]
 [ext_resource type="Resource" uid="uid://ctncgtd731m3y" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_escorted.tres" id="94_boss2"]
 [ext_resource type="Resource" uid="uid://b5v4bhmin2332" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_wing.tres" id="95_boss3"]
@@ -260,6 +263,9 @@ fit_content = true
 horizontal_alignment = 1
 script = ExtResource("92_hazui")
 
+
+[node name="BackgroundModifierLabel" parent="UI" unique_id=904210008 instance=ExtResource("97_bgmodui")]
+
 [node name="FPSCounter" type="RichTextLabel" parent="UI" unique_id=1878225024]
 visible = false
 anchors_preset = 1
@@ -274,6 +280,9 @@ text = "FPS: 60"
 fit_content = true
 horizontal_alignment = 1
 script = ExtResource("4_7iud4")
+
+[node name="TilePalette" parent="UI" unique_id=1930415882 instance=ExtResource("2_tpal")]
+visible = false
 
 [node name="FadeIn" type="ColorRect" parent="UI" unique_id=1337741916]
 visible = false
@@ -360,6 +369,9 @@ position = Vector2(122, 43)
 
 [node name="HazardManager" type="Node" parent="Systems" unique_id=904210003]
 script = ExtResource("91_hazmgr")
+
+[node name="BackgroundModifierManager" type="Node" parent="Systems" unique_id=904210007]
+script = ExtResource("96_bgmodmgr")
 
 [node name="RunStats" type="Node" parent="Systems" unique_id=904210005]
 script = ExtResource("93_runstats")

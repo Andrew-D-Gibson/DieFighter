@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="BackgroundModifierResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_modifier_resource.gd" id="script_0"]
+
+[resource]
+script = ExtResource("script_0")
+modifier_name = "Pulsar Wash"
+description = "No effect can exceed [color=orange]3[/color]"
+color = Color(0.933333, 0.827451, 0.364706, 1)
+effect = 6
+amount_cap = 3

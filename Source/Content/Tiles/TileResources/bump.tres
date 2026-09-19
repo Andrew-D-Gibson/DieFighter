@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_rp1c6"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_m7a5a"]
 [ext_resource type="Texture2D" uid="uid://b6kpbm6fqon2g" path="res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png" id="7_0ono8"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_u271i"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_gm6wk"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_pmkt1"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="9_u271i"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="10_gm6wk"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="10_pmkt1"]
 
 [sub_resource type="Resource" id="Resource_7xmxb"]
 script = ExtResource("1_u36sv")
@@ -91,5 +91,5 @@ description = "[color=yellow]Die smaller than[/color] (die_6) -> Adds 1 to the d
 textures = SubResource("SpriteFrames_j21c8")
 uses_per_combat = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])
-effect_chain_v2 = SubResource("Resource_j3pel")
+effect_chain = SubResource("Resource_j3pel")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

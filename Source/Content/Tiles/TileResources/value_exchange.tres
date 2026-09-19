@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_ctsso"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_fdhil"]
 [ext_resource type="Texture2D" uid="uid://c2mo72opur4fv" path="res://Assets/Textures/Tiles/GreenTiles/value_exchange.png" id="7_jubjl"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="9_wohu7"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="10_86yy8"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="10_ino2a"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="9_wohu7"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="10_86yy8"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="10_ino2a"]
 
 [sub_resource type="Resource" id="Resource_qtm42"]
 script = ExtResource("9_wohu7")
@@ -72,5 +72,5 @@ tile_name = "[color=green]Value Exchange[/color]"
 description = "[color=yellow]Any die[/color] -> Flip all (die_1) and (die_6), then [color=orange]give[/color] die to [color=purple]random ship[/color]"
 textures = SubResource("SpriteFrames_pgax4")
 uses_per_combat = -1
-effect_chain_v2 = SubResource("Resource_ino2a")
+effect_chain = SubResource("Resource_ino2a")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

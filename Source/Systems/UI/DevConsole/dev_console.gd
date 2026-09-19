@@ -56,6 +56,8 @@ func _toggle_dev_console() -> void:
 		line_edit.grab_focus()
 		line_edit.text = ''
 
+	Events.dev_console_toggled.emit(visible)
+
 
 func _on_line_edit_text_submitted(console_command: String) -> void:
 	if console_command.strip_edges().is_empty():
@@ -167,8 +169,7 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 
 func _on_line_edit_text_changed(current_text: String) -> void:
 	if current_text.contains('`'):
-		current_text.replace('`', '')
-		visible = !visible
+		_toggle_dev_console()
 
 
 # ── Tile / Grid ──────────────────────────────────────────────────────────────

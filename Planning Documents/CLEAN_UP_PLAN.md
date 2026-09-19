@@ -243,7 +243,7 @@ This pass covered all 106 entries in ANALYZE.md (101 analyzed, 5 stale/missing â
 
 ## tile_event.gd
 **Current responsibilities:**
-- Pure data resource: an `EventType` enum (turn start, tile pushed, tile manually moved, player fatal damage) plus a `listen_only_for_self` flag, used as dictionary keys in `TileResource.event_responses_v2`
+- Pure data resource: an `EventType` enum (turn start, tile pushed, tile manually moved, player fatal damage) plus a `listen_only_for_self` flag, used as dictionary keys in `TileResource.event_responses`
 
 **Style issues:** none found â€” no functions, nothing to check.
 
@@ -287,7 +287,7 @@ This pass covered all 106 entries in ANALYZE.md (101 analyzed, 5 stale/missing â
 
 ## tile_resource.gd
 **Current responsibilities:**
-- Pure data resource: tile metadata (name/descriptions/hint text), rarity enum, textures, uses-per-combat, activation checks, effect chains (`effect_chain_v2`, `event_responses_v2`), dragging/queue-limit config
+- Pure data resource: tile metadata (name/descriptions/hint text), rarity enum, textures, uses-per-combat, activation checks, effect chains (`effect_chain`, `event_responses`), dragging/queue-limit config
 
 **Style issues:** none found â€” no functions, category grouping (`@export_category`) is consistent.
 
@@ -487,7 +487,7 @@ This pass covered all 106 entries in ANALYZE.md (101 analyzed, 5 stale/missing â
 
 ## enemy_action_resource.gd
 **Current responsibilities:**
-- Data for one concrete enemy action: name, description, textures, `effect_chain_v2`, and a rolled `intent_amount`
+- Data for one concrete enemy action: name, description, textures, `effect_chain`, and a rolled `intent_amount`
 - A clamped `activating_die_number` setter (restricts to 1-6)
 - Display logic: `get_intent_amount_text()` and `show_info()`, which builds an `InfoResource` (substituting `(amount)`/die-number text into the description) and emits it via `Events.show_info`
 
@@ -1267,7 +1267,7 @@ This pass covered all 106 entries in ANALYZE.md (101 analyzed, 5 stale/missing â
 
 ## scenario_engine_test.gd
 **Current responsibilities:**
-- A manual smoke-test harness (not an automated test) exercising the `EffectChainV2`/`ConditionalEffectData`/`EffectContext` pipeline with a hardcoded odd/even-die-value example, meant to be run directly in the editor and checked by reading console output
+- A manual smoke-test harness (not an automated test) exercising the `EffectChain`/`ConditionalEffectData`/`EffectContext` pipeline with a hardcoded odd/even-die-value example, meant to be run directly in the editor and checked by reading console output
 
 **Style issues:**
 - Lines 6-8 (and continuing through the rest of the function) mix indentation styles: line 6 is indented with a tab, while lines 7 onward use three literal spaces for what should be the same indentation level (the direct body of `_ready()`). This is a real, visible inconsistency against every other file in this codebase, which uses tabs uniformly (matching STYLE_GUIDE.md's example). `validate_scripts` confirms this doesn't cause a parse error, so it's a style/readability issue, not a compile-time defect.

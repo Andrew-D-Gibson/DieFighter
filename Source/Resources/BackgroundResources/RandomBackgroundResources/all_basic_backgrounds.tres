@@ -6,8 +6,11 @@
 [ext_resource type="Resource" uid="uid://sk166eerw6ax" path="res://Source/Resources/BackgroundResources/debris_field.tres" id="3_dm83u"]
 [ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="4_oym7p"]
 [ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="5_b2ggj"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/cryo_belt.tres" id="6_cryo"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/pulsar_field.tres" id="7_puls"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/derelict_boneyard.tres" id="8_bone"]
 
 [resource]
 script = ExtResource("2_pi16q")
-eligible_backgrounds = Array[ExtResource("1_3s5r3")]([ExtResource("2_1uew3"), ExtResource("3_dm83u"), ExtResource("4_oym7p"), ExtResource("5_b2ggj")])
+eligible_backgrounds = Array[ExtResource("1_3s5r3")]([ExtResource("2_1uew3"), ExtResource("3_dm83u"), ExtResource("4_oym7p"), ExtResource("5_b2ggj"), ExtResource("6_cryo"), ExtResource("7_puls"), ExtResource("8_bone")])
 metadata/_custom_type_script = "uid://3roroso3mo17"

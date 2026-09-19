@@ -9,7 +9,7 @@ extends Resource
 ##
 ## AUTHORING:
 ##   1. Create a ScenarioHazardResource.
-##   2. Write its effect_chain_v2 like any other chain — it runs with the player
+##   2. Write its effect_chain like any other chain — it runs with the player
 ##      as actor and no activator die, so avoid die-dependent effects.
 ##   3. Assign it to a ScenarioResource's 'hazard' field.
 
@@ -30,4 +30,4 @@ extends Resource
 
 @export_category('Behavior')
 ## What actually happens. Runs on the scenario's engine like any other chain.
-@export var effect_chain_v2: EffectChainV2
+@export var effect_chain: EffectChain

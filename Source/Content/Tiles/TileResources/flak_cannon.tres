@@ -4,10 +4,10 @@
 [ext_resource type="Texture2D" uid="uid://up1lduwwygjq" path="res://Assets/Textures/Tiles/RedTiles/flak_cannon.png" id="2_mywar"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_mywar"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="9_sndgu"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_y24nt"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="11_y24nt"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="12_8q7m7"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_a1g78"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="13_0ntbc"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="12_a1g78"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="13_0ntbc"]
 
 [sub_resource type="Resource" id="Resource_44pq3"]
 script = ExtResource("1_71286")
@@ -106,5 +106,5 @@ description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]targ
 textures = SubResource("SpriteFrames_m1j0p")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi"), SubResource("Resource_m1j0p")])
-effect_chain_v2 = SubResource("Resource_0ntbc")
+effect_chain = SubResource("Resource_0ntbc")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

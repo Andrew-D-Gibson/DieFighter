@@ -502,8 +502,8 @@ and never landed on an encounter already placed in that same sector.
 **Built:** Event scenarios went 2 → 5. DEMO_PLAN wants 4–6, and two was very
 thin across ~54 tile-pulls in a three-sector run.
 
-The interesting discovery: `ScenarioShipState.effects_on_enter_v2` was only ever
-used by the shop (to open the shop UI). It's a full `EffectChainV2` that fires
+The interesting discovery: `ScenarioShipState.effects_on_enter` was only ever
+used by the shop (to open the shop UI). It's a full `EffectChain` that fires
 the instant a ship enters a state — which means an encounter can *do* something
 to you on arrival, before a single die is placed. All three new events are built
 on that.
@@ -636,7 +636,7 @@ never insert.** Same applies to `Category` itself.
 scenario.
 
 - `ScenarioHazardResource` — name, description, colour, a first-trigger delay,
-  a repeat interval, and an `EffectChainV2`. Hangs off `ScenarioResource.hazard`
+  a repeat interval, and an `EffectChain`. Hangs off `ScenarioResource.hazard`
   (null = a plain quiet fight).
 - `HazardManager` (`Systems/HazardManager`) — arms on `Events.load_scenario`,
   counts down on `Events.player_turn_start`, and queues a `HazardEvent` onto the
@@ -672,7 +672,7 @@ throughout.
 Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array
 — that still referenced the deleted pre-V2 effect system. They had finished
 art, finished descriptions, and were completely unloadable. Ported all four to
-EffectChainV2, moved them into `TileResources/`, and deleted the broken
+EffectChain, moved them into `TileResources/`, and deleted the broken
 originals. Tile count 14 → 18.
 
 - **Tactical Boomerang** (2 uses) — 5 damage to your target, then kicks *itself*
@@ -899,4 +899,4 @@ produced state `VICTORY`, a deleted save, and the victory screen.
 **Known noise (pre-existing, not mine):** boot spews ~184 errors from the four
 `ComplicatedTileResources/*.tres` still referencing the deleted pre-V2 effect
 system. `RewardManager._load_tile_resources()` tries to load them every run.
-Worth porting to EffectChainV2 — they have good ideas in them.
+Worth porting to EffectChain — they have good ideas in them.

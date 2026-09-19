@@ -10,7 +10,7 @@
 5. `GameSaveResource` (`Resources/game_save_resource.gd`, renamed from `game_save.gd`) + `Resources/SaveResources/*.tres` slot resources (`game_start.tres`, `tutorial_start.tres`).
 
 ## EffectsV2 — Enemy Intents Migration
-6. Enemy actions now run through `EffectChainV2`; `effect_data.gd` gained an "Enemy Intents" setting; `effect_enums.gd` expanded (~+44 lines).
+6. Enemy actions now run through `EffectChain`; `effect_data.gd` gained an "Enemy Intents" setting; `effect_enums.gd` expanded (~+44 lines).
 7. New effect events: `EffectEvents/Enemy/enemy_action_event.gd`, `EffectEvents/Enemy/scenario_state_effects_event.gd`, `EffectEvents/TileControl/tile_event_triggered_event.gd`, `EffectEvents/AudioVisual/snap_die_to_position_event.gd`.
 8. New handlers: `add_amount_handler`, `add_adjacent_tiles_amount_handler`, `add_tile_data_amount_handler`, `set_amount_handler`, `set_amount_to_die_value_handler`, `set_amount_to_enemy_intent_handler`, `set_amount_to_engine_charge_handler`, `target_tile_with_offset_handler`, `give_die_away_handler`, `give_die_to_player_handler`, plus edits to amount/attribute/targeting handlers.
 9. Legacy `Content/Effects/*` tree gutted/mostly deleted (activators, attribute changers, targeters, tile movers, tweens removed).
@@ -30,7 +30,7 @@
 ## Other
 18. New util `Source/Systems/utils.gd`.
 19. Removed `faction_system.gd` and `enemy_action_filter.gd`; enemy action resources migrated to v2 chains.
-20. New tile resources: `inertial_feedback.tres`, `unstable_shield_array.tres`; many `.tres` tiles migrated to `effect_chain_v2`.
+20. New tile resources: `inertial_feedback.tres`, `unstable_shield_array.tres`; many `.tres` tiles migrated to `effect_chain`.
 21. `project.godot` updated with new autoloads registered.
 
 ## Stale in ARCHITECTURE_OVERVIEW.md

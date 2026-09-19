@@ -5,9 +5,9 @@
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="4_77b16"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_8vpcq"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_p7d6s"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/EffectsV2/effect_data.gd" id="11_q67gt"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/EffectsV2/EffectChainV2/effect_chain_v2.gd" id="12_534nq"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/EffectsV2/conditional_effect_data.gd" id="12_cnb1i"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="11_q67gt"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="12_534nq"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="12_cnb1i"]
 
 [sub_resource type="Resource" id="Resource_p7d6s"]
 script = ExtResource("1_854mr")
@@ -90,5 +90,5 @@ description = "(die_3) -> Add [color=blue]8 shields[/color], then [color=orange]
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_combat = -1
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])
-effect_chain_v2 = SubResource("Resource_m0r4a")
+effect_chain = SubResource("Resource_m0r4a")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

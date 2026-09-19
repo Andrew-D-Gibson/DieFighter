@@ -332,12 +332,12 @@ func run_turn() -> void:
 func trigger_state_effects() -> void:
 	dialogue_manager.show_dialogue(scenario_state.dialogue, scenario_state.faction)
 
-	if not scenario_state.effects_on_enter_v2 or not scenario_engine:
+	if not scenario_state.effects_on_enter or not scenario_engine:
 		return
 
 	var event: ScenarioStateEffectsEvent = ScenarioStateEffectsEvent.new()
 	event.enemy = self
-	event.chain = scenario_state.effects_on_enter_v2
+	event.chain = scenario_state.effects_on_enter
 	scenario_engine.queue_event(event)
 
 
