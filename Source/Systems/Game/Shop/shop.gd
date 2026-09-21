@@ -8,6 +8,14 @@ var item_to_shop_index: Dictionary[Node, int]
 
 const DICE_PRICE: int = 25
 
+## Identifies the screen space the open shop panel holds against the enemy
+## formation. See [EnemyFormation].
+const _FORMATION_KEY: StringName = &"shop"
+
+## Breathing room either side of the panel, so the shopkeeper isn't scraping
+## along its edge.
+const _FORMATION_PADDING: float = 6.0
+
 var shop_tiles: Array[Node2D]
 
 
@@ -22,10 +30,30 @@ func _open_shop() -> void:
 	_create_shop_tiles()
 	_create_dice_buy_zone()
 	show()
+	_claim_formation_space()
 
 
 func _close_shop() -> void:
 	hide()
+	if Globals.enemy_manager:
+		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)
+
+
+## The panel covers the middle of the screen, which is exactly where a lone
+## shopkeeper would otherwise be standing. Tell the formation to stand clear
+## and it slides out from behind the panel — and back to centre when the shop
+## closes.
+func _claim_formation_space() -> void:
+	if not Globals.enemy_manager or not bounding_box:
+		return
+
+	var panel: Rect2 = bounding_box.shape.get_rect()
+	var centre_x: float = bounding_box.global_position.x
+	Globals.enemy_manager.reserve_formation_space(
+		_FORMATION_KEY,
+		centre_x + panel.position.x - _FORMATION_PADDING,
+		centre_x + panel.end.x + _FORMATION_PADDING
+	)
 
 
 func _get_possible_shop_tiles() -> Array[TileResource]:

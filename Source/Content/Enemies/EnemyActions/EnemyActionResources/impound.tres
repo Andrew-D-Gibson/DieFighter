@@ -1,11 +1,12 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://bxuwbocierbhv"]
 
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_oef70"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_2"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_5"]
 [ext_resource type="Texture2D" uid="uid://bprnebdcojp6o" path="res://Assets/Textures/Enemies/IntentIndicator/impound.png" id="tex_3"]
 [ext_resource type="Texture2D" uid="uid://c1d80w2d150bq" path="res://Assets/Textures/Enemies/IntentIndicator/impound_info.png" id="tex_4"]
-[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_5"]
 
 [sub_resource type="Resource" id="Resource_step0"]
 script = ExtResource("script_1")

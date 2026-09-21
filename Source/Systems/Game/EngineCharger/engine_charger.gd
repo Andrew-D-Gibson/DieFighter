@@ -5,8 +5,22 @@ extends Node2D
 @export var charged_indicator: Sprite2D
 @export var display_text: RichTextLabel
 
+## The fill level the bar is currently animating towards. Tracked separately
+## from progress_bar.value because several charge changes can land in the same
+## frame before any tween has stepped, and the bar's value would still read as
+## the pre-tween one.
+var _target_proportion: float = -1.0
+var _bar_tween: Tween
+var _head_tween: Tween
+
 
 func _ready() -> void:
+	# The charger opens empty: a run starts mid-ambush, with the engine cold.
+	progress_bar.value = 0
+	fill_head.position = Vector2(60, 2)
+	fill_head.visible = true
+	charged_indicator.visible = false
+
 	Events.engine_charge_changed.connect(_update_ui)
 	Events.start_scenario.connect(_update_ui)
 	Events.load_scenario.connect(_check_for_combat_scenario)
@@ -44,10 +58,19 @@ func _update_ui() -> void:
 		return
 		
 	var charge_proportion: float = Globals.player.engine_charge / float(Globals.player.max_engine_charge)
-	if charge_proportion != progress_bar.value:
+	if charge_proportion != _target_proportion:
+		_target_proportion = charge_proportion
 		var tween_time: float = 0.25
-		var bar_tween: Tween = get_tree().create_tween()
-		bar_tween.tween_property(
+		
+		# Any tween still in flight is chasing a stale charge value, so it has
+		# to die before a new one starts or the two fight over the bar.
+		if _bar_tween and _bar_tween.is_valid():
+			_bar_tween.kill()
+		if _head_tween and _head_tween.is_valid():
+			_head_tween.kill()
+		
+		_bar_tween = get_tree().create_tween()
+		_bar_tween.tween_property(
 			progress_bar, 
 			'value', 
 			charge_proportion, 
@@ -56,12 +79,10 @@ func _update_ui() -> void:
 		.from_current()\
 		.set_trans(Tween.TRANS_QUAD)
 		
-	# The bar is 32 long and the head bar's maximum y is 2
-	var desired_head_ypos: float = 2 - (charge_proportion * 32)
-	if fill_head.position != Vector2(60, desired_head_ypos):
-		var tween_time: float = 0.25
-		var head_tween: Tween = get_tree().create_tween()
-		head_tween.tween_property(
+		# The bar is 32 long and the head bar's maximum y is 2
+		var desired_head_ypos: float = 2 - (charge_proportion * 32)
+		_head_tween = get_tree().create_tween()
+		_head_tween.tween_property(
 			fill_head, 
 			'position', 
 			Vector2(60, desired_head_ypos), 

@@ -47,8 +47,14 @@ enum Effect {
 ## the rest of the game's text uses.
 @export_multiline var description: String
 
-## Tint for the banner. Should match the background's own palette.
+## Tint for the rule's name on the info panel. Should match the background's
+## own palette.
 @export var color: Color = Color.WHITE
+
+## Art for the corner badge and the info panel it opens. Left null, the badge
+## falls back to a generic "unknown rule" glyph, which still reads correctly —
+## the badge's whole job is to say "something governs this place, click me".
+@export var icon: Texture2D
 
 @export_category('Behavior')
 @export var effect: Effect = Effect.SHIELD_BLACKOUT

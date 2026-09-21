@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="BackgroundResource" format=3]
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://3a7g3t3udsgm"]
 
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/DerelictHulk/derelict_hulk.tscn" id="3_hulk"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/dead_systems.tres" id="mod_0"]
 
@@ -9,7 +9,6 @@
 script = ExtResource("2_so")
 scene = ExtResource("3_hulk")
 position = Vector2(40, 26)
-parallax_level = 0
 metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [sub_resource type="Resource" id="Resource_hulk_far"]
@@ -18,13 +17,12 @@ scene = ExtResource("3_hulk")
 position = Vector2(256, 12)
 scale = Vector2(-1, 1)
 modulate = Color(0.55, 0.58, 0.72, 1)
-parallax_level = 0
 metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [resource]
 script = ExtResource("1_bg")
-global_modifier = ExtResource("mod_0")
 background_color = Color(0.019608, 0.023529, 0.043137, 1)
+global_modifier = ExtResource("mod_0")
 stars = true
 num_of_stars = 24
 num_of_twinkling_stars = 4
@@ -32,4 +30,3 @@ debris = true
 num_of_med_pieces = 48
 num_of_large_pieces = 10
 static_objects = Array[ExtResource("2_so")]([SubResource("Resource_hulk_near"), SubResource("Resource_hulk_far")])
-metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/background_resource.gd"

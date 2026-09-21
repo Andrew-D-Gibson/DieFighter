@@ -20,7 +20,6 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 [sub_resource type="Resource" id="Resource_5v5ce"]
 script = ExtResource("4_0qfbq")
 enemy_resource = ExtResource("8_26ng0")
-spawning_path_location = 0.7
 starting_state = ExtResource("9_rjncu")
 reward_resource = SubResource("Resource_6f72w")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
@@ -36,7 +35,6 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 [sub_resource type="Resource" id="Resource_jmxcg"]
 script = ExtResource("4_0qfbq")
 enemy_resource = ExtResource("8_hi8qk")
-spawning_path_location = 0.3
 starting_state = ExtResource("7_bh7eb")
 reward_resource = SubResource("Resource_gtj44")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"

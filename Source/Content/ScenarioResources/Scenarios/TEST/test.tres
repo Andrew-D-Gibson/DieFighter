@@ -22,7 +22,6 @@ metadata/_custom_type_script = "uid://cpgidtisgk77q"
 [sub_resource type="Resource" id="Resource_pnywb"]
 script = ExtResource("3_wd86h")
 enemy_resource = ExtResource("6_nhdkr")
-spawning_path_location = 0.15
 starting_state = SubResource("Resource_1h1ka")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
@@ -69,7 +68,6 @@ metadata/_custom_type_script = "uid://cpgidtisgk77q"
 [sub_resource type="Resource" id="Resource_qh20m"]
 script = ExtResource("3_wd86h")
 enemy_resource = SubResource("Resource_km0xj")
-spawning_path_location = 0.4
 starting_state = SubResource("Resource_1mpwq")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
@@ -111,7 +109,6 @@ metadata/_custom_type_script = "uid://cpgidtisgk77q"
 [sub_resource type="Resource" id="Resource_ansyq"]
 script = ExtResource("3_wd86h")
 enemy_resource = SubResource("Resource_xlgyd")
-spawning_path_location = 0.7
 starting_state = SubResource("Resource_ur4fs")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
@@ -153,7 +150,6 @@ metadata/_custom_type_script = "uid://cpgidtisgk77q"
 [sub_resource type="Resource" id="Resource_r3x3f"]
 script = ExtResource("3_wd86h")
 enemy_resource = SubResource("Resource_nhdkr")
-spawning_path_location = 0.9
 starting_state = SubResource("Resource_fq5ss")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 

@@ -13,8 +13,8 @@ metadata/_custom_type_script = "uid://cgosy7gnhi58w"
 
 [resource]
 script = ExtResource("1_tbvtb")
-global_modifier = ExtResource("mod_0")
 background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+global_modifier = ExtResource("mod_0")
 nebula = null
 nebula_color = Color(0.388235, 0.376471, 0.360784, 0.168627)
 stars = true

@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="BackgroundResource" format=3]
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://cmr240lb4gqr"]
 
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/Pulsar/pulsar.tscn" id="3_pul"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/pulsar_wash.tres" id="mod_0"]
 
@@ -9,17 +9,15 @@
 script = ExtResource("2_so")
 scene = ExtResource("3_pul")
 position = Vector2(44, 30)
-parallax_level = 0
 metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [resource]
 script = ExtResource("1_bg")
-global_modifier = ExtResource("mod_0")
 background_color = Color(0.078431, 0.027451, 0.098039, 1)
+global_modifier = ExtResource("mod_0")
 nebula = true
 nebula_color = Color(0.94902, 0.611765, 0.364706, 0.137255)
 stars = true
 num_of_stars = 70
 num_of_twinkling_stars = 18
 static_objects = Array[ExtResource("2_so")]([SubResource("Resource_pulsar")])
-metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/background_resource.gd"

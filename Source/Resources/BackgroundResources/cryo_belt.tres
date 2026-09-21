@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="BackgroundResource" format=3]
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://btm71d34h8kou"]
 
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IceShards/ice_shards.tscn" id="3_ice"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/flash_freeze.tres" id="mod_0"]
 
@@ -9,7 +9,6 @@
 script = ExtResource("2_so")
 scene = ExtResource("3_ice")
 position = Vector2(34, 30)
-parallax_level = 0
 metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [sub_resource type="Resource" id="Resource_ice_far"]
@@ -18,13 +17,12 @@ scene = ExtResource("3_ice")
 position = Vector2(286, 14)
 scale = Vector2(-1, 1)
 modulate = Color(0.65, 0.72, 0.85, 1)
-parallax_level = 0
 metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [resource]
 script = ExtResource("1_bg")
-global_modifier = ExtResource("mod_0")
 background_color = Color(0.031373, 0.070588, 0.145098, 1)
+global_modifier = ExtResource("mod_0")
 stars = true
 num_of_stars = 110
 num_of_twinkling_stars = 30
@@ -32,4 +30,3 @@ debris = true
 num_of_med_pieces = 34
 num_of_large_pieces = 5
 static_objects = Array[ExtResource("2_so")]([SubResource("Resource_ice_near"), SubResource("Resource_ice_far")])
-metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/background_resource.gd"

@@ -36,7 +36,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `GameStateManager` | `Systems/GameStateManager` | `GameStateManager/game_state_manager.gd` | State machine: OUT_OF_COMBAT → IN_COMBAT → GAME_OVER / VICTORY; generates each sector, detects a cleared jump gate and advances to the next sector, owns the run's difficulty multipliers |
 | `Player` | `Systems/Player` | `Systems/Game/Player/player.gd` | Player ship with health/shields/dice queue; manages turn flow: spawn dice, reroll, end turn |
 | `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, status effects per cell |
-| `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue |
+| `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation` |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
 | `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy |
@@ -708,6 +708,7 @@ Source/
 │   │   ├── TileGrid/tile_grid.gd               # Grid management
 │   │   ├── Map/map.gd                          # Hyperspace map
 │   │   ├── EnemyManager/enemy_manager.gd       # Enemy spawner/turn runner
+│   │   ├── EnemyManager/enemy_formation.gd     # Derives ship placement from roster + free screen space
 │   │   ├── TargetingComputer/targeting_computer.gd  # Intent display
 │   │   ├── MainViewer/main_viewer.gd           # Systems/Map tabs
 │   │   ├── ScenarioManager/scenario_manager.gd # Faction events

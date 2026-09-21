@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://dt6a8lgxcnjve"]
+
+[ext_resource type="Script" uid="uid://qy7xyquee3nh" path="res://Source/Systems/UI/BackgroundModifierBadge/background_modifier_badge.gd" id="1_q6fvw"]
+[ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="2_badge"]
+
+[node name="BackgroundModifierBadge" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_q6fvw")
+
+[node name="Badge" type="TextureButton" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -216.0
+offset_top = 140.0
+offset_right = -120.0
+offset_bottom = 236.0
+grow_horizontal = 0
+pivot_offset = Vector2(48, 48)
+texture_normal = ExtResource("2_badge")
+ignore_texture_size = true
+stretch_mode = 0

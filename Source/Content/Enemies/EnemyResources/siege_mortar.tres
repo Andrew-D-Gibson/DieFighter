@@ -1,14 +1,14 @@
 [gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://bqbs4io5yjaeb"]
 
-[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
-[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
-[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
-[ext_resource type="PackedScene" uid="uid://8od2oxhw85mm" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/siege_mortar_ship_graphics.tscn" id="gfx_3"]
-[ext_resource type="Texture2D" uid="uid://crmch5q07lqms" path="res://Assets/Textures/Enemies/SiegeMortar/siege_mortar_targeting_image.png" id="tex_4"]
 [ext_resource type="Resource" uid="uid://dg1wfg8fa6s31" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/charge_weapon.tres" id="act_5"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_6"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_7"]
 [ext_resource type="Resource" uid="uid://bykt50148cap2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siege_shot.tres" id="act_8"]
+[ext_resource type="PackedScene" uid="uid://8od2oxhw85mm" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/siege_mortar_ship_graphics.tscn" id="gfx_3"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://crmch5q07lqms" path="res://Assets/Textures/Enemies/SiegeMortar/siege_mortar_targeting_image.png" id="tex_4"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -28,7 +28,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt2"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_7")
-weight = 1.0
 min_amount = 1
 max_amount = 2
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -67,7 +66,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt6"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_6")
-weight = 1.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_pool1"]
@@ -80,9 +78,7 @@ script = ExtResource("script_2")
 enemy_name = "Siege Mortar"
 description = "A gun with a ship attached. Spends one turn loading and the next one making that your problem."
 max_health = 22
-starting_shields = 0
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1")])
-pool_selection = 0
 ship_graphics_scene = ExtResource("gfx_3")
 dialogue_offset = Vector2(16, -8)
 targeting_computer_image = ExtResource("tex_4")

@@ -4,6 +4,64 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-20 — Enemies place themselves
+
+**Built:** `EnemyFormation`, and the removal of every hand-authored spawn
+position in the game.
+
+Scenarios used to carry a `spawning_path_location` per ship — a number between
+0 and 1 picked by eye. That only ever described one correct layout: the roster
+the scenario happened to start with, on a screen with nothing else on it. The
+opening ambusher sat at 0.3 because the tutorial's popups cover the right-hand
+side, which meant a returning player who never sees a popup still got an enemy
+hugging the left edge for no reason.
+
+Position is derived now. A scenario says who shows up and in what order;
+`EnemyFormation` decides where they stand, from how many there are and how much
+of the screen is actually free:
+
+- One ship centres itself. Two spread to thirds. Four spread to fifths. The
+  survivors close ranks when one of them dies.
+- Space is taken away by **reservations** — a screen-space x span claimed by
+  something else on screen, keyed by its owner so it can be given back. The
+  tutorial claims the strip its popups occupy for as long as it is narrating;
+  the shop claims its panel's width while it is open. The formation re-expands
+  the moment a key is dropped.
+- A ship a scenario effect deliberately parked (`MoveShipEvent`) pins itself
+  and reserves its own footprint, so the rest reflow around it rather than
+  through it.
+- `EnemyStateRewardResource.path_location_override` (default −1, "you decide")
+  is the escape hatch for an encounter that is genuinely *about* where a ship
+  is standing. Nothing in the game uses it yet.
+
+`EnemyManager.move_ship_to_point_on_path()` now owns the whole move — stopping
+the bob, flagging `moving_in_world`, parking the targeting reticle and putting
+it back — so the formation's reflow and a scripted move are the same code
+path. `MoveShipEvent` is nine lines shorter for it.
+
+**Why:** The tutorial and a normal run play the same encounter, and should
+differ only in what is on screen — not in a number baked into the scenario. The
+same machinery that fixes that also fixes the shopkeeper standing behind the
+shop panel and the hole left in a wing when you kill its middle ship.
+
+**Verified:** Live, against the real scenes. No tutorial: opening ambusher at
+x=160, dead centre. Tutorial active: x=96 (the old authored 0.3 was x≈97).
+Shop opened: the shopkeeper slid from 160 to 229.5 and back on close. Three
+drones spawned at 106/160/214; killing the middle one closed the other two to
+124/196. A scripted move to the centre pinned that ship and pushed its
+squadmate out to 96. Screen-x → path-proportion inversion round-trips to
+within 0.0002 across the whole curve.
+
+**Snag:** A new `class_name` is invisible to `validate_script` until Godot's
+global class cache knows about it, and the cache only rebuilds on a successful
+parse — so the first script to reference `EnemyFormation` can't compile, which
+stops the cache from ever learning the name. Broke the deadlock by adding the
+entry to `.godot/global_script_class_cache.cfg` by hand. The editor will
+generate `enemy_formation.gd.uid` on its next open; nothing references the
+script by uid, so its absence is harmless until then.
+
+---
+
 ## 2026-09-18 — The game starts in the middle of a fight
 
 **Built:** A cold open, and a tutorial rebuilt on top of it.

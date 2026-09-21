@@ -40,6 +40,11 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 var turn_actions: Array[EnemyActionResource]
 var moving_in_world: bool = false
 
+## True once something has deliberately placed this ship — a scenario that
+## authored a fixed spot, or an effect that flew it somewhere. The formation
+## then leaves it where it is and reflows the other ships around it.
+var formation_pinned: bool = false
+
 ## The number of turns this enemy has lived
 @onready var turns_alive: int = 0
 

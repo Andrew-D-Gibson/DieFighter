@@ -29,11 +29,21 @@ extends Node2D
 ## setup, before any step has had a chance to run.
 @export var opening_setup: TutorialStep
 
+## Screen-space x span the tutorial's popups sit in. While the tutorial is
+## narrating, the enemy formation treats this as occupied and stands clear of
+## it, which is why the opening ambusher hangs off to one side during the
+## tutorial and sits dead centre on every run after. Nothing else about the
+## encounter changes — see [EnemyFormation].
+@export var popup_screen_span: Vector2 = Vector2(140, 320)
+
 ## Seconds a step may wait on its closing signal before the tutorial gives up,
 ## logs, and moves on. A step whose signal never fires would otherwise hang the
 ## game forever with no way out. Deliberately generous — this is a bug backstop,
 ## not a patience limit — and steps can override it with max_wait_time.
 @export var default_step_timeout: float = 120.0
+
+## Identifies the space the tutorial holds against the enemy formation.
+const _FORMATION_KEY: StringName = &"tutorial"
 
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
@@ -86,6 +96,7 @@ func _ready() -> void:
 
 	Globals.tutorial_active = true
 	Globals.tutorial_controls_enemy_turns = true
+	_claim_formation_space()
 
 	if opening_setup:
 		_apply_step_forcing(opening_setup)
@@ -99,6 +110,18 @@ func _ready() -> void:
 			tutorial_functions[step.tutorial_function].call()
 
 	start_tutorial()
+
+
+## Keeps the enemy formation out from under the tutorial's popups. Claimed
+## before the first scenario loads, so the opening ambusher is placed off to
+## the side from the moment it spawns rather than sliding over afterwards.
+func _claim_formation_space() -> void:
+	if not Globals.enemy_manager:
+		push_warning("TutorialManager: no EnemyManager to reserve popup space with.")
+		return
+	Globals.enemy_manager.reserve_formation_space(
+		_FORMATION_KEY, popup_screen_span.x, popup_screen_span.y
+	)
 
 
 ## Catches a TutorialFunctions value that was added to the enum but never
@@ -321,3 +344,8 @@ func _finish_tutorial() -> void:
 	Globals.tutorial_controls_enemy_turns = false
 	Globals.map.enable_controls()
 	Globals.tutorial_active = false
+
+	# No more popups, so the formation gets the right-hand side of the screen
+	# back and any surviving ships spread into it.
+	if Globals.enemy_manager:
+		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)

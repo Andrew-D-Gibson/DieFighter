@@ -16,9 +16,6 @@
 [ext_resource type="Script" uid="uid://tw7lpv214pfl" path="res://Source/Systems/UI/Camera/camera.gd" id="6_7iud4"]
 [ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
 [ext_resource type="PackedScene" uid="uid://cf2seb35hnl52" path="res://Source/Systems/Game/Player/player.tscn" id="6_rir3g"]
-[ext_resource type="Resource" uid="uid://biawl3820xfte" path="res://Source/Resources/SaveResources/game_start.tres" id="7_3g417"]
-[ext_resource type="Resource" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="99_ambush"]
 [ext_resource type="PackedScene" uid="uid://cpqd13acuxpx" path="res://Source/Systems/Game/TargetingComputer/targeting_computer.tscn" id="8_okrb4"]
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="10_3g417"]
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/Game/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
@@ -40,45 +37,47 @@
 [ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss.tres" id="26_aaucc"]
-[ext_resource type="Script" path="res://Source/Systems/Game/HazardManager/hazard_manager.gd" id="91_hazmgr"]
-[ext_resource type="Script" path="res://Source/Systems/Game/RunStats/run_stats.gd" id="93_runstats"]
-[ext_resource type="Script" path="res://Source/Systems/UI/HazardIndicator/hazard_indicator.gd" id="92_hazui"]
-[ext_resource type="Script" path="res://Source/Systems/Game/BackgroundModifierManager/background_modifier_manager.gd" id="96_bgmodmgr"]
-[ext_resource type="PackedScene" uid="uid://dt6a8lgxcnjve" path="res://Source/Systems/UI/BackgroundModifierLabel/background_modifier_label.tscn" id="97_bgmodui"]
 [ext_resource type="Resource" uid="uid://c5jyv6pxbbm24" path="res://Source/Content/ScenarioResources/Scenarios/JumpGate/jump_gate.tres" id="26_jgate"]
-[ext_resource type="Resource" uid="uid://ctncgtd731m3y" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_escorted.tres" id="94_boss2"]
-[ext_resource type="Resource" uid="uid://b5v4bhmin2332" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_wing.tres" id="95_boss3"]
 [ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
 [ext_resource type="PackedScene" uid="uid://c2hbku8vgrm4f" path="res://Source/Systems/Game/JumpManager/jump_manager.tscn" id="27_nwhv6"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="28_lejlh"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/opening_hand.tres" id="tut_opening"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_keeps_die.tres" id="tut_enemy_keeps_die"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/bump_explanation.tres" id="tut_bump_explanation"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/end_turn_prompt.tres" id="tut_end_turn_prompt"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_response.tres" id="tut_enemy_response"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_the_raider.tres" id="tut_finish_the_raider"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/claim_salvage.tres" id="tut_claim_salvage"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/open_the_map.tres" id="tut_open_the_map"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_out.tres" id="tut_jump_out"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_handoff.tres" id="tut_tutorial_handoff"]
 [ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
+[ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
+[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="67_1kud3"]
 [ext_resource type="Resource" uid="uid://v82d83vwmjmq" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheCollector/COMBAT_tithe_collector.tres" id="80_tithe"]
 [ext_resource type="Resource" uid="uid://1afnq5aul5tn" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_IonLances/COMBAT_ion_lances.tres" id="81_ion"]
 [ext_resource type="Resource" uid="uid://s3hfdf1gooad" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheEscort/COMBAT_tithe_escort.tres" id="82_escort"]
 [ext_resource type="Resource" uid="uid://cg864or4c5wv8" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wolfpack/COMBAT_wolfpack.tres" id="83_wolf"]
 [ext_resource type="Resource" uid="uid://b00imj4aargrb" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_DroneBattery/COMBAT_drone_battery.tres" id="84_battery"]
 [ext_resource type="Resource" uid="uid://3q350k3vjama" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TenderEscort/COMBAT_tender_escort.tres" id="85_tender"]
-[ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
-[ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
-[ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
 [ext_resource type="Resource" uid="uid://ckd1yu7748qpq" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_MercyCall/EVENT_mercy_call.tres" id="86_mercy"]
 [ext_resource type="Resource" uid="uid://dhwi8lv4ordv5" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/EVENT_tollkeeper.tres" id="87_toll"]
 [ext_resource type="Resource" uid="uid://df1xwbuu5qt5a" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/EVENT_wreck_salvage.tres" id="88_wreck"]
-[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="67_1kud3"]
+[ext_resource type="Script" uid="uid://c8epcmglrpd7i" path="res://Source/Systems/Game/HazardManager/hazard_manager.gd" id="91_hazmgr"]
+[ext_resource type="Script" uid="uid://5ben1x2fhdo7" path="res://Source/Systems/UI/HazardIndicator/hazard_indicator.gd" id="92_hazui"]
+[ext_resource type="Script" uid="uid://cl0bfcstgkgxo" path="res://Source/Systems/Game/RunStats/run_stats.gd" id="93_runstats"]
+[ext_resource type="Resource" uid="uid://ctncgtd731m3y" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_escorted.tres" id="94_boss2"]
+[ext_resource type="Resource" uid="uid://b5v4bhmin2332" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_wing.tres" id="95_boss3"]
+[ext_resource type="Script" uid="uid://7whk8psw2ylx" path="res://Source/Systems/Game/BackgroundModifierManager/background_modifier_manager.gd" id="96_bgmodmgr"]
 [ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
+[ext_resource type="PackedScene" uid="uid://dt6a8lgxcnjve" path="res://Source/Systems/UI/BackgroundModifierBadge/background_modifier_badge.tscn" id="97_bgmodui"]
+[ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
+[ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="99_ambush"]
+[ext_resource type="Resource" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/bump_explanation.tres" id="tut_bump_explanation"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/claim_salvage.tres" id="tut_claim_salvage"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/end_turn_prompt.tres" id="tut_end_turn_prompt"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_keeps_die.tres" id="tut_enemy_keeps_die"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_response.tres" id="tut_enemy_response"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_the_raider.tres" id="tut_finish_the_raider"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_out.tres" id="tut_jump_out"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/opening_hand.tres" id="tut_opening"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/open_the_map.tres" id="tut_open_the_map"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_handoff.tres" id="tut_tutorial_handoff"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -102,7 +101,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1kud3"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1d4wr"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -225,6 +224,8 @@ bus = &"Music"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=354160955]
 
+[node name="BackgroundModifierBadge" parent="UI" unique_id=904210008 instance=ExtResource("97_bgmodui")]
+
 [node name="InfoShower" parent="UI" unique_id=1611703635 instance=ExtResource("1_hd7px")]
 visible = false
 
@@ -235,7 +236,6 @@ visible = false
 visible = false
 
 [node name="SaveIndicator" parent="UI" unique_id=1121636869 instance=ExtResource("4_svind")]
-layout_mode = 3
 
 [node name="GlitchShader" type="ColorRect" parent="UI" unique_id=2111896328]
 visible = false
@@ -263,9 +263,6 @@ fit_content = true
 horizontal_alignment = 1
 script = ExtResource("92_hazui")
 
-
-[node name="BackgroundModifierLabel" parent="UI" unique_id=904210008 instance=ExtResource("97_bgmodui")]
-
 [node name="FPSCounter" type="RichTextLabel" parent="UI" unique_id=1878225024]
 visible = false
 anchors_preset = 1
@@ -282,7 +279,6 @@ horizontal_alignment = 1
 script = ExtResource("4_7iud4")
 
 [node name="TilePalette" parent="UI" unique_id=1930415882 instance=ExtResource("2_tpal")]
-visible = false
 
 [node name="FadeIn" type="ColorRect" parent="UI" unique_id=1337741916]
 visible = false
@@ -343,7 +339,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_1kud3")
+material = SubResource("ShaderMaterial_1d4wr")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]
@@ -357,7 +353,6 @@ position = Vector2(96, 7)
 
 [node name="EnemyManager" parent="Systems" unique_id=1703945841 instance=ExtResource("10_oai2y")]
 z_index = -5
-enemy_spacing = 432
 
 [node name="RewardManager" parent="Systems" unique_id=1010479289 instance=ExtResource("13_7iud4")]
 
@@ -380,7 +375,7 @@ script = ExtResource("93_runstats")
 
 [node name="TutorialManager" parent="Systems" unique_id=1846484380 instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
-auto_start = true
+auto_start = false
 tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("tut_ambush_intro"), ExtResource("tut_activate_tile"), ExtResource("tut_enemy_keeps_die"), ExtResource("tut_read_intents"), ExtResource("tut_bump_explanation"), ExtResource("tut_end_turn_prompt"), ExtResource("tut_enemy_response"), ExtResource("tut_finish_the_raider"), ExtResource("tut_claim_salvage"), ExtResource("tut_open_the_map"), ExtResource("tut_jump_out"), ExtResource("tut_tutorial_handoff")])
 opening_setup = ExtResource("tut_opening")
 

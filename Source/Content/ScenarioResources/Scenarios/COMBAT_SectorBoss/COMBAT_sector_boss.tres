@@ -28,6 +28,6 @@ script = ExtResource("3_664ej")
 map_icon = ExtResource("2_1djmd")
 background_resource = ExtResource("1_86g1y")
 sector_gate_scenario = true
-hazard = ExtResource("haz_flare")
 starting_enemies = Array[ExtResource("4_f4n7r")]([SubResource("Resource_4dr6h")])
+hazard = ExtResource("haz_flare")
 metadata/_custom_type_script = "uid://bidpx7urxb1md"
