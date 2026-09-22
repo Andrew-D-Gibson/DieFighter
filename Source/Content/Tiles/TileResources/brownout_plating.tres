@@ -1,0 +1,134 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://xmpvvv0oqjctf"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://bla3la6e5sc2l" path="res://Assets/Textures/Tiles/PurpleTiles/brownout_plating.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_6"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_7"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+type = 6
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_b1_target"]
+script = ExtResource("script_3")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_b2_particle_count"]
+script = ExtResource("script_3")
+category = 2
+amount = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_b3_particles"]
+script = ExtResource("script_3")
+category = 4
+subtype = 1
+color = Color(0.5529412, 0.9411765, 0.95686275, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_b4_amount"]
+script = ExtResource("script_3")
+category = 2
+amount = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_b5_shield"]
+script = ExtResource("script_3")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cond"]
+script = ExtResource("script_6")
+category = 7
+subtype = 2
+if_true_effects = Array[ExtResource("script_3")]([])
+if_false_effects = Array[ExtResource("script_3")]([SubResource("Resource_b1_target"), SubResource("Resource_b2_particle_count"), SubResource("Resource_b3_particles"), SubResource("Resource_b4_amount"), SubResource("Resource_b5_shield")])
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_cond")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_evt"]
+script = ExtResource("script_7")
+event = 3
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_r1_target"]
+script = ExtResource("script_3")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r2_particle_count"]
+script = ExtResource("script_3")
+category = 2
+amount = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r3_particles"]
+script = ExtResource("script_3")
+category = 4
+subtype = 1
+color = Color(0.5529412, 0.9411765, 0.95686275, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r4_amount"]
+script = ExtResource("script_3")
+category = 2
+amount = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r5_shield"]
+script = ExtResource("script_3")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_cond"]
+script = ExtResource("script_6")
+category = 7
+subtype = 2
+if_true_effects = Array[ExtResource("script_3")]([])
+if_false_effects = Array[ExtResource("script_3")]([SubResource("Resource_r1_target"), SubResource("Resource_r2_particle_count"), SubResource("Resource_r3_particles"), SubResource("Resource_r4_amount"), SubResource("Resource_r5_shield")])
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
+[sub_resource type="Resource" id="Resource_response"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_r_cond")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=purple]Brownout Plating[/color]"
+description = "[color=yellow]Takes no dice.[/color] At the end of every [color=purple]enemy turn[/color], gain [color=blue]4 shields[/color] — but only while the engine is [color=purple]not charged[/color]"
+hint_text = "It armours a ship that isn't going anywhere."
+textures = SubResource("Resource_frames2")
+uses_per_combat = -1
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
+effect_chain = SubResource("Resource_chain")
+event_responses = Dictionary[ExtResource("script_7"), ExtResource("script_5")]({
+SubResource("Resource_evt"): SubResource("Resource_response")
+})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
