@@ -1,0 +1,180 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://zoya3e7gsph1d"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://bgglmub54avdl" path="res://Assets/Textures/Tiles/PurpleTiles/runaway_reactor.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_4"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_6"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_7"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+type = 6
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_p_a"]
+script = ExtResource("script_3")
+category = 0
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_b"]
+script = ExtResource("script_3")
+category = 2
+amount = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_c"]
+script = ExtResource("script_3")
+category = 4
+color = Color(0.8156863, 0.21176471, 0.3372549, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_d"]
+script = ExtResource("script_3")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_4")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_e"]
+script = ExtResource("script_3")
+category = 2
+amount = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_f"]
+script = ExtResource("script_3")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_g"]
+script = ExtResource("script_3")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_h"]
+script = ExtResource("script_3")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_i"]
+script = ExtResource("script_3")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_p_cond"]
+script = ExtResource("script_6")
+category = 7
+subtype = 5
+if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_p_a"), SubResource("Resource_p_b"), SubResource("Resource_p_c"), SubResource("Resource_p_d"), SubResource("Resource_p_e"), SubResource("Resource_p_f"), SubResource("Resource_p_g"), SubResource("Resource_p_h"), SubResource("Resource_p_i")])
+if_false_effects = Array[ExtResource("script_3")]([])
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
+[sub_resource type="Resource" id="Resource_p_chain"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_p_cond")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_r_a"]
+script = ExtResource("script_3")
+category = 0
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_b"]
+script = ExtResource("script_3")
+category = 2
+amount = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_c"]
+script = ExtResource("script_3")
+category = 4
+color = Color(0.8156863, 0.21176471, 0.3372549, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_d"]
+script = ExtResource("script_3")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_4")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_e"]
+script = ExtResource("script_3")
+category = 2
+amount = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_f"]
+script = ExtResource("script_3")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_g"]
+script = ExtResource("script_3")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_h"]
+script = ExtResource("script_3")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_i"]
+script = ExtResource("script_3")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_r_cond"]
+script = ExtResource("script_6")
+category = 7
+subtype = 5
+if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_r_a"), SubResource("Resource_r_b"), SubResource("Resource_r_c"), SubResource("Resource_r_d"), SubResource("Resource_r_e"), SubResource("Resource_r_f"), SubResource("Resource_r_g"), SubResource("Resource_r_h"), SubResource("Resource_r_i")])
+if_false_effects = Array[ExtResource("script_3")]([])
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
+[sub_resource type="Resource" id="Resource_r_chain"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_r_cond")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_evt"]
+script = ExtResource("script_7")
+event = 0
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=purple]Runaway Reactor[/color]"
+description = "[color=yellow]Takes no dice.[/color] At the start of your turn, if [color=red]overcharged[/color]: deal [color=red]5 damage[/color] to a [color=purple]random enemy[/color] and [color=red]2[/color] to your own hull"
+hint_text = "It does not care that the surplus was meant for leaving."
+rarity = 2
+textures = SubResource("Resource_frames2")
+uses_per_combat = -1
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
+effect_chain = SubResource("Resource_p_chain")
+event_responses = Dictionary[ExtResource("script_7"), ExtResource("script_5")]({
+SubResource("Resource_evt"): SubResource("Resource_r_chain")
+})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
