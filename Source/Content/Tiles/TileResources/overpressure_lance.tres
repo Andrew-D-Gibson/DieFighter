@@ -1,0 +1,127 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://lkfkv2ck8n2k1"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://c0kugcc0qhbvm" path="res://Assets/Textures/Tiles/PurpleTiles/overpressure_lance.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_4"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act2"]
+script = ExtResource("script_1")
+type = 1
+acceptable_values = Array[int]([6])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act3"]
+script = ExtResource("script_1")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act4"]
+script = ExtResource("script_1")
+type = 11
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("script_3")
+category = 2
+amount = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("script_3")
+category = 4
+subtype = 1
+color = Color(1.0, 0.45, 0.45, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_3")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_4")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step6"]
+script = ExtResource("script_3")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_3")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step8"]
+script = ExtResource("script_3")
+category = 2
+subtype = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step9"]
+script = ExtResource("script_3")
+category = 2
+subtype = 2
+multiplier = 3.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step10"]
+script = ExtResource("script_3")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step11"]
+script = ExtResource("script_3")
+category = 2
+subtype = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step12"]
+script = ExtResource("script_3")
+category = 1
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step13"]
+script = ExtResource("script_3")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain14"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=purple]Overpressure Lance[/color]"
+description = "(die_6), only while [color=red]overcharged[/color] -> Deal [color=red]3x your surplus[/color] in damage, spending it all. The drive is left [color=purple]exactly full[/color]"
+hint_text = "It only ever burns what you didn't need to escape."
+rarity = 2
+textures = SubResource("Resource_frames2")
+uses_per_combat = -1
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3"), SubResource("Resource_act4")])
+effect_chain = SubResource("Resource_chain14")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
