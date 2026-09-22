@@ -1,0 +1,116 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://hpumfdj2ztmed"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://b5jyp441mq8d1" path="res://Assets/Textures/Tiles/PurpleTiles/regenerative_brake.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+type = 6
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("script_3")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("script_3")
+category = 2
+amount = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_3")
+category = 4
+color = Color(0.78431374, 0.34117648, 0.9490196, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step6"]
+script = ExtResource("script_3")
+category = 2
+amount = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_3")
+category = 1
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain8"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_evt9"]
+script = ExtResource("script_6")
+event = 4
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_step10"]
+script = ExtResource("script_3")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step11"]
+script = ExtResource("script_3")
+category = 2
+amount = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step12"]
+script = ExtResource("script_3")
+category = 4
+color = Color(0.78431374, 0.34117648, 0.9490196, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step13"]
+script = ExtResource("script_3")
+category = 2
+amount = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step14"]
+script = ExtResource("script_3")
+category = 1
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain15"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=purple]Regenerative Brake[/color]"
+description = "[color=yellow]Takes no dice.[/color] Whenever your [color=red]hull[/color] is hit, gain [color=purple]3 engine charge[/color]"
+hint_text = "Every hit you take is thrust you didn't have to pay for."
+rarity = 1
+textures = SubResource("Resource_frames2")
+uses_per_combat = -1
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
+effect_chain = SubResource("Resource_chain8")
+event_responses = Dictionary[ExtResource("script_6"), ExtResource("script_5")]({
+SubResource("Resource_evt9"): SubResource("Resource_chain15")
+})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
