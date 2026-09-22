@@ -1,0 +1,95 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dyxva56rx72lu"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_act"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_tile"]
+[ext_resource type="Texture2D" uid="uid://bmpeu07k3aidd" path="res://Assets/Textures/Tiles/PurpleTiles/governor_coil.png" id="3_tex"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_chain"]
+
+[sub_resource type="Resource" id="Resource_act_die"]
+script = ExtResource("1_act")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act_combat"]
+script = ExtResource("1_act")
+type = 2
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act_target"]
+script = ExtResource("1_act")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_s1_die_value"]
+script = ExtResource("4_data")
+category = 2
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s2_particles"]
+script = ExtResource("4_data")
+category = 4
+subtype = 1
+color = Color(0.78431374, 0.34117648, 0.9490196, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s3_target_player"]
+script = ExtResource("4_data")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s4_charge"]
+script = ExtResource("4_data")
+category = 1
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s5_set_one"]
+script = ExtResource("4_data")
+category = 2
+amount = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s6_nerf_die"]
+script = ExtResource("4_data")
+category = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s7_target_computer"]
+script = ExtResource("4_data")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_s8_give_die"]
+script = ExtResource("4_data")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("5_chain")
+effects = Array[ExtResource("4_data")]([SubResource("Resource_s1_die_value"), SubResource("Resource_s2_particles"), SubResource("Resource_s3_target_player"), SubResource("Resource_s4_charge"), SubResource("Resource_s5_set_one"), SubResource("Resource_s6_nerf_die"), SubResource("Resource_s7_target_computer"), SubResource("Resource_s8_give_die")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_governor"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_tex")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("2_tile")
+tile_name = "[color=purple]Governor Coil[/color]"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge[/color] equal to the die, then [color=orange]give[/color] [color=purple]target[/color] the die as a (die_1)"
+hint_text = "The drive keeps the six. They get the scrap."
+rarity = 2
+textures = SubResource("SpriteFrames_governor")
+uses_per_combat = 2
+activation_checks = Array[ExtResource("1_act")]([SubResource("Resource_act_die"), SubResource("Resource_act_combat"), SubResource("Resource_act_target")])
+effect_chain = SubResource("Resource_chain")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
