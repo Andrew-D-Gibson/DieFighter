@@ -89,9 +89,18 @@ func _map_hovered(is_hovered: bool) -> void:
 
 
 func _check_for_engine_charge() -> void:
-	if Globals.player.engine_charge >= Globals.player.max_engine_charge:
+	if not Globals.player:
+		return
+
+	# The highlight is a claim that the player can leave right now, so it has to
+	# come back down when charge does. Partial charge spends make this reachable
+	# mid-combat, where it used to only ever move at scenario boundaries.
+	if Globals.player.is_engine_charged():
 		map_button_label.add_theme_color_override('default_color', Globals.medium_purple)
 		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
+	else:
+		map_button_label.add_theme_color_override('default_color', Globals.white)
+		map_button_label.text = 'MAP'
 		
 		
 func _systems_startup() -> void:

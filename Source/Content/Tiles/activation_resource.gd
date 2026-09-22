@@ -79,11 +79,17 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			
 	ActivationType.ENGINE_NOT_CHARGED:
 		func(_die: Dice) -> bool:
-			return Globals.player.engine_charge < Globals.player.max_engine_charge,
+			if not Globals.player:
+				return false
+
+			return not Globals.player.is_engine_charged(),
 			
 	ActivationType.ENGINE_CHARGED:
 		func(_die: Dice) -> bool:
-			return Globals.player.engine_charge == Globals.player.max_engine_charge,
+			if not Globals.player:
+				return false
+
+			return Globals.player.is_engine_charged(),
 }
 
 

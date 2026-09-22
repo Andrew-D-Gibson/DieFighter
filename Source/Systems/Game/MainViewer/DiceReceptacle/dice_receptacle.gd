@@ -11,7 +11,7 @@ func _ready() -> void:
 	
 func _add_die(die: Dice) -> void:
 	# Make sure the engine is charged
-	if Globals.player.engine_charge != Globals.player.max_engine_charge:
+	if not Globals.player.is_engine_charged():
 		return
 		
 	# Limit the dice in the queue to 1 (for now this is silly, but w/e)

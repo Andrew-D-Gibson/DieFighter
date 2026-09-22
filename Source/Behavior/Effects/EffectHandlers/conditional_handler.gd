@@ -65,8 +65,7 @@ func _is_enemy_targeted(context: EffectContext) -> bool:
 func _is_engine_charged() -> bool:
 	if Globals.player == null:
 		return false
-	# Adjust this call to match your actual EngineCharger API.
-	return Globals.player.engine_charger.is_charged()
+	return Globals.player.is_engine_charged()
 
 
 func _is_die_in_range(data: ConditionalEffectData, context: EffectContext) -> bool:

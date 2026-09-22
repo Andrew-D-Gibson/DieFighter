@@ -8,11 +8,54 @@ const _DICE_REROLL_SFX: SoundEffectResource = preload("res://Source/Resources/So
 @export var _time_between_die_spawns: float = 0.2
 @export var _dice_queue_spacing: int = 14
 
+## Redline headroom as a fraction of max_engine_charge. Held at 0 until the
+## overcharge effects exist: without the ADD_OVERCHARGE clamp in
+## ChangeEngineChargeEvent, any headroom here would let the ordinary Engine
+## Charger tile spill past max and redline the player by accident.
+const _OVERCHARGE_CAP_FRACTION: float = 0.0
+
 var max_engine_charge: int = 24
+
+## Headroom above max_engine_charge that charge is allowed to occupy — the
+## "redline" band. Derived from max_engine_charge whenever the dice count
+## changes. Reaching it is deliberate: only an ADD_OVERCHARGE effect may push
+## charge past max, so topping off to jump can never redline you by accident.
+var overcharge_cap: int = 0
+
+## The absolute ceiling the charge setter clamps to.
+var charge_ceiling: int:
+	get: return max_engine_charge + overcharge_cap
+
 @export var engine_charge: int = 0:
 	set(new_value):
-		engine_charge = clampi(new_value, 0, max_engine_charge)
+		engine_charge = clampi(new_value, 0, charge_ceiling)
 		Events.engine_charge_changed.emit()
+
+
+## True once the engine will allow a jump. Deliberately >= rather than ==:
+## charge can sit above max while redlined, and an equality test there would
+## silently lock the player out of jumping.
+func is_engine_charged() -> bool:
+	return engine_charge >= max_engine_charge
+
+
+func is_overcharged() -> bool:
+	return engine_charge > max_engine_charge
+
+
+## How far into the redline band the engine currently sits. Never negative.
+func overcharge_amount() -> int:
+	return maxi(0, engine_charge - max_engine_charge)
+
+
+## How much charge is still needed to open the jump gate. Never negative, and
+## reads 0 while overcharged.
+func missing_charge() -> int:
+	return maxi(0, max_engine_charge - engine_charge)
+
+
+func can_afford_charge(cost: int) -> bool:
+	return engine_charge >= cost
 
 
 @onready var dice_manager: DiceQueue = %DiceQueue
@@ -23,7 +66,12 @@ var num_of_dice: int:
 		num_of_dice = new_num
 		
 		max_engine_charge = (6*(num_of_dice-1)) - floor(1.7078 * sqrt(num_of_dice))
-		
+		overcharge_cap = roundi(max_engine_charge * _OVERCHARGE_CAP_FRACTION)
+
+		# The ceiling just moved. Re-run the charge setter so a shrinking
+		# ceiling re-clamps rather than leaving charge stranded above it.
+		engine_charge = engine_charge
+
 		Events.die_added.emit()
 		
 		
