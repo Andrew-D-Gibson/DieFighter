@@ -21,3 +21,9 @@ func resolve(_engine: ScenarioEngine) -> void:
 		target = mini(target, Globals.player.max_engine_charge)
 
 	Globals.player.engine_charge = target
+
+	# Only an enemy taking charge counts as a drain. The player dumping their
+	# own bar through Emergency Transfer or Overdraw Coil is a purchase, not a
+	# theft, and shouldn't arm anything that retaliates.
+	if amount < 0 and actor is Enemy:
+		Events.engine_charge_drained.emit()

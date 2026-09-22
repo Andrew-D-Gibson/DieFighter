@@ -12,6 +12,9 @@ enum EventType {
 	## The player's hull (not shields) just took damage. The hook for
 	## retaliation: getting hit stops being purely something that happens to you.
 	ON_PLAYER_HEALTH_HIT,
+	## An enemy siphoned engine charge. The hook for punishing the one verb
+	## that attacks the player's ability to leave rather than their hull.
+	ON_ENGINE_CHARGE_DRAINED,
 	ON_PLAYER_FATAL_DAMAGE = 100,
 }
 

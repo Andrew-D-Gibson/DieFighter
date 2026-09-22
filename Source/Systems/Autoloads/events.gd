@@ -43,6 +43,10 @@ signal player_shields_hit()
 ## protected to exposed is a bigger moment than any single point of chip damage.
 signal player_shields_broken()
 signal engine_charge_changed()
+## An enemy just siphoned engine charge away. Distinct from
+## engine_charge_changed because losing charge to theft is a different
+## event from spending it, and only the former is worth retaliating to.
+signal engine_charge_drained()
 signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction)
 signal player_fatal_damage()
 
@@ -69,6 +73,11 @@ signal tile_clicked_for_info()
 # Reward/Economy Events
 signal spawn_reward(pos: Vector2, reward_resource: RewardResource)
 signal reward_picked()
+## What the player took out of a reward offer, for listeners that care about
+## the choice rather than just the fact that one was made. ScenarioManager
+## turns these into ScenarioEvents so an encounter can react to being robbed.
+signal reward_tile_taken()
+signal reward_money_taken()
 signal set_money(value: int)
 
 
