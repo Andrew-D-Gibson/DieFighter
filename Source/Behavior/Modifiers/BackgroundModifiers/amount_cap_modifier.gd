@@ -23,7 +23,8 @@ func _init(amount_cap: int = 3) -> void:
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if not (event is DamageEvent or event is HealEvent
-			or event is ShieldEvent or event is ChangeEngineChargeEvent):
+			or event is ShieldEvent or event is ChangeEngineChargeEvent
+			or event is SpendEngineChargeEvent):
 		return
 
 	event.amount = clampi(event.amount, -cap, cap)

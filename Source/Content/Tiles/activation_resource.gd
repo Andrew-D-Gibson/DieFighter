@@ -12,6 +12,10 @@ enum ActivationType {
 	TARGETED_SHIP_HAS_SHIELDS,
 	ENGINE_NOT_CHARGED,
 	ENGINE_CHARGED,
+	## The player can afford [member threshold] engine charge. Runs before the
+	## die is consumed, so a tile that spends charge refuses cleanly and hands
+	## the die back instead of firing for free.
+	CHARGE_AT_LEAST,
 }
 
 @export var type: ActivationType
@@ -19,6 +23,9 @@ enum ActivationType {
 
 # VALUE activation values
 @export var acceptable_values: Array[int]
+
+# CHARGE_AT_LEAST activation values
+@export var threshold: int = 0
 
 
 var activation_functions: Dictionary[ActivationType, Callable] = {
@@ -90,6 +97,13 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 
 			return Globals.player.is_engine_charged(),
+			
+	ActivationType.CHARGE_AT_LEAST:
+		func(_die: Dice) -> bool:
+			if not Globals.player:
+				return false
+
+			return Globals.player.can_afford_charge(threshold),
 }
 
 
@@ -124,6 +138,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 		
 	ActivationType.ENGINE_CHARGED:
 		"ENGINE IS NOT CHARGED",
+		
+	ActivationType.CHARGE_AT_LEAST:
+		"NOT ENOUGH ENGINE CHARGE",
 }
 
 

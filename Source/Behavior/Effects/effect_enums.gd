@@ -64,6 +64,13 @@ enum AttributeChangeSubtype {
 	HEAL,                 ## Restore HP to targets (creates HealEvent)
 	SHIELD,               ## Grant shields to targets (creates ShieldEvent)
 	CHANGE_ENGINE_CHARGE, ## Change the player's engine charge by an amount
+	## Spend engine charge as a cost. Unlike CHANGE_ENGINE_CHARGE, which
+	## clamps a negative amount silently at zero, this refuses to underflow —
+	## so a tile can't fire its payoff for free when the player can't afford
+	## it. Affordability is normally guaranteed upstream by the
+	## CHARGE_AT_LEAST activation check; this is the guard rail for when a
+	## tile's authored cost and its threshold disagree.
+	SPEND_ENGINE_CHARGE,
 }
 
 
@@ -81,6 +88,10 @@ enum AmountModifierSubtype {
 	SET_TO_DIE_VALUE,     ## Set running_amount to the activator die's face value
 	SET_TO_ENEMY_INTENT,  ## Set running_amount to the enemy action's rolled intent amount
 	ADD_EMPTY_ADJACENT_CELLS, ## Add count of empty cells around the source tile
+	## Set running_amount to how much charge is still MISSING (max - current).
+	## Reads 0 once the jump gate is open, so effects built on it are strongest
+	## on a cold drive and go quiet as the player secures their escape.
+	SET_TO_MISSING_CHARGE,
 }
 
 
