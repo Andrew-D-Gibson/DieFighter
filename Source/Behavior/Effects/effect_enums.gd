@@ -145,6 +145,10 @@ enum TileControlSubtype {
 	SET_TILE_DATA,              ## Set a named value stored on a tile
 	PUSH_TARGETED_TILES,        ## Push each targeted tile one cell (zero offset = random)
 	PASS_DIE_TO_TILE,           ## Hand the activator die to a targeted tile and activate it
+	## Arm the engine death save: a full drive cancels a killing blow and is
+	## spent doing it. A modifier rather than an event response because the
+	## save has to be decided before the damage lands.
+	ADD_DEATH_SAVE_MODIFIER,
 }
 
 

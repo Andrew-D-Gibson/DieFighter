@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://tqtnyxgff76ks"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
+[ext_resource type="Texture2D" uid="uid://6wgpc2s6i81o" path="res://Assets/Textures/Tiles/PurpleTiles/dead_mans_switch.png" id="tex_2"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_7"]
+
+[sub_resource type="Resource" id="Resource_act1"]
+script = ExtResource("script_1")
+type = 6
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_arm_p"]
+script = ExtResource("script_3")
+category = 5
+subtype = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain_p"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_arm_p")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_arm_r"]
+script = ExtResource("script_3")
+category = 5
+subtype = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain_r"]
+script = ExtResource("script_5")
+effects = Array[ExtResource("script_3")]([SubResource("Resource_arm_r")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_evt"]
+script = ExtResource("script_7")
+event = 0
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[resource]
+script = ExtResource("script_0")
+tile_name = "[color=purple]Dead Man's Switch[/color]"
+description = "[color=yellow]Takes no dice.[/color] While [color=purple]fully charged[/color], a blow that would [color=red]kill you[/color] is cancelled instead — and the whole drive is spent doing it"
+hint_text = "A full drive is a saved life. You just can't also leave with it."
+rarity = 2
+textures = SubResource("Resource_frames2")
+uses_per_combat = -1
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
+effect_chain = SubResource("Resource_chain_p")
+event_responses = Dictionary[ExtResource("script_7"), ExtResource("script_5")]({
+SubResource("Resource_evt"): SubResource("Resource_chain_r")
+})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

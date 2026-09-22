@@ -127,6 +127,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.SET_TILE_DATA, label = "Set Tile Data", handler = SetTileDataHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.PUSH_TARGETED_TILES, label = "Push Targeted Tiles", handler = PushTargetedTilesHandler, fields = ["grid_offset"]},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.PASS_DIE_TO_TILE, label = "Pass Die to Tile", handler = PassDieToTileHandler},
+	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER, label = "Add Death Save Modifier", handler = AddDeathSaveModifierHandler},
 
 	# ── SCENARIO_CONTROL ──────────────────────────────────────────
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.OPEN_SHOP, label = "Open Shop", handler = OpenShopHandler},
