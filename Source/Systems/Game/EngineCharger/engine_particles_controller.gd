@@ -8,4 +8,5 @@ func _ready() -> void:
 func _update_particle_amount() -> void:
 	var engine_charge_percentage: float = Globals.player.engine_charge / float(Globals.player.max_engine_charge)
 
-	self.amount_ratio = engine_charge_percentage
+	# amount_ratio is 0..1; redline charge would push this past the top.
+	self.amount_ratio = minf(1.0, engine_charge_percentage)

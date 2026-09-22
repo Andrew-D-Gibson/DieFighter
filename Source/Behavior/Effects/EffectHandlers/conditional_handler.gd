@@ -41,6 +41,9 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext) ->
 		EffectEnums.ConditionalSubtype.IF_ENGINE_CHARGED:
 			return _is_engine_charged()
 
+		EffectEnums.ConditionalSubtype.IF_OVERCHARGED:
+			return _is_overcharged()
+
 		EffectEnums.ConditionalSubtype.IF_DIE_VALUE_IN_RANGE:
 			return _is_die_in_range(data, context)
 
@@ -60,6 +63,12 @@ func _is_activator_odd(context: EffectContext) -> bool:
 
 func _is_enemy_targeted(context: EffectContext) -> bool:
 	return not context.targets.is_empty() and context.targets[0] is Enemy
+
+
+func _is_overcharged() -> bool:
+	if Globals.player == null:
+		return false
+	return Globals.player.is_overcharged()
 
 
 func _is_engine_charged() -> bool:

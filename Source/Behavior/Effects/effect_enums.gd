@@ -71,6 +71,10 @@ enum AttributeChangeSubtype {
 	## CHARGE_AT_LEAST activation check; this is the guard rail for when a
 	## tile's authored cost and its threshold disagree.
 	SPEND_ENGINE_CHARGE,
+	## Add charge, permitted to push PAST max_engine_charge into the redline
+	## band. The only door into overcharge: ordinary CHANGE_ENGINE_CHARGE
+	## clamps at max, so topping off to jump can never redline you by accident.
+	ADD_OVERCHARGE,
 }
 
 
@@ -92,6 +96,10 @@ enum AmountModifierSubtype {
 	## Reads 0 once the jump gate is open, so effects built on it are strongest
 	## on a cold drive and go quiet as the player secures their escape.
 	SET_TO_MISSING_CHARGE,
+	## Set running_amount to how far past max the drive is sitting (0 when not
+	## overcharged). Lets a tile cash out surplus without touching the charge
+	## the player needs to leave.
+	SET_TO_OVERCHARGE,
 }
 
 
@@ -159,6 +167,7 @@ enum ConditionalSubtype {
 	IF_ENGINE_CHARGED,   ## True if the player's engine is charged
 	IF_DIE_VALUE_IN_RANGE, ## True if die value is between min and max (inclusive)
 	IF_TARGET_HOLDS_MATCHING_DIE, ## True if the first target already holds a die of the activator's value
+	IF_OVERCHARGED,      ## True if the drive is sitting above max_engine_charge
 }
 
 

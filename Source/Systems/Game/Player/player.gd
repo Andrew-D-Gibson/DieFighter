@@ -8,11 +8,15 @@ const _DICE_REROLL_SFX: SoundEffectResource = preload("res://Source/Resources/So
 @export var _time_between_die_spawns: float = 0.2
 @export var _dice_queue_spacing: int = 14
 
-## Redline headroom as a fraction of max_engine_charge. Held at 0 until the
-## overcharge effects exist: without the ADD_OVERCHARGE clamp in
-## ChangeEngineChargeEvent, any headroom here would let the ordinary Engine
-## Charger tile spill past max and redline the player by accident.
-const _OVERCHARGE_CAP_FRACTION: float = 0.0
+## Redline headroom as a fraction of max_engine_charge. Safe to open now that
+## ChangeEngineChargeEvent clamps at max unless a change explicitly opts in,
+## so only ADD_OVERCHARGE can reach the band.
+const _OVERCHARGE_CAP_FRACTION: float = 0.5
+
+## Hull paid per turn ended in the redline, as a divisor of the overcharge:
+## +10 past the gate costs 5 a turn. Pushing deeper costs more, which is what
+## makes the band a burst resource rather than a bank.
+const _REDLINE_HULL_DIVISOR: int = 2
 
 var max_engine_charge: int = 24
 
@@ -89,6 +93,10 @@ var money: int:
 
 func _ready() -> void:
 	Globals.player = self
+	# The redline's cost lives here rather than in a manager because Player
+	# owns engine_charge; the consequence of holding it past the gate belongs
+	# with the field, not with the bar that draws it.
+	Events.enemy_turn_over.connect(_bleed_for_redline)
 	health.death.connect(Events.game_over.emit)
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
@@ -132,6 +140,33 @@ func _ready() -> void:
 	money = 0
 			
 			
+## Charges the player hull for every turn ended above the jump gate.
+##
+## Goes through the scenario engine rather than touching Health directly, so
+## the bleed passes the same modifier pipeline as any other damage and a region
+## that caps or blunts damage blunts this too.
+func _bleed_for_redline() -> void:
+	var over: int = overcharge_amount()
+	if over <= 0:
+		return
+
+	if not Globals.scenario_manager:
+		return
+
+	var engine: ScenarioEngine = Globals.scenario_manager.engine
+	if engine == null:
+		return
+
+	var event: DamageEvent = DamageEvent.new()
+	event.amount = maxi(1, over / _REDLINE_HULL_DIVISOR)
+	event.actor = self
+	event.effect_source = self
+	event.targets = [self]
+	engine.queue_event(event)
+
+	Events.camera_shake_small.emit()
+
+
 func _load_game_save(game_save: GameSaveResource) -> void:
 	health.max_health = game_save.player_max_health
 	health.starting_health = game_save.player_health

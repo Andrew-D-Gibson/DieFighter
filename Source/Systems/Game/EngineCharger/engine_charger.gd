@@ -5,6 +5,9 @@ extends Node2D
 @export var charged_indicator: Sprite2D
 @export var display_text: RichTextLabel
 
+## Applied to the charged indicator while the drive is past the gate.
+const _REDLINE_TINT: Color = Color(1.0, 0.45, 0.45)
+
 ## The fill level the bar is currently animating towards. Tracked separately
 ## from progress_bar.value because several charge changes can land in the same
 ## frame before any tween has stepped, and the bar's value would still read as
@@ -57,7 +60,12 @@ func _update_ui() -> void:
 	if not Globals.player:
 		return
 		
-	var charge_proportion: float = Globals.player.engine_charge / float(Globals.player.max_engine_charge)
+	# The bar tops out at the jump gate. Charge above it is redline, shown by
+	# recolouring the charged indicator and spelling the surplus out in the
+	# readout, rather than by overflowing a bar that has nowhere to go.
+	var charge_proportion: float = minf(
+		1.0, Globals.player.engine_charge / float(Globals.player.max_engine_charge)
+	)
 	if charge_proportion != _target_proportion:
 		_target_proportion = charge_proportion
 		var tween_time: float = 0.25
@@ -94,8 +102,22 @@ func _update_ui() -> void:
 	if charge_proportion >= 1:
 		fill_head.visible = false
 		charged_indicator.visible = true
+		# Redlining is dangerous, so the "you may leave" light stops reading
+		# as reassurance and goes hot.
+		charged_indicator.modulate = (
+			_REDLINE_TINT if Globals.player.is_overcharged() else Color.WHITE
+		)
 	else:
 		fill_head.visible = true
 		charged_indicator.visible = false
+		charged_indicator.modulate = Color.WHITE
 		
-	display_text.text = str(Globals.player.engine_charge) + '/' + str(Globals.player.max_engine_charge)
+	# The readout is only about five characters wide, so the redline can't just
+	# be appended to "10/10" — it clips. Past the gate the denominator carries
+	# no information (it's always full), so the surplus takes its place: "10+3".
+	if Globals.player.is_overcharged():
+		display_text.text = str(Globals.player.max_engine_charge) \
+			+ '+' + str(Globals.player.overcharge_amount())
+	else:
+		display_text.text = str(Globals.player.engine_charge) \
+			+ '/' + str(Globals.player.max_engine_charge)

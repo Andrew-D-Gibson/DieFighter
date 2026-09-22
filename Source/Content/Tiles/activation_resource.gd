@@ -16,6 +16,8 @@ enum ActivationType {
 	## die is consumed, so a tile that spends charge refuses cleanly and hands
 	## the die back instead of firing for free.
 	CHARGE_AT_LEAST,
+	## The drive is sitting above max — in the redline band.
+	OVERCHARGED,
 }
 
 @export var type: ActivationType
@@ -104,6 +106,13 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 
 			return Globals.player.can_afford_charge(threshold),
+			
+	ActivationType.OVERCHARGED:
+		func(_die: Dice) -> bool:
+			if not Globals.player:
+				return false
+
+			return Globals.player.is_overcharged(),
 }
 
 
@@ -141,6 +150,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 		
 	ActivationType.CHARGE_AT_LEAST:
 		"NOT ENOUGH ENGINE CHARGE",
+		
+	ActivationType.OVERCHARGED:
+		"ENGINE IS NOT OVERCHARGED",
 }
 
 
