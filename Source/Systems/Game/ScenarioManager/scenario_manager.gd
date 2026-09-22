@@ -11,6 +11,11 @@ enum ScenarioEvent {
 	PIRATES_DEFEATED,
 	CIVILIANS_DEFEATED,
 	BOSS_DEFEATED,
+	
+	# Appended, never inserted: authored .tres transition dictionaries store
+	# these as raw ints, so reordering silently rewires every encounter.
+	PLAYER_TOOK_REWARD_TILE,
+	PLAYER_TOOK_REWARD_MONEY,
 }
 
 enum Faction {
@@ -38,6 +43,13 @@ func _ready() -> void:
 	Events.start_scenario.connect(_start_scenario)
 	Events.jump.connect(_jump)
 
+	Events.reward_tile_taken.connect(func() -> void:
+		Events.scenario_event.emit(ScenarioEvent.PLAYER_TOOK_REWARD_TILE)
+	)
+	Events.reward_money_taken.connect(func() -> void:
+		Events.scenario_event.emit(ScenarioEvent.PLAYER_TOOK_REWARD_MONEY)
+	)
+
 
 func _load_scenario(scenario: ScenarioResource) -> void:
 	current_scenario = scenario
@@ -56,6 +68,21 @@ func _start_scenario() -> void:
 		
 	# Set for enemies
 	Globals.enemy_manager.scenario_engine = engine
+
+	_spawn_starting_reward()
+
+
+## Floats this scenario's pre-placed salvage, if it has any. Spawned on
+## scenario start rather than on load so it appears alongside the ships flying
+## in, not while the previous encounter is still fading out.
+func _spawn_starting_reward() -> void:
+	if not current_scenario or not current_scenario.starting_reward:
+		return
+
+	Events.spawn_reward.emit(
+		current_scenario.starting_reward_position,
+		current_scenario.starting_reward
+	)
 	
 	
 func _jump() -> void:

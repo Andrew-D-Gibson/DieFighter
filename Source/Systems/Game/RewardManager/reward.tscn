@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bgv4pmv8q5n1c" path="res://Source/Systems/Game/RewardManager/reward.gd" id="1_n0mmt"]
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="2_jm8cj"]
 [ext_resource type="PackedScene" uid="uid://bl8vaahrwfvl8" path="res://Source/Systems/Game/MoneyParticles/money_particle.tscn" id="4_72c3x"]
+[ext_resource type="PackedScene" uid="uid://4cyznjbe26rl1" path="res://Source/Systems/Game/RewardManager/MoneyPickup/money_pickup.tscn" id="5_mpick"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5hors"]
 size = Vector2(98, 32)
@@ -10,6 +11,7 @@ size = Vector2(98, 32)
 [node name="Reward" type="Node2D" unique_id=600140509 node_paths=PackedStringArray("bounding_box")]
 script = ExtResource("1_n0mmt")
 dice_scene = ExtResource("2_jm8cj")
+money_pickup_scene = ExtResource("5_mpick")
 money_particle_scene = ExtResource("4_72c3x")
 bounding_box = NodePath("CollisionShape2D")
 

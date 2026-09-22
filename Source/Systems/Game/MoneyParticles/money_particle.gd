@@ -38,6 +38,34 @@ var collision_radius: Dictionary[money_amount, int] = {
 var _money_added_particle_scene: PackedScene = preload("uid://cf7c6vnmskqff")
 
 
+## Pays out [param amount] credits as floating particles at [param global_pos],
+## parented to [param parent]. Large denominations first, then small change.
+##
+## Every payout in the game routes through here so credits look the same
+## wherever they came from — a destroyed ship's drop, a salvage pickup — and
+## so the "how many coins is this worth" arithmetic lives in exactly one place.
+##
+## The scene is passed in rather than preloaded: this script is attached to
+## that scene, and preloading it here would be a cyclic dependency.
+static func spawn_payout(
+	parent: Node, global_pos: Vector2, amount: int, particle_scene: PackedScene
+) -> void:
+	if amount <= 0 or particle_scene == null or not is_instance_valid(parent):
+		return
+
+	var num_of_large_particles: int = floori(float(amount) / money_amount.LARGE)
+	var num_of_small_particles: int = amount % money_amount.LARGE
+
+	for i: int in range(num_of_large_particles + num_of_small_particles):
+		var particle: MoneyParticle = particle_scene.instantiate()
+		particle.amount = (
+			money_amount.LARGE if i < num_of_large_particles else money_amount.SMALL
+		)
+
+		parent.add_child(particle)
+		particle.global_position = global_pos
+
+
 func _ready() -> void:
 	_set_up_particle()
 	_set_up_float()

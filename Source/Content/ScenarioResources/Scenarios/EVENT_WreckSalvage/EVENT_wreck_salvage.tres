@@ -45,6 +45,13 @@ starting_state = ExtResource("state_9")
 reward_resource = SubResource("Resource_reward1")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
+[sub_resource type="Resource" id="Resource_salvage"]
+script = ExtResource("script_2")
+num_of_rewards = 2
+min_money_pickup = 35
+max_money_pickup = 60
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
 [resource]
 script = ExtResource("script_0")
 map_icon = ExtResource("tex_5")
@@ -54,4 +61,5 @@ rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_faction0"),
 1: SubResource("Resource_faction1")
 })
+starting_reward = SubResource("Resource_salvage")
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

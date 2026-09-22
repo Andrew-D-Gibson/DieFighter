@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://cowesv4hnjoqr"]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="script_1"]
+
+
+[resource]
+script = ExtResource("script_0")
+dialogue = "Told you. Hull's off limits. Weapons hot."
+attitude = 2
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

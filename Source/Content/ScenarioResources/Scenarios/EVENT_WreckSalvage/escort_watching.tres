@@ -2,15 +2,18 @@
 
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="script_1"]
-[ext_resource type="Resource" uid="uid://c7lf32sl5vliu" path="Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/escort_avenging.tres" id="state_2"]
-
+[ext_resource type="Resource" uid="uid://c7lf32sl5vliu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/escort_avenging.tres" id="state_2"]
+[ext_resource type="Resource" uid="uid://cowesv4hnjoqr" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/escort_enforcing.tres" id="state_3"]
+[ext_resource type="Resource" uid="uid://2ujc1qjwuu4q" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/escort_satisfied.tres" id="state_4"]
 
 [resource]
 script = ExtResource("script_0")
-dialogue = "Salvage what's venting. Touch the hull and we have a problem."
+dialogue = "The credits are yours. Pull a plate off that hull and we'll be having a different conversation."
 attitude = 1
 transitions = Dictionary[int, ExtResource("script_1")]({
+0: ExtResource("state_2"),
 1: ExtResource("state_2"),
-0: ExtResource("state_2")
+7: ExtResource("state_3"),
+8: ExtResource("state_4")
 })
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

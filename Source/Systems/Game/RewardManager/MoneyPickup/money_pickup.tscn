@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://4cyznjbe26rl1"]
+
+[ext_resource type="Script" uid="uid://ovc5j420bbx0n" path="res://Source/Systems/Game/RewardManager/MoneyPickup/money_pickup.gd" id="1_mpick"]
+[ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_mdrag"]
+[ext_resource type="Texture2D" uid="uid://b41a3gdbfjgrk" path="res://Assets/Textures/Money/money_symbol.png" id="3_msym"]
+[ext_resource type="PackedScene" uid="uid://bl8vaahrwfvl8" path="res://Source/Systems/Game/MoneyParticles/money_particle.tscn" id="4_mpart"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mpick"]
+size = Vector2(12, 12)
+
+[node name="MoneyPickup" type="Node2D" node_paths=PackedStringArray("draggable", "amount_label") groups=["MoneyPickup"]]
+z_index = 10
+script = ExtResource("1_mpick")
+draggable = NodePath("Draggable")
+amount_label = NodePath("AmountLabel")
+money_particle_scene = ExtResource("4_mpart")
+
+[node name="Draggable" parent="." instance=ExtResource("2_mdrag")]
+bob_amplitude = 0.75
+drift_amplitude = 0.5
+drift_speed = 0.25
+rotation_amplitude = 1.5
+rotation_speed = 0.15
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
+shape = SubResource("RectangleShape2D_mpick")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(0, -2)
+texture = ExtResource("3_msym")
+
+[node name="AmountLabel" type="RichTextLabel" parent="."]
+offset_left = -13.0
+offset_top = 3.0
+offset_right = 13.0
+offset_bottom = 17.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
+bbcode_enabled = true
+text = "[center]0[/center]"
