@@ -41,30 +41,11 @@ func _ready() -> void:
 
 ## Winning a fight refills the drive.
 ##
-## Done twice on purpose. combat_finished fires the instant the last enemy
-## dies, which is mid-chain: a tile that deals damage and then charges a
-## price against the engine (Arc Tap, Overpressure Lance, Overdraw Coil)
-## resolves its cost AFTER the refill and eats it, leaving the player below
-## the jump gate with no fight left to recharge in. So set it now for the UI,
-## then set it again once the engine has finished everything the killing blow
-## set in motion.
+## A plain assignment is safe because combat_finished is now emitted from
+## EndCombatEvent, which resolves after the chain that won the fight — so a
+## tile that strikes and then charges a price against the engine has already
+## been paid for by the time this runs.
 func _refill_after_combat() -> void:
-	Globals.player.engine_charge = Globals.player.max_engine_charge
-	_update_ui()
-
-	if not Globals.scenario_manager:
-		return
-
-	var engine: ScenarioEngine = Globals.scenario_manager.engine
-	if engine == null or not engine.currently_processing_queue:
-		return
-
-	await engine.finished_processing_queue
-
-	# The scenario can be torn down while the queue drains.
-	if not is_instance_valid(Globals.player):
-		return
-
 	Globals.player.engine_charge = Globals.player.max_engine_charge
 	_update_ui()
 

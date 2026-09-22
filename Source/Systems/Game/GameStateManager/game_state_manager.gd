@@ -61,6 +61,11 @@ var main_menu_file: String = "uid://ccvtlre5vhj7d"
 ## gets the alarm: a continued save is resuming a fight it already knows about.
 var _is_fresh_run: bool = true
 
+## True while an EndCombatEvent is queued but has not resolved yet. Several
+## enemies can die inside one chain and each death re-checks combat state;
+## without this the queue collects a redundant event per corpse.
+var _end_combat_queued: bool = false
+
 enum GameState {
 	IN_COMBAT,
 	OUT_OF_COMBAT,
@@ -358,9 +363,52 @@ func _checkpoint_after_combat() -> void:
 
 func _check_combat_state() -> void:
 	if _in_combat():
+		# Entering combat stays immediate. Nothing downstream of start_combat
+		# spends a resource, so there is no cost for an ordering bug to eat,
+		# and deferring it would leave a chain briefly acting as though the
+		# fight it just started hadn't.
 		state = GameState.IN_COMBAT
-	else:
+		return
+
+	if state != GameState.IN_COMBAT:
+		# No fight in progress to end. Assign directly, which also keeps
+		# GAME_OVER and VICTORY behaving exactly as they did before.
 		state = GameState.OUT_OF_COMBAT
+		return
+
+	# Leaving combat is deferred through the engine so that everything hanging
+	# off combat_finished lands after the chain that won the fight, rather
+	# than in the middle of the damage event that landed the last blow.
+	# See EndCombatEvent.
+	var engine: ScenarioEngine = null
+	if Globals.scenario_manager and is_instance_valid(Globals.scenario_manager.engine):
+		engine = Globals.scenario_manager.engine
+
+	if engine == null:
+		# Teardown, or a load with no engine standing yet — nothing to order
+		# against, so flip directly.
+		state = GameState.OUT_OF_COMBAT
+		return
+
+	if _end_combat_queued:
+		return
+
+	_end_combat_queued = true
+	engine.queue_event(EndCombatEvent.new())
+
+
+## Applies the deferred end-of-combat transition.
+##
+## Re-checks rather than trusting the check that queued it: an effect later in
+## the same chain can spawn or revive an enemy, and a fight that is back on
+## shouldn't end just because it was briefly won.
+func resolve_end_of_combat() -> void:
+	_end_combat_queued = false
+
+	if _in_combat():
+		return
+
+	state = GameState.OUT_OF_COMBAT
 	
 	
 func _in_combat() -> bool:
