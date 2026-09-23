@@ -47,7 +47,7 @@ func _ready() -> void:
 		
 	%AnimationPlayer.play("on_application_start")
 	
-	ResourceLoader.load_threaded_request(opening_cutscene)
+	SceneLoader.request(opening_cutscene)
 	
 	
 func _clear_stars() -> void:
@@ -95,14 +95,7 @@ func _on_new_game_confirmed() -> void:
 
 
 func _start_new_game() -> void:
-	var status := ResourceLoader.load_threaded_get_status(opening_cutscene)
-	if status == ResourceLoader.THREAD_LOAD_LOADED:
-		var resource := ResourceLoader.load_threaded_get(opening_cutscene)
-		if resource is PackedScene:
-			get_tree().change_scene_to_packed(resource)
-
-	elif status == ResourceLoader.THREAD_LOAD_FAILED:
-		push_error("Failed to load opening cutscene")
+	SceneLoader.switch_to(get_tree(), opening_cutscene)
 
 
 func _on_continue_button_pressed() -> void:

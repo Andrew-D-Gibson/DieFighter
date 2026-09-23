@@ -24,7 +24,7 @@ func _ready() -> void:
 	_set_stars()
 	star_speed = 25
 	
-	ResourceLoader.load_threaded_request(entering_cockpit_scene)
+	SceneLoader.request(entering_cockpit_scene)
 
 
 func _process(delta: float) -> void:
@@ -95,14 +95,7 @@ func _player_ship_hit() -> void:
 	
 	
 func _switch_to_next_scene() -> void:
-	var status := ResourceLoader.load_threaded_get_status(entering_cockpit_scene)
-	if status == ResourceLoader.THREAD_LOAD_LOADED:
-		var resource := ResourceLoader.load_threaded_get(entering_cockpit_scene)
-		if resource is PackedScene:
-			get_tree().change_scene_to_packed(resource)
-
-	elif status == ResourceLoader.THREAD_LOAD_FAILED:
-		push_error("Failed to load entering cockpit cutscene")
+	SceneLoader.switch_to(get_tree(), entering_cockpit_scene)
 
 
 func _input(event: InputEvent) -> void:
