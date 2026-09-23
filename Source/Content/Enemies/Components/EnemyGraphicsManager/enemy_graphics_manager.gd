@@ -108,7 +108,9 @@ func start_bob_tween() -> void:
 		return
 		
 	var tween_time: float = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 2, 4)
-	_bob_tween = get_tree().create_tween()
+	# Node-owned so it dies with the ship. A looping tree-owned tween outlives
+	# its target, and Godot kills it with "Infinite loop detected".
+	_bob_tween = create_tween()
 	_bob_tween.tween_property(ship_graphics, 'global_position', self.global_position + Vector2(0, 8), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_bob_tween.tween_property(ship_graphics, 'global_position', self.global_position, tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_bob_tween.set_loops()

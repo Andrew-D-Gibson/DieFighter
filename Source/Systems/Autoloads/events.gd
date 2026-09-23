@@ -101,12 +101,9 @@ signal close_shop()
 
 # Info/Tutorial Events
 signal error_text_popup(text: String, global_pos: Vector2)
-signal tutorial_text_popup(text: String, global_pos: Vector2)
-signal close_tutorial_text_popup()
 
 
 # Interaction Events
-signal mouse_clickable_for_info(clickable_for_info: bool)
 signal set_current_clickable(clickable: Clickable)
 signal targeting_computer_retargeted()
 
@@ -122,9 +119,7 @@ signal hazard_triggered(hazard: ScenarioHazardResource)
 
 # Background Modifier Events
 ## The background on screen has finished changing, with any random pool
-## already resolved to a concrete resource. Listeners that care about which
-## background is actually up should use this rather than 'set_background',
-## which fires before the pick is made.
+## already resolved to a concrete resource.
 signal background_changed(background: BackgroundResource)
 ## The background the player just arrived in carries a permanent rule (or
 ## none, when the resource is null). Emitted once per scenario, after the
@@ -136,7 +131,6 @@ signal background_modifier_applied(modifier: BackgroundModifierResource)
 ## Sustained red vignette pulse — the ship is in trouble in a way that outlasts
 ## a single hit. Distinct from the one-shot flashes driven by damage signals.
 signal red_alert(duration: float)
-signal set_background(background_resource: BackgroundResource)
 signal take_screenshot()
 signal camera_shake_small()
 signal camera_shake_large()

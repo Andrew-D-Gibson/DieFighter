@@ -1,6 +1,9 @@
 class_name LockoutEffectEvent
 extends EffectEvent
 
+## The lockout this event is enforcing, so rolling the key (a 2) can lift it.
+var lockout_modifier: LockoutModifier
+
 
 func resolve(engine: ScenarioEngine) -> void:
 	if effect_source is not Tile:
@@ -12,10 +15,8 @@ func resolve(engine: ScenarioEngine) -> void:
 	
 	if activator_die.value == 2:
 		# Clear the Lockout
-		if metadata.has("active_lockout_modifier") and metadata["active_lockout_modifier"] is LockoutModifier:
-			# Get rid of the lockout modifier
-			var mod: LockoutModifier = metadata["active_lockout_modifier"]
-			engine.remove_modifier(mod)
+		if lockout_modifier:
+			engine.remove_modifier(lockout_modifier)
 			
 			# Give the activator die to a random enemy
 			var alive_enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()

@@ -13,7 +13,7 @@ func _ready() -> void:
 	
 	await get_tree().create_timer(6).timeout
 	
-	var tween: Tween = get_tree().create_tween()
+	var tween: Tween = create_tween()
 	#tween.tween_property(self, "rotation_degrees", -angle_amount, tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	#tween.tween_property(self, "rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	#tween.tween_property(self, "rotation_degrees", angle_amount, tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)

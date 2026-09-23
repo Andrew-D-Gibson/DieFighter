@@ -10,13 +10,13 @@
 ##      Order matters — entries execute top to bottom.
 ##   3. Assign it to TileResource.effect_chain.
 ##
-## TYPICAL USAGE IN Tile.activate():
+## TYPICAL USAGE (see TileActivationEvent.resolve()):
 ##   var context := EffectContext.new()
 ##   context.actor = Globals.player
-##   context.effect_source = self
+##   context.effect_source = tile
 ##   context.activator_die = activator_die
-##   await tile_resource.effect_chain.play(context, scenario_engine)
-##   await scenario_engine.process_events()
+##   await tile.tile_resource.effect_chain.play(context, engine)
+## play() only injects events; the engine's running drain resolves them.
 
 
 class_name EffectChain
@@ -116,4 +116,7 @@ func play(context: EffectContext, engine: ScenarioEngine) -> void:
 					"\nAdd a row for it in EffectCatalog."
 				)
 				continue
-			handler.apply(data, context, engine)
+			# Awaited like the condition handlers above: no leaf handler
+			# pauses today, but ConditionalHandler awaits nested ones, and a
+			# handler that ever does must not let the chain run ahead of it.
+			await handler.apply(data, context, engine)

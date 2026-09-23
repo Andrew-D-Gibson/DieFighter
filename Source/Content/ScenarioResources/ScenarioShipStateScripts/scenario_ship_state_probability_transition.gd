@@ -21,9 +21,9 @@ func get_next_state_from_probabilities() -> ScenarioShipState:
 		
 		random_value -= weighted_probabilities[state]
 	
-	# This function will never return here, 
-	# but to make the compiler happy:
-	print('Your weighted scenario transition bonked genius')
+	# Only reachable through float rounding leaving random_value a hair above
+	# the last weight; fall back to any state rather than none.
+	push_warning("Weighted scenario transition fell through; picking at random.")
 	return RNGManager.pick_random(RNGManager.Bucket.ENEMY_AI, weighted_probabilities.keys())
 		
 	

@@ -36,6 +36,9 @@ func resolve(engine: ScenarioEngine) -> void:
 	enemy.dice_manager.remove(activator_die)
 
 	Globals.targeting_computer.target_enemy(enemy)
+	# Pulses the matching intent on the targeting computer, so the player can
+	# see which row of the intent table this die is about to play.
+	Events.enemy_used_die.emit(enemy, die_value)
 
 	# Tween the die to in front of the enemy, weighted by its face value.
 	var weight: float = (clampf(die_value, 1, 6) - 1.0) / 5.0
@@ -88,6 +91,8 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.enemy_intent_amount = action.intent_amount
 	
 	
+	Events.enemy_acted.emit(enemy.enemy_resource.enemy_name, action.name)
+
 	# Play the effect chain — this enqueues more events; the engine's while-loop
 	# picks them up automatically because they're appended to the same event_queue.
 	if action.effect_chain:

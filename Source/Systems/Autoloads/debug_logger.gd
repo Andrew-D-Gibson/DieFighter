@@ -1,7 +1,9 @@
 extends Node
 
 var _log_file: FileAccess
-var _log_path: String = "res://debug_log.txt"
+## user://, not res://: an exported build can't write inside its own package.
+## On macOS this is ~/Library/Application Support/Godot/app_userdata/DieFighter/.
+var _log_path: String = "user://debug_log.txt"
 
 func _ready() -> void:
 	# Make this unpausable

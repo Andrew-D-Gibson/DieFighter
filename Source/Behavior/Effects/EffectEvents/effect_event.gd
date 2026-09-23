@@ -30,11 +30,6 @@ var amount: int = 0
 ## and after-hooks are also skipped.
 var canceled: bool = false
 
-## Optional free-form metadata for handlers to attach extra data without
-## subclassing. Prefer subclassing for anything non-trivial.
-## Example: metadata["source_tile_position"] = Vector2(2, 3)
-var metadata: Dictionary = {}
-
 
 # ── Interface ──────────────────────────────────────────────────────────────────
 

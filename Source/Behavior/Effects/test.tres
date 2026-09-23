@@ -1,9 +1,0 @@
-[gd_resource type="Resource" script_class="EffectData" format=3 uid="uid://cyap4u6x3k8qc"]
-
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_1skj7"]
-
-[resource]
-script = ExtResource("1_1skj7")
-category = 3
-subtype = 8
-metadata/_custom_type_script = "uid://tr402hc111gu"

@@ -39,7 +39,6 @@ func _ready() -> void:
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
 		_set_background(scenario.background_resource)
 	)
-	Events.set_background.connect(_set_background)
 	
 	
 func _process(delta: float) -> void:

@@ -65,10 +65,6 @@ func inject_event(event: EffectEvent) -> void:
 	event_queue.insert(_inject_index, event)
 	_inject_index += 1
 
-	
-func clear_events() -> void:
-	event_queue.clear()
-	
 
 ## Modifier functions	
 func add_modifier(mod: Modifier) -> void:

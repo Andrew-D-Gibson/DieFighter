@@ -16,5 +16,5 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 		var lockout_event: LockoutEffectEvent = LockoutEffectEvent.new()
 		lockout_event.effect_source = affected_node
 		lockout_event.activator_die = event.activator_die
-		lockout_event.metadata["active_lockout_modifier"] = self
+		lockout_event.lockout_modifier = self
 		engine.inject_event(lockout_event)

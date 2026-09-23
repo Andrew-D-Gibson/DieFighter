@@ -81,10 +81,6 @@ var num_of_dice: int:
 		
 @export var dice_scene: PackedScene
 
-@onready var tile_activation_queue: Array[Tile] = []
-@onready var tile_currently_activating: bool = false
-
-
 var money: int:
 	set(value):
 		money = value
