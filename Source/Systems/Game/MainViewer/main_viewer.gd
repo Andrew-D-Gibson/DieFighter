@@ -123,32 +123,8 @@ func _map_startup() -> void:
 	
 	
 func _systems_reveal_tween() -> void:
-	var reveal_tween: Tween = get_tree().create_tween()
-	var reveal_time: float = 3
-	var max_progress: int = 54
-	
-	reveal_tween.tween_property(
-		%SystemsRevealOverlay, 
-		"material:shader_parameter/progress", 
-		max_progress, 
-		reveal_time
-	).from(0)
+	await RevealOverlay.play(%SystemsRevealOverlay, 3.0, 54.0)
 
-	await reveal_tween.finished
-	%SystemsRevealOverlay.hide()
-	
-	
+
 func _map_reveal_tween() -> void:
-	var reveal_tween: Tween = get_tree().create_tween()
-	var reveal_time: float = 3
-	var max_progress: int = 60
-	
-	reveal_tween.tween_property(
-		%MapRevealOverlay, 
-		"material:shader_parameter/progress", 
-		max_progress, 
-		reveal_time
-	).from(25)
-
-	await reveal_tween.finished
-	%MapRevealOverlay.hide()
+	await RevealOverlay.play(%MapRevealOverlay, 3.0, 60.0, 25.0)
