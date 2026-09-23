@@ -1,9 +1,14 @@
 # General ignores
 Exports/
 
-# Rewritten from scratch on every launch by DebugLogger (res://debug_log.txt),
-# so tracking it means every run shows up as a local change.
+# Old DebugLogger output from when it wrote to res://; it now writes to
+# user://debug_log.txt, outside the project.
 debug_log.txt
+
+# Written to the project root by the Godot MCP server on every run_project.
+# The autoload uses Source/Systems/Autoloads/mcp_interaction_server.gd.
+/mcp_interaction_server.gd
+/mcp_interaction_server.gd.uid
 
 
 # Godot-specific ignores
