@@ -50,10 +50,6 @@ var _active_moves: Dictionary[Enemy, Tween] = {}
 ## rather than slide if the formation changes mid-arrival.
 var _awaiting_fly_in: Array[Enemy] = []
 
-var scenario_engine: ScenarioEngine = null:
-	set = set_scenario_engine
-	
-	
 func _ready() -> void:
 	Globals.enemy_manager = self
 	
@@ -345,7 +341,9 @@ func run_enemy_turn() -> void:
 	# This prevents issues if enemies are removed during iteration
 	var current_enemies: Array[Enemy] = enemies.duplicate()
 	
-	var engine: ScenarioEngine = scenario_engine
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if not engine:
+		return
 	var queued_anything: bool = false
 	for enemy: Enemy in current_enemies:
 		if not enemy or not is_instance_valid(enemy):
@@ -440,9 +438,3 @@ func damage_all_enemies(amount: int) -> void:
 	for i: int in range(len(enemies)-1, -1, -1):
 		enemies[i].health.take_damage(amount)
 		
-		
-func set_scenario_engine(engine: ScenarioEngine) -> void:
-	scenario_engine = engine
-	
-	for enemy: Enemy in get_alive_enemies():
-		enemy.scenario_engine = engine

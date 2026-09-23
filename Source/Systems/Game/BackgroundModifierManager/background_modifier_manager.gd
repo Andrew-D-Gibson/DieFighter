@@ -86,7 +86,4 @@ func _remove_active_modifier() -> void:
 
 
 func _get_engine() -> ScenarioEngine:
-	if not is_instance_valid(Globals.scenario_manager):
-		return null
-	var engine: ScenarioEngine = Globals.scenario_manager.engine
-	return engine if is_instance_valid(engine) else null
+	return ScenarioEngine.current()

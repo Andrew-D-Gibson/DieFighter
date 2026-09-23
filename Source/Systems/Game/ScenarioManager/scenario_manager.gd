@@ -60,15 +60,6 @@ func _load_scenario(scenario: ScenarioResource) -> void:
 	
 	
 func _start_scenario() -> void:
-	# Grab all tiles
-	var tiles: Array[Node] = get_tree().get_nodes_in_group('Tile')
-	
-	for tile: Tile in tiles:
-		tile.set_scenario_engine(engine)
-		
-	# Set for enemies
-	Globals.enemy_manager.scenario_engine = engine
-
 	_spawn_starting_reward()
 
 

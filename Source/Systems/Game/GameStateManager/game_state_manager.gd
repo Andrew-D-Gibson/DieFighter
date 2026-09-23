@@ -385,9 +385,7 @@ func _check_combat_state() -> void:
 	# off combat_finished lands after the chain that won the fight, rather
 	# than in the middle of the damage event that landed the last blow.
 	# See EndCombatEvent.
-	var engine: ScenarioEngine = null
-	if Globals.scenario_manager and is_instance_valid(Globals.scenario_manager.engine):
-		engine = Globals.scenario_manager.engine
+	var engine: ScenarioEngine = ScenarioEngine.current()
 
 	if engine == null:
 		# Teardown, or a load with no engine standing yet — nothing to order

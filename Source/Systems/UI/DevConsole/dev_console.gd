@@ -12,10 +12,9 @@ func _ready() -> void:
 
 
 func _test(_command_args: Array[String] = []) -> void:
-	if Globals.scenario_manager.engine:
-		var tile: Tile = Globals.tile_grid.tile_locations[Vector2i(0,0)]
-		
-		Globals.scenario_manager.engine.add_modifier(ActivatesTwiceOnValueModifier.new(5))
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine:
+		engine.add_modifier(ActivatesTwiceOnValueModifier.new(5))
 
 
 func _on_line_edit_gui_input(event: InputEvent) -> void:
@@ -191,14 +190,15 @@ func _activate_tile(command_args: Array[String] = []) -> void:
 
 	var tile: Tile = Globals.tile_grid.tile_locations[grid_pos]
 
-	if not tile.scenario_engine:
-		command_history.append_text('\n\t\tactivate_tile only works during combat.')
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if not engine:
+		command_history.append_text('\n\t\tactivate_tile needs a scenario running.')
 		return
 
 	var event := TileActivationEvent.new()
 	event.tile = tile
 	event.activator_die = null
-	tile.scenario_engine.queue_event(event)
+	engine.queue_event(event)
 
 	command_history.append_text('\n[center]Activated tile at (' + str(grid_pos.x) + ', ' + str(grid_pos.y) + ').[/center]')
 

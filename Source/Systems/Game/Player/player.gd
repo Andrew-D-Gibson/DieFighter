@@ -153,7 +153,7 @@ func _bleed_for_redline() -> void:
 	if not Globals.scenario_manager:
 		return
 
-	var engine: ScenarioEngine = Globals.scenario_manager.engine
+	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine == null:
 		return
 

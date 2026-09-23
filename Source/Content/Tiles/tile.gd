@@ -30,10 +30,6 @@ var _saturation_tween: Tween
 var effect_data: Dictionary[String, int]
 		
 		
-var scenario_engine: ScenarioEngine = null:
-	set = set_scenario_engine
-		
-		
 @export_category('Components')
 @export var draggable: Draggable
 @export var clickable: Clickable
@@ -116,13 +112,14 @@ func _get_tile_info() -> InfoResource:
 
 func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 	var event_check: TileEvent = _find_matching_event_response(tile, event)
-	if event_check == null or not scenario_engine:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if event_check == null or not engine:
 		return
 
 	var trigger_event: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
 	trigger_event.responder = self
 	trigger_event.chain = tile_resource.event_responses[event_check]
-	scenario_engine.queue_event(trigger_event)
+	engine.queue_event(trigger_event)
 
 
 ## Finds the TileEvent key matching this event type whose response should
@@ -192,12 +189,13 @@ func _replace_event_data_in_string(text: String) -> String:
 
 ## Re-activates this tile with no activator die (e.g. TILE_CONTROL.ACTIVATE_SELF).
 func try_to_activate() -> void:
-	if not scenario_engine:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if not engine:
 		return
 
 	var event: TileActivationEvent = TileActivationEvent.new()
 	event.tile = self
-	scenario_engine.queue_event(event)
+	engine.queue_event(event)
 
 
 func _update_dice_queue_locations() -> void:
@@ -217,12 +215,13 @@ func _on_die_accepted(die: Dice) -> void:
 	# Emit event for die placement for tutorial use
 	Events.die_placed_on_tile.emit(die, self)
 	
-	if scenario_engine:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine:
 		var event: TileActivationEvent = TileActivationEvent.new()
 		event.tile = self
 		event.activator_die = die
 		event.die_value = die.value
-		scenario_engine.queue_event(event)
+		engine.queue_event(event)
 		
 
 func _on_visibility_changed() -> void:	
@@ -264,6 +263,3 @@ func set_gray_out(gray_out: bool) -> void:
 		tween_time
 	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
-	
-func set_scenario_engine(engine: ScenarioEngine) -> void:
-	scenario_engine = engine

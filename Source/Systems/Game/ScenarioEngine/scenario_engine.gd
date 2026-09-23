@@ -30,6 +30,21 @@ var modifiers: Array[Modifier]
 var _shut_down: bool = false
 
 
+## The engine for the scenario being played, or null between scenarios (after
+## a jump has shut the old one down and before the next has loaded).
+##
+## The single way to reach the engine. Nodes used to hold their own pushed
+## reference, which went stale on every jump and was never handed to a tile
+## that arrived mid-scenario, so it silently did nothing.
+static func current() -> ScenarioEngine:
+	if not is_instance_valid(Globals.scenario_manager):
+		return null
+	var engine: ScenarioEngine = Globals.scenario_manager.engine
+	if not is_instance_valid(engine) or engine.is_shut_down():
+		return null
+	return engine
+
+
 func _ready() -> void:
 	Events.player_turn_start.connect(clear_temporary_modifiers)
 

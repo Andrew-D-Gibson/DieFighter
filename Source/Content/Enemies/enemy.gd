@@ -68,9 +68,6 @@ static var forced_actions: Array[EnemyActionResource] = []
 ## node enters the tree. See that resource for why it exists.
 var starting_health_fraction: float = 1.0
 
-var scenario_engine: ScenarioEngine = null:
-	set = set_scenario_engine
-	
 var explosion_particles: PackedScene = preload("uid://566ykra4buin")
 
 
@@ -328,8 +325,10 @@ func run_turn() -> void:
 		
 		enemy_action_events.append(event)
 		
-	for event: EnemyActionEvent in enemy_action_events:
-		scenario_engine.queue_event(event)
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine:
+		for event: EnemyActionEvent in enemy_action_events:
+			engine.queue_event(event)
 	turns_alive += 1
 	
 
@@ -337,19 +336,17 @@ func run_turn() -> void:
 func trigger_state_effects() -> void:
 	dialogue_manager.show_dialogue(scenario_state.dialogue, scenario_state.faction)
 
-	if not scenario_state.effects_on_enter or not scenario_engine:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if not scenario_state.effects_on_enter or not engine:
 		return
 
 	var event: ScenarioStateEffectsEvent = ScenarioStateEffectsEvent.new()
 	event.enemy = self
 	event.chain = scenario_state.effects_on_enter
-	scenario_engine.queue_event(event)
+	engine.queue_event(event)
 
 
 ## Re-targets the computer for this enemy
 func _on_clicked() -> void:
 	Globals.targeting_computer.target_enemy(self)
 	
-	
-func set_scenario_engine(engine: ScenarioEngine) -> void:
-	scenario_engine = engine

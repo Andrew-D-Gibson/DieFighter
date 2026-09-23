@@ -62,7 +62,7 @@ func _fire() -> void:
 	# ship's attack, so it gets the big shake.
 	Events.camera_shake_large.emit(true)
 
-	var engine: ScenarioEngine = Globals.scenario_manager.engine
+	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine == null or current_hazard.effect_chain == null:
 		return
 
