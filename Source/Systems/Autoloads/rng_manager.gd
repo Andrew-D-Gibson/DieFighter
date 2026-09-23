@@ -7,6 +7,20 @@ enum Bucket { RUN, DICE, ENEMY_AI, TARGETING, REWARDS, BACKGROUND, COSMETIC }
 
 var _rngs: Dictionary = {}
 
+## The buckets reseeded from each scenario's seed. BACKGROUND is among them
+## because a background can carry a gameplay rule (BackgroundModifierResource):
+## picking it from a free-running stream meant reloading a scenario could land
+## the player under a different rule.
+const _SCENARIO_BUCKETS: Array[Bucket] = [
+	Bucket.DICE, Bucket.ENEMY_AI, Bucket.TARGETING, Bucket.REWARDS, Bucket.BACKGROUND
+]
+
+## The per-scenario buckets a mid-scenario checkpoint saves. BACKGROUND is left
+## out: it's only drawn at arrival, and cosmetic effects draw on it afterwards.
+const _CHECKPOINT_BUCKETS: Array[Bucket] = [
+	Bucket.DICE, Bucket.ENEMY_AI, Bucket.TARGETING, Bucket.REWARDS
+]
+
 
 func _ready() -> void:
 	for bucket: int in Bucket.values():
@@ -14,6 +28,7 @@ func _ready() -> void:
 	_rngs[Bucket.BACKGROUND].randomize()
 	_rngs[Bucket.COSMETIC].randomize()
 	Events.load_scenario.connect(_on_load_scenario)
+	Events.load_game_save.connect(_on_load_game_save)
 
 
 ## The seed is stored on the ScenarioResource, but a sector can hold the same
@@ -26,6 +41,20 @@ func _on_load_scenario(scenario: ScenarioResource) -> void:
 	if is_instance_valid(Globals.map):
 		slot = Globals.map.current_scenario_index
 	seed_scenario(hash([scenario.scenario_seed, slot]))
+
+	# Continuing a save taken partway through this scenario: pick the streams up
+	# where they were, so the rest of the scenario rolls what it would have.
+	# Nothing that runs while the scenario is rebuilt draws from these buckets
+	# (enemies, offers and the shop come back from the save, not re-rolled).
+	if is_instance_valid(Globals.state_manager):
+		restore_states(Globals.state_manager.get_restore().get("rng", {}))
+
+
+## Picks the run-wide stream up where the save left it, so the sectors still to
+## be generated and Fate's advance come out as they would have. Connected
+## before Map's own load_game_save listener, which is what draws from it next.
+func _on_load_game_save(game_save: GameSaveResource) -> void:
+	restore_states(game_save.rng_states)
 
 
 ## Seeds the RUN bucket, which governs sector/shop generation for an entire
@@ -42,8 +71,33 @@ func start_new_run(run_seed: int = -1) -> void:
 ## deriving a distinct seed per bucket so they don't produce correlated
 ## sequences despite sharing the same source value.
 func seed_scenario(scenario_seed: int) -> void:
-	for bucket: int in [Bucket.DICE, Bucket.ENEMY_AI, Bucket.TARGETING, Bucket.REWARDS]:
+	for bucket: int in _SCENARIO_BUCKETS:
 		_rngs[bucket].seed = hash(str(scenario_seed) + str(bucket))
+
+
+## RandomNumberGenerator.state for the given buckets, keyed by bucket name and
+## stored as strings (JSON would round an int64).
+func capture_states(buckets: Array[Bucket]) -> Dictionary:
+	var out: Dictionary = {}
+	for bucket: Bucket in buckets:
+		out[Bucket.find_key(bucket)] = str(_rngs[bucket].state)
+	return out
+
+
+func capture_run_state() -> Dictionary:
+	return capture_states([Bucket.RUN])
+
+
+func capture_scenario_states() -> Dictionary:
+	return capture_states(_CHECKPOINT_BUCKETS)
+
+
+## Inverse of capture_states(). Unknown names are ignored.
+func restore_states(states: Dictionary) -> void:
+	for bucket_name: Variant in states:
+		if not Bucket.has(bucket_name):
+			continue
+		_rngs[Bucket[bucket_name]].state = int(str(states[bucket_name]))
 
 
 func get_rng(bucket: Bucket) -> RandomNumberGenerator:

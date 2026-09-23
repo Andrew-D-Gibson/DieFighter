@@ -16,6 +16,7 @@ var jump_manager: JumpManager
 var hazard_manager: HazardManager
 var background_modifier_manager: BackgroundModifierManager
 var run_stats: RunStats
+var shop: Shop
 var tutorial_manager: TutorialManager
 
 ## True while the onboarding tutorial is narrating the run. Gameplay systems ask

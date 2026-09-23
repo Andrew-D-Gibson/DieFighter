@@ -36,6 +36,13 @@ func _arm_for_scenario(scenario: ScenarioResource) -> void:
 		return
 
 	turns_remaining = maxi(1, current_hazard.turns_until_first)
+
+	# Continuing a save taken partway through: resume the countdown.
+	if Globals.state_manager:
+		var saved_turns: int = int(Globals.state_manager.get_restore().get("hazard_turns", 0))
+		if saved_turns > 0:
+			turns_remaining = saved_turns
+
 	Events.hazard_armed.emit(current_hazard, turns_remaining)
 
 

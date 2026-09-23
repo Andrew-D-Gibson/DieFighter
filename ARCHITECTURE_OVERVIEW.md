@@ -295,16 +295,56 @@ events, which resolve through the engine's modifier pipeline.
 
 **Autoload:** `SaveManager` (`Autoloads/save_manager.gd`)
 
-Single autosave slot serialized to JSON at `user://save_game.json` (`SAVE_VERSION = 1`). `GameStateManager` keeps a current `GameSaveResource` in sync and calls `write_save()` at checkpoints; `SaveManager` deletes the save on `game_over` **and** on `victory` — a run ends either way.
+There's a single autosave slot, serialized to JSON at `user://save_game.json`
+(`SAVE_VERSION = 2`; v1 saves still load, and their missing fields fall back
+to the old behaviour). `GameStateManager` keeps a `GameSaveResource` current and
+writes it at checkpoints. `SaveManager` deletes the save on `game_over` and
+`victory`. A fresh run works on a `duplicate()` of `run_start.tres`, never the
+cached resource itself.
 
-`GameSaveResource.sector_index` (zero-based) persists how deep the run is. It's read with a default, so pre-sector saves load as sector 1 without a version bump.
+**Goal: a Continue rebuilds the run exactly.** A fight is never saved
+mid-fight. Quitting mid-fight replays it from the last checkpoint, and because
+every gameplay RNG stream is saved or reseeded, the replay rolls the same
+enemies, intents and dice.
 
-Nothing writes to disk during a sector transition — the next checkpoint is the `start_scenario` at the far end of the jump — so quitting mid-transition reloads at the jump gate with its fight intact rather than in a half-advanced state.
+### Checkpoints
+
+| When | `scenario_progress` | A Continue… |
+|------|---------------------|-------------|
+| Arrival (`start_scenario`), taken synchronously before any ship's arrival effects | empty | rebuilds the scenario from its seed, the same as arriving |
+| After a won fight (not the jump gate, which checkpoints on the next sector's arrival) | captured, `cleared = true` | reopens the original scenario with no enemies or salvage; untaken offers come back |
+| A reward or shop item taken while out of combat | captured | reopens the scenario as it stood |
+| A pickup during a fight | no write | it's saved by the after-combat checkpoint |
+
+`scenario_progress` (see `GameStateManager._capture_scenario_progress()`) holds:
+- the scenario id and seed, and the cleared flag;
+- ships by `starting_enemies` index (state resource path, HP, shields,
+  squad_losses, turns_alive; a missing index means the ship is gone);
+- untaken reward offers item by item, and the shop's unsold stock and prices;
+- the hazard countdown, the dice in hand, and tile `uses_remaining`;
+- the per-scenario RNG states.
+
+Restored ships skip `effects_on_enter`: those already ran and their results
+are in the save. The shop reopens from the save instead.
+
+**Run-level state** is saved at every checkpoint:
+- player stats and the tile layout, including each tile's `effect_data`;
+- the map list, index and Fate state (`Map.get_fate_state()`);
+- `RunStats`, counting money still in flight as earned;
+- the RUN RNG state. RNG states are stored as strings, because JSON rounds
+  int64.
+
+### Determinism
+
+`RNGManager` reseeds DICE, ENEMY_AI, TARGETING, REWARDS and BACKGROUND from the
+scenario seed mixed with the map slot. Shared ScenarioResources (shops, Fate,
+empty) would otherwise share one seed. BACKGROUND is included because a
+background can carry a gameplay rule. Shop prices draw from REWARDS, not RUN.
 
 | Resource | Location | Responsibility |
 |----------|----------|----------------|
-| `GameSaveResource` | `Resources/game_save_resource.gd` | Serializable game state (renamed from `game_save.gd`) |
-| Slot resources | `Resources/SaveResources/*.tres` | Per-slot save templates (`game_start.tres`, `tutorial_start.tres`) |
+| `GameSaveResource` | `Resources/SaveResources/game_save_resource.gd` | Serializable run state |
+| `run_start.tres` | `Resources/SaveResources/` | New-run template (duplicated per run) |
 
 ---
 

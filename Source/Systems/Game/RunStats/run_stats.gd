@@ -26,6 +26,30 @@ func _ready() -> void:
 	)
 	Events.enemy_left.connect(_on_enemy_left)
 	Events.set_money.connect(_on_money_changed)
+	Events.load_game_save.connect(_load_game_save)
+
+
+## Picks the tallies up from the save. Also re-baselines the money tracker on
+## the saved balance, which Player restores through set_money: without that,
+## every Continue counted the whole bank as credits earned. Works whichever of
+## the two load_game_save listeners runs first — both land on absolute values.
+func _load_game_save(game_save: GameSaveResource) -> void:
+	_last_money = game_save.money
+	# A save from before stats were recorded restores to zeros, which beats
+	# the bank-as-earnings count set_money may already have added.
+	sectors_reached = game_save.run_stats.get("sectors_reached", game_save.sector_index + 1)
+	encounters_cleared = game_save.run_stats.get("encounters_cleared", 0)
+	ships_destroyed = game_save.run_stats.get("ships_destroyed", 0)
+	credits_earned = game_save.run_stats.get("credits_earned", 0)
+
+
+func get_state() -> Dictionary:
+	return {
+		"sectors_reached": sectors_reached,
+		"encounters_cleared": encounters_cleared,
+		"ships_destroyed": ships_destroyed,
+		"credits_earned": credits_earned,
+	}
 
 
 ## enemy_left also fires when a ship flees or when combat ends peacefully, so

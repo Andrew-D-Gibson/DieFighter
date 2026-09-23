@@ -4,6 +4,70 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-22 — Save the whole run
+
+**Goal:** a Continue recreates the run exactly. User chose the "replay fight"
+model: never checkpoint mid-fight; quitting mid-fight replays it from the
+last checkpoint with the same RNG.
+
+**Design:**
+- Checkpoint kinds: *arrival* (start_scenario → `scenario_progress` empty, a
+  reload replays the scenario from its seed) and *mid-scenario* (after combat,
+  or a reward/shop pickup while OUT_OF_COMBAT → `scenario_progress` captures
+  the live scenario). reward_picked during combat writes nothing.
+- `scenario_progress` (JSON dict): scenario id+seed, cleared flag, enemies by
+  spawn index (alive/state path/hp/shields), pending reward offers, shop
+  stock, hazard countdown, dice in hand, tile uses, per-scenario RNG states.
+- Run-level additions: RUN rng state, map Fate indices/danger, RunStats,
+  tile effect_data. BACKGROUND bucket seeded per scenario (bg rules were
+  re-rolling on reload); shop prices move RUN→REWARDS.
+- Restored ship states that aren't the starting state skip effects_on_enter
+  (mercy call heal / tollkeeper charge are one-time payouts).
+- Save version 2; v1 saves still load (missing fields default).
+- Enemy/Reward/Dice forced_* statics are already cleared by TutorialManager
+  on every game-scene load — not an issue.
+
+**Progress:**
+- [x] save format + GSM capture/restore plumbing
+- [x] map / run stats / rng / tile effect_data
+- [x] scenario progress: enemies, offers, shop, hazard, dice, tile uses
+- [x] live verification — all passed:
+  - arrival replay: same hand, enemies, background, Fate
+  - win → reload: no enemies, untaken offer back, same stats
+  - pick offer → offer gone from save
+  - jump-from-checkpoint twice: identical scenario, enemies, hand, Fate, RUN state
+  - shop: buy tile / buy die → reload shows the same stock minus sales, same prices, hand, dice count
+  - salvage event: taken salvage stays taken, ship states and HP kept
+  - mercy call heals once, not twice, across a reload
+  - a reward_picked mid-fight writes nothing
+  - tile effect_data survives a reload
+  - a second New Game in one session starts clean
+  - replaying a combat round from arrival gives identical results
+  - a v1 save still loads
+
+**Bugs found along the way:**
+- The checkpoint captured scenario progress before its settling frame, so a
+  just-taken offer was still recorded.
+- An arrival snapshot taken a frame late could include a medic's arrival heal
+  (double heal on replay); it's now synchronous.
+- `run_start.tres` was mutated in place: a second New Game in a session opened
+  on the last run's final checkpoint.
+- Every shop visit left the previous shop's unsold tiles and die as hidden
+  children.
+- `tile_grid.gd` connected `Events.start_combat` to `Events.show_systems.emit`
+  (autoload to autoload). The connection outlived the scene, and every later
+  game scene logged a duplicate-connect error.
+- The targeting computer's looping bob tween was tree-owned ("Infinite loop
+  detected" on scene change).
+- RunStats counted the restored balance as credits earned on every Continue.
+
+**Known limits:** mid-fight state is deliberately not saved (replay model).
+Out-of-combat modifiers on the engine (e.g. a lockout applied outside a fight)
+aren't saved. Offers are restored at their saved position, but their reveal
+animation replays.
+
+---
+
 ## 2026-09-22 — Cleanup pass
 
 **Plan:** `~/.claude/plans/this-isn-t-the-cleanest-piped-wilkes.md` (audit

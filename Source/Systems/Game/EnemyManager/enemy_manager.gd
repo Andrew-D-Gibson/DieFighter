@@ -78,9 +78,14 @@ func _ready() -> void:
 		if enemies_jumping:
 			delete_all_enemies()
 		
+		# A won fight doesn't come back on a reload.
+		if Globals.state_manager and Globals.state_manager.is_scenario_cleared():
+			return
+
 		# Spawn the starting ships
 		if len(scenario.starting_enemies) > 0:
 			spawn_enemies(scenario.starting_enemies)
+			_restore_enemies(scenario.starting_enemies)
 	)
 	Events.start_scenario.connect(start_enemy_fly_in)
 	
@@ -91,8 +96,10 @@ func _process(delta: float) -> void:
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
-	for spawn: EnemyStateRewardResource in enemies_to_spawn:
+	for i: int in range(len(enemies_to_spawn)):
+		var spawn: EnemyStateRewardResource = enemies_to_spawn[i]
 		var enemy: Enemy = enemy_base_scene.instantiate()
+		enemy.spawn_index = i
 		enemy.enemy_resource = spawn.enemy_resource
 		enemy.reward_resource = spawn.reward_resource
 		enemy.scenario_state = spawn.starting_state
@@ -111,6 +118,45 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 
 		if enemy.formation_pinned:
 			_reserve_pinned_ship(enemy, spawn.path_location_override)
+
+	refresh_formation(false)
+
+
+## The ships still here, for the save. A starting ship with no record has died
+## or left.
+func capture_enemies() -> Array:
+	var out: Array = []
+	for enemy: Enemy in get_alive_enemies():
+		if is_instance_valid(enemy) and enemy.spawn_index >= 0:
+			out.append(enemy.capture_state())
+	return out
+
+
+## Continuing a save taken partway through a scenario: bring each starting ship
+## back to how it was, and drop the ones that were already gone. Runs straight
+## after spawn_enemies(), before anything has flown in or acted.
+func _restore_enemies(starting_enemies: Array[EnemyStateRewardResource]) -> void:
+	if not Globals.state_manager:
+		return
+	var restore: Dictionary = Globals.state_manager.get_restore()
+	if not restore.has("enemies"):
+		return
+
+	var saved: Dictionary = {}
+	for entry: Variant in restore["enemies"]:
+		saved[int(entry["spawn"])] = entry
+
+	for enemy: Enemy in enemies.duplicate():
+		if saved.has(enemy.spawn_index):
+			enemy.restore_state(saved[enemy.spawn_index], starting_enemies[enemy.spawn_index].starting_state)
+			continue
+		# Gone before the save. Freed quietly — no death, no reward, no
+		# enemy_left for the scenario to react to a second time.
+		formation.clear_reservation(_pin_key(enemy))
+		enemy.disconnect_scenario_signals()
+		enemies.erase(enemy)
+		_awaiting_fly_in.erase(enemy)
+		enemy.queue_free()
 
 	refresh_formation(false)
 

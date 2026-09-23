@@ -8,6 +8,12 @@ extends Node2D
 
 var rewards: Array[Node2D]
 
+## What this offer holds, as save data: one entry per choice, left to right —
+## {"tile": id}, {"dice": true} or {"money": amount}. Set the moment the offer
+## is decided, not when it appears, so a checkpoint taken during the reveal
+## delay still records it.
+var items: Array = []
+
 ## Optional: force specific rewards (used by tutorial)
 static var forced_rewards: Array[TileResource] = []
 
@@ -24,14 +30,52 @@ func give_reward(reward_resource: RewardResource) -> void:
 		RNGManager.Bucket.REWARDS, reward_resource.min_money, reward_resource.max_money
 	)
 	_spawn_money_particles(money)
-	
-	await get_tree().create_timer(2).timeout
-	
+
+	# Roll the offer now rather than after the pause, so it exists (and is
+	# saveable) from the moment the ship pays out.
 	var offered: Array[Node2D] = _build_offered_rewards(reward_resource)
 	if offered.is_empty():
 		queue_free()
 		return
-		
+
+	await get_tree().create_timer(2).timeout
+	_present(offered)
+
+
+## Puts back an offer captured in a save. No payout: the money it came with was
+## banked by the checkpoint that recorded it.
+func restore_offer(saved_items: Array) -> void:
+	var offered: Array[Node2D] = []
+	for entry: Variant in saved_items:
+		var node: Node2D = _node_for_item(entry)
+		if node:
+			offered.append(node)
+	if offered.is_empty():
+		queue_free()
+		return
+	_present(offered)
+
+
+func _node_for_item(entry: Dictionary) -> Node2D:
+	if entry.has("tile"):
+		var path: String = ContentRegistry.get_tile_path(str(entry["tile"]))
+		if path == "":
+			return null
+		var tile: Tile = Globals.tile_grid.create_tile(ResourceLoader.load(path))
+		items.append(entry)
+		return tile
+	if entry.has("dice"):
+		items.append(entry)
+		return dice_scene.instantiate()
+	if entry.has("money") and money_pickup_scene:
+		var pickup: MoneyPickup = money_pickup_scene.instantiate()
+		pickup.amount = int(entry["money"])
+		items.append(entry)
+		return pickup
+	return null
+
+
+func _present(offered: Array[Node2D]) -> void:
 	# Fade in
 	show()
 	var tween_time: float = 0.5
@@ -84,6 +128,7 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 		or len(possible_tile_rewards) == 0\
 		or RNGManager.randf(RNGManager.Bucket.REWARDS) <= reward_resource.dice_probability:
 			offered.append(dice_scene.instantiate())
+			items.append({"dice": true})
 			
 		# Make a tile reward
 		else:
@@ -94,6 +139,7 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 				chosen_resource = Globals.reward_manager.pick_weighted_tile_reward(possible_tile_rewards)
 			possible_tile_rewards.erase(chosen_resource)
 			offered.append(Globals.tile_grid.create_tile(chosen_resource))
+			items.append({"tile": ContentRegistry.get_tile_id(chosen_resource.resource_path)})
 
 	if reward_resource.max_money_pickup > 0 and money_pickup_scene:
 		var pickup: MoneyPickup = money_pickup_scene.instantiate()
@@ -103,6 +149,7 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 			reward_resource.max_money_pickup
 		)
 		offered.append(pickup)
+		items.append({"money": pickup.amount})
 
 	return offered
 		

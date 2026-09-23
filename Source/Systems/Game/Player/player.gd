@@ -289,10 +289,32 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 	
 	
 func _start_scenario() -> void:
-	health.shields = 0
+	# Continuing a save taken partway through a scenario: the hand and the
+	# shields are whatever they were then, not a fresh arrival's.
+	var saved_hand: Array = []
+	if Globals.state_manager:
+		saved_hand = Globals.state_manager.get_restore().get("dice", [])
+	var restoring: bool = Globals.state_manager and not Globals.state_manager.get_restore().is_empty()
+
+	if not restoring:
+		health.shields = 0
 	_delete_existing_dice()
 	await get_tree().create_timer(_time_between_die_spawns).timeout
-	spawn_dice()
+
+	if not restoring:
+		spawn_dice()
+		return
+	for entry: Variant in saved_hand:
+		await spawn_dice(1, int(entry["value"]), bool(entry.get("holo", false)))
+
+
+## The dice in hand, for the save: value and whether each is holographic.
+func capture_hand() -> Array:
+	var hand: Array = []
+	for die: Dice in dice_manager.queue:
+		if is_instance_valid(die):
+			hand.append({"value": die.value, "holo": die.holographic})
+	return hand
 
 
 func end_turn() -> void:

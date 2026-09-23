@@ -66,9 +66,39 @@ var _is_fresh_run: bool = true
 ## without this the queue collects a redundant event per corpse.
 var _end_combat_queued: bool = false
 
+## The saved scenario_progress being rebuilt, while a Continue is still
+## standing the checkpointed scenario back up. Empty otherwise — including for
+## an arrival checkpoint, which rebuilds from the seed like any arrival. Kept
+## until the player leaves the scenario, since some of it (the shop's stock) is
+## only asked for once the scenario is already running.
+var _restore: Dictionary = {}
+
+## True once the current scenario's fight has been won. Its enemies, hazard and
+## salvage must not come back on a reload, even for a boss tile, whose map
+## slot is never overwritten with an empty one.
+var _scenario_cleared: bool = false
+
+## Set while a won jump gate hands over to the next sector, so the after-combat
+## checkpoint doesn't snapshot a map that already shows the new sector.
+var _sector_advancing: bool = false
+
+## Set between leaving a scenario and arriving at the next. Nothing is stable
+## enough to checkpoint mid-jump.
+var _in_transit: bool = false
+
+
 ## True for a brand new run, false when continuing a save.
 func is_fresh_run() -> bool:
 	return _is_fresh_run
+
+
+## See _restore.
+func get_restore() -> Dictionary:
+	return _restore
+
+
+func is_scenario_cleared() -> bool:
+	return _scenario_cleared
 
 
 enum GameState {
@@ -104,16 +134,28 @@ func _ready() -> void:
 		current_game_save = Globals.pending_load_save
 		Globals.pending_load_save = null
 		_is_fresh_run = false
+		_restore = current_game_save.scenario_progress
+		_scenario_cleared = bool(_restore.get("cleared", false))
+	else:
+		# The exported run_start.tres is a cached resource, and checkpoints
+		# write into current_game_save. Without a copy, a second New Game in
+		# the same session would open on the last run's final checkpoint.
+		current_game_save = current_game_save.duplicate()
 
 	if len(current_game_save.sector_scenarios) == 0:
 		RNGManager.start_new_run()
 		_randomize_sector_scenarios()
 
 	Events.start_scenario.connect(_check_combat_state)
-	Events.start_scenario.connect(_checkpoint_game_save)
+	Events.start_scenario.connect(_checkpoint_on_arrival)
 	Events.combat_finished.connect(_check_sector_cleared)
 	Events.combat_finished.connect(_checkpoint_after_combat)
-	Events.reward_picked.connect(_checkpoint_game_save)
+	Events.reward_picked.connect(_checkpoint_mid_scenario)
+	Events.jump.connect(func() -> void:
+		_restore = {}
+		_scenario_cleared = false
+		_in_transit = true
+	)
 	Events.enemy_turn_over.connect(_check_combat_state)
 	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_check_combat_state()
@@ -126,11 +168,26 @@ func _ready() -> void:
 	)
 
 	Events.load_game_save.emit(current_game_save)
-	Events.load_scenario.emit(
-		current_game_save.sector_scenarios[
-			current_game_save.current_scenario_index
-		] 
-	)
+	Events.load_scenario.emit(_scenario_to_load())
+
+
+## The scenario a (re)started game scene opens in: the map slot, unless the
+## save was taken partway through a scenario. A won fight overwrites its slot
+## with an empty or Fate tile, but the player is still standing in the
+## original — its background and rules — just with the enemies gone.
+func _scenario_to_load() -> ScenarioResource:
+	var slot: ScenarioResource = current_game_save.sector_scenarios[
+		current_game_save.current_scenario_index
+	]
+	if not _restore.has("scenario"):
+		return slot
+
+	var path: String = ContentRegistry.get_scenario_path(_restore["scenario"])
+	if path == "":
+		return slot
+	var scenario: ScenarioResource = ResourceLoader.load(path)
+	scenario.scenario_seed = int(_restore.get("seed", scenario.scenario_seed))
+	return scenario
 
 	
 ## Called one frame into the game_start animation, once every system's _ready()
@@ -293,6 +350,7 @@ func _check_sector_cleared() -> void:
 ## Generates the next, harder sector and jumps the player into it — or ends the
 ## run in victory if that was the last sector.
 func _advance_to_next_sector() -> void:
+	_sector_advancing = true
 	current_game_save.sector_index += 1
 
 	if current_game_save.sector_index >= demo_sector_count:
@@ -316,54 +374,127 @@ func _advance_to_next_sector() -> void:
 	)
 
 
+## Checkpoint on arriving in a scenario. The scenario itself is saved only as
+## its seed: a Continue rebuilds it from scratch, which is exactly the state
+## the player arrived to. A Continue that is still standing a mid-scenario save
+## back up skips this — the save on disk already describes where they are.
+##
+## Taken synchronously, before any ship's arrival effects: this listener is
+## connected before the ships spawn, so it runs first. A medic that heals on
+## arrival must not be in the snapshot, or replaying the arrival heals twice.
+func _checkpoint_on_arrival() -> void:
+	_in_transit = false
+	_sector_advancing = false
+	if not _restore.is_empty():
+		return
+	_checkpoint_game_save(false)
+
+
+## Checkpoint partway through a scenario (a reward or shop item taken). Never
+## during a fight: a fight is replayed from the last checkpoint instead, so
+## this waits for the after-combat checkpoint to record a mid-fight pickup.
+func _checkpoint_mid_scenario() -> void:
+	if state == GameState.IN_COMBAT or _in_transit or _sector_advancing:
+		return
+	await _checkpoint_game_save(true)
+
+
+## Checkpoints right after a won fight, so "I won this scenario" is a valid
+## stopping point rather than only "I just started the next one". Marks the
+## scenario cleared and empties its map slot (same as jump() does when leaving
+## it), and records anything still on offer. The jump gate is skipped: winning
+## it has already generated the next sector, which checkpoints on arrival.
+func _checkpoint_after_combat() -> void:
+	if _sector_advancing or _in_transit:
+		return
+
+	_scenario_cleared = true
+	Globals.map.clear_current_scenario_slot()
+	await _checkpoint_game_save(true)
+
+
 ## Snapshots live run state into current_game_save and writes it to disk.
-## Runs on scenario start (new run / after a jump), right after combat ends
-## (via _checkpoint_after_combat), and whenever a dice/tile reward is claimed
-## (Events.reward_picked, also emitted by shop purchases) so those aren't
-## lost if the player quits before their next jump.
-func _checkpoint_game_save() -> void:
-	# Let other start_scenario listeners (e.g. Player resetting shields to 0)
-	# finish first, so we snapshot settled state rather than racing them.
-	await get_tree().process_frame
+## mid_scenario captures the scenario as it stands; otherwise it's saved as an
+## arrival (empty scenario_progress).
+func _checkpoint_game_save(mid_scenario: bool) -> void:
+	# A mid-scenario checkpoint waits a frame for the pickup or purchase that
+	# triggered it to settle (the offer it came from is freed at frame end).
+	# An arrival snapshot must not wait — see _checkpoint_on_arrival().
+	if mid_scenario:
+		await get_tree().process_frame
+
+	# A jump that started during that frame leaves nothing stable to capture.
+	if _in_transit and mid_scenario:
+		return
 
 	current_game_save.player_health = Globals.player.health.health
 	current_game_save.player_max_health = Globals.player.health.max_health
 	current_game_save.player_defense = Globals.player.health.shields
 	current_game_save.player_engine_charge = Globals.player.engine_charge
 	current_game_save.num_of_dice = Globals.player.num_of_dice
-	
+
 	# Check for loose money and make sure it gets saved
 	var loose_money: Array[Node] = get_tree().get_nodes_in_group('Money')
 	var loose_money_total: int = 0
 	for money_particle: Node in loose_money:
 		loose_money_total += money_particle.amount
-		
+
 	current_game_save.money = Globals.player.money + loose_money_total
-	
 
 	current_game_save.current_scenario_index = Globals.map.current_scenario_index
 	current_game_save.sector_scenarios = Globals.map.scenario_list
+	current_game_save.map_state = Globals.map.get_fate_state()
+	# Money still in flight is banked above; count it as earned here too, or it
+	# never will be — the reload restores it as balance, not as income.
+	var run_stats: Dictionary = Globals.run_stats.get_state()
+	run_stats["credits_earned"] += loose_money_total
+	current_game_save.run_stats = run_stats
+	current_game_save.rng_states = RNGManager.capture_run_state()
 
 	var tile_locations: Dictionary[Vector2i, TileResource] = {}
+	var tile_effect_data: Dictionary = {}
 	for pos: Vector2i in Globals.tile_grid.tile_locations:
-		tile_locations[pos] = Globals.tile_grid.tile_locations[pos].tile_resource
+		var tile: Tile = Globals.tile_grid.tile_locations[pos]
+		tile_locations[pos] = tile.tile_resource
+		if not tile.effect_data.is_empty():
+			tile_effect_data[pos] = tile.effect_data.duplicate()
 	current_game_save.tile_locations = tile_locations
+	current_game_save.tile_effect_data = tile_effect_data
+
+	# Captured after the settling frame, not before: the pickup that triggered
+	# this checkpoint frees its offer at the end of the frame it happened in.
+	current_game_save.scenario_progress = _capture_scenario_progress() if mid_scenario else {}
 
 	SaveManager.write_save(current_game_save)
 
 
-## Checkpoints right after a won fight, so "I won this scenario" is a valid
-## stopping point rather than only "I just started the next one". Clears the
-## just-fought tile first (same as jump() does when leaving it) so a reload
-## doesn't re-spawn the enemies. Skipped for sector-gate scenarios (boss
-## fights, jump gates), which are never safe to clear early — those keep
-## checkpointing only at the next start_scenario/jump.
-func _checkpoint_after_combat() -> void:
-	if Globals.map.scenario_list[Globals.map.current_scenario_index].sector_gate_scenario:
-		return
-
-	Globals.map.clear_current_scenario_slot()
-	_checkpoint_game_save()
+## Everything about the current scenario a Continue needs to stand it back up
+## as it is now, rather than as it was on arrival. Plain JSON-able data:
+##   scenario, seed   — which scenario, even if its map slot has been emptied
+##   cleared          — the fight here is won; nothing hostile comes back
+##   enemies          — per starting_enemies index: alive, state, health, shields
+##   offers           — reward offers still floating, item by item
+##   shop             — unsold stock and prices, when the shop is open
+##   hazard_turns     — the hazard's countdown
+##   dice             — the player's hand: value and holographic per die
+##   tile_uses        — uses_remaining per grid position ("x,y")
+##   rng              — the per-scenario RNG streams, mid-flight
+func _capture_scenario_progress() -> Dictionary:
+	var scenario: ScenarioResource = Globals.scenario_manager.current_scenario
+	var progress: Dictionary = {
+		"scenario": ContentRegistry.get_scenario_id(scenario.resource_path),
+		"seed": scenario.scenario_seed,
+		"cleared": _scenario_cleared,
+		"enemies": Globals.enemy_manager.capture_enemies(),
+		"offers": Globals.reward_manager.capture_offers(),
+		"hazard_turns": Globals.hazard_manager.turns_remaining,
+		"dice": Globals.player.capture_hand(),
+		"tile_uses": Globals.tile_grid.capture_tile_uses(),
+		"rng": RNGManager.capture_scenario_states(),
+	}
+	if is_instance_valid(Globals.shop) and Globals.shop.visible:
+		progress["shop"] = Globals.shop.capture_stock()
+	return progress
 
 
 func _check_combat_state() -> void:

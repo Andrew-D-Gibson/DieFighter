@@ -10,6 +10,7 @@ func _ready() -> void:
 	_load_tile_resources()
 	
 	Events.spawn_reward.connect(_spawn_reward)
+	Events.start_scenario.connect(_restore_offers)
 
 	
 func _load_tile_resources() -> void:
@@ -76,3 +77,28 @@ func _spawn_reward(pos: Vector2, reward_resource: RewardResource) -> void:
 	add_child(reward)
 	reward.global_position = pos
 	reward.give_reward(reward_resource)
+
+
+## Offers still waiting to be picked from, for the save.
+func capture_offers() -> Array:
+	var offers: Array = []
+	for child: Node in get_children():
+		if child is Reward and not child.is_queued_for_deletion() and not child.items.is_empty():
+			offers.append({
+				"x": child.global_position.x,
+				"y": child.global_position.y,
+				"items": child.items,
+			})
+	return offers
+
+
+## Continuing a save taken partway through a scenario puts its untaken offers
+## back where they were. Done on start_scenario, alongside the ships arriving.
+func _restore_offers() -> void:
+	if not Globals.state_manager:
+		return
+	for offer: Variant in Globals.state_manager.get_restore().get("offers", []):
+		var reward: Reward = reward_scene.instantiate()
+		add_child(reward)
+		reward.global_position = Vector2(float(offer["x"]), float(offer["y"]))
+		reward.restore_offer(offer["items"])

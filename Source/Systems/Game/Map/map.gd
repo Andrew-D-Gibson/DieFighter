@@ -101,7 +101,31 @@ func _sync_slider_to_camera() -> void:
 	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
-	load_sector(game_save.sector_scenarios, game_save.current_scenario_index)
+	if game_save.map_state.is_empty():
+		# A new run, or a save from before Fate's progress was recorded.
+		load_sector(game_save.sector_scenarios, game_save.current_scenario_index)
+		return
+
+	# Restore rather than re-roll: load_sector() would reset Fate to the sector
+	# edges and draw fresh danger ranges from the RUN stream, handing back the
+	# ground Fate had already taken and shifting every roll after it.
+	scenario_list = game_save.sector_scenarios
+	current_scenario_index = game_save.current_scenario_index
+	left_fate_index = game_save.map_state.get("left_fate_index", 0)
+	right_fate_index = game_save.map_state.get("right_fate_index", len(scenario_list) - 1)
+	left_scenarios_in_danger = game_save.map_state.get("left_scenarios_in_danger", 0)
+	right_scenarios_in_danger = game_save.map_state.get("right_scenarios_in_danger", 0)
+	_update_map_sprites()
+
+
+## Fate's progress through the sector, for the save. See _load_game_save().
+func get_fate_state() -> Dictionary:
+	return {
+		"left_fate_index": left_fate_index,
+		"right_fate_index": right_fate_index,
+		"left_scenarios_in_danger": left_scenarios_in_danger,
+		"right_scenarios_in_danger": right_scenarios_in_danger,
+	}
 
 
 ## Points the map at a whole new list of scenarios, resetting Fate's

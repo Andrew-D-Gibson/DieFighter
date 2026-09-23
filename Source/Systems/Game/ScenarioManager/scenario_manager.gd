@@ -70,6 +70,12 @@ func _spawn_starting_reward() -> void:
 	if not current_scenario or not current_scenario.starting_reward:
 		return
 
+	# A save taken partway through this scenario already holds whatever is
+	# left of the salvage (see RewardManager._restore_offers); rolling it again
+	# would hand back salvage the player already took.
+	if Globals.state_manager and not Globals.state_manager.get_restore().is_empty():
+		return
+
 	Events.spawn_reward.emit(
 		current_scenario.starting_reward_position,
 		current_scenario.starting_reward

@@ -20,13 +20,48 @@ func _ready() -> void:
 	Globals.tile_grid = self
 	
 	Events.load_game_save.connect(_load_game_save)
-	Events.start_combat.connect(Events.show_systems.emit)
+	# Through a lambda, not Events.show_systems.emit directly: that callable
+	# belongs to the autoload, so the connection would outlive this scene and
+	# the next game scene's identical connect() would fail as a duplicate.
+	Events.start_combat.connect(func() -> void: Events.show_systems.emit())
+	Events.start_scenario.connect(_restore_tile_uses)
 
 	_setup_grid_graphics()
 	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
 	_setup_tiles(game_save.tile_locations)
+
+	# Counters a tile keeps across scenarios (Tile.effect_data) aren't part of
+	# its resource, so a tile rebuilt on load needs them handed back.
+	for pos: Vector2i in game_save.tile_effect_data:
+		if tile_locations.has(pos):
+			tile_locations[pos].effect_data.assign(game_save.tile_effect_data[pos])
+
+
+## uses_remaining per tile, keyed "x,y", for a mid-scenario save.
+func capture_tile_uses() -> Dictionary:
+	var uses: Dictionary = {}
+	for pos: Vector2i in tile_locations:
+		uses["%d,%d" % [pos.x, pos.y]] = tile_locations[pos].uses_remaining
+	return uses
+
+
+## Continuing a save taken partway through a scenario: tiles spent before the
+## save stay spent. Deferred a frame because every tile resets its own uses on
+## start_scenario, and tiles connect after this node does.
+func _restore_tile_uses() -> void:
+	if not Globals.state_manager:
+		return
+	var saved: Dictionary = Globals.state_manager.get_restore().get("tile_uses", {})
+	if saved.is_empty():
+		return
+	await get_tree().process_frame
+	for key: Variant in saved:
+		var parts: PackedStringArray = str(key).split(",")
+		var pos := Vector2i(int(parts[0]), int(parts[1]))
+		if tile_locations.has(pos):
+			tile_locations[pos].uses_remaining = int(saved[key])
 	
 	
 func _setup_grid_graphics() -> void:

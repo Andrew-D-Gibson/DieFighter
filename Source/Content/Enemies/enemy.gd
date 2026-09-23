@@ -68,6 +68,18 @@ static var forced_actions: Array[EnemyActionResource] = []
 ## node enters the tree. See that resource for why it exists.
 var starting_health_fraction: float = 1.0
 
+## This ship's index in its scenario's starting_enemies, so a save can say
+## which authored ship each record belongs to. -1 for a ship spawned any other
+## way.
+var spawn_index: int = -1
+
+## Set when a save restores this ship. Whatever state it was in, that state's
+## effects_on_enter already ran before the save (a medic's arrival heal, a
+## toll's charge), and their results are in the save; running them again on
+## load would pay out twice. Scene setup those effects did (opening the shop)
+## is restored from the save directly instead.
+var _skip_next_enter_effects: bool = false
+
 var explosion_particles: PackedScene = preload("uid://566ykra4buin")
 
 
@@ -344,6 +356,10 @@ func run_turn() -> void:
 func trigger_state_effects() -> void:
 	dialogue_manager.show_dialogue(scenario_state.dialogue, scenario_state.faction)
 
+	if _skip_next_enter_effects:
+		_skip_next_enter_effects = false
+		return
+
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if not scenario_state.effects_on_enter or not engine:
 		return
@@ -358,3 +374,64 @@ func trigger_state_effects() -> void:
 func _on_clicked() -> void:
 	Globals.targeting_computer.target_enemy(self)
 	
+
+
+## This ship as save data. See EnemyManager.capture_enemies().
+func capture_state() -> Dictionary:
+	return {
+		"spawn": spawn_index,
+		"state": _state_key(scenario_state),
+		"health": health.health,
+		"shields": health.shields,
+		"squad_losses": squad_losses,
+		"turns_alive": turns_alive,
+	}
+
+
+## Inverse of capture_state(), applied right after the ship spawns in its
+## starting state. starting_state is where the saved state is looked up from.
+func restore_state(entry: Dictionary, starting_state: ScenarioShipState) -> void:
+	var saved_state: ScenarioShipState = _find_state(starting_state, str(entry.get("state", "")))
+	_skip_next_enter_effects = true
+	if saved_state and saved_state != scenario_state:
+		scenario_state = saved_state
+		graphics_manager.set_health_bar_attitude(scenario_state.attitude)
+
+	health.health = int(entry.get("health", health.health))
+	health.shields = int(entry.get("shields", health.shields))
+	squad_losses = int(entry.get("squad_losses", 0))
+	turns_alive = int(entry.get("turns_alive", 0))
+
+
+## A state's identity across a save: its file for a state saved as its own
+## .tres, or its id inside the scenario file for one embedded there.
+static func _state_key(state: ScenarioShipStateBase) -> String:
+	if state == null:
+		return ""
+	if not state.resource_path.is_empty() and not state.resource_path.contains("::"):
+		return state.resource_path
+	return "#" + state.resource_scene_unique_id
+
+
+## Walks the state graph reachable from start (through probability
+## transitions too) for the state with the given key.
+static func _find_state(start: ScenarioShipStateBase, key: String) -> ScenarioShipState:
+	if key.is_empty():
+		return null
+	var seen: Dictionary = {}
+	var stack: Array[ScenarioShipStateBase] = [start]
+	while not stack.is_empty():
+		var state: ScenarioShipStateBase = stack.pop_back()
+		if state == null or seen.has(state):
+			continue
+		seen[state] = true
+		if state is ScenarioShipStateProbabilityTransition:
+			for next: ScenarioShipStateBase in state.weighted_probabilities.keys():
+				stack.append(next)
+			continue
+		if _state_key(state) == key:
+			return state
+		for next: ScenarioShipStateBase in state.transitions.values():
+			stack.append(next)
+	push_warning("Enemy: saved ship state '%s' not found; keeping the starting state." % key)
+	return null

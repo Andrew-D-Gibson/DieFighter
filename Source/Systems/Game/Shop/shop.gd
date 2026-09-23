@@ -1,3 +1,4 @@
+class_name Shop
 extends Node2D
 
 @export var prices: Array[Node2D]
@@ -20,15 +21,34 @@ var shop_tiles: Array[Node2D]
 
 
 func _ready() -> void:
+	Globals.shop = self
 	Events.open_shop.connect(_open_shop)
 	Events.close_shop.connect(_close_shop)
 	Events.jump.connect(_close_shop)
+	Events.start_scenario.connect(_reopen_saved_shop)
+
+
+## Continuing a save taken in an open shop. Normally the shopkeeper's arrival
+## effect opens the shop, but restored ships don't replay arrival effects
+## (see Enemy._skip_next_enter_effects), so the save reopens it itself.
+func _reopen_saved_shop() -> void:
+	if Globals.state_manager and Globals.state_manager.get_restore().get("shop") is Dictionary:
+		_open_shop()
 
 
 func _open_shop() -> void:
-	# Create shop layout
-	_create_shop_tiles()
-	_create_dice_buy_zone()
+	# Continuing a save taken in this shop puts back what was left on the
+	# shelves, rather than restocking it and re-offering what was bought.
+	var saved_stock: Variant = null
+	if Globals.state_manager:
+		saved_stock = Globals.state_manager.get_restore().get("shop")
+
+	_clear_stock()
+	if saved_stock is Dictionary:
+		_restore_stock(saved_stock)
+	else:
+		_create_shop_tiles()
+		_create_dice_buy_zone()
 	show()
 	_claim_formation_space()
 
@@ -69,23 +89,22 @@ func _get_possible_shop_tiles() -> Array[TileResource]:
 	return Utils.array_while_excluding(possible_tile_rewards, shop_tile_resources)
 	
 	
+## Drawn from REWARDS, which is seeded per scenario, so a shop reloaded from
+## its seed shows the same prices. (It used to draw from RUN, which also meant
+## every shop visited shifted the rolls for every sector generated after it.)
 func _get_randomized_price(rarity: TileResource.Rarity) -> int:
 	match rarity:
 		TileResource.Rarity.COMMON:
-			return RNGManager.randi_range(RNGManager.Bucket.RUN, 10, 20)
+			return RNGManager.randi_range(RNGManager.Bucket.REWARDS, 10, 20)
 		TileResource.Rarity.UNCOMMON:
-			return RNGManager.randi_range(RNGManager.Bucket.RUN, 15, 25)
+			return RNGManager.randi_range(RNGManager.Bucket.REWARDS, 15, 25)
 		TileResource.Rarity.RARE:
-			return RNGManager.randi_range(RNGManager.Bucket.RUN, 25, 35)
+			return RNGManager.randi_range(RNGManager.Bucket.REWARDS, 25, 35)
 		_:
 			return 0
 
 
 func _create_shop_tiles() -> void:
-	var tile_spacing_x: int = 46
-	var tile_spacing_y: int = 27
-	var start_pos: Vector2 = Vector2(-50,-13.5)
-	
 	item_to_shop_index = {}
 	shop_tiles.clear()  # Clear the shop tiles array to prevent accumulation from previous sessions
 	
@@ -106,23 +125,89 @@ func _create_shop_tiles() -> void:
 			if chosen_resource == null:
 				prices[shop_index].visible = false
 				continue
-			var tile: Tile = Globals.tile_grid.create_tile(chosen_resource)
-			add_child(tile)
-			
-			var pos: Vector2 = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
-			tile.global_position = global_position + pos
-			tile.draggable.drag_started.connect(Events.show_systems.emit)
-			tile.draggable.home_position = tile.global_position
-			tile.draggable.emit_reached_new_home = false
-			tile.draggable.drag_ended.connect(_on_shop_item_dragged)
-			
-			shop_tiles.append(tile)
-			
-			
-			item_to_shop_index[tile] = shop_index
-			var price: int = _get_randomized_price(tile.tile_resource.rarity)
-			prices[shop_index].visible = true
-			prices[shop_index].get_child(0).text = str(price)
+			var tile: Tile = _place_shop_tile(shop_index, chosen_resource)
+			_set_price(shop_index, _get_randomized_price(tile.tile_resource.rarity))
+
+
+## Puts a tile for sale in the given slot. Slots run down each column:
+## slot = col * 2 + row.
+func _place_shop_tile(shop_index: int, tile_resource: TileResource) -> Tile:
+	var tile_spacing_x: int = 46
+	var tile_spacing_y: int = 27
+	var start_pos: Vector2 = Vector2(-50,-13.5)
+	var col: int = shop_index / 2
+	var row: int = shop_index % 2
+
+	var tile: Tile = Globals.tile_grid.create_tile(tile_resource)
+	add_child(tile)
+
+	var pos: Vector2 = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
+	tile.global_position = global_position + pos
+	tile.draggable.drag_started.connect(Events.show_systems.emit)
+	tile.draggable.home_position = tile.global_position
+	tile.draggable.emit_reached_new_home = false
+	tile.draggable.drag_ended.connect(_on_shop_item_dragged)
+
+	shop_tiles.append(tile)
+	item_to_shop_index[tile] = shop_index
+	return tile
+
+
+func _set_price(shop_index: int, price: int) -> void:
+	prices[shop_index].visible = true
+	prices[shop_index].get_child(0).text = str(price)
+
+
+## What's still for sale, for the save: each unsold tile with its slot and
+## price, and whether the extra die is still on offer.
+func capture_stock() -> Dictionary:
+	var tiles: Array = []
+	var dice_for_sale: bool = false
+	for item: Node in item_to_shop_index:
+		if not is_instance_valid(item) or item.get_parent() != self:
+			continue
+		var shop_index: int = item_to_shop_index[item]
+		if not prices[shop_index].visible:
+			continue
+		if item is Tile:
+			tiles.append({
+				"slot": shop_index,
+				"tile": ContentRegistry.get_tile_id(item.tile_resource.resource_path),
+				"price": int(prices[shop_index].get_child(0).text),
+			})
+		elif item is Dice:
+			dice_for_sale = true
+	return {"tiles": tiles, "dice": dice_for_sale}
+
+
+## Frees whatever the last shop left unsold. Closing only hides the panel, so
+## without this every shop visit stacked another set of hidden tiles and dice
+## under this node.
+func _clear_stock() -> void:
+	for item: Node in item_to_shop_index:
+		if is_instance_valid(item) and item.get_parent() == self:
+			item.queue_free()
+	item_to_shop_index = {}
+	shop_tiles.clear()
+
+
+## Inverse of capture_stock(). Slots that were sold stay empty.
+func _restore_stock(stock: Dictionary) -> void:
+	item_to_shop_index = {}
+	shop_tiles.clear()
+	for price_node: Node2D in prices:
+		price_node.visible = false
+
+	for entry: Variant in stock.get("tiles", []):
+		var path: String = ContentRegistry.get_tile_path(str(entry["tile"]))
+		if path == "":
+			continue
+		var shop_index: int = int(entry["slot"])
+		_place_shop_tile(shop_index, ResourceLoader.load(path))
+		_set_price(shop_index, int(entry["price"]))
+
+	if stock.get("dice", false):
+		_create_dice_buy_zone()
 
 
 func _create_dice_buy_zone() -> void:

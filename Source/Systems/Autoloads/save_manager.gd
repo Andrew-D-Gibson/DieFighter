@@ -5,7 +5,11 @@ extends Node
 ## GameSaveResource up to date and calling write_save() at checkpoints.
 
 const SAVE_PATH: String = "user://save_game.json"
-const SAVE_VERSION: int = 1
+const SAVE_VERSION: int = 2
+
+## Oldest format read_save() still accepts. Version 1 predates the run-state
+## fields; those load as empty and each system falls back to its old behaviour.
+const _MIN_READABLE_VERSION: int = 1
 
 
 func _ready() -> void:
@@ -37,7 +41,10 @@ func write_save(game_save: GameSaveResource) -> void:
 		var id: String = ContentRegistry.get_tile_id(tile_resource.resource_path)
 		if id == "":
 			continue
-		tile_locations_data.append({"x": pos.x, "y": pos.y, "id": id})
+		var entry: Dictionary = {"x": pos.x, "y": pos.y, "id": id}
+		if game_save.tile_effect_data.has(pos):
+			entry["data"] = game_save.tile_effect_data[pos]
+		tile_locations_data.append(entry)
 
 	var payload: Dictionary = {
 		"version": SAVE_VERSION,
@@ -51,6 +58,10 @@ func write_save(game_save: GameSaveResource) -> void:
 		"sector_index": game_save.sector_index,
 		"sector_scenarios": sector_scenarios_data,
 		"tile_locations": tile_locations_data,
+		"map_state": game_save.map_state,
+		"run_stats": game_save.run_stats,
+		"rng_states": game_save.rng_states,
+		"scenario_progress": game_save.scenario_progress,
 	}
 
 	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
@@ -76,8 +87,9 @@ func read_save() -> GameSaveResource:
 		push_warning("SaveManager: save file is corrupt, ignoring")
 		return null
 
-	if int(data.get("version", -1)) != SAVE_VERSION:
-		push_warning("SaveManager: save file version mismatch, ignoring")
+	var version: int = int(data.get("version", -1))
+	if version < _MIN_READABLE_VERSION or version > SAVE_VERSION:
+		push_warning("SaveManager: unsupported save version %d, ignoring" % version)
 		return null
 
 	var game_save: GameSaveResource = GameSaveResource.new()
@@ -101,16 +113,35 @@ func read_save() -> GameSaveResource:
 	game_save.sector_scenarios = sector_scenarios
 
 	var tile_locations: Dictionary[Vector2i, TileResource] = {}
+	var tile_effect_data: Dictionary = {}
 	for entry: Variant in data.get("tile_locations", []):
 		var path: String = ContentRegistry.get_tile_path(entry["id"])
 		if path == "":
 			continue
 		var tile_resource: TileResource = ResourceLoader.load(path)
-		tile_locations[Vector2i(int(entry["x"]), int(entry["y"]))] = tile_resource
+		var pos := Vector2i(int(entry["x"]), int(entry["y"]))
+		tile_locations[pos] = tile_resource
+		if entry.has("data"):
+			tile_effect_data[pos] = _ints(entry["data"])
 	game_save.tile_locations = tile_locations
+	game_save.tile_effect_data = tile_effect_data
+
+	game_save.map_state = _ints(data.get("map_state", {}))
+	game_save.run_stats = _ints(data.get("run_stats", {}))
+	game_save.rng_states = data.get("rng_states", {})
+	game_save.scenario_progress = data.get("scenario_progress", {})
 
 	if sector_scenarios.is_empty():
 		push_warning("SaveManager: save file has no valid scenarios, ignoring")
 		return null
 
 	return game_save
+
+
+## JSON has one number type, so every int comes back a float. Converts a flat
+## dictionary of numbers back to ints.
+static func _ints(dict: Dictionary) -> Dictionary:
+	var out: Dictionary = {}
+	for key: Variant in dict:
+		out[key] = int(dict[key])
+	return out
