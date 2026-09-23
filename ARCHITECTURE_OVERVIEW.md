@@ -4,7 +4,7 @@
 
 Die Fighter is a turn-based sci-fi roguelike built in Godot 4.7 where players place dice on an ability grid to trigger tile effects, then enemies use the same dice values to act. The core architecture centers around a **ScenarioEngine** (event queue + modifier system) that processes combat events through a deterministic pipeline: modifiers adjust → event resolves → follow-ups trigger.
 
-The codebase uses a **component-based composition pattern** with minimal inheritance, heavy reliance on GDScript signals for decoupling, and data-driven resource assets for game content. A refactor in progress moves from direct behavior execution (Effect classes) to an event-driven architecture (EffectEvent subclasses + handlers).
+The codebase uses a **component-based composition pattern** with minimal inheritance, heavy reliance on GDScript signals for decoupling, and data-driven resource assets for game content. All effects run through the event-driven pipeline: data-authored `EffectChain`s dispatch to stateless handlers, which inject `EffectEvent` subclasses into the `ScenarioEngine`. (The older direct-execution Effect classes are gone.)
 
 ---
 
@@ -20,14 +20,15 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `Globals` | `Autoloads/globals.gd` | Central registry for all system singletons and global constants (colors, settings) |
 | `Events` | `Autoloads/events.gd` | Central event bus—35+ signals for all game events (combat start, player health hit, dice placed, etc.) |
 | `SFXPlayer` | `Autoloads/sound_effects_player.gd` | Audio playback through SoundEffectResource and AudioStreamPlayer |
-| `DebugLogger` | `Autoloads/debug_logger.gd` | Centralized logging and debug output |
+| `DebugLogger` | `Autoloads/debug_logger.gd` | Logs key Events-bus traffic to `user://debug_log.txt` |
 | `Screenshotter` | `Autoloads/screenshotter.gd` | Screenshot capture |
 | `QuitManager` | `Autoloads/quit_manager.gd` | Graceful application quit |
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
 | `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs to `res://` paths so saves survive `.tres` renames/moves; stores IDs in save instead of raw paths |
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 1`); deletes save on `game_over`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
-| `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (mirrored at repo root) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS` |
+| `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter |
+| `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS` |
 
 **Core Game Systems** (Scene-organized with singleton references)
 
@@ -120,13 +121,28 @@ For each event in `event_queue`:
 
 4. Emit `event_resolved(event)` signal
 
+A modifier that cancels an event stops the remaining before-hooks; the event
+skips resolve and after-hooks and `event_canceled(event)` fires instead. Hooks
+iterate a snapshot of the modifier list, since a hook can await and modifiers
+may be added or removed meanwhile.
+
+**Lifecycle.** `ScenarioManager` creates one engine per scenario on
+`load_scenario`. On a jump it calls `shutdown()` before freeing it: the queue is
+dropped, every modifier is unregistered (freeing status visuals parented to
+tiles that outlive the scenario), and anything awaiting
+`finished_processing_queue` is released. A drain suspended in an await checks
+`is_shut_down()` on resuming and bails.
+
+**Access.** `ScenarioEngine.current()` is the only way to reach the engine. It
+returns null between scenarios. Nodes don't cache their own reference.
+
 **Event Queue Management**
 
 | Method | Behavior |
 |--------|----------|
 | `queue_event(event)` | Append to queue end, start processing if idle |
-| `inject_event(event)` | Insert at current injection index (for mid-chain follow-ups) |
-| `clear_events()` | Empty queue immediately |
+| `inject_event(event)` | Insert right after the resolving event (and anything it already injected); queues normally when no drain is running |
+| `shutdown()` | Tear down before freeing (see Lifecycle) |
 
 ### 4.2 EffectEvent Base Class
 
@@ -144,8 +160,13 @@ var die_value: int           # Cached at activation time
 var targets: Array[Node]     # Set by targeting handlers
 var amount: int              # Primary numeric value (damage/shields/heal)
 var canceled: bool = false   # Set by modifiers to abort
-var metadata: Dictionary     # Free-form data storage
+
+func is_amplifiable() -> bool  # false when amount is a price/duration/counter/face value
 ```
+
+Handlers fill actor / effect_source / activator_die / die_value with
+`EffectHandler._stamp(event, context)`, so every event carries the full context
+modifiers match on. Event-specific data goes in typed fields on the subclass.
 
 **Key Subclasses**
 
@@ -158,7 +179,7 @@ var metadata: Dictionary     # Free-form data storage
 
 **Tile Grid Integration**
 
-- Each `Tile` has a `scenario_engine` reference set during scenario start
+- Tiles reach the engine through `ScenarioEngine.current()`
 - When player places a die: Tile enqueues `TileActivationEvent`
 - When grid events fire (tile push, manual move): Tile enqueues corresponding events
 - Events flow through ScenarioEngine → modifiers → resolution
@@ -207,7 +228,7 @@ var is_temporary: bool      # Swept by clear_temporary_modifiers() on player tur
 var event: TileActivationEvent = TileActivationEvent.new()
 event.tile = self
 event.activator_die = die
-scenario_engine.queue_event(event)
+ScenarioEngine.current().queue_event(event)
 ```
 
 5. ScenarioEngine processes:
@@ -222,8 +243,8 @@ scenario_engine.queue_event(event)
    - targeting_computer shows intent UI (`Events.enemy_received_die` updates dice view)
    - Tween die to front of enemy ship (0.75s)
    - Popup action indicator texture
-   - `action.effect_chain.play(effect_variables)` (legacy chain, see 4.7)
-   - Emit `Events.enemy_used_die(enemy, die_value)`
+   - Emit `Events.enemy_used_die(enemy, die_value)` (pulses the matching intent) and `Events.enemy_acted`
+   - `await action.effect_chain.play(context, engine)`
 3. When all enemies out of dice: `Events.enemy_turn_over`
 
 ---
@@ -239,8 +260,7 @@ scenario_engine.queue_event(event)
 | `TileResource` | `Source/Content/Tiles/TileResources/*.tres` | Defines tile behavior, textures, uses per turn, activation criteria, effect chains |
 | `ScenarioHazardResource` | `Source/Content/ScenarioResources/Hazards/*.tres` | A recurring environmental event on a scenario (solar flare, ion storm, asteroid impact): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
-| `EffectChain` | In TileResource fields | Legacy effect chain (deprecated, see refactoring) |
-| `EffectChain` | In TileResource fields | Data-driven effect chain (refactored) |
+| `EffectChain` | `TileResource.effect_chain`, `event_responses`, enemy actions, hazards | Ordered list of `EffectData` entries dispatched through `EffectRegistry` |
 | `ActivationResource` | In TileResource.activation_checks | Dice criteria checks (value range, odd/even, same die value) |
 
 ### 5.2 Tile Resource Fields
@@ -256,27 +276,16 @@ class_name TileResource extends Resource
 @export var textures: SpriteFrames                    # 0 = infinite uses, 1-∞ = uses remaining
 @export var uses_per_combat: int = -1                # -1 = unlimited uses
 @export var activation_checks: Array[ActivationResource]
-@export var effect_chain: EffectChain                  # Legacy (to be removed)
-@export var effect_chain: EffectChain             # Refactored (active)
-@export var event_responses: Dictionary[TileEvent, EffectChain]      # Legacy
-@export var event_responses: Dictionary[TileEvent, EffectChain] # Refactored
+@export var effect_chain: EffectChain
+@export var event_responses: Dictionary[TileEvent, EffectChain]
 ```
 
 ### 5.3 Effect Chains
 
-**Two implementations coexist:**
-
-1. **EffectChain (Legacy)**
-   - Located in `Source/Content/Effects/effect_chain.gd`
-   - Direct node execution via `play(effect_variables)`
-   - No modifier interaction
-   - Being phased out
-
-2. **EffectChain (Refactored)**
-   - Located in `Source/Behavior/Effects/EffectChain/effect_chain.gd`
-   - Contains array of `EffectData` nodes
-   - Calls EffectRegistry to resolve handlers
-   - Integrates with ScenarioEngine modifiers
+`Source/Behavior/Effects/EffectChain/effect_chain.gd` holds an array of
+`EffectData` entries. `play(context, engine)` looks up each entry's handler in
+`EffectRegistry` (built from `EffectCatalog`) and awaits it; handlers inject
+events, which resolve through the engine's modifier pipeline.
 
 ---
 
@@ -499,10 +508,9 @@ func end_turn() -> void               # Emit player_turn_over when queue empty
 ```gdscript
 @export var uses_remaining: int                  # Decrements on activation
 var effect_data: Dictionary[String, int]         # Tile-specific state (turns_since_last_active, etc.)
-var scenario_engine: ScenarioEngine
 
 func clears_activation_criteria(die: Dice) -> bool   # Checks uses, dice value criteria
-func handle_tile_event(tile, event_type) -> void     # Hook for event-driven activation (disabled, TODO)
+func handle_tile_event(tile, event_type) -> void     # Queues the matching event_responses chain
 ```
 
 **Activation Check Resource**
@@ -648,11 +656,8 @@ they cost a grid cell instead of a die.
                                                       ▼
 ┌─────────────────────────────────────────────────────────────────────┐
 │                      EFFECT EXECUTION LAYER                          │
-│  EffectChain (Legacy)      EffectChain (Refactored)              │
-│  Direct Method Calls       → EffectContext                         │
-│                            → EffectRegistry                        │
-│                            → EffectEvent Subclasses                │
-│                            → ScenarioEngine.queue_event()          │
+│  EffectChain → EffectContext → EffectRegistry → EffectHandler      │
+│             → EffectEvent subclasses → ScenarioEngine.inject_event()│
 └─────────────────────────────────────────────────────────────────────┘
                                                       ▼
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -680,7 +685,7 @@ Source/
 │    ├── content_registry.gd
 │    ├── rng_manager.gd
 │    ├── save_manager.gd
-│    └── mcp_interaction_server.gd    # also mirrored at repo root
+│    └── mcp_interaction_server.gd
 │
 ├── Content/
 │   ├── Tiles/                 # Tile resources & behavior
@@ -739,30 +744,6 @@ Source/
     │   ├── AttributeChange/damage_event.gd
     │   ├── TileControl/tile_activation_event.gd
     │   └── ...
-    ├── EffectChain/effect_chain.gd       # New chain runner
+    ├── EffectChain/effect_chain.gd       # Chain runner
     └── effect_context.gd                      # Context for effect execution
 ```
-
----
-
-## Migration Status
-
-### Legacy Pipeline (No longer active)
-
-1. Tile activation → `EffectChain.play(effect_variables)`
-2. Direct node execution within chain
-3. No modifier hook points
-4. Hard-coded behavior in Effect classes
-
-### Refactored Pipeline (Active for New Content)
-
-1. Tile activation → `ScenarioEngine.queue_event(effect_event)`
-2. Event flows through:
-   - Modifier before-hooks → Event resolution → Modifier after-hooks
-3. Data-driven via EffectRegistry
-4. Fully composable modifiers
-
-**Migration Strategy**
-
-- NewTileResource fields use `effect_chain` + `event_responses`
-- Legacy fields retained but not called by default

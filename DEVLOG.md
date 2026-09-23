@@ -4,7 +4,7 @@ Newest entries at the top.
 
 ---
 
-## 2026-09-22 — Cleanup pass (IN PROGRESS)
+## 2026-09-22 — Cleanup pass
 
 **Plan:** `~/.claude/plans/this-isn-t-the-cleanest-piped-wilkes.md` (audit
 findings, Phases 1–4). Resume from the checklist below.
@@ -13,7 +13,7 @@ findings, Phases 1–4). Resume from the checklist below.
 - [x] Phase 1 — confirmed bugs (items 1–10)
 - [x] Phase 2 — single engine accessor (item 11)
 - [x] Phase 3 — combine duplicated systems (items 12–16)
-- [ ] Phase 4 — hygiene
+- [x] Phase 4 — hygiene
 
 **Notes:**
 - Items 1–7 done (commit "Harden ScenarioEngine lifecycle"). Engine now has
