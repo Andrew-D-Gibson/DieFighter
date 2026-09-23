@@ -107,9 +107,13 @@ func _connect_scenario_signals() -> void:
 	Events.start_scenario.connect(trigger_state_effects)
 
 
+## Safe to call more than once: a ship that died is disconnected on death, and
+## again when a jump clears the board.
 func disconnect_scenario_signals() -> void:
-	Events.scenario_event.disconnect(_handle_scenario_event)
-	Events.start_scenario.disconnect(trigger_state_effects)
+	if Events.scenario_event.is_connected(_handle_scenario_event):
+		Events.scenario_event.disconnect(_handle_scenario_event)
+	if Events.start_scenario.is_connected(trigger_state_effects):
+		Events.start_scenario.disconnect(trigger_state_effects)
 	
 
 func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
@@ -156,6 +160,10 @@ func _connect_dice_manager_signals() -> void:
 
 ## Called when the enemy dies
 func _on_death() -> void:
+	# Stop reacting to the scenario before announcing the death: enemy_left
+	# drives PIRATES_DEFEATED / COMBAT_ENDED, and a corpse still subscribed
+	# would change state and queue its on-enter effects mid death animation.
+	disconnect_scenario_signals()
 	dice_manager.give_away_dice()
 	Events.enemy_left.emit(self, scenario_state.faction)
 	

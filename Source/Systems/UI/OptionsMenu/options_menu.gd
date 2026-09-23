@@ -12,9 +12,8 @@ var screen_showing: ScreenShowing
 
 
 func _ready() -> void:
-	%OptionsSavingManager.load_options_settings()
-	
-	# Set up the UI elements to reflect the loaded settings
+	# Settings were loaded and applied at startup by the OptionsSettings
+	# autoload; the UI just reflects them.
 	_setup_game_options_UI()
 	_setup_graphics_options_UI()
 	_setup_audio_sliders()
@@ -24,7 +23,7 @@ func _ready() -> void:
 		
 	
 func _on_close_button_pressed() -> void:
-	%OptionsSavingManager.save_options_settings()
+	OptionsSettings.save_options_settings()
 	hide()
 
 

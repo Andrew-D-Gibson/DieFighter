@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://c7hyjenhhnsah"]
 
 [ext_resource type="Script" uid="uid://b3278n4xjt53b" path="res://Source/Systems/UI/OptionsMenu/options_menu.gd" id="1_c6430"]
-[ext_resource type="PackedScene" uid="uid://6l4ixooaa16q" path="res://Source/Systems/UI/OptionsMenu/options_saving_manager.tscn" id="2_okq5w"]
 [ext_resource type="Texture2D" uid="uid://con6g3t6bp21i" path="res://Assets/Textures/UI/OptionsMenu/options_background-Sheet.png" id="2_xqred"]
 [ext_resource type="Texture2D" uid="uid://cyvsute3rdn06" path="res://Assets/Textures/UI/OptionsMenu/music_volume_knob_dark.png" id="3_c6430"]
 [ext_resource type="PackedScene" uid="uid://fpxgv5lkm1f0" path="res://Source/Systems/UI/Buttons/small_button.tscn" id="3_smy8a"]
@@ -113,9 +112,6 @@ script = ExtResource("1_c6430")
 _game_options = NodePath("GameOptions")
 _graphics_options = NodePath("GraphicsOptions")
 _audio_options = NodePath("AudioOptions")
-
-[node name="OptionsSavingManager" parent="." unique_id=70754641 instance=ExtResource("2_okq5w")]
-unique_name_in_owner = true
 
 [node name="ScreenDim" type="ColorRect" parent="." unique_id=1659694118]
 custom_minimum_size = Vector2(320, 180)

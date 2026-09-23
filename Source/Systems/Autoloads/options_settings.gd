@@ -1,11 +1,17 @@
-class_name OptionsSavingManager
 extends Node
+## Persists the player's options (plus the launch counter) to a ConfigFile and
+## applies them at startup.
+##
+## An autoload so settings take effect when the game boots. It used to live
+## inside the OptionsMenu scene, so nothing was applied — window size, volume,
+## animation speed — until a menu containing it happened to be instanced.
 
 var _settings_path: String = "user://options_settings.cfg"
 
 
 func _ready() -> void:
 	Events.save_options_config.connect(save_options_settings)
+	load_options_settings()
 	
 
 func save_options_settings() -> void:
@@ -41,9 +47,9 @@ func load_options_settings() -> void:
 	var config = ConfigFile.new()
 	var err = config.load(_settings_path)
 
-	# If the file didn't load, ignore it
-	if err != OK:
-		printerr("Error loading settings file: ", _settings_path)
+	# A missing file is a first launch: fall through to the defaults below.
+	if err != OK and err != ERR_FILE_NOT_FOUND:
+		printerr("Error loading settings file: ", _settings_path, " (", error_string(err), ")")
 		
 	# Game
 	var game_settings: Dictionary = {}

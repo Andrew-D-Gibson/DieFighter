@@ -22,7 +22,7 @@ config/windows_native_icon="res://Assets/Icon/diefighter.ico"
 
 [audio]
 
-buses/default_bus_layout="uid://bfw33lm7dfih8"
+buses/default_bus_layout="res://default_bus_layout.tres"
 
 [autoload]
 
@@ -37,6 +37,7 @@ QuitManager="*res://Source/Systems/Autoloads/quit_manager.gd"
 EffectRegistry="*res://Source/Systems/Autoloads/effect_registry.gd"
 ContentRegistry="*res://Source/Systems/Autoloads/content_registry.gd"
 SaveManager="*res://Source/Systems/Autoloads/save_manager.gd"
+OptionsSettings="*res://Source/Systems/Autoloads/options_settings.gd"
 McpInteractionServer="*uid://coajxxari555t"
 
 [debug]
