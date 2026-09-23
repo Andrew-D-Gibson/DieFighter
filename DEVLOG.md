@@ -4,6 +4,31 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-22 — Cleanup pass (IN PROGRESS)
+
+**Plan:** `~/.claude/plans/this-isn-t-the-cleanest-piped-wilkes.md` (audit
+findings, Phases 1–4). Resume from the checklist below.
+
+**Progress:**
+- [ ] Phase 1 — confirmed bugs (items 1–10)
+- [ ] Phase 2 — single engine accessor (item 11)
+- [ ] Phase 3 — combine duplicated systems (items 12–16)
+- [ ] Phase 4 — hygiene
+
+**Notes:**
+- Items 1–7 done (commit "Harden ScenarioEngine lifecycle"). Engine now has
+  `shutdown()`/`is_shut_down()` and `event_canceled`; `ScenarioManager._jump`
+  calls `shutdown()` before freeing. `_end_combat_queued` clears when the drain
+  that holds the EndCombatEvent finishes (one-shot on
+  `finished_processing_queue`), so cancel/drop/jump can't strand it.
+  `EnemyManager.run_enemy_turn` won't emit `enemy_turn_over` for an engine
+  that was shut down. Tile activation tween is now tree-owned (a tile-owned
+  tween on a freed tile never emits `finished` → queue stall).
+  Verified live: killing the last enemy via a queued DamageEvent ends combat
+  and clears the flag; a queued JumpEvent with a trailing event jumps cleanly.
+
+---
+
 ## 2026-09-20 — Enemies place themselves
 
 **Built:** `EnemyFormation`, and the removal of every hand-authored spawn

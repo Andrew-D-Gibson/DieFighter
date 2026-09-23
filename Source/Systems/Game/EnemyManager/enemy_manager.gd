@@ -345,6 +345,7 @@ func run_enemy_turn() -> void:
 	# This prevents issues if enemies are removed during iteration
 	var current_enemies: Array[Enemy] = enemies.duplicate()
 	
+	var engine: ScenarioEngine = scenario_engine
 	var queued_anything: bool = false
 	for enemy: Enemy in current_enemies:
 		if not enemy or not is_instance_valid(enemy):
@@ -361,10 +362,16 @@ func run_enemy_turn() -> void:
 	# resolves without ever yielding is already done by the time we get here —
 	# awaiting the signal in either case hangs the game, because the player's
 	# next turn is started by enemy_turn_over and it would never be emitted.
-	if queued_anything and scenario_engine.currently_processing_queue:
-		await scenario_engine.finished_processing_queue
+	if queued_anything and engine.currently_processing_queue:
+		await engine.finished_processing_queue
 	else:
 		await get_tree().process_frame
+
+	# A jump resolved inside the turn shuts the engine down, which releases
+	# the await above. That turn belongs to a scenario we have already left;
+	# announcing its end would start a player turn in the new one.
+	if not is_instance_valid(engine) or engine.is_shut_down():
+		return
 
 	Events.enemy_turn_over.emit()
 

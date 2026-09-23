@@ -393,7 +393,17 @@ func _check_combat_state() -> void:
 	if _end_combat_queued:
 		return
 
+	# The drain that picks the event up is the drain that finishes it, one way
+	# or another: resolved, canceled by a modifier, dropped by the runaway
+	# guard, or thrown away by a jump's shutdown(). Clearing the flag when that
+	# drain ends — rather than only in resolve — means none of those can leave
+	# it stuck, which would stop every later fight from ever ending. Connected
+	# before queueing, because an idle engine drains synchronously.
 	_end_combat_queued = true
+	engine.finished_processing_queue.connect(
+		func() -> void: _end_combat_queued = false,
+		CONNECT_ONE_SHOT
+	)
 	engine.queue_event(EndCombatEvent.new())
 
 

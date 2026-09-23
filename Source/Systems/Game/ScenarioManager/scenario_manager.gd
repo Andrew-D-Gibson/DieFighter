@@ -88,6 +88,7 @@ func _spawn_starting_reward() -> void:
 func _jump() -> void:
 	# Get rid of the old engine
 	if is_instance_valid(engine):
+		engine.shutdown()
 		engine.queue_free()
 		engine = null
 	

@@ -31,7 +31,10 @@ func resolve(engine: ScenarioEngine) -> void:
 	if activator_die:
 		activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		var tween_time: float = 0.2 / Globals.animation_speed
-		var tween: Tween = tile.create_tween().set_parallel(true)
+		# Tree-owned, not tile-owned: a tween bound to a tile that gets freed
+		# mid-flight is killed without emitting finished, which would stall
+		# the whole event queue on the await below.
+		var tween: Tween = tile.get_tree().create_tween().set_parallel(true)
 		tween.tween_property(
 			activator_die,
 			'global_position',
@@ -45,6 +48,9 @@ func resolve(engine: ScenarioEngine) -> void:
 			tween_time
 		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 		await tween.finished
+
+	if not is_instance_valid(tile):
+		return
 
 	tile.shakeable.large_shake()
 

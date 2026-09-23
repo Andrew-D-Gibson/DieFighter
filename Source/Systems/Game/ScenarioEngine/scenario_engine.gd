@@ -2,6 +2,8 @@ class_name ScenarioEngine
 extends Node
 
 signal event_resolved(event: EffectEvent)
+## A modifier canceled this event before it resolved.
+signal event_canceled(event: EffectEvent)
 signal began_processing_queue()
 signal finished_processing_queue()
 signal modifier_added(mod: Modifier)
@@ -23,6 +25,10 @@ var event_queue: Array[EffectEvent]
 
 var modifiers: Array[Modifier]
 
+## Set by shutdown(). A drain suspended in an await checks this on resuming
+## and bails, rather than carrying on inside an engine that is being freed.
+var _shut_down: bool = false
+
 
 func _ready() -> void:
 	Events.player_turn_start.connect(clear_temporary_modifiers)
@@ -34,7 +40,13 @@ func queue_event(event: EffectEvent) -> void:
 	process_event_queue()
 	
 	
+## Inserts an event to resolve right after the one currently resolving (and
+## after anything else it has already injected). Outside a drain there is no
+## "current" event, so this is just a queue.
 func inject_event(event: EffectEvent) -> void:
+	if not currently_processing_queue:
+		queue_event(event)
+		return
 	event_queue.insert(_inject_index, event)
 	_inject_index += 1
 
@@ -73,14 +85,34 @@ func clear_temporary_modifiers() -> void:
 	
 	
 func clear_modifiers() -> void:
-	for mod: Modifier in modifiers:
+	# Iterate a copy: remove_modifier() erases from the live array.
+	for mod: Modifier in modifiers.duplicate():
 		remove_modifier(mod)
+
+
+## Tears the engine down before it is freed.
+##
+## Freeing an engine mid-drain (a jump resolved from inside the queue) would
+## otherwise strand everything waiting on finished_processing_queue, and leave
+## modifier status visuals parented to tiles that outlive the scenario.
+func shutdown() -> void:
+	event_queue.clear()
+	clear_modifiers()
+	_inject_index = 0
+	if currently_processing_queue:
+		currently_processing_queue = false
+		finished_processing_queue.emit()
+	_shut_down = true
+
+
+func is_shut_down() -> bool:
+	return _shut_down
 	
 	
 ## Main Process Function
 func process_event_queue() -> void:
 	# Allow for multiple calls to happen without breaking
-	if currently_processing_queue:
+	if currently_processing_queue or _shut_down:
 		return
 		
 	began_processing_queue.emit()
@@ -105,25 +137,42 @@ func process_event_queue() -> void:
 		var event: EffectEvent = event_queue.pop_front()
 		
 		# Handle any changes that need to happen BEFORE we 
-		# process the event
-		for mod: Modifier in modifiers:
+		# process the event. Hooks run against a snapshot, because a hook
+		# can await, and anything resolving meanwhile may add or remove
+		# modifiers.
+		for mod: Modifier in modifiers.duplicate():
+			if event.canceled or _shut_down:
+				break
+			if mod not in modifiers:
+				continue
 			await mod.on_before_event(event, self)
-			
+
+		if _shut_down:
+			return
+
 		# Check for cancelation
 		if event.canceled:
+			event_canceled.emit(event)
 			continue
 			
 		# Handle the event itself
 		await event.resolve(self)
+		if _shut_down:
+			return
 		
 		# Handle any changes that need to happen AFTER we 
 		# process the event
-		for mod: Modifier in modifiers:
+		for mod: Modifier in modifiers.duplicate():
+			if _shut_down:
+				return
+			if mod not in modifiers:
+				continue
 			await mod.on_after_event(event, self)
 			
 		# Tell everyone we're done!
 		event_resolved.emit(event)
-			
+
+	_inject_index = 0
 	currently_processing_queue = false
 	finished_processing_queue.emit()
 		

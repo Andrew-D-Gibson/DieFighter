@@ -27,7 +27,7 @@ var activation_repetitions: int = 1
 
 
 func resolve(engine: ScenarioEngine) -> void:
-	if not enemy and is_instance_valid(enemy):
+	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
 		return
 
 	# Remove die from the visual stacking queue
@@ -58,15 +58,17 @@ func resolve(engine: ScenarioEngine) -> void:
 	).set_ease(Tween.EASE_OUT)
 	await tween.finished
 	
-	# Just in case.
-	# This only happens when an enemy flees with multiple dice I think,
-	# and I don't love this but it's fine.
-	if not enemy and is_instance_valid(enemy):
+	# The ship can be freed while its die is in flight — fleeing with dice
+	# still queued, or killed by something that resolved in the meantime.
+	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
 		return
 		
 	await enemy.get_tree().create_timer(
 		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight)
 	).timeout
+
+	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
+		return
 	
 	# Make an action indicator popup
 	var popup_time: float = 0.75
