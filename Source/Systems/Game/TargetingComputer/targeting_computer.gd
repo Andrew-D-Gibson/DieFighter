@@ -228,7 +228,7 @@ func _indicator_bob() -> void:
 	if indicator_bob_tween:
 		indicator_bob_tween.kill()
 		
-	indicator_bob_tween = get_tree().create_tween()
+	indicator_bob_tween = create_tween()
 	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset + Vector2(4, 4), bob_time/2.0).from(targeted_enemy.global_position + targeting_indicator_offset).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, bob_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	indicator_bob_tween.set_loops()
