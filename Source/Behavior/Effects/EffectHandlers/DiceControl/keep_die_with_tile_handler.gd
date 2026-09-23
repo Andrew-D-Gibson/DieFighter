@@ -9,7 +9,5 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 		return
 
 	var event := KeepDieWithTileEvent.new()
-	event.activator_die = context.activator_die
-	event.effect_source = context.effect_source
-	event.actor         = context.actor
+	_stamp(event, context)
 	engine.inject_event(event)

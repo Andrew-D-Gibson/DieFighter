@@ -7,5 +7,5 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 		return
 
 	var event := DestroySourceEvent.new()
-	event.effect_source = context.effect_source
+	_stamp(event, context)
 	engine.inject_event(event)

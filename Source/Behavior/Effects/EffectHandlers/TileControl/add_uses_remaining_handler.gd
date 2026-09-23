@@ -7,7 +7,7 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 		return
 
 	var event := AddUsesRemainingEvent.new()
-	event.actor    = context.actor
+	_stamp(event, context)
 	event.targets  = context.targets.duplicate()
 	event.amount   = context.running_amount
 	engine.inject_event(event)

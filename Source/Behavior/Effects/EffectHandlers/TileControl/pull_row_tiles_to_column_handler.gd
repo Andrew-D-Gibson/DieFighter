@@ -6,8 +6,7 @@ extends EffectHandler
 
 func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	var event := PullRowTilesToColumnEvent.new()
-	event.actor          = context.actor
-	event.effect_source  = context.effect_source
+	_stamp(event, context)
 	event.target_column  = data.grid_offset.x
 	event.target_row     = data.grid_offset.y
 	engine.inject_event(event)

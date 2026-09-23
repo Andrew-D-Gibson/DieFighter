@@ -8,7 +8,6 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 		return
 
 	var event := ChangeActivatorValueEvent.new()
-	event.activator_die = context.activator_die
-	event.actor         = context.actor
+	_stamp(event, context)
 	event.amount        = context.running_amount
 	engine.inject_event(event)

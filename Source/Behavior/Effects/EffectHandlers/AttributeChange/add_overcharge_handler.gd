@@ -13,9 +13,6 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 	event.amount = context.running_amount
 	event.allow_overcharge = true
 
-	event.actor         = context.actor
-	event.effect_source = context.effect_source
-	event.activator_die = context.activator_die
-	event.die_value     = context.activator_die.value if context.activator_die else 0
+	_stamp(event, context)
 
 	engine.inject_event(event)

@@ -24,8 +24,6 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 		return
 
 	var event := AnimateDieToTileEvent.new()
-	event.actor             = context.actor
-	event.effect_source     = context.effect_source
-	event.activator_die     = context.activator_die
+	_stamp(event, context)
 	event.target_global_pos = Globals.tile_grid.grid_to_global_pos(target_pos)
 	engine.inject_event(event)

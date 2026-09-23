@@ -18,8 +18,6 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 		return
 
 	var event := PassDieToTileEvent.new()
-	event.actor         = context.actor
-	event.effect_source = context.effect_source
-	event.activator_die = context.activator_die
+	_stamp(event, context)
 	event.targets       = context.targets.duplicate()
 	engine.inject_event(event)

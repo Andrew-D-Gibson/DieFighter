@@ -8,7 +8,6 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 		return
 
 	var event := PushTileInDirectionEvent.new()
-	event.actor         = context.actor
-	event.effect_source = context.effect_source
+	_stamp(event, context)
 	event.direction     = data.grid_offset
 	engine.inject_event(event)

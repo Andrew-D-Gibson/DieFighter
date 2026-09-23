@@ -12,11 +12,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	# Read the amount from the running amount (set by prior AMOUNT_MODIFIER steps)
 	heal_event.amount = context.running_amount
 	
-	# Build out the event
-	heal_event.actor = context.actor
-	heal_event.effect_source = context.effect_source
-	heal_event.activator_die = context.activator_die
-	heal_event.die_value     = context.activator_die.value if context.activator_die else 0
+	_stamp(heal_event, context)
 	heal_event.targets       = context.targets.duplicate()  # snapshot, not a live reference
 	
 	engine.inject_event(heal_event)

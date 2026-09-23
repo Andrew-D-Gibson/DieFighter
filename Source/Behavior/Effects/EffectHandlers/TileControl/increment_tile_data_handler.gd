@@ -10,8 +10,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 		return
 
 	var event := IncrementTileDataEvent.new()
-	event.actor         = context.actor
-	event.effect_source = context.effect_source
+	_stamp(event, context)
 	event.data_key      = data.string_param
 	event.amount        = context.running_amount if context.running_amount != 0 else 1
 	engine.inject_event(event)

@@ -24,7 +24,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 			direction = _pick_open_direction(target as Tile)
 
 		var event := PushTileInDirectionEvent.new()
-		event.actor         = context.actor
+		_stamp(event, context)
 		event.effect_source = target
 		event.direction     = direction
 		engine.inject_event(event)

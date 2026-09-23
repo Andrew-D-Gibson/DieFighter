@@ -8,8 +8,6 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	var jump_delta: int = context.running_amount
 
 	var event := JumpEvent.new()
-	event.actor         = context.actor
-	event.effect_source = context.effect_source
-	event.activator_die = context.activator_die
+	_stamp(event, context)
 	event.jump_delta    = jump_delta
 	engine.inject_event(event)

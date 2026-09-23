@@ -33,3 +33,18 @@ extends RefCounted
 ## 'engine'  — the live ScenarioEngine; call engine.inject_event() to queue work
 func apply(_data: EffectData, _context: EffectContext, _engine: ScenarioEngine) -> void:
 	pass  # Override in subclass.
+
+
+## Copies the chain's shared context onto a new event: who acted, whose chain
+## it is, and the die behind it. Handlers set anything event-specific
+## afterwards (amount, targets, or a different effect_source).
+##
+## Stamp every event, even one that ignores a field. Modifiers match on these
+## — AmplifierModifier on effect_source — so an event that skipped one was
+## silently exempt from them.
+func _stamp(event: EffectEvent, context: EffectContext) -> EffectEvent:
+	event.actor = context.actor
+	event.effect_source = context.effect_source
+	event.activator_die = context.activator_die
+	event.die_value = context.activator_die.value if is_instance_valid(context.activator_die) else 0
+	return event

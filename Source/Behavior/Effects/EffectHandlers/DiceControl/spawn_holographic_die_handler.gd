@@ -11,8 +11,7 @@ extends EffectHandler
 
 func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	var event := SpawnHolographicDieEvent.new()
-	event.actor         = context.actor
-	event.activator_die = context.activator_die
+	_stamp(event, context)
 	event.amount        = context.running_amount
 	event.die_value     = context.activator_die.value if is_instance_valid(context.activator_die) else 1
 	engine.inject_event(event)

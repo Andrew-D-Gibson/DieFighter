@@ -12,6 +12,5 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 		return
 
 	var event := GiveDieToPlayerEvent.new()
-	event.activator_die = context.activator_die
-	event.actor         = context.actor
+	_stamp(event, context)
 	engine.inject_event(event)

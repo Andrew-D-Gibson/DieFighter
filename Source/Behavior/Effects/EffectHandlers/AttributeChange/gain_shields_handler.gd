@@ -12,11 +12,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	shield_event.amount = context.running_amount
 		
 	
-	# Build out the event
-	shield_event.actor = context.actor
-	shield_event.effect_source = context.effect_source
-	shield_event.activator_die = context.activator_die
-	shield_event.die_value     = context.activator_die.value if context.activator_die else 0
+	_stamp(shield_event, context)
 	shield_event.targets       = context.targets.duplicate()  # snapshot, not a live reference
 	
 	engine.inject_event(shield_event)

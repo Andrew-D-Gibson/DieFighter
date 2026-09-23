@@ -7,7 +7,6 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 		return
 
 	var event := MoveTileWithOffsetEvent.new()
-	event.actor         = context.actor
-	event.effect_source = context.effect_source
+	_stamp(event, context)
 	event.offset        = data.grid_offset
 	engine.inject_event(event)
