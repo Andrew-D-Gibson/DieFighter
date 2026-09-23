@@ -14,6 +14,5 @@ func _init(tile: Tile, amount: int) -> void:
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
-	if event.effect_source == affected_node:
-		#and (event is DamageEvent or event is AddAmplifierModifierEvent):
+	if event.effect_source == affected_node and event.is_amplifiable():
 		event.amount += amplify_amount

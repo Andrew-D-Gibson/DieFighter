@@ -10,7 +10,7 @@ Newest entries at the top.
 findings, Phases 1–4). Resume from the checklist below.
 
 **Progress:**
-- [ ] Phase 1 — confirmed bugs (items 1–10)
+- [x] Phase 1 — confirmed bugs (items 1–10)
 - [ ] Phase 2 — single engine accessor (item 11)
 - [ ] Phase 3 — combine duplicated systems (items 12–16)
 - [ ] Phase 4 — hygiene

@@ -66,6 +66,11 @@ var _is_fresh_run: bool = true
 ## without this the queue collects a redundant event per corpse.
 var _end_combat_queued: bool = false
 
+## True for a brand new run, false when continuing a save.
+func is_fresh_run() -> bool:
+	return _is_fresh_run
+
+
 enum GameState {
 	IN_COMBAT,
 	OUT_OF_COMBAT,

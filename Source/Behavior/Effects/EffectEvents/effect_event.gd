@@ -38,6 +38,15 @@ var metadata: Dictionary = {}
 
 # ── Interface ──────────────────────────────────────────────────────────────────
 
+## Whether [member amount] is an output a flat boost should grow (damage,
+## shields, charge gained, uses added). Events whose amount is a price, a
+## duration or a stored counter override this to false, so an Amplifier on a
+## tile makes it hit harder without also making it cost more or corrupting its
+## tile data.
+func is_amplifiable() -> bool:
+	return true
+
+
 ## Override this in each concrete event class.
 ## The engine calls this after all before-hooks have run (and not canceled).
 ## Use 'await' here for animations, tweens, or any async work.

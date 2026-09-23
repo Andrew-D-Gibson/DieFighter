@@ -16,6 +16,9 @@ var _target_proportion: float = -1.0
 var _bar_tween: Tween
 var _head_tween: Tween
 
+## Set while a continued save's first load_scenario is still to come.
+var _restoring_save: bool = false
+
 
 func _ready() -> void:
 	# The charger opens empty: a run starts mid-ambush, with the engine cold.
@@ -27,6 +30,9 @@ func _ready() -> void:
 	Events.engine_charge_changed.connect(_update_ui)
 	Events.start_scenario.connect(_update_ui)
 	Events.load_scenario.connect(_check_for_combat_scenario)
+	Events.load_game_save.connect(func(_save: GameSaveResource) -> void:
+		_restoring_save = not Globals.state_manager.is_fresh_run()
+	)
 	Events.start_combat.connect(func() -> void:
 		Globals.player.engine_charge = 0
 		_update_ui()
@@ -50,7 +56,18 @@ func _refill_after_combat() -> void:
 	_update_ui()
 
 
+## Sets the drive for a scenario the player is arriving at: cold for an
+## ambush, full otherwise.
+##
+## A continued save is not an arrival. Player restores the checkpointed charge
+## from the save just before this scenario's load_scenario, and that value
+## already accounts for the arrival plus anything since — redline surplus from
+## the last fight, charge spent in a shop. Resetting it here would erase both.
 func _check_for_combat_scenario(scenario: ScenarioResource) -> void:
+	if _restoring_save:
+		_restoring_save = false
+		return
+
 	var in_combat: bool = false
 	for ship in scenario.starting_enemies:
 		if ship.starting_state.attitude == Enemy.Attitude.AGGRESSIVE:

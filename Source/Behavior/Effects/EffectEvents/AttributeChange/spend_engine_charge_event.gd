@@ -11,6 +11,11 @@ extends EffectEvent
 ## silently absorbing.
 
 
+## amount is a price, not an output.
+func is_amplifiable() -> bool:
+	return false
+
+
 func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(Globals.player):
 		return

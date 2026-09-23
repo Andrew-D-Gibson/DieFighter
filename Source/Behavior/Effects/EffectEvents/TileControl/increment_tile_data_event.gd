@@ -4,6 +4,11 @@ extends EffectEvent
 var data_key: String = ""
 
 
+## amount is a stored counter, not an output.
+func is_amplifiable() -> bool:
+	return false
+
+
 func resolve(_engine: ScenarioEngine) -> void:
 	if data_key.is_empty():
 		push_error("IncrementTileDataEvent: data_key is empty.")

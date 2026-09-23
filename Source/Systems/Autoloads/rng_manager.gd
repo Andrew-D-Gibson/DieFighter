@@ -16,8 +16,16 @@ func _ready() -> void:
 	Events.load_scenario.connect(_on_load_scenario)
 
 
+## The seed is stored on the ScenarioResource, but a sector can hold the same
+## resource in several slots (every shop, fate and empty scenario is one shared
+## object), and they all carry whichever seed was written last. Mixing in the
+## map slot keeps two shops in one sector from rolling identical stock.
+## Globals.map already points at the destination when load_scenario fires.
 func _on_load_scenario(scenario: ScenarioResource) -> void:
-	seed_scenario(scenario.scenario_seed)
+	var slot: int = 0
+	if is_instance_valid(Globals.map):
+		slot = Globals.map.current_scenario_index
+	seed_scenario(hash([scenario.scenario_seed, slot]))
 
 
 ## Seeds the RUN bucket, which governs sector/shop generation for an entire
