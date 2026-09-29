@@ -37,3 +37,7 @@ enum PoolSelection {
 @export var targeting_computer_image: Texture2D
 @export var health_bar_position: Vector2
 @export var dice_queue_position: Vector2
+## How much of the formation's width the hull takes up. Ordinary ships are
+## 32px across; a capital ship needs its real width here, or the formation
+## parks its escorts underneath it.
+@export var formation_width: float = 32.0

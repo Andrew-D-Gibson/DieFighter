@@ -234,6 +234,7 @@ frame_progress = 0.489481
 
 [node name="TargetingIndicator" type="Sprite2D" parent="." unique_id=1175290674]
 visible = false
+z_index = 9
 position = Vector2(16, -22)
 texture = ExtResource("3_ewmvk")
 

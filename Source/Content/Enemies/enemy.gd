@@ -244,7 +244,7 @@ func _update_health_bar() -> void:
 
 ## Updates the position and color of the dialogue manager
 func _update_dialogue() -> void:
-	dialogue_manager.position = enemy_resource.dialogue_offset
+	dialogue_manager.anchor = enemy_resource.dialogue_offset
 
 
 ## Which of the enemy's action pools this turn's six slots are drawn from.

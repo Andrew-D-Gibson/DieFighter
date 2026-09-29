@@ -19,8 +19,8 @@ var enemies: Array[Enemy]
 ## off it, and their health bars entirely so.
 @export var formation_edge_margin: float = 36.0
 
-## Closest two ships will ever stand. See [member EnemyFormation.min_ship_spacing].
-@export var formation_min_spacing: float = 40.0
+## Narrowest gap between two ships' hulls. See [member EnemyFormation.min_ship_gap].
+@export var formation_min_gap: float = 8.0
 
 ## How long a ship takes to slide to a new spot when the formation changes.
 @export var reflow_time: float = 0.75
@@ -29,7 +29,17 @@ var enemies: Array[Enemy]
 ## of the formation, so nobody reflows on top of it.
 @export var pinned_ship_footprint: float = 40.0
 
-var enemies_jumping: bool = false
+@export_category('Draw Order')
+## The z the ships drop to while jumping away. In combat they draw above the
+## main viewer, so a tractor beam can run over the tile grid and still come
+## out from underneath the ship. Falling off the bottom of the screen, they
+## have to pass behind the cockpit instead.
+@export var jump_z_index: int = -5
+
+var enemies_jumping: bool = false:
+	set(value):
+		enemies_jumping = value
+		z_index = jump_z_index if value else _combat_z_index
 var screen_size: Vector2 = Vector2(320, 180)
 
 ## Decides who stands where. See [EnemyFormation] for why placement is derived
@@ -49,6 +59,9 @@ var _active_moves: Dictionary[Enemy, Tween] = {}
 ## formation, but they sit above their slot rather than on it, and they snap
 ## rather than slide if the formation changes mid-arrival.
 var _awaiting_fly_in: Array[Enemy] = []
+
+## The z authored on this node, which the ships go back to once a jump is over.
+@onready var _combat_z_index: int = z_index
 
 func _ready() -> void:
 	Globals.enemy_manager = self
@@ -260,7 +273,12 @@ func refresh_formation(animate: bool = true) -> void:
 		return
 
 	var members: Array[Enemy] = _formation_members()
-	var slots: PackedFloat32Array = formation.solve(members.size())
+	var widths: PackedFloat32Array = PackedFloat32Array()
+	for enemy: Enemy in members:
+		widths.append(enemy.enemy_resource.formation_width)
+	var slots: PackedFloat32Array = formation.solve(widths)
+
+	_point_speech(members, slots)
 
 	for i: int in range(members.size()):
 		var enemy: Enemy = members[i]
@@ -274,10 +292,33 @@ func refresh_formation(animate: bool = true) -> void:
 			continue
 
 		if animate:
-			if not enemy.position.is_equal_approx(target):
+			# A ship can already be where it belongs while still sliding away
+			# from it: a reflow that started and was overruled in the same
+			# frame, when a reward claims the gap a dying ship left.
+			if not enemy.position.is_equal_approx(target) or _active_moves.has(enemy):
 				_slide_ship_to(enemy, target, reflow_time)
 		else:
 			enemy.position = target
+
+
+## Turns each ship's speech box toward the clearer side of it, judged from
+## where everyone is headed rather than where they are mid-slide. Pinned ships
+## count too: they stand at the middle of the space they hold.
+func _point_speech(members: Array[Enemy], slots: PackedFloat32Array) -> void:
+	var ships: Array[Enemy] = members.duplicate()
+	var xs: PackedFloat32Array = slots.duplicate()
+	for enemy: Enemy in enemies:
+		if is_instance_valid(enemy) and enemy.formation_pinned:
+			var held: Vector2 = formation.get_reservation(_pin_key(enemy))
+			ships.append(enemy)
+			xs.append((held.x + held.y) * 0.5)
+
+	for i: int in range(ships.size()):
+		var others: PackedFloat32Array = xs.duplicate()
+		others.remove_at(i)
+		var points_left: bool = formation.speech_points_left(xs[i], others)
+		var room: Vector2 = formation.speech_room(xs[i], others)
+		ships[i].dialogue_manager.point(points_left, room.x if points_left else room.y)
 
 
 ## Claims screen-space x for something that is not a ship — the shop panel, the
@@ -339,7 +380,8 @@ func _build_path_sample_table() -> void:
 		_path_x_samples[0] + formation_edge_margin,
 		_path_x_samples[-1] - formation_edge_margin
 	)
-	formation.min_ship_spacing = formation_min_spacing
+	formation.min_ship_gap = formation_min_gap
+	formation.speech_span = Vector2(0.0, screen_size.x)
 
 
 ## The point along the path that sits at screen x [param target_x].

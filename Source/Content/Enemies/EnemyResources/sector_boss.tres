@@ -134,4 +134,5 @@ dialogue_offset = Vector2(16, -8)
 targeting_computer_image = ExtResource("tex_4")
 health_bar_position = Vector2(-78, -5)
 dice_queue_position = Vector2(72, 16)
+formation_width = 128.0
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"

@@ -352,9 +352,10 @@ position = Vector2(-44, -106)
 position = Vector2(96, 7)
 
 [node name="EnemyManager" parent="Systems" unique_id=1703945841 instance=ExtResource("10_oai2y")]
-z_index = -5
+z_index = 9
 
 [node name="RewardManager" parent="Systems" unique_id=1010479289 instance=ExtResource("13_7iud4")]
+z_index = 14
 
 [node name="Shop" parent="Systems" unique_id=918544456 instance=ExtResource("24_ealw0")]
 visible = false

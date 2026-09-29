@@ -26,12 +26,40 @@ static var time_last_dialogue_was_shown: int
 var fadeout_timer: Timer
 @export var dialogue_time_shown: float = 4
 
+## Where the box sits relative to the ship, as authored: on the ship's right.
+var anchor: Vector2 = Vector2.ZERO:
+	set(value):
+		anchor = value
+		_apply_side()
+
+## How much further out than [member anchor] the box sits, room permitting,
+## to clear what else hangs off that side of the ship: the health bar on its
+## left, the dice it's holding on its right.
+@export var left_clearance: float = 16.0
+@export var right_clearance: float = 14.0
+
+## Whether the box is on the ship's left, mirrored so its tail still points
+## back at the ship. See [method point].
+var points_left: bool = false
+
+## The box and text's authored x, which pointing left mirrors.
+var _box_x: float
+var _text_x: float
+
+## How far past [member anchor] the box currently sits. See
+## [member left_clearance].
+var _shift: float = 0.0
+
 
 func _ready() -> void:
 	fadeout_timer = Timer.new()
 	fadeout_timer.one_shot = true
 	fadeout_timer.timeout.connect(hide_dialogue)
 	add_child(fadeout_timer)
+
+	_box_x = %Sprite2D.position.x
+	_text_x = %RichTextLabel.position.x
+	_apply_side()
 	
 
 func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:
@@ -107,6 +135,40 @@ func _start_fade_in() -> void:
 	.set_ease(Tween.EASE_IN_OUT)
 	
 	
+## Puts the box on the ship's left or right. [EnemyManager] picks the side from
+## where the ship stands, so neighbouring ships talk away from each other
+## rather than over each other. [param room] is how far from the ship the box
+## can reach on that side before it runs into something.
+func point(left: bool, room: float) -> void:
+	points_left = left
+	_shift = 0.0
+	if is_node_ready():
+		var clearance: float = left_clearance if left else right_clearance
+		_shift = clampf(room - _reach(), 0.0, clearance)
+	_apply_side()
+
+
+## How far from the ship the far edge of the box sits, unshifted.
+func _reach() -> float:
+	return anchor.x + _box_x + %Sprite2D.texture.get_width() * 0.5
+
+
+func _apply_side() -> void:
+	if not is_node_ready():
+		return
+
+	var label: RichTextLabel = %RichTextLabel
+	var side: float = -1.0 if points_left else 1.0
+	position = Vector2((anchor.x + _shift) * side, anchor.y)
+	if points_left:
+		%Sprite2D.position.x = -_box_x
+		label.position.x = -_text_x - label.size.x
+	else:
+		%Sprite2D.position.x = _box_x
+		label.position.x = _text_x
+	%Sprite2D.flip_h = points_left
+
+
 func _show_characters(num: int) -> void:
 	if %RichTextLabel.visible_characters != num and RNGManager.randi_range(RNGManager.Bucket.COSMETIC, 1, 5) == 1:
 		Events.play_sound.emit(_TEXT_BLIP_SFX)

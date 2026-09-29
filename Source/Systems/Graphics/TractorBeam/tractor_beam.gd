@@ -116,9 +116,10 @@ func _setup(die: Dice, enemy: Enemy) -> void:
 	top_level = true
 	# A top-level item hangs off the canvas root rather than the enemy, so it
 	# no longer inherits the enemy's z. Match the ship's absolute z, one below,
-	# so the beam comes out from underneath it.
+	# so the beam comes out from underneath it. Ships sit above the main
+	# viewer, so that also runs the beam over the tile grid it's pulling from.
 	z_as_relative = false
-	z_index = _absolute_z(_enemy) - 1
+	_follow_enemy_z()
 
 	_glow = _make_line(6.0, Color(_color, 0.35))
 	_core = _make_line(2.0, _color.lightened(0.5))
@@ -147,6 +148,9 @@ func _process(delta: float) -> void:
 	or _die.host_queue != _enemy.dice_manager:
 		queue_free()
 		return
+
+	# The ships drop behind the cockpit when the player jumps; stay under this one.
+	_follow_enemy_z()
 
 	# Another die joining this enemy reflows the queue, which hands every die
 	# back to Draggable's homing. Keep hold of this one until it lands.
@@ -344,6 +348,10 @@ static func _color_for(threat: EnemyActionResource.Threat) -> Color:
 			return Globals.purple
 		_:
 			return Globals.white
+
+
+func _follow_enemy_z() -> void:
+	z_index = _absolute_z(_enemy) - 1
 
 
 ## The z an item actually draws at: its own z_index plus every ancestor's, up

@@ -115,9 +115,16 @@ func create_tile(tile_resource: TileResource) -> Tile:
 
 
 func receive_tile(tile: Tile, drop_position: Vector2) -> void:
+	tile.reparent(self, true)
+	tile.update_dragging_allowed()
 	tile.draggable.floating_enabled = false
 	tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
-	tile.reparent(self, true)
+
+	# Mid-fight the tiles already here are locked in place, so a tile taken
+	# from a reward drops into the first free cell instead of shoving one aside.
+	if Tile.grid_locked() and not is_grid_pos_open(global_pos_to_grid(drop_position)):
+		drop_position = grid_to_global_pos(find_available_grid_pos())
+
 	_drop_tile_on_grid_pos(tile.draggable, drop_position)
 
 

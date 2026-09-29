@@ -211,7 +211,7 @@ func _on_fps_limit_options_item_selected(index: int) -> void:
 			Engine.max_fps = 60
 		"120":
 			Engine.max_fps = 120
-		"Unlimited":
+		"None":
 			Engine.max_fps = 0 # 0 means unlimited
 
 

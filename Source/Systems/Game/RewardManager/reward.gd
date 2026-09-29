@@ -17,11 +17,24 @@ var items: Array = []
 ## Optional: force specific rewards (used by tutorial)
 static var forced_rewards: Array[TileResource] = []
 
+## Horizontal distance between the choices on offer.
+const _REWARD_SPACING: int = 26
+
+## Extra room either side of the offer that the ships leave clear.
+const _FORMATION_PADDING: float = 4.0
+
 
 func _ready() -> void:
 	hide()
 	
 	Events.jump.connect(queue_free)
+
+
+func _exit_tree() -> void:
+	# Leaving with the whole scene (back to the menu) there's no formation left
+	# to hand the space back to.
+	if is_instance_valid(Globals.enemy_manager) and Globals.enemy_manager.is_inside_tree():
+		Globals.enemy_manager.clear_formation_space(_formation_key())
 	
 
 func give_reward(reward_resource: RewardResource) -> void:
@@ -38,6 +51,7 @@ func give_reward(reward_resource: RewardResource) -> void:
 		queue_free()
 		return
 
+	_claim_formation_space(offered.size())
 	await get_tree().create_timer(2).timeout
 	_present(offered)
 
@@ -53,6 +67,7 @@ func restore_offer(saved_items: Array) -> void:
 	if offered.is_empty():
 		queue_free()
 		return
+	_claim_formation_space(offered.size())
 	_present(offered)
 
 
@@ -87,11 +102,9 @@ func _present(offered: Array[Node2D]) -> void:
 		tween_time
 	).from(0.0)
 	
-	var reward_spacing: int = 26
+	bounding_box.shape.size.x = _REWARD_SPACING * offered.size()
 	
-	bounding_box.shape.size.x = reward_spacing * offered.size()
-	
-	var total_length := reward_spacing * (offered.size() - 1)
+	var total_length := _REWARD_SPACING * (offered.size() - 1)
 	var start_offset := -total_length / 2
 
 	for i in range(offered.size()):
@@ -101,7 +114,7 @@ func _present(offered: Array[Node2D]) -> void:
 		
 		reward.draggable.drag_started.connect(Events.show_systems.emit)
 		reward.draggable.drag_ended.connect(_end_reward)
-		reward.global_position = global_position + Vector2(start_offset,0) + Vector2(i * reward_spacing, 0)
+		reward.global_position = global_position + Vector2(start_offset,0) + Vector2(i * _REWARD_SPACING, 0)
 		reward.draggable.home_position = reward.global_position
 		reward.draggable.emit_reached_new_home = false
 		reward.draggable.floating_enabled = true
@@ -180,6 +193,26 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 		
 	Events.reward_picked.emit()
 	queue_free()
+
+
+## An offer drops where the ship that paid it out used to be. Without holding
+## that spot, the surviving ships close ranks straight over the top of it and
+## the player has to pick a reward out from under a hull. The space is handed
+## back when the offer goes, whether it was taken or the player jumped away.
+func _claim_formation_space(count: int) -> void:
+	if not is_instance_valid(Globals.enemy_manager):
+		return
+
+	var half_width: float = maxf($RichTextLabel.size.x, _REWARD_SPACING * count) * 0.5
+	Globals.enemy_manager.reserve_formation_space(
+		_formation_key(),
+		global_position.x - half_width - _FORMATION_PADDING,
+		global_position.x + half_width + _FORMATION_PADDING
+	)
+
+
+func _formation_key() -> StringName:
+	return StringName("reward_%d" % get_instance_id())
 
 
 func _spawn_money_particles(amount: int) -> void:

@@ -37,7 +37,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `GameStateManager` | `Systems/GameStateManager` | `GameStateManager/game_state_manager.gd` | State machine: OUT_OF_COMBAT → IN_COMBAT → GAME_OVER / VICTORY; generates each sector, detects a cleared jump gate and advances to the next sector, owns the run's difficulty multipliers |
 | `Player` | `Systems/Player` | `Systems/Game/Player/player.gd` | Player ship with health/shields/dice queue; manages turn flow: spawn dice, reroll, end turn |
 | `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, status effects per cell |
-| `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation` |
+| `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation`, which also turns each ship's speech box toward its clearer side |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
 | `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy |
@@ -490,8 +490,9 @@ Main (Node2D)
 │   │   └── MainViewer (Systems map toggle)
 │   │       ├── TileGrid
 │   │       └── Map
-│   ├── EnemyManager (enemies array)
-│   ├── RewardManager
+│   ├── EnemyManager (enemies array, z_index=9: above the main viewer so tractor
+│   │                 beams run over the tile grid; drops to -5 while jumping away)
+│   ├── RewardManager (z_index=14: offers stay above ships, their HUDs and speech)
 │   ├── Shop
 │   ├── ScenarioManager
 │   ├── JumpManager

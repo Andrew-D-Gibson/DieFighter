@@ -55,13 +55,8 @@ func _ready() -> void:
 		)
 	
 	Events.start_scenario.connect(reset_uses_remaining)
-	Events.start_combat.connect(func() -> void:
-		draggable.dragging_allowed = false
-	)
-	Events.combat_finished.connect(func() -> void:
-		if tile_resource.dragging_allowed:
-			draggable.dragging_allowed = true
-	)
+	Events.start_combat.connect(update_dragging_allowed)
+	Events.combat_finished.connect(update_dragging_allowed)
 	_connect_tile_event_signals()
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
@@ -95,9 +90,21 @@ func _connect_tile_event_signals() -> void:
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
 	uses_remaining = tile_resource.uses_per_combat
+	update_dragging_allowed()
 
-	draggable.dragging_allowed = tile_resource.dragging_allowed and \
-		Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT
+
+## Tiles in the grid are locked in place for the length of a fight. A tile
+## anywhere else — on offer from a ship that just died, on the shop's shelf —
+## can still be picked up, or a reward dropped mid-fight could never be taken.
+func update_dragging_allowed() -> void:
+	var locked: bool = get_parent() is TileGrid and grid_locked()
+	draggable.dragging_allowed = tile_resource.dragging_allowed and not locked
+
+
+## Whether the grid is locked right now, which is for as long as a fight lasts.
+static func grid_locked() -> bool:
+	return Globals.state_manager != null \
+		and Globals.state_manager.state != GameStateManager.GameState.OUT_OF_COMBAT
 
 
 func _get_tile_info() -> InfoResource:	
