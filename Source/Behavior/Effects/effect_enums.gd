@@ -128,6 +128,13 @@ enum AudioVisualSubtype {
 	SHAKE_DICE,               ## Shake all dice visually
 	PLAY_SOUND,               ## Play a SFX resource
 	WAIT,                     ## Wait for N milliseconds (for timing)
+	HITSTOP,                  ## Freeze the game for N ms on the impact frame
+	SLOW_MO,                  ## Slow the game to a time scale for N ms
+	ZOOM_PUNCH,               ## Kick the camera zoom in toward the target, ease back
+	FLASH_TARGET,             ## Flash the targets a solid color for a moment
+	SCREEN_SHAKE,             ## Shake the camera (1 small, 2 large, 3 large + glitch)
+	VIGNETTE_PULSE,           ## Flash the screen-edge vignette in a color
+	GLITCH_BURST,             ## Turn the glitch overlay on for N ms
 }
 
 

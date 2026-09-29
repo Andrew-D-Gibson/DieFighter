@@ -54,6 +54,10 @@ signal player_fatal_damage()
 signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)
 signal enemy_flew_in()
 signal enemy_received_die()
+## A die the player spent has finished its trip into an enemy's hand (the
+## tractor beam landed). enemy_received_die fires earlier, the moment the die
+## joins the queue; this is the beat the player actually sees it arrive.
+signal enemy_armed(enemy: Enemy, die_value: int)
 signal enemy_used_die(enemy: Enemy, die_value: int)
 signal enemy_acted(enemy_name: String, action_name: String)
 
@@ -135,6 +139,15 @@ signal take_screenshot()
 signal camera_shake_small()
 signal camera_shake_large()
 signal set_glitch(glitch_state: bool)
+## Kicks the camera zoom to `peak_zoom` times its resting zoom, then eases it
+## back. With has_focus, the camera also leans toward `focus` (global position)
+## for the duration, so the punch reads as toward the impact.
+signal camera_zoom_punch(peak_zoom: float, focus: Vector2, has_focus: bool)
+## One-shot vignette flash in an arbitrary color, for effects authored in data
+## rather than the fixed player-hit colors.
+signal vignette_pulse(color: Color)
+## Turns the glitch overlay on for `duration_ms` of real time, then off.
+signal glitch_burst(duration_ms: int)
 
 
 # Audio Events

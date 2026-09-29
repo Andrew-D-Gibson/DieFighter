@@ -113,6 +113,13 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SHAKE_DICE, label = "Shake Dice", handler = ShakeDiceHandler},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.PLAY_SOUND, label = "Play Sound", handler = PlaySoundHandler, fields = ["sound_resource"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.WAIT, label = "Wait", handler = WaitHandler},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.HITSTOP, label = "Hitstop", handler = HitstopHandler, fields = ["amount"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SLOW_MO, label = "Slow-Mo", handler = SlowMoHandler, fields = ["amount", "multiplier"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ZOOM_PUNCH, label = "Zoom Punch", handler = ZoomPunchHandler, fields = ["multiplier"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.FLASH_TARGET, label = "Flash Target", handler = FlashTargetHandler, fields = ["color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SCREEN_SHAKE, label = "Screen Shake", handler = ScreenShakeHandler, fields = ["amount"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.VIGNETTE_PULSE, label = "Vignette Pulse", handler = VignettePulseHandler, fields = ["color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.GLITCH_BURST, label = "Glitch Burst", handler = GlitchBurstHandler, fields = ["amount"]},
 
 	# ── TILE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ACTIVATE_SELF, label = "Activate Self", handler = ActivateSelfHandler},

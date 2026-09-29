@@ -1,7 +1,7 @@
 class_name ShakeDiceEvent
 extends EffectEvent
 
-var _tween_time: float = 2.4
+var _tween_time: float = 1.2
 
 
 func resolve(_engine: ScenarioEngine) -> void:

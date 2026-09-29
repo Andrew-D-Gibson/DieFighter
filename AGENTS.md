@@ -52,9 +52,11 @@ that gap:
    for anything that only surfaces at runtime — null refs, bad type coercion, silent
    warnings.
 5. Runtime tools (godot_game_*) require an active game session with the
-   McpInteractionServer autoload running — there's no launch tool available.
-   If runtime verification (godot_game_eval, get_errors, get_logs) would help,
-   ask the user to start the game rather than assuming a session exists.
+   McpInteractionServer autoload running. Launch one yourself with
+   `godot_run_project` (and `godot_stop_project` when done) — don't ask the user
+   to start the game. Use `godot_game_screenshot` to check visual changes, and
+   `godot_game_call_method` / `godot_game_eval` to drive the game into the state
+   you need to see (e.g. switching tabs, hovering).
 
 ## Scene & Node Workflow
 - Never modify a scene blind. Run `godot_read_scene` (file-based) or

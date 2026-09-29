@@ -11,6 +11,10 @@ const SAVE_VERSION: int = 2
 ## fields; those load as empty and each system falls back to its old behaviour.
 const _MIN_READABLE_VERSION: int = 1
 
+## Where this instance reads and writes. Only tests point it elsewhere, so a
+## test run can never clobber the player's real save.
+var save_path: String = SAVE_PATH
+
 
 func _ready() -> void:
 	# A run ends either way — a finished save is not a resumable one.
@@ -19,12 +23,12 @@ func _ready() -> void:
 
 
 func has_save() -> bool:
-	return FileAccess.file_exists(SAVE_PATH)
+	return FileAccess.file_exists(save_path)
 
 
 func delete_save() -> void:
 	if has_save():
-		DirAccess.remove_absolute(SAVE_PATH)
+		DirAccess.remove_absolute(save_path)
 
 
 func write_save(game_save: GameSaveResource) -> void:
@@ -64,7 +68,7 @@ func write_save(game_save: GameSaveResource) -> void:
 		"scenario_progress": game_save.scenario_progress,
 	}
 
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	var file: FileAccess = FileAccess.open(save_path, FileAccess.WRITE)
 	if not file:
 		push_error("SaveManager: failed to open save file for writing")
 		return
@@ -77,7 +81,7 @@ func read_save() -> GameSaveResource:
 	if not has_save():
 		return null
 
-	var file: FileAccess = FileAccess.open(SAVE_PATH, FileAccess.READ)
+	var file: FileAccess = FileAccess.open(save_path, FileAccess.READ)
 	if not file:
 		push_error("SaveManager: failed to open save file for reading")
 		return null

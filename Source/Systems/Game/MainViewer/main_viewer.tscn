@@ -27,7 +27,7 @@
 [ext_resource type="Shader" uid="uid://bpk7pp4280qo8" path="res://Assets/Shaders/map_reveal_shader.gdshader" id="23_4s628"]
 [ext_resource type="Texture2D" uid="uid://bi62etcyjmuyd" path="res://Assets/Textures/MainViewer/systems_reveal_overlay.png" id="23_5ksti"]
 [ext_resource type="Texture2D" uid="uid://bia5pmbiuud7k" path="res://Assets/Textures/MainViewer/map_reveal_overlay.png" id="25_4s628"]
-[ext_resource type="Script" uid="uid://mcto5c3ityid" path="res://Source/Systems/UI/SectorIndicator/sector_indicator.gd" id="90_sector"]
+[ext_resource type="Script" uid="uid://bdbgbxb6kk4ne" path="res://Source/Systems/Game/Map/MapHint/map_hint.gd" id="26_maphint"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4s628"]
 atlas = ExtResource("2_q6tn0")
@@ -63,7 +63,7 @@ shader_parameter/overlay = true
 shader_parameter/scanlines_opacity = 0.0
 shader_parameter/scanlines_width = 0.25
 shader_parameter/grille_opacity = 0.1
-shader_parameter/resolution = Vector2(120, 50)
+shader_parameter/resolution = Vector2(120, 75)
 shader_parameter/pixelate = false
 shader_parameter/roll = true
 shader_parameter/roll_speed = 8.0
@@ -168,17 +168,6 @@ metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 position = Vector2(0, -0.5)
 shape = SubResource("RectangleShape2D_p0pmq")
 
-[node name="SectorIndicator" type="RichTextLabel" parent="TabButtons" unique_id=904210001]
-offset_left = -26.0
-offset_top = -45.0
-offset_right = 26.0
-offset_bottom = -33.0
-mouse_filter = 2
-bbcode_enabled = true
-text = "SECTOR 1/3"
-horizontal_alignment = 1
-script = ExtResource("90_sector")
-
 [node name="MapButton" type="RichTextLabel" parent="TabButtons" unique_id=1135479775]
 offset_left = 30.0
 offset_top = -44.5
@@ -204,20 +193,21 @@ shape = SubResource("RectangleShape2D_p0pmq")
 visible = false
 position = Vector2(-73, -31)
 
-[node name="Map" parent="." unique_id=604926307 node_paths=PackedStringArray("map_viewport", "map_camera", "left_arrow_tile", "right_arrow_tile") instance=ExtResource("13_l0r2u")]
+[node name="Map" parent="." unique_id=604926307 node_paths=PackedStringArray("map_viewport", "map_camera", "left_arrow_tile", "right_arrow_tile", "hint") instance=ExtResource("13_l0r2u")]
 danger_area = ExtResource("6_5ksti")
 corrupted_area = ExtResource("7_84a1l")
 map_viewport = NodePath("ViewportTexture/MapViewport")
 map_camera = NodePath("ViewportTexture/MapViewport/Camera2D")
 left_arrow_tile = NodePath("LeftArrowTile")
 right_arrow_tile = NodePath("RightArrowTile")
+hint = NodePath("ViewportTexture/MapViewport/HintLayer/MapHint")
 empty_scenario = ExtResource("14_mm1jt")
 fate_scenario = ExtResource("8_5ksti")
 
 [node name="ViewportTexture" type="TextureRect" parent="Map" unique_id=159515092]
 z_index = -1
 offset_left = -73.0
-offset_top = -8.0
+offset_top = -33.0
 offset_right = 47.0
 offset_bottom = 42.0
 mouse_filter = 2
@@ -227,12 +217,33 @@ expand_mode = 1
 [node name="MapViewport" type="SubViewport" parent="Map/ViewportTexture" unique_id=1342663530]
 handle_input_locally = false
 canvas_item_default_texture_filter = 0
-size = Vector2i(720, 300)
-size_2d_override = Vector2i(120, 50)
+size = Vector2i(720, 450)
+size_2d_override = Vector2i(120, 75)
 size_2d_override_stretch = true
 render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="Map/ViewportTexture/MapViewport" unique_id=725843903]
+offset = Vector2(0, -12.5)
+
+[node name="HintLayer" type="CanvasLayer" parent="Map/ViewportTexture/MapViewport" unique_id=1873401256]
+
+[node name="MapHint" type="Control" parent="Map/ViewportTexture/MapViewport/HintLayer" unique_id=904210002 node_paths=PackedStringArray("icon", "label")]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 27.0
+offset_top = 3.0
+offset_right = 93.0
+offset_bottom = 26.0
+mouse_filter = 2
+script = ExtResource("26_maphint")
+icon = NodePath("Icon")
+label = NodePath("Label")
+
+[node name="Icon" type="Sprite2D" parent="Map/ViewportTexture/MapViewport/HintLayer/MapHint" unique_id=1873401257]
+
+[node name="Label" type="Label" parent="Map/ViewportTexture/MapViewport/HintLayer/MapHint" unique_id=1873401258]
+layout_mode = 0
+vertical_alignment = 1
 
 [node name="LeftArrowTile" parent="Map" unique_id=193794753 instance=ExtResource("11_mm1jt")]
 position = Vector2(-60, -18)
@@ -245,16 +256,17 @@ tile_resource = ExtResource("11_niw3m")
 [node name="CRTShader" type="ColorRect" parent="Map" unique_id=1239919409]
 z_index = -1
 material = SubResource("ShaderMaterial_foiuu")
-custom_minimum_size = Vector2(120, 50)
+custom_minimum_size = Vector2(120, 75)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -73.0
-offset_top = -8.0
+offset_top = -33.0
 offset_right = 47.0
 offset_bottom = 42.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 2
 
 [node name="MapViewSlider" type="HSlider" parent="Map" unique_id=455744980]
 unique_name_in_owner = true

@@ -35,9 +35,13 @@ extends Resource
 
 # ── Numeric Parameters ─────────────────────────────────────────────────────────
 ## The base numeric amount for this effect.
+## For HITSTOP, SLOW_MO and GLITCH_BURST it is a duration in milliseconds;
+## for SCREEN_SHAKE it is the strength (1 small, 2 large, 3 large + glitch).
 @export var amount: int = 0
 
 ## Floating-point multiplier. Used by AMOUNT_MODIFIER/MULTIPLY.
+## SLOW_MO reads it as the time scale (0.3 = 30% speed); ZOOM_PUNCH as the
+## peak zoom relative to rest (1.05 = 5% closer). 1.0 does nothing for either.
 @export var multiplier: float = 1.0
 
 # ── String / Key Parameters ────────────────────────────────────────────────────
@@ -57,7 +61,8 @@ extends Resource
 ## The SFX resource to play. Used by AudioVisualSubtype.PLAY_SOUND.
 @export var sound_resource: SoundEffectResource = null
 
-## Particle tint color. Used by SPAWN_HIT_PARTICLES and SPAWN_EXPLOSION_PARTICLES.
+## Tint color. Used by SPAWN_HIT_PARTICLES, SPAWN_EXPLOSION_PARTICLES,
+## FLASH_TARGET and VIGNETTE_PULSE.
 @export var color: Color = Color.WHITE
 
 

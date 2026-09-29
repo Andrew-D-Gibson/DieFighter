@@ -19,6 +19,9 @@ extends Node2D
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
 
+## Whichever flash is currently fading. See _flash().
+var _flash_tween: Tween
+
 ## Sets up the ship graphics and associated components
 func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 	if ship_graphics:
@@ -118,20 +121,36 @@ func start_bob_tween() -> void:
 
 ## Plays a red flash effect when health is damaged
 func _health_hit_flash() -> void:
-	ship_graphics.material.set_shader_parameter('flash_color', Globals.red)
-	
-	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_flash(Globals.red, hit_flash_time, true)
 
 
 ## Plays a blue flash effect when shields are damaged
 func _shields_hit_flash() -> void:
-	ship_graphics.material.set_shader_parameter('flash_color', Globals.blue)
-	
-	var tween = get_tree().create_tween()
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, hit_flash_time * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, hit_flash_time * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_flash(Globals.blue, hit_flash_time, true)
+
+
+## A short, hard impact flash for authored effects (FLASH_TARGET). Snaps to full
+## instantly rather than easing in: it usually lands inside a hitstop, where an
+## ease-in would still be at zero when the freeze ends.
+func flash(color: Color, duration: float = 0.25) -> void:
+	_flash(color, duration, false)
+
+
+## Every flash drives the same shader parameter, so a new one cancels whatever
+## flash is still fading instead of the two tweens fighting over it.
+func _flash(color: Color, duration: float, ease_in: bool) -> void:
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
+
+	ship_graphics.material.set_shader_parameter('flash_color', color)
+
+	_flash_tween = create_tween()
+	if ease_in:
+		_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, duration * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
+		_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, duration * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	else:
+		ship_graphics.material.set_shader_parameter('flash_amount', 1.0)
+		_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 
 
 func _set_transparency(alpha: float) -> void:

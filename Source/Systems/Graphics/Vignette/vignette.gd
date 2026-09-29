@@ -24,7 +24,8 @@ func _ready() -> void:
 	Events.player_shields_hit.connect(_shield_hit_vignette)
 	Events.player_shields_broken.connect(_shield_break_vignette)
 	Events.red_alert.connect(_red_alert_vignette)
-	
+	Events.vignette_pulse.connect(_pulse_vignette)
+
 
 
 func _health_hit_vignette() -> void:
@@ -50,6 +51,15 @@ func _shield_break_vignette() -> void:
 	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(self, "material:shader_parameter/alpha", break_alpha, break_flash_time * 0.06).from(0).set_trans(Tween.TRANS_QUAD)
 	tween.tween_property(self, "material:shader_parameter/alpha", 0, break_flash_time * 0.94).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## Same shape as a hit flash, in whatever color the authored effect asked for.
+func _pulse_vignette(color: Color) -> void:
+	material.set_shader_parameter('color', color)
+
+	var tween: Tween = get_tree().create_tween()
+	tween.tween_property(self, "material:shader_parameter/alpha", vignette_alpha, vignette_flash_time * 0.1).from(0).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(self, "material:shader_parameter/alpha", 0, vignette_flash_time * 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Pulses red for `duration` seconds, then settles back to clear. Used by the

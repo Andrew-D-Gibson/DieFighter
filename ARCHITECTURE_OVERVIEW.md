@@ -55,7 +55,6 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
 | `PauseMenu` | `UI/PauseMenu` | Pause state toggle, save/quit, option screen |
 | `GameOver` | `UI/GameOver` | Game over **and** victory sequence, with the run summary line |
-| `SectorIndicator` | `Systems/Player/MainViewer/TabButtons` | `SECTOR n/3` readout; pulses on `sector_advanced` |
 | `HazardIndicator` | `UI/HazardIndicator` | Countdown banner for the active scenario hazard |
 | `MainMenu` | Root scene (title_screen) | Start game, options, wishlist link |
 | `TutorialManager` | `Systems/TutorialManager` | Tutorial step progression with popups |
@@ -620,7 +619,7 @@ the *table they were drawn from* changes.
 | `start_combat` | Enter combat state | Disable map switch, update UI colors |
 | `combat_finished` | Combat ends (all enemies gone) | Re-enable grid dragging, unlock engine charge |
 | `jump` | Hyperspace jump begins | Clear dice, reset player state |
-| `sector_advanced` | A new sector has been generated (zero-based index) | SectorIndicator, RunStats |
+| `sector_advanced` | A new sector has been generated (zero-based index) | RunStats |
 | `victory` | Final sector's jump gate cleared | GameOver screen, SaveManager (deletes save), GameStateManager |
 | `hazard_armed` / `hazard_countdown_changed` | Scenario hazard set up / ticked | HazardIndicator |
 | `hazard_triggered` | Hazard fired | HazardIndicator, camera shake |

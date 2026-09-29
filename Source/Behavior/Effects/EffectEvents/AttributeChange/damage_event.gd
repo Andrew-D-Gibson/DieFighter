@@ -20,7 +20,11 @@ func resolve(_engine: ScenarioEngine) -> void:
 		if actor is Player and target is Enemy:
 			Events.player_attacked_ship.emit(target, target.scenario_state.faction)
 
+		# Read before the hit lands: afterwards the shields it spent are gone.
+		var number_color: Color = Globals.blue if target.health.shields >= amount else Globals.red
 		target.health.take_damage(amount)
+		if target is Enemy and not target.health.invulnerable:
+			DamageNumber.spawn(target, amount, number_color)
 
 
 ## Spawn directional hit particles + an explosion at the target's position.

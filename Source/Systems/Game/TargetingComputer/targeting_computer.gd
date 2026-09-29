@@ -27,6 +27,9 @@ func _ready() -> void:
 		check_target_is_valid()
 	)
 	Events.enemy_used_die.connect(_on_enemy_used_die)
+	# A die landing in an enemy's hand slams the intent it just bought, the
+	# same pulse as when the enemy spends it.
+	Events.enemy_armed.connect(_on_enemy_used_die)
 	Events.enemy_flew_in.connect(_initial_target)
 	Events.enemy_received_die.connect(_update_ui)
 	Events.start_scenario.connect(_update_ui)
