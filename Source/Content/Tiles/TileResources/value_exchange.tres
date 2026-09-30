@@ -71,6 +71,6 @@ script = ExtResource("6_ctsso")
 tile_name = "[color=green]Value Exchange[/color]"
 description = "[color=yellow]Any die[/color] -> Flip all (die_1) and (die_6), then [color=orange]give[/color] die to [color=purple]random ship[/color]"
 textures = SubResource("SpriteFrames_pgax4")
-uses_per_combat = -1
+uses_per_turn = -1
 effect_chain = SubResource("Resource_ino2a")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

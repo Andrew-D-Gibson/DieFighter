@@ -4,6 +4,51 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-30 — Uses refill every turn, and relays that Feed
+
+**Uses are per turn now.** `uses_per_combat` → `uses_per_turn` across every tile
+resource, refilled on a new `Events.player_turn_refresh` beat that fires just
+before `player_turn_start`. It's its own signal because turn-start effects run
+synchronously inside `player_turn_start`: a Pilot Light-style tile spending a
+neighbour's use would otherwise get it refunded or not depending on signal
+connection order. The first turn of a scenario is still covered by the existing
+`start_scenario` reset. Every limited tile is now much stronger; bigger payoffs
+will carry costs (charge, credits, hull, dice, neighbours' uses) in the
+rebalance.
+
+**Relays Feed.** `PassDieToTileEvent` now asks the next tile whether it will
+take the die *before* passing it. If it won't, the die goes to your target —
+through `GiveDieToTargetEvent`, so it gets the tractor beam and dead-target
+fallback like any other tile's die. Previously a refusal fell through to
+`TileActivationEvent`, which hands the die back to the player: an unlimited
+Signal Relay pointed at a spent or picky tile was free damage forever
+(verified live before the fix: 2 damage, die back in hand, enemy got nothing).
+
+The design reason, not just the bug: a relay should be an ordinary attack tile
+when it's alone, and a better one when it's wired into a machine. Connecting it
+should earn more value, never recover a die.
+
+**Loop rule:** no loop counter. Every loop must pass through a tile with limited
+uses and dries up when that tile refuses. Unlimited relays only Feed right,
+which guarantees that — any tile that Feeds another direction needs limited uses.
+
+**Keywords.** New `Keywords` registry (`Source/Systems/keywords.gd`). Tokens like
+`(feed_right)` render as styled terms via `Utils.format_text`, and the tile info
+panel appends a definition for every keyword the description uses. Info panel
+layout tightened so the hint column no longer overlaps the description.
+
+**Verified live:** Bump 3 → 2 on use, back to 3 after a real enemy turn;
+relay → spent Bump dealt 2 and gave the die to the enemy; relay → relay →
+Dice Cannon with a 3 dealt 2 + 2 + 3; queue idle afterwards, no runtime errors.
+
+**Tooling gotcha:** `godot_modify_scene_node` re-saves the whole scene in a
+headless context without autoloads. On `info_shower.tscn` that failed to compile
+the script (`Events` unknown) and silently saved the scene *without its script*
+and without UIDs. Restored from git and hand-edited. Check `git diff` after any
+scene-tool edit to a node whose script references autoloads.
+
+---
+
 ## 2026-09-22 — Save the whole run
 
 **Goal:** a Continue recreates the run exactly. User chose the "replay fight"

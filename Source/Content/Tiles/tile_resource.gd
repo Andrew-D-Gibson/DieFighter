@@ -14,8 +14,8 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 @export var textures: SpriteFrames
 
 @export_category('Behavior')
-## Set to -1 for infinite uses per turn
-@export var uses_per_combat: int
+## Refilled at the start of every player turn. Set to -1 for infinite uses
+@export var uses_per_turn: int
 @export var activation_checks: Array[ActivationResource]
 
 @export var effect_chain: EffectChain

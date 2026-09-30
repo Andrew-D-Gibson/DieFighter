@@ -83,8 +83,8 @@ layout_mode = 2
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.0
 mouse_filter = 2
-theme_override_constants/margin_left = 128
-theme_override_constants/margin_right = 128
+theme_override_constants/margin_left = 224
+theme_override_constants/margin_right = 224
 
 [node name="BottomLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer2" unique_id=1941923680]
 unique_name_in_owner = true
@@ -101,14 +101,14 @@ vertical_alignment = 1
 
 [node name="SideLabel" type="RichTextLabel" parent="." unique_id=315009438]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(600, 0)
+custom_minimum_size = Vector2(460, 0)
 layout_mode = 1
 anchors_preset = 6
 anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -100.0
+offset_left = -460.0
 offset_top = -470.0
 offset_bottom = 470.0
 grow_horizontal = 0

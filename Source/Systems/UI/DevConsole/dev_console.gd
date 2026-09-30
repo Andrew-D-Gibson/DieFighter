@@ -401,7 +401,7 @@ func _reroll(command_args: Array[String] = []) -> void:
 		
 func _reset_uses() -> void:
 	for tile: Tile in Globals.tile_grid.tile_locations.values():
-		tile.uses_remaining = tile.tile_resource.uses_per_combat
+		tile.uses_remaining = tile.tile_resource.uses_per_turn
 
 
 func _set_dice(command_args: Array[String] = []) -> void:

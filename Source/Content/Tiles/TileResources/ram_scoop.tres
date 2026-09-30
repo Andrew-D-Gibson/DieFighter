@@ -96,7 +96,7 @@ tile_name = "[color=purple]Ram Scoop[/color]"
 description = "[color=yellow]Any die[/color] -> Gain [color=purple]2 engine charge[/color] for every [color=yellow]empty cell[/color] touching this tile, then [color=orange]give[/color] them the die"
 hint_text = "It needs room to breathe. Crowd it and it starves."
 textures = SubResource("SpriteFrames_ram_scoop")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("1_act")]([SubResource("Resource_act_die"), SubResource("Resource_act_combat"), SubResource("Resource_act_target")])
 effect_chain = SubResource("Resource_chain")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

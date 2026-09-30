@@ -122,7 +122,7 @@ description = "[color=yellow]Takes no dice.[/color] Whenever an enemy [color=pur
 hint_text = "Spending your own charge is not theft. It knows the difference."
 rarity = 1
 textures = SubResource("Resource_frames2")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
 effect_chain = SubResource("Resource_p_chain")
 event_responses = Dictionary[ExtResource("script_7"), ExtResource("script_5")]({

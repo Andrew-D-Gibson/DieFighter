@@ -72,7 +72,7 @@ script = ExtResource("3_ar2wr")
 tile_name = "Engine Charger"
 description = "[color=yellow]Any die[/color] -> Adds [color=purple]X engine charge[/color], then [color=orange]gives[/color] die to [color=purple]target[/color]"
 textures = SubResource("SpriteFrames_dd8hj")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("1_8mym4")]([SubResource("Resource_dd8hj")])
 effect_chain = SubResource("Resource_ubmp7")
 dragging_allowed = false

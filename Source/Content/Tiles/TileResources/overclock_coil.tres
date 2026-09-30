@@ -134,7 +134,7 @@ description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color]
 hint_text = "Runs hot. Cools off between turns."
 rarity = 2
 textures = SubResource("Resource_frames3")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2")])
 effect_chain = SubResource("Resource_chain15")
 event_responses = Dictionary[ExtResource("script_6"), ExtResource("script_5")]({

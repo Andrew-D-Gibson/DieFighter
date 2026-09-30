@@ -171,7 +171,7 @@ description = "[color=yellow]Takes no dice.[/color] At the start of your turn, i
 hint_text = "It does not care that the surplus was meant for leaving."
 rarity = 2
 textures = SubResource("Resource_frames2")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
 effect_chain = SubResource("Resource_p_chain")
 event_responses = Dictionary[ExtResource("script_7"), ExtResource("script_5")]({

@@ -119,7 +119,7 @@ description = "(die_6) -> Deal [color=red]12 damage[/color] to [color=purple]tar
 hint_text = "Shields count. Fire it behind one."
 rarity = 2
 textures = SubResource("Resource_frames4")
-uses_per_combat = 2
+uses_per_turn = 2
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain17")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

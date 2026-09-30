@@ -117,7 +117,7 @@ description = "(die_1) -> Deal [color=red]damage equal to your engine charge[/co
 hint_text = "You will not be jumping out of this one."
 rarity = 2
 textures = SubResource("Resource_frames4")
-uses_per_combat = 1
+uses_per_turn = 1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain16")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

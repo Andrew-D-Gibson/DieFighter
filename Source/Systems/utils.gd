@@ -63,6 +63,9 @@ static var left_controls_image_path: String = "res://Assets/Textures/Map/left_ar
 
 
 static func format_text(text: String, scale: int = 6) -> String:
+	# Keywords first: their styling uses palette color names resolved below
+	text = Keywords.render(text)
+
 	# Change colors to match the palette
 	text = text.replace('=red', '=#' + Globals.red.to_html(false))
 	text = text.replace('=blue', '=#' + Globals.blue.to_html(false))

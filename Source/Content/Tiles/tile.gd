@@ -13,7 +13,7 @@ const _TILE_DROPPED_SFX: SoundEffectResource = preload("res://Source/Resources/S
 var _saturation_tween: Tween
 @export var uses_remaining: int = -1:
 	set(new_value):
-		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_combat)
+		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_turn)
 
 		if uses_remaining == 0:
 			set_gray_out(true)
@@ -54,7 +54,10 @@ func _ready() -> void:
 			Events.play_sound.emit(_TILE_DROPPED_SFX)
 		)
 	
+	# Uses are a per-turn budget. The first turn of a scenario has no
+	# turn-start beat of its own, so arriving counts as a refill too.
 	Events.start_scenario.connect(reset_uses_remaining)
+	Events.player_turn_refresh.connect(reset_uses_remaining)
 	Events.start_combat.connect(update_dragging_allowed)
 	Events.combat_finished.connect(update_dragging_allowed)
 	_connect_tile_event_signals()
@@ -89,7 +92,7 @@ func _connect_tile_event_signals() -> void:
 
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
-	uses_remaining = tile_resource.uses_per_combat
+	uses_remaining = tile_resource.uses_per_turn
 	update_dragging_allowed()
 
 
@@ -113,6 +116,11 @@ func _get_tile_info() -> InfoResource:
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
 	info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
+	# Spell out any keyword rules the description leans on, so a new player
+	# never has to already know what "Feed" means.
+	var glossary: String = Keywords.glossary_for(tile_resource.description)
+	if not glossary.is_empty():
+		info.bottom_label_text += "\n\n" + glossary
 	info.side_label_text = tile_resource.hint_text
 	return info
 
@@ -155,7 +163,7 @@ func clears_activation_criteria(activator_die: Dice = null) -> bool:
 	
 
 func reset_uses_remaining() -> void:
-	uses_remaining = tile_resource.uses_per_combat
+	uses_remaining = tile_resource.uses_per_turn
 
 
 func _replace_event_data_in_string(text: String) -> String:

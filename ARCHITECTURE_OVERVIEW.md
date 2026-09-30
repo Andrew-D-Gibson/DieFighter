@@ -273,7 +273,7 @@ class_name TileResource extends Resource
 @export_multiline var hint_text: String
 
 @export var textures: SpriteFrames                    # 0 = infinite uses, 1-∞ = uses remaining
-@export var uses_per_combat: int = -1                # -1 = unlimited uses
+@export var uses_per_turn: int = -1                  # -1 = unlimited; refilled each player turn
 @export var activation_checks: Array[ActivationResource]
 @export var effect_chain: EffectChain
 @export var event_responses: Dictionary[TileEvent, EffectChain]

@@ -30,6 +30,11 @@ signal scenario_event(event: ScenarioManager.ScenarioEvent)
 
 
 # Combat/Turn Management
+## Per-turn budgets (tile uses) refill here, immediately before
+## player_turn_start. A separate beat so every tile is topped up before any
+## turn-start effect fires — otherwise a turn-start chain that spends another
+## tile's use would get it refunded or not depending on signal connection order.
+signal player_turn_refresh()
 signal player_turn_start()
 signal player_turn_over()
 signal enemy_turn_over()

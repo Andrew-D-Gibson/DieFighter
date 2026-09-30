@@ -257,7 +257,8 @@ func _start_player_turn() -> void:
 	# Wait for any dice to get back to the dice queue before rerolling them
 	await get_tree().create_timer(0.5).timeout
 	await reroll_dice()
-	
+
+	Events.player_turn_refresh.emit()
 	Events.player_turn_start.emit()
 	
 	for die: Dice in dice_manager.queue:

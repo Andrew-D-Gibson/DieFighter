@@ -174,7 +174,7 @@ tile_name = "[color=blue]Unstable Shield Array[/color]"
 description = "[color=yellow]When pushed[/color] -> Gain [color=blue]2 shields[/color], +1 for every push since it was last picked up. Moving it by hand resets the stack.\n(Currently [color=blue][data]activation_count[/data] stacked[/color])"
 rarity = 1
 textures = SubResource("Resource_frames2")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
 effect_chain = SubResource("Resource_chain11")
 event_responses = Dictionary[ExtResource("script_6"), ExtResource("script_5")]({

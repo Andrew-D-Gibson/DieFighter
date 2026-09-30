@@ -61,7 +61,7 @@ script = ExtResource("4_3qev1")
 tile_name = "Left Controls"
 description = "[color=yellow]Any die[/color] -> Jump [color=purple]X[/color] locations left"
 textures = SubResource("SpriteFrames_3qev1")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("1_axjj4")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46")])
 effect_chain = SubResource("Resource_f3imi")
 dragging_allowed = false

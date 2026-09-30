@@ -133,7 +133,7 @@ tile_name = "[color=red]Tactical Boomerang[/color]"
 description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=purple]target[/color], then recoil [color=green]left[/color] on (die_3) or [color=green]right[/color] on (die_4)"
 rarity = 1
 textures = SubResource("Resource_frames4")
-uses_per_combat = 2
+uses_per_turn = 2
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain16")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -112,7 +112,7 @@ tile_name = "[color=red]Dice Cannon[/color]"
 description = "[color=yellow]Any die[/color] -> Deal [color=red]X damage[/color] to [color=purple]target[/color], then [color=orange]give[/color] them the die"
 rarity = 1
 textures = SubResource("SpriteFrames_mkcsn")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("1_q4v50")]([SubResource("Resource_mkcsn"), SubResource("Resource_e261g")])
 effect_chain = SubResource("Resource_p5sws")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

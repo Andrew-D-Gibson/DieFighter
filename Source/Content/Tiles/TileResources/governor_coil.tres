@@ -89,7 +89,7 @@ description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge
 hint_text = "The drive keeps the six. They get the scrap."
 rarity = 2
 textures = SubResource("SpriteFrames_governor")
-uses_per_combat = 2
+uses_per_turn = 2
 activation_checks = Array[ExtResource("1_act")]([SubResource("Resource_act_die"), SubResource("Resource_act_combat"), SubResource("Resource_act_target")])
 effect_chain = SubResource("Resource_chain")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

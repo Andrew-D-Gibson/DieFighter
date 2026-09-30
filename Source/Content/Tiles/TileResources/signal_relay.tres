@@ -94,11 +94,11 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=green]Signal Relay[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], then [color=orange]pass the die right[/color] — that tile activates with it"
-hint_text = "Point them at each other's feet."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], then (feed_right)"
+hint_text = "Alone, it's a peashooter. In a row, it's a machine."
 rarity = 2
 textures = SubResource("Resource_frames3")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2")])
 effect_chain = SubResource("Resource_chain13")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

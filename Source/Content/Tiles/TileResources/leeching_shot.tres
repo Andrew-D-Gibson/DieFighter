@@ -110,7 +110,7 @@ tile_name = "[color=red]Leeching Shot[/color]"
 description = "(die_1) or (die_2) -> Steal [color=red]2 hull[/color] from the [color=purple]target[/color] then [color=orange]give[/color] them the die"
 rarity = 1
 textures = SubResource("SpriteFrames_cy0vr")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("1_u0h2o")]([SubResource("Resource_r2sor"), SubResource("Resource_0lgwc"), SubResource("Resource_swlve")])
 effect_chain = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

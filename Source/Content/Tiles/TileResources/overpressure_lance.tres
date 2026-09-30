@@ -121,7 +121,7 @@ description = "(die_6), only while [color=red]overcharged[/color] -> Deal [color
 hint_text = "It only ever burns what you didn't need to escape."
 rarity = 2
 textures = SubResource("Resource_frames2")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3"), SubResource("Resource_act4")])
 effect_chain = SubResource("Resource_chain14")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

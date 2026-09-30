@@ -104,7 +104,7 @@ description = "(die_1) or (die_2) -> Deal [color=red]damage[/color] equal to [co
 hint_text = "It fires hardest on a cold drive. Charging up disarms it."
 rarity = 1
 textures = SubResource("Resource_frames2")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain12")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

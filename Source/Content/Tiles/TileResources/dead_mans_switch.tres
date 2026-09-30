@@ -61,7 +61,7 @@ description = "[color=yellow]Takes no dice.[/color] While [color=purple]fully ch
 hint_text = "A full drive is a saved life. You just can't also leave with it."
 rarity = 2
 textures = SubResource("Resource_frames2")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])
 effect_chain = SubResource("Resource_chain_p")
 event_responses = Dictionary[ExtResource("script_7"), ExtResource("script_5")]({

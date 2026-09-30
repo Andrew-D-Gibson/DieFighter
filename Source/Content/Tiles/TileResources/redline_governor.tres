@@ -83,7 +83,7 @@ description = "[color=yellow]Any die[/color], only while [color=purple]fully cha
 hint_text = "Every turn spent past the gate costs hull. Spend it on something."
 rarity = 1
 textures = SubResource("Resource_frames2")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain9")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

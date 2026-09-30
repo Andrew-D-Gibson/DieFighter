@@ -113,7 +113,7 @@ description = "(die_5) -> Deal [color=red]4 damage[/color] to [color=purple]targ
 hint_text = "Feed it a 5, then feed it another."
 rarity = 2
 textures = SubResource("Resource_frames4")
-uses_per_combat = -1
+uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain15")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
