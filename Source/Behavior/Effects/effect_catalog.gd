@@ -67,6 +67,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_EFFECT_SOURCE, label = "Target Effect Source", handler = TargetEffectSourceHandler},
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_SELF, label = "Target Self", handler = TargetSelfHandler},
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_RANDOM_OTHER_ENEMY, label = "Target Random Other Enemy", handler = TargetRandomOtherEnemyHandler},
+	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_RANDOM_ADJACENT_TILE, label = "Target Random Adjacent Tile", handler = TargetRandomAdjacentTileHandler},
 
 	# ── ATTRIBUTE_CHANGE ──────────────────────────────────────────
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.DAMAGE, label = "Damage", handler = DealDamageHandler},

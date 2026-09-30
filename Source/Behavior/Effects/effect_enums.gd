@@ -55,6 +55,7 @@ enum TargetingSubtype {
 	TARGET_EFFECT_SOURCE,          	## The tile or entity that owns this chain
 	TARGET_SELF,                   	## The actor itself (e.g. enemy targets itself)
 	TARGET_RANDOM_OTHER_ENEMY,     	## One random living enemy that isn't the actor
+	TARGET_RANDOM_ADJACENT_TILE,   	## One random tile directly above, below, left or right of the source tile
 }
 
 

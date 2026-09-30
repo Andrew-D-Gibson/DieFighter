@@ -25,6 +25,7 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(feed_left)":  {"label": "Feed left",  "term": "Feed"},
 	"(feed_up)":    {"label": "Feed up",    "term": "Feed"},
 	"(feed_down)":  {"label": "Feed down",  "term": "Feed"},
+	"(feed_random)": {"label": "Feed a random neighbour", "term": "Feed"},
 }
 
 const _KEYWORD_COLOR: String = "orange"
