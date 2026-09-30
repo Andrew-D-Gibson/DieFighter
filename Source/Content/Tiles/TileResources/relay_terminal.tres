@@ -129,7 +129,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Relay Terminal[/color]"
-description = "[color=yellow](die_6)[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], [color=red]+3[/color] for every time the die was (fed) on its way here. Then give them the die"
+description = "[color=yellow](die_6)[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], [color=red]+3[/color] each time it was (fed) on the way. Then give them the die"
 hint_text = "The longer the line, the harder it lands."
 rarity = 2
 textures = SubResource("SpriteFrames_tile")

@@ -123,6 +123,9 @@ enum DiceControlSubtype {
 	SPAWN_HOLOGRAPHIC_DIE,   ## Spawn a holographic (one-use) die
 	RECEIVE_DIE_FROM_TARGET, ## Enemy action: take a die from a target
 	KEEP_DIE_WITH_ACTOR,     ## The actor holds onto the activator die instead of returning it
+	## The activator die gains the value of the die the source tile is holding
+	## (capped at 6), and the held die goes back to the player's hand.
+	MERGE_HELD_DIE,
 }
 
 
@@ -191,6 +194,7 @@ enum ConditionalSubtype {
 	IF_TARGET_HOLDS_MATCHING_DIE, ## True if the first target already holds a die of the activator's value
 	IF_OVERCHARGED,      ## True if the drive is sitting above max_engine_charge
 	IF_FED,              ## True if another tile's Feed passed the die here
+	IF_SOURCE_HOLDS_DIE, ## True if the source tile is holding a die other than the activator
 }
 
 

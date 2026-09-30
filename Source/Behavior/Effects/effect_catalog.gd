@@ -107,6 +107,7 @@ static var _entries: Array[Dictionary] = [
 	## content already refers to.
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.RECEIVE_DIE_FROM_TARGET, label = "Receive Die from Target", handler = null, reserved = true},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR, label = "Keep Die with Actor", handler = KeepDieWithActorHandler},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.MERGE_HELD_DIE, label = "Merge Held Die", handler = MergeHeldDieHandler},
 
 	# ── AUDIO_VISUAL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES, label = "Spawn Hit Particles", handler = SpawnHitParticlesHandler, fields = ["color"]},
@@ -155,6 +156,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_TARGET_HOLDS_MATCHING_DIE, label = "If Target Holds Matching Die", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_OVERCHARGED, label = "If Overcharged", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_FED, label = "If Fed", handler = ConditionalHandler},
+	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE, label = "If Source Holds Die", handler = ConditionalHandler},
 
 	# ── REPETITION ────────────────────────────────────────────────
 	{category = EffectEnums.Category.REPETITION, subtype = EffectEnums.RepetitionSubtype.ADD_REPETITIONS, label = "Add Repetitions", handler = AddRepetitionsHandler},

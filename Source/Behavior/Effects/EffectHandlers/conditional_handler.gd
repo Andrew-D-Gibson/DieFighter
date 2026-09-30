@@ -53,6 +53,10 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext) ->
 		EffectEnums.ConditionalSubtype.IF_FED:
 			return context.feed_depth > 0
 
+		EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE:
+			return context.effect_source is Tile \
+				and (context.effect_source as Tile).get_held_die(context.activator_die) != null
+
 		_:
 			push_error("ConditionalHandler: unhandled subtype %d" % data.subtype)
 			return false

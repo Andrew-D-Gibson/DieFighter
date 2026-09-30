@@ -60,6 +60,10 @@ func _ready() -> void:
 	Events.player_turn_refresh.connect(reset_uses_remaining)
 	Events.start_combat.connect(update_dragging_allowed)
 	Events.combat_finished.connect(update_dragging_allowed)
+	# A die a tile is holding (KEEP_DIE_WITH_TILE) is the player's, on loan.
+	# Hand it back before the enemies act, and before a jump frees every die.
+	Events.player_turn_over.connect(release_held_dice)
+	Events.combat_finished.connect(release_held_dice)
 	_connect_tile_event_signals()
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
@@ -228,6 +232,23 @@ func try_to_activate() -> void:
 	var event: TileActivationEvent = TileActivationEvent.new()
 	event.tile = self
 	engine.queue_event(event)
+
+
+## Returns every die this tile is holding to the player's hand.
+func release_held_dice() -> void:
+	for die: Dice in dice_queue.queue.duplicate():
+		if is_instance_valid(die) and is_instance_valid(Globals.player):
+			Globals.player.dice_manager.add(die, true, false)
+		else:
+			dice_queue.remove(die)
+
+
+## The first die this tile is holding other than `except`, or null.
+func get_held_die(except: Dice = null) -> Dice:
+	for die: Dice in dice_queue.queue:
+		if is_instance_valid(die) and die != except:
+			return die
+	return null
 
 
 func _update_dice_queue_locations() -> void:

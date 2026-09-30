@@ -73,6 +73,14 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   1 damage to a random enemy. New `TileEvent.ON_ADJACENT_TILE_ACTIVATED`
   (appended before the pinned `= 100`), raised by `Tile` from
   `Events.tile_activated` when the activating tile is directly beside it.
+- [x] Welder — holds the first die; the next gains its value (capped at 6)
+  and Feeds right, and the held die returns to the hand. New
+  `DICE_CONTROL/MERGE_HELD_DIE` and `CONDITIONAL/IF_SOURCE_HOLDS_DIE`
+  (appended), and the first real use of `KEEP_DIE_WITH_TILE`.
+  New general rule in `Tile`: any die a tile is holding goes back to the hand
+  on `player_turn_over` and `combat_finished`. Without it, a held die would
+  sit in the tile's queue after a jump freed it, and the queue-layout code
+  would read freed dice.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -115,6 +123,11 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Spark Gap under the middle of three Toll Relays: a die through all three
   sparked once (only the middle one is adjacent). A 2 on the Dice Cannon to
   its left dealt 2 + 1.
+- Welder → Dice Cannon: held a 2; a 3 became a 5 and hit for 5, and the 2 was
+  back in hand. A held 5 plus a 4 became a 6. A die left on it came back when
+  the turn ended, and the next turn opened with a full hand.
+- Info-panel sweep: every tile's panel shown in turn and measured. Welder and
+  Relay Terminal overflowed the screen by 12px; their text was tightened.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
