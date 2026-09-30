@@ -53,6 +53,8 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   two appended effects that read it — `CONDITIONAL/IF_FED` and
   `AMOUNT_MODIFIER/SET_TO_FEED_DEPTH` (both unit-tested). A `(fed)` keyword
   explains the term in the info panel.
+- [x] Relay Terminal — a 6 deals 3, +3 per Feed that carried it here; then give
+  the die (rare; the 6 requirement is the limit, so uses are unlimited)
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -80,6 +82,8 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Booster Stage → Dice Cannon with a 1: the cannon hit for 3.
 - Grounding Rod with a 4: dealt 4; the enemy received a 1.
 - Receiver Dish: Fed by a Toll Relay it dealt 8; placed by hand, 3.
+- Toll → Toll → Relay Terminal: a 6 hit for 9 (3 + 3×2); a 5 was refused at
+  the Terminal and went to the enemy.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
