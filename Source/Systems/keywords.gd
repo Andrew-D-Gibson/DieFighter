@@ -16,7 +16,7 @@ extends RefCounted
 ## Term -> plain-language rule. Written for a first-time player: say what
 ## happens to the die, and what happens when it goes wrong.
 const _DEFINITIONS: Dictionary[String, String] = {
-	"Feed": "The next tile in that direction uses the die. If it can't, your [color=purple]target[/color] gets the die.",
+	"Feed": "The tile that way uses the die next. If it can't, your [color=purple]target[/color] gets it.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.

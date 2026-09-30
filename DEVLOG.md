@@ -4,6 +4,37 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-30 — Machine tiles
+
+**Goal:** 19 tiles built around Feed, so the grid can be wired into machines.
+Built one at a time, each committed once it's verified live.
+
+**Rules they follow:** unlimited-use tiles only Feed right; anything that
+Feeds up, down or left has limited uses, so every loop runs dry. Die values stay
+capped at 6. Holographic dice are left alone (an enemy receiving one destroys
+it, as intended).
+
+**Art pipeline:** a Lua generator (run through the Aseprite MCP) draws the tile
+chrome exactly as the existing tiles have it — frame, screen, plate, 7×7
+activation face, and the use-pip column for 1–3 uses with one sprite frame per
+remaining use. Each tile only supplies a 20×11 icon, colour family, use count
+and die face. The `.tres` files come from a matching generator, so every
+Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
+`PASS_DIE_TO_TILE`, and every hit is the Dice Cannon's full attack block.
+
+**Progress:**
+- [x] Filter Gate — a 4+ Feeds right; lower deals 4 and goes to the target
+
+**Verified live:**
+- Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
+  (7 → 3) and went to the enemy.
+
+**Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
+panel on every tile, not just these. `Utils.format_text` emits
+`[img={72}x{72}]` — the braces look like they stop Godot reading the size.
+
+---
+
 ## 2026-09-30 — Uses refill every turn, and relays that Feed
 
 **Uses are per turn now.** `uses_per_combat` → `uses_per_turn` across every tile
