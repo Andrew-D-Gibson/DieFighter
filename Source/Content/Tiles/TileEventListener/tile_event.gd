@@ -15,6 +15,9 @@ enum EventType {
 	## An enemy siphoned engine charge. The hook for punishing the one verb
 	## that attacks the player's ability to leave rather than their hull.
 	ON_ENGINE_CHARGE_DRAINED,
+	## A tile directly above, below, left or right of this one activated. The
+	## hook for tiles that profit from sitting beside a busy machine.
+	ON_ADJACENT_TILE_ACTIVATED,
 	ON_PLAYER_FATAL_DAMAGE = 100,
 }
 

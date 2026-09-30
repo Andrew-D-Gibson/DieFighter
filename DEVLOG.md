@@ -69,6 +69,10 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   passed, use spent); `TileGrid.activations_this_turn` counts it and resets on
   `player_turn_refresh` and `start_scenario`; appended
   `AMOUNT_MODIFIER/SET_TO_ACTIVATIONS_THIS_TURN` reads it (unit-tested).
+- [x] Spark Gap — takes no dice; whenever an orthogonal neighbour activates,
+  1 damage to a random enemy. New `TileEvent.ON_ADJACENT_TILE_ACTIVATED`
+  (appended before the pinned `= 100`), raised by `Tile` from
+  `Events.tile_activated` when the activating tile is directly beside it.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -108,6 +112,9 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Toll → Toll → Crescendo Cannon dealt 3 (three activations); a die placed
   straight on it next dealt 4. The count was back to 0 after a real enemy
   turn.
+- Spark Gap under the middle of three Toll Relays: a die through all three
+  sparked once (only the middle one is adjacent). A 2 on the Dice Cannon to
+  its left dealt 2 + 1.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits

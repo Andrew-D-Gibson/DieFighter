@@ -88,6 +88,23 @@ func _connect_tile_event_signals() -> void:
 	Events.player_fatal_damage.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE)
 	)
+	Events.tile_activated.connect(func(tile: Tile) -> void:
+		if _is_orthogonal_neighbour(tile):
+			handle_tile_event(self, TileEvent.EventType.ON_ADJACENT_TILE_ACTIVATED)
+	)
+
+
+## Whether another tile sits directly above, below, left or right of this one
+## on the grid — the four directions a die can be Fed.
+func _is_orthogonal_neighbour(other: Tile) -> bool:
+	if other == self or not Globals.tile_grid:
+		return false
+	var grid: TileGrid = Globals.tile_grid
+	var mine: Vector2i = grid.find_tile_pos(self)
+	var theirs: Vector2i = grid.find_tile_pos(other)
+	if not grid.is_grid_pos_valid(mine) or not grid.is_grid_pos_valid(theirs):
+		return false
+	return absi(mine.x - theirs.x) + absi(mine.y - theirs.y) == 1
 
 
 func _set_up_resource() -> void:
