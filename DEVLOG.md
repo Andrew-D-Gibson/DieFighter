@@ -45,6 +45,8 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - [x] Booster Stage — the tile to the right gets +2 this turn, then Feed right
   into it. 2 uses: it only Feeds right, but amplifiers stack, so unlimited
   uses would let one cannon climb without bound.
+- [x] Grounding Rod — deal the die's value, then the target gets it as a 1.
+  1 use per turn: otherwise it's strictly a better Dice Cannon.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -70,6 +72,7 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   (unlimited) was untouched.
 - Toll Relay → Bump: charge 5 → 7, and Bump returned the 2 as a 3.
 - Booster Stage → Dice Cannon with a 1: the cannon hit for 3.
+- Grounding Rod with a 4: dealt 4; the enemy received a 1.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
