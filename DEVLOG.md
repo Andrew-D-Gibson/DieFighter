@@ -55,6 +55,12 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   explains the term in the info panel.
 - [x] Relay Terminal — a 6 deals 3, +3 per Feed that carried it here; then give
   the die (rare; the 6 requirement is the limit, so uses are unlimited)
+- [x] Beam Splitter — Feed the die right and a holographic copy down (1 use).
+  New effect `TILE_CONTROL/FEED_HOLOGRAM` (appended): spawns a hologram at the
+  tile and Feeds it through the ordinary `PassDieToTileEvent`, so refusals and
+  enemy destruction behave exactly as for a real die. The hologram is queued
+  on its tile and taken back out, like a placed die — `Dice.reroll_with_tween()`
+  reads `host_queue`, and a hologram without one would crash a Surge Relay.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -84,6 +90,10 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Receiver Dish: Fed by a Toll Relay it dealt 8; placed by hand, 3.
 - Toll → Toll → Relay Terminal: a 6 hit for 9 (3 + 3×2); a 5 was refused at
   the Terminal and went to the enemy.
+- Beam Splitter with Dice Cannons right and below: a 3 hit for 3 + 3, the
+  enemy kept only the real 3, and no hologram survived. With a Surge Relay
+  below instead, the hologram rerolled without error and was destroyed on
+  hand-off.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits

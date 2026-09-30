@@ -160,6 +160,10 @@ enum TileControlSubtype {
 	## spent doing it. A modifier rather than an event response because the
 	## save has to be decided before the damage lands.
 	ADD_DEATH_SAVE_MODIFIER,
+	## Spawn a holographic die showing running_amount at the source tile and
+	## Feed it to the first target, exactly as PASS_DIE_TO_TILE would pass a
+	## real one.
+	FEED_HOLOGRAM,
 }
 
 
