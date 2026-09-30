@@ -40,6 +40,8 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   right. Found and fixed: a negative `ADD_USES_REMAINING` on a spent tile
   clamped to −1, which means *unlimited* — draining a tile could make it fire
   forever. The event now skips unlimited tiles and floors at 0.
+- [x] Toll Relay — gain 2 engine charge, then Feed right (combat only, so an
+  unlimited charge source can't be farmed between fights)
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -63,6 +65,7 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Leech Relay with Bump above, a spent Parity Junction below, Dice Cannon
   right: a 3 dealt 5 + 3; Bump 3 → 2; the Junction stayed at 0; the cannon
   (unlimited) was untouched.
+- Toll Relay → Bump: charge 5 → 7, and Bump returned the 2 as a 3.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
