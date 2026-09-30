@@ -36,6 +36,10 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - [x] Afterburner Relay — spend 3 engine charge to deal 6, then Feed right
   (refuses the die when you can't pay, so an upstream Feed sends it to the
   target instead)
+- [x] Leech Relay — 5 damage, the tiles above and below lose 1 use, then Feed
+  right. Found and fixed: a negative `ADD_USES_REMAINING` on a spent tile
+  clamped to −1, which means *unlimited* — draining a tile could make it fire
+  forever. The event now skips unlimited tiles and floors at 0.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -56,6 +60,9 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   enemy got the 4.
 - Afterburner Relay: at 10 charge it dealt 6 and left 7; at 2 charge it
   refused the die, which came back to the hand, and dealt nothing.
+- Leech Relay with Bump above, a spent Parity Junction below, Dice Cannon
+  right: a 3 dealt 5 + 3; Bump 3 → 2; the Junction stayed at 0; the cannon
+  (unlimited) was untouched.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits

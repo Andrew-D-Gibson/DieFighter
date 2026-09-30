@@ -1,7 +1,7 @@
 class_name AddUsesRemainingEvent
 extends EffectEvent
 
-## amount (from EffectEvent base) is the number of uses to add.
+## amount (from EffectEvent base) is the number of uses to add. Negative drains.
 
 ## Never amplified historically (its handler didn't pass effect_source, which
 ## Amplifier matches on). Return true to let an Amplifier grant extra uses.
@@ -15,4 +15,9 @@ func resolve(_engine: ScenarioEngine) -> void:
 			continue
 		if target is not Tile:
 			continue
-		target.uses_remaining += amount
+		# Unlimited tiles have no budget to top up or drain. Guarding it also
+		# matters for drains: -1 means unlimited, so a spent tile drained
+		# below 0 would otherwise come out able to fire forever.
+		if target.uses_remaining == -1:
+			continue
+		target.uses_remaining = maxi(target.uses_remaining + amount, 0)
