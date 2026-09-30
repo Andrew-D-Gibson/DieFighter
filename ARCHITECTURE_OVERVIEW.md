@@ -18,7 +18,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 |------|------|----------------|
 | `InputManager` | `Autoloads/input_manager.gd` | Global input actions (screenshot, pause menu, end turn) |
 | `Globals` | `Autoloads/globals.gd` | Central registry for all system singletons and global constants (colors, settings) |
-| `Events` | `Autoloads/events.gd` | Central event bus—35+ signals for all game events (combat start, player health hit, dice placed, etc.) |
+| `Events` | `Autoloads/events.gd` | Central event bus—75+ signals for all game events (combat start, player health hit, dice placed, etc.) |
 | `SFXPlayer` | `Autoloads/sound_effects_player.gd` | Audio playback through SoundEffectResource and AudioStreamPlayer |
 | `DebugLogger` | `Autoloads/debug_logger.gd` | Logs key Events-bus traffic to `user://debug_log.txt` |
 | `Screenshotter` | `Autoloads/screenshotter.gd` | Screenshot capture |
@@ -26,7 +26,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
 | `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs to `res://` paths so saves survive `.tres` renames/moves; stores IDs in save instead of raw paths |
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
-| `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 1`); deletes save on `game_over`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
+| `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `game_over`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS` |
 
@@ -36,7 +36,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 |--------|-----------|------|----------------|
 | `GameStateManager` | `Systems/GameStateManager` | `GameStateManager/game_state_manager.gd` | State machine: OUT_OF_COMBAT → IN_COMBAT → GAME_OVER / VICTORY; generates each sector, detects a cleared jump gate and advances to the next sector, owns the run's difficulty multipliers |
 | `Player` | `Systems/Player` | `Systems/Game/Player/player.gd` | Player ship with health/shields/dice queue; manages turn flow: spawn dice, reroll, end turn |
-| `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, status effects per cell |
+| `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, status effects per cell, per-turn tile activation count |
 | `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation`, which also turns each ship's speech box toward its clearer side |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
@@ -49,7 +49,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `InfoShower` | `UI/InfoShower` | Hover-to-show info graphics with tween animation |
+| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description + keyword glossary, hint) with tween animation |
 | `MoneyIndicator` | `Systems/Player/MoneyIndicator` | Displays current money with spawn particles |
 | `PlayerHealthBar` | `Systems/Player/PlayerHealthBar` | HP/shields UI with reveal animations |
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
@@ -75,10 +75,11 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 1. **Player Turn**
    - `Events.start_scenario` → `GameStateManager` checks combat state
-   - `Events.player_turn_start` → Player rerolls dice, enables dragging
+   - `Events.player_turn_refresh` → every tile refills to `uses_per_turn`; `TileGrid` zeroes its activation count
+   - `Events.player_turn_start` → Player rerolls dice, enables dragging; `ON_TURN_START` tile responses fire
    - Player places dice on tiles
    - Tiles trigger effects via ScenarioEngine (event queue)
-   - When dice queue empty: `Events.player_turn_over`
+   - When dice queue empty: `Events.player_turn_over` (any die a tile is still holding returns to the hand)
 
 2. **Enemy Turn**
    - EnemyManager sequentially processes each enemy's dice queue
@@ -175,6 +176,8 @@ modifiers match on. Event-specific data goes in typed fields on the subclass.
 | `ShieldEvent` | `AttributeChange/shield_event.gd` | Adds shield buffer; clamps at max_shields |
 | `HealEvent` | `AttributeChange/heal_event.gd` | Restores HP up to max_health |
 | `TileActivationEvent` | `TileControl/tile_activation_event.gd` | Triggers a tile's effect chain with an activator die |
+| `PassDieToTileEvent` | `TileControl/pass_die_to_tile_event.gd` | Feed: hands the die to the next tile if it will take it, otherwise to the target |
+| `FeedHologramEvent` | `TileControl/feed_hologram_event.gd` | Spawns a holographic die at a tile and Feeds it on |
 
 **Tile Grid Integration**
 
@@ -232,8 +235,14 @@ ScenarioEngine.current().queue_event(event)
 
 5. ScenarioEngine processes:
    - `on_before_event()` → Modifiers adjust tile behavior if needed
-   - Resolve → Tile's effect chain executes (see 4.6)
+   - Resolve → `clears_activation_criteria()`; a refused die goes back to the
+     player's hand. Otherwise a use is spent, `Events.tile_activated(tile)`
+     fires, and the tile's effect chain runs with `context.feed_depth` set
    - `on_after_event()` → Follow-up modifiers (status, etc.)
+
+A die that reaches a tile through a Feed takes a different route on refusal:
+`PassDieToTileEvent` checks the criteria first and sends a refused die to the
+target, never back to the hand (see 6.2).
 
 ### 4.5 Enemy Turn Flow
 
@@ -260,7 +269,7 @@ ScenarioEngine.current().queue_event(event)
 | `ScenarioHazardResource` | `Source/Content/ScenarioResources/Hazards/*.tres` | A recurring environmental event on a scenario (solar flare, ion storm, asteroid impact): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | `TileResource.effect_chain`, `event_responses`, enemy actions, hazards | Ordered list of `EffectData` entries dispatched through `EffectRegistry` |
-| `ActivationResource` | In TileResource.activation_checks | Dice criteria checks (value range, odd/even, same die value) |
+| `ActivationResource` | In TileResource.activation_checks | Criteria checks: requires a die / takes no die, specific values, in combat, a ship targeted, engine charged / not charged, can afford N charge, overcharged |
 
 ### 5.2 Tile Resource Fields
 
@@ -269,17 +278,34 @@ class_name TileResource extends Resource
 
 @export var tile_name: String
 @export_multiline var activation_description: String
-@export_multiline var description: String
+@export_multiline var description: String            # May use keyword tokens, e.g. (feed_right)
 @export_multiline var hint_text: String
+@export var rarity: Rarity                           # COMMON / UNCOMMON / RARE — weights rewards and shop stock
 
-@export var textures: SpriteFrames                    # 0 = infinite uses, 1-∞ = uses remaining
-@export var uses_per_turn: int = -1                  # -1 = unlimited; refilled each player turn
+@export var textures: SpriteFrames                   # Frame N is shown while N uses remain (frame 0 when unlimited)
+@export var uses_per_turn: int                       # -1 = unlimited; refilled every player turn
 @export var activation_checks: Array[ActivationResource]
 @export var effect_chain: EffectChain
 @export var event_responses: Dictionary[TileEvent, EffectChain]
+@export var dragging_allowed: bool = true
+@export var max_dice_in_queue: int = -1
 ```
 
-### 5.3 Effect Chains
+Uses are a **per-turn budget**. Bigger payoffs are meant to carry a cost other
+than uses (engine charge, hull, a die, neighbours' uses), not a once-per-fight
+limit.
+
+### 5.3 Keywords
+
+`Source/Systems/keywords.gd` (`Keywords`) holds game terms written into
+descriptions as tokens: `(feed_right)`, `(feed_left)`, `(feed_up)`,
+`(feed_down)`, `(feed_random)` and `(fed)`. `Utils.format_text()` renders each
+token as a styled label, and `Tile._get_tile_info()` appends a definition for
+every keyword the description uses, so the info panel explains the rule
+without each description repeating it. Add a keyword by adding its definition
+and its token spellings to the two tables in that file.
+
+### 5.4 Effect Chains
 
 `Source/Behavior/Effects/EffectChain/effect_chain.gd` holds an array of
 `EffectData` entries. `play(context, engine)` looks up each entry's handler in
@@ -410,10 +436,10 @@ Authored hazards live in `Source/Content/ScenarioResources/Hazards/`.
 | Component | Location | Description |
 |-----------|----------|-------------|
 | `EffectCatalog` | `Source/Behavior/Effects/effect_catalog.gd` | **The single source of truth for effect types.** One row per effect: label, handler class, and the EffectData fields that effect actually reads. The registry, the inspector dropdown and field visibility are all derived from it |
-| `EffectContext` | `Source/Behavior/Effects/effect_context.gd` | "Who and what" for effect execution: actor, effect_source, activator_die, targets, repetitions |
+| `EffectContext` | `Source/Behavior/Effects/effect_context.gd` | "Who and what" for effect execution: actor, effect_source, activator_die, targets, repetitions, running_amount, feed_depth |
 | `EffectEnums` | `Source/Behavior/Effects/effect_enums.gd` | Owns the category/subtype **ordinals only** — authored `.tres` files store `subtype` as a raw int, so values are append-only |
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Builds its Category/Subtype → handler table from `EffectCatalog`, and runs `EffectCatalog.validate()` at startup |
-| `EffectEvents/*` | `Source/Behavior/Effects/EffectEvents/` | Event subclasses per subtype (50+ concrete event types) |
+| `EffectEvents/*` | `Source/Behavior/Effects/EffectEvents/` | Event subclasses per subtype (55+ concrete event types) |
 
 **Adding an effect:** append the enum value, write the handler, add the catalog
 row. `EffectCatalog.validate()` fails loudly at startup if those three ever
@@ -448,13 +474,6 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 > Without it, two tiles activating each other hard-freezes the game silently.
 > Relevant to anything using `ACTIVATE_TARGETED_TILES` or `PASS_DIE_TO_TILE`.
 
-> **Feed (relays).** `PASS_DIE_TO_TILE` asks the next tile whether it will take
-> the die *before* passing it; a refusal (or an empty cell) sends the die to the
-> targeted ship through `GiveDieToTargetEvent`. `EffectContext.feed_depth`
-> counts how many Feeds carried the die to the current tile. Loop rule for
-> authoring: a tile with unlimited uses may only Feed right, so every loop runs
-> through a limited tile and dries up. Tile uses refill every player turn.
-
 **Flow when EffectChain executes:**
 
 1. Caller builds `EffectContext` (actor, source, die, targets)
@@ -462,6 +481,41 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 3. For each, lookup handler in `EffectRegistry`
 4. Handler instantiates appropriate `EffectEvent` subclass
 5. Event enqueued to ScenarioEngine → modifiers → resolution
+
+### 6.2 Feed and Machine Tiles
+
+A **relay** does its own small effect and then **Feeds** the die: it passes the
+die to a neighbouring tile, which activates with it. That lets the player wire
+the 3×5 grid into a machine that one die runs through.
+
+- **The Feed rule.** `PASS_DIE_TO_TILE` asks the next tile whether it will take
+  the die (`clears_activation_criteria`) *before* passing it. An empty cell, the
+  board edge, or a refusal sends the die to the targeted ship through
+  `GiveDieToTargetEvent`, the same as any other tile's hand-off. A relay alone
+  is therefore an ordinary attack tile; being wired in is how it earns more,
+  never a way to get the die back.
+- **Feed depth.** `EffectContext.feed_depth` counts how many Feeds carried the
+  die to the current tile (0 when the player placed it). `PassDieToTileEvent`
+  hands the next `TileActivationEvent` one more than it received. Read it with
+  `IF_FED` or `SET_TO_FEED_DEPTH`.
+- **Holograms.** `FEED_HOLOGRAM` spawns a holographic die at the tile and Feeds
+  it through the same event, so it follows the same rules; an enemy receiving
+  it destroys it. It is queued on its tile and taken back out, as a placed die
+  is, because `Dice.reroll_with_tween()` reads `host_queue`.
+- **Held dice.** A tile can hold a die (`KEEP_DIE_WITH_TILE`); `MERGE_HELD_DIE`
+  folds its value into the next die, capped at 6. Anything still held returns
+  to the hand on `player_turn_over` and `combat_finished`.
+- **Activity.** `Events.tile_activated` fires whenever a tile commits to an
+  activation. `TileGrid.activations_this_turn` counts them
+  (`SET_TO_ACTIVATIONS_THIS_TURN`), and a tile's orthogonal neighbours receive
+  `ON_ADJACENT_TILE_ACTIVATED`.
+- **Die values stay capped at 6.** Nothing overflows.
+
+> **Loop rule for authoring.** There is no loop counter. A tile with unlimited
+> uses may only Feed **right**; anything that Feeds up, down, left or randomly
+> must have limited uses. Every loop on the grid then passes through a limited
+> tile and runs dry when that tile refuses. The engine's event ceiling is the
+> backstop if a loop is ever authored without one.
 
 ---
 
@@ -547,23 +601,26 @@ func end_turn() -> void               # Emit player_turn_over when queue empty
 
 - `Events.load_scenario` → seed RNG
 - `Events.start_scenario` → clear dice, spawn new set
-- `Events.player_turn_start` → reroll dice, enable dragging
+- `Events.player_turn_refresh` / `player_turn_start` → refill tile uses, reroll dice, enable dragging
 - `Events.tile_activation_complete` (from tile grid) → check empty queue, enable end-turn button
 
 ### 8.2 Tile (`Source/Content/Tiles/tile.gd`)
 
 ```gdscript
-@export var uses_remaining: int                  # Decrements on activation
+@export var uses_remaining: int                  # Decrements on activation; refilled each player turn
 var effect_data: Dictionary[String, int]         # Tile-specific state (turns_since_last_active, etc.)
 
-func clears_activation_criteria(die: Dice) -> bool   # Checks uses, dice value criteria
+func clears_activation_criteria(die: Dice) -> bool   # Checks uses, then every ActivationResource
 func handle_tile_event(tile, event_type) -> void     # Queues the matching event_responses chain
+func reset_uses_remaining() -> void                  # On start_scenario and player_turn_refresh
+func get_held_die(except: Dice = null) -> Dice       # A die this tile is holding, if any
+func release_held_dice() -> void                     # Held dice back to the hand (turn over / combat finished)
 ```
 
 **Activation Check Resource**
 
-- `ActivationResource` checks die properties
-- Examples: value in range [min,max], die odd/even, same value as another tile
+- `ActivationResource` checks the die and the game state before a use is spent
+- Examples: specific values, requires a die / takes no die, in combat, enough engine charge
 
 ### 8.3 TileGrid (`Source/Systems/Game/TileGrid/tile_grid.gd`)
 
@@ -572,10 +629,12 @@ var grid_width: int = 5
 var grid_height: int = 3
 var grid_spacing: int = 24
 var tile_locations: Dictionary[Vector2i, Tile]  # Coordinate → Tile mapping
+var activations_this_turn: int                  # Tile activations this player turn
 
 func receive_tile(tile, drop_position) -> void     # Drop from outside grid into cell
 func move_tile(tile, new_pos) -> void              # Swap or move to new cell
 func push_tile(tile, direction) -> void            # Cardinal push (Asteroids style)
+func can_push_tile(tile, direction) -> bool        # Whether that push would move anything
 func find_available_grid_pos() -> Vector2i         # First empty coordinate
 ```
 
@@ -653,14 +712,16 @@ the *table they were drawn from* changes.
 | `tile_pushed` | Grid push mechanic | Tile activation event |
 | `die_placed_on_tile` | Die accepted on tile | Tutorial logging |
 | `tile_activation_complete` | Tile effect chain finished | Check end of turn (dice queue empty) |
+| `player_turn_over` | End turn pressed | Tiles release held dice |
 | `tile_activated` | A tile committed to an activation (use spent) | TileGrid activation count, neighbours' `ON_ADJACENT_TILE_ACTIVATED` |
 
 Tiles also respond to `TileEvent.EventType` hooks via `event_responses`:
 `ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`,
 `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_ENGINE_CHARGE_DRAINED`,
-`ON_ADJACENT_TILE_ACTIVATED`, `ON_PLAYER_FATAL_DAMAGE`. The
-last two enable tiles that take **no dice at all** and pay out reactively —
-they cost a grid cell instead of a die.
+`ON_ADJACENT_TILE_ACTIVATED`, `ON_PLAYER_FATAL_DAMAGE`. Most of these enable
+tiles that take **no dice at all** and pay out reactively — they cost a grid
+cell instead of a die. `TileEvent.EventType` is stored as a raw int, so append
+new values; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` to leave room.
 
 ### 9.4 Enemy Signals
 
@@ -774,6 +835,9 @@ Source/
 │   │   ├── Dice/dice.gd                        # Die behavior & RNG
 │   │   └── RewardManager/reward_manager.gd     # Tile unlocks
 │   │
+│   ├── keywords.gd                            # Keyword tokens + glossary for tile text
+│   ├── utils.gd                               # format_text (colours, die icons, keywords)
+│   │
 │   ├── UI/                                    # Interface nodes
 │   │   ├── InfoShower/info_shower.gd           # Hover info display
 │   │   ├── PauseMenu/pause_menu.gd             # Pause/Quit UI
@@ -790,9 +854,11 @@ Source/
 │       └── background_manager.gd               # Parallax layers
 │
 └── Behavior/Effects/                          # Data-driven effect system
-    ├── EffectEvents/                          # Event subclasses (50+)
+    ├── EffectEvents/                          # Event subclasses (55+)
     │   ├── AttributeChange/damage_event.gd
     │   ├── TileControl/tile_activation_event.gd
+    │   ├── TileControl/pass_die_to_tile_event.gd   # Feed
+    │   ├── TileControl/feed_hologram_event.gd
     │   └── ...
     ├── EffectChain/effect_chain.gd       # Chain runner
     └── effect_context.gd                      # Context for effect execution

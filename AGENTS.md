@@ -36,6 +36,10 @@
 4. Never present code as "done" on the basis of "this should work." It's done when
    validate_script is clean AND (where applicable) the verification loop below has
    run.
+5. A new `class_name` isn't known to the validator until Godot's global class
+   cache is rebuilt, so the first validate after adding one reports it (and
+   every script that uses it) as undeclared. Rebuild the cache with
+   `Godot --headless --path . --import` (the 4.7.1 binary), then validate again.
 
 ## Verification Loop (behavior beyond compiling)
 `godot_validate_script` catches syntax/type/compile errors, not logic errors. Close
@@ -65,6 +69,11 @@ that gap:
 - Use `godot_manage_scene_structure`, `godot_add_node`, `godot_modify_scene_node`,
   and `godot_remove_scene_node` for edits, after confirming current hierarchy.
 - `godot_save_scene` explicitly after structural changes — don't assume autosave.
+- Check `git diff` after any scene-tool edit. `godot_modify_scene_node` re-saves
+  the whole scene in a headless context without autoloads; if the scene's root
+  script references an autoload, it fails to compile there and the scene is
+  saved **without its script and without UIDs**, with no error returned. If that
+  happens, restore the file from git and make the property edit by hand.
 
 ## Scripting Conventions
 - GDScript, static typing on all declared variables and function signatures

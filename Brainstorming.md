@@ -4,7 +4,14 @@
 
 This is a pure ideation document, not an implementation plan — nothing here gets built until you pick favorites. It's grounded in what actually exists in the codebase today (verified via exploration, not guesswork), so every idea below notes which real system it would hook into. The goal: give you a big menu of "yes, and" ideas across mechanics, AI, story, content, and *feel*, organized so you can grab a handful and ignore the rest.
 
-**The engine is in great shape for this.** The EffectChain / EffectData / EffectHandler / EffectRegistry pipeline (`Source/Behavior/Effects/`) is a genuinely clean, data-driven verb library — 10 categories, ~50 subtypes already. Most ideas below are "new subtype + new handler," not "rewrite a system." I've flagged the few ideas that *are* bigger swings so you can weigh them differently.
+> **Status (2026-09-30).** This doc was written against an earlier build, and a
+> lot of it has since shipped. Current counts: 58 player tiles, 89 effect
+> subtypes across the 10 categories. Tile uses are now a **per-turn** budget
+> (refilled every player turn), not per-combat. Ideas that now exist are
+> tagged *(Built: …)* in §3, and §11 has its own status note. The rest of the
+> doc is unchanged ideation.
+
+**The engine is in great shape for this.** The EffectChain / EffectData / EffectHandler / EffectRegistry pipeline (`Source/Behavior/Effects/`) is a genuinely clean, data-driven verb library — 10 categories, ~50 subtypes when this was written (89 now). Most ideas below are "new subtype + new handler," not "rewrite a system." I've flagged the few ideas that *are* bigger swings so you can weigh them differently.
 
 ## The Core Tension (the thing every idea should serve)
 
@@ -50,29 +57,29 @@ There's more here than it looks like at first glance. You already have a **dead 
 
 ## 3. New Tile Archetypes
 
-You have 13 live tiles plus 4 broken-but-designed legacy tiles (`ComplicatedTileResources/`: Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array) still referencing the deleted pre-V2 effect system. **Porting those four to EffectChain is itself a great source of new archetypes** — they already have interesting ideas (self-pushing on hit, row-pulling, movement-scaled damage, stacking-shields-on-being-pushed) that just need new `TILE_CONTROL` handlers. Beyond reviving those, here are fresh archetypes grouped by the kind of decision they create:
+*(Status: the four legacy tiles below have been ported to EffectChain and live in `TileResources/`; `ComplicatedTileResources/` is gone. There are 58 tiles now.)* When this was written there were 13 live tiles plus 4 broken-but-designed legacy tiles (`ComplicatedTileResources/`: Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array) still referencing the deleted pre-V2 effect system. **Porting those four to EffectChain is itself a great source of new archetypes** — they already have interesting ideas (self-pushing on hit, row-pulling, movement-scaled damage, stacking-shields-on-being-pushed) that just need new `TILE_CONTROL` handlers. Beyond reviving those, here are fresh archetypes grouped by the kind of decision they create:
 
-- **Momentum/Movement.** Tiles that reward keeping the grid in motion — e.g. a tile that gains stacking damage per tile pushed this combat, resetting if the board goes static for a turn. Builds directly on the push/pull machinery already partially built for the legacy tiles.
-- **Denial-focused.** Tiles that punish the *enemy* for the specific die value they're currently holding rather than just scaling off player stats — e.g. bonus damage if the target already holds a die matching the activator's value. This is the most on-theme archetype possible: it makes you actively track what you've already handed away and stack punishment on it.
-- **Engine-economy expansion.** Right now only one tile (`Emergency Transfer`) really uses engine charge as a spendable resource. More tiles built around banking/spending charge — e.g. a coil that drains half your current charge for a big damage burst — would make the "gate for jumping/fleeing" resource into a real build-around axis instead of a side gauge.
+- **Momentum/Movement.** Tiles that reward keeping the grid in motion — e.g. a tile that gains stacking damage per tile pushed this combat, resetting if the board goes static for a turn. Builds directly on the push/pull machinery already partially built for the legacy tiles. *(Built: Inertial Feedback.)*
+- **Denial-focused.** Tiles that punish the *enemy* for the specific die value they're currently holding rather than just scaling off player stats — e.g. bonus damage if the target already holds a die matching the activator's value. This is the most on-theme archetype possible: it makes you actively track what you've already handed away and stack punishment on it. *(Built: Grudge Cannon.)*
+- **Engine-economy expansion.** Right now only one tile (`Emergency Transfer`) really uses engine charge as a spendable resource. More tiles built around banking/spending charge — e.g. a coil that drains half your current charge for a big damage burst — would make the "gate for jumping/fleeing" resource into a real build-around axis instead of a side gauge. *(Built: Overdraw Coil, Arc Tap, Bootstrap Injector, Afterburner Relay, Toll Relay and the overcharge tiles.)*
 - **Holographic fleet.** `Holo-Duplicator` already spawns one-use ghost dice; extend into a whole sub-archetype — tiles that scale off how many holographic dice are currently in play, a tile that "upgrades" a holo die into a real one, an ultimate that detonates every holographic die on the board at once for AOE.
-- **Sacrifice/glass-cannon.** Tiles that cost you hull or shields for outsized effect (e.g. a cannon that deals big damage but also dings your own hull) — high-risk-high-reward content for aggressive builds, fitting a game already built around spending power at a cost.
+- **Sacrifice/glass-cannon.** Tiles that cost you hull or shields for outsized effect (e.g. a cannon that deals big damage but also dings your own hull) — high-risk-high-reward content for aggressive builds, fitting a game already built around spending power at a cost. *(Built: Ablative Charge.)*
 - **Run-persistent "signature weapon."** Using the existing per-tile `effect_data: Dictionary` (already used for tracked counters like activation count), a tile could permanently gain +1 damage every time it's activated *across the whole run*, not just per-combat. Makes a specific early tile feel like it's growing into a signature weapon by the boss fight — no new system needed, just a different scope for a counter that already exists.
 - **Adjacency-adaptive.** A tile whose behavior (damage vs. shield vs. heal) is determined by whichever effect type is most common among its neighbors, at reduced potency — rewards deliberate grid layout, deepens the puzzle-layer that adjacency-counting tiles (Flak Cannon, Amplifier) already hint at.
-- **Deeper dice manipulation.** New `DICE_CONTROL` subtypes to sit alongside reroll/flip/duplicate: a "weighted reroll" that biases toward high values, a "split die" that turns one die into two half-value dice, a "fuse" that combines two dice into their summed value (capped at 6). Same category, more verbs.
-- **Turn-scoped overclock.** The mirror image of the run-persistent tile above: a tile that gets stronger with each activation *this turn only*, resetting at turn start — rewards dumping many dice into one tile in a single turn, as a counterweight to the spread-your-dice-around synergy tiles you already have.
-- **Reactive/retaliation tiles.** Currently `TileEvent` only covers `ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`, `ON_PLAYER_FATAL_DAMAGE`. Adding an `ON_ENEMY_ACTION_RESOLVED` hook would unlock a whole class of "if an enemy attacks you this turn, gain shields at end of enemy turn" tiles — small engine addition (one new TileEvent + a fire-point), broad content payoff.
+- **Deeper dice manipulation.** New `DICE_CONTROL` subtypes to sit alongside reroll/flip/duplicate: a "weighted reroll" that biases toward high values, a "split die" that turns one die into two half-value dice, a "fuse" that combines two dice into their summed value (capped at 6). Same category, more verbs. *(Built: the fuse, as the Welder.)*
+- **Turn-scoped overclock.** The mirror image of the run-persistent tile above: a tile that gets stronger with each activation *this turn only*, resetting at turn start — rewards dumping many dice into one tile in a single turn, as a counterweight to the spread-your-dice-around synergy tiles you already have. *(Built: Overclock Coil.)*
+- **Reactive/retaliation tiles.** Currently `TileEvent` only covers `ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`, `ON_PLAYER_FATAL_DAMAGE`. Adding an `ON_ENEMY_ACTION_RESOLVED` hook would unlock a whole class of "if an enemy attacks you this turn, gain shields at end of enemy turn" tiles — small engine addition (one new TileEvent + a fire-point), broad content payoff. *(Built: `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_ENGINE_CHARGE_DRAINED` and `ON_ADJACENT_TILE_ACTIVATED`, used by Counterweight Battery, Spite Coil, Feedback Cowl, Spark Gap and others.)*
 - **Anchor tiles.** A tile immune to push/pull that instead redirects incoming push effects to an adjacent tile — gives the emerging spatial-puzzle layer a defensive counter-play option.
 - **Tile fusion.** A shop or event service that welds two tiles you own into one hybrid: it inherits one tile's activation criteria and the other's effect chain (literally concatenate the two `EffectChain` arrays with a shared targeting prefix). Every fusion is a small design surprise the *player* authored, it frees grid space (spatially precious on a 3x5 board), and it turns end-of-run inventories into crafting material. The data-driven chain format makes this almost eerily cheap to build for how deep it plays.
 - **Row/column set bonuses.** A tile family that gets +N per same-family tile in its row ("Laser Bank: +2 damage per Laser Bank in this row"). The grid already knows coordinates (`tile_locations: Dictionary[Vector2i, Tile]`); this creates deliberate *formation-building* — players arranging a gun deck along the top row — and makes the push/lock enemy verbs sting in a new way (breaking your formation, not just disabling one tile).
-- **Conveyor / relay tiles.** A tile that performs a small effect, then *passes the die* to the next tile in a direction (which activates if criteria match). Chain three relays and the player builds a literal Rube Goldberg machine on the grid — self-expression through layout, and a spectacular thing to watch resolve (see Juice). `ACTIVATE_TARGETED_TILES` + a directional target selector is most of the machinery already.
-- **Empty-space tiles.** A tile that scales off *empty cells* adjacent to it (solar sails need clearance). The exact inverse of the amplifier-adjacency pattern you already have — suddenly a sparse board is a build, tile placement has real tension against "just fill everything," and grid real estate becomes a resource with two competing philosophies.
+- **Conveyor / relay tiles.** A tile that performs a small effect, then *passes the die* to the next tile in a direction (which activates if criteria match). Chain three relays and the player builds a literal Rube Goldberg machine on the grid — self-expression through layout, and a spectacular thing to watch resolve (see Juice). `ACTIVATE_TARGETED_TILES` + a directional target selector is most of the machinery already. *(Built: the Feed keyword and 20 machine tiles; see §11's status note.)*
+- **Empty-space tiles.** A tile that scales off *empty cells* adjacent to it (solar sails need clearance). The exact inverse of the amplifier-adjacency pattern you already have — suddenly a sparse board is a build, tile placement has real tension against "just fill everything," and grid real estate becomes a resource with two competing philosophies. *(Built: Solar Sail, Ram Scoop.)*
 - **Cursed Fate tiles.** The Fate Cult pact (§2) needs merchandise: tiles with a huge upside and an *honest, visible* drawback — "Deal 12. On activation, corrupt the die (it becomes value 6 in the enemy's hands regardless of face)," or "Massive shield, but this tile drifts one cell in a random direction each turn." Corrupted tiles get the glitch-shader visual treatment (see Juice §8) so your board *looks* increasingly haunted as you take more pacts. Build-around identity + visual storytelling in one.
 - **Dice bank vault.** A tile that *swallows* a die this turn and returns it (same value) at the start of your next turn. It respects the letter of "all dice get given away" loosely enough to be spicy: you denied the enemy a die entirely, at the cost of your own tempo. Probably wants a steep cost (uses per combat, or the vault can be attacked/locked). Flagging like the Wild Die: this one bends a core rule, so treat as a rare, legendary-tier effect if at all.
 
 ## 4. New Enemy Verbs & Types
 
-Only **5 action verbs exist in the entire game**: attack, shield, flee, lock a grid tile, do nothing. That's a strikingly small surface for how much texture the intent-telegraph system could support — this is probably the highest-leverage content category in the whole brainstorm.
+*(Status: Engine Siphon, Grid Quake, Impound, Repair Beam and Aegis Link have since been added, along with the Field Tender support enemy and the Bounty Runner's flee timer.)* When this was written, only **5 action verbs existed in the entire game**: attack, shield, flee, lock a grid tile, do nothing. That's a strikingly small surface for how much texture the intent-telegraph system could support — this is probably the highest-leverage content category in the whole brainstorm.
 
 - **Dice Thief.** A new verb that steals a die directly out of your queue before you can spend it — the first enemy action that attacks the dice economy itself rather than your HP/shields, which is exactly the resource the whole game revolves around.
 - **Support/buffer enemy.** Heals or shields *other* enemies instead of itself (needs a `TARGET_RANDOM_OTHER_ENEMY` targeting option for enemy actions, which slots into the existing Targeting category). Turns multi-enemy fights into "kill the medic first" prioritization.
@@ -282,6 +289,31 @@ One thing I'd not do: cut the atmospheric beats -- writer-in-the-dark opening is
 
 ## 11. Tile Machines — Building Contraptions Out of Grid Geometry
 
+> **Status (2026-09-30): machines are in.** What shipped, and where it differs
+> from the ideas below:
+> - **The Feed rule.** A relay does its own effect, then passes the die to a
+>   neighbour, which activates with it. If that tile can't take the die, it goes
+>   to your target instead, so a relay alone is just an attack tile and wiring
+>   it in is how it earns more. Built on `PASS_DIE_TO_TILE` +
+>   `TARGET_TILE_WITH_OFFSET` (the "directional routing" primitive in 11.1), not
+>   `ACTIVATE_TARGETED_TILES`, which fires tiles without a die.
+> - **Tiles:** Signal Relay, Filter Gate, Parity Junction, Value Sorter,
+>   Scatter Router, Inverter, Polarizer, Surge Relay, Welder, Beam Splitter,
+>   Afterburner Relay, Toll Relay, Leech Relay, Booster Stage, Grounding Rod,
+>   Receiver Dish, Relay Terminal, Crescendo Cannon, Spark Gap, Pilot Light.
+> - **Loops are bounded by uses, not a lap counter.** Unlimited-use tiles only
+>   Feed right, so any loop must pass through a limited tile and runs dry. That
+>   rules out the Feedback Ring below as written (a lap bonus on unlimited
+>   conduits); a version with limited-use conduits would fit.
+> - **Die values cap at 6.** A value-raising machine part (like the Welder)
+>   wastes anything past 6 rather than overflowing.
+> - **Grid orientation:** the real grid is **5 wide × 3 tall**
+>   (`grid_width = 5`, `grid_height = 3`; `x` 0–4, `y` 0–2). The worked examples
+>   in 11.4 assume 3 wide × 5 tall, so their coordinates need transposing.
+> - **Not built yet:** capacitors (banking value across turns), AND-gates
+>   (Junction Box), the Distributor fan-out, formation turrets, and the wiring
+>   overlay called for in 11.3.
+
 The seed for this is already in §3 (Conveyor/relay tiles, Row/column set bonuses, Anchor tiles, Adjacency-adaptive, Empty-space tiles) and the engine backs it well: `tile_locations: Dictionary[Vector2i, Tile]` gives you real coordinates, `ACTIVATE_TARGETED_TILES` already lets one activation trigger another, `push_tile()`/pull already move tiles around, and `TileEvent` gives hook points (`ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`) that fire *because of* geometry changes. Nothing below needs a new core system — it's about treating the 3x5 grid less like a hand of independent cards and more like a breadboard: signal in, signal routed, signal out, with the *player's layout choice* as the circuit diagram. A few organizing principles first, then concrete machines.
 
 **Why this direction is strong for this game specifically:** the core tension is "use dice now vs. deny dice to enemies," and machines add a third axis — *where* you commit a die matters as much as *which* tile gets it, because the die's energy propagates through your layout. It also solves a real problem good deckbuilders eventually hit: once you have ~15 tiles, most builds become "pick the five best standalone tiles." Machines make weaker individual tiles *worth including* because of what they're wired next to — pushing the metagame from "best tiles" toward "best floorplan."
@@ -314,7 +346,7 @@ Right now the 3x5 grid is mostly a container — tiles are largely independent, 
 
 ### 11.4 Soup-to-Nuts Examples — Every 11.2 Machine, Worked
 
-Grid coordinates below use `(col, row)` on the 3x5 board (3 wide, 5 tall), matching `tile_locations: Dictionary[Vector2i, Tile]`. Each example names concrete tiles, states their exact criteria/effect numbers, and walks one real turn.
+Grid coordinates below use `(col, row)` on the 3x5 board (3 wide, 5 tall), matching `tile_locations: Dictionary[Vector2i, Tile]`. *(Correction: the real grid is 5 wide × 3 tall; transpose these coordinates. See §11's status note.)* Each example names concrete tiles, states their exact criteria/effect numbers, and walks one real turn.
 
 **The Assembly Line — "Coolant Row"**
 Layout: three tiles in row 2, left to right — `Coolant Vent (1,2)` → `Pressure Relief (2,2)` → `Ignition Chamber (3,2)`. Each has activation criteria "die value 2-6" and, on top of its own small effect, a `PASS_DIE_EAST` payload step that hands the *same die* to the next tile in the row if one exists.

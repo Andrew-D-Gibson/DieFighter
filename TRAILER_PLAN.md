@@ -2,11 +2,11 @@
 
 ## Context
 
-You want a trailer that sells Die Fighter, and you're asking what to build so there's footage worth cutting. This builds on BRAINSTORMING.md §8 (juice) and §9 (trailer moments) and PLAN_FOR_FUN Phase 3. It's based on what's in the repo today, not on what those docs predicted.
+You want a trailer that sells Die Fighter, and you're asking what to build so there's footage worth cutting. This builds on Brainstorming.md §8 (juice) and §9 (trailer moments) and PLAN_FOR_FUN Phase 3. It's based on what's in the repo today, not on what those docs predicted.
 
-**Already in the game (trailer-usable today):** the cold-open ambush with klaxon and red alert, handover timing weighted by die value, shield-break cyan flash, glitch shader, vignette, camera `Shakeable`, the JumpTransition, the opening and entering-cockpit cutscenes, 4 hazards (Solar Flare, Ion Storm, Asteroid Field, Fate Rift), 9 backgrounds (black holes, pulsar field, derelict boneyard, cryo belt, Fate infection…), a boss that changes phase, relay tiles, and a finished track at `Assets/Music/Trailer/Trailer_1_updated.wav`.
+**Already in the game (trailer-usable today):** the cold-open ambush with klaxon and red alert, handover timing weighted by die value, shield-break cyan flash, glitch shader, vignette, camera `Shakeable`, the JumpTransition, the opening and entering-cockpit cutscenes, 4 hazards (Solar Flare, Ion Storm, Asteroid Field, Fate Rift), 9 backgrounds (black holes, pulsar field, derelict boneyard, cryo belt, Fate infection…), a boss that changes phase, the handover tractor beam, 20 Feed/machine tiles that pass one die through several tiles, and a finished track at `Assets/Music/Trailer/Trailer_1_updated.wav`.
 
-**Not built yet (the biggest gap):** `AudioVisualSubtype` still has only 7 entries (particles, tween, shake dice, sound, wait). There's no hitstop, slow-mo, zoom punch, target flash or damage numbers, and deaths are one explosion. Footage today will look *correct* but not *punchy*.
+**Status (2026-09-30):** the juice verbs have landed. `AudioVisualSubtype` now has `HITSTOP`, `SLOW_MO`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SCREEN_SHAKE`, `VIGNETTE_PULSE` and `GLITCH_BURST`, and every Dice Cannon-style hit uses flash + hitstop + zoom. Still missing: damage numbers (`SPAWN_DAMAGE_NUMBER`), chain arcs between tiles, and staged deaths.
 
 **The one thing to optimize for:** a stranger must understand "**you arm your enemy with the dice you spend**" within ~8 seconds and without text. Everything below is ranked by how much it helps that shot and the 3–4 shots after it.
 
@@ -28,10 +28,10 @@ You want a trailer that sells Die Fighter, and you're asking what to build so th
 
 ## 2. Tier 1: build these first (they carry the trailer)
 
-1. **Juice verbs as effect subtypes** (BRAINSTORMING §8.0): `HITSTOP`, `SLOW_MO`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SCREEN_SHAKE`, `VIGNETTE_PULSE`, `SPAWN_DAMAGE_NUMBER`, `GLITCH_BURST`. Every shot below uses them, and once added they can be set per tile or enemy in the inspector.
+1. ✅ **Juice verbs as effect subtypes** (Brainstorming §8.0) — built, except `SPAWN_DAMAGE_NUMBER`: `HITSTOP`, `SLOW_MO`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SCREEN_SHAKE`, `VIGNETTE_PULSE`, `SPAWN_DAMAGE_NUMBER`, `GLITCH_BURST`. Every shot below uses them, and once added they can be set per tile or enemy in the inspector.
    - Files: `Source/Behavior/Effects/effect_enums.gd`, `effect_catalog.gd`, and a new handler under `Source/Behavior/Effects/EffectHandlers/`
    - Reuse: the camera `Shakeable`, `Vignette`, `GlitchController` and the enemy shader's `flash_amount`, which the opening cutscene already tweens
-2. **Tractor-beam handover and intent-slot reaction.** This is the thesis shot. The beam locks on, the die resists for a moment, then leaves fast with a trail. The slot it lands on slams, and the enemy's weapon glows if the slot is an attack.
+2. ✅ **Tractor-beam handover and intent-slot reaction** (`TractorBeam`, with lock and dread-thunk sounds). This is the thesis shot. The beam locks on, the die resists for a moment, then leaves fast with a trail. The slot it lands on slams, and the enemy's weapon glows if the slot is an attack.
 3. **Staged deaths.** 3–5 small explosions, then a hull flash, 250ms of slow-mo and a big boom, then debris and money arcing to the counter. The kill that ends a fight also gets a zoom punch toward the dying ship.
 4. **Trailer capture mode** (§8). Without it you'll spend hours reshooting.
 
@@ -41,7 +41,7 @@ You want a trailer that sells Die Fighter, and you're asking what to build so th
 
 **A. Handover (thesis):** described in Tier 1. Also add a low "dread" thunk when a die lands on a dangerous slot and a flat click when it lands on a dead one. The trailer's sound mix will carry this.
 
-**B. Chain choreography:** energy arcs from tile to tile with an 80ms gap per hop, plus the combo pitch ladder (`SFXPlayer.get_pitch_escalation()` already exists). Pair this with the relay tiles: Signal Relay, Arc Tap, Amplifier.
+**B. Chain choreography:** energy arcs from tile to tile with an 80ms gap per hop, plus the combo pitch ladder (`SFXPlayer.get_pitch_escalation()` already exists). Pair this with the Feed tiles, which pass one die through several tiles in a turn. A strong single shot: Polarizer → Toll Relay → Toll Relay → Relay Terminal with a Spark Gap underneath, where one die makes four activations, a spark, and a 12-damage finish. `TileGrid.activations_this_turn` and `Events.tile_activated` are the hooks for the pitch ladder and the per-hop arcs.
 
 **C. Impact trio:** target flash + hitstop + shake, scaled by damage. Add floating damage numbers in 5–7px pixel digits. Overkill (2× remaining HP or more) automatically escalates to a bigger boom and slow-mo. That's your "number go up" close-up.
 
@@ -82,7 +82,7 @@ Give each existing enemy **one 1.5-second hero moment** for the variety montage.
 
 ## 5. Tiles that film well
 
-Tiles that already exist and film well include Chain Cannon, Runaway Reactor, Holographic Duplicator, Tactical Boomerang, Chaos Explosion, Signal Relay and Arc Tap. Each needs its own custom animation chain once the Tier 1 verbs exist:
+Tiles that already exist and film well include Chain Cannon, Runaway Reactor, Holographic Duplicator, Tactical Boomerang, Chaos Explosion, Signal Relay, Arc Tap, and the machine tiles (Beam Splitter splitting a die in two, Scatter Router, Relay Terminal's finish, Crescendo Cannon at the end of a busy turn). Each needs its own custom animation chain once the Tier 1 verbs exist:
 - **Tactical Boomerang:** the projectile arcs out and back and hits twice.
 - **Runaway Reactor:** glows hotter each use, then a meltdown flash.
 - **Holographic Duplicator:** a ghost copy of the die splits off with hologram particles (`holographic_dice_particles.tscn` exists).

@@ -139,6 +139,17 @@ raider died to a single die and the fight ended cleanly.
 for every appended effect. `ARCHITECTURE_OVERVIEW.md` updated with the new
 effects, signals, tile event, and the Feed/loop rules.
 
+**Docs pass:** every markdown doc brought in line with the code.
+`ARCHITECTURE_OVERVIEW.md` gains a Feed / machine-tiles section (6.2) and a
+Keywords section (5.3), updated turn flow, Tile/TileGrid APIs and file tree, and
+a fixed `SAVE_VERSION` (the autoload table still said 1). The plan docs and
+`Brainstorming.md` got dated status notes, with checkboxes ticked only where the
+code confirms them. Found along the way: `Brainstorming.md` §11 describes the
+grid as 3 wide × 5 tall (it's 5 × 3), and the `SectorIndicator` added on 09-17
+was removed in the "Map cleanup" commit, so DEMO_PLAN's run-progress item is
+open again. `AGENTS.md` records the class-cache and `modify_scene_node`
+pitfalls.
+
 **For the rebalance:** Grounding Rod (1 use) and Booster Stage (2 uses) are
 limited for balance rather than the loop rule. Toll Relay is combat-only.
 Pilot Light and every other turn-start tile skip a fight's first turn.

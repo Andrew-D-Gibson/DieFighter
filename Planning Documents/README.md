@@ -12,6 +12,15 @@ lives in `../ARCHITECTURE_OVERVIEW.md`; what changed and why lives in
 | `TUTORIAL_CLEANUP.md` | Done (2026-09-18) | History. |
 | `ARCHITECTURE_UPDATE.md` | Folded into `ARCHITECTURE_OVERVIEW.md` | History. Its autoload and save-system notes are in the overview now. |
 
+**Known drift in the reference docs** (as of 2026-09-30):
+- `Source/Content/Tiles/ComplicatedTileResources/` no longer exists. Its four
+  tiles were ported into `TileResources/`, so every "scan both tile
+  directories" finding now involves one directory.
+- `TileResource.uses_per_combat` is now `uses_per_turn` (uses refill every
+  player turn). The rename was applied across these docs mechanically, so older
+  sentences may read oddly.
+- `SAVE_VERSION` is 2, not the 1 that `ARCHITECTURE_UPDATE.md` records.
+
 The 2026-09-22 cleanup pass (see DEVLOG) didn't come from these docs. It was a
 fresh audit: engine lifecycle, the single engine accessor, handler stamping,
 options at boot, and dead signals.

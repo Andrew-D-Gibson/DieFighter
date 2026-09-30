@@ -28,10 +28,11 @@
 - **Prefer fresh instances over autoloads.** Load `rng_manager.gd` or `save_manager.gd` and `.new()` them. `SaveManager.save_path` exists so tests never touch `user://save_game.json`.
 - **Nodes that reach for game systems in `_ready()`** (Tile, Dice) are instantiated from their scene and kept *out* of the tree.
 - **Expected errors must be asserted.** GUT fails a test on any unexpected `push_error` or engine error, so a test that exercises an error path should say so with `assert_push_error("…")`, `assert_push_warning("…")` or `assert_engine_error_count(n)`.
-- `test_effect_catalog.gd` pins every effect enum's ordinals. Appending a value passes. If it fails because a value was inserted or reordered, fix the enum, not the test.
+- `test_effect_catalog.gd` pins every effect enum's ordinals. Appending a value passes. If it fails because a value was inserted or reordered, fix the enum, not the test. After appending, add the new name to the end of its pinned list too, so the next person's insert is caught.
 
 ## Not covered yet (good next targets)
 
 - Targeting handlers, and tile/dice-control handlers that need a populated `TileGrid` / `EnemyManager`.
+- The Feed flow: `PassDieToTileEvent` (refusal sends the die to the target, `feed_depth` increments), `FeedHologramEvent`, `MergeHeldDieEvent`, `TARGET_RANDOM_ADJACENT_TILE`, `Tile.release_held_dice()`, and `ON_ADJACENT_TILE_ACTIVATED`. All verified live in a running game (see `DEVLOG.md`, 2026-09-30); a unit test needs a `TileGrid` with real tiles, and tiles need the scene tree because the `uses_remaining` setter tweens the sprite.
 - `DamageEvent.resolve()`, which needs `Globals.state_manager` and spawns particles.
 - `Enemy` action selection (`TURN_CYCLE` / `HEALTH_THRESHOLD` / `SQUAD_LOSSES` pools), `Map` Fate state, `GameStateManager` sector generation and checkpoint capture. These want a small test double for GameStateManager, or some logic pulled out into RefCounted classes first.

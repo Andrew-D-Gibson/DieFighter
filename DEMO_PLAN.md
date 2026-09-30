@@ -1,5 +1,11 @@
 # Multi-Sector Jump Gate Progression — Path to a Playable Demo
 
+> **Status (2026-09-30): Phases 1–5 are implemented** (`sector_index`,
+> difficulty and damage multipliers, the jump gate as each sector's last tile,
+> `_advance_to_next_sector()`, `GameState.VICTORY` / `Events.victory`). The plan
+> below is kept as written for its reasoning; line numbers in it are out of
+> date. The appendix's baseline table is updated with current counts.
+
 ## Context
 
 The game currently has a solid combat/content layer (tiles, enemies, the Effect Chain v2 pipeline) but no real progression: `GameStateManager._randomize_sector_scenarios()` builds exactly one linear sector ending in a boss fight, and defeating the boss only flips a UI label to "VICTORY!" — the run doesn't actually end, and there's no way to continue into a harder second sector. You'd already identified this gap and were considering either stopping at one sector, or building a "jump gate" to chain sectors with scaling difficulty.
@@ -49,7 +55,7 @@ Given that, the plan below finishes what was already started rather than inventi
 
 ## Phase 6 — Playtest pass (not code)
 
-- With scaling and 3 sectors in place, play through end-to-end and check: does difficulty feel meaningfully harder by sector 3, does content (9 enemies / ~24 tiles) start repeating noticeably across 3 sectors × 18 tiles, does the jump-gate transition read clearly as "you cleared this sector"? Tune `difficulty_scale_per_sector` and `demo_sector_count` from there — these are both single-number knobs by design.
+- With scaling and 3 sectors in place, play through end-to-end and check: does difficulty feel meaningfully harder by sector 3, does content (14 enemy resources / 58 tiles as of 2026-09-30) start repeating noticeably across 3 sectors × 18 tiles, does the jump-gate transition read clearly as "you cleared this sector"? Tune `difficulty_scale_per_sector` and `demo_sector_count` from there — these are both single-number knobs by design.
 
 ## Critical files
 
@@ -73,17 +79,17 @@ Given that, the plan below finishes what was already started rather than inventi
 
 (For content-authoring execution — not code.)
 
-## Current baseline (grounded in actual resource counts)
+## Baseline when this was written (see "Now" for 2026-09-30 counts)
 
-| Pool | Count | Notes |
-|---|---|---|
-| Combat scenario templates | 3 | Attacker, CannonDrone, DefenderDisabler |
-| Question/event scenarios | 2 | PiratesAttackingCivilian, SleepingDrone (each has branching narrative states) |
-| Boss scenarios | 1 | SectorBoss |
-| Fate scenario | 1 | |
-| Enemy resources | 9 files → ~5 real combat enemies (attacker, cannon_drone, defender, disabler, fate_attacker) + 1 boss + civilian_transport (non-hostile) + shop (non-combat) + tutorial_attacker (tutorial-only) |
-| Tiles | 21 | |
-| sector_size | 18 | |
+| Pool | Count then | Now | Notes |
+|---|---|---|---|
+| Combat scenario templates | 3 | 11 | plus the opening ambush and the boss folder |
+| Question/event scenarios | 2 | 5 | + Mercy Call, Tollkeeper, Wreck Salvage |
+| Boss scenarios | 1 | 1 kit, 3 sector variants | SectorBoss |
+| Fate scenario | 1 | 2 | + Fate Rift |
+| Enemy resources | 9 | 14 | then: ~5 real combat enemies + boss + civilian + shop + tutorial |
+| Tiles | 21 | 58 | 20 of the new ones are the Feed/machine tiles |
+| sector_size | 18 | 18 | |
 
 With `sector_size = 18`, after 2-3 shops, the fate tile, the boss, and the jump gate, ~11-12 slots remain, split ~70/30 combat/question — meaning **~8 combat slots pulling from only 3 templates** per sector. Across 3 sectors that's the same 3 fights recurring 6-9 times each. This is the single biggest repetition risk for the demo, ahead of tile/enemy count.
 
@@ -93,16 +99,16 @@ With `sector_size = 18`, after 2-3 shops, the fate tile, the boss, and the jump 
 - [ ] **Enemy types (combat-capable): 8-10** (from ~5). Add a swarm (low HP, more actions), a support/healer, a shield-focused type to round out the existing aggressive/artillery/tank/disruptor/corrupted spread.
 - [ ] **Bosses: 1 kit, 2-3 escalation variants.** Reuse `sector_boss` with a different `action_options` set per sector rather than building new bosses from scratch.
 - [ ] **Question/event scenarios: 4-6** (from 2). Lower priority than combat (more expensive to author), but 2 is thin across 54 tile-pulls over 3 sectors.
-- [ ] **Tiles: keep at ~21.** In genre-typical range for a demo (20-35); spend time balancing what exists rather than growing the count.
+- [ ] **Tiles: keep at ~21.** In genre-typical range for a demo (20-35); spend time balancing what exists rather than growing the count. *(Now 58, above this range. Tile uses also became per-turn, which changes every limited tile's strength; a balance pass is due.)*
 - [ ] **Sectors: 3** (~54 total encounters, ~45-75 min). If the combat-template authoring load above is too much, cutting to 2 sectors is a legitimate way to reduce scope instead of adding more content.
 
 ## Blindspots — must-fix before shippable
 
-- [ ] **Enemy damage doesn't scale with sector.** The difficulty-scaling phase above only scales enemy `max_health`/`starting_shields`; enemy intent *damage amounts* are flat, hand-authored min/max per action. Meanwhile player builds get stronger every sector. Net risk: sector 3 enemies are tankier but hit no harder, while the player out-scales them — verify difficulty actually increases in playtesting, not just fight length.
+- [x] **Enemy damage doesn't scale with sector.** *(Fixed: `get_damage_multiplier()`, +0.20 per sector.)* The difficulty-scaling phase above only scales enemy `max_health`/`starting_shields`; enemy intent *damage amounts* are flat, hand-authored min/max per action. Meanwhile player builds get stronger every sector. Net risk: sector 3 enemies are tankier but hit no harder, while the player out-scales them — verify difficulty actually increases in playtesting, not just fight length.
 - [ ] **`Source/Content/ScenarioResources/Scenarios/TEST/test.tres`** exists — confirm it's excluded from every exported scenario pool before shipping.
-- [ ] **No run-progress UI** — nothing currently shows "Sector X of 3" or overall run progress; add one now that sectors mean something.
+- [ ] **No run-progress UI** — nothing currently shows "Sector X of 3" or overall run progress; add one now that sectors mean something. *(A `SectorIndicator` was added, then removed in the "Map cleanup" commit, so this is open again.)*
 - [ ] **Save/quit mid sector-transition** — the sector-advance flow is async (jump animation await); define a safe checkpoint boundary for a quit during that window.
-- [ ] **No post-run loop** — confirm GAME_OVER/VICTORY both lead to a clear "play again"/return-to-menu flow, ideally with a run summary (sectors reached, encounters cleared).
+- [x] **No post-run loop** *(Run summary line on both end screens, from `RunStats`.)* — confirm GAME_OVER/VICTORY both lead to a clear "play again"/return-to-menu flow, ideally with a run summary (sectors reached, encounters cleared).
 
 ## Blindspots — worth a deliberate pass
 
