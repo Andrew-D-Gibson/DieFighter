@@ -29,6 +29,8 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - [x] Scatter Router — 2 damage, then Feed a random occupied neighbour (2 uses).
   New effect `TARGETING/TARGET_RANDOM_ADJACENT_TILE` (appended), and a
   `(feed_random)` keyword token.
+- [x] Inverter — turn the die to its opposite face (7 − value), then Feed right.
+  Data only: SET_TO_DIE_VALUE → MULTIPLY −1 → ADD 7 → CHANGE_ACTIVATOR_VALUE.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -41,6 +43,8 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   went to the enemy.
 - Scatter Router whose only neighbour was a Dice Cannon on its left: a 1
   dealt 2 + 1 (12 → 9). With no neighbours: 2 damage, the die to the enemy.
+- Inverter → Dice Cannon: a 2 became a 5, the cannon dealt 5 (7 → 2), and the
+  enemy ended up holding the 5.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
