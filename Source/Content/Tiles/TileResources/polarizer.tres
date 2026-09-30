@@ -1,0 +1,92 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://1yotueloovoi"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/GreenTiles/polarizer.png" id="tex"]
+[ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="sfx_reroll"]
+
+[sub_resource type="Resource" id="Resource_act_1"]
+script = ExtResource("script_act")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_step_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_reroll")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_3"]
+script = ExtResource("script_effect")
+category = 2
+amount = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_4"]
+script = ExtResource("script_effect")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cond_5"]
+script = ExtResource("script_cond")
+category = 7
+subtype = 3
+range_min = 1
+range_max = 3
+if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_3")])
+if_false_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_4")])
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
+[sub_resource type="Resource" id="Resource_step_6"]
+script = ExtResource("script_effect")
+category = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_7"]
+script = ExtResource("script_effect")
+subtype = 9
+grid_offset = Vector2i(1, 0)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_8"]
+script = ExtResource("script_effect")
+category = 5
+subtype = 11
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain_9"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_cond_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tile"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+tile_name = "[color=green]Polarizer[/color]"
+description = "[color=yellow]Any die[/color] -> A [color=yellow]1-3[/color] becomes a (die_1), a [color=yellow]4-6[/color] becomes a (die_6). Then (feed_right)"
+hint_text = "Nothing in the middle survives it."
+rarity = 1
+textures = SubResource("SpriteFrames_tile")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1")])
+effect_chain = SubResource("Resource_chain_9")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
