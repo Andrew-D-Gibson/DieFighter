@@ -428,14 +428,14 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 
 | Category | Subtypes |
 |----------|----------|
-| TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, etc. |
+| TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, etc. |
 | ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE |
-| AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE |
-| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR |
+| AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN |
+| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND |
-| TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, ADD_AMPLIFIER_STATUS |
+| TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, FEED_HOLOGRAM, ADD_AMPLIFIER_STATUS |
 | SCENARIO_CONTROL | OPEN_SHOP, CLOSE_SHOP, JUMP, FLEE |
-| CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED, IF_TARGET_HOLDS_MATCHING_DIE |
+| CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED, IF_TARGET_HOLDS_MATCHING_DIE, IF_FED, IF_SOURCE_HOLDS_DIE |
 | REPETITION | ADD_REPETITIONS |
 | UTILITY | DESTROY_SOURCE, PRINT_DEBUG |
 
@@ -447,6 +447,13 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 > `_MAX_EVENTS_PER_RUN` (2000) events in one drain and logs the likely cause.
 > Without it, two tiles activating each other hard-freezes the game silently.
 > Relevant to anything using `ACTIVATE_TARGETED_TILES` or `PASS_DIE_TO_TILE`.
+
+> **Feed (relays).** `PASS_DIE_TO_TILE` asks the next tile whether it will take
+> the die *before* passing it; a refusal (or an empty cell) sends the die to the
+> targeted ship through `GiveDieToTargetEvent`. `EffectContext.feed_depth`
+> counts how many Feeds carried the die to the current tile. Loop rule for
+> authoring: a tile with unlimited uses may only Feed right, so every loop runs
+> through a limited tile and dries up. Tile uses refill every player turn.
 
 **Flow when EffectChain executes:**
 
@@ -614,6 +621,7 @@ the *table they were drawn from* changes.
 | Signal | When Emitted | Listeners |
 |--------|--------------|-----------|
 | `start_scenario` | Begin new scenario | Player (spawn dice), EnemyManager, TileGrid, Tutorial |
+| `player_turn_refresh` | Just before `player_turn_start` | Tiles refill uses, TileGrid resets its activation count |
 | `player_turn_start` | Player begins turn | Dice reroll, enable dragging, update UI |
 | `player_turn_over` | Dice queue empty | Start enemy turn |
 | `enemy_turn_over` | All enemies out of dice | Loop to player turn |
@@ -645,10 +653,12 @@ the *table they were drawn from* changes.
 | `tile_pushed` | Grid push mechanic | Tile activation event |
 | `die_placed_on_tile` | Die accepted on tile | Tutorial logging |
 | `tile_activation_complete` | Tile effect chain finished | Check end of turn (dice queue empty) |
+| `tile_activated` | A tile committed to an activation (use spent) | TileGrid activation count, neighbours' `ON_ADJACENT_TILE_ACTIVATED` |
 
 Tiles also respond to `TileEvent.EventType` hooks via `event_responses`:
 `ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`,
-`ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_PLAYER_FATAL_DAMAGE`. The
+`ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_ENGINE_CHARGE_DRAINED`,
+`ON_ADJACENT_TILE_ACTIVATED`, `ON_PLAYER_FATAL_DAMAGE`. The
 last two enable tiles that take **no dice at all** and pay out reactively —
 they cost a grid cell instead of a die.
 

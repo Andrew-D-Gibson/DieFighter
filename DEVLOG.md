@@ -129,6 +129,20 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Info-panel sweep: every tile's panel shown in turn and measured. Welder and
   Relay Terminal overflowed the screen by 12px; their text was tightened.
 
+**Whole machine, verified live:** Polarizer → Toll → Toll → Relay Terminal
+with a Spark Gap under the second Toll. One 5 became a 6, paid 4 charge on the
+way, sparked once, and hit the Terminal at feed depth 3 for 12 — the 12 HP
+raider died to a single die and the fight ended cleanly.
+
+**Done:** all 19 tiles, 39 → 58 player tiles. Suite 201 → 204 tests
+(IF_FED, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN), plus pinned ordinals
+for every appended effect. `ARCHITECTURE_OVERVIEW.md` updated with the new
+effects, signals, tile event, and the Feed/loop rules.
+
+**For the rebalance:** Grounding Rod (1 use) and Booster Stage (2 uses) are
+limited for balance rather than the loop rule. Toll Relay is combat-only.
+Pilot Light and every other turn-start tile skip a fight's first turn.
+
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
 `[img={72}x{72}]` — the braces look like they stop Godot reading the size.
