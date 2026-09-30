@@ -61,6 +61,9 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   enemy destruction behave exactly as for a real die. The hologram is queued
   on its tile and taken back out, like a placed die — `Dice.reroll_with_tween()`
   reads `host_queue`, and a hologram without one would crash a Surge Relay.
+- [x] Pilot Light — takes no dice; at turn start it Feeds a holographic 1 right.
+  Like every turn-start tile, it doesn't fire on a fight's first turn (the
+  opening turn has no `player_turn_start`).
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -94,6 +97,9 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   enemy kept only the real 3, and no hologram survived. With a Surge Relay
   below instead, the hologram rerolled without error and was destroyed on
   hand-off.
+- Pilot Light → Dice Cannon, through a real end-turn and enemy turn: the new
+  turn opened with a 1 damage hit (4 → 3), the hand refilled, and no
+  hologram was left over.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
