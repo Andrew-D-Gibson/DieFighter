@@ -8,6 +8,9 @@ var tile: Tile
 ## "tiles activated by a 4 activate twice").
 var activation_repetitions: int = 1
 
+## How many Feeds brought the die here; see EffectContext.feed_depth.
+var feed_depth: int = 0
+
 func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(tile):
 		return
@@ -60,6 +63,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.effect_source = tile
 	context.activator_die = activator_die
 	context.repetitions = activation_repetitions
+	context.feed_depth = feed_depth
 
 	# Play the effect chain — this enqueues more events; the engine's while-loop
 	# picks them up automatically because they're appended to the same event_queue.

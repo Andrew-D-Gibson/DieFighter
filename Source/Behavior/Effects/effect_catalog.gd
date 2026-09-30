@@ -89,6 +89,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_EMPTY_ADJACENT_CELLS, label = "Add Empty Adjacent Cells", handler = AddEmptyAdjacentCellsAmountHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_MISSING_CHARGE, label = "Set to Missing Charge", handler = SetAmountToMissingChargeHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_OVERCHARGE, label = "Set to Overcharge", handler = SetAmountToOverchargeHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_FEED_DEPTH, label = "Set to Feed Depth", handler = SetAmountToFeedDepthHandler},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
@@ -151,6 +152,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_DIE_VALUE_IN_RANGE, label = "If Die Value in Range", handler = ConditionalHandler, fields = ["range_min", "range_max"]},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_TARGET_HOLDS_MATCHING_DIE, label = "If Target Holds Matching Die", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_OVERCHARGED, label = "If Overcharged", handler = ConditionalHandler},
+	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_FED, label = "If Fed", handler = ConditionalHandler},
 
 	# ── REPETITION ────────────────────────────────────────────────
 	{category = EffectEnums.Category.REPETITION, subtype = EffectEnums.RepetitionSubtype.ADD_REPETITIONS, label = "Add Repetitions", handler = AddRepetitionsHandler},

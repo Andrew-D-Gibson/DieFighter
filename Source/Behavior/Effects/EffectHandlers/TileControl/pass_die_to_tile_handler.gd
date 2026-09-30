@@ -20,4 +20,5 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 	var event := PassDieToTileEvent.new()
 	_stamp(event, context)
 	event.targets       = context.targets.duplicate()
+	event.feed_depth    = context.feed_depth
 	engine.inject_event(event)

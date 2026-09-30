@@ -47,6 +47,12 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   uses would let one cannon climb without bound.
 - [x] Grounding Rod — deal the die's value, then the target gets it as a 1.
   1 use per turn: otherwise it's strictly a better Dice Cannon.
+- [x] Receiver Dish — 3 damage, or 8 if the die was Fed; then give the die.
+  New plumbing: `EffectContext.feed_depth`, carried through
+  `PassDieToTileEvent` into the next `TileActivationEvent` (+1 per Feed), and
+  two appended effects that read it — `CONDITIONAL/IF_FED` and
+  `AMOUNT_MODIFIER/SET_TO_FEED_DEPTH` (both unit-tested). A `(fed)` keyword
+  explains the term in the info panel.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -73,6 +79,7 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Toll Relay → Bump: charge 5 → 7, and Bump returned the 2 as a 3.
 - Booster Stage → Dice Cannon with a 1: the cannon hit for 3.
 - Grounding Rod with a 4: dealt 4; the enemy received a 1.
+- Receiver Dish: Fed by a Toll Relay it dealt 8; placed by hand, 3.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits

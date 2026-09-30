@@ -17,6 +17,7 @@ extends RefCounted
 ## happens to the die, and what happens when it goes wrong.
 const _DEFINITIONS: Dictionary[String, String] = {
 	"Feed": "The tile that way uses the die next. If it can't, your [color=purple]target[/color] gets it.",
+	"Fed": "Another tile's Feed passed the die here, rather than you placing it.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -26,6 +27,7 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(feed_up)":    {"label": "Feed up",    "term": "Feed"},
 	"(feed_down)":  {"label": "Feed down",  "term": "Feed"},
 	"(feed_random)": {"label": "Feed a random neighbour", "term": "Feed"},
+	"(fed)":        {"label": "Fed",        "term": "Fed"},
 }
 
 const _KEYWORD_COLOR: String = "orange"

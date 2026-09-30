@@ -15,6 +15,10 @@ extends EffectEvent
 ## limited uses, and runs dry when that tile refuses; ScenarioEngine's per-drain
 ## event ceiling is the backstop if a loop is ever authored without one.
 
+## Feeds that carried the die to the tile doing the passing. The next tile
+## sees one more.
+var feed_depth: int = 0
+
 
 func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(activator_die):
@@ -37,6 +41,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	event.tile = next_tile
 	event.activator_die = activator_die
 	event.die_value = activator_die.value
+	event.feed_depth = feed_depth + 1
 	engine.inject_event(event)
 
 

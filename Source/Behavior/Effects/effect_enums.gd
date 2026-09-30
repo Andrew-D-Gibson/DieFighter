@@ -101,6 +101,9 @@ enum AmountModifierSubtype {
 	## overcharged). Lets a tile cash out surplus without touching the charge
 	## the player needs to leave.
 	SET_TO_OVERCHARGE,
+	## Set running_amount to how many Feeds carried the die here (0 when it
+	## came from the player's hand). The payoff for the end of a long machine.
+	SET_TO_FEED_DEPTH,
 }
 
 
@@ -180,6 +183,7 @@ enum ConditionalSubtype {
 	IF_DIE_VALUE_IN_RANGE, ## True if die value is between min and max (inclusive)
 	IF_TARGET_HOLDS_MATCHING_DIE, ## True if the first target already holds a die of the activator's value
 	IF_OVERCHARGED,      ## True if the drive is sitting above max_engine_charge
+	IF_FED,              ## True if another tile's Feed passed the die here
 }
 
 

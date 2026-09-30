@@ -62,3 +62,11 @@ func test_add_repetitions_adds_the_running_amount() -> void:
 	var data := Effects.add_repetitions()
 	await EffectRegistry.get_handler(data.category, data.subtype).apply(data, context, engine)
 	assert_eq(context.repetitions, 3)
+
+
+func test_set_to_feed_depth() -> void:
+	context.running_amount = 9
+	context.feed_depth = 3
+	assert_eq(await _apply(Sub.SET_TO_FEED_DEPTH), 3)
+	context.feed_depth = 0
+	assert_eq(await _apply(Sub.SET_TO_FEED_DEPTH), 0)

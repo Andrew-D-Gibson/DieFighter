@@ -109,3 +109,10 @@ func test_plain_effect_data_is_rejected() -> void:
 	var not_conditional := Effects.data(EffectEnums.Category.CONDITIONAL, Cond.IF_ACTIVATOR_ODD)
 	await handler.apply(not_conditional, context, engine)
 	assert_push_error("non-ConditionalEffectData")
+
+
+func test_if_fed_reads_feed_depth() -> void:
+	context.feed_depth = 0
+	assert_eq(await _branch_taken(_cond(Cond.IF_FED)), FALSE_BRANCH, "placed by hand")
+	context.feed_depth = 2
+	assert_eq(await _branch_taken(_cond(Cond.IF_FED)), TRUE_BRANCH, "arrived through a Feed")

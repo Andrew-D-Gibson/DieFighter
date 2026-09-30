@@ -39,4 +39,9 @@ var repetitions: int = 1
 var running_amount: int = 0
 
 ## Enemy intention, set by the enemy with an intent amount
-var enemy_intent_amount: int = 0 
+var enemy_intent_amount: int = 0
+
+## How many Feeds carried the activator die to this tile in the current chain.
+## 0 means it arrived some other way (usually the player's hand). Lets a tile
+## pay out for sitting at the end of a machine.
+var feed_depth: int = 0

@@ -50,6 +50,9 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext) ->
 		EffectEnums.ConditionalSubtype.IF_TARGET_HOLDS_MATCHING_DIE:
 			return _target_holds_matching_die(context)
 
+		EffectEnums.ConditionalSubtype.IF_FED:
+			return context.feed_depth > 0
+
 		_:
 			push_error("ConditionalHandler: unhandled subtype %d" % data.subtype)
 			return false
