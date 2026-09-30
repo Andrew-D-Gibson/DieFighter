@@ -32,6 +32,7 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - [x] Inverter — turn the die to its opposite face (7 − value), then Feed right.
   Data only: SET_TO_DIE_VALUE → MULTIPLY −1 → ADD 7 → CHANGE_ACTIVATOR_VALUE.
 - [x] Polarizer — 1-3 becomes a 1, 4-6 becomes a 6, then Feed right
+- [x] Surge Relay — reroll the die, then Feed right
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -48,6 +49,8 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   enemy ended up holding the 5.
 - Polarizer → Bump: a 2 became a 1 and Bump returned it as a 2; a 4 became a
   6, Bump refused it, and it went to the enemy.
+- Surge Relay → Dice Cannon: a 2 rerolled to a 4; the cannon dealt 4 and the
+  enemy got the 4.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
