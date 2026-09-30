@@ -42,6 +42,9 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   forever. The event now skips unlimited tiles and floors at 0.
 - [x] Toll Relay — gain 2 engine charge, then Feed right (combat only, so an
   unlimited charge source can't be farmed between fights)
+- [x] Booster Stage — the tile to the right gets +2 this turn, then Feed right
+  into it. 2 uses: it only Feeds right, but amplifiers stack, so unlimited
+  uses would let one cannon climb without bound.
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -66,6 +69,7 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
   right: a 3 dealt 5 + 3; Bump 3 → 2; the Junction stayed at 0; the cannon
   (unlimited) was untouched.
 - Toll Relay → Bump: charge 5 → 7, and Bump returned the 2 as a 3.
+- Booster Stage → Dice Cannon with a 1: the cannon hit for 3.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
