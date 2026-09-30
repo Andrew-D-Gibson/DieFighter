@@ -13,6 +13,10 @@ const CARDINAL_DIRECTIONS: Array[Vector2i] = [
 var tile_scene: PackedScene = preload("uid://delq7kb5loqt2")
 var tile_locations: Dictionary[Vector2i, Tile] = {}
 
+## Tile activations so far this player turn, for tiles that scale with how
+## busy the machine has been.
+var activations_this_turn: int = 0
+
 @export var empty_cell_texture: Texture2D
 
 
@@ -25,10 +29,21 @@ func _ready() -> void:
 	# the next game scene's identical connect() would fail as a duplicate.
 	Events.start_combat.connect(func() -> void: Events.show_systems.emit())
 	Events.start_scenario.connect(_restore_tile_uses)
+	Events.start_scenario.connect(_reset_activation_count)
+	Events.player_turn_refresh.connect(_reset_activation_count)
+	Events.tile_activated.connect(_count_activation)
 
 	_setup_grid_graphics()
 	
 	
+func _reset_activation_count() -> void:
+	activations_this_turn = 0
+
+
+func _count_activation(_tile: Tile) -> void:
+	activations_this_turn += 1
+
+
 func _load_game_save(game_save: GameSaveResource) -> void:
 	_setup_tiles(game_save.tile_locations)
 

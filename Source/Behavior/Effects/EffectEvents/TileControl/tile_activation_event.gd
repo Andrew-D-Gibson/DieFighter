@@ -26,6 +26,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	# Decrement uses now that we're committed to activating
 	if tile.uses_remaining != -1:
 		tile.uses_remaining -= 1
+	Events.tile_activated.emit(tile)
 
 	# Remove die from the visual stacking queue — it's about to fly to tile center
 	tile.dice_queue.remove(activator_die)

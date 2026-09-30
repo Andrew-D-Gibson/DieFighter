@@ -104,6 +104,9 @@ enum AmountModifierSubtype {
 	## Set running_amount to how many Feeds carried the die here (0 when it
 	## came from the player's hand). The payoff for the end of a long machine.
 	SET_TO_FEED_DEPTH,
+	## Set running_amount to how many tiles have activated this player turn,
+	## counting the one reading it.
+	SET_TO_ACTIVATIONS_THIS_TURN,
 }
 
 

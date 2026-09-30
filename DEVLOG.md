@@ -64,6 +64,11 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - [x] Pilot Light — takes no dice; at turn start it Feeds a holographic 1 right.
   Like every turn-start tile, it doesn't fire on a fight's first turn (the
   opening turn has no `player_turn_start`).
+- [x] Crescendo Cannon — 1 damage per tile activated this turn, counting
+  itself. New `Events.tile_activated(tile)` fires when a tile commits (criteria
+  passed, use spent); `TileGrid.activations_this_turn` counts it and resets on
+  `player_turn_refresh` and `start_scenario`; appended
+  `AMOUNT_MODIFIER/SET_TO_ACTIVATIONS_THIS_TURN` reads it (unit-tested).
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
@@ -100,6 +105,9 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 - Pilot Light → Dice Cannon, through a real end-turn and enemy turn: the new
   turn opened with a 1 damage hit (4 → 3), the hand refilled, and no
   hologram was left over.
+- Toll → Toll → Crescendo Cannon dealt 3 (three activations); a die placed
+  straight on it next dealt 4. The count was back to 0 after a real enemy
+  turn.
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits

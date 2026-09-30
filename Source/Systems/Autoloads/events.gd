@@ -76,6 +76,9 @@ signal die_added()
 signal tile_manually_moved(tile: Tile)
 signal tile_pushed(tile: Tile)
 signal tile_activation_complete()
+## A tile has committed to activating: its criteria passed and a use was spent,
+## whether the die came from the player, a Feed, or no die at all.
+signal tile_activated(tile: Tile)
 signal tile_clicked_for_info()
 
 

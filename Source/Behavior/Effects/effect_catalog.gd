@@ -90,6 +90,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_MISSING_CHARGE, label = "Set to Missing Charge", handler = SetAmountToMissingChargeHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_OVERCHARGE, label = "Set to Overcharge", handler = SetAmountToOverchargeHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_FEED_DEPTH, label = "Set to Feed Depth", handler = SetAmountToFeedDepthHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_ACTIVATIONS_THIS_TURN, label = "Set to Activations This Turn", handler = SetAmountToActivationsThisTurnHandler},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},

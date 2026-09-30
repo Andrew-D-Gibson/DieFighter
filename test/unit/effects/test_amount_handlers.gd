@@ -70,3 +70,10 @@ func test_set_to_feed_depth() -> void:
 	assert_eq(await _apply(Sub.SET_TO_FEED_DEPTH), 3)
 	context.feed_depth = 0
 	assert_eq(await _apply(Sub.SET_TO_FEED_DEPTH), 0)
+
+
+func test_set_to_activations_this_turn() -> void:
+	var grid: TileGrid = autofree(TileGrid.new())
+	grid.activations_this_turn = 4
+	Globals.tile_grid = grid
+	assert_eq(await _apply(Sub.SET_TO_ACTIVATIONS_THIS_TURN), 4)
