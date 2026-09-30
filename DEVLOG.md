@@ -24,10 +24,14 @@ Feed tile's chain is the same shape: `TARGET_TILE_WITH_OFFSET` →
 
 **Progress:**
 - [x] Filter Gate — a 4+ Feeds right; lower deals 4 and goes to the target
+- [x] Parity Junction — 1 damage, then odd Feeds up, even Feeds down (2 uses)
 
 **Verified live:**
 - Filter Gate → Dice Cannon: a 5 passed through (12 → 7); a 2 dealt 4
   (7 → 3) and went to the enemy.
+- Parity Junction with a Dice Cannon above, empty cell below: a 3 dealt 1 + 3
+  (12 → 8); a 4 dealt 1 and went to the enemy; the third die was refused
+  with 0 uses and returned to the hand. Sprite frame tracked uses (2 → 0).
 
 **Noted, not fixed:** die icons in tile text (`(die_4)`) render tiny in the info
 panel on every tile, not just these. `Utils.format_text` emits
