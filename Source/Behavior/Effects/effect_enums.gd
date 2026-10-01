@@ -76,6 +76,11 @@ enum AttributeChangeSubtype {
 	## band. The only door into overcharge: ordinary CHANGE_ENGINE_CHARGE
 	## clamps at max, so topping off to jump can never redline you by accident.
 	ADD_OVERCHARGE,
+	## Put the status named by string_param on the targets, with running_amount
+	## stacks (added to any they already have). See StatusCatalog.
+	APPLY_STATUS,
+	## Remove the status named by string_param from the targets entirely.
+	CLEAR_STATUS,
 }
 
 
@@ -107,6 +112,9 @@ enum AmountModifierSubtype {
 	## Set running_amount to how many tiles have activated this player turn,
 	## counting the one reading it.
 	SET_TO_ACTIVATIONS_THIS_TURN,
+	## Set running_amount to the first target's stacks of the status named by
+	## string_param (0 when it has none).
+	SET_TO_TARGET_STATUS,
 }
 
 
@@ -195,6 +203,7 @@ enum ConditionalSubtype {
 	IF_OVERCHARGED,      ## True if the drive is sitting above max_engine_charge
 	IF_FED,              ## True if another tile's Feed passed the die here
 	IF_SOURCE_HOLDS_DIE, ## True if the source tile is holding a die other than the activator
+	IF_TARGET_HAS_STATUS, ## True if the first target has the status named by string_param
 }
 
 

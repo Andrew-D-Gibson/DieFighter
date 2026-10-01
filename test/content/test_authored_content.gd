@@ -78,6 +78,26 @@ func test_every_authored_effect_exists_in_the_catalog() -> void:
 		assert_false(row.get("reserved", false), "%s uses a reserved, unimplemented effect" % _describe(entry))
 
 
+## Statuses are named by a string, which the editor can't check. A typo would
+## author an effect that silently does nothing.
+func test_every_authored_status_exists() -> void:
+	var status_effects: Array = [
+		[EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.APPLY_STATUS],
+		[EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.CLEAR_STATUS],
+		[EffectEnums.Category.AMOUNT_MODIFIER, EffectEnums.AmountModifierSubtype.SET_TO_TARGET_STATUS],
+		[EffectEnums.Category.CONDITIONAL, EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS],
+	]
+	var checked: int = 0
+	for entry: Dictionary in _effects:
+		var data: EffectData = entry["data"]
+		if [data.category, data.subtype] in status_effects:
+			checked += 1
+			assert_true(StatusCatalog.has(StringName(data.string_param)),
+				"%s names unknown status '%s'" % [_describe(entry), data.string_param])
+	if checked == 0:
+		pass_test("no authored content uses statuses yet")
+
+
 func test_conditional_effects_are_conditional_data() -> void:
 	for entry: Dictionary in _effects:
 		var data: EffectData = entry["data"]

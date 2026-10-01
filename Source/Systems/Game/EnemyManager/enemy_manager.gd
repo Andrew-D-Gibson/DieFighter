@@ -425,13 +425,24 @@ func _remove_dead_enemies() -> void:
 			
 			
 func run_enemy_turn() -> void:
-	# Create a copy of the enemies array to iterate over
-	# This prevents issues if enemies are removed during iteration
-	var current_enemies: Array[Enemy] = enemies.duplicate()
-	
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if not engine:
 		return
+
+	# Statuses tick first, and resolve completely before any ship acts. Burn
+	# connecting to player_turn_over itself would run after this manager's
+	# own handler had already queued every ship's actions — and a ship that
+	# burns to death here must not go on to take its turn.
+	engine.tick_statuses()
+	if engine.currently_processing_queue:
+		await engine.finished_processing_queue
+	if not is_instance_valid(engine) or engine.is_shut_down():
+		return
+
+	# Create a copy of the enemies array to iterate over
+	# This prevents issues if enemies are removed during iteration
+	var current_enemies: Array[Enemy] = enemies.duplicate()
+
 	var queued_anything: bool = false
 	for enemy: Enemy in current_enemies:
 		if not enemy or not is_instance_valid(enemy):

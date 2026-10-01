@@ -152,6 +152,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 
 		'spawn_enemy':
 			_spawn_enemy(command.slice(1))
+
+		'status':
+			_status(command.slice(1))
 			
 		'unlock_tiles':
 			_unlock_tiles()
@@ -478,6 +481,26 @@ func _shield_enemies(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Shielded all enemies.[/center]')
 
 
+## Applies a status to the targeted enemy through the engine, exactly as a
+## tile would, so it merges with stacks already there.
+func _status(command_args: Array[String] = []) -> void:
+	if command_args.is_empty() or not StatusCatalog.has(StringName(command_args[0])):
+		command_history.append_text('\n\t\tUsage: status <%s> [stacks]' % '|'.join(PackedStringArray(StatusCatalog.ids())))
+		return
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	var target: Enemy = Globals.targeting_computer.targeted_enemy if Globals.targeting_computer else null
+	if engine == null or target == null:
+		command_history.append_text('\n\t\tNeeds a fight with a targeted enemy.')
+		return
+
+	var event: ApplyStatusEvent = ApplyStatusEvent.new()
+	event.status_id = StringName(command_args[0])
+	event.amount = int(command_args[1]) if command_args.size() > 1 and command_args[1].is_valid_int() else 1
+	event.targets = [target]
+	engine.queue_event(event)
+	command_history.append_text('\n[center]Applied %d %s.[/center]' % [event.amount, command_args[0]])
+
+
 func _spawn_enemy(_command_args: Array[String] = []) -> void:
 	command_history.append_text('\n\t\tspawn_enemy is not yet implemented.')
 	
@@ -536,5 +559,6 @@ func _help() -> void:
 	command_history.append_text('\n[b]shield_enemies[/b] [amount]       add shields to all enemies')
 	command_history.append_text('\n[b]spawn_dice[/b] [amount]           spawn extra dice')
 	command_history.append_text('\n[b]spawn_enemy[/b] <type>            (not yet implemented)')
+	command_history.append_text('\n[b]status[/b] <id> [stacks]          apply a status to the targeted enemy')
 	command_history.append_text('\n[b]unlock_tiles[/b] <a|b|c>          allow tiles to be moved')
 	command_history.append_text('\n[color=gray]Up/Down arrows cycle command history.[/color]')

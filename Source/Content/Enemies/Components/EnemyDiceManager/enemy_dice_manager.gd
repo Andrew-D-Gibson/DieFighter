@@ -1,13 +1,26 @@
 class_name EnemyDiceManager
 extends DiceQueue
 
+## A die is about to land with this ship, by any route. Fires before it joins
+## the queue, so a listener can change its value and everything that reacts to
+## the arrival (the targeting computer's intent highlight) sees the final face.
+signal die_arriving(die: Dice)
+
 
 func _ready() -> void:
 	die_added.connect(_update_dice_queue_locations)
 	die_removed.connect(_update_dice_queue_locations)
-	
-	
+
+
 func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = true) -> void:
+	# A ship putting back a die it already held (Charge Bore keeping its shot)
+	# hasn't received anything new. A hologram is destroyed rather than queued,
+	# and a die that will be rerolled on arrival keeps no face to change.
+	var arriving: bool = die.host_queue != self \
+		and not (die.holographic and destroy_holographic) \
+		and preserve_value
+	if arriving:
+		die_arriving.emit(die)
 	super(die, preserve_value, destroy_holographic)
 	die.scale = Vector2(0.75, 0.75)
 		

@@ -18,6 +18,10 @@ extends RefCounted
 const _DEFINITIONS: Dictionary[String, String] = {
 	"Feed": "The tile that way uses the die next. If it can't, your [color=purple]target[/color] gets it.",
 	"Fed": "Another tile's Feed passed the die here, rather than you placing it.",
+	"Burn": "When your turn ends, a burning ship takes damage equal to its Burn, then loses 1 Burn.",
+	"Scrambled": "Each die handed to a scrambled ship lands on its opposite face (1-6, 2-5, 3-4) and spends 1 Scrambled. Dice it already holds are untouched.",
+	"Jammed": "Each die a jammed ship uses does nothing and comes back to you, spending 1 Jammed.",
+	"Exposed": "The next hit a tile lands on an exposed ship deals extra damage equal to its Exposed, then all of it is spent.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -28,6 +32,13 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(feed_down)":  {"label": "Feed down",  "term": "Feed"},
 	"(feed_random)": {"label": "Feed a random neighbour", "term": "Feed"},
 	"(fed)":        {"label": "Fed",        "term": "Fed"},
+	"(burn)":       {"label": "Burn",       "term": "Burn"},
+	"(scrambled)":  {"label": "Scrambled",  "term": "Scrambled"},
+	"(scramble)":   {"label": "Scramble",   "term": "Scrambled"},
+	"(jammed)":     {"label": "Jammed",     "term": "Jammed"},
+	"(jam)":        {"label": "Jam",        "term": "Jammed"},
+	"(exposed)":    {"label": "Exposed",    "term": "Exposed"},
+	"(expose)":     {"label": "Expose",     "term": "Exposed"},
 }
 
 const _KEYWORD_COLOR: String = "orange"
@@ -63,6 +74,11 @@ static func glossary_for(text: String) -> String:
 	for term: String in terms:
 		lines.append(_styled(term) + ": " + _DEFINITIONS[term])
 	return "\n".join(lines)
+
+
+## The plain-language rule for a term, or an empty string for an unknown one.
+static func definition(term: String) -> String:
+	return _DEFINITIONS.get(term, "")
 
 
 static func _styled(label: String) -> String:

@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://cunuv8hg5d8gc" path="res://Source/Content/Enemies/Components/EnemyDiceManager/enemy_dice_manager.tscn" id="8_fjj67"]
 [ext_resource type="PackedScene" uid="uid://bs2us7nioax1u" path="res://Source/Content/Enemies/Components/EnemyGraphicsManager/enemy_graphics_manager.tscn" id="8_sfiwu"]
 [ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="9_sfiwu"]
+[ext_resource type="Script" uid="uid://dm50m071qu6kk" path="res://Source/Behavior/Modifiers/Statuses/StatusBadge/status_bar.gd" id="10_status"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dycj8"]
 size = Vector2(70, 50)
@@ -39,6 +40,11 @@ health_bar = NodePath("EnemyHealthBar")
 [node name="EnemyHealthBar" parent="EnemyGraphicsManager" unique_id=1158956667 node_paths=PackedStringArray("health_component") instance=ExtResource("4_tvtxf")]
 z_index = 1
 health_component = NodePath("../../Health")
+
+[node name="StatusBar" type="Node2D" parent="EnemyGraphicsManager/EnemyHealthBar" unique_id=1846203571]
+unique_name_in_owner = true
+position = Vector2(19, -7)
+script = ExtResource("10_status")
 
 [node name="Shakeable" parent="EnemyGraphicsManager" unique_id=1669626425 node_paths=PackedStringArray("node_to_shake") instance=ExtResource("3_tvtxf")]
 node_to_shake = NodePath("../..")

@@ -76,6 +76,8 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.CHANGE_ENGINE_CHARGE, label = "Change Engine Charge", handler = ChangeEngineChargeHandler},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SPEND_ENGINE_CHARGE, label = "Spend Engine Charge", handler = SpendEngineChargeHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ADD_OVERCHARGE, label = "Add Overcharge", handler = AddOverchargeHandler},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.APPLY_STATUS, label = "Apply Status", handler = ApplyStatusHandler, fields = ["string_param"]},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.CLEAR_STATUS, label = "Clear Status", handler = ClearStatusHandler, fields = ["string_param"]},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
@@ -91,6 +93,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_OVERCHARGE, label = "Set to Overcharge", handler = SetAmountToOverchargeHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_FEED_DEPTH, label = "Set to Feed Depth", handler = SetAmountToFeedDepthHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_ACTIVATIONS_THIS_TURN, label = "Set to Activations This Turn", handler = SetAmountToActivationsThisTurnHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_STATUS, label = "Set to Target Status", handler = SetAmountToTargetStatusHandler, fields = ["string_param"]},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
@@ -157,6 +160,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_OVERCHARGED, label = "If Overcharged", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_FED, label = "If Fed", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE, label = "If Source Holds Die", handler = ConditionalHandler},
+	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS, label = "If Target Has Status", handler = ConditionalHandler, fields = ["string_param"]},
 
 	# ── REPETITION ────────────────────────────────────────────────
 	{category = EffectEnums.Category.REPETITION, subtype = EffectEnums.RepetitionSubtype.ADD_REPETITIONS, label = "Add Repetitions", handler = AddRepetitionsHandler},

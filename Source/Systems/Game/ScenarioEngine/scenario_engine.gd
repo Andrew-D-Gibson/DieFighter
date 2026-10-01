@@ -95,6 +95,32 @@ func clear_temporary_modifiers() -> void:
 		remove_modifier(mod)
 	
 	
+## The status with this id on host, or null if it has none.
+func find_status(host: Node, status_id: StringName) -> StatusModifier:
+	for mod: Modifier in modifiers:
+		if mod is StatusModifier and mod.affected_node == host \
+				and (mod as StatusModifier).status_id == status_id:
+			return mod
+	return null
+
+
+func statuses_on(host: Node) -> Array[StatusModifier]:
+	var result: Array[StatusModifier] = []
+	for mod: Modifier in modifiers:
+		if mod is StatusModifier and mod.affected_node == host:
+			result.append(mod)
+	return result
+
+
+## Gives every status its once-a-round tick. Called by the enemy manager as
+## the player's turn ends, before any ship acts.
+func tick_statuses() -> void:
+	# A tick can spend a status's last stack and remove it from the list.
+	for mod: Modifier in modifiers.duplicate():
+		if mod is StatusModifier and mod in modifiers:
+			(mod as StatusModifier).on_status_tick()
+
+
 func clear_modifiers() -> void:
 	# Iterate a copy: remove_modifier() erases from the live array.
 	for mod: Modifier in modifiers.duplicate():

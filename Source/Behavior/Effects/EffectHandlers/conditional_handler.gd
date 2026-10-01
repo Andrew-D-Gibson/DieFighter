@@ -18,7 +18,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 		return
 
 	var cdata := data as ConditionalEffectData
-	var condition_met: bool = _evaluate_condition(cdata, context)
+	var condition_met: bool = _evaluate_condition(cdata, context, engine)
 	var branch: Array[EffectData] = cdata.if_true_effects if condition_met else cdata.if_false_effects
 
 	# Execute the chosen branch exactly like EffectChain.play() does,
@@ -30,7 +30,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 		await handler.apply(effect_data, context, engine)
 
 
-func _evaluate_condition(data: ConditionalEffectData, context: EffectContext) -> bool:
+func _evaluate_condition(data: ConditionalEffectData, context: EffectContext, engine: ScenarioEngine) -> bool:
 	match data.subtype:
 		EffectEnums.ConditionalSubtype.IF_ACTIVATOR_ODD:
 			return _is_activator_odd(context)
@@ -56,6 +56,10 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext) ->
 		EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE:
 			return context.effect_source is Tile \
 				and (context.effect_source as Tile).get_held_die(context.activator_die) != null
+
+		EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS:
+			return not context.targets.is_empty() and is_instance_valid(context.targets[0]) \
+				and engine.find_status(context.targets[0], StringName(data.string_param)) != null
 
 		_:
 			push_error("ConditionalHandler: unhandled subtype %d" % data.subtype)

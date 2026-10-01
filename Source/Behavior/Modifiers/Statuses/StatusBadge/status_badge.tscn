@@ -1,0 +1,30 @@
+[gd_scene format=3 uid="uid://dp6gwxhihnidu"]
+
+[ext_resource type="Script" uid="uid://835b42651xq1" path="res://Source/Behavior/Modifiers/Statuses/StatusBadge/status_badge.gd" id="1_badge"]
+[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="2_click"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_badge"]
+size = Vector2(17, 11)
+
+[node name="StatusBadge" type="Node2D"]
+script = ExtResource("1_badge")
+
+[node name="Icon" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Count" type="Label" parent="."]
+unique_name_in_owner = true
+offset_left = 6.0
+offset_top = -7.0
+offset_right = 16.0
+offset_bottom = 6.0
+mouse_filter = 2
+text = "1"
+vertical_alignment = 1
+
+[node name="Clickable" parent="." instance=ExtResource("2_click")]
+unique_name_in_owner = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+position = Vector2(3, 0)
+shape = SubResource("RectangleShape2D_badge")

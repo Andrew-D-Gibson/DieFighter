@@ -370,6 +370,11 @@ func trigger_state_effects() -> void:
 	engine.queue_event(event)
 
 
+## Where this ship's status badges go. StatusModifier looks for this method.
+func get_status_bar() -> StatusBar:
+	return get_node_or_null("%StatusBar") as StatusBar
+
+
 ## Re-targets the computer for this enemy
 func _on_clicked() -> void:
 	Globals.targeting_computer.target_enemy(self)
