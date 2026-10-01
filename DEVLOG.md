@@ -4,6 +4,70 @@ Newest entries at the top.
 
 ---
 
+## 2026-09-30 — Enemy statuses, and 14 tiles that use them
+
+**Goal:** the player had no way to put a status on an enemy. Their only verbs
+were damage, stripping shields, and choosing which die to hand over. Add
+statuses that work through the dice and the intents, not just extra damage,
+and enough tiles to make each one a build.
+
+**The system:** a status is a `StatusModifier`, an ordinary engine modifier
+that sits on one enemy, counts stacks, and removes itself when they run out or
+the ship leaves. Stacks are its only number; each status decides what a stack
+means. One verb applies any of them (`APPLY_STATUS`, with the id in
+`string_param`, amplifiable stacks), and three read them (`SET_TO_TARGET_STATUS`,
+`IF_TARGET_HAS_STATUS`, `CLEAR_STATUS`). Each shows a badge with its stack count
+beside the enemy's health ring; clicking it explains the rule.
+
+- **Burn** — when your turn ends, the ship takes damage equal to its Burn,
+  then loses one. Ticks before any ship acts, so a ship that burns to death
+  doesn't take its turn.
+- **Scrambled** — each die handed to the ship lands on its opposite face, one
+  stack per die. Dice it already holds are untouched: scramble first, then
+  hand over the six.
+- **Jammed** — each die the ship uses does nothing and comes back to you.
+- **Exposed** — the next single-target tile hit deals extra damage equal to
+  its Exposed, all spent at once.
+
+**Tiles** (art and `.tres` from the machine-tile generators):
+
+| Status | Tiles |
+|---|---|
+| Burn | Incendiary Round (1/2: 3 Burn), Napalm Vent (no dice: 1 Burn per neighbour activation), Flashpoint (6, rare: 3x Burn as damage, then put out), Heat Sink (4: shields = 2x Burn) |
+| Scrambled | Crossed Wires (any, 2 uses: 1 Scrambled, die comes back), Turncoat Cannon (5/6: 4 damage, 10 if Scrambled), Static Bloom (no dice: 1 Scrambled at turn start) |
+| Jammed | Chaff Pod (1: 1 Jammed), Sabotage Charge (8 charge: 2 Jammed), Interdiction Net (no dice, rare: 1 Jammed whenever your hull is hit) |
+| Exposed | Target Painter (Exposed = the die), Sensor Spike (2 Exposed, Feed right), Spotter Drone (no dice: 3 Exposed after every enemy turn), Flare Burst (5, rare: 3 Exposed on every enemy) |
+
+**Why these:** each status gets an applier, a payoff, and a passive, and they
+lean on the handover. Crossed Wires into Turncoat Cannon deals 10 *and* hands
+the target a 1. Burn stacks additively, so Flashpoint rewards stoking one
+fire. Exposed is a set-up for one big hit, the opposite of Burn's slow
+pressure, and Sensor Spike makes it a machine part.
+
+**Snags:**
+- Burn first listened to `player_turn_over`, but `EnemyManager` connects first
+  and had already queued every action by then. `run_enemy_turn()` now ticks
+  statuses explicitly and waits for them to resolve.
+- Scrambled flipped dice after they joined the queue, so the targeting
+  computer highlighted the intent of the face the ship *didn't* hold.
+  `EnemyDiceManager` now emits `die_arriving` before the die joins. A ship
+  putting back a die it already held (Charge Bore) isn't an arrival, or it
+  would flip twice.
+- `TARGET_ENEMIES` had never worked: it cast `Array[Enemy]` to `Array[Node]`,
+  which fails at runtime. Flare Burst was its first user.
+
+**Verified live:** every tile played in a fight, and each status checked with
+`game_eval` — Turncoat hit for 10 and its 6 landed as a 1 (intent highlight
+on the 1); Target Painter (4) + Sensor Spike Fed into a Dice Cannon for
+3 + 6; Burn ticked 2 before the enemy acted; Flashpoint dealt 15 from 5 Burn;
+two hull hits through Interdiction Net left 2 Jammed; Spotter Drone and Static
+Bloom fired on their turn boundaries. 224 tests pass (20 new).
+
+**Not built yet:** statuses on the player or tiles (Lockout and Amplifier are
+still their own modifiers), immunity, and status-aware activation checks.
+
+---
+
 ## 2026-09-30 — Machine tiles
 
 **Goal:** 19 tiles built around Feed, so the grid can be wired into machines.

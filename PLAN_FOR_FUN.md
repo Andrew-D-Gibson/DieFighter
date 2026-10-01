@@ -6,7 +6,7 @@
 > background modifiers, the four legacy tiles ported, the data-driven impact
 > effects (hitstop, zoom punch, flash, slow-mo, screen shake, vignette) and
 > the handover tractor beam. Tiles went well past the
-> target (58 now, including 20 Feed/machine tiles). Checkboxes below are ticked
+> target (72 now, including 20 Feed/machine tiles and 14 status tiles). Checkboxes below are ticked
 > only where the code confirms it; playtest and judgment items are left for you.
 
 ## Mission

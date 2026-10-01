@@ -36,7 +36,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 |--------|-----------|------|----------------|
 | `GameStateManager` | `Systems/GameStateManager` | `GameStateManager/game_state_manager.gd` | State machine: OUT_OF_COMBAT → IN_COMBAT → GAME_OVER / VICTORY; generates each sector, detects a cleared jump gate and advances to the next sector, owns the run's difficulty multipliers |
 | `Player` | `Systems/Player` | `Systems/Game/Player/player.gd` | Player ship with health/shields/dice queue; manages turn flow: spawn dice, reroll, end turn |
-| `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, status effects per cell, per-turn tile activation count |
+| `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, per-turn tile activation count |
 | `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation`, which also turns each ship's speech box toward its clearer side |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
@@ -82,6 +82,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
    - When dice queue empty: `Events.player_turn_over` (any die a tile is still holding returns to the hand)
 
 2. **Enemy Turn**
+   - Statuses tick first (`ScenarioEngine.tick_statuses()` — Burn deals its damage) and resolve before any ship acts
    - EnemyManager sequentially processes each enemy's dice queue
    - Enemy uses die → triggers Pre-chosen actions → emit `Events.enemy_used_die`
    - When all enemies out of dice: `Events.enemy_turn_over`
@@ -244,9 +245,55 @@ A die that reaches a tile through a Feed takes a different route on refusal:
 `PassDieToTileEvent` checks the criteria first and sends a refused die to the
 target, never back to the hand (see 6.2).
 
-### 4.5 Enemy Turn Flow
+### 4.5 Enemy Statuses
 
-1. `Events.player_turn_over` triggers `EnemyManager.run_enemy_turn()`
+**Location:** `Source/Behavior/Modifiers/Statuses/`
+
+A status is a `StatusModifier`: an ordinary `Modifier` that sits on one enemy
+(`affected_node`), counts `stacks`, and removes itself when they run out or
+the ship leaves (`Events.enemy_left`). Stacks are the only number a status
+has; each status decides what one means.
+
+| Status | Hooks | A stack is |
+|---|---|---|
+| `BurnStatus` | `on_status_tick()` | damage per round; loses one per tick |
+| `ScrambledStatus` | `EnemyDiceManager.die_arriving` | one die flipped to its opposite face as it arrives |
+| `JammedStatus` | before `EnemyActionEvent` (priority 35) | one action swapped for Do Nothing, which hands the die back |
+| `ExposedStatus` | before `DamageEvent` (priority 25) | +1 on the next single-target tile hit; all spent at once |
+
+- **Applying:** `ATTRIBUTE_CHANGE/APPLY_STATUS` names the status in
+  `string_param` and takes `running_amount` stacks. `ApplyStatusEvent` merges
+  into an existing status (`merge()`, additive by default) or registers a new
+  one. Its amount is amplifiable, so an Amplifier adds stacks. Statuses only
+  go on enemies for now.
+- **Reading:** `AMOUNT_MODIFIER/SET_TO_TARGET_STATUS`,
+  `CONDITIONAL/IF_TARGET_HAS_STATUS`, and `ATTRIBUTE_CHANGE/CLEAR_STATUS`.
+  `ScenarioEngine.find_status()` / `statuses_on()` look them up.
+- **Ids:** `StatusCatalog` maps the authored id to its class. A content test
+  checks every authored id against it.
+- **Ticking:** once per round, from `EnemyManager.run_enemy_turn()` (see 4.6).
+  Nothing ticks off a signal: `EnemyManager` connects to `player_turn_over`
+  first and would queue every action before a status got a look in.
+- **Scrambled flips on arrival**, not on use: `EnemyDiceManager.add()` emits
+  `die_arriving` before the die joins the queue, so the targeting computer's
+  intent highlight sees the final face. A ship re-adding a die it already held
+  (Charge Bore) isn't an arrival.
+- **Badges:** each status shows a `StatusBadge` (icon + stack count) on the
+  enemy's `%StatusBar`, beside the health ring. Clicking one shows the
+  keyword's rule in the info panel. Art is in `Assets/Textures/Statuses/`
+  (11×11 badge, 24×24 info).
+- **Debugging:** the dev console's `status <id> [stacks]` applies one to the
+  targeted enemy.
+
+**Adding a status:** subclass `StatusModifier` (set `status_id`,
+`display_name`, `title_color`, `icon`, `info_icon`, `priority`), add it to
+`StatusCatalog`, and give it a keyword in `Keywords`.
+
+### 4.6 Enemy Turn Flow
+
+1. `Events.player_turn_over` triggers `EnemyManager.run_enemy_turn()`, which
+   first ticks every status and waits for the queue to drain, so a ship that
+   burns to death never takes its turn
 2. For each enemy with dice:
    - targeting_computer shows intent UI (`Events.enemy_received_die` updates dice view)
    - Tween die to front of enemy ship (0.75s)
@@ -299,11 +346,13 @@ limit.
 
 `Source/Systems/keywords.gd` (`Keywords`) holds game terms written into
 descriptions as tokens: `(feed_right)`, `(feed_left)`, `(feed_up)`,
-`(feed_down)`, `(feed_random)` and `(fed)`. `Utils.format_text()` renders each
+`(feed_down)`, `(feed_random)`, `(fed)`, and one per status — `(burn)`,
+`(scrambled)`/`(scramble)`, `(jammed)`/`(jam)`, `(exposed)`/`(expose)`. `Utils.format_text()` renders each
 token as a styled label, and `Tile._get_tile_info()` appends a definition for
 every keyword the description uses, so the info panel explains the rule
-without each description repeating it. Add a keyword by adding its definition
-and its token spellings to the two tables in that file.
+without each description repeating it. `Keywords.definition()` serves the
+same text to the status badges. Add a keyword by adding its definition and its
+token spellings to the two tables in that file.
 
 ### 5.4 Effect Chains
 
@@ -648,6 +697,7 @@ static var rng: RandomNumberGenerator              # Shared RNG per scenario
 
 func generate_turn_actions() -> void               # Build 6 actions from weighted selection
 func run_turn() -> void                            # Use all dice in queue sequentially
+func get_status_bar() -> StatusBar                 # Where status badges go (beside the health ring)
 ```
 
 **Action Selection**

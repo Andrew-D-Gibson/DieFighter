@@ -5,13 +5,13 @@
 This is a pure ideation document, not an implementation plan — nothing here gets built until you pick favorites. It's grounded in what actually exists in the codebase today (verified via exploration, not guesswork), so every idea below notes which real system it would hook into. The goal: give you a big menu of "yes, and" ideas across mechanics, AI, story, content, and *feel*, organized so you can grab a handful and ignore the rest.
 
 > **Status (2026-09-30).** This doc was written against an earlier build, and a
-> lot of it has since shipped. Current counts: 58 player tiles, 89 effect
+> lot of it has since shipped. Current counts: 72 player tiles, 93 effect
 > subtypes across the 10 categories. Tile uses are now a **per-turn** budget
 > (refilled every player turn), not per-combat. Ideas that now exist are
 > tagged *(Built: …)* in §3, and §11 has its own status note. The rest of the
 > doc is unchanged ideation.
 
-**The engine is in great shape for this.** The EffectChain / EffectData / EffectHandler / EffectRegistry pipeline (`Source/Behavior/Effects/`) is a genuinely clean, data-driven verb library — 10 categories, ~50 subtypes when this was written (89 now). Most ideas below are "new subtype + new handler," not "rewrite a system." I've flagged the few ideas that *are* bigger swings so you can weigh them differently.
+**The engine is in great shape for this.** The EffectChain / EffectData / EffectHandler / EffectRegistry pipeline (`Source/Behavior/Effects/`) is a genuinely clean, data-driven verb library — 10 categories, ~50 subtypes when this was written (93 now). Most ideas below are "new subtype + new handler," not "rewrite a system." I've flagged the few ideas that *are* bigger swings so you can weigh them differently.
 
 ## The Core Tension (the thing every idea should serve)
 
@@ -57,7 +57,7 @@ There's more here than it looks like at first glance. You already have a **dead 
 
 ## 3. New Tile Archetypes
 
-*(Status: the four legacy tiles below have been ported to EffectChain and live in `TileResources/`; `ComplicatedTileResources/` is gone. There are 58 tiles now.)* When this was written there were 13 live tiles plus 4 broken-but-designed legacy tiles (`ComplicatedTileResources/`: Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array) still referencing the deleted pre-V2 effect system. **Porting those four to EffectChain is itself a great source of new archetypes** — they already have interesting ideas (self-pushing on hit, row-pulling, movement-scaled damage, stacking-shields-on-being-pushed) that just need new `TILE_CONTROL` handlers. Beyond reviving those, here are fresh archetypes grouped by the kind of decision they create:
+*(Status: the four legacy tiles below have been ported to EffectChain and live in `TileResources/`; `ComplicatedTileResources/` is gone. There are 72 tiles now, including 14 status tiles.)* When this was written there were 13 live tiles plus 4 broken-but-designed legacy tiles (`ComplicatedTileResources/`: Tactical Boomerang, Shield Attractor, Inertial Feedback, Unstable Shield Array) still referencing the deleted pre-V2 effect system. **Porting those four to EffectChain is itself a great source of new archetypes** — they already have interesting ideas (self-pushing on hit, row-pulling, movement-scaled damage, stacking-shields-on-being-pushed) that just need new `TILE_CONTROL` handlers. Beyond reviving those, here are fresh archetypes grouped by the kind of decision they create:
 
 - **Momentum/Movement.** Tiles that reward keeping the grid in motion — e.g. a tile that gains stacking damage per tile pushed this combat, resetting if the board goes static for a turn. Builds directly on the push/pull machinery already partially built for the legacy tiles. *(Built: Inertial Feedback.)*
 - **Denial-focused.** Tiles that punish the *enemy* for the specific die value they're currently holding rather than just scaling off player stats — e.g. bonus damage if the target already holds a die matching the activator's value. This is the most on-theme archetype possible: it makes you actively track what you've already handed away and stack punishment on it. *(Built: Grudge Cannon.)*

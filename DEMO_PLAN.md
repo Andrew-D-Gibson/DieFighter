@@ -55,7 +55,7 @@ Given that, the plan below finishes what was already started rather than inventi
 
 ## Phase 6 — Playtest pass (not code)
 
-- With scaling and 3 sectors in place, play through end-to-end and check: does difficulty feel meaningfully harder by sector 3, does content (14 enemy resources / 58 tiles as of 2026-09-30) start repeating noticeably across 3 sectors × 18 tiles, does the jump-gate transition read clearly as "you cleared this sector"? Tune `difficulty_scale_per_sector` and `demo_sector_count` from there — these are both single-number knobs by design.
+- With scaling and 3 sectors in place, play through end-to-end and check: does difficulty feel meaningfully harder by sector 3, does content (14 enemy resources / 72 tiles as of 2026-09-30) start repeating noticeably across 3 sectors × 18 tiles, does the jump-gate transition read clearly as "you cleared this sector"? Tune `difficulty_scale_per_sector` and `demo_sector_count` from there — these are both single-number knobs by design.
 
 ## Critical files
 
@@ -88,7 +88,7 @@ Given that, the plan below finishes what was already started rather than inventi
 | Boss scenarios | 1 | 1 kit, 3 sector variants | SectorBoss |
 | Fate scenario | 1 | 2 | + Fate Rift |
 | Enemy resources | 9 | 14 | then: ~5 real combat enemies + boss + civilian + shop + tutorial |
-| Tiles | 21 | 58 | 20 of the new ones are the Feed/machine tiles |
+| Tiles | 21 | 72 | 20 of the new ones are the Feed/machine tiles, 14 are status tiles |
 | sector_size | 18 | 18 | |
 
 With `sector_size = 18`, after 2-3 shops, the fate tile, the boss, and the jump gate, ~11-12 slots remain, split ~70/30 combat/question — meaning **~8 combat slots pulling from only 3 templates** per sector. Across 3 sectors that's the same 3 fights recurring 6-9 times each. This is the single biggest repetition risk for the demo, ahead of tile/enemy count.
