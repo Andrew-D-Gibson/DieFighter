@@ -65,6 +65,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 |--------|-----------|----------------|
 | `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, debris |
 | `Vignette` | `Graphics/Vignette` | Flash overlay for camera shake/impact emphasis |
+| `Juice` | `Systems/Graphics/Juice/juice.gd` (static helpers) | Bumps, wiggles, rings, sparkles and callouts; see 4.7 |
 | `GlitchController` | `UI/GlitchShader` | CSS glitch shader activation on large camera shake |
 
 ---
@@ -285,6 +286,10 @@ has; each status decides what one means.
 - **Debugging:** the dev console's `status <id> [stacks]` applies one to the
   targeted enemy.
 
+**Feedback:** `play_applied_feedback()` runs when a dose lands (ship flash,
+ring, `+N NAME` callout); `announce_triggered()` flashes the ship and calls
+out the name whenever a status does its job (see 4.7).
+
 **Adding a status:** subclass `StatusModifier` (set `status_id`,
 `display_name`, `title_color`, `icon`, `info_icon`, `priority`), add it to
 `StatusCatalog`, and give it a keyword in `Keywords`.
@@ -301,6 +306,28 @@ has; each status decides what one means.
    - Emit `Events.enemy_used_die(enemy, die_value)` (pulses the matching intent) and `Events.enemy_acted`
    - `await action.effect_chain.play(context, engine)`
 3. When all enemies out of dice: `Events.enemy_turn_over`
+
+### 4.7 Modifier Feedback (procs)
+
+A modifier calls `announce_triggered()` from a hook **only when it changed
+something** (an amount, a cancel, a repetition). That emits
+`Events.modifier_triggered(mod)` and calls `on_modifier_triggered()` on the
+modifier's visual, if it has one.
+
+| Listener | Reacts when | Does |
+|---|---|---|
+| `Tile` | `mod.source == self` | `play_trigger_feedback()`: bump, flash, ring, sparks, sound, callout of `get_trigger_text()` in `get_trigger_color()` |
+| `BackgroundModifierBadge` | `mod` is `BackgroundModifierManager.get_active_modifier()` | kicks the badge |
+| `StatusModifier` (override) | always | flashes the host ship, callout of the status name |
+
+Set `source` when registering a modifier on a tile's behalf (see
+`AddAmplifierModifierEvent`). `TileEventTriggeredEvent` gives reactive tiles
+the same pop when their chain queues at least one event.
+
+Cosmetic flourishes live in `Systems/Graphics/Juice/juice.gd` (`Juice.bump`,
+`wiggle`, `ring`, `sparkle`, `callout`). They're fire-and-forget and never
+awaited by the pipeline. Bump a sprite, not a node whose scale a movement
+tween owns.
 
 ---
 

@@ -4,6 +4,62 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-06 — Juice pass, and upgrades that show themselves working
+
+**Goal:** make effect chains feel physical, and make passive upgrades visible.
+A modifier that quietly turns a 3 into a 5 is invisible: the player sees a
+bigger number and never learns which tile earned it.
+
+**Upgrade procs.** `Modifier` gained `source` (the node that put it in play)
+and `announce_triggered()`, which a modifier calls only when it actually
+changed something — doubled a hit, clamped an amount, cancelled an event,
+added a stack. It emits `Events.modifier_triggered`, and whoever owns the
+modifier reacts:
+
+- **The source tile** bumps, flashes the modifier's colour, throws a ring and
+  sparks, plays a rising blip, and calls out what it did (`+2`, `x2`,
+  `SAVED`). The Amplifier, Dead Man's Switch and Lockout events now set
+  `source`. A 150 ms window keeps one activation from stacking callouts,
+  since an Amplifier touches every amplifiable event in a chain.
+- **The background badge** kicks when its rule bites (a blackout cancels, the
+  cap clamps).
+- **Statuses** flash their ship in the status colour and call out their name
+  (Burn skips the callout: its damage number already says it).
+- **Reactive tiles** (`event_responses`) pop when their chain fires, but only
+  if it queued something. Half of them are conditional, and a tile lighting
+  up for a check that failed would teach the player to ignore it.
+
+**Everything else** goes through a new `Juice` helper (bump, wiggle, ring,
+sparkle, callout). All of it is fire-and-forget, so no turn got longer.
+
+| Moment | Feedback |
+|---|---|
+| Die lands in a tile | tile squashes, white flash, ring; die pops |
+| Tile refuses a die | red flash, head-shake wiggle |
+| Enemy commits an action | ship squashes, die pops with a ring |
+| Ship killed | 70 ms hitstop, zoom punch toward it, two shockwave rings |
+| Player hull hit by anything | 45 ms hitstop (player tiles author their own) |
+| Status applied | ship flashes, ring, sparks, `+3 BURN` |
+| Shields / hull gained | enemy: `+N` callout; health bars: icon pop, sparks, flash |
+| Die rerolled / tile dropped | face pops / tile bumps |
+
+Tiles flash through two new `tile.gdshader` uniforms (`flash_color`,
+`flash_amount`): the shader overwrites `COLOR` from the texture, so `modulate`
+alone never reached it.
+
+**Verified live:** with time slowed to 5%, screenshotted an Amplifier sourced
+from the Bump tile firing on a Dice Cannon (Bump flashed yellow with `+2`), a
+Burn application and tick, an enemy wind-up, health and shield gains on the
+player's bar, a kill, and a refused die. A reactive chain with nothing to do
+stayed quiet; one that queued an event popped. No runtime errors. New
+`test_modifier_triggers.gd` pins "announce only when it changed something";
+229/229 tests pass.
+
+**Snag:** `EnemyGraphicsManager.flash()` assumed loaded ship graphics; the
+status tests use bare enemies, so it now returns quietly without them.
+
+---
+
 ## 2026-09-30 — Enemy statuses, and 14 tiles that use them
 
 **Goal:** the player had no way to put a status on an enemy. Their only verbs
