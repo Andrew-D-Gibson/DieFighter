@@ -25,3 +25,15 @@ func test_target_enemies_targets_every_living_enemy() -> void:
 	# A copy, not the manager's own list: later steps retarget the context.
 	context.targets.clear()
 	assert_eq(manager.enemies.size(), 2)
+
+
+func test_random_other_enemy_falls_back_to_a_lone_actor() -> void:
+	var manager: EnemyManager = autofree(EnemyManager.new())
+	var medic := _enemy()
+	manager.enemies = [medic]
+	Globals.enemy_manager = manager
+
+	var context := EffectContext.new()
+	context.actor = medic
+	TargetRandomOtherEnemyHandler.new().apply(null, context, null)
+	assert_eq(context.targets, [medic] as Array[Node], "with nobody else alive it tends to itself")

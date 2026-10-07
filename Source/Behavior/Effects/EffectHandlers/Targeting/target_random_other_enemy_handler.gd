@@ -15,7 +15,13 @@ func apply(_data: EffectData, context: EffectContext, _engine: ScenarioEngine) -
 			others.append(enemy)
 
 	if others.is_empty():
-		context.targets = [context.actor] if is_instance_valid(context.actor) else []
+		# Built up rather than written as a ternary: a ternary of two array
+		# literals is an untyped Array, which the typed targets refuse at
+		# runtime — a lone medic used to halt the game here.
+		var fallback: Array[Node] = []
+		if is_instance_valid(context.actor):
+			fallback.append(context.actor)
+		context.targets = fallback
 		return
 
 	context.targets = [RNGManager.pick_random(RNGManager.Bucket.TARGETING, others) as Node]

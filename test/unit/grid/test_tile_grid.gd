@@ -109,3 +109,11 @@ func test_diagonal_pushes_are_refused() -> void:
 func test_tiles_outside_the_grid_cannot_be_pushed() -> void:
 	var loose: Tile = autofree(TILE_SCENE.instantiate())
 	assert_false(grid.can_push_tile(loose, Vector2i.RIGHT))
+
+
+func test_forgetting_a_tile_empties_only_its_cell() -> void:
+	var doomed: Tile = _place(Vector2i(1, 1))
+	var neighbour: Tile = _place(Vector2i(2, 1))
+	grid.forget_tile(doomed)
+	assert_false(grid.tile_locations.has(Vector2i(1, 1)), "a destroyed tile must not linger in its cell")
+	assert_eq(grid.tile_locations[Vector2i(2, 1)], neighbour)

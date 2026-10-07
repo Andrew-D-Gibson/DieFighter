@@ -156,6 +156,15 @@ func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i) -> void:
 	tile.draggable.home_position = grid_to_global_pos(grid_pos)
 
 
+## Forgets a tile that is leaving the grid for good (destroyed by its own
+## effect). Without this its cell keeps pointing at a freed node, and every
+## neighbour lookup and the next save trip over it.
+func forget_tile(tile: Tile) -> void:
+	var pos: Vector2i = find_tile_pos(tile)
+	if is_grid_pos_valid(pos):
+		tile_locations.erase(pos)
+
+
 func move_tile(tile: Tile, new_pos: Vector2i) -> void:
 	# Find the tile's current position
 	var old_pos: Vector2i = find_tile_pos(tile)
