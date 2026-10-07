@@ -251,7 +251,7 @@ func _give_tile(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Added: ' + found_resource.tile_name + '[/center]')
 
 func _get_available_tile_names() -> Array[String]:
-	var names := []
+	var names: Array[String] = []
 	var search_dirs: Array[String] = [
 		"res://Source/Content/Tiles/TileResources/",
 	]
