@@ -19,9 +19,26 @@ category = 6
 subtype = 3
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("5_ewju3")
+category = 4
+subtype = 16
+string_param = "RETREAT!"
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("5_ewju3")
+category = 4
+subtype = 15
+amount = 14
+multiplier = 1.2
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_nkp0x"]
 script = ExtResource("7_drqkg")
-effects = Array[ExtResource("5_ewju3")]([SubResource("Resource_bdgkf"), SubResource("Resource_0rpmg")])
+effects = Array[ExtResource("5_ewju3")]([SubResource("Resource_bdgkf"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_0rpmg")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]

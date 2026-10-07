@@ -73,9 +73,26 @@ category = 3
 subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("13_dymuh")
+category = 4
+subtype = 21
+amount = 12
+string_param = "out"
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("13_dymuh")
+category = 4
+subtype = 16
+string_param = "TRANSFER"
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_e2rem"]
 script = ExtResource("14_ougyd")
-effects = Array[ExtResource("13_dymuh")]([SubResource("Resource_4nsdf"), SubResource("Resource_iur0g"), SubResource("Resource_jippl"), SubResource("Resource_k4fy2"), SubResource("Resource_sy1le"), SubResource("Resource_ranjh"), SubResource("Resource_vqfph"), SubResource("Resource_sjank"), SubResource("Resource_hg50f")])
+effects = Array[ExtResource("13_dymuh")]([SubResource("Resource_4nsdf"), SubResource("Resource_iur0g"), SubResource("Resource_jippl"), SubResource("Resource_k4fy2"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_sy1le"), SubResource("Resource_ranjh"), SubResource("Resource_vqfph"), SubResource("Resource_sjank"), SubResource("Resource_hg50f")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_lpymo"]

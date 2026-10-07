@@ -117,9 +117,76 @@ script = ExtResource("12_esdata")
 category = 9
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 13
+amount = 200
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 8
+amount = 800
+multiplier = 0.3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 20
+multiplier = 2.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 12
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_5"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 16
+string_param = "EMERGENCY SHIELD"
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_6"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 17
+multiplier = 1.5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_7"]
+script = ExtResource("12_esdata")
+category = 0
+subtype = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_8"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 14
+amount = 24
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_9"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 15
+amount = 20
+multiplier = 1.5
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_esv2chain"]
 script = ExtResource("11_55lg7")
-effects = Array[ExtResource("12_esdata")]([SubResource("Resource_esv2tgt"), SubResource("Resource_esv2set1"), SubResource("Resource_esv2heal"), SubResource("Resource_esv2set2"), SubResource("Resource_esv2wait1"), SubResource("Resource_esv2set3"), SubResource("Resource_esv2fx1"), SubResource("Resource_esv2set4"), SubResource("Resource_esv2wait2"), SubResource("Resource_esv2set5"), SubResource("Resource_esv2shield"), SubResource("Resource_esv2set6"), SubResource("Resource_esv2fx2"), SubResource("Resource_esv2set7"), SubResource("Resource_esv2wait3"), SubResource("Resource_esv2destroy")])
+effects = Array[ExtResource("12_esdata")]([SubResource("Resource_esv2tgt"), SubResource("Resource_esv2set1"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_esv2heal"), SubResource("Resource_esv2set2"), SubResource("Resource_esv2wait1"), SubResource("Resource_esv2set3"), SubResource("Resource_esv2fx1"), SubResource("Resource_esv2set4"), SubResource("Resource_esv2wait2"), SubResource("Resource_esv2set5"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_juice_5"), SubResource("Resource_juice_6"), SubResource("Resource_esv2shield"), SubResource("Resource_esv2set6"), SubResource("Resource_esv2fx2"), SubResource("Resource_esv2set7"), SubResource("Resource_esv2wait3"), SubResource("Resource_juice_7"), SubResource("Resource_juice_8"), SubResource("Resource_juice_9"), SubResource("Resource_esv2destroy")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6btq7"]

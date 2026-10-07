@@ -79,9 +79,23 @@ subtype = 8
 string_param = "activation_count"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_3")
+category = 4
+subtype = 14
+amount = 16
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_3")
+category = 4
+subtype = 17
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain11"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_evt12"]
@@ -140,9 +154,23 @@ subtype = 8
 string_param = "activation_count"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("script_3")
+category = 4
+subtype = 14
+amount = 16
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("script_3")
+category = 4
+subtype = 17
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain21"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_step16"), SubResource("Resource_step17"), SubResource("Resource_step18"), SubResource("Resource_step19"), SubResource("Resource_step20")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_step16"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step17"), SubResource("Resource_step18"), SubResource("Resource_step19"), SubResource("Resource_step20")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_evt22"]

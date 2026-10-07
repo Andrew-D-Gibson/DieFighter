@@ -104,11 +104,43 @@ category = 5
 subtype = 11
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "ODD"
+color = Color(0.9333, 0.8275, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 18
+amount = 80
+color = Color(0.9333, 0.8275, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "EVEN"
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 18
+amount = 80
+color = Color(0.2627, 0.6510, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_cond_17"]
 script = ExtResource("script_cond")
 category = 7
-if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_13"), SubResource("Resource_step_14")])
-if_false_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_15"), SubResource("Resource_step_16")])
+if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_13"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_step_14")])
+if_false_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_15"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step_16")])
 metadata/_custom_type_script = "uid://1c0msmj2pcjy"
 
 [sub_resource type="Resource" id="Resource_chain_18"]

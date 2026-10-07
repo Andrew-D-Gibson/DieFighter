@@ -71,9 +71,38 @@ category = 3
 subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_3")
+category = 4
+subtype = 16
+string_param = "REDLINE"
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_3")
+category = 4
+subtype = 12
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("script_3")
+category = 4
+subtype = 13
+amount = 120
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("script_3")
+category = 4
+subtype = 20
+multiplier = 0.6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain9"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]

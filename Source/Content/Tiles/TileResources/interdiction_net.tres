@@ -42,9 +42,25 @@ subtype = 6
 string_param = "jammed"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 18
+amount = 100
+color = Color(0.9333, 0.8275, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 14
+amount = -22
+color = Color(0.9333, 0.8275, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain_7"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_step_6")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_step_8"]
@@ -76,9 +92,25 @@ subtype = 6
 string_param = "jammed"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 18
+amount = 100
+color = Color(0.9333, 0.8275, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 14
+amount = -22
+color = Color(0.9333, 0.8275, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain_13"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_step_12")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step_12")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_evt_14"]

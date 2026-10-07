@@ -107,9 +107,59 @@ category = 3
 subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_3")
+category = 4
+subtype = 20
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_3")
+category = 4
+subtype = 14
+amount = 28
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("script_3")
+category = 4
+subtype = 7
+amount = 80
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("script_3")
+category = 4
+subtype = 9
+multiplier = 1.04
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_5"]
+script = ExtResource("script_3")
+category = 4
+subtype = 12
+color = Color(0.9490, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_6"]
+script = ExtResource("script_3")
+category = 4
+subtype = 16
+string_param = "BLOWBACK"
+color = Color(0.9490, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_7"]
+script = ExtResource("script_3")
+category = 4
+subtype = 17
+multiplier = 1.5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain17"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_step16")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_juice_5"), SubResource("Resource_juice_6"), SubResource("Resource_juice_7"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_step16")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]

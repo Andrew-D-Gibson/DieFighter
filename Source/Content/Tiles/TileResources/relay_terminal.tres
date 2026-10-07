@@ -106,9 +106,17 @@ category = 3
 subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "LINK {amount}"
+color = Color(0.4784, 0.7412, 0.2000, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain_17"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_step_12"), SubResource("Resource_step_13"), SubResource("Resource_step_14"), SubResource("Resource_step_15"), SubResource("Resource_step_16")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_juice_1"), SubResource("Resource_step_11"), SubResource("Resource_step_12"), SubResource("Resource_step_13"), SubResource("Resource_step_14"), SubResource("Resource_step_15"), SubResource("Resource_step_16")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]

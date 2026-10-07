@@ -67,12 +67,34 @@ category = 2
 amount = 4
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "TURNCOAT!"
+color = Color(0.4784, 0.7412, 0.2000, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 13
+amount = 100
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 7
+amount = 60
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_cond_11"]
 script = ExtResource("script_cond")
 category = 7
 subtype = 8
 string_param = "scrambled"
-if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_9")])
+if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_9"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3")])
 if_false_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_10")])
 metadata/_custom_type_script = "uid://1c0msmj2pcjy"
 

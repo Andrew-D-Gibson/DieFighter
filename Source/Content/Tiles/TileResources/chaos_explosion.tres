@@ -67,9 +67,54 @@ category = 3
 subtype = 2
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 8
+amount = 450
+multiplier = 0.3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 20
+multiplier = 1.8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 19
+amount = 50
+color = Color(0.9490, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 11
+amount = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_5"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 12
+color = Color(0.9490, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_6"]
+script = ExtResource("9_iso42")
+category = 4
+subtype = 14
+amount = 40
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_xliol"]
 script = ExtResource("10_1rls6")
-effects = Array[ExtResource("9_iso42")]([SubResource("Resource_nmiuw"), SubResource("Resource_1l13j"), SubResource("Resource_ntcm6"), SubResource("Resource_k21bt"), SubResource("Resource_dvljf"), SubResource("Resource_qtm42"), SubResource("Resource_k4xy2"), SubResource("Resource_1kud3"), SubResource("Resource_gn824")])
+effects = Array[ExtResource("9_iso42")]([SubResource("Resource_nmiuw"), SubResource("Resource_1l13j"), SubResource("Resource_ntcm6"), SubResource("Resource_k21bt"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_juice_5"), SubResource("Resource_juice_6"), SubResource("Resource_dvljf"), SubResource("Resource_qtm42"), SubResource("Resource_k4xy2"), SubResource("Resource_1kud3"), SubResource("Resource_gn824")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gneyo"]

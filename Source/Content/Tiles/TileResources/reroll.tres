@@ -24,9 +24,24 @@ category = 3
 subtype = 4
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("6_mwp2x")
+category = 4
+subtype = 22
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("6_mwp2x")
+category = 4
+subtype = 15
+amount = 10
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_f3imi"]
 script = ExtResource("7_8dutl")
-effects = Array[ExtResource("6_mwp2x")]([SubResource("Resource_1kud3"), SubResource("Resource_qtm42")])
+effects = Array[ExtResource("6_mwp2x")]([SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_1kud3"), SubResource("Resource_qtm42")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ecbfa"]

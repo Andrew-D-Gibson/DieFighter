@@ -43,9 +43,32 @@ category = 3
 subtype = 4
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("1_rkim4")
+category = 4
+subtype = 18
+amount = 120
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("1_rkim4")
+category = 4
+subtype = 14
+amount = -20
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("1_rkim4")
+category = 4
+subtype = 17
+multiplier = 1.2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_f3imi"]
 script = ExtResource("3_2l8m7")
-effects = Array[ExtResource("1_rkim4")]([SubResource("Resource_1kud3"), SubResource("Resource_qtm42"), SubResource("Resource_3phsw"), SubResource("Resource_j6chx"), SubResource("Resource_x81fm"), SubResource("Resource_f06cv")])
+effects = Array[ExtResource("1_rkim4")]([SubResource("Resource_1kud3"), SubResource("Resource_qtm42"), SubResource("Resource_3phsw"), SubResource("Resource_j6chx"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_x81fm"), SubResource("Resource_f06cv")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]

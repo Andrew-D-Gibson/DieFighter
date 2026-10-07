@@ -86,9 +86,17 @@ category = 5
 subtype = 11
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_3")
+category = 4
+subtype = 18
+amount = 80
+color = Color(0.4784, 0.7412, 0.2000, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain13"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_step12")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_juice_1"), SubResource("Resource_step12")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
