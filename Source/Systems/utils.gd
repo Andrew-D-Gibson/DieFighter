@@ -94,9 +94,11 @@ static var _inline_icons: Dictionary = {
 }
 
 
-static func format_text(text: String) -> String:
+## With hoverable_keywords, keyword labels carry meta so the label showing the
+## text can pop up their rules on hover.
+static func format_text(text: String, hoverable_keywords: bool = false) -> String:
 	# Keywords first: their styling uses palette color names resolved below
-	text = Keywords.render(text)
+	text = Keywords.render(text, hoverable_keywords)
 
 	# Change colors to match the palette
 	text = text.replace('=red', '=#' + Globals.red.to_html(false))

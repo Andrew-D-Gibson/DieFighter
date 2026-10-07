@@ -58,7 +58,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("3_action")
 name = "Relay"
-description = "[color=blue]Shields[/color] for [color=blue](amount)[/color], then [color=orange]passes the die[/color] to (target), who uses it at once"
+description = "Gain [color=blue](amount) shields[/color]. [color=orange]Give[/color] your die to (target), who uses it at once"
 indicator_texture = ExtResource("4_icon")
 info_texture = ExtResource("5_info")
 effect_chain = SubResource("Resource_chain")

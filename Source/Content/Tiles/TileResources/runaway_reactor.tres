@@ -223,8 +223,7 @@ metadata/_custom_type_script = "uid://cfken75wevu1a"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Runaway Reactor[/color]"
-description = "[color=yellow]Takes no dice.[/color] At the start of your turn, if [color=red]overcharged[/color]: deal [color=red]5 damage[/color] to a [color=purple]random enemy[/color] and [color=red]2[/color] to your own hull"
-hint_text = "It does not care that the surplus was meant for leaving."
+description = "[color=yellow]Your turn starts while overcharged[/color] -> Deal [color=red]5 damage[/color] to [color=purple]random enemy[/color]. Take [color=red]2 damage[/color]"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

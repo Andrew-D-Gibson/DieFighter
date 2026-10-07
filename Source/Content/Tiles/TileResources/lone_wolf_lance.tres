@@ -219,8 +219,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Lone Wolf Lance[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]X damage[/color] to [color=purple]target[/color], [color=red]tripled[/color] while your (fleet) is 2 or fewer. Then [color=orange]give[/color] them the die"
-hint_text = "Every die you leave behind makes it hungrier."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die, tripled while (fleet) is 2 or fewer. [color=orange]Give[/color] die"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

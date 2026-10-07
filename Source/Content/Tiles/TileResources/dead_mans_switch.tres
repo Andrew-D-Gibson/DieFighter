@@ -57,8 +57,7 @@ metadata/_custom_type_script = "uid://cfken75wevu1a"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Dead Man's Switch[/color]"
-description = "[color=yellow]Takes no dice.[/color] While [color=purple]fully charged[/color], a blow that would [color=red]kill you[/color] is cancelled instead — and the whole drive is spent doing it"
-hint_text = "A full drive is a saved life. You just can't also leave with it."
+description = "[color=yellow]Fatal hit while fully charged[/color] -> Cancel it. Spend all [color=purple]engine charge[/color]"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

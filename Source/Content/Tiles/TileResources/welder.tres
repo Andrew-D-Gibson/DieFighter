@@ -107,8 +107,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Welder[/color]"
-description = "[color=yellow]Any die[/color] -> Holds it. The next die gains its value (max 6), then (feed_right)"
-hint_text = "The held die goes back to your hand once welded, or at end of turn."
+description = "[color=yellow]Any die[/color] -> Hold die. Next die gains its value (max 6). (feed_right). Held die then returns to hand"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

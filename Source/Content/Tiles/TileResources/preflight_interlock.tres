@@ -129,8 +129,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Preflight Interlock[/color]"
-description = "[color=yellow]Any die[/color], only while [color=purple]fully charged[/color] -> Deal [color=red]3x the die[/color] in damage to [color=purple]target[/color], then [color=orange]give[/color] them the die"
-hint_text = "Being able to leave is not the same as leaving."
+description = "[color=yellow]Any die while fully charged[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to 3x die. [color=orange]Give[/color] die"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

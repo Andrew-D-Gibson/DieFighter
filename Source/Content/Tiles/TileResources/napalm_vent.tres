@@ -138,8 +138,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Napalm Vent[/color]"
-description = "[color=yellow]Takes no dice.[/color] Whenever a tile directly above, below, left or right of it activates, apply [color=orange]1[/color] (burn) to your [color=purple]target[/color]"
-hint_text = "Every busy neighbour stokes it."
+description = "[color=yellow]Adjacent tile activates[/color] -> Apply 1 (burn) to [color=purple]target[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

@@ -125,8 +125,7 @@ animations = [{
 [resource]
 script = ExtResource("3_mywar")
 tile_name = "[color=red]Flak Cannon[/color]"
-description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]target[/color], +1 for every surrounding tile.
-[color=orange]Give[/color] them the die"
+description = "(die_5) -> Deal [color=red]1 damage[/color] to [color=purple]target[/color], +1 per surrounding tile. [color=orange]Give[/color] die"
 textures = SubResource("SpriteFrames_m1j0p")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi"), SubResource("Resource_m1j0p")])

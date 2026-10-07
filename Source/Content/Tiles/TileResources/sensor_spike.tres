@@ -119,8 +119,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Sensor Spike[/color]"
-description = "[color=yellow]Any die[/color] -> Apply [color=red]2[/color] (exposed) to [color=purple]target[/color], then (feed_right)"
-hint_text = "Point it at the gun next door."
+description = "[color=yellow]Any die[/color] -> Apply 2 (exposed) to [color=purple]target[/color]. (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

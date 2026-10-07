@@ -154,8 +154,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Brownout Plating[/color]"
-description = "[color=yellow]Takes no dice.[/color] At the end of every [color=purple]enemy turn[/color], gain [color=blue]4 shields[/color] — but only while the engine is [color=purple]not charged[/color]"
-hint_text = "It armours a ship that isn't going anywhere."
+description = "[color=yellow]Enemy turn ends while engine not charged[/color] -> Gain [color=blue]4 shields[/color]"
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1")])

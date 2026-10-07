@@ -126,8 +126,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Crossed Wires[/color]"
-description = "[color=yellow]Any die[/color] -> Apply [color=green]1[/color] (scrambled) to [color=purple]target[/color]. The die comes back to your hand"
-hint_text = "Scramble first, then hand them a six."
+description = "[color=yellow]Any die[/color] -> Apply 1 (scrambled) to [color=purple]target[/color]. [color=orange]Return[/color] die to hand"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])

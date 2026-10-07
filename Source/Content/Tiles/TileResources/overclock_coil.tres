@@ -161,8 +161,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=red]Overclock Coil[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], [color=red]+2[/color] for every time this tile already fired this turn ([data]overclock[/data]). Resets each turn"
-hint_text = "Runs hot. Cools off between turns."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], +2 per earlier use this turn ([data]overclock[/data])"
 rarity = 2
 textures = SubResource("Resource_frames3")
 uses_per_turn = -1

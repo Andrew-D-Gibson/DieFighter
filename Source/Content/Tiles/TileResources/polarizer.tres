@@ -97,8 +97,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Polarizer[/color]"
-description = "[color=yellow]Any die[/color] -> A [color=yellow]1-3[/color] becomes a (die_1), a [color=yellow]4-6[/color] becomes a (die_6). Then (feed_right)"
-hint_text = "Nothing in the middle survives it."
+description = "[color=yellow]Any die[/color] -> [color=yellow]1-3[/color] becomes (die_1). [color=yellow]4-6[/color] becomes (die_6). (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

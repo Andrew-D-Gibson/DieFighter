@@ -139,8 +139,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Receiver Dish[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], or [color=red]8[/color] if the die was (fed). Then give them the die"
-hint_text = "Put it at the end of the line, not the start."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], or [color=red]8[/color] if die was (fed). [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

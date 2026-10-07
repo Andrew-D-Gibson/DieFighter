@@ -116,8 +116,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Bootstrap Injector[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]8 engine charge[/color] to spawn a [color=blue]hologram[/color] of the same value, then [color=orange]give[/color] them the die"
-hint_text = "They get the die. You keep its shadow."
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]8 engine charge[/color] to spawn a (hologram) of die. [color=orange]Give[/color] die"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

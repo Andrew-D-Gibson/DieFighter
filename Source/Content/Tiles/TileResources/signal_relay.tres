@@ -102,8 +102,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=green]Signal Relay[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], then (feed_right)"
-hint_text = "Alone, it's a peashooter. In a row, it's a machine."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color]. (feed_right)"
 rarity = 2
 textures = SubResource("Resource_frames3")
 uses_per_turn = -1

@@ -221,8 +221,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Value Sorter[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]1 damage[/color] to [color=purple]target[/color]. Then [color=yellow]1-2[/color]: (feed_up), [color=yellow]3-4[/color]: (feed_right), [color=yellow]5-6[/color]: (feed_down)"
-hint_text = "Every number has somewhere to be."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]1 damage[/color] to [color=purple]target[/color]. [color=yellow]1-2[/color]: (feed_up). [color=yellow]3-4[/color]: (feed_right). [color=yellow]5-6[/color]: (feed_down)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

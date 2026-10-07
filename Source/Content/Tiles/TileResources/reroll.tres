@@ -76,7 +76,7 @@ animations = [{
 [resource]
 script = ExtResource("3_1nta3")
 tile_name = "[color=green]Re-Roll[/color]"
-description = "[color=yellow]Any die[/color] -> [color=green]Re-rolls[/color] the die"
+description = "[color=yellow]Any die[/color] -> [color=green]Re-roll[/color] die"
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa")])

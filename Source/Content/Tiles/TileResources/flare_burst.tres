@@ -130,8 +130,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Flare Burst[/color]"
-description = "(die_5) -> Apply [color=red]3[/color] (exposed) to [color=purple]every enemy[/color], then [color=orange]give[/color] the die to a [color=purple]random enemy[/color]"
-hint_text = "Light up the whole formation."
+description = "(die_5) -> Apply 3 (exposed) to [color=purple]every enemy[/color]. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

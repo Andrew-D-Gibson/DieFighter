@@ -116,8 +116,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=purple]Repo Beam[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]4 engine charge[/color] to pull back the last die [color=purple]target[/color] took. Both dice return to your hand"
-hint_text = "Get them back before you jump."
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]4 engine charge[/color] to take back the last die [color=purple]target[/color] took. [color=orange]Return[/color] both dice to hand"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

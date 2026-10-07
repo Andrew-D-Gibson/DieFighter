@@ -121,8 +121,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Regenerative Brake[/color]"
-description = "[color=yellow]Takes no dice.[/color] Whenever your [color=red]hull[/color] is hit, gain [color=purple]3 engine charge[/color]"
-hint_text = "Every hit you take is thrust you didn't have to pay for."
+description = "[color=yellow]Hull hit[/color] -> Gain [color=purple]3 engine charge[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

@@ -180,8 +180,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Parity Junction[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]1 damage[/color] to [color=purple]target[/color]. Then [color=yellow]odd[/color]: (feed_up), [color=yellow]even[/color]: (feed_down)"
-hint_text = "Odds up, evens down. Build a line for each."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]1 damage[/color] to [color=purple]target[/color]. [color=yellow]Odd[/color]: (feed_up). [color=yellow]Even[/color]: (feed_down)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

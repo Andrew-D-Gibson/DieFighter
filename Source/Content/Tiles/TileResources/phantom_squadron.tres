@@ -128,8 +128,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Phantom Squadron[/color]"
-description = "[color=yellow]Any die[/color], with a (fleet) of 4 or fewer -> Spawn [color=blue]holograms[/color] of this die until your (fleet) reaches 5, then [color=orange]give[/color] the die to [color=purple]target[/color]"
-hint_text = "Lose a die, gain a ghost. [color=blue]Holograms[/color] are destroyed if given to another ship."
+description = "[color=yellow]Any die while (fleet) is 4 or fewer[/color] -> Spawn (holograms) of die until (fleet) is 5. [color=orange]Give[/color] die"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

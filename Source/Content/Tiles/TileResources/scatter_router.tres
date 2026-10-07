@@ -144,8 +144,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Scatter Router[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], then (feed_random)"
-hint_text = "Surround it with things you'd be happy to hit."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color]. (feed_random)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

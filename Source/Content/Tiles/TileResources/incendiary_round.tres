@@ -134,8 +134,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Incendiary Round[/color]"
-description = "(die_1) or (die_2) -> Apply [color=orange]3[/color] (burn) to [color=purple]target[/color], then [color=orange]give[/color] them the die"
-hint_text = "The smallest dice light the longest fires."
+description = "(die_1) or (die_2) -> Apply 3 (burn) to [color=purple]target[/color]. [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

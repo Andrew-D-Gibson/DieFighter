@@ -169,8 +169,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Leech Relay[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color] to [color=purple]target[/color]. The tiles above and below it [color=orange]lose 1 use[/color]. Then (feed_right)"
-hint_text = "It feeds on its neighbours. Give it ones that can spare it."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color] to [color=purple]target[/color]. Tiles above and below lose 1 use. (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

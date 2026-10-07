@@ -104,8 +104,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Beam Splitter[/color]"
-description = "[color=yellow]Any die[/color] -> (feed_right), and a [color=orange]holographic copy[/color] of it (feed_down)"
-hint_text = "One die, two lines."
+description = "[color=yellow]Any die[/color] -> (feed_right). (Hologram) copy: (feed_down)"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

@@ -90,9 +90,7 @@ animations = [{
 [resource]
 script = ExtResource("3_uekf7")
 tile_name = "[color=yellow]Holo-Duplicator[/color]"
-description = "[color=yellow]Any die[/color] -> Spawn 2 
-[color=blue]holograms[/color] with the same value, then [color=orange]give[/color] die to [color=purple]target[/color]"
-hint_text = "[color=blue]Holograms[/color] are destroyed if given to another ship"
+description = "[color=yellow]Any die[/color] -> Spawn 2 (holograms) of die. [color=orange]Give[/color] die"
 textures = SubResource("SpriteFrames_2vvbj")
 uses_per_turn = 1
 activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6")])

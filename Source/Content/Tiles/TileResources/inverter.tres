@@ -103,8 +103,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Inverter[/color]"
-description = "[color=yellow]Any die[/color] -> Turn it to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]), then (feed_right)"
-hint_text = "A 1 is just a 6 facing the wrong way."
+description = "[color=yellow]Any die[/color] -> Flip die to opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). (feed_right)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1")])

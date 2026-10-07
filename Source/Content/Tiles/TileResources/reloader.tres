@@ -89,7 +89,7 @@ animations = [{
 [resource]
 script = ExtResource("4_ymfbh")
 tile_name = "[color=yellow]Reloader[/color]"
-description = "[color=yellow]Any die[/color] -> Add one use to every surrounding tile. [color=orange]Gives[/color] die to [color=purple]target[/color]"
+description = "[color=yellow]Any die[/color] -> Surrounding tiles gain 1 use. [color=orange]Give[/color] die"
 rarity = 2
 textures = SubResource("SpriteFrames_0qwli")
 uses_per_turn = 1

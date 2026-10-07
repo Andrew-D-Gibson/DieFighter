@@ -74,7 +74,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("1_6sgwv")
 name = "Grid Lockout"
-description = "[color=orange]Locks[/color] a grid location"
+description = "Lock a grid cell"
 indicator_texture = ExtResource("1_354nc")
 info_texture = ExtResource("2_m2445")
 effect_chain = SubResource("Resource_f3imi")

@@ -162,8 +162,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Flashpoint[/color]"
-description = "(die_6) -> Deal [color=red]3x[/color] the [color=purple]target's[/color] (burn) as damage, then put the fire out. Then [color=orange]give[/color] them the die"
-hint_text = "Let it smoulder, then cash it in all at once."
+description = "(die_6) -> Deal [color=red]3 damage[/color] to [color=purple]target[/color] per (burn) on it. Clear its (burn). [color=orange]Give[/color] die"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

@@ -145,8 +145,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=purple]Afterburner Relay[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]3 engine charge[/color] to deal [color=red]6 damage[/color] to [color=purple]target[/color], then (feed_right)"
-hint_text = "Every shot burns fuel you might want for leaving."
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]3 engine charge[/color] to deal [color=red]6 damage[/color] to [color=purple]target[/color]. (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

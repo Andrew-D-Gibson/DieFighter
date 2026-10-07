@@ -122,8 +122,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Arc Tap[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]6 engine charge[/color] to deal [color=red]10 damage[/color] to [color=purple]target[/color], then [color=orange]give[/color] them the die"
-hint_text = "A measured sip. Three of them is your way out, spent."
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]6 engine charge[/color] to deal [color=red]10 damage[/color] to [color=purple]target[/color]. [color=orange]Give[/color] die"
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])

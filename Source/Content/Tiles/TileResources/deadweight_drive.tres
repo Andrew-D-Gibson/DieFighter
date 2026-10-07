@@ -136,8 +136,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Deadweight Drive[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]damage[/color] equal to [color=purple]half the charge you are missing[/color], then [color=orange]give[/color] them the die"
-hint_text = "It fires hardest on a cold drive. Charging up disarms it."
+description = "(die_1) or (die_2) -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to half your missing [color=purple]engine charge[/color]. [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

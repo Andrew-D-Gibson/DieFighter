@@ -153,8 +153,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Overpressure Lance[/color]"
-description = "(die_6), only while [color=red]overcharged[/color] -> Deal [color=red]3x your surplus[/color] in damage, spending it all. The drive is left [color=purple]exactly full[/color]"
-hint_text = "It only ever burns what you didn't need to escape."
+description = "(die_6) [color=yellow]while overcharged[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to 3x [color=purple]surplus charge[/color]. Spend it"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

@@ -89,7 +89,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 name = "Engine Siphon"
-description = "Drains [color=purple](amount) engine charge[/color]"
+description = "Drain [color=purple](amount) engine charge[/color]"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
 effect_chain = SubResource("Resource_chain")

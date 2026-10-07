@@ -120,8 +120,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Spotter Drone[/color]"
-description = "[color=yellow]Takes no dice.[/color] At the end of every [color=purple]enemy turn[/color], apply [color=red]3[/color] (exposed) to your [color=purple]target[/color]"
-hint_text = "Your first hit each turn lands harder."
+description = "[color=yellow]Enemy turn ends[/color] -> Apply 3 (exposed) to [color=purple]target[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

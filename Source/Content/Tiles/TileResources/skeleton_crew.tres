@@ -140,8 +140,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=blue]Skeleton Crew[/color]"
-description = "Takes no dice. At the start of each turn, gain [color=blue]2 shields[/color] for every die your (fleet) is short of 5"
-hint_text = "Fewer hands, fewer places to get hit."
+description = "[color=yellow]Your turn starts[/color] -> Gain [color=blue]2 shields[/color] per die your (fleet) is short of 5"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

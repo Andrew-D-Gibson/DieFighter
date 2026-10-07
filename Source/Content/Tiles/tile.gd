@@ -154,12 +154,6 @@ func _get_tile_info() -> InfoResource:
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
 	info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
-	# Spell out any keyword rules the description leans on, so a new player
-	# never has to already know what "Feed" means.
-	var glossary: String = Keywords.glossary_for(tile_resource.description)
-	if not glossary.is_empty():
-		info.bottom_label_text += "\n\n" + glossary
-	info.side_label_text = tile_resource.hint_text
 	return info
 
 

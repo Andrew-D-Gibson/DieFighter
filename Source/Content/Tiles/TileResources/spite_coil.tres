@@ -148,8 +148,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=red]Spite Coil[/color]"
-description = "[color=yellow]Takes no dice.[/color] Whenever your [color=red]hull[/color] is hit, deal [color=red]3 damage[/color] to a [color=purple]random enemy[/color]"
-hint_text = "Shields keep it quiet."
+description = "[color=yellow]Hull hit[/color] -> Deal [color=red]3 damage[/color] to [color=purple]random enemy[/color]"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

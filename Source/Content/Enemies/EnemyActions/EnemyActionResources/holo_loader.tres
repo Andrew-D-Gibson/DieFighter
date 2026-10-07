@@ -38,7 +38,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("3_action")
 name = "Holo Loader"
-description = "Hands your die back, then conjures a [color=#5fcde4]holographic (amount)[/color] for (target), who uses it at once"
+description = "[color=orange]Return[/color] your die. [color=orange]Give[/color] (target) a (hologram) (amount) to use at once"
 indicator_texture = ExtResource("4_icon")
 info_texture = ExtResource("5_info")
 effect_chain = SubResource("Resource_chain")

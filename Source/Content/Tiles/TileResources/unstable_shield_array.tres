@@ -199,7 +199,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=blue]Unstable Shield Array[/color]"
-description = "[color=yellow]When pushed[/color] -> Gain [color=blue]2 shields[/color], +1 for every push since it was last picked up. Moving it by hand resets the stack.\n(Currently [color=blue][data]activation_count[/data] stacked[/color])"
+description = "[color=yellow]Pushed[/color] -> Gain [color=blue]2 shields[/color], +1 per push since last picked up\n(Stack: [data]activation_count[/data])"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

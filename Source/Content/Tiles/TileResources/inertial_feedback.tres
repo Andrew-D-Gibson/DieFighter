@@ -159,7 +159,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=red]Inertial Feedback[/color]"
-description = "(die_6) -> Deal [color=red]1 damage[/color] to [color=purple]all other ships[/color] per tile moved this combat ([data]tiles_moved[/data]), then reset the count. [color=orange]Gives[/color] the die to a [color=purple]random enemy[/color]"
+description = "(die_6) -> Deal [color=red]1 damage[/color] to [color=purple]all other ships[/color] per tile moved this combat ([data]tiles_moved[/data]). Reset count. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = -1

@@ -15,9 +15,9 @@ func _show_info(info: InfoResource) -> void:
 		return
 		
 	%TitleLabel.text = Utils.format_text(info.title_label_text)
-	%TopLabel.text = Utils.format_text(info.top_label_text)
-	%BottomLabel.text = Utils.format_text(info.bottom_label_text)
-	%SideLabel.text = Utils.format_text(info.side_label_text)
+	%TopLabel.text = Utils.format_text(info.top_label_text, true)
+	%BottomLabel.text = Utils.format_text(info.bottom_label_text, true)
+	%KeywordPopup.hide()
 	self.visible = true
 
 	%TextureDisplay.texture = info.texture
@@ -52,6 +52,38 @@ func _show_info(info: InfoResource) -> void:
 	%TweenableTextureDisplay.hide()
 	%TextureDisplay.modulate.a = 1
 
+
+
+func _process(_delta: float) -> void:
+	if %KeywordPopup.visible:
+		_place_keyword_popup()
+
+
+func _on_keyword_hover_started(meta: Variant) -> void:
+	var rule: String = Keywords.definition(str(meta))
+	if rule.is_empty():
+		return
+	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [meta, rule])
+	# Shrink back to the new text's size before placing, or a long rule's
+	# height lingers on a short one.
+	%KeywordPopup.reset_size()
+	%KeywordPopup.show()
+	_place_keyword_popup()
+
+
+func _on_keyword_hover_ended(_meta: Variant) -> void:
+	%KeywordPopup.hide()
+
+
+## Sits below-right of the cursor, flipped back inside the screen at the edges.
+func _place_keyword_popup() -> void:
+	var offset: Vector2 = Vector2(32, 32)
+	var popup_size: Vector2 = %KeywordPopup.size
+	var pos: Vector2 = get_local_mouse_position() + offset
+	pos.x = minf(pos.x, size.x - popup_size.x - offset.x)
+	if pos.y + popup_size.y > size.y - offset.y:
+		pos.y = get_local_mouse_position().y - popup_size.y - offset.y
+	%KeywordPopup.position = pos
 
 
 func _on_screen_dim_gui_input(event: InputEvent) -> void:

@@ -150,8 +150,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=blue]Counterweight Battery[/color]"
-description = "[color=yellow]Takes no dice.[/color] At the end of every [color=purple]enemy turn[/color], gain [color=blue]3 shields[/color]"
-hint_text = "Costs a cell, not a die."
+description = "[color=yellow]Enemy turn ends[/color] -> Gain [color=blue]3 shields[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

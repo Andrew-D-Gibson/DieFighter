@@ -132,8 +132,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Debt Collector[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color] to [color=purple]target[/color] for every die it's holding, then [color=orange]give[/color] it the die"
-hint_text = "Every die you feed it is a debt to collect, and a die you lose if you jump."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color] to [color=purple]target[/color] per die it holds. [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

@@ -76,8 +76,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Surge Relay[/color]"
-description = "[color=yellow]Any die[/color] -> [color=orange]Reroll[/color] it, then (feed_right)"
-hint_text = "Put something picky after it and take your chances."
+description = "[color=yellow]Any die[/color] -> [color=green]Re-roll[/color] die. (feed_right)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1")])

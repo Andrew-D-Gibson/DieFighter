@@ -144,8 +144,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Swarm Battery[/color]"
-description = "[color=yellow]Any die[/color] -> Fire a [color=red]2 damage[/color] shot at [color=purple]target[/color] for every die in your (fleet), then [color=orange]give[/color] them the die"
-hint_text = "Holograms count. So does every die you've already handed over."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color] per die in (fleet). [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

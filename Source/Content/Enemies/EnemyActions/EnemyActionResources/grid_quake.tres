@@ -76,7 +76,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 name = "Grid Quake"
-description = "[color=yellow]Shoves[/color] one of your tiles one cell in a random direction"
+description = "[color=green]Shove[/color] one of your tiles 1 cell in a random direction"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
 effect_chain = SubResource("Resource_chain")

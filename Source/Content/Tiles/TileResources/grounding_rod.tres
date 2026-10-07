@@ -150,8 +150,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Grounding Rod[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]X damage[/color] to [color=purple]target[/color], then give them the die as a (die_1)"
-hint_text = "End a line here and they get nothing worth throwing back."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. [color=orange]Give[/color] die as (die_1)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

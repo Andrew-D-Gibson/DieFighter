@@ -138,8 +138,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=green]Grudge Cannon[/color]"
-description = "(die_5) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color] — or [color=red]9[/color] if they are already holding a (die_5). Then [color=orange]gives[/color] them the die"
-hint_text = "Feed it a 5, then feed it another."
+description = "(die_5) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color], or [color=red]9[/color] if it holds a (die_5). [color=orange]Give[/color] die"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = -1

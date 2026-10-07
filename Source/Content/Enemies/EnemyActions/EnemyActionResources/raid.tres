@@ -87,7 +87,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("3_action")
 name = "Raid"
-description = "Fires on (target) for [color=red](amount) damage[/color], then hands your die back"
+description = "Deal [color=red](amount) damage[/color] to (target). [color=orange]Return[/color] your die"
 indicator_texture = ExtResource("4_icon")
 info_texture = ExtResource("5_info")
 effect_chain = SubResource("Resource_chain")

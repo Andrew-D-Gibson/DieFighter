@@ -132,8 +132,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Crescendo Cannon[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]1 damage[/color] to [color=purple]target[/color] for every tile activated this turn, counting this one. Then give them the die"
-hint_text = "Fire it last."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]1 damage[/color] to [color=purple]target[/color] per tile activated this turn, including this one. [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

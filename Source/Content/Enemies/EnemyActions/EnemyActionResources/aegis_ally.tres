@@ -80,7 +80,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 name = "Aegis Link"
-description = "[color=blue]Shields[/color] (target) for [color=blue](amount)[/color]"
+description = "Grant (target) [color=blue](amount) shields[/color]"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
 effect_chain = SubResource("Resource_chain")

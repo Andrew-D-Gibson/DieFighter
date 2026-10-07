@@ -126,8 +126,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=blue]Chaff Pod[/color]"
-description = "(die_1) -> Apply [color=yellow]1[/color] (jammed) to [color=purple]target[/color], then [color=orange]give[/color] them the die"
-hint_text = "Their next die does nothing, whichever one it is."
+description = "(die_1) -> Apply 1 (jammed) to [color=purple]target[/color]. [color=orange]Give[/color] die"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3")])

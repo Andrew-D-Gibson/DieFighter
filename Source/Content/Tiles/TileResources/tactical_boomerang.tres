@@ -172,7 +172,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=red]Tactical Boomerang[/color]"
-description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=purple]target[/color], then recoil [color=green]left[/color] on (die_3) or [color=green]right[/color] on (die_4)"
+description = "(die_3) or (die_4) -> Deal [color=red]5 damage[/color] to [color=purple]target[/color]. Recoil: (die_3) [color=green]left[/color], (die_4) [color=green]right[/color]"
 rarity = 1
 textures = SubResource("Resource_frames4")
 uses_per_turn = 2

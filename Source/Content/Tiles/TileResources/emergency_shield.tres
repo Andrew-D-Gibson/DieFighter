@@ -203,7 +203,7 @@ animations = [{
 [resource]
 script = ExtResource("4_k7gdr")
 tile_name = "Emergency Shield"
-description = "After [color=red]fatal damage[/color], remain at 1 [color=red]HULL[/color] and gain 12 [color=blue]shields[/color].  [color=yellow]Single use[/color]"
+description = "[color=yellow]Fatal hit[/color] -> Survive at 1 [color=red]hull[/color]. Gain [color=blue]12 shields[/color]. Single use"
 rarity = 1
 textures = SubResource("SpriteFrames_6btq7")
 uses_per_turn = -1

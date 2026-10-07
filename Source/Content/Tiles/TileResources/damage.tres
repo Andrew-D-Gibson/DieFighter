@@ -117,7 +117,7 @@ animations = [{
 [resource]
 script = ExtResource("8_2fv8l")
 tile_name = "[color=red]Dice Cannon[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]X damage[/color] to [color=purple]target[/color], then [color=orange]give[/color] them the die"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_mkcsn")
 uses_per_turn = -1

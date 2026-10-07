@@ -109,7 +109,7 @@ animations = [{
 [resource]
 script = ExtResource("3_r846u")
 tile_name = "[color=purple]Emergency Transfer[/color]"
-description = "(die_1) -> Turn all [color=purple]engine charge[/color] into [color=blue]shields[/color], then [color=orange]give[/color] die to [color=purple]random enemy[/color]"
+description = "(die_1) -> Convert all [color=purple]engine charge[/color] to [color=blue]shields[/color]. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_wsqrt")]([SubResource("Resource_r846u"), SubResource("Resource_u10cf")])

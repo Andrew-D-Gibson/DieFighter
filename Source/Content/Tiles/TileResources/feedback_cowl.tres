@@ -150,8 +150,7 @@ metadata/_custom_type_script = "uid://cfken75wevu1a"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Feedback Cowl[/color]"
-description = "[color=yellow]Takes no dice.[/color] Whenever an enemy [color=purple]siphons your engine[/color], deal [color=red]4 damage[/color] to a [color=purple]random enemy[/color]"
-hint_text = "Spending your own charge is not theft. It knows the difference."
+description = "[color=yellow]Enemy siphons engine[/color] -> Deal [color=red]4 damage[/color] to [color=purple]random enemy[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

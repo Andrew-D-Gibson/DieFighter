@@ -142,7 +142,7 @@ animations = [{
 [resource]
 script = ExtResource("4_rsbqf")
 tile_name = "[color=green]Chaos Explosion[/color]"
-description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to all ships then [color=green]re-roll[/color] all dice"
+description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to [color=purple]all ships[/color]. [color=green]Re-roll[/color] all dice"
 rarity = 2
 textures = SubResource("SpriteFrames_2itrs")
 uses_per_turn = 1

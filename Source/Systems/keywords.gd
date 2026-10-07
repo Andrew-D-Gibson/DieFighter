@@ -3,26 +3,29 @@ extends RefCounted
 ## Game terms written into descriptions as tokens, e.g. "(feed_right)".
 ##
 ## Utils.format_text() swaps each token for its styled label wherever text is
-## shown. glossary_for() lists the definitions a piece of text relies on, so a
-## tile's info panel can explain every keyword it uses without each
-## description having to repeat the rules.
+## shown. In the info panel the label is also hoverable: the panel looks the
+## term up with definition() and pops its rule up, so descriptions never have
+## to repeat the rules.
 ##
 ## HOW TO ADD A KEYWORD:
 ##   1. Add its definition to _DEFINITIONS, keyed by the term.
 ##   2. Add one row per token spelling to _TOKENS, pointing at that term.
-##      Directional variants share a term, so the glossary explains it once.
+##      Variants share a term, so its rule is written once. A row may set
+##      "color" to a palette name where the word belongs to another colour
+##      rule (holograms are blue); otherwise keywords are orange.
 
 
-## Term -> plain-language rule. Written for a first-time player: say what
-## happens to the die, and what happens when it goes wrong.
+## Term -> rule, shown in a pop-up on hover. Terse and in the same palette as
+## tile text: say what happens to the die, and what happens when it can't.
 const _DEFINITIONS: Dictionary[String, String] = {
-	"Feed": "The tile that way uses the die next. If it can't, your [color=purple]target[/color] gets it.",
-	"Fed": "Another tile's Feed passed the die here, rather than you placing it.",
-	"Burn": "When your turn ends, a burning ship takes damage equal to its Burn, then loses 1 Burn.",
-	"Scrambled": "Each die handed to a scrambled ship lands on its opposite face (1-6, 2-5, 3-4) and spends 1 Scrambled. Dice it already holds are untouched.",
-	"Jammed": "Each die a jammed ship uses does nothing and comes back to you, spending 1 Jammed.",
-	"Exposed": "The next hit a tile lands on an exposed ship deals extra damage equal to its Exposed, then all of it is spent.",
-	"Fleet": "Every die you own, wherever it is right now: in your hand, on a tile, or handed to an enemy. Holograms in your hand count too. Dice an enemy is still holding when you jump stay behind, and leave your Fleet for good.",
+	"Feed": "The next tile that way uses the die. If it can't, [color=purple]target[/color] gets it.",
+	"Fed": "Passed here by another tile's Feed.",
+	"Burn": "At end of turn, take [color=red]damage[/color] equal to Burn, then lose 1 Burn.",
+	"Scrambled": "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled.",
+	"Jammed": "Each die this ship uses does nothing and returns to you. Spends 1 Jammed.",
+	"Exposed": "The next hit on this ship deals extra [color=red]damage[/color] equal to Exposed, then clears it.",
+	"Hologram": "A copy of a die. Destroyed if given to another ship.",
+	"Fleet": "Every die you own: in hand, on tiles, or held by enemies. Holograms count. Dice enemies hold when you jump are lost.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -41,6 +44,9 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(exposed)":    {"label": "Exposed",    "term": "Exposed"},
 	"(expose)":     {"label": "Expose",     "term": "Exposed"},
 	"(fleet)":      {"label": "Fleet",      "term": "Fleet"},
+	"(hologram)":   {"label": "hologram",   "term": "Hologram", "color": "blue"},
+	"(holograms)":  {"label": "holograms",  "term": "Hologram", "color": "blue"},
+	"(Hologram)":   {"label": "Hologram",   "term": "Hologram", "color": "blue"},
 }
 
 const _KEYWORD_COLOR: String = "orange"
@@ -48,40 +54,23 @@ const _KEYWORD_COLOR: String = "orange"
 
 ## Replaces every keyword token with its styled label. Emits palette color
 ## names (=orange), so run it before format_text's palette substitution.
-static func render(text: String) -> String:
+## With hoverable, each label also carries its term as a [url] tag, so a RichTextLabel
+## can raise meta_hover_started for it.
+static func render(text: String, hoverable: bool = false) -> String:
 	for token: String in _TOKENS:
-		text = text.replace(token, _styled(_TOKENS[token]["label"]))
+		var entry: Dictionary = _TOKENS[token]
+		var meta_term: String = entry["term"] if hoverable else ""
+		text = text.replace(token, _styled(entry["label"], meta_term, entry.get("color", _KEYWORD_COLOR)))
 	return text
 
 
-## A definition line for each distinct keyword that appears in the text, in
-## the order they first appear. Empty when the text uses none.
-static func glossary_for(text: String) -> String:
-	# Term -> earliest position any of its tokens appears at.
-	var first_seen: Dictionary[String, int] = {}
-	for token: String in _TOKENS:
-		var index: int = text.find(token)
-		if index == -1:
-			continue
-		var term: String = _TOKENS[token]["term"]
-		first_seen[term] = mini(index, first_seen.get(term, index))
-
-	var terms: Array[String] = []
-	terms.assign(first_seen.keys())
-	terms.sort_custom(func(a: String, b: String) -> bool:
-		return first_seen[a] < first_seen[b]
-	)
-
-	var lines: PackedStringArray = []
-	for term: String in terms:
-		lines.append(_styled(term) + ": " + _DEFINITIONS[term])
-	return "\n".join(lines)
-
-
-## The plain-language rule for a term, or an empty string for an unknown one.
+## The rule for a term, or an empty string for an unknown one.
 static func definition(term: String) -> String:
 	return _DEFINITIONS.get(term, "")
 
 
-static func _styled(label: String) -> String:
-	return "[color=" + _KEYWORD_COLOR + "]" + label + "[/color]"
+static func _styled(label: String, meta_term: String = "", color: String = _KEYWORD_COLOR) -> String:
+	var styled: String = "[color=" + color + "]" + label + "[/color]"
+	if meta_term.is_empty():
+		return styled
+	return "[url=" + meta_term + "]" + styled + "[/url]"

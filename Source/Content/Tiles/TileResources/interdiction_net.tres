@@ -136,8 +136,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=blue]Interdiction Net[/color]"
-description = "[color=yellow]Takes no dice.[/color] Whenever your [color=red]hull[/color] is hit, apply [color=yellow]1[/color] (jammed) to a [color=purple]random enemy[/color]"
-hint_text = "Shields keep it quiet."
+description = "[color=yellow]Hull hit[/color] -> Apply 1 (jammed) to [color=purple]random enemy[/color]"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

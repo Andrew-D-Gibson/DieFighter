@@ -92,8 +92,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=purple]Toll Relay[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]2 engine charge[/color], then (feed_right)"
-hint_text = "Every die that passes through pays for the trip home."
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]2 engine charge[/color]. (feed_right)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])

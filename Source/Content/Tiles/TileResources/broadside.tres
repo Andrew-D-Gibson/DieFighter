@@ -159,8 +159,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Broadside[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color] for every die still in your hand, then [color=orange]give[/color] them the die"
-hint_text = "Fire it first."
+description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color] per die in hand. [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

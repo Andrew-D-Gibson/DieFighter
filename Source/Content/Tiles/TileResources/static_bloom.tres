@@ -133,8 +133,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Static Bloom[/color]"
-description = "[color=yellow]Takes no dice.[/color] At the start of your turn, apply [color=green]1[/color] (scrambled) to a [color=purple]random enemy[/color]"
-hint_text = "Background noise in their targeting."
+description = "[color=yellow]Your turn starts[/color] -> Apply 1 (scrambled) to [color=purple]random enemy[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

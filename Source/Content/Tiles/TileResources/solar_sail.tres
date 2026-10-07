@@ -124,8 +124,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=blue]Solar Sail[/color]"
-description = "(die_2) -> Gain [color=blue]2 shields[/color] for every [color=yellow]empty cell[/color] touching this tile"
-hint_text = "Sails need room to unfold."
+description = "(die_2) -> Gain [color=blue]2 shields[/color] per surrounding empty cell"
 rarity = 1
 textures = SubResource("Resource_frames4")
 uses_per_turn = -1

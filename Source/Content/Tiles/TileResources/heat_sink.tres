@@ -124,8 +124,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=blue]Heat Sink[/color]"
-description = "(die_4) -> Gain [color=blue]shields[/color] equal to twice the [color=purple]target's[/color] (burn), then [color=orange]give[/color] them the die"
-hint_text = "Their fire, your armour."
+description = "(die_4) -> Gain [color=blue]2 shields[/color] per (burn) on [color=purple]target[/color]. [color=orange]Give[/color] die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

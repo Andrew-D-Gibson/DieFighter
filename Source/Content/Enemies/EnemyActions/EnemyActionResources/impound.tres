@@ -79,7 +79,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 name = "Impound"
-description = "Attacks for [color=red](amount) damage[/color], then [color=orange]keeps the die[/color]"
+description = "Deal [color=red](amount) damage[/color]. [color=orange]Keep[/color] your die"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
 effect_chain = SubResource("Resource_chain")

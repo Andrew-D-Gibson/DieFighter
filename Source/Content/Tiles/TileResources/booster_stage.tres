@@ -97,8 +97,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Booster Stage[/color]"
-description = "[color=yellow]Any die[/color] -> The tile to the right gets [color=orange]+2 to its effects[/color] this turn. Then (feed_right)"
-hint_text = "Put your biggest gun after it."
+description = "[color=yellow]Any die[/color] -> Tile to the right gets +2 to effects this turn. (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

@@ -101,8 +101,7 @@ animations = [{
 [resource]
 script = ExtResource("2_tile")
 tile_name = "[color=purple]Governor Coil[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge[/color] equal to the die, then [color=orange]give[/color] [color=purple]target[/color] the die as a (die_1)"
-hint_text = "The drive keeps the six. They get the scrap."
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge[/color] equal to die. [color=orange]Give[/color] die as (die_1)"
 rarity = 2
 textures = SubResource("SpriteFrames_governor")
 uses_per_turn = 2

@@ -101,7 +101,7 @@ animations = [{
 [resource]
 script = ExtResource("8_8vpcq")
 tile_name = "[color=blue]Shield Burst[/color]"
-description = "(die_3) -> Add [color=blue]8 shields[/color], then [color=orange]give[/color] die to the [color=purple]target[/color]"
+description = "(die_3) -> Gain [color=blue]8 shields[/color]. [color=orange]Give[/color] die"
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])

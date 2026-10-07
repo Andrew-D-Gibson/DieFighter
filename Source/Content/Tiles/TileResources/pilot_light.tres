@@ -76,8 +76,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Pilot Light[/color]"
-description = "Takes no dice. At the start of each turn, a [color=orange]holographic[/color] (die_1) (feed_right)"
-hint_text = "Something to start the machine with before you've rolled."
+description = "[color=yellow]Your turn starts[/color] -> Spawn a (hologram) (die_1). (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

@@ -77,8 +77,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Spark Gap[/color]"
-description = "Takes no dice. Whenever a tile directly above, below, left or right of it activates, deal [color=red]1 damage[/color] to a [color=purple]random enemy[/color]"
-hint_text = "Wire your machine around it."
+description = "[color=yellow]Adjacent tile activates[/color] -> Deal [color=red]1 damage[/color] to [color=purple]random enemy[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

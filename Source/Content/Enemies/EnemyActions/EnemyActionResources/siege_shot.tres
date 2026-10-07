@@ -108,7 +108,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 name = "Siege Shot"
-description = "Fires the bore for [color=red](amount) damage[/color]"
+description = "Deal [color=red](amount) damage[/color]"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
 effect_chain = SubResource("Resource_chain")
