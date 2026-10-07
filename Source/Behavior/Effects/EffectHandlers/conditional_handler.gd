@@ -57,6 +57,12 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext, en
 			return context.effect_source is Tile \
 				and (context.effect_source as Tile).get_held_die(context.activator_die) != null
 
+		EffectEnums.ConditionalSubtype.IF_DICE_OWNED_IN_RANGE:
+			if Globals.player == null:
+				return false
+			var owned: int = Globals.player.dice_owned()
+			return owned >= data.range_min and owned <= data.range_max
+
 		EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS:
 			return not context.targets.is_empty() and is_instance_valid(context.targets[0]) \
 				and engine.find_status(context.targets[0], StringName(data.string_param)) != null

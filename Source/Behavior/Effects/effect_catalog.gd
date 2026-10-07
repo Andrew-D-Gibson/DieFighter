@@ -94,6 +94,9 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_FEED_DEPTH, label = "Set to Feed Depth", handler = SetAmountToFeedDepthHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_ACTIVATIONS_THIS_TURN, label = "Set to Activations This Turn", handler = SetAmountToActivationsThisTurnHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_STATUS, label = "Set to Target Status", handler = SetAmountToTargetStatusHandler, fields = ["string_param"]},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_DICE_OWNED, label = "Set to Dice Owned", handler = SetAmountToDiceOwnedHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_DICE_IN_HAND, label = "Set to Dice in Hand", handler = SetAmountToDiceInHandHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_DICE_HELD, label = "Set to Target Dice Held", handler = SetAmountToTargetDiceHeldHandler},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
@@ -105,10 +108,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.GIVE_DIE_AWAY, label = "Give Die Away", handler = GiveDieAwayHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_TILE, label = "Keep Die with Tile", handler = KeepDieWithTileHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE, label = "Spawn Holographic Die", handler = SpawnHolographicDieHandler},
-	## Enemy-side 'take a die from a target' was specced but never built. The
-	## ordinal is kept so KEEP_DIE_WITH_ACTOR below stays at 10, which authored
-	## content already refers to.
-	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.RECEIVE_DIE_FROM_TARGET, label = "Receive Die from Target", handler = null, reserved = true},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.RECEIVE_DIE_FROM_TARGET, label = "Receive Die from Target", handler = ReceiveDieFromTargetHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR, label = "Keep Die with Actor", handler = KeepDieWithActorHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.MERGE_HELD_DIE, label = "Merge Held Die", handler = MergeHeldDieHandler},
 
@@ -170,6 +170,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_FED, label = "If Fed", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE, label = "If Source Holds Die", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS, label = "If Target Has Status", handler = ConditionalHandler, fields = ["string_param"]},
+	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_DICE_OWNED_IN_RANGE, label = "If Dice Owned in Range", handler = ConditionalHandler, fields = ["range_min", "range_max"]},
 
 	# ── REPETITION ────────────────────────────────────────────────
 	{category = EffectEnums.Category.REPETITION, subtype = EffectEnums.RepetitionSubtype.ADD_REPETITIONS, label = "Add Repetitions", handler = AddRepetitionsHandler},

@@ -1,0 +1,154 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/RedTiles/swarm_battery.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
+
+[sub_resource type="Resource" id="Resource_step_1"]
+script = ExtResource("script_effect")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_1")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_3"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 18
+amount = 60
+color = Color(0.949, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_4"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 15
+amount = 6
+color = Color(0.949, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_5"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 14
+amount = 10
+color = Color(0.949, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_6"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 7
+amount = 25
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_7"]
+script = ExtResource("script_effect")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_8"]
+script = ExtResource("script_effect")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_9"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 17
+multiplier = 0.6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_10"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_11"]
+script = ExtResource("script_effect")
+category = 2
+subtype = 14
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_12"]
+script = ExtResource("script_effect")
+category = 2
+subtype = 2
+multiplier = 1.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_13"]
+script = ExtResource("script_effect")
+category = 2
+subtype = 1
+amount = -1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_14"]
+script = ExtResource("script_effect")
+category = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cond_15"]
+script = ExtResource("script_cond")
+category = 7
+subtype = 9
+range_min = 0
+range_max = 99
+if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_11"), SubResource("Resource_step_12"), SubResource("Resource_step_13"), SubResource("Resource_step_14")])
+if_false_effects = Array[ExtResource("script_effect")]([])
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
+[sub_resource type="Resource" id="Resource_chain_16"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_1"), SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10")])
+repetition_conditions = Array[ExtResource("script_cond")]([SubResource("Resource_cond_15")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_act_17"]
+script = ExtResource("script_act")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act_18"]
+script = ExtResource("script_act")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tile"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+tile_name = "[color=red]Swarm Battery[/color]"
+description = "[color=yellow]Any die[/color] -> Fire a [color=red]2 damage[/color] shot at [color=purple]target[/color] for every die in your (fleet), then [color=orange]give[/color] them the die"
+hint_text = "Holograms count. So does every die you've already handed over."
+rarity = 1
+textures = SubResource("SpriteFrames_tile")
+uses_per_turn = 1
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_17"), SubResource("Resource_act_18")])
+effect_chain = SubResource("Resource_chain_16")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

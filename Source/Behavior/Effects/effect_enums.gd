@@ -115,6 +115,14 @@ enum AmountModifierSubtype {
 	## Set running_amount to the first target's stacks of the status named by
 	## string_param (0 when it has none).
 	SET_TO_TARGET_STATUS,
+	## Set running_amount to how many dice the player owns, holograms included
+	## (see Player.dice_owned()). Where a die is right now doesn't matter.
+	SET_TO_DICE_OWNED,
+	## Set running_amount to how many dice are still in the player's hand,
+	## not counting the one being spent.
+	SET_TO_DICE_IN_HAND,
+	## Set running_amount to how many dice the first target is holding.
+	SET_TO_TARGET_DICE_HELD,
 }
 
 
@@ -129,7 +137,7 @@ enum DiceControlSubtype {
 	GIVE_DIE_AWAY,           ## Give the activator die away from the actor
 	KEEP_DIE_WITH_TILE,      ## Retain the activator die on this tile after use
 	SPAWN_HOLOGRAPHIC_DIE,   ## Spawn a holographic (one-use) die
-	RECEIVE_DIE_FROM_TARGET, ## Enemy action: take a die from a target
+	RECEIVE_DIE_FROM_TARGET, ## The actor takes back a die its first target is holding
 	KEEP_DIE_WITH_ACTOR,     ## The actor holds onto the activator die instead of returning it
 	## The activator die gains the value of the die the source tile is holding
 	## (capped at 6), and the held die goes back to the player's hand.
@@ -213,6 +221,7 @@ enum ConditionalSubtype {
 	IF_FED,              ## True if another tile's Feed passed the die here
 	IF_SOURCE_HOLDS_DIE, ## True if the source tile is holding a die other than the activator
 	IF_TARGET_HAS_STATUS, ## True if the first target has the status named by string_param
+	IF_DICE_OWNED_IN_RANGE, ## True if the player owns between min and max dice (inclusive), holograms included
 }
 
 

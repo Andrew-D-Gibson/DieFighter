@@ -77,3 +77,33 @@ func test_set_to_activations_this_turn() -> void:
 	grid.activations_this_turn = 4
 	Globals.tile_grid = grid
 	assert_eq(await _apply(Sub.SET_TO_ACTIVATIONS_THIS_TURN), 4)
+
+
+# ── Fleet readers ─────────────────────────────────────────────────────────────
+
+const _DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
+
+
+## A ship-shaped stand-in holding `count` real dice, for the readers that
+## look at a target's dice_manager. Kept out of the tree, like every Dice here.
+func _ship_holding(count: int) -> Node:
+	var ship: Player = autofree(Player.new())
+	ship.dice_manager = autofree(DiceQueue.new())
+	for i: int in count:
+		ship.dice_manager.queue.append(autofree(_DICE_SCENE.instantiate()))
+	return ship
+
+
+func test_set_to_dice_owned_reads_the_fleet() -> void:
+	Globals.player = make_player(4)
+	assert_eq(await _apply(Sub.SET_TO_DICE_OWNED), 4)
+
+
+func test_set_to_target_dice_held_counts_the_first_targets_dice() -> void:
+	context.targets = [_ship_holding(3), _ship_holding(1)]
+	assert_eq(await _apply(Sub.SET_TO_TARGET_DICE_HELD), 3)
+
+
+func test_set_to_target_dice_held_is_zero_without_a_target() -> void:
+	context.running_amount = 9
+	assert_eq(await _apply(Sub.SET_TO_TARGET_DICE_HELD), 0)

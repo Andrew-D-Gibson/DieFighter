@@ -116,3 +116,20 @@ func test_if_fed_reads_feed_depth() -> void:
 	assert_eq(await _branch_taken(_cond(Cond.IF_FED)), FALSE_BRANCH, "placed by hand")
 	context.feed_depth = 2
 	assert_eq(await _branch_taken(_cond(Cond.IF_FED)), TRUE_BRANCH, "arrived through a Feed")
+
+
+func test_if_dice_owned_in_range_reads_the_fleet() -> void:
+	var cond := _cond(Cond.IF_DICE_OWNED_IN_RANGE)
+	cond.range_min = 0
+	cond.range_max = 2
+	Globals.player = make_player(2)
+	assert_eq(await _branch_taken(cond), TRUE_BRANCH)
+	Globals.player = make_player(3)
+	assert_eq(await _branch_taken(cond), FALSE_BRANCH)
+
+
+func test_if_dice_owned_in_range_is_false_without_a_player() -> void:
+	Globals.player = null
+	var cond := _cond(Cond.IF_DICE_OWNED_IN_RANGE)
+	cond.range_max = 99
+	assert_eq(await _branch_taken(cond), FALSE_BRANCH)

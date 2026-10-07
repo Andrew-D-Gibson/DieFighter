@@ -22,6 +22,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Scrambled": "Each die handed to a scrambled ship lands on its opposite face (1-6, 2-5, 3-4) and spends 1 Scrambled. Dice it already holds are untouched.",
 	"Jammed": "Each die a jammed ship uses does nothing and comes back to you, spending 1 Jammed.",
 	"Exposed": "The next hit a tile lands on an exposed ship deals extra damage equal to its Exposed, then all of it is spent.",
+	"Fleet": "Every die you own, wherever it is right now: in your hand, on a tile, or handed to an enemy. Holograms in your hand count too. Dice an enemy is still holding when you jump stay behind, and leave your Fleet for good.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -39,6 +40,7 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(jam)":        {"label": "Jam",        "term": "Jammed"},
 	"(exposed)":    {"label": "Exposed",    "term": "Exposed"},
 	"(expose)":     {"label": "Expose",     "term": "Exposed"},
+	"(fleet)":      {"label": "Fleet",      "term": "Fleet"},
 }
 
 const _KEYWORD_COLOR: String = "orange"

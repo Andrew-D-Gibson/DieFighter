@@ -67,6 +67,21 @@ func can_afford_charge(cost: int) -> bool:
 	return engine_charge >= cost
 
 
+## Every die the player owns, wherever it is right now — in hand, on a tile,
+## or handed to an enemy — plus the holograms they're holding. A hologram an
+## enemy is holding isn't counted: it can't come back.
+func dice_owned() -> int:
+	if not is_inside_tree():
+		return num_of_dice
+	var holograms: int = 0
+	for node: Node in get_tree().get_nodes_in_group('Dice'):
+		var die: Dice = node as Dice
+		if die and die.holographic and not die.is_queued_for_deletion() \
+		and die.host_queue != null and die.host_queue is not EnemyDiceManager:
+			holograms += 1
+	return num_of_dice + holograms
+
+
 @onready var dice_manager: DiceQueue = %DiceQueue
 @onready var health: Health = %Health
 

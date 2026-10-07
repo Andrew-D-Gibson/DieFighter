@@ -18,6 +18,8 @@ enum ActivationType {
 	CHARGE_AT_LEAST,
 	## The drive is sitting above max — in the redline band.
 	OVERCHARGED,
+	## The player owns [member threshold] dice or fewer, holograms included.
+	DICE_OWNED_AT_MOST,
 }
 
 @export var type: ActivationType
@@ -26,7 +28,7 @@ enum ActivationType {
 # VALUE activation values
 @export var acceptable_values: Array[int]
 
-# CHARGE_AT_LEAST activation values
+# CHARGE_AT_LEAST / DICE_OWNED_AT_MOST activation values
 @export var threshold: int = 0
 
 
@@ -113,6 +115,13 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 
 			return Globals.player.is_overcharged(),
+
+	ActivationType.DICE_OWNED_AT_MOST:
+		func(_die: Dice) -> bool:
+			if not Globals.player:
+				return false
+
+			return Globals.player.dice_owned() <= threshold,
 }
 
 
@@ -153,6 +162,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 		
 	ActivationType.OVERCHARGED:
 		"ENGINE IS NOT OVERCHARGED",
+
+	ActivationType.DICE_OWNED_AT_MOST:
+		"TOO MANY DICE",
 }
 
 

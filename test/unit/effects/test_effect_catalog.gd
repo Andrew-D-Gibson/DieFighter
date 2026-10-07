@@ -32,7 +32,8 @@ const _PINNED_ORDINALS: Dictionary = {
 		"SET", "ADD", "MULTIPLY", "ADD_ADJACENT_TILES", "ADD_TILE_DATA",
 		"SET_TO_ENGINE_CHARGE", "SET_TO_DIE_VALUE", "SET_TO_ENEMY_INTENT",
 		"ADD_EMPTY_ADJACENT_CELLS", "SET_TO_MISSING_CHARGE", "SET_TO_OVERCHARGE",
-		"SET_TO_FEED_DEPTH", "SET_TO_ACTIVATIONS_THIS_TURN",
+		"SET_TO_FEED_DEPTH", "SET_TO_ACTIVATIONS_THIS_TURN", "SET_TO_TARGET_STATUS",
+		"SET_TO_DICE_OWNED", "SET_TO_DICE_IN_HAND", "SET_TO_TARGET_DICE_HELD",
 	],
 	"DICE_CONTROL": [
 		"CHANGE_ACTIVATOR_VALUE", "REROLL_ACTIVATOR", "REROLL_ALL",
@@ -59,7 +60,8 @@ const _PINNED_ORDINALS: Dictionary = {
 	"CONDITIONAL": [
 		"IF_ACTIVATOR_ODD", "IF_ENEMY_TARGETED", "IF_ENGINE_CHARGED",
 		"IF_DIE_VALUE_IN_RANGE", "IF_TARGET_HOLDS_MATCHING_DIE", "IF_OVERCHARGED",
-		"IF_FED", "IF_SOURCE_HOLDS_DIE",
+		"IF_FED", "IF_SOURCE_HOLDS_DIE", "IF_TARGET_HAS_STATUS",
+		"IF_DICE_OWNED_IN_RANGE",
 	],
 	"REPETITION": ["ADD_REPETITIONS"],
 	"UTILITY": ["DESTROY_SOURCE", "PRINT_DEBUG"],
@@ -99,10 +101,9 @@ func test_every_implemented_row_builds_an_effect_handler() -> void:
 
 
 func test_reserved_ordinals_are_not_offered_to_authors() -> void:
-	var rows: Array[Dictionary] = EffectCatalog.selectable_entries(EffectEnums.Category.DICE_CONTROL)
-	var subtypes: Array = rows.map(func(r: Dictionary) -> int: return r["subtype"])
-	assert_does_not_have(subtypes, EffectEnums.DiceControlSubtype.RECEIVE_DIE_FROM_TARGET)
-	assert_has(subtypes, EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR)
+	for category: int in EffectEnums.Category.values():
+		for entry: Dictionary in EffectCatalog.selectable_entries(category):
+			assert_false(entry.get("reserved", false), "%s is reserved but offered" % entry["label"])
 
 
 func test_uses_field_reflects_what_the_handler_reads() -> void:
@@ -125,11 +126,13 @@ func test_registry_serves_one_shared_handler_per_effect() -> void:
 	assert_same(EffectRegistry.get_handler(cat, sub), handler, "handlers are stateless singletons")
 
 
-func test_registry_refuses_reserved_ordinals_loudly() -> void:
+func test_the_once_reserved_receive_die_ordinal_is_now_served() -> void:
+	# Held back for years as the catalog's only reserved row; Repo Beam built
+	# it. It must keep its ordinal so KEEP_DIE_WITH_ACTOR stays at 10.
 	var handler: EffectHandler = EffectRegistry.get_handler(
 		EffectEnums.Category.DICE_CONTROL, EffectEnums.DiceControlSubtype.RECEIVE_DIE_FROM_TARGET)
-	assert_null(handler)
-	assert_push_error("reserved ordinal")
+	assert_true(handler is ReceiveDieFromTargetHandler)
+	assert_eq(EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR, 10)
 
 
 func test_registry_refuses_stale_ordinals_loudly() -> void:
