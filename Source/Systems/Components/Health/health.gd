@@ -9,7 +9,17 @@ extends Node2D
 @onready var health: int = starting_health:
 	set(new_value):
 		health = new_value
+		# Setting hull directly (a new run, a loaded save, a death save) is
+		# how something comes back; damage and healing never revive.
+		if health > 0:
+			is_dead = false
 		health_set.emit()
+
+## Latched when death fires. A ship keeps taking hits while its death plays
+## out (a multi-shot tile's second shot, splash), and without the latch each
+## of those would declare the death again — a second reward, a second
+## enemy_left. Cleared only by assigning health above zero.
+var is_dead: bool = false
 
 @export_category("Shields")
 @export var starting_shields: int
@@ -35,7 +45,7 @@ signal death()
 
 
 func take_damage(amount: int) -> void:
-	if invulnerable:
+	if invulnerable or is_dead:
 		return
 		
 	if shields >= amount:
@@ -49,6 +59,9 @@ func take_damage(amount: int) -> void:
 
 
 func change_health(amount: int) -> void:
+	if is_dead:
+		return
+
 	health += amount
 	health = clampi(health, 0, max_health)
 	
@@ -58,6 +71,7 @@ func change_health(amount: int) -> void:
 		
 		# Check again in case we've been saved
 		if health <= 0:
+			is_dead = true
 			death.emit()
 			
 	if amount > 0:

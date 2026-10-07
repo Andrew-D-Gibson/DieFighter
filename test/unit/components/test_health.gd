@@ -69,3 +69,28 @@ func test_a_fatal_damage_listener_can_prevent_death() -> void:
 	health.take_damage(99)
 	assert_eq(health.health, 1)
 	assert_signal_not_emitted(health, "death")
+
+
+func test_hits_on_a_dead_hull_do_not_declare_death_again() -> void:
+	# A multi-shot tile keeps firing at a ship that died on its first shot.
+	health.take_damage(99)
+	health.take_damage(5)
+	health.change_health(-5)
+	assert_signal_emit_count(health, "fatal_damage", 1)
+	assert_signal_emit_count(health, "death", 1)
+
+
+func test_healing_does_not_revive_a_dead_hull() -> void:
+	health.take_damage(99)
+	health.change_health(5)
+	assert_eq(health.health, 0)
+	assert_true(health.is_dead)
+
+
+func test_assigning_health_revives_so_it_can_die_again() -> void:
+	# The player's hull is reset this way at the start of a new run.
+	health.take_damage(99)
+	health.health = health.starting_health
+	assert_false(health.is_dead)
+	health.take_damage(99)
+	assert_signal_emit_count(health, "death", 2)
