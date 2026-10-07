@@ -26,7 +26,10 @@ func _ready() -> void:
 		_set_health()
 		_start_health_text_shake()
 	)
-	health_component.health_healed.connect(_set_health)
+	health_component.health_healed.connect(func() -> void:
+		_set_health()
+		_play_health_gained_feedback()
+	)
 	
 	# Connect shield signals
 	health_component.shields_set.connect(_set_shields)
@@ -34,7 +37,10 @@ func _ready() -> void:
 		_set_shields()
 		_start_shield_text_shake()
 	)
-	health_component.shields_reinforced.connect(_set_shields)
+	health_component.shields_reinforced.connect(func() -> void:
+		_set_shields()
+		_play_shields_gained_feedback()
+	)
 	
 	
 func _process(delta: float) -> void:
@@ -103,3 +109,26 @@ func _set_shields() -> void:
 func _start_shield_text_shake() -> void:
 	%ShieldsLabel.text = '[shake rate=75, level=' + str(text_shake_level + 2) + ']' + _get_shield_string() + '[/shake]'
 	shields_label_shake_time = text_shake_time
+
+
+## Losses shake the readout; gains should feel just as physical, or the
+## defensive half of the game reads as a spreadsheet next to the attacks.
+func _play_shields_gained_feedback() -> void:
+	Juice.bump(%Shields, 0.35, 0.3)
+	Juice.sparkle(self, %Shields.global_position, Globals.blue, 8, 30.0, true)
+	_flash_bright(%ShieldsLabel)
+
+
+func _play_health_gained_feedback() -> void:
+	var bar: Control = %HealthBar
+	Juice.sparkle(self, bar.get_global_rect().get_center(), Globals.green, 10, 30.0, true)
+	_flash_bright(bar)
+	_flash_bright(%HealthLabel)
+
+
+## Over-brightens `item` and lets it settle. self_modulate, so it doesn't
+## fight anything driving the node's own modulate.
+func _flash_bright(item: CanvasItem) -> void:
+	var tween: Tween = item.create_tween()
+	tween.tween_property(item, "self_modulate", Color.WHITE, 0.3) \
+		.from(Color(2.0, 2.0, 2.0)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

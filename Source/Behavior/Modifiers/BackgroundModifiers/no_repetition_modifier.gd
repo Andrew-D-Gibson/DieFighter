@@ -19,4 +19,6 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 		return
 
 	var activation: TileActivationEvent = event as TileActivationEvent
-	activation.activation_repetitions = mini(activation.activation_repetitions, 1)
+	if activation.activation_repetitions > 1:
+		activation.activation_repetitions = 1
+		announce_triggered()

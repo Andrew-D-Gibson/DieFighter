@@ -22,3 +22,8 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 		return
 
 	activation_event.activation_repetitions *= 2
+	announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "x2"

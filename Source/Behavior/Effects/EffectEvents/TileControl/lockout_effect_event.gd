@@ -31,4 +31,5 @@ func resolve(engine: ScenarioEngine) -> void:
 		var tile: Tile = effect_source as Tile
 		tile.dice_queue.remove(activator_die)
 		Events.error_text_popup.emit("TILE LOCKED", tile.global_position)
+		tile.play_refusal_feedback()
 		Globals.player.dice_manager.add(activator_die, true, false)

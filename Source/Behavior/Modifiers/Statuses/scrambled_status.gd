@@ -41,6 +41,9 @@ func on_die_arriving(die: Node) -> void:
 	if stacks <= 0 or not is_instance_valid(die):
 		return
 	die.value = 7 - die.value
+	if die.has_method("play_pop"):
+		die.play_pop(0.5)
+	announce_triggered()
 	consume(1)
 
 

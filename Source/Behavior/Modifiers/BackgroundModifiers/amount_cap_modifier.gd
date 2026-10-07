@@ -27,4 +27,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 			or event is SpendEngineChargeEvent):
 		return
 
-	event.amount = clampi(event.amount, -cap, cap)
+	var capped: int = clampi(event.amount, -cap, cap)
+	if capped != event.amount:
+		event.amount = capped
+		announce_triggered()

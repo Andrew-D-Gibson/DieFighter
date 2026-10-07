@@ -74,6 +74,12 @@ func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
 		return
 	
+	# The ship rears as it commits and the die kicks, so the action reads as
+	# the ship's doing — and as the die the player handed it going off.
+	Juice.bump(enemy.graphics_manager.ship_graphics, 0.15, 0.3)
+	activator_die.play_pop(0.4)
+	Juice.ring(enemy, activator_die.global_position, Globals.white, 14.0, 0.3, 4.0)
+
 	# Make an action indicator popup
 	var popup_time: float = 0.75
 	var action_indicator: Node2D = action_popup.instantiate()

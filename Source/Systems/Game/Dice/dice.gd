@@ -84,12 +84,21 @@ func reroll_with_tween(new_value: int = 0) -> void:
 			value = get_random_die_value()
 		else:
 			value = new_value
+		# The new face lands with a snap, so it reads as rolled, not swapped.
+		play_pop(0.25)
 	)
 	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, 'global_position', global_position, tween_time).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(self, 'scale', final_scale, tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
 	await tween.finished
+
+
+## A quick squash on the face, for the moments a die matters: landing in a
+## tile, flipping under Scramble, going off in front of a ship. The sprite
+## bumps rather than the die itself, whose scale the movement tweens own.
+func play_pop(strength: float = 0.3) -> void:
+	Juice.bump($Sprite2D, strength, 0.3)
 
 
 func _on_tree_exiting() -> void:

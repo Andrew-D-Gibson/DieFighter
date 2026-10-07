@@ -54,6 +54,44 @@ func consume(amount: int = 1) -> void:
 	_refresh_badge(true)
 
 
+## A fresh dose just landed on the ship: it flashes the status colour and
+## calls out how much it got, so the player sees a status take hold rather
+## than spotting a new badge later.
+func play_applied_feedback(stacks_added: int) -> void:
+	var ship: Node2D = host()
+	if ship == null:
+		return
+	var color: Color = get_trigger_color()
+	if ship is Enemy:
+		(ship as Enemy).graphics_manager.flash(color, 0.35)
+	Juice.ring(ship, ship.global_position, color, 22.0, 0.4, 6.0)
+	Juice.sparkle(ship, ship.global_position, color, 12, 40.0, true)
+	Juice.callout(ship, "+%d %s" % [stacks_added, display_name.to_upper()], color)
+
+
+## Statuses have no source tile to light up, so the ship they sit on reacts
+## instead. The badge pulses on its own as consume() spends the stack.
+func announce_triggered() -> void:
+	super()
+	var ship: Node2D = host()
+	if ship == null:
+		return
+	var color: Color = get_trigger_color()
+	if ship is Enemy:
+		(ship as Enemy).graphics_manager.flash(color, 0.3)
+	Juice.sparkle(ship, ship.global_position, color, 8, 35.0)
+	Juice.callout(ship, get_trigger_text(), color)
+
+
+func get_trigger_text() -> String:
+	return display_name.to_upper()
+
+
+func get_trigger_color() -> Color:
+	var color: Variant = Globals.get(title_color)
+	return color if color is Color else Globals.yellow
+
+
 ## Called once per round by ScenarioEngine.tick_statuses(), which the enemy
 ## manager runs as the player's turn ends and before any ship acts.
 func on_status_tick() -> void:

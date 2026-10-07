@@ -57,6 +57,9 @@ func resolve(engine: ScenarioEngine) -> void:
 		return
 
 	tile.shakeable.large_shake()
+	tile.play_activation_feedback()
+	if is_instance_valid(activator_die):
+		activator_die.play_pop()
 
 	# Build the EffectContext for this activation
 	var context: EffectContext = EffectContext.new()

@@ -139,6 +139,10 @@ func flash(color: Color, duration: float = 0.25) -> void:
 ## Every flash drives the same shader parameter, so a new one cancels whatever
 ## flash is still fading instead of the two tweens fighting over it.
 func _flash(color: Color, duration: float, ease_in: bool) -> void:
+	# A ship whose graphics haven't loaded (or a bare one in a test) has
+	# nothing to flash.
+	if not is_instance_valid(ship_graphics) or ship_graphics.material == null:
+		return
 	if _flash_tween and _flash_tween.is_valid():
 		_flash_tween.kill()
 

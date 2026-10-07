@@ -8,4 +8,6 @@ func resolve(engine: ScenarioEngine) -> void:
 			continue
 		if target is not Tile:
 			continue
-		engine.add_modifier(AmplifierModifier.new(target, amount))
+		var amplifier: AmplifierModifier = AmplifierModifier.new(target, amount)
+		amplifier.source = effect_source as Node2D
+		engine.add_modifier(amplifier)

@@ -12,6 +12,7 @@ func _init(tile: Tile) -> void:
 func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	if event is TileActivationEvent and (event as TileActivationEvent).tile == affected_node:
 		event.canceled = true
+		announce_triggered()
 
 		var lockout_event: LockoutEffectEvent = LockoutEffectEvent.new()
 		lockout_event.effect_source = affected_node

@@ -12,4 +12,15 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if not event is DamageEvent:
 		return
 
+	if event.amount <= 0:
+		return
 	event.amount *= 2
+	announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "x2"
+
+
+func get_trigger_color() -> Color:
+	return Globals.red

@@ -10,3 +10,5 @@ func resolve(_engine: ScenarioEngine) -> void:
 		if not is_instance_valid(target):
 			continue
 		target.health.change_health(amount)
+		if target is Enemy and amount > 0:
+			Juice.callout(target, "+%d" % amount, Globals.green)

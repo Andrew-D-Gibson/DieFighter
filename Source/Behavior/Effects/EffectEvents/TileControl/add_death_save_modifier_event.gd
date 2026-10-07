@@ -11,4 +11,6 @@ func resolve(engine: ScenarioEngine) -> void:
 		if mod is EngineDeathSaveModifier:
 			return
 
-	engine.add_modifier(EngineDeathSaveModifier.new())
+	var save: EngineDeathSaveModifier = EngineDeathSaveModifier.new()
+	save.source = effect_source as Node2D
+	engine.add_modifier(save)

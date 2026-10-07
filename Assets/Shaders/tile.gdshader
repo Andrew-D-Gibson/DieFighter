@@ -17,6 +17,10 @@ uniform float brightness_period: hint_range(0.1, 10.0, 0.01) = 2.0;
 
 uniform float time_offset = 0.0;
 
+// Solid-colour flash laid over everything else, driven by Tile.flash().
+uniform vec4 flash_color : source_color = vec4(1.0);
+uniform float flash_amount : hint_range(0.0, 1.0) = 0.0;
+
 void fragment() {
 	vec4 tex_color = texture(TEXTURE, UV);
 
@@ -73,6 +77,8 @@ void fragment() {
 		// Blend final highlight into base color
 		final_color = mix(final_color, grad_color.rgb, effect_distance * highlight_strength * grad_alpha);
 	}
+
+	final_color = mix(final_color, flash_color.rgb, flash_amount);
 
 	COLOR.rgb = final_color;
 	COLOR.a = tex_color.a;

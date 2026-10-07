@@ -34,12 +34,14 @@ const _FLASH_SCALE: float = 1.15
 var _modifier: BackgroundModifierResource = null
 
 var _flash_tween: Tween
+var _trigger_tween: Tween
 
 
 func _ready() -> void:
 	_badge.hide()
 	_badge.pressed.connect(_on_badge_pressed)
 	Events.background_modifier_applied.connect(_on_modifier_applied)
+	Events.modifier_triggered.connect(_on_modifier_triggered)
 
 
 func _on_modifier_applied(modifier: BackgroundModifierResource) -> void:
@@ -59,6 +61,25 @@ func _on_modifier_applied(modifier: BackgroundModifierResource) -> void:
 	# Every arrival is a fresh rule to read, even when the region repeats one
 	# the player has seen before, so the badge always starts unread.
 	_start_flashing()
+
+
+## The rule just bit — a shield gain cancelled, a big hit capped. Kicking the
+## badge then ties the surprise to its cause. An unread badge is already
+## flashing for attention, so it's left to do that.
+func _on_modifier_triggered(mod: Modifier) -> void:
+	var manager: BackgroundModifierManager = Globals.background_modifier_manager
+	if not is_instance_valid(manager) or mod != manager.get_active_modifier():
+		return
+	if not _badge.visible or (_flash_tween and _flash_tween.is_valid()):
+		return
+
+	if _trigger_tween and _trigger_tween.is_valid():
+		_trigger_tween.kill()
+	_trigger_tween = create_tween().set_parallel()
+	_trigger_tween.tween_property(_badge, "scale", Vector2.ONE, 0.35) \
+		.from(Vector2.ONE * 1.5).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_trigger_tween.tween_property(_badge, "self_modulate", Color.WHITE, 0.35) \
+		.from(Color(2.5, 2.5, 2.5)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Hands the rule to the shared info panel, which zooms the badge art up to the

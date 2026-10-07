@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_trig"]
+[ext_resource type="AudioStream" uid="uid://21c1t5r458h5" path="res://Assets/Sounds/Dice/Reroll/Reroll.wav" id="2_trig"]
+
+[resource]
+script = ExtResource("1_trig")
+name = "upgrade_trigger"
+limit = 6
+sound_effect = ExtResource("2_trig")
+volume = -12.0
+pitch_scale = 0.9
+pitch_randomness = 0.03
+enable_pitch_escalation = true
+max_pitch_escalation = 2.0
+pitch_escalation_step = 0.15

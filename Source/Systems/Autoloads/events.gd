@@ -80,6 +80,10 @@ signal tile_activation_complete()
 ## whether the die came from the player, a Feed, or no die at all.
 signal tile_activated(tile: Tile)
 signal tile_clicked_for_info()
+## A modifier just changed an event (or did its job some other way). Whatever
+## put it in play — its source tile, the background badge — lights up, so a
+## passive upgrade is seen paying off rather than silently bending numbers.
+signal modifier_triggered(mod: Modifier)
 
 
 # Reward/Economy Events

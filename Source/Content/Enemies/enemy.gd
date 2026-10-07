@@ -180,6 +180,7 @@ func _on_death() -> void:
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
 	Events.play_sound.emit(_DEATH_SFX)
+	_play_kill_confirm()
 	
 	# Create explosion particles
 	var explosion = explosion_particles.instantiate()
@@ -195,6 +196,17 @@ func _on_death() -> void:
 	
 	await graphics_manager.play_death_animation()
 	queue_free()
+
+
+## A beat of freeze, a punch toward the wreck and a shockwave, so the shot
+## that finishes a ship lands harder than every shot before it. The rings go
+## on the manager rather than the ship, which is about to be freed.
+func _play_kill_confirm() -> void:
+	TimeDirector.hitstop(70)
+	Events.camera_zoom_punch.emit(1.05, global_position, true)
+	Events.camera_shake_large.emit(false)
+	Juice.ring(get_parent(), global_position, Globals.white, 44.0, 0.5, 6.0)
+	Juice.ring(get_parent(), global_position, Globals.red, 30.0, 0.4, 4.0)
 
 
 ## Updates the enemy's components based on the enemy resource

@@ -39,3 +39,13 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	event.canceled = true
 	Globals.player.engine_charge = 0
 	Events.camera_shake_large.emit(true)
+	Events.vignette_pulse.emit(get_trigger_color())
+	announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "SAVED"
+
+
+func get_trigger_color() -> Color:
+	return Globals.white

@@ -31,4 +31,5 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 		return
 
 	action_event.action = _DO_NOTHING
+	announce_triggered()
 	consume(1)

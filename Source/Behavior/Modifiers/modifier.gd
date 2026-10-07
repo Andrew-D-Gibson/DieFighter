@@ -20,6 +20,11 @@ var modifier_name: String = "Unnamed Modifier"
 ## Set this in _init() of any modifier that targets a specific node.
 var affected_node: Node2D = null
 
+## The node that put this modifier in play — usually the tile whose effect
+## registered it. It calls attention to itself whenever the modifier fires
+## (see announce_triggered()). Null for rules with no tile behind them.
+var source: Node2D = null
+
 ## Per-type visual scenes, keyed by GDScript class_name (e.g. &"Tile", &"Enemy", &"Dice").
 ## If the affected_node's class is not in this dict, status_visual_scene is used instead.
 var status_visual_scenes: Dictionary = {}
@@ -60,6 +65,27 @@ func on_after_event(_event: EffectEvent, _engine: ScenarioEngine) -> void:
 	pass  # Override in subclass.
 	
 	
+## Call from a hook whenever this modifier actually did something: changed an
+## amount, canceled an event, added a repetition. Not on every hook call —
+## an upgrade that flashes when it changed nothing teaches the player that
+## the flash means nothing.
+func announce_triggered() -> void:
+	if is_instance_valid(_visual) and _visual.has_method("on_modifier_triggered"):
+		_visual.on_modifier_triggered()
+	Events.modifier_triggered.emit(self)
+
+
+## A short callout floated off the source when this fires ("x2", "+1").
+## Empty for none.
+func get_trigger_text() -> String:
+	return ""
+
+
+## Colour of the source's flash and callout when this fires.
+func get_trigger_color() -> Color:
+	return Globals.yellow
+
+
 ## Called by ScenarioEngine.add_modifier(). Override to add extra setup logic,
 ## but always call super.on_registered(engine) to ensure the visual spawns.
 func on_registered(_engine: ScenarioEngine) -> void:

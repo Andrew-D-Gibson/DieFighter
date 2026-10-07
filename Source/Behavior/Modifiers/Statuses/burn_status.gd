@@ -27,4 +27,11 @@ func on_status_tick() -> void:
 	event.targets = [ship]
 	_host_engine.queue_event(event)
 
+	announce_triggered()
 	consume(1)
+
+
+## The damage number already says how much it burned for; the orange flash
+## and embers say why.
+func get_trigger_text() -> String:
+	return ""

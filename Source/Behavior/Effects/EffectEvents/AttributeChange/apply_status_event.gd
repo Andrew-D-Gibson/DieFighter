@@ -29,5 +29,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		var existing: StatusModifier = engine.find_status(target, status_id)
 		if existing:
 			existing.merge(incoming)
+			existing.play_applied_feedback(amount)
 		else:
 			engine.add_modifier(incoming)
+			incoming.play_applied_feedback(amount)

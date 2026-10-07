@@ -31,4 +31,5 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 		return
 
 	event.amount += stacks
+	announce_triggered()
 	consume(stacks)

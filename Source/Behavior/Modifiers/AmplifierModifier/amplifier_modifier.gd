@@ -16,3 +16,9 @@ func _init(tile: Tile, amount: int) -> void:
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if event.effect_source == affected_node and event.is_amplifiable():
 		event.amount += amplify_amount
+		if amplify_amount != 0:
+			announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "%+d" % amplify_amount

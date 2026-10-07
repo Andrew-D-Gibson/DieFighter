@@ -3,6 +3,13 @@ class_name Tile
 extends Node2D
 
 const _TILE_DROPPED_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
+const _TRIGGER_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/upgrade_trigger.tres")
+
+## One modifier can fire on several events of a single activation (an
+## Amplifier touches every amplifiable event in the chain). Within this window
+## the tile still bumps and flashes, but only the first fire gets the callout,
+## sound and burst, so a proc reads as one beat rather than a pile.
+const _TRIGGER_CALLOUT_COOLDOWN_MSEC: int = 150
 
 @export var tile_resource: TileResource:
 	set(new_resource):
@@ -11,6 +18,8 @@ const _TILE_DROPPED_SFX: SoundEffectResource = preload("res://Source/Resources/S
 			_set_up_resource()
 		
 var _saturation_tween: Tween
+var _flash_tween: Tween
+var _last_trigger_callout_msec: int = -_TRIGGER_CALLOUT_COOLDOWN_MSEC
 @export var uses_remaining: int = -1:
 	set(new_value):
 		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_turn)
@@ -51,6 +60,7 @@ func _ready() -> void:
 	if draggable:
 		draggable.reached_new_home.connect(func() -> void:
 			shakeable.small_shake()
+			Juice.bump(sprite_frames, 0.15, 0.25)
 			Events.play_sound.emit(_TILE_DROPPED_SFX)
 		)
 	
@@ -95,6 +105,10 @@ func _connect_tile_event_signals() -> void:
 	Events.tile_activated.connect(func(tile: Tile) -> void:
 		if _is_orthogonal_neighbour(tile):
 			handle_tile_event(self, TileEvent.EventType.ON_ADJACENT_TILE_ACTIVATED)
+	)
+	Events.modifier_triggered.connect(func(mod: Modifier) -> void:
+		if mod.source == self:
+			play_trigger_feedback(mod.get_trigger_color(), mod.get_trigger_text())
 	)
 
 
@@ -172,12 +186,14 @@ func clears_activation_criteria(activator_die: Dice = null) -> bool:
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
 		Events.error_text_popup.emit("NO USES REMAINING", self.global_position)
+		play_refusal_feedback()
 		return false
 		
 	# Check the tile's activation criteria
 	for check: ActivationResource in tile_resource.activation_checks:
 		if not check.criteria_satisfied(activator_die):
 			Events.error_text_popup.emit(check.get_criteria_fail_text(), self.global_position)
+			play_refusal_feedback()
 			return false
 			
 	return true
@@ -316,3 +332,52 @@ func set_gray_out(gray_out: bool) -> void:
 		tween_time
 	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	
+
+
+## The die has landed and the tile is committed to firing: it takes the hit,
+## squashing down and flashing like it was struck.
+func play_activation_feedback() -> void:
+	Juice.bump(sprite_frames, 0.2, 0.25)
+	flash(Color.WHITE, 0.6, 0.15)
+	Juice.ring(self, global_position, Globals.white, 14.0, 0.25, 6.0)
+
+
+## The tile turned a die away: a red flash and a shake of the head.
+func play_refusal_feedback() -> void:
+	Juice.wiggle(sprite_frames, 12.0, 0.3)
+	flash(Globals.red, 0.7, 0.3)
+
+
+## Something this tile set up just paid off — a modifier it put in play
+## fired, or one of its reactive chains went off. Loud on purpose: a passive
+## upgrade the player never sees working is one they stop valuing.
+func play_trigger_feedback(color: Color, callout_text: String = "") -> void:
+	Juice.bump(sprite_frames, 0.3, 0.35)
+	flash(color, 0.8, 0.35)
+
+	var now: int = Time.get_ticks_msec()
+	if now - _last_trigger_callout_msec < _TRIGGER_CALLOUT_COOLDOWN_MSEC:
+		return
+	_last_trigger_callout_msec = now
+
+	Juice.ring(self, global_position, color, 20.0, 0.4, 8.0)
+	Juice.sparkle(self, global_position, color, 10, 45.0)
+	if not callout_text.is_empty():
+		Juice.callout(self, callout_text, color)
+	Events.play_sound.emit(_TRIGGER_SFX)
+
+
+## Floods the tile with `color` at `strength` and lets it fade. Snapped on
+## rather than eased in, so it still reads when it lands inside a hitstop.
+func flash(color: Color, strength: float = 1.0, duration: float = 0.25) -> void:
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
+
+	var mat: ShaderMaterial = sprite_frames.material as ShaderMaterial
+	if mat == null:
+		return
+	mat.set_shader_parameter("flash_color", color)
+	mat.set_shader_parameter("flash_amount", strength)
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(mat, "shader_parameter/flash_amount", 0.0, duration) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)

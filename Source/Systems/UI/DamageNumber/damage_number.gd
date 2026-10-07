@@ -29,25 +29,33 @@ var _label: Label
 ## Spawns a number for `amount` above `target`. Parented beside the target
 ## rather than under it, so a killing blow's number outlives the ship.
 static func spawn(target: Node2D, amount: int, color: Color) -> void:
-	if amount <= 0 or not is_instance_valid(target) or target.get_parent() == null:
+	if amount <= 0:
+		return
+	spawn_text(target, str(amount), color, amount >= _BIG_HIT)
+
+
+## The same pop-and-drift for any short label: a heal's "+3", a status name,
+## an upgrade tile's "x2".
+static func spawn_text(target: Node2D, text: String, color: Color, big: bool = false) -> void:
+	if text.is_empty() or not is_instance_valid(target) or target.get_parent() == null:
 		return
 
 	var number: DamageNumber = DamageNumber.new()
-	number._build(amount, color)
+	number._build(text, color)
 	target.get_parent().add_child(number)
 	number.global_position = target.global_position + Vector2(
 		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -_SCATTER_PIXELS, _SCATTER_PIXELS),
 		-10.0
 	)
-	number._animate(amount >= _BIG_HIT)
+	number._animate(big)
 
 
-func _build(amount: int, color: Color) -> void:
+func _build(text: String, color: Color) -> void:
 	# Above ships, particles and the cockpit frame.
 	z_index = 100
 
 	_label = Label.new()
-	_label.text = str(amount)
+	_label.text = text
 	_label.add_theme_font_override("font", _FONT)
 	_label.add_theme_font_size_override("font_size", _FONT_SIZE)
 	_label.add_theme_color_override("font_color", color)

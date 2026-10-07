@@ -7,4 +7,6 @@ func resolve(engine: ScenarioEngine) -> void:
 			continue
 		if target is not Tile:
 			continue
-		engine.add_modifier(LockoutModifier.new(target as Tile))
+		var lockout: LockoutModifier = LockoutModifier.new(target as Tile)
+		lockout.source = effect_source as Node2D
+		engine.add_modifier(lockout)
