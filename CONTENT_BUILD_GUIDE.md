@@ -23,14 +23,35 @@ registration to testing. For how the systems work underneath, see
   `test/content/test_authored_content.gd` loads every `.tres` under
   `Source/Content`. It catches stale effect ordinals, unknown status ids and
   empty chain slots. `test_effect_catalog.gd` pins every enum's ordinals.
-- **Text conventions.** Descriptions use bbcode colour names: `red` damage,
-  `blue` shields, `green` heal, `purple` engine/target, `orange` dice
-  hand-offs, `yellow` die faces.
+- **Text conventions.** Keep descriptions terse. Say what happens, in order,
+  and nothing else. Players work out strategy themselves, so there is no hint
+  or flavour line.
+  - Shape: `TRIGGER -> effect. effect. hand-off`. Sentences end with a full
+    stop except the last. Verbs are imperative (`Deal`, `Gain`, `Apply`,
+    `Spend`, `Give`).
+  - The trigger is yellow: `Any die`, a die icon, or an event
+    (`Hull hit`, `Enemy turn ends`, `Your turn starts`, `Adjacent tile
+    activates`). A condition follows it with `while`
+    (`Any die while fully charged`). Passive tiles use the same arrow.
+  - Order: cost (`Spend`), main effect, side effects, then where the die goes.
+    The standard ending is `Give die`, which means to `target`. Name any other
+    destination (`Give die to random enemy`), or use `Return`, `Keep`.
+  - Branches read `Label: effect`, as in `Odd: Feed up. Even: Feed down`.
+  - `per` is for scaling (`2 shields per burn`). `equal to` is for copying a
+    value (`damage to target equal to die`). `adjacent` is the four
+    orthogonal tiles, `surrounding` is all eight.
+  - Colours: `red` damage, hull and enemy intents that hurt, `blue` shields and
+    holograms, `green` heals, re-rolls and tile movement, `purple` engine
+    charge and targets (`target`, `random enemy`, `all ships`), `orange` dice
+    hand-offs (`Give`, `Return`, `Keep`) and keywords, `yellow` triggers and
+    die faces. Colour the number with its unit (`5 damage`, `2 shields`).
+    Status amounts, `+N` and counts stay plain.
   - Tokens: `(die_N)` draws a die face.
   - `(amount)` and `(target)` fill in an enemy intent's rolled value and its
-    bound ship.
-  - Keyword tokens like `(feed_right)` and `(burn)` render styled and add a
-    glossary line (§9).
+    bound ship. An enemy action reads like a tile minus the trigger, and the
+    panel prefixes `Uses (die_N) ->`.
+  - Keyword tokens like `(feed_right)` and `(burn)` render styled and
+    underlined. Hovering one in the info panel pops up its rule (§9).
 
 ---
 
@@ -58,8 +79,8 @@ registration to testing. For how the systems work underneath, see
 - **Info**
   - `tile_name`: bbcode-coloured to match the tile's colour.
   - `activation_description`, `description`: say what the die does,
-    e.g. `[color=yellow]Any die[/color] -> ...`.
-  - `hint_text`: flavour line.
+    e.g. `[color=yellow]Any die[/color] -> ...` (see the text conventions at
+    the top).
 - **`rarity`** sets both drop weight (COMMON 1.0 / UNCOMMON 0.45 / RARE 0.18)
   and shop price.
 - **`textures`**: a SpriteFrames whose `default` animation holds AtlasTexture
@@ -379,8 +400,10 @@ In `Source/Systems/keywords.gd`:
 1. Add the rule text to `_DEFINITIONS` under its term.
 2. Add each token spelling to `_TOKENS` (`"(my_kw)": {"label": ..., "term": ...}`).
 
-Write `(my_kw)` in any description. It renders styled, and the info panel adds
-the definition automatically.
+Write `(my_kw)` in any description. It renders styled and underlined, and the
+info panel shows its definition in a pop-up while the player hovers it. A token
+row may set `"color"` where the word follows another colour rule (holograms are
+blue). Keep the rule to a sentence or two in the same terse style.
 
 ---
 

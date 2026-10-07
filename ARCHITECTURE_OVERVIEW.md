@@ -49,7 +49,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description + keyword glossary, hint) with tween animation |
+| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. Keywords in it are hoverable and pop up their rule |
 | `MoneyIndicator` | `Systems/Player/MoneyIndicator` | Displays current money with spawn particles |
 | `PlayerHealthBar` | `Systems/Player/PlayerHealthBar` | HP/shields UI with reveal animations |
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
@@ -368,7 +368,6 @@ class_name TileResource extends Resource
 @export var tile_name: String
 @export_multiline var activation_description: String
 @export_multiline var description: String            # May use keyword tokens, e.g. (feed_right)
-@export_multiline var hint_text: String
 @export var rarity: Rarity                           # COMMON / UNCOMMON / RARE — weights rewards and shop stock
 
 @export var textures: SpriteFrames                   # Frame N is shown while N uses remain (frame 0 when unlimited)
@@ -389,12 +388,14 @@ limit.
 `Source/Systems/keywords.gd` (`Keywords`) holds game terms written into
 descriptions as tokens: `(feed_right)`, `(feed_left)`, `(feed_up)`,
 `(feed_down)`, `(feed_random)`, `(fed)`, and one per status — `(burn)`,
-`(scrambled)`/`(scramble)`, `(jammed)`/`(jam)`, `(exposed)`/`(expose)` — and `(fleet)`, the dice the player owns (see 6.3). `Utils.format_text()` renders each
-token as a styled label, and `Tile._get_tile_info()` appends a definition for
-every keyword the description uses, so the info panel explains the rule
-without each description repeating it. `Keywords.definition()` serves the
-same text to the status badges. Add a keyword by adding its definition and its
-token spellings to the two tables in that file.
+`(scrambled)`/`(scramble)`, `(jammed)`/`(jam)`, `(exposed)`/`(expose)` — plus
+`(fleet)`, the dice the player owns (see 6.3), and `(hologram)`. `Utils.format_text()`
+renders each token as a styled label. The info panel asks for hoverable labels
+(`format_text(text, true)`), which wrap each in a `[url]` tag. `InfoShower`
+listens for `meta_hover_started` on its labels and pops up
+`Keywords.definition()` beside the cursor, so no rules are on screen until the
+player asks. `definition()` also serves the status badges. Add a keyword by
+adding its definition and its token spellings to the two tables in that file.
 
 ### 5.4 Effect Chains
 
@@ -1034,7 +1035,7 @@ Source/
 │   │   ├── Dice/dice.gd                        # Die behavior & RNG
 │   │   └── RewardManager/reward_manager.gd     # Tile unlocks
 │   │
-│   ├── keywords.gd                            # Keyword tokens + glossary for tile text
+│   ├── keywords.gd                            # Keyword tokens + hover definitions
 │   ├── utils.gd                               # format_text (colours, die icons, keywords)
 │   │
 │   ├── UI/                                    # Interface nodes
