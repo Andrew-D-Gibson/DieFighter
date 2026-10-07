@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://bn2wtbh44umub" path="res://Assets/Textures/TargetingComputer/intent_dice_indicator_held-Sheet.png" id="12_y72xu"]
 [ext_resource type="Texture2D" uid="uid://brya2gd3t851s" path="res://Assets/Textures/TargetingComputer/reveal_overlay.png" id="13_du4uj"]
 [ext_resource type="Shader" uid="uid://4sn3gy37h8dt" path="res://Assets/Shaders/targeting_computer_reveal_shader.gdshader" id="13_y72xu"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/TargetingComputer/EnvironmentMonitor/environment_monitor.tscn" id="14_envmon"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_du4uj"]
 shader = ExtResource("10_chiev")
@@ -199,6 +200,10 @@ shader_parameter/progress_bias = Vector2(10, 10)
 script = ExtResource("1_8ig5e")
 targeting_indicator = NodePath("TargetingIndicator")
 unknown_intent_indicator = ExtResource("2_g8xi5")
+
+[node name="EnvironmentMonitor" parent="." instance=ExtResource("14_envmon")]
+z_index = -3
+position = Vector2(14, -24)
 
 [node name="Background" type="Sprite2D" parent="." unique_id=1820618632]
 z_index = -1

@@ -1,0 +1,46 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Game/TargetingComputer/EnvironmentMonitor/environment_monitor.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ctgh2hroah2f0" path="res://Assets/Textures/TargetingComputer/environment_monitor.png" id="2_body"]
+[ext_resource type="Texture2D" uid="uid://s0qo2q45nmq0" path="res://Assets/Textures/TargetingComputer/environment_monitor_lamp.png" id="3_lamp"]
+[ext_resource type="Texture2D" uid="uid://dk0e6ojr8ac0f" path="res://Assets/Textures/TargetingComputer/environment_monitor_glyph.png" id="4_glyph"]
+[ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="5_click"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_housing"]
+size = Vector2(28, 22)
+
+[node name="EnvironmentMonitor" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Arm" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Body" type="Sprite2D" parent="Arm"]
+texture = ExtResource("2_body")
+centered = false
+offset = Vector2(-15, -36)
+
+[node name="Lamp" type="Sprite2D" parent="Arm"]
+unique_name_in_owner = true
+texture = ExtResource("3_lamp")
+centered = false
+offset = Vector2(-15, -36)
+
+[node name="Glyph" type="Sprite2D" parent="Arm"]
+unique_name_in_owner = true
+position = Vector2(0, -22)
+texture = ExtResource("4_glyph")
+
+[node name="Clickable" type="Area2D" parent="Arm"]
+unique_name_in_owner = true
+input_pickable = false
+script = ExtResource("5_click")
+hover_for_info = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Arm/Clickable"]
+position = Vector2(0, -22)
+shape = SubResource("RectangleShape2D_housing")
+
+[connection signal="input_event" from="Arm/Clickable" to="Arm/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Arm/Clickable" to="Arm/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Arm/Clickable" to="Arm/Clickable" method="_on_mouse_exited"]

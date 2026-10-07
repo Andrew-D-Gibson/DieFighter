@@ -51,9 +51,10 @@ enum Effect {
 ## own palette.
 @export var color: Color = Color.WHITE
 
-## Art for the corner badge and the info panel it opens. Left null, the badge
-## falls back to a generic "unknown rule" glyph, which still reads correctly —
-## the badge's whole job is to say "something governs this place, click me".
+## Art for the targeting computer's environment monitor and the info panel it opens.
+## Left null, the monitor shows a hazard glyph tinted to 'color', which still
+## reads correctly — its whole job is to say "something governs this place,
+## click me".
 @export var icon: Texture2D
 
 @export_category('Behavior')

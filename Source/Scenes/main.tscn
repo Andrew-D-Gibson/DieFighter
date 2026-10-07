@@ -60,7 +60,6 @@
 [ext_resource type="Resource" uid="uid://b5v4bhmin2332" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_wing.tres" id="95_boss3"]
 [ext_resource type="Script" uid="uid://7whk8psw2ylx" path="res://Source/Systems/Game/BackgroundModifierManager/background_modifier_manager.gd" id="96_bgmodmgr"]
 [ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
-[ext_resource type="PackedScene" uid="uid://dt6a8lgxcnjve" path="res://Source/Systems/UI/BackgroundModifierBadge/background_modifier_badge.tscn" id="97_bgmodui"]
 [ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="99_ambush"]
@@ -223,8 +222,6 @@ autoplay = true
 bus = &"Music"
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=354160955]
-
-[node name="BackgroundModifierBadge" parent="UI" unique_id=904210008 instance=ExtResource("97_bgmodui")]
 
 [node name="InfoShower" parent="UI" unique_id=1611703635 instance=ExtResource("1_hd7px")]
 visible = false
