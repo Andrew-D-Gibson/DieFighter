@@ -4,6 +4,89 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-06 — Every tile and enemy action gets its own juice
+
+**Goal:** the first juice pass was systemic. This one is per-content: make
+each of the 72 tiles and 12 enemy actions look like what it does, so a
+player can read a machine from its effects alone.
+
+**Toolkit first.** Nine new `AUDIO_VISUAL` effects, appended to the enum and
+served by one `JuiceHandler` / `JuiceEvent` pair:
+
+| Effect | What it draws | Parameters |
+|---|---|---|
+| `SHOCKWAVE` | Ring out from each target; a **negative** radius closes in (a lock-on) | amount, color |
+| `SPARK_BURST` | Spark burst; `string_param = "rise"` drifts them up | amount, multiplier (speed), color |
+| `CALLOUT` | Floating text; `{amount}` shows the running amount | string_param, color |
+| `BUMP` | Squash-and-stretch the target's body | multiplier |
+| `ZAP` | Crackling bolt from source to each target, **holds the chain** for `amount` ms | amount, color |
+| `GRID_RIPPLE` | Flash + bump spreading cell by cell from the source tile | amount (ms/step), color |
+| `SCREEN_RIPPLE` | New `screen_ripple.gdshader`: refraction ring + chromatic split over the whole screen | multiplier |
+| `STREAM` | Motes drained target → source (`"out"`: the other way; `"engine"`: the player's end is the engine bar), **holds** until they land | amount, string_param, color |
+| `DIE_FLARE` | Activator die spins, pops and rings | color |
+
+They read authored parameters only (never `running_amount`, except
+`CALLOUT`'s token), and aren't amplifiable, so they can sit anywhere in a chain
+without changing the numbers around them. They play at the targets, or at the
+source when nothing is targeted yet, so a flourish authored at the top of a
+chain lands on the tile or ship itself. Effects aimed at the player land on
+their health bar (`Player.get_juice_anchor()`). Every target is fine: a
+`BUMP` on the player squashes the health bar.
+
+**Then content.** An authoring script inserted the flourishes into 71 tiles
+and all 12 enemy actions, including inside conditional branches and
+event-response chains. Some themes:
+
+- **Relays crackle a bolt** to the tile they Feed, in their own colour, and the
+  routers say where the die went (`ODD`/`EVEN`, `LOW`/`MID`/`HIGH`,
+  `PASS`/`FILTERED`, `<<`/`>>`) over the destination.
+- **Drains are visible.** Siphon Engine pulls motes out of your engine bar;
+  Leech Relay sucks uses out of its neighbours; Heat Sink pulls heat off the
+  burning ship; Regenerative Brake harvests your hit into the drive.
+- **Status appliers have a look each.** Lock-on rings close in for Exposed
+  (Sensor Spike, Spotter Drone, Target Painter), Chaff Pod throws a white
+  cloud with static, Crossed Wires and Static Bloom zap and glitch.
+- **Big payoffs bend the screen.** Chaos Explosion slows time, ripples the
+  screen and the grid, and rings every ship. Overdraw pours the drive into the
+  target. Siege Shot announces itself, then slows time for the hit.
+- **Die-changers flare the die** (Bump `+1`, Inverter `FLIP`, Polarizer,
+  Grounding Rod `GROUNDED`, Welder `WELD`).
+- **Enemies telegraph:** `CHARGING` with an imploding ring, `IMPOUNDED` with a
+  red die flare, `RETREAT!`, and a deadpan `...` for Do Nothing.
+
+Dead Man's Switch was left alone: its save is already the loudest thing in the
+game.
+
+**SOUND_EFFECTS.md** lists every place a sound should go: systemic moments,
+every tile and action with the slot in its chain, the statuses, and a
+top-ten. `dice_cannon` currently plays for ~35 different attacks.
+
+**Bugs found by running everything live:**
+- A lone ship rolling **Aegis Ally or Repair Ally halted the game** in the
+  debugger. `TargetRandomOtherEnemyHandler`'s fallback assigned a ternary of
+  array literals, which is an untyped `Array`, to the typed `targets`.
+- **Emergency Shield left a freed tile in the grid.** `DestroySourceEvent`
+  never told `TileGrid`, so neighbour targeting (and the next checkpoint
+  save) read a freed node. `TileGrid.forget_tile()` clears the cell.
+
+**Verified live:** swapped every tile onto one grid slot and activated it with
+a real die (and fired its event responses), then ran all 12 enemy actions
+against a ship: no runtime errors after the two fixes above. Screenshots of
+the bolt, the stream (Siphon Engine), the screen ripple + grid ripple (Chaos
+Explosion), and the ripple at rest all looked right. 234/234 tests pass,
+including new ones for the flourish handler, `forget_tile`, and the lone
+medic.
+
+**Snags:**
+- A uniform a `ShaderMaterial` has never been given doesn't exist as a
+  property, so tweening `shader_parameter/progress` failed until it was set
+  once first.
+- `.tres` parsing: a description line starting with `[color=...]` looks like a
+  section header to a naive splitter. The authoring script splits only on real
+  `[sub_resource`/`[ext_resource`/`[resource` headers.
+
+---
+
 ## 2026-10-06 — Juice pass, and upgrades that show themselves working
 
 **Goal:** make effect chains feel physical, and make passive upgrades visible.

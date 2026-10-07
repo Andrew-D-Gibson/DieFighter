@@ -325,9 +325,20 @@ Set `source` when registering a modifier on a tile's behalf (see
 the same pop when their chain queues at least one event.
 
 Cosmetic flourishes live in `Systems/Graphics/Juice/juice.gd` (`Juice.bump`,
-`wiggle`, `ring`, `sparkle`, `callout`). They're fire-and-forget and never
-awaited by the pipeline. Bump a sprite, not a node whose scale a movement
-tween owns.
+`wiggle`, `ring`, `sparkle`, `callout`, `zap`, `stream`, `grid_ripple`,
+`screen_ripple`, `die_flare`). Bump a sprite, not a node whose scale a
+movement tween owns.
+
+**Authored flourishes.** The same primitives are effects a chain can use:
+`AUDIO_VISUAL` `SHOCKWAVE`, `SPARK_BURST`, `CALLOUT`, `BUMP`, `ZAP`,
+`GRID_RIPPLE`, `SCREEN_RIPPLE`, `STREAM`, `DIE_FLARE`, all one `JuiceHandler`
+building a `JuiceEvent`. They read authored fields only (`CALLOUT`'s
+`{amount}` token is the exception), aren't amplifiable, and play at the
+targets or, with none, at the source. `ZAP` and `STREAM` hold the chain until
+they land; the rest don't. `Juice.anchor_of()` / `body_of()` decide where an
+effect on a node is drawn and what gets squashed (`Player` routes both to its
+health bar). `SCREEN_RIPPLE` honours the screenshake setting. Where every
+sound should go is in `SOUND_EFFECTS.md`.
 
 ---
 
@@ -534,7 +545,7 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 | ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE |
 | AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN |
 | DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE |
-| AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND |
+| AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |
 | TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, FEED_HOLOGRAM, ADD_AMPLIFIER_STATUS |
 | SCENARIO_CONTROL | OPEN_SHOP, CLOSE_SHOP, JUMP, FLEE |
 | CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED, IF_TARGET_HOLDS_MATCHING_DIE, IF_FED, IF_SOURCE_HOLDS_DIE |
