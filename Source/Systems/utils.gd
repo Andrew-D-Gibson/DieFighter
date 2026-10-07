@@ -62,7 +62,39 @@ static var right_controls_image_path: String = "res://Assets/Textures/Map/right_
 static var left_controls_image_path: String = "res://Assets/Textures/Map/left_arrow_tile.png"
 
 
-static func format_text(text: String, scale: int = 6) -> String:
+## Icon heights as a fraction of the surrounding font size, so an icon reads
+## at text scale in any label without the caller knowing its pixel scale.
+const _DIE_ICON_HEIGHT_EM: float = 0.625
+const _TILE_ICON_HEIGHT_EM: float = 0.625
+const _SMALL_ICON_HEIGHT_EM: float = 0.5
+const _NBSP: String = "\u00a0"
+
+## Text token -> [texture path, height in em]. Only height is set, so each
+## texture keeps its own aspect ratio.
+static var _inline_icons: Dictionary = {
+	'(die_blank)': [dice_image_paths[0], _DIE_ICON_HEIGHT_EM],
+	'(die_1)': [dice_image_paths[1], _DIE_ICON_HEIGHT_EM],
+	'(die_2)': [dice_image_paths[2], _DIE_ICON_HEIGHT_EM],
+	'(die_3)': [dice_image_paths[3], _DIE_ICON_HEIGHT_EM],
+	'(die_4)': [dice_image_paths[4], _DIE_ICON_HEIGHT_EM],
+	'(die_5)': [dice_image_paths[5], _DIE_ICON_HEIGHT_EM],
+	'(die_6)': [dice_image_paths[6], _DIE_ICON_HEIGHT_EM],
+	'(fate)': [fate_image_path, _TILE_ICON_HEIGHT_EM],
+	'(left_mouse)': [mouse_indicator_path, _TILE_ICON_HEIGHT_EM],
+	'(attack_indicator)': [attack_indicator_path, _SMALL_ICON_HEIGHT_EM],
+	'(fate_scenario)': [fate_scenario_image_path, _TILE_ICON_HEIGHT_EM],
+	'(targeting_arrows)': [targeting_arrows_image_path, _TILE_ICON_HEIGHT_EM],
+	'(arrow_keys)': [arrow_keys_image_path, _TILE_ICON_HEIGHT_EM],
+	'(jump_gate_scenario)': [jump_gate_scenario_image_path, _TILE_ICON_HEIGHT_EM],
+	'(dice_cannon)': [dice_cannon_image_path, _TILE_ICON_HEIGHT_EM],
+	'(shield_burst)': [shield_burst_image_path, _TILE_ICON_HEIGHT_EM],
+	'(credits)': [credits_image_path, _SMALL_ICON_HEIGHT_EM],
+	'(right_controls)': [right_controls_image_path, _TILE_ICON_HEIGHT_EM],
+	'(left_controls)': [left_controls_image_path, _TILE_ICON_HEIGHT_EM],
+}
+
+
+static func format_text(text: String) -> String:
 	# Keywords first: their styling uses palette color names resolved below
 	text = Keywords.render(text)
 
@@ -73,36 +105,16 @@ static func format_text(text: String, scale: int = 6) -> String:
 	text = text.replace('=yellow', '=#' + Globals.yellow.to_html(false))
 	text = text.replace('=purple', '=#' + Globals.purple.to_html(false))
 	text = text.replace('=orange', '=#' + Globals.orange.to_html(false))
-	
-	# Add dice images to replace numbers
-	var image_size: int = int(72.0 / scale)
-	text = text.replace('(die_blank)', '[img={' + str(image_size) + '}x{' + str(image_size) + '}]' + dice_image_paths[0] + '[/img]')
-	text = text.replace('(die_1)', '[img={' + str(image_size) + '}x{' + str(image_size) + '}]' + dice_image_paths[1] + '[/img]')
-	text = text.replace('(die_2)', '[img={' + str(image_size) + '}x{' + str(image_size) + '}]' + dice_image_paths[2] + '[/img]')
-	text = text.replace('(die_3)', '[img={' + str(image_size) + '}x{' + str(image_size) + '}]' + dice_image_paths[3] + '[/img]')
-	text = text.replace('(die_4)', '[img={' + str(image_size) + '}x{' + str(image_size) + '}]' + dice_image_paths[4] + '[/img]')
-	text = text.replace('(die_5)', '[img={' + str(image_size) + '}x{' + str(image_size) + '}]' + dice_image_paths[5] + '[/img]')
-	text = text.replace('(die_6)', '[img={' + str(image_size) + '}x{' + str(image_size) + '}]' + dice_image_paths[6] + '[/img]')
-	
-	#text = text.replace('(info_cursor)', '[img=top,bottom {' + str(image_size) + '}x{' + str(image_size) + '}]' + info_cursor_image_path + '[/img]')
 
-	text = text.replace('(fate)', '[img={' + str(18) + '}x{' + str(11) + '}]' + fate_image_path + '[/img]')
-	text = text.replace('(left_mouse)', '[img={' + str(8) + '}x{' + str(8) + '}]' + mouse_indicator_path + '[/img]')
-	text = text.replace('(attack_indicator)', '[img={' + str(8) + '}x{' + str(8) + '}]' + attack_indicator_path + '[/img]')
-	text = text.replace('(fate_scenario)', '[img={' + str(8) + '}x{' + str(8) + '}]' + fate_scenario_image_path + '[/img]')
-	text = text.replace('(targeting_arrows)', '[img={' + str(8) + '}x{' + str(11) + '}]' + targeting_arrows_image_path + '[/img]')
-	text = text.replace('(arrow_keys)', '[img={' + str(16) + '}x{' + str(8) + '}]' + arrow_keys_image_path + '[/img]')
-	text = text.replace('(jump_gate_scenario)', '[img={' + str(8) + '}x{' + str(8) + '}]' + jump_gate_scenario_image_path + '[/img]')
-	
-	text = text.replace('(dice_cannon)', '[img={' + str(8) + '}x{' + str(8) + '}]' + dice_cannon_image_path + '[/img]')
-	text = text.replace('(shield_burst)', '[img={' + str(8) + '}x{' + str(8) + '}]' + shield_burst_image_path + '[/img]')
-	
-	text = text.replace('(credits)', '[img={' + str(8) + '}x{' + str(8) + '}]' + credits_image_path + '[/img]')
-	
-	text = text.replace('(right_controls)', '[img={' + str(8) + '}x{' + str(8) + '}]' + right_controls_image_path + '[/img]')
-	text = text.replace('(left_controls)', '[img={' + str(8) + '}x{' + str(8) + '}]' + left_controls_image_path + '[/img]')
-	
-	
+	for token: String in _inline_icons:
+		var icon: Array = _inline_icons[token]
+		var image: String = '[img height=%sem]%s[/img]' % [icon[1], icon[0]]
+		# A non-breaking space keeps the icon wrapping with the word before
+		# it. Alone on a line, an icon is shorter than the theme's tight
+		# line separation allows for, and overlaps the line above.
+		text = text.replace(" " + token, _NBSP + image)
+		text = text.replace(token, image)
+
 	return text
 
 

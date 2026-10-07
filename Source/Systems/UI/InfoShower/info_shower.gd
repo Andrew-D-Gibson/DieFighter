@@ -14,10 +14,10 @@ func _show_info(info: InfoResource) -> void:
 	if not info:
 		return
 		
-	%TitleLabel.text = Utils.format_text(info.title_label_text, 1)
-	%TopLabel.text = Utils.format_text(info.top_label_text, 1)
-	%BottomLabel.text = Utils.format_text(info.bottom_label_text, 1)
-	%SideLabel.text = Utils.format_text(info.side_label_text, 1)
+	%TitleLabel.text = Utils.format_text(info.title_label_text)
+	%TopLabel.text = Utils.format_text(info.top_label_text)
+	%BottomLabel.text = Utils.format_text(info.bottom_label_text)
+	%SideLabel.text = Utils.format_text(info.side_label_text)
 	self.visible = true
 
 	%TextureDisplay.texture = info.texture

@@ -59,7 +59,7 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 	# Parse delay tags before formatting
 	var original_delay_positions: Dictionary = Utils.parse_delay_tags(text)
 	var text_without_delays: String = Utils.remove_delay_tags(text)
-	var bb_code_text: String = Utils.format_text(text_without_delays, 9)
+	var bb_code_text: String = Utils.format_text(text_without_delays)
 	var raw_text: String = Utils.strip_bbcode_tags(bb_code_text)
 	
 	# Map delay positions from original text to processed text positions
