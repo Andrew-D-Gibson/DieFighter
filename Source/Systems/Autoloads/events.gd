@@ -58,6 +58,9 @@ signal engine_charge_changed()
 ## event from spending it, and only the former is worth retaliating to.
 signal engine_charge_drained()
 signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction)
+## One ship hit another (a pirate raiding a civilian). The player wasn't
+## involved; see player_attacked_ship for that.
+signal ship_attacked_ship(attacker: Enemy, target: Enemy)
 signal player_fatal_damage()
 
 # Enemy Events

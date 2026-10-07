@@ -16,6 +16,8 @@ enum ScenarioEvent {
 	# these as raw ints, so reordering silently rewires every encounter.
 	PLAYER_TOOK_REWARD_TILE,
 	PLAYER_TOOK_REWARD_MONEY,
+	## A pirate (or their boss) fired on a civilian ship.
+	PIRATE_ATTACKED_CIVILIAN,
 }
 
 enum Faction {
@@ -34,6 +36,7 @@ func _ready() -> void:
 	Globals.scenario_manager = self
 	
 	Events.player_attacked_ship.connect(_handle_attack)
+	Events.ship_attacked_ship.connect(_handle_ship_attack)
 	Events.enemy_left.connect(_handle_enemy_leaving)
 
 	Events.combat_finished.connect(func() -> void:
@@ -99,6 +102,16 @@ func _handle_attack(_ship: Enemy, ship_faction: ScenarioManager.Faction) -> void
 			Events.scenario_event.emit(ScenarioEvent.PLAYER_ATTACKED_CIVILIAN)
 
 
+## Ships fighting each other. Only one pairing means anything to the scenario
+## so far: pirates preying on civilians.
+func _handle_ship_attack(attacker: Enemy, target: Enemy) -> void:
+	if not attacker.scenario_state or not target.scenario_state:
+		return
+	if attacker.scenario_state.faction in [Faction.PIRATE, Faction.BOSS] \
+	and target.scenario_state.faction == Faction.CIVILIAN:
+		Events.scenario_event.emit(ScenarioEvent.PIRATE_ATTACKED_CIVILIAN)
+
+
 ## Checks if a faction has been completely wiped out,
 ## then emits the corresponding signal if necessary
 func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
@@ -111,7 +124,9 @@ func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
 		other_faction_ships.erase(ship)
 		
 	if len(other_faction_ships) == 0:
-		if current_scenario.rewards.keys().has(faction):
+		# A faction finished off by another ship wasn't the player's doing,
+		# so its bounty isn't theirs either.
+		if current_scenario.rewards.keys().has(faction) and not ship.was_killed_by_ship():
 			Events.spawn_reward.emit(
 				ship.global_position, 
 				current_scenario.rewards[faction]

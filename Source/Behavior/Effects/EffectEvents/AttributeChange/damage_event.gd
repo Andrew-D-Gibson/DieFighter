@@ -19,6 +19,10 @@ func resolve(_engine: ScenarioEngine) -> void:
 		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
 		if actor is Player and target is Enemy:
 			Events.player_attacked_ship.emit(target, target.scenario_state.faction)
+		elif actor is Enemy and target is Enemy and actor != target:
+			Events.ship_attacked_ship.emit(actor, target)
+		if target is Enemy:
+			(target as Enemy).last_damaged_by = actor
 
 		# Read before the hit lands: afterwards the shields it spent are gone.
 		var number_color: Color = Globals.blue if target.health.shields >= amount else Globals.red

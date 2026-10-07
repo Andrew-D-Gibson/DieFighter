@@ -1,0 +1,95 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="2_chain"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="3_action"]
+[ext_resource type="Texture2D" uid="uid://rib5l4kpwe7v" path="res://Assets/Textures/Enemies/IntentIndicator/raid.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://cbmpwbr78g43u" path="res://Assets/Textures/Enemies/IntentIndicator/raid_info.png" id="5_info"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="6_sfx"]
+
+[sub_resource type="Resource" id="Resource_particles_amount"]
+script = ExtResource("1_data")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_particles"]
+script = ExtResource("1_data")
+category = 4
+subtype = 1
+color = Color(0.31764707, 0.08235294, 0.13333334, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_sound"]
+script = ExtResource("1_data")
+category = 4
+subtype = 5
+sound_resource = ExtResource("6_sfx")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_target_prey"]
+script = ExtResource("1_data")
+subtype = 15
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_lunge"]
+script = ExtResource("1_data")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_intent"]
+script = ExtResource("1_data")
+category = 2
+subtype = 7
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_shockwave"]
+script = ExtResource("1_data")
+category = 4
+subtype = 14
+amount = 22
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_sparks"]
+script = ExtResource("1_data")
+category = 4
+subtype = 15
+amount = 10
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_callout"]
+script = ExtResource("1_data")
+category = 4
+subtype = 16
+string_param = "RAID"
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_damage"]
+script = ExtResource("1_data")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_give_back"]
+script = ExtResource("1_data")
+category = 3
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("2_chain")
+effects = Array[ExtResource("1_data")]([SubResource("Resource_particles_amount"), SubResource("Resource_particles"), SubResource("Resource_sound"), SubResource("Resource_target_prey"), SubResource("Resource_lunge"), SubResource("Resource_intent"), SubResource("Resource_shockwave"), SubResource("Resource_sparks"), SubResource("Resource_callout"), SubResource("Resource_damage"), SubResource("Resource_give_back")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("3_action")
+name = "Raid"
+description = "Fires on (target) for [color=red](amount) damage[/color], then hands your die back"
+indicator_texture = ExtResource("4_icon")
+info_texture = ExtResource("5_info")
+effect_chain = SubResource("Resource_chain")
+intent_amount = 4
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

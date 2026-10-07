@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://meeikumym0ie" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_probability_transition.gd" id="5_bg857"]
 [ext_resource type="Resource" uid="uid://cwu8gsutmwmwl" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/pirate_angry.tres" id="6_xunp5"]
 [ext_resource type="Resource" uid="uid://dgckhqqe22dlv" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/pirate_grateful.tres" id="7_bww20"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/pirate_raiding.tres" id="8_raiding"]
 
 [sub_resource type="Resource" id="Resource_8wwsw"]
 script = ExtResource("5_bg857")
@@ -21,6 +22,7 @@ dialogue = "This is our kill, back off!"
 attitude = 1
 transitions = Dictionary[int, ExtResource("3_fhktm")]({
 0: ExtResource("4_tclhq"),
-5: SubResource("Resource_8wwsw")
+5: SubResource("Resource_8wwsw"),
+9: ExtResource("8_raiding")
 })
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

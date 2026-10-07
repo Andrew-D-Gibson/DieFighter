@@ -53,9 +53,10 @@ func get_state() -> Dictionary:
 
 
 ## enemy_left also fires when a ship flees or when combat ends peacefully, so
-## only count the ones that actually died.
+## only count the ones that actually died, and not the ones another ship
+## killed.
 func _on_enemy_left(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
-	if is_instance_valid(ship) and ship.health.health <= 0:
+	if is_instance_valid(ship) and ship.health.health <= 0 and not ship.was_killed_by_ship():
 		ships_destroyed += 1
 
 

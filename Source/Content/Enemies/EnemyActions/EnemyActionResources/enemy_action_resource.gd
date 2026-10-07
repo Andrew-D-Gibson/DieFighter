@@ -61,7 +61,9 @@ func get_threat() -> Threat:
 	return _threat_of(effect_chain.effects)
 
 
-static func _threat_of(effects: Array[EffectData]) -> Threat:
+## [param aimed_at_ship] is whether the steps before these last targeted
+## another enemy ship (a raid's prey), whose damage is no threat to the player.
+static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false) -> Threat:
 	var threat: Threat = Threat.DEAD
 	for effect: EffectData in effects:
 		if effect == null:
@@ -69,14 +71,21 @@ static func _threat_of(effects: Array[EffectData]) -> Threat:
 		if effect is ConditionalEffectData:
 			var conditional: ConditionalEffectData = effect
 			threat = maxi(threat, maxi(
-				_threat_of(conditional.if_true_effects),
-				_threat_of(conditional.if_false_effects)
+				_threat_of(conditional.if_true_effects, aimed_at_ship),
+				_threat_of(conditional.if_false_effects, aimed_at_ship)
 			)) as Threat
+		elif effect.category == EffectEnums.Category.TARGETING:
+			aimed_at_ship = effect.subtype in [
+				EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY,
+				EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP,
+			]
 		elif effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
 		and effect.subtype == EffectEnums.AttributeChangeSubtype.DAMAGE:
-			return Threat.DANGEROUS
+			if not aimed_at_ship:
+				return Threat.DANGEROUS
+			threat = maxi(threat, Threat.NEUTRAL) as Threat
 		elif _has_consequence(effect):
-			threat = Threat.NEUTRAL
+			threat = maxi(threat, Threat.NEUTRAL) as Threat
 	return threat
 
 

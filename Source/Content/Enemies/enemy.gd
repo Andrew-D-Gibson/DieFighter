@@ -68,6 +68,10 @@ static var forced_actions: Array[EnemyActionResource] = []
 ## node enters the tree. See that resource for why it exists.
 var starting_health_fraction: float = 1.0
 
+## Whoever landed the latest hit: the player, another ship, or null for
+## something with no shooter (a hazard). Set by DamageEvent.
+var last_damaged_by: Node = null
+
 ## This ship's index in its scenario's starting_enemies, so a save can say
 ## which authored ship each record belongs to. -1 for a ship spawned any other
 ## way.
@@ -175,6 +179,12 @@ func _connect_dice_manager_signals() -> void:
 	dice_manager.die_added.connect(Events.enemy_received_die.emit)
 	
 
+## Whether the shot that finished this ship came from another ship (a pirate
+## raiding it), rather than the player.
+func was_killed_by_ship() -> bool:
+	return last_damaged_by is Enemy and last_damaged_by != self
+
+
 ## Called when the enemy dies
 func _on_death() -> void:
 	# Stop reacting to the scenario before announcing the death: enemy_left
@@ -185,7 +195,10 @@ func _on_death() -> void:
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
 	Events.play_sound.emit(_DEATH_SFX)
-	_play_kill_confirm()
+	# Another ship's kill isn't the player's to celebrate, or to loot.
+	var killed_by_ship: bool = was_killed_by_ship()
+	if not killed_by_ship:
+		_play_kill_confirm()
 	
 	# Create explosion particles
 	var explosion = explosion_particles.instantiate()
@@ -194,10 +207,11 @@ func _on_death() -> void:
 	add_child(explosion)
 
 	# Spawn rewards
-	Events.spawn_reward.emit(
-		global_position, 
-		reward_resource
-	)
+	if not killed_by_ship:
+		Events.spawn_reward.emit(
+			global_position,
+			reward_resource
+		)
 	
 	await graphics_manager.play_death_animation()
 	queue_free()

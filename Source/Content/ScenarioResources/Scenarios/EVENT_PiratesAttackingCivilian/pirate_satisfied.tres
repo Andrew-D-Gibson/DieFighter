@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="1_state"]
+
+[resource]
+script = ExtResource("1_state")
+dialogue = "Pleasure doing business."
+attitude = 1
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_kf7lg"]
 [ext_resource type="Resource" uid="uid://dmanmtu3cgxkk" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/civilian_grateful.tres" id="4_kf7lg"]
 [ext_resource type="Resource" uid="uid://qo10lvm3ond" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/civilian_betrayed.tres" id="5_7x0hr"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/civilian_under_fire.tres" id="6_fire"]
 
 [resource]
 script = ExtResource("2_tyfvd")
@@ -12,6 +13,7 @@ faction = 1
 transitions = Dictionary[int, ExtResource("3_kf7lg")]({
 1: ExtResource("5_7x0hr"),
 2: ExtResource("5_7x0hr"),
-4: ExtResource("4_kf7lg")
+4: ExtResource("4_kf7lg"),
+9: ExtResource("6_fire")
 })
 metadata/_custom_type_script = "uid://cpgidtisgk77q"
