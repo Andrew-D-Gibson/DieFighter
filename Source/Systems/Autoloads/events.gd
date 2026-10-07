@@ -36,6 +36,11 @@ signal scenario_event(event: ScenarioManager.ScenarioEvent)
 ## tile's use would get it refunded or not depending on signal connection order.
 signal player_turn_refresh()
 signal player_turn_start()
+## The opening turn of a fight, which has no player_turn_start of its own: that
+## beat comes after an enemy turn. Fires once the opening hand is dealt. Only
+## turn-start *effects* listen here; per-turn bookkeeping (hazard countdowns,
+## enemy intents) already ran for this turn and must not run twice.
+signal first_turn_start()
 signal player_turn_over()
 signal enemy_turn_over()
 signal combat_finished()

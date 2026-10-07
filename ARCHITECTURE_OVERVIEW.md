@@ -735,6 +735,14 @@ func end_turn() -> void               # Emit player_turn_over when queue empty
 - Ships alive when a fight ends hand their dice to the player (not to each
   other), and a sector advance waits two frames for them before jumping
 - `Events.player_turn_refresh` / `player_turn_start` → refill tile uses, reroll dice, enable dragging
+- `Events.first_turn_start` → a fight's opening turn, which has no
+  `player_turn_start` (that beat follows an enemy turn). Player emits it once
+  per fight: after the hand is dealt for a fight that opens with the scenario,
+  or on `start_combat` for one that breaks out mid-scenario. Tiles treat it as
+  `ON_TURN_START`, so Pilot Light, Skeleton Crew and Static Bloom go off on
+  turn one. Nothing else listens: hazard countdowns, enemy intents and
+  temporary modifiers already ran for that turn. `start_combat` alone isn't
+  enough, because fleeing one fight into another never leaves IN_COMBAT
 - `Events.tile_activation_complete` (from tile grid) → check empty queue, enable end-turn button
 
 ### 8.2 Tile (`Source/Content/Tiles/tile.gd`)

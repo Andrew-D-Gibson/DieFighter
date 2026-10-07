@@ -106,6 +106,13 @@ var num_of_dice: int:
 		
 @export var dice_scene: PackedScene
 
+## True while _start_scenario() is still bringing the opening hand in. A
+## fight that starts then gets its first turn once the hand is down.
+var _dealing_hand: bool = false
+
+## Whether this fight's first turn has been announced. A fight gets exactly one.
+var _first_turn_announced: bool = false
+
 var money: int:
 	set(value):
 		money = value
@@ -168,6 +175,11 @@ func _ready() -> void:
 	%EndTurnButton.update_ui()
 	
 	Events.start_scenario.connect(_start_scenario)
+	Events.start_combat.connect(func() -> void:
+		if not _dealing_hand:
+			_announce_first_turn()
+	)
+	Events.combat_finished.connect(func() -> void: _first_turn_announced = false)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
 	
@@ -331,6 +343,8 @@ func _start_scenario() -> void:
 	# Continuing a save taken partway through a scenario: the hand and the
 	# shields are whatever they were then, not a fresh arrival's.
 	var restoring: bool = Globals.state_manager and not Globals.state_manager.get_restore().is_empty()
+	_dealing_hand = true
+	_first_turn_announced = false
 
 	if not restoring:
 		health.shields = 0
@@ -341,6 +355,22 @@ func _start_scenario() -> void:
 	else:
 		await _arrive_with_hand()
 	_unlock_dice_after_jump()
+	_dealing_hand = false
+	if Globals.state_manager and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
+		_announce_first_turn()
+
+
+## A fight's first turn has no player_turn_start (that beat follows an enemy
+## turn), so it's announced here instead. A fight that breaks out partway
+## through a scenario (firing on a civilian) starts it on the spot. One that
+## opens with the scenario waits for _start_scenario() to finish dealing the
+## hand — and has to: state can stay IN_COMBAT straight through a flee into
+## the next fight, so start_combat is never emitted for it.
+func _announce_first_turn() -> void:
+	if _first_turn_announced:
+		return
+	_first_turn_announced = true
+	Events.first_turn_start.emit()
 
 
 ## A Continue builds the scene from nothing, so no die has survived to here:
