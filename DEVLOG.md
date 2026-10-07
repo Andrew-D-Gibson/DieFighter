@@ -4,6 +4,77 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-07 — Enemies that read the board, pass dice and raid civilians
+
+**Goal:** enemy intent tables were rolled ship by ship with no idea what else
+was on the board. Three problems came out of that: a friendly ship whose
+intents read "?" could still hold Flee, so firing on it with a 4 could make
+it leave on that very die; a pirate medic could patch up a civilian; and
+ships couldn't work together. Now every ship rolls together against a
+picture of the board, picks cooperative or predatory actions accordingly,
+and the perfect-information pillar holds: the six slots, and now the ship
+each one acts on, are shown before the player commits a die.
+
+**Hidden tables can't flee.** Actions say whether they're safe to roll while
+intents are hidden, read off their chain (anything with `FLEE` or `JUMP`
+isn't). Visibility is read off the roster, since `state` still says
+`IN_COMBAT` from the last fight while a new scenario's ships roll; I caught
+that live, rolling a Flee into a hidden table after a jump. When a fight
+ends with friendlies still around, any table holding a Flee is rerolled
+safe, and the targeting computer now reveals tables the moment a fight
+breaks out.
+
+**Rolling** moved out of `Enemy` into `EnemyActionSelector`, and
+`EnemyManager` rolls everyone together. `FactionRelations` is one small
+table: pirates and their boss are one side, civilians another, and pirates
+prey on civilians. Options can carry authored conditions and weight rules
+(Repair ×3 while an ally is hurt); actions that need another ship are gated
+on one existing, read off their chain.
+
+**Bound targets.** A slot that acts on another ship picks it when rolled.
+`TARGET_BOUND_ALLY` / `TARGET_BOUND_HOSTILE_SHIP` read the binding,
+descriptions can say `(target)`, and the targeting computer hangs a green
+(ally) or red (prey) die face under each ship the targeted enemy's slots
+point at. That came out of live testing: both Tender escorts are called
+"Venom Fighter", so the name alone couldn't say which one. Repair Beam and
+Aegis Link moved onto it. If the bound ship leaves, the slot re-points.
+
+**Relays, and why they can't loop.** Relay shields a little and hands its die
+to an ally, who spends it at once; Holo Loader hands your die back and
+conjures a hologram (face = intent amount) for an ally. The Field Tender
+carries both. Loops are ruled out at selection, as asked: each (ship, face)
+is a node with at most one edge out, so "would this binding loop?" is a
+walk forward. A relay is only bound where the walk can't come back; if no
+ally qualifies, that one slot is rerolled relay-free. No retry loop, no
+dice rerolled in flight, nothing else the player can see moves. Rerolling
+whole tables until valid was the alternative; with two or three ships and
+relay-heavy pools it fails repeatedly and churns slots for no reason. A
+300-seed fuzz test (2–4 ships, relay-heavy pools, holograms on every face)
+finds no loops, and a `relay_visited` list on the events is the backstop.
+A slot's threat follows its relay, so the tractor beam colours a die by
+what it finally does.
+
+**Raids.** Raid fires on a bound civilian and hands the die back; its threat
+reads neutral (its damage isn't aimed at you). It lives on the Venom Raider,
+a raiding loadout of the Venom Fighter used in Pirates Attacking Civilian,
+not on the plain fighter, which escorts its own hauler in Wreck Salvage.
+Ship-on-ship damage is announced (`ship_attacked_ship` →
+`PIRATE_ATTACKED_CIVILIAN`), and a ship killed by another drops no reward,
+gets no kill-confirm, pays no faction bounty and isn't the player's kill.
+The event reacts: a civilian under fire cries for help, and a pirate that
+makes the kill itself doesn't thank you for it.
+
+**Caught by the content test:** I authored Relay with Holo Loader's ordinal
+(miscounted `DiceControlSubtype` by one). `test_authored_content` flagged the
+loader's dangling ordinal, and a new test pins both shipped relays to what
+they say they do.
+
+**Tests:** 311 (+49): `unit/enemies/` covers the selector, gates, factions,
+conditions, binding, relays (including the fuzz) and raids, using a shared
+`helpers/ships.gd`.
+
+---
+
 ## 2026-10-07 — The background rule swings out of the targeting computer
 
 **Goal:** the background-rule badge borrowed the map's "!?" glyph and floated

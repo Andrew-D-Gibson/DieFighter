@@ -213,8 +213,11 @@ at once, with no per-tile authoring.
 | Do Nothing | error | Sputter / failed-ignition cough | chain start |
 | Flee | — | Engine burn away | before `FLEE` |
 | Grid Quake | tile_dropped | Seismic rumble through the grid | before `PUSH_TARGETED_TILES` |
+| Holo Loader | — | Hologram shimmer as a die is conjured for an ally | before `SPAWN_HOLOGRAM_FOR_ALLY` |
 | Impound | dice_cannon | Clamp + hold (the die is taken) | before `KEEP_DIE_WITH_ACTOR` |
 | Lockout Grid Pos | — | Lock-on + clamp | before `LOCKOUT_TILE` |
+| Raid | dice_cannon | A meaner, ragged shot at another ship (not at you) | before `DAMAGE` |
+| Relay | — | Toss-and-catch: the die flicked to an ally | before `FEED_ALLY` |
 | Repair Ally | player_shield | Repair drones whirr | before `HEAL` |
 | Shield Self | — | Shield up | before `SHIELD` |
 | Siege Shot | dice_cannon | Long wind-up → enormous slowed shot | chain start; before `DAMAGE` |

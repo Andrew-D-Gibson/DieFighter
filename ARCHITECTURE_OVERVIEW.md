@@ -305,6 +305,10 @@ out the name whenever a status does its job (see 4.7).
    - Popup action indicator texture
    - Emit `Events.enemy_used_die(enemy, die_value)` (pulses the matching intent) and `Events.enemy_acted`
    - `await action.effect_chain.play(context, engine)`
+   - A relay (`FEED_ALLY` / `SPAWN_HOLOGRAM_FOR_ALLY`, see 8.4) queues the die
+     with its bound ally and injects that ally's `EnemyActionEvent` straight
+     after, so the ally spends it at once on its own table. The event carries
+     `feed_depth` and the ships already in the chain (`relay_visited`)
 3. When all enemies out of dice: `Events.enemy_turn_over`
 
 ### 4.7 Modifier Feedback (procs)
@@ -551,10 +555,10 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 
 | Category | Subtypes |
 |----------|----------|
-| TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, etc. |
+| TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, TARGET_BOUND_ALLY, TARGET_BOUND_HOSTILE_SHIP, etc. |
 | ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE |
 | AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN, SET_TO_DICE_OWNED, SET_TO_DICE_IN_HAND, SET_TO_TARGET_DICE_HELD |
-| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET |
+| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET, FEED_ALLY, SPAWN_HOLOGRAM_FOR_ALLY |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |
 | TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, FEED_HOLOGRAM, ADD_AMPLIFIER_STATUS |
 | SCENARIO_CONTROL | OPEN_SHOP, CLOSE_SHOP, JUMP, FLEE |
@@ -785,14 +789,24 @@ func find_available_grid_pos() -> Vector2i         # First empty coordinate
 @export var enemy_resource: EnemyResource          # Base stats, graphics, action options
 @export var scenario_state: ScenarioShipState      # Runtime state (faction, attitude)
 var turn_actions: Array[EnemyActionResource]       # 6 pre-chosen actions per turn
-static var rng: RandomNumberGenerator              # Shared RNG per scenario
+var last_damaged_by: Node                          # Who landed the latest hit (see Ship vs ship)
 
-func generate_turn_actions() -> void               # Build 6 actions from weighted selection
+func generate_turn_actions(situation) -> void      # Roll 6 slots (call EnemyManager's instead)
+func threat_of_face(face: int) -> Threat           # What a die does here, following any relay
 func run_turn() -> void                            # Use all dice in queue sequentially
 func get_status_bar() -> StatusBar                 # Where status badges go (beside the health ring)
 ```
 
 **Action Selection**
+
+`EnemyManager` rolls every ship together, in roster order: on spawn (once
+the whole roster is in), on `player_turn_start`, and for a table that holds
+something unsafe when `combat_finished` hides intents again. Rolling is
+`EnemyActionSelector` (RNG bucket `ENEMY_AI`), reading an
+`EnemyActionSituation` built per ship: its allies and the ships its faction
+preys on (`FactionRelations`), its hull, its attitude, and whether intents
+are visible (`GameStateManager.enemy_intents_visible()`, read off the roster
+because `state` is stale while a new scenario's ships roll).
 
 - 6 action slots per enemy per turn
 - Action options with weights (likelihood)
@@ -800,6 +814,42 @@ func get_status_bar() -> StatusBar                 # Where status badges go (bes
   exactly one of a signature verb appears — weight 0 plus `force_include` means
   "one and only one")
 - Weighted random fill remaining slots
+- **Gates read off the chain**, like threat: an action that flees or jumps
+  (`is_safe_while_hidden()`) is never rolled while intents read "?", so a ship
+  can't leave on a die the player couldn't read. An action that binds a ship
+  (`get_binding()`) needs one to exist. A gated `force_include` is skipped;
+  a pool with nothing left fills with Do Nothing.
+- **Authored on the option:** `conditions` (`EnemyActionCondition`: ally
+  exists or is hurt, prey exists, own hull below a share, attitude; each can
+  be inverted) must all hold, and `situational_weights`
+  (`EnemyActionWeightRule`) scale the weight while a condition holds.
+
+**Bound targets.** An action that acts on another ship picks it when the slot
+is rolled, not when the die is spent: `EnemyTargetBinder` sets
+`EnemyActionResource.bound_target` once every table is in, and
+`TARGET_BOUND_ALLY` / `TARGET_BOUND_HOSTILE_SHIP` read it. The description's
+`(target)` token names the ship, and while an enemy is targeted the targeting
+computer hangs a small die face, green for an ally and red for prey, under
+each ship its slots are bound to. A bound ship that leaves mid-turn has its
+slots rebound by the same rules; the action itself is never rerolled once
+the player can see it.
+
+**Relays.** Relay (`FEED_ALLY`) hands the die on, and Holo Loader
+(`SPAWN_HOLOGRAM_FOR_ALLY`) conjures a hologram whose face is its intent
+amount; either way the bound ally spends it at once. Loops are ruled out at
+selection: each (ship, face) is a node, a relay slot is its one edge to the
+(ally, face) the die lands as, and the binder only binds a relay where
+walking forward can't come back to it. When no ally qualifies, that one
+slot is rerolled with relays excluded, so the graph stays loop-free by
+construction with no retries. `relay_visited` on the events is the backstop
+(Scrambled can flip a die in flight). Hologram faces aren't scaled by the run's
+damage multiplier.
+
+**Ship vs ship.** `DamageEvent` records `last_damaged_by` and emits
+`ship_attacked_ship` when one enemy hits another; `ScenarioManager` turns
+pirate fire on a civilian into `ScenarioEvent.PIRATE_ATTACKED_CIVILIAN`. A
+ship killed by another ship (`was_killed_by_ship()`) drops no reward, plays
+no kill-confirm, pays no faction bounty and doesn't count toward RunStats.
 
 **Which pool a turn draws from** is set by `EnemyResource.pool_selection`:
 
@@ -808,6 +858,7 @@ func get_status_bar() -> StatusBar                 # Where status badges go (bes
 | `TURN_CYCLE` (default) | `turns_alive % pool_count` — rhythms like charge/fire |
 | `HEALTH_THRESHOLD` | health bar mapped onto the pools; full HP → first, near death → last |
 | `SQUAD_LOSSES` | how many of its own faction have died this fight |
+| `COMBAT_ROUNDS` | rounds elapsed since it arrived, fed or not — a real timer |
 
 None of these cost anything from the perfect-information pillar: the six
 resolved slots are still shown in full before the player commits a die. Only
@@ -826,8 +877,8 @@ the *table they were drawn from* changes.
 | `player_turn_start` | Player begins turn | Dice reroll, enable dragging, update UI |
 | `player_turn_over` | Dice queue empty | Start enemy turn |
 | `enemy_turn_over` | All enemies out of dice | Loop to player turn |
-| `start_combat` | Enter combat state | Disable map switch, update UI colors |
-| `combat_finished` | Combat ends (all enemies gone) | Re-enable grid dragging, unlock engine charge |
+| `start_combat` | Enter combat state | Disable map switch, update UI colors, targeting computer reveals intents |
+| `combat_finished` | Combat ends (all enemies gone) | Re-enable grid dragging, unlock engine charge, EnemyManager rerolls survivors' unsafe tables |
 | `jump` | Hyperspace jump begins | Carry the player's dice, strand the ones enemies hold, reset player state |
 | `sector_advanced` | A new sector has been generated (zero-based index) | RunStats |
 | `victory` | Final sector's jump gate cleared | GameOver screen, SaveManager (deletes save), GameStateManager |
@@ -871,7 +922,8 @@ new values; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` to leave room.
 |--------|--------------|-----------|
 | `enemy_received_die` | Enemy gains die in turn | Update targeting intent dice UI |
 | `enemy_used_die` | Die used for action | Pulse intent indicator, emit enemy_acted |
-| `enemy_left` | Enemy removed (death/flee) | Remove from array, spawn reward, faction check |
+| `enemy_left` | Enemy removed (death/flee) | Remove from array, rebind slots that pointed at it, faction check |
+| `ship_attacked_ship` | One enemy damaged another | ScenarioManager (`PIRATE_ATTACKED_CIVILIAN`) |
 | `enemy_flew_in` | New enemy enters screen | Re-enable bobbing animation |
 
 ---
@@ -949,6 +1001,10 @@ Source/
 │   │
 │   ├── Enemies/
 │   │   ├── enemy.gd                               # Enemy ship behavior
+│   │   ├── EnemyActions/enemy_action_selector.gd  # Rolls a ship's six slots, with gates
+│   │   ├── EnemyActions/enemy_action_situation.gd # The board as one roll sees it
+│   │   ├── EnemyActions/enemy_target_binder.gd    # Binds slots to ships; keeps relays loop-free
+│   │   ├── EnemyActions/enemy_action_condition.gd # Authored gates / weight rules (+ _weight_rule.gd)
 │   │   └── ... action/resource files ...
 │   │
 │   └── ScenarioResources/
@@ -970,6 +1026,7 @@ Source/
 │   │   ├── TargetingComputer/targeting_computer.gd  # Intent display
 │   │   ├── MainViewer/main_viewer.gd           # Systems/Map tabs
 │   │   ├── ScenarioManager/scenario_manager.gd # Faction events
+│   │   ├── ScenarioManager/faction_relations.gd # Who fights alongside / preys on whom
 │   │   ├── ScenarioEngine/                     # Combat processor
 │   │   │   ├── scenario_engine.gd              # Core engine
 │   │   │   └── effect_event.gd                 # Event base class
