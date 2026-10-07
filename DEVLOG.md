@@ -4,6 +4,34 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-07 — The background rule swings out of the targeting computer
+
+**Goal:** the background-rule badge borrowed the map's "!?" glyph and floated
+in clear sky with nothing holding it up. It should be part of the cockpit.
+
+**The monitor.** `EnvironmentMonitor` is a small hinged screen, drawn in the
+targeting computer's palette, that lives folded away behind the computer
+(`z_index -3`, so the computer's body hides it). When the background carries
+a rule it rises leaning over and swings upright on its mast with an elastic
+settle; in plain space it drops back out of sight, so the monitor appearing at
+all is still the signal.
+
+- **Screen:** a hazard triangle tinted to the rule's `color`. A rule that
+  ships its own `icon` shows that untinted instead.
+- **Lamp:** blinks in the rule's colour (the screen dims with it) until the
+  monitor is clicked, then stays lit. This replaces the old alpha pulse.
+- **Click:** the same InfoShower panel as before. The panel gets a
+  self-coloured `environment_rule_icon.png`, since a tinted white glyph
+  can't carry its colour into another scene.
+- **Rule bites:** the monitor jolts on its hinge and its screen flares.
+- It isn't clickable while stowed or in transit, so it never catches a click
+  aimed at the targeting computer.
+
+Named "environment" rather than "sector" because a sector is a stretch of the
+run, and this rule belongs to the background.
+
+---
+
 ## 2026-10-07 — Dice ride the jump, and the ones you hand over stay behind
 
 **Goal:** dice used to vanish when a jump started and respawn at the start of

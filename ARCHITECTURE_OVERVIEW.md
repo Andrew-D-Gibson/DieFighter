@@ -317,7 +317,7 @@ modifier's visual, if it has one.
 | Listener | Reacts when | Does |
 |---|---|---|
 | `Tile` | `mod.source == self` | `play_trigger_feedback()`: bump, flash, ring, sparks, sound, callout of `get_trigger_text()` in `get_trigger_color()` |
-| `BackgroundModifierBadge` | `mod` is `BackgroundModifierManager.get_active_modifier()` | kicks the badge |
+| `EnvironmentMonitor` | `mod` is `BackgroundModifierManager.get_active_modifier()` | jolts the monitor on its hinge and flares its screen |
 | `StatusModifier` (override) | always | flashes the host ship, callout of the status name |
 
 Set `source` when registering a modifier on a tile's behalf (see

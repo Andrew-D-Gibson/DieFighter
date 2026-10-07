@@ -79,7 +79,7 @@ at once, with no per-tile authoring.
 | Tile refuses a die | `Tile.play_refusal_feedback()` | Soft denied buzz |
 | Upgrade tile's modifier fires | `Tile.play_trigger_feedback()` (`_TRIGGER_SFX`) | See #1 above |
 | Reactive tile fires (event response) | `TileEventTriggeredEvent` → `play_trigger_feedback` | Same as above, or a lower "click-on" variant |
-| Background rule bites | `BackgroundModifierBadge._on_modifier_triggered` | Ominous low tone |
+| Background rule bites | `EnvironmentMonitor._on_modifier_triggered` | Ominous low tone |
 | Status applied | `StatusModifier.play_applied_feedback()` | One per status (see #5) |
 | Status ticks / fires | `StatusModifier.announce_triggered()` | Burn tick sizzle, Jam clank, Scramble warble, Exposed crit "shink" |
 | Die scrambled on arrival | `ScrambledStatus.on_die_arriving` | Glitchy pitch-bend |
@@ -115,7 +115,7 @@ at once, with no per-tile authoring.
 | Sector advanced | `Events.sector_advanced` | Bigger arrival sting |
 | Victory / game over | `GameOver` | Fanfare / defeat drone |
 | Info panel open / close | `InfoShower` | Paper/hologram swish |
-| Background modifier badge appears | `BackgroundModifierBadge._on_modifier_applied` | Mysterious chime |
+| Environment monitor swings up out of the targeting computer | `EnvironmentMonitor._deploy` | Mechanical clunk, then a warning chime |
 
 ## Tiles
 
