@@ -4,6 +4,96 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-07 — Dice ride the jump, and the ones you hand over stay behind
+
+**Goal:** dice used to vanish when a jump started and respawn at the start of
+the next scenario. Now they're physical and persistent: the dice you still
+have ride the jump with you, and any die an enemy is holding is left behind
+with that ship, for good. Jumping takes a die, and that die is never on an
+enemy, so the hand can't empty this way. Keeping hold of your dice is now a
+decision, and because nothing pops in or out of existence, a player watches
+the die get left behind.
+
+**The rule.** If a die is in the player's inventory (hand, held by a tile, or
+sitting on the tile that fired the jump), it comes along. If it's in an
+enemy's queue, including one impounded across turns, it's lost. On
+`Events.jump`, `Player._carry_dice_through_jump()`:
+
+- brings the kept dice home and locks them until arrival (the scenario engine
+  a tile would fire through is already shut down);
+- **strands** enemy-held dice: pulls them out of every queue and the `Dice`
+  group so nothing can hand them back, reparents them to their ship so they
+  ride it off the bottom of the screen and behind the cockpit, flares each
+  one with a red "LOST", and announces "-1 DIE" over the hand with a dread
+  thunk and a small shake;
+- fizzles holograms (they're borrowed light, not owned dice).
+
+On arrival the carried dice are rerolled, and the hand only spawns new dice to
+reach `num_of_dice`: the first scenario of a run, a Continue, or a die bought
+since the last arrival.
+
+**Saving.** Only the count is run-level state. The loss lands in
+`num_of_dice` when the jump starts, but nothing is written until the
+destination's arrival checkpoint, so quitting mid-jump reloads the fight being
+fled with every die still owned. A mid-scenario restore tops the saved hand up
+to `num_of_dice`, so a die on a tile when the save was taken isn't lost to it.
+
+**Knock-on fixes:**
+- Losing a die with a full drive pushed charge into the redline (the gate
+  shrinks, the old charge stays), which bleeds hull every turn. A drive that
+  wasn't redlined now stops at the new gate.
+- `max_engine_charge` went to -1 at a single die, which a jump can now leave
+  you with, and the engine bar divides by it. Floored at 1.
+- Ships that survive a fight (civilians, shopkeepers) passed their dice to
+  each other, not to the player, so those dice would now be lost on the next
+  jump. They hand them home instead, and a sector advance waits two frames
+  for them before jumping.
+
+**Then content: seven tiles about how many dice you own.** "Fleet" is a new
+keyword: every die you own wherever it is, plus the holograms you're holding.
+
+| Tile | Colour, rarity, uses | Does | Juice |
+|---|---|---|---|
+| Swarm Battery | red, uncommon, 1 | A 2 damage shot per die in your Fleet | One zap, spark and ring per shot |
+| Broadside | red, uncommon, 1 | 3 damage per die still in hand; fire it first | "BROADSIDE", screen ripple, big shake |
+| Lone Wolf Lance | red, rare, 2 | X damage, tripled with a Fleet of 2 or fewer | Tripled: "LONE WOLF", glitch, red vignette, screen ripple, long hitstop |
+| Skeleton Crew | blue, uncommon, passive | Turn start: 2 shields per die your Fleet is short of 5 | Shield motes stream from the tile to the hull |
+| Phantom Squadron | yellow, rare, 1 | With a Fleet of 4 or fewer, holograms of the die until your Fleet reaches 5 | Cyan die flare and glitch per hologram |
+| Debt Collector | green, uncommon, 2 | 4 damage per die the target is holding | Gold motes stream out of the ship, "PAY UP" |
+| Repo Beam | purple, uncommon, 1 | 4 charge: pull back the target's newest die; both dice return | Closing lock-on ring, cyan beam, "REPO'D" |
+
+They pull in different directions on purpose. Swarm and Broadside want a big
+Fleet; Lone Wolf and Skeleton Crew want a small one; Phantom Squadron refills a
+small one with holograms, which then turn Lone Wolf off. Debt Collector wants
+you to pile dice onto one ship, exactly the dice a jump would strand, and Repo
+Beam is the way to get one back before you leave.
+
+New effects (appended): `SET_TO_DICE_OWNED`, `SET_TO_DICE_IN_HAND`,
+`SET_TO_TARGET_DICE_HELD`, `IF_DICE_OWNED_IN_RANGE`, the `DICE_OWNED_AT_MOST`
+activation check, and `RECEIVE_DIE_FROM_TARGET`, the ordinal the catalog had
+kept reserved and unbuilt. Art is drawn on each colour's tile template.
+
+**Found while testing:**
+- The first callouts landed on the ship, under the damage number they were
+  explaining. Callouts now float off the tile that fired.
+- `ReceiveDieFromTargetHandler` didn't pass the chain's targets to its event
+  (`_stamp()` doesn't copy them), so Repo Beam did nothing. Fixed, with a
+  regression test.
+- The dev console's `give` command broke into the debugger every time (an
+  untyped array returned as `Array[String]`). Fixed separately.
+
+**Verified live:** a die handed to the raider rode it off screen behind the
+cockpit with "LOST" and "-1 DIE"; the count went 3 → 2 and the gate 10 → 4
+with no redline; the save on disk stayed at 3 dice mid-jump and became 2 on
+arrival; a Continue rebuilt 2 dice with the same faces as the live arrival; a
+hologram fizzled on a jump without costing a die. Each tile fired against a
+300-HP raider: Swarm 3×2, Lone Wolf tripled to 6 at a Fleet of 2, Broadside 6
+with 2 in hand, Debt Collector 16 against 4 held dice, Phantom two 2-holograms
+for a Fleet of 3, Repo Beam pulled a die back for 4 charge, Skeleton Crew +4
+shields at turn start. 249 GUT tests pass.
+
+---
+
 ## 2026-10-06 — Every tile and enemy action gets its own juice
 
 **Goal:** the first juice pass was systemic. This one is per-content: make

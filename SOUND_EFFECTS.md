@@ -31,7 +31,7 @@ higher; good for chains, ticks and combos).
 | `enemy_health_hit` / `enemy_shields_hit` | Enemy damaged |
 | `player_health_hit` / `player_shields_hit` | Player damaged |
 | `enemy_death_explosion` | Ship destroyed |
-| `tractor_lock`, `die_dread_thunk`, `die_dead_click` | Tractor beam handing a die to a ship |
+| `tractor_lock`, `die_dread_thunk`, `die_dead_click` | Tractor beam handing a die to a ship. `tractor_lock` also plays for Repo Beam, and `die_dread_thunk` for dice left behind on a jump |
 | `hover_thump`, `text_blip`, `money_tick`, `alarm_klaxon` | UI hover, dialogue/tutorial text, money counting, red alert |
 | `upgrade_trigger` | **Placeholder** (the reroll blip, pitched up): an upgrade tile's modifier firing |
 
@@ -109,6 +109,9 @@ at once, with no per-tile authoring.
 | Shop open / buy | `Events.open_shop`, `Shop` | Shop bell / register |
 | Map open / waypoint chosen | `Events.show_map`, `Map` | Map unfold / plot beep |
 | Hyperspace jump | `JumpManager.jump_to_scenario` | Spool-up, jump boom, arrival |
+| Dice left behind on a jump | `Player._announce_lost_dice()` (plays `die_dread_thunk` today) | A falling, hollow "lost" sting: the one jump moment that costs something for good |
+| Hologram fizzles on a jump | `Player._dissolve_hologram()` | Soft static fizzle |
+| Carried dice rerolled on arrival | `Player._arrive_with_hand()` (plays `dice_reroll_blip` today) | Fine; maybe a heavier rattle than a mid-fight reroll |
 | Sector advanced | `Events.sector_advanced` | Bigger arrival sting |
 | Victory / game over | `GameOver` | Fanfare / defeat drone |
 | Info panel open / close | `InfoShower` | Paper/hologram swish |
@@ -127,6 +130,7 @@ at once, with no per-tile authoring.
 | Beam Splitter | — | Prism split chime + hologram shimmer | before `PASS_DIE_TO_TILE`, `FEED_HOLOGRAM` |
 | Booster Stage | — | Rocket-stage ignition | before `ADD_AMPLIFIER_MODIFIER` |
 | Bootstrap Injector | — | Digital materialise + engine drain | before `SPAWN_HOLOGRAPHIC_DIE` |
+| Broadside | dice_cannon | Rolling multi-gun volley, one report per die in hand | before `DAMAGE` |
 | Brownout Plating | — | Flickering power-down + shield hum | before `SHIELD` |
 | Bump | — | Little "tick-up" | before `CHANGE_ACTIVATOR_VALUE` |
 | Chaff Pod | error | Chaff-pop burst | before `APPLY_STATUS` |
@@ -137,6 +141,7 @@ at once, with no per-tile authoring.
 | Crossed Wires | reroll blip | Electrical short buzz | before `APPLY_STATUS` |
 | Dead Man's Switch | — | Arming click (quiet; it re-arms every turn) | chain start |
 | Deadweight Drive | dice_cannon | Very heavy, slow thud | before `DAMAGE` |
+| Debt Collector | dice_cannon | Cash-register clunk as the motes land | before `DAMAGE` |
 | Dice Cannon | dice_cannon | Keep (the baseline shot) | — |
 | Emergency Shield | — | Klaxon → slowed shield slam → burn-out | before `HEAL`, `SHIELD`, `DESTROY_SOURCE` |
 | Emergency Transfer | — | Power-transfer whine | before `SHIELD` |
@@ -156,21 +161,24 @@ at once, with no per-tile authoring.
 | Inverter | reroll blip | Flip "fwip" | before `CHANGE_ACTIVATOR_VALUE` |
 | Leech Relay | dice_cannon | Suction slurp ×2 | before each `ADD_USES_REMAINING` |
 | Leeching Shot | dice_cannon | Shot + drain slurp | before `TARGET_PLAYER` |
+| Lone Wolf Lance | dice_cannon | Thin lance; a howl or overdriven crack on the tripled shot | before `DAMAGE`; in the Fleet branch |
 | Napalm Vent | — | Vent hiss + flame | before `APPLY_STATUS` |
 | Overclock Coil | dice_cannon | Coil whine rising with each use | chain start |
 | Overdraw Coil | dice_cannon | Huge drain → discharge | before `DAMAGE` |
 | Overpressure Lance | dice_cannon | Pressure hiss → lance blast | before `DAMAGE` |
 | Parity Junction | dice_cannon | Switch click (two pitches for odd/even) | each branch |
+| Phantom Squadron | — | Ghostly shimmer per hologram | before each `SPAWN_HOLOGRAPHIC_DIE` |
 | Pilot Light | — | Pilot flame "fwump" | before `FEED_HOLOGRAM` |
 | Polarizer | reroll blip | Magnetic snap | before `CHANGE_ACTIVATOR_VALUE` |
 | Preflight Interlock | dice_cannon | Checklist beeps → triple shot | before `DAMAGE` |
 | Ram Scoop | — | Intake whoosh | before `CHANGE_ENGINE_CHARGE` |
+| Re-Roll | — | Dice rattle | before `REROLL_ACTIVATOR` |
 | Receiver Dish | dice_cannon | Signal-received chirp when Fed | Fed branch |
 | Redline Governor | — | Redline engine scream | before `ADD_OVERCHARGE` |
 | Regenerative Brake | — | Regen whine | before `CHANGE_ENGINE_CHARGE` |
 | Relay Terminal | dice_cannon | Relay hum stacking with depth | before `DAMAGE` |
 | Reloader | — | Magazine reload clack | before `ADD_USES_REMAINING` |
-| Re-Roll | — | Dice rattle | before `REROLL_ACTIVATOR` |
+| Repo Beam | tractor_lock | Reverse tractor whine, die yanked free | before `RECEIVE_DIE_FROM_TARGET` |
 | Runaway Reactor | dice_cannon | Reactor alarm + meltdown | branch |
 | Sabotage Charge | error | Sabotage beep-beep-clunk | before `APPLY_STATUS` |
 | Scatter Router | dice_cannon | Ricochet ping | before `PASS_DIE_TO_TILE` |
@@ -178,12 +186,14 @@ at once, with no per-tile authoring.
 | Shield Attractor | player_shield | Magnetic pull + grid slide | before `SHIELD`; before `PULL_ROW_TILES_TO_COLUMN` |
 | Shield Burst | player_shield | Keep, maybe a bigger burst layer | — |
 | Signal Relay | dice_cannon | Signal blip | before `PASS_DIE_TO_TILE` |
+| Skeleton Crew | player_shield | Hollow, sparse shield hum | before `SHIELD` |
 | Solar Sail | player_shield | Sail unfurl + shimmer | before `SHIELD` |
 | Spark Gap | — | Spark snap | before `DAMAGE` |
 | Spite Coil | dice_cannon | Snarling zap | before `DAMAGE` |
 | Spotter Drone | — | Drone beep + lock | before `APPLY_STATUS` |
 | Static Bloom | — | Static wash | before `APPLY_STATUS` |
 | Surge Relay | reroll blip | Surge buzz | before `REROLL_ACTIVATOR` |
+| Swarm Battery | dice_cannon (every shot) | Small rapid pops, pitch escalating across the volley | before each `DAMAGE` |
 | Tactical Boomerang | dice_cannon | Throw "whirr" out and back | before `PUSH_TILE_IN_DIRECTION` |
 | Target Painter | tile_dropped | Laser-paint hum | before `APPLY_STATUS` |
 | Toll Relay | — | Coin-toll ding | chain start |

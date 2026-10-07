@@ -354,7 +354,7 @@ sound should go is in `SOUND_EFFECTS.md`.
 | `ScenarioHazardResource` | `Source/Content/ScenarioResources/Hazards/*.tres` | A recurring environmental event on a scenario (solar flare, ion storm, asteroid impact): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | `TileResource.effect_chain`, `event_responses`, enemy actions, hazards | Ordered list of `EffectData` entries dispatched through `EffectRegistry` |
-| `ActivationResource` | In TileResource.activation_checks | Criteria checks: requires a die / takes no die, specific values, in combat, a ship targeted, engine charged / not charged, can afford N charge, overcharged |
+| `ActivationResource` | In TileResource.activation_checks | Criteria checks: requires a die / takes no die, specific values, in combat, a ship targeted, engine charged / not charged, can afford N charge, overcharged, Fleet of N or fewer |
 
 ### 5.2 Tile Resource Fields
 
@@ -385,7 +385,7 @@ limit.
 `Source/Systems/keywords.gd` (`Keywords`) holds game terms written into
 descriptions as tokens: `(feed_right)`, `(feed_left)`, `(feed_up)`,
 `(feed_down)`, `(feed_random)`, `(fed)`, and one per status — `(burn)`,
-`(scrambled)`/`(scramble)`, `(jammed)`/`(jam)`, `(exposed)`/`(expose)`. `Utils.format_text()` renders each
+`(scrambled)`/`(scramble)`, `(jammed)`/`(jam)`, `(exposed)`/`(expose)` — and `(fleet)`, the dice the player owns (see 6.3). `Utils.format_text()` renders each
 token as a styled label, and `Tile._get_tile_info()` appends a definition for
 every keyword the description uses, so the info panel explains the rule
 without each description repeating it. `Keywords.definition()` serves the
@@ -438,6 +438,16 @@ enemies, intents and dice.
 
 Restored ships skip `effects_on_enter`: those already ran and their results
 are in the save. The shop reopens from the save instead.
+
+**Dice across a jump.** Only the dice *count* (`num_of_dice`) is run-level
+state; arriving rerolls the hand anyway, so faces aren't worth saving. Dice
+left on an enemy at a jump lower the count the moment the jump starts, but
+nothing is written until the destination's arrival checkpoint (mid-scenario
+checkpoints refuse to run while in transit). Quitting mid-jump therefore
+reloads the pre-jump checkpoint — the fight being fled, with every die still
+owned — and arriving commits the loss. A mid-scenario restore spawns the
+saved hand, then tops it up to `num_of_dice`, so a die that was on a tile or
+in flight when the save was taken is never lost to it.
 
 **Run-level state** is saved at every checkpoint:
 - player stats and the tile layout, including each tile's `effect_data`;
@@ -543,12 +553,12 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 |----------|----------|
 | TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, etc. |
 | ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE |
-| AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN |
-| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE |
+| AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN, SET_TO_DICE_OWNED, SET_TO_DICE_IN_HAND, SET_TO_TARGET_DICE_HELD |
+| DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |
 | TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, FEED_HOLOGRAM, ADD_AMPLIFIER_STATUS |
 | SCENARIO_CONTROL | OPEN_SHOP, CLOSE_SHOP, JUMP, FLEE |
-| CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED, IF_TARGET_HOLDS_MATCHING_DIE, IF_FED, IF_SOURCE_HOLDS_DIE |
+| CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED, IF_TARGET_HOLDS_MATCHING_DIE, IF_FED, IF_SOURCE_HOLDS_DIE, IF_DICE_OWNED_IN_RANGE |
 | REPETITION | ADD_REPETITIONS |
 | UTILITY | DESTROY_SOURCE, PRINT_DEBUG |
 
@@ -597,6 +607,28 @@ the 3×5 grid into a machine that one die runs through.
   (`SET_TO_ACTIVATIONS_THIS_TURN`), and a tile's orthogonal neighbours receive
   `ON_ADJACENT_TILE_ACTIVATED`.
 - **Die values stay capped at 6.** Nothing overflows.
+
+### 6.3 The Fleet: dice the player owns
+
+Dice persist across jumps (see 8.1). The player's **Fleet** is every die they
+own, wherever it is right now, plus the holograms they hold:
+`Player.dice_owned()` = `num_of_dice` + holograms in hand or on a tile. A die
+handed to an enemy still counts until the player jumps away from it.
+
+| Piece | Reads |
+|---|---|
+| `SET_TO_DICE_OWNED` | the Fleet |
+| `SET_TO_DICE_IN_HAND` | dice still in hand (the activator has already left it) |
+| `SET_TO_TARGET_DICE_HELD` | dice the first target is holding |
+| `IF_DICE_OWNED_IN_RANGE` | Fleet between `range_min` and `range_max` |
+| `DICE_OWNED_AT_MOST` (activation) | Fleet ≤ `threshold`, refusing with "TOO MANY DICE" |
+| `RECEIVE_DIE_FROM_TARGET` | moves the target's newest die to the actor (rerolled if the actor is the player) |
+
+Volley tiles (Swarm Battery, Phantom Squadron) set their repetition count
+from the Fleet in `repetition_conditions`, behind an always-true
+`IF_DICE_OWNED_IN_RANGE 0–99`. A conditional's branches are evaluated before
+the events they queue resolve, so a chain can't count holograms it is in the
+middle of spawning; compute the count once, up front.
 
 > **Loop rule for authoring.** There is no loop counter. A tile with unlimited
 > uses may only Feed **right**; anything that Feeds up, down, left or randomly
@@ -676,10 +708,11 @@ Main (Node2D)
 
 ```gdscript
 @export var num_of_dice: int          # Dice count → determines max_engine_charge
-@export var engine_charge: int        # Max: (6*(num-1)) - floor(1.7078 * sqrt(num))
+@export var engine_charge: int        # Max: max(1, (6*(num-1)) - floor(1.7078 * sqrt(num)))
 var dice_manager: DiceQueue           # Queue node with drag management
 
 func spawn_dice(num_to_spawn, value=0, holographic=false) -> void
+func dice_owned() -> int              # The Fleet: num_of_dice + holograms held
 func reroll_dice() -> void            # Tween each die with sound SFX
 func end_turn() -> void               # Emit player_turn_over when queue empty
 ```
@@ -687,7 +720,20 @@ func end_turn() -> void               # Emit player_turn_over when queue empty
 **Turn Logic**
 
 - `Events.load_scenario` → seed RNG
-- `Events.start_scenario` → clear dice, spawn new set
+- `Events.jump` → the dice ride the jump. Dice in hand, held by a tile, or on
+  the tile that fired the jump come home and are locked until arrival. Dice
+  an enemy holds are **stranded**: pulled out of every queue and the `Dice`
+  group, reparented to the ship so they ride it off screen, and subtracted
+  from `num_of_dice` (a "LOST" / "-N DICE" callout says so). Holograms fizzle.
+  Dice with no `host_queue` (shop stock, salvage) go with the scenario. A
+  shrinking dice count stops a full drive at the new gate rather than
+  redlining it.
+- `Events.start_scenario` → arriving keeps the carried dice and rerolls them,
+  spawning only to reach `num_of_dice` (first scenario, Continue from an
+  arrival, a die bought since); a mid-scenario Continue rebuilds the saved
+  hand instead
+- Ships alive when a fight ends hand their dice to the player (not to each
+  other), and a sector advance waits two frames for them before jumping
 - `Events.player_turn_refresh` / `player_turn_start` → refill tile uses, reroll dice, enable dragging
 - `Events.tile_activation_complete` (from tile grid) → check empty queue, enable end-turn button
 
@@ -774,7 +820,7 @@ the *table they were drawn from* changes.
 | `enemy_turn_over` | All enemies out of dice | Loop to player turn |
 | `start_combat` | Enter combat state | Disable map switch, update UI colors |
 | `combat_finished` | Combat ends (all enemies gone) | Re-enable grid dragging, unlock engine charge |
-| `jump` | Hyperspace jump begins | Clear dice, reset player state |
+| `jump` | Hyperspace jump begins | Carry the player's dice, strand the ones enemies hold, reset player state |
 | `sector_advanced` | A new sector has been generated (zero-based index) | RunStats |
 | `victory` | Final sector's jump gate cleared | GameOver screen, SaveManager (deletes save), GameStateManager |
 | `hazard_armed` / `hazard_countdown_changed` | Scenario hazard set up / ticked | HazardIndicator |
