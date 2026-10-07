@@ -33,6 +33,13 @@ func _ready() -> void:
 	Events.enemy_flew_in.connect(_initial_target)
 	Events.enemy_received_die.connect(_update_ui)
 	Events.start_scenario.connect(_update_ui)
+	# A fight breaking out mid-turn (firing on a civilian) reveals the tables
+	# that were rolled while they read "?". A frame later, because combat
+	# starts as the shot lands, before the ship it hit turns hostile.
+	Events.start_combat.connect(func() -> void:
+		await get_tree().process_frame
+		_update_ui()
+	)
 	Events.player_turn_start.connect(func() -> void:
 		await get_tree().create_timer(0.5).timeout
 		_update_ui()
@@ -180,7 +187,7 @@ func _update_ui() -> void:
 		
 		$TargetImage.texture = targeted_enemy.enemy_resource.targeting_computer_image
 		for i: int in range(len(targeted_enemy.turn_actions)): # Should always loop 0 to 5
-			if Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
+			if Globals.state_manager.enemy_intents_visible():
 				# Set up the intent die properly
 				if targeted_enemy.dice_manager.has_value(i+1):
 					die_sprites[i].frame = i + 6

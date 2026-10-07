@@ -147,8 +147,9 @@ func _connect_combat_signals() -> void:
 		await get_tree().process_frame
 		dice_manager.return_dice_to_player()
 	)
-	
-	Events.player_turn_start.connect(generate_turn_actions)
+
+	# Turn tables are rolled by EnemyManager, every ship together, so a roll
+	# can see the rest of the board.
 	Events.enemy_turn_over.connect(func() -> void:
 		rounds_in_combat += 1
 	)
@@ -220,7 +221,8 @@ func _update_resource() -> void:
 	_update_health_from_resource()
 	_update_health_bar()
 	_update_dialogue()
-	generate_turn_actions()
+	# The first table is rolled by EnemyManager once the whole roster is in,
+	# so a roll can see who else is on the board.
 
 
 ## Updates the enemy's graphics
@@ -290,54 +292,35 @@ func _current_pool_index() -> int:
 			return turns_alive % pool_count
 
 
-## Generates the actions the enemy will take this turn
-func generate_turn_actions() -> void:
-	# Clear the previous turn's actions
-	turn_actions = []
+## Rolls this turn's six intent slots. EnemyManager calls this for every ship
+## together (see EnemyManager.generate_all_turn_actions()); call that instead
+## unless only this ship's table should change.
+func generate_turn_actions(situation: EnemyActionSituation = null, take_forced: bool = true) -> void:
+	if situation == null:
+		situation = EnemyActionSituation.for_ship(self)
+
+	# The tutorial's forced actions are a queue shared by every ship: each
+	# roll takes the next six.
+	var forced: Array[EnemyActionResource] = []
+	if take_forced:
+		forced = forced_actions.slice(0, EnemyActionSelector.SLOT_COUNT)
+		forced_actions = forced_actions.slice(forced.size())
+
+	turn_actions = EnemyActionSelector.roll(
+		enemy_resource.action_options[_current_pool_index()],
+		situation,
+		forced
+	)
 	
-	# Add any forced actions
-	if len(forced_actions) > 0:
-		var last_action_index_to_grab: int = min(6, len(forced_actions))
-		turn_actions.append_array(forced_actions.slice(0, last_action_index_to_grab))
-		
-		forced_actions = forced_actions.slice(last_action_index_to_grab)
-	
-	var this_turns_action_options: EnemyTurnActionList = \
-		enemy_resource.action_options[_current_pool_index()]
-	
-	# Grab at least one of every action that has "force_include"
-	# and sum up the likelihoods of all actions for later
-	var action_weights_sum: float = 0
-	for option: EnemyActionOptionResource in this_turns_action_options.actions_possible:
-		if option.force_include:
-			turn_actions.append(option.get_action())
-		action_weights_sum += option.weight
-		
-	# With the forced actions and the "force_include" options, 
-	# we might be over the required 6 actions
-	if len(turn_actions) >= 6:
-		turn_actions = turn_actions.slice(0,6)
-		return
-		
-	# Randomly fill the rest of the list using the action likelihoods
-	# Randomly choose 6 actions picking from our weighted list
-	for i in range(6 - len(turn_actions)):
-		var rand_float: float = RNGManager.randf_range(RNGManager.Bucket.ENEMY_AI, 0, action_weights_sum)
-		var choice_threshold = rand_float
-		for option: EnemyActionOptionResource in this_turns_action_options.actions_possible:
-			if choice_threshold > option.weight:
-				choice_threshold -= option.weight
-			else:
-				turn_actions.append(option.get_action())
-				break
-				
-	RNGManager.shuffle_array(RNGManager.Bucket.ENEMY_AI, turn_actions)
-	
-	# Make sure every action knows what dice activates it,
-	# so it can display the correct hint text when clicked
-	for i: int in range(6):
-		turn_actions[i].activating_die_number = i+1
-	
+
+## Whether every slot of this turn's table could stand while its intents
+## read "?".
+func is_turn_table_safe_while_hidden() -> bool:
+	for action: EnemyActionResource in turn_actions:
+		if action and not action.is_safe_while_hidden():
+			return false
+	return true
+
 
 ## Runs a full turn using all the dice in the queue,
 ## executing their actions sequentially 

@@ -309,8 +309,7 @@ func _enable_controls() -> void:
 ## take effect on the turn that is already telegraphed, rather than the turn
 ## after. Enemies otherwise only regenerate on player_turn_start.
 func _reroll_enemy_intents() -> void:
-	for enemy: Enemy in Globals.enemy_manager.get_alive_enemies():
-		enemy.generate_turn_actions()
+	Globals.enemy_manager.generate_all_turn_actions()
 
 
 func _lock_dice() -> void:

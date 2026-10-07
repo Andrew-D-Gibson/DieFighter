@@ -101,6 +101,8 @@ func _ready() -> void:
 			_restore_enemies(scenario.starting_enemies)
 	)
 	Events.start_scenario.connect(start_enemy_fly_in)
+	Events.player_turn_start.connect(generate_all_turn_actions)
+	Events.combat_finished.connect(_reroll_tables_gone_hidden)
 	
 	
 func _process(delta: float) -> void:
@@ -109,6 +111,7 @@ func _process(delta: float) -> void:
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
+	var spawned: Array[Enemy] = []
 	for i: int in range(len(enemies_to_spawn)):
 		var spawn: EnemyStateRewardResource = enemies_to_spawn[i]
 		var enemy: Enemy = enemy_base_scene.instantiate()
@@ -126,12 +129,16 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 			enemy.position = _resting_position(enemy, spawn.path_location_override)
 
 		enemies.append(enemy)
+		spawned.append(enemy)
 		_awaiting_fly_in.append(enemy)
 		add_child(enemy)
 
 		if enemy.formation_pinned:
 			_reserve_pinned_ship(enemy, spawn.path_location_override)
 
+	# Rolled once everyone is in, so each roll sees the whole roster. Ships
+	# already here keep the table the player has been reading.
+	_roll_turn_actions(spawned)
 	refresh_formation(false)
 
 
@@ -177,10 +184,11 @@ func _restore_enemies(starting_enemies: Array[EnemyStateRewardResource]) -> void
 func start_enemy_fly_in() -> void:
 	_awaiting_fly_in.clear()
 
+	# A tutorial step queued forced actions after the roster was rolled.
+	if len(Enemy.forced_actions) > 0:
+		generate_all_turn_actions()
+
 	for enemy: Enemy in enemies:
-		if len(Enemy.forced_actions) > 0:
-			enemy.generate_turn_actions()
-			
 		var fly_in_tween: Tween = get_tree().create_tween()
 		fly_in_tween.tween_property(
 			enemy,
@@ -402,6 +410,30 @@ func proportion_for_screen_x(target_x: float) -> float:
 		return (float(i - 1) + within) * step
 
 	return 1.0
+
+
+## Rolls every ship's intent table for the coming turn, in roster order, so
+## the result is the same on a replay.
+func generate_all_turn_actions() -> void:
+	_roll_turn_actions(get_alive_enemies())
+
+
+func _roll_turn_actions(ships: Array[Enemy], take_forced: bool = true) -> void:
+	for enemy: Enemy in ships:
+		if is_instance_valid(enemy):
+			enemy.generate_turn_actions(EnemyActionSituation.for_ship(enemy), take_forced)
+
+
+## The survivors of a fight (the civilian it was over) go back to unreadable
+## intents, and the table they last rolled in the open may hold a Flee. Only
+## those tables are rerolled, and the tutorial's forced actions are left for
+## the ships they were queued for.
+func _reroll_tables_gone_hidden() -> void:
+	var unsafe: Array[Enemy] = []
+	for enemy: Enemy in get_alive_enemies():
+		if is_instance_valid(enemy) and not enemy.is_turn_table_safe_while_hidden():
+			unsafe.append(enemy)
+	_roll_turn_actions(unsafe, false)
 
 
 func get_alive_enemies() -> Array[Enemy]:

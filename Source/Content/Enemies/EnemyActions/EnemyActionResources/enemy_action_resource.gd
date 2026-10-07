@@ -60,6 +60,38 @@ static func _threat_of(effects: Array[EffectData]) -> Threat:
 	return threat
 
 
+## Whether this action may sit in a table the player can't see yet. One that
+## takes the ship off the board can't: a die handed to a ship whose intents
+## read "?" would make it leave before the player could answer. Read off the
+## chain for the same reason as get_threat().
+func is_safe_while_hidden() -> bool:
+	if effect_chain == null:
+		return true
+	return not _any_effect(effect_chain.effects, func(effect: EffectData) -> bool:
+		return effect.category == EffectEnums.Category.SCENARIO_CONTROL \
+			and effect.subtype in [
+				EffectEnums.ScenarioControlSubtype.FLEE,
+				EffectEnums.ScenarioControlSubtype.JUMP,
+			]
+	)
+
+
+## Whether any step in the chain, either branch of a conditional included,
+## satisfies [param test].
+static func _any_effect(effects: Array[EffectData], test: Callable) -> bool:
+	for effect: EffectData in effects:
+		if effect == null:
+			continue
+		if test.call(effect):
+			return true
+		if effect is ConditionalEffectData:
+			var conditional: ConditionalEffectData = effect
+			if _any_effect(conditional.if_true_effects, test) \
+			or _any_effect(conditional.if_false_effects, test):
+				return true
+	return false
+
+
 ## Whether a single step changes anything in the game. Targeting, visuals and
 ## passing the die along don't — every action does those, including the ones
 ## that do nothing.

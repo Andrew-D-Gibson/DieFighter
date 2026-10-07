@@ -561,6 +561,18 @@ func resolve_end_of_combat() -> void:
 	state = GameState.OUT_OF_COMBAT
 	
 	
+## Whether the player can read enemy intents. The targeting computer shows "?"
+## otherwise, and enemies roll their tables against the same rule, so nothing
+## the player can't see is able to take a ship off the board.
+##
+## Read off the roster rather than [member state], which is what state is
+## derived from anyway: state can still say IN_COMBAT from the fight before
+## while a new scenario's ships are rolled on load_scenario, and it only
+## catches up on start_scenario.
+func enemy_intents_visible() -> bool:
+	return _in_combat()
+
+
 func _in_combat() -> bool:
 	for enemy: Enemy in Globals.enemy_manager.get_alive_enemies():
 		if enemy.scenario_state\
