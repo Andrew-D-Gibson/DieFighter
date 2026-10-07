@@ -68,6 +68,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_1")
 category = 4
 subtype = 21
+string_param = "engine"
 amount = 12
 color = Color(0.7725, 0.3216, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"

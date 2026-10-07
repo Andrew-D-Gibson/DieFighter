@@ -21,6 +21,8 @@ var _restoring_save: bool = false
 
 
 func _ready() -> void:
+	# Effects that move engine charge draw to and from here (Juice.engine_anchor).
+	add_to_group(&"engine_charger")
 	# The charger opens empty: a run starts mid-ambush, with the engine cold.
 	progress_bar.value = 0
 	fill_head.position = Vector2(60, 2)

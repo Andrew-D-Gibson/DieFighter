@@ -79,7 +79,7 @@ script = ExtResource("4_data")
 category = 4
 subtype = 21
 amount = 10
-string_param = "out"
+string_param = "out engine"
 color = Color(0.7725, 0.3216, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

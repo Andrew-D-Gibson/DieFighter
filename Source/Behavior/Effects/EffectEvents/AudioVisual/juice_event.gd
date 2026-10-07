@@ -77,8 +77,10 @@ func _zap(anchors: Array[Node2D]) -> void:
 	await from.get_tree().create_timer(msec / 1000.0).timeout
 
 
-## Motes flow from each target into the source (a drain), or out of it with
-## text "out". Held until they arrive, for the same reason as the bolt.
+## Motes flow from each target into the source (a drain), or out of it when
+## text contains "out". With "engine" in it, the player's end is their engine
+## charge rather than their health bar. Held until they arrive, for the same
+## reason as the bolt.
 func _stream(anchors: Array[Node2D]) -> void:
 	var hub: Node2D = effect_source as Node2D
 	if not is_instance_valid(hub):
@@ -88,15 +90,21 @@ func _stream(anchors: Array[Node2D]) -> void:
 	for node: Node2D in anchors:
 		if node == hub:
 			continue
-		var start: Vector2 = Juice.anchor_of(node)
-		var end: Vector2 = Juice.anchor_of(hub)
-		if text == "out":
+		var start: Vector2 = _stream_end(node)
+		var end: Vector2 = _stream_end(hub)
+		if text.contains("out"):
 			var swap: Vector2 = start
 			start = end
 			end = swap
 		seconds = maxf(seconds, Juice.stream(hub, start, end, color, count))
 	if seconds > 0.0:
 		await hub.get_tree().create_timer(seconds).timeout
+
+
+func _stream_end(node: Node2D) -> Vector2:
+	if node is Player and text.contains("engine"):
+		return Juice.engine_anchor(node)
+	return Juice.anchor_of(node)
 
 
 func _anchors() -> Array[Node2D]:

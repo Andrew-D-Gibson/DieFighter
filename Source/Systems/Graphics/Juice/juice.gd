@@ -203,6 +203,13 @@ static func die_flare(die: Dice, color: Color) -> void:
 	sparkle(die, die.global_position, color, 8, 35.0)
 
 
+## Where the player's engine charge is on screen, for effects that move it.
+## Falls back to the player's usual anchor if the charger isn't around.
+static func engine_anchor(fallback: Node2D) -> Vector2:
+	var charger: Node2D = fallback.get_tree().get_first_node_in_group(&"engine_charger") as Node2D
+	return charger.global_position if charger else anchor_of(fallback)
+
+
 ## Where an effect on `node` should be drawn. Usually the node itself; the
 ## player has no sprite, so theirs is their health bar.
 static func anchor_of(node: Node2D) -> Vector2:
