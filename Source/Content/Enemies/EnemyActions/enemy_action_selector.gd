@@ -50,6 +50,30 @@ static func roll(
 	return actions
 
 
+## Rerolls one slot of [param actions] from the pool's relay-free options.
+## The binder's last resort for a relay it can't bind without closing a loop:
+## it changes that one slot and nothing else the player can see.
+static func reroll_slot_without_relays(
+	pool: EnemyTurnActionList,
+	situation: EnemyActionSituation,
+	actions: Array[EnemyActionResource],
+	slot: int
+) -> void:
+	var options: Array[EnemyActionOptionResource] = []
+	var weights: Array[float] = []
+	var weight_sum: float = 0.0
+	for option: EnemyActionOptionResource in available_options(pool, situation):
+		if option.base_action.get_relay() != EnemyActionResource.Relay.NONE:
+			continue
+		options.append(option)
+		weights.append(option.weight_in(situation))
+		weight_sum += weights[-1]
+
+	var action: EnemyActionResource = _weighted_pick(options, weights, weight_sum)
+	action.activating_die_number = slot + 1
+	actions[slot] = action
+
+
 ## The pool's options this situation allows.
 static func available_options(
 	pool: EnemyTurnActionList,

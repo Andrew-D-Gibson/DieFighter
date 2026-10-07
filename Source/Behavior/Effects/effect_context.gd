@@ -50,3 +50,9 @@ var feed_depth: int = 0
 ## repair or feed, a civilian to raid). Read by the TARGET_BOUND_* steps.
 ## Null for anything that isn't an enemy action, or one that binds nothing.
 var bound_target: Node = null
+
+## The ships that have already acted with the activator die in this relay
+## chain, oldest first. A Feed never hands the die back to one of them, so a
+## chain of enemies passing a die along always ends. Turn tables are bound so
+## this never comes up; it's the backstop.
+var relay_visited: Array[Node] = []

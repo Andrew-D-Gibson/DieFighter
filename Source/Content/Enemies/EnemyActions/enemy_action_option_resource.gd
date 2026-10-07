@@ -28,7 +28,10 @@ func get_action() -> EnemyActionResource:
 	# the run the player is. This is the only place a turn's amounts are rolled,
 	# so it's the one place run difficulty needs to touch enemy damage.
 	amount = RNGManager.randi_range(RNGManager.Bucket.ENEMY_AI, min_amount, max_amount)
-	if amount != 0 and Globals.state_manager:
+	# A hologram's amount is its face, which picks the ally's slot; it isn't
+	# something to scale up with the run.
+	var is_face: bool = action.get_relay() == EnemyActionResource.Relay.HOLOGRAM
+	if amount != 0 and Globals.state_manager and not is_face:
 		amount = maxi(1, ceili(amount * Globals.state_manager.get_damage_multiplier()))
 	action.intent_amount = amount
 

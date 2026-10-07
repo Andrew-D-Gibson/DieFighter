@@ -148,6 +148,12 @@ enum DiceControlSubtype {
 	## The activator die gains the value of the die the source tile is holding
 	## (capped at 6), and the held die goes back to the player's hand.
 	MERGE_HELD_DIE,
+	## An enemy hands its die to the ally its slot was bound to, who uses it
+	## straight away on its own table. Ends the actor's use of the die.
+	FEED_ALLY,
+	## An enemy spawns a holographic die, face = its intent amount, for the
+	## ally its slot was bound to, who uses it straight away.
+	SPAWN_HOLOGRAM_FOR_ALLY,
 }
 
 

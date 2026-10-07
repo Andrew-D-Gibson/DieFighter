@@ -1,0 +1,66 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="2_chain"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="3_action"]
+[ext_resource type="Texture2D" uid="uid://bwrg00vwh8800" path="res://Assets/Textures/Enemies/IntentIndicator/relay.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://c1r8dbaxa53g8" path="res://Assets/Textures/Enemies/IntentIndicator/relay_info.png" id="5_info"]
+
+[sub_resource type="Resource" id="Resource_particles_amount"]
+script = ExtResource("1_data")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_particles"]
+script = ExtResource("1_data")
+category = 4
+subtype = 1
+color = Color(0.949, 0.612, 0.365, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_target_self"]
+script = ExtResource("1_data")
+subtype = 11
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_intent"]
+script = ExtResource("1_data")
+category = 2
+subtype = 7
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_shockwave"]
+script = ExtResource("1_data")
+category = 4
+subtype = 14
+amount = 16
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_shield"]
+script = ExtResource("1_data")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_feed"]
+script = ExtResource("1_data")
+category = 3
+subtype = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("2_chain")
+effects = Array[ExtResource("1_data")]([SubResource("Resource_particles_amount"), SubResource("Resource_particles"), SubResource("Resource_target_self"), SubResource("Resource_intent"), SubResource("Resource_shockwave"), SubResource("Resource_shield"), SubResource("Resource_feed")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("3_action")
+name = "Relay"
+description = "[color=blue]Shields[/color] for [color=blue](amount)[/color], then [color=orange]passes the die[/color] to (target), who uses it at once"
+indicator_texture = ExtResource("4_icon")
+info_texture = ExtResource("5_info")
+effect_chain = SubResource("Resource_chain")
+intent_amount = 1
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

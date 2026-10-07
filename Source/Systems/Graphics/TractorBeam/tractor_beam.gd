@@ -330,14 +330,11 @@ func _ricochet_target() -> Vector2:
 	return _start_position + toward_player.rotated(spread) * distance
 
 
-## What this die will do once the enemy uses it. The slots are fixed for the
-## turn by the time a die is handed over, so this is exactly the intent shown
-## on the targeting computer.
+## What this die will do once the enemy uses it, following a relay to the ally
+## that ends up spending it. The slots are fixed for the turn by the time a
+## die is handed over, so this is exactly what the intents promise.
 static func _threat_for(die: Dice, enemy: Enemy) -> EnemyActionResource.Threat:
-	var index: int = die.value - 1
-	if index < 0 or index >= enemy.turn_actions.size() or enemy.turn_actions[index] == null:
-		return EnemyActionResource.Threat.NEUTRAL
-	return enemy.turn_actions[index].get_threat()
+	return enemy.threat_of_face(die.value)
 
 
 static func _color_for(threat: EnemyActionResource.Threat) -> Color:

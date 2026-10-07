@@ -310,6 +310,39 @@ func generate_turn_actions(situation: EnemyActionSituation, take_forced: bool = 
 	)
 	
 
+## Swaps one slot for a fresh roll that relays nothing. See
+## EnemyTargetBinder: it's how a Feed that could only loop gets out of the way.
+func reroll_slot_without_relays(slot: int, situation: EnemyActionSituation) -> void:
+	EnemyActionSelector.reroll_slot_without_relays(
+		enemy_resource.action_options[_current_pool_index()],
+		situation,
+		turn_actions,
+		slot
+	)
+
+
+## What a die of [param face] does once this ship spends it: the worst of
+## every step along any relay, to the ally that ends up using it. A Feed by
+## itself hurts nobody; the slot it feeds into might.
+func threat_of_face(face: int) -> EnemyActionResource.Threat:
+	var threat: EnemyActionResource.Threat = EnemyActionResource.Threat.DEAD
+	var ship: Enemy = self
+	var visited: Array[Enemy] = []
+	while true:
+		if face < 1 or face > ship.turn_actions.size() or ship.turn_actions[face - 1] == null:
+			return maxi(threat, EnemyActionResource.Threat.NEUTRAL) as EnemyActionResource.Threat
+		var action: EnemyActionResource = ship.turn_actions[face - 1]
+		threat = maxi(threat, action.get_threat()) as EnemyActionResource.Threat
+		var next: Enemy = action.bound_target
+		if action.get_relay() == EnemyActionResource.Relay.NONE \
+		or not FeedAllyEvent.can_feed(next, []) or next in visited:
+			return threat
+		visited.append(ship)
+		face = action.relay_face(face)
+		ship = next
+	return threat
+
+
 ## Whether every slot of this turn's table could stand while its intents
 ## read "?".
 func is_turn_table_safe_while_hidden() -> bool:

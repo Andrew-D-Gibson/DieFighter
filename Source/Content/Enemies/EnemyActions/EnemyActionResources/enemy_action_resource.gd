@@ -17,6 +17,15 @@ enum Binding {
 	HOSTILE_SHIP, ## A ship its faction preys on, never the player (raid)
 }
 
+## Whether this action hands a die on to the ally it's bound to, who uses it
+## at once. Relays are what can chain, so they're what the binder keeps from
+## ever looping.
+enum Relay {
+	NONE,
+	FEED,     ## Passes the die it was given; the face stays the same
+	HOLOGRAM, ## Conjures a hologram whose face is the intent amount
+}
+
 @export var name: String
 @export var description: String
 @export var indicator_texture: Texture2D
@@ -91,19 +100,42 @@ func is_safe_while_hidden() -> bool:
 ## An action binds one ship at most; an ally takes precedence if a chain were
 ## ever authored with both.
 func get_binding() -> Binding:
-	if _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY):
+	if get_relay() != Relay.NONE or _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY):
 		return Binding.ALLY
 	if _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP):
 		return Binding.HOSTILE_SHIP
 	return Binding.NONE
 
 
-func _targets_with(subtype: EffectEnums.TargetingSubtype) -> bool:
+func get_relay() -> Relay:
+	if _has_step(EffectEnums.Category.DICE_CONTROL, EffectEnums.DiceControlSubtype.FEED_ALLY):
+		return Relay.FEED
+	if _has_step(EffectEnums.Category.DICE_CONTROL, EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAM_FOR_ALLY):
+		return Relay.HOLOGRAM
+	return Relay.NONE
+
+
+## The face the relayed die shows when it reaches the ally, for a die of
+## [param face] spent on this slot. 0 when nothing is relayed.
+func relay_face(face: int) -> int:
+	match get_relay():
+		Relay.FEED:
+			return face
+		Relay.HOLOGRAM:
+			return clampi(intent_amount, 1, 6)
+	return 0
+
+
+func _has_step(category: EffectEnums.Category, subtype: int) -> bool:
 	if effect_chain == null:
 		return false
 	return _any_effect(effect_chain.effects, func(effect: EffectData) -> bool:
-		return effect.category == EffectEnums.Category.TARGETING and effect.subtype == subtype
+		return effect.category == category and effect.subtype == subtype
 	)
+
+
+func _targets_with(subtype: EffectEnums.TargetingSubtype) -> bool:
+	return _has_step(EffectEnums.Category.TARGETING, subtype)
 
 
 ## Whether any step in the chain, either branch of a conditional included,
@@ -138,6 +170,7 @@ static func _has_consequence(effect: EffectData) -> bool:
 				EffectEnums.DiceControlSubtype.GIVE_DIE_TO_TARGET,
 				EffectEnums.DiceControlSubtype.GIVE_DIE_AWAY,
 				EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR,
+				EffectEnums.DiceControlSubtype.FEED_ALLY,
 			]
 		_:
 			return true

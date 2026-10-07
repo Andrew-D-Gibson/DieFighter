@@ -3,6 +3,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## the conditions and weights that read it, and the binder that picks each
 ## slot's ship up front so its intent can name it.
 
+const Ships := preload("res://test/helpers/ships.gd")
 const Cat := EffectEnums.Category
 const Faction := ScenarioManager.Faction
 const Binding := EnemyActionResource.Binding
@@ -15,20 +16,11 @@ func before_each() -> void:
 	RNGManager.seed_scenario(99)
 
 
-## A ship good enough for everything here: a faction, an attitude and a hull.
-## Kept out of the tree, so none of its components need to exist.
 func _ship(faction: Faction, hull: int = 10, max_hull: int = 10,
 		attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE) -> Enemy:
-	var ship: Enemy = autofree(Enemy.new())
-	ship.enemy_resource = EnemyResource.new()
-	ship.enemy_resource.enemy_name = "%s %d" % [Faction.find_key(faction), get_instance_id() % 1000]
-	ship.scenario_state = ScenarioShipState.new()
-	ship.scenario_state.faction = faction
-	ship.scenario_state.attitude = attitude
-	ship.health = autofree(Health.new())
-	ship.health.max_health = max_hull
-	ship.health.health = hull
-	return ship
+	var made: Enemy = Ships.ship(faction, hull, max_hull, attitude)
+	autofree(made.health)
+	return autofree(made)
 
 
 func _action(subtype: EffectEnums.TargetingSubtype) -> EnemyActionResource:

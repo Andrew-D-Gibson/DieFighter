@@ -25,6 +25,13 @@ const _HEAVY_HOLD_SECONDS: float = 0.45
 ## "tiles activated by a 4 activate twice").
 var activation_repetitions: int = 1
 
+## How many Feeds carried the die to this ship. 0 when it came from the
+## player's hand. See FeedAllyEvent.
+var feed_depth: int = 0
+
+## Ships that already acted with this die in a relay chain.
+var relay_visited: Array[Node] = []
+
 
 func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
@@ -97,6 +104,8 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.repetitions = activation_repetitions
 	context.enemy_intent_amount = action.intent_amount
 	context.bound_target = action.bound_target
+	context.feed_depth = feed_depth
+	context.relay_visited = relay_visited
 
 	
 	Events.enemy_acted.emit(enemy.enemy_resource.enemy_name, action.name)

@@ -1,0 +1,46 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="2_chain"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="3_action"]
+[ext_resource type="Texture2D" uid="uid://cuc26t6i8gpab" path="res://Assets/Textures/Enemies/IntentIndicator/holo_loader.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://7mg8vxyv70rw" path="res://Assets/Textures/Enemies/IntentIndicator/holo_loader_info.png" id="5_info"]
+
+[sub_resource type="Resource" id="Resource_give_back"]
+script = ExtResource("1_data")
+category = 3
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_target_ally"]
+script = ExtResource("1_data")
+subtype = 14
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_zap"]
+script = ExtResource("1_data")
+category = 4
+subtype = 18
+color = Color(0.3725, 0.8039, 0.8941, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_hologram"]
+script = ExtResource("1_data")
+category = 3
+subtype = 13
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("2_chain")
+effects = Array[ExtResource("1_data")]([SubResource("Resource_give_back"), SubResource("Resource_target_ally"), SubResource("Resource_zap"), SubResource("Resource_hologram")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("3_action")
+name = "Holo Loader"
+description = "Hands your die back, then conjures a [color=#5fcde4]holographic (amount)[/color] for (target), who uses it at once"
+indicator_texture = ExtResource("4_icon")
+info_texture = ExtResource("5_info")
+effect_chain = SubResource("Resource_chain")
+intent_amount = 4
+metadata/_custom_type_script = "uid://bb27rg8tmmvk0"
