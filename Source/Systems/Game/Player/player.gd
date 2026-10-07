@@ -87,6 +87,19 @@ var money: int:
 		Events.set_money.emit(money)
 
 
+## Where effects aimed at the player are drawn. The ship has no sprite of its
+## own on screen; its health bar is the thing the player watches.
+func get_juice_anchor() -> Vector2:
+	var bar: Node2D = get_node_or_null("PlayerHealthBar") as Node2D
+	return bar.global_position if bar else global_position
+
+
+## What a BUMP aimed at the player squashes.
+func get_juice_body() -> Node2D:
+	var bar: Node2D = get_node_or_null("PlayerHealthBar") as Node2D
+	return bar if bar else self
+
+
 func _ready() -> void:
 	Globals.player = self
 	# The redline's cost lives here rather than in a manager because Player

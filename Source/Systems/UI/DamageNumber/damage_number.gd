@@ -37,13 +37,20 @@ static func spawn(target: Node2D, amount: int, color: Color) -> void:
 ## The same pop-and-drift for any short label: a heal's "+3", a status name,
 ## an upgrade tile's "x2".
 static func spawn_text(target: Node2D, text: String, color: Color, big: bool = false) -> void:
-	if text.is_empty() or not is_instance_valid(target) or target.get_parent() == null:
+	if not is_instance_valid(target) or target.get_parent() == null:
+		return
+	spawn_text_at(target.get_parent(), target.global_position, text, color, big)
+
+
+## A label at `global_pos`, parented to `parent`.
+static func spawn_text_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false) -> void:
+	if text.is_empty() or not is_instance_valid(parent):
 		return
 
 	var number: DamageNumber = DamageNumber.new()
 	number._build(text, color)
-	target.get_parent().add_child(number)
-	number.global_position = target.global_position + Vector2(
+	parent.add_child(number)
+	number.global_position = global_pos + Vector2(
 		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -_SCATTER_PIXELS, _SCATTER_PIXELS),
 		-10.0
 	)

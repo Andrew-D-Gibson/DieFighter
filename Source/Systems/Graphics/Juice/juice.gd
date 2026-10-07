@@ -119,6 +119,113 @@ static func callout(anchor: Node2D, text: String, color: Color, big: bool = fals
 	DamageNumber.spawn_text(anchor, text, color, big)
 
 
+## The same label at an arbitrary point, for anchors that aren't where their
+## node is (the player's is their health bar).
+static func callout_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false) -> void:
+	if not _usable(parent):
+		return
+	DamageNumber.spawn_text_at(parent, global_pos, text, color, big)
+
+
+## A jagged bolt from `from` to `to` that flickers for `msec` and is gone.
+static func zap(parent: Node, from: Vector2, to: Vector2, color: Color, msec: int = 140) -> void:
+	if not _usable(parent):
+		return
+	var bolt: JuiceBolt = JuiceBolt.new()
+	bolt.from = from
+	bolt.to = to
+	bolt.color = color
+	bolt.duration = msec / 1000.0
+	bolt.z_index = _FX_Z_INDEX
+	parent.add_child(bolt)
+	bolt.global_position = Vector2.ZERO
+	sparkle(parent, to, color, 6, 35.0)
+
+
+## `count` motes that arc from `from` to `to`, staggered so they read as a
+## flow rather than a volley. Returns the seconds until the last one lands.
+static func stream(parent: Node, from: Vector2, to: Vector2, color: Color, count: int = 10) -> float:
+	if not _usable(parent):
+		return 0.0
+	var flow: JuiceStream = JuiceStream.new()
+	flow.from = from
+	flow.to = to
+	flow.color = color
+	flow.count = count
+	flow.z_index = _FX_Z_INDEX
+	parent.add_child(flow)
+	flow.global_position = Vector2.ZERO
+	return flow.total_seconds()
+
+
+## A flash that spreads across the tile grid one ring of cells at a time,
+## starting from `origin` (or the middle of the grid when it's null). Each
+## tile bumps as the wave reaches it.
+static func grid_ripple(origin: Tile, color: Color, step_msec: int = 60) -> void:
+	var grid: TileGrid = Globals.tile_grid
+	if not _usable(grid):
+		return
+	var centre: Vector2i = Vector2i(floori(grid.grid_width / 2.0), floori(grid.grid_height / 2.0))
+	if is_instance_valid(origin) and grid.is_grid_pos_valid(grid.find_tile_pos(origin)):
+		centre = grid.find_tile_pos(origin)
+
+	for pos: Vector2i in grid.tile_locations:
+		var tile: Tile = grid.tile_locations[pos]
+		var distance: int = absi(pos.x - centre.x) + absi(pos.y - centre.y)
+		var timer: SceneTreeTimer = grid.get_tree().create_timer(distance * step_msec / 1000.0)
+		timer.timeout.connect(func() -> void:
+			if _usable(tile):
+				tile.flash(color, 0.6, 0.3)
+				bump(tile.sprite_frames, 0.18, 0.3)
+		)
+
+
+## A screen-space shockwave, centred on a world position, that bends
+## everything on screen — UI included — as it passes. Counts as camera
+## motion, so it honours the screenshake setting.
+static func screen_ripple(context_node: Node, world_pos: Vector2, strength: float = 1.0) -> void:
+	if not Globals.screenshake_enabled or not _usable(context_node):
+		return
+	JuiceScreenRipple.spawn(context_node, world_pos, strength)
+
+
+## The die spins, pops and throws a ring: its value was just changed or
+## spent in a way worth noticing.
+static func die_flare(die: Dice, color: Color) -> void:
+	if not _usable(die):
+		return
+	die.play_pop(0.5)
+	var sprite: Node2D = die.get_node("Sprite2D") as Node2D
+	var spin: Tween = sprite.create_tween()
+	spin.tween_property(sprite, "rotation", TAU, 0.3).from(0.0) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	ring(die, die.global_position, color, 14.0, 0.35, 4.0)
+	sparkle(die, die.global_position, color, 8, 35.0)
+
+
+## Where an effect on `node` should be drawn. Usually the node itself; the
+## player has no sprite, so theirs is their health bar.
+static func anchor_of(node: Node2D) -> Vector2:
+	if node.has_method("get_juice_anchor"):
+		return node.get_juice_anchor()
+	return node.global_position
+
+
+## The part of `node` worth squashing: a tile's sprite, a ship's hull, a
+## die's face, the player's health bar. Never the root, whose scale and
+## position belong to movement tweens.
+static func body_of(node: Node2D) -> Node2D:
+	if node is Tile:
+		return (node as Tile).sprite_frames
+	if node is Enemy:
+		return (node as Enemy).graphics_manager.ship_graphics
+	if node is Dice:
+		return node.get_node("Sprite2D") as Node2D
+	if node.has_method("get_juice_body"):
+		return node.get_juice_body()
+	return node
+
+
 ## Alpha 1 to 0 over a particle's life, shared by every sparkle.
 static func _fade_out_ramp() -> Gradient:
 	var ramp: Gradient = Gradient.new()

@@ -19,6 +19,9 @@ func resolve(_engine: ScenarioEngine) -> void:
 			(target as Enemy).graphics_manager.flash(color, _FLASH_SECONDS)
 		elif target is Player:
 			Events.vignette_pulse.emit(color)
+		elif target is Tile:
+			# The tile shader ignores modulate; it has a flash of its own.
+			(target as Tile).flash(color, 1.0, _FLASH_SECONDS)
 		elif target is CanvasItem:
 			_flash_canvas_item(target as CanvasItem)
 

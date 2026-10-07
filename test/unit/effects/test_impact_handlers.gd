@@ -147,3 +147,29 @@ func test_durations_and_strength_tiers_are_not_amplifiable() -> void:
 	for event: EffectEvent in [HitstopEvent.new(), SlowMoEvent.new(),
 			ScreenShakeEvent.new(), GlitchBurstEvent.new()]:
 		assert_false(event.is_amplifiable(), event.get_script().get_global_name())
+
+
+# ── Authored flourishes (SHOCKWAVE .. DIE_FLARE, all JuiceHandler) ────────────
+
+func test_flourishes_copy_authored_parameters_not_the_running_amount() -> void:
+	context.running_amount = 99
+	var data := _data(Sub.SHOCKWAVE, 24, 1.5, Color.RED)
+	var event := await _apply_one(data) as JuiceEvent
+	assert_eq(event.kind, Sub.SHOCKWAVE)
+	assert_eq(event.amount, 24, "the ring's size, not the chain's number")
+	assert_eq(event.multiplier, 1.5)
+	assert_eq(event.color, Color.RED)
+	assert_eq(context.running_amount, 99, "a flourish never touches the running amount")
+
+
+func test_callout_substitutes_the_running_amount() -> void:
+	context.running_amount = 7
+	var data := _data(Sub.CALLOUT)
+	data.string_param = "LINK x{amount}"
+	var event := await _apply_one(data) as JuiceEvent
+	assert_eq(event.text, "LINK x7")
+
+
+func test_flourishes_are_not_amplifiable() -> void:
+	var event := await _apply_one(_data(Sub.SPARK_BURST, 10)) as JuiceEvent
+	assert_false(event.is_amplifiable(), "an Amplifier must not resize a spark burst")

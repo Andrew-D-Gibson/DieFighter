@@ -153,6 +153,15 @@ enum AudioVisualSubtype {
 	SCREEN_SHAKE,             ## Shake the camera (1 small, 2 large, 3 large + glitch)
 	VIGNETTE_PULSE,           ## Flash the screen-edge vignette in a color
 	GLITCH_BURST,             ## Turn the glitch overlay on for N ms
+	SHOCKWAVE,                ## Ring out from each target (negative amount: ring closes in, a lock-on)
+	SPARK_BURST,              ## Burst of sparks at each target
+	CALLOUT,                  ## Float text off each target; "{amount}" shows the running amount
+	BUMP,                     ## Squash-and-stretch each target
+	ZAP,                      ## Lightning bolt from the effect source to each target
+	GRID_RIPPLE,              ## A flash that ripples out across the tile grid from the source
+	SCREEN_RIPPLE,            ## Screen-space shockwave distortion centred on the first target
+	STREAM,                   ## Motes flowing from each target to the source ("out": the other way)
+	DIE_FLARE,                ## Spin, pop and ring the activator die
 }
 
 
