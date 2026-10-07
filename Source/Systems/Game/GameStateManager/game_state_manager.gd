@@ -368,6 +368,12 @@ func _advance_to_next_sector() -> void:
 	)
 	Events.sector_advanced.emit(current_game_save.sector_index)
 
+	# Survivors of the fight hand their dice home a frame after
+	# combat_finished (see Enemy._connect_combat_signals). Jumping before that
+	# would strand dice the player won the fight to keep.
+	await get_tree().process_frame
+	await get_tree().process_frame
+
 	# Reuse the normal between-tiles jump so a sector change reads as one too.
 	await Globals.jump_manager.jump_to_scenario(
 		current_game_save.sector_scenarios[current_game_save.current_scenario_index]

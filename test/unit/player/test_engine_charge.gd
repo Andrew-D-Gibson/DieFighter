@@ -27,6 +27,23 @@ func test_losing_dice_reclamps_stranded_charge() -> void:
 	assert_eq(player.engine_charge, player.charge_ceiling)
 
 
+func test_a_full_drive_that_loses_dice_stops_at_the_new_gate() -> void:
+	# Dice left behind on a jump shrink the gate mid-flight. A drive sitting
+	# at the old gate must not land in the redline and start bleeding hull.
+	var player := make_player(3)
+	player.engine_charge = player.max_engine_charge
+	player.num_of_dice = 2
+	assert_eq(player.engine_charge, player.max_engine_charge)
+	assert_false(player.is_overcharged())
+
+
+func test_a_single_die_still_has_a_positive_gate() -> void:
+	# The curve goes negative at one die, which a jump can now leave the
+	# player with; the engine bar divides by this.
+	var player := make_player(1)
+	assert_eq(player.max_engine_charge, 1)
+
+
 func test_charge_queries() -> void:
 	var player := make_player(5)
 	player.engine_charge = player.max_engine_charge - 3

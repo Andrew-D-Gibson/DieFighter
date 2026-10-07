@@ -52,3 +52,11 @@ func give_away_dice() -> void:
 			Globals.player.dice_manager.add(die, false, true)
 		else:
 			RNGManager.pick_random(RNGManager.Bucket.TARGETING, enemies).dice_manager.add(die, true, true)
+
+
+## Hands every die straight back to the player, rerolled.
+func return_dice_to_player() -> void:
+	for i: int in range(len(queue)-1, -1, -1):
+		var die: Dice = queue[i]
+		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+		Globals.player.dice_manager.add(die, false, true)

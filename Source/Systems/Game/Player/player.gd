@@ -4,6 +4,11 @@ extends Node2D
 const _HEALTH_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/player_health_hit.tres")
 const _SHIELDS_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/player_shields_hit.tres")
 const _DICE_REROLL_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres")
+const _DIE_LOST_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres")
+
+## Marks a die this script locked for the length of a jump, so arrival only
+## unlocks what the jump locked and leaves a tutorial's own locks alone.
+const _TRANSIT_LOCK_META: StringName = &"_transit_locked"
 
 @export var _time_between_die_spawns: float = 0.2
 @export var _dice_queue_spacing: int = 14
@@ -67,14 +72,19 @@ func can_afford_charge(cost: int) -> bool:
 
 var num_of_dice: int:
 	set(new_num):
+		var was_overcharged: bool = is_overcharged()
 		num_of_dice = new_num
 		
-		max_engine_charge = (6*(num_of_dice-1)) - floor(1.7078 * sqrt(num_of_dice))
+		# Floored at 1: the curve goes negative at a single die, which a jump
+		# can now leave the player with, and the engine bar divides by this.
+		max_engine_charge = maxi(1, (6*(num_of_dice-1)) - floor(1.7078 * sqrt(num_of_dice)))
 		overcharge_cap = roundi(max_engine_charge * _OVERCHARGE_CAP_FRACTION)
 
 		# The ceiling just moved. Re-run the charge setter so a shrinking
-		# ceiling re-clamps rather than leaving charge stranded above it.
-		engine_charge = engine_charge
+		# ceiling re-clamps rather than leaving charge stranded above it. A
+		# drive that wasn't in the redline stops at the new gate: losing a die
+		# with a full engine must not redline the player into bleeding hull.
+		engine_charge = engine_charge if was_overcharged else mini(engine_charge, max_engine_charge)
 
 		Events.die_added.emit()
 		
@@ -137,7 +147,7 @@ func _ready() -> void:
 	
 	Events.tile_activation_complete.connect(_check_for_end_of_turn)
 	
-	Events.jump.connect(_delete_existing_dice)
+	Events.jump.connect(_carry_dice_through_jump)
 	
 	%EndTurnButton.disabled = true
 	%EndTurnButton.update_ui()
@@ -305,21 +315,159 @@ func spawn_dice(num_to_spawn: int = num_of_dice, value: int = 0, holographic: bo
 func _start_scenario() -> void:
 	# Continuing a save taken partway through a scenario: the hand and the
 	# shields are whatever they were then, not a fresh arrival's.
-	var saved_hand: Array = []
-	if Globals.state_manager:
-		saved_hand = Globals.state_manager.get_restore().get("dice", [])
 	var restoring: bool = Globals.state_manager and not Globals.state_manager.get_restore().is_empty()
 
 	if not restoring:
 		health.shields = 0
-	_delete_existing_dice()
 	await get_tree().create_timer(_time_between_die_spawns).timeout
 
-	if not restoring:
-		spawn_dice()
-		return
+	if restoring:
+		await _restore_saved_hand()
+	else:
+		await _arrive_with_hand()
+	_unlock_dice_after_jump()
+
+
+## A Continue builds the scene from nothing, so no die has survived to here:
+## the hand is rebuilt from the save. The save only records the dice in hand,
+## so any owned die that was elsewhere when it was taken (on a tile, mid-
+## flight) is topped back up, since a die the player owns is never lost to a
+## save.
+func _restore_saved_hand() -> void:
+	_delete_existing_dice()
+	var saved_hand: Array = Globals.state_manager.get_restore().get("dice", [])
+	var real_dice: int = 0
 	for entry: Variant in saved_hand:
-		await spawn_dice(1, int(entry["value"]), bool(entry.get("holo", false)))
+		var holo: bool = bool(entry.get("holo", false))
+		if not holo:
+			real_dice += 1
+		await spawn_dice(1, int(entry["value"]), holo)
+	if real_dice < num_of_dice:
+		await spawn_dice(num_of_dice - real_dice)
+
+
+## Arriving keeps whatever dice made the jump and rolls them fresh, rather
+## than swapping in a new set. The hand only grows here when it has to: the
+## first scenario of a run, a Continue from an arrival checkpoint, or a die
+## bought since the last arrival that never reached the hand.
+func _arrive_with_hand() -> void:
+	var carried: Array[Dice] = _real_dice_in_hand()
+	var shortfall: int = num_of_dice - carried.size()
+
+	# More dice in hand than owned would mean a die was double-counted
+	# somewhere. Trust the count, which is what the save records.
+	while shortfall < 0:
+		var extra: Dice = carried.pop_back()
+		dice_manager.remove(extra)
+		extra.queue_free()
+		shortfall += 1
+
+	if not carried.is_empty():
+		await reroll_dice()
+	if shortfall > 0:
+		await spawn_dice(shortfall)
+
+
+func _real_dice_in_hand() -> Array[Dice]:
+	var real: Array[Dice] = []
+	for die: Dice in dice_manager.queue:
+		if is_instance_valid(die) and not die.holographic:
+			real.append(die)
+	return real
+
+
+## A jump keeps every die the player still has — in hand, held by a tile, or
+## sitting on the tile that fired the jump — and leaves behind every die an
+## enemy is holding. The die that fired the jump is never on an enemy, so a
+## jump can't empty the hand.
+##
+## A die with no host_queue was never the player's: shop stock or salvage on
+## offer. Those go with the scenario, as they always have.
+func _carry_dice_through_jump() -> void:
+	var stranded: int = 0
+	for node: Node in get_tree().get_nodes_in_group('Dice'):
+		var die: Dice = node as Dice
+		if die == null or die.is_queued_for_deletion():
+			continue
+
+		if die.host_queue == null:
+			die.queue_free()
+		elif die.host_queue is EnemyDiceManager:
+			_strand_die(die, die.host_queue.get_parent() as Enemy)
+			if not die.holographic:
+				stranded += 1
+		elif die.holographic:
+			_dissolve_hologram(die)
+		else:
+			_stow_die_for_jump(die)
+
+	if stranded > 0:
+		_announce_lost_dice(stranded)
+		num_of_dice = maxi(1, num_of_dice - stranded)
+
+
+## Brings a die home to the hand and holds it there until arrival. Nothing
+## may be played mid-jump: the scenario engine a tile would fire through has
+## already been shut down.
+func _stow_die_for_jump(die: Dice) -> void:
+	if die.host_queue != dice_manager:
+		dice_manager.add(die, true, false)
+	die.draggable.state = Draggable.DragState.DEFAULT
+	die.scale = Vector2.ONE
+	die.rotation = 0.0
+	if die.draggable.dragging_allowed:
+		die.draggable.dragging_allowed = false
+		die.set_meta(_TRANSIT_LOCK_META, true)
+
+
+## The die stays with the ship that's holding it, and is seen to: it rides
+## that ship off the bottom of the screen as the player jumps away, and is
+## freed with it. Pulled out of every queue and the Dice group first, so
+## nothing can hand it back — a ship freed mid-jump never gives its dice away,
+## but a combat_finished arriving late would.
+func _strand_die(die: Dice, holder: Enemy) -> void:
+	die.host_queue.remove(die)
+	die.host_queue = null
+	die.remove_from_group('Dice')
+	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+	if is_instance_valid(holder):
+		die.reparent(holder, true)
+		# A die's own z lifts it over the cockpit, which is right in hand and
+		# wrong here: the ship drops behind the cockpit as the player jumps
+		# away, and the die has to go behind it with the ship.
+		die.z_index = 0
+
+	if die.holographic:
+		return
+	Juice.die_flare(die, Globals.red)
+	Juice.callout(die, "LOST", Globals.red)
+
+
+## A hologram is borrowed light, not a die the player owns: it can't make the
+## trip, and fizzles out where it sits.
+func _dissolve_hologram(die: Dice) -> void:
+	if die.host_queue:
+		die.host_queue.remove(die)
+	Juice.sparkle(self, die.global_position, Globals.white, 10, 30.0, true)
+	die.queue_free()
+
+
+## The count drop is the part that lasts — fewer dice is a smaller hand and a
+## lower jump gate for the rest of the run — so it's said out loud over the
+## hand, not just shown on the dice being left behind.
+func _announce_lost_dice(count: int) -> void:
+	Events.play_sound.emit(_DIE_LOST_SFX)
+	Events.camera_shake_small.emit()
+	var text: String = "-%d DIE" % count if count == 1 else "-%d DICE" % count
+	Juice.callout_at(self, global_position + dice_manager.position + Vector2(0, -14),
+			text, Globals.red, true)
+
+
+func _unlock_dice_after_jump() -> void:
+	for die: Dice in dice_manager.queue:
+		if is_instance_valid(die) and die.has_meta(_TRANSIT_LOCK_META):
+			die.remove_meta(_TRANSIT_LOCK_META)
+			die.draggable.dragging_allowed = true
 
 
 ## The dice in hand, for the save: value and whether each is holographic.

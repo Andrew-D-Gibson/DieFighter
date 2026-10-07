@@ -139,9 +139,13 @@ func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
 
 ## Connects all combat-related signals
 func _connect_combat_signals() -> void:
+	# With the fight over, nobody is left to pass dice between: a ship that
+	# survives it (a civilian, a shopkeeper) hands them home. Passing them to
+	# another survivor would keep them aboard, and dice an enemy holds are lost
+	# when the player jumps.
 	Events.combat_finished.connect(func() -> void:
 		await get_tree().process_frame
-		dice_manager.give_away_dice()
+		dice_manager.return_dice_to_player()
 	)
 	
 	Events.player_turn_start.connect(generate_turn_actions)
