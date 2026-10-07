@@ -292,13 +292,10 @@ func _current_pool_index() -> int:
 			return turns_alive % pool_count
 
 
-## Rolls this turn's six intent slots. EnemyManager calls this for every ship
-## together (see EnemyManager.generate_all_turn_actions()); call that instead
-## unless only this ship's table should change.
-func generate_turn_actions(situation: EnemyActionSituation = null, take_forced: bool = true) -> void:
-	if situation == null:
-		situation = EnemyActionSituation.for_ship(self)
-
+## Rolls this turn's six intent slots. Call EnemyManager's
+## generate_all_turn_actions() rather than this: it rolls every ship against
+## the same roster and then binds the slots that act on another ship.
+func generate_turn_actions(situation: EnemyActionSituation, take_forced: bool = true) -> void:
 	# The tutorial's forced actions are a queue shared by every ship: each
 	# roll takes the next six.
 	var forced: Array[EnemyActionResource] = []

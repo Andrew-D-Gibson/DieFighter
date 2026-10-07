@@ -27,13 +27,15 @@ static func roll(
 	var actions: Array[EnemyActionResource] = forced.slice(0, SLOT_COUNT)
 	var options: Array[EnemyActionOptionResource] = available_options(pool, situation)
 
-	# At least one of every "force_include" option, and the weight total for
-	# the weighted fill.
+	# At least one of every "force_include" option, and the weights for the
+	# weighted fill as the situation scales them.
+	var weights: Array[float] = []
 	var weight_sum: float = 0.0
 	for option: EnemyActionOptionResource in options:
 		if option.force_include:
 			actions.append(option.get_action())
-		weight_sum += option.weight
+		weights.append(option.weight_in(situation))
+		weight_sum += weights[-1]
 
 	if actions.size() >= SLOT_COUNT:
 		actions = actions.slice(0, SLOT_COUNT)
@@ -41,7 +43,7 @@ static func roll(
 		return actions
 
 	for i: int in range(SLOT_COUNT - actions.size()):
-		actions.append(_weighted_pick(options, weight_sum))
+		actions.append(_weighted_pick(options, weights, weight_sum))
 
 	RNGManager.shuffle_array(RNGManager.Bucket.ENEMY_AI, actions)
 	_number_slots(actions)
@@ -65,23 +67,33 @@ static func available_options(
 static func is_available(option: EnemyActionOptionResource, situation: EnemyActionSituation) -> bool:
 	if option == null or option.base_action == null:
 		return false
-	if not situation.intents_visible and not option.base_action.is_safe_while_hidden():
+	var action: EnemyActionResource = option.base_action
+	if not situation.intents_visible and not action.is_safe_while_hidden():
 		return false
-	return true
+	# An action that acts on another ship needs one there to bind to.
+	match action.get_binding():
+		EnemyActionResource.Binding.ALLY:
+			if situation.allies.is_empty():
+				return false
+		EnemyActionResource.Binding.HOSTILE_SHIP:
+			if situation.hostile_ships.is_empty():
+				return false
+	return option.conditions_met(situation)
 
 
 ## One weighted draw. Draws even when the weights sum to zero, the way the roll
 ## always has, so a pool with nothing gated out rolls exactly what it used to.
 static func _weighted_pick(
 	options: Array[EnemyActionOptionResource],
+	weights: Array[float],
 	weight_sum: float
 ) -> EnemyActionResource:
 	var threshold: float = RNGManager.randf_range(RNGManager.Bucket.ENEMY_AI, 0, weight_sum)
-	for option: EnemyActionOptionResource in options:
-		if threshold > option.weight:
-			threshold -= option.weight
+	for i: int in range(options.size()):
+		if threshold > weights[i]:
+			threshold -= weights[i]
 		else:
-			return option.get_action()
+			return options[i].get_action()
 
 	# Rounding can leave the draw just past the last option.
 	if not options.is_empty():

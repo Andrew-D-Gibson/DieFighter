@@ -56,6 +56,12 @@ enum TargetingSubtype {
 	TARGET_SELF,                   	## The actor itself (e.g. enemy targets itself)
 	TARGET_RANDOM_OTHER_ENEMY,     	## One random living enemy that isn't the actor
 	TARGET_RANDOM_ADJACENT_TILE,   	## One random tile directly above, below, left or right of the source tile
+	## The ally an enemy action was bound to when its slot was rolled. The
+	## slot needs an ally to be rolled at all, and its intent names the ship.
+	TARGET_BOUND_ALLY,
+	## The hostile non-player ship an enemy action was bound to when its slot
+	## was rolled (a pirate's raid on a civilian).
+	TARGET_BOUND_HOSTILE_SHIP,
 }
 
 

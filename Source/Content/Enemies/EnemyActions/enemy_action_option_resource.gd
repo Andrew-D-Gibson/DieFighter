@@ -7,6 +7,14 @@ extends Resource
 @export var max_amount: int = 0
 @export var force_include: bool = false
 
+## Every one must hold for this option to be rolled at all, force_include
+## included. An action that acts on another ship already needs one to exist;
+## these are for anything more particular.
+@export var conditions: Array[EnemyActionCondition] = []
+
+## Scale [member weight] while the board looks a certain way.
+@export var situational_weights: Array[EnemyActionWeightRule] = []
+
 var amount: int = 0
 
 	
@@ -25,3 +33,19 @@ func get_action() -> EnemyActionResource:
 	action.intent_amount = amount
 
 	return action
+
+
+func conditions_met(situation: EnemyActionSituation) -> bool:
+	for condition: EnemyActionCondition in conditions:
+		if condition and not condition.is_met(situation):
+			return false
+	return true
+
+
+## [member weight] as this situation scales it.
+func weight_in(situation: EnemyActionSituation) -> float:
+	var scaled: float = weight
+	for rule: EnemyActionWeightRule in situational_weights:
+		if rule:
+			scaled *= rule.factor(situation)
+	return scaled

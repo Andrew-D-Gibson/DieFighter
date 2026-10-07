@@ -96,7 +96,8 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.activator_die = activator_die
 	context.repetitions = activation_repetitions
 	context.enemy_intent_amount = action.intent_amount
-	
+	context.bound_target = action.bound_target
+
 	
 	Events.enemy_acted.emit(enemy.enemy_resource.enemy_name, action.name)
 

@@ -10,6 +10,13 @@ enum Threat {
 	DANGEROUS, ## Deals damage
 }
 
+## What kind of ship, if any, this action picks out when its slot is rolled.
+enum Binding {
+	NONE,
+	ALLY,         ## Another ship on its own side (repair, feed)
+	HOSTILE_SHIP, ## A ship its faction preys on, never the player (raid)
+}
+
 @export var name: String
 @export var description: String
 @export var indicator_texture: Texture2D
@@ -25,6 +32,10 @@ enum Threat {
 var activating_die_number: int:
 	set(new_num):
 		activating_die_number = clampi(new_num, 1, 6)
+
+## The ship this slot acts on, chosen when the table is rolled so the intent
+## can name it before the player commits a die. See EnemyTargetBinder.
+var bound_target: Enemy = null
 
 
 ## Text form of intent_amount for display, e.g. in (amount) description substitution.
@@ -73,6 +84,25 @@ func is_safe_while_hidden() -> bool:
 				EffectEnums.ScenarioControlSubtype.FLEE,
 				EffectEnums.ScenarioControlSubtype.JUMP,
 			]
+	)
+
+
+## Which kind of ship this action needs bound, read off its targeting steps.
+## An action binds one ship at most; an ally takes precedence if a chain were
+## ever authored with both.
+func get_binding() -> Binding:
+	if _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY):
+		return Binding.ALLY
+	if _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP):
+		return Binding.HOSTILE_SHIP
+	return Binding.NONE
+
+
+func _targets_with(subtype: EffectEnums.TargetingSubtype) -> bool:
+	if effect_chain == null:
+		return false
+	return _any_effect(effect_chain.effects, func(effect: EffectData) -> bool:
+		return effect.category == EffectEnums.Category.TARGETING and effect.subtype == subtype
 	)
 
 
@@ -125,10 +155,22 @@ func show_info() -> void:
 		info.bottom_label_text = "[color=yellow]Enemy uses (die_" + \
 									str(activating_die_number) + \
 									") -> " + \
-									description.replace('(amount)', get_intent_amount_text())
+									get_description_text()
 	else:
-		info.bottom_label_text = description.replace('(amount)', get_intent_amount_text())
+		info.bottom_label_text = get_description_text()
 
 	info.texture = info_texture
 
 	Events.show_info.emit(info)
+
+
+## The description with this slot's rolled values filled in: (amount), and
+## (target) for the ship it's bound to.
+func get_description_text() -> String:
+	var target_name: String = "another ship"
+	if is_instance_valid(bound_target):
+		target_name = bound_target.enemy_resource.enemy_name
+	return description \
+		.replace('(amount)', get_intent_amount_text()) \
+		.replace('(target)', target_name)
+

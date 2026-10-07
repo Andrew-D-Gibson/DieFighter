@@ -45,3 +45,8 @@ var enemy_intent_amount: int = 0
 ## 0 means it arrived some other way (usually the player's hand). Lets a tile
 ## pay out for sitting at the end of a machine.
 var feed_depth: int = 0
+
+## The ship an enemy action was bound to when its slot was rolled (an ally to
+## repair or feed, a civilian to raid). Read by the TARGET_BOUND_* steps.
+## Null for anything that isn't an enemy action, or one that binds nothing.
+var bound_target: Node = null

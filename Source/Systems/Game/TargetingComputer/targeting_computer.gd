@@ -9,6 +9,16 @@ var targeted_enemy: Enemy
 var indicator_bob_tween: Tween
 var intent_scale_tweens: Array[Tween] = []
 
+## Small die faces hung over the ships the targeted enemy's slots are bound
+## to: "on a 1, the Tender repairs *this* one". Escorts often share a name,
+## so the intent text alone can't say which ship it means.
+var _bound_markers: Array[Node2D] = []
+
+## Where a marker sits relative to the ship it points out, and how far apart
+## two markers on the same ship stand.
+const _BOUND_MARKER_OFFSET: Vector2 = Vector2(0, 22)
+const _BOUND_MARKER_SPACING: float = 8.0
+
 @onready var die_sprites: Array[AnimatedSprite2D] = [
 	%DieSprite1, 
 	%DieSprite2, 
@@ -169,6 +179,7 @@ func target_enemy(enemy: Enemy) -> void:
 
 	
 func _update_ui() -> void:
+	_show_bound_markers()
 	if !targeted_enemy or targeted_enemy_index == -1:
 		targeting_indicator.visible = false
 		
@@ -217,6 +228,48 @@ func _update_ui() -> void:
 		$TargetImageFill.frame = 0
 		await $TargetImageFill.animation_looped
 		$TargetImageFill.z_index = -2
+
+
+func _show_bound_markers() -> void:
+	for marker: Node2D in _bound_markers:
+		if is_instance_valid(marker):
+			marker.queue_free()
+	_bound_markers.clear()
+
+	if not targeted_enemy or not is_instance_valid(targeted_enemy):
+		return
+	if not Globals.state_manager or not Globals.state_manager.enemy_intents_visible():
+		return
+
+	# Slots bound to the same ship line up side by side over it.
+	var slots_by_ship: Dictionary[Enemy, Array] = {}
+	for i: int in range(len(targeted_enemy.turn_actions)):
+		var action: EnemyActionResource = targeted_enemy.turn_actions[i]
+		if action == null or not is_instance_valid(action.bound_target):
+			continue
+		if action.bound_target.health.health <= 0:
+			continue
+		if not slots_by_ship.has(action.bound_target):
+			slots_by_ship[action.bound_target] = []
+		slots_by_ship[action.bound_target].append(i)
+
+	for ship: Enemy in slots_by_ship:
+		var slots: Array = slots_by_ship[ship]
+		for n: int in range(slots.size()):
+			var slot: int = slots[n]
+			var action: EnemyActionResource = targeted_enemy.turn_actions[slot]
+			var marker := AnimatedSprite2D.new()
+			marker.sprite_frames = die_sprites[slot].sprite_frames
+			# The lit face: white, so the tint reads true.
+			marker.frame = slot + 6
+			marker.modulate = Globals.green \
+				if action.get_binding() == EnemyActionResource.Binding.ALLY else Globals.red
+			marker.position = _BOUND_MARKER_OFFSET + Vector2(
+				(n - (slots.size() - 1) * 0.5) * _BOUND_MARKER_SPACING, 0
+			)
+			marker.z_index = 5
+			ship.add_child(marker)
+			_bound_markers.append(marker)
 
 
 func _move_indicator() -> void:

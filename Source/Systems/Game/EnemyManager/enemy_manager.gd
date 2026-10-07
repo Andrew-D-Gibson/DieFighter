@@ -82,6 +82,9 @@ func _ready() -> void:
 		_awaiting_fly_in.erase(ship)
 		_active_moves.erase(ship)
 		formation.clear_reservation(_pin_key(ship))
+		# Any slot that was going to act on it picks someone else, so the
+		# intent the player reads stays true.
+		EnemyTargetBinder.rebind_departed(ship, get_alive_enemies())
 		# The survivors close the gap the loss left behind.
 		refresh_formation()
 	)
@@ -418,10 +421,15 @@ func generate_all_turn_actions() -> void:
 	_roll_turn_actions(get_alive_enemies())
 
 
+## Rolls each ship's table, then binds the slots that act on another ship.
+## Binding waits until every table is in, because who a slot can pick depends
+## on the rest of the roster.
 func _roll_turn_actions(ships: Array[Enemy], take_forced: bool = true) -> void:
+	var roster: Array[Enemy] = get_alive_enemies()
 	for enemy: Enemy in ships:
 		if is_instance_valid(enemy):
-			enemy.generate_turn_actions(EnemyActionSituation.for_ship(enemy), take_forced)
+			enemy.generate_turn_actions(EnemyActionSituation.for_ship(enemy, roster), take_forced)
+	EnemyTargetBinder.bind(ships, roster)
 
 
 ## The survivors of a fight (the civilian it was over) go back to unreadable

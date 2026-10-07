@@ -16,7 +16,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step1"]
 script = ExtResource("script_1")
-subtype = 12
+subtype = 14
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step2"]
@@ -80,7 +80,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 name = "Aegis Link"
-description = "[color=blue]Shields[/color] another ship for [color=blue](amount)[/color]"
+description = "[color=blue]Shields[/color] (target) for [color=blue](amount)[/color]"
 indicator_texture = ExtResource("tex_3")
 info_texture = ExtResource("tex_4")
 effect_chain = SubResource("Resource_chain")
