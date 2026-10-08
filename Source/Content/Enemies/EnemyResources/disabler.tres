@@ -4,9 +4,11 @@
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_hbxdm"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_7wyve"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="2_v8aec"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_od4nw"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="4_t8kfg"]
 [ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="5_1ll6j"]
 [ext_resource type="PackedScene" uid="uid://sxp7koeaaan5" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/disabler_ship_graphics.tscn" id="5_5pxhh"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_pprml"]
 [ext_resource type="Texture2D" uid="uid://35lb5bt8fxo1" path="res://Assets/Textures/Enemies/Disabler/Disabler_targeting_image.png" id="6_1ll6j"]
 
 [sub_resource type="Resource" id="Resource_1ll6j"]

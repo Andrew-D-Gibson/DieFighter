@@ -6,6 +6,14 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="8_tih48"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="9_q575a"]
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("6_uiyg5")
+category = 4
+subtype = 16
+string_param = "..."
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_oguca"]
 script = ExtResource("6_uiyg5")
 category = 4
@@ -23,14 +31,6 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("6_uiyg5")
 category = 3
 subtype = 4
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("6_uiyg5")
-category = 4
-subtype = 16
-string_param = "..."
-color = Color(0.8078, 0.9412, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_enj8n"]

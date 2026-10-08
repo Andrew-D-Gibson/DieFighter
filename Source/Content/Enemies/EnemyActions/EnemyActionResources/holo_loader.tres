@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://b7gytaref6vee"]
 
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_data"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="2_chain"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="2_wqxdb"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="3_action"]
 [ext_resource type="Texture2D" uid="uid://cuc26t6i8gpab" path="res://Assets/Textures/Enemies/IntentIndicator/holo_loader.png" id="4_icon"]
 [ext_resource type="Texture2D" uid="uid://7mg8vxyv70rw" path="res://Assets/Textures/Enemies/IntentIndicator/holo_loader_info.png" id="5_info"]

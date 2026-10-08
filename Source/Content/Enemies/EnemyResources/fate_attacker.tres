@@ -4,7 +4,9 @@
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="2_2edq1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_ogj8x"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="3_hli4g"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_00tck"]
 [ext_resource type="PackedScene" uid="uid://ds03fs4txnc1c" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_enemy_graphics.tscn" id="5_00tck"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_patpg"]
 [ext_resource type="Texture2D" uid="uid://deoaj6bxuv4i4" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="6_patpg"]
 
 [sub_resource type="Resource" id="Resource_behws"]

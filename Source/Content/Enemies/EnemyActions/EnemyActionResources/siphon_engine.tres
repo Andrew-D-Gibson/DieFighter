@@ -52,6 +52,23 @@ subtype = 2
 multiplier = -1.0
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_1")
+category = 4
+subtype = 21
+amount = 12
+string_param = "engine"
+color = Color(0.7725, 0.3216, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_1")
+category = 4
+subtype = 16
+string_param = "SIPHON"
+color = Color(0.7725, 0.3216, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_step7"]
 script = ExtResource("script_1")
 category = 1
@@ -62,23 +79,6 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_1")
 category = 3
 subtype = 4
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("script_1")
-category = 4
-subtype = 21
-string_param = "engine"
-amount = 12
-color = Color(0.7725, 0.3216, 0.9451, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("script_1")
-category = 4
-subtype = 16
-string_param = "SIPHON"
-color = Color(0.7725, 0.3216, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain"]

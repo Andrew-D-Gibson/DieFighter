@@ -1,5 +1,7 @@
 [gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://bfqg4bqueelwx"]
 
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_ulh08"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_mqxhx"]
 [ext_resource type="Resource" uid="uid://brr01wenpqywh" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/repair_ally.tres" id="act_5"]
 [ext_resource type="Resource" uid="uid://cnsicvupexlcv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/aegis_ally.tres" id="act_6"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_7"]

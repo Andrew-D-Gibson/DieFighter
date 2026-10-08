@@ -32,3 +32,5 @@ shader_parameter/texture_size = Vector2(12, 12)
 shader_parameter/brightness_max = 1.5
 shader_parameter/brightness_period = 2.0
 shader_parameter/time_offset = 0.0
+shader_parameter/flash_color = Color(1, 1, 1, 1)
+shader_parameter/flash_amount = 0.0

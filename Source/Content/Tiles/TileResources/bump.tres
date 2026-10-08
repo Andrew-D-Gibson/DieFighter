@@ -32,6 +32,21 @@ subtype = 1
 amount = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("9_u271i")
+category = 4
+subtype = 22
+color = Color(0.4784, 0.7412, 0.2, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("9_u271i")
+category = 4
+subtype = 16
+string_param = "+1"
+color = Color(0.4784, 0.7412, 0.2, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_1kud3"]
 script = ExtResource("9_u271i")
 category = 3
@@ -41,21 +56,6 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("9_u271i")
 category = 3
 subtype = 4
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("9_u271i")
-category = 4
-subtype = 22
-color = Color(0.4784, 0.7412, 0.2000, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("9_u271i")
-category = 4
-subtype = 16
-string_param = "+1"
-color = Color(0.4784, 0.7412, 0.2000, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_j3pel"]

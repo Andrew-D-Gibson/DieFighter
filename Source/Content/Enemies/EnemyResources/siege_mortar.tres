@@ -1,5 +1,7 @@
 [gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://bqbs4io5yjaeb"]
 
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_nwjkq"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_fjt6d"]
 [ext_resource type="Resource" uid="uid://dg1wfg8fa6s31" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/charge_weapon.tres" id="act_5"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_6"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_7"]

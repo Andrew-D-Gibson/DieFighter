@@ -8,6 +8,14 @@
 [ext_resource type="Texture2D" uid="uid://btbmn3xiam6um" path="res://Assets/Textures/Enemies/IntentIndicator/siege.png" id="tex_3"]
 [ext_resource type="Texture2D" uid="uid://c2r1as55pfd23" path="res://Assets/Textures/Enemies/IntentIndicator/siege_info.png" id="tex_4"]
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_1")
+category = 4
+subtype = 16
+string_param = "SIEGE SHOT"
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_step0"]
 script = ExtResource("script_1")
 category = 2
@@ -45,25 +53,6 @@ category = 2
 subtype = 7
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step6"]
-script = ExtResource("script_1")
-category = 1
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_step7"]
-script = ExtResource("script_1")
-category = 3
-subtype = 4
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("script_1")
-category = 4
-subtype = 16
-string_param = "SIEGE SHOT"
-color = Color(0.8157, 0.2118, 0.3373, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_2"]
 script = ExtResource("script_1")
 category = 4
@@ -98,6 +87,17 @@ script = ExtResource("script_1")
 category = 4
 subtype = 12
 color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step6"]
+script = ExtResource("script_1")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_1")
+category = 3
+subtype = 4
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain"]

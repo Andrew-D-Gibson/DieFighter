@@ -1,5 +1,7 @@
 [gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://x46nmdaxwrnm"]
 
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_y50ve"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_0y2l6"]
 [ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_5"]
 [ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_6"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_7"]

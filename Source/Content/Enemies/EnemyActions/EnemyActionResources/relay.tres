@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://cp0l6a18hiwyb"]
 
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_data"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="2_chain"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="2_qx6oo"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="3_action"]
 [ext_resource type="Texture2D" uid="uid://bwrg00vwh8800" path="res://Assets/Textures/Enemies/IntentIndicator/relay.png" id="4_icon"]
 [ext_resource type="Texture2D" uid="uid://c1r8dbaxa53g8" path="res://Assets/Textures/Enemies/IntentIndicator/relay_info.png" id="5_info"]

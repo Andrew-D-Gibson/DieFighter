@@ -62,8 +62,7 @@
 [ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
 [ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="99_ambush"]
-[ext_resource type="Resource" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
+[ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/bump_explanation.tres" id="tut_bump_explanation"]
@@ -100,7 +99,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_1d4wr"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kcewt"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -336,7 +335,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_1d4wr")
+material = SubResource("ShaderMaterial_kcewt")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]
@@ -386,7 +385,7 @@ combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtR
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("94_boss2"), ExtResource("95_boss3")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
-starting_scenario = ExtResource("99_ambush")
+starting_scenario = ExtResource("88_wreck")
 jump_gate_scenario = ExtResource("26_jgate")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]

@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://cmlhn71vmoo54"]
 
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_data"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="2_chain"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="3_action"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_c4wn1"]
 [ext_resource type="Texture2D" uid="uid://rib5l4kpwe7v" path="res://Assets/Textures/Enemies/IntentIndicator/raid.png" id="4_icon"]
 [ext_resource type="Texture2D" uid="uid://cbmpwbr78g43u" path="res://Assets/Textures/Enemies/IntentIndicator/raid_info.png" id="5_info"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="6_sfx"]

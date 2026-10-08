@@ -50,12 +50,6 @@ script = ExtResource("script_1")
 category = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step7"]
-script = ExtResource("script_1")
-category = 3
-subtype = 10
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_1"]
 script = ExtResource("script_1")
 category = 4
@@ -69,6 +63,12 @@ category = 4
 subtype = 16
 string_param = "IMPOUNDED"
 color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step7"]
+script = ExtResource("script_1")
+category = 3
+subtype = 10
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain"]

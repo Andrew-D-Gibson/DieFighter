@@ -13,12 +13,6 @@ category = 3
 subtype = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_0rpmg"]
-script = ExtResource("5_ewju3")
-category = 6
-subtype = 3
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_1"]
 script = ExtResource("5_ewju3")
 category = 4
@@ -34,6 +28,12 @@ subtype = 15
 amount = 14
 multiplier = 1.2
 color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_0rpmg"]
+script = ExtResource("5_ewju3")
+category = 6
+subtype = 3
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_nkp0x"]
