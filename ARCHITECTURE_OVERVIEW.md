@@ -853,11 +853,13 @@ because `state` is stale while a new scenario's ships roll).
   exactly one of a signature verb appears — weight 0 plus `force_include` means
   "one and only one")
 - Weighted random fill remaining slots
-- `place_on_held_faces` moves a forced copy onto the face of a die the ship
-  already holds (`EnemyActionSituation.held_faces`), after face bias has
-  placed the table. A die kept with `KEEP_DIE_WITH_ACTOR` last turn therefore
-  fires that action: the Siege Mortar's Charge Bore loads the face its Siege
-  Shot lands on.
+- **Kept faces:** a `fills_kept_faces` option is never rolled into an ordinary
+  slot. `KeepDieWithActorEvent` records the die in `Enemy.kept_dice`
+  (cleared when the ship next acts), `EnemyActionSituation.kept_faces` reads
+  the ones still held, and the selector rolls and places the rest of the
+  table around those faces before inserting one copy on each. Dice a ship
+  was merely handed don't count. The Siege Mortar's Siege Shot exists only
+  this way: it's always the payoff of a die left in Charge Bore.
 - **Gates read off the chain**, like threat: an action that flees or jumps
   (`is_safe_while_hidden()`) is never rolled while intents read "?", so a ship
   can't leave on a die the player couldn't read. An action that binds a ship

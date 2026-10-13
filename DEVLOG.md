@@ -32,7 +32,18 @@ keyword.
 table had Siege Shot (10) on 3 → hull 14 → 4, die back in hand, loading
 table again. Repeated with a 5 and a 6. 344 tests pass (6 new for pinning).
 
-**To playtest:** it's very punishing right now. That's deliberate for the
+**Follow-up, same day: Siege Shot only ever follows a loaded Charge Bore.**
+The first pass also kept two force-included Siege Shots in the loaded pool,
+so one always landed at random, and the pin read any die the Mortar held,
+including ones a dying ally passed it. That punished the player for a
+choice they didn't make. Now the option is `fills_kept_faces`: never rolled,
+one copy on the face of each die the ship *kept itself* (`Enemy.kept_dice`,
+recorded by `KeepDieWithActorEvent`, cleared when it next acts). With nothing
+loaded, the loaded table is just small attacks and blanks. Verified live:
+fed a non-Bore die → no Siege Shot. Loaded a 6 → exactly one Siege Shot, on
+6, which hit for 9, and then the kept memory cleared. 347 tests pass.
+
+**To playtest:** it was very punishing in the first pass. That's deliberate for the
 moment. Knobs to watch are the second unpinned Siege Shot, the 8–13
 damage, and whether shields stacking across cycles makes the Mortar too
 tanky to burst.
