@@ -34,7 +34,12 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if not shaking or not node_to_shake:
 		return
-		
+	# A hitstop stops the clock. The jitter below is per frame, not per second,
+	# so without this it would keep rattling at full strength through the
+	# freeze while its timer and decay stood still.
+	if delta == 0.0:
+		return
+
 	if shake_time_remaining <= 0:
 		shaking = false
 		node_to_shake.position = original_position

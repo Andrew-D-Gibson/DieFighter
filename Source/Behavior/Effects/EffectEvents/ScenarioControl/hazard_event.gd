@@ -1,6 +1,6 @@
 class_name HazardEvent
 extends EffectEvent
-## Wraps a scenario hazard's chain so it resolves in the engine's normal order
+## Wraps a background hazard's chain so it resolves in the engine's normal order
 ## rather than jumping the queue.
 ##
 ## Hazards have no activator die — they're the environment acting, not a ship —

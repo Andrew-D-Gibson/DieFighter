@@ -1,0 +1,18 @@
+{
+  "synth_type": "Rustlr",
+  "version": "1.0.0",
+  "file_name": "CardFlick",
+  "params": {
+    "masterVolume": 0.52,
+    "seed": 0.03360435958240038,
+    "material": 1,
+    "gesture": 2,
+    "duration": 0.17,
+    "grain": 0.05,
+    "density": 0.55,
+    "motion": 0.9,
+    "pressure": 0.62,
+    "folds": 3,
+    "brightness": 0.31
+  }
+}

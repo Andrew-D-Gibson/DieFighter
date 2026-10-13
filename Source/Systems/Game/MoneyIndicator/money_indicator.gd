@@ -44,6 +44,11 @@ func _ready() -> void:
 func _on_money_changed(new_value: int) -> void:
 	total_change = new_value - int(money_label.text)
 	
+	# Any real balance change (reward, shop, dev tools) should surface the
+	# indicator, rather than relying on each source to announce itself.
+	if total_change != 0:
+		_fade_in()
+	
 	if countdown_tween:
 		countdown_tween.kill()
 		

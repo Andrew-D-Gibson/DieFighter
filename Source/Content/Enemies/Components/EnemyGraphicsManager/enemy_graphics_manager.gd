@@ -16,10 +16,15 @@ extends Node2D
 ## The component that displays the enemy's health and attitude
 @export var health_bar: EnemyHealthBar
 
+## How far set_ship_raised() lifts the ship: past the dice (two above a ship),
+## hit sparks and Juice shockwaves (+20), but under damage numbers (+100) so
+## the killing blow's number stays readable.
+const _RAISED_SHIP_Z_INDEX: int = 50
+
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
 
-## Whichever flash is currently fading. See _flash().
+## Whichever flash is currently fading. See flash().
 var _flash_tween: Tween
 
 ## Sets up the ship graphics and associated components
@@ -121,24 +126,21 @@ func start_bob_tween() -> void:
 
 ## Plays a red flash effect when health is damaged
 func _health_hit_flash() -> void:
-	_flash(Globals.red, hit_flash_time, true)
+	flash(Globals.red, hit_flash_time)
 
 
 ## Plays a blue flash effect when shields are damaged
 func _shields_hit_flash() -> void:
-	_flash(Globals.blue, hit_flash_time, true)
+	flash(Globals.blue, hit_flash_time)
 
 
-## A short, hard impact flash for authored effects (FLASH_TARGET). Snaps to full
-## instantly rather than easing in: it usually lands inside a hitstop, where an
-## ease-in would still be at zero when the freeze ends.
-func flash(color: Color, duration: float = 0.25) -> void:
-	_flash(color, duration, false)
-
-
+## A hard impact flash, for hits and authored effects (FLASH_TARGET) alike.
+## Snaps to full instantly rather than easing in: impacts usually land inside a
+## hitstop, where an ease-in would still be at zero when the freeze ends.
+##
 ## Every flash drives the same shader parameter, so a new one cancels whatever
 ## flash is still fading instead of the two tweens fighting over it.
-func _flash(color: Color, duration: float, ease_in: bool) -> void:
+func flash(color: Color, duration: float = 0.25) -> void:
 	# A ship whose graphics haven't loaded (or a bare one in a test) has
 	# nothing to flash.
 	if not is_instance_valid(ship_graphics) or ship_graphics.material == null:
@@ -147,14 +149,20 @@ func _flash(color: Color, duration: float, ease_in: bool) -> void:
 		_flash_tween.kill()
 
 	ship_graphics.material.set_shader_parameter('flash_color', color)
+	ship_graphics.material.set_shader_parameter('flash_amount', 1.0)
 
 	_flash_tween = create_tween()
-	if ease_in:
-		_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 1, duration * 0.05).from(0).set_trans(Tween.TRANS_QUAD)
-		_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, duration * 0.95).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	else:
-		ship_graphics.material.set_shader_parameter('flash_amount', 1.0)
-		_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## Lifts the ship above the dice and impact sparks that normally draw over it,
+## so a kill flash reads as the whole silhouette. Ship scenes don't set a z of
+## their own, so lowering returns to 0.
+func set_ship_raised(raised: bool) -> void:
+	if not is_instance_valid(ship_graphics):
+		return
+	ship_graphics.z_index = _RAISED_SHIP_Z_INDEX if raised else 0
+	ship_graphics.scale = Vector2(1.2, 1.2) if raised else Vector2(1,1)
 
 
 func _set_transparency(alpha: float) -> void:

@@ -9,8 +9,11 @@
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/cryo_belt.tres" id="6_cryo"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/pulsar_field.tres" id="7_puls"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/derelict_boneyard.tres" id="8_bone"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/solar_corona.tres" id="9_solar"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ion_storm_front.tres" id="10_ion"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/asteroid_field.tres" id="11_rocks"]
 
 [resource]
 script = ExtResource("2_pi16q")
-eligible_backgrounds = Array[ExtResource("1_3s5r3")]([ExtResource("2_1uew3"), ExtResource("3_dm83u"), ExtResource("4_oym7p"), ExtResource("5_b2ggj"), ExtResource("6_cryo"), ExtResource("7_puls"), ExtResource("8_bone")])
+eligible_backgrounds = Array[ExtResource("1_3s5r3")]([ExtResource("2_1uew3"), ExtResource("3_dm83u"), ExtResource("4_oym7p"), ExtResource("5_b2ggj"), ExtResource("6_cryo"), ExtResource("7_puls"), ExtResource("8_bone"), ExtResource("9_solar"), ExtResource("10_ion"), ExtResource("11_rocks")])
 metadata/_custom_type_script = "uid://3roroso3mo17"

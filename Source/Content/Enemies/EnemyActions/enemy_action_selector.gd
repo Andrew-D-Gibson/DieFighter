@@ -18,11 +18,13 @@ const _FALLBACK_ACTION: EnemyActionResource = preload("res://Source/Content/Enem
 
 ## Rolls a full table. [param forced] actions (the tutorial's) take the first
 ## slots as given; when they fill the table it isn't shuffled, because the
-## tutorial relies on their order.
+## tutorial relies on their order. [param face_bias] is the ship's
+## EnemyResource.face_bias: which faces its stronger actions lean toward.
 static func roll(
 	pool: EnemyTurnActionList,
 	situation: EnemyActionSituation,
-	forced: Array[EnemyActionResource] = []
+	forced: Array[EnemyActionResource] = [],
+	face_bias: float = 0.0
 ) -> Array[EnemyActionResource]:
 	var actions: Array[EnemyActionResource] = forced.slice(0, SLOT_COUNT)
 	var options: Array[EnemyActionOptionResource] = available_options(pool, situation)
@@ -45,14 +47,15 @@ static func roll(
 	for i: int in range(SLOT_COUNT - actions.size()):
 		actions.append(_weighted_pick(options, weights, weight_sum))
 
-	RNGManager.shuffle_array(RNGManager.Bucket.ENEMY_AI, actions)
+	_place(actions, face_bias)
 	_number_slots(actions)
 	return actions
 
 
 ## Rerolls one slot of [param actions] from the pool's relay-free options.
 ## The binder's last resort for a relay it can't bind without closing a loop:
-## it changes that one slot and nothing else the player can see.
+## it changes that one slot and nothing else the player can see. The face is
+## already fixed, so face_bias has no say in what lands there.
 static func reroll_slot_without_relays(
 	pool: EnemyTurnActionList,
 	situation: EnemyActionSituation,
@@ -129,6 +132,58 @@ static func _fallback() -> EnemyActionResource:
 	var action: EnemyActionResource = _FALLBACK_ACTION.duplicate(true)
 	action.intent_amount = 0
 	return action
+
+
+## Orders a rolled table onto faces 1-6. With no bias it's the plain shuffle it
+## has always been, draw for draw, so a seeded run rolls the same tables.
+## Otherwise each action sorts on a random key nudged by how strong it is next
+## to the rest of the table: strength only tilts the odds, so a strong action
+## can still turn up on a face the bias leans away from.
+static func _place(actions: Array[EnemyActionResource], face_bias: float) -> void:
+	if is_zero_approx(face_bias):
+		RNGManager.shuffle_array(RNGManager.Bucket.ENEMY_AI, actions)
+		return
+
+	var ranks: Array[float] = _strength_ranks(actions)
+	var keyed: Array[Array] = []
+	for i: int in range(actions.size()):
+		var key: float = RNGManager.randf(RNGManager.Bucket.ENEMY_AI) + face_bias * ranks[i]
+		keyed.append([key, actions[i]])
+	keyed.sort_custom(func(a: Array, b: Array) -> bool: return a[0] < b[0])
+	for i: int in range(keyed.size()):
+		actions[i] = keyed[i][1]
+
+
+## Each action's strength as its place in the table, from 0 (weakest) to 1
+## (strongest). Ranks rather than raw strengths, so a bias tilts a table of
+## shields the same amount as one of big guns. Equal strengths share the
+## average of the places they span, so two identical attacks are treated alike.
+static func _strength_ranks(actions: Array[EnemyActionResource]) -> Array[float]:
+	var count: int = actions.size()
+	var ranks: Array[float] = []
+	ranks.resize(count)
+	if count <= 1:
+		ranks.fill(0.5)
+		return ranks
+
+	var strengths: Array[float] = []
+	for action: EnemyActionResource in actions:
+		strengths.append(action.placement_strength())
+	var order: Array[int] = []
+	for i: int in range(count):
+		order.append(i)
+	order.sort_custom(func(a: int, b: int) -> bool: return strengths[a] < strengths[b])
+
+	var start: int = 0
+	while start < count:
+		var end: int = start
+		while end + 1 < count and is_equal_approx(strengths[order[end + 1]], strengths[order[start]]):
+			end += 1
+		var shared: float = (start + end) / 2.0 / (count - 1)
+		for k: int in range(start, end + 1):
+			ranks[order[k]] = shared
+		start = end + 1
+	return ranks
 
 
 ## Every action knows which face plays it, so its info text can say so.

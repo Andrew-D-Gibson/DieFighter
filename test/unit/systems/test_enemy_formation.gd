@@ -55,6 +55,34 @@ func test_the_widest_free_stretch_wins() -> void:
 	assert_eq(formation.get_free_span(), Vector2(140, 280))
 
 
+func test_a_pair_splits_around_a_reservation_in_the_middle() -> void:
+	# Salvage floating mid-screen: one ship either side, each centred in its
+	# half, rather than both crushed into one half.
+	formation.reserve(&"reward", Vector2(110, 210))
+	assert_eq(_positions(2), [75.0, 245.0])
+
+
+func test_ships_keep_their_order_when_split() -> void:
+	formation.reserve(&"reward", Vector2(150, 170))
+	var positions := _positions(4)
+	for i: int in range(1, positions.size()):
+		assert_true(positions[i] > positions[i - 1], "ship %d stays right of ship %d" % [i, i - 1])
+	assert_true(positions[1] < 150.0 and positions[2] > 170.0, "two each side")
+
+
+func test_a_wing_stays_together_when_the_other_side_is_cramped() -> void:
+	# 20px is no room for a 32px hull; both go right, even though that
+	# side alone is narrower than the whole screen.
+	formation.reserve(&"popup", Vector2(60, 100))
+	var positions := _positions(2)
+	assert_true(positions[0] > 100.0, "nobody squeezed into the sliver on the left")
+
+
+func test_a_lone_ship_takes_the_wider_side() -> void:
+	formation.reserve(&"popup", Vector2(100, 140))
+	assert_eq(_positions(1), [210.0])
+
+
 func test_clearing_a_reservation_restores_the_layout() -> void:
 	formation.reserve(&"shop", Vector2(200, 280))
 	formation.clear_reservation(&"shop")

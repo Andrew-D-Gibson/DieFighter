@@ -26,7 +26,7 @@ func _load_tile_resources() -> void:
 			for file_name: String in dir.get_files():
 				if file_name.ends_with(".tres"):
 					var res = ResourceLoader.load(dir_location + file_name)
-					if res is TileResource:
+					if res is TileResource and res.offered_as_reward:
 						_all_tile_resources.append(res)
 	
 	

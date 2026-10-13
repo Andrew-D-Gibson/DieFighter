@@ -8,9 +8,8 @@ func resolve(_engine: ScenarioEngine) -> void:
 
 	activator_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
 
-	# No valid target — reroll and return to player.
+	# No valid target — return to the player with the face unchanged.
 	if targets.is_empty() or not is_instance_valid(targets[0]):
-		await activator_die.reroll_with_tween()
 		if is_instance_valid(Globals.player):
 			Globals.player.dice_manager.add(activator_die)
 		return

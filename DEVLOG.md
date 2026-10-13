@@ -4,6 +4,104 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-12 — Face bias: where an enemy's strong actions land
+
+A table's six actions used to be shuffled onto the faces at random, so the
+value of a die said nothing about how bad it was to hand over. Now an enemy
+can lean its strong actions toward high or low faces: `EnemyResource.face_bias`,
+overridable per pool (`EnemyTurnActionList.override_face_bias`). A boss that
+turns erratic in its last pool can drop back to 0.
+
+**How.** `EnemyActionSelector` still rolls the six actions the same way. Only
+the final shuffle changes: each action sorts on `randf() + face_bias × rank`,
+where rank is its place in the table by strength. Strength is read off the
+chain (threat tier, then rolled amount), so a 6-damage attack outranks a
+3-damage one and both outrank any shield. `strength_tier_override` on an
+option covers what the chain undersells. At bias 0 the old shuffle runs draw
+for draw, so every existing enemy and seeded run rolls exactly as before.
+
+**Feel.** Sector Boss pool 0, 500 rolls, share of each face (1→6) that deals damage:
+
+| bias | 1 | 2 | 3 | 4 | 5 | 6 |
+|---|---|---|---|---|---|---|
+| −1 | 96% | 85% | 65% | 50% | 29% | 9% |
+| 0 | 54% | 55% | 60% | 54% | 54% | 55% |
+| +0.5 | 24% | 49% | 56% | 56% | 69% | 82% |
+| +1 | 9% | 27% | 42% | 64% | 85% | 93% |
+| +2 | 2% | 17% | 43% | 76% | 92% | 99% |
+
+The average hit on a damaging face climbs too (+1: 5.0 on a 1 up to 8.0 on a 6).
+With positive bias, Do Nothing collects on the low faces, so 1s become safe
+dumps for that ship: the tension moves onto the high dice, and the table is
+still shown in full before the player commits.
+
+The default is +0.5, so every enemy leans gently high unless it's tuned to do
+otherwise. It's the script default rather than a value in each `.tres`, so
+changing the house rule is one line. Tutorial tables are fully forced and
+never placed, so they're unaffected.
+
+---
+
+## 2026-10-12 — Timed backgrounds, Napalm Vent per hop, player numbers on screen
+
+**Hazards are backgrounds now.** Solar flares, ion storms, asteroid impacts and
+the Fate Rift used to sit on a scenario, layered over whatever background the
+pool rolled, announced by a banner. They read as random punishment. Each is now
+a background of its own (`BackgroundResource.hazard`, a
+`BackgroundHazardResource`, mutually exclusive with `global_modifier`):
+Solar Corona (a big star, top left), Ion Storm Front (charged clouds), Asteroid
+Field (drifting rocks plus a meteor shower) and Rift Space (a tear beside the
+black hole). The general three joined `all_basic_backgrounds`; the six
+encounters that had hazards point at one-background pools, so the boss still
+fights you beside a flaring star.
+
+**Telegraphing.** The countdown moved into the EnvironmentMonitor: the hazard's
+icon with the turns left beside it. Each tick down flashes the unit and pops
+the digit; at one turn left it goes red and the lamp won't stop blinking; when
+it fires the monitor calls out the hazard's name. The art warns too, through
+`HazardTelegraph`: the star's corona throbs hot when a flare is a turn out and
+whites out when it lands, the clouds strike constantly before a discharge,
+rocks streak overhead more often before an impact and one comes down at the
+cockpit when it hits, the rift quickens. `HazardManager` arms on
+`start_combat`, so a hazard region you pass through out of combat never counts
+down to nothing. The banner (`HazardIndicator`) is gone.
+
+**Napalm Vent** answered a relay chain once. Its `ON_ADJACENT_TILE_ACTIVATED`
+responses were appended to the back of the queue, so they all resolved after
+the chain, back to back inside the callout cooldown, and looked like one proc.
+They're injected right behind each neighbour's activation now, one visible
+burn per hop. It also listens wider: a new `ON_SURROUNDING_TILE_ACTIVATED`
+event covers all eight cells, diagonals included (Spark Gap keeps the
+orthogonal `ON_ADJACENT_TILE_ACTIVATED`).
+
+**Hazard text** follows the tile conventions now: imperative, terse, with the
+established phrasings (`Re-roll all dice`, `Flip all (die_1) and (die_6)`,
+`Take 3 damage`). Asteroid Impact's "for the turn" was wrong (a lock cancels
+the tile's next activation, whenever it comes) and is gone. The monitor's
+panel puts the timing on two short lines (`Next in 2 turns` / `Repeats every
+3 turns`), and the Solar Flare is yellow rather than the near-white it shared
+with the UI.
+
+**Ion Storm and Fate Rift go off as your turn ends.** At turn start they did
+next to nothing: the hand had just been rolled, so re-rolling it gave another
+random hand, and swapping its 1s and 6s left a hand just as random. Hazards now
+have a `timing`. These two fire on `enemy_turn_starting`, once your dice have
+landed with the ships and before any ship uses them, and act only on those
+dice (`REROLL_TARGETS_DICE`, `FLIP_TARGETS_ONES_AND_SIXES`). On a storm turn
+you can't buy a ship's weak action with a 1; on a rift turn a 6 handed over
+plays as a 1. Verified live: 1-1-1 handed over came out 5-2-6 and the ship
+played 5-2-6; 1-6-3 under the rift played 6-1-3. Every hazard description now
+opens with its trigger, and at one turn left the monitor spells out "Hits as
+you end this turn" or "Hits at start of next turn".
+
+**Player damage numbers** fell sideways out of the bottom-left corner. They
+now start anywhere in a patch over the hull bar and rise at a random angle,
+and every label's whole flight (start, drift and pop overshoot) is clamped to
+the screen. The first pass only randomised the side, and the left side always
+clamped to the same spot against the edge, so they looked fixed.
+
+---
+
 ## 2026-10-07 — Enemies that read the board, pass dice and raid civilians
 
 **Goal:** enemy intent tables were rolled ship by ship with no idea what else

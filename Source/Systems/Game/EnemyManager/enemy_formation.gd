@@ -75,22 +75,34 @@ func get_reservation(key: StringName) -> Vector2:
 ## keeps a capital ship from parking on top of its escorts; giving the ends only
 ## half a gap spreads a pair out across the screen rather than bunching them in
 ## the middle, which leaves room between them for their dice and their speech.
+##
+## A reservation in the middle of the screen (salvage floating where the wreck
+## was) leaves free space on both sides of it. The wing then splits across
+## them, keeping its left-to-right order, whichever way gives the most crowded
+## ship the most room — rather than crushing everyone into the wider half.
 func solve(widths: PackedFloat32Array) -> PackedFloat32Array:
 	var positions: PackedFloat32Array = PackedFloat32Array()
 	var count: int = widths.size()
 	if count == 0:
 		return positions
 
-	var span: Vector2 = get_free_span()
-	var gap: float = (span.y - span.x - _total(widths)) / float(count)
+	var stretches: Array[Vector2] = get_free_stretches()
+	var groups: PackedInt32Array = _best_split(widths, stretches)
+	if count > 1 and _split_gap(widths, stretches, groups) < min_ship_gap:
+		return _overflow_positions(widths, get_free_span())
 
-	if count > 1 and gap < min_ship_gap:
-		return _overflow_positions(widths, span)
-
-	var edge: float = span.x + gap * 0.5
-	for width: float in widths:
-		positions.append(edge + width * 0.5)
-		edge += width + gap
+	var first: int = 0
+	for i: int in range(stretches.size()):
+		var group: PackedFloat32Array = widths.slice(first, first + groups[i])
+		first += groups[i]
+		if group.is_empty():
+			continue
+		var span: Vector2 = stretches[i]
+		var gap: float = (span.y - span.x - _total(group)) / float(group.size())
+		var edge: float = span.x + gap * 0.5
+		for width: float in group:
+			positions.append(edge + width * 0.5)
+			edge += width + gap
 	return positions
 
 
@@ -134,6 +146,19 @@ func speech_room(x: float, other_ships: PackedFloat32Array) -> Vector2:
 ## whole span when reservations have swallowed all of it, so a ship always has
 ## somewhere to be.
 func get_free_span() -> Vector2:
+	var widest: Vector2 = usable_span
+	var widest_width: float = -1.0
+	for stretch: Vector2 in get_free_stretches():
+		var width: float = stretch.y - stretch.x
+		if width > widest_width:
+			widest_width = width
+			widest = stretch
+	return widest
+
+
+## Every unreserved stretch of [member usable_span], left to right. Just the
+## whole span when reservations have swallowed all of it.
+func get_free_stretches() -> Array[Vector2]:
 	var free: Array[Vector2] = [usable_span]
 
 	for reserved: Vector2 in _reservations.values():
@@ -142,14 +167,55 @@ func get_free_span() -> Vector2:
 			remaining.append_array(_subtract(stretch, reserved))
 		free = remaining
 
-	var widest: Vector2 = usable_span
-	var widest_width: float = -1.0
-	for stretch: Vector2 in free:
-		var width: float = stretch.y - stretch.x
-		if width > widest_width:
-			widest_width = width
-			widest = stretch
-	return widest
+	if free.is_empty():
+		return [usable_span]
+	free.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
+	return free
+
+
+## How many ships, taken in order, go in each of [param stretches]: the split
+## whose tightest gap is widest. Ties go to the split found first, which puts
+## ships further left.
+func _best_split(widths: PackedFloat32Array, stretches: Array[Vector2]) -> PackedInt32Array:
+	var best: PackedInt32Array = PackedInt32Array()
+	var best_gap: float = -INF
+	for split: PackedInt32Array in _splits(widths.size(), stretches.size()):
+		var gap: float = _split_gap(widths, stretches, split)
+		if gap > best_gap:
+			best_gap = gap
+			best = split
+	return best
+
+
+## The tightest gap any ship gets under [param split]. See [method solve].
+func _split_gap(widths: PackedFloat32Array, stretches: Array[Vector2], split: PackedInt32Array) -> float:
+	var tightest: float = INF
+	var first: int = 0
+	for i: int in range(stretches.size()):
+		if split[i] == 0:
+			continue
+		var group: PackedFloat32Array = widths.slice(first, first + split[i])
+		first += split[i]
+		var room: float = stretches[i].y - stretches[i].x - _total(group)
+		tightest = minf(tightest, room / float(split[i]))
+	return tightest
+
+
+## Every way of dealing [param count] ships out, in order, across [param parts]
+## stretches, empty stretches allowed. A handful of ships over a handful of
+## stretches is at most a few hundred splits.
+static func _splits(count: int, parts: int) -> Array[PackedInt32Array]:
+	var out: Array[PackedInt32Array] = []
+	if parts == 1:
+		out.append(PackedInt32Array([count]))
+		return out
+	# Most-in-the-first-stretch first, so ties settle leftward.
+	for here: int in range(count, -1, -1):
+		for rest: PackedInt32Array in _splits(count - here, parts - 1):
+			var split: PackedInt32Array = PackedInt32Array([here])
+			split.append_array(rest)
+			out.append(split)
+	return out
 
 
 ## [param stretch] minus [param reserved]: nothing, one side, or both sides.

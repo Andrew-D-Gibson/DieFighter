@@ -98,7 +98,9 @@ registration to testing. For how the systems work underneath, see
   - Holding tiles end with `KEEP_DIE_WITH_TILE`.
 - **`event_responses`**: `TileEvent` → `EffectChain` for reactive tiles
   (`ON_TURN_START`, `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, ...). A tile
-  can take no dice at all and live only on these.
+  can take no dice at all and live only on these. `ON_TURN_START` also fires
+  for a fight's opening turn, but only after `Events.enemies_arrived` (every
+  ship landed and targeted), so it is safe to target enemies from it.
 - **`dragging_allowed`, `max_dice_in_queue`**: rarely touched.
 
 **Loop rule for Feed tiles:** a tile with unlimited uses may only Feed
@@ -188,6 +190,16 @@ step; its ally is bound automatically.
     `hull_fraction`), `ATTITUDE_IS`, plus `invert`.
   - `situational_weights`: `EnemyActionWeightRule` = a condition and a
     multiplier.
+  - `strength_tier_override`: how strong the action counts as for
+    `face_bias`, on the threat scale (0 nothing, 1 something, 2 damage).
+    -1 reads it off the chain. Raise it for actions the chain undersells
+    (Lockout, Impound, a Relay into a heavy hitter).
+- **`face_bias`**: which faces the strong actions lean toward. Defaults to
+  0.5, a gentle lean toward high faces for every enemy; leave it there unless
+  the ship should break the rule. Positive pushes strong actions onto high
+  faces, so the 6 is the die to fear; negative onto low faces; 0 places them
+  at random. ±1 is a clear lean. A pool can set its own with
+  `override_face_bias`.
 - **`pool_selection`**: which pool a turn uses.
   - `TURN_CYCLE`: rhythm, e.g. charge then fire.
   - `HEALTH_THRESHOLD`: escalates as it's hurt.
@@ -221,7 +233,9 @@ enemy resource (e.g. `raider.tres`), not on a shared one.
 - **`map_icon`**: from `Assets/Textures/Map/EncounterIcons/` (enemy, boss,
   unknown, shop, healing...).
 - **`background_resource`**: a `RandomBackgroundResource` pool, usually
-  `RandomBackgroundResources/all_basic_backgrounds.tres`.
+  `RandomBackgroundResources/all_basic_backgrounds.tres`. An encounter built
+  around a hazard points at a one-background pool instead
+  (`solar_corona_only.tres`, `ion_storm_front_only.tres`, ...).
 - **`starting_enemies`**: one `EnemyStateRewardResource` per ship:
   - `enemy_resource`, `starting_state`, `reward_resource`.
   - `starting_health_fraction`: start it pre-damaged.
@@ -229,11 +243,11 @@ enemy resource (e.g. `raider.tres`), not on a shared one.
 - **`rewards`**: Faction → `RewardResource`, paid when a faction is wiped out
   by the player.
 - **`starting_reward`**: an optional pickup floating on arrival.
-- **`hazard`**: optional (§6).
 - **`sector_gate_scenario`**: only for the boss and the jump gate.
 
 **Ship states** (`ScenarioShipState`, one `.tres` each)
-- `dialogue`.
+- `dialogue`. The speech box holds five lines of about ten characters, so
+  keep a line to roughly 50 characters; longer text spills out the bottom.
 - `faction`: PIRATE, CIVILIAN or BOSS. Also picks the speech-box colour.
 - `attitude`: an AGGRESSIVE ship puts the scenario in combat, and intents are
   only readable while one is present. With only FRIENDLY or NEUTRAL ships,
@@ -289,7 +303,9 @@ encounter.
 - Nebula, star and debris toggles and counts.
 - `static_objects` (`StaticBackgroundObjectResource`: a scene + position, e.g.
   the pulsar).
-- `global_modifier`: an optional rule.
+- `global_modifier`: an optional permanent rule, **or**
+- `hazard`: an optional timed event (§6). Never both: the environment monitor
+  has one screen.
 
 To make a background appear, add it to a pool's `eligible_backgrounds`
 (`RandomBackgroundResources/all_basic_backgrounds.tres`), or make a new pool
@@ -311,15 +327,32 @@ for specific scenarios.
 
 ---
 
-## 6. Hazards
+## 6. Hazards (timed backgrounds)
 
-`Source/Content/ScenarioResources/Hazards/<name>.tres` (a
-`ScenarioHazardResource`):
-- `hazard_name`, `description`, `icon`, `color`.
-- `turns_until_first`, `turns_between`.
-- `effect_chain`: what fires, e.g. `TARGET_ALL_SHIPS` → amount → `DAMAGE`.
+A hazard belongs to a background, not a scenario: the place itself goes off.
+`Source/Resources/BackgroundResources/BackgroundHazards/<name>.tres` (a
+`BackgroundHazardResource`):
+- `hazard_name`, `description`, `color`.
+- `icon`: 9x9 at most, from `Assets/Textures/TargetingComputer/HazardIcons/`.
+  It sits beside the countdown digit on the environment monitor.
+- `timing`: `YOUR_TURN_STARTS` (after the hand is rolled) or
+  `YOUR_TURN_ENDS` (once the dice the player spent have landed with the
+  ships, before any ship uses them). Anything that changes dice belongs at
+  turn end: at turn start the hand is freshly rolled, so re-rolling or
+  flipping it changes nothing the player has committed. Aim those at
+  `TARGET_ENEMIES` → `REROLL_TARGETS_DICE` / `FLIP_TARGETS_ONES_AND_SIXES`.
+- `turns_until_first`, `turns_between`: counted in the hazard's own trigger
+  points. Start the description with that trigger (`Your turn starts ->`).
+- `effect_chain`: what fires, e.g. `TARGET_ALL_SHIPS` → amount → `DAMAGE`. It
+  runs with the player as actor and no die.
 
-Assign it to a scenario's `hazard`. The countdown banner is automatic.
+Assign it to a background's `hazard`, and give that background art that shows
+it coming. The countdown on the environment monitor is automatic; background
+objects that should react to it extend `HazardTelegraph`
+(`BackgroundObjects/hazard_telegraph.gd`) and override `_urgency_changed()`
+(the hazard fires next turn, or has calmed) and `_fired()`. See the flare star,
+ion cloud, meteor shower and rift tear for examples. Drive their visuals with
+`self_modulate`: `BackgroundManager` owns `modulate`.
 
 ---
 
@@ -410,7 +443,7 @@ blue). Keep the rule to a sentence or two in the same terse style.
 ## 10. New tile events and activation checks
 
 - **TileEvent:**
-  1. Add a value after `ON_ADJACENT_TILE_ACTIVATED` in `TileEvent.EventType`
+  1. Add a value after `ON_SURROUNDING_TILE_ACTIVATED` in `TileEvent.EventType`
      (`Source/Content/Tiles/TileEventListener/tile_event.gd`). Values up to 99
      are free; `ON_PLAYER_FATAL_DAMAGE` is pinned at 100.
   2. Fire it from `tile.gd` by connecting the triggering signal to

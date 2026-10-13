@@ -8,9 +8,14 @@
 ## in real (unscaled) milliseconds, and the slowest active request wins.
 extends Node
 
-## Time scale during a hitstop. Not zero: a fully stopped clock stalls physics
-## interpolation and anything else that divides by delta.
-const _HITSTOP_SCALE: float = 0.02
+## Time scale during a hitstop: a true freeze, so nothing creeps while the
+## impact frame holds. Safe only while nothing divides by delta and physics
+## interpolation stays off; revisit this if either changes.
+const _HITSTOP_SCALE: float = 0.0
+
+## The slowest a slow-mo may go. Slow-mo is meant to keep moving; a full stop
+## is what hitstop is for.
+const _SLOW_MO_FLOOR: float = 0.02
 
 ## Active requests as {scale, ends_at_msec}. Pruned as they expire.
 var _requests: Array[Dictionary] = []
@@ -46,7 +51,7 @@ func hitstop(duration_ms: int) -> void:
 func slow_mo(time_scale: float, duration_ms: int) -> void:
 	if duration_ms <= 0 or time_scale >= 1.0:
 		return
-	_add_request(clampf(time_scale, _HITSTOP_SCALE, 1.0), duration_ms)
+	_add_request(clampf(time_scale, _SLOW_MO_FLOOR, 1.0), duration_ms)
 
 
 ## Drops every request and restores full speed.

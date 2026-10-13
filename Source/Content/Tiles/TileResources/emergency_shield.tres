@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_wphb4"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_k5jac"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_k7gdr"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="5_k7gdr"]
 [ext_resource type="Texture2D" uid="uid://b20hbpbd0v7jl" path="res://Assets/Textures/Tiles/BlueTiles/emergency_shield.png" id="10_rg6sh"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="11_55lg7"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="12_esdata"]
@@ -17,10 +18,6 @@ script = ExtResource("2_k5jac")
 event = 100
 metadata/_custom_type_script = "uid://cfken75wevu1a"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_iyog3"]
-atlas = ExtResource("10_rg6sh")
-region = Rect2(0, 0, 24, 24)
-
 [sub_resource type="Resource" id="Resource_esv2tgt"]
 script = ExtResource("12_esdata")
 subtype = 1
@@ -30,6 +27,21 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("12_esdata")
 category = 2
 amount = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 13
+amount = 200
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 8
+amount = 800
+multiplier = 0.3
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_esv2heal"]
@@ -81,6 +93,35 @@ category = 2
 amount = 12
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 20
+multiplier = 2.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 12
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_5"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 16
+string_param = "EMERGENCY SHIELD"
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_6"]
+script = ExtResource("12_esdata")
+category = 4
+subtype = 17
+multiplier = 1.5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_esv2shield"]
 script = ExtResource("12_esdata")
 category = 1
@@ -112,58 +153,8 @@ category = 4
 subtype = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_esv2destroy"]
-script = ExtResource("12_esdata")
-category = 9
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("12_esdata")
-category = 4
-subtype = 13
-amount = 200
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("12_esdata")
-category = 4
-subtype = 8
-amount = 800
-multiplier = 0.3
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_3"]
-script = ExtResource("12_esdata")
-category = 4
-subtype = 20
-multiplier = 2.0
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_4"]
-script = ExtResource("12_esdata")
-category = 4
-subtype = 12
-color = Color(0.2627, 0.6510, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_5"]
-script = ExtResource("12_esdata")
-category = 4
-subtype = 16
-string_param = "EMERGENCY SHIELD"
-color = Color(0.2627, 0.6510, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_6"]
-script = ExtResource("12_esdata")
-category = 4
-subtype = 17
-multiplier = 1.5
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_7"]
 script = ExtResource("12_esdata")
-category = 0
 subtype = 10
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -181,13 +172,22 @@ category = 4
 subtype = 15
 amount = 20
 multiplier = 1.5
-color = Color(0.2627, 0.6510, 0.9882, 1)
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_esv2destroy"]
+script = ExtResource("12_esdata")
+category = 9
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_esv2chain"]
 script = ExtResource("11_55lg7")
 effects = Array[ExtResource("12_esdata")]([SubResource("Resource_esv2tgt"), SubResource("Resource_esv2set1"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_esv2heal"), SubResource("Resource_esv2set2"), SubResource("Resource_esv2wait1"), SubResource("Resource_esv2set3"), SubResource("Resource_esv2fx1"), SubResource("Resource_esv2set4"), SubResource("Resource_esv2wait2"), SubResource("Resource_esv2set5"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_juice_5"), SubResource("Resource_juice_6"), SubResource("Resource_esv2shield"), SubResource("Resource_esv2set6"), SubResource("Resource_esv2fx2"), SubResource("Resource_esv2set7"), SubResource("Resource_esv2wait3"), SubResource("Resource_juice_7"), SubResource("Resource_juice_8"), SubResource("Resource_juice_9"), SubResource("Resource_esv2destroy")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_iyog3"]
+atlas = ExtResource("10_rg6sh")
+region = Rect2(0, 0, 24, 24)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6btq7"]
 animations = [{

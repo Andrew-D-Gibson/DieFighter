@@ -79,10 +79,19 @@ func test_requests_that_would_do_nothing_are_ignored() -> void:
 	assert_eq(director._requests.size(), 0)
 
 
-func test_slow_mo_never_goes_below_the_hitstop_floor() -> void:
-	# A zero time scale would stall physics and anything dividing by delta.
+func test_slow_mo_never_comes_to_a_full_stop() -> void:
+	# A full stop is hitstop's job; slow-mo always keeps moving.
 	director.slow_mo(0.0, 200)
 	assert_gt(Engine.time_scale, 0.0)
+
+
+func test_hitstop_freezes_time_completely() -> void:
+	# hitstop() awaits a tree timer, and this director stays out of the tree,
+	# so file the request it would make.
+	director._add_request(director._HITSTOP_SCALE, 120)
+	assert_eq(Engine.time_scale, 0.0)
+	_step(120)
+	assert_eq(Engine.time_scale, 1.0)
 
 
 func test_hitstop_with_no_duration_does_nothing() -> void:

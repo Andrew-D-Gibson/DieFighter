@@ -115,6 +115,8 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.MERGE_HELD_DIE, label = "Merge Held Die", handler = MergeHeldDieHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.FEED_ALLY, label = "Feed Ally", handler = FeedAllyHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAM_FOR_ALLY, label = "Spawn Hologram For Ally", handler = SpawnHologramForAllyHandler},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.REROLL_TARGETS_DICE, label = "Reroll Targets' Dice", handler = RerollTargetsDiceHandler},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.FLIP_TARGETS_ONES_AND_SIXES, label = "Flip Targets' Ones and Sixes", handler = FlipTargetsOnesAndSixesHandler},
 
 	# ── AUDIO_VISUAL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES, label = "Spawn Hit Particles", handler = SpawnHitParticlesHandler, fields = ["color"]},

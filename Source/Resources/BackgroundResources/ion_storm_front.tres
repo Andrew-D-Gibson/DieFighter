@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://cbuor3uvj38r0"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IonCloud/ion_cloud.tscn" id="3_cloud"]
+[ext_resource type="Resource" uid="uid://bksbsmdcc4wo" path="res://Source/Resources/BackgroundResources/BackgroundHazards/ion_storm.tres" id="haz_0"]
+
+[sub_resource type="Resource" id="Resource_cloud_far"]
+script = ExtResource("2_so")
+scene = ExtResource("3_cloud")
+position = Vector2(280, 14)
+scale = Vector2(-1, 1)
+modulate = Color(0.48, 0.55, 0.7, 1)
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_cloud_near"]
+script = ExtResource("2_so")
+scene = ExtResource("3_cloud")
+position = Vector2(42, 24)
+modulate = Color(0.78, 0.85, 0.94, 1)
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[resource]
+script = ExtResource("1_bg")
+background_color = Color(0.031373, 0.058824, 0.109804, 1)
+hazard = ExtResource("haz_0")
+nebula = true
+nebula_color = Color(0.552941, 0.945098, 0.956863, 0.1)
+stars = true
+num_of_stars = 40
+num_of_twinkling_stars = 8
+static_objects = Array[ExtResource("2_so")]([SubResource("Resource_cloud_far"), SubResource("Resource_cloud_near")])
+metadata/_custom_type_script = "uid://c0mcptxevxdde"

@@ -17,3 +17,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if event is ChangeEngineChargeEvent and event.amount > 0:
 		event.canceled = true
 		announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "NO CHARGE"

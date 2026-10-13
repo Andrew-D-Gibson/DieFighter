@@ -29,6 +29,16 @@ enum PoolSelection {
 @export var action_options: Array[EnemyTurnActionList]
 @export var pool_selection: PoolSelection = PoolSelection.TURN_CYCLE
 
+## Which die faces this enemy's stronger actions tend to land on. Positive puts
+## them on high faces, so a 6 is the die the player least wants to hand over;
+## negative puts them on low faces instead. 0 places actions with no regard to
+## strength. Around ±0.5 is a gentle lean, ±1 a clear one, and ±3 nearly a
+## strict sort. A pool can override it (EnemyTurnActionList.override_face_bias).
+## The default is the house rule: a gentle lean toward high faces, so a higher
+## die is always a bit more to hand over. Set an enemy's own value only to
+## depart from it.
+@export_range(-3.0, 3.0, 0.25, "or_greater", "or_less") var face_bias: float = 0.5
+
 
 @export_category('Graphics')
 @export var ship_graphics_scene: PackedScene

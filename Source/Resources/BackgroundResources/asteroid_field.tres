@@ -1,0 +1,71 @@
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://do2wttsty7r4q"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/Asteroids/asteroid_large.tscn" id="3_large"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/Asteroids/asteroid_medium.tscn" id="4_medium"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/Asteroids/asteroid_small.tscn" id="5_small"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/Asteroids/meteor_shower.tscn" id="6_shower"]
+[ext_resource type="Resource" uid="uid://b1vjawhxysmae" path="res://Source/Resources/BackgroundResources/BackgroundHazards/asteroid_impact.tres" id="haz_0"]
+
+[sub_resource type="Resource" id="Resource_shower"]
+script = ExtResource("2_so")
+scene = ExtResource("6_shower")
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_rock_4"]
+script = ExtResource("2_so")
+scene = ExtResource("4_medium")
+position = Vector2(292, 136)
+scale = Vector2(-1, 1)
+modulate = Color(0.55, 0.55, 0.66, 1)
+parallax_level = 1
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_rock_5"]
+script = ExtResource("2_so")
+scene = ExtResource("5_small")
+position = Vector2(18, 112)
+modulate = Color(0.55, 0.55, 0.66, 1)
+parallax_level = 1
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_rock_6"]
+script = ExtResource("2_so")
+scene = ExtResource("3_large")
+position = Vector2(176, -36)
+scale = Vector2(-1, 1)
+modulate = Color(0.55, 0.55, 0.66, 1)
+parallax_level = 1
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_rock_1"]
+script = ExtResource("2_so")
+scene = ExtResource("3_large")
+position = Vector2(46, 30)
+parallax_level = 1
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_rock_2"]
+script = ExtResource("2_so")
+scene = ExtResource("4_medium")
+position = Vector2(214, 74)
+parallax_level = 2
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_rock_3"]
+script = ExtResource("2_so")
+scene = ExtResource("5_small")
+position = Vector2(132, 8)
+parallax_level = 2
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[resource]
+script = ExtResource("1_bg")
+background_color = Color(0.054902, 0.043137, 0.07451, 1)
+hazard = ExtResource("haz_0")
+stars = true
+num_of_stars = 60
+num_of_twinkling_stars = 12
+static_objects = Array[ExtResource("2_so")]([SubResource("Resource_shower"), SubResource("Resource_rock_4"), SubResource("Resource_rock_5"), SubResource("Resource_rock_6"), SubResource("Resource_rock_1"), SubResource("Resource_rock_2"), SubResource("Resource_rock_3")])
+metadata/_custom_type_script = "uid://c0mcptxevxdde"

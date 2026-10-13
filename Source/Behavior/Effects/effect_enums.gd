@@ -154,6 +154,12 @@ enum DiceControlSubtype {
 	## An enemy spawns a holographic die, face = its intent amount, for the
 	## ally its slot was bound to, who uses it straight away.
 	SPAWN_HOLOGRAM_FOR_ALLY,
+	## Re-roll every die the targets are holding. Aimed at enemies after the
+	## player has handed dice over, it scrambles which intents will fire.
+	REROLL_TARGETS_DICE,
+	## Flip every 1 to a 6 and every 6 to a 1 among the dice the targets are
+	## holding.
+	FLIP_TARGETS_ONES_AND_SIXES,
 }
 
 

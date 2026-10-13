@@ -19,6 +19,9 @@ var _bound_markers: Array[Node2D] = []
 const _BOUND_MARKER_OFFSET: Vector2 = Vector2(0, 22)
 const _BOUND_MARKER_SPACING: float = 8.0
 
+## Intents no die is lighting sit back so the live ones stand out.
+const _DIMMED_INTENT: Color = Color(1.0, 1.0, 1.0, 0.45)
+
 @onready var die_sprites: Array[AnimatedSprite2D] = [
 	%DieSprite1, 
 	%DieSprite2, 
@@ -40,8 +43,10 @@ func _ready() -> void:
 	# A die landing in an enemy's hand slams the intent it just bought, the
 	# same pulse as when the enemy spends it.
 	Events.enemy_armed.connect(_on_enemy_used_die)
-	Events.enemy_flew_in.connect(_initial_target)
+	Events.enemy_flew_in.connect(ensure_target)
 	Events.enemy_received_die.connect(_update_ui)
+	Events.enemy_lost_die.connect(_refresh_intent_highlights)
+	Events.enemy_held_dice_changed.connect(_refresh_intent_highlights)
 	Events.start_scenario.connect(_update_ui)
 	# A fight breaking out mid-turn (firing on a civilian) reveals the tables
 	# that were rolled while they read "?". A frame later, because combat
@@ -66,11 +71,12 @@ func _ready() -> void:
 	%RevealOverlay.material = %RevealOverlay.material.duplicate()
 	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
 
-	_initial_target()
+	ensure_target()
 	
 	
 
-func _initial_target() -> void:
+## Targets the first ship if nothing is targeted yet.
+func ensure_target() -> void:
 	if !targeted_enemy:
 		targeted_enemy_index = 0
 		check_target_is_valid()
@@ -190,6 +196,7 @@ func _update_ui() -> void:
 			
 			# De-highlight the die sprites
 			die_sprites[i].frame = i
+			$Intents.get_child(i).modulate = Color.WHITE
 		
 		$TargetImageFill.z_index = 1
 		
@@ -200,10 +207,7 @@ func _update_ui() -> void:
 		for i: int in range(len(targeted_enemy.turn_actions)): # Should always loop 0 to 5
 			if Globals.state_manager.enemy_intents_visible():
 				# Set up the intent die properly
-				if targeted_enemy.dice_manager.has_value(i+1):
-					die_sprites[i].frame = i + 6
-				else:
-					die_sprites[i].frame = i
+				_set_intent_highlight(i)
 					
 				# Set up the action texture
 				$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
@@ -219,6 +223,7 @@ func _update_ui() -> void:
 					$Intents.get_child(i).get_child(1).hover_for_info = true
 			else:
 				$Intents.get_child(i).texture = unknown_intent_indicator
+				$Intents.get_child(i).modulate = Color.WHITE
 				$Intents.get_child(i).get_child(0).text = ""
 				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
 				$Intents.get_child(i).get_child(1).hover_for_info = false
@@ -228,6 +233,25 @@ func _update_ui() -> void:
 		$TargetImageFill.frame = 0
 		await $TargetImageFill.animation_looped
 		$TargetImageFill.z_index = -2
+
+
+## Lights slot [param i]'s die face and intent when the targeted enemy holds
+## that value, dims them otherwise.
+func _set_intent_highlight(i: int) -> void:
+	var lit: bool = targeted_enemy.dice_manager.has_value(i + 1)
+	die_sprites[i].frame = i + 6 if lit else i
+	$Intents.get_child(i).modulate = Color.WHITE if lit else _DIMMED_INTENT
+
+
+## Re-reads which faces the targeted enemy holds without the full redraw (and
+## its scan animation), for when a die leaves its hand.
+func _refresh_intent_highlights() -> void:
+	if not targeted_enemy or not is_instance_valid(targeted_enemy):
+		return
+	if not Globals.state_manager or not Globals.state_manager.enemy_intents_visible():
+		return
+	for i: int in range(len(targeted_enemy.turn_actions)):
+		_set_intent_highlight(i)
 
 
 func _show_bound_markers() -> void:

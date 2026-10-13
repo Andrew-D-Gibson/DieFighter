@@ -4,6 +4,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## takes a ship off the board can be rolled into a table the player can't read.
 
 const Cat := EffectEnums.Category
+const Ships := preload("res://test/helpers/ships.gd")
 const CIVILIAN_TRANSPORT := "res://Source/Content/Enemies/EnemyResources/civilian_transport.tres"
 
 
@@ -148,3 +149,113 @@ func test_the_civilian_transport_still_flees_once_it_can_be_read() -> void:
 		if not action.is_safe_while_hidden():
 			unsafe += 1
 	assert_gt(unsafe, 0, "Flee is force_include, so a readable table carries it")
+
+
+# ── Face bias: which faces the strong actions land on ──────────────────────────
+
+func _wait() -> EnemyActionResource:
+	return _action("Wait")
+
+
+func _attack_option(amount: int, label: String = "Attack") -> EnemyActionOptionResource:
+	var attack := Ships.attack()
+	attack.name = label
+	var option := Ships.option(attack, 0.0, amount, amount)
+	option.force_include = true
+	return option
+
+
+## The face (1-6) the named action landed on, or 0.
+func _face_of(actions: Array[EnemyActionResource], action_name: String) -> int:
+	return _names(actions).find(action_name) + 1
+
+
+func test_damage_outranks_a_consequence_outranks_nothing() -> void:
+	var attack := Ships.attack()
+	var shield := _action("Shield", [Effects.shield()])
+	shield.intent_amount = 50
+	assert_gt(attack.placement_strength(), shield.placement_strength(),
+		"any damage outranks any shield, however big")
+	assert_gt(shield.placement_strength(), _wait().placement_strength())
+
+
+func test_a_bigger_amount_outranks_a_smaller_one_of_the_same_tier() -> void:
+	var small := Ships.attack()
+	small.intent_amount = 3
+	var big := Ships.attack()
+	big.intent_amount = 6
+	assert_gt(big.placement_strength(), small.placement_strength())
+
+
+func test_a_tier_override_replaces_the_derived_tier() -> void:
+	var shield := _action("Shield", [Effects.shield()])
+	var option := Ships.option(shield)
+	option.strength_tier_override = 2.5
+	var rolled := option.get_action()
+	var attack := Ships.attack()
+	attack.intent_amount = 10
+	assert_gt(rolled.placement_strength(), attack.placement_strength())
+
+
+func test_a_holograms_amount_is_a_face_not_a_strength() -> void:
+	var low := Ships.loader()
+	low.intent_amount = 1
+	var high := Ships.loader()
+	high.intent_amount = 6
+	assert_eq(low.placement_strength(), high.placement_strength())
+
+
+func test_no_bias_rolls_exactly_what_it_always_has() -> void:
+	var pool := _pool([_attack_option(4), _option(_wait()), _option(_action("Shield", [Effects.shield()]))])
+	var before: Array = []
+	for i: int in range(20):
+		before.append(_names(EnemyActionSelector.roll(pool, _situation(true))))
+	RNGManager.seed_scenario(1234)
+	for i: int in range(20):
+		assert_eq(_names(EnemyActionSelector.roll(pool, _situation(true), [], 0.0)), before[i])
+
+
+func test_a_strong_bias_puts_the_attack_on_the_six() -> void:
+	var pool := _pool([_attack_option(4), _option(_wait())])
+	for i: int in range(100):
+		assert_eq(_face_of(EnemyActionSelector.roll(pool, _situation(true), [], 3.0), "Attack"), 6)
+
+
+func test_a_strong_negative_bias_puts_the_attack_on_the_one() -> void:
+	var pool := _pool([_attack_option(4), _option(_wait())])
+	for i: int in range(100):
+		assert_eq(_face_of(EnemyActionSelector.roll(pool, _situation(true), [], -3.0), "Attack"), 1)
+
+
+func test_a_mild_bias_only_leans() -> void:
+	var pool := _pool([_attack_option(4), _option(_wait())])
+	var high: int = 0
+	var faces: Dictionary[int, bool] = {}
+	for i: int in range(300):
+		var face: int = _face_of(EnemyActionSelector.roll(pool, _situation(true), [], 0.5), "Attack")
+		faces[face] = true
+		if face >= 4:
+			high += 1
+	assert_gt(high, 200, "mostly on the high faces")
+	assert_true(faces.has(1) or faces.has(2) or faces.has(3), "but not always")
+
+
+func test_a_bigger_hit_lands_on_a_higher_face() -> void:
+	var pool := _pool([_attack_option(3, "Small"), _attack_option(6, "Big"), _option(_wait())])
+	for i: int in range(100):
+		var actions := EnemyActionSelector.roll(pool, _situation(true), [], 6.0)
+		assert_eq(_face_of(actions, "Big"), 6)
+		assert_eq(_face_of(actions, "Small"), 5)
+
+
+func test_a_pool_override_wins_over_the_enemy_bias() -> void:
+	var ship: Enemy = autofree(Ships.ship(ScenarioManager.Faction.PIRATE))
+	autofree(ship.health)
+	Ships.give_pool(ship, [Ships.option(_wait())])
+	ship.enemy_resource.face_bias = 1.5
+	assert_eq(ship._current_face_bias(), 1.5)
+
+	var pool: EnemyTurnActionList = ship.enemy_resource.action_options[0]
+	pool.override_face_bias = true
+	pool.face_bias = 0.0
+	assert_eq(ship._current_face_bias(), 0.0, "an override of 0 still counts")

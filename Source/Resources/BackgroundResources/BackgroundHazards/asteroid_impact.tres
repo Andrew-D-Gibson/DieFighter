@@ -1,26 +1,27 @@
-[gd_resource type="Resource" script_class="ScenarioHazardResource" format=3 uid="uid://bksbsmdcc4wo"]
+[gd_resource type="Resource" script_class="BackgroundHazardResource" format=3 uid="uid://b1vjawhxysmae"]
 
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_vusp4"]
-[ext_resource type="Script" uid="uid://bpcwym2qynvqs" path="res://Source/Content/ScenarioResources/scenario_hazard_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_61yic"]
+[ext_resource type="Texture2D" uid="uid://ba42lsg56dny1" path="res://Assets/Textures/TargetingComputer/HazardIcons/asteroid_impact.png" id="icon_tex"]
+[ext_resource type="Script" uid="uid://bpcwym2qynvqs" path="res://Source/Resources/BackgroundResources/background_hazard_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_3"]
-[ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="sfx_2"]
+[ext_resource type="Resource" uid="uid://dmov75b4snh4y" path="res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres" id="sfx_2"]
 
 [sub_resource type="Resource" id="Resource_step1"]
 script = ExtResource("script_1")
 category = 2
-amount = 8
+amount = 10
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step2"]
 script = ExtResource("script_1")
-subtype = 1
+subtype = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step3"]
 script = ExtResource("script_1")
 category = 4
-color = Color(0.553, 0.945, 0.957, 1)
+color = Color(0.949, 0.612, 0.365, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step4"]
@@ -32,8 +33,8 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step5"]
 script = ExtResource("script_1")
-category = 3
-subtype = 2
+category = 5
+subtype = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain6"]
@@ -43,9 +44,11 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
 script = ExtResource("script_0")
-hazard_name = "Ion Storm"
-description = "[color=yellow]Rerolls[/color] every die on the board"
-color = Color(0.553, 0.945, 0.957, 1)
+hazard_name = "Asteroid Impact"
+description = "[color=yellow]Your turn starts[/color] ->
+Lock a [color=purple]random tile[/color]"
+icon = ExtResource("icon_tex")
+color = Color(0.949, 0.612, 0.365, 1)
 turns_until_first = 2
 turns_between = 2
 effect_chain = SubResource("Resource_chain6")

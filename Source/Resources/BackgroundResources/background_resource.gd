@@ -8,6 +8,12 @@ extends Resource
 ## "no ship can raise shields". Leave null for plain, unmodified space.
 @export var global_modifier: BackgroundModifierResource
 
+@export_category('Timed Hazard')
+## An event that counts down and fires during every fight here, e.g. the
+## region's star flaring. Leave null for space where nothing goes off.
+## Mutually exclusive with global_modifier.
+@export var hazard: BackgroundHazardResource
+
 @export_category('Nebula')
 @export var nebula: bool
 @export var nebula_color: Color

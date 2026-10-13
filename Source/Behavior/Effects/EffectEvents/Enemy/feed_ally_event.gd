@@ -61,12 +61,10 @@ static func build_ally_action(target: Enemy, die: Dice, depth: int, visited: Arr
 	return event
 
 
-## Nobody to feed: the die goes home, rerolled, the way any hand-off with no
-## one to take it does. A hologram is destroyed on the way.
+## Nobody to feed: the die goes home with its face unchanged. A hologram is destroyed on the way.
 func _return_to_player() -> void:
 	if not is_instance_valid(Globals.player):
 		return
 	activator_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
-	await activator_die.reroll_with_tween()
 	if is_instance_valid(activator_die):
 		Globals.player.dice_manager.add(activator_die)

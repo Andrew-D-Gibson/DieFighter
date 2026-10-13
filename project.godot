@@ -56,7 +56,7 @@ window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/effect_data_inspector/plugin.cfg", "res://addons/gut/plugin.cfg")
+enabled=PackedStringArray("res://addons/effect_data_inspector/plugin.cfg", "res://addons/gut/plugin.cfg", "res://addons/sound_effect_inspector/plugin.cfg")
 
 [global_group]
 

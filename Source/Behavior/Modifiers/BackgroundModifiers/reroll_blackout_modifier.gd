@@ -18,3 +18,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if event is RerollActivatorEvent or event is RerollAllDiceEvent:
 		event.canceled = true
 		announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "NO REROLL"

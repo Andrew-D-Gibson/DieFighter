@@ -50,6 +50,9 @@ var _text_x: float
 ## [member left_clearance].
 var _shift: float = 0.0
 
+## Set once the player jumps away from this ship; it never speaks again.
+var _silenced: bool = false
+
 
 func _ready() -> void:
 	fadeout_timer = Timer.new()
@@ -60,16 +63,24 @@ func _ready() -> void:
 	_box_x = %Sprite2D.position.x
 	_text_x = %RichTextLabel.position.x
 	_apply_side()
-	
+
+	Events.jump.connect(_on_jump)
+
 
 func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:
+	if _silenced:
+		return
+
 	# Check if we just showed a dialogue, and if so, just wait
 	var current_time: int = Time.get_ticks_msec()
 	if time_last_dialogue_was_shown and \
 	current_time < time_last_dialogue_was_shown + (time_between_dialogues * 1000):
 		var time_remaining: int = (time_last_dialogue_was_shown + (time_between_dialogues * 1000)) - current_time
 		await get_tree().create_timer(float(time_remaining) / 1000).timeout
-	
+		# The player may have jumped away while this line waited its turn.
+		if _silenced:
+			return
+
 	# Reset if we this was just called for another line of dialogue
 	if character_reveal_tween:
 		character_reveal_tween.kill()
@@ -117,8 +128,22 @@ func hide_dialogue() -> void:
 	
 	await fade_tween.finished
 	hide()
-	
-	
+
+
+## A ship left behind in the jump has nothing more to say to the player. The
+## box fades the usual way, but drops level with the hull first: the ships fall
+## away behind the cockpit as the player jumps, and the box at its normal
+## height would hang in front of the cockpit until the fade caught up.
+func _on_jump() -> void:
+	_silenced = true
+	z_index = 0
+	fadeout_timer.stop()
+	if character_reveal_tween:
+		character_reveal_tween.kill()
+	if visible:
+		hide_dialogue()
+
+
 func _start_fade_in() -> void:
 	if fade_tween:
 		fade_tween.kill()

@@ -31,3 +31,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if capped != event.amount:
 		event.amount = capped
 		announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "MAX %d" % cap

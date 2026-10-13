@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="RandomBackgroundResource" format=3 uid="uid://dqjnxm5e570on"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="2_pool"]
+[ext_resource type="Resource" uid="uid://bijrv85j17rvq" path="res://Source/Resources/BackgroundResources/solar_corona.tres" id="3_only"]
+
+[resource]
+script = ExtResource("2_pool")
+eligible_backgrounds = Array[ExtResource("1_bg")]([ExtResource("3_only")])
+metadata/_custom_type_script = "uid://3roroso3mo17"

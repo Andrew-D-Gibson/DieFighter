@@ -8,7 +8,7 @@
 
 [resource]
 script = ExtResource("script_0")
-dialogue = "The credits are yours. Pull a plate off that hull and we'll be having a different conversation."
+dialogue = "The credits are yours. The hull is not."
 attitude = 1
 transitions = Dictionary[int, ExtResource("script_1")]({
 0: ExtResource("state_2"),

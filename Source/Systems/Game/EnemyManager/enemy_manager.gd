@@ -60,6 +60,14 @@ var _active_moves: Dictionary[Enemy, Tween] = {}
 ## rather than slide if the formation changes mid-arrival.
 var _awaiting_fly_in: Array[Enemy] = []
 
+## Where each awaiting ship will come to rest, kept current by the formation.
+var _arrival_rest: Dictionary[Enemy, Vector2] = {}
+
+## True from the moment the opening fly-in starts until the last ship has landed
+## and been targeted. Combat-start effects wait on this so nothing fires at a
+## ship that is still arriving; see Events.enemies_arrived.
+var arrival_in_progress: bool = false
+
 ## The z authored on this node, which the ships go back to once a jump is over.
 @onready var _combat_z_index: int = z_index
 
@@ -80,6 +88,7 @@ func _ready() -> void:
 		if ship in enemies:
 			enemies.erase(ship)
 		_awaiting_fly_in.erase(ship)
+		_arrival_rest.erase(ship)
 		_active_moves.erase(ship)
 		formation.clear_reservation(_pin_key(ship))
 		# Any slot that was going to act on it picks someone else, so the
@@ -129,7 +138,9 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 		# about where that ship is. Everyone else is placed by the formation.
 		if spawn.has_fixed_position():
 			enemy.formation_pinned = true
-			enemy.position = _resting_position(enemy, spawn.path_location_override)
+			var rest: Vector2 = _resting_position(enemy, spawn.path_location_override)
+			_arrival_rest[enemy] = rest
+			enemy.position = rest + Vector2(0, -fly_in_range)
 
 		enemies.append(enemy)
 		spawned.append(enemy)
@@ -179,34 +190,67 @@ func _restore_enemies(starting_enemies: Array[EnemyStateRewardResource]) -> void
 		enemy.disconnect_scenario_signals()
 		enemies.erase(enemy)
 		_awaiting_fly_in.erase(enemy)
+		_arrival_rest.erase(enemy)
 		enemy.queue_free()
 
 	refresh_formation(false)
 
 
 func start_enemy_fly_in() -> void:
-	_awaiting_fly_in.clear()
+	arrival_in_progress = true
 
 	# A tutorial step queued forced actions after the roster was rolled.
 	if len(Enemy.forced_actions) > 0:
 		generate_all_turn_actions()
 
-	for enemy: Enemy in enemies:
+	# A copy, because ships can leave while an earlier one is still arriving.
+	for enemy: Enemy in enemies.duplicate():
+		if not is_instance_valid(enemy):
+			continue
+
+		# Ships ride the tween from above their slot down onto it, and keep
+		# counting as awaiting until it ends. Ships arrive one at a time, so a
+		# later ship sits above its slot for a while; if it stopped counting as
+		# awaiting, a reflow in that window (the scenario's salvage claiming
+		# space) would slide it onto its slot and the tween would then carry it
+		# a further fly_in_range below it.
 		var fly_in_tween: Tween = get_tree().create_tween()
-		fly_in_tween.tween_property(
-			enemy,
-			"position",
-			enemy.position + Vector2(0, fly_in_range),
+		fly_in_tween.tween_method(
+			func(progress: float) -> void: _place_arriving(enemy, progress),
+			0.0,
+			1.0,
 			fly_in_time
 		).set_trans(Tween.TRANS_CUBIC)\
 		.set_ease(Tween.EASE_OUT)
-		
-		# Re-enable bobbing animation after spawn tween completes
+
 		await fly_in_tween.finished
+		_awaiting_fly_in.erase(enemy)
+		_arrival_rest.erase(enemy)
+		if not is_instance_valid(enemy):
+			continue
 		Events.enemy_flew_in.emit()
+		# Re-enable bobbing animation after spawn tween completes
 		enemy.graphics_manager.start_bob_tween()
-	
-	
+
+	# Targeted explicitly rather than trusting the per-ship signal, which only
+	# helps if some ship's arrival came after the roster was final.
+	if Globals.targeting_computer:
+		Globals.targeting_computer.ensure_target()
+	arrival_in_progress = false
+	Events.enemies_arrived.emit()
+
+
+## One frame of a ship's fly-in. [param progress] is 0 above the slot and 1 on
+## it; the slot is read every frame because the formation may still move it.
+func _place_arriving(ship: Enemy, progress: float) -> void:
+	if not is_instance_valid(ship):
+		return
+	if not _arrival_rest.has(ship):
+		_arrival_rest[ship] = ship.position
+	var rest: Vector2 = _arrival_rest[ship]
+	ship.position = rest + Vector2(0.0, -fly_in_range * (1.0 - progress))
+
+
 func get_point_along_path(proportion: float) -> Vector2:
 	var total_length: float = spawning_path.curve.get_baked_length()
 	return spawning_path.curve.sample_baked(proportion * total_length)
@@ -299,6 +343,7 @@ func refresh_formation(animate: bool = true) -> void:
 		# A ship that has not flown in yet is holding above its slot. Snap it
 		# across so its arrival tween still ends where the formation wants it.
 		if enemy in _awaiting_fly_in:
+			_arrival_rest[enemy] = target
 			enemy.position = target + Vector2(0, -fly_in_range)
 			continue
 
@@ -469,6 +514,17 @@ func run_enemy_turn() -> void:
 	if not engine:
 		return
 
+	# The player can end their turn while the dice they just spent are still
+	# being dragged across the screen. Nothing acts until they've landed.
+	await TractorBeam.wait_for_landings(get_tree())
+	if not is_instance_valid(engine) or engine.is_shut_down():
+		return
+
+	# Turn-end hazards go off now, with the player's dice in the ships' hands
+	# and before any ship reads them. They queue onto the engine, so the wait
+	# below lets them resolve fully first.
+	Events.enemy_turn_starting.emit()
+
 	# Statuses tick first, and resolve completely before any ship acts. Burn
 	# connecting to player_turn_over itself would run after this manager's
 	# own handler had already queued every ship's actions — and a ship that
@@ -560,6 +616,7 @@ func delete_all_enemies() -> void:
 		enemies[i].queue_free()
 	enemies = []
 	_awaiting_fly_in.clear()
+	_arrival_rest.clear()
 	_active_moves.clear()
 	enemies_jumping = false
 

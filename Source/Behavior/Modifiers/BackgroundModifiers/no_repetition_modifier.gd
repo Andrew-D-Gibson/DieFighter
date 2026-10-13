@@ -22,3 +22,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if activation.activation_repetitions > 1:
 		activation.activation_repetitions = 1
 		announce_triggered()
+
+
+func get_trigger_text() -> String:
+	return "x1"

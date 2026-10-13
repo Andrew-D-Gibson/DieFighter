@@ -21,8 +21,4 @@ extends Resource
 ## draws over the player's own systems panel and reads as already-installed.
 @export var starting_reward_position: Vector2 = Vector2(160, 72)
 
-## Optional recurring environmental event for this encounter (solar flare, ion
-## storm, ...). Null means a plain, quiet fight.
-@export var hazard: ScenarioHazardResource
-
 var scenario_seed: int = 0

@@ -365,11 +365,24 @@ func _start_scenario() -> void:
 ## through a scenario (firing on a civilian) starts it on the spot. One that
 ## opens with the scenario waits for _start_scenario() to finish dealing the
 ## hand — and has to: state can stay IN_COMBAT straight through a flee into
-## the next fight, so start_combat is never emitted for it.
+## the next fight, so start_combat is never emitted for it. Either way it also
+## waits for Events.enemies_arrived, so the opening turn begins only once every
+## ship has landed and is targeted.
 func _announce_first_turn() -> void:
 	if _first_turn_announced:
 		return
 	_first_turn_announced = true
+
+	# Combat-start effects must not fire at ships that are still flying in or
+	# haven't been targeted yet.
+	var enemy_manager: EnemyManager = Globals.enemy_manager
+	if enemy_manager and enemy_manager.arrival_in_progress:
+		await Events.enemies_arrived
+
+	# The fight may have ended (or the player jumped) while we waited.
+	if not Globals.state_manager \
+			or Globals.state_manager.state != GameStateManager.GameState.IN_COMBAT:
+		return
 	Events.first_turn_start.emit()
 
 

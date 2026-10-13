@@ -35,6 +35,10 @@ static var _bbcode_regex: RegEx = RegEx.create_from_string("\\[/?[^\\]]*\\]")
 var _panel: PanelContainer
 var _show_button: Button
 var _collapsed: bool = false
+var _tile_grid: GridContainer
+## Each tile entry paired with its lowercased searchable text, so filtering
+## doesn't re-derive names on every keystroke.
+var _tile_entries: Array[Dictionary] = []
 
 
 func _ready() -> void:
@@ -80,6 +84,7 @@ func _build_panel() -> void:
 	column.add_child(_build_dice_row())
 	column.add_child(HSeparator.new())
 	column.add_child(_make_label("TILES", 32))
+	column.add_child(_build_search_bar())
 	column.add_child(_build_tile_list())
 
 
@@ -110,6 +115,24 @@ func _build_dice_row() -> Control:
 	return row
 
 
+func _build_search_bar() -> Control:
+	var search := LineEdit.new()
+	search.name = "TileSearch"
+	search.placeholder_text = "Search tiles by name or id"
+	search.clear_button_enabled = true
+	search.add_theme_font_override("font", _FONT)
+	search.add_theme_font_size_override("font_size", 28)
+	search.text_changed.connect(_on_search_changed)
+	return search
+
+
+func _on_search_changed(query: String) -> void:
+	var needle: String = query.strip_edges().to_lower()
+	for item: Dictionary in _tile_entries:
+		var entry: Control = item["entry"]
+		entry.visible = needle.is_empty() or (item["text"] as String).contains(needle)
+
+
 func _build_tile_list() -> Control:
 	var scroll := ScrollContainer.new()
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -119,6 +142,7 @@ func _build_tile_list() -> Control:
 	grid.columns = _TILE_COLUMNS
 	grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.add_child(grid)
+	_tile_grid = grid
 
 	for tile_resource: TileResource in _load_tile_resources():
 		var entry: Control = _make_entry(
@@ -126,6 +150,11 @@ func _build_tile_list() -> Control:
 		)
 		entry.gui_input.connect(_on_tile_entry_input.bind(tile_resource))
 		grid.add_child(entry)
+		# resource_path stem doubles as the id, which is what content authors type.
+		_tile_entries.append({
+			"entry": entry,
+			"text": (_plain_tile_name(tile_resource) + " " + tile_resource.resource_path.get_file().get_basename()).to_lower(),
+		})
 
 	return scroll
 

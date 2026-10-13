@@ -28,7 +28,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 		var number_color: Color = Globals.blue if target.health.shields >= amount else Globals.red
 		var hull_before: int = target.health.health
 		target.health.take_damage(amount)
-		if target is Enemy and not target.health.invulnerable:
+		if not target.health.invulnerable:
 			DamageNumber.spawn(target, amount, number_color)
 		# Player tiles author their own impact hitstop; enemy fire doesn't, so
 		# a hit to the hull gets a short one here to give it weight.

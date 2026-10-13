@@ -40,7 +40,8 @@ func _update_dice_queue_locations() -> void:
 		)
 
 
-## Give dice away to other enemies or the player randomly
+## Give dice away to other enemies or the player randomly. Values are kept
+## either way, so killing an enemy returns exactly the die it held.
 func give_away_dice() -> void:
 	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
 
@@ -49,14 +50,15 @@ func give_away_dice() -> void:
 		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		
 		if len(enemies) == 0:
-			Globals.player.dice_manager.add(die, false, true)
+			Globals.player.dice_manager.add(die, true, true)
 		else:
 			RNGManager.pick_random(RNGManager.Bucket.TARGETING, enemies).dice_manager.add(die, true, true)
 
 
-## Hands every die straight back to the player, rerolled.
+## Hands every die straight back to the player with the face it holds: the
+## player is reclaiming their own die, not rolling a new one.
 func return_dice_to_player() -> void:
 	for i: int in range(len(queue)-1, -1, -1):
 		var die: Dice = queue[i]
 		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-		Globals.player.dice_manager.add(die, false, true)
+		Globals.player.dice_manager.add(die, true, true)

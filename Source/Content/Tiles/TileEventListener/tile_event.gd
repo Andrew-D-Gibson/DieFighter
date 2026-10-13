@@ -18,6 +18,10 @@ enum EventType {
 	## A tile directly above, below, left or right of this one activated. The
 	## hook for tiles that profit from sitting beside a busy machine.
 	ON_ADJACENT_TILE_ACTIVATED,
+	## A tile in any of the eight cells around this one activated, diagonals
+	## included. The wider net, for tiles that should catch every hop of a
+	## chain winding past them.
+	ON_SURROUNDING_TILE_ACTIVATED,
 	ON_PLAYER_FATAL_DAMAGE = 100,
 }
 

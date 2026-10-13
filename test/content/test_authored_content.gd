@@ -10,6 +10,10 @@ const CONTENT_ROOT: String = "res://Source/Content/"
 const TILE_DIR: String = "res://Source/Content/Tiles/TileResources/"
 const SCENARIO_DIR: String = "res://Source/Content/ScenarioResources/Scenarios/"
 
+## Backgrounds carry hazard chains, so they are scanned alongside content even
+## when no scenario happens to reference them yet.
+const BACKGROUND_ROOT: String = "res://Source/Resources/BackgroundResources/"
+
 ## Every EffectData / EffectChain reachable from content, paired with the file
 ## it came from. Built once in before_all(): loading all content is the slow part.
 var _effects: Array[Dictionary] = []
@@ -17,7 +21,7 @@ var _chains: Array[Dictionary] = []
 
 
 func before_all() -> void:
-	for path: String in _tres_files(CONTENT_ROOT):
+	for path: String in _tres_files(CONTENT_ROOT) + _tres_files(BACKGROUND_ROOT):
 		var res: Resource = load(path)
 		if res:
 			_collect(res, path, {})
@@ -126,6 +130,22 @@ func test_every_tile_is_registered_for_saving() -> void:
 	for path: String in _tres_files(TILE_DIR):
 		if load(path) is TileResource:
 			assert_ne(ContentRegistry.get_tile_id(path), "", "%s can't be saved" % path)
+
+
+## The environment monitor has one screen: a rule or a countdown, not both.
+func test_no_background_carries_both_a_rule_and_a_hazard() -> void:
+	for path: String in _tres_files(BACKGROUND_ROOT):
+		var background: BackgroundResource = load(path) as BackgroundResource
+		if background:
+			assert_false(background.global_modifier != null and background.hazard != null,
+				"%s has both a global_modifier and a hazard" % path)
+
+
+func test_every_hazard_has_a_chain() -> void:
+	for path: String in _tres_files(BACKGROUND_ROOT):
+		var hazard: BackgroundHazardResource = load(path) as BackgroundHazardResource
+		if hazard:
+			assert_not_null(hazard.effect_chain, "%s does nothing when it fires" % path)
 
 
 func test_every_scenario_is_registered_for_saving() -> void:

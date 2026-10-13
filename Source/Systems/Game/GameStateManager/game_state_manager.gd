@@ -206,7 +206,7 @@ func _sound_the_alarm() -> void:
 	if not _is_fresh_run:
 		return
 
-	Events.play_sound.emit(_ALARM_SFX)
+	#Events.play_sound.emit(_ALARM_SFX)
 	Events.red_alert.emit(cold_open_alert_time)
 	Events.camera_shake_large.emit(true)
 	

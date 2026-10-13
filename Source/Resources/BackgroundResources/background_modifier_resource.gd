@@ -3,7 +3,7 @@ extends Resource
 ## A permanent rule that applies for as long as the player sits in a given
 ## background.
 ##
-## Unlike a ScenarioHazardResource, which counts down and then fires, a
+## Unlike a BackgroundHazardResource, which counts down and then fires, a
 ## background modifier never triggers — it is simply true the whole time. That
 ## makes the background itself a strategic choice rather than scenery: taking
 ## the route through the blue nebula means planning a fight without shields.

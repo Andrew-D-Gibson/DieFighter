@@ -4,6 +4,7 @@ extends Node2D
 const _SHIELDS_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_shields_hit.tres")
 const _HEALTH_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_health_hit.tres")
 const _DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_death_explosion.tres")
+const _PRE_DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_pre_death.tres")
 
 ## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
@@ -113,7 +114,10 @@ func _connect_health_signals() -> void:
 	
 	health.health_damaged.connect(graphics_manager.on_health_hit)
 	health.health_damaged.connect(func():
-		Events.play_sound.emit(_HEALTH_HIT_SFX)
+		# The killing blow gets the pre-death sound instead. Health emits
+		# death before health_damaged, so is_dead is already set here.
+		if not health.is_dead:
+			Events.play_sound.emit(_HEALTH_HIT_SFX)
 	)
 
 
@@ -177,6 +181,7 @@ func _on_other_enemy_left(ship: Enemy, faction: ScenarioManager.Faction) -> void
 ## Connects the signals for the dice manager
 func _connect_dice_manager_signals() -> void:
 	dice_manager.die_added.connect(Events.enemy_received_die.emit)
+	dice_manager.die_removed.connect(Events.enemy_lost_die.emit)
 	
 
 ## Whether the shot that finished this ship came from another ship (a pirate
@@ -194,11 +199,12 @@ func _on_death() -> void:
 	dice_manager.give_away_dice()
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
-	Events.play_sound.emit(_DEATH_SFX)
+	Events.play_sound.emit(_PRE_DEATH_SFX)
 	# Another ship's kill isn't the player's to celebrate, or to loot.
 	var killed_by_ship: bool = was_killed_by_ship()
 	if not killed_by_ship:
-		_play_kill_confirm()
+		await _play_kill_confirm()
+	Events.play_sound.emit(_DEATH_SFX)
 	
 	# Create explosion particles
 	var explosion = explosion_particles.instantiate()
@@ -220,8 +226,14 @@ func _on_death() -> void:
 ## A beat of freeze, a punch toward the wreck and a shockwave, so the shot
 ## that finishes a ship lands harder than every shot before it. The rings go
 ## on the manager rather than the ship, which is about to be freed.
+##
+## Resolves once the freeze ends, and everything after it waits too: anything
+## spawned into a stopped clock would hang on its first frame instead of
+## bursting out when time resumes.
 func _play_kill_confirm() -> void:
-	TimeDirector.hitstop(70)
+	graphics_manager.set_ship_raised(true)
+	await TimeDirector.hitstop(300)
+	graphics_manager.set_ship_raised(false)
 	Events.camera_zoom_punch.emit(1.05, global_position, true)
 	Events.camera_shake_large.emit(false)
 	Juice.ring(get_parent(), global_position, Globals.white, 44.0, 0.5, 6.0)
@@ -306,6 +318,17 @@ func _current_pool_index() -> int:
 			return turns_alive % pool_count
 
 
+## Which faces this turn's stronger actions lean toward: the current pool's
+## own bias when it sets one, the enemy's otherwise.
+func _current_face_bias() -> float:
+	var pool_index: int = _current_pool_index()
+	if pool_index < enemy_resource.action_options.size():
+		var pool: EnemyTurnActionList = enemy_resource.action_options[pool_index]
+		if pool and pool.override_face_bias:
+			return pool.face_bias
+	return enemy_resource.face_bias
+
+
 ## Rolls this turn's six intent slots. Call EnemyManager's
 ## generate_all_turn_actions() rather than this: it rolls every ship against
 ## the same roster and then binds the slots that act on another ship.
@@ -320,7 +343,8 @@ func generate_turn_actions(situation: EnemyActionSituation, take_forced: bool = 
 	turn_actions = EnemyActionSelector.roll(
 		enemy_resource.action_options[_current_pool_index()],
 		situation,
-		forced
+		forced,
+		_current_face_bias()
 	)
 	
 

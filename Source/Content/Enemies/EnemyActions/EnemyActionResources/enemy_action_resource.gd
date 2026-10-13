@@ -46,6 +46,10 @@ var activating_die_number: int:
 ## can name it before the player commits a die. See EnemyTargetBinder.
 var bound_target: Enemy = null
 
+## Copied from the option that rolled this action. See
+## EnemyActionOptionResource.strength_tier_override.
+var strength_tier_override: float = -1.0
+
 
 ## Text form of intent_amount for display, e.g. in (amount) description substitution.
 ## Blank when the action has no meaningful amount (e.g. a pure status effect).
@@ -87,6 +91,19 @@ static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false) 
 		elif _has_consequence(effect):
 			threat = maxi(threat, Threat.NEUTRAL) as Threat
 	return threat
+
+
+## How strong this action is, for placing it on a face (see
+## EnemyActionSelector). Only the order matters: the threat tier first, then
+## the rolled amount, so a 6-damage attack outranks a 3-damage one, and both
+## outrank any shield. A hologram's amount is the face it conjures, not a
+## measure of power, so it doesn't count.
+func placement_strength() -> float:
+	var tier: float = strength_tier_override
+	if tier < 0.0:
+		tier = float(get_threat())
+	var amount: int = 0 if get_relay() == Relay.HOLOGRAM else intent_amount
+	return tier * 100.0 + amount
 
 
 ## Whether this action may sit in a table the player can't see yet. One that

@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://bijrv85j17rvq"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FlareStar/flare_star.tscn" id="3_star"]
+[ext_resource type="Resource" uid="uid://dbjkv27qxwp4x" path="res://Source/Resources/BackgroundResources/BackgroundHazards/solar_flare.tres" id="haz_0"]
+
+[sub_resource type="Resource" id="Resource_star"]
+script = ExtResource("2_so")
+scene = ExtResource("3_star")
+position = Vector2(42, 36)
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[resource]
+script = ExtResource("1_bg")
+background_color = Color(0.105882, 0.035294, 0.054902, 1)
+hazard = ExtResource("haz_0")
+nebula = true
+nebula_color = Color(0.815686, 0.211765, 0.337255, 0.12)
+stars = true
+num_of_stars = 50
+num_of_twinkling_stars = 10
+static_objects = Array[ExtResource("2_so")]([SubResource("Resource_star")])
+metadata/_custom_type_script = "uid://c0mcptxevxdde"

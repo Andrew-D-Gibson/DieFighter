@@ -15,6 +15,13 @@ extends Resource
 ## Scale [member weight] while the board looks a certain way.
 @export var situational_weights: Array[EnemyActionWeightRule] = []
 
+## How strong this action counts as when the enemy's face_bias places it, on
+## the Threat scale: 0 does nothing, 1 does something, 2 deals damage. Below 0
+## it's read off the effect chain. For actions the chain undersells — a Lockout
+## or an Impound hurts more than "does something" — or a Feed into a ship that
+## hits hard.
+@export_range(-1.0, 3.0, 0.5) var strength_tier_override: float = -1.0
+
 var amount: int = 0
 
 	
@@ -34,6 +41,7 @@ func get_action() -> EnemyActionResource:
 	if amount != 0 and Globals.state_manager and not is_face:
 		amount = maxi(1, ceili(amount * Globals.state_manager.get_damage_multiplier()))
 	action.intent_amount = amount
+	action.strength_tier_override = strength_tier_override
 
 	return action
 

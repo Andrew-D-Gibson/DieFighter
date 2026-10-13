@@ -23,15 +23,66 @@ const _LIFETIME_SECONDS: float = 0.8
 ## one unreadable pile.
 const _SCATTER_PIXELS: float = 6.0
 
+## Damage numbers fly off sideways and fall, while callouts (status names,
+## heals) rise from the middle, so a hit never lands on top of the text that
+## explains it.
+const _DAMAGE_SIDE_PIXELS: float = 16.0
+const _DAMAGE_DRIFT: Vector2 = Vector2(10.0, 8.0)
+
+## Callouts landing on one ship inside this window stack upward instead of
+## printing over each other.
+const _STACK_WINDOW_MSEC: int = 600
+const _STACK_STEP_PIXELS: float = 9.0
+
+## Ship instance id -> {"msec": last callout time, "count": stacked so far}.
+static var _recent_callouts: Dictionary = {}
+
+## How much bigger the numbers for hits on the player print, in whole steps.
+const _PLAYER_EXTRA_SCALE: float = 1.0
+
+## Where a hit on the player starts, relative to their hull bar, and how far it
+## drifts. Both lean right: there is more open space on that side of the bar.
+const _PLAYER_SPAWN_AREA: Rect2 = Rect2(-16.0, -20.0, 52.0, 18.0)
+const _PLAYER_DRIFT_RANGE: Rect2 = Rect2(-6.0, -24.0, 20.0, 10.0)
+
+## Room kept between a label and the edge of the screen.
+const _SCREEN_MARGIN_PIXELS: float = 2.0
+
+## How far past full size the label overshoots as it pops in.
+const _POP_SCALE: float = 1.4
+
+var _drift: Vector2 = Vector2(0.0, -_RISE_PIXELS)
+var _rest_scale: Vector2 = Vector2.ONE
 var _label: Label
 
 
-## Spawns a number for `amount` above `target`. Parented beside the target
+## Spawns a number for `amount` beside `target`. Parented beside the target
 ## rather than under it, so a killing blow's number outlives the ship.
 static func spawn(target: Node2D, amount: int, color: Color) -> void:
-	if amount <= 0:
+	if amount <= 0 or not is_instance_valid(target) or target.get_parent() == null:
 		return
-	spawn_text(target, str(amount), color, amount >= _BIG_HIT)
+	# Hits on the player land down in the cockpit corner while their eyes are on
+	# the enemy that fired, so they print a size up to still catch the eye.
+	var size: float = 1.0 + (_PLAYER_EXTRA_SCALE if target is Player else 0.0)
+	# Alternate sides so back-to-back hits don't share a spot.
+	var side: float = -1.0 if RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, 1.0) < 0.5 else 1.0
+	var origin: Vector2 = Juice.anchor_of(target) + Vector2(side * _DAMAGE_SIDE_PIXELS * size, 0.0)
+	var drift: Vector2 = Vector2(side * _DAMAGE_DRIFT.x, _DAMAGE_DRIFT.y) * size
+	# The player's bar sits in the bottom-left corner, so a sideways fall
+	# carries their numbers straight out of frame, and a left-hand spot is
+	# always pushed back to the same place against the edge. They start
+	# anywhere over the bar and rise into the open starfield above it instead.
+	if target is Player:
+		origin = Juice.anchor_of(target) + _random_in(_PLAYER_SPAWN_AREA)
+		drift = _random_in(_PLAYER_DRIFT_RANGE)
+	_spawn_label(target.get_parent(), origin, str(amount), color, amount >= _BIG_HIT, drift, size)
+
+
+static func _random_in(area: Rect2) -> Vector2:
+	return Vector2(
+		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, area.position.x, area.end.x),
+		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, area.position.y, area.end.y)
+	)
 
 
 ## The same pop-and-drift for any short label: a heal's "+3", a status name,
@@ -39,22 +90,57 @@ static func spawn(target: Node2D, amount: int, color: Color) -> void:
 static func spawn_text(target: Node2D, text: String, color: Color, big: bool = false) -> void:
 	if not is_instance_valid(target) or target.get_parent() == null:
 		return
-	spawn_text_at(target.get_parent(), target.global_position, text, color, big)
+	var origin: Vector2 = Juice.anchor_of(target)
+	spawn_text_at(target.get_parent(), origin + Vector2(0.0, _stack_offset(target)), text, color, big)
 
 
 ## A label at `global_pos`, parented to `parent`.
 static func spawn_text_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false) -> void:
+	_spawn_label(parent, global_pos, text, color, big, Vector2(0.0, -_RISE_PIXELS))
+
+
+static func _stack_offset(target: Node2D) -> float:
+	var now: int = Time.get_ticks_msec()
+	var id: int = target.get_instance_id()
+	var entry: Dictionary = _recent_callouts.get(id, {"msec": -_STACK_WINDOW_MSEC, "count": 0})
+	var count: int = (entry["count"] as int) + 1 if now - (entry["msec"] as int) < _STACK_WINDOW_MSEC else 0
+	_recent_callouts[id] = {"msec": now, "count": count}
+	return -_STACK_STEP_PIXELS * count
+
+
+## [param size] is a whole-number scale on top of the big-hit doubling, so the
+## pixel font stays crisp.
+static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color: Color,
+		big: bool, drift: Vector2, size: float = 1.0) -> void:
 	if text.is_empty() or not is_instance_valid(parent):
 		return
 
 	var number: DamageNumber = DamageNumber.new()
 	number._build(text, color)
+	number._drift = drift
+	number._rest_scale = Vector2.ONE * ((2.0 if big else 1.0) + size - 1.0)
 	parent.add_child(number)
 	number.global_position = global_pos + Vector2(
 		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -_SCATTER_PIXELS, _SCATTER_PIXELS),
 		-10.0
 	)
-	number._animate(big)
+	number._keep_on_screen()
+	number._animate()
+
+
+## Keeps the whole flight on screen: slides the start in from the edge if it
+## would begin half off it (callouts off hardware at the edge of the cockpit, a
+## wide word on a ship at the end of the formation), then shortens the drift
+## so the label never carries itself out of frame before it has faded.
+func _keep_on_screen() -> void:
+	var screen: Rect2 = get_canvas_transform().affine_inverse() * get_viewport_rect()
+	var half_size: Vector2 = _label.size * 0.5 * _rest_scale * _POP_SCALE + Vector2.ONE * _SCREEN_MARGIN_PIXELS
+	var safe: Rect2 = screen.grow_individual(-half_size.x, -half_size.y, -half_size.x, -half_size.y)
+	if safe.size.x <= 0.0 or safe.size.y <= 0.0:
+		return
+	global_position = global_position.clamp(safe.position, safe.end)
+	var end: Vector2 = (global_position + _drift).clamp(safe.position, safe.end)
+	_drift = end - global_position
 
 
 func _build(text: String, color: Color) -> void:
@@ -77,16 +163,16 @@ func _build(text: String, color: Color) -> void:
 
 
 ## Pops in past full size, drifts up, and fades out on the way.
-func _animate(big: bool) -> void:
-	var rest_scale: Vector2 = Vector2.ONE * (2.0 if big else 1.0)
+func _animate() -> void:
+	var rest_scale: Vector2 = _rest_scale
 	scale = rest_scale * 0.4
 
 	var tween: Tween = create_tween()
-	tween.tween_property(self, "scale", rest_scale * 1.4, 0.08) \
+	tween.tween_property(self, "scale", rest_scale * _POP_SCALE, 0.08) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "scale", rest_scale, 0.12) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(self, "position:y", position.y - _RISE_PIXELS, _LIFETIME_SECONDS) \
+	tween.parallel().tween_property(self, "position", position + _drift, _LIFETIME_SECONDS) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.parallel().tween_property(self, "modulate:a", 0.0, _LIFETIME_SECONDS * 0.4) \
 		.set_delay(_LIFETIME_SECONDS * 0.6)

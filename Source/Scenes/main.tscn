@@ -44,6 +44,7 @@
 [ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
 [ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
 [ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="67_1kud3"]
+[ext_resource type="Resource" uid="uid://opnsaw6rik7t" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="75_imw1m"]
 [ext_resource type="Resource" uid="uid://v82d83vwmjmq" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheCollector/COMBAT_tithe_collector.tres" id="80_tithe"]
 [ext_resource type="Resource" uid="uid://1afnq5aul5tn" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_IonLances/COMBAT_ion_lances.tres" id="81_ion"]
 [ext_resource type="Resource" uid="uid://s3hfdf1gooad" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheEscort/COMBAT_tithe_escort.tres" id="82_escort"]
@@ -54,7 +55,6 @@
 [ext_resource type="Resource" uid="uid://dhwi8lv4ordv5" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/EVENT_tollkeeper.tres" id="87_toll"]
 [ext_resource type="Resource" uid="uid://df1xwbuu5qt5a" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/EVENT_wreck_salvage.tres" id="88_wreck"]
 [ext_resource type="Script" uid="uid://c8epcmglrpd7i" path="res://Source/Systems/Game/HazardManager/hazard_manager.gd" id="91_hazmgr"]
-[ext_resource type="Script" uid="uid://5ben1x2fhdo7" path="res://Source/Systems/UI/HazardIndicator/hazard_indicator.gd" id="92_hazui"]
 [ext_resource type="Script" uid="uid://cl0bfcstgkgxo" path="res://Source/Systems/Game/RunStats/run_stats.gd" id="93_runstats"]
 [ext_resource type="Resource" uid="uid://ctncgtd731m3y" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_escorted.tres" id="94_boss2"]
 [ext_resource type="Resource" uid="uid://b5v4bhmin2332" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SectorBoss/COMBAT_sector_boss_wing.tres" id="95_boss3"]
@@ -243,22 +243,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("5_aaucc")
 
-[node name="HazardIndicator" type="RichTextLabel" parent="UI" unique_id=904210002]
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -600.0
-offset_top = 34.0
-offset_right = 600.0
-offset_bottom = 130.0
-grow_horizontal = 2
-mouse_filter = 2
-theme_override_font_sizes/normal_font_size = 64
-bbcode_enabled = true
-fit_content = true
-horizontal_alignment = 1
-script = ExtResource("92_hazui")
-
 [node name="FPSCounter" type="RichTextLabel" parent="UI" unique_id=1878225024]
 visible = false
 anchors_preset = 1
@@ -385,7 +369,7 @@ combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtR
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 boss_combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("94_boss2"), ExtResource("95_boss3")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
-starting_scenario = ExtResource("88_wreck")
+starting_scenario = ExtResource("75_imw1m")
 jump_gate_scenario = ExtResource("26_jgate")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]

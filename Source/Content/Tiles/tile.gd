@@ -105,9 +105,15 @@ func _connect_tile_event_signals() -> void:
 	Events.player_fatal_damage.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE)
 	)
+	# Answered straight after the neighbour's activation rather than at the back
+	# of the queue. A relay chain winding past this tile activates several
+	# neighbours in one pass; queued, every response would wait for the chain
+	# to finish and then fire back to back, reading as a single proc.
 	Events.tile_activated.connect(func(tile: Tile) -> void:
 		if _is_orthogonal_neighbour(tile):
-			handle_tile_event(self, TileEvent.EventType.ON_ADJACENT_TILE_ACTIVATED)
+			handle_tile_event(self, TileEvent.EventType.ON_ADJACENT_TILE_ACTIVATED, true)
+		if _is_surrounding_neighbour(tile):
+			handle_tile_event(self, TileEvent.EventType.ON_SURROUNDING_TILE_ACTIVATED, true)
 	)
 	Events.modifier_triggered.connect(func(mod: Modifier) -> void:
 		if mod.source == self:
@@ -126,6 +132,19 @@ func _is_orthogonal_neighbour(other: Tile) -> bool:
 	if not grid.is_grid_pos_valid(mine) or not grid.is_grid_pos_valid(theirs):
 		return false
 	return absi(mine.x - theirs.x) + absi(mine.y - theirs.y) == 1
+
+
+## Whether another tile sits in any of the eight cells around this one,
+## diagonals included.
+func _is_surrounding_neighbour(other: Tile) -> bool:
+	if other == self or not Globals.tile_grid:
+		return false
+	var grid: TileGrid = Globals.tile_grid
+	var mine: Vector2i = grid.find_tile_pos(self)
+	var theirs: Vector2i = grid.find_tile_pos(other)
+	if not grid.is_grid_pos_valid(mine) or not grid.is_grid_pos_valid(theirs):
+		return false
+	return maxi(absi(mine.x - theirs.x), absi(mine.y - theirs.y)) == 1
 
 
 func _set_up_resource() -> void:
@@ -157,7 +176,9 @@ func _get_tile_info() -> InfoResource:
 	return info
 
 
-func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
+## [param immediate] resolves the response right after the event currently
+## resolving instead of at the back of the queue.
+func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false) -> void:
 	var event_check: TileEvent = _find_matching_event_response(tile, event)
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if event_check == null or not engine:
@@ -166,7 +187,10 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType) -> void:
 	var trigger_event: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
 	trigger_event.responder = self
 	trigger_event.chain = tile_resource.event_responses[event_check]
-	engine.queue_event(trigger_event)
+	if immediate:
+		engine.inject_event(trigger_event)
+	else:
+		engine.queue_event(trigger_event)
 
 
 ## Finds the TileEvent key matching this event type whose response should

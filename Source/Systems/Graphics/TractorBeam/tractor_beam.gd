@@ -14,6 +14,8 @@
 ## Purely cosmetic and non-blocking. GiveDieToTargetEvent has already put the
 ## die in the enemy's queue before the beam starts; the beam only takes over
 ## *how it gets there*, so the player can keep placing dice while it plays.
+## The one thing that does wait on it is the enemy turn (see
+## [method wait_for_landings]), so no ship spends a die that is still in flight.
 class_name TractorBeam
 extends Node2D
 
@@ -100,6 +102,26 @@ static func release(die: Dice) -> void:
 	var beam: TractorBeam = _active.get(die)
 	if is_instance_valid(beam):
 		beam._finish(false)
+
+
+## Returns once every die being pulled has landed in its enemy's hand. The
+## enemy turn waits on this: an enemy spending a die the beam is still dragging
+## takes it mid-spin, and the die plays its action tilted and oversized.
+static func wait_for_landings(tree: SceneTree) -> void:
+	while _any_in_flight():
+		await tree.process_frame
+
+
+static func _any_in_flight() -> bool:
+	for value: Variant in _active.values():
+		if not is_instance_valid(value):
+			continue
+		var beam: TractorBeam = value
+		# A beam whose die or enemy has gone frees itself next frame.
+		if beam._phase != Phase.RELEASE \
+		and is_instance_valid(beam._die) and is_instance_valid(beam._enemy):
+			return true
+	return false
 
 
 func _setup(die: Dice, enemy: Enemy) -> void:

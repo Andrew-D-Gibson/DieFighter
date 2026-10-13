@@ -1,32 +1,18 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://lw6llmdnys1j"]
 
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_sxh30"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_1"]
-[ext_resource type="Texture2D" uid="uid://bibel1ft5whhk" path="res://Assets/Textures/Tiles/BlueTiles/counterweight_battery.png" id="tex_2"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
-[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_4"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_4"]
+[ext_resource type="Texture2D" uid="uid://bibel1ft5whhk" path="res://Assets/Textures/Tiles/BlueTiles/counterweight_battery.png" id="tex_2"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")
 type = 6
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
-atlas = ExtResource("tex_2")
-region = Rect2(0, 0, 24, 24)
-
-[sub_resource type="SpriteFrames" id="Resource_frames2"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_f1_0")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
 
 [sub_resource type="Resource" id="Resource_step3"]
 script = ExtResource("script_3")
@@ -58,18 +44,12 @@ category = 2
 amount = 3
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step8"]
-script = ExtResource("script_3")
-category = 1
-subtype = 2
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_1"]
 script = ExtResource("script_3")
 category = 4
 subtype = 14
 amount = 18
-color = Color(0.2627, 0.6510, 0.9882, 1)
+color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_2"]
@@ -77,7 +57,13 @@ script = ExtResource("script_3")
 category = 4
 subtype = 16
 string_param = "+{amount}"
-color = Color(0.2627, 0.6510, 0.9882, 1)
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step8"]
+script = ExtResource("script_3")
+category = 1
+subtype = 2
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain9"]
@@ -120,18 +106,12 @@ category = 2
 amount = 3
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step16"]
-script = ExtResource("script_3")
-category = 1
-subtype = 2
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_3"]
 script = ExtResource("script_3")
 category = 4
 subtype = 14
 amount = 18
-color = Color(0.2627, 0.6510, 0.9882, 1)
+color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_4"]
@@ -139,13 +119,34 @@ script = ExtResource("script_3")
 category = 4
 subtype = 16
 string_param = "+{amount}"
-color = Color(0.2627, 0.6510, 0.9882, 1)
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step16"]
+script = ExtResource("script_3")
+category = 1
+subtype = 2
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain17"]
 script = ExtResource("script_5")
 effects = Array[ExtResource("script_3")]([SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step16")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
+atlas = ExtResource("tex_2")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="Resource_frames2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_0")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
 
 [resource]
 script = ExtResource("script_0")

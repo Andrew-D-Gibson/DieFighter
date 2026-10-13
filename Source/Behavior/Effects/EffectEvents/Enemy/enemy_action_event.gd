@@ -67,6 +67,11 @@ func resolve(engine: ScenarioEngine) -> void:
 		Vector2.ONE * lerpf(0.8, 1.15, weight),
 		adjusted_tween_time
 	).set_ease(Tween.EASE_OUT)
+	# Square it up too: a die handed on mid-relay can still be spinning from a
+	# tractor beam that was cut short. Wrapped first so it takes the short way.
+	activator_die.rotation = wrapf(activator_die.rotation, -PI, PI)
+	tween.parallel().tween_property(activator_die, "rotation", 0.0, adjusted_tween_time) \
+		.set_ease(Tween.EASE_OUT)
 	await tween.finished
 	
 	# The ship can be freed while its die is in flight — fleeing with dice

@@ -8,6 +8,10 @@ extends Resource
 
 enum Rarity {COMMON, UNCOMMON, RARE}
 @export var rarity: Rarity = Rarity.COMMON
+## Untick to hold a tile out of reward and shop offers while it's being
+## reworked. It still loads everywhere else (dev console, saves), so it can be
+## tested and a run that already owns it keeps working.
+@export var offered_as_reward: bool = true
 
 @export_category('Graphics')
 @export var textures: SpriteFrames

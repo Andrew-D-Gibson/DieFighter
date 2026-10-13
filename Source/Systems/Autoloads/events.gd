@@ -66,7 +66,22 @@ signal player_fatal_damage()
 # Enemy Events
 signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)
 signal enemy_flew_in()
+## Every ship in the opening fly-in has landed and the targeting computer has a
+## target. Combat starts here: a fight's first turn (first_turn_start) waits for
+## it, so turn-start tiles never fire at ships that are still arriving.
+signal enemies_arrived()
 signal enemy_received_die()
+## A die left an enemy's hand by any route (spent, reclaimed, handed on).
+## Lets the targeting computer drop the intent highlight the die was lighting.
+signal enemy_lost_die()
+## A die already in an enemy's hand changed face (a hazard re-rolled or
+## flipped it). Lets the targeting computer move the intent highlight to the
+## action the ship will now play.
+signal enemy_held_dice_changed()
+## The enemy turn is about to start: the dice the player spent have landed and
+## no ship has acted yet. The beat for anything that should change what the
+## ships are holding before they use it (turn-end hazards).
+signal enemy_turn_starting()
 ## A die the player spent has finished its trip into an enemy's hand (the
 ## tractor beam landed). enemy_received_die fires earlier, the moment the die
 ## joins the queue; this is the beat the player actually sees it arrive.
@@ -133,12 +148,13 @@ signal targeting_computer_retargeted()
 
 
 # Hazard Events
-## A scenario's hazard is set up (or cleared, when the hazard is null).
-signal hazard_armed(hazard: ScenarioHazardResource, turns_remaining: int)
+## The background's hazard is counting down for this fight (or has stopped,
+## when the hazard is null: the fight ended, or there is none here).
+signal hazard_armed(hazard: BackgroundHazardResource, turns_remaining: int)
 ## The countdown ticked. Emitted every player turn while a hazard is active.
-signal hazard_countdown_changed(hazard: ScenarioHazardResource, turns_remaining: int)
+signal hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remaining: int)
 ## The hazard just went off.
-signal hazard_triggered(hazard: ScenarioHazardResource)
+signal hazard_triggered(hazard: BackgroundHazardResource)
 
 
 # Background Modifier Events

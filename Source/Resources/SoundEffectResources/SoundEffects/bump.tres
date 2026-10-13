@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3 uid="uid://dhdiec4h8tjs3"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_12pcp"]
+[ext_resource type="AudioStream" uid="uid://b1mok5b0fosp5" path="res://Assets/Sounds/Tiles/Bump/PowerUp4.wav" id="2_52ig5"]
+
+[resource]
+script = ExtResource("1_12pcp")
+name = "bump"
+sound_effect = ExtResource("2_52ig5")
+pitch_randomness = 0.08
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"
