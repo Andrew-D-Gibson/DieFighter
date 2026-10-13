@@ -4,6 +4,41 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-13 — Charge Bore loads the shot
+
+Charge Bore and Siege Shot were never actually linked. Charge Bore gave its
+die back, and the loaded table scattered two Siege Shots at random, so the
+face that triggered the charge said nothing about where the shot would land.
+`KeepDieWithActorEvent` and a comment in `EnemyDiceManager` ("Charge Bore
+keeping its shot") show it was meant to keep the die. The chain just never
+used it.
+
+**Now:** Charge Bore ends with `Keep Die with Actor`, and the Siege Shot
+options are flagged `place_on_held_faces`. When the Mortar rolls its loaded
+table, a Siege Shot goes on the face of each die it's holding. Feed a 3 into
+Charge Bore and your 3 sits in its queue, with Siege Shot on slot 3 lit in
+the targeting computer. The second Siege Shot still lands wherever face bias
+puts it.
+
+**What changes in play:** the Mortar's loaded turn isn't optional anymore,
+since it's holding a die and will act. You're also a die down for that turn.
+The answers are to kill it through the shields it just gained, or to tamper
+with the loaded die (reroll it, flip it, or take it back) so it misses the
+shot. Readability: the callout reads `LOADED: 3` (new `{die}` callout
+token), and the text is `Gain 3 shields. Load die`, where Load is a hover
+keyword.
+
+**Verified live:** fed a 3 into Charge Bore → 4 shields, die held, next
+table had Siege Shot (10) on 3 → hull 14 → 4, die back in hand, loading
+table again. Repeated with a 5 and a 6. 344 tests pass (6 new for pinning).
+
+**To playtest:** it's very punishing right now. That's deliberate for the
+moment. Knobs to watch are the second unpinned Siege Shot, the 8–13
+damage, and whether shields stacking across cycles makes the Mortar too
+tanky to burst.
+
+---
+
 ## 2026-10-12 — Face bias: where an enemy's strong actions land
 
 A table's six actions used to be shuffled onto the faces at random, so the

@@ -336,7 +336,7 @@ movement tween owns.
 `AUDIO_VISUAL` `SHOCKWAVE`, `SPARK_BURST`, `CALLOUT`, `BUMP`, `ZAP`,
 `GRID_RIPPLE`, `SCREEN_RIPPLE`, `STREAM`, `DIE_FLARE`, all one `JuiceHandler`
 building a `JuiceEvent`. They read authored fields only (`CALLOUT`'s
-`{amount}` token is the exception), aren't amplifiable, and play at the
+`{amount}` and `{die}` tokens are the exception), aren't amplifiable, and play at the
 targets or, with none, at the source. `ZAP` and `STREAM` hold the chain until
 they land; the rest don't. `Juice.anchor_of()` / `body_of()` decide where an
 effect on a node is drawn and what gets squashed (`Player` routes both to its
@@ -853,6 +853,11 @@ because `state` is stale while a new scenario's ships roll).
   exactly one of a signature verb appears — weight 0 plus `force_include` means
   "one and only one")
 - Weighted random fill remaining slots
+- `place_on_held_faces` moves a forced copy onto the face of a die the ship
+  already holds (`EnemyActionSituation.held_faces`), after face bias has
+  placed the table. A die kept with `KEEP_DIE_WITH_ACTOR` last turn therefore
+  fires that action: the Siege Mortar's Charge Bore loads the face its Siege
+  Shot lands on.
 - **Gates read off the chain**, like threat: an action that flees or jumps
   (`is_safe_while_hidden()`) is never rolled while intents read "?", so a ship
   can't leave on a die the player couldn't read. An action that binds a ship

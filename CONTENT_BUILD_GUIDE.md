@@ -185,6 +185,9 @@ step; its ally is bound automatically.
     except a Holo Loader's face.
   - `force_include`: always present once. Weight 0 plus `force_include` means
     exactly one.
+  - `place_on_held_faces`: the forced copy goes on the face of a die the ship
+    is already holding (one per held face). Pair with an action that ends
+    `Keep Die with Actor` (Charge Bore → Siege Shot).
   - `conditions`: `EnemyActionCondition`s, all of which must hold. Types:
     `ALLY_EXISTS`, `HOSTILE_SHIP_EXISTS`, `ALLY_HURT`, `SELF_HURT` (with
     `hull_fraction`), `ATTITUDE_IS`, plus `invert`.
