@@ -7,6 +7,11 @@ extends Resource
 @export var max_amount: int = 0
 @export var force_include: bool = false
 
+## Put the forced copy on the face of a die the ship is already holding, so a
+## die it kept last turn (Charge Bore) fires this action. Only the
+## force_include copy is placed; with no held die it lands like any other.
+@export var place_on_held_faces: bool = false
+
 ## Every one must hold for this option to be rolled at all, force_include
 ## included. An action that acts on another ship already needs one to exist;
 ## these are for anything more particular.

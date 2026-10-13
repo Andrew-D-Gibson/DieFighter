@@ -33,9 +33,12 @@ static func roll(
 	# weighted fill as the situation scales them.
 	var weights: Array[float] = []
 	var weight_sum: float = 0.0
+	var pinned: Array[EnemyActionResource] = []
 	for option: EnemyActionOptionResource in options:
 		if option.force_include:
 			actions.append(option.get_action())
+			if option.place_on_held_faces:
+				pinned.append(actions[-1])
 		weights.append(option.weight_in(situation))
 		weight_sum += weights[-1]
 
@@ -48,8 +51,32 @@ static func roll(
 		actions.append(_weighted_pick(options, weights, weight_sum))
 
 	_place(actions, face_bias)
+	_pin_to_held_faces(actions, pinned, situation.held_faces)
 	_number_slots(actions)
 	return actions
+
+
+## Moves each [param pinned] action onto the face of a die the ship already
+## holds, one face each, in order. Swaps rather than overwrites, so the table
+## keeps everything it rolled. Pinned actions left over stay where _place put
+## them, and a held die with no pinned action left fires whatever it lands on.
+static func _pin_to_held_faces(
+	actions: Array[EnemyActionResource],
+	pinned: Array[EnemyActionResource],
+	held_faces: Array[int]
+) -> void:
+	var claimed: Array[int] = []
+	for face: int in held_faces:
+		if pinned.is_empty():
+			return
+		var slot: int = face - 1
+		if slot < 0 or slot >= actions.size() or slot in claimed:
+			continue
+		var action: EnemyActionResource = pinned.pop_front()
+		var from: int = actions.find(action)
+		actions[from] = actions[slot]
+		actions[slot] = action
+		claimed.append(slot)
 
 
 ## Rerolls one slot of [param actions] from the pool's relay-free options.

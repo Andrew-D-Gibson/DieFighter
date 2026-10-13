@@ -24,6 +24,10 @@ var health_fraction: float = 1.0
 ## [member ship]'s attitude toward the player.
 var attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE
 
+## Faces of the dice [member ship] is already holding as it rolls, lowest
+## first and without repeats: the slots those dice will fire next turn.
+var held_faces: Array[int] = []
+
 
 static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyActionSituation:
 	var situation := EnemyActionSituation.new()
@@ -38,6 +42,11 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 	situation.health_fraction = hull_fraction(rolling_ship)
 	if rolling_ship.scenario_state:
 		situation.attitude = rolling_ship.scenario_state.attitude
+	if rolling_ship.dice_manager:
+		for die: Dice in rolling_ship.dice_manager.queue:
+			if is_instance_valid(die) and die.value not in situation.held_faces:
+				situation.held_faces.append(die.value)
+		situation.held_faces.sort()
 	return situation
 
 

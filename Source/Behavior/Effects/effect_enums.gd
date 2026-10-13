@@ -181,7 +181,7 @@ enum AudioVisualSubtype {
 	GLITCH_BURST,             ## Turn the glitch overlay on for N ms
 	SHOCKWAVE,                ## Ring out from each target (negative amount: ring closes in, a lock-on)
 	SPARK_BURST,              ## Burst of sparks at each target
-	CALLOUT,                  ## Float text off each target; "{amount}" shows the running amount
+	CALLOUT,                  ## Float text off each target; "{amount}" shows the running amount, "{die}" the die's face
 	BUMP,                     ## Squash-and-stretch each target
 	ZAP,                      ## Lightning bolt from the effect source to each target
 	GRID_RIPPLE,              ## A flash that ripples out across the tile grid from the source
