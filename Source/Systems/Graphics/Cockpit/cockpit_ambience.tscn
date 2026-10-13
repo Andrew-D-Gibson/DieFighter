@@ -1,0 +1,29 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitLights/cockpit_lights.gd" id="1_lights"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/VentPuff/vent_puff.tscn" id="2_vent"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/HangingDice/hanging_dice.gd" id="3_dice"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/UI/Cockpit/hanging_dice-Sheet.png" id="4_sheet"]
+
+[node name="CockpitAmbience" type="Node2D"]
+
+[node name="CockpitLights" type="Node2D" parent="."]
+script = ExtResource("1_lights")
+
+[node name="Vents" type="Node2D" parent="."]
+
+[node name="LeftFootwellVent" parent="Vents" instance=ExtResource("2_vent")]
+position = Vector2(9, 171)
+emission_rect_extents = Vector2(5, 2)
+
+[node name="RightDashVent" parent="Vents" instance=ExtResource("2_vent")]
+position = Vector2(305, 163)
+emission_rect_extents = Vector2(5, 1)
+
+[node name="DiceTrayVent" parent="Vents" instance=ExtResource("2_vent")]
+position = Vector2(212, 172)
+emission_rect_extents = Vector2(6, 2)
+
+[node name="HangingDice" type="Node2D" parent="."]
+script = ExtResource("3_dice")
+sheet = ExtResource("4_sheet")

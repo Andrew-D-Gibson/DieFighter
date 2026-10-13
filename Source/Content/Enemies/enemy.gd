@@ -232,7 +232,7 @@ func _on_death() -> void:
 ## bursting out when time resumes.
 func _play_kill_confirm() -> void:
 	graphics_manager.set_ship_raised(true)
-	await TimeDirector.hitstop(300)
+	await TimeDirector.hitstop(150)
 	graphics_manager.set_ship_raised(false)
 	Events.camera_zoom_punch.emit(1.05, global_position, true)
 	Events.camera_shake_large.emit(false)

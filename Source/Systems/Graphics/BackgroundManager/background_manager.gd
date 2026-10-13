@@ -252,7 +252,7 @@ func play_jump_intro() -> void:
 	%JumpTransition.tween_particles(1.0, speed_ramp_up_time/2)
 	
 	# Finish speeding up background objects
-	await tween_speed(480, speed_ramp_up_time/2)
+	await tween_speed(960, speed_ramp_up_time/2)
 	
 	# Punch in the jump background
 	%JumpTransition.tween_background(1.0, 0.5)

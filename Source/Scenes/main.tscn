@@ -63,6 +63,7 @@
 [ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/bump_explanation.tres" id="tut_bump_explanation"]
@@ -99,7 +100,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_kcewt"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_imw1m"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -304,6 +305,8 @@ position = Vector2(0.5, 82.5)
 texture = ExtResource("13_nfx0x")
 script = ExtResource("14_jblvd")
 
+[node name="CockpitAmbience" parent="Graphics" unique_id=339508340 instance=ExtResource("cockpit_ambience")]
+
 [node name="BackgroundManager" parent="Graphics" unique_id=753734428 instance=ExtResource("5_flage")]
 z_index = -24
 position = Vector2(160, 90)
@@ -319,7 +322,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_kcewt")
+material = SubResource("ShaderMaterial_imw1m")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]
