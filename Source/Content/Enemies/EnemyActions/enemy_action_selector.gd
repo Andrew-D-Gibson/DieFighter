@@ -33,12 +33,9 @@ static func roll(
 	# weighted fill as the situation scales them.
 	var weights: Array[float] = []
 	var weight_sum: float = 0.0
-	var pinned: Array[EnemyActionResource] = []
 	for option: EnemyActionOptionResource in options:
 		if option.force_include:
 			actions.append(option.get_action())
-			if option.place_on_held_faces:
-				pinned.append(actions[-1])
 		weights.append(option.weight_in(situation))
 		weight_sum += weights[-1]
 
@@ -47,36 +44,37 @@ static func roll(
 		_number_slots(actions)
 		return actions
 
-	for i: int in range(SLOT_COUNT - actions.size()):
+	# Kept faces are spoken for: the rest of the table is rolled and placed
+	# around them, so a loaded die lands on its payoff and nothing else moves.
+	var kept_option: EnemyActionOptionResource = _kept_face_option(pool, situation)
+	var kept_faces: Array[int] = situation.kept_faces if kept_option else ([] as Array[int])
+	var open_slots: int = SLOT_COUNT - kept_faces.size()
+
+	for i: int in range(open_slots - actions.size()):
 		actions.append(_weighted_pick(options, weights, weight_sum))
+	actions = actions.slice(0, open_slots)
 
 	_place(actions, face_bias)
-	_pin_to_held_faces(actions, pinned, situation.held_faces)
+	# Ascending faces, so each insert lands at its face with the earlier ones
+	# already in place.
+	for face: int in kept_faces:
+		actions.insert(face - 1, kept_option.get_action())
 	_number_slots(actions)
 	return actions
 
 
-## Moves each [param pinned] action onto the face of a die the ship already
-## holds, one face each, in order. Swaps rather than overwrites, so the table
-## keeps everything it rolled. Pinned actions left over stay where _place put
-## them, and a held die with no pinned action left fires whatever it lands on.
-static func _pin_to_held_faces(
-	actions: Array[EnemyActionResource],
-	pinned: Array[EnemyActionResource],
-	held_faces: Array[int]
-) -> void:
-	var claimed: Array[int] = []
-	for face: int in held_faces:
-		if pinned.is_empty():
-			return
-		var slot: int = face - 1
-		if slot < 0 or slot >= actions.size() or slot in claimed:
-			continue
-		var action: EnemyActionResource = pinned.pop_front()
-		var from: int = actions.find(action)
-		actions[from] = actions[slot]
-		actions[slot] = action
-		claimed.append(slot)
+## The pool's fills_kept_faces option this situation allows, or null. One is
+## all a pool needs: every kept face gets a copy of it.
+static func _kept_face_option(
+	pool: EnemyTurnActionList,
+	situation: EnemyActionSituation
+) -> EnemyActionOptionResource:
+	if pool == null:
+		return null
+	for option: EnemyActionOptionResource in pool.actions_possible:
+		if option and option.fills_kept_faces and _passes_gates(option, situation):
+			return option
+	return null
 
 
 ## Rerolls one slot of [param actions] from the pool's relay-free options.
@@ -118,7 +116,15 @@ static func available_options(
 	return options
 
 
+## Whether [param option] can be rolled into an ordinary slot. Kept-face
+## options never can: they only appear where a loaded die sits.
 static func is_available(option: EnemyActionOptionResource, situation: EnemyActionSituation) -> bool:
+	if option == null or option.fills_kept_faces:
+		return false
+	return _passes_gates(option, situation)
+
+
+static func _passes_gates(option: EnemyActionOptionResource, situation: EnemyActionSituation) -> bool:
 	if option == null or option.base_action == null:
 		return false
 	var action: EnemyActionResource = option.base_action

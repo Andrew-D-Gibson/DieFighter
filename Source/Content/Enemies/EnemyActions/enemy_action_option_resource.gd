@@ -7,10 +7,11 @@ extends Resource
 @export var max_amount: int = 0
 @export var force_include: bool = false
 
-## Put the forced copy on the face of a die the ship is already holding, so a
-## die it kept last turn (Charge Bore) fires this action. Only the
-## force_include copy is placed; with no held die it lands like any other.
-@export var place_on_held_faces: bool = false
+## Never rolled like other options: one copy goes on the face of each die the
+## ship kept itself last turn, and none appear otherwise. The payoff of a
+## loading action (Charge Bore -> Siege Shot), so the player only ever faces
+## it after leaving a die in the loader. weight and force_include are ignored.
+@export var fills_kept_faces: bool = false
 
 ## Every one must hold for this option to be rolled at all, force_include
 ## included. An action that acts on another ship already needs one to exist;

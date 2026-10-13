@@ -45,18 +45,7 @@ base_action = ExtResource("act_8")
 weight = 0.0
 min_amount = 8
 max_amount = 13
-force_include = true
-place_on_held_faces = true
-metadata/_custom_type_script = "uid://cn6juw5whtujy"
-
-[sub_resource type="Resource" id="Resource_opt4"]
-script = ExtResource("script_0")
-base_action = ExtResource("act_8")
-weight = 0.0
-min_amount = 8
-max_amount = 13
-force_include = true
-place_on_held_faces = true
+fills_kept_faces = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_opt5"]
@@ -74,7 +63,7 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_pool1"]
 script = ExtResource("script_1")
-actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt3"), SubResource("Resource_opt4"), SubResource("Resource_opt5"), SubResource("Resource_opt6")])
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt3"), SubResource("Resource_opt5"), SubResource("Resource_opt6")])
 metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [resource]

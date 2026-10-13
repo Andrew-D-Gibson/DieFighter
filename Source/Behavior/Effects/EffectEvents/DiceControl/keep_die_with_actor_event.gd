@@ -23,3 +23,5 @@ func resolve(_engine: ScenarioEngine) -> void:
 		return
 
 	holder.add(activator_die)
+	if actor is Enemy:
+		(actor as Enemy).kept_dice.append(activator_die)

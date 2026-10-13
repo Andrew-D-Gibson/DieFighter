@@ -6,6 +6,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 const Cat := EffectEnums.Category
 const Ships := preload("res://test/helpers/ships.gd")
 const CIVILIAN_TRANSPORT := "res://Source/Content/Enemies/EnemyResources/civilian_transport.tres"
+const _DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 
 
 func before_each() -> void:
@@ -261,60 +262,111 @@ func test_a_pool_override_wins_over_the_enemy_bias() -> void:
 	assert_eq(ship._current_face_bias(), 0.0, "an override of 0 still counts")
 
 
-# ── Held faces: a die the ship kept picks where its pinned action goes ────────
+# ── Kept faces: a loaded payoff appears only where the ship kept a die ──────
 
-func _pinned_option(label: String) -> EnemyActionOptionResource:
-	var option := _attack_option(9, label)
-	option.place_on_held_faces = true
+func _kept_option(label: String) -> EnemyActionOptionResource:
+	var attack := Ships.attack()
+	attack.name = label
+	var option := Ships.option(attack, 5.0, 9, 9)
+	option.force_include = true
+	option.fills_kept_faces = true
 	return option
 
 
-func _holding(faces: Array[int]) -> EnemyActionSituation:
+func _keeping(faces: Array[int]) -> EnemyActionSituation:
 	var situation := _situation(true)
-	situation.held_faces = faces
+	situation.kept_faces = faces
 	return situation
 
 
-func test_a_pinned_action_lands_on_the_held_face() -> void:
-	var pool := _pool([_pinned_option("Shot"), _option(_wait())])
+func test_a_kept_face_option_never_appears_without_a_kept_die() -> void:
+	var pool := _pool([_kept_option("Shot"), _option(_wait())])
+	for i: int in range(100):
+		var actions := EnemyActionSelector.roll(pool, _keeping([]), [], 1.0)
+		assert_eq(_face_of(actions, "Shot"), 0, "weight and force_include are ignored")
+		assert_eq(actions.size(), 6)
+
+
+func test_a_kept_face_option_is_never_available_to_an_ordinary_slot() -> void:
+	assert_false(EnemyActionSelector.is_available(_kept_option("Shot"), _situation(true)))
+
+
+func test_a_kept_die_gets_the_payoff_on_its_face() -> void:
+	var pool := _pool([_kept_option("Shot"), _option(_wait())])
 	for face: int in range(1, 7):
 		for i: int in range(20):
-			var actions := EnemyActionSelector.roll(pool, _holding([face]), [], 1.0)
+			var actions := EnemyActionSelector.roll(pool, _keeping([face]), [], 6.0)
+			assert_eq(_names(actions).count("Shot"), 1)
 			assert_eq(_face_of(actions, "Shot"), face)
-			assert_eq(actions[face - 1].activating_die_number, face, "the slot is renumbered")
+			assert_eq(actions[face - 1].activating_die_number, face, "the slot is numbered")
 
 
-func test_a_pin_overrides_face_bias() -> void:
-	var pool := _pool([_pinned_option("Shot"), _option(_wait())])
-	var actions := EnemyActionSelector.roll(pool, _holding([1]), [], 6.0)
-	assert_eq(_face_of(actions, "Shot"), 1)
+func test_each_kept_face_gets_its_own_copy() -> void:
+	var pool := _pool([_kept_option("Shot"), _option(_wait())])
+	var actions := EnemyActionSelector.roll(pool, _keeping([2, 5]), [], 0.0)
+	assert_eq(_names(actions).count("Shot"), 2)
+	assert_eq(actions[1].name, "Shot")
+	assert_eq(actions[4].name, "Shot")
+	assert_eq(actions.size(), 6)
 
 
-func test_each_pinned_action_takes_its_own_held_face() -> void:
-	var pool := _pool([_pinned_option("A"), _pinned_option("B"), _option(_wait())])
-	var actions := EnemyActionSelector.roll(pool, _holding([2, 5]), [], 0.0)
-	assert_eq(_face_of(actions, "A"), 2)
-	assert_eq(_face_of(actions, "B"), 5)
-
-
-func test_a_spare_pinned_action_still_appears_somewhere() -> void:
-	var pool := _pool([_pinned_option("A"), _pinned_option("B"), _option(_wait())])
-	var actions := EnemyActionSelector.roll(pool, _holding([4]), [], 0.0)
-	assert_eq(_face_of(actions, "A"), 4)
-	assert_gt(_face_of(actions, "B"), 0)
-
-
-func test_holding_nothing_leaves_the_roll_unchanged() -> void:
-	var pool := _pool([_pinned_option("Shot"), _option(_wait())])
+func test_nothing_kept_rolls_exactly_what_it_would_without_the_option() -> void:
 	RNGManager.seed_scenario(77)
-	var pinned := _names(EnemyActionSelector.roll(pool, _holding([]), [], 0.5))
-	pool.actions_possible[0].place_on_held_faces = false
+	var with_option := _names(EnemyActionSelector.roll(
+		_pool([_kept_option("Shot"), _attack_option(3), _option(_wait())]), _keeping([]), [], 0.5))
 	RNGManager.seed_scenario(77)
-	assert_eq(_names(EnemyActionSelector.roll(pool, _holding([]), [], 0.5)), pinned)
+	var without := _names(EnemyActionSelector.roll(
+		_pool([_attack_option(3), _option(_wait())]), _keeping([]), [], 0.5))
+	assert_eq(with_option, without)
 
 
-func test_the_siege_mortar_loads_its_shot_on_the_held_face() -> void:
+## A die out of the tree (Dice reach for game systems) showing [param face].
+func _die(face: int) -> Dice:
+	var die: Dice = autofree(_DICE_SCENE.instantiate())
+	die.value = face
+	return die
+
+
+## A pirate with a dice queue in the tree (DiceQueue.add reads its position).
+func _holder() -> Enemy:
+	var ship: Enemy = autofree(Ships.ship(ScenarioManager.Faction.PIRATE))
+	autofree(ship.health)
+	ship.dice_manager = add_child_autofree(EnemyDiceManager.new())
+	return ship
+
+
+func test_only_dice_the_ship_kept_itself_count() -> void:
+	var ship := _holder()
+	var handed := _die(2)
+	var kept := _die(4)
+	ship.dice_manager.queue.append(handed)
+	ship.dice_manager.queue.append(kept)
+	ship.kept_dice.append(kept)
+	assert_eq(EnemyActionSituation.for_ship(ship, [ship]).kept_faces, [4] as Array[int])
+
+
+func test_a_kept_die_taken_back_no_longer_counts() -> void:
+	var ship := _holder()
+	ship.kept_dice.append(_die(4))
+	assert_eq(EnemyActionSituation.for_ship(ship, [ship]).kept_faces, [] as Array[int])
+
+
+func test_keeping_a_die_records_it_on_the_ship() -> void:
+	var ship := _holder()
+	var event := KeepDieWithActorEvent.new()
+	event.actor = ship
+	event.activator_die = _die(3)
+	event.resolve(null)
+	assert_eq(ship.kept_dice.size(), 1)
+	assert_true(event.activator_die in ship.dice_manager.queue)
+
+
+func test_the_siege_mortar_only_fires_siege_shot_from_a_loaded_die() -> void:
 	var mortar: EnemyResource = load("res://Source/Content/Enemies/EnemyResources/siege_mortar.tres")
-	var loaded: EnemyTurnActionList = mortar.action_options[1]
-	var actions := EnemyActionSelector.roll(loaded, _holding([3]), [], mortar.face_bias)
-	assert_eq(actions[2].name, "Siege Shot")
+	for pool: EnemyTurnActionList in mortar.action_options:
+		for i: int in range(50):
+			var actions := EnemyActionSelector.roll(pool, _keeping([]), [], mortar.face_bias)
+			assert_false("Siege Shot" in _names(actions))
+	var loaded := EnemyActionSelector.roll(mortar.action_options[1], _keeping([3]), [], mortar.face_bias)
+	assert_eq(_names(loaded).count("Siege Shot"), 1)
+	assert_eq(loaded[2].name, "Siege Shot")

@@ -49,6 +49,11 @@ var formation_pinned: bool = false
 ## The number of turns this enemy has lived
 @onready var turns_alive: int = 0
 
+## Dice this ship held onto itself on its last turn (KEEP_DIE_WITH_ACTOR), as
+## opposed to dice it was handed. Only these load a kept-face action (see
+## EnemyActionOptionResource.fills_kept_faces). Cleared when it next acts.
+var kept_dice: Array[Dice] = []
+
 ## How many ships of this enemy's own faction have died since it arrived.
 ## Drives PoolSelection.SQUAD_LOSSES.
 var squad_losses: int = 0
@@ -393,6 +398,9 @@ func is_turn_table_safe_while_hidden() -> bool:
 ## Runs a full turn using all the dice in the queue,
 ## executing their actions sequentially 
 func run_turn() -> void:
+	# Last turn's loaded dice are being spent now; only what this turn keeps
+	# loads the next table.
+	kept_dice.clear()
 	var enemy_action_events: Array[EnemyActionEvent] = []
 	
 	for i in range(len(dice_manager.queue)):
