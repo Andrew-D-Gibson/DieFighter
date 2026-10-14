@@ -72,6 +72,14 @@ var _arrival_rest: Dictionary[Enemy, Vector2] = {}
 ## ship that is still arriving; see Events.enemies_arrived.
 var arrival_in_progress: bool = false
 
+## The hull of a ship made of parts (ScenarioResource.hull), while one is here.
+var _hull: ShipHull
+## Each mounted part, and where on the hull it sits.
+var _mounts: Dictionary[Enemy, Vector2] = {}
+const _HULL_KEY: StringName = &"hull"
+## How much of the formation a mounted part holds, for its speech box.
+const _MOUNT_FOOTPRINT: float = 32.0
+
 ## The z authored on this node, which the ships go back to once a jump is over.
 @onready var _combat_z_index: int = z_index
 
@@ -91,6 +99,7 @@ func _ready() -> void:
 	Events.enemy_left.connect(func(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		if ship in enemies:
 			enemies.erase(ship)
+		_unmount(ship)
 		_awaiting_fly_in.erase(ship)
 		_arrival_rest.erase(ship)
 		_active_moves.erase(ship)
@@ -115,6 +124,7 @@ func _ready() -> void:
 		if len(scenario.starting_enemies) > 0:
 			spawn_enemies(scenario.starting_enemies)
 			_restore_enemies(scenario.starting_enemies)
+			_spawn_hull(scenario)
 	)
 	Events.start_scenario.connect(start_enemy_fly_in)
 	Events.player_turn_start.connect(generate_all_turn_actions)
@@ -124,6 +134,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if enemies_jumping:
 		_update_jumping_enemies(delta)
+	elif is_instance_valid(_hull):
+		_carry_mounts()
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
@@ -138,9 +150,16 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 		# Set before add_child: Enemy._ready() bakes health off this.
 		enemy.starting_health_fraction = spawn.starting_health_fraction
 
+		# A part of a bigger ship rides its hull (see _spawn_hull), and never
+		# bobs on its own: it moves when the hull does.
+		if spawn.mounted:
+			enemy.formation_pinned = true
+			enemy.moving_in_world = true
+			_mounts[enemy] = spawn.mount_offset
+
 		# A scenario can still nail a ship to one spot when the encounter is
 		# about where that ship is. Everyone else is placed by the formation.
-		if spawn.has_fixed_position():
+		elif spawn.has_fixed_position():
 			enemy.formation_pinned = true
 			var rest: Vector2 = _resting_position(enemy, spawn.path_location_override)
 			_arrival_rest[enemy] = rest
@@ -148,7 +167,8 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 
 		enemies.append(enemy)
 		spawned.append(enemy)
-		_awaiting_fly_in.append(enemy)
+		if not spawn.mounted:
+			_awaiting_fly_in.append(enemy)
 		add_child(enemy)
 
 		if enemy.formation_pinned:
@@ -245,9 +265,13 @@ func start_enemy_fly_in() -> void:
 	if len(Enemy.forced_actions) > 0:
 		generate_all_turn_actions()
 
+	# A hull arrives first, carrying its parts with it.
+	if is_instance_valid(_hull):
+		await _fly_in_hull()
+
 	# A copy, because ships can leave while an earlier one is still arriving.
 	for enemy: Enemy in enemies.duplicate():
-		if not is_instance_valid(enemy):
+		if not is_instance_valid(enemy) or _mounts.has(enemy):
 			continue
 
 		# Ships ride the tween from above their slot down onto it, and keep
@@ -630,6 +654,12 @@ func _update_jumping_enemies(delta: float) -> void:
 	var parallax_level: int = 1  # Match medium debris
 	var speed: float = Globals.background_manager.global_speed * \
 					  Globals.background_manager.get_parallax_speed(parallax_level)
+
+	# The hull falls away at the same speed as its parts, so they stay seated.
+	if is_instance_valid(_hull):
+		_hull.global_position.y += delta * speed
+		if _hull.global_position.y > screen_size.y + 80:
+			_free_hull()
 	
 	for i: int in range(len(enemies) - 1, -1, -1):
 		var enemy: Enemy = enemies[i]
@@ -660,6 +690,7 @@ func delete_all_enemies() -> void:
 	_awaiting_fly_in.clear()
 	_arrival_rest.clear()
 	_active_moves.clear()
+	_free_hull()
 	enemies_jumping = false
 
 
@@ -676,3 +707,90 @@ func damage_all_enemies(amount: int) -> void:
 	for i: int in range(len(enemies)-1, -1, -1):
 		enemies[i].health.take_damage(amount)
 		
+
+
+
+## Stands up the hull a scenario's mounted ships are parts of, once they and
+## any saved state are in. Parts already destroyed before a save leave their
+## sockets scarred.
+func _spawn_hull(scenario: ScenarioResource) -> void:
+	# Only the old hull goes: the parts spawn_enemies() just mounted stay.
+	formation.clear_reservation(_HULL_KEY)
+	if is_instance_valid(_hull):
+		_hull.queue_free()
+	_hull = null
+	if scenario.hull == null or scenario.hull.hull_scene == null:
+		_mounts.clear()
+		return
+
+	_hull = scenario.hull.hull_scene.instantiate()
+	var rest: Vector2 = get_point_along_path(scenario.hull.path_location) + scenario.hull.offset
+	_hull.position = rest + Vector2(0, -fly_in_range)
+	_hull.set_meta("rest", rest)
+	add_child(_hull)
+	move_child(_hull, 0)
+
+	var centre_x: float = get_global_point_along_path(scenario.hull.path_location).x
+	formation.reserve(_HULL_KEY, Vector2(
+		centre_x - scenario.hull.width * 0.5, centre_x + scenario.hull.width * 0.5
+	))
+
+	for spawn: EnemyStateRewardResource in scenario.starting_enemies:
+		if spawn.mounted and not _has_part_at(spawn.mount_offset):
+			_hull.scar(spawn.mount_offset, true)
+	# A Continue frees parts that were already gone without announcing them.
+	for part: Enemy in _mounts.keys():
+		if not is_instance_valid(part) or part not in enemies:
+			_mounts.erase(part)
+
+	for part: Enemy in _mounts:
+		var x: float = centre_x + _mounts[part].x
+		formation.reserve(_pin_key(part), Vector2(x - _MOUNT_FOOTPRINT * 0.5, x + _MOUNT_FOOTPRINT * 0.5))
+	_carry_mounts()
+	refresh_formation(false)
+
+
+func _has_part_at(offset: Vector2) -> bool:
+	for part: Enemy in _mounts:
+		if is_instance_valid(part) and part in enemies and _mounts[part] == offset:
+			return true
+	return false
+
+
+## Seats every part on the hull, where the hull is this frame.
+func _carry_mounts() -> void:
+	for part: Enemy in _mounts:
+		if is_instance_valid(part):
+			part.position = _hull.mount_position(_mounts[part])
+
+
+func _fly_in_hull() -> void:
+	var rest: Vector2 = _hull.get_meta("rest")
+	var arrive: Tween = get_tree().create_tween()
+	arrive.tween_property(_hull, "position", rest, fly_in_time)\
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	await arrive.finished
+	Events.enemy_flew_in.emit()
+
+
+## A part left the fight: scar its socket, and break up the hull with the last.
+func _unmount(ship: Enemy) -> void:
+	if not _mounts.has(ship):
+		return
+	var offset: Vector2 = _mounts[ship]
+	_mounts.erase(ship)
+	if not is_instance_valid(_hull) or enemies_jumping:
+		return
+	_hull.scar(offset)
+	if _mounts.is_empty():
+		formation.clear_reservation(_HULL_KEY)
+		_hull.break_up()
+		_hull = null
+
+
+func _free_hull() -> void:
+	formation.clear_reservation(_HULL_KEY)
+	if is_instance_valid(_hull):
+		_hull.queue_free()
+	_hull = null
+	_mounts.clear()

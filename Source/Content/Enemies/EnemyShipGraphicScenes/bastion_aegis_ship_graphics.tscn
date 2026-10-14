@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Bastion/bastion_aegis.png" id="1_5hy1v"]
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_oby0r"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_3pfgn"]
+resource_local_to_scene = true
+shader = ExtResource("1_oby0r")
+shader_parameter/alpha = 0.0
+shader_parameter/flash_color = Color(1, 0, 0, 1)
+shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
+shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
+shader_parameter/cloak_tolerance = 0.1
+
+[node name="BastionAegisShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_3pfgn")
+texture = ExtResource("1_5hy1v")

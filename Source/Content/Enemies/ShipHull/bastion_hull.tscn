@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Enemies/ShipHull/ship_hull.gd" id="1_hull"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Bastion/bastion_hull.png" id="2_tex"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Bastion/bastion_scar.png" id="3_scar"]
+[ext_resource type="PackedScene" uid="uid://b5qwpdwbg4isw" path="res://Assets/Particles/enemy_death_explosion.tscn" id="4_boom"]
+[ext_resource type="PackedScene" uid="uid://c8hhukq5cxc44" path="res://Assets/Particles/engine_particles_large.tscn" id="5_engine"]
+
+[node name="BastionHull" type="Node2D" node_paths=PackedStringArray("body")]
+script = ExtResource("1_hull")
+body = NodePath("Body")
+scar_texture = ExtResource("3_scar")
+explosion_scene = ExtResource("4_boom")
+
+[node name="Body" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+
+[node name="Engine1" parent="Body" instance=ExtResource("5_engine")]
+position = Vector2(-60, -28)
+
+[node name="Engine2" parent="Body" instance=ExtResource("5_engine")]
+position = Vector2(-38, -28)
+
+[node name="Engine3" parent="Body" instance=ExtResource("5_engine")]
+position = Vector2(38, -28)
+
+[node name="Engine4" parent="Body" instance=ExtResource("5_engine")]
+position = Vector2(60, -28)

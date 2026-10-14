@@ -68,6 +68,7 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.tscn" id="boss_intro_card"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_ArcDynamo/GATE_arc_dynamo.tres" id="gate_dynamo"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/GATE_bastion.tres" id="gate_bastion"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
@@ -381,7 +382,7 @@ shop_scenario = ExtResource("21_oai2y")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter")])
-gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo")])
+gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
 starting_scenario = ExtResource("75_imw1m")
 

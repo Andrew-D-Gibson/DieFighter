@@ -21,6 +21,10 @@ extends Resource
 ## draws over the player's own systems panel and reads as already-installed.
 @export var starting_reward_position: Vector2 = Vector2(160, 72)
 
+## A hull the scenario's mounted ships are parts of. Null for an ordinary
+## encounter. See ShipHullResource.
+@export var hull: ShipHullResource
+
 @export_category('Boss')
 ## The name stamped across the boss intro card when this fight starts. Leave
 ## empty for an encounter that isn't a boss fight: no card plays.

@@ -25,3 +25,11 @@ extends Resource
 
 func has_fixed_position() -> bool:
 	return path_location_override >= 0.0
+
+
+## This ship is a part of the scenario's hull (ScenarioResource.hull) rather
+## than a ship of its own: it rides the hull at mount_offset instead of taking
+## a place in the formation.
+@export var mounted: bool = false
+## Where on the hull this part sits, from the hull's centre.
+@export var mount_offset: Vector2 = Vector2.ZERO
