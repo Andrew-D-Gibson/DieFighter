@@ -26,7 +26,11 @@ static func roll(
 	forced: Array[EnemyActionResource] = [],
 	face_bias: float = 0.0
 ) -> Array[EnemyActionResource]:
-	var actions: Array[EnemyActionResource] = forced.slice(0, SLOT_COUNT)
+	# Copies, because each slot gets numbered and bound: the tutorial's queued
+	# resources are shared, and must not carry one ship's binding to the next.
+	var actions: Array[EnemyActionResource] = []
+	for action: EnemyActionResource in forced.slice(0, SLOT_COUNT):
+		actions.append(action.duplicate(true))
 	var options: Array[EnemyActionOptionResource] = available_options(pool, situation)
 
 	# At least one of every "force_include" option, and the weights for the
@@ -162,9 +166,7 @@ static func _weighted_pick(
 
 
 static func _fallback() -> EnemyActionResource:
-	var action: EnemyActionResource = _FALLBACK_ACTION.duplicate(true)
-	action.intent_amount = 0
-	return action
+	return _FALLBACK_ACTION.duplicate(true)
 
 
 ## Orders a rolled table onto faces 1-6. With no bias it's the plain shuffle it

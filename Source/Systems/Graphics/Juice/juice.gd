@@ -46,6 +46,18 @@ static func bump(node: Node2D, strength: float = 0.25, duration: float = 0.3) ->
 	node.set_meta(_BUMP_TWEEN_META, tween)
 
 
+## Stops a bump partway and puts [param node] back at its resting scale, for
+## code that is about to set the scale itself.
+static func cancel_bump(node: Node2D) -> void:
+	if not is_instance_valid(node) or not node.has_meta(_BUMP_TWEEN_META):
+		return
+	var tween: Tween = node.get_meta(_BUMP_TWEEN_META)
+	if tween != null and tween.is_valid():
+		tween.kill()
+		node.scale = node.get_meta(_REST_SCALE_META)
+	node.remove_meta(_BUMP_TWEEN_META)
+
+
 ## A quick side-to-side twist, read as "no". Rotation rather than position,
 ## because Shakeable owns a sprite's position while a shake is running.
 static func wiggle(node: Node2D, degrees: float = 10.0, duration: float = 0.3) -> void:

@@ -20,6 +20,8 @@ extends Node2D
 ## hit sparks and Juice shockwaves (+20), but under damage numbers (+100) so
 ## the killing blow's number stays readable.
 const _RAISED_SHIP_Z_INDEX: int = 50
+## How much bigger the ship draws while raised.
+const _RAISED_SHIP_SCALE: float = 1.2
 
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
@@ -30,6 +32,9 @@ var _health_bar_tween: Tween
 
 ## Whichever flash is currently fading. See flash().
 var _flash_tween: Tween
+
+## The ship's scale before set_ship_raised() enlarged it.
+var _lowered_ship_scale: Vector2 = Vector2.ONE
 
 ## Sets up the ship graphics and associated components
 func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
@@ -174,8 +179,14 @@ func flash(color: Color, duration: float = 0.25) -> void:
 func set_ship_raised(raised: bool) -> void:
 	if not is_instance_valid(ship_graphics):
 		return
+	# A hit's bump may still be springing the scale; it would undo ours.
+	Juice.cancel_bump(ship_graphics)
 	ship_graphics.z_index = _RAISED_SHIP_Z_INDEX if raised else 0
-	ship_graphics.scale = Vector2(1.2, 1.2) if raised else Vector2(1,1)
+	if raised:
+		_lowered_ship_scale = ship_graphics.scale
+		ship_graphics.scale = _lowered_ship_scale * _RAISED_SHIP_SCALE
+	else:
+		ship_graphics.scale = _lowered_ship_scale
 
 
 func _set_transparency(alpha: float) -> void:

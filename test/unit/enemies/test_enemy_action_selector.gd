@@ -107,6 +107,14 @@ func test_forced_actions_that_fill_the_table_keep_their_order() -> void:
 	assert_eq(names, ["Forced 0", "Forced 1", "Forced 2", "Forced 3", "Forced 4", "Forced 5"])
 
 
+func test_forced_actions_are_copied_so_numbering_never_touches_the_originals() -> void:
+	var forced: Array[EnemyActionResource] = [_action("Forced")]
+	var pool := _pool([_option(_action("Attack"))])
+	var table: Array[EnemyActionResource] = EnemyActionSelector.roll(pool, _situation(true), forced)
+	assert_does_not_have(table, forced[0])
+	assert_eq(forced[0].activating_die_number, 0, "the tutorial's queued resource is untouched")
+
+
 # ── Hidden intents ─────────────────────────────────────────────────────────────
 
 func test_hidden_tables_never_roll_flee() -> void:

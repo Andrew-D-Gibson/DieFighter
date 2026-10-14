@@ -28,9 +28,7 @@ extends Resource
 ## hits hard.
 @export_range(-1.0, 3.0, 0.5) var strength_tier_override: float = -1.0
 
-var amount: int = 0
 
-	
 func get_action() -> EnemyActionResource:
 	# base_action.duplicate(true) already deep-duplicates effect_chain
 	# (and its effects) for us, so v2 actions need nothing further here —
@@ -40,7 +38,7 @@ func get_action() -> EnemyActionResource:
 	# Randomly set the strength of the effect, then scale it by how deep into
 	# the run the player is. This is the only place a turn's amounts are rolled,
 	# so it's the one place run difficulty needs to touch enemy damage.
-	amount = RNGManager.randi_range(RNGManager.Bucket.ENEMY_AI, min_amount, max_amount)
+	var amount: int = RNGManager.randi_range(RNGManager.Bucket.ENEMY_AI, min_amount, max_amount)
 	# A hologram's amount is its face, which picks the ally's slot; it isn't
 	# something to scale up with the run.
 	var is_face: bool = action.get_relay() == EnemyActionResource.Relay.HOLOGRAM

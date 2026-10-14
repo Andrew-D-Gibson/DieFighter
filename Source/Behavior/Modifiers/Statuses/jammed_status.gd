@@ -30,6 +30,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if action_event.enemy != affected_node:
 		return
 
-	action_event.action = _DO_NOTHING
+	# A copy, like every rolled action: the preloaded one is shared.
+	action_event.action = _DO_NOTHING.duplicate(true)
 	announce_triggered()
 	consume(1)

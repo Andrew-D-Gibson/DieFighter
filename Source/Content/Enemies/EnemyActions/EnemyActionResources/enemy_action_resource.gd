@@ -216,10 +216,9 @@ func show_info() -> void:
 	info.title_label_text = name
 
 	if activating_die_number:
-		info.bottom_label_text = "[color=yellow]Uses (die_" + \
-									str(activating_die_number) + \
-									") -> " + \
-									get_description_text()
+		info.bottom_label_text = "[color=yellow]Uses (die_%d) -> %s[/color]" % [
+			activating_die_number, get_description_text()
+		]
 	else:
 		info.bottom_label_text = get_description_text()
 

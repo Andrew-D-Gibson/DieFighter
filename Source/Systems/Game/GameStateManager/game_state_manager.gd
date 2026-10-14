@@ -491,7 +491,6 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 ##   enemies          — per starting_enemies index: alive, state, health, shields
 ##   offers           — reward offers still floating, item by item
 ##   shop             — unsold stock and prices, when the shop is open
-##   hazard_turns     — the hazard's countdown
 ##   dice             — the player's hand: value and holographic per die
 ##   tile_uses        — uses_remaining per grid position ("x,y")
 ##   rng              — the per-scenario RNG streams, mid-flight
@@ -503,7 +502,6 @@ func _capture_scenario_progress() -> Dictionary:
 		"cleared": _scenario_cleared,
 		"enemies": Globals.enemy_manager.capture_enemies(),
 		"offers": Globals.reward_manager.capture_offers(),
-		"hazard_turns": Globals.hazard_manager.turns_remaining,
 		"dice": Globals.player.capture_hand(),
 		"tile_uses": Globals.tile_grid.capture_tile_uses(),
 		"rng": RNGManager.capture_scenario_states(),

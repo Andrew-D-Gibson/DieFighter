@@ -205,7 +205,8 @@ func test_jammed_turns_its_ships_actions_into_nothing() -> void:
 	own.enemy = enemy
 	own.action = ATTACK
 	jammed.on_before_event(own, engine)
-	assert_eq(own.action, DO_NOTHING)
+	assert_eq(own.action.name, DO_NOTHING.name)
+	assert_ne(own.action, DO_NOTHING, "a copy, so the shared resource is never bound")
 	assert_null(engine.find_status(enemy, &"jammed"))
 
 
