@@ -11,7 +11,10 @@ extends Node2D
 ## with whatever the jump sequence is doing.
 ##
 ## Positions are rounded to whole sprite pixels before drawing so the dice and
-## chains never shimmer between pixels at the camera's zoom.
+## chains never shimmer between pixels at the camera's zoom. Swinging toward or
+## away from the camera also grows or shrinks a die, rounded to whole pixels
+## too, so it stays at its native size through the gentle idle sway and only
+## stretches on the big lurches of a jump.
 
 ## Twist frames, left to right, covering one full turn on the chain.
 @export var sheet: Texture2D
@@ -39,6 +42,10 @@ const _TWIST_DAMPING: float = 1.4
 const _PERSPECTIVE: float = 0.4
 ## The camera looks at the middle of the walls sprite.
 const _VIEW_CENTRE: Vector2 = Vector2(160, 90)
+## How far the dice hang from the camera, in sprite pixels. Sets how much they
+## grow or shrink with depth: the jump's lean back on the long chain draws them
+## about a fifth bigger, and the hard stop's throw forward about a fifth smaller.
+const _CAMERA_DISTANCE: float = 60.0
 
 ## Idle: a slow, off-beat sway, like a ship that is never perfectly still.
 const _IDLE_SWAY: float = 18.0
@@ -107,6 +114,10 @@ class Die:
 			cos(swing.x) * cos(swing.y),
 			sin(swing.y)
 		) * length
+
+	## Size on screen relative to the sprite, from how close the die has swung.
+	func depth_scale() -> float:
+		return _CAMERA_DISTANCE / (_CAMERA_DISTANCE - reach().z)
 
 	## Where the top of the die sits on screen, before rounding.
 	func hang_point() -> Vector2:
@@ -277,9 +288,13 @@ func _draw_chain(from: Vector2i, to: Vector2i) -> void:
 func _draw_die(die: Die, top: Vector2i) -> void:
 	var frame: int = posmod(roundi(die.twist / (TAU / frame_count)), frame_count)
 	var region: Rect2 = Rect2(Vector2(frame * frame_size.x, 0), Vector2(frame_size))
+	# Whole pixels, so small swings round back to the native size and the
+	# sprite only stretches once the die has clearly moved in depth.
+	var size: Vector2i = Vector2i((Vector2(frame_size) * die.depth_scale()).round())
 	# The sheet's first row is empty headroom; the die's top edge is row one.
-	var origin: Vector2 = Vector2(top) - Vector2(floorf(frame_size.x / 2.0), 1.0)
-	draw_texture_rect_region(sheet, Rect2(origin, Vector2(frame_size)), region)
+	var headroom: float = roundf(float(size.y) / frame_size.y)
+	var origin: Vector2 = Vector2(top) - Vector2(floorf(size.x / 2.0), headroom)
+	draw_texture_rect_region(sheet, Rect2(origin, Vector2(size)), region)
 
 
 static func _line_pixels(from: Vector2i, to: Vector2i) -> Array[Vector2i]:

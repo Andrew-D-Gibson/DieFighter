@@ -1,18 +1,21 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://l1wx7psycgx0"]
 
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_vuk0s"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_olpow"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="12_vk8qy"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" uid="uid://bxuwbocierbhv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/impound.tres" id="act_impound"]
+[ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_quake"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield"]
 [ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_siphon"]
-[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
-[ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_quake"]
-[ext_resource type="Resource" uid="uid://bxuwbocierbhv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/impound.tres" id="act_impound"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="effect_chain"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect_data"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/arc_dynamo_ship_graphics.tscn" id="gfx"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/ArcDynamo/arc_dynamo_targeting_image.png" id="tex"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect_data"]
-[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="effect_chain"]
+[ext_resource type="Texture2D" uid="uid://dhsdegv7iqfet" path="res://Assets/Textures/Enemies/ArcDynamo/arc_dynamo_targeting_image.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -33,7 +36,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt2"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_shield")
-weight = 1.0
 min_amount = 6
 max_amount = 9
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -41,7 +43,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt3"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_siphon")
-weight = 1.0
 min_amount = 2
 max_amount = 3
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -76,13 +77,11 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt7"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_quake")
-weight = 1.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_opt8"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_impound")
-weight = 1.0
 min_amount = 4
 max_amount = 6
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -138,13 +137,13 @@ pool_selection = 1
 face_bias = 1.5
 overload_threshold = 15
 overload_threshold_growth = 4
+overload_chain = SubResource("Resource_chain")
 overload_gauge_position = Vector2(0, 27)
+ship_graphics_scene = ExtResource("gfx")
 graphics_scene_offset = Vector2(0, -4)
 dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex")
 health_bar_position = Vector2(-64, -5)
 dice_queue_position = Vector2(56, 14)
 formation_width = 100.0
-overload_chain = SubResource("Resource_chain")
-ship_graphics_scene = ExtResource("gfx")
-targeting_computer_image = ExtResource("tex")
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"

@@ -1,13 +1,15 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://cccbjf87dwwt6"]
 
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_esltd"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_t1ius"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack"]
-[ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="act_lockout"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="act_lockout"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/bastion_batteries_ship_graphics.tscn" id="gfx"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Bastion/bastion_batteries_targeting_image.png" id="tex"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://n7tlfjwgahc7" path="res://Assets/Textures/Enemies/Bastion/bastion_batteries_targeting_image.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -20,7 +22,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt1"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_attack")
-weight = 1.0
 min_amount = 10
 max_amount = 14
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -28,7 +29,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt2"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_lockout")
-weight = 1.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_opt3"]
@@ -49,9 +49,9 @@ description = "The Bastion's main guns. Its heaviest volleys sit on its highest 
 max_health = 30
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
 face_bias = 1.0
+ship_graphics_scene = ExtResource("gfx")
 dialogue_offset = Vector2(0, -20)
+targeting_computer_image = ExtResource("tex")
 health_bar_position = Vector2(0, -25)
 dice_queue_position = Vector2(-14, 24)
-ship_graphics_scene = ExtResource("gfx")
-targeting_computer_image = ExtResource("tex")
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"

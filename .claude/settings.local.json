@@ -24,5 +24,6 @@
     "godot-mcp-docs",
     "godot",
     "aseprite"
-  ]
+  ],
+  "skillOverrides": {}
 }

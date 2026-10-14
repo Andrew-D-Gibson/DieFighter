@@ -26,6 +26,9 @@ func resolve(_engine: ScenarioEngine) -> void:
 	if is_instance_valid(Globals.player):
 		Globals.player.lose_dice_to(enemy, loot)
 
+	# Deaf to the scenario first: enemy_left can fire PIRATES_DEFEATED at once,
+	# and a ship still listening would react to its own exit.
+	enemy.disconnect_scenario_signals()
 	# Off the roster first, so the formation closes up behind it as it goes.
 	Events.enemy_left.emit(enemy, enemy.scenario_state.faction)
 

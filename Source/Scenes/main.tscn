@@ -37,10 +37,6 @@
 [ext_resource type="PackedScene" uid="uid://c5lgcsetsx3lq" path="res://Source/Systems/Game/Shop/shop.tscn" id="24_ealw0"]
 [ext_resource type="Resource" uid="uid://b5fsugdeu2q82" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/EVENT_pirate_attacking_civilian.tres" id="25_o33d5"]
 [ext_resource type="Resource" uid="uid://dn8q8cchon3n6" path="res://Source/Content/ScenarioResources/Scenarios/GATE_SectorWarden/GATE_sector_warden.tres" id="26_aaucc"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_MortarNest/ELITE_mortar_nest.tres" id="elite_mortar"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_LanceSquadron/ELITE_lance_squadron.tres" id="elite_lance"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_TitheFleet/ELITE_tithe_fleet.tres" id="elite_tithe"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_HunterKillers/ELITE_hunter_killers.tres" id="elite_hunter"]
 [ext_resource type="PackedScene" uid="uid://c7oubps738mwn" path="res://Source/Systems/TutorialManager/tutorial_manager.tscn" id="27_mpji1"]
 [ext_resource type="PackedScene" uid="uid://c2hbku8vgrm4f" path="res://Source/Systems/Game/JumpManager/jump_manager.tscn" id="27_nwhv6"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="28_lejlh"]
@@ -63,14 +59,18 @@
 [ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
 [ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
-[ext_resource type="PackedScene" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.tscn" id="boss_intro_card"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_ArcDynamo/GATE_arc_dynamo.tres" id="gate_dynamo"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/GATE_bastion.tres" id="gate_bastion"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.tscn" id="boss_intro_card"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_HunterKillers/ELITE_hunter_killers.tres" id="elite_hunter"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_LanceSquadron/ELITE_lance_squadron.tres" id="elite_lance"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_MortarNest/ELITE_mortar_nest.tres" id="elite_mortar"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_TitheFleet/ELITE_tithe_fleet.tres" id="elite_tithe"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/GATE_bastion.tres" id="gate_bastion"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_ArcDynamo/GATE_arc_dynamo.tres" id="gate_dynamo"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/bump_explanation.tres" id="tut_bump_explanation"]
@@ -107,7 +107,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_imw1m"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_r1j6u"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -239,7 +239,7 @@ visible = false
 [node name="GameOver" parent="UI" unique_id=1344297921 instance=ExtResource("3_flage")]
 visible = false
 
-[node name="BossIntroCard" parent="UI" instance=ExtResource("boss_intro_card")]
+[node name="BossIntroCard" parent="UI" unique_id=1189634466 instance=ExtResource("boss_intro_card")]
 
 [node name="SaveIndicator" parent="UI" unique_id=1121636869 instance=ExtResource("4_svind")]
 
@@ -320,7 +320,7 @@ script = ExtResource("14_jblvd")
 z_index = -24
 position = Vector2(160, 90)
 
-[node name="JumpGate" parent="Graphics" instance=ExtResource("jump_gate_scene")]
+[node name="JumpGate" parent="Graphics" unique_id=262818756 instance=ExtResource("jump_gate_scene")]
 
 [node name="Vignette" parent="Graphics" unique_id=1077340110 instance=ExtResource("6_hd7px")]
 visible = false
@@ -333,7 +333,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_imw1m")
+material = SubResource("ShaderMaterial_r1j6u")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]

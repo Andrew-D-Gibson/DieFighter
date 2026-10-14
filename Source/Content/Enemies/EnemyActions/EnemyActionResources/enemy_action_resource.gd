@@ -27,7 +27,7 @@ enum Relay {
 }
 
 @export var name: String
-@export var description: String
+@export_multiline var description: String
 @export var indicator_texture: Texture2D
 @export var info_texture: Texture2D
 @export var effect_chain: EffectChain
@@ -237,4 +237,3 @@ func get_description_text() -> String:
 	return description \
 		.replace('(amount)', get_intent_amount_text()) \
 		.replace('(target)', target_name)
-

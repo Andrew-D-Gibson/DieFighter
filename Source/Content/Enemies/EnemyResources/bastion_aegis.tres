@@ -1,14 +1,16 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://41yhwmalllrh"]
 
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/aegis_ally.tres" id="act_aegis"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/repair_ally.tres" id="act_repair"]
-[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_5ope4"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_323ea"]
+[ext_resource type="Resource" uid="uid://cnsicvupexlcv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/aegis_ally.tres" id="act_aegis"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack"]
+[ext_resource type="Resource" uid="uid://brr01wenpqywh" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/repair_ally.tres" id="act_repair"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/bastion_aegis_ship_graphics.tscn" id="gfx"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Bastion/bastion_aegis_targeting_image.png" id="tex"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://ng11g05wgoew" path="res://Assets/Textures/Enemies/Bastion/bastion_aegis_targeting_image.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -21,7 +23,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt1"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_repair")
-weight = 1.0
 min_amount = 4
 max_amount = 6
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -29,7 +30,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt2"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_shield")
-weight = 1.0
 min_amount = 5
 max_amount = 8
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -37,7 +37,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt3"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_attack")
-weight = 1.0
 min_amount = 3
 max_amount = 5
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -54,9 +53,9 @@ description = "Shield generator. It throws shields over the rest of the Bastion 
 max_health = 24
 starting_shields = 8
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+ship_graphics_scene = ExtResource("gfx")
 dialogue_offset = Vector2(0, -20)
+targeting_computer_image = ExtResource("tex")
 health_bar_position = Vector2(0, -25)
 dice_queue_position = Vector2(14, 24)
-ship_graphics_scene = ExtResource("gfx")
-targeting_computer_image = ExtResource("tex")
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"

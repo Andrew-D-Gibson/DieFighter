@@ -1,17 +1,19 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://bbslo3tuswbhc"]
 
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_yhsgv"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_6rat1"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/relay.tres" id="act_relay"]
-[ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_siphon"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
 [ext_resource type="Resource" uid="uid://bxuwbocierbhv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/impound.tres" id="act_impound"]
-[ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_quake"]
 [ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="act_lockout"]
+[ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_quake"]
+[ext_resource type="Resource" uid="uid://cp0l6a18hiwyb" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/relay.tres" id="act_relay"]
+[ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_siphon"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/bastion_core_ship_graphics.tscn" id="gfx"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Bastion/bastion_core_targeting_image.png" id="tex"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://c8n3dingm437s" path="res://Assets/Textures/Enemies/Bastion/bastion_core_targeting_image.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -30,7 +32,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt2"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_siphon")
-weight = 1.0
 min_amount = 2
 max_amount = 3
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -57,7 +58,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt5"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_impound")
-weight = 1.0
 min_amount = 4
 max_amount = 6
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -65,7 +65,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt6"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_quake")
-weight = 1.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_pool1"]
@@ -84,7 +83,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt8"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_siphon")
-weight = 1.0
 min_amount = 3
 max_amount = 4
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -92,7 +90,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt9"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_impound")
-weight = 1.0
 min_amount = 4
 max_amount = 6
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -100,7 +97,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt10"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_lockout")
-weight = 1.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_pool2"]
@@ -115,9 +111,9 @@ description = "The heart of the Bastion. It passes dice to its parts while they 
 max_health = 40
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1"), SubResource("Resource_pool2")])
 pool_selection = 2
+ship_graphics_scene = ExtResource("gfx")
 dialogue_offset = Vector2(0, -20)
+targeting_computer_image = ExtResource("tex")
 health_bar_position = Vector2(0, -27)
 dice_queue_position = Vector2(14, 26)
-ship_graphics_scene = ExtResource("gfx")
-targeting_computer_image = ExtResource("tex")
 metadata/_custom_type_script = "uid://cajjx3mskpg2e"

@@ -64,7 +64,7 @@ static func spawn(target: Node2D, amount: int, color: Color) -> void:
 	# Hits on the player land down in the cockpit corner while their eyes are on
 	# the enemy that fired, so they print a size up to still catch the eye.
 	var size: float = 1.0 + (_PLAYER_EXTRA_SCALE if target is Player else 0.0)
-	# Alternate sides so back-to-back hits don't share a spot.
+	# A random side, so back-to-back hits usually don't share a spot.
 	var side: float = -1.0 if RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, 1.0) < 0.5 else 1.0
 	var origin: Vector2 = Juice.anchor_of(target) + Vector2(side * _DAMAGE_SIDE_PIXELS * size, 0.0)
 	var drift: Vector2 = Vector2(side * _DAMAGE_DRIFT.x, _DAMAGE_DRIFT.y) * size
@@ -104,6 +104,10 @@ static func _stack_offset(target: Node2D) -> float:
 	var id: int = target.get_instance_id()
 	var entry: Dictionary = _recent_callouts.get(id, {"msec": -_STACK_WINDOW_MSEC, "count": 0})
 	var count: int = (entry["count"] as int) + 1 if now - (entry["msec"] as int) < _STACK_WINDOW_MSEC else 0
+	# Keyed by instance id, so drop expired ships rather than grow all run.
+	for stale: int in _recent_callouts.keys():
+		if now - (_recent_callouts[stale]["msec"] as int) >= _STACK_WINDOW_MSEC:
+			_recent_callouts.erase(stale)
 	_recent_callouts[id] = {"msec": now, "count": count}
 	return -_STACK_STEP_PIXELS * count
 

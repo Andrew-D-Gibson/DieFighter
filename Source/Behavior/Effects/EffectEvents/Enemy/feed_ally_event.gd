@@ -65,6 +65,4 @@ static func build_ally_action(target: Enemy, die: Dice, depth: int, visited: Arr
 func _return_to_player() -> void:
 	if not is_instance_valid(Globals.player):
 		return
-	activator_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
-	if is_instance_valid(activator_die):
-		Globals.player.dice_manager.add(activator_die)
+	Globals.player.dice_manager.add(activator_die)

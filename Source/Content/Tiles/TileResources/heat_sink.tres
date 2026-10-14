@@ -1,13 +1,13 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://by703x7tftnwu"]
 
-[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/BlueTiles/heat_sink.png" id="tex"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_shield"]
+[ext_resource type="Texture2D" uid="uid://dubvespbhgfs7" path="res://Assets/Textures/Tiles/BlueTiles/heat_sink.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -63,9 +63,25 @@ subtype = 2
 multiplier = 2.0
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 21
+amount = 10
+color = Color(0.949, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_step_10"]
 script = ExtResource("script_effect")
 subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_11"]
@@ -85,22 +101,6 @@ category = 3
 subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 21
-amount = 10
-color = Color(0.9490, 0.6118, 0.3647, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 14
-amount = 18
-color = Color(0.2627, 0.6510, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_chain_14"]
 script = ExtResource("script_chain")
 effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_juice_1"), SubResource("Resource_step_10"), SubResource("Resource_juice_2"), SubResource("Resource_step_11"), SubResource("Resource_step_12"), SubResource("Resource_step_13")])
@@ -116,7 +116,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_f0")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

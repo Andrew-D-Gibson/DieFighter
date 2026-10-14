@@ -94,6 +94,8 @@ func open(quiet: bool) -> void:
 	_kill_tweens()
 	position = Vector2(_clear_rest_x(), rest_position.y)
 	modulate = Color.WHITE
+	# A warp-in cut short by close() leaves the ring over-bright.
+	ring.modulate = Color.WHITE
 	ring.show()
 	portal.show()
 	ring.speed_scale = 1.0

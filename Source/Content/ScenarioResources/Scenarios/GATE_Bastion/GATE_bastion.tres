@@ -1,21 +1,20 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://dq0xed2ajxje"]
 
-[ext_resource type="Texture2D" uid="uid://e4r8pfc36ryf" path="res://Assets/Textures/Map/EncounterIcons/jump_gate.png" id="tex_gate"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/rift_space_only.tres" id="bg_rift"]
+[ext_resource type="Resource" uid="uid://41yhwmalllrh" path="res://Source/Content/Enemies/EnemyResources/bastion_aegis.tres" id="enemy_aegis"]
+[ext_resource type="Resource" uid="uid://cccbjf87dwwt6" path="res://Source/Content/Enemies/EnemyResources/bastion_batteries.tres" id="enemy_batteries"]
+[ext_resource type="Resource" uid="uid://bbslo3tuswbhc" path="res://Source/Content/Enemies/EnemyResources/bastion_core.tres" id="enemy_core"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/ShipHull/bastion_hull.tscn" id="hull_scene"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
-[ext_resource type="Script" path="res://Source/Content/ScenarioResources/ship_hull_resource.gd" id="script_hull"]
-[ext_resource type="PackedScene" path="res://Source/Content/Enemies/ShipHull/bastion_hull.tscn" id="hull_scene"]
+[ext_resource type="Script" uid="uid://by46pdxrs2ri1" path="res://Source/Content/ScenarioResources/ship_hull_resource.gd" id="script_hull"]
 [ext_resource type="Resource" uid="uid://kfnsjk3tjcr0" path="res://Source/Content/ScenarioResources/Scenarios/GATE_SectorWarden/warden_combatant.tres" id="state_boss"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/rift_space_only.tres" id="bg_rift"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/bastion_batteries.tres" id="enemy_batteries"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/bastion_core.tres" id="enemy_core"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/bastion_aegis.tres" id="enemy_aegis"]
+[ext_resource type="Texture2D" uid="uid://e4r8pfc36ryf" path="res://Assets/Textures/Map/EncounterIcons/jump_gate.png" id="tex_gate"]
 
 [sub_resource type="Resource" id="Resource_hull"]
 script = ExtResource("script_hull")
 hull_scene = ExtResource("hull_scene")
-offset = Vector2(0, 0)
 width = 210.0
 
 [sub_resource type="Resource" id="Resource_reward0"]
@@ -38,7 +37,6 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_2")
 min_money = 120
 max_money = 120
-num_of_rewards = 3
 minimum_rarity = 2
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
