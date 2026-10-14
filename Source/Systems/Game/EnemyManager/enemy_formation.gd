@@ -56,6 +56,12 @@ func reserve(key: StringName, span: Vector2) -> bool:
 	return true
 
 
+## The reservation key for space a particular ship holds (a pinned spot, a
+## seat on a hull).
+static func ship_key(ship: Node) -> StringName:
+	return StringName("ship_%d" % ship.get_instance_id())
+
+
 ## Gives [param key]'s claimed space back. Returns whether anything was held.
 func clear_reservation(key: StringName) -> bool:
 	return _reservations.erase(key)

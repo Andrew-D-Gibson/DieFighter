@@ -69,13 +69,8 @@ var _arrival_rest: Dictionary[Enemy, Vector2] = {}
 ## ship that is still arriving; see Events.enemies_arrived.
 var arrival_in_progress: bool = false
 
-## The hull of a ship made of parts (ScenarioResource.hull), while one is here.
-var _hull: ShipHull
-## Each mounted part, and where on the hull it sits.
-var _mounts: Dictionary[Enemy, Vector2] = {}
-const _HULL_KEY: StringName = &"hull"
-## How much of the formation a mounted part holds, for its speech box.
-const _MOUNT_FOOTPRINT: float = 32.0
+## The hull of a ship made of parts, and the parts riding it.
+var _hull_mounts: HullMounts = HullMounts.new(formation)
 
 ## The z authored on this node, which the ships go back to once a jump is over.
 @onready var _combat_z_index: int = z_index
@@ -96,7 +91,7 @@ func _ready() -> void:
 	Events.enemy_left.connect(func(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		if ship in enemies:
 			enemies.erase(ship)
-		_unmount(ship)
+		_hull_mounts.unmount(ship, enemies_jumping)
 		_forget(ship)
 		# Any slot that was going to act on it picks someone else, so the
 		# intent the player reads stays true.
@@ -128,8 +123,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if enemies_jumping:
 		_update_jumping_enemies(delta)
-	elif is_instance_valid(_hull):
-		_carry_mounts()
+	elif _hull_mounts.has_hull():
+		_hull_mounts.carry()
 	
 	
 func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
@@ -149,7 +144,7 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 		if spawn.mounted:
 			enemy.formation_pinned = true
 			enemy.moving_in_world = true
-			_mounts[enemy] = spawn.mount_offset
+			_hull_mounts.mount(enemy, spawn.mount_offset)
 
 		# A scenario can still nail a ship to one spot when the encounter is
 		# about where that ship is. Everyone else is placed by the formation.
@@ -258,12 +253,13 @@ func start_enemy_fly_in() -> void:
 		generate_all_turn_actions()
 
 	# A hull arrives first, carrying its parts with it.
-	if is_instance_valid(_hull):
-		await _fly_in_hull()
+	if _hull_mounts.has_hull():
+		await _hull_mounts.fly_in(fly_in_time)
+		Events.enemy_flew_in.emit()
 
 	# A copy, because ships can leave while an earlier one is still arriving.
 	for enemy: Enemy in enemies.duplicate():
-		if not is_instance_valid(enemy) or _mounts.has(enemy):
+		if not is_instance_valid(enemy) or _hull_mounts.is_mounted(enemy):
 			continue
 
 		# Ships ride the tween from above their slot down onto it, and keep
@@ -426,7 +422,7 @@ func _point_speech(members: Array[Enemy], slots: PackedFloat32Array) -> void:
 	var xs: PackedFloat32Array = slots.duplicate()
 	for enemy: Enemy in enemies:
 		if is_instance_valid(enemy) and enemy.formation_pinned:
-			var held: Vector2 = formation.get_reservation(_pin_key(enemy))
+			var held: Vector2 = formation.get_reservation(EnemyFormation.ship_key(enemy))
 			ships.append(enemy)
 			xs.append((held.x + held.y) * 0.5)
 
@@ -486,7 +482,7 @@ func _reserve_pinned_ship(ship: Enemy, proportion: float) -> void:
 	var centre_x: float = get_global_point_along_path(proportion).x
 	ship.set_health_bar_compact(false)
 	var reach: Vector2 = ship.formation_footprint(false)
-	formation.reserve(_pin_key(ship), Vector2(centre_x - reach.x, centre_x + reach.y))
+	formation.reserve(EnemyFormation.ship_key(ship), Vector2(centre_x - reach.x, centre_x + reach.y))
 
 
 ## Drops everything the formation was tracking for a ship that has gone.
@@ -494,11 +490,7 @@ func _forget(ship: Enemy) -> void:
 	_awaiting_fly_in.erase(ship)
 	_arrival_rest.erase(ship)
 	_active_moves.erase(ship)
-	formation.clear_reservation(_pin_key(ship))
-
-
-func _pin_key(ship: Enemy) -> StringName:
-	return StringName("ship_%d" % ship.get_instance_id())
+	formation.clear_reservation(EnemyFormation.ship_key(ship))
 
 
 ## Samples the path's screen-space x at even steps along it, so a screen x can
@@ -545,15 +537,8 @@ func generate_all_turn_actions() -> void:
 	_roll_turn_actions(get_alive_enemies())
 
 
-## Rolls each ship's table, then binds the slots that act on another ship.
-## Binding waits until every table is in, because who a slot can pick depends
-## on the rest of the roster.
 func _roll_turn_actions(ships: Array[Enemy], take_forced: bool = true) -> void:
-	var roster: Array[Enemy] = get_alive_enemies()
-	for enemy: Enemy in ships:
-		if is_instance_valid(enemy):
-			enemy.generate_turn_actions(EnemyActionSituation.for_ship(enemy, roster), take_forced)
-	EnemyTargetBinder.bind(ships, roster)
+	EnemyTurn.roll_tables(ships, get_alive_enemies(), take_forced)
 
 
 ## The survivors of a fight (the civilian it was over) go back to unreadable
@@ -589,63 +574,7 @@ func _remove_dead_enemies() -> void:
 			
 			
 func run_enemy_turn() -> void:
-	var engine: ScenarioEngine = ScenarioEngine.current()
-	if not engine:
-		return
-
-	# The player can end their turn while the dice they just spent are still
-	# being dragged across the screen. Nothing acts until they've landed.
-	await TractorBeam.wait_for_landings(get_tree())
-	if not is_instance_valid(engine) or engine.is_shut_down():
-		return
-
-	# Turn-end hazards go off now, with the player's dice in the ships' hands
-	# and before any ship reads them. They queue onto the engine, so the wait
-	# below lets them resolve fully first.
-	Events.enemy_turn_starting.emit()
-
-	# Statuses tick first, and resolve completely before any ship acts. Burn
-	# connecting to player_turn_over itself would run after this manager's
-	# own handler had already queued every ship's actions — and a ship that
-	# burns to death here must not go on to take its turn.
-	engine.tick_statuses()
-	if engine.currently_processing_queue:
-		await engine.finished_processing_queue
-	if not is_instance_valid(engine) or engine.is_shut_down():
-		return
-
-	# Create a copy of the enemies array to iterate over
-	# This prevents issues if enemies are removed during iteration
-	var current_enemies: Array[Enemy] = enemies.duplicate()
-
-	var queued_anything: bool = false
-	for enemy: Enemy in current_enemies:
-		if not enemy or not is_instance_valid(enemy):
-			continue
-			
-		if len(enemy.dice_manager.queue) <= 0:
-			continue
-			
-		enemy.run_turn()
-		queued_anything = true
-
-	# finished_processing_queue only fires if there was a queue to finish. An
-	# enemy turn where nobody was handed a die queues nothing, and a turn that
-	# resolves without ever yielding is already done by the time we get here —
-	# awaiting the signal in either case hangs the game, because the player's
-	# next turn is started by enemy_turn_over and it would never be emitted.
-	if queued_anything and engine.currently_processing_queue:
-		await engine.finished_processing_queue
-	else:
-		await get_tree().process_frame
-
-	# A jump resolved inside the turn shuts the engine down, which releases
-	# the await above. That turn belongs to a scenario we have already left;
-	# announcing its end would start a player turn in the new one.
-	if not is_instance_valid(engine) or engine.is_shut_down():
-		return
-
-	Events.enemy_turn_over.emit()
+	await EnemyTurn.play(get_alive_enemies, get_tree())
 
 
 func start_enemy_jump_animation() -> void:
@@ -669,10 +598,7 @@ func _update_jumping_enemies(delta: float) -> void:
 					  Globals.background_manager.get_parallax_speed(parallax_level)
 
 	# The hull falls away at the same speed as its parts, so they stay seated.
-	if is_instance_valid(_hull):
-		_hull.global_position.y += delta * speed
-		if _hull.global_position.y > screen_size.y + 80:
-			_free_hull()
+	_hull_mounts.fall(delta * speed, screen_size.y + 80)
 	
 	for i: int in range(len(enemies) - 1, -1, -1):
 		var enemy: Enemy = enemies[i]
@@ -687,7 +613,7 @@ func _update_jumping_enemies(delta: float) -> void:
 			# they held (a pinned spot, a seat on a hull) is let go here, or
 			# the next scenario's formation inherits it.
 			_forget(enemy)
-			_mounts.erase(enemy)
+			_hull_mounts.forget(enemy)
 			enemy.disconnect_scenario_signals()
 			enemy.queue_free()
 			enemies.remove_at(i)
@@ -695,7 +621,7 @@ func _update_jumping_enemies(delta: float) -> void:
 	# Reset flag when all enemies are gone. A hull still falling goes with
 	# them: once the jump is over nothing carries it any further.
 	if len(enemies) == 0:
-		_free_hull()
+		_hull_mounts.free_hull()
 		enemies_jumping = false
 
 
@@ -704,14 +630,14 @@ func delete_all_enemies() -> void:
 	# so we don't spawn rewards
 	for i: int in range(len(enemies)-1, -1, -1):
 		if is_instance_valid(enemies[i]):
-			formation.clear_reservation(_pin_key(enemies[i]))
+			formation.clear_reservation(EnemyFormation.ship_key(enemies[i]))
 			enemies[i].disconnect_scenario_signals()
 			enemies[i].queue_free()
 	enemies = []
 	_awaiting_fly_in.clear()
 	_arrival_rest.clear()
 	_active_moves.clear()
-	_free_hull()
+	_hull_mounts.free_hull()
 	enemies_jumping = false
 
 
@@ -732,86 +658,12 @@ func damage_all_enemies(amount: int) -> void:
 
 
 ## Stands up the hull a scenario's mounted ships are parts of, once they and
-## any saved state are in. Parts already destroyed before a save leave their
-## sockets scarred.
+## any saved state are in.
 func _spawn_hull(scenario: ScenarioResource) -> void:
-	# Only the old hull goes: the parts spawn_enemies() just mounted stay.
-	formation.clear_reservation(_HULL_KEY)
-	if is_instance_valid(_hull):
-		_hull.queue_free()
-	_hull = null
-	if scenario.hull == null or scenario.hull.hull_scene == null:
-		_mounts.clear()
-		return
-
-	_hull = scenario.hull.hull_scene.instantiate()
-	var rest: Vector2 = get_point_along_path(scenario.hull.path_location) + scenario.hull.offset
-	_hull.position = rest + Vector2(0, -fly_in_range)
-	_hull.set_meta("rest", rest)
-	add_child(_hull)
-	move_child(_hull, 0)
-
-	var centre_x: float = get_global_point_along_path(scenario.hull.path_location).x
-	formation.reserve(_HULL_KEY, Vector2(
-		centre_x - scenario.hull.width * 0.5, centre_x + scenario.hull.width * 0.5
-	))
-
-	for spawn: EnemyStateRewardResource in scenario.starting_enemies:
-		if spawn.mounted and not _has_part_at(spawn.mount_offset):
-			_hull.scar(spawn.mount_offset, true)
-	# A Continue frees parts that were already gone without announcing them.
-	for part: Enemy in _mounts.keys():
-		if not is_instance_valid(part) or part not in enemies:
-			_mounts.erase(part)
-
-	for part: Enemy in _mounts:
-		var x: float = centre_x + _mounts[part].x
-		formation.reserve(_pin_key(part), Vector2(x - _MOUNT_FOOTPRINT * 0.5, x + _MOUNT_FOOTPRINT * 0.5))
-	_carry_mounts()
-	refresh_formation(false)
-
-
-func _has_part_at(offset: Vector2) -> bool:
-	for part: Enemy in _mounts:
-		if is_instance_valid(part) and part in enemies and _mounts[part] == offset:
-			return true
-	return false
-
-
-## Seats every part on the hull, where the hull is this frame.
-func _carry_mounts() -> void:
-	for part: Enemy in _mounts:
-		if is_instance_valid(part):
-			part.position = _hull.mount_position(_mounts[part])
-
-
-func _fly_in_hull() -> void:
-	var rest: Vector2 = _hull.get_meta("rest")
-	var arrive: Tween = get_tree().create_tween()
-	arrive.tween_property(_hull, "position", rest, fly_in_time)\
-		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
-	await arrive.finished
-	Events.enemy_flew_in.emit()
-
-
-## A part left the fight: scar its socket, and break up the hull with the last.
-func _unmount(ship: Enemy) -> void:
-	if not _mounts.has(ship):
-		return
-	var offset: Vector2 = _mounts[ship]
-	_mounts.erase(ship)
-	if not is_instance_valid(_hull) or enemies_jumping:
-		return
-	_hull.scar(offset)
-	if _mounts.is_empty():
-		formation.clear_reservation(_HULL_KEY)
-		_hull.break_up()
-		_hull = null
-
-
-func _free_hull() -> void:
-	formation.clear_reservation(_HULL_KEY)
-	if is_instance_valid(_hull):
-		_hull.queue_free()
-	_hull = null
-	_mounts.clear()
+	var spec: ShipHullResource = scenario.hull
+	var path_location: float = spec.path_location if spec else 0.5
+	var rest: Vector2 = get_point_along_path(path_location) + (spec.offset if spec else Vector2.ZERO)
+	var centre_x: float = get_global_point_along_path(path_location).x
+	_hull_mounts.build(spec, self, rest, centre_x, fly_in_range, scenario.starting_enemies, enemies)
+	if _hull_mounts.has_hull():
+		refresh_formation(false)
