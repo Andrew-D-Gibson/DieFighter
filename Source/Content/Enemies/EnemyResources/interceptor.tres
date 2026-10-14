@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3]
+
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="ext_1"]
+[ext_resource type="Script" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="ext_2"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="ext_3"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="ext_4"]
+[ext_resource type="Script" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="ext_5"]
+[ext_resource type="Script" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="ext_6"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/interceptor_ship_graphics.tscn" id="ext_7"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Interceptor/interceptor_targeting_image.png" id="ext_8"]
+
+[sub_resource type="Resource" id="Resource_cannon"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_1")
+weight = 3.0
+min_amount = 1
+max_amount = 3
+
+[sub_resource type="Resource" id="Resource_shield"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_3")
+weight = 1.0
+min_amount = 1
+max_amount = 2
+
+[sub_resource type="Resource" id="Resource_idle"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_4")
+weight = 1.0
+
+[sub_resource type="Resource" id="Resource_pool_sortie"]
+script = ExtResource("ext_5")
+actions_possible = Array[ExtResource("ext_2")]([SubResource("Resource_cannon"), SubResource("Resource_shield"), SubResource("Resource_idle")])
+
+[resource]
+script = ExtResource("ext_6")
+enemy_name = "Interceptor"
+description = "Carrier-launched fighter. Fragile, and there is always another."
+max_health = 5
+starting_shields = 0
+action_options = Array[ExtResource("ext_5")]([SubResource("Resource_pool_sortie")])
+ship_graphics_scene = ExtResource("ext_7")
+dialogue_offset = Vector2(12, -8)
+targeting_computer_image = ExtResource("ext_8")
+health_bar_position = Vector2(-18, -10)
+dice_queue_position = Vector2(18, 6)
+formation_width = 26.0

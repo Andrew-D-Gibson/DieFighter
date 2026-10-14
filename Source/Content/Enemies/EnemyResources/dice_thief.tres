@@ -1,0 +1,106 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3]
+
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/pilfer.tres" id="ext_1"]
+[ext_resource type="Script" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="ext_2"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="ext_3"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="ext_4"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="ext_5"]
+[ext_resource type="Script" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="ext_6"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/getaway.tres" id="ext_7"]
+[ext_resource type="Script" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="ext_8"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/dice_thief_ship_graphics.tscn" id="ext_9"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/DiceThief/dice_thief_targeting_image.png" id="ext_10"]
+
+[sub_resource type="Resource" id="Resource_pilfer"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_1")
+weight = 0.4
+min_amount = 1
+max_amount = 2
+force_include = true
+strength_tier_override = 2.0
+
+[sub_resource type="Resource" id="Resource_pilfer_kept"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_1")
+weight = 1.0
+min_amount = 1
+max_amount = 2
+fills_kept_faces = true
+strength_tier_override = 2.0
+
+[sub_resource type="Resource" id="Resource_cannon"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_3")
+weight = 1.5
+min_amount = 2
+max_amount = 3
+
+[sub_resource type="Resource" id="Resource_shield"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_4")
+weight = 1.0
+min_amount = 2
+max_amount = 4
+
+[sub_resource type="Resource" id="Resource_idle"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_5")
+weight = 1.0
+
+[sub_resource type="Resource" id="Resource_pool_steal"]
+script = ExtResource("ext_6")
+actions_possible = Array[ExtResource("ext_2")]([SubResource("Resource_pilfer"), SubResource("Resource_pilfer_kept"), SubResource("Resource_cannon"), SubResource("Resource_shield"), SubResource("Resource_idle")])
+
+[sub_resource type="Resource" id="Resource_getaway_kept"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_7")
+weight = 1.0
+fills_kept_faces = true
+
+[sub_resource type="Resource" id="Resource_pilfer_late"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_1")
+weight = 0.4
+min_amount = 1
+max_amount = 2
+force_include = true
+strength_tier_override = 2.0
+
+[sub_resource type="Resource" id="Resource_cannon_late"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_3")
+weight = 1.5
+min_amount = 2
+max_amount = 3
+
+[sub_resource type="Resource" id="Resource_shield_late"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_4")
+weight = 1.0
+min_amount = 2
+max_amount = 4
+
+[sub_resource type="Resource" id="Resource_idle_late"]
+script = ExtResource("ext_2")
+base_action = ExtResource("ext_5")
+weight = 1.0
+
+[sub_resource type="Resource" id="Resource_pool_bolt"]
+script = ExtResource("ext_6")
+actions_possible = Array[ExtResource("ext_2")]([SubResource("Resource_getaway_kept"), SubResource("Resource_pilfer_late"), SubResource("Resource_cannon_late"), SubResource("Resource_shield_late"), SubResource("Resource_idle_late")])
+
+[resource]
+script = ExtResource("ext_8")
+enemy_name = "Cutpurse"
+description = "Pockets the dice you hand it. Hangs around three rounds, then bolts with the haul."
+max_health = 14
+starting_shields = 2
+action_options = Array[ExtResource("ext_6")]([SubResource("Resource_pool_steal"), SubResource("Resource_pool_steal"), SubResource("Resource_pool_steal"), SubResource("Resource_pool_bolt")])
+pool_selection = 3
+ship_graphics_scene = ExtResource("ext_9")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("ext_10")
+health_bar_position = Vector2(-22, -9)
+dice_queue_position = Vector2(26, 8)
+formation_width = 32.0

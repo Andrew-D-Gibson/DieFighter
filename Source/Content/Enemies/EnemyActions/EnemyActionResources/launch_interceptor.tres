@@ -1,0 +1,54 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
+[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="ext_2"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/interceptor.tres" id="ext_3"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_4"]
+[ext_resource type="Script" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="ext_5"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/IntentIndicator/launch.png" id="ext_6"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/IntentIndicator/launch_info.png" id="ext_7"]
+
+[sub_resource type="Resource" id="Resource_step0"]
+script = ExtResource("ext_1")
+subtype = 11
+
+[sub_resource type="Resource" id="Resource_step1"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 5
+sound_resource = ExtResource("ext_2")
+
+[sub_resource type="Resource" id="Resource_step2"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 17
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 16
+string_param = "LAUNCH"
+color = Color(0.949, 0.612, 0.365, 1)
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 6
+ship_resource = ExtResource("ext_3")
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("ext_1")
+category = 3
+subtype = 4
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("ext_4")
+effects = Array[ExtResource("ext_1")]([SubResource("Resource_step0"), SubResource("Resource_step1"), SubResource("Resource_step2"), SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5")])
+
+[resource]
+script = ExtResource("ext_5")
+name = "Launch"
+description = "Launch an Interceptor. [color=orange]Return[/color] your die"
+indicator_texture = ExtResource("ext_6")
+info_texture = ExtResource("ext_7")
+effect_chain = SubResource("Resource_chain")

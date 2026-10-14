@@ -31,7 +31,7 @@ var enemies: Array[Enemy]
 
 ## The most ships a launch may bring the board up to. Past this the formation
 ## starts squeezing hulls together.
-@export var max_ships_in_combat: int = 6
+@export var max_ships_in_combat: int = 5
 
 @export_category('Draw Order')
 ## The z the ships drop to while jumping away. In combat they draw above the
