@@ -6,6 +6,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 const PLAYER_SCENE: PackedScene = preload("res://Source/Systems/Game/Player/player.tscn")
 const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
 const ENEMY_MANAGER_SCENE: PackedScene = preload("res://Source/Systems/Game/EnemyManager/enemy_manager.tscn")
+const COMPUTER_SCENE: PackedScene = preload("res://Source/Systems/Game/TargetingComputer/targeting_computer.tscn")
 const GATE_SCENE: PackedScene = preload("res://Source/Systems/Game/JumpGate/jump_gate.tscn")
 const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 const INTERCEPTOR: EnemyResource = preload("res://Source/Content/Enemies/EnemyResources/interceptor.tres")
@@ -156,3 +157,19 @@ func test_a_warp_in_cut_short_does_not_leave_the_ring_glowing() -> void:
 	gate.close()
 	gate.open(true)
 	assert_eq(gate.ring.modulate, Color.WHITE)
+
+
+# ── The reticle on a moving ship ──────────────────────────────────────────────
+
+
+func test_a_targeted_ship_can_move_before_the_reticle_has_ever_bobbed() -> void:
+	var computer: TargetingComputer = add_child_autofree(COMPUTER_SCENE.instantiate())
+	var ship: Enemy = _ship()
+	computer.targeted_enemy = ship
+	computer.indicator_bob_tween = null
+
+	assert_false(computer.hide_indicator_while_moving(_ship()), "only the targeted ship")
+	assert_true(computer.hide_indicator_while_moving(ship))
+	assert_false(computer.targeting_indicator.visible)
+	computer.show_indicator_after_move(ship)
+	assert_true(computer.targeting_indicator.visible)

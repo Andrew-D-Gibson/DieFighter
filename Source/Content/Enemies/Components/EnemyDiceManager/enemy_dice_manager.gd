@@ -8,8 +8,8 @@ signal die_arriving(die: Dice)
 
 
 func _ready() -> void:
-	die_added.connect(_update_dice_queue_locations)
-	die_removed.connect(_update_dice_queue_locations)
+	die_added.connect(update_dice_locations)
+	die_removed.connect(update_dice_locations)
 
 
 func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = true) -> void:
@@ -30,7 +30,7 @@ func remove(die: Dice) -> void:
 	die.scale = Vector2(1.0, 1.0)
 	
 	
-func _update_dice_queue_locations() -> void:
+func update_dice_locations() -> void:
 	var dice_spacing: int = 10
 	for i: int in range(len(queue)):
 		queue[i].draggable.state = Draggable.DragState.ENEMY_HOLDING

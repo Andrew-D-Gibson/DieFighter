@@ -56,3 +56,12 @@ var bound_target: Node = null
 ## chain of enemies passing a die along always ends. Turn tables are bound so
 ## this never comes up; it's the backstop.
 var relay_visited: Array[Node] = []
+
+
+## relay_visited with the actor added: the list to hand on with a die this
+## actor is relaying.
+func relay_visited_with_actor() -> Array[Node]:
+	var visited: Array[Node] = relay_visited.duplicate()
+	if is_instance_valid(actor) and actor not in visited:
+		visited.append(actor)
+	return visited

@@ -13,6 +13,6 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 	_stamp(event, context)
 	event.amount = clampi(context.enemy_intent_amount, 1, 6)
 	event.ally = context.bound_target as Enemy
-	event.relay_visited = FeedAllyHandler._visited_including_actor(context)
+	event.relay_visited = context.relay_visited_with_actor()
 	event.feed_depth = context.feed_depth
 	engine.inject_event(event)

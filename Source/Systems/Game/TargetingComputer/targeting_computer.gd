@@ -218,13 +218,13 @@ func _update_ui() -> void:
 		
 		$TargetImage.texture = null
 		for i: int in range(6):
-			$Intents.get_child(i).texture = null
-			$Intents.get_child(i).get_child(0).text = ''
+			_intent(i).texture = null
+			_intent_amount(i).text = ''
 			
 			# De-highlight the die sprites
 			die_sprites[i].frame = i
-			$Intents.get_child(i).modulate = Color.WHITE
-			_set_intent_clickable($Intents.get_child(i).get_child(1), false)
+			_intent(i).modulate = Color.WHITE
+			_set_intent_clickable(_intent_clickable(i), false)
 
 		$TargetImageFill.z_index = 1
 		
@@ -238,22 +238,22 @@ func _update_ui() -> void:
 				_set_intent_highlight(i)
 					
 				# Set up the action texture
-				$Intents.get_child(i).texture = targeted_enemy.turn_actions[i].indicator_texture
+				_intent(i).texture = targeted_enemy.turn_actions[i].indicator_texture
 				
 				# Set up the action amount text
-				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].get_intent_amount_text()
+				_intent_amount(i).text = targeted_enemy.turn_actions[i].get_intent_amount_text()
 
 				# Change over the info on clicking this particular action indicator 
-				var clickable: Clickable = $Intents.get_child(i).get_child(1)
+				var clickable: Clickable = _intent_clickable(i)
 				Utils.disconnect_all_callables(clickable.clicked)
 				clickable.clicked.connect(targeted_enemy.turn_actions[i].show_info)
 				_set_intent_clickable(clickable, targeted_enemy.turn_actions[i].name != "")
 			else:
-				$Intents.get_child(i).texture = unknown_intent_indicator
-				$Intents.get_child(i).modulate = Color.WHITE
-				$Intents.get_child(i).get_child(0).text = ""
-				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
-				_set_intent_clickable($Intents.get_child(i).get_child(1), false)
+				_intent(i).texture = unknown_intent_indicator
+				_intent(i).modulate = Color.WHITE
+				_intent_amount(i).text = ""
+				Utils.disconnect_all_callables(_intent_clickable(i).clicked)
+				_set_intent_clickable(_intent_clickable(i), false)
 				
 				
 		$TargetImageFill.z_index = 1
@@ -268,7 +268,7 @@ func _set_intent_highlight(i: int) -> void:
 	var lit: bool = targeted_enemy.dice_manager.has_value(i + 1) \
 		or (targeted_enemy == _acting_enemy and i == _acting_slot)
 	die_sprites[i].frame = i + 6 if lit else i
-	$Intents.get_child(i).modulate = Color.WHITE if lit else _DIMMED_INTENT
+	_intent(i).modulate = Color.WHITE if lit else _DIMMED_INTENT
 
 
 ## A slot with nothing to explain (a blank action, or one not yet scanned)
@@ -331,6 +331,37 @@ func _show_bound_markers() -> void:
 			marker.z_index = 5
 			ship.add_child(marker)
 			_bound_markers.append(marker)
+
+
+## Takes the reticle off [param ship] while it moves, if it's the one
+## targeted. Returns whether it was; pass that to show_indicator_after_move().
+func hide_indicator_while_moving(ship: Enemy) -> bool:
+	if ship != targeted_enemy:
+		return false
+	if indicator_bob_tween:
+		indicator_bob_tween.kill()
+	targeting_indicator.visible = false
+	return true
+
+
+## Puts the reticle back on [param ship] once it has stopped, if it's still
+## the one targeted.
+func show_indicator_after_move(ship: Enemy) -> void:
+	if ship == targeted_enemy:
+		_move_indicator()
+
+
+## Slot [param i]'s intent icon on the screen, and the parts hung off it.
+func _intent(i: int) -> Sprite2D:
+	return $Intents.get_child(i) as Sprite2D
+
+
+func _intent_amount(i: int) -> RichTextLabel:
+	return _intent(i).get_node("AmountLabel") as RichTextLabel
+
+
+func _intent_clickable(i: int) -> Clickable:
+	return _intent(i).get_node("Clickable") as Clickable
 
 
 func _move_indicator() -> void:

@@ -117,7 +117,7 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	if moving_in_world:
-		dice_manager._update_dice_queue_locations()
+		dice_manager.update_dice_locations()
 		
 
 ## Connects all health-related signals

@@ -335,13 +335,8 @@ func move_ship_to_point_on_path(ship: Enemy, proportion: float) -> void:
 ## travelling — the bobbing idle, and the targeting reticle that tracks it —
 ## in step with the move.
 func _slide_ship_to(ship: Enemy, target: Vector2, duration: float) -> void:
-	var retarget_indicator: bool = (
-		Globals.targeting_computer
-		and ship == Globals.targeting_computer.targeted_enemy
-	)
-	if retarget_indicator:
-		Globals.targeting_computer.indicator_bob_tween.kill()
-		Globals.targeting_computer.targeting_indicator.visible = false
+	var computer: TargetingComputer = Globals.targeting_computer
+	var retarget_indicator: bool = computer != null and computer.hide_indicator_while_moving(ship)
 
 	ship.moving_in_world = true
 	ship.graphics_manager.stop_bob_tween()
@@ -368,8 +363,8 @@ func _slide_ship_to(ship: Enemy, target: Vector2, duration: float) -> void:
 	ship.moving_in_world = false
 	ship.graphics_manager.start_bob_tween()
 
-	if retarget_indicator and ship == Globals.targeting_computer.targeted_enemy:
-		Globals.targeting_computer._move_indicator()
+	if retarget_indicator and is_instance_valid(computer):
+		computer.show_indicator_after_move(ship)
 
 
 ## Re-derives everyone's spot from the roster and whatever space is currently
