@@ -21,4 +21,11 @@ extends Resource
 ## draws over the player's own systems panel and reads as already-installed.
 @export var starting_reward_position: Vector2 = Vector2(160, 72)
 
+@export_category('Boss')
+## The name stamped across the boss intro card when this fight starts. Leave
+## empty for an encounter that isn't a boss fight: no card plays.
+@export var boss_title: String
+## A short line under the name: what the boss is, or what it guards.
+@export var boss_subtitle: String
+
 var scenario_seed: int = 0
