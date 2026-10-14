@@ -214,7 +214,10 @@ step; its ally is bound automatically.
 - **Graphics:** `ship_graphics_scene`, `graphics_scene_offset`,
   `dialogue_offset`, `targeting_computer_image`, `health_bar_position`,
   `dice_queue_position`, and `formation_width` (real hull width for big
-  ships).
+  ships). The formation spaces ships by hull *and* health bar, so a bar can
+  hang off the side without landing on a neighbour; when a crowded board
+  can't fit that, every bar moves to `compact_health_bar_position` (default
+  just above a 32px hull). Set it for a ship whose hull is much taller.
 
 **Faction** isn't on the enemy; it's on the scenario's ship state (§4). Who
 allies with whom, and who raids whom, is `FactionRelations`
