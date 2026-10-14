@@ -115,3 +115,10 @@ func test_the_authored_attack_and_do_nothing_actions_classify_correctly() -> voi
 		"res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres")
 	assert_eq(attack.get_threat(), Threat.DANGEROUS, "attack_player.tres")
 	assert_eq(nothing.get_threat(), Threat.DEAD, "do_nothing.tres")
+
+
+func test_replacing_the_chain_is_read_fresh() -> void:
+	var action := _action([_target_player(), Effects.damage()])
+	assert_eq(action.get_threat(), Threat.DANGEROUS)
+	action.effect_chain = Effects.chain([_play_sound()])
+	assert_eq(action.get_threat(), Threat.DEAD)

@@ -30,7 +30,10 @@ enum Relay {
 @export_multiline var description: String
 @export var indicator_texture: Texture2D
 @export var info_texture: Texture2D
-@export var effect_chain: EffectChain
+@export var effect_chain: EffectChain:
+	set(value):
+		effect_chain = value
+		_derived.clear()
 
 ## Set by the EnemyActionOptionResource who creates this action.
 ## The raw rolled amount — used both for display (via get_intent_amount_text())
@@ -50,6 +53,11 @@ var bound_target: Enemy = null
 ## EnemyActionOptionResource.strength_tier_override.
 var strength_tier_override: float = -1.0
 
+## What get_threat(), get_relay(), get_binding() and is_safe_while_hidden()
+## read off the chain, kept once worked out: the binder and placement ask
+## them for every slot of every ship. Cleared when the chain is replaced.
+var _derived: Dictionary[StringName, int] = {}
+
 
 ## Text form of intent_amount for display, e.g. in (amount) description substitution.
 ## Blank when the action has no meaningful amount (e.g. a pure status effect).
@@ -60,9 +68,9 @@ func get_intent_amount_text() -> String:
 ## Read off the effect chain rather than authored, so it can't drift out of
 ## date with what the action actually does.
 func get_threat() -> Threat:
-	if effect_chain == null:
-		return Threat.DEAD
-	return _threat_of(effect_chain.effects)
+	if not _derived.has(&"threat"):
+		_derived[&"threat"] = Threat.DEAD if effect_chain == null else _threat_of(effect_chain.effects)
+	return _derived[&"threat"] as Threat
 
 
 ## [param aimed_at_ship] is whether the steps before these last targeted
@@ -115,6 +123,12 @@ func placement_strength() -> float:
 ## read "?" would make it leave before the player could answer. Read off the
 ## chain for the same reason as get_threat().
 func is_safe_while_hidden() -> bool:
+	if not _derived.has(&"safe_while_hidden"):
+		_derived[&"safe_while_hidden"] = int(_compute_safe_while_hidden())
+	return bool(_derived[&"safe_while_hidden"])
+
+
+func _compute_safe_while_hidden() -> bool:
 	if effect_chain == null:
 		return true
 	return not _any_effect(effect_chain.effects, func(effect: EffectData) -> bool:
@@ -131,6 +145,12 @@ func is_safe_while_hidden() -> bool:
 ## An action binds one ship at most; an ally takes precedence if a chain were
 ## ever authored with both.
 func get_binding() -> Binding:
+	if not _derived.has(&"binding"):
+		_derived[&"binding"] = _compute_binding()
+	return _derived[&"binding"] as Binding
+
+
+func _compute_binding() -> Binding:
 	if get_relay() != Relay.NONE or _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY):
 		return Binding.ALLY
 	if _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP):
@@ -139,6 +159,12 @@ func get_binding() -> Binding:
 
 
 func get_relay() -> Relay:
+	if not _derived.has(&"relay"):
+		_derived[&"relay"] = _compute_relay()
+	return _derived[&"relay"] as Relay
+
+
+func _compute_relay() -> Relay:
 	if _has_step(EffectEnums.Category.DICE_CONTROL, EffectEnums.DiceControlSubtype.FEED_ALLY):
 		return Relay.FEED
 	if _has_step(EffectEnums.Category.DICE_CONTROL, EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAM_FOR_ALLY):
