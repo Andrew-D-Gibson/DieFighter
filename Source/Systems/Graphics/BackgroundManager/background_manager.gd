@@ -261,6 +261,25 @@ func play_jump_intro() -> void:
 	Events.camera_shake_large.emit(false)
 	
 	
+## Drops straight into hyperspace with no run-up, for a jump that already had
+## its own (a jump gate's passage, cut on a white flash). play_jump_outro()
+## brings it back down as usual.
+func cut_to_hyperspace() -> void:
+	set_global_speed(960)
+	%JumpTransition.show()
+	%JumpTransition.set_particles_transparency(1.0)
+	%JumpTransition.set_background_transparency(1.0)
+
+
+## Recolours hyperspace until reset_jump_tint(). See JumpTransition.set_tint().
+func set_jump_tint(background: Color, particles: Color) -> void:
+	%JumpTransition.set_tint(background, particles)
+
+
+func reset_jump_tint() -> void:
+	%JumpTransition.reset_tint()
+
+
 func play_jump_outro() -> void:
 	var speed_ramp_down_time: float = 1
 	

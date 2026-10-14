@@ -1,0 +1,213 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Game/JumpGate/jump_gate.gd" id="1_gate"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_ring-Sheet.png" id="2_ring"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal-Sheet.png" id="3_portal"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal_charged-Sheet.png" id="5_charged"]
+[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="4_font"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ring0"]
+atlas = ExtResource("2_ring")
+region = Rect2(0, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ring1"]
+atlas = ExtResource("2_ring")
+region = Rect2(80, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ring2"]
+atlas = ExtResource("2_ring")
+region = Rect2(160, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ring3"]
+atlas = ExtResource("2_ring")
+region = Rect2(240, 0, 80, 80)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portal0"]
+atlas = ExtResource("3_portal")
+region = Rect2(0, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portal1"]
+atlas = ExtResource("3_portal")
+region = Rect2(50, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portal2"]
+atlas = ExtResource("3_portal")
+region = Rect2(100, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portal3"]
+atlas = ExtResource("3_portal")
+region = Rect2(150, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portal4"]
+atlas = ExtResource("3_portal")
+region = Rect2(200, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_portal5"]
+atlas = ExtResource("3_portal")
+region = Rect2(250, 0, 50, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ring"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ring0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ring1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ring2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ring3")
+}],
+"loop": true,
+"name": &"default",
+"speed": 8.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_portal"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_portal0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_portal1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_portal2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_portal3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_portal4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_portal5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_charged0"]
+atlas = ExtResource("5_charged")
+region = Rect2(0, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_charged1"]
+atlas = ExtResource("5_charged")
+region = Rect2(50, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_charged2"]
+atlas = ExtResource("5_charged")
+region = Rect2(100, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_charged3"]
+atlas = ExtResource("5_charged")
+region = Rect2(150, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_charged4"]
+atlas = ExtResource("5_charged")
+region = Rect2(200, 0, 50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_charged5"]
+atlas = ExtResource("5_charged")
+region = Rect2(250, 0, 50, 50)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_charged"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_charged0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_charged1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_charged2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_charged3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_charged4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_charged5")
+}],
+"loop": true,
+"name": &"default",
+"speed": 14.0
+}]
+
+[node name="JumpGate" type="Node2D" node_paths=PackedStringArray("ring", "portal", "portal_charged", "flash", "sector_title", "sector_subtitle")]
+z_index = -10
+position = Vector2(160, 40)
+script = ExtResource("1_gate")
+ring = NodePath("Ring")
+portal = NodePath("Portal")
+portal_charged = NodePath("PortalCharged")
+flash = NodePath("Overlay/Flash")
+sector_title = NodePath("Overlay/SectorTitle")
+sector_subtitle = NodePath("Overlay/SectorSubtitle")
+
+[node name="Portal" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_portal")
+
+[node name="PortalCharged" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_charged")
+
+[node name="Ring" type="AnimatedSprite2D" parent="."]
+visible = false
+sprite_frames = SubResource("SpriteFrames_ring")
+
+[node name="Overlay" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="Flash" type="ColorRect" parent="Overlay"]
+visible = false
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.807843, 0.941176, 0.945098, 0)
+
+[node name="SectorTitle" type="Label" parent="Overlay"]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 90.0
+offset_bottom = 282.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.933333, 0.827451, 0.364706, 1)
+theme_override_colors/font_outline_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+theme_override_constants/outline_size = 36
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 192
+text = "SECTOR 2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SectorSubtitle" type="Label" parent="Overlay"]
+visible = false
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 270.0
+offset_bottom = 366.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_colors/font_outline_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+theme_override_constants/outline_size = 24
+theme_override_fonts/font = ExtResource("4_font")
+theme_override_font_sizes/font_size = 96
+text = "OF 3"
+horizontal_alignment = 1
+vertical_alignment = 1

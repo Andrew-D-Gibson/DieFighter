@@ -63,6 +63,9 @@
 [ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
 [ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
@@ -312,6 +315,8 @@ script = ExtResource("14_jblvd")
 z_index = -24
 position = Vector2(160, 90)
 
+[node name="JumpGate" parent="Graphics" instance=ExtResource("jump_gate_scene")]
+
 [node name="Vignette" parent="Graphics" unique_id=1077340110 instance=ExtResource("6_hd7px")]
 visible = false
 vignette_flash_time = 0.75
@@ -369,7 +374,7 @@ current_game_save = ExtResource("99_runstart")
 sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
-combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege")])
+combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter")])
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc")])

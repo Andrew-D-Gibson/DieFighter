@@ -26,6 +26,9 @@ signal game_over()
 signal victory()
 ## Emitted once a new sector has been generated. sector_index is zero-based.
 signal sector_advanced(sector_index: int)
+## The ring at a sector's jump gate is up: its boss is beaten, and jumping
+## forward from here leaves the sector.
+signal jump_gate_opened()
 signal scenario_event(event: ScenarioManager.ScenarioEvent)
 
 

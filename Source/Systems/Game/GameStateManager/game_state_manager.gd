@@ -53,9 +53,6 @@ extends Node2D
 ## an emergency, short enough to be over before the player's first die lands.
 @export var cold_open_alert_time: float = 2.2
 
-## Beat between the final kill and the victory screen taking over.
-const _VICTORY_DELAY_SECONDS: float = 1.5
-
 const _ALARM_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/alarm_klaxon.tres")
 
 var main_menu_file: String = "uid://ccvtlre5vhj7d"
@@ -81,8 +78,8 @@ var _restore: Dictionary = {}
 ## slot is never overwritten with an empty one.
 var _scenario_cleared: bool = false
 
-## Set while a won jump gate hands over to the next sector, so the after-combat
-## checkpoint doesn't snapshot a map that already shows the new sector.
+## Set while the player goes through the jump gate into the next sector, so no
+## checkpoint snapshots a map that already shows the new sector.
 var _sector_advancing: bool = false
 
 ## Set between leaving a scenario and arriving at the next. Nothing is stable
@@ -151,7 +148,6 @@ func _ready() -> void:
 
 	Events.start_scenario.connect(_check_combat_state)
 	Events.start_scenario.connect(_checkpoint_on_arrival)
-	Events.combat_finished.connect(_check_sector_cleared)
 	Events.combat_finished.connect(_checkpoint_after_combat)
 	Events.reward_picked.connect(_checkpoint_mid_scenario)
 	Events.jump.connect(func() -> void:
@@ -355,28 +351,24 @@ func get_damage_multiplier() -> float:
 	return 1.0 + current_game_save.sector_index * damage_scale_per_sector
 
 
-## Fires after every won fight. The sector's last tile is always its jump gate,
-## so winning there means the sector itself is done.
-func _check_sector_cleared() -> void:
-	var index: int = Globals.map.current_scenario_index
-	if index != len(Globals.map.scenario_list) - 1:
+## Leaves the sector through its jump gate: the next, harder sector, or the
+## end of the run if that was the last. Only valid once the gate is open (its
+## boss beaten), which JumpEvent checks before calling this.
+func go_through_gate() -> void:
+	if _sector_advancing:
 		return
-	if not Globals.map.scenario_list[index].sector_gate_scenario:
-		return
-
 	_advance_to_next_sector()
 
 
-## Generates the next, harder sector and jumps the player into it — or ends the
-## run in victory if that was the last sector.
 func _advance_to_next_sector() -> void:
 	_sector_advancing = true
 	current_game_save.sector_index += 1
 
 	if current_game_save.sector_index >= demo_sector_count:
-		# Let the last kill land before the run's end takes over the screen.
-		await get_tree().create_timer(_VICTORY_DELAY_SECONDS).timeout
+		# Through the last gate and out: the run is won.
+		await Globals.jump_manager.leave_through_final_gate()
 		Events.victory.emit()
+		Globals.jump_gate.fade_flash(1.0)
 		return
 
 	_repair_after_sector()
@@ -388,15 +380,10 @@ func _advance_to_next_sector() -> void:
 	)
 	Events.sector_advanced.emit(current_game_save.sector_index)
 
-	# Survivors of the fight hand their dice home a frame after
-	# combat_finished (see Enemy._connect_combat_signals). Jumping before that
-	# would strand dice the player won the fight to keep.
-	await get_tree().process_frame
-	await get_tree().process_frame
-
-	# Reuse the normal between-tiles jump so a sector change reads as one too.
-	await Globals.jump_manager.jump_to_scenario(
-		current_game_save.sector_scenarios[current_game_save.current_scenario_index]
+	await Globals.jump_manager.jump_through_gate(
+		current_game_save.sector_scenarios[current_game_save.current_scenario_index],
+		current_game_save.sector_index + 1,
+		demo_sector_count
 	)
 
 
@@ -428,14 +415,17 @@ func _checkpoint_mid_scenario() -> void:
 ## Checkpoints right after a won fight, so "I won this scenario" is a valid
 ## stopping point rather than only "I just started the next one". Marks the
 ## scenario cleared and empties its map slot (same as jump() does when leaving
-## it), and records anything still on offer. The jump gate is skipped: winning
-## it has already generated the next sector, which checkpoints on arrival.
+## it), and records anything still on offer. A won jump gate isn't emptied: it
+## opens, so the way out of the sector is still there to come back to.
 func _checkpoint_after_combat() -> void:
 	if _sector_advancing or _in_transit:
 		return
 
 	_scenario_cleared = true
-	Globals.map.clear_current_scenario_slot()
+	if Globals.map.scenario_list[Globals.map.current_scenario_index].sector_gate_scenario:
+		Globals.map.open_current_gate()
+	else:
+		Globals.map.clear_current_scenario_slot()
 	await _checkpoint_game_save(true)
 
 

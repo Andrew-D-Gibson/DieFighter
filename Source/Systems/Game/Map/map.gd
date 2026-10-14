@@ -29,6 +29,9 @@ var right_scenarios_in_danger: int
 @export_category('Behavior')
 @export var empty_scenario: ScenarioResource
 @export var fate_scenario: ScenarioResource
+## What a jump gate becomes once its boss is beaten: the same gate, with no one
+## left guarding it.
+@export var open_gate_scenario: ScenarioResource
 @export var sprite_spacing: int = 14
 
 var scenario_sprites: Array[Sprite2D]
@@ -201,6 +204,8 @@ func _compute_hint(hovered: int) -> Array:
 		if _corrupted_sprite and _corrupted_sprite.texture and _sprite_rect(_corrupted_sprite).has_point(world):
 			return [_FATE_ICON, "Corrupt", Globals.medium_purple]
 
+	if Globals.jump_gate and Globals.jump_gate.is_open():
+		return [scenario_list.back().map_icon, "Jump through!", Globals.blue]
 	return [scenario_list.back().map_icon, "Gate ahead", Globals.blue]
 
 
@@ -521,6 +526,14 @@ func clear_current_scenario_slot() -> void:
 		scenario_list[current_scenario_index] = fate_scenario
 	else:
 		scenario_list[current_scenario_index] = empty_scenario
+
+
+## The player won the fight at the jump gate they're standing on. The gate stays
+## a gate (never cleared, never corrupted) but nobody guards it now, so coming
+## back to it later finds the ring waiting rather than the boss.
+func open_current_gate() -> void:
+	if scenario_list[current_scenario_index].sector_gate_scenario and open_gate_scenario:
+		scenario_list[current_scenario_index] = open_gate_scenario
 
 
 func jump(desired_scenario_index: int) -> void:

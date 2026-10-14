@@ -13,6 +13,7 @@ var scenario_manager: ScenarioManager
 var state_manager: GameStateManager
 var background_manager: BackgroundManager
 var jump_manager: JumpManager
+var jump_gate: JumpGate
 var hazard_manager: HazardManager
 var background_modifier_manager: BackgroundModifierManager
 var run_stats: RunStats

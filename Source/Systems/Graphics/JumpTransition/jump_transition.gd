@@ -8,6 +8,12 @@ extends Control
 
 var fade_tween: Tween
 
+## The hyperspace colour of an ordinary jump, read off the material so the
+## scene stays where it's authored. A gate jump tints over it; see set_tint().
+var _default_tint: Color
+## Multiplied into the particle streaks. White leaves the sheet as drawn.
+var _particle_tint: Color = Color.WHITE
+
 func set_transparency(alpha: float) -> void:
 	set_background_transparency(alpha)
 	set_particles_transparency(alpha)
@@ -18,10 +24,23 @@ func set_background_transparency(alpha: float) -> void:
 	
 	
 func set_particles_transparency(alpha: float) -> void:
-	%ParticleSheet.modulate = Color(1,1,1,alpha)
+	%ParticleSheet.modulate = Color(_particle_tint, alpha)
+
+
+## Recolours the next jump. Used by a jump gate, so leaving a sector doesn't
+## look like any other hop between tiles.
+func set_tint(background: Color, particles: Color) -> void:
+	%JumpTexture.material.set_shader_parameter("tint_color", background)
+	_particle_tint = particles
+	set_particles_transparency(%ParticleSheet.modulate.a)
+
+
+func reset_tint() -> void:
+	set_tint(_default_tint, Color.WHITE)
 	
 	
 func _ready() -> void:
+	_default_tint = %JumpTexture.material.get_shader_parameter("tint_color")
 	set_background_transparency(0)
 	set_particles_transparency(0)
 	hide()
