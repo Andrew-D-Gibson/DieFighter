@@ -47,7 +47,7 @@ var moving_in_world: bool = false
 var formation_pinned: bool = false
 
 ## The number of turns this enemy has lived
-@onready var turns_alive: int = 0
+var turns_alive: int = 0
 
 ## Dice this ship held onto itself on its last turn (KEEP_DIE_WITH_ACTOR), as
 ## opposed to dice it was handed. Only these load a kept-face action (see

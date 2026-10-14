@@ -18,7 +18,9 @@ extends HazardTelegraph
 @onready var _body: Sprite2D = $Body
 @onready var _corona: Sprite2D = $Corona
 
-var _time: float = 0.0
+## Where in its breath the star is, in radians. Advanced by the current
+## period, so switching to the urgent throb doesn't jump the glow.
+var _phase: float = 0.0
 
 ## Extra brightness from a flare, decaying back to zero.
 var _flash: float = 0.0
@@ -26,9 +28,9 @@ var _flash_tween: Tween
 
 
 func _process(delta: float) -> void:
-	_time += delta
 	var period: float = urgent_period if urgent else calm_period
-	var wave: float = 0.5 + 0.5 * sin(TAU * _time / period)
+	_phase = fmod(_phase + TAU * delta / period, TAU)
+	var wave: float = 0.5 + 0.5 * sin(_phase)
 	var peak: float = urgent_glow if urgent else calm_glow
 
 	var corona: float = lerpf(0.85, peak, wave) + _flash

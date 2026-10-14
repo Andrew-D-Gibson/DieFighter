@@ -12,13 +12,13 @@ func apply(_data: EffectData, context: EffectContext, _engine: ScenarioEngine) -
 	context.targets = []
 
 	if not is_instance_valid(context.effect_source) or context.effect_source is not Tile:
-		printerr("TargetRandomAdjacentTileHandler's effect_source is not a Tile!")
+		push_error("TargetRandomAdjacentTileHandler's effect_source is not a Tile!")
 		return
 
 	var grid: TileGrid = Globals.tile_grid
 	var source_pos: Vector2i = grid.find_tile_pos(context.effect_source as Tile)
 	if not grid.is_grid_pos_valid(source_pos):
-		printerr("TargetRandomAdjacentTileHandler couldn't find source tile position!")
+		push_error("TargetRandomAdjacentTileHandler couldn't find source tile position!")
 		return
 
 	var neighbours: Array[Tile] = []
