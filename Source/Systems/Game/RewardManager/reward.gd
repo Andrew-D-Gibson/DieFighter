@@ -131,7 +131,10 @@ func _present(offered: Array[Node2D]) -> void:
 ## the bounding box, and an empty result means there is no offer to show.
 func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 	var offered: Array[Node2D] = []
-	var possible_tile_rewards = Globals.reward_manager.get_possible_tile_rewards()
+	var possible_tile_rewards: Array[TileResource] = RewardManager.filter_by_minimum_rarity(
+		Globals.reward_manager.get_possible_tile_rewards(),
+		reward_resource.minimum_rarity
+	)
 
 	for i in range(reward_resource.num_of_rewards):
 		# Give the player a dice instead of a tile if we can't fit another tile, 

@@ -118,9 +118,19 @@ func test_a_save_from_a_newer_build_is_refused() -> void:
 	assert_push_warning("unsupported save version")
 
 
-func test_a_version_1_save_still_loads() -> void:
+func test_a_save_from_before_gate_bosses_is_refused() -> void:
+	# Version 2 sectors end on a jump gate encounter that no longer exists.
 	_write_raw({
-		"version": 1,
+		"version": 2,
+		"sector_scenarios": [{"id": "COMBAT_drone_battery", "seed": 5}],
+	})
+	assert_null(saves.read_save())
+	assert_push_warning("unsupported save version")
+
+
+func test_missing_run_state_fields_load_empty() -> void:
+	_write_raw({
+		"version": SaveManagerScript.SAVE_VERSION,
 		"sector_scenarios": [{"id": "COMBAT_drone_battery", "seed": 5}],
 	})
 	var loaded: GameSaveResource = saves.read_save()

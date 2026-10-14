@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c8n5rlrs468on"
-path="res://.godot/imported/boss_encounter.png-0af8af84fc7252d96980328b043732ed.ctex"
+path="res://.godot/imported/elite_encounter.png-3d270dac8cb7376471daf7a8f4d148e9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Map/EncounterIcons/boss_encounter.png"
-dest_files=["res://.godot/imported/boss_encounter.png-0af8af84fc7252d96980328b043732ed.ctex"]
+source_file="res://Assets/Textures/Map/EncounterIcons/elite_encounter.png"
+dest_files=["res://.godot/imported/elite_encounter.png-3d270dac8cb7376471daf7a8f4d148e9.ctex"]
 
 [params]
 

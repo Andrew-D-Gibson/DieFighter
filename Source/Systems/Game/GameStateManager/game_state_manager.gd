@@ -11,17 +11,20 @@ extends Node2D
 @export var shop_scenario: ScenarioResource
 @export var combat_scenarios: Array[ScenarioResource]
 @export var question_scenarios: Array[ScenarioResource]
-## One boss encounter per sector, in order. The last entry is reused if a run
-## outlasts the list, so this can be shorter than demo_sector_count.
-@export var boss_combat_scenarios: Array[ScenarioResource]
+## Optional fights a cut above the rest: tougher ships, rarer salvage. Shuffled
+## in among a sector's other encounters, never two of the same in one sector.
+@export var elite_scenarios: Array[ScenarioResource]
+## How many elites a sector holds, inclusive on both ends.
+@export var elites_per_sector: Vector2i = Vector2i(1, 2)
+## The boss guarding each sector's jump gate, in order. The gate is the
+## sector's last tile and the only way out of it, so every boss here has to be
+## beaten to progress. The last entry is reused if a run outlasts the list.
+@export var gate_boss_scenarios: Array[ScenarioResource]
 @export var fate_scenarios: Array[ScenarioResource]
 
 ## Where the player arrives in the very first sector. Authored rather than
 ## random, so a new run always opens on the same deliberate first impression.
 @export var starting_scenario: ScenarioResource
-
-## Guards the exit of every sector. Cleared -> the sector is over.
-@export var jump_gate_scenario: ScenarioResource
 
 @export_category('Run Difficulty')
 ## How many sectors a full run lasts. Clearing the last sector's jump gate wins.
@@ -217,7 +220,9 @@ func _randomize_sector_scenarios() -> void:
 	# Add the shop(s)
 	for i: int in range(RNGManager.randi_range(RNGManager.Bucket.RUN, 2, 3)):
 		current_game_save.sector_scenarios.append(shop_scenario)
-		
+
+	_add_elites()
+
 	# Add the blend of combat and question scenarios
 	for i: int in range(sector_size - len(current_game_save.sector_scenarios)):
 		var question_scenario_options: Array[ScenarioResource] = Utils.array_while_excluding(
@@ -257,18 +262,15 @@ func _randomize_sector_scenarios() -> void:
 
 	RNGManager.shuffle_array(RNGManager.Bucket.RUN, current_game_save.sector_scenarios)
 
-	# Add this sector's boss. Indexed rather than random: the boss is the one
-	# encounter the player is guaranteed to meet once per sector, so it's the
-	# clearest place to show a run getting harder.
-	if not boss_combat_scenarios.is_empty():
+	# The jump gate, guarded by this sector's boss, is always the last tile.
+	# Indexed rather than random: the boss is the one encounter the player is
+	# guaranteed to meet once per sector, so it's the clearest place to show a
+	# run getting harder.
+	if not gate_boss_scenarios.is_empty():
 		var boss_index: int = clampi(
-			current_game_save.sector_index, 0, len(boss_combat_scenarios) - 1
+			current_game_save.sector_index, 0, len(gate_boss_scenarios) - 1
 		)
-		current_game_save.sector_scenarios.append(boss_combat_scenarios[boss_index])
-
-	# The gate, not the boss, is the last tile — clearing it ends the sector.
-	if jump_gate_scenario:
-		current_game_save.sector_scenarios.append(jump_gate_scenario)
+		current_game_save.sector_scenarios.append(gate_boss_scenarios[boss_index])
 
 	# Add a leading "corrupted" scenario
 	current_game_save.sector_scenarios.insert(
@@ -293,6 +295,24 @@ func _randomize_sector_scenarios() -> void:
 	
 	
 	
+## Rolls this sector's elites into the encounter list, before it's shuffled.
+## Each elite appears at most once per sector, so a short elite list caps the
+## count rather than repeating a fight.
+func _add_elites() -> void:
+	var count: int = RNGManager.randi_range(
+		RNGManager.Bucket.RUN, elites_per_sector.x, elites_per_sector.y
+	)
+	for i: int in range(count):
+		var options: Array[ScenarioResource] = Utils.array_while_excluding(
+			elite_scenarios, current_game_save.sector_scenarios
+		)
+		if options.is_empty():
+			return
+		current_game_save.sector_scenarios.append(
+			RNGManager.pick_random(RNGManager.Bucket.RUN, options)
+		)
+
+
 ## Patches the hull for surviving a sector. Health.change_health() clamps to
 ## max_health, so this is safe to call at any damage level.
 func _repair_after_sector() -> void:

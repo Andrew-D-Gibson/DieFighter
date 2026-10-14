@@ -58,11 +58,11 @@ var _hover_tweens: Array[Tween] = []
 ## scenarios share one. One word each: the icon beside it does the rest.
 var _icon_hints: Dictionary[String, Dictionary] = {
 	"enemy_encounter.png": {"title": "Enemy", "color": Globals.red},
-	"boss_encounter.png": {"title": "Boss", "color": Globals.purple},
+	"elite_encounter.png": {"title": "Elite", "color": Globals.purple},
 	"unknown_encounter.png": {"title": "Unknown", "color": Globals.yellow},
 	"shop.png": {"title": "Shop", "color": Globals.green},
 	"empty_encounter.png": {"title": "Empty", "color": Globals.white.darkened(0.3)},
-	"jump_gate.png": {"title": "Gate", "color": Globals.blue},
+	"jump_gate.png": {"title": "Boss Gate", "color": Globals.blue},
 	"fate_encounter.png": {"title": "Corrupt", "color": Globals.medium_purple},
 }
 
@@ -412,7 +412,10 @@ func _update_map_sprites() -> void:
 	var left_danger: Sprite2D = Sprite2D.new()
 	_danger_sprite = left_danger
 
-	left_danger.texture = Utils.slice_texture_right(danger_area, left_scenarios_in_danger * sprite_spacing)
+	# Nothing is in danger once Fate has stopped in front of the gate, and a
+	# zero-width slice isn't a texture.
+	if left_scenarios_in_danger > 0:
+		left_danger.texture = Utils.slice_texture_right(danger_area, left_scenarios_in_danger * sprite_spacing)
 	left_danger.centered = false
 	left_danger.position = Vector2((sprite_spacing * (left_fate_index + 0.5)), -21)
 
@@ -566,9 +569,10 @@ func _look_at_scenario_index(idx: int) -> void:
 	
 	
 func _pick_new_danger_ranges() -> void:
-	# Handle the left-danger zone running into the right corrupted zone
-	# This will usually be 2, except when the two danger zones close in on each other
-	var max_left_scenarios_in_danger: int = min(2, len(scenario_list) - left_fate_index - 1)
+	# Usually 2. Fate stops one short of the last tile, the jump gate: the
+	# player must always be able to leave the sector, so the gate is never
+	# corrupted, never covered by the corrupted zone, and never in danger.
+	var max_left_scenarios_in_danger: int = min(2, len(scenario_list) - left_fate_index - 2)
 	
 	if max_left_scenarios_in_danger <= 0:
 		left_scenarios_in_danger = 0

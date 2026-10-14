@@ -5,11 +5,12 @@ extends Node
 ## GameSaveResource up to date and calling write_save() at checkpoints.
 
 const SAVE_PATH: String = "user://save_game.json"
-const SAVE_VERSION: int = 2
+const SAVE_VERSION: int = 3
 
-## Oldest format read_save() still accepts. Version 1 predates the run-state
-## fields; those load as empty and each system falls back to its old behaviour.
-const _MIN_READABLE_VERSION: int = 1
+## Oldest format read_save() still accepts. Version 3 moved each sector's boss
+## onto its jump gate and retired the old gate encounter; an older save's
+## sector would load with no way out of it.
+const _MIN_READABLE_VERSION: int = 3
 
 ## Where this instance reads and writes. Only tests point it elsewhere, so a
 ## test run can never clobber the player's real save.

@@ -6,6 +6,12 @@ extends Resource
 @export var num_of_rewards: int = 3
 @export_range(0.0, 1.0) var dice_probability: float = 0
 
+## The lowest rarity this offer's tiles can be. Elites and bosses raise it so
+## beating them pays out in tiles a normal fight rarely shows. Rarity weighting
+## still applies above the floor, and if the player already owns every tile at
+## or above it, the floor is dropped rather than offering nothing.
+@export var minimum_rarity: TileResource.Rarity = TileResource.Rarity.COMMON
+
 ## When max_money_pickup is above zero the offer also floats a MoneyPickup
 ## worth a roll in this range, sitting alongside the tile/dice choices.
 ##

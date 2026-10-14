@@ -62,6 +62,20 @@ func pick_weighted_tile_reward(pool: Array[TileResource]) -> TileResource:
 	return pool[-1]
 
 
+## The tiles in [param pool] at or above [param minimum_rarity]. Falls back to
+## the whole pool when none qualify, so a raised floor narrows an offer but
+## never empties it.
+static func filter_by_minimum_rarity(
+	pool: Array[TileResource],
+	minimum_rarity: TileResource.Rarity
+) -> Array[TileResource]:
+	var filtered: Array[TileResource] = []
+	for tile_resource: TileResource in pool:
+		if tile_resource.rarity >= minimum_rarity:
+			filtered.append(tile_resource)
+	return filtered if not filtered.is_empty() else pool
+
+
 func get_possible_tile_rewards() -> Array[TileResource]:
 	var player_tiles = Globals.tile_grid.tile_locations.values()
 	
