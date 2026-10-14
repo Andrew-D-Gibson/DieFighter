@@ -61,6 +61,7 @@ func test_a_jump_keeps_the_hand_and_strands_what_ships_hold() -> void:
 
 	assert_has(player.dice_manager.queue, in_hand)
 	assert_false(in_hand.draggable.dragging_allowed, "nothing is played mid-jump")
+	assert_true(in_hand.transit_locked, "so arrival knows to unlock it")
 	assert_eq(held.get_parent(), ship, "it rides the ship off screen")
 	assert_false(held.is_in_group("Dice"), "nothing can hand it back")
 	assert_true(hologram.is_queued_for_deletion())

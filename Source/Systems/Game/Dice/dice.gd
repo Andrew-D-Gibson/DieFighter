@@ -39,6 +39,11 @@ static var forced_rolls: Array[int] = []
 		
 var host_queue: DiceQueue
 
+## True while the player has locked this die for the length of a jump, so
+## arrival unlocks only what the jump locked and leaves a tutorial's own
+## locks alone.
+var transit_locked: bool = false
+
 
 func _ready() -> void:
 	if value == 0:

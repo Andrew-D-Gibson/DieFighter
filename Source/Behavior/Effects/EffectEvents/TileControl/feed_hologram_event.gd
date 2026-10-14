@@ -25,8 +25,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	var source: Tile = effect_source as Tile
 	var hologram: Dice = Globals.player.dice_scene.instantiate()
 	hologram.holographic = true
-	# A face past 6 would index off the end of a ship's intent table.
-	hologram.value = clampi(amount, 1, 6)
+	hologram.value = amount
 	hologram.global_position = source.global_position
 	# Every die lives under the player node, including the ones out on the grid.
 	Globals.player.add_child(hologram)

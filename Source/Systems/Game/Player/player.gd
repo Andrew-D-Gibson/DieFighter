@@ -6,10 +6,6 @@ const _SHIELDS_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/So
 const _DICE_REROLL_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres")
 const _DIE_LOST_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres")
 
-## Marks a die this script locked for the length of a jump, so arrival only
-## unlocks what the jump locked and leaves a tutorial's own locks alone.
-const _TRANSIT_LOCK_META: StringName = &"_transit_locked"
-
 @export var _time_between_die_spawns: float = 0.2
 @export var _dice_queue_spacing: int = 14
 
@@ -493,7 +489,7 @@ func _stow_die_for_jump(die: Dice) -> void:
 	die.rotation = 0.0
 	if die.draggable.dragging_allowed:
 		die.draggable.dragging_allowed = false
-		die.set_meta(_TRANSIT_LOCK_META, true)
+		die.transit_locked = true
 
 
 ## The die stays with the ship that's holding it, and is seen to: it rides
@@ -543,8 +539,8 @@ func _announce_lost_dice(count: int) -> void:
 
 func _unlock_dice_after_jump() -> void:
 	for die: Dice in dice_manager.queue:
-		if is_instance_valid(die) and die.has_meta(_TRANSIT_LOCK_META):
-			die.remove_meta(_TRANSIT_LOCK_META)
+		if is_instance_valid(die) and die.transit_locked:
+			die.transit_locked = false
 			die.draggable.dragging_allowed = true
 
 
