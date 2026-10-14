@@ -356,14 +356,12 @@ func _start_scenario() -> void:
 		_announce_first_turn()
 
 
-## A fight's first turn has no player_turn_start (that beat follows an enemy
-## turn), so it's announced here instead. A fight that breaks out partway
-## through a scenario (firing on a civilian) starts it on the spot. One that
-## opens with the scenario waits for _start_scenario() to finish dealing the
-## hand — and has to: state can stay IN_COMBAT straight through a flee into
-## the next fight, so start_combat is never emitted for it. Either way it also
-## waits for Events.enemies_arrived, so the opening turn begins only once every
-## ship has landed and is targeted.
+## A fight's first turn has no player_turn_start (that follows an enemy turn),
+## so it's announced here, once every ship has landed (Events.enemies_arrived).
+## A fight breaking out mid-scenario starts it on start_combat. One opening
+## with the scenario is started by _start_scenario() once the hand is dealt:
+## state can stay IN_COMBAT through a flee into the next fight, so no
+## start_combat comes for it.
 func _announce_first_turn() -> void:
 	if _first_turn_announced:
 		return

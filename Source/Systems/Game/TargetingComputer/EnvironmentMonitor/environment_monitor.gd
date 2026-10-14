@@ -1,24 +1,13 @@
 class_name EnvironmentMonitor
 extends Node2D
-## A small hinged monitor that swings up out of the targeting computer to
-## announce what governs the background the player just arrived in: a
-## permanent rule (BackgroundModifierResource), or a timed hazard
-## (BackgroundHazardResource) with its countdown beside its icon.
+## A hinged monitor that swings up out of the targeting computer when the
+## background has a rule (BackgroundModifierResource) or a timed hazard
+## (BackgroundHazardResource, shown with its countdown). Backgrounds are random,
+## so the rule has to announce itself or it reads as a bug. It stays folded
+## away in plain space, its lamp blinks until clicked (which opens the usual
+## InfoShower panel), then stays lit while the rule holds.
 ##
-## Backgrounds are drawn from a random pool, so the player does not pick their
-## rule — which means the rule has to announce itself, or "shields do nothing
-## here" reads as a bug rather than as the terrain. Rather than a UI badge
-## floating in the sky, the warning is a piece of cockpit hardware: it lives
-## folded away behind the targeting computer in plain space, so the monitor
-## deploying at all is itself information. Its lamp blinks until the rule has
-## been read, then stays lit as a reminder the rule is still in force.
-##
-## Clicking it opens the ordinary InfoShower panel, the same one tiles and
-## enemy intents use, so the rule is presented in the vocabulary the player
-## already reads everything else in.
-##
-## The node's origin is the hinge. Everything that moves hangs off %Arm, which
-## rises from behind the targeting computer and swings upright about that hinge.
+## The node's origin is the hinge; everything that moves hangs off %Arm.
 
 ## Shown on the screen when a rule ships no art of its own. White, so it can
 ## take the rule's colour.

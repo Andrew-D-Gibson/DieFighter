@@ -3,16 +3,10 @@ extends Resource
 ## A recurring environmental event that belongs to a background: the star in a
 ## solar flare region flares, the storm in an ion region discharges.
 ##
-## The counterpart to BackgroundModifierResource. A modifier is simply true the
-## whole time; a hazard counts down and then fires. Hazards fire on a fixed turn
-## count that the player can always see, which is the whole point: a flare that
-## wipes every shield on the board is only interesting if you knew it was two
-## turns out and chose to shield anyway. Random, unannounced damage would just
-## be noise.
-##
-## Hazards live on backgrounds rather than scenarios so the place itself does
-## the telegraphing — the region's art shows what is coming before the
-## environment monitor's countdown says when.
+## Where a BackgroundModifierResource is true the whole time, a hazard counts
+## down on a turn count the player can always see, then fires: a flare that
+## wipes shields is only interesting if you knew it was coming. It lives on
+## the background so the region's art can telegraph it too (HazardTelegraph).
 ##
 ## AUTHORING:
 ##   1. Create a BackgroundHazardResource.

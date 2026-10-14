@@ -2,26 +2,15 @@ class_name EnemyFormation
 extends RefCounted
 ## Works out where ships stand along the enemy spawning path.
 ##
-## Scenarios used to author a hard-coded spot for every ship they spawned. That
-## only ever produced one correct layout: the roster the scenario happened to
-## start with, on a screen with nothing else on it. A ship dying left a gap, the
-## shop panel opened on top of whoever was standing there, and the tutorial's
-## popups covered the one enemy they were talking about.
+## Derived rather than authored, so the layout stays right as ships die, arrive
+## and the screen fills up. A scenario gives the order; this spaces ships by
+## their whole footprint (hull plus health bar) across whatever screen is free.
 ##
-## So position is derived instead. A scenario says who shows up and in what
-## order; this decides where they go, from how wide they are and how much of
-## the screen is currently free. One ship centres itself, a wing spreads evenly,
-## and the survivors close ranks when one of them dies. "How wide" means the
-## whole footprint a ship draws, not just its hull: a health bar hanging off
-## one ship's side must not land on the hull beside it.
+## Reservations take space away: a screen-space x span claimed by something
+## else on screen (the shop panel, a tutorial popup, a pinned ship), keyed by
+## its owner so it can be given back.
 ##
-## Space is taken away by reservations — a screen-space x span claimed by
-## something else on screen (the shop panel, the tutorial's popups, a ship that
-## a scenario effect deliberately parked somewhere). Each is keyed by its owner
-## so it can be dropped again, and the formation re-expands when it is.
-##
-## Everything here is in screen-space x. Turning that back into a position along
-## the curve is [EnemyManager]'s job.
+## Everything here is in screen-space x; EnemyManager maps it onto the curve.
 
 
 ## The full stretch of screen the formation may use, before reservations.
@@ -82,26 +71,15 @@ func solve(widths: PackedFloat32Array) -> PackedFloat32Array:
 	return solve_footprints(symmetric_footprints(widths))
 
 
-## Where ships taking up [param footprints] should stand, left to right. Each
-## footprint is how far the ship reaches to the left (x) and right (y) of its
-## centre — its hull, plus whatever hangs off it, like a health bar. Returns
-## centres.
+## Centres for ships taking up [param footprints], left to right. Each
+## footprint is how far the ship reaches left (x) and right (y) of its centre.
 ##
-## Every ship gets the same gap to its neighbours and half that gap to the ends
-## of the free span. Measuring gaps between footprints rather than between
-## centres keeps a capital ship from parking on top of its escorts, and keeps
-## one ship's health bar off the hull beside it; giving the ends only half a
-## gap spreads a pair out across the screen rather than bunching them in the
-## middle, which leaves room between them for their dice and their speech.
-##
-## A reservation in the middle of the screen (salvage floating where the wreck
-## was) leaves free space on both sides of it. The wing then splits across
-## them, keeping its left-to-right order, whichever way gives the most crowded
-## ship the most room — rather than crushing everyone into the wider half.
-##
-## A ship alone in its stretch centres its hull rather than its footprint, as
-## long as the footprint still fits: one lopsided ship has nobody to crowd,
-## and an off-centre lone ship just looks misplaced.
+## Every ship gets the same gap between footprints, and half a gap at the ends
+## of the free span, so a pair spreads across the screen with room between
+## them for dice and speech. When reservations split the free space, the wing
+## splits too, in order, whichever way gives the most crowded ship the most
+## room. A ship alone in its stretch centres its hull, not its footprint, as
+## long as the footprint still fits.
 func solve_footprints(footprints: PackedVector2Array) -> PackedFloat32Array:
 	var positions: PackedFloat32Array = PackedFloat32Array()
 	var count: int = footprints.size()

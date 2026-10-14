@@ -5,13 +5,9 @@ var enemy: Enemy
 var action: EnemyActionResource
 var action_popup: PackedScene = preload("uid://b8gjt5a2dcrbn")
 
-## How long the die takes to travel out in front of the enemy, by face value.
-##
-## This is the most repeated moment in the game and the whole thesis of it —
-## you armed them, and now you watch what you armed them with. A 1 should skip
-## over weightlessly; a 6 should drag. Making the *value* legible in pure body
-## language means a turn's worth of handovers has a felt threat-texture before
-## the player re-reads a single intent.
+## How long the die takes to travel out in front of the enemy, by face value:
+## a 1 skips over lightly and a 6 drags, so a turn's handovers read by weight
+## before the player re-reads a single intent.
 const _LIGHT_HANDOVER_SECONDS: float = 0.45
 const _HEAVY_HANDOVER_SECONDS: float = 0.95
 
