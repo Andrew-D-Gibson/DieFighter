@@ -39,7 +39,7 @@ script = ExtResource("script_effect")
 category = 4
 subtype = 21
 amount = 8
-string_param = "out"
+juice_flags = 2
 color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -55,7 +55,7 @@ script = ExtResource("script_effect")
 category = 4
 subtype = 15
 amount = 12
-string_param = "rise"
+juice_flags = 1
 color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

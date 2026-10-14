@@ -173,3 +173,18 @@ func test_callout_substitutes_the_running_amount() -> void:
 func test_flourishes_are_not_amplifiable() -> void:
 	var event := await _apply_one(_data(Sub.SPARK_BURST, 10)) as JuiceEvent
 	assert_false(event.is_amplifiable(), "an Amplifier must not resize a spark burst")
+
+
+func test_stream_carries_its_motion_flags() -> void:
+	var data := _data(Sub.STREAM)
+	data.juice_flags = JuiceEvent.Flag.OUTWARD | JuiceEvent.Flag.ENGINE
+	var event := await _apply_one(data) as JuiceEvent
+	assert_eq(event.flags, JuiceEvent.Flag.OUTWARD | JuiceEvent.Flag.ENGINE)
+
+
+func test_the_inspector_shows_juice_flags_only_where_they_are_read() -> void:
+	var category := EffectEnums.Category.AUDIO_VISUAL
+	assert_true(EffectCatalog.uses_field(category, Sub.SPARK_BURST, "juice_flags"))
+	assert_true(EffectCatalog.uses_field(category, Sub.STREAM, "juice_flags"))
+	assert_false(EffectCatalog.uses_field(category, Sub.CALLOUT, "juice_flags"))
+	assert_false(EffectCatalog.uses_field(category, Sub.STREAM, "string_param"))

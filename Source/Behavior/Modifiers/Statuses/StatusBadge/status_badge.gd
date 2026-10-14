@@ -20,7 +20,7 @@ func setup(status: StatusModifier) -> void:
 
 func _ready() -> void:
 	_icon.texture = _status.icon
-	_count.add_theme_color_override("font_color", Globals.get(_status.title_color))
+	_count.add_theme_color_override("font_color", _status.color)
 	_clickable.clicked.connect(_show_info)
 	# Arriving is the moment the player most needs to notice it.
 	set_stacks(_status.stacks, true)
@@ -45,7 +45,7 @@ func _pulse() -> void:
 
 func _show_info() -> void:
 	var info: InfoResource = InfoResource.new()
-	info.title_label_text = "[color=%s]%s[/color]" % [_status.title_color, _status.display_name]
+	info.title_label_text = "[color=#%s]%s[/color]" % [_status.color.to_html(false), _status.display_name]
 	info.top_label_text = "%d stack%s" % [_status.stacks, "" if _status.stacks == 1 else "s"]
 	info.texture = _status.info_icon if _status.info_icon else _status.icon
 	info.bottom_label_text = Keywords.definition(_status.display_name)

@@ -65,6 +65,10 @@ extends Resource
 ## FLASH_TARGET and VIGNETTE_PULSE.
 @export var color: Color = Color.WHITE
 
+## How a flourish moves. SPARK_BURST reads RISE; STREAM reads OUTWARD and
+## ENGINE. See JuiceEvent.
+@export_flags("Rise", "Outward", "Engine") var juice_flags: int = 0
+
 ## The ship to bring into the fight. Used by ScenarioControlSubtype.LAUNCH_SHIP.
 @export var ship_resource: EnemyResource = null
 

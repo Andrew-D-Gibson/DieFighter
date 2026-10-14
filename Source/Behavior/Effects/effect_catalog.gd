@@ -48,7 +48,7 @@ extends RefCounted
 const KNOWN_FIELDS: Array[String] = [
 	"amount", "multiplier", "string_param", "grid_offset",
 	"sound_resource", "color", "range_min", "range_max",
-	"ship_resource",
+	"ship_resource", "juice_flags",
 ]
 
 
@@ -135,13 +135,13 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.VIGNETTE_PULSE, label = "Vignette Pulse", handler = VignettePulseHandler, fields = ["color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.GLITCH_BURST, label = "Glitch Burst", handler = GlitchBurstHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SHOCKWAVE, label = "Shockwave", handler = JuiceHandler, fields = ["amount", "color"]},
-	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPARK_BURST, label = "Spark Burst", handler = JuiceHandler, fields = ["amount", "multiplier", "string_param", "color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPARK_BURST, label = "Spark Burst", handler = JuiceHandler, fields = ["amount", "multiplier", "juice_flags", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.CALLOUT, label = "Callout", handler = JuiceHandler, fields = ["string_param", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.BUMP, label = "Bump", handler = JuiceHandler, fields = ["multiplier"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ZAP, label = "Zap", handler = JuiceHandler, fields = ["amount", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.GRID_RIPPLE, label = "Grid Ripple", handler = JuiceHandler, fields = ["amount", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SCREEN_RIPPLE, label = "Screen Ripple", handler = JuiceHandler, fields = ["multiplier"]},
-	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.STREAM, label = "Stream", handler = JuiceHandler, fields = ["amount", "string_param", "color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.STREAM, label = "Stream", handler = JuiceHandler, fields = ["amount", "juice_flags", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.DIE_FLARE, label = "Die Flare", handler = JuiceHandler, fields = ["color"]},
 
 	# ── TILE_CONTROL ──────────────────────────────────────────────

@@ -25,8 +25,8 @@ const _BADGE_SCENE: PackedScene = preload("res://Source/Behavior/Modifiers/Statu
 var status_id: StringName
 ## The keyword term in Keywords that explains this status.
 var display_name: String
-## A palette colour name ("red", "orange", ...) for the badge and info panel.
-var title_color: String = "orange"
+## The status's palette colour, for its badge, info panel and callouts.
+var color: Color = Globals.orange
 ## 11x11, for the badge.
 var icon: Texture2D
 ## 24x24, for the info panel.
@@ -61,12 +61,12 @@ func play_applied_feedback(stacks_added: int) -> void:
 	var ship: Node2D = host()
 	if ship == null:
 		return
-	var color: Color = get_trigger_color()
+	var tint: Color = get_trigger_color()
 	if ship is Enemy:
-		(ship as Enemy).graphics_manager.flash(color, 0.35)
-	Juice.ring(ship, ship.global_position, color, 22.0, 0.4, 6.0)
-	Juice.sparkle(ship, ship.global_position, color, 12, 40.0, true)
-	Juice.callout(ship, "+%d %s" % [stacks_added, display_name.to_upper()], color)
+		(ship as Enemy).graphics_manager.flash(tint, 0.35)
+	Juice.ring(ship, ship.global_position, tint, 22.0, 0.4, 6.0)
+	Juice.sparkle(ship, ship.global_position, tint, 12, 40.0, true)
+	Juice.callout(ship, "+%d %s" % [stacks_added, display_name.to_upper()], tint)
 
 
 ## Statuses have no source tile to light up, so the ship they sit on reacts
@@ -76,11 +76,11 @@ func announce_triggered() -> void:
 	var ship: Node2D = host()
 	if ship == null:
 		return
-	var color: Color = get_trigger_color()
+	var tint: Color = get_trigger_color()
 	if ship is Enemy:
-		(ship as Enemy).graphics_manager.flash(color, 0.3)
-	Juice.sparkle(ship, ship.global_position, color, 8, 35.0)
-	Juice.callout(ship, get_trigger_text(), color)
+		(ship as Enemy).graphics_manager.flash(tint, 0.3)
+	Juice.sparkle(ship, ship.global_position, tint, 8, 35.0)
+	Juice.callout(ship, get_trigger_text(), tint)
 
 
 func get_trigger_text() -> String:
@@ -88,8 +88,7 @@ func get_trigger_text() -> String:
 
 
 func get_trigger_color() -> Color:
-	var color: Variant = Globals.get(title_color)
-	return color if color is Color else Globals.yellow
+	return color
 
 
 ## Called once per round by ScenarioEngine.tick_statuses(), which the enemy

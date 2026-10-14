@@ -85,7 +85,7 @@ script = ExtResource("script_effect")
 category = 4
 subtype = 15
 amount = 16
-string_param = "rise"
+juice_flags = 1
 color = Color(0.9490, 0.6118, 0.3647, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

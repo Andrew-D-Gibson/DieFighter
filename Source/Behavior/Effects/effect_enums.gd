@@ -186,7 +186,7 @@ enum AudioVisualSubtype {
 	ZAP,                      ## Lightning bolt from the effect source to each target
 	GRID_RIPPLE,              ## A flash that ripples out across the tile grid from the source
 	SCREEN_RIPPLE,            ## Screen-space shockwave distortion centred on the first target
-	STREAM,                   ## Motes flowing from each target to the source ("out": the other way)
+	STREAM,                   ## Motes flowing from each target to the source (OUTWARD: the other way)
 	DIE_FLARE,                ## Spin, pop and ring the activator die
 }
 

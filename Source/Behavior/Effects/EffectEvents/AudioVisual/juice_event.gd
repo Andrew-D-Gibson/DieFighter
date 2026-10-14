@@ -12,6 +12,15 @@ var kind: int
 var multiplier: float = 1.0
 var color: Color = Color.WHITE
 var text: String = ""
+## EffectData.juice_flags: a bitmask of Flag.
+var flags: int = 0
+
+## The bits of EffectData.juice_flags, in the order its inspector lists them.
+enum Flag {
+	RISE = 1,    ## SPARK_BURST: sparks drift upward, for gains rather than hits
+	OUTWARD = 2, ## STREAM: flow out of the source rather than into it
+	ENGINE = 4,  ## STREAM: the player's end is their engine charge
+}
 
 const _DEFAULT_SHOCKWAVE_RADIUS: int = 20
 const _DEFAULT_SPARK_COUNT: int = 10
@@ -43,7 +52,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 			var count: int = amount if amount > 0 else _DEFAULT_SPARK_COUNT
 			for node: Node2D in anchors:
 				Juice.sparkle(node, Juice.anchor_of(node), color, count,
-						40.0 * multiplier, text == "rise")
+						40.0 * multiplier, _has(Flag.RISE))
 		EffectEnums.AudioVisualSubtype.CALLOUT:
 			for node: Node2D in anchors:
 				Juice.callout_at(node, Juice.anchor_of(node), text, color)
@@ -77,9 +86,9 @@ func _zap(anchors: Array[Node2D]) -> void:
 	await from.get_tree().create_timer(msec / 1000.0).timeout
 
 
-## Motes flow from each target into the source (a drain), or out of it when
-## text contains "out". With "engine" in it, the player's end is their engine
-## charge rather than their health bar. Held until they arrive, for the same
+## Motes flow from each target into the source (a drain), or out of it with
+## OUTWARD. With ENGINE, the player's end is their engine charge rather than
+## their health bar. Held until they arrive, for the same
 ## reason as the bolt.
 func _stream(anchors: Array[Node2D]) -> void:
 	var hub: Node2D = effect_source as Node2D
@@ -92,7 +101,7 @@ func _stream(anchors: Array[Node2D]) -> void:
 			continue
 		var start: Vector2 = _stream_end(node)
 		var end: Vector2 = _stream_end(hub)
-		if text.contains("out"):
+		if _has(Flag.OUTWARD):
 			var swap: Vector2 = start
 			start = end
 			end = swap
@@ -102,9 +111,13 @@ func _stream(anchors: Array[Node2D]) -> void:
 
 
 func _stream_end(node: Node2D) -> Vector2:
-	if node is Player and text.contains("engine"):
+	if node is Player and _has(Flag.ENGINE):
 		return Juice.engine_anchor(node)
 	return Juice.anchor_of(node)
+
+
+func _has(flag: Flag) -> bool:
+	return (flags & flag) != 0
 
 
 func _anchors() -> Array[Node2D]:
