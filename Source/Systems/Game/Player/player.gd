@@ -464,6 +464,24 @@ func _carry_dice_through_jump() -> void:
 		num_of_dice = maxi(1, num_of_dice - stranded)
 
 
+## A ship is leaving the fight with [param dice]: they go with it, and every
+## real one among them is gone from the Fleet for good, exactly as if the
+## player had jumped away from it. Holograms fizzle with the ship.
+func lose_dice_to(holder: Enemy, dice: Array[Dice]) -> void:
+	var lost: int = 0
+	for die: Dice in dice:
+		if not is_instance_valid(die) or die.is_queued_for_deletion():
+			continue
+		TractorBeam.release(die)
+		_strand_die(die, holder)
+		if not die.holographic:
+			lost += 1
+
+	if lost > 0:
+		_announce_lost_dice(lost)
+		num_of_dice = maxi(1, num_of_dice - lost)
+
+
 ## Brings a die home to the hand and holds it there until arrival. Nothing
 ## may be played mid-jump: the scenario engine a tile would fire through has
 ## already been shut down.
@@ -484,7 +502,9 @@ func _stow_die_for_jump(die: Dice) -> void:
 ## nothing can hand it back — a ship freed mid-jump never gives its dice away,
 ## but a combat_finished arriving late would.
 func _strand_die(die: Dice, holder: Enemy) -> void:
-	die.host_queue.remove(die)
+	# A die mid-action has already left its holder's queue.
+	if die.host_queue:
+		die.host_queue.remove(die)
 	die.host_queue = null
 	die.remove_from_group('Dice')
 	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE

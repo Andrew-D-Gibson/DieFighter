@@ -26,6 +26,8 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Exposed": "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends 1 Exposed.",
 	"Hologram": "A copy of a die. Destroyed if given to another ship.",
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
+	"Steal": "This ship keeps the die. Next turn it uses it to Steal again. It drops what it holds if destroyed.",
+	"Getaway": "This ship flees with every die it holds. Those dice are gone from your [color=purple]Fleet[/color] for good.",
 	"Fleet": "Every die you own: in hand, on tiles, or held by enemies. Holograms count. Dice enemies hold when you jump are lost.",
 }
 
@@ -47,6 +49,9 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(fleet)":      {"label": "Fleet",      "term": "Fleet"},
 	"(load)":       {"label": "Load",       "term": "Load"},
 	"(loaded)":     {"label": "Loaded",     "term": "Load"},
+	"(steal)":      {"label": "Steal",      "term": "Steal"},
+	"(stolen)":     {"label": "stolen",     "term": "Steal"},
+	"(getaway)":    {"label": "Getaway",    "term": "Getaway"},
 	"(hologram)":   {"label": "hologram",   "term": "Hologram", "color": "blue"},
 	"(holograms)":  {"label": "holograms",  "term": "Hologram", "color": "blue"},
 	"(Hologram)":   {"label": "Hologram",   "term": "Hologram", "color": "blue"},

@@ -223,6 +223,13 @@ enum ScenarioControlSubtype {
 	JUMP,       ## Trigger a hyperspace jump
 	FLEE,       ## Enemy flees (removes itself from combat)
 	MOVE_SHIP,  ## Move an enemy ship's position on screen
+	## The enemy leaves combat taking every die it holds, the one it is
+	## spending included. The player loses those dice for good, as if they had
+	## jumped away from them.
+	ESCAPE_WITH_DICE,
+	## The enemy launches a new ship of ship_resource beside itself, on its
+	## own side, to fight from the next turn.
+	LAUNCH_SHIP,
 }
 
 

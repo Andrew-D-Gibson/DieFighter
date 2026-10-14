@@ -65,6 +65,9 @@ extends Resource
 ## FLASH_TARGET and VIGNETTE_PULSE.
 @export var color: Color = Color.WHITE
 
+## The ship to bring into the fight. Used by ScenarioControlSubtype.LAUNCH_SHIP.
+@export var ship_resource: EnemyResource = null
+
 
 # ── Range Parameters ───────────────────────────────────────────────────────────
 ## Used by: ConditionalSubtype.IF_DIE_VALUE_IN_RANGE.

@@ -29,6 +29,10 @@ var enemies: Array[Enemy]
 ## of the formation, so nobody reflows on top of it.
 @export var pinned_ship_footprint: float = 40.0
 
+## The most ships a launch may bring the board up to. Past this the formation
+## starts squeezing hulls together.
+@export var max_ships_in_combat: int = 6
+
 @export_category('Draw Order')
 ## The z the ships drop to while jumping away. In combat they draw above the
 ## main viewer, so a tractor beam can run over the tile grid and still come
@@ -154,6 +158,44 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 	# already here keep the table the player has been reading.
 	_roll_turn_actions(spawned)
 	refresh_formation(false)
+
+
+## Whether another ship would still fit on the board.
+func has_room_to_launch() -> bool:
+	return get_alive_enemies().size() < max_ships_in_combat
+
+
+## Brings [param resource] into the fight from [param launcher]'s hull, on its
+## side and in its scenario state, and slides it out to a spot in the formation
+## beside it. A launched ship pays no reward of its own (its side's bounty still
+## waits on it) and isn't part of the save: a Continue rebuilds the scenario's
+## authored roster only.
+func launch_ship(resource: EnemyResource, launcher: Enemy) -> Enemy:
+	if not is_instance_valid(launcher):
+		return null
+
+	var ship: Enemy = enemy_base_scene.instantiate()
+	ship.enemy_resource = resource
+	ship.scenario_state = launcher.scenario_state
+	ship.position = launcher.position
+	# Next to its launcher in the roster, which is left-to-right formation
+	# order, so it doesn't cross the board to reach its slot.
+	var index: int = enemies.find(launcher)
+	enemies.insert(index + 1 if index >= 0 else enemies.size(), ship)
+	add_child(ship)
+	# Below the launcher, so it reads as coming out of the hangar.
+	move_child(ship, launcher.get_index())
+
+	# A table now, so the targeting computer has something to show; the
+	# next player turn rolls it again with everyone else.
+	_roll_turn_actions([ship])
+	Juice.ring(self, ship.global_position, Globals.orange, 22.0, 0.35, 3.0)
+	refresh_formation()
+
+	var move: Tween = _active_moves.get(ship)
+	if move and move.is_valid():
+		await move.finished
+	return ship
 
 
 ## The ships still here, for the save. A starting ship with no record has died

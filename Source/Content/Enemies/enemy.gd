@@ -217,8 +217,8 @@ func _on_death() -> void:
 	explosion.amount = health.max_health * 5
 	add_child(explosion)
 
-	# Spawn rewards
-	if not killed_by_ship:
+	# Spawn rewards. A launched fighter carries none of its own.
+	if not killed_by_ship and reward_resource:
 		Events.spawn_reward.emit(
 			global_position,
 			reward_resource

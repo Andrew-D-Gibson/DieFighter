@@ -83,6 +83,10 @@ static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false) 
 				EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY,
 				EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP,
 			]
+		elif effect.category == EffectEnums.Category.SCENARIO_CONTROL \
+		and effect.subtype == EffectEnums.ScenarioControlSubtype.ESCAPE_WITH_DICE:
+			# Losing dice for good is worse than any hit.
+			return Threat.DANGEROUS
 		elif effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
 		and effect.subtype == EffectEnums.AttributeChangeSubtype.DAMAGE:
 			if not aimed_at_ship:
@@ -118,6 +122,7 @@ func is_safe_while_hidden() -> bool:
 			and effect.subtype in [
 				EffectEnums.ScenarioControlSubtype.FLEE,
 				EffectEnums.ScenarioControlSubtype.JUMP,
+				EffectEnums.ScenarioControlSubtype.ESCAPE_WITH_DICE,
 			]
 	)
 

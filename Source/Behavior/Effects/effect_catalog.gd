@@ -48,6 +48,7 @@ extends RefCounted
 const KNOWN_FIELDS: Array[String] = [
 	"amount", "multiplier", "string_param", "grid_offset",
 	"sound_resource", "color", "range_min", "range_max",
+	"ship_resource",
 ]
 
 
@@ -165,6 +166,8 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.JUMP, label = "Jump", handler = JumpHandler},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.FLEE, label = "Flee", handler = FleeHandler},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.MOVE_SHIP, label = "Move Ship", handler = MoveShipHandler, fields = ["multiplier"]},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.ESCAPE_WITH_DICE, label = "Escape With Dice", handler = EscapeWithDiceHandler},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.LAUNCH_SHIP, label = "Launch Ship", handler = LaunchShipHandler, fields = ["ship_resource"]},
 
 	# ── CONDITIONAL ───────────────────────────────────────────────
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_ACTIVATOR_ODD, label = "If Activator Odd", handler = ConditionalHandler},

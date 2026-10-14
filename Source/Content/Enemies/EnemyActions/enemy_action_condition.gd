@@ -19,6 +19,9 @@ enum Type {
 	SELF_HURT,
 	## This ship's attitude toward the player is [member attitude].
 	ATTITUDE_IS,
+	## No more than [member count] other ships are on this one's side. Keeps a
+	## launcher from filling the board.
+	ALLIES_AT_MOST,
 }
 
 @export var type: Type = Type.ALLY_EXISTS
@@ -32,6 +35,9 @@ enum Type {
 
 ## ATTITUDE_IS: the attitude to match.
 @export var attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE
+
+## ALLIES_AT_MOST: the most allies there may be.
+@export var count: int = 3
 
 
 func is_met(situation: EnemyActionSituation) -> bool:
@@ -50,4 +56,6 @@ func _test(situation: EnemyActionSituation) -> bool:
 			return situation.health_fraction < hull_fraction
 		Type.ATTITUDE_IS:
 			return situation.attitude == attitude
+		Type.ALLIES_AT_MOST:
+			return situation.allies.size() <= count
 	return false
