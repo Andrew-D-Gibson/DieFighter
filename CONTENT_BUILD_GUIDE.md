@@ -402,7 +402,9 @@ ion cloud, meteor shower and rift tear for examples. Drive their visuals with
   ATTRIBUTE_CHANGE steps consume it.
 - Visual flourishes (`AUDIO_VISUAL`: SHOCKWAVE, SPARK_BURST, CALLOUT, ZAP,
   STREAM, ...) play at the current targets. ZAP and STREAM hold the chain
-  until they land.
+  until they land. Tick `juice_flags` for how they move: Rise (sparks drift
+  up, for gains), Outward (a stream flows out of the source) and Engine (the
+  player's end of a stream is the engine bar).
 
 **Adding a new effect type:**
 1. **Append** a value to the right enum in
@@ -452,7 +454,8 @@ ion cloud, meteor shower and rift tear for examples. Drive their visuals with
 
 1. Subclass `StatusModifier` in `Source/Behavior/Modifiers/Statuses/`. Copy
    `burn_status.gd` or `exposed_status.gd`. Set `status_id`, `display_name`,
-   `title_color`, `icon`, `info_icon` and `priority`, and implement its hook.
+   `color` (a `Globals` palette colour), `icon`, `info_icon` and `priority`,
+   and implement its hook.
 2. Add it to `StatusCatalog._statuses` (`status_catalog.gd`), keyed by id.
 3. Art: `Assets/Textures/Statuses/` (11×11 badge, 24×24 info).
 4. Add a keyword for it (§9).

@@ -272,7 +272,7 @@ has; each status decides what one means.
   `ScenarioEngine.find_status()` / `statuses_on()` look them up.
 - **Ids:** `StatusCatalog` maps the authored id to its class. A content test
   checks every authored id against it.
-- **Ticking:** once per round, from `EnemyManager.run_enemy_turn()` (see 4.6).
+- **Ticking:** once per round, from `EnemyTurn.play()` (see 4.6).
   Nothing ticks off a signal: `EnemyManager` connects to `player_turn_over`
   first and would queue every action before a status got a look in.
 - **Scrambled flips on arrival**, not on use: `EnemyDiceManager.add()` emits
@@ -291,13 +291,15 @@ ring, `+N NAME` callout); `announce_triggered()` flashes the ship and calls
 out the name whenever a status does its job (see 4.7).
 
 **Adding a status:** subclass `StatusModifier` (set `status_id`,
-`display_name`, `title_color`, `icon`, `info_icon`, `priority`), add it to
+`display_name`, `color`, `icon`, `info_icon`, `priority`), add it to
 `StatusCatalog`, and give it a keyword in `Keywords`.
 
 ### 4.6 Enemy Turn Flow
 
 1. `Events.player_turn_over` triggers `EnemyManager.run_enemy_turn()`, which
-   first ticks every status and waits for the queue to drain, so a ship that
+   runs `EnemyTurn.play()` (`EnemyManager/enemy_turn.gd`; `EnemyTurn` also
+   rolls and binds the tables). It waits for dice still in flight, then ticks
+   every status and waits for the queue to drain, so a ship that
    burns to death never takes its turn
 2. For each enemy with dice:
    - targeting_computer shows intent UI (`Events.enemy_received_die` updates dice view)
@@ -338,7 +340,9 @@ movement tween owns.
 `GRID_RIPPLE`, `SCREEN_RIPPLE`, `STREAM`, `DIE_FLARE`, all one `JuiceHandler`
 building a `JuiceEvent`. They read authored fields only (`CALLOUT`'s
 `{amount}` and `{die}` tokens are the exception), aren't amplifiable, and play at the
-targets or, with none, at the source. `ZAP` and `STREAM` hold the chain until
+targets or, with none, at the source. `SPARK_BURST` and `STREAM` take a
+`juice_flags` bitmask (Rise; Outward, Engine; see `JuiceEvent.Flag`) rather
+than a string. `ZAP` and `STREAM` hold the chain until
 they land; the rest don't. `Juice.anchor_of()` / `body_of()` decide where an
 effect on a node is drawn and what gets squashed (`Player` routes both to its
 health bar). `SCREEN_RIPPLE` honours the screenshake setting. Where every
@@ -438,8 +442,11 @@ enemies, intents and dice.
 - ships by `starting_enemies` index (state resource path, HP, shields,
   squad_losses, turns_alive; a missing index means the ship is gone);
 - untaken reward offers item by item, and the shop's unsold stock and prices;
-- the hazard countdown, the dice in hand, and tile `uses_remaining`;
+- the dice in hand, and tile `uses_remaining`;
 - the per-scenario RNG states.
+
+Checkpoints are never taken mid-fight, so a hazard's countdown isn't saved: a
+Continue replays the fight, countdown and all, from the top.
 
 Restored ships skip `effects_on_enter`: those already ran and their results
 are in the save. The shop reopens from the save instead.
@@ -537,7 +544,7 @@ does part of the telegraphing.
 Each hazard has a `timing`. `YOUR_TURN_STARTS` hazards (Solar Flare, Asteroid
 Impact) go off as the player's turn starts, after the hand is rolled.
 `YOUR_TURN_ENDS` hazards (Ion Storm, Fate Rift) go off on
-`Events.enemy_turn_starting`, which `EnemyManager.run_enemy_turn()` emits once
+`Events.enemy_turn_starting`, which `EnemyTurn.play()` emits once
 the dice the player spent have landed and before statuses tick or any ship
 acts; it then awaits the engine, so the hazard resolves before a ship reads a
 die. Dice hazards have to live there: at turn start the hand has only just
@@ -949,9 +956,11 @@ ship shows held/threshold.
 `ShipHullResource`) gives a scenario one big untargetable body, and starting
 ships flagged `mounted` are its parts at `mount_offset`. Parts are ordinary
 Enemies, pinned out of the formation and never bobbing on their own.
-`EnemyManager` seats them on the `ShipHull` every frame (`_carry_mounts`), flies
-the hull in first, moves it with them on a jump, scars each lost part's socket
-(`ShipHull.scar`), and breaks it up with the last (`break_up`).
+`HullMounts` (`EnemyManager/hull_mounts.gd`, owned by `EnemyManager`) builds
+the hull, seats the parts on the `ShipHull` every frame, flies it in first,
+moves it with them on a jump, scars each lost part's socket (`ShipHull.scar`),
+breaks it up with the last (`break_up`), and holds and releases the formation
+space the hull and its parts take.
 
 **Which pool a turn draws from** is set by `EnemyResource.pool_selection`:
 

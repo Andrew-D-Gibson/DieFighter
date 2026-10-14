@@ -4,6 +4,44 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-14 — Review cleanup of the last two weeks
+
+A code review of the fortnight's work, then the cleanup it suggested. No
+gameplay changes intended.
+
+**Bugs fixed.** A fleeing or escaping ship stopped listening to scenario
+events only after announcing it was leaving, so `PIRATES_DEFEATED` could make
+it react to its own exit; it now goes deaf first, as a dying ship already
+did. A cut-short gate warp-in no longer leaves the ring over-bright on the
+next quiet open. Damage-number callout stacking forgets old ships instead of
+growing all run. A targeted ship that moved before its reticle had ever bobbed
+crashed the reticle hand-off. Forced tutorial actions and Jammed's Do Nothing
+were numbered and bound in place on shared resources; they are copied first.
+Raising a ship for its kill flash cancels a hit bump that would undo its scale.
+
+**Structure.** `EnemyManager` lost its hull and turn code to `HullMounts`
+(hull lifetime, seating parts, the formation space they hold) and `EnemyTurn`
+(rolling tables, playing the turn). `TargetingComputer` gained public
+`hide_indicator_while_moving()` / `show_indicator_after_move()`, and
+`EffectContext.relay_visited_with_actor()` replaced a borrowed private helper.
+Node meta became fields (`Dice.transit_locked`, the hull's rest spot).
+
+**Data.** `SPARK_BURST` and `STREAM` read a typed `juice_flags` bitmask
+(Rise / Outward / Engine) instead of words in `string_param`; 23 authored
+steps were migrated. Statuses carry a palette `color` rather than a colour
+name. The never-filled `hazard_turns` save field is gone, since checkpoints
+are never taken mid-fight. `Globals.SCREEN_SIZE` replaces four hardcoded
+320x180s. `EnemyActionResource` keeps what it reads off its chain.
+
+**Tests.** New: departures (dice stranded by a jump, flee, escape, launching,
+the gate, the reticle), `HullMounts` and the Bastion through `EnemyManager`,
+`EnemyTurn` always ending, tile neighbours, juice flags, and the action cache.
+
+**Correction.** The review claimed Feed Hologram could mint a die face above
+6. `Dice.value` already clamps, so the clamp added for it was removed again.
+
+---
+
 ## 2026-10-14 — Elites, bosses on the gates, the gate ring, and two new bosses
 
 **Map.** The purple boss icon now marks **elites** (`elite_encounter.png`).
