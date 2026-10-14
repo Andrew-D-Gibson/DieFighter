@@ -24,6 +24,10 @@ const _RAISED_SHIP_Z_INDEX: int = 50
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
 
+## The health bar's slide between its side and compact spots. See
+## set_health_bar_position().
+var _health_bar_tween: Tween
+
 ## Whichever flash is currently fading. See flash().
 var _flash_tween: Tween
 
@@ -63,9 +67,18 @@ func play_death_animation() -> void:
 	await explosion.animation_finished
 
 
-## Sets the position of the health bar
-func set_health_bar_position(pos: Vector2) -> void:
-	health_bar.position = pos
+## Sets the position of the health bar, sliding it there over [param duration]
+## seconds rather than jumping when the formation moves it mid-fight.
+func set_health_bar_position(pos: Vector2, duration: float = 0.0) -> void:
+	if _health_bar_tween:
+		_health_bar_tween.kill()
+	if duration <= 0.0 or not is_inside_tree():
+		health_bar.position = pos
+		return
+	_health_bar_tween = create_tween()
+	_health_bar_tween.tween_property(health_bar, "position", pos, duration)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_IN_OUT)
 
 
 ## Updates the health bar's attitude indicator

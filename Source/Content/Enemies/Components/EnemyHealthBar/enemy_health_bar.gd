@@ -1,6 +1,12 @@
 class_name EnemyHealthBar
 extends HealthBarController
 
+## How far the drawn bar reaches to the left and right of its own origin: the
+## attitude face on one side, the health ring on the other. The formation
+## spaces ships by this, so it has to track the art if the bar is redrawn.
+const REACH_LEFT: float = 20.0
+const REACH_RIGHT: float = 12.0
+
 
 ## Single tween for manipulating the attitude indicator
 ## Used to animate the indicator on transitions for better clarity

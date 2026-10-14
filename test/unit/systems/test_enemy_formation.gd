@@ -124,3 +124,49 @@ func test_speech_turns_away_from_reserved_space() -> void:
 func test_a_ship_is_not_crowded_by_its_own_pin() -> void:
 	formation.reserve(&"ship_1", Vector2(140, 180))
 	assert_false(formation.speech_points_left(160.0, PackedFloat32Array()))
+
+
+## A ship whose health bar hangs 24px further out on its left than its 32px
+## hull does, like the Venom Fighter's.
+const _SIDE_BAR: Vector2 = Vector2(40.0, 16.0)
+
+
+func _footprints(count: int, reach: Vector2) -> PackedVector2Array:
+	var footprints := PackedVector2Array()
+	for i: int in range(count):
+		footprints.append(reach)
+	return footprints
+
+
+func test_a_health_bar_never_lands_on_the_next_hull() -> void:
+	var footprints := _footprints(4, _SIDE_BAR)
+	var positions := formation.solve_footprints(footprints)
+	for i: int in range(1, positions.size()):
+		var gap: float = (positions[i] - _SIDE_BAR.x) - (positions[i - 1] + _SIDE_BAR.y)
+		assert_true(gap >= formation.min_ship_gap, "ship %d's bar clears ship %d" % [i, i - 1])
+
+
+func test_a_lone_lopsided_ship_still_centres_its_hull() -> void:
+	assert_eq(Array(formation.solve_footprints(_footprints(1, _SIDE_BAR))), [160.0])
+
+
+func test_a_lone_ship_pressed_against_a_reservation_keeps_its_bar_clear() -> void:
+	# The free stretch is 140..280; centring the hull at 210 would be fine, but
+	# a stretch only just wide enough has to push the hull right of centre.
+	formation.reserve(&"popup", Vector2(40, 226))
+	var positions := formation.solve_footprints(_footprints(1, _SIDE_BAR))
+	assert_true(positions[0] - _SIDE_BAR.x >= 226.0, "the bar stays off the reservation")
+
+
+func test_symmetric_footprints_match_plain_widths() -> void:
+	var widths := PackedFloat32Array([32.0, 128.0, 32.0])
+	assert_eq(
+		formation.solve_footprints(EnemyFormation.symmetric_footprints(widths)),
+		formation.solve(widths)
+	)
+
+
+func test_fits_reports_a_crowd() -> void:
+	assert_true(formation.fits(_footprints(3, _SIDE_BAR)))
+	assert_false(formation.fits(_footprints(5, _SIDE_BAR)), "five side bars don't fit 240px")
+	assert_true(formation.fits(_footprints(1, Vector2(400, 400))), "a lone ship always fits")

@@ -14,20 +14,17 @@ var enemies: Array[Enemy]
 @export var fly_in_time: float = 1.5
 
 @export_category('Formation')
-## How far in from each end of the spawning path the formation keeps its ships.
-## The path runs to the edges of the screen; ships standing there would be half
-## off it, and their health bars entirely so.
-@export var formation_edge_margin: float = 36.0
+## How far in from each end of the spawning path the formation keeps its ships'
+## footprints. The path runs to the edges of the screen; the formation already
+## counts health bars as part of a ship, so this only has to keep them clear of
+## the cockpit frame.
+@export var formation_edge_margin: float = 14.0
 
-## Narrowest gap between two ships' hulls. See [member EnemyFormation.min_ship_gap].
+## Narrowest gap between two ships' footprints. See [member EnemyFormation.min_ship_gap].
 @export var formation_min_gap: float = 8.0
 
 ## How long a ship takes to slide to a new spot when the formation changes.
 @export var reflow_time: float = 0.75
-
-## Screen-space width a ship parked by a scenario effect holds against the rest
-## of the formation, so nobody reflows on top of it.
-@export var pinned_ship_footprint: float = 40.0
 
 ## The most ships a launch may bring the board up to. Past this the formation
 ## starts squeezing hulls together.
@@ -100,10 +97,7 @@ func _ready() -> void:
 		if ship in enemies:
 			enemies.erase(ship)
 		_unmount(ship)
-		_awaiting_fly_in.erase(ship)
-		_arrival_rest.erase(ship)
-		_active_moves.erase(ship)
-		formation.clear_reservation(_pin_key(ship))
+		_forget(ship)
 		# Any slot that was going to act on it picks someone else, so the
 		# intent the player reads stays true.
 		EnemyTargetBinder.rebind_departed(ship, get_alive_enemies())
@@ -248,11 +242,9 @@ func _restore_enemies(starting_enemies: Array[EnemyStateRewardResource]) -> void
 			continue
 		# Gone before the save. Freed quietly — no death, no reward, no
 		# enemy_left for the scenario to react to a second time.
-		formation.clear_reservation(_pin_key(enemy))
+		_forget(enemy)
 		enemy.disconnect_scenario_signals()
 		enemies.erase(enemy)
-		_awaiting_fly_in.erase(enemy)
-		_arrival_rest.erase(enemy)
 		enemy.queue_free()
 
 	refresh_formation(false)
@@ -394,10 +386,13 @@ func refresh_formation(animate: bool = true) -> void:
 		return
 
 	var members: Array[Enemy] = _formation_members()
-	var widths: PackedFloat32Array = PackedFloat32Array()
+	# Health bars hang off each ship's side, which is the clearest place for
+	# them. Only when the wing can't fit that way do they tuck above the hulls,
+	# all together, so the board doesn't mix the two looks.
+	var compact: bool = not formation.fits(_footprints(members, false))
+	var slots: PackedFloat32Array = formation.solve_footprints(_footprints(members, compact))
 	for enemy: Enemy in members:
-		widths.append(enemy.enemy_resource.formation_width)
-	var slots: PackedFloat32Array = formation.solve(widths)
+		enemy.set_health_bar_compact(compact, reflow_time if animate else 0.0)
 
 	_point_speech(members, slots)
 
@@ -456,6 +451,15 @@ func clear_formation_space(key: StringName) -> void:
 		refresh_formation()
 
 
+## What each of [param ships] takes up, laid out with its health bar beside the
+## hull or, with [param compact], above it.
+func _footprints(ships: Array[Enemy], compact: bool) -> PackedVector2Array:
+	var footprints: PackedVector2Array = PackedVector2Array()
+	for ship: Enemy in ships:
+		footprints.append(ship.formation_footprint(compact))
+	return footprints
+
+
 ## Everyone the formation is free to place: alive, still valid, and not nailed
 ## down by a scenario effect. Scenario order is left-to-right order.
 func _formation_members() -> Array[Enemy]:
@@ -474,14 +478,23 @@ func _resting_position(ship: Enemy, proportion: float) -> Vector2:
 	return get_point_along_path(proportion) + ship.enemy_resource.graphics_scene_offset
 
 
-## A pinned ship holds its own patch of screen, so the rest of the formation
-## reflows around it instead of through it.
+## A pinned ship holds its own patch of screen, health bar and all, so the rest
+## of the formation reflows around it instead of through it. Pinned ships keep
+## their health bar beside the hull: it is the spot the scenario was laid out
+## around.
 func _reserve_pinned_ship(ship: Enemy, proportion: float) -> void:
 	var centre_x: float = get_global_point_along_path(proportion).x
-	formation.reserve(
-		_pin_key(ship),
-		Vector2(centre_x - pinned_ship_footprint * 0.5, centre_x + pinned_ship_footprint * 0.5)
-	)
+	ship.set_health_bar_compact(false)
+	var reach: Vector2 = ship.formation_footprint(false)
+	formation.reserve(_pin_key(ship), Vector2(centre_x - reach.x, centre_x + reach.y))
+
+
+## Drops everything the formation was tracking for a ship that has gone.
+func _forget(ship: Enemy) -> void:
+	_awaiting_fly_in.erase(ship)
+	_arrival_rest.erase(ship)
+	_active_moves.erase(ship)
+	formation.clear_reservation(_pin_key(ship))
 
 
 func _pin_key(ship: Enemy) -> StringName:
@@ -670,12 +683,19 @@ func _update_jumping_enemies(delta: float) -> void:
 		enemy.global_position.y += delta * speed
 		
 		if enemy.global_position.y > screen_size.y + 50:  # Off-screen offset
+			# Ships that fly off this way never announce leaving, so whatever
+			# they held (a pinned spot, a seat on a hull) is let go here, or
+			# the next scenario's formation inherits it.
+			_forget(enemy)
+			_mounts.erase(enemy)
 			enemy.disconnect_scenario_signals()
 			enemy.queue_free()
 			enemies.remove_at(i)
 	
-	# Reset flag when all enemies are gone
+	# Reset flag when all enemies are gone. A hull still falling goes with
+	# them: once the jump is over nothing carries it any further.
 	if len(enemies) == 0:
+		_free_hull()
 		enemies_jumping = false
 
 
@@ -683,9 +703,10 @@ func delete_all_enemies() -> void:
 	# Needs to be queue_free'ed, not health reduced to 0
 	# so we don't spawn rewards
 	for i: int in range(len(enemies)-1, -1, -1):
-		formation.clear_reservation(_pin_key(enemies[i]))
-		enemies[i].disconnect_scenario_signals()
-		enemies[i].queue_free()
+		if is_instance_valid(enemies[i]):
+			formation.clear_reservation(_pin_key(enemies[i]))
+			enemies[i].disconnect_scenario_signals()
+			enemies[i].queue_free()
 	enemies = []
 	_awaiting_fly_in.clear()
 	_arrival_rest.clear()

@@ -63,6 +63,9 @@ enum PoolSelection {
 @export var dialogue_offset: Vector2 = Vector2(0,0)
 @export var targeting_computer_image: Texture2D
 @export var health_bar_position: Vector2
+## Where the health bar moves when the formation is too crowded for it to hang
+## off the ship's side: tucked above the hull, inside the ship's own width.
+@export var compact_health_bar_position: Vector2 = Vector2(0, -27)
 @export var dice_queue_position: Vector2
 ## How much of the formation's width the hull takes up. Ordinary ships are
 ## 32px across; a capital ship needs its real width here, or the formation

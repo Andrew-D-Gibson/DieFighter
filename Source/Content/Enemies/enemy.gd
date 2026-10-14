@@ -97,6 +97,10 @@ var spawn_index: int = -1
 ## is restored from the save directly instead.
 var _skip_next_enter_effects: bool = false
 
+## Whether the health bar is tucked above the hull because the formation is
+## too crowded for it to hang off the side. See set_health_bar_compact().
+var health_bar_compact: bool = false
+
 var explosion_particles: PackedScene = preload("uid://566ykra4buin")
 
 
@@ -327,8 +331,37 @@ func _update_health_from_resource() -> void:
 ## Updates the health bar's position and values
 func _update_health_bar() -> void:
 	graphics_manager.set_health_bar_attitude(scenario_state.attitude)
-	graphics_manager.set_health_bar_position(enemy_resource.health_bar_position)
+	graphics_manager.set_health_bar_position(_health_bar_position())
 	graphics_manager.set_health_bar_health(health)
+
+
+## How far this ship's drawing reaches to the left (x) and right (y) of its
+## centre: its hull, and its health bar wherever that hangs. With
+## [param compact], as it would be with the bar tucked above the hull. The
+## formation spaces ships by this. See [method EnemyFormation.solve_footprints].
+func formation_footprint(compact: bool = health_bar_compact) -> Vector2:
+	var half_hull: float = enemy_resource.formation_width * 0.5
+	var bar: Vector2 = enemy_resource.compact_health_bar_position if compact \
+		else enemy_resource.health_bar_position
+	return Vector2(
+		maxf(half_hull, EnemyHealthBar.REACH_LEFT - bar.x),
+		maxf(half_hull, bar.x + EnemyHealthBar.REACH_RIGHT)
+	)
+
+
+## Moves the health bar between its usual spot beside the hull and its compact
+## one above it. EnemyManager calls this when the formation gets too crowded
+## for health bars to hang off the side.
+func set_health_bar_compact(compact: bool, duration: float = 0.0) -> void:
+	if compact == health_bar_compact:
+		return
+	health_bar_compact = compact
+	graphics_manager.set_health_bar_position(_health_bar_position(), duration)
+
+
+func _health_bar_position() -> Vector2:
+	return enemy_resource.compact_health_bar_position if health_bar_compact \
+		else enemy_resource.health_bar_position
 
 
 ## Updates the position and color of the dialogue manager

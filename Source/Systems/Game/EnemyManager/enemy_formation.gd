@@ -11,7 +11,9 @@ extends RefCounted
 ## So position is derived instead. A scenario says who shows up and in what
 ## order; this decides where they go, from how wide they are and how much of
 ## the screen is currently free. One ship centres itself, a wing spreads evenly,
-## and the survivors close ranks when one of them dies.
+## and the survivors close ranks when one of them dies. "How wide" means the
+## whole footprint a ship draws, not just its hull: a health bar hanging off
+## one ship's side must not land on the hull beside it.
 ##
 ## Space is taken away by reservations — a screen-space x span claimed by
 ## something else on screen (the shop panel, the tutorial's popups, a ship that
@@ -25,7 +27,7 @@ extends RefCounted
 ## The full stretch of screen the formation may use, before reservations.
 var usable_span: Vector2 = Vector2(40.0, 280.0)
 
-## Narrowest gap allowed between two ships' hulls. When the free space can't
+## Narrowest gap allowed between two ships' footprints. When the free space can't
 ## give everyone this much, the formation overflows its free span rather than
 ## stacking ships on top of each other — a ship half-behind the shop panel is
 ## bad, two ships in the same pixel is worse.
@@ -69,41 +71,83 @@ func get_reservation(key: StringName) -> Vector2:
 
 
 ## Where ships with hulls [param widths] wide should stand, left to right.
+## Each ship's footprint is just its hull. See [method solve_footprints].
+func solve(widths: PackedFloat32Array) -> PackedFloat32Array:
+	return solve_footprints(symmetric_footprints(widths))
+
+
+## Where ships taking up [param footprints] should stand, left to right. Each
+## footprint is how far the ship reaches to the left (x) and right (y) of its
+## centre — its hull, plus whatever hangs off it, like a health bar. Returns
+## centres.
 ##
 ## Every ship gets the same gap to its neighbours and half that gap to the ends
-## of the free span. Measuring gaps between hulls rather than between centres
-## keeps a capital ship from parking on top of its escorts; giving the ends only
-## half a gap spreads a pair out across the screen rather than bunching them in
-## the middle, which leaves room between them for their dice and their speech.
+## of the free span. Measuring gaps between footprints rather than between
+## centres keeps a capital ship from parking on top of its escorts, and keeps
+## one ship's health bar off the hull beside it; giving the ends only half a
+## gap spreads a pair out across the screen rather than bunching them in the
+## middle, which leaves room between them for their dice and their speech.
 ##
 ## A reservation in the middle of the screen (salvage floating where the wreck
 ## was) leaves free space on both sides of it. The wing then splits across
 ## them, keeping its left-to-right order, whichever way gives the most crowded
 ## ship the most room — rather than crushing everyone into the wider half.
-func solve(widths: PackedFloat32Array) -> PackedFloat32Array:
+##
+## A ship alone in its stretch centres its hull rather than its footprint, as
+## long as the footprint still fits: one lopsided ship has nobody to crowd,
+## and an off-centre lone ship just looks misplaced.
+func solve_footprints(footprints: PackedVector2Array) -> PackedFloat32Array:
 	var positions: PackedFloat32Array = PackedFloat32Array()
-	var count: int = widths.size()
+	var count: int = footprints.size()
 	if count == 0:
 		return positions
 
+	var widths: PackedFloat32Array = _footprint_widths(footprints)
 	var stretches: Array[Vector2] = get_free_stretches()
 	var groups: PackedInt32Array = _best_split(widths, stretches)
 	if count > 1 and _split_gap(widths, stretches, groups) < min_ship_gap:
-		return _overflow_positions(widths, get_free_span())
+		return _overflow_positions(footprints, get_free_span())
 
 	var first: int = 0
 	for i: int in range(stretches.size()):
-		var group: PackedFloat32Array = widths.slice(first, first + groups[i])
+		var group: PackedVector2Array = footprints.slice(first, first + groups[i])
 		first += groups[i]
 		if group.is_empty():
 			continue
 		var span: Vector2 = stretches[i]
-		var gap: float = (span.y - span.x - _total(group)) / float(group.size())
+		if group.size() == 1:
+			var reach: Vector2 = group[0]
+			positions.append(clampf(
+				(span.x + span.y) * 0.5,
+				span.x + reach.x,
+				maxf(span.x + reach.x, span.y - reach.y)
+			))
+			continue
+		var gap: float = (span.y - span.x - _total(_footprint_widths(group))) / float(group.size())
 		var edge: float = span.x + gap * 0.5
-		for width: float in group:
-			positions.append(edge + width * 0.5)
-			edge += width + gap
+		for reach: Vector2 in group:
+			positions.append(edge + reach.x)
+			edge += reach.x + reach.y + gap
 	return positions
+
+
+## Whether ships taking up [param footprints] fit the free space with at least
+## [member min_ship_gap] between them. When they don't, [method solve_footprints]
+## overflows; a caller with a slimmer way to draw its ships can try that first.
+func fits(footprints: PackedVector2Array) -> bool:
+	if footprints.size() <= 1:
+		return true
+	var widths: PackedFloat32Array = _footprint_widths(footprints)
+	var stretches: Array[Vector2] = get_free_stretches()
+	return _split_gap(widths, stretches, _best_split(widths, stretches)) >= min_ship_gap
+
+
+## Footprints for ships that are nothing but their hulls.
+static func symmetric_footprints(widths: PackedFloat32Array) -> PackedVector2Array:
+	var footprints: PackedVector2Array = PackedVector2Array()
+	for width: float in widths:
+		footprints.append(Vector2(width * 0.5, width * 0.5))
+	return footprints
 
 
 ## Whether a ship standing at [param x] should put its speech box on its left
@@ -234,8 +278,9 @@ func _subtract(stretch: Vector2, reserved: Vector2) -> Array[Vector2]:
 ## Too many ships for the free span: line them up at the minimum gap, centred
 ## on the free space, and slide the whole line back inside the usable span if
 ## that pushed anyone off the edge of the screen.
-func _overflow_positions(widths: PackedFloat32Array, span: Vector2) -> PackedFloat32Array:
-	var line_width: float = _total(widths) + min_ship_gap * float(widths.size() - 1)
+func _overflow_positions(footprints: PackedVector2Array, span: Vector2) -> PackedFloat32Array:
+	var line_width: float = _total(_footprint_widths(footprints)) \
+		+ min_ship_gap * float(footprints.size() - 1)
 	var start: float = (span.x + span.y) * 0.5 - line_width * 0.5
 	start = clampf(
 		start,
@@ -245,10 +290,17 @@ func _overflow_positions(widths: PackedFloat32Array, span: Vector2) -> PackedFlo
 
 	var positions: PackedFloat32Array = PackedFloat32Array()
 	var edge: float = start
-	for width: float in widths:
-		positions.append(edge + width * 0.5)
-		edge += width + min_ship_gap
+	for reach: Vector2 in footprints:
+		positions.append(edge + reach.x)
+		edge += reach.x + reach.y + min_ship_gap
 	return positions
+
+
+static func _footprint_widths(footprints: PackedVector2Array) -> PackedFloat32Array:
+	var widths: PackedFloat32Array = PackedFloat32Array()
+	for reach: Vector2 in footprints:
+		widths.append(reach.x + reach.y)
+	return widths
 
 
 static func _total(values: PackedFloat32Array) -> float:
