@@ -35,6 +35,9 @@ var pending_load_save: GameSaveResource = null
 # Audio Singletons
 var sfx_player: SFXPlayer
 
+## The game's screen in world pixels: the 1920x1080 window through a 6x camera.
+const SCREEN_SIZE: Vector2 = Vector2(320, 180)
+
 # Colors
 var red: Color = Color.html('#d03656')
 var blue: Color = Color.html('#43a6fc')

@@ -455,9 +455,7 @@ func _carry_dice_through_jump() -> void:
 		else:
 			_stow_die_for_jump(die)
 
-	if stranded > 0:
-		_announce_lost_dice(stranded)
-		num_of_dice = maxi(1, num_of_dice - stranded)
+	_lose_dice(stranded)
 
 
 ## A ship is leaving the fight with [param dice]: they go with it, and every
@@ -473,9 +471,7 @@ func lose_dice_to(holder: Enemy, dice: Array[Dice]) -> void:
 		if not die.holographic:
 			lost += 1
 
-	if lost > 0:
-		_announce_lost_dice(lost)
-		num_of_dice = maxi(1, num_of_dice - lost)
+	_lose_dice(lost)
 
 
 ## Brings a die home to the hand and holds it there until arrival. Nothing
@@ -524,6 +520,15 @@ func _dissolve_hologram(die: Dice) -> void:
 		die.host_queue.remove(die)
 	Juice.sparkle(self, die.global_position, Globals.white, 10, 30.0, true)
 	die.queue_free()
+
+
+## Takes [param count] dice off the Fleet for good, never leaving fewer than
+## one.
+func _lose_dice(count: int) -> void:
+	if count <= 0:
+		return
+	_announce_lost_dice(count)
+	num_of_dice = maxi(1, num_of_dice - count)
 
 
 ## The count drop is the part that lasts — fewer dice is a smaller hand and a

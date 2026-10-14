@@ -124,27 +124,28 @@ func _connect_tile_event_signals() -> void:
 ## Whether another tile sits directly above, below, left or right of this one
 ## on the grid — the four directions a die can be Fed.
 func _is_orthogonal_neighbour(other: Tile) -> bool:
-	if other == self or not Globals.tile_grid:
-		return false
-	var grid: TileGrid = Globals.tile_grid
-	var mine: Vector2i = grid.find_tile_pos(self)
-	var theirs: Vector2i = grid.find_tile_pos(other)
-	if not grid.is_grid_pos_valid(mine) or not grid.is_grid_pos_valid(theirs):
-		return false
-	return absi(mine.x - theirs.x) + absi(mine.y - theirs.y) == 1
+	var apart: Vector2i = _grid_distance_to(other)
+	return apart.x + apart.y == 1
 
 
 ## Whether another tile sits in any of the eight cells around this one,
 ## diagonals included.
 func _is_surrounding_neighbour(other: Tile) -> bool:
-	if other == self or not Globals.tile_grid:
-		return false
+	var apart: Vector2i = _grid_distance_to(other)
+	return maxi(apart.x, apart.y) == 1
+
+
+## How many columns and rows apart [param other] is, or (-1, -1) when either
+## tile is off the grid or they are the same tile.
+func _grid_distance_to(other: Tile) -> Vector2i:
 	var grid: TileGrid = Globals.tile_grid
+	if other == self or not grid:
+		return Vector2i(-1, -1)
 	var mine: Vector2i = grid.find_tile_pos(self)
 	var theirs: Vector2i = grid.find_tile_pos(other)
 	if not grid.is_grid_pos_valid(mine) or not grid.is_grid_pos_valid(theirs):
-		return false
-	return maxi(absi(mine.x - theirs.x), absi(mine.y - theirs.y)) == 1
+		return Vector2i(-1, -1)
+	return (mine - theirs).abs()
 
 
 func _set_up_resource() -> void:

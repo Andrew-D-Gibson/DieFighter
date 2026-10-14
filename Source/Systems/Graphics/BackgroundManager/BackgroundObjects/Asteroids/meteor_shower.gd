@@ -17,8 +17,6 @@ const _IMPACT_TEXTURE: Texture2D = preload(
 ## The colour a rock's trail starts in: it is burning up, not just moving.
 const _TRAIL_COLOR: Color = Color(0.949, 0.612, 0.365, 0.8)
 
-const _SCREEN: Vector2 = Vector2(320, 180)
-
 ## Seconds between streaks at rest, and while an impact is imminent.
 @export var calm_interval: Vector2 = Vector2(4.0, 9.0)
 @export var urgent_interval: Vector2 = Vector2(0.6, 1.6)
@@ -57,8 +55,8 @@ func _schedule_next_streak() -> void:
 ## A small rock crossing the upper sky on a shallow diagonal, either way.
 func _streak_across_sky() -> void:
 	var leftward: bool = _rand(0.0, 1.0) < 0.5
-	var start_x: float = _SCREEN.x + 12.0 if leftward else -12.0
-	var end_x: float = -12.0 if leftward else _SCREEN.x + 12.0
+	var start_x: float = Globals.SCREEN_SIZE.x + 12.0 if leftward else -12.0
+	var end_x: float = -12.0 if leftward else Globals.SCREEN_SIZE.x + 12.0
 	var from: Vector2 = Vector2(start_x, _rand(-10.0, 30.0))
 	var to: Vector2 = Vector2(end_x, from.y + _rand(30.0, 70.0))
 	var texture: Texture2D = RNGManager.pick_random(RNGManager.Bucket.COSMETIC, _ROCK_TEXTURES)

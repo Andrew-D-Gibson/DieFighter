@@ -41,7 +41,6 @@ var enemies_jumping: bool = false:
 	set(value):
 		enemies_jumping = value
 		z_index = jump_z_index if value else _combat_z_index
-var screen_size: Vector2 = Vector2(320, 180)
 
 ## Decides who stands where. See [EnemyFormation] for why placement is derived
 ## rather than authored.
@@ -503,7 +502,7 @@ func _build_path_sample_table() -> void:
 		_path_x_samples[-1] - formation_edge_margin
 	)
 	formation.min_ship_gap = formation_min_gap
-	formation.speech_span = Vector2(0.0, screen_size.x)
+	formation.speech_span = Vector2(0.0, Globals.SCREEN_SIZE.x)
 
 
 ## The point along the path that sits at screen x [param target_x].
@@ -593,7 +592,7 @@ func _update_jumping_enemies(delta: float) -> void:
 					  Globals.background_manager.get_parallax_speed(parallax_level)
 
 	# The hull falls away at the same speed as its parts, so they stay seated.
-	_hull_mounts.fall(delta * speed, screen_size.y + 80)
+	_hull_mounts.fall(delta * speed, Globals.SCREEN_SIZE.y + 80)
 	
 	for i: int in range(len(enemies) - 1, -1, -1):
 		var enemy: Enemy = enemies[i]
@@ -603,7 +602,7 @@ func _update_jumping_enemies(delta: float) -> void:
 			
 		enemy.global_position.y += delta * speed
 		
-		if enemy.global_position.y > screen_size.y + 50:  # Off-screen offset
+		if enemy.global_position.y > Globals.SCREEN_SIZE.y + 50:  # Off-screen offset
 			# Ships that fly off this way never announce leaving, so whatever
 			# they held (a pinned spot, a seat on a hull) is let go here, or
 			# the next scenario's formation inherits it.

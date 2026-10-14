@@ -21,10 +21,6 @@ const _BLUE_OFF: Color = Color("#2c71aa")
 const _RED_OFF: Color = Color("#511521")
 const _UNLIT: Color = Color("#0f0c2e")
 
-const _METER_GREEN: Color = Color("#7abd33")
-const _METER_YELLOW: Color = Color("#eed35d")
-const _METER_RED: Color = Color("#d03656")
-
 const _CRT_TRACE: Color = Color("#4c7520")
 const _CRT_TRACE_HEAD: Color = Color("#659c2a")
 
@@ -160,11 +156,11 @@ func _draw_meter() -> void:
 	for i: int in range(_METER_PIXELS.size()):
 		var color: Color = _UNLIT
 		if i < _meter_level:
-			color = _METER_GREEN
+			color = Globals.green
 			if i == _METER_PIXELS.size() - 2:
-				color = _METER_YELLOW
+				color = Globals.yellow
 			elif i == _METER_PIXELS.size() - 1:
-				color = _METER_RED
+				color = Globals.red
 		_draw_pixel(_METER_PIXELS[i], color)
 
 

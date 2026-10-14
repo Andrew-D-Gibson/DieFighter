@@ -14,7 +14,6 @@ extends Sprite2D
 @export var star_twinkle_scene: PackedScene
 @export var debris_scene: PackedScene
 
-var screen_size: Vector2 = Vector2(320, 180)
 
 var stars: Array[Node2D]
 var debris: Array[Node2D]
@@ -69,25 +68,25 @@ func _update_objects_motion(
 		var speed: float = (global_speed * get_parallax_speed(parallax_level) * speed_multiplier) + base_speed
 		obj.global_position.y += delta * speed
 		
-		if obj.global_position.y > screen_size.y + wrap_offset:
+		if obj.global_position.y > Globals.SCREEN_SIZE.y + wrap_offset:
 			wrap_callback.call(obj)
 
 
 func _wrap_star_position(star: Node2D) -> void:
 	star.global_position.y = -5
-	star.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x)
+	star.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x)
 
 
 func _wrap_debris_position(piece: Node2D) -> void:
 	piece.pick_random_texture()
 	piece.pick_random_velocity_delta()
 	piece.global_position.y = -5 - piece.texture.get_height()
-	piece.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x)
+	piece.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x)
 
 
 func _wrap_static_object_position(obj: Node2D) -> void:
 	obj.global_position.y = -50
-	obj.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x)
+	obj.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x)
 
 
 func _get_debris_base_speed(piece: Node2D) -> float:
@@ -190,8 +189,8 @@ func _create_stars(star_scene: PackedScene, count: int) -> void:
 
 func _random_screen_position() -> Vector2:
 	return Vector2(
-		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x),
-		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.y)
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x),
+		RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.y)
 	)
 		
 
@@ -206,8 +205,8 @@ func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_co
 		# Same ordering trap as the static objects below; debris only hid it by
 		# self-correcting the first time it wrapped.
 		piece.global_position = Vector2(
-			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, screen_size.x),
-			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, -50, screen_size.y)
+			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x),
+			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, -50, Globals.SCREEN_SIZE.y)
 		)
 		debris.append(piece)
 

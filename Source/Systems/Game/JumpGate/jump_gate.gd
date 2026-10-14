@@ -206,7 +206,7 @@ func play_passage() -> void:
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	rush.tween_property(self, "scale", Vector2.ONE * passage_scale, passage_time)
 	# Toward the middle of the screen, so the hole is centred as it engulfs it.
-	rush.tween_property(self, "position", Vector2(160, 90), passage_time)
+	rush.tween_property(self, "position", Globals.SCREEN_SIZE / 2.0, passage_time)
 	Globals.background_manager.tween_speed(480, passage_time)
 	_tweens.append(rush)
 	await rush.finished

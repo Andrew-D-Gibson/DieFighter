@@ -117,3 +117,19 @@ func test_forgetting_a_tile_empties_only_its_cell() -> void:
 	grid.forget_tile(doomed)
 	assert_false(grid.tile_locations.has(Vector2i(1, 1)), "a destroyed tile must not linger in its cell")
 	assert_eq(grid.tile_locations[Vector2i(2, 1)], neighbour)
+
+
+func test_neighbours_four_ways_and_eight_ways() -> void:
+	Globals.tile_grid = grid
+	var centre: Tile = _place(Vector2i(1, 1))
+	var beside: Tile = _place(Vector2i(2, 1))
+	var diagonal: Tile = _place(Vector2i(2, 2))
+	var far: Tile = _place(Vector2i(3, 1))
+
+	assert_true(centre._is_orthogonal_neighbour(beside))
+	assert_false(centre._is_orthogonal_neighbour(diagonal))
+	assert_true(centre._is_surrounding_neighbour(diagonal))
+	assert_false(centre._is_surrounding_neighbour(far))
+	assert_false(centre._is_surrounding_neighbour(centre), "never its own neighbour")
+	assert_false(centre._is_orthogonal_neighbour(autofree(TILE_SCENE.instantiate())),
+		"a tile off the grid neighbours nothing")
