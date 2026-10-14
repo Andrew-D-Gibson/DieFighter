@@ -137,7 +137,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Relay Terminal[/color]"
-description = "(die_6) -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], +3 per time die was (fed). [color=orange]Give[/color] die"
+description = "(die_6) -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], +3 per time die was (fed)"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

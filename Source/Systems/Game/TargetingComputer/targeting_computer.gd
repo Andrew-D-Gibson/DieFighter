@@ -22,6 +22,12 @@ const _BOUND_MARKER_SPACING: float = 8.0
 ## Intents no die is lighting sit back so the live ones stand out.
 const _DIMMED_INTENT: Color = Color(1.0, 1.0, 1.0, 0.45)
 
+## The ship acting right now and the slot it's playing. The die leaves its hand
+## as the action starts, but the intent stays lit until the action's effects
+## have all played out, so the player can read what is happening to them.
+var _acting_enemy: Enemy
+var _acting_slot: int = -1
+
 @onready var die_sprites: Array[AnimatedSprite2D] = [
 	%DieSprite1, 
 	%DieSprite2, 
@@ -42,7 +48,7 @@ func _ready() -> void:
 	Events.enemy_used_die.connect(_on_enemy_used_die)
 	# A die landing in an enemy's hand slams the intent it just bought, the
 	# same pulse as when the enemy spends it.
-	Events.enemy_armed.connect(_on_enemy_used_die)
+	Events.enemy_armed.connect(_pulse_intent)
 	Events.enemy_flew_in.connect(ensure_target)
 	Events.enemy_received_die.connect(_update_ui)
 	Events.enemy_lost_die.connect(_refresh_intent_highlights)
@@ -83,6 +89,8 @@ func ensure_target() -> void:
 		
 
 func _target_nothing() -> void:
+	_acting_enemy = null
+	_acting_slot = -1
 	targeted_enemy = null
 	targeted_enemy_index = -1
 	_update_ui()
@@ -144,6 +152,25 @@ func check_target_is_valid() -> void:
 	
 	
 func _on_enemy_used_die(enemy: Enemy, die_value: int) -> void:
+	_acting_enemy = enemy
+	_acting_slot = clampi(die_value - 1, 0, 5)
+	# Actions resolve one after another off the engine's queue, so the queue
+	# running dry means the last one has finished playing. Each new action
+	# takes the light over from the one before it.
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine and not engine.finished_processing_queue.is_connected(_end_acting_intent):
+		engine.finished_processing_queue.connect(_end_acting_intent, CONNECT_ONE_SHOT)
+	_refresh_intent_highlights()
+	_pulse_intent(enemy, die_value)
+
+
+func _end_acting_intent() -> void:
+	_acting_enemy = null
+	_acting_slot = -1
+	_refresh_intent_highlights()
+
+
+func _pulse_intent(enemy: Enemy, die_value: int) -> void:
 	# Only animate for the currently targeted enemy
 	if enemy != targeted_enemy:
 		return
@@ -197,7 +224,8 @@ func _update_ui() -> void:
 			# De-highlight the die sprites
 			die_sprites[i].frame = i
 			$Intents.get_child(i).modulate = Color.WHITE
-		
+			_set_intent_clickable($Intents.get_child(i).get_child(1), false)
+
 		$TargetImageFill.z_index = 1
 		
 	else:
@@ -216,17 +244,16 @@ func _update_ui() -> void:
 				$Intents.get_child(i).get_child(0).text = targeted_enemy.turn_actions[i].get_intent_amount_text()
 
 				# Change over the info on clicking this particular action indicator 
-				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
-				$Intents.get_child(i).get_child(1).clicked.connect(targeted_enemy.turn_actions[i].show_info)
-				
-				if targeted_enemy.turn_actions[i].name != "":
-					$Intents.get_child(i).get_child(1).hover_for_info = true
+				var clickable: Clickable = $Intents.get_child(i).get_child(1)
+				Utils.disconnect_all_callables(clickable.clicked)
+				clickable.clicked.connect(targeted_enemy.turn_actions[i].show_info)
+				_set_intent_clickable(clickable, targeted_enemy.turn_actions[i].name != "")
 			else:
 				$Intents.get_child(i).texture = unknown_intent_indicator
 				$Intents.get_child(i).modulate = Color.WHITE
 				$Intents.get_child(i).get_child(0).text = ""
 				Utils.disconnect_all_callables($Intents.get_child(i).get_child(1).clicked)
-				$Intents.get_child(i).get_child(1).hover_for_info = false
+				_set_intent_clickable($Intents.get_child(i).get_child(1), false)
 				
 				
 		$TargetImageFill.z_index = 1
@@ -236,11 +263,21 @@ func _update_ui() -> void:
 
 
 ## Lights slot [param i]'s die face and intent when the targeted enemy holds
-## that value, dims them otherwise.
+## that value or is playing that slot now, dims them otherwise.
 func _set_intent_highlight(i: int) -> void:
-	var lit: bool = targeted_enemy.dice_manager.has_value(i + 1)
+	var lit: bool = targeted_enemy.dice_manager.has_value(i + 1) \
+		or (targeted_enemy == _acting_enemy and i == _acting_slot)
 	die_sprites[i].frame = i + 6 if lit else i
 	$Intents.get_child(i).modulate = Color.WHITE if lit else _DIMMED_INTENT
+
+
+## A slot with nothing to explain (a blank action, or one not yet scanned)
+## takes no hover at all, so the cursor doesn't promise info that isn't there.
+func _set_intent_clickable(clickable: Clickable, has_info: bool) -> void:
+	clickable.hover_for_info = has_info
+	clickable.input_pickable = has_info
+	if not has_info and clickable.hovered:
+		clickable.reset_hover_state()
 
 
 ## Re-reads which faces the targeted enemy holds without the full redraw (and

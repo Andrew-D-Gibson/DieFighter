@@ -90,7 +90,7 @@ animations = [{
 [resource]
 script = ExtResource("3_uekf7")
 tile_name = "[color=yellow]Holo-Duplicator[/color]"
-description = "[color=yellow]Any die[/color] -> Spawn 2 (holograms) of die. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die[/color] -> Spawn 2 (holograms) of die"
 textures = SubResource("SpriteFrames_2vvbj")
 uses_per_turn = 1
 activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6")])

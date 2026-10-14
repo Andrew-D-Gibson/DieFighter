@@ -119,7 +119,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Target Painter[/color]"
-description = "[color=yellow]Any die[/color] -> Apply (exposed) to [color=purple]target[/color] equal to die. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die[/color] -> Apply (exposed) to [color=purple]target[/color] equal to die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

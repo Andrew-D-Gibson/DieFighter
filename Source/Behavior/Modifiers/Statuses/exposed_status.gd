@@ -1,7 +1,8 @@
 class_name ExposedStatus
 extends StatusModifier
-## The next hit a tile lands on the ship deals extra damage equal to its
-## Exposed, and spends all of it. Stacking Exposed sets up one big hit.
+## Every hit a tile lands on the ship deals extra damage equal to its Exposed,
+## and spends 1 of it. Spending one at a time rather than all at once keeps a
+## big stack from cashing in as a single overwhelming hit.
 ##
 ## Only single-target hits cash it in: a DamageEvent carries one amount for
 ## all its targets, so an area hit would hand the bonus to every ship. Burn
@@ -32,4 +33,4 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 
 	event.amount += stacks
 	announce_triggered()
-	consume(stacks)
+	consume(1)

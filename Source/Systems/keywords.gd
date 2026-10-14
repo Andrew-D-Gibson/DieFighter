@@ -23,7 +23,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Burn": "At end of turn, take [color=red]damage[/color] equal to Burn, then lose 1 Burn.",
 	"Scrambled": "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled.",
 	"Jammed": "Each die this ship uses does nothing and returns to you. Spends 1 Jammed.",
-	"Exposed": "The next hit on this ship deals extra [color=red]damage[/color] equal to Exposed, then clears it.",
+	"Exposed": "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends 1 Exposed.",
 	"Hologram": "A copy of a die. Destroyed if given to another ship.",
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
 	"Fleet": "Every die you own: in hand, on tiles, or held by enemies. Holograms count. Dice enemies hold when you jump are lost.",

@@ -279,20 +279,17 @@ func _on_clicked() -> void:
 	Events.show_info.emit(info)
 
 
-## "Next in 2 turns / Repeats every 3 turns", one short line each so neither
-## wraps in the info panel. The countdown digit says when; this says how often,
-## which is what decides whether to brace or to race it. The last turn is
-## spelled out, because "in 1 turn" can't say whether that means as this turn
-## ends or as the next one starts.
+## When the hazard next hits. How often it repeats is left out: once it has
+## hit, the reset countdown says that. The last turn is spelled out, because
+## "in 1 turn" can't say whether that means as this turn ends or as the next
+## one starts.
 func _hazard_timing_text() -> String:
-	var interval: int = maxi(1, _hazard.turns_between)
-	var next: String = "Next in [color=yellow]%s[/color]" % _turns_text(_turns_remaining)
 	if _turns_remaining <= 1:
 		var ends_turn: bool = _hazard.timing == BackgroundHazardResource.Timing.YOUR_TURN_ENDS
 		# Both kept under the ~27 characters the panel fits on one line.
-		next = "Hits as you [color=yellow]end this turn[/color]" if ends_turn \
+		return "Hits as you [color=yellow]end this turn[/color]" if ends_turn \
 			else "Hits at [color=yellow]start of next turn[/color]"
-	return "%s\nRepeats every [color=yellow]%s[/color]" % [next, _turns_text(interval)]
+	return "Next in [color=yellow]%s[/color]" % _turns_text(_turns_remaining)
 
 
 static func _turns_text(turns: int) -> String:

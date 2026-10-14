@@ -211,15 +211,20 @@ func test_jammed_turns_its_ships_actions_into_nothing() -> void:
 
 # ── Exposed ───────────────────────────────────────────────────────────────────
 
-func test_exposed_adds_its_stacks_to_the_next_tile_hit_and_is_spent() -> void:
+func test_exposed_adds_its_stacks_to_each_tile_hit_and_spends_one() -> void:
 	var enemy := _enemy()
 	var tile: Tile = autofree(TILE_SCENE.instantiate())
-	await _apply(enemy, &"exposed", 4)
+	await _apply(enemy, &"exposed", 2)
 	var exposed: StatusModifier = engine.find_status(enemy, &"exposed")
 
-	var hit := _hit(tile, [enemy], 3)
-	exposed.on_before_event(hit, engine)
-	assert_eq(hit.amount, 7)
+	var first := _hit(tile, [enemy], 3)
+	exposed.on_before_event(first, engine)
+	assert_eq(first.amount, 5)
+	assert_eq(exposed.stacks, 1)
+
+	var second := _hit(tile, [enemy], 3)
+	exposed.on_before_event(second, engine)
+	assert_eq(second.amount, 4)
 	assert_null(engine.find_status(enemy, &"exposed"))
 
 

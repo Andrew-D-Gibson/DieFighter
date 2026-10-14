@@ -108,7 +108,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Redline Governor[/color]"
-description = "[color=yellow]Any die while fully charged[/color] -> [color=purple]Overcharge[/color] engine by die value. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die while fully charged[/color] -> [color=purple]Overcharge[/color] engine by die value"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

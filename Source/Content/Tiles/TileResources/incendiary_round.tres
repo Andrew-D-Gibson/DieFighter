@@ -134,7 +134,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Incendiary Round[/color]"
-description = "(die_1) or (die_2) -> Apply 3 (burn) to [color=purple]target[/color]. [color=orange]Give[/color] die"
+description = "(die_1) or (die_2) -> Apply 3 (burn) to [color=purple]target[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

@@ -37,16 +37,17 @@ func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
 		return
 
+	Globals.targeting_computer.target_enemy(enemy)
+	# Pulses the matching intent on the targeting computer, so the player can
+	# see which row of the intent table this die is about to play. Before the
+	# die leaves the hand, so the intent never blinks dim in between.
+	Events.enemy_used_die.emit(enemy, die_value)
+
 	# Remove die from the visual stacking queue
 	# It's about to fly in front of the enemy
 	TractorBeam.release(activator_die)
 	activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	enemy.dice_manager.remove(activator_die)
-
-	Globals.targeting_computer.target_enemy(enemy)
-	# Pulses the matching intent on the targeting computer, so the player can
-	# see which row of the intent table this die is about to play.
-	Events.enemy_used_die.emit(enemy, die_value)
 
 	# Tween the die to in front of the enemy, weighted by its face value.
 	var weight: float = (clampf(die_value, 1, 6) - 1.0) / 5.0

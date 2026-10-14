@@ -152,7 +152,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Turncoat Cannon[/color]"
-description = "(die_5) or (die_6) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color], or [color=red]10[/color] if it is (scrambled). [color=orange]Give[/color] die"
+description = "(die_5) or (die_6) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color], or [color=red]10[/color] if it is (scrambled)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

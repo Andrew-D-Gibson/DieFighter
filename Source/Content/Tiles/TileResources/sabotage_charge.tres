@@ -133,7 +133,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=purple]Sabotage Charge[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]8 engine charge[/color] to apply 2 (jammed) to [color=purple]target[/color]. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]8 engine charge[/color] to apply 2 (jammed) to [color=purple]target[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
