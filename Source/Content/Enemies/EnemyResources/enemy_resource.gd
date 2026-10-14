@@ -40,6 +40,23 @@ enum PoolSelection {
 @export_range(-3.0, 3.0, 0.25, "or_greater", "or_less") var face_bias: float = 0.5
 
 
+@export_category('Overload')
+## When the dice this ship holds at the start of its turn add up to this much,
+## it overloads instead of acting: it skips the turn, vents every die it holds
+## back to the player and plays overload_chain. 0 means it never overloads.
+##
+## It turns the gift into a weapon: the player can stuff a ship like this with
+## big dice on purpose to trip its breaker, at the risk of falling short and
+## eating whatever those big faces do.
+@export var overload_threshold: int = 0
+## Added to the threshold each time the ship overloads, so stuffing it gets
+## harder every time it works.
+@export var overload_threshold_growth: int = 0
+## What overloading does to the ship, usually a jolt of damage to itself.
+@export var overload_chain: EffectChain
+## Where the heat gauge sits, relative to the ship.
+@export var overload_gauge_position: Vector2 = Vector2(0, 28)
+
 @export_category('Graphics')
 @export var ship_graphics_scene: PackedScene
 @export var graphics_scene_offset: Vector2 = Vector2(0,0)

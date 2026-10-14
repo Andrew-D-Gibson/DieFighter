@@ -67,6 +67,13 @@ var squad_losses: int = 0
 ## correctness is a trap.
 var rounds_in_combat: int = 0
 
+## The held-dice total that trips this ship's breaker right now. Starts at
+## EnemyResource.overload_threshold and climbs each time it overloads. 0 means
+## the ship never overloads.
+var overload_threshold: int = 0
+
+const _OVERLOAD_GAUGE: PackedScene = preload("res://Source/Content/Enemies/Components/OverloadGauge/overload_gauge.tscn")
+
 ## Optional: force specific actions (used by tutorial)
 static var forced_actions: Array[EnemyActionResource] = []
 
@@ -252,8 +259,41 @@ func _update_resource() -> void:
 	_update_health_from_resource()
 	_update_health_bar()
 	_update_dialogue()
+	_update_overload()
 	# The first table is rolled by EnemyManager once the whole roster is in,
 	# so a roll can see who else is on the board.
+
+
+## A ship with a breaker shows how close it is to tripping.
+func _update_overload() -> void:
+	overload_threshold = enemy_resource.overload_threshold
+	if overload_threshold <= 0:
+		return
+	var gauge: OverloadGauge = _OVERLOAD_GAUGE.instantiate()
+	gauge.enemy = self
+	gauge.position = enemy_resource.overload_gauge_position
+	graphics_manager.add_child(gauge)
+
+
+## The face total of every die this ship is holding.
+func held_heat() -> int:
+	var heat: int = 0
+	for die: Dice in dice_manager.queue:
+		if is_instance_valid(die):
+			heat += die.value
+	return heat
+
+
+## Whether the dice it holds are enough to trip its breaker.
+func is_overloaded() -> bool:
+	return overload_threshold > 0 and held_heat() >= overload_threshold
+
+
+## Sends every held die home and makes the next overload harder. Called by
+## OverloadEvent.
+func vent_overload() -> void:
+	overload_threshold += enemy_resource.overload_threshold_growth
+	dice_manager.return_dice_to_player()
 
 
 ## Updates the enemy's graphics
@@ -401,6 +441,17 @@ func run_turn() -> void:
 	# Last turn's loaded dice are being spent now; only what this turn keeps
 	# loads the next table.
 	kept_dice.clear()
+
+	# Stuffed past its breaker: no actions this turn, just the overload.
+	if is_overloaded():
+		var overload: OverloadEvent = OverloadEvent.new()
+		overload.enemy = self
+		var overload_engine: ScenarioEngine = ScenarioEngine.current()
+		if overload_engine:
+			overload_engine.queue_event(overload)
+		turns_alive += 1
+		return
+
 	var enemy_action_events: Array[EnemyActionEvent] = []
 	
 	for i in range(len(dice_manager.queue)):

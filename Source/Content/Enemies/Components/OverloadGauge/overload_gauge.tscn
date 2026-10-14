@@ -1,0 +1,20 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Enemies/Components/OverloadGauge/overload_gauge.gd" id="1_gauge"]
+[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_font"]
+
+[node name="OverloadGauge" type="Node2D" node_paths=PackedStringArray("label")]
+z_index = 2
+script = ExtResource("1_gauge")
+label = NodePath("Label")
+
+[node name="Label" type="Label" parent="."]
+offset_left = 15.0
+offset_top = -6.0
+offset_right = 44.0
+offset_bottom = 10.0
+theme_override_colors/font_outline_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 16
+text = "0/0"
