@@ -4,6 +4,28 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-13 — Playtest tweaks
+
+- **Tile text:** the trailing `Give die` is gone from every tile. Giving the
+  die to the target is the default and the words read as unclear. Tiles that
+  hand it somewhere else (`to random enemy`, `as (die_1)`) keep theirs.
+- **Hazard info:** the panel says only when the hazard next hits. "Repeats
+  every N turns" is gone; the countdown resets after it fires and shows that.
+- **Intent highlights:** an enemy's die leaves its hand as the action starts,
+  which dimmed the intent before anything had happened. The targeting computer
+  now holds the acting slot lit until the action has played out, meaning the
+  engine queue drains or the next action takes over. `enemy_used_die` now
+  fires before the die is removed, so the intent never blinks dim in between.
+- **Blank intents:** slots with no action (or not yet scanned) turn off their
+  `Clickable` entirely, so the info cursor doesn't appear over them.
+  `hover_for_info` used to be set true and never cleared for a blank slot.
+- **Exposed:** every single-target tile hit gets +Exposed and spends 1,
+  instead of one hit spending the whole stack. Stacks no longer build up into
+  one huge hit, but a stack now pays out over several hits, so Spotter Drone
+  and Flare Burst are worth watching for balance.
+
+---
+
 ## 2026-10-13 — Charge Bore loads the shot
 
 Charge Bore and Siege Shot were never actually linked. Charge Bore gave its

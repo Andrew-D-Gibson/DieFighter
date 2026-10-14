@@ -259,7 +259,7 @@ has; each status decides what one means.
 | `BurnStatus` | `on_status_tick()` | damage per round; loses one per tick |
 | `ScrambledStatus` | `EnemyDiceManager.die_arriving` | one die flipped to its opposite face as it arrives |
 | `JammedStatus` | before `EnemyActionEvent` (priority 35) | one action swapped for Do Nothing, which hands the die back |
-| `ExposedStatus` | before `DamageEvent` (priority 25) | +1 on the next single-target tile hit; all spent at once |
+| `ExposedStatus` | before `DamageEvent` (priority 25) | +stacks on each single-target tile hit; spends 1 |
 
 - **Applying:** `ATTRIBUTE_CHANGE/APPLY_STATUS` names the status in
   `string_param` and takes `running_amount` stacks. `ApplyStatusEvent` merges
