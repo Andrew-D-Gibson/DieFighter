@@ -4,6 +4,48 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-13 — Cutpurse and Carrier
+
+Two enemies, each built on a new verb.
+
+**Cutpurse (dice thief).** Its Pilfer intent deals a point or two and
+**Steals** the die (new hover keyword). Pilfer keeps the die, and it's also the
+ship's kept-face action, so a stolen die lands on Pilfer again every turn: it
+stays stolen, and your hand stays a die short, until you kill the ship (it
+drops its haul like any wreck) or take the die back (Repo Beam and friends).
+Any other die you hand it on that face gets pocketed too. From its fourth
+round the stolen faces read **Getaway** instead: if it's still alive on its
+turn, it flies off the top of the screen with everything it holds, and those
+dice are gone from the Fleet for good. That's the same loss as jumping away
+from a ship holding them. New effect: `ESCAPE_WITH_DICE`
+(`Player.lose_dice_to()` shares the jump's stranding code). It counts as
+DANGEROUS for the tractor beam and is never rolled while hidden.
+
+**Carrier + Interceptor.** A 30-hull, 6-shield flight deck whose signature
+Launch intent puts an **Interceptor** (5 hull, small gun) into the formation
+beside it. It also shields its fighters with Aegis Link. New effect:
+`LAUNCH_SHIP` with a new `EffectData.ship_resource` field, via
+`EnemyManager.launch_ship()`. A launched ship pays no reward of its own, isn't
+saved, and can't push the board past `max_ships_in_combat` (5; at 6 the health
+rings collide). Launch is also gated on a new condition, `ALLIES_AT_MOST` 3.
+
+**Art.** Hulls cut from the tiny-spaceships pack (`Assets/tiny-spaceships/`):
+flipped to face the player and remapped onto the enemy palette (house greys,
+`#040217` outline, purple accent for the thief, orange for the carrier wing).
+16×16 targeting silhouettes and the Pilfer / Getaway / Launch intent icons
+are new.
+
+**Encounters.** `COMBAT_Cutpurse` (thief between two Venom Fighters) and
+`COMBAT_Carrier` (Carrier + one Interceptor).
+
+**Verified live:** fed the Cutpurse a 1 and a 6 on Pilfer faces → both held,
+hand down to 1, next table Pilfer on 1 and 6. Forced round 4 → Getaway on
+those faces; ending the turn flew it off and the Fleet went 3 → 1. Two 1s into
+the Carrier's Launch → two Interceptors slid out beside it; killing a launched
+one dropped nothing; launches stop at 5 ships. No script errors in the log.
+
+---
+
 ## 2026-10-13 — Playtest tweaks
 
 - **Tile text:** the trailing `Give die` is gone from every tile. Giving the

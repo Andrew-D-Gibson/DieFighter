@@ -144,6 +144,7 @@ Every action must end the die's life one of these ways:
 | `KEEP_DIE_WITH_ACTOR` | is held for next turn (Impound) |
 | `FEED_ALLY` | is passed to the bound ally, who uses it at once (Relay) |
 | `SPAWN_HOLOGRAM_FOR_ALLY` | hologram goes to an ally (Holo Loader); still return the real die |
+| `ESCAPE_WITH_DICE` | leaves with the ship, with every other die it holds; the player loses them for good (Getaway) |
 
 **Targeting another ship:** use `TARGET_BOUND_ALLY` or
 `TARGET_BOUND_HOSTILE_SHIP`, never the random ones. The ship is then picked
@@ -191,7 +192,8 @@ step; its ally is bound automatically.
     payoff the player only faces after loading it (Charge Bore → Siege Shot).
   - `conditions`: `EnemyActionCondition`s, all of which must hold. Types:
     `ALLY_EXISTS`, `HOSTILE_SHIP_EXISTS`, `ALLY_HURT`, `SELF_HURT` (with
-    `hull_fraction`), `ATTITUDE_IS`, plus `invert`.
+    `hull_fraction`), `ATTITUDE_IS`, `ALLIES_AT_MOST` (with `count`; gate a
+    launcher on it so it can't fill the board), plus `invert`.
   - `situational_weights`: `EnemyActionWeightRule` = a condition and a
     multiplier.
   - `strength_tier_override`: how strong the action counts as for
@@ -219,6 +221,13 @@ allies with whom, and who raids whom, is `FactionRelations`
 (`Source/Systems/Game/ScenarioManager/faction_relations.gd`). Behaviour that
 only makes sense in some encounters, like raiding, should go on a variant
 enemy resource (e.g. `raider.tres`), not on a shared one.
+
+**Launched ships** (the Carrier's Interceptors): `SCENARIO_CONTROL /
+LAUNCH_SHIP` with `ship_resource` set brings that enemy in beside the actor,
+on its side and in its scenario state. It drops no reward of its own (its
+side's bounty still waits on it), isn't saved (a Continue rebuilds the
+authored roster), and refuses with "HANGAR JAMMED" once
+`EnemyManager.max_ships_in_combat` ships are up.
 
 **Registration:** none. An enemy exists once a scenario spawns it.
 
@@ -411,7 +420,8 @@ ion cloud, meteor shower and rift tear for examples. Drive their visuals with
 - **Effect used by enemy actions:**
   - If it shouldn't count as a threat to the player, add it to the exclusion
     lists in `EnemyActionResource._has_consequence()`.
-  - If it removes the ship from play, add it to `is_safe_while_hidden()`.
+  - If it removes the ship from play, add it to `is_safe_while_hidden()`
+    (`FLEE`, `JUMP` and `ESCAPE_WITH_DICE` are there).
 - **Data a chain needs from its caller:** add a field to `EffectContext`
   (`effect_context.gd`).
 

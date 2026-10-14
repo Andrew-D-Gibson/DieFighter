@@ -596,7 +596,7 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 | DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET, FEED_ALLY, SPAWN_HOLOGRAM_FOR_ALLY, REROLL_TARGETS_DICE, FLIP_TARGETS_ONES_AND_SIXES |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |
 | TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, FEED_HOLOGRAM, ADD_AMPLIFIER_STATUS |
-| SCENARIO_CONTROL | OPEN_SHOP, CLOSE_SHOP, JUMP, FLEE |
+| SCENARIO_CONTROL | OPEN_SHOP, CLOSE_SHOP, JUMP, FLEE, MOVE_SHIP, ESCAPE_WITH_DICE, LAUNCH_SHIP |
 | CONDITIONAL | IF_ACTIVATOR_ODD, IF_ENEMY_TARGETED, IF_ENGINE_CHARGED, IF_TARGET_HOLDS_MATCHING_DIE, IF_FED, IF_SOURCE_HOLDS_DIE, IF_DICE_OWNED_IN_RANGE |
 | REPETITION | ADD_REPETITIONS |
 | UTILITY | DESTROY_SOURCE, PRINT_DEBUG |
@@ -653,7 +653,9 @@ the 3×5 grid into a machine that one die runs through.
 Dice persist across jumps (see 8.1). The player's **Fleet** is every die they
 own, wherever it is right now, plus the holograms they hold:
 `Player.dice_owned()` = `num_of_dice` + holograms in hand or on a tile. A die
-handed to an enemy still counts until the player jumps away from it.
+handed to an enemy still counts until the player jumps away from it, or
+the ship escapes with it (`ESCAPE_WITH_DICE` → `Player.lose_dice_to()`,
+the same stranding a jump uses).
 
 | Piece | Reads |
 |---|---|
@@ -905,6 +907,25 @@ damage multiplier.
 pirate fire on a civilian into `ScenarioEvent.PIRATE_ATTACKED_CIVILIAN`. A
 ship killed by another ship (`was_killed_by_ship()`) drops no reward, plays
 no kill-confirm, pays no faction bounty and doesn't count toward RunStats.
+
+**Stealing and escaping.** The Cutpurse's Pilfer keeps the die
+(`KEEP_DIE_WITH_ACTOR`) and is also its `fills_kept_faces` option, so a
+stolen die lands on Pilfer again every turn and never comes home while the
+ship lives; killed, it gives its dice away as any ship does. From its fourth
+round (`COMBAT_ROUNDS`) the kept-face option is Getaway instead:
+`EscapeWithDiceEvent` strands every die it holds, the one being spent
+included, drops the player's `num_of_dice` by the real ones, emits
+`enemy_left` and flies the ship off the top of the screen. It reads as
+DANGEROUS and, like Flee, is never rolled while hidden.
+
+**Launched ships.** `LAUNCH_SHIP` calls `EnemyManager.launch_ship()`: a new
+`Enemy` of `EffectData.ship_resource` goes into the roster right after its
+launcher (formation order), shares the launcher's scenario state, rolls a
+table at once and slides out of the hull to its slot. It has no
+`reward_resource` (`Enemy._on_death` skips the payout) and `spawn_index` -1,
+so saves leave it out. `has_room_to_launch()` caps the board at
+`max_ships_in_combat`; the Carrier's Launch option is also gated on
+`ALLIES_AT_MOST`.
 
 **Which pool a turn draws from** is set by `EnemyResource.pool_selection`:
 
