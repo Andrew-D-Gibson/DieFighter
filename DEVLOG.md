@@ -4,6 +4,85 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-14 — Elites, bosses on the gates, the gate ring, and two new bosses
+
+**Map.** The purple boss icon now marks **elites** (`elite_encounter.png`).
+These are optional three-ship fights: Mortar Nest, Lance Squadron, Tithe Fleet
+and Hunter-Killers. One or two are shuffled into each sector
+(`GameStateManager.elite_scenarios`, `elites_per_sector`). The lead ship's
+salvage is rare-or-better, its wingmen's uncommon-or-better (new
+`RewardResource.minimum_rarity`, which falls back to the whole pool when
+nothing qualifies), and wiping the squad pays a credit bounty. The bounty is
+credits only, because a fourth offer stacked on the last wreck buried the
+others.
+
+**Bosses guard the gates.** Each sector's boss now *is* its jump gate
+(`gate_boss_scenarios`, indexed by sector): the Sector Warden, the Arc Dynamo,
+then the Bastion. The old Attacker+Defender gate fight and the escorted Warden
+variants are gone. Fate now stops one tile short of the gate
+(`_pick_new_danger_ranges`), so the way out can never be corrupted or covered.
+That also fixed a zero-width danger texture the map threw once Fate ran out of
+room. The save format is v3: older sectors would have no gate.
+
+**The gate ring.** Beating a gate's boss warps in a ring-shaped gate ship
+(`JumpGate`). It rests where the window is clear of floating salvage, with
+chasing rim lights and a swirling portal. Jumping forward from the gate (map
+arrow, any die) flies through it: the portal crossfades to gold, the ring
+rushes the camera until its hole swallows the window, the screen whites out,
+and the ship cuts straight into gold hyperspace (`set_jump_tint`,
+`cut_to_hyperspace`) under a **SECTOR N / OF 3** title. Forward from a
+guarded gate says GATE LOCKED. A won gate becomes `GATE_open`, so leaving and
+coming back finds the ring waiting rather than the boss. The final gate plays
+the same passage and ends in victory, with gold hyperspace behind the screen.
+
+**Boss intro card.** A scenario with a `boss_title` opens on a red band with
+the boss's silhouette, its name stamped on with a shake and a glitch, and a
+typed subtitle. It plays only while the boss is hostile and swallows input
+while it's up (~2.3 s).
+
+**Arc Dynamo and Overload (sector 2).** New `EnemyResource.overload_*`: if
+the dice a ship holds at the start of its turn add up to its threshold, it
+**overloads** instead of acting. It vents every die home, plays its
+`overload_chain`, and the threshold rises. An `OverloadGauge` under the ship
+shows held/threshold and flashes red once the next turn will trip it. The
+Dynamo (58 hull) trips at 15, grows by 4, and jolts itself for 10, but its
+biggest guns sit on its highest faces (`face_bias` 1.5). Stuffing it with
+sixes is a bet you'll get there. It fights in the Ion Storm Front, whose storm
+re-rolls held dice before the check.
+
+**The Bastion (sector 3, split-component).** A scenario can carry a hull
+(`ShipHullResource`) whose mounted ships (`EnemyStateRewardResource.mounted`,
+`mount_offset`) are its parts. Each part is an ordinary Enemy, so targeting,
+intents, dice and statuses need no changes. `EnemyManager` carries the parts on
+the hull: they fly in, bob and fall away as one ship. A destroyed part scars
+its socket, and the last one breaks the hull up. The parts are:
+- **Core:** relays dice to the others while they stand, then escalates by
+  squad losses.
+- **Batteries:** the guns.
+- **Aegis:** shields and repairs the rest.
+
+**Art.** Gate ring, blue and gold portals, the Dynamo, and the Bastion's hull,
+three parts, socket scar and silhouettes. All are drawn in the house palette,
+with `.aseprite` sources beside each PNG.
+
+**Verified live:**
+- Generated sectors 1–3: elites present, the boss gate always last, Fate
+  halting at the tile before it.
+- Elite drops respected their rarity floors.
+- GATE LOCKED with the boss alive. The ring warped in after the kill, clear of
+  the salvage, and the caption read "Jump through!".
+- Gate passage into sectors 2 and 3, and the final passage into victory.
+- Leaving a won gate and coming back found the ring, not the boss.
+- Intro card fired 7 s into the jump.
+- Handed the Dynamo three 6s: it overloaded (58 → 48, threshold 19, dice home,
+  no damage to the player).
+- Bastion: killing the Aegis scarred its socket, and the Core's squad_losses
+  went to 1. Killing the rest broke the hull up and opened the gate. Fleeing
+  mid-fight took the hull with its parts.
+- GUT 354/354. No script errors in the log.
+
+---
+
 ## 2026-10-13 — Cutpurse and Carrier
 
 Two enemies, each built on a new verb.

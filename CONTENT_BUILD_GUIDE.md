@@ -229,6 +229,10 @@ side's bounty still waits on it), isn't saved (a Continue rebuilds the
 authored roster), and refuses with "HANGAR JAMMED" once
 `EnemyManager.max_ships_in_combat` ships are up.
 
+**Overload** (optional): `overload_threshold` (held-dice total that trips
+it; 0 = never), `overload_threshold_growth`, `overload_chain` (what tripping
+does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
+
 **Registration:** none. An enemy exists once a scenario spawns it.
 
 ---
@@ -237,14 +241,15 @@ authored roster), and refuses with "HANGAR JAMMED" once
 
 **Files**
 - Folder: `Source/Content/ScenarioResources/Scenarios/<KIND>_<Name>/`, where
-  KIND is `COMBAT`, `EVENT`, ... Subfolders are fine here, unlike tiles.
+  KIND is `COMBAT`, `EVENT`, `ELITE`, `GATE`, ... Subfolders are fine here, unlike tiles.
 - `<name>.tres` (a `ScenarioResource`) plus one `.tres` per ship state it
   uses. `0GenericShipStates/pirate_combatant.tres` is a reusable plain
   aggressive pirate.
 
 **ScenarioResource fields**
-- **`map_icon`**: from `Assets/Textures/Map/EncounterIcons/` (enemy, boss,
-  unknown, shop, healing...).
+- **`map_icon`**: from `Assets/Textures/Map/EncounterIcons/` (enemy, elite,
+  unknown, shop, healing...). An elite uses `elite_encounter.png`, a boss gate
+  `jump_gate.png`.
 - **`background_resource`**: a `RandomBackgroundResource` pool, usually
   `RandomBackgroundResources/all_basic_backgrounds.tres`. An encounter built
   around a hazard points at a one-background pool instead
@@ -253,10 +258,19 @@ authored roster), and refuses with "HANGAR JAMMED" once
   - `enemy_resource`, `starting_state`, `reward_resource`.
   - `starting_health_fraction`: start it pre-damaged.
   - `path_location_override`: leave at -1; the formation places ships.
+  - `mounted` / `mount_offset`: this ship is a part of the scenario's `hull`
+    (below), seated at that offset from the hull's centre.
 - **`rewards`**: Faction → `RewardResource`, paid when a faction is wiped out
   by the player.
 - **`starting_reward`**: an optional pickup floating on arrival.
-- **`sector_gate_scenario`**: only for the boss and the jump gate.
+- **`sector_gate_scenario`**: only for a boss gate (and `GATE_open`). Fate
+  never takes these, and winning one opens the gate instead of emptying it.
+- **`boss_title` / `boss_subtitle`**: set on a boss fight to play the intro
+  card. The portrait is the toughest starting ship's targeting image.
+- **`hull`**: a `ShipHullResource` (`hull_scene` whose root is a `ShipHull`,
+  `path_location`, `offset`, `width`) for a boss built from parts. See
+  `GATE_Bastion` and `Source/Content/Enemies/ShipHull/`. Each part is an
+  ordinary enemy with its own art, resource and table.
 
 **Ship states** (`ScenarioShipState`, one `.tres` each)
 - `dialogue`. The speech box holds five lines of about ten characters, so
@@ -288,16 +302,20 @@ authored roster), and refuses with "HANGAR JAMMED" once
   can't load circular `.tres` references. Route around it with a third state.
 
 **RewardResource:** `min_money`/`max_money`, `num_of_rewards` (tile offers),
-`dice_probability` (chance an offer is a die instead), and
-`min/max_money_pickup`.
+`dice_probability` (chance an offer is a die instead),
+`min/max_money_pickup`, and `minimum_rarity` (elites use UNCOMMON on wingmen
+and RARE on the lead; bosses RARE). Keep elite bounties to credits
+(`num_of_rewards = 0`): an extra offer lands on the last wreck's.
 
 **Registration** (required): open `Source/Scenes/main.tscn`, select
 **GameStateManager**, and add the scenario to the right list:
 - `combat_scenarios` or `question_scenarios` (events): the random sector mix.
-- `boss_combat_scenarios`: one per sector, in order.
+- `elite_scenarios`: the elite pool (`elites_per_sector` per sector).
+- `gate_boss_scenarios`: the boss guarding each sector's gate, in order.
 - `fate_scenarios`.
-- Or set the single slots: `starting_scenario`, `jump_gate_scenario`,
-  `shop_scenario`, `empty_scenario`.
+- Or set the single slots: `starting_scenario`, `shop_scenario`,
+  `empty_scenario`. The open gate is `Map.open_gate_scenario`
+  (`main_viewer.tscn`).
 
 `ContentRegistry` picks up every ScenarioResource under `Scenarios/` for
 saves, keyed by filename, which must be unique.

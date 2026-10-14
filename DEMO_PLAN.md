@@ -5,6 +5,11 @@
 > `_advance_to_next_sector()`, `GameState.VICTORY` / `Events.victory`). The plan
 > below is kept as written for its reasoning; line numbers in it are out of
 > date. The appendix's baseline table is updated with current counts.
+>
+> **Since then (2026-10-14):** the boss moved *onto* the jump gate. Each
+> sector's gate is now guarded by its own boss (Sector Warden, Arc Dynamo, the
+> Bastion), there is no separate gate encounter, and the old boss tile became
+> elite encounters. See DEVLOG and ARCHITECTURE_OVERVIEW "Run Progression".
 
 ## Context
 
@@ -97,7 +102,7 @@ With `sector_size = 18`, after 2-3 shops, the fate tile, the boss, and the jump 
 
 - [ ] **Combat scenario templates: 6-8** (from 3). Highest-leverage, cheapest fix — new combinations of the existing 5 enemies (2x attacker, cannon_drone + defender, disabler + attacker, a 3-enemy swarm, etc.) before authoring any new enemy.
 - [ ] **Enemy types (combat-capable): 8-10** (from ~5). Add a swarm (low HP, more actions), a support/healer, a shield-focused type to round out the existing aggressive/artillery/tank/disruptor/corrupted spread.
-- [ ] **Bosses: 1 kit, 2-3 escalation variants.** Reuse `sector_boss` with a different `action_options` set per sector rather than building new bosses from scratch.
+- [x] **Bosses: 1 kit, 2-3 escalation variants.** *(Went further: three distinct bosses, one per gate.)* Reuse `sector_boss` with a different `action_options` set per sector rather than building new bosses from scratch.
 - [ ] **Question/event scenarios: 4-6** (from 2). Lower priority than combat (more expensive to author), but 2 is thin across 54 tile-pulls over 3 sectors.
 - [ ] **Tiles: keep at ~21.** In genre-typical range for a demo (20-35); spend time balancing what exists rather than growing the count. *(Now 58, above this range. Tile uses also became per-turn, which changes every limited tile's strength; a balance pass is due.)*
 - [ ] **Sectors: 3** (~54 total encounters, ~45-75 min). If the combat-template authoring load above is too much, cutting to 2 sectors is a legitimate way to reduce scope instead of adding more content.
