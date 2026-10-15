@@ -174,6 +174,12 @@ func _get_tile_info() -> InfoResource:
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
 	info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine:
+		for mod: Modifier in engine.modifiers:
+			var line: String = mod.get_info_text() if mod.affected_node == self else ""
+			if not line.is_empty():
+				info.bottom_label_text += "\n\n" + line
 	return info
 
 

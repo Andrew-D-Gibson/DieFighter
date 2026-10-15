@@ -86,6 +86,13 @@ func get_trigger_color() -> Color:
 	return Globals.yellow
 
 
+## A line added to the affected node's info panel while this is in play, so a
+## status the player can see on the board is also explained there. Empty for
+## none.
+func get_info_text() -> String:
+	return ""
+
+
 ## Called by ScenarioEngine.add_modifier(). Override to add extra setup logic,
 ## but always call super.on_registered(engine) to ensure the visual spawns.
 func on_registered(_engine: ScenarioEngine) -> void:
