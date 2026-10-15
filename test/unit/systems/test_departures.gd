@@ -98,6 +98,54 @@ func test_a_fleeing_ship_stops_hearing_the_scenario_before_it_leaves() -> void:
 	assert_true(ship.is_queued_for_deletion())
 
 
+func test_a_fleeing_ship_hands_every_die_to_the_others_never_itself() -> void:
+	Globals.enemy_manager = autofree(EnemyManager.new())
+	var ship: Enemy = _ship()
+	var other: Enemy = _ship()
+	Globals.enemy_manager.enemies = [ship, other] as Array[Enemy]
+	var held: Array[Dice] = [_die(1), _die(2), _die(3)]
+	for die: Dice in held:
+		ship.dice_manager.add(die)
+	# EnemyActionEvent has already taken the die it's spending out of the queue.
+	var spending: Dice = _die(6)
+	ship.dice_manager.add(spending)
+	ship.dice_manager.remove(spending)
+
+	var flee: FleeEvent = FleeEvent.new()
+	flee.actor = ship
+	flee.activator_die = spending
+	flee.resolve(null)
+
+	assert_true(ship.dice_manager.queue.is_empty())
+	for die: Dice in held + [spending] as Array[Dice]:
+		assert_eq(die.host_queue, other.dice_manager)
+
+
+func test_the_last_ship_to_flee_gives_its_dice_back_to_the_player() -> void:
+	Globals.enemy_manager = autofree(EnemyManager.new())
+	var ship: Enemy = _ship()
+	Globals.enemy_manager.enemies = [ship] as Array[Enemy]
+	var held: Dice = _die(4)
+	ship.dice_manager.add(held)
+	var spending: Dice = _die(5)
+	ship.dice_manager.add(spending)
+	ship.dice_manager.remove(spending)
+
+	var give: GiveDieAwayEvent = GiveDieAwayEvent.new()
+	give.actor = ship
+	give.activator_die = spending
+	give.resolve(null)
+	# Flee after the chain has already handed the spent die on: it stays put.
+	var flee: FleeEvent = FleeEvent.new()
+	flee.actor = ship
+	flee.activator_die = spending
+	flee.resolve(null)
+
+	assert_has(player.dice_manager.queue, held)
+	assert_has(player.dice_manager.queue, spending)
+	assert_eq(player.dice_manager.queue.count(spending), 1)
+
+
 func test_an_escaping_ship_takes_its_dice_and_the_one_it_was_spending() -> void:
 	var ship: Enemy = _ship()
 	ship.dice_manager.add(_die(4))

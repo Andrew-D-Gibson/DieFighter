@@ -42,17 +42,32 @@ func update_dice_locations() -> void:
 
 ## Give dice away to other enemies or the player randomly. Values are kept
 ## either way, so killing an enemy returns exactly the die it held.
-func give_away_dice() -> void:
-	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
+##
+## [param in_hand] is a die this ship took out of the queue to spend (an
+## EnemyActionEvent's activator, floating in front of the ship). It goes too,
+## unless the chain already handed it on somewhere else.
+func give_away_dice(in_hand: Node = null) -> void:
+	# A fleeing ship is still alive while it empties its hold, and must not
+	# hand its dice to itself: they'd leave with it.
+	var recipients: Array[Enemy] = []
+	for enemy: Enemy in Globals.enemy_manager.get_alive_enemies():
+		if enemy.dice_manager != self:
+			recipients.append(enemy)
 
-	for i: int in range(len(queue)-1, -1, -1):
-		var die: Dice = queue[i]
+	var dice: Array[Dice] = queue.duplicate()
+	if is_instance_valid(in_hand) and in_hand is Dice and not in_hand.is_queued_for_deletion() \
+			and (in_hand as Dice).host_queue == self and in_hand not in dice:
+		dice.append(in_hand as Dice)
+
+	for i: int in range(len(dice)-1, -1, -1):
+		var die: Dice = dice[i]
+		TractorBeam.release(die)
 		die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 		
-		if len(enemies) == 0:
+		if recipients.is_empty():
 			Globals.player.dice_manager.add(die, true, true)
 		else:
-			RNGManager.pick_random(RNGManager.Bucket.TARGETING, enemies).dice_manager.add(die, true, true)
+			RNGManager.pick_random(RNGManager.Bucket.TARGETING, recipients).dice_manager.add(die, true, true)
 
 
 ## Hands every die straight back to the player with the face it holds: the

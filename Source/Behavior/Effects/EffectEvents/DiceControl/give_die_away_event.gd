@@ -7,4 +7,4 @@ func resolve(_engine: ScenarioEngine) -> void:
 		return
 	if actor is not Enemy:
 		return
-	actor.dice_manager.give_away_dice()
+	actor.dice_manager.give_away_dice(activator_die)
