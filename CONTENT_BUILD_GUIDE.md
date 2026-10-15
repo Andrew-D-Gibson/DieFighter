@@ -345,9 +345,16 @@ encounter.
 **Background** (`Source/Resources/BackgroundResources/<name>.tres`, a
 `BackgroundResource`)
 - `background_color`.
-- Nebula, star and debris toggles and counts.
+- Nebula and star toggles and counts.
+- `scrolling_objects`: what drifts past at varying depths, with
+  `num_of_med_pieces` / `num_of_large_pieces`. Pick a set from
+  `ScrollingObjects/` (`triangle_debris`, `asteroids`, `ice`), or make a new
+  `ScrollingObjectsResource`: medium and large texture lists, plus whether
+  pieces keep their own colours or become flat silhouettes, and whether they
+  may spin (off for art lit from a fixed side).
 - `static_objects` (`StaticBackgroundObjectResource`: a scene + position, e.g.
-  the pulsar).
+  the pulsar). Only for placed set pieces; anything that just drifts by
+  belongs in `scrolling_objects`.
 - `global_modifier`: an optional permanent rule, **or**
 - `hazard`: an optional timed event (§6). Never both: the environment monitor
   has one screen.
