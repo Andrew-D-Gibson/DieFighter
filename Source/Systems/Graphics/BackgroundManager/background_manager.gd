@@ -237,9 +237,12 @@ func make_static_objects_movable() -> void:
 			static_object.set_meta("parallax_level", 1)
 	
 
+## How long play_jump_intro() builds before hyperspace punches in.
+const JUMP_RAMP_UP_TIME: float = 4.0
+
+
 func play_jump_intro() -> void:
-	# Set up timings
-	var speed_ramp_up_time: float = 4
+	var speed_ramp_up_time: float = JUMP_RAMP_UP_TIME
 
 	# Speed up the background object speed by half
 	await tween_speed(320, speed_ramp_up_time/2)

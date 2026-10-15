@@ -109,6 +109,14 @@ var _dealing_hand: bool = false
 ## Whether this fight's first turn has been announced. A fight gets exactly one.
 var _first_turn_announced: bool = false
 
+## The die that fired the jump in progress. It rides the jump out on the tile
+## it was dropped on, so the player can see what launched them, and comes home
+## on arrival with the rest of the hand.
+var _jump_activator: Dice = null
+
+## How far the dice jolt, in pixels, at the peak of a jump's run-up.
+const _JUMP_RATTLE_STRENGTH: float = 2.0
+
 var money: int:
 	set(value):
 		money = value
@@ -341,6 +349,7 @@ func _start_scenario() -> void:
 	var restoring: bool = Globals.state_manager and not Globals.state_manager.get_restore().is_empty()
 	_dealing_hand = true
 	_first_turn_announced = false
+	_bring_jump_activator_home()
 
 	if not restoring:
 		health.shields = 0
@@ -450,6 +459,8 @@ func _carry_dice_through_jump() -> void:
 				stranded += 1
 		elif die.holographic:
 			_dissolve_hologram(die)
+		elif die == _jump_activator:
+			_lock_die_for_jump(die)
 		else:
 			_stow_die_for_jump(die)
 
@@ -481,9 +492,50 @@ func _stow_die_for_jump(die: Dice) -> void:
 	die.draggable.state = Draggable.DragState.DEFAULT
 	die.scale = Vector2.ONE
 	die.rotation = 0.0
+	_lock_die_for_jump(die)
+
+
+func _lock_die_for_jump(die: Dice) -> void:
 	if die.draggable.dragging_allowed:
 		die.draggable.dragging_allowed = false
 		die.transit_locked = true
+
+
+## Leaves [param die] on the tile that fired the jump for the length of the
+## trip instead of flying it home with the rest. JumpEvent calls this before
+## the jump starts. A hologram is ignored: it can't make the trip at all.
+func hold_die_through_jump(die: Dice) -> void:
+	if is_instance_valid(die) and not die.holographic:
+		_jump_activator = die
+
+
+func _bring_jump_activator_home() -> void:
+	if is_instance_valid(_jump_activator) and not _jump_activator.is_queued_for_deletion():
+		_stow_die_for_jump(_jump_activator)
+	_jump_activator = null
+
+
+## Every die making the jump shakes harder as the drive spools up, building
+## over [param ramp_time] until settle_dice_after_jump().
+func rattle_dice_for_jump(ramp_time: float) -> void:
+	for die: Dice in _dice_making_the_jump():
+		die.rattle(_JUMP_RATTLE_STRENGTH, ramp_time)
+
+
+## The drive has kicked in: the dice drop still all at once.
+func settle_dice_after_jump() -> void:
+	for die: Dice in _dice_making_the_jump():
+		die.settle()
+
+
+func _dice_making_the_jump() -> Array[Dice]:
+	var dice: Array[Dice] = []
+	for die: Dice in dice_manager.queue:
+		if is_instance_valid(die):
+			dice.append(die)
+	if is_instance_valid(_jump_activator):
+		dice.append(_jump_activator)
+	return dice
 
 
 ## The die stays with the ship that's holding it, and is seen to: it rides

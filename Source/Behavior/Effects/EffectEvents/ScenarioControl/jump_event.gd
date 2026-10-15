@@ -26,6 +26,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 		_refuse("INVALID DESTINATION")
 		return
 
+	Globals.player.hold_die_through_jump(activator_die)
 	Globals.map.jump(desired_index)
 
 

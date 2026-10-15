@@ -55,6 +55,16 @@ const _HOVER_BOB_TIME: float = 0.4
 var _hovered_index: int = -1
 var _hover_rest_position: Vector2
 var _hover_tweens: Array[Tween] = []
+## The jump's destination throbs, bigger and quicker than the player's own
+## marker, so it reads as the target and not just another hovered icon.
+const _TARGET_PULSE_SCALE: float = 1.5
+const _TARGET_PULSE_TIME: float = 0.25
+## How long the map lingers on the destination before the drive spools up.
+const _JUMP_TARGET_HOLD_TIME: float = 1.0
+const _JUMPING_TEXT: String = "Jumping..."
+## True from the moment a jump is committed until the next scenario starts.
+## The map is a progress display for the trip then, not something to browse.
+var _jumping: bool = false
 ## What each map icon means to the player, keyed by texture file name: a
 ## title tinted to match the icon. Kept here rather than on ScenarioResource
 ## because the icon is what the player actually recognises, and several
@@ -119,6 +129,7 @@ func _ready() -> void:
 	
 	Events.load_game_save.connect(_load_game_save)
 	Events.start_scenario.connect(func() -> void:
+		_jumping = false
 		_update_map_sprites()
 		_update_ui()
 	)
@@ -132,7 +143,7 @@ func _ready() -> void:
 ## Click-drag inside the map, or use the wheel, to pan the camera. Handled
 ## here (unhandled) so the slider, tiles and dice get first claim on the mouse.
 func _unhandled_input(event: InputEvent) -> void:
-	if not visible or scenario_list.is_empty():
+	if not visible or scenario_list.is_empty() or _jumping:
 		return
 
 	if event is InputEventMouseButton:
@@ -159,7 +170,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(_delta: float) -> void:
-	if not visible or scenario_list.is_empty():
+	if not visible or scenario_list.is_empty() or _jumping:
 		return
 	var hovered: int = _hovered_scenario_index()
 	_set_hovered(hovered)
@@ -498,21 +509,30 @@ func _tween_map_to_index(index: int) -> void:
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_IN_OUT)
 
-	# Use the map's tween to animate the desired encounter's sprite
-	# We use a singular tween to make sure only one tween is running at a time
-	var tween_time: float = 1
-	var scenario_zoom_tween: Tween = get_tree().create_tween()
-	scenario_zoom_tween.tween_property(
-		scenario_sprites[index], 
-		'scale', 
-		Vector2(1.5,1.5), 
-		tween_time
-	).from(Vector2(1,1))
-	
-	await scenario_zoom_tween.finished
+	_pulse_target(scenario_sprites[index])
+	await get_tree().create_timer(_JUMP_TARGET_HOLD_TIME).timeout
 	
 	# Sync slider to match final camera position
 	_sync_slider_to_camera()
+
+
+## Sets the destination throbbing for the rest of the jump. The tween is the
+## sprite's, so it ends when the map is rebuilt on arrival.
+func _pulse_target(target: Sprite2D) -> void:
+	var pulse: Tween = target.create_tween().set_loops()\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
+	pulse.tween_property(target, "scale", Vector2.ONE * _TARGET_PULSE_SCALE, _TARGET_PULSE_TIME)
+	pulse.tween_property(target, "scale", Vector2.ONE, _TARGET_PULSE_TIME)
+
+
+## Freezes the map on the trip: no hover, no panning, and the caption says
+## where the player is headed until they get there.
+func _begin_jump_display(target_index: int) -> void:
+	_jumping = true
+	_panning = false
+	_set_hovered(-1)
+	_set_hint([scenario_sprites[target_index].texture, _JUMPING_TEXT, Globals.blue])
 
 
 ## Marks the scenario at current_scenario_index as cleared — empty, or
@@ -550,6 +570,7 @@ func jump(desired_scenario_index: int) -> void:
 		printerr("Attempted to jump to an invalid destination: ", desired_scenario_index)
 		return
 		
+	_begin_jump_display(desired_scenario_index)
 	await _tween_map_to_index(desired_scenario_index)
 
 	# Set the current index scenario to empty

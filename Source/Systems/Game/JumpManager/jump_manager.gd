@@ -19,7 +19,11 @@ func _ready() -> void:
 func jump_to_scenario(scenario: ScenarioResource) -> void:
 	Events.jump.emit()
 
+	# The dice shake harder as the drive spools up, and drop still the moment
+	# hyperspace punches in.
+	Globals.player.rattle_dice_for_jump(BackgroundManager.JUMP_RAMP_UP_TIME)
 	await Globals.background_manager.play_jump_intro()
+	Globals.player.settle_dice_after_jump()
 	await get_tree().create_timer(2).timeout
 	Events.load_scenario.emit(scenario)
 	await Globals.background_manager.play_jump_outro()

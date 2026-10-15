@@ -44,8 +44,20 @@ var host_queue: DiceQueue
 ## locks alone.
 var transit_locked: bool = false
 
+## How far the face jitters while rattling, in pixels; 0 when still. The
+## sprite shakes rather than the die, whose position Draggable owns.
+var _rattle_strength: float = 0.0
+var _rattle_tween: Tween
+var _rattle_elapsed: float = 0.0
+## Jitter steps per second. Slower than the frame rate, so each jolt lands on
+## the pixel grid long enough to read instead of blurring.
+const _RATTLE_STEPS_PER_SECOND: float = 30.0
+## Degrees of tilt per pixel of rattle.
+const _RATTLE_TILT: float = 6.0
+
 
 func _ready() -> void:
+	set_process(false)
 	if value == 0:
 		value = get_random_die_value()
 		
@@ -104,6 +116,47 @@ func reroll_with_tween(new_value: int = 0) -> void:
 ## bumps rather than the die itself, whose scale the movement tweens own.
 func play_pop(strength: float = 0.3) -> void:
 	Juice.bump($Sprite2D, strength, 0.3)
+
+
+## Starts the face shaking, building from still to [param max_strength]
+## pixels over [param ramp_time]. Keeps going until settle().
+func rattle(max_strength: float, ramp_time: float) -> void:
+	if _rattle_tween:
+		_rattle_tween.kill()
+	_rattle_elapsed = 0.0
+	set_process(true)
+	_rattle_tween = create_tween()
+	_rattle_tween.tween_property(self, "_rattle_strength", max_strength, ramp_time)\
+		.from(0.0)\
+		.set_trans(Tween.TRANS_QUAD)\
+		.set_ease(Tween.EASE_IN)
+
+
+## Stops a rattle dead and lands the face with a pop.
+func settle() -> void:
+	if not is_processing():
+		return
+	if _rattle_tween:
+		_rattle_tween.kill()
+	_rattle_strength = 0.0
+	set_process(false)
+	$Sprite2D.position = Vector2.ZERO
+	$Sprite2D.rotation = 0.0
+	play_pop(0.4)
+
+
+func _process(delta: float) -> void:
+	_rattle_elapsed += delta
+	if _rattle_elapsed < 1.0 / _RATTLE_STEPS_PER_SECOND:
+		return
+	_rattle_elapsed = 0.0
+
+	var jitter: float = _rattle_strength
+	$Sprite2D.position = Vector2(
+		roundf(RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -jitter, jitter)),
+		roundf(RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -jitter, jitter))
+	)
+	$Sprite2D.rotation_degrees = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -jitter, jitter) * _RATTLE_TILT
 
 
 func _on_tree_exiting() -> void:
