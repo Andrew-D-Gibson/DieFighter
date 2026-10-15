@@ -363,6 +363,9 @@ func go_through_gate() -> void:
 func _advance_to_next_sector() -> void:
 	_sector_advancing = true
 	current_game_save.sector_index += 1
+	# Before load_sector(): the map holds on the old sector's gate for the
+	# trip, rather than redrawing the next sector the moment it's generated.
+	Globals.map.show_gate_jump()
 
 	if current_game_save.sector_index >= demo_sector_count:
 		# Through the last gate and out: the run is won.

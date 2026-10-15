@@ -65,6 +65,9 @@ const _JUMPING_TEXT: String = "Jumping..."
 ## True from the moment a jump is committed until the next scenario starts.
 ## The map is a progress display for the trip then, not something to browse.
 var _jumping: bool = false
+## The player's marker, and the breathing that keeps it easy to spot.
+var _pip: Sprite2D
+var _pip_tween: Tween
 ## What each map icon means to the player, keyed by texture file name: a
 ## title tinted to match the icon. Kept here rather than on ScenarioResource
 ## because the icon is what the player actually recognises, and several
@@ -371,7 +374,10 @@ func load_sector(new_scenario_list: Array[ScenarioResource], start_index: int) -
 	
 	_pick_new_danger_ranges()
 	
-	_update_map_sprites()
+	# Mid-jump the map keeps showing the trip out of the old sector; arrival
+	# redraws it (see start_scenario in _ready).
+	if not _jumping:
+		_update_map_sprites()
 	
 	
 func _on_visibility_changed() -> void:
@@ -474,6 +480,7 @@ func _update_map_sprites() -> void:
 			
 		map_viewport.add_child(scenario_sprite)
 		if current_scenario_index == i:
+			_pip = scenario_sprite
 			_pulse_pip(scenario_sprite)
 		scenario_sprites.append(scenario_sprite)
 		
@@ -483,11 +490,11 @@ func _update_map_sprites() -> void:
 
 ## Keep the player's marker gently breathing so it's easy to spot.
 func _pulse_pip(pip: Sprite2D) -> void:
-	var pulse: Tween = pip.create_tween().set_loops()\
+	_pip_tween = pip.create_tween().set_loops()\
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_IN_OUT)
-	pulse.tween_property(pip, "scale", Vector2.ONE * _PIP_PULSE_SCALE, _PIP_PULSE_TIME)
-	pulse.tween_property(pip, "scale", Vector2.ONE, _PIP_PULSE_TIME)
+	_pip_tween.tween_property(pip, "scale", Vector2.ONE * _PIP_PULSE_SCALE, _PIP_PULSE_TIME)
+	_pip_tween.tween_property(pip, "scale", Vector2.ONE, _PIP_PULSE_TIME)
 
 
 func is_valid_destination(desired_scenario_index: int) -> bool:
@@ -528,11 +535,21 @@ func _pulse_target(target: Sprite2D) -> void:
 
 ## Freezes the map on the trip: no hover, no panning, and the caption says
 ## where the player is headed until they get there.
-func _begin_jump_display(target_index: int) -> void:
+func _begin_jump_display(caption_icon: Texture2D) -> void:
 	_jumping = true
 	_panning = false
 	_set_hovered(-1)
-	_set_hint([scenario_sprites[target_index].texture, _JUMPING_TEXT, Globals.blue])
+	_set_hint([caption_icon, _JUMPING_TEXT, Globals.blue])
+
+
+## Going through the sector's gate, which the player is standing on: their own
+## marker is the destination, and throbs like one.
+func show_gate_jump() -> void:
+	_begin_jump_display(scenario_list.back().map_icon)
+	if is_instance_valid(_pip):
+		if _pip_tween:
+			_pip_tween.kill()
+		_pulse_target(_pip)
 
 
 ## Marks the scenario at current_scenario_index as cleared — empty, or
@@ -570,7 +587,7 @@ func jump(desired_scenario_index: int) -> void:
 		printerr("Attempted to jump to an invalid destination: ", desired_scenario_index)
 		return
 		
-	_begin_jump_display(desired_scenario_index)
+	_begin_jump_display(scenario_sprites[desired_scenario_index].texture)
 	await _tween_map_to_index(desired_scenario_index)
 
 	# Set the current index scenario to empty

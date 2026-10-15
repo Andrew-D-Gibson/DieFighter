@@ -35,12 +35,7 @@ func jump_to_scenario(scenario: ScenarioResource) -> void:
 ## ship flies through the ring and the screen whites out into gold hyperspace,
 ## with the new sector's number across it, instead of the usual run-up.
 func jump_through_gate(scenario: ScenarioResource, sector_number: int, sector_count: int) -> void:
-	Globals.jump_gate.begin_passage()
-	Events.jump.emit()
-
-	Globals.background_manager.set_jump_tint(_GATE_TINT, _GATE_PARTICLE_TINT)
-	await Globals.jump_gate.play_passage()
-	Globals.background_manager.cut_to_hyperspace()
+	await _fly_through_gate()
 	Globals.jump_gate.fade_flash(0.6)
 	Globals.jump_gate.show_sector_title(sector_number, sector_count)
 
@@ -56,9 +51,18 @@ func jump_through_gate(scenario: ScenarioResource, sector_number: int, sector_co
 ## The last gate: through the ring and out of the run. Leaves the ship in gold
 ## hyperspace behind the white-out, for the victory screen to settle over.
 func leave_through_final_gate() -> void:
+	await _fly_through_gate()
+
+
+## The run-up every gate passage shares, ending on the white frame with
+## hyperspace behind it. The dice play it like any jump, with the ring's rush
+## standing in for the drive spooling up.
+func _fly_through_gate() -> void:
 	Globals.jump_gate.begin_passage()
 	Events.jump.emit()
 
+	Globals.player.rattle_dice_for_jump(Globals.jump_gate.passage_duration())
 	Globals.background_manager.set_jump_tint(_GATE_TINT, _GATE_PARTICLE_TINT)
 	await Globals.jump_gate.play_passage()
+	Globals.player.settle_dice_after_jump()
 	Globals.background_manager.cut_to_hyperspace()

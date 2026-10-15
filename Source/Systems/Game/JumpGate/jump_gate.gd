@@ -37,6 +37,9 @@ const _RING_HALF_WIDTH: float = 40.0
 const _OFFER_HALF_SPACING: float = 13.0
 const _BOB_HEIGHT: float = 2.0
 const _BOB_TIME: float = 1.6
+## The portal turning gold before the rush, and the white-out after it.
+const _CHARGE_TIME: float = 0.35
+const _WHITE_OUT_TIME: float = 0.08
 
 var _open: bool = false
 ## True from the moment a passage begins until the next sector starts. The
@@ -183,6 +186,11 @@ func begin_passage() -> void:
 	_passage_active = true
 
 
+## How long play_passage() runs, from the portal charging to the white frame.
+func passage_duration() -> float:
+	return _CHARGE_TIME + passage_time + _WHITE_OUT_TIME
+
+
 ## The ship flies through: the portal turns gold, the ring rushes at the
 ## camera until its hole swallows the window, and the screen whites out.
 ## Returns on the white frame, with the ring gone behind it. The caller swaps
@@ -196,8 +204,8 @@ func play_passage() -> void:
 	portal_charged.play()
 
 	var charge: Tween = create_tween().set_parallel()
-	charge.tween_property(portal_charged, "modulate:a", 1.0, 0.35)
-	charge.tween_property(self, "position:y", rest_position.y, 0.35)
+	charge.tween_property(portal_charged, "modulate:a", 1.0, _CHARGE_TIME)
+	charge.tween_property(self, "position:y", rest_position.y, _CHARGE_TIME)
 	_tweens.append(charge)
 	Events.camera_shake_small.emit()
 	await charge.finished
@@ -213,7 +221,7 @@ func play_passage() -> void:
 
 	flash.show()
 	var white: Tween = create_tween()
-	white.tween_property(flash, "color:a", 1.0, 0.08)
+	white.tween_property(flash, "color:a", 1.0, _WHITE_OUT_TIME)
 	_tweens.append(white)
 	await white.finished
 
