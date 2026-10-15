@@ -263,8 +263,8 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
   - `path_location_override`: leave at -1; the formation places ships.
   - `mounted` / `mount_offset`: this ship is a part of the scenario's `hull`
     (below), seated at that offset from the hull's centre.
-- **`rewards`**: Faction → `RewardResource`, paid when a faction is wiped out
-  by the player.
+- **`rewards`**: Faction → `RewardResource`, paid when the player destroys a
+  faction's last ship. A last ship that flees or escapes takes it along.
 - **`starting_reward`**: an optional pickup floating on arrival.
 - **`sector_gate_scenario`**: only for a boss gate (and `GATE_open`). Fate
   never takes these, and winning one opens the gate instead of emptying it.
@@ -306,9 +306,19 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
 
 **RewardResource:** `min_money`/`max_money`, `num_of_rewards` (tile offers),
 `dice_probability` (chance an offer is a die instead),
-`min/max_money_pickup`, and `minimum_rarity` (elites use UNCOMMON on wingmen
-and RARE on the lead; bosses RARE). Keep elite bounties to credits
-(`num_of_rewards = 0`): an extra offer lands on the last wreck's.
+`min/max_money_pickup` with `money_pickup_probability` (chance that money
+option shows up), and `minimum_rarity`.
+
+Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
+- Combats and elites put the pick on the PIRATE faction bounty, and every ship
+  pays credits only (`num_of_rewards = 0`). Combat bounty: `dice_probability`
+  0.25 and a 12-20 money option at 0.5. Elite bounty: RARE floor, 0.25 dice and
+  a 25-40 money option at 0.5. Bosses keep a RARE pick on the boss itself.
+- Bounty Run is the exception: the runner carries the pick, so letting it
+  escape costs the tile.
+- Only one of a ship's reward and its faction's bounty may offer picks.
+  `test_no_ship_and_faction_reward_both_offer_picks` enforces it, because
+  both offers would open on the same wreck.
 
 **Registration** (required): open `Source/Scenes/main.tscn`, select
 **GameStateManager**, and add the scenario to the right list:
