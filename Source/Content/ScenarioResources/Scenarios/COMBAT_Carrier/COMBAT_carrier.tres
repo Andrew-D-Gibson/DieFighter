@@ -13,6 +13,7 @@
 script = ExtResource("ext_1")
 min_money = 10
 max_money = 18
+num_of_rewards = 0
 
 [sub_resource type="Resource" id="Resource_spawn0"]
 script = ExtResource("ext_4")
@@ -24,6 +25,7 @@ reward_resource = SubResource("Resource_reward0")
 script = ExtResource("ext_1")
 min_money = 1
 max_money = 3
+num_of_rewards = 0
 
 [sub_resource type="Resource" id="Resource_spawn1"]
 script = ExtResource("ext_4")
@@ -31,8 +33,19 @@ enemy_resource = ExtResource("ext_5")
 starting_state = ExtResource("ext_3")
 reward_resource = SubResource("Resource_reward1")
 
+[sub_resource type="Resource" id="Resource_bounty"]
+script = ExtResource("ext_1")
+dice_probability = 0.25
+min_money_pickup = 12
+max_money_pickup = 20
+money_pickup_probability = 0.5
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
 [resource]
 script = ExtResource("ext_6")
 map_icon = ExtResource("ext_7")
 background_resource = ExtResource("ext_8")
 starting_enemies = Array[ExtResource("ext_4")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])
+rewards = Dictionary[int, ExtResource("ext_1")]({
+0: SubResource("Resource_bounty")
+})

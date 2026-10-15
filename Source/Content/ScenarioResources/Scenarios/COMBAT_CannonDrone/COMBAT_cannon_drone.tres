@@ -12,7 +12,7 @@
 script = ExtResource("1_3d2pu")
 min_money = 5
 max_money = 15
-dice_probability = 0.3
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_xegmr"]
@@ -22,9 +22,20 @@ starting_state = ExtResource("7_vbqq8")
 reward_resource = SubResource("Resource_xrbtu")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
+[sub_resource type="Resource" id="Resource_bounty"]
+script = ExtResource("1_3d2pu")
+dice_probability = 0.25
+min_money_pickup = 12
+max_money_pickup = 20
+money_pickup_probability = 0.5
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
 [resource]
 script = ExtResource("2_qmptm")
 map_icon = ExtResource("2_0qdiy")
 background_resource = ExtResource("1_j02j7")
 starting_enemies = Array[ExtResource("3_osxv8")]([SubResource("Resource_xegmr")])
+rewards = Dictionary[int, ExtResource("1_3d2pu")]({
+0: SubResource("Resource_bounty")
+})
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

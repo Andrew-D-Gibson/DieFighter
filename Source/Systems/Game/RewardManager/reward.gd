@@ -157,7 +157,8 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 			offered.append(Globals.tile_grid.create_tile(chosen_resource))
 			items.append({"tile": ContentRegistry.get_tile_id(chosen_resource.resource_path)})
 
-	if reward_resource.max_money_pickup > 0 and money_pickup_scene:
+	if reward_resource.max_money_pickup > 0 and money_pickup_scene \
+	and rolls_money_pickup(reward_resource):
 		var pickup: MoneyPickup = money_pickup_scene.instantiate()
 		pickup.amount = RNGManager.randi_range(
 			RNGManager.Bucket.REWARDS,
@@ -168,7 +169,15 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 		items.append({"money": pickup.amount})
 
 	return offered
-		
+
+
+## A certain pickup draws nothing, so offers authored before the chance existed
+## keep the same rolls (and the same seeded runs) as they always had.
+static func rolls_money_pickup(reward_resource: RewardResource) -> bool:
+	if reward_resource.money_pickup_probability >= 1.0:
+		return true
+	return RNGManager.randf(RNGManager.Bucket.REWARDS) < reward_resource.money_pickup_probability
+
 
 func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	var local_end_position = end_position - bounding_box.global_position

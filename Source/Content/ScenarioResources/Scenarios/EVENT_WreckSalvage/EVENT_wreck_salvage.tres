@@ -14,6 +14,7 @@
 script = ExtResource("script_2")
 min_money = 10
 max_money = 22
+dice_probability = 0.25
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_faction1"]

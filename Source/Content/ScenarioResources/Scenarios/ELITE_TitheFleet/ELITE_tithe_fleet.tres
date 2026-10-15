@@ -14,14 +14,19 @@
 script = ExtResource("script_2")
 min_money = 35
 max_money = 50
-num_of_rewards = 0
+num_of_rewards = 3
+minimum_rarity = 2
+dice_probability = 0.25
+min_money_pickup = 25
+max_money_pickup = 40
+money_pickup_probability = 0.5
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_reward0"]
 script = ExtResource("script_2")
 min_money = 10
 max_money = 16
-minimum_rarity = 1
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn0"]
@@ -35,7 +40,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_2")
 min_money = 16
 max_money = 26
-minimum_rarity = 2
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn1"]
@@ -49,7 +54,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_2")
 min_money = 12
 max_money = 20
-minimum_rarity = 1
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn2"]

@@ -112,6 +112,14 @@ func _handle_ship_attack(attacker: Enemy, target: Enemy) -> void:
 		Events.scenario_event.emit(ScenarioEvent.PIRATE_ATTACKED_CIVILIAN)
 
 
+## Whether the last ship of a faction leaving pays the faction's bounty. A
+## faction finished off by another ship wasn't the player's doing, so its
+## bounty isn't theirs either. Nor is one whose last ship got away: a runner or
+## thief that escapes takes the bounty with it.
+static func earns_faction_bounty(last_ship: Enemy) -> bool:
+	return last_ship.health.is_dead and not last_ship.was_killed_by_ship()
+
+
 ## Checks if a faction has been completely wiped out,
 ## then emits the corresponding signal if necessary
 func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
@@ -124,9 +132,7 @@ func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
 		other_faction_ships.erase(ship)
 		
 	if len(other_faction_ships) == 0:
-		# A faction finished off by another ship wasn't the player's doing,
-		# so its bounty isn't theirs either.
-		if current_scenario.rewards.keys().has(faction) and not ship.was_killed_by_ship():
+		if current_scenario.rewards.keys().has(faction) and earns_faction_bounty(ship):
 			Events.spawn_reward.emit(
 				ship.global_position, 
 				current_scenario.rewards[faction]

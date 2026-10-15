@@ -20,3 +20,7 @@ extends Resource
 ## the moment the reward appears, no decision attached.
 @export var min_money_pickup: int = 0
 @export var max_money_pickup: int = 0
+## Chance the money pickup above shows up at all. Below 1.0 it becomes an
+## occasional alternative, so some offers tempt the player to pass on a tile
+## and others don't.
+@export_range(0.0, 1.0) var money_pickup_probability: float = 1.0
