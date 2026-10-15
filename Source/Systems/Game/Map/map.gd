@@ -620,15 +620,19 @@ func _tween_map_to_index(index: int) -> void:
 	# Tween the camera to center on the desired encounter
 	var camera_tween_time: float = 0.5
 	var camera_movement_tween: Tween = get_tree().create_tween()
-	camera_movement_tween.tween_property(map_camera, 'position', \
-		Vector2(desired_camera_position, 0), camera_tween_time)\
+	camera_movement_tween.tween_method(_set_camera_x, map_camera.position.x, \
+		float(desired_camera_position), camera_tween_time)\
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_IN_OUT)
 
 	_pulse_target(scenario_sprites[index])
 	await get_tree().create_timer(_JUMP_TARGET_HOLD_TIME).timeout
-	
-	# Sync slider to match final camera position
+
+
+## Moves the camera and drags the view slider's knob along with it, so the
+## knob glides in step with a camera tween instead of snapping at the end.
+func _set_camera_x(x: float) -> void:
+	map_camera.position = Vector2(x, 0)
 	_sync_slider_to_camera()
 
 
