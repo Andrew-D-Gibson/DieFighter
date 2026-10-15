@@ -268,11 +268,6 @@ func _randomize_sector_scenarios() -> void:
 		)
 		current_game_save.sector_scenarios.append(gate_boss_scenarios[boss_index])
 
-	# Add a leading "corrupted" scenario
-	current_game_save.sector_scenarios.insert(
-		0, RNGManager.pick_random(RNGManager.Bucket.RUN, fate_scenarios)
-	)
-
 	# Place the player's arrival scenario somewhere in the beginning third
 	var sector_length: int = len(current_game_save.sector_scenarios)
 	var starting_scenario_index: int = RNGManager.randi_range(

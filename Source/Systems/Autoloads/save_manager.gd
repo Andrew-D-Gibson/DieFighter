@@ -143,10 +143,16 @@ func read_save() -> GameSaveResource:
 	return game_save
 
 
-## JSON has one number type, so every int comes back a float. Converts a flat
-## dictionary of numbers back to ints.
+## JSON has one number type, so every int comes back a float. Converts a
+## dictionary of numbers, or of arrays of numbers, back to ints.
 static func _ints(dict: Dictionary) -> Dictionary:
 	var out: Dictionary = {}
 	for key: Variant in dict:
-		out[key] = int(dict[key])
+		if dict[key] is Array:
+			var values: Array[int] = []
+			for value: Variant in dict[key]:
+				values.append(int(value))
+			out[key] = values
+		else:
+			out[key] = int(dict[key])
 	return out

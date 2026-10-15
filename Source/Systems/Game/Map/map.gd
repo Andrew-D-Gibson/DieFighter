@@ -9,6 +9,9 @@ var left_fate_index: int
 var right_fate_index: int
 var left_scenarios_in_danger: int 
 var right_scenarios_in_danger: int
+## Tiles past the danger zone that Fate has reached out and marked at random.
+## Like the danger zone, they're corrupted on the next jump.
+var stray_danger_indices: Array[int] = []
 
 @export_category('Map Textures')
 @export var current_scenario_icon: Texture2D
@@ -33,6 +36,9 @@ var right_scenarios_in_danger: int
 ## left guarding it.
 @export var open_gate_scenario: ScenarioResource
 @export var sprite_spacing: int = 14
+## Chance, rolled per tile on every jump, that a tile past the danger zone
+## starts corrupting anyway. Punishes a player who only watches the red zone.
+@export_range(0.0, 1.0) var stray_danger_chance: float = 0.1
 
 var scenario_sprites: Array[Sprite2D]
 var _corrupted_sprite: Sprite2D
@@ -226,9 +232,11 @@ func _compute_hint(hovered: int) -> Array:
 ## Whether Fate takes this scenario on the next jump. Mirrors jump(), which
 ## spares sector-gate scenarios.
 func _is_in_danger(index: int) -> bool:
-	return index > left_fate_index \
-		and index <= left_fate_index + left_scenarios_in_danger \
-		and not scenario_list[index].sector_gate_scenario
+	if scenario_list[index].sector_gate_scenario:
+		return false
+	return index in stray_danger_indices or (
+		index > left_fate_index and index <= left_fate_index + left_scenarios_in_danger
+	)
 
 
 ## The scenario's own icon with Fate's cut in diagonally from the left: what's
@@ -349,6 +357,7 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	right_fate_index = game_save.map_state.get("right_fate_index", len(scenario_list) - 1)
 	left_scenarios_in_danger = game_save.map_state.get("left_scenarios_in_danger", 0)
 	right_scenarios_in_danger = game_save.map_state.get("right_scenarios_in_danger", 0)
+	stray_danger_indices.assign(game_save.map_state.get("stray_danger_indices", []))
 	_update_map_sprites()
 
 
@@ -359,6 +368,7 @@ func get_fate_state() -> Dictionary:
 		"right_fate_index": right_fate_index,
 		"left_scenarios_in_danger": left_scenarios_in_danger,
 		"right_scenarios_in_danger": right_scenarios_in_danger,
+		"stray_danger_indices": stray_danger_indices.duplicate(),
 	}
 
 
@@ -369,8 +379,11 @@ func load_sector(new_scenario_list: Array[ScenarioResource], start_index: int) -
 	scenario_list = new_scenario_list
 	current_scenario_index = start_index
 	
-	left_fate_index = 0
+	# Fate starts just off the sector's left edge: nothing is corrupted yet,
+	# only the first one or two tiles are under threat.
+	left_fate_index = -1
 	right_fate_index = len(scenario_list)-1
+	stray_danger_indices.clear()
 	
 	_pick_new_danger_ranges()
 	
@@ -597,11 +610,15 @@ func jump(desired_scenario_index: int) -> void:
 	for idx: int in range(left_fate_index + 1, left_fate_index + 1 + left_scenarios_in_danger):
 		if not scenario_list[idx].sector_gate_scenario:
 			scenario_list[idx] = fate_scenario
+	for idx: int in stray_danger_indices:
+		if not scenario_list[idx].sector_gate_scenario:
+			scenario_list[idx] = fate_scenario
 			
 	left_fate_index += left_scenarios_in_danger
 	
 	# Set up which scenarios are in danger next
 	_pick_new_danger_ranges()
+	_pick_stray_danger(desired_scenario_index)
 	
 	# Request a jump with the new index
 	current_scenario_index = desired_scenario_index
@@ -629,6 +646,20 @@ func _pick_new_danger_ranges() -> void:
 		left_scenarios_in_danger = 0
 	else:
 		left_scenarios_in_danger = RNGManager.randi_range(RNGManager.Bucket.RUN, 1, max_left_scenarios_in_danger)
+
+
+## Rolls stray_danger_chance for every tile past the danger zone. The tile the
+## player is arriving at is spared — corrupting it underneath them would read
+## as a bug, not a threat — as are the gate and tiles Fate already holds.
+func _pick_stray_danger(arriving_index: int) -> void:
+	stray_danger_indices.clear()
+	for idx: int in range(left_fate_index + left_scenarios_in_danger + 1, len(scenario_list)):
+		if idx == arriving_index \
+		or scenario_list[idx].sector_gate_scenario \
+		or scenario_list[idx] == fate_scenario:
+			continue
+		if RNGManager.randf(RNGManager.Bucket.RUN) < stray_danger_chance:
+			stray_danger_indices.append(idx)
 	
 	
 func disable_controls() -> void:
