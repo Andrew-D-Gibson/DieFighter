@@ -53,6 +53,14 @@ const _FATE_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/
 ## Animates a threatened icon on the map itself. Captions, which are too small
 ## and too brief to need it, use the static splice from _danger_icon().
 const _CORRUPTING_SHADER: Shader = preload("res://Assets/Shaders/corrupting_icon.gdshader")
+const _SEAM_SHADER: Shader = preload("res://Assets/Shaders/fate_seam.gdshader")
+## The corrupted and danger zones each stop this far short of their shared
+## border; the animated seam fills the gap. Leaves room for the wave to swing.
+const _SEAM_HALF_WIDTH: int = 3
+## A one-tile danger column with the dashed border on both sides, built from
+## danger_area on first use. See _stray_danger_texture().
+var _stray_danger_tex: Texture2D
+var _seam_tex: Texture2D
 
 ## The player's marker breathes between these scales so it's easy to find.
 const _PIP_PULSE_SCALE: float = 1.25
@@ -458,7 +466,9 @@ func _update_map_sprites() -> void:
 	var left_fate_background: Sprite2D = Sprite2D.new()
 	_corrupted_sprite = left_fate_background
 	left_fate_background.texture = corrupted_area
-	left_fate_background.position = Vector2(-232 + (sprite_spacing * (left_fate_index + 1)), 4)
+	left_fate_background.position = Vector2(
+		-232 + (sprite_spacing * (left_fate_index + 1)) - _SEAM_HALF_WIDTH, 4
+	)
 
 	left_fate_background.z_index = -2
 	map_viewport.add_child(left_fate_background)
@@ -470,13 +480,18 @@ func _update_map_sprites() -> void:
 
 	# Nothing is in danger once Fate has stopped in front of the gate, and a
 	# zero-width slice isn't a texture.
+	var fate_border_x: float = sprite_spacing * (left_fate_index + 0.5)
 	if left_scenarios_in_danger > 0:
-		left_danger.texture = Utils.slice_texture_right(danger_area, left_scenarios_in_danger * sprite_spacing)
+		left_danger.texture = Utils.slice_texture_right(
+			danger_area, left_scenarios_in_danger * sprite_spacing - _SEAM_HALF_WIDTH
+		)
 	left_danger.centered = false
-	left_danger.position = Vector2((sprite_spacing * (left_fate_index + 0.5)), -21)
+	left_danger.position = Vector2(fate_border_x + _SEAM_HALF_WIDTH, -21)
 
 	left_danger.z_index = -2
 	map_viewport.add_child(left_danger)
+
+	map_viewport.add_child(_make_fate_seam(fate_border_x))
 
 	# Stray tiles get the same red column as the danger zone, so red always
 	# means "corrupted on the next jump", wherever on the map it shows up.
@@ -484,7 +499,12 @@ func _update_map_sprites() -> void:
 		if scenario_list[idx].sector_gate_scenario:
 			continue
 		var stray_danger: Sprite2D = Sprite2D.new()
-		stray_danger.texture = Utils.slice_texture_right(danger_area, sprite_spacing)
+		# A red neighbour already draws the border between them; doubling it
+		# would read as a thick line.
+		if _is_in_danger(idx - 1):
+			stray_danger.texture = Utils.slice_texture_right(danger_area, sprite_spacing)
+		else:
+			stray_danger.texture = _stray_danger_texture()
 		stray_danger.centered = false
 		stray_danger.position = Vector2(sprite_spacing * (idx - 0.5), -21)
 		stray_danger.z_index = -2
@@ -532,6 +552,49 @@ func _update_map_sprites() -> void:
 		
 	# Sync the slider to match the camera position
 	_sync_slider_to_camera()
+
+
+## The wavy, living border between the corrupted zone and the danger zone.
+## Its tints are sampled from the zone textures so the seam always matches
+## them; with nothing in danger, the right side is left clear.
+func _make_fate_seam(border_x: float) -> Sprite2D:
+	if not _seam_tex:
+		var blank: Image = Image.create(
+			_SEAM_HALF_WIDTH * 2, danger_area.get_height(), false, Image.FORMAT_RGBA8
+		)
+		blank.fill(Color.WHITE)
+		_seam_tex = ImageTexture.create_from_image(blank)
+
+	var seam_material: ShaderMaterial = ShaderMaterial.new()
+	seam_material.shader = _SEAM_SHADER
+	seam_material.set_shader_parameter("left_color", corrupted_area.get_image().get_pixel(0, 0))
+	var right: Color = Color.TRANSPARENT
+	if left_scenarios_in_danger > 0:
+		right = danger_area.get_image().get_pixel(0, 0)
+	seam_material.set_shader_parameter("right_color", right)
+
+	var seam: Sprite2D = Sprite2D.new()
+	seam.texture = _seam_tex
+	seam.material = seam_material
+	seam.centered = false
+	seam.position = Vector2(border_x - _SEAM_HALF_WIDTH, -21)
+	seam.z_index = -2
+	return seam
+
+
+## danger_area's border only ever needed to sit on the zone's right edge. A
+## lone stray column wants it on both sides, so copy that edge onto the left.
+func _stray_danger_texture() -> Texture2D:
+	if _stray_danger_tex:
+		return _stray_danger_tex
+
+	var column: Image = Utils.slice_texture_right(danger_area, sprite_spacing).get_image()
+	column.decompress()
+	var edge_x: int = column.get_width() - 1
+	for y: int in range(column.get_height()):
+		column.set_pixel(0, y, column.get_pixel(edge_x, y))
+	_stray_danger_tex = ImageTexture.create_from_image(column)
+	return _stray_danger_tex
 
 
 ## Keep the player's marker gently breathing so it's easy to spot.
