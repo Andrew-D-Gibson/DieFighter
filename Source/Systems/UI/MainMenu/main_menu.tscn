@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://4krr0rymcm65" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_bump_map.png" id="16_dn166"]
 [ext_resource type="Texture2D" uid="uid://dpgitv7aac1gi" path="res://Assets/Textures/UI/MainMenu/main_menu_planet_palette.png" id="17_sd3hn"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/ConfirmDialog/confirm_dialog.tscn" id="18_confirm"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/LoadingPopup/loading_popup.tscn" id="19_loading"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -330,6 +331,10 @@ visible = false
 position = Vector2(160, 90)
 
 [node name="ConfirmDialog" parent="." unique_id=330426674 instance=ExtResource("18_confirm")]
+unique_name_in_owner = true
+position = Vector2(160, 90)
+
+[node name="LoadingPopup" parent="." instance=ExtResource("19_loading")]
 unique_name_in_owner = true
 position = Vector2(160, 90)
 

@@ -14,6 +14,8 @@ var _stars: Array[Node2D]
 var opening_cutscene: String = "uid://b1j8blia5iw65"
 var main_game_scene: String = "uid://deisauteocrjl"
 
+var _is_loading: bool = false
+
 
 func _ready() -> void:
 	get_tree().paused = false
@@ -99,11 +101,18 @@ func _start_new_game() -> void:
 
 
 func _on_continue_button_pressed() -> void:
+	if _is_loading:
+		return
 	var loaded_save: GameSaveResource = SaveManager.read_save()
 	if not loaded_save:
 		push_error("Failed to load save file")
 		return
 	Globals.pending_load_save = loaded_save
+	_is_loading = true
+	%LoadingPopup.show()
+	# The scene change blocks the main thread while it loads, so wait until the
+	# popup has actually been drawn or the player never sees it.
+	await RenderingServer.frame_post_draw
 	get_tree().change_scene_to_file(main_game_scene)
 
 
