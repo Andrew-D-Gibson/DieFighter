@@ -222,3 +222,18 @@ func test_current_is_null_once_the_engine_is_shut_down() -> void:
 
 	engine.shutdown()
 	assert_null(ScenarioEngine.current())
+
+
+# ── Pending tile activations ──────────────────────────────────────────────────
+
+func test_a_queued_tile_activation_counts_as_pending() -> void:
+	assert_false(engine.has_pending_tile_activation())
+	engine.event_queue.append(_event("unrelated"))
+	assert_false(engine.has_pending_tile_activation())
+	engine.event_queue.append(TileActivationEvent.new())
+	assert_true(engine.has_pending_tile_activation())
+
+
+func test_an_activation_still_owed_its_completion_counts_as_pending() -> void:
+	engine.event_queue.append(TileActivationCompleteEvent.new())
+	assert_true(engine.has_pending_tile_activation())

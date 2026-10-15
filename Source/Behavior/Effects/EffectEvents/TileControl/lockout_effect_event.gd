@@ -33,3 +33,8 @@ func resolve(engine: ScenarioEngine) -> void:
 		Events.error_text_popup.emit("TILE LOCKED", tile.global_position)
 		tile.play_refusal_feedback()
 		Globals.player.dice_manager.add(activator_die, true, false)
+
+	# This stands in for the activation the lockout canceled, so the turn
+	# still gets its end-of-activation check: a locked tile can be the last
+	# one the hand was waiting on.
+	engine.inject_event(TileActivationCompleteEvent.new())

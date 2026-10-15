@@ -66,6 +66,17 @@ func inject_event(event: EffectEvent) -> void:
 	_inject_index += 1
 
 
+## Whether a tile activation is still waiting in the queue, or is part way
+## through and hasn't announced its completion yet. A die placed on a tile
+## behind another tile's activation has left the hand but not been played, so
+## the turn isn't over until this goes false.
+func has_pending_tile_activation() -> bool:
+	for event: EffectEvent in event_queue:
+		if event is TileActivationEvent or event is TileActivationCompleteEvent:
+			return true
+	return false
+
+
 ## Modifier functions	
 func add_modifier(mod: Modifier) -> void:
 	modifiers.append(mod)

@@ -288,7 +288,11 @@ func _process(_delta: float) -> void:
 
 
 func _check_for_end_of_turn() -> void:
-	if len(dice_manager.queue) == 0:
+	# An empty hand isn't enough: dice already dropped on tiles queued behind
+	# this activation (a Bump waiting on a Dice Cannon) still have to fire.
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	var activations_pending: bool = engine != null and engine.has_pending_tile_activation()
+	if len(dice_manager.queue) == 0 and not activations_pending:
 		%EndTurnButton.disabled = false
 		%EndTurnButton.update_ui()
 		%EndTurnButton.soft_highlight()
