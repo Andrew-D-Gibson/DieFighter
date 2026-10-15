@@ -156,6 +156,12 @@ func _ready() -> void:
 		_in_transit = true
 	)
 	Events.enemy_turn_over.connect(_check_combat_state)
+	# A scenario event can turn a ship hostile without a shot being fired (a
+	# toll the player couldn't pay, salvage the escort told them not to take).
+	# Deferred so the ships have reacted before the roster is read.
+	Events.scenario_event.connect(func(_event: ScenarioManager.ScenarioEvent) -> void:
+		_check_combat_state.call_deferred()
+	)
 	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_check_combat_state()
 	)

@@ -4,6 +4,9 @@ extends EffectEvent
 ## have if that's less. The balance drops at once (so a checkpoint never sees
 ## credits still in flight) and the coins stream from the money counter to the
 ## thief, the payout a destroyed ship makes run backwards.
+##
+## Coming up short announces PLAYER_COULDNT_PAY, so a ship can turn on a
+## player who couldn't cover what it asked for.
 
 const _MONEY_PARTICLE_SCENE: PackedScene = preload("res://Source/Systems/Game/MoneyParticles/money_particle.tscn")
 
@@ -21,9 +24,16 @@ func resolve(_engine: ScenarioEngine) -> void:
 		return
 
 	taken = mini(amount, Globals.player.money)
+	Globals.player.money -= taken
+	_send_coins()
+
+	if taken < amount:
+		Events.scenario_event.emit(ScenarioManager.ScenarioEvent.PLAYER_COULDNT_PAY)
+
+
+func _send_coins() -> void:
 	if taken <= 0:
 		return
-	Globals.player.money -= taken
 
 	var thief: Node2D = actor as Node2D if is_instance_valid(actor) else null
 	if thief == null:

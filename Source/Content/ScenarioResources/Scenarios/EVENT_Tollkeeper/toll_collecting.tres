@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_2"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_4"]
 [ext_resource type="Resource" uid="uid://ditjw8a2kt8yf" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/toll_refused.tres" id="state_5"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/toll_shortchanged.tres" id="state_6"]
 
 [sub_resource type="Resource" id="Resource_toll_amount"]
 script = ExtResource("script_2")
@@ -31,6 +32,7 @@ dialogue = "Toll's paid. Object, and it's your hull."
 attitude = 1
 effects_on_enter = SubResource("Resource_chain7")
 transitions = Dictionary[int, ExtResource("script_1")]({
-0: ExtResource("state_5")
+0: ExtResource("state_5"),
+10: ExtResource("state_6")
 })
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

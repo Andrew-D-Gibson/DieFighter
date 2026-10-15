@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="script_0"]
+
+[resource]
+script = ExtResource("script_0")
+dialogue = "Short? Then your hull pays the rest."
+attitude = 2
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

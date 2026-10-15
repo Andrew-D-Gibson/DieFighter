@@ -18,6 +18,8 @@ enum ScenarioEvent {
 	PLAYER_TOOK_REWARD_MONEY,
 	## A pirate (or their boss) fired on a civilian ship.
 	PIRATE_ATTACKED_CIVILIAN,
+	## A ship tried to take credits (STEAL_MONEY) and the player came up short.
+	PLAYER_COULDNT_PAY,
 }
 
 enum Faction {
