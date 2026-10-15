@@ -50,6 +50,9 @@ var _danger_icons: Dictionary[Texture2D, Texture2D] = {}
 
 ## Stands in for the Fate zones, which have no map icon of their own.
 const _FATE_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/fate_encounter.png")
+## Animates a threatened icon on the map itself. Captions, which are too small
+## and too brief to need it, use the static splice from _danger_icon().
+const _CORRUPTING_SHADER: Shader = preload("res://Assets/Shaders/corrupting_icon.gdshader")
 
 ## The player's marker breathes between these scales so it's easy to find.
 const _PIP_PULSE_SCALE: float = 1.25
@@ -210,8 +213,7 @@ func _compute_hint(hovered: int) -> Array:
 	if hovered >= 0:
 		var texture: Texture2D = scenario_sprites[hovered].texture
 		if _is_in_danger(hovered):
-			# The sprite already wears the spliced icon; see _update_map_sprites().
-			return [texture, "Corrupting!", Globals.red]
+			return [_caption_icon(hovered), "Corrupting!", Globals.red]
 		var entry: Dictionary = _icon_hints.get(texture.resource_path.get_file(), {})
 		if entry.is_empty():
 			return [texture, "Unknown", Globals.yellow]
@@ -262,6 +264,25 @@ func _danger_icon(texture: Texture2D) -> Texture2D:
 	var result: ImageTexture = ImageTexture.create_from_image(spliced)
 	_danger_icons[texture] = result
 	return result
+
+
+## Each threatened icon gets its own material so its seed, and so its glitches,
+## differ from its neighbours'.
+func _corrupting_material(index: int) -> ShaderMaterial:
+	var corrupting: ShaderMaterial = ShaderMaterial.new()
+	corrupting.shader = _CORRUPTING_SHADER
+	corrupting.set_shader_parameter("fate_texture", _FATE_ICON)
+	corrupting.set_shader_parameter("seed", float(index) * 0.618)
+	return corrupting
+
+
+## The icon a caption shows for a scenario: spliced with Fate if it's in danger,
+## standing in for the animated shader the map sprite wears.
+func _caption_icon(index: int) -> Texture2D:
+	var texture: Texture2D = scenario_sprites[index].texture
+	if _is_in_danger(index) and texture:
+		return _danger_icon(texture)
+	return texture
 
 
 ## Grow the hovered icon and set it bobbing; settle the previous one back.
@@ -456,6 +477,18 @@ func _update_map_sprites() -> void:
 
 	left_danger.z_index = -2
 	map_viewport.add_child(left_danger)
+
+	# Stray tiles get the same red column as the danger zone, so red always
+	# means "corrupted on the next jump", wherever on the map it shows up.
+	for idx: int in stray_danger_indices:
+		if scenario_list[idx].sector_gate_scenario:
+			continue
+		var stray_danger: Sprite2D = Sprite2D.new()
+		stray_danger.texture = Utils.slice_texture_right(danger_area, sprite_spacing)
+		stray_danger.centered = false
+		stray_danger.position = Vector2(sprite_spacing * (idx - 0.5), -21)
+		stray_danger.z_index = -2
+		map_viewport.add_child(stray_danger)
 	
 		
 	for i: int in range(len(scenario_list)):
@@ -479,7 +512,7 @@ func _update_map_sprites() -> void:
 		else:
 			scenario_sprite.texture = scenario_list[i].map_icon
 			if _is_in_danger(i) and scenario_sprite.texture:
-				scenario_sprite.texture = _danger_icon(scenario_sprite.texture)
+				scenario_sprite.material = _corrupting_material(i)
 			
 			# Offset the icon up or down
 			scenario_sprite.position += Vector2(0, -13 if i%2==0 else 13)
@@ -600,7 +633,7 @@ func jump(desired_scenario_index: int) -> void:
 		printerr("Attempted to jump to an invalid destination: ", desired_scenario_index)
 		return
 		
-	_begin_jump_display(scenario_sprites[desired_scenario_index].texture)
+	_begin_jump_display(_caption_icon(desired_scenario_index))
 	await _tween_map_to_index(desired_scenario_index)
 
 	# Set the current index scenario to empty
