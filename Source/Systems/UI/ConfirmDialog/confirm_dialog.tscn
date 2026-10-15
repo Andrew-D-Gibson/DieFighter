@@ -2,6 +2,22 @@
 
 [ext_resource type="Script" path="res://Source/Systems/UI/ConfirmDialog/confirm_dialog.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="2_button"]
+[ext_resource type="Texture2D" uid="uid://66npl6ypq2vo" path="res://Assets/Textures/UI/Buttons/button_medium_green.png" id="3_green"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_green"]
+atlas = ExtResource("3_green")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_green"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_green")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
 
 [node name="ConfirmDialog" type="Node2D"]
 process_mode = 3
@@ -54,6 +70,16 @@ grow_vertical = 2
 theme_override_constants/separation = 8
 alignment = 1
 
+[node name="ConfirmButton" parent="HBoxContainer" instance=ExtResource("2_button")]
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="AnimatedSprite2D" parent="HBoxContainer/ConfirmButton" index="0"]
+sprite_frames = SubResource("SpriteFrames_green")
+
+[node name="RichTextLabel" parent="HBoxContainer/ConfirmButton" index="1"]
+text = "CONFIRM"
+
 [node name="CancelButton" parent="HBoxContainer" instance=ExtResource("2_button")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
@@ -61,15 +87,8 @@ hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 [node name="RichTextLabel" parent="HBoxContainer/CancelButton" index="1"]
 text = "CANCEL"
 
-[node name="ConfirmButton" parent="HBoxContainer" instance=ExtResource("2_button")]
-layout_mode = 2
-hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
-
-[node name="RichTextLabel" parent="HBoxContainer/ConfirmButton" index="1"]
-text = "CONFIRM"
-
 [connection signal="pressed_within_window" from="HBoxContainer/ConfirmButton" to="." method="_on_confirm_button_pressed"]
 [connection signal="pressed_within_window" from="HBoxContainer/CancelButton" to="." method="_on_cancel_button_pressed"]
 
-[editable path="HBoxContainer/CancelButton"]
 [editable path="HBoxContainer/ConfirmButton"]
+[editable path="HBoxContainer/CancelButton"]
