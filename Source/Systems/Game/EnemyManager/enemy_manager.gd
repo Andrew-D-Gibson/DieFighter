@@ -594,7 +594,7 @@ func _update_jumping_enemies(delta: float) -> void:
 	if not Globals.background_manager:
 		return
 		
-	var parallax_level: int = 1  # Match medium debris
+	var parallax_level: int = 1  # Match the far scrolling objects
 	var speed: float = Globals.background_manager.global_speed * \
 					  Globals.background_manager.get_parallax_speed(parallax_level)
 

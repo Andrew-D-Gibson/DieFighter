@@ -12,11 +12,11 @@ extends Sprite2D
 @export var nebula_scene: PackedScene
 @export var star_pixel_scene: PackedScene
 @export var star_twinkle_scene: PackedScene
-@export var debris_scene: PackedScene
+@export var scrolling_object_scene: PackedScene
 
 
 var stars: Array[Node2D]
-var debris: Array[Node2D]
+var scrolling_objects: Array[Node2D]
 var static_objects: Array[Node2D]
 var nebula: Node2D
 
@@ -42,7 +42,7 @@ func _ready() -> void:
 	
 func _process(delta: float) -> void:
 	_update_objects_motion(stars, delta, 3.0, 0, 5, _wrap_star_position)
-	_update_objects_motion(debris, delta, 1.0, 2, 0, _wrap_debris_position, _get_debris_base_speed)
+	_update_objects_motion(scrolling_objects, delta, 1.0, 2, 0, _wrap_scrolling_object_position, _get_scrolling_object_base_speed)
 	_update_objects_motion(static_objects, delta, 2.0, 0, 50, _wrap_static_object_position, null, true)
 	_update_nebula_speed()
 
@@ -77,9 +77,8 @@ func _wrap_star_position(star: Node2D) -> void:
 	star.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x)
 
 
-func _wrap_debris_position(piece: Node2D) -> void:
-	piece.pick_random_texture()
-	piece.pick_random_velocity_delta()
+func _wrap_scrolling_object_position(piece: ScrollingObject) -> void:
+	piece.reroll()
 	piece.global_position.y = -5 - piece.texture.get_height()
 	piece.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x)
 
@@ -89,7 +88,7 @@ func _wrap_static_object_position(obj: Node2D) -> void:
 	obj.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x)
 
 
-func _get_debris_base_speed(piece: Node2D) -> float:
+func _get_scrolling_object_base_speed(piece: ScrollingObject) -> float:
 	return 2.0 + piece.velocity_delta
 
 
@@ -123,7 +122,7 @@ func set_global_speed(new_speed: float) -> void:
 	
 func _clear_children() -> void:
 	stars = []
-	debris = []
+	scrolling_objects = []
 	static_objects = []
 	nebula = null
 	
@@ -157,8 +156,8 @@ func _set_background(background_resource: Resource) -> void:
 		_set_nebula(bg_resource.nebula_color)
 	if bg_resource.stars:
 		_set_stars(bg_resource.num_of_stars, bg_resource.num_of_twinkling_stars)
-	if bg_resource.debris:
-		_set_debris(bg_resource.num_of_med_pieces, bg_resource.num_of_large_pieces, bg_resource.background_color)
+	if bg_resource.scrolling_objects:
+		_set_scrolling_objects(bg_resource)
 	if bg_resource.static_objects.size() > 0:
 		_set_static_objects(bg_resource.static_objects)
 
@@ -194,21 +193,20 @@ func _random_screen_position() -> Vector2:
 	)
 		
 
-func _set_debris(num_of_med_pieces: int, num_of_large_pieces: int, background_color: Color) -> void:
-	for i: int in range(num_of_med_pieces + num_of_large_pieces):
-		var piece: Node2D = debris_scene.instantiate()
-		piece.is_medium = (i < num_of_med_pieces)
-		piece.randomize()
-		piece.background_color = background_color
+func _set_scrolling_objects(bg_resource: BackgroundResource) -> void:
+	var num_of_med_pieces: int = bg_resource.num_of_med_pieces
+	for i: int in range(num_of_med_pieces + bg_resource.num_of_large_pieces):
+		var piece: ScrollingObject = scrolling_object_scene.instantiate()
+		piece.setup(bg_resource.scrolling_objects, i < num_of_med_pieces, bg_resource.background_color)
 		piece.set_meta("parallax_level", 2 if piece.is_medium else 1)
 		add_child(piece)
-		# Same ordering trap as the static objects below; debris only hid it by
-		# self-correcting the first time it wrapped.
+		# Same ordering trap as the static objects below; scrolling objects only
+		# hide it by self-correcting the first time they wrap.
 		piece.global_position = Vector2(
 			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x),
 			RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, -50, Globals.SCREEN_SIZE.y)
 		)
-		debris.append(piece)
+		scrolling_objects.append(piece)
 
 
 func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResource]) -> void:
@@ -220,6 +218,9 @@ func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResourc
 		static_object.scale = object_data.scale
 		static_object.rotation = object_data.rotation
 		static_object.modulate = object_data.modulate
+		# Stars sit at z 1; anything level with or under them shows the
+		# starfield through it, as if see-through.
+		static_object.z_index = maxi(static_object.z_index, 1)
 		static_object.set_meta("parallax_level", object_data.get_parallax_level() if object_data.has_method("get_parallax_level") else 0)
 		add_child(static_object)
 
@@ -301,7 +302,7 @@ func _determine_background_name(bg_resource: BackgroundResource) -> String:
 		return "nebula"
 	elif bg_resource.stars and bg_resource.num_of_stars > 10:
 		return "starfield"
-	elif bg_resource.debris and bg_resource.num_of_large_pieces > 5:
+	elif bg_resource.scrolling_objects and bg_resource.num_of_large_pieces > 5:
 		return "debris_field"
 	elif bg_resource.static_objects.size() > 0:
 		return "complex"

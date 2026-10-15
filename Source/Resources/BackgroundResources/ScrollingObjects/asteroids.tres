@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://c6w7gbxkak5nx" path="res://Assets/Textures/Backgrounds/StaticObjects/asteroid_small.png" id="tex_0"]
+[ext_resource type="Texture2D" uid="uid://bsu6kxvmkyb1w" path="res://Assets/Textures/Backgrounds/StaticObjects/asteroid_medium.png" id="tex_1"]
+[ext_resource type="Texture2D" uid="uid://c3ow1lbebkh44" path="res://Assets/Textures/Backgrounds/StaticObjects/asteroid_large.png" id="tex_2"]
+
+[resource]
+script = ExtResource("1_script")
+medium_textures = Array[Texture2D]([ExtResource("tex_0"), ExtResource("tex_1")])
+large_textures = Array[Texture2D]([ExtResource("tex_2")])
+keep_texture_colors = true
+base_visibility = 0.35
+visibility_per_depth = 0.16
+random_quarter_turns = false

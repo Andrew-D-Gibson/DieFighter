@@ -23,10 +23,14 @@ extends Resource
 @export var num_of_stars: int
 @export var num_of_twinkling_stars: int
 
-@export_category('Triangle Debris')
-@export var debris: bool
+@export_category('Scrolling Objects')
+## What drifts past at varying depths: debris, asteroids, ice. Leave null for
+## space with nothing in it.
+@export var scrolling_objects: ScrollingObjectsResource
 @export var num_of_med_pieces: int
 @export var num_of_large_pieces: int
 
 @export_category('Static Objects')
+## Set pieces placed by hand, like a star or a wreck. Things that only drift by
+## belong in scrolling_objects.
 @export var static_objects: Array[StaticBackgroundObjectResource] = []

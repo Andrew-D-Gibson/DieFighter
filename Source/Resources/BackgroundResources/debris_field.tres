@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/shrapnel_wake.tres" id="mod_0"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ScrollingObjects/triangle_debris.tres" id="scroll_0"]
 
 [resource]
 resource_local_to_scene = true
@@ -13,7 +14,7 @@ nebula_color = Color(0.82, 0.2132, 0.33456, 0.286275)
 stars = true
 num_of_stars = 75
 num_of_twinkling_stars = 15
-debris = true
+scrolling_objects = ExtResource("scroll_0")
 num_of_med_pieces = 64
 num_of_large_pieces = 12
 static_objects = null

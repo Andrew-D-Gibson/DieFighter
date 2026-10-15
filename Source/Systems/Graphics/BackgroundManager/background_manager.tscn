@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://bqnr0itscotaw" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/nebula.tscn" id="3_j7lqu"]
 [ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="4_hcsrv"]
 [ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="5_jjrua"]
-[ext_resource type="PackedScene" uid="uid://dhh3wbvm6lsew" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/debris_piece.tscn" id="6_vmxgm"]
+[ext_resource type="PackedScene" uid="uid://dhh3wbvm6lsew" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/scrolling_object.tscn" id="6_vmxgm"]
 [ext_resource type="PackedScene" uid="uid://d1eqq3hswo3d6" path="res://Source/Systems/Graphics/JumpTransition/jump_transition.tscn" id="7_mwyp7"]
 
 [node name="BackgroundManager" type="Sprite2D" unique_id=175737585]
@@ -16,7 +16,7 @@ script = ExtResource("2_e2ils")
 nebula_scene = ExtResource("3_j7lqu")
 star_pixel_scene = ExtResource("4_hcsrv")
 star_twinkle_scene = ExtResource("5_jjrua")
-debris_scene = ExtResource("6_vmxgm")
+scrolling_object_scene = ExtResource("6_vmxgm")
 
 [node name="JumpTransition" parent="." unique_id=1059039291 instance=ExtResource("7_mwyp7")]
 unique_name_in_owner = true
