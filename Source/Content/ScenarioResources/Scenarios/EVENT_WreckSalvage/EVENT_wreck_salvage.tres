@@ -36,6 +36,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [sub_resource type="Resource" id="Resource_reward1"]
 script = ExtResource("script_2")
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn1"]

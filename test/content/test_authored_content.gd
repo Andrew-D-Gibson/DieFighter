@@ -152,3 +152,47 @@ func test_every_scenario_is_registered_for_saving() -> void:
 	for path: String in _tres_files(SCENARIO_DIR):
 		if load(path) is ScenarioResource:
 			assert_ne(ContentRegistry.get_scenario_id(path), "", "%s can't be saved" % path)
+
+
+## A faction's bounty floats from the last of its ships to go, at the same spot
+## as that ship's own reward. If both offer something to pick, two offers open
+## on top of each other. The convention: a faction bounty that offers picks
+## pairs with ship rewards that pay money only (num_of_rewards = 0), and a ship
+## reward that offers picks pairs with a money-only bounty.
+func test_no_ship_and_faction_reward_both_offer_picks() -> void:
+	for path: String in _tres_files(SCENARIO_DIR):
+		var scenario: ScenarioResource = load(path) as ScenarioResource
+		if not scenario:
+			continue
+		for spawn: EnemyStateRewardResource in scenario.starting_enemies:
+			if not _offers_picks(spawn.reward_resource):
+				continue
+			for faction: int in _reachable_factions(spawn.starting_state):
+				assert_false(_offers_picks(scenario.rewards.get(faction)),
+					"%s: %s's reward and faction %s's bounty both offer picks" % [
+						path, spawn.enemy_resource.resource_path.get_file(),
+						ScenarioManager.Faction.keys()[faction]])
+
+
+static func _offers_picks(reward: RewardResource) -> bool:
+	return reward != null and (reward.num_of_rewards > 0 or reward.max_money_pickup > 0)
+
+
+## Every faction a ship can be in, following its state transitions.
+static func _reachable_factions(start: ScenarioShipStateBase) -> Array[int]:
+	var factions: Array[int] = []
+	var seen: Dictionary = {}
+	var pending: Array[ScenarioShipStateBase] = [start]
+	while not pending.is_empty():
+		var state: ScenarioShipStateBase = pending.pop_back()
+		if state == null or seen.has(state):
+			continue
+		seen[state] = true
+		if state is ScenarioShipState:
+			var ship_state: ScenarioShipState = state as ScenarioShipState
+			if ship_state.faction not in factions:
+				factions.append(ship_state.faction)
+			pending.append_array(ship_state.transitions.values())
+		elif state is ScenarioShipStateProbabilityTransition:
+			pending.append_array((state as ScenarioShipStateProbabilityTransition).weighted_probabilities.keys())
+	return factions
