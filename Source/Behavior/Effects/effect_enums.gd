@@ -87,6 +87,9 @@ enum AttributeChangeSubtype {
 	APPLY_STATUS,
 	## Remove the status named by string_param from the targets entirely.
 	CLEAR_STATUS,
+	## The actor takes running_amount credits from the player, or all they
+	## have if that's less. The credits fly from the money counter to the actor.
+	STEAL_MONEY,
 }
 
 
@@ -129,6 +132,8 @@ enum AmountModifierSubtype {
 	SET_TO_DICE_IN_HAND,
 	## Set running_amount to how many dice the first target is holding.
 	SET_TO_TARGET_DICE_HELD,
+	## Set running_amount to a roll from range_min to range_max, inclusive.
+	SET_RANDOM,
 }
 
 

@@ -107,3 +107,17 @@ func test_set_to_target_dice_held_counts_the_first_targets_dice() -> void:
 func test_set_to_target_dice_held_is_zero_without_a_target() -> void:
 	context.running_amount = 9
 	assert_eq(await _apply(Sub.SET_TO_TARGET_DICE_HELD), 0)
+
+
+func test_set_random_stays_inside_its_range() -> void:
+	RNGManager.seed_scenario(11)
+	var data := Effects.data(EffectEnums.Category.AMOUNT_MODIFIER, Sub.SET_RANDOM)
+	data.range_min = 10
+	data.range_max = 18
+	var handler: EffectHandler = EffectRegistry.get_handler(data.category, data.subtype)
+	var seen: Dictionary = {}
+	for i: int in range(200):
+		await handler.apply(data, context, engine)
+		assert_between(context.running_amount, 10, 18)
+		seen[context.running_amount] = true
+	assert_eq(seen.size(), 9, "every value in the range comes up")

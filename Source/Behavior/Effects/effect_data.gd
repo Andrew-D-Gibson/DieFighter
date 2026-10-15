@@ -74,7 +74,8 @@ extends Resource
 
 
 # ── Range Parameters ───────────────────────────────────────────────────────────
-## Used by: ConditionalSubtype.IF_DIE_VALUE_IN_RANGE.
+## Used by: ConditionalSubtype.IF_DIE_VALUE_IN_RANGE, IF_DICE_OWNED_IN_RANGE and
+## AmountModifierSubtype.SET_RANDOM.
 @export var range_min: int = 1
 @export var range_max: int = 6
 

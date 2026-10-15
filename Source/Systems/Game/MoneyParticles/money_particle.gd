@@ -25,6 +25,11 @@ var _current_float_velocity: Vector2
 
 var _floating: bool = true
 
+## A credit that's leaving the player flies to _destination and is gone,
+## rather than flying to the money counter and paying out.
+var _leaving: bool = false
+var _destination: Node2D = null
+
 var textures: Dictionary[money_amount, Texture2D] = {
 	money_amount.SMALL: preload("uid://dhmcum1v58y5h"),
 	money_amount.LARGE: preload("uid://b41a3gdbfjgrk")
@@ -53,17 +58,42 @@ static func spawn_payout(
 	if amount <= 0 or particle_scene == null or not is_instance_valid(parent):
 		return
 
-	var num_of_large_particles: int = floori(float(amount) / money_amount.LARGE)
-	var num_of_small_particles: int = amount % money_amount.LARGE
-
-	for i: int in range(num_of_large_particles + num_of_small_particles):
+	for particle_amount: money_amount in _denominations(amount):
 		var particle: MoneyParticle = particle_scene.instantiate()
-		particle.amount = (
-			money_amount.LARGE if i < num_of_large_particles else money_amount.SMALL
-		)
+		particle.amount = particle_amount
 
 		parent.add_child(particle)
 		particle.global_position = global_pos
+
+
+## The reverse of [method spawn_payout]: [param total] credits burst off the
+## money counter and fly to [param destination]. Purely a picture of the loss,
+## so the caller takes the credits off the balance itself; a coin that never
+## lands (the scenario ends mid-flight) has already been paid.
+static func spawn_loss(
+	parent: Node, destination: Node2D, total: int, particle_scene: PackedScene
+) -> void:
+	if total <= 0 or particle_scene == null or not is_instance_valid(parent) \
+	or not is_instance_valid(Globals.money_indicator):
+		return
+
+	for particle_amount: money_amount in _denominations(total):
+		var particle: MoneyParticle = particle_scene.instantiate()
+		particle.amount = particle_amount
+		particle._leaving = true
+		particle._destination = destination
+		parent.add_child(particle)
+		particle.global_position = Globals.money_indicator.global_position
+
+
+## Large coins first, then small change.
+static func _denominations(total: int) -> Array[money_amount]:
+	var coins: Array[money_amount] = []
+	for i: int in range(floori(float(total) / money_amount.LARGE)):
+		coins.append(money_amount.LARGE)
+	for i: int in range(total % money_amount.LARGE):
+		coins.append(money_amount.SMALL)
+	return coins
 
 
 func _ready() -> void:
@@ -76,6 +106,9 @@ func _process(delta: float) -> void:
 	if _current_time > _time_to_float:
 		if _floating:
 			_floating = false
+			if _leaving:
+				_fly_away()
+				return
 			
 			var tween_time: float = 0.75
 			var tween: Tween = get_tree().create_tween()
@@ -98,6 +131,20 @@ func _process(delta: float) -> void:
 	_current_float_velocity = _starting_float_velocity.lerp(Vector2.ZERO, t)
 
 	
+## A lost credit heads for whoever took it and winks out on arrival. If they're
+## already gone it just fades where it is.
+func _fly_away() -> void:
+	var tween: Tween = get_tree().create_tween()
+	if is_instance_valid(_destination):
+		tween.tween_property(
+			self, "global_position", _destination.global_position, 0.75
+		).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_IN)
+		tween.tween_callback(func() -> void: Events.play_sound.emit(_MONEY_TICK_SFX))
+	else:
+		tween.tween_property(self, "modulate:a", 0.0, 0.3)
+	tween.tween_callback(queue_free)
+
+
 func _set_up_particle() -> void:
 	$Sprite2D.texture = textures[amount]
 	$Area2D/CollisionShape2D.shape.radius = collision_radius[amount]
@@ -118,6 +165,9 @@ func _set_up_float() -> void:
 
 
 func _on_area_2d_area_entered(area: Area2D) -> void:
+	# A lost credit starts on top of the counter; it mustn't pay itself back.
+	if _leaving:
+		return
 	if area.get_parent() == Globals.money_indicator:
 		Globals.player.money += amount
 		

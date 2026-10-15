@@ -81,6 +81,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ADD_OVERCHARGE, label = "Add Overcharge", handler = AddOverchargeHandler},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.APPLY_STATUS, label = "Apply Status", handler = ApplyStatusHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.CLEAR_STATUS, label = "Clear Status", handler = ClearStatusHandler, fields = ["string_param"]},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.STEAL_MONEY, label = "Steal Money", handler = StealMoneyHandler},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
@@ -100,6 +101,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_DICE_OWNED, label = "Set to Dice Owned", handler = SetAmountToDiceOwnedHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_DICE_IN_HAND, label = "Set to Dice in Hand", handler = SetAmountToDiceInHandHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_DICE_HELD, label = "Set to Target Dice Held", handler = SetAmountToTargetDiceHeldHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_RANDOM, label = "Set Random", handler = SetAmountToRandomHandler, fields = ["range_min", "range_max"]},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
