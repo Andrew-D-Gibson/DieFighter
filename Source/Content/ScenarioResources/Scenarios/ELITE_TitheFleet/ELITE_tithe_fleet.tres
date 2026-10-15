@@ -14,9 +14,8 @@
 script = ExtResource("script_2")
 min_money = 35
 max_money = 50
-num_of_rewards = 3
-minimum_rarity = 2
 dice_probability = 0.25
+minimum_rarity = 2
 min_money_pickup = 25
 max_money_pickup = 40
 money_pickup_probability = 0.5

@@ -8,6 +8,14 @@
 [ext_resource type="Resource" uid="uid://c8kw8h1mjtmml" path="res://Source/Content/Enemies/EnemyResources/cannon_drone.tres" id="6_ru81j"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="7_vbqq8"]
 
+[sub_resource type="Resource" id="Resource_bounty"]
+script = ExtResource("1_3d2pu")
+dice_probability = 0.25
+min_money_pickup = 12
+max_money_pickup = 20
+money_pickup_probability = 0.5
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
 [sub_resource type="Resource" id="Resource_xrbtu"]
 script = ExtResource("1_3d2pu")
 min_money = 5
@@ -21,14 +29,6 @@ enemy_resource = ExtResource("6_ru81j")
 starting_state = ExtResource("7_vbqq8")
 reward_resource = SubResource("Resource_xrbtu")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
-
-[sub_resource type="Resource" id="Resource_bounty"]
-script = ExtResource("1_3d2pu")
-dice_probability = 0.25
-min_money_pickup = 12
-max_money_pickup = 20
-money_pickup_probability = 0.5
-metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [resource]
 script = ExtResource("2_qmptm")

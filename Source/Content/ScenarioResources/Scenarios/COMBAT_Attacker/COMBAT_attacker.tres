@@ -8,6 +8,14 @@
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_57squ"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="7_xibkc"]
 
+[sub_resource type="Resource" id="Resource_bounty"]
+script = ExtResource("6_57squ")
+dice_probability = 0.25
+min_money_pickup = 12
+max_money_pickup = 20
+money_pickup_probability = 0.5
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
 [sub_resource type="Resource" id="Resource_vrd8y"]
 script = ExtResource("6_57squ")
 min_money = 1
@@ -21,14 +29,6 @@ enemy_resource = ExtResource("5_xibkc")
 starting_state = ExtResource("7_xibkc")
 reward_resource = SubResource("Resource_vrd8y")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
-
-[sub_resource type="Resource" id="Resource_bounty"]
-script = ExtResource("6_57squ")
-dice_probability = 0.25
-min_money_pickup = 12
-max_money_pickup = 20
-money_pickup_probability = 0.5
-metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [resource]
 script = ExtResource("1_n0owd")

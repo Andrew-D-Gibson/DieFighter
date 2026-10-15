@@ -43,7 +43,6 @@
 [ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
 [ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
 [ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="67_1kud3"]
-[ext_resource type="Resource" uid="uid://opnsaw6rik7t" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="75_imw1m"]
 [ext_resource type="Resource" uid="uid://v82d83vwmjmq" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheCollector/COMBAT_tithe_collector.tres" id="80_tithe"]
 [ext_resource type="Resource" uid="uid://1afnq5aul5tn" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_IonLances/COMBAT_ion_lances.tres" id="81_ion"]
 [ext_resource type="Resource" uid="uid://s3hfdf1gooad" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheEscort/COMBAT_tithe_escort.tres" id="82_escort"]
@@ -384,7 +383,7 @@ question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), Ex
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter")])
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
-starting_scenario = ExtResource("75_imw1m")
+starting_scenario = ExtResource("87_toll")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]
 unique_name_in_owner = true
