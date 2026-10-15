@@ -10,6 +10,19 @@ extends Node2D
 
 var countdown_tick_duration: float = 0.03 
 
+## The change label floats over whatever is behind the cockpit, so it carries a
+## dark 1px outline. Built from offset copies: the font's MSDF outline comes out
+## soft and patchy at this size.
+const _OUTLINE_COLOR: Color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+const _OUTLINE_OFFSETS: Array[Vector2] = [
+	Vector2(-1, -1), Vector2(0, -1), Vector2(1, -1),
+	Vector2(-1, 0), Vector2(1, 0),
+	Vector2(-1, 1), Vector2(0, 1), Vector2(1, 1),
+]
+## Hotter than the palette red, which sinks into the dark sky.
+const _LOSS_COLOR: Color = Color(1.0, 0.301961, 0.427451, 1)
+var _change_outline_labels: Array[RichTextLabel] = []
+
 var total_change: int = 0
 var grace_timer: Timer
 var countdown_tween: Tween
@@ -18,6 +31,7 @@ func _ready() -> void:
 	Globals.money_indicator = self
 	
 	_update_money_display(0)
+	_build_change_outline()
 	
 	# Initialize the grace period timer
 	grace_timer = Timer.new()
@@ -67,14 +81,15 @@ func _on_grace_period_expired() -> void:
 func _show_change_label(change: int) -> void:
 	money_change_label.visible = true
 	
+	# Undo the previous countdown's fade-out.
+	money_change_label.modulate.a = 1.0
 	if change > 0:
-		money_change_label.text = "+" + str(change)
-		money_change_label.modulate = Globals.green
+		money_change_label.add_theme_color_override("default_color", Globals.green)
 	elif change < 0:
-		money_change_label.text = str(change)
-		money_change_label.modulate = Globals.red
+		money_change_label.add_theme_color_override("default_color", _LOSS_COLOR)
 	else:
 		money_change_label.visible = false
+	_update_change_display(change)
 
 
 func _start_countdown_animation() -> void:
@@ -126,12 +141,31 @@ func _start_countdown_animation() -> void:
 
 
 func _update_change_display(value: int) -> void:
+	var text: String = ""
 	if value > 0:
-		money_change_label.text = "+" + str(value)
+		text = "+" + str(value)
 	elif value < 0:
-		money_change_label.text = str(value)
-	else:
-		money_change_label.text = ""
+		text = str(value)
+	money_change_label.text = text
+	for outline_label: RichTextLabel in _change_outline_labels:
+		outline_label.text = text
+
+
+## Children of the change label, so they share its visibility and fade.
+func _build_change_outline() -> void:
+	# The outline pokes a pixel past the label's rect.
+	money_change_label.clip_contents = false
+	# Duplicate them all before attaching any, or each copy also clones the
+	# outline labels already attached.
+	for offset: Vector2 in _OUTLINE_OFFSETS:
+		var outline_label: RichTextLabel = money_change_label.duplicate() as RichTextLabel
+		outline_label.visible = true
+		outline_label.show_behind_parent = true
+		outline_label.position = offset
+		outline_label.add_theme_color_override("default_color", _OUTLINE_COLOR)
+		_change_outline_labels.append(outline_label)
+	for outline_label: RichTextLabel in _change_outline_labels:
+		money_change_label.add_child(outline_label)
 
 
 func _update_money_display(value: int) -> void:
