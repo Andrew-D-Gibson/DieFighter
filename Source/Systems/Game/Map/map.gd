@@ -75,7 +75,7 @@ var _hover_tweens: Array[Tween] = []
 ## The jump's destination throbs, bigger and quicker than the player's own
 ## marker, so it reads as the target and not just another hovered icon.
 const _TARGET_PULSE_SCALE: float = 1.5
-const _TARGET_PULSE_TIME: float = 0.25
+const _TARGET_PULSE_TIME: float = 0.75
 ## How long the map lingers on the destination before the drive spools up.
 const _JUMP_TARGET_HOLD_TIME: float = 1.0
 const _JUMPING_TEXT: String = "Jumping..."

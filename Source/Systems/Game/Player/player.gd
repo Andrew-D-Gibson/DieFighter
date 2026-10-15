@@ -115,7 +115,7 @@ var _first_turn_announced: bool = false
 var _jump_activator: Dice = null
 
 ## How far the dice jolt, in pixels, at the peak of a jump's run-up.
-const _JUMP_RATTLE_STRENGTH: float = 2.0
+const _JUMP_RATTLE_STRENGTH: float = 1.2
 
 var money: int:
 	set(value):
