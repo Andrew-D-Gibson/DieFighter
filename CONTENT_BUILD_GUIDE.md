@@ -298,6 +298,7 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
 | 7 | `PLAYER_TOOK_REWARD_TILE` |
 | 8 | `PLAYER_TOOK_REWARD_MONEY` |
 | 9 | `PIRATE_ATTACKED_CIVILIAN` |
+| 10 | `PLAYER_COULDNT_PAY` (a STEAL_MONEY came up short) |
 
 - For a random branch, point a transition at a
   `ScenarioShipStateProbabilityTransition` (`weighted_probabilities`).
