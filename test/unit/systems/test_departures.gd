@@ -10,6 +10,7 @@ const COMPUTER_SCENE: PackedScene = preload("res://Source/Systems/Game/Targeting
 const GATE_SCENE: PackedScene = preload("res://Source/Systems/Game/JumpGate/jump_gate.tscn")
 const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 const INTERCEPTOR: EnemyResource = preload("res://Source/Content/Enemies/EnemyResources/interceptor.tres")
+const ATTACK_PLAYER: EnemyActionResource = preload("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres")
 
 var player: Player
 
@@ -144,6 +145,45 @@ func test_the_last_ship_to_flee_gives_its_dice_back_to_the_player() -> void:
 	assert_has(player.dice_manager.queue, held)
 	assert_has(player.dice_manager.queue, spending)
 	assert_eq(player.dice_manager.queue.count(spending), 1)
+
+
+func test_a_ship_killed_mid_handover_passes_on_the_die_it_was_spending() -> void:
+	Globals.enemy_manager = autofree(EnemyManager.new())
+	Globals.targeting_computer = add_child_autofree(COMPUTER_SCENE.instantiate())
+	var ship: Enemy = _ship()
+	var other: Enemy = _ship()
+	Globals.enemy_manager.enemies = [ship, other] as Array[Enemy]
+	var spending: Dice = _die(6)
+	ship.dice_manager.add(spending)
+	var next_up: Dice = _die(3)
+	ship.dice_manager.add(next_up)
+
+	var action: EnemyActionEvent = EnemyActionEvent.new()
+	action.enemy = ship
+	action.activator_die = spending
+	action.die_value = spending.value
+	action.action = ATTACK_PLAYER
+	var later: EnemyActionEvent = EnemyActionEvent.new()
+	later.enemy = ship
+	later.activator_die = next_up
+	later.die_value = next_up.value
+	later.action = ATTACK_PLAYER
+	watch_signals(Events)
+	action.resolve(null)
+
+	# Killed while the die is still flying out in front of the hull.
+	ship.health.change_health(-ship.health.health)
+
+	assert_eq(spending.host_queue, other.dice_manager)
+	assert_eq(next_up.host_queue, other.dice_manager)
+	assert_false(ship.spending_tween.is_running(), "it stops pulling the die back")
+
+	# The die it was due to spend next is someone else's now.
+	later.resolve(null)
+	await wait_seconds(1.5)
+	assert_signal_not_emitted(Events, "enemy_acted", "a dead ship doesn't act")
+	assert_has(other.dice_manager.queue, spending)
+	assert_has(other.dice_manager.queue, next_up)
 
 
 func test_an_escaping_ship_takes_its_dice_and_the_one_it_was_spending() -> void:

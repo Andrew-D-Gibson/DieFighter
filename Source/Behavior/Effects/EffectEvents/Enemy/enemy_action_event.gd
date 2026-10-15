@@ -30,7 +30,9 @@ var relay_visited: Array[Node] = []
 
 
 func resolve(engine: ScenarioEngine) -> void:
-	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
+	# Also covers a die queued for this turn that the ship gave away when it
+	# died before reaching it.
+	if not _can_still_act():
 		return
 
 	Globals.targeting_computer.target_enemy(enemy)
@@ -69,18 +71,20 @@ func resolve(engine: ScenarioEngine) -> void:
 	activator_die.rotation = wrapf(activator_die.rotation, -PI, PI)
 	tween.parallel().tween_property(activator_die, "rotation", 0.0, adjusted_tween_time) \
 		.set_ease(Tween.EASE_OUT)
+	enemy.spending_die = activator_die as Dice
+	enemy.spending_tween = tween
 	await tween.finished
 	
 	# The ship can be freed while its die is in flight — fleeing with dice
 	# still queued, or killed by something that resolved in the meantime.
-	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
+	if not _can_still_act():
 		return
 		
 	await enemy.get_tree().create_timer(
 		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight)
 	).timeout
 
-	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
+	if not _can_still_act():
 		return
 	
 	# The ship rears as it commits and the die kicks, so the action reads as
@@ -116,3 +120,11 @@ func resolve(engine: ScenarioEngine) -> void:
 	# picks them up automatically because they're appended to the same event_queue.
 	if action.effect_chain:
 		await action.effect_chain.play(context, engine)
+
+
+## A ship killed while its die was in flight is still a valid node through its
+## death animation, but it has already handed the die on and must not act.
+func _can_still_act() -> bool:
+	if not is_instance_valid(enemy) or not is_instance_valid(activator_die):
+		return false
+	return enemy.health.health > 0 and (activator_die as Dice).host_queue == enemy.dice_manager

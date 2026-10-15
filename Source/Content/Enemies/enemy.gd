@@ -54,6 +54,14 @@ var turns_alive: int = 0
 ## EnemyActionOptionResource.fills_kept_faces). Cleared when it next acts.
 var kept_dice: Array[Dice] = []
 
+## The die this ship has taken out of its queue to spend, and the tween
+## carrying it out in front of the hull. Set by EnemyActionEvent. Out of the
+## queue, the die would be missed if the ship died with it in hand, so death
+## hands it on along with the rest. Left stale afterwards on purpose:
+## give_away_dice() ignores a die that has since gone to someone else.
+var spending_die: Dice = null
+var spending_tween: Tween = null
+
 ## How many ships of this enemy's own faction have died since it arrived.
 ## Drives PoolSelection.SQUAD_LOSSES.
 var squad_losses: int = 0
@@ -212,7 +220,12 @@ func _on_death() -> void:
 	# drives PIRATES_DEFEATED / COMBAT_ENDED, and a corpse still subscribed
 	# would change state and queue its on-enter effects mid death animation.
 	disconnect_scenario_signals()
-	dice_manager.give_away_dice()
+	# Finish the die's trip out in front of the hull at once, so the handover
+	# tween stops pulling it back here while it flies to its new holder.
+	# Stepped rather than killed: EnemyActionEvent is awaiting its finish.
+	if spending_tween and spending_tween.is_running():
+		spending_tween.custom_step(1000.0)
+	dice_manager.give_away_dice(spending_die)
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
 	Events.play_sound.emit(_PRE_DEATH_SFX)
