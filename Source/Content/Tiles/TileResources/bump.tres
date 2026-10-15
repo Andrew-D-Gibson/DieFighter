@@ -19,17 +19,9 @@ type = 1
 acceptable_values = Array[int]([1, 2, 3, 4, 5])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
-[sub_resource type="Resource" id="Resource_f3imi"]
-script = ExtResource("9_u271i")
-category = 2
-subtype = 6
-amount = 1
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_4ge7v"]
 script = ExtResource("9_u271i")
 category = 2
-subtype = 1
 amount = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -37,14 +29,6 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("9_u271i")
 category = 4
 subtype = 22
-color = Color(0.4784, 0.7412, 0.2, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("9_u271i")
-category = 4
-subtype = 16
-string_param = "+1"
 color = Color(0.4784, 0.7412, 0.2, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -58,6 +42,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_1kud3"]
 script = ExtResource("9_u271i")
 category = 3
+subtype = 16
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_xliol"]
@@ -68,7 +53,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_j3pel"]
 script = ExtResource("10_pmkt1")
-effects = Array[ExtResource("9_u271i")]([SubResource("Resource_f3imi"), SubResource("Resource_4ge7v"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_1kprn"), SubResource("Resource_1kud3"), SubResource("Resource_xliol")])
+effects = Array[ExtResource("9_u271i")]([SubResource("Resource_4ge7v"), SubResource("Resource_juice_1"), SubResource("Resource_1kprn"), SubResource("Resource_1kud3"), SubResource("Resource_xliol")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_gm6wk"]

@@ -160,6 +160,10 @@ enum DiceControlSubtype {
 	## Flip every 1 to a 6 and every 6 to a 1 among the dice the targets are
 	## holding.
 	FLIP_TARGETS_ONES_AND_SIXES,
+	## Raise the activator die's face by running_amount, capped at 6. Unlike
+	## CHANGE_ACTIVATOR_VALUE the amount is the step, not the face, so an
+	## Amplifier on the tile grows the step.
+	ADD_TO_ACTIVATOR_VALUE,
 }
 
 
