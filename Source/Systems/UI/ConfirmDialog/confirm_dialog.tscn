@@ -72,7 +72,7 @@ alignment = 1
 
 [node name="ConfirmButton" parent="HBoxContainer" instance=ExtResource("2_button")]
 layout_mode = 2
-hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+hover_text_color = Color(0.478431, 0.741176, 0.2, 1)
 
 [node name="AnimatedSprite2D" parent="HBoxContainer/ConfirmButton" index="0"]
 sprite_frames = SubResource("SpriteFrames_green")
