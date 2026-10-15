@@ -24,7 +24,7 @@ var min_ship_gap: float = 8.0
 
 ## The stretch of screen a ship's speech box may use. Wider than
 ## [member usable_span]: a ship has to stand clear of the screen edge so its
-## health bar stays visible, but its speech can run right up to it.
+## health bar stays visible, but its speech only has to keep off the very edge.
 var speech_span: Vector2 = Vector2(0.0, 320.0)
 
 ## How much more room the left side needs before a speech box moves there. The

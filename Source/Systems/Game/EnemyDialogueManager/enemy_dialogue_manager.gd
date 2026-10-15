@@ -38,6 +38,12 @@ var anchor: Vector2 = Vector2.ZERO:
 @export var left_clearance: float = 16.0
 @export var right_clearance: float = 14.0
 
+## How far the box may tuck in toward the ship, past [member anchor], when it
+## would otherwise run out of room: off the screen edge or into a neighbour's
+## speech. Its tail then overlaps the hull a little, which reads better than
+## a box jammed against the edge of the screen.
+@export var max_tuck: float = 8.0
+
 ## Whether the box is on the ship's left, mirrored so its tail still points
 ## back at the ship. See [method point].
 var points_left: bool = false
@@ -46,8 +52,8 @@ var points_left: bool = false
 var _box_x: float
 var _text_x: float
 
-## How far past [member anchor] the box currently sits. See
-## [member left_clearance].
+## How far past [member anchor] the box currently sits; negative when it is
+## tucked in. See [member left_clearance] and [member max_tuck].
 var _shift: float = 0.0
 
 ## Set once the player jumps away from this ship; it never speaks again.
@@ -169,7 +175,7 @@ func point(left: bool, room: float) -> void:
 	_shift = 0.0
 	if is_node_ready():
 		var clearance: float = left_clearance if left else right_clearance
-		_shift = clampf(room - _reach(), 0.0, clearance)
+		_shift = clampf(room - _reach(), -max_tuck, clearance)
 	_apply_side()
 
 

@@ -23,6 +23,10 @@ var enemies: Array[Enemy]
 ## Narrowest gap between two ships' footprints. See [member EnemyFormation.min_ship_gap].
 @export var formation_min_gap: float = 8.0
 
+## How far speech boxes keep from the screen edges. A box flush against the
+## edge reads as cut off.
+@export var speech_edge_margin: float = 8.0
+
 ## How long a ship takes to slide to a new spot when the formation changes.
 @export var reflow_time: float = 0.75
 
@@ -502,7 +506,10 @@ func _build_path_sample_table() -> void:
 		_path_x_samples[-1] - formation_edge_margin
 	)
 	formation.min_ship_gap = formation_min_gap
-	formation.speech_span = Vector2(0.0, Globals.SCREEN_SIZE.x)
+	formation.speech_span = Vector2(
+		speech_edge_margin,
+		Globals.SCREEN_SIZE.x - speech_edge_margin
+	)
 
 
 ## The point along the path that sits at screen x [param target_x].
