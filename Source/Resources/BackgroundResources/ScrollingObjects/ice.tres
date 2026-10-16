@@ -19,4 +19,3 @@ large_pieces = Array[PackedScene]([ExtResource("1_6gcua"), ExtResource("2_5uqr1"
 keep_texture_colors = true
 base_visibility = 0.35
 visibility_per_depth = 0.16
-random_quarter_turns = false
