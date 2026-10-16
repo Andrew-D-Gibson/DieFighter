@@ -62,9 +62,22 @@ registration to testing. For how the systems work underneath, see
   beside it).
   - Colour by role: Red attack, Blue defence, Green die tricks/movement,
     Purple engine, Yellow support/buffs.
-  - Tiles are 24×24. A limited-use tile can be a horizontal strip
-    (`<name>-Sheet.png`): frame *k* shows while *k* uses remain, and frame 0
-    is used up. A single frame is fine too.
+  - Tiles are 24×24. An unlimited tile is a single frame, `<name>.png`.
+  - **A limited-use tile must show its uses.** It is a horizontal strip,
+    `<name>-Sheet.png`, of `uses_per_turn + 1` frames. `Tile` shows frame
+    `uses_remaining`, so frame *k* has *k* white lights lit and frame 0 has
+    none. Bump is the reference. The lights are 2×2 slots on the right edge
+    of the lower panel, stacked up from the bottom, lit `#cef0f1` and unlit
+    `#070326`, outlined in the tile's own border colour. There is room for
+    three, so uses top out at 3.
+  - Don't draw the lights by hand. Draw the tile as one frame, then run
+    `tools/add_use_lights.lua` (usage at the top of the script). It turns the
+    `.aseprite` into the frames and exports the sheet. Then import
+    (`Godot --headless --path . --import`) to get the sheet's uid, and
+    `git rm` the old single-frame png and its `.import`.
+  - If a tile's uses change later, rebuild its sheet from the single-frame
+    art (`git show` the old png, or frame 0 with the lights painted out). The
+    script refuses an already-multi-frame file.
 - Resource: `Source/Content/Tiles/TileResources/<name>.tres` (a
   `TileResource`). It must sit **directly** in that folder, not in a
   subfolder.
@@ -84,9 +97,13 @@ registration to testing. For how the systems work underneath, see
 - **`rarity`** sets both drop weight (COMMON 1.0 / UNCOMMON 0.45 / RARE 0.18)
   and shop price.
 - **`textures`**: a SpriteFrames whose `default` animation holds AtlasTexture
-  frames cut from the png (24×24 regions).
+  frames cut from the png (24×24 regions). A limited tile lists one
+  AtlasTexture per sheet frame, in order: `Rect2(0, 0, 24, 24)`,
+  `Rect2(24, 0, 24, 24)`, ... The frame count must equal
+  `uses_per_turn + 1`, otherwise the lights show the wrong count.
 - **`uses_per_turn`**: -1 for unlimited. Uses are a per-turn budget. Strong
-  payoffs should cost something else (charge, hull, a die).
+  payoffs should cost something else (charge, hull, a die). Changing it
+  means rebuilding the sheet (see Art above).
 - **`activation_checks`**: `ActivationResource`s, e.g. `REQUIRES_ACTIVATOR_DIE`,
   `VALUE` with `acceptable_values`, `IN_COMBAT`, `SHIP_TARGETED`,
   `CHARGE_AT_LEAST`. A refused die goes back to the hand.
@@ -106,6 +123,11 @@ registration to testing. For how the systems work underneath, see
 **Loop rule for Feed tiles:** a tile with unlimited uses may only Feed
 **right**. Feeding up, down, left or randomly needs limited uses, so every loop
 on the grid runs dry.
+
+**Relays are always limited, to 1 or 2 uses.** A relay takes any die, acts and
+Feeds it on, so with unlimited uses one die chains through every relay for
+free. Use 2 for modest effects (Signal, Surge, Toll, Afterburner Relay, and
+Relay Terminal) and 1 for the biggest per-die hit (Leech Relay).
 
 **Test:** run the game, open the dev console with `` ` ``, then `give_tile <name>`.
 `set_dice 1 2 3`, `reset_uses` and `charge_engines` help set up a case.

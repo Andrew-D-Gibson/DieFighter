@@ -105,3 +105,10 @@ If a method, property, or signal can't be confirmed via `godot_game_get_node_inf
 say so explicitly rather than guessing at a plausible-sounding API. Flag it as
 "unconfirmed for 4.8dev" and propose the concrete verification step needed, rather
 than writing code against an assumed signature.
+## DieFighter-specific
+- Before adding or changing tiles, enemies or other content, read
+  `CONTENT_BUILD_GUIDE.md` for the workflow. In particular, §1 Tiles:
+  - Every limited-use tile needs indicator-light frames
+    (`uses_per_turn + 1` frames, built with `tools/add_use_lights.lua`, never
+    hand-drawn).
+  - Relays are always limited to 1-2 uses.
