@@ -94,3 +94,10 @@ func test_assigning_health_revives_so_it_can_die_again() -> void:
 	assert_false(health.is_dead)
 	health.take_damage(99)
 	assert_signal_emit_count(health, "death", 2)
+
+
+func test_gaining_zero_shields_is_not_a_hit() -> void:
+	health.change_shields(0)
+	assert_eq(health.shields, 3)
+	assert_signal_not_emitted(health, "shields_damaged")
+	assert_signal_not_emitted(health, "shields_reinforced")

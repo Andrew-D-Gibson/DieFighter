@@ -22,6 +22,9 @@ enum EventType {
 	## included. The wider net, for tiles that should catch every hop of a
 	## chain winding past them.
 	ON_SURROUNDING_TILE_ACTIVATED,
+	## The player gained shields, from any source. The hook for tiles that
+	## turn bracing into pressure.
+	ON_PLAYER_SHIELDS_GAINED,
 	ON_PLAYER_FATAL_DAMAGE = 100,
 }
 

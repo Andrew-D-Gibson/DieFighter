@@ -102,6 +102,9 @@ func _connect_tile_event_signals() -> void:
 	Events.engine_charge_drained.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_ENGINE_CHARGE_DRAINED)
 	)
+	Events.player_shields_gained.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_SHIELDS_GAINED)
+	)
 	Events.player_fatal_damage.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE)
 	)

@@ -20,6 +20,9 @@ enum ActivationType {
 	OVERCHARGED,
 	## The player owns [member threshold] dice or fewer, holograms included.
 	DICE_OWNED_AT_MOST,
+	## The player has [member threshold] shields or more. Gates tiles that
+	## spend or cash in shields, so they refuse rather than fire for nothing.
+	SHIELDS_AT_LEAST,
 }
 
 @export var type: ActivationType
@@ -28,7 +31,7 @@ enum ActivationType {
 # VALUE activation values
 @export var acceptable_values: Array[int]
 
-# CHARGE_AT_LEAST / DICE_OWNED_AT_MOST activation values
+# CHARGE_AT_LEAST / DICE_OWNED_AT_MOST / SHIELDS_AT_LEAST activation values
 @export var threshold: int = 0
 
 
@@ -122,6 +125,13 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 
 			return Globals.player.dice_owned() <= threshold,
+
+	ActivationType.SHIELDS_AT_LEAST:
+		func(_die: Dice) -> bool:
+			if not Globals.player:
+				return false
+
+			return Globals.player.health.shields >= threshold,
 }
 
 
@@ -165,6 +175,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.DICE_OWNED_AT_MOST:
 		"TOO MANY DICE",
+
+	ActivationType.SHIELDS_AT_LEAST:
+		"NOT ENOUGH SHIELDS",
 }
 
 

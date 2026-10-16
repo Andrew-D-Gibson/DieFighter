@@ -81,6 +81,10 @@ func change_health(amount: int) -> void:
 	
 	
 func change_shields(amount: int) -> void:
+	# A tile that scales to nothing (Solar Sail boxed in) gains 0. Without this
+	# it would fall through to the damage branch and read as a hit.
+	if amount == 0:
+		return
 	var had_shields: bool = shields > 0
 
 	shields += amount

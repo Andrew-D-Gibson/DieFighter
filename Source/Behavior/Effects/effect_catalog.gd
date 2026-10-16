@@ -82,6 +82,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.APPLY_STATUS, label = "Apply Status", handler = ApplyStatusHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.CLEAR_STATUS, label = "Clear Status", handler = ClearStatusHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.STEAL_MONEY, label = "Steal Money", handler = StealMoneyHandler},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SPEND_SHIELDS, label = "Spend Shields", handler = SpendShieldsHandler, fields = ["amount"]},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
@@ -102,6 +103,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_DICE_IN_HAND, label = "Set to Dice in Hand", handler = SetAmountToDiceInHandHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_DICE_HELD, label = "Set to Target Dice Held", handler = SetAmountToTargetDiceHeldHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_RANDOM, label = "Set Random", handler = SetAmountToRandomHandler, fields = ["range_min", "range_max"]},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_SHIELDS, label = "Set to Target Shields", handler = SetAmountToTargetShieldsHandler},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
@@ -183,6 +185,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE, label = "If Source Holds Die", handler = ConditionalHandler},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS, label = "If Target Has Status", handler = ConditionalHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_DICE_OWNED_IN_RANGE, label = "If Dice Owned in Range", handler = ConditionalHandler, fields = ["range_min", "range_max"]},
+	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_IN_COMBAT, label = "If In Combat", handler = ConditionalHandler},
 
 	# ── REPETITION ────────────────────────────────────────────────
 	{category = EffectEnums.Category.REPETITION, subtype = EffectEnums.RepetitionSubtype.ADD_REPETITIONS, label = "Add Repetitions", handler = AddRepetitionsHandler},

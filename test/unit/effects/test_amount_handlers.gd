@@ -121,3 +121,16 @@ func test_set_random_stays_inside_its_range() -> void:
 		assert_between(context.running_amount, 10, 18)
 		seen[context.running_amount] = true
 	assert_eq(seen.size(), 9, "every value in the range comes up")
+
+
+func test_set_to_target_shields_reads_the_first_target() -> void:
+	var shielded := make_player()
+	shielded.health = add_child_autofree(Health.new())
+	shielded.health.shields = 7
+	context.targets = [shielded, make_player()]
+	assert_eq(await _apply(Sub.SET_TO_TARGET_SHIELDS), 7)
+
+
+func test_set_to_target_shields_is_zero_without_a_target() -> void:
+	context.running_amount = 9
+	assert_eq(await _apply(Sub.SET_TO_TARGET_SHIELDS), 0)

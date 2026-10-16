@@ -55,6 +55,9 @@ signal player_shields_hit()
 ## The player's shields just dropped to zero. Worth its own signal — going from
 ## protected to exposed is a bigger moment than any single point of chip damage.
 signal player_shields_broken()
+## The player's shields just went up. Spending them isn't the reverse of this;
+## it isn't a hit either (see SpendShieldsEvent).
+signal player_shields_gained()
 signal engine_charge_changed()
 ## An enemy just siphoned engine charge away. Distinct from
 ## engine_charge_changed because losing charge to theft is a different

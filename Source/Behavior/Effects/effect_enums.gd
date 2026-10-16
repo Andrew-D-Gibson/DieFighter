@@ -90,6 +90,10 @@ enum AttributeChangeSubtype {
 	## The actor takes running_amount credits from the player, or all they
 	## have if that's less. The credits fly from the money counter to the actor.
 	STEAL_MONEY,
+	## Spend the player's shields as a cost: amount when authored, else
+	## running_amount. Unlike a negative SHIELD this isn't a hit, so it plays
+	## no hit feedback and doesn't count as the shields taking damage.
+	SPEND_SHIELDS,
 }
 
 
@@ -134,6 +138,8 @@ enum AmountModifierSubtype {
 	SET_TO_TARGET_DICE_HELD,
 	## Set running_amount to a roll from range_min to range_max, inclusive.
 	SET_RANDOM,
+	## Set running_amount to the first target's shields (0 without a target).
+	SET_TO_TARGET_SHIELDS,
 }
 
 
@@ -256,6 +262,10 @@ enum ConditionalSubtype {
 	IF_SOURCE_HOLDS_DIE, ## True if the source tile is holding a die other than the activator
 	IF_TARGET_HAS_STATUS, ## True if the first target has the status named by string_param
 	IF_DICE_OWNED_IN_RANGE, ## True if the player owns between min and max dice (inclusive), holograms included
+	## True while a fight is on. Event responses skip activation checks, so a
+	## passive that lashes out at a random enemy guards with this; outside
+	## combat that "enemy" could be a merchant.
+	IF_IN_COMBAT,
 }
 
 

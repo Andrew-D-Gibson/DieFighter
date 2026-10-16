@@ -67,6 +67,10 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext, en
 			return not context.targets.is_empty() and is_instance_valid(context.targets[0]) \
 				and engine.find_status(context.targets[0], StringName(data.string_param)) != null
 
+		EffectEnums.ConditionalSubtype.IF_IN_COMBAT:
+			return Globals.state_manager != null \
+				and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
+
 		_:
 			push_error("ConditionalHandler: unhandled subtype %d" % data.subtype)
 			return false

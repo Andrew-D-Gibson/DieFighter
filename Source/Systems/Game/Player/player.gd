@@ -146,6 +146,7 @@ func _ready() -> void:
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
 	health.shields_broken.connect(Events.player_shields_broken.emit)
+	health.shields_reinforced.connect(Events.player_shields_gained.emit)
 	health.fatal_damage.connect(Events.player_fatal_damage.emit)
 	
 	health.health_damaged.connect(func() -> void:

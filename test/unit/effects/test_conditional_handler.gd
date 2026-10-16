@@ -133,3 +133,13 @@ func test_if_dice_owned_in_range_is_false_without_a_player() -> void:
 	var cond := _cond(Cond.IF_DICE_OWNED_IN_RANGE)
 	cond.range_max = 99
 	assert_eq(await _branch_taken(cond), FALSE_BRANCH)
+
+
+func test_if_in_combat_reads_the_game_state() -> void:
+	var manager: GameStateManager = autofree(GameStateManager.new())
+	Globals.state_manager = manager
+	assert_eq(await _branch_taken(_cond(Cond.IF_IN_COMBAT)), FALSE_BRANCH)
+	manager.state = GameStateManager.GameState.IN_COMBAT
+	assert_eq(await _branch_taken(_cond(Cond.IF_IN_COMBAT)), TRUE_BRANCH)
+	Globals.state_manager = null
+	assert_eq(await _branch_taken(_cond(Cond.IF_IN_COMBAT)), FALSE_BRANCH)

@@ -21,3 +21,14 @@ func test_dice_owned_at_most_is_inclusive() -> void:
 func test_dice_owned_at_most_refuses_without_a_player() -> void:
 	Globals.player = null
 	assert_false(_check(ActivationResource.ActivationType.DICE_OWNED_AT_MOST, 99).criteria_satisfied(null))
+
+
+func test_shields_at_least_is_inclusive() -> void:
+	var check := _check(ActivationResource.ActivationType.SHIELDS_AT_LEAST, 1)
+	var player := make_player()
+	player.health = add_child_autofree(Health.new())
+	Globals.player = player
+	assert_false(check.criteria_satisfied(null), "no shields, nothing to cash in")
+	player.health.shields = 1
+	assert_true(check.criteria_satisfied(null))
+	assert_eq(check.get_criteria_fail_text(), "NOT ENOUGH SHIELDS")
