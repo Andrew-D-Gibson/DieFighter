@@ -57,9 +57,9 @@ const _SEAM_SHADER: Shader = preload("res://Assets/Shaders/fate_seam.gdshader")
 ## The corrupted and danger zones each stop this far short of their shared
 ## border; the animated seam fills the gap. Leaves room for the wave to swing.
 const _SEAM_HALF_WIDTH: int = 3
-## A one-tile danger column with the dashed border on both sides, built from
-## danger_area on first use. See _stray_danger_texture().
-var _stray_danger_tex: Texture2D
+## Danger blocks with the dashed border on both sides, keyed by width in
+## tiles, built from danger_area on first use. See _stray_danger_texture().
+var _stray_danger_texs: Dictionary[int, Texture2D] = {}
 var _seam_tex: Texture2D
 
 ## The player's marker breathes between these scales so it's easy to find.
@@ -474,7 +474,11 @@ func _update_map_sprites() -> void:
 	map_viewport.add_child(left_fate_background)
 	
 	
-	# Show and move the danger area as needed
+	# Show and move the danger area as needed. Stray tiles get the same red, so
+	# red always means "corrupted on the next jump", wherever on the map it
+	# shows up; each run of neighbouring red tiles is one block, so no border
+	# splits them.
+	var danger_runs: Array[Vector2i] = _danger_runs()
 	var left_danger: Sprite2D = Sprite2D.new()
 	_danger_sprite = left_danger
 
@@ -482,8 +486,10 @@ func _update_map_sprites() -> void:
 	# zero-width slice isn't a texture.
 	var fate_border_x: float = sprite_spacing * (left_fate_index + 0.5)
 	if left_scenarios_in_danger > 0:
+		# The zone is the run touching Fate, strays that join it included.
+		var zone: Vector2i = danger_runs.pop_front()
 		left_danger.texture = Utils.slice_texture_right(
-			danger_area, left_scenarios_in_danger * sprite_spacing - _SEAM_HALF_WIDTH
+			danger_area, (zone.y - zone.x + 1) * sprite_spacing - _SEAM_HALF_WIDTH
 		)
 	left_danger.centered = false
 	left_danger.position = Vector2(fate_border_x + _SEAM_HALF_WIDTH, -21)
@@ -493,20 +499,11 @@ func _update_map_sprites() -> void:
 
 	map_viewport.add_child(_make_fate_seam(fate_border_x))
 
-	# Stray tiles get the same red column as the danger zone, so red always
-	# means "corrupted on the next jump", wherever on the map it shows up.
-	for idx: int in stray_danger_indices:
-		if scenario_list[idx].sector_gate_scenario:
-			continue
+	for run: Vector2i in danger_runs:
 		var stray_danger: Sprite2D = Sprite2D.new()
-		# A red neighbour already draws the border between them; doubling it
-		# would read as a thick line.
-		if _is_in_danger(idx - 1):
-			stray_danger.texture = Utils.slice_texture_right(danger_area, sprite_spacing)
-		else:
-			stray_danger.texture = _stray_danger_texture()
+		stray_danger.texture = _stray_danger_texture(run.y - run.x + 1)
 		stray_danger.centered = false
-		stray_danger.position = Vector2(sprite_spacing * (idx - 0.5), -21)
+		stray_danger.position = Vector2(sprite_spacing * (run.x - 0.5), -21)
 		stray_danger.z_index = -2
 		map_viewport.add_child(stray_danger)
 	
@@ -582,19 +579,33 @@ func _make_fate_seam(border_x: float) -> Sprite2D:
 	return seam
 
 
-## danger_area's border only ever needed to sit on the zone's right edge. A
-## lone stray column wants it on both sides, so copy that edge onto the left.
-func _stray_danger_texture() -> Texture2D:
-	if _stray_danger_tex:
-		return _stray_danger_tex
+## Every tile in danger, grouped into runs of neighbours as [first, last]
+## scenario indices, left to right.
+func _danger_runs() -> Array[Vector2i]:
+	var runs: Array[Vector2i] = []
+	for idx: int in range(left_fate_index + 1, len(scenario_list)):
+		if not _is_in_danger(idx):
+			continue
+		if not runs.is_empty() and runs.back().y == idx - 1:
+			runs[-1] = Vector2i(runs.back().x, idx)
+		else:
+			runs.append(Vector2i(idx, idx))
+	return runs
 
-	var column: Image = Utils.slice_texture_right(danger_area, sprite_spacing).get_image()
-	column.decompress()
-	var edge_x: int = column.get_width() - 1
-	for y: int in range(column.get_height()):
-		column.set_pixel(0, y, column.get_pixel(edge_x, y))
-	_stray_danger_tex = ImageTexture.create_from_image(column)
-	return _stray_danger_tex
+
+## danger_area's border only ever needed to sit on the zone's right edge. A
+## block of stray tiles wants it on both sides, so copy that edge onto the left.
+func _stray_danger_texture(tile_count: int) -> Texture2D:
+	if _stray_danger_texs.has(tile_count):
+		return _stray_danger_texs[tile_count]
+
+	var block: Image = Utils.slice_texture_right(danger_area, tile_count * sprite_spacing).get_image()
+	block.decompress()
+	var edge_x: int = block.get_width() - 1
+	for y: int in range(block.get_height()):
+		block.set_pixel(0, y, block.get_pixel(edge_x, y))
+	_stray_danger_texs[tile_count] = ImageTexture.create_from_image(block)
+	return _stray_danger_texs[tile_count]
 
 
 ## Keep the player's marker gently breathing so it's easy to spot.
