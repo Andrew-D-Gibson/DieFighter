@@ -20,7 +20,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `Globals` | `Autoloads/globals.gd` | Central registry for all system singletons and global constants (colors, settings) |
 | `Events` | `Autoloads/events.gd` | Central event bus—75+ signals for all game events (combat start, player health hit, dice placed, etc.) |
 | `SFXPlayer` | `Autoloads/sound_effects_player.gd` | Audio playback through SoundEffectResource and AudioStreamPlayer |
-| `DebugLogger` | `Autoloads/debug_logger.gd` | Logs key Events-bus traffic to `user://debug_log.txt` |
+| `DebugLogger` | `Autoloads/debug_logger.gd` | Play-by-play of the latest session in `user://debug_log.txt`: every resolved engine event (skipping AudioVisual), turn snapshots (dice rolled, vitals, statuses, intent tables), backgrounds, modifiers and hazards. Wording in `debug_log_format.gd` (`DebugLogFormat`). Off in headless instances |
 | `Screenshotter` | `Autoloads/screenshotter.gd` | Screenshot capture |
 | `QuitManager` | `Autoloads/quit_manager.gd` | Graceful application quit |
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
@@ -1154,6 +1154,7 @@ Source/
 │    ├── globals.gd              # Registry + color constants
 │    ├── sound_effects_player.gd
 │    ├── debug_logger.gd
+│    ├── debug_log_format.gd     # DebugLogger's line wording
 │    ├── screenshotter.gd
 │    ├── quit_manager.gd
 │    ├── effect_registry.gd
