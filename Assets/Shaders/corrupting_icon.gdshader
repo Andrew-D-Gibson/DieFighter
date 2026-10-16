@@ -19,6 +19,9 @@ uniform float flicker_rate : hint_range(0.0, 1.0) = 0.04;
 // How far, in texels, the seam sways back and forth over time.
 uniform float seam_sway = 2.0;
 uniform vec4 hot_color : source_color = vec4(1.0, 0.35, 0.85, 1.0);
+// How much of the icon Fate holds: 0 untouched, 0.5 the usual half (waiting
+// for the next jump), 1 all of it. The map sweeps it either way during a jump.
+uniform float progress : hint_range(0.0, 1.0) = 0.5;
 
 float hash(vec2 p) {
 	p = fract(p * vec2(123.34, 345.45));
@@ -31,8 +34,11 @@ void fragment() {
 	vec2 texel = floor(UV * size);
 	float step_time = floor(TIME * step_rate) + seed * 97.0;
 
-	bool glitching = hash(vec2(step_time, seed + 1.3)) < glitch_rate;
-	bool flicker = hash(vec2(step_time, seed + 7.1)) < flicker_rate;
+	// The seam's wobble fades out toward either end, so an icon Fate has barely
+	// touched shows none of it and one it's swallowed shows nothing else.
+	float wobble = clamp(min(progress, 1.0 - progress) * 2.0, 0.0, 1.0);
+	bool glitching = progress > 0.0 && hash(vec2(step_time, seed + 1.3)) < glitch_rate;
+	bool flicker = wobble > 0.0 && hash(vec2(step_time, seed + 7.1)) < flicker_rate;
 
 	// Row tear: on a glitch frame, a band of rows slides sideways.
 	float band_start = floor(hash(vec2(step_time, seed + 2.7)) * size.y);
@@ -47,9 +53,9 @@ void fragment() {
 
 	// The seam: a diagonal that sways over time and is ragged row by row, so
 	// Fate looks like it's actively chewing in rather than sitting still.
-	float sway = round(sin(TIME * 2.2 + seed * 6.28) * seam_sway);
-	float ragged = floor(hash(vec2(texel.y, step_time)) * 3.0) - 1.0;
-	bool in_fate = flicker || texel.x + texel.y < size.x + sway + ragged;
+	float sway = round(sin(TIME * 2.2 + seed * 6.28) * seam_sway * wobble);
+	float ragged = (floor(hash(vec2(texel.y, step_time)) * 3.0) - 1.0) * wobble;
+	bool in_fate = flicker || texel.x + texel.y < progress * 2.0 * size.x + sway + ragged;
 
 	vec4 color = in_fate ? fate : base;
 

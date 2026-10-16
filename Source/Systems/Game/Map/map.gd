@@ -43,6 +43,11 @@ var stray_danger_indices: Array[int] = []
 var scenario_sprites: Array[Sprite2D]
 var _corrupted_sprite: Sprite2D
 var _danger_sprite: Sprite2D
+var _seam_sprite: Sprite2D
+## The red blocks over stray tiles, apart from any that joined the danger zone.
+var _stray_danger_sprites: Array[Sprite2D] = []
+## Map-world x of the danger zone's right edge; its left edge is the seam.
+var _danger_end_x: float
 ## Identifies the caption on screen, so it only re-animates when it changes.
 var _shown_hint: Array = []
 ## Scenario icons with Fate spliced in, built on demand. See _danger_icon().
@@ -61,6 +66,12 @@ const _SEAM_HALF_WIDTH: int = 3
 ## tiles, built from danger_area on first use. See _stray_danger_texture().
 var _stray_danger_texs: Dictionary[int, Texture2D] = {}
 var _seam_tex: Texture2D
+## A jump plays out on the map while the drive spools up: Fate swallows what
+## was in danger and the purple and red zones slide forward over it...
+const _FATE_ADVANCE_TIME: float = 0.9
+## ...then the next jump's danger spreads out: the red zone reaches over its
+## new tiles, stray blocks fade in and their icons start corrupting.
+const _DANGER_SPREAD_TIME: float = 0.7
 
 ## The player's marker breathes between these scales so it's easy to find.
 const _PIP_PULSE_SCALE: float = 1.25
@@ -229,7 +240,7 @@ func _compute_hint(hovered: int) -> Array:
 
 	if _mouse_in_map():
 		var world: Vector2 = _mouse_world_position()
-		if _danger_sprite and _danger_sprite.texture and _sprite_rect(_danger_sprite).has_point(world):
+		if _danger_sprite and _danger_sprite.visible and _sprite_rect(_danger_sprite).has_point(world):
 			return [_FATE_ICON, "Corrupting!", Globals.red]
 		if _corrupted_sprite and _corrupted_sprite.texture and _sprite_rect(_corrupted_sprite).has_point(world):
 			return [_FATE_ICON, "Corrupt", Globals.medium_purple]
@@ -281,6 +292,9 @@ func _corrupting_material(index: int) -> ShaderMaterial:
 	corrupting.shader = _CORRUPTING_SHADER
 	corrupting.set_shader_parameter("fate_texture", _FATE_ICON)
 	corrupting.set_shader_parameter("seed", float(index) * 0.618)
+	# Set even at its default: a uniform left unset isn't a property a jump
+	# can tween. See _animate_fate_advance().
+	corrupting.set_shader_parameter("progress", 0.5)
 	return corrupting
 
 
@@ -481,31 +495,23 @@ func _update_map_sprites() -> void:
 	var danger_runs: Array[Vector2i] = _danger_runs()
 	var left_danger: Sprite2D = Sprite2D.new()
 	_danger_sprite = left_danger
-
-	# Nothing is in danger once Fate has stopped in front of the gate, and a
-	# zero-width slice isn't a texture.
-	var fate_border_x: float = sprite_spacing * (left_fate_index + 0.5)
-	if left_scenarios_in_danger > 0:
-		# The zone is the run touching Fate, strays that join it included.
-		var zone: Vector2i = danger_runs.pop_front()
-		left_danger.texture = Utils.slice_texture_right(
-			danger_area, (zone.y - zone.x + 1) * sprite_spacing - _SEAM_HALF_WIDTH
-		)
+	left_danger.texture = danger_area
+	left_danger.region_enabled = true
 	left_danger.centered = false
-	left_danger.position = Vector2(fate_border_x + _SEAM_HALF_WIDTH, -21)
-
+	left_danger.position.y = -21
 	left_danger.z_index = -2
 	map_viewport.add_child(left_danger)
 
-	map_viewport.add_child(_make_fate_seam(fate_border_x))
+	var fate_border_x: float = _fate_border_x()
+	_danger_end_x = _danger_zone_end_x(danger_runs)
+	_set_danger_span(fate_border_x + _SEAM_HALF_WIDTH, _danger_end_x)
 
+	_seam_sprite = _make_fate_seam(fate_border_x)
+	map_viewport.add_child(_seam_sprite)
+
+	_stray_danger_sprites.clear()
 	for run: Vector2i in danger_runs:
-		var stray_danger: Sprite2D = Sprite2D.new()
-		stray_danger.texture = _stray_danger_texture(run.y - run.x + 1)
-		stray_danger.centered = false
-		stray_danger.position = Vector2(sprite_spacing * (run.x - 0.5), -21)
-		stray_danger.z_index = -2
-		map_viewport.add_child(stray_danger)
+		_add_stray_danger_sprite(run)
 	
 		
 	for i: int in range(len(scenario_list)):
@@ -577,6 +583,44 @@ func _make_fate_seam(border_x: float) -> Sprite2D:
 	seam.position = Vector2(border_x - _SEAM_HALF_WIDTH, -21)
 	seam.z_index = -2
 	return seam
+
+
+## Where Fate's corrupted zone ends and its danger zone begins.
+func _fate_border_x() -> float:
+	return sprite_spacing * (left_fate_index + 0.5)
+
+
+## Right edge of the danger zone: the run touching Fate, strays that join it
+## included. Pops that run off danger_runs, leaving only the stray blocks.
+## Nothing is in danger once Fate has stopped in front of the gate, which
+## leaves the zone with no width.
+func _danger_zone_end_x(danger_runs: Array[Vector2i]) -> float:
+	if left_scenarios_in_danger <= 0:
+		return _fate_border_x()
+	var zone: Vector2i = danger_runs.pop_front()
+	return sprite_spacing * (zone.y + 0.5)
+
+
+## Stretches the danger zone between two map-world x positions. It shows the
+## right end of danger_area, so the dashed border always marks its far edge.
+func _set_danger_span(left_x: float, right_x: float) -> void:
+	var width: int = maxi(roundi(right_x - left_x), 0)
+	_danger_sprite.position.x = roundf(left_x)
+	_danger_sprite.region_rect = Rect2(
+		danger_area.get_width() - width, 0, width, danger_area.get_height()
+	)
+	_danger_sprite.visible = width > 0
+
+
+func _add_stray_danger_sprite(run: Vector2i) -> Sprite2D:
+	var stray_danger: Sprite2D = Sprite2D.new()
+	stray_danger.texture = _stray_danger_texture(run.y - run.x + 1)
+	stray_danger.centered = false
+	stray_danger.position = Vector2(sprite_spacing * (run.x - 0.5), -21)
+	stray_danger.z_index = -2
+	map_viewport.add_child(stray_danger)
+	_stray_danger_sprites.append(stray_danger)
+	return stray_danger
 
 
 ## Every tile in danger, grouped into runs of neighbours as [first, last]
@@ -714,6 +758,14 @@ func jump(desired_scenario_index: int) -> void:
 	_begin_jump_display(_caption_icon(desired_scenario_index))
 	await _tween_map_to_index(desired_scenario_index)
 
+	# What the map shows now, for the animation to start from.
+	var leaving_index: int = current_scenario_index
+	var old_border_x: float = _fate_border_x()
+	var taken: Array[int] = []
+	for idx: int in range(left_fate_index + 1, len(scenario_list)):
+		if _is_in_danger(idx):
+			taken.append(idx)
+
 	# Set the current index scenario to empty
 	clear_current_scenario_slot()
 
@@ -733,8 +785,85 @@ func jump(desired_scenario_index: int) -> void:
 	
 	# Request a jump with the new index
 	current_scenario_index = desired_scenario_index
+	_animate_fate_advance(old_border_x, taken, [leaving_index, desired_scenario_index])
 	request_jump_to_scenario.emit(scenario_list[current_scenario_index])
 	
+
+## Plays the jump's corruption on the map, which still shows the state from
+## before it: Fate swallows the threatened icons as its zones slide forward,
+## then the next jump's danger spreads out. Arrival rebuilds the map from the
+## real state (see start_scenario in _ready), so this has to finish looking
+## exactly like that rebuild. The tweens belong to the zone sprites, so a
+## rebuild mid-animation cleanly stops them.
+## [param taken]: the tiles that were in danger, now Fate's.
+## [param pip_indices]: the tiles the player leaves and arrives at. Neither
+## shows a scenario icon now, so neither starts corrupting here.
+func _animate_fate_advance(old_border_x: float, taken: Array[int], pip_indices: Array[int]) -> void:
+	if not is_instance_valid(_corrupted_sprite):
+		return
+	var new_border_x: float = _fate_border_x()
+	var advance: float = new_border_x - old_border_x
+
+	var swallow: Tween = _corrupted_sprite.create_tween().set_parallel()\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
+	swallow.tween_property(_corrupted_sprite, "position:x", _corrupted_sprite.position.x + advance, _FATE_ADVANCE_TIME)
+	swallow.tween_property(_seam_sprite, "position:x", _seam_sprite.position.x + advance, _FATE_ADVANCE_TIME)
+	# Purple eats into red from the left; red's far edge holds until it spreads.
+	swallow.tween_method(
+		func(left_x: float) -> void: _set_danger_span(left_x, _danger_end_x),
+		old_border_x + _SEAM_HALF_WIDTH, new_border_x + _SEAM_HALF_WIDTH, _FATE_ADVANCE_TIME
+	)
+	for stray: Sprite2D in _stray_danger_sprites:
+		swallow.tween_property(stray, "modulate:a", 0.0, _FATE_ADVANCE_TIME)
+
+	var swallowed: Array[Sprite2D] = []
+	for idx: int in taken:
+		var icon: Sprite2D = scenario_sprites[idx]
+		if icon.material is ShaderMaterial:
+			swallowed.append(icon)
+			swallow.tween_property(icon, "material:shader_parameter/progress", 1.0, _FATE_ADVANCE_TIME)
+
+	await swallow.finished
+	if not is_instance_valid(_corrupted_sprite):
+		return
+
+	for icon: Sprite2D in swallowed:
+		icon.texture = fate_scenario.map_icon
+		icon.material = null
+	for stray: Sprite2D in _stray_danger_sprites:
+		stray.queue_free()
+	_stray_danger_sprites.clear()
+
+	var danger_runs: Array[Vector2i] = _danger_runs()
+	var old_end_x: float = maxf(_danger_end_x, new_border_x)
+	_danger_end_x = _danger_zone_end_x(danger_runs)
+
+	var spread: Tween = _corrupted_sprite.create_tween().set_parallel()\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_OUT)
+	spread.tween_method(
+		func(right_x: float) -> void: _set_danger_span(new_border_x + _SEAM_HALF_WIDTH, right_x),
+		old_end_x, _danger_end_x, _DANGER_SPREAD_TIME
+	)
+	for run: Vector2i in danger_runs:
+		var stray: Sprite2D = _add_stray_danger_sprite(run)
+		stray.modulate.a = 0.0
+		spread.tween_property(stray, "modulate:a", 1.0, _DANGER_SPREAD_TIME)
+
+	for idx: int in range(left_fate_index + 1, len(scenario_list)):
+		var icon: Sprite2D = scenario_sprites[idx]
+		if idx in pip_indices or not _is_in_danger(idx) or not icon.texture:
+			continue
+		if not icon.material:
+			icon.material = _corrupting_material(idx)
+			icon.material.set_shader_parameter("progress", 0.0)
+		spread.tween_property(icon, "material:shader_parameter/progress", 0.5, _DANGER_SPREAD_TIME)
+
+	await spread.finished
+	if is_instance_valid(_seam_sprite) and left_scenarios_in_danger <= 0:
+		_seam_sprite.material.set_shader_parameter("right_color", Color.TRANSPARENT)
+
 
 func _on_map_view_slider_value_changed(value: float) -> void:
 	var desired_camera_position: int = _get_camera_position_from_slider_value(value)
