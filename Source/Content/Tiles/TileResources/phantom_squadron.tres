@@ -128,7 +128,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Phantom Squadron[/color]"
-description = "[color=yellow]Any die while all dice number 4 or fewer[/color] -> Spawn (holograms) of die until all dice number 5"
+description = "[color=yellow]Any die with 4 or fewer dice in play[/color] -> Spawn (holograms) of die until 5 dice are in play"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1
