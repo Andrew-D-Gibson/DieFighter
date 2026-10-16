@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_panel-Sheet.png" id="1_rtu50"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_frames.gd" id="2_x0cyi"]
+
+[node name="ScrapPanel" type="Sprite2D" unique_id=1603527725]
+texture = ExtResource("1_rtu50")
+hframes = 2
+script = ExtResource("2_x0cyi")
+fps = 1.5
+sequence = PackedInt32Array()

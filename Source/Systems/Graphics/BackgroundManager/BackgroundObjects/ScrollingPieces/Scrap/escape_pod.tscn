@@ -1,0 +1,19 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/escape_pod.png" id="1_hatdy"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/escape_pod_beacon-Sheet.png" id="2_wo1b1"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_frames.gd" id="3_lopse"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_jy8jn"]
+
+[node name="EscapePod" type="Sprite2D" unique_id=606409278]
+texture = ExtResource("1_hatdy")
+
+[node name="Beacon" type="Sprite2D" parent="." unique_id=38171624]
+material = SubResource("CanvasItemMaterial_jy8jn")
+position = Vector2(0, -6)
+texture = ExtResource("2_wo1b1")
+hframes = 2
+script = ExtResource("3_lopse")
+fps = 1.2
+sequence = PackedInt32Array()

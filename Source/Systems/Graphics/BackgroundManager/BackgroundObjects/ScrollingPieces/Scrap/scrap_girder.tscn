@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_girder.png" id="1_jisxr"]
+
+[node name="ScrapGirder" type="Sprite2D" unique_id=593249076]
+texture = ExtResource("1_jisxr")

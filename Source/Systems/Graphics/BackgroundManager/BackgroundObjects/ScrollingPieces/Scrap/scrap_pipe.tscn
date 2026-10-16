@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_pipe.png" id="1_pt12f"]
+
+[node name="ScrapPipe" type="Sprite2D" unique_id=1392195560]
+texture = ExtResource("1_pt12f")

@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_hull.tscn" id="1_1xb41"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_wing.tscn" id="2_vnxjf"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_engine.tscn" id="3_23n74"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/escape_pod.tscn" id="4_28vao"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_plate_1.tscn" id="5_phntd"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_plate_2.tscn" id="6_rhqqj"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_girder.tscn" id="7_eg26m"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_pipe.tscn" id="8_tu1wx"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_chunk.tscn" id="9_81rgf"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_panel.tscn" id="10_o38e1"]
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="11_f55jl"]
+
+[resource]
+script = ExtResource("11_f55jl")
+medium_pieces = Array[PackedScene]([ExtResource("5_phntd"), ExtResource("6_rhqqj"), ExtResource("7_eg26m"), ExtResource("8_tu1wx"), ExtResource("9_81rgf"), ExtResource("10_o38e1")])
+large_pieces = Array[PackedScene]([ExtResource("1_1xb41"), ExtResource("2_vnxjf"), ExtResource("3_23n74"), ExtResource("4_28vao")])
+keep_texture_colors = true
+base_visibility = 0.25
+visibility_per_depth = 0.15
+random_quarter_turns = false
