@@ -675,7 +675,7 @@ handed to an enemy still counts until the player jumps away from it, or
 the ship escapes with it (`ESCAPE_WITH_DICE` → `Player.lose_dice_to()`,
 the same stranding a jump uses).
 
-"Fleet" is an internal name only. Tile text says "dice you have" with no
+"Fleet" is an internal name only. Tile text says "all dice" with no
 keyword, and leaves the player to learn what counts.
 
 | Piece | Reads |
