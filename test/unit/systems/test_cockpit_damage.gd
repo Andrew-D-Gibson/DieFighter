@@ -39,8 +39,11 @@ func _damage() -> CockpitDamage:
 
 
 func test_small_hit_at_full_hull_billows_gently() -> void:
-	# Just over the big-hit line, with plenty of hull left.
-	assert_almost_eq(_damage().billow_intensity(5, 27, 32), 0.0, 0.05)
+	# Right on the big-hit line, with plenty of hull left. Read from the
+	# exports so tuning the line doesn't break the test.
+	var damage: CockpitDamage = _damage()
+	var lost: int = ceili(damage.big_hit_fraction * 100.0)
+	assert_almost_eq(damage.billow_intensity(lost, 100 - lost, 100), 0.0, 0.05)
 
 
 func test_bigger_hits_billow_harder() -> void:

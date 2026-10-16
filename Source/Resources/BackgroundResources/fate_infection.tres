@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_v0oo0"]
 [ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="3_5u8kd"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/fates_tithe.tres" id="mod_0"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ScrollingObjects/fate_shards.tres" id="scroll_0"]
+[ext_resource type="Resource" uid="uid://cqjktemmveajs" path="res://Source/Resources/BackgroundResources/ScrollingObjects/fate_shards.tres" id="scroll_0"]
 
 [sub_resource type="Resource" id="Resource_um1v6"]
 script = ExtResource("2_v0oo0")

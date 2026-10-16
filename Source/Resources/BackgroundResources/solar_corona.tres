@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FlareStar/flare_star.tscn" id="3_star"]
 [ext_resource type="Resource" uid="uid://dbjkv27qxwp4x" path="res://Source/Resources/BackgroundResources/BackgroundHazards/solar_flare.tres" id="haz_0"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ScrollingObjects/solar_embers.tres" id="scroll_0"]
+[ext_resource type="Resource" uid="uid://bw5yf0g7cyqme" path="res://Source/Resources/BackgroundResources/ScrollingObjects/solar_embers.tres" id="scroll_0"]
 
 [sub_resource type="Resource" id="Resource_star"]
 script = ExtResource("2_so")

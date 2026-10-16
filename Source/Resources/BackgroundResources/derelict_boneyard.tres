@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/DerelictHulk/derelict_hulk.tscn" id="3_hulk"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/dead_systems.tres" id="mod_0"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ScrollingObjects/ship_scrap.tres" id="scroll_0"]
+[ext_resource type="Resource" uid="uid://ciniqw0ki60db" path="res://Source/Resources/BackgroundResources/ScrollingObjects/ship_scrap.tres" id="scroll_0"]
 
 [sub_resource type="Resource" id="Resource_hulk_near"]
 script = ExtResource("2_so")

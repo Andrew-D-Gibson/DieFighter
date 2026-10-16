@@ -17,10 +17,14 @@ const _FLASH_SHADER: Shader = preload("res://Assets/Shaders/flash.gdshader")
 const _SMOKE_SCENE: PackedScene = preload("res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_smoke.tscn")
 const _CRACK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/glass_crack.tres")
 
-## Lingering smoke puff size (min, max) at a healthy hull and at nearly none:
-## the trail out of a torn seam thickens as things get dire.
-const _LINGER_SCALE_CALM: Vector2 = Vector2(0.25, 0.4)
-const _LINGER_SCALE_DIRE: Vector2 = Vector2(0.4, 0.65)
+## How much bigger the lingering puffs get at nearly no hull than at a healthy
+## one: the trail out of a torn seam thickens as things get dire. The healthy
+## size is whatever cockpit_smoke.tscn sets, so tune that there.
+const _LINGER_DIRE_GROWTH: float = 1.6
+## How much bigger a big hit's plume puffs are than the scene's: from a hit
+## that just made the cut to a huge hit with the hull nearly gone.
+const _BILLOW_GROWTH_MIN: float = 1.9
+const _BILLOW_GROWTH_MAX: float = 3.8
 
 enum Kind { GLASS, FRAME }
 
@@ -34,6 +38,9 @@ var is_open: bool = false
 ## A torn seam keeps leaking a thin trail of smoke for as long as it's open.
 var _linger_smoke: CPUParticles2D = null
 var _linger_intensity: float = 0.0
+## The scene's own puff size (min, max), kept so the dire growth scales it
+## rather than replacing it.
+var _linger_base_scale: Vector2 = Vector2.ONE
 var _tween: Tween = null
 
 @onready var _damage: CockpitDamage = get_parent() as CockpitDamage
@@ -133,7 +140,7 @@ func billow(intensity: float) -> void:
 	var t: float = clampf(intensity, 0.0, 1.0)
 	var smoke: CPUParticles2D = _SMOKE_SCENE.instantiate()
 	smoke.one_shot = true
-	smoke.amount = roundi(lerpf(24.0, 70.0, t))
+	#smoke.amount = roundi(lerpf(24.0, 70.0, t))
 	smoke.lifetime = lerpf(2.6, 4.2, t)
 	smoke.explosiveness = 0.6
 	smoke.spread = lerpf(55.0, 90.0, t)
@@ -141,8 +148,9 @@ func billow(intensity: float) -> void:
 	smoke.initial_velocity_min = lerpf(8.0, 14.0, t)
 	smoke.initial_velocity_max = lerpf(22.0, 40.0, t)
 	smoke.gravity = Vector2(3.0, lerpf(-10.0, -18.0, t))
-	smoke.scale_amount_min = lerpf(0.45, 0.9, t)
-	smoke.scale_amount_max = lerpf(0.8, 1.6, t)
+	var growth: float = lerpf(_BILLOW_GROWTH_MIN, _BILLOW_GROWTH_MAX, t)
+	smoke.scale_amount_min *= growth
+	smoke.scale_amount_max *= growth
 	smoke.finished.connect(smoke.queue_free)
 	get_parent().add_child(smoke)
 	smoke.position = emit_points[0]
@@ -165,6 +173,7 @@ func _start_linger_smoke() -> void:
 	if _linger_smoke or emit_points.is_empty():
 		return
 	_linger_smoke = _SMOKE_SCENE.instantiate()
+	_linger_base_scale = Vector2(_linger_smoke.scale_amount_min, _linger_smoke.scale_amount_max)
 	_apply_linger_intensity(_linger_smoke)
 	get_parent().add_child(_linger_smoke)
 	_linger_smoke.position = emit_points[0]
@@ -182,7 +191,7 @@ func _stop_linger_smoke() -> void:
 
 
 func _apply_linger_intensity(smoke: CPUParticles2D) -> void:
-	var size: Vector2 = _LINGER_SCALE_CALM.lerp(_LINGER_SCALE_DIRE, _linger_intensity)
+	var size: Vector2 = _linger_base_scale * lerpf(1.0, _LINGER_DIRE_GROWTH, _linger_intensity)
 	smoke.scale_amount_min = size.x
 	smoke.scale_amount_max = size.y
 

@@ -15,12 +15,12 @@ extends Node2D
 @export_group("Smoke")
 ## A hull hit at least this big (as a fraction of max hull) billows smoke out
 ## of the open breaks. Anything smaller just chips.
-@export_range(0.0, 1.0) var big_hit_fraction: float = 0.15
+@export_range(0.0, 1.0) var big_hit_fraction: float = 0.1
 ## A hit this big (fraction of max hull) or bigger billows as hard as a hit can.
-@export_range(0.0, 1.0) var huge_hit_fraction: float = 0.5
+@export_range(0.0, 1.0) var huge_hit_fraction: float = 0.25
 ## How much of a plume's size comes from the hit itself; the rest comes from
 ## how little hull is left, so the same hit plumes harder near the end.
-@export_range(0.0, 1.0) var hit_share: float = 0.6
+@export_range(0.0, 1.0) var hit_share: float = 0.4
 ## Hull lost (fraction of max) where the dire part of the smoke starts
 ## building. Above it, only the size of the hit matters.
 @export_range(0.0, 1.0) var dire_from: float = 0.5
