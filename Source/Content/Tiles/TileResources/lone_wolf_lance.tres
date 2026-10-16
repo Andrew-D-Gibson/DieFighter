@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/RedTiles/lone_wolf_lance.png" id="tex"]
+[ext_resource type="Texture2D" uid="uid://cigmm7vecvxsn" path="res://Assets/Textures/Tiles/RedTiles/lone_wolf_lance-Sheet.png" id="tex"]
 [ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
 
 [sub_resource type="Resource" id="Resource_step_1"]
@@ -205,11 +205,25 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 atlas = ExtResource("tex")
 region = Rect2(0, 0, 24, 24)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0_1"]
+atlas = ExtResource("tex")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0_2"]
+atlas = ExtResource("tex")
+region = Rect2(48, 0, 24, 24)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_tile"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_f0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0_2")
 }],
 "loop": true,
 "name": &"default",

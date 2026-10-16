@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://jm2fautp377o"
-path="res://.godot/imported/ablative_charge.png-820bd09b777587e60caf3c41dfd6e064.ctex"
+uid="uid://brs7txrubcqpq"
+path="res://.godot/imported/governor_coil-Sheet.png-0d044f4809835640b6f629458977d2b4.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/RedTiles/ablative_charge.png"
-dest_files=["res://.godot/imported/ablative_charge.png-820bd09b777587e60caf3c41dfd6e064.ctex"]
+source_file="res://Assets/Textures/Tiles/PurpleTiles/governor_coil-Sheet.png"
+dest_files=["res://.godot/imported/governor_coil-Sheet.png-0d044f4809835640b6f629458977d2b4.ctex"]
 
 [params]
 

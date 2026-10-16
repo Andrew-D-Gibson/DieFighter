@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2ieq4r2pptjj"
-path="res://.godot/imported/afterburner_relay.png-3d6347b0c42d118eb6ee58c334a431af.ctex"
+uid="uid://cx5y7gfh0nr72"
+path="res://.godot/imported/broadside-Sheet.png-917c92d61172dea8cea3d5551e3bbf3f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/PurpleTiles/afterburner_relay.png"
-dest_files=["res://.godot/imported/afterburner_relay.png-3d6347b0c42d118eb6ee58c334a431af.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/broadside-Sheet.png"
+dest_files=["res://.godot/imported/broadside-Sheet.png-917c92d61172dea8cea3d5551e3bbf3f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://5xy0ixfk5l11"
-path="res://.godot/imported/leech_relay.png-7ad0774433dbd561fddd2c5ea1d76f3f.ctex"
+uid="uid://c7264ve0f2xiv"
+path="res://.godot/imported/debt_collector-Sheet.png-d0051e942c8e830012a3561185094bba.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/RedTiles/leech_relay.png"
-dest_files=["res://.godot/imported/leech_relay.png-7ad0774433dbd561fddd2c5ea1d76f3f.ctex"]
+source_file="res://Assets/Textures/Tiles/GreenTiles/debt_collector-Sheet.png"
+dest_files=["res://.godot/imported/debt_collector-Sheet.png-d0051e942c8e830012a3561185094bba.ctex"]
 
 [params]
 

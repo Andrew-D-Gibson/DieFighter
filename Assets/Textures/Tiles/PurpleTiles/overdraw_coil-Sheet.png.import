@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c42qp5t3yk27n"
-path="res://.godot/imported/overdraw_coil.png-1f8dc453c81f57e010b39c37e1ab8f66.ctex"
+uid="uid://c06sdi7j72kan"
+path="res://.godot/imported/overdraw_coil-Sheet.png-fbf24487c684d337967d2e3e11be552f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/PurpleTiles/overdraw_coil.png"
-dest_files=["res://.godot/imported/overdraw_coil.png-1f8dc453c81f57e010b39c37e1ab8f66.ctex"]
+source_file="res://Assets/Textures/Tiles/PurpleTiles/overdraw_coil-Sheet.png"
+dest_files=["res://.godot/imported/overdraw_coil-Sheet.png-fbf24487c684d337967d2e3e11be552f.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://w04fjqqni1mp"
-path="res://.godot/imported/debt_collector.png-d679c963c6a71cdba1e8612a2e0db7af.ctex"
+uid="uid://c21vtmsysl2v3"
+path="res://.godot/imported/swarm_battery-Sheet.png-3e5bf45c0982e9fcb4390bd829f58955.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/GreenTiles/debt_collector.png"
-dest_files=["res://.godot/imported/debt_collector.png-d679c963c6a71cdba1e8612a2e0db7af.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/swarm_battery-Sheet.png"
+dest_files=["res://.godot/imported/swarm_battery-Sheet.png-3e5bf45c0982e9fcb4390bd829f58955.ctex"]
 
 [params]
 

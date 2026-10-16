@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dhb20ekhwk5mt"
-path="res://.godot/imported/signal_relay.png-8086aff6c709c2885169d85cf00d130a.ctex"
+uid="uid://cigmm7vecvxsn"
+path="res://.godot/imported/lone_wolf_lance-Sheet.png-ca608dd8eb7e52def4a46a96be7f1ff5.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/GreenTiles/signal_relay.png"
-dest_files=["res://.godot/imported/signal_relay.png-8086aff6c709c2885169d85cf00d130a.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/lone_wolf_lance-Sheet.png"
+dest_files=["res://.godot/imported/lone_wolf_lance-Sheet.png-ca608dd8eb7e52def4a46a96be7f1ff5.ctex"]
 
 [params]
 

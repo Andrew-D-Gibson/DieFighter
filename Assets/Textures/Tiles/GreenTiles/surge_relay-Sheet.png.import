@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://csctvqcjdyieu"
-path="res://.godot/imported/relay_terminal.png-210922b0e99617db3268de0bd1c294ea.ctex"
+uid="uid://d3odqgc503hsx"
+path="res://.godot/imported/surge_relay-Sheet.png-f18fcd772ae5fc02adf00b3e9b46a3c3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/RedTiles/relay_terminal.png"
-dest_files=["res://.godot/imported/relay_terminal.png-210922b0e99617db3268de0bd1c294ea.ctex"]
+source_file="res://Assets/Textures/Tiles/GreenTiles/surge_relay-Sheet.png"
+dest_files=["res://.godot/imported/surge_relay-Sheet.png-f18fcd772ae5fc02adf00b3e9b46a3c3.ctex"]
 
 [params]
 

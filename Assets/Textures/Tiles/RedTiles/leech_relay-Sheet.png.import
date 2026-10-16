@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cadu4kymw4glw"
-path="res://.godot/imported/lone_wolf_lance.png-97136a6968a615bd89382ea860d7fb53.ctex"
+uid="uid://deagw7t472ps5"
+path="res://.godot/imported/leech_relay-Sheet.png-fbd9ebb3accf38b8ed82a67065210795.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/RedTiles/lone_wolf_lance.png"
-dest_files=["res://.godot/imported/lone_wolf_lance.png-97136a6968a615bd89382ea860d7fb53.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/leech_relay-Sheet.png"
+dest_files=["res://.godot/imported/leech_relay-Sheet.png-fbd9ebb3accf38b8ed82a67065210795.ctex"]
 
 [params]
 

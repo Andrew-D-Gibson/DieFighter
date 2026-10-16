@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlpiv8s31pgln"
-path="res://.godot/imported/surge_relay.png-7f4f8060f4fcfcbfbd42cd0bf453fd8e.ctex"
+uid="uid://cuq8a3doxbksg"
+path="res://.godot/imported/phantom_squadron-Sheet.png-5aed7be34e565a8fe65df5fd5c26cd9a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/GreenTiles/surge_relay.png"
-dest_files=["res://.godot/imported/surge_relay.png-7f4f8060f4fcfcbfbd42cd0bf453fd8e.ctex"]
+source_file="res://Assets/Textures/Tiles/YellowTiles/phantom_squadron-Sheet.png"
+dest_files=["res://.godot/imported/phantom_squadron-Sheet.png-5aed7be34e565a8fe65df5fd5c26cd9a.ctex"]
 
 [params]
 

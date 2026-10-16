@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_act"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_tile"]
-[ext_resource type="Texture2D" uid="uid://bmpeu07k3aidd" path="res://Assets/Textures/Tiles/PurpleTiles/governor_coil.png" id="3_tex"]
+[ext_resource type="Texture2D" uid="uid://brs7txrubcqpq" path="res://Assets/Textures/Tiles/PurpleTiles/governor_coil-Sheet.png" id="3_tex"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_data"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_chain"]
 
@@ -87,11 +87,29 @@ script = ExtResource("5_chain")
 effects = Array[ExtResource("4_data")]([SubResource("Resource_s1_die_value"), SubResource("Resource_s2_particles"), SubResource("Resource_s3_target_player"), SubResource("Resource_juice_1"), SubResource("Resource_s4_charge"), SubResource("Resource_s5_set_one"), SubResource("Resource_juice_2"), SubResource("Resource_s6_nerf_die"), SubResource("Resource_s7_target_computer"), SubResource("Resource_s8_give_die")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_use0"]
+atlas = ExtResource("3_tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_use1"]
+atlas = ExtResource("3_tex")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_use2"]
+atlas = ExtResource("3_tex")
+region = Rect2(48, 0, 24, 24)
+
 [sub_resource type="SpriteFrames" id="SpriteFrames_governor"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": ExtResource("3_tex")
+"texture": SubResource("AtlasTexture_use0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_use1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_use2")
 }],
 "loop": 1,
 "name": &"default",

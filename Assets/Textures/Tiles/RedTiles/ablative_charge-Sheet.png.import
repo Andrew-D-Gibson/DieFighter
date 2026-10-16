@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dqhcxa7eyiml4"
-path="res://.godot/imported/broadside.png-703a022af2c229183d2dd814a3d8a399.ctex"
+uid="uid://ca8hf0jjfxosa"
+path="res://.godot/imported/ablative_charge-Sheet.png-969356132270f787509fc9ebe1f058f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/RedTiles/broadside.png"
-dest_files=["res://.godot/imported/broadside.png-703a022af2c229183d2dd814a3d8a399.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/ablative_charge-Sheet.png"
+dest_files=["res://.godot/imported/ablative_charge-Sheet.png-969356132270f787509fc9ebe1f058f7.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bmpeu07k3aidd"
-path="res://.godot/imported/governor_coil.png-a82a9535979a4ed30c2a571e393cdb22.ctex"
+uid="uid://1bkwcwxnun1w"
+path="res://.godot/imported/relay_terminal-Sheet.png-abe5b73aa9d69a94f72d5825e9bcf634.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/PurpleTiles/governor_coil.png"
-dest_files=["res://.godot/imported/governor_coil.png-a82a9535979a4ed30c2a571e393cdb22.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/relay_terminal-Sheet.png"
+dest_files=["res://.godot/imported/relay_terminal-Sheet.png-abe5b73aa9d69a94f72d5825e9bcf634.ctex"]
 
 [params]
 

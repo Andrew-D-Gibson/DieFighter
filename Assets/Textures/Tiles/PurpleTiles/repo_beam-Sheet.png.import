@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://rcflx4maa44j"
-path="res://.godot/imported/toll_relay.png-6dc34f039ec62c75be519c36b45e4403.ctex"
+uid="uid://bwjjpowvfh1d7"
+path="res://.godot/imported/repo_beam-Sheet.png-86406ad89d6cb67579117020eaae1477.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/PurpleTiles/toll_relay.png"
-dest_files=["res://.godot/imported/toll_relay.png-6dc34f039ec62c75be519c36b45e4403.ctex"]
+source_file="res://Assets/Textures/Tiles/PurpleTiles/repo_beam-Sheet.png"
+dest_files=["res://.godot/imported/repo_beam-Sheet.png-86406ad89d6cb67579117020eaae1477.ctex"]
 
 [params]
 

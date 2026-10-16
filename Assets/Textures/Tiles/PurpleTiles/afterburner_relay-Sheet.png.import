@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c6dxst2r5lh2s"
-path="res://.godot/imported/swarm_battery.png-22cf671acc2981a5094c042e87c61676.ctex"
+uid="uid://b0tp4shmwajdb"
+path="res://.godot/imported/afterburner_relay-Sheet.png-d8dc146ce19136e9bcc39023f61e7cf1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/RedTiles/swarm_battery.png"
-dest_files=["res://.godot/imported/swarm_battery.png-22cf671acc2981a5094c042e87c61676.ctex"]
+source_file="res://Assets/Textures/Tiles/PurpleTiles/afterburner_relay-Sheet.png"
+dest_files=["res://.godot/imported/afterburner_relay-Sheet.png-d8dc146ce19136e9bcc39023f61e7cf1.ctex"]
 
 [params]
 
