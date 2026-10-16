@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/plasma_1.tscn" id="1_40kcc"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/plasma_2.tscn" id="2_a03lo"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/cinder_1.tscn" id="3_qlart"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/cinder_2.tscn" id="4_euks3"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/ember_1.tscn" id="5_0rgxd"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/ember_2.tscn" id="6_mtbpl"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/ember_3.tscn" id="7_4xdha"]
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="8_hrrw1"]
+
+[resource]
+script = ExtResource("8_hrrw1")
+medium_pieces = Array[PackedScene]([ExtResource("5_0rgxd"), ExtResource("6_mtbpl"), ExtResource("7_4xdha")])
+large_pieces = Array[PackedScene]([ExtResource("1_40kcc"), ExtResource("2_a03lo"), ExtResource("3_qlart"), ExtResource("4_euks3")])
+keep_texture_colors = true
+base_visibility = 0.5
+visibility_per_depth = 0.12
+random_quarter_turns = false

@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Embers/cinder_1.png" id="1_h28ov"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Embers/cinder_1_cracks.png" id="2_nr5b4"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_pulse.gd" id="3_aityg"]
+
+[sub_resource type="Gradient" id="Gradient_ovhx3"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.9843137, 0.9098039, 0.6039216, 1, 0.9490196, 0.6117647, 0.3647059, 1, 0.816, 0.212, 0.337, 0)
+
+[node name="Cinder1" type="Sprite2D" unique_id=867604208]
+texture = ExtResource("1_h28ov")
+
+[node name="Cracks" type="Sprite2D" parent="." unique_id=339717237]
+texture = ExtResource("2_nr5b4")
+script = ExtResource("3_aityg")
+period = 2.6
+low = 0.75
+high = 1.35
+
+[node name="Embers" type="CPUParticles2D" parent="." unique_id=793400081]
+amount = 3
+lifetime = 1.4
+lifetime_randomness = 0.3
+emission_shape = 3
+emission_rect_extents = Vector2(4, 3)
+direction = Vector2(0, -1)
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+color_ramp = SubResource("Gradient_ovhx3")
