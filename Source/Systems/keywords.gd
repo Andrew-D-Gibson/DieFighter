@@ -27,7 +27,6 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Hologram": "A copy of a die. Destroyed if given to another ship.",
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
 	"Steal": "This ship keeps the die. Next turn it uses it to Steal again. It drops what it holds if destroyed.",
-	"Fleet": "Every die you own: in hand, on tiles, or held by enemies. Holograms count. Dice enemies hold when you jump, or that a ship escapes with, are lost.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -45,7 +44,6 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(jam)":        {"label": "Jam",        "term": "Jammed"},
 	"(exposed)":    {"label": "Exposed",    "term": "Exposed"},
 	"(expose)":     {"label": "Expose",     "term": "Exposed"},
-	"(fleet)":      {"label": "Fleet",      "term": "Fleet"},
 	"(load)":       {"label": "Load",       "term": "Load"},
 	"(loaded)":     {"label": "Loaded",     "term": "Load"},
 	"(steal)":      {"label": "Steal",      "term": "Steal"},

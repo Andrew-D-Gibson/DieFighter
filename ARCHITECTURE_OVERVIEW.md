@@ -393,7 +393,7 @@ limit.
 descriptions as tokens: `(feed_right)`, `(feed_left)`, `(feed_up)`,
 `(feed_down)`, `(feed_random)`, `(fed)`, and one per status — `(burn)`,
 `(scrambled)`/`(scramble)`, `(jammed)`/`(jam)`, `(exposed)`/`(expose)` — plus
-`(fleet)`, the dice the player owns (see 6.3), and `(hologram)`. `Utils.format_text()`
+`(hologram)`. `Utils.format_text()`
 renders each token as a styled label. The info panel asks for hoverable labels
 (`format_text(text, true)`), which wrap each in a `[url]` tag. `InfoShower`
 listens for `meta_hover_started` on its labels and pops up
@@ -674,6 +674,9 @@ own, wherever it is right now, plus the holograms they hold:
 handed to an enemy still counts until the player jumps away from it, or
 the ship escapes with it (`ESCAPE_WITH_DICE` → `Player.lose_dice_to()`,
 the same stranding a jump uses).
+
+"Fleet" is an internal name only. Tile text says "dice you have" with no
+keyword, and leaves the player to learn what counts.
 
 | Piece | Reads |
 |---|---|
