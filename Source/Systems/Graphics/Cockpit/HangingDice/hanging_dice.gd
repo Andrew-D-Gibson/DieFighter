@@ -286,8 +286,7 @@ func _draw_chain(from: Vector2i, to: Vector2i) -> void:
 
 
 func _draw_die(die: Die, top: Vector2i) -> void:
-	var frame: int = posmod(roundi(die.twist / (TAU / frame_count)), frame_count)
-	var region: Rect2 = Rect2(Vector2(frame * frame_size.x, 0), Vector2(frame_size))
+	var region: Rect2 = _face_region(die)
 	# Whole pixels, so small swings round back to the native size and the
 	# sprite only stretches once the die has clearly moved in depth.
 	var size: Vector2i = Vector2i((Vector2(frame_size) * die.depth_scale()).round())
@@ -295,6 +294,34 @@ func _draw_die(die: Die, top: Vector2i) -> void:
 	var headroom: float = roundf(float(size.y) / frame_size.y)
 	var origin: Vector2 = Vector2(top) - Vector2(floorf(size.x / 2.0), headroom)
 	draw_texture_rect_region(sheet, Rect2(origin, Vector2(size)), region)
+
+
+## The sheet frame showing the face [param die] has turned to.
+func _face_region(die: Die) -> Rect2:
+	var frame: int = posmod(roundi(die.twist / (TAU / frame_count)), frame_count)
+	return Rect2(Vector2(frame * frame_size.x, 0), Vector2(frame_size))
+
+
+## Snaps both chains: each die becomes a free sprite under [param parent],
+## where it hangs now and showing the face it shows now, and the pair stops
+## drawing. For the cockpit coming apart, which throws the dice on their own.
+func cut_loose(parent: Node) -> Array[Sprite2D]:
+	var pieces: Array[Sprite2D] = []
+	for die: Die in _dice:
+		var atlas: AtlasTexture = AtlasTexture.new()
+		atlas.atlas = sheet
+		atlas.region = _face_region(die)
+		var piece: Sprite2D = Sprite2D.new()
+		piece.texture = atlas
+		parent.add_child(piece)
+		# Centred on the die, which hangs below its top point.
+		var centre: Vector2 = die.hang_point() + Vector2(0.0, frame_size.y / 2.0)
+		piece.global_transform = get_global_transform() \
+				* Transform2D(0.0, Vector2.ONE * die.depth_scale(), 0.0, centre)
+		pieces.append(piece)
+	hide()
+	set_process(false)
+	return pieces
 
 
 static func _line_pixels(from: Vector2i, to: Vector2i) -> Array[Vector2i]:

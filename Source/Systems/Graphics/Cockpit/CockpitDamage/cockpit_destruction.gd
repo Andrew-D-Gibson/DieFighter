@@ -18,6 +18,9 @@ const _EXPLOSION_SFX: SoundEffectResource = preload("res://Source/Resources/Soun
 ## Above the ships and the hand: the cockpit is the nearest thing to the
 ## camera, and its pieces fly past everything on their way out.
 const _DEBRIS_Z: int = 30
+## Over the rest of the debris: the dice cross the middle of the screen just
+## as the main viewer tumbles through it, and must not vanish behind it.
+const _HANGING_DICE_Z: int = _DEBRIS_Z + 5
 
 ## How much debris grows over its flight (min, max), which sells it coming at
 ## the camera. A whole panel is already big; growing it as much as a shard
@@ -41,18 +44,21 @@ const _PANEL_GROW: Vector2 = Vector2(1.05, 1.3)
 @export var breakup_slow_mo_scale: float = 0.25
 ## Real (unscaled) milliseconds the slow-mo lasts.
 @export var breakup_slow_mo_ms: int = 1600
-## Where the hanging dice's hook ends up. The dice don't scatter at random
-## like the rest of the wreckage: they always drop from the top-right strut
-## to the bottom right, the one fixed beat in every death.
-@export var hanging_dice_landing: Vector2 = Vector2(282, 138)
-@export var hanging_dice_landing_scale: float = 1.4
-@export var hanging_dice_landing_rotation: float = 0.7
+## Where the hanging dice's hook is carried to. The dice don't scatter at
+## random like the rest of the wreckage: every death, they tear off the
+## top-right strut and drift through the middle of the screen during the
+## slow-mo, then snap apart and fly off. The one fixed beat in the sequence.
+@export var hanging_dice_crossing: Vector2 = Vector2(178, 70)
+@export var hanging_dice_crossing_scale: float = 1.6
+@export var hanging_dice_crossing_rotation: float = -0.5
+## How fast the two dice fly off once their chains snap, in pixels/second.
+@export var hanging_dice_split_speed: float = 260.0
 
 ## Everything flying apart, as {node, velocity, spin, grow, age, life,
-## rest_scale, owned}. Owned pieces were made here; they slow and fade, and
-## are freed. Borrowed ones (the player's panels) are thrown clear off screen
-## and then hidden instead: tiles draw through a shader that ignores
-## modulate, so a panel fading out would leave its tiles hanging in space.
+## rest_scale, owned, fade}. Shell fragments slow and fade. The player's
+## panels are thrown clear off screen instead: tiles draw through a shader
+## that ignores modulate, so a panel fading out would leave its tiles hanging
+## in space. Owned pieces were made here and are freed; borrowed ones hidden.
 var _debris: Array[Dictionary] = []
 var _playing: bool = false
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -178,32 +184,61 @@ func _fling_ambience() -> void:
 		if child == _damage or not child is CanvasItem:
 			continue
 		if child is HangingDice:
-			_drop_hanging_dice(child)
+			_send_hanging_dice_across(child)
 		else:
 			(child as CanvasItem).hide()
 
 
-## Swings the hanging dice down to the bottom right over exactly the length
-## of the breakup slow-mo, and leaves them there.
-func _drop_hanging_dice(dice: HangingDice) -> void:
+## Carries the hanging dice into the middle of the screen over exactly the
+## length of the breakup slow-mo, then splits them.
+func _send_hanging_dice_across(dice: HangingDice) -> void:
 	# The dice draw around their hook, but the node's origin is the screen's
 	# corner. A pivot at the hook lets them tilt and grow about themselves
 	# instead of swinging across the whole screen.
-	var pivot: Node2D = Node2D.new()
-	add_child(pivot)
-	pivot.global_position = dice.anchor
-	dice.reparent(pivot, true)
+	var hook: Node2D = Node2D.new()
+	hook.z_as_relative = false
+	hook.z_index = _HANGING_DICE_Z
+	add_child(hook)
+	hook.global_position = dice.anchor
+	dice.reparent(hook, true)
 
 	# The slow-mo's span in game time, which is what a tween runs on, so the
-	# drop lands as the slow-mo lets go.
+	# dice reach the middle as the slow-mo lets go. Easing out, they rush off
+	# the strut and then hang in the middle while time is slowest.
 	var duration: float = breakup_slow_mo_scale * breakup_slow_mo_ms / 1000.0
-	var tween: Tween = pivot.create_tween().set_parallel()
-	tween.tween_property(pivot, "global_position", hanging_dice_landing, duration) \
-			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	tween.tween_property(pivot, "rotation", hanging_dice_landing_rotation, duration) \
+	var tween: Tween = hook.create_tween().set_parallel()
+	tween.tween_property(hook, "global_position", hanging_dice_crossing, duration) \
+			.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_property(hook, "rotation", hanging_dice_crossing_rotation, duration) \
 			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-	tween.tween_property(pivot, "scale", Vector2.ONE * hanging_dice_landing_scale, duration) \
-			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tween.tween_property(hook, "scale", Vector2.ONE * hanging_dice_crossing_scale, duration) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.chain().tween_callback(_split_hanging_dice.bind(dice, hook))
+
+
+## The chains snap and the two dice fly apart, on along the way they were
+## already heading and away from each other, clear off the screen.
+func _split_hanging_dice(dice: HangingDice, hook: Node2D) -> void:
+	var heading: Vector2 = (hanging_dice_crossing - dice.anchor).normalized()
+	_sparks(hook.global_position, Globals.yellow, 8, 60.0)
+	var pieces: Array[Sprite2D] = dice.cut_loose(self)
+	hook.queue_free()
+	if pieces.is_empty():
+		return
+
+	var centre: Vector2 = Vector2.ZERO
+	for piece: Sprite2D in pieces:
+		centre += piece.global_position
+	centre /= pieces.size()
+	for piece: Sprite2D in pieces:
+		var apart: Vector2 = piece.global_position - centre
+		if apart.length() < 0.5:
+			apart = heading.orthogonal()
+		var direction: Vector2 = (heading + apart.normalized() * 1.2).normalized()
+		_sparks(piece.global_position, Globals.yellow, 4, 40.0)
+		_track_debris(piece, direction * hanging_dice_split_speed, true, false,
+				Vector2(1.2, 1.5), _rng.randf_range(6.0, 10.0) * signf(apart.x + 0.01))
+		piece.z_index = _HANGING_DICE_Z
 
 
 ## The player's panels and the dice in hand tumble away whole.
@@ -230,6 +265,7 @@ func _pin_draggables(node: Node) -> void:
 		draggable.state = Draggable.DragState.MOVING_WITH_CODE
 
 
+## Throws [param node] out from the blast.
 func _add_debris(node: Node2D, owned: bool, grow: Vector2) -> void:
 	var away: Vector2 = node.global_position - blast_origin
 	if away.length() < 1.0:
@@ -237,17 +273,26 @@ func _add_debris(node: Node2D, owned: bool, grow: Vector2) -> void:
 	var speed: Vector2 = Vector2(60.0, 170.0) if owned else Vector2(160.0, 240.0)
 	var velocity: Vector2 = away.normalized().rotated(_rng.randf_range(-0.35, 0.35)) \
 			* _rng.randf_range(speed.x, speed.y) + Vector2(0, -25)
+	_track_debris(node, velocity, owned, owned, grow, _rng.randf_range(-5.0, 5.0))
+
+
+## Flies [param node] at [param velocity] until its life runs out. A fading
+## piece slows and fades; one that doesn't keeps its speed to clear the
+## screen. Owned pieces are freed at the end, borrowed ones hidden.
+func _track_debris(node: Node2D, velocity: Vector2, owned: bool, fade: bool,
+		grow: Vector2, spin: float) -> void:
 	node.z_as_relative = false
 	node.z_index = _DEBRIS_Z
 	_debris.append({
 		"node": node,
 		"velocity": velocity,
-		"spin": _rng.randf_range(-5.0, 5.0),
+		"spin": spin,
 		"grow": _rng.randf_range(grow.x, grow.y),
 		"age": 0.0,
 		"life": _rng.randf_range(1.2, 2.0),
 		"rest_scale": node.scale,
 		"owned": owned,
+		"fade": fade,
 	})
 
 
@@ -264,7 +309,7 @@ func _process(delta: float) -> void:
 		node.global_position += velocity * delta
 		node.rotation += d["spin"] * delta
 		node.scale = d["rest_scale"] * lerpf(1.0, d["grow"], t)
-		if d["owned"]:
+		if d["fade"]:
 			d["velocity"] = velocity * (1.0 - 0.6 * delta)
 			node.modulate.a = 1.0 - smoothstep(0.55, 1.0, t)
 		if t >= 1.0:
