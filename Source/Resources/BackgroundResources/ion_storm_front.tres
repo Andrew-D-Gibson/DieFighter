@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IonCloud/ion_cloud.tscn" id="3_cloud"]
 [ext_resource type="Resource" uid="uid://bksbsmdcc4wo" path="res://Source/Resources/BackgroundResources/BackgroundHazards/ion_storm.tres" id="haz_0"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ScrollingObjects/ion_motes.tres" id="scroll_0"]
 
 [sub_resource type="Resource" id="Resource_cloud_far"]
 script = ExtResource("2_so")
@@ -29,5 +30,8 @@ nebula_color = Color(0.552941, 0.945098, 0.956863, 0.1)
 stars = true
 num_of_stars = 40
 num_of_twinkling_stars = 8
+scrolling_objects = ExtResource("scroll_0")
+num_of_med_pieces = 16
+num_of_large_pieces = 3
 static_objects = Array[ExtResource("2_so")]([SubResource("Resource_cloud_far"), SubResource("Resource_cloud_near")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_cloudlet_1.tscn" id="1_1ixvj"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_cloudlet_2.tscn" id="2_acvcu"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_mote_1.tscn" id="3_ljt14"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_mote_2.tscn" id="4_dq171"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_mote_3.tscn" id="5_h3mon"]
+[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="6_hkm23"]
+
+[resource]
+script = ExtResource("6_hkm23")
+medium_pieces = Array[PackedScene]([ExtResource("3_ljt14"), ExtResource("4_dq171"), ExtResource("5_h3mon")])
+large_pieces = Array[PackedScene]([ExtResource("1_1ixvj"), ExtResource("2_acvcu")])
+keep_texture_colors = true
+base_visibility = 0.45
+visibility_per_depth = 0.14
+random_quarter_turns = false
