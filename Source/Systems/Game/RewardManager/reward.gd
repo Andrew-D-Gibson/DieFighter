@@ -23,11 +23,22 @@ const _REWARD_SPACING: int = 26
 ## Extra room either side of the offer that the ships leave clear.
 const _FORMATION_PADDING: float = 4.0
 
+## Gap between each choice popping when the player jumps away, left to right,
+## so the offer reads as going out rather than vanishing in one frame.
+const _DISMISS_STAGGER: float = 0.06
+
+## One choice's whole pop: squash, stretch, gone.
+const _DISMISS_POP_TIME: float = 0.28
+
+## Set once the player has jumped away with this offer still up. The choices
+## are on their way out and can no longer be taken.
+var _dismissing: bool = false
+
 
 func _ready() -> void:
 	hide()
 	
-	Events.jump.connect(queue_free)
+	Events.jump.connect(_dismiss)
 
 
 func _exit_tree() -> void:
@@ -180,6 +191,8 @@ static func rolls_money_pickup(reward_resource: RewardResource) -> bool:
 
 
 func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
+	if _dismissing:
+		return
 	var local_end_position = end_position - bounding_box.global_position
 	# Don't do anything if the drag ended within the reward window
 	if bounding_box.shape.get_rect().has_point(local_end_position):
@@ -225,6 +238,58 @@ func _claim_formation_space(count: int) -> void:
 
 func _formation_key() -> StringName:
 	return StringName("reward_%d" % get_instance_id())
+
+
+## Jumping away abandons the offer. Each choice still on show squashes,
+## stretches and blinks out in turn, the way the environment monitor answers a
+## rule biting, instead of the whole offer snapping off screen.
+func _dismiss() -> void:
+	if _dismissing:
+		return
+	_dismissing = true
+	# Nothing left to save: the player left it behind.
+	items.clear()
+
+	# Still in the payout pause, nothing is on screen to animate.
+	if not visible or rewards.is_empty():
+		queue_free()
+		return
+
+	var label: RichTextLabel = $RichTextLabel
+	label.pivot_offset = (label.size / 2.0).round()
+	_pop(label, 0.0)
+
+	var delay: float = _DISMISS_STAGGER
+	for reward: Node2D in rewards:
+		if not is_instance_valid(reward):
+			continue
+		# Keep it bobbing, but out of reach.
+		reward.draggable.dragging_allowed = false
+		reward.draggable.floating_enabled = true
+		_pop(reward, delay)
+		delay += _DISMISS_STAGGER
+
+	get_tree().create_timer(delay + _DISMISS_POP_TIME).timeout.connect(queue_free)
+
+
+## Squashes [param node] wide, stretches it tall and thin, then pinches it to
+## nothing with a puff of sparks where it was. The sparks go on the parent,
+## which outlives this offer.
+func _pop(node: CanvasItem, delay: float) -> void:
+	var rest: Vector2 = node.scale
+	var tween: Tween = node.create_tween()
+	tween.tween_interval(delay)
+	tween.tween_property(node, "scale", rest * Vector2(1.3, 0.7), _DISMISS_POP_TIME * 0.3) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(node, "scale", rest * Vector2(0.6, 1.5), _DISMISS_POP_TIME * 0.3) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(node, "scale", rest * Vector2(0.0, 1.8), _DISMISS_POP_TIME * 0.4) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	if node is Node2D:
+		tween.tween_callback(func() -> void:
+			Juice.sparkle(get_parent(), (node as Node2D).global_position, Color.WHITE, 6, 30.0)
+		)
+	tween.tween_callback(node.hide)
 
 
 func _spawn_money_particles(amount: int) -> void:
