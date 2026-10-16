@@ -63,7 +63,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, scrolling objects (debris, asteroids, ice) |
+| `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, scrolling objects (debris, asteroids, ice, scrap, fate shards, embers, ion motes) |
 | `Vignette` | `Graphics/Vignette` | Flash overlay for camera shake/impact emphasis |
 | `Juice` | `Systems/Graphics/Juice/juice.gd` (static helpers) | Bumps, wiggles, rings, sparkles and callouts; see 4.7 |
 | `GlitchController` | `UI/GlitchShader` | CSS glitch shader activation on large camera shake |

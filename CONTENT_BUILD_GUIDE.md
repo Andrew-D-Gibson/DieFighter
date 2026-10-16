@@ -348,7 +348,8 @@ encounter.
 - Nebula and star toggles and counts.
 - `scrolling_objects`: what drifts past at varying depths, with
   `num_of_med_pieces` / `num_of_large_pieces`. Pick a set from
-  `ScrollingObjects/` (`triangle_debris`, `asteroids`, `ice`), or make a new
+  `ScrollingObjects/` (`triangle_debris`, `asteroids`, `ice`, `ship_scrap`,
+  `fate_shards`, `solar_embers`, `ion_motes`), or make a new
   `ScrollingObjectsResource`: medium and large piece-scene lists, plus whether
   pieces keep their own colours or become flat silhouettes, and whether they
   may spin (off for art lit from a fixed side).
@@ -360,7 +361,15 @@ encounter.
   (a light that should glow at any depth). Sprites and `AnimatedSprite2D`s
   set the piece's size for wrapping; particles don't, so keep them close.
   A piece is freed when it wraps, so particles never streak across the
-  screen; set `preprocess` if an emitter shouldn't start empty.
+  screen; set `preprocess` if an emitter shouldn't start empty. Particles
+  left in world space (`local_coords` off) hang behind a falling piece as a
+  trail, like the embers'.
+- Two scripts in `ScrollingPieces/` animate a piece without code:
+  `PieceFrames` on a `Sprite2D` sheet steps its frames (a `sequence` can hold
+  frames, e.g. a run of blanks between rare lightning), and `PiecePulse`
+  throbs a sprite's brightness (the fate die's fissure, the cinders' cracks).
+  Both start each copy at a random point, so a field of pieces never pulses
+  in step.
 - `static_objects` (`StaticBackgroundObjectResource`: a scene + position, e.g.
   the pulsar). Only for placed set pieces; anything that just drifts by
   belongs in `scrolling_objects`.
