@@ -349,9 +349,18 @@ encounter.
 - `scrolling_objects`: what drifts past at varying depths, with
   `num_of_med_pieces` / `num_of_large_pieces`. Pick a set from
   `ScrollingObjects/` (`triangle_debris`, `asteroids`, `ice`), or make a new
-  `ScrollingObjectsResource`: medium and large texture lists, plus whether
+  `ScrollingObjectsResource`: medium and large piece-scene lists, plus whether
   pieces keep their own colours or become flat silhouettes, and whether they
   may spin (off for art lit from a fixed side).
+- A piece is a small scene under
+  `BackgroundManager/BackgroundObjects/ScrollingPieces/<set>/`. A plain one
+  is just a `Sprite2D` root with the texture; animate it or add particles
+  freely. Every node without its own material takes the depth fade, so the
+  whole piece dims with distance; give a node a material only to opt it out
+  (a light that should glow at any depth). Sprites and `AnimatedSprite2D`s
+  set the piece's size for wrapping; particles don't, so keep them close.
+  A piece is freed when it wraps, so particles never streak across the
+  screen; set `preprocess` if an emitter shouldn't start empty.
 - `static_objects` (`StaticBackgroundObjectResource`: a scene + position, e.g.
   the pulsar). Only for placed set pieces; anything that just drifts by
   belongs in `scrolling_objects`.
