@@ -283,8 +283,10 @@ func _pop(node: CanvasItem, delay: float) -> void:
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(node, "scale", rest * Vector2(0.6, 1.5), _DISMISS_POP_TIME * 0.3) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	# Quad, not back: back-in winds up the wrong way first, which reads as a
+	# stall at the peak of the stretch.
 	tween.tween_property(node, "scale", rest * Vector2(0.0, 1.8), _DISMISS_POP_TIME * 0.4) \
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	if node is Node2D:
 		tween.tween_callback(func() -> void:
 			Juice.sparkle(get_parent(), (node as Node2D).global_position, Color.WHITE, 6, 30.0)
