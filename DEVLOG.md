@@ -4,6 +4,28 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-15 — Cockpit damage and destruction
+
+The cockpit now shows the hull. Nine damage sites (five canopy cracks, four
+split frame seams) open one by one as hull falls, each popping in on a flash
+with glass shards or sparks and debris. Healing closes them in reverse: the
+break glows green and fades as green sparks pop out of it. A big hull hit
+(15% of max or more) billows smoke out of the torn seams, and open seams
+keep leaking a thin trail.
+
+Dying is no longer a cut to the game-over panel. `player_destroyed` fires as
+the hull goes: the scenario engine shuts down where it is, the hand locks
+and End Turn disables, but the ships keep hovering and shots already in the
+air land. The breaks rupture faster and faster, then the shell blows apart
+into fragments and the panels tumble away past the camera, leaving the
+ships in open space. `game_over` follows once the wreckage clears.
+
+The crack and seam art was generated (cracks clipped to the glass, seams
+drawn only on frame pixels) and lives as one layer per site in
+`cockpit_damage.aseprite`.
+
+---
+
 ## 2026-10-15 — Shield build
 
 Eight tiles around shields, so defence can win a fight instead of only

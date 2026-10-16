@@ -26,7 +26,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
 | `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs to `res://` paths so saves survive `.tres` renames/moves; stores IDs in save instead of raw paths |
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
-| `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `game_over`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
+| `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS` |
 
@@ -419,7 +419,8 @@ events, which resolve through the engine's modifier pipeline.
 There's a single autosave slot, serialized to JSON at `user://save_game.json`
 (`SAVE_VERSION = 2`; v1 saves still load, and their missing fields fall back
 to the old behaviour). `GameStateManager` keeps a `GameSaveResource` current and
-writes it at checkpoints. `SaveManager` deletes the save on `game_over` and
+writes it at checkpoints. `SaveManager` deletes the save on `player_destroyed`
+(so quitting during the death sequence can't resume it), `game_over` and
 `victory`. A fresh run works on a `duplicate()` of `run_start.tres`, never the
 cached resource itself.
 
@@ -723,6 +724,8 @@ Main (Node2D)
 │   │   └── Shakeable (Shakeable component)
 │   ├── Cockpit Walls
 │   ├── DiceAreaHighlight (shader pulse)
+│   ├── CockpitAmbience (lights, vents, hanging dice)
+│   │   └── CockpitDamage (hull damage overlays; Destruction plays the death)
 │   └── BackgroundManager
 ├── Systems (Node2D)
 │   ├── Player (player.gd)
@@ -764,6 +767,31 @@ Main (Node2D)
 - `Events.show_systems.emit()` / `Events.show_map.emit()`
 
 ---
+
+### 7.3 Cockpit Damage
+
+`CockpitDamage` (`Graphics/Cockpit/CockpitDamage/`) shows the player's hull
+on the cockpit. Each child `CockpitDamageSite` is one full-screen overlay
+(a canopy crack or a split frame seam) with `emit_points` for its particles.
+Sites open in child order as hull falls, evenly spread over the bar
+(`sites_open_at()`), and close in reverse on a heal. A hit or heal animates
+(debris in, green sparks out); a hull set directly (load, new run) snaps. A
+hull hit of at least `big_hit_fraction` of max billows smoke from torn seams,
+and open seams keep leaking a thin trail.
+
+The art is `Assets/Textures/UI/Cockpit/Damage/cockpit_damage.aseprite`, one
+layer per site, exported with
+`aseprite -b cockpit_damage.aseprite --split-layers --save-as "{layer}.png"`.
+To add a site, add a layer, export, add a `CockpitDamageSite` child in
+`cockpit_damage.tscn` at the point in the order it should open, and set its
+`kind` and `emit_points`.
+
+On death, `CockpitDestruction` ruptures every site, cuts the `Cockpit Walls`
+texture into fragments and throws them, and the player's panels, clear,
+then emits `game_over`. By then the fight has already stopped:
+`player_destroyed` shut the engine down, so an enemy turn in progress ends
+without starting another player turn, while ships, shots in flight and the
+background carry on.
 
 ## Core Classes Reference
 
@@ -995,6 +1023,8 @@ the *table they were drawn from* changes.
 | `combat_finished` | Combat ends (all enemies gone) | Re-enable grid dragging, unlock engine charge, EnemyManager rerolls survivors' unsafe tables |
 | `jump` | Hyperspace jump begins | Carry the player's dice, strand the ones enemies hold, reset player state |
 | `sector_advanced` | A new sector has been generated (zero-based index) | RunStats |
+| `player_destroyed` | Player hull hit zero | GameStateManager (GAME_OVER, shuts the ScenarioEngine down), Player (locks the hand, End Turn), SaveManager (deletes save), CockpitDestruction (plays the death, then emits `game_over`) |
+| `game_over` | The cockpit has finished coming apart | GameOver screen, TimeDirector, DebugLogger |
 | `victory` | Final sector's jump gate cleared | GameOver screen, SaveManager (deletes save), GameStateManager |
 | `hazard_armed` / `hazard_countdown_changed` | Background hazard armed for a fight (null: stopped) / ticked | EnvironmentMonitor, HazardTelegraph |
 | `hazard_triggered` | Hazard fired | EnvironmentMonitor, HazardTelegraph, camera shake |
@@ -1010,7 +1040,7 @@ the *table they were drawn from* changes.
 | `player_health_hit` | HP damage taken | SFX + large shake + glitch (if critical) |
 | `player_shields_hit` | Shield damage taken | SFX + small shake |
 | `player_shields_broken` | Shields hit zero (protected → exposed) | Large shake + long cyan vignette |
-| `player_fatal_damage` | Hull reaches 0 | Emit GAME_OVER |
+| `player_fatal_damage` | Hull reaches 0, before death is declared | Tiles (`ON_PLAYER_FATAL_DAMAGE`, which can save the player) |
 | `engine_charge_changed` | Engine charge changed | Update engine bar, map unlock indicators |
 
 ### 9.3 Tile Signals
