@@ -4,6 +4,35 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-16 — Glass that falls, cracks that fade
+
+The canopy cracks were the best part of the cockpit damage, but they sat on
+screen for good. Now a new crack holds for two seconds, then fades over six to
+a ghost at 10%. The canopy remembers every hit without being hard to see
+through. The torn seams and their smoke carry the lasting "hull is low"
+signal. A new hit only brings in new cracks.
+
+Cracks knock glass loose. Shards tumble down inside the cockpit and land on
+whatever is under them: the dash, the top of the main viewer, the rim of the
+hull gauge, the top of the targeting computer. Each one bounces once, glints
+now and then, and fades, with a tinkle as they land. The floor is the art
+itself: the first opaque pixel of the walls texture, or of any sprite in the
+`cockpit_surface` group. No collision shapes to keep in step.
+
+Smoke is now real puffs (three variants) that grow as they rise. The plume
+scales smoothly with the size of the hit, and gets an extra push as the hull
+runs out. A small big-hit at full hull gives a modest puff. A huge hit near
+the end chokes the cabin. Open seams' lingering trails thicken as things get
+dire too. The curve is tunable from CockpitDamage's exports.
+
+On death, every crack drops to its ghost, then they come back one at a time
+in the order they were taken, quickening, each with a glass crack (pitching up
+as they come) and a spill of shards. Then the canopy blows out.
+
+Both glass sounds are synthesised placeholders.
+
+---
+
 ## 2026-10-15 — Cockpit damage and destruction
 
 The cockpit now shows the hull. Nine damage sites (five canopy cracks, four

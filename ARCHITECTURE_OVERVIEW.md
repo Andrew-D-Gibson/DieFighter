@@ -777,7 +777,23 @@ Sites open in child order as hull falls, evenly spread over the bar
 (`sites_open_at()`), and close in reverse on a heal. A hit or heal animates
 (debris in, green sparks out); a hull set directly (load, new run) snaps. A
 hull hit of at least `big_hit_fraction` of max billows smoke from torn seams,
-and open seams keep leaking a thin trail.
+and open seams keep leaking a thin trail. The smoke is `smoke_puff-Sheet.png`
+(three puffs, one picked per particle) growing as it rises. A plume's size
+scales smoothly with `billow_intensity()`, which blends the size of the hit
+(`big_hit_fraction` to `huge_hit_fraction`) with how dire the hull is
+(`dire_at()`, building from `dire_from` of the bar lost). The lingering trail
+also thickens as things get dire. All the knobs are exports on CockpitDamage.
+
+A new crack holds for `crack_hold_time`, then fades over `crack_fade_time`
+to a ghost at `crack_ghost_alpha`. The torn seams and their smoke carry the
+lasting "hull is low" signal, and the glass marks the moment of a big hit. A crack
+knocks glass loose: `CockpitGlassShards` simulates the shards (CPUParticles2D
+can't collide) as they tumble, land, bounce once, glint and fade. They land
+on the first opaque pixel below them of the `Cockpit Walls` texture, or of any
+Sprite2D in the `cockpit_surface` group (the hull gauge and targeting
+computer backgrounds, which stand in front of the dash). A panel moving away
+drops whatever was resting on it. To make another sprite catch glass, add it
+to that group.
 
 The art is `Assets/Textures/UI/Cockpit/Damage/cockpit_damage.aseprite`, one
 layer per site, exported with
@@ -785,8 +801,15 @@ layer per site, exported with
 To add a site, add a layer, export, add a `CockpitDamageSite` child in
 `cockpit_damage.tscn` at the point in the order it should open, and set its
 `kind` and `emit_points`.
+The smoke puffs and glass shards are `smoke_puff.aseprite` and
+`glass_shard.aseprite` beside it, one frame per variant, exported with
+`aseprite -b <name>.aseprite --sheet <name>-Sheet.png --sheet-type horizontal`.
 
-On death, `CockpitDestruction` ruptures every site, cuts the `Cockpit Walls`
+On death, the killing blow's cracks open straight to their ghosts and any
+still fading are dimmed. During the rupture, `CockpitDestruction` brings each
+crack back in its opening order (`crack_return_at()`, gaps shrinking), each
+with a `glass_crack` and a spill of shards. Then the shell blows apart and the
+shards are blown away with it. It also ruptures every site, cuts the `Cockpit Walls`
 texture into fragments and throws them, and the player's panels, clear,
 then emits `game_over`. By then the fight has already stopped:
 `player_destroyed` shut the engine down, so an enemy turn in progress ends
