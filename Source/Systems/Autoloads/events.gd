@@ -22,6 +22,9 @@ signal cockpit_snap_online()
 signal start_scenario()
 signal start_combat()
 signal jump()
+## The player's hull just hit zero. The fight stops here and the cockpit comes
+## apart; game_over follows once that has played out.
+signal player_destroyed()
 signal game_over()
 signal victory()
 ## Emitted once a new sector has been generated. sector_index is zero-based.

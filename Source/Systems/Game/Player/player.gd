@@ -142,7 +142,9 @@ func _ready() -> void:
 	# owns engine_charge; the consequence of holding it past the gate belongs
 	# with the field, not with the bar that draws it.
 	Events.enemy_turn_over.connect(_bleed_for_redline)
-	health.death.connect(Events.game_over.emit)
+	# game_over waits for the cockpit to come apart (CockpitDestruction).
+	health.death.connect(Events.player_destroyed.emit)
+	Events.player_destroyed.connect(_stand_down)
 	health.health_damaged.connect(Events.player_health_hit.emit)
 	health.shields_damaged.connect(Events.player_shields_hit.emit)
 	health.shields_broken.connect(Events.player_shields_broken.emit)
@@ -611,6 +613,18 @@ func capture_hand() -> Array:
 		if is_instance_valid(die):
 			hand.append({"value": die.value, "holo": die.holographic})
 	return hand
+
+
+## The ship is lost: nothing in hand can be played, and the turn can't be
+## ended. A die mid-drag is dropped where it is rather than played, since the
+## engine it would fire through has shut down.
+func _stand_down() -> void:
+	%EndTurnButton.disabled = true
+	%EndTurnButton.update_ui()
+	for die: Dice in _dice_making_the_jump():
+		die.draggable.dragging_allowed = false
+		if die.draggable.state == Draggable.DragState.DRAGGING:
+			die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 
 
 func end_turn() -> void:

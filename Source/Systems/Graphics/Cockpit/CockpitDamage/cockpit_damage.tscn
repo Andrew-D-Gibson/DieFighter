@@ -1,0 +1,85 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage.gd" id="1_damage"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage_site.gd" id="2_site"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_destruction.gd" id="3_destruction"]
+[ext_resource type="Texture2D" uid="uid://doruja68e1s6a" path="res://Assets/Textures/UI/Cockpit/Damage/crack_top_right.png" id="t0"]
+[ext_resource type="Texture2D" uid="uid://cqv8hj75dptab" path="res://Assets/Textures/UI/Cockpit/Damage/seam_canopy_left.png" id="t1"]
+[ext_resource type="Texture2D" uid="uid://bbcjvsh54q8e6" path="res://Assets/Textures/UI/Cockpit/Damage/crack_left.png" id="t2"]
+[ext_resource type="Texture2D" uid="uid://bgs1vdee2shiq" path="res://Assets/Textures/UI/Cockpit/Damage/seam_dash_right.png" id="t3"]
+[ext_resource type="Texture2D" uid="uid://bma63kpc2fiaw" path="res://Assets/Textures/UI/Cockpit/Damage/crack_upper_right.png" id="t4"]
+[ext_resource type="Texture2D" uid="uid://2itubl0qkx1n" path="res://Assets/Textures/UI/Cockpit/Damage/seam_canopy_right.png" id="t5"]
+[ext_resource type="Texture2D" uid="uid://2k8qecxeo22y" path="res://Assets/Textures/UI/Cockpit/Damage/crack_lower_right.png" id="t6"]
+[ext_resource type="Texture2D" uid="uid://cnefdrnwcgkns" path="res://Assets/Textures/UI/Cockpit/Damage/seam_dash_left.png" id="t7"]
+[ext_resource type="Texture2D" uid="uid://bsgbb1x37cujh" path="res://Assets/Textures/UI/Cockpit/Damage/crack_upper_left.png" id="t8"]
+
+[node name="CockpitDamage" type="Node2D"]
+z_as_relative = false
+z_index = 10
+script = ExtResource("1_damage")
+
+[node name="CrackTopRight" type="Sprite2D" parent="."]
+texture = ExtResource("t0")
+centered = false
+script = ExtResource("2_site")
+kind = 0
+emit_points = PackedVector2Array(276, 18, 277, 31, 271, 26, 265, 30)
+
+[node name="SeamCanopyLeft" type="Sprite2D" parent="."]
+texture = ExtResource("t1")
+centered = false
+script = ExtResource("2_site")
+kind = 1
+emit_points = PackedVector2Array(8, 22, 19, 14, 32, 6)
+
+[node name="CrackLeft" type="Sprite2D" parent="."]
+texture = ExtResource("t2")
+centered = false
+script = ExtResource("2_site")
+kind = 0
+emit_points = PackedVector2Array(22, 64, 31, 61, 34, 72, 21, 74)
+
+[node name="SeamDashRight" type="Sprite2D" parent="."]
+texture = ExtResource("t3")
+centered = false
+script = ExtResource("2_site")
+kind = 1
+emit_points = PackedVector2Array(313, 169, 296, 175)
+
+[node name="CrackUpperRight" type="Sprite2D" parent="."]
+texture = ExtResource("t4")
+centered = false
+script = ExtResource("2_site")
+kind = 0
+emit_points = PackedVector2Array(212, 30, 228, 29, 245, 31, 221, 42)
+
+[node name="SeamCanopyRight" type="Sprite2D" parent="."]
+texture = ExtResource("t5")
+centered = false
+script = ExtResource("2_site")
+kind = 1
+emit_points = PackedVector2Array(311, 22, 300, 14, 287, 6)
+
+[node name="CrackLowerRight" type="Sprite2D" parent="."]
+texture = ExtResource("t6")
+centered = false
+script = ExtResource("2_site")
+kind = 0
+emit_points = PackedVector2Array(262, 66, 277, 68, 271, 72, 261, 76)
+
+[node name="SeamDashLeft" type="Sprite2D" parent="."]
+texture = ExtResource("t7")
+centered = false
+script = ExtResource("2_site")
+kind = 1
+emit_points = PackedVector2Array(7, 169, 30, 170, 3, 32)
+
+[node name="CrackUpperLeft" type="Sprite2D" parent="."]
+texture = ExtResource("t8")
+centered = false
+script = ExtResource("2_site")
+kind = 0
+emit_points = PackedVector2Array(70, 22, 84, 18, 99, 10, 85, 34)
+
+[node name="Destruction" type="Node2D" parent="."]
+script = ExtResource("3_destruction")

@@ -165,6 +165,16 @@ func _ready() -> void:
 	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_check_combat_state()
 	)
+	# The fight stops where it is the moment the hull goes, not once the
+	# game-over panel is up: shutting the engine down drops every queued
+	# effect, and an enemy turn in progress ends without starting another
+	# player turn.
+	Events.player_destroyed.connect(func() -> void:
+		state = GameState.GAME_OVER
+		var engine: ScenarioEngine = ScenarioEngine.current()
+		if engine:
+			engine.shutdown()
+	)
 	Events.game_over.connect(func() -> void:
 		state = GameState.GAME_OVER
 	)

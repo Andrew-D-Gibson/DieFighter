@@ -18,7 +18,9 @@ var save_path: String = SAVE_PATH
 
 
 func _ready() -> void:
-	# A run ends either way — a finished save is not a resumable one.
+	# A run ends either way — a finished save is not a resumable one. Gone
+	# as the hull goes, so quitting during the destruction can't resume it.
+	Events.player_destroyed.connect(delete_save)
 	Events.game_over.connect(delete_save)
 	Events.victory.connect(delete_save)
 

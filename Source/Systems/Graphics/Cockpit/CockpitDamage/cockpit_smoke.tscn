@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" uid="uid://cickkmemxemqu" path="res://Assets/Particles/hit_particle_pixel.png" id="1_pixel"]
+
+[sub_resource type="Gradient" id="Gradient_smoke"]
+offsets = PackedFloat32Array(0, 0.15, 0.6, 1)
+colors = PackedColorArray(0.78, 0.76, 0.84, 0, 0.66, 0.64, 0.74, 0.8, 0.45, 0.42, 0.56, 0.5, 0.3, 0.27, 0.42, 0)
+
+[sub_resource type="Curve" id="Curve_smoke"]
+_data = [Vector2(0, 0.4), 0.0, 1.2, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[node name="CockpitSmoke" type="CPUParticles2D"]
+emitting = false
+amount = 5
+lifetime = 2.4
+randomness = 0.5
+texture = ExtResource("1_pixel")
+emission_shape = 1
+emission_sphere_radius = 1.5
+direction = Vector2(0, -1)
+spread = 25.0
+gravity = Vector2(2, -6)
+initial_velocity_min = 3.0
+initial_velocity_max = 7.0
+damping_min = 1.0
+damping_max = 3.0
+scale_amount_min = 1.5
+scale_amount_max = 2.5
+scale_amount_curve = SubResource("Curve_smoke")
+color_ramp = SubResource("Gradient_smoke")
