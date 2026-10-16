@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Ice/ice_shard_2.png" id="1_wleke"]
+
+[node name="IceShard2" type="Sprite2D" unique_id=619094]
+texture = ExtResource("1_wleke")

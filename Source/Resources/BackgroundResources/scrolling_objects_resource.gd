@@ -1,16 +1,20 @@
 class_name ScrollingObjectsResource
 extends Resource
-## A family of sprites that drift down past the cockpit at several depths:
+## A family of pieces that drift down past the cockpit at several depths:
 ## triangle debris, asteroids, ice. A background picks one set, and says how
 ## many pieces of each size to scatter.
+##
+## Each piece is a small scene, so it can animate or emit particles; a plain
+## piece is just a Sprite2D root. ScrollingObject explains how a piece's nodes
+## pick up the depth fade.
 
 ## Smaller pieces. They take the nearer, faster depths.
-@export var medium_textures: Array[Texture2D] = []
+@export var medium_pieces: Array[PackedScene] = []
 ## Bigger pieces. They take the farther, slower depths.
-@export var large_textures: Array[Texture2D] = []
+@export var large_pieces: Array[PackedScene] = []
 
 @export_group("Look")
-## Keep each texture's own colours. Off, every piece is a flat silhouette in
+## Keep each piece's own colours. Off, every piece is a flat silhouette in
 ## silhouette_color, the way the triangle debris has always looked.
 @export var keep_texture_colors: bool = false
 @export var silhouette_color: Color = Color(0.388235, 0.376471, 0.360784, 1)

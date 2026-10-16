@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/TriangleDebris/medium_2.png" id="1_jx1sf"]
+
+[node name="Medium2" type="Sprite2D" unique_id=907087179]
+texture = ExtResource("1_jx1sf")

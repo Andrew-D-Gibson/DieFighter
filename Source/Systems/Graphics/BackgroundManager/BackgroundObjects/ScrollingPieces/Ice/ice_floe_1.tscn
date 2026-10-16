@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Ice/ice_floe_1.png" id="1_thh23"]
+
+[node name="IceFloe1" type="Sprite2D" unique_id=417521014]
+texture = ExtResource("1_thh23")

@@ -79,7 +79,8 @@ func _wrap_star_position(star: Node2D) -> void:
 
 func _wrap_scrolling_object_position(piece: ScrollingObject) -> void:
 	piece.reroll()
-	piece.global_position.y = -5 - piece.texture.get_height()
+	# Just clear of the top edge, so the new piece slides in rather than pops.
+	piece.global_position.y = -5 - piece.bounds.end.y
 	piece.global_position.x = RNGManager.randf_range(RNGManager.Bucket.BACKGROUND, 0, Globals.SCREEN_SIZE.x)
 
 

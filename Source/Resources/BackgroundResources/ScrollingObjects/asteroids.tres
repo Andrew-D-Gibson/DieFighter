@@ -1,22 +1,22 @@
 [gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
 
 [ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="1_script"]
-[ext_resource type="Texture2D" uid="uid://c6w7gbxkak5nx" path="res://Assets/Textures/Backgrounds/StaticObjects/asteroid_small.png" id="tex_0"]
-[ext_resource type="Texture2D" uid="uid://bsu6kxvmkyb1w" path="res://Assets/Textures/Backgrounds/StaticObjects/asteroid_medium.png" id="tex_1"]
-[ext_resource type="Texture2D" uid="uid://c3ow1lbebkh44" path="res://Assets/Textures/Backgrounds/StaticObjects/asteroid_large.png" id="tex_2"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_pebble.png" id="new_asteroid_pebble"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_stone_1.png" id="new_asteroid_stone_1"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_stone_2.png" id="new_asteroid_stone_2"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_stone_3.png" id="new_asteroid_stone_3"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_stone_4.png" id="new_asteroid_stone_4"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_boulder_1.png" id="new_asteroid_boulder_1"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_boulder_2.png" id="new_asteroid_boulder_2"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Asteroids/asteroid_boulder_3.png" id="new_asteroid_boulder_3"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_large.tscn" id="1_sn2a7"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_boulder_1.tscn" id="2_07o1p"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_boulder_2.tscn" id="3_dko5c"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_boulder_3.tscn" id="4_aieft"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_small.tscn" id="9_g68ma"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_medium.tscn" id="10_irfja"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_pebble.tscn" id="11_f4bsx"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_stone_1.tscn" id="12_na0mu"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_stone_2.tscn" id="13_ebbub"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_stone_3.tscn" id="14_d04b0"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_stone_4.tscn" id="15_pte6n"]
 
 [resource]
 script = ExtResource("1_script")
-medium_textures = Array[Texture2D]([ExtResource("tex_0"), ExtResource("tex_1"), ExtResource("new_asteroid_pebble"), ExtResource("new_asteroid_stone_1"), ExtResource("new_asteroid_stone_2"), ExtResource("new_asteroid_stone_3"), ExtResource("new_asteroid_stone_4")])
-large_textures = Array[Texture2D]([ExtResource("tex_2"), ExtResource("new_asteroid_boulder_1"), ExtResource("new_asteroid_boulder_2"), ExtResource("new_asteroid_boulder_3")])
+medium_pieces = Array[PackedScene]([ExtResource("9_g68ma"), ExtResource("10_irfja"), ExtResource("11_f4bsx"), ExtResource("12_na0mu"), ExtResource("13_ebbub"), ExtResource("14_d04b0"), ExtResource("15_pte6n")])
+large_pieces = Array[PackedScene]([ExtResource("1_sn2a7"), ExtResource("2_07o1p"), ExtResource("3_dko5c"), ExtResource("4_aieft")])
 keep_texture_colors = true
 base_visibility = 0.35
 visibility_per_depth = 0.16

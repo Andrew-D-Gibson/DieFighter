@@ -10,7 +10,7 @@ shader_parameter/color = Color(0.388235, 0.376471, 0.360784, 1)
 shader_parameter/background_color = Color(0, 0, 0, 1)
 shader_parameter/velocity_level = 0.0
 
-[node name="ScrollingObject" type="Sprite2D" unique_id=1006073785]
+[node name="ScrollingObject" type="Node2D" unique_id=1006073785]
 z_index = 1
 material = SubResource("ShaderMaterial_aktdh")
 script = ExtResource("1_f12lg")
