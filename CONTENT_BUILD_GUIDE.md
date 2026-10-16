@@ -118,6 +118,13 @@ registration to testing. For how the systems work underneath, see
   can take no dice at all and live only on these. `ON_TURN_START` also fires
   for a fight's opening turn, but only after `Events.enemies_arrived` (every
   ship landed and targeted), so it is safe to target enemies from it.
+  - Event responses skip `activation_checks`. A response that can fire
+    outside combat (`ON_PLAYER_SHIELDS_GAINED`, since shield tiles work
+    anywhere) and hits a random enemy must wrap its chain in `IF_IN_COMBAT`,
+    or it can attack a merchant (Repulsor Field).
+  - A tile that spends or cashes in shields gates on `SHIELDS_AT_LEAST`, and
+    pays with `SPEND_SHIELDS`, not a negative `SHIELD`: that would read as a
+    hit and set off anything listening for one.
 - **`dragging_allowed`, `max_dice_in_queue`**: rarely touched.
 
 **Loop rule for Feed tiles:** a tile with unlimited uses may only Feed

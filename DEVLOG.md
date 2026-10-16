@@ -4,6 +4,35 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-15 — Shield build
+
+Eight tiles around shields, so defence can win a fight instead of only
+delaying it, after Slay the Spire's Body Slam and Juggernaut.
+
+**Builders.** Deflector Array (any die -> shields equal to die), Overshield
+Relay (+3 shields, Feed right, 2 uses), Reactive Armor (hull hit -> 4
+shields). **Multipliers.** Fortress Protocol (a 6 doubles your shields, 1
+use, rare) and Shield Siphon (a 4 steals every shield off the target, 2
+uses). **Payoffs.** Ram Plating (any die -> damage equal to shields, keeps
+them, 1 use, rare), Discharge Plate (a 1 spends all shields for 2x that in
+damage) and Repulsor Field (shields gained -> 2 damage to a random enemy,
+rare).
+
+Shields last the whole scenario, unlike Spire's block, so the payoffs that
+keep shields are single-use and rare, and the one that can be used freely
+spends them.
+
+**Engine.** `SET_TO_TARGET_SHIELDS` reads shields (after `TARGET_PLAYER`,
+your own). `SPEND_SHIELDS` pays a shield cost without counting as a hit, so
+it plays no hit feedback and can't trip Repulsor-style listeners;
+`SHIELDS_AT_LEAST` gates it. `ON_PLAYER_SHIELDS_GAINED` is a new tile event,
+and `IF_IN_COMBAT` keeps a random-enemy response off civilians, since event
+responses ignore activation checks. `Health.change_shields(0)` is now a no-op;
+a tile that scaled to nothing (a boxed-in Solar Sail) used to play the shield
+hit.
+
+---
+
 ## 2026-10-14 — Review cleanup of the last two weeks
 
 A code review of the fortnight's work, then the cleanup it suggested. No
