@@ -1,11 +1,11 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://d1h700h620u23"]
 
-[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Texture2D" uid="uid://c3pua8pkuhrsp" path="res://Assets/Textures/Tiles/PurpleTiles/toll_relay-Sheet.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
@@ -16,6 +16,14 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_act")
 type = 2
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "+2 TOLL"
+color = Color(0.7725, 0.3216, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_3"]
 script = ExtResource("script_effect")
@@ -47,26 +55,18 @@ subtype = 9
 grid_offset = Vector2i(1, 0)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step_8"]
-script = ExtResource("script_effect")
-category = 5
-subtype = 11
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 16
-string_param = "+2 TOLL"
-color = Color(0.7725, 0.3216, 0.9451, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_2"]
 script = ExtResource("script_effect")
 category = 4
 subtype = 18
 amount = 80
 color = Color(0.7725, 0.3216, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_8"]
+script = ExtResource("script_effect")
+category = 5
+subtype = 11
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain_9"]
@@ -98,7 +98,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_f0_2")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

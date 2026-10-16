@@ -8,7 +8,8 @@
       "List_dir",
       "Read(**/*.gd)",
       "Write(**/*.gd)",
-      "Bash"
+      "Bash",
+      "mcp__godot-mcp-docs__get_documentation_file"
     ],
     "deny": [
       "Bash(rm *)",

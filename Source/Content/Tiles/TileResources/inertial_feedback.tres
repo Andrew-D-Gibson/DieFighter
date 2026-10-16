@@ -161,6 +161,7 @@ script = ExtResource("script_0")
 tile_name = "[color=red]Inertial Feedback[/color]"
 description = "(die_6) -> Deal [color=red]1 damage[/color] to [color=purple]all other ships[/color] per tile moved this combat ([data]tiles_moved[/data]). Reset count. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
+offered_as_reward = false
 textures = SubResource("Resource_frames4")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])

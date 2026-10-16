@@ -1,23 +1,61 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bvupt82cylumk"]
 
-[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
-[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/GreenTiles/welder.png" id="tex"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="sfx_reroll"]
+[ext_resource type="Texture2D" uid="uid://ckwna1asnoiio" path="res://Assets/Textures/Tiles/GreenTiles/welder.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_juice_4"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "HOLD"
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_6"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 7
+metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_2"]
 script = ExtResource("script_effect")
 category = 4
 subtype = 5
 sound_resource = ExtResource("sfx_reroll")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 22
+color = Color(0.949, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 15
+amount = 16
+multiplier = 1.5
+color = Color(0.949, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "WELD"
+color = Color(0.949, 0.6118, 0.3647, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_3"]
@@ -38,50 +76,12 @@ category = 5
 subtype = 11
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step_6"]
-script = ExtResource("script_effect")
-category = 3
-subtype = 7
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 22
-color = Color(0.9490, 0.6118, 0.3647, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 15
-amount = 16
-multiplier = 1.5
-color = Color(0.9490, 0.6118, 0.3647, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_3"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 16
-string_param = "WELD"
-color = Color(0.9490, 0.6118, 0.3647, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_4"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 16
-string_param = "HOLD"
-color = Color(0.8078, 0.9412, 0.9451, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_cond_7"]
 script = ExtResource("script_cond")
-category = 7
-subtype = 7
 if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5")])
 if_false_effects = Array[ExtResource("script_effect")]([SubResource("Resource_juice_4"), SubResource("Resource_step_6")])
+category = 7
+subtype = 7
 metadata/_custom_type_script = "uid://1c0msmj2pcjy"
 
 [sub_resource type="Resource" id="Resource_chain_8"]
@@ -99,7 +99,7 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_f0")
 }],
-"loop": true,
+"loop": 1,
 "name": &"default",
 "speed": 5.0
 }]

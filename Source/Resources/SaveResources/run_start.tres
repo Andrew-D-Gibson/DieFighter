@@ -9,7 +9,7 @@
 
 [resource]
 script = ExtResource("1_runst")
-player_health = 14
+player_health = 32
 player_max_health = 32
 num_of_dice = 3
 tile_locations = Dictionary[Vector2i, ExtResource("2_runst")]({
