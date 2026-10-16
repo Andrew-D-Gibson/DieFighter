@@ -98,3 +98,50 @@ func test_hitstop_with_no_duration_does_nothing() -> void:
 	await director.hitstop(0)
 	assert_eq(Engine.time_scale, 1.0)
 	assert_eq(director._requests.size(), 0)
+
+
+func test_base_scale_sets_the_resting_speed() -> void:
+	director.set_base_scale(0.5)
+	assert_almost_eq(Engine.time_scale, 0.5, 0.0001)
+
+
+func test_requests_slow_relative_to_the_base_scale() -> void:
+	director.set_base_scale(0.5)
+	director.slow_mo(0.4, 100)
+	assert_almost_eq(Engine.time_scale, 0.2, 0.0001)
+	_step(200)
+	assert_almost_eq(Engine.time_scale, 0.5, 0.0001, "back to the base, not full speed")
+
+
+func test_request_durations_stretch_with_the_base_scale() -> void:
+	# At quarter speed everything should play four times as long, hitstops
+	# included, or a slowed game still flashes past its impact frames.
+	director.set_base_scale(0.25)
+	director._add_request(director._HITSTOP_SCALE, 100)
+	_step(399)
+	assert_eq(Engine.time_scale, 0.0, "still frozen at 399 of 400 real ms")
+	_step(1)
+	assert_almost_eq(Engine.time_scale, 0.25, 0.0001)
+
+
+func test_effect_time_runs_through_a_hitstop() -> void:
+	_step(0)
+	var start: float = director.effect_msec()
+	director._add_request(director._HITSTOP_SCALE, 1000)
+	_step(100)
+	assert_almost_eq(director.effect_msec() - start, 100.0, 0.001)
+
+
+func test_effect_time_runs_at_the_base_speed() -> void:
+	_step(0)
+	director.set_base_scale(0.25)
+	var start: float = director.effect_msec()
+	_step(100)
+	assert_almost_eq(director.effect_msec() - start, 25.0, 0.001)
+
+
+func test_clear_keeps_the_base_scale() -> void:
+	director.set_base_scale(0.25)
+	director.slow_mo(0.5, 1000)
+	director.clear()
+	assert_almost_eq(Engine.time_scale, 0.25, 0.0001)

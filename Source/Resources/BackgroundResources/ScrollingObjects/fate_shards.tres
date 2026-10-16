@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3 uid="uid://cqjktemmveajs"]
 
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die.tscn" id="1_got00"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_wisp.tscn" id="2_5op8j"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_shard_3.tscn" id="6_0n2m3"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_mote.tscn" id="7_lscok"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die_chip.tscn" id="8_lw60w"]
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="9_sbly6"]
+[ext_resource type="Script" uid="uid://dmtivy7vglv0q" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="9_sbly6"]
 
 [resource]
 script = ExtResource("9_sbly6")

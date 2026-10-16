@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3 uid="uid://vdfv2ivudb1o"]
 
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_cloudlet_1.tscn" id="1_1ixvj"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_cloudlet_2.tscn" id="2_acvcu"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_mote_1.tscn" id="3_ljt14"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_mote_2.tscn" id="4_dq171"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ion/ion_mote_3.tscn" id="5_h3mon"]
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="6_hkm23"]
+[ext_resource type="Script" uid="uid://dmtivy7vglv0q" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="6_hkm23"]
 
 [resource]
 script = ExtResource("6_hkm23")

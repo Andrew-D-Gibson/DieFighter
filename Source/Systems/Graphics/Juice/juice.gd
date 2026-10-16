@@ -89,9 +89,7 @@ static func ring(parent: Node, global_pos: Vector2, color: Color,
 	shockwave.start_radius = start_radius
 	shockwave.end_radius = end_radius
 	shockwave.duration = duration
-	shockwave.z_index = _FX_Z_INDEX
-	parent.add_child(shockwave)
-	shockwave.global_position = global_pos
+	JuicePixelated.spawn(parent, shockwave, _FX_Z_INDEX).global_position = global_pos
 
 
 ## A burst of single-pixel sparks flying out from `global_pos` and fading.
@@ -202,7 +200,7 @@ static func screen_ripple(context_node: Node, world_pos: Vector2, strength: floa
 
 
 ## Dims the world and rushes speed lines in on [param target] for
-## [param hold_seconds] of real time, then cuts them away. Meant to run inside
+## [param hold_seconds] of effect time, then cuts them away. Meant to run inside
 ## a hitstop. Drawn at [param z_index] relative to [param target], so pass one
 ## just under whatever should stay lit.
 static func kill_focus(target: Node2D, z_index: int, hold_seconds: float, accent: Color) -> void:
@@ -211,8 +209,7 @@ static func kill_focus(target: Node2D, z_index: int, hold_seconds: float, accent
 	var focus: JuiceKillFocus = JuiceKillFocus.new()
 	focus.hold_seconds = hold_seconds
 	focus.accent = accent
-	focus.z_index = z_index
-	target.add_child(focus)
+	JuicePixelated.spawn(target, focus, z_index)
 
 
 ## A full-screen wash of [param color] that fades over [param seconds] of real
@@ -231,7 +228,7 @@ static func screen_flash(context_node: Node, color: Color, alpha: float = 0.3, s
 	layer.add_child(rect)
 	context_node.get_tree().root.add_child(layer)
 
-	var tween: Tween = layer.create_tween().set_ignore_time_scale(true)
+	var tween: Tween = TimeDirector.effect_tween(layer)
 	tween.tween_property(rect, "color:a", 0.0, seconds) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.finished.connect(layer.queue_free)

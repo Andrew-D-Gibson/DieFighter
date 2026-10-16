@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3 uid="uid://bw5yf0g7cyqme"]
 
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/plasma_1.tscn" id="1_40kcc"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/plasma_2.tscn" id="2_a03lo"]
@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/ember_1.tscn" id="5_0rgxd"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/ember_2.tscn" id="6_mtbpl"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Embers/ember_3.tscn" id="7_4xdha"]
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="8_hrrw1"]
+[ext_resource type="Script" uid="uid://dmtivy7vglv0q" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="8_hrrw1"]
 
 [resource]
 script = ExtResource("8_hrrw1")

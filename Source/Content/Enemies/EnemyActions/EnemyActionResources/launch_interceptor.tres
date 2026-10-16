@@ -49,7 +49,7 @@ effects = Array[ExtResource("ext_1")]([SubResource("Resource_step0"), SubResourc
 [resource]
 script = ExtResource("ext_5")
 name = "Launch"
-description = "Launch an Interceptor. [color=orange]Return[/color] your die"
+description = "Launch an [color=red]Interceptor[/color]"
 indicator_texture = ExtResource("ext_6")
 info_texture = ExtResource("ext_7")
 effect_chain = SubResource("Resource_chain")

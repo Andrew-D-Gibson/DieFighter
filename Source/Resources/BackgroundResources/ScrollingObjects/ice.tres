@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3 uid="uid://ddyap0pj58xl3"]
 
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ice/ice_floe_1.tscn" id="1_6gcua"]
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dmtivy7vglv0q" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ice/ice_floe_2.tscn" id="2_5uqr1"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ice/ice_cluster_1.tscn" id="3_bx5xr"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Ice/ice_cluster_2.tscn" id="4_rd7by"]

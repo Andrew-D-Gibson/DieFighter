@@ -7,7 +7,7 @@ const _DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEff
 const _PRE_DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_pre_death.tres")
 
 ## How long the finishing blow holds the frame, in real time.
-const _KILL_HOLD_MSEC: int = 280
+const _KILL_HOLD_MSEC: int = 340
 ## How long the kill's white flash takes to fade once time resumes.
 const _KILL_FLASH_FADE_SECONDS: float = 0.3
 ## How close to the middle of the screen a ship has to be to pick its launch

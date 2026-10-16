@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3]
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3 uid="uid://caqyji88mj1rw"]
 
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://dmtivy7vglv0q" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="1_script"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_large.tscn" id="1_sn2a7"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_boulder_1.tscn" id="2_07o1p"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Asteroids/asteroid_boulder_2.tscn" id="3_dko5c"]

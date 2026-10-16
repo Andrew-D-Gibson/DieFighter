@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://cpe7rl3favxbf"]
+
+[ext_resource type="Texture2D" uid="uid://c3ow1lbebkh44" path="res://Assets/Textures/Backgrounds/StaticObjects/asteroid_large.png" id="1_tex"]
+
+[node name="AsteroidLarge" type="Sprite2D" unique_id=181879544]
+texture = ExtResource("1_tex")

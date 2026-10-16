@@ -27,7 +27,7 @@ const _RAISED_SHIP_SCALE: float = 1.2
 const _SHUDDER_STRENGTH: float = 3.0
 ## How far a killed ship is knocked before it blows, and how fast.
 const _LAUNCH_DISTANCE: float = 70.0
-const _LAUNCH_SECONDS: float = 0.32
+const _LAUNCH_SECONDS: float = 0.4
 const _LAUNCH_SPIN: float = TAU * 0.6
 const _LAUNCH_END_SCALE: float = 0.7
 
@@ -98,7 +98,7 @@ func play_kill_shudder(direction: Vector2, seconds: float) -> void:
 	_dying = true
 	stop_bob_tween()
 	_shudder_rest = position
-	_shudder_tween = create_tween().set_ignore_time_scale(true)
+	_shudder_tween = TimeDirector.effect_tween(self)
 	_shudder_tween.tween_method(func(progress: float) -> void:
 		# Alternating sides every frame, shrinking to rest. Mostly along the
 		# line the ship is about to fly, so the shudder points the way.

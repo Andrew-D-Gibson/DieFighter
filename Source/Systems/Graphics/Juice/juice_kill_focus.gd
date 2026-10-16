@@ -4,7 +4,7 @@ extends Node2D
 ## dying ship, then both cut away the instant time resumes. Spawned through
 ## Juice.kill_focus().
 ##
-## It runs on real time throughout, because it plays inside a hitstop. A freeze
+## It runs on effect time throughout, because it plays inside a hitstop. A freeze
 ## where nothing moves reads as the game hitching; a freeze where the frame
 ## itself is still charging reads as impact.
 
@@ -16,14 +16,20 @@ const _DIM_OUT_SECONDS: float = 0.12
 const _DIM_EXTENT: float = 600.0
 
 const _LINE_COUNT: int = 24
-## Where the lines start, from the ship's centre. They close in over the hold,
-## so the frame tightens on the ship rather than sitting still.
+## How close the lines' tips get to the ship's centre, at the end of the hold.
+## They close in from there, so the frame tightens on the ship rather than
+## sitting still.
 const _LINE_INNER_START: float = 46.0
 const _LINE_INNER_END: float = 24.0
 const _LINE_INNER_JITTER: float = 10.0
 ## Just past the screen corners at the kill cam's zoom: any further and the
 ## wide ends of the wedges are all offscreen, leaving only thin slivers.
 const _LINE_OUTER: float = 170.0
+## Shares of the hold the lines spend shooting in from offscreen, and then
+## with their tails chasing the tips in until they vanish into the ship. They
+## sit at full length in between.
+const _LINE_EXTEND_SHARE: float = 0.35
+const _LINE_RETRACT_SHARE: float = 0.3
 const _LINE_MIN_WIDTH: float = 4.0
 const _LINE_MAX_WIDTH: float = 12.0
 ## Redrawn this often rather than every frame: a flicker on twos reads as
@@ -49,8 +55,8 @@ var hold_seconds: float = 0.25
 var accent: Color = Color.RED
 
 var _draws_dim: bool = true
-var _started_msec: int = 0
-var _last_reroll_msec: int = -_REROLL_MSEC
+var _started_msec: float = 0.0
+var _last_reroll_msec: float = -_REROLL_MSEC
 var _released: bool = false
 var _dim_alpha: float = 0.0
 ## Each line as [angle, inner offset, width, is_accent].
@@ -68,11 +74,15 @@ func _ready() -> void:
 	_draws_dim = get_tree().get_nodes_in_group(_DIM_GROUP).is_empty()
 	if _draws_dim:
 		add_to_group(_DIM_GROUP)
-	_started_msec = Time.get_ticks_msec()
+	_started_msec = TimeDirector.effect_msec()
+	# The first draw can land before the first process, and an empty spark
+	# isn't a polygon.
+	_last_reroll_msec = 0
+	_reroll_lines()
 
 
 func _process(_delta: float) -> void:
-	var elapsed_msec: int = Time.get_ticks_msec() - _started_msec
+	var elapsed_msec: float = TimeDirector.effect_msec() - _started_msec
 	if not _released and elapsed_msec >= hold_seconds * 1000.0:
 		_release()
 	if _released:
@@ -92,13 +102,22 @@ func _draw() -> void:
 	if _released:
 		return
 
-	var progress: float = clampf((Time.get_ticks_msec() - _started_msec) / (hold_seconds * 1000.0), 0.0, 1.0)
+	var progress: float = clampf((TimeDirector.effect_msec() - _started_msec) / (hold_seconds * 1000.0), 0.0, 1.0)
 	var inner_base: float = lerpf(_LINE_INNER_START, _LINE_INNER_END, progress)
+	# Eased out on the way in, so they strike rather than slide; eased in on
+	# the way out, so they're gone in a snap on the frame time resumes.
+	var extend: float = ease(clampf(progress / _LINE_EXTEND_SHARE, 0.0, 1.0), 0.4)
+	var retract: float = ease(clampf((progress - (1.0 - _LINE_RETRACT_SHARE)) / _LINE_RETRACT_SHARE, 0.0, 1.0), 2.0)
 	for line: Array in _lines:
 		var direction: Vector2 = Vector2.from_angle(line[0])
 		var side: Vector2 = direction.orthogonal() * (line[2] / 2.0)
-		var tip: Vector2 = direction * (inner_base + line[1])
-		var outer: Vector2 = direction * _LINE_OUTER
+		var inner: float = inner_base + line[1]
+		var tip_distance: float = lerpf(_LINE_OUTER, inner, extend)
+		var outer_distance: float = lerpf(_LINE_OUTER, inner, retract)
+		if outer_distance - tip_distance < 1.0:
+			continue
+		var tip: Vector2 = direction * tip_distance
+		var outer: Vector2 = direction * outer_distance
 		var color: Color = accent if line[3] else Color.WHITE
 		draw_colored_polygon(PackedVector2Array([tip, outer + side, outer - side]), color)
 
@@ -129,15 +148,16 @@ func _reroll_lines() -> void:
 		_spark.append(Vector2.from_angle(twist + i * PI / _SPARK_POINTS) * radius)
 
 
-## The lines cut on the frame time resumes; only the dim lingers, briefly, so
-## the burst that follows lands on a world that's still coming back up.
+## The lines have closed into the ship by the frame time resumes; only the dim
+## lingers, briefly, so the burst that follows lands on a world that's still
+## coming back up.
 func _release() -> void:
 	_released = true
 	queue_redraw()
 	if not _draws_dim:
 		queue_free()
 		return
-	var tween: Tween = create_tween().set_ignore_time_scale(true)
+	var tween: Tween = TimeDirector.effect_tween(self)
 	tween.tween_method(func(alpha: float) -> void:
 		_dim_alpha = alpha
 		queue_redraw(), 1.0, 0.0, _DIM_OUT_SECONDS)

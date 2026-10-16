@@ -81,8 +81,8 @@ func _kill_cam(focus: Vector2, hold_seconds: float) -> void:
 	var lean: Vector2 = (focus - get_screen_center_position() + offset) * _KILL_CAM_FOCUS_LEAN
 	var creep_seconds: float = maxf(hold_seconds - _KILL_CAM_SNAP_SECONDS, 0.0)
 
-	# Real time throughout: the hold is a hitstop, where game time stands still.
-	_punch_tween = create_tween().set_ignore_time_scale(true)
+	# Effect time throughout: the hold is a hitstop, where game time stands still.
+	_punch_tween = TimeDirector.effect_tween(self)
 	_punch_tween.tween_property(self, "zoom", _resting_zoom * _KILL_CAM_SNAP_ZOOM, _KILL_CAM_SNAP_SECONDS) \
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	_punch_tween.parallel().tween_property(self, "offset", lean, _KILL_CAM_SNAP_SECONDS) \

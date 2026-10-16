@@ -85,8 +85,7 @@ registration to testing. For how the systems work underneath, see
 **Registration:** none. Any `TileResource` in that folder is automatically:
 - in the reward and shop pools (`RewardManager`), weighted by `rarity`;
 - saved by its filename id (`ContentRegistry`). Filenames must be unique, and
-  renaming one breaks existing saves that hold it;
-- available to `give_tile` in the dev console.
+  renaming one breaks existing saves that hold it.
 
 **Fields**
 - **Info**
@@ -136,8 +135,8 @@ Feeds it on, so with unlimited uses one die chains through every relay for
 free. Use 2 for modest effects (Signal, Surge, Toll, Afterburner Relay, and
 Relay Terminal) and 1 for the biggest per-die hit (Leech Relay).
 
-**Test:** run the game, open the dev console with `` ` ``, then `give_tile <name>`.
-`set_dice 1 2 3`, `reset_uses` and `charge_engines` help set up a case.
+**Test:** run the game and get the tile onto the grid, then open the dev console
+with `` ` ``. `set_dice 1 2 3`, `reset_uses` and `charge_engines` help set up a case.
 
 ---
 

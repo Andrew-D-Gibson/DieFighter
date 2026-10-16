@@ -99,9 +99,6 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'fps':
 			_toggle_fps_display()
 
-		'give_tile':
-			_give_tile(command.slice(1))
-
 		'god':
 			_god()
 
@@ -162,6 +159,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'test':
 			_test(command.slice(1))
 
+		'timescale':
+			_timescale(command.slice(1))
+
 		_:
 			command_history.append_text('\t\tInvalid command. Type [b]help[/b] for a list.')
 
@@ -211,77 +211,6 @@ func _clear_grid() -> void:
 		tile.queue_free()
 	Globals.tile_grid.tile_locations.clear()
 	command_history.append_text('\n[center]Cleared all tiles.[/center]')
-
-
-func _give_tile(command_args: Array[String] = []) -> void:
-	var available_pos: Vector2i = Globals.tile_grid.find_available_grid_pos()
-	if not Globals.tile_grid.is_grid_pos_valid(available_pos):
-		command_history.append_text('\n\t\tNo space in the grid.')
-		return
-
-	var tile_names := _get_available_tile_names()
-
-	if command_args.is_empty():
-		if not tile_names.is_empty():
-			command_history.append_text('\n\t\tAvailable tiles: ' + ', '.join(tile_names))
-		else:
-			command_history.append_text('\n\t\tNo tiles found.')
-		return
-
-	var search_name: String = ' '.join(command_args).strip_edges().to_lower()
-	var found_resource: TileResource = null
-
-	var matches := tile_names.filter(func(name: String) -> bool: return name.to_lower().contains(search_name))
-
-	if matches.is_empty():
-		command_history.append_text('\n\t\tNo tile found matching: "' + search_name + '"')
-		return
-
-	found_resource = _load_tile_by_name(matches[0])
-
-	if not found_resource:
-		command_history.append_text('\n\t\tNo tile found matching: "' + search_name + '"')
-		return
-
-	var tile: Tile = Globals.tile_grid.create_tile(found_resource)
-	add_child(tile)
-	tile.global_position = Globals.tile_grid.grid_to_global_pos(available_pos)
-	Globals.tile_grid.receive_tile(tile, tile.global_position)
-
-	command_history.append_text('\n[center]Added: ' + found_resource.tile_name + '[/center]')
-
-func _get_available_tile_names() -> Array[String]:
-	var names: Array[String] = []
-	var search_dirs: Array[String] = [
-		"res://Source/Content/Tiles/TileResources/",
-	]
-	for dir_location: String in search_dirs:
-		var dir: DirAccess = DirAccess.open(dir_location)
-		if not dir:
-			continue
-		for file_name: String in dir.get_files():
-			if not file_name.ends_with(".tres"):
-				continue
-			var res := ResourceLoader.load(dir_location + file_name)
-			if res is TileResource and not res.tile_name in names:
-				names.append(res.tile_name)
-	return names
-
-func _load_tile_by_name(tile_name: String) -> TileResource:
-	var search_dirs: Array[String] = [
-		"res://Source/Content/Tiles/TileResources/",
-	]
-	for dir_location: String in search_dirs:
-		var dir: DirAccess = DirAccess.open(dir_location)
-		if not dir:
-			continue
-		for file_name: String in dir.get_files():
-			if not file_name.ends_with(".tres"):
-				continue
-			var res := ResourceLoader.load(dir_location + file_name)
-			if res is TileResource and res.tile_name == tile_name:
-				return res
-	return null
 
 
 func _save_grid(command_args: Array[String] = []) -> void:
@@ -520,6 +449,17 @@ func _toggle_fps_display() -> void:
 	Events.toggle_fps_display.emit()
 
 
+func _timescale(command_args: Array[String] = []) -> void:
+	if command_args.is_empty():
+		TimeDirector.set_base_scale(1.0)
+	elif command_args.size() == 1 and command_args[0].is_valid_float() and float(command_args[0]) > 0.0:
+		TimeDirector.set_base_scale(float(command_args[0]))
+	else:
+		command_history.append_text('\n\t\tUsage: timescale [scale]  (scale > 0, no arg resets to 1)')
+		return
+	command_history.append_text('\n[center]Time scale set to ' + str(TimeDirector.base_scale) + '.[/center]')
+
+
 const _TEST_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres")
 const _TEST_COMPARISON_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_health_hit.tres")
 
@@ -543,7 +483,6 @@ func _help() -> void:
 	command_history.append_text('\n[b]damage[/b] <amount>               damage player')
 	command_history.append_text('\n[b]damage_enemies[/b] <amount>       damage all enemies')
 	command_history.append_text('\n[b]fps[/b]                           toggle FPS display')
-	command_history.append_text('\n[b]give_tile[/b] <name>              add a tile by name to first open slot')
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')
 	command_history.append_text('\n[b]kill_enemies[/b]                  kill all enemies')
@@ -560,5 +499,6 @@ func _help() -> void:
 	command_history.append_text('\n[b]spawn_dice[/b] [amount]           spawn extra dice')
 	command_history.append_text('\n[b]spawn_enemy[/b] <type>            (not yet implemented)')
 	command_history.append_text('\n[b]status[/b] <id> [stacks]          apply a status to the targeted enemy')
+	command_history.append_text('\n[b]timescale[/b] [scale]             set game speed (e.g. 0.25; no arg: reset to 1)')
 	command_history.append_text('\n[b]unlock_tiles[/b] <a|b|c>          allow tiles to be moved')
 	command_history.append_text('\n[color=gray]Up/Down arrows cycle command history.[/color]')
