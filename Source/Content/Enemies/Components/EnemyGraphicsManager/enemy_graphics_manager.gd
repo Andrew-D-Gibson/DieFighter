@@ -23,6 +23,14 @@ const _RAISED_SHIP_Z_INDEX: int = 50
 ## How much bigger the ship draws while raised.
 const _RAISED_SHIP_SCALE: float = 1.2
 
+## How far the kill shudder throws the ship at its start, in pixels.
+const _SHUDDER_STRENGTH: float = 3.0
+## How far a killed ship is knocked before it blows, and how fast.
+const _LAUNCH_DISTANCE: float = 70.0
+const _LAUNCH_SECONDS: float = 0.32
+const _LAUNCH_SPIN: float = TAU * 0.6
+const _LAUNCH_END_SCALE: float = 0.7
+
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
 
@@ -35,6 +43,15 @@ var _flash_tween: Tween
 
 ## The ship's scale before set_ship_raised() enlarged it.
 var _lowered_ship_scale: Vector2 = Vector2.ONE
+
+## Set once the kill sequence takes the ship. A hit landing just before the
+## killing blow would otherwise restart the bob when its shake ends, and the
+## bob tweens to a fixed global position, dragging a launched wreck back.
+var _dying: bool = false
+
+## The kill shudder, and where it rattles around. launch() cuts it short.
+var _shudder_tween: Tween
+var _shudder_rest: Vector2 = Vector2.ZERO
 
 ## Sets up the ship graphics and associated components
 func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
@@ -70,6 +87,58 @@ func play_death_animation() -> void:
 	explosion.global_position = self.global_position
 	
 	await explosion.animation_finished
+
+
+## Rattles the ship along [param direction] for [param seconds] of real time,
+## dying away to nothing: the fighting-game shudder of a body taking a hit too
+## big to absorb. Real time because it plays through the kill's hitstop.
+## Moves this manager rather than the ship graphics, which Shakeable and the
+## bob own.
+func play_kill_shudder(direction: Vector2, seconds: float) -> void:
+	_dying = true
+	stop_bob_tween()
+	_shudder_rest = position
+	_shudder_tween = create_tween().set_ignore_time_scale(true)
+	_shudder_tween.tween_method(func(progress: float) -> void:
+		# Alternating sides every frame, shrinking to rest. Mostly along the
+		# line the ship is about to fly, so the shudder points the way.
+		var side: float = 1.0 if Engine.get_frames_drawn() % 2 == 0 else -1.0
+		var strength: float = _SHUDDER_STRENGTH * (1.0 - progress)
+		position = _shudder_rest + direction * side * strength + direction.orthogonal() * side * strength * 0.3,
+		0.0, 1.0, seconds)
+	_shudder_tween.finished.connect(func() -> void: position = _shudder_rest)
+
+
+## Dims the world and rushes speed lines in on the ship for [param seconds],
+## drawn just under the raised ship so its silhouette stays lit.
+func play_kill_focus(seconds: float) -> void:
+	# The badges would sit lit over the dim, pulling the eye off the ship.
+	health_bar.visible = false
+	Juice.kill_focus(self, _RAISED_SHIP_Z_INDEX - 1, seconds, Globals.red)
+
+
+## Knocks the ship off along [param direction], spinning and shrinking away
+## with a spark trail, and resolves where it lands, which is where the death
+## explosion then goes.
+func launch(direction: Vector2) -> void:
+	_dying = true
+	stop_bob_tween()
+	if _shudder_tween and _shudder_tween.is_valid():
+		_shudder_tween.kill()
+		position = _shudder_rest
+	health_bar.visible = false
+	Juice.trail(self, Globals.red, _LAUNCH_SECONDS)
+
+	var spin: float = _LAUNCH_SPIN * signf(direction.x if direction.x != 0.0 else 1.0)
+	var tween: Tween = create_tween().set_parallel(true)
+	# Expo out: all the speed is up front, like a body leaving a big hit.
+	tween.tween_property(self, "position", position + direction * _LAUNCH_DISTANCE, _LAUNCH_SECONDS) \
+		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "rotation", rotation + spin, _LAUNCH_SECONDS) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "scale", scale * _LAUNCH_END_SCALE, _LAUNCH_SECONDS) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	await tween.finished
 
 
 ## Sets the position of the health bar, sliding it there over [param duration]
@@ -130,7 +199,7 @@ func start_bob_tween() -> void:
 	# Don't start bobbing if we're translating in space, 
 	# like tweening to enter the scene or tweening to another 
 	# position on the spawn curve
-	if get_parent().moving_in_world:
+	if get_parent().moving_in_world or _dying:
 		return
 		
 	var tween_time: float = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 2, 4)

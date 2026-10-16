@@ -6,6 +6,16 @@ const _HEALTH_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/Sou
 const _DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_death_explosion.tres")
 const _PRE_DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_pre_death.tres")
 
+## How long the finishing blow holds the frame, in real time.
+const _KILL_HOLD_MSEC: int = 280
+## How long the kill's white flash takes to fade once time resumes.
+const _KILL_FLASH_FADE_SECONDS: float = 0.3
+## How close to the middle of the screen a ship has to be to pick its launch
+## side at random, in pixels.
+const _LAUNCH_CENTRE_DEADZONE: float = 6.0
+## How much a launched wreck climbs for each unit it travels sideways.
+const _LAUNCH_RISE: float = 0.2
+
 ## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 
@@ -231,11 +241,13 @@ func _on_death() -> void:
 	Events.play_sound.emit(_PRE_DEATH_SFX)
 	# Another ship's kill isn't the player's to celebrate, or to loot.
 	var killed_by_ship: bool = was_killed_by_ship()
+	var launch_direction: Vector2 = Vector2.ZERO
 	if not killed_by_ship:
-		await _play_kill_confirm()
+		launch_direction = await _play_kill_confirm()
 	Events.play_sound.emit(_DEATH_SFX)
 	
-	# Create explosion particles
+	# Create explosion particles. They stay where the blow landed while the
+	# wreck flies off.
 	var explosion = explosion_particles.instantiate()
 	explosion.color = Globals.red
 	explosion.amount = health.max_health * 5
@@ -248,25 +260,60 @@ func _on_death() -> void:
 			reward_resource
 		)
 	
+	if launch_direction != Vector2.ZERO:
+		await graphics_manager.launch(launch_direction)
 	await graphics_manager.play_death_animation()
 	queue_free()
 
 
-## A beat of freeze, a punch toward the wreck and a shockwave, so the shot
-## that finishes a ship lands harder than every shot before it. The rings go
-## on the manager rather than the ship, which is about to be freed.
+## The finishing blow, framed like a fighting game's: time stops, the camera
+## pushes in, the world dims behind a white-hot silhouette and speed lines
+## close in while the ship shudders. Then everything lets go at once, and the
+## caller sends the wreck flying.
 ##
-## Resolves once the freeze ends, and everything after it waits too: anything
-## spawned into a stopped clock would hang on its first frame instead of
-## bursting out when time resumes.
-func _play_kill_confirm() -> void:
+## The freeze is only worth holding because so much keeps moving through it;
+## a freeze where nothing moves reads as the game hitching.
+##
+## Resolves once the freeze ends, with the direction to knock the wreck.
+## Everything after it waits too: anything spawned into a stopped clock would
+## hang on its first frame instead of bursting out when time resumes.
+func _play_kill_confirm() -> Vector2:
+	var hold_seconds: float = _KILL_HOLD_MSEC / 1000.0
+	var direction: Vector2 = _launch_direction()
+
 	graphics_manager.set_ship_raised(true)
-	await TimeDirector.hitstop(150)
+	# Game-time fade, so it holds at full white through the freeze and only
+	# fades as the ship flies.
+	graphics_manager.flash(Color.WHITE, _KILL_FLASH_FADE_SECONDS)
+	graphics_manager.play_kill_focus(hold_seconds)
+	graphics_manager.play_kill_shudder(direction, hold_seconds)
+	Events.camera_kill_cam.emit(global_position, hold_seconds)
+	await TimeDirector.hitstop(_KILL_HOLD_MSEC)
+
+	# The release. The rings go on the manager rather than the ship, which is
+	# about to be freed.
 	graphics_manager.set_ship_raised(false)
-	Events.camera_zoom_punch.emit(1.05, global_position, true)
 	Events.camera_shake_large.emit(false)
-	Juice.ring(get_parent(), global_position, Globals.white, 44.0, 0.5, 6.0)
-	Juice.ring(get_parent(), global_position, Globals.red, 30.0, 0.4, 4.0)
+	Juice.screen_flash(self, Color.WHITE)
+	Juice.screen_ripple(self, global_position, 1.5)
+	Juice.ring(get_parent(), global_position, Globals.white, 56.0, 0.5, 8.0)
+	Juice.ring(get_parent(), global_position, Globals.red, 36.0, 0.4, 4.0)
+	return direction
+
+
+## Away from the middle of the screen and a little up, so the wreck clears
+## the dice below it and heads for the nearer edge. A ship dead centre picks
+## a side at random.
+func _launch_direction() -> Vector2:
+	var side: float = 0.0
+	var camera: Camera2D = get_viewport().get_camera_2d()
+	if camera:
+		var away: float = global_position.x - (camera.get_screen_center_position().x - camera.offset.x)
+		if absf(away) > _LAUNCH_CENTRE_DEADZONE:
+			side = signf(away)
+	if side == 0.0:
+		side = 1.0 if RNGManager.randf(RNGManager.Bucket.COSMETIC) < 0.5 else -1.0
+	return Vector2(side, -_LAUNCH_RISE).normalized()
 
 
 ## Updates the enemy's components based on the enemy resource

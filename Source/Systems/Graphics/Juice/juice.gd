@@ -201,6 +201,72 @@ static func screen_ripple(context_node: Node, world_pos: Vector2, strength: floa
 	JuiceScreenRipple.spawn(context_node, world_pos, strength)
 
 
+## Dims the world and rushes speed lines in on [param target] for
+## [param hold_seconds] of real time, then cuts them away. Meant to run inside
+## a hitstop. Drawn at [param z_index] relative to [param target], so pass one
+## just under whatever should stay lit.
+static func kill_focus(target: Node2D, z_index: int, hold_seconds: float, accent: Color) -> void:
+	if not _usable(target):
+		return
+	var focus: JuiceKillFocus = JuiceKillFocus.new()
+	focus.hold_seconds = hold_seconds
+	focus.accent = accent
+	focus.z_index = z_index
+	target.add_child(focus)
+
+
+## A full-screen wash of [param color] that fades over [param seconds] of real
+## time: one bright frame to mark the instant something gives way. Kept faint,
+## since the whole screen flashing at full strength is harsh.
+static func screen_flash(context_node: Node, color: Color, alpha: float = 0.3, seconds: float = 0.12) -> void:
+	if not _usable(context_node):
+		return
+	var layer: CanvasLayer = CanvasLayer.new()
+	# Over the game and UI, alongside the screen ripple.
+	layer.layer = 90
+	var rect: ColorRect = ColorRect.new()
+	rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+	rect.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rect.color = Color(color, alpha)
+	layer.add_child(rect)
+	context_node.get_tree().root.add_child(layer)
+
+	var tween: Tween = layer.create_tween().set_ignore_time_scale(true)
+	tween.tween_property(rect, "color:a", 0.0, seconds) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.finished.connect(layer.queue_free)
+
+
+## Sheds sparks behind [param node] as it moves, for [param seconds], then
+## stops and cleans itself up once the last spark fades.
+static func trail(node: Node2D, color: Color, seconds: float) -> void:
+	if not _usable(node):
+		return
+	var particles: CPUParticles2D = CPUParticles2D.new()
+	particles.texture = _PIXEL_TEXTURE
+	# World space, so the sparks hang where they were shed instead of
+	# following the node.
+	particles.local_coords = false
+	particles.amount = 40
+	particles.lifetime = 0.4
+	particles.spread = 180.0
+	particles.initial_velocity_min = 4.0
+	particles.initial_velocity_max = 14.0
+	particles.scale_amount_min = 1.0
+	particles.scale_amount_max = 3.0
+	particles.color = color
+	particles.color_ramp = _fade_out_ramp()
+	particles.z_index = _FX_Z_INDEX
+	node.add_child(particles)
+	particles.emitting = true
+
+	node.get_tree().create_timer(seconds).timeout.connect(func() -> void:
+		if is_instance_valid(particles):
+			particles.emitting = false
+			particles.finished.connect(particles.queue_free)
+	)
+
+
 ## The die spins, pops and throws a ring: its value was just changed or
 ## spent in a way worth noticing.
 static func die_flare(die: Dice, color: Color) -> void:

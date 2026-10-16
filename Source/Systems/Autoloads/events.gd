@@ -188,6 +188,10 @@ signal set_glitch(glitch_state: bool)
 ## back. With has_focus, the camera also leans toward `focus` (global position)
 ## for the duration, so the punch reads as toward the impact.
 signal camera_zoom_punch(peak_zoom: float, focus: Vector2, has_focus: bool)
+## The kill cam: the camera pushes in on `focus` (global position) for
+## `hold_seconds` of real time, then pulls back out. Runs on real time so it can
+## move through the hitstop it's paired with.
+signal camera_kill_cam(focus: Vector2, hold_seconds: float)
 ## One-shot vignette flash in an arbitrary color, for effects authored in data
 ## rather than the fixed player-hit colors.
 signal vignette_pulse(color: Color)
