@@ -4,6 +4,10 @@ extends Sprite2D
 ## seam in the frame split open. CockpitDamage decides when it opens or
 ## closes; this owns how that looks.
 ##
+## A crack holds for a moment after it opens, then fades to a faint ghost, so
+## the canopy stays clear to see through. The torn seams and their smoke are
+## what keep showing the hull is low.
+##
 ## The texture is a full-screen overlay (cockpit pixels, origin top-left), so
 ## emit_points are plain screen coordinates. Particles go on the parent, not on
 ## the sprite: they have to outlive the break they came out of.
@@ -11,6 +15,12 @@ extends Sprite2D
 const _PIXEL: Texture2D = preload("res://Assets/Particles/hit_particle_pixel.png")
 const _FLASH_SHADER: Shader = preload("res://Assets/Shaders/flash.gdshader")
 const _SMOKE_SCENE: PackedScene = preload("res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_smoke.tscn")
+const _CRACK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/glass_crack.tres")
+
+## Lingering smoke puff size (min, max) at a healthy hull and at nearly none:
+## the trail out of a torn seam thickens as things get dire.
+const _LINGER_SCALE_CALM: Vector2 = Vector2(0.25, 0.4)
+const _LINGER_SCALE_DIRE: Vector2 = Vector2(0.4, 0.65)
 
 enum Kind { GLASS, FRAME }
 
@@ -23,7 +33,10 @@ var is_open: bool = false
 
 ## A torn seam keeps leaking a thin trail of smoke for as long as it's open.
 var _linger_smoke: CPUParticles2D = null
+var _linger_intensity: float = 0.0
 var _tween: Tween = null
+
+@onready var _damage: CockpitDamage = get_parent() as CockpitDamage
 
 
 func _ready() -> void:
@@ -34,7 +47,8 @@ func _ready() -> void:
 
 
 ## Shows the damage. Animated, it pops in on a flash with debris flying out of
-## the break; otherwise it's simply there (a loaded save, a new run).
+## the break; otherwise it's simply there (a loaded save, a new run), a crack
+## already faded to its ghost.
 func open(animate: bool) -> void:
 	if is_open:
 		return
@@ -46,18 +60,47 @@ func open(animate: bool) -> void:
 		_start_linger_smoke()
 	if not animate:
 		_set_flash(Color.WHITE, 0.0)
+		if kind == Kind.GLASS:
+			self_modulate.a = _ghost_alpha()
 		return
 
 	_set_flash(Color.WHITE, 1.0)
 	_tween = create_tween()
 	_tween.tween_method(_set_flash_amount, 1.0, 0.0, 0.3)
+	if kind == Kind.GLASS:
+		_spill_glass()
+		_queue_fade()
+		return
 	for point: Vector2 in emit_points:
-		if kind == Kind.GLASS:
-			_burst(point, Globals.white, 8, 50.0, 90.0)
-		else:
-			_burst(point, Globals.orange, 10, 60.0, 140.0)
-			_burst(point, Globals.yellow, 4, 40.0, 140.0)
-			_burst(point, Color(0.027, 0.012, 0.149), 4, 30.0, 220.0)
+		_burst(point, Globals.orange, 10, 60.0, 140.0)
+		_burst(point, Globals.yellow, 4, 40.0, 140.0)
+		_burst(point, Color(0.027, 0.012, 0.149), 4, 30.0, 220.0)
+
+
+## A crack that has faded to its ghost cracks again, full and bright, for the
+## cockpit's last moments.
+func flare_back() -> void:
+	if kind != Kind.GLASS:
+		return
+	is_open = true
+	_kill_tween()
+	visible = true
+	self_modulate = Color.WHITE
+	_set_flash(Color.WHITE, 1.0)
+	_tween = create_tween()
+	_tween.tween_method(_set_flash_amount, 1.0, 0.0, 0.25)
+	_spill_glass()
+	Events.play_sound.emit(_CRACK_SFX)
+
+
+## Fades a crack straight to its ghost, clearing the canopy for flare_back.
+func dim() -> void:
+	if kind != Kind.GLASS or not is_open:
+		return
+	_kill_tween()
+	_set_flash(Color.WHITE, 0.0)
+	_tween = create_tween()
+	_tween.tween_property(self, "self_modulate:a", _ghost_alpha(), 0.25)
 
 
 ## Repairs the damage: the break glows green and fades as green sparks pop out
@@ -81,25 +124,36 @@ func close(animate: bool) -> void:
 	_tween.tween_callback(hide)
 
 
-## A big hit chokes the cabin: a heavy plume rolls out of the break.
-func billow() -> void:
+## A big hit chokes the cabin: a plume rolls out of the break and rises.
+## [param intensity] runs from 0 (a hit that just made the cut) to 1 (a huge
+## hit with the hull nearly gone), and everything about the plume grows with it.
+func billow(intensity: float) -> void:
 	if not is_open or emit_points.is_empty():
 		return
+	var t: float = clampf(intensity, 0.0, 1.0)
 	var smoke: CPUParticles2D = _SMOKE_SCENE.instantiate()
 	smoke.one_shot = true
-	smoke.amount = 48
-	smoke.lifetime = 3.0
+	smoke.amount = roundi(lerpf(24.0, 70.0, t))
+	smoke.lifetime = lerpf(2.6, 4.2, t)
 	smoke.explosiveness = 0.6
-	smoke.spread = 70.0
-	smoke.emission_sphere_radius = 3.0
-	smoke.initial_velocity_min = 10.0
-	smoke.initial_velocity_max = 30.0
-	smoke.scale_amount_min = 3.0
-	smoke.scale_amount_max = 6.0
+	smoke.spread = lerpf(55.0, 90.0, t)
+	smoke.emission_sphere_radius = lerpf(3.0, 6.0, t)
+	smoke.initial_velocity_min = lerpf(8.0, 14.0, t)
+	smoke.initial_velocity_max = lerpf(22.0, 40.0, t)
+	smoke.gravity = Vector2(3.0, lerpf(-10.0, -18.0, t))
+	smoke.scale_amount_min = lerpf(0.45, 0.9, t)
+	smoke.scale_amount_max = lerpf(0.8, 1.6, t)
 	smoke.finished.connect(smoke.queue_free)
 	get_parent().add_child(smoke)
 	smoke.position = emit_points[0]
 	smoke.emitting = true
+
+
+## How dire things are, 0 to 1: the lingering trail thickens with it.
+func set_linger_intensity(intensity: float) -> void:
+	_linger_intensity = clampf(intensity, 0.0, 1.0)
+	if _linger_smoke:
+		_apply_linger_intensity(_linger_smoke)
 
 
 ## Stops the lingering smoke without cutting off what's already in the air.
@@ -111,6 +165,7 @@ func _start_linger_smoke() -> void:
 	if _linger_smoke or emit_points.is_empty():
 		return
 	_linger_smoke = _SMOKE_SCENE.instantiate()
+	_apply_linger_intensity(_linger_smoke)
 	get_parent().add_child(_linger_smoke)
 	_linger_smoke.position = emit_points[0]
 	_linger_smoke.emitting = true
@@ -124,6 +179,39 @@ func _stop_linger_smoke() -> void:
 	_linger_smoke = null
 	smoke.emitting = false
 	get_tree().create_timer(smoke.lifetime).timeout.connect(smoke.queue_free)
+
+
+func _apply_linger_intensity(smoke: CPUParticles2D) -> void:
+	var size: Vector2 = _LINGER_SCALE_CALM.lerp(_LINGER_SCALE_DIRE, _linger_intensity)
+	smoke.scale_amount_min = size.x
+	smoke.scale_amount_max = size.y
+
+
+## Glass knocked in through the crack: shards tumbling down into the cockpit,
+## and a quick glint of fine bits at the point of impact.
+func _spill_glass() -> void:
+	if emit_points.is_empty():
+		return
+	var shards: CockpitGlassShards = _damage.glass_shards if _damage else null
+	for i: int in emit_points.size():
+		var point: Vector2 = emit_points[i]
+		_burst(point, Globals.white, 3, 35.0, 90.0)
+		if shards:
+			# Most of the glass comes out where it was struck.
+			shards.spill(to_global(point), 5 if i == 0 else 2)
+
+
+## Holds the crack at full strength for a beat, then lets it fade to a ghost.
+func _queue_fade() -> void:
+	var hold: float = _damage.crack_hold_time if _damage else 2.0
+	var fade: float = _damage.crack_fade_time if _damage else 6.0
+	_tween.tween_interval(maxf(0.0, hold - 0.3))
+	_tween.tween_property(self, "self_modulate:a", _ghost_alpha(), fade) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+
+
+func _ghost_alpha() -> float:
+	return _damage.crack_ghost_alpha if _damage else 0.1
 
 
 func _burst(point: Vector2, color: Color, count: int, speed: float, fall: float) -> void:

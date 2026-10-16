@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage.gd" id="1_damage"]
 [ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage_site.gd" id="2_site"]
 [ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_destruction.gd" id="3_destruction"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_glass_shards.gd" id="4_shards"]
 [ext_resource type="Texture2D" uid="uid://doruja68e1s6a" path="res://Assets/Textures/UI/Cockpit/Damage/crack_top_right.png" id="t0"]
 [ext_resource type="Texture2D" uid="uid://cqv8hj75dptab" path="res://Assets/Textures/UI/Cockpit/Damage/seam_canopy_left.png" id="t1"]
 [ext_resource type="Texture2D" uid="uid://bbcjvsh54q8e6" path="res://Assets/Textures/UI/Cockpit/Damage/crack_left.png" id="t2"]
@@ -80,6 +81,9 @@ centered = false
 script = ExtResource("2_site")
 kind = 0
 emit_points = PackedVector2Array(70, 22, 84, 18, 99, 10, 85, 34)
+
+[node name="GlassShards" type="Node2D" parent="."]
+script = ExtResource("4_shards")
 
 [node name="Destruction" type="Node2D" parent="."]
 script = ExtResource("3_destruction")

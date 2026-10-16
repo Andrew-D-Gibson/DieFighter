@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_sfx"]
+[ext_resource type="AudioStream" path="res://Assets/Sounds/Player/Glass/glass_crack.wav" id="2_wav"]
+
+[resource]
+script = ExtResource("1_sfx")
+name = "glass_crack"
+limit = 3
+sound_effect = ExtResource("2_wav")
+volume = -6.0
+pitch_randomness = 0.1
+enable_pitch_escalation = true
+pitch_escalation_step = 0.08
+max_pitch_escalation = 1.5
+quick_play_threshold = 0.6
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

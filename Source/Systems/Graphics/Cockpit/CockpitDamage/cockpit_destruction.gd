@@ -2,6 +2,9 @@ class_name CockpitDestruction
 extends Node2D
 ## The player's death: the cockpit tears itself apart, then the game ends.
 ##
+## The canopy's cracks, faded to ghosts by now, come back one at a time in the
+## order they were taken, faster and faster, until the glass gives way.
+##
 ## The fight has already stopped by the time this plays (player_destroyed
 ## shuts the scenario engine down), but nothing is frozen: the ships keep
 ## hovering, shots already in the air land, the background keeps scrolling.
@@ -84,6 +87,8 @@ func play() -> void:
 	Events.red_alert.emit(rupture_time + 1.0)
 	Events.glitch_burst.emit(250)
 	Events.play_sound.emit(_KLAXON_SFX)
+	for site: CockpitDamageSite in _glass_sites():
+		site.dim()
 
 	await get_tree().create_timer(0.35).timeout
 	await _rupture()
@@ -93,18 +98,24 @@ func play() -> void:
 
 
 ## The breaks blow out one after another, faster and faster, as the frame
-## gives way.
+## gives way, and the cracks come back across the canopy.
 func _rupture() -> void:
 	var points: Array[Vector2] = _all_emit_points()
 	if points.is_empty():
 		points.append(blast_origin)
 	for site: CockpitDamageSite in _sites():
-		site.billow()
+		site.billow(1.0)
 
+	var cracks: Array[CockpitDamageSite] = _glass_sites()
+	var cracks_back: int = 0
 	var elapsed: float = 0.0
 	var blasts: int = 0
 	while elapsed < rupture_time:
 		var progress: float = elapsed / rupture_time
+		while cracks_back < cracks.size() \
+				and progress >= crack_return_at(cracks_back, cracks.size()):
+			cracks[cracks_back].flare_back()
+			cracks_back += 1
 		var point: Vector2 = points[_rng.randi() % points.size()] \
 				+ Vector2(_rng.randf_range(-4, 4), _rng.randf_range(-4, 4))
 		_explosion(point, lerpf(0.35, 0.7, progress))
@@ -117,6 +128,17 @@ func _rupture() -> void:
 		var gap: float = lerpf(0.24, 0.07, progress)
 		await get_tree().create_timer(gap).timeout
 		elapsed += gap
+	for i: int in range(cracks_back, cracks.size()):
+		cracks[i].flare_back()
+
+
+## When crack [param index] of [param count] comes back, as a fraction of the
+## rupture. The gaps shrink gently as it goes, and the last lands a beat
+## before the glass blows out, long enough to register.
+static func crack_return_at(index: int, count: int) -> float:
+	if count <= 1:
+		return 0.08
+	return 0.08 + 0.82 * pow(float(index) / (count - 1), 0.75)
 
 
 ## The shell blows apart. Every visible piece of cockpit becomes debris.
@@ -137,6 +159,12 @@ func _break_apart() -> void:
 
 
 func _shatter_glass() -> void:
+	var glass_points: Array[Vector2] = []
+	for site: CockpitDamageSite in _glass_sites():
+		for point: Vector2 in site.emit_points:
+			glass_points.append(site.to_global(point))
+	if _damage:
+		_damage.glass_shards.blow_away(blast_origin, glass_points, 3)
 	for site: CockpitDamageSite in _sites():
 		site.stop_smoke()
 		site.hide()
@@ -369,6 +397,15 @@ func _sites() -> Array[CockpitDamageSite]:
 	return _damage.get_sites() if _damage else ([] as Array[CockpitDamageSite])
 
 
+## The canopy cracks, in the order they open.
+func _glass_sites() -> Array[CockpitDamageSite]:
+	var glass: Array[CockpitDamageSite] = []
+	for site: CockpitDamageSite in _sites():
+		if site.kind == CockpitDamageSite.Kind.GLASS:
+			glass.append(site)
+	return glass
+
+
 func _all_emit_points() -> Array[Vector2]:
 	var points: Array[Vector2] = []
 	for site: CockpitDamageSite in _sites():
@@ -377,12 +414,8 @@ func _all_emit_points() -> Array[Vector2]:
 	return points
 
 
-## The cockpit shell sprite, a sibling of the ambience in the Graphics layer.
 func _walls() -> Sprite2D:
-	var ambience: Node = _damage.get_parent() if _damage else null
-	if not ambience or not ambience.get_parent():
-		return null
-	return ambience.get_parent().get_node_or_null("Cockpit Walls") as Sprite2D
+	return _damage.get_walls() if _damage else null
 
 
 static func _opaque_pixels(image: Image, region: Rect2i) -> int:

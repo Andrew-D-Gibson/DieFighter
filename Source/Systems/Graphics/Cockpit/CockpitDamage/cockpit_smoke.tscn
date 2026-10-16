@@ -1,31 +1,39 @@
 [gd_scene format=3]
 
-[ext_resource type="Texture2D" uid="uid://cickkmemxemqu" path="res://Assets/Particles/hit_particle_pixel.png" id="1_pixel"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/UI/Cockpit/Damage/smoke_puff-Sheet.png" id="1_puff"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_puff"]
+particles_animation = true
+particles_anim_h_frames = 3
+particles_anim_v_frames = 1
+particles_anim_loop = false
 
 [sub_resource type="Gradient" id="Gradient_smoke"]
-offsets = PackedFloat32Array(0, 0.15, 0.6, 1)
-colors = PackedColorArray(0.78, 0.76, 0.84, 0, 0.66, 0.64, 0.74, 0.8, 0.45, 0.42, 0.56, 0.5, 0.3, 0.27, 0.42, 0)
+offsets = PackedFloat32Array(0, 0.12, 0.6, 1)
+colors = PackedColorArray(0.78, 0.76, 0.84, 0, 0.66, 0.64, 0.74, 0.75, 0.45, 0.42, 0.56, 0.45, 0.3, 0.27, 0.42, 0)
 
 [sub_resource type="Curve" id="Curve_smoke"]
-_data = [Vector2(0, 0.4), 0.0, 1.2, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.3), 0.0, 1.6, 0, 0, Vector2(1, 1), 0.3, 0.0, 0, 0]
 point_count = 2
 
 [node name="CockpitSmoke" type="CPUParticles2D"]
+material = SubResource("CanvasItemMaterial_puff")
 emitting = false
 amount = 5
-lifetime = 2.4
+lifetime = 2.6
 randomness = 0.5
-texture = ExtResource("1_pixel")
+texture = ExtResource("1_puff")
 emission_shape = 1
 emission_sphere_radius = 1.5
 direction = Vector2(0, -1)
 spread = 25.0
-gravity = Vector2(2, -6)
+gravity = Vector2(2, -8)
 initial_velocity_min = 3.0
 initial_velocity_max = 7.0
 damping_min = 1.0
 damping_max = 3.0
-scale_amount_min = 1.5
-scale_amount_max = 2.5
+scale_amount_min = 0.25
+scale_amount_max = 0.4
 scale_amount_curve = SubResource("Curve_smoke")
 color_ramp = SubResource("Gradient_smoke")
+anim_offset_max = 0.99

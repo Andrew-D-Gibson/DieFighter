@@ -71,7 +71,7 @@ shader_parameter/progress_bias = Vector2(10, 10)
 [node name="PlayerHealthBar" type="Node2D" unique_id=1742111469]
 script = ExtResource("1_p4fc1")
 
-[node name="Background" type="Sprite2D" parent="." unique_id=814825624]
+[node name="Background" type="Sprite2D" parent="." unique_id=814825624 groups=["cockpit_surface"]]
 z_index = -1
 texture = ExtResource("1_gt1ml")
 
