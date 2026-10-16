@@ -35,6 +35,19 @@ const _PANEL_GROW: Vector2 = Vector2(1.05, 1.3)
 ## up and out, toward and past the camera.
 @export var blast_origin: Vector2 = Vector2(160, 130)
 
+@export_group("Breakup Slow-Mo")
+## The moment the shell blows apart plays in slow motion, so the pieces can
+## be seen leaving rather than just gone.
+@export var breakup_slow_mo_scale: float = 0.25
+## Real (unscaled) milliseconds the slow-mo lasts.
+@export var breakup_slow_mo_ms: int = 1600
+## Where the hanging dice's hook ends up. The dice don't scatter at random
+## like the rest of the wreckage: they always drop from the top-right strut
+## to the bottom right, the one fixed beat in every death.
+@export var hanging_dice_landing: Vector2 = Vector2(282, 138)
+@export var hanging_dice_landing_scale: float = 1.4
+@export var hanging_dice_landing_rotation: float = 0.7
+
 ## Everything flying apart, as {node, velocity, spin, grow, age, life,
 ## rest_scale, owned}. Owned pieces were made here; they slow and fade, and
 ## are freed. Borrowed ones (the player's panels) are thrown clear off screen
@@ -102,6 +115,7 @@ func _rupture() -> void:
 
 ## The shell blows apart. Every visible piece of cockpit becomes debris.
 func _break_apart() -> void:
+	TimeDirector.slow_mo(breakup_slow_mo_scale, breakup_slow_mo_ms)
 	Events.play_sound.emit(_EXPLOSION_SFX)
 	Events.camera_shake_large.emit(true)
 	Events.camera_zoom_punch.emit(1.08, blast_origin, true)
@@ -164,9 +178,32 @@ func _fling_ambience() -> void:
 		if child == _damage or not child is CanvasItem:
 			continue
 		if child is HangingDice:
-			_add_debris(child, false, _PANEL_GROW)
+			_drop_hanging_dice(child)
 		else:
 			(child as CanvasItem).hide()
+
+
+## Swings the hanging dice down to the bottom right over exactly the length
+## of the breakup slow-mo, and leaves them there.
+func _drop_hanging_dice(dice: HangingDice) -> void:
+	# The dice draw around their hook, but the node's origin is the screen's
+	# corner. A pivot at the hook lets them tilt and grow about themselves
+	# instead of swinging across the whole screen.
+	var pivot: Node2D = Node2D.new()
+	add_child(pivot)
+	pivot.global_position = dice.anchor
+	dice.reparent(pivot, true)
+
+	# The slow-mo's span in game time, which is what a tween runs on, so the
+	# drop lands as the slow-mo lets go.
+	var duration: float = breakup_slow_mo_scale * breakup_slow_mo_ms / 1000.0
+	var tween: Tween = pivot.create_tween().set_parallel()
+	tween.tween_property(pivot, "global_position", hanging_dice_landing, duration) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(pivot, "rotation", hanging_dice_landing_rotation, duration) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_property(pivot, "scale", Vector2.ONE * hanging_dice_landing_scale, duration) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 
 
 ## The player's panels and the dice in hand tumble away whole.
