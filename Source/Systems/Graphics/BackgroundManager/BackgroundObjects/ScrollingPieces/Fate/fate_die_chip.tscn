@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_die_chip.png" id="1_4rw3f"]
+
+[node name="FateDieChip" type="Sprite2D" unique_id=1387801325]
+texture = ExtResource("1_4rw3f")

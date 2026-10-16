@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_shard_1-Sheet.png" id="1_lbe8s"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_frames.gd" id="2_4b15k"]
+
+[node name="FateShard1" type="Sprite2D" unique_id=1289878333]
+texture = ExtResource("1_lbe8s")
+hframes = 4
+script = ExtResource("2_4b15k")
+fps = 5.0
+sequence = PackedInt32Array()
