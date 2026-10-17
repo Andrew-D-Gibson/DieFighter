@@ -205,6 +205,8 @@ signal play_sound(sfx: SoundEffectResource)
 
 # Configuration Events
 signal save_options_config()
+## The game's language just changed. Text built in code should rebuild.
+signal locale_changed(locale: String)
 
 
 # Save/Load Events

@@ -108,6 +108,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'help':
 			_help()
 
+		'lang':
+			_lang(command.slice(1))
+
 		'kill_enemies':
 			_kill_enemies()
 
@@ -449,6 +452,17 @@ func _toggle_fps_display() -> void:
 	Events.toggle_fps_display.emit()
 
 
+func _lang(command_args: Array[String] = []) -> void:
+	var available: Array[String] = Localization.get_available_locales()
+	if command_args.size() != 1 or (command_args[0] != 'pseudo' and command_args[0] not in available):
+		command_history.append_text('\n\t\tUsage: lang <%s|pseudo>' % '|'.join(available))
+		return
+	var locale: String = Localization.PSEUDO_LOCALE if command_args[0] == 'pseudo' else command_args[0]
+	Localization.set_locale(locale)
+	Events.save_options_config.emit()
+	command_history.append_text('\n[center]Language set to ' + Localization.get_locale_name(locale) + '.[/center]')
+
+
 func _timescale(command_args: Array[String] = []) -> void:
 	if command_args.is_empty():
 		TimeDirector.set_base_scale(1.0)
@@ -486,6 +500,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')
 	command_history.append_text('\n[b]kill_enemies[/b]                  kill all enemies')
+	command_history.append_text('\n[b]lang[/b] <locale|pseudo>          switch language (pseudo: stretched English, debug)')
 	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
 	command_history.append_text('\n[b]lock_tiles[/b]		            stop tiles from being moved')
 	command_history.append_text('\n[b]reroll[/b] [value]                reroll dice, or set all to value')

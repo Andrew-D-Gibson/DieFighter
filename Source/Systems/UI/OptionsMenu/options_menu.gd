@@ -10,6 +10,15 @@ const _HOVER_THUMP_SFX: SoundEffectResource = preload("res://Source/Resources/So
 enum ScreenShowing {GAME, GRAPHICS, AUDIO}
 var screen_showing: ScreenShowing
 
+# What each dropdown row means, by index. Rows are matched by position, not by
+# their text, so the text can be translated.
+const _ANIMATION_SPEEDS: Array[float] = [0.5, 1.0, 2.0, 4.0]
+const _FPS_LIMITS: Array[int] = [30, 60, 120, 0] # 0 means unlimited
+const _WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
+
+## Locale codes in the language dropdown's row order.
+var _language_locales: Array[String] = []
+
 
 func _ready() -> void:
 	# Settings were loaded and applied at startup by the OptionsSettings
@@ -32,27 +41,12 @@ func _on_item_hover() -> void:
 
 
 func _setup_game_options_UI() -> void:
-	match Globals.animation_speed:
-		0.5:
-			%AnimationSpeedOptionButton.select(0)
-		1.0:
-			%AnimationSpeedOptionButton.select(1)
-		2.0:
-			%AnimationSpeedOptionButton.select(2)
-		4.0:
-			%AnimationSpeedOptionButton.select(3)
-			
-	match Engine.max_fps:
-		30:
-			%FPSLimitOptions.select(0)
-		60:
-			%FPSLimitOptions.select(1)
-		120:
-			%FPSLimitOptions.select(2)
-		0:
-			%FPSLimitOptions.select(3)
-		_:
-			%FPSLimitOptions.select(1)
+	%AnimationSpeedOptionButton.select(_ANIMATION_SPEEDS.find(Globals.animation_speed))
+
+	var fps_index: int = _FPS_LIMITS.find(Engine.max_fps)
+	%FPSLimitOptions.select(fps_index if fps_index >= 0 else _FPS_LIMITS.find(60))
+
+	_setup_language_options()
 			
 	var bus_idx: int = AudioServer.get_bus_index("Master")
 	%MuteAllSoundsCheckBox.button_pressed = AudioServer.is_bus_mute(bus_idx)
@@ -80,7 +74,7 @@ func _reduce_scale_options() -> void:
 		else:
 			break
 	
-	var max_scale_index: int = Array([2, 4, 6, 8, 9, 10, 12]).find(max_scale)
+	var max_scale_index: int = _WINDOW_SCALES.find(max_scale)
 
 	for idx: int in range(6, max_scale_index, -1):
 		%ScaleOptionButton.remove_item(idx)
@@ -93,7 +87,7 @@ func _set_scale_choice_label() -> void:
 	if current_window_size.x / base_resolution.x == current_window_size.y / base_resolution.y:
 		screen_scale = floor(current_window_size.x / base_resolution.x)
 		
-	var scale_index: int = Array([2, 4, 6, 8, 9, 10, 12]).find(screen_scale)
+	var scale_index: int = _WINDOW_SCALES.find(screen_scale)
 	%ScaleOptionButton.select(scale_index)
 	
 
@@ -190,29 +184,23 @@ func _on_audio_button_pressed() -> void:
 
 
 func _on_animation_speed_option_button_item_selected(index: int) -> void:
-	var option_selected: String = %AnimationSpeedOptionButton.get_item_text(index)
-	match option_selected:
-		"0.5x":
-			Globals.animation_speed = 0.5
-		"1x":
-			Globals.animation_speed = 1
-		"2x":
-			Globals.animation_speed = 2
-		"4x":
-			Globals.animation_speed = 4
+	Globals.animation_speed = _ANIMATION_SPEEDS[index]
 
 
 func _on_fps_limit_options_item_selected(index: int) -> void:
-	var option_selected: String = %FPSLimitOptions.get_item_text(index)
-	match option_selected:
-		"30":
-			Engine.max_fps = 30
-		"60":
-			Engine.max_fps = 60
-		"120":
-			Engine.max_fps = 120
-		"None":
-			Engine.max_fps = 0 # 0 means unlimited
+	Engine.max_fps = _FPS_LIMITS[index]
+
+
+func _setup_language_options() -> void:
+	_language_locales = Localization.get_available_locales()
+	%LanguageOptionButton.clear()
+	for locale: String in _language_locales:
+		%LanguageOptionButton.add_item(Localization.get_locale_name(locale))
+	%LanguageOptionButton.select(_language_locales.find(Localization.get_locale()))
+
+
+func _on_language_option_button_item_selected(index: int) -> void:
+	Localization.set_locale(_language_locales[index])
 
 
 func _on_mute_all_sounds_check_box_toggled(toggled_on: bool) -> void:
@@ -222,25 +210,8 @@ func _on_mute_all_sounds_check_box_toggled(toggled_on: bool) -> void:
 
 func _on_scale_option_button_item_selected(index: int) -> void:
 	var base_resolution: Vector2 = Vector2(320, 180)
-	var scale: int = 2
-	
-	var option_selected: String = %ScaleOptionButton.get_item_text(index)
-	match option_selected:
-		"2x":
-			scale = 2
-		"4x":
-			scale = 4
-		"6x":
-			scale = 6
-		"8x":
-			scale = 8
-		"9x":
-			scale = 9
-		"10x":
-			scale = 10
-		"12x":
-			scale = 12
-		
+	var scale: int = _WINDOW_SCALES[index]
+
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	
 	var window_size: Vector2 = base_resolution * scale

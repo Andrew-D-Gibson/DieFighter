@@ -20,6 +20,7 @@ func save_options_settings() -> void:
 	# Game settings
 	var game_settings: Dictionary = _get_current_game_settings()
 	config.set_value("Game", "animation_speed", game_settings["animation_speed"])
+	config.set_value("Game", "language", Localization.get_locale())
 	
 	# Graphics settings
 	var graphics_settings: Dictionary = _get_current_graphics_settings()
@@ -53,7 +54,8 @@ func load_options_settings() -> void:
 		
 	# Game
 	var game_settings: Dictionary = {}
-	game_settings["language"] = config.get_value("Game", "language", "eng")
+	# Empty means nothing chosen yet: Localization picks from the OS language.
+	game_settings["language"] = config.get_value("Game", "language", "")
 	game_settings["animation_speed"] = config.get_value("Game", "animation_speed", "1x")
 	_set_game_settings(game_settings)
 
@@ -103,7 +105,7 @@ func _get_current_game_settings() -> Dictionary:
 	
 	
 func _set_game_settings(game_settings: Dictionary) -> void:
-	# TODO: Set Language with game_settings["language"]
+	Localization.set_locale(game_settings["language"])
 	match game_settings["animation_speed"]:
 		"0.5x":
 			Globals.animation_speed = 0.5

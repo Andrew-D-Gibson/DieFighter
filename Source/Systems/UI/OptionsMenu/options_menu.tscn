@@ -248,7 +248,6 @@ font_color = Color(0.815686, 0.211765, 0.337255, 1)
 selected = 1
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=660029667]
-visible = false
 layout_mode = 2
 size_flags_vertical = 4
 
@@ -256,11 +255,12 @@ size_flags_vertical = 4
 custom_minimum_size = Vector2(49.44, 16)
 layout_mode = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
-text = "Language"
+text = "OPT_LANGUAGE"
 vertical_alignment = 1
 
 [node name="LanguageOptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3" unique_id=902666919 instance=ExtResource("10_pxdrp")]
-custom_minimum_size = Vector2(40, 0)
+unique_name_in_owner = true
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
 size_flags_horizontal = 1
 items = Array[String](["English"])
@@ -708,6 +708,7 @@ text = "CLOSE"
 [connection signal="pressed_within_window" from="TabButtons/AudioTabButton" to="." method="_on_audio_button_pressed"]
 [connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer/AnimationSpeedOptionButton" to="." method="_on_animation_speed_option_button_item_selected"]
 [connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2/TextSpeedOptionButton" to="." method="_on_text_speed_option_button_item_selected"]
+[connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3/LanguageOptionButton" to="." method="_on_language_option_button_item_selected"]
 [connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
 [connection signal="item_selected" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/ScaleOptionButton" to="." method="_on_scale_option_button_item_selected"]
