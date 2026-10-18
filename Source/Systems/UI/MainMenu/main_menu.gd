@@ -50,6 +50,7 @@ func _ready() -> void:
 	%AnimationPlayer.play("on_application_start")
 	
 	SceneLoader.request(opening_cutscene)
+	$VBoxContainer/QuitButton.visible = QuitManager.can_quit()
 	
 	
 func _clear_stars() -> void:

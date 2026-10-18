@@ -8,6 +8,10 @@ var _history_index: int = -1
 
 
 func _ready() -> void:
+	# Cheats (god mode, kill, give) are for development, not for players.
+	if not OS.is_debug_build():
+		queue_free()
+		return
 	line_edit.gui_input.connect(_on_line_edit_gui_input)
 
 

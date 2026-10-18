@@ -3,7 +3,8 @@ extends Control
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
-	
+	$VBoxContainer/QuitButton.visible = QuitManager.can_quit()
+
 	Events.game_over.connect(_on_game_over)
 	# Keyed off victory, not BOSS_DEFEATED — there's a boss in every sector,
 	# but only one end of the run.

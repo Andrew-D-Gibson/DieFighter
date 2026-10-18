@@ -1,6 +1,9 @@
 class_name PlayerHealthBar
 extends HealthBarController
 
+const _HULL_INFO_TEXTURE: Texture2D = preload("uid://cdul5hb8yotks")
+const _SHIELDS_INFO_TEXTURE: Texture2D = preload("uid://cm0dbq7jogf17")
+
 
 func _ready() -> void:
 	super()
@@ -52,7 +55,7 @@ func _snap_online() -> void:
 func _show_hull_info() -> void:
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = "[color=red]Hull[/color]"
-	info.texture = load("uid://cdul5hb8yotks")
+	info.texture = _HULL_INFO_TEXTURE
 	info.bottom_label_text = "If [color=red]Hull[/color] reaches 0, your ship is destroyed"
 	
 	Events.show_info.emit(info)
@@ -61,7 +64,7 @@ func _show_hull_info() -> void:
 func _show_shield_info() -> void:
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = "[color=blue]Shields[/color]"
-	info.texture = load("uid://cm0dbq7jogf17")
+	info.texture = _SHIELDS_INFO_TEXTURE
 	info.bottom_label_text = "[color=blue]Shields[/color] absorb [color=red]damage[/color] before it reaches your [color=red]Hull[/color]. Resets after jumping"
 	
 	Events.show_info.emit(info)

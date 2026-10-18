@@ -37,8 +37,8 @@ func _shield_break_vignette() -> void:
 
 
 ## Same shape as a hit flash, in whatever color the authored effect asked for.
-func _pulse_vignette(color: Color) -> void:
-	material.set_shader_parameter('color', color)
+func _pulse_vignette(tint: Color) -> void:
+	material.set_shader_parameter('color', tint)
 
 	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(self, "material:shader_parameter/alpha", vignette_alpha, vignette_flash_time * 0.1).from(0).set_trans(Tween.TRANS_QUAD)

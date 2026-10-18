@@ -30,6 +30,10 @@ func _ready() -> void:
 	# running alongside them, so they stay out of it.
 	if DisplayServer.get_name() == "headless":
 		return
+	# In a browser user:// is IndexedDB: flushing every line there is slow,
+	# and the player can't open the file anyway.
+	if OS.has_feature("web"):
+		return
 
 	# Clear the log file at startup
 	_log_file = FileAccess.open(_log_path, FileAccess.WRITE)

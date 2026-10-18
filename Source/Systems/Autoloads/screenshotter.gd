@@ -3,6 +3,9 @@ extends Node
 var ssCount: int = 1
 
 func _ready() -> void:
+	# A browser keeps user:// in IndexedDB, out of the player's reach.
+	if OS.has_feature("web"):
+		return
 	Events.take_screenshot.connect(screenshot)
 	
 	var dir: DirAccess = DirAccess.open("user://screenshots")

@@ -31,7 +31,7 @@ enum Faction {
 var current_scenario: ScenarioResource
 var engine: ScenarioEngine
 
-var engine_scene: PackedScene = load("uid://ccv04abb5xv1m")
+var engine_scene: PackedScene = preload("uid://ccv04abb5xv1m")
 
 
 func _ready() -> void:

@@ -20,12 +20,12 @@ func _ready() -> void:
 ## Whether the game owns its window. In a browser the page does: size,
 ## position and vsync can't be set, and fullscreen is only granted in direct
 ## response to a click, never at boot.
-static func controls_window() -> bool:
+func controls_window() -> bool:
 	return not OS.has_feature("web")
 
 
 ## The largest window scale that still fits on the current display.
-static func largest_window_scale() -> int:
+func largest_window_scale() -> int:
 	var display_size: Vector2 = DisplayServer.screen_get_size()
 	var best: int = WINDOW_SCALES[0]
 	for scale: int in WINDOW_SCALES:

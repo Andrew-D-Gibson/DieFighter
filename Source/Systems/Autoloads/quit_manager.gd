@@ -16,7 +16,7 @@ func _notification(what: int) -> void:
 
 ## Whether quitting means anything here. A browser tab is closed by the player,
 ## not the game, so a web build hides its Quit buttons.
-static func can_quit() -> bool:
+func can_quit() -> bool:
 	return not OS.has_feature("web")
 
 

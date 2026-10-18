@@ -4,6 +4,7 @@ extends Node2D
 
 func _ready() -> void:
 	Events.toggle_pause_menu.connect(_toggle_pause_menu)
+	$VBoxContainer/QuitButton.visible = QuitManager.can_quit()
 
 
 func _toggle_pause_menu() -> void:
