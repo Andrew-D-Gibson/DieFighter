@@ -34,8 +34,15 @@ func _ready() -> void:
 	# and the player can't open the file anyway.
 	if OS.has_feature("web"):
 		return
+	start(_log_path)
 
-	# Clear the log file at startup
+
+## Starts logging to [param path], overwriting it. A headless instance can
+## still ask for a log of its own (the AutoPilot keeps one per run).
+func start(path: String) -> void:
+	if _log_file != null:
+		return
+	_log_path = path
 	_log_file = FileAccess.open(_log_path, FileAccess.WRITE)
 	if _log_file == null:
 		push_error("Failed to open debug log file at: " + _log_path)
@@ -175,8 +182,10 @@ func _log_player_turn_snapshot(turn: int) -> void:
 	if is_instance_valid(Globals.player):
 		_log(DebugLogFormat.player_summary(Globals.player))
 		_log("Rolled %s" % DebugLogFormat.dice_values(Globals.player.dice_manager.queue))
+	# Deferred: a jump can free the engine in between.
+	var engine: ScenarioEngine = _engine if is_instance_valid(_engine) else null
 	for enemy: Enemy in _live_enemies():
-		_log(DebugLogFormat.enemy_summary(enemy, _engine))
+		_log(DebugLogFormat.enemy_summary(enemy, engine))
 		_log("    intents %s" % DebugLogFormat.intent_table(enemy))
 
 
@@ -238,6 +247,10 @@ func _on_hazard_armed(hazard: BackgroundHazardResource, turns_remaining: int) ->
 
 
 func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remaining: int) -> void:
+	# A hazard that ends the fight when it fires is disarmed before its
+	# countdown resets.
+	if hazard == null:
+		return
 	_log("Hazard %s: %d to go" % [hazard.hazard_name, turns_remaining])
 
 

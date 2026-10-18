@@ -20,10 +20,12 @@ static var _bbcode_tag: RegEx = RegEx.create_from_string("\\[/?[^\\]]*\\]")
 
 
 ## A short, stable name for anything that shows up as an actor, source or
-## target.
-static func label(node: Node) -> String:
-	if not is_instance_valid(node):
+## target. Untyped, because what an event names may have been freed by the
+## time it's logged, and a freed object can't be passed as a Node.
+static func label(subject: Variant) -> String:
+	if not is_instance_valid(subject) or subject is not Node:
 		return "-"
+	var node: Node = subject as Node
 	if node is Player:
 		return "Player"
 	if node is Enemy:

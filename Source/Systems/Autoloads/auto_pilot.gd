@@ -24,11 +24,23 @@ extends Node
 ## The transcript is JSON lines: a header, a snapshot at the start of every
 ## player turn, every move, and how the run ended. Gameplay only, never
 ## positions or frame counts, so two runs from the same seed and policy should
-## write identical files (tools/autoplay.sh --determinism checks that).
+## write identical files (tools/autoplay.sh --determinism checks that). The
+## one exception is "memory" entries (node counts, and a leak warning once a
+## count has grown too far), which the check skips.
+##
+## Along the way it watches for what a crash-free run can still get wrong:
+## every engine or script error, with the move it followed ("error"), and
+## every broken invariant ("violation", see AutoPilotInvariants). The result
+## line counts both. The engine's own play-by-play goes to a .debug.txt
+## beside the transcript (DebugLogger).
 
 ## Frames to let the game settle after acting before acting again. A patient
 ## player: dice reach the hand and chains finish before the next move.
 const _SETTLE_FRAMES: int = 10
+
+## Errors written to the transcript before the rest are only counted. One
+## bug can repeat every frame.
+const _MAX_ERRORS_WRITTEN: int = 200
 
 ## STALLED: nothing to do for too long. LOOPING: acting without the run
 ## getting anywhere (no new turn, scenario or won fight).
@@ -52,6 +64,16 @@ var _player_turn: int = 0
 var _player_turn_active: bool = false
 var _in_transit: bool = false
 var _scenario_name: String = ""
+
+var _invariants: AutoPilotInvariants = AutoPilotInvariants.new()
+var _error_log: AutoPilotErrorLog
+var _errors: int = 0
+var _violations: int = 0
+## The last move made, for an error to say what it followed.
+var _last_move: Dictionary = {}
+## Set on each arrival until the bot first gets to act there; the board is
+## checked then, once the hand is dealt.
+var _arrival_unchecked: bool = false
 
 
 func _ready() -> void:
@@ -93,6 +115,10 @@ func _ready() -> void:
 
 	if not _open_transcript():
 		return
+	# The engine's play-by-play, for reading a flagged run after the fact.
+	DebugLogger.start(_out_dir.path_join("seed_%d_%s.debug.txt" % [_run_seed, _policy_name]))
+	_error_log = AutoPilotErrorLog.new()
+	OS.add_logger(_error_log)
 	_connect_game_signals()
 	# Autoloads are ready before the main scene (main.tscn, the game itself)
 	# is built, so everything above is in place before the run starts.
@@ -101,7 +127,10 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if _outcome != Outcome.NONE or not _game_is_up():
+	if _outcome != Outcome.NONE:
+		return
+	_record_errors()
+	if not _game_is_up():
 		return
 
 	_idle_frames += 1
@@ -114,6 +143,16 @@ func _process(_delta: float) -> void:
 		return
 	if not _waiting_on_player():
 		return
+	if _arrival_unchecked:
+		_arrival_unchecked = false
+		_report(_invariants.on_arrival_settled())
+		var memory: Dictionary = AutoPilotInvariants.memory()
+		var leaks: Array[String] = _invariants.leaks(memory)
+		if not leaks.is_empty():
+			memory["leaks"] = leaks
+		memory["type"] = "memory"
+		memory["turn"] = _player_turn
+		_write(memory)
 
 	var moves: Array[AutoPilotMove] = AutoPilotMove.list_legal()
 	# Only dice and End Turn move the game on. Retargeting or flipping tabs
@@ -127,6 +166,7 @@ func _process(_delta: float) -> void:
 	entry["type"] = "move"
 	entry["turn"] = _player_turn
 	_write(entry)
+	_last_move = move.describe()
 	move.perform()
 	_idle_frames = 0
 	_settle = _SETTLE_FRAMES
@@ -163,15 +203,34 @@ func _game_is_up() -> bool:
 func _connect_game_signals() -> void:
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
 		_scenario_name = scenario.resource_path.get_file().get_basename()
+		_invariants.reset_turns()
 	)
+	Events.start_combat.connect(func() -> void:
+		_invariants.reset_turns()
+		# A fight breaking out starts with its own first turn, whatever the
+		# bot was doing out of combat.
+		_player_turn_active = false
+	)
+	Events.combat_finished.connect(_invariants.reset_turns)
+	Events.enemy_turn_starting.connect(func() -> void: _report(_invariants.on_enemy_turn_starting()))
+	Events.enemy_turn_over.connect(_invariants.on_enemy_turn_over)
 	# A fight's first turn has its own signal; every later one follows an
 	# enemy turn.
 	Events.first_turn_start.connect(_on_player_turn_start)
 	Events.player_turn_start.connect(_on_player_turn_start)
-	Events.player_turn_over.connect(func() -> void: _player_turn_active = false)
-	Events.jump.connect(func() -> void: _in_transit = true)
+	Events.player_turn_over.connect(func() -> void:
+		_player_turn_active = false
+		_invariants.on_player_turn_over()
+	)
+	Events.jump.connect(func() -> void:
+		_in_transit = true
+		# A fight arrived at starts with its own first turn; until then the
+		# ships are still flying in.
+		_player_turn_active = false
+	)
 	Events.start_scenario.connect(func() -> void:
 		_in_transit = false
+		_arrival_unchecked = true
 		_idle_frames = 0
 		_moves_since_progress = 0
 		_write({"type": "arrive", "turn": _player_turn, "scenario": _scenario_name,
@@ -187,6 +246,7 @@ func _connect_game_signals() -> void:
 
 
 func _on_player_turn_start() -> void:
+	_report(_invariants.on_player_turn_start(_in_transit))
 	_player_turn_active = true
 	_player_turn += 1
 	_idle_frames = 0
@@ -230,12 +290,37 @@ func _write(entry: Dictionary) -> void:
 		_transcript.store_line(JSON.stringify(entry, "", false))
 
 
+func _report(violations: Array[Dictionary]) -> void:
+	for violation: Dictionary in violations:
+		_violations += 1
+		violation["type"] = "violation"
+		violation["turn"] = _player_turn
+		violation["scenario"] = _scenario_name
+		_write(violation)
+
+
+func _record_errors() -> void:
+	if not _error_log:
+		return
+	for error: Dictionary in _error_log.take():
+		_errors += 1
+		if _errors > _MAX_ERRORS_WRITTEN:
+			continue
+		error["type"] = "error"
+		error["turn"] = _player_turn
+		error["scenario"] = _scenario_name
+		error["after"] = _last_move
+		_write(error)
+
+
 func _finish(outcome: Outcome) -> void:
 	if _outcome != Outcome.NONE:
 		return
 	_outcome = outcome
+	_record_errors()
 	var result: Dictionary = {"type": "result", "outcome": Outcome.keys()[outcome].to_lower(),
-		"turns": _player_turn, "scenario": _scenario_name}
+		"turns": _player_turn, "scenario": _scenario_name, "errors": _errors,
+		"violations": _violations}
 	if _game_is_up():
 		result["sector"] = Globals.state_manager.current_game_save.sector_index
 		result["hull"] = Globals.player.health.health
@@ -243,7 +328,10 @@ func _finish(outcome: Outcome) -> void:
 	# Quitting waits for the frame to end, and signals can still arrive.
 	_transcript.close()
 	_transcript = null
-	print("AutoPilot: %s after %d turns" % [result["outcome"], _player_turn])
+	OS.remove_logger(_error_log)
+	_error_log = null
+	print("AutoPilot: %s after %d turns, %d errors, %d violations" % [
+		result["outcome"], _player_turn, _errors, _violations])
 	SaveManager.delete_save()
 	# Not QuitManager: its cleanup bumps times_run and rewrites the player's
 	# options file. A stuck run exits non-zero so the launcher can flag it.
@@ -251,6 +339,9 @@ func _finish(outcome: Outcome) -> void:
 
 
 func _abort(reason: String) -> void:
+	if _error_log:
+		OS.remove_logger(_error_log)
+		_error_log = null
 	push_error("AutoPilot: " + reason)
 	get_tree().quit(2)
 
