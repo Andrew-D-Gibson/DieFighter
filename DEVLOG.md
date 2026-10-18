@@ -4,6 +4,40 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-17 — Cleanup pass
+
+A sweep for flags and code that cost more than they gave: about 650 fewer
+lines of GDScript (1,900 counting deleted scenes). Play is unchanged apart from
+the fixes below.
+
+Removed: flags nothing read (`Globals.tutorial_active`,
+`display_close_button`), flags that copied another (`_sector_advancing` into
+`_in_transit`, `_restoring_save`, the tutorial's `_dice_locked` and
+`is_active`), the never-authored pool `override_face_bias`, Fate's vestigial
+right-hand side on the map, two unused signals, and orphan scenes (Legend,
+DiceReceptacle, title_screen, the pre-GUT engine test). Draggable's arrival
+thump is now opt-in (`set_home()`), so four callers stopped switching it back
+off. HealthBarController's countdowns became tweens. The options code stores
+numbers instead of menu labels and lost three hidden placeholder rows, two of
+them wired to the wrong handlers.
+
+Fixed on the way:
+
+- Tutorial pause tags now pause. The old position mapping put 6 of the 9
+  authored `(delay=x)` pauses at the end of their line. `format_with_delays()`
+  replaces it in a fraction of the code.
+- A heal of 0 no longer reads as a hull hit (sound and big shake).
+- The shop keeps prices as data instead of parsing its own labels.
+- ContentRegistry, the reward pool and the tile palette list resources with
+  `ResourceLoader.list_directory()`. `DirAccess` sees `*.tres.remap` in an
+  exported build, so those lists could come up empty there.
+
+Release and web: the dev console only exists in debug builds. On the web, Quit
+buttons hide, the debug log and screenshots stay off, and options skip
+window settings.
+
+---
+
 ## 2026-10-16 — Glass that falls, cracks that fade
 
 The canopy cracks were the best part of the cockpit damage, but they sat on

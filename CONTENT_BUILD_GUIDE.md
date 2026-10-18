@@ -232,8 +232,7 @@ step; its ally is bound automatically.
   0.5, a gentle lean toward high faces for every enemy; leave it there unless
   the ship should break the rule. Positive pushes strong actions onto high
   faces, so the 6 is the die to fear; negative onto low faces; 0 places them
-  at random. ±1 is a clear lean. A pool can set its own with
-  `override_face_bias`.
+  at random. ±1 is a clear lean.
 - **`pool_selection`**: which pool a turn uses.
   - `TURN_CYCLE`: rhythm, e.g. charge then fire.
   - `HEALTH_THRESHOLD`: escalates as it's hurt.

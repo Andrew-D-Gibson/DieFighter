@@ -20,14 +20,14 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `Globals` | `Autoloads/globals.gd` | Central registry for all system singletons and global constants (colors, settings) |
 | `Events` | `Autoloads/events.gd` | Central event bus—75+ signals for all game events (combat start, player health hit, dice placed, etc.) |
 | `SFXPlayer` | `Autoloads/sound_effects_player.gd` | Audio playback through SoundEffectResource and AudioStreamPlayer |
-| `DebugLogger` | `Autoloads/debug_logger.gd` | Play-by-play of the latest session in `user://debug_log.txt`: every resolved engine event (skipping AudioVisual), turn snapshots (dice rolled, vitals, statuses, intent tables), backgrounds, modifiers and hazards. Wording in `debug_log_format.gd` (`DebugLogFormat`). Off in headless instances |
-| `Screenshotter` | `Autoloads/screenshotter.gd` | Screenshot capture |
-| `QuitManager` | `Autoloads/quit_manager.gd` | Graceful application quit |
+| `DebugLogger` | `Autoloads/debug_logger.gd` | Play-by-play of the latest session in `user://debug_log.txt`: every resolved engine event (skipping AudioVisual), turn snapshots (dice rolled, vitals, statuses, intent tables), backgrounds, modifiers and hazards. Wording in `debug_log_format.gd` (`DebugLogFormat`). Off in headless instances and on the web |
+| `Screenshotter` | `Autoloads/screenshotter.gd` | Screenshot capture (off on the web) |
+| `QuitManager` | `Autoloads/quit_manager.gd` | Graceful application quit. `can_quit()` is false on the web, where the Quit buttons hide |
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
-| `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs to `res://` paths so saves survive `.tres` renames/moves; stores IDs in save instead of raw paths |
+| `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs to `res://` paths so saves survive `.tres` renames/moves; stores IDs in save instead of raw paths. Scans with `Utils.list_resource_paths()` (`ResourceLoader.list_directory()`), which still sees `.tres` names in an export, where `DirAccess` sees `.remap` |
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
-| `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter |
+| `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter. Skips window size, position, vsync and boot fullscreen on the web (`controls_window()`) |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS` |
 
 **Core Game Systems** (Scene-organized with singleton references)
@@ -56,7 +56,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
 | `PauseMenu` | `UI/PauseMenu` | Pause state toggle, save/quit, option screen |
 | `GameOver` | `UI/GameOver` | Game over **and** victory sequence, with the run summary line |
-| `MainMenu` | Root scene (title_screen) | Start game, options, wishlist link |
+| `MainMenu` | Root scene (`main_menu.tscn`) | Start game, options, wishlist link |
 | `TutorialManager` | `Systems/TutorialManager` | Tutorial step progression with popups |
 
 **Background & Visuals**
@@ -305,7 +305,7 @@ out the name whenever a status does its job (see 4.7).
    - targeting_computer shows intent UI (`Events.enemy_received_die` updates dice view)
    - Tween die to front of enemy ship (0.75s)
    - Popup action indicator texture
-   - Emit `Events.enemy_used_die(enemy, die_value)` (pulses the matching intent) and `Events.enemy_acted`
+   - Emit `Events.enemy_used_die(enemy, die_value)` (pulses the matching intent)
    - `await action.effect_chain.play(context, engine)`
    - A relay (`FEED_ALLY` / `SPAWN_HOLOGRAM_FOR_ALLY`, see 8.4) queues the die
      with its bound ally and injects that ally's `EnemyActionEvent` straight
@@ -754,7 +754,9 @@ Main (Node2D)
 
 - Uses `Draggable` component on Dice and Tile
 - `draggable.drag_ended.connect(drop_handler)`
-- `draggable.reached_new_home.connect(homemovement_finished)`
+- `draggable.set_home(pos, announce_arrival)` moves where it floats back to;
+  only with `announce_arrival` does `reached_new_home` fire when it settles
+  (a tile landing in a new grid cell thumps, one placed by code doesn't)
 
 **Click-to-Show (Targeting)**
 
@@ -943,8 +945,7 @@ because `state` is stale while a new scenario's ships roll).
   exists or is hurt, prey exists, own hull below a share, attitude; each can
   be inverted) must all hold, and `situational_weights`
   (`EnemyActionWeightRule`) scale the weight while a condition holds.
-- **Which face each action lands on** is `EnemyResource.face_bias` (a pool
-  can override it with `EnemyTurnActionList.override_face_bias`); the
+- **Which face each action lands on** is `EnemyResource.face_bias`; the
   default, 0.5, leans every enemy gently toward high faces. At 0 the
   rolled actions are shuffled as they always were, draw for draw. Otherwise
   each sorts onto faces 1–6 by `randf() + face_bias × rank`, where rank is
@@ -1090,7 +1091,7 @@ new values; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` to leave room.
 | Signal | When Emitted | Listeners |
 |--------|--------------|-----------|
 | `enemy_received_die` | Enemy gains die in turn | Update targeting intent dice UI |
-| `enemy_used_die` | Die used for action | Pulse intent indicator, emit enemy_acted |
+| `enemy_used_die` | Die used for action | Pulse intent indicator |
 | `enemy_left` | Enemy removed (death/flee) | Remove from array, rebind slots that pointed at it, faction check |
 | `ship_attacked_ship` | One enemy damaged another | ScenarioManager (`PIRATE_ATTACKED_CIVILIAN`) |
 | `enemy_flew_in` | New enemy enters screen | Re-enable bobbing animation |
