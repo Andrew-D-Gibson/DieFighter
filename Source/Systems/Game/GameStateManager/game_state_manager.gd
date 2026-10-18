@@ -49,11 +49,9 @@ extends Node2D
 @export var damage_scale_per_sector: float = 0.2
 
 @export_category('Cold Open')
-## How long the arrival klaxon and red vignette run. Long enough to register as
+## How long the arrival's red-alert vignette runs. Long enough to register as
 ## an emergency, short enough to be over before the player's first die lands.
 @export var cold_open_alert_time: float = 2.2
-
-var main_menu_file: String = "uid://ccvtlre5vhj7d"
 
 ## True when this is a brand new run rather than a loaded save. Only a new run
 ## gets the alarm: a continued save is resuming a fight it already knows about.
@@ -76,18 +74,10 @@ var _restore: Dictionary = {}
 ## slot is never overwritten with an empty one.
 var _scenario_cleared: bool = false
 
-## Set while the player goes through the jump gate into the next sector, so no
-## checkpoint snapshots a map that already shows the new sector.
-var _sector_advancing: bool = false
-
-## Set between leaving a scenario and arriving at the next. Nothing is stable
-## enough to checkpoint mid-jump.
+## Set between leaving a scenario and arriving at the next, including a trip
+## through the jump gate (whose map already shows the new sector). Nothing is
+## stable enough to checkpoint mid-jump.
 var _in_transit: bool = false
-
-
-## True for a brand new run, false when continuing a save.
-func is_fresh_run() -> bool:
-	return _is_fresh_run
 
 
 ## See _restore.
@@ -363,13 +353,9 @@ func get_damage_multiplier() -> float:
 ## end of the run if that was the last. Only valid once the gate is open (its
 ## boss beaten), which JumpEvent checks before calling this.
 func go_through_gate() -> void:
-	if _sector_advancing:
+	if _in_transit:
 		return
-	_advance_to_next_sector()
-
-
-func _advance_to_next_sector() -> void:
-	_sector_advancing = true
+	_in_transit = true
 	current_game_save.sector_index += 1
 	# Before load_sector(): the map holds on the old sector's gate for the
 	# trip, rather than redrawing the next sector the moment it's generated.
@@ -408,7 +394,6 @@ func _advance_to_next_sector() -> void:
 ## arrival must not be in the snapshot, or replaying the arrival heals twice.
 func _checkpoint_on_arrival() -> void:
 	_in_transit = false
-	_sector_advancing = false
 	if not _restore.is_empty():
 		return
 	_checkpoint_game_save(false)
@@ -418,7 +403,7 @@ func _checkpoint_on_arrival() -> void:
 ## during a fight: a fight is replayed from the last checkpoint instead, so
 ## this waits for the after-combat checkpoint to record a mid-fight pickup.
 func _checkpoint_mid_scenario() -> void:
-	if state == GameState.IN_COMBAT or _in_transit or _sector_advancing:
+	if state == GameState.IN_COMBAT or _in_transit:
 		return
 	await _checkpoint_game_save(true)
 
@@ -429,7 +414,7 @@ func _checkpoint_mid_scenario() -> void:
 ## it), and records anything still on offer. A won jump gate isn't emptied: it
 ## opens, so the way out of the sector is still there to come back to.
 func _checkpoint_after_combat() -> void:
-	if _sector_advancing or _in_transit:
+	if _in_transit:
 		return
 
 	_scenario_cleared = true
@@ -602,7 +587,7 @@ func _in_combat() -> bool:
 
 
 func load_main_menu() -> void:
-	get_tree().change_scene_to_file(main_menu_file)
+	get_tree().change_scene_to_file(SceneLoader.MAIN_MENU)
 	
 	
 func fade_out_to_main_menu() -> void:

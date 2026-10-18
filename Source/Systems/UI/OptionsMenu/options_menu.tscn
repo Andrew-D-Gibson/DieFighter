@@ -220,33 +220,6 @@ arrow_icon = ExtResource("8_vuhip")
 font_color = Color(0.815686, 0.211765, 0.337255, 1)
 selected = 1
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=1391445222]
-visible = false
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="TextSpeedLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1106876605]
-custom_minimum_size = Vector2(46, 16)
-layout_mode = 2
-theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
-text = "Text Speed"
-vertical_alignment = 1
-
-[node name="TextSpeedOptionButton" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=729985805 instance=ExtResource("10_pxdrp")]
-unique_name_in_owner = true
-custom_minimum_size = Vector2(40, 0)
-layout_mode = 2
-size_flags_horizontal = 1
-items = Array[String](["0.5x", "1x", "2x", "Instant"])
-alignment = 1
-normal_style = SubResource("StyleBoxTexture_efhff")
-hover_style = SubResource("StyleBoxTexture_0bdbe")
-pressed_style = SubResource("StyleBoxTexture_ajqpr")
-disabled_style = SubResource("StyleBoxTexture_p11be")
-arrow_icon = ExtResource("8_vuhip")
-font_color = Color(0.815686, 0.211765, 0.337255, 1)
-selected = 1
-
 [node name="HBoxContainer3" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=660029667]
 layout_mode = 2
 size_flags_vertical = 4
@@ -395,34 +368,6 @@ theme_override_icons/checked = ExtResource("5_nleqt")
 theme_override_icons/unchecked = ExtResource("6_oqkfw")
 flat = true
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer" unique_id=80156892]
-visible = false
-layout_mode = 2
-size_flags_horizontal = 0
-alignment = 1
-
-[node name="PixelFontLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4" unique_id=418755946]
-custom_minimum_size = Vector2(48, 16)
-layout_mode = 2
-theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
-text = "Pixel Font"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4" unique_id=1608518441]
-layout_mode = 2
-theme_override_constants/margin_left = -4
-theme_override_constants/margin_top = -4
-theme_override_constants/margin_right = -4
-theme_override_constants/margin_bottom = -4
-
-[node name="PixelFontCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer" unique_id=670009408]
-layout_mode = 2
-focus_mode = 0
-theme_override_icons/checked = ExtResource("5_nleqt")
-theme_override_icons/unchecked = ExtResource("6_oqkfw")
-flat = true
-
 [node name="Control" type="Control" parent="GraphicsOptions/MarginContainer/HBoxContainer" unique_id=1855899095]
 custom_minimum_size = Vector2(24, 0)
 layout_mode = 2
@@ -451,33 +396,6 @@ theme_override_constants/margin_bottom = -4
 
 [node name="ScreenshakeCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer" unique_id=1687580562]
 unique_name_in_owner = true
-layout_mode = 2
-focus_mode = 0
-theme_override_icons/checked = ExtResource("7_go7dx")
-theme_override_icons/unchecked = ExtResource("8_7mi2c")
-flat = true
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2" unique_id=2023584860]
-visible = false
-layout_mode = 2
-alignment = 2
-
-[node name="PostProcessingLabel" type="RichTextLabel" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2" unique_id=1189254305]
-custom_minimum_size = Vector2(56.49, 0)
-layout_mode = 2
-theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
-text = "Postprocessing"
-horizontal_alignment = 2
-vertical_alignment = 1
-
-[node name="MarginContainer" type="MarginContainer" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2" unique_id=1243409542]
-layout_mode = 2
-theme_override_constants/margin_left = -4
-theme_override_constants/margin_top = -4
-theme_override_constants/margin_right = -4
-theme_override_constants/margin_bottom = -4
-
-[node name="PostProcessingCheckBox" type="CheckBox" parent="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer" unique_id=939475073]
 layout_mode = 2
 focus_mode = 0
 theme_override_icons/checked = ExtResource("7_go7dx")
@@ -707,19 +625,14 @@ text = "CLOSE"
 [connection signal="pressed_within_window" from="TabButtons/GraphicsTabButton" to="." method="_on_graphics_button_pressed"]
 [connection signal="pressed_within_window" from="TabButtons/AudioTabButton" to="." method="_on_audio_button_pressed"]
 [connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer/AnimationSpeedOptionButton" to="." method="_on_animation_speed_option_button_item_selected"]
-[connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer2/TextSpeedOptionButton" to="." method="_on_text_speed_option_button_item_selected"]
 [connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3/LanguageOptionButton" to="." method="_on_language_option_button_item_selected"]
 [connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
 [connection signal="item_selected" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/ScaleOptionButton" to="." method="_on_scale_option_button_item_selected"]
 [connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/MarginContainer/VSyncCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer3/MarginContainer/VSyncCheckBox" to="." method="_on_v_sync_check_box_toggled"]
-[connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer/PixelFontCheckBox" to="." method="_on_item_hover"]
-[connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer4/MarginContainer/PixelFontCheckBox" to="." method="_on_v_sync_check_box_toggled"]
 [connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer/ScreenshakeCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer/MarginContainer/ScreenshakeCheckBox" to="." method="_on_screenshake_check_box_toggled"]
-[connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer/PostProcessingCheckBox" to="." method="_on_item_hover"]
-[connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer2/MarginContainer/PostProcessingCheckBox" to="." method="_on_screenshake_check_box_toggled"]
 [connection signal="item_selected" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer2/HBoxContainer3/MarginContainer/FPSLimitOptions" to="." method="_on_fps_limit_options_item_selected"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer/GameVolumeSlider" to="." method="_on_game_volume_slider_value_changed"]
 [connection signal="value_changed" from="AudioOptions/HBoxContainer2/MusicVolumeSlider" to="." method="_on_music_volume_slider_value_changed"]

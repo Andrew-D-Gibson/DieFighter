@@ -20,28 +20,11 @@ var _alert_tween: Tween
 
 func _ready() -> void:
 	visible = true
-	Events.player_health_hit.connect(_health_hit_vignette)
-	Events.player_shields_hit.connect(_shield_hit_vignette)
+	Events.player_health_hit.connect(_pulse_vignette.bind(Globals.red))
+	Events.player_shields_hit.connect(_pulse_vignette.bind(Globals.blue))
 	Events.player_shields_broken.connect(_shield_break_vignette)
 	Events.red_alert.connect(_red_alert_vignette)
 	Events.vignette_pulse.connect(_pulse_vignette)
-
-
-
-func _health_hit_vignette() -> void:
-	material.set_shader_parameter('color', Globals.red)
-	
-	var tween = get_tree().create_tween()
-	tween.tween_property(self, "material:shader_parameter/alpha", vignette_alpha, vignette_flash_time * 0.1).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(self, "material:shader_parameter/alpha", 0, vignette_flash_time * 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-
-	
-func _shield_hit_vignette() -> void:
-	material.set_shader_parameter('color', Globals.blue)
-	
-	var tween = get_tree().create_tween()
-	tween.tween_property(self, "material:shader_parameter/alpha", vignette_alpha, vignette_flash_time * 0.1).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(self, "material:shader_parameter/alpha", 0, vignette_flash_time * 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Cyan rather than blue, brighter, and slow to fade: the hull is bare now.

@@ -1,8 +1,11 @@
 class_name Shop
 extends Node2D
 
+## The price tag shown under each slot. Slots 0-3 hold tiles, 4 the extra die.
 @export var prices: Array[Node2D]
 var item_to_shop_index: Dictionary[Node, int]
+## What each item on the shelves costs. The tag only displays it.
+var _item_prices: Dictionary[Node, int]
 
 @export var dice_scene: PackedScene
 @export var bounding_box: CollisionShape2D
@@ -16,8 +19,6 @@ const _FORMATION_KEY: StringName = &"shop"
 ## Breathing room either side of the panel, so the shopkeeper isn't scraping
 ## along its edge.
 const _FORMATION_PADDING: float = 6.0
-
-var shop_tiles: Array[Node2D]
 
 
 func _ready() -> void:
@@ -77,15 +78,13 @@ func _claim_formation_space() -> void:
 
 
 func _get_possible_shop_tiles() -> Array[TileResource]:
-	# Get an array of tile resources already in the shop
 	var shop_tile_resources: Array[TileResource] = []
-	for tile in shop_tiles:
-		shop_tile_resources.append(tile.tile_resource)
-		
-	# Get an array of the possible rewards not already owned by the player
-	var possible_tile_rewards = Globals.reward_manager.get_possible_tile_rewards()
-		
-	# Filter the possible rewards, removing the tile resources already in the shop
+	for item: Node in item_to_shop_index:
+		if item is Tile:
+			shop_tile_resources.append(item.tile_resource)
+
+	# Tiles the player doesn't own yet, minus what's already on the shelves.
+	var possible_tile_rewards: Array[TileResource] = Globals.reward_manager.get_possible_tile_rewards()
 	return Utils.array_while_excluding(possible_tile_rewards, shop_tile_resources)
 	
 	
@@ -105,9 +104,6 @@ func _get_randomized_price(rarity: TileResource.Rarity) -> int:
 
 
 func _create_shop_tiles() -> void:
-	item_to_shop_index = {}
-	shop_tiles.clear()  # Clear the shop tiles array to prevent accumulation from previous sessions
-	
 	for row: int in range(2):
 		for col: int in range(2):
 			var shop_index: int = (col*2) + row
@@ -126,7 +122,7 @@ func _create_shop_tiles() -> void:
 				prices[shop_index].visible = false
 				continue
 			var tile: Tile = _place_shop_tile(shop_index, chosen_resource)
-			_set_price(shop_index, _get_randomized_price(tile.tile_resource.rarity))
+			_set_price(tile, _get_randomized_price(tile.tile_resource.rarity))
 
 
 ## Puts a tile for sale in the given slot. Slots run down each column:
@@ -145,17 +141,17 @@ func _place_shop_tile(shop_index: int, tile_resource: TileResource) -> Tile:
 	tile.global_position = global_position + pos
 	tile.draggable.drag_started.connect(Events.show_systems.emit)
 	tile.draggable.home_position = tile.global_position
-	tile.draggable.emit_reached_new_home = false
 	tile.draggable.drag_ended.connect(_on_shop_item_dragged)
 
-	shop_tiles.append(tile)
 	item_to_shop_index[tile] = shop_index
 	return tile
 
 
-func _set_price(shop_index: int, price: int) -> void:
-	prices[shop_index].visible = true
-	prices[shop_index].get_child(0).text = str(price)
+func _set_price(item: Node, price: int) -> void:
+	_item_prices[item] = price
+	var tag: Node2D = prices[item_to_shop_index[item]]
+	tag.visible = true
+	tag.get_child(0).text = str(price)
 
 
 ## What's still for sale, for the save: each unsold tile with its slot and
@@ -173,7 +169,7 @@ func capture_stock() -> Dictionary:
 			tiles.append({
 				"slot": shop_index,
 				"tile": ContentRegistry.get_tile_id(item.tile_resource.resource_path),
-				"price": int(prices[shop_index].get_child(0).text),
+				"price": _item_prices[item],
 			})
 		elif item is Dice:
 			dice_for_sale = true
@@ -188,13 +184,11 @@ func _clear_stock() -> void:
 		if is_instance_valid(item) and item.get_parent() == self:
 			item.queue_free()
 	item_to_shop_index = {}
-	shop_tiles.clear()
+	_item_prices = {}
 
 
 ## Inverse of capture_stock(). Slots that were sold stay empty.
 func _restore_stock(stock: Dictionary) -> void:
-	item_to_shop_index = {}
-	shop_tiles.clear()
 	for price_node: Node2D in prices:
 		price_node.visible = false
 
@@ -202,9 +196,8 @@ func _restore_stock(stock: Dictionary) -> void:
 		var path: String = ContentRegistry.get_tile_path(str(entry["tile"]))
 		if path == "":
 			continue
-		var shop_index: int = int(entry["slot"])
-		_place_shop_tile(shop_index, ResourceLoader.load(path))
-		_set_price(shop_index, int(entry["price"]))
+		var tile: Tile = _place_shop_tile(int(entry["slot"]), ResourceLoader.load(path))
+		_set_price(tile, int(entry["price"]))
 
 	if stock.get("dice", false):
 		_create_dice_buy_zone()
@@ -215,14 +208,11 @@ func _create_dice_buy_zone() -> void:
 	add_child(dice)
 	dice.global_position = global_position + Vector2(46, -16)
 	dice.draggable.home_position = dice.global_position
-	dice.draggable.emit_reached_new_home = false
 	dice.draggable.drag_started.connect(Events.show_systems.emit)
 	dice.draggable.drag_ended.connect(_on_shop_item_dragged)
 	
 	item_to_shop_index[dice] = 4
-	
-	prices[4].visible = true
-	prices[4].get_child(0).text = str(DICE_PRICE)
+	_set_price(dice, DICE_PRICE)
 
 
 func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
@@ -230,10 +220,12 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 	
 	if not bounding_box.shape.get_rect().has_point(local_end_position):
 		var item: Node = draggable.get_parent()
-		
-		## TODO: there is a bug here with accessing stuff, and a visual bug too
-		var price = int(prices[item_to_shop_index[item]].get_child(0).text)
-		
+		# A drag that outlives its shelf (the shop restocked mid-drag) sells
+		# nothing.
+		if not _item_prices.has(item):
+			return
+		var price: int = _item_prices[item]
+
 		if Globals.player.money >= price:
 			Globals.player.money -= price
 			
@@ -251,3 +243,4 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			Events.reward_picked.emit()
 
 			prices[item_to_shop_index[item]].visible = false
+			_item_prices.erase(item)

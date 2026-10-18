@@ -9,6 +9,8 @@ extends RefCounted
 ## whatever is left of it), and ignores repeat calls, so a skip-click racing the
 ## animation's own switch can't consume the load twice.
 
+const MAIN_MENU: String = "uid://ccvtlre5vhj7d"
+
 static var _switching: bool = false
 
 

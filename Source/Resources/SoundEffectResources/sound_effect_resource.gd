@@ -63,5 +63,5 @@ func get_pitch_escalation() -> float:
 		return 0.0
 	
 	# Calculate escalation based on current level
-	var escalation = current_escalation_level * pitch_escalation_step
-	return min(escalation, max_pitch_escalation - pitch_scale)
+	var escalation: float = current_escalation_level * pitch_escalation_step
+	return minf(escalation, max_pitch_escalation - pitch_scale)

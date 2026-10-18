@@ -24,12 +24,18 @@ func test_dice_sort_can_pin_a_die_to_the_front() -> void:
 	assert_eq(Utils.sort_dice_by_position([a, b], b), [b, a] as Array[Node])
 
 
-func test_parse_delay_tags_records_position_and_duration() -> void:
-	assert_eq(Utils.parse_delay_tags("Hi(delay=0.5) there(delay=2)"), {2: 0.5, 19: 2.0})
+func test_delay_tags_are_removed_and_timed_by_visible_character() -> void:
+	var formatted: Dictionary = Utils.format_with_delays("Hi(delay=0.5) there(delay=2)")
+	assert_eq(formatted["text"], "Hi there")
+	assert_eq(formatted["length"], 8)
+	assert_eq(formatted["delays"], {2: 0.5, 8: 2.0} as Dictionary[int, float])
 
 
-func test_remove_delay_tags() -> void:
-	assert_eq(Utils.remove_delay_tags("Hi(delay=0.5) there(delay=2)"), "Hi there")
+func test_delay_positions_skip_bbcode() -> void:
+	# The pause lands after "Ready.", not after the colour tag's characters.
+	var formatted: Dictionary = Utils.format_with_delays("[color=#ff0000]Ready.[/color](delay=0.3) Go")
+	assert_eq(formatted["delays"], {6: 0.3} as Dictionary[int, float])
+	assert_eq(formatted["length"], 9)
 
 
 func test_strip_bbcode_removes_tags_and_inline_images() -> void:

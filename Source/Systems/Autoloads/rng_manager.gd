@@ -132,6 +132,6 @@ func shuffle_array(bucket: Bucket, array: Array) -> void:
 	var rng: RandomNumberGenerator = _rngs[bucket]
 	for i in range(array.size() - 1, 0, -1):
 		var j: int = rng.randi_range(0, i)
-		var tmp = array[i]
+		var tmp: Variant = array[i]
 		array[i] = array[j]
 		array[j] = tmp

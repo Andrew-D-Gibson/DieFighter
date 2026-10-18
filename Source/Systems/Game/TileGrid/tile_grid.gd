@@ -114,10 +114,8 @@ func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:
 		tile.global_position = tile_world_pos
 
 		# Set the tile within the grid representation
-		_assign_tile_to_grid_pos(tile as Tile, tile_grid_pos)
-
-		# Disable the first sound effect of the tile being dropped
-		tile.draggable.emit_reached_new_home = false
+		# Placed, not dropped: no landing thump.
+		_assign_tile_to_grid_pos(tile as Tile, tile_grid_pos, false)
 
 		# Connect the tile's drag ended signal to the function to snap it to the grid
 		tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
@@ -143,7 +141,7 @@ func receive_tile(tile: Tile, drop_position: Vector2) -> void:
 	_drop_tile_on_grid_pos(tile.draggable, drop_position)
 
 
-func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i) -> void:
+func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i, announce_arrival: bool = true) -> void:
 	# Find the tile's current position, if it exists
 	var old_pos: Vector2i = find_tile_pos(tile)
 
@@ -153,7 +151,7 @@ func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i) -> void:
 
 	# Place the tile at the new position
 	tile_locations[grid_pos] = tile
-	tile.draggable.home_position = grid_to_global_pos(grid_pos)
+	tile.draggable.set_home(grid_to_global_pos(grid_pos), announce_arrival)
 
 
 ## Forgets a tile that is leaving the grid for good (destroyed by its own

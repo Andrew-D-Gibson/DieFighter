@@ -1,7 +1,7 @@
 class_name ChangeEngineChargeHandler
 extends EffectHandler
 
-func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
+func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	# Instantiate a new event
 	var event: ChangeEngineChargeEvent = ChangeEngineChargeEvent.new()
 

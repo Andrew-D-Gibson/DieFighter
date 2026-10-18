@@ -142,12 +142,12 @@ func _process(_delta: float) -> void:
 func _connect_health_signals() -> void:
 	health.death.connect(_on_death)
 	health.shields_damaged.connect(graphics_manager.on_shields_hit)
-	health.shields_damaged.connect(func():
+	health.shields_damaged.connect(func() -> void:
 		Events.play_sound.emit(_SHIELDS_HIT_SFX)
 	)
 	
 	health.health_damaged.connect(graphics_manager.on_health_hit)
-	health.health_damaged.connect(func():
+	health.health_damaged.connect(func() -> void:
 		# The killing blow gets the pre-death sound instead. Health emits
 		# death before health_damaged, so is_dead is already set here.
 		if not health.is_dead:
@@ -248,7 +248,7 @@ func _on_death() -> void:
 	
 	# Create explosion particles. They stay where the blow landed while the
 	# wreck flies off.
-	var explosion = explosion_particles.instantiate()
+	var explosion: CPUParticles2D = explosion_particles.instantiate()
 	explosion.color = Globals.red
 	explosion.amount = health.max_health * 5
 	add_child(explosion)
@@ -318,11 +318,11 @@ func _launch_direction() -> Vector2:
 
 ## Updates the enemy's components based on the enemy resource
 func _update_resource() -> void:
-	_update_graphics()
-	_update_dice_queue()
+	graphics_manager.update_ship_graphics(enemy_resource.ship_graphics_scene)
+	dice_manager.position = enemy_resource.dice_queue_position
+	dialogue_manager.anchor = enemy_resource.dialogue_offset
 	_update_health_from_resource()
 	_update_health_bar()
-	_update_dialogue()
 	_update_overload()
 	# The first table is rolled by EnemyManager once the whole roster is in,
 	# so a roll can see who else is on the board.
@@ -358,16 +358,6 @@ func is_overloaded() -> bool:
 func vent_overload() -> void:
 	overload_threshold += enemy_resource.overload_threshold_growth
 	dice_manager.return_dice_to_player()
-
-
-## Updates the enemy's graphics
-func _update_graphics() -> void:
-	graphics_manager.update_ship_graphics(enemy_resource.ship_graphics_scene)
-
-
-## Updates the dice queue position
-func _update_dice_queue() -> void:
-	dice_manager.position = enemy_resource.dice_queue_position
 
 
 ## Updates the health component's values, scaled by how deep into the run the
@@ -422,11 +412,6 @@ func set_health_bar_compact(compact: bool, duration: float = 0.0) -> void:
 func _health_bar_position() -> Vector2:
 	return enemy_resource.compact_health_bar_position if health_bar_compact \
 		else enemy_resource.health_bar_position
-
-
-## Updates the position and color of the dialogue manager
-func _update_dialogue() -> void:
-	dialogue_manager.anchor = enemy_resource.dialogue_offset
 
 
 ## Which of the enemy's action pools this turn's six slots are drawn from.

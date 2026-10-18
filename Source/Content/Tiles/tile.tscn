@@ -87,8 +87,6 @@ unique_name_in_owner = true
 floating_enabled = false
 bob_amplitude = 1.0
 drift_amplitude = 0.75
-rotation_amplitude = 1.5
-rotation_speed = 0.15
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable" unique_id=51185880]
 visible = false

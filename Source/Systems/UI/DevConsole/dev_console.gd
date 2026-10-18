@@ -246,7 +246,7 @@ func _load_grid(command_args: Array[String] = []) -> void:
 		command_history.append_text('\n\t\tNo save in slot ' + slot.to_upper() + '.')
 		return
 
-	var data = JSON.parse_string(file.get_as_text())
+	var data: Variant = JSON.parse_string(file.get_as_text())
 	if not data is Dictionary:
 		command_history.append_text('\n\t\tCorrupt save in slot ' + slot.to_upper() + '.')
 		return

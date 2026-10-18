@@ -2,7 +2,7 @@ class_name HealHandler
 extends EffectHandler
 
 
-func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
+func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	if context.targets.is_empty():
 		return
 

@@ -19,8 +19,6 @@ money_particle_scene = ExtResource("4_mpart")
 bob_amplitude = 0.75
 drift_amplitude = 0.5
 drift_speed = 0.25
-rotation_amplitude = 1.5
-rotation_speed = 0.15
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
 shape = SubResource("RectangleShape2D_mpick")

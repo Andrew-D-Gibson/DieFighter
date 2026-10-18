@@ -1,8 +1,6 @@
 class_name PauseMenu
 extends Node2D
 
-var main_menu_file: String = "uid://ccvtlre5vhj7d"
-
 
 func _ready() -> void:
 	Events.toggle_pause_menu.connect(_toggle_pause_menu)
@@ -22,7 +20,7 @@ func _toggle_pause_menu() -> void:
 
 func _on_main_menu_button_pressed() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file(main_menu_file)
+	get_tree().change_scene_to_file(SceneLoader.MAIN_MENU)
 
 
 func _on_options_button_pressed() -> void:

@@ -106,6 +106,6 @@ func soft_highlight() -> void:
 	$RichTextLabel.add_theme_color_override('default_color', soft_highlight_color)
 
 
-func set_button_text(text: String) -> void:
-	$RichTextLabel.text = text
-	_text_on_ready = text
+func set_button_text(new_text: String) -> void:
+	$RichTextLabel.text = new_text
+	_text_on_ready = new_text

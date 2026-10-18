@@ -59,11 +59,12 @@ func take_damage(amount: int) -> void:
 
 
 func change_health(amount: int) -> void:
-	if is_dead:
+	# A heal that scales to nothing gains 0; without this it would fall through
+	# to the damage branch and read as a hit (see change_shields()).
+	if is_dead or amount == 0:
 		return
 
-	health += amount
-	health = clampi(health, 0, max_health)
+	health = clampi(health + amount, 0, max_health)
 	
 	if health <= 0:
 		# Alert the world for fatal damage

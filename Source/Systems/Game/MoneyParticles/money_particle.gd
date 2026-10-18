@@ -43,7 +43,7 @@ var collision_radius: Dictionary[money_amount, int] = {
 var _money_added_particle_scene: PackedScene = preload("uid://cf7c6vnmskqff")
 
 
-## Pays out [param amount] credits as floating particles at [param global_pos],
+## Pays out [param credits] as floating particles at [param global_pos],
 ## parented to [param parent]. Large denominations first, then small change.
 ##
 ## Every payout in the game routes through here so credits look the same
@@ -53,12 +53,12 @@ var _money_added_particle_scene: PackedScene = preload("uid://cf7c6vnmskqff")
 ## The scene is passed in rather than preloaded: this script is attached to
 ## that scene, and preloading it here would be a cyclic dependency.
 static func spawn_payout(
-	parent: Node, global_pos: Vector2, amount: int, particle_scene: PackedScene
+	parent: Node, global_pos: Vector2, credits: int, particle_scene: PackedScene
 ) -> void:
-	if amount <= 0 or particle_scene == null or not is_instance_valid(parent):
+	if credits <= 0 or particle_scene == null or not is_instance_valid(parent):
 		return
 
-	for particle_amount: money_amount in _denominations(amount):
+	for particle_amount: money_amount in _denominations(credits):
 		var particle: MoneyParticle = particle_scene.instantiate()
 		particle.amount = particle_amount
 
@@ -125,7 +125,7 @@ func _process(delta: float) -> void:
 	position += _current_float_velocity * delta
 	
 	# Get t as a fraction of time passed (clamped between 0 and 1)
-	var t = clamp(_current_time / _time_to_float, 0.0, 1.0)
+	var t: float = clampf(_current_time / _time_to_float, 0.0, 1.0)
 	
 	# Decay the velocity
 	_current_float_velocity = _starting_float_velocity.lerp(Vector2.ZERO, t)

@@ -26,7 +26,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		return
 
 	if not can_feed(ally, relay_visited):
-		await _return_to_player()
+		_return_to_player()
 		return
 
 	if is_instance_valid(actor) and actor is Node2D:

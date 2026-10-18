@@ -235,15 +235,8 @@ func _make_style(color: Color) -> StyleBoxFlat:
 func _load_tile_resources() -> Array[TileResource]:
 	var resources: Array[TileResource] = []
 
-	var dir: DirAccess = DirAccess.open(_TILE_RESOURCE_DIR)
-	if not dir:
-		push_warning("TilePalette: could not open " + _TILE_RESOURCE_DIR)
-		return resources
-
-	for file_name: String in dir.get_files():
-		if not file_name.ends_with(".tres"):
-			continue
-		var res: Resource = ResourceLoader.load(_TILE_RESOURCE_DIR + file_name)
+	for path: String in Utils.list_resource_paths(_TILE_RESOURCE_DIR):
+		var res: Resource = ResourceLoader.load(path)
 		if res is TileResource:
 			resources.append(res)
 
@@ -319,7 +312,6 @@ func _grab_with_cursor(draggable: Draggable) -> void:
 	node.scale = Vector2(1.3, 1.3)
 
 	draggable.home_position = cursor_position
-	draggable.emit_reached_new_home = false
 	draggable.state = Draggable.DragState.DRAGGING
 
 	Globals.mouse_is_dragging_something = true

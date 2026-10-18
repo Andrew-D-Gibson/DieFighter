@@ -13,7 +13,7 @@ func _ready() -> void:
 
 
 func _set_glitch(glitch_state: bool) -> void:
-	show() if glitch_state else hide()
+	visible = glitch_state
 
 
 ## Timed in real time, so a burst fired inside a hitstop doesn't freeze on.

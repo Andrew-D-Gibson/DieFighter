@@ -25,7 +25,7 @@ signal all_text_displayed()
 signal popup_closed()
 
 
-func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, time_delay: float = 0, close_button: bool = true, auto_close_time: float = 0) -> void:
+func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:
 	global_position = global_pos
 	time_to_wait_after_text_shown = auto_close_time
 	
@@ -47,21 +47,14 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 
 	_fade_in()
 	
-	# Parse delay tags before formatting
-	var original_delay_positions: Dictionary = Utils.parse_delay_tags(text)
-	var text_without_delays: String = Utils.remove_delay_tags(text)
-	var bb_code_text: String = Utils.format_text(text_without_delays)
-	var raw_text: String = Utils.strip_bbcode_tags(bb_code_text)
-	
-	# Map delay positions from original text to processed text positions
-	delay_positions = Utils.map_delay_positions(text, text_without_delays, bb_code_text, raw_text, original_delay_positions)
-	
-	%RichTextLabel.text = bb_code_text
+	var formatted: Dictionary = Utils.format_with_delays(text)
+	delay_positions = formatted["delays"]
+	%RichTextLabel.text = formatted["text"]
 	%RichTextLabel.visible_characters = 0
-	
-	target_character = len(raw_text)
+
+	target_character = formatted["length"]
 	current_character = 0
-	
+
 	# Start the custom character reveal
 	_reveal_next_character()
 		

@@ -21,13 +21,10 @@ func _load_tile_resources() -> void:
 	]
 
 	for dir_location: String in dir_locations:
-		var dir := DirAccess.open(dir_location)
-		if dir:
-			for file_name: String in dir.get_files():
-				if file_name.ends_with(".tres"):
-					var res = ResourceLoader.load(dir_location + file_name)
-					if res is TileResource and res.offered_as_reward:
-						_all_tile_resources.append(res)
+		for path: String in Utils.list_resource_paths(dir_location):
+			var res: Resource = ResourceLoader.load(path)
+			if res is TileResource and res.offered_as_reward:
+				_all_tile_resources.append(res)
 	
 	
 ## Relative likelihood a tile of each rarity is offered. Rarity previously only
@@ -77,10 +74,8 @@ static func filter_by_minimum_rarity(
 
 
 func get_possible_tile_rewards() -> Array[TileResource]:
-	var player_tiles = Globals.tile_grid.tile_locations.values()
-	
 	var player_tile_resources: Array[TileResource] = []
-	for tile in player_tiles:
+	for tile: Tile in Globals.tile_grid.tile_locations.values():
 		player_tile_resources.append(tile.tile_resource)
 		
 	return Utils.array_while_excluding(_all_tile_resources, player_tile_resources)

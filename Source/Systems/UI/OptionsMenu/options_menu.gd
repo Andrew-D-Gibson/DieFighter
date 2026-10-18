@@ -14,7 +14,6 @@ var screen_showing: ScreenShowing
 # their text, so the text can be translated.
 const _ANIMATION_SPEEDS: Array[float] = [0.5, 1.0, 2.0, 4.0]
 const _FPS_LIMITS: Array[int] = [30, 60, 120, 0] # 0 means unlimited
-const _WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
 
 ## Locale codes in the language dropdown's row order.
 var _language_locales: Array[String] = []
@@ -54,42 +53,35 @@ func _setup_game_options_UI() -> void:
 
 func _setup_graphics_options_UI() -> void:
 	%ScreenshakeCheckBox.button_pressed = Globals.screenshake_enabled
+	%FullscreenCheckBox.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
+
+	# In a browser the page owns the window: its size and vsync aren't ours to
+	# set. (Fullscreen stays: the checkbox is a click, which browsers allow.)
+	if not OptionsSettings.controls_window():
+		%ScaleOptionButton.get_parent().hide()
+		%VSyncCheckBox.get_parent().get_parent().hide()
+		return
 
 	%VSyncCheckBox.button_pressed = (DisplayServer.window_get_vsync_mode() == DisplayServer.VSyncMode.VSYNC_ENABLED)
-	
-	%FullscreenCheckBox.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
-	
 	_reduce_scale_options()
 	_set_scale_choice_label()
-	
-	
+
+
+## Drops the window scales too big for this display.
 func _reduce_scale_options() -> void:
-	var base_resolution: Vector2 = Vector2(320, 180)
-	var display_size: Vector2 = DisplayServer.screen_get_size()
-	var max_scale: int = 2
-
-	for scale in [4, 6, 8, 9, 10, 12]:
-		if (base_resolution * scale).x <= display_size.x and (base_resolution * scale).y <= display_size.y:
-			max_scale = scale
-		else:
-			break
-	
-	var max_scale_index: int = _WINDOW_SCALES.find(max_scale)
-
-	for idx: int in range(6, max_scale_index, -1):
+	var max_scale_index: int = OptionsSettings.WINDOW_SCALES.find(OptionsSettings.largest_window_scale())
+	for idx: int in range(OptionsSettings.WINDOW_SCALES.size() - 1, max_scale_index, -1):
 		%ScaleOptionButton.remove_item(idx)
-	
-	
+
+
 func _set_scale_choice_label() -> void:
 	var screen_scale: int = 1
-	var current_window_size: Vector2 = DisplayServer.window_get_size() 
-	var base_resolution: Vector2 = Vector2(320, 180)
-	if current_window_size.x / base_resolution.x == current_window_size.y / base_resolution.y:
-		screen_scale = floor(current_window_size.x / base_resolution.x)
-		
-	var scale_index: int = _WINDOW_SCALES.find(screen_scale)
-	%ScaleOptionButton.select(scale_index)
-	
+	var current_window_size: Vector2 = DisplayServer.window_get_size()
+	if current_window_size.x / Globals.SCREEN_SIZE.x == current_window_size.y / Globals.SCREEN_SIZE.y:
+		screen_scale = floori(current_window_size.x / Globals.SCREEN_SIZE.x)
+
+	%ScaleOptionButton.select(OptionsSettings.WINDOW_SCALES.find(screen_scale))
+
 
 func _on_screenshake_check_box_toggled(toggled_on: bool) -> void:
 	Globals.screenshake_enabled = toggled_on
@@ -124,36 +116,23 @@ func _setup_audio_sliders() -> void:
 	
 	
 func _on_game_volume_slider_value_changed(value: float) -> void:
-	var master_bus_index: int = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_volume_linear(master_bus_index, %GameVolumeSlider.value)
-	
-	%GameVolumeKnobLabel.text = str(int(%GameVolumeSlider.value * 100)) + '%'
-	%GameVolumeKnobLabel.global_position.x = \
-		%GameVolumeSlider.global_position.x + \
-		(%GameVolumeSlider.value / %GameVolumeSlider.max_value) * \
-		(%GameVolumeSlider.size.x - 24)
-		
+	_set_bus_volume("Master", value, %GameVolumeSlider, %GameVolumeKnobLabel)
+
 
 func _on_music_volume_slider_value_changed(value: float) -> void:
-	var music_bus_index: int = AudioServer.get_bus_index("Music")
-	AudioServer.set_bus_volume_linear(music_bus_index, %MusicVolumeSlider.value)
-	
-	%MusicVolumeKnobLabel.text = str(int(%MusicVolumeSlider.value * 100)) + '%'
-	%MusicVolumeKnobLabel.global_position.x = \
-		%MusicVolumeSlider.global_position.x + \
-		(%MusicVolumeSlider.value / %MusicVolumeSlider.max_value) * \
-		(%MusicVolumeSlider.size.x - 24)
+	_set_bus_volume("Music", value, %MusicVolumeSlider, %MusicVolumeKnobLabel)
 
 
 func _on_sfx_volume_slider_value_changed(value: float) -> void:
-	var sfx_bus_index: int = AudioServer.get_bus_index("SFX")
-	AudioServer.set_bus_volume_linear(sfx_bus_index, %SFXVolumeSlider.value)
-	
-	%SFXVolumeKnobLabel.text = str(int(%SFXVolumeSlider.value * 100)) + '%'
-	%SFXVolumeKnobLabel.global_position.x = \
-		%SFXVolumeSlider.global_position.x + \
-		(%SFXVolumeSlider.value / %SFXVolumeSlider.max_value) * \
-		(%SFXVolumeSlider.size.x - 24)		
+	_set_bus_volume("SFX", value, %SFXVolumeSlider, %SFXVolumeKnobLabel)
+
+
+## Applies a volume slider to its bus and keeps the percentage riding the knob.
+func _set_bus_volume(bus: StringName, value: float, slider: Range, knob_label: RichTextLabel) -> void:
+	AudioServer.set_bus_volume_linear(AudioServer.get_bus_index(bus), value)
+	knob_label.text = str(int(value * 100)) + '%'
+	knob_label.global_position.x = slider.global_position.x \
+		+ (value / slider.max_value) * (slider.size.x - 24)
 
 
 func _on_game_button_pressed() -> void:
@@ -209,20 +188,13 @@ func _on_mute_all_sounds_check_box_toggled(toggled_on: bool) -> void:
 
 
 func _on_scale_option_button_item_selected(index: int) -> void:
-	var base_resolution: Vector2 = Vector2(320, 180)
-	var scale: int = _WINDOW_SCALES[index]
-
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-	
-	var window_size: Vector2 = base_resolution * scale
-	DisplayServer.window_set_size(window_size)	
-	
+
+	var window_size: Vector2 = Globals.SCREEN_SIZE * OptionsSettings.WINDOW_SCALES[index]
+	DisplayServer.window_set_size(window_size)
+
 	var display_size: Vector2 = DisplayServer.screen_get_size()
 	DisplayServer.window_set_position((display_size - window_size) / 2)
 	
 	%ScaleLabel.add_theme_color_override("default_color", Globals.red)
 	%FullscreenCheckBox.button_pressed = false
-
-
-func _on_text_speed_option_button_item_selected(index: int) -> void:
-	pass # Replace with function body.

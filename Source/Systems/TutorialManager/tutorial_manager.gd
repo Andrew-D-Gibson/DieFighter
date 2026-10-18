@@ -50,20 +50,12 @@ var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 var current_step_index: int = -1
 var current_popup: TutorialTextPopup
 
-## Guards against a second start_tutorial() running over the first.
-var is_active: bool = false
-
-## While true, newly spawned dice are locked as they arrive. Dice spawn one at a
-## time on a timer, so locking only what exists at call time would miss the rest.
-var _dice_locked: bool = false
-
-
 var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.REVEAL_HEALTH_BAR: _reveal_health_bar,
 	TutorialStep.TutorialFunctions.TRIGGER_ENEMY_SPAWN: _spawn_enemy,
 	TutorialStep.TutorialFunctions.REVEAL_SYSTEMS: _reveal_systems,
 	TutorialStep.TutorialFunctions.SPAWN_DICE: _spawn_dice,
-	TutorialStep.TutorialFunctions.ALLOW_DICE_DRAGGING: _allow_dice_dragging,
+	TutorialStep.TutorialFunctions.ALLOW_DICE_DRAGGING: _unlock_dice,
 	TutorialStep.TutorialFunctions.REVEAL_TARGETING_COMPUTER: _reveal_targeting_computer,
 	TutorialStep.TutorialFunctions.RUN_ENEMY_TURN: _run_enemy_turn,
 	TutorialStep.TutorialFunctions.ALLOW_NORMAL_COMBAT: _allow_normal_combat,
@@ -134,21 +126,17 @@ func _assert_every_function_is_wired() -> void:
 		)
 
 
-func create_tutorial_popup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, time_delay: float = 0, close_button: bool = true, auto_close_time: float = 0) -> void:
+func create_tutorial_popup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:
 	if current_popup and is_instance_valid(current_popup):
 		current_popup.close()
 		
 	current_popup = tutorial_text_popup_scene.instantiate()
 	add_child(current_popup)
 
-	current_popup.setup(text, global_pos, highlight_texture, time_delay, close_button, auto_close_time)
+	current_popup.setup(text, global_pos, highlight_texture, close_button, auto_close_time)
 	
 
 func start_tutorial() -> void:
-	if is_active:
-		return
-	is_active = true
-
 	for i: int in range(len(tutorial_steps)):
 		current_step_index = i
 		var step: TutorialStep = tutorial_steps[i]
@@ -157,8 +145,6 @@ func start_tutorial() -> void:
 
 		await play_step(step)
 		await _await_popup_closed(step)
-
-	is_active = false
 
 
 func play_step(step: TutorialStep) -> void:
@@ -176,11 +162,11 @@ func play_step(step: TutorialStep) -> void:
 
 	# Create the text popup
 	if step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_MANUALLY:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, step.time_delay, true)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, true)
 	elif step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_AFTER_TIME:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, step.time_delay, false, step.time_to_auto_close)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false, step.time_to_auto_close)
 	else:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, step.time_delay, false)
+		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false)
 
 		var closing_signal: Signal = _closing_signal_for(step)
 		if closing_signal:
@@ -273,10 +259,6 @@ func _spawn_dice() -> void:
 	_lock_dice()
 		
 
-func _allow_dice_dragging() -> void:
-	_unlock_dice()
-		
-		
 func _reveal_targeting_computer() -> void:
 	Events.targeting_computer_startup.emit()
 
@@ -309,8 +291,9 @@ func _reroll_enemy_intents() -> void:
 	Globals.enemy_manager.generate_all_turn_actions()
 
 
+## Locks the hand, and every die that lands in it until unlocked: dice spawn
+## one at a time on a timer, so locking only what exists now would miss the rest.
 func _lock_dice() -> void:
-	_dice_locked = true
 	if not Globals.player.dice_manager.die_added.is_connected(_lock_newest_die):
 		Globals.player.dice_manager.die_added.connect(_lock_newest_die)
 
@@ -319,13 +302,12 @@ func _lock_dice() -> void:
 
 
 func _lock_newest_die() -> void:
-	if not _dice_locked or Globals.player.dice_manager.queue.is_empty():
+	if Globals.player.dice_manager.queue.is_empty():
 		return
 	Globals.player.dice_manager.queue[-1].draggable.dragging_allowed = false
 
 
 func _unlock_dice() -> void:
-	_dice_locked = false
 	if Globals.player.dice_manager.die_added.is_connected(_lock_newest_die):
 		Globals.player.dice_manager.die_added.disconnect(_lock_newest_die)
 

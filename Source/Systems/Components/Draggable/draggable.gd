@@ -21,13 +21,9 @@ var state: DragState = DragState.DEFAULT
 		floating_enabled = dragging_allowed
 
 var follow_strength: float = 20
-var home_position: Vector2 :
-	set(new_home):
-		if home_position != new_home:
-			emit_reached_new_home = true
-		home_position = new_home
-		
-var emit_reached_new_home: bool = false
+var home_position: Vector2
+## Set by set_home() when the parent's next arrival home should be announced.
+var _announce_arrival: bool = false
 var tween: Tween
 
 # --- Floating Behavior ---
@@ -46,22 +42,26 @@ var tween: Tween
 @export var bob_speed: float = 1.0       # How fast it bobs up and down
 @export var drift_amplitude: float = 3.0 # Max horizontal drift in pixels
 @export var drift_speed: float = 0.5     # How fast it drifts left/right
-@export var rotation_amplitude: float = 3.0 # Max rotation in degrees
-@export var rotation_speed: float = 0.3     # Rotation oscillation speed
 
 # --- Internal floating variables ---
 var _floating_time: float = 0.0
-var _floating_start_pos: Vector2
 
 
 func _ready() -> void:
 	if not home_position:
 		home_position = global_position
-		
-	emit_reached_new_home = false
 
 		
 		
+## Moves where the parent floats back to. With [param announce_arrival],
+## reached_new_home fires once it settles there: a tile landing in a new grid
+## cell thumps, while one placed by code just appears.
+func set_home(new_home: Vector2, announce_arrival: bool = false) -> void:
+	if announce_arrival and new_home != home_position:
+		_announce_arrival = true
+	home_position = new_home
+
+
 func _process(delta: float) -> void:
 	# Don't handle moving the draggable object if it's being moved with code
 	if state == DragState.MOVING_WITH_CODE:
@@ -90,23 +90,19 @@ func _process(delta: float) -> void:
 			drag_ended.emit(self, get_global_mouse_position())
 		return
 	
-	if emit_reached_new_home \
+	if _announce_arrival \
 	and state == DragState.DEFAULT \
 	and get_parent().global_position.distance_to(home_position) < 2:
 		if not floating_enabled:
 			get_parent().global_position = home_position
-		emit_reached_new_home = false
-		
+		_announce_arrival = false
 		reached_new_home.emit()
 		
 	if state == DragState.DEFAULT and global_position.distance_to(home_position) < 4 and floating_enabled:
 		_floating_time += delta
 	
-		var bob_offset = sin(_floating_time * bob_speed) * bob_amplitude
-		var drift_offset = sin(_floating_time * drift_speed + 1.5) * drift_amplitude
-		var rot_offset = sin(_floating_time * rotation_speed + 0.8) * deg_to_rad(rotation_amplitude)
-
-		#get_parent().rotation = rot_offset
+		var bob_offset: float = sin(_floating_time * bob_speed) * bob_amplitude
+		var drift_offset: float = sin(_floating_time * drift_speed + 1.5) * drift_amplitude
 		get_parent().global_position = lerp(global_position, home_position + Vector2(drift_offset, bob_offset), follow_strength * delta * 0.2)
 	else:
 		get_parent().global_position = lerp(global_position, home_position, follow_strength * delta)

@@ -55,6 +55,17 @@ func test_healing_clamps_at_max() -> void:
 	assert_signal_emitted(health, "health_healed")
 
 
+func test_a_heal_of_nothing_is_not_a_hit() -> void:
+	health.change_health(0)
+	assert_signal_not_emitted(health, "health_damaged")
+	assert_signal_not_emitted(health, "health_healed")
+
+
+func test_a_hull_change_announces_itself_once() -> void:
+	health.change_health(-2)
+	assert_signal_emit_count(health, "health_set", 1)
+
+
 func test_hull_never_goes_below_zero_and_death_fires_once() -> void:
 	health.take_damage(99)
 	assert_eq(health.health, 0)

@@ -1,6 +1,5 @@
 extends Control
 
-var main_menu_file: String = "uid://ccvtlre5vhj7d"
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -12,7 +11,7 @@ func _ready() -> void:
 
 
 func _on_main_menu_button_pressed() -> void:
-	get_tree().change_scene_to_file(main_menu_file)
+	get_tree().change_scene_to_file(SceneLoader.MAIN_MENU)
 
 
 func _on_quit_button_pressed() -> void:

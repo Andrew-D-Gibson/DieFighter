@@ -4,7 +4,7 @@ extends EffectHandler
 ## Reads jump_delta from context.running_amount.
 ## Positive = jump forward, negative = jump backward.
 
-func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
+func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	var jump_delta: int = context.running_amount
 
 	var event := JumpEvent.new()

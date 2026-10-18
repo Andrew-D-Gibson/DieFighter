@@ -136,7 +136,7 @@ func _start_countdown_animation() -> void:
 	
 	# Hide the change label when animation completes
 	countdown_tween.tween_callback(
-		func(): money_change_label.visible = false
+		func() -> void: money_change_label.visible = false
 	).set_delay(countdown_duration)
 
 

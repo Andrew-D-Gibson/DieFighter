@@ -6,210 +6,106 @@ extends Node
 ## inside the OptionsMenu scene, so nothing was applied — window size, volume,
 ## animation speed — until a menu containing it happened to be instanced.
 
-var _settings_path: String = "user://options_settings.cfg"
+const _SETTINGS_PATH: String = "user://options_settings.cfg"
+
+## Window scales offered, in screen multiples of Globals.SCREEN_SIZE.
+const WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
 
 
 func _ready() -> void:
 	Events.save_options_config.connect(save_options_settings)
 	load_options_settings()
-	
+
+
+## Whether the game owns its window. In a browser the page does: size,
+## position and vsync can't be set, and fullscreen is only granted in direct
+## response to a click, never at boot.
+static func controls_window() -> bool:
+	return not OS.has_feature("web")
+
+
+## The largest window scale that still fits on the current display.
+static func largest_window_scale() -> int:
+	var display_size: Vector2 = DisplayServer.screen_get_size()
+	var best: int = WINDOW_SCALES[0]
+	for scale: int in WINDOW_SCALES:
+		var size: Vector2 = Globals.SCREEN_SIZE * scale
+		if size.x > display_size.x or size.y > display_size.y:
+			break
+		best = scale
+	return best
+
 
 func save_options_settings() -> void:
-	var config = ConfigFile.new()
-	
-	# Game settings
-	var game_settings: Dictionary = _get_current_game_settings()
-	config.set_value("Game", "animation_speed", game_settings["animation_speed"])
-	config.set_value("Game", "language", Localization.get_locale())
-	
-	# Graphics settings
-	var graphics_settings: Dictionary = _get_current_graphics_settings()
-	config.set_value("Graphics", "screenshake", graphics_settings["screenshake"])
-	config.set_value("Graphics", "vsync", graphics_settings["vsync"])
-	config.set_value("Graphics", "fullscreen", graphics_settings["fullscreen"])
-	config.set_value("Graphics", "window_size", graphics_settings["window_size"])
-	config.set_value("Graphics", "window_pos", graphics_settings["window_pos"])
-	config.set_value("Graphics", "max_fps", graphics_settings["max_fps"])
-	
-	# Audio settings
-	var audio_settings: Dictionary = _get_current_audio_settings()
-	config.set_value("Audio", "master_volume", audio_settings["master_volume"])
-	config.set_value("Audio", "music_volume", audio_settings["music_volume"])
-	config.set_value("Audio", "sfx_volume", audio_settings["sfx_volume"])
-	config.set_value("Audio", "mute_all", audio_settings["mute_all"])
+	var config: ConfigFile = ConfigFile.new()
 
-	# Misc. settings
+	config.set_value("Game", "animation_speed", Globals.animation_speed)
+	config.set_value("Game", "language", Localization.get_locale())
+
+	config.set_value("Graphics", "screenshake", Globals.screenshake_enabled)
+	config.set_value("Graphics", "max_fps", Engine.max_fps)
+	if controls_window():
+		config.set_value("Graphics", "vsync", DisplayServer.window_get_vsync_mode() == DisplayServer.VSYNC_ENABLED)
+		config.set_value("Graphics", "fullscreen", DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
+		config.set_value("Graphics", "window_size", DisplayServer.window_get_size())
+		config.set_value("Graphics", "window_pos", DisplayServer.window_get_position())
+
+	var master_bus: int = AudioServer.get_bus_index("Master")
+	config.set_value("Audio", "master_volume", AudioServer.get_bus_volume_linear(master_bus))
+	config.set_value("Audio", "music_volume", AudioServer.get_bus_volume_linear(AudioServer.get_bus_index("Music")))
+	config.set_value("Audio", "sfx_volume", AudioServer.get_bus_volume_linear(AudioServer.get_bus_index("SFX")))
+	config.set_value("Audio", "mute_all", AudioServer.is_bus_mute(master_bus))
+
 	config.set_value("Misc", "times_run", Globals.times_run)
 
-	config.save(_settings_path)
-	
-	
+	config.save(_SETTINGS_PATH)
+
+
 func load_options_settings() -> void:
-	var config = ConfigFile.new()
-	var err = config.load(_settings_path)
+	var config: ConfigFile = ConfigFile.new()
+	var err: Error = config.load(_SETTINGS_PATH)
 
-	# A missing file is a first launch: fall through to the defaults below.
+	# A missing file is a first launch: every get_value() below falls back to
+	# its default.
 	if err != OK and err != ERR_FILE_NOT_FOUND:
-		printerr("Error loading settings file: ", _settings_path, " (", error_string(err), ")")
-		
-	# Game
-	var game_settings: Dictionary = {}
+		printerr("Error loading settings file: ", _SETTINGS_PATH, " (", error_string(err), ")")
+
 	# Empty means nothing chosen yet: Localization picks from the OS language.
-	game_settings["language"] = config.get_value("Game", "language", "")
-	game_settings["animation_speed"] = config.get_value("Game", "animation_speed", "1x")
-	_set_game_settings(game_settings)
+	Localization.set_locale(config.get_value("Game", "language", ""))
+	Globals.animation_speed = _read_number(config.get_value("Game", "animation_speed", 1.0))
 
-	# Graphics
-	var graphics_settings: Dictionary = {}
-	graphics_settings["screenshake"] = config.get_value("Graphics", "screenshake", true)
-	graphics_settings["vsync"] = config.get_value("Graphics", "vsync", true)
-	graphics_settings["fullscreen"] = config.get_value("Graphics", "fullscreen", false)
-	
-	var recommended_scale: int = _get_recommended_scale()
-	var display_size: Vector2 = DisplayServer.screen_get_size()
-	graphics_settings["window_size"] = config.get_value("Graphics", "window_size", recommended_scale * Vector2(320, 180))
-	graphics_settings["window_pos"] = config.get_value("Graphics", "window_pos", (display_size - (recommended_scale * Vector2(320, 180))) / 2)
-	
-	graphics_settings["max_fps"] = config.get_value("Graphics", "max_fps", "60")
-	_set_graphics_settings(graphics_settings)
+	Globals.screenshake_enabled = config.get_value("Graphics", "screenshake", true)
+	Engine.max_fps = int(_read_number(config.get_value("Graphics", "max_fps", 60)))
+	if controls_window():
+		_apply_window_settings(config)
 
-	# Audio
-	var audio_settings: Dictionary = {}
-	audio_settings["master_volume"] = config.get_value("Audio", "master_volume", 0.5)
-	audio_settings["music_volume"] = config.get_value("Audio", "music_volume", 0.5)
-	audio_settings["sfx_volume"] = config.get_value("Audio", "sfx_volume", 0.5)
-	audio_settings["mute_all"] = config.get_value("Audio", "mute_all", false)
-	_set_audio_settings(audio_settings)
-	
-	# Misc.
-	var times_run: int = config.get_value("Misc", "times_run", 0)
-	Globals.times_run = times_run
+	var master_bus: int = AudioServer.get_bus_index("Master")
+	AudioServer.set_bus_volume_linear(master_bus, config.get_value("Audio", "master_volume", 0.5))
+	AudioServer.set_bus_volume_linear(AudioServer.get_bus_index("Music"), config.get_value("Audio", "music_volume", 0.5))
+	AudioServer.set_bus_volume_linear(AudioServer.get_bus_index("SFX"), config.get_value("Audio", "sfx_volume", 0.5))
+	AudioServer.set_bus_mute(master_bus, config.get_value("Audio", "mute_all", false))
+
+	Globals.times_run = config.get_value("Misc", "times_run", 0)
 
 
-func _get_current_game_settings() -> Dictionary:
-	var game_settings: Dictionary = {}
-	
-	match Globals.animation_speed:
-		0.5:
-			game_settings["animation_speed"] = "0.5x"
-		1.0:
-			game_settings["animation_speed"] = "1x"
-		2.0:
-			game_settings["animation_speed"] = "2x"
-		4.0:
-			game_settings["animation_speed"] = "4x"
-		_:
-			game_settings["animation_speed"] = "1x"
-			
-	return game_settings
-	
-	
-func _set_game_settings(game_settings: Dictionary) -> void:
-	Localization.set_locale(game_settings["language"])
-	match game_settings["animation_speed"]:
-		"0.5x":
-			Globals.animation_speed = 0.5
-		"1x": 
-			Globals.animation_speed = 1
-		"2x":
-			Globals.animation_speed = 2
-		"4x":
-			Globals.animation_speed = 4
-	
+func _apply_window_settings(config: ConfigFile) -> void:
+	var vsync: bool = config.get_value("Graphics", "vsync", true)
+	DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if vsync else DisplayServer.VSYNC_DISABLED)
 
-func _get_current_graphics_settings() -> Dictionary:
-	var graphics_settings: Dictionary = {}
-	
-	graphics_settings["screenshake"] = Globals.screenshake_enabled
-	graphics_settings["vsync"] = (DisplayServer.window_get_vsync_mode() == DisplayServer.VSyncMode.VSYNC_ENABLED)
-	graphics_settings["fullscreen"] = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
-	
-	graphics_settings["window_size"] = DisplayServer.window_get_size()
-	graphics_settings["window_pos"] = DisplayServer.window_get_position()
-	
-	match Engine.max_fps:
-		30:
-			graphics_settings["max_fps"] = "30"
-		60:
-			graphics_settings["max_fps"] = "60"
-		120:
-			graphics_settings["max_fps"] = "120"
-		0:
-			graphics_settings["max_fps"] = "Unlimited"
-		_:
-			graphics_settings["max_fps"] = "60"
-	
-	return graphics_settings
-	
-	
-func _set_graphics_settings(graphics_settings: Dictionary) -> void:
-	# Screenshake
-	Globals.screenshake_enabled = graphics_settings["screenshake"]
-	
-	# V-Sync
-	if graphics_settings["vsync"]:
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED)
-	else:
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_DISABLED)
-		
-	# Fullscreen
-	if graphics_settings["fullscreen"]:
+	if config.get_value("Graphics", "fullscreen", false):
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	else:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_size(graphics_settings["window_size"])	
-		DisplayServer.window_set_position(graphics_settings["window_pos"])
-	
-	# FPS Limit
-	match graphics_settings["max_fps"]:
-		"30":
-			Engine.max_fps = 30
-		"60":
-			Engine.max_fps = 60
-		"120":
-			Engine.max_fps = 120
-		"Unlimited":
-			Engine.max_fps = 0 # 0 means unlimited
-		_:
-			Engine.max_fps = 60
-	
-	
-func _get_current_audio_settings() -> Dictionary:
-	var audio_settings: Dictionary = {}
-	
-	var master_bus_index: int = AudioServer.get_bus_index("Master")
-	var music_bus_index: int = AudioServer.get_bus_index("Music")
-	var sfx_bus_index: int = AudioServer.get_bus_index("SFX")
-	
-	audio_settings["master_volume"] = 	AudioServer.get_bus_volume_linear(master_bus_index)
-	audio_settings["music_volume"] = 	AudioServer.get_bus_volume_linear(music_bus_index)
-	audio_settings["sfx_volume"] = 	AudioServer.get_bus_volume_linear(sfx_bus_index)
-	audio_settings["mute_all"] = AudioServer.is_bus_mute(master_bus_index)
+		return
 
-	return audio_settings
-	
-
-func _set_audio_settings(audio_settings: Dictionary) -> void:
-	var master_bus_index: int = AudioServer.get_bus_index("Master")
-	var music_bus_index: int = AudioServer.get_bus_index("Music")
-	var sfx_bus_index: int = AudioServer.get_bus_index("SFX")
-	
-	AudioServer.set_bus_volume_linear(master_bus_index, audio_settings["master_volume"])
-	AudioServer.set_bus_volume_linear(music_bus_index, audio_settings["music_volume"])
-	AudioServer.set_bus_volume_linear(sfx_bus_index, audio_settings["sfx_volume"])
-
-	AudioServer.set_bus_mute(master_bus_index, audio_settings["mute_all"])
-	
-	
-func _get_recommended_scale() -> int:
-	var base_resolution: Vector2 = Vector2(320, 180)
+	var default_size: Vector2 = Globals.SCREEN_SIZE * largest_window_scale()
 	var display_size: Vector2 = DisplayServer.screen_get_size()
-	var best_scale = 2
+	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+	DisplayServer.window_set_size(config.get_value("Graphics", "window_size", default_size))
+	DisplayServer.window_set_position(config.get_value("Graphics", "window_pos", (display_size - default_size) / 2))
 
-	for scale in [4, 6, 8, 9, 10, 12]:
-		if (base_resolution * scale).x <= display_size.x and (base_resolution * scale).y <= display_size.y:
-			best_scale = scale
-		else:
-			break
-			
-	return best_scale
+
+## Settings files written before October 2026 stored these as the menu's
+## labels ("2x", "Unlimited") rather than as numbers.
+static func _read_number(value: Variant) -> float:
+	if value is String:
+		return 0.0 if value == "Unlimited" else float(value.trim_suffix("x"))
+	return float(value)

@@ -6,7 +6,7 @@ extends EffectHandler
 ## If you need per-target independent modifier hooks, create one event
 ## per target here instead.
 
-func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
+func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
 	if context.targets.is_empty():
 		return
 

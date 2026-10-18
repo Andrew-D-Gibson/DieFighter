@@ -17,8 +17,10 @@ var _scenario_path_to_id: Dictionary[String, String] = {}
 
 func _ready() -> void:
 	for dir_location: String in _TILE_DIRS:
-		_scan_dir(dir_location, false, _register_tile)
-	_scan_dir(_SCENARIO_DIR, true, _register_scenario)
+		for path: String in Utils.list_resource_paths(dir_location):
+			_register_tile(path)
+	for path: String in Utils.list_resource_paths(_SCENARIO_DIR, true):
+		_register_scenario(path)
 
 
 func get_tile_path(id: String) -> String:
@@ -77,28 +79,3 @@ func _register(
 		return
 	id_to_path[id] = path
 	path_to_id[path] = id
-
-
-## Recursively walks dir_location, calling handle_file(path) for every .tres found.
-func _scan_dir(dir_location: String, recursive: bool, handle_file: Callable) -> void:
-	var dir: DirAccess = DirAccess.open(dir_location)
-	if not dir:
-		push_error("ContentRegistry: could not open directory '%s'" % dir_location)
-		return
-
-	dir.list_dir_begin()
-	var entry_name: String = dir.get_next()
-	while entry_name != "":
-		if entry_name in [".", ".."]:
-			entry_name = dir.get_next()
-			continue
-
-		var full_path: String = dir_location.path_join(entry_name)
-		if dir.current_is_dir():
-			if recursive:
-				_scan_dir(full_path + "/", recursive, handle_file)
-		elif entry_name.ends_with(".tres"):
-			handle_file.call(full_path)
-
-		entry_name = dir.get_next()
-	dir.list_dir_end()

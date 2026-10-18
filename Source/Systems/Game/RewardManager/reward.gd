@@ -127,7 +127,6 @@ func _present(offered: Array[Node2D]) -> void:
 		reward.draggable.drag_ended.connect(_end_reward)
 		reward.global_position = global_position + Vector2(start_offset,0) + Vector2(i * _REWARD_SPACING, 0)
 		reward.draggable.home_position = reward.global_position
-		reward.draggable.emit_reached_new_home = false
 		reward.draggable.floating_enabled = true
 		
 		rewards.append(reward)
@@ -193,14 +192,14 @@ static func rolls_money_pickup(reward_resource: RewardResource) -> bool:
 func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	if _dismissing:
 		return
-	var local_end_position = end_position - bounding_box.global_position
+	var local_end_position: Vector2 = end_position - bounding_box.global_position
 	# Don't do anything if the drag ended within the reward window
 	if bounding_box.shape.get_rect().has_point(local_end_position):
 		return
-		
-	var chosen_reward = draggable.get_parent()
-	chosen_reward.draggable.drag_started.disconnect(Events.show_systems.emit)
-	chosen_reward.draggable.drag_ended.disconnect(_end_reward)
+
+	var chosen_reward: Node = draggable.get_parent()
+	draggable.drag_started.disconnect(Events.show_systems.emit)
+	draggable.drag_ended.disconnect(_end_reward)
 	
 	
 	if chosen_reward is Tile:
