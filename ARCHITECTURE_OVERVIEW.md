@@ -945,7 +945,8 @@ because `state` is stale while a new scenario's ships roll).
   exists or is hurt, prey exists, own hull below a share, attitude; each can
   be inverted) must all hold, and `situational_weights`
   (`EnemyActionWeightRule`) scale the weight while a condition holds.
-- **Which face each action lands on** is `EnemyResource.face_bias`; the
+- **Which face each action lands on** is `EnemyResource.face_bias` (a pool
+  can override it with `EnemyTurnActionList.override_face_bias`); the
   default, 0.5, leans every enemy gently toward high faces. At 0 the
   rolled actions are shuffled as they always were, draw for draw. Otherwise
   each sorts onto faces 1–6 by `randf() + face_bias × rank`, where rank is

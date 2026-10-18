@@ -13,7 +13,7 @@ the fixes below.
 Removed: flags nothing read (`Globals.tutorial_active`,
 `display_close_button`), flags that copied another (`_sector_advancing` into
 `_in_transit`, `_restoring_save`, the tutorial's `_dice_locked` and
-`is_active`), the never-authored pool `override_face_bias`, Fate's vestigial
+`is_active`), Fate's vestigial
 right-hand side on the map, two unused signals, and orphan scenes (Legend,
 DiceReceptacle, title_screen, the pre-GUT engine test). Draggable's arrival
 thump is now opt-in (`set_home()`), so four callers stopped switching it back
