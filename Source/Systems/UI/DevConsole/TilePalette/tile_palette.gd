@@ -42,8 +42,8 @@ var _tile_entries: Array[Dictionary] = []
 
 
 func _ready() -> void:
-	# Opens with the dev console, which only exists in debug builds.
-	if not OS.is_debug_build():
+	# Opens with the dev console, so it's only here when the console is.
+	if not DevConsole.is_available():
 		queue_free()
 		return
 	mouse_filter = Control.MOUSE_FILTER_IGNORE

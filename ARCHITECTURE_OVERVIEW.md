@@ -28,7 +28,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter. Skips window size, position, vsync and boot fullscreen on the web (`controls_window()`) |
-| `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS` |
+| `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS`. Editor-launched runs only: in any exported build (debug or release) it frees itself without opening the port |
 
 **Core Game Systems** (Scene-organized with singleton references)
 

@@ -16,6 +16,11 @@ var _key_map: Dictionary
 var _held_keys: Dictionary = {}
 
 func _ready() -> void:
+	# Editor-launched runs only. It runs arbitrary GDScript sent over TCP, so
+	# an exported build (debug or release) must never open the port.
+	if not OS.has_feature("editor"):
+		queue_free()
+		return
 	# Ensure MCP server keeps processing even when game is paused
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	_init_key_map()

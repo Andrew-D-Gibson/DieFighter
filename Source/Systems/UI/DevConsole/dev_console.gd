@@ -1,3 +1,4 @@
+class_name DevConsole
 extends Control
 
 @onready var line_edit := $PanelContainer/VBoxContainer/LineEdit
@@ -7,9 +8,16 @@ var _history_list: Array[String] = []
 var _history_index: int = -1
 
 
+## Whether this build gets the console. Its cheats (god mode, kill, give)
+## are for development: always on in debug builds, and in a release build only
+## if its export preset lists the custom feature "dev_console" (a demo for
+## press, say).
+static func is_available() -> bool:
+	return OS.is_debug_build() or OS.has_feature("dev_console")
+
+
 func _ready() -> void:
-	# Cheats (god mode, kill, give) are for development, not for players.
-	if not OS.is_debug_build():
+	if not is_available():
 		queue_free()
 		return
 	line_edit.gui_input.connect(_on_line_edit_gui_input)
