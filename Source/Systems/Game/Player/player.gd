@@ -115,6 +115,14 @@ var _first_turn_announced: bool = false
 ## mustn't go out into whatever comes next.
 var _fight_generation: int = 0
 
+## Bumped when a fight starts or the player jumps. The enemy turn that
+## follows End Turn hands the turn back only if neither happened meanwhile: a
+## fight can break out partway through one (a Burn tick on a civilian), and
+## opens with its own first turn. A fight *ending* doesn't count: the turn
+## that follows is still the one that unlocks the dice handed back.
+var _turn_generation: int = 0
+var _turn_generation_at_end: int = 0
+
 ## The die that fired the jump in progress. It rides the jump out on the tile
 ## it was dropped on, so the player can see what launched them, and comes home
 ## on arrival with the rest of the hand.
@@ -202,6 +210,7 @@ func _ready() -> void:
 		# A fight breaking out during an enemy turn run out of combat starts
 		# with its own first turn, not the one that enemy turn would start.
 		_fight_generation += 1
+		_turn_generation += 1
 		_between_turns = true
 		if not _dealing_hand:
 			_announce_first_turn()
@@ -346,16 +355,15 @@ func _start_player_turn() -> void:
 	# An enemy turn can finish after the player has committed to a jump, or
 	# as they leave (one run out of combat goes on while they play). Its
 	# fight is gone, and the turn with it.
-	if _jump_committed:
+	if _jump_committed or _turn_generation_at_end != _turn_generation:
 		return
-	var fight: int = _fight_generation
 	# Wait for any dice to get back to the dice queue before rerolling them
 	await get_tree().create_timer(0.5).timeout
-	if fight != _fight_generation:
+	if _turn_generation_at_end != _turn_generation:
 		return
 	await reroll_dice()
 	await _ensure_a_die_to_play()
-	if fight != _fight_generation:
+	if _turn_generation_at_end != _turn_generation:
 		return
 
 	_between_turns = false
@@ -565,6 +573,7 @@ func _lock_die_for_jump(die: Dice) -> void:
 func commit_to_jump(die: Dice) -> void:
 	_jump_committed = true
 	_fight_generation += 1
+	_turn_generation += 1
 	%EndTurnButton.disabled = true
 	%EndTurnButton.update_ui()
 	for held: Dice in dice_manager.queue:
@@ -758,6 +767,7 @@ func can_end_turn() -> bool:
 
 func end_turn() -> void:
 	_between_turns = true
+	_turn_generation_at_end = _turn_generation
 	%EndTurnButton.disabled = true
 	%EndTurnButton.update_ui()
 	Events.player_turn_over.emit()
