@@ -4,6 +4,49 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-18 — Spare die, End Turn fixes, AutoPilot step 2: watchdogs
+
+**The spare die.** A ship could take every die (a Cutpurse fleeing with the
+haul, a Charge Bore keeping the last), leaving the player with nothing to
+play, stuck in a fight or unable to jump out of a scenario at all. Now,
+whenever a turn starts or a fight ends with nothing to play, the player gets
+a spare: real if the Fleet owns a die nobody holds, a hologram if ships hold
+them all. It also allows a nice play: hand a near-dead Cutpurse everything,
+take the free hologram, shoot it down, and get your dice back.
+
+**End Turn only on the player's turn.** It's off from the moment a jump is
+committed (no more enemy turns in a scenario being torn down: 21 of 40 runs
+hit that), from the press until the next turn, and while a fight's ships fly
+in. The hotkey follows the button. Fixing it turned up two neighbours:
+- A fight breaking out during an enemy turn run out of combat (a Burn tick on
+  a civilian) got two player turns at once.
+- A first-turn announcement could go out into the next scenario if the
+  player jumped before the ships landed.
+
+**AutoPilot step 2.** Runs now fail on any engine or script error
+(captured with the move it followed) and on broken invariants: overlapping
+turns, empty-handed fight turns, dice duplicated or missing, a limited tile
+gone unlimited, values out of range. Hung runs are killed. A batch ends with
+a grouped summary and seeds to replay. Each run keeps a DebugLogger
+play-by-play, which turned up three logger crashes on freed ships, a freed
+engine and a disarmed hazard (fixed).
+
+200 random runs (seeds 1000–1199): no stalls, loops, hangs or violations.
+Still open, found by the new checks (not fixed):
+- `Dice.reroll_with_tween()` (dice.gd:89) calls `host_queue.get_parent()` on
+  a die with no host queue: 10 times in 200 runs. Seeds 1090, 1131, 1191.
+- `Shop._clear_stock()` (shop.gd:184) iterates a typed dictionary whose keys
+  include freed items: 8 runs. Seeds 1051, 1096, 1112.
+- `DamageEvent._spawn_hit_particles()` asks for zero particles (a 0-damage
+  hit): seed 1051.
+- Shop tiles leak particles: an unbought tile in the shop keeps running its
+  event responses (Counterweight Battery's shields at every enemy turn end,
+  214 times in seed 1133) and leaves a sparkle each time on a hidden panel,
+  where it never finishes. That's a gameplay bug too: the player gets the
+  shields from a tile they didn't buy. Seeds 1054, 1133 (memory warnings).
+
+---
+
 ## 2026-10-18 — AutoPilot, step 1: fast, reproducible runs
 
 The game can now play itself (`tools/autoplay.sh`). This first step is the

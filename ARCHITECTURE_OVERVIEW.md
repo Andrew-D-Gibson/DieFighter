@@ -522,11 +522,42 @@ runs don't fight over port 9090.
 
 **Transcripts** (`<out>/seed_<N>_<policy>.jsonl`): a header, a snapshot at
 every player turn (`AutoPilotSnapshot`), every move, arrivals, won fights and
-the result (`victory`, `defeat`, `turn_limit`, `stalled`, `looping`). They
-hold gameplay state only, never positions or frame counts, so a seed and
-policy should always write the same file; `--determinism` checks. Money in a
-snapshot counts payout coins still in flight (`AutoPilotSnapshot.credits()`),
-because how long a coin floats is cosmetic randomness.
+the result (`victory`, `defeat`, `turn_limit`, `stalled`, `looping`, plus
+error and violation counts). They hold gameplay state only, never positions
+or frame counts, so a seed and policy should always write the same file;
+`--determinism` checks, skipping `memory` entries. Money in a snapshot counts
+payout coins still in flight (`AutoPilotSnapshot.credits()`), because how
+long a coin floats is cosmetic randomness. Each run also keeps the engine's
+play-by-play (`seed_<N>_<policy>.debug.txt`, `DebugLogger.start()`) and
+console output (`.log`).
+
+**What fails a run.** Besides a stall, a loop or a crash:
+- **Errors.** `AutoPilotErrorLog` (an `OS.add_logger()` Logger) catches every
+  engine and script error. Each goes in the transcript with its innermost
+  GDScript frame, the turn and the move it followed. Object ids are masked so
+  replays still match.
+- **Invariant violations** (`AutoPilotInvariants`), checked at the moments
+  they should hold:
+  - At turn boundaries: no overlapping player or enemy turns, no player turn
+    mid-jump, and no fight turn starting with an empty hand.
+  - At every turn start and settled arrival:
+    - Real dice held never exceed `num_of_dice`, and after arriving they
+      aren't fewer.
+    - The count never drops below 1.
+    - Hull, shields, charge and money stay in range.
+    - No limited tile reads -1 (unlimited) uses.
+  - The counts are taken independently of Player's own bookkeeping, so a bug
+    there can't hide itself.
+- **Hangs.** `autoplay.sh --time-limit` (default 300 s) kills a run stuck
+  inside one frame, which the AutoPilot's own stall check can't catch.
+
+**Memory** is recorded at each arrival (nodes, orphans, objects). A count
+more than a limit above the first arrival's gets a `leaks` warning on its
+`memory` entry. That's a warning, not a failure: node counts wobble by one
+or two between runs of a seed.
+
+A batch ends with a summary: outcomes, violations by check, memory warnings,
+and errors grouped by site, each with example seeds to replay.
 
 ---
 
@@ -878,6 +909,8 @@ func spawn_dice(num_to_spawn, value=0, holographic=false) -> void
 func dice_owned() -> int              # The Fleet: num_of_dice + holograms held
 func reroll_dice() -> void            # Tween each die with sound SFX
 func end_turn() -> void               # Emit player_turn_over when queue empty
+func can_end_turn() -> bool           # Whether End Turn (button or hotkey) would take a press
+func commit_to_jump(die) -> void      # JumpEvent: the player is leaving; lock the hand and End Turn
 ```
 
 **Turn Logic**
@@ -910,6 +943,27 @@ func end_turn() -> void               # Emit player_turn_over when queue empty
   temporary modifiers already ran for that turn. `start_combat` alone isn't
   enough, because fleeing one fight into another never leaves IN_COMBAT
 - `Events.tile_activation_complete` (from tile grid) → check empty queue, enable end-turn button
+
+**When End Turn works.** Only while it's the player's turn to end. It stays
+off from the press until their next turn starts, while a fight's ships fly in
+(before `first_turn_start`), and from `commit_to_jump()` until arrival.
+JumpEvent calls that the moment a jump is decided, before `Map.jump()` pans
+the map, so no enemy turn can start in a scenario being torn down. The hotkey
+follows the button (`can_end_turn()`). An enemy turn hands the turn back
+(`_start_player_turn()`) only if no fight started and no jump was committed
+since End Turn (`_turn_generation`): a fight can break out partway through an
+enemy turn run out of combat, and it opens with its own first turn.
+
+**The spare die.** The player always has a die to play. At each turn start,
+and once a fight ends, `_ensure_a_die_to_play()` checks for a die in hand or
+in a tile's queue (judged by queue membership, after beams land and the
+chain finishes, since a die in flight still points at the queue it left). If
+there's none, the player gets one with a "SPARE DIE" callout
+(`CALLOUT_SPARE_DIE`): a real die if `num_of_dice` exceeds the real dice still
+held anywhere (a Cutpurse fled with the rest; the count never drops below
+one), otherwise a hologram (ships hold them all). A hologram doesn't count as
+owned and fizzles at the jump, so it can't be banked, and it's enough to shoot
+the holder down and get the dice back.
 
 ### 8.2 Tile (`Source/Content/Tiles/tile.gd`)
 
