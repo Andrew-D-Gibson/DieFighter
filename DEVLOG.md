@@ -4,6 +4,35 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-18 — AutoPilot, step 1: fast, reproducible runs
+
+The game can now play itself (`tools/autoplay.sh`). This first step is the
+foundation: runs that are fast, isolated from the player's save, and
+reproducible from a seed. The only policy so far plays at random.
+
+- Headless with `--fixed-fps 60`, a full run takes 3–5 s; 40 runs take 45 s
+  on 8 cores. Nothing is skipped, just compressed.
+- 20 of 20 seeds replayed identically. The one divergence on the way was
+  money: a payout only reaches the balance when its coin lands, and coin float
+  times are cosmetic randomness. Snapshots now count coins in flight.
+- See ARCHITECTURE_OVERVIEW, "AutoPilot".
+
+Found in the first 40 random runs (not fixed yet):
+
+- **End Turn during a jump.** `Map.jump()` pans the map before the jump
+  starts. Spend your last die on a map arrow and End Turn is lit through the
+  pan. Pressing it starts an enemy turn whose engine the jump then frees, and
+  `EnemyTurn._engine_alive()` errors on the freed engine (typed parameter).
+  21 of 40 runs hit it.
+- **Turns that start with an empty hand.** Flee and leave dice behind, then
+  have an enemy keep the last one (Charge Bore), and a turn starts with no
+  dice. End Turn is only re-checked when a tile finishes activating, so it
+  stays disabled; only the hotkey ends the turn. 6 of 40 runs.
+- Possible, unconfirmed: checkpoints count every coin in the `Money` group as
+  owned, including a Pilfer's coins flying away.
+
+---
+
 ## 2026-10-17 — Cleanup pass
 
 A sweep for flags and code that cost more than they gave: about 650 fewer

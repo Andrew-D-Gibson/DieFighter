@@ -29,6 +29,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter. Skips window size, position, vsync and boot fullscreen on the web (`controls_window()`) |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS`. Editor-launched runs only: in any exported build (debug or release) it frees itself without opening the port |
+| `AutoPilot` | `Autoloads/auto_pilot.gd`, helpers in `Systems/AutoPilot/` | Plays runs by itself for QA and balance testing (see AutoPilot below). Editor binaries with `-- --autoplay` only; otherwise it frees itself |
 
 **Core Game Systems** (Scene-organized with singleton references)
 
@@ -480,6 +481,52 @@ background can carry a gameplay rule. Shop prices draw from REWARDS, not RUN.
 |----------|----------|----------------|
 | `GameSaveResource` | `Resources/SaveResources/game_save_resource.gd` | Serializable run state |
 | `run_start.tres` | `Resources/SaveResources/` | New-run template (duplicated per run) |
+
+`RNGManager.next_run_seed` queues the seed the next new run starts from, and
+`current_run_seed` records the one in use, so any run can be replayed.
+
+---
+
+## AutoPilot (QA harness)
+
+The game playing itself, to find crashes, softlocks and balance problems
+faster than playtesting can. `tools/autoplay.sh` launches it; the script's
+header lists the options.
+
+**Speed without skipping anything.** Headless runs use `--fixed-fps 60`:
+every frame simulates 1/60 s however fast the machine gets through it. Every
+tween, timer and await still happens, in order, just compressed, so ordering
+bugs between animations and the engine still show up. A run takes seconds.
+`TimeDirector.use_frame_clock()` times hitstops and slow-mo by physics frames,
+since the wall clock no longer matches game time. `--watch` plays one run in a
+window at normal speed.
+
+**Acting like a player.** `AutoPilotMove.list_legal()` lists what a player
+could do now: drop a die from the hand on a tile that would take it
+(`Tile.activation_refusal()`, the pure half of `clears_activation_criteria()`),
+retarget, switch the map/systems tab, or press End Turn
+(`Player.can_end_turn()`). `perform()` goes through the same entry points as
+input. A drop emits the die's `drag_ended`, as letting go of the mouse does.
+The AutoPilot is patient: it waits for the engine to go idle, for its turn,
+and for jumps to land. It skips the tutorial (`TutorialManager.auto_start`).
+
+**Policies** (`AutoPilotPolicy`) pick among the legal moves, drawing any
+randomness from the AutoPilot's own stream, seeded from the run seed. Drawing
+from a gameplay bucket would shift every roll after it. `random` plays
+wherever a die is accepted.
+
+**Isolation.** One run per process. Saves go to the output directory, keyed
+by process id. It quits without `QuitManager`, so `times_run` and the options
+file are left alone. Headless runs free `McpInteractionServer`, so parallel
+runs don't fight over port 9090.
+
+**Transcripts** (`<out>/seed_<N>_<policy>.jsonl`): a header, a snapshot at
+every player turn (`AutoPilotSnapshot`), every move, arrivals, won fights and
+the result (`victory`, `defeat`, `turn_limit`, `stalled`, `looping`). They
+hold gameplay state only, never positions or frame counts, so a seed and
+policy should always write the same file; `--determinism` checks. Money in a
+snapshot counts payout coins still in flight (`AutoPilotSnapshot.credits()`),
+because how long a coin floats is cosmetic randomness.
 
 ---
 
