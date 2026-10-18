@@ -54,13 +54,13 @@ func _ready() -> void:
 	
 	
 func _clear_stars() -> void:
-	for star in _stars:
+	for star: Node2D in _stars:
 		star.queue_free()
 	_stars = []
 
 
 func _add_star(star_scene: PackedScene) -> void:
-	var star = star_scene.instantiate()
+	var star: Node2D = star_scene.instantiate()
 	star.z_index = -2
 	add_child(star)
 	star.global_position = Vector2(
