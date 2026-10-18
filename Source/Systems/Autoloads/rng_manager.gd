@@ -7,6 +7,14 @@ enum Bucket { RUN, DICE, ENEMY_AI, TARGETING, REWARDS, BACKGROUND, COSMETIC }
 
 var _rngs: Dictionary = {}
 
+## The seed the current run started from, so any run can be replayed. Not
+## saved: a continued run's RUN stream is restored mid-way instead.
+var current_run_seed: int = -1
+
+## The seed the next new run starts from, for replaying one on purpose (the
+## AutoPilot harness sets it before the game scene loads). Consumed once.
+var next_run_seed: int = -1
+
 ## The buckets reseeded from each scenario's seed. BACKGROUND is among them
 ## because a background can carry a gameplay rule (BackgroundModifierResource):
 ## picking it from a free-running stream meant reloading a scenario could land
@@ -59,12 +67,17 @@ func _on_load_game_save(game_save: GameSaveResource) -> void:
 
 ## Seeds the RUN bucket, which governs sector/shop generation for an entire
 ## playthrough. Pass an explicit seed to make a whole run replayable.
+## Without one, a seed queued in next_run_seed is used, then a random one.
 func start_new_run(run_seed: int = -1) -> void:
+	if run_seed == -1 and next_run_seed != -1:
+		run_seed = next_run_seed
+		next_run_seed = -1
 	if run_seed == -1:
 		var seeder := RandomNumberGenerator.new()
 		seeder.randomize()
 		run_seed = seeder.randi()
 	_rngs[Bucket.RUN].seed = run_seed
+	current_run_seed = run_seed
 
 
 ## Reseeds the deterministic per-scenario buckets from one scenario seed,

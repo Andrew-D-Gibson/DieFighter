@@ -41,6 +41,9 @@ var base_scale: float = 1.0
 var _effect_msec: float = 0.0
 var _last_real_msec: int = -1
 
+## See use_frame_clock().
+var _frame_clock: bool = false
+
 
 func _ready() -> void:
 	# Must keep ticking while the game is slowed (or paused) to end the slow.
@@ -121,8 +124,22 @@ func _stretch(msec: float) -> float:
 
 
 ## Real time, in ms. A method so tests can step the clock instead of sleeping.
+## On the frame clock it's simulated time instead: see use_frame_clock().
 func _now_msec() -> int:
+	if _frame_clock:
+		return roundi(Engine.get_physics_frames() * 1000.0 / Engine.physics_ticks_per_second)
 	return Time.get_ticks_msec()
+
+
+## Times requests by elapsed frames rather than the wall clock. Under
+## `--fixed-fps` a frame no longer takes the time it stands for, so a hitstop
+## timed by the wall clock would hold the game frozen for however many
+## frames the machine fits into its real duration, and a fast-forwarded run
+## would play out differently on a faster machine. Physics frames keep
+## ticking through time_scale 0, which a hitstop needs to end.
+func use_frame_clock() -> void:
+	_frame_clock = true
+	_last_real_msec = -1
 
 
 func _apply() -> void:

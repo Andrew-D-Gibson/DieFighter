@@ -627,6 +627,11 @@ func _stand_down() -> void:
 			die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 
 
+## Whether the End Turn button would take a press right now.
+func can_end_turn() -> bool:
+	return not %EndTurnButton.disabled
+
+
 func end_turn() -> void:
 	%EndTurnButton.disabled = true
 	%EndTurnButton.update_ui()

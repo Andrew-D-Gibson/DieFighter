@@ -145,3 +145,16 @@ func test_clear_keeps_the_base_scale() -> void:
 	director.slow_mo(0.5, 1000)
 	director.clear()
 	assert_almost_eq(Engine.time_scale, 0.25, 0.0001)
+
+
+func test_the_frame_clock_times_requests_by_physics_frames() -> void:
+	var framed: Node = autofree(load("res://Source/Systems/Autoloads/time_director.gd").new())
+	framed.use_frame_clock()
+	var frame_ms: float = 1000.0 / Engine.physics_ticks_per_second
+	framed.slow_mo(0.5, roundi(frame_ms * 4))
+	await wait_physics_frames(2)
+	framed._process(0.0)
+	assert_almost_eq(Engine.time_scale, 0.5, 0.0001, "two frames into four")
+	await wait_physics_frames(4)
+	framed._process(0.0)
+	assert_eq(Engine.time_scale, 1.0)

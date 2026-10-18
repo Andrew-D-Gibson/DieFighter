@@ -53,6 +53,30 @@ func test_a_run_seed_replays_the_run() -> void:
 	assert_eq(_draws(Bucket.RUN), first)
 
 
+func test_a_queued_run_seed_starts_the_next_run() -> void:
+	rng.next_run_seed = 42
+	rng.start_new_run()
+	var queued := _draws(Bucket.RUN)
+	assert_eq(rng.current_run_seed, 42)
+	rng.start_new_run(42)
+	assert_eq(_draws(Bucket.RUN), queued)
+
+
+func test_a_queued_run_seed_is_used_once() -> void:
+	rng.next_run_seed = 42
+	rng.start_new_run()
+	assert_eq(rng.next_run_seed, -1)
+	rng.start_new_run()
+	assert_ne(rng.current_run_seed, 42, "the second run rolls its own seed")
+
+
+func test_an_explicit_run_seed_beats_a_queued_one() -> void:
+	rng.next_run_seed = 42
+	rng.start_new_run(7)
+	assert_eq(rng.current_run_seed, 7)
+	assert_eq(rng.next_run_seed, 42, "still waiting for the run it was queued for")
+
+
 func test_captured_states_restore_mid_stream() -> void:
 	rng.seed_scenario(7)
 	_draws(Bucket.DICE, 3)

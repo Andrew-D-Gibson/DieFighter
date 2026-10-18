@@ -213,21 +213,28 @@ func _find_matching_event_response(tile: Tile, event: TileEvent.EventType) -> Ti
 	return null
 		
 		
-func clears_activation_criteria(activator_die: Dice = null) -> bool:	
+func clears_activation_criteria(activator_die: Dice = null) -> bool:
+	var refusal: String = activation_refusal(activator_die)
+	if refusal.is_empty():
+		return true
+	Events.error_text_popup.emit(refusal, self.global_position)
+	play_refusal_feedback()
+	return false
+
+
+## Why this tile would turn [param activator_die] away right now, or "" if it
+## would take it. A pure query, so callers can ask without the refusal
+## popping up (the AutoPilot uses it to list the legal moves).
+func activation_refusal(activator_die: Dice = null) -> String:
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
-		Events.error_text_popup.emit("NO USES REMAINING", self.global_position)
-		play_refusal_feedback()
-		return false
-		
-	# Check the tile's activation criteria
+		return "NO USES REMAINING"
+
 	for check: ActivationResource in tile_resource.activation_checks:
 		if not check.criteria_satisfied(activator_die):
-			Events.error_text_popup.emit(check.get_criteria_fail_text(), self.global_position)
-			play_refusal_feedback()
-			return false
-			
-	return true
+			return check.get_criteria_fail_text()
+
+	return ""
 	
 
 func reset_uses_remaining() -> void:

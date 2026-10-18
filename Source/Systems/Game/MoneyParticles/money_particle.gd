@@ -86,6 +86,12 @@ static func spawn_loss(
 		particle.global_position = Globals.money_indicator.global_position
 
 
+## Whether this coin is on its way to the player's balance, rather than
+## flying off with credits already taken from it.
+func is_payout() -> bool:
+	return not _leaving
+
+
 ## Large coins first, then small change.
 static func _denominations(total: int) -> Array[money_amount]:
 	var coins: Array[money_amount] = []
