@@ -1,2 +1,3 @@
 keys,en,zh_CN,ja,ru,de,fr,es,pt_BR,_context,_max_chars,_status,_en_hash
 OPT_LANGUAGE,Language,,,,,,,,Options > Game tab: label beside the language dropdown,,,
+CALLOUT_SPARE_DIE,SPARE DIE,,,,,,,,"Callout over the hand when the player has no die left to play and is given a spare one (a real die, or a hologram if ships hold all of theirs)",,,

@@ -17,7 +17,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 	# Forward from the sector's last tile, the jump gate, is through the gate.
 	if jump_delta > 0 and current_index == len(Globals.map.scenario_list) - 1:
 		if Globals.jump_gate and Globals.jump_gate.is_open():
-			Globals.player.hold_die_through_jump(activator_die)
+			Globals.player.commit_to_jump(activator_die)
 			Globals.state_manager.go_through_gate()
 		else:
 			_refuse("GATE LOCKED")
@@ -27,7 +27,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 		_refuse("INVALID DESTINATION")
 		return
 
-	Globals.player.hold_die_through_jump(activator_die)
+	Globals.player.commit_to_jump(activator_die)
 	Globals.map.jump(desired_index)
 
 

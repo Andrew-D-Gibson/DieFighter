@@ -109,10 +109,26 @@ var _dealing_hand: bool = false
 ## Whether this fight's first turn has been announced. A fight gets exactly one.
 var _first_turn_announced: bool = false
 
+## Bumped whenever the fight on screen stops being the one a waiting
+## announcement was for: it ended, or the player jumped away from it (dice
+## can be played while the ships are still flying in). That announcement
+## mustn't go out into whatever comes next.
+var _fight_generation: int = 0
+
 ## The die that fired the jump in progress. It rides the jump out on the tile
 ## it was dropped on, so the player can see what launched them, and comes home
 ## on arrival with the rest of the hand.
 var _jump_activator: Dice = null
+
+## From commit_to_jump() until arrival.
+var _jump_committed: bool = false
+
+## True while it isn't the player's turn in a fight: from End Turn until
+## their next turn starts, and while a fight's ships are still flying in.
+## Dice can be played then, and a tile finishing its activation would light
+## End Turn; pressing it would start an enemy turn on top of the one
+## running, or end a turn that hasn't been announced yet.
+var _between_turns: bool = false
 
 ## How far the dice jolt, in pixels, at the peak of a jump's run-up.
 const _JUMP_RATTLE_STRENGTH: float = 1.2
@@ -183,10 +199,19 @@ func _ready() -> void:
 	
 	Events.start_scenario.connect(_start_scenario)
 	Events.start_combat.connect(func() -> void:
+		# A fight breaking out during an enemy turn run out of combat starts
+		# with its own first turn, not the one that enemy turn would start.
+		_fight_generation += 1
+		_between_turns = true
 		if not _dealing_hand:
 			_announce_first_turn()
 	)
-	Events.combat_finished.connect(func() -> void: _first_turn_announced = false)
+	Events.combat_finished.connect(func() -> void:
+		_first_turn_announced = false
+		_fight_generation += 1
+		_between_turns = false
+	)
+	Events.combat_finished.connect(_ensure_a_die_after_combat)
 	Events.enemy_turn_over.connect(_start_player_turn)
 	Events.load_game_save.connect(_load_game_save)
 	
@@ -295,7 +320,10 @@ func _check_for_end_of_turn() -> void:
 	# this activation (a Bump waiting on a Dice Cannon) still have to fire.
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	var activations_pending: bool = engine != null and engine.has_pending_tile_activation()
-	if len(dice_manager.queue) == 0 and not activations_pending:
+	# The die that fired a jump finishes its activation while the map is still
+	# panning, with the hand empty; the turn still mustn't end.
+	if len(dice_manager.queue) == 0 and not activations_pending and not _jump_committed \
+	and not _between_turns:
 		%EndTurnButton.disabled = false
 		%EndTurnButton.update_ui()
 		%EndTurnButton.soft_highlight()
@@ -315,10 +343,22 @@ func reroll_dice() -> void:
 	
 
 func _start_player_turn() -> void:
+	# An enemy turn can finish after the player has committed to a jump, or
+	# as they leave (one run out of combat goes on while they play). Its
+	# fight is gone, and the turn with it.
+	if _jump_committed:
+		return
+	var fight: int = _fight_generation
 	# Wait for any dice to get back to the dice queue before rerolling them
 	await get_tree().create_timer(0.5).timeout
+	if fight != _fight_generation:
+		return
 	await reroll_dice()
+	await _ensure_a_die_to_play()
+	if fight != _fight_generation:
+		return
 
+	_between_turns = false
 	Events.player_turn_refresh.emit()
 	Events.player_turn_start.emit()
 	
@@ -356,6 +396,9 @@ func _start_scenario() -> void:
 	var restoring: bool = Globals.state_manager and not Globals.state_manager.get_restore().is_empty()
 	_dealing_hand = true
 	_first_turn_announced = false
+	_jump_committed = false
+	_between_turns = Globals.state_manager != null \
+			and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
 	_bring_jump_activator_home()
 
 	if not restoring:
@@ -382,17 +425,20 @@ func _announce_first_turn() -> void:
 	if _first_turn_announced:
 		return
 	_first_turn_announced = true
+	var fight: int = _fight_generation
 
 	# Combat-start effects must not fire at ships that are still flying in or
 	# haven't been targeted yet.
 	var enemy_manager: EnemyManager = Globals.enemy_manager
 	if enemy_manager and enemy_manager.arrival_in_progress:
 		await Events.enemies_arrived
+	await _ensure_a_die_to_play()
 
 	# The fight may have ended (or the player jumped) while we waited.
-	if not Globals.state_manager \
+	if fight != _fight_generation or not Globals.state_manager \
 			or Globals.state_manager.state != GameStateManager.GameState.IN_COMBAT:
 		return
+	_between_turns = false
 	Events.first_turn_start.emit()
 
 
@@ -508,10 +554,22 @@ func _lock_die_for_jump(die: Dice) -> void:
 		die.transit_locked = true
 
 
-## Leaves [param die] on the tile that fired the jump for the length of the
-## trip instead of flying it home with the rest. JumpEvent calls this before
-## the jump starts. A hologram is ignored: it can't make the trip at all.
-func hold_die_through_jump(die: Dice) -> void:
+## The player is leaving: JumpEvent calls this the moment a jump is decided,
+## before the map pans to the destination. From here until arrival nothing
+## more is played and the turn can't be ended, since an enemy turn or a tile
+## started now would play out in a scenario that's about to be torn down.
+##
+## [param die], the one that fired the jump, stays on its tile for the trip
+## instead of flying home with the rest, so the player can see what launched
+## them. A hologram can't make the trip at all.
+func commit_to_jump(die: Dice) -> void:
+	_jump_committed = true
+	_fight_generation += 1
+	%EndTurnButton.disabled = true
+	%EndTurnButton.update_ui()
+	for held: Dice in dice_manager.queue:
+		if is_instance_valid(held):
+			_lock_die_for_jump(held)
 	if is_instance_valid(die) and not die.holographic:
 		_jump_activator = die
 
@@ -588,6 +646,72 @@ func _lose_dice(count: int) -> void:
 	num_of_dice = maxi(1, num_of_dice - count)
 
 
+## The player always has a die to play. Ships can take every die there is
+## (a Cutpurse pockets them, a Charge Bore holds the last one), and with
+## nothing in hand or on a tile the player can't fight back in a fight, or
+## jump out of a scenario at all. So they're given a spare: a die the Fleet
+## still owns that nobody is holding (the count never drops below one) turns
+## up for real; if every die is in a ship's hands, a hologram stands in. A
+## hologram doesn't count as owned and fizzles at the jump, so it can't be
+## banked, and it's enough to shoot the holder down and get the dice back.
+##
+## Checked at the start of each turn, and once a fight is over.
+func _ensure_a_die_to_play() -> void:
+	if _has_a_die_to_play():
+		return
+	# A die still on its way somewhere (fired off a tile, being spent by a
+	# ship, caught in a beam) may yet come home, so judge once it's landed.
+	await _until_board_settles()
+	if _jump_committed or _has_a_die_to_play():
+		return
+	var real: bool = num_of_dice > _real_dice_still_held()
+	await spawn_dice(1, 0, not real)
+	Juice.callout_at(self, global_position + dice_manager.position + Vector2(0, -14),
+			tr("CALLOUT_SPARE_DIE"), Globals.white, true)
+
+
+## A fight can end with the hand empty: a ship flew off with every die. The
+## survivors hand their dice home a frame after combat_finished; this was
+## connected first, so it waits a frame longer to see them land.
+func _ensure_a_die_after_combat() -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await _until_board_settles()
+	if Globals.state_manager and Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
+		await _ensure_a_die_to_play()
+
+
+## A die in hand, or on a tile that will hand it back. Judged by where each
+## die actually sits: a die in flight still points at the last queue it left.
+func _has_a_die_to_play() -> bool:
+	for node: Node in get_tree().get_nodes_in_group('Dice'):
+		var die: Dice = node as Dice
+		if die and not die.is_queued_for_deletion() and die.host_queue != null \
+		and die.host_queue is not EnemyDiceManager and die in die.host_queue.queue:
+			return true
+	return false
+
+
+## Returns once no die is being pulled and no chain is resolving.
+func _until_board_settles() -> void:
+	await TractorBeam.wait_for_landings(get_tree())
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine and engine.currently_processing_queue:
+		await engine.finished_processing_queue
+
+
+## Real dice the player still has somewhere, a ship's hands included. Shop
+## stock and salvage on offer have no host_queue and were never theirs.
+func _real_dice_still_held() -> int:
+	var held: int = 0
+	for node: Node in get_tree().get_nodes_in_group('Dice'):
+		var die: Dice = node as Dice
+		if die and not die.holographic and not die.is_queued_for_deletion() \
+		and die.host_queue != null:
+			held += 1
+	return held
+
+
 ## The count drop is the part that lasts — fewer dice is a smaller hand and a
 ## lower jump gate for the rest of the run — so it's said out loud over the
 ## hand, not just shown on the dice being left behind.
@@ -633,6 +757,7 @@ func can_end_turn() -> bool:
 
 
 func end_turn() -> void:
+	_between_turns = true
 	%EndTurnButton.disabled = true
 	%EndTurnButton.update_ui()
 	Events.player_turn_over.emit()

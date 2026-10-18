@@ -71,5 +71,7 @@ static func play(roster: Callable, tree: SceneTree) -> void:
 	Events.enemy_turn_over.emit()
 
 
-static func _engine_alive(engine: ScenarioEngine) -> bool:
-	return is_instance_valid(engine) and not engine.is_shut_down()
+## Untyped: by the time a turn checks, a jump may have freed the engine, and
+## a freed object can't be passed as a ScenarioEngine.
+static func _engine_alive(engine: Variant) -> bool:
+	return is_instance_valid(engine) and not (engine as ScenarioEngine).is_shut_down()
