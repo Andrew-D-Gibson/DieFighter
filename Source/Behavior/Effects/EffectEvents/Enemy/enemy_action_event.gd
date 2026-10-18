@@ -114,7 +114,6 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.relay_visited = relay_visited
 
 	
-	Events.enemy_acted.emit(enemy.enemy_resource.enemy_name, action.name)
 
 	# Play the effect chain — this enqueues more events; the engine's while-loop
 	# picks them up automatically because they're appended to the same event_queue.

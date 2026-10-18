@@ -213,13 +213,6 @@ func grid_to_global_pos(grid_pos: Vector2i) -> Vector2:
 	)
 	
 	
-func grid_to_local_pos(grid_pos: Vector2i) -> Vector2:
-	return Vector2(
-		((grid_pos.x + 0.5) * grid_spacing),
-		((grid_pos.y + 0.5) * grid_spacing)
-	)
-
-
 func is_grid_pos_open(grid_pos: Vector2i) -> bool:
 	return not tile_locations.has(grid_pos)
 

@@ -456,17 +456,6 @@ func _current_pool_index() -> int:
 			return turns_alive % pool_count
 
 
-## Which faces this turn's stronger actions lean toward: the current pool's
-## own bias when it sets one, the enemy's otherwise.
-func _current_face_bias() -> float:
-	var pool_index: int = _current_pool_index()
-	if pool_index < enemy_resource.action_options.size():
-		var pool: EnemyTurnActionList = enemy_resource.action_options[pool_index]
-		if pool and pool.override_face_bias:
-			return pool.face_bias
-	return enemy_resource.face_bias
-
-
 ## Rolls this turn's six intent slots. Call EnemyManager's
 ## generate_all_turn_actions() rather than this: it rolls every ship against
 ## the same roster and then binds the slots that act on another ship.
@@ -482,7 +471,7 @@ func generate_turn_actions(situation: EnemyActionSituation, take_forced: bool = 
 		enemy_resource.action_options[_current_pool_index()],
 		situation,
 		forced,
-		_current_face_bias()
+		enemy_resource.face_bias
 	)
 	
 

@@ -5,10 +5,11 @@ extends Node2D
 var scenario_list: Array[ScenarioResource]
 var current_scenario_index: int
 
-var left_fate_index: int
-var right_fate_index: int
-var left_scenarios_in_danger: int 
-var right_scenarios_in_danger: int
+## The last tile Fate has corrupted, counting from the sector's left edge.
+## -1 before it has taken any.
+var fate_index: int
+## How many tiles past fate_index Fate takes on the next jump.
+var scenarios_in_danger: int
 ## Tiles past the danger zone that Fate has reached out and marked at random.
 ## Like the danger zone, they're corrupted on the next jump.
 var stray_danger_indices: Array[int] = []
@@ -256,7 +257,7 @@ func _is_in_danger(index: int) -> bool:
 	if scenario_list[index].sector_gate_scenario:
 		return false
 	return index in stray_danger_indices or (
-		index > left_fate_index and index <= left_fate_index + left_scenarios_in_danger
+		index > fate_index and index <= fate_index + scenarios_in_danger
 	)
 
 
@@ -396,10 +397,11 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	# ground Fate had already taken and shifting every roll after it.
 	scenario_list = game_save.sector_scenarios
 	current_scenario_index = game_save.current_scenario_index
-	left_fate_index = game_save.map_state.get("left_fate_index", 0)
-	right_fate_index = game_save.map_state.get("right_fate_index", len(scenario_list) - 1)
-	left_scenarios_in_danger = game_save.map_state.get("left_scenarios_in_danger", 0)
-	right_scenarios_in_danger = game_save.map_state.get("right_scenarios_in_danger", 0)
+	# The left_ keys are from saves written while Fate could close in from both
+	# ends.
+	var state: Dictionary = game_save.map_state
+	fate_index = state.get("fate_index", state.get("left_fate_index", 0))
+	scenarios_in_danger = state.get("scenarios_in_danger", state.get("left_scenarios_in_danger", 0))
 	stray_danger_indices.assign(game_save.map_state.get("stray_danger_indices", []))
 	_update_map_sprites()
 
@@ -407,10 +409,8 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 ## Fate's progress through the sector, for the save. See _load_game_save().
 func get_fate_state() -> Dictionary:
 	return {
-		"left_fate_index": left_fate_index,
-		"right_fate_index": right_fate_index,
-		"left_scenarios_in_danger": left_scenarios_in_danger,
-		"right_scenarios_in_danger": right_scenarios_in_danger,
+		"fate_index": fate_index,
+		"scenarios_in_danger": scenarios_in_danger,
 		"stray_danger_indices": stray_danger_indices.duplicate(),
 	}
 
@@ -424,8 +424,7 @@ func load_sector(new_scenario_list: Array[ScenarioResource], start_index: int) -
 	
 	# Fate starts just off the sector's left edge: nothing is corrupted yet,
 	# only the first one or two tiles are under threat.
-	left_fate_index = -1
-	right_fate_index = len(scenario_list)-1
+	fate_index = -1
 	stray_danger_indices.clear()
 	
 	_pick_new_danger_ranges()
@@ -471,21 +470,21 @@ func _update_map_sprites() -> void:
 		return
 		
 	# Add the fate sprite
-	var left_fate: Node2D = fate.instantiate()
-	left_fate.position = Vector2(-2 * sprite_spacing, 0)
-	left_fate.z_index = -1
-	map_viewport.add_child(left_fate)
+	var fate_marker: Node2D = fate.instantiate()
+	fate_marker.position = Vector2(-2 * sprite_spacing, 0)
+	fate_marker.z_index = -1
+	map_viewport.add_child(fate_marker)
 	
 	# Add the fate background sprite
-	var left_fate_background: Sprite2D = Sprite2D.new()
-	_corrupted_sprite = left_fate_background
-	left_fate_background.texture = corrupted_area
-	left_fate_background.position = Vector2(
-		-232 + (sprite_spacing * (left_fate_index + 1)) - _SEAM_HALF_WIDTH, 4
+	var fate_background: Sprite2D = Sprite2D.new()
+	_corrupted_sprite = fate_background
+	fate_background.texture = corrupted_area
+	fate_background.position = Vector2(
+		-232 + (sprite_spacing * (fate_index + 1)) - _SEAM_HALF_WIDTH, 4
 	)
 
-	left_fate_background.z_index = -2
-	map_viewport.add_child(left_fate_background)
+	fate_background.z_index = -2
+	map_viewport.add_child(fate_background)
 	
 	
 	# Show and move the danger area as needed. Stray tiles get the same red, so
@@ -493,14 +492,14 @@ func _update_map_sprites() -> void:
 	# shows up; each run of neighbouring red tiles is one block, so no border
 	# splits them.
 	var danger_runs: Array[Vector2i] = _danger_runs()
-	var left_danger: Sprite2D = Sprite2D.new()
-	_danger_sprite = left_danger
-	left_danger.texture = danger_area
-	left_danger.region_enabled = true
-	left_danger.centered = false
-	left_danger.position.y = -21
-	left_danger.z_index = -2
-	map_viewport.add_child(left_danger)
+	var danger: Sprite2D = Sprite2D.new()
+	_danger_sprite = danger
+	danger.texture = danger_area
+	danger.region_enabled = true
+	danger.centered = false
+	danger.position.y = -21
+	danger.z_index = -2
+	map_viewport.add_child(danger)
 
 	var fate_border_x: float = _fate_border_x()
 	_danger_end_x = _danger_zone_end_x(danger_runs)
@@ -572,7 +571,7 @@ func _make_fate_seam(border_x: float) -> Sprite2D:
 	seam_material.shader = _SEAM_SHADER
 	seam_material.set_shader_parameter("left_color", corrupted_area.get_image().get_pixel(0, 0))
 	var right: Color = Color.TRANSPARENT
-	if left_scenarios_in_danger > 0:
+	if scenarios_in_danger > 0:
 		right = danger_area.get_image().get_pixel(0, 0)
 	seam_material.set_shader_parameter("right_color", right)
 
@@ -587,7 +586,7 @@ func _make_fate_seam(border_x: float) -> Sprite2D:
 
 ## Where Fate's corrupted zone ends and its danger zone begins.
 func _fate_border_x() -> float:
-	return sprite_spacing * (left_fate_index + 0.5)
+	return sprite_spacing * (fate_index + 0.5)
 
 
 ## Right edge of the danger zone: the run touching Fate, strays that join it
@@ -595,7 +594,7 @@ func _fate_border_x() -> float:
 ## Nothing is in danger once Fate has stopped in front of the gate, which
 ## leaves the zone with no width.
 func _danger_zone_end_x(danger_runs: Array[Vector2i]) -> float:
-	if left_scenarios_in_danger <= 0:
+	if scenarios_in_danger <= 0:
 		return _fate_border_x()
 	var zone: Vector2i = danger_runs.pop_front()
 	return sprite_spacing * (zone.y + 0.5)
@@ -627,7 +626,7 @@ func _add_stray_danger_sprite(run: Vector2i) -> Sprite2D:
 ## scenario indices, left to right.
 func _danger_runs() -> Array[Vector2i]:
 	var runs: Array[Vector2i] = []
-	for idx: int in range(left_fate_index + 1, len(scenario_list)):
+	for idx: int in range(fate_index + 1, len(scenario_list)):
 		if not _is_in_danger(idx):
 			continue
 		if not runs.is_empty() and runs.back().y == idx - 1:
@@ -727,7 +726,7 @@ func show_gate_jump() -> void:
 func clear_current_scenario_slot() -> void:
 	if scenario_list[current_scenario_index].sector_gate_scenario:
 		return
-	if current_scenario_index <= left_fate_index or current_scenario_index >= right_fate_index:
+	if current_scenario_index <= fate_index:
 		scenario_list[current_scenario_index] = fate_scenario
 	else:
 		scenario_list[current_scenario_index] = empty_scenario
@@ -762,7 +761,7 @@ func jump(desired_scenario_index: int) -> void:
 	var leaving_index: int = current_scenario_index
 	var old_border_x: float = _fate_border_x()
 	var taken: Array[int] = []
-	for idx: int in range(left_fate_index + 1, len(scenario_list)):
+	for idx: int in range(fate_index + 1, len(scenario_list)):
 		if _is_in_danger(idx):
 			taken.append(idx)
 
@@ -770,14 +769,14 @@ func jump(desired_scenario_index: int) -> void:
 	clear_current_scenario_slot()
 
 	# Have "Fate" infect the scenarios in danger
-	for idx: int in range(left_fate_index + 1, left_fate_index + 1 + left_scenarios_in_danger):
+	for idx: int in range(fate_index + 1, fate_index + 1 + scenarios_in_danger):
 		if not scenario_list[idx].sector_gate_scenario:
 			scenario_list[idx] = fate_scenario
 	for idx: int in stray_danger_indices:
 		if not scenario_list[idx].sector_gate_scenario:
 			scenario_list[idx] = fate_scenario
 			
-	left_fate_index += left_scenarios_in_danger
+	fate_index += scenarios_in_danger
 	
 	# Set up which scenarios are in danger next
 	_pick_new_danger_ranges()
@@ -851,7 +850,7 @@ func _animate_fate_advance(old_border_x: float, taken: Array[int], pip_indices: 
 		stray.modulate.a = 0.0
 		spread.tween_property(stray, "modulate:a", 1.0, _DANGER_SPREAD_TIME)
 
-	for idx: int in range(left_fate_index + 1, len(scenario_list)):
+	for idx: int in range(fate_index + 1, len(scenario_list)):
 		var icon: Sprite2D = scenario_sprites[idx]
 		if idx in pip_indices or not _is_in_danger(idx) or not icon.texture:
 			continue
@@ -861,7 +860,7 @@ func _animate_fate_advance(old_border_x: float, taken: Array[int], pip_indices: 
 		spread.tween_property(icon, "material:shader_parameter/progress", 0.5, _DANGER_SPREAD_TIME)
 
 	await spread.finished
-	if is_instance_valid(_seam_sprite) and left_scenarios_in_danger <= 0:
+	if is_instance_valid(_seam_sprite) and scenarios_in_danger <= 0:
 		_seam_sprite.material.set_shader_parameter("right_color", Color.TRANSPARENT)
 
 
@@ -880,12 +879,12 @@ func _pick_new_danger_ranges() -> void:
 	# Usually 2. Fate stops one short of the last tile, the jump gate: the
 	# player must always be able to leave the sector, so the gate is never
 	# corrupted, never covered by the corrupted zone, and never in danger.
-	var max_left_scenarios_in_danger: int = min(2, len(scenario_list) - left_fate_index - 2)
-	
-	if max_left_scenarios_in_danger <= 0:
-		left_scenarios_in_danger = 0
+	var max_in_danger: int = mini(2, len(scenario_list) - fate_index - 2)
+
+	if max_in_danger <= 0:
+		scenarios_in_danger = 0
 	else:
-		left_scenarios_in_danger = RNGManager.randi_range(RNGManager.Bucket.RUN, 1, max_left_scenarios_in_danger)
+		scenarios_in_danger = RNGManager.randi_range(RNGManager.Bucket.RUN, 1, max_in_danger)
 
 
 ## Rolls stray_danger_chance for every tile past the danger zone. The tile the
@@ -893,7 +892,7 @@ func _pick_new_danger_ranges() -> void:
 ## as a bug, not a threat — as are the gate and tiles Fate already holds.
 func _pick_stray_danger(arriving_index: int) -> void:
 	stray_danger_indices.clear()
-	for idx: int in range(left_fate_index + left_scenarios_in_danger + 1, len(scenario_list)):
+	for idx: int in range(fate_index + scenarios_in_danger + 1, len(scenario_list)):
 		if idx == arriving_index \
 		or scenario_list[idx].sector_gate_scenario \
 		or scenario_list[idx] == fate_scenario:

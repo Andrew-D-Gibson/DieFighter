@@ -11,7 +11,6 @@ extends Modifier
 func _init() -> void:
 	modifier_name = "Shield Blackout"
 	priority = 5    # cancellation; runs before anything tries to scale it
-	is_temporary = false
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

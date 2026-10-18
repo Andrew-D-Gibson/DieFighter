@@ -11,7 +11,6 @@ extends Modifier
 func _init() -> void:
 	modifier_name = "Reroll Blackout"
 	priority = 5    # cancellation; nothing downstream should see the event
-	is_temporary = false
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

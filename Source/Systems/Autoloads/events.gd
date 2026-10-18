@@ -29,9 +29,6 @@ signal game_over()
 signal victory()
 ## Emitted once a new sector has been generated. sector_index is zero-based.
 signal sector_advanced(sector_index: int)
-## The ring at a sector's jump gate is up: its boss is beaten, and jumping
-## forward from here leaves the sector.
-signal jump_gate_opened()
 signal scenario_event(event: ScenarioManager.ScenarioEvent)
 
 
@@ -96,7 +93,6 @@ signal enemy_turn_starting()
 ## joins the queue; this is the beat the player actually sees it arrive.
 signal enemy_armed(enemy: Enemy, die_value: int)
 signal enemy_used_die(enemy: Enemy, die_value: int)
-signal enemy_acted(enemy_name: String, action_name: String)
 
 
 # Dice Events

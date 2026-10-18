@@ -10,7 +10,6 @@ func _init() -> void:
 	color = Globals.orange
 	icon = preload("res://Assets/Textures/Statuses/burn.png")
 	info_icon = preload("res://Assets/Textures/Statuses/burn_info.png")
-	is_temporary = false
 
 
 func on_status_tick() -> void:

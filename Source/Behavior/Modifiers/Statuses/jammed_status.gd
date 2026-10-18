@@ -20,7 +20,6 @@ func _init() -> void:
 	icon = preload("res://Assets/Textures/Statuses/jammed.png")
 	info_icon = preload("res://Assets/Textures/Statuses/jammed_info.png")
 	priority = 35
-	is_temporary = false
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

@@ -113,7 +113,6 @@ func open(quiet: bool) -> void:
 	else:
 		_warp_in()
 	_start_bob()
-	Events.jump_gate_opened.emit()
 
 
 func _warp_in() -> void:

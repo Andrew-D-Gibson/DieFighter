@@ -9,7 +9,6 @@ const _TEXT_BLIP_SFX: SoundEffectResource = preload("res://Source/Resources/Soun
 @export var character_reveal_time: float = 0.025
 @export var max_reveal_time: float = 5
 
-var display_close_button: bool = true
 var time_to_wait_after_text_shown: float = 0
 
 var tween: Tween
@@ -28,7 +27,6 @@ signal popup_closed()
 
 func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, time_delay: float = 0, close_button: bool = true, auto_close_time: float = 0) -> void:
 	global_position = global_pos
-	display_close_button = close_button
 	time_to_wait_after_text_shown = auto_close_time
 	
 	# Handle highlighting
@@ -48,13 +46,6 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 		%CloseButton.hide()
 
 	_fade_in()
-	
-	## Bob the computer head
-	#var _bob_tween: Tween = get_tree().create_tween()
-	#var tween_time: float = 2
-	#_bob_tween.tween_property(%ComputerTalking, 'position', position + Vector2(0, 2), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	#_bob_tween.tween_property(%ComputerTalking, 'position', position - Vector2(0, 2), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	#_bob_tween.set_loops()
 	
 	# Parse delay tags before formatting
 	var original_delay_positions: Dictionary = Utils.parse_delay_tags(text)

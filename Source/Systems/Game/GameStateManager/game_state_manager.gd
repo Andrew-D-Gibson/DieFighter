@@ -53,8 +53,6 @@ extends Node2D
 ## an emergency, short enough to be over before the player's first die lands.
 @export var cold_open_alert_time: float = 2.2
 
-const _ALARM_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/alarm_klaxon.tres")
-
 var main_menu_file: String = "uid://ccvtlre5vhj7d"
 
 ## True when this is a brand new run rather than a loaded save. Only a new run
@@ -221,7 +219,6 @@ func _sound_the_alarm() -> void:
 	if not _is_fresh_run:
 		return
 
-	#Events.play_sound.emit(_ALARM_SFX)
 	Events.red_alert.emit(cold_open_alert_time)
 	Events.camera_shake_large.emit(true)
 	

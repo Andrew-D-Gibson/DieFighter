@@ -18,7 +18,6 @@ func _init(amount_cap: int = 3) -> void:
 	cap = maxi(1, amount_cap)
 	modifier_name = "Amount Cap"
 	priority = 75   # clamping; runs after additive and multiplicative changes
-	is_temporary = false
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

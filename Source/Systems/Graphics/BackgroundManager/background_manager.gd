@@ -233,12 +233,6 @@ func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResourc
 		static_objects.append(static_object)
 			
 			
-func make_static_objects_movable() -> void:
-	for static_object: Node2D in static_objects:
-		if static_object.get_meta("parallax_level") == 0:
-			static_object.set_meta("parallax_level", 1)
-	
-
 ## How long play_jump_intro() builds before hyperspace punches in.
 const JUMP_RAMP_UP_TIME: float = 4.0
 

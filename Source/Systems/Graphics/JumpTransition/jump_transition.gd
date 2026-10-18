@@ -4,8 +4,6 @@ extends Control
 @export var fade_in_time: float = 2
 @export var fade_out_time: float = 2
 
-#var particle_sprites:
-
 var fade_tween: Tween
 
 ## The hyperspace colour of an ordinary jump, read off the material so the
@@ -14,11 +12,6 @@ var _default_tint: Color
 ## Multiplied into the particle streaks. White leaves the sheet as drawn.
 var _particle_tint: Color = Color.WHITE
 
-func set_transparency(alpha: float) -> void:
-	set_background_transparency(alpha)
-	set_particles_transparency(alpha)
-	
-	
 func set_background_transparency(alpha: float) -> void:
 	%JumpTexture.material.set_shader_parameter("alpha", alpha)
 	

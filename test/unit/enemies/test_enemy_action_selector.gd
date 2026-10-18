@@ -257,19 +257,6 @@ func test_a_bigger_hit_lands_on_a_higher_face() -> void:
 		assert_eq(_face_of(actions, "Small"), 5)
 
 
-func test_a_pool_override_wins_over_the_enemy_bias() -> void:
-	var ship: Enemy = autofree(Ships.ship(ScenarioManager.Faction.PIRATE))
-	autofree(ship.health)
-	Ships.give_pool(ship, [Ships.option(_wait())])
-	ship.enemy_resource.face_bias = 1.5
-	assert_eq(ship._current_face_bias(), 1.5)
-
-	var pool: EnemyTurnActionList = ship.enemy_resource.action_options[0]
-	pool.override_face_bias = true
-	pool.face_bias = 0.0
-	assert_eq(ship._current_face_bias(), 0.0, "an override of 0 still counts")
-
-
 # ── Kept faces: a loaded payoff appears only where the ship kept a die ──────
 
 func _kept_option(label: String) -> EnemyActionOptionResource:

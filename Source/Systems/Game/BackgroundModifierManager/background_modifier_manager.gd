@@ -41,10 +41,6 @@ func _on_background_changed(_background: BackgroundResource) -> void:
 	_apply_current_background()
 
 
-func has_modifier() -> bool:
-	return current_modifier_resource != null
-
-
 ## The live Modifier enforcing the current rule, or null in plain space.
 func get_active_modifier() -> Modifier:
 	return _active_modifier

@@ -14,15 +14,9 @@ var state_manager: GameStateManager
 var background_manager: BackgroundManager
 var jump_manager: JumpManager
 var jump_gate: JumpGate
-var hazard_manager: HazardManager
 var background_modifier_manager: BackgroundModifierManager
 var run_stats: RunStats
 var shop: Shop
-var tutorial_manager: TutorialManager
-
-## True while the onboarding tutorial is narrating the run. Gameplay systems ask
-## this rather than reaching into TutorialManager's own fields.
-var tutorial_active: bool = false
 
 ## While true, the tutorial decides when enemy turns run, so EnemyManager should
 ## not fire one off the back of player_turn_over.
@@ -31,9 +25,6 @@ var tutorial_controls_enemy_turns: bool = false
 # Set by MainMenu's Continue button before switching to the main game scene,
 # and consumed by GameStateManager._ready() in place of its scene-baked default.
 var pending_load_save: GameSaveResource = null
-
-# Audio Singletons
-var sfx_player: SFXPlayer
 
 ## The game's screen in world pixels: the 1920x1080 window through a 6x camera.
 const SCREEN_SIZE: Vector2 = Vector2(320, 180)
@@ -49,7 +40,6 @@ var dark_gray: Color = Color.html('#343330')
 var white: Color = Color.html('#cef0f1')
 
 var medium_purple: Color = Color.html('#a846ce')
-var dark_purple: Color = Color.html('#80359d')
 
 var mouse_is_dragging_something: bool = false
 

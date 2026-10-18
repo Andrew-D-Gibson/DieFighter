@@ -181,7 +181,7 @@ func test_a_ship_killed_mid_handover_passes_on_the_die_it_was_spending() -> void
 	# The die it was due to spend next is someone else's now.
 	later.resolve(null)
 	await wait_seconds(1.5)
-	assert_signal_not_emitted(Events, "enemy_acted", "a dead ship doesn't act")
+	assert_signal_emit_count(Events, "enemy_used_die", 1, "only the die it was already spending; a dead ship doesn't act")
 	assert_has(other.dice_manager.queue, spending)
 	assert_has(other.dice_manager.queue, next_up)
 

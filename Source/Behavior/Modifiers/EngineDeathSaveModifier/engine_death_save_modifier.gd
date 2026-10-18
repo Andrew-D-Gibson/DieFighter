@@ -16,7 +16,6 @@ extends Modifier
 func _init() -> void:
 	modifier_name = "Dead Man's Switch"
 	priority = 5    # cancellation; must run before anything scales the damage
-	is_temporary = false
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

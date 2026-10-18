@@ -11,7 +11,6 @@ extends Modifier
 func _init() -> void:
 	modifier_name = "No Repetition"
 	priority = 75   # clamping; must run after the x2 multipliers at 50
-	is_temporary = false
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

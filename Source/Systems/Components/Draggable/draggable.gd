@@ -59,10 +59,7 @@ func _ready() -> void:
 		home_position = global_position
 		
 	emit_reached_new_home = false
-	
-	# Connect mouse enter/exit signals for hover scaling
-	#mouse_entered.connect(_on_mouse_entered)
-	#mouse_exited.connect(_on_mouse_exited)
+
 		
 		
 func _process(delta: float) -> void:

@@ -5,7 +5,6 @@ func _init(tile: Tile) -> void:
 	modifier_name = "Lockout"
 	affected_node = tile
 	priority = 5
-	is_temporary = false
 	status_visual_scene = preload("uid://bmigs3ltcqtec")
 
 

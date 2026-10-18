@@ -19,7 +19,6 @@ func _init() -> void:
 	color = Globals.green
 	icon = preload("res://Assets/Textures/Statuses/scrambled.png")
 	info_icon = preload("res://Assets/Textures/Statuses/scrambled_info.png")
-	is_temporary = false
 
 
 func on_registered(engine: ScenarioEngine) -> void:

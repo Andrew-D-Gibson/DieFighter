@@ -78,7 +78,6 @@ var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 
 
 func _ready() -> void:
-	Globals.tutorial_manager = self
 	_assert_every_function_is_wired()
 
 	# These are statics and Globals is an autoload, so both outlive a return to
@@ -87,14 +86,12 @@ func _ready() -> void:
 	Dice.forced_rolls.clear()
 	Enemy.forced_actions.clear()
 	Reward.forced_rewards.clear()
-	Globals.tutorial_active = false
 	Globals.tutorial_controls_enemy_turns = false
 
 	# A player who picked Continue has seen all of this already.
 	if not auto_start or tutorial_steps.is_empty() or Globals.pending_load_save:
 		return
 
-	Globals.tutorial_active = true
 	Globals.tutorial_controls_enemy_turns = true
 	_claim_formation_space()
 
@@ -342,7 +339,6 @@ func _finish_tutorial() -> void:
 	_unlock_dice()
 	Globals.tutorial_controls_enemy_turns = false
 	Globals.map.enable_controls()
-	Globals.tutorial_active = false
 
 	# No more popups, so the formation gets the right-hand side of the screen
 	# back and any surviving ships spread into it.

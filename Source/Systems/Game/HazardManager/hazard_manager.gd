@@ -29,7 +29,6 @@ var turns_remaining: int = 0
 
 
 func _ready() -> void:
-	Globals.hazard_manager = self
 
 	Events.start_combat.connect(_arm_for_background)
 	Events.combat_finished.connect(_disarm)
