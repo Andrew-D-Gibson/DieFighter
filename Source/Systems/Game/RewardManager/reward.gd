@@ -48,6 +48,18 @@ func _exit_tree() -> void:
 		Globals.enemy_manager.clear_formation_space(_formation_key())
 	
 
+## Whether the player can take a choice from this offer right now: it's on
+## show and not being dismissed by a jump.
+func can_take() -> bool:
+	return is_visible_in_tree() and not _dismissing and not is_queued_for_deletion()
+
+
+## Whether this offer has been decided but isn't on show yet: the pause
+## between a ship paying out and its choices appearing.
+func is_on_its_way() -> bool:
+	return not visible and not _dismissing and not items.is_empty() and not is_queued_for_deletion()
+
+
 func give_reward(reward_resource: RewardResource) -> void:
 	#Globals.player.money += money
 	var money: int = RNGManager.randi_range(

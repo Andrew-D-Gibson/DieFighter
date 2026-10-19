@@ -7,13 +7,17 @@ extends AutoPilotPolicy
 ## How likely each kind of move is to be picked when it's available, before
 ## choosing uniformly within the kind. By kind first, because a busy fight
 ## offers a move per ship to retarget to, and those shouldn't crowd out
-## placing dice. End Turn only lights once the hand is spent, so it always
-## wins.
+## placing dice. End Turn only lights once the hand is spent, so it wins
+## over everything but salvage and shopping, which it competes with as an
+## equal: a random player takes some offers and walks past others.
 const _KIND_WEIGHTS: Dictionary[AutoPilotMove.Kind, float] = {
 	AutoPilotMove.Kind.PLACE_DIE: 1.0,
 	AutoPilotMove.Kind.TARGET: 0.25,
 	AutoPilotMove.Kind.VIEW_MAP: 0.2,
 	AutoPilotMove.Kind.VIEW_SYSTEMS: 0.2,
+	AutoPilotMove.Kind.END_TURN: 1.0,
+	AutoPilotMove.Kind.CLAIM: 2.0,
+	AutoPilotMove.Kind.BUY: 0.5,
 }
 
 
@@ -25,7 +29,12 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 		by_kind[move.kind].append(move)
 
 	if by_kind.has(AutoPilotMove.Kind.END_TURN):
-		return by_kind[AutoPilotMove.Kind.END_TURN][0]
+		var shopping: bool = by_kind.has(AutoPilotMove.Kind.CLAIM) or by_kind.has(AutoPilotMove.Kind.BUY)
+		if not shopping:
+			return by_kind[AutoPilotMove.Kind.END_TURN][0]
+		for idle: AutoPilotMove.Kind in [AutoPilotMove.Kind.PLACE_DIE, AutoPilotMove.Kind.TARGET,
+				AutoPilotMove.Kind.VIEW_MAP, AutoPilotMove.Kind.VIEW_SYSTEMS]:
+			by_kind.erase(idle)
 
 	# Kinds in enum order, so the draw doesn't depend on dictionary order.
 	var kinds: Array[AutoPilotMove.Kind] = []

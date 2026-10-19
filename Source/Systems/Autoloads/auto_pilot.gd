@@ -33,6 +33,11 @@ extends Node
 ## every broken invariant ("violation", see AutoPilotInvariants). The result
 ## line counts both. The engine's own play-by-play goes to a .debug.txt
 ## beside the transcript (DebugLogger).
+##
+## For balance, it tallies what tiles and enemies did (AutoPilotTelemetry):
+## a "visit" entry as each scenario is left, and the run's totals, final
+## build and what dealt the last blow in the result.
+## tools/autoplay_report.py reads a batch of them.
 
 ## Frames to let the game settle after acting before acting again. A patient
 ## player: dice reach the hand and chains finish before the next move.
@@ -66,6 +71,7 @@ var _in_transit: bool = false
 var _scenario_name: String = ""
 
 var _invariants: AutoPilotInvariants = AutoPilotInvariants.new()
+var _telemetry: AutoPilotTelemetry = AutoPilotTelemetry.new()
 var _error_log: AutoPilotErrorLog
 var _errors: int = 0
 var _violations: int = 0
@@ -74,6 +80,8 @@ var _last_move: Dictionary = {}
 ## Set on each arrival until the bot first gets to act there; the board is
 ## checked then, once the hand is dealt.
 var _arrival_unchecked: bool = false
+## Salvage offers already counted, by instance id.
+var _offers_seen: Dictionary[int, bool] = {}
 
 
 func _ready() -> void:
@@ -120,8 +128,12 @@ func _ready() -> void:
 	_error_log = AutoPilotErrorLog.new()
 	OS.add_logger(_error_log)
 	_connect_game_signals()
-	# Autoloads are ready before the main scene (main.tscn, the game itself)
-	# is built, so everything above is in place before the run starts.
+	# By the time autoloads are ready the main scene (main.tscn, the game
+	# itself) has already entered the tree, but none of it is ready yet, so
+	# everything above is in place before the run starts. The tutorial is
+	# switched off now, before its own _ready() decides whether to run.
+	if not _switch_off_tutorials(get_tree().root):
+		return
 	get_tree().node_added.connect(_on_node_added)
 	print("AutoPilot: seed %d, policy %s" % [_run_seed, _policy_name])
 
@@ -132,6 +144,8 @@ func _process(_delta: float) -> void:
 	_record_errors()
 	if not _game_is_up():
 		return
+	_telemetry.follow(ScenarioEngine.current())
+	_count_salvage_offers()
 
 	_idle_frames += 1
 	if _idle_frames > _stall_frames:
@@ -146,6 +160,11 @@ func _process(_delta: float) -> void:
 	if _arrival_unchecked:
 		_arrival_unchecked = false
 		_report(_invariants.on_arrival_settled())
+		# Something seeding the run itself (the tutorial does) would make this
+		# transcript describe a different run than its name says.
+		if RNGManager.current_run_seed != _run_seed:
+			_report([{"check": "run_seed_overridden",
+				"detail": "asked for %d, the run is %d" % [_run_seed, RNGManager.current_run_seed]}])
 		var memory: Dictionary = AutoPilotInvariants.memory()
 		var leaks: Array[String] = _invariants.leaks(memory)
 		if not leaks.is_empty():
@@ -167,6 +186,8 @@ func _process(_delta: float) -> void:
 	entry["turn"] = _player_turn
 	_write(entry)
 	_last_move = move.describe()
+	if move.kind == AutoPilotMove.Kind.CLAIM or move.kind == AutoPilotMove.Kind.BUY:
+		_telemetry.on_item_taken(move.kind == AutoPilotMove.Kind.BUY)
 	move.perform()
 	_idle_frames = 0
 	_settle = _SETTLE_FRAMES
@@ -175,16 +196,19 @@ func _process(_delta: float) -> void:
 		_finish(Outcome.LOOPING)
 
 
+## Moves that change the game for good. Taking a choice or buying uses it up,
+## so they can't loop the way flipping tabs can.
 static func _advances_play(move: AutoPilotMove) -> bool:
-	return move.kind == AutoPilotMove.Kind.PLACE_DIE or move.kind == AutoPilotMove.Kind.END_TURN
+	return move.kind in [AutoPilotMove.Kind.PLACE_DIE, AutoPilotMove.Kind.END_TURN,
+		AutoPilotMove.Kind.CLAIM, AutoPilotMove.Kind.BUY]
 
 
 ## Whether a patient player would act: the game scene is up and not over,
-## no jump is underway, nothing is resolving, and (in a fight) it's their
-## turn. A player *can* act sooner, mid-jump or mid-chain; that's for an
+## no jump is underway, the hand is dealt, nothing is resolving, no salvage
+## is about to appear, and (in a fight) it's their turn. A player *can* act sooner, mid-jump or mid-chain; that's for an
 ## impatient mode to explore.
 func _waiting_on_player() -> bool:
-	if _in_transit:
+	if _in_transit or Globals.player.is_dealing_hand():
 		return false
 	var state: GameStateManager.GameState = Globals.state_manager.state
 	if state == GameStateManager.GameState.GAME_OVER or state == GameStateManager.GameState.VICTORY:
@@ -192,7 +216,33 @@ func _waiting_on_player() -> bool:
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if not engine or engine.currently_processing_queue or not engine.event_queue.is_empty():
 		return false
+	# Salvage shows a moment after the ship that dropped it goes down; a
+	# patient player sees what's on offer before moving on.
+	if _salvage_on_its_way():
+		return false
 	return state == GameStateManager.GameState.OUT_OF_COMBAT or _player_turn_active
+
+
+## Counts each salvage offer once, as its choices come on show. A ship's
+## payout alone (Events.spawn_reward) may be only credits, with no choices.
+func _count_salvage_offers() -> void:
+	if not is_instance_valid(Globals.reward_manager):
+		return
+	for child: Node in Globals.reward_manager.get_children():
+		var offer: Reward = child as Reward
+		if offer and offer.visible and not offer.rewards.is_empty() \
+		and not _offers_seen.has(offer.get_instance_id()):
+			_offers_seen[offer.get_instance_id()] = true
+			_telemetry.on_salvage_offered()
+
+
+func _salvage_on_its_way() -> bool:
+	if not is_instance_valid(Globals.reward_manager):
+		return false
+	for child: Node in Globals.reward_manager.get_children():
+		if child is Reward and (child as Reward).is_on_its_way():
+			return true
+	return false
 
 
 func _game_is_up() -> bool:
@@ -205,6 +255,7 @@ func _connect_game_signals() -> void:
 		_scenario_name = scenario.resource_path.get_file().get_basename()
 		_invariants.reset_turns()
 	)
+	Events.first_turn_start.connect(_telemetry.on_fight_started)
 	Events.start_combat.connect(func() -> void:
 		_invariants.reset_turns()
 		# A fight breaking out starts with its own first turn, whatever the
@@ -212,6 +263,11 @@ func _connect_game_signals() -> void:
 		_player_turn_active = false
 	)
 	Events.combat_finished.connect(_invariants.reset_turns)
+	Events.combat_finished.connect(_telemetry.on_combat_won)
+	Events.enemy_left.connect(func(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
+		if is_instance_valid(ship):
+			_telemetry.on_enemy_left(ship)
+	)
 	Events.enemy_turn_starting.connect(func() -> void: _report(_invariants.on_enemy_turn_starting()))
 	Events.enemy_turn_over.connect(_invariants.on_enemy_turn_over)
 	# A fight's first turn has its own signal; every later one follows an
@@ -223,6 +279,7 @@ func _connect_game_signals() -> void:
 		_invariants.on_player_turn_over()
 	)
 	Events.jump.connect(func() -> void:
+		_write(_telemetry.end_visit("left", _player_turn))
 		_in_transit = true
 		# A fight arrived at starts with its own first turn; until then the
 		# ships are still flying in.
@@ -235,6 +292,8 @@ func _connect_game_signals() -> void:
 		_moves_since_progress = 0
 		_write({"type": "arrive", "turn": _player_turn, "scenario": _scenario_name,
 			"map_index": Globals.map.current_scenario_index})
+		_telemetry.begin_visit(_scenario_name, Globals.state_manager.current_game_save.sector_index,
+			Globals.map.current_scenario_index, _player_turn)
 	)
 	Events.combat_finished.connect(func() -> void:
 		_moves_since_progress = 0
@@ -261,18 +320,38 @@ func _on_player_turn_start() -> void:
 	_write(entry)
 
 
-## The tutorial narrates the first fight and waits on popups; the bot plays
-## the cold open as a returning player sees it. Set before the manager's
-## _ready(), which is where it decides.
+## The tutorial narrates the first fight, waits on popups and fixes the run's
+## seed; the bot plays the cold open as a returning player sees it. Set before
+## each manager's _ready(), which is where it decides. One already ready has
+## started, and the run would be the tutorial's, not this seed's.
+func _switch_off_tutorials(root: Node) -> bool:
+	var stack: Array[Node] = [root]
+	while not stack.is_empty():
+		var node: Node = stack.pop_back()
+		if node is TutorialManager:
+			if node.is_node_ready():
+				_abort("the tutorial started before the AutoPilot could switch it off")
+				return false
+			(node as TutorialManager).auto_start = false
+		stack.append_array(node.get_children())
+	return true
+
+
+## A tutorial built later (a scene change) is caught as it arrives.
 func _on_node_added(node: Node) -> void:
 	if node is TutorialManager:
 		(node as TutorialManager).auto_start = false
 
 
-## Keeps the bot off the player's save, and parallel bots off each other's.
+## Keeps the bot off the player's save and options, and parallel bots off
+## each other's saves. Options aren't redirected but silenced: nothing in a
+## bot run (finishing the tutorial, the dev console) may change a setting the
+## player chose.
 func _isolate_from_player_data() -> void:
 	DirAccess.make_dir_recursive_absolute(_out_dir)
 	SaveManager.save_path = _out_dir.path_join("save_%d.json" % OS.get_process_id())
+	if Events.save_options_config.is_connected(OptionsSettings.save_options_settings):
+		Events.save_options_config.disconnect(OptionsSettings.save_options_settings)
 
 
 func _open_transcript() -> bool:
@@ -286,7 +365,7 @@ func _open_transcript() -> bool:
 
 
 func _write(entry: Dictionary) -> void:
-	if _transcript:
+	if _transcript and not entry.is_empty():
 		_transcript.store_line(JSON.stringify(entry, "", false))
 
 
@@ -322,8 +401,20 @@ func _finish(outcome: Outcome) -> void:
 		"turns": _player_turn, "scenario": _scenario_name, "errors": _errors,
 		"violations": _violations}
 	if _game_is_up():
+		var how: String = "died" if outcome == Outcome.DEFEAT else "run_over"
+		if outcome == Outcome.VICTORY:
+			how = "left"
+		_write(_telemetry.end_visit(how, _player_turn))
 		result["sector"] = Globals.state_manager.current_game_save.sector_index
+		result["map_index"] = Globals.map.current_scenario_index
 		result["hull"] = Globals.player.health.health
+		result["dice"] = Globals.player.num_of_dice
+		result["money"] = AutoPilotSnapshot.credits()
+		result["build"] = AutoPilotTelemetry.build()
+		if outcome == Outcome.DEFEAT:
+			result["killed_by"] = _telemetry.last_hit
+	result["tiles"] = _telemetry.tiles
+	result["enemies"] = _telemetry.enemies
 	_write(result)
 	# Quitting waits for the frame to end, and signals can still arrive.
 	_transcript.close()

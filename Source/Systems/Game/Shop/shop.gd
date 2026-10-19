@@ -148,6 +148,11 @@ func _place_shop_tile(shop_index: int, tile_resource: TileResource) -> Tile:
 	return tile
 
 
+## What [param item] costs, or -1 if it isn't on the shelves.
+func price_of(item: Node) -> int:
+	return _item_prices.get(item, -1)
+
+
 func _set_price(item: Node, price: int) -> void:
 	_item_prices[item] = price
 	var tag: Node2D = prices[item_to_shop_index[item]]

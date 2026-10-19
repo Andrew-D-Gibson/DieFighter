@@ -98,6 +98,14 @@ func check_board() -> Array[Dictionary]:
 	if AutoPilotSnapshot.credits() < 0:
 		broken.append(_violation("negative_money", "%d credits" % AutoPilotSnapshot.credits()))
 
+	# A tile reparented onto the grid without a cell (taken from salvage onto
+	# a full grid, say) floats there, unplayable and unsaved.
+	for child: Node in Globals.tile_grid.get_children():
+		var loose: Tile = child as Tile
+		if loose and not loose.is_queued_for_deletion() \
+		and not Globals.tile_grid.is_grid_pos_valid(Globals.tile_grid.find_tile_pos(loose)):
+			broken.append(_violation("tile_without_cell", loose.tile_resource.tile_name))
+
 	for cell: Vector2i in Globals.tile_grid.tile_locations:
 		var tile: Tile = Globals.tile_grid.tile_locations[cell]
 		# -1 means unlimited: a limited tile spent past zero would read as

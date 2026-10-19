@@ -30,6 +30,9 @@
 #   seed_<N>_<policy>.debug.txt  the engine's play-by-play (DebugLogger)
 #   seed_<N>_<policy>.log        the engine's console output
 #
+# A batch also writes report.html (tools/autoplay_report.py): how runs ended,
+# which encounters kill, and what each enemy and tile did.
+#
 # A run fails if it stalled, looped, hung, crashed, hit an engine or script
 # error, or broke an invariant. A batch ends with a summary grouping the
 # failures, with example seeds to replay; runs whose node count kept growing
@@ -215,4 +218,8 @@ seq "$seed" $(( seed + runs - 1 )) \
 	| xargs -P "$jobs" -I{} bash -c 'play_one "$1" "$2"' _ {} "$out" \
 	|| failed=1
 summarize
+if command -v python3 > /dev/null; then
+	echo
+	python3 "$PROJECT/tools/autoplay_report.py" "$out" || true
+fi
 exit $failed
