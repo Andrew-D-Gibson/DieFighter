@@ -324,6 +324,10 @@ func _process(_delta: float) -> void:
 				dice_manager.add(die, true, false)
 
 
+## Lights End Turn once nothing is left to play. Checked as each tile finishes
+## activating, and as each turn starts: a turn can open with the hand already
+## spent (the last die is on a tile that holds it, like a Welder), and with
+## no activation to come, nothing else would light it.
 func _check_for_end_of_turn() -> void:
 	# An empty hand isn't enough: dice already dropped on tiles queued behind
 	# this activation (a Bump waiting on a Dice Cannon) still have to fire.
@@ -369,6 +373,7 @@ func _start_player_turn() -> void:
 	_between_turns = false
 	Events.player_turn_refresh.emit()
 	Events.player_turn_start.emit()
+	_check_for_end_of_turn()
 	
 	for die: Dice in dice_manager.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
@@ -448,6 +453,7 @@ func _announce_first_turn() -> void:
 		return
 	_between_turns = false
 	Events.first_turn_start.emit()
+	_check_for_end_of_turn()
 
 
 ## A Continue builds the scene from nothing, so no die has survived to here:
@@ -758,6 +764,11 @@ func _stand_down() -> void:
 		die.draggable.dragging_allowed = false
 		if die.draggable.state == Draggable.DragState.DRAGGING:
 			die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+
+
+## Whether the opening hand is still coming in after an arrival.
+func is_dealing_hand() -> bool:
+	return _dealing_hand
 
 
 ## Whether the End Turn button would take a press right now.

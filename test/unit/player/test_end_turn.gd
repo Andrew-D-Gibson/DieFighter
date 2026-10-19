@@ -70,3 +70,17 @@ func test_end_turn_stays_off_after_the_press() -> void:
 	# A tile that finishes activating after the press.
 	Events.tile_activation_complete.emit()
 	assert_true(_end_turn_button().disabled, "a second press would start a second enemy turn")
+
+
+func test_a_turn_that_opens_with_the_hand_already_spent_can_be_ended() -> void:
+	# The last die went onto a tile that holds it (a Welder) just before the
+	# turn started. Nothing will activate this turn to light End Turn.
+	var welder_queue: DiceQueue = add_child_autofree(DiceQueue.new())
+	var held: Dice = DICE_SCENE.instantiate()
+	player.add_child(held)
+	welder_queue.add(held)
+	player.end_turn()
+
+	await player._start_player_turn()
+
+	assert_false(_end_turn_button().disabled, "the turn would otherwise be stuck")
