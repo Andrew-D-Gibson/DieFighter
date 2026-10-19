@@ -4,6 +4,48 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-18 — Shelf tiles, AutoPilot step 3: balance stats
+
+**Fixes from step 2's findings.**
+- Shop stock and salvage on offer were live tiles. A die dropped on one
+  played it for free (the random bot did it about 150 times in 200 runs),
+  and their passives worked from the shelf: an unbought Counterweight Battery
+  shielded the player 214 times in one run, leaking a sparkle each time. Tiles
+  are now `on_offer` until installed.
+- The shop forgets an item that leaves the tree (a jump frees the die on
+  offer), `Dice.reroll_with_tween()` copes with a die in no queue, and a
+  zero-damage hit spawns no particles.
+- New, found on the way: a turn could open with the hand already spent (the
+  last die on a Welder) and no End Turn. It's re-checked at every turn start.
+
+**The bot never actually skipped the tutorial.** Its switch hooked
+`node_added`, but the main scene enters the tree before autoloads are ready.
+Earlier batches only dodged the tutorial because Options had it off. With the
+reworked, seeded tutorial on, every bot run played seed 21 with its dice
+locked, and a run that finished the tutorial could have saved
+`show_tutorial=false` to the player's options. Now it switches the tutorial
+off from the tree, flags a run whose seed was overridden, and can't write
+the options file at all.
+
+**Step 3: stats.** The bot now takes salvage and buys from shops, so builds
+vary. Every run tallies what each tile and enemy did and how each scenario
+visit went, and `tools/autoplay_report.py` turns a batch into a sortable
+`report.html`; `autoplay.sh` writes one after every batch.
+
+First look, 200 random runs (seeds 1000–1199), all lost in sector 1, median
+20 turns, 3.7 fights won per run:
+- The Sector Warden ends 65% of the runs that reach it (89 visits), and Fate
+  Attackers deal the most final blows (89), likely because the random bot
+  keeps jumping onto Fate's tiles. Tithe Escort (47% of 17 visits) and Tollkeeper (33% of 12) are
+  the deadliest ordinary encounters.
+- Salvage with choices is rare at this level: 14 offers in 40 runs, every one
+  taken.
+- Tile numbers mostly measure the starter kit for now. Fixed loadouts (step
+  4) and a smarter bot (step 5) will make per-tile comparisons mean
+  something.
+
+---
+
 ## 2026-10-18 — Spare die, End Turn fixes, AutoPilot step 2: watchdogs
 
 **The spare die.** A ship could take every die (a Cutpurse fleeing with the

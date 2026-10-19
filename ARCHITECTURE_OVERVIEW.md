@@ -504,11 +504,22 @@ window at normal speed.
 **Acting like a player.** `AutoPilotMove.list_legal()` lists what a player
 could do now: drop a die from the hand on a tile that would take it
 (`Tile.activation_refusal()`, the pure half of `clears_activation_criteria()`),
-retarget, switch the map/systems tab, or press End Turn
-(`Player.can_end_turn()`). `perform()` goes through the same entry points as
-input. A drop emits the die's `drag_ended`, as letting go of the mouse does.
-The AutoPilot is patient: it waits for the engine to go idle, for its turn,
-and for jumps to land. It skips the tutorial (`TutorialManager.auto_start`).
+retarget, switch the map/systems tab, take a salvage choice
+(`Reward.can_take()`), buy from the shop (`Shop.price_of()`, if affordable),
+or press End Turn (`Player.can_end_turn()`). `perform()` goes through the
+same entry points as input. A drop emits the die's `drag_ended`, as letting
+go of the mouse does; a claim or a purchase emits the item's, over the grid
+(a tile) or the hand (anything else). The AutoPilot is patient: it waits for
+the engine to go idle, for its turn, for jumps to land, for the hand to be
+dealt (`Player.is_dealing_hand()`) and for salvage to show
+(`Reward.is_on_its_way()`).
+
+**No tutorial.** The tutorial would narrate, lock dice and seed the run
+itself. When autoloads are ready the main scene has already entered the tree
+but none of it is ready, so the AutoPilot walks the tree in its own `_ready()`
+and sets `TutorialManager.auto_start = false` before the tutorial decides
+(a `node_added` hook would come too late). A run whose seed isn't the one
+asked for is flagged (`run_seed_overridden`).
 
 **Policies** (`AutoPilotPolicy`) pick among the legal moves, drawing any
 randomness from the AutoPilot's own stream, seeded from the run seed. Drawing
@@ -516,8 +527,9 @@ from a gameplay bucket would shift every roll after it. `random` plays
 wherever a die is accepted.
 
 **Isolation.** One run per process. Saves go to the output directory, keyed
-by process id. It quits without `QuitManager`, so `times_run` and the options
-file are left alone. Headless runs free `McpInteractionServer`, so parallel
+by process id. It quits without `QuitManager`, so `times_run` is left alone,
+and it unhooks `OptionsSettings` from `Events.save_options_config`, so nothing
+in a bot run can write the player's options file. Headless runs free `McpInteractionServer`, so parallel
 runs don't fight over port 9090.
 
 **Transcripts** (`<out>/seed_<N>_<policy>.jsonl`): a header, a snapshot at
@@ -558,6 +570,33 @@ or two between runs of a seed.
 
 A batch ends with a summary: outcomes, violations by check, memory warnings,
 and errors grouped by site, each with example seeds to replay.
+
+**Telemetry** (`AutoPilotTelemetry`) tallies balance data off the engine's
+`event_resolved` feed, so new content is counted without it learning about
+it. Amounts are what resolved, after modifiers (damage before shields; a
+change a rule cancels, like Fate's Tithe eating charge, doesn't count):
+- **Tiles**, per run in the result: activations, damage, shields, heal,
+  charge, status stacks.
+- **Enemies**, per run in the result: actions used, damage to the player,
+  destroyed, escaped. Damage is credited to "Ship: Action", the action the
+  ship was spending; the player's own side hurting them (hazards, the
+  redline) is "environment".
+- **Visits**, a `visit` entry as each scenario is left: fought (any fight's
+  first turn, so a fight fled into counts), result (won, fled, passed, died,
+  run_over), turns, hull lost, credits gained, dice lost, salvage offers
+  (counted as their choices show; a payout of only credits isn't one),
+  claims, buys, damage taken by source.
+- **The result** adds the final build, the dice and credits left, and the
+  final blow (`killed_by`).
+
+**The report.** `tools/autoplay_report.py <batch>` (standard library only;
+`autoplay.sh` runs it after every batch) writes `report.html` beside the
+transcripts and prints the headlines. It covers outcomes, encounters ranked
+by how often a visit ended the run, final blows, damage by source, enemies,
+tiles (per-activation output, and mean fights won by the runs that used
+each, a crude lift), and pickups. With the random bot, encounter and enemy
+numbers compare well with each other, but tile lift is mostly luck; steps
+4 and 5 (fixed loadouts, a smarter bot) are what make it meaningful.
 
 ---
 
@@ -952,7 +991,10 @@ the map, so no enemy turn can start in a scenario being torn down. The hotkey
 follows the button (`can_end_turn()`). An enemy turn hands the turn back
 (`_start_player_turn()`) only if no fight started and no jump was committed
 since End Turn (`_turn_generation`): a fight can break out partway through an
-enemy turn run out of combat, and it opens with its own first turn.
+enemy turn run out of combat, and it opens with its own first turn. End Turn
+is also re-checked as every turn starts: a turn can open with the hand
+already spent (the last die on a tile that holds it, like a Welder), with no
+activation to come that would light it.
 
 **The spare die.** The player always has a die to play. At each turn start,
 and once a fight ends, `_ensure_a_die_to_play()` checks for a die in hand or
@@ -976,7 +1018,14 @@ func handle_tile_event(tile, event_type, immediate = false) -> void  # Queues th
 func reset_uses_remaining() -> void                  # On start_scenario and player_turn_refresh
 func get_held_die(except: Dice = null) -> Dice       # A die this tile is holding, if any
 func release_held_dice() -> void                     # Held dice back to the hand (turn over / combat finished)
+var on_offer: bool                                   # Shop stock or salvage: takes no dice, ignores events
 ```
+
+**Tiles on offer.** The shop and salvage create tiles with `on_offer = true`
+until `TileGrid.receive_tile()` installs one. Until then it takes no dice
+(its `CanAcceptDice` is disabled) and `handle_tile_event()` ignores the game,
+so an unbought tile can't be played for free and its passives don't work
+from the shelf.
 
 **Activation Check Resource**
 
