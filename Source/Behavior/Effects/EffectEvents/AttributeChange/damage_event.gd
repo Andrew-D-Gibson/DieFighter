@@ -39,6 +39,10 @@ func resolve(_engine: ScenarioEngine) -> void:
 ## Spawn directional hit particles + an explosion at the target's position.
 ## Color is based on whether the damage will reach HP or be shield-absorbed.
 func _spawn_hit_particles(target: Node) -> void:
+	# Zero damage (fully negated) has nothing to burst, and a particle node
+	# refuses an amount of zero.
+	if amount <= 0:
+		return
 	# Blue if shields will absorb all the damage, red otherwise.
 	var color: Color = Globals.blue if target.health.shields >= amount else Globals.red
 

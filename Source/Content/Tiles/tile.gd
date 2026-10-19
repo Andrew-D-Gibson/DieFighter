@@ -47,10 +47,21 @@ var effect_data: Dictionary[String, int]
 @export var dice_queue: DiceQueue
 @export var can_accept_dice: CanAcceptDice
 
+## True while the tile is shop stock or salvage on offer: shown, but not the
+## player's yet. It takes no dice and ignores the game's events until
+## TileGrid.receive_tile() installs it; without this, an unbought tile could
+## be played for free, and its passives (Counterweight Battery's shields)
+## worked from the shelf.
+var on_offer: bool = false:
+	set(value):
+		on_offer = value
+		_update_dice_acceptance()
+
 
 func _ready() -> void:
 	assert(tile_resource)
 	_set_up_resource()
+	_update_dice_acceptance()
 	
 	if clickable:
 		clickable.clicked.connect(func() -> void: 
@@ -160,6 +171,11 @@ func _set_up_resource() -> void:
 ## Tiles in the grid are locked in place for the length of a fight. A tile
 ## anywhere else — on offer from a ship that just died, on the shop's shelf —
 ## can still be picked up, or a reward dropped mid-fight could never be taken.
+func _update_dice_acceptance() -> void:
+	if can_accept_dice:
+		can_accept_dice.enabled = not on_offer
+
+
 func update_dragging_allowed() -> void:
 	var locked: bool = get_parent() is TileGrid and grid_locked()
 	draggable.dragging_allowed = tile_resource.dragging_allowed and not locked
@@ -189,6 +205,8 @@ func _get_tile_info() -> InfoResource:
 ## [param immediate] resolves the response right after the event currently
 ## resolving instead of at the back of the queue.
 func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false) -> void:
+	if on_offer:
+		return
 	var event_check: TileEvent = _find_matching_event_response(tile, event)
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if event_check == null or not engine:

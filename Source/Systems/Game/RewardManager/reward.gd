@@ -88,6 +88,7 @@ func _node_for_item(entry: Dictionary) -> Node2D:
 		if path == "":
 			return null
 		var tile: Tile = Globals.tile_grid.create_tile(ResourceLoader.load(path))
+		tile.on_offer = true
 		items.append(entry)
 		return tile
 	if entry.has("dice"):
@@ -164,7 +165,9 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 			else:
 				chosen_resource = Globals.reward_manager.pick_weighted_tile_reward(possible_tile_rewards)
 			possible_tile_rewards.erase(chosen_resource)
-			offered.append(Globals.tile_grid.create_tile(chosen_resource))
+			var tile: Tile = Globals.tile_grid.create_tile(chosen_resource)
+			tile.on_offer = true
+			offered.append(tile)
 			items.append({"tile": ContentRegistry.get_tile_id(chosen_resource.resource_path)})
 
 	if reward_resource.max_money_pickup > 0 and money_pickup_scene \

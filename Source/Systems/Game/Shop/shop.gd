@@ -135,6 +135,7 @@ func _place_shop_tile(shop_index: int, tile_resource: TileResource) -> Tile:
 	var row: int = shop_index % 2
 
 	var tile: Tile = Globals.tile_grid.create_tile(tile_resource)
+	tile.on_offer = true
 	add_child(tile)
 
 	var pos: Vector2 = start_pos + Vector2(col * tile_spacing_x, row * tile_spacing_y)
@@ -143,7 +144,7 @@ func _place_shop_tile(shop_index: int, tile_resource: TileResource) -> Tile:
 	tile.draggable.home_position = tile.global_position
 	tile.draggable.drag_ended.connect(_on_shop_item_dragged)
 
-	item_to_shop_index[tile] = shop_index
+	_stock(tile, shop_index)
 	return tile
 
 
@@ -211,8 +212,22 @@ func _create_dice_buy_zone() -> void:
 	dice.draggable.drag_started.connect(Events.show_systems.emit)
 	dice.draggable.drag_ended.connect(_on_shop_item_dragged)
 	
-	item_to_shop_index[dice] = 4
+	_stock(dice, 4)
 	_set_price(dice, DICE_PRICE)
+
+
+## Shelves [param item] in [param shop_index]. An item can leave without being
+## bought (a jump frees the die on offer, which isn't the player's), and is
+## taken off the books when it does: a freed key in a typed dictionary
+## breaks every later pass over it.
+func _stock(item: Node, shop_index: int) -> void:
+	item_to_shop_index[item] = shop_index
+	item.tree_exiting.connect(_forget.bind(item), CONNECT_ONE_SHOT)
+
+
+func _forget(item: Node) -> void:
+	item_to_shop_index.erase(item)
+	_item_prices.erase(item)
 
 
 func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
@@ -231,6 +246,10 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			
 			item.draggable.drag_started.disconnect(Events.show_systems.emit)
 			item.draggable.drag_ended.disconnect(_on_shop_item_dragged)
+			# Sold: it's the player's now, and off the shelves for good. (The
+			# reparent below fires the one-shot _forget again, harmlessly.)
+			prices[item_to_shop_index[item]].visible = false
+			_forget(item)
 			
 			if item is Tile:
 				Globals.tile_grid.receive_tile(item, end_position)
@@ -241,6 +260,3 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 				Globals.player.num_of_dice += 1
 
 			Events.reward_picked.emit()
-
-			prices[item_to_shop_index[item]].visible = false
-			_item_prices.erase(item)

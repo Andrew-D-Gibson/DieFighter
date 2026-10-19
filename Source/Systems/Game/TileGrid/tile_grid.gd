@@ -128,6 +128,7 @@ func create_tile(tile_resource: TileResource) -> Tile:
 
 
 func receive_tile(tile: Tile, drop_position: Vector2) -> void:
+	tile.on_offer = false
 	tile.reparent(self, true)
 	tile.update_dragging_allowed()
 	tile.draggable.floating_enabled = false

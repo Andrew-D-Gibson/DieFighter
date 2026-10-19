@@ -86,7 +86,9 @@ func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 
 func reroll_with_tween(new_value: int = 0) -> void:
 	var final_scale: Vector2 = Vector2(1,1)
-	if host_queue.get_parent() is Enemy or host_queue.get_parent() is Tile:
+	# A die between queues (in flight, or never held) rests at full size.
+	var holder: Node = host_queue.get_parent() if host_queue else null
+	if holder is Enemy or holder is Tile:
 		final_scale = Vector2(0.75, 0.75)
 	
 	var tween_time: float = 0.2
