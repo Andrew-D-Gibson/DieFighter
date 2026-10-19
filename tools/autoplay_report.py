@@ -434,9 +434,16 @@ def render(batch_dir, runs, top):
               [[cell(name), cell(claims.get(name, 0)), cell(buys.get(name, 0))]
                for name in sorted(set(claims) | set(buys))]))
 
-    if checks or errors:
+    galleries = sorted(glob.glob(os.path.join(batch_dir, "replays", "*", "shots", "index.html")))
+    if checks or errors or galleries:
         out("<h2>Errors and violations</h2>")
-        out('<p class="note">tools/autoplay.sh lists seeds to replay for each.</p>')
+        out('<p class="note">tools/autoplay.sh lists seeds to replay for each, and '
+            "<code>tools/autoplay.sh --replay &lt;batch&gt;</code> plays the worst again in a window, "
+            "with screenshots.</p>")
+        if galleries:
+            out("<ul>" + "".join(
+                f'<li><a href="{html.escape(os.path.relpath(path, batch_dir))}">'
+                f'{html.escape(path.split(os.sep)[-3])}</a> (replay)</li>' for path in galleries) + "</ul>")
         if checks:
             out(counter_table("Invariant", checks))
         if errors:

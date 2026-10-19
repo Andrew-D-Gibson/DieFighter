@@ -31,6 +31,8 @@ const _RUN_START: String = "res://Source/Resources/SaveResources/run_start.tres"
 var scenario_id: String
 var loadout_name: String
 var sector: int = 0
+## The spec file, so a replay of this run can find the loadout again.
+var spec_path: String = ""
 var _loadout: Dictionary = {}
 
 
@@ -52,6 +54,7 @@ func load_cell(path: String, scenario: String, loadout: String, sector_override:
 		return "no scenario '%s'" % scenario
 	scenario_id = scenario
 	loadout_name = loadout
+	spec_path = path
 	_loadout = loadouts[loadout]
 
 	sector = int((spec as Dictionary).get("sector", 0))
@@ -103,7 +106,7 @@ func place_scenario(game_save: GameSaveResource) -> void:
 
 ## For the transcript header.
 func describe() -> Dictionary:
-	return {"scenario": scenario_id, "loadout": loadout_name, "sector": sector}
+	return {"scenario": scenario_id, "loadout": loadout_name, "sector": sector, "spec": spec_path}
 
 
 static func _cell(text: String) -> Vector2i:

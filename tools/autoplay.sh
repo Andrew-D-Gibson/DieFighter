@@ -11,6 +11,8 @@
 #   tools/autoplay.sh [--seed N] [--runs N] [--jobs N] [--policy NAMES]
 #                     [--out DIR] [--time-limit S] [--watch] [--determinism]
 #                     [--gauntlet SPEC] [-- extra args]
+#   tools/autoplay.sh --replay TRANSCRIPT|BATCH_DIR [--runs N] [--real-time]
+#                     [--stop-at-turn N] [--out DIR] [-- extra args]
 #
 #   --seed N         first seed (default: random); runs use N, N+1, ...
 #   --runs N         how many runs (default 1)
@@ -33,6 +35,18 @@
 #                    and the spec's "seeds" count, or --runs. Needs python3.
 #   -- ...           anything after this goes to the AutoPilot as-is
 #                    (e.g. -- --max-turns=100)
+#
+# Replays (--replay) play a run again in a window, taking screenshots: the
+# board before the first move of every turn and arrival, every error and
+# broken invariant, and the end. Given a batch directory, it replays the runs
+# that batch flagged, worst first (--runs, default 3). Each replay goes in
+# <out>/<run>/ (out defaults to replays/ beside the transcript), with
+# shots/index.html showing each screenshot beside what happened, and is
+# checked against the original transcript: REPRODUCED or DIVERGED.
+#   --real-time      play at normal speed (default: as fast as it draws)
+#   --stop-at-turn N stop as player turn N starts and leave the game open to
+#                    look around or play on by hand; close the window to
+#                    finish
 #
 # Each run writes to the output directory:
 #   seed_<N>_<policy>.jsonl      the transcript: turns, moves, errors,
@@ -63,6 +77,9 @@ time_limit=300
 watch=0
 determinism=0
 gauntlet=""
+replay=""
+real_time=0
+stop_at_turn=0
 runs_given=0
 extra=()
 
@@ -77,10 +94,66 @@ while [[ $# -gt 0 ]]; do
 		--watch) watch=1; shift ;;
 		--determinism) determinism=1; shift ;;
 		--gauntlet) gauntlet="$2"; shift 2 ;;
+		--replay) replay="$2"; shift 2 ;;
+		--real-time) real_time=1; shift ;;
+		--stop-at-turn) stop_at_turn="$2"; shift 2 ;;
 		--) shift; extra=("$@"); break ;;
 		*) echo "unknown option: $1" >&2; exit 2 ;;
 	esac
 done
+
+# One replay: replay_one <transcript> <out dir>. Prints how it went; fails if
+# the replay didn't play the same run.
+replay_one() {
+	local transcript="$1" dir="$2/$(basename "$1" .jsonl)"
+	local run_args=()
+	run_args=($(python3 "$PROJECT/tools/autoplay_replay.py" args "$transcript")) || return 1
+	mkdir -p "$dir"
+	local godot_args=(--fixed-fps 60 --path "$PROJECT")
+	(( real_time )) || godot_args+=(--disable-vsync)
+	local pilot_args=(--autoplay "${run_args[@]}" --out="$dir" --screenshots="$dir/shots")
+	if (( stop_at_turn > 0 )); then
+		pilot_args+=(--stop-at-turn="$stop_at_turn")
+	else
+		pilot_args+=(--no-mcp)
+	fi
+	echo "replaying $(basename "$transcript") ..."
+	"$GODOT" "${godot_args[@]}" -- "${pilot_args[@]}" "${extra[@]+"${extra[@]}"}" \
+		> "$dir/replay.log" 2>&1
+	local replayed
+	replayed=$(ls "$dir"/seed_*.jsonl 2>/dev/null | head -1)
+	if [[ -z "$replayed" ]]; then
+		echo "  FAILED: no transcript; see $dir/replay.log"
+		return 1
+	fi
+	local verdict status=0
+	verdict=$(python3 "$PROJECT/tools/autoplay_replay.py" compare "$transcript" "$replayed") || status=1
+	sed 's/^/  /' <<< "$verdict"
+	echo "  $(ls "$dir"/shots/*.png 2>/dev/null | wc -l | tr -d ' ') screenshots:" \
+		"$(python3 "$PROJECT/tools/autoplay_replay.py" gallery "$dir/shots" "$replayed")"
+	return $status
+}
+
+if [[ -n "$replay" ]]; then
+	command -v python3 > /dev/null || { echo "--replay needs python3" >&2; exit 2; }
+	if [[ -d "$replay" ]]; then
+		(( runs_given )) || runs=3
+		targets=$(python3 "$PROJECT/tools/autoplay_replay.py" flagged "$replay" --limit "$runs")
+		[[ -n "$targets" ]] || { echo "nothing flagged in $replay"; exit 0; }
+		[[ -z "$out" ]] && out="$replay/replays"
+	elif [[ -f "$replay" ]]; then
+		targets="$replay"
+		[[ -z "$out" ]] && out="$(dirname "$replay")/replays"
+	else
+		echo "no transcript or batch at $replay" >&2; exit 2
+	fi
+	mkdir -p "$out"
+	failed=0
+	while read -r target; do
+		replay_one "$target" "$out" || failed=1
+	done <<< "$targets"
+	exit $failed
+fi
 
 if [[ -n "$gauntlet" ]]; then
 	[[ -f "$gauntlet" ]] || { echo "no gauntlet spec at $gauntlet" >&2; exit 2; }
@@ -216,6 +289,9 @@ summarize() {
 	fi
 	echo
 	echo "transcripts: $out"
+	if [[ -n "$(python3 "$PROJECT/tools/autoplay_replay.py" flagged "$out" --limit 1 2>/dev/null)" ]]; then
+		echo "to watch the worst of them again, with screenshots: tools/autoplay.sh --replay $out"
+	fi
 }
 
 IFS=',' read -ra policy_list <<< "$policies"

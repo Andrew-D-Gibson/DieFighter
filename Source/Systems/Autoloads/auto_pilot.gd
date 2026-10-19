@@ -21,6 +21,12 @@ extends Node
 ##   --gauntlet=SPEC      play one gauntlet cell from the spec file at SPEC
 ##   --scenario=ID        ...this scenario (see AutoPilotGauntlet)
 ##   --loadout=NAME       ...with this loadout from the spec
+##   --screenshots=DIR    save pictures of the run here (windowed runs only;
+##                        see AutoPilotCamera)
+##   --stop-at-turn=N     stop playing as player turn N starts and leave the
+##                        game running, to look around or play on by hand
+##   --no-mcp             free McpInteractionServer in a windowed run too,
+##                        so a replay can't clash with a game on port 9090
 ##
 ## A gauntlet run starts in the chosen scenario with the chosen loadout, holds
 ## its ground (no jumping away mid-fight), and ends when that scenario's fight
@@ -85,6 +91,17 @@ var _gauntlet: AutoPilotGauntlet
 var _invariants: AutoPilotInvariants = AutoPilotInvariants.new()
 var _telemetry: AutoPilotTelemetry = AutoPilotTelemetry.new()
 var _error_log: AutoPilotErrorLog
+## Set for a windowed run asked for screenshots.
+var _camera: AutoPilotCamera
+## Set at each turn start and arrival: before its first move there the bot
+## spends a frame looking at the board, and a replay photographs it. Headless
+## runs look too, so a replay keeps the original's timing.
+var _look_before_next_move: bool = false
+var _shot_label: String = ""
+## 0: play to the end.
+var _stop_at_turn: int = 0
+## Set once --stop-at-turn has been reached: the game is the developer's.
+var _handed_over: bool = false
 var _errors: int = 0
 var _violations: int = 0
 ## The last move made, for an error to say what it followed.
@@ -114,6 +131,9 @@ func _ready() -> void:
 	_max_turns = int(args.get("max-turns", str(_max_turns)))
 	_stall_frames = int(args.get("stall-seconds", "90")) * Engine.physics_ticks_per_second
 	_max_moves_without_progress = int(args.get("max-loop-moves", str(_max_moves_without_progress)))
+	_stop_at_turn = int(args.get("stop-at-turn", "0"))
+	if args.has("screenshots") and AutoPilotCamera.can_capture():
+		_camera = AutoPilotCamera.new(args["screenshots"])
 
 	if args.has("seed"):
 		_run_seed = int(args["seed"])
@@ -138,7 +158,8 @@ func _ready() -> void:
 	_isolate_from_player_data()
 	# Parallel headless runs would fight over the MCP port, and could take it
 	# from a game the developer has open. A watched run keeps it.
-	if DisplayServer.get_name() == "headless" and is_instance_valid(McpInteractionServer):
+	if (DisplayServer.get_name() == "headless" or args.has("no-mcp")) \
+	and is_instance_valid(McpInteractionServer):
 		McpInteractionServer.queue_free()
 	TimeDirector.use_frame_clock()
 	RNGManager.next_run_seed = _run_seed
@@ -165,7 +186,7 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if _outcome != Outcome.NONE:
+	if _outcome != Outcome.NONE or _handed_over:
 		return
 	_record_errors()
 	if not _game_is_up():
@@ -206,6 +227,12 @@ func _process(_delta: float) -> void:
 	# with nothing to play would just fill the wait while a chain finishes;
 	# a die with nowhere to go on this tab may have somewhere on the other.
 	if not moves.any(_advances_play) and AutoPilotMove.dice_in_hand().is_empty():
+		return
+
+	if _look_before_next_move:
+		_look_before_next_move = false
+		if _camera:
+			_camera.capture(get_viewport(), _shot_label)
 		return
 
 	var move: AutoPilotMove = _policy.choose(moves, _rng)
@@ -334,6 +361,7 @@ func _connect_game_signals() -> void:
 		_moves_since_progress = 0
 		_write({"type": "arrive", "turn": _player_turn, "scenario": _scenario_name,
 			"map_index": Globals.map.current_scenario_index})
+		_shoot("arrive_%s" % _scenario_name)
 		_telemetry.begin_visit(_scenario_name, Globals.state_manager.current_game_save.sector_index,
 			Globals.map.current_scenario_index, _player_turn)
 	)
@@ -341,6 +369,8 @@ func _connect_game_signals() -> void:
 		_moves_since_progress = 0
 		_write({"type": "combat_won", "turn": _player_turn, "scenario": _scenario_name,
 			"hull": Globals.player.health.health})
+		# What the fight left behind: salvage, the open map.
+		_shoot("won_%s" % _scenario_name)
 		if _gauntlet:
 			_finish(Outcome.CLEARED)
 	)
@@ -358,6 +388,10 @@ func _on_player_turn_start() -> void:
 	if _player_turn > _max_turns:
 		_finish(Outcome.TURN_LIMIT)
 		return
+	if _stop_at_turn > 0 and _player_turn >= _stop_at_turn:
+		_hand_over()
+		return
+	_shoot("turn_%03d" % _player_turn)
 	var entry: Dictionary = AutoPilotSnapshot.turn(_scenario_name)
 	entry["type"] = "turn"
 	entry["turn"] = _player_turn
@@ -425,9 +459,28 @@ func _write(entry: Dictionary) -> void:
 		_transcript.store_line(JSON.stringify(entry, "", false))
 
 
+## The next picture: the board as the bot is about to make its first move
+## here, once the hand is dealt and the intents are up.
+func _shoot(label: String) -> void:
+	_look_before_next_move = true
+	_shot_label = label
+
+
+## Stops playing (--stop-at-turn) and leaves the game as it is.
+func _hand_over() -> void:
+	_handed_over = true
+	_write({"type": "stopped", "turn": _player_turn, "scenario": _scenario_name})
+	_transcript.flush()
+	if _camera:
+		_camera.capture(get_viewport(), "stopped_turn_%03d" % _player_turn)
+	print("AutoPilot: stopped at turn %d as asked; the game is yours" % _player_turn)
+
+
 func _report(violations: Array[Dictionary]) -> void:
 	for violation: Dictionary in violations:
 		_violations += 1
+		if _camera:
+			_camera.capture_flagged(get_viewport(), "violation_%s_turn_%03d" % [violation["check"], _player_turn])
 		violation["type"] = "violation"
 		violation["turn"] = _player_turn
 		violation["scenario"] = _scenario_name
@@ -446,6 +499,8 @@ func _record_errors() -> void:
 		error["scenario"] = _scenario_name
 		error["after"] = _last_move
 		_write(error)
+		if _camera:
+			_camera.capture_flagged(get_viewport(), "error_turn_%03d" % _player_turn)
 
 
 func _finish(outcome: Outcome) -> void:
@@ -481,6 +536,8 @@ func _finish(outcome: Outcome) -> void:
 	_error_log = null
 	print("AutoPilot: %s after %d turns, %d errors, %d violations" % [
 		result["outcome"], _player_turn, _errors, _violations])
+	if _camera:
+		await _camera.capture(get_viewport(), "end_%s" % result["outcome"])
 	SaveManager.delete_save()
 	# Not QuitManager: its cleanup bumps times_run and rewrites the player's
 	# options file. A stuck run exits non-zero so the launcher can flag it.
