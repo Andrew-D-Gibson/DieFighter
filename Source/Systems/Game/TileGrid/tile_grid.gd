@@ -264,6 +264,12 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 		Events.tile_manually_moved.emit(tile_to_move)
 
 
+## Whether a new tile has somewhere to go. A shop or salvage tile taken onto a
+## full grid would never get a cell.
+func has_free_cell() -> bool:
+	return is_grid_pos_valid(find_available_grid_pos())
+
+
 func find_available_grid_pos() -> Vector2i:
 	for y: int in range(grid_height):
 		for x: int in range(grid_width):

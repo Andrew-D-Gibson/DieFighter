@@ -79,12 +79,16 @@ static func list_legal() -> Array[AutoPilotMove]:
 			if ship != Globals.targeting_computer.targeted_enemy:
 				moves.append(target(ship))
 
+	# A tile with no free cell to go to is refused, as a player can see.
+	var room: bool = Globals.tile_grid.has_free_cell()
 	for choice: Node2D in _salvage_on_offer():
-		moves.append(claim(choice))
+		if room or choice is not Tile:
+			moves.append(claim(choice))
 	if is_instance_valid(Globals.shop) and Globals.shop.is_visible_in_tree():
 		for stock: Node in Globals.shop.item_to_shop_index:
 			var cost: int = Globals.shop.price_of(stock)
-			if cost >= 0 and cost <= Globals.player.money and _can_pick_up(stock as Node2D):
+			if cost >= 0 and cost <= Globals.player.money and _can_pick_up(stock as Node2D) \
+			and (room or stock is not Tile):
 				moves.append(buy(stock as Node2D, cost))
 
 	# The map's controls are tiles, but only while its tab is showing.
@@ -168,15 +172,12 @@ static func _can_pick_up(thing: Node2D) -> bool:
 
 
 ## Where a player would let go of [param thing]: a tile on the first open cell
-## of the grid (a full grid gets the corner, as a player might try), anything
-## else on the hand. Both are well clear of the offer and the shelves.
+## of the grid (list_legal() offers no tile without one), anything else on the
+## hand. Both are well clear of the offer and the shelves.
 static func _drop_point_for(thing: Node2D) -> Vector2:
 	if thing is Tile:
 		var grid: TileGrid = Globals.tile_grid
-		var cell: Vector2i = grid.find_available_grid_pos()
-		if not grid.is_grid_pos_valid(cell):
-			cell = Vector2i.ZERO
-		return grid.grid_to_global_pos(cell)
+		return grid.grid_to_global_pos(grid.find_available_grid_pos())
 	return Globals.player.dice_manager.global_position
 
 

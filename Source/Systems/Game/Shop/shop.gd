@@ -245,6 +245,11 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 		if not _item_prices.has(item):
 			return
 		var price: int = _item_prices[item]
+		# No cell for it: refused before any money changes hands, and it
+		# drifts back to its shelf.
+		if item is Tile and not Globals.tile_grid.has_free_cell():
+			Events.error_text_popup.emit("GRID FULL", end_position)
+			return
 
 		if Globals.player.money >= price:
 			Globals.player.money -= price

@@ -213,6 +213,10 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 		return
 
 	var chosen_reward: Node = draggable.get_parent()
+	# No cell for it: the offer stands, and the tile drifts back into it.
+	if chosen_reward is Tile and not Globals.tile_grid.has_free_cell():
+		Events.error_text_popup.emit("GRID FULL", end_position)
+		return
 	draggable.drag_started.disconnect(Events.show_systems.emit)
 	draggable.drag_ended.disconnect(_end_reward)
 	

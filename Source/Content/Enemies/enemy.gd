@@ -68,7 +68,8 @@ var kept_dice: Array[Dice] = []
 ## carrying it out in front of the hull. Set by EnemyActionEvent. Out of the
 ## queue, the die would be missed if the ship died with it in hand, so death
 ## hands it on along with the rest. Left stale afterwards on purpose:
-## give_away_dice() ignores a die that has since gone to someone else.
+## give_away_dice() ignores a die that has since gone to someone else. Check
+## is_instance_valid() before using it: a spent hologram is freed.
 var spending_die: Dice = null
 var spending_tween: Tween = null
 
@@ -235,7 +236,10 @@ func _on_death() -> void:
 	# Stepped rather than killed: EnemyActionEvent is awaiting its finish.
 	if spending_tween and spending_tween.is_running():
 		spending_tween.custom_step(1000.0)
-	dice_manager.give_away_dice(spending_die)
+	# spending_die is left stale on purpose (see its comment), so it may be a
+	# hologram that's been spent and freed since; a freed object can't even
+	# be passed as a Dice.
+	dice_manager.give_away_dice(spending_die if is_instance_valid(spending_die) else null)
 	Events.enemy_left.emit(self, scenario_state.faction)
 	
 	Events.play_sound.emit(_PRE_DEATH_SFX)

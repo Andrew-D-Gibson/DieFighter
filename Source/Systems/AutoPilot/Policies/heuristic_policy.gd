@@ -480,9 +480,6 @@ func item_value(item: Node) -> float:
 	if item is MoneyPickup:
 		return (item as MoneyPickup).amount / _CREDITS_PER_POINT
 	if item is Tile:
-		var grid: TileGrid = Globals.tile_grid
-		if not grid.is_grid_pos_valid(grid.find_available_grid_pos()):
-			return -1.0
 		return _tile_worth(item as Tile)
 	return _DIE_WORTH
 
