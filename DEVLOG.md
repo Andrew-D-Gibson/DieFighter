@@ -4,6 +4,42 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-18 — AutoPilot step 4: gauntlets
+
+`tools/autoplay.sh --gauntlet tools/gauntlets/sector1.json` plays chosen
+scenarios with chosen loadouts on the same seeds, and the report opens with
+a scenario × loadout matrix. A run starts from a loadout-only save, so the
+sector around it is generated as usual, and the chosen fight takes the
+starting slot. The bot holds its ground until the fight is decided.
+
+First gauntlet: sector 1's nine fights × four loadouts × 10 seeds, 360 runs
+in under 4 minutes, no errors or violations. The loadouts are the starter
+kit, the kit plus a 4th die, plus a 2nd Dice Cannon, and plus a 2nd Shield
+Burst. Share of runs that cleared the fight:
+
+| Fight | starter | 4th die | 2nd cannon | 2nd shield |
+|---|---|---|---|---|
+| Opening Ambush | 50% | 90% | 80% | 50% |
+| Attacker | 30% | 70% | 80% | 30% |
+| Ion Lances | 40% | 10% | 80% | 40% |
+| Wolfpack | 20% | 10% | 60% | 20% |
+| Cutpurse | 0% | 10% | 0% | 10% |
+| Cannon Drone | 0% | 0% | 10% | 0% |
+| Tithe Escort, Mortar Nest, Sector Warden | 0% | 0% | 0% | 0% |
+
+It's the random bot, so read these as how forgiving a fight is of careless
+play, not as a player's odds:
+- A second Dice Cannon is the strongest single addition across the board.
+- A 4th die helps against lone ships but hurts against Ion Lances and the
+  Wolfpack: a careless player just hands the enemies one more die.
+- Tithe Escort, Mortar Nest and the Sector Warden were never beaten. The
+  Warden kills a full-hull ship in 1–3 turns when handed every die (its
+  faces are mostly 8–10 damage Dice Cannons).
+
+Step 5's smarter bot is what turns these into balance numbers.
+
+---
+
 ## 2026-10-18 — Shelf tiles, AutoPilot step 3: balance stats
 
 **Fixes from step 2's findings.**

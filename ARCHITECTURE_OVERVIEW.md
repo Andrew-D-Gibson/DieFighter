@@ -598,6 +598,25 @@ each, a crude lift), and pickups. With the random bot, encounter and enemy
 numbers compare well with each other, but tile lift is mostly luck; steps
 4 and 5 (fixed loadouts, a smarter bot) are what make it meaningful.
 
+**Gauntlets.** `autoplay.sh --gauntlet <spec>` plays every scenario × loadout
+in a JSON spec (`tools/gauntlets/`; the format is in
+`AutoPilotGauntlet`'s header) on the same seeds, `--seed` up, so a column of
+the matrix against another compares loadouts on the same draws. Each run is
+one cell:
+- The AutoPilot hands `GameStateManager` a save holding only the loadout
+  (`Globals.pending_load_save`, the Continue path). With no scenarios in it,
+  an ordinary sector is generated around the loadout from the run seed.
+- From `Events.load_game_save`, which comes before the opening scenario
+  loads and before the map is drawn, the chosen scenario takes the starting
+  slot and keeps that slot's seed (`place_scenario()`).
+- The bot holds its ground: it never drops a die on the map's controls while
+  in combat.
+- The run ends when the fight is decided: `cleared`, `defeat`, or `fled` /
+  `passed` if it was left first. Transcripts are named
+  `seed_<N>_<policy>__<scenario>__<loadout>`, and the header records the cell.
+The report leads with the matrix: the share of runs that cleared each fight,
+the hull those runs lost, and the turns taken.
+
 ---
 
 ## Run Progression
