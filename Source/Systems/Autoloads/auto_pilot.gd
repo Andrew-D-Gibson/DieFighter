@@ -12,7 +12,8 @@ extends Node
 ## User args (after `--`):
 ##   --autoplay           turn it on
 ##   --seed=N             the run seed (default: random, and reported)
-##   --policy=NAME        how it chooses (default: random; see AutoPilotPolicy)
+##   --policy=NAME        how it chooses: random (the default), or smart,
+##                        aggressive, turtle or synergy (HeuristicPolicy)
 ##   --out=DIR            where the transcript goes (default: user://autoplay)
 ##   --max-turns=N        give up after this many player turns (default 600)
 ##   --stall-seconds=N    give up after this long with nothing to do (default 90)
@@ -130,6 +131,8 @@ func _ready() -> void:
 			return
 		# Read by GameStateManager's _ready(), still to come.
 		Globals.pending_load_save = _gauntlet.build_save()
+		# The question is whether the loadout can win the fight.
+		_policy.set_may_flee(false)
 		Events.load_game_save.connect(_gauntlet.place_scenario)
 
 	_isolate_from_player_data()
@@ -206,6 +209,8 @@ func _process(_delta: float) -> void:
 		return
 
 	var move: AutoPilotMove = _policy.choose(moves, _rng)
+	if not move:
+		return
 	var entry: Dictionary = move.describe()
 	entry["type"] = "move"
 	entry["turn"] = _player_turn
@@ -236,11 +241,12 @@ static func _advances_play(move: AutoPilotMove) -> bool:
 
 
 ## Whether a patient player would act: the game scene is up and not over,
-## no jump is underway, the hand is dealt, nothing is resolving, no salvage
-## is about to appear, and (in a fight) it's their turn. A player *can* act sooner, mid-jump or mid-chain; that's for an
+## no jump is underway (from the moment one is decided), the hand is dealt,
+## nothing is resolving, no salvage is about to appear, and (in a fight) it's
+## their turn. A player *can* act sooner, mid-jump or mid-chain; that's for an
 ## impatient mode to explore.
 func _waiting_on_player() -> bool:
-	if _in_transit or Globals.player.is_dealing_hand():
+	if _in_transit or Globals.player.is_dealing_hand() or Globals.player.is_jump_committed():
 		return false
 	var state: GameStateManager.GameState = Globals.state_manager.state
 	if state == GameStateManager.GameState.GAME_OVER or state == GameStateManager.GameState.VICTORY:

@@ -8,14 +8,19 @@
 # at normal speed instead, to see what a transcript describes.
 #
 # Usage:
-#   tools/autoplay.sh [--seed N] [--runs N] [--jobs N] [--policy NAME]
+#   tools/autoplay.sh [--seed N] [--runs N] [--jobs N] [--policy NAMES]
 #                     [--out DIR] [--time-limit S] [--watch] [--determinism]
 #                     [--gauntlet SPEC] [-- extra args]
 #
 #   --seed N         first seed (default: random); runs use N, N+1, ...
 #   --runs N         how many runs (default 1)
 #   --jobs N         how many at once (default: CPU count)
-#   --policy NAME    AutoPilot policy (default random)
+#   --policy NAMES   AutoPilot policy (default random): random, smart,
+#                    aggressive, turtle or synergy. A comma-separated list
+#                    plays every seed (and gauntlet cell) with each, and the
+#                    report sets them side by side: the gap between random
+#                    and smart is what says which fights reward good play.
+#                    --watch and --determinism take the first.
 #   --out DIR        output directory (default .autoplay/<timestamp>)
 #   --time-limit S   kill a run after S seconds of wall time (default 300;
 #                    a run takes seconds, so this only catches a hang)
@@ -52,7 +57,7 @@ PROJECT="$(cd "$(dirname "$0")/.." && pwd)"
 seed=""
 runs=1
 jobs="$(sysctl -n hw.ncpu 2>/dev/null || nproc)"
-policy="random"
+policies="random"
 out=""
 time_limit=300
 watch=0
@@ -66,7 +71,7 @@ while [[ $# -gt 0 ]]; do
 		--seed) seed="$2"; shift 2 ;;
 		--runs) runs="$2"; runs_given=1; shift 2 ;;
 		--jobs) jobs="$2"; shift 2 ;;
-		--policy) policy="$2"; shift 2 ;;
+		--policy) policies="$2"; shift 2 ;;
 		--out) out="$2"; shift 2 ;;
 		--time-limit) time_limit="$2"; shift 2 ;;
 		--watch) watch=1; shift ;;
@@ -99,10 +104,10 @@ json_field() {
 }
 export -f json_field
 
-# One run: play_one <seed> <dir> [<scenario> <loadout>]. The last two make it
-# a gauntlet run. Prints a one-line summary; fails if the run did.
+# One run: play_one <seed> <dir> <policy> [<scenario> <loadout>]. The last two
+# make it a gauntlet run. Prints a one-line summary; fails if the run did.
 play_one() {
-	local run_seed="$1" dir="$2" scenario="${3:-}" loadout="${4:-}"
+	local run_seed="$1" dir="$2" policy="$3" scenario="${4:-}" loadout="${5:-}"
 	local name="seed_${run_seed}_${policy}"
 	local args=(--path "$PROJECT")
 	# Arrays don't survive export into xargs' shells, so extras travel joined.
@@ -144,7 +149,9 @@ play_one() {
 	turns=$(json_field "$result" turns)
 	errors=$(json_field "$result" errors)
 	violations=$(json_field "$result" violations)
-	local line="seed $run_seed${scenario:+ $scenario × $loadout}: $outcome after $turns turns, $errors errors, $violations violations"
+	local who=""
+	[[ "$policies" == *,* ]] && who=" $policy"
+	local line="seed $run_seed$who${scenario:+ $scenario × $loadout}: $outcome after $turns turns, $errors errors, $violations violations"
 	if [[ $code -ne 0 || "$errors" != "0" || "$violations" != "0" \
 			|| "$outcome" == "stalled" || "$outcome" == "looping" ]]; then
 		echo "$line  FAILED"
@@ -153,13 +160,13 @@ play_one() {
 	echo "$line"
 }
 export -f play_one
-export GODOT PROJECT policy watch time_limit gauntlet
+export GODOT PROJECT policies watch time_limit gauntlet
 export extra_joined="${extra[*]+"${extra[*]}"}"
 
 # Seeds whose transcripts contain <pattern>, at most three: example_seeds <pattern>.
 example_seeds() {
 	grep -l -F -- "$1" "$out"/*.jsonl 2>/dev/null | head -3 \
-		| sed -E 's/.*seed_([0-9]+)_[a-z]+(__.*)?\.jsonl$/\1\2/' | paste -sd' ' -
+		| sed -E 's/.*seed_([0-9]+)_([a-z]+)(__.*)?\.jsonl$/\1_\2\3/' | paste -sd' ' -
 }
 
 # What a batch found, grouped, with seeds to replay.
@@ -211,7 +218,11 @@ summarize() {
 	echo "transcripts: $out"
 }
 
+IFS=',' read -ra policy_list <<< "$policies"
+first_policy="${policy_list[0]}"
+
 if [[ $determinism -eq 1 ]]; then
+	policy="$first_policy"
 	mkdir -p "$out/a" "$out/b"
 	cell=()
 	name="seed_${seed}_${policy}.jsonl"
@@ -220,8 +231,8 @@ if [[ $determinism -eq 1 ]]; then
 		read -ra cell <<< "$(python3 -c 'import json,sys; s=json.load(open(sys.argv[1])); c=s["scenarios"][0]; print(c["id"] if isinstance(c, dict) else c, next(iter(s["loadouts"])))' "$gauntlet")"
 		name="seed_${seed}_${policy}__${cell[0]}__${cell[1]}.jsonl"
 	fi
-	play_one "$seed" "$out/a" "${cell[@]+"${cell[@]}"}" &
-	play_one "$seed" "$out/b" "${cell[@]+"${cell[@]}"}" &
+	play_one "$seed" "$out/a" "$policy" "${cell[@]+"${cell[@]}"}" &
+	play_one "$seed" "$out/b" "$policy" "${cell[@]+"${cell[@]}"}" &
 	wait
 	# Memory use isn't gameplay; it's the one thing allowed to differ.
 	if diff -q <(grep -v '"type":"memory"' "$out/a/$name") \
@@ -236,14 +247,14 @@ if [[ $determinism -eq 1 ]]; then
 fi
 
 if [[ $watch -eq 1 ]]; then
-	play_one "$seed" "$out"
+	play_one "$seed" "$out" "$first_policy"
 	exit $?
 fi
 
 failed=0
 if [[ -n "$gauntlet" ]]; then
-	# One line per run: seed, scenario, loadout.
-	cells=$(python3 - "$gauntlet" "$seed" "$runs" "$runs_given" <<'PYEOF'
+	# One line per run: seed, policy, scenario, loadout.
+	cells=$(python3 - "$gauntlet" "$seed" "$runs" "$runs_given" "$policies" <<'PYEOF'
 import json, sys
 spec = json.load(open(sys.argv[1]))
 first, runs, runs_given = int(sys.argv[2]), int(sys.argv[3]), sys.argv[4] == "1"
@@ -252,16 +263,20 @@ scenarios = [s["id"] if isinstance(s, dict) else s for s in spec["scenarios"]]
 for scenario in scenarios:
     for loadout in spec["loadouts"]:
         for run_seed in range(first, first + count):
-            print(run_seed, scenario, loadout)
+            for policy in sys.argv[5].split(","):
+                print(run_seed, policy, scenario, loadout)
 PYEOF
 	) || { echo "can't read gauntlet spec $gauntlet" >&2; exit 2; }
 	runs=$(wc -l <<< "$cells" | tr -d ' ')
 	export out
-	xargs -P "$jobs" -n 3 bash -c 'play_one "$1" "$out" "$2" "$3"' _ <<< "$cells" || failed=1
+	xargs -P "$jobs" -n 4 bash -c 'play_one "$1" "$out" "$2" "$3" "$4"' _ <<< "$cells" || failed=1
 else
-	seq "$seed" $(( seed + runs - 1 )) \
-		| xargs -P "$jobs" -I{} bash -c 'play_one "$1" "$2"' _ {} "$out" \
-		|| failed=1
+	lines=$(for (( s = seed; s < seed + runs; s++ )); do
+		for policy in "${policy_list[@]}"; do echo "$s $policy"; done
+	done)
+	runs=$(wc -l <<< "$lines" | tr -d ' ')
+	export out
+	xargs -P "$jobs" -n 2 bash -c 'play_one "$1" "$out" "$2"' _ <<< "$lines" || failed=1
 fi
 summarize
 if command -v python3 > /dev/null; then

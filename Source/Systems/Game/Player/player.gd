@@ -771,6 +771,12 @@ func is_dealing_hand() -> bool:
 	return _dealing_hand
 
 
+## Whether a jump has been decided (commit_to_jump()) and the ship hasn't
+## arrived yet.
+func is_jump_committed() -> bool:
+	return _jump_committed
+
+
 ## Whether the End Turn button would take a press right now.
 func can_end_turn() -> bool:
 	return not %EndTurnButton.disabled

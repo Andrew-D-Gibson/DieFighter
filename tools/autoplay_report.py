@@ -4,7 +4,10 @@
 Reads every transcript (seed_*.jsonl) in a batch directory, as written by
 tools/autoplay.sh, and writes report.html beside them: how runs ended, which
 encounters kill, what hurts, what each enemy and tile does, and what gets
-picked up. Prints the headlines too.
+picked up. Prints the headlines too. A batch that played more than one
+policy (tools/autoplay.sh --policy random,smart) sets them side by side: the
+gap between how random and smart players fare says which fights and tiles
+reward playing well, and which are luck or a wall.
 
 Usage:
     tools/autoplay_report.py <batch dir> [--top N]
@@ -78,6 +81,16 @@ def overview(runs):
         "violations": sum(r["result"].get("violations", 0) for r in finished),
         "policies": Counter(r["policy"] for r in runs),
     }
+
+
+def by_policy(runs):
+    """Runs grouped by policy, random first (it's the baseline), then the
+    rest in the order the batch has them."""
+    groups = {}
+    for run in runs:
+        groups.setdefault(run["policy"], []).append(run)
+    order = sorted(groups, key=lambda name: (name != "random", list(groups).index(name)))
+    return {name: groups[name] for name in order}
 
 
 def encounters(runs):
@@ -270,10 +283,12 @@ document.querySelectorAll("table.sortable").forEach(function (table) {
 """
 
 
-def cell(value, fmt="{}", css="", bar=None):
-    """A table cell that sorts by its raw value. bar: 0..1 to draw behind."""
+def cell(value, fmt="{}", css="", bar=None, sort=None):
+    """A table cell that sorts by its raw value, or by sort when the text
+    isn't the number to sort on. bar: 0..1 to draw behind."""
     text = html.escape(fmt.format(value)) if not isinstance(value, str) else html.escape(value)
-    sort = value if not isinstance(value, str) else value.lower()
+    if sort is None:
+        sort = value if not isinstance(value, str) else value.lower()
     cls = f' class="{css}"' if css else ""
     if bar is not None:
         width = max(0.0, min(1.0, bar)) * 100
@@ -332,8 +347,14 @@ def render(batch_dir, runs, top):
     out(f'<p class="note">Outcomes: {html.escape(outcome_text)}'
         + (f'; {ov["no_result"]} crashed or hung' if ov["no_result"] else "") + ".</p>")
 
+    groups = by_policy(runs)
     matrix = gauntlet(runs)
-    if matrix:
+    if len(groups) > 1:
+        out(render_policies(groups))
+        if matrix:
+            out(render_gauntlet_by_policy(groups))
+        out(render_encounters_by_policy(groups))
+    elif matrix:
         out(render_gauntlet(matrix))
 
     # Encounters
@@ -427,7 +448,86 @@ def render(batch_dir, runs, top):
             + "".join(parts) + f"</main><script>{_JS}</script></body></html>")
 
 
-def render_gauntlet(matrix):
+def render_policies(groups):
+    """One row per policy: how its runs went."""
+    rows = []
+    for name, group in groups.items():
+        ov = overview(group)
+        sectors = sum(1 for r in group if r["result"] and r["result"].get("sector", 0) > 0)
+        rows.append([
+            cell(name), cell(ov["runs"]), cell(ov["outcomes"].get("victory", 0)),
+            cell(ov["turns_median"], "{:g}"), cell(ov["fights_won_mean"], "{:.1f}"),
+            cell(pct(sectors, ov["runs"]), "{:.0f}%"),
+            cell(f'sector {ov["furthest"][0] + 1}, tile {ov["furthest"][1]}'),
+        ])
+    return ("<h2>Policies</h2>"
+            '<p class="note">The same seeds, played by each policy. Random is the floor; smart is a '
+            "player who has learned the basics (AutoPilot step 5). Fights won counts every fight, "
+            "including the one-hull Fate ships a random bot keeps jumping back into.</p>"
+            + table(["Policy", "Runs", "Won", "Median turns", "Fights won / run",
+                     "Got past sector 1", "Furthest"], rows))
+
+
+def render_gauntlet_by_policy(groups):
+    """A matrix per policy, then each policy's clear rate against random's."""
+    parts = []
+    matrices = {name: gauntlet(group) for name, group in groups.items()}
+    for name, matrix in matrices.items():
+        if matrix:
+            parts.append(render_gauntlet(matrix, f"Gauntlet: {name}"))
+    baseline = matrices.get("random")
+    if not baseline:
+        return "".join(parts)
+    for name, matrix in matrices.items():
+        if name == "random" or not matrix:
+            continue
+        rows = []
+        for scenario, sector in matrix["scenarios"]:
+            row = [cell(scenario if sector == 0 else f"{scenario} (sector {sector + 1})")]
+            for loadout in matrix["loadouts"]:
+                ours = matrix["cells"].get(((scenario, sector), loadout))
+                theirs = baseline["cells"].get(((scenario, sector), loadout))
+                if not ours or not theirs or not ours["runs"] or not theirs["runs"]:
+                    row.append(cell("–"))
+                    continue
+                rate = pct(ours["outcomes"]["cleared"], ours["runs"])
+                gap = rate - pct(theirs["outcomes"]["cleared"], theirs["runs"])
+                # A fight nobody clears isn't rewarding skill: it's a wall.
+                css = "good" if gap >= 30 else ("bad" if rate < 20 else "")
+                row.append(cell(f"{gap:+.0f} pts ({rate:.0f}%)", css=css, sort=gap))
+            rows.append(row)
+        parts.append(f"<h2>Skill gap: {html.escape(name)} vs random</h2>"
+                     '<p class="note">Points of clear rate the policy gains over random on the same '
+                     "seeds, then its own rate. A wide gap means the fight rewards playing well; a "
+                     "narrow one at a low rate means good play doesn't save it (red).</p>"
+                     + table(["Scenario"] + matrix["loadouts"], rows))
+    return "".join(parts)
+
+
+def render_encounters_by_policy(groups):
+    """Per scenario, each policy's death rate and hull lost per fight."""
+    tables = {name: encounters(group) for name, group in groups.items()}
+    scenarios = sorted({scenario for enc in tables.values() for scenario in enc})
+    rows = []
+    for scenario in scenarios:
+        row = [cell(scenario)]
+        for name in groups:
+            r = tables[name].get(scenario)
+            if not r or not r["visits"]:
+                row.append(cell("–"))
+                continue
+            died = pct(r["died"], r["visits"])
+            text = f'{died:.0f}% of {r["visits"]}'
+            if r["hull_lost"]:
+                text += f' · −{mean(r["hull_lost"]):.1f} hull'
+            row.append(cell(text, css="bad" if died >= 25 else "", sort=died))
+        rows.append(row)
+    return ("<h2>Encounters by policy</h2>"
+            '<p class="note">The share of visits each policy died in, then hull lost per fight.</p>'
+            + table(["Scenario"] + list(groups), rows))
+
+
+def render_gauntlet(matrix, title="Gauntlet"):
     """Scenario rows × loadout columns: the share of runs that cleared the
     fight, with hull lost (in the runs that cleared it) and turns."""
     loadouts = matrix["loadouts"]
@@ -451,7 +551,7 @@ def render_gauntlet(matrix):
             row.append(f'<td class="barcell {css}" data-sort="{rate}"><span class="b" style="width:{rate:.0f}%"></span>'
                        f'<span class="t">{html.escape(text)}</span></td>')
         rows.append(row)
-    return ("<h2>Gauntlet</h2>"
+    return (f"<h2>{html.escape(title)}</h2>"
             '<p class="note">Each cell: the share of runs that cleared the fight, then the hull those '
             "runs lost and the turns taken (t). Every cell plays the same seeds, so a column against "
             "another compares loadouts on the same draws. Other is anything but cleared or defeat "
@@ -460,6 +560,16 @@ def render_gauntlet(matrix):
 
 
 def headlines(runs, top):
+    groups = by_policy(runs)
+    if len(groups) > 1:
+        lines = []
+        for name, group in groups.items():
+            lines.append(f"[{name}] " + _headlines_for(group, top))
+        return "\n".join(lines)
+    return _headlines_for(runs, top)
+
+
+def _headlines_for(runs, top):
     ov = overview(runs)
     enc = encounters(runs)
     lines = [f"{ov['runs']} runs: " + ", ".join(f"{n} {k}" for k, n in ov["outcomes"].most_common())
