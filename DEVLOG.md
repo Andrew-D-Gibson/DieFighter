@@ -4,6 +4,62 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-18 — AutoPilot step 5: a smart bot
+
+`--policy smart` plays like a player who knows the basics. Each die-on-tile
+is worth what the tile does, read off its effect chain without running it,
+less what the die will cost once the ship it's handed to spends it. It aims
+the targeting computer at whichever ship makes that trade best, finishes
+ships off, banks shields against the hits it can see, takes salvage, shops,
+and jumps toward good stops. Hidden intents cost a flat average, so it never
+reads what a player can't. `aggressive`, `turtle` and `synergy` reweigh the
+same sums. `autoplay.sh --policy random,smart` plays both on the same seeds,
+and the report adds a skill-gap matrix.
+
+**Sector 1 gauntlet, random → smart** (6 seeds a cell, smart's hull lost in
+brackets). Smart clears 81% of runs, random 20%:
+
+| Fight | starter | 4th die | 2nd cannon | 2nd shield |
+|---|---|---|---|---|
+| Opening Ambush | 50% → 100% (−0) | 83% → 100% (−0) | 66% → 100% (−0) | 50% → 100% (−0) |
+| Attacker | 16% → 100% (−4) | 66% → 100% (−1) | 66% → 100% (−4) | 16% → 100% (−4) |
+| Ion Lances | 50% → 100% (−1) | 16% → 100% (−0) | 66% → 100% (−1) | 66% → 100% (−1) |
+| Wolfpack | 16% → 100% (−3) | 16% → 100% (−2) | 50% → 100% (−3) | 16% → 100% (−3) |
+| Cutpurse | 0% → 100% (−9) | 16% → 100% (−11) | 0% → 100% (−8) | 0% → 100% (−10) |
+| Cannon Drone | 0% → 100% (−9) | 0% → 100% (−13) | 0% → 100% (−8) | 0% → 100% (−9) |
+| Tithe Escort | 0% → 100% (−11) | 0% → 83% (−6) | 0% → 100% (−10) | 0% → 100% (−10) |
+| Mortar Nest (elite) | 0% → 16% (−5) | 0% → 33% (−2) | 0% → 66% (−3) | 0% → 0% |
+| Sector Warden (boss) | 0% → 0% | 0% → 0% | 0% → 0% | 0% → 0% |
+
+- Every ordinary fight is a skill check, not a wall. Played sensibly each one
+  is a sure win; Cutpurse, Cannon Drone and Tithe Escort just cost 8–13 hull.
+- Mortar Nest rewards offence: a second cannon wins two in three, a second
+  shield never.
+- No sector-1 loadout beats the Sector Warden, even played well.
+
+**Whole runs** (24 seeds each): smart wins 2.2 real fights a run against
+random's 1.3 (random's 6.7 "wins" are mostly the one-hull Fate ships it keeps
+jumping back into). It reaches the Warden in 17 of 24 runs (random: 9), and
+dies there. Neither got out of sector 1. The map is part of why: a run starts
+on stop 4, the gate is stop 13, and a jump goes exactly a die's face, so a
+player sees about three stops before the boss. Smart arrives with the starter
+kit plus a die or a tile.
+
+**Game bugs it found, not yet fixed:**
+- A tile bought or claimed onto a full grid takes the money but never gets a
+  cell (`TileGrid.receive_tile()` finds no free cell and does nothing). It
+  floats, unplayable and unsaved.
+- `Enemy._on_death()` passes `spending_die` to `give_away_dice()` after the
+  die has been freed: a hologram a Field Tender's Holo Loader conjured and
+  the Siege Mortar spent. Script error at `enemy.gd:238` (Mortar Nest).
+
+**Fixed in the bot on the way.** A boss Lockout cancels a tile without
+`activation_refusal()` knowing, so the die bounces back. Out of combat the hand
+never empties, since a die given to nobody comes home. The bot also bought
+from the shop while its jump was already underway.
+
+---
+
 ## 2026-10-18 — AutoPilot step 4: gauntlets
 
 `tools/autoplay.sh --gauntlet tools/gauntlets/sector1.json` plays chosen

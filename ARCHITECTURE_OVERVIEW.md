@@ -521,10 +521,56 @@ and sets `TutorialManager.auto_start = false` before the tutorial decides
 (a `node_added` hook would come too late). A run whose seed isn't the one
 asked for is flagged (`run_seed_overridden`).
 
-**Policies** (`AutoPilotPolicy`) pick among the legal moves, drawing any
-randomness from the AutoPilot's own stream, seeded from the run seed. Drawing
-from a gameplay bucket would shift every roll after it. `random` plays
-wherever a die is accepted.
+**Policies** (`AutoPilotPolicy`) pick among the legal moves, or return null
+to wait for the board to change, drawing any randomness from the AutoPilot's
+own stream, seeded from the run seed. Drawing from a gameplay bucket would
+shift every roll after it. `random` plays wherever a die is accepted.
+
+**The smart bot** (`HeuristicPolicy`, `--policy smart`) plays like a player
+who knows the basics. It's greedy, with no lookahead: the point is a fixed,
+believable standard to measure the random bot against, not strong play.
+- **Scoring.** Every die-on-tile is worth what the tile does, less what the
+  die costs the ship it's handed to, in points of hull. It tries each living
+  ship as the target, and retargets first when another makes the trade
+  better.
+- **`AutoPilotForecast`** reads what a tile would do off its effect chain,
+  without running it. Steps that only read the board (most targeting and
+  amount modifiers) go to the real handlers. Everything else is tallied:
+  damage by target, shields, heal, charge, statuses, dice coming back, where
+  the die ends up (following Feeds) and tricks. Random targets are spread
+  over the candidates, so a forecast never draws from a gameplay bucket.
+  Reads see the face the die arrived with; the hand-off sees it after any
+  change, as the queued events would.
+- **`AutoPilotThreat`** prices a face: an attack's damage, a share of anything
+  else, and a steep toll for a die kept or flown off with. It follows relays,
+  Scrambled and Jammed. A hidden ("?") face costs a flat average, so the bot
+  never reads what a player can't. That matters out of combat too: a shop is
+  a ship, and it shoots the dice it's handed.
+- **The rest of the tally.** A kill earns a bonus plus the dice the ship held.
+  Shields count in full up to the coming enemy turn's expected hit. Out of a
+  fight, charge counts up to a full drive, and it only picks a fight with
+  pirates, and only while healthy.
+- **The map.** Charged and out of a fight, it always jumps: a die handed out
+  with no ship to take it comes home, so the hand never empties and a jump is
+  the only way on. It picks the face that lands on the best stop the map
+  shows: enemy, elite by hull, unknown, shop by credits, never a tile Fate
+  takes next. A small push forward is offset by a cost for each stop it
+  skips. Below its style's hull share it flees a fight, but never in a
+  gauntlet (`set_may_flee()`).
+- **Salvage and shops.** A tile is valued by its forecast over every face it
+  takes, a die and credits at flat rates. It buys what clears its price, and
+  never a tile with no free cell.
+- **Two things the legal move list can't see.** A tile showing a Lockout, and
+  a placement that bounced back (same die, tile, face, uses and hand).
+- **Styles** (`HeuristicPolicy.persona()`) reweigh the same tally:
+  `aggressive`, `turtle` (flees sooner, values shields and hull), and
+  `synergy` (statuses, dice back, Feeds and tricks).
+
+`autoplay.sh --policy random,smart` plays every seed, or gauntlet cell, with
+each policy. The report then adds a Policies table, a gauntlet matrix per
+policy, a skill-gap matrix (each policy's clear rate minus random's on the
+same seeds) and encounters by policy. A wide gap means a fight rewards good
+play; a narrow gap at a low clear rate means good play doesn't save it.
 
 **Isolation.** One run per process. Saves go to the output directory, keyed
 by process id. It quits without `QuitManager`, so `times_run` is left alone,
@@ -595,8 +641,8 @@ transcripts and prints the headlines. It covers outcomes, encounters ranked
 by how often a visit ended the run, final blows, damage by source, enemies,
 tiles (per-activation output, and mean fights won by the runs that used
 each, a crude lift), and pickups. With the random bot, encounter and enemy
-numbers compare well with each other, but tile lift is mostly luck; steps
-4 and 5 (fixed loadouts, a smarter bot) are what make it meaningful.
+numbers compare well with each other, but tile lift is mostly luck;
+gauntlets and the smart bot are what make it meaningful.
 
 **Gauntlets.** `autoplay.sh --gauntlet <spec>` plays every scenario × loadout
 in a JSON spec (`tools/gauntlets/`; the format is in
