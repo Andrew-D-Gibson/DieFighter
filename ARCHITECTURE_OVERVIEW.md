@@ -510,9 +510,12 @@ or press End Turn (`Player.can_end_turn()`). `perform()` goes through the
 same entry points as input. A drop emits the die's `drag_ended`, as letting
 go of the mouse does; a claim or a purchase emits the item's, over the grid
 (a tile) or the hand (anything else). The AutoPilot is patient: it waits for
-the engine to go idle, for its turn, for jumps to land, for the hand to be
-dealt (`Player.is_dealing_hand()`) and for salvage to show
-(`Reward.is_on_its_way()`).
+the engine to go idle, for its turn, for a jump from the moment it's decided
+(`Player.is_jump_committed()`) until it lands, for the hand to be dealt
+(`Player.is_dealing_hand()`) and for salvage to show
+(`Reward.is_on_its_way()`). At each turn start, arrival and won fight it
+spends one frame looking at the board before moving, which is when a replay
+takes its picture. Headless runs look too, so both keep the same timing.
 
 **No tutorial.** The tutorial would narrate, lock dice and seed the run
 itself. When autoloads are ready the main scene has already entered the tree
@@ -662,6 +665,29 @@ one cell:
   `seed_<N>_<policy>__<scenario>__<loadout>`, and the header records the cell.
 The report leads with the matrix: the share of runs that cleared each fight,
 the hull those runs lost, and the turns taken.
+
+**Replays.** `autoplay.sh --replay <transcript>` plays a run again in a
+window, and `--replay <batch>` does the same for the runs that batch flagged,
+worst first. Flagged means no result, stalled, looping, errors or
+violations, as `tools/autoplay_replay.py flagged` ranks them.
+- **Speed.** `--fixed-fps 60` as in a batch, so the run is the same one, with
+  vsync off so it goes as fast as it draws (`--real-time` to watch). The
+  transcript header holds everything needed to play the run again: seed,
+  policy, and for a gauntlet its spec, scenario, loadout and sector. Extra
+  AutoPilot args (`-- --max-turns=...`) have to be given again.
+- **Pictures.** `AutoPilotCamera` (`--screenshots=DIR`, windowed runs only)
+  takes the board before the first move of each turn, arrival and won fight,
+  every error and violation (up to 12), and the end. A capture waits for the
+  frame to draw but never holds the bot up, so it can't change the run.
+- **Checking.** The replay's transcript is compared with the original:
+  REPRODUCED, or DIVERGED with the first entry that differs. A run that
+  doesn't reproduce is itself a determinism bug. `shots/index.html` puts each
+  screenshot beside what the transcript says happened until the next one,
+  and the batch report links any replays made from it.
+- **Stopping early.** `--stop-at-turn N` stops as player turn N starts and
+  leaves the game open to look around or play on by hand. Replays otherwise
+  free `McpInteractionServer` (`--no-mcp`), so a replay can't fight a game
+  already on port 9090.
 
 ---
 

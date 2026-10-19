@@ -4,6 +4,34 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-18 — AutoPilot step 6: replays, and step 5's bugs fixed
+
+**Fixes.**
+- A tile bought or claimed onto a full grid used to take the money and
+  float with no cell. The shop and salvage now refuse it ("GRID FULL") and it
+  drifts back (`TileGrid.has_free_cell()`). The AutoPilot doesn't list
+  those moves, as a player can see the grid is full.
+- `Enemy._on_death()` no longer hands a freed die to `give_away_dice()`. The
+  die was a hologram, spent and gone. 424 sector 1 gauntlet runs (random and
+  smart) and 40 runs across all five policies came back with no errors or
+  violations.
+
+**Replays.** `tools/autoplay.sh --replay <batch>` plays the batch's flagged
+runs again in a window, worst first, photographing the board before every
+turn, arrival and won fight, at each error, and at the end. Each replay is
+checked against its original transcript, and `shots/index.html` pairs every
+picture with that turn's moves. A replayed run and a gauntlet cell both
+came back REPRODUCED. A forced loop (`-- --max-loop-moves=12`) was found,
+replayed and reproduced too. `--stop-at-turn N` stops there and leaves the
+game open.
+
+So that a replay can take its picture before the first move without
+changing the run, every run now spends a frame looking at the board at each
+turn start. Older transcripts won't replay exactly for that reason, and
+gauntlet ones also lack the spec path their header now records.
+
+---
+
 ## 2026-10-18 — AutoPilot step 5: a smart bot
 
 `--policy smart` plays like a player who knows the basics. Each die-on-tile
