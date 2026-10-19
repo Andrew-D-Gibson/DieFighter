@@ -17,6 +17,13 @@ extends Node
 ##   --max-turns=N        give up after this many player turns (default 600)
 ##   --stall-seconds=N    give up after this long with nothing to do (default 90)
 ##   --max-loop-moves=N   give up after this many moves without progress (500)
+##   --gauntlet=SPEC      play one gauntlet cell from the spec file at SPEC
+##   --scenario=ID        ...this scenario (see AutoPilotGauntlet)
+##   --loadout=NAME       ...with this loadout from the spec
+##
+## A gauntlet run starts in the chosen scenario with the chosen loadout, holds
+## its ground (no jumping away mid-fight), and ends when that scenario's fight
+## is decided: cleared, defeat, or fled/passed if it jumped on before one.
 ##
 ## One run per process: statics (forced rolls, forced actions) and the scene's
 ## own state would otherwise leak from one run into the next.
@@ -48,8 +55,10 @@ const _SETTLE_FRAMES: int = 10
 const _MAX_ERRORS_WRITTEN: int = 200
 
 ## STALLED: nothing to do for too long. LOOPING: acting without the run
-## getting anywhere (no new turn, scenario or won fight).
-enum Outcome { NONE, VICTORY, DEFEAT, TURN_LIMIT, STALLED, LOOPING }
+## getting anywhere (no new turn, scenario or won fight). CLEARED, FLED and
+## PASSED end a gauntlet run: its fight won, jumped away from mid-fight, or
+## left without one.
+enum Outcome { NONE, VICTORY, DEFEAT, TURN_LIMIT, STALLED, LOOPING, CLEARED, FLED, PASSED }
 
 var _policy: AutoPilotPolicy
 var _policy_name: String = "random"
@@ -70,6 +79,8 @@ var _player_turn_active: bool = false
 var _in_transit: bool = false
 var _scenario_name: String = ""
 
+## Set for a gauntlet run.
+var _gauntlet: AutoPilotGauntlet
 var _invariants: AutoPilotInvariants = AutoPilotInvariants.new()
 var _telemetry: AutoPilotTelemetry = AutoPilotTelemetry.new()
 var _error_log: AutoPilotErrorLog
@@ -110,6 +121,17 @@ func _ready() -> void:
 		seeder.randomize()
 		_run_seed = seeder.randi()
 
+	if args.has("gauntlet"):
+		_gauntlet = AutoPilotGauntlet.new()
+		var problem: String = _gauntlet.load_cell(args["gauntlet"], args.get("scenario", ""),
+			args.get("loadout", ""), int(args.get("sector", "-1")))
+		if problem != "":
+			_abort(problem)
+			return
+		# Read by GameStateManager's _ready(), still to come.
+		Globals.pending_load_save = _gauntlet.build_save()
+		Events.load_game_save.connect(_gauntlet.place_scenario)
+
 	_isolate_from_player_data()
 	# Parallel headless runs would fight over the MCP port, and could take it
 	# from a game the developer has open. A watched run keeps it.
@@ -124,7 +146,7 @@ func _ready() -> void:
 	if not _open_transcript():
 		return
 	# The engine's play-by-play, for reading a flagged run after the fact.
-	DebugLogger.start(_out_dir.path_join("seed_%d_%s.debug.txt" % [_run_seed, _policy_name]))
+	DebugLogger.start(_out_dir.path_join(_run_name() + ".debug.txt"))
 	_error_log = AutoPilotErrorLog.new()
 	OS.add_logger(_error_log)
 	_connect_game_signals()
@@ -135,7 +157,8 @@ func _ready() -> void:
 	if not _switch_off_tutorials(get_tree().root):
 		return
 	get_tree().node_added.connect(_on_node_added)
-	print("AutoPilot: seed %d, policy %s" % [_run_seed, _policy_name])
+	print("AutoPilot: seed %d, policy %s%s" % [_run_seed, _policy_name,
+		", gauntlet %s × %s" % [_gauntlet.scenario_id, _gauntlet.loadout_name] if _gauntlet else ""])
 
 
 func _process(_delta: float) -> void:
@@ -174,6 +197,8 @@ func _process(_delta: float) -> void:
 		_write(memory)
 
 	var moves: Array[AutoPilotMove] = AutoPilotMove.list_legal()
+	if _gauntlet and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT:
+		moves = moves.filter(_stays_in_the_fight)
 	# Only dice and End Turn move the game on. Retargeting or flipping tabs
 	# with nothing to play would just fill the wait while a chain finishes;
 	# a die with nowhere to go on this tab may have somewhere on the other.
@@ -198,6 +223,13 @@ func _process(_delta: float) -> void:
 
 ## Moves that change the game for good. Taking a choice or buying uses it up,
 ## so they can't loop the way flipping tabs can.
+## A gauntlet asks whether the loadout can win the fight, so the bot doesn't
+## jump out of one.
+static func _stays_in_the_fight(move: AutoPilotMove) -> bool:
+	return move.kind != AutoPilotMove.Kind.PLACE_DIE \
+		or (move.tile != Globals.map.left_arrow_tile and move.tile != Globals.map.right_arrow_tile)
+
+
 static func _advances_play(move: AutoPilotMove) -> bool:
 	return move.kind in [AutoPilotMove.Kind.PLACE_DIE, AutoPilotMove.Kind.END_TURN,
 		AutoPilotMove.Kind.CLAIM, AutoPilotMove.Kind.BUY]
@@ -279,7 +311,11 @@ func _connect_game_signals() -> void:
 		_invariants.on_player_turn_over()
 	)
 	Events.jump.connect(func() -> void:
+		var in_combat: bool = Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
 		_write(_telemetry.end_visit("left", _player_turn))
+		if _gauntlet:
+			_finish(Outcome.FLED if in_combat else Outcome.PASSED)
+			return
 		_in_transit = true
 		# A fight arrived at starts with its own first turn; until then the
 		# ships are still flying in.
@@ -299,6 +335,8 @@ func _connect_game_signals() -> void:
 		_moves_since_progress = 0
 		_write({"type": "combat_won", "turn": _player_turn, "scenario": _scenario_name,
 			"hull": Globals.player.health.health})
+		if _gauntlet:
+			_finish(Outcome.CLEARED)
 	)
 	Events.player_destroyed.connect(func() -> void: _finish(Outcome.DEFEAT))
 	Events.victory.connect(func() -> void: _finish(Outcome.VICTORY))
@@ -354,13 +392,25 @@ func _isolate_from_player_data() -> void:
 		Events.save_options_config.disconnect(OptionsSettings.save_options_settings)
 
 
+## What this run's files are called: seed_<N>_<policy>, plus the gauntlet
+## cell for a gauntlet run (tools/autoplay.sh names them the same way).
+func _run_name() -> String:
+	var run_name: String = "seed_%d_%s" % [_run_seed, _policy_name]
+	if _gauntlet:
+		run_name += "__%s__%s" % [_gauntlet.scenario_id, _gauntlet.loadout_name]
+	return run_name
+
+
 func _open_transcript() -> bool:
-	var path: String = _out_dir.path_join("seed_%d_%s.jsonl" % [_run_seed, _policy_name])
+	var path: String = _out_dir.path_join(_run_name() + ".jsonl")
 	_transcript = FileAccess.open(path, FileAccess.WRITE)
 	if not _transcript:
 		_abort("can't write %s (%s)" % [path, error_string(FileAccess.get_open_error())])
 		return false
-	_write({"type": "header", "seed": _run_seed, "policy": _policy_name})
+	var header: Dictionary = {"type": "header", "seed": _run_seed, "policy": _policy_name}
+	if _gauntlet:
+		header["gauntlet"] = _gauntlet.describe()
+	_write(header)
 	return true
 
 
@@ -404,6 +454,8 @@ func _finish(outcome: Outcome) -> void:
 		var how: String = "died" if outcome == Outcome.DEFEAT else "run_over"
 		if outcome == Outcome.VICTORY:
 			how = "left"
+		elif outcome == Outcome.CLEARED:
+			how = "won"
 		_write(_telemetry.end_visit(how, _player_turn))
 		result["sector"] = Globals.state_manager.current_game_save.sector_index
 		result["map_index"] = Globals.map.current_scenario_index

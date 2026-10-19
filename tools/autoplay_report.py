@@ -175,6 +175,32 @@ def _item_kind(item):
     return "credits" if item.endswith(" credits") else item
 
 
+def gauntlet(runs):
+    """Per (scenario, sector) × loadout: how the cell's runs ended. None if
+    the batch isn't a gauntlet."""
+    cells = defaultdict(lambda: {"runs": 0, "outcomes": Counter(), "hull_lost": [], "turns": []})
+    loadouts = []
+    for run in runs:
+        header = next((e for e in run["entries"] if e["type"] == "header"), {})
+        cell_info = header.get("gauntlet")
+        if not cell_info or not run["result"]:
+            continue
+        if cell_info["loadout"] not in loadouts:
+            loadouts.append(cell_info["loadout"])
+        cell = cells[((cell_info["scenario"], cell_info["sector"]), cell_info["loadout"])]
+        cell["runs"] += 1
+        cell["outcomes"][run["result"]["outcome"]] += 1
+        visit = next((v for v in of_type(run, "visit")), None)
+        if visit:
+            cell["turns"].append(visit["turns"])
+            if run["result"]["outcome"] == "cleared":
+                cell["hull_lost"].append(visit["hull_lost"])
+    if not cells:
+        return None
+    scenarios = sorted({key[0] for key in cells}, key=lambda k: (k[1], k[0]))
+    return {"cells": cells, "scenarios": scenarios, "loadouts": loadouts}
+
+
 def failures(runs):
     checks = Counter()
     errors = Counter()
@@ -306,6 +332,10 @@ def render(batch_dir, runs, top):
     out(f'<p class="note">Outcomes: {html.escape(outcome_text)}'
         + (f'; {ov["no_result"]} crashed or hung' if ov["no_result"] else "") + ".</p>")
 
+    matrix = gauntlet(runs)
+    if matrix:
+        out(render_gauntlet(matrix))
+
     # Encounters
     out("<h2>Encounters</h2>")
     out('<p class="note">Each scenario visit. Died is the share of visits the run ended in; hull lost and '
@@ -397,11 +427,52 @@ def render(batch_dir, runs, top):
             + "".join(parts) + f"</main><script>{_JS}</script></body></html>")
 
 
+def render_gauntlet(matrix):
+    """Scenario rows × loadout columns: the share of runs that cleared the
+    fight, with hull lost (in the runs that cleared it) and turns."""
+    loadouts = matrix["loadouts"]
+    rows = []
+    for scenario, sector in matrix["scenarios"]:
+        row = [cell(scenario if sector == 0 else f"{scenario} (sector {sector + 1})")]
+        for loadout in loadouts:
+            c = matrix["cells"].get(((scenario, sector), loadout))
+            if not c or not c["runs"]:
+                row.append(cell("–"))
+                continue
+            rate = pct(c["outcomes"]["cleared"], c["runs"])
+            other = c["runs"] - c["outcomes"]["cleared"] - c["outcomes"]["defeat"]
+            text = f'{rate:.0f}% of {c["runs"]}'
+            if c["hull_lost"]:
+                text += f' · −{mean(c["hull_lost"]):.0f} hull'
+            text += f' · {mean(c["turns"]):.1f}t'
+            if other:
+                text += f" · {other} other"
+            css = "good" if rate >= 70 else ("bad" if rate < 30 else "")
+            row.append(f'<td class="barcell {css}" data-sort="{rate}"><span class="b" style="width:{rate:.0f}%"></span>'
+                       f'<span class="t">{html.escape(text)}</span></td>')
+        rows.append(row)
+    return ("<h2>Gauntlet</h2>"
+            '<p class="note">Each cell: the share of runs that cleared the fight, then the hull those '
+            "runs lost and the turns taken (t). Every cell plays the same seeds, so a column against "
+            "another compares loadouts on the same draws. Other is anything but cleared or defeat "
+            "(fled, passed, gave up). The bot holds its ground: it never jumps out of a fight.</p>"
+            + table(["Scenario"] + loadouts, rows))
+
+
 def headlines(runs, top):
     ov = overview(runs)
     enc = encounters(runs)
     lines = [f"{ov['runs']} runs: " + ", ".join(f"{n} {k}" for k, n in ov["outcomes"].most_common())
              + f"; median {ov['turns_median']:g} turns, {ov['fights_won_mean']:.1f} fights won per run"]
+    matrix = gauntlet(runs)
+    if matrix:
+        for scenario, sector in matrix["scenarios"]:
+            rates = []
+            for loadout in matrix["loadouts"]:
+                c = matrix["cells"].get(((scenario, sector), loadout))
+                if c and c["runs"]:
+                    rates.append(f"{loadout} {pct(c['outcomes']['cleared'], c['runs']):.0f}%")
+            lines.append(f"  {scenario}: " + ", ".join(rates))
     deadliest = sorted(((pct(r["died"], r["visits"]), name, r["visits"]) for name, r in enc.items()
                         if r["visits"] >= 5), reverse=True)[:top]
     if deadliest:

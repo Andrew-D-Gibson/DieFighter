@@ -1,0 +1,31 @@
+{
+  "description": "Sector 1's fights, with the starter kit and three variations on it.",
+  "seeds": 10,
+  "sector": 0,
+  "scenarios": [
+    "COMBAT_opening_ambush",
+    "COMBAT_attacker",
+    "COMBAT_cannon_drone",
+    "COMBAT_cutpurse",
+    "COMBAT_ion_lances",
+    "COMBAT_tithe_escort",
+    "COMBAT_wolfpack",
+    "ELITE_mortar_nest",
+    "GATE_sector_warden"
+  ],
+  "loadouts": {
+    "starter": {
+      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield"}
+    },
+    "fourth_die": {
+      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield"},
+      "dice": 4
+    },
+    "second_cannon": {
+      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield", "3,1": "damage"}
+    },
+    "second_shield": {
+      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield", "3,1": "shield"}
+    }
+  }
+}
