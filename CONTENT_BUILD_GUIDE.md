@@ -360,6 +360,7 @@ Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
 - `gate_boss_scenarios`: the boss guarding each sector's gate, in order.
 - `fate_scenarios`.
 - Or set the single slots: `starting_scenario`, `shop_scenario`,
+  `repair_scenario` (1-2 a sector, swapped in past a jump from the arrival),
   `empty_scenario`. The open gate is `Map.open_gate_scenario`
   (`main_viewer.tscn`).
 

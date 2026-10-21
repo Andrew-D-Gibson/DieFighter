@@ -173,6 +173,8 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.MOVE_SHIP, label = "Move Ship", handler = MoveShipHandler, fields = ["multiplier"]},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.ESCAPE_WITH_DICE, label = "Escape With Dice", handler = EscapeWithDiceHandler},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.LAUNCH_SHIP, label = "Launch Ship", handler = LaunchShipHandler, fields = ["ship_resource"]},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.OPEN_REPAIR_STATION, label = "Open Repair Station", handler = OpenRepairStationHandler},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.CLOSE_REPAIR_STATION, label = "Close Repair Station", handler = CloseRepairStationHandler},
 
 	# ── CONDITIONAL ───────────────────────────────────────────────
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_ACTIVATOR_ODD, label = "If Activator Odd", handler = ConditionalHandler},

@@ -1,0 +1,47 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="1_option"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="2_list"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="3_enemy"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="4_attack"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="5_nothing"]
+[ext_resource type="Resource" uid="uid://cesjiwhhl5hh0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/flee.tres" id="6_flee"]
+[ext_resource type="PackedScene" uid="uid://cuqq8i1t2wkwg" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/tender_ship_graphics.tscn" id="7_gfx"]
+[ext_resource type="Texture2D" uid="uid://cu56brsxbsafc" path="res://Assets/Textures/Enemies/Tender/tender_targeting_image.png" id="8_target"]
+
+[sub_resource type="Resource" id="Resource_nothing"]
+script = ExtResource("1_option")
+base_action = ExtResource("5_nothing")
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_flee"]
+script = ExtResource("1_option")
+base_action = ExtResource("6_flee")
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_attack"]
+script = ExtResource("1_option")
+base_action = ExtResource("4_attack")
+min_amount = 4
+max_amount = 10
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool"]
+script = ExtResource("2_list")
+actions_possible = Array[ExtResource("1_option")]([SubResource("Resource_nothing"), SubResource("Resource_flee"), SubResource("Resource_attack")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("3_enemy")
+enemy_name = "Repair Dock"
+description = "Patches hulls for credits. Buys spare tiles."
+max_health = 28
+action_options = Array[ExtResource("2_list")]([SubResource("Resource_pool")])
+ship_graphics_scene = ExtResource("7_gfx")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("8_target")
+health_bar_position = Vector2(-22, -9)
+dice_queue_position = Vector2(26, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

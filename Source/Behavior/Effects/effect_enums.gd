@@ -245,6 +245,8 @@ enum ScenarioControlSubtype {
 	## The enemy launches a new ship of ship_resource beside itself, on its
 	## own side, to fight from the next turn.
 	LAUNCH_SHIP,
+	OPEN_REPAIR_STATION,  ## Open the repair station UI (repair hull, sell tiles)
+	CLOSE_REPAIR_STATION, ## Close the repair station UI
 }
 
 

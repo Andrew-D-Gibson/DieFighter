@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_scenario"]
+[ext_resource type="Texture2D" uid="uid://dnrjsts365rfs" path="res://Assets/Textures/Map/EncounterIcons/healing_encounter.png" id="2_icon"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="3_bg"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="4_ship"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/repair_dock.tres" id="5_dock"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_reward"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/RepairStation/repair_dock_default.tres" id="7_state"]
+
+[sub_resource type="Resource" id="Resource_salvage"]
+script = ExtResource("6_reward")
+min_money = 20
+max_money = 30
+num_of_rewards = 0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_dock"]
+script = ExtResource("4_ship")
+enemy_resource = ExtResource("5_dock")
+starting_state = ExtResource("7_state")
+reward_resource = SubResource("Resource_salvage")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("1_scenario")
+map_icon = ExtResource("2_icon")
+background_resource = ExtResource("3_bg")
+starting_enemies = Array[ExtResource("4_ship")]([SubResource("Resource_dock")])
+metadata/_custom_type_script = "uid://bidpx7urxb1md"

@@ -76,6 +76,11 @@ func _ready() -> void:
 func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:
 	if _silenced:
 		return
+	# A line can be a translation key. Translated here rather than left to the
+	# label, because the reveal below is timed off the text's length: a key
+	# shorter than its line would cut the line off. Plain English passes
+	# through unchanged.
+	dialogue = tr(dialogue)
 
 	# Check if we just showed a dialogue, and if so, just wait
 	var current_time: int = Time.get_ticks_msec()

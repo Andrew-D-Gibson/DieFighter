@@ -148,6 +148,10 @@ def _describe(entry):
                     f"{_strip(entry['tile'])} [{entry['cell']}]"]
         if move == "target":
             return [f"target {entry['ship']}"]
+        if move == "repair":
+            return [f"repair for {entry.get('price')}"]
+        if move == "sell":
+            return [f"sell {_strip(entry['item'])} [{entry.get('cell')}] for {entry.get('price')}"]
         if move in ("claim", "buy"):
             return [f"{move} {_strip(entry['item'])}" + (f" for {entry['price']}" if "price" in entry else "")]
         return [move.replace("_", " ")]
