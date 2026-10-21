@@ -37,10 +37,12 @@ static func of_face(ship: Enemy, face: int, arriving: bool = true) -> float:
 			total += of_face(ship, each, arriving)
 		return total / 6.0
 	if arriving:
-		if _stacks(ship, &"jammed") > _held_count(ship):
-			return 0.0
 		if _stacks(ship, &"scrambled") > 0:
 			face = 7 - face
+		# Jammed is only spent on dice that would act, so only those already
+		# held queue ahead of this one for it.
+		if _acts(ship, face) and _stacks(ship, &"jammed") > _held_acting_count(ship):
+			return 0.0
 
 	var cost: float = 0.0
 	var visited: Array[Enemy] = []
@@ -145,6 +147,23 @@ static func _has_step(action: EnemyActionResource, category: EffectEnums.Categor
 
 static func _held_count(ship: Enemy) -> int:
 	return ship.dice_manager.queue.size() if ship.dice_manager else 0
+
+
+static func _held_acting_count(ship: Enemy) -> int:
+	if not ship.dice_manager:
+		return 0
+	var count: int = 0
+	for die: Dice in ship.dice_manager.queue:
+		if is_instance_valid(die) and _acts(ship, die.value):
+			count += 1
+	return count
+
+
+## Whether [param ship]'s slot for [param face] would do anything right now.
+static func _acts(ship: Enemy, face: int) -> bool:
+	if face < 1 or face > ship.turn_actions.size():
+		return false
+	return EnemyActionResource.outcome_of(ship.turn_actions[face - 1]) == EnemyActionResource.Outcome.ACTS
 
 
 static func _stacks(ship: Enemy, status_id: StringName) -> int:

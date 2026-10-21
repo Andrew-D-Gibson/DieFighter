@@ -237,29 +237,6 @@ func test_a_slot_that_binds_nothing_stays_unbound() -> void:
 	assert_null(ship.turn_actions[0].bound_target)
 
 
-func test_a_departed_target_is_replaced_by_another_ally() -> void:
-	var medic := _ship(Faction.PIRATE)
-	var first := _ship(Faction.PIRATE)
-	var second := _ship(Faction.PIRATE)
-	var tables: Array[EnemyActionResource] = [_ally_action()]
-	medic.turn_actions = tables
-	medic.turn_actions[0].bound_target = first
-
-	EnemyTargetBinder.rebind_departed(first, _roster([medic, second]))
-	assert_eq(medic.turn_actions[0].bound_target, second)
-
-
-func test_a_departed_target_with_nobody_to_replace_it_leaves_the_slot_unbound() -> void:
-	var medic := _ship(Faction.PIRATE)
-	var only := _ship(Faction.PIRATE)
-	var tables: Array[EnemyActionResource] = [_ally_action()]
-	medic.turn_actions = tables
-	medic.turn_actions[0].bound_target = only
-
-	EnemyTargetBinder.rebind_departed(only, _roster([medic]))
-	assert_null(medic.turn_actions[0].bound_target)
-
-
 # ── The targeting step and the intent text ─────────────────────────────────────
 
 func test_the_bound_targeting_step_targets_the_bound_ship() -> void:

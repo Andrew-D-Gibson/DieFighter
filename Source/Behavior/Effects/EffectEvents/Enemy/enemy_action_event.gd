@@ -5,6 +5,12 @@ var enemy: Enemy
 var action: EnemyActionResource
 var action_popup: PackedScene = preload("uid://b8gjt5a2dcrbn")
 
+## What an action that can't happen any more is played as: the "..." of a
+## wasted die, with the die handed back.
+const _DO_NOTHING: EnemyActionResource = preload("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres")
+## Pops up in place of the action's own icon when it can't happen.
+const BLOCKED_ICON: Texture2D = preload("res://Assets/Textures/Enemies/IntentIndicator/blocked_info.png")
+
 ## How long the die takes to travel out in front of the enemy, by face value:
 ## a 1 skips over lightly and a 6 drags, so a turn's handovers read by weight
 ## before the player re-reads a single intent.
@@ -102,10 +108,11 @@ func resolve(engine: ScenarioEngine) -> void:
 	Juice.ring(enemy, activator_die.global_position, Globals.white, 14.0, 0.3, 4.0)
 
 	# Make an action indicator popup
+	var popup_icon: Texture2D = settle_action()
 	var popup_time: float = 0.75
 	var action_indicator: Node2D = action_popup.instantiate()
 	enemy.add_child(action_indicator)
-	action_indicator.sprite.texture = action.info_texture
+	action_indicator.sprite.texture = popup_icon
 	action_indicator.popup_time = popup_time
 	action_indicator.global_position = activator_die.global_position + Vector2(0,12)
 		
@@ -127,6 +134,19 @@ func resolve(engine: ScenarioEngine) -> void:
 	# picks them up automatically because they're appended to the same event_queue.
 	if action.effect_chain:
 		await action.effect_chain.play(context, engine)
+
+
+## Settles what the ship actually does with the die, now that it's about to,
+## and returns the icon to pop up for it. An action that meant to do
+## something but no longer can (its ally destroyed since the slot was rolled,
+## a full hangar) plays as Do Nothing, like a jam, and pops a "?" over the
+## "...", so the player sees it fizzle rather than wonder where it went.
+func settle_action() -> Texture2D:
+	if EnemyActionResource.outcome_of(action) != EnemyActionResource.Outcome.BLOCKED:
+		return action.info_texture if action else null
+	# A copy, like every rolled action: the preloaded one is shared.
+	action = _DO_NOTHING.duplicate(true)
+	return BLOCKED_ICON
 
 
 ## A ship killed while its die was in flight is still a valid node through its

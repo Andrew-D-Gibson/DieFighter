@@ -6,7 +6,9 @@ extends RefCounted
 ## Done once, when the table is rolled, rather than when the die is spent, so
 ## the intent can name the ship before the player commits a die. A slot only
 ## binds once the whole roster has rolled, since who it can pick depends on
-## everyone else.
+## everyone else. A binding is never re-pointed: if its ship leaves, the
+## slot's action simply can't happen (EnemyActionResource.Outcome.BLOCKED),
+## rather than landing on a ship the player never saw it aimed at.
 ##
 ## Relays are where this earns its keep. Think of every (ship, die face) as a
 ## node: a relay slot is an edge to the (ally, face) the die arrives as. Each
@@ -30,20 +32,6 @@ static func bind(ships: Array[Enemy], roster: Array[Enemy]) -> void:
 			# A relay with nobody it can safely feed: swap that one slot out.
 			ship.reroll_slot_without_relays(slot, EnemyActionSituation.for_ship(ship, roster))
 			bind_slot(ship, slot, roster)
-
-
-## Re-points every slot that was bound to [param departed], which has just
-## left the board. The slot keeps its action: the player has been reading it.
-## With nobody left to pick, it stays unbound; a relay then hands its die
-## back to the player, and any other bound step finds no one.
-static func rebind_departed(departed: Enemy, roster: Array[Enemy]) -> void:
-	for ship: Enemy in roster:
-		if not is_instance_valid(ship) or ship == departed:
-			continue
-		for slot: int in range(ship.turn_actions.size()):
-			var action: EnemyActionResource = ship.turn_actions[slot]
-			if action and action.bound_target == departed:
-				bind_slot(ship, slot, roster)
 
 
 ## Returns false when the slot needs a ship and none can be had.

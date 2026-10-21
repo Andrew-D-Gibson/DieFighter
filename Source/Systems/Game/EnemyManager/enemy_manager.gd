@@ -96,9 +96,8 @@ func _ready() -> void:
 			enemies.erase(ship)
 		_hull_mounts.unmount(ship, enemies_jumping)
 		_forget(ship)
-		# Any slot that was going to act on it picks someone else, so the
-		# intent the player reads stays true.
-		EnemyTargetBinder.rebind_departed(ship, get_alive_enemies())
+		# Slots bound to it stay bound: a Repair Beam meant for this ship
+		# doesn't move to another. EnemyActionEvent shows it can't happen.
 		# The survivors close the gap the loss left behind.
 		refresh_formation()
 	)

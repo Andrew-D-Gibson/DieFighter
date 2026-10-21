@@ -209,23 +209,6 @@ func test_fuzzed_rosters_never_bind_a_loop() -> void:
 	assert_gt(bound_relays[Relay.HOLOGRAM], 100, "holograms were exercised")
 
 
-func test_a_relay_whose_target_dies_is_rebound_only_where_it_cannot_loop() -> void:
-	var a := _ship()
-	var b := _ship()
-	var c := _ship()
-	for ship: Enemy in [a, b, c]:
-		Ships.set_table(ship, _table_of(Ships.attack))
-	a.turn_actions[3] = Ships.relay()
-	a.turn_actions[3].bound_target = b
-	b.turn_actions[3] = Ships.relay()
-	b.turn_actions[3].bound_target = c
-
-	# C leaves. B's 4 could only go to A, whose 4 feeds B: it stays unbound.
-	EnemyTargetBinder.rebind_departed(c, Ships.roster([a, b]))
-	assert_null(b.turn_actions[3].bound_target)
-	assert_eq(b.turn_actions[3].get_relay(), Relay.FEED, "a visible action isn't rerolled mid-turn")
-
-
 # ── Threat follows the die ─────────────────────────────────────────────────────
 
 func test_a_relay_slot_carries_the_threat_of_where_the_die_ends_up() -> void:

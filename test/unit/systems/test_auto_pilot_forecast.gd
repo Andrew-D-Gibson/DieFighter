@@ -4,6 +4,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## (AutoPilotThreat).
 
 const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
+const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
+const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 const Ships := preload("res://test/helpers/ships.gd")
 const Cat := EffectEnums.Category
 const Targeting := EffectEnums.TargetingSubtype
@@ -202,3 +204,30 @@ func test_a_relay_costs_what_the_ally_does_with_the_die() -> void:
 	var cost: float = AutoPilotThreat.of_face(relayer, 3)
 	assert_almost_eq(cost, AutoPilotThreat.NEUTRAL_FLOOR + 5.0, 0.001,
 		"the relay's own shield, then the ally's attack")
+
+
+func test_jammed_only_waits_behind_held_dice_that_would_act() -> void:
+	var engine: ScenarioEngine = add_child_autofree(ScenarioEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = engine
+	Globals.scenario_manager = manager
+	var ship: Enemy = autofree(ENEMY_SCENE.instantiate())
+	ship.health.max_health = 20
+	ship.health.health = 20
+	_table(ship, [_idle(), _attack(4), _idle(), _idle(), _idle(), _idle()])
+	var jam: ApplyStatusEvent = ApplyStatusEvent.new()
+	jam.status_id = &"jammed"
+	jam.amount = 1
+	jam.targets = [ship]
+	await jam.resolve(engine)
+
+	var idle_die: Dice = autofree(DICE_SCENE.instantiate())
+	idle_die.value = 1
+	ship.dice_manager.add(idle_die)
+	assert_eq(AutoPilotThreat.of_face(ship, 2), 0.0,
+		"the held die does nothing, so the jam is still waiting for this one")
+
+	var attack_die: Dice = autofree(DICE_SCENE.instantiate())
+	attack_die.value = 2
+	ship.dice_manager.add(attack_die)
+	assert_eq(AutoPilotThreat.of_face(ship, 2), 4.0, "the held attack takes the jam first")
