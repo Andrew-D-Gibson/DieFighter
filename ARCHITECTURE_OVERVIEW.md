@@ -58,7 +58,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `PauseMenu` | `UI/PauseMenu` | Pause state toggle, save/quit, option screen |
 | `GameOver` | `UI/GameOver` | Game over **and** victory sequence, with the run summary line |
 | `MainMenu` | Root scene (`main_menu.tscn`) | Start game, options, wishlist link |
-| `TutorialManager` | `Systems/TutorialManager` | Tutorial step progression with popups |
+| `TutorialManager` | `Systems/TutorialManager` | Seeded first-run tutorial: step popups over the opening fight |
 
 **Background & Visuals**
 
@@ -484,6 +484,39 @@ background can carry a gameplay rule. Shop prices draw from REWARDS, not RUN.
 
 `RNGManager.next_run_seed` queues the seed the next new run starts from, and
 `current_run_seed` records the one in use, so any run can be replayed.
+
+---
+
+## Tutorial
+
+`TutorialManager` (in main.tscn) narrates the opening ambush, then hands the
+run back mid-sector. It plays only on a new game while `Globals.show_tutorial`
+is on. That flag is saved in the options file, cleared when the tutorial
+finishes, and switched back on by the Options menu's Show Tutorial box.
+
+**Hard-seeded.** The manager sits above GameStateManager in the tree, so its
+`_ready` sets `RNGManager.next_run_seed = run_seed` (21) before the run starts.
+The map, encounters and backgrounds are the same for every new player. The
+`opening_setup` step then forces the hand (4/2/1) and the raider's intent table,
+because both are generated during scene setup, before any ordinary step runs.
+Later steps force the turn-two hand and the salvage (`forced_dice`,
+`forced_enemy_actions`, `forced_rewards`). `_finish_tutorial` clears all three
+statics.
+
+**Steps** are `TutorialStep` resources played in order. Each opens on one
+`TutorialSignals` value and closes on another, and may call one
+`TutorialFunctions` entry (lock dice, run the enemy turn, enable the map
+arrow...). Both enums are stored as ints in the .tres files, so append only.
+- A step that closes on something the player already did (pressed End Turn
+  while reading, claimed the reward, opened the map) shows its text and then
+  closes itself (`_already_satisfied`), rather than waiting for an event that
+  has passed.
+- Steps waiting on the player (`_PLAYER_DRIVEN`) never time out. Timing out
+  the End Turn prompt, for example, would run the enemy turn without End Turn
+  and soft-lock the game. Steps waiting on the game keep
+  `default_step_timeout` (or `max_wait_time`) as a backstop, with a warning.
+- `test_tutorial.gd` checks every step's text for unknown icon tokens, that
+  every close signal is wired, and that main.tscn plays every step file.
 
 ---
 

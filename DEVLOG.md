@@ -166,6 +166,81 @@ First look, 200 random runs (seeds 1000–1199), all lost in sector 1, median
 
 ---
 
+## 2026-10-18 — The tutorial, reworked for a complete novice
+
+**Why.** A step-by-step review with screenshots, against a list of what a new
+player has to know, found problems.
+- The tutorial was switched off in main.tscn (`auto_start = false`), so nobody
+  saw it.
+- Its text claimed the hull was at 14 of 32 when it was full.
+- It implied only the Dice Cannon hands its die to the enemy.
+- It said "feed it the small rolls", which clashes with the Feed keyword.
+- It never said how to read a tile, that every die must be used before End
+  Turn, or that a die's value is how far you jump.
+- The salvage was a second Shield Burst.
+- The handoff closed itself after 5 s, over a new fight.
+
+**Now.** Twelve short steps, most of them asking the player to do something.
+Most of the learning is still left to play.
+
+| # | Step | Teaches |
+|---|---|---|
+| 1 | ambush_intro | the raider, the hull, the goal (highlights both) |
+| 2 | activate_tile | drag a die onto a system to fire it |
+| 3 | enemy_keeps_die | used dice go to your target, who fights back with them |
+| 4 | read_intents | the targeting computer: a value with no action is wasted |
+| 5 | end_turn_prompt | click a system to read it; use every die, then End Turn |
+| 6 | enemy_response | stays up for the whole enemy turn |
+| 7 | finish_the_raider | dice come back each turn with new values |
+| 8 | claim_salvage | credits buy upgrades; drag the new system into a slot |
+| 9 | open_the_map | engines charge when a fight ends (gauge highlighted) |
+| 10 | map_explanation | hover markers; the Boss Gate; corruption follows |
+| 11 | jump_out | a die's value is how far you jump |
+| 12 | tutorial_handoff | click a ship to target it; good luck (closed manually) |
+
+- **Hard-seeded.** The whole first run uses seed 21: the same map,
+  encounters and backgrounds for everyone. The hand (4/2/1, then 5/6/4), the
+  raider's intents and the salvage (now a Deflector Array) are forced.
+- **First run only.** `Globals.show_tutorial` is saved in the options file
+  and cleared when the tutorial finishes. The Options menu has a new Show
+  Tutorial box (Game tab) to see it again.
+- New highlight masks: enemy plus hull, and map tab plus engine gauge.
+- Deleted 26 unused step files, five unused masks, `tutorial_start.tres` and
+  the old TUTORIAL_ scenarios and enemy.
+
+**Found while testing:**
+- *Eager players soft-locked it.* Pressing End Turn while reading an earlier
+  popup left the End Turn prompt waiting 120 s for an event already passed.
+  Steps now check whether their event already happened (`_already_satisfied`)
+  and close once the text has shown.
+- *Steps waiting on the player timed out.* After 120 s the End Turn prompt
+  gave up, which ran the enemy turn without End Turn and never gave the turn
+  back. Player-driven steps now have no deadline. Steps waiting on the game
+  keep the backstop.
+- *"Your dice come back" showed mid-enemy-turn* (the enemy turn step closed
+  after a fixed 2 s). It now closes on the new `PLAYER_TURN_STARTED`.
+- *Bump counted as handing over a die.* Step 3 now opens on the new
+  `ENEMY_RECEIVED_DIE`, which a Bump doesn't send.
+- *"Lambda capture at index 0 was freed" errors.* A step's deadline outlived
+  its popup. It is now disconnected when the popup closes.
+- *The handoff popup hid the second ship* in the next fight. It now sits over
+  the systems grid.
+
+**Verified:** Played through live, screenshotting every step. That covered
+the eager End Turn, Bump-first and the map jump; the log was clean. 475 of
+475 GUT tests pass, including 10 new ones in `test_tutorial.gd`.
+
+**Open:**
+- Seed 21 also fixes sectors two and three. A seed that only covered sector
+  one would mean reseeding at the first jump.
+- Almost every background carries a rule modifier, the tutorial's too.
+- "Dice Cannon" wraps across lines in step 2.
+- Corruption gets one line. Fate is left to play.
+- Step text is still literal English in the .tres files, pending
+  localization milestone 2.
+
+---
+
 ## 2026-10-18 — Spare die, End Turn fixes, AutoPilot step 2: watchdogs
 
 **The spare die.** A ship could take every die (a Cutpurse fleeing with the
