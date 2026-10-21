@@ -57,9 +57,11 @@ func _hand_die_off(engine: ScenarioEngine) -> void:
 	give.activator_die = activator_die
 	give.die_value = activator_die.value
 
+	# The ship the die was dropped against, even if the player has targeted
+	# another while it made its way through the machine.
 	var targeted: Enemy = null
 	if Globals.targeting_computer:
-		targeted = Globals.targeting_computer.targeted_enemy
+		targeted = Globals.targeting_computer.target_for(activator_die)
 	if is_instance_valid(targeted):
 		give.targets = [targeted]
 

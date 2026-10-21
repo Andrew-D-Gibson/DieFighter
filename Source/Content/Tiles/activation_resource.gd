@@ -62,12 +62,14 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				
 			return len(Globals.enemy_manager.enemies) > 0,
 
+	# The two targeting checks ask about the ship this die was dropped
+	# against, the same one TARGET_WITH_TARGETING_COMPUTER will hit.
 	ActivationType.SHIP_TARGETED: 
-		func(_die: Dice) -> bool:
+		func(die: Dice) -> bool:
 			if not Globals.targeting_computer:
 				return false
 				
-			return Globals.targeting_computer.targeted_enemy != null,
+			return Globals.targeting_computer.target_for(die) != null,
 			
 	ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC: 
 		func(die: Dice) -> bool:
@@ -82,14 +84,15 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			return not die,
 			
 	ActivationType.TARGETED_SHIP_HAS_SHIELDS:
-		func(_die:Dice) -> bool:
+		func(die: Dice) -> bool:
 			if not Globals.targeting_computer:
 				return false
 				
-			if not Globals.targeting_computer.targeted_enemy:
+			var target: Enemy = Globals.targeting_computer.target_for(die)
+			if not target:
 				return false
 			
-			return Globals.targeting_computer.targeted_enemy.health.shields > 0,
+			return target.health.shields > 0,
 			
 	ActivationType.ENGINE_NOT_CHARGED:
 		func(_die: Dice) -> bool:
