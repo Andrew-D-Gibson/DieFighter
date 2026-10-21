@@ -41,7 +41,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation`, spacing each by its footprint (hull plus side-hung health bar; on a board too crowded for that, every bar tucks above its hull) and splitting the wing across free space either side of a reservation such as salvage, which also turns each ship's speech box toward its clearer side; waits for in-flight tractor beams (`TractorBeam.wait_for_landings`) before an enemy turn starts |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
-| `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy |
+| `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy. `target_for(die)` answers who a dropped die should hit. The reticle is placed every frame from its ship's live position (so it rides a slide), and a real target change resets every running intent pulse |
 | `JumpManager` | `Systems/JumpManager` | `Systems/Game/JumpManager/jump_manager.gd` | Plays the hyperspace transition (intro → load scenario → outro → start). Public `jump_to_scenario()`, used both by map jumps and sector advances |
 | `JumpGate` | `Graphics/JumpGate` | `Systems/Game/JumpGate/jump_gate.gd` | The ring at a beaten sector gate: warps in clear of salvage, `is_open()` gates the way out, plays the passage, owns the white flash and the sector title |
 | `HazardManager` | `Systems/HazardManager` | `Systems/Game/HazardManager/hazard_manager.gd` | Runs the current background's `BackgroundHazardResource` for the length of each fight: arms on `start_combat`, counts down at each turn start (or, for `YOUR_TURN_ENDS` hazards, each `enemy_turn_starting`), queues its chain onto the engine, broadcasts the countdown |
@@ -51,11 +51,11 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. Keywords in it are hoverable and pop up their rule |
+| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. Keywords in it are hoverable and pop up their rule. While open it consumes Esc (`PauseMenu` action) to close itself, so the pause menu doesn't open |
 | `MoneyIndicator` | `Systems/Player/MoneyIndicator` | Displays current money with spawn particles |
 | `PlayerHealthBar` | `Systems/Player/PlayerHealthBar` | HP/shields UI with reveal animations |
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
-| `PauseMenu` | `UI/PauseMenu` | Pause state toggle, save/quit, option screen |
+| `PauseMenu` | `PauseLayer/PauseMenu` | Pause state toggle, save/quit, option screen |
 | `GameOver` | `UI/GameOver` | Game over **and** victory sequence, with the run summary line |
 | `MainMenu` | Root scene (`main_menu.tscn`) | Start game, options, wishlist link |
 | `TutorialManager` | `Systems/TutorialManager` | Seeded first-run tutorial: step popups over the opening fight |
@@ -220,12 +220,23 @@ var is_temporary: bool      # Swept by clear_temporary_modifiers() on player tur
 - `remove_modifier(mod)` → Remove, call `mod.on_unregistered()`
 - `clear_temporary_modifiers()` → Called on player turn start, removes all `is_temporary = true`
 
+**Lockout.** Every lockout, from any source, goes through
+`AddLockoutModifierEvent`, which skips a tile whose
+`TileResource.can_be_locked_out` is off (the Engine Charger, so it can never
+soft-lock the run). A locked tile's info panel gets a line from
+`LockoutModifier.get_info_text()`, the same way an Amplifier adds its own.
+
 ### 4.4 Tile Activation Flow
 
 **Step-by-step when player drops a die on a tile:**
 
 1. Player's `DiceQueue` receives die → enqueues to `dice_manager.queue`
-2. `Tile._on_die_accepted()` called
+2. `Tile._on_die_accepted()` called. It stamps `die.aimed_at` with the
+   current target; effects that read the targeting computer ask
+   `TargetingComputer.target_for(die)`, which keeps that ship while it's alive
+   and in the fight and falls back to the current target otherwise.
+   `DiceQueue.add()` clears the aim, so it lives only until the die lands
+   somewhere new.
 3. `Events.die_placed_on_tile.emit(die, tile)` (tutorial)
 4. Tile enqueues to ScenarioEngine:
 
@@ -260,7 +271,7 @@ has; each status decides what one means.
 |---|---|---|
 | `BurnStatus` | `on_status_tick()` | damage per round; loses one per tick |
 | `ScrambledStatus` | `EnemyDiceManager.die_arriving` | one die flipped to its opposite face as it arrives |
-| `JammedStatus` | before `EnemyActionEvent` (priority 35) | one action swapped for Do Nothing, which hands the die back |
+| `JammedStatus` | before `EnemyActionEvent` (priority 35) | the next `ACTS` action swapped for Do Nothing, which hands the die back; `IDLE`/`BLOCKED` dice don't spend a stack |
 | `ExposedStatus` | before `DamageEvent` (priority 25) | +stacks on each single-target tile hit; spends 1 |
 
 - **Applying:** `ATTRIBUTE_CHANGE/APPLY_STATUS` names the status in
@@ -733,6 +744,23 @@ generated by `GameStateManager._randomize_sector_scenarios()` and laid out as:
 [fate] ... [shops / elites / combat / event mix] ... [boss's jump gate]
 ```
 
+**Repair stations** (`repair_stations_per_sector`, 1-2) are swapped in by
+`place_repair_stations()` after the sector is otherwise built. They replace
+combats or events beyond a die's reach of the arrival, never shops, elites,
+the arrival or the gate. Placement uses a side generator seeded from the RUN
+stream's *state* without drawing from it, so every existing seeded map
+(the tutorial's seed 21, AutoPilot transcripts) changes only in the replaced
+slots. A new kind of stop added this way stays seed-compatible.
+
+The station itself (`RepairStation`) is a panel like `Shop`, opened and
+closed by its scenario ship's state effects (`OPEN_/CLOSE_REPAIR_STATION`),
+closed on `Events.jump` and when any ship leaves. It listens to the grid only
+while open: `TileGrid.tile_lifted` previews a sale price and
+`tile_dropped_off_grid` inside the sell zone sells. The economy is exports on
+the node; pure queries (`repair_refusal()`, `sale_refusal()`,
+`repair_cost()`, `sell_price()`) let the AutoPilot list legal moves. Shop
+prices live in `Shop.PRICE_RANGES` and sales pay half of `Shop.base_price()`.
+
 **Elites** (`elite_scenarios`, `elites_per_sector`) are shuffled in with the
 rest and use the purple elite icon. Their ships drop salvage with a raised
 `RewardResource.minimum_rarity`.
@@ -852,7 +880,7 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 |----------|----------|
 | TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, TARGET_BOUND_ALLY, TARGET_BOUND_HOSTILE_SHIP, etc. |
 | ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE, STEAL_MONEY (actor takes credits; coins fly from the money counter to it) |
-| AMOUNT_MODIFIER | MULTIPLY, ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN, SET_TO_DICE_OWNED, SET_TO_DICE_IN_HAND, SET_TO_TARGET_DICE_HELD, SET_RANDOM (`range_min`–`range_max`) |
+| AMOUNT_MODIFIER | MULTIPLY (a fraction rounds up, away from zero, so every "half of" rounds up), ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN, SET_TO_DICE_OWNED, SET_TO_DICE_IN_HAND, SET_TO_TARGET_DICE_HELD, SET_RANDOM (`range_min`–`range_max`) |
 | DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET, FEED_ALLY, SPAWN_HOLOGRAM_FOR_ALLY, REROLL_TARGETS_DICE, FLIP_TARGETS_ONES_AND_SIXES |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |
 | TILE_CONTROL | ACTIVATE_SELF, PUSH_TILE_IN_DIRECTION, PUSH_TARGETED_TILES, PASS_DIE_TO_TILE, FEED_HOLOGRAM, ADD_AMPLIFIER_STATUS |
@@ -959,7 +987,6 @@ Main (Node2D)
 │   ├── GlitchShader (ColorRect with shader)
 │   ├── FPSCounter
 │   ├── FadeIn (overlay for fade-in/fade-out)
-│   └── MouseCursor
 ├── Graphics (Node2D, z_index=-2)
 │   ├── Camera2D (zoom=6x, 320×180→1920×1080)
 │   │   └── Shakeable (Shakeable component)
@@ -981,13 +1008,23 @@ Main (Node2D)
 │   │                 beams run over the tile grid; drops to -5 while jumping away)
 │   ├── RewardManager (z_index=14: offers stay above ships, their HUDs and speech)
 │   ├── Shop
+│   ├── RepairStation
 │   ├── ScenarioManager
 │   ├── JumpManager
 │   ├── TutorialManager
 │   ├── GameStateManager
 │   └── GameAnimationPlayer (fade animations)
-└── PauseMenu (on top layer)
+├── PauseLayer (CanvasLayer 100, follows the camera)
+│   └── PauseMenu
+└── CursorLayer (CanvasLayer 128)
+    └── MouseCursor
 ```
+
+Screen layers in draw order: world (0), `UI` (1, which holds the glitch
+shader), Juice overlays (90), `PauseLayer` (100), `CursorLayer` (128).
+Anything that should draw over a screen-reading effect has to sit on a later
+layer than that effect, not just at a higher z_index.
+`test_screen_layers.gd` pins this order.
 
 ### 7.2 UI Interaction Patterns
 
@@ -1170,6 +1207,8 @@ func move_tile(tile, new_pos) -> void              # Swap or move to new cell
 func push_tile(tile, direction) -> void            # Cardinal push (Asteroids style)
 func can_push_tile(tile, direction) -> bool        # Whether that push would move anything
 func find_available_grid_pos() -> Vector2i         # First empty coordinate
+func remove_tile(tile) -> void                     # A tile leaving for good (sold): releases dice, forgets the cell, frees it
+# signals: tile_lifted(tile), tile_dropped_off_grid(tile, position)
 ```
 
 ### 8.4 Enemy (`Source/Content/Enemies/enemy.gd`)
@@ -1235,9 +1274,20 @@ is rolled, not when the die is spent: `EnemyTargetBinder` sets
 `TARGET_BOUND_ALLY` / `TARGET_BOUND_HOSTILE_SHIP` read it. The description's
 `(target)` token names the ship, and while an enemy is targeted the targeting
 computer hangs a small die face, green for an ally and red for prey, under
-each ship its slots are bound to. A bound ship that leaves mid-turn has its
-slots rebound by the same rules; the action itself is never rerolled once
-the player can see it.
+each ship its slots are bound to. Bindings never move and the action is
+never rerolled once the player can see it: if the bound ship leaves, the
+slot can't happen any more (see Action outcome below).
+
+**Action outcome.** `EnemyActionResource.get_outcome()` (null-safe
+`outcome_of()`) asks whether spending a die on an action would change
+anything *right now*: `ACTS`, `IDLE` (never does anything: Do Nothing, an
+empty slot, a chain of only visuals and a hand-off) or `BLOCKED` (means to
+but can't: a step aimed at a bound ship that's dead or gone, a heal on an
+undamaged bound ship, `LAUNCH_SHIP` with the hangar full). Unlike Threat,
+which is static and read off the chain once, the outcome reads the board
+every time. `EnemyActionEvent.settle_action()` swaps a `BLOCKED` action for a
+copy of Do Nothing (the "..." callout, the die handed back) and pops the "?"
+icon (`IntentIndicator/blocked_info.png`) instead of the action's own.
 
 **Relays.** Relay (`FEED_ALLY`) hands the die on, and Holo Loader
 (`SPAWN_HOLOGRAM_FOR_ALLY`) conjures a hologram whose face is its intent
@@ -1335,6 +1385,7 @@ the *table they were drawn from* changes.
 | Signal | When Emitted | Listeners |
 |--------|--------------|-----------|
 | `die_added` | Dice spawned/rerolled/dropped | Update dice queue layout, engine charge (out of combat) |
+| `DiceQueue.die_received(die)` (per queue, not the bus) | Fires in `add()` just before `die_added` | Hand and `EnemyDiceManager` call `Dice.reset_visual_state()`, the one place a die's rotation/scale is reset when it changes hands |
 | `set_money` | Money changed | Update UI display |
 | `player_health_hit` | HP damage taken | SFX + large shake + glitch (if critical) |
 | `player_shields_hit` | Shield damage taken | SFX + small shake |
@@ -1367,7 +1418,7 @@ new values; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` to leave room.
 |--------|--------------|-----------|
 | `enemy_received_die` | Enemy gains die in turn | Update targeting intent dice UI |
 | `enemy_used_die` | Die used for action | Pulse intent indicator |
-| `enemy_left` | Enemy removed (death/flee) | Remove from array, rebind slots that pointed at it, faction check |
+| `enemy_left` | Enemy removed (death/flee) | Remove from array, faction check (bindings to it stay put and become `BLOCKED`) |
 | `ship_attacked_ship` | One enemy damaged another | ScenarioManager (`PIRATE_ATTACKED_CIVILIAN`) |
 | `enemy_flew_in` | New enemy enters screen | Re-enable bobbing animation |
 | `enemies_arrived` | Whole opening fly-in done and a target is set | Player releases `first_turn_start` (Pilot Light etc.) |

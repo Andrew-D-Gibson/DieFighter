@@ -4,6 +4,408 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-21 — Playtest tweaks, built in parallel
+
+Eighteen tweaks from a playtest list, split into six groups and built at the
+same time by separate agents, each in its own git worktree, then merged:
+repair stations (F), enemy actions that can't happen and Jammed (C), UI polish
+(E), lockouts and rounding (D), targeting (B) and dice handoffs (A). Their
+notes follow.
+
+Each group's note mentions one failing test,
+`test_tutorial.gd::test_main_scene_plays_every_step_file`. The tutorial
+rework's commit had dropped the uid from `map_explanation.tres`'s header while
+`main.tscn` still referred to it by uid; restored in 61d41a9. After the
+merges the full suite is 605/605. The only conflict was `translations.csv`,
+where D and F each appended rows; both kept.
+
+---
+
+## 2026-10-21 — Repair stations: buy hull, sell tiles
+
+Hull was the one thing a run couldn't buy. Two tiles heal and a cleared
+gate pays back 12, so attrition, not skill, ended most runs. A **repair
+station** is a new map stop under the green "+" icon
+(`healing_encounter.png`, map hint "Repair"). A friendly Repair Dock pulls up
+and opens a panel beside it, laid out like the shop:
+
+- **REPAIR** (button): pay credits for hull, as often as you can pay and
+  the hull has room. It greys out (the purple disabled frame) when the hull
+  is full or the next repair is unaffordable. The line above it says
+  "+6 HULL" or "HULL FULL", and the price turns red when you're short.
+- **SELL** (a slot): drag a tile off your grid and let go over it. While
+  you hold a tile, the slot shows what it would fetch, or why it won't sell.
+  You can sell several.
+
+Shooting the dock closes the panel and starts a fight, the same as at the
+shop. Leave by jumping, like any stop.
+
+**Economy.** Every number is an export on `RepairStation`
+(`repair_station.gd` defaults, overridable on `repair_station.tscn`):
+
+| Knob | Value | Why |
+|---|---|---|
+| `hull_per_repair` | 6 | A sixth of the starting 32. One repair is worth the stop, a full patch-up takes several. A repair that would overfill heals only what's missing, at full price. |
+| `base_repair_cost` | 10 | Under the cheapest shop tile (10-20), so a thin wallet can still buy one. One fight's bounty (12-20) buys one or two. |
+| `repair_cost_growth` | +5 per repair at that station | 10, 15, 20, 25, 30: 0→30 hull costs 100, so topping off a wreck costs real money and competes with the shop. The next station starts at 10 again. |
+| `sell_fraction` | 0.5 of `Shop.base_price(rarity)` | COMMON 7, UNCOMMON 10, RARE 15. Half the average shelf price, so selling and buying back always loses. The price is fixed (the midpoint), not rolled. |
+| `min_tiles_kept` | 1 | The last tile can't be sold ("LAST TILE"). |
+| `unsellable_tiles` | Engine Charger | It lives off the grid and can't be dragged, so it can't reach the slot anyway. Listed in case that changes. Undraggable tiles are refused too. |
+| `repair_stations_per_sector` (GameStateManager) | 1-2 | Shops get 2-3; hull is the scarcer thing to buy. |
+
+Shop prices now come from `Shop.PRICE_RANGES`, and `Shop.base_price()` is
+the midpoint. The rolls are unchanged.
+
+**Placement.** Measured over 600 seeds with the real `main.tscn` settings,
+there are 1.16 stations a sector on average: none in 10%, one in 64%, two
+in 26%. Each station always sits 7-10 stops past the arrival, before the
+gate. `place_repair_stations()` runs after the sector is otherwise built.
+It swaps out combats or events that sit beyond a die's reach (6) of the
+arrival, never shops, elites, the arrival or the gate. It uses its own
+generator, seeded from the RUN stream's *state*. Drawing from RUN instead
+would have reshuffled every seeded map: the tutorial's seed 21, which
+promises a shop beside the opening fight and a plain fight at distances 4,
+5 and 6, and every AutoPilot transcript. Now only the replaced slots
+differ. Seed 21 changes in exactly one slot (11, Cannon Drone → station).
+The 10% of sectors with no station are the ones with nothing replaceable
+past a jump. Allowing stations closer to the arrival would mean changing
+the tutorial's map.
+
+**What changed.**
+- `RepairStation` (`Source/Systems/Game/RepairStation/`), instanced in
+  `main.tscn` beside the Shop, and `Globals.repair_station`.
+- `ScenarioControlSubtype.OPEN_REPAIR_STATION` / `CLOSE_REPAIR_STATION`
+  (appended; handlers, events, catalog rows, pinned in
+  `test_effect_catalog.gd`), and `Events.open_repair_station` /
+  `close_repair_station`.
+- Content: `Scenarios/RepairStation/` (`repair_station.tres`,
+  `repair_dock_default.tres` opens the panel, `repair_dock_angry.tres` closes
+  it and turns AGGRESSIVE), `EnemyResources/repair_dock.tres`. The dock has
+  the shop's table (does nothing, flees, hidden 4-10 shot at dice handed to
+  it) and the Field Tender's hull art. It pays 20-30 credits if destroyed.
+- `TileGrid`: `tile_lifted` and `tile_dropped_off_grid` signals (a grid tile
+  let go off the grid used to just float home), and `remove_tile()`. That
+  releases held dice, forgets the cell, drops the tile's engine modifiers
+  and frees it.
+- Saves: `scenario_progress.repair_station = {repairs}` while open, so a
+  Continue keeps the climbing price. Repairs and sales take the same
+  mid-scenario checkpoint as a shop purchase (`Events.reward_picked`).
+- Localization: `REPAIR_*`, `SELL_*` and `DIALOGUE_REPAIR_*` rows, with all
+  seven other columns drafted. `EnemyDialogueManager.show_dialogue()` now
+  `tr()`s the line before timing its reveal, so a ship state's `dialogue`
+  can be a key. Plain English passes through unchanged. Without this a key
+  shorter than its line cut the line off.
+- Art: `Assets/Textures/RepairStation/repair_station_background.{aseprite,png}`,
+  derived from the shop's tabbed panel with the shelf dividers taken out, a
+  REPAIR | SELL divider and a bracketed 26×26 slot.
+
+**AutoPilot.** `AutoPilotMove.Kind` gains `REPAIR` and `SELL` (appended).
+Both use the player's own entry points: the button's handler, and a grid
+tile's `drag_ended` let go over the slot. The random bot repairs at weight
+0.5 and sells at 0.05, enough to exercise the path without stripping its
+grid. The heuristic bot never sells. It repairs while its hull share is
+under 0.5 + 0.3 × the persona's heal (smart 0.77, turtle 0.89, aggressive
+0.68). It values a station stop at 0.5 + 10 × missing-hull share × heal
+when it has 10 credits. Visits count `repairs` and `sold`, and replays print
+both. No autoplay batch was run (it boots `main.tscn`); worth one before
+trusting the balance.
+
+**Testing.** 34 new GUT tests (`test_repair_station.gd`,
+`test_auto_pilot_repair_station.gd`). They cover repairs, price growth, the
+cap, refusals, sale prices, what can't be sold, selling by drop, the lift
+preview, a Continue keeping the price, placement, and the bot's moves and
+thresholds. Suite: 537/538. The one failure is the known
+`test_tutorial::test_main_scene_plays_every_step_file` (missing uid in
+`map_explanation.tres`), already failing on the base commit. A windowed
+one-off render of the panel scene (not `main.tscn`) checked the three
+states: prompt, a tile held over the slot showing "+15", and full hull
+greyed out.
+
+---
+
+## 2026-10-21 — Enemy actions that can't happen, and Jammed
+
+**Why.** Jammed swallowed the next die a ship used, even one that was going
+to do nothing anyway, so a jam could be wasted on a Do Nothing face. And a
+Repair Beam aimed at a ship that died quietly moved to another ally: the
+player had read "Repair Viper" and watched it heal someone else.
+
+**One question.** `EnemyActionResource.get_outcome()` (and the null-safe
+`outcome_of()`) asks whether spending a die on an action would change
+anything right now:
+- `ACTS`: something happens.
+- `IDLE`: it was never going to do anything (Do Nothing, an empty slot, a
+  chain of only visuals and a hand-off).
+- `BLOCKED`: it means to, but nothing it does can happen now. Steps aimed at
+  the bound ship (after `TARGET_BOUND_ALLY` / `TARGET_BOUND_HOSTILE_SHIP`,
+  plus `FEED_ALLY` and `SPAWN_HOLOGRAM_FOR_ALLY`) can't happen once that ship
+  is dead or gone. A heal on an undamaged bound ship can't either, and
+  neither can `LAUNCH_SHIP` with the hangar full.
+
+It's read from the chain each time, not cached, because it depends on the
+board. A Relay whose ally died still `ACTS`: its own shield goes up and the
+Feed hands the die back, as before.
+
+**What changed.**
+- Jammed only takes a stack from an `ACTS` action. `IDLE` and `BLOCKED` dice
+  pass through and the stacks wait. The keyword now says so.
+- Bindings never move. `EnemyTargetBinder.rebind_departed()` is gone, and
+  so is its call in `EnemyManager`'s `enemy_left` handler. A slot keeps
+  pointing at the ship the player saw it aimed at.
+- `EnemyActionEvent.settle_action()` runs just before the pop-up. A
+  `BLOCKED` action is swapped for a copy of Do Nothing, as Jammed does, so
+  it plays the "..." callout and error buzz and hands the die back. A new
+  24×24 "?" (`IntentIndicator/blocked_info.png`, pale die on a dark
+  outline) pops up instead of the action's own icon.
+- The Carrier's Launch pop-up (`launch_info.png`) used to be the whole
+  Interceptor sprite, filling all 24×24. It's now a 13×12 cut-down
+  Interceptor with the cyan "+" of its 7×7 intent, the same scale as the
+  other icons. The `.aseprite` sources sit beside both PNGs.
+- AutoPilot's forecast follows the new Jammed rule: an arriving die is
+  swallowed only if its face acts and the stacks outnumber the held dice
+  that act.
+
+**Testing.** The new `test/unit/enemies/test_enemy_action_outcome.gd` has 16
+tests: every outcome case, the "?" swap, icon sizes, and that `enemy_left`
+on a real EnemyManager leaves a binding alone. `test_statuses.gd` checks
+that Jammed keeps its stacks through Do Nothing, a blocked Repair Beam and
+an empty slot, then spends them on an attack. `test_auto_pilot_forecast.gd`
+checks the bot's version of the same rule. The three rebind tests were
+removed. Suite: 519 tests, 518 pass. The one failure is
+`test_tutorial.gd::test_main_scene_plays_every_step_file`, which already
+failed on the base commit (stale `map_explanation.tres` uid in
+`main.tscn`). None of this was played live.
+
+---
+
+## 2026-10-20 — UI polish: death blasts on the grid, pause over the glitch, Esc, shields
+
+**Death explosions at 320x180.** The game doesn't render into a 320x180
+buffer. The viewport is 1920x1080 (`stretch/mode="viewport"`) and the
+`Graphics/Camera2D` zooms 6x, so world art only stays pixel-true at whole
+scales and whole-pixel positions, and nothing snaps it there
+(`snap_2d_transforms_to_pixel` is off). The death explosions weren't on another
+layer. `CockpitDestruction._explosion()` scaled the enemy-death blast by
+0.35–1.1 and spun it to any angle, which resampled it into pixels finer than
+the art around it, and skewed. Each blast now plays at native size, like an
+enemy's, varies only by a quarter turn and a mirror, and is centred with
+`pixel_aligned_centre()` so its pixels land on whole world pixels (37px frames
+centre on a half pixel). The rupture used to grow its blasts from 0.35 to 0.7
+as it built up. They're all full size now, so the rupture fills more of the
+screen, sooner.
+
+**The hit glitch no longer warps the pause menu.** `UI/GlitchShader` is a
+full-screen `hint_screen_texture` shader on the UI canvas layer (1). The pause
+menu was a world node (layer 0, z 25), so it was drawn before the glitch and
+warped with everything else. It now sits in its own `PauseLayer` CanvasLayer
+(layer 100, `follow_viewport_enabled`, so it still draws through the camera's
+6x zoom). That puts it above the glitch and above Juice's ripple and flash
+(layer 90), as `juice_screen_ripple.gd` already said would be ideal. Layer 100
+would also have covered the custom cursor (`UI/MouseCursor`, layer 1), so the
+cursor moves to its own `CursorLayer` (128). It now draws over the ripple too.
+`test_screen_layers.gd` reads main.tscn's text and pins this order.
+
+**Esc in the info shower.** Esc used to open the pause menu, which closed the
+info on its way up (`close_info`). The info shower now takes the `PauseMenu` action in
+`_unhandled_input` while it's visible and marks it handled. `InputManager` (an
+autoload) opens the pause menu from `_unhandled_input` too, and autoloads sit
+ahead of the game scene under root, so they hear unhandled input after it does.
+Esc closes the info the same way a click does, with `info_graphic_closed`, which
+the tutorial waits on.
+
+**Shield sprite.** `PlayerHealthBar.shield_frame()`: full from half the hull,
+medium from a quarter, low below that (it was full only at max, medium from
+half). Zero shields still hides the sprite (`HealthBarController._set_shields`).
+Enemies have no equivalent: their `Shields` is a single-texture Sprite2D that's
+only shown or hidden.
+
+**Testing.** Headless GUT: 518 tests, 517 pass. The one failure,
+`test_tutorial.gd::test_main_scene_plays_every_step_file`, is already there on
+the base commit (b4296f6). `map_explanation.tres` has no uid in its header, but
+main.tscn refers to it by `uid://cjs5pb8b7yx5b`. New tests:
+`test_shield_frame.gd`, `test_info_shower_input.gd` (pushes a real Esc through
+the root viewport, with a probe node ahead of the autoloads standing in for
+InputManager; it fails without the fix), `test_screen_layers.gd`, and three
+pixel-grid tests in `test_cockpit_damage.gd`. Nothing was checked in a live
+window. The pause menu's look and clicks on its new layer, the cursor over it,
+and how the death sequence reads now all still need an eyeball.
+
+---
+
+## 2026-10-20 — Lockouts explain themselves; half always rounds up
+
+**A locked tile says so.** Clicking a locked-out tile used to show its
+ordinary description, so the player had no way to learn why it kept handing
+dice back. Its info panel now adds a line, `(locked): dice given to this tile
+return to your hand until a (die_2) unlocks it.` (`INFO_TILE_LOCKED`, written
+by `LockoutModifier.get_info_text()`, en plus machine drafts with
+`_status = machine`). `Locked` is a new keyword (`(locked)`, `(lock)`), so
+hovering it pops the full rule up: a 2 unlocks the tile instead of activating
+it and goes to a random enemy, the lock lasts until then or until you jump,
+and the Engine Charger can't be locked. A lockout has no turn counter (it is
+not temporary; only a 2 or the engine shutting down on a jump lifts it), so
+there's no countdown to show. A tile locked twice still shows one line. The
+Grid Lockout intent ("Lock a grid cell") and Asteroid Impact now read
+`(lock) a random tile`, so they get the hover too.
+
+**The Engine Charger can't be locked out.** It's the only way to charge the
+drive, so a lock on it could strand the player. `TileResource` has a new
+`can_be_locked_out` (on by default, off in `engine_charger.tres`), read
+through `Tile.can_be_locked_out()`. `AddLockoutModifierEvent` is the one
+door every lockout goes through (enemy action, hazard, anything future), and
+it skips such a tile. Random lockouts (`TARGET_RANDOM_TILE`) draw only from
+`TileGrid.tile_locations`, and the Engine Charger sits on the main viewer,
+never the grid, so they always pick an eligible tile. A test pins that every
+grid tile stays lockable. If a grid tile is ever made immune, random
+lockouts would need a lockable-only pick, or they'd fizzle on it (and the
+zap would still hit it).
+
+**Half of always rounds up.** Deadweight Drive ("half your missing engine
+charge") used `MULTIPLY 0.5`, which truncated: 5 missing dealt 2. `MULTIPLY`
+now rounds any fraction up, away from zero (`MultiplyAmountHandler.
+rounded_product()`), with a small epsilon so a whole product like 10 x 0.3
+isn't bumped to 4 by float error. Deadweight Drive is the only authored
+content with a fractional multiplier, but every future "half of" gets the
+rule for free. The other gameplay halving was the redline bleed,
+`over / 2` in integer maths (+3 cost 1 hull); it is now
+`Player.redline_hull_cost()`, which rounds up. The redline headroom
+(`roundi(max * 0.5)`) already rounded half up.
+
+The audit covered every `/ 2`, `/ 2.0`, `* 0.5`, `>> 1` and "half" in
+`.gd`, `.tres` and the CSV. Everything else was layout, tweens, AutoPilot
+estimates, juice multipliers (ripple, ship movement) or the shield sprite
+threshold, all left alone. No text said "rounded down".
+
+**Tests.** `test_lockout.gd` (the Engine Charger refuses a lock while the
+rest of the lockout lands, every grid tile is lockable, the info line, one
+line for a double lock, the key resolves, the keyword renders) and
+`test_half_rounds_up.gd` (odd, even, zero, negative and float-error products,
+Deadweight Drive's own amount steps at 5 missing charge give 3, redline cost
+at 0/1/3/5/10, headroom at 21 gives 11). `test_multiply_truncates_toward_zero`
+became `test_multiply_rounds_a_fraction_up` (5 x 1.5 = 8). Suite: 516/517;
+the one failure, `test_main_scene_plays_every_step_file`, is pre-existing
+(`main.tscn` references `map_explanation.tres` by a uid the file's header
+doesn't carry).
+
+**Found, not fixed.** Two lockouts can stack on one tile. A 2 then fires both
+`LockoutEffectEvent`s: both modifiers go, but the die is handed to a random
+enemy twice and two `TileActivationCompleteEvent`s are injected. Refusing a
+second lock on an already-locked tile would be the clean fix.
+
+---
+
+## 2026-10-20 — Queued dice keep their target; everything follows a sliding ship
+
+**Why.** A die dropped on a busy tile (a chain resolving, the tile's queue
+backed up) used to act on whatever was targeted *when it resolved*, so
+switching target while it waited quietly redirected it. And when a ship died
+and the survivors slid over, three things lagged the slide: a die already in
+flight flew to the target's old spot, the targeting reticle vanished for the
+slide and reappeared, and a target switch could leave a half-played intent
+pulse running on the new ship's icons.
+
+**A die remembers its target.** `Tile._on_die_accepted()` stamps
+`Dice.aimed_at` with the ship targeted at drop time.
+`TargetingComputer.target_for(die)` answers "who should this die hit": that
+ship if it's still in the fight (alive and on the roster), otherwise the
+current target, which may be nothing (the effects already handle no target;
+`GiveDieToTargetEvent` already re-homes a die whose target is dead). Readers:
+`TARGET_WITH_TARGETING_COMPUTER`, a Feed's leftover hand-off
+(`PassDieToTileEvent._hand_die_off`), and the `SHIP_TARGETED` /
+`TARGETED_SHIP_HAS_SHIELDS` activation checks, so a check and the shot it
+gates ask about the same ship. A die fed on through a machine keeps its aim
+(it never re-joins a queue), and a hologram from `FEED_HOLOGRAM` inherits the
+source tile's die's aim. `DiceQueue.add()` clears the aim, so it lives only
+between the drop and the die landing somewhere (a hand, an enemy, a tile
+holding it), and a stale aim never follows a die into its next drop. A tile
+fired with no die (`ACTIVATE_SELF`, the dev console) or a reactive tile's
+`event_responses` chain still uses the current target.
+
+**Following a moving ship.** `AttackTweenEvent` tweens a progress value and
+re-reads the target's position every frame (the spring overshoot carries
+through it). If the target is freed mid-flight the die finishes at its last
+known spot. Held dice and the tractor beam already followed a sliding ship
+(`moving_in_world` updates `home_position`), so those were left alone.
+
+**The reticle** is now placed every frame in `TargetingComputer._process()`
+from the targeted ship's live position: a 0.3 s cubic glide from wherever it
+was, then the same (4, 4) hover on a 1.5 s cycle. `_move_indicator()` does
+nothing if the reticle is already on that ship, so the many same-target
+redraws (turn start, `enemy_turn_over`) no longer restart the glide. The
+glide tween is owned by the computer and killed on every switch; before,
+each redraw started a new tree-owned move tween without killing the last.
+`EnemyManager._slide_ship_to()` no longer calls
+`hide_indicator_while_moving()` / `show_indicator_after_move()`, both gone.
+
+**Icons on a target switch.** `check_target_is_valid()` and
+`_target_nothing()` compare old and new targets; on a real change
+`_reset_icon_tweens()` kills every intent pulse and puts the icons back to
+scale 1. A redraw for the same target lets a running pulse finish. The scan
+fill's `await animation_looped` now checks a redraw counter, so a stale scan
+can't drop the fill behind the panel after a newer redraw cleared the target.
+
+**Testing.** `test/unit/systems/test_targeting_computer.gd` (17 tests):
+aim set on drop and cleared on landing; fallback when the aim died, fled,
+was freed, or there's no target at all; the handler and both activation
+checks reading the aim; the reticle staying on a ship moved while settled
+and while mid-glide; an attack tween landing on a moved ship and on the spot
+a freed one left; pulses cut by a switch, not by a same-target redraw. The
+old reticle test in `test_departures.gd` went with the API it tested. Full
+suite 519/520. The one failure is on the base commit too:
+`test_tutorial.gd::test_main_scene_plays_every_step_file`, because
+`map_explanation.tres` has no uid in its header but `main.tscn` refers to it
+by `uid://cjs5pb8b7yx5b`.
+
+---
+
+## 2026-10-20 — Dice square up when they change hands
+
+**Why.** Dice handed on sometimes kept a transform their last holder gave
+them. A die coming back to the hand could stay at a ship's 0.75 scale, a
+dying ship's dice could reach the next ship tilted, and every die rerolled by
+an Ion Storm ended upside down, so the ship using it did an odd half-flip
+putting it right. The user liked the flip, so it's now deliberate.
+
+**One reset point.** `DiceQueue` has a new `die_received(die)` signal, fired
+from `add()` before `die_added`. `die_added` has no argument, which is why
+the hand used to guess with `queue[-1]`. The player's hand and every
+`EnemyDiceManager` answer `die_received` with `Dice.reset_visual_state()`:
+rotation 0, scale `Dice.rest_scale()` (`HELD_SCALE` 0.75 with a ship or a
+tile, 1.0 in hand or between queues), and any running *flourish* tween is
+killed. A die being dragged is left alone. This replaces the player's
+`_reset_newest_die_transform()` and the scale-only line in
+`EnemyDiceManager.add()`.
+
+**Flourish tweens.** `Dice.create_flourish_tween()` is for cosmetic scale or
+angle tweens that nothing awaits. The tractor beam's landing slam uses it
+now, so a die passed on just after it's caught doesn't finish the slam at the
+old ship's size. Awaited tweens (rerolls, a ship's spend) aren't flourishes.
+Killing one would hang whatever awaits it, so they end by squaring
+themselves up instead.
+
+**Rerolls.** The second half of `reroll_with_tween()` restarted from 0 to
+180°, so every reroll ended at 180°. It now runs 180→360° and then calls
+`reset_visual_state()`, which reads the holder *when the die lands*: a die
+passed on mid-roll ends at its new holder's size.
+
+**The spin.** `EnemyActionEvent` now gives the die one full turn
+(`_USE_SPIN = TAU`, cubic ease-out) as it flies out in front of the ship. A
+chained callback then sets rotation back to exactly 0, because a die left at
+TAU looks upright but would spin back next time something tweens it.
+`Enemy._on_death()` already steps that tween to its end, so a ship killed
+mid-spend hands its die on at 0 too.
+
+**Found while testing.** Dice aren't children of ships (they all live under
+the Player node), so the death launch's spin never rotated them directly.
+The tilt came from a tractor beam released mid-yank in `give_away_dice()`,
+and the receiving queue reset the scale but not the angle. Tiles don't reset
+on receive: a die dropped on a tile stays at the 1.0 the drop gives it, but a
+reroll on a tile lands it at 0.75, as before. That's left alone.
+
+Tests: `test/unit/components/test_die_handoff.gd` (9).
+
+---
+
 ## 2026-10-18 — AutoPilot step 6: replays, and step 5's bugs fixed
 
 **Fixes.**
