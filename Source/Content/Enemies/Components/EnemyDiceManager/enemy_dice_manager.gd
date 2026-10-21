@@ -8,6 +8,10 @@ signal die_arriving(die: Dice)
 
 
 func _ready() -> void:
+	# Whatever was moving the die on its way here (a dying ship's death
+	# sequence, a tractor beam cut short, a reroll) may have left it tilted or
+	# at another holder's size.
+	die_received.connect(func(die: Dice) -> void: die.reset_visual_state())
 	die_added.connect(update_dice_locations)
 	die_removed.connect(update_dice_locations)
 
@@ -22,8 +26,7 @@ func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = tru
 	if arriving:
 		die_arriving.emit(die)
 	super(die, preserve_value, destroy_holographic)
-	die.scale = Vector2(0.75, 0.75)
-		
+
 		
 func remove(die: Dice) -> void:
 	super(die)
