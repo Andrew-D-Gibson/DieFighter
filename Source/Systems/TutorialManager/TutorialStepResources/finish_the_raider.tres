@@ -1,19 +1,19 @@
 [gd_resource type="Resource" script_class="TutorialStep" format=3]
 
-[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_s"]
-[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="2_s"]
-[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_s"]
-[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="4_s"]
-[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="5_s"]
-[ext_resource type="Resource" uid="uid://c5gk2kf6r2v5y" path="res://Source/Content/Tiles/TileResources/shield.tres" id="6_s"]
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="act_script"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="tile_script"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="attack"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="nothing"]
+[ext_resource type="Resource" uid="uid://bkxu3ydkhj2o6" path="res://Source/Content/Tiles/TileResources/deflector_array.tres" id="deflector"]
 
 [resource]
-script = ExtResource("2_s")
-tutorial_text = "Hull holding. Now [wave amp=10.0 freq=3.0 connected=1][color=yellow]finish it[/color][/wave]:"
-time_delay = 1.5
-forced_enemy_actions = Array[ExtResource("1_s")]([ExtResource("4_s"), ExtResource("4_s"), ExtResource("4_s"), ExtResource("4_s"), ExtResource("5_s"), ExtResource("5_s")])
-forced_rewards = Array[ExtResource("3_s")]([ExtResource("6_s")])
+script = ExtResource("1_s")
+tutorial_text = "Your dice come back every turn with new values.(delay=0.3) Now [wave amp=10.0 freq=3.0 connected=1][color=yellow]finish it[/color][/wave]:"
 text_position = Vector2(220, 40)
+time_delay = 0.5
+forced_enemy_actions = Array[ExtResource("act_script")]([ExtResource("attack"), ExtResource("attack"), ExtResource("attack"), ExtResource("attack"), ExtResource("nothing"), ExtResource("nothing")])
+forced_rewards = Array[ExtResource("tile_script")]([ExtResource("deflector")])
 close_on_signal = 7
 tutorial_function = 8
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

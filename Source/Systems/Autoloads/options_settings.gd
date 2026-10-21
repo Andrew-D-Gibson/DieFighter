@@ -41,6 +41,7 @@ func save_options_settings() -> void:
 
 	config.set_value("Game", "animation_speed", Globals.animation_speed)
 	config.set_value("Game", "language", Localization.get_locale())
+	config.set_value("Game", "show_tutorial", Globals.show_tutorial)
 
 	config.set_value("Graphics", "screenshake", Globals.screenshake_enabled)
 	config.set_value("Graphics", "max_fps", Engine.max_fps)
@@ -73,6 +74,7 @@ func load_options_settings() -> void:
 	# Empty means nothing chosen yet: Localization picks from the OS language.
 	Localization.set_locale(config.get_value("Game", "language", ""))
 	Globals.animation_speed = _read_number(config.get_value("Game", "animation_speed", 1.0))
+	Globals.show_tutorial = config.get_value("Game", "show_tutorial", true)
 
 	Globals.screenshake_enabled = config.get_value("Graphics", "screenshake", true)
 	Engine.max_fps = int(_read_number(config.get_value("Graphics", "max_fps", 60)))

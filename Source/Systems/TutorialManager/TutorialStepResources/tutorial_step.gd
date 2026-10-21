@@ -24,6 +24,13 @@ enum TutorialSignals {
 	ON_JUMP,
 	ON_ENEMY_FLY_IN,
 	ON_TARGET_SWITCH,
+	## A ship was handed a die. Unlike TILE_ACTIVATED, a Bump (which hands its
+	## die back) doesn't count, so a step that explains the hand-off can't
+	## open over a tile that didn't make one.
+	ENEMY_RECEIVED_DIE,
+	## The player's next turn has begun: the enemy turn is over and the new
+	## hand is dealt. Lets a step stay up for a whole enemy turn, however long.
+	PLAYER_TURN_STARTED,
 }
 @export var open_on_signal: TutorialSignals
 @export var close_on_signal: TutorialSignals 
@@ -58,7 +65,8 @@ enum TutorialFunctions {
 
 ## Seconds to wait for close_on_signal before the tutorial gives up on this step
 ## and advances anyway, so a missed gameplay event can't soft-lock the game.
-## 0 falls back to TutorialManager.default_step_timeout.
+## 0 falls back to TutorialManager.default_step_timeout, or to no deadline for a
+## step waiting on the player (see TutorialManager._PLAYER_DRIVEN).
 @export var max_wait_time: float = 0
 
 # Optional: Highlight specific UI elements

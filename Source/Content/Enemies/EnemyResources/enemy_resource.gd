@@ -37,7 +37,7 @@ enum PoolSelection {
 ## The default is the house rule: a gentle lean toward high faces, so a higher
 ## die is always a bit more to hand over. Set an enemy's own value only to
 ## depart from it.
-@export_range(-3.0, 3.0, 0.25, "or_greater", "or_less") var face_bias: float = 0.5
+@export_range(-3.0, 3.0, 0.05, "or_greater", "or_less") var face_bias: float = 0.3
 
 
 @export_category('Overload')

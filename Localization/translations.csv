@@ -1,3 +1,4 @@
 keys,en,zh_CN,ja,ru,de,fr,es,pt_BR,_context,_max_chars,_status,_en_hash
 OPT_LANGUAGE,Language,,,,,,,,Options > Game tab: label beside the language dropdown,,,
 CALLOUT_SPARE_DIE,SPARE DIE,,,,,,,,"Callout over the hand when the player has no die left to play and is given a spare one (a real die, or a hologram if ships hold all of theirs)",,,
+OPT_SHOW_TUTORIAL,Show Tutorial,,,,,,,,"Options > Game tab: label beside a checkbox. Checked, the next new game opens with the tutorial. It switches itself off once the tutorial is finished.",,,

@@ -73,13 +73,13 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/bump_explanation.tres" id="tut_bump_explanation"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/claim_salvage.tres" id="tut_claim_salvage"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/end_turn_prompt.tres" id="tut_end_turn_prompt"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_keeps_die.tres" id="tut_enemy_keeps_die"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_response.tres" id="tut_enemy_response"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_the_raider.tres" id="tut_finish_the_raider"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_out.tres" id="tut_jump_out"]
+[ext_resource type="Resource" uid="uid://cjs5pb8b7yx5b" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_explanation.tres" id="tut_map_explanation"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/opening_hand.tres" id="tut_opening"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/open_the_map.tres" id="tut_open_the_map"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
@@ -371,8 +371,7 @@ script = ExtResource("93_runstats")
 
 [node name="TutorialManager" parent="Systems" unique_id=1846484380 instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
-auto_start = false
-tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("tut_ambush_intro"), ExtResource("tut_activate_tile"), ExtResource("tut_enemy_keeps_die"), ExtResource("tut_read_intents"), ExtResource("tut_bump_explanation"), ExtResource("tut_end_turn_prompt"), ExtResource("tut_enemy_response"), ExtResource("tut_finish_the_raider"), ExtResource("tut_claim_salvage"), ExtResource("tut_open_the_map"), ExtResource("tut_jump_out"), ExtResource("tut_tutorial_handoff")])
+tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("tut_ambush_intro"), ExtResource("tut_activate_tile"), ExtResource("tut_enemy_keeps_die"), ExtResource("tut_read_intents"), ExtResource("tut_end_turn_prompt"), ExtResource("tut_enemy_response"), ExtResource("tut_finish_the_raider"), ExtResource("tut_claim_salvage"), ExtResource("tut_open_the_map"), ExtResource("tut_map_explanation"), ExtResource("tut_jump_out"), ExtResource("tut_tutorial_handoff")])
 opening_setup = ExtResource("tut_opening")
 
 [node name="GameStateManager" parent="Systems" unique_id=1522777559 instance=ExtResource("12_6ebjm")]

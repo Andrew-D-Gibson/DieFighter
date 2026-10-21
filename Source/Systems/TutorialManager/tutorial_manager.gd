@@ -13,9 +13,23 @@ extends Node2D
 ## Steps are authored as TutorialStep resources; this class only sequences them
 ## and owns the small set of gameplay pokes they can request.
 
+## Ends the current _await_open_signal(), whichever of its signal and its
+## timeout comes first.
+signal _open_wait_over
+
 ## Whether the tutorial narrates this run at all. Off means the cold open plays
-## exactly as it would for a returning player.
+## exactly as it would for a returning player. Even when on, it only runs while
+## Globals.show_tutorial is set: a player's first game, or after they turn it
+## back on in Options.
 @export var auto_start: bool = true
+
+## The run the tutorial plays in. The forced dice and intents fix the opening
+## fight, but the map the player is shown, the credits they're paid and the
+## fight they jump into come from the run's RNG. Seeding it means every new
+## player sees the same thing and the steps can promise what's on screen. 21
+## puts a shop beside the opening fight and an ordinary fight at every distance
+## the hand they leave it with can jump (4, 5 or 6).
+@export var run_seed: int = 21
 
 ## Debug aid: drop this many steps, applying their forced dice/actions/rewards
 ## so the run state stays consistent, and start from the one after.
@@ -36,11 +50,30 @@ extends Node2D
 ## encounter changes — see [EnemyFormation].
 @export var popup_screen_span: Vector2 = Vector2(140, 320)
 
-## Seconds a step may wait on its closing signal before the tutorial gives up,
-## logs, and moves on. A step whose signal never fires would otherwise hang the
-## game forever with no way out. Deliberately generous — this is a bug backstop,
+## Seconds a step may wait on the game before the tutorial gives up, logs, and
+## moves on. A step whose signal never fires would otherwise hang the game
+## forever with no way out. Deliberately generous — this is a bug backstop,
 ## not a patience limit — and steps can override it with max_wait_time.
+## Steps waiting on the player get no default deadline: see _PLAYER_DRIVEN.
 @export var default_step_timeout: float = 120.0
+
+## Closing signals that wait on the player rather than the game. A player can
+## take as long as they like over these, and giving up on one is worse than
+## waiting: closing the End Turn prompt early runs the enemy turn without the
+## player's End Turn, and the player's next turn then never starts. The game
+## isn't stuck meanwhile; the player can always still do the thing asked.
+const _PLAYER_DRIVEN: Array[TutorialStep.TutorialSignals] = [
+	TutorialStep.TutorialSignals.CLOSED_MANUALLY,
+	TutorialStep.TutorialSignals.TILE_CLICKED_FOR_INFO,
+	TutorialStep.TutorialSignals.TILE_ACTIVATED,
+	TutorialStep.TutorialSignals.PLAYER_TURN_OVER,
+	TutorialStep.TutorialSignals.ENEMY_DEFEATED,
+	TutorialStep.TutorialSignals.REWARD_CLAIMED,
+	TutorialStep.TutorialSignals.MAP_OPENED,
+	TutorialStep.TutorialSignals.ON_JUMP,
+	TutorialStep.TutorialSignals.ON_TARGET_SWITCH,
+	TutorialStep.TutorialSignals.ENEMY_RECEIVED_DIE,
+]
 
 ## Identifies the space the tutorial holds against the enemy formation.
 const _FORMATION_KEY: StringName = &"tutorial"
@@ -49,6 +82,17 @@ var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
 var current_step_index: int = -1
 var current_popup: TutorialTextPopup
+
+## Set when the player presses End Turn, cleared when their next turn starts.
+## A step that asks them to end the turn may open after they already have.
+var _turn_ended: bool = false
+
+## Set once the ambush's salvage has been taken.
+var _reward_claimed: bool = false
+
+## Bumped by every _await_open_signal(), so a stale timeout from an earlier
+## wait can't end a later one.
+var _open_wait_id: int = 0
 
 var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.REVEAL_HEALTH_BAR: _reveal_health_bar,
@@ -81,10 +125,16 @@ func _ready() -> void:
 	Globals.tutorial_controls_enemy_turns = false
 
 	# A player who picked Continue has seen all of this already.
-	if not auto_start or tutorial_steps.is_empty() or Globals.pending_load_save:
+	if not auto_start or not Globals.show_tutorial or tutorial_steps.is_empty() \
+	or Globals.pending_load_save:
 		return
 
+	# GameStateManager rolls the run after this, in its own _ready().
+	RNGManager.next_run_seed = run_seed
 	Globals.tutorial_controls_enemy_turns = true
+	Events.player_turn_over.connect(_on_player_turn_over)
+	Events.player_turn_start.connect(_on_player_turn_start)
+	Events.reward_picked.connect(_on_reward_picked)
 	_claim_formation_space()
 
 	if opening_setup:
@@ -99,6 +149,18 @@ func _ready() -> void:
 			tutorial_functions[step.tutorial_function].call()
 
 	start_tutorial()
+
+
+func _on_player_turn_over() -> void:
+	_turn_ended = true
+
+
+func _on_player_turn_start() -> void:
+	_turn_ended = false
+
+
+func _on_reward_picked() -> void:
+	_reward_claimed = true
 
 
 ## Keeps the enemy formation out from under the tutorial's popups. Claimed
@@ -150,13 +212,13 @@ func start_tutorial() -> void:
 func play_step(step: TutorialStep) -> void:
 	match step.open_on_signal:
 		TutorialStep.TutorialSignals.CLICKED_OUT_OF_INFO:
-			await Events.info_graphic_closed
-			
+			await _await_open_signal(Events.info_graphic_closed, step)
+
 		TutorialStep.TutorialSignals.ON_ENEMY_FLY_IN:
-			await Events.enemy_flew_in
-			
+			await _await_open_signal(Events.enemy_flew_in, step)
+
 		TutorialStep.TutorialSignals.REWARD_CLAIMED:
-			await Events.reward_picked
+			await _await_open_signal(Events.reward_picked, step)
 
 	_apply_step_forcing(step)
 
@@ -169,7 +231,11 @@ func play_step(step: TutorialStep) -> void:
 		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false)
 
 		var closing_signal: Signal = _closing_signal_for(step)
-		if closing_signal:
+		if _already_satisfied(step):
+			# Still shown, briefly, so the step's function runs and the
+			# player sees the line they've already acted on go by.
+			current_popup.all_text_displayed.connect(current_popup.close)
+		elif closing_signal:
 			closing_signal.connect(current_popup.close)
 
 	# Handle calling tutorial functions
@@ -213,32 +279,93 @@ func _closing_signal_for(step: TutorialStep) -> Signal:
 			return Events.jump
 		TutorialStep.TutorialSignals.ON_TARGET_SWITCH:
 			return Events.targeting_computer_retargeted
+		TutorialStep.TutorialSignals.ENEMY_RECEIVED_DIE:
+			return Events.enemy_received_die
+		TutorialStep.TutorialSignals.PLAYER_TURN_STARTED:
+			return Events.player_turn_start
 	return Signal()
 
 
-## Waits for the step's popup to close, but not forever. If the gameplay event
-## a step is waiting on never fires — a bug anywhere else in the game can cause
-## that — the tutorial would otherwise sit on screen with no way forward and no
-## way back. Timing out and moving on is worse than working, and much better
-## than a soft lock.
+## Whether the player already did what this step asks before it opened. The
+## popups don't block play, so a player can end their turn, finish the fight
+## or open the map while still reading the step before; the event the step
+## waits on has then been and gone. Only the steps that wait on a state change
+## are checked: anything else is an instruction the player still has to follow.
+func _already_satisfied(step: TutorialStep) -> bool:
+	match step.close_on_signal:
+		TutorialStep.TutorialSignals.PLAYER_TURN_OVER:
+			return _turn_ended
+		TutorialStep.TutorialSignals.ENEMY_DEFEATED:
+			return Globals.state_manager.state != GameStateManager.GameState.IN_COMBAT
+		TutorialStep.TutorialSignals.REWARD_CLAIMED:
+			return _reward_claimed
+		TutorialStep.TutorialSignals.MAP_OPENED:
+			return Globals.map.visible
+	return false
+
+
+## Waits for the gameplay event that opens a step, but, like the closing wait,
+## not forever: a step whose event never comes would stop the tutorial short
+## of FINISH_TUTORIAL and leave the map's controls locked.
+func _await_open_signal(opening_signal: Signal, step: TutorialStep) -> void:
+	_open_wait_id += 1
+	var wait_id: int = _open_wait_id
+	var timeout: float = step.max_wait_time if step.max_wait_time > 0 else default_step_timeout
+	var finish: Callable = func(timed_out: bool) -> void:
+		if wait_id != _open_wait_id:
+			return
+		_open_wait_id += 1
+		if timed_out:
+			push_warning(
+				"TutorialManager: step %d ('%s') never got its opening signal after %.0fs; opening anyway."
+				% [current_step_index, step.tutorial_text.left(40), timeout]
+			)
+		_open_wait_over.emit()
+
+	opening_signal.connect(finish.bind(false), CONNECT_ONE_SHOT)
+	get_tree().create_timer(timeout).timeout.connect(finish.bind(true))
+	await _open_wait_over
+
+
+## Waits for the step's popup to close. A step waiting on the game gets a
+## deadline: if its event never fires — a bug anywhere else in the game can
+## cause that — the tutorial would otherwise sit on screen with no way forward
+## and no way back. Timing out and moving on is worse than working, and much
+## better than a soft lock. Steps waiting on the player wait as long as it takes.
 func _await_popup_closed(step: TutorialStep) -> void:
 	var popup: TutorialTextPopup = current_popup
-	var timeout: float = step.max_wait_time if step.max_wait_time > 0 else default_step_timeout
+	var timeout: float = _closing_timeout(step)
 
 	# Rather than race two awaits, let the deadline close the popup itself —
 	# then there is only one thing to wait on, and the normal path is unchanged.
-	if timeout > 0:
-		get_tree().create_timer(timeout).timeout.connect(func() -> void:
-			if not is_instance_valid(popup) or popup != current_popup:
-				return
-			push_warning(
-				"TutorialManager: step %d ('%s') never got its closing signal after %.0fs; advancing."
-				% [current_step_index, step.tutorial_text.left(40), timeout]
-			)
-			popup.close()
+	var deadline: SceneTreeTimer = null
+	var give_up: Callable = func() -> void:
+		if popup != current_popup:
+			return
+		push_warning(
+			"TutorialManager: step %d ('%s') never got its closing signal after %.0fs; advancing."
+			% [current_step_index, step.tutorial_text.left(40), timeout]
 		)
+		popup.close()
+	if timeout > 0:
+		deadline = get_tree().create_timer(timeout)
+		deadline.timeout.connect(give_up)
 
 	await popup.popup_closed
+
+	# The lambda holds the popup, which is freed now; calling it later logs an
+	# error even though it would return straight away.
+	if deadline and deadline.timeout.is_connected(give_up):
+		deadline.timeout.disconnect(give_up)
+
+
+## How long _await_popup_closed() waits before giving up; 0 for never.
+func _closing_timeout(step: TutorialStep) -> float:
+	if step.max_wait_time > 0:
+		return step.max_wait_time
+	if step.close_on_signal in _PLAYER_DRIVEN:
+		return 0.0
+	return default_step_timeout
 
 
 func _reveal_health_bar() -> void:
@@ -321,6 +448,16 @@ func _finish_tutorial() -> void:
 	_unlock_dice()
 	Globals.tutorial_controls_enemy_turns = false
 	Globals.map.enable_controls()
+
+	# Anything a step queued and the fight didn't use up would otherwise rig
+	# the next fight.
+	Dice.forced_rolls.clear()
+	Enemy.forced_actions.clear()
+	Reward.forced_rewards.clear()
+
+	# Seen once is enough; Options can turn it back on.
+	Globals.show_tutorial = false
+	Events.save_options_config.emit()
 
 	# No more popups, so the formation gets the right-hand side of the screen
 	# back and any surviving ships spread into it.

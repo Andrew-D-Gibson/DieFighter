@@ -46,6 +46,7 @@ func _setup_game_options_UI() -> void:
 	%FPSLimitOptions.select(fps_index if fps_index >= 0 else _FPS_LIMITS.find(60))
 
 	_setup_language_options()
+	%TutorialCheckBox.button_pressed = Globals.show_tutorial
 			
 	var bus_idx: int = AudioServer.get_bus_index("Master")
 	%MuteAllSoundsCheckBox.button_pressed = AudioServer.is_bus_mute(bus_idx)
@@ -81,6 +82,12 @@ func _set_scale_choice_label() -> void:
 		screen_scale = floori(current_window_size.x / Globals.SCREEN_SIZE.x)
 
 	%ScaleOptionButton.select(OptionsSettings.WINDOW_SCALES.find(screen_scale))
+
+
+## Takes effect on the next new game: a run already under way keeps going
+## with or without the tutorial it started with.
+func _on_tutorial_check_box_toggled(toggled_on: bool) -> void:
+	Globals.show_tutorial = toggled_on
 
 
 func _on_screenshake_check_box_toggled(toggled_on: bool) -> void:

@@ -47,4 +47,7 @@ var mouse_is_dragging_something: bool = false
 # Game Settings
 var screenshake_enabled: bool = true
 var animation_speed: float = 4
-var times_run: int = 0 
+var times_run: int = 0
+## Whether the next new game opens with the tutorial. On until the player
+## finishes it once; the Options menu turns it back on.
+var show_tutorial: bool = true 

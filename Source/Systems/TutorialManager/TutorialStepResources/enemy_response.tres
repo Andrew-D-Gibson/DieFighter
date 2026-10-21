@@ -4,10 +4,9 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "Incoming:"
+tutorial_text = "[color=red]Enemy turn.[/color] Watch what the raider does with your dice."
 text_position = Vector2(220, 40)
-close_on_signal = 2
+close_on_signal = 15
 forced_dice = Array[int]([5, 6, 4])
 tutorial_function = 7
-time_to_auto_close = 2.0
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

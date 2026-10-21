@@ -2,22 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dmd3p05sfg6im"
-path="res://.godot/imported/highlight_player_health_bar.png-d3a29381e5f249b15eee73624f54111f.ctex"
+uid="uid://dwqf302ttfgmx"
+path="res://.godot/imported/map_tab_and_engines_highlight.png-cd28b23c94a1a14289c5ed7d5ffd6b90.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/TutorialManager/Highlights/highlight_player_health_bar.png"
-dest_files=["res://.godot/imported/highlight_player_health_bar.png-d3a29381e5f249b15eee73624f54111f.ctex"]
+source_file="res://Assets/Textures/TutorialManager/Highlights/map_tab_and_engines_highlight.png"
+dest_files=["res://.godot/imported/map_tab_and_engines_highlight.png-cd28b23c94a1a14289c5ed7d5ffd6b90.ctex"]
 
 [params]
 
 compress/mode=0
 compress/high_quality=false
-compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

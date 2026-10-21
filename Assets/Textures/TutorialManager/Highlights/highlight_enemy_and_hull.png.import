@@ -2,22 +2,21 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bxviwvqgnvt6p"
-path="res://.godot/imported/map_tab_highlight.png-cb0fc4b6026d70baadb46e9feb2cfa94.ctex"
+uid="uid://c2v1go0ggo6rk"
+path="res://.godot/imported/highlight_enemy_and_hull.png-8f6056585f5349f02272a04c8c85c8ff.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/TutorialManager/Highlights/map_tab_highlight.png"
-dest_files=["res://.godot/imported/map_tab_highlight.png-cb0fc4b6026d70baadb46e9feb2cfa94.ctex"]
+source_file="res://Assets/Textures/TutorialManager/Highlights/highlight_enemy_and_hull.png"
+dest_files=["res://.godot/imported/highlight_enemy_and_hull.png-8f6056585f5349f02272a04c8c85c8ff.ctex"]
 
 [params]
 
 compress/mode=0
 compress/high_quality=false
-compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

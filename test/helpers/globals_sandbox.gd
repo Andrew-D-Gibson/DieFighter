@@ -9,8 +9,8 @@ const _FIELDS: Array[String] = [
 	"player", "tile_grid", "map", "targeting_computer", "reward_manager",
 	"money_indicator", "enemy_manager", "scenario_manager", "state_manager",
 	"background_manager", "jump_manager", "jump_gate", "hazard_manager",
-	"background_modifier_manager", "run_stats", "shop", "tutorial_manager",
-	"tutorial_active", "tutorial_controls_enemy_turns", "pending_load_save",
+	"background_modifier_manager", "run_stats", "shop",
+	"tutorial_controls_enemy_turns", "show_tutorial", "pending_load_save",
 ]
 
 var _saved: Dictionary = {}
