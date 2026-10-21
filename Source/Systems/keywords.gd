@@ -27,6 +27,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Hologram": "A copy of a die. Destroyed if given to another ship.",
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
 	"Steal": "This ship keeps the die. Next turn it uses it to Steal again. It drops what it holds if destroyed.",
+	"Locked": "Dice given to this tile return to your hand. A [color=yellow]2[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -51,6 +52,8 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(hologram)":   {"label": "hologram",   "term": "Hologram", "color": "blue"},
 	"(holograms)":  {"label": "holograms",  "term": "Hologram", "color": "blue"},
 	"(Hologram)":   {"label": "Hologram",   "term": "Hologram", "color": "blue"},
+	"(locked)":     {"label": "Locked",     "term": "Locked"},
+	"(lock)":       {"label": "Lock",       "term": "Locked"},
 }
 
 const _KEYWORD_COLOR: String = "orange"

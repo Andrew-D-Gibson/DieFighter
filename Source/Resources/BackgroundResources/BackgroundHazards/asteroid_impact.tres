@@ -46,7 +46,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 script = ExtResource("script_0")
 hazard_name = "Asteroid Impact"
 description = "[color=yellow]Your turn starts[/color] ->
-Lock a [color=purple]random tile[/color]"
+(lock) a [color=purple]random tile[/color]"
 icon = ExtResource("icon_tex")
 color = Color(0.949, 0.612, 0.365, 1)
 turns_until_first = 2
