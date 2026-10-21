@@ -36,6 +36,10 @@ func resolve(engine: ScenarioEngine) -> void:
 	# taken back out as it activates.
 	source.dice_queue.add(hologram, true, false)
 	source.dice_queue.remove(hologram)
+	# Born from the source tile's die, so it chases the same ship that die was
+	# dropped against.
+	if is_instance_valid(activator_die):
+		hologram.aimed_at = activator_die.aimed_at
 
 	var feed := PassDieToTileEvent.new()
 	feed.actor = actor

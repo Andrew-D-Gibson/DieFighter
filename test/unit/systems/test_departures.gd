@@ -245,19 +245,3 @@ func test_a_warp_in_cut_short_does_not_leave_the_ring_glowing() -> void:
 	gate.close()
 	gate.open(true)
 	assert_eq(gate.ring.modulate, Color.WHITE)
-
-
-# ── The reticle on a moving ship ──────────────────────────────────────────────
-
-
-func test_a_targeted_ship_can_move_before_the_reticle_has_ever_bobbed() -> void:
-	var computer: TargetingComputer = add_child_autofree(COMPUTER_SCENE.instantiate())
-	var ship: Enemy = _ship()
-	computer.targeted_enemy = ship
-	computer.indicator_bob_tween = null
-
-	assert_false(computer.hide_indicator_while_moving(_ship()), "only the targeted ship")
-	assert_true(computer.hide_indicator_while_moving(ship))
-	assert_false(computer.targeting_indicator.visible)
-	computer.show_indicator_after_move(ship)
-	assert_true(computer.targeting_indicator.visible)

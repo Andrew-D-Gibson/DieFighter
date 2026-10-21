@@ -334,13 +334,9 @@ func move_ship_to_point_on_path(ship: Enemy, proportion: float) -> void:
 	await _slide_ship_to(ship, _resting_position(ship, proportion), reflow_time)
 
 
-## Moves one ship, keeping the bits that have to be switched off while it is
-## travelling — the bobbing idle, and the targeting reticle that tracks it —
-## in step with the move.
+## Moves one ship, switching its bobbing idle off for the trip. The
+## targeting reticle needs nothing: it reads the ship's position every frame.
 func _slide_ship_to(ship: Enemy, target: Vector2, duration: float) -> void:
-	var computer: TargetingComputer = Globals.targeting_computer
-	var retarget_indicator: bool = computer != null and computer.hide_indicator_while_moving(ship)
-
 	ship.moving_in_world = true
 	ship.graphics_manager.stop_bob_tween()
 
@@ -365,9 +361,6 @@ func _slide_ship_to(ship: Enemy, target: Vector2, duration: float) -> void:
 
 	ship.moving_in_world = false
 	ship.graphics_manager.start_bob_tween()
-
-	if retarget_indicator and is_instance_valid(computer):
-		computer.show_indicator_after_move(ship)
 
 
 ## Re-derives everyone's spot from the roster and whatever space is currently

@@ -39,6 +39,13 @@ static var forced_rolls: Array[int] = []
 		
 var host_queue: DiceQueue
 
+## The ship that was targeted when the player dropped this die on a tile. A
+## die that waits its turn in a busy queue still acts on that ship even if the
+## player has moved on to another target since; see
+## [method TargetingComputer.target_for]. Cleared as the die lands back in a
+## ship's hand, so a stale aim never follows it into its next drop.
+var aimed_at: Enemy = null
+
 ## True while the player has locked this die for the length of a jump, so
 ## arrival unlocks only what the jump locked and leaves a tutorial's own
 ## locks alone.

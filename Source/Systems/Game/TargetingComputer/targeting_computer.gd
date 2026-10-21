@@ -6,8 +6,26 @@ extends Node2D
 @export var targeting_indicator_offset: Vector2 = Vector2(20, 18)
 var targeted_enemy_index: int
 var targeted_enemy: Enemy
-var indicator_bob_tween: Tween
 var intent_scale_tweens: Array[Tween] = []
+
+## The reticle glides onto a newly targeted ship, then hovers on it. It's
+## placed every frame from the ship's live position, so it rides along when the
+## ship slides across to close a gap in the formation.
+const _INDICATOR_GLIDE_SECONDS: float = 0.3
+const _INDICATOR_BOB_SECONDS: float = 1.5
+const _INDICATOR_BOB: Vector2 = Vector2(4, 4)
+
+## The ship the reticle is on (or gliding to), and the glide's progress from
+## where it set off: 0 there, 1 on the ship.
+var _indicator_ship: Enemy
+var _indicator_glide_tween: Tween
+var _indicator_glide: float = 1.0
+var _indicator_glide_from: Vector2
+var _indicator_bob_time: float = 0.0
+
+## Bumped by every redraw, so a scan animation still playing out from an
+## earlier one can tell it's been superseded.
+var _redraw_generation: int = 0
 
 ## Small die faces hung over the ships the targeted enemy's slots are bound
 ## to: "on a 1, the Tender repairs *this* one". Escorts often share a name,
@@ -88,12 +106,55 @@ func ensure_target() -> void:
 		check_target_is_valid()
 		
 
+## The ship a tile activated by [param die] should act on. That's the ship
+## the die was dropped against, so a die queued behind a busy chain doesn't
+## swerve onto whatever the player targeted while it waited. If that ship has
+## died or left since, it's the current target instead (which may be nothing:
+## the effects already handle having no target). A tile fired with no die, or
+## by an untracked die, also uses the current target.
+func target_for(die: Node) -> Enemy:
+	# Checked before anything typed touches it: a freed ship can't even be
+	# assigned to an Enemy variable.
+	if is_instance_valid(die) and die is Dice and is_instance_valid((die as Dice).aimed_at):
+		var aimed: Enemy = (die as Dice).aimed_at
+		if _still_in_fight(aimed):
+			return aimed
+	return targeted_enemy if is_instance_valid(targeted_enemy) else null
+
+
+func _still_in_fight(ship: Enemy) -> bool:
+	if ship.is_queued_for_deletion() or ship.health.health <= 0:
+		return false
+	# A ship that fled is still alive, but it's off the roster.
+	return Globals.enemy_manager != null and ship in Globals.enemy_manager.get_alive_enemies()
+
+
 func _target_nothing() -> void:
 	_acting_enemy = null
 	_acting_slot = -1
+	var previous: Enemy = targeted_enemy if is_instance_valid(targeted_enemy) else null
 	targeted_enemy = null
 	targeted_enemy_index = -1
+	_after_retarget(previous)
 	_update_ui()
+
+
+## Every animation on the computer's icons belongs to the ship being shown. A
+## pulse started for the last target and left to finish on the new one's
+## intents would read as the new ship's action, so a switch stops them all
+## and puts the icons back at rest.
+func _after_retarget(previous: Enemy) -> void:
+	if previous == targeted_enemy:
+		return
+	_reset_icon_tweens()
+
+
+func _reset_icon_tweens() -> void:
+	for i: int in range(intent_scale_tweens.size()):
+		if intent_scale_tweens[i]:
+			intent_scale_tweens[i].kill()
+			intent_scale_tweens[i] = null
+		_intent(i).scale = Vector2.ONE
 	
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -126,6 +187,7 @@ func check_target_is_valid() -> void:
 		_update_ui()
 		return
 		
+	var previous: Enemy = targeted_enemy if is_instance_valid(targeted_enemy) else null
 	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
 	
 	# Check that there even are enemies to target
@@ -147,6 +209,7 @@ func check_target_is_valid() -> void:
 	else:
 		targeted_enemy = enemies[targeted_enemy_index]
 
+	_after_retarget(previous)
 	_update_ui()
 	Events.targeting_computer_retargeted.emit()
 	
@@ -212,9 +275,11 @@ func target_enemy(enemy: Enemy) -> void:
 
 	
 func _update_ui() -> void:
+	_redraw_generation += 1
+	var generation: int = _redraw_generation
 	_show_bound_markers()
 	if !targeted_enemy or targeted_enemy_index == -1:
-		targeting_indicator.visible = false
+		_hide_indicator()
 		
 		$TargetImage.texture = null
 		for i: int in range(6):
@@ -259,7 +324,9 @@ func _update_ui() -> void:
 		$TargetImageFill.z_index = 1
 		$TargetImageFill.frame = 0
 		await $TargetImageFill.animation_looped
-		$TargetImageFill.z_index = -2
+		# A later redraw owns the fill now; with no target it has to stay up.
+		if generation == _redraw_generation:
+			$TargetImageFill.z_index = -2
 
 
 ## Lights slot [param i]'s die face and intent when the targeted enemy holds
@@ -333,24 +400,6 @@ func _show_bound_markers() -> void:
 			_bound_markers.append(marker)
 
 
-## Takes the reticle off [param ship] while it moves, if it's the one
-## targeted. Returns whether it was; pass that to show_indicator_after_move().
-func hide_indicator_while_moving(ship: Enemy) -> bool:
-	if ship != targeted_enemy:
-		return false
-	if indicator_bob_tween:
-		indicator_bob_tween.kill()
-	targeting_indicator.visible = false
-	return true
-
-
-## Puts the reticle back on [param ship] once it has stopped, if it's still
-## the one targeted.
-func show_indicator_after_move(ship: Enemy) -> void:
-	if ship == targeted_enemy:
-		_move_indicator()
-
-
 ## Slot [param i]'s intent icon on the screen, and the parts hung off it.
 func _intent(i: int) -> Sprite2D:
 	return $Intents.get_child(i) as Sprite2D
@@ -364,29 +413,50 @@ func _intent_clickable(i: int) -> Clickable:
 	return _intent(i).get_node("Clickable") as Clickable
 
 
+## Sends the reticle to the targeted ship. Left alone if it's already there,
+## so a redraw for the same target doesn't restart its glide or its hover.
 func _move_indicator() -> void:
-	targeting_indicator.visible = true
-		
-	var tween_time: float = 0.3
-	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, tween_time).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
-
-	tween.tween_callback(_indicator_bob)
-	
-	
-func _indicator_bob() -> void:
-	if not targeted_enemy:
+	if targeting_indicator.visible and _indicator_ship == targeted_enemy:
 		return
-		
-	var bob_time: float = 1.5
-	
-	if indicator_bob_tween:
-		indicator_bob_tween.kill()
-		
-	indicator_bob_tween = create_tween()
-	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset + Vector2(4, 4), bob_time/2.0).from(targeted_enemy.global_position + targeting_indicator_offset).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	indicator_bob_tween.tween_property(targeting_indicator, 'global_position', targeted_enemy.global_position + targeting_indicator_offset, bob_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	indicator_bob_tween.set_loops()
+
+	_indicator_ship = targeted_enemy
+	_indicator_glide_from = targeting_indicator.global_position
+	_indicator_glide = 0.0
+	_indicator_bob_time = 0.0
+	targeting_indicator.visible = true
+
+	if _indicator_glide_tween:
+		_indicator_glide_tween.kill()
+	_indicator_glide_tween = create_tween()
+	_indicator_glide_tween.tween_property(self, "_indicator_glide", 1.0, _INDICATOR_GLIDE_SECONDS) \
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_IN_OUT)
+
+
+func _hide_indicator() -> void:
+	if _indicator_glide_tween:
+		_indicator_glide_tween.kill()
+	_indicator_glide_tween = null
+	_indicator_ship = null
+	targeting_indicator.visible = false
+
+
+func _process(delta: float) -> void:
+	if not targeting_indicator.visible or not is_instance_valid(_indicator_ship):
+		return
+	if _indicator_glide >= 1.0:
+		_indicator_bob_time += delta
+	targeting_indicator.global_position = indicator_position()
+
+
+## Where the reticle belongs this frame: partway along its glide, or hovering
+## on the ship. Both are measured from where the ship is now.
+func indicator_position() -> Vector2:
+	var anchor: Vector2 = _indicator_ship.global_position + targeting_indicator_offset
+	if _indicator_glide < 1.0:
+		return _indicator_glide_from.lerp(anchor, _indicator_glide)
+	# Out to the full offset and back once per period, easing at both ends.
+	var swing: float = 0.5 - 0.5 * cos(TAU * _indicator_bob_time / _INDICATOR_BOB_SECONDS)
+	return anchor + _INDICATOR_BOB * swing
 
 
 func _startup() -> void:

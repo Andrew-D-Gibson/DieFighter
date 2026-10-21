@@ -336,7 +336,11 @@ func _on_die_accepted(die: Dice) -> void:
 		return
 		
 	dice_queue.add(die, true, false)
-	
+	# Remember who the player meant this die for. It may sit in this queue
+	# (or behind a resolving chain) while they switch to another ship.
+	if Globals.targeting_computer:
+		die.aimed_at = Globals.targeting_computer.targeted_enemy
+
 	# Emit event for die placement for tutorial use
 	Events.die_placed_on_tile.emit(die, self)
 	

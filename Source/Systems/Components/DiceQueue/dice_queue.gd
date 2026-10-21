@@ -27,6 +27,9 @@ func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = tru
 		queue.append(die)
 	
 	die.host_queue = self
+	# A die only carries an aim between being dropped on a tile and landing
+	# somewhere new. The tile that takes a drop sets it again right after this.
+	die.aimed_at = null
 	die.draggable.home_position = global_position
 
 	die_added.emit()
