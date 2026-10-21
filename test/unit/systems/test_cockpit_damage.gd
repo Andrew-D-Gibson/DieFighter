@@ -83,6 +83,35 @@ func test_last_crack_lands_inside_the_rupture() -> void:
 	assert_gt(CockpitDestruction.crack_return_at(0, 5), 0.0)
 
 
+# --- Death explosions on the pixel grid ---
+
+func test_an_odd_sprite_centres_on_a_half_pixel() -> void:
+	var at: Vector2 = CockpitDestruction.pixel_aligned_centre(Vector2(100.8, 40.2), Vector2(37, 37))
+	assert_eq(at, Vector2(100.5, 40.5))
+
+
+func test_an_even_sprite_centres_on_a_whole_pixel() -> void:
+	var at: Vector2 = CockpitDestruction.pixel_aligned_centre(Vector2(100.8, 40.2), Vector2(16, 12))
+	assert_eq(at, Vector2(101, 40))
+
+
+## Every blast the death throws comes out at native size and a quarter turn,
+## with its corner on a whole world pixel: nothing resampled off the grid.
+func test_death_explosions_stay_on_the_pixel_grid() -> void:
+	var destruction: CockpitDestruction = add_child_autofree(CockpitDestruction.new())
+	for i: int in 12:
+		destruction._explosion(Vector2(randf_range(0, 320), randf_range(0, 180)))
+	var blasts: Array[Node] = destruction.get_children()
+	assert_eq(blasts.size(), 12)
+	for blast: AnimatedSprite2D in blasts:
+		assert_eq(blast.scale, Vector2.ONE)
+		var quarter_turns: float = blast.rotation / (PI / 2.0)
+		assert_almost_eq(quarter_turns, roundf(quarter_turns), 0.0001)
+		var size: Vector2 = blast.sprite_frames.get_frame_texture(blast.animation, 0).get_size()
+		var corner: Vector2 = blast.global_position - size / 2.0
+		assert_eq(corner, corner.round(), "blast at %s is off the grid" % blast.global_position)
+
+
 # --- Glass shards ---
 
 ## Shards over a fake cockpit: open glass, with a ledge filling row 50 down.

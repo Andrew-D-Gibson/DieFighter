@@ -4,6 +4,11 @@ extends HealthBarController
 const _HULL_INFO_TEXTURE: Texture2D = preload("uid://cdul5hb8yotks")
 const _SHIELDS_INFO_TEXTURE: Texture2D = preload("uid://cm0dbq7jogf17")
 
+## Shield sprite frames, strongest first.
+const SHIELD_FRAME_FULL: int = 0
+const SHIELD_FRAME_MEDIUM: int = 1
+const SHIELD_FRAME_LOW: int = 2
+
 
 func _ready() -> void:
 	super()
@@ -15,14 +20,22 @@ func _ready() -> void:
 	Events.cockpit_snap_online.connect(_snap_online)
 	
 	
-func _set_shields() -> void:		
+func _set_shields() -> void:
+	# The base class hides the sprite at zero shields; the frame only matters
+	# while it shows.
 	super()
-	if health_component.shields < health_component.max_health / 2.0:
-		%Shields.frame = 2
-	elif health_component.shields < health_component.max_health:
-		%Shields.frame = 1
-	else:\
-		%Shields.frame = 0
+	%Shields.frame = shield_frame(health_component.shields, health_component.max_health)
+
+
+## Which shield sprite frame [param shields] reads as, measured against the
+## hull's [param max_health]: full from half the hull up, medium from a
+## quarter, low below that.
+static func shield_frame(shields: int, max_health: int) -> int:
+	if shields >= max_health / 2.0:
+		return SHIELD_FRAME_FULL
+	if shields >= max_health / 4.0:
+		return SHIELD_FRAME_MEDIUM
+	return SHIELD_FRAME_LOW
 
 
 func _get_health_string() -> String:

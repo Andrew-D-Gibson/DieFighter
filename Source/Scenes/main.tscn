@@ -280,7 +280,10 @@ grow_vertical = 2
 mouse_filter = 2
 color = Color(0, 0, 0.0941176, 1)
 
-[node name="MouseCursor" type="Sprite2D" parent="UI" unique_id=347379124]
+[node name="CursorLayer" type="CanvasLayer" parent="." unique_id=1730592614]
+layer = 128
+
+[node name="MouseCursor" type="Sprite2D" parent="CursorLayer" unique_id=347379124]
 visible = false
 z_index = 1000
 scale = Vector2(6, 6)
@@ -393,6 +396,10 @@ root_node = NodePath("../../..")
 libraries/ = SubResource("AnimationLibrary_xwceq")
 autoplay = &"game_start"
 
-[node name="PauseMenu" parent="." unique_id=1539490053 instance=ExtResource("4_6ebjm")]
+[node name="PauseLayer" type="CanvasLayer" parent="." unique_id=1482735061]
+layer = 100
+follow_viewport_enabled = true
+
+[node name="PauseMenu" parent="PauseLayer" unique_id=1539490053 instance=ExtResource("4_6ebjm")]
 visible = false
 position = Vector2(160, 90)

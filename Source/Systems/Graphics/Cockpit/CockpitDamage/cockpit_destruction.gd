@@ -118,7 +118,7 @@ func _rupture() -> void:
 			cracks_back += 1
 		var point: Vector2 = points[_rng.randi() % points.size()] \
 				+ Vector2(_rng.randf_range(-4, 4), _rng.randf_range(-4, 4))
-		_explosion(point, lerpf(0.35, 0.7, progress))
+		_explosion(point)
 		_sparks(point, Globals.orange, 10, 70.0)
 		Events.camera_shake_small.emit()
 		if blasts % 3 == 0:
@@ -149,8 +149,7 @@ func _break_apart() -> void:
 	Events.camera_zoom_punch.emit(1.08, blast_origin, true)
 	_flash()
 	for i: int in 5:
-		_explosion(blast_origin + Vector2(_rng.randf_range(-110, 110), _rng.randf_range(-30, 45)),
-				_rng.randf_range(0.7, 1.1))
+		_explosion(blast_origin + Vector2(_rng.randf_range(-110, 110), _rng.randf_range(-30, 45)))
 
 	_shatter_glass()
 	_fragment_walls()
@@ -360,12 +359,35 @@ func _flash() -> void:
 	tween.tween_callback(flash.queue_free)
 
 
-func _explosion(point: Vector2, scale_factor: float) -> void:
-	var explosion: Node2D = _EXPLOSION_SCENE.instantiate()
-	explosion.scale = Vector2.ONE * scale_factor
-	explosion.rotation = _rng.randf_range(0.0, TAU)
+## The same blast an enemy dies in, kept on the game's 320x180 pixel grid like
+## the rest of the art: native size, whole-pixel placement, and only quarter
+## turns and a mirror for variety. Any other scale or angle resamples the
+## sprite, so its pixels come out smaller than, or skewed across, everything
+## around it.
+func _explosion(point: Vector2) -> void:
+	var explosion: AnimatedSprite2D = _EXPLOSION_SCENE.instantiate()
+	var quarter_turns: int = _rng.randi_range(0, 3)
+	explosion.rotation = quarter_turns * PI / 2.0
+	explosion.flip_h = _rng.randf() < 0.5
 	add_child(explosion)
-	explosion.global_position = point
+	var frame_size: Vector2 = explosion.sprite_frames \
+			.get_frame_texture(explosion.animation, 0).get_size()
+	if quarter_turns % 2 == 1:
+		frame_size = Vector2(frame_size.y, frame_size.x)
+	explosion.global_position = pixel_aligned_centre(point, frame_size)
+
+
+## Where to put a centred sprite of [param size] near [param point] so its
+## pixels land on whole world pixels. An odd-sized sprite's centre is the
+## middle of a pixel, so it sits on a half; an even one on a whole.
+static func pixel_aligned_centre(point: Vector2, size: Vector2) -> Vector2:
+	return Vector2(_aligned_axis(point.x, int(size.x)), _aligned_axis(point.y, int(size.y)))
+
+
+static func _aligned_axis(value: float, size: int) -> float:
+	if size % 2 == 1:
+		return floorf(value) + 0.5
+	return roundf(value)
 
 
 func _sparks(point: Vector2, color: Color, count: int, speed: float) -> void:

@@ -86,7 +86,23 @@ func _place_keyword_popup() -> void:
 	%KeywordPopup.position = pos
 
 
+## Escape closes the info shower and nothing else. InputManager, an autoload,
+## opens the pause menu on the same action, and autoloads sit ahead of the
+## game scene in the tree, so they hear unhandled input after this does:
+## marking it handled here keeps the pause menu shut.
+func _unhandled_input(event: InputEvent) -> void:
+	if visible and event.is_action_pressed("PauseMenu"):
+		get_viewport().set_input_as_handled()
+		_close()
+
+
 func _on_screen_dim_gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
-		Events.info_graphic_closed.emit()
-		hide()
+		_close()
+
+
+## The player dismissing the info, as opposed to the game closing it through
+## close_info, which isn't announced.
+func _close() -> void:
+	Events.info_graphic_closed.emit()
+	hide()
