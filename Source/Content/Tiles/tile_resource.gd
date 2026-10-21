@@ -26,5 +26,13 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 
 @export var dragging_allowed: bool = true
 
+## Untick for a tile that must never be locked out. The Engine Charger is the
+## one: it is the only way to charge the jump drive, so locking it could leave
+## the player unable to ever leave. Lockouts refuse such a tile (see
+## AddLockoutModifierEvent). Random lockouts already draw only from the grid,
+## which the Engine Charger is never on; a grid tile with this unticked would
+## need a lockable-only random pick, or a random lockout would fizzle on it.
+@export var can_be_locked_out: bool = true
+
 ## This limit is ignored when the max dice allowed in queue is -1
 @export var max_dice_in_queue: int = -1

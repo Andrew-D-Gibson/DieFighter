@@ -76,4 +76,5 @@ uses_per_turn = -1
 activation_checks = Array[ExtResource("1_8mym4")]([SubResource("Resource_dd8hj")])
 effect_chain = SubResource("Resource_ubmp7")
 dragging_allowed = false
+can_be_locked_out = false
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -1,0 +1,104 @@
+extends "res://test/helpers/die_fighter_test.gd"
+## Lockout: which tiles it may take hold on, and how a locked tile explains
+## itself in the info panel.
+
+const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
+const ENGINE_CHARGER: TileResource = preload("res://Source/Content/Tiles/MapTileResources/engine_charger.tres")
+const DAMAGE_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/damage.tres")
+const GRID_TILES_DIR: String = "res://Source/Content/Tiles/TileResources/"
+
+var engine: ScenarioEngine
+
+
+func before_each() -> void:
+	super()
+	engine = autofree(ScenarioEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = engine
+	Globals.scenario_manager = manager
+
+
+## A tile outside the tree carrying [param resource]. Its sprite is dropped
+## first so assigning the resource doesn't start the gray-out tween, which
+## needs the tree.
+func _tile(resource: TileResource) -> Tile:
+	var tile: Tile = autofree(TILE_SCENE.instantiate())
+	tile.sprite_frames = null
+	tile.tile_resource = resource
+	return tile
+
+
+func _lock(targets: Array[Node]) -> void:
+	var event: AddLockoutModifierEvent = AddLockoutModifierEvent.new()
+	event.targets = targets
+	await event.resolve(engine)
+
+
+func _lockouts_on(tile: Tile) -> int:
+	return engine.modifiers.filter(func(mod: Modifier) -> bool:
+		return mod is LockoutModifier and mod.affected_node == tile
+	).size()
+
+
+# ── Who can be locked ─────────────────────────────────────────────────────────
+
+func test_the_engine_charger_refuses_a_lockout() -> void:
+	# Locking the only way to charge the drive could strand the player.
+	var charger: Tile = _tile(ENGINE_CHARGER)
+	var other: Tile = _tile(DAMAGE_TILE)
+	await _lock([charger, other] as Array[Node])
+
+	assert_false(charger.can_be_locked_out())
+	assert_eq(_lockouts_on(charger), 0, "the Engine Charger is never locked")
+	assert_eq(_lockouts_on(other), 1, "the rest of the lockout still lands")
+
+
+func test_every_grid_tile_can_be_locked_out() -> void:
+	# Random lockouts draw from the grid without asking, so a grid tile that
+	# refused would make one fizzle. The Engine Charger lives off the grid.
+	var dir: DirAccess = DirAccess.open(GRID_TILES_DIR)
+	assert_not_null(dir)
+	var checked: int = 0
+	for file: String in dir.get_files():
+		var path: String = file.trim_suffix(".remap")
+		if not path.ends_with(".tres"):
+			continue
+		var resource: TileResource = load(GRID_TILES_DIR + path) as TileResource
+		if resource == null:
+			continue
+		checked += 1
+		assert_true(resource.can_be_locked_out, "%s can be locked out" % path)
+	assert_gt(checked, 0)
+
+
+# ── Info panel ────────────────────────────────────────────────────────────────
+
+func test_a_locked_tile_says_so_in_its_info() -> void:
+	var tile: Tile = _tile(DAMAGE_TILE)
+	assert_false(tile._get_tile_info().bottom_label_text.contains("(locked)"))
+
+	await _lock([tile] as Array[Node])
+	var text: String = tile._get_tile_info().bottom_label_text
+	assert_string_contains(text, "(locked)")
+	assert_string_contains(text, "(die_2)", "names the key that opens it")
+
+
+func test_a_tile_locked_twice_shows_one_line() -> void:
+	var tile: Tile = _tile(DAMAGE_TILE)
+	await _lock([tile] as Array[Node])
+	await _lock([tile] as Array[Node])
+	assert_eq(_lockouts_on(tile), 2)
+	assert_eq(tile._get_tile_info().bottom_label_text.count("(locked)"), 1)
+
+
+func test_the_info_line_is_localized() -> void:
+	var line: String = (LockoutModifier.new(_tile(DAMAGE_TILE))).get_info_text()
+	assert_ne(line, "INFO_TILE_LOCKED", "the key resolves to text")
+	assert_string_contains(line, "(locked)")
+
+
+func test_locked_is_a_hoverable_keyword() -> void:
+	assert_string_contains(Keywords.definition("Locked"), "Engine Charger")
+	var rendered: String = Keywords.render("(locked) and (lock)", true)
+	assert_string_contains(rendered, "[url=Locked]")
+	assert_false(rendered.contains("(lock"), "both spellings render")

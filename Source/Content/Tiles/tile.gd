@@ -255,6 +255,13 @@ func activation_refusal(activator_die: Dice = null) -> String:
 	return ""
 	
 
+## Whether a lockout may take hold on this tile. Every lockout goes through
+## AddLockoutModifierEvent, which asks this, so the rule lives with the tile
+## rather than in each enemy action or hazard that locks one.
+func can_be_locked_out() -> bool:
+	return tile_resource != null and tile_resource.can_be_locked_out
+
+
 func reset_uses_remaining() -> void:
 	uses_remaining = tile_resource.uses_per_turn
 
