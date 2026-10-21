@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TutorialStep" format=3]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://cjs5pb8b7yx5b"]
 
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
 [ext_resource type="Texture2D" uid="uid://d1raxvhmcgf8v" path="res://Assets/Textures/TutorialManager/Highlights/map_large_tab_highlight.png" id="highlight"]
