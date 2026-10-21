@@ -115,9 +115,9 @@ vertical_alignment = 1
 
 [node name="SellLabel" type="RichTextLabel" parent="."]
 offset_left = 10.0
-offset_top = -24.0
+offset_top = -26.0
 offset_right = 61.0
-offset_bottom = -13.0
+offset_bottom = -15.0
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.933333, 0.827451, 0.364706, 1)
 bbcode_enabled = true

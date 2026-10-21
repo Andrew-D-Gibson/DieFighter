@@ -48,6 +48,8 @@ func begin_visit(scenario: String, sector: int, map_index: int, turn: int) -> vo
 		"offers": 0,
 		"claimed": 0,
 		"bought": 0,
+		"repairs": 0,
+		"sold": 0,
 		"hull_start": player.health.health,
 		"money_start": AutoPilotSnapshot.credits(),
 		"dice_start": player.num_of_dice,
@@ -73,6 +75,13 @@ func on_salvage_offered() -> void:
 func on_item_taken(bought: bool) -> void:
 	if not _visit.is_empty():
 		_visit["bought" if bought else "claimed"] += 1
+
+
+## The player bought a repair, or sold a tile ([param sold]), at a repair
+## station.
+func on_station_used(sold: bool) -> void:
+	if not _visit.is_empty():
+		_visit["sold" if sold else "repairs"] += 1
 
 
 func on_combat_won() -> void:

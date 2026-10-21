@@ -4,7 +4,8 @@ extends AutoPilotPolicy
 ## tile does with it, less what the ship it's handed to will do with it next.
 ## It aims the targeting computer at whichever ship makes that trade best,
 ## finishes ships off, banks shields against the hits it can see coming,
-## takes salvage, shops, and charges up and jumps toward good stops on the
+## takes salvage, shops, patches the hull at repair stations (it never sells),
+## and charges up and jumps toward good stops on the
 ## map. It reads only what a player can see: intents a "?" hides cost the
 ## same whatever the face (AutoPilotThreat).
 ##
@@ -114,6 +115,14 @@ const _STOP_GATE: float = 2.0
 ## Credits per point a shop stop gains, up to a cap.
 const _SHOP_CREDITS_PER_POINT: float = 30.0
 const _SHOP_CAP: float = 5.0
+## A repair station is worth this much per share of the hull missing (times
+## the persona's heal), on top of an empty stop, given the credits for a repair.
+const _STOP_REPAIR_PER_MISSING: float = 10.0
+const _REPAIR_STOP_MIN_CREDITS: int = 10
+## It buys repairs while the hull share is under this plus the persona's heal
+## times the slope: smart 0.77, aggressive 0.68, turtle 0.89.
+const _REPAIR_BELOW: float = 0.5
+const _REPAIR_BELOW_PER_HEAL: float = 0.3
 ## Per tile forward: staying ahead of Fate. Small, since stops are the point.
 const _PROGRESS: float = 0.3
 ## Per stop worth visiting that a jump flies past.
@@ -178,6 +187,8 @@ func choose(moves: Array[AutoPilotMove], _rng: RandomNumberGenerator) -> AutoPil
 		var purchase: AutoPilotMove = _best_item(by_kind[AutoPilotMove.Kind.BUY], true)
 		if purchase:
 			return purchase
+	if by_kind.has(AutoPilotMove.Kind.REPAIR) and _wants_repair():
+		return by_kind[AutoPilotMove.Kind.REPAIR][0]
 	if by_kind.has(AutoPilotMove.Kind.END_TURN):
 		return by_kind[AutoPilotMove.Kind.END_TURN][0]
 
@@ -415,6 +426,10 @@ func _stop_value(index: int) -> float:
 			return _STOP_UNKNOWN
 		"shop.png":
 			return _STOP_SHOP + minf(AutoPilotSnapshot.credits() / _SHOP_CREDITS_PER_POINT, _SHOP_CAP)
+		"healing_encounter.png":
+			if AutoPilotSnapshot.credits() < _REPAIR_STOP_MIN_CREDITS:
+				return _STOP_EMPTY
+			return _STOP_EMPTY + (1.0 - hull_share) * _STOP_REPAIR_PER_MISSING * _persona.heal
 		"fate_encounter.png":
 			return _STOP_CORRUPT
 		"jump_gate.png":
@@ -454,6 +469,14 @@ func _board_key() -> String:
 
 
 # ── Salvage and the shop ───────────────────────────────────────────────────────
+
+## Whether to buy another repair: while the hull is low enough for this style
+## to care. The station only offers one it can pay for and has room for.
+func _wants_repair() -> bool:
+	var health: Health = Globals.player.health
+	var hull_share: float = float(health.health) / maxf(1.0, float(health.max_health))
+	return hull_share < _REPAIR_BELOW + _REPAIR_BELOW_PER_HEAL * _persona.heal
+
 
 ## The best of [param offers] worth having; for purchases, only one that
 ## clears its price. Null if none is.

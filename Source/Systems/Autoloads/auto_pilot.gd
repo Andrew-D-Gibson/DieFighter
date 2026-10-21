@@ -245,6 +245,8 @@ func _process(_delta: float) -> void:
 	_last_move = move.describe()
 	if move.kind == AutoPilotMove.Kind.CLAIM or move.kind == AutoPilotMove.Kind.BUY:
 		_telemetry.on_item_taken(move.kind == AutoPilotMove.Kind.BUY)
+	elif move.kind == AutoPilotMove.Kind.REPAIR or move.kind == AutoPilotMove.Kind.SELL:
+		_telemetry.on_station_used(move.kind == AutoPilotMove.Kind.SELL)
 	move.perform()
 	_idle_frames = 0
 	_settle = _SETTLE_FRAMES
@@ -254,7 +256,8 @@ func _process(_delta: float) -> void:
 
 
 ## Moves that change the game for good. Taking a choice or buying uses it up,
-## so they can't loop the way flipping tabs can.
+## so they can't loop the way flipping tabs can; nor can a repair (the price
+## climbs and the hull fills) or a sale (the tile is gone).
 ## A gauntlet asks whether the loadout can win the fight, so the bot doesn't
 ## jump out of one.
 static func _stays_in_the_fight(move: AutoPilotMove) -> bool:
@@ -264,7 +267,8 @@ static func _stays_in_the_fight(move: AutoPilotMove) -> bool:
 
 static func _advances_play(move: AutoPilotMove) -> bool:
 	return move.kind in [AutoPilotMove.Kind.PLACE_DIE, AutoPilotMove.Kind.END_TURN,
-		AutoPilotMove.Kind.CLAIM, AutoPilotMove.Kind.BUY]
+		AutoPilotMove.Kind.CLAIM, AutoPilotMove.Kind.BUY, AutoPilotMove.Kind.REPAIR,
+		AutoPilotMove.Kind.SELL]
 
 
 ## Whether a patient player would act: the game scene is up and not over,

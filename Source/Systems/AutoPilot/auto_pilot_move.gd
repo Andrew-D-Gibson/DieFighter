@@ -3,19 +3,21 @@ extends RefCounted
 ## One thing the AutoPilot could do right now, through the same entry points a
 ## player's input reaches: drop a die from the hand on a tile, retarget the
 ## targeting computer, flip between the systems and map tabs, take a choice
-## from a salvage offer, buy from the shop, or press End Turn.
+## from a salvage offer, buy from the shop, buy a repair or sell a tile at a
+## repair station, or press End Turn.
 ##
 ## Moves are listed fresh every time the AutoPilot acts and used at once, so
 ## they hold live node references rather than ids.
 
-enum Kind { PLACE_DIE, TARGET, VIEW_MAP, VIEW_SYSTEMS, END_TURN, CLAIM, BUY }
+## Append only: transcripts and replays name kinds by their position.
+enum Kind { PLACE_DIE, TARGET, VIEW_MAP, VIEW_SYSTEMS, END_TURN, CLAIM, BUY, REPAIR, SELL }
 
 var kind: Kind
 var die: Dice
 var tile: Tile
 var enemy: Enemy
 ## A salvage choice (CLAIM) or shop stock (BUY): a Tile, a Dice or a
-## MoneyPickup.
+## MoneyPickup. For SELL, the grid tile.
 var item: Node2D
 var price: int = 0
 
@@ -47,6 +49,23 @@ static func buy(stock: Node2D, cost: int) -> AutoPilotMove:
 	move.kind = Kind.BUY
 	move.item = stock
 	move.price = cost
+	return move
+
+
+static func repair(cost: int) -> AutoPilotMove:
+	var move := AutoPilotMove.new()
+	move.kind = Kind.REPAIR
+	move.price = cost
+	return move
+
+
+## [param pay] is what the station pays, so a policy can weigh it.
+static func sell(grid_tile: Tile, pay: int) -> AutoPilotMove:
+	var move := AutoPilotMove.new()
+	move.kind = Kind.SELL
+	move.item = grid_tile
+	move.tile = grid_tile
+	move.price = pay
 	return move
 
 
@@ -91,6 +110,8 @@ static func list_legal() -> Array[AutoPilotMove]:
 			and (room or stock is not Tile):
 				moves.append(buy(stock as Node2D, cost))
 
+	moves.append_array(_repair_station_moves())
+
 	# The map's controls are tiles, but only while its tab is showing.
 	moves.append(_of_kind(Kind.VIEW_SYSTEMS if Globals.map.visible else Kind.VIEW_MAP))
 	return moves
@@ -116,6 +137,12 @@ func perform() -> void:
 		Kind.CLAIM, Kind.BUY:
 			var draggable: Draggable = item.get("draggable")
 			draggable.drag_ended.emit(draggable, _drop_point_for(item))
+		# The button's own handler.
+		Kind.REPAIR:
+			Globals.repair_station.repair()
+		# Dragged off the grid and let go over the SELL slot.
+		Kind.SELL:
+			tile.draggable.drag_ended.emit(tile.draggable, Globals.repair_station.sell_zone_centre())
 
 
 ## A readable, replay-stable record of the move for the transcript.
@@ -131,6 +158,10 @@ func describe() -> Dictionary:
 			}
 		Kind.TARGET:
 			return {"move": "target", "ship": AutoPilotSnapshot.ship_label(enemy)}
+		Kind.REPAIR:
+			return {"move": "repair", "price": price}
+		Kind.SELL:
+			return {"move": "sell", "item": item_name(tile), "price": price, "cell": _tile_cell(tile)}
 		Kind.CLAIM, Kind.BUY:
 			var entry: Dictionary = {"move": Kind.keys()[kind].to_lower(), "item": item_name(item)}
 			if kind == Kind.BUY:
@@ -146,6 +177,24 @@ static func item_name(thing: Node) -> String:
 	if thing is MoneyPickup:
 		return "%d credits" % (thing as MoneyPickup).amount
 	return "die"
+
+
+## A repair, if one can be had, and every tile the station would buy, while
+## its panel is open. Selling needs the grid on show, as it does for a player.
+static func _repair_station_moves() -> Array[AutoPilotMove]:
+	var moves: Array[AutoPilotMove] = []
+	var station: RepairStation = Globals.repair_station
+	if not is_instance_valid(station) or not station.is_visible_in_tree():
+		return moves
+	if station.repair_refusal().is_empty():
+		moves.append(repair(station.repair_cost()))
+	if not Globals.tile_grid.is_visible_in_tree():
+		return moves
+	for cell: Vector2i in Globals.tile_grid.tile_locations:
+		var grid_tile: Tile = Globals.tile_grid.tile_locations[cell]
+		if _can_pick_up(grid_tile) and station.sale_refusal(grid_tile).is_empty():
+			moves.append(sell(grid_tile, station.sell_price(grid_tile.tile_resource)))
+	return moves
 
 
 ## Choices in the salvage offers on show.

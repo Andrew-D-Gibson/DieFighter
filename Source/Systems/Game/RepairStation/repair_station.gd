@@ -309,9 +309,10 @@ func _refuse(text: String, at: Vector2) -> void:
 
 func _play_repair_feedback(healed: int) -> void:
 	Events.play_sound.emit(_MONEY_SFX)
-	var anchor: Vector2 = Globals.player.get_juice_anchor()
-	Juice.sparkle(self, anchor, Globals.green, 10, 40.0, true)
-	Juice.callout_at(self, anchor, "+" + str(healed), Globals.green)
+	if Globals.player.is_inside_tree():
+		var anchor: Vector2 = Globals.player.get_juice_anchor()
+		Juice.sparkle(self, anchor, Globals.green, 10, 40.0, true)
+		Juice.callout_at(self, anchor, "+" + str(healed), Globals.green)
 	if repair_button:
 		Juice.ring(self, repair_button.global_position + repair_button.size / 2.0, Globals.green, 18.0)
 

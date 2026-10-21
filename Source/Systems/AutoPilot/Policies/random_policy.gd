@@ -18,6 +18,10 @@ const _KIND_WEIGHTS: Dictionary[AutoPilotMove.Kind, float] = {
 	AutoPilotMove.Kind.END_TURN: 1.0,
 	AutoPilotMove.Kind.CLAIM: 2.0,
 	AutoPilotMove.Kind.BUY: 0.5,
+	AutoPilotMove.Kind.REPAIR: 0.5,
+	# Rare: a random seller would strip its own grid at every station, and
+	# the point is to exercise the path, not to lose every run to it.
+	AutoPilotMove.Kind.SELL: 0.05,
 }
 
 
