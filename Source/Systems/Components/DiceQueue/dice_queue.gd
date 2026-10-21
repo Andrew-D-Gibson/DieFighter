@@ -5,6 +5,10 @@ var queue: Array[Dice]
 		
 signal die_added()
 signal die_removed()
+## [param die] has just joined this queue, by any route: the one hook a holder
+## needs to react to the die itself, since die_added doesn't say which die it
+## was. Fires before die_added.
+signal die_received(die: Dice)
 
 
 func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = true) -> void:
@@ -29,6 +33,7 @@ func add(die: Dice, preserve_value: bool = true, destroy_holographic: bool = tru
 	die.host_queue = self
 	die.draggable.home_position = global_position
 
+	die_received.emit(die)
 	die_added.emit()
 
 

@@ -55,6 +55,14 @@ const _RATTLE_STEPS_PER_SECOND: float = 30.0
 ## Degrees of tilt per pixel of rattle.
 const _RATTLE_TILT: float = 6.0
 
+## The scale a die rests at while a ship or a tile holds it.
+const HELD_SCALE: float = 0.75
+
+## A purely cosmetic tween on this die's scale or angle that nothing awaits
+## (a landing slam). Tracked so a new holder can cut it off: left running, it
+## would go on writing the old holder's scale after the handover.
+var _flourish_tween: Tween
+
 
 func _ready() -> void:
 	set_process(false)
@@ -85,19 +93,14 @@ func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 
 
 func reroll_with_tween(new_value: int = 0) -> void:
-	var final_scale: Vector2 = Vector2(1,1)
-	# A die between queues (in flight, or never held) rests at full size.
-	var holder: Node = host_queue.get_parent() if host_queue else null
-	if holder is Enemy or holder is Tile:
-		final_scale = Vector2(0.75, 0.75)
-	
+	var final_scale: Vector2 = rest_scale()
 	var tween_time: float = 0.2
-		
+
 	var tween: Tween = get_tree().create_tween().set_parallel()
 	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	tween.tween_property(self, 'global_position', global_position + Vector2(0,-8), tween_time).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(self, 'scale', Vector2(0.75, 0.75), tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	
+
 	tween.chain().tween_callback(func() -> void:
 		if new_value == 0:
 			value = get_random_die_value()
@@ -106,11 +109,53 @@ func reroll_with_tween(new_value: int = 0) -> void:
 		# The new face lands with a snap, so it reads as rolled, not swapped.
 		play_pop(0.25)
 	)
-	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	# The second half carries on round to a full turn. Restarting it from 0
+	# left every rerolled die resting upside down at 180°, and a ship then
+	# spun it back upright as it used it.
+	tween.tween_property(self, 'rotation_degrees', 360, tween_time).from(180).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, 'global_position', global_position, tween_time).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(self, 'scale', final_scale, tween_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	
+	# Square up for whoever holds it once it lands, which needn't be who held
+	# it when the roll began: a ship can die mid-roll and pass the die on.
+	tween.chain().tween_callback(reset_visual_state)
+
 	await tween.finished
+
+
+## The scale this die rests at with its current holder: shrunk while a ship or
+## a tile holds it, full size in the player's hand or between queues.
+func rest_scale() -> Vector2:
+	var holder: Node = host_queue.get_parent() if host_queue else null
+	if host_queue is EnemyDiceManager or holder is Enemy or holder is Tile:
+		return Vector2.ONE * HELD_SCALE
+	return Vector2.ONE
+
+
+## Squares the die up for its current holder: upright, at that holder's rest
+## scale, with any cosmetic flourish cut off. The one place a die's transform is
+## reset when it changes hands, so a die can't arrive tilted or at the size its
+## last holder gave it, whatever was animating it on the way out.
+##
+## A die being dragged is left alone; the drag owns its scale and wobble, and
+## the drop squares it up.
+func reset_visual_state() -> void:
+	if draggable and draggable.state == Draggable.DragState.DRAGGING:
+		return
+	if _flourish_tween and _flourish_tween.is_valid():
+		_flourish_tween.kill()
+	_flourish_tween = null
+	rotation = 0.0
+	scale = rest_scale()
+
+
+## A new tween bound to this die for a cosmetic scale or angle flourish that
+## nothing awaits, replacing the last one. reset_visual_state() kills it, so a
+## handover can't be overwritten by the flourish finishing afterwards.
+func create_flourish_tween() -> Tween:
+	if _flourish_tween and _flourish_tween.is_valid():
+		_flourish_tween.kill()
+	_flourish_tween = create_tween()
+	return _flourish_tween
 
 
 ## A quick squash on the face, for the moments a die matters: landing in a

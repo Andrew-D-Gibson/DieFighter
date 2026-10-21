@@ -191,10 +191,12 @@ func _ready() -> void:
 	)
 	
 	
+	# Every die coming back to the hand passes through here, from whatever
+	# was last moving it: a ship's queue, a dying ship's hold, a tile, a reroll.
+	dice_manager.die_received.connect(func(die: Dice) -> void: die.reset_visual_state())
 	dice_manager.die_added.connect(func() -> void:
 		_update_dice_queue_locations()
 		_make_newest_die_draggable()
-		_reset_newest_die_transform()
 	)
 	dice_manager.die_removed.connect(_update_dice_queue_locations)
 	
@@ -273,13 +275,7 @@ func _update_dice_queue_locations() -> void:
 func _make_newest_die_draggable() -> void:
 	if dice_manager.queue[-1].draggable.state != Draggable.DragState.DRAGGING:
 		dice_manager.queue[-1].draggable.state = Draggable.DragState.DEFAULT
-		
-		
-func _reset_newest_die_transform() -> void:
-	if dice_manager.queue[-1].draggable.state != Draggable.DragState.DRAGGING:
-		dice_manager.queue[-1].scale = Vector2(1,1)
-		dice_manager.queue[-1].rotation_degrees = 0
-	
+
 
 func _process(_delta: float) -> void:
 	# Handle rearranging dice in the queue
@@ -557,8 +553,8 @@ func _stow_die_for_jump(die: Dice) -> void:
 	if die.host_queue != dice_manager:
 		dice_manager.add(die, true, false)
 	die.draggable.state = Draggable.DragState.DEFAULT
-	die.scale = Vector2.ONE
-	die.rotation = 0.0
+	# A die already in hand skips the add, so square it up here too.
+	die.reset_visual_state()
 	_lock_die_for_jump(die)
 
 

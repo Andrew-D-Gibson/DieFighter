@@ -16,6 +16,10 @@ const _HEAVY_HANDOVER_SECONDS: float = 0.95
 const _LIGHT_HOLD_SECONDS: float = 0.15
 const _HEAVY_HOLD_SECONDS: float = 0.45
 
+## How far the die spins on its way out in front of the ship: one full turn,
+## so it lands upright.
+const _USE_SPIN: float = TAU
+
 ## How many times the full effect chain plays for this single activation.
 ## Defaults to 1; modifiers may multiply this in on_before_event() (e.g.
 ## "tiles activated by a 4 activate twice").
@@ -66,11 +70,15 @@ func resolve(engine: ScenarioEngine) -> void:
 		Vector2.ONE * lerpf(0.8, 1.15, weight),
 		adjusted_tween_time
 	).set_ease(Tween.EASE_OUT)
-	# Square it up too: a die handed on mid-relay can still be spinning from a
-	# tractor beam that was cut short. Wrapped first so it takes the short way.
+	# The die turns over once on the way, a flourish that marks it as the
+	# ship's to spend now. Wrapped first, so a die still tilted from a beam
+	# that was cut short spins one turn rather than unwinding several, then
+	# set back to 0 at the end: a full turn looks upright but isn't 0, and
+	# whatever moves the die next would spin it back.
 	activator_die.rotation = wrapf(activator_die.rotation, -PI, PI)
-	tween.parallel().tween_property(activator_die, "rotation", 0.0, adjusted_tween_time) \
-		.set_ease(Tween.EASE_OUT)
+	tween.parallel().tween_property(activator_die, "rotation", _USE_SPIN, adjusted_tween_time) \
+		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(activator_die.set_rotation.bind(0.0))
 	enemy.spending_die = activator_die as Dice
 	enemy.spending_tween = tween
 	await tween.finished

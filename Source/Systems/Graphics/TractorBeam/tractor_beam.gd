@@ -50,8 +50,8 @@ const _RESIST_JITTER: Vector2 = Vector2(0.4, 1.4)
 const _RICOCHET_RADIUS: float = 40.0
 const _RICOCHET_DISTANCE: Vector2 = Vector2(24.0, 40.0)
 
-## The scale a die rests at in an enemy's queue (see EnemyDiceManager.add).
-const _HELD_SCALE: float = 0.75
+## The scale a die rests at in an enemy's queue.
+const _HELD_SCALE: float = Dice.HELD_SCALE
 
 ## Trail length in points at 1x animation speed.
 const _TRAIL_POINTS: int = 16
@@ -273,7 +273,9 @@ func _land() -> void:
 	_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
 	_trail.clear_points()
 
-	var slam: Tween = _die.create_tween()
+	# A flourish, so a ship dying straight after the catch can pass the die on
+	# without the slam finishing at this ship's scale.
+	var slam: Tween = _die.create_flourish_tween()
 	slam.tween_property(_die, "scale", Vector2.ONE * _HELD_SCALE, _SLAM_SECONDS * _time_scale()) \
 		.from(Vector2.ONE * _HELD_SCALE * 1.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
