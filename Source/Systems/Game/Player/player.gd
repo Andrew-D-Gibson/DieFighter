@@ -16,7 +16,7 @@ const _OVERCHARGE_CAP_FRACTION: float = 0.5
 
 ## Hull paid per turn ended in the redline, as a divisor of the overcharge:
 ## +10 past the gate costs 5 a turn. Pushing deeper costs more, which is what
-## makes the band a burst resource rather than a bank.
+## makes the band a burst resource rather than a bank. See redline_hull_cost().
 const _REDLINE_HULL_DIVISOR: int = 2
 
 var max_engine_charge: int = 24
@@ -245,13 +245,22 @@ func _bleed_for_redline() -> void:
 		return
 
 	var event: DamageEvent = DamageEvent.new()
-	event.amount = maxi(1, over / _REDLINE_HULL_DIVISOR)
+	event.amount = redline_hull_cost(over)
 	event.actor = self
 	event.effect_source = self
 	event.targets = [self]
 	engine.queue_event(event)
 
 	Events.camera_shake_small.emit()
+
+
+## Hull lost for ending a turn [param over] charge past the gate: half of it,
+## rounded up like every "half of" in the game (+3 costs 2), and never less
+## than 1 while redlined at all.
+static func redline_hull_cost(over: int) -> int:
+	if over <= 0:
+		return 0
+	return maxi(1, ceili(over / float(_REDLINE_HULL_DIVISOR)))
 
 
 func _load_game_save(game_save: GameSaveResource) -> void:

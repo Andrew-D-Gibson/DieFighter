@@ -32,9 +32,14 @@ func test_amount_modifiers_run_in_order_into_the_damage() -> void:
 	assert_eq(_damage_amounts(), [10])
 
 
-func test_multiply_truncates_toward_zero() -> void:
+func test_multiply_rounds_a_fraction_up() -> void:
 	await Effects.chain([Effects.set_amount(5), Effects.multiply(1.5), Effects.damage()]).play(context, engine)
-	assert_eq(_damage_amounts(), [7])
+	assert_eq(_damage_amounts(), [8], "7.5 rounds up")
+
+
+func test_half_of_an_odd_amount_rounds_up() -> void:
+	await Effects.chain([Effects.set_amount(5), Effects.multiply(0.5), Effects.damage()]).play(context, engine)
+	assert_eq(_damage_amounts(), [3], "half of 5 is 3")
 
 
 func test_events_are_stamped_with_the_chain_context() -> void:
