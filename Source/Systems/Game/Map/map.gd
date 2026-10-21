@@ -106,6 +106,7 @@ var _icon_hints: Dictionary[String, Dictionary] = {
 	"elite_encounter.png": {"title": "Elite", "color": Globals.purple},
 	"unknown_encounter.png": {"title": "Unknown", "color": Globals.yellow},
 	"shop.png": {"title": "Shop", "color": Globals.green},
+	"healing_encounter.png": {"title": "Repair", "color": Globals.green},
 	"empty_encounter.png": {"title": "Empty", "color": Globals.white.darkened(0.3)},
 	"jump_gate.png": {"title": "Boss Gate", "color": Globals.blue},
 	"fate_encounter.png": {"title": "Corrupt", "color": Globals.medium_purple},

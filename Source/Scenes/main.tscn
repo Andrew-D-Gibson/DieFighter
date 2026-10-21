@@ -84,6 +84,8 @@
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/open_the_map.tres" id="tut_open_the_map"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_handoff.tres" id="tut_tutorial_handoff"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/RepairStation/repair_station.tscn" id="repair_station_scene"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/RepairStation/repair_station.tres" id="repair_station_scenario"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -356,6 +358,10 @@ z_index = 14
 visible = false
 position = Vector2(122, 43)
 
+[node name="RepairStation" parent="Systems" unique_id=1475209381 instance=ExtResource("repair_station_scene")]
+visible = false
+position = Vector2(122, 43)
+
 [node name="ScenarioManager" parent="Systems" unique_id=831267193 instance=ExtResource("19_3g417")]
 
 [node name="HazardManager" type="Node" parent="Systems" unique_id=904210003]
@@ -379,6 +385,7 @@ current_game_save = ExtResource("99_runstart")
 sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
+repair_scenario = ExtResource("repair_station_scenario")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter")])

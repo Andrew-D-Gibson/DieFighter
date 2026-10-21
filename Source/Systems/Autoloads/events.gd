@@ -141,6 +141,8 @@ signal systems_shown()
 signal map_shown()
 signal open_shop()
 signal close_shop()
+signal open_repair_station()
+signal close_repair_station()
 
 
 # Info/Tutorial Events

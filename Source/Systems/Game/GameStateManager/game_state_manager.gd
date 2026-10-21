@@ -9,6 +9,12 @@ extends Node2D
 @export_category('Scenario Resources')
 @export var empty_scenario: ScenarioResource
 @export var shop_scenario: ScenarioResource
+## The repair station: buy hull, sell tiles. See _place_repair_stations().
+@export var repair_scenario: ScenarioResource
+## How many repair stations a sector holds, inclusive on both ends. A little
+## rarer than shops (2-3): hull is the scarcer thing to buy, and with nothing
+## else reliably healing, two stations a sector would make it cheap.
+@export var repair_stations_per_sector: Vector2i = Vector2i(1, 2)
 @export var combat_scenarios: Array[ScenarioResource]
 @export var question_scenarios: Array[ScenarioResource]
 ## Optional fights a cut above the rest: tougher ships, rarer salvage. Shuffled
@@ -52,6 +58,9 @@ extends Node2D
 ## How long the arrival's red-alert vignette runs. Long enough to register as
 ## an emergency, short enough to be over before the player's first die lands.
 @export var cold_open_alert_time: float = 2.2
+
+## The furthest one jump goes: a die's top face.
+const _LONGEST_JUMP: int = 6
 
 ## True when this is a brand new run rather than a loaded save. Only a new run
 ## gets the alarm: a continued save is resuming a fight it already knows about.
@@ -214,6 +223,9 @@ func _sound_the_alarm() -> void:
 	
 	
 func _randomize_sector_scenarios() -> void:
+	# Read before anything is drawn: the stations are placed from it, after
+	# the sector is otherwise finished. See place_repair_stations().
+	var repair_placement_seed: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, "repair"])
 	current_game_save.sector_scenarios = []
 	
 	# Add the shop(s)
@@ -286,9 +298,61 @@ func _randomize_sector_scenarios() -> void:
 	# Seed all the scenarios
 	for scenario: ScenarioResource in current_game_save.sector_scenarios:
 		scenario.scenario_seed = RNGManager.randi(RNGManager.Bucket.RUN)
+
+	if repair_scenario:
+		var replaceable: Array[ScenarioResource] = []
+		replaceable.append_array(combat_scenarios)
+		replaceable.append_array(question_scenarios)
+		place_repair_stations(
+			current_game_save.sector_scenarios,
+			current_game_save.current_scenario_index,
+			replaceable,
+			repair_scenario,
+			repair_stations_per_sector,
+			repair_placement_seed
+		)
 	
 	
 	
+## Swaps [param count_range] ordinary stops in a finished sector for repair
+## stations: combats or events (anything in [param replaceable]) that sit
+## further from the arrival than one jump can reach, before the gate.
+##
+## Done last, from its own generator seeded off the RUN stream's state rather
+## than by drawing from it. Drawing would shift every roll after it, so every
+## seeded map (the tutorial's seed 21, every AutoPilot transcript) would come
+## out different. This way the RUN stream is untouched, and a sector only
+## differs where a station replaced a stop.
+##
+## Why beyond a jump's reach: the arrival's neighbourhood stays exactly as the
+## RUN stream dealt it, which the tutorial's script relies on, and a station is
+## a stop to plan a route toward, a pit stop before the gate.
+static func place_repair_stations(
+	scenarios: Array[ScenarioResource],
+	arrival_index: int,
+	replaceable: Array[ScenarioResource],
+	station: ScenarioResource,
+	count_range: Vector2i,
+	placement_seed: int
+) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = placement_seed
+
+	var candidates: Array[int] = []
+	# The last slot is the gate.
+	for index: int in range(arrival_index + _LONGEST_JUMP + 1, scenarios.size() - 1):
+		if scenarios[index] in replaceable:
+			candidates.append(index)
+
+	var count: int = rng.randi_range(count_range.x, count_range.y)
+	for i: int in range(mini(count, candidates.size())):
+		var pick: int = rng.randi_range(0, candidates.size() - 1)
+		scenarios[candidates[pick]] = station
+		candidates.remove_at(pick)
+	if count > 0:
+		station.scenario_seed = rng.randi()
+
+
 ## Rolls this sector's elites into the encounter list, before it's shuffled.
 ## Each elite appears at most once per sector, so a short elite list caps the
 ## count rather than repeating a fight.
@@ -487,6 +551,7 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 ##   enemies          — per starting_enemies index: alive, state, health, shields
 ##   offers           — reward offers still floating, item by item
 ##   shop             — unsold stock and prices, when the shop is open
+##   repair_station   — repairs bought here (they set the price), when open
 ##   dice             — the player's hand: value and holographic per die
 ##   tile_uses        — uses_remaining per grid position ("x,y")
 ##   rng              — the per-scenario RNG streams, mid-flight
@@ -504,6 +569,8 @@ func _capture_scenario_progress() -> Dictionary:
 	}
 	if is_instance_valid(Globals.shop) and Globals.shop.visible:
 		progress["shop"] = Globals.shop.capture_stock()
+	if is_instance_valid(Globals.repair_station) and Globals.repair_station.visible:
+		progress["repair_station"] = Globals.repair_station.capture_state()
 	return progress
 
 

@@ -17,6 +17,7 @@ var jump_gate: JumpGate
 var background_modifier_manager: BackgroundModifierManager
 var run_stats: RunStats
 var shop: Shop
+var repair_station: RepairStation
 
 ## While true, the tutorial decides when enemy turns run, so EnemyManager should
 ## not fire one off the back of player_turn_over.

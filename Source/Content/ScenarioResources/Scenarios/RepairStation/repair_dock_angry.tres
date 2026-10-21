@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="1_state"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_chain"]
+
+[sub_resource type="Resource" id="Resource_close"]
+script = ExtResource("2_data")
+category = 6
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_moveship"]
+script = ExtResource("2_data")
+category = 6
+subtype = 4
+multiplier = 0.5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("3_chain")
+effects = Array[ExtResource("2_data")]([SubResource("Resource_close"), SubResource("Resource_moveship")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("1_state")
+dialogue = "DIALOGUE_REPAIR_ANGRY"
+faction = 1
+attitude = 2
+effects_on_enter = SubResource("Resource_chain")
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

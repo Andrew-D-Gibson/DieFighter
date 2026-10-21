@@ -6,6 +6,13 @@ const CARDINAL_DIRECTIONS: Array[Vector2i] = [
 	Vector2i(-1, 0), Vector2i(1, 0), Vector2i(0, -1), Vector2i(0, 1)
 ]
 
+## A tile on the grid was picked up. Anything that takes tiles off the player
+## (the repair station buying them) uses it to show what it would pay.
+signal tile_lifted(tile: Tile)
+## A tile from the grid was let go of somewhere off the grid. It floats back to
+## its cell unless a listener takes it.
+signal tile_dropped_off_grid(tile: Tile, global_drop_pos: Vector2)
+
 @export var grid_width: int = 5
 @export var grid_height: int = 3
 @export var grid_spacing: int = 24
@@ -117,8 +124,7 @@ func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:
 		# Placed, not dropped: no landing thump.
 		_assign_tile_to_grid_pos(tile as Tile, tile_grid_pos, false)
 
-		# Connect the tile's drag ended signal to the function to snap it to the grid
-		tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
+		_listen_to_drags(tile)
 
 
 func create_tile(tile_resource: TileResource) -> Tile:
@@ -132,7 +138,7 @@ func receive_tile(tile: Tile, drop_position: Vector2) -> void:
 	tile.reparent(self, true)
 	tile.update_dragging_allowed()
 	tile.draggable.floating_enabled = false
-	tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
+	_listen_to_drags(tile)
 
 	# Mid-fight the tiles already here are locked in place, so a tile taken
 	# from a reward drops into the first free cell instead of shoving one aside.
@@ -140,6 +146,18 @@ func receive_tile(tile: Tile, drop_position: Vector2) -> void:
 		drop_position = grid_to_global_pos(find_available_grid_pos())
 
 	_drop_tile_on_grid_pos(tile.draggable, drop_position)
+
+
+## Snaps the tile to the grid when it's let go, and reports it being picked
+## up. Bound rather than a lambda, so the connection dies with the tile.
+func _listen_to_drags(tile: Tile) -> void:
+	tile.draggable.drag_ended.connect(_drop_tile_on_grid_pos)
+	tile.draggable.drag_started.connect(_on_tile_lifted.bind(tile))
+
+
+func _on_tile_lifted(tile: Tile) -> void:
+	if find_tile_pos(tile) != Vector2i(-1, -1):
+		tile_lifted.emit(tile)
 
 
 func _assign_tile_to_grid_pos(tile: Tile, grid_pos: Vector2i, announce_arrival: bool = true) -> void:
@@ -162,6 +180,20 @@ func forget_tile(tile: Tile) -> void:
 	var pos: Vector2i = find_tile_pos(tile)
 	if is_grid_pos_valid(pos):
 		tile_locations.erase(pos)
+
+
+## Takes a tile off the grid for good (sold). Any die it was holding goes
+## back to the hand first, and anything the tile had put in play on the engine
+## goes with it, so nothing keeps acting for a tile that's gone.
+func remove_tile(tile: Tile) -> void:
+	tile.release_held_dice()
+	forget_tile(tile)
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine:
+		for mod: Modifier in engine.modifiers.duplicate():
+			if mod.source == tile or mod.affected_node == tile:
+				engine.remove_modifier(mod)
+	tile.queue_free()
 
 
 func move_tile(tile: Tile, new_pos: Vector2i) -> void:
@@ -230,6 +262,8 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 			var available_pos: Vector2i = find_available_grid_pos()
 			if is_grid_pos_valid(available_pos):
 				_assign_tile_to_grid_pos(tile_to_move, available_pos)
+		else:
+			tile_dropped_off_grid.emit(tile_to_move, global_drop_pos)
 		return
 
 	# If the target grid position is occupied

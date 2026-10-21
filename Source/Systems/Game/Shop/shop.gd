@@ -12,6 +12,13 @@ var _item_prices: Dictionary[Node, int]
 
 const DICE_PRICE: int = 25
 
+## What a tile on the shelf costs, by rarity, inclusive on both ends.
+const PRICE_RANGES: Dictionary[TileResource.Rarity, Vector2i] = {
+	TileResource.Rarity.COMMON: Vector2i(10, 20),
+	TileResource.Rarity.UNCOMMON: Vector2i(15, 25),
+	TileResource.Rarity.RARE: Vector2i(25, 35),
+}
+
 ## Identifies the screen space the open shop panel holds against the enemy
 ## formation. See [EnemyFormation].
 const _FORMATION_KEY: StringName = &"shop"
@@ -92,15 +99,20 @@ func _get_possible_shop_tiles() -> Array[TileResource]:
 ## its seed shows the same prices. (It used to draw from RUN, which also meant
 ## every shop visited shifted the rolls for every sector generated after it.)
 func _get_randomized_price(rarity: TileResource.Rarity) -> int:
-	match rarity:
-		TileResource.Rarity.COMMON:
-			return RNGManager.randi_range(RNGManager.Bucket.REWARDS, 10, 20)
-		TileResource.Rarity.UNCOMMON:
-			return RNGManager.randi_range(RNGManager.Bucket.REWARDS, 15, 25)
-		TileResource.Rarity.RARE:
-			return RNGManager.randi_range(RNGManager.Bucket.REWARDS, 25, 35)
-		_:
-			return 0
+	if not PRICE_RANGES.has(rarity):
+		return 0
+	var price_range: Vector2i = PRICE_RANGES[rarity]
+	return RNGManager.randi_range(RNGManager.Bucket.REWARDS, price_range.x, price_range.y)
+
+
+## The middle of a rarity's shelf price, with no roll: what a tile of that
+## rarity is worth on average. The repair station pays a share of this for a
+## tile sold to it, so a resale value never depends on the dice.
+static func base_price(rarity: TileResource.Rarity) -> int:
+	if not PRICE_RANGES.has(rarity):
+		return 0
+	var price_range: Vector2i = PRICE_RANGES[rarity]
+	return (price_range.x + price_range.y) / 2
 
 
 func _create_shop_tiles() -> void:

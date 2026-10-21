@@ -125,9 +125,10 @@ static func earns_faction_bounty(last_ship: Enemy) -> bool:
 ## Checks if a faction has been completely wiped out,
 ## then emits the corresponding signal if necessary
 func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
-	# Just as an edge case, if the player destroys the shop in a single turn
-	# it won't close the normal way, so we close it here
+	# Just as an edge case, if the player destroys the shop (or the repair
+	# dock) in a single turn it won't close the normal way, so we close it here
 	Events.close_shop.emit()
+	Events.close_repair_station.emit()
 	
 	var other_faction_ships: Array[Enemy] = Globals.enemy_manager.get_faction_ships(faction)
 	if ship in other_faction_ships:
