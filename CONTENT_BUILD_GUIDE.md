@@ -178,7 +178,10 @@ Every action must end the die's life one of these ways:
 `TARGET_BOUND_HOSTILE_SHIP`, never the random ones. The ship is then picked
 when the slot is rolled, named in the intent, and marked under the ship, and
 the action is only rolled when such a ship exists. A relay needs no targeting
-step; its ally is bound automatically.
+step; its ally is bound automatically. The binding never moves: if that ship
+leaves, the action can't happen, and a die spent on it pops a "?" and does
+nothing (`EnemyActionResource.get_outcome()` is `BLOCKED`). Jammed isn't spent
+on such a die, or on any die whose action does nothing.
 
 **Derived automatically, nothing to set:**
 - Threat (tractor-beam colour). Damage aimed at the player is DANGEROUS.
@@ -257,8 +260,9 @@ enemy resource (e.g. `raider.tres`), not on a shared one.
 LAUNCH_SHIP` with `ship_resource` set brings that enemy in beside the actor,
 on its side and in its scenario state. It drops no reward of its own (its
 side's bounty still waits on it), isn't saved (a Continue rebuilds the
-authored roster), and refuses with "HANGAR JAMMED" once
-`EnemyManager.max_ships_in_combat` ships are up.
+authored roster). Once `EnemyManager.max_ships_in_combat` ships are up, a
+die spent on a launch pops a "?" and does nothing ("HANGAR JAMMED" is the
+backstop if two launches race).
 
 **Overload** (optional): `overload_threshold` (held-dice total that trips
 it; 0 = never), `overload_threshold_growth`, `overload_chain` (what tripping

@@ -8,6 +8,7 @@ const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 const ATTACK: EnemyActionResource = preload("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres")
 const DO_NOTHING: EnemyActionResource = preload("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres")
+const REPAIR: EnemyActionResource = preload("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/repair_ally.tres")
 
 var engine: ScenarioEngine
 
@@ -207,6 +208,41 @@ func test_jammed_turns_its_ships_actions_into_nothing() -> void:
 	jammed.on_before_event(own, engine)
 	assert_eq(own.action.name, DO_NOTHING.name)
 	assert_ne(own.action, DO_NOTHING, "a copy, so the shared resource is never bound")
+	assert_null(engine.find_status(enemy, &"jammed"))
+
+
+func test_jammed_keeps_its_stacks_through_dice_that_would_do_nothing() -> void:
+	var enemy := _enemy()
+	await _apply(enemy, &"jammed", 1)
+	var jammed: StatusModifier = engine.find_status(enemy, &"jammed")
+
+	var idle: EnemyActionEvent = EnemyActionEvent.new()
+	idle.enemy = enemy
+	idle.action = DO_NOTHING
+	jammed.on_before_event(idle, engine)
+	assert_eq(idle.action, DO_NOTHING)
+
+	# A support whose ally has gone: it meant to act, but can't.
+	var dead_ally := _enemy()
+	dead_ally.health.health = 0
+	var repair: EnemyActionResource = REPAIR.duplicate(true)
+	repair.bound_target = dead_ally
+	var blocked: EnemyActionEvent = EnemyActionEvent.new()
+	blocked.enemy = enemy
+	blocked.action = repair
+	jammed.on_before_event(blocked, engine)
+	assert_eq(blocked.action, repair, "left for EnemyActionEvent to show as blocked")
+
+	var empty: EnemyActionEvent = EnemyActionEvent.new()
+	empty.enemy = enemy
+	jammed.on_before_event(empty, engine)
+	assert_eq(jammed.stacks, 1, "nothing worth jamming yet")
+
+	var attack: EnemyActionEvent = EnemyActionEvent.new()
+	attack.enemy = enemy
+	attack.action = ATTACK
+	jammed.on_before_event(attack, engine)
+	assert_eq(attack.action.name, DO_NOTHING.name, "spent on the first die that would act")
 	assert_null(engine.find_status(enemy, &"jammed"))
 
 

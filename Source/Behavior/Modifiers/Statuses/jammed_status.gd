@@ -1,7 +1,12 @@
 class_name JammedStatus
 extends StatusModifier
-## Each die the ship uses does nothing and comes back to the player, spending
-## one Jammed.
+## Each die the ship uses on an action that would do something instead does
+## nothing and comes back to the player, spending one Jammed.
+##
+## A die that was going to fizzle anyway (Do Nothing, or a Repair Beam whose
+## ally has died) passes through untouched, keeping the stacks for a die that
+## matters: otherwise a jam could be wasted on a die the player chose
+## precisely because it does nothing. See EnemyActionResource.outcome_of().
 ##
 ## Rather than cancel the ship's action, which would strand the die in its
 ## queue, the action is swapped for Do Nothing — whose chain already hands
@@ -27,6 +32,8 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 		return
 	var action_event: EnemyActionEvent = event as EnemyActionEvent
 	if action_event.enemy != affected_node:
+		return
+	if EnemyActionResource.outcome_of(action_event.action) != EnemyActionResource.Outcome.ACTS:
 		return
 
 	# A copy, like every rolled action: the preloaded one is shared.

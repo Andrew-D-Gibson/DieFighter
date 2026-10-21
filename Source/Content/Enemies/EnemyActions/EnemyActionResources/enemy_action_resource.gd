@@ -26,6 +26,15 @@ enum Relay {
 	HOLOGRAM, ## Conjures a hologram whose face is the intent amount
 }
 
+## What spending a die on this action would come to right now. Unlike Threat,
+## which is read off the chain once, this reads the board: the ship it was
+## bound to may have died since, or the hangar may be full.
+enum Outcome {
+	ACTS,    ## Something in the game changes
+	IDLE,    ## The action was never going to do anything (Do Nothing)
+	BLOCKED, ## The action means to do something, but nothing it does can happen now
+}
+
 @export var name: String
 @export_multiline var description: String
 @export var indicator_texture: Texture2D
@@ -116,6 +125,87 @@ func placement_strength() -> float:
 		tier = float(get_threat())
 	var amount: int = 0 if get_relay() == Relay.HOLOGRAM else intent_amount
 	return tier * 100.0 + amount
+
+
+## What spending a die on [param action] would come to right now. Jammed and
+## the "?" pop-up both ask this one question, so a jam is never spent on a die
+## that was going to fizzle anyway. An empty slot is idle.
+static func outcome_of(action: EnemyActionResource) -> Outcome:
+	if action == null:
+		return Outcome.IDLE
+	return action.get_outcome()
+
+
+## See [enum Outcome]. Read fresh each time: unlike the chain, the board it
+## depends on changes mid-turn.
+func get_outcome() -> Outcome:
+	if effect_chain == null:
+		return Outcome.IDLE
+	var tally: Dictionary[StringName, int] = {&"steps": 0, &"possible": 0}
+	_tally_outcome(effect_chain.effects, false, tally)
+	if tally[&"steps"] == 0:
+		return Outcome.IDLE
+	return Outcome.ACTS if tally[&"possible"] > 0 else Outcome.BLOCKED
+
+
+## Counts the steps that would change the game, and how many of them still
+## can. [param aimed_at_bound] is whether the targeting so far points at the
+## bound ship. A conditional's branches are each counted from the aim going
+## in; whichever branch runs, the steps after it keep that same aim.
+func _tally_outcome(effects: Array[EffectData], aimed_at_bound: bool, tally: Dictionary[StringName, int]) -> void:
+	for effect: EffectData in effects:
+		if effect == null:
+			continue
+		if effect is ConditionalEffectData:
+			var conditional: ConditionalEffectData = effect
+			_tally_outcome(conditional.if_true_effects, aimed_at_bound, tally)
+			_tally_outcome(conditional.if_false_effects, aimed_at_bound, tally)
+			continue
+		if effect.category == EffectEnums.Category.TARGETING:
+			aimed_at_bound = effect.subtype in [
+				EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY,
+				EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP,
+			]
+			continue
+		# A Feed changes nothing by itself for the threat reading, but handing
+		# the die on is the whole point of the step.
+		var is_feed: bool = effect.category == EffectEnums.Category.DICE_CONTROL \
+			and effect.subtype == EffectEnums.DiceControlSubtype.FEED_ALLY
+		if not is_feed and not _has_consequence(effect):
+			continue
+		tally[&"steps"] += 1
+		if _step_can_happen(effect, aimed_at_bound):
+			tally[&"possible"] += 1
+
+
+func _step_can_happen(effect: EffectData, aimed_at_bound: bool) -> bool:
+	var acts_on_bound: bool = aimed_at_bound or (
+		effect.category == EffectEnums.Category.DICE_CONTROL
+		and effect.subtype in [
+			EffectEnums.DiceControlSubtype.FEED_ALLY,
+			EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAM_FOR_ALLY,
+		]
+	)
+	if acts_on_bound:
+		# The ship was picked when the slot was rolled, and a slot is never
+		# re-pointed: with it gone, this step has no one to act on.
+		if not is_bound_target_present():
+			return false
+		if effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
+		and effect.subtype == EffectEnums.AttributeChangeSubtype.HEAL \
+		and bound_target.health.health >= bound_target.health.max_health:
+			return false
+	if effect.category == EffectEnums.Category.SCENARIO_CONTROL \
+	and effect.subtype == EffectEnums.ScenarioControlSubtype.LAUNCH_SHIP:
+		var manager: EnemyManager = Globals.enemy_manager
+		if manager != null and not manager.has_room_to_launch():
+			return false
+	return true
+
+
+## Whether the ship this slot was bound to is still in the fight.
+func is_bound_target_present() -> bool:
+	return is_instance_valid(bound_target) and bound_target.health.health > 0
 
 
 ## Whether this action may sit in a table the player can't see yet. One that
