@@ -34,7 +34,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
 script = ExtResource("script_0")
-dialogue = "Cargo's gone. Take the credit tin. We're square."
+dialogue = "Take the credits, not my hull."
 faction = 1
 effects_on_enter = SubResource("Resource_chain4")
 transitions = Dictionary[int, ExtResource("script_1")]({

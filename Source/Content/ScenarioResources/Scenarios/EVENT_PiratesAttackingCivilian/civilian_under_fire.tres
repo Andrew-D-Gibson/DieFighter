@@ -7,7 +7,7 @@
 
 [resource]
 script = ExtResource("2_pg8o7")
-dialogue = "They're firing on us! Please!"
+dialogue = "They're firing on us!"
 faction = 1
 transitions = Dictionary[int, ExtResource("3_o6elf")]({
 1: ExtResource("5_c1435"),

@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("2_1cg12")
-dialogue = "We never would've made it without you."
+dialogue = "We owe you our lives."
 faction = 1
 transitions = Dictionary[int, ExtResource("3_4o1nx")]({
 1: ExtResource("4_1cg12")

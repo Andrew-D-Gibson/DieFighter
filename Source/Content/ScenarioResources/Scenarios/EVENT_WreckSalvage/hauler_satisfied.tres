@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("script_0")
-dialogue = "Credits for scrap. Cleanest trade all cycle."
+dialogue = "Fair trade. Safe travels."
 faction = 1
 attitude = 1
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

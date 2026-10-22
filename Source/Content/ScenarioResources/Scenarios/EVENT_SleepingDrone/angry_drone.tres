@@ -5,6 +5,6 @@
 
 [resource]
 script = ExtResource("1_2jsga")
-dialogue = "!!! THREAT DETECTED !!!"
+dialogue = "THREAT DETECTED!"
 attitude = 2
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

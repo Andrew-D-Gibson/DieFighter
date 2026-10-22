@@ -51,7 +51,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
 script = ExtResource("script_0")
-dialogue = "Hull breach on your port side. Hold still, we do this for free."
+dialogue = "Hold still. Repairs are free."
 faction = 1
 effects_on_enter = SubResource("Resource_chain7")
 transitions = Dictionary[int, ExtResource("script_1")]({

@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "Salvage! [color=green]Credits[/color](credits) buy upgrades at shops.(delay=0.3) [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave](left_mouse) the new system into an empty slot:"
+tutorial_text = "Salvage! Spend [color=green]credits[/color](credits) at shops.(delay=0.3) [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave](left_mouse) the new system into an empty slot:"
 text_position = Vector2(220, 40)
 time_delay = 2.0
 close_on_signal = 9

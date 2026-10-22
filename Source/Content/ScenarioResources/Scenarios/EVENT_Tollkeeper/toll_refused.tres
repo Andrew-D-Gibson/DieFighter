@@ -6,6 +6,6 @@
 
 [resource]
 script = ExtResource("script_0")
-dialogue = "Then we take it the other way."
+dialogue = "Wrong answer."
 attitude = 2
 metadata/_custom_type_script = "uid://cpgidtisgk77q"
