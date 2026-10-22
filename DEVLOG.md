@@ -4,6 +4,41 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-21 — Opening cutscene: the escape from Fate
+
+The opening now sets up the first fight. The player's ship claws away from
+Fate with two Attackers on its tail. Fate surges and swallows one; the other
+is clipped and trails smoke from then on, which is where the ambush
+Attacker's missing 35% of hull went. Both jump, the chase carries on through
+hyperspace, and they drop out into star_field (the ambush's background). The
+Attacker arrives a beat after the player, the alarm sounds, it locks on, the
+player flips to face it, and the cut to the cockpit comes as the dice cross.
+
+- **Two resolutions.** Ships, Fate, debris and effects render in a 320x180
+  SubViewport scaled 6x, so nothing rotates or scales into mixels. The
+  starfield stays in the 1080p viewport behind it, so it glides and streaks
+  smoothly. The container blends premultiplied, or half-faded pixels (nebula,
+  smoke, flashes) composite muddy grey, as in `JuicePixelated`.
+- **The jump** is the game's, turned horizontal: stars speed up and streak,
+  then the hyperspace noise and streak sheet punch in under a flash. Each ship
+  also stretches along its heading and leaves a streak, and drops out of one.
+- **Background** borrows rift_space: the black hole, its purple nebula
+  (darkened, since the shader stacks it up to 3x and clips to grey-white),
+  and fate shards plus scrap, dragged into the hole and stretched as they go.
+- **New player ship** (`Assets/Textures/Player/Ship/`), drawn from
+  tinyShip12 in the game palette, with cruise, boost and fire frames. The
+  cockpit cutscene flies it too, now over star_field, zooming onto the
+  canopy.
+- Timing lives in `cutscene_anim`, so it can be scrubbed and retimed in the
+  editor; its method track calls the one-shot effects in
+  `opening_cutscene.gd`.
+
+Checked by rendering both cutscenes frame by frame with `--write-movie` and
+live at full resolution. How it plays at speed, with the music, still needs a
+watch.
+
+---
+
 ## 2026-10-21 — Music: MusicDirector
 
 The game had a `Music` bus and volume slider but no music; `main.tscn`'s
