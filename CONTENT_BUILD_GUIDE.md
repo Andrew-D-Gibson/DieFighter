@@ -413,9 +413,16 @@ encounter.
 - Two scripts in `ScrollingPieces/` animate a piece without code:
   `PieceFrames` on a `Sprite2D` sheet steps its frames (a `sequence` can hold
   frames, e.g. a run of blanks between rare lightning), and `PiecePulse`
-  throbs a sprite's brightness (the fate die's fissure, the cinders' cracks).
-  Both start each copy at a random point, so a field of pieces never pulses
-  in step.
+  throbs a sprite's brightness (the cinders' cracks). Both start each copy at
+  a random point, so a field of pieces never pulses in step.
+- **Shader per set.** A set's `shader` replaces the plain depth fade for all
+  its pieces. It must take `scrolling_object.gdshader`'s uniforms, and gets a
+  fresh `seed` per piece. `fate_shards` uses `fate_corruption.gdshader`,
+  which animates Fate eating the piece. Fate pieces follow its rules:
+  single-frame textures with a 1px clear border (the seam spans the whole
+  texture, and the rim light needs empty neighbours), dark indigo stone, and
+  pure `#000000` wherever Fate has already eaten in. The shader fills that
+  void with crawling static, so paint the bite, not the static.
 - **Angles.** The game draws at 6x zoom, so a sprite turned in-engine tilts
   its big pixels. For any angle finer than a quarter turn, bake the angles
   into a sheet and put `PieceVariant` on the `Sprite2D`. It shows one random
@@ -425,7 +432,10 @@ encounter.
   `random_quarter_turns` off.
 - `static_objects` (`StaticBackgroundObjectResource`: a scene + position, e.g.
   the pulsar). Only for placed set pieces; anything that just drifts by
-  belongs in `scrolling_objects`.
+  belongs in `scrolling_objects`. `FateStorm` (placed at `(0, 0)`) is Fate's
+  weather: sheet lightning, bolts and void tears. Each flash sets the global
+  shader uniform `fate_flash`, which rims the fate shards. It quickens and
+  fires a barrage with a Fate Rift hazard. Use it only near Fate.
 - `global_modifier`: an optional permanent rule, **or**
 - `hazard`: an optional timed event (§6). Never both: the environment monitor
   has one screen.

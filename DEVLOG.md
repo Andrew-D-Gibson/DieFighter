@@ -4,6 +4,26 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-21 — Fate's weather
+
+- **Shards Fate is eating.** The fate pieces were loud purple sprites with
+  white highlights. They are now quiet indigo obsidian, flat like the
+  triangle debris, with black where Fate has bitten in. A shader does the
+  rest, in the map icon's corruption language. The void crawls with static,
+  a ragged seam chews in from a corner and back, rows tear and colours
+  split, and now and then a shard blinks out. The wisp became a spire, and
+  a broken die face joins the large pieces.
+- **A storm over Fate.** Both Fate backgrounds get sheet lightning, double
+  strike bolts and bands of void tearing through the sky. Each flash
+  silhouettes the shards and rims them in Fate's purple, and bolts throw a
+  faint wash over the whole screen. The storm quickens as the Fate Rift
+  readies and breaks into a barrage when it opens.
+- **The opening matches.** Its Fate shards are corrupted the same way and
+  the storm hangs behind them. Fate's pulses crack arcs across its disk,
+  and the surge and the Attacker's death tear the sky.
+
+---
+
 ## 2026-10-21 — Palette pass, a new Siege Mortar, and a wreck site
 
 - **One palette.** Every PNG the game loads now uses only the 33 colours in
