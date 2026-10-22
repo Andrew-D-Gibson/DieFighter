@@ -17,7 +17,6 @@ dest_files=["res://.godot/imported/mouse_indicator.png-4b31ee64f5cfb09f016cfaefd
 
 compress/mode=0
 compress/high_quality=false
-compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
