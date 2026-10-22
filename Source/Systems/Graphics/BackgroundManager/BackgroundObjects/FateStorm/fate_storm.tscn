@@ -1,0 +1,31 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FateStorm/fate_storm.gd" id="1_script"]
+[ext_resource type="Shader" path="res://Assets/Shaders/fate_tear.gdshader" id="2_tear"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_tear"]
+shader = ExtResource("2_tear")
+shader_parameter/coverage = 0.0
+
+[node name="FateStorm" type="Node2D"]
+z_index = 2
+script = ExtResource("1_script")
+
+[node name="Sky" type="ColorRect" parent="."]
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_add")
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
+color = Color(0.27451, 0.235294, 0.568627, 0)
+
+[node name="Tear" type="ColorRect" parent="."]
+visible = false
+show_behind_parent = true
+material = SubResource("ShaderMaterial_tear")
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2

@@ -5,11 +5,17 @@
 [ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="3_5u8kd"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/fates_tithe.tres" id="mod_0"]
 [ext_resource type="Resource" uid="uid://cqjktemmveajs" path="res://Source/Resources/BackgroundResources/ScrollingObjects/fate_shards.tres" id="scroll_0"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FateStorm/fate_storm.tscn" id="5_storm"]
 
 [sub_resource type="Resource" id="Resource_um1v6"]
 script = ExtResource("2_v0oo0")
 scene = ExtResource("3_5u8kd")
 position = Vector2(240, 30)
+metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+
+[sub_resource type="Resource" id="Resource_storm"]
+script = ExtResource("2_v0oo0")
+scene = ExtResource("5_storm")
 metadata/_custom_type_script = "uid://cgosy7gnhi58w"
 
 [resource]
@@ -24,5 +30,5 @@ num_of_twinkling_stars = 4
 scrolling_objects = ExtResource("scroll_0")
 num_of_med_pieces = 18
 num_of_large_pieces = 4
-static_objects = Array[ExtResource("2_v0oo0")]([SubResource("Resource_um1v6")])
+static_objects = Array[ExtResource("2_v0oo0")]([SubResource("Resource_um1v6"), SubResource("Resource_storm")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

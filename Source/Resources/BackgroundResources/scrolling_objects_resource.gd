@@ -23,6 +23,10 @@ extends Resource
 ## colour, not transparency, so stars never peek through a piece.
 @export_range(0.0, 1.0) var base_visibility: float = 0.0
 @export_range(0.0, 1.0) var visibility_per_depth: float = 0.1
+## Draws the pieces with this instead of the plain depth fade, e.g. Fate
+## eating its shards. It must take scrolling_object.gdshader's uniforms, and
+## gets a fresh "seed" per piece so a field of them never moves in step.
+@export var shader: Shader
 
 @export_group("Variation")
 ## Turn each piece a random quarter turn. Leave off for art lit from a fixed

@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3 uid="uid://cqjktemmveajs"]
 
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die.tscn" id="1_got00"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_wisp.tscn" id="2_5op8j"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_spire.tscn" id="2_spire"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_cluster.tscn" id="3_tugbp"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_shard_1.tscn" id="4_wvwjd"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_shard_2.tscn" id="5_riix8"]
@@ -9,11 +9,14 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_mote.tscn" id="7_lscok"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die_chip.tscn" id="8_lw60w"]
 [ext_resource type="Script" uid="uid://dmtivy7vglv0q" path="res://Source/Resources/BackgroundResources/scrolling_objects_resource.gd" id="9_sbly6"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_slab.tscn" id="10_slab"]
+[ext_resource type="Shader" path="res://Assets/Shaders/fate_corruption.gdshader" id="11_shader"]
 
 [resource]
 script = ExtResource("9_sbly6")
 medium_pieces = Array[PackedScene]([ExtResource("4_wvwjd"), ExtResource("5_riix8"), ExtResource("6_0n2m3"), ExtResource("7_lscok"), ExtResource("8_lw60w")])
-large_pieces = Array[PackedScene]([ExtResource("1_got00"), ExtResource("2_5op8j"), ExtResource("3_tugbp")])
+large_pieces = Array[PackedScene]([ExtResource("1_got00"), ExtResource("2_spire"), ExtResource("3_tugbp"), ExtResource("10_slab")])
 keep_texture_colors = true
 base_visibility = 0.45
 visibility_per_depth = 0.14
+shader = ExtResource("11_shader")

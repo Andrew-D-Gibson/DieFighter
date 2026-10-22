@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://2cu2c7cn6212"
-path="res://.godot/imported/fate_die_fissure.png-7bcf99081f4001315c7b170067822d17.ctex"
+uid="uid://bd85bnd2e8pef"
+path="res://.godot/imported/fate_slab.png-5498dbf3fb32bb08fe0b9402217d1b74.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_die_fissure.png"
-dest_files=["res://.godot/imported/fate_die_fissure.png-7bcf99081f4001315c7b170067822d17.ctex"]
+source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_slab.png"
+dest_files=["res://.godot/imported/fate_slab.png-5498dbf3fb32bb08fe0b9402217d1b74.ctex"]
 
 [params]
 

@@ -24,6 +24,8 @@ var _piece: Node = null
 func setup(new_objects: ScrollingObjectsResource, medium: bool, background_color: Color) -> void:
 	objects = new_objects
 	is_medium = medium
+	if objects.shader:
+		(material as ShaderMaterial).shader = objects.shader
 	material.set_shader_parameter("background_color", background_color)
 	material.set_shader_parameter("color", objects.silhouette_color)
 	material.set_shader_parameter("keep_texture_colors", objects.keep_texture_colors)
@@ -54,6 +56,8 @@ func pick_random_piece() -> void:
 		rotation_degrees = RNGManager.pick_random(RNGManager.Bucket.BACKGROUND, [0, 90, 180, 270])
 
 	_piece = scene.instantiate()
+	if objects.shader:
+		material.set_shader_parameter("seed", RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, 100.0))
 	_share_material(_piece)
 	add_child(_piece)
 	bounds = _measure(_piece, Transform2D(rotation, Vector2.ZERO))

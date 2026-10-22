@@ -1,11 +1,6 @@
 [gd_scene format=3]
 
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_cluster-Sheet.png" id="1_ymbfu"]
-[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_frames.gd" id="2_cmy51"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_cluster.png" id="1_tex"]
 
-[node name="FateCluster" type="Sprite2D" unique_id=557323372]
-texture = ExtResource("1_ymbfu")
-hframes = 4
-script = ExtResource("2_cmy51")
-fps = 4.0
-sequence = PackedInt32Array()
+[node name="FateCluster" type="Sprite2D"]
+texture = ExtResource("1_tex")

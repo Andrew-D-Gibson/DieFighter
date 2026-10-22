@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dnvw0h2e5nnsl"
-path="res://.godot/imported/fate_cluster-Sheet.png-1fbf42b19acfccceb5fd71281c3c0e04.ctex"
+uid="uid://b3c0lbxfdowvv"
+path="res://.godot/imported/fate_mote.png-f1862111ea978645c77b4e8abf6bb1be.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_cluster-Sheet.png"
-dest_files=["res://.godot/imported/fate_cluster-Sheet.png-1fbf42b19acfccceb5fd71281c3c0e04.ctex"]
+source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Fate/fate_mote.png"
+dest_files=["res://.godot/imported/fate_mote.png-f1862111ea978645c77b4e8abf6bb1be.ctex"]
 
 [params]
 
