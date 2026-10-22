@@ -262,6 +262,24 @@ func can_be_locked_out() -> bool:
 	return tile_resource != null and tile_resource.can_be_locked_out
 
 
+## Whether a lockout already holds this tile. A second lock would fire twice on
+## the 2 that opens it, so lockouts check this before landing.
+func is_locked_out() -> bool:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine == null:
+		return false
+	for mod: Modifier in engine.modifiers:
+		if mod is LockoutModifier and mod.affected_node == self:
+			return true
+	return false
+
+
+## Whether a new lockout could take hold here: the tile allows locks and isn't
+## locked already. Random lockouts pick only from these.
+func accepts_lockout() -> bool:
+	return can_be_locked_out() and not is_locked_out()
+
+
 func reset_uses_remaining() -> void:
 	uses_remaining = tile_resource.uses_per_turn
 

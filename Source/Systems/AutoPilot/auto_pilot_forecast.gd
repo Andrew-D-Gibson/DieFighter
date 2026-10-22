@@ -185,6 +185,7 @@ func _target_step(data: EffectData, walk: _Walk) -> void:
 			ships.append_array(_roster)
 			_spread(walk, ships)
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_TILE, \
+		EffectEnums.TargetingSubtype.TARGET_RANDOM_LOCKABLE_TILE, \
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_ADJACENT_TILE:
 			# Which tile is a draw; whatever it does lands on a tile, not a ship.
 			walk.context.targets = _none()

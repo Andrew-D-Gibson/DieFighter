@@ -1,6 +1,6 @@
 extends "res://test/helpers/die_fighter_test.gd"
-## Lockout: which tiles it may take hold on, and how a locked tile explains
-## itself in the info panel.
+## Lockout: which tiles it may take hold on, that it never stacks, and how a
+## locked tile explains itself in the info panel.
 
 const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const ENGINE_CHARGER: TileResource = preload("res://Source/Content/Tiles/MapTileResources/engine_charger.tres")
@@ -71,6 +71,75 @@ func test_every_grid_tile_can_be_locked_out() -> void:
 	assert_gt(checked, 0)
 
 
+# ── Lockouts never stack ──────────────────────────────────────────────────────
+
+func test_a_second_lockout_on_a_locked_tile_is_refused() -> void:
+	# Two locks would both fire on the 2 that opens the tile, handing the die
+	# out twice.
+	var tile: Tile = _tile(DAMAGE_TILE)
+	await _lock([tile] as Array[Node])
+	assert_true(tile.is_locked_out())
+	assert_false(tile.accepts_lockout())
+	await _lock([tile] as Array[Node])
+	assert_eq(_lockouts_on(tile), 1)
+
+
+func test_one_lockout_naming_a_tile_twice_locks_it_once() -> void:
+	var tile: Tile = _tile(DAMAGE_TILE)
+	await _lock([tile, tile] as Array[Node])
+	assert_eq(_lockouts_on(tile), 1)
+
+
+## A grid holding [param tiles] in its first cells, as Globals.tile_grid.
+func _grid_of(tiles: Array[Tile]) -> TileGrid:
+	var grid: TileGrid = autofree(TileGrid.new())
+	for i: int in tiles.size():
+		grid.tile_locations[Vector2i(i, 0)] = tiles[i]
+	Globals.tile_grid = grid
+	return grid
+
+
+func _pick_lockable() -> Array[Node]:
+	var context: EffectContext = EffectContext.new()
+	TargetRandomLockableTileHandler.new().apply(EffectData.new(), context, engine)
+	return context.targets
+
+
+func test_a_random_lockout_skips_locked_tiles() -> void:
+	var locked: Tile = _tile(DAMAGE_TILE)
+	var open: Tile = _tile(DAMAGE_TILE)
+	_grid_of([locked, open] as Array[Tile])
+	await _lock([locked] as Array[Node])
+	for i: int in 20:
+		assert_eq(_pick_lockable(), [open] as Array[Node], "only the open tile is drawn")
+
+
+func test_a_random_lockout_skips_immune_tiles() -> void:
+	var charger: Tile = _tile(ENGINE_CHARGER)
+	var open: Tile = _tile(DAMAGE_TILE)
+	_grid_of([charger, open] as Array[Tile])
+	for i: int in 20:
+		assert_eq(_pick_lockable(), [open] as Array[Node])
+
+
+func test_a_random_lockout_with_every_tile_locked_targets_nothing() -> void:
+	var first: Tile = _tile(DAMAGE_TILE)
+	var second: Tile = _tile(DAMAGE_TILE)
+	_grid_of([first, second] as Array[Tile])
+	await _lock([first, second] as Array[Node])
+	assert_eq(_pick_lockable(), [] as Array[Node])
+
+
+func test_every_lockout_source_draws_a_lockable_tile() -> void:
+	# A source still drawing from every tile could pick a locked one while an
+	# open one is free, and the lock would fizzle on the backstop instead.
+	for path: String in [
+			"res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres",
+			"res://Source/Resources/BackgroundResources/BackgroundHazards/asteroid_impact.tres"]:
+		var text: String = FileAccess.get_file_as_string(path)
+		assert_string_contains(text, "subtype = %d\n" % EffectEnums.TargetingSubtype.TARGET_RANDOM_LOCKABLE_TILE, path)
+
+
 # ── Info panel ────────────────────────────────────────────────────────────────
 
 func test_a_locked_tile_says_so_in_its_info() -> void:
@@ -83,11 +152,9 @@ func test_a_locked_tile_says_so_in_its_info() -> void:
 	assert_string_contains(text, "(die_2)", "names the key that opens it")
 
 
-func test_a_tile_locked_twice_shows_one_line() -> void:
+func test_a_locked_tile_shows_one_line() -> void:
 	var tile: Tile = _tile(DAMAGE_TILE)
 	await _lock([tile] as Array[Node])
-	await _lock([tile] as Array[Node])
-	assert_eq(_lockouts_on(tile), 2)
 	assert_eq(tile._get_tile_info().bottom_label_text.count("(locked)"), 1)
 
 

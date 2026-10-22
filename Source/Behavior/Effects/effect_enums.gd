@@ -62,6 +62,10 @@ enum TargetingSubtype {
 	## The hostile non-player ship an enemy action was bound to when its slot
 	## was rolled (a pirate's raid on a civilian).
 	TARGET_BOUND_HOSTILE_SHIP,
+	## One random grid tile a lockout could take hold on: not already locked,
+	## and not immune (Tile.accepts_lockout). Lockouts use this so they never
+	## stack, and fizzle only when every tile is already locked.
+	TARGET_RANDOM_LOCKABLE_TILE,
 }
 
 

@@ -15,7 +15,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step2"]
 script = ExtResource("script_1")
-subtype = 6
+subtype = 16
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step3"]
