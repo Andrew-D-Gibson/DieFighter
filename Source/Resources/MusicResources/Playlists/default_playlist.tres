@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="MusicPlaylistResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Resources/MusicResources/music_playlist_resource.gd" id="1_playlist"]
+[ext_resource type="Script" path="res://Source/Resources/MusicResources/music_track_resource.gd" id="2_track"]
+[ext_resource type="Resource" path="res://Source/Resources/MusicResources/Tracks/game_start_theme.tres" id="3_game_start"]
+[ext_resource type="Resource" path="res://Source/Resources/MusicResources/Tracks/trailer_1.tres" id="4_trailer"]
+
+[resource]
+script = ExtResource("1_playlist")
+tracks = Array[ExtResource("2_track")]([ExtResource("3_game_start"), ExtResource("4_trailer")])

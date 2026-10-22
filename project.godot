@@ -41,6 +41,7 @@ SaveManager="*res://Source/Systems/Autoloads/save_manager.gd"
 OptionsSettings="*res://Source/Systems/Autoloads/options_settings.gd"
 McpInteractionServer="*uid://coajxxari555t"
 TimeDirector="*res://Source/Systems/Autoloads/time_director.gd"
+MusicDirector="*res://Source/Systems/Autoloads/music_director.gd"
 AutoPilot="*res://Source/Systems/Autoloads/auto_pilot.gd"
 
 [debug]

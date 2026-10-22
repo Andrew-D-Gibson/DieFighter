@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="MusicTrackResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Resources/MusicResources/music_track_resource.gd" id="1_track"]
+[ext_resource type="Script" path="res://Source/Resources/MusicResources/music_layer_resource.gd" id="2_layer"]
+[ext_resource type="AudioStream" uid="uid://ib50atokqp2u" path="res://Assets/Music/Battle Themes/Game_Start_Theme/GameStartTheme.wav" id="3_stream"]
+
+[sub_resource type="Resource" id="Resource_full"]
+script = ExtResource("2_layer")
+id = &"full"
+stream = ExtResource("3_stream")
+
+[resource]
+script = ExtResource("1_track")
+id = &"game_start_theme"
+layers = Array[ExtResource("2_layer")]([SubResource("Resource_full")])
