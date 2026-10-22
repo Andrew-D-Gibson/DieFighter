@@ -18,6 +18,11 @@ registration to testing. For how the systems work underneath, see
   the subtype.
 - **After adding a script with a new `class_name`**, rebuild the class cache:
   `/Users/drew/Documents/Godot/Godot_4.7_stable.app/Contents/MacOS/Godot --headless --path . --import`.
+- **Art uses only the approved palette**, the 33 colours in
+  `Assets/aseprite_palette_final.aseprite`. Outlines are `#040217` (never
+  pure black). Alpha is free. The exceptions are white masks that get tinted
+  in-engine (particle pixels, stars, smoke, shader masks), which stay pure
+  white.
 - **Before committing**, run the GUT suite:
   `.../Godot --headless --path . -s addons/gut/gut_cmdln.gd`.
   `test/content/test_authored_content.gd` loads every `.tres` under
@@ -392,7 +397,8 @@ encounter.
   `fate_shards`, `solar_embers`, `ion_motes`), or make a new
   `ScrollingObjectsResource`: medium and large piece-scene lists, plus whether
   pieces keep their own colours or become flat silhouettes, and whether they
-  may spin (off for art lit from a fixed side).
+  take random quarter turns (off for art lit from a fixed side) or mirror
+  flips.
 - A piece is a small scene under
   `BackgroundManager/BackgroundObjects/ScrollingPieces/<set>/`. A plain one
   is just a `Sprite2D` root with the texture; animate it or add particles
@@ -410,6 +416,13 @@ encounter.
   throbs a sprite's brightness (the fate die's fissure, the cinders' cracks).
   Both start each copy at a random point, so a field of pieces never pulses
   in step.
+- **Angles.** The game draws at 6x zoom, so a sprite turned in-engine tilts
+  its big pixels. For any angle finer than a quarter turn, bake the angles
+  into a sheet and put `PieceVariant` on the `Sprite2D`. It shows one random
+  frame and holds it (the ship-scrap girders, plates and containers). The
+  set's `random_flip` mirrors pieces left to right, and is pixel-clean. Light
+  such art from straight above so a flip keeps it lit from above, and turn
+  `random_quarter_turns` off.
 - `static_objects` (`StaticBackgroundObjectResource`: a scene + position, e.g.
   the pulsar). Only for placed set pieces; anything that just drifts by
   belongs in `scrolling_objects`.

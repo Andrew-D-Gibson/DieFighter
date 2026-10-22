@@ -4,6 +4,29 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-21 — Palette pass, a new Siege Mortar, and a wreck site
+
+- **One palette.** Every PNG the game loads now uses only the 33 colours in
+  `aseprite_palette_final.aseprite`, and the matching `.aseprite` sources
+  were remapped the same way. 215 textures changed. Most drift came from the
+  old palette's navy `#070326` (tiles, dice, cockpit cracks), which became
+  the outline navy `#040217`. The rest came from off-palette greys, slate
+  blues and soft effect gradients. Colours snap by perceptual distance with
+  extra weight on hue, so pale tints keep their colour. A few snap by role
+  instead: the engine-charge bar is purple with a white head, and cinders
+  ramp into dark red. Tinted white masks are left alone. The Fate pieces
+  were redrawn separately.
+- **Siege Mortar.** Redrawn from flat blocks into a heavy gun ship with
+  engine nacelles, an ammo drum, stabiliser blades and a banded barrel,
+  shaded like the rest of the fleet.
+- **Ship scrap.** The boneyard was a grid of identical grey capsules. Its
+  15 pieces (5 new) now have torn, irregular silhouettes, sizes from bolts
+  to hull sections, and paint, glass, rust and hazard stripes. Each piece
+  is baked at several angles because in-engine rotation would tilt the
+  6x pixels. `PieceVariant` picks one, and the new `random_flip` mirrors it.
+
+---
+
 ## 2026-10-21 — Four new combats, four new events
 
 Every enemy already appeared somewhere, but Carrier, Cutpurse and Bounty
