@@ -200,6 +200,23 @@ func test_a_closed_station_buys_nothing() -> void:
 	assert_eq(grid.find_tile_pos(kept), Vector2i(1, 0))
 
 
+func test_the_station_fades_away_when_the_player_dies() -> void:
+	# The death sequence wants the whole screen.
+	_place(_tile(), Vector2i(0, 0))
+	var kept: Tile = _place(_tile(), Vector2i(1, 0))
+	station._open_station()
+	# Called directly: emitting player_destroyed would also reach SaveManager,
+	# which deletes the real save.
+	station._fade_out_for_death()
+	await wait_seconds(Utils.PANEL_FADE_TIME + 0.1)
+	assert_false(station.visible)
+	grid._drop_tile_on_grid_pos(kept.draggable, station.sell_zone_centre())
+	assert_eq(grid.find_tile_pos(kept), Vector2i(1, 0), "it stops buying")
+
+	station._open_station()
+	assert_eq(station.modulate.a, 1.0, "it comes back opaque next time")
+
+
 func test_lifting_a_tile_shows_what_it_would_fetch() -> void:
 	_place(_tile(), Vector2i(0, 0))
 	var lifted: Tile = _place(_tile(TileResource.Rarity.UNCOMMON), Vector2i(1, 0))

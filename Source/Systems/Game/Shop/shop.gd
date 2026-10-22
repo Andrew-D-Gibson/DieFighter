@@ -33,6 +33,7 @@ func _ready() -> void:
 	Events.open_shop.connect(_open_shop)
 	Events.close_shop.connect(_close_shop)
 	Events.jump.connect(_close_shop)
+	Events.player_destroyed.connect(_fade_out_for_death)
 	Events.start_scenario.connect(_reopen_saved_shop)
 
 
@@ -57,6 +58,7 @@ func _open_shop() -> void:
 	else:
 		_create_shop_tiles()
 		_create_dice_buy_zone()
+	modulate.a = 1.0
 	show()
 	_claim_formation_space()
 
@@ -65,6 +67,14 @@ func _close_shop() -> void:
 	hide()
 	if Globals.enemy_manager:
 		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)
+
+
+## The death sequence wants the whole screen, so the panel gets out of its way
+## before the first blast. The formation keeps its gap: a shopkeeper sliding to
+## centre mid-explosion would pull the eye.
+func _fade_out_for_death() -> void:
+	if visible:
+		Utils.fade_out_panel(self)
 
 
 ## The panel covers the middle of the screen, which is exactly where a lone

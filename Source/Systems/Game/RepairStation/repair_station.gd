@@ -75,6 +75,7 @@ func _ready() -> void:
 	Events.open_repair_station.connect(_open_station)
 	Events.close_repair_station.connect(_close_station)
 	Events.jump.connect(_close_station)
+	Events.player_destroyed.connect(_fade_out_for_death)
 	Events.start_scenario.connect(_reopen_saved_station)
 	Events.locale_changed.connect(func(_locale: String) -> void: _refresh())
 	Events.set_money.connect(func(_money: int) -> void: _refresh())
@@ -183,6 +184,7 @@ func _open_station() -> void:
 			repairs_bought = int(saved.get("repairs", 0))
 
 	_listen_to_the_grid(true)
+	modulate.a = 1.0
 	show()
 	_claim_formation_space()
 	_refresh()
@@ -194,6 +196,16 @@ func _close_station() -> void:
 	_lifted_tile = null
 	if Globals.enemy_manager:
 		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)
+
+
+## Clears the screen for the death sequence, as the shop does. The formation
+## keeps its gap so the dock doesn't slide to centre mid-explosion.
+func _fade_out_for_death() -> void:
+	if not visible:
+		return
+	_listen_to_the_grid(false)
+	_lifted_tile = null
+	Utils.fade_out_panel(self)
 
 
 ## Only an open station watches the grid, so a tile dragged off it anywhere

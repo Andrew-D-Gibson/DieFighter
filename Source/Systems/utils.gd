@@ -198,3 +198,16 @@ static func slice_texture_right(sprite: Texture2D, pixels: int) -> Texture2D:
 	# Convert cropped Image back to Texture2D
 	var new_texture: ImageTexture = ImageTexture.create_from_image(cropped_image)
 	return new_texture
+
+
+## Seconds a panel takes to fade away when it has to clear the screen at once.
+const PANEL_FADE_TIME: float = 0.15
+
+## Fades [param panel] out and hides it. Timed in real seconds, so a slow-mo
+## (the death sequence opens with one) can't leave it lingering. Whoever shows
+## the panel again resets its alpha.
+static func fade_out_panel(panel: CanvasItem) -> Tween:
+	var tween: Tween = panel.create_tween().set_ignore_time_scale(true)
+	tween.tween_property(panel, "modulate:a", 0.0, PANEL_FADE_TIME)
+	tween.tween_callback(panel.hide)
+	return tween
