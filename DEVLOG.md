@@ -4,6 +4,39 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-21 — Four new combats, four new events
+
+Every enemy already appeared somewhere, but Carrier, Cutpurse and Bounty
+Runner had one encounter each, and Venom Raider never fought outside the
+pirate-and-civilian event and an elite. The pools are now 17 combats and 9
+events.
+
+- **Combats.** Loose Wing (four Interceptors, no carrier), Smash and Grab
+  (Carrier screening a Cutpurse), Blockade Runner (Field Tender patching a
+  Bounty Runner, which carries the pick as in Bounty Run), Spotter (Ion
+  Lance draining the drive while a Siege Mortar loads).
+- **Ghost Carrier.** Salvage (UNCOMMON floor) beside a dormant Carrier.
+  Taking a tile wakes it 2 times in 3, credits 1 in 3; shooting it always
+  does.
+- **Black Market.** A Bounty Runner sells one of a three-tile crate on
+  credit, then bills 14-22 (shop prices run 10-35). Coming up short, or
+  shooting, turns it and its silent Ion Lance escort.
+- **Pickpocket.** A Cutpurse lifts 8-14 credits on arrival. Chasing it
+  pays 20-32, but it bolts after three rounds with any dice it holds.
+- **Mayday.** A Venom Raider at 40% hull, flying as a civilian, begs for
+  help beside its salvage. Taking it is a coin flip: grateful, or a decoy
+  that turns pirate and repairs 12 hull. Shooting first is a coin flip too:
+  the decoy unmasked, or a wronged civilian.
+
+The events' credits paths change state through `STEAL_MONEY` and
+`PLAYER_COULDNT_PAY`, as Tollkeeper does. Each branch was driven live,
+with scenario seeds varied to reach both sides of each roll. Seed 21 (the
+tutorial) keeps its sector shape; only which encounter fills each slot
+changed, and the jumps out of the opening fight still reach a shop, the
+elite and an event.
+
+---
+
 ## 2026-10-21 — Opening cutscene: the escape from Fate
 
 The opening now sets up the first fight. The player's ship claws away from
