@@ -436,6 +436,16 @@ encounter.
   weather: sheet lightning, bolts and void tears. Each flash sets the global
   shader uniform `fate_flash`, which rims the fate shards. It quickens and
   fires a barrage with a Fate Rift hazard. Use it only near Fate.
+- Planets, moons and stars are `CelestialBody` scenes in
+  `BackgroundObjects/CelestialBodies/`, drawn live by
+  `pixel_planet.gdshader` (the main menu's planet). Make a new one by
+  duplicating the closest design and editing its `Body` material: palettes
+  are inline `GradientTexture1D`s, ordered low to high noise; a gas giant's
+  bands come from a striped `surface_bump_map`. Stars use shading mode Max
+  Brightness so the corona isn't shaded like a lit sphere. Each copy turns to
+  a random face. Put far copies at a dimmer `modulate`, and flip
+  (`scale = (-1, 1)`) to light one from the other side, e.g. toward the
+  solar corona's star.
 - `global_modifier`: an optional permanent rule, **or**
 - `hazard`: an optional timed event (§6). Never both: the environment monitor
   has one screen.

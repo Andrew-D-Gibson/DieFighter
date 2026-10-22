@@ -4,6 +4,28 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-21 — Shader planets and stars
+
+- **Planets instead of stickers.** The backgrounds' set pieces are now
+  drawn live by `pixel_planet.gdshader`, the main menu's planet shader.
+  Eleven `CelestialBody` designs turn slowly, with drifting clouds and
+  atmospheres: ice, ocean, lava, dead and barren worlds, a banded gas
+  giant and a blue storm giant, two moons, a blue star and a red dwarf. They
+  replace the ice shards (cryo belt) and the derelict hulk (boneyard), and
+  give the nebulae, star field, debris field and solar corona a world each.
+  Every copy turns to a random face, so a region met twice looks different.
+- **The flare star.** Now a shader star too: a boiling surface from
+  counter-rotating noise, a corona stepping from orange to deep red, and
+  prominences that lick off the limb. When its flare is imminent the
+  prominences climb as the star throbs; when it fires, it whites out.
+- **Shader fixes.** The shader overwrote `COLOR`, so `modulate` was ignored
+  and far copies couldn't be dimmed; it now multiplies the node colour back
+  in. Clouds shade toward `shade_colour` instead of black, and a new
+  `atmosphere_fades_at_night` lets stars show through a planet's unlit
+  atmosphere instead of a dark ring. The main menu planet is unchanged.
+
+---
+
 ## 2026-10-21 — Fate's weather
 
 - **Shards Fate is eating.** The fate pieces were loud purple sprites with

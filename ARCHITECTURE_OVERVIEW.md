@@ -65,7 +65,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, scrolling objects (debris, asteroids, ice, scrap, fate shards, embers, ion motes) |
+| `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, shader planets and suns (`CelestialBody`), scrolling objects (debris, asteroids, ice, scrap, fate shards, embers, ion motes) |
 | `Vignette` | `Graphics/Vignette` | Flash overlay for camera shake/impact emphasis |
 | `Juice` | `Systems/Graphics/Juice/juice.gd` (static helpers) | Bumps, wiggles, rings, sparkles and callouts; see 4.7 |
 | `GlitchController` | `UI/GlitchShader` | CSS glitch shader activation on large camera shake |
@@ -844,8 +844,8 @@ rule the enemy intent telegraph follows. Three things carry it:
   it explains the hazard and its interval.
 - **`HazardTelegraph`** (`BackgroundObjects/hazard_telegraph.gd`) is the base
   for background art that reacts: `_urgency_changed()` when it becomes
-  imminent or calms, `_fired()` when it goes off. The flare star's corona
-  throbs hot, ion clouds strike constantly, the meteor shower thickens and
+  imminent or calms, `_fired()` when it goes off. The flare star throbs hot
+  and its limb erupts, ion clouds strike constantly, the meteor shower thickens and
   sends one rock at the cockpit, the rift tear quickens.
 - The hazard's own chain carries the impact (flash, sound, shake).
 
