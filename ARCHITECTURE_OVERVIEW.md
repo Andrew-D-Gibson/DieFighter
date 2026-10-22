@@ -223,7 +223,9 @@ var is_temporary: bool      # Swept by clear_temporary_modifiers() on player tur
 **Lockout.** Every lockout, from any source, goes through
 `AddLockoutModifierEvent`, which skips a tile whose
 `TileResource.can_be_locked_out` is off (the Engine Charger, so it can never
-soft-lock the run). A locked tile's info panel gets a line from
+soft-lock the run) or that's already locked, so locks never stack. Random
+lockouts target with `TARGET_RANDOM_LOCKABLE_TILE`, which draws only tiles
+where `Tile.accepts_lockout()` holds. A locked tile's info panel gets a line from
 `LockoutModifier.get_info_text()`, the same way an Amplifier adds its own.
 
 ### 4.4 Tile Activation Flow

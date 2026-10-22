@@ -287,10 +287,20 @@ the one failure, `test_main_scene_plays_every_step_file`, is pre-existing
 (`main.tscn` references `map_explanation.tres` by a uid the file's header
 doesn't carry).
 
-**Found, not fixed.** Two lockouts can stack on one tile. A 2 then fires both
-`LockoutEffectEvent`s: both modifiers go, but the die is handed to a random
-enemy twice and two `TileActivationCompleteEvent`s are injected. Refusing a
-second lock on an already-locked tile would be the clean fix.
+**Found, then fixed after the merge.** Two lockouts could stack on one tile,
+and a 2 then fired both: the die went to a random enemy twice and two
+`TileActivationCompleteEvent`s were injected. Random lockouts (Grid Lockout,
+Asteroid Impact) now use a new `TARGET_RANDOM_LOCKABLE_TILE`, which draws
+only grid tiles that allow a lock and aren't locked already
+(`Tile.accepts_lockout()`), and fizzles only when every tile is locked.
+`AddLockoutModifierEvent` refuses an already-locked tile as a backstop
+(`Tile.is_locked_out()`).
+
+**Panels clear for the death sequence.** The shop and repair panels used to
+stay drawn over the player's destruction. On `player_destroyed` they fade out
+in 0.15 s of real time (`Utils.fade_out_panel`), clear before the first
+blast. The formation keeps its gap, so the shopkeeper doesn't slide to centre
+mid-explosion.
 
 ---
 
