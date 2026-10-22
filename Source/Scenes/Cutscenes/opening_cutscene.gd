@@ -1,8 +1,8 @@
 extends Node2D
 ## The opening: the player's ship claws away from Fate, loses one of its two
 ## pursuers to it and jumps, only for the other to follow it out of
-## hyperspace. It ends on the two squaring up, which is where the first fight
-## (COMBAT_opening_ambush, one Attacker already holed) picks up.
+## hyperspace. It cuts straight into the first fight (COMBAT_opening_ambush,
+## one Attacker already holed) as the player turns to face it.
 ##
 ## Two resolutions on purpose. Everything that is art (ships, Fate, debris,
 ## effects) lives in the PixelWorld SubViewport: 320x180, blown up 6x, so it
@@ -32,6 +32,8 @@ extends Node2D
 @export var num_of_debris: int = 16
 ## Keyed. How fast the debris is dragged left toward Fate.
 @export var debris_speed: float = 70.0
+## Keyed. Speed lines whipping past, per second. 0 for none.
+@export var speed_lines: float = 0.0
 ## How fast the rift's nebula slides past, in texture lengths per second.
 ## Negative, because the sheet is turned on its side.
 @export var nebula_drift: float = -0.015
@@ -60,18 +62,27 @@ const _JUMP_STRETCH: Vector2 = Vector2(0.5, 3.0)
 ## event horizon it is gone.
 const _DEBRIS_STRETCH_RANGE: float = 70.0
 const _EVENT_HORIZON: float = 14.0
+## Fastest a piece tumbles, in radians per second, before Fate spins it up.
+const _DEBRIS_MAX_SPIN: float = 1.5
 
 const _BLUE_JUMP: Color = Color("#8df1f4")
 const _RED_JUMP: Color = Color("#d03656")
 const _FATE_PURPLE: Color = Color("#c552f1")
 
-var entering_cockpit_scene: String = "uid://2htmp8viygbt"
+var main_game_scene: String = "uid://deisauteocrjl"
 
 var _stars: Array[Node2D] = []
 ## Per star: how near it is. Near stars stream faster and streak longer.
 var _star_depths: PackedFloat32Array = PackedFloat32Array()
+## Each piece of debris sits in an unrotated holder: the piece tumbles, while
+## the holder is what Fate stretches, so it stretches along the pull and not
+## along whichever way the piece happens to face.
 var _debris: Array[Node2D] = []
 var _debris_depths: PackedFloat32Array = PackedFloat32Array()
+var _debris_spins: PackedFloat32Array = PackedFloat32Array()
+## Extra drag on the debris from Fate's last pulse, dying away.
+var _debris_jolt: float = 0.0
+var _speed_lines: SpeedLines = null
 ## Smoke trails, each following the ship it was lit on.
 var _smoke_trails: Dictionary[Node2D, CPUParticles2D] = {}
 var _reticle: LockOnReticle = null
@@ -81,9 +92,12 @@ var _reticle: LockOnReticle = null
 
 
 func _ready() -> void:
-	SceneLoader.request(entering_cockpit_scene)
+	SceneLoader.request(main_game_scene)
 	_spawn_stars()
 	_spawn_debris()
+	_speed_lines = SpeedLines.new()
+	_speed_lines.z_index = 8
+	%PixelWorld.add_child(_speed_lines)
 	_build_hyperspace_streaks()
 	_add_exhaust(%PlayerShip)
 	%RiftNebula.speed = nebula_drift
@@ -92,6 +106,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_move_stars(delta)
 	_move_debris(delta)
+	_speed_lines.rate = speed_lines
 	for ship: Node2D in _smoke_trails:
 		var smoke: CPUParticles2D = _smoke_trails[ship]
 		# Behind the ship along its heading, so the trail leaves its tail.
@@ -142,17 +157,21 @@ func _spawn_debris() -> void:
 	if debris_scenes.is_empty():
 		return
 	for i: int in range(num_of_debris):
+		var holder: Node2D = Node2D.new()
+		%Debris.add_child(holder)
 		var piece: Node2D = RNGManager.pick_random(RNGManager.Bucket.COSMETIC, debris_scenes).instantiate()
-		%Debris.add_child(piece)
+		holder.add_child(piece)
+		piece.rotation = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, TAU)
 		var depth: float = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.5, 1.2)
 		# Further pieces sink into the dark rather than going see-through,
 		# which would show stars through solid wreckage.
 		var shade: float = remap(depth, 0.5, 1.2, 0.4, 0.85)
-		piece.modulate = Color(shade, shade, shade)
-		piece.z_index = int(depth * 4)
-		piece.position = _random_point_on_screen()
-		_debris.append(piece)
+		holder.modulate = Color(shade, shade, shade)
+		holder.z_index = int(depth * 4)
+		holder.position = _random_point_on_screen()
+		_debris.append(holder)
 		_debris_depths.append(depth)
+		_debris_spins.append(RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -_DEBRIS_MAX_SPIN, _DEBRIS_MAX_SPIN))
 
 
 ## Drags each piece left and in toward Fate's centre line, and stretches it
@@ -161,20 +180,23 @@ func _spawn_debris() -> void:
 func _move_debris(delta: float) -> void:
 	if not %Debris.visible:
 		return
+	_debris_jolt = move_toward(_debris_jolt, 0.0, 240.0 * delta)
 	var hole: Vector2 = _fate.global_position
 	for i: int in range(_debris.size()):
-		var piece: Node2D = _debris[i]
+		var holder: Node2D = _debris[i]
 		var depth: float = _debris_depths[i]
-		var distance: float = piece.position.x - hole.x
+		var distance: float = holder.position.x - hole.x
 		var pull: float = clampf(1.0 - distance / 260.0, 0.0, 1.0)
-		piece.position.x -= debris_speed * depth * (1.0 + pull) * delta
-		piece.position.y = lerpf(piece.position.y, hole.y, pull * pull * 2.0 * delta)
+		holder.position.x -= (debris_speed + _debris_jolt) * depth * (1.0 + pull) * delta
+		holder.position.y = lerpf(holder.position.y, hole.y, pull * pull * 2.0 * delta)
+		# Tumbles faster the deeper into the pull it gets.
+		holder.get_child(0).rotation += _debris_spins[i] * (1.0 + pull * pull * 6.0) * delta
 
 		var squeeze: float = clampf(distance / _DEBRIS_STRETCH_RANGE, 0.0, 1.0)
-		piece.scale = Vector2(lerpf(2.5, 1.0, squeeze), lerpf(0.0, 1.0, squeeze))
+		holder.scale = Vector2(lerpf(2.5, 1.0, squeeze), lerpf(0.0, 1.0, squeeze))
 
 		if distance < _EVENT_HORIZON:
-			piece.position = Vector2(
+			holder.position = Vector2(
 				Globals.SCREEN_SIZE.x + RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 20, 80),
 				RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 8, Globals.SCREEN_SIZE.y - 8)
 			)
@@ -217,6 +239,7 @@ func _start_music() -> void:
 func _fate_pulse(strength: float) -> void:
 	Events.play_sound.emit(_FATE_PULSE_SFX)
 	var centre: Vector2 = _fate.global_position
+	_debris_jolt = 140.0 * strength
 	_ring(centre, _FATE_PURPLE, 70.0, 110.0 + 40.0 * strength, 0.9)
 	if strength > 1.0:
 		_ring(centre, Globals.white, 60.0, 180.0, 0.7)
@@ -236,6 +259,7 @@ func _fire_die(shooter: StringName, target: StringName, flight_time: float, hits
 	Events.play_sound.emit(_DICE_CANNON_SFX)
 	_recoil(from)
 	Juice.sparkle(_effects, muzzle, Globals.yellow, 5, 30.0)
+	_ring(muzzle, Globals.yellow, 1.0, 7.0, 0.15)
 
 	var die: Sprite2D = Sprite2D.new()
 	die.texture = _DIE_TEXTURE
@@ -267,6 +291,7 @@ func _ship_hit(ship_name: StringName) -> void:
 	Events.play_sound.emit(_PLAYER_HIT_SFX if is_player else _ENEMY_HIT_SFX)
 	if is_player:
 		Events.camera_shake_large.emit()
+		TimeDirector.hitstop(50)
 	else:
 		Events.camera_shake_small.emit()
 	_flash_ship(ship, Globals.red, 0.5)
@@ -279,6 +304,7 @@ func _ship_hit(ship_name: StringName) -> void:
 ## The ambush starts its Attacker on 65% hull; this is where it lost the rest.
 func _ship_damaged(ship_name: StringName) -> void:
 	_ship_hit(ship_name)
+	TimeDirector.hitstop(70)
 	var ship: Node2D = _ship(ship_name)
 	var smoke: CPUParticles2D = _smoke_particles()
 	_effects.add_child(smoke)
@@ -296,6 +322,10 @@ func _engines_out(ship_name: StringName) -> void:
 			(child as CPUParticles2D).emitting = false
 	Juice.sparkle(_effects, ship.global_position - _heading(ship) * 10.0, Globals.orange, 10, 30.0)
 	_flash_ship(ship, Globals.white, 0.3)
+	# It comes apart on the way in.
+	var smoke: CPUParticles2D = _smoke_particles()
+	_effects.add_child(smoke)
+	_smoke_trails[ship] = smoke
 
 
 ## The ship crosses the event horizon: a last flare and it is gone.
@@ -304,6 +334,7 @@ func _consumed(ship_name: StringName) -> void:
 	var spot: Vector2 = ship.global_position
 	Events.play_sound.emit(_CONSUMED_SFX)
 	Events.camera_shake_large.emit()
+	TimeDirector.hitstop(120)
 	Juice.sparkle(_effects, spot, _FATE_PURPLE, 18, 70.0)
 	Juice.sparkle(_effects, spot, Globals.white, 10, 45.0)
 	_ring(spot, Globals.white, 2.0, 28.0, 0.4)
@@ -337,6 +368,10 @@ func _jump_out(ship_name: StringName, color: Color) -> void:
 	var ship: Node2D = _ship(ship_name)
 	Events.camera_shake_large.emit()
 	_flash_ship(ship, Globals.white, 0.15)
+	if ship == %PlayerShip:
+		# A breath of slow motion as the player's ship goes, so the stretch
+		# and the streak it leaves can register.
+		TimeDirector.slow_mo(0.3, 220)
 
 	var tween: Tween = create_tween()
 	tween.tween_property(ship, "scale", _JUMP_STRETCH, 0.1) \
@@ -373,6 +408,7 @@ func _jump_in(ship_name: StringName, color: Color) -> void:
 ## has built up speed.
 func _hyperspace_punch() -> void:
 	Events.camera_shake_large.emit()
+	TimeDirector.hitstop(80)
 	_flash_screen(Globals.white, 0.75, 0.5)
 
 
@@ -380,6 +416,24 @@ func _hyperspace_punch() -> void:
 func _hyperspace_exit() -> void:
 	Events.camera_shake_large.emit()
 	_flash_screen(Globals.white, 1.0, 0.6)
+
+
+## Hot sparks spitting from a drive run past its limit against Fate's pull.
+func _strain(ship_name: StringName, straining: bool) -> void:
+	var ship: Node2D = _ship(ship_name)
+	var sparks: CPUParticles2D = ship.get_node_or_null(^"StrainSparks")
+	if not sparks:
+		sparks = _strain_particles(ship)
+		ship.add_child(sparks)
+	sparks.emitting = straining
+
+
+## Manoeuvring thrusters firing on both flanks: the ship is about to turn.
+func _rcs_burst(ship_name: StringName) -> void:
+	var ship: Node2D = _ship(ship_name)
+	var flank: Vector2 = _heading(ship).orthogonal() * 10.0
+	Juice.sparkle(_effects, ship.global_position + flank, Globals.white, 5, 35.0)
+	Juice.sparkle(_effects, ship.global_position - flank, Globals.white, 5, 35.0)
 
 
 func _sound_alarm() -> void:
@@ -399,7 +453,7 @@ func _lock_on(target: StringName) -> void:
 
 
 func _switch_to_next_scene() -> void:
-	SceneLoader.switch_to(get_tree(), entering_cockpit_scene)
+	SceneLoader.switch_to(get_tree(), main_game_scene)
 
 
 # --- Helpers ----------------------------------------------------------------
@@ -534,6 +588,31 @@ func _smoke_particles() -> CPUParticles2D:
 	return smoke
 
 
+func _strain_particles(ship: Node2D) -> CPUParticles2D:
+	var sparks: CPUParticles2D = CPUParticles2D.new()
+	sparks.name = "StrainSparks"
+	sparks.texture = _PIXEL_TEXTURE
+	sparks.amount = 18
+	sparks.lifetime = 0.3
+	sparks.local_coords = false
+	# Out of the tail, which is local down for the player's nose-up sheet and
+	# local up for the Attacker's nose-down one.
+	var tail: Vector2 = Vector2.DOWN if ship == %PlayerShip else Vector2.UP
+	sparks.position = tail * 12.0
+	sparks.direction = tail
+	sparks.spread = 25.0
+	sparks.gravity = Vector2.ZERO
+	sparks.initial_velocity_min = 45.0
+	sparks.initial_velocity_max = 90.0
+	var ramp: Gradient = Gradient.new()
+	ramp.offsets = PackedFloat32Array([0.0, 0.4, 1.0])
+	ramp.colors = PackedColorArray([Globals.yellow, Globals.orange, Color(Globals.red, 0.0)])
+	sparks.color_ramp = ramp
+	sparks.show_behind_parent = true
+	sparks.emitting = false
+	return sparks
+
+
 func _charge_particles(seconds: float) -> CPUParticles2D:
 	var motes: CPUParticles2D = CPUParticles2D.new()
 	motes.texture = _PIXEL_TEXTURE
@@ -594,3 +673,35 @@ class LockOnReticle extends Node2D:
 			var tip: Vector2 = corner * h
 			draw_line(tip, tip - Vector2(corner.x * _ARM, 0), color, 1.0)
 			draw_line(tip, tip - Vector2(0, corner.y * _ARM), color, 1.0)
+
+
+## Thin dashes of light whipping past, closer than the stars: the sense of
+## speed the starfield is too far away to give. One art pixel tall.
+class SpeedLines extends Node2D:
+	## Lines spawned per second.
+	var rate: float = 0.0
+	var _owed: float = 0.0
+	## Per line: x, y, length, speed.
+	var _lines: Array[Vector4] = []
+
+	func _process(delta: float) -> void:
+		_owed += rate * delta
+		while _owed >= 1.0:
+			_owed -= 1.0
+			_lines.append(Vector4(
+				Globals.SCREEN_SIZE.x + RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, 40),
+				roundf(RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, Globals.SCREEN_SIZE.y)),
+				RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 10, 48),
+				RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 380, 640)
+			))
+		for i: int in range(_lines.size() - 1, -1, -1):
+			_lines[i].x -= _lines[i].w * delta
+			if _lines[i].x + _lines[i].z < 0:
+				_lines.remove_at(i)
+		queue_redraw()
+
+	func _draw() -> void:
+		for line: Vector4 in _lines:
+			# The faster the line, the brighter: nearer things whip past.
+			var alpha: float = remap(line.w, 380, 640, 0.2, 0.55)
+			draw_rect(Rect2(roundf(line.x), line.y, roundf(line.z), 1), Color(Globals.white, alpha))
