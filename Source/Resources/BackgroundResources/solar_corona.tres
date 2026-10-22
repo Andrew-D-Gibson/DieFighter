@@ -5,12 +5,21 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FlareStar/flare_star.tscn" id="3_star"]
 [ext_resource type="Resource" uid="uid://dbjkv27qxwp4x" path="res://Source/Resources/BackgroundResources/BackgroundHazards/solar_flare.tres" id="haz_0"]
 [ext_resource type="Resource" uid="uid://bw5yf0g7cyqme" path="res://Source/Resources/BackgroundResources/ScrollingObjects/solar_embers.tres" id="scroll_0"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/lava_world.tscn" id="body_far"]
 
 [sub_resource type="Resource" id="Resource_star"]
 script = ExtResource("2_so")
 scene = ExtResource("3_star")
 position = Vector2(42, 36)
-metadata/_custom_type_script = "uid://cgosy7gnhi58w"
+metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
+
+[sub_resource type="Resource" id="Resource_scorched"]
+script = ExtResource("2_so")
+scene = ExtResource("body_far")
+position = Vector2(282, 24)
+scale = Vector2(-1, 1)
+modulate = Color(0.8, 0.75, 0.8, 1)
+metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [resource]
 script = ExtResource("1_bg")
@@ -24,5 +33,5 @@ num_of_twinkling_stars = 10
 scrolling_objects = ExtResource("scroll_0")
 num_of_med_pieces = 16
 num_of_large_pieces = 3
-static_objects = Array[ExtResource("2_so")]([SubResource("Resource_star")])
+static_objects = Array[ExtResource("2_so")]([SubResource("Resource_star"), SubResource("Resource_scorched")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

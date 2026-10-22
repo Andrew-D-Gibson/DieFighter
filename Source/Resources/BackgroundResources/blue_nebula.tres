@@ -3,6 +3,21 @@
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_ow0l5"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_807x5"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/ion_saturation.tres" id="mod_0"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/ocean_world.tscn" id="body_near"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="body_far"]
+
+[sub_resource type="Resource" id="Resource_ocean_world"]
+script = ExtResource("2_807x5")
+scene = ExtResource("body_near")
+position = Vector2(274, 34)
+metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
+
+[sub_resource type="Resource" id="Resource_moon"]
+script = ExtResource("2_807x5")
+scene = ExtResource("body_far")
+position = Vector2(236, 16)
+modulate = Color(0.6, 0.65, 0.85, 1)
+metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [resource]
 script = ExtResource("1_ow0l5")
@@ -13,4 +28,5 @@ nebula_color = Color(0.2673, 0.65274, 0.99, 0.164706)
 stars = true
 num_of_stars = 80
 num_of_twinkling_stars = 20
+static_objects = Array[ExtResource("2_807x5")]([SubResource("Resource_ocean_world"), SubResource("Resource_moon")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

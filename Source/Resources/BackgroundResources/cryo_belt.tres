@@ -2,21 +2,21 @@
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IceShards/ice_shards.tscn" id="3_ice"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/flash_freeze.tres" id="mod_0"]
 [ext_resource type="Resource" uid="uid://ddyap0pj58xl3" path="res://Source/Resources/BackgroundResources/ScrollingObjects/ice.tres" id="scroll_0"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/ice_world.tscn" id="body_near"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/ice_moon.tscn" id="body_far"]
 
-[sub_resource type="Resource" id="Resource_ice_near"]
+[sub_resource type="Resource" id="Resource_ice_world"]
 script = ExtResource("2_so")
-scene = ExtResource("3_ice")
-position = Vector2(34, 30)
+scene = ExtResource("body_near")
+position = Vector2(40, 36)
 metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
-[sub_resource type="Resource" id="Resource_ice_far"]
+[sub_resource type="Resource" id="Resource_ice_moon"]
 script = ExtResource("2_so")
-scene = ExtResource("3_ice")
-position = Vector2(286, 14)
-scale = Vector2(-1, 1)
+scene = ExtResource("body_far")
+position = Vector2(284, 20)
 modulate = Color(0.65, 0.72, 0.85, 1)
 metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
@@ -30,4 +30,4 @@ num_of_twinkling_stars = 30
 scrolling_objects = ExtResource("scroll_0")
 num_of_med_pieces = 26
 num_of_large_pieces = 6
-static_objects = Array[ExtResource("2_so")]([SubResource("Resource_ice_near"), SubResource("Resource_ice_far")])
+static_objects = Array[ExtResource("2_so")]([SubResource("Resource_ice_world"), SubResource("Resource_ice_moon")])

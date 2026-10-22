@@ -3,6 +3,15 @@
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/shrapnel_wake.tres" id="mod_0"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ScrollingObjects/triangle_debris.tres" id="scroll_0"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="so_script"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/gas_giant.tscn" id="body_near"]
+
+[sub_resource type="Resource" id="Resource_gas_giant"]
+script = ExtResource("so_script")
+scene = ExtResource("body_near")
+position = Vector2(30, 50)
+modulate = Color(0.85, 0.85, 0.9, 1)
+metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
 
 [resource]
 resource_local_to_scene = true
@@ -17,5 +26,5 @@ num_of_twinkling_stars = 15
 scrolling_objects = ExtResource("scroll_0")
 num_of_med_pieces = 64
 num_of_large_pieces = 12
-static_objects = null
+static_objects = Array[ExtResource("so_script")]([SubResource("Resource_gas_giant")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

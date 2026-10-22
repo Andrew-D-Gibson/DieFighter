@@ -1,22 +1,31 @@
 extends HazardTelegraph
 ## The star a solar flare region sits beside, and the source of its flares.
 ##
-## Breathes slowly while the flare is far off. Once it is imminent the corona
-## flares hot and throbs fast, so the sky itself is shouting "next turn"; when
-## it fires, the whole star whites out.
+## Breathes slowly while the flare is far off. Once it is imminent its limb
+## erupts in prominences and the whole star throbs fast and hot, so the sky
+## itself is shouting "next turn"; when it fires, the star whites out.
 ##
-## Brightness only, never scale or rotation: either would smear the pixel art.
+## The star is drawn live by pixel_planet.gdshader on Body; this only drives
+## its brightness and how much of its limb is erupting. Never touch the
+## shader's speeds from here: they multiply TIME, so changing one jumps the
+## surface to a new place instead of speeding it up.
 
 ## Seconds per breath at rest, and while the flare is imminent.
 @export var calm_period: float = 3.2
 @export var urgent_period: float = 0.7
 
-## How hot the corona runs at the peak of a breath, calm and imminent.
+## How hot the star runs at the peak of a breath, calm and imminent.
 @export var calm_glow: float = 1.1
-@export var urgent_glow: float = 1.9
+@export var urgent_glow: float = 1.7
 
-@onready var _body: Sprite2D = $Body
-@onready var _corona: Sprite2D = $Corona
+## How much of the limb is erupting (the shader's cloud cover), calm and
+## imminent, and how long it takes to climb or settle between them.
+@export var calm_prominences: float = 0.3
+@export var urgent_prominences: float = 0.45
+@export var prominence_shift_time: float = 1.5
+
+@onready var _body: ColorRect = $Body
+@onready var _material: ShaderMaterial = _body.material as ShaderMaterial
 
 ## Where in its breath the star is, in radians. Advanced by the current
 ## period, so switching to the urgent throb doesn't jump the glow.
@@ -26,6 +35,14 @@ var _phase: float = 0.0
 var _flash: float = 0.0
 var _flash_tween: Tween
 
+var _prominences: float = 0.0
+var _prominence_tween: Tween
+
+
+func _ready() -> void:
+	super()
+	_prominences = calm_prominences
+
 
 func _process(delta: float) -> void:
 	var period: float = urgent_period if urgent else calm_period
@@ -33,10 +50,19 @@ func _process(delta: float) -> void:
 	var wave: float = 0.5 + 0.5 * sin(_phase)
 	var peak: float = urgent_glow if urgent else calm_glow
 
-	var corona: float = lerpf(0.85, peak, wave) + _flash
-	_corona.self_modulate = Color(corona, corona, corona, lerpf(0.7, 1.0, wave))
-	var body: float = 1.0 + (0.15 * wave if urgent else 0.0) + _flash * 0.6
-	_body.self_modulate = Color(body, body, body)
+	var glow: float = lerpf(0.9, peak, wave) + _flash
+	_body.self_modulate = Color(glow, glow, glow)
+	_material.set_shader_parameter("cloud_1_cover", _prominences)
+
+
+func _urgency_changed() -> void:
+	if _prominence_tween and _prominence_tween.is_valid():
+		_prominence_tween.kill()
+	_prominence_tween = create_tween()
+	_prominence_tween.tween_property(
+		self, "_prominences", urgent_prominences if urgent else calm_prominences,
+		prominence_shift_time
+	).set_trans(Tween.TRANS_SINE)
 
 
 func _fired() -> void:

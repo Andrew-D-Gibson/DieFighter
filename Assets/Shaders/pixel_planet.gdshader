@@ -111,6 +111,9 @@ uniform float atmosphere_radius : hint_range(0.01, 0.5, 0.001) = .34;
 // The colours should be in a single row ordered from lowest to highest.
 // Additional rows will be ignored.
 uniform sampler2D atmosphere_palette : filter_nearest, hint_default_transparent;
+// Thin the atmosphere out where it's unlit, so whatever is behind the planet
+// shows through it instead of a dark ring.
+uniform bool atmosphere_fades_at_night = false;
 
 
 //// Posterisation
@@ -650,7 +653,9 @@ vec4 clouds(
 	}
 
 	float light = calculate_light(uv, radius);
-	color.rgb = color.rgb * light;
+	// Shade toward the same colour as the surface, so clouds over the night
+	// side don't turn into black blots against it.
+	color.rgb = mix(shade_colour, color.rgb, light);
 	return color;
 }
 
@@ -675,12 +680,19 @@ vec4 atmosphere(vec2 uv) {
 			float light = calculate_light(uv, radius);
 			result = get_colour(atmosphere_palette, palette_size, column, 0);
 			result.rgb = result.rgb * light;
+			if (atmosphere_fades_at_night) {
+				result.a = result.a * clamp(light, 0.0, 1.0);
+			}
 		}
 	}
 	return result;
 }
 
 void fragment() {
+	// Everything below overwrites COLOR, which would drop the node's modulate
+	// and self_modulate; keep them to multiply back in at the end.
+	vec4 node_colour = COLOR;
+
 	// Put the UV on a pixel grid.
 	vec2 grid_uv = calculate_grid_uv(UV);
 
@@ -802,4 +814,6 @@ void fragment() {
 	if (posterise) {
 		COLOR.rgb = get_nearest_colour(posterisation_palette, COLOR.rgb);
 	}
+
+	COLOR *= node_colour;
 }
