@@ -4,6 +4,45 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-21 — Music: MusicDirector
+
+The game had a `Music` bus and volume slider but no music; `main.tscn`'s
+`MusicPlayer` autoplayed an empty stream. A `MusicDirector` autoload now owns
+it, built for dynamic music but authored with two songs for now:
+GameStartTheme and Trailer 1, alternating forever.
+
+- **Playlists and cues.** A `MusicPlaylistResource` plays back to back,
+  wrapping when `loop` is on. Scenes cue a track by id with `play_track()`;
+  the playlist then carries on from that track. The menu cues the start
+  theme with `restart` (from the top after a run, but not at boot, where it
+  only just started). The opening cutscene crossfades to Trailer 1 over 4 s
+  from a method key at 0 s, so skipping can't beat it. Continue cues Trailer 1
+  itself, since it skips the cutscenes.
+- **Decks.** Each playing track gets a new `MusicDeck` (an AudioStreamPlayer)
+  that frees itself once faded out, so a cue landing mid-fade adds a third
+  deck instead of cutting off an audible tail. The plan said two fixed A/B
+  decks; that would have had to cut one.
+- **Layers.** A deck plays its track's layers as one `AudioStreamSynchronized`.
+  `set_layer_enabled()` tweens `set_sync_stream_volume()`, which 4.7.1 does
+  apply to a stream that is already playing: muting the one layer took the
+  Music bus peak from -12 dB to -91 dB, and turning it back on restored it.
+- **Fades** are equal-power (sine ease in and out: 0.71 on each deck halfway)
+  and ignore `Engine.time_scale`, which hitstop sets to 0.
+- `GameStartTheme.wav.import` looped (`loop_mode=2`), so it never emitted
+  `finished`; now off. A test pins both shipped tracks to not looping.
+
+Checked live from the menu: boot on the start theme, handover at the end of
+each song and the wrap back, a crossfade and a second cue mid-fade, the
+cutscene fade, Trailer 1 continuing through the cockpit scene into the run
+without restarting, back to the menu restarting the start theme, and Continue.
+How the fades and handovers actually sound still needs a listen.
+
+Next: stems for a battle theme driven by combat events, combat/explore state
+transitions, and transitions that wait for the next bar (tracks already have
+`bpm` and `beats_per_bar`, unused so far).
+
+---
+
 ## 2026-10-21 — Playtest tweaks, built in parallel
 
 Eighteen tweaks from a playtest list, split into six groups and built at the

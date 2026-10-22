@@ -569,6 +569,27 @@ Sounds are `SoundEffectResource`s in
 `Source/Resources/SoundEffectResources/SoundEffects/`. Hook one into a chain
 with `AUDIO_VISUAL / PLAY_SOUND`, placed just before the step it belongs to.
 
+### Music
+
+Music goes through the `MusicDirector` autoload, never a scene's own
+AudioStreamPlayer.
+
+1. **Export** from FL Studio as WAV (or OGG). For a layered track, export
+   every stem at exactly the same length from the same project, so they stay
+   in time. Put them beside the `.flp` under `Assets/Music/`.
+2. **Turn looping off** in the import (`edit/loop_mode=0` for WAV, `loop`
+   off for OGG). A looping stream never ends, so its playlist never moves on.
+3. **Make a track**: a `MusicTrackResource` in
+   `Source/Resources/MusicResources/Tracks/`, with a unique `id` and one
+   `MusicLayerResource` per stem (one layer, `id = full`, for a plain song).
+   A layer with `starts_enabled` off still plays, silently.
+4. **Add it to a playlist** in `MusicResources/Playlists/`.
+   `default_playlist.tres` is the one that starts at boot.
+5. **Cue it** from code: `MusicDirector.play_track(&"id", fade_seconds)`,
+   or `set_layer_enabled(&"layer", on, fade_seconds)` for a stem. For a
+   cutscene, call it from a method-track key so the timing lives in the
+   AnimationPlayer (see `opening_cutscene.gd` `_start_music()`).
+
 ---
 
 ## 12. Checklist before committing content
