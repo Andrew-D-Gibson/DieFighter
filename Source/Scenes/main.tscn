@@ -64,6 +64,14 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
 [ext_resource type="Resource" uid="uid://br4j63c7vl8h" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
 [ext_resource type="Resource" uid="uid://c6swfwrjfa55" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LooseWing/COMBAT_loose_wing.tres" id="combat_loose_wing"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SmashAndGrab/COMBAT_smash_and_grab.tres" id="combat_smash_and_grab"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BlockadeRunner/COMBAT_blockade_runner.tres" id="combat_blockade_runner"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Spotter/COMBAT_spotter.tres" id="combat_spotter"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_GhostCarrier/EVENT_ghost_carrier.tres" id="event_ghost_carrier"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_BlackMarket/EVENT_black_market.tres" id="event_black_market"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pickpocket/EVENT_pickpocket.tres" id="event_pickpocket"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Mayday/EVENT_mayday.tres" id="event_mayday"]
 [ext_resource type="Resource" uid="uid://bqsr7vyhbsrw3" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_HunterKillers/ELITE_hunter_killers.tres" id="elite_hunter"]
 [ext_resource type="Resource" uid="uid://bj2ob57kph037" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_LanceSquadron/ELITE_lance_squadron.tres" id="elite_lance"]
 [ext_resource type="Resource" uid="uid://b5ioo4r40s64j" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_MortarNest/ELITE_mortar_nest.tres" id="elite_mortar"]
@@ -385,8 +393,8 @@ sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
 repair_scenario = ExtResource("repair_station_scenario")
-combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier")])
-question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck")])
+combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier"), ExtResource("combat_loose_wing"), ExtResource("combat_smash_and_grab"), ExtResource("combat_blockade_runner"), ExtResource("combat_spotter")])
+question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck"), ExtResource("event_ghost_carrier"), ExtResource("event_black_market"), ExtResource("event_pickpocket"), ExtResource("event_mayday")])
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter")])
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])

@@ -1,0 +1,34 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_1"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_2"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_4"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pickpocket/pickpocket_running.tres" id="ext_5"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pickpocket/pickpocket_skint.tres" id="ext_6"]
+
+[sub_resource type="Resource" id="Resource_step0"]
+script = ExtResource("ext_2")
+category = 2
+subtype = 17
+range_min = 8
+range_max = 14
+
+[sub_resource type="Resource" id="Resource_step1"]
+script = ExtResource("ext_2")
+category = 1
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("ext_3")
+effects = Array[ExtResource("ext_2")]([SubResource("Resource_step0"), SubResource("Resource_step1")])
+
+[resource]
+script = ExtResource("ext_1")
+dialogue = "Oops! Sorry, friend."
+attitude = 1
+effects_on_enter = SubResource("Resource_chain")
+transitions = Dictionary[int, ExtResource("ext_4")]({
+0: ExtResource("ext_5"),
+10: ExtResource("ext_6")
+})
