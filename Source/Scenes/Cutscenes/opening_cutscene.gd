@@ -94,6 +94,12 @@ func _player_ship_hit() -> void:
 	$PlayerShip.add_child(explosion)
 	
 	
+## Keyed on the cutscene's method track at 0 s, so the fade can be retimed in
+## the AnimationPlayer. It carries on through the cockpit scene into the run.
+func _start_music() -> void:
+	MusicDirector.play_track(&"trailer_1", 4.0)
+
+
 func _switch_to_next_scene() -> void:
 	SceneLoader.switch_to(get_tree(), entering_cockpit_scene)
 

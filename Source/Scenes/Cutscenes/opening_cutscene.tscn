@@ -596,9 +596,12 @@ tracks/14/path = NodePath(".")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(6.36667, 7.06667, 7.6, 8.3, 8.76667, 9.33333, 27),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 6.36667, 7.06667, 7.6, 8.3, 8.76667, 9.33333, 27),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "values": [{
+"args": [],
+"method": &"_start_music"
+}, {
 "args": [],
 "method": &"_play_dice_cannon_fire_sound"
 }, {

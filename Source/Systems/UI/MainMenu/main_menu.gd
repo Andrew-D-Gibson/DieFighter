@@ -16,6 +16,10 @@ var main_game_scene: String = "uid://deisauteocrjl"
 
 var _is_loading: bool = false
 
+const _MENU_TRACK: StringName = &"game_start_theme"
+## Brought in by the opening cutscene on a new game.
+const _RUN_TRACK: StringName = &"trailer_1"
+
 
 func _ready() -> void:
 	get_tree().paused = false
@@ -51,6 +55,10 @@ func _ready() -> void:
 	
 	SceneLoader.request(opening_cutscene)
 	$VBoxContainer/QuitButton.visible = QuitManager.can_quit()
+
+	# The menu always opens on the start theme, from the top when coming back
+	# from a run.
+	MusicDirector.play_track(_MENU_TRACK, 2.0, true)
 	
 	
 func _clear_stars() -> void:
@@ -110,6 +118,8 @@ func _on_continue_button_pressed() -> void:
 		return
 	Globals.pending_load_save = loaded_save
 	_is_loading = true
+	# Continuing skips the cutscenes that would have brought this track in.
+	MusicDirector.play_track(_RUN_TRACK, 2.0)
 	%LoadingPopup.show()
 	# The scene change blocks the main thread while it loads, so wait until the
 	# popup has actually been drawn or the player never sees it.
