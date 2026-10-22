@@ -32,3 +32,8 @@ extends Resource
 ## Turn each piece a random quarter turn. Leave off for art lit from a fixed
 ## direction, which would otherwise be lit from all four sides.
 @export var random_quarter_turns: bool = true
+## Mirror each piece left-to-right half the time. Pixel-clean, and art lit from
+## straight above stays lit from above. For finer angles than quarter turns,
+## bake them into the art as a PieceVariant sheet: the game draws at 6x zoom,
+## so turning a sprite in-engine tilts its big pixels.
+@export var random_flip: bool = false

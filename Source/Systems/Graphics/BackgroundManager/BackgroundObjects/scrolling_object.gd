@@ -54,13 +54,16 @@ func pick_random_piece() -> void:
 	rotation_degrees = 0
 	if objects.random_quarter_turns:
 		rotation_degrees = RNGManager.pick_random(RNGManager.Bucket.BACKGROUND, [0, 90, 180, 270])
+	scale = Vector2.ONE
+	if objects.random_flip and RNGManager.randf(RNGManager.Bucket.BACKGROUND) < 0.5:
+		scale.x = -1.0
 
 	_piece = scene.instantiate()
 	if objects.shader:
 		material.set_shader_parameter("seed", RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, 100.0))
 	_share_material(_piece)
 	add_child(_piece)
-	bounds = _measure(_piece, Transform2D(rotation, Vector2.ZERO))
+	bounds = _measure(_piece, Transform2D(rotation, scale, 0.0, Vector2.ZERO))
 
 
 func pick_random_velocity_delta() -> void:

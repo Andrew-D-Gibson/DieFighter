@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cscvtqg0ut1pu"
-path="res://.godot/imported/scrap_girder.png-fec3432e22d3c0a91f8efc105da41e55.ctex"
+uid="uid://c1ookudmghrt0"
+path="res://.godot/imported/scrap_engine.png-b7de837f9b1bb6dc0092a43f3f3db25b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_girder.png"
-dest_files=["res://.godot/imported/scrap_girder.png-fec3432e22d3c0a91f8efc105da41e55.ctex"]
+source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_engine.png"
+dest_files=["res://.godot/imported/scrap_engine.png-b7de837f9b1bb6dc0092a43f3f3db25b.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u30spv1cqumi"
-path="res://.godot/imported/scrap_engine-Sheet.png-240d6583daa90a79bf5e93be9b698ee7.ctex"
+uid="uid://buo1uamivt7ay"
+path="res://.godot/imported/scrap_plate_2-Sheet.png-fe3e633c52f96c7dabefbf88eed70e18.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_engine-Sheet.png"
-dest_files=["res://.godot/imported/scrap_engine-Sheet.png-240d6583daa90a79bf5e93be9b698ee7.ctex"]
+source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_plate_2-Sheet.png"
+dest_files=["res://.godot/imported/scrap_plate_2-Sheet.png-fe3e633c52f96c7dabefbf88eed70e18.ctex"]
 
 [params]
 

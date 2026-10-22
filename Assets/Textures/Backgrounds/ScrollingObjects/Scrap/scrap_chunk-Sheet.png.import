@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b2dfblkxud3v8"
-path="res://.godot/imported/scrap_pipe.png-22b0ee156405fe63c6f4466747bc17a3.ctex"
+uid="uid://dg2cc48akkgb2"
+path="res://.godot/imported/scrap_chunk-Sheet.png-c8cef460e3aea2f6bbdb87f1f35537ef.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_pipe.png"
-dest_files=["res://.godot/imported/scrap_pipe.png-22b0ee156405fe63c6f4466747bc17a3.ctex"]
+source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_chunk-Sheet.png"
+dest_files=["res://.godot/imported/scrap_chunk-Sheet.png-c8cef460e3aea2f6bbdb87f1f35537ef.ctex"]
 
 [params]
 

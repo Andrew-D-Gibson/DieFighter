@@ -1,6 +1,9 @@
 [gd_scene format=3]
 
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_girder.png" id="1_jisxr"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_girder-Sheet.png" id="1_tex"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_variant.gd" id="2_variant"]
 
 [node name="ScrapGirder" type="Sprite2D" unique_id=593249076]
-texture = ExtResource("1_jisxr")
+texture = ExtResource("1_tex")
+hframes = 5
+script = ExtResource("2_variant")

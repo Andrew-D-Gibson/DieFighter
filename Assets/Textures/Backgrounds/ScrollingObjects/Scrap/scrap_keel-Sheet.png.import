@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b4d5o0endydq6"
-path="res://.godot/imported/scrap_plate_1.png-527ee1606564330efe33328838e6de79.ctex"
+uid="uid://dfv3embraammu"
+path="res://.godot/imported/scrap_keel-Sheet.png-72a89c038681d3c404eff27993cdfed3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_plate_1.png"
-dest_files=["res://.godot/imported/scrap_plate_1.png-527ee1606564330efe33328838e6de79.ctex"]
+source_file="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_keel-Sheet.png"
+dest_files=["res://.godot/imported/scrap_keel-Sheet.png-72a89c038681d3c404eff27993cdfed3.ctex"]
 
 [params]
 

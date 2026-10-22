@@ -2,23 +2,24 @@
 
 [ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_hull.png" id="1_1852n"]
 
-[sub_resource type="Gradient" id="Gradient_cvavl"]
+[sub_resource type="Gradient" id="Gradient_sparks"]
 offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(0.9843137, 0.9098039, 0.6039216, 1, 0.9490196, 0.6117647, 0.3647059, 1, 0.878, 0.439, 0.29, 0)
+colors = PackedColorArray(0.93333334, 0.827451, 0.3647059, 1, 0.9490196, 0.6117647, 0.3647059, 1, 0.93333334, 0.49803922, 0.18431373, 0)
 
 [node name="ScrapHull" type="Sprite2D" unique_id=973350477]
 texture = ExtResource("1_1852n")
 
 [node name="Sparks" type="CPUParticles2D" parent="." unique_id=1136613963]
-position = Vector2(11, 0)
+position = Vector2(17.6, -4.7)
 amount = 5
 lifetime = 2.2
 explosiveness = 1.0
 lifetime_randomness = 0.75
 emission_shape = 3
 emission_rect_extents = Vector2(1, 4)
+direction = Vector2(1, -0.2)
 spread = 70.0
 gravity = Vector2(0, 0)
 initial_velocity_min = 6.0
 initial_velocity_max = 16.0
-color_ramp = SubResource("Gradient_cvavl")
+color_ramp = SubResource("Gradient_sparks")

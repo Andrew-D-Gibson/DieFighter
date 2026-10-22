@@ -1,28 +1,38 @@
 [gd_scene format=3]
 
-[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_engine-Sheet.png" id="1_hurqr"]
-[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_frames.gd" id="2_wau7c"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_engine.png" id="1_hurqr"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Backgrounds/ScrollingObjects/Scrap/scrap_engine_glow-Sheet.png" id="2_glow"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/piece_frames.gd" id="3_wau7c"]
 
-[sub_resource type="Gradient" id="Gradient_3hr5u"]
+[sub_resource type="Gradient" id="Gradient_sparks"]
 offsets = PackedFloat32Array(0, 0.5, 1)
-colors = PackedColorArray(0.9843137, 0.9098039, 0.6039216, 1, 0.9490196, 0.6117647, 0.3647059, 1, 0.878, 0.439, 0.29, 0)
+colors = PackedColorArray(0.93333334, 0.827451, 0.3647059, 1, 0.9490196, 0.6117647, 0.3647059, 1, 0.93333334, 0.49803922, 0.18431373, 0)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_glow"]
 
 [node name="ScrapEngine" type="Sprite2D" unique_id=1672100386]
 texture = ExtResource("1_hurqr")
+
+[node name="Glow" type="Sprite2D" parent="." unique_id=514743897]
+material = SubResource("CanvasItemMaterial_glow")
+position = Vector2(15, -6)
+texture = ExtResource("2_glow")
+centered = false
 hframes = 3
-script = ExtResource("2_wau7c")
+script = ExtResource("3_wau7c")
 fps = 7.0
 sequence = PackedInt32Array(0, 1, 0, 1, 2, 1, 2, 2)
 
 [node name="Sputter" type="CPUParticles2D" parent="." unique_id=387058163]
-position = Vector2(8, 0)
+position = Vector2(17.4, -2)
 amount = 4
 lifetime = 0.9
 lifetime_randomness = 0.3
 emission_shape = 3
 emission_rect_extents = Vector2(0, 1)
+direction = Vector2(1, -0.1)
 spread = 25.0
 gravity = Vector2(0, 0)
 initial_velocity_min = 4.0
 initial_velocity_max = 9.0
-color_ramp = SubResource("Gradient_3hr5u")
+color_ramp = SubResource("Gradient_sparks")
