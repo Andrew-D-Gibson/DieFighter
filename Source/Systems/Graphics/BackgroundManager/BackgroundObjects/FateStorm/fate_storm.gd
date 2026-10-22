@@ -38,7 +38,11 @@ const _HOT: Color = Color("#c552f1")
 const _GLOW: Color = Color("#80359d")
 
 ## How long each kind of strike lights the sky, in seconds.
-const _LIFETIMES: Dictionary[Kind, float] = {Kind.SHEET: 0.7, Kind.BOLT: 0.5, Kind.TEAR: 0.3}
+const _LIFETIMES: Dictionary[Kind, float] = {Kind.SHEET: 0.7, Kind.BOLT: 0.7, Kind.TEAR: 0.3}
+## A bolt's dark blink between its two strikes, in seconds from its start,
+## and when its second strike starts to fade.
+const _BOLT_BLINK: Vector2 = Vector2(0.06, 0.1)
+const _BOLT_HOLD: float = 0.22
 ## Bolts step this many art pixels between kinks.
 const _BOLT_STEP: Vector2 = Vector2(3.0, 7.0)
 
@@ -93,14 +97,17 @@ func strike(kind: Kind, strength: float = 1.0) -> void:
 	_begin(new_strike)
 
 
-## Bolts that crack outward from [param origin], as if thrown off by it.
-func strike_from(origin: Vector2, bolts: int = 3, strength: float = 1.0) -> void:
+## Bolts that crack outward from [param origin] (in this node's space), as if
+## thrown off by it. Each starts [param inner_radius] out, past whatever body
+## sits there, and reaches up to [param reach] art pixels further.
+func strike_from(origin: Vector2, bolts: int = 3, reach: float = 70.0, inner_radius: float = 0.0, strength: float = 1.0) -> void:
 	for i: int in range(bolts):
 		var new_strike: Strike = Strike.new()
 		new_strike.kind = Kind.BOLT
 		new_strike.strength = strength
 		var angle: float = TAU * (float(i) + _randf(0.0, 0.7)) / float(bolts)
-		_build_bolt(new_strike, origin, angle, _randf(40.0, 90.0), 1)
+		var start: Vector2 = origin + Vector2.from_angle(angle) * inner_radius
+		_build_bolt(new_strike, start, angle, _randf(reach * 0.6, reach), 1)
 		_begin(new_strike)
 
 
@@ -139,17 +146,22 @@ func _next_gap() -> float:
 
 # --- Light ------------------------------------------------------------------
 
-## How lit the sky is by [param strike] right now, 0 to 1. Bolts stutter:
-## a flash, a blink of dark, a second flash, then a fade. Sheet lightning
-## rolls in two humps, like light behind cloud.
+## How lit the sky is by [param strike] right now, 0 to 1. Bolts strike
+## twice: a flash, a blink of dark, a second flash that holds, then a fade.
+## Sheet lightning rolls in two humps, like light behind cloud.
 func _light(strike_now: Strike) -> float:
 	var t: float = strike_now.age
 	var level: float = 0.0
 	match strike_now.kind:
 		Kind.BOLT:
-			level = exp(-t / 0.14)
-			if t > 0.05 and t < 0.09:
-				level *= 0.15
+			if t < _BOLT_BLINK.x:
+				level = 1.0
+			elif t < _BOLT_BLINK.y:
+				level = 0.15
+			elif t < _BOLT_HOLD:
+				level = 1.0
+			else:
+				level = exp(-(t - _BOLT_HOLD) / 0.12)
 		Kind.SHEET:
 			level = 0.6 * exp(-t / 0.12)
 			if t > 0.14:
@@ -188,8 +200,10 @@ func _draw() -> void:
 		var level: float = _light(strike_now)
 		if level <= 0.05:
 			continue
-		# White-hot only for the first instant, then Fate's purple.
-		var core: Color = _CORE if strike_now.age < 0.05 else _HOT
+		# White-hot only while each strike lands, then Fate's purple.
+		var age: float = strike_now.age
+		var landing: bool = age < _BOLT_BLINK.x or (age > _BOLT_BLINK.y and age < _BOLT_BLINK.y + 0.05)
+		var core: Color = _CORE if landing else _HOT
 		for pixel: Vector2i in strike_now.glow:
 			draw_rect(Rect2(pixel, Vector2.ONE), Color(_GLOW, level * 0.8))
 		for pixel: Vector2i in strike_now.core:

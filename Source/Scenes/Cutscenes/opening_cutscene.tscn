@@ -18,7 +18,10 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_mote.tscn" id="16_fate_mote"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die_chip.tscn" id="17_fate_die_chi"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die.tscn" id="18_fate_die"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_wisp.tscn" id="19_fate_wisp"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_spire.tscn" id="19_fate_spire"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_slab.tscn" id="19_fate_slab"]
+[ext_resource type="Shader" path="res://Assets/Shaders/fate_corruption.gdshader" id="19_fate_corruption"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FateStorm/fate_storm.tscn" id="19_fate_storm"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_cluster.tscn" id="20_fate_cluster"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_wing.tscn" id="21_scrap_wing"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_plate_1.tscn" id="22_scrap_plate_"]
@@ -812,7 +815,9 @@ _data = {
 script = ExtResource("1_opening_cuts")
 star_pixel_scene = ExtResource("2_star")
 star_twinkle_scene = ExtResource("3_twinkling_st")
-debris_scenes = Array[PackedScene]([ExtResource("13_fate_shard_1"), ExtResource("14_fate_shard_2"), ExtResource("15_fate_shard_3"), ExtResource("16_fate_mote"), ExtResource("17_fate_die_chi"), ExtResource("18_fate_die"), ExtResource("19_fate_wisp"), ExtResource("20_fate_cluster"), ExtResource("21_scrap_wing"), ExtResource("22_scrap_plate_"), ExtResource("23_scrap_plate_"), ExtResource("24_scrap_girder"), ExtResource("25_scrap_panel"), ExtResource("26_scrap_pipe")])
+debris_scenes = Array[PackedScene]([ExtResource("21_scrap_wing"), ExtResource("22_scrap_plate_"), ExtResource("23_scrap_plate_"), ExtResource("24_scrap_girder"), ExtResource("25_scrap_panel"), ExtResource("26_scrap_pipe")])
+fate_debris_scenes = Array[PackedScene]([ExtResource("13_fate_shard_1"), ExtResource("14_fate_shard_2"), ExtResource("15_fate_shard_3"), ExtResource("16_fate_mote"), ExtResource("17_fate_die_chi"), ExtResource("18_fate_die"), ExtResource("19_fate_spire"), ExtResource("20_fate_cluster"), ExtResource("19_fate_slab")])
+fate_debris_shader = ExtResource("19_fate_corruption")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_glow")
@@ -872,6 +877,18 @@ z_index = -6
 position = Vector2(160, 90)
 rotation = 1.570796
 material = SubResource("ShaderMaterial_nebula")
+
+[node name="FateStorm" parent="PixelLayer/PixelScreen/PixelWorld" instance=ExtResource("19_fate_storm")]
+unique_name_in_owner = true
+z_index = 3
+bolt_weight = 0.0
+screen_wash = 0.0
+
+[node name="Sky" parent="PixelLayer/PixelScreen/PixelWorld/FateStorm" index="0"]
+z_index = -8
+
+[node name="Tear" parent="PixelLayer/PixelScreen/PixelWorld/FateStorm" index="1"]
+z_index = -8
 
 [node name="Debris" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
 unique_name_in_owner = true

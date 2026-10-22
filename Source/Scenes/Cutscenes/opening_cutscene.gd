@@ -27,8 +27,12 @@ extends Node2D
 @export var star_stretch: float = 1.0
 
 @export_category('Debris')
-## Pieces of wreckage and fate shards being dragged into Fate.
+## Pieces of wreckage being dragged into Fate.
 @export var debris_scenes: Array[PackedScene] = []
+## Fate's own shards, dragged in with the wreckage and drawn with
+## fate_debris_shader, the way the Fate background draws them.
+@export var fate_debris_scenes: Array[PackedScene] = []
+@export var fate_debris_shader: Shader
 @export var num_of_debris: int = 16
 ## Keyed. How fast the debris is dragged left toward Fate.
 @export var debris_speed: float = 70.0
@@ -62,6 +66,9 @@ const _JUMP_STRETCH: Vector2 = Vector2(0.5, 3.0)
 ## event horizon it is gone.
 const _DEBRIS_STRETCH_RANGE: float = 70.0
 const _EVENT_HORIZON: float = 14.0
+## Fate's lightning starts out on its disk, so the arcs crawl over the disk's
+## edge rather than out of the black core.
+const _FATE_RIM: float = 40.0
 ## Fastest a piece tumbles, in radians per second, before Fate spins it up.
 const _DEBRIS_MAX_SPIN: float = 1.5
 
@@ -89,6 +96,7 @@ var _reticle: LockOnReticle = null
 
 @onready var _effects: Node2D = %Effects
 @onready var _fate: Node2D = %Fate
+@onready var _storm: FateStorm = %FateStorm
 
 
 func _ready() -> void:
@@ -106,6 +114,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_move_stars(delta)
 	_move_debris(delta)
+	# The storm is Fate's weather: it goes when Fate drops behind the jump.
+	_storm.visible = _fate.visible
+	_storm.autonomous = _fate.visible
 	_speed_lines.rate = speed_lines
 	for ship: Node2D in _smoke_trails:
 		var smoke: CPUParticles2D = _smoke_trails[ship]
@@ -154,12 +165,17 @@ func _move_stars(delta: float) -> void:
 # --- Debris -----------------------------------------------------------------
 
 func _spawn_debris() -> void:
-	if debris_scenes.is_empty():
+	var pool: Array[PackedScene] = debris_scenes.duplicate()
+	pool.append_array(fate_debris_scenes)
+	if pool.is_empty():
 		return
 	for i: int in range(num_of_debris):
 		var holder: Node2D = Node2D.new()
 		%Debris.add_child(holder)
-		var piece: Node2D = RNGManager.pick_random(RNGManager.Bucket.COSMETIC, debris_scenes).instantiate()
+		var scene: PackedScene = RNGManager.pick_random(RNGManager.Bucket.COSMETIC, pool)
+		var piece: Node2D = scene.instantiate()
+		if fate_debris_shader and fate_debris_scenes.has(scene):
+			_corrupt(piece)
 		holder.add_child(piece)
 		piece.rotation = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, TAU)
 		var depth: float = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.5, 1.2)
@@ -172,6 +188,21 @@ func _spawn_debris() -> void:
 		_debris.append(holder)
 		_debris_depths.append(depth)
 		_debris_spins.append(RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -_DEBRIS_MAX_SPIN, _DEBRIS_MAX_SPIN))
+
+
+## Gives a fate shard the corruption the Fate background draws it with. The
+## holder's modulate already sinks far pieces into the dark, so the shader's
+## own depth fade is left fully shown.
+func _corrupt(piece: Node2D) -> void:
+	var corruption: ShaderMaterial = ShaderMaterial.new()
+	corruption.shader = fate_debris_shader
+	corruption.set_shader_parameter("keep_texture_colors", true)
+	corruption.set_shader_parameter("base_visibility", 1.0)
+	corruption.set_shader_parameter("seed", RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, 100.0))
+	piece.material = corruption
+	for child: Node in piece.get_children():
+		if child is CanvasItem:
+			(child as CanvasItem).use_parent_material = true
 
 
 ## Drags each piece left and in toward Fate's centre line, and stretches it
@@ -234,18 +265,24 @@ func _start_music() -> void:
 	MusicDirector.play_track(&"trailer_1", 4.0)
 
 
-## Fate breathing: a ring rolls out of the hole and the screen shudders.
-## Strength 1 is a pulse; higher is the surge that takes a ship.
+## Fate breathing: a ring rolls out of the hole, lightning cracks off it and
+## the screen shudders. Strength 1 is a pulse; higher is the surge that takes
+## a ship. A pulse's bolts stay short of the Attackers, so it never reads as
+## Fate striking them before the surge does.
 func _fate_pulse(strength: float) -> void:
 	Events.play_sound.emit(_FATE_PULSE_SFX)
 	var centre: Vector2 = _fate.global_position
+	var storm_centre: Vector2 = _storm.to_local(centre)
 	_debris_jolt = 140.0 * strength
 	_ring(centre, _FATE_PURPLE, 70.0, 110.0 + 40.0 * strength, 0.9)
 	if strength > 1.0:
 		_ring(centre, Globals.white, 60.0, 180.0, 0.7)
 		_flash_screen(_FATE_PURPLE, 0.45, 0.5)
+		_storm.strike_from(storm_centre, 7, 110.0, _FATE_RIM)
+		_storm.strike(FateStorm.Kind.TEAR)
 		Events.camera_shake_large.emit()
 	else:
+		_storm.strike_from(storm_centre, 4, 35.0, _FATE_RIM, 0.8)
 		Events.camera_shake_small.emit()
 
 
@@ -340,6 +377,9 @@ func _consumed(ship_name: StringName) -> void:
 	_ring(spot, Globals.white, 2.0, 28.0, 0.4)
 	_ring(spot, _FATE_PURPLE, 4.0, 46.0, 0.6)
 	_flash_screen(_FATE_PURPLE, 0.35, 0.4)
+	# Fate tears the sky as it takes the ship.
+	_storm.strike(FateStorm.Kind.TEAR)
+	_storm.strike_from(_storm.to_local(_fate.global_position), 5, 30.0, _FATE_RIM)
 
 
 ## Spooling the jump drive: motes are drawn in to the ship while its hull
