@@ -1,19 +1,34 @@
 [gd_scene format=3 uid="uid://b1j8blia5iw65"]
 
-[ext_resource type="Script" uid="uid://dm76x4thoi7rc" path="res://Source/Scenes/Cutscenes/opening_cutscene.gd" id="1_wfho2"]
-[ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="2_p2uiq"]
-[ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="3_6lqss"]
-[ext_resource type="PackedScene" uid="uid://hdt1pqaoa4fq" path="res://Assets/Particles/engine_particles_rotated_left.tscn" id="5_7e3e1"]
-[ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="5_740k5"]
-[ext_resource type="Texture2D" uid="uid://kr308ya3kowt" path="res://Assets/Textures/Dice/Cutscene/cutscene_dice.png" id="6_1dh7u"]
-[ext_resource type="PackedScene" uid="uid://dueij0vemaxof" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/defender_ship_graphics.tscn" id="6_5gc3m"]
-[ext_resource type="Script" uid="uid://tw7lpv214pfl" path="res://Source/Systems/UI/Camera/camera.gd" id="6_drddh"]
-[ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="7_66qfi"]
-[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="9_vj2dl"]
-[ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="10_rq5t1"]
-[ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="11_m2fiu"]
+[ext_resource type="Script" uid="uid://dm76x4thoi7rc" path="res://Source/Scenes/Cutscenes/opening_cutscene.gd" id="1_opening_cuts"]
+[ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="2_star"]
+[ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="3_twinkling_st"]
+[ext_resource type="PackedScene" uid="uid://hdt1pqaoa4fq" path="res://Assets/Particles/engine_particles_rotated_left.tscn" id="4_engine_parti"]
+[ext_resource type="PackedScene" uid="uid://bljmx610i58dj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn" id="5_attacker_shi"]
+[ext_resource type="Script" uid="uid://tw7lpv214pfl" path="res://Source/Systems/UI/Camera/camera.gd" id="6_camera"]
+[ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="7_shakeable"]
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="8_enemy_shader"]
+[ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="9_black_hole"]
+[ext_resource type="Shader" uid="uid://648u4hecibjb" path="res://Assets/Shaders/jump_hyperspace.gdshader" id="10_jump_hypersp"]
+[ext_resource type="PackedScene" uid="uid://bqnr0itscotaw" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/nebula.tscn" id="11_nebula"]
+[ext_resource type="Shader" uid="uid://bo7q4qcfw0qo2" path="res://Assets/Shaders/sprite_nebula.gdshader" id="12_sprite_nebul"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_shard_1.tscn" id="13_fate_shard_1"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_shard_2.tscn" id="14_fate_shard_2"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_shard_3.tscn" id="15_fate_shard_3"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_mote.tscn" id="16_fate_mote"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die_chip.tscn" id="17_fate_die_chi"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_die.tscn" id="18_fate_die"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_wisp.tscn" id="19_fate_wisp"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Fate/fate_cluster.tscn" id="20_fate_cluster"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_wing.tscn" id="21_scrap_wing"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_plate_1.tscn" id="22_scrap_plate_"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_plate_2.tscn" id="23_scrap_plate_"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_girder.tscn" id="24_scrap_girder"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_panel.tscn" id="25_scrap_panel"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/Scrap/scrap_pipe.tscn" id="26_scrap_pipe"]
+[ext_resource type="SpriteFrames" path="res://Assets/Textures/Player/Ship/player_ship_frames.tres" id="27_player_ship_"]
 
-[sub_resource type="Environment" id="Environment_m2fiu"]
+[sub_resource type="Environment" id="Environment_glow"]
 background_mode = 3
 glow_enabled = true
 glow_intensity = 0.6
@@ -21,911 +36,908 @@ glow_bloom = 0.3
 glow_hdr_threshold = 0.5
 adjustment_enabled = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_m2fiu"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_player"]
 resource_local_to_scene = true
-shader = ExtResource("9_vj2dl")
+shader = ExtResource("8_enemy_shader")
 shader_parameter/alpha = 1.0
-shader_parameter/flash_color = Color(1, 0, 0, 1)
+shader_parameter/flash_color = Color(1, 1, 1, 1.0)
 shader_parameter/flash_amount = 0.0
 shader_parameter/cloak_amount = 0.0
-shader_parameter/cloak_key_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
-shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
-shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
-shader_parameter/cloak_tolerance = 0.1
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_tpj7u"]
-resource_local_to_scene = true
-shader = ExtResource("9_vj2dl")
-shader_parameter/alpha = 1.0
-shader_parameter/flash_color = Color(1, 0, 0, 1)
-shader_parameter/flash_amount = 0.0
-shader_parameter/cloak_amount = 0.0
-shader_parameter/cloak_key_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
-shader_parameter/cloak_main_color = Color(0.172549, 0.443137, 0.666667, 1)
-shader_parameter/cloak_bg_color = Color(0.262745, 0.65098, 0.988235, 0.247059)
-shader_parameter/cloak_tolerance = 0.1
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nebula"]
+shader = ExtResource("12_sprite_nebul")
+shader_parameter/uv_offset = 0.0
+shader_parameter/nebula_color = Vector4(0.3, 0.12, 0.38, 0.14)
 
-[sub_resource type="Animation" id="Animation_5gc3m"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_hyper"]
+noise_type = 0
+frequency = 0.0345
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_hyper"]
+width = 1080
+height = 180
+noise = SubResource("FastNoiseLite_hyper")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hyper"]
+shader = ExtResource("10_jump_hypersp")
+shader_parameter/alpha = 0.0
+shader_parameter/tint_color = Color(0.262745, 0.65098, 0.988235, 1.0)
+shader_parameter/speed = Vector2(0.02, 0)
+shader_parameter/pixel_resolution = Vector2(180, 180)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_premult"]
+blend_mode = 4
+
+[sub_resource type="Animation" id="Animation_reset"]
 length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerShip:position")
+tracks/0/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fade:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(0.5),
 "update": 0,
-"values": [Vector2(84, 91)]
+"values": [Color(1, 1, 1, 1)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("AttackerShip2:position")
+tracks/1/path = NodePath(".:star_speed")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
 "update": 0,
-"values": [Vector2(-18, 136)]
+"values": [30.0]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("AttackerShip1:position")
+tracks/2/path = NodePath(".:star_stretch")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
 "update": 0,
-"values": [Vector2(-15, 47)]
+"values": [1.0]
 }
-tracks/3/type = "bezier"
+tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("PlayerShip:position:x")
+tracks/3/path = NodePath(".:debris_speed")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(62, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [70.0]
 }
-tracks/4/type = "bezier"
+tracks/4/type = "value"
 tracks/4/imported = false
 tracks/4/enabled = true
-tracks/4/path = NodePath("PlayerShip:position:y")
+tracks/4/path = NodePath("Backdrop:color")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(91, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Color(0.025, 0.01, 0.075, 1.0)]
 }
-tracks/5/type = "bezier"
+tracks/5/type = "value"
 tracks/5/imported = false
 tracks/5/enabled = true
-tracks/5/path = NodePath("AttackerShip1:position:x")
+tracks/5/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Debris:visible")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(-17, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [true]
 }
-tracks/6/type = "bezier"
+tracks/6/type = "value"
 tracks/6/imported = false
 tracks/6/enabled = true
-tracks/6/path = NodePath("AttackerShip1:position:y")
+tracks/6/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fate:visible")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(54, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [true]
 }
-tracks/7/type = "bezier"
+tracks/7/type = "value"
 tracks/7/imported = false
 tracks/7/enabled = true
-tracks/7/path = NodePath("AttackerShip2:position:x")
+tracks/7/path = NodePath("PixelLayer/PixelScreen/PixelWorld/RiftNebula:visible")
 tracks/7/interp = 1
 tracks/7/loop_wrap = true
 tracks/7/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(-20, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/8/type = "bezier"
-tracks/8/imported = false
-tracks/8/enabled = true
-tracks/8/path = NodePath("AttackerShip2:position:y")
-tracks/8/interp = 1
-tracks/8/loop_wrap = true
-tracks/8/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(143, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/9/type = "value"
-tracks/9/imported = false
-tracks/9/enabled = true
-tracks/9/path = NodePath("AttackerShip1/DiceShot:visible")
-tracks/9/interp = 1
-tracks/9/loop_wrap = true
-tracks/9/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
 "update": 1,
 "values": [true]
-}
-tracks/10/type = "bezier"
-tracks/10/imported = false
-tracks/10/enabled = true
-tracks/10/path = NodePath("AttackerShip1/DiceShot:position:x")
-tracks/10/interp = 1
-tracks/10/loop_wrap = true
-tracks/10/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(-37, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/11/type = "bezier"
-tracks/11/imported = false
-tracks/11/enabled = true
-tracks/11/path = NodePath("AttackerShip1/DiceShot:position:y")
-tracks/11/interp = 1
-tracks/11/loop_wrap = true
-tracks/11/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(70, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/12/type = "value"
-tracks/12/imported = false
-tracks/12/enabled = true
-tracks/12/path = NodePath("AttackerShip2/DiceShot2:visible")
-tracks/12/interp = 1
-tracks/12/loop_wrap = true
-tracks/12/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/13/type = "bezier"
-tracks/13/imported = false
-tracks/13/enabled = true
-tracks/13/path = NodePath("AttackerShip2/DiceShot2:position:x")
-tracks/13/interp = 1
-tracks/13/loop_wrap = true
-tracks/13/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(52, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/14/type = "bezier"
-tracks/14/imported = false
-tracks/14/enabled = true
-tracks/14/path = NodePath("AttackerShip2/DiceShot2:position:y")
-tracks/14/interp = 1
-tracks/14/loop_wrap = true
-tracks/14/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(73, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/15/type = "bezier"
-tracks/15/imported = false
-tracks/15/enabled = true
-tracks/15/path = NodePath(".:star_speed")
-tracks/15/interp = 1
-tracks/15/loop_wrap = true
-tracks/15/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(50, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/16/type = "bezier"
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/path = NodePath("Fate:position:x")
-tracks/16/interp = 1
-tracks/16/loop_wrap = true
-tracks/16/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(-36, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/17/type = "bezier"
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/path = NodePath("Fate:position:y")
-tracks/17/interp = 1
-tracks/17/loop_wrap = true
-tracks/17/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/18/type = "bezier"
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/path = NodePath("AttackerShip2:scale:x")
-tracks/18/interp = 1
-tracks/18/loop_wrap = true
-tracks/18/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/19/type = "bezier"
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/path = NodePath("AttackerShip2:scale:y")
-tracks/19/interp = 1
-tracks/19/loop_wrap = true
-tracks/19/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/20/type = "bezier"
-tracks/20/imported = false
-tracks/20/enabled = true
-tracks/20/path = NodePath("AttackerShip1:scale:x")
-tracks/20/interp = 1
-tracks/20/loop_wrap = true
-tracks/20/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0.1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/21/type = "bezier"
-tracks/21/imported = false
-tracks/21/enabled = true
-tracks/21/path = NodePath("AttackerShip1:scale:y")
-tracks/21/interp = 1
-tracks/21/loop_wrap = true
-tracks/21/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0.1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/22/type = "value"
-tracks/22/imported = false
-tracks/22/enabled = true
-tracks/22/path = NodePath("AttackerShip2:visible")
-tracks/22/interp = 1
-tracks/22/loop_wrap = true
-tracks/22/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/23/type = "value"
-tracks/23/imported = false
-tracks/23/enabled = true
-tracks/23/path = NodePath("AttackerShip1:visible")
-tracks/23/interp = 1
-tracks/23/loop_wrap = true
-tracks/23/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [true]
-}
-tracks/24/type = "bezier"
-tracks/24/imported = false
-tracks/24/enabled = true
-tracks/24/path = NodePath("Camera2D:offset:x")
-tracks/24/interp = 1
-tracks/24/loop_wrap = true
-tracks/24/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(100, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/25/type = "bezier"
-tracks/25/imported = false
-tracks/25/enabled = true
-tracks/25/path = NodePath("Camera2D:offset:y")
-tracks/25/interp = 1
-tracks/25/loop_wrap = true
-tracks/25/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/26/type = "bezier"
-tracks/26/imported = false
-tracks/26/enabled = true
-tracks/26/path = NodePath("Camera2D:zoom:x")
-tracks/26/interp = 1
-tracks/26/loop_wrap = true
-tracks/26/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(10, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/27/type = "bezier"
-tracks/27/imported = false
-tracks/27/enabled = true
-tracks/27/path = NodePath("Camera2D:zoom:y")
-tracks/27/interp = 1
-tracks/27/loop_wrap = true
-tracks/27/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(10, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/28/type = "bezier"
-tracks/28/imported = false
-tracks/28/enabled = true
-tracks/28/path = NodePath("AttackerShip2:rotation")
-tracks/28/interp = 1
-tracks/28/loop_wrap = true
-tracks/28/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(-1.5708, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/29/type = "bezier"
-tracks/29/imported = false
-tracks/29/enabled = true
-tracks/29/path = NodePath("AttackerShip1:rotation")
-tracks/29/interp = 1
-tracks/29/loop_wrap = true
-tracks/29/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(-1.5708, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/30/type = "bezier"
-tracks/30/imported = false
-tracks/30/enabled = true
-tracks/30/path = NodePath("AttackerShip1/DiceShot:rotation")
-tracks/30/interp = 1
-tracks/30/loop_wrap = true
-tracks/30/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/31/type = "bezier"
-tracks/31/imported = false
-tracks/31/enabled = true
-tracks/31/path = NodePath("AttackerShip2/DiceShot2:rotation")
-tracks/31/interp = 1
-tracks/31/loop_wrap = true
-tracks/31/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/32/type = "bezier"
-tracks/32/imported = false
-tracks/32/enabled = true
-tracks/32/path = NodePath("FadeIn:self_modulate:a")
-tracks/32/interp = 1
-tracks/32/loop_wrap = true
-tracks/32/keys = {
-"handle_modes": PackedInt32Array(0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0)
-}
-tracks/33/type = "value"
-tracks/33/imported = false
-tracks/33/enabled = true
-tracks/33/path = NodePath("FadeIn:visible")
-tracks/33/interp = 1
-tracks/33/loop_wrap = true
-tracks/33/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [false]
-}
-
-[sub_resource type="Animation" id="Animation_7e3e1"]
-resource_name = "cutscene_anim"
-length = 27.0
-tracks/0/type = "bezier"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("PlayerShip:position:x")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0, 0, 0),
-"points": PackedFloat32Array(-43, -0.25, 0, 2.26667, 289.5, 206, -0.25, 0, 0.25, 0, 251, -0.25, 0, 0.368283, 13, 198, -1.05101, -18, 0.757404, 19, 181, -0.955769, -18, 0.427485, 13, 132, -0.439047, 33, 0.260952, -15, 146, -0.21422, -53, 0.252445, 67, 479, -0.172541, -13, 0.25, 0),
-"times": PackedFloat32Array(-0.45, 8.13333, 14.0667, 18.5667, 20.6333, 21.5667, 23.4333, 23.9667)
-}
-tracks/1/type = "bezier"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("PlayerShip:position:y")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0, 0, 0),
-"points": PackedFloat32Array(91, -0.25, 0, 0.25, 0, 91, -0.25, 0, 0.25, 0, 91, -0.25, 0, 0.25, 0, 91, -0.25, 0, 0.25, 0, 91, -0.25, 0, 0.25, 0, 91, -0.25, 0, 0.25, 0, 91, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 8.13333, 14.0667, 18.5831, 18.7987, 20.1112, 21.076)
-}
-tracks/2/type = "bezier"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("AttackerShip1:position:x")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(-94, -0.25, 0, 3.4, 225.5, 115, -0.0169721, 1, 0.107971, 1, 136, -0.25, 0, 0.25, 0, 181, -0.25, 0, 0.25, 0, 78, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 8.13333, 9.32232, 12.4833, 17.5847)
-}
-tracks/3/type = "bezier"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("AttackerShip1:position:y")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(49, -0.25, 0, 0.25, 0, 54, -0.25, 0, 0.25, 0, 55, -0.25, 0, 0.25, 0, 55, -0.25, 0, 0.25, 0, 88, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 8.13333, 9.32232, 15, 17.5847)
-}
-tracks/4/type = "bezier"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("AttackerShip2:position:x")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(-97, -0.25, 0, 3.63333, 79.5, 124, -0.284855, -28, 0.315145, 42, 107, -0.25, 0, 0.484282, -43, 152, -0.615717, 17, 0.417616, -19, 68, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 7.1, 8.96667, 13.6333, 16.0967)
-}
-tracks/5/type = "bezier"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("AttackerShip2:position:y")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(138, -0.25, 0, 0.25, 0, 143, -0.25, 0, 0.25, 0, 142, -0.25, 0, 0.25, 0, 142, -0.25, 0, 0.25, 0, 102, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 7.11172, 8.96667, 13.6333, 16.0967)
-}
-tracks/6/type = "bezier"
-tracks/6/imported = false
-tracks/6/enabled = true
-tracks/6/path = NodePath("Fate:position:x")
-tracks/6/interp = 1
-tracks/6/loop_wrap = true
-tracks/6/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0),
-"points": PackedFloat32Array(-176, -0.25, 0, 0.25, 0, -36, -0.25, 0, 0.25, 0, 46, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 9.11871, 14.0667)
-}
-tracks/7/type = "bezier"
-tracks/7/imported = false
-tracks/7/enabled = true
-tracks/7/path = NodePath("Fate:position:y")
-tracks/7/interp = 1
-tracks/7/loop_wrap = true
-tracks/7/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0),
-"points": PackedFloat32Array(94, -0.25, 0, 0.25, 0, 90, -0.25, 0, 0.25, 0, 90, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 9.11871, 14.0667)
 }
 tracks/8/type = "value"
 tracks/8/imported = false
 tracks/8/enabled = true
-tracks/8/path = NodePath("AttackerShip1/DiceShot:visible")
+tracks/8/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fate:position")
 tracks/8/interp = 1
 tracks/8/loop_wrap = true
 tracks/8/keys = {
-"times": PackedFloat32Array(2.06667, 6.3693, 7.06667, 8.76667, 9.33333),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [false, true, false, true, false]
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(-2.0),
+"update": 0,
+"values": [Vector2(-12, 90)]
 }
-tracks/9/type = "bezier"
+tracks/9/type = "value"
 tracks/9/imported = false
 tracks/9/enabled = true
-tracks/9/path = NodePath("AttackerShip1/DiceShot:position:x")
+tracks/9/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Hyperspace:visible")
 tracks/9/interp = 1
 tracks/9/loop_wrap = true
 tracks/9/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.203333, 26.5, -37.823, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.203333, 26.5, -35.0003, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(6.37263, 7.06667, 7.1, 8.77, 9.33333)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [false]
 }
-tracks/10/type = "bezier"
+tracks/10/type = "value"
 tracks/10/imported = false
 tracks/10/enabled = true
-tracks/10/path = NodePath("AttackerShip1/DiceShot:position:y")
+tracks/10/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Hyperspace/HyperspaceNoise:material:shader_parameter/alpha")
 tracks/10/interp = 1
 tracks/10/loop_wrap = true
 tracks/10/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.203333, -53.5, 85.7642, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.203333, -53.5, 68.006, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(6.3693, 7.06667, 7.1, 8.76667, 9.33333)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.0]
 }
 tracks/11/type = "value"
 tracks/11/imported = false
 tracks/11/enabled = true
-tracks/11/path = NodePath("AttackerShip2/DiceShot2:visible")
+tracks/11/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Hyperspace/HyperspaceStreaks:modulate")
 tracks/11/interp = 1
 tracks/11/loop_wrap = true
 tracks/11/keys = {
-"times": PackedFloat32Array(2.06667, 7.6, 8.23333),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [false, true, false]
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
 }
-tracks/12/type = "bezier"
+tracks/12/type = "value"
 tracks/12/imported = false
 tracks/12/enabled = true
-tracks/12/path = NodePath("AttackerShip2/DiceShot2:position:x")
+tracks/12/path = NodePath("PixelLayer/PixelScreen/PixelWorld/AlertTint:modulate")
 tracks/12/interp = 1
 tracks/12/loop_wrap = true
 tracks/12/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.246437, -19.5, 52, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(7.59959, 8.3)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Color(1, 1, 1, 0)]
 }
-tracks/13/type = "bezier"
+tracks/13/type = "value"
 tracks/13/imported = false
 tracks/13/enabled = true
-tracks/13/path = NodePath("AttackerShip2/DiceShot2:position:y")
+tracks/13/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/PlayerShip:position")
 tracks/13/interp = 1
 tracks/13/loop_wrap = true
 tracks/13/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.37977, -46.5, 73, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(7.59959, 8.3)
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(-2.0),
+"update": 0,
+"values": [Vector2(124, 92)]
 }
-tracks/14/type = "method"
+tracks/14/type = "value"
 tracks/14/imported = false
 tracks/14/enabled = true
-tracks/14/path = NodePath(".")
+tracks/14/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/PlayerShip:rotation")
 tracks/14/interp = 1
 tracks/14/loop_wrap = true
 tracks/14/keys = {
-"times": PackedFloat32Array(0, 6.36667, 7.06667, 7.6, 8.3, 8.76667, 9.33333, 27),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [1.570796]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/PlayerShip:visible")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [true]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:position")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(-40, 40)]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:rotation")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [-1.570796]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:visible")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [true]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:position")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(-40, 140)]
+}
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:rotation")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [-1.570796]
+}
+tracks/21/type = "value"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:scale")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(1, 1)]
+}
+tracks/22/type = "value"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:modulate")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/23/type = "value"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:visible")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="Animation" id="Animation_cutscene"]
+resource_name = "cutscene_anim"
+length = 24.6
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0, 2.2, 23.62, 23.64),
+"transitions": PackedFloat32Array(0.5, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".:star_speed")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 13.5, 15.6, 16.35, 19.4, 20.6),
+"transitions": PackedFloat32Array(1.0, 2.0, 2.0, 1.0, 0.5, 1.0),
+"update": 0,
+"values": [30.0, 30.0, 150.0, 400.0, 400.0, 18.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:star_stretch")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 13.5, 15.6, 16.35, 19.4, 20.4),
+"transitions": PackedFloat32Array(1.0, 2.0, 2.0, 1.0, 0.5, 1.0),
+"update": 0,
+"values": [1.0, 1.0, 6.0, 24.0, 24.0, 1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:debris_speed")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0, 9.8, 10.3, 11.5, 13.5, 15.6),
+"transitions": PackedFloat32Array(1.0, 0.5, -2.0, 1.0, 2.0, 1.0),
+"update": 0,
+"values": [70.0, 70.0, 170.0, 100.0, 100.0, 260.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Backdrop:color")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.0, 19.44, 19.46),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 0,
+"values": [Color(0.025, 0.01, 0.075, 1.0), Color(0.025, 0.01, 0.075, 1.0), Color(0.04496, 0.0192, 0.24, 1.0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Debris:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.0, 16.6),
+"transitions": PackedFloat32Array(1.0, 1.0),
+"update": 1,
+"values": [true, false]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fate:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.0, 16.6),
+"transitions": PackedFloat32Array(1.0, 1.0),
+"update": 1,
+"values": [true, false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("PixelLayer/PixelScreen/PixelWorld/RiftNebula:visible")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.0, 16.6),
+"transitions": PackedFloat32Array(1.0, 1.0),
+"update": 1,
+"values": [true, false]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fate:position")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.0, 5.0, 9.8, 10.5, 13.5, 16.6),
+"transitions": PackedFloat32Array(-2.0, -2.0, 0.25, -2.0, -2.0, 1.0),
+"update": 0,
+"values": [Vector2(-12, 90), Vector2(-2, 92), Vector2(2, 90), Vector2(30, 90), Vector2(18, 90), Vector2(4, 90)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Hyperspace:visible")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0.0, 16.0, 20.5),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 1,
+"values": [false, true, false]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Hyperspace/HyperspaceNoise:material:shader_parameter/alpha")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0.0, 16.3, 16.6, 19.4, 19.5),
+"transitions": PackedFloat32Array(1.0, 0.5, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 1.0, 0.0]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Hyperspace/HyperspaceStreaks:modulate")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0.0, 16.0, 16.45, 19.4, 20.4),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0, 0.5, 1.0),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("PixelLayer/PixelScreen/PixelWorld/AlertTint:modulate")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0.0, 22.1, 22.2, 22.6, 22.9, 23.3),
+"transitions": PackedFloat32Array(1.0, 1.0, 0.5, 1.0, 0.5, 1.0),
+"update": 0,
+"values": [Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 0.3), Color(1, 1, 1, 0), Color(1, 1, 1, 0.3), Color(1, 1, 1, 0)]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/PlayerShip:position")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0.0, 1.6, 3.2, 4.6, 6.5, 7.7, 8.1, 9.0, 9.8, 10.6, 12.5, 13.6, 15.6, 15.75, 16.9, 18.2, 18.45, 19.3, 19.45, 21.5, 22.3, 22.75, 23.6),
+"transitions": PackedFloat32Array(-2.0, -2.0, -2.0, 0.5, -2.0, 0.5, -2.0, -2.0, 0.5, -2.0, -2.0, 1.0, 4.0, 1.0, -2.0, 0.5, -2.0, 0.5, -2.0, 1.0, -2.0, -2.0, 1.0),
+"update": 0,
+"values": [Vector2(124, 92), Vector2(132, 87), Vector2(120, 93), Vector2(130, 89), Vector2(152, 90), Vector2(152, 91), Vector2(156, 75), Vector2(156, 92), Vector2(158, 90), Vector2(146, 94), Vector2(172, 90), Vector2(180, 90), Vector2(184, 90), Vector2(220, 90), Vector2(190, 90), Vector2(196, 85), Vector2(194, 97), Vector2(192, 91), Vector2(176, 90), Vector2(160, 92), Vector2(160, 92), Vector2(200, 90), Vector2(198, 90)]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/PlayerShip:rotation")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0.0, 22.3, 22.75),
+"transitions": PackedFloat32Array(1.0, -2.0, 1.0),
+"update": 0,
+"values": [1.570796, 1.570796, -1.570796]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/PlayerShip:visible")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0.0, 15.8, 16.9),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 1,
+"values": [true, false, true]
+}
+tracks/16/type = "method"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/PlayerShip")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0.0, 19.9, 23.3, 23.45),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0),
+"values": [{
+"args": [&"boost"],
+"method": &"play"
+}, {
+"args": [&"cruise"],
+"method": &"play"
+}, {
+"args": [&"fire"],
+"method": &"play"
+}, {
+"args": [&"cruise"],
+"method": &"play"
+}]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:position")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0.0, 5.3, 6.9, 8.6, 9.8, 10.6, 12.0, 13.5, 15.8, 16.15, 17.5, 18.5, 19.3, 21.45, 22.3, 23.6),
+"transitions": PackedFloat32Array(1.0, 0.5, -2.0, -2.0, 0.5, -2.0, -2.0, -2.0, 4.0, 1.0, -2.0, -2.0, 1.0, 0.5, -2.0, 1.0),
+"update": 0,
+"values": [Vector2(-40, 40), Vector2(-40, 40), Vector2(50, 52), Vector2(62, 56), Vector2(60, 54), Vector2(50, 62), Vector2(76, 58), Vector2(96, 70), Vector2(100, 72), Vector2(160, 84), Vector2(80, 96), Vector2(100, 92), Vector2(110, 95), Vector2(70, 86), Vector2(96, 90), Vector2(100, 90)]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:rotation")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0.0, 10.5, 10.7, 10.95, 11.3),
+"transitions": PackedFloat32Array(1.0, 0.5, -2.0, -2.0, 1.0),
+"update": 0,
+"values": [-1.570796, -1.570796, -1.270796, -1.770796, -1.570796]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:visible")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0.0, 16.25, 17.5, 19.4, 21.45),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 1,
+"values": [true, false, true, false, true]
+}
+tracks/20/type = "value"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:position")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0.0, 5.0, 6.6, 8.5, 9.8, 10.4, 12.2),
+"transitions": PackedFloat32Array(1.0, 0.5, -2.0, -2.0, -2.0, 2.5, 1.0),
+"update": 0,
+"values": [Vector2(-40, 140), Vector2(-40, 140), Vector2(40, 132), Vector2(52, 128), Vector2(48, 130), Vector2(44, 126), Vector2(30, 92)]
+}
+tracks/21/type = "value"
+tracks/21/imported = false
+tracks/21/enabled = true
+tracks/21/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:rotation")
+tracks/21/interp = 1
+tracks/21/loop_wrap = true
+tracks/21/keys = {
+"times": PackedFloat32Array(0.0, 10.4, 12.2),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0),
+"update": 0,
+"values": [-1.570796, -1.570796, -14.137167]
+}
+tracks/22/type = "value"
+tracks/22/imported = false
+tracks/22/enabled = true
+tracks/22/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:scale")
+tracks/22/interp = 1
+tracks/22/loop_wrap = true
+tracks/22/keys = {
+"times": PackedFloat32Array(0.0, 10.8, 12.2),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1, 1), Vector2(0.2, 0.2)]
+}
+tracks/23/type = "value"
+tracks/23/imported = false
+tracks/23/enabled = true
+tracks/23/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:modulate")
+tracks/23/interp = 1
+tracks/23/loop_wrap = true
+tracks/23/keys = {
+"times": PackedFloat32Array(0.0, 10.8, 12.2),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(0.8, 0.4, 1, 0.2)]
+}
+tracks/24/type = "value"
+tracks/24/imported = false
+tracks/24/enabled = true
+tracks/24/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Doomed:visible")
+tracks/24/interp = 1
+tracks/24/loop_wrap = true
+tracks/24/keys = {
+"times": PackedFloat32Array(0.0, 12.25),
+"transitions": PackedFloat32Array(1.0, 1.0),
+"update": 1,
+"values": [true, false]
+}
+tracks/25/type = "method"
+tracks/25/imported = false
+tracks/25/enabled = true
+tracks/25/path = NodePath(".")
+tracks/25/interp = 1
+tracks/25/loop_wrap = true
+tracks/25/keys = {
+"times": PackedFloat32Array(0.0, 1.2, 3.8, 6.9, 7.7, 8.6, 9.8, 10.4, 10.5, 12.25, 13.6, 15.7, 16.15, 16.35, 16.9, 17.5, 18.25, 19.4, 19.45, 21.45, 22.05, 22.4, 23.3, 23.35, 24.6),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
 "values": [{
 "args": [],
 "method": &"_start_music"
 }, {
-"args": [],
-"method": &"_play_dice_cannon_fire_sound"
+"args": [1.0],
+"method": &"_fate_pulse"
+}, {
+"args": [1.0],
+"method": &"_fate_pulse"
+}, {
+"args": [&"Survivor", &"PlayerShip", 0.45, true],
+"method": &"_fire_die"
+}, {
+"args": [&"Doomed", &"PlayerShip", 0.5, false],
+"method": &"_fire_die"
+}, {
+"args": [&"Survivor", &"PlayerShip", 0.4, true],
+"method": &"_fire_die"
+}, {
+"args": [2.0],
+"method": &"_fate_pulse"
+}, {
+"args": [&"Doomed"],
+"method": &"_engines_out"
+}, {
+"args": [&"Survivor"],
+"method": &"_ship_damaged"
+}, {
+"args": [&"Doomed"],
+"method": &"_consumed"
+}, {
+"args": [&"PlayerShip", 2.0],
+"method": &"_charge_jump"
+}, {
+"args": [&"PlayerShip", Color(0.552941, 0.945098, 0.956863, 1.0)],
+"method": &"_jump_out"
+}, {
+"args": [&"Survivor", Color(0.815686, 0.211765, 0.337255, 1.0)],
+"method": &"_jump_out"
 }, {
 "args": [],
-"method": &"_player_ship_hit"
+"method": &"_hyperspace_punch"
+}, {
+"args": [&"PlayerShip", Color(0.552941, 0.945098, 0.956863, 1.0)],
+"method": &"_jump_in"
+}, {
+"args": [&"Survivor", Color(0.815686, 0.211765, 0.337255, 1.0)],
+"method": &"_jump_in"
+}, {
+"args": [&"Survivor", &"PlayerShip", 0.5, false],
+"method": &"_fire_die"
 }, {
 "args": [],
-"method": &"_play_dice_cannon_fire_sound"
+"method": &"_hyperspace_exit"
+}, {
+"args": [&"PlayerShip", Color(0.552941, 0.945098, 0.956863, 1.0)],
+"method": &"_jump_in"
+}, {
+"args": [&"Survivor", Color(0.815686, 0.211765, 0.337255, 1.0)],
+"method": &"_jump_in"
 }, {
 "args": [],
-"method": &"_player_ship_hit"
+"method": &"_sound_alarm"
 }, {
-"args": [],
-"method": &"_play_dice_cannon_fire_sound"
+"args": [&"PlayerShip"],
+"method": &"_lock_on"
 }, {
-"args": [],
-"method": &"_player_ship_hit"
+"args": [&"PlayerShip", &"Survivor", 0.6, true],
+"method": &"_fire_die"
+}, {
+"args": [&"Survivor", &"PlayerShip", 0.6, true],
+"method": &"_fire_die"
 }, {
 "args": [],
 "method": &"_switch_to_next_scene"
 }]
 }
-tracks/15/type = "bezier"
-tracks/15/imported = false
-tracks/15/enabled = true
-tracks/15/path = NodePath(".:star_speed")
-tracks/15/interp = 1
-tracks/15/loop_wrap = true
-tracks/15/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0),
-"points": PackedFloat32Array(25, -0.25, 0, 0.25, 0, 75, -0.279733, 1, 0.25, 0, 75, -0.25, 0, 0.25, 0, 250, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 7.47973, 15.1475, 21.3765)
-}
-tracks/16/type = "bezier"
-tracks/16/imported = false
-tracks/16/enabled = true
-tracks/16/path = NodePath("AttackerShip2:scale:x")
-tracks/16/interp = 1
-tracks/16/loop_wrap = true
-tracks/16/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0.1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 13.6422, 16.0967)
-}
-tracks/17/type = "bezier"
-tracks/17/imported = false
-tracks/17/enabled = true
-tracks/17/path = NodePath("AttackerShip2:scale:y")
-tracks/17/interp = 1
-tracks/17/loop_wrap = true
-tracks/17/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0.1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 13.6422, 16.0967)
-}
-tracks/18/type = "bezier"
-tracks/18/imported = false
-tracks/18/enabled = true
-tracks/18/path = NodePath("AttackerShip1:scale:x")
-tracks/18/interp = 1
-tracks/18/loop_wrap = true
-tracks/18/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0.1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 15, 17.5847)
-}
-tracks/19/type = "bezier"
-tracks/19/imported = false
-tracks/19/enabled = true
-tracks/19/path = NodePath("AttackerShip1:scale:y")
-tracks/19/interp = 1
-tracks/19/loop_wrap = true
-tracks/19/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, 0.1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(2.06667, 15, 17.5847)
-}
-tracks/20/type = "value"
-tracks/20/imported = false
-tracks/20/enabled = true
-tracks/20/path = NodePath("AttackerShip2:visible")
-tracks/20/interp = 1
-tracks/20/loop_wrap = true
-tracks/20/keys = {
-"times": PackedFloat32Array(2.06667, 15.5309),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/21/type = "value"
-tracks/21/imported = false
-tracks/21/enabled = true
-tracks/21/path = NodePath("AttackerShip1:visible")
-tracks/21/interp = 1
-tracks/21/loop_wrap = true
-tracks/21/keys = {
-"times": PackedFloat32Array(2.06667, 17.1667),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [true, false]
-}
-tracks/22/type = "bezier"
-tracks/22/imported = false
-tracks/22/enabled = true
-tracks/22/path = NodePath("Camera2D:zoom:x")
-tracks/22/interp = 1
-tracks/22/loop_wrap = true
-tracks/22/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0, 10, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(14.1, 21.5077)
-}
-tracks/23/type = "bezier"
-tracks/23/imported = false
-tracks/23/enabled = true
-tracks/23/path = NodePath("Camera2D:zoom:y")
-tracks/23/interp = 1
-tracks/23/loop_wrap = true
-tracks/23/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(6, -0.25, 0, 0.25, 0, 10, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(14.1, 21.5077)
-}
-tracks/24/type = "bezier"
-tracks/24/imported = false
-tracks/24/enabled = true
-tracks/24/path = NodePath("Camera2D:offset:x")
-tracks/24/interp = 1
-tracks/24/loop_wrap = true
-tracks/24/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(160, -0.25, 0, 0.25, 0, 100, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(14.1, 21.5077)
-}
-tracks/25/type = "bezier"
-tracks/25/imported = false
-tracks/25/enabled = true
-tracks/25/path = NodePath("Camera2D:offset:y")
-tracks/25/interp = 1
-tracks/25/loop_wrap = true
-tracks/25/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0, 90, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(14.1, 21.5077)
-}
-tracks/26/type = "bezier"
-tracks/26/imported = false
-tracks/26/enabled = true
-tracks/26/path = NodePath("AttackerShip2:rotation")
-tracks/26/interp = 1
-tracks/26/loop_wrap = true
-tracks/26/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(-1.5708, -0.25, 0, 0.25, 0, -1.5708, -0.233544, -20.9292, 0.25, 0),
-"times": PackedFloat32Array(13.6395, 15.6065)
-}
-tracks/27/type = "bezier"
-tracks/27/imported = false
-tracks/27/enabled = true
-tracks/27/path = NodePath("AttackerShip1:rotation")
-tracks/27/interp = 1
-tracks/27/loop_wrap = true
-tracks/27/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(-1.5708, -0.25, 0, 0.25, 0, -1.5, -0.23048, 24.0708, 0.25, 0),
-"times": PackedFloat32Array(15.0412, 17.1667)
-}
-tracks/28/type = "bezier"
-tracks/28/imported = false
-tracks/28/enabled = true
-tracks/28/path = NodePath("AttackerShip1/DiceShot:rotation")
-tracks/28/interp = 1
-tracks/28/loop_wrap = true
-tracks/28/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.469052, 40.5, 60.5, -0.459929, -35, 0.25, 0, 0, -0.25, 0, 0.469052, 40.5, 60.5, -0.459929, -35, 0.25, 0),
-"times": PackedFloat32Array(6.37102, 7.1, 8.76667, 9.33333)
-}
-tracks/29/type = "bezier"
-tracks/29/imported = false
-tracks/29/enabled = true
-tracks/29/path = NodePath("AttackerShip2/DiceShot2:rotation")
-tracks/29/interp = 1
-tracks/29/loop_wrap = true
-tracks/29/keys = {
-"handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(0, -0.25, 0, 0.286538, 22.5, 60.5, -0.247551, -25, 0.25, 0),
-"times": PackedFloat32Array(7.59924, 8.3)
-}
-tracks/30/type = "value"
-tracks/30/imported = false
-tracks/30/enabled = true
-tracks/30/path = NodePath("FadeIn:visible")
-tracks/30/interp = 1
-tracks/30/loop_wrap = true
-tracks/30/keys = {
-"times": PackedFloat32Array(0, 2.29832, 25.1102),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [true, false, true]
-}
-tracks/31/type = "bezier"
-tracks/31/imported = false
-tracks/31/enabled = true
-tracks/31/path = NodePath("FadeIn:self_modulate:a")
-tracks/31/interp = 1
-tracks/31/loop_wrap = true
-tracks/31/keys = {
-"handle_modes": PackedInt32Array(0, 0, 0, 0),
-"points": PackedFloat32Array(1, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0),
-"times": PackedFloat32Array(0, 2.02596, 25.1102, 27)
-}
 
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_1dh7u"]
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cutscene"]
 _data = {
-&"RESET": SubResource("Animation_5gc3m"),
-&"cutscene_anim": SubResource("Animation_7e3e1")
+&"RESET": SubResource("Animation_reset"),
+&"cutscene_anim": SubResource("Animation_cutscene")
 }
 
-[node name="OpeningCutscene" type="Node2D" unique_id=1882302225]
-script = ExtResource("1_wfho2")
-star_pixel_scene = ExtResource("2_p2uiq")
-star_twinkle_scene = ExtResource("3_6lqss")
-star_speed = 50.0
+[node name="OpeningCutscene" type="Node2D"]
+script = ExtResource("1_opening_cuts")
+star_pixel_scene = ExtResource("2_star")
+star_twinkle_scene = ExtResource("3_twinkling_st")
+debris_scenes = Array[PackedScene]([ExtResource("13_fate_shard_1"), ExtResource("14_fate_shard_2"), ExtResource("15_fate_shard_3"), ExtResource("16_fate_mote"), ExtResource("17_fate_die_chi"), ExtResource("18_fate_die"), ExtResource("19_fate_wisp"), ExtResource("20_fate_cluster"), ExtResource("21_scrap_wing"), ExtResource("22_scrap_plate_"), ExtResource("23_scrap_plate_"), ExtResource("24_scrap_girder"), ExtResource("25_scrap_panel"), ExtResource("26_scrap_pipe")])
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1973160382]
-environment = SubResource("Environment_m2fiu")
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_glow")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=918582820]
+[node name="Backdrop" type="ColorRect" parent="."]
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
+z_index = -10
+color = Color(0.025, 0.01, 0.075, 1.0)
+
+[node name="Stars" type="Node2D" parent="."]
 unique_name_in_owner = true
-offset = Vector2(100, 90)
-zoom = Vector2(10, 10)
-script = ExtResource("6_drddh")
 
-[node name="Shakeable" parent="Camera2D" unique_id=324408128 node_paths=PackedStringArray("node_to_shake") instance=ExtResource("7_66qfi")]
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(160, 90)
+zoom = Vector2(6, 6)
+
+[node name="PixelLayer" type="CanvasLayer" parent="."]
+
+[node name="PixelScreen" type="SubViewportContainer" parent="PixelLayer"]
+material = SubResource("CanvasItemMaterial_premult")
+texture_filter = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+stretch = true
+stretch_shrink = 6
+
+[node name="PixelWorld" type="SubViewport" parent="PixelLayer/PixelScreen"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(320, 180)
+render_target_update_mode = 4
+
+[node name="PixelCamera" type="Camera2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+position = Vector2(160, 90)
+script = ExtResource("6_camera")
+
+[node name="Shakeable" parent="PixelLayer/PixelScreen/PixelWorld/PixelCamera" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("7_shakeable")]
 node_to_shake = NodePath("..")
+small_shake_intensity = 1.0
+small_shake_duration = 0.15
+large_shake_intensity = 2.5
+large_shake_duration = 0.25
 
-[node name="PlayerShip" parent="." unique_id=408596952 instance=ExtResource("6_5gc3m")]
+[node name="RiftNebula" parent="PixelLayer/PixelScreen/PixelWorld" instance=ExtResource("11_nebula")]
+unique_name_in_owner = true
+z_index = -6
+position = Vector2(160, 90)
+rotation = 1.570796
+material = SubResource("ShaderMaterial_nebula")
+
+[node name="Debris" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = -4
+
+[node name="Fate" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
 z_index = 2
-position = Vector2(62, 91)
-rotation = -1.5708
+position = Vector2(-12, 90)
 
-[node name="EngineParticles" parent="PlayerShip" index="0" unique_id=140859516]
-visible = false
-
-[node name="EngineParticlesRotated" parent="PlayerShip" unique_id=758515 instance=ExtResource("5_7e3e1")]
-position = Vector2(3, -12.9577)
-rotation = 1.5708
-
-[node name="EngineParticlesRotated2" parent="PlayerShip" unique_id=1488562512 instance=ExtResource("5_7e3e1")]
-position = Vector2(-3, -12.9577)
-rotation = 1.5708
-
-[node name="AttackerShip1" parent="." unique_id=1344236527 instance=ExtResource("5_740k5")]
-z_index = 2
-material = SubResource("ShaderMaterial_m2fiu")
-position = Vector2(-17, 54)
-rotation = -1.5708
-scale = Vector2(0.1, 0.1)
-
-[node name="EngineParticles" parent="AttackerShip1" index="0" unique_id=1542671433]
-visible = false
-
-[node name="EngineParticles2" parent="AttackerShip1" index="1" unique_id=1615275938]
-visible = false
-
-[node name="DiceShot" type="Sprite2D" parent="AttackerShip1" unique_id=1852326283]
-position = Vector2(-37, 70)
-texture = ExtResource("6_1dh7u")
-
-[node name="EngineParticlesRotated" parent="AttackerShip1" unique_id=2085308165 instance=ExtResource("5_7e3e1")]
-position = Vector2(3, -12.9577)
-rotation = 1.5708
-
-[node name="EngineParticlesRotated2" parent="AttackerShip1" unique_id=1373588152 instance=ExtResource("5_7e3e1")]
-position = Vector2(-3, -12.9577)
-rotation = 1.5708
-
-[node name="AttackerShip2" parent="." unique_id=378331966 instance=ExtResource("5_740k5")]
-z_index = 2
-material = SubResource("ShaderMaterial_tpj7u")
-position = Vector2(-20, 143)
-rotation = -1.5708
-
-[node name="EngineParticles" parent="AttackerShip2" index="0" unique_id=1542671433]
-visible = false
-
-[node name="EngineParticles2" parent="AttackerShip2" index="1" unique_id=1615275938]
-visible = false
-
-[node name="DiceShot2" type="Sprite2D" parent="AttackerShip2" unique_id=559100646]
-position = Vector2(52, 73)
-texture = ExtResource("6_1dh7u")
-
-[node name="EngineParticlesRotated" parent="AttackerShip2" unique_id=1295154556 instance=ExtResource("5_7e3e1")]
-position = Vector2(3, -12.9577)
-rotation = 1.5708
-
-[node name="EngineParticlesRotated2" parent="AttackerShip2" unique_id=1685857163 instance=ExtResource("5_7e3e1")]
-position = Vector2(-3, -12.9577)
-rotation = 1.5708
-
-[node name="Fate" type="AnimatedSprite2D" parent="." unique_id=1100738687]
-z_index = 5
-position = Vector2(-36, 90)
-autoplay = "default"
-speed_scale = 12.0
-
-[node name="BlackHole" parent="Fate" unique_id=1991253877 instance=ExtResource("11_m2fiu")]
-position = Vector2(-19, -1)
+[node name="BlackHole" parent="PixelLayer/PixelScreen/PixelWorld/Fate" instance=ExtResource("9_black_hole")]
 scale = Vector2(1.4, 1.4)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1806033259]
-libraries/ = SubResource("AnimationLibrary_1dh7u")
+[node name="Hyperspace" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+visible = false
+z_index = 5
+
+[node name="HyperspaceNoise" type="Sprite2D" parent="PixelLayer/PixelScreen/PixelWorld/Hyperspace"]
+material = SubResource("ShaderMaterial_hyper")
+position = Vector2(160, 90)
+scale = Vector2(40, 1)
+texture = SubResource("NoiseTexture2D_hyper")
+
+[node name="HyperspaceStreaks" type="AnimatedSprite2D" parent="PixelLayer/PixelScreen/PixelWorld/Hyperspace"]
+unique_name_in_owner = true
+modulate = Color(1, 1, 1, 0)
+position = Vector2(160, 90)
+
+[node name="Ships" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+z_index = 10
+
+[node name="Doomed" parent="PixelLayer/PixelScreen/PixelWorld/Ships" instance=ExtResource("5_attacker_shi")]
+unique_name_in_owner = true
+position = Vector2(-40, 140)
+rotation = -1.570796
+
+[node name="EngineParticles" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Doomed" index="0" unique_id=1542671433]
+visible = false
+
+[node name="EngineParticles2" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Doomed" index="1" unique_id=1615275938]
+visible = false
+
+[node name="EngineLeft" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Doomed" instance=ExtResource("4_engine_parti")]
+position = Vector2(3, -12.9577)
+rotation = 1.570796
+
+[node name="EngineRight" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Doomed" instance=ExtResource("4_engine_parti")]
+position = Vector2(-3, -12.9577)
+rotation = 1.570796
+
+[node name="Survivor" parent="PixelLayer/PixelScreen/PixelWorld/Ships" instance=ExtResource("5_attacker_shi")]
+unique_name_in_owner = true
+position = Vector2(-40, 40)
+rotation = -1.570796
+
+[node name="EngineParticles" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Survivor" index="0" unique_id=1542671433]
+visible = false
+
+[node name="EngineParticles2" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Survivor" index="1" unique_id=1615275938]
+visible = false
+
+[node name="EngineLeft" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Survivor" instance=ExtResource("4_engine_parti")]
+position = Vector2(3, -12.9577)
+rotation = 1.570796
+
+[node name="EngineRight" parent="PixelLayer/PixelScreen/PixelWorld/Ships/Survivor" instance=ExtResource("4_engine_parti")]
+position = Vector2(-3, -12.9577)
+rotation = 1.570796
+
+[node name="PlayerShip" type="AnimatedSprite2D" parent="PixelLayer/PixelScreen/PixelWorld/Ships"]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_player")
+position = Vector2(124, 92)
+rotation = 1.570796
+sprite_frames = ExtResource("27_player_ship_")
+animation = &"boost"
+autoplay = "boost"
+
+[node name="Effects" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = 20
+
+[node name="AlertTint" type="ColorRect" parent="PixelLayer/PixelScreen/PixelWorld"]
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
+z_index = 25
+modulate = Color(1, 1, 1, 0)
+color = Color(0.815686, 0.211765, 0.337255, 1.0)
+
+[node name="Flash" type="ColorRect" parent="PixelLayer/PixelScreen/PixelWorld"]
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
+unique_name_in_owner = true
+z_index = 30
+color = Color(1, 1, 1, 0)
+
+[node name="Fade" type="ColorRect" parent="PixelLayer/PixelScreen/PixelWorld"]
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
+z_index = 40
+color = Color(0.015686, 0.007843, 0.090196, 1.0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimationLibrary_cutscene")
 autoplay = &"cutscene_anim"
 
-[node name="FadeIn" type="Sprite2D" parent="." unique_id=1292651175]
-unique_name_in_owner = true
-visible = false
-self_modulate = Color(0.0156863, 0.00784314, 0.0901961, 0)
-z_index = 20
-position = Vector2(160, 90)
-texture = ExtResource("10_rq5t1")
-
-[editable path="PlayerShip"]
-[editable path="AttackerShip1"]
-[editable path="AttackerShip2"]
+[editable path="PixelLayer/PixelScreen/PixelWorld/Ships/Doomed"]
+[editable path="PixelLayer/PixelScreen/PixelWorld/Ships/Survivor"]
