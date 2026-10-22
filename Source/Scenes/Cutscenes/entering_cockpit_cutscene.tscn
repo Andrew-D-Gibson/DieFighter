@@ -4,10 +4,9 @@
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="1_pmj2g"]
 [ext_resource type="Texture2D" uid="uid://ipb6vettnk" path="res://Assets/Textures/Backgrounds/blank_white_screen.png" id="3_vtw8f"]
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="3_yd0cl"]
-[ext_resource type="Texture2D" uid="uid://dmby000i3wqa0" path="res://Assets/Textures/Enemies/Defender/Defender.png" id="4_gps8f"]
-[ext_resource type="Resource" uid="uid://hmsqg8qxbitq" path="res://Source/Resources/BackgroundResources/red_nebula.tres" id="4_icuno"]
+[ext_resource type="SpriteFrames" path="res://Assets/Textures/Player/Ship/player_ship_frames.tres" id="4_gps8f"]
+[ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="4_icuno"]
 [ext_resource type="Script" uid="uid://3roroso3mo17" path="res://Source/Resources/BackgroundResources/random_background_resource.gd" id="5_bfawc"]
-[ext_resource type="PackedScene" uid="uid://ct6jo26ujhw4d" path="res://Assets/Particles/engine_particles_rotated_down.tscn" id="5_qn6rl"]
 
 [sub_resource type="Environment" id="Environment_sjdfe"]
 background_mode = 3
@@ -137,7 +136,7 @@ tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
 "handle_modes": PackedInt32Array(0, 0),
-"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0, 100, -0.25, 0, 0.25, 0),
+"points": PackedFloat32Array(90, -0.25, 0, 0.25, 0, 89, -0.25, 0, 0.25, 0),
 "times": PackedFloat32Array(4, 8)
 }
 tracks/4/type = "bezier"
@@ -209,15 +208,8 @@ texture = ExtResource("3_vtw8f")
 libraries/ = SubResource("AnimationLibrary_bfawc")
 autoplay = &"entering_cockpit_cutscene"
 
-[node name="PlayerShip" type="Sprite2D" parent="." unique_id=1662764127]
+[node name="PlayerShip" type="AnimatedSprite2D" parent="." unique_id=1662764127]
 position = Vector2(160, 180)
-rotation = 3.14159
-texture = ExtResource("4_gps8f")
-
-[node name="EngineParticlesRotatedDown" parent="PlayerShip" unique_id=321737036 instance=ExtResource("5_qn6rl")]
-position = Vector2(3, -11)
-rotation = 3.14159
-
-[node name="EngineParticlesRotatedDown2" parent="PlayerShip" unique_id=1539258073 instance=ExtResource("5_qn6rl")]
-position = Vector2(-3, -11)
-rotation = 3.14159
+sprite_frames = ExtResource("4_gps8f")
+animation = &"boost"
+autoplay = "boost"
