@@ -308,8 +308,15 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
   ordinary enemy with its own art, resource and table.
 
 **Ship states** (`ScenarioShipState`, one `.tres` each)
-- `dialogue`. The speech box holds five lines of about ten characters, so
-  keep a line to roughly 50 characters; longer text spills out the bottom.
+- `dialogue`. The speech box holds four lines of about ten characters, and
+  three read best, so keep a line to roughly 35 characters. A fifth line
+  spills out the bottom.
+  - **One voice per side.** Allied ships don't talk over each other: give
+    one ship the line and leave its allies' `dialogue` empty (e.g.
+    `FateScenario/fate_attacker_silent.tres` for the Rift's extra ships).
+    Two ships speak at once only when they're on opposite sides, each
+    telling its half of the story (the pirate and the civilian in
+    `EVENT_PiratesAttackingCivilian`).
 - `faction`: PIRATE, CIVILIAN or BOSS. Also picks the speech-box colour.
 - `attitude`: an AGGRESSIVE ship puts the scenario in combat, and intents are
   only readable while one is present. With only FRIENDLY or NEUTRAL ships,
