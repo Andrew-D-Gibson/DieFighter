@@ -44,8 +44,15 @@ Fate with two Attackers on its tail. Fate surges and swallows one; the other
 is clipped and trails smoke from then on, which is where the ambush
 Attacker's missing 35% of hull went. Both jump, the chase carries on through
 hyperspace, and they drop out into star_field (the ambush's background). The
-Attacker arrives a beat after the player, the alarm sounds, it locks on, the
-player flips to face it, and the cut to the cockpit comes as the dice cross.
+Attacker arrives a beat after the player, the alarm sounds, it locks on, and
+the moment the player has flipped round to face it the cutscene cuts
+straight into the fight. The old cockpit cutscene that sat in between is
+gone.
+
+The Attackers drop in from above and below and hold well clear of Fate's
+disk, straining against it with sparks spitting from their drives. Only the
+surge reaches them: it clips one, and the other's drive dies and Fate reels
+it across the disk, smoking, into the core.
 
 - **Two resolutions.** Ships, Fate, debris and effects render in a 320x180
   SubViewport scaled 6x, so nothing rotates or scales into mixels. The
@@ -53,21 +60,28 @@ player flips to face it, and the cut to the cockpit comes as the dice cross.
   smoothly. The container blends premultiplied, or half-faded pixels (nebula,
   smoke, flashes) composite muddy grey, as in `JuicePixelated`.
 - **The jump** is the game's, turned horizontal: stars speed up and streak,
-  then the hyperspace noise and streak sheet punch in under a flash. Each ship
-  also stretches along its heading and leaves a streak, and drops out of one.
+  then hyperspace and the game's streak sheet punch in under a flash. Each
+  ship also stretches along its heading and leaves a streak, and drops out of
+  one. Hyperspace has its own shader, `hyperspace_horizontal.gdshader`:
+  `jump_hyperspace` pixelates into screen-sized cells before it scrolls, which
+  pinned a cell edge to the middle of the screen as a hard seam. The new one
+  scrolls continuously and snaps to the art grid only where it reads.
+- **Juice:** speed lines, debris that tumbles at random angles (in unrotated
+  holders, so Fate still stretches it along the pull) and spins up near the
+  hole, Fate's pulses jolting the debris, muzzle rings, an RCS burst before
+  the turn, and `TimeDirector` hitstops on hits, the kill and the punch into
+  hyperspace, with a breath of slow motion as the player jumps.
 - **Background** borrows rift_space: the black hole, its purple nebula
   (darkened, since the shader stacks it up to 3x and clips to grey-white),
   and fate shards plus scrap, dragged into the hole and stretched as they go.
 - **New player ship** (`Assets/Textures/Player/Ship/`), drawn from
-  tinyShip12 in the game palette, with cruise, boost and fire frames. The
-  cockpit cutscene flies it too, now over star_field, zooming onto the
-  canopy.
+  tinyShip12 in the game palette, with cruise, boost and fire frames.
 - Timing lives in `cutscene_anim`, so it can be scrubbed and retimed in the
   editor; its method track calls the one-shot effects in
   `opening_cutscene.gd`.
 
-Checked by rendering both cutscenes frame by frame with `--write-movie` and
-live at full resolution. How it plays at speed, with the music, still needs a
+Checked by rendering it frame by frame with `--write-movie`, and live at
+full resolution through the hand-off into the ambush. How it plays at speed, with the music, still needs a
 watch.
 
 ---
