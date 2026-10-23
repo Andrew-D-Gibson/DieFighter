@@ -755,6 +755,46 @@ violations, as `tools/autoplay_replay.py flagged` ranks them.
 
 ---
 
+## Scenario Lab (dev builds)
+
+A harness for inspecting every scenario by hand, start to finish. The
+`ScenarioLab` autoload owns the session and the coverage record;
+`ScenarioLabPanel` (in `main.tscn`'s UI layer, beside the tile palette) is the
+in-game side. Release builds get neither, unless the export preset has the
+`dev_console` feature (`DevConsole.is_available()`).
+
+- **Getting in.** The main menu's **LAB** button resumes at the scenario last
+  tested; **F1** toggles the panel in any run.
+- **A lab run** is a fresh run on the starter kit from `run_start.tres`, whose
+  generated sector gets the chosen scenario in its start slot from
+  `Events.load_game_save`, as a gauntlet's does. **<** / **>** step through
+  the list, **RESTART** replays the session's run seed (queued through
+  `RNGManager.next_run_seed`), **NEW SEED** rerolls it, and **LIST** shows
+  every scenario by kind with its coverage. Every scenario under
+  `ScenarioResources/Scenarios/` is listed except `test`; a new one shows up
+  on its own.
+- **Saves.** A lab run saves to `user://scenario_lab_save.json` (via
+  `SaveManager.save_path`), so it can't overwrite, or be continued as, the
+  real run. The session ends when the menu opens (`MainMenu._ready()`) or a
+  game starts without a lab launch pending.
+- **Inspector.** Each ship's scenario state, line and exits. A transition's
+  event button emits `Events.scenario_event` as play would (every ship hears
+  it); a weighted transition lists its outcomes to force on that ship alone
+  (`Enemy.force_scenario_state()`). The checklist under it lists every state
+  the scenario can reach, and clicking one puts the ship whose branch it is
+  into it, which is how to reach a branch a fresh start can't (Tollkeeper and
+  Pickpocket take credits on arrival: `add_money` in the console, then click
+  the demand state again).
+- **Coverage.** `ScenarioGraph` walks every state reachable from the
+  scenario's starting ships, through each weighted outcome too, and notes
+  whether any of them is hostile. A scenario is fully seen once every state
+  has been seen in a lab run, plus its fight ending (won or settled, not
+  jumped away from) where it has one. The record is per scenario in
+  `user://scenario_lab_coverage.json`, keyed like saved ship states
+  (`Enemy.state_key()`); **RESET COVERAGE** in the list clears it.
+
+---
+
 ## Run Progression
 
 A run is `demo_sector_count` sectors long (3 by default). Each sector is
@@ -1476,6 +1516,7 @@ new values; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` to leave room.
 | `enemy_received_die` | Enemy gains die in turn | Update targeting intent dice UI |
 | `enemy_used_die` | Die used for action | Pulse intent indicator |
 | `enemy_left` | Enemy removed (death/flee) | Remove from array, faction check (bindings to it stay put and become `BLOCKED`) |
+| `ship_scenario_state_changed` | A ship moved to another scenario state (an event, or the Scenario Lab forcing one) | GameStateManager rechecks combat; ScenarioLab records coverage |
 | `ship_attacked_ship` | One enemy damaged another | ScenarioManager (`PIRATE_ATTACKED_CIVILIAN`) |
 | `enemy_flew_in` | New enemy enters screen | Re-enable bobbing animation |
 | `enemies_arrived` | Whole opening fly-in done and a target is set | Player releases `first_turn_start` (Pilot Light etc.) |

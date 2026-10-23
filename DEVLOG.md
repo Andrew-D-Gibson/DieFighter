@@ -4,6 +4,33 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Scenario Lab
+
+A dev-build harness for playing any scenario from a clean start and walking
+every branch of it (see ARCHITECTURE_OVERVIEW, "Scenario Lab").
+
+- **LAB** on the main menu, or **F1** in a run, opens a panel: arrows step
+  through all 40 scenarios (TEST left out; Empty is in, since revisiting a
+  cleared tile lands there), each launched into the start slot of a fresh
+  starter-kit run on a fixed seed. RESTART replays it, NEW SEED rerolls it,
+  LIST shows everything with coverage. Lab runs save to their own file.
+- **Inspector**: each ship's state, line and exits, with buttons to fire a
+  transition's event, force a weighted outcome, or put a ship straight into
+  any state on its branch.
+- **Coverage**: every reachable state, plus the fight ending where there is
+  one, ticked per scenario and kept across sessions.
+- **Swept**: every scenario launched clean through the Lab with no errors.
+  The COMBAT fights and two elites were won from there (`kill_enemies`), and
+  Arc Dynamo's and Bastion's gates opened once won. Shop, repair station,
+  Fate, Empty and the open gate all work from the start slot.
+- **Found**: Tollkeeper and Pickpocket take credits the moment the player
+  arrives, so a starter-kit arrival (0 credits) always lands on
+  `toll_shortchanged` / `pickpocket_skint`, as it would for a player who
+  turns up broke. In the Lab the paid branch needs `add_money` and a click
+  on the demand state.
+
+---
+
 ## 2026-10-23 — Monitor on arrival, a calmer cut into the game, Mayday tidied
 
 - **Overcharge tiles benched.** Redline Governor, Runaway Reactor and
