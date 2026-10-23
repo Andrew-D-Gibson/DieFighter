@@ -44,6 +44,13 @@ func get_scenario_path(id: String) -> String:
 	return _scenario_id_to_path[id]
 
 
+## Every registered scenario id, unordered.
+func get_scenario_ids() -> Array[String]:
+	var ids: Array[String] = []
+	ids.assign(_scenario_id_to_path.keys())
+	return ids
+
+
 func get_scenario_id(path: String) -> String:
 	if not _scenario_path_to_id.has(path):
 		push_error("ContentRegistry: no scenario registered at path '%s'" % path)

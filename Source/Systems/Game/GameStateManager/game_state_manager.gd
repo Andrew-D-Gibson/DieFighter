@@ -163,6 +163,10 @@ func _ready() -> void:
 	Events.scenario_event.connect(func(_event: ScenarioManager.ScenarioEvent) -> void:
 		_check_combat_state.call_deferred()
 	)
+	# The Scenario Lab can put a ship in a state with no event behind it.
+	Events.ship_scenario_state_changed.connect(func(_ship: Enemy) -> void:
+		_check_combat_state.call_deferred()
+	)
 	Events.enemy_left.connect(func(_ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_check_combat_state()
 	)

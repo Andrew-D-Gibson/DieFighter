@@ -176,8 +176,22 @@ func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
 		graphics_manager.set_health_bar_attitude(new_state.attitude)
 		
 		if new_state != scenario_state:
-			scenario_state = new_state
-			trigger_state_effects()
+			_enter_scenario_state(new_state)
+
+
+## Puts this ship straight into [param state], as if a scenario event had led
+## there. For the Scenario Lab, which forces each outcome of a weighted
+## transition rather than rolling for it.
+func force_scenario_state(state: ScenarioShipState) -> void:
+	graphics_manager.set_health_bar_attitude(state.attitude)
+	if state != scenario_state:
+		_enter_scenario_state(state)
+
+
+func _enter_scenario_state(state: ScenarioShipState) -> void:
+	scenario_state = state
+	Events.ship_scenario_state_changed.emit(self)
+	trigger_state_effects()
 		
 
 ## Connects all combat-related signals
@@ -594,7 +608,7 @@ func _on_clicked() -> void:
 func capture_state() -> Dictionary:
 	return {
 		"spawn": spawn_index,
-		"state": _state_key(scenario_state),
+		"state": state_key(scenario_state),
 		"health": health.health,
 		"shields": health.shields,
 		"squad_losses": squad_losses,
@@ -619,7 +633,7 @@ func restore_state(entry: Dictionary, starting_state: ScenarioShipState) -> void
 
 ## A state's identity across a save: its file for a state saved as its own
 ## .tres, or its id inside the scenario file for one embedded there.
-static func _state_key(state: ScenarioShipStateBase) -> String:
+static func state_key(state: ScenarioShipStateBase) -> String:
 	if state == null:
 		return ""
 	if not state.resource_path.is_empty() and not state.resource_path.contains("::"):
@@ -643,7 +657,7 @@ static func _find_state(start: ScenarioShipStateBase, key: String) -> ScenarioSh
 			for next: ScenarioShipStateBase in state.weighted_probabilities.keys():
 				stack.append(next)
 			continue
-		if _state_key(state) == key:
+		if state_key(state) == key:
 			return state
 		for next: ScenarioShipStateBase in state.transitions.values():
 			stack.append(next)

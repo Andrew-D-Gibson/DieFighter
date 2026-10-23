@@ -3,6 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/DevConsole/TilePalette/tile_palette.tscn" id="2_tpal"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/DevConsole/ScenarioLab/scenario_lab_panel.tscn" id="2_slab"]
 [ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
 [ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="4_6ebjm"]
 [ext_resource type="Script" uid="uid://by2nuppu48mrd" path="res://Source/Systems/UI/DebugItems/fps_counter.gd" id="4_7iud4"]
@@ -275,6 +276,8 @@ horizontal_alignment = 1
 script = ExtResource("4_7iud4")
 
 [node name="TilePalette" parent="UI" unique_id=1930415882 instance=ExtResource("2_tpal")]
+
+[node name="ScenarioLabPanel" parent="UI" unique_id=1930415883 instance=ExtResource("2_slab")]
 
 [node name="FadeIn" type="ColorRect" parent="UI" unique_id=1337741916]
 visible = false
