@@ -763,11 +763,12 @@ A harness for inspecting every scenario by hand, start to finish. The
 console page under the console box. Release builds get neither, unless the export preset has the
 `dev_console` feature (`DevConsole.is_available()`).
 
-- **Getting in.** The main menu's **LAB** button resumes at the scenario last
-  tested. The panel is on the dev console page (the console key), and so is
-  the tile palette. Both start folded away to their **SHOW LAB** / **SHOW
-  TILES** buttons and stay as left while the game scene reloads (static
-  `collapsed` flags); the menu's LAB button opens the Lab's.
+- **Getting in.** Open the dev console page (the console key) in any run;
+  the panel is there with the tile palette. Both start folded away to their
+  **SHOW LAB** / **SHOW TILES** buttons and stay as left while the game scene
+  reloads (static `collapsed` flags). In an ordinary run the inspector works
+  on whatever scenario is live; the navigator starts a lab run, resuming at
+  the scenario last tested. There's no main menu entry.
 - **A lab run** is a fresh run on the starter kit from `run_start.tres`, whose
   generated sector gets the chosen scenario in its start slot from
   `Events.load_game_save`, as a gauntlet's does. **<** / **>** step through
