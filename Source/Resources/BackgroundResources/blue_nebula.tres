@@ -5,19 +5,79 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="body_far"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/ocean_world.tscn" id="body_near"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/ion_saturation.tres" id="mod_0"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/ice_moon.tscn" id="body_ice_moon"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/storm_giant.tscn" id="body_storm_giant"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
 
-[sub_resource type="Resource" id="Resource_ocean_world"]
+[sub_resource type="Resource" id="Piece_ocean_and_moon_0"]
 script = ExtResource("2_807x5")
 scene = ExtResource("body_near")
 position = Vector2(274, 34)
-metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
+scale = Vector2(-1, 1)
+size_jitter = 0.1
 
-[sub_resource type="Resource" id="Resource_moon"]
+[sub_resource type="Resource" id="Piece_ocean_and_moon_1"]
 script = ExtResource("2_807x5")
 scene = ExtResource("body_far")
 position = Vector2(236, 16)
+scale = Vector2(-1, 1)
 modulate = Color(0.6, 0.65, 0.85, 1)
-metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
+size_jitter = 0.15
+
+[sub_resource type="Resource" id="Composition_ocean_and_moon"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_807x5")]([SubResource("Piece_ocean_and_moon_0"), SubResource("Piece_ocean_and_moon_1")])
+
+[sub_resource type="Resource" id="Piece_ocean_and_ice_moon_0"]
+script = ExtResource("2_807x5")
+scene = ExtResource("body_near")
+position = Vector2(40, 44)
+size_jitter = 0.1
+
+[sub_resource type="Resource" id="Piece_ocean_and_ice_moon_1"]
+script = ExtResource("2_807x5")
+scene = ExtResource("body_ice_moon")
+position = Vector2(86, 16)
+modulate = Color(0.65, 0.72, 0.85, 1)
+size_jitter = 0.15
+
+[sub_resource type="Resource" id="Composition_ocean_and_ice_moon"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_807x5")]([SubResource("Piece_ocean_and_ice_moon_0"), SubResource("Piece_ocean_and_ice_moon_1")])
+
+[sub_resource type="Resource" id="Piece_storm_giant_rising_0"]
+script = ExtResource("2_807x5")
+scene = ExtResource("body_storm_giant")
+position = Vector2(290, 24)
+scale = Vector2(-1, 1)
+modulate = Color(0.85, 0.9, 1, 1)
+size_jitter = 0.1
+
+[sub_resource type="Resource" id="Composition_storm_giant_rising"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_807x5")]([SubResource("Piece_storm_giant_rising_0")])
+offset_jitter = Vector2(8, 5)
+
+[sub_resource type="Resource" id="Piece_two_far_moons_0"]
+script = ExtResource("2_807x5")
+scene = ExtResource("body_ice_moon")
+position = Vector2(266, 22)
+scale = Vector2(-1, 1)
+modulate = Color(0.65, 0.72, 0.85, 1)
+size_jitter = 0.15
+
+[sub_resource type="Resource" id="Piece_two_far_moons_1"]
+script = ExtResource("2_807x5")
+scene = ExtResource("body_far")
+position = Vector2(240, 42)
+scale = Vector2(-1, 1)
+modulate = Color(0.55, 0.58, 0.72, 1)
+size_jitter = 0.15
+
+[sub_resource type="Resource" id="Composition_two_far_moons"]
+script = ExtResource("comp_script")
+weight = 0.6
+objects = Array[ExtResource("2_807x5")]([SubResource("Piece_two_far_moons_0"), SubResource("Piece_two_far_moons_1")])
 
 [resource]
 script = ExtResource("1_ow0l5")
@@ -28,5 +88,5 @@ nebula_color = Color(0.2673, 0.65274, 0.99, 0.164706)
 stars = true
 num_of_stars = 80
 num_of_twinkling_stars = 20
-static_objects = Array[ExtResource("2_807x5")]([SubResource("Resource_ocean_world"), SubResource("Resource_moon")])
+set_piece_compositions = Array[ExtResource("comp_script")]([SubResource("Composition_ocean_and_moon"), SubResource("Composition_ocean_and_ice_moon"), SubResource("Composition_storm_giant_rising"), SubResource("Composition_two_far_moons")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

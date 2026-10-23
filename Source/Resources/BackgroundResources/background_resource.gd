@@ -32,5 +32,21 @@ extends Resource
 
 @export_category('Static Objects')
 ## Set pieces placed by hand, like a star or a wreck. Things that only drift by
-## belong in scrolling_objects.
+## belong in scrolling_objects. Always placed exactly as authored; planets and
+## stars that should move between visits go in set_piece_compositions.
 @export var static_objects: Array[StaticBackgroundObjectResource] = []
+## Alternative arrangements of the background's planets and stars. One is
+## picked (by weight, from the BACKGROUND bucket) each time the background is
+## shown, then jittered and maybe mirrored, on top of static_objects.
+@export var set_piece_compositions: Array[SetPieceComposition] = []
+
+
+## Whether anything in this background holds still or drifts past on its own:
+## set pieces of any kind or scrolling objects. With either on screen the
+## stars hold still too, so they don't slide past a planet the ship is parked
+## beside, or race debris that is doing the drifting. [param composition] is
+## the arrangement actually on screen, if any.
+func anchors_the_view(composition: SetPieceComposition = null) -> bool:
+	if scrolling_objects or not static_objects.is_empty():
+		return true
+	return composition != null and not composition.objects.is_empty()

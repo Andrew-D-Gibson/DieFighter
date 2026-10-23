@@ -4,18 +4,57 @@
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_buxbt"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/blue_star.tscn" id="body_far"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/storm_giant.tscn" id="body_near"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
 
-[sub_resource type="Resource" id="Resource_storm_giant"]
+[sub_resource type="Resource" id="Piece_storm_giant_and_star_0"]
 script = ExtResource("2_buxbt")
 scene = ExtResource("body_near")
 position = Vector2(290, 46)
-metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
+scale = Vector2(-1, 1)
+size_jitter = 0.1
 
-[sub_resource type="Resource" id="Resource_blue_star"]
+[sub_resource type="Resource" id="Piece_storm_giant_and_star_1"]
 script = ExtResource("2_buxbt")
 scene = ExtResource("body_far")
 position = Vector2(46, 22)
-metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/static_background_object_resource.gd"
+size_jitter = 0.15
+
+[sub_resource type="Resource" id="Composition_storm_giant_and_star"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_storm_giant_and_star_0"), SubResource("Piece_storm_giant_and_star_1")])
+
+[sub_resource type="Resource" id="Piece_lone_star_0"]
+script = ExtResource("2_buxbt")
+scene = ExtResource("body_far")
+position = Vector2(268, 26)
+size_jitter = 0.2
+
+[sub_resource type="Resource" id="Composition_lone_star"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_lone_star_0")])
+offset_jitter = Vector2(10, 6)
+
+[sub_resource type="Resource" id="Piece_giant_and_far_star_0"]
+script = ExtResource("2_buxbt")
+scene = ExtResource("body_near")
+position = Vector2(40, 40)
+size_jitter = 0.1
+
+[sub_resource type="Resource" id="Piece_giant_and_far_star_1"]
+script = ExtResource("2_buxbt")
+scene = ExtResource("body_far")
+position = Vector2(276, 18)
+size_jitter = 0.15
+
+[sub_resource type="Resource" id="Composition_giant_and_far_star"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_giant_and_far_star_0"), SubResource("Piece_giant_and_far_star_1")])
+
+[sub_resource type="Resource" id="Composition_open_field"]
+script = ExtResource("comp_script")
+weight = 0.75
+objects = Array[ExtResource("2_buxbt")]([])
+offset_jitter = Vector2(0, 0)
 
 [resource]
 script = ExtResource("1_fu3ps")
@@ -23,5 +62,5 @@ background_color = Color(0.04496, 0.0192, 0.24, 1)
 stars = true
 num_of_stars = 100
 num_of_twinkling_stars = 25
-static_objects = Array[ExtResource("2_buxbt")]([SubResource("Resource_storm_giant"), SubResource("Resource_blue_star")])
+set_piece_compositions = Array[ExtResource("comp_script")]([SubResource("Composition_storm_giant_and_star"), SubResource("Composition_lone_star"), SubResource("Composition_giant_and_far_star"), SubResource("Composition_open_field")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"
