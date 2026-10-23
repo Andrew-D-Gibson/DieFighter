@@ -161,6 +161,9 @@ var _no_jump_from: Dictionary[String, bool] = {}
 ## one again means the die bounced back (a refusal the legal move list can't
 ## see), so it isn't tried a third time.
 var _placed: Dictionary[String, int] = {}
+## Hull when it last fled each fight, by sector and map stop. Fleeing the same
+## fight again with no more hull than that just comes back to it.
+var _fled_at_hull: Dictionary[String, int] = {}
 ## Stands in for "an enemy" when valuing a tile on offer, with no fight on.
 var _nominal_enemy: Enemy
 
@@ -208,6 +211,11 @@ func choose(moves: Array[AutoPilotMove], _rng: RandomNumberGenerator) -> AutoPil
 	if by_kind.has(AutoPilotMove.Kind.END_TURN):
 		return by_kind[AutoPilotMove.Kind.END_TURN][0]
 
+	if _gate_still_opening():
+		# The ring comes up a moment after the boss goes down; jumping before
+		# then could only go backwards.
+		return null
+
 	var on_map: bool = is_instance_valid(Globals.map) and Globals.map.visible
 	var want_map: bool = _wants_to_jump() and not _no_jump_from.has(_board_key())
 	if want_map and not on_map and by_kind.has(AutoPilotMove.Kind.VIEW_MAP):
@@ -237,6 +245,8 @@ func choose(moves: Array[AutoPilotMove], _rng: RandomNumberGenerator) -> AutoPil
 	var chosen: AutoPilotMove = best["move"]
 	var key: String = _placement_key(chosen.die, chosen.tile)
 	_placed[key] = _placed.get(key, 0) + 1
+	if _in_combat() and _is_jump(chosen):
+		_fled_at_hull[_fight_key()] = Globals.player.health.health
 	return chosen
 
 
@@ -439,7 +449,42 @@ func _wants_to_flee() -> bool:
 	if not _may_flee or not _in_combat():
 		return false
 	var health: Health = Globals.player.health
-	return float(health.health) < float(health.max_health) * _persona.flee_below
+	if float(health.health) >= float(health.max_health) * _persona.flee_below:
+		return false
+	if _fled_at_hull.has(_fight_key()) and health.health <= _fled_at_hull[_fight_key()]:
+		return false
+	return _has_refuge()
+
+
+## Whether some stop a jump could reach will still be an ordinary stop when it
+## lands: not Fate's, and not the gate. Fleeing anywhere else only trades this
+## fight for one as bad, or for a trip straight back to it.
+static func _has_refuge() -> bool:
+	var map: Map = Globals.map
+	var here: int = map.current_scenario_index
+	for distance: int in range(1, 7):
+		for there: int in [here - distance, here + distance]:
+			if there < 0 or there >= map.scenario_list.size():
+				continue
+			var stop: ScenarioResource = map.scenario_list[there]
+			if stop == map.fate_scenario or stop.sector_gate_scenario or _corrupted_by_next_jump(there):
+				continue
+			return true
+	return false
+
+
+## Out of a fight at a sector gate whose ring isn't up yet: the boss was just
+## beaten.
+static func _gate_still_opening() -> bool:
+	if _in_combat() or not is_instance_valid(Globals.jump_gate) or Globals.jump_gate.is_open():
+		return false
+	var scenario: ScenarioResource = Globals.scenario_manager.current_scenario
+	return scenario != null and scenario.sector_gate_scenario
+
+
+static func _fight_key() -> String:
+	return "%d/%d" % [Globals.state_manager.current_game_save.sector_index,
+		Globals.map.current_scenario_index]
 
 
 ## A jump of [param delta] tiles: where it lands, as the map shows it.
