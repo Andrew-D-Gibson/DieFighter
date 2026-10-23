@@ -23,7 +23,7 @@ const _PANEL_RECT: Rect2 = Rect2(16, 456, 500, 608)
 const _SHOW_BUTTON_SIZE: Vector2 = Vector2(260, 84)
 
 ## Whether the panel is folded away to its show button. A static, so it stays
-## as left while lab runs reload the game scene; the menu's LAB button opens it.
+## as left while lab runs reload the game scene.
 static var collapsed: bool = true
 
 var _panel: PanelContainer

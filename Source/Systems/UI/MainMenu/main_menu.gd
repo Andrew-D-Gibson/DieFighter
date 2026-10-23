@@ -16,8 +16,6 @@ var main_game_scene: String = "uid://deisauteocrjl"
 
 var _is_loading: bool = false
 
-const _LARGE_BUTTON: PackedScene = preload("uid://pagumreni25k")
-
 const _MENU_TRACK: StringName = &"game_start_theme"
 ## Brought in by the opening cutscene on a new game.
 const _RUN_TRACK: StringName = &"trailer_1"
@@ -25,10 +23,9 @@ const _RUN_TRACK: StringName = &"trailer_1"
 
 func _ready() -> void:
 	get_tree().paused = false
-	# Before has_save(): a lab run points the save file somewhere else.
+	# Before has_save(): a lab run (started from the dev console) points the
+	# save file somewhere else.
 	ScenarioLab.end_session()
-	if DevConsole.is_available():
-		_add_scenario_lab_button()
 
 	# Set up the initial state of needed components
 	#%FadeIn.self_modulate = background_color
@@ -131,29 +128,6 @@ func _on_continue_button_pressed() -> void:
 	# popup has actually been drawn or the player never sees it.
 	await RenderingServer.frame_post_draw
 	get_tree().change_scene_to_file(main_game_scene)
-
-
-## Dev builds only: straight into the Scenario Lab, at the scenario tested
-## last. The panel itself is on the dev console page. Built here rather than in the scene so release builds never carry it.
-func _add_scenario_lab_button() -> void:
-	var lab_button: Node = _LARGE_BUTTON.instantiate()
-	$VBoxContainer.add_child(lab_button)
-	$VBoxContainer.move_child(lab_button, $VBoxContainer/QuitButton.get_index())
-	lab_button.set_button_text("LAB")
-	lab_button.hover_text_color = Globals.yellow
-	lab_button.pressed_within_window.connect(_on_scenario_lab_button_pressed)
-
-
-func _on_scenario_lab_button_pressed() -> void:
-	if _is_loading:
-		return
-	_is_loading = true
-	MusicDirector.play_track(_RUN_TRACK, 2.0)
-	%LoadingPopup.show()
-	await RenderingServer.frame_post_draw
-	# Asked for by name, so it's open on the console page rather than folded.
-	ScenarioLabPanel.collapsed = false
-	ScenarioLab.launch(ScenarioLab.index)
 
 
 func _on_options_button_pressed() -> void:
