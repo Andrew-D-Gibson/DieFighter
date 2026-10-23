@@ -1,11 +1,13 @@
 class_name EnvironmentMonitor
 extends Node2D
 ## A hinged monitor that swings up out of the targeting computer when the
-## background has a rule (BackgroundModifierResource) or a timed hazard
-## (BackgroundHazardResource, shown with its countdown). Backgrounds are random,
-## so the rule has to announce itself or it reads as a bug. It stays folded
-## away in plain space, its lamp blinks until clicked (which opens the usual
-## InfoShower panel), then stays lit while the rule holds.
+## player arrives in a region whose background has a rule
+## (BackgroundModifierResource) or a timed hazard (BackgroundHazardResource).
+## Backgrounds are random, so the rule has to announce itself or it reads as a
+## bug. It stays folded away in plain space, its lamp blinks until clicked
+## (which opens the usual InfoShower panel), then stays lit while the player is
+## in the region. A hazard only counts down during a fight, so its countdown
+## shows only while one is on.
 ##
 ## The node's origin is the hinge; everything that moves hangs off %Arm.
 
@@ -75,10 +77,27 @@ const _URGENT_TICK_SFX: SoundEffectResource = preload(
 ## The permanent rule in force right now, or null.
 var _modifier: BackgroundModifierResource = null
 
-## The hazard counting down this fight, or null. Shown in preference to a
-## rule, though a background only ever carries one of the two.
+## The region's timed hazard, or null. Shown in preference to a rule, though a
+## background only ever carries one of the two.
 var _hazard: BackgroundHazardResource = null
+## True while a fight has the hazard counting down. Outside one it is shown
+## without a number: a warning of what a fight here will bring.
+var _armed: bool = false
 var _turns_remaining: int = 0
+
+## Between arriving in a region and jumping out of it. A background swapped in
+## hyperspace waits for the arrival to be announced.
+var _in_region: bool = false
+
+## What the screen is showing, so a fight starting or ending in the same region
+## updates the countdown instead of announcing the rule all over again.
+var _shown: Resource = null
+var _shown_armed: bool = false
+## The lamp blinks until the player clicks to read what's shown.
+var _unread: bool = false
+## Arrival fires several signals in one go (the rule applied, the region
+## entered, a fight starting); they're answered as one present.
+var _present_queued: bool = false
 
 var _countdown: Label
 
@@ -102,18 +121,52 @@ func _ready() -> void:
 	Events.hazard_armed.connect(_on_hazard_armed)
 	Events.hazard_countdown_changed.connect(_on_hazard_countdown_changed)
 	Events.hazard_triggered.connect(_on_hazard_triggered)
+	Events.start_scenario.connect(_on_arrival)
+	Events.background_changed.connect(_on_background_changed)
 	Events.jump.connect(_on_jump)
 
 
 func _on_modifier_applied(modifier: BackgroundModifierResource) -> void:
 	_modifier = modifier
-	_present()
+	_queue_present()
 
 
+## The hazard is the region's, not the fight's, so it goes up as the player
+## arrives, whether or not anyone is shooting yet.
+func _on_arrival() -> void:
+	_in_region = true
+	_hazard = _region_hazard()
+	_queue_present()
+
+
+## A background swapped in place (dev console, scripted sequences) brings its
+## own hazard. HazardManager re-arms a live fight for it, so only a change of
+## hazard drops the countdown here.
+func _on_background_changed(background: BackgroundResource) -> void:
+	if not _in_region:
+		return
+	var hazard: BackgroundHazardResource = background.hazard if background else null
+	if hazard != _hazard:
+		_hazard = hazard
+		_armed = false
+	_queue_present()
+
+
+## A null hazard is the fight ending (or never arming): the countdown goes, but
+## the region's hazard stays on show until the player leaves.
 func _on_hazard_armed(hazard: BackgroundHazardResource, turns_remaining: int) -> void:
-	_hazard = hazard
-	_turns_remaining = turns_remaining
-	_present()
+	_armed = hazard != null
+	if hazard:
+		_hazard = hazard
+		_turns_remaining = turns_remaining
+	_queue_present()
+
+
+func _region_hazard() -> BackgroundHazardResource:
+	var manager: BackgroundManager = Globals.background_manager
+	if not is_instance_valid(manager) or manager.current_background == null:
+		return null
+	return manager.current_background.hazard
 
 
 ## The number going down is the moment the player should look up, so every
@@ -127,7 +180,7 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 	_update_countdown()
 	if not ticked_down:
 		# Reset after firing: no longer imminent, so the red alarm blink ends.
-		_stop_blinking()
+		_refresh_blink()
 		return
 
 	var color: Color = _current_color()
@@ -138,7 +191,7 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 	Events.play_sound.emit(_URGENT_TICK_SFX if _is_urgent() else _TICK_SFX)
 	if _is_urgent():
 		Juice.ring(self, _glyph.global_position, color, 22.0, 0.4, 8.0)
-		_start_blinking()
+		_refresh_blink()
 
 
 func _on_hazard_triggered(hazard: BackgroundHazardResource) -> void:
@@ -147,12 +200,29 @@ func _on_hazard_triggered(hazard: BackgroundHazardResource) -> void:
 	_play_trigger_feedback(hazard.hazard_name.to_upper(), hazard.color)
 
 
-## Puts whatever governs this place on the screen — the hazard and its
-## countdown, else the permanent rule — or folds away when neither does.
-func _present() -> void:
-	_stop_blinking()
+func _queue_present() -> void:
+	if _present_queued:
+		return
+	_present_queued = true
+	_present.call_deferred()
 
-	if _hazard == null and _modifier == null:
+
+## Puts whatever governs this place on the screen — the hazard (and its
+## countdown, during a fight), else the permanent rule — or folds away when
+## neither does.
+func _present() -> void:
+	_present_queued = false
+	# A rule can be applied while still in hyperspace (the engine for the new
+	# region exists before the jump out finishes); it waits for the arrival.
+	var shown: Resource = null
+	if _in_region:
+		shown = _hazard if _hazard else _modifier
+
+	if shown == null:
+		_shown = null
+		_shown_armed = false
+		_unread = false
+		_refresh_blink()
 		_countdown.hide()
 		if _deployed:
 			_stow()
@@ -168,29 +238,39 @@ func _present() -> void:
 		_glyph.texture = _DEFAULT_GLYPH
 		_glyph.modulate = _hazard.color if _hazard else _modifier.color
 
-	_glyph.position = _GLYPH_BESIDE_COUNTDOWN if _hazard else _GLYPH_CENTRED
-	_countdown.visible = _hazard != null
+	var counting: bool = _hazard != null and _armed
+	_glyph.position = _GLYPH_BESIDE_COUNTDOWN if counting else _GLYPH_CENTRED
+	_countdown.visible = counting
 	_update_countdown()
 
-	if _deployed:
-		# Already up from the last region: a fresh swing says "new rule"
+	# The jump clears what was shown, so every arrival is a fresh rule to
+	# read, even when the region repeats one the player has seen before.
+	var is_new: bool = shown != _shown
+	var countdown_appeared: bool = counting and not _shown_armed
+	_shown = shown
+	_shown_armed = counting
+
+	if not _deployed:
+		_deploy()
+	elif is_new or countdown_appeared:
+		# Already up: a fresh swing says "new rule" (or "it's counting now")
 		# without folding away and back.
 		_kick()
-	else:
-		_deploy()
 
-	# Every arrival is a fresh rule to read, even when the region repeats one
-	# the player has seen before, so the monitor always starts unread.
-	_start_blinking()
+	if is_new:
+		_unread = true
+	_refresh_blink()
 
 
 ## The old region's rule is meaningless mid-hyperspace, and a lamp blinking
-## over the jump reads as a warning about nothing. Stow now; the next
-## start_scenario re-announces whatever rule the new region carries, so the
-## monitor only comes back when one is actually in force.
+## over the jump reads as a warning about nothing. Stow now; the next arrival
+## re-announces whatever rule the new region carries, so the monitor only comes
+## back when there is one.
 func _on_jump() -> void:
+	_in_region = false
 	_modifier = null
 	_hazard = null
+	_armed = false
 	_present()
 
 
@@ -247,10 +327,11 @@ func _flare(color: Color) -> void:
 ## Hands the rule to the shared info panel, which zooms its art up to the
 ## middle of the screen and dims everything behind it.
 func _on_clicked() -> void:
-	if _hazard == null and _modifier == null:
+	if _shown == null:
 		return
 
-	_stop_blinking()
+	_unread = false
+	_refresh_blink()
 
 	var info: InfoResource = InfoResource.new()
 	if _hazard:
@@ -273,6 +354,9 @@ func _on_clicked() -> void:
 ## "in 1 turn" can't say whether that means as this turn ends or as the next
 ## one starts.
 func _hazard_timing_text() -> String:
+	if not _armed:
+		# Kept under the ~27 characters the panel fits on one line.
+		return "Strikes [color=yellow]once a fight starts[/color]"
 	if _turns_remaining <= 1:
 		var ends_turn: bool = _hazard.timing == BackgroundHazardResource.Timing.YOUR_TURN_ENDS
 		# Both kept under the ~27 characters the panel fits on one line.
@@ -337,27 +421,27 @@ func _kick() -> void:
 		.from(Color(2.5, 2.5, 2.5)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
-func _start_blinking() -> void:
+## Blinks while what's shown is unread, else stays lit and steady: read, but
+## still in force. A hazard about to go off blinks regardless — reading it
+## doesn't make it less imminent. Restarted on every change, so the blink
+## picks up the current colour (red once imminent).
+func _refresh_blink() -> void:
 	if _is_blinking():
 		_blink_tween.kill()
+	_blink_tween = null
+	if _shown == null:
+		return
+
 	var lit: Color = _current_color()
+	if not (_unread or _is_urgent()):
+		_set_lit(lit, true)
+		return
+
 	_blink_tween = create_tween().set_loops()
 	_blink_tween.tween_callback(_set_lit.bind(lit, true))
 	_blink_tween.tween_interval(blink_period * 0.5)
 	_blink_tween.tween_callback(_set_lit.bind(lit, false))
 	_blink_tween.tween_interval(blink_period * 0.5)
-
-
-## Leaves the lamp lit and steady: read, but still in force. A hazard about to
-## go off keeps blinking regardless — reading it doesn't make it less imminent.
-func _stop_blinking() -> void:
-	if _hazard and _is_urgent() and _deployed:
-		return
-	if _blink_tween:
-		_blink_tween.kill()
-		_blink_tween = null
-	if _hazard or _modifier:
-		_set_lit(_current_color(), true)
 
 
 ## The lamp and countdown colour: the hazard's own, red once it is imminent,
@@ -369,9 +453,9 @@ func _current_color() -> Color:
 
 
 ## Imminent hazards turn the countdown red and keep the lamp blinking even once
-## read.
+## read. Only a fight's countdown can be imminent.
 func _is_urgent() -> bool:
-	return _hazard != null and _turns_remaining <= HazardManager.URGENT_AT
+	return _hazard != null and _armed and _turns_remaining <= HazardManager.URGENT_AT
 
 
 ## Built in code like DamageNumber's label, so it can be centred on its own
