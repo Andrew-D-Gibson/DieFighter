@@ -622,7 +622,9 @@ AudioStreamPlayer.
 3. **Make a track**: a `MusicTrackResource` in
    `Source/Resources/MusicResources/Tracks/`, with a unique `id` and one
    `MusicLayerResource` per stem (one layer, `id = full`, for a plain song).
-   A layer with `starts_enabled` off still plays, silently.
+   A layer with `starts_enabled` off still plays, silently. Tick `repeats`
+   for a theme that should play again from the top rather than hand over
+   to the next track (the start theme does, so the trailer only plays once).
 4. **Add it to a playlist** in `MusicResources/Playlists/`.
    `default_playlist.tres` is the one that starts at boot.
 5. **Cue it** from code: `MusicDirector.play_track(&"id", fade_seconds)`,

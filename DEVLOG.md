@@ -4,6 +4,39 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Opening cutscene pass and music
+
+- **A pursuit before the black hole.** The cutscene now opens tight on the
+  player's ship, jinking out of two dice fired from off screen, then pulls
+  back to show both Attackers on its tail, and on again until Fate comes
+  into view with a pulse. Fate's own lightning waits for that reveal. The
+  rest of the story (one Attacker taken, the jump, the ambush) follows as
+  before, 2.6 s later.
+- **Longer fade in.** The picture holds black for a second and fades over
+  three, so the music's 4 s fade has started before anything is seen.
+- **Push in on the player.** After the player's ship turns to face the
+  Survivor, the shot closes in on it under the lock-on brackets before
+  cutting to the fight, so it is clear which ship is yours.
+- **Shots without mixels.** `view_zoom` / `view_center` on
+  `opening_cutscene.gd` are keyed like the rest of the timeline. They scale
+  the finished 320x180 picture and the starfield together rather than
+  zooming a camera inside the SubViewport, so art pixels stay even (at worst
+  one screen pixel apart mid-zoom), and every held zoom (3, 1.5, 2.5) is a
+  whole number of screen pixels per art pixel.
+- **The enemy spools up too.** The Survivor charges its jump the way the
+  player does, hull flickering and motes drawn in, in its own red.
+- **Hyperspace edges.** The thin streakless bands down both sides of the
+  screen came from the clear border round each streak frame, stretched
+  across the screen; the frames are cropped now. The screen-filling layers
+  (hyperspace, flash, fade, alert) also reach 8 px past the frame, so a
+  camera shake can't show their edges.
+- **Trailer once.** Tracks can be marked `repeats`. The start theme is, so
+  after the cutscene's Trailer 1 the playlist comes back to the start theme
+  and holds it rather than alternating. The menu now loops the start theme
+  too.
+
+---
+
 ## 2026-10-23 — Tutorial layout and dev text boxes
 
 - **Cards left, enemy right.** The tutorial's cards moved to the left of the
