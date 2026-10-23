@@ -68,6 +68,17 @@ registration to testing. For how the systems work underneath, see
   - Colour by role: Red attack, Blue defence, Green die tricks/movement,
     Purple engine, Yellow support/buffs.
   - Tiles are 24×24. An unlimited tile is a single frame, `<name>.png`.
+  - **The lower panel shows which dice the tile takes**, matching its
+    `activation_checks`. The marker is a 7×7 slot in the darkest shade of the
+    tile's ramp, with pips in the panel's mid shade:
+    - any die (including checks that aren't about the value, like charge,
+      combat or holograms): a blank slot;
+    - one value: that die face (Flashpoint 6, Chaff Pod 1);
+    - two values: both faces side by side, slots at x=3 and x=11
+      (Chaos Explosion 5+6, Leeching Shot 1+2);
+    - a run: a 4×7 `<` or `>` chevron before the face (Bump `<6` for 1-5).
+    - `CANT_BE_ACTIVATED_WITH_DIE`: no lower panel at all, only the
+      coloured outline, with the art centred in the tile (Emergency Shield).
   - **A limited-use tile must show its uses.** It is a horizontal strip,
     `<name>-Sheet.png`, of `uses_per_turn + 1` frames. `Tile` shows frame
     `uses_remaining`, so frame *k* has *k* white lights lit and frame 0 has

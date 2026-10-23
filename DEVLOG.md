@@ -4,6 +4,23 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Tile markers match their activation checks
+
+- **Audited all 87 tiles** against their `activation_checks`; 30 fixed,
+  57 already right. The rule is now written down in the content guide.
+- **Die tiles.** Six purple tiles that take any die (Arc Tap, Bootstrap
+  Injector, Governor Coil, Preflight Interlock, Ram Scoop, Redline
+  Governor) carried a stray 3-pip slot and now show the blank slot.
+  Overpressure Lance shows its 6. Deadweight Drive and Incendiary Round
+  show 1+2, Turncoat Cannon 5+6, side by side like Chaos Explosion.
+  Leeching Shot's 2 uses the standard diagonal, and three red tiles' 8px
+  blank slots are the standard 7px.
+- **Die-less tiles** (16 of them) showed an X or a stray 3. Like Emergency
+  Shield, they have no lower panel now, only the coloured outline, with
+  the art centred in the tile.
+
+---
+
 ## 2026-10-23 — Ion Shot, and a one-use Value Exchange
 
 - **Ion Shot**, a new enemy action: `(amount)` ion damage, doubled against
