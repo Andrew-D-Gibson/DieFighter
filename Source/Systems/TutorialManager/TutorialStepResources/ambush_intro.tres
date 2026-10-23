@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_s")
 tutorial_text = "A [color=red]pirate raider[/color] attacks!(delay=0.3) Destroy it before your [color=red]hull[/color] drops to 0."
-text_position = Vector2(215, 42)
+text_position = Vector2(105, 42)
 time_delay = 1.4
 close_on_signal = 1
 tutorial_function = 12

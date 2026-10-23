@@ -57,6 +57,8 @@ static var arrow_keys_image_path: String = "res://Assets/Textures/TutorialManage
 static var jump_gate_scenario_image_path: String = "res://Assets/Textures/Map/EncounterIcons/jump_gate.png"
 static var dice_cannon_image_path: String = "res://Assets/Textures/Tiles/RedTiles/damage.png"
 static var shield_burst_image_path: String = "res://Assets/Textures/Tiles/BlueTiles/shield.png"
+static var bump_image_path: String = "res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png"
+static var deflector_array_image_path: String = "res://Assets/Textures/Tiles/BlueTiles/deflector_array.png"
 static var credits_image_path: String = "res://Assets/Textures/Money/money_symbol.png"
 static var right_controls_image_path: String = "res://Assets/Textures/Map/right_arrow_tile.png"
 static var left_controls_image_path: String = "res://Assets/Textures/Map/left_arrow_tile.png"
@@ -69,8 +71,9 @@ const _TILE_ICON_HEIGHT_EM: float = 0.625
 const _SMALL_ICON_HEIGHT_EM: float = 0.5
 const _NBSP: String = "\u00a0"
 
-## Text token -> [texture path, height in em]. Only height is set, so each
-## texture keeps its own aspect ratio.
+## Text token -> [texture path, height in em] or, for a frame of a sprite
+## sheet, [texture path, height in em, "x,y,w,h" region]. Only height is set,
+## so each texture keeps its own aspect ratio.
 static var _inline_icons: Dictionary = {
 	'(die_blank)': [dice_image_paths[0], _DIE_ICON_HEIGHT_EM],
 	'(die_1)': [dice_image_paths[1], _DIE_ICON_HEIGHT_EM],
@@ -88,6 +91,9 @@ static var _inline_icons: Dictionary = {
 	'(jump_gate_scenario)': [jump_gate_scenario_image_path, _TILE_ICON_HEIGHT_EM],
 	'(dice_cannon)': [dice_cannon_image_path, _TILE_ICON_HEIGHT_EM],
 	'(shield_burst)': [shield_burst_image_path, _TILE_ICON_HEIGHT_EM],
+	# Bump's art is its use-light strip; the first frame is the tile at rest.
+	'(bump)': [bump_image_path, _TILE_ICON_HEIGHT_EM, "0,0,24,24"],
+	'(deflector_array)': [deflector_array_image_path, _TILE_ICON_HEIGHT_EM],
 	'(credits)': [credits_image_path, _SMALL_ICON_HEIGHT_EM],
 	'(right_controls)': [right_controls_image_path, _TILE_ICON_HEIGHT_EM],
 	'(left_controls)': [left_controls_image_path, _TILE_ICON_HEIGHT_EM],
@@ -110,7 +116,8 @@ static func format_text(text: String, hoverable_keywords: bool = false) -> Strin
 
 	for token: String in _inline_icons:
 		var icon: Array = _inline_icons[token]
-		var image: String = '[img height=%sem]%s[/img]' % [icon[1], icon[0]]
+		var region: String = (" region=" + icon[2]) if icon.size() > 2 else ""
+		var image: String = '[img height=%sem%s]%s[/img]' % [icon[1], region, icon[0]]
 		# A non-breaking space keeps the icon wrapping with the word before
 		# it. Alone on a line, an icon is shorter than the theme's tight
 		# line separation allows for, and overlaps the line above.

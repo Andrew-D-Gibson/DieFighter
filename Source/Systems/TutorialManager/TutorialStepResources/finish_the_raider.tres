@@ -10,7 +10,7 @@
 [resource]
 script = ExtResource("1_s")
 tutorial_text = "Your dice come back every turn with new values.(delay=0.3) Now [wave amp=10.0 freq=3.0 connected=1][color=yellow]finish it[/color][/wave]:"
-text_position = Vector2(220, 40)
+text_position = Vector2(100, 40)
 time_delay = 0.5
 forced_enemy_actions = Array[ExtResource("act_script")]([ExtResource("attack"), ExtResource("attack"), ExtResource("attack"), ExtResource("attack"), ExtResource("nothing"), ExtResource("nothing")])
 forced_rewards = Array[ExtResource("tile_script")]([ExtResource("deflector")])

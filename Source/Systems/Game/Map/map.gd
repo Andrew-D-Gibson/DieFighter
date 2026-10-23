@@ -910,3 +910,11 @@ func disable_controls() -> void:
 func enable_controls() -> void:
 	left_arrow_tile.can_accept_dice.enabled = true
 	right_arrow_tile.can_accept_dice.enabled = true
+
+
+## Shows or hides the jump arrows outright. Disabling them still leaves two
+## arrows on screen that look usable, which reads as a lock-out when the player
+## isn't meant to be jumping at all yet (the tutorial's tour of the map).
+func set_jump_arrows_visible(left_shown: bool, right_shown: bool) -> void:
+	left_arrow_tile.visible = left_shown
+	right_arrow_tile.visible = right_shown

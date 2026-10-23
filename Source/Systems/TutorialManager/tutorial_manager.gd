@@ -43,12 +43,13 @@ signal _open_wait_over
 ## setup, before any step has had a chance to run.
 @export var opening_setup: TutorialStep
 
-## Screen-space x span the tutorial's popups sit in. While the tutorial is
-## narrating, the enemy formation treats this as occupied and stands clear of
-## it, which is why the opening ambusher hangs off to one side during the
+## Screen-space x span the tutorial's popups sit in. While the opening fight
+## is narrated, the enemy formation treats this as occupied and stands clear of
+## it, which is why the opening ambusher hangs off to the right during the
 ## tutorial and sits dead centre on every run after. Nothing else about the
-## encounter changes — see [EnemyFormation].
-@export var popup_screen_span: Vector2 = Vector2(140, 320)
+## encounter changes — see [EnemyFormation]. Given back at the jump, so the
+## next fight's ships fly in to their usual places.
+@export var popup_screen_span: Vector2 = Vector2(0, 180)
 
 ## Seconds a step may wait on the game before the tutorial gives up, logs, and
 ## moves on. A step whose signal never fires would otherwise hang the game
@@ -136,11 +137,18 @@ func _ready() -> void:
 	Events.player_turn_start.connect(_on_player_turn_start)
 	Events.reward_picked.connect(_on_reward_picked)
 	_claim_formation_space()
+	# Only the opening fight is narrated over its ships. The steps after the
+	# jump sit clear of a centred formation, so the next fight's ships fly
+	# straight to their usual places instead of off to the side.
+	Events.jump.connect(_release_formation_space, CONNECT_ONE_SHOT)
 
 	if opening_setup:
 		_apply_step_forcing(opening_setup)
 
 	Globals.map.disable_controls()
+	# Out of sight until the step that teaches jumping, so the map tour doesn't
+	# show the player two arrows they aren't allowed to use yet.
+	Globals.map.set_jump_arrows_visible(false, false)
 
 	for _skipped: int in range(mini(skip_to_step, tutorial_steps.size())):
 		var step: TutorialStep = tutorial_steps.pop_front()
@@ -173,6 +181,11 @@ func _claim_formation_space() -> void:
 	Globals.enemy_manager.reserve_formation_space(
 		_FORMATION_KEY, popup_screen_span.x, popup_screen_span.y
 	)
+
+
+func _release_formation_space() -> void:
+	if Globals.enemy_manager:
+		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)
 
 
 ## Catches a TutorialFunctions value that was added to the enum but never
@@ -402,11 +415,15 @@ func _reveal_map() -> void:
 	Events.map_startup.emit()
 	
 	
+## The jump step teaches the right arrow alone, so the left one stays hidden
+## until the tutorial hands the run back.
 func _enable_right_control() -> void:
+	Globals.map.set_jump_arrows_visible(false, true)
 	Globals.map.right_arrow_tile.can_accept_dice.enabled = true
 	
 	
 func _enable_controls() -> void:
+	Globals.map.set_jump_arrows_visible(true, true)
 	Globals.map.enable_controls()
 	Events.show_map.emit()
 
@@ -447,6 +464,7 @@ func _unlock_dice() -> void:
 func _finish_tutorial() -> void:
 	_unlock_dice()
 	Globals.tutorial_controls_enemy_turns = false
+	Globals.map.set_jump_arrows_visible(true, true)
 	Globals.map.enable_controls()
 
 	# Anything a step queued and the fight didn't use up would otherwise rig
@@ -459,7 +477,6 @@ func _finish_tutorial() -> void:
 	Globals.show_tutorial = false
 	Events.save_options_config.emit()
 
-	# No more popups, so the formation gets the right-hand side of the screen
-	# back and any surviving ships spread into it.
-	if Globals.enemy_manager:
-		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)
+	# Normally given back at the jump already; this covers a skipped or
+	# timed-out step, so surviving ships always get the whole screen back.
+	_release_formation_space()

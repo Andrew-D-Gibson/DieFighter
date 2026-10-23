@@ -5,7 +5,7 @@
 [resource]
 script = ExtResource("1_s")
 tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave](left_mouse) a die onto the [color=red]Dice Cannon[/color] (dice_cannon) to fire it:"
-text_position = Vector2(220, 40)
+text_position = Vector2(100, 40)
 close_on_signal = 14
 tutorial_function = 13
 metadata/_custom_type_script = "uid://eyoqrls6ero4"
