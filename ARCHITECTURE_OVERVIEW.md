@@ -352,15 +352,21 @@ movement tween owns.
 
 **Authored flourishes.** The same primitives are effects a chain can use:
 `AUDIO_VISUAL` `SHOCKWAVE`, `SPARK_BURST`, `CALLOUT`, `BUMP`, `ZAP`,
-`GRID_RIPPLE`, `SCREEN_RIPPLE`, `STREAM`, `DIE_FLARE`, all one `JuiceHandler`
+`GRID_RIPPLE`, `SCREEN_RIPPLE`, `STREAM`, `DIE_FLARE`, `LASER`, `MISSILE`, all one `JuiceHandler`
 building a `JuiceEvent`. They read authored fields only (`CALLOUT`'s
 `{amount}` and `{die}` tokens are the exception), aren't amplifiable, and play at the
-targets or, with none, at the source. `SPARK_BURST` and `STREAM` take a
-`juice_flags` bitmask (Rise; Outward, Engine; see `JuiceEvent.Flag`) rather
-than a string. `ZAP` and `STREAM` hold the chain until
-they land; the rest don't. `Juice.anchor_of()` / `body_of()` decide where an
+targets or, with none, at the source. `SPARK_BURST`, `STREAM` and `CALLOUT` take a
+`juice_flags` bitmask (Rise; Outward, Engine, Hull Hub, Engine Hub; see
+`JuiceEvent.Flag`) rather than a string. `ZAP`, `STREAM`, `LASER` and
+`MISSILE` hold the chain until they land; the rest don't. `LASER`/`MISSILE`
+are one `JuiceProjectile` (style enum, colour, length) drawn through
+`JuicePixelated` and re-aimed at its target node each frame;
+`Juice.projectile()` is the entry point, so an enemy shot that isn't a die
+can reuse it. `Juice.anchor_of()` / `body_of()` decide where an
 effect on a node is drawn and what gets squashed (`Player` routes both to its
-health bar). `SCREEN_RIPPLE` honours the screenshake setting. Where every
+health bar; `Juice.engine_anchor()` is the engine gauge's centre). A dying
+enemy's ship graphics move into a `JuicePixelated` (`pixelate()`) so the kill
+sequence and its explosion render on the 320x180 grid. `SCREEN_RIPPLE` honours the screenshake setting. Where every
 sound should go is in `SOUND_EFFECTS.md`.
 
 ---

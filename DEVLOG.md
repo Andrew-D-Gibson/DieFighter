@@ -4,6 +4,32 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Lasers, missiles and leech streams
+
+- **A die flies at a ship only when the ship keeps it.** New `LASER` and
+  `MISSILE` effects (one `JuiceProjectile`, on the 320x180 grid, tracking
+  its target, holding the chain until impact) replace the die flight on
+  every tile that hits without giving its die away. Lasers: Afterburner
+  Relay (purple), Signal Relay and Parity Junction (green), Leech Relay
+  (red), Sensor Spike (yellow). Missiles: Scatter Router and Value Sorter
+  (green), Tactical Boomerang (red, its recoil reads as a launch). Crossed
+  Wires just keeps its bolt. A content test fails any tile that throws a die
+  it never gives away.
+- **Afterburner Relay** drains the engine into the tile before it fires.
+- **Engine Siphon** no longer throws its die at the hull: motes run from
+  the engine gauge to the enemy and "SIPHON" pops on the gauge.
+- **Leech streams audited.** Streams can now end on the player's hull or
+  engine instead of the tile. Leeching Shot and Shield Siphon drain into
+  the hull bar; Emergency Transfer flows engine to hull; Overdraw Coil
+  engine to target; Regenerative Brake tile to engine (it ran backwards).
+  Every engine-ended effect had been aiming at the charger's origin, out in
+  the empty tile grid; it now hits the gauge.
+- **Kills on the pixel grid.** The dying ship, its trail, burst and final
+  explosion render through `JuicePixelated`, so the spin and shrink stay in
+  game pixels. The final explosion is 1.5x bigger.
+
+---
+
 ## 2026-10-23 — Opening cutscene pass and music
 
 - **A pursuit before the black hole.** The cutscene now opens tight on the

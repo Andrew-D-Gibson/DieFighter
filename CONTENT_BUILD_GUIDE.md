@@ -510,10 +510,18 @@ ion cloud, meteor shower and rift tear for examples. Drive their visuals with
   (SET, ADD, MULTIPLY, SET_TO_DIE_VALUE, SET_TO_ENEMY_INTENT, ...) and the
   ATTRIBUTE_CHANGE steps consume it.
 - Visual flourishes (`AUDIO_VISUAL`: SHOCKWAVE, SPARK_BURST, CALLOUT, ZAP,
-  STREAM, ...) play at the current targets. ZAP and STREAM hold the chain
-  until they land. Tick `juice_flags` for how they move: Rise (sparks drift
-  up, for gains), Outward (a stream flows out of the source) and Engine (the
-  player's end of a stream is the engine bar).
+  STREAM, LASER, MISSILE, ...) play at the current targets. ZAP, STREAM,
+  LASER and MISSILE hold the chain until they land. Tick `juice_flags` for
+  how they move: Rise (sparks drift up, for gains), Outward (a stream flows
+  out of the source), Engine (the player's end of a stream or callout is the
+  engine gauge), Hull Hub / Engine Hub (the stream's own end is the player's
+  health bar / engine gauge instead of the tile, e.g. a drain that heals).
+- **Only throw a die at a ship that keeps it.** ATTACK_TWEEN flies the die at
+  the target, which reads as handing it over, so use it only when the chain
+  then gives the die to that target. A tile that hits but keeps or passes its
+  die (relays, recoil, return-to-hand) fires a LASER or MISSILE instead
+  (`amount` = beam hold / flight in msec, 0 = default; `color`). A content
+  test enforces this.
 
 **Adding a new effect type:**
 1. **Append** a value to the right enum in
