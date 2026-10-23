@@ -888,8 +888,11 @@ unannounced board-wide flare is a dice roll; one the player watched approach
 for two turns while deciding whether to spend on shields is a decision. Same
 rule the enemy intent telegraph follows. Three things carry it:
 
-- **`EnvironmentMonitor`** shows the hazard's icon with the turns left beside
-  it. Every tick down flashes the unit and pops the digit; at one turn left
+- **`EnvironmentMonitor`** swings up on arrival in any region with a rule or
+  a hazard, fight or not, and stays until the jump out; nothing shows in
+  hyperspace. A hazard shows its icon alone outside a fight, and with the
+  turns left beside it once `hazard_armed` starts the countdown. Every tick
+  down flashes the unit and pops the digit; at one turn left
   the digit goes red and the lamp keeps blinking even once read; when it fires
   the monitor pops like a tile with the hazard's name as the callout. Clicking
   it explains the hazard and its interval.

@@ -4,6 +4,41 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Monitor on arrival, a calmer cut into the game, Mayday tidied
+
+- **Overcharge tiles benched.** Redline Governor, Runaway Reactor and
+  Overpressure Lance are `offered_as_reward = false` while the redline's
+  design is reconsidered. The tiles and the overcharge mechanic stay in.
+- **The environment monitor announces every arrival.** It used to come up
+  for a hazard only once a fight started, and folded away again when the
+  fight ended, so it appeared in some places and not others. Now it swings
+  up whenever the player arrives somewhere with a rule or a hazard. A hazard
+  shows its icon alone outside a fight ("Strikes once a fight starts" on
+  the info panel) and gains its countdown when one begins. The several
+  signals an arrival sends are answered as one present, and nothing is
+  shown until the jump has finished.
+- **No repair dock in the Bloodhaze.** The repair station draws from
+  `repair_station_backgrounds.tres`: every basic background but the Red
+  Nebula. `RandomBackgroundResource` gained `includes_pool` and
+  `excluded_backgrounds` for that, so the variant follows the basic pool
+  as it grows. `test_authored_content` pins it.
+- **Opening cutscene ending.** The closing push-in on the player's ship is
+  slower (1.3 s, was 0.9 s), and the picture fades to black over it,
+  then cuts hard into the cockpit. The klaxon moved from the cutscene's
+  end to the cold open's red alert, where it sounds as the fight starts
+  (fresh runs only, as before).
+- **Mayday.** The lines now hang together. The wreck offers its cargo for
+  an escort ("Drive's dead! Cargo for an escort?"). Taking it gets "Bless
+  you, pilot. Stay close." or the reveal, "Ha! Drive's fine. Cargo was
+  bait.", which also works when the player shoots first. The salvage
+  floats right of centre, so the Raider isn't squeezed against the left
+  edge with its speech box running off screen.
+- **Starting salvage sits higher.** `starting_reward_position` defaults to
+  y=60 (was 72), so pre-placed offers (Mayday, Ghost Carrier, Black Market,
+  Wreck Salvage) no longer overlap the systems panel.
+
+---
+
 ## 2026-10-23 — The ion storm, and rules that fit their places
 
 - **Ion Storm Front.** The puffy clouds (two fixed, three drifting) are

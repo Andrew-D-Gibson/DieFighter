@@ -310,7 +310,10 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
 - **`background_resource`**: a `RandomBackgroundResource` pool, usually
   `RandomBackgroundResources/all_basic_backgrounds.tres`. An encounter built
   around a hazard points at a one-background pool instead
-  (`solar_corona_only.tres`, `ion_storm_front_only.tres`, ...).
+  (`solar_corona_only.tres`, `ion_storm_front_only.tres`, ...). A place
+  whose rule contradicts it uses a variant pool: `includes_pool` the basic
+  one and list the clash in `excluded_backgrounds`
+  (`repair_station_backgrounds.tres` drops Bloodhaze's Red Nebula).
 - **`starting_enemies`**: one `EnemyStateRewardResource` per ship:
   - `enemy_resource`, `starting_state`, `reward_resource`.
   - `starting_health_fraction`: start it pre-damaged.
@@ -319,7 +322,11 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
     (below), seated at that offset from the hull's centre.
 - **`rewards`**: Faction → `RewardResource`, paid when the player destroys a
   faction's last ship. A last ship that flees or escapes takes it along.
-- **`starting_reward`**: an optional pickup floating on arrival.
+- **`starting_reward`**: an optional pickup floating on arrival, at
+  `starting_reward_position` (default `(160, 60)`, clear of the systems
+  panel). It reserves its stretch of the formation, so a lone ship beside a
+  centred offer is squeezed toward the screen edge with no room to speak:
+  move the offer aside (Mayday's sits at `(230, 60)`).
 - **`sector_gate_scenario`**: only for a boss gate (and `GATE_open`). Fate
   never takes these, and winning one opens the gate instead of emptying it.
 - **`boss_title` / `boss_subtitle`**: set on a boss fight to play the intro
@@ -500,7 +507,8 @@ encounter.
 
 To make a background appear, add it to a pool's `eligible_backgrounds`
 (`RandomBackgroundResources/all_basic_backgrounds.tres`), or make a new pool
-for specific scenarios.
+for specific scenarios. A pool can also take in another (`includes_pool`)
+minus some backgrounds (`excluded_backgrounds`).
 
 **Rule from an existing effect:** create a `BackgroundModifierResource` in
 `BackgroundModifiers/`:
