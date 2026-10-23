@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="SoundEffectResource" format=3]
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3 uid="uid://r1fdvf4rxfcc"]
 
 [ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_lock"]
-[ext_resource type="AudioStream" path="res://Assets/Sounds/Enemies/TractorBeam/tractor_lock.wav" id="2_lock"]
+[ext_resource type="AudioStream" uid="uid://b7n6t6g2417ds" path="res://Assets/Sounds/Enemies/TractorBeam/tractor_lock.wav" id="2_lock"]
 
 [resource]
 script = ExtResource("1_lock")

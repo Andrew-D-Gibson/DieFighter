@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="SoundEffectResource" format=3]
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3 uid="uid://jjteq7hw548o"]
 
 [ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_sfx"]
-[ext_resource type="AudioStream" path="res://Assets/Sounds/Player/Glass/glass_tinkle.wav" id="2_wav"]
+[ext_resource type="AudioStream" uid="uid://8nnkjw6rhekw" path="res://Assets/Sounds/Player/Glass/glass_tinkle.wav" id="2_wav"]
 
 [resource]
 script = ExtResource("1_sfx")
 name = "glass_tinkle"
 limit = 3
 sound_effect = ExtResource("2_wav")
-volume = -12.0
-pitch_randomness = 0.15
+volume = -22.129
+pitch_randomness = 0.1
 metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

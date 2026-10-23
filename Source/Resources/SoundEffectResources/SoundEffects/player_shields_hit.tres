@@ -7,6 +7,7 @@
 script = ExtResource("1_tay7w")
 name = "player_shields_hit"
 sound_effect = ExtResource("2_0t38k")
+volume = 3.0
 pitch_scale = 0.8
 pitch_randomness = 0.2
 metadata/_custom_type_script = "uid://d2n1utrxjvsq6"

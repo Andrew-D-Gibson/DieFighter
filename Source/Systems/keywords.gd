@@ -20,7 +20,7 @@ extends RefCounted
 const _DEFINITIONS: Dictionary[String, String] = {
 	"Feed": "The next tile that way uses the die. If it can't, [color=purple]target[/color] gets it.",
 	"Fed": "Passed here by another tile's Feed.",
-	"Burn": "At end of turn, take [color=red]damage[/color] equal to Burn, then lose 1 Burn.",
+	"Burn": "At the start of their turn, burned ships take [color=red]damage[/color] equal to Burn, then lose 1 Burn.",
 	"Scrambled": "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled.",
 	"Jammed": "Each die this ship uses does nothing and returns to you. Spends 1 Jammed, only on a die that would have done something.",
 	"Exposed": "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends 1 Exposed.",

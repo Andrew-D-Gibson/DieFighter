@@ -1,10 +1,10 @@
 [gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://sk166eerw6ax"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/shrapnel_wake.tres" id="mod_0"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/ScrollingObjects/triangle_debris.tres" id="scroll_0"]
-[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="so_script"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/gas_giant.tscn" id="body_near"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/shrapnel_wake.tres" id="mod_0"]
+[ext_resource type="Resource" uid="uid://bkrxtp3qx8wli" path="res://Source/Resources/BackgroundResources/ScrollingObjects/triangle_debris.tres" id="scroll_0"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="so_script"]
 
 [sub_resource type="Resource" id="Resource_gas_giant"]
 script = ExtResource("so_script")

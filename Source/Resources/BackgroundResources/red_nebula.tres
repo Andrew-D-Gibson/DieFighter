@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_owkot"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_tque6"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/bloodhaze.tres" id="mod_0"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/lava_world.tscn" id="body_near"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/red_dwarf.tscn" id="body_far"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/lava_world.tscn" id="body_near"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/bloodhaze.tres" id="mod_0"]
 
 [sub_resource type="Resource" id="Resource_lava_world"]
 script = ExtResource("2_tque6")
@@ -20,8 +20,8 @@ metadata/_custom_type_script = "res://Source/Resources/BackgroundResources/stati
 
 [resource]
 script = ExtResource("1_owkot")
-global_modifier = ExtResource("mod_0")
 background_color = Color(0.027451, 0.0117647, 0.14902, 1)
+global_modifier = ExtResource("mod_0")
 nebula = true
 nebula_color = Color(0.68, 0.1768, 0.27744, 0.12549)
 stars = true

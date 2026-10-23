@@ -160,6 +160,7 @@ shader_parameter/cloud_2_secondary_cell_amount = 10
 shader_parameter/cloud_2_secondary_strength = 0.3
 shader_parameter/atmosphere_radius = 0.4
 shader_parameter/atmosphere_palette = ExtResource("15_6qnrd")
+shader_parameter/atmosphere_fades_at_night = false
 shader_parameter/posterise = false
 shader_parameter/shading_mode = 2
 shader_parameter/maximum_brightness = 1.0
@@ -334,7 +335,7 @@ position = Vector2(160, 90)
 unique_name_in_owner = true
 position = Vector2(160, 90)
 
-[node name="LoadingPopup" parent="." instance=ExtResource("19_loading")]
+[node name="LoadingPopup" parent="." unique_id=1544343432 instance=ExtResource("19_loading")]
 unique_name_in_owner = true
 position = Vector2(160, 90)
 

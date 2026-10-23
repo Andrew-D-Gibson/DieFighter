@@ -1,7 +1,7 @@
-[gd_resource type="Resource" script_class="MusicTrackResource" format=3]
+[gd_resource type="Resource" script_class="MusicTrackResource" format=3 uid="uid://boggi8h30jx0l"]
 
-[ext_resource type="Script" path="res://Source/Resources/MusicResources/music_track_resource.gd" id="1_track"]
-[ext_resource type="Script" path="res://Source/Resources/MusicResources/music_layer_resource.gd" id="2_layer"]
+[ext_resource type="Script" uid="uid://b6autwiufnuo" path="res://Source/Resources/MusicResources/music_track_resource.gd" id="1_track"]
+[ext_resource type="Script" uid="uid://bjxt6jlk78hki" path="res://Source/Resources/MusicResources/music_layer_resource.gd" id="2_layer"]
 [ext_resource type="AudioStream" uid="uid://f530b0cc4aao" path="res://Assets/Music/Trailer/Trailer_1/Trailer_1_updated.wav" id="3_stream"]
 
 [sub_resource type="Resource" id="Resource_full"]
@@ -13,3 +13,4 @@ stream = ExtResource("3_stream")
 script = ExtResource("1_track")
 id = &"trailer_1"
 layers = Array[ExtResource("2_layer")]([SubResource("Resource_full")])
+volume_db = -5.0

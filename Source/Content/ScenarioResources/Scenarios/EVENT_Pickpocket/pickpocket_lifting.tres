@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://clnvrjhjof8sp"]
 
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="2_ih28s"]
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_1"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_2"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]

@@ -1,32 +1,34 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://2n2lytv0vdqc"]
 
-[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitLights/cockpit_lights.gd" id="1_lights"]
+[ext_resource type="Script" uid="uid://bx3xracnr5wya" path="res://Source/Systems/Graphics/Cockpit/CockpitLights/cockpit_lights.gd" id="1_lights"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/VentPuff/vent_puff.tscn" id="2_vent"]
-[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/HangingDice/hanging_dice.gd" id="3_dice"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/UI/Cockpit/hanging_dice-Sheet.png" id="4_sheet"]
+[ext_resource type="Script" uid="uid://b8usdgidu28k4" path="res://Source/Systems/Graphics/Cockpit/HangingDice/hanging_dice.gd" id="3_dice"]
+[ext_resource type="Texture2D" uid="uid://bmxf8dsnoum52" path="res://Assets/Textures/UI/Cockpit/hanging_dice-Sheet.png" id="4_sheet"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage.tscn" id="5_damage"]
 
-[node name="CockpitAmbience" type="Node2D"]
+[node name="CockpitAmbience" type="Node2D" unique_id=1217412505]
 
-[node name="CockpitLights" type="Node2D" parent="."]
+[node name="CockpitLights" type="Node2D" parent="." unique_id=672787569]
 script = ExtResource("1_lights")
 
-[node name="Vents" type="Node2D" parent="."]
+[node name="Vents" type="Node2D" parent="." unique_id=139071719]
 
-[node name="LeftFootwellVent" parent="Vents" instance=ExtResource("2_vent")]
+[node name="LeftFootwellVent" parent="Vents" unique_id=953894261 instance=ExtResource("2_vent")]
 position = Vector2(9, 171)
 emission_rect_extents = Vector2(5, 2)
 
-[node name="RightDashVent" parent="Vents" instance=ExtResource("2_vent")]
-position = Vector2(305, 163)
+[node name="RightDashVent" parent="Vents" unique_id=1097933211 instance=ExtResource("2_vent")]
+position = Vector2(307, 167)
 emission_rect_extents = Vector2(5, 1)
 
-[node name="DiceTrayVent" parent="Vents" instance=ExtResource("2_vent")]
+[node name="DiceTrayVent" parent="Vents" unique_id=34543784 instance=ExtResource("2_vent")]
 position = Vector2(212, 172)
 emission_rect_extents = Vector2(6, 2)
+min_interval = 0.0
+max_interval = 0.0
 
-[node name="HangingDice" type="Node2D" parent="."]
+[node name="HangingDice" type="Node2D" parent="." unique_id=88121160]
 script = ExtResource("3_dice")
 sheet = ExtResource("4_sheet")
 
-[node name="CockpitDamage" parent="." instance=ExtResource("5_damage")]
+[node name="CockpitDamage" parent="." unique_id=211839717 instance=ExtResource("5_damage")]

@@ -121,7 +121,9 @@ renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.0156863, 0.00784314, 0.0901961, 1)
 anti_aliasing/quality/screen_space_aa=1
 
-
 [shader_globals]
 
-fate_flash={"type": "float", "value": 0.0}
+fate_flash={
+"type": "float",
+"value": 0.0
+}
