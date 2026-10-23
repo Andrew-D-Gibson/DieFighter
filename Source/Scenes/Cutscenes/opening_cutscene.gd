@@ -10,10 +10,17 @@ extends Node2D
 ## mixels. The starfield sits behind it in the full 1080p viewport, so stars
 ## glide and streak smoothly instead of stepping a whole art pixel at a time.
 ##
-## The timeline is the AnimationPlayer's "cutscene_anim". Paths, fades and the
-## starfield's speed are keyed there; its method track calls the one-shot
-## effects below. This script owns the ships' scale and flash, so the keys
-## never fight a jump's stretch.
+## The timeline is the AnimationPlayer's "cutscene_anim". Paths, fades, the
+## shot and the starfield's speed are keyed there; its method track calls the
+## one-shot effects below. This script owns the ships' scale and flash, so the
+## keys never fight a jump's stretch.
+##
+## The shot (view_zoom, view_center) is framed from outside both worlds: it
+## scales the finished 320x180 picture and the starfield together, rather
+## than zooming a camera inside the SubViewport. Inside, a zoom that isn't a
+## whole number would draw some art pixels twice as wide as others; outside,
+## each art pixel is at worst one screen pixel off its neighbours, and every
+## held zoom is keyed on a whole number of screen pixels per art pixel.
 
 @export_category('Starfield')
 @export var num_of_stars: int = 110
@@ -25,6 +32,15 @@ extends Node2D
 ## Keyed. How far each star smears into a streak, as a multiple of its width.
 ## 1 is a plain dot; the jump drives it up the way the game's jump does.
 @export var star_stretch: float = 1.0
+
+@export_category('Shot')
+## Keyed. How far the shot is pushed in on the 320x180 frame; 1 shows all of
+## it. Hold it on a multiple of 1/6 (a whole number of screen pixels per art
+## pixel) so a held shot stays crisp.
+@export var view_zoom: float = 1.0
+## Keyed. The point of the frame, in art pixels, the shot centres on. Kept far
+## enough in that the shot never runs off the edge of the frame.
+@export var view_center: Vector2 = Vector2(160, 90)
 
 @export_category('Debris')
 ## Pieces of wreckage being dragged into Fate.
@@ -38,6 +54,9 @@ extends Node2D
 @export var debris_speed: float = 70.0
 ## Keyed. Speed lines whipping past, per second. 0 for none.
 @export var speed_lines: float = 0.0
+## Keyed. Whether Fate throws its own lightning about. Off until the shot
+## pulls back far enough to show it, so its weather doesn't arrive first.
+@export var fate_weather: bool = true
 ## How fast the rift's nebula slides past, in texture lengths per second.
 ## Negative, because the sheet is turned on its side.
 @export var nebula_drift: float = -0.015
@@ -59,6 +78,13 @@ const _LOCK_ON_SFX: SoundEffectResource = preload("res://Source/Resources/SoundE
 const _STREAK_COLUMNS: int = 12
 const _STREAK_ROWS: int = 10
 const _STREAK_FPS: float = 24.0
+## Each frame has a few clear texels round its edge. Stretched across the
+## screen they left a thin streakless band down each side, so they are
+## cropped off.
+const _STREAK_FRAME_INSET: float = 4.0
+## How far the screen-filling layers reach past the frame on every side, so a
+## camera shake never shows their edges. Matches their rects in the scene.
+const _OVERSCAN: float = 8.0
 
 ## How the jump stretches a ship along its heading as it goes to light speed.
 const _JUMP_STRETCH: Vector2 = Vector2(0.5, 3.0)
@@ -95,6 +121,9 @@ var _smoke_trails: Dictionary[Node2D, CPUParticles2D] = {}
 var _reticle: LockOnReticle = null
 
 @onready var _effects: Node2D = %Effects
+@onready var _pixel_layer: CanvasLayer = $PixelLayer
+@onready var _pixel_screen: SubViewportContainer = $PixelLayer/PixelScreen
+@onready var _star_camera: Camera2D = $Camera2D
 @onready var _fate: Node2D = %Fate
 @onready var _storm: FateStorm = %FateStorm
 
@@ -112,11 +141,12 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	_frame_shot()
 	_move_stars(delta)
 	_move_debris(delta)
 	# The storm is Fate's weather: it goes when Fate drops behind the jump.
 	_storm.visible = _fate.visible
-	_storm.autonomous = _fate.visible
+	_storm.autonomous = _fate.visible and fate_weather
 	_speed_lines.rate = speed_lines
 	for ship: Node2D in _smoke_trails:
 		var smoke: CPUParticles2D = _smoke_trails[ship]
@@ -134,6 +164,23 @@ func _input(event: InputEvent) -> void:
 	event.button_index == MOUSE_BUTTON_LEFT and \
 	event.pressed:
 		_switch_to_next_scene()
+
+
+# --- Shot -------------------------------------------------------------------
+
+## Pushes in on view_center by view_zoom: the pixel layer is scaled and moved
+## on screen, and the starfield's camera matched to it, so stars and ships
+## stay together.
+func _frame_shot() -> void:
+	var art_scale: float = float(_pixel_screen.stretch_shrink)
+	var zoom: float = maxf(view_zoom, 1.0)
+	var half_view: Vector2 = Globals.SCREEN_SIZE / (2.0 * zoom)
+	var centre: Vector2 = view_center.clamp(half_view, Globals.SCREEN_SIZE - half_view)
+	_star_camera.zoom = Vector2.ONE * art_scale * zoom
+	_star_camera.position = centre
+	_pixel_layer.scale = Vector2.ONE * zoom
+	# Whole screen pixels, so the art grid never lands between them.
+	_pixel_layer.offset = (get_viewport_rect().size / 2.0 - centre * art_scale * zoom).round()
 
 
 # --- Starfield --------------------------------------------------------------
@@ -244,23 +291,25 @@ func _build_hyperspace_streaks() -> void:
 		_HYPERSPACE_STREAKS.get_width() / _STREAK_COLUMNS,
 		_HYPERSPACE_STREAKS.get_height() / _STREAK_ROWS
 	)
+	var inset: Vector2 = Vector2.ONE * _STREAK_FRAME_INSET
 	for row: int in range(_STREAK_ROWS):
 		for column: int in range(_STREAK_COLUMNS):
 			var frame: AtlasTexture = AtlasTexture.new()
 			frame.atlas = _HYPERSPACE_STREAKS
-			frame.region = Rect2(Vector2(column, row) * size, size)
+			frame.region = Rect2(Vector2(column, row) * size + inset, size - inset * 2.0)
 			frames.add_frame(&"default", frame)
 
 	var streaks: AnimatedSprite2D = %HyperspaceStreaks
 	streaks.sprite_frames = frames
-	streaks.scale = Globals.SCREEN_SIZE / size
+	streaks.scale = (Globals.SCREEN_SIZE + Vector2.ONE * _OVERSCAN * 2.0) / (size - inset * 2.0)
 	streaks.play(&"default")
 
 
 # --- Timeline calls ---------------------------------------------------------
 
 ## Keyed on the cutscene's method track at 0 s, so the fade can be retimed in
-## the AnimationPlayer. It carries on through the cockpit scene into the run.
+## the AnimationPlayer. The trailer plays once, on into the run; when it ends
+## the playlist brings the start theme back and holds it.
 func _start_music() -> void:
 	MusicDirector.play_track(&"trailer_1", 4.0)
 
@@ -383,10 +432,11 @@ func _consumed(ship_name: StringName) -> void:
 
 
 ## Spooling the jump drive: motes are drawn in to the ship while its hull
-## flickers brighter and brighter.
-func _charge_jump(ship_name: StringName, seconds: float) -> void:
+## flickers brighter and brighter. The motes take the colour of the jump they
+## build up to.
+func _charge_jump(ship_name: StringName, seconds: float, color: Color = _BLUE_JUMP) -> void:
 	var ship: Node2D = _ship(ship_name)
-	var motes: CPUParticles2D = _charge_particles(seconds)
+	var motes: CPUParticles2D = _charge_particles(seconds, color)
 	ship.add_child(motes)
 	motes.emitting = true
 
@@ -653,7 +703,7 @@ func _strain_particles(ship: Node2D) -> CPUParticles2D:
 	return sparks
 
 
-func _charge_particles(seconds: float) -> CPUParticles2D:
+func _charge_particles(seconds: float, color: Color) -> CPUParticles2D:
 	var motes: CPUParticles2D = CPUParticles2D.new()
 	motes.texture = _PIXEL_TEXTURE
 	motes.amount = 24
@@ -664,7 +714,7 @@ func _charge_particles(seconds: float) -> CPUParticles2D:
 	motes.gravity = Vector2.ZERO
 	motes.radial_accel_min = -320.0
 	motes.radial_accel_max = -260.0
-	motes.color = _BLUE_JUMP
+	motes.color = color
 	motes.color_ramp = _fade_in_ramp()
 	get_tree().create_timer(seconds).timeout.connect(func() -> void:
 		motes.emitting = false
