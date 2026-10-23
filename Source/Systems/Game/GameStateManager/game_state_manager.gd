@@ -59,6 +59,10 @@ extends Node2D
 ## an emergency, short enough to be over before the player's first die lands.
 @export var cold_open_alert_time: float = 2.2
 
+## Sounds here rather than at the end of the opening cutscene, which fades
+## out: the alarm belongs to the moment the player is dropped into the fight.
+const _ALARM_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/alarm_klaxon.tres")
+
 ## The furthest one jump goes: a die's top face.
 const _LONGEST_JUMP: int = 6
 
@@ -218,6 +222,7 @@ func _sound_the_alarm() -> void:
 	if not _is_fresh_run:
 		return
 
+	Events.play_sound.emit(_ALARM_SFX)
 	Events.red_alert.emit(cold_open_alert_time)
 	Events.camera_shake_large.emit(true)
 	

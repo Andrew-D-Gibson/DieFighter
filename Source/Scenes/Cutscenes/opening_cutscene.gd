@@ -71,7 +71,6 @@ const _ENEMY_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/Soun
 const _FATE_PULSE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres")
 const _ENGINES_OUT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_pre_death.tres")
 const _CONSUMED_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_death_explosion.tres")
-const _ALARM_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/alarm_klaxon.tres")
 const _LOCK_ON_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres")
 
 ## jump_particles.png is a 12x10 grid of horizontal streak frames.
@@ -524,10 +523,6 @@ func _rcs_burst(ship_name: StringName) -> void:
 	var flank: Vector2 = _heading(ship).orthogonal() * 10.0
 	Juice.sparkle(_effects, ship.global_position + flank, Globals.white, 5, 35.0)
 	Juice.sparkle(_effects, ship.global_position - flank, Globals.white, 5, 35.0)
-
-
-func _sound_alarm() -> void:
-	Events.play_sound.emit(_ALARM_SFX)
 
 
 ## Brackets close in on [param target]: [param shooter] has a firing solution.

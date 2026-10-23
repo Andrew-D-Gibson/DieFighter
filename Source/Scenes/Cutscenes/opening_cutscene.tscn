@@ -421,10 +421,10 @@ tracks/0/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fade:modulate")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.0, 1.0, 4.0),
-"transitions": PackedFloat32Array(1.0, 0.5, 1.0),
+"times": PackedFloat32Array(0.0, 1.0, 4.0, 25.4, 27.0),
+"transitions": PackedFloat32Array(1.0, 0.5, 1.0, 1.0, 1.0),
 "update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0)]
+"values": [Color(1, 1, 1, 1), Color(1, 1, 1, 1), Color(1, 1, 1, 0), Color(1, 1, 1, 0), Color(1, 1, 1, 1)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -744,8 +744,8 @@ tracks/26/path = NodePath(".")
 tracks/26/interp = 1
 tracks/26/loop_wrap = true
 tracks/26/keys = {
-"times": PackedFloat32Array(0.0, 0.05, 1.9, 3.0, 7.6, 9.0, 9.1, 9.2, 9.5, 10.3, 11.2, 12.4, 12.45, 13.0, 13.1, 14.85, 15.2, 16.1, 16.2, 16.8, 18.3, 18.75, 18.95, 19.5, 20.1, 20.85, 22.0, 22.05, 24.05, 24.35, 24.55, 24.75, 27.0),
-"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"times": PackedFloat32Array(0.0, 0.05, 1.9, 3.0, 7.6, 9.0, 9.1, 9.2, 9.5, 10.3, 11.2, 12.4, 12.45, 13.0, 13.1, 14.85, 15.2, 16.1, 16.2, 16.8, 18.3, 18.75, 18.95, 19.5, 20.1, 20.85, 22.0, 22.05, 24.35, 24.55, 24.75, 27.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
 "values": [{
 "args": [],
 "method": &"_start_music"
@@ -834,9 +834,6 @@ tracks/26/keys = {
 "args": [&"Survivor", Color(0.815686, 0.211765, 0.337255, 1.0)],
 "method": &"_jump_in"
 }, {
-"args": [],
-"method": &"_sound_alarm"
-}, {
 "args": [&"PlayerShip"],
 "method": &"_lock_on"
 }, {
@@ -854,7 +851,7 @@ tracks/27/path = NodePath(".:view_zoom")
 tracks/27/interp = 1
 tracks/27/loop_wrap = true
 tracks/27/keys = {
-"times": PackedFloat32Array(0.0, 4.4, 6.2, 6.8, 8.4, 25.2, 26.1, 27.0),
+"times": PackedFloat32Array(0.0, 4.4, 6.2, 6.8, 8.4, 25.2, 26.5, 27.0),
 "transitions": PackedFloat32Array(1.0, -2.0, 1.0, -2.0, 1.0, -2.0, 1.0, 1.0),
 "update": 0,
 "values": [3.0, 3.0, 1.5, 1.5, 1.0, 1.0, 2.5, 2.5]
@@ -866,7 +863,7 @@ tracks/28/path = NodePath(".:view_center")
 tracks/28/interp = 1
 tracks/28/loop_wrap = true
 tracks/28/keys = {
-"times": PackedFloat32Array(0.0, 4.4, 6.2, 6.8, 8.4, 25.2, 26.1, 27.0),
+"times": PackedFloat32Array(0.0, 4.4, 6.2, 6.8, 8.4, 25.2, 26.5, 27.0),
 "transitions": PackedFloat32Array(1.0, -2.0, 1.0, -2.0, 1.0, -2.0, 1.0, 1.0),
 "update": 0,
 "values": [Vector2(126, 91), Vector2(126, 91), Vector2(160, 90), Vector2(160, 90), Vector2(160, 90), Vector2(160, 90), Vector2(184, 89), Vector2(184, 89)]
