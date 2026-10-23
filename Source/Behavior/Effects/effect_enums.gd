@@ -98,6 +98,10 @@ enum AttributeChangeSubtype {
 	## running_amount. Unlike a negative SHIELD this isn't a hit, so it plays
 	## no hit feedback and doesn't count as the shields taking damage.
 	SPEND_SHIELDS,
+	## Ion damage (creates IonDamageEvent): strips twice running_amount from
+	## the targets' shields and never touches the hull. Whatever the shields
+	## can't absorb is lost.
+	ION_DAMAGE,
 }
 
 
@@ -209,6 +213,7 @@ enum AudioVisualSubtype {
 	DIE_FLARE,                ## Spin, pop and ring the activator die
 	LASER,                    ## A beam from the effect source to each target; holds until it lands
 	MISSILE,                  ## A missile from the effect source to each target; holds until it lands
+	ION_BOLT,                 ## A crackling ion orb from the effect source to each target's shields; holds until it lands
 }
 
 

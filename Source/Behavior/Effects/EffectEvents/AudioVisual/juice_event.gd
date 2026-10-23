@@ -81,6 +81,8 @@ func resolve(_engine: ScenarioEngine) -> void:
 			await _shoot(anchors, JuiceProjectile.Style.LASER)
 		EffectEnums.AudioVisualSubtype.MISSILE:
 			await _shoot(anchors, JuiceProjectile.Style.MISSILE)
+		EffectEnums.AudioVisualSubtype.ION_BOLT:
+			await _shoot(anchors, JuiceProjectile.Style.ION)
 
 
 ## The bolt holds the chain for its length, so whatever comes next (the
@@ -97,7 +99,7 @@ func _zap(anchors: Array[Node2D]) -> void:
 
 
 ## A shot from the source at each target that isn't a die: the source keeps
-## its die, or passes it on. Held until it lands, for the same reason as the
+## its die, or passes it on. An ion bolt aims at the target's shields. Held until it lands, for the same reason as the
 ## bolt.
 func _shoot(anchors: Array[Node2D], style: JuiceProjectile.Style) -> void:
 	var from: Node2D = effect_source as Node2D
@@ -106,8 +108,10 @@ func _shoot(anchors: Array[Node2D], style: JuiceProjectile.Style) -> void:
 	var seconds: float = 0.0
 	for node: Node2D in anchors:
 		if node != from:
+			var aim: Vector2 = Juice.shield_anchor(node) if style == JuiceProjectile.Style.ION \
+					else Juice.anchor_of(node)
 			seconds = maxf(seconds, Juice.projectile(from, Juice.anchor_of(from),
-					Juice.anchor_of(node), color, style, amount / 1000.0, node))
+					aim, color, style, amount / 1000.0, node))
 	if seconds > 0.0:
 		await from.get_tree().create_timer(seconds).timeout
 

@@ -154,6 +154,13 @@ func get_juice_anchor() -> Vector2:
 	return bar.global_position if bar else global_position
 
 
+## Where shots at the player's shields land (an ion bolt): the shield counter
+## beside the health bar.
+func get_shield_anchor() -> Vector2:
+	var bar: PlayerHealthBar = get_node_or_null("PlayerHealthBar") as PlayerHealthBar
+	return bar.get_shield_anchor() if bar else get_juice_anchor()
+
+
 ## What a BUMP aimed at the player squashes.
 func get_juice_body() -> Node2D:
 	var bar: Node2D = get_node_or_null("PlayerHealthBar") as Node2D

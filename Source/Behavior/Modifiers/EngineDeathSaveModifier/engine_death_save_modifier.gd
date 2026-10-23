@@ -19,7 +19,7 @@ func _init() -> void:
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
-	if event is not DamageEvent:
+	if event is not DamageEvent or not (event as DamageEvent).reaches_hull():
 		return
 	if not is_instance_valid(Globals.player):
 		return

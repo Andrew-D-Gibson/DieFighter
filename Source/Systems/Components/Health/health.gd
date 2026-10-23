@@ -1,6 +1,9 @@
 class_name Health
 extends Node2D
 
+## How much harder ion damage hits shields than ordinary damage does.
+const ION_SHIELD_MULTIPLIER: int = 2
+
 @export var invulnerable: bool = false
 
 @export_category("Health")
@@ -56,6 +59,17 @@ func take_damage(amount: int) -> void:
 			change_shields(-shields)
 			
 		change_health(-amount)
+
+
+## Ion damage: [param amount] x ION_SHIELD_MULTIPLIER comes off the shields and
+## the hull is never touched. What the shields can't absorb is lost, so a ship
+## with no shields shrugs it off. Returns the shields actually stripped.
+func take_ion_damage(amount: int) -> int:
+	if invulnerable or is_dead or amount <= 0:
+		return 0
+	var stripped: int = mini(shields, amount * ION_SHIELD_MULTIPLIER)
+	change_shields(-stripped)
+	return stripped
 
 
 func change_health(amount: int) -> void:

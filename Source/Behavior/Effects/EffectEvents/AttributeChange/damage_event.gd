@@ -6,6 +6,13 @@ var _hit_particles_scene: PackedScene = preload("uid://doi43icsr46q0")
 var _explosion_particles_scene: PackedScene = preload("uid://566ykra4buin")
 
 
+## Whether this hit can reach the hull once the shields are gone. A modifier
+## that only matters for hull damage (a death save) asks this rather than
+## naming every kind of damage there is.
+func reaches_hull() -> bool:
+	return true
+
+
 func resolve(_engine: ScenarioEngine) -> void:
 	if targets.is_empty():
 		return

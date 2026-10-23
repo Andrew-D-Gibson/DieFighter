@@ -2,7 +2,7 @@ class_name JuiceHandler
 extends EffectHandler
 
 ## One handler for every authorable flourish (SHOCKWAVE onwards: through
-## DIE_FLARE, then the LASER and MISSILE shots).
+## DIE_FLARE, then the LASER, MISSILE and ION_BOLT shots).
 ## They differ only in what JuiceEvent draws, so the handler just copies the
 ## authored parameters across. It reads data.amount, never running_amount,
 ## so a flourish can sit anywhere in a chain without disturbing the numbers

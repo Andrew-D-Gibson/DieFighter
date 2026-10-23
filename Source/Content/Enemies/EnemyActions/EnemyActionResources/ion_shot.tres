@@ -1,0 +1,70 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://banpownpi5wfm"]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_ahfqw"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="2_3nptn"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_rdxvl"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_ivoj5"]
+[ext_resource type="Texture2D" uid="uid://bh0kswxsmf31p" path="res://Assets/Textures/Enemies/IntentIndicator/ion.png" id="5_tt1gm"]
+[ext_resource type="Texture2D" uid="uid://vkbmbcevam83" path="res://Assets/Textures/Enemies/IntentIndicator/ion_info.png" id="6_tg15k"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="7_40ck4"]
+
+[sub_resource type="Resource" id="Resource_h8y3l"]
+script = ExtResource("1_ahfqw")
+category = 2
+amount = 3
+
+[sub_resource type="Resource" id="Resource_0nsu4"]
+script = ExtResource("1_ahfqw")
+category = 4
+subtype = 1
+color = Color(0.17254902, 0.44313726, 0.6666667, 1)
+
+[sub_resource type="Resource" id="Resource_wkj1x"]
+script = ExtResource("1_ahfqw")
+category = 4
+subtype = 5
+sound_resource = ExtResource("2_3nptn")
+
+[sub_resource type="Resource" id="Resource_wf1ip"]
+script = ExtResource("1_ahfqw")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_0qute"]
+script = ExtResource("1_ahfqw")
+category = 4
+subtype = 25
+color = Color(0.2627451, 0.6509804, 0.9882353, 1)
+
+[sub_resource type="Resource" id="Resource_a1qa2"]
+script = ExtResource("1_ahfqw")
+category = 2
+subtype = 7
+
+[sub_resource type="Resource" id="Resource_51bnt"]
+script = ExtResource("1_ahfqw")
+category = 4
+subtype = 13
+amount = 120
+
+[sub_resource type="Resource" id="Resource_lxa7t"]
+script = ExtResource("1_ahfqw")
+category = 1
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_ocnxm"]
+script = ExtResource("1_ahfqw")
+category = 3
+subtype = 4
+
+[sub_resource type="Resource" id="Resource_4gns8"]
+script = ExtResource("4_ivoj5")
+effects = Array[ExtResource("1_ahfqw")]([SubResource("Resource_h8y3l"), SubResource("Resource_0nsu4"), SubResource("Resource_wkj1x"), SubResource("Resource_wf1ip"), SubResource("Resource_0qute"), SubResource("Resource_a1qa2"), SubResource("Resource_51bnt"), SubResource("Resource_lxa7t"), SubResource("Resource_ocnxm")])
+
+[resource]
+script = ExtResource("7_40ck4")
+name = "Ion Shot"
+description = "Deal [color=blue](amount)[/color] (ion_damage)"
+indicator_texture = ExtResource("5_tt1gm")
+info_texture = ExtResource("6_tg15k")
+effect_chain = SubResource("Resource_4gns8")
+intent_amount = 3

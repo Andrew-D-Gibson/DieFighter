@@ -84,6 +84,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.CLEAR_STATUS, label = "Clear Status", handler = ClearStatusHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.STEAL_MONEY, label = "Steal Money", handler = StealMoneyHandler},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SPEND_SHIELDS, label = "Spend Shields", handler = SpendShieldsHandler, fields = ["amount"]},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ION_DAMAGE, label = "Ion Damage", handler = IonDamageHandler},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
@@ -151,6 +152,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.DIE_FLARE, label = "Die Flare", handler = JuiceHandler, fields = ["color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.LASER, label = "Laser", handler = JuiceHandler, fields = ["amount", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.MISSILE, label = "Missile", handler = JuiceHandler, fields = ["amount", "color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ION_BOLT, label = "Ion Bolt", handler = JuiceHandler, fields = ["amount", "color"]},
 
 	# ── TILE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ACTIVATE_SELF, label = "Activate Self", handler = ActivateSelfHandler},

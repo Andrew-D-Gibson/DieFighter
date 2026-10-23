@@ -7,7 +7,7 @@ extends Resource
 enum Threat {
 	DEAD,      ## Does nothing to anyone — the die was wasted on them
 	NEUTRAL,   ## Does something, but doesn't hurt the player directly
-	DANGEROUS, ## Deals damage
+	DANGEROUS, ## Deals damage (ion damage to shields included)
 }
 
 ## What kind of ship, if any, this action picks out when its slot is rolled.
@@ -105,7 +105,9 @@ static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false) 
 			# Losing dice for good is worse than any hit.
 			return Threat.DANGEROUS
 		elif effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
-		and effect.subtype == EffectEnums.AttributeChangeSubtype.DAMAGE:
+		and effect.subtype in [EffectEnums.AttributeChangeSubtype.DAMAGE, EffectEnums.AttributeChangeSubtype.ION_DAMAGE]:
+			# Ion only strips shields, but shields are what stand between a
+			# hit and the hull, so losing them is a hurt all the same.
 			if not aimed_at_ship:
 				return Threat.DANGEROUS
 			threat = maxi(threat, Threat.NEUTRAL) as Threat

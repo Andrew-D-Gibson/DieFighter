@@ -27,6 +27,11 @@ func _set_shields() -> void:
 	%Shields.frame = shield_frame(health_component.shields, health_component.max_health)
 
 
+## The middle of the shield counter: where a shot at the shields strikes.
+func get_shield_anchor() -> Vector2:
+	return ($ShieldsClickable/CollisionShape2D as Node2D).global_position
+
+
 ## Which shield sprite frame [param shields] reads as, measured against the
 ## hull's [param max_health]: full from half the hull up, medium from a
 ## quarter, low below that.

@@ -312,6 +312,14 @@ static func anchor_of(node: Node2D) -> Vector2:
 	return node.global_position
 
 
+## Where a shot at `node`'s shields lands: the player's shield counter, or
+## the usual anchor for anything without one of its own.
+static func shield_anchor(node: Node2D) -> Vector2:
+	if node.has_method("get_shield_anchor"):
+		return node.get_shield_anchor()
+	return anchor_of(node)
+
+
 ## The part of `node` worth squashing: a tile's sprite, a ship's hull, a
 ## die's face, the player's health bar. Never the root, whose scale and
 ## position belong to movement tweens.

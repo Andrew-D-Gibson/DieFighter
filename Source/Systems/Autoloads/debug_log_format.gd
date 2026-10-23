@@ -177,6 +177,8 @@ static func event_line(e: EffectEvent) -> String:
 		if action and is_instance_valid(action.bound_target):
 			text += " bound to %s" % label(action.bound_target)
 		return text + _repetitions(action_event.activation_repetitions)
+	if e is IonDamageEvent:
+		return "  ION %d (x%d to shields) %s -> %s" % [e.amount, Health.ION_SHIELD_MULTIPLIER, _origin(e), _targets_with_vitals(e.targets)]
 	if e is DamageEvent:
 		return "  DAMAGE %d %s -> %s" % [e.amount, _origin(e), _targets_with_vitals(e.targets)]
 	if e is ShieldEvent:
