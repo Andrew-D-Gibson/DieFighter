@@ -46,7 +46,9 @@ and flee again, forever (one run hit the turn limit after 146 arrivals).
 A dev-build harness for playing any scenario from a clean start and walking
 every branch of it (see ARCHITECTURE_OVERVIEW, "Scenario Lab").
 
-- **LAB** on the main menu, or **F1** in a run, opens a panel: arrows step
+- **LAB** on the main menu starts a lab run, and the panel lives on the dev
+  console page (`), next to the tile palette. Both fold away to bigger SHOW
+  buttons by default and stay as left across restarts. Its arrows step
   through all 40 scenarios (TEST left out; Empty is in, since revisiting a
   cleared tile lands there), each launched into the start slot of a fresh
   starter-kit run on a fixed seed. RESTART replays it, NEW SEED rerolls it,

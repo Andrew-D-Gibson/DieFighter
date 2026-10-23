@@ -759,12 +759,15 @@ violations, as `tools/autoplay_replay.py flagged` ranks them.
 
 A harness for inspecting every scenario by hand, start to finish. The
 `ScenarioLab` autoload owns the session and the coverage record;
-`ScenarioLabPanel` (in `main.tscn`'s UI layer, beside the tile palette) is the
-in-game side. Release builds get neither, unless the export preset has the
+`ScenarioLabPanel` (in `main.tscn`'s UI layer) is the in-game side, on the dev
+console page under the console box. Release builds get neither, unless the export preset has the
 `dev_console` feature (`DevConsole.is_available()`).
 
 - **Getting in.** The main menu's **LAB** button resumes at the scenario last
-  tested; **F1** toggles the panel in any run.
+  tested. The panel is on the dev console page (the console key), and so is
+  the tile palette. Both start folded away to their **SHOW LAB** / **SHOW
+  TILES** buttons and stay as left while the game scene reloads (static
+  `collapsed` flags); the menu's LAB button opens the Lab's.
 - **A lab run** is a fresh run on the starter kit from `run_start.tres`, whose
   generated sector gets the chosen scenario in its start slot from
   `Events.load_game_save`, as a gauntlet's does. **<** / **>** step through
