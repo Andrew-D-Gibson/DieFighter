@@ -463,6 +463,24 @@ encounter.
   a random face. Put far copies at a dimmer `modulate`, and flip
   (`scale = (-1, 1)`) to light one from the other side, e.g. toward the
   solar corona's star.
+- **Planets go in `set_piece_compositions`, not `static_objects`.** Give a
+  planet background three or four `SetPieceComposition`s (e.g. planet and
+  moon on the left, the planet on the right with a different moon, a lone
+  far body), each a list of `StaticBackgroundObjectResource`s plus a
+  `weight`. The game picks one per visit, slides it by `offset_jitter`,
+  may mirror it (`mirrorable`), and varies each body by its `size_jitter`
+  (0.1 for planets, 0.15-0.2 for moons) and `position_jitter`. Author it
+  for one side only. Keep bodies in the top corners, out of x 112-208 and
+  with centres no lower than y 64 at full jitter
+  (`test_background_set_pieces.gd` checks). Light every body in a
+  composition from the same side: toward the screen centre, or toward the
+  composition's star (shader planets are lit from the right, the dead world
+  from the left; flip to swap). Vary only shape, place and light, never the
+  palette. An empty composition is open space, where the stars drift.
+- **Stars.** Where anything is on screen besides stars and nebula (set
+  pieces or scrolling objects), the stars hold still between jumps; only
+  open space drifts. Nothing to set: `BackgroundResource.anchors_the_view()`
+  works it out.
 - `global_modifier`: an optional permanent rule, **or**
 - `hazard`: an optional timed event (§6). Never both: the environment monitor
   has one screen.

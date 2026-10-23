@@ -4,6 +4,25 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Planets that move between visits, and star parallax
+
+- **Layouts per visit.** The seven planet backgrounds each have three or
+  four arrangements of their worlds (`SetPieceComposition`): the blue
+  nebula's ocean world with a grey or an ice moon, a storm giant rising
+  over the corner, or just two far moons; the star field can be open
+  space. One is picked on arrival, slid a few pixels, maybe mirrored, and
+  each body's size, sun height and face varied. It all comes from one
+  draw on the BACKGROUND bucket, so a seed reproduces it. Bodies stay in
+  the top corners, lit toward the middle of the screen or toward their
+  star.
+- **Star parallax.** Stars have depth now, as in the opening cutscene: far
+  ones dim and slow, near ones bright, fast and smeared when a jump spools
+  up. Beside anything fixed (a planet, the pulsar) or a field of drifting
+  debris, they hold still until the jump; in open space they drift all the
+  time.
+
+---
+
 ## 2026-10-23 — Tile markers match their activation checks
 
 - **Audited all 87 tiles** against their `activation_checks`; 30 fixed,

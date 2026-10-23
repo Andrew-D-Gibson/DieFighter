@@ -65,7 +65,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, shader planets and suns (`CelestialBody`), scrolling objects (debris, asteroids, ice, scrap, fate shards, embers, ion motes) |
+| `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, shader planets and suns (`CelestialBody`) laid out from a picked `SetPieceComposition`, scrolling objects (debris, asteroids, ice, scrap, fate shards, embers, ion motes); see Background Layouts and Star Parallax |
 | `Vignette` | `Graphics/Vignette` | Flash overlay for camera shake/impact emphasis |
 | `Juice` | `Systems/Graphics/Juice/juice.gd` (static helpers) | Bumps, wiggles, rings, sparkles and callouts; see 4.7 |
 | `GlitchController` | `UI/GlitchShader` | CSS glitch shader activation on large camera shake |
@@ -818,6 +818,40 @@ The **boss is indexed by sector** rather than picked at random
 guaranteed to meet each sector is also the clearest place to show escalation.
 Sector 1 arrives at the authored `starting_scenario`; later sectors arrive at a
 random question scenario not already placed in that sector.
+
+---
+
+## Background Layouts and Star Parallax
+
+**Layouts.** A background's planets and stars live in
+`set_piece_compositions` (`SetPieceComposition`,
+`Resources/BackgroundResources/set_piece_composition.gd`), not
+`static_objects`, which stays for pieces that must sit exactly where authored
+(the pulsar, the black hole, Fate's weather). On arrival `BackgroundManager`
+seeds a private `RandomNumberGenerator` from one `BACKGROUND` draw, picks a
+composition by `weight`, then `place()` rolls: a mirror (positions flip and
+each node's `scale.x` flips, so the light swaps sides with the layout), a
+shared group offset (`offset_jitter`), each piece's own `position_jitter`, a
+`size_jitter` (the `CelestialBody` rect resized to an even whole-pixel
+diameter, `pixel_scale` to match), one sun height for the whole group
+(`light_tilt_jitter`, added to `sun_direction.z`) and each body's face. The
+private stream means a scenario seed always gives the same layout, however
+many stars or pieces are drawn around it. `test_background_set_pieces.gd`
+keeps every layout's worst case out of the column the ships fight in
+(x 112-208) and in the top band (centre y at most 64).
+
+**Star parallax.** Each star gets a depth (0.3-1.0): dimmer and slower when
+far, and smeared into a whole-pixel streak when fast. How fast a depth-1 star
+streams is `_star_stream_speed()`:
+
+| Background | At rest | Jumping (speed above cruise) |
+|---|---|---|
+| Anything anchors the view: set pieces of any kind (planets, stars, pulsar, black hole, ion clouds, Fate's storm) or scrolling objects | Still: the ship is holding station, and the debris does the drifting | Streams at `(global_speed - cruise) x star_parallax_rate x depth`, settling to still as the outro slows |
+| Open space: nothing in `static_objects`, no scrolling objects, an empty (or no) composition, e.g. the star field's open layout | Drifts at `global_speed x star_parallax_rate x depth` | The same formula, so it just speeds up |
+
+`BackgroundResource.anchors_the_view(composition)` decides which row applies.
+Cruise is `global_speed` as authored (16); `play_jump_outro()` tweens back to
+it. The nebula's own churn and the scrolling objects are unchanged.
 
 ---
 
