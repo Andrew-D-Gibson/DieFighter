@@ -4,6 +4,43 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — The smart bot learns lockouts, and a softer Sector Warden
+
+The smart bot couldn't clear Sector 1 (0 of 60 runs) and won fewer fights
+than the random bot. Mostly it was the bot's fault, not the game's.
+
+- **Lockouts.** A lock lasts until a 2 is placed on the tile. The bot scored
+  every locked tile at -50 and never used a 2, so once Dice Cannon, Bump and
+  Shield Burst were locked it fed every die to the Engine Charger, which still
+  hands the die to the target, until it died. A 2 on a locked tile now scores
+  as opening it (`_unlock_value`: the tile for the rest of the fight, less the
+  2 going to a random ship).
+- **Full drive.** A die that only charges a full drive mid-fight scores
+  `_WASTED_CHARGE` (-15). The Charger is now only used when nothing else will
+  take the die.
+- **Bounce tally.** `_placed` never reset, so after a few turns ordinary
+  repeats of a die and face read as bounces and blacklisted the best tile.
+  It clears each turn and arrival.
+- **Exploring.** `_SKIPPED_STOP` -0.75 -> -2.5: stops before the gate went
+  3.6 -> 4.7, and runs reaching the gate with 4+ tiles 6 -> 26 of ~55.
+
+With the bot playing properly the Warden was still the wall: from full hull
+it won 93-100% of its fights against every Sector 1 loadout, while elites lost
+80-93% of theirs. It now has 40 hull (was 64), and its cannons roll 3-8, 3-7
+and 6-12 (were 4-10, 4-9, 8-15). Its phases are hull fractions, so they scale.
+
+| Smart bot | Before | After |
+|---|---|---|
+| Warden from full hull: starter / 4th die / 2nd cannon | 0% / 7% / 0% | 47% / 67% / 80% |
+| Campaign runs clearing Sector 1 (60 seeds) | 0 | 34 of 59 |
+
+**Still open:** the bot only looks one move ahead, so a 1:1 trade into a ship
+holding several dice looks worthless even though ending the fight sooner stops
+those dice. And at low hull it can flee the Warden to a corrupted stop, return
+and flee again, forever (one run hit the turn limit after 146 arrivals).
+
+---
+
 ## 2026-10-23 — Scenario Lab
 
 A dev-build harness for playing any scenario from a clean start and walking
