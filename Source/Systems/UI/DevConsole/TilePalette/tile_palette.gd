@@ -120,12 +120,9 @@ func _build_dice_row() -> Control:
 
 
 func _build_search_bar() -> Control:
-	var search := LineEdit.new()
+	var search := DevTextBox.new()
 	search.name = "TileSearch"
 	search.placeholder_text = "Search tiles by name or id"
-	search.clear_button_enabled = true
-	search.add_theme_font_override("font", _FONT)
-	search.add_theme_font_size_override("font_size", 28)
 	search.text_changed.connect(_on_search_changed)
 	return search
 

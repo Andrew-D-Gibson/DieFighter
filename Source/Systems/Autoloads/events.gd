@@ -134,6 +134,9 @@ signal toggle_fps_display()
 ## The dev console was opened or closed. Dev-only UI that lives outside the
 ## console's own scene follows this rather than watching for the key itself.
 signal dev_console_toggled(is_open: bool)
+## A dev text field took the console key: close the dev tools rather than
+## typing a backtick into the field.
+signal dev_console_close_requested()
 signal highlight_dice_area()
 signal show_map()
 signal show_systems()

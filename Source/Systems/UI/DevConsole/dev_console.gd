@@ -1,7 +1,8 @@
 class_name DevConsole
 extends Control
 
-@onready var line_edit := $PanelContainer/VBoxContainer/LineEdit
+@onready var text_box: DevTextBox = $PanelContainer/VBoxContainer/TextBox
+@onready var line_edit: LineEdit = text_box.line_edit
 @onready var command_history := $PanelContainer/VBoxContainer/RichTextLabel
 
 var _history_list: Array[String] = []
@@ -21,6 +22,8 @@ func _ready() -> void:
 		queue_free()
 		return
 	line_edit.gui_input.connect(_on_line_edit_gui_input)
+	text_box.text_submitted.connect(_on_line_edit_text_submitted)
+	Events.dev_console_close_requested.connect(_on_close_requested)
 
 
 func _test(_command_args: Array[String] = []) -> void:
@@ -57,6 +60,11 @@ func _navigate_history(direction: int) -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed('DevConsole'):
+		_toggle_dev_console()
+
+
+func _on_close_requested() -> void:
+	if visible:
 		_toggle_dev_console()
 
 
@@ -182,11 +190,6 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 
 	line_edit.text = ''
 	line_edit.edit.call_deferred()
-
-
-func _on_line_edit_text_changed(current_text: String) -> void:
-	if current_text.contains('`'):
-		_toggle_dev_console()
 
 
 # ── Tile / Grid ──────────────────────────────────────────────────────────────
