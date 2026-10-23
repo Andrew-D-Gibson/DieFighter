@@ -407,7 +407,10 @@ encounter.
 **Background** (`Source/Resources/BackgroundResources/<name>.tres`, a
 `BackgroundResource`)
 - `background_color`.
-- Nebula and star toggles and counts.
+- Nebula and star toggles and counts. `nebula_material` swaps the
+  standard one-colour nebula for a place whose sky is its own weather (the
+  Ion Storm Front's `IonStorm/ion_nebula.tres`). Its shader must take
+  `sprite_nebula.gdshader`'s `uv_offset` and `nebula_color`.
 - `scrolling_objects`: what drifts past at varying depths, with
   `num_of_med_pieces` / `num_of_large_pieces`. Pick a set from
   `ScrollingObjects/` (`triangle_debris`, `asteroids`, `ice`, `ship_scrap`,
@@ -453,6 +456,14 @@ encounter.
   weather: sheet lightning, bolts and void tears. Each flash sets the global
   shader uniform `fate_flash`, which rims the fate shards. It quickens and
   fires a barrage with a Fate Rift hazard. Use it only near Fate.
+  `IonStorm` (also at `(0, 0)`) is the Ion Storm Front's: bolts in view, or
+  unseen strikes just off screen that only light the near cloud. Each
+  writes the global `ion_flash` (centre, strength, reach), which
+  `ion_nebula.gdshader` reads to light the cloud from where the lightning
+  is. Both storms grow their bolts with `LightningBolt`. Lightning stays
+  photosensitivity-safe: strikes at least `IonStorm.MIN_GAP` (1 s) apart,
+  flicker that never drops fully dark, and a faint full-screen wash at
+  most.
 - Planets, moons and stars are `CelestialBody` scenes in
   `BackgroundObjects/CelestialBodies/`, drawn live by
   `pixel_planet.gdshader` (the main menu's planet). Make a new one by
@@ -481,7 +492,9 @@ encounter.
   pieces or scrolling objects), the stars hold still between jumps; only
   open space drifts. Nothing to set: `BackgroundResource.anchors_the_view()`
   works it out.
-- `global_modifier`: an optional permanent rule, **or**
+- `global_modifier`: an optional permanent rule that suits the place
+  (the pulsar strips shields, shrapnel doubles damage; see
+  `test_background_rules.gd`, which pins the pairings), **or**
 - `hazard`: an optional timed event (§6). Never both: the environment monitor
   has one screen.
 
@@ -529,7 +542,7 @@ it coming. The countdown on the environment monitor is automatic; background
 objects that should react to it extend `HazardTelegraph`
 (`BackgroundObjects/hazard_telegraph.gd`) and override `_urgency_changed()`
 (the hazard fires next turn, or has calmed) and `_fired()`. See the flare star,
-ion cloud, meteor shower and rift tear for examples. Drive their visuals with
+ion storm, meteor shower and rift tear for examples. Drive their visuals with
 `self_modulate`: `BackgroundManager` owns `modulate`.
 
 ---

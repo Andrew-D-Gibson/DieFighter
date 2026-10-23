@@ -846,7 +846,7 @@ streams is `_star_stream_speed()`:
 
 | Background | At rest | Jumping (speed above cruise) |
 |---|---|---|
-| Anything anchors the view: set pieces of any kind (planets, stars, pulsar, black hole, ion clouds, Fate's storm) or scrolling objects | Still: the ship is holding station, and the debris does the drifting | Streams at `(global_speed - cruise) x star_parallax_rate x depth`, settling to still as the outro slows |
+| Anything anchors the view: set pieces of any kind (planets, stars, pulsar, black hole, the ion storm, Fate's storm) or scrolling objects | Still: the ship is holding station, and the debris does the drifting | Streams at `(global_speed - cruise) x star_parallax_rate x depth`, settling to still as the outro slows |
 | Open space: nothing in `static_objects`, no scrolling objects, an empty (or no) composition, e.g. the star field's open layout | Drifts at `global_speed x star_parallax_rate x depth` | The same formula, so it just speeds up |
 
 `BackgroundResource.anchors_the_view(composition)` decides which row applies.
@@ -896,8 +896,8 @@ rule the enemy intent telegraph follows. Three things carry it:
 - **`HazardTelegraph`** (`BackgroundObjects/hazard_telegraph.gd`) is the base
   for background art that reacts: `_urgency_changed()` when it becomes
   imminent or calms, `_fired()` when it goes off. The flare star throbs hot
-  and its limb erupts, ion clouds strike constantly, the meteor shower thickens and
-  sends one rock at the cockpit, the rift tear quickens.
+  and its limb erupts, the ion storm strikes more often, the meteor shower
+  thickens and sends one rock at the cockpit, the rift tear quickens.
 - The hazard's own chain carries the impact (flash, sound, shake).
 
 Encounters built around a hazard point at a one-background pool

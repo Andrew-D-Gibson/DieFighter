@@ -4,6 +4,41 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — The ion storm, and rules that fit their places
+
+- **Ion Storm Front.** The puffy clouds (two fixed, three drifting) are
+  gone. The front is its own nebula now: banks of cloud stepped through
+  the palette's navies and blues, threaded with bright ion filaments, its
+  edges slowly boiling. The ion motes still drift through it.
+- **Lightning.** Now and then a bolt cracks down a flank or in across the
+  top, lighting the cloud around it. Just as often the strike is off
+  screen and all you see is the near cloud lighting up from one edge.
+  The light comes from where the lightning is. It strikes more often when
+  the storm is a turn from discharging, and the discharge itself is a
+  close bolt with a broad flash. Kept gentle: strikes at least a second
+  apart, a flicker that never goes fully dark, and only a faint wash over
+  the cockpit. There's no reduced-flashing option yet; `IonStorm` notes
+  where one would hook in.
+- **Rules moved to where they fit.** Each place keeps its name and colour
+  and takes the rule that suits it:
+
+  | Background | Before | After |
+  |---|---|---|
+  | Pulsar Field (Pulsar Wash) | No effect can exceed 3 | No ship can raise shields |
+  | Blue Nebula (Ion Saturation, now Doldrums) | No ship can raise shields | No effect can exceed 3 |
+  | Debris Field (Shrapnel Wake) | No ship can repair hull | All damage is doubled |
+  | Red Nebula (Bloodhaze) | All damage is doubled | No ship can repair hull |
+
+  Unchanged: Cryo Belt (Flash Freeze, no re-rolls), Derelict Boneyard
+  (Dead Systems, tiles activate once), Fate Infection (Fate's Tithe, no
+  engine charge), and the four hazard backgrounds. The Ion Storm Front
+  keeps its storm, which re-rolls enemy dice: it is already the
+  energy-disruption place, a background carries a rule or a hazard but
+  not both, and the Arc Dynamo is built around it. Fate's Tithe and Flash
+  Freeze now colour charge purple and re-rolls green.
+
+---
+
 ## 2026-10-23 — Planets that move between visits, and star parallax
 
 - **Layouts per visit.** The seven planet backgrounds each have three or
