@@ -97,10 +97,16 @@ const _PIRATE_HUNTING: float = 0.6
 const _HUNTING_HULL: float = 0.6
 ## Charge in a fight is worth little until it's time to leave.
 const _COMBAT_CHARGE: float = 0.15
+## Charging a full drive mid-fight, with nothing else to show for the die.
+const _WASTED_CHARGE: float = -15.0
 ## A tile that destroys itself costs the tile.
 const _SELF_DESTRUCT: float = -3.0
 ## A placement that bounced back, or one on a tile showing a lockout.
 const _BOUNCED: float = -50.0
+## The face that opens a locked tile, and roughly how many more turns of the
+## fight opening it gets back.
+const _LOCKOUT_KEY: int = 2
+const _UNLOCK_TURNS: float = 1.5
 ## Retargeting to break a tie isn't worth a move.
 const _RETARGET_MARGIN: float = 0.25
 
@@ -126,7 +132,7 @@ const _REPAIR_BELOW_PER_HEAL: float = 0.3
 ## Per tile forward: staying ahead of Fate. Small, since stops are the point.
 const _PROGRESS: float = 0.3
 ## Per stop worth visiting that a jump flies past.
-const _SKIPPED_STOP: float = -0.75
+const _SKIPPED_STOP: float = -2.5
 const _BACKTRACK: float = -3.0
 const _THROUGH_GATE: float = 20.0
 const _WORTH_VISITING: Array[String] = [
@@ -161,6 +167,16 @@ var _nominal_enemy: Enemy
 
 func _init(style: Persona) -> void:
 	_persona = style
+	# A bounce is a refusal within one hand. Across hands the same die rolls the
+	# same face often enough that a lasting tally would read every repeat as a
+	# bounce and blacklist the best tile for the rest of the run.
+	Events.player_turn_start.connect(_forget_placements)
+	Events.first_turn_start.connect(_forget_placements)
+	Events.start_scenario.connect(_forget_placements)
+
+
+func _forget_placements() -> void:
+	_placed.clear()
 
 
 func set_may_flee(allowed: bool) -> void:
@@ -242,10 +258,17 @@ func _best_placement(placements: Array) -> Dictionary:
 		aims.append(current)
 	for placement: AutoPilotMove in placements:
 		var penalty: float = _BOUNCED * _placed.get(_placement_key(placement.die, placement.tile), 0)
-		if _locked_out(placement.tile):
+		var locked: bool = _locked_out(placement.tile)
+		if locked and placement.die.value != _LOCKOUT_KEY:
 			penalty += _BOUNCED
 		for aim: Enemy in aims:
-			var score: float = score_placement(placement.die, placement.tile, aim) + penalty
+			var score: float = penalty
+			if locked:
+				# The tile does nothing this time; the 2 only opens it.
+				if placement.die.value == _LOCKOUT_KEY:
+					score += _unlock_value(placement.tile)
+			else:
+				score += score_placement(placement.die, placement.tile, aim)
 			# Ties stay on the ship already targeted.
 			if aim != current:
 				score -= _RETARGET_MARGIN
@@ -259,7 +282,20 @@ func _placement_key(die: Dice, tile: Tile) -> String:
 		tile.uses_remaining, AutoPilotMove.dice_in_hand().size()]
 
 
-## A lockout cancels whatever the tile is given this turn, and shows on it.
+## Opening [param tile]: what it's worth for the rest of the fight, less the
+## 2, which goes to a ship picked at random.
+func _unlock_value(tile: Tile) -> float:
+	var ships: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
+	var handoff: float = 0.0
+	for ship: Enemy in ships:
+		handoff += AutoPilotThreat.of_face(ship, _LOCKOUT_KEY)
+	if not ships.is_empty():
+		handoff /= ships.size()
+	return _tile_worth(tile) * _UNLOCK_TURNS - handoff * _persona.hull
+
+
+## A lockout cancels whatever the tile is given until a 2 opens it, and shows
+## on it.
 static func _locked_out(tile: Tile) -> bool:
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if not engine:
@@ -298,6 +334,8 @@ func score_placement(die: Dice, tile: Tile, aim: Enemy) -> float:
 		score += _shield_value(forecast.shields)
 	score += minf(forecast.heal, float(player.health.max_health - player.health.health)) * _persona.heal
 	score += _charge_value(forecast.charge, in_combat)
+	if _only_wastes_charge(forecast, in_combat):
+		score += _WASTED_CHARGE
 	if in_combat:
 		for status: StringName in forecast.statuses:
 			score += forecast.statuses[status] * _STATUS_WORTH.get(status, _STATUS_WORTH_DEFAULT) * _persona.status
@@ -373,6 +411,22 @@ func _charge_value(amount: float, in_combat: bool) -> float:
 	return minf(amount, missing)
 
 
+## A die that only tops up a full drive mid-fight does nothing for the fight,
+## yet still goes to the target (the Engine Charger hands it on), so almost
+## any tile that does something is the better play.
+func _only_wastes_charge(forecast: AutoPilotForecast, in_combat: bool) -> bool:
+	if not in_combat or forecast.charge <= 0.0 or _wants_to_flee():
+		return false
+	var player: Player = Globals.player
+	if player.engine_charge < player.max_engine_charge:
+		return false
+	for hit: Node in forecast.damage:
+		if hit is Enemy:
+			return false
+	return forecast.shields <= 0.0 and forecast.heal <= 0.0 and forecast.statuses.is_empty() \
+		and forecast.dice_back <= 0.0 and forecast.jump == 0
+
+
 # ── The map ────────────────────────────────────────────────────────────────────
 
 func _wants_to_jump() -> bool:
@@ -435,7 +489,7 @@ func _stop_value(index: int) -> float:
 		"jump_gate.png":
 			# The boss waits; the stops before it are where the build grows.
 			var left: int = _stops_between(map.current_scenario_index, index)
-			return _STOP_GATE + _SKIPPED_STOP * 2.0 * left
+			return _STOP_GATE + _SKIPPED_STOP * 1.6 * left
 	return _STOP_EMPTY
 
 
