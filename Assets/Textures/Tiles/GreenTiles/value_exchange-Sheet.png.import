@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c2mo72opur4fv"
-path="res://.godot/imported/value_exchange.png-16e2acb0c425c8a5af3aab2ab9160a26.ctex"
+uid="uid://ci5qp8qubrox"
+path="res://.godot/imported/value_exchange-Sheet.png-c07fa9421fa4c2cab1d16f032ff56361.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/GreenTiles/value_exchange.png"
-dest_files=["res://.godot/imported/value_exchange.png-16e2acb0c425c8a5af3aab2ab9160a26.ctex"]
+source_file="res://Assets/Textures/Tiles/GreenTiles/value_exchange-Sheet.png"
+dest_files=["res://.godot/imported/value_exchange-Sheet.png-c07fa9421fa4c2cab1d16f032ff56361.ctex"]
 
 [params]
 
