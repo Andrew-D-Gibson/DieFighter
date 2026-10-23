@@ -30,6 +30,8 @@ const _LAUNCH_DISTANCE: float = 70.0
 const _LAUNCH_SECONDS: float = 0.4
 const _LAUNCH_SPIN: float = TAU * 0.6
 const _LAUNCH_END_SCALE: float = 0.7
+## How much bigger than its art the final explosion draws.
+const _DEATH_EXPLOSION_SCALE: float = 1.5
 
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
@@ -52,6 +54,13 @@ var _dying: bool = false
 ## The kill shudder, and where it rattles around. launch() cuts it short.
 var _shudder_tween: Tween
 var _shudder_rest: Vector2 = Vector2.ZERO
+
+## Once dying, the ship draws through this, on the game's pixel grid. See
+## pixelate().
+var _pixel_view: JuicePixelated
+## The ship graphics' parent inside _pixel_view. It tracks this node, so
+## everything that moves the manager still moves the ship.
+var _pixel_body: Node2D
 
 ## Sets up the ship graphics and associated components
 func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
@@ -81,12 +90,33 @@ func play_death_animation() -> void:
 	).set_trans(Tween.TRANS_CUBIC)\
 	.set_ease(Tween.EASE_IN)
 	
-	# Spawn the death explosion and wait
+	# Spawn the death explosion and wait. On the pixel grid like the wreck it
+	# replaces, and a size up from the art so the kill ends on a bang.
 	var explosion: AnimatedSprite2D = death_explosion.instantiate()
-	add_sibling(explosion)
-	explosion.global_position = self.global_position
-	
+	var view: JuicePixelated = JuicePixelated.spawn(get_parent(), explosion, z_index + 1)
+	view.global_position = global_position
+	view.scale = Vector2.ONE * _DEATH_EXPLOSION_SCALE
+
 	await explosion.animation_finished
+
+
+## From here on the ship draws on the game's 320x180 pixel grid, like the
+## effects around it. The kill raises, rattles, spins and shrinks the hull;
+## drawn straight to the full-resolution screen, that resamples it into smooth
+## sub-pixel art. Inside a JuicePixelated it turns and shrinks a game pixel at
+## a time. One-way, since only a dying ship moves like that.
+func pixelate() -> void:
+	if _pixel_view or not is_instance_valid(ship_graphics):
+		return
+	_pixel_body = Node2D.new()
+	_pixel_view = JuicePixelated.spawn(self, _pixel_body, ship_graphics.z_index)
+	ship_graphics.reparent(_pixel_body, false)
+
+
+## Where effects that ride along with the ship belong: on its pixel grid once
+## it's dying.
+func _effects_parent() -> Node2D:
+	return _pixel_body if is_instance_valid(_pixel_body) else self
 
 
 ## Rattles the ship along [param direction] for [param seconds] of real time,
@@ -127,7 +157,7 @@ func launch(direction: Vector2) -> void:
 		_shudder_tween.kill()
 		position = _shudder_rest
 	health_bar.visible = false
-	Juice.trail(self, Globals.red, _LAUNCH_SECONDS)
+	Juice.trail(_effects_parent(), Globals.red, _LAUNCH_SECONDS)
 
 	var spin: float = _LAUNCH_SPIN * signf(direction.x if direction.x != 0.0 else 1.0)
 	var tween: Tween = create_tween().set_parallel(true)
@@ -251,6 +281,10 @@ func set_ship_raised(raised: bool) -> void:
 	# A hit's bump may still be springing the scale; it would undo ours.
 	Juice.cancel_bump(ship_graphics)
 	ship_graphics.z_index = _RAISED_SHIP_Z_INDEX if raised else 0
+	# Inside the pixel view the ship's own z only sorts it against its
+	# trail; the view is what sits among the world's layers.
+	if _pixel_view:
+		_pixel_view.z_index = ship_graphics.z_index
 	if raised:
 		_lowered_ship_scale = ship_graphics.scale
 		ship_graphics.scale = _lowered_ship_scale * _RAISED_SHIP_SCALE

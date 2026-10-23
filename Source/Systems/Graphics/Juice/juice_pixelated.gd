@@ -50,6 +50,9 @@ func _ready() -> void:
 	_effect.tree_exited.connect(queue_free)
 	_viewport.add_child(_effect)
 	_sync()
+	# Again once the caller has placed this node: spawn() adds it before they
+	# can, and a first frame drawn at the parent's origin flickers.
+	_sync.call_deferred()
 
 
 func _process(_delta: float) -> void:

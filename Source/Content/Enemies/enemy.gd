@@ -246,16 +246,17 @@ func _on_death() -> void:
 	# Another ship's kill isn't the player's to celebrate, or to loot.
 	var killed_by_ship: bool = was_killed_by_ship()
 	var launch_direction: Vector2 = Vector2.ZERO
+	graphics_manager.pixelate()
 	if not killed_by_ship:
 		launch_direction = await _play_kill_confirm()
 	Events.play_sound.emit(_DEATH_SFX)
 	
 	# Create explosion particles. They stay where the blow landed while the
-	# wreck flies off.
+	# wreck flies off, on the pixel grid with it.
 	var explosion: CPUParticles2D = explosion_particles.instantiate()
 	explosion.color = Globals.red
 	explosion.amount = health.max_health * 5
-	add_child(explosion)
+	JuicePixelated.spawn(self, explosion, 0)
 
 	# Spawn rewards. A launched fighter carries none of its own.
 	if not killed_by_ship and reward_resource:
