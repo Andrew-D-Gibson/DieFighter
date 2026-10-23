@@ -15,6 +15,8 @@ const CURRENT_COLOR: Color = Color(0.93, 0.83, 0.36)
 const BODY_SIZE: int = 24
 const HEADING_SIZE: int = 32
 const TITLE_SIZE: int = 40
+## The show buttons on the dev console page, big enough to find at a glance.
+const SHOW_BUTTON_SIZE: int = 48
 
 
 static func label(text: String, font_size: int = BODY_SIZE, color: Color = Color.WHITE) -> Label:

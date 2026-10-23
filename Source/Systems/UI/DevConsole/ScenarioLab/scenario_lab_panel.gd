@@ -14,11 +14,17 @@ extends Control
 ## branches gated on something a fresh start lacks (a toll needs credits the
 ## starter kit doesn't have: add_money, then replay the demand).
 ##
-## Opens by itself during a lab run; F1 toggles it in any run. Dev builds only.
+## Part of the dev console page (the console key), folded away to its show
+## button until opened. Dev builds only.
 
-const _TOGGLE_KEY: Key = KEY_F1
-## Sits in the open sky above the hull gauge, clear of the cockpit.
-const _PANEL_RECT: Rect2 = Rect2(16, 16, 500, 620)
+## Under the dev console, which takes the top-left; the tile palette has the
+## right edge.
+const _PANEL_RECT: Rect2 = Rect2(16, 456, 500, 608)
+const _SHOW_BUTTON_SIZE: Vector2 = Vector2(260, 84)
+
+## Whether the panel is folded away to its show button. A static, so it stays
+## as left while lab runs reload the game scene; the menu's LAB button opens it.
+static var collapsed: bool = true
 
 var _panel: PanelContainer
 var _show_button: Button
@@ -47,8 +53,8 @@ func _ready() -> void:
 	_picker.visible = false
 	add_child(_picker)
 
-	_set_collapsed(false)
-	visible = ScenarioLab.active
+	_set_collapsed(collapsed)
+	visible = false
 
 	Events.load_scenario.connect(_queue_refresh.unbind(1))
 	Events.start_scenario.connect(_queue_refresh)
@@ -57,20 +63,12 @@ func _ready() -> void:
 	Events.start_combat.connect(_queue_refresh)
 	Events.combat_finished.connect(_queue_refresh)
 	ScenarioLab.coverage_changed.connect(_queue_refresh)
-	# The dev console and its tile palette own the screen's edges while open.
 	Events.dev_console_toggled.connect(func(is_open: bool) -> void:
-		_panel.modulate.a = 0.25 if is_open else 1.0
+		visible = is_open
+		if is_open:
+			_queue_refresh()
 	)
 	_queue_refresh()
-
-
-func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == _TOGGLE_KEY:
-		visible = not visible
-		if visible:
-			_set_collapsed(false)
-			_queue_refresh()
-		get_viewport().set_input_as_handled()
 
 
 # ── Layout ───────────────────────────────────────────────────────────────────
@@ -133,13 +131,15 @@ func _build_panel() -> void:
 
 
 func _build_show_button() -> void:
-	_show_button = ScenarioLabUI.button("LAB", _set_collapsed.bind(false), ScenarioLabUI.HEADING_SIZE)
+	_show_button = ScenarioLabUI.button("SHOW LAB", _set_collapsed.bind(false), ScenarioLabUI.SHOW_BUTTON_SIZE)
 	_show_button.name = "ShowLab"
 	_show_button.position = _PANEL_RECT.position
+	_show_button.size = _SHOW_BUTTON_SIZE
 	add_child(_show_button)
 
 
-func _set_collapsed(collapsed: bool) -> void:
+func _set_collapsed(is_collapsed: bool) -> void:
+	collapsed = is_collapsed
 	_panel.visible = not collapsed
 	_show_button.visible = collapsed
 

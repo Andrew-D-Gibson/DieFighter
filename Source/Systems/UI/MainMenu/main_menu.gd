@@ -134,7 +134,7 @@ func _on_continue_button_pressed() -> void:
 
 
 ## Dev builds only: straight into the Scenario Lab, at the scenario tested
-## last. Built here rather than in the scene so release builds never carry it.
+## last. The panel itself is on the dev console page. Built here rather than in the scene so release builds never carry it.
 func _add_scenario_lab_button() -> void:
 	var lab_button: Node = _LARGE_BUTTON.instantiate()
 	$VBoxContainer.add_child(lab_button)
@@ -151,6 +151,8 @@ func _on_scenario_lab_button_pressed() -> void:
 	MusicDirector.play_track(_RUN_TRACK, 2.0)
 	%LoadingPopup.show()
 	await RenderingServer.frame_post_draw
+	# Asked for by name, so it's open on the console page rather than folded.
+	ScenarioLabPanel.collapsed = false
 	ScenarioLab.launch(ScenarioLab.index)
 
 

@@ -24,6 +24,7 @@ const _MARGIN: float = 16.0
 const _TILE_COLUMNS: int = 3
 const _TILE_THUMB_SIZE: float = 96.0
 const _DIE_THUMB_SIZE: float = 64.0
+const _SHOW_BUTTON_SIZE: Vector2 = Vector2(300, 84)
 
 const _PANEL_COLOR: Color = Color(0.144, 0.3416, 0.6, 0.843137)
 const _ENTRY_COLOR: Color = Color(0.09, 0.22, 0.42, 0.85)
@@ -34,7 +35,9 @@ static var _bbcode_regex: RegEx = RegEx.create_from_string("\\[/?[^\\]]*\\]")
 
 var _panel: PanelContainer
 var _show_button: Button
-var _collapsed: bool = false
+## Starts folded away to its show button, and stays however it was left: a
+## static, so it survives the game scene reloading (a Scenario Lab restart).
+static var _collapsed: bool = true
 var _tile_grid: GridContainer
 ## Each tile entry paired with its lowercased searchable text, so filtering
 ## doesn't re-derive names on every keystroke.
@@ -50,7 +53,7 @@ func _ready() -> void:
 
 	_build_panel()
 	_build_show_button()
-	_set_collapsed(false)
+	_set_collapsed(_collapsed)
 
 	visible = false
 	Events.dev_console_toggled.connect(_on_dev_console_toggled)
@@ -163,15 +166,15 @@ func _build_tile_list() -> Control:
 func _build_show_button() -> void:
 	_show_button = Button.new()
 	_show_button.name = "ShowPalette"
-	_show_button.text = "TILES"
+	_show_button.text = "SHOW TILES"
 	_show_button.anchor_left = 1.0
 	_show_button.anchor_right = 1.0
-	_show_button.offset_left = -(140.0 + _MARGIN)
+	_show_button.offset_left = -(_SHOW_BUTTON_SIZE.x + _MARGIN)
 	_show_button.offset_right = -_MARGIN
 	_show_button.offset_top = _MARGIN
-	_show_button.offset_bottom = _MARGIN + 56.0
+	_show_button.offset_bottom = _MARGIN + _SHOW_BUTTON_SIZE.y
 	_show_button.add_theme_font_override("font", _FONT)
-	_show_button.add_theme_font_size_override("font_size", 32)
+	_show_button.add_theme_font_size_override("font_size", 48)
 	_show_button.pressed.connect(_set_collapsed.bind(false))
 	add_child(_show_button)
 
