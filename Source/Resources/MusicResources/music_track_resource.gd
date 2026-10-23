@@ -11,6 +11,10 @@ extends Resource
 @export var id: StringName
 @export var layers: Array[MusicLayerResource] = []
 @export_range(-40, 20) var volume_db: float = 0.0
+## Plays again from the top when it ends by itself, instead of handing over
+## to the next track in the playlist. For a theme that should hold until a
+## cue moves the music on.
+@export var repeats: bool = false
 
 ## Not read yet. Kept with the track for transitions that wait for the next
 ## bar. 0 means unknown.

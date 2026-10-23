@@ -13,3 +13,4 @@ stream = ExtResource("3_stream")
 script = ExtResource("1_track")
 id = &"game_start_theme"
 layers = Array[ExtResource("2_layer")]([SubResource("Resource_full")])
+repeats = true

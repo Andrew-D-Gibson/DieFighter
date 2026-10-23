@@ -112,10 +112,14 @@ func _crossfade_to(track: MusicTrackResource, fade: float) -> void:
 
 
 ## Tracks hand over back to back when one ends by itself, with no fade: the
-## songs are written to end, not to blend.
+## songs are written to end, not to blend. A repeating track restarts on its
+## own deck, so any layers a cue turned off stay off.
 func _on_deck_track_finished(deck: MusicDeck) -> void:
 	if deck != _active:
 		deck.queue_free()
+		return
+	if deck.track.repeats:
+		deck.play()
 		return
 
 	var next: int = _playlist.next_index(_playlist_index) if _playlist else -1

@@ -46,6 +46,18 @@ func test_a_finished_track_hands_over_to_the_next_and_wraps() -> void:
 	assert_eq(_director.get_decks().size(), 1)
 
 
+func test_a_repeating_track_restarts_instead_of_handing_over() -> void:
+	var playlist: MusicPlaylistResource = _playlist([&"a", &"b"])
+	playlist.tracks[0].repeats = true
+	_director.play_playlist(playlist)
+	var deck: MusicDeck = _director.active_deck()
+	_finish_active()
+	assert_eq(_director.current_track_id(), &"a")
+	assert_eq(_director.active_deck(), deck, "it plays again on the same deck")
+	assert_true(deck.playing)
+	assert_eq(_director.get_decks().size(), 1)
+
+
 func test_a_playlist_without_loop_goes_quiet_at_the_end() -> void:
 	var playlist: MusicPlaylistResource = _playlist([&"a"])
 	playlist.loop = false
@@ -125,11 +137,16 @@ func test_an_unknown_layer_is_a_warning() -> void:
 	assert_push_warning("has no layer 'nope'")
 
 
-func test_the_shipped_playlist_alternates_the_two_themes() -> void:
+## The trailer is cued once by the opening cutscene; after it the start theme
+## comes back and holds, since the trailer is too heavy to keep coming round.
+func test_the_shipped_playlist_plays_the_trailer_once_then_holds_the_start_theme() -> void:
 	var playlist: MusicPlaylistResource = load("res://Source/Resources/MusicResources/Playlists/default_playlist.tres")
 	assert_true(playlist.loop)
 	assert_eq(playlist.index_of(&"game_start_theme"), 0, "the game always opens on the start theme")
 	assert_eq(playlist.index_of(&"trailer_1"), 1)
+	assert_eq(playlist.next_index(1), 0, "the trailer hands back to the start theme")
+	assert_true(playlist.tracks[0].repeats, "the start theme loops")
+	assert_false(playlist.tracks[1].repeats, "the trailer plays once")
 	for track: MusicTrackResource in playlist.tracks:
 		var wav: AudioStreamWAV = track.layers[0].stream as AudioStreamWAV
 		assert_eq(wav.loop_mode, AudioStreamWAV.LOOP_DISABLED, "%s must end for the playlist to move on" % track.id)
