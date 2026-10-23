@@ -217,6 +217,7 @@ at once, with no per-tile authoring.
 | Getaway | die_dread_thunk | Afterburner snatch-and-run, a cackle of engines | before `ESCAPE_WITH_DICE` |
 | Grid Quake | tile_dropped | Seismic rumble through the grid | before `PUSH_TARGETED_TILES` |
 | Holo Loader | — | Hologram shimmer as a die is conjured for an ally | before `SPAWN_HOLOGRAM_FOR_ALLY` |
+| Ion Shot | dice_cannon | An ion discharge: a rising crackle, then a fizzing shield hit | before `ION_BOLT` |
 | Impound | dice_cannon | Clamp + hold (the die is taken) | before `KEEP_DIE_WITH_ACTOR` |
 | Launch | bump | Hangar klaxon + catapult whoosh | before `LAUNCH_SHIP` |
 | Lockout Grid Pos | — | Lock-on + clamp | before `LOCKOUT_TILE` |

@@ -352,14 +352,16 @@ movement tween owns.
 
 **Authored flourishes.** The same primitives are effects a chain can use:
 `AUDIO_VISUAL` `SHOCKWAVE`, `SPARK_BURST`, `CALLOUT`, `BUMP`, `ZAP`,
-`GRID_RIPPLE`, `SCREEN_RIPPLE`, `STREAM`, `DIE_FLARE`, `LASER`, `MISSILE`, all one `JuiceHandler`
+`GRID_RIPPLE`, `SCREEN_RIPPLE`, `STREAM`, `DIE_FLARE`, `LASER`, `MISSILE`, `ION_BOLT`, all one `JuiceHandler`
 building a `JuiceEvent`. They read authored fields only (`CALLOUT`'s
 `{amount}` and `{die}` tokens are the exception), aren't amplifiable, and play at the
 targets or, with none, at the source. `SPARK_BURST`, `STREAM` and `CALLOUT` take a
 `juice_flags` bitmask (Rise; Outward, Engine, Hull Hub, Engine Hub; see
-`JuiceEvent.Flag`) rather than a string. `ZAP`, `STREAM`, `LASER` and
-`MISSILE` hold the chain until they land; the rest don't. `LASER`/`MISSILE`
-are one `JuiceProjectile` (style enum, colour, length) drawn through
+`JuiceEvent.Flag`) rather than a string. `ZAP`, `STREAM`, `LASER`,
+`MISSILE` and `ION_BOLT` hold the chain until they land; the rest don't.
+`LASER`/`MISSILE`/`ION_BOLT` are one `JuiceProjectile` (style enum, colour,
+length; an ion bolt aims at `Juice.shield_anchor()`, the player's shield
+counter) drawn through
 `JuicePixelated` and re-aimed at its target node each frame;
 `Juice.projectile()` is the entry point, so an enemy shot that isn't a die
 can reuse it. `Juice.anchor_of()` / `body_of()` decide where an
@@ -897,7 +899,7 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 | Category | Subtypes |
 |----------|----------|
 | TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, TARGET_BOUND_ALLY, TARGET_BOUND_HOSTILE_SHIP, etc. |
-| ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE, STEAL_MONEY (actor takes credits; coins fly from the money counter to it) |
+| ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE, STEAL_MONEY (actor takes credits; coins fly from the money counter to it), ION_DAMAGE (`IonDamageEvent`, a `DamageEvent` with `reaches_hull()` false: `Health.take_ion_damage` strips 2x from shields, the rest is lost) |
 | AMOUNT_MODIFIER | MULTIPLY (a fraction rounds up, away from zero, so every "half of" rounds up), ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN, SET_TO_DICE_OWNED, SET_TO_DICE_IN_HAND, SET_TO_TARGET_DICE_HELD, SET_RANDOM (`range_min`–`range_max`) |
 | DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET, FEED_ALLY, SPAWN_HOLOGRAM_FOR_ALLY, REROLL_TARGETS_DICE, FLIP_TARGETS_ONES_AND_SIXES |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |

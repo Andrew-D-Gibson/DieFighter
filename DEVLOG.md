@@ -4,6 +4,30 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Ion Shot, and a one-use Value Exchange
+
+- **Ion Shot**, a new enemy action: `(amount)` ion damage, doubled against
+  shields and never touching the hull. What the shields can't absorb is
+  lost, so it does nothing to an unshielded ship and only strips what's
+  left of a weak one. New `ATTRIBUTE_CHANGE / ION_DAMAGE`
+  (`IonDamageEvent`, a `DamageEvent` whose `reaches_hull()` is false, so
+  amount caps still shape it but Dead Man's Switch never fires on it).
+- **Ion bolt.** New `AUDIO_VISUAL / ION_BOLT`, a third `JuiceProjectile`
+  style: an orb swells at the muzzle, drifts in with afterimages and
+  crackle, and bursts in a ring on the player's shield counter
+  (`Juice.shield_anchor`). The Ion Shot fires it rather than throwing its
+  die, then returns the die home, the same end state as an attack.
+- **Who fires it.** Ion Lance rolls one at 2-3 while its pair flies, and
+  always carries a 3-4 once alone (strip, then the bigger cannon lands).
+  Disabler Drone rolls one at 2-3 beside its lockouts.
+  Intent and info icons, an `(ion_damage)` keyword, and a GUT test of the
+  rule.
+- **Value Exchange** is now one use a turn, and returns its die to the hand
+  instead of giving it to a random enemy. Use light built with
+  `add_use_lights.lua`.
+
+---
+
 ## 2026-10-23 — Lasers, missiles and leech streams
 
 - **A die flies at a ship only when the ship keeps it.** New `LASER` and

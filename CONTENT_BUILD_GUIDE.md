@@ -188,8 +188,14 @@ leaves, the action can't happen, and a die spent on it pops a "?" and does
 nothing (`EnemyActionResource.get_outcome()` is `BLOCKED`). Jammed isn't spent
 on such a die, or on any die whose action does nothing.
 
+**Damage kinds:** `DAMAGE` goes through shields into the hull.
+`ION_DAMAGE` (Ion Shot) takes twice the amount off the shields and never
+reaches the hull; what the shields can't absorb is lost. Write it as
+`Deal [color=blue](amount)[/color] (ion_damage)`.
+
 **Derived automatically, nothing to set:**
-- Threat (tractor-beam colour). Damage aimed at the player is DANGEROUS.
+- Threat (tractor-beam colour). Damage aimed at the player is DANGEROUS
+  (ion damage too).
   Damage aimed at a bound ship is not.
 - Hidden-safety: anything that flees or jumps is never rolled while intents
   read "?".
@@ -510,8 +516,9 @@ ion cloud, meteor shower and rift tear for examples. Drive their visuals with
   (SET, ADD, MULTIPLY, SET_TO_DIE_VALUE, SET_TO_ENEMY_INTENT, ...) and the
   ATTRIBUTE_CHANGE steps consume it.
 - Visual flourishes (`AUDIO_VISUAL`: SHOCKWAVE, SPARK_BURST, CALLOUT, ZAP,
-  STREAM, LASER, MISSILE, ...) play at the current targets. ZAP, STREAM,
-  LASER and MISSILE hold the chain until they land. Tick `juice_flags` for
+  STREAM, LASER, MISSILE, ION_BOLT, ...) play at the current targets. ZAP,
+  STREAM, LASER, MISSILE and ION_BOLT hold the chain until they land.
+  ION_BOLT aims at the target's shields (the player's shield counter). Tick `juice_flags` for
   how they move: Rise (sparks drift up, for gains), Outward (a stream flows
   out of the source), Engine (the player's end of a stream or callout is the
   engine gauge), Hull Hub / Engine Hub (the stream's own end is the player's
@@ -521,7 +528,8 @@ ion cloud, meteor shower and rift tear for examples. Drive their visuals with
   then gives the die to that target. A tile that hits but keeps or passes its
   die (relays, recoil, return-to-hand) fires a LASER or MISSILE instead
   (`amount` = beam hold / flight in msec, 0 = default; `color`). A content
-  test enforces this.
+  test enforces this. Enemy actions follow the same rule: the Ion Shot
+  fires an ION_BOLT and ends `GIVE_DIE_TO_PLAYER`.
 
 **Adding a new effect type:**
 1. **Append** a value to the right enum in
