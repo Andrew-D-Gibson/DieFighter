@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="1_scenario"]
 [ext_resource type="Texture2D" uid="uid://dnrjsts365rfs" path="res://Assets/Textures/Map/EncounterIcons/healing_encounter.png" id="2_icon"]
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="3_bg"]
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/repair_station_backgrounds.tres" id="3_bg"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="4_ship"]
 [ext_resource type="Resource" uid="uid://bs8mb4cncwgf5" path="res://Source/Content/Enemies/EnemyResources/repair_dock.tres" id="5_dock"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="6_reward"]

@@ -162,6 +162,19 @@ func test_no_background_carries_both_a_rule_and_a_hazard() -> void:
 				"%s has both a global_modifier and a hazard" % path)
 
 
+## A repair dock in a region where no hull can be repaired makes no sense.
+func test_the_repair_station_never_lands_where_repairs_are_blacked_out() -> void:
+	var scenario: ScenarioResource = load(
+		"res://Source/Content/ScenarioResources/Scenarios/RepairStation/repair_station.tres"
+	)
+	var backgrounds: Array[BackgroundResource] = scenario.background_resource.get_backgrounds()
+	assert_gt(backgrounds.size(), 0)
+	for background: BackgroundResource in backgrounds:
+		if background.global_modifier:
+			assert_false(background.global_modifier.create_modifier() is RepairBlackoutModifier,
+				"%s blacks out repairs" % background.resource_path)
+
+
 func test_every_hazard_has_a_chain() -> void:
 	for path: String in _tres_files(BACKGROUND_ROOT):
 		var hazard: BackgroundHazardResource = load(path) as BackgroundHazardResource
