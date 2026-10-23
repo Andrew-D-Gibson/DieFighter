@@ -532,6 +532,15 @@ arrow...). Both enums are stored as ints in the .tres files, so append only.
 - `test_tutorial.gd` checks every step's text for unknown icon tokens, that
   every close signal is wired, and that main.tscn plays every step file.
 
+**Layout.** The cards sit on the left (`text_position` x around 100) and, for
+the opening fight only, the manager reserves screen x 0-180 from the enemy
+formation (`popup_screen_span`), so the ambusher stands off to the right. The
+enemy highlight masks in `Assets/Textures/TutorialManager/Highlights/` are
+drawn for that spot. The reservation is given back on `Events.jump`, so the
+next fight's ships fly straight to their usual places. The map's jump arrows
+are hidden (`Map.set_jump_arrows_visible`) until the jump step shows the right
+one; the left one returns when the tutorial finishes.
+
 ---
 
 ## AutoPilot (QA harness)

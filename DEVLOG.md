@@ -4,6 +4,29 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-23 — Tutorial layout and dev text boxes
+
+- **Cards left, enemy right.** The tutorial's cards moved to the left of the
+  screen and the opening raider now waits off to the right, with the enemy
+  highlights mirrored to match.
+- **Systems you can see.** Cards that say "system" now show it: the
+  read-a-system card shows the three starting systems (Dice Cannon, Bump,
+  Shield Burst), and the salvage card shows the Deflector Array. Inline icon
+  tokens can now name one frame of a sprite sheet, which Bump needed. Both
+  cards were trimmed to stay at three lines.
+- **Second fight in the middle.** The tutorial gives the formation its room
+  back at the jump, so the ships in the next fight fly straight to the
+  centre instead of off to the side and sliding over later.
+- **No locked arrows on the map tour.** The jump arrows stay hidden while the
+  tutorial explains the map. The right arrow appears with the "drag a die
+  onto the arrow" card; the left one comes back when the tutorial ends.
+- **Dev text boxes.** The console's command bar and the tile search share one
+  `DevTextBox`: the same style, a taller field and an X button to clear it.
+  Pressing ` in the tile search now closes the dev tools instead of typing
+  a backtick.
+
+---
+
 ## 2026-10-21 — Shader planets and stars
 
 - **Planets instead of stickers.** The backgrounds' set pieces are now
