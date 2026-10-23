@@ -155,6 +155,7 @@ script = ExtResource("script_0")
 tile_name = "[color=purple]Overpressure Lance[/color]"
 description = "(die_6) [color=yellow]while overcharged[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to 3x [color=purple]surplus charge[/color]. Spend it"
 rarity = 2
+offered_as_reward = false
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3"), SubResource("Resource_act4")])

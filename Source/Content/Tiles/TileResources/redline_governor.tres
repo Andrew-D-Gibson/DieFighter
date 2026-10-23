@@ -110,6 +110,7 @@ script = ExtResource("script_0")
 tile_name = "[color=purple]Redline Governor[/color]"
 description = "[color=yellow]Any die while fully charged[/color] -> [color=purple]Overcharge[/color] engine by die value"
 rarity = 1
+offered_as_reward = false
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
