@@ -41,6 +41,12 @@ func _ready() -> void:
 	)
 
 
+## Where effects that move engine charge draw to and from: the middle of the
+## gauge. The node's own origin sits off to its left, out in the tile grid.
+func get_juice_anchor() -> Vector2:
+	return progress_bar.get_global_rect().get_center()
+
+
 ## Winning a fight refills the drive.
 ##
 ## A plain assignment is safe because combat_finished is now emitted from

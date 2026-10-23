@@ -46,7 +46,8 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_step_7"]
 script = ExtResource("script_effect")
 category = 4
-subtype = 3
+subtype = 23
+color = Color(0.4784, 0.7412, 0.2, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_8"]

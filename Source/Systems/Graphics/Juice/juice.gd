@@ -168,6 +168,25 @@ static func stream(parent: Node, from: Vector2, to: Vector2, color: Color, count
 	return flow.total_seconds()
 
 
+## A laser or missile (see JuiceProjectile.Style) from `from` to `to`, on the
+## game's pixel grid. With a `target`, the shot follows that node's anchor in
+## flight instead of `to`. `seconds` is how long a laser holds or a missile
+## flies; zero takes the style's default. Returns the seconds until impact.
+static func projectile(parent: Node, from: Vector2, to: Vector2, color: Color,
+		style: JuiceProjectile.Style, seconds: float = 0.0, target: Node2D = null) -> float:
+	if not _usable(parent):
+		return 0.0
+	var shot: JuiceProjectile = JuiceProjectile.new()
+	shot.style = style
+	shot.from = from
+	shot.to = to
+	shot.target = target
+	shot.color = color
+	shot.duration = seconds
+	JuicePixelated.spawn(parent, shot, _FX_Z_INDEX)
+	return shot.impact_seconds()
+
+
 ## A flash that spreads across the tile grid one ring of cells at a time,
 ## starting from `origin` (or the middle of the grid when it's null). Each
 ## tile bumps as the wave reaches it.
@@ -282,7 +301,7 @@ static func die_flare(die: Dice, color: Color) -> void:
 ## Falls back to the player's usual anchor if the charger isn't around.
 static func engine_anchor(fallback: Node2D) -> Vector2:
 	var charger: Node2D = fallback.get_tree().get_first_node_in_group(&"engine_charger") as Node2D
-	return charger.global_position if charger else anchor_of(fallback)
+	return anchor_of(charger) if charger else anchor_of(fallback)
 
 
 ## Where an effect on `node` should be drawn. Usually the node itself; the

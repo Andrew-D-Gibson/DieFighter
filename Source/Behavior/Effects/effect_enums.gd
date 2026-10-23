@@ -207,6 +207,8 @@ enum AudioVisualSubtype {
 	SCREEN_RIPPLE,            ## Screen-space shockwave distortion centred on the first target
 	STREAM,                   ## Motes flowing from each target to the source (OUTWARD: the other way)
 	DIE_FLARE,                ## Spin, pop and ring the activator die
+	LASER,                    ## A beam from the effect source to each target; holds until it lands
+	MISSILE,                  ## A missile from the effect source to each target; holds until it lands
 }
 
 

@@ -36,7 +36,9 @@ extends Resource
 # ── Numeric Parameters ─────────────────────────────────────────────────────────
 ## The base numeric amount for this effect.
 ## For HITSTOP, SLOW_MO and GLITCH_BURST it is a duration in milliseconds;
-## for SCREEN_SHAKE it is the strength (1 small, 2 large, 3 large + glitch).
+## for SCREEN_SHAKE it is the strength (1 small, 2 large, 3 large + glitch);
+## for LASER how long the beam holds and for MISSILE how long it flies, in
+## milliseconds (0 takes the default).
 @export var amount: int = 0
 
 ## Floating-point multiplier. Used by AMOUNT_MODIFIER/MULTIPLY.
@@ -65,9 +67,9 @@ extends Resource
 ## FLASH_TARGET and VIGNETTE_PULSE.
 @export var color: Color = Color.WHITE
 
-## How a flourish moves. SPARK_BURST reads RISE; STREAM reads OUTWARD and
-## ENGINE. See JuiceEvent.
-@export_flags("Rise", "Outward", "Engine") var juice_flags: int = 0
+## How a flourish moves. SPARK_BURST reads RISE; STREAM reads OUTWARD,
+## ENGINE, HULL_HUB and ENGINE_HUB; CALLOUT reads ENGINE. See JuiceEvent.Flag.
+@export_flags("Rise", "Outward", "Engine", "Hull Hub", "Engine Hub") var juice_flags: int = 0
 
 ## The ship to bring into the fight. Used by ScenarioControlSubtype.LAUNCH_SHIP.
 @export var ship_resource: EnemyResource = null

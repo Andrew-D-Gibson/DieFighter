@@ -19,7 +19,13 @@ var flags: int = 0
 enum Flag {
 	RISE = 1,    ## SPARK_BURST: sparks drift upward, for gains rather than hits
 	OUTWARD = 2, ## STREAM: flow out of the source rather than into it
-	ENGINE = 4,  ## STREAM: the player's end is their engine charge
+	ENGINE = 4,  ## STREAM and CALLOUT: the player's end is their engine charge
+	## STREAM: the player's health bar stands in for the effect source, so
+	## a drain lands in the hull it heals (Leeching Shot) rather than the tile.
+	HULL_HUB = 8,
+	## STREAM: the player's engine charge stands in for the effect source,
+	## for charge that's spent at a target (Overdraw Coil).
+	ENGINE_HUB = 16,
 }
 
 const _DEFAULT_SHOCKWAVE_RADIUS: int = 20
@@ -55,7 +61,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 						40.0 * multiplier, _has(Flag.RISE))
 		EffectEnums.AudioVisualSubtype.CALLOUT:
 			for node: Node2D in anchors:
-				Juice.callout_at(node, Juice.anchor_of(node), text, color)
+				Juice.callout_at(node, _anchor_for(node), text, color)
 		EffectEnums.AudioVisualSubtype.BUMP:
 			for node: Node2D in anchors:
 				Juice.bump(Juice.body_of(node), _BUMP_STRENGTH * multiplier, 0.3)
@@ -71,6 +77,10 @@ func resolve(_engine: ScenarioEngine) -> void:
 		EffectEnums.AudioVisualSubtype.DIE_FLARE:
 			if is_instance_valid(activator_die) and activator_die is Dice:
 				Juice.die_flare(activator_die as Dice, color)
+		EffectEnums.AudioVisualSubtype.LASER:
+			await _shoot(anchors, JuiceProjectile.Style.LASER)
+		EffectEnums.AudioVisualSubtype.MISSILE:
+			await _shoot(anchors, JuiceProjectile.Style.MISSILE)
 
 
 ## The bolt holds the chain for its length, so whatever comes next (the
@@ -86,31 +96,62 @@ func _zap(anchors: Array[Node2D]) -> void:
 	await from.get_tree().create_timer(msec / 1000.0).timeout
 
 
-## Motes flow from each target into the source (a drain), or out of it with
-## OUTWARD. With ENGINE, the player's end is their engine charge rather than
-## their health bar. Held until they arrive, for the same
+## A shot from the source at each target that isn't a die: the source keeps
+## its die, or passes it on. Held until it lands, for the same reason as the
+## bolt.
+func _shoot(anchors: Array[Node2D], style: JuiceProjectile.Style) -> void:
+	var from: Node2D = effect_source as Node2D
+	if not is_instance_valid(from):
+		return
+	var seconds: float = 0.0
+	for node: Node2D in anchors:
+		if node != from:
+			seconds = maxf(seconds, Juice.projectile(from, Juice.anchor_of(from),
+					Juice.anchor_of(node), color, style, amount / 1000.0, node))
+	if seconds > 0.0:
+		await from.get_tree().create_timer(seconds).timeout
+
+
+## Motes flow from each target into the hub (a drain), or out of it with
+## OUTWARD. The hub is the effect source, unless HULL_HUB or ENGINE_HUB put
+## it on the player. With ENGINE, a player target's end is their engine
+## charge rather than their health bar. Held until they arrive, for the same
 ## reason as the bolt.
 func _stream(anchors: Array[Node2D]) -> void:
-	var hub: Node2D = effect_source as Node2D
-	if not is_instance_valid(hub):
+	var source: Node2D = effect_source as Node2D
+	if not is_instance_valid(source):
 		return
+	var hub_end: Vector2 = _hub_end(source)
 	var count: int = amount if amount > 0 else _DEFAULT_STREAM_MOTES
 	var seconds: float = 0.0
 	for node: Node2D in anchors:
-		if node == hub:
+		var start: Vector2 = _anchor_for(node)
+		var end: Vector2 = hub_end
+		# A target that is the hub has nowhere to flow to.
+		if start.is_equal_approx(end):
 			continue
-		var start: Vector2 = _stream_end(node)
-		var end: Vector2 = _stream_end(hub)
 		if _has(Flag.OUTWARD):
 			var swap: Vector2 = start
 			start = end
 			end = swap
-		seconds = maxf(seconds, Juice.stream(hub, start, end, color, count))
+		seconds = maxf(seconds, Juice.stream(source, start, end, color, count))
 	if seconds > 0.0:
-		await hub.get_tree().create_timer(seconds).timeout
+		await source.get_tree().create_timer(seconds).timeout
 
 
-func _stream_end(node: Node2D) -> Vector2:
+func _hub_end(source: Node2D) -> Vector2:
+	var player: Node2D = Globals.player as Node2D
+	if is_instance_valid(player):
+		if _has(Flag.ENGINE_HUB):
+			return Juice.engine_anchor(player)
+		if _has(Flag.HULL_HUB):
+			return Juice.anchor_of(player)
+	return _anchor_for(source)
+
+
+## Where on [param node] a stream or callout lands: its usual anchor, or the
+## engine gauge for the player when ENGINE is set.
+func _anchor_for(node: Node2D) -> Vector2:
 	if node is Player and _has(Flag.ENGINE):
 		return Juice.engine_anchor(node)
 	return Juice.anchor_of(node)

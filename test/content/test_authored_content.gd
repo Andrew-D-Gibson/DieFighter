@@ -126,6 +126,27 @@ func test_chains_have_no_empty_slots() -> void:
 		assert_gt(chain.base_repetitions, 0, "%s never plays" % entry["origin"])
 
 
+## A die flying at a ship reads as handing it over. A tile that hits without
+## giving the die away fires a LASER or MISSILE instead.
+func test_tiles_only_throw_dice_they_give_away() -> void:
+	var throws: Dictionary[String, bool] = {}
+	var gives: Dictionary[String, bool] = {}
+	for entry: Dictionary in _effects:
+		var origin: String = entry["origin"]
+		var data: EffectData = entry["data"]
+		if not origin.begins_with(TILE_DIR):
+			continue
+		if data.category == EffectEnums.Category.AUDIO_VISUAL \
+				and data.subtype == EffectEnums.AudioVisualSubtype.ATTACK_TWEEN:
+			throws[origin] = true
+		if data.category == EffectEnums.Category.DICE_CONTROL \
+				and data.subtype == EffectEnums.DiceControlSubtype.GIVE_DIE_TO_TARGET:
+			gives[origin] = true
+	assert_gt(throws.size(), 0, "no tile throws its die any more; is the check stale?")
+	for origin: String in throws:
+		assert_true(gives.has(origin), "%s throws its die at a ship that never gets it" % origin)
+
+
 func test_every_tile_is_registered_for_saving() -> void:
 	for path: String in _tres_files(TILE_DIR):
 		if load(path) is TileResource:

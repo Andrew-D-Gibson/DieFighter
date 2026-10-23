@@ -182,9 +182,40 @@ func test_stream_carries_its_motion_flags() -> void:
 	assert_eq(event.flags, JuiceEvent.Flag.OUTWARD | JuiceEvent.Flag.ENGINE)
 
 
+func test_shots_carry_their_color_and_length() -> void:
+	for subtype: Sub in [Sub.LASER, Sub.MISSILE]:
+		engine.injected.clear()
+		var event := await _apply_one(_data(subtype, 300, 1.0, Color.RED)) as JuiceEvent
+		assert_eq(event.kind, subtype)
+		assert_eq(event.amount, 300, "the beam's hold or the flight, in msec")
+		assert_eq(event.color, Color.RED)
+		assert_false(event.is_amplifiable(), "an Amplifier must not stretch a shot")
+
+
+func test_the_inspector_shows_a_shots_length_and_color() -> void:
+	var category := EffectEnums.Category.AUDIO_VISUAL
+	for subtype: Sub in [Sub.LASER, Sub.MISSILE]:
+		assert_true(EffectCatalog.uses_field(category, subtype, "amount"))
+		assert_true(EffectCatalog.uses_field(category, subtype, "color"))
+		assert_false(EffectCatalog.uses_field(category, subtype, "juice_flags"))
+
+
+func test_a_missile_lands_after_a_laser_and_its_length_is_its_flight() -> void:
+	var laser := JuiceProjectile.new()
+	var missile := JuiceProjectile.new()
+	missile.style = JuiceProjectile.Style.MISSILE
+	assert_lt(laser.impact_seconds(), missile.impact_seconds(),
+		"a beam strikes as it fires; a missile has to get there")
+	missile.duration = 0.8
+	assert_eq(missile.impact_seconds(), 0.8)
+	laser.free()
+	missile.free()
+
+
 func test_the_inspector_shows_juice_flags_only_where_they_are_read() -> void:
 	var category := EffectEnums.Category.AUDIO_VISUAL
 	assert_true(EffectCatalog.uses_field(category, Sub.SPARK_BURST, "juice_flags"))
 	assert_true(EffectCatalog.uses_field(category, Sub.STREAM, "juice_flags"))
-	assert_false(EffectCatalog.uses_field(category, Sub.CALLOUT, "juice_flags"))
+	assert_true(EffectCatalog.uses_field(category, Sub.CALLOUT, "juice_flags"))
+	assert_false(EffectCatalog.uses_field(category, Sub.BUMP, "juice_flags"))
 	assert_false(EffectCatalog.uses_field(category, Sub.STREAM, "string_param"))

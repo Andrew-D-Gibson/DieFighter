@@ -89,6 +89,7 @@ category = 4
 subtype = 16
 string_param = "+{amount} CHARGE"
 color = Color(0.7725, 0.3216, 0.9451, 1)
+juice_flags = 4
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain"]

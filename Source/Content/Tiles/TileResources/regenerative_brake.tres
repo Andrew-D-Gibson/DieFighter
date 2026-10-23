@@ -42,7 +42,7 @@ category = 4
 subtype = 21
 amount = 8
 color = Color(0.7725, 0.3216, 0.9451, 1)
-juice_flags = 4
+juice_flags = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step7"]
@@ -90,7 +90,7 @@ category = 4
 subtype = 21
 amount = 8
 color = Color(0.7725, 0.3216, 0.9451, 1)
-juice_flags = 4
+juice_flags = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step14"]
