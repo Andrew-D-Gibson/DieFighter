@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IonStorm/ion_storm.gd" id="1_script"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+
+[node name="IonStorm" type="Node2D"]
+z_index = 2
+script = ExtResource("1_script")
+
+[node name="Sky" type="ColorRect" parent="."]
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_add")
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
+color = Color(0.145098, 0.109804, 0.419608, 0)

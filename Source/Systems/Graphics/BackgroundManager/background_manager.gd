@@ -216,7 +216,7 @@ func _set_background(background_resource: Resource) -> void:
 	_stars_drift = not bg_resource.anchors_the_view(current_composition)
 
 	if bg_resource.nebula:
-		_set_nebula(bg_resource.nebula_color)
+		_set_nebula(bg_resource.nebula_color, bg_resource.nebula_material)
 	if bg_resource.stars:
 		_set_stars(bg_resource.num_of_stars, bg_resource.num_of_twinkling_stars)
 	if bg_resource.scrolling_objects:
@@ -229,8 +229,12 @@ func _set_background(background_resource: Resource) -> void:
 	Events.background_changed.emit(bg_resource)
 
 
-func _set_nebula(nebula_color: Color) -> void:
+func _set_nebula(nebula_color: Color, custom_material: ShaderMaterial = null) -> void:
 	nebula = nebula_scene.instantiate()
+	if custom_material:
+		# A copy, since the nebula writes its scroll offset into the material
+		# every frame.
+		nebula.material = custom_material.duplicate()
 	nebula.material.set_shader_parameter('nebula_color', Vector4(nebula_color.r, nebula_color.g, nebula_color.b, nebula_color.a))
 	nebula.set_meta("parallax_level", 1)
 	add_child(nebula)

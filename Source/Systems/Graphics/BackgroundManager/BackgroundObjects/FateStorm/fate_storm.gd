@@ -43,16 +43,13 @@ const _LIFETIMES: Dictionary[Kind, float] = {Kind.SHEET: 0.7, Kind.BOLT: 0.7, Ki
 ## and when its second strike starts to fade.
 const _BOLT_BLINK: Vector2 = Vector2(0.06, 0.1)
 const _BOLT_HOLD: float = 0.22
-## Bolts step this many art pixels between kinks.
-const _BOLT_STEP: Vector2 = Vector2(3.0, 7.0)
 
 class Strike:
 	var kind: Kind
 	var age: float = 0.0
 	var strength: float = 1.0
-	## BOLT only: the lit pixels, and the pixels glowing around them.
-	var core: Array[Vector2i] = []
-	var glow: Array[Vector2i] = []
+	## BOLT only: its shape.
+	var bolt: LightningBolt = null
 
 var _strikes: Array[Strike] = []
 var _countdown: float = 0.0
@@ -91,7 +88,7 @@ func strike(kind: Kind, strength: float = 1.0) -> void:
 	new_strike.strength = strength
 	if kind == Kind.BOLT:
 		var start: Vector2 = Vector2(_randf(8.0, Globals.SCREEN_SIZE.x - 8.0), -1.0)
-		_build_bolt(new_strike, start, PI / 2.0 + _randf(-0.5, 0.5), _randf(70.0, 150.0), 2)
+		new_strike.bolt = LightningBolt.grow(start, PI / 2.0 + _randf(-0.5, 0.5), _randf(70.0, 150.0), 2)
 	elif kind == Kind.TEAR:
 		_tear_material.set_shader_parameter("seed", _randf(0.0, 100.0))
 	_begin(new_strike)
@@ -107,7 +104,7 @@ func strike_from(origin: Vector2, bolts: int = 3, reach: float = 70.0, inner_rad
 		new_strike.strength = strength
 		var angle: float = TAU * (float(i) + _randf(0.0, 0.7)) / float(bolts)
 		var start: Vector2 = origin + Vector2.from_angle(angle) * inner_radius
-		_build_bolt(new_strike, start, angle, _randf(reach * 0.6, reach), 1)
+		new_strike.bolt = LightningBolt.grow(start, angle, _randf(reach * 0.6, reach), 1)
 		_begin(new_strike)
 
 
@@ -204,67 +201,7 @@ func _draw() -> void:
 		var age: float = strike_now.age
 		var landing: bool = age < _BOLT_BLINK.x or (age > _BOLT_BLINK.y and age < _BOLT_BLINK.y + 0.05)
 		var core: Color = _CORE if landing else _HOT
-		for pixel: Vector2i in strike_now.glow:
-			draw_rect(Rect2(pixel, Vector2.ONE), Color(_GLOW, level * 0.8))
-		for pixel: Vector2i in strike_now.core:
-			draw_rect(Rect2(pixel, Vector2.ONE), Color(core, minf(1.0, level * 1.5)))
-
-
-# --- Bolt shape -------------------------------------------------------------
-
-## Walks a jagged line from [param start] heading roughly [param angle] for
-## [param length] art pixels, forking off up to [param forks] shorter
-## branches, and fills in the strike's core and glow pixels.
-func _build_bolt(target: Strike, start: Vector2, angle: float, length: float, forks: int) -> void:
-	var lit: Dictionary[Vector2i, bool] = {}
-	_walk(lit, start, angle, length, forks)
-	for pixel: Vector2i in lit:
-		target.core.append(pixel)
-	var halo: Dictionary[Vector2i, bool] = {}
-	for pixel: Vector2i in lit:
-		for offset: Vector2i in [Vector2i.LEFT, Vector2i.RIGHT, Vector2i.UP, Vector2i.DOWN]:
-			var neighbour: Vector2i = pixel + offset
-			if not lit.has(neighbour):
-				halo[neighbour] = true
-	for pixel: Vector2i in halo:
-		target.glow.append(pixel)
-
-
-func _walk(lit: Dictionary[Vector2i, bool], from: Vector2, angle: float, length: float, forks: int) -> void:
-	var position_now: Vector2 = from
-	var travelled: float = 0.0
-	while travelled < length:
-		var step_length: float = _randf(_BOLT_STEP.x, _BOLT_STEP.y)
-		var heading: float = angle + _randf(-0.6, 0.6)
-		var next: Vector2 = position_now + Vector2.from_angle(heading) * step_length
-		_line(lit, Vector2i(position_now.round()), Vector2i(next.round()))
-		position_now = next
-		travelled += step_length
-		if forks > 0 and _randf(0.0, 1.0) < 0.25:
-			forks -= 1
-			var side: float = 1.0 if _randf(0.0, 1.0) < 0.5 else -1.0
-			_walk(lit, position_now, angle + side * _randf(0.4, 0.9), (length - travelled) * 0.5, 0)
-
-
-## Bresenham, so a bolt is one clean pixel wide however it bends.
-func _line(lit: Dictionary[Vector2i, bool], a: Vector2i, b: Vector2i) -> void:
-	var dx: int = absi(b.x - a.x)
-	var dy: int = -absi(b.y - a.y)
-	var sx: int = 1 if a.x < b.x else -1
-	var sy: int = 1 if a.y < b.y else -1
-	var error: int = dx + dy
-	var point: Vector2i = a
-	while true:
-		lit[point] = true
-		if point == b:
-			return
-		var doubled: int = 2 * error
-		if doubled >= dy:
-			error += dy
-			point.x += sx
-		if doubled <= dx:
-			error += dx
-			point.y += sy
+		strike_now.bolt.draw_on(self, Color(core, minf(1.0, level * 1.5)), Color(_GLOW, level * 0.8))
 
 
 func _randf(from: float, to: float) -> float:

@@ -17,6 +17,11 @@ extends Resource
 @export_category('Nebula')
 @export var nebula: bool
 @export var nebula_color: Color
+## Replaces the standard nebula's look for a place whose sky is its own
+## weather, e.g. the ion storm's charged front. The shader must take
+## sprite_nebula.gdshader's uniforms (uv_offset, nebula_color). Leave null for
+## the standard one-colour nebula.
+@export var nebula_material: ShaderMaterial
 
 @export_category('Stars')
 @export var stars: bool
