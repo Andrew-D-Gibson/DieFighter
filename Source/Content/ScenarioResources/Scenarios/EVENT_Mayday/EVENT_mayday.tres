@@ -43,3 +43,4 @@ rewards = Dictionary[int, ExtResource("ext_2")]({
 0: SubResource("Resource_bounty")
 })
 starting_reward = SubResource("Resource_salvage")
+starting_reward_position = Vector2(230, 60)

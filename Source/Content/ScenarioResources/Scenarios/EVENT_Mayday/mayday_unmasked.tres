@@ -39,6 +39,6 @@ effects = Array[ExtResource("ext_2")]([SubResource("Resource_step0"), SubResourc
 
 [resource]
 script = ExtResource("ext_1")
-dialogue = "Thanks for slowing down."
+dialogue = "Ha! Drive's fine. Cargo was bait."
 attitude = 2
 effects_on_enter = SubResource("Resource_chain")

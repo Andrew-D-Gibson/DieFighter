@@ -30,7 +30,7 @@ ExtResource("ext_3"): 1.0
 
 [resource]
 script = ExtResource("ext_1")
-dialogue = "Mayday! Drive's dead!"
+dialogue = "Drive's dead! Cargo for an escort?"
 faction = 1
 attitude = 1
 transitions = Dictionary[int, ExtResource("ext_2")]({
