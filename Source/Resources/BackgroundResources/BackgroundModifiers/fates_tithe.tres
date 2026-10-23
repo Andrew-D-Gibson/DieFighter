@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("script_0")
 modifier_name = "Fate's Tithe"
-description = "Your [color=yellow]engine[/color] cannot gain charge"
+description = "Your engine cannot gain [color=purple]charge[/color]"
 color = Color(0.772549, 0.321569, 0.945098, 1)
 effect = 3
