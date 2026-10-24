@@ -3,6 +3,10 @@ extends Node2D
 
 const _TEXT_BLIP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/text_blip.tres")
 
+## A line has started showing, fresh or replayed. The targeting computer's
+## comms lamp listens for it.
+signal line_shown()
+
 @export var character_reveal_time: float = 0.08
 
 var current_dialogue: String
@@ -59,6 +63,12 @@ var _shift: float = 0.0
 ## Set once the player jumps away from this ship; it never speaks again.
 var _silenced: bool = false
 
+## The last thing this ship said, untranslated, and the box it said it in, so
+## the player can hail it for a line that faded before they read it. See
+## replay_last_line().
+var _last_line: String = ""
+var _last_faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE
+
 
 func _ready() -> void:
 	fadeout_timer = Timer.new()
@@ -73,9 +83,19 @@ func _ready() -> void:
 	Events.jump.connect(_on_jump)
 
 
-func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE) -> void:
+## Shows [param dialogue] in [param faction]'s box. Unless
+## [param wait_turn] is off, a line arriving right after another ship spoke
+## waits its turn, so two ships don't talk over each other.
+func show_dialogue(
+	dialogue: String,
+	faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE,
+	wait_turn: bool = true
+) -> void:
 	if _silenced:
 		return
+	if dialogue != "":
+		_last_line = dialogue
+		_last_faction = faction
 	# A line can be a translation key. Translated here rather than left to the
 	# label, because the reveal below is timed off the text's length: a key
 	# shorter than its line would cut the line off. Plain English passes
@@ -84,7 +104,7 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 
 	# Check if we just showed a dialogue, and if so, just wait
 	var current_time: int = Time.get_ticks_msec()
-	if time_last_dialogue_was_shown and \
+	if wait_turn and time_last_dialogue_was_shown and \
 	current_time < time_last_dialogue_was_shown + (time_between_dialogues * 1000):
 		var time_remaining: int = (time_last_dialogue_was_shown + (time_between_dialogues * 1000)) - current_time
 		await get_tree().create_timer(float(time_remaining) / 1000).timeout
@@ -92,7 +112,9 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 		if _silenced:
 			return
 
-	# Reset if we this was just called for another line of dialogue
+	# Reset if we this was just called for another line of dialogue. The last
+	# line's fade-out timer goes too, or it would cut this one off partway.
+	fadeout_timer.stop()
 	if character_reveal_tween:
 		character_reveal_tween.kill()
 	%RichTextLabel.visible_characters = 0
@@ -107,6 +129,7 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 
 	_start_fade_in()
 	%Sprite2D.texture = faction_textures[faction]
+	line_shown.emit()
 		
 	character_reveal_tween = get_tree().create_tween()
 	character_reveal_tween.tween_method(
@@ -123,6 +146,17 @@ func show_dialogue(dialogue: String, faction: ScenarioManager.Faction = Scenario
 	fadeout_timer.start(dialogue_time_shown)
 	
 	
+## Whether the ship has said anything it could say again.
+func has_line_to_replay() -> bool:
+	return not _silenced and not _last_line.is_empty()
+
+
+## Says the last line again, at once: the player asked for it.
+func replay_last_line() -> void:
+	if has_line_to_replay():
+		show_dialogue(_last_line, _last_faction, false)
+
+
 func hide_dialogue() -> void:
 	if fade_tween:
 		fade_tween.kill()

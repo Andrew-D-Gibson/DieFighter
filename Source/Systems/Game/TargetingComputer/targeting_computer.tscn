@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://brya2gd3t851s" path="res://Assets/Textures/TargetingComputer/reveal_overlay.png" id="13_du4uj"]
 [ext_resource type="Shader" uid="uid://4sn3gy37h8dt" path="res://Assets/Shaders/targeting_computer_reveal_shader.gdshader" id="13_y72xu"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/TargetingComputer/EnvironmentMonitor/environment_monitor.tscn" id="14_envmon"]
+[ext_resource type="Texture2D" uid="uid://dto02rot63p6y" path="res://Assets/Textures/TargetingComputer/comms_lamp-Sheet.png" id="15_comms"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_du4uj"]
 shader = ExtResource("10_chiev")
@@ -42,6 +43,9 @@ shader_parameter/warp_amount = 0.0
 shader_parameter/clip_warp = false
 shader_parameter/vignette_intensity = -0.2
 shader_parameter/vignette_opacity = 0.8
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_comms"]
+size = Vector2(27, 20)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ysc67"]
 atlas = ExtResource("9_hbs2t")
@@ -259,6 +263,23 @@ position = Vector2(-4, 1)
 scale = Vector2(0.6, 1.4)
 polygon = PackedVector2Array(1.66667, -12.1429, 18.3333, -5, 18.3333, 2.14286, 1.66667, 9.28571)
 
+[node name="CommsLamp" type="Sprite2D" parent="." unique_id=1720448301]
+unique_name_in_owner = true
+position = Vector2(12.5, -13.9)
+texture = ExtResource("15_comms")
+hframes = 2
+
+[node name="CommsButton" type="Area2D" parent="." unique_id=1720448302]
+unique_name_in_owner = true
+z_index = 1
+script = ExtResource("4_exnvl")
+hover_for_info = false
+metadata/_custom_type_script = "uid://hts4ayfgd5jk"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CommsButton" unique_id=1720448303]
+position = Vector2(2.5, -7.5)
+shape = SubResource("RectangleShape2D_comms")
+
 [node name="Intents" type="Node2D" parent="." unique_id=768132844]
 position = Vector2(0.5, 0)
 
@@ -464,3 +485,6 @@ offset_bottom = 33.0
 [connection signal="input_event" from="Intents/6/Clickable" to="Intents/6/Clickable" method="_on_input_event"]
 [connection signal="mouse_entered" from="Intents/6/Clickable" to="Intents/6/Clickable" method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="Intents/6/Clickable" to="Intents/6/Clickable" method="_on_mouse_exited"]
+[connection signal="input_event" from="CommsButton" to="CommsButton" method="_on_input_event"]
+[connection signal="mouse_entered" from="CommsButton" to="CommsButton" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="CommsButton" to="CommsButton" method="_on_mouse_exited"]
