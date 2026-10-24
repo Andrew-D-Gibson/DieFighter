@@ -238,7 +238,8 @@ reaches the hull; what the shields can't absorb is lost. Write it as
   - `min_amount`/`max_amount`: the rolled intent. Scaled +20% per sector,
     except a Holo Loader's face.
   - `force_include`: always present once. Weight 0 plus `force_include` means
-    exactly one.
+    exactly one. Except under the sector's variety cap (see below), which
+    can leave its kind out of a turn entirely.
   - `fills_kept_faces`: never rolled normally (`weight` and `force_include`
     are ignored). One copy goes on the face of each die the ship kept itself
     last turn with `Keep Die with Actor`, and it appears nowhere else. For a
@@ -253,6 +254,14 @@ reaches the hull; what the shields can't absorb is lost. Write it as
     `face_bias`, on the threat scale (0 nothing, 1 something, 2 damage).
     -1 reads it off the chain. Raise it for actions the chain undersells
     (Lockout, Impound, a Relay into a heavy hitter).
+- **Variety cap:** a table mixes at most 2 kinds of action in sector 1 and
+  3 in sector 2, any number after (`GameStateManager.action_kinds_per_sector`).
+  A kind is the action's `name`; Do Nothing and kept-face payoffs don't
+  count. Each turn the kept kinds are drawn weighted by how many slots each
+  would fill, so heavy weights are a ship's identity in early sectors. A
+  ship whose `force_include` options alone name more kinds than the cap won't
+  always show them all (the Ion Lance's Siphon + Quake, the Tender's Repair +
+  Aegis): check how it reads in sector 1.
 - **`face_bias`**: which faces the strong actions lean toward. Defaults to
   0.5, a gentle lean toward high faces for every enemy; leave it there unless
   the ship should break the rule. Positive pushes strong actions onto high

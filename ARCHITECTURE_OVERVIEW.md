@@ -939,7 +939,12 @@ rule the enemy intent telegraph follows. Three things carry it:
   down flashes the unit and pops the digit; at one turn left
   the digit goes red and the lamp keeps blinking even once read; when it fires
   the monitor pops like a tile with the hazard's name as the callout. Clicking
-  it explains the hazard and its interval.
+  it explains the hazard and its interval. Each fresh rule or hazard also
+  spawns a `RegionAlert` card (unless `Globals.show_region_alerts`, Options >
+  Game > Region Alerts, is off): name and formatted description over the
+  main viewer for ~2 s while the ships fly in, then it shrinks into the
+  monitor's screen, whose landing kicks the monitor and counts as read. A card
+  from a region the player has since left fades or lands without effect.
 - **`HazardTelegraph`** (`BackgroundObjects/hazard_telegraph.gd`) is the base
   for background art that reacts: `_urgency_changed()` when it becomes
   imminent or calms, `_fired()` when it goes off. The flare star throbs hot
@@ -1368,6 +1373,19 @@ because `state` is stale while a new scenario's ships roll).
   option's `strength_tier_override`), then the rolled amount. Positive puts
   the strong actions on high faces, negative on low; it tilts the odds
   rather than fixing them.
+- **Variety cap:** `EnemyActionSituation.max_action_kinds` (from
+  `GameStateManager.get_action_kinds_cap()`, i.e. `action_kinds_per_sector`,
+  `[2, 3, 0]` by default; 0 is no cap) limits how many different actions one
+  table mixes. `EnemyActionVariety.limit()` runs on the available options
+  before the fill: a kind is an action's `name`, blank faces (Do Nothing) and
+  kept-face payoffs don't count, and the tutorial's forced slots keep their
+  kinds. The kinds kept are drawn each turn without replacement, weighted by
+  how many slots each would fill (one per `force_include`, plus its share of
+  the weighted fill), and options of the other kinds are dropped whole,
+  `force_include` ones too. When nothing needs trimming it draws nothing, so
+  an uncapped roll is unchanged draw for draw. `reroll_slot_without_relays()`
+  only brings in a new kind while the table has room for one
+  (`within_table()`).
 
 **Bound targets.** An action that acts on another ship picks it when the slot
 is rolled, not when the die is spent: `EnemyTargetBinder` sets

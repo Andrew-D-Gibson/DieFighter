@@ -4,6 +4,40 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-24 — Wrecks break up, comms, a variety cap, and region alerts
+
+- **Wrecks break up.** A killed ship no longer sails off to explode once. The
+  hull cracks into three pieces (four for hulls 48 px and wider) that drift
+  apart along the killing blow and blow up one after another
+  (`ShipWreck`). Each piece is the ship's sprites cut to a wedge as textured
+  `Polygon2D`s: clipping (`clip_children`) inside the pixel view's
+  transparent SubViewport filled the masked area solid black. The wreck, its
+  debris and the kill's shockwave rings draw on
+  `EnemyGraphicsManager.wreck_layer()`, absolute z -3, under the cockpit
+  walls (-2), so blasts read as out past the canopy. The 1 s health-hit flash
+  lands after the death signal and overrides the kill's white flash, so the
+  breakup gives the hull its own 0.35 s white flash; otherwise the pieces
+  stayed solid red the whole time.
+- **Comms.** A 5x5 speech-bubble lamp sits in the gutter beside the
+  targeting computer's portrait. It lights (and blinks) once the targeted
+  ship has said something; clicking the portrait replays the line
+  (`EnemyDialogueManager.replay_last_line()`, which skips the wait-your-turn
+  gap). Fixed on the way: a new line never stopped the previous line's
+  fade-out timer, so back-to-back lines got cut off partway.
+- **Action variety cap.** Sector 1 tables mix at most 2 kinds of action,
+  sector 2 three, sector 3 any (`EnemyActionVariety`). Kinds are kept by a
+  weighted draw over how many slots each would fill, fresh each turn, and a
+  forced option whose kind isn't drawn is dropped. Ships whose forced options
+  already name 2+ kinds change most in sector 1: about one Ion Lance turn in
+  ten is Siphon + Quake with no damage, and the Tender often skips its
+  Repair or Aegis.
+- **Region alerts.** A fresh background rule or hazard gets a card over the
+  main viewer for ~2 s while ships fly in, then it shrinks into the
+  EnvironmentMonitor (`RegionAlert`). Options > Game > Region Alerts turns it
+  off.
+
+---
+
 ## 2026-10-23 — The smart bot learns lockouts, and a softer Sector Warden
 
 The smart bot couldn't clear Sector 1 (0 of 60 runs) and won fewer fights
