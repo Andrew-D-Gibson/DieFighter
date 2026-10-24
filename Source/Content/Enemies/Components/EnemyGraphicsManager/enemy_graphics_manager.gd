@@ -25,13 +25,15 @@ const _RAISED_SHIP_SCALE: float = 1.2
 
 ## How far the kill shudder throws the ship at its start, in pixels.
 const _SHUDDER_STRENGTH: float = 3.0
-## How far a killed ship is knocked before it blows, and how fast.
-const _LAUNCH_DISTANCE: float = 70.0
-const _LAUNCH_SECONDS: float = 0.4
-const _LAUNCH_SPIN: float = TAU * 0.6
-const _LAUNCH_END_SCALE: float = 0.7
-## How much bigger than its art the final explosion draws.
-const _DEATH_EXPLOSION_SCALE: float = 1.5
+
+## The absolute z a dying ship's wreck and explosions draw at: under the
+## cockpit walls (the Graphics layer sits at -2) and everything mounted in
+## front of them, so the blasts read as out past the canopy, not inside it.
+const WRECK_Z_INDEX: int = -3
+## How long the hull's flash takes to clear once it cracks. Short, so the
+## pieces show their own art while they drift and the eye can follow each one
+## to its explosion; the pieces share the hull's material, so they fade too.
+const _BREAK_FLASH_SECONDS: float = 0.35
 
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
@@ -48,10 +50,10 @@ var _lowered_ship_scale: Vector2 = Vector2.ONE
 
 ## Set once the kill sequence takes the ship. A hit landing just before the
 ## killing blow would otherwise restart the bob when its shake ends, and the
-## bob tweens to a fixed global position, dragging a launched wreck back.
+## bob tweens to a fixed global position, tugging the shuddering hull about.
 var _dying: bool = false
 
-## The kill shudder, and where it rattles around. launch() cuts it short.
+## The kill shudder, and where it rattles around. break_apart() cuts it short.
 var _shudder_tween: Tween
 var _shudder_rest: Vector2 = Vector2.ZERO
 
@@ -61,6 +63,9 @@ var _pixel_view: JuicePixelated
 ## The ship graphics' parent inside _pixel_view. It tracks this node, so
 ## everything that moves the manager still moves the ship.
 var _pixel_body: Node2D
+
+## Where the wreck goes. See wreck_layer().
+var _wreck_layer: Node2D
 
 ## Sets up the ship graphics and associated components
 func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
@@ -74,30 +79,37 @@ func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 	shakeable.node_to_shake = ship_graphics
 
 
-## Plays the death animation sequence
-func play_death_animation() -> void:
-	# Hide the health bar
+## Cracks the ship into pieces that drift apart and blow up one by one,
+## carried along [param kick] (the killing blow's direction, or zero), each
+## blast sounding [param blast_sound]. Resolves once the last explosion has
+## played out.
+func break_apart(kick: Vector2, blast_sound: SoundEffectResource) -> void:
+	_dying = true
+	stop_bob_tween()
+	if _shudder_tween and _shudder_tween.is_valid():
+		_shudder_tween.kill()
+		position = _shudder_rest
 	health_bar.visible = false
-	
-	# Fade out the ship graphics
-	var tween_time: float = 0.75
-	var tween: Tween = get_tree().create_tween()
-	tween.tween_method(
-		_set_transparency, 
-		1.0,
-		0.0,
-		tween_time
-	).set_trans(Tween.TRANS_CUBIC)\
-	.set_ease(Tween.EASE_IN)
-	
-	# Spawn the death explosion and wait. On the pixel grid like the wreck it
-	# replaces, and a size up from the art so the kill ends on a bang.
-	var explosion: AnimatedSprite2D = death_explosion.instantiate()
-	var view: JuicePixelated = JuicePixelated.spawn(get_parent(), explosion, z_index + 1)
-	view.global_position = global_position
-	view.scale = Vector2.ONE * _DEATH_EXPLOSION_SCALE
+	if not is_instance_valid(ship_graphics):
+		return
+	flash(Color.WHITE, _BREAK_FLASH_SECONDS)
+	var wreck: ShipWreck = ShipWreck.shatter(wreck_layer(), ship_graphics, kick, death_explosion, blast_sound)
+	ship_graphics.visible = false
+	await wreck.finished
 
-	await explosion.animation_finished
+
+## The layer a dying ship's debris and explosions belong on. See
+## [constant WRECK_Z_INDEX]. Detached from the manager's transform, so the
+## kill shudder doesn't drag what's already been thrown off; place things on
+## it by global position.
+func wreck_layer() -> Node2D:
+	if not is_instance_valid(_wreck_layer):
+		_wreck_layer = Node2D.new()
+		_wreck_layer.top_level = true
+		_wreck_layer.z_as_relative = false
+		_wreck_layer.z_index = WRECK_Z_INDEX
+		add_child(_wreck_layer)
+	return _wreck_layer
 
 
 ## From here on the ship draws on the game's 320x180 pixel grid, like the
@@ -111,12 +123,6 @@ func pixelate() -> void:
 	_pixel_body = Node2D.new()
 	_pixel_view = JuicePixelated.spawn(self, _pixel_body, ship_graphics.z_index)
 	ship_graphics.reparent(_pixel_body, false)
-
-
-## Where effects that ride along with the ship belong: on its pixel grid once
-## it's dying.
-func _effects_parent() -> Node2D:
-	return _pixel_body if is_instance_valid(_pixel_body) else self
 
 
 ## Rattles the ship along [param direction] for [param seconds] of real time,
@@ -145,30 +151,6 @@ func play_kill_focus(seconds: float) -> void:
 	# The badges would sit lit over the dim, pulling the eye off the ship.
 	health_bar.visible = false
 	Juice.kill_focus(self, _RAISED_SHIP_Z_INDEX - 1, seconds, Globals.red)
-
-
-## Knocks the ship off along [param direction], spinning and shrinking away
-## with a spark trail, and resolves where it lands, which is where the death
-## explosion then goes.
-func launch(direction: Vector2) -> void:
-	_dying = true
-	stop_bob_tween()
-	if _shudder_tween and _shudder_tween.is_valid():
-		_shudder_tween.kill()
-		position = _shudder_rest
-	health_bar.visible = false
-	Juice.trail(_effects_parent(), Globals.red, _LAUNCH_SECONDS)
-
-	var spin: float = _LAUNCH_SPIN * signf(direction.x if direction.x != 0.0 else 1.0)
-	var tween: Tween = create_tween().set_parallel(true)
-	# Expo out: all the speed is up front, like a body leaving a big hit.
-	tween.tween_property(self, "position", position + direction * _LAUNCH_DISTANCE, _LAUNCH_SECONDS) \
-		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "rotation", rotation + spin, _LAUNCH_SECONDS) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.tween_property(self, "scale", scale * _LAUNCH_END_SCALE, _LAUNCH_SECONDS) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
-	await tween.finished
 
 
 ## Sets the position of the health bar, sliding it there over [param duration]

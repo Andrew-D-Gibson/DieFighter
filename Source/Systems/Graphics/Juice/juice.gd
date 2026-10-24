@@ -79,9 +79,11 @@ static func wiggle(node: Node2D, degrees: float = 10.0, duration: float = 0.3) -
 
 
 ## An expanding ring that fades as it grows: a shockwave for an impact, or a
-## "look here" for something that just fired.
+## "look here" for something that just fired. [param draw_z_index] is relative
+## to [param parent]; pass 0 to keep the ring on the parent's own layer.
 static func ring(parent: Node, global_pos: Vector2, color: Color,
-		end_radius: float = 16.0, duration: float = 0.35, start_radius: float = 2.0) -> void:
+		end_radius: float = 16.0, duration: float = 0.35, start_radius: float = 2.0,
+		draw_z_index: int = _FX_Z_INDEX) -> void:
 	if not _usable(parent):
 		return
 	var shockwave: JuiceRing = JuiceRing.new()
@@ -89,7 +91,7 @@ static func ring(parent: Node, global_pos: Vector2, color: Color,
 	shockwave.start_radius = start_radius
 	shockwave.end_radius = end_radius
 	shockwave.duration = duration
-	JuicePixelated.spawn(parent, shockwave, _FX_Z_INDEX).global_position = global_pos
+	JuicePixelated.spawn(parent, shockwave, draw_z_index).global_position = global_pos
 
 
 ## A burst of single-pixel sparks flying out from `global_pos` and fading.

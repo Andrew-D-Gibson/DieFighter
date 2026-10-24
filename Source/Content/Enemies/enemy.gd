@@ -10,11 +10,11 @@ const _PRE_DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/Soun
 const _KILL_HOLD_MSEC: int = 340
 ## How long the kill's white flash takes to fade once time resumes.
 const _KILL_FLASH_FADE_SECONDS: float = 0.3
-## How close to the middle of the screen a ship has to be to pick its launch
-## side at random, in pixels.
-const _LAUNCH_CENTRE_DEADZONE: float = 6.0
-## How much a launched wreck climbs for each unit it travels sideways.
-const _LAUNCH_RISE: float = 0.2
+## How close to the middle of the screen a ship has to be to pick the side
+## its wreck is knocked toward at random, in pixels.
+const _KICK_CENTRE_DEADZONE: float = 6.0
+## How much the wreck is knocked upward for each unit it goes sideways.
+const _KICK_RISE: float = 0.2
 
 ## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
@@ -259,18 +259,17 @@ func _on_death() -> void:
 	Events.play_sound.emit(_PRE_DEATH_SFX)
 	# Another ship's kill isn't the player's to celebrate, or to loot.
 	var killed_by_ship: bool = was_killed_by_ship()
-	var launch_direction: Vector2 = Vector2.ZERO
+	var kick: Vector2 = Vector2.ZERO
 	graphics_manager.pixelate()
 	if not killed_by_ship:
-		launch_direction = await _play_kill_confirm()
-	Events.play_sound.emit(_DEATH_SFX)
-	
-	# Create explosion particles. They stay where the blow landed while the
-	# wreck flies off, on the pixel grid with it.
+		kick = await _play_kill_confirm()
+
+	# Debris from the blow, hanging where it landed while the hull comes
+	# apart. Behind the cockpit, with the rest of the wreck.
 	var explosion: CPUParticles2D = explosion_particles.instantiate()
 	explosion.color = Globals.red
 	explosion.amount = health.max_health * 5
-	JuicePixelated.spawn(self, explosion, 0)
+	JuicePixelated.spawn(graphics_manager.wreck_layer(), explosion, 0).global_position = global_position
 
 	# Spawn rewards. A launched fighter carries none of its own.
 	if not killed_by_ship and reward_resource:
@@ -278,10 +277,8 @@ func _on_death() -> void:
 			global_position,
 			reward_resource
 		)
-	
-	if launch_direction != Vector2.ZERO:
-		await graphics_manager.launch(launch_direction)
-	await graphics_manager.play_death_animation()
+
+	await graphics_manager.break_apart(kick, _DEATH_SFX)
 	queue_free()
 
 
@@ -298,7 +295,7 @@ func _on_death() -> void:
 ## hang on its first frame instead of bursting out when time resumes.
 func _play_kill_confirm() -> Vector2:
 	var hold_seconds: float = _KILL_HOLD_MSEC / 1000.0
-	var direction: Vector2 = _launch_direction()
+	var direction: Vector2 = _kick_direction()
 
 	graphics_manager.set_ship_raised(true)
 	# Game-time fade, so it holds at full white through the freeze and only
@@ -309,30 +306,31 @@ func _play_kill_confirm() -> Vector2:
 	Events.camera_kill_cam.emit(global_position, hold_seconds)
 	await TimeDirector.hitstop(_KILL_HOLD_MSEC)
 
-	# The release. The rings go on the manager rather than the ship, which is
-	# about to be freed.
+	# The release. The shockwaves are part of the blast, so they go behind
+	# the cockpit with the wreck.
 	graphics_manager.set_ship_raised(false)
 	Events.camera_shake_large.emit(false)
 	Juice.screen_flash(self, Color.WHITE)
 	Juice.screen_ripple(self, global_position, 1.5)
-	Juice.ring(get_parent(), global_position, Globals.white, 56.0, 0.5, 8.0)
-	Juice.ring(get_parent(), global_position, Globals.red, 36.0, 0.4, 4.0)
+	var wreck_layer: Node2D = graphics_manager.wreck_layer()
+	Juice.ring(wreck_layer, global_position, Globals.white, 56.0, 0.5, 8.0, 0)
+	Juice.ring(wreck_layer, global_position, Globals.red, 36.0, 0.4, 4.0, 0)
 	return direction
 
 
-## Away from the middle of the screen and a little up, so the wreck clears
-## the dice below it and heads for the nearer edge. A ship dead centre picks
+## Away from the middle of the screen and a little up, so the pieces clear
+## the dice below and drift toward the nearer edge. A ship dead centre picks
 ## a side at random.
-func _launch_direction() -> Vector2:
+func _kick_direction() -> Vector2:
 	var side: float = 0.0
 	var camera: Camera2D = get_viewport().get_camera_2d()
 	if camera:
 		var away: float = global_position.x - (camera.get_screen_center_position().x - camera.offset.x)
-		if absf(away) > _LAUNCH_CENTRE_DEADZONE:
+		if absf(away) > _KICK_CENTRE_DEADZONE:
 			side = signf(away)
 	if side == 0.0:
 		side = 1.0 if RNGManager.randf(RNGManager.Bucket.COSMETIC) < 0.5 else -1.0
-	return Vector2(side, -_LAUNCH_RISE).normalized()
+	return Vector2(side, -_KICK_RISE).normalized()
 
 
 ## Updates the enemy's components based on the enemy resource
