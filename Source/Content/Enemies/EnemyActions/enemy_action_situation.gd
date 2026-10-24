@@ -29,12 +29,17 @@ var attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE
 ## was merely handed don't count.
 var kept_faces: Array[int] = []
 
+## The most kinds of action the table may mix; 0 for no limit. Set from how
+## deep into the run the player is. See EnemyActionVariety.
+var max_action_kinds: int = 0
+
 
 static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyActionSituation:
 	var situation := EnemyActionSituation.new()
 	situation.ship = rolling_ship
 	if Globals.state_manager:
 		situation.intents_visible = Globals.state_manager.enemy_intents_visible()
+		situation.max_action_kinds = Globals.state_manager.get_action_kinds_cap()
 	if roster.is_empty() and Globals.enemy_manager:
 		roster = Globals.enemy_manager.get_alive_enemies()
 

@@ -54,6 +54,13 @@ extends Node2D
 ## the player's own damage grows faster than their max health does.
 @export var damage_scale_per_sector: float = 0.2
 
+## The most different kinds of action one enemy's table may mix, by sector:
+## the first entry for the first sector, and so on, with the last entry
+## carrying on past the end. 0 means no limit. Early ships doing one or two
+## things lets the player learn each action before tables start mixing them.
+## See EnemyActionVariety.
+@export var action_kinds_per_sector: Array[int] = [2, 3, 0]
+
 @export_category('Cold Open')
 ## How long the arrival's red-alert vignette runs. Long enough to register as
 ## an emergency, short enough to be over before the player's first die lands.
@@ -420,6 +427,15 @@ func get_difficulty_multiplier() -> float:
 ## only longer, not harder — the player out-scales flat hand-authored damage.
 func get_damage_multiplier() -> float:
 	return 1.0 + current_game_save.sector_index * damage_scale_per_sector
+
+
+## The cap on kinds of action per enemy table this sector, or 0 for none.
+## See [member action_kinds_per_sector].
+func get_action_kinds_cap() -> int:
+	if action_kinds_per_sector.is_empty() or current_game_save == null:
+		return 0
+	var index: int = clampi(current_game_save.sector_index, 0, action_kinds_per_sector.size() - 1)
+	return action_kinds_per_sector[index]
 
 
 ## Leaves the sector through its jump gate: the next, harder sector, or the

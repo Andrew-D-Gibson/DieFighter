@@ -31,7 +31,9 @@ static func roll(
 	var actions: Array[EnemyActionResource] = []
 	for action: EnemyActionResource in forced.slice(0, SLOT_COUNT):
 		actions.append(action.duplicate(true))
-	var options: Array[EnemyActionOptionResource] = available_options(pool, situation)
+	var options: Array[EnemyActionOptionResource] = EnemyActionVariety.limit(
+		available_options(pool, situation), situation, actions
+	)
 
 	# At least one of every "force_include" option, and the weights for the
 	# weighted fill as the situation scales them.
@@ -94,7 +96,14 @@ static func reroll_slot_without_relays(
 	var options: Array[EnemyActionOptionResource] = []
 	var weights: Array[float] = []
 	var weight_sum: float = 0.0
-	for option: EnemyActionOptionResource in available_options(pool, situation):
+	# The rest of the table stays, so this slot mustn't bring in a kind past
+	# the cap.
+	var others: Array[EnemyActionResource] = actions.duplicate()
+	others.remove_at(slot)
+	var allowed: Array[EnemyActionOptionResource] = EnemyActionVariety.within_table(
+		available_options(pool, situation), situation, others
+	)
+	for option: EnemyActionOptionResource in allowed:
 		if option.base_action.get_relay() != EnemyActionResource.Relay.NONE:
 			continue
 		options.append(option)
