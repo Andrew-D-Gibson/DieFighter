@@ -272,6 +272,32 @@ theme_override_icons/checked = ExtResource("5_nleqt")
 theme_override_icons/unchecked = ExtResource("6_oqkfw")
 flat = true
 
+[node name="HBoxContainer5" type="HBoxContainer" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=1418836482]
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="RegionAlertsLabel" type="RichTextLabel" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer5" unique_id=1418836483]
+custom_minimum_size = Vector2(60, 16)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
+text = "OPT_REGION_ALERTS"
+vertical_alignment = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer5" unique_id=1418836484]
+layout_mode = 2
+theme_override_constants/margin_left = -4
+theme_override_constants/margin_top = -4
+theme_override_constants/margin_right = -4
+theme_override_constants/margin_bottom = -4
+
+[node name="RegionAlertsCheckBox" type="CheckBox" parent="GameOptions/MarginContainer/VBoxContainer/HBoxContainer5/MarginContainer" unique_id=1418836485]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_icons/checked = ExtResource("5_nleqt")
+theme_override_icons/unchecked = ExtResource("6_oqkfw")
+flat = true
+
 [node name="Control" type="Control" parent="GameOptions/MarginContainer/VBoxContainer" unique_id=1407712527]
 custom_minimum_size = Vector2(0, 8.785)
 layout_mode = 2
@@ -654,6 +680,8 @@ text = "CLOSE"
 [connection signal="item_selected" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer3/LanguageOptionButton" to="." method="_on_language_option_button_item_selected"]
 [connection signal="pressed" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer4/MarginContainer/TutorialCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer4/MarginContainer/TutorialCheckBox" to="." method="_on_tutorial_check_box_toggled"]
+[connection signal="pressed" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer5/MarginContainer/RegionAlertsCheckBox" to="." method="_on_item_hover"]
+[connection signal="toggled" from="GameOptions/MarginContainer/VBoxContainer/HBoxContainer5/MarginContainer/RegionAlertsCheckBox" to="." method="_on_region_alerts_check_box_toggled"]
 [connection signal="pressed" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_item_hover"]
 [connection signal="toggled" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer/MarginContainer/FullscreenCheckBox" to="." method="_on_fullscreen_check_box_toggled"]
 [connection signal="item_selected" from="GraphicsOptions/MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2/ScaleOptionButton" to="." method="_on_scale_option_button_item_selected"]

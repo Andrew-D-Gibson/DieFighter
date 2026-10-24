@@ -52,3 +52,7 @@ var times_run: int = 0
 ## Whether the next new game opens with the tutorial. On until the player
 ## finishes it once; the Options menu turns it back on.
 var show_tutorial: bool = true 
+## Whether arriving somewhere with a background rule or hazard pops up a card
+## spelling it out (RegionAlert). Players who know the backgrounds can turn it
+## off in the Options menu.
+var show_region_alerts: bool = true

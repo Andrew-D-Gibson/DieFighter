@@ -47,6 +47,7 @@ func _setup_game_options_UI() -> void:
 
 	_setup_language_options()
 	%TutorialCheckBox.button_pressed = Globals.show_tutorial
+	%RegionAlertsCheckBox.button_pressed = Globals.show_region_alerts
 			
 	var bus_idx: int = AudioServer.get_bus_index("Master")
 	%MuteAllSoundsCheckBox.button_pressed = AudioServer.is_bus_mute(bus_idx)
@@ -88,6 +89,10 @@ func _set_scale_choice_label() -> void:
 ## with or without the tutorial it started with.
 func _on_tutorial_check_box_toggled(toggled_on: bool) -> void:
 	Globals.show_tutorial = toggled_on
+
+
+func _on_region_alerts_check_box_toggled(toggled_on: bool) -> void:
+	Globals.show_region_alerts = toggled_on
 
 
 func _on_screenshake_check_box_toggled(toggled_on: bool) -> void:

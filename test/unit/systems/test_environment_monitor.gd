@@ -28,6 +28,9 @@ func before_each() -> void:
 	background_manager.current_background = background
 	Globals.background_manager = background_manager
 
+	# The arrival card has tests of its own below; elsewhere it would only
+	# leave stray cards in the test tree.
+	Globals.show_region_alerts = false
 	monitor = add_child_autofree(MONITOR_SCENE.instantiate())
 
 
@@ -111,3 +114,58 @@ func test_a_rule_region_shows_its_rule_on_arrival() -> void:
 	await _settle()
 	assert_true(monitor._deployed)
 	assert_eq(monitor._shown, modifier)
+
+
+# ── The arrival card ──────────────────────────────────────────────────────────
+
+func _alerts() -> Array[RegionAlert]:
+	var out: Array[RegionAlert] = []
+	for child: Node in get_children():
+		if child is RegionAlert:
+			out.append(autofree(child))
+	return out
+
+
+func _arrive_with_rule() -> BackgroundModifierResource:
+	Globals.background_manager.current_background = BackgroundResource.new()
+	var modifier: BackgroundModifierResource = BackgroundModifierResource.new()
+	modifier.modifier_name = "Pulsar Wash"
+	modifier.description = "No ship can raise shields"
+	Events.start_scenario.emit()
+	Events.background_modifier_applied.emit(modifier)
+	await _settle()
+	return modifier
+
+
+func test_arriving_with_alerts_on_spells_the_rule_out() -> void:
+	Globals.show_region_alerts = true
+	await _arrive_with_rule()
+	var alerts: Array[RegionAlert] = _alerts()
+	assert_eq(alerts.size(), 1)
+	assert_eq(alerts[0].title, "PULSAR WASH")
+
+
+func test_alerts_off_leaves_just_the_monitor() -> void:
+	await _arrive_with_rule()
+	assert_eq(_alerts().size(), 0)
+	assert_true(monitor._deployed)
+	assert_true(monitor._unread, "the lamp still asks to be read")
+
+
+func test_the_card_landing_counts_as_read() -> void:
+	Globals.show_region_alerts = true
+	await _arrive_with_rule()
+	var alerts: Array[RegionAlert] = _alerts()
+	assert_true(monitor._unread)
+	alerts[0].landed.emit()
+	assert_false(monitor._unread)
+
+
+func test_a_card_for_the_last_region_landing_late_changes_nothing() -> void:
+	Globals.show_region_alerts = true
+	await _arrive_with_rule()
+	var alerts: Array[RegionAlert] = _alerts()
+	await _arrive_with_rule()
+	_alerts()
+	alerts[0].landed.emit()
+	assert_true(monitor._unread, "the new region's rule is still unread")

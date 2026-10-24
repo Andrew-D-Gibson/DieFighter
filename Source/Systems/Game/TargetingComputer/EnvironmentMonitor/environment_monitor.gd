@@ -6,7 +6,8 @@ extends Node2D
 ## Backgrounds are random, so the rule has to announce itself or it reads as a
 ## bug. It stays folded away in plain space, its lamp blinks until clicked
 ## (which opens the usual InfoShower panel), then stays lit while the player is
-## in the region. A hazard only counts down during a fight, so its countdown
+## in the region. Unless the player turned them off, a RegionAlert card spells
+## the rule out on arrival and shrinks into the screen, which counts as read. A hazard only counts down during a fight, so its countdown
 ## shows only while one is on.
 ##
 ## The node's origin is the hinge; everything that moves hangs off %Arm.
@@ -259,7 +260,41 @@ func _present() -> void:
 
 	if is_new:
 		_unread = true
+		if Globals.show_region_alerts:
+			_announce(shown)
 	_refresh_blink()
+
+
+## Spells the new rule out in a card that then shrinks into the screen. See
+## RegionAlert.
+func _announce(shown: Resource) -> void:
+	var alert: RegionAlert = RegionAlert.new()
+	if shown is BackgroundHazardResource:
+		var hazard: BackgroundHazardResource = shown
+		alert.title = tr(hazard.hazard_name).to_upper()
+		alert.color = hazard.color
+		alert.description = tr(hazard.description)
+	else:
+		var modifier: BackgroundModifierResource = shown
+		alert.title = tr(modifier.modifier_name).to_upper()
+		alert.color = modifier.color
+		alert.description = tr(modifier.description)
+	alert.landing_point = func() -> Vector2: return _glyph.global_position
+	alert.landed.connect(_on_alert_landed.bind(shown))
+	# Beside the monitor rather than on it: the monitor hides itself while
+	# stowed, and would take the card with it.
+	get_parent().add_child(alert)
+
+
+## The card has delivered the rule: the screen takes it in with a knock and a
+## flare, and the lamp stops asking to be read.
+func _on_alert_landed(shown: Resource) -> void:
+	if shown != _shown or not _deployed:
+		return
+	_unread = false
+	_refresh_blink()
+	_kick()
+	_flare(_current_color())
 
 
 ## The old region's rule is meaningless mid-hyperspace, and a lamp blinking
