@@ -84,3 +84,21 @@ func test_disarming_stops_the_countdown() -> void:
 	manager._on_player_turn_start()
 	assert_signal_not_emitted(Events, "hazard_countdown_changed")
 	assert_signal_not_emitted(Events, "hazard_triggered")
+
+
+func test_a_hazard_builds_up_before_it_strikes() -> void:
+	var engine: ScenarioEngine = add_child_autofree(ScenarioEngine.new())
+	var order: Array[String] = []
+	var on_wind_up: Callable = func(_h: BackgroundHazardResource, _s: float) -> void: order.append("wind up")
+	var on_strike: Callable = func(_h: BackgroundHazardResource) -> void: order.append("strike")
+	Events.hazard_winding_up.connect(on_wind_up)
+	Events.hazard_struck.connect(on_strike)
+
+	var event: HazardEvent = HazardEvent.new()
+	event.hazard = hazard
+	event.chain = EffectChain.new()
+	await event.resolve(engine)
+
+	Events.hazard_winding_up.disconnect(on_wind_up)
+	Events.hazard_struck.disconnect(on_strike)
+	assert_eq(order, ["wind up", "strike"] as Array[String])

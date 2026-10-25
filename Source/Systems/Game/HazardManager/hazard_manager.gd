@@ -104,13 +104,10 @@ func _count_down(trigger: BackgroundHazardResource.Timing) -> void:
 	Events.hazard_countdown_changed.emit(current_hazard, turns_remaining)
 
 
-## Queues the hazard's chain onto the live scenario engine.
+## Queues the hazard onto the live scenario engine, which builds up to it and
+## then plays its chain (see HazardEvent).
 func _fire() -> void:
 	Events.hazard_triggered.emit(current_hazard)
-
-	# The environment hitting the whole board should land harder than any one
-	# ship's attack, so it gets the big shake.
-	Events.camera_shake_large.emit(true)
 
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine == null or current_hazard.effect_chain == null:
@@ -119,5 +116,6 @@ func _fire() -> void:
 	var event: HazardEvent = HazardEvent.new()
 	event.actor = Globals.player
 	event.effect_source = Globals.player
+	event.hazard = current_hazard
 	event.chain = current_hazard.effect_chain
 	engine.queue_event(event)

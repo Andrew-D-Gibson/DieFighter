@@ -65,6 +65,16 @@ func _urgency_changed() -> void:
 	).set_trans(Tween.TRANS_SINE)
 
 
+## Brightens toward the strike, so the flare's own flash lands on a star
+## already burning hot.
+func _winding_up(seconds: float) -> void:
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
+	_flash_tween = create_tween()
+	_flash_tween.tween_property(self, "_flash", 1.0, seconds) \
+		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
+
+
 func _fired() -> void:
 	if _flash_tween and _flash_tween.is_valid():
 		_flash_tween.kill()

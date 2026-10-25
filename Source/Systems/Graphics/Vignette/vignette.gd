@@ -25,6 +25,8 @@ func _ready() -> void:
 	Events.player_shields_broken.connect(_shield_break_vignette)
 	Events.red_alert.connect(_red_alert_vignette)
 	Events.vignette_pulse.connect(_pulse_vignette)
+	Events.hazard_winding_up.connect(_hazard_wind_up)
+	Events.hazard_struck.connect(_hazard_strike)
 
 
 ## Cyan rather than blue, brighter, and slow to fade: the hull is bare now.
@@ -34,6 +36,36 @@ func _shield_break_vignette() -> void:
 	var tween: Tween = get_tree().create_tween()
 	tween.tween_property(self, "material:shader_parameter/alpha", break_alpha, break_flash_time * 0.06).from(0).set_trans(Tween.TRANS_QUAD)
 	tween.tween_property(self, "material:shader_parameter/alpha", 0, break_flash_time * 0.94).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## A hazard building to its strike: the edges swell in its colour in pulses
+## that come faster and burn brighter toward the hit, like an alarm winding up.
+func _hazard_wind_up(hazard: BackgroundHazardResource, seconds: float) -> void:
+	if _alert_tween and _alert_tween.is_valid():
+		_alert_tween.kill()
+	material.set_shader_parameter('color', hazard.color)
+	_alert_tween = get_tree().create_tween()
+	# Fractions of the wind-up each pulse takes: long, shorter, shortest.
+	var pulses: Array[float] = [0.45, 0.3, 0.25]
+	for i: int in range(pulses.size()):
+		var peak: float = lerpf(alert_alpha * 0.5, alert_alpha * 1.2, float(i) / (pulses.size() - 1))
+		_alert_tween.tween_property(
+			self, "material:shader_parameter/alpha", peak, seconds * pulses[i] * 0.6
+		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		_alert_tween.tween_property(
+			self, "material:shader_parameter/alpha", peak * 0.35, seconds * pulses[i] * 0.4
+		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## The strike: the hazard's colour floods the edges, then drains slowly.
+func _hazard_strike(hazard: BackgroundHazardResource) -> void:
+	if _alert_tween and _alert_tween.is_valid():
+		_alert_tween.kill()
+	material.set_shader_parameter('color', hazard.color)
+	_alert_tween = get_tree().create_tween()
+	_alert_tween.tween_property(self, "material:shader_parameter/alpha", 0.85, 0.05)
+	_alert_tween.tween_property(self, "material:shader_parameter/alpha", 0.0, break_flash_time) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Same shape as a hit flash, in whatever color the authored effect asked for.

@@ -40,6 +40,12 @@ func _urgency_changed() -> void:
 	_schedule_next_streak()
 
 
+## A couple of rocks cross the sky ahead of the big one.
+func _winding_up(seconds: float) -> void:
+	_streak_across_sky()
+	get_tree().create_timer(seconds * 0.5, false).timeout.connect(_streak_across_sky)
+
+
 ## The impact itself: a big rock falling from high up at the player's panel.
 func _fired() -> void:
 	var from: Vector2 = Vector2(_rand(60.0, 260.0), -24.0)

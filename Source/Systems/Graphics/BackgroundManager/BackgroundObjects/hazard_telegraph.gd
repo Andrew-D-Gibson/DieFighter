@@ -5,8 +5,9 @@ extends Node2D
 ##
 ## The environment monitor says *when* a hazard lands; the region itself
 ## should say *that* something is building, so a player glancing at the sky
-## gets the warning too. Subclasses get two beats to act on — the hazard
-## becoming imminent (and calming after it fires), and the moment it fires.
+## gets the warning too. Subclasses get three beats to act on — the hazard
+## becoming imminent (and calming after it fires), the build-up to the strike,
+## and the strike itself.
 ##
 ## Only ever instanced inside the background that carries the hazard, so any
 ## hazard signal is this object's hazard.
@@ -21,7 +22,8 @@ var urgent: bool = false
 func _ready() -> void:
 	Events.hazard_armed.connect(_on_countdown)
 	Events.hazard_countdown_changed.connect(_on_countdown)
-	Events.hazard_triggered.connect(func(_hazard: BackgroundHazardResource) -> void: _fired())
+	Events.hazard_winding_up.connect(func(_hazard: BackgroundHazardResource, seconds: float) -> void: _winding_up(seconds))
+	Events.hazard_struck.connect(func(_hazard: BackgroundHazardResource) -> void: _fired())
 
 
 func _on_countdown(hazard: BackgroundHazardResource, turns_remaining: int) -> void:
@@ -38,6 +40,11 @@ func _urgency_changed() -> void:
 	pass
 
 
-## The hazard is going off right now.
+## The hazard is building to its strike, which lands in [param seconds].
+func _winding_up(_seconds: float) -> void:
+	pass
+
+
+## The hazard strikes right now.
 func _fired() -> void:
 	pass

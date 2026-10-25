@@ -166,8 +166,15 @@ signal targeting_computer_retargeted()
 signal hazard_armed(hazard: BackgroundHazardResource, turns_remaining: int)
 ## The countdown ticked. Emitted every player turn while a hazard is active.
 signal hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remaining: int)
-## The hazard just went off.
+## The hazard's countdown ran out: it goes off as soon as the engine reaches
+## it. The monitor pops; the build-up and the strike follow.
 signal hazard_triggered(hazard: BackgroundHazardResource)
+## The hazard is building to its strike, which lands in [param seconds]. See
+## HazardEvent.
+signal hazard_winding_up(hazard: BackgroundHazardResource, seconds: float)
+## The hazard strikes now: its art fires and the screen flashes, right before
+## its chain lands.
+signal hazard_struck(hazard: BackgroundHazardResource)
 
 
 # Background Modifier Events

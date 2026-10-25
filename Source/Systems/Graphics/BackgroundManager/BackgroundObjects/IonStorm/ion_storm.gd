@@ -153,6 +153,16 @@ func _urgency_changed() -> void:
 	_countdown = minf(_countdown, _next_gap())
 
 
+## The clouds flicker faster and faster as the discharge builds.
+func _winding_up(seconds: float) -> void:
+	# When, as fractions of the build-up.
+	var beats: Array[float] = [0.15, 0.45, 0.68, 0.84, 0.94]
+	for at: float in beats:
+		get_tree().create_timer(seconds * at, false).timeout.connect(
+			func() -> void: flash_offscreen(lerpf(0.4, 0.9, at))
+		)
+
+
 ## The discharge: a close bolt with a broad flash behind it, then a second
 ## bolt once the first has faded.
 func _fired() -> void:

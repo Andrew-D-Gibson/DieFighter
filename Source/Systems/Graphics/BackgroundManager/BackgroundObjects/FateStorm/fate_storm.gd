@@ -112,6 +112,16 @@ func _urgency_changed() -> void:
 	_countdown = minf(_countdown, _next_gap())
 
 
+## Sheet lightning rolls in faster and faster as the storm gathers.
+func _winding_up(seconds: float) -> void:
+	# When, as fractions of the build-up.
+	var beats: Array[float] = [0.1, 0.4, 0.65, 0.85]
+	for at: float in beats:
+		get_tree().create_timer(seconds * at, false).timeout.connect(
+			func() -> void: strike(Kind.SHEET, lerpf(0.5, 1.0, at))
+		)
+
+
 ## The rift opening: a barrage of bolts with a tear through the middle.
 func _fired() -> void:
 	strike(Kind.TEAR, 1.0)
