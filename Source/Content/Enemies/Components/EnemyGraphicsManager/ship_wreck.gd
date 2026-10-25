@@ -9,7 +9,9 @@ extends Node2D
 ## The wedges share their crack lines, so the pieces fit back together exactly
 ## at the moment the hull gives way.
 ##
-## Frees itself once the last explosion has played out.
+## Frees itself once the last explosion has played out, or at a deadline
+## should one never finish: the dying ship waits on [signal finished] before
+## it frees itself, and a wreck that never finished would keep it in play.
 
 signal finished
 
@@ -40,6 +42,9 @@ const _BLAST_JITTER_SECONDS: float = 0.06
 const _BLAST_SCALE_MIN: float = 0.75
 const _BLAST_SCALE_MAX: float = 1.05
 const _BLAST_SPEED: float = 1.3
+## Longest an explosion could take, at _BLAST_SPEED, before the wreck gives up
+## waiting for it. The explosion art runs 2.5 s at normal speed.
+const _BLAST_SECONDS_MAX: float = 3.0
 
 ## How far the crack lines wander off straight, in pixels.
 const _CRACK_JAG: float = 3.0
@@ -51,6 +56,7 @@ const _SPARK_TEXTURE: Texture2D = preload("res://Assets/Particles/hit_particle_p
 var _explosion_scene: PackedScene
 var _blast_sound: SoundEffectResource
 var _blasts_left: int = 0
+var _done: bool = false
 
 
 ## Breaks [param ship_graphics] up into pieces drawn under [param parent],
@@ -92,6 +98,9 @@ func _break(ship_graphics: Node2D, kick: Vector2) -> void:
 	RNGManager.shuffle_array(RNGManager.Bucket.COSMETIC, blast_order)
 
 	_blasts_left = count
+	var last_blast: float = _FIRST_BLAST_SECONDS + (count - 1) * _BLAST_SPACING_SECONDS \
+		+ _BLAST_JITTER_SECONDS
+	get_tree().create_timer(last_blast + _BLAST_SECONDS_MAX).timeout.connect(_finish)
 	for i: int in range(count):
 		var next: int = (i + 1) % count
 		var arc_to: float = angles[next] if next > i else angles[next] + TAU
@@ -277,24 +286,27 @@ func _blow(piece: Node2D) -> void:
 	explosion.rotation = _rand(0.0, TAU)
 	explosion.scale = Vector2.ONE * _rand(_BLAST_SCALE_MIN, _BLAST_SCALE_MAX)
 	explosion.speed_scale = _BLAST_SPEED
-	# The explosion scene frees itself; counting it out is how the wreck knows
-	# when it's done.
-	explosion.tree_exited.connect(_on_blast_gone, CONNECT_ONE_SHOT)
+	# The explosion scene frees itself once it has played; counting those out
+	# is how the wreck knows when it's done.
+	explosion.animation_finished.connect(_on_blast_done, CONNECT_ONE_SHOT)
 	add_child(explosion)
 	Juice.sparkle(self, piece.global_position, Globals.red, 6, 30.0)
 	Events.play_sound.emit(_blast_sound)
 	Events.camera_shake_small.emit()
 
 
-func _on_blast_gone() -> void:
-	# The wreck being freed takes its explosions with it; that isn't them
-	# finishing.
-	if is_queued_for_deletion() or not is_inside_tree():
-		return
+func _on_blast_done() -> void:
 	_blasts_left -= 1
-	if _blasts_left == 0:
-		finished.emit()
-		queue_free()
+	if _blasts_left <= 0:
+		_finish()
+
+
+func _finish() -> void:
+	if _done:
+		return
+	_done = true
+	finished.emit()
+	queue_free()
 
 
 func _rand(from: float, to: float) -> float:

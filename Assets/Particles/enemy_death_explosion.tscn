@@ -430,34 +430,8 @@ animations = [{
 "speed": 24.0
 }]
 
-[sub_resource type="Animation" id="Animation_5m3w0"]
-resource_name = "destroy_after_playing"
-tracks/0/type = "method"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath(".")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(2),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"queue_free"
-}]
-}
-
-[sub_resource type="AnimationLibrary" id="AnimationLibrary_amhix"]
-_data = {
-&"destroy_after_playing": SubResource("Animation_5m3w0")
-}
-
 [node name="EnemyDeathExplosion" type="AnimatedSprite2D" unique_id=1952869326]
 sprite_frames = SubResource("SpriteFrames_c3rim")
 autoplay = "default"
-frame = 59
-frame_progress = 1.0
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=863743913]
-libraries/ = SubResource("AnimationLibrary_amhix")
-autoplay = &"destroy_after_playing"
+[connection signal="animation_finished" from="." to="." method="queue_free"]
