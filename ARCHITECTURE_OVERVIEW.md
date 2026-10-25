@@ -941,10 +941,19 @@ rule the enemy intent telegraph follows. Three things carry it:
   the monitor pops like a tile with the hazard's name as the callout. Clicking
   it explains the hazard and its interval. Each fresh rule or hazard also
   spawns a `RegionAlert` card (unless `Globals.show_region_alerts`, Options >
-  Game > Region Alerts, is off): name and formatted description over the
-  main viewer for ~2 s while the ships fly in, then it shrinks into the
-  monitor's screen, whose landing kicks the monitor and counts as read. A card
-  from a region the player has since left fades or lands without effect.
+  Game > Region Alerts, is off). On arrival it is the first beat of the
+  `ArrivalIntro`: once the monitor has swung up, the card unfolds out of its
+  screen into the empty sky, the cockpit dims slightly, and it holds ~2 s (a
+  click anywhere skips it) before folding back in, which kicks the monitor
+  and counts as read. A card from a region the player has since left fades or
+  lands without effect.
+- **`ArrivalIntro`** (`ScenarioManager/arrival_intro.gd`) plays an arrival's
+  beats one at a time before `EnemyManager.start_enemy_fly_in` lets the ships
+  in: the region card (`Beat.REGION_RULE`), then the `BossIntroCard` band
+  (`Beat.BOSS`). Systems `add()` their beat while `start_scenario` is being
+  answered; with none, the ships come straight in. A beat is given up on
+  after `max_beat_seconds` or when its node is freed, and a jump lets the
+  ships go, so nothing can strand them off-screen.
 - **`HazardTelegraph`** (`BackgroundObjects/hazard_telegraph.gd`) is the base
   for background art that reacts: `_urgency_changed()` when it becomes
   imminent or calms, `_fired()` when it goes off. The flare star throbs hot

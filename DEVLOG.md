@@ -20,6 +20,15 @@ Newest entries at the top.
   (`GameStateManager.boss_bonus_action_kinds`): 3 kinds in sector 1, 4 in
   sector 2, still no cap in sector 3. A boss is any boss-faction ship, which
   is every part of a gate fight.
+- **Arrivals take turns.** Arriving started everything at once: ships flying
+  in, the monitor swinging up, the region card over the tile grid, the
+  targeting computer locking on, and in a gate the boss band too. Now an
+  `ArrivalIntro` plays the beats one after another and holds the fly-in for
+  them: the monitor swings up alone, the region card unfolds out of its
+  screen into the empty sky over a slight cockpit dim, holds ~2 s (a click
+  anywhere skips it), folds back into the monitor, then the boss band, then
+  the ships. With Region Alerts off the arrival is as it was before the card
+  existed, except that a gate's ships now also wait for the boss band.
 
 ---
 
