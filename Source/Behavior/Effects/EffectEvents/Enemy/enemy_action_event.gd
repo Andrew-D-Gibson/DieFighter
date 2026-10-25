@@ -19,8 +19,14 @@ const _HEAVY_HANDOVER_SECONDS: float = 0.95
 
 ## Beat between the die arriving and the action firing. Scales the same way, so
 ## a heavy die also hangs there a moment longer before it goes off.
-const _LIGHT_HOLD_SECONDS: float = 0.15
-const _HEAVY_HOLD_SECONDS: float = 0.45
+const _LIGHT_HOLD_SECONDS: float = 0.3
+const _HEAVY_HOLD_SECONDS: float = 0.6
+
+## Beat after an action and everything it set off has resolved, before the
+## ship's next die goes (Enemy queues it as a WaitEvent). Without it one
+## action's damage numbers and callouts were still on screen when the next
+## die was already flying, and the player lost track of which did what.
+const SETTLE_SECONDS: float = 0.5
 
 ## How far the die spins on its way out in front of the ship: one full turn,
 ## so it lands upright.
@@ -95,7 +101,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		return
 		
 	await enemy.get_tree().create_timer(
-		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight)
+		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight) / Globals.animation_speed
 	).timeout
 
 	if not _can_still_act():

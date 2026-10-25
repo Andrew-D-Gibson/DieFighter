@@ -18,6 +18,11 @@ const _BIG_HIT: int = 6
 
 const _RISE_PIXELS: float = 10.0
 const _LIFETIME_SECONDS: float = 0.8
+## Words take longer to read than a number: a callout ("RELAY", "+2 BURN",
+## "NO SHIELDS") holds this long, plus a little per letter.
+const _TEXT_LIFETIME_SECONDS: float = 1.4
+const _TEXT_SECONDS_PER_LETTER: float = 0.05
+const _MAX_TEXT_LIFETIME_SECONDS: float = 2.2
 
 ## Repeated hits on the same ship scatter sideways instead of stacking into
 ## one unreadable pile.
@@ -31,7 +36,7 @@ const _DAMAGE_DRIFT: Vector2 = Vector2(10.0, 8.0)
 
 ## Callouts landing on one ship inside this window stack upward instead of
 ## printing over each other.
-const _STACK_WINDOW_MSEC: int = 600
+const _STACK_WINDOW_MSEC: int = 900
 const _STACK_STEP_PIXELS: float = 9.0
 
 ## Ship instance id -> {"msec": last callout time, "count": stacked so far}.
@@ -54,6 +59,7 @@ const _POP_SCALE: float = 1.4
 var _drift: Vector2 = Vector2(0.0, -_RISE_PIXELS)
 var _rest_scale: Vector2 = Vector2.ONE
 var _label: Label
+var _lifetime: float = _LIFETIME_SECONDS
 
 
 ## Spawns a number for `amount` beside `target`. Parented beside the target
@@ -75,7 +81,7 @@ static func spawn(target: Node2D, amount: int, color: Color) -> void:
 	if target is Player:
 		origin = Juice.anchor_of(target) + _random_in(_PLAYER_SPAWN_AREA)
 		drift = _random_in(_PLAYER_DRIFT_RANGE)
-	_spawn_label(target.get_parent(), origin, str(amount), color, amount >= _BIG_HIT, drift, size)
+	_spawn_label(target.get_parent(), origin, str(amount), color, amount >= _BIG_HIT, drift, size, _LIFETIME_SECONDS)
 
 
 static func _random_in(area: Rect2) -> Vector2:
@@ -96,7 +102,9 @@ static func spawn_text(target: Node2D, text: String, color: Color, big: bool = f
 
 ## A label at `global_pos`, parented to `parent`.
 static func spawn_text_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false) -> void:
-	_spawn_label(parent, global_pos, text, color, big, Vector2(0.0, -_RISE_PIXELS))
+	var lifetime: float = minf(_TEXT_LIFETIME_SECONDS + text.length() * _TEXT_SECONDS_PER_LETTER,
+		_MAX_TEXT_LIFETIME_SECONDS)
+	_spawn_label(parent, global_pos, text, color, big, Vector2(0.0, -_RISE_PIXELS), 1.0, lifetime)
 
 
 static func _stack_offset(target: Node2D) -> float:
@@ -115,13 +123,14 @@ static func _stack_offset(target: Node2D) -> float:
 ## [param size] is a whole-number scale on top of the big-hit doubling, so the
 ## pixel font stays crisp.
 static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color: Color,
-		big: bool, drift: Vector2, size: float = 1.0) -> void:
+		big: bool, drift: Vector2, size: float = 1.0, lifetime: float = _LIFETIME_SECONDS) -> void:
 	if text.is_empty() or not is_instance_valid(parent):
 		return
 
 	var number: DamageNumber = DamageNumber.new()
 	number._build(text, color)
 	number._drift = drift
+	number._lifetime = lifetime
 	number._rest_scale = Vector2.ONE * ((2.0 if big else 1.0) + size - 1.0)
 	parent.add_child(number)
 	number.global_position = global_pos + Vector2(
@@ -176,8 +185,10 @@ func _animate() -> void:
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(self, "scale", rest_scale, 0.12) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(self, "position", position + _drift, _LIFETIME_SECONDS) \
+	tween.parallel().tween_property(self, "position", position + _drift, _lifetime) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	tween.parallel().tween_property(self, "modulate:a", 0.0, _LIFETIME_SECONDS * 0.4) \
-		.set_delay(_LIFETIME_SECONDS * 0.6)
+	# Fades over a fixed stretch at the end, so a longer life is all reading time.
+	var fade: float = _LIFETIME_SECONDS * 0.4
+	tween.parallel().tween_property(self, "modulate:a", 0.0, fade) \
+		.set_delay(_lifetime - fade)
 	tween.finished.connect(queue_free)

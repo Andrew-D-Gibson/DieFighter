@@ -1,13 +1,31 @@
 class_name FeedAllyEvent
 extends EffectEvent
-## An enemy hands its die to an ally, who uses it straight away on its own
-## intent table: whatever that ally's slot for the die's face says.
+## An enemy hands its die to an ally. The die joins the ally's hold like any
+## other: the ally spends it on its own turn, on whatever its slot for the
+## die's face says, and if its turn has already gone EnemyTurn comes back for
+## it once every ship has had theirs.
 ##
 ## The enemy-side cousin of a tile's Feed. The ally was picked when the
 ## feeding slot was rolled, so the player can read the whole chain before
 ## committing a die. EnemyTargetBinder never binds a Feed that could come
 ## back around; relay_visited is the backstop for anything that changes the
 ## die on the way (Scrambled flipping it as it lands).
+##
+## It used to be spent the instant it landed, and between the relaying ship's
+## own effect and the ally's going off in the same breath the player couldn't
+## tell who did what. Now the hand-off is a beat of its own.
+
+## Where a relayed die has been, carried with it into the ally's hold. See
+## Enemy.receive_relayed_die().
+class Trail extends RefCounted:
+	## How many Feeds carried the die to the ship holding it.
+	var depth: int = 0
+	## Ships that already acted with the die, so it can't come back to them.
+	var visited: Array[Node] = []
+
+	func _init(feed_depth: int, ships: Array[Node]) -> void:
+		depth = feed_depth
+		visited = ships.duplicate()
 
 ## The ally the feeding slot was bound to.
 var ally: Enemy
@@ -20,8 +38,12 @@ var feed_depth: int = 0
 
 const _RELAY_COLOR: Color = Color("#ef9a3a")
 
+## How long the turn holds on a hand-off once the die has been sent, so the
+## player watches it cross to the ally before anything else happens.
+const HANDOFF_SECONDS: float = 0.9
 
-func resolve(engine: ScenarioEngine) -> void:
+
+func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(activator_die):
 		return
 
@@ -34,8 +56,25 @@ func resolve(engine: ScenarioEngine) -> void:
 		Juice.callout(from, "RELAY", _RELAY_COLOR)
 		Juice.stream(from.get_parent(), activator_die.global_position, ally.global_position, _RELAY_COLOR, 6)
 
-	ally.dice_manager.add(activator_die, true, false)
-	engine.inject_event(build_ally_action(ally, activator_die, feed_depth + 1, relay_visited))
+	hand_over(ally, activator_die, Trail.new(feed_depth + 1, relay_visited), _RELAY_COLOR)
+	await wait_for_handoff(ally)
+
+
+## Puts [param die] in [param target]'s hold along with where it has been,
+## and marks the catch on the ally so the player sees who has it now.
+static func hand_over(target: Enemy, die: Dice, trail: Trail, color: Color) -> void:
+	target.dice_manager.add(die, true, false)
+	target.receive_relayed_die(die, trail)
+	Juice.ring(target, target.global_position, color, 18.0, 0.4, 4.0)
+
+
+## The beat a hand-off holds the turn for, cut short if the ally is gone.
+static func wait_for_handoff(target: Enemy) -> void:
+	if not is_instance_valid(target) or not target.is_inside_tree():
+		return
+	await target.get_tree().create_timer(HANDOFF_SECONDS / Globals.animation_speed).timeout
+	if is_instance_valid(target):
+		Juice.bump(target.graphics_manager.ship_graphics, 0.12, 0.25)
 
 
 ## Whether [param target] can take a die in this relay chain.
@@ -45,20 +84,6 @@ static func can_feed(target: Enemy, visited: Array[Node]) -> bool:
 	if target in visited:
 		return false
 	return target.turn_actions.size() == EnemyActionSelector.SLOT_COUNT
-
-
-## The action [param target] takes with [param die] the moment it arrives.
-## Read after the die has landed, so a face changed on arrival plays the slot
-## it now shows.
-static func build_ally_action(target: Enemy, die: Dice, depth: int, visited: Array[Node]) -> EnemyActionEvent:
-	var event := EnemyActionEvent.new()
-	event.enemy = target
-	event.activator_die = die
-	event.die_value = die.value
-	event.action = target.turn_actions[clampi(die.value, 1, 6) - 1]
-	event.feed_depth = depth
-	event.relay_visited = visited.duplicate()
-	return event
 
 
 ## Nobody to feed: the die goes home with its face unchanged. A hologram is destroyed on the way.

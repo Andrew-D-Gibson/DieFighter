@@ -64,6 +64,9 @@ var turns_alive: int = 0
 ## EnemyActionOptionResource.fills_kept_faces). Cleared when it next acts.
 var kept_dice: Array[Dice] = []
 
+## Where each die an ally relayed here has been. See receive_relayed_die().
+var _relay_trails: Dictionary[Dice, FeedAllyEvent.Trail] = {}
+
 ## The die this ship has taken out of its queue to spend, and the tween
 ## carrying it out in front of the hull. Set by EnemyActionEvent. Out of the
 ## queue, the die would be missed if the ship died with it in hand, so death
@@ -533,7 +536,38 @@ func run_turn() -> void:
 	# Last turn's loaded dice are being spent now; only what this turn keeps
 	# loads the next table.
 	kept_dice.clear()
+	turns_alive += 1
+	_spend_held_dice()
 
+
+## Spends dice an ally relayed here after this ship's own turn had already
+## gone: EnemyTurn comes back round for them once every ship has gone.
+## Dice it kept this turn stay kept.
+func run_relayed_dice() -> void:
+	_spend_held_dice()
+
+
+## Whether it holds any die at all, kept ones included: what its turn spends.
+func holds_dice() -> bool:
+	return not dice_manager.queue.is_empty()
+
+
+## Whether a die in the hold is still waiting to be spent this turn. Dice it
+## kept (a loaded Siege Shot) wait for the next one.
+func has_dice_to_spend() -> bool:
+	for die: Dice in dice_manager.queue:
+		if is_instance_valid(die) and die not in kept_dice:
+			return true
+	return false
+
+
+## Remembers where a die relayed to this ship has been, so that when the ship
+## gets round to spending it the chain still can't double back.
+func receive_relayed_die(die: Dice, trail: FeedAllyEvent.Trail) -> void:
+	_relay_trails[die] = trail
+
+
+func _spend_held_dice() -> void:
 	# Stuffed past its breaker: no actions this turn, just the overload.
 	if is_overloaded():
 		var overload: OverloadEvent = OverloadEvent.new()
@@ -541,7 +575,7 @@ func run_turn() -> void:
 		var overload_engine: ScenarioEngine = ScenarioEngine.current()
 		if overload_engine:
 			overload_engine.queue_event(overload)
-		turns_alive += 1
+		_relay_trails.clear()
 		return
 
 	var enemy_action_events: Array[EnemyActionEvent] = []
@@ -551,6 +585,8 @@ func run_turn() -> void:
 			continue
 		
 		var die := dice_manager.queue[i]
+		if die in kept_dice:
+			continue
 		
 		# Get the action for the chosen die
 		var action := turn_actions[die.value - 1]
@@ -560,14 +596,24 @@ func run_turn() -> void:
 		event.activator_die = die
 		event.die_value = die.value
 		event.action = action
+		var trail: FeedAllyEvent.Trail = _relay_trails.get(die)
+		if trail:
+			event.feed_depth = trail.depth
+			event.relay_visited = trail.visited.duplicate()
 		
 		enemy_action_events.append(event)
+	# Spent or gone: a trail outlives its die only until the ship next acts.
+	_relay_trails.clear()
 		
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine:
 		for event: EnemyActionEvent in enemy_action_events:
 			engine.queue_event(event)
-	turns_alive += 1
+			# The action's own effects are injected ahead of this, so the
+			# beat comes once they've all landed.
+			var settle: WaitEvent = WaitEvent.new()
+			settle.amount = roundi(EnemyActionEvent.SETTLE_SECONDS * 1000.0 / Globals.animation_speed)
+			engine.queue_event(settle)
 	
 
 ## Triggers any effects associated with the current scenario state. On

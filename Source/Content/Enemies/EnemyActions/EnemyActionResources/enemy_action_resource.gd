@@ -17,8 +17,8 @@ enum Binding {
 	HOSTILE_SHIP, ## A ship its faction preys on, never the player (raid)
 }
 
-## Whether this action hands a die on to the ally it's bound to, who uses it
-## at once. Relays are what can chain, so they're what the binder keeps from
+## Whether this action hands a die on to the ally it's bound to, who spends
+## it on its turn. Relays are what can chain, so they're what the binder keeps from
 ## ever looping.
 enum Relay {
 	NONE,

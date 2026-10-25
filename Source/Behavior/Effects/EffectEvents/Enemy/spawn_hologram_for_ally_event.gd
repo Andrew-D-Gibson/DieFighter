@@ -1,7 +1,7 @@
 class_name SpawnHologramForAllyEvent
 extends EffectEvent
-## An enemy conjures a holographic die for an ally, who uses it straight away
-## on its own intent table. The hologram's face is the action's rolled intent
+## An enemy conjures a holographic die for an ally, who spends it on its own
+## intent table like any die it holds (see FeedAllyEvent). The hologram's face is the action's rolled intent
 ## amount, so the intent tells the player exactly which of the ally's slots
 ## it will play. It's spent the first time it's handed anywhere.
 ##
@@ -23,7 +23,7 @@ func is_amplifiable() -> bool:
 	return false
 
 
-func resolve(engine: ScenarioEngine) -> void:
+func resolve(_engine: ScenarioEngine) -> void:
 	if amount <= 0 or not is_instance_valid(Globals.player):
 		return
 	if not FeedAllyEvent.can_feed(ally, relay_visited):
@@ -42,8 +42,8 @@ func resolve(engine: ScenarioEngine) -> void:
 		Juice.callout(from, "HOLO", _HOLOGRAM_COLOR)
 		Juice.ring(from, hologram.global_position, _HOLOGRAM_COLOR, 14.0, 0.3, 4.0)
 
-	ally.dice_manager.add(hologram, true, false)
-	engine.inject_event(FeedAllyEvent.build_ally_action(ally, hologram, feed_depth + 1, relay_visited))
+	FeedAllyEvent.hand_over(ally, hologram, FeedAllyEvent.Trail.new(feed_depth + 1, relay_visited), _HOLOGRAM_COLOR)
+	await FeedAllyEvent.wait_for_handoff(ally)
 
 
 ## Where a die hangs in front of a ship that's using it. The die that paid for
