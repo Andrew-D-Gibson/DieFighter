@@ -30,7 +30,8 @@ var attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE
 var kept_faces: Array[int] = []
 
 ## The most kinds of action the table may mix; 0 for no limit. Set from how
-## deep into the run the player is. See EnemyActionVariety.
+## deep into the run the player is, a little higher for a boss. See
+## EnemyActionVariety.
 var max_action_kinds: int = 0
 
 
@@ -39,7 +40,7 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 	situation.ship = rolling_ship
 	if Globals.state_manager:
 		situation.intents_visible = Globals.state_manager.enemy_intents_visible()
-		situation.max_action_kinds = Globals.state_manager.get_action_kinds_cap()
+		situation.max_action_kinds = Globals.state_manager.get_action_kinds_cap(is_boss(rolling_ship))
 	if roster.is_empty() and Globals.enemy_manager:
 		roster = Globals.enemy_manager.get_alive_enemies()
 
@@ -55,6 +56,13 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 				situation.kept_faces.append(die.value)
 		situation.kept_faces.sort()
 	return situation
+
+
+## Whether [param rolling_ship] is one of a boss fight's ships: every part of
+## a gate boss fights under the boss faction.
+static func is_boss(rolling_ship: Enemy) -> bool:
+	return rolling_ship.scenario_state != null \
+		and rolling_ship.scenario_state.faction == ScenarioManager.Faction.BOSS
 
 
 ## Whether any ally is below [param fraction] of its hull.

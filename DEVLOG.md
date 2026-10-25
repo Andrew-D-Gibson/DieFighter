@@ -4,6 +4,25 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-25 — Killed ships free again, no comms lamp, bosses mix more
+
+- **Killed ships were never freed.** The death explosion's `queue_free` key
+  sat at 2 s in an animation 1 s long, so it never fired: every blast hung on
+  its last frame, the wreck waited for them forever, and so did the
+  dying `Enemy`. It had always leaked; the breakup was just the first thing to
+  wait on it. The explosion now frees itself on its own `animation_finished`
+  (which respects `speed_scale`), and `ShipWreck` also has a deadline so a
+  stuck blast can never keep a ship in play. This also stops the cockpit
+  destruction and Bastion hull explosions leaking.
+- **Comms lamp removed.** It didn't look right; clicking the portrait still
+  replays the targeted ship's last line.
+- **Bosses get +1 kind** under the variety cap
+  (`GameStateManager.boss_bonus_action_kinds`): 3 kinds in sector 1, 4 in
+  sector 2, still no cap in sector 3. A boss is any boss-faction ship, which
+  is every part of a gate fight.
+
+---
+
 ## 2026-10-24 — Wrecks break up, comms, a variety cap, and region alerts
 
 - **Wrecks break up.** A killed ship no longer sails off to explode once. The

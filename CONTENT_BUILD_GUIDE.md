@@ -261,7 +261,9 @@ reaches the hull; what the shields can't absorb is lost. Write it as
   would fill, so heavy weights are a ship's identity in early sectors. A
   ship whose `force_include` options alone name more kinds than the cap won't
   always show them all (the Ion Lance's Siphon + Quake, the Tender's Repair +
-  Aegis): check how it reads in sector 1.
+  Aegis): check how it reads in sector 1. Boss ships (the boss faction,
+  i.e. every part of a gate fight) get one more kind wherever there's a cap
+  (`boss_bonus_action_kinds`), so a sector-1 boss mixes 3.
 - **`face_bias`**: which faces the strong actions lean toward. Defaults to
   0.5, a gentle lean toward high faces for every enemy; leave it there unless
   the ship should break the rule. Positive pushes strong actions onto high

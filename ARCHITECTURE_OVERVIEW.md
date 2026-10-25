@@ -1385,7 +1385,9 @@ because `state` is stale while a new scenario's ships roll).
   `force_include` ones too. When nothing needs trimming it draws nothing, so
   an uncapped roll is unchanged draw for draw. `reroll_slot_without_relays()`
   only brings in a new kind while the table has room for one
-  (`within_table()`).
+  (`within_table()`). Boss-faction ships (`EnemyActionSituation.is_boss()`)
+  get `boss_bonus_action_kinds` (1) more wherever a cap applies; no cap stays
+  no cap.
 
 **Bound targets.** An action that acts on another ship picks it when the slot
 is rolled, not when the die is spent: `EnemyTargetBinder` sets

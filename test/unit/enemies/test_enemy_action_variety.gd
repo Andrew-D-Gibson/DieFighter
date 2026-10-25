@@ -191,3 +191,28 @@ func test_an_empty_dial_means_no_cap() -> void:
 	manager.current_game_save = GameSaveResource.new()
 	manager.action_kinds_per_sector = [] as Array[int]
 	assert_eq(manager.get_action_kinds_cap(), 0)
+
+
+func test_a_boss_gets_an_extra_kind_wherever_there_is_a_cap() -> void:
+	var manager: GameStateManager = autofree(GameStateManager.new())
+	manager.current_game_save = GameSaveResource.new()
+	manager.action_kinds_per_sector = [2, 3, 0] as Array[int]
+	manager.boss_bonus_action_kinds = 1
+	var caps: Array[int] = []
+	for sector: int in range(4):
+		manager.current_game_save.sector_index = sector
+		caps.append(manager.get_action_kinds_cap(true))
+	assert_eq(caps, [3, 4, 0, 0] as Array[int], "no cap stays no cap")
+
+
+func _ship_of(faction: ScenarioManager.Faction) -> Enemy:
+	var ship: Enemy = autofree(Enemy.new())
+	ship.scenario_state = ScenarioShipState.new()
+	ship.scenario_state.faction = faction
+	return ship
+
+
+func test_boss_faction_ships_are_bosses() -> void:
+	assert_true(EnemyActionSituation.is_boss(_ship_of(ScenarioManager.Faction.BOSS)))
+	assert_false(EnemyActionSituation.is_boss(_ship_of(ScenarioManager.Faction.PIRATE)))
+	assert_false(EnemyActionSituation.is_boss(autofree(Enemy.new())), "a ship with no scenario state")
