@@ -137,12 +137,44 @@ func _arrive_with_rule() -> BackgroundModifierResource:
 	return modifier
 
 
+## The card unfolds out of the screen once the monitor is up; this skips the
+## swing rather than waiting it out.
+func _finish_swing() -> void:
+	if monitor._motion_tween and monitor._motion_tween.is_valid():
+		monitor._motion_tween.custom_step(5.0)
+	await _settle()
+	await _settle()
+
+
 func test_arriving_with_alerts_on_spells_the_rule_out() -> void:
 	Globals.show_region_alerts = true
 	await _arrive_with_rule()
+	await _finish_swing()
 	var alerts: Array[RegionAlert] = _alerts()
 	assert_eq(alerts.size(), 1)
 	assert_eq(alerts[0].title, "PULSAR WASH")
+
+
+func test_the_card_waits_for_the_monitor_to_swing_up() -> void:
+	Globals.show_region_alerts = true
+	await _arrive_with_rule()
+	await _settle()
+	assert_eq(_alerts().size(), 0, "nothing comes out of a screen still in motion")
+	await _finish_swing()
+	assert_eq(_alerts().size(), 1)
+
+
+func test_the_card_is_a_beat_the_ships_wait_for() -> void:
+	Globals.show_region_alerts = true
+	await _arrive_with_rule()
+	await _finish_swing()
+	var intro: ArrivalIntro = ArrivalIntro.shared()
+	assert_true(intro._playing, "the ships are still held")
+	_alerts()[0].landed.emit()
+	_alerts()[0].queue_free()
+	await _settle()
+	await _settle()
+	assert_false(intro._playing, "the card gone, the ships may come in")
 
 
 func test_alerts_off_leaves_just_the_monitor() -> void:
@@ -155,6 +187,7 @@ func test_alerts_off_leaves_just_the_monitor() -> void:
 func test_the_card_landing_counts_as_read() -> void:
 	Globals.show_region_alerts = true
 	await _arrive_with_rule()
+	await _finish_swing()
 	var alerts: Array[RegionAlert] = _alerts()
 	assert_true(monitor._unread)
 	alerts[0].landed.emit()
@@ -164,8 +197,10 @@ func test_the_card_landing_counts_as_read() -> void:
 func test_a_card_for_the_last_region_landing_late_changes_nothing() -> void:
 	Globals.show_region_alerts = true
 	await _arrive_with_rule()
+	await _finish_swing()
 	var alerts: Array[RegionAlert] = _alerts()
 	await _arrive_with_rule()
+	await _finish_swing()
 	_alerts()
 	alerts[0].landed.emit()
 	assert_true(monitor._unread, "the new region's rule is still unread")

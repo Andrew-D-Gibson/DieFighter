@@ -6,6 +6,12 @@ extends Control
 ## Continue after the win) arrives quietly.
 ##
 ## Swallows input while it's up, so the first die isn't spent under it.
+##
+## On arrival it's a beat of the ArrivalIntro: after the region's rule card,
+## and the ships hold off until it clears.
+
+## The band has cleared (or a jump swept it away).
+signal finished()
 
 @export var band: Control
 @export var portrait: TextureRect
@@ -23,6 +29,7 @@ var _tween: Tween
 
 func _ready() -> void:
 	hide()
+	ArrivalIntro.shared()
 	Events.start_scenario.connect(_on_start_scenario)
 	Events.jump.connect(_clear)
 
@@ -34,7 +41,12 @@ func _on_start_scenario() -> void:
 		return
 	if not Globals.state_manager.enemy_intents_visible():
 		return
+	ArrivalIntro.shared().add(ArrivalIntro.Beat.BOSS, _play_beat.bind(scenario))
+
+
+func _play_beat(scenario: ScenarioResource) -> void:
 	play(scenario)
+	await finished
 
 
 func play(scenario: ScenarioResource) -> void:
@@ -68,7 +80,10 @@ func play(scenario: ScenarioResource) -> void:
 	_tween.tween_property(band, "position:x", size.x, slide_time)\
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
 	_tween.parallel().tween_property(dim, "color:a", 0.0, slide_time)
-	_tween.tween_callback(hide)
+	_tween.tween_callback(func() -> void:
+		hide()
+		finished.emit()
+	)
 
 
 ## The boss is the toughest ship the scenario starts with.
@@ -84,4 +99,6 @@ func _portrait_for(scenario: ScenarioResource) -> Texture2D:
 func _clear() -> void:
 	if _tween:
 		_tween.kill()
-	hide()
+	if visible:
+		hide()
+		finished.emit()

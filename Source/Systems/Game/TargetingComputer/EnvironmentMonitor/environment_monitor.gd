@@ -7,8 +7,10 @@ extends Node2D
 ## bug. It stays folded away in plain space, its lamp blinks until clicked
 ## (which opens the usual InfoShower panel), then stays lit while the player is
 ## in the region. Unless the player turned them off, a RegionAlert card spells
-## the rule out on arrival and shrinks into the screen, which counts as read. A hazard only counts down during a fight, so its countdown
-## shows only while one is on.
+## the rule out on arrival: it unfolds out of the screen once the monitor is
+## up, ahead of the ships (the first beat of the ArrivalIntro), and folds back
+## in, which counts as read. A hazard only counts down during a fight, so its
+## countdown shows only while one is on.
 ##
 ## The node's origin is the hinge; everything that moves hangs off %Arm.
 
@@ -116,6 +118,7 @@ var _last_trigger_msec: int = -_TRIGGER_COOLDOWN_MSEC
 func _ready() -> void:
 	_build_countdown()
 	_stow_instantly()
+	ArrivalIntro.shared()
 	_clickable.clicked.connect(_on_clicked)
 	Events.background_modifier_applied.connect(_on_modifier_applied)
 	Events.modifier_triggered.connect(_on_modifier_triggered)
@@ -261,13 +264,24 @@ func _present() -> void:
 	if is_new:
 		_unread = true
 		if Globals.show_region_alerts:
-			_announce(shown)
+			var intro: ArrivalIntro = ArrivalIntro.shared()
+			if intro.is_collecting():
+				intro.add(ArrivalIntro.Beat.REGION_RULE, _announce.bind(shown))
+			else:
+				_announce(shown)
 	_refresh_blink()
 
 
-## Spells the new rule out in a card that then shrinks into the screen. See
-## RegionAlert.
+## Spells the new rule out in a card that unfolds out of the screen and
+## later shrinks back into it, returning once it has. See RegionAlert.
 func _announce(shown: Resource) -> void:
+	# Out of the screen, so the monitor has to be up first. Killed (a jump
+	# stowing it) ends the wait as well as finishing does.
+	while _motion_tween and _motion_tween.is_valid() and _motion_tween.is_running():
+		await get_tree().process_frame
+	if shown != _shown or not _deployed:
+		return
+
 	var alert: RegionAlert = RegionAlert.new()
 	if shown is BackgroundHazardResource:
 		var hazard: BackgroundHazardResource = shown
@@ -284,6 +298,7 @@ func _announce(shown: Resource) -> void:
 	# Beside the monitor rather than on it: the monitor hides itself while
 	# stowed, and would take the card with it.
 	get_parent().add_child(alert)
+	await alert.tree_exited
 
 
 ## The card has delivered the rule: the screen takes it in with a knock and a

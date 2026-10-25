@@ -80,6 +80,7 @@ var _hull_mounts: HullMounts = HullMounts.new(formation)
 
 func _ready() -> void:
 	Globals.enemy_manager = self
+	ArrivalIntro.shared()
 	
 	# Force the baking on the curve where we spawn enemies
 	spawning_path.curve.get_baked_points()
@@ -253,6 +254,13 @@ func start_enemy_fly_in() -> void:
 	# A tutorial step queued forced actions after the roster was rolled.
 	if len(Enemy.forced_actions) > 0:
 		generate_all_turn_actions()
+
+	# The region's rule card and a boss's band each get the screen first.
+	await ArrivalIntro.shared().wait()
+	if enemies_jumping:
+		# Jumped away before anyone flew in.
+		arrival_in_progress = false
+		return
 
 	# A hull arrives first, carrying its parts with it.
 	if _hull_mounts.has_hull():
