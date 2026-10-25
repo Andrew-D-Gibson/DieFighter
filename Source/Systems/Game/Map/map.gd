@@ -61,6 +61,11 @@ var _danger_icons: Dictionary[Texture2D, Texture2D] = {}
 
 ## Stands in for the Fate zones, which have no map icon of their own.
 const _FATE_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/fate_encounter.png")
+## Beside the caption while the jump gate is open: the way out is to the right.
+const _NEXT_SECTOR_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/next_sector.png")
+## How often the right arrow pulses while the gate is open, so the eye goes
+## from "jump right" to the tile that does it.
+const _GATE_PULSE_SECONDS: float = 1.1
 ## Animates a threatened icon on the map itself. Captions, which are too small
 ## and too brief to need it, use the static splice from _danger_icon().
 const _CORRUPTING_SHADER: Shader = preload("res://Assets/Shaders/corrupting_icon.gdshader")
@@ -99,6 +104,8 @@ const _JUMPING_TEXT: String = "Jumping..."
 ## True from the moment a jump is committed until the next scenario starts.
 ## The map is a progress display for the trip then, not something to browse.
 var _jumping: bool = false
+## Counts down to the right arrow's next pulse at an open gate.
+var _gate_pulse_elapsed: float = 0.0
 ## The player's marker, and the breathing that keeps it easy to spot.
 var _pip: Sprite2D
 var _pip_tween: Tween
@@ -207,12 +214,24 @@ func _unhandled_input(event: InputEvent) -> void:
 		_pan_last_x = mouse_x
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	if not visible or scenario_list.is_empty() or _jumping:
 		return
 	var hovered: int = _hovered_scenario_index()
 	_set_hovered(hovered)
 	_set_hint(_compute_hint(hovered))
+	_pulse_right_arrow_at_open_gate(delta)
+
+
+func _pulse_right_arrow_at_open_gate(delta: float) -> void:
+	if not Globals.jump_gate or not Globals.jump_gate.is_open() or not right_arrow_tile:
+		_gate_pulse_elapsed = 0.0
+		return
+	_gate_pulse_elapsed -= delta
+	if _gate_pulse_elapsed > 0.0:
+		return
+	_gate_pulse_elapsed = _GATE_PULSE_SECONDS
+	right_arrow_tile.flash(Globals.yellow, 0.8, 0.5)
 
 
 ## Index of the scenario icon under the cursor, or -1. The player's own
@@ -253,7 +272,7 @@ func _compute_hint(hovered: int) -> Array:
 			return [_FATE_ICON, "Corrupt", Globals.medium_purple]
 
 	if Globals.jump_gate and Globals.jump_gate.is_open():
-		return [scenario_list.back().map_icon, "Jump through!", Globals.blue]
+		return [_NEXT_SECTOR_ICON, tr("MAP_HINT_JUMP_RIGHT"), Globals.yellow]
 	return [scenario_list.back().map_icon, "Gate ahead", Globals.blue]
 
 
