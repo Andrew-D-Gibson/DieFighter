@@ -19,4 +19,4 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 
 
 func get_trigger_text() -> String:
-	return "NO CHARGE"
+	return "NO ESCAPE"

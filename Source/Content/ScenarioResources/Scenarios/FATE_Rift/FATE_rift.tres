@@ -13,6 +13,7 @@
 script = ExtResource("script_2")
 min_money = 1
 max_money = 4
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn0"]
@@ -26,6 +27,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_2")
 min_money = 1
 max_money = 4
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn1"]
@@ -39,6 +41,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_2")
 min_money = 1
 max_money = 4
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn2"]
@@ -52,6 +55,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_2")
 min_money = 1
 max_money = 4
+num_of_rewards = 0
 metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn3"]

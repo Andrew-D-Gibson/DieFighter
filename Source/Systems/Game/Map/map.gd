@@ -32,7 +32,12 @@ var stray_danger_indices: Array[int] = []
 
 @export_category('Behavior')
 @export var empty_scenario: ScenarioResource
+## What Fate leaves behind. Also the icon a corrupted tile shows, whichever
+## variant it holds.
 @export var fate_scenario: ScenarioResource
+## Other encounters a corrupted tile can hold besides fate_scenario, so walking
+## into Fate isn't always the same pushover. See _corrupt().
+@export var fate_variants: Array[ScenarioResource] = []
 ## What a jump gate becomes once its boss is beaten: the same gate, with no one
 ## left guarding it.
 @export var open_gate_scenario: ScenarioResource
@@ -728,7 +733,7 @@ func clear_current_scenario_slot() -> void:
 	if scenario_list[current_scenario_index].sector_gate_scenario:
 		return
 	if current_scenario_index <= fate_index:
-		scenario_list[current_scenario_index] = fate_scenario
+		_corrupt(current_scenario_index)
 	else:
 		scenario_list[current_scenario_index] = empty_scenario
 
@@ -739,6 +744,25 @@ func clear_current_scenario_slot() -> void:
 func open_current_gate() -> void:
 	if scenario_list[current_scenario_index].sector_gate_scenario and open_gate_scenario:
 		scenario_list[current_scenario_index] = open_gate_scenario
+
+
+## Whether [param scenario] is one of Fate's: a tile it has already taken.
+func is_fate_scenario(scenario: ScenarioResource) -> bool:
+	return scenario != null and (scenario == fate_scenario or scenario in fate_variants)
+
+
+## Hands the tile at [param idx] to Fate, as one of its encounters. The pick is
+## a hash of the RUN stream's state and the tile rather than a draw from it,
+## so adding variants leaves every seeded map (the tutorial's, AutoPilot
+## transcripts) otherwise unchanged, the same way repair stations are placed.
+func _corrupt(idx: int) -> void:
+	if fate_variants.is_empty():
+		scenario_list[idx] = fate_scenario
+		return
+	var pool: Array[ScenarioResource] = [fate_scenario]
+	pool.append_array(fate_variants)
+	var roll: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, idx, "fate"])
+	scenario_list[idx] = pool[posmod(roll, pool.size())]
 
 
 func jump(desired_scenario_index: int) -> void:
@@ -772,10 +796,10 @@ func jump(desired_scenario_index: int) -> void:
 	# Have "Fate" infect the scenarios in danger
 	for idx: int in range(fate_index + 1, fate_index + 1 + scenarios_in_danger):
 		if not scenario_list[idx].sector_gate_scenario:
-			scenario_list[idx] = fate_scenario
+			_corrupt(idx)
 	for idx: int in stray_danger_indices:
 		if not scenario_list[idx].sector_gate_scenario:
-			scenario_list[idx] = fate_scenario
+			_corrupt(idx)
 			
 	fate_index += scenarios_in_danger
 	
@@ -896,7 +920,7 @@ func _pick_stray_danger(arriving_index: int) -> void:
 	for idx: int in range(fate_index + scenarios_in_danger + 1, len(scenario_list)):
 		if idx == arriving_index \
 		or scenario_list[idx].sector_gate_scenario \
-		or scenario_list[idx] == fate_scenario:
+		or is_fate_scenario(scenario_list[idx]):
 			continue
 		if RNGManager.randf(RNGManager.Bucket.RUN) < stray_danger_chance:
 			stray_danger_indices.append(idx)

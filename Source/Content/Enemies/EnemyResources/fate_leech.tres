@@ -1,0 +1,45 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_siphon"]
+[ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="act_lockout"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_leech_ship_graphics.tscn" id="gfx"]
+[ext_resource type="Texture2D" uid="uid://c6yhaeu0wxymd" path="res://Assets/Textures/Enemies/DiceThief/dice_thief_targeting_image.png" id="tex"]
+
+[sub_resource type="Resource" id="Resource_siphon"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_siphon")
+weight = 2.0
+min_amount = 1
+max_amount = 2
+force_include = true
+
+[sub_resource type="Resource" id="Resource_attack"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_attack")
+min_amount = 2
+max_amount = 3
+
+[sub_resource type="Resource" id="Resource_lockout"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_lockout")
+weight = 0.7
+
+[sub_resource type="Resource" id="Resource_pool"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_siphon"), SubResource("Resource_attack"), SubResource("Resource_lockout")])
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Fate Leech"
+description = "Latches on and drinks your engine dry, so there's nothing left to jump with."
+max_health = 8
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool")])
+ship_graphics_scene = ExtResource("gfx")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex")
+health_bar_position = Vector2(-22, -9)
+dice_queue_position = Vector2(26, 8)

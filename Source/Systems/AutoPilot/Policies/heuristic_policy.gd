@@ -467,7 +467,7 @@ static func _has_refuge() -> bool:
 			if there < 0 or there >= map.scenario_list.size():
 				continue
 			var stop: ScenarioResource = map.scenario_list[there]
-			if stop == map.fate_scenario or stop.sector_gate_scenario or _corrupted_by_next_jump(there):
+			if map.is_fate_scenario(stop) or stop.sector_gate_scenario or _corrupted_by_next_jump(there):
 				continue
 			return true
 	return false

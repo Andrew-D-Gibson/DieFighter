@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_gpvwa"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Fate/fate_husk.png" id="1_mit2i"]
+[ext_resource type="PackedScene" uid="uid://ml2nvb5is54d" path="res://Assets/Particles/engine_particles.tscn" id="2_86hdk"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cglea"]
+resource_local_to_scene = true
+shader = ExtResource("1_gpvwa")
+shader_parameter/alpha = 1.0
+shader_parameter/flash_color = Color(0.815686, 0.211765, 0.337255, 1)
+shader_parameter/flash_amount = 0.0
+shader_parameter/cloak_amount = 0.0
+shader_parameter/cloak_key_color = Color(1, 1, 1, 1)
+shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
+shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
+shader_parameter/cloak_tolerance = 0.1
+
+[node name="FateHuskShipGraphics" type="Sprite2D"]
+material = SubResource("ShaderMaterial_cglea")
+texture = ExtResource("1_mit2i")
+
+[node name="EngineParticles" parent="." instance=ExtResource("2_86hdk")]
+position = Vector2(0, -11)
