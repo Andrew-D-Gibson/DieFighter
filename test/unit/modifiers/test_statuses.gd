@@ -69,6 +69,27 @@ func test_applying_twice_merges_stacks_into_one_status() -> void:
 	assert_eq(engine.find_status(enemy, &"burn").stacks, 5)
 
 
+func test_a_status_from_the_player_counts_as_an_attack() -> void:
+	var enemy := _enemy()
+	enemy.scenario_state = ScenarioShipState.new()
+	enemy.scenario_state.faction = ScenarioManager.Faction.CIVILIAN
+	watch_signals(Events)
+	var event: ApplyStatusEvent = ApplyStatusEvent.new()
+	event.actor = autofree(Player.new())
+	event.status_id = &"jammed"
+	event.amount = 1
+	event.targets = [enemy]
+	await event.resolve(engine)
+	assert_signal_emitted_with_parameters(Events, "player_attacked_ship",
+		[enemy, ScenarioManager.Faction.CIVILIAN])
+
+
+func test_a_status_from_no_one_provokes_nobody() -> void:
+	watch_signals(Events)
+	await _apply(_enemy(), &"burn", 1)
+	assert_signal_not_emitted(Events, "player_attacked_ship")
+
+
 func test_different_statuses_sit_side_by_side_with_badges() -> void:
 	var enemy := _enemy()
 	await _apply(enemy, &"burn", 1)

@@ -47,3 +47,16 @@ func is_amplifiable() -> bool:
 ## Use 'await' here for animations, tweens, or any async work.
 func resolve(_engine: ScenarioEngine) -> void:
 	pass  # Base class no-op. Subclasses must override.
+
+
+## The player doing something hostile to [param target] short of a hit
+## (jamming it, burning it, rerolling the dice it holds) provokes it the same
+## way a hit does: the fight starts and the ship's scenario hears it was
+## attacked. Without this, a shopkeeper could be Jammed into uselessness and
+## never notice.
+func provoke(target: Node) -> void:
+	if actor is not Player or target is not Enemy or not is_instance_valid(target):
+		return
+	if Globals.state_manager:
+		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
+	Events.player_attacked_ship.emit(target, (target as Enemy).scenario_state.faction)

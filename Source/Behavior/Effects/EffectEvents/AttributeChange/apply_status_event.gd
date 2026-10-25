@@ -25,6 +25,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		var incoming: StatusModifier = StatusCatalog.create(status_id, target as Enemy, amount)
 		if incoming == null:
 			return
+		provoke(target)
 
 		var existing: StatusModifier = engine.find_status(target, status_id)
 		if existing:

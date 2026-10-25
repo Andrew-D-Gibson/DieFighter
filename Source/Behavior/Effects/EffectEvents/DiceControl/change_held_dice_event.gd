@@ -34,6 +34,8 @@ func resolve(engine: ScenarioEngine) -> void:
 
 	if dice.is_empty():
 		return
+	for target: Node in targets:
+		provoke(target)
 
 	# Not awaited one by one, so the rolls overlap — as RerollAllDiceEvent does.
 	for die: Dice in dice:
