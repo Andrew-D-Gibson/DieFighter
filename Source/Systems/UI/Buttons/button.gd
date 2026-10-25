@@ -24,6 +24,12 @@ enum ButtonSize {
 ## This is so that pushing a button can be canceled by holding it
 @export var button_click_window_sec: float = 0.5
 
+## A disabled button lets clicks through to whatever is under it. For a button
+## that shares its spot with something the player handles until it activates,
+## like End Turn over a long hand of dice: a Control eats the click before a
+## die's Area2D ever sees it.
+@export var pass_mouse_while_disabled: bool = false
+
 @onready var _text_on_ready: String = $RichTextLabel.text
 var _button_down_time: int
 
@@ -32,6 +38,8 @@ signal pressed_within_window()
 
 
 func update_ui() -> void:
+	if pass_mouse_while_disabled:
+		mouse_filter = Control.MOUSE_FILTER_IGNORE if disabled else Control.MOUSE_FILTER_STOP
 	if disabled:
 		$AnimatedSprite2D.frame = 1
 		$RichTextLabel.position = text_position + Vector2(0, 2)

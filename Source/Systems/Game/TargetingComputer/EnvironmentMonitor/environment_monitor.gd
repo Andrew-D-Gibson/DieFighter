@@ -263,13 +263,22 @@ func _present() -> void:
 
 	if is_new:
 		_unread = true
-		if Globals.show_region_alerts:
+		if Globals.show_region_alerts and _arrival_announces_region():
 			var intro: ArrivalIntro = ArrivalIntro.shared()
 			if intro.is_collecting():
 				intro.add(ArrivalIntro.Beat.REGION_RULE, _announce.bind(shown))
 			else:
 				_announce(shown)
 	_refresh_blink()
+
+
+## False at a stop whose own panel opens on arrival (ScenarioResource.
+## announce_region): the card would only cover it.
+func _arrival_announces_region() -> bool:
+	var manager: ScenarioManager = Globals.scenario_manager
+	if manager == null or manager.current_scenario == null:
+		return true
+	return manager.current_scenario.announce_region
 
 
 ## Spells the new rule out in a card that unfolds out of the screen and

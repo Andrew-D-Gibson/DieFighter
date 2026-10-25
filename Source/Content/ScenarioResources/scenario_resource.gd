@@ -28,6 +28,12 @@ extends Resource
 ## encounter. See ShipHullResource.
 @export var hull: ShipHullResource
 
+## Whether arriving here plays the region's rule card (RegionAlert). Off for
+## stops whose own panel opens at once (the shop, the repair station): that
+## panel is what the player came for, and a card over it only gets in the way.
+## The environment monitor still comes up, its lamp blinking unread.
+@export var announce_region: bool = true
+
 @export_category('Boss')
 ## The name stamped across the boss intro card when this fight starts. Leave
 ## empty for an encounter that isn't a boss fight: no card plays.

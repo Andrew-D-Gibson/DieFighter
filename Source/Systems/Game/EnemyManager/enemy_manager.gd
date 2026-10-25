@@ -266,6 +266,9 @@ func start_enemy_fly_in() -> void:
 	if _hull_mounts.has_hull():
 		await _hull_mounts.fly_in(fly_in_time)
 		Events.enemy_flew_in.emit()
+		for part: Enemy in enemies.duplicate():
+			if is_instance_valid(part) and _hull_mounts.is_mounted(part):
+				part.trigger_state_effects()
 
 	# A copy, because ships can leave while an earlier one is still arriving.
 	for enemy: Enemy in enemies.duplicate():
@@ -295,6 +298,9 @@ func start_enemy_fly_in() -> void:
 		Events.enemy_flew_in.emit()
 		# Re-enable bobbing animation after spawn tween completes
 		enemy.graphics_manager.start_bob_tween()
+		# Its greeting and arrival effects (a toll, a shop opening) wait for
+		# it to be on screen. See Enemy.trigger_state_effects().
+		enemy.trigger_state_effects()
 
 	# Targeted explicitly rather than trusting the per-ship signal, which only
 	# helps if some ship's arrival came after the roster was final.

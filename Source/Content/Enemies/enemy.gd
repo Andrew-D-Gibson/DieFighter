@@ -159,7 +159,6 @@ func _connect_health_signals() -> void:
 ## Connects all scenario-related signals
 func _connect_scenario_signals() -> void:
 	Events.scenario_event.connect(_handle_scenario_event)
-	Events.start_scenario.connect(trigger_state_effects)
 
 
 ## Safe to call more than once: a ship that died is disconnected on death, and
@@ -167,8 +166,6 @@ func _connect_scenario_signals() -> void:
 func disconnect_scenario_signals() -> void:
 	if Events.scenario_event.is_connected(_handle_scenario_event):
 		Events.scenario_event.disconnect(_handle_scenario_event)
-	if Events.start_scenario.is_connected(trigger_state_effects):
-		Events.start_scenario.disconnect(trigger_state_effects)
 	
 
 func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
@@ -573,7 +570,10 @@ func run_turn() -> void:
 	turns_alive += 1
 	
 
-## Triggers any effects associated with the current scenario state
+## Triggers any effects associated with the current scenario state. On
+## arrival EnemyManager calls this once the ship has landed, not on
+## start_scenario: a toll taken (or a greeting spoken) by a ship still off
+## the top of the screen has no visible cause.
 func trigger_state_effects() -> void:
 	dialogue_manager.show_dialogue(scenario_state.dialogue, scenario_state.faction)
 
