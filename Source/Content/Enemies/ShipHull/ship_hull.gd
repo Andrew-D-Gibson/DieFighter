@@ -79,6 +79,5 @@ func _blast(at: Vector2) -> void:
 		return
 	var blast: Node2D = explosion_scene.instantiate()
 	get_parent().add_child(blast)
+	# The explosion scene frees itself once it has played.
 	blast.global_position = at
-	if blast is AnimatedSprite2D:
-		(blast as AnimatedSprite2D).animation_finished.connect(blast.queue_free)
