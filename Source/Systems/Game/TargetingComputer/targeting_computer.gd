@@ -46,11 +46,9 @@ const _DIMMED_INTENT: Color = Color(1.0, 1.0, 1.0, 0.45)
 var _acting_enemy: Enemy
 var _acting_slot: int = -1
 
-## The comms lamp beside the portrait lights while the targeted ship has said
-## something; clicking the portrait has it say that again. This is the ship
-## the lamp is listening to.
+## Clicking the portrait has the targeted ship say its last line again. This
+## is the ship the portrait is listening to.
 var _comms_ship: Enemy
-const _COMMS_LAMP_BUMP: float = 0.4
 
 @onready var die_sprites: Array[AnimatedSprite2D] = [
 	%DieSprite1, 
@@ -159,7 +157,7 @@ func _after_retarget(previous: Enemy) -> void:
 	_reset_icon_tweens()
 
 
-## Points the comms lamp at the targeted ship.
+## Points the portrait's comms at the targeted ship.
 func _listen_for_comms() -> void:
 	var ship: Enemy = targeted_enemy if is_instance_valid(targeted_enemy) else null
 	if ship != _comms_ship:
@@ -169,28 +167,22 @@ func _listen_for_comms() -> void:
 		_comms_ship = ship
 		if ship:
 			ship.dialogue_manager.line_shown.connect(_on_target_spoke)
-	_refresh_comms_lamp()
+	_refresh_comms()
 
 
 func _has_comms() -> bool:
 	return is_instance_valid(_comms_ship) and _comms_ship.dialogue_manager.has_line_to_replay()
 
 
-## Lit and clickable while there's a line to replay; dark, and no hover, when
-## there isn't.
-func _refresh_comms_lamp() -> void:
-	var lit: bool = _has_comms()
-	%CommsLamp.frame = 1 if lit else 0
-	_set_intent_clickable(%CommsButton, lit)
+## Clickable while there's a line to replay; no hover when there isn't.
+func _refresh_comms() -> void:
+	_set_intent_clickable(%CommsButton, _has_comms())
 	# The intents' clickables show info on hover; this one only replays.
 	%CommsButton.hover_for_info = false
 
 
-## The lamp blinks as the targeted ship speaks, so the player learns where to
-## hail it from.
 func _on_target_spoke() -> void:
-	_refresh_comms_lamp()
-	Juice.bump(%CommsLamp, _COMMS_LAMP_BUMP)
+	_refresh_comms()
 
 
 func _on_comms_clicked() -> void:
