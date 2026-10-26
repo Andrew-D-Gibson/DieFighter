@@ -4,6 +4,56 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-25 — Relays wait their turn, hazards build up, Fate's variants
+
+- **Ships act once they've landed.** A ship's greeting and arrival effects
+  ran on `start_scenario`, so the Tollkeeper took its toll (and the
+  Pickpocket its lift) while still off the top of the screen. EnemyManager
+  now calls `trigger_state_effects()` as each ship lands (after the hull, for
+  mounted parts). The shop and repair station also skip the region card
+  (`ScenarioResource.announce_region = false`): their panel is the point.
+- **End Turn lets dice through.** With five or more dice, the 5th sat under
+  the disabled End Turn button, which ate the click before the die's Area2D
+  saw it. `pass_mouse_while_disabled` on the button.
+- **Relays queue the die.** A relayed die (or Holo Loader hologram) was spent
+  by the ally the instant it landed, in the same breath as the relaying
+  ship's shield, so it looked like one ship doing everything. Now the die
+  joins the ally's hold with its relay trail (`FeedAllyEvent.Trail`) and a
+  0.9 s hand-off beat. `EnemyTurn.play()` goes left to right as before, then
+  comes back round for any ship handed a die after its turn, until nobody
+  holds an unspent die (kept dice wait for next turn; 8 passes max).
+- **Slower beats.** Each enemy action is followed by a 0.5 s settle once its
+  effects land, the hold before an action fires doubled, and text callouts
+  ("RELAY", "+2 BURN") live 1.4-2.2 s instead of 0.8 s. Damage numbers are
+  unchanged.
+- **Statuses provoke.** Jamming, burning or rerolling a ship's dice
+  (`EffectEvent.provoke()`) starts combat and tells the scenario it was
+  attacked, like a hit does.
+- **Fate's Tithe** now says "No escape: you can't flee this fight", and pops
+  NO ESCAPE.
+- **Fate's variants.** A corrupted tile used to always be one 1-hull Fate
+  Attacker. `Map.fate_variants` adds the Fate Rift (four Attackers under the
+  rift; built in September but never placed), FATE_Hollows (Leech, Husk, two
+  Attackers) and FATE_Maw, the hard one: a 26-hull Fate Maw (a heavier Siege
+  Mortar) behind two Husks throwing shields on it, and a Leech draining the
+  engine, with no way to flee. The Maw pays a rare tile pick. The pick hashes
+  the RUN state with the tile, so seeded maps are unchanged elsewhere. The
+  three new ships are palette remaps of the Defender, Cutpurse and Siege
+  Mortar hulls (`Assets/Textures/Enemies/Fate/`). The Rift's ships no longer
+  offer three tile picks each.
+- **Hazards build up.** A flare or impact used to flash and hit in one
+  instant. `HazardEvent` now winds up for 1.6 s: the vignette pulses in the
+  hazard's colour, faster toward the hit; `HazardWarning` slams "!! SOLAR
+  FLARE !!" across the screen to a quickening thud; the region's art joins in
+  (`HazardTelegraph._winding_up()`). Then `hazard_struck`: the art fires, a
+  screen flash and a colour flood, the big shake, and the chain.
+- **The open gate points right.** "NEXT SECTOR >>>" floats in the sky to the
+  right while the ring is up (`NextSectorPrompt`, click it for the map), the
+  map caption reads "Jump right!" beside the next-sector chevron, and the
+  right arrow tile pulses yellow.
+
+---
+
 ## 2026-10-25 — Killed ships free again, no comms lamp, bosses mix more
 
 - **Killed ships were never freed.** The death explosion's `queue_free` key

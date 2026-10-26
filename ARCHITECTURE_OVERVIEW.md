@@ -86,9 +86,9 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 2. **Enemy Turn**
    - Statuses tick first (`ScenarioEngine.tick_statuses()` — Burn deals its damage) and resolve before any ship acts
-   - EnemyManager sequentially processes each enemy's dice queue
+   - EnemyManager sequentially processes each enemy's dice queue, left to right, then goes round again for dice relayed to a ship after its turn
    - Enemy uses die → triggers Pre-chosen actions → emit `Events.enemy_used_die`
-   - When all enemies out of dice: `Events.enemy_turn_over`
+   - When no ship holds an unspent die: `Events.enemy_turn_over`
 
 3. **Round Reset**
    - `Events.combat_finished` (if combat ended) or loop to step 1
@@ -316,17 +316,24 @@ out the name whenever a status does its job (see 4.7).
    rolls and binds the tables). It waits for dice still in flight, then ticks
    every status and waits for the queue to drain, so a ship that
    burns to death never takes its turn
-2. For each enemy with dice:
+2. For each enemy with dice, left to right, one ship at a time (its queue
+   drains before the next starts):
    - targeting_computer shows intent UI (`Events.enemy_received_die` updates dice view)
-   - Tween die to front of enemy ship (0.75s)
+   - Tween die to front of enemy ship (weighted by face), a short hold
    - Popup action indicator texture
    - Emit `Events.enemy_used_die(enemy, die_value)` (pulses the matching intent)
    - `await action.effect_chain.play(context, engine)`
-   - A relay (`FEED_ALLY` / `SPAWN_HOLOGRAM_FOR_ALLY`, see 8.4) queues the die
-     with its bound ally and injects that ally's `EnemyActionEvent` straight
-     after, so the ally spends it at once on its own table. The event carries
-     `feed_depth` and the ships already in the chain (`relay_visited`)
-3. When all enemies out of dice: `Events.enemy_turn_over`
+   - A `WaitEvent` settle beat (`EnemyActionEvent.SETTLE_SECONDS`) once the
+     action's injected effects have landed
+   - A relay (`FEED_ALLY` / `SPAWN_HOLOGRAM_FOR_ALLY`, see 8.4) puts the die
+     in its bound ally's hold with a `FeedAllyEvent.Trail` (`feed_depth`, the
+     ships already in the chain) and holds a hand-off beat. The ally spends
+     it on its own table when its turn comes; the event it builds then
+     carries the trail as `feed_depth` / `relay_visited`
+3. Ships handed a die after their own turn get another pass
+   (`Enemy.run_relayed_dice()`, no turn bookkeeping), round and round until
+   no ship `has_dice_to_spend()` (kept dice don't count; `MAX_PASSES` 8)
+4. Then `Events.enemy_turn_over`
 
 ### 4.7 Modifier Feedback (procs)
 
@@ -847,6 +854,16 @@ Winning the fight turns the slot into `Map.open_gate_scenario` (`GATE_open`).
 A scenario with a `boss_title` plays the `BossIntroCard` on arrival while its
 ships are hostile.
 
+While the gate is open, `JumpGate` shows a `NextSectorPrompt` ("NEXT SECTOR
+>>>" in the sky to the right; clicking it opens the map), and the map's
+caption reads "Jump right!" while its right arrow tile pulses.
+
+**Fate's tiles.** A tile Fate takes becomes `Map.fate_scenario` or one of
+`Map.fate_variants` (Fate Rift, Hollows, Maw), picked by `Map._corrupt()`
+from a hash of the RUN stream's state and the tile, so no draw is spent.
+`Map.is_fate_scenario()` is how anything asks whether a tile is Fate's.
+`GameStateManager.fate_scenarios` is not read by anything.
+
 **Difficulty** is two numbers, deliberately separate:
 
 | Multiplier | Applied at | Default per sector |
@@ -959,7 +976,15 @@ rule the enemy intent telegraph follows. Three things carry it:
   imminent or calms, `_fired()` when it goes off. The flare star throbs hot
   and its limb erupts, the ion storm strikes more often, the meteor shower
   thickens and sends one rock at the cockpit, the rift tear quickens.
-- The hazard's own chain carries the impact (flash, sound, shake).
+- **The strike gets a build-up.** `HazardManager` emits `hazard_triggered`
+  (the monitor pops) and queues a `HazardEvent`. When the engine reaches it,
+  it emits `hazard_winding_up(hazard, seconds)` and waits
+  `HazardEvent.WIND_UP_SECONDS` (1.6, over animation speed): the `Vignette`
+  pulses in the hazard's colour, faster toward the hit, `HazardWarning`
+  slams the name across the screen to a quickening thud, and each
+  `HazardTelegraph` gets `_winding_up()`. Then `hazard_struck`: telegraphs
+  `_fired()`, a screen flash and colour flood, the large camera shake, and
+  the hazard's own chain (its damage, sound, glitch).
 
 Encounters built around a hazard point at a one-background pool
 (`RandomBackgroundResources/<background>_only.tres`); the general hazard

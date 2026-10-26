@@ -342,6 +342,8 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
   never takes these, and winning one opens the gate instead of emptying it.
 - **`boss_title` / `boss_subtitle`**: set on a boss fight to play the intro
   card. The portrait is the toughest starting ship's targeting image.
+- **`announce_region`**: leave on. Off for a stop whose own panel opens on
+  arrival (shop, repair station): its region card is skipped.
 - **`hull`**: a `ShipHullResource` (`hull_scene` whose root is a `ShipHull`,
   `path_location`, `offset`, `width`) for a boss built from parts. See
   `GATE_Bastion` and `Source/Content/Enemies/ShipHull/`. Each part is an
@@ -362,7 +364,8 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
   only readable while one is present. With only FRIENDLY or NEUTRAL ships,
   every table reads "?" and is rolled hidden-safe.
 - `effects_on_enter`: a chain run on entering the state, e.g. heal the
-  player, open the shop.
+  player, open the shop. A starting state's chain (and its dialogue) runs
+  once the ship has flown in, not on arrival.
 - `transitions`: `ScenarioEvent` → next state. Events:
 
 | # | Event |
@@ -405,7 +408,9 @@ Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
 - `combat_scenarios` or `question_scenarios` (events): the random sector mix.
 - `elite_scenarios`: the elite pool (`elites_per_sector` per sector).
 - `gate_boss_scenarios`: the boss guarding each sector's gate, in order.
-- `fate_scenarios`.
+- Fate's encounters go on the **Map** instead (`main_viewer.tscn`):
+  `fate_scenario` and `fate_variants`. (GameStateManager's `fate_scenarios`
+  is unused.)
 - Or set the single slots: `starting_scenario`, `shop_scenario`,
   `repair_scenario` (1-2 a sector, swapped in past a jump from the arrival),
   `empty_scenario`. The open gate is `Map.open_gate_scenario`
