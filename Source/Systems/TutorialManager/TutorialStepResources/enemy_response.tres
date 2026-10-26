@@ -1,12 +1,14 @@
-[gd_resource type="Resource" script_class="TutorialStep" format=3]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://yl7376jtgxga"]
 
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_r6w6u"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_bmybg"]
 
 [resource]
 script = ExtResource("1_s")
 tutorial_text = "[color=red]Enemy turn.[/color] Watch what the raider does with your dice."
 text_position = Vector2(100, 40)
-close_on_signal = 15
 forced_dice = Array[int]([5, 6, 4])
+close_on_signal = 15
 tutorial_function = 7
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

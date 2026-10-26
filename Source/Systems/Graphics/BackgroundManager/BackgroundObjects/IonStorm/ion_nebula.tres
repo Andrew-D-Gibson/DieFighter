@@ -1,20 +1,6 @@
-[gd_resource type="ShaderMaterial" format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cq163rkg0p7cl"]
 
-[ext_resource type="Shader" path="res://Assets/Shaders/ion_nebula.gdshader" id="1_shader"]
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_detail"]
-noise_type = 3
-frequency = 0.04
-fractal_octaves = 3
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_detail"]
-width = 128
-height = 128
-seamless = true
-noise = SubResource("FastNoiseLite_detail")
+[ext_resource type="Shader" uid="uid://n148xe5csdpg" path="res://Assets/Shaders/ion_nebula.gdshader" id="1_shader"]
 
 [resource]
 shader = ExtResource("1_shader")
-shader_parameter/uv_offset = 0.0
-shader_parameter/nebula_color = Vector4(1, 1, 1, 1)
-shader_parameter/detail_noise = SubResource("NoiseTexture2D_detail")

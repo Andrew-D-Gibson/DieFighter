@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="TutorialStep" format=3]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://khmq2jc1m34t"]
 
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_xb378"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_hghq5"]
 
 [resource]
 script = ExtResource("1_s")

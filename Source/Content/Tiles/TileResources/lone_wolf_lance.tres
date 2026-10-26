@@ -233,7 +233,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Lone Wolf Lance[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to the number of die.  color=red]Damage[/color] is tripled if there are 2 or fewer dice in play"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to the number of die.  [color=red]Damage[/color] is tripled if there are 2 or fewer dice in play"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

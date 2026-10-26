@@ -4,9 +4,9 @@
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="body_far"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/dead_world.tscn" id="body_near"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/dead_systems.tres" id="mod_0"]
 [ext_resource type="Resource" uid="uid://ciniqw0ki60db" path="res://Source/Resources/BackgroundResources/ScrollingObjects/ship_scrap.tres" id="scroll_0"]
-[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
 
 [sub_resource type="Resource" id="Piece_dead_world_and_moon_0"]
 script = ExtResource("2_so")

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_u1rxp"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
-[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres" id="ext_2"]
+[ext_resource type="Resource" uid="uid://dxxivytqlv64p" path="res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres" id="ext_2"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="ext_4"]
 [ext_resource type="Texture2D" uid="uid://cr12q5kdw41nw" path="res://Assets/Textures/Enemies/IntentIndicator/getaway.png" id="ext_5"]

@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IonStorm/ion_storm.tscn" id="3_storm"]
-[ext_resource type="Material" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IonStorm/ion_nebula.tres" id="4_nebula"]
+[ext_resource type="Material" uid="uid://cq163rkg0p7cl" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/IonStorm/ion_nebula.tres" id="4_nebula"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="5_a7l3h"]
 [ext_resource type="Resource" uid="uid://bksbsmdcc4wo" path="res://Source/Resources/BackgroundResources/BackgroundHazards/ion_storm.tres" id="haz_0"]
 [ext_resource type="Resource" uid="uid://vdfv2ivudb1o" path="res://Source/Resources/BackgroundResources/ScrollingObjects/ion_motes.tres" id="scroll_0"]
 
@@ -24,6 +25,5 @@ num_of_stars = 40
 num_of_twinkling_stars = 8
 scrolling_objects = ExtResource("scroll_0")
 num_of_med_pieces = 16
-num_of_large_pieces = 0
 static_objects = Array[ExtResource("2_so")]([SubResource("Resource_storm")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

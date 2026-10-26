@@ -2,8 +2,8 @@
 
 [ext_resource type="PackedScene" uid="uid://cuyjuwunjxclv" path="res://Source/Systems/UI/InfoShower/info_shower.tscn" id="1_hd7px"]
 [ext_resource type="PackedScene" uid="uid://87ld1okihf31" path="res://Source/Systems/UI/DevConsole/dev_console.tscn" id="2_3g417"]
-[ext_resource type="PackedScene" path="res://Source/Systems/UI/DevConsole/TilePalette/tile_palette.tscn" id="2_tpal"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/DevConsole/ScenarioLab/scenario_lab_panel.tscn" id="2_slab"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/DevConsole/TilePalette/tile_palette.tscn" id="2_tpal"]
 [ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
 [ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="4_6ebjm"]
 [ext_resource type="Script" uid="uid://by2nuppu48mrd" path="res://Source/Systems/UI/DebugItems/fps_counter.gd" id="4_7iud4"]
@@ -62,39 +62,39 @@
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.tscn" id="boss_intro_card"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
+[ext_resource type="PackedScene" uid="uid://2n2lytv0vdqc" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
+[ext_resource type="Resource" uid="uid://cleaatku88rbu" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BlockadeRunner/COMBAT_blockade_runner.tres" id="combat_blockade_runner"]
 [ext_resource type="Resource" uid="uid://br4j63c7vl8h" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
 [ext_resource type="Resource" uid="uid://c6swfwrjfa55" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LooseWing/COMBAT_loose_wing.tres" id="combat_loose_wing"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SmashAndGrab/COMBAT_smash_and_grab.tres" id="combat_smash_and_grab"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BlockadeRunner/COMBAT_blockade_runner.tres" id="combat_blockade_runner"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Spotter/COMBAT_spotter.tres" id="combat_spotter"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_GhostCarrier/EVENT_ghost_carrier.tres" id="event_ghost_carrier"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_BlackMarket/EVENT_black_market.tres" id="event_black_market"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pickpocket/EVENT_pickpocket.tres" id="event_pickpocket"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Mayday/EVENT_mayday.tres" id="event_mayday"]
+[ext_resource type="Resource" uid="uid://kbe4skjmrnlm" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LooseWing/COMBAT_loose_wing.tres" id="combat_loose_wing"]
+[ext_resource type="Resource" uid="uid://c1g2asmaw6quj" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SmashAndGrab/COMBAT_smash_and_grab.tres" id="combat_smash_and_grab"]
+[ext_resource type="Resource" uid="uid://deajyqfy3ayqh" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Spotter/COMBAT_spotter.tres" id="combat_spotter"]
 [ext_resource type="Resource" uid="uid://bqsr7vyhbsrw3" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_HunterKillers/ELITE_hunter_killers.tres" id="elite_hunter"]
 [ext_resource type="Resource" uid="uid://bj2ob57kph037" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_LanceSquadron/ELITE_lance_squadron.tres" id="elite_lance"]
 [ext_resource type="Resource" uid="uid://b5ioo4r40s64j" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_MortarNest/ELITE_mortar_nest.tres" id="elite_mortar"]
 [ext_resource type="Resource" uid="uid://dixvapje5mvum" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_TitheFleet/ELITE_tithe_fleet.tres" id="elite_tithe"]
+[ext_resource type="Resource" uid="uid://3hmruhxlyjas" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_BlackMarket/EVENT_black_market.tres" id="event_black_market"]
+[ext_resource type="Resource" uid="uid://dj6wn2sr12huo" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_GhostCarrier/EVENT_ghost_carrier.tres" id="event_ghost_carrier"]
+[ext_resource type="Resource" uid="uid://bokjx2i8fcamy" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Mayday/EVENT_mayday.tres" id="event_mayday"]
+[ext_resource type="Resource" uid="uid://dog38o3ouenl" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pickpocket/EVENT_pickpocket.tres" id="event_pickpocket"]
 [ext_resource type="Resource" uid="uid://dq0xed2ajxje" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/GATE_bastion.tres" id="gate_bastion"]
 [ext_resource type="Resource" uid="uid://c8gl2266ni6co" path="res://Source/Content/ScenarioResources/Scenarios/GATE_ArcDynamo/GATE_arc_dynamo.tres" id="gate_dynamo"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/claim_salvage.tres" id="tut_claim_salvage"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/end_turn_prompt.tres" id="tut_end_turn_prompt"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_keeps_die.tres" id="tut_enemy_keeps_die"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_response.tres" id="tut_enemy_response"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_the_raider.tres" id="tut_finish_the_raider"]
+[ext_resource type="Resource" uid="uid://cumnnvtuhuxcl" path="res://Source/Content/ScenarioResources/Scenarios/RepairStation/repair_station.tres" id="repair_station_scenario"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/RepairStation/repair_station.tscn" id="repair_station_scene"]
+[ext_resource type="Resource" uid="uid://khmq2jc1m34t" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
+[ext_resource type="Resource" uid="uid://b6enhd80vypfm" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
+[ext_resource type="Resource" uid="uid://beuvtclivqpi6" path="res://Source/Systems/TutorialManager/TutorialStepResources/claim_salvage.tres" id="tut_claim_salvage"]
+[ext_resource type="Resource" uid="uid://o5vwobuitdpg" path="res://Source/Systems/TutorialManager/TutorialStepResources/end_turn_prompt.tres" id="tut_end_turn_prompt"]
+[ext_resource type="Resource" uid="uid://bdm0i8jm1b8ab" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_keeps_die.tres" id="tut_enemy_keeps_die"]
+[ext_resource type="Resource" uid="uid://yl7376jtgxga" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_response.tres" id="tut_enemy_response"]
+[ext_resource type="Resource" uid="uid://bnc113gea7fqw" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_the_raider.tres" id="tut_finish_the_raider"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_out.tres" id="tut_jump_out"]
 [ext_resource type="Resource" uid="uid://cjs5pb8b7yx5b" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_explanation.tres" id="tut_map_explanation"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/opening_hand.tres" id="tut_opening"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/open_the_map.tres" id="tut_open_the_map"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
+[ext_resource type="Resource" uid="uid://pf1dsr7b31jw" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_handoff.tres" id="tut_tutorial_handoff"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Game/RepairStation/repair_station.tscn" id="repair_station_scene"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/RepairStation/repair_station.tres" id="repair_station_scenario"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -118,7 +118,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_r1j6u"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8vg7b"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -345,7 +345,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_r1j6u")
+material = SubResource("ShaderMaterial_8vg7b")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]

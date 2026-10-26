@@ -1,6 +1,6 @@
-[gd_resource type="Resource" script_class="BackgroundModifierResource" format=3]
+[gd_resource type="Resource" script_class="BackgroundModifierResource" format=3 uid="uid://bc78s3pr7rylp"]
 
-[ext_resource type="Script" path="res://Source/Resources/BackgroundResources/background_modifier_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://btc7do1jlfemq" path="res://Source/Resources/BackgroundResources/background_modifier_resource.gd" id="script_0"]
 
 [resource]
 script = ExtResource("script_0")

@@ -53,7 +53,6 @@ objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_giant_and_far_star_0
 [sub_resource type="Resource" id="Composition_open_field"]
 script = ExtResource("comp_script")
 weight = 0.75
-objects = Array[ExtResource("2_buxbt")]([])
 offset_jitter = Vector2(0, 0)
 
 [resource]

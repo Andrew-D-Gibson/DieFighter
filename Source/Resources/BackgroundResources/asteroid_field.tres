@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="4_t5gjj"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/Asteroids/meteor_shower.tscn" id="6_shower"]
 [ext_resource type="Resource" uid="uid://b1vjawhxysmae" path="res://Source/Resources/BackgroundResources/BackgroundHazards/asteroid_impact.tres" id="haz_0"]
 [ext_resource type="Resource" uid="uid://caqyji88mj1rw" path="res://Source/Resources/BackgroundResources/ScrollingObjects/asteroids.tres" id="scroll_0"]

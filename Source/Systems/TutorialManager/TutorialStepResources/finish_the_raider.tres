@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="TutorialStep" format=3]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://bnc113gea7fqw"]
 
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="act_script"]
-[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="tile_script"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="attack"]
-[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="nothing"]
 [ext_resource type="Resource" uid="uid://bkxu3ydkhj2o6" path="res://Source/Content/Tiles/TileResources/deflector_array.tres" id="deflector"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="nothing"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="tile_script"]
 
 [resource]
 script = ExtResource("1_s")

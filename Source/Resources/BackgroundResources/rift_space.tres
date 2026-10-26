@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_bg"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="2_so"]
 [ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="3_hole"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="4_ifkhq"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FateRift/fate_rift_tear.tscn" id="4_tear"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FateStorm/fate_storm.tscn" id="5_storm"]
 [ext_resource type="Resource" uid="uid://wte5e085jmyd" path="res://Source/Resources/BackgroundResources/BackgroundHazards/fate_rift.tres" id="haz_0"]

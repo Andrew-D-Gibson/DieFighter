@@ -1,12 +1,12 @@
 [gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://sk166eerw6ax"]
 
 [ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Resources/BackgroundResources/background_resource.gd" id="1_u7gdh"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="body_barren_moon"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/gas_giant.tscn" id="body_near"]
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/shrapnel_wake.tres" id="mod_0"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
+[ext_resource type="Resource" uid="uid://d0bnu1nwwdmc6" path="res://Source/Resources/BackgroundResources/BackgroundModifiers/shrapnel_wake.tres" id="mod_0"]
 [ext_resource type="Resource" uid="uid://bkrxtp3qx8wli" path="res://Source/Resources/BackgroundResources/ScrollingObjects/triangle_debris.tres" id="scroll_0"]
 [ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="so_script"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="body_barren_moon"]
-[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
 
 [sub_resource type="Resource" id="Piece_gas_giant_low_0"]
 script = ExtResource("so_script")
