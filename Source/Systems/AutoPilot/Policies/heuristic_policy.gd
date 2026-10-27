@@ -103,9 +103,7 @@ const _WASTED_CHARGE: float = -15.0
 const _SELF_DESTRUCT: float = -3.0
 ## A placement that bounced back, or one on a tile showing a lockout.
 const _BOUNCED: float = -50.0
-## The face that opens a locked tile, and roughly how many more turns of the
-## fight opening it gets back.
-const _LOCKOUT_KEY: int = 2
+## Roughly how many more turns of the fight opening a locked tile gets back.
 const _UNLOCK_TURNS: float = 1.5
 ## Retargeting to break a tie isn't worth a move.
 const _RETARGET_MARGIN: float = 0.25
@@ -269,14 +267,15 @@ func _best_placement(placements: Array) -> Dictionary:
 	for placement: AutoPilotMove in placements:
 		var penalty: float = _BOUNCED * _placed.get(_placement_key(placement.die, placement.tile), 0)
 		var locked: bool = _locked_out(placement.tile)
-		if locked and placement.die.value != _LOCKOUT_KEY:
+		var opens: bool = locked and LockoutModifier.unlocks(placement.die.value)
+		if locked and not opens:
 			penalty += _BOUNCED
 		for aim: Enemy in aims:
 			var score: float = penalty
 			if locked:
-				# The tile does nothing this time; the 2 only opens it.
-				if placement.die.value == _LOCKOUT_KEY:
-					score += _unlock_value(placement.tile)
+				# The tile does nothing this time; a low die only opens it.
+				if opens:
+					score += _unlock_value(placement.tile, placement.die.value)
 			else:
 				score += score_placement(placement.die, placement.tile, aim)
 			# Ties stay on the ship already targeted.
@@ -292,19 +291,19 @@ func _placement_key(die: Dice, tile: Tile) -> String:
 		tile.uses_remaining, AutoPilotMove.dice_in_hand().size()]
 
 
-## Opening [param tile]: what it's worth for the rest of the fight, less the
-## 2, which goes to a ship picked at random.
-func _unlock_value(tile: Tile) -> float:
+## Opening [param tile] with a [param face]: what it's worth for the rest of
+## the fight, less the die, which goes to a ship picked at random.
+func _unlock_value(tile: Tile, face: int) -> float:
 	var ships: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
 	var handoff: float = 0.0
 	for ship: Enemy in ships:
-		handoff += AutoPilotThreat.of_face(ship, _LOCKOUT_KEY)
+		handoff += AutoPilotThreat.of_face(ship, face)
 	if not ships.is_empty():
 		handoff /= ships.size()
 	return _tile_worth(tile) * _UNLOCK_TURNS - handoff * _persona.hull
 
 
-## A lockout cancels whatever the tile is given until a 2 opens it, and shows
+## A lockout cancels whatever the tile is given until a low die opens it, and shows
 ## on it.
 static func _locked_out(tile: Tile) -> bool:
 	var engine: ScenarioEngine = ScenarioEngine.current()

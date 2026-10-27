@@ -28,7 +28,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
 	"Steal": "This ship keeps the die. Next turn it uses it to Steal again. It drops what it holds if destroyed.",
 	"Ion": "Deals double [color=blue]damage[/color] to shields and none to the hull. Damage the shields can't absorb is lost.",
-	"Locked": "Dice given to this tile return to your hand. A [color=yellow]2[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
+	"Locked": "Dice given to this tile return to your hand. A [color=yellow]1[/color] or [color=yellow]2[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.

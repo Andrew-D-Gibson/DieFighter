@@ -5,6 +5,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const ENGINE_CHARGER: TileResource = preload("res://Source/Content/Tiles/MapTileResources/engine_charger.tres")
 const DAMAGE_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/damage.tres")
+const LOCK_VISUAL: PackedScene = preload("res://Source/Behavior/Modifiers/LockoutModifier/lockout_modifier_visual.tscn")
 const GRID_TILES_DIR: String = "res://Source/Content/Tiles/TileResources/"
 
 var engine: ScenarioEngine
@@ -74,7 +75,7 @@ func test_every_grid_tile_can_be_locked_out() -> void:
 # ── Lockouts never stack ──────────────────────────────────────────────────────
 
 func test_a_second_lockout_on_a_locked_tile_is_refused() -> void:
-	# Two locks would both fire on the 2 that opens the tile, handing the die
+	# Two locks would both fire on the die that opens the tile, handing it
 	# out twice.
 	var tile: Tile = _tile(DAMAGE_TILE)
 	await _lock([tile] as Array[Node])
@@ -140,6 +141,30 @@ func test_every_lockout_source_draws_a_lockable_tile() -> void:
 		assert_string_contains(text, "subtype = %d\n" % EffectEnums.TargetingSubtype.TARGET_RANDOM_LOCKABLE_TILE, path)
 
 
+# ── Opening a lock ────────────────────────────────────────────────────────────
+
+func test_any_die_below_three_opens_a_lock() -> void:
+	assert_true(LockoutModifier.unlocks(1))
+	assert_true(LockoutModifier.unlocks(2))
+	for face: int in range(3, 7):
+		assert_false(LockoutModifier.unlocks(face), "a %d is turned away" % face)
+
+
+func test_a_lock_pops_off_when_opened() -> void:
+	# Opening the lock plays its release instead of freeing it on the spot.
+	var host: Node2D = add_child_autofree(Node2D.new())
+	var visual: Node2D = LOCK_VISUAL.instantiate()
+	visual.configure(host)
+	host.add_child(visual)
+	var mod: LockoutModifier = LockoutModifier.new(_tile(DAMAGE_TILE))
+	mod._visual = visual
+	mod.on_unregistered(engine)
+	assert_null(mod._visual)
+	assert_true(is_instance_valid(visual), "still showing its release")
+	await wait_seconds(0.6)
+	assert_false(is_instance_valid(visual), "gone once it has popped off")
+
+
 # ── Info panel ────────────────────────────────────────────────────────────────
 
 func test_a_locked_tile_says_so_in_its_info() -> void:
@@ -149,7 +174,8 @@ func test_a_locked_tile_says_so_in_its_info() -> void:
 	await _lock([tile] as Array[Node])
 	var text: String = tile._get_tile_info().bottom_label_text
 	assert_string_contains(text, "(locked)")
-	assert_string_contains(text, "(die_2)", "names the key that opens it")
+	assert_string_contains(text, "(die_1)", "names the keys that open it")
+	assert_string_contains(text, "(die_2)", "names the keys that open it")
 
 
 func test_a_locked_tile_shows_one_line() -> void:

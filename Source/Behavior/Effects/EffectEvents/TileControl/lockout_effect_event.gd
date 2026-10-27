@@ -1,7 +1,7 @@
 class_name LockoutEffectEvent
 extends EffectEvent
 
-## The lockout this event is enforcing, so rolling the key (a 2) can lift it.
+## The lockout this event is enforcing, so a key (any die below 3) can lift it.
 var lockout_modifier: LockoutModifier
 
 
@@ -13,7 +13,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		return
 		
 	
-	if activator_die.value == 2:
+	if LockoutModifier.unlocks(activator_die.value):
 		# Clear the Lockout
 		if lockout_modifier:
 			engine.remove_modifier(lockout_modifier)

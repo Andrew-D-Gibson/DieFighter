@@ -1,8 +1,11 @@
 [gd_scene format=3 uid="uid://bmigs3ltcqtec"]
 
-[ext_resource type="Texture2D" uid="uid://devcbbtmrh7id" path="res://Assets/Textures/Modifiers/lockout.png" id="1_la5i5"]
+[ext_resource type="Script" uid="uid://d2trcy3teghot" path="res://Source/Behavior/Modifiers/LockoutModifier/lockout_modifier_visual.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bfsm5j14wd03i" path="res://Assets/Textures/Modifiers/lockout-Sheet.png" id="2_sheet"]
 
 [node name="Node2D" type="Node2D" unique_id=584588811]
+script = ExtResource("1_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1766844325]
-texture = ExtResource("1_la5i5")
+texture = ExtResource("2_sheet")
+hframes = 2
