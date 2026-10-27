@@ -239,7 +239,8 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.AttributeChangeSubtype.CHANGE_ENGINE_CHARGE, \
 		EffectEnums.AttributeChangeSubtype.ADD_OVERCHARGE:
 			charge += amount
-		EffectEnums.AttributeChangeSubtype.SPEND_ENGINE_CHARGE:
+		EffectEnums.AttributeChangeSubtype.SPEND_ENGINE_CHARGE, \
+		EffectEnums.AttributeChangeSubtype.SIPHON_ENGINE_CHARGE:
 			charge -= amount
 		EffectEnums.AttributeChangeSubtype.APPLY_STATUS:
 			for target: Node in walk.context.targets:

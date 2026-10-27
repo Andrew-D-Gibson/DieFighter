@@ -102,6 +102,11 @@ enum AttributeChangeSubtype {
 	## the targets' shields and never touches the hull. Whatever the shields
 	## can't absorb is lost.
 	ION_DAMAGE,
+	## The actor drains running_amount engine charge from the player, in a few
+	## pulses: each drops the gauge, then motes in the effect's colour stream
+	## from it to the actor. One drain however many pulses it takes, so it
+	## arms engine_charge_drained once, like an enemy's CHANGE_ENGINE_CHARGE.
+	SIPHON_ENGINE_CHARGE,
 }
 
 
