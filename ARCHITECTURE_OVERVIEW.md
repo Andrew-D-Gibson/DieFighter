@@ -228,7 +228,7 @@ soft-lock the run) or that's already locked, so locks never stack. Random
 lockouts target with `TARGET_RANDOM_LOCKABLE_TILE`, which draws only tiles
 where `Tile.accepts_lockout()` holds. A locked tile's info panel gets a line from
 `LockoutModifier.get_info_text()`, the same way an Amplifier adds its own.
-Any die below 3 (`LockoutModifier.unlocks(face)`) opens a lock and goes to a
+A 1, 2 or 3 (`LockoutModifier.unlocks(face)`) opens a lock and goes to a
 random enemy; anything else bounces back to the hand. The padlock
 (`lockout_modifier_visual.gd`) slams on with sparks, a ring and a LOCKED
 callout, rattles on each bounce, and pops off on unlock: `on_unregistered`
@@ -535,12 +535,16 @@ The map, encounters and backgrounds are the same for every new player. The
 because both are generated during scene setup, before any ordinary step runs.
 
 **The opening shot.** Every fresh run (tutorial or not) opens with the
-ambusher firing once, before the first turn (`OpeningStrike`, played from
-`Player._announce_first_turn`): it takes the player's last die by tractor
-beam, fires `attack_player.tres` with it for `OpeningStrike.DAMAGE` (4), and
-the chain hands the die back. `GameStateManager._owe_opening_strike()` starts
+ambusher firing once, before the first turn. `OpeningStrike.arm()` (called by
+GameStateManager once the opening ships spawn) hands the ship a die of its
+own, out of the `Dice` group, which it flies in holding; `play()` (from
+`Player._announce_first_turn`) fires `attack_player.tres` with it for
+`OpeningStrike.DAMAGE` (4), minus its die-handling steps, and the spent die
+fades. The player's hand is never touched. The action is `load()`ed, not
+preloaded: GameStateManager holds an OpeningStrike, and a preload there puts
+the enemy-action scripts into their own preload cycle. `GameStateManager._owe_opening_strike()` starts
 the run that much over the save's hull, so the shot lands it on
-`run_start.tres`'s 24; until `opening_strike_landed()`, checkpoints save the
+`run_start.tres`'s 24; until the shot lands, checkpoints save the
 hull minus what's owed, so a Continue never replays the shot. Continues,
 gauntlets and lab runs aren't fresh, so they skip it.
 Later steps force the turn-two hand and the salvage (`forced_dice`,
@@ -869,13 +873,14 @@ Winning the fight turns the slot into `Map.open_gate_scenario` (`GATE_open`).
 A scenario with a `boss_title` plays the `BossIntroCard` on arrival while its
 ships are hostile.
 
-The map leads right on its own: the sector's gate sits on the timeline at
-the far right (`Map.gate_map_icon`, 20x20; the caption keeps the scenario's
-small `map_icon`), mirroring the Black Hole at the left, and a
-`MapGateBeacon` past the right edge glows with motes streaming past the gate
-into it. While the gate is open the beacon swells, the caption reads "Jump
-right!" and the right arrow tile pulses. Nothing in the sky prompts the
-player.
+The map leads right on its own: the sector's gate sits on the timeline a
+slot past its own (`Map.gate_map_icon`, 20x20), mirroring the Black Hole at
+the left. It wears `jump_gate_portal.gdshader` (a swirling portal, an
+orbiting glint) and two `MapGateAura`s, a breathing halo behind and motes
+whirlpooling into it in front. The caption's small `jump_gate.png` wears the
+same shader. While the gate is open the portal brightens and the aura
+quickens, the caption reads "Jump right!" and the right arrow tile pulses.
+Nothing in the sky prompts the player.
 
 **Fate's tiles.** A tile Fate takes becomes `Map.fate_scenario` or one of
 `Map.fate_variants` (Fate Rift, Hollows, Maw), picked by `Map._corrupt()`

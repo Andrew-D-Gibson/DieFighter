@@ -4,20 +4,22 @@ Newest entries at the top.
 
 ---
 
-## 2026-10-26 — Opening shot, map leads right, lockouts below 3
+## 2026-10-26 — Opening shot, map leads right, lockouts at 3 or less
 
 - **The ambusher shoots first.** A new run (tutorial too) opens with the
-  raider pulling the player's last die across and firing its Dice Cannon
-  once, carrying the cutscene's attack into the fight; the die comes back with
-  the hit. The run starts 4 over `run_start.tres`'s hull (28/32), so the shot
+  raider, which flies in holding a die of its own, firing its Dice Cannon once
+  before the player's first turn, carrying the cutscene's attack into the
+  fight. The player's hand isn't touched. The run starts 4 over `run_start.tres`'s hull (28/32), so the shot
   lands it on 24. Until it lands, checkpoints save the post-shot hull
-  (`OpeningStrike`, `GameStateManager.take_opening_strike()`).
-- **The map leads right.** The jump gate sits on the timeline at the far
-  right with a bigger icon, like the Black Hole at the left, and a white light
-  (`MapGateBeacon`) glows past the right edge with motes streaming into it,
-  livelier while the gate is open. The sky's "NEXT SECTOR" prompt is gone.
-- **Lockouts open below 3.** A 1 or a 2 opens a lock (was only a 2). The
-  padlock's face flips between one pip and two, it slams on with orange
+  (`OpeningStrike.arm()`, `GameStateManager.play_opening_strike()`).
+- **The map leads right.** The jump gate sits on the timeline a slot past
+  its own with a bigger icon, like the Black Hole at the left. Its portal
+  swirls (`jump_gate_portal.gdshader`), a halo breathes behind it and motes
+  whirlpool into it (`MapGateAura`), livelier while the gate is open. The
+  caption's gate icon is redrawn to match and wears the same shader. The
+  sky's "NEXT SECTOR" prompt is gone.
+- **Lockouts open at 3 or less.** A 1, 2 or 3 opens a lock (was only a 2).
+  The padlock's face counts one pip, two, three, it slams on with orange
   sparks, a ring, a clank, a shake and LOCKED, rattles when it bounces a die,
   and pops off with UNLOCKED.
 - **Siphons take, then fly.** New `SIPHON_ENGINE_CHARGE`: Engine Siphon
@@ -29,8 +31,8 @@ Newest entries at the top.
   balanced lines past 100 px ("NOT ENOUGH / ENGINE CHARGE"); its border is
   9-sliced.
 - **Hologram guide.** The tutorial's computer wears `hologram_figure.gdshader`
-  (the holographic dice shimmer, a cyan tint, scanlines, torn rows) and bobs
-  inside its bezel.
+  (a light touch of the holographic dice shimmer, cyan tint, scanlines and
+  torn rows), and its head bobs smoothly inside a still bezel.
 
 ---
 
