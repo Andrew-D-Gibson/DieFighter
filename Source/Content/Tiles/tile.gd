@@ -363,8 +363,14 @@ func _on_die_accepted(die: Dice) -> void:
 	dice_queue.add(die, true, false)
 	# Remember who the player meant this die for. It may sit in this queue
 	# (or behind a resolving chain) while they switch to another ship.
+	# The target can be a ship destroyed a moment ago that the computer hasn't
+	# moved off yet, and a freed ship can't even be assigned to aimed_at. The
+	# die then falls back to whatever is targeted when it fires (target_for).
 	if Globals.targeting_computer:
-		die.aimed_at = Globals.targeting_computer.targeted_enemy
+		if is_instance_valid(Globals.targeting_computer.targeted_enemy):
+			die.aimed_at = Globals.targeting_computer.targeted_enemy
+		else:
+			die.aimed_at = null
 
 	# Emit event for die placement for tutorial use
 	Events.die_placed_on_tile.emit(die, self)
