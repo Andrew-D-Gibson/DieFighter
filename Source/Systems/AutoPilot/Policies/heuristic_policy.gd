@@ -149,6 +149,11 @@ const _PASSIVE_TILE_WORTH: float = 3.0
 const _PRICE_PER_POINT: float = 10.0
 const _BUY_BAR: float = 1.0
 
+## Takes salvage and shop stock at random instead of by worth, playing the
+## rest as usual, so every tile gets taken often enough to measure, not only
+## the ones this policy rates (a balance batch's "smart-randpick").
+var random_picks: bool = false
+
 var _persona: Persona
 ## Whether it may jump out of a fight (see set_may_flee()).
 var _may_flee: bool = true
@@ -164,6 +169,8 @@ var _placed: Dictionary[String, int] = {}
 var _fled_at_hull: Dictionary[String, int] = {}
 ## Stands in for "an enemy" when valuing a tile on offer, with no fight on.
 var _nominal_enemy: Enemy
+## Shops a random picker has walked away from, by sector and map stop.
+var _done_shopping: Dictionary[String, bool] = {}
 
 
 func _init(style: Persona) -> void:
@@ -189,7 +196,7 @@ func _notification(what: int) -> void:
 		_nominal_enemy.free()
 
 
-func choose(moves: Array[AutoPilotMove], _rng: RandomNumberGenerator) -> AutoPilotMove:
+func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilotMove:
 	var by_kind: Dictionary[AutoPilotMove.Kind, Array] = {}
 	for move: AutoPilotMove in moves:
 		if not by_kind.has(move.kind):
@@ -197,11 +204,13 @@ func choose(moves: Array[AutoPilotMove], _rng: RandomNumberGenerator) -> AutoPil
 		by_kind[move.kind].append(move)
 
 	if by_kind.has(AutoPilotMove.Kind.CLAIM):
-		var claim: AutoPilotMove = _best_item(by_kind[AutoPilotMove.Kind.CLAIM], false)
+		var claim: AutoPilotMove = _random_claim(by_kind[AutoPilotMove.Kind.CLAIM], rng) \
+			if random_picks else _best_item(by_kind[AutoPilotMove.Kind.CLAIM], false)
 		if claim:
 			return claim
 	if by_kind.has(AutoPilotMove.Kind.BUY):
-		var purchase: AutoPilotMove = _best_item(by_kind[AutoPilotMove.Kind.BUY], true)
+		var purchase: AutoPilotMove = _random_purchase(by_kind[AutoPilotMove.Kind.BUY], rng) \
+			if random_picks else _best_item(by_kind[AutoPilotMove.Kind.BUY], true)
 		if purchase:
 			return purchase
 	if by_kind.has(AutoPilotMove.Kind.REPAIR) and _wants_repair():
@@ -593,6 +602,25 @@ func _best_item(offers: Array, buying: bool) -> AutoPilotMove:
 			best_score = score
 			best = offer
 	return best
+
+
+## Any one of [param offers]: a random picker always takes something.
+static func _random_claim(offers: Array, rng: RandomNumberGenerator) -> AutoPilotMove:
+	return offers[rng.randi_range(0, offers.size() - 1)]
+
+
+## Any one of [param stock] it can afford, or null once it has walked away.
+## Before each purchase walking away is one more equal choice, so a shop
+## visit buys nothing about as often as it buys any one item.
+func _random_purchase(stock: Array, rng: RandomNumberGenerator) -> AutoPilotMove:
+	var shop_key: String = _fight_key()
+	if _done_shopping.has(shop_key):
+		return null
+	var pick: int = rng.randi_range(0, stock.size())
+	if pick == stock.size():
+		_done_shopping[shop_key] = true
+		return null
+	return stock[pick]
 
 
 ## What having [param item] is worth: a tile by what it does with an average

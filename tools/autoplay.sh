@@ -22,7 +22,9 @@
 #                    plays every seed (and gauntlet cell) with each, and the
 #                    report sets them side by side: the gap between random
 #                    and smart is what says which fights reward good play.
-#                    --watch and --determinism take the first.
+#                    --watch and --determinism take the first. A style
+#                    ending -randpick (smart-randpick) takes salvage and
+#                    shop stock at random, for tools/tile_balance.py.
 #   --out DIR        output directory (default .autoplay/<timestamp>)
 #   --time-limit S   kill a run after S seconds of wall time (default 300;
 #                    a run takes seconds, so this only catches a hang)

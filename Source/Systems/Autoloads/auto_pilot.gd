@@ -13,7 +13,9 @@ extends Node
 ##   --autoplay           turn it on
 ##   --seed=N             the run seed (default: random, and reported)
 ##   --policy=NAME        how it chooses: random (the default), or smart,
-##                        aggressive, turtle or synergy (HeuristicPolicy)
+##                        aggressive, turtle or synergy (HeuristicPolicy);
+##                        add -randpick (smart-randpick) to take salvage and
+##                        shop stock at random
 ##   --out=DIR            where the transcript goes (default: user://autoplay)
 ##   --max-turns=N        give up after this many player turns (default 600)
 ##   --stall-seconds=N    give up after this long with nothing to do (default 90)
@@ -50,7 +52,9 @@ extends Node
 ##
 ## For balance, it tallies what tiles and enemies did (AutoPilotTelemetry):
 ## a "visit" entry as each scenario is left, and the run's totals, final
-## build and what dealt the last blow in the result.
+## build and what dealt the last blow in the result. Each arrival records the
+## build, and each salvage offer and shop its items ("offer"), so a tile can
+## be judged against what it was taken over (tools/tile_balance.py).
 ## tools/autoplay_report.py reads a batch of them.
 
 ## Frames to let the game settle after acting before acting again. A patient
@@ -111,6 +115,8 @@ var _last_move: Dictionary = {}
 var _arrival_unchecked: bool = false
 ## Salvage offers already counted, by instance id.
 var _offers_seen: Dictionary[int, bool] = {}
+## Whether this stop's shop stock has gone in the transcript.
+var _shop_written: bool = false
 
 
 func _ready() -> void:
@@ -193,6 +199,7 @@ func _process(_delta: float) -> void:
 		return
 	_telemetry.follow(ScenarioEngine.current())
 	_count_salvage_offers()
+	_write_shop_stock()
 
 	_idle_frames += 1
 	if _idle_frames > _stall_frames:
@@ -303,6 +310,27 @@ func _count_salvage_offers() -> void:
 		and not _offers_seen.has(offer.get_instance_id()):
 			_offers_seen[offer.get_instance_id()] = true
 			_telemetry.on_salvage_offered()
+			var items: Array[String] = []
+			for choice: Node2D in offer.rewards:
+				if is_instance_valid(choice):
+					items.append(AutoPilotMove.item_name(choice))
+			_write({"type": "offer", "source": "salvage", "turn": _player_turn, "items": items,
+				"room": Globals.tile_grid.has_free_cell()})
+
+
+## Writes what the shop has, and at what price, once per stop: with the
+## salvage offers, what a tile taken was chosen over.
+func _write_shop_stock() -> void:
+	if _shop_written or not is_instance_valid(Globals.shop) or not Globals.shop.is_visible_in_tree() \
+	or Globals.shop.item_to_shop_index.is_empty():
+		return
+	_shop_written = true
+	var items: Array[Dictionary] = []
+	for stock: Node in Globals.shop.item_to_shop_index:
+		if is_instance_valid(stock):
+			items.append({"item": AutoPilotMove.item_name(stock), "price": Globals.shop.price_of(stock)})
+	_write({"type": "offer", "source": "shop", "turn": _player_turn, "items": items,
+		"money": AutoPilotSnapshot.credits(), "room": Globals.tile_grid.has_free_cell()})
 
 
 func _salvage_on_its_way() -> bool:
@@ -363,8 +391,11 @@ func _connect_game_signals() -> void:
 		_arrival_unchecked = true
 		_idle_frames = 0
 		_moves_since_progress = 0
+		_shop_written = false
+		# The build at every stop says when each tile joined and left it.
 		_write({"type": "arrive", "turn": _player_turn, "scenario": _scenario_name,
-			"map_index": Globals.map.current_scenario_index})
+			"sector": Globals.state_manager.current_game_save.sector_index,
+			"map_index": Globals.map.current_scenario_index, "build": AutoPilotTelemetry.build()})
 		_shoot("arrive_%s" % _scenario_name)
 		_telemetry.begin_visit(_scenario_name, Globals.state_manager.current_game_save.sector_index,
 			Globals.map.current_scenario_index, _player_turn)
