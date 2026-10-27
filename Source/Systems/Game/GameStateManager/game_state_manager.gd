@@ -98,6 +98,13 @@ var _restore: Dictionary = {}
 ## slot is never overwritten with an empty one.
 var _scenario_cleared: bool = false
 
+## Hull the opening ambusher's first shot still owes a fresh run (see
+## OpeningStrike). The run starts this much over the save's hull, and until
+## the shot lands checkpoints record the hull as it will be after it, so a
+## Continue never replays the shot or keeps the extra.
+var _opening_strike_owed: int = 0
+var _opening_strike_taken: bool = false
+
 ## Set between leaving a scenario and arriving at the next, including a trip
 ## through the jump gate (whose map already shows the new sector). Nothing is
 ## stable enough to checkpoint mid-jump.
@@ -153,6 +160,7 @@ func _ready() -> void:
 		# write into current_game_save. Without a copy, a second New Game in
 		# the same session would open on the last run's final checkpoint.
 		current_game_save = current_game_save.duplicate()
+		_owe_opening_strike()
 
 	if len(current_game_save.sector_scenarios) == 0:
 		RNGManager.start_new_run()
@@ -163,6 +171,7 @@ func _ready() -> void:
 	Events.combat_finished.connect(_checkpoint_after_combat)
 	Events.reward_picked.connect(_checkpoint_mid_scenario)
 	Events.jump.connect(func() -> void:
+		_opening_strike_owed = 0
 		_restore = {}
 		_scenario_cleared = false
 		_in_transit = true
@@ -221,6 +230,30 @@ func _scenario_to_load() -> ScenarioResource:
 	return scenario
 
 	
+## Raises the new run's hull by the opening shot it's about to take, short
+## of max_health, so the shot lands it on the save's starting hull.
+func _owe_opening_strike() -> void:
+	_opening_strike_owed = clampi(
+		current_game_save.player_max_health - current_game_save.player_health,
+		0, OpeningStrike.DAMAGE
+	)
+	current_game_save.player_health += _opening_strike_owed
+
+
+## How much the opening shot should hit for, the one time it's asked; 0 after
+## that, and on any run that isn't a fresh one.
+func take_opening_strike() -> int:
+	if _opening_strike_taken:
+		return 0
+	_opening_strike_taken = true
+	return _opening_strike_owed
+
+
+## The opening shot has landed: the hull is the save's now.
+func opening_strike_landed() -> void:
+	_opening_strike_owed = 0
+
+
 ## Called one frame into the game_start animation, once every system's _ready()
 ## has run. There is no fade and no boot sequence: a run opens in the middle of
 ## an ambush, so the cockpit snaps on already lit and already screaming.
@@ -536,7 +569,7 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 	if _in_transit and mid_scenario:
 		return
 
-	current_game_save.player_health = Globals.player.health.health
+	current_game_save.player_health = Globals.player.health.health - _opening_strike_owed
 	current_game_save.player_max_health = Globals.player.health.max_health
 	current_game_save.player_defense = Globals.player.health.shields
 	current_game_save.player_engine_charge = Globals.player.engine_charge

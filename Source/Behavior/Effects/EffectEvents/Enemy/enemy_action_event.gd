@@ -44,6 +44,10 @@ var feed_depth: int = 0
 ## Ships that already acted with this die in a relay chain.
 var relay_visited: Array[Node] = []
 
+## Whether the targeting computer lights the intent row for this die's face.
+## Off for a shot that isn't on the ship's table (OpeningStrike).
+var pulses_intent: bool = true
+
 
 func resolve(engine: ScenarioEngine) -> void:
 	# Also covers a die queued for this turn that the ship gave away when it
@@ -55,7 +59,8 @@ func resolve(engine: ScenarioEngine) -> void:
 	# Pulses the matching intent on the targeting computer, so the player can
 	# see which row of the intent table this die is about to play. Before the
 	# die leaves the hand, so the intent never blinks dim in between.
-	Events.enemy_used_die.emit(enemy, die_value)
+	if pulses_intent:
+		Events.enemy_used_die.emit(enemy, die_value)
 
 	# Remove die from the visual stacking queue
 	# It's about to fly in front of the enemy

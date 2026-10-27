@@ -457,6 +457,12 @@ func _announce_first_turn() -> void:
 	var enemy_manager: EnemyManager = Globals.enemy_manager
 	if enemy_manager and enemy_manager.arrival_in_progress:
 		await Events.enemies_arrived
+	# A new run's ambusher opens fire before the player's first move.
+	if Globals.state_manager:
+		var strike: int = Globals.state_manager.take_opening_strike()
+		if strike > 0 and fight == _fight_generation:
+			await OpeningStrike.play(strike)
+			Globals.state_manager.opening_strike_landed()
 	await _ensure_a_die_to_play()
 
 	# The fight may have ended (or the player jumped) while we waited.
