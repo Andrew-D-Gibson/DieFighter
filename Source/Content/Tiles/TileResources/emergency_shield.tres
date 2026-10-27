@@ -23,12 +23,6 @@ script = ExtResource("12_esdata")
 subtype = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_esv2set1"]
-script = ExtResource("12_esdata")
-category = 2
-amount = 1
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_juice_1"]
 script = ExtResource("12_esdata")
 category = 4
@@ -42,12 +36,6 @@ category = 4
 subtype = 8
 amount = 800
 multiplier = 0.3
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_esv2heal"]
-script = ExtResource("12_esdata")
-category = 1
-subtype = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_esv2set2"]
@@ -182,7 +170,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_esv2chain"]
 script = ExtResource("11_55lg7")
-effects = Array[ExtResource("12_esdata")]([SubResource("Resource_esv2tgt"), SubResource("Resource_esv2set1"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_esv2heal"), SubResource("Resource_esv2set2"), SubResource("Resource_esv2wait1"), SubResource("Resource_esv2set3"), SubResource("Resource_esv2fx1"), SubResource("Resource_esv2set4"), SubResource("Resource_esv2wait2"), SubResource("Resource_esv2set5"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_juice_5"), SubResource("Resource_juice_6"), SubResource("Resource_esv2shield"), SubResource("Resource_esv2set6"), SubResource("Resource_esv2fx2"), SubResource("Resource_esv2set7"), SubResource("Resource_esv2wait3"), SubResource("Resource_juice_7"), SubResource("Resource_juice_8"), SubResource("Resource_juice_9"), SubResource("Resource_esv2destroy")])
+effects = Array[ExtResource("12_esdata")]([SubResource("Resource_esv2tgt"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_esv2set2"), SubResource("Resource_esv2wait1"), SubResource("Resource_esv2set3"), SubResource("Resource_esv2fx1"), SubResource("Resource_esv2set4"), SubResource("Resource_esv2wait2"), SubResource("Resource_esv2set5"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_juice_5"), SubResource("Resource_juice_6"), SubResource("Resource_esv2shield"), SubResource("Resource_esv2set6"), SubResource("Resource_esv2fx2"), SubResource("Resource_esv2set7"), SubResource("Resource_esv2wait3"), SubResource("Resource_juice_7"), SubResource("Resource_juice_8"), SubResource("Resource_juice_9"), SubResource("Resource_esv2destroy")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_iyog3"]

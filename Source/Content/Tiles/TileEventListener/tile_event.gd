@@ -25,6 +25,9 @@ enum EventType {
 	## The player gained shields, from any source. The hook for tiles that
 	## turn bracing into pressure.
 	ON_PLAYER_SHIELDS_GAINED,
+	## The player just took a killing blow. Answering it is a death save: the
+	## tile holds the hull at 1 on the spot, then its chain plays and should
+	## spend the tile (Tile._on_player_fatal_damage).
 	ON_PLAYER_FATAL_DAMAGE = 100,
 }
 

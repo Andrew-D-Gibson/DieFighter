@@ -20,6 +20,8 @@ const _TRIGGER_CALLOUT_COOLDOWN_MSEC: int = 150
 var _saturation_tween: Tween
 var _flash_tween: Tween
 var _last_trigger_callout_msec: int = -_TRIGGER_CALLOUT_COOLDOWN_MSEC
+## Set once this tile has caught a killing blow (see _on_player_fatal_damage).
+var _death_save_spent: bool = false
 @export var uses_remaining: int = -1:
 	set(new_value):
 		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_turn)
@@ -116,9 +118,7 @@ func _connect_tile_event_signals() -> void:
 	Events.player_shields_gained.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_SHIELDS_GAINED)
 	)
-	Events.player_fatal_damage.connect(func() -> void:
-		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE)
-	)
+	Events.player_fatal_damage.connect(_on_player_fatal_damage)
 	# Answered straight after the neighbour's activation rather than at the back
 	# of the queue. A relay chain winding past this tile activates several
 	# neighbours in one pass; queued, every response would wait for the chain
@@ -200,6 +200,30 @@ func _get_tile_info() -> InfoResource:
 			if not line.is_empty():
 				info.bottom_label_text += "\n\n" + line
 	return info
+
+
+## A response to a fatal hit is a death save, so the ship has to be saved
+## before Health re-checks the hull, straight after this signal returns. The
+## response chain can't do it: like every tile response it resolves later
+## through the queue, by which time death has long been declared. So the tile
+## holds the hull at 1 here, and the chain plays the rest (the shields, the
+## show, the tile burning out). It's injected rather than queued so the
+## shields land before the next enemy shot, not after the whole volley.
+##
+## Spent on the first blow it catches, so a second blow landing before the
+## chain finishes isn't saved for free, and when two tiles could answer, only
+## the first one burns.
+func _on_player_fatal_damage() -> void:
+	if _death_save_spent or on_offer or not ScenarioEngine.current():
+		return
+	if _find_matching_event_response(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE) == null:
+		return
+	var health: Health = Globals.player.health
+	if health.health > 0:
+		return	# another tile already caught this blow
+	_death_save_spent = true
+	health.health = 1
+	handle_tile_event(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE, true)
 
 
 ## [param immediate] resolves the response right after the event currently
