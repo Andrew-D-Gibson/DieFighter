@@ -17,7 +17,7 @@ func _create_error_popup(text: String, global_pos: Vector2) -> void:
 	
 	var error_text: ErrorTextPopup = error_text_popup_scene.instantiate()
 	add_child(error_text)
-	error_text.text = text
+	error_text.set_message(text)
 	error_text.global_position = global_pos + Vector2(-error_text.size.x / 2, -error_text.size.y)
 			
 	_current_popups.append(error_text)
