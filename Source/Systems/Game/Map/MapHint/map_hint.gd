@@ -15,8 +15,11 @@ extends Control
 var _tween: Tween
 
 
-func show_hint(texture: Texture2D, text: String, color: Color) -> void:
+## [param icon_material] dresses the icon (the gate's portal shader); null for
+## a plain one.
+func show_hint(texture: Texture2D, text: String, color: Color, icon_material: Material = null) -> void:
 	icon.texture = texture
+	icon.material = icon_material
 	label.text = text
 	label.add_theme_color_override("font_color", color)
 	_layout()

@@ -21,9 +21,10 @@ var stray_danger_indices: Array[int] = []
 @export var fate: PackedScene
 @export var danger_area: Texture2D
 @export var corrupted_area: Texture2D
-## The sector's jump gate, drawn bigger than the other stops and on the
-## timeline itself, like the Black Hole at the other end. Scenarios keep their
-## small map_icon for the caption.
+## The sector's jump gate, drawn bigger than the other stops, on the timeline
+## itself and a slot further out, like the Black Hole at the other end. It
+## wears the portal shader and a MapGateAura. Scenarios keep their small
+## map_icon for the caption, which wears the shader too.
 @export var gate_map_icon: Texture2D
 
 @export_category('Components')
@@ -70,9 +71,17 @@ const _NEXT_SECTOR_ICON: Texture2D = preload("res://Assets/Textures/Map/Encounte
 ## How often the right arrow pulses while the gate is open, so the eye goes
 ## from "jump right" to the tile that does it.
 const _GATE_PULSE_SECONDS: float = 1.1
-## How far past the gate the beacon's light sits: just beyond the map's right
-## edge with the view scrolled all the way, so only its glow shows.
-const _BEACON_OFFSET: float = 38.0
+## The gate sits this far right of its own slot, out past the last stop the
+## way the Black Hole sits out past the first.
+const _GATE_SHIFT: float = 14.0
+const _PORTAL_SHADER: Shader = preload("res://Assets/Shaders/jump_gate_portal.gdshader")
+## The caption's gate icon: what "Gate ahead" and a hovered gate show.
+const _GATE_CAPTION_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/jump_gate.png")
+## How lit the portal is while the gate is shut, and once it's open.
+const _PORTAL_ENERGY: float = 0.45
+const _OPEN_PORTAL_ENERGY: float = 1.0
+## Shared by every portal on the map and in the caption, so they glow in step.
+var _portal_material: ShaderMaterial
 ## Animates a threatened icon on the map itself. Captions, which are too small
 ## and too brief to need it, use the static splice from _danger_icon().
 const _CORRUPTING_SHADER: Shader = preload("res://Assets/Shaders/corrupting_icon.gdshader")
@@ -228,6 +237,8 @@ func _process(delta: float) -> void:
 	_set_hovered(hovered)
 	_set_hint(_compute_hint(hovered))
 	_pulse_right_arrow_at_open_gate(delta)
+	# Keeps the portal's glow in step with the gate opening.
+	_portal()
 
 
 func _pulse_right_arrow_at_open_gate(delta: float) -> void:
@@ -389,7 +400,8 @@ func _set_hint(caption: Array) -> void:
 	if caption == _shown_hint or not hint:
 		return
 	_shown_hint = caption
-	hint.show_hint(caption[0], caption[1], caption[2])
+	var icon_material: Material = _portal() if caption[0] == _GATE_CAPTION_ICON else null
+	hint.show_hint(caption[0], caption[1], caption[2], icon_material)
 
 
 func _mouse_in_map() -> bool:
@@ -549,8 +561,8 @@ func _update_map_sprites() -> void:
 	
 		
 	for i: int in range(len(scenario_list)):
-		# Create a timeline bar to the next location
-		if i < len(scenario_list) - 1:
+		# Create a timeline bar to the next location, and on out to the gate
+		if i < len(scenario_list) - 1 or _is_gate_slot(i):
 			var timeline_bar_sprite: Sprite2D = Sprite2D.new()
 			timeline_bar_sprite.texture = timeline_icon
 			timeline_bar_sprite.position = Vector2((i * sprite_spacing) + 7, 4)
@@ -561,6 +573,8 @@ func _update_map_sprites() -> void:
 		var scenario_sprite: Sprite2D = Sprite2D.new()
 		scenario_sprite.position = Vector2(i * sprite_spacing, 4)
 		var is_gate: bool = _is_gate_slot(i)
+		if is_gate:
+			scenario_sprite.position.x += _GATE_SHIFT
 		
 		# Mark the encounter as either our present location or 
 		# a possible destination with a map icon
@@ -570,12 +584,12 @@ func _update_map_sprites() -> void:
 			# Standing at the gate: the marker sits on it rather than hiding it.
 			if is_gate:
 				var gate_under_pip: Sprite2D = Sprite2D.new()
-				gate_under_pip.texture = gate_map_icon
 				gate_under_pip.position = scenario_sprite.position
+				_dress_gate(gate_under_pip)
 				map_viewport.add_child(gate_under_pip)
 		elif is_gate:
 			# On the timeline itself, with no connector to reach it by.
-			scenario_sprite.texture = gate_map_icon
+			_dress_gate(scenario_sprite)
 		else:
 			scenario_sprite.texture = scenario_list[i].map_icon
 			if _is_in_danger(i) and scenario_sprite.texture:
@@ -597,13 +611,28 @@ func _update_map_sprites() -> void:
 			_pulse_pip(scenario_sprite)
 		scenario_sprites.append(scenario_sprite)
 
-	var beacon: MapGateBeacon = MapGateBeacon.new()
-	beacon.position = Vector2((len(scenario_list) - 1) * sprite_spacing + _BEACON_OFFSET, 4)
-	beacon.z_index = -1
-	map_viewport.add_child(beacon)
 		
 	# Sync the slider to match the camera position
 	_sync_slider_to_camera()
+
+
+## Makes [param sprite] the gate: the big icon, its portal swirling, its
+## halo behind and motes swirling in.
+func _dress_gate(sprite: Sprite2D) -> void:
+	sprite.texture = gate_map_icon
+	sprite.material = _portal()
+	sprite.add_child(MapGateAura.make(MapGateAura.Layer.HALO))
+	sprite.add_child(MapGateAura.make(MapGateAura.Layer.MOTES))
+
+
+## The portal shader's material, lit to match the gate: brighter once open.
+func _portal() -> ShaderMaterial:
+	if not _portal_material:
+		_portal_material = ShaderMaterial.new()
+		_portal_material.shader = _PORTAL_SHADER
+	var open: bool = Globals.jump_gate != null and Globals.jump_gate.is_open()
+	_portal_material.set_shader_parameter("energy", _OPEN_PORTAL_ENERGY if open else _PORTAL_ENERGY)
+	return _portal_material
 
 
 ## Whether slot [param index] is the sector's jump gate, drawn on the timeline.
