@@ -3,7 +3,7 @@ extends Node2D
 ##
 ## The lock is a blow, so it slams on rather than appearing: it drops in big,
 ## lands with a squash, a burst of sparks, a ring and a clank, and knocks the
-## tile. Its face then flips between one pip and two, the faces that open it.
+## tile. Its face then counts one pip, two, three: the faces that open it.
 ## It rattles each time it turns a die away, and pops off when it's opened.
 
 const _LOCK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres")
@@ -39,7 +39,7 @@ func _process(delta: float) -> void:
 	_face_age += delta
 	if _face_age >= _FACE_SECONDS:
 		_face_age -= _FACE_SECONDS
-		_sprite.frame = 1 - _sprite.frame
+		_sprite.frame = (_sprite.frame + 1) % _sprite.hframes
 
 
 ## The lock turned a die away: it rattles and spits a few sparks.

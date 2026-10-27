@@ -8,4 +8,4 @@ script = ExtResource("1_script")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1766844325]
 texture = ExtResource("2_sheet")
-hframes = 2
+hframes = 3

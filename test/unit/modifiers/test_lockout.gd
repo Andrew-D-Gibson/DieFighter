@@ -143,10 +143,10 @@ func test_every_lockout_source_draws_a_lockable_tile() -> void:
 
 # ── Opening a lock ────────────────────────────────────────────────────────────
 
-func test_any_die_below_three_opens_a_lock() -> void:
-	assert_true(LockoutModifier.unlocks(1))
-	assert_true(LockoutModifier.unlocks(2))
-	for face: int in range(3, 7):
+func test_a_one_two_or_three_opens_a_lock() -> void:
+	for face: int in range(1, 4):
+		assert_true(LockoutModifier.unlocks(face), "a %d opens it" % face)
+	for face: int in range(4, 7):
 		assert_false(LockoutModifier.unlocks(face), "a %d is turned away" % face)
 
 
@@ -176,6 +176,7 @@ func test_a_locked_tile_says_so_in_its_info() -> void:
 	assert_string_contains(text, "(locked)")
 	assert_string_contains(text, "(die_1)", "names the keys that open it")
 	assert_string_contains(text, "(die_2)", "names the keys that open it")
+	assert_string_contains(text, "(die_3)", "names the keys that open it")
 
 
 func test_a_locked_tile_shows_one_line() -> void:

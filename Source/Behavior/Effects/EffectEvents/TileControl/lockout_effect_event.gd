@@ -1,7 +1,7 @@
 class_name LockoutEffectEvent
 extends EffectEvent
 
-## The lockout this event is enforcing, so a key (any die below 3) can lift it.
+## The lockout this event is enforcing, so a key (a 1, 2 or 3) can lift it.
 var lockout_modifier: LockoutModifier
 
 

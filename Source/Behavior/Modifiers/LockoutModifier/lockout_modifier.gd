@@ -2,7 +2,7 @@ class_name LockoutModifier
 extends Modifier
 
 ## A die showing less than this opens the lock instead of being turned away.
-const UNLOCK_BELOW: int = 3
+const UNLOCK_BELOW: int = 4
 
 
 ## Whether a die showing [param face] opens a locked tile.
@@ -31,7 +31,7 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 
 ## Shown in the tile's info panel, so a lock the player can see on the board
 ## is explained when they click the tile. The lock has no timer: it lasts
-## until a 1 or a 2 opens it or the player jumps away (the engine shuts down), so
+## until a 1, 2 or 3 opens it or the player jumps away (the engine shuts down), so
 ## there is no countdown to show. A tile locked twice still gets one line:
 ## the first lock on it writes it and the rest stay quiet.
 func get_info_text() -> String:
