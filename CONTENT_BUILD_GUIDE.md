@@ -204,6 +204,12 @@ on such a die, or on any die whose action does nothing.
 reaches the hull; what the shields can't absorb is lost. Write it as
 `Deal [color=blue](amount)[/color] (ion_damage)`.
 
+**Drains:** an enemy taking engine charge uses `SIPHON_ENGINE_CHARGE` (amount
+= running_amount, `color` = the motes), not a STREAM plus a negative
+`CHANGE_ENGINE_CHARGE`: it drops the gauge before each spurt of motes, so the
+loss reads first. Any other drain-and-stream chain should likewise change the
+value before its STREAM.
+
 **Derived automatically, nothing to set:**
 - Threat (tractor-beam colour). Damage aimed at the player is DANGEROUS
   (ion damage too).

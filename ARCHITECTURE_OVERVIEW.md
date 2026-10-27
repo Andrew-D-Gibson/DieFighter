@@ -228,6 +228,11 @@ soft-lock the run) or that's already locked, so locks never stack. Random
 lockouts target with `TARGET_RANDOM_LOCKABLE_TILE`, which draws only tiles
 where `Tile.accepts_lockout()` holds. A locked tile's info panel gets a line from
 `LockoutModifier.get_info_text()`, the same way an Amplifier adds its own.
+Any die below 3 (`LockoutModifier.unlocks(face)`) opens a lock and goes to a
+random enemy; anything else bounces back to the hand. The padlock
+(`lockout_modifier_visual.gd`) slams on with sparks, a ring and a LOCKED
+callout, rattles on each bounce, and pops off on unlock: `on_unregistered`
+calls its `release()` instead of freeing it outright.
 
 ### 4.4 Tile Activation Flow
 
@@ -528,6 +533,16 @@ finishes, and switched back on by the Options menu's Show Tutorial box.
 The map, encounters and backgrounds are the same for every new player. The
 `opening_setup` step then forces the hand (4/2/1) and the raider's intent table,
 because both are generated during scene setup, before any ordinary step runs.
+
+**The opening shot.** Every fresh run (tutorial or not) opens with the
+ambusher firing once, before the first turn (`OpeningStrike`, played from
+`Player._announce_first_turn`): it takes the player's last die by tractor
+beam, fires `attack_player.tres` with it for `OpeningStrike.DAMAGE` (4), and
+the chain hands the die back. `GameStateManager._owe_opening_strike()` starts
+the run that much over the save's hull, so the shot lands it on
+`run_start.tres`'s 24; until `opening_strike_landed()`, checkpoints save the
+hull minus what's owed, so a Continue never replays the shot. Continues,
+gauntlets and lab runs aren't fresh, so they skip it.
 Later steps force the turn-two hand and the salvage (`forced_dice`,
 `forced_enemy_actions`, `forced_rewards`). `_finish_tutorial` clears all three
 statics.
@@ -854,9 +869,13 @@ Winning the fight turns the slot into `Map.open_gate_scenario` (`GATE_open`).
 A scenario with a `boss_title` plays the `BossIntroCard` on arrival while its
 ships are hostile.
 
-While the gate is open, `JumpGate` shows a `NextSectorPrompt` ("NEXT SECTOR
->>>" in the sky to the right; clicking it opens the map), and the map's
-caption reads "Jump right!" while its right arrow tile pulses.
+The map leads right on its own: the sector's gate sits on the timeline at
+the far right (`Map.gate_map_icon`, 20x20; the caption keeps the scenario's
+small `map_icon`), mirroring the Black Hole at the left, and a
+`MapGateBeacon` past the right edge glows with motes streaming past the gate
+into it. While the gate is open the beacon swells, the caption reads "Jump
+right!" and the right arrow tile pulses. Nothing in the sky prompts the
+player.
 
 **Fate's tiles.** A tile Fate takes becomes `Map.fate_scenario` or one of
 `Map.fate_variants` (Fate Rift, Hollows, Maw), picked by `Map._corrupt()`
@@ -1019,7 +1038,7 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 | Category | Subtypes |
 |----------|----------|
 | TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, TARGET_BOUND_ALLY, TARGET_BOUND_HOSTILE_SHIP, etc. |
-| ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE, STEAL_MONEY (actor takes credits; coins fly from the money counter to it), ION_DAMAGE (`IonDamageEvent`, a `DamageEvent` with `reaches_hull()` false: `Health.take_ion_damage` strips 2x from shields, the rest is lost) |
+| ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE, STEAL_MONEY (actor takes credits; coins fly from the money counter to it), SIPHON_ENGINE_CHARGE (`SiphonEngineChargeEvent`: drains in up to 3 pulses, each dropping the gauge then streaming motes from it to the actor; one `engine_charge_drained`), ION_DAMAGE (`IonDamageEvent`, a `DamageEvent` with `reaches_hull()` false: `Health.take_ion_damage` strips 2x from shields, the rest is lost) |
 | AMOUNT_MODIFIER | MULTIPLY (a fraction rounds up, away from zero, so every "half of" rounds up), ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN, SET_TO_DICE_OWNED, SET_TO_DICE_IN_HAND, SET_TO_TARGET_DICE_HELD, SET_RANDOM (`range_min`–`range_max`) |
 | DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET, FEED_ALLY, SPAWN_HOLOGRAM_FOR_ALLY, REROLL_TARGETS_DICE, FLIP_TARGETS_ONES_AND_SIXES |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |
