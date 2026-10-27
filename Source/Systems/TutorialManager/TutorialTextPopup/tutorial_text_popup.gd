@@ -21,8 +21,26 @@ var popup_completed: bool = false
 var time_between_blip_sounds: float = 0.1
 var last_blip_time: int = 0
 
+## The hologram's head drifts up and down inside its bezel this many pixels,
+## smoothly rather than a pixel at a time, over one bob period.
+const _HEAD_BOB_PIXELS: float = 1.0
+const _HEAD_BOB_SECONDS: float = 1.6
+var _head_rest: Vector2
+var _bob_time: float = 0.0
+
 signal all_text_displayed()
 signal popup_closed()
+
+
+func _ready() -> void:
+	_head_rest = %ComputerTalking.position
+
+
+func _process(delta: float) -> void:
+	_bob_time += delta
+	%ComputerTalking.position = _head_rest + Vector2(
+		0.0, sin(_bob_time * TAU / _HEAD_BOB_SECONDS) * _HEAD_BOB_PIXELS
+	)
 
 
 func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:

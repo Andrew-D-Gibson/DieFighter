@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://hclp4lke0uuu" path="res://Assets/Textures/UI/Buttons/button_small_blue.png" id="6_cjyxc"]
 [ext_resource type="Texture2D" uid="uid://c265tonvt4uft" path="res://Assets/Textures/UI/Buttons/button_small_blue_disabled.png" id="7_dqf6j"]
 [ext_resource type="Shader" path="res://Assets/Shaders/hologram_figure.gdshader" id="8_holo"]
+[ext_resource type="Texture2D" uid="uid://cfra3uwymobm7" path="res://Assets/Textures/TutorialManager/computer_bezel.png" id="9_bezel"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dqf6j"]
 texture = ExtResource("2_cjyxc")
@@ -152,6 +153,11 @@ sprite_frames = SubResource("SpriteFrames_5wl13")
 animation = &"talking"
 autoplay = "talking"
 frame_progress = 0.134329
+
+[node name="ComputerBezel" type="Sprite2D" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/TextureRect"]
+z_index = 1
+position = Vector2(8, 8)
+texture = ExtResource("9_bezel")
 
 [node name="CloseButton" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer" unique_id=1550678308 instance=ExtResource("4_aaaot")]
 unique_name_in_owner = true
