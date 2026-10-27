@@ -319,6 +319,9 @@ func _place_arriving(ship: Enemy, progress: float) -> void:
 		_arrival_rest[ship] = ship.position
 	var rest: Vector2 = _arrival_rest[ship]
 	ship.position = rest + Vector2(0.0, -fly_in_range * (1.0 - progress))
+	# A ship can arrive already holding dice (the opening ambusher's shot).
+	if ship.holds_dice():
+		ship.dice_manager.update_dice_locations()
 
 
 func get_point_along_path(proportion: float) -> Vector2:

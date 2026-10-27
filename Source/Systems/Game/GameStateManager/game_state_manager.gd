@@ -103,7 +103,9 @@ var _scenario_cleared: bool = false
 ## the shot lands checkpoints record the hull as it will be after it, so a
 ## Continue never replays the shot or keeps the extra.
 var _opening_strike_owed: int = 0
-var _opening_strike_taken: bool = false
+## Armed once the opening ships have spawned; null once played, or when
+## there's nothing to fire.
+var _opening_strike: OpeningStrike
 
 ## Set between leaving a scenario and arriving at the next, including a trip
 ## through the jump gate (whose map already shows the new sector). Nothing is
@@ -209,6 +211,10 @@ func _ready() -> void:
 
 	Events.load_game_save.emit(current_game_save)
 	Events.load_scenario.emit(_scenario_to_load())
+	# The scenario's ships have spawned: the ambusher takes its die now, so it
+	# flies in holding it.
+	if _opening_strike_owed > 0:
+		_opening_strike = OpeningStrike.arm(_opening_strike_owed)
 
 
 ## The scenario a (re)started game scene opens in: the map slot, unless the
@@ -240,17 +246,14 @@ func _owe_opening_strike() -> void:
 	current_game_save.player_health += _opening_strike_owed
 
 
-## How much the opening shot should hit for, the one time it's asked; 0 after
-## that, and on any run that isn't a fresh one.
-func take_opening_strike() -> int:
-	if _opening_strike_taken:
-		return 0
-	_opening_strike_taken = true
-	return _opening_strike_owed
-
-
-## The opening shot has landed: the hull is the save's now.
-func opening_strike_landed() -> void:
+## Plays the opening shot, the one time there is one, and returns once it
+## has landed. The hull is the save's after it.
+func play_opening_strike() -> void:
+	if not _opening_strike:
+		return
+	var strike: OpeningStrike = _opening_strike
+	_opening_strike = null
+	await strike.play()
 	_opening_strike_owed = 0
 
 
