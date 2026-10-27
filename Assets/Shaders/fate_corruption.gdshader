@@ -2,7 +2,8 @@
 // background by depth, exactly as scrolling_object.gdshader does, and Fate
 // works on it in the same language as corrupting_icon.gdshader on the map:
 //
-// - Pure black in the art is void Fate already holds. It crawls with static.
+// - Pure black in the art is void Fate already holds: a hole cut through the
+//   piece, so whatever is behind shows through. It crawls with static.
 // - A seam creeps in from one corner and back out, ragged row by row, with a
 //   hot edge, so every piece is visibly being chewed rather than just tinted.
 // - On glitch frames a band of rows tears sideways and red splits off a
@@ -118,14 +119,18 @@ void fragment() {
 		vec3 rgb;
 		// Static and edges are light Fate gives off, so depth dims them less.
 		bool emissive = false;
+		// Void is a hole, not paint: only its static is drawn.
+		float alpha = base.a;
 
 		if (void_here) {
 			rgb = void_color.rgb;
+			alpha = 0.0;
 			float noise = hash(texel + vec2(step_time * 0.37, seed));
 			float density = static_density + 0.25 * fate_flash;
 			if (noise > 1.0 - density) {
 				rgb = static_color.rgb;
 				emissive = true;
+				alpha = base.a;
 			}
 			if (noise > 1.0 - density * 0.35) {
 				rgb = hot_color.rgb;
@@ -157,6 +162,6 @@ void fragment() {
 		// Modulate darkens Fate's light too: the cutscene shades depth with it.
 		rgb *= tint.rgb;
 		float shown = emissive ? sqrt(visibility) : visibility;
-		COLOR = vec4(mix(background_color.rgb, rgb, shown), base.a * tint.a);
+		COLOR = vec4(mix(background_color.rgb, rgb, shown), alpha * tint.a);
 	}
 }
