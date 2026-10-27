@@ -9,13 +9,16 @@ offer, a fair test of the tile.
 
 Progress is how far a run got: the furthest map stop it reached, counted
 across sectors (STOPS_PER_SECTOR each, the boss last), and a full clear on
-top. A win is a run that beat the final boss.
+top. A win is a run that beat the final boss. Wins are rare while the bot
+dies at a boss wall, so the yes/no measure is the next boss: whether a run
+offered a tile in sector N went on to beat sector N's boss.
 
 For each tile it reports:
   offer-relative  every first time a run was offered the tile and could have
                   taken it (room on the grid, credits for it): the progress
-                  made from that stop on, and the win rate, of runs that took
-                  it minus runs that passed. Positive means the tile helps.
+                  made from that stop on, and the share that beat the next
+                  boss, of runs that took it minus runs that passed. Positive
+                  means the tile helps.
   naive           win rate and progress of runs whose final build had it, the
                   way a casual tally would read it; biased toward tiles that
                   show up late, side by side so the bias shows.
@@ -89,7 +92,14 @@ def tile_catalog():
 
 def read_run(path):
     """One transcript, boiled down; None if it didn't finish."""
-    entries = [json.loads(line) for line in open(path, encoding="utf-8") if line.strip()]
+    entries = []
+    for line in open(path, encoding="utf-8"):
+        try:
+            entries.append(json.loads(line))
+        except json.JSONDecodeError:
+            pass  # a run killed mid-write (a hang) leaves half a line
+    if not entries:
+        return {"outcome": "no_result"}
     result = next((e for e in entries if e.get("type") == "result"), None)
     if result is None:
         return {"outcome": "no_result"}
@@ -123,7 +133,8 @@ def read_run(path):
                 items = [(i["item"], room and 0 <= i["price"] <= money) for i in e["items"]]
             else:
                 items = [(i, room) for i in e["items"]]
-            offer = {"source": e["source"], "items": items, "at_stops": best, "taken": set()}
+            offer = {"source": e["source"], "items": items, "at_stops": best, "sector": sector,
+                     "taken": set()}
             offers.append(offer)
             open_offers.append(offer)
         elif kind == "move" and e.get("move") in ("claim", "buy"):
@@ -165,7 +176,7 @@ def analyse(runs, catalog):
     base_stops = mean([r["stops"] for r in done])
     base_win = mean([r["won"] for r in done])
     per = defaultdict(lambda: {
-        "took_gain": [], "passed_gain": [], "took_win": [], "passed_win": [],
+        "took_gain": [], "passed_gain": [], "took_boss": [], "passed_boss": [],
         "offered": 0, "taken": 0, "offered_salvage": 0, "offered_shop": 0,
         "final_runs": [], "owned_runs": [],
         "activations": 0, "owned_turns": 0, "idle_runs": 0, "owned_3plus": 0,
@@ -189,7 +200,8 @@ def analyse(runs, catalog):
                 seen.add(name)
                 gain = r["stops"] - offer["at_stops"]
                 t["took_gain" if took else "passed_gain"].append(gain)
-                t["took_win" if took else "passed_win"].append(float(r["won"]))
+                beat_boss = r["won"] or r["sector"] > offer["sector"]
+                t["took_boss" if took else "passed_boss"].append(float(beat_boss))
         for name in r["final_build"]:
             per[name]["final_runs"].append(r)
         for name in r["ever_owned"]:
@@ -211,7 +223,7 @@ def analyse(runs, catalog):
         if name not in catalog and name not in STARTER:
             continue
         d_gain, se_gain = diff_with_se(t["took_gain"], t["passed_gain"])
-        d_win, se_win = diff_with_se(t["took_win"], t["passed_win"])
+        d_boss, se_boss = diff_with_se(t["took_boss"], t["passed_boss"])
         acts = t["activations"]
         info = catalog.get(name, {})
         rows.append({
@@ -228,13 +240,15 @@ def analyse(runs, catalog):
             "n_took": len(t["took_gain"]),
             "n_passed": len(t["passed_gain"]),
             "delta_stops": d_gain, "delta_stops_se": se_gain,
-            "delta_win": d_win, "delta_win_se": se_win,
-            "took_win": mean(t["took_win"]), "passed_win": mean(t["passed_win"]),
+            "delta_boss": d_boss, "delta_boss_se": se_boss,
+            "took_boss": mean(t["took_boss"]), "passed_boss": mean(t["passed_boss"]),
             "n_final": len(t["final_runs"]),
             "final_win": mean([r["won"] for r in t["final_runs"]]),
+            "final_past_s1": mean([r["sector"] >= 1 for r in t["final_runs"]]),
             "final_stops": mean([r["stops"] for r in t["final_runs"]]),
             "n_owned": len(t["owned_runs"]),
             "owned_win": mean([r["won"] for r in t["owned_runs"]]),
+            "owned_past_s1": mean([r["sector"] >= 1 for r in t["owned_runs"]]),
             "owned_stops": mean([r["stops"] for r in t["owned_runs"]]),
             "owned_turns": t["owned_turns"],
             "activations_per_turn": acts / t["owned_turns"] if t["owned_turns"] else None,
@@ -244,6 +258,8 @@ def analyse(runs, catalog):
         })
     rows.sort(key=lambda row: -999 if math.isnan(row["delta_stops"]) else -row["delta_stops"])
     return {"runs": len(runs), "finished": len(done), "base_stops": base_stops, "base_win": base_win,
+            "sector_reached": _hist([r["sector"] for r in done]),
+            "base_past_s1": mean([r["sector"] >= 1 for r in done]),
             "excluded": {o: sum(1 for r in runs if r["outcome"] == o)
                          for o in {r["outcome"] for r in runs} - FINISHED},
             "stops_hist": _hist([r["stops"] for r in done]),
@@ -281,14 +297,14 @@ def main():
           % (report["runs"], report["finished"], report["excluded"] or "none",
              report["base_stops"], WIN_STOPS, 100 * report["base_win"]))
     print("%-24s %-8s %5s %5s %5s  %13s  %12s  %9s %7s %6s" % (
-        "tile", "rarity", "offer", "took", "pass", "Δstops±se", "Δwin%±se", "final win", "act/t", "idle"))
+        "tile", "rarity", "offer", "took", "pass", "Δstops±se", "Δboss%±se", "final stp", "act/t", "idle"))
     for row in report["tiles"]:
         def fmt(v, se, scale=1.0):
             return "   n/a" if math.isnan(v) else "%+5.1f ±%4.1f" % (v * scale, se * scale)
-        print("%-24s %-8s %5d %5d %5d  %13s  %12s  %4d %3.0f%% %7s %6s" % (
+        print("%-24s %-8s %5d %5d %5d  %13s  %12s  %4d %4.1f %7s %6s" % (
             row["tile"][:24], row["rarity"], row["offered"], row["n_took"], row["n_passed"],
-            fmt(row["delta_stops"], row["delta_stops_se"]), fmt(row["delta_win"], row["delta_win_se"], 100),
-            row["n_final"], 100 * row["final_win"] if row["n_final"] else 0,
+            fmt(row["delta_stops"], row["delta_stops_se"]), fmt(row["delta_boss"], row["delta_boss_se"], 100),
+            row["n_final"], row["final_stops"] if row["n_final"] else 0,
             "%.2f" % row["activations_per_turn"] if row["activations_per_turn"] is not None else "-",
             "%.0f%%" % (100 * row["idle_share"]) if row["idle_share"] is not None else "-"))
 
