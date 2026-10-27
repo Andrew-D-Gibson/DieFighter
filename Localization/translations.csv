@@ -16,7 +16,6 @@ SELL_TILE_BUSY,TILE BUSY,模块忙碌,使用中,ЗАНЯТО,BESCHÄFTIGT,TUILE 
 DIALOGUE_REPAIR_GREETING,Patch you up? I buy spare parts too.,要修一下吗?我也收零件。,修理するかい?部品も買い取るよ。,Подлатать? Я и запчасти беру.,Flicken? Ich kaufe auch Teile.,Une réparation? J'achète aussi des pièces.,¿Te reparo? También compro piezas.,Um reparo? Também compro peças.,Repair dock ship's greeting in its speech box on arrival. The box holds about 50 characters (five short lines),50,,
 DIALOGUE_REPAIR_ANGRY,You'll pay for that hull breach!,你得为这个破洞付出代价!,その穴の代償は払ってもらう!,Ты заплатишь за эту пробоину!,Für das Leck wirst du zahlen!,Tu vas payer pour cette brèche!,¡Pagarás por esa brecha!,Você vai pagar por esse rombo!,Repair dock ship after the player shoots it; it closes up and fights. About 50 characters fit,50,,
 OPT_REGION_ALERTS,Region Alerts,,,,,,,,"Options > Game tab: label beside a checkbox. Checked, arriving somewhere whose background has a special rule or hazard pops up a short card explaining it before it shrinks into the environment monitor.",,,
-PROMPT_NEXT_SECTOR,NEXT SECTOR,,,,,,,,"Sky, right side: floats beside the open jump gate after the boss falls, pointing right. Clicking it opens the map, where jumping right leaves the sector",12,,
 MAP_HINT_JUMP_RIGHT,Jump right!,,,,,,,,"Map caption strip, beside a right-pointing chevron, while the jump gate is open: jumping right from the gate goes to the next sector",16,,
 CALLOUT_LOCKED,LOCKED,,,,,,,,Callout floated off a tile when an enemy locks it out,,,
 CALLOUT_UNLOCKED,UNLOCKED,,,,,,,,Callout floated off a locked tile when a low die opens it,,,

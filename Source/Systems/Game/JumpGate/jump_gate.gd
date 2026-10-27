@@ -46,8 +46,6 @@ var _open: bool = false
 ## passage emits Events.jump like any jump, which would otherwise close the ring.
 var _passage_active: bool = false
 var _tweens: Array[Tween] = []
-## Points the player right while the ring is up. See NextSectorPrompt.
-var _prompt: NextSectorPrompt
 
 
 func _ready() -> void:
@@ -115,7 +113,6 @@ func open(quiet: bool) -> void:
 	else:
 		_warp_in()
 	_start_bob()
-	_show_prompt()
 
 
 func _warp_in() -> void:
@@ -181,25 +178,11 @@ func close() -> void:
 	_open = false
 	_kill_tweens()
 	_hide_all()
-	_dismiss_prompt()
 
 
 ## Call before the passage's Events.jump, so the ring survives it.
 func begin_passage() -> void:
 	_passage_active = true
-	_dismiss_prompt()
-
-
-func _show_prompt() -> void:
-	_dismiss_prompt()
-	_prompt = NextSectorPrompt.new()
-	add_child(_prompt)
-
-
-func _dismiss_prompt() -> void:
-	if is_instance_valid(_prompt):
-		_prompt.dismiss()
-	_prompt = null
 
 
 ## How long play_passage() runs, from the portal charging to the white frame.

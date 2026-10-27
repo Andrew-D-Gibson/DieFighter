@@ -21,6 +21,10 @@ var stray_danger_indices: Array[int] = []
 @export var fate: PackedScene
 @export var danger_area: Texture2D
 @export var corrupted_area: Texture2D
+## The sector's jump gate, drawn bigger than the other stops and on the
+## timeline itself, like the Black Hole at the other end. Scenarios keep their
+## small map_icon for the caption.
+@export var gate_map_icon: Texture2D
 
 @export_category('Components')
 @export var map_viewport: SubViewport
@@ -66,6 +70,9 @@ const _NEXT_SECTOR_ICON: Texture2D = preload("res://Assets/Textures/Map/Encounte
 ## How often the right arrow pulses while the gate is open, so the eye goes
 ## from "jump right" to the tile that does it.
 const _GATE_PULSE_SECONDS: float = 1.1
+## How far past the gate the beacon's light sits: just beyond the map's right
+## edge with the view scrolled all the way, so only its glow shows.
+const _BEACON_OFFSET: float = 38.0
 ## Animates a threatened icon on the map itself. Captions, which are too small
 ## and too brief to need it, use the static splice from _danger_icon().
 const _CORRUPTING_SHADER: Shader = preload("res://Assets/Shaders/corrupting_icon.gdshader")
@@ -257,6 +264,9 @@ func _mouse_world_position() -> Vector2:
 func _compute_hint(hovered: int) -> Array:
 	if hovered >= 0:
 		var texture: Texture2D = scenario_sprites[hovered].texture
+		# The gate's map sprite is too big for the caption; it has its own icon.
+		if texture == gate_map_icon:
+			texture = scenario_list[hovered].map_icon
 		if _is_in_danger(hovered):
 			return [_caption_icon(hovered), "Corrupting!", Globals.red]
 		var entry: Dictionary = _icon_hints.get(texture.resource_path.get_file(), {})
@@ -550,12 +560,22 @@ func _update_map_sprites() -> void:
 		# Add the sprite for this encounter
 		var scenario_sprite: Sprite2D = Sprite2D.new()
 		scenario_sprite.position = Vector2(i * sprite_spacing, 4)
+		var is_gate: bool = _is_gate_slot(i)
 		
 		# Mark the encounter as either our present location or 
 		# a possible destination with a map icon
 		if current_scenario_index == i:
 			scenario_sprite.texture = current_scenario_icon
 			_look_at_scenario_index(i)
+			# Standing at the gate: the marker sits on it rather than hiding it.
+			if is_gate:
+				var gate_under_pip: Sprite2D = Sprite2D.new()
+				gate_under_pip.texture = gate_map_icon
+				gate_under_pip.position = scenario_sprite.position
+				map_viewport.add_child(gate_under_pip)
+		elif is_gate:
+			# On the timeline itself, with no connector to reach it by.
+			scenario_sprite.texture = gate_map_icon
 		else:
 			scenario_sprite.texture = scenario_list[i].map_icon
 			if _is_in_danger(i) and scenario_sprite.texture:
@@ -576,9 +596,20 @@ func _update_map_sprites() -> void:
 			_pip = scenario_sprite
 			_pulse_pip(scenario_sprite)
 		scenario_sprites.append(scenario_sprite)
+
+	var beacon: MapGateBeacon = MapGateBeacon.new()
+	beacon.position = Vector2((len(scenario_list) - 1) * sprite_spacing + _BEACON_OFFSET, 4)
+	beacon.z_index = -1
+	map_viewport.add_child(beacon)
 		
 	# Sync the slider to match the camera position
 	_sync_slider_to_camera()
+
+
+## Whether slot [param index] is the sector's jump gate, drawn on the timeline.
+func _is_gate_slot(index: int) -> bool:
+	return gate_map_icon != null and index == len(scenario_list) - 1 \
+		and scenario_list[index].sector_gate_scenario
 
 
 ## The wavy, living border between the corrupted zone and the danger zone.
