@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://cygxk6obb46wn" path="res://Assets/Particles/computer_hologram_particles.tscn" id="4_s002k"]
 [ext_resource type="Texture2D" uid="uid://hclp4lke0uuu" path="res://Assets/Textures/UI/Buttons/button_small_blue.png" id="6_cjyxc"]
 [ext_resource type="Texture2D" uid="uid://c265tonvt4uft" path="res://Assets/Textures/UI/Buttons/button_small_blue_disabled.png" id="7_dqf6j"]
+[ext_resource type="Shader" path="res://Assets/Shaders/hologram_figure.gdshader" id="8_holo"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dqf6j"]
 texture = ExtResource("2_cjyxc")
@@ -14,6 +15,9 @@ texture_margin_left = 2.0
 texture_margin_top = 2.0
 texture_margin_right = 2.0
 texture_margin_bottom = 2.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_holo"]
+shader = ExtResource("8_holo")
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wosuk"]
 atlas = ExtResource("2_wosuk")
@@ -142,6 +146,7 @@ position = Vector2(8, 4)
 [node name="ComputerTalking" type="AnimatedSprite2D" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/TextureRect" unique_id=41436584]
 unique_name_in_owner = true
 z_index = 1
+material = SubResource("ShaderMaterial_holo")
 position = Vector2(8, 8)
 sprite_frames = SubResource("SpriteFrames_5wl13")
 animation = &"talking"
