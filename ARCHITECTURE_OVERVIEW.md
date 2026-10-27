@@ -737,6 +737,29 @@ each, a crude lift), and pickups. With the random bot, encounter and enemy
 numbers compare well with each other, but tile lift is mostly luck;
 gauntlets and the smart bot are what make it meaningful.
 
+**Tile balance.** `--policy smart-randpick` (any style plus `-randpick`,
+`HeuristicPolicy.random_picks`) fights like smart but takes salvage at
+random, and at a shop buys at random with walking away as one more equal
+choice, so whether a run took a tile is a coin flip. Transcripts log every
+salvage offer and each stop's shop stock (`offer`, with credits and grid
+room) and each arrival's sector and build. `tools/tile_balance.py <batch>`
+reads them:
+- **Progress** is the furthest map stop, 14 to a sector, a win counting 42.
+  The yes/no measure is the next boss: whether a run offered a tile in a
+  sector went on to beat that sector's boss.
+- **Effect**: at a tile's first takeable offer in a run (room on the grid,
+  credits for it), progress gained from that stop and next-boss rate of runs
+  that took it minus runs that passed. Only the first chance counts, since a
+  repeat offer means the run lasted. "Passed" means taking something else
+  (a tile, a die, credits, nothing), so the typical tile sits above zero.
+  Compare tiles with each other and with the median.
+- **Naive** numbers (runs whose final build had it) sit beside it, to show the
+  bias toward tiles picked up late.
+- **Usage**: activations per turn on the grid, output per turn and per
+  activation, and the share of runs holding it 3+ turns that got nothing from
+  it (passive tiles judged by output; boosts, feeds and holograms aren't
+  tallied).
+
 **Gauntlets.** `autoplay.sh --gauntlet <spec>` plays every scenario × loadout
 in a JSON spec (`tools/gauntlets/`; the format is in
 `AutoPilotGauntlet`'s header) on the same seeds, `--seed` up, so a column of

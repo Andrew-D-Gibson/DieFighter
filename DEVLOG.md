@@ -4,6 +4,28 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-26 — Tile balance batch (smart-randpick)
+
+- **Random picks, smart fights.** `--policy smart-randpick` takes salvage and
+  shop stock at random, so took-vs-passed at the same offer is a fair test of
+  a tile. Transcripts now log offers, and each arrival's sector and build.
+- **`tools/tile_balance.py`** turns a batch into per-tile effects (map stops
+  gained and next boss beaten, took minus passed, first chance only, with
+  standard errors), the naive final-build numbers beside them, and usage.
+- **First batch** (1,000 runs on dbf18fad, so locks opened on a 1 or 2, with
+  a local guard for the stale `targeted_enemy` softlock at tile.gd:367): no
+  wins; 62% die in Sector 1 (52% at the Sector Warden), 35% in Sector 2.
+  Brownout Plating, Holo-Duplicator, Repulsor Field and Napalm Vent stand out
+  above the typical tile; Dead Man's Switch, Chaos Explosion and Re-Roll fall
+  below it. The naive tally puts every tile above the average run.
+- **Found:** Emergency Shield never fires. It answers `ON_PLAYER_FATAL_DAMAGE`
+  through the engine queue, which resolves after death is declared (see
+  `EngineDeathSaveModifier`'s header); 23 runs died holding it. Most tiles
+  that spend engine charge sit unused in the bot's hands, since it doesn't
+  bank charge mid-fight.
+
+---
+
 ## 2026-10-26 — Opening shot, map leads right, lockouts at 3 or less
 
 - **The ambusher shoots first.** A new run (tutorial too) opens with the
