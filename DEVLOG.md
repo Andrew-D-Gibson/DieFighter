@@ -4,6 +4,25 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — The Codex
+
+- **A CODEX button on the main menu** opens a Pokédex-style collection with
+  Tiles and Enemies tabs. Found entries are in colour; picking one shows a
+  tile's rarity, uses and text, or an enemy's hull, shields, overload, its
+  actions with their roll ranges, and how often it has been met and
+  destroyed. Unfound entries are palette-grey shapes named "???". Keyword
+  hover works in the pane, as it does in the info popup.
+- **Discoveries outlive runs:** a new `CollectionManager` autoload keeps them
+  in `user://collection.json`. Tiles count once on the grid at a checkpoint.
+  Enemies count on arrival or launch (new `Events.ship_encountered`) and on
+  death (new `Events.enemy_destroyed`). Lab and AutoPilot runs don't count.
+- `ContentRegistry` registers enemy ids. `EnemyResource.in_codex` keeps the
+  shop, repair dock and civilian transport out of the enemy list.
+- `Tile.fill_data_tokens()` (static) and `EnemyActionResource.describe()` let
+  text be built without a live tile or ship.
+
+---
+
 ## 2026-10-28 — Quality pass: ships and player statuses
 
 - **The Scenario Lab and AutoPilot gauntlets fly the ship's own kit.** Both

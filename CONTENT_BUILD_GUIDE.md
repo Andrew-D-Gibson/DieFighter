@@ -228,7 +228,8 @@ value before its STREAM.
 **Files**
 - Art: `Assets/Textures/Enemies/<Name>/`.
   - Hull sprite: ~32×32 (wider for capital ships).
-  - `<name>_targeting_image.png`: 16×16.
+  - `<name>_targeting_image.png`: 16×16. It is also the enemy's portrait in
+    the main menu's codex, drawn grey until the player meets the ship.
 - Ship graphics scene: `Source/Content/Enemies/EnemyShipGraphicScenes/<name>_ship_graphics.tscn`.
   Copy `attacker_ship_graphics.tscn`.
   - The root **must** be a `Sprite2D` whose material is a
@@ -240,6 +241,8 @@ value before its STREAM.
 
 **Fields**
 - `enemy_name`, `description`.
+- `in_codex`: untick for a ship that isn't a foe (the shop, the repair dock,
+  the civilian transport), so the codex leaves it out of its enemy list.
 - `max_health`, `starting_shields`. Both are scaled +35% per sector.
 - **`action_options`**: one or more `EnemyTurnActionList` pools. Each holds
   `EnemyActionOptionResource`s:
@@ -760,7 +763,8 @@ AudioStreamPlayer.
    the cockpit lights' "off" colour).
 6. Write a two-line card `description` in tile-text style.
 7. Tiles only the ship should see live in `TileResources/` like any other (so
-   saves can name them) with `offered_as_reward = false`.
+   saves can name them) with `offered_as_reward = false`. The codex still lists
+   them, because a ship's starting kit is read from `ShipCatalog`.
 8. Check balance against the Die Fighter on the same seeds:
    `tools/autoplay.sh --seed 1 --runs 24 --policy smart -- --ship=<id>`.
    Teach the bot the ship's rule if it plays it badly.
@@ -778,3 +782,7 @@ AudioStreamPlayer.
       grep `SCRIPT ERROR`).
 - [ ] New sound slots noted in `SOUND_EFFECTS.md`; DEVLOG entry for anything
       sizable.
+- [ ] Opened the codex (main menu): a new tile or enemy shows on its tab, in
+      its colour group for a tile. The codex lists every tile offered as a
+      reward or in a ship's kit, and every enemy with `in_codex`, with no
+      registration step.

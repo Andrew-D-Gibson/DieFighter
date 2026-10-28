@@ -25,9 +25,10 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `Screenshotter` | `Autoloads/screenshotter.gd` | Screenshot capture (off on the web) |
 | `QuitManager` | `Autoloads/quit_manager.gd` | Graceful application quit. `can_quit()` is false on the web, where the Quit buttons hide |
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
-| `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs to `res://` paths so saves survive `.tres` renames/moves; stores IDs in save instead of raw paths. Scans with `Utils.list_resource_paths()` (`ResourceLoader.list_directory()`), which still sees `.tres` names in an export, where `DirAccess` sees `.remap` |
+| `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs (the file name) to `res://` paths for tiles, scenarios and enemies, so saves and the codex's collection survive `.tres` renames/moves; stores IDs in save instead of raw paths. Scans with `Utils.list_resource_paths()` (`ResourceLoader.list_directory()`), which still sees `.tres` names in an export, where `DirAccess` sees `.remap` |
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
+| `CollectionManager` | `Autoloads/collection_manager.gd` | What the player has found across every run, for the codex: tiles they've owned and enemies met/destroyed. Kept in `user://collection.json`, outside the run save (see Codex below) |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter. Skips window size, position, vsync and boot fullscreen on the web (`controls_window()`) |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS`. Editor-launched runs only: in any exported build (debug or release) it frees itself without opening the port |
 | `AutoPilot` | `Autoloads/auto_pilot.gd`, helpers in `Systems/AutoPilot/` | Plays runs by itself for QA and balance testing (see AutoPilot below). Editor binaries with `-- --autoplay` only; otherwise it frees itself |
@@ -549,6 +550,30 @@ background can carry a gameplay rule. Shop prices draw from REWARDS, not RUN.
 `current_run_seed` records the one in use, so any run can be replayed.
 
 ---
+
+## Codex
+
+The main menu's CODEX button opens `CodexPopup`
+(`Systems/UI/Codex/`): a Tiles tab and an Enemies tab, each a paged 6×4 grid.
+An entry the player has found is in colour and can be picked to read about it
+in the pane alongside. The rest are redrawn in the palette's greys by
+`codex_locked.gdshader` and read "???".
+
+- **What's listed** (`CodexCatalog`): every tile offered as a reward or in a
+  ship's starting kit, plus any held-out tile already found, grouped by the
+  colour folder of its art; every `EnemyResource` with `in_codex`, by name.
+  The position in the list is the entry's number.
+- **What's found** (`CollectionManager`, `user://collection.json`): a tile
+  once it is on the grid at a checkpoint (`Events.game_saved`), so the
+  starting kit, rewards and shop buys all count. An enemy on
+  `Events.ship_encountered` and `Events.enemy_destroyed`, which also keep its
+  met and destroyed tallies. A Continue that rebuilds a fight doesn't count
+  its ships again.
+- **Only the player's own runs count.** The Scenario Lab and the AutoPilot
+  point `SaveManager.save_path` elsewhere, and `CollectionManager.is_recording()`
+  checks for that. Tests use a scratch file (`die_fighter_test.gd`).
+- An enemy's page lists its actions once each, with the range its options
+  roll (`CodexCatalog.enemy_action_lines`), before run depth scales them.
 
 ## Tutorial
 
@@ -1706,6 +1731,8 @@ new values; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` to leave room.
 | `ship_attacked_ship` | One enemy damaged another | ScenarioManager (`PIRATE_ATTACKED_CIVILIAN`) |
 | `enemy_flew_in` | New enemy enters screen | Re-enable bobbing animation |
 | `enemies_arrived` | Whole opening fly-in done and a target is set | Player releases `first_turn_start` (Pilot Light etc.) |
+| `ship_encountered` | A scenario's starting ships spawned (not on a Continue that rebuilds them), or a ship launched mid-fight | CollectionManager (codex) |
+| `enemy_destroyed` | A ship died, to anyone (`enemy_left` also fires for one that fled) | CollectionManager (codex) |
 
 ---
 
