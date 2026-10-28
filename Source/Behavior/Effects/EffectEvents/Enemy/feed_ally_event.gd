@@ -78,12 +78,19 @@ static func wait_for_handoff(target: Enemy) -> void:
 
 
 ## Whether [param target] can take a die in this relay chain.
-static func can_feed(target: Enemy, visited: Array[Node]) -> bool:
-	if not is_instance_valid(target) or target.health.health <= 0:
+##
+## [param target] is untyped on purpose: a relay's bound ally can already be
+## freed, and GDScript rejects a freed object at any Object-typed parameter
+## before the validity check below gets to run.
+static func can_feed(target: Variant, visited: Array[Node]) -> bool:
+	if not is_instance_valid(target):
 		return false
-	if target in visited:
+	var ship: Enemy = target as Enemy
+	if ship == null or ship.health.health <= 0:
 		return false
-	return target.turn_actions.size() == EnemyActionSelector.SLOT_COUNT
+	if ship in visited:
+		return false
+	return ship.turn_actions.size() == EnemyActionSelector.SLOT_COUNT
 
 
 ## Nobody to feed: the die goes home with its face unchanged. A hologram is destroyed on the way.

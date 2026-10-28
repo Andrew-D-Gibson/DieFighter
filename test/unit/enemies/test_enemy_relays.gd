@@ -277,3 +277,17 @@ func test_nobody_already_in_the_chain_can_be_fed_again() -> void:
 	assert_false(FeedAllyEvent.can_feed(b, [a, b] as Array[Node]))
 	b.health.health = 0
 	assert_false(FeedAllyEvent.can_feed(b, [] as Array[Node]))
+
+
+# A relay bound to an ally that's since been freed used to crash the moment a
+# die was handed to the relaying ship (the tractor beam reads its threat).
+func test_a_freed_ally_cant_be_fed() -> void:
+	var a := _ship()
+	var b := _ship()
+	Ships.set_table(a, _table_of(Ships.relay))
+	Ships.set_table(b, _table_of(Ships.attack))
+	a.turn_actions[2].bound_target = b
+	b.free()
+	assert_false(FeedAllyEvent.can_feed(a.turn_actions[2].bound_target, [] as Array[Node]))
+	# With nobody left to relay to, the slot reads as its own (shield-only) threat.
+	assert_eq(a.threat_of_face(3), EnemyActionResource.Threat.NEUTRAL)
