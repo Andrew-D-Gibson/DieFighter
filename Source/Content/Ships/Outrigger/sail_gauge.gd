@@ -114,10 +114,12 @@ func catch_light(gain: int, last: bool, order: int = 0) -> void:
 	var at: Vector2 = get_juice_anchor()
 	Juice.ring(self, at, _BODY_FULL, 14.0, 0.35, 2.0)
 	Juice.sparkle(self, at, _BODY_FULL, 10, 40.0, true)
-	# Kept off the badge at the top of the mast, where the readout is, and
-	# alternating sides of the mast so one die's call doesn't land on the last.
-	var side: float = 14.0 if order % 2 == 0 else -14.0
-	var label_at: Vector2 = Vector2(at.x + side, maxf(at.y, to_global(Vector2(0, 14)).y) + 6 * floori(order / 2.0))
+	# Kept off the badge at the top of the mast, where the readout is. Each
+	# die's call alternates sides and steps down a row, so a quick run of
+	# catches never stacks one double-size label on the last (labels scatter a
+	# few pixels on their own, which side-alternation alone didn't survive).
+	var side: float = 19.0 if order % 2 == 0 else -19.0
+	var label_at: Vector2 = Vector2(at.x + side, maxf(at.y, to_global(Vector2(0, 14)).y) + 12 * order)
 	Juice.callout_at(self, label_at, "+%d" % gain, _BODY_LIGHT, true)
 	if last:
 		_celebrate_if_full.call_deferred()
