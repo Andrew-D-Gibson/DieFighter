@@ -87,3 +87,46 @@ func test_no_spare_once_the_player_is_leaving() -> void:
 	player.commit_to_jump(null)
 	await player._ensure_a_die_to_play()
 	assert_eq(player.dice_manager.queue.size(), 0, "arrival deals the hand")
+
+
+# ── A fight the player started with their last die ────────────────────────────
+
+## The player drops their last die on a tile: the hand is empty by their own
+## hand, and the die is on its way to a ship.
+func _spend_last_die() -> void:
+	var die: Dice = _die()
+	player.dice_manager.add(die)
+	player.dice_manager.remove(die)
+	var tile_queue: DiceQueue = add_child_autofree(DiceQueue.new())
+	tile_queue.add(die)
+	Events.die_placed_on_tile.emit(die, null)
+	tile_queue.remove(die)
+
+
+func test_starting_a_fight_with_the_last_die_deals_no_spare() -> void:
+	_spend_last_die()
+	await player._ensure_a_die_for_first_turn()
+	assert_eq(player.dice_manager.queue.size(), 0, "the player spent their own turn")
+
+
+func test_the_next_turn_still_rescues_an_empty_hand() -> void:
+	_spend_last_die()
+	await player._ensure_a_die_to_play()
+	assert_eq(player.dice_manager.queue.size(), 1)
+
+
+func test_a_die_coming_home_clears_it() -> void:
+	_spend_last_die()
+	var back: Dice = _die()
+	player.dice_manager.add(back)
+	player.dice_manager.remove(back)
+	back.queue_free()
+	await player._ensure_a_die_for_first_turn()
+	assert_eq(player.dice_manager.queue.size(), 1, "ships took the hand after it was refilled")
+
+
+func test_a_fight_starting_on_a_hand_ships_emptied_still_deals_one() -> void:
+	var ship: Enemy = _ship()
+	ship.dice_manager.add(_die(4))
+	await player._ensure_a_die_for_first_turn()
+	assert_eq(player.dice_manager.queue.size(), 1)

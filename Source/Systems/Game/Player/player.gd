@@ -138,6 +138,13 @@ var _jump_committed: bool = false
 ## running, or end a turn that hasn't been announced yet.
 var _between_turns: bool = false
 
+## True when the player's own play emptied the hand: a die went onto a tile
+## and none has come back since. A fight that this play starts (the last die
+## fired at a ship) opens on a turn the player has already spent, so its
+## first turn deals no spare die; the next turn start still will if ships
+## kept every die.
+var _spent_own_hand: bool = false
+
 ## How far the dice jolt, in pixels, at the peak of a jump's run-up.
 const _JUMP_RATTLE_STRENGTH: float = 1.2
 
@@ -202,12 +209,16 @@ func _ready() -> void:
 	# was last moving it: a ship's queue, a dying ship's hold, a tile, a reroll.
 	dice_manager.die_received.connect(func(die: Dice) -> void: die.reset_visual_state())
 	dice_manager.die_added.connect(func() -> void:
+		_spent_own_hand = false
 		_update_dice_queue_locations()
 		_make_newest_die_draggable()
 	)
 	dice_manager.die_removed.connect(_update_dice_queue_locations)
 	
 	Events.tile_activation_complete.connect(_check_for_end_of_turn)
+	Events.die_placed_on_tile.connect(func(_die: Dice, _tile: Tile) -> void:
+		_spent_own_hand = dice_manager.queue.is_empty()
+	)
 	
 	Events.jump.connect(_carry_dice_through_jump)
 	
@@ -460,7 +471,7 @@ func _announce_first_turn() -> void:
 	# A new run's ambusher opens fire before the player's first move.
 	if Globals.state_manager and fight == _fight_generation:
 		await Globals.state_manager.play_opening_strike()
-	await _ensure_a_die_to_play()
+	await _ensure_a_die_for_first_turn()
 
 	# The fight may have ended (or the player jumped) while we waited.
 	if fight != _fight_generation or not Globals.state_manager \
@@ -698,6 +709,15 @@ func _ensure_a_die_to_play() -> void:
 	await spawn_dice(1, 0, not real)
 	Juice.callout_at(self, global_position + dice_manager.position + Vector2(0, -14),
 			tr("CALLOUT_SPARE_DIE"), Globals.white, true)
+
+
+## As _ensure_a_die_to_play(), unless the player emptied the hand
+## themselves: a fight they started with their last die isn't one ships left
+## them nothing to fight with.
+func _ensure_a_die_for_first_turn() -> void:
+	if _spent_own_hand:
+		return
+	await _ensure_a_die_to_play()
 
 
 ## A fight can end with the hand empty: a ship flew off with every die. The
