@@ -319,14 +319,15 @@ only number a status has; each status decides what one means.
   (Charge Bore) isn't an arrival.
 - **Badges:** each status shows a `StatusBadge` (icon + stack count) on its
   ship's `%StatusBar`: beside an enemy's health ring, above the player's
-  (three to a row). Clicking one shows its rule in the info panel:
+  (two to a row, clear of the Outrigger's wider panel). Clicking one shows its rule in the info panel:
   `rule_term()` picks the keyword, the "(you)" one where the player's side
   differs (`Keywords.PLAYER_SUFFIX`). The hull panel lists the player's
   statuses too. Art is in `Assets/Textures/Statuses/` (11×11 badge, 24×24
   info).
 - **Threat:** an enemy action putting a status on the player (or venting
   onto them) reads `DANGEROUS`. `AutoPilotThreat.status_cost()` prices it in
-  hull for the bot.
+  hull for the bot, and `AutoPilotForecast.of()` plays the player's own
+  Scrambled (flipped face) and Jammed (only the hand-off) into a placement.
 - **Debugging:** the dev console's `status <id> [stacks] [me]` applies one to
   the targeted enemy, or to the player.
 
@@ -796,6 +797,8 @@ one cell:
 - The AutoPilot hands `GameStateManager` a save holding only the loadout
   (`Globals.pending_load_save`, the Continue path). With no scenarios in it,
   an ordinary sector is generated around the loadout from the run seed.
+  Unset loadout fields come from the flown ship's kit (`--ship=ID`), and a
+  loadout tile in a cell that ship lacks is refused.
 - From `Events.load_game_save`, which comes before the opening scenario
   loads and before the map is drawn, the chosen scenario takes the starting
   slot and keeps that slot's seed (`place_scenario()`).
@@ -846,7 +849,9 @@ console page under the console box. Release builds get neither, unless the expor
   reloads (static `collapsed` flags). In an ordinary run the inspector works
   on whatever scenario is live; the navigator starts a lab run, resuming at
   the scenario last tested. There's no main menu entry.
-- **A lab run** is a fresh run on the starter kit from `run_start.tres`, whose
+- **A lab run** is a fresh run on the flown ship's starter kit
+  (`ShipCatalog.starting_save()`; `Globals.selected_ship`, or the Die
+  Fighter), whose
   generated sector gets the chosen scenario in its start slot from
   `Events.load_game_save`, as a gauntlet's does. **<** / **>** step through
   the list, **RESTART** replays the session's run seed (queued through

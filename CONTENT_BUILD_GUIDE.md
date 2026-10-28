@@ -121,7 +121,10 @@ registration to testing. For how the systems work underneath, see
   means rebuilding the sheet (see Art above).
 - **`activation_checks`**: `ActivationResource`s, e.g. `REQUIRES_ACTIVATOR_DIE`,
   `VALUE` with `acceptable_values`, `IN_COMBAT`, `SHIP_TARGETED`,
-  `CHARGE_AT_LEAST`. A refused die goes back to the hand.
+  `CHARGE_AT_LEAST`, `TILE_DATA_AT_LEAST` (the tile's own `effect_data`
+  under `data_key`; Slingshot waits for a ring step). A refused die goes back
+  to the hand. A tile whose payoff can come to nothing (a count at 0, no
+  shields to spend) should refuse rather than eat the die.
 - **`effect_chain`**: see §7 for authoring.
   - The standard ending is `TARGET_WITH_TARGETING_COMPUTER` then
     `GIVE_DIE_TO_TARGET`. The die always goes to the targeted ship, which is

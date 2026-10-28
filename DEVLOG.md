@@ -4,6 +4,30 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — Quality pass: ships and player statuses
+
+- **The Scenario Lab and AutoPilot gauntlets fly the ship's own kit.** Both
+  started every run from the Die Fighter's `run_start.tres`, so on the
+  Carousel the lab put Shield Burst in the Reactor's hole. They now take the
+  flown ship's starting kit (`ShipCatalog.starting_save`), and a gauntlet
+  loadout naming a cell the ship lacks is refused.
+- **Slingshot refuses a die before the ring has moved** instead of spending
+  it for 0 damage (the Reactor fed it one at every fight's start). New
+  activation check: `TILE_DATA_AT_LEAST`.
+- **Ship cards use the palette.** The Outrigger's "orange" and "purple" were
+  Godot's named colours; card text now goes through `Utils.format_text`.
+  The card's HULL / DICE line and the HOLD and SAIL FULL callouts are
+  translation keys.
+- **Player status badges wrap after two**, clear of the Outrigger's wider
+  systems panel even with two-digit stacks.
+- **The bot reads its own statuses:** a Scrambled player's die is forecast
+  on its flipped face, a Jammed one as only a hand-off.
+- **Two errors fixed that every ship's bot runs hit:** a freed bound ship
+  assigned to a typed field (`EnemyActionResource.bound_ship()` now reads it
+  as null), and the forecast handing a stand-in die to `Tile.get_held_die()`.
+
+---
+
 ## 2026-10-28 — Statuses on the player's ship
 
 - **Burn, Exposed, Jammed and Scrambled now work on the player.** The same
@@ -15,7 +39,7 @@ Newest entries at the top.
   tiles or the Engine Charger.
 - **Timing.** The player's statuses tick as the enemy turn ends (the start of
   the player's turn, mirroring the ships'), and clear when the fight ends.
-- **Seeing it.** Badges sit above the hull ring, three to a row; a dose
+- **Seeing it.** Badges sit above the hull ring, two to a row; a dose
   pulses the cockpit vignette and calls out "+N NAME"; Jammed and Scrambled
   call out on the tile they act on. Clicking a badge shows the player-side
   rule ("Jammed (you)"), and the hull panel lists everything on the ship.
