@@ -6,12 +6,17 @@ extends GutTest
 const Effects := preload("res://test/helpers/effects.gd")
 const FakeDie := preload("res://test/helpers/fake_die.gd")
 const GlobalsSandbox := preload("res://test/helpers/globals_sandbox.gd")
+## Ships met and tiles owned in a test land here, never in the player's
+## real codex.
+const TEST_COLLECTION_PATH: String = "user://test_collection.json"
 
 var _globals: GlobalsSandbox
 
 
 func before_each() -> void:
 	_globals = GlobalsSandbox.new()
+	if CollectionManager.collection_path != TEST_COLLECTION_PATH:
+		CollectionManager.collection_path = TEST_COLLECTION_PATH
 
 
 func after_each() -> void:

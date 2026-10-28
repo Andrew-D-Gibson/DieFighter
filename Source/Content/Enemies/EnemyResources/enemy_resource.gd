@@ -4,6 +4,9 @@ extends Resource
 @export_category('Info')
 @export var enemy_name: String
 @export_multiline var description: String
+## Untick for a ship that isn't a foe (a shop, a dock, a transport you
+## escort), so the main menu's codex doesn't list it among the enemies.
+@export var in_codex: bool = true
 
 ## How this enemy decides which action pool to draw its six turn slots from
 ## when it has more than one.

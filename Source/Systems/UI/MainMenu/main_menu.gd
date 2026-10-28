@@ -140,6 +140,10 @@ func _on_continue_button_pressed() -> void:
 	get_tree().change_scene_to_file(main_game_scene)
 
 
+func _on_codex_button_pressed() -> void:
+	%CodexPopup.open()
+
+
 func _on_options_button_pressed() -> void:
 	%OptionsMenu.show()
 	

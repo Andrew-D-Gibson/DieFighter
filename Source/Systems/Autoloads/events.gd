@@ -71,6 +71,12 @@ signal player_fatal_damage()
 
 # Enemy Events
 signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)
+## A ship showed up: a scenario's starting ship arriving, or one launched
+## mid-fight. Not emitted for ships a Continue rebuilds, which were already
+## seen when they first arrived.
+signal ship_encountered(ship: Enemy)
+## A ship was blown up, by anyone. enemy_left also fires for one that fled.
+signal enemy_destroyed(ship: Enemy)
 ## A ship moved to another scenario state: an event led there, or the
 ## Scenario Lab forced it. Not emitted for the state a ship spawns in.
 signal ship_scenario_state_changed(ship: Enemy)

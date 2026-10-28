@@ -1,0 +1,282 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/UI/Codex/codex_popup.gd" id="1_script"]
+[ext_resource type="Script" path="res://Source/Systems/UI/Codex/codex_button.gd" id="2_button"]
+[ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="3_medium"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pane"]
+bg_color = Color(0.0588235, 0.0470588, 0.180392, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.27451, 0.235294, 0.568627, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_scroll"]
+bg_color = Color(0.0980392, 0.0745098, 0.278431, 1)
+content_margin_left = 1.0
+content_margin_right = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grabber"]
+bg_color = Color(0.27451, 0.235294, 0.568627, 1)
+content_margin_left = 1.0
+content_margin_right = 1.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_grabber_hover"]
+bg_color = Color(0.933333, 0.827451, 0.364706, 1)
+content_margin_left = 1.0
+content_margin_right = 1.0
+
+[sub_resource type="Theme" id="Theme_scroll"]
+VScrollBar/styles/grabber = SubResource("StyleBoxFlat_grabber")
+VScrollBar/styles/grabber_highlight = SubResource("StyleBoxFlat_grabber_hover")
+VScrollBar/styles/grabber_pressed = SubResource("StyleBoxFlat_grabber_hover")
+VScrollBar/styles/scroll = SubResource("StyleBoxFlat_scroll")
+VScrollBar/styles/scroll_focus = SubResource("StyleBoxFlat_scroll")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_keyword"]
+bg_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.94902, 0.611765, 0.364706, 1)
+content_margin_left = 3.0
+content_margin_top = 1.0
+content_margin_right = 3.0
+content_margin_bottom = 1.0
+
+[node name="CodexPopup" type="Node2D"]
+process_mode = 3
+z_index = 30
+script = ExtResource("1_script")
+
+[node name="ScreenDim" type="ColorRect" parent="."]
+z_index = -1
+offset_left = -160.0
+offset_top = -90.0
+offset_right = 160.0
+offset_bottom = 90.0
+color = Color(0.027451, 0.0117647, 0.054902, 0.94)
+
+[node name="Title" type="RichTextLabel" parent="."]
+offset_left = -100.0
+offset_top = -88.0
+offset_right = 100.0
+offset_bottom = -72.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+text = "CODEX_TITLE"
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="TilesTab" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -152.0
+offset_top = -70.0
+offset_right = -104.0
+offset_bottom = -58.0
+script = ExtResource("2_button")
+text = "CODEX_TAB_TILES"
+
+[node name="EnemiesTab" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -102.0
+offset_top = -70.0
+offset_right = -54.0
+offset_bottom = -58.0
+script = ExtResource("2_button")
+text = "CODEX_TAB_ENEMIES"
+
+[node name="FoundLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -50.0
+offset_top = -71.0
+offset_right = 9.0
+offset_bottom = -59.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 2
+
+[node name="Grid" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -152.0
+offset_top = -55.0
+offset_right = 9.0
+offset_bottom = 52.0
+
+[node name="HoverLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -152.0
+offset_top = 54.0
+offset_right = -40.0
+offset_bottom = 66.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="PrevPage" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -37.0
+offset_top = 54.0
+offset_right = -27.0
+offset_bottom = 66.0
+script = ExtResource("2_button")
+text = "<"
+
+[node name="PageLabel" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
+offset_left = -26.0
+offset_top = 53.0
+offset_right = -2.0
+offset_bottom = 65.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = false
+autowrap_mode = 0
+horizontal_alignment = 1
+
+[node name="NextPage" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_left = -1.0
+offset_top = 54.0
+offset_right = 9.0
+offset_bottom = 66.0
+script = ExtResource("2_button")
+text = ">"
+
+[node name="Pane" type="Panel" parent="."]
+offset_left = 15.0
+offset_top = -70.0
+offset_right = 152.0
+offset_bottom = 66.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_pane")
+
+[node name="Portrait" type="TextureRect" parent="Pane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 52.0
+offset_bottom = 52.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="NameLabel" type="RichTextLabel" parent="Pane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 56.0
+offset_top = 4.0
+offset_right = 134.0
+offset_bottom = 24.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = false
+
+[node name="SubLabel" type="RichTextLabel" parent="Pane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 56.0
+offset_top = 25.0
+offset_right = 134.0
+offset_bottom = 53.0
+mouse_filter = 1
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = false
+
+[node name="BodyLabel" type="RichTextLabel" parent="Pane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 56.0
+offset_right = 134.0
+offset_bottom = 132.0
+mouse_filter = 1
+theme = SubResource("Theme_scroll")
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+
+[node name="StatsLabel" type="RichTextLabel" parent="Pane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 4.0
+offset_top = 122.0
+offset_right = 134.0
+offset_bottom = 134.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="EmptyLabel" type="RichTextLabel" parent="Pane"]
+unique_name_in_owner = true
+layout_mode = 0
+offset_left = 8.0
+offset_top = 40.0
+offset_right = 129.0
+offset_bottom = 96.0
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+scroll_active = false
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BackButton" parent="." instance=ExtResource("3_medium")]
+unique_name_in_owner = true
+offset_left = -28.0
+offset_top = 70.0
+offset_right = 28.0
+offset_bottom = 84.0
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="KeywordPopup" type="PanelContainer" parent="."]
+unique_name_in_owner = true
+visible = false
+z_index = 5
+offset_right = 120.0
+offset_bottom = 12.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_keyword")
+
+[node name="KeywordLabel" type="RichTextLabel" parent="KeywordPopup"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(114, 0)
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+fit_content = true
+scroll_active = false

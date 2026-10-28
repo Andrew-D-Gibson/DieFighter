@@ -255,6 +255,7 @@ func _on_death() -> void:
 	# be passed as a Dice.
 	dice_manager.give_away_dice(spending_die if is_instance_valid(spending_die) else null)
 	Events.enemy_left.emit(self, scenario_state.faction)
+	Events.enemy_destroyed.emit(self)
 	
 	Events.play_sound.emit(_PRE_DEATH_SFX)
 	# Another ship's kill isn't the player's to celebrate, or to loot.

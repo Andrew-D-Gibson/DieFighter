@@ -45,6 +45,7 @@ TimeDirector="*res://Source/Systems/Autoloads/time_director.gd"
 MusicDirector="*res://Source/Systems/Autoloads/music_director.gd"
 AutoPilot="*res://Source/Systems/Autoloads/auto_pilot.gd"
 ScenarioLab="*res://Source/Systems/Autoloads/scenario_lab.gd"
+CollectionManager="*res://Source/Systems/Autoloads/collection_manager.gd"
 
 [debug]
 

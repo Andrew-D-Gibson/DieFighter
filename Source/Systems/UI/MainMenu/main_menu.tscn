@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/ConfirmDialog/confirm_dialog.tscn" id="18_confirm"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/LoadingPopup/loading_popup.tscn" id="19_loading"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/ShipSelect/ship_select_popup.tscn" id="20_shipselect"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/Codex/codex_popup.tscn" id="21_codex"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -264,9 +265,9 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 6.0
-offset_top = 29.0
+offset_top = 8.0
 offset_right = 88.0
-offset_bottom = 125.0
+offset_bottom = 129.0
 grow_vertical = 0
 alignment = 1
 
@@ -282,6 +283,13 @@ text = "CONTINUE"
 unique_name_in_owner = true
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="CodexButton" parent="VBoxContainer" instance=ExtResource("7_n0c18")]
+layout_mode = 2
+hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+
+[node name="RichTextLabel" parent="VBoxContainer/CodexButton" index="0" unique_id=1229508524]
+text = "MENU_CODEX"
 
 [node name="OptionsButton" parent="VBoxContainer" unique_id=964819615 instance=ExtResource("7_n0c18")]
 layout_mode = 2
@@ -344,6 +352,10 @@ position = Vector2(160, 90)
 unique_name_in_owner = true
 position = Vector2(160, 90)
 
+[node name="CodexPopup" parent="." instance=ExtResource("21_codex")]
+unique_name_in_owner = true
+position = Vector2(160, 90)
+
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=952747932]
 z_index = -2
 position = Vector2(160, 90)
@@ -374,12 +386,14 @@ mouse_filter = 2
 
 [connection signal="pressed_within_window" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
+[connection signal="pressed_within_window" from="VBoxContainer/CodexButton" to="." method="_on_codex_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/OptionsButton" to="." method="_on_options_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed_within_window" from="ButtonRotator/WishlistButton" to="." method="_on_wishlist_button_pressed"]
 
 [editable path="VBoxContainer/ContinueButton"]
 [editable path="VBoxContainer/PlayButton"]
+[editable path="VBoxContainer/CodexButton"]
 [editable path="VBoxContainer/OptionsButton"]
 [editable path="VBoxContainer/QuitButton"]
 [editable path="ButtonRotator/WishlistButton"]

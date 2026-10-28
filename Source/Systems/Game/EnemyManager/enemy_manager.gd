@@ -114,9 +114,14 @@ func _ready() -> void:
 
 		# Spawn the starting ships
 		if len(scenario.starting_enemies) > 0:
-			spawn_enemies(scenario.starting_enemies)
+			var spawned: Array[Enemy] = spawn_enemies(scenario.starting_enemies)
+			var restoring: bool = Globals.state_manager != null \
+				and Globals.state_manager.get_restore().has("enemies")
 			_restore_enemies(scenario.starting_enemies)
 			_spawn_hull(scenario)
+			if not restoring:
+				for ship: Enemy in spawned:
+					Events.ship_encountered.emit(ship)
 	)
 	Events.start_scenario.connect(start_enemy_fly_in)
 	Events.player_turn_start.connect(generate_all_turn_actions)
@@ -130,7 +135,7 @@ func _process(delta: float) -> void:
 		_hull_mounts.carry()
 	
 	
-func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
+func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> Array[Enemy]:
 	var spawned: Array[Enemy] = []
 	for i: int in range(len(enemies_to_spawn)):
 		var spawn: EnemyStateRewardResource = enemies_to_spawn[i]
@@ -170,6 +175,7 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> void:
 	# already here keep the table the player has been reading.
 	_roll_turn_actions(spawned)
 	refresh_formation(false)
+	return spawned
 
 
 ## Whether another ship would still fit on the board.
@@ -201,6 +207,7 @@ func launch_ship(resource: EnemyResource, launcher: Enemy) -> Enemy:
 	# A table now, so the targeting computer has something to show; the
 	# next player turn rolls it again with everyone else.
 	_roll_turn_actions([ship])
+	Events.ship_encountered.emit(ship)
 	Juice.ring(self, ship.global_position, Globals.orange, 22.0, 0.35, 3.0)
 	refresh_formation()
 

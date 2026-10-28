@@ -375,6 +375,13 @@ func get_description_text() -> String:
 	var target_name: String = "another ship"
 	if is_instance_valid(bound_target):
 		target_name = bound_target.enemy_resource.enemy_name
+	return describe(get_intent_amount_text(), target_name)
+
+
+## The description with [param amount_text] and [param target_name] standing
+## in for (amount) and (target). The codex passes a range ("2-4") for an
+## action that isn't on any ship's table.
+func describe(amount_text: String, target_name: String = "another ship") -> String:
 	return description \
-		.replace('(amount)', get_intent_amount_text()) \
+		.replace('(amount)', amount_text) \
 		.replace('(target)', target_name)

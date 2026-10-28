@@ -192,7 +192,7 @@ func _get_tile_info() -> InfoResource:
 	info.title_label_text = tile_resource.tile_name
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
-	info.bottom_label_text = _replace_event_data_in_string(tile_resource.description)
+	info.bottom_label_text = fill_data_tokens(tile_resource.description, effect_data)
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine:
 		for mod: Modifier in engine.modifiers:
@@ -308,7 +308,10 @@ func reset_uses_remaining() -> void:
 	uses_remaining = tile_resource.uses_per_turn
 
 
-func _replace_event_data_in_string(text: String) -> String:
+## Works out each [data]expression[/data] in [param text] from a tile's
+## counters. A counter the tile hasn't set yet reads as 0, which is also how
+## the text reads for a tile that isn't on a grid at all (the codex).
+static func fill_data_tokens(text: String, data: Dictionary[String, int]) -> String:
 	var pattern: String = r"\[data\](.+?)\[/data\]"
 	var regex: RegEx = RegEx.new()
 	regex.compile(pattern)
@@ -325,8 +328,8 @@ func _replace_event_data_in_string(text: String) -> String:
 		var rebuilt_expression: String = ""
 		for token: String in tokens:
 			if token.is_valid_identifier():
-				if effect_data.has(token):
-					rebuilt_expression += str(effect_data[token]) + " "
+				if data.has(token):
+					rebuilt_expression += str(data[token]) + " "
 				else:
 					rebuilt_expression += "0 "
 			else:
