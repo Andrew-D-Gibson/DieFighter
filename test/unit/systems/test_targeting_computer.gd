@@ -292,3 +292,110 @@ func test_losing_every_target_rests_the_icons_too() -> void:
 	assert_null(computer.targeted_enemy)
 	assert_eq(computer._intent(0).scale, Vector2.ONE)
 	assert_false(computer.targeting_indicator.visible)
+
+
+# ── Arcs to the ships a slot is bound to ──────────────────────────────────────
+
+const REPAIR_ALLY: EnemyActionResource = preload(
+	"res://Source/Content/Enemies/EnemyActions/EnemyActionResources/repair_ally.tres"
+)
+const AEGIS_ALLY: EnemyActionResource = preload(
+	"res://Source/Content/Enemies/EnemyActions/EnemyActionResources/aegis_ally.tres"
+)
+
+
+## [param source]'s slot [param slot] repairs (or, with [param action],
+## does that to) [param ally].
+func _bind(source: Enemy, slot: int, ally: Enemy, action: EnemyActionResource = REPAIR_ALLY) -> void:
+	var bound: EnemyActionResource = action.duplicate()
+	bound.bound_target = ally
+	# A ship that hasn't rolled its table yet has no slots at all; a real
+	# table always fills all six.
+	while source.turn_actions.size() < 6:
+		source.turn_actions.append(EnemyActionResource.new())
+	source.turn_actions[slot] = bound
+
+
+## Intents (and so the arcs) only show in a fight.
+func _fight() -> void:
+	for ship: Enemy in manager.enemies:
+		ship.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
+
+
+func _arrows() -> Array[BoundIntentArrow]:
+	var out: Array[BoundIntentArrow] = []
+	for child: Node in computer.get_children():
+		if child is BoundIntentArrow and not child.is_queued_for_deletion():
+			out.append(child)
+	return out
+
+
+func test_slots_bound_to_one_ship_share_an_arc() -> void:
+	var tender: Enemy = _ship(Vector2(100, 40))
+	var escort: Enemy = _ship(Vector2(200, 40))
+	_bind(tender, 0, escort)
+	_bind(tender, 3, escort, AEGIS_ALLY)
+	_fight()
+	_target(tender)
+
+	var arrows: Array[BoundIntentArrow] = _arrows()
+	assert_eq(arrows.size(), 1)
+	assert_eq(arrows[0].source, tender)
+	assert_eq(arrows[0].target, escort)
+	assert_eq(arrows[0].slots, [0, 3] as Array[int])
+	assert_false(arrows[0].hostile)
+
+
+func test_each_bound_ship_gets_its_own_arc() -> void:
+	var tender: Enemy = _ship(Vector2(160, 40))
+	_bind(tender, 0, _ship(Vector2(80, 40)))
+	_bind(tender, 1, _ship(Vector2(240, 40)))
+	_fight()
+	_target(tender)
+	assert_eq(_arrows().size(), 2)
+
+
+func test_retargeting_clears_the_old_arcs() -> void:
+	var tender: Enemy = _ship(Vector2(100, 40))
+	var escort: Enemy = _ship(Vector2(200, 40))
+	_bind(tender, 0, escort)
+	_fight()
+	_target(tender)
+	_target(escort)
+	assert_eq(_arrows().size(), 0, "the escort binds nothing")
+
+
+func test_no_arcs_while_intents_are_hidden() -> void:
+	var tender: Enemy = _ship(Vector2(100, 40))
+	_bind(tender, 0, _ship(Vector2(200, 40)))
+	_target(tender)
+	assert_eq(_arrows().size(), 0)
+
+
+func test_same_action_slots_share_a_badge() -> void:
+	var tender: Enemy = _ship(Vector2(100, 40))
+	var escort: Enemy = _ship(Vector2(200, 40))
+	_bind(tender, 0, escort)
+	_bind(tender, 2, escort)
+	_bind(tender, 4, escort, AEGIS_ALLY)
+	_fight()
+	_target(tender)
+	assert_eq(_arrows()[0]._slot_groups(), [[0, 2], [4]] as Array[Array])
+
+
+func test_a_slot_is_live_while_its_die_is_held() -> void:
+	var tender: Enemy = _ship(Vector2(100, 40))
+	_bind(tender, 2, _ship(Vector2(200, 40)))
+	assert_false(computer.is_slot_live(tender, 2))
+	var die: Dice = _die(3)
+	tender.dice_manager.add(die)
+	assert_true(computer.is_slot_live(tender, 2))
+	assert_false(computer.is_slot_live(tender, 0))
+
+
+func test_the_arc_rises_over_the_ships_but_stays_on_screen() -> void:
+	var low: Vector2 = BoundIntentArrow.control_point(Vector2(100, 40), Vector2(200, 40))
+	assert_lt(low.y, 40.0, "it arcs over")
+	var high: Vector2 = BoundIntentArrow.control_point(Vector2(40, 6), Vector2(280, 6))
+	var apex_y: float = (6.0 + high.y) * 0.5
+	assert_gte(apex_y, BoundIntentArrow._MIN_APEX_Y - 0.001)

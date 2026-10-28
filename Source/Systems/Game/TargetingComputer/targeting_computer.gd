@@ -27,15 +27,9 @@ var _indicator_bob_time: float = 0.0
 ## earlier one can tell it's been superseded.
 var _redraw_generation: int = 0
 
-## Small die faces hung over the ships the targeted enemy's slots are bound
-## to: "on a 1, the Tender repairs *this* one". Escorts often share a name,
-## so the intent text alone can't say which ship it means.
-var _bound_markers: Array[Node2D] = []
-
-## Where a marker sits relative to the ship it points out, and how far apart
-## two markers on the same ship stand.
-const _BOUND_MARKER_OFFSET: Vector2 = Vector2(0, 22)
-const _BOUND_MARKER_SPACING: float = 8.0
+## Arcs from the targeted enemy to each ship its slots are bound to: "on a
+## 1, the Tender repairs *that* one". See BoundIntentArrow.
+var _bound_arrows: Array[BoundIntentArrow] = []
 
 ## Intents no die is lighting sit back so the live ones stand out.
 const _DIMMED_INTENT: Color = Color(1.0, 1.0, 1.0, 0.45)
@@ -318,7 +312,7 @@ func target_enemy(enemy: Enemy) -> void:
 func _update_ui() -> void:
 	_redraw_generation += 1
 	var generation: int = _redraw_generation
-	_show_bound_markers()
+	_show_bound_arrows()
 	if !targeted_enemy or targeted_enemy_index == -1:
 		_hide_indicator()
 		
@@ -373,10 +367,17 @@ func _update_ui() -> void:
 ## Lights slot [param i]'s die face and intent when the targeted enemy holds
 ## that value or is playing that slot now, dims them otherwise.
 func _set_intent_highlight(i: int) -> void:
-	var lit: bool = targeted_enemy.dice_manager.has_value(i + 1) \
-		or (targeted_enemy == _acting_enemy and i == _acting_slot)
+	var lit: bool = is_slot_live(targeted_enemy, i)
 	die_sprites[i].frame = i + 6 if lit else i
 	_intent(i).modulate = Color.WHITE if lit else _DIMMED_INTENT
+
+
+## Whether [param ship]'s slot [param i] is in play: it holds that die, or
+## is playing that slot right now.
+func is_slot_live(ship: Enemy, i: int) -> bool:
+	if not is_instance_valid(ship):
+		return false
+	return ship.dice_manager.has_value(i + 1) or (ship == _acting_enemy and i == _acting_slot)
 
 
 ## A slot with nothing to explain (a blank action, or one not yet scanned)
@@ -399,46 +400,38 @@ func _refresh_intent_highlights() -> void:
 		_set_intent_highlight(i)
 
 
-func _show_bound_markers() -> void:
-	for marker: Node2D in _bound_markers:
-		if is_instance_valid(marker):
-			marker.queue_free()
-	_bound_markers.clear()
+func _show_bound_arrows() -> void:
+	for arrow: BoundIntentArrow in _bound_arrows:
+		if is_instance_valid(arrow):
+			arrow.queue_free()
+	_bound_arrows.clear()
 
 	if not targeted_enemy or not is_instance_valid(targeted_enemy):
 		return
 	if not Globals.state_manager or not Globals.state_manager.enemy_intents_visible():
 		return
 
-	# Slots bound to the same ship line up side by side over it.
-	var slots_by_ship: Dictionary[Enemy, Array] = {}
+	# Slots bound to the same ship share one arc, their badges side by side.
+	var arrows_by_ship: Dictionary[Enemy, BoundIntentArrow] = {}
 	for i: int in range(len(targeted_enemy.turn_actions)):
 		var action: EnemyActionResource = targeted_enemy.turn_actions[i]
 		if action == null or not is_instance_valid(action.bound_target):
 			continue
 		if action.bound_target.health.health <= 0:
 			continue
-		if not slots_by_ship.has(action.bound_target):
-			slots_by_ship[action.bound_target] = []
-		slots_by_ship[action.bound_target].append(i)
-
-	for ship: Enemy in slots_by_ship:
-		var slots: Array = slots_by_ship[ship]
-		for n: int in range(slots.size()):
-			var slot: int = slots[n]
-			var action: EnemyActionResource = targeted_enemy.turn_actions[slot]
-			var marker := AnimatedSprite2D.new()
-			marker.sprite_frames = die_sprites[slot].sprite_frames
-			# The lit face: white, so the tint reads true.
-			marker.frame = slot + 6
-			marker.modulate = Globals.green \
-				if action.get_binding() == EnemyActionResource.Binding.ALLY else Globals.red
-			marker.position = _BOUND_MARKER_OFFSET + Vector2(
-				(n - (slots.size() - 1) * 0.5) * _BOUND_MARKER_SPACING, 0
-			)
-			marker.z_index = 5
-			ship.add_child(marker)
-			_bound_markers.append(marker)
+		var ship: Enemy = action.bound_target
+		if not arrows_by_ship.has(ship):
+			var arrow: BoundIntentArrow = BoundIntentArrow.new()
+			arrow.source = targeted_enemy
+			arrow.target = ship
+			arrow.hostile = action.get_binding() != EnemyActionResource.Binding.ALLY
+			arrow.is_live = is_slot_live
+			# Over the ships, with the reticle.
+			arrow.z_index = targeting_indicator.z_index
+			add_child(arrow)
+			arrows_by_ship[ship] = arrow
+			_bound_arrows.append(arrow)
+		arrows_by_ship[ship].slots.append(i)
 
 
 ## Slot [param i]'s intent icon on the screen, and the parts hung off it.
