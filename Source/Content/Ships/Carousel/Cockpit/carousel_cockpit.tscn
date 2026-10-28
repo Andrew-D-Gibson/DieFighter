@@ -1,0 +1,113 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/cockpit.gd" id="1_cockpit"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/carousel_walls.png" id="2_walls"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage.gd" id="3_damage"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_glass_shards.gd" id="4_shards"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_destruction.gd" id="5_destruction"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage_site.gd" id="6_site"]
+[ext_resource type="Script" path="res://Source/Content/Ships/Carousel/Cockpit/marquee_lights.gd" id="7_marquee"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/HangingDice/hanging_dice.gd" id="8_hanging"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/brass_ring-Sheet.png" id="9_ring"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/crack_left.png" id="d0"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/rip_awning_right.png" id="d1"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/crack_sky_right.png" id="d2"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/split_dash_left.png" id="d3"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/crack_right.png" id="d4"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/rip_awning_left.png" id="d5"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/crack_sky_left.png" id="d6"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/Cockpit/Damage/split_dash_right.png" id="d7"]
+
+[node name="CarouselCockpit" type="Node2D"]
+script = ExtResource("1_cockpit")
+walls_texture = ExtResource("2_walls")
+
+[node name="HudSlots" type="Node2D" parent="."]
+
+[node name="hud_hull_gauge" type="Marker2D" parent="HudSlots"]
+position = Vector2(50, 136)
+
+[node name="hud_status_bar" type="Marker2D" parent="HudSlots"]
+position = Vector2(37, 100)
+
+[node name="hud_targeting_computer" type="Marker2D" parent="HudSlots"]
+position = Vector2(274, 127)
+
+[node name="MarqueeLights" type="Node2D" parent="."]
+script = ExtResource("7_marquee")
+bulbs = PackedVector2Array(2, 21, 21, 18, 39, 15, 55, 13, 71, 11, 86, 10, 100, 9, 114, 8, 127, 8, 140, 7, 153, 7, 167, 7, 180, 7, 193, 8, 206, 8, 220, 9, 234, 10, 249, 11, 265, 13, 281, 15, 299, 18, 318, 21)
+
+[node name="BrassRing" type="Node2D" parent="."]
+script = ExtResource("8_hanging")
+sheet = ExtResource("9_ring")
+frame_size = Vector2i(11, 11)
+anchor = Vector2(288, 18)
+chain_lengths = PackedFloat32Array(13)
+
+[node name="CockpitDamage" type="Node2D" parent="."]
+z_as_relative = false
+z_index = 10
+script = ExtResource("3_damage")
+
+[node name="CrackLeft" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d0")
+centered = false
+script = ExtResource("6_site")
+kind = 0
+emit_points = PackedVector2Array(30, 66, 37, 71, 24, 72)
+
+[node name="RipAwningRight" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d1")
+centered = false
+script = ExtResource("6_site")
+kind = 1
+emit_points = PackedVector2Array(245, 9, 244, 2)
+
+[node name="CrackSkyRight" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d2")
+centered = false
+script = ExtResource("6_site")
+kind = 0
+emit_points = PackedVector2Array(214, 42, 221, 47, 208, 48)
+
+[node name="SplitDashLeft" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d3")
+centered = false
+script = ExtResource("6_site")
+kind = 1
+emit_points = PackedVector2Array(20, 169, 8, 168)
+
+[node name="CrackRight" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d4")
+centered = false
+script = ExtResource("6_site")
+kind = 0
+emit_points = PackedVector2Array(290, 70, 297, 75, 284, 76)
+
+[node name="RipAwningLeft" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d5")
+centered = false
+script = ExtResource("6_site")
+kind = 1
+emit_points = PackedVector2Array(71, 8, 70, 1)
+
+[node name="CrackSkyLeft" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d6")
+centered = false
+script = ExtResource("6_site")
+kind = 0
+emit_points = PackedVector2Array(112, 38, 119, 43, 106, 44)
+
+[node name="SplitDashRight" type="Sprite2D" parent="CockpitDamage"]
+texture = ExtResource("d7")
+centered = false
+script = ExtResource("6_site")
+kind = 1
+emit_points = PackedVector2Array(304, 170, 292, 169)
+
+[node name="GlassShards" type="Node2D" parent="CockpitDamage"]
+script = ExtResource("4_shards")
+
+[node name="Destruction" type="Node2D" parent="CockpitDamage"]
+script = ExtResource("5_destruction")
+hanging_dice_crossing = Vector2(150, 70)

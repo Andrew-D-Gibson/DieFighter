@@ -19,6 +19,10 @@ extends Node2D
 ## Lives as the TileGrid's "ShipBehavior" child, so it sits in grid space and
 ## hides with the grid on the map tab.
 
+## Raised each time the ring moves, by [param steps] cells (clockwise
+## positive): a turn of the fight, a reversed one, or the spin home after it.
+signal ring_turned(steps: int)
+
 const RING: Array[Vector2i] = [
 	Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0),
 	Vector2i(4, 1), Vector2i(4, 2), Vector2i(3, 2), Vector2i(2, 2), Vector2i(1, 2),
@@ -190,6 +194,7 @@ func _turn_ring(steps: int, ridden: bool) -> void:
 		if _grid.tile_locations.has(cell) and is_instance_valid(_grid.tile_locations[cell]):
 			moves[cell] = ring_cell_after(cell, steps)
 	_ring_offset = posmod(_ring_offset + steps, RING.size())
+	ring_turned.emit(steps)
 	if moves.is_empty():
 		return
 
