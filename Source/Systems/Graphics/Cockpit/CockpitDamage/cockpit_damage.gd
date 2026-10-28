@@ -4,13 +4,19 @@ extends Node2D
 ## frame splits open as hull drops, and mends as it comes back.
 ##
 ## Each child CockpitDamageSite is one break. They open in child order, evenly
-## spread over the hull bar, so the first chip of damage cracks the glass and
-## the cockpit is coming apart by the last few points. The same ordering runs
+## spread over the hull below [member intact_from], so the first real dent
+## below a fresh run's hull cracks the glass and the cockpit is coming apart
+## by the last few points. The same ordering runs
 ## backwards when healing, so a repair closes the most recent damage first.
 
 ## Gap between breaks popping open (or shut) when one change crosses several
 ## thresholds, so a big swing reads as a cascade rather than a jump cut.
 @export var stagger: float = 0.07
+
+## Hull (fraction of max) at and above which the cockpit shows no damage. A
+## run starts short of max hull (run_start.tres), and opening on a cracked,
+## smoking canopy reads as already losing; keep this at or below that start.
+@export_range(0.0, 1.0) var intact_from: float = 0.75
 
 @export_group("Smoke")
 ## A hull hit at least this big (as a fraction of max hull) billows smoke out
@@ -67,15 +73,16 @@ func _bind_to_player() -> void:
 
 
 ## Breaks that should be showing at [param health] out of [param max_health].
-## Site i of n opens once hull falls to (n - i) / (n + 1) of max, so a full
-## hull shows nothing and only zero shows everything.
-static func sites_open_at(health: int, max_health: int, site_count: int) -> int:
-	if max_health <= 0 or health >= max_health:
+## Site i of n opens once hull falls to (n - i) / (n + 1) of the
+## [param intact] line, so hull on or above it shows nothing and only zero
+## shows everything.
+static func sites_open_at(health: int, max_health: int, site_count: int, intact: float = 1.0) -> int:
+	if max_health <= 0 or intact <= 0.0 or float(health) >= max_health * intact:
 		return 0
 	if health <= 0:
 		return site_count
-	var lost: float = 1.0 - float(health) / max_health
-	return clampi(floori(lost * (site_count + 1)), 0, site_count)
+	var worn: float = 1.0 - float(health) / (max_health * intact)
+	return clampi(floori(worn * (site_count + 1)), 0, site_count)
 
 
 ## How hard a hit of [param lost] hull billows, 0 to 1, given [param health]
@@ -127,7 +134,7 @@ func _sync(from_queue: bool) -> void:
 	for site: CockpitDamageSite in _sites:
 		site.set_linger_intensity(dire)
 
-	var want: int = sites_open_at(health, _health.max_health, _sites.size())
+	var want: int = sites_open_at(health, _health.max_health, _sites.size(), intact_from)
 	var opening: Array[CockpitDamageSite] = []
 	var closing: Array[CockpitDamageSite] = []
 	for i: int in _sites.size():

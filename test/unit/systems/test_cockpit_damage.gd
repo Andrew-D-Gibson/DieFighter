@@ -1,7 +1,12 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## CockpitDamage: how many breaks show at a given hull. Spread evenly, so a
-## full hull shows none, any damage at all starts showing them, and only zero
-## hull shows every one.
+## full hull (or anything above the intact line) shows none, damage below it
+## starts showing them, and only zero hull shows every one.
+
+const _COCKPIT_DAMAGE_SCENE: PackedScene = preload(
+	"res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage.tscn"
+)
+const _RUN_START: GameSaveResource = preload("res://Source/Resources/SaveResources/run_start.tres")
 
 
 func test_full_hull_shows_no_damage() -> void:
@@ -30,6 +35,30 @@ func test_count_never_falls_as_hull_drops() -> void:
 
 func test_no_max_hull_shows_nothing() -> void:
 	assert_eq(CockpitDamage.sites_open_at(0, 0, 9), 0)
+
+
+func test_hull_above_the_intact_line_shows_nothing() -> void:
+	assert_eq(CockpitDamage.sites_open_at(24, 32, 9, 0.75), 0)
+	assert_eq(CockpitDamage.sites_open_at(30, 32, 9, 0.75), 0)
+
+
+func test_breaks_spread_over_the_hull_below_the_intact_line() -> void:
+	# Nine sites under a line at 24 hull: one per 2.4 hull lost below it.
+	assert_eq(CockpitDamage.sites_open_at(22, 32, 9, 0.75), 0)
+	assert_eq(CockpitDamage.sites_open_at(21, 32, 9, 0.75), 1)
+	assert_eq(CockpitDamage.sites_open_at(12, 32, 9, 0.75), 5)
+	assert_eq(CockpitDamage.sites_open_at(0, 32, 9, 0.75), 9)
+
+
+## A new run opens on a clean canopy: no crack or smoke before the first hit
+## of the run that really dents the hull.
+func test_a_new_run_starts_with_an_intact_cockpit() -> void:
+	var damage: CockpitDamage = autofree(_COCKPIT_DAMAGE_SCENE.instantiate())
+	var health: int = _RUN_START.player_health
+	var max_health: int = _RUN_START.player_max_health
+	assert_eq(CockpitDamage.sites_open_at(health, max_health, 9, damage.intact_from), 0,
+		"run_start.tres's hull is under CockpitDamage.intact_from")
+	assert_eq(damage.dire_at(health, max_health), 0.0, "a new run would open on lingering smoke")
 
 
 # --- Smoke ---
