@@ -46,6 +46,8 @@ extends Resource
 @export var hand_may_be_kept: bool = false
 
 @export_category("Art")
+## The ship's signature colour: its ship-select card is drawn in it.
+@export var theme_color: Color = Color("#7abd33")
 ## Repaints the cockpit shell for this ship: each key, one of the default
 ## cockpit's colours (its navy ramp #463c91 #251c6b #191347 #130f38), becomes
 ## its value. Approved palette only. Leave #0f0c2e alone: the cockpit lights

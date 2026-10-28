@@ -12,12 +12,10 @@ const _HOVER_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEff
 const _PICK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
 
 const _BACKGROUND: Color = Color("#0f0c2e")
+## Mixed toward the ship's theme colour.
 const _BORDER: Color = Color("#463c91")
-const _BORDER_HOVER: Color = Color("#a846ce")
 const _BORDER_PICKED: Color = Color("#eed35d")
 const _CELL: Color = Color("#251c6b")
-const _CELL_TILE: Color = Color("#8dF1f4")
-const _HOLE: Color = Color("#130f38")
 
 ## Size of one grid cell on the map, and the gap between cells.
 const _MAP_CELL: int = 4
@@ -129,7 +127,11 @@ func _gui_input(event: InputEvent) -> void:
 
 func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, SIZE), _BACKGROUND)
-	var border: Color = _BORDER_PICKED if is_picked else (_BORDER_HOVER if _hovered else _BORDER)
+	# At rest the frame is a dim wash of the ship's colour; hovered, the colour
+	# itself; picked, the gold every pick on the menu uses.
+	var border: Color = ship.theme_color if _hovered else _BORDER.lerp(ship.theme_color, 0.45)
+	if is_picked:
+		border = _BORDER_PICKED
 	draw_rect(Rect2(Vector2(0.5, 0.5), SIZE - Vector2.ONE), border, false, 1.0)
 	if is_picked:
 		# A soft inner glow, and bright corner brackets, so the pick reads
@@ -166,4 +168,4 @@ func _draw_grid_map() -> void:
 
 	for cell: Vector2i in cells:
 		var rect: Rect2 = Rect2(origin + Vector2(cell * pitch), Vector2.ONE * _MAP_CELL)
-		draw_rect(rect, _CELL_TILE if starting.has(cell) else _CELL)
+		draw_rect(rect, ship.theme_color if starting.has(cell) else _CELL)

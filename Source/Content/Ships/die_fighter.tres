@@ -12,3 +12,4 @@ description = "Standard issue. Feed dice to the [color=#c552f1]Engine Charger[/c
 starting_save = ExtResource("2_start")
 supports_tutorial = true
 cutscene_frames = ExtResource("3_frames")
+theme_color = Color(0.47843137, 0.7411765, 0.2, 1)
