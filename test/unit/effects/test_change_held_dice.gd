@@ -37,3 +37,15 @@ func test_no_targets_means_no_event() -> void:
 	var events: Array[EffectEvent] = await _apply(
 		EffectEnums.DiceControlSubtype.REROLL_TARGETS_DICE, [] as Array[Node])
 	assert_eq(events.size(), 0)
+
+
+func test_the_event_carries_the_effects_colour() -> void:
+	var engine: RecordingEngine = autofree(RecordingEngine.new())
+	var context := EffectContext.new()
+	context.targets = [autofree(Node.new())] as Array[Node]
+	var data := Effects.data(EffectEnums.Category.DICE_CONTROL,
+		EffectEnums.DiceControlSubtype.REROLL_TARGETS_DICE)
+	data.color = Color.CYAN
+	await EffectRegistry.get_handler(data.category, data.subtype).apply(data, context, engine)
+	var events: Array[EffectEvent] = engine.injected_of(ChangeHeldDiceEvent)
+	assert_eq((events[0] as ChangeHeldDiceEvent).color, Color.CYAN)

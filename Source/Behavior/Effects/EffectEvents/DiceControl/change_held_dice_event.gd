@@ -12,12 +12,20 @@ enum Change { REROLL, FLIP_ONES_AND_SIXES }
 
 var change: Change = Change.REROLL
 
-## Seconds between one die starting to turn over and the next, so a handful
-## of dice read as a ripple rather than a single blink.
-const _STAGGER_SECONDS: float = 0.12
+## Rings each die as its turn comes. The effect's own colour, so a storm's
+## rerolls and a rift's flips each look like their cause.
+var color: Color = Color.WHITE
 
-## How long Dice.reroll_with_tween takes to land its new face.
-const _ROLL_SECONDS: float = 0.4
+## One die at a time, each landing before the next goes, so the player can
+## follow which ship's die became what. Overlapped, a hand of rerolls read as
+## one blink. All at animation speed 1.
+const _ROLL_HALF_SECONDS: float = 0.35
+## A breath between one die landing and the next one going up.
+const _GAP_SECONDS: float = 0.15
+
+const _ROLL_SFX: SoundEffectResource = preload(
+	"res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres"
+)
 
 
 func resolve(engine: ScenarioEngine) -> void:
@@ -37,15 +45,25 @@ func resolve(engine: ScenarioEngine) -> void:
 	for target: Node in targets:
 		provoke(target)
 
-	# Not awaited one by one, so the rolls overlap — as RerollAllDiceEvent does.
-	for die: Dice in dice:
-		if is_instance_valid(die):
-			die.reroll_with_tween(0 if change == Change.REROLL else 7 - die.value)
-		await engine.get_tree().create_timer(_STAGGER_SECONDS).timeout
-	# The new face is written partway through the roll; let the last one land
-	# before anything reads the hands.
-	await engine.get_tree().create_timer(_ROLL_SECONDS).timeout
+	var speed: float = Globals.animation_speed
+	for i: int in dice.size():
+		var die: Dice = dice[i]
+		if i > 0:
+			await engine.get_tree().create_timer(_GAP_SECONDS / speed).timeout
+			if engine.is_shut_down():
+				return
+		# A ship can die mid-sequence and take its dice with it.
+		if not is_instance_valid(die) or not die.is_inside_tree():
+			continue
+		_mark(die)
+		await die.reroll_with_tween(0 if change == Change.REROLL else 7 - die.value, _ROLL_HALF_SECONDS / speed)
 	Events.enemy_held_dice_changed.emit()
+
+
+## The "this one" beat as a die goes up: a ring and a blip.
+func _mark(die: Dice) -> void:
+	Juice.ring(die.get_parent(), die.global_position, color, 12.0, 0.3)
+	Events.play_sound.emit(_ROLL_SFX)
 
 
 func _changes(die: Dice) -> bool:
