@@ -243,10 +243,25 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.AttributeChangeSubtype.SIPHON_ENGINE_CHARGE:
 			charge -= amount
 		EffectEnums.AttributeChangeSubtype.APPLY_STATUS:
+			var status: StringName = StringName(data.string_param)
 			for target: Node in walk.context.targets:
 				if target is Enemy:
-					var status: StringName = StringName(data.string_param)
 					statuses[status] = statuses.get(status, 0.0) + amount * walk.share
+				elif target == Globals.player and status == &"burn":
+					# Burn the player puts on themselves (Blowtorch) is hull
+					# lost over the next turns, and stacks onto any Burn
+					# already there: what it adds to n + (n - 1) + ... + 1.
+					damage[target] = damage.get(target, 0.0) + _added_burn_cost(amount) * walk.share
+
+
+## Hull the player loses to Burn over the coming turns if [param added]
+## stacks join the Burn already on them.
+func _added_burn_cost(added: float) -> float:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	var burn: StatusModifier = engine.find_status(Globals.player, &"burn") if engine else null
+	var now: float = float(burn.stacks) if burn else 0.0
+	var after: float = now + added
+	return (after * (after + 1.0) - now * (now + 1.0)) / 2.0
 
 
 func _hits_player(walk: _Walk) -> bool:

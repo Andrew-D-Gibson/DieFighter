@@ -112,6 +112,10 @@ enum AttributeChangeSubtype {
 	## from it to the actor. One drain however many pulses it takes, so it
 	## arms engine_charge_drained once, like an enemy's CHANGE_ENGINE_CHARGE.
 	SIPHON_ENGINE_CHARGE,
+	## Move every status on the actor onto the first target, stacks and all,
+	## merging into any it already has. The player can hand an enemy their
+	## Burn; an enemy can vent the player's Burn back at them.
+	TRANSFER_STATUSES,
 }
 
 

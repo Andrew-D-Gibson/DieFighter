@@ -44,7 +44,7 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	var action_event: EnemyActionEvent = event as EnemyActionEvent
 	if action_event.enemy != affected_node:
 		return
-	if EnemyActionResource.outcome_of(action_event.action) != EnemyActionResource.Outcome.ACTS:
+	if EnemyActionResource.outcome_of(action_event.action, action_event.enemy) != EnemyActionResource.Outcome.ACTS:
 		return
 
 	# A copy, like every rolled action: the preloaded one is shared.

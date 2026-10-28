@@ -21,6 +21,9 @@ var hostile_ships: Array[Enemy] = []
 ## How much of its hull [member ship] has left, 0 to 1.
 var health_fraction: float = 1.0
 
+## The ids of the statuses on [member ship].
+var statuses: Array[StringName] = []
+
 ## [member ship]'s attitude toward the player.
 var attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE
 
@@ -47,6 +50,10 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 	situation.allies = allies_of(rolling_ship, roster)
 	situation.hostile_ships = hostile_ships_of(rolling_ship, roster)
 	situation.health_fraction = hull_fraction(rolling_ship)
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine:
+		for status: StatusModifier in engine.statuses_on(rolling_ship):
+			situation.statuses.append(status.status_id)
 	if rolling_ship.scenario_state:
 		situation.attitude = rolling_ship.scenario_state.attitude
 	if rolling_ship.dice_manager:
@@ -101,3 +108,11 @@ static func _others_where(of_ship: Enemy, roster: Array[Enemy], relation: Callab
 		if relation.call(of_ship.scenario_state.faction, other.scenario_state.faction):
 			out.append(other)
 	return out
+
+
+## Whether [member ship] has the status [param status_id], or any status when
+## it's empty.
+func has_status(status_id: StringName = &"") -> bool:
+	if status_id.is_empty():
+		return not statuses.is_empty()
+	return status_id in statuses

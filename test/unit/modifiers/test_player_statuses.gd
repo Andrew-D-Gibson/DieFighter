@@ -25,6 +25,7 @@ func _enemy() -> Enemy:
 	var enemy: Enemy = autofree(ENEMY_SCENE.instantiate())
 	enemy.health.max_health = 20
 	enemy.health.health = 20
+	enemy.scenario_state = ScenarioShipState.new()
 	return enemy
 
 
@@ -233,3 +234,75 @@ func test_scrambled_runs_before_jammed_so_the_jam_sees_the_flipped_face() -> voi
 	var jammed: StatusModifier = StatusCatalog.create(&"jammed", player, 1)
 	assert_lt(scrambled.priority, jammed.priority)
 	assert_gt(scrambled.priority, LockoutModifier.new(null).priority, "a lock reads the face it was given")
+
+
+# ── Moving statuses ───────────────────────────────────────────────────────────
+
+func _transfer(from: Node, to: Node) -> void:
+	var event: TransferStatusesEvent = TransferStatusesEvent.new()
+	event.actor = from
+	event.targets = [to]
+	await event.resolve(engine)
+
+
+func test_transfer_moves_every_status_and_merges_into_the_targets() -> void:
+	var enemy := _enemy()
+	await _apply(player, &"burn", 3)
+	await _apply(player, &"jammed", 1)
+	await _apply(enemy, &"burn", 2)
+
+	await _transfer(player, enemy)
+	assert_eq(engine.statuses_on(player).size(), 0)
+	assert_eq(engine.find_status(enemy, &"burn").stacks, 5)
+	var jam: StatusModifier = engine.find_status(enemy, &"jammed")
+	assert_eq(jam.affected_node, enemy, "rebuilt for its new host")
+	assert_eq(jam.rule_term(), "Jammed", "now the enemy's rule")
+	assert_eq(enemy.get_status_bar().get_child_count(), 2)
+
+
+func test_an_enemy_can_vent_its_statuses_onto_the_player() -> void:
+	var enemy := _enemy()
+	await _apply(enemy, &"scrambled", 2)
+	await _transfer(enemy, player)
+	assert_null(engine.find_status(enemy, &"scrambled"))
+	assert_eq(engine.find_status(player, &"scrambled").stacks, 2)
+	assert_eq(player.get_status_bar().get_child_count(), 1)
+
+
+func test_purge_vents_is_blocked_with_nothing_to_vent() -> void:
+	var real_engine: ScenarioEngine = autofree(ScenarioEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = real_engine
+	Globals.scenario_manager = manager
+	var enemy := _enemy()
+	var vent: EnemyActionResource = load("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres").duplicate(true)
+
+	assert_eq(EnemyActionResource.outcome_of(vent, enemy), EnemyActionResource.Outcome.BLOCKED)
+	var burn: ApplyStatusEvent = ApplyStatusEvent.new()
+	burn.status_id = &"burn"
+	burn.amount = 1
+	burn.targets = [enemy]
+	await burn.resolve(real_engine)
+	assert_eq(EnemyActionResource.outcome_of(vent, enemy), EnemyActionResource.Outcome.ACTS)
+	assert_eq(EnemyActionResource.outcome_of(vent), EnemyActionResource.Outcome.ACTS, "no ship to ask: assume it can")
+
+
+# ── Enemy actions ─────────────────────────────────────────────────────────────
+
+func test_statuses_aimed_at_the_player_read_as_dangerous() -> void:
+	for file: String in ["incendiary_shot", "target_lock", "jamming_pulse", "scrambler", "purge_vents"]:
+		var action: EnemyActionResource = load("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/%s.tres" % file)
+		assert_eq(action.get_threat(), EnemyActionResource.Threat.DANGEROUS, file)
+
+
+func test_self_has_status_gates_on_the_rolling_ships_statuses() -> void:
+	var condition: EnemyActionCondition = EnemyActionCondition.new()
+	condition.type = EnemyActionCondition.Type.SELF_HAS_STATUS
+	var situation: EnemyActionSituation = EnemyActionSituation.new()
+	assert_false(condition.is_met(situation))
+	situation.statuses = [&"burn"] as Array[StringName]
+	assert_true(condition.is_met(situation), "any status")
+	condition.status_id = &"jammed"
+	assert_false(condition.is_met(situation))
+	condition.status_id = &"burn"
+	assert_true(condition.is_met(situation))

@@ -58,6 +58,9 @@ var activating_die_number: int:
 ## can name it before the player commits a die. See EnemyTargetBinder.
 var bound_target: Enemy = null
 
+## The ship get_outcome() is asking about, only while it asks.
+var _acting_ship: Enemy = null
+
 ## Copied from the option that rolled this action. See
 ## EnemyActionOptionResource.strength_tier_override.
 var strength_tier_override: float = -1.0
@@ -84,7 +87,9 @@ func get_threat() -> Threat:
 
 ## [param aimed_at_ship] is whether the steps before these last targeted
 ## another enemy ship (a raid's prey), whose damage is no threat to the player.
-static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false) -> Threat:
+## [param aimed_at_player] is whether they last targeted the player, so a
+## status landing there (Burn, Jammed) counts as the hurt it is.
+static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false, aimed_at_player: bool = false) -> Threat:
 	var threat: Threat = Threat.DEAD
 	for effect: EffectData in effects:
 		if effect == null:
@@ -92,14 +97,18 @@ static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false) 
 		if effect is ConditionalEffectData:
 			var conditional: ConditionalEffectData = effect
 			threat = maxi(threat, maxi(
-				_threat_of(conditional.if_true_effects, aimed_at_ship),
-				_threat_of(conditional.if_false_effects, aimed_at_ship)
+				_threat_of(conditional.if_true_effects, aimed_at_ship, aimed_at_player),
+				_threat_of(conditional.if_false_effects, aimed_at_ship, aimed_at_player)
 			)) as Threat
 		elif effect.category == EffectEnums.Category.TARGETING:
 			aimed_at_ship = effect.subtype in [
 				EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY,
 				EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP,
 			]
+			aimed_at_player = effect.subtype == EffectEnums.TargetingSubtype.TARGET_PLAYER
+		elif aimed_at_player and effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
+		and effect.subtype in [EffectEnums.AttributeChangeSubtype.APPLY_STATUS, EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES]:
+			return Threat.DANGEROUS
 		elif effect.category == EffectEnums.Category.SCENARIO_CONTROL \
 		and effect.subtype == EffectEnums.ScenarioControlSubtype.ESCAPE_WITH_DICE:
 			# Losing dice for good is worse than any hit.
@@ -131,20 +140,24 @@ func placement_strength() -> float:
 
 ## What spending a die on [param action] would come to right now. Jammed and
 ## the "?" pop-up both ask this one question, so a jam is never spent on a die
-## that was going to fizzle anyway. An empty slot is idle.
-static func outcome_of(action: EnemyActionResource) -> Outcome:
+## that was going to fizzle anyway. An empty slot is idle. [param ship] is the
+## ship spending the die, for steps that depend on it (a vent with no status
+## on it to vent); without it those steps count as possible.
+static func outcome_of(action: EnemyActionResource, ship: Enemy = null) -> Outcome:
 	if action == null:
 		return Outcome.IDLE
-	return action.get_outcome()
+	return action.get_outcome(ship)
 
 
 ## See [enum Outcome]. Read fresh each time: unlike the chain, the board it
 ## depends on changes mid-turn.
-func get_outcome() -> Outcome:
+func get_outcome(ship: Enemy = null) -> Outcome:
 	if effect_chain == null:
 		return Outcome.IDLE
 	var tally: Dictionary[StringName, int] = {&"steps": 0, &"possible": 0}
+	_acting_ship = ship
 	_tally_outcome(effect_chain.effects, false, tally)
+	_acting_ship = null
 	if tally[&"steps"] == 0:
 		return Outcome.IDLE
 	return Outcome.ACTS if tally[&"possible"] > 0 else Outcome.BLOCKED
@@ -202,6 +215,10 @@ func _step_can_happen(effect: EffectData, aimed_at_bound: bool) -> bool:
 		var manager: EnemyManager = Globals.enemy_manager
 		if manager != null and not manager.has_room_to_launch():
 			return false
+	if effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
+	and effect.subtype == EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES \
+	and is_instance_valid(_acting_ship):
+		return TransferStatusesEvent.has_any(ScenarioEngine.current(), _acting_ship)
 	return true
 
 

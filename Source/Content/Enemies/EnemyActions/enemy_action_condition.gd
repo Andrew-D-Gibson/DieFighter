@@ -22,6 +22,9 @@ enum Type {
 	## No more than [member count] other ships are on this one's side. Keeps a
 	## launcher from filling the board.
 	ALLIES_AT_MOST,
+	## This ship has a status on it ([member status_id], or any when empty).
+	## Gates an action that vents its statuses at the player.
+	SELF_HAS_STATUS,
 }
 
 @export var type: Type = Type.ALLY_EXISTS
@@ -38,6 +41,9 @@ enum Type {
 
 ## ALLIES_AT_MOST: the most allies there may be.
 @export var count: int = 3
+
+## SELF_HAS_STATUS: the status to look for; empty for any.
+@export var status_id: StringName = &""
 
 
 func is_met(situation: EnemyActionSituation) -> bool:
@@ -58,4 +64,6 @@ func _test(situation: EnemyActionSituation) -> bool:
 			return situation.attitude == attitude
 		Type.ALLIES_AT_MOST:
 			return situation.allies.size() <= count
+		Type.SELF_HAS_STATUS:
+			return situation.has_status(status_id)
 	return false

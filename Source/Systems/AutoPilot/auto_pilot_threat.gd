@@ -23,6 +23,15 @@ const KEPT_DIE: float = 4.0
 const ESCAPE: float = 8.0
 const ESCAPE_PER_DIE: float = 3.0
 
+## Hull a stack of a status on the player is worth, beyond Burn (which is
+## n + (n - 1) + ... + 1). Jammed throws away a die and hands it over;
+## Exposed adds to the next hits; Scrambled only flips faces.
+const _STATUS_STACK_COST: Dictionary[StringName, float] = {
+	&"jammed": 3.5,
+	&"exposed": 1.5,
+	&"scrambled": 1.0,
+}
+
 
 ## The cost of handing [param ship] a die of [param face]. Face 0 means a face
 ## nobody knows yet (a rerolled die): the average over all six.
@@ -115,6 +124,16 @@ static func _cost_of_action(action: EnemyActionResource, ship: Enemy, face: int)
 		EnemyActionResource.Threat.DANGEROUS:
 			if _escapes(action):
 				return ESCAPE + ESCAPE_PER_DIE * (_held_count(ship) + 1)
+			if _vents(action):
+				var vented: float = 0.0
+				var engine: ScenarioEngine = ScenarioEngine.current()
+				if engine:
+					for status: StatusModifier in engine.statuses_on(ship):
+						vented += status_cost(status.status_id, status.stacks)
+				return vented
+			var applied: StringName = _status_applied(action)
+			if not applied.is_empty():
+				return status_cost(applied, action.intent_amount)
 			# An attack worth its die's face authors no amount of its own.
 			var amount: int = action.intent_amount if action.intent_amount > 0 else face
 			var hits: int = action.effect_chain.base_repetitions if action.effect_chain else 1
@@ -125,6 +144,29 @@ static func _cost_of_action(action: EnemyActionResource, ship: Enemy, face: int)
 				cost += KEPT_DIE
 			return cost
 	return 0.0
+
+
+## What [param stacks] of [param status_id] on the player will cost, in hull.
+static func status_cost(status_id: StringName, stacks: int) -> float:
+	if status_id == &"burn":
+		return stacks * (stacks + 1) / 2.0
+	return _STATUS_STACK_COST.get(status_id, 1.0) * stacks
+
+
+## The status [param action] puts on the player, or &"" for none.
+static func _status_applied(action: EnemyActionResource) -> StringName:
+	if action.effect_chain == null:
+		return &""
+	for effect: EffectData in action.effect_chain.effects:
+		if effect != null and effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
+		and effect.subtype == EffectEnums.AttributeChangeSubtype.APPLY_STATUS:
+			return StringName(effect.string_param)
+	return &""
+
+
+static func _vents(action: EnemyActionResource) -> bool:
+	return _has_step(action, EffectEnums.Category.ATTRIBUTE_CHANGE,
+		EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES)
 
 
 static func _escapes(action: EnemyActionResource) -> bool:
@@ -163,7 +205,7 @@ static func _held_acting_count(ship: Enemy) -> int:
 static func _acts(ship: Enemy, face: int) -> bool:
 	if face < 1 or face > ship.turn_actions.size():
 		return false
-	return EnemyActionResource.outcome_of(ship.turn_actions[face - 1]) == EnemyActionResource.Outcome.ACTS
+	return EnemyActionResource.outcome_of(ship.turn_actions[face - 1], ship) == EnemyActionResource.Outcome.ACTS
 
 
 static func _stacks(ship: Enemy, status_id: StringName) -> int:

@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_action"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_chain"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="4_sound"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/IntentIndicator/vent.png" id="5_icon"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/IntentIndicator/vent_info.png" id="6_info"]
+
+[sub_resource type="Resource" id="Resource_purge_vents_0"]
+script = ExtResource("2_data")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_purge_vents_1"]
+script = ExtResource("2_data")
+category = 4
+subtype = 21
+color = Color(0.9333, 0.4980, 0.1843, 1)
+juice_flags = 2
+
+[sub_resource type="Resource" id="Resource_purge_vents_2"]
+script = ExtResource("2_data")
+category = 1
+subtype = 12
+
+[sub_resource type="Resource" id="Resource_purge_vents_3"]
+script = ExtResource("2_data")
+category = 3
+subtype = 4
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("3_chain")
+effects = Array[ExtResource("2_data")]([SubResource("Resource_purge_vents_0"), SubResource("Resource_purge_vents_1"), SubResource("Resource_purge_vents_2"), SubResource("Resource_purge_vents_3")])
+
+[resource]
+script = ExtResource("1_action")
+name = "Purge Vents"
+description = "Move its statuses to you"
+indicator_texture = ExtResource("5_icon")
+info_texture = ExtResource("6_info")
+effect_chain = SubResource("Resource_chain")
+intent_amount = 0

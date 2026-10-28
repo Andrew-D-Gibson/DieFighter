@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_pprml"]
 [ext_resource type="Texture2D" uid="uid://35lb5bt8fxo1" path="res://Assets/Textures/Enemies/Disabler/Disabler_targeting_image.png" id="6_1ll6j"]
 [ext_resource type="Resource" uid="uid://banpownpi5wfm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/ion_shot.tres" id="act_ion"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/jamming_pulse.tres" id="new_jamming_pulse"]
 
 [sub_resource type="Resource" id="Resource_1ll6j"]
 script = ExtResource("1_hbxdm")
@@ -40,9 +41,16 @@ min_amount = 2
 max_amount = 3
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
+[sub_resource type="Resource" id="Resource_jamming_pulse_Resource_kmvs5"]
+script = ExtResource("1_hbxdm")
+base_action = ExtResource("new_jamming_pulse")
+weight = 0.6
+min_amount = 1
+max_amount = 1
+
 [sub_resource type="Resource" id="Resource_kmvs5"]
 script = ExtResource("1_5pxhh")
-actions_possible = Array[ExtResource("1_hbxdm")]([SubResource("Resource_1ll6j"), SubResource("Resource_od4nw"), SubResource("Resource_pprml"), SubResource("Resource_ion")])
+actions_possible = Array[ExtResource("1_hbxdm")]([SubResource("Resource_1ll6j"), SubResource("Resource_od4nw"), SubResource("Resource_pprml"), SubResource("Resource_ion"), SubResource("Resource_jamming_pulse_Resource_kmvs5")])
 metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [resource]

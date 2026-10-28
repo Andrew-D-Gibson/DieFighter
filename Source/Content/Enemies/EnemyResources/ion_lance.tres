@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
 [ext_resource type="Texture2D" uid="uid://dmwvhly1a8jbt" path="res://Assets/Textures/Enemies/FighterJet/fighter_jet_targeting_image.png" id="tex_4"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/scrambler.tres" id="new_scrambler"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -50,9 +51,16 @@ min_amount = 2
 max_amount = 3
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
+[sub_resource type="Resource" id="Resource_scrambler_Resource_pool0"]
+script = ExtResource("script_0")
+base_action = ExtResource("new_scrambler")
+weight = 0.6
+min_amount = 1
+max_amount = 2
+
 [sub_resource type="Resource" id="Resource_pool0"]
 script = ExtResource("script_1")
-actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2"), SubResource("Resource_opt3"), SubResource("Resource_opt_ion0")])
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2"), SubResource("Resource_opt3"), SubResource("Resource_opt_ion0"), SubResource("Resource_scrambler_Resource_pool0")])
 metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [sub_resource type="Resource" id="Resource_opt4"]
@@ -94,9 +102,16 @@ max_amount = 4
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
+[sub_resource type="Resource" id="Resource_scrambler_Resource_pool1"]
+script = ExtResource("script_0")
+base_action = ExtResource("new_scrambler")
+weight = 0.6
+min_amount = 1
+max_amount = 2
+
 [sub_resource type="Resource" id="Resource_pool1"]
 script = ExtResource("script_1")
-actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt4"), SubResource("Resource_opt5"), SubResource("Resource_opt6"), SubResource("Resource_opt7"), SubResource("Resource_opt_ion1")])
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt4"), SubResource("Resource_opt5"), SubResource("Resource_opt6"), SubResource("Resource_opt7"), SubResource("Resource_opt_ion1"), SubResource("Resource_scrambler_Resource_pool1")])
 metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [resource]
