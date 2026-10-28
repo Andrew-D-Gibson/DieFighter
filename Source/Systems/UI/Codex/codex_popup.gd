@@ -37,10 +37,15 @@ var _page: int = 0
 var _entries: Array[CodexEntry] = []
 ## The entry last picked on each tab, so switching back finds it again.
 var _picked_ids: Dictionary[Tab, String] = {}
+var _warmed_up: bool = false
 
 
 func _ready() -> void:
 	hide()
+	# Loaded behind the menu rather than on open, which would stall the
+	# first open for seconds; not preloaded, which would slow the menu down.
+	CodexCatalog.warm_up()
+	tree_exiting.connect(CodexCatalog.release)
 	%TilesTab.pressed.connect(_show_tab.bind(Tab.TILES))
 	%EnemiesTab.pressed.connect(_show_tab.bind(Tab.ENEMIES))
 	%PrevPage.pressed.connect(_turn_page.bind(-1))
@@ -235,6 +240,8 @@ func _on_keyword_hover_ended(_meta: Variant) -> void:
 
 
 func _process(_delta: float) -> void:
+	if not _warmed_up:
+		_warmed_up = CodexCatalog.collect_loaded()
 	if visible and %KeywordPopup.visible:
 		_place_keyword_popup()
 

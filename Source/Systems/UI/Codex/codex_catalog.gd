@@ -10,6 +10,41 @@ const _TILE_COLOUR_ORDER: Array[String] = [
 	"RedTiles", "BlueTiles", "GreenTiles", "YellowTiles", "PurpleTiles",
 ]
 
+## Every tile and enemy loaded so far, by path. A resource nothing holds is
+## unloaded, so without this the codex would load all of them again each time
+## it sorted, paged or switched tabs (seconds, for the tiles).
+static var _cache: Dictionary[String, Resource] = {}
+## Paths warm_up() asked a loader thread for that aren't in the cache yet.
+static var _pending: Dictionary[String, bool] = {}
+
+
+## Starts loading every tile and enemy on loader threads, so the codex opens
+## at once later. Call collect_loaded() each frame until it returns true.
+static func warm_up() -> void:
+	for path: String in _content_paths():
+		if _cache.has(path) or _pending.has(path):
+			continue
+		if ResourceLoader.load_threaded_request(path) == OK:
+			_pending[path] = true
+
+
+## Moves what the loader threads have finished into the cache. True once
+## nothing is left loading.
+static func collect_loaded() -> bool:
+	for path: String in _pending.keys():
+		match ResourceLoader.load_threaded_get_status(path):
+			ResourceLoader.THREAD_LOAD_LOADED:
+				_cache[path] = ResourceLoader.load_threaded_get(path)
+				_pending.erase(path)
+			ResourceLoader.THREAD_LOAD_FAILED, ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+				_pending.erase(path)
+	return _pending.is_empty()
+
+
+## Lets go of everything loaded, for when the codex can't be opened any more.
+static func release() -> void:
+	_cache.clear()
+
 
 ## Every tile a player could own: those offered as rewards, those a ship
 ## starts with, and any held-out tile the player has owned anyway.
@@ -50,13 +85,38 @@ static func enemy_ids() -> Array[String]:
 
 
 static func tile_resource(id: String) -> TileResource:
-	var path: String = ContentRegistry.get_tile_path(id)
-	return load(path) as TileResource if path != "" else null
+	return _resource(ContentRegistry.get_tile_path(id)) as TileResource
 
 
 static func enemy_resource(id: String) -> EnemyResource:
-	var path: String = ContentRegistry.get_enemy_path(id)
-	return load(path) as EnemyResource if path != "" else null
+	return _resource(ContentRegistry.get_enemy_path(id)) as EnemyResource
+
+
+static func _resource(path: String) -> Resource:
+	if path.is_empty():
+		return null
+	if _cache.has(path):
+		return _cache[path]
+	var resource: Resource
+	if _pending.has(path):
+		# Still on its loader thread: this waits for it rather than loading
+		# it a second time.
+		resource = ResourceLoader.load_threaded_get(path)
+		_pending.erase(path)
+	else:
+		resource = load(path)
+	if resource:
+		_cache[path] = resource
+	return resource
+
+
+static func _content_paths() -> Array[String]:
+	var paths: Array[String] = []
+	for id: String in ContentRegistry.get_tile_ids():
+		paths.append(ContentRegistry.get_tile_path(id))
+	for id: String in ContentRegistry.get_enemy_ids():
+		paths.append(ContentRegistry.get_enemy_path(id))
+	return paths
 
 
 static func tile_icon(tile: TileResource) -> Texture2D:

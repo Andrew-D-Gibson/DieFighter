@@ -22,6 +22,8 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/LoadingPopup/loading_popup.tscn" id="19_loading"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/ShipSelect/ship_select_popup.tscn" id="20_shipselect"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/Codex/codex_popup.tscn" id="21_codex"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="22_blue"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/UI/Buttons/button_medium_dark_blue.png" id="23_dark_blue"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -97,6 +99,36 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_e7dir")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_blue"]
+atlas = ExtResource("22_blue")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_blue"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_blue")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dark_blue"]
+atlas = ExtResource("23_dark_blue")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_dark_blue"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dark_blue")
 }],
 "loop": 1,
 "name": &"default",
@@ -265,9 +297,9 @@ anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
 offset_left = 6.0
-offset_top = 8.0
+offset_top = 27.0
 offset_right = 88.0
-offset_bottom = 129.0
+offset_bottom = 131.0
 grow_vertical = 0
 alignment = 1
 
@@ -284,25 +316,45 @@ unique_name_in_owner = true
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="CodexButton" parent="VBoxContainer" instance=ExtResource("7_n0c18")]
+[node name="Spacer" type="Control" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
-hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+mouse_filter = 2
 
-[node name="RichTextLabel" parent="VBoxContainer/CodexButton" index="0" unique_id=1229508524]
+[node name="CodexButton" parent="VBoxContainer" instance=ExtResource("7_vm02d")]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+hover_text_color = Color(0.262745, 0.65098, 0.988235, 1)
+
+[node name="AnimatedSprite2D" parent="VBoxContainer/CodexButton" index="0" unique_id=937158098]
+sprite_frames = SubResource("SpriteFrames_blue")
+
+[node name="RichTextLabel" parent="VBoxContainer/CodexButton" index="1" unique_id=604948362]
 text = "MENU_CODEX"
 
-[node name="OptionsButton" parent="VBoxContainer" unique_id=964819615 instance=ExtResource("7_n0c18")]
+[node name="OptionsButton" parent="VBoxContainer" instance=ExtResource("7_vm02d")]
 layout_mode = 2
-hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+size_flags_horizontal = 4
+size_flags_vertical = 4
+hover_text_color = Color(0.262745, 0.65098, 0.988235, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="0" unique_id=1229508524]
+[node name="AnimatedSprite2D" parent="VBoxContainer/OptionsButton" index="0" unique_id=937158098]
+sprite_frames = SubResource("SpriteFrames_blue")
+
+[node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="1" unique_id=604948362]
 text = "OPTIONS"
 
-[node name="QuitButton" parent="VBoxContainer" unique_id=1830899854 instance=ExtResource("7_n0c18")]
+[node name="QuitButton" parent="VBoxContainer" instance=ExtResource("7_vm02d")]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="0" unique_id=1229508524]
+[node name="AnimatedSprite2D" parent="VBoxContainer/QuitButton" index="0" unique_id=937158098]
+sprite_frames = SubResource("SpriteFrames_dark_blue")
+
+[node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1" unique_id=604948362]
 text = "QUIT"
 
 [node name="ButtonRotator" type="Control" parent="." unique_id=507446324]

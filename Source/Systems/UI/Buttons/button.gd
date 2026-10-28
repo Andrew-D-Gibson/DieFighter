@@ -30,6 +30,9 @@ enum ButtonSize {
 ## die's Area2D ever sees it.
 @export var pass_mouse_while_disabled: bool = false
 
+## Kept as written, which may be a translation key: the label translates it,
+## but the hover wave wraps it in BBCode, which the label can't look up, so
+## it has to be translated by hand there.
 @onready var _text_on_ready: String = $RichTextLabel.text
 var _button_down_time: int
 
@@ -70,7 +73,7 @@ func _on_mouse_entered() -> void:
 		+ 'amp=' + str(amp) \
 		+ 'freq=' + str(freq) \
 		+ 'connected=1]'\
-		+ _text_on_ready \
+		+ tr(_text_on_ready) \
 		+ '[/wave]'
 	$RichTextLabel.add_theme_color_override('default_color', hover_text_color)
 
@@ -109,7 +112,7 @@ func soft_highlight() -> void:
 		+ 'amp=' + str(amp) \
 		+ 'freq=' + str(freq) \
 		+ 'connected=1]'\
-		+ _text_on_ready \
+		+ tr(_text_on_ready) \
 		+ '[/wave]'
 	$RichTextLabel.add_theme_color_override('default_color', soft_highlight_color)
 
