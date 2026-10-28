@@ -454,8 +454,8 @@ func _only_wastes_charge(forecast: AutoPilotForecast, in_combat: bool) -> bool:
 
 
 ## What keeping [param die] in hand through End Turn is worth on a ship with
-## a sail (OutriggerSail): its charge while the sail has room, and nothing
-## handed to the enemy; once the sail is full it drifts to the target instead.
+## a sail (OutriggerSail): the charge it adds while the sail has room, less
+## what the enemy will do with it, since it goes to the target afterwards.
 func _bank_value(die: Dice) -> float:
 	if not OutriggerSail.is_sail_up():
 		return 0.0
@@ -466,10 +466,11 @@ func _bank_value(die: Dice) -> float:
 	var plan: Array[int] = OutriggerSail.charge_plan(faces,
 			Globals.player.engine_charge, Globals.player.max_engine_charge)
 	var index: int = hand.find(die)
-	if index >= 0 and plan[index] > 0:
-		return _charge_value(plan[index], true)
+	var charge: float = _charge_value(plan[index], true) if index >= 0 else 0.0
 	var target: Enemy = _targeted()
-	return -AutoPilotThreat.of_face(target, die.value) * _persona.hull if is_instance_valid(target) else 0.0
+	var handoff: float = AutoPilotThreat.of_face(target, die.value) * _persona.hull \
+			if is_instance_valid(target) and not die.holographic else 0.0
+	return charge - handoff
 
 
 # ── The map ────────────────────────────────────────────────────────────────────

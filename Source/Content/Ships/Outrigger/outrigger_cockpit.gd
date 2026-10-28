@@ -17,16 +17,17 @@ const _PANEL_REVEAL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/
 const _MAP_FRAME: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_map_frame.png")
 const _CHARGER_FILL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_fill_sail.png")
 const _CHARGER_CHARGED: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_charged_sail.png")
+const _MAP_REVEAL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_map_reveal.png")
 
 ## The panel is drawn centred on the main viewer's origin.
 const _PANEL_CENTRE: Vector2 = Vector2.ZERO
 ## The mast's slot, top-left, relative to the main viewer.
-const _MAST_TOP_LEFT: Vector2 = Vector2(-4, -31)
+const _MAST_TOP_LEFT: Vector2 = Vector2(-3, -31)
 ## The readout badge, relative to the main viewer.
 const _BADGE_RECT: Rect2 = Rect2(-12, -45, 24, 13)
 ## Running lights, relative to the main viewer: port red, starboard green.
-const _PORT_LIGHT: Vector2 = Vector2(-82, -33)
-const _STARBOARD_LIGHT: Vector2 = Vector2(81, -33)
+const _PORT_LIGHT: Vector2 = Vector2(-84, -33)
+const _STARBOARD_LIGHT: Vector2 = Vector2(83, -33)
 const _PORT_COLOR: Color = Color("#d03656")
 const _STARBOARD_COLOR: Color = Color("#7abd33")
 
@@ -92,13 +93,14 @@ func _retire_engine_charger() -> void:
 		lit.texture = _CHARGER_CHARGED
 
 
-## The startup wipe peels a dark cover off the panel; it has to be this
-## panel's shape or the pods' outer edges show through it early.
+## The startup wipes peel a dark cover off each tab's panel; they have to be
+## this hull's width or its outer edges show through early.
 func _restyle_reveal_overlay() -> void:
-	var overlay: Sprite2D = _viewer.get_node_or_null("%SystemsRevealOverlay") as Sprite2D
-	if overlay:
-		overlay.texture = _PANEL_REVEAL
-		overlay.offset = _panel_offset()
+	for pair: Array in [["%SystemsRevealOverlay", _PANEL_REVEAL], ["%MapRevealOverlay", _MAP_REVEAL]]:
+		var overlay: Sprite2D = _viewer.get_node_or_null(pair[0]) as Sprite2D
+		if overlay:
+			overlay.texture = pair[1]
+			overlay.offset = _panel_offset()
 
 
 func _place_mast() -> void:

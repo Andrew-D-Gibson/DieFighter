@@ -2,9 +2,10 @@ class_name OutriggerSail
 extends Node
 ## The Outrigger has no Engine Charger tile: its drive runs on a sail. When
 ## the player ends a turn in a fight, every die still in their hand charges
-## the engine by its face, one after another. So each turn asks what a die is
-## worth more as: a shot, or a step towards leaving (and a die the enemy never
-## gets to use).
+## the engine by its face, one after another, and then goes to the targeted
+## ship like any spent die. Enemy pressure is the same as on any ship; what a
+## kept die buys is charge instead of a tile's effect. So each turn asks what
+## a die is worth more as: a shot, or a step towards leaving.
 ##
 ## The rules at the edges:
 ## - "In hand" is the hand as End Turn is pressed. Dice a tile was holding come
@@ -12,19 +13,19 @@ extends Node
 ##   don't count. This node connects to player_turn_over before any grid tile
 ##   exists (TileGrid spawns it in _ready; tiles arrive with the save or later),
 ##   so it reads the hand before Tile.release_held_dice() refills it.
-## - Real dice stay in hand, and are rerolled next turn as always. Holograms
-##   are borrowed light: they burn into the sail, charging it and fizzling.
 ## - The sail fills the drive to the jump gate and no further, so keeping dice
 ##   never redlines the player into bleeding hull (the redline stays the
-##   business of ADD_OVERCHARGE tiles). A die the sail has no room for drifts
-##   to the targeted ship, as a Feed with nowhere to go does. So a full sail
-##   can't be used to sit out a fight: past the gate, a kept die is a die
-##   handed over, just as on any other ship. Spending charge makes room again.
+##   business of ADD_OVERCHARGE tiles). A die the sail has no room for adds
+##   nothing and goes straight to the target. Spending charge makes room again.
+## - A hologram charges the sail too, and is destroyed when the target gets it,
+##   as any hologram handed to a ship is.
 ## - Only in a fight. Out of one the drive is already full (EngineCharger fills
 ##   it on arrival and after a win), and there's nothing to flee.
-## - Charging goes through the scenario engine as ChangeEngineChargeEvents, so
-##   anything that blocks or caps charge (an engine blackout) does it here too,
-##   and it all lands before any ship acts (EnemyTurn waits for the queue).
+## - Everything goes through the scenario engine: the charge as
+##   ChangeEngineChargeEvents (an engine blackout blocks it), the hand-off as
+##   GiveDieToTargetEvents (a Scrambled ship flips the die). The last event
+##   waits for every tractor beam to land, and EnemyTurn waits for the queue,
+##   so no ship acts on a die still in flight.
 
 ## Raised once a turn's catch has been queued, with the dice taking part.
 signal sail_set(dice: Array[Dice])
@@ -42,35 +43,20 @@ func _on_player_turn_over() -> void:
 		return
 
 	var hand: Array[Dice] = banked_dice()
+	if hand.is_empty():
+		return
 	var faces: Array[int] = []
 	for die: Dice in hand:
 		faces.append(die.value)
 	var plan: Array[int] = charge_plan(faces, Globals.player.engine_charge, Globals.player.max_engine_charge)
 
 	var catching: Array[Dice] = []
-	var drifting: Array[Dice] = []
 	for i: int in hand.size():
 		if plan[i] > 0:
 			catching.append(hand[i])
 		else:
-			drifting.append(hand[i])
-
-	# The drifters go first, and their hand-off resolves on the spot, so their
-	# tractor beams are already running when the enemy turn starts waiting
-	# for beams to land. Through the engine, so a Scrambled ship flips them.
-	for die: Dice in drifting:
-		var give: GiveDieToTargetEvent = GiveDieToTargetEvent.new()
-		give.actor = Globals.player
-		give.effect_source = Globals.player
-		give.activator_die = die
-		give.die_value = die.value
-		var target: Enemy = Globals.targeting_computer.target_for(die) \
-				if is_instance_valid(Globals.targeting_computer) else null
-		if is_instance_valid(target):
-			give.targets = [target]
-		engine.queue_event(give)
-	if catching.is_empty():
-		return
+			# No room in the sail: it's just a die handed over.
+			engine.queue_event(hand_off(hand[i]))
 
 	for i: int in catching.size():
 		var catch: SailCatchEvent = SailCatchEvent.new()
@@ -82,7 +68,23 @@ func _on_player_turn_over() -> void:
 		catch.order = i
 		catch.last = i == catching.size() - 1
 		engine.queue_event(catch)
+	engine.queue_event(SailSettleEvent.new())
 	sail_set.emit(catching)
+
+
+## [param die] going to the ship it would have been dropped against, through
+## the same event every tile's hand-off uses.
+static func hand_off(die: Dice) -> GiveDieToTargetEvent:
+	var give: GiveDieToTargetEvent = GiveDieToTargetEvent.new()
+	give.actor = Globals.player
+	give.effect_source = Globals.player
+	give.activator_die = die
+	give.die_value = die.value
+	var target: Enemy = Globals.targeting_computer.target_for(die) \
+			if is_instance_valid(Globals.targeting_computer) else null
+	if is_instance_valid(target):
+		give.targets = [target]
+	return give
 
 
 ## Whether ending a turn right now would charge the drive.

@@ -73,7 +73,7 @@ func test_the_ship_hands_its_gap_width_to_the_grid() -> void:
 	Globals.selected_ship = OUTRIGGER
 	grid = TileGrid.new()
 	add_child_autofree(grid)
-	assert_eq(grid.hole_column_width, 12)
+	assert_eq(grid.hole_column_width, 16)
 	assert_eq(grid.grid_width, 7)
 
 
@@ -151,3 +151,49 @@ func test_a_sail_catch_never_redlines() -> void:
 	event.resolve(null)
 	assert_eq(Globals.player.engine_charge, Globals.player.max_engine_charge)
 	assert_false(Globals.player.is_overcharged())
+
+
+# ── Kept dice still go to the target ─────────────────────────────────────────
+
+const SpyModifier := preload("res://test/helpers/spy_modifier.gd")
+const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
+
+
+func _die(face: int) -> Dice:
+	var die: Dice = autofree(DICE_SCENE.instantiate())
+	die.value = face
+	return die
+
+
+## Runs [param event] on a bare engine and returns every die hand-off it
+## produced. The hand-offs are cancelled: there's no ship to receive them.
+func _hand_offs_from(event: EffectEvent) -> Array[GiveDieToTargetEvent]:
+	var engine: ScenarioEngine = autofree(ScenarioEngine.new())
+	var given: Array[GiveDieToTargetEvent] = []
+	var spy: Modifier = SpyModifier.new("spy", 0, [])
+	spy.before = func(seen: EffectEvent, _engine: ScenarioEngine) -> void:
+		if seen is GiveDieToTargetEvent:
+			given.append(seen)
+			seen.canceled = true
+	engine.add_modifier(spy)
+	engine.queue_event(event)
+	return given
+
+
+func test_a_die_the_full_sail_cannot_take_goes_to_the_target() -> void:
+	Globals.player = make_player(3, 10)
+	var die: Dice = _die(5)
+	var catch: SailCatchEvent = SailCatchEvent.new()
+	catch.activator_die = die
+	catch.amount = 5
+	var given: Array[GiveDieToTargetEvent] = _hand_offs_from(catch)
+	assert_eq(given.size(), 1)
+	assert_eq(given[0].activator_die, die)
+	assert_eq(Globals.player.engine_charge, 10, "a full sail adds nothing")
+
+
+func test_a_hand_off_carries_the_die_and_its_face() -> void:
+	var die: Dice = _die(4)
+	var give: GiveDieToTargetEvent = OutriggerSail.hand_off(die)
+	assert_eq(give.activator_die, die)
+	assert_eq(give.die_value, 4)
