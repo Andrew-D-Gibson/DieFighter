@@ -4,6 +4,60 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — Three ships: pick one at Play; the Outrigger and the Carousel
+
+- **Play opens a ship picker.** A card per ship (hull, its starting hull and
+  dice, a map of its grid drawn from the ship's own cells, a two-line pitch),
+  each in its ship's colour; the last ship flown is preselected, arrows and
+  Enter work. The save is only put at risk once a ship is picked, so Back
+  loses nothing. The opening cutscene flies the picked hull, with its own
+  exhaust points. The tutorial only plays on the Die Fighter.
+- **Ships are data.** `ShipResource` (`Source/Content/Ships/`) holds the
+  grid's cells (holes allowed), the starting kit, an optional behaviour scene
+  for the ship's own rules, cockpit colours and cutscene art; the run's ship
+  id rides in the save (an older save flies the Die Fighter). `TileGrid`
+  takes any set of cells, and every adjacency, push, Feed and targeting
+  handler already asked `is_grid_pos_valid()`, so holes just work.
+- **Each ship repaints the cockpit.** `ShipResource.cockpit_palette` swaps the
+  cockpit shell's navy ramp for the ship's own (maroon for the Carousel,
+  bright blue for the Outrigger). The walls texture is recoloured once at
+  load, not shaded, so the destruction cut from it keeps the colours.
+- **The Outrigger** (safe pick, blue and orange): two 3x3 pods with a hull gap
+  nothing crosses, and no Engine Charger. Ending a fight turn with dice in
+  hand charges a solar sail by their faces (an orange mast in the gap, to the
+  gate, never redlining), and then they go to the target like any spent die,
+  so the choice is "use it now, or bank it toward escape" and enemy pressure
+  is unchanged. While it's your turn a ghost on the mast and a "+N" tag on
+  each die preview the catch. New tiles, in every ship's pool: **Crosslink**
+  (relay, 2 uses: +1, then Feed across to the mirrored cell, the one Feed
+  that crosses the gap) and **Ballast Tanks** (1 use: 3 shields, return die).
+  The first cut kept kept dice from the enemy entirely, which starved it:
+  fights ran 23 turns to the Die Fighter's 15.5 and were won less often.
+- **The Carousel** (risky pick, carnival red and gold): the 12 edge cells of
+  the 5x3 panel are a ring that steps one cell clockwise at the start of every
+  fight turn after the first, around two fixed hub slots and the **Reactor**,
+  the Engine Charger tile moved into the hub. A die in the Reactor charges the
+  engine by its face and is then Fed up into the ignition slot, firing
+  whatever tile is passing. The ring winds back to the player's arrangement
+  when a fight ends, so checkpoints never see it mid-spin. Carousel-only
+  tiles: **Gearbox** (1 use: odd holds the ring a turn, even runs it
+  backwards) and **Slingshot** (3 damage per ring step ridden since it last
+  fired). The AutoPilot found a locked ignition tile turning the Reactor into
+  an endless charge pump; a locked ignition tile now only takes a die that
+  opens the lock.
+- **AutoPilot** takes `--ship=ID`, and both ships taught it their rule
+  (banking dice against the best play; what the Reactor will fire). Smart
+  policy, same seeds: Die Fighter 15 median turns and 3.8 fights won a run;
+  Outrigger 18.5 and 4.1; Carousel 20 and 5.1.
+- Built by two agents in parallel worktrees on a shared foundation, then
+  reviewed and rated (gameplay / visuals, out of 10): Carousel 8 / 8;
+  Outrigger 7 / 6.5, iterated once to 8 / 8.
+- Open: the Gearbox is barely played by the bot, so hold and reverse aren't in
+  the balance numbers; a Slingshot the Reactor fires at 0 steps deals 0; the
+  sail reuses `upgrade_trigger` and wants its own sounds.
+
+---
+
 ## 2026-10-27 — Arcs for cooperative intents, no spare die for a self-started fight
 
 - **Bound slots draw an arc.** The tinted die face under a bound ship said

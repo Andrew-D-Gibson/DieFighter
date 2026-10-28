@@ -722,7 +722,33 @@ AudioStreamPlayer.
 
 ---
 
-## 12. Checklist before committing content
+## 12. Player ships
+
+1. Add `Source/Content/Ships/<id>.tres` (`ShipResource`). The `id` is written
+   to saves: never rename one that has shipped. `sort_order` places its card.
+2. Give it a starting kit: a `GameSaveResource` with hull, max hull, dice and
+   `tile_locations` (every position must be one of the ship's cells;
+   `test_ship_layouts.gd` checks).
+3. Lay out the grid with `grid_cells` (holes allowed) or `grid_size`. Holes
+   need no handler work: adjacency, pushes and Feeds stop at them.
+4. Rules of its own go in a `behavior_scene` (child of the TileGrid) that
+   listens to `Events`. Restyle the cockpit from it at runtime rather than
+   editing `main.tscn` / `main_viewer.tscn`, which every ship shares.
+5. Art, all in the approved palette: `cutscene_frames` (a "boost" animation,
+   nose up, about the default hull's footprint) and `cutscene_exhaust_points`,
+   `preview_texture`, `theme_color`, and `cockpit_palette` (map the default
+   cockpit's #463c91 #251c6b #191347 #130f38 to the ship's ramp; leave #0f0c2e,
+   the cockpit lights' "off" colour).
+6. Write a two-line card `description` in tile-text style.
+7. Tiles only the ship should see live in `TileResources/` like any other (so
+   saves can name them) with `offered_as_reward = false`.
+8. Check balance against the Die Fighter on the same seeds:
+   `tools/autoplay.sh --seed 1 --runs 24 --policy smart -- --ship=<id>`.
+   Teach the bot the ship's rule if it plays it badly.
+
+---
+
+## 13. Checklist before committing content
 
 - [ ] New scripts validated, class cache rebuilt if a `class_name` was added.
 - [ ] GUT suite green (content tests load every new `.tres`).

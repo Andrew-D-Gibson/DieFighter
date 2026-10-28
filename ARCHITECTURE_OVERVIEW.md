@@ -38,7 +38,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 |--------|-----------|------|----------------|
 | `GameStateManager` | `Systems/GameStateManager` | `GameStateManager/game_state_manager.gd` | State machine: OUT_OF_COMBAT → IN_COMBAT → GAME_OVER / VICTORY; generates each sector (elites and a boss-guarded gate included), advances to the next sector through the open gate (`go_through_gate()`), owns the run's difficulty multipliers |
 | `Player` | `Systems/Player` | `Systems/Game/Player/player.gd` | Player ship with health/shields/dice queue; manages turn flow: spawn dice, reroll, end turn |
-| `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | 3x5 grid coordinates, tile placement/snap logic, push mechanics, per-turn tile activation count |
+| `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | The ship's grid (3x5 by default; see Player Ships), tile placement/snap logic, push mechanics, per-turn tile activation count |
 | `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation`, spacing each by its footprint (hull plus side-hung health bar; on a board too crowded for that, every bar tucks above its hull) and splitting the wing across free space either side of a reservation such as salvage, which also turns each ship's speech box toward its clearer side; waits for in-flight tractor beams (`TractorBeam.wait_for_landings`) before an enemy turn starts |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
@@ -848,6 +848,39 @@ console page under the console box. Release builds get neither, unless the expor
 
 ---
 
+## Player Ships
+
+A run flies one `ShipResource` (`Source/Content/Ships/<id>.tres`), picked on
+the main menu's ship-select popup (`Source/Systems/UI/ShipSelect/`) and read
+back from the save's `ship_id` on Continue. `ShipCatalog.all()/find(id)` lists
+them (loaded at use, never preloaded: a starting kit drags in the effect
+catalog). `Globals.selected_ship` is set before the game scene loads, since
+`TileGrid` shapes itself from `Globals.current_ship()` in `_ready()`; it falls
+back to `die_fighter`.
+
+| Field | Used by |
+|---|---|
+| `grid_cells` / `grid_size`, `grid_spacing`, `grid_offset`, `hole_column_width` | `TileGrid`: which cells exist (holes allowed), where they're drawn. A column with no cells is drawn `hole_column_width` px wide (-1: full width) |
+| `starting_save` | `GameStateManager`: a new run's hull, dice and tiles (stamped with `ship_id`) |
+| `behavior_scene` | Instanced as `TileGrid/ShipBehavior` (`TileGrid.ship_behavior`): the ship's own rules and cockpit restyle, hooked to `Events` |
+| `hand_may_be_kept` | `Player`: End Turn lights with dice in hand during a fight |
+| `supports_tutorial` | `TutorialManager`: the tutorial is written for the default grid |
+| `cockpit_palette` | `CockpitWalls`: recolours the cockpit shell texture once at load |
+| `cutscene_frames`, `cutscene_exhaust_points`, `preview_texture`, `theme_color` | Opening cutscene, ship-select card |
+
+| Ship | Grid | Engine | Behaviour |
+|---|---|---|---|
+| Die Fighter | 5x3 | Engine Charger tile | none |
+| Outrigger | two 3x3 pods, x 0-2 and 4-6 (column 3 a 16 px hole) | `OutriggerSail`: dice in hand at End Turn charge the drive by face (to the gate), then go to the target. `SailCatchEvent` per die, `SailSettleEvent` holds the queue until they land | `Outrigger/`: sail, `SailGauge` (mast in the gap; takes the `engine_charger` juice group), `OutriggerCockpit` (runtime restyle, frees the charger tile) |
+| Carousel | 5x3 minus (2,1): 12-cell ring + hub slots (1,1), (3,1) | The Reactor: the charger tile moved to (2,1), re-dressed with `reactor.tres`; charges, then Feeds up to the ignition slot (2,0). `ReactorIgnitionModifier` points that Feed at the ignition tile | `CarouselBehavior`: turns the ring at `player_turn_refresh` (fight turns after the first) via `TileGrid.relocate_tiles()`, winds it home on `combat_finished`/`jump`; `CarouselTrackLights` |
+
+`TileGrid.relocate_tiles(moves)` moves many tiles at once (all leave before any
+arrive, so a closed loop can shift) and emits no push or manual-move events.
+`TileGrid.mirror_of(pos)` is the same row, `x -> grid_width - 1 - x`
+(`TARGET_MIRRORED_TILE`, the Crosslink).
+
+---
+
 ## Run Progression
 
 A run is `demo_sector_count` sectors long (3 by default). Each sector is
@@ -1397,7 +1430,11 @@ func receive_tile(tile, drop_position) -> void     # Drop from outside grid into
 func move_tile(tile, new_pos) -> void              # Swap or move to new cell
 func push_tile(tile, direction) -> void            # Cardinal push (Asteroids style)
 func can_push_tile(tile, direction) -> bool        # Whether that push would move anything
-func find_available_grid_pos() -> Vector2i         # First empty coordinate
+func find_available_grid_pos() -> Vector2i         # First empty cell, top row first
+func is_grid_pos_valid(pos) -> bool                # One of the ship's cells (not a hole)
+func get_cells() -> Array[Vector2i]                # Every cell, from the ship's layout
+func relocate_tiles(moves) -> void                 # Many tiles at once (the Carousel's ring)
+func mirror_of(pos) -> Vector2i                    # Same row, mirrored across the grid
 func remove_tile(tile) -> void                     # A tile leaving for good (sold): releases dice, forgets the cell, frees it
 # signals: tile_lifted(tile), tile_dropped_off_grid(tile, position)
 ```
