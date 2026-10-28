@@ -4,6 +4,47 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — Ships get their own cockpits and starting tiles
+
+- **A ship can bring its own cockpit** (`ShipResource.cockpit_scene`). The
+  game scene's `CockpitMount` mounts it: a `Cockpit` root with a shell
+  texture, ambient nodes, its own breaks, and `HudSlots` markers that move
+  the hull gauge, targeting computer and status bar (by group).
+  `cockpit_palette` now also repaints the instruments' frames.
+- **Outrigger:** an open bridge under the hem of a gold solar sail. Telltales
+  on the bolt rope flutter, lurch on hits and stream through jumps, and a
+  sun glint runs along the rope. Blue pods with racing stripes, a teak deck,
+  instruments swapped port/starboard. Its breaks are sail tears and arcing
+  pod splits. (`OutriggerCockpit`, which only dressed the systems panel, is
+  now `OutriggerPanel`.)
+- **Carousel:** a gyroscopic viewport. A segmented red ring with running
+  lights that race when the tile ring turns (new
+  `CarouselBehavior.ring_turned`), a gold gimbal ring, bearing hubs on
+  struts, anodized dash and tread plate, and a little gyroscope on a chain.
+  A first pass as a striped carnival awning was dropped as too cartoony.
+- **New ship tiles**, so neither ship starts with the Dice Cannon, Shield
+  Burst or Bump:
+  - Outrigger (charge is ammo; spending it makes room in the sail):
+    **Sunlance**, any die → damage equal to die, (boost) 3 charge: apply 3
+    Burn. **Solar Shroud**, die below 4 → 6 shields, (boost) 2 charge: 12. Low
+    dice are poor sail fuel, so this is where they go.
+  - Carousel (where a tile is on the lap matters): **Apex Cannon**, any die
+    → damage equal to die, +3 from the top row. **Keel Plating**, 3 or 4 → 5
+    shields, 10 from the bottom row. They start opposite each other on the
+    ring, so they peak together. **Flywheel**, die below 6 → +2 per ring
+    step it has ridden since last used, back to hand.
+- New keyword **Boost**; new conditionals `IF_CHARGE_AT_LEAST` and
+  `IF_SOURCE_IN_ROW`.
+- AutoPilot, smart policy, seeds 1-24: Die Fighter 15.5 median turns and 3.6
+  fights won a run; Outrigger 27 and 4.0 (4.1 on its old kit); Carousel 15.5
+  and 5.6 with one victory (5.1 on its old kit). A first pass had the
+  Outrigger at 3.1 (Solar Shroud took only 2 or 3, for 5 shields) and the
+  Carousel at 5.8 (Apex Cannon doubled from the top row).
+- Fix: an enemy action popup's tween was the tree's, so a scene change
+  mid-popup ran its callback on a freed node (a debugger break in dev runs).
+
+---
+
 ## 2026-10-28 — The Codex
 
 - **A CODEX button on the main menu** opens a Pokédex-style collection with

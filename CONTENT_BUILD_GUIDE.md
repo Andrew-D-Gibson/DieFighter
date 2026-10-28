@@ -131,6 +131,15 @@ registration to testing. For how the systems work underneath, see
     the core trade of the game.
   - Feed tiles end with `PASS_DIE_TO_TILE` instead.
   - Holding tiles end with `KEEP_DIE_WITH_TILE`.
+  - **Boost** (an optional charge cost): an `IF_CHARGE_AT_LEAST` conditional
+    (`amount` = cost) whose true branch spends it (`TARGET_PLAYER`, an Engine
+    `STREAM`, `SPEND_ENGINE_CHARGE`) then does the extra. The tile still works
+    without the charge, so it takes no `CHARGE_AT_LEAST` check. Text:
+    `(boost) [color=purple]3 charge[/color]: Apply 3 (burn)` (Sunlance).
+  - **Rows**: `IF_SOURCE_IN_ROW` (`range_min`-`range_max`, 0 = top) for a tile
+    that does more in part of the grid. On the Carousel's turning ring that's
+    part of each lap (Apex Cannon, Keel Plating). Text: `[color=yellow]Top
+    row[/color]: +3`.
 - **`event_responses`**: `TileEvent` → `EffectChain` for reactive tiles
   (`ON_TURN_START`, `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, ...). A tile
   can take no dice at all and live only on these. `ON_TURN_START` also fires
@@ -760,12 +769,34 @@ AudioStreamPlayer.
    nose up, about the default hull's footprint) and `cutscene_exhaust_points`,
    `preview_texture`, `theme_color`, and `cockpit_palette` (map the default
    cockpit's #463c91 #251c6b #191347 #130f38 to the ship's ramp; leave #0f0c2e,
-   the cockpit lights' "off" colour).
-6. Write a two-line card `description` in tile-text style.
-7. Tiles only the ship should see live in `TileResources/` like any other (so
+   the cockpit lights' "off" colour). The palette also repaints the
+   instruments' frames (every Sprite2D in the `cockpit_surface` group).
+6. **Its own cockpit** (optional, but it's most of a ship's look): a scene in
+   `Source/Content/Ships/<Ship>/Cockpit/` set as `cockpit_scene`, art in the
+   ship's texture folder under `Cockpit/`. `CockpitMount` (main.tscn) mounts
+   it in place of the default `cockpit_ambience.tscn`. Copy
+   `Outrigger/Cockpit/outrigger_cockpit.tscn`:
+   - The root carries `cockpit.gd` with `walls_texture`: a 320x180 shell in
+     screen pixels, drawn in its own colours (the palette doesn't touch it).
+     Keep the dice tray's band (y 164-180, x ~70-250) solid, since the dice
+     highlight sits on it, and leave the systems panel's area clear: anything
+     opaque under it flies apart as debris on death.
+   - `HudSlots`: a `Marker2D` per instrument the ship moves, named after its
+     group (`hud_hull_gauge`, `hud_targeting_computer`, `hud_status_bar`;
+     `Cockpit.HUD_GROUPS`). An instrument with no slot stays put.
+   - A `CockpitDamage` with its own `CockpitDamageSite`s (full-screen
+     overlays: GLASS cracks in the open view, FRAME splits on the shell, in
+     the order they open) plus `GlassShards` and `Destruction` children.
+   - Ambient life of its own: a `HangingDice` takes any twist sheet (the
+     Carousel's gyroscope), `ChaseLights` runs lights along a track.
+   - Keep it sci-fi: a ship's theme becomes hardware (rotation is gyro rings
+     and bearings), never props.
+   `test_ship_cockpits.gd` holds every cockpit to this.
+7. Write a two-line card `description` in tile-text style.
+8. Tiles only the ship should see live in `TileResources/` like any other (so
    saves can name them) with `offered_as_reward = false`. The codex still lists
    them, because a ship's starting kit is read from `ShipCatalog`.
-8. Check balance against the Die Fighter on the same seeds:
+9. Check balance against the Die Fighter on the same seeds:
    `tools/autoplay.sh --seed 1 --runs 24 --policy smart -- --ship=<id>`.
    Teach the bot the ship's rule if it plays it badly.
 

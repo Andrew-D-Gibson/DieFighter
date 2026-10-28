@@ -923,7 +923,8 @@ back to `die_fighter`.
 | `behavior_scene` | Instanced as `TileGrid/ShipBehavior` (`TileGrid.ship_behavior`): the ship's own rules and cockpit restyle, hooked to `Events` |
 | `hand_may_be_kept` | `Player`: End Turn lights with dice in hand during a fight |
 | `supports_tutorial` | `TutorialManager`: the tutorial is written for the default grid |
-| `cockpit_palette` | `CockpitWalls`: recolours the cockpit shell texture once at load |
+| `cockpit_scene` | `CockpitMount` (main.tscn, `Graphics/Cockpit`): mounts the ship's `Cockpit` scene, or the default `cockpit_ambience.tscn` |
+| `cockpit_palette` | `Cockpit`: recolours the default shell (when the cockpit has no `walls_texture`) and the instruments' frames (`cockpit_surface` sprites) once at load |
 | `cutscene_frames`, `cutscene_exhaust_points`, `preview_texture`, `theme_color` | Opening cutscene, ship-select card |
 
 | Ship | Grid | Engine | Behaviour |
@@ -931,6 +932,21 @@ back to `die_fighter`.
 | Die Fighter | 5x3 | Engine Charger tile | none |
 | Outrigger | two 3x3 pods, x 0-2 and 4-6 (column 3 a 16 px hole) | `OutriggerSail`: dice in hand at End Turn charge the drive by face (to the gate), then go to the target. `SailCatchEvent` per die, `SailSettleEvent` holds the queue until they land | `Outrigger/`: sail, `SailGauge` (mast in the gap; takes the `engine_charger` juice group), `OutriggerPanel` (runtime restyle of the systems panel, frees the charger tile) |
 | Carousel | 5x3 minus (2,1): 12-cell ring + hub slots (1,1), (3,1) | The Reactor: the charger tile moved to (2,1), re-dressed with `reactor.tres`; charges, then Feeds up to the ignition slot (2,0). `ReactorIgnitionModifier` points that Feed at the ignition tile | `CarouselBehavior`: turns the ring at `player_turn_refresh` (fight turns after the first) via `TileGrid.relocate_tiles()`, winds it home on `combat_finished`/`jump`; `CarouselTrackLights` |
+
+**Cockpits.** A `Cockpit` (`Source/Systems/Graphics/Cockpit/cockpit.gd`) is
+the root of each ship's cockpit scene: the shell (`walls_texture`, drawn by
+the shared `CockpitWalls` sprite, which `CockpitWalls.find()` reaches by
+group), ambient nodes, a `CockpitDamage` with that shell's breaks, and
+`HudSlots` markers. Each marker's name is a group the hull gauge, targeting
+computer or status bar joins (`Cockpit.HUD_GROUPS`). The instruments are moved
+onto them in the Cockpit's `_ready`, which runs before anything under Systems
+is ready, because Graphics comes first in the scene.
+
+| Ship | Cockpit | Instruments |
+|---|---|---|
+| Die Fighter | `cockpit_ambience.tscn`: the navy canopy, dash LEDs and CRT, hanging dice | hull left, target right |
+| Outrigger | `Outrigger/Cockpit/`: gold solar-sail hem across the top, `SailTelltales` (ribbons on the bolt rope, a sun glint), blue pods, teak deck | swapped: target to port, hull to starboard |
+| Carousel | `Carousel/Cockpit/`: a gyroscopic viewport, a segmented ring with `ChaseLights` (race on `CarouselBehavior.ring_turned`), gimbal ring and bearing hubs, a `HangingDice` gyroscope | pulled in between the struts |
 
 `TileGrid.relocate_tiles(moves)` moves many tiles at once (all leave before any
 arrive, so a closed loop can shift) and emits no push or manual-move events.
