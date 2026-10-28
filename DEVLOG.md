@@ -20,7 +20,9 @@ Newest entries at the top.
   backtraces kept in release exports (`always_track_call_stacks`).
 - **Earlier sessions survive a relaunch** as `debug_log_<time>.txt` (5 kept),
   and each log opens with the build, machine and locale, and each run's seed.
-  `application/config/version` isn't set yet, so exports say "unversioned".
+  The build is `application/config/version` (now `v0.0.0.1`); bump it for
+  each tester build so a log can be matched to one. The Windows preset's
+  `file_version`/`product_version` are separate and must stay numeric.
 
 ---
 
