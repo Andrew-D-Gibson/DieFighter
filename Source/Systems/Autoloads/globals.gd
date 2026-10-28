@@ -27,6 +27,19 @@ var tutorial_controls_enemy_turns: bool = false
 # and consumed by GameStateManager._ready() in place of its scene-baked default.
 var pending_load_save: GameSaveResource = null
 
+## The ship this run flies. Set by the main menu (picked for a new game, read
+## from the save on Continue) before the game scene loads, since the TileGrid
+## shapes itself from it in _ready. Read it through current_ship().
+var selected_ship: ShipResource = null
+
+
+## The ship this run flies, falling back to the default when nothing picked
+## one (a direct boot of the game scene, a test).
+func current_ship() -> ShipResource:
+	if not selected_ship:
+		selected_ship = ShipCatalog.find(ShipCatalog.DEFAULT_ID)
+	return selected_ship
+
 ## The game's screen in world pixels: the 1920x1080 window through a 6x camera.
 const SCREEN_SIZE: Vector2 = Vector2(320, 180)
 

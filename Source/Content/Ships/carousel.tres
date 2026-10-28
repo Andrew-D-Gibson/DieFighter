@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ShipResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Ships/ship_resource.gd" id="1_ship"]
+[ext_resource type="Resource" path="res://Source/Resources/SaveResources/run_start.tres" id="2_start"]
+
+[resource]
+script = ExtResource("1_ship")
+id = &"carousel"
+display_name = "Carousel"
+description = "STUB: a ring that turns every turn around a reactor core."
+sort_order = 2
+starting_save = ExtResource("2_start")
+grid_size = Vector2i(4, 4)

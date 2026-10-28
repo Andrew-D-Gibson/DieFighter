@@ -33,6 +33,7 @@ func _ready() -> void:
 	%OptionsMenu.hide()
 	%ConfirmDialog.hide()
 	%ConfirmDialog.confirmed.connect(_on_new_game_confirmed)
+	%ShipSelectPopup.launched.connect(_on_ship_launched)
 
 	if SaveManager.has_save():
 		%ContinueButton.visible = true
@@ -95,7 +96,14 @@ func _input(event: InputEvent) -> void:
 			%Camera2D.offset.y = 90
 
 
+## A new run starts by picking its ship. The save is only put at risk once
+## one is picked, so backing out of the picker loses nothing.
 func _on_play_button_pressed() -> void:
+	%ShipSelectPopup.open()
+
+
+func _on_ship_launched(ship: ShipResource) -> void:
+	Globals.selected_ship = ship
 	if SaveManager.has_save():
 		%ConfirmDialog.open("Starting a new game will overwrite your existing save. Continue?")
 		return
@@ -120,6 +128,8 @@ func _on_continue_button_pressed() -> void:
 		push_error("Failed to load save file")
 		return
 	Globals.pending_load_save = loaded_save
+	# The game scene shapes its grid from the ship before it reads the save.
+	Globals.selected_ship = ShipCatalog.find(loaded_save.ship_id)
 	_is_loading = true
 	# Continuing skips the cutscenes that would have brought this track in.
 	MusicDirector.play_track(_RUN_TRACK, 2.0)

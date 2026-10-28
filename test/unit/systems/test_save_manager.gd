@@ -86,6 +86,21 @@ func test_a_save_round_trips() -> void:
 	assert_eq(loaded.tile_effect_data[Vector2i(2, 1)], {"charge": 3})
 
 
+func test_the_ship_round_trips() -> void:
+	var save: GameSaveResource = _sample_save()
+	save.ship_id = &"outrigger"
+	saves.write_save(save)
+	assert_eq(saves.read_save().ship_id, &"outrigger")
+
+
+func test_a_save_from_before_ships_flies_the_default_ship() -> void:
+	saves.write_save(_sample_save())
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_SAVE_PATH))
+	raw.erase("ship_id")
+	_write_raw(raw)
+	assert_eq(saves.read_save().ship_id, ShipCatalog.DEFAULT_ID)
+
+
 func test_numbers_come_back_as_ints_not_json_floats() -> void:
 	saves.write_save(_sample_save())
 	var loaded: GameSaveResource = saves.read_save()

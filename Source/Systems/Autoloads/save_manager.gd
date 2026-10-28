@@ -55,6 +55,7 @@ func write_save(game_save: GameSaveResource) -> void:
 
 	var payload: Dictionary = {
 		"version": SAVE_VERSION,
+		"ship_id": String(game_save.ship_id),
 		"player_health": game_save.player_health,
 		"player_max_health": game_save.player_max_health,
 		"player_defense": game_save.player_defense,
@@ -108,6 +109,8 @@ func read_save() -> GameSaveResource:
 	game_save.money = int(data.get("money", 0))
 	game_save.current_scenario_index = int(data.get("current_scenario_index", 0))
 	game_save.sector_index = int(data.get("sector_index", 0))
+	# A save from before ships had none: it flew the default one.
+	game_save.ship_id = StringName(data.get("ship_id", ShipCatalog.DEFAULT_ID))
 
 	var sector_scenarios: Array[ScenarioResource] = []
 	for entry: Variant in data.get("sector_scenarios", []):

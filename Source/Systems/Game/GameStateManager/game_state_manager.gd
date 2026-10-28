@@ -161,7 +161,14 @@ func _ready() -> void:
 		# The exported run_start.tres is a cached resource, and checkpoints
 		# write into current_game_save. Without a copy, a second New Game in
 		# the same session would open on the last run's final checkpoint.
+		# The ship picked at the menu brings its own starting kit; the scene's
+		# run_start.tres is the fallback.
+		var ship: ShipResource = Globals.current_ship()
+		if ship and ship.starting_save:
+			current_game_save = ship.starting_save
 		current_game_save = current_game_save.duplicate()
+		if ship:
+			current_game_save.ship_id = ship.id
 		_owe_opening_strike()
 
 	if len(current_game_save.sector_scenarios) == 0:

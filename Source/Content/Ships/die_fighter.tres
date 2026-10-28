@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ShipResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Ships/ship_resource.gd" id="1_ship"]
+[ext_resource type="Resource" path="res://Source/Resources/SaveResources/run_start.tres" id="2_start"]
+[ext_resource type="SpriteFrames" path="res://Assets/Textures/Player/Ship/player_ship_frames.tres" id="3_frames"]
+
+[resource]
+script = ExtResource("1_ship")
+id = &"die_fighter"
+display_name = "Die Fighter"
+description = "The standard-issue frame. A 5x3 grid and an Engine Charger: [color=#eed35d]dice in[/color], [color=#c552f1]charge out[/color]."
+starting_save = ExtResource("2_start")
+supports_tutorial = true
+cutscene_frames = ExtResource("3_frames")

@@ -11,7 +11,7 @@ const _FIELDS: Array[String] = [
 	"background_manager", "jump_manager", "jump_gate", "hazard_manager",
 	"background_modifier_manager", "run_stats", "shop", "repair_station",
 	"tutorial_controls_enemy_turns", "show_tutorial", "show_region_alerts",
-	"pending_load_save",
+	"pending_load_save", "selected_ship",
 ]
 
 var _saved: Dictionary = {}

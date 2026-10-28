@@ -125,9 +125,10 @@ func _ready() -> void:
 	Reward.forced_rewards.clear()
 	Globals.tutorial_controls_enemy_turns = false
 
-	# A player who picked Continue has seen all of this already.
+	# A player who picked Continue has seen all of this already. The steps
+	# point at the default ship's grid, so another ship flies without them.
 	if not auto_start or not Globals.show_tutorial or tutorial_steps.is_empty() \
-	or Globals.pending_load_save:
+	or Globals.pending_load_save or not Globals.current_ship().supports_tutorial:
 		return
 
 	# GameStateManager rolls the run after this, in its own _ready().

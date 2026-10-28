@@ -2,6 +2,9 @@ class_name GameSaveResource
 extends Resource
 
 @export_category('Player Info')
+## Which ShipResource the run flies (ShipCatalog.find). Stamped on a new run
+## from the ship picked at the main menu.
+@export var ship_id: StringName = &""
 @export var player_health: int
 @export var player_max_health: int
 @export var player_defense: int

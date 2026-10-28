@@ -13,6 +13,8 @@ signal tile_lifted(tile: Tile)
 ## its cell unless a listener takes it.
 signal tile_dropped_off_grid(tile: Tile, global_drop_pos: Vector2)
 
+## The rectangle the grid's cells span. Set from the ship's layout, which may
+## leave holes in it: ask is_grid_pos_valid() whether a tile can sit somewhere.
 @export var grid_width: int = 5
 @export var grid_height: int = 3
 @export var grid_spacing: int = 24
@@ -25,6 +27,14 @@ var tile_locations: Dictionary[Vector2i, Tile] = {}
 var activations_this_turn: int = 0
 
 @export var empty_cell_texture: Texture2D
+
+## Every cell a tile can sit in, top row first. Set from the ship in _ready,
+## or by set_cells() before the grid enters the tree.
+var _cells: Array[Vector2i] = []
+var _cell_set: Dictionary[Vector2i, bool] = {}
+var _empty_cell_sprites: Dictionary[Vector2i, Sprite2D] = {}
+## The ship's own rules (ShipResource.behavior_scene), if it has any.
+var ship_behavior: Node = null
 
 
 func _ready() -> void:
@@ -40,9 +50,66 @@ func _ready() -> void:
 	Events.player_turn_refresh.connect(_reset_activation_count)
 	Events.tile_activated.connect(_count_activation)
 
+	if _cells.is_empty():
+		_apply_ship(Globals.current_ship())
 	_setup_grid_graphics()
-	
-	
+	_spawn_ship_behavior(Globals.current_ship())
+
+
+## Shapes the grid to the ship: its cells, spacing and nudge within the viewer.
+func _apply_ship(ship: ShipResource) -> void:
+	if not ship:
+		set_cells([])
+		return
+	grid_spacing = ship.grid_spacing
+	position += ship.grid_offset
+	grid_width = ship.grid_size.x
+	grid_height = ship.grid_size.y
+	set_cells(ship.get_cells())
+
+
+## Sets which cells exist. Empty fills the grid_width x grid_height rectangle.
+## Only before the grid enters the tree: the empty-cell art is laid in _ready.
+func set_cells(cells: Array[Vector2i]) -> void:
+	_cells.clear()
+	_cell_set.clear()
+	if cells.is_empty():
+		for y: int in grid_height:
+			for x: int in grid_width:
+				_cells.append(Vector2i(x, y))
+	else:
+		_cells.assign(cells)
+		grid_width = 0
+		grid_height = 0
+		for cell: Vector2i in _cells:
+			grid_width = maxi(grid_width, cell.x + 1)
+			grid_height = maxi(grid_height, cell.y + 1)
+	for cell: Vector2i in _cells:
+		_cell_set[cell] = true
+	_cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
+		return a.y < b.y or (a.y == b.y and a.x < b.x)
+	)
+
+
+## Every cell a tile can sit in, top row first, left to right.
+func get_cells() -> Array[Vector2i]:
+	return _cells.duplicate()
+
+
+## The dark socket drawn under an empty cell, for ship art that restyles it.
+func get_empty_cell_sprite(pos: Vector2i) -> Sprite2D:
+	return _empty_cell_sprites.get(pos)
+
+
+func _spawn_ship_behavior(ship: ShipResource) -> void:
+	if not ship or not ship.behavior_scene:
+		return
+	ship_behavior = ship.behavior_scene.instantiate()
+	ship_behavior.name = "ShipBehavior"
+	add_child(ship_behavior)
+
+
+
 func _reset_activation_count() -> void:
 	activations_this_turn = 0
 
@@ -87,18 +154,16 @@ func _restore_tile_uses() -> void:
 	
 	
 func _setup_grid_graphics() -> void:
-	for x: int in range(grid_width):
-		for y: int in range(grid_height):
-			# Add an empty cell sprite
-			var empty_cell: Sprite2D = Sprite2D.new()
-			empty_cell.texture = empty_cell_texture
-			empty_cell.z_index = -1
-			empty_cell.position = Vector2(
-				(x + 0.5) * grid_spacing,		# The added 0.5 is to offset the tiles 
-				(y + 0.5) * grid_spacing		# to their top left, rather than their center 
-			)
-			
-			add_child(empty_cell)
+	for cell: Vector2i in _cells:
+		var empty_cell: Sprite2D = Sprite2D.new()
+		empty_cell.texture = empty_cell_texture
+		empty_cell.z_index = -1
+		empty_cell.position = Vector2(
+			(cell.x + 0.5) * grid_spacing,		# The added 0.5 is to offset the tiles 
+			(cell.y + 0.5) * grid_spacing		# to their top left, rather than their center 
+		)
+		add_child(empty_cell)
+		_empty_cell_sprites[cell] = empty_cell
 	
 	
 func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:
@@ -305,18 +370,16 @@ func has_free_cell() -> bool:
 
 
 func find_available_grid_pos() -> Vector2i:
-	for y: int in range(grid_height):
-		for x: int in range(grid_width):
-			if is_grid_pos_open(Vector2i(x,y)):
-				return Vector2i(x,y)
+	for cell: Vector2i in _cells:
+		if is_grid_pos_open(cell):
+			return cell
 	return Vector2i(-1, -1)
 
 
+## Whether a tile can sit here: one of the ship's cells, not a hole in its
+## layout or off its edge.
 func is_grid_pos_valid(pos: Vector2i) -> bool:
-	return pos.x >= 0\
-		and pos.x < grid_width\
-		and pos.y >= 0\
-		and pos.y < grid_height
+	return _cell_set.has(pos)
 
 
 func find_tile_pos(tile_to_find: Tile) -> Vector2i:

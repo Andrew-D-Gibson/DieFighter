@@ -135,6 +135,7 @@ func _ready() -> void:
 	_speed_lines.z_index = 8
 	%PixelWorld.add_child(_speed_lines)
 	_build_hyperspace_streaks()
+	_dress_player_ship(Globals.current_ship())
 	_add_exhaust(%PlayerShip)
 	%RiftNebula.speed = nebula_drift
 
@@ -615,8 +616,20 @@ func _recoil(ship: Node2D) -> void:
 
 ## The player's drive wash: a thin trail of cyan from both pods, on top of
 ## the flames drawn into the sheet.
+## Swaps in the hull of the ship this run flies. Everything keyed on
+## %PlayerShip (its path, its jumps) carries on with the new frames.
+func _dress_player_ship(ship: ShipResource) -> void:
+	if not ship or not ship.cutscene_frames:
+		return
+	%PlayerShip.sprite_frames = ship.cutscene_frames
+	%PlayerShip.play(&"boost")
+
+
 func _add_exhaust(ship: Node2D) -> void:
-	for pod_x: float in [-8.5, 8.5]:
+	var points: PackedVector2Array = PackedVector2Array([Vector2(-8.5, 9.0), Vector2(8.5, 9.0)])
+	if ship == %PlayerShip and Globals.current_ship():
+		points = Globals.current_ship().cutscene_exhaust_points
+	for point: Vector2 in points:
 		var exhaust: CPUParticles2D = CPUParticles2D.new()
 		exhaust.texture = _PIXEL_TEXTURE
 		exhaust.amount = 10
@@ -629,7 +642,7 @@ func _add_exhaust(ship: Node2D) -> void:
 		exhaust.initial_velocity_max = 70.0
 		exhaust.color = _BLUE_JUMP
 		exhaust.color_ramp = _fade_ramp()
-		exhaust.position = Vector2(pod_x, 9.0)
+		exhaust.position = point
 		exhaust.show_behind_parent = true
 		ship.add_child(exhaust)
 
