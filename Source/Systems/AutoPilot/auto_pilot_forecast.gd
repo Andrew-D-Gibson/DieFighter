@@ -328,7 +328,7 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.TileControlSubtype.PASS_DIE_TO_TILE:
 			if not walk.disposed:
 				walk.disposed = true
-				_feed(_first_tile(walk), walk, walk.final_face, walk.hologram)
+				_feed(_feed_target(walk), walk, walk.final_face, walk.hologram)
 		EffectEnums.TileControlSubtype.FEED_HOLOGRAM:
 			_feed(_first_tile(walk), walk, clampi(walk.context.running_amount, 1, 6), true)
 		EffectEnums.TileControlSubtype.ACTIVATE_TARGETED_TILES, \
@@ -345,6 +345,19 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.TileControlSubtype.PUSH_TARGETED_TILES, \
 		EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN:
 			tile_tricks += 0.25
+
+
+## The tile a Feed goes to: the chain's own target, or, when it has none, the
+## one the ship's rules aim it at (the Carousel's Reactor feeds its ignition
+## slot through a modifier the forecast can't see).
+func _feed_target(walk: _Walk) -> Tile:
+	var next: Tile = _first_tile(walk)
+	if next:
+		return next
+	var rules: Node = Globals.tile_grid.ship_behavior if Globals.tile_grid else null
+	if rules and rules.has_method(&"feed_target_for"):
+		return rules.feed_target_for(walk.context.effect_source, walk.final_face)
+	return null
 
 
 func _first_tile(walk: _Walk) -> Tile:

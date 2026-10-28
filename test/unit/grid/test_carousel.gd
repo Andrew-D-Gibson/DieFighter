@@ -137,3 +137,20 @@ func test_carousel_tiles_follow_the_content_rules() -> void:
 	assert_false(SLINGSHOT.offered_as_reward, "useless off the Carousel")
 	assert_false(REACTOR.dragging_allowed)
 	assert_false(REACTOR.can_be_locked_out, "it is the engine charger: never soft-lock it")
+
+
+func test_a_locked_ignition_tile_only_takes_a_die_that_opens_it() -> void:
+	var engine: ScenarioEngine = autofree(ScenarioEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = engine
+	Globals.scenario_manager = manager
+	var reactor: Tile = _place(Vector2i(1, 1), REACTOR)
+	grid.forget_tile(reactor)
+	behavior._reactor = reactor
+	var ignition: Tile = _place(CarouselBehavior.IGNITION_CELL)
+	assert_eq(behavior.feed_target_for(reactor, 5), ignition)
+	engine.modifiers.append(LockoutModifier.new(ignition))
+	assert_null(behavior.feed_target_for(reactor, 5),
+		"a lock would bounce the die home: the Reactor would charge for free")
+	assert_eq(behavior.feed_target_for(reactor, 2), ignition, "a low die opens the lock")
+	assert_null(behavior.feed_target_for(ignition, 2), "only the Reactor's Feed is aimed")

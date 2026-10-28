@@ -11,14 +11,14 @@ extends Node2D
 ## lights stay in the art's palette while they pulse.
 
 const _WHITE: Color = Color("#CEF0F1")
-const _BASE: Color = Color("#2C71AA")
-const _FORWARD: Color = Color("#8DF1F4")
-const _REVERSE: Color = Color("#EE7F2F")
-const _REVERSE_DARK: Color = Color("#BD580F")
+const _BASE: Color = Color("#90263C")
+const _FORWARD: Color = Color("#EED35D")
+const _REVERSE: Color = Color("#C4C1BC")
+const _REVERSE_DARK: Color = Color("#63605C")
 const _HOLD: Color = Color("#D03656")
 const _HOLD_DARK: Color = Color("#90263C")
-const _IGNITION_COLD: Color = Color("#BD580F")
-const _IGNITION: Color = Color("#EE7F2F")
+const _IGNITION_COLD: Color = Color("#98873B")
+const _IGNITION: Color = Color("#CCB550")
 const _IGNITION_HOT: Color = Color("#EED35D")
 
 ## Cells round the ring, clockwise; set by the behavior.
@@ -89,7 +89,7 @@ func _draw_seam_light(i: int) -> void:
 	var feeds_ignition: bool = (to_cell == ignition_cell and motion > 0) \
 		or (from_cell == ignition_cell and motion < 0)
 	if feeds_ignition:
-		color = _IGNITION_HOT if _pulse(1.2) > 0.5 else _IGNITION
+		color = _WHITE if _pulse(1.2) > 0.5 else _IGNITION_HOT
 	if _sweep > 0.4:
 		color = _WHITE
 	_draw_chevron(centre, dir, color)

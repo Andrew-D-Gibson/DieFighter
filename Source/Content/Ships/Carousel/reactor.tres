@@ -57,7 +57,7 @@ animations = [{
 
 [resource]
 script = ExtResource("6_vrqhp")
-tile_name = "[color=purple]Reactor[/color]"
+tile_name = "[color=yellow]Reactor[/color]"
 description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge[/color] equal to die. (feed_up) into the [color=orange]ignition[/color] slot"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_3b6ch")

@@ -38,6 +38,13 @@ const STEPS_KEY: String = "ring_steps"
 const _REACTOR: TileResource = preload("res://Source/Content/Ships/Carousel/reactor.tres")
 const _CLUNK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres")
 const _LAND_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
+## The cockpit in the Carousel's carnival reds and gold: the systems panel
+## frame (same layout as MainViewer-Sheet.png), the engine gauge and the
+## Reactor's exhaust rings.
+const _VIEWER_SHEET: Texture2D = preload("res://Assets/Textures/Player/Carousel/carousel_viewer-Sheet.png")
+const _GAUGE_FILL: Texture2D = preload("res://Assets/Textures/Player/Carousel/carousel_gauge_fill.png")
+const _GAUGE_CHARGED: Texture2D = preload("res://Assets/Textures/Player/Carousel/carousel_gauge_charged.png")
+const _ENGINE_RING: Texture2D = preload("res://Assets/Textures/Player/Carousel/carousel_engine_ring.png")
 
 ## One step's glide, after a short wind-up against the direction of travel.
 const _WINDUP_SEC: float = 0.08
@@ -98,6 +105,23 @@ func get_reactor() -> Tile:
 	return _reactor
 
 
+## Where a Feed from [param source] goes, when this ship's rules aim it rather
+## than the chain's own targeting: the Reactor's goes to the ignition tile.
+## Null for any other tile. The ignition modifier and the AutoPilot's
+## forecast both ask this, so they agree on where the die ends up.
+##
+## A locked ignition tile only takes a die that would open its lock: a lock
+## bounces any other die back to the hand, which would make the Reactor a
+## free, endless charge pump.
+func feed_target_for(source: Node, face: int) -> Tile:
+	if source == null or source != _reactor:
+		return null
+	var ignition: Tile = get_ignition_tile()
+	if ignition and ignition.is_locked_out() and not LockoutModifier.unlocks(face):
+		return null
+	return ignition
+
+
 ## The tile passing the ignition slot right now, if any.
 func get_ignition_tile() -> Tile:
 	var tile: Tile = _grid.tile_locations.get(IGNITION_CELL)
@@ -135,8 +159,8 @@ func play_ignition(target: Tile) -> void:
 	if not is_instance_valid(_reactor):
 		return
 	var to: Vector2 = _grid.grid_to_global_pos(IGNITION_CELL)
-	Juice.zap(self, _reactor.global_position, to, Globals.orange, 160)
-	Juice.sparkle(self, to, Globals.orange, 8 if target else 4, 30.0)
+	Juice.zap(self, _reactor.global_position, to, Globals.yellow, 160)
+	Juice.sparkle(self, to, Globals.yellow, 8 if target else 4, 30.0)
 	if target:
 		target.flash(Globals.yellow, 0.4, 0.25)
 
@@ -234,7 +258,7 @@ func _land(tile: Tile) -> void:
 	Juice.bump(tile.sprite_frames, 0.12, 0.2)
 	if _grid.find_tile_pos(tile) == IGNITION_CELL:
 		tile.flash(Globals.yellow, 0.35, 0.3)
-		Juice.sparkle(self, tile.global_position + Vector2(0, -10), Globals.orange, 6, 25.0)
+		Juice.sparkle(self, tile.global_position + Vector2(0, -10), Globals.yellow, 6, 25.0)
 		Events.play_sound.emit(_LAND_SFX)
 
 
@@ -298,6 +322,31 @@ func _dress_cockpit() -> void:
 	_reactor.draggable.home_position = home
 	_set_reactor_shown(_grid.is_visible_in_tree())
 	_arm_ignition()
+	_paint_cockpit(charger)
+
+
+## Repaints the shared cockpit art in the Carousel's colours. Swaps textures
+## on the live nodes rather than editing their scenes, so other ships keep
+## theirs.
+func _paint_cockpit(charger: Node) -> void:
+	var viewer: MainViewer = _grid.get_parent() as MainViewer
+	if viewer and viewer.background and viewer.background.sprite_frames:
+		var frames: SpriteFrames = viewer.background.sprite_frames.duplicate(true)
+		for anim: StringName in frames.get_animation_names():
+			for i: int in frames.get_frame_count(anim):
+				var atlas: AtlasTexture = frames.get_frame_texture(anim, i) as AtlasTexture
+				if atlas:
+					atlas.atlas = _VIEWER_SHEET
+		viewer.background.sprite_frames = frames
+	var bar: TextureProgressBar = charger.get(&"progress_bar") as TextureProgressBar
+	if bar:
+		bar.texture_progress = _GAUGE_FILL
+	var charged: Sprite2D = charger.get(&"charged_indicator") as Sprite2D
+	if charged:
+		charged.texture = _GAUGE_CHARGED
+	var exhaust: GPUParticles2D = _reactor.get_node_or_null(^"ParticleMask/LargeEngineParticles") as GPUParticles2D
+	if exhaust:
+		exhaust.texture = _ENGINE_RING
 
 
 ## The Reactor belongs to the Engine Charger, not the grid, so it has to be

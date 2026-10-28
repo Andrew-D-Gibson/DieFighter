@@ -24,7 +24,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 		return
 	if event.effect_source == null or event.effect_source != behavior.get_reactor():
 		return
-	var ignition: Tile = behavior.get_ignition_tile()
+	var ignition: Tile = behavior.feed_target_for(event.effect_source, event.die_value)
 	var targets: Array[Node] = []
 	if ignition:
 		targets.append(ignition)
