@@ -20,14 +20,19 @@ const _FILL_WIDTH: int = 6
 const _FILL_HEIGHT: int = 70
 
 const _GHOST_FLICKER_HZ: float = 5.0
+## The Outrigger's sail is orange, against the blue of its hull.
 const _REDLINE: Color = Color("#d03656")
-const _BODY: Color = Color("#c552f1")
-const _BODY_LIGHT: Color = Color("#8df1f4")
-const _BODY_SHADE: Color = Color("#80359d")
-const _BODY_MID: Color = Color("#a846ce")
+const _BODY: Color = Color("#ee7f2f")
+const _BODY_LIGHT: Color = Color("#f29c5d")
+const _BODY_SHADE: Color = Color("#bd580f")
+const _BODY_FULL: Color = Color("#eed35d")
 const _HEAD: Color = Color("#cef0f1")
-const _GHOST: Color = Color("#80359d")
-const _NOTCH: Color = Color("#463c91")
+const _GHOST: Color = Color("#bd580f")
+const _NOTCH: Color = Color("#3789cc")
+## Lights over the dice in hand: caught by the sail, or drifting to the enemy.
+const _PIP_SAIL: Color = Color("#f29c5d")
+const _PIP_DRIFT: Color = Color("#d03656")
+const SAIL_COLOR: Color = Color("#ee7f2f")
 
 ## The charger the gauge stands in for, whose anchor is used on the map tab.
 var charger: Node2D = null
@@ -79,8 +84,10 @@ func catch_light(gain: int, last: bool) -> void:
 	_flash = 1.0
 	var at: Vector2 = get_juice_anchor()
 	Juice.ring(self, at, _BODY, 10.0, 0.3, 2.0)
-	Juice.sparkle(self, at, _BODY_LIGHT, 5, 25.0, true)
-	Juice.callout_at(self, at + Vector2(10, 0), "+%d" % gain, _BODY)
+	Juice.sparkle(self, at, _BODY_FULL, 5, 25.0, true)
+	# Kept off the badge at the top of the mast, where the readout is.
+	var label_at: Vector2 = Vector2(at.x + 11, maxf(at.y, to_global(Vector2(0, 12)).y))
+	Juice.callout_at(self, label_at, "+%d" % gain, _BODY)
 	if last:
 		_celebrate_if_full.call_deferred()
 
@@ -92,13 +99,13 @@ func _celebrate_if_full() -> void:
 		return
 	var top: Vector2 = to_global(Vector2(TRACK_SIZE.x / 2.0, 3))
 	Juice.ring(self, top, _HEAD, 22.0, 0.5, 3.0)
-	Juice.sparkle(self, top, _BODY_LIGHT, 14, 45.0, true)
+	Juice.sparkle(self, top, _BODY_FULL, 14, 45.0, true)
 	if is_instance_valid(readout):
 		var pop: Tween = readout.create_tween()
 		readout.scale = Vector2(1.4, 1.4)
 		pop.tween_property(readout, "scale", Vector2.ONE, 0.4) \
 			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	Juice.callout_at(self, top + Vector2(0, -14), "SAIL FULL", Globals.white, true)
+	Juice.callout_at(self, top + Vector2(0, -14), "SAIL FULL", Globals.yellow, true)
 	Events.camera_shake_small.emit()
 
 
@@ -117,7 +124,7 @@ func _update_readout() -> void:
 	if player.is_overcharged():
 		readout.text = "[color=#d03656]%d+%d[/color]" % [player.max_engine_charge, player.overcharge_amount()]
 	elif player.is_engine_charged():
-		readout.text = "[color=#8df1f4]%d/%d[/color]" % [player.engine_charge, player.max_engine_charge]
+		readout.text = "[color=#eed35d]%d/%d[/color]" % [player.engine_charge, player.max_engine_charge]
 	else:
 		readout.text = "%d/%d" % [player.engine_charge, player.max_engine_charge]
 
@@ -132,6 +139,8 @@ func _fill_pixels(charge: float) -> int:
 func _draw() -> void:
 	if not is_instance_valid(Globals.player):
 		return
+	if _projecting:
+		_draw_hand_pips()
 	var bottom: int = TRACK_SIZE.y - 1
 	var filled: int = _fill_pixels(_shown_charge)
 	var ghost: int = _fill_pixels(_projected)
@@ -159,13 +168,33 @@ func _draw() -> void:
 		var body: Color = _BODY
 		if full:
 			# A full sail breathes: the go-signal for a jump.
-			body = _BODY.lerp(_BODY_LIGHT, 0.25 + 0.25 * sin(_time * 4.0))
+			body = _BODY_LIGHT.lerp(_BODY_FULL, 0.5 + 0.5 * sin(_time * 4.0))
 		body = body.lerp(_HEAD, _flash * 0.6)
 		draw_rect(Rect2(_FILL_LEFT, top, _FILL_WIDTH, filled), body)
-		draw_rect(Rect2(_FILL_LEFT, top, 1, filled), _BODY_LIGHT if full else _BODY_MID)
+		draw_rect(Rect2(_FILL_LEFT, top, 1, filled), _BODY_FULL if full else _BODY_LIGHT)
 		draw_rect(Rect2(_FILL_LEFT + _FILL_WIDTH - 1, top, 1, filled), _BODY_SHADE)
 		# Rungs: the sail's battens, every 6 px, so the fill reads as a sail
 		# being raised rather than a bar.
 		for y: int in range(bottom - 5, top, -6):
 			draw_rect(Rect2(_FILL_LEFT + 1, y, _FILL_WIDTH - 2, 1), Color(_BODY_SHADE, 0.6))
 		draw_rect(Rect2(_FILL_LEFT, top, _FILL_WIDTH, 1), _REDLINE if over else _HEAD)
+
+
+## A light over each die in hand: orange if ending the turn now would put it
+## in the sail, red if the sail has no room and it would drift to the enemy.
+func _draw_hand_pips() -> void:
+	if not OutriggerSail.is_sail_up():
+		return
+	var hand: Array[Dice] = OutriggerSail.banked_dice()
+	var faces: Array[int] = []
+	for die: Dice in hand:
+		faces.append(die.value)
+	var plan: Array[int] = OutriggerSail.charge_plan(faces,
+			Globals.player.engine_charge, Globals.player.max_engine_charge)
+	for i: int in hand.size():
+		if hand[i].draggable.state == Draggable.DragState.DRAGGING:
+			continue
+		var at: Vector2 = (to_local(hand[i].draggable.home_position) + Vector2(-2, -9)).round()
+		var color: Color = _PIP_SAIL if plan[i] > 0 else _PIP_DRIFT
+		draw_rect(Rect2(at - Vector2.ONE, Vector2(6, 3)), Color("#040217"))
+		draw_rect(Rect2(at, Vector2(4, 1)), color)

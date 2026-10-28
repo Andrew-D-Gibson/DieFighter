@@ -53,6 +53,12 @@ func _ready() -> void:
 
 	Events.systems_shown.connect(_dress_systems)
 	Events.map_shown.connect(_dress_map)
+	# MainViewer lights the MAP label purple when the drive can jump. On this
+	# hull the tab is orange, so the label goes sail-orange instead. Deferred:
+	# MainViewer connects after us and recolours it in the same signal.
+	for ready_signal: Signal in [Events.engine_charge_changed, Events.start_scenario,
+			Events.combat_finished, Events.start_combat]:
+		ready_signal.connect(func() -> void: _retint_map_label.call_deferred())
 	if _viewer.screen_showing == MainViewer.ScreenShowing.SYSTEMS:
 		_dress_systems()
 
@@ -139,3 +145,9 @@ func _draw_light(viewer_pos: Vector2, color: Color, phase: float) -> void:
 	var at: Vector2 = to_local(_viewer.global_position + viewer_pos)
 	draw_rect(Rect2(at - Vector2.ONE, Vector2(3, 3)), Color(color, 0.25 * lit))
 	draw_rect(Rect2(at, Vector2.ONE), Color(color, 0.5 + 0.5 * lit))
+
+
+func _retint_map_label() -> void:
+	var label: RichTextLabel = _viewer.map_button_label
+	if is_instance_valid(label) and label.get_theme_color(&"default_color") == Globals.medium_purple:
+		label.add_theme_color_override(&"default_color", Globals.orange)

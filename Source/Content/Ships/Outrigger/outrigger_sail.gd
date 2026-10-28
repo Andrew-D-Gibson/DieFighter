@@ -14,10 +14,12 @@ extends Node
 ##   so it reads the hand before Tile.release_held_dice() refills it.
 ## - Real dice stay in hand, and are rerolled next turn as always. Holograms
 ##   are borrowed light: they burn into the sail, charging it and fizzling.
-## - The sail fills the drive to the jump gate and no further, so a hand the
-##   player couldn't use never redlines them into bleeding hull. The redline
-##   stays the business of ADD_OVERCHARGE tiles; a drive already past the gate
-##   takes nothing from the sail. A die the sail has no room for stays put.
+## - The sail fills the drive to the jump gate and no further, so keeping dice
+##   never redlines the player into bleeding hull (the redline stays the
+##   business of ADD_OVERCHARGE tiles). A die the sail has no room for drifts
+##   to the targeted ship, as a Feed with nowhere to go does. So a full sail
+##   can't be used to sit out a fight: past the gate, a kept die is a die
+##   handed over, just as on any other ship. Spending charge makes room again.
 ## - Only in a fight. Out of one the drive is already full (EngineCharger fills
 ##   it on arrival and after a win), and there's nothing to flee.
 ## - Charging goes through the scenario engine as ChangeEngineChargeEvents, so
@@ -46,9 +48,27 @@ func _on_player_turn_over() -> void:
 	var plan: Array[int] = charge_plan(faces, Globals.player.engine_charge, Globals.player.max_engine_charge)
 
 	var catching: Array[Dice] = []
+	var drifting: Array[Dice] = []
 	for i: int in hand.size():
 		if plan[i] > 0:
 			catching.append(hand[i])
+		else:
+			drifting.append(hand[i])
+
+	# The drifters go first, and their hand-off resolves on the spot, so their
+	# tractor beams are already running when the enemy turn starts waiting
+	# for beams to land. Through the engine, so a Scrambled ship flips them.
+	for die: Dice in drifting:
+		var give: GiveDieToTargetEvent = GiveDieToTargetEvent.new()
+		give.actor = Globals.player
+		give.effect_source = Globals.player
+		give.activator_die = die
+		give.die_value = die.value
+		var target: Enemy = Globals.targeting_computer.target_for(die) \
+				if is_instance_valid(Globals.targeting_computer) else null
+		if is_instance_valid(target):
+			give.targets = [target]
+		engine.queue_event(give)
 	if catching.is_empty():
 		return
 

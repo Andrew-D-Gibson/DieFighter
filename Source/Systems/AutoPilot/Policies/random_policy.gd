@@ -25,6 +25,10 @@ const _KIND_WEIGHTS: Dictionary[AutoPilotMove.Kind, float] = {
 }
 
 
+## Chance a random player ends the turn early when it could keep its hand.
+const _BANK_CHANCE: float = 0.25
+
+
 func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilotMove:
 	var by_kind: Dictionary[AutoPilotMove.Kind, Array] = {}
 	for move: AutoPilotMove in moves:
@@ -32,6 +36,11 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 			by_kind[move.kind] = []
 		by_kind[move.kind].append(move)
 
+	# A ship that may keep its hand (the Outrigger) lights End Turn with dice
+	# still in it. A random player sometimes banks them, mostly plays on.
+	if by_kind.has(AutoPilotMove.Kind.END_TURN) and not AutoPilotMove.dice_in_hand().is_empty():
+		if rng.randf() >= _BANK_CHANCE:
+			by_kind.erase(AutoPilotMove.Kind.END_TURN)
 	if by_kind.has(AutoPilotMove.Kind.END_TURN):
 		var shopping: bool = by_kind.has(AutoPilotMove.Kind.CLAIM) or by_kind.has(AutoPilotMove.Kind.BUY)
 		if not shopping:

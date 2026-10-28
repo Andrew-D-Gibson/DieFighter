@@ -16,6 +16,5 @@ num_of_dice = 3
 tile_locations = Dictionary[Vector2i, ExtResource("2_tile")]({
 Vector2i(1, 1): ExtResource("3_cannon"),
 Vector2i(2, 1): ExtResource("5_crosslink"),
-Vector2i(4, 1): ExtResource("4_shield"),
-Vector2i(5, 1): ExtResource("6_ballast")
+Vector2i(4, 1): ExtResource("4_shield")
 })

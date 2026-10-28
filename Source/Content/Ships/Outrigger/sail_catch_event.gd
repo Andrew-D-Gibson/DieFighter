@@ -32,7 +32,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		return
 
 	var gauge: Node2D = engine.get_tree().get_first_node_in_group(&"engine_charger") as Node2D
-	var color: Color = Globals.purple
+	var color: Color = SailGauge.SAIL_COLOR
 	Juice.die_flare(die, color)
 	Events.play_sound.emit(_SAIL_SFX)
 	var flight: float = Juice.stream(Globals.player, die.global_position,
