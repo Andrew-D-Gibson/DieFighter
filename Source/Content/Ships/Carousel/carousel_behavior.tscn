@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Ships/Carousel/carousel_behavior.gd" id="1_beh"]
+[ext_resource type="Script" path="res://Source/Content/Ships/Carousel/carousel_track_lights.gd" id="2_lights"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/carousel_panel.png" id="3_panel"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/ring_indicator-Sheet.png" id="4_ind"]
+
+[node name="CarouselBehavior" type="Node2D" node_paths=PackedStringArray("track_lights", "track_panel", "gear_indicator")]
+script = ExtResource("1_beh")
+track_lights = NodePath("TrackLights")
+track_panel = NodePath("TrackPanel")
+gear_indicator = NodePath("GearIndicator")
+
+[node name="TrackPanel" type="Sprite2D" parent="."]
+texture = ExtResource("3_panel")
+centered = false
+
+[node name="TrackLights" type="Node2D" parent="."]
+z_index = 3
+script = ExtResource("2_lights")
+
+[node name="GearIndicator" type="Sprite2D" parent="."]
+z_index = 1
+texture = ExtResource("4_ind")
+hframes = 3

@@ -432,3 +432,30 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 		_assign_tile_to_grid_pos(t, to_pos)
 		
 		Events.tile_pushed.emit(t)
+
+
+## Moves several grid tiles at once, keyed old cell -> new cell. Unlike
+## move_tile() (one tile, swapping with whatever is there), every listed tile
+## leaves before any arrives, so a whole loop of tiles can shift one cell
+## along in a single step (the Carousel's ring). New cells must be valid and
+## either listed as vacated or empty; anything else is skipped with an error.
+## Homes move but the tiles don't announce their arrival: the caller decides
+## how the motion looks (it can take the tiles over with MOVING_WITH_CODE).
+## Emits no tile_pushed / tile_manually_moved: nothing was pushed or dragged.
+func relocate_tiles(moves: Dictionary[Vector2i, Vector2i]) -> void:
+	var moving: Dictionary[Vector2i, Tile] = {}
+	for from_pos: Vector2i in moves:
+		var to_pos: Vector2i = moves[from_pos]
+		if not tile_locations.has(from_pos) or not is_grid_pos_valid(to_pos):
+			push_error("TileGrid.relocate_tiles: bad move %s -> %s" % [from_pos, to_pos])
+			continue
+		if tile_locations.has(to_pos) and not moves.has(to_pos):
+			push_error("TileGrid.relocate_tiles: %s is taken by a tile that isn't moving" % to_pos)
+			continue
+		moving[from_pos] = tile_locations[from_pos]
+	for from_pos: Vector2i in moving:
+		tile_locations.erase(from_pos)
+	for from_pos: Vector2i in moving:
+		var tile: Tile = moving[from_pos]
+		tile_locations[moves[from_pos]] = tile
+		tile.draggable.set_home(grid_to_global_pos(moves[from_pos]))
