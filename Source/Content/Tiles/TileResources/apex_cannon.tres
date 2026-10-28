@@ -1,0 +1,135 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_cjofy"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_k6rn8"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_tsjhu"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_56v0q"]
+[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_bgqxb"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="4_k6rn8"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_xhp2m"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/RedTiles/apex_cannon.png" id="5_bgqxb"]
+
+[sub_resource type="Resource" id="Resource_k6rn8"]
+script = ExtResource("1_cjofy")
+
+[sub_resource type="Resource" id="Resource_bgqxb"]
+script = ExtResource("1_cjofy")
+type = 4
+
+[sub_resource type="Resource" id="Resource_xhp2m"]
+script = ExtResource("2_k6rn8")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_7rrvl"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 1
+color = Color(0.31764707, 0.08235294, 0.12941177, 1)
+
+[sub_resource type="Resource" id="Resource_esg62"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_bgqxb")
+
+[sub_resource type="Resource" id="Resource_jnyxd"]
+script = ExtResource("2_k6rn8")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_71x3c"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_p318j"]
+script = ExtResource("2_k6rn8")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_3r5ag"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_knbmu"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 7
+amount = 60
+
+[sub_resource type="Resource" id="Resource_r052l"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.80784315, 0.9411765, 0.94509804, 1)
+
+[sub_resource type="Resource" id="Resource_dsrtk"]
+script = ExtResource("2_k6rn8")
+category = 2
+subtype = 1
+amount = 3
+
+[sub_resource type="Resource" id="Resource_560ff"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 15
+amount = 12
+color = Color(0.93333334, 0.827451, 0.3647059, 1)
+
+[sub_resource type="Resource" id="Resource_lxqlm"]
+script = ExtResource("4_xhp2m")
+if_true_effects = Array[ExtResource("2_k6rn8")]([SubResource("Resource_dsrtk"), SubResource("Resource_560ff")])
+category = 7
+subtype = 12
+range_min = 0
+range_max = 0
+
+[sub_resource type="Resource" id="Resource_37kf6"]
+script = ExtResource("2_k6rn8")
+category = 1
+
+[sub_resource type="Resource" id="Resource_x5ort"]
+script = ExtResource("2_k6rn8")
+category = 4
+subtype = 9
+multiplier = 1.03
+
+[sub_resource type="Resource" id="Resource_kv3oa"]
+script = ExtResource("2_k6rn8")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_mwjly"]
+script = ExtResource("2_k6rn8")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_ffegd"]
+script = ExtResource("3_56v0q")
+effects = Array[ExtResource("2_k6rn8")]([SubResource("Resource_xhp2m"), SubResource("Resource_7rrvl"), SubResource("Resource_esg62"), SubResource("Resource_jnyxd"), SubResource("Resource_71x3c"), SubResource("Resource_p318j"), SubResource("Resource_3r5ag"), SubResource("Resource_knbmu"), SubResource("Resource_r052l"), SubResource("Resource_lxqlm"), SubResource("Resource_37kf6"), SubResource("Resource_x5ort"), SubResource("Resource_kv3oa"), SubResource("Resource_mwjly")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_urkjh"]
+atlas = ExtResource("5_bgqxb")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_07g5j"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_urkjh")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_k6rn8")
+tile_name = "[color=red]Apex Cannon[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. [color=yellow]Top row[/color]: +3"
+offered_as_reward = false
+textures = SubResource("SpriteFrames_07g5j")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_cjofy")]([SubResource("Resource_k6rn8"), SubResource("Resource_bgqxb")])
+effect_chain = SubResource("Resource_ffegd")

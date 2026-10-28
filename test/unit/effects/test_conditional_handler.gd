@@ -143,3 +143,34 @@ func test_if_in_combat_reads_the_game_state() -> void:
 	assert_eq(await _branch_taken(_cond(Cond.IF_IN_COMBAT)), TRUE_BRANCH)
 	Globals.state_manager = null
 	assert_eq(await _branch_taken(_cond(Cond.IF_IN_COMBAT)), FALSE_BRANCH)
+
+
+func test_if_charge_at_least_reads_the_drive() -> void:
+	var cond := _cond(Cond.IF_CHARGE_AT_LEAST)
+	cond.amount = 3
+	Globals.player = make_player(3, 3)
+	assert_eq(await _branch_taken(cond), TRUE_BRANCH, "exactly enough")
+	Globals.player = make_player(3, 2)
+	assert_eq(await _branch_taken(cond), FALSE_BRANCH, "one short")
+	Globals.player = null
+	assert_eq(await _branch_taken(cond), FALSE_BRANCH, "no player")
+
+
+func test_if_source_in_row_reads_where_the_tile_sits() -> void:
+	var grid: TileGrid = TileGrid.new()
+	var cells: Array[Vector2i] = [Vector2i(0, 0), Vector2i(0, 1), Vector2i(0, 2)]
+	grid.set_cells(cells)
+	add_child_autofree(grid)
+	Globals.tile_grid = grid
+	var tile: Tile = autofree(preload("res://Source/Content/Tiles/tile.tscn").instantiate())
+	context.effect_source = tile
+	var top_row := _cond(Cond.IF_SOURCE_IN_ROW)
+	top_row.range_min = 0
+	top_row.range_max = 0
+
+	assert_eq(await _branch_taken(top_row), FALSE_BRANCH, "not on the grid")
+	grid._assign_tile_to_grid_pos(tile, Vector2i(0, 0))
+	assert_eq(await _branch_taken(top_row), TRUE_BRANCH, "top row")
+	grid.tile_locations.erase(Vector2i(0, 0))
+	grid._assign_tile_to_grid_pos(tile, Vector2i(0, 2))
+	assert_eq(await _branch_taken(top_row), FALSE_BRANCH, "bottom row")

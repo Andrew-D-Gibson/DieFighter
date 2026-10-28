@@ -1,0 +1,98 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_a5j04"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_a2tqo"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_pt2gy"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_gvq4y"]
+[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="3_qo3wy"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="4_a2tqo"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_dbbip"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/GreenTiles/flywheel.png" id="5_qo3wy"]
+
+[sub_resource type="Resource" id="Resource_a2tqo"]
+script = ExtResource("1_a5j04")
+type = 1
+acceptable_values = Array[int]([1, 2, 3, 4, 5])
+
+[sub_resource type="Resource" id="Resource_qo3wy"]
+script = ExtResource("1_a5j04")
+type = 14
+threshold = 1
+data_key = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_dbbip"]
+script = ExtResource("2_a2tqo")
+category = 2
+
+[sub_resource type="Resource" id="Resource_0vatd"]
+script = ExtResource("2_a2tqo")
+category = 2
+subtype = 4
+string_param = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_40gov"]
+script = ExtResource("2_a2tqo")
+category = 2
+subtype = 2
+multiplier = 2.0
+
+[sub_resource type="Resource" id="Resource_y6vou"]
+script = ExtResource("2_a2tqo")
+category = 4
+subtype = 22
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_m6mxb"]
+script = ExtResource("2_a2tqo")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_qo3wy")
+
+[sub_resource type="Resource" id="Resource_nvrh1"]
+script = ExtResource("2_a2tqo")
+category = 3
+subtype = 16
+
+[sub_resource type="Resource" id="Resource_0pae2"]
+script = ExtResource("2_a2tqo")
+category = 2
+
+[sub_resource type="Resource" id="Resource_glakn"]
+script = ExtResource("2_a2tqo")
+category = 5
+subtype = 9
+string_param = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_gkvrn"]
+script = ExtResource("2_a2tqo")
+category = 3
+subtype = 4
+
+[sub_resource type="Resource" id="Resource_qh36a"]
+script = ExtResource("3_gvq4y")
+effects = Array[ExtResource("2_a2tqo")]([SubResource("Resource_dbbip"), SubResource("Resource_0vatd"), SubResource("Resource_40gov"), SubResource("Resource_y6vou"), SubResource("Resource_m6mxb"), SubResource("Resource_nvrh1"), SubResource("Resource_0pae2"), SubResource("Resource_glakn"), SubResource("Resource_gkvrn")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_by306"]
+atlas = ExtResource("5_qo3wy")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_rmax5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_by306")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_a2tqo")
+tile_name = "[color=green]Flywheel[/color]"
+description = "[color=yellow]Die below[/color] (die_6) [color=yellow]after a ring step[/color] -> Add 2 to die per ring step since last used ([data]ring_steps[/data]). Reset count. [color=orange]Return[/color] die"
+offered_as_reward = false
+textures = SubResource("SpriteFrames_rmax5")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_a5j04")]([SubResource("Resource_a2tqo"), SubResource("Resource_qo3wy")])
+effect_chain = SubResource("Resource_qh36a")

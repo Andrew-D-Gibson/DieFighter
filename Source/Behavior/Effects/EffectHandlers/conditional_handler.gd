@@ -71,6 +71,12 @@ func _evaluate_condition(data: ConditionalEffectData, context: EffectContext, en
 			return Globals.state_manager != null \
 				and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
 
+		EffectEnums.ConditionalSubtype.IF_CHARGE_AT_LEAST:
+			return Globals.player != null and Globals.player.engine_charge >= data.amount
+
+		EffectEnums.ConditionalSubtype.IF_SOURCE_IN_ROW:
+			return _is_source_in_row(data, context)
+
 		_:
 			push_error("ConditionalHandler: unhandled subtype %d" % data.subtype)
 			return false
@@ -90,6 +96,16 @@ func _is_overcharged() -> bool:
 	if Globals.player == null:
 		return false
 	return Globals.player.is_overcharged()
+
+
+func _is_source_in_row(data: ConditionalEffectData, context: EffectContext) -> bool:
+	var tile: Tile = context.effect_source as Tile
+	var grid: TileGrid = Globals.tile_grid
+	if tile == null or not is_instance_valid(grid):
+		return false
+	# (-1, -1) when the tile isn't on the grid, which no row range holds.
+	var row: int = grid.find_tile_pos(tile).y
+	return row >= 0 and row >= data.range_min and row <= data.range_max
 
 
 func _is_engine_charged() -> bool:

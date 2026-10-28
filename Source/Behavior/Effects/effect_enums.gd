@@ -293,6 +293,13 @@ enum ConditionalSubtype {
 	## passive that lashes out at a random enemy guards with this; outside
 	## combat that "enemy" could be a merchant.
 	IF_IN_COMBAT,
+	## True if the player has at least `amount` engine charge. The "Boost"
+	## tiles branch on it: pay that much for the bigger effect, or fire plain.
+	IF_CHARGE_AT_LEAST,
+	## True if the source tile sits in a grid row from range_min to range_max
+	## (0 is the top row). For tiles that do more in one part of the grid,
+	## which on the Carousel means part of each lap.
+	IF_SOURCE_IN_ROW,
 }
 
 

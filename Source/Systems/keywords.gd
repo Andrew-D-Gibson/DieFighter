@@ -38,6 +38,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
 	"Steal": "This ship keeps the die. Next turn it uses it to Steal again. It drops what it holds if destroyed.",
 	"Ion": "Deals double [color=blue]damage[/color] to shields and none to the hull. Damage the shields can't absorb is lost.",
+	"Boost": "If you have that much [color=purple]engine charge[/color], it's spent for the extra effect. If not, the tile works without it.",
 	"Locked": "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
 }
 
@@ -69,6 +70,7 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(ion_damage)": {"label": "ion damage", "term": "Ion", "color": "blue"},
 	"(locked)":     {"label": "Locked",     "term": "Locked"},
 	"(lock)":       {"label": "Lock",       "term": "Locked"},
+	"(boost)":      {"label": "Boost",      "term": "Boost"},
 }
 
 const _KEYWORD_COLOR: String = "orange"

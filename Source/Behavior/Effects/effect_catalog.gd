@@ -196,6 +196,8 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS, label = "If Target Has Status", handler = ConditionalHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_DICE_OWNED_IN_RANGE, label = "If Dice Owned in Range", handler = ConditionalHandler, fields = ["range_min", "range_max"]},
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_IN_COMBAT, label = "If In Combat", handler = ConditionalHandler},
+	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_CHARGE_AT_LEAST, label = "If Charge At Least", handler = ConditionalHandler, fields = ["amount"]},
+	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_SOURCE_IN_ROW, label = "If Source In Row", handler = ConditionalHandler, fields = ["range_min", "range_max"]},
 
 	# ── REPETITION ────────────────────────────────────────────────
 	{category = EffectEnums.Category.REPETITION, subtype = EffectEnums.RepetitionSubtype.ADD_REPETITIONS, label = "Add Repetitions", handler = AddRepetitionsHandler},

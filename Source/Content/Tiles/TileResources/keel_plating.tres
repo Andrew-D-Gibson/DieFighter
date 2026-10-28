@@ -1,0 +1,110 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_npb3o"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_bg44j"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_ddadk"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_ushpr"]
+[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="3_xcvtl"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="4_ddadk"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_oe480"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/BlueTiles/keel_plating.png" id="5_xcvtl"]
+
+[sub_resource type="Resource" id="Resource_ddadk"]
+script = ExtResource("1_npb3o")
+type = 1
+acceptable_values = Array[int]([3, 4])
+
+[sub_resource type="Resource" id="Resource_xcvtl"]
+script = ExtResource("2_ddadk")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_oe480"]
+script = ExtResource("2_ddadk")
+category = 4
+subtype = 1
+color = Color(0.21568628, 0.5372549, 0.8, 1)
+
+[sub_resource type="Resource" id="Resource_d5b1n"]
+script = ExtResource("2_ddadk")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_xcvtl")
+
+[sub_resource type="Resource" id="Resource_qnt5x"]
+script = ExtResource("2_ddadk")
+category = 2
+amount = 5
+
+[sub_resource type="Resource" id="Resource_8bf8f"]
+script = ExtResource("2_ddadk")
+category = 2
+amount = 10
+
+[sub_resource type="Resource" id="Resource_6kpmh"]
+script = ExtResource("4_oe480")
+if_true_effects = Array[ExtResource("2_ddadk")]([SubResource("Resource_8bf8f")])
+category = 7
+subtype = 12
+range_min = 2
+range_max = 2
+
+[sub_resource type="Resource" id="Resource_04efq"]
+script = ExtResource("2_ddadk")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_dm2ca"]
+script = ExtResource("2_ddadk")
+category = 4
+subtype = 14
+amount = 24
+color = Color(0.2627451, 0.6509804, 0.9882353, 1)
+
+[sub_resource type="Resource" id="Resource_0tbhi"]
+script = ExtResource("2_ddadk")
+category = 4
+subtype = 12
+color = Color(0.2627451, 0.6509804, 0.9882353, 1)
+
+[sub_resource type="Resource" id="Resource_x2cj6"]
+script = ExtResource("2_ddadk")
+category = 1
+subtype = 2
+
+[sub_resource type="Resource" id="Resource_reesw"]
+script = ExtResource("2_ddadk")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_yf8eh"]
+script = ExtResource("2_ddadk")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_8gjlo"]
+script = ExtResource("3_ushpr")
+effects = Array[ExtResource("2_ddadk")]([SubResource("Resource_xcvtl"), SubResource("Resource_oe480"), SubResource("Resource_d5b1n"), SubResource("Resource_qnt5x"), SubResource("Resource_6kpmh"), SubResource("Resource_04efq"), SubResource("Resource_dm2ca"), SubResource("Resource_0tbhi"), SubResource("Resource_x2cj6"), SubResource("Resource_reesw"), SubResource("Resource_yf8eh")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_if7gm"]
+atlas = ExtResource("5_xcvtl")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jay77"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_if7gm")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_ddadk")
+tile_name = "[color=blue]Keel Plating[/color]"
+description = "(die_3) or (die_4) -> Gain [color=blue]5 shields[/color]. [color=yellow]Bottom row[/color]: [color=blue]10[/color]"
+offered_as_reward = false
+textures = SubResource("SpriteFrames_jay77")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_npb3o")]([SubResource("Resource_ddadk")])
+effect_chain = SubResource("Resource_8gjlo")
