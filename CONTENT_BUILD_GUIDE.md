@@ -253,7 +253,8 @@ value before its STREAM.
   - `conditions`: `EnemyActionCondition`s, all of which must hold. Types:
     `ALLY_EXISTS`, `HOSTILE_SHIP_EXISTS`, `ALLY_HURT`, `SELF_HURT` (with
     `hull_fraction`), `ATTITUDE_IS`, `ALLIES_AT_MOST` (with `count`; gate a
-    launcher on it so it can't fill the board), plus `invert`.
+    launcher on it so it can't fill the board), `SELF_HAS_STATUS` (with an
+    optional `status_id`; gates Purge Vents), plus `invert`.
   - `situational_weights`: `EnemyActionWeightRule` = a condition and a
     multiplier.
   - `strength_tier_override`: how strong the action counts as for
@@ -647,20 +648,35 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
 
 ---
 
-## 8. Statuses (stack-based enemy debuffs)
+## 8. Statuses (stack-based debuffs)
+
+Statuses go on enemies and on the player. The same status works on both, so
+a new one needs a rule for each side.
 
 1. Subclass `StatusModifier` in `Source/Behavior/Modifiers/Statuses/`. Copy
    `burn_status.gd` or `exposed_status.gd`. Set `status_id`, `display_name`,
    `color` (a `Globals` palette colour), `icon`, `info_icon` and `priority`,
-   and implement its hook.
+   and implement its hook. Where it touches dice, branch on
+   `is_on_player()`: an enemy spends dice on its table, the player places
+   them on tiles (`JammedStatus` and `ScrambledStatus` show both).
 2. Add it to `StatusCatalog._statuses` (`status_catalog.gd`), keyed by id.
 3. Art: `Assets/Textures/Statuses/` (11×11 badge, 24×24 info).
-4. Add a keyword for it (§9).
+4. Add a keyword for it (§9). If it reads differently on the player, add a
+   second term, `<Name> (you)`, and a token for it (`(jammed_you)`): the
+   player's badge shows that rule, and enemy actions aimed at the player use
+   that token.
 5. Apply it with `ATTRIBUTE_CHANGE / APPLY_STATUS`: `string_param` = id,
    running amount = stacks. Test with dev console `status <id> [stacks]` on a
-   targeted enemy.
+   targeted enemy, or `status <id> [stacks] me` on yourself.
 
----
+**Enemy actions that put a status on the player** follow the usual chain
+shape: `TARGET_PLAYER`, a shot that doesn't carry the die (ZAP, LASER,
+MISSILE), `SET_TO_ENEMY_INTENT`, `APPLY_STATUS`, then `GIVE_DIE_TO_PLAYER`
+(Incendiary Shot, Target Lock, Jamming Pulse, Scrambler). They read as
+`DANGEROUS` without anything to set. Purge Vents moves the ship's own
+statuses onto the player (`TRANSFER_STATUSES`); gate it on
+`SELF_HAS_STATUS`. A tile that puts a status on its own ship (Blowtorch)
+targets the player for that step; its Amplifier doesn't grow it.
 
 ## 9. Keywords
 

@@ -130,6 +130,7 @@ at once, with no per-tile authoring.
 | Amplifier | — | Power-up hum, twice | before each `ADD_AMPLIFIER_MODIFIER` |
 | Arc Tap | dice_cannon | High-voltage arc snap | before `DAMAGE` |
 | Beam Splitter | — | Prism split chime + hologram shimmer | before `PASS_DIE_TO_TILE`, `FEED_HOLOGRAM` |
+| Blowtorch | dice_cannon | A roaring torch jet, then a hiss of flame back on you | before `DAMAGE`; before `APPLY_STATUS` |
 | Booster Stage | — | Rocket-stage ignition | before `ADD_AMPLIFIER_MODIFIER` |
 | Bootstrap Injector | — | Digital materialise + engine drain | before `SPAWN_HOLOGRAPHIC_DIE` |
 | Broadside | dice_cannon | Rolling multi-gun volley, one report per die in hand | before `DAMAGE` |
@@ -138,6 +139,8 @@ at once, with no per-tile authoring.
 | Chaff Pod | error | Chaff-pop burst | before `APPLY_STATUS` |
 | Chain Cannon | dice_cannon | Rapid chained shot (escalating pitch) | before `DAMAGE` |
 | Chaos Explosion | — | Massive slowed-down explosion | before `DAMAGE` |
+| Cinder Turbine | — | A turbine spinning up on the heat | before `CHANGE_ENGINE_CHARGE` |
+| Countermeasures | — | Countermeasure flares popping, a whoosh across | before `TRANSFER_STATUSES` |
 | Counterweight Battery | player_shield | Pendulum clunk + shield | before `SHIELD` |
 | Crescendo Cannon | dice_cannon | Shot whose pitch climbs with the crescendo (escalation) | before `DAMAGE` |
 | Crossed Wires | reroll blip | Electrical short buzz | before `APPLY_STATUS` |
@@ -219,15 +222,20 @@ at once, with no per-tile authoring.
 | Holo Loader | — | Hologram shimmer as a die is conjured for an ally | before `SPAWN_HOLOGRAM_FOR_ALLY` |
 | Ion Shot | dice_cannon | An ion discharge: a rising crackle, then a fizzing shield hit | before `ION_BOLT` |
 | Impound | dice_cannon | Clamp + hold (the die is taken) | before `KEEP_DIE_WITH_ACTOR` |
+| Incendiary Shot | dice_cannon | A whooshing incendiary round that bursts into flame | before `MISSILE` |
+| Jamming Pulse | — | A buzzing jammer squeal | before `ZAP` |
 | Launch | bump | Hangar klaxon + catapult whoosh | before `LAUNCH_SHIP` |
 | Lockout Grid Pos | — | Lock-on + clamp | before `LOCKOUT_TILE` |
 | Pilfer | dice_cannon | Quick grab: a snap and a pocketed rattle | before `KEEP_DIE_WITH_ACTOR` |
+| Purge Vents | — | Vents blowing hot exhaust across at you | before `STREAM` |
 | Raid | dice_cannon | A meaner, ragged shot at another ship (not at you) | before `DAMAGE` |
 | Relay | — | Toss-and-catch: the die flicked to an ally | before `FEED_ALLY` |
 | Repair Ally | player_shield | Repair drones whirr | before `HEAL` |
+| Scrambler | — | A warbling static bolt | before `ZAP` |
 | Shield Self | — | Shield up | before `SHIELD` |
 | Siege Shot | dice_cannon | Long wind-up → enormous slowed shot | chain start; before `DAMAGE` |
 | Siphon Engine | reroll blip | Draining suction from your engine | before `CHANGE_ENGINE_CHARGE` |
+| Target Lock | — | Rising lock-on tone | before `LASER` |
 
 ## Statuses
 
@@ -237,3 +245,6 @@ at once, with no per-tile authoring.
 | Scrambled | Static warble | Glitch pitch-bend as a die flips |
 | Jammed | Clank / gears catching | Grinding stall as an action becomes nothing |
 | Exposed | Target-lock beep | Critical "shink" when cashed in |
+
+The same statuses on the player use the same sounds. Jammed and Scrambled
+fire on a tile there (a jammed tile's refusal, a die flipping as it lands).

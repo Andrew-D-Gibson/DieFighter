@@ -266,60 +266,87 @@ A die that reaches a tile through a Feed takes a different route on refusal:
 `PassDieToTileEvent` checks the criteria first and sends a refused die to the
 target, never back to the hand (see 6.2).
 
-### 4.5 Enemy Statuses
+### 4.5 Statuses
 
 **Location:** `Source/Behavior/Modifiers/Statuses/`
 
-A status is a `StatusModifier`: an ordinary `Modifier` that sits on one enemy
-(`affected_node`), counts `stacks`, and removes itself when they run out or
-the ship leaves (`Events.enemy_left`). Stacks are the only number a status
-has; each status decides what one means.
+A status is a `StatusModifier`: an ordinary `Modifier` that sits on one ship
+(`affected_node`, an enemy or the player), counts `stacks`, and removes
+itself when they run out, when an enemy ship leaves (`Events.enemy_left`) or,
+on the player, when the fight ends (`Events.combat_finished`). Stacks are the
+only number a status has; each status decides what one means.
 
-| Status | Hooks | A stack is |
-|---|---|---|
-| `BurnStatus` | `on_status_tick()` | damage per round; loses one per tick |
-| `ScrambledStatus` | `EnemyDiceManager.die_arriving` | one die flipped to its opposite face as it arrives |
-| `JammedStatus` | before `EnemyActionEvent` (priority 35) | the next `ACTS` action swapped for Do Nothing, which hands the die back; `IDLE`/`BLOCKED` dice don't spend a stack |
-| `ExposedStatus` | before `DamageEvent` (priority 25) | +stacks on each single-target tile hit; spends 1 |
+| Status | On an enemy | On the player | A stack is |
+|---|---|---|---|
+| `BurnStatus` | `on_status_tick()` | the same | damage per round; loses one per tick |
+| `ScrambledStatus` | `EnemyDiceManager.die_arriving` | before `TileActivationEvent` (priority 6), dice from the hand only | one die flipped to its opposite face |
+| `JammedStatus` | before `EnemyActionEvent` (priority 35) | before `TileActivationEvent`: canceled for a `JammedTileEvent`, which sends the die to the target | the next die that would act does nothing; dice that would idle (or that the tile refuses) don't spend a stack |
+| `ExposedStatus` | before `DamageEvent` (priority 25), tile hits | the same, enemy hits | +stacks on each single-target hit; spends 1 |
 
+- **The player's side.** A status that hooks dice reads `is_on_player()`:
+  where an enemy spends dice on its table, the player places them on tiles.
+  Only the grid's own tiles count (`JammedStatus.is_ship_system()`: not the
+  map's jump tiles or the Engine Charger). A lock (priority 5) stops an
+  activation before Scrambled or Jammed see it. Burn and Exposed work the
+  same either side.
 - **Applying:** `ATTRIBUTE_CHANGE/APPLY_STATUS` names the status in
   `string_param` and takes `running_amount` stacks. `ApplyStatusEvent` merges
   into an existing status (`merge()`, additive by default) or registers a new
-  one. Its amount is amplifiable, so an Amplifier adds stacks. Statuses only
-  go on enemies for now.
+  one. Its amount is amplifiable, so an Amplifier adds stacks, except a status
+  a tile puts on its own ship (Blowtorch's Burn): a cost never grows. An enemy
+  putting one on the player starts the fight, like a hit.
+- **Moving:** `ATTRIBUTE_CHANGE/TRANSFER_STATUSES` moves every status on the
+  actor onto the first target (`TransferStatusesEvent`), rebuilt for its new
+  host and merged into what it has. Countermeasures uses it one way, an
+  enemy's Purge Vents the other. A vent with nothing on its ship is
+  `BLOCKED` (`EnemyActionResource.outcome_of(action, ship)`), and the
+  `SELF_HAS_STATUS` condition keeps it off a table until there's something
+  to vent.
 - **Reading:** `AMOUNT_MODIFIER/SET_TO_TARGET_STATUS`,
   `CONDITIONAL/IF_TARGET_HAS_STATUS`, and `ATTRIBUTE_CHANGE/CLEAR_STATUS`.
   `ScenarioEngine.find_status()` / `statuses_on()` look them up.
 - **Ids:** `StatusCatalog` maps the authored id to its class. A content test
   checks every authored id against it.
-- **Ticking:** once per round, from `EnemyTurn.play()` (see 4.6).
+- **Ticking:** once per round, from `EnemyTurn.play()` (see 4.6):
+  `tick_statuses()` for the enemies before any ship acts, and
+  `tick_statuses(true)` for the player once every ship has, before
+  `enemy_turn_over` starts the player's turn.
   Nothing ticks off a signal: `EnemyManager` connects to `player_turn_over`
   first and would queue every action before a status got a look in.
 - **Scrambled flips on arrival**, not on use: `EnemyDiceManager.add()` emits
   `die_arriving` before the die joins the queue, so the targeting computer's
   intent highlight sees the final face. A ship re-adding a die it already held
   (Charge Bore) isn't an arrival.
-- **Badges:** each status shows a `StatusBadge` (icon + stack count) on the
-  enemy's `%StatusBar`, beside the health ring. Clicking one shows the
-  keyword's rule in the info panel. Art is in `Assets/Textures/Statuses/`
-  (11×11 badge, 24×24 info).
-- **Debugging:** the dev console's `status <id> [stacks]` applies one to the
-  targeted enemy.
+- **Badges:** each status shows a `StatusBadge` (icon + stack count) on its
+  ship's `%StatusBar`: beside an enemy's health ring, above the player's
+  (three to a row). Clicking one shows its rule in the info panel:
+  `rule_term()` picks the keyword, the "(you)" one where the player's side
+  differs (`Keywords.PLAYER_SUFFIX`). The hull panel lists the player's
+  statuses too. Art is in `Assets/Textures/Statuses/` (11×11 badge, 24×24
+  info).
+- **Threat:** an enemy action putting a status on the player (or venting
+  onto them) reads `DANGEROUS`. `AutoPilotThreat.status_cost()` prices it in
+  hull for the bot.
+- **Debugging:** the dev console's `status <id> [stacks] [me]` applies one to
+  the targeted enemy, or to the player.
 
-**Feedback:** `play_applied_feedback()` runs when a dose lands (ship flash,
-ring, `+N NAME` callout); `announce_triggered()` flashes the ship and calls
-out the name whenever a status does its job (see 4.7).
+**Feedback:** `play_applied_feedback()` runs when a dose lands (ship flash, or
+the cockpit vignette for the player, ring, `+N NAME` callout);
+`announce_triggered()` flashes the ship and calls out the name whenever a
+status does its job (see 4.7). `announce_triggered_at()` draws it on a tile
+instead, for a player status that acts there.
 
 **Adding a status:** subclass `StatusModifier` (set `status_id`,
 `display_name`, `color`, `icon`, `info_icon`, `priority`), add it to
-`StatusCatalog`, and give it a keyword in `Keywords`.
+`StatusCatalog`, give it a keyword in `Keywords`, and decide what it does on
+the player (a "(you)" keyword if that reads differently).
 
 ### 4.6 Enemy Turn Flow
 
 1. `Events.player_turn_over` triggers `EnemyManager.run_enemy_turn()`, which
    runs `EnemyTurn.play()` (`EnemyManager/enemy_turn.gd`; `EnemyTurn` also
    rolls and binds the tables). It waits for dice still in flight, then ticks
-   every status and waits for the queue to drain, so a ship that
+   the enemies' statuses and waits for the queue to drain, so a ship that
    burns to death never takes its turn
 2. For each enemy with dice, left to right, one ship at a time (its queue
    drains before the next starts):
@@ -338,7 +365,8 @@ out the name whenever a status does its job (see 4.7).
 3. Ships handed a die after their own turn get another pass
    (`Enemy.run_relayed_dice()`, no turn bookkeeping), round and round until
    no ship `has_dice_to_spend()` (kept dice don't count; `MAX_PASSES` 8)
-4. Then `Events.enemy_turn_over`
+4. The player's statuses tick (`tick_statuses(true)`) and resolve
+5. Then `Events.enemy_turn_over`
 
 ### 4.7 Modifier Feedback (procs)
 
@@ -1103,7 +1131,7 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 | Category | Subtypes |
 |----------|----------|
 | TARGETING | TARGET_ENEMIES, TARGET_PLAYER, TARGET_RANDOM_SHIP, TARGET_RANDOM_OTHER_ENEMY, TARGET_TILE_WITH_OFFSET, TARGET_RANDOM_ADJACENT_TILE, TARGET_BOUND_ALLY, TARGET_BOUND_HOSTILE_SHIP, etc. |
-| ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE, STEAL_MONEY (actor takes credits; coins fly from the money counter to it), SIPHON_ENGINE_CHARGE (`SiphonEngineChargeEvent`: drains in up to 3 pulses, each dropping the gauge then streaming motes from it to the actor; one `engine_charge_drained`), ION_DAMAGE (`IonDamageEvent`, a `DamageEvent` with `reaches_hull()` false: `Health.take_ion_damage` strips 2x from shields, the rest is lost) |
+| ATTRIBUTE_CHANGE | DAMAGE, HEAL, SHIELD, CHANGE_ENGINE_CHARGE, STEAL_MONEY (actor takes credits; coins fly from the money counter to it), SIPHON_ENGINE_CHARGE (`SiphonEngineChargeEvent`: drains in up to 3 pulses, each dropping the gauge then streaming motes from it to the actor; one `engine_charge_drained`), ION_DAMAGE (`IonDamageEvent`, a `DamageEvent` with `reaches_hull()` false: `Health.take_ion_damage` strips 2x from shields, the rest is lost), APPLY_STATUS / CLEAR_STATUS / TRANSFER_STATUSES (see 4.5) |
 | AMOUNT_MODIFIER | MULTIPLY (a fraction rounds up, away from zero, so every "half of" rounds up), ADD_ADJACENT_TILES, ADD_EMPTY_ADJACENT_CELLS, SET_TO_ENGINE_CHARGE, SET_TO_FEED_DEPTH, SET_TO_ACTIVATIONS_THIS_TURN, SET_TO_DICE_OWNED, SET_TO_DICE_IN_HAND, SET_TO_TARGET_DICE_HELD, SET_RANDOM (`range_min`–`range_max`) |
 | DICE_CONTROL | REROLL_ACTIVATOR, FLIP_1S_AND_6S, SPAWN_HOLOGRAPHIC_DIE, KEEP_DIE_WITH_ACTOR, KEEP_DIE_WITH_TILE, MERGE_HELD_DIE, RECEIVE_DIE_FROM_TARGET, FEED_ALLY, SPAWN_HOLOGRAM_FOR_ALLY, REROLL_TARGETS_DICE, FLIP_TARGETS_ONES_AND_SIXES |
 | AUDIO_VISUAL | SPAWN_HIT_PARTICLES, ANIMATE_DIE_TO_TILE, PLAY_SOUND, HITSTOP, ZOOM_PUNCH, FLASH_TARGET, SHOCKWAVE, ZAP, STREAM, SCREEN_RIPPLE, etc. (see 4.7) |

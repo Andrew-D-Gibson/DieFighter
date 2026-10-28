@@ -4,6 +4,40 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — Statuses on the player's ship
+
+- **Burn, Exposed, Jammed and Scrambled now work on the player.** The same
+  statuses, with the player's side of each rule: Burn ticks for its stacks;
+  Exposed adds to each enemy hit; Jammed makes the next die placed on a tile
+  do nothing and go to the target (a die the tile would refuse keeps the
+  stack, and a lock stops it first); Scrambled flips each die placed from the
+  hand before the tile reads it. Only grid tiles count, not the map's jump
+  tiles or the Engine Charger.
+- **Timing.** The player's statuses tick as the enemy turn ends (the start of
+  the player's turn, mirroring the ships'), and clear when the fight ends.
+- **Seeing it.** Badges sit above the hull ring, three to a row; a dose
+  pulses the cockpit vignette and calls out "+N NAME"; Jammed and Scrambled
+  call out on the tile they act on. Clicking a badge shows the player-side
+  rule ("Jammed (you)"), and the hull panel lists everything on the ship.
+  The dev console's `status` takes `me`.
+- **New effect: Transfer Statuses** moves every status on the actor onto the
+  target, and a new enemy condition, `SELF_HAS_STATUS`, gates on the ship's
+  own statuses. Status actions aimed at the player read as dangerous
+  (tractor beam and placement), and the bot prices them in hull.
+- **Enemy actions**, on ships that already exist: **Incendiary Shot** (Burn;
+  Siege Mortar's firing pool, Venom Raider), **Target Lock** (Exposed;
+  Carrier, with an ally out), **Jamming Pulse** (Jammed; Disabler Drone),
+  **Scrambler** (Scrambled; Ion Lance) and **Purge Vents** (Bamba Defender:
+  moves its statuses onto you; only rolled while it has one, and a "?" if
+  they burnt out first).
+- **Tiles:** **Blowtorch** (red, rare: any die, 2x die damage, 3 Burn on
+  you), **Countermeasures** (yellow, uncommon: any die, move your statuses
+  to the target) and **Cinder Turbine** (purple, uncommon: your turn starts,
+  2 engine charge per Burn on you). Blowtorch's Burn feeds the Turbine, and
+  Countermeasures throws it at an enemy.
+
+---
+
 ## 2026-10-28 — Three ships: pick one at Play; the Outrigger and the Carousel
 
 - **Play opens a ship picker.** A card per ship (hull, its starting hull and
