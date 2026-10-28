@@ -58,7 +58,9 @@ func setup(for_ship: ShipResource) -> void:
 	var stats: RichTextLabel = _label(_stats_text(), Rect2(0, 45, SIZE.x, 14), 16)
 	stats.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
-	var description: RichTextLabel = _label(ship.description, Rect2(4, 81, SIZE.x - 8, 42), 16)
+	# Formatted like tile text, so palette names ("orange", "purple") are the
+	# palette's, not Godot's named colours.
+	var description: RichTextLabel = _label(Utils.format_text(ship.description), Rect2(4, 81, SIZE.x - 8, 42), 16)
 	description.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	mouse_entered.connect(func() -> void:
@@ -79,9 +81,9 @@ func _stats_text() -> String:
 	if not ship.starting_save:
 		return ""
 	var start: GameSaveResource = ship.starting_save
-	return "[color=#d03656]%d/%d HULL[/color]  [color=#eed35d]%d DICE[/color]" % [
-		start.player_health, start.player_max_health, start.num_of_dice
-	]
+	var hull: String = tr("SHIP_CARD_HULL").format({"health": start.player_health, "max": start.player_max_health})
+	var dice: String = tr("SHIP_CARD_DICE").format({"dice": start.num_of_dice})
+	return "[color=#d03656]%s[/color]  [color=#eed35d]%s[/color]" % [hull, dice]
 
 
 ## Slides the card up into place, after a delay so a row of them ripples in.

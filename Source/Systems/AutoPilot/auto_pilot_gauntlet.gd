@@ -22,11 +22,9 @@ extends RefCounted
 ##     }
 ##   }
 ## Scenario and tile ids are ContentRegistry's: the .tres file's base name.
-## Tiles are placed by "x,y" grid cell. Unset loadout fields default to a new
-## run's (run_start.tres). There's no starting shields field: arriving in a
+## Tiles are placed by "x,y" grid cell, which must be one of the flown ship's
+## cells. Unset loadout fields default to a new run in that ship. There's no starting shields field: arriving in a
 ## scenario clears shields.
-
-const _RUN_START: String = "res://Source/Resources/SaveResources/run_start.tres"
 
 var scenario_id: String
 var loadout_name: String
@@ -64,9 +62,12 @@ func load_cell(path: String, scenario: String, loadout: String, sector_override:
 	if sector_override >= 0:
 		sector = sector_override
 
+	var cells: Array[Vector2i] = Globals.current_ship().get_cells()
 	for cell: String in (_loadout.get("tiles", {}) as Dictionary):
 		if _cell(cell) == Vector2i(-1, -1):
 			return "loadout '%s' has a bad cell '%s' (want \"x,y\")" % [loadout, cell]
+		if _cell(cell) not in cells:
+			return "loadout '%s' puts a tile at %s, which %s doesn't have" % [loadout, cell, Globals.current_ship().id]
 		if ContentRegistry.get_tile_path(str(_loadout["tiles"][cell])) == "":
 			return "loadout '%s' has no tile '%s'" % [loadout, _loadout["tiles"][cell]]
 	return ""
@@ -75,8 +76,9 @@ func load_cell(path: String, scenario: String, loadout: String, sector_override:
 ## The save the run starts from: the loadout and the sector, and no
 ## scenarios, so the sector is generated.
 func build_save() -> GameSaveResource:
-	var start: GameSaveResource = load(_RUN_START)
+	var start: GameSaveResource = ShipCatalog.starting_save(Globals.current_ship())
 	var game_save: GameSaveResource = GameSaveResource.new()
+	game_save.ship_id = start.ship_id
 	game_save.player_max_health = int(_loadout.get("max_hull", start.player_max_health))
 	game_save.player_health = int(_loadout.get("hull", game_save.player_max_health))
 	game_save.player_engine_charge = int(_loadout.get("charge", 0))

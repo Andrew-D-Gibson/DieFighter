@@ -13,6 +13,7 @@ const SPEC: Dictionary = {
 		"bare": {},
 		"bad_cell": {"tiles": {"0;1": "damage"}},
 		"bad_tile": {"tiles": {"0,1": "no_such_tile"}},
+		"in_a_hole": {"tiles": {"2,1": "damage"}},
 	},
 }
 
@@ -48,7 +49,7 @@ func test_a_loadout_becomes_the_starting_save() -> void:
 
 func test_unset_fields_are_a_new_runs() -> void:
 	var game_save: GameSaveResource = _cell("COMBAT_cutpurse", "bare").build_save()
-	var start: GameSaveResource = load(AutoPilotGauntlet._RUN_START)
+	var start: GameSaveResource = load(ShipCatalog.RUN_START)
 	assert_eq(game_save.num_of_dice, start.num_of_dice)
 	assert_eq(game_save.player_health, start.player_max_health)
 	assert_eq(game_save.tile_locations.size(), start.tile_locations.size(), "no tiles means the starter kit")
@@ -88,3 +89,12 @@ func test_the_scenario_takes_the_starting_slot_and_its_seed() -> void:
 	assert_eq(game_save.sector_scenarios[1].resource_path.get_file(), "COMBAT_cutpurse.tres")
 	assert_eq(game_save.sector_scenarios[1].scenario_seed, 4242)
 	assert_eq(game_save.sector_scenarios[0], empty, "the rest of the sector is untouched")
+
+
+func test_a_loadout_cell_the_flown_ship_lacks_is_refused() -> void:
+	Globals.selected_ship = ShipCatalog.find(&"carousel")
+	var gauntlet := AutoPilotGauntlet.new()
+	var problem: String = gauntlet.load_cell(SPEC_PATH, "COMBAT_cutpurse", "in_a_hole", -1)
+	assert_string_contains(problem, "doesn't have")
+	Globals.selected_ship = ShipCatalog.find(ShipCatalog.DEFAULT_ID)
+	assert_eq(gauntlet.load_cell(SPEC_PATH, "COMBAT_cutpurse", "in_a_hole", -1), "", "the Die Fighter has that cell")

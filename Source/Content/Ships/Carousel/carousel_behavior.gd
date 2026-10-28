@@ -270,7 +270,7 @@ func _play_hold() -> void:
 		var tile: Tile = _grid.tile_locations.get(cell)
 		if is_instance_valid(tile):
 			tile.shakeable.small_shake()
-	Juice.callout_at(self, _grid.grid_to_global_pos(IGNITION_CELL) + Vector2(0, -8), "HOLD", Globals.red)
+	Juice.callout_at(self, _grid.grid_to_global_pos(IGNITION_CELL) + Vector2(0, -8), tr("CALLOUT_RING_HOLD"), Globals.red)
 
 
 func _clear_tile_data(keys: Array[String]) -> void:

@@ -19,7 +19,6 @@ extends Node
 signal coverage_changed()
 
 const _MAIN_GAME_SCENE: String = "uid://deisauteocrjl"
-const _RUN_START: String = "res://Source/Resources/SaveResources/run_start.tres"
 const _SAVE_PATH: String = "user://scenario_lab_save.json"
 const _COVERAGE_PATH: String = "user://scenario_lab_coverage.json"
 
@@ -104,9 +103,9 @@ func current_id() -> String:
 	return scenario_ids[index] if not scenario_ids.is_empty() else ""
 
 
-## The starter kit from run_start.tres, with no sector, so one is generated.
+## The flown ship's starter kit, with no sector, so one is generated.
 func _build_starter_save() -> GameSaveResource:
-	var game_save: GameSaveResource = (load(_RUN_START) as GameSaveResource).duplicate()
+	var game_save: GameSaveResource = ShipCatalog.starting_save(Globals.current_ship())
 	game_save.sector_scenarios = []
 	game_save.sector_index = 0
 	return game_save

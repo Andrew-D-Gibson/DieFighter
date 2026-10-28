@@ -83,3 +83,13 @@ func test_only_cells_get_empty_sockets() -> void:
 	grid = _holed_grid()
 	assert_null(grid.get_empty_cell_sprite(Vector2i(1, 0)))
 	assert_not_null(grid.get_empty_cell_sprite(Vector2i(1, 1)))
+
+
+func test_a_run_started_outside_the_menu_gets_its_ships_own_kit() -> void:
+	for ship: ShipResource in ShipCatalog.all():
+		var kit: GameSaveResource = ShipCatalog.starting_save(ship)
+		assert_eq(kit.ship_id, ship.id)
+		var cells: Array[Vector2i] = ship.get_cells()
+		for pos: Vector2i in kit.tile_locations:
+			assert_true(pos in cells, "%s's kit puts a tile in a hole at %s" % [ship.id, pos])
+		assert_ne(kit, ship.starting_save, "a copy: checkpoints write into the run's save")

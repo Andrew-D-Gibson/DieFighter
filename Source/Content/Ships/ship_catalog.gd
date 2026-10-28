@@ -8,6 +8,8 @@ const _DIR: String = "res://Source/Content/Ships/"
 ## The ship a run flies when nothing chose one: an old save, a direct boot of
 ## the game scene, a test.
 const DEFAULT_ID: StringName = &"die_fighter"
+## The kit a ship with no starting_save of its own begins with.
+const RUN_START: String = "res://Source/Resources/SaveResources/run_start.tres"
 
 
 ## Every ship, in ship-select order.
@@ -32,3 +34,17 @@ static func find(id: StringName) -> ShipResource:
 		if ship.id == DEFAULT_ID:
 			fallback = ship
 	return fallback
+
+
+## A fresh copy of [param ship]'s starting kit, stamped with its id, for a
+## run that starts outside the menu (the Scenario Lab, an AutoPilot
+## gauntlet). Each ship's tiles sit in its own cells, so another ship's kit
+## could put a tile in a hole (the Die Fighter's Shield Burst lands on the
+## Carousel's Reactor).
+static func starting_save(ship: ShipResource) -> GameSaveResource:
+	var kit: GameSaveResource = ship.starting_save if ship and ship.starting_save \
+		else load(RUN_START) as GameSaveResource
+	var copy: GameSaveResource = kit.duplicate()
+	if ship:
+		copy.ship_id = ship.id
+	return copy

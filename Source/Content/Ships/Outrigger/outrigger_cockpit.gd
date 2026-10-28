@@ -116,7 +116,7 @@ func _place_mast() -> void:
 	add_child(_readout)
 	_readout.global_position = _viewer.global_position + _BADGE_RECT.position
 	gauge.readout = _readout
-	gauge._update_readout()
+	gauge.update_readout()
 
 
 func _dress_systems() -> void:

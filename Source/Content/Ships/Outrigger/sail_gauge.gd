@@ -68,9 +68,9 @@ func _ready() -> void:
 	Events.first_turn_start.connect(_start_projecting)
 	Events.player_turn_over.connect(_stop_projecting)
 	Events.combat_finished.connect(_stop_projecting)
-	Events.engine_charge_changed.connect(_update_readout)
-	Events.start_scenario.connect(_update_readout)
-	_update_readout()
+	Events.engine_charge_changed.connect(update_readout)
+	Events.start_scenario.connect(update_readout)
+	update_readout()
 
 
 func _process(delta: float) -> void:
@@ -138,7 +138,7 @@ func _celebrate_if_full() -> void:
 		readout.scale = Vector2(1.4, 1.4)
 		pop.tween_property(readout, "scale", Vector2.ONE, 0.4) \
 			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	Juice.callout_at(self, top + Vector2(0, -14), "SAIL FULL", Globals.yellow, true)
+	Juice.callout_at(self, top + Vector2(0, -14), tr("CALLOUT_SAIL_FULL"), Globals.yellow, true)
 	Events.camera_shake_small.emit()
 
 
@@ -150,7 +150,9 @@ func _stop_projecting() -> void:
 	_projecting = false
 
 
-func _update_readout() -> void:
+## Rewrites the charge in the badge above the mast. Also called once the
+## cockpit has built the badge (OutriggerCockpit).
+func update_readout() -> void:
 	if not is_instance_valid(readout) or not is_instance_valid(Globals.player):
 		return
 	var player: Player = Globals.player

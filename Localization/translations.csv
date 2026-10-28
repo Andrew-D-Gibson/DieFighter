@@ -27,3 +27,7 @@ HAZARD_HITS_AS_NEXT_TURN_STARTS,Hits at [color=yellow]start of next turn[/color]
 HAZARD_REPEATS_EVERY_TURNS,Then every {turns} turns,,,,,,,,"Arrival card for a timed hazard, the line under when it first goes off: how often it repeats after that. {turns} is a number, 2 or more.",27,,
 HAZARD_REPEATS_EVERY_TURN,Then every turn,,,,,,,,"As HAZARD_REPEATS_EVERY_TURNS, for a hazard that goes off every turn.",27,,
 INFO_HULL_STATUSES,On your ship: {statuses},,,,,,,,"Hull info panel (click the player's health ring), a line listing the statuses on the player's ship. {statuses} is a comma-separated list of coloured status names with their stack counts, e.g. Burn 3, Jammed 1. Click a status badge for its rule.",,,
+CALLOUT_RING_HOLD,HOLD,,,,,,,,"Carousel ship: callout over the ignition slot when a Gearbox holds the tile ring still for a turn instead of letting it turn",,,
+CALLOUT_SAIL_FULL,SAIL FULL,,,,,,,,"Outrigger ship: big callout over the sail mast when dice kept in hand have charged the engine all the way to the jump gate",,,
+SHIP_CARD_HULL,{health}/{max} HULL,,,,,,,,"Ship-select card: the ship's starting hull, e.g. 24/32 HULL. {health} and {max} are numbers.",,,
+SHIP_CARD_DICE,{dice} DICE,,,,,,,,"Ship-select card, after the hull: how many dice the ship starts with, e.g. 3 DICE. {dice} is a number.",,,
