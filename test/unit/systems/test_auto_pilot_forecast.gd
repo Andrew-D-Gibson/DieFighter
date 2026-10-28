@@ -231,3 +231,38 @@ func test_jammed_only_waits_behind_held_dice_that_would_act() -> void:
 	attack_die.value = 2
 	ship.dice_manager.add(attack_die)
 	assert_eq(AutoPilotThreat.of_face(ship, 2), 4.0, "the held attack takes the jam first")
+
+
+## A live engine holding [param status_ids] on the player, and [param tile]
+## on the grid, so the forecast sees what the game would.
+func _player_with(status_ids: Array[StringName], tile: Tile) -> void:
+	var engine: ScenarioEngine = autofree(ScenarioEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = engine
+	Globals.scenario_manager = manager
+	Globals.player = make_player()
+	var grid: TileGrid = autofree(TileGrid.new())
+	grid.tile_locations[Vector2i(0, 0)] = tile
+	Globals.tile_grid = grid
+	for status_id: StringName in status_ids:
+		engine.add_modifier(StatusCatalog.create(status_id, Globals.player, 1))
+
+
+func test_a_scrambled_player_forecasts_the_flipped_face() -> void:
+	var ship: Enemy = _ship()
+	var cannon: Tile = _cannon()
+	_player_with([&"scrambled"] as Array[StringName], cannon)
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(cannon, _die(5), ship, Ships.roster([ship]))
+	assert_eq(forecast.damage.get(ship, 0.0), 2.0, "the 5 lands as a 2")
+
+
+func test_a_jammed_player_forecasts_only_the_hand_off() -> void:
+	var ship: Enemy = _ship()
+	var cannon: Tile = _cannon()
+	cannon.tile_resource.uses_per_turn = -1
+	cannon.reset_uses_remaining()
+	_player_with([&"jammed"] as Array[StringName], cannon)
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(cannon, _die(5), ship, Ships.roster([ship]))
+	assert_eq(forecast.damage.get(ship, 0.0), 0.0)
+	assert_eq(forecast.handoffs.size(), 1)
+	assert_eq(forecast.handoffs[0].ship, ship)

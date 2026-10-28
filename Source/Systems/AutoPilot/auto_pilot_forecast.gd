@@ -68,8 +68,30 @@ static func of(tile: Tile, die: Node, target: Enemy, roster: Array[Enemy] = []) 
 	forecast._target = target
 	forecast._roster = roster if not roster.is_empty() else _live_roster()
 	var hologram: bool = die.get("holographic") == true
-	forecast._follow(tile, die, int(die.get("value")), hologram, 0, [])
+	var face: int = int(die.get("value"))
+	# The player's own statuses act as the die lands: Scrambled flips it,
+	# then Jammed (if the tile takes that face) sends it straight on.
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine and is_instance_valid(Globals.player) and JammedStatus.is_ship_system(tile):
+		if engine.find_status(Globals.player, &"scrambled"):
+			face = 7 - face
+		if engine.find_status(Globals.player, &"jammed") and _would_take(tile, face, hologram):
+			forecast._jammed(target, face, hologram)
+			return forecast
+	forecast._follow(tile, die, face, hologram, 0, [])
 	return forecast
+
+
+## A jammed tile does nothing; the die goes to the target, or home without one.
+func _jammed(target: Enemy, face: int, hologram: bool) -> void:
+	if not is_instance_valid(target):
+		dice_back += 1.0
+		return
+	var handoff := Handoff.new()
+	handoff.ship = target
+	handoff.face = face
+	handoff.hologram = hologram
+	handoffs.append(handoff)
 
 
 static func _live_roster() -> Array[Enemy]:
