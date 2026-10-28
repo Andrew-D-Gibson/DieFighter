@@ -66,6 +66,11 @@ enum TargetingSubtype {
 	## and not immune (Tile.accepts_lockout). Lockouts use this so they never
 	## stack, and fizzle only when every tile is already locked.
 	TARGET_RANDOM_LOCKABLE_TILE,
+	## The tile in the source tile's mirrored cell: same row, the other side
+	## of the grid (x -> grid_width - 1 - x). On a twin-pod ship that's the
+	## matching cell across the hull gap. Nothing in a centre column, which
+	## mirrors onto itself. The "Feed across" relays use it.
+	TARGET_MIRRORED_TILE,
 }
 
 

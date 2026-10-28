@@ -1,13 +1,19 @@
 [gd_resource type="Resource" script_class="ShipResource" format=3]
 
 [ext_resource type="Script" path="res://Source/Content/Ships/ship_resource.gd" id="1_ship"]
-[ext_resource type="Resource" path="res://Source/Resources/SaveResources/run_start.tres" id="2_start"]
+[ext_resource type="Resource" path="res://Source/Content/Ships/Outrigger/outrigger_start.tres" id="2_start"]
+[ext_resource type="PackedScene" path="res://Source/Content/Ships/Outrigger/outrigger_behavior.tscn" id="3_behavior"]
 
 [resource]
 script = ExtResource("1_ship")
 id = &"outrigger"
 display_name = "Outrigger"
-description = "STUB: two 3x3 pods. Unspent dice charge the engine."
+description = "Twin hulls, two pods, no charger. Dice you [color=orange]keep[/color] fill the sail with [color=purple]engine charge[/color]."
 sort_order = 1
 starting_save = ExtResource("2_start")
 grid_cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(4, 0), Vector2i(5, 0), Vector2i(6, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(2, 1), Vector2i(4, 1), Vector2i(5, 1), Vector2i(6, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(4, 2), Vector2i(5, 2), Vector2i(6, 2)])
+grid_size = Vector2i(7, 3)
+grid_offset = Vector2(-5, 0)
+hole_column_width = 12
+behavior_scene = ExtResource("3_behavior")
+hand_may_be_kept = true
