@@ -4,6 +4,22 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-27 — Hazard timing on arrival, intact cockpit at the start, dice one at a time
+
+- **The arrival card says when.** A hazard's RegionAlert adds "Hits 2 turns
+  into a fight / Then every 2 turns" (or "Next in N turns" once a fight has it
+  counting). "Your turn ends -> re-roll" alone read as every turn. The
+  monitor's timing lines are CSV keys now.
+- **No damage at the starting hull.** Cockpit cracks and smoke spread over the
+  hull below `CockpitDamage.intact_from` (75%) rather than the whole bar, so a
+  run's 24/32 shows a clean canopy; the first crack is at 21. A test ties the
+  line to `run_start.tres`. Hull itself is unchanged, so balance is too.
+- **Ion Storm and Fate Rift go die by die.** `ChangeHeldDiceEvent` rings each
+  held die in the hazard's colour, blips and flips it (0.35 s a half, was
+  0.2), and lands it before the next. About 0.8 s a die.
+
+---
+
 ## 2026-10-26 — Tile balance batch (smart-randpick)
 
 - **Random picks, smart fights.** `--policy smart-randpick` takes salvage and

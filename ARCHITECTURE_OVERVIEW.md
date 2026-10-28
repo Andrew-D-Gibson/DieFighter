@@ -983,7 +983,9 @@ die. Dice hazards have to live there: at turn start the hand has only just
 been rolled, so re-rolling or flipping it changes nothing. At turn end they
 re-roll or flip the dice the player handed over (`ChangeHeldDiceEvent`),
 which changes which intents fire, and `enemy_held_dice_changed` moves the
-targeting computer's highlight to match.
+targeting computer's highlight to match. The dice go one at a time, each
+ringed in the hazard's colour (the DICE_CONTROL step's `color`) and landing
+before the next turns over, so the player can follow which die became what.
 
 `HazardManager` arms on `start_combat` from whatever background is on screen,
 disarms on `combat_finished` / `load_scenario` / `jump`, counts down in player
@@ -1008,7 +1010,9 @@ rule the enemy intent telegraph follows. Three things carry it:
   Game > Region Alerts, is off). On arrival it is the first beat of the
   `ArrivalIntro`: once the monitor has swung up, the card unfolds out of its
   screen into the empty sky, the cockpit dims slightly, and it holds ~2 s (a
-  click anywhere skips it) before folding back in, which kicks the monitor
+  click anywhere skips it; a hazard's card adds when it first hits and how
+  often after, from `EnvironmentMonitor.hazard_timing_text()` /
+  `hazard_repeat_text()`, and holds 1.3 s longer) before folding back in, which kicks the monitor
   and counts as read. A card from a region the player has since left fades or
   lands without effect.
 - **`ArrivalIntro`** (`ScenarioManager/arrival_intro.gd`) plays an arrival's
@@ -1240,8 +1244,8 @@ layer than that effect, not just at a higher z_index.
 `CockpitDamage` (`Graphics/Cockpit/CockpitDamage/`) shows the player's hull
 on the cockpit. Each child `CockpitDamageSite` is one full-screen overlay
 (a canopy crack or a split frame seam) with `emit_points` for its particles.
-Sites open in child order as hull falls, evenly spread over the bar
-(`sites_open_at()`), and close in reverse on a heal. A hit or heal animates
+Sites open in child order as hull falls, evenly spread over the hull below
+`intact_from` (`sites_open_at()`; 75%, so a new run's 24/32 shows nothing), and close in reverse on a heal. A hit or heal animates
 (debris in, green sparks out); a hull set directly (load, new run) snaps. A
 hull hit of at least `big_hit_fraction` of max billows smoke from torn seams,
 and open seams keep leaking a thin trail. The smoke is `smoke_puff-Sheet.png`
