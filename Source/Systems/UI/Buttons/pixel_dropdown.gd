@@ -46,6 +46,9 @@ signal item_selected(index: int)
 ## How far from the button the list opens, in pixels.
 const _LIST_GAP: float = 1.0
 
+## The open list keeps at least this far inside the screen's edges.
+const _SCREEN_MARGIN: float = 2.0
+
 var item_count: int:
 	get:
 		return items.size()
@@ -187,23 +190,84 @@ func _open_popup() -> void:
 		"panel", list_style if list_style else get_theme_stylebox("panel", "PopupMenu")
 	)
 	_popup_panel.custom_minimum_size.x = _main_button.size.x
-	_popup_panel.add_child(_build_item_list())
+	var columns: HBoxContainer = HBoxContainer.new()
+	columns.add_theme_constant_override("separation", 0)
+	_popup_panel.add_child(columns)
 	host.add_child(_popup_panel)
+	var rows: Array[Button] = _build_rows()
+	var rows_per_column: int = _arrange_in_columns(columns, rows, visible_rect)
 	_popup_panel.reset_size()
-
-	# Open downward, or upward when the list would run off the bottom of the
-	# screen. Whole pixels only: anything else smears under the camera zoom.
-	var origin: Vector2 = _main_button.global_position
-	var position_below: Vector2 = origin + Vector2(0, _main_button.size.y + _LIST_GAP)
-	if position_below.y + _popup_panel.size.y > visible_rect.end.y:
-		position_below.y = origin.y - _LIST_GAP - _popup_panel.size.y
-	_popup_panel.global_position = position_below.round()
+	_popup_panel.global_position = _popup_position(visible_rect, rows, rows_per_column)
 
 
-func _build_item_list() -> VBoxContainer:
-	var list: VBoxContainer = VBoxContainer.new()
-	list.add_theme_constant_override("separation", 0)
+## Where the open list goes: under the button, or over it when there's no
+## room below. When it fits neither way (a long list on a short screen) it is
+## slid so the current value sits on the button, then kept on screen: the
+## whole list stays reachable, and a click that lands where it was pressed
+## changes nothing.
+func _popup_position(visible_rect: Rect2, rows: Array[Button], rows_per_column: int) -> Vector2:
+	var bounds: Rect2 = visible_rect.grow(-_SCREEN_MARGIN)
+	var button_rect: Rect2 = _main_button.get_global_rect()
+	var list_size: Vector2 = _popup_panel.size
 
+	var below_y: float = button_rect.end.y + _LIST_GAP
+	var above_y: float = button_rect.position.y - _LIST_GAP - list_size.y
+	var y: float
+	if below_y + list_size.y <= bounds.end.y:
+		y = below_y
+	elif above_y >= bounds.position.y:
+		y = above_y
+	else:
+		y = below_y
+		if selected >= 0 and selected < rows.size():
+			# Worked out rather than read off the row: the containers haven't
+			# laid the rows out yet.
+			var row_height: float = rows[0].get_combined_minimum_size().y
+			var top_padding: float = _popup_panel.get_theme_stylebox("panel").get_margin(SIDE_TOP)
+			y = button_rect.get_center().y - top_padding \
+				- (selected % rows_per_column + 0.5) * row_height
+		y = clampf(y, bounds.position.y, maxf(bounds.position.y, bounds.end.y - list_size.y))
+
+	var x: float = clampf(button_rect.position.x, bounds.position.x,
+		maxf(bounds.position.x, bounds.end.x - list_size.x))
+	# Whole pixels only: anything else smears under the camera zoom.
+	return Vector2(x, y).round()
+
+
+## Fills `columns` with the rows, top to bottom then left to right, and
+## returns how many went in each column. A list taller than the screen wraps
+## into more columns instead of running off it.
+func _arrange_in_columns(columns: HBoxContainer, rows: Array[Button], visible_rect: Rect2) -> int:
+	if rows.is_empty():
+		return 1
+	# Measured once in the tree: outside it a row doesn't see the project's
+	# theme and comes out the wrong height.
+	var column: VBoxContainer = _add_column(columns)
+	column.add_child(rows[0])
+	var row_height: float = rows[0].get_combined_minimum_size().y
+	var panel_padding: float = _popup_panel.get_theme_stylebox("panel").get_minimum_size().y
+	var room: float = visible_rect.size.y - 2.0 * _SCREEN_MARGIN - panel_padding
+	var fit: int = maxi(1, floori(room / row_height))
+	# Even the columns out rather than leaving a stub at the end.
+	var column_count: int = ceili(float(rows.size()) / fit)
+	var rows_per_column: int = ceili(float(rows.size()) / column_count)
+
+	for i: int in range(1, rows.size()):
+		if i % rows_per_column == 0:
+			column = _add_column(columns)
+		column.add_child(rows[i])
+	return rows_per_column
+
+
+func _add_column(columns: HBoxContainer) -> VBoxContainer:
+	var column: VBoxContainer = VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.add_theme_constant_override("separation", 0)
+	columns.add_child(column)
+	return column
+
+
+func _build_rows() -> Array[Button]:
 	var hover: StyleBoxFlat = StyleBoxFlat.new()
 	hover.bg_color = item_hover_color
 	hover.anti_aliasing = false
@@ -216,6 +280,7 @@ func _build_item_list() -> VBoxContainer:
 	var checked: Texture2D = get_theme_icon("radio_checked", "PopupMenu")
 	var unchecked: Texture2D = get_theme_icon("radio_unchecked", "PopupMenu")
 
+	var rows: Array[Button] = []
 	for i: int in range(items.size()):
 		var row: Button = Button.new()
 		row.text = items[i]
@@ -229,8 +294,8 @@ func _build_item_list() -> VBoxContainer:
 		row.add_theme_stylebox_override("pressed", hover)
 		row.add_theme_stylebox_override("hover_pressed", hover)
 		row.pressed.connect(_on_item_button_pressed.bind(i))
-		list.add_child(row)
-	return list
+		rows.append(row)
+	return rows
 
 
 func _set_row_margins(style: StyleBox) -> void:
@@ -258,6 +323,13 @@ func _close_if_hidden() -> void:
 ## global_position.
 func _visible_canvas_rect() -> Rect2:
 	return get_canvas_transform().affine_inverse() * get_viewport_rect()
+
+
+## Escape backs out of the open list without changing anything.
+func _unhandled_input(event: InputEvent) -> void:
+	if _popup_panel and event.is_action_pressed(&"ui_cancel"):
+		_close_popup()
+		get_viewport().set_input_as_handled()
 
 
 func _on_click_catcher_gui_input(event: InputEvent) -> void:
