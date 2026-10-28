@@ -291,3 +291,12 @@ func test_a_freed_ally_cant_be_fed() -> void:
 	assert_false(FeedAllyEvent.can_feed(a.turn_actions[2].bound_target, [] as Array[Node]))
 	# With nobody left to relay to, the slot reads as its own (shield-only) threat.
 	assert_eq(a.threat_of_face(3), EnemyActionResource.Threat.NEUTRAL)
+
+
+func test_a_bound_ship_freed_since_the_roll_reads_as_none() -> void:
+	var action: EnemyActionResource = EnemyActionResource.new()
+	var ally: Enemy = preload("res://Source/Content/Enemies/enemy.tscn").instantiate()
+	action.bound_target = ally
+	assert_eq(action.bound_ship(), ally)
+	ally.free()
+	assert_null(action.bound_ship(), "and safe to put in a typed variable")

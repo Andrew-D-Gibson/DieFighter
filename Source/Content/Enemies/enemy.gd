@@ -511,7 +511,7 @@ func threat_of_face(face: int) -> EnemyActionResource.Threat:
 			return maxi(threat, EnemyActionResource.Threat.NEUTRAL) as EnemyActionResource.Threat
 		var action: EnemyActionResource = ship.turn_actions[face - 1]
 		threat = maxi(threat, action.get_threat()) as EnemyActionResource.Threat
-		var next: Enemy = action.bound_target
+		var next: Enemy = action.bound_ship()
 		if action.get_relay() == EnemyActionResource.Relay.NONE \
 		or not FeedAllyEvent.can_feed(next, []) or next in visited:
 			return threat

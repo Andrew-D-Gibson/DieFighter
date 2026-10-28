@@ -222,6 +222,13 @@ func _step_can_happen(effect: EffectData, aimed_at_bound: bool) -> bool:
 	return true
 
 
+## The ship this slot was bound to, or null once it has been freed. Read it
+## through here into a typed variable: assigning a freed ship to one is an
+## error, and a bound ship can be destroyed between the roll and the use.
+func bound_ship() -> Enemy:
+	return bound_target if is_instance_valid(bound_target) else null
+
+
 ## Whether the ship this slot was bound to is still in the fight.
 func is_bound_target_present() -> bool:
 	return is_instance_valid(bound_target) and bound_target.health.health > 0

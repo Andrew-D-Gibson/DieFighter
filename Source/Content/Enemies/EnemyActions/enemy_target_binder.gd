@@ -98,7 +98,7 @@ static func next_hop(ship: Enemy, face: int) -> Array:
 	var action: EnemyActionResource = ship.turn_actions[face - 1]
 	if action == null or action.get_relay() == EnemyActionResource.Relay.NONE:
 		return []
-	var ally: Enemy = action.bound_target
+	var ally: Enemy = action.bound_ship()
 	if not is_instance_valid(ally) or ally.health.health <= 0:
 		return []
 	return [ally, action.relay_face(face)]

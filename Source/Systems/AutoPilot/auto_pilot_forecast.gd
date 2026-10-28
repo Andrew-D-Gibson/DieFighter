@@ -463,6 +463,16 @@ func _holds(data: ConditionalEffectData, walk: _Walk) -> bool:
 				return false
 			var queue: DiceQueue = walk.context.targets[0].get("dice_manager") as DiceQueue
 			return queue != null and queue.has_value(walk.face)
+		EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE:
+			# Asked here rather than of Tile.get_held_die(), which takes only a
+			# real Dice and the policy may walk a stand-in.
+			var source: Tile = walk.context.effect_source as Tile
+			if source == null:
+				return false
+			for held: Dice in source.dice_queue.queue:
+				if is_instance_valid(held) and held != walk.context.activator_die:
+					return true
+			return false
 		EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS:
 			var engine: ScenarioEngine = ScenarioEngine.current()
 			return engine != null and not walk.context.targets.is_empty() \

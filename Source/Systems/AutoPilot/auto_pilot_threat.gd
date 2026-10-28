@@ -60,7 +60,7 @@ static func of_face(ship: Enemy, face: int, arriving: bool = true) -> float:
 			break
 		var action: EnemyActionResource = ship.turn_actions[face - 1]
 		cost += _cost_of_action(action, ship, face)
-		var next: Enemy = action.bound_target
+		var next: Enemy = action.bound_ship()
 		if action.get_relay() == EnemyActionResource.Relay.NONE or not FeedAllyEvent.can_feed(next, []):
 			break
 		visited.append(ship)

@@ -135,7 +135,9 @@ func resolve(engine: ScenarioEngine) -> void:
 	context.activator_die = activator_die
 	context.repetitions = activation_repetitions
 	context.enemy_intent_amount = action.intent_amount
-	context.bound_target = action.bound_target
+	# Null if the bound ship was destroyed (and freed) since the roll: the
+	# action then finds no one to act on, as get_outcome() already said.
+	context.bound_target = action.bound_ship()
 	context.feed_depth = feed_depth
 	context.relay_visited = relay_visited
 
