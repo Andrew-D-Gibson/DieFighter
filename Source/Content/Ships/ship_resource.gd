@@ -38,6 +38,11 @@ extends Resource
 @export var supports_tutorial: bool = false
 
 @export_category("Art")
+## Repaints the cockpit shell for this ship: each key, one of the default
+## cockpit's colours (its navy ramp #463c91 #251c6b #191347 #130f38), becomes
+## its value. Approved palette only. Leave #0f0c2e alone: the cockpit lights
+## paint it as their "off" colour. Empty keeps the default cockpit.
+@export var cockpit_palette: Dictionary[Color, Color] = {}
 ## The ship in the opening cutscene. Needs a "boost" animation, nose up.
 ## Null keeps the cutscene's own.
 @export var cutscene_frames: SpriteFrames

@@ -11,6 +11,7 @@
 [ext_resource type="Shader" uid="uid://b325sq1hvbhpv" path="res://Assets/Shaders/glitch.gdshader" id="4_o33d5"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
 [ext_resource type="PackedScene" uid="uid://c6xh4tyxli6ko" path="res://Source/Systems/UI/SaveIndicator/save_indicator.tscn" id="4_svind"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitWalls/cockpit_walls.gd" id="cockpit_walls_script"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
 [ext_resource type="Script" uid="uid://chphrqxy6veu0" path="res://Source/Systems/UI/Glitch/glitch_controller.gd" id="5_aaucc"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
@@ -318,6 +319,7 @@ large_shake_duration = 0.25
 [node name="Cockpit Walls" type="Sprite2D" parent="Graphics" unique_id=880211854]
 position = Vector2(160, 90)
 texture = ExtResource("5_a6pqk")
+script = ExtResource("cockpit_walls_script")
 
 [node name="DiceAreaHighlight" type="Sprite2D" parent="Graphics/Cockpit Walls" unique_id=1079840625]
 visible = false
