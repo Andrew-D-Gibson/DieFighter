@@ -1478,9 +1478,16 @@ because `state` is stale while a new scenario's ships roll).
 is rolled, not when the die is spent: `EnemyTargetBinder` sets
 `EnemyActionResource.bound_target` once every table is in, and
 `TARGET_BOUND_ALLY` / `TARGET_BOUND_HOSTILE_SHIP` read it. The description's
-`(target)` token names the ship, and while an enemy is targeted the targeting
-computer hangs a small die face, green for an ally and red for prey, under
-each ship its slots are bound to. Bindings never move and the action is
+`(target)` token names the ship, and while an enemy is targeted (in a fight)
+the targeting computer draws a `BoundIntentArrow` to each ship its slots are
+bound to: a dotted arc over the ships, green to an ally and red to prey,
+landing on the bound ship with a pixel arrowhead. A badge near the top of the
+arc shows each thing the arc carries (the die faces that buy it, the intent
+icon, the amount); slots with the same icon and amount share one. A slot the
+ship holds the die for, or is playing now (`TargetingComputer.is_slot_live`),
+lights its face, and the dots march toward the target; otherwise the arc sits
+dim and still. Badges sit short of the arc's middle, toward its left end,
+since every ship carries its hull badges on its upper left. Bindings never move and the action is
 never rerolled once the player can see it: if the bound ship leaves, the
 slot can't happen any more (see Action outcome below).
 

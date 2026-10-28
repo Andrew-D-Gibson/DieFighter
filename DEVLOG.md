@@ -4,6 +4,23 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-27 — Arcs for cooperative intents, no spare die for a self-started fight
+
+- **Bound slots draw an arc.** The tinted die face under a bound ship said
+  which ship but not who from, or what. Now the targeted ship throws a dotted
+  arc (`BoundIntentArrow`) over the formation to each ship its slots are bound
+  to, green for help and red for a raid, with a badge near the top: die
+  faces, intent icon, amount, one badge per distinct effect. Held slots light
+  up and the dots march; the rest sit dim. Only while the ship is targeted, as
+  before.
+- **No spare die for a fight you started.** Firing your last die at a ship out
+  of combat started the fight with an empty hand, and its first turn dealt a
+  spare. The player now notes when its own play emptied the hand, and the
+  fight's first turn skips the spare then; turn starts still rescue a hand
+  ships emptied.
+
+---
+
 ## 2026-10-27 — Relay crash, and a debug log a playtester can send
 
 - **Crash: a relay bound to a destroyed ally.** Handing a die to a ship whose
