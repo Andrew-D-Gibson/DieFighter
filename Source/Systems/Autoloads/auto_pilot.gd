@@ -27,6 +27,7 @@ extends Node
 ##                        see AutoPilotCamera)
 ##   --stop-at-turn=N     stop playing as player turn N starts and leave the
 ##                        game running, to look around or play on by hand
+##   --ship=ID            fly this ship (ShipResource.id; default die_fighter)
 ##   --no-mcp             free McpInteractionServer in a windowed run too,
 ##                        so a replay can't clash with a game on port 9090
 ##
@@ -140,6 +141,13 @@ func _ready() -> void:
 	_stop_at_turn = int(args.get("stop-at-turn", "0"))
 	if args.has("screenshots") and AutoPilotCamera.can_capture():
 		_camera = AutoPilotCamera.new(args["screenshots"])
+
+	# Before the game scene's _ready(): the TileGrid shapes itself from it.
+	if args.has("ship"):
+		Globals.selected_ship = ShipCatalog.find(StringName(args["ship"]))
+		if Globals.selected_ship.id != StringName(args["ship"]):
+			_abort("unknown ship '%s'" % args["ship"])
+			return
 
 	if args.has("seed"):
 		_run_seed = int(args["seed"])
@@ -482,7 +490,8 @@ func _open_transcript() -> bool:
 	if not _transcript:
 		_abort("can't write %s (%s)" % [path, error_string(FileAccess.get_open_error())])
 		return false
-	var header: Dictionary = {"type": "header", "seed": _run_seed, "policy": _policy_name}
+	var header: Dictionary = {"type": "header", "seed": _run_seed, "policy": _policy_name,
+		"ship": String(Globals.current_ship().id)}
 	if _gauntlet:
 		header["gauntlet"] = _gauntlet.describe()
 	_write(header)
