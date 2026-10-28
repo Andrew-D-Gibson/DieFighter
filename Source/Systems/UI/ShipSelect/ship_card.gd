@@ -8,6 +8,9 @@ signal picked(card: ShipCard)
 
 const SIZE: Vector2 = Vector2(98, 124)
 
+const _HOVER_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/hover_thump.tres")
+const _PICK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
+
 const _BACKGROUND: Color = Color("#0f0c2e")
 const _BORDER: Color = Color("#463c91")
 const _BORDER_HOVER: Color = Color("#a846ce")
@@ -20,7 +23,7 @@ const _HOLE: Color = Color("#130f38")
 const _MAP_CELL: int = 4
 const _MAP_GAP: int = 1
 ## The map's box on the card.
-const _MAP_RECT: Rect2 = Rect2(4, 52, 90, 30)
+const _MAP_RECT: Rect2 = Rect2(4, 60, 90, 20)
 
 var ship: ShipResource
 var is_picked: bool = false:
@@ -51,14 +54,19 @@ func setup(for_ship: ShipResource) -> void:
 	_hull.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_hull)
 
-	_name_label = _label(ship.display_name.to_upper(), Rect2(0, 35, SIZE.x, 16), 16)
+	_name_label = _label(ship.display_name.to_upper(), Rect2(0, 34, SIZE.x, 14), 16)
 	_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
-	var description: RichTextLabel = _label(ship.description, Rect2(4, 83, SIZE.x - 8, 40), 16)
+	var stats: RichTextLabel = _label(_stats_text(), Rect2(0, 45, SIZE.x, 14), 16)
+	stats.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+
+	var description: RichTextLabel = _label(ship.description, Rect2(4, 81, SIZE.x - 8, 42), 16)
 	description.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	mouse_entered.connect(func() -> void:
 		_hovered = true
+		if not is_picked:
+			Events.play_sound.emit(_HOVER_SFX)
 		queue_redraw()
 	)
 	mouse_exited.connect(func() -> void:
@@ -66,6 +74,27 @@ func setup(for_ship: ShipResource) -> void:
 		queue_redraw()
 	)
 	is_picked = false
+
+
+## What the ship starts a run with: hull and dice.
+func _stats_text() -> String:
+	if not ship.starting_save:
+		return ""
+	var start: GameSaveResource = ship.starting_save
+	return "[color=#d03656]%d/%d HULL[/color]  [color=#eed35d]%d DICE[/color]" % [
+		start.player_health, start.player_max_health, start.num_of_dice
+	]
+
+
+## Slides the card up into place, after a delay so a row of them ripples in.
+func play_entrance(delay: float) -> void:
+	var home: Vector2 = position
+	position.y += 10
+	modulate.a = 0.0
+	var tween: Tween = create_tween().set_parallel()
+	tween.tween_property(self, "position", home, 0.25) \
+		.set_delay(delay).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(self, "modulate:a", 1.0, 0.15).set_delay(delay)
 
 
 func _label(text: String, rect: Rect2, font_size: int) -> RichTextLabel:
@@ -92,6 +121,8 @@ func _process(delta: float) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed \
 	and event.button_index == MOUSE_BUTTON_LEFT:
+		if not is_picked:
+			Events.play_sound.emit(_PICK_SFX)
 		picked.emit(self)
 		accept_event()
 
@@ -100,6 +131,19 @@ func _draw() -> void:
 	draw_rect(Rect2(Vector2.ZERO, SIZE), _BACKGROUND)
 	var border: Color = _BORDER_PICKED if is_picked else (_BORDER_HOVER if _hovered else _BORDER)
 	draw_rect(Rect2(Vector2(0.5, 0.5), SIZE - Vector2.ONE), border, false, 1.0)
+	if is_picked:
+		# A soft inner glow, and bright corner brackets, so the pick reads
+		# from across the screen.
+		var glow: Color = Color(_BORDER_PICKED, 0.3)
+		draw_rect(Rect2(Vector2(1.5, 1.5), SIZE - Vector2.ONE * 3), glow, false, 1.0)
+		for left: bool in [true, false]:
+			for top: bool in [true, false]:
+				# An L of two 8px bars wrapped round the outside of the corner.
+				var outer: Vector2 = Vector2(-2.0 if left else SIZE.x, -2.0 if top else SIZE.y)
+				var bar_x: float = outer.x if left else outer.x - 6.0
+				var bar_y: float = outer.y if top else outer.y - 6.0
+				draw_rect(Rect2(bar_x, outer.y, 8, 2), _BORDER_PICKED)
+				draw_rect(Rect2(outer.x, bar_y, 2, 8), _BORDER_PICKED)
 	_draw_grid_map()
 
 

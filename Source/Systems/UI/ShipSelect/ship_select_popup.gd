@@ -38,6 +38,7 @@ func open() -> void:
 			-row_width / 2.0 + i * (ShipCard.SIZE.x + _CARD_GAP), _CARD_TOP
 		).floor()
 		card.picked.connect(_pick)
+		card.play_entrance(0.05 * i)
 		_cards.append(card)
 
 	var remembered: ShipResource = Globals.current_ship()
