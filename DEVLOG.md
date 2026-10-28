@@ -4,6 +4,26 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-27 — Relay crash, and a debug log a playtester can send
+
+- **Crash: a relay bound to a destroyed ally.** Handing a die to a ship whose
+  relay slot still pointed at a freed ally crashed in
+  `Enemy.threat_of_face()` (the tractor beam colours itself by it).
+  `FeedAllyEvent.can_feed()` had an `is_instance_valid` guard, but GDScript
+  rejects a freed object at any Object-typed parameter before the body runs,
+  so the guard never got a chance. `target` is untyped now; all four callers
+  (threat walk, AutoPilot threat, Feed Ally, Holo Loader) were exposed.
+- **Errors land in `debug_log.txt`.** The crash's backtrace was only in
+  `logs/godot.log`, and the play-by-play had been overwritten by the next
+  launch. Now `DebugLogger.ErrorSink` writes each engine error and its
+  GDScript backtrace right after the last thing the game logged, with
+  backtraces kept in release exports (`always_track_call_stacks`).
+- **Earlier sessions survive a relaunch** as `debug_log_<time>.txt` (5 kept),
+  and each log opens with the build, machine and locale, and each run's seed.
+  `application/config/version` isn't set yet, so exports say "unversioned".
+
+---
+
 ## 2026-10-27 — Hazard timing on arrival, intact cockpit at the start, dice one at a time
 
 - **The arrival card says when.** A hazard's RegionAlert adds "Hits 2 turns
