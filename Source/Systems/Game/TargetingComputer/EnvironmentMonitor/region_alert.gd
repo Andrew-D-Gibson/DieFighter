@@ -32,6 +32,8 @@ const _DIM_RECT: Rect2 = Rect2(-16, -16, 352, 212)
 const _UNFOLD_SECONDS: float = 0.4
 ## Long enough to read a one-line rule.
 const _HOLD_SECONDS: float = 2.2
+## Extra time to read a footnote (a hazard's timing).
+const _FOOTNOTE_HOLD_SECONDS: float = 1.3
 const _FOLD_SECONDS: float = 0.45
 ## How small the card is at the monitor's screen, coming and going.
 const _AT_MONITOR_SCALE: float = 0.06
@@ -39,6 +41,8 @@ const _AT_MONITOR_SCALE: float = 0.06
 var title: String = ""
 var color: Color = Color.WHITE
 var description: String = ""
+## Small print under the description, e.g. when a hazard hits. Empty for none.
+var footnote: String = ""
 ## The monitor's screen, asked as each flight starts.
 var landing_point: Callable
 
@@ -95,6 +99,8 @@ func _build() -> void:
 	lines.add_child(_label("[color=%s]%s[/color]" % [color.to_html(false), title]))
 	# Formatted like the info panel: keyword tokens, palette colours, icons.
 	lines.add_child(_label(Utils.format_text(description)))
+	if not footnote.is_empty():
+		lines.add_child(_label(Utils.format_text(footnote)))
 
 	# Centred on the card's origin, so scaling it shrinks toward its middle.
 	_panel.reset_size()
@@ -133,7 +139,8 @@ func _unfold() -> void:
 	tween.tween_property(_card, "modulate:a", 1.0, _UNFOLD_SECONDS * 0.4)
 	tween.tween_property(_dim, "modulate:a", 1.0, _UNFOLD_SECONDS)
 	# Paused with the game, so a pause mid-read doesn't send it away.
-	var hold: SceneTreeTimer = get_tree().create_timer(_UNFOLD_SECONDS + _HOLD_SECONDS, false)
+	var hold_seconds: float = _HOLD_SECONDS + (0.0 if footnote.is_empty() else _FOOTNOTE_HOLD_SECONDS)
+	var hold: SceneTreeTimer = get_tree().create_timer(_UNFOLD_SECONDS + hold_seconds, false)
 	hold.timeout.connect(_fold)
 
 

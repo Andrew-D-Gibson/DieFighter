@@ -204,3 +204,52 @@ func test_a_card_for_the_last_region_landing_late_changes_nothing() -> void:
 	_alerts()
 	alerts[0].landed.emit()
 	assert_true(monitor._unread, "the new region's rule is still unread")
+
+
+# ── When a hazard hits ────────────────────────────────────────────────────────
+
+func test_before_a_fight_it_says_how_far_into_one_it_hits() -> void:
+	hazard.turns_until_first = 2
+	var text: String = EnvironmentMonitor.hazard_timing_text(hazard, false, 0)
+	assert_string_contains(text, "2 turns")
+	assert_string_contains(text, "fight")
+
+
+func test_during_a_fight_it_counts_the_turns_left() -> void:
+	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 3), "Next in")
+	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 3), "3 turns")
+
+
+func test_the_last_turn_says_which_end_of_it() -> void:
+	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_ENDS
+	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 1), "end this turn")
+	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_STARTS
+	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 1), "next turn")
+
+
+func test_the_repeat_reads_naturally_for_one_turn() -> void:
+	hazard.turns_between = 2
+	assert_string_contains(EnvironmentMonitor.hazard_repeat_text(hazard), "every 2 turns")
+	hazard.turns_between = 1
+	assert_string_contains(EnvironmentMonitor.hazard_repeat_text(hazard), "every turn")
+
+
+## "Your turn ends -> re-roll" alone reads as every turn; the card says when.
+func test_a_hazard_card_says_when_it_hits() -> void:
+	Globals.show_region_alerts = true
+	hazard.turns_until_first = 2
+	hazard.turns_between = 2
+	Events.start_scenario.emit()
+	await _settle()
+	await _finish_swing()
+	var alerts: Array[RegionAlert] = _alerts()
+	assert_eq(alerts.size(), 1)
+	assert_string_contains(alerts[0].footnote, "2 turns")
+	assert_string_contains(alerts[0].footnote, "every 2 turns")
+
+
+func test_a_rule_card_has_no_footnote() -> void:
+	Globals.show_region_alerts = true
+	await _arrive_with_rule()
+	await _finish_swing()
+	assert_eq(_alerts()[0].footnote, "")

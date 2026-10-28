@@ -297,6 +297,11 @@ func _announce(shown: Resource) -> void:
 		alert.title = tr(hazard.hazard_name).to_upper()
 		alert.color = hazard.color
 		alert.description = tr(hazard.description)
+		# The description says what happens and on which beat; without when,
+		# "your turn ends ->" reads as every turn.
+		alert.footnote = "%s\n%s" % [
+			hazard_timing_text(hazard, _armed, _turns_remaining), hazard_repeat_text(hazard)
+		]
 	else:
 		var modifier: BackgroundModifierResource = shown
 		alert.title = tr(modifier.modifier_name).to_upper()
@@ -397,7 +402,9 @@ func _on_clicked() -> void:
 		info.title_label_text = "[color=%s]%s[/color]" % [
 			_hazard.color.to_html(false), _hazard.hazard_name.to_upper()
 		]
-		info.bottom_label_text = "%s\n%s" % [_hazard.description, _hazard_timing_text()]
+		info.bottom_label_text = "%s\n%s" % [
+			_hazard.description, hazard_timing_text(_hazard, _armed, _turns_remaining)
+		]
 		info.texture = _hazard.icon if _hazard.icon else _DEFAULT_INFO_ICON
 	else:
 		info.title_label_text = "[color=%s]%s[/color]" % [
@@ -408,24 +415,33 @@ func _on_clicked() -> void:
 	Events.show_info.emit(info)
 
 
-## When the hazard next hits. How often it repeats is left out: once it has
-## hit, the reset countdown says that. The last turn is spelled out, because
-## "in 1 turn" can't say whether that means as this turn ends or as the next
-## one starts.
-func _hazard_timing_text() -> String:
-	if not _armed:
-		# Kept under the ~27 characters the panel fits on one line.
-		return "Strikes [color=yellow]once a fight starts[/color]"
-	if _turns_remaining <= 1:
-		var ends_turn: bool = _hazard.timing == BackgroundHazardResource.Timing.YOUR_TURN_ENDS
-		# Both kept under the ~27 characters the panel fits on one line.
-		return "Hits as you [color=yellow]end this turn[/color]" if ends_turn \
-			else "Hits at [color=yellow]start of next turn[/color]"
-	return "Next in [color=yellow]%s[/color]" % _turns_text(_turns_remaining)
+## When [param hazard] next hits: [param turns_remaining] on a fight's
+## countdown while [param armed], else how far into a fight it first does.
+## How often it repeats is left out (see hazard_repeat_text). The last turn is
+## spelled out, because "in 1 turn" can't say whether that means as this turn
+## ends or as the next one starts. Every line is kept under the ~27
+## characters the info panel fits on one line.
+static func hazard_timing_text(
+	hazard: BackgroundHazardResource, armed: bool, turns_remaining: int
+) -> String:
+	if not armed:
+		var first: int = maxi(1, hazard.turns_until_first)
+		if first == 1:
+			return TranslationServer.translate("HAZARD_FIRST_ONE_TURN_INTO_FIGHT")
+		return TranslationServer.translate("HAZARD_FIRST_TURNS_INTO_FIGHT").format({"turns": first})
+	if turns_remaining <= 1:
+		if hazard.timing == BackgroundHazardResource.Timing.YOUR_TURN_ENDS:
+			return TranslationServer.translate("HAZARD_HITS_AS_THIS_TURN_ENDS")
+		return TranslationServer.translate("HAZARD_HITS_AS_NEXT_TURN_STARTS")
+	return TranslationServer.translate("HAZARD_NEXT_IN_TURNS").format({"turns": turns_remaining})
 
 
-static func _turns_text(turns: int) -> String:
-	return "1 turn" if turns == 1 else "%d turns" % turns
+## How often [param hazard] hits after the first time.
+static func hazard_repeat_text(hazard: BackgroundHazardResource) -> String:
+	var interval: int = maxi(1, hazard.turns_between)
+	if interval == 1:
+		return TranslationServer.translate("HAZARD_REPEATS_EVERY_TURN")
+	return TranslationServer.translate("HAZARD_REPEATS_EVERY_TURNS").format({"turns": interval})
 
 
 ## Rises out from behind the targeting computer leaning over, then swings
