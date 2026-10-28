@@ -1,4 +1,4 @@
-class_name OutriggerCockpit
+class_name OutriggerPanel
 extends Node2D
 ## Dresses the systems panel for the Outrigger at runtime: the twin-pod panel
 ## art in place of the default 5x3 one, the sail mast in the hull gap, and the

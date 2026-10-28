@@ -929,7 +929,7 @@ back to `die_fighter`.
 | Ship | Grid | Engine | Behaviour |
 |---|---|---|---|
 | Die Fighter | 5x3 | Engine Charger tile | none |
-| Outrigger | two 3x3 pods, x 0-2 and 4-6 (column 3 a 16 px hole) | `OutriggerSail`: dice in hand at End Turn charge the drive by face (to the gate), then go to the target. `SailCatchEvent` per die, `SailSettleEvent` holds the queue until they land | `Outrigger/`: sail, `SailGauge` (mast in the gap; takes the `engine_charger` juice group), `OutriggerCockpit` (runtime restyle, frees the charger tile) |
+| Outrigger | two 3x3 pods, x 0-2 and 4-6 (column 3 a 16 px hole) | `OutriggerSail`: dice in hand at End Turn charge the drive by face (to the gate), then go to the target. `SailCatchEvent` per die, `SailSettleEvent` holds the queue until they land | `Outrigger/`: sail, `SailGauge` (mast in the gap; takes the `engine_charger` juice group), `OutriggerPanel` (runtime restyle of the systems panel, frees the charger tile) |
 | Carousel | 5x3 minus (2,1): 12-cell ring + hub slots (1,1), (3,1) | The Reactor: the charger tile moved to (2,1), re-dressed with `reactor.tres`; charges, then Feeds up to the ignition slot (2,0). `ReactorIgnitionModifier` points that Feed at the ignition tile | `CarouselBehavior`: turns the ring at `player_turn_refresh` (fight turns after the first) via `TileGrid.relocate_tiles()`, winds it home on `combat_finished`/`jump`; `CarouselTrackLights` |
 
 `TileGrid.relocate_tiles(moves)` moves many tiles at once (all leave before any

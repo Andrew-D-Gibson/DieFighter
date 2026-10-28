@@ -22,6 +22,7 @@ const HUD_SLOTS: StringName = &"HudSlots"
 const HULL_GAUGE: StringName = &"hud_hull_gauge"
 const TARGETING_COMPUTER: StringName = &"hud_targeting_computer"
 const STATUS_BAR: StringName = &"hud_status_bar"
+const HUD_GROUPS: Array[StringName] = [HULL_GAUGE, TARGETING_COMPUTER, STATUS_BAR]
 
 ## The shell. Null keeps the default shell, repainted with the ship's
 ## cockpit_palette. A shell of the ship's own is drawn in its own colours.

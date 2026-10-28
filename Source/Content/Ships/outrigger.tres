@@ -5,6 +5,7 @@
 [ext_resource type="PackedScene" path="res://Source/Content/Ships/Outrigger/outrigger_behavior.tscn" id="3_behavior"]
 [ext_resource type="SpriteFrames" path="res://Assets/Textures/Ships/Outrigger/outrigger_ship_frames.tres" id="4_frames"]
 [ext_resource type="Texture2D" uid="uid://48giughbube6" path="res://Assets/Textures/Ships/Outrigger/outrigger_preview.png" id="5_preview"]
+[ext_resource type="PackedScene" path="res://Source/Content/Ships/Outrigger/Cockpit/outrigger_cockpit.tscn" id="6_cockpit"]
 
 [resource]
 script = ExtResource("1_ship")
@@ -22,6 +23,7 @@ hand_may_be_kept = true
 cutscene_frames = ExtResource("4_frames")
 cutscene_exhaust_points = PackedVector2Array(-10, 10, 10, 10)
 preview_texture = ExtResource("5_preview")
+cockpit_scene = ExtResource("6_cockpit")
 cockpit_palette = Dictionary[Color, Color]({
 Color(0.27450980392156865, 0.23529411764705882, 0.5686274509803921, 1): Color(0.21568627450980393, 0.5372549019607843, 0.8, 1),
 Color(0.1450980392156863, 0.10980392156862745, 0.4196078431372549, 1): Color(0.17254901960784313, 0.44313725490196076, 0.6666666666666666, 1),

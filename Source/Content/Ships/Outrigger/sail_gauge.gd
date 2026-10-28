@@ -151,7 +151,7 @@ func _stop_projecting() -> void:
 
 
 ## Rewrites the charge in the badge above the mast. Also called once the
-## cockpit has built the badge (OutriggerCockpit).
+## cockpit has built the badge (OutriggerPanel).
 func update_readout() -> void:
 	if not is_instance_valid(readout) or not is_instance_valid(Globals.player):
 		return
