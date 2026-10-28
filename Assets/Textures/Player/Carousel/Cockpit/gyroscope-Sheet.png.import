@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0twce68m26xf"
-path="res://.godot/imported/brass_ring-Sheet.png-d7dc89853435db244a420eec5dbae36f.ctex"
+uid="uid://c74m2nfbtq3ib"
+path="res://.godot/imported/gyroscope-Sheet.png-0ef64b2ab9cc91247d7fc23830eed576.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/Carousel/Cockpit/brass_ring-Sheet.png"
-dest_files=["res://.godot/imported/brass_ring-Sheet.png-d7dc89853435db244a420eec5dbae36f.ctex"]
+source_file="res://Assets/Textures/Player/Carousel/Cockpit/gyroscope-Sheet.png"
+dest_files=["res://.godot/imported/gyroscope-Sheet.png-0ef64b2ab9cc91247d7fc23830eed576.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bqq31j018v58w"
-path="res://.godot/imported/rip_awning_right.png-7d2a99a87d3972d43845b94cdd4d400f.ctex"
+uid="uid://duanmnvrfp7io"
+path="res://.godot/imported/split_ring_left.png-02d774cdb025e9373dd7a785ad8f55ab.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Player/Carousel/Cockpit/Damage/rip_awning_right.png"
-dest_files=["res://.godot/imported/rip_awning_right.png-7d2a99a87d3972d43845b94cdd4d400f.ctex"]
+source_file="res://Assets/Textures/Player/Carousel/Cockpit/Damage/split_ring_left.png"
+dest_files=["res://.godot/imported/split_ring_left.png-02d774cdb025e9373dd7a785ad8f55ab.ctex"]
 
 [params]
 
