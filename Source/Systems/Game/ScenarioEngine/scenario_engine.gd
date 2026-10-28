@@ -123,12 +123,14 @@ func statuses_on(host: Node) -> Array[StatusModifier]:
 	return result
 
 
-## Gives every status its once-a-round tick. Called by the enemy manager as
-## the player's turn ends, before any ship acts.
-func tick_statuses() -> void:
+## Gives one side's statuses their once-a-round tick: the enemies' as their
+## turn starts, before any ship acts, and the player's (with [param player_side])
+## as it ends, before the player's turn starts. Both are called from EnemyTurn.
+func tick_statuses(player_side: bool = false) -> void:
 	# A tick can spend a status's last stack and remove it from the list.
 	for mod: Modifier in modifiers.duplicate():
-		if mod is StatusModifier and mod in modifiers:
+		if mod is StatusModifier and mod in modifiers \
+				and (mod as StatusModifier).is_on_player() == player_side:
 			(mod as StatusModifier).on_status_tick()
 
 

@@ -13,6 +13,13 @@ extends RefCounted
 ##      Variants share a term, so its rule is written once. A row may set
 ##      "color" to a palette name where the word belongs to another colour
 ##      rule (holograms are blue); otherwise keywords are orange.
+##   A status that works differently on the player has a second term, its
+##   name plus PLAYER_SUFFIX, which its badge shows on the player's ship.
+
+
+## Appended to a status's term for its rule on the player (see
+## StatusModifier.rule_term()).
+const PLAYER_SUFFIX: String = " (you)"
 
 
 ## Term -> rule, shown in a pop-up on hover. Terse and in the same palette as
@@ -25,6 +32,8 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Scrambled": "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled.",
 	"Jammed": "The next die this ship uses does nothing. Spends 1 Jammed.",
 	"Exposed": "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends 1 Exposed.",
+	"Scrambled (you)": "Each die you place on a tile flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]) first. Spends 1 Scrambled.",
+	"Jammed (you)": "The next die you place on a tile does nothing and goes to [color=purple]target[/color]. Spends 1 Jammed.",
 	"Hologram": "A copy of a die. Destroyed if given to another ship.",
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
 	"Steal": "This ship keeps the die. Next turn it uses it to Steal again. It drops what it holds if destroyed.",
@@ -46,6 +55,8 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(scramble)":   {"label": "Scramble",   "term": "Scrambled"},
 	"(jammed)":     {"label": "Jammed",     "term": "Jammed"},
 	"(jam)":        {"label": "Jam",        "term": "Jammed"},
+	"(jammed_you)": {"label": "Jammed",     "term": "Jammed (you)"},
+	"(scrambled_you)": {"label": "Scrambled", "term": "Scrambled (you)"},
 	"(exposed)":    {"label": "Exposed",    "term": "Exposed"},
 	"(expose)":     {"label": "Expose",     "term": "Exposed"},
 	"(load)":       {"label": "Load",       "term": "Load"},

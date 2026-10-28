@@ -11,6 +11,12 @@ extends StatusModifier
 ## Hooks the ship's dice intake instead of an engine event, because dice reach
 ## ships by several routes (a tile's give, a refused Feed, a dying ship's dice
 ## scattering) and EnemyDiceManager.add() is the one door they all pass.
+##
+## On the player, each die placed on a tile from the hand flips as the tile
+## takes it, before the tile checks whether it takes that face. Dice a Feed
+## passes along are already in play and stay as they are. Priority 6: after
+## a lock (which reads the face it was given), before a jam (which asks
+## whether the tile takes the flipped face) and anything that reads the face.
 
 
 func _init() -> void:
@@ -19,6 +25,24 @@ func _init() -> void:
 	color = Globals.green
 	icon = preload("res://Assets/Textures/Statuses/scrambled.png")
 	info_icon = preload("res://Assets/Textures/Statuses/scrambled_info.png")
+	priority = 6
+
+
+func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
+	if stacks <= 0 or not is_on_player() or event is not TileActivationEvent:
+		return
+	var activation: TileActivationEvent = event as TileActivationEvent
+	if activation.feed_depth > 0 or not JammedStatus.is_ship_system(activation.tile):
+		return
+	var die: Node = activation.activator_die
+	if not is_instance_valid(die):
+		return
+	die.value = 7 - die.value
+	activation.die_value = die.value
+	if die.has_method("play_pop"):
+		die.play_pop(0.5)
+	announce_triggered_at(activation.tile)
+	consume(1)
 
 
 func on_registered(engine: ScenarioEngine) -> void:

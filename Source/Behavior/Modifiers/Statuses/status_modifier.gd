@@ -7,6 +7,12 @@ extends Modifier
 ## status needs on top: stacks, a turn tick, cleanup when its ship leaves, and a
 ## badge on that ship's StatusBar.
 ##
+## A status can sit on an enemy or on the player. It is the same idea on either
+## side, but the player plays dice onto tiles where an enemy spends them on its
+## table, so a status that hooks dice reads is_on_player() and hooks the
+## player's side of it. Player statuses tick as the enemy turn ends (the start
+## of the player's own turn) and clear when the fight does.
+##
 ## Stacks are the only number a status has. Each status decides what a stack
 ## means — damage per tick, dice to flip, bonus on the next hit — so merging,
 ## spending and the badge all stay generic.
@@ -64,23 +70,34 @@ func play_applied_feedback(stacks_added: int) -> void:
 	var tint: Color = get_trigger_color()
 	if ship is Enemy:
 		(ship as Enemy).graphics_manager.flash(tint, 0.35)
-	Juice.ring(ship, ship.global_position, tint, 22.0, 0.4, 6.0)
-	Juice.sparkle(ship, ship.global_position, tint, 12, 40.0, true)
+	elif ship is Player:
+		# The player's ship has no hull on screen to flash; the cockpit
+		# glass takes the colour instead, as it does for any hit.
+		Events.vignette_pulse.emit(tint)
+	var at: Vector2 = Juice.anchor_of(ship)
+	Juice.ring(ship, at, tint, 22.0, 0.4, 6.0)
+	Juice.sparkle(ship, at, tint, 12, 40.0, true)
 	Juice.callout(ship, "+%d %s" % [stacks_added, display_name.to_upper()], tint)
 
 
 ## Statuses have no source tile to light up, so the ship they sit on reacts
 ## instead. The badge pulses on its own as consume() spends the stack.
 func announce_triggered() -> void:
-	super()
-	var ship: Node2D = host()
-	if ship == null:
+	announce_triggered_at(host())
+
+
+## announce_triggered() with the flourish drawn on [param anchor] rather than
+## the host: a player status that acts on a tile (Jammed, Scrambled) shows up
+## on that tile, where the player is looking, not on the health bar.
+func announce_triggered_at(anchor: Node2D) -> void:
+	super.announce_triggered()
+	if not is_instance_valid(anchor):
 		return
 	var tint: Color = get_trigger_color()
-	if ship is Enemy:
-		(ship as Enemy).graphics_manager.flash(tint, 0.3)
-	Juice.sparkle(ship, ship.global_position, tint, 8, 35.0)
-	Juice.callout(ship, get_trigger_text(), tint)
+	if anchor is Enemy:
+		(anchor as Enemy).graphics_manager.flash(tint, 0.3)
+	Juice.sparkle(anchor, Juice.anchor_of(anchor), tint, 8, 35.0)
+	Juice.callout(anchor, get_trigger_text(), tint)
 
 
 func get_trigger_text() -> String:
@@ -91,8 +108,9 @@ func get_trigger_color() -> Color:
 	return color
 
 
-## Called once per round by ScenarioEngine.tick_statuses(), which the enemy
-## manager runs as the player's turn ends and before any ship acts.
+## Called once per round by ScenarioEngine.tick_statuses(): for an enemy as
+## its turn starts, before any ship acts; for the player as the enemy turn
+## ends, before the player's turn starts.
 func on_status_tick() -> void:
 	pass
 
@@ -102,17 +120,37 @@ func host() -> Node2D:
 	return affected_node if is_instance_valid(affected_node) else null
 
 
+## Whether this status sits on the player's ship rather than an enemy.
+func is_on_player() -> bool:
+	return affected_node is Player
+
+
+## The Keywords term whose rule explains this status where it sits. A status
+## that works differently on the player has its own "(you)" term.
+func rule_term() -> String:
+	var player_term: String = display_name + Keywords.PLAYER_SUFFIX
+	if is_on_player() and not Keywords.definition(player_term).is_empty():
+		return player_term
+	return display_name
+
+
 func on_registered(engine: ScenarioEngine) -> void:
 	_host_engine = engine
 	super(engine)
 	if not Events.enemy_left.is_connected(_on_ship_left):
 		Events.enemy_left.connect(_on_ship_left)
+	# A player's statuses are the fight's doing, and end with it; out of
+	# combat there is no enemy turn left to tick them away.
+	if is_on_player() and not Events.combat_finished.is_connected(_on_combat_finished):
+		Events.combat_finished.connect(_on_combat_finished)
 
 
 func on_unregistered(engine: ScenarioEngine) -> void:
 	super(engine)
 	if Events.enemy_left.is_connected(_on_ship_left):
 		Events.enemy_left.disconnect(_on_ship_left)
+	if Events.combat_finished.is_connected(_on_combat_finished):
+		Events.combat_finished.disconnect(_on_combat_finished)
 	_badge = null
 	_host_engine = null
 
@@ -146,4 +184,9 @@ func _find_status_bar() -> StatusBar:
 ## is freed, so a status can't tick on a ship that is already gone.
 func _on_ship_left(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 	if ship == affected_node and _host_engine:
+		_host_engine.remove_modifier(self)
+
+
+func _on_combat_finished() -> void:
+	if _host_engine:
 		_host_engine.remove_modifier(self)

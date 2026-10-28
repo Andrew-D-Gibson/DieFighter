@@ -83,6 +83,13 @@ static func play(roster: Callable, tree: SceneTree) -> void:
 	if not _engine_alive(engine):
 		return
 
+	# The player's statuses tick last, mirroring the ships': at the start of
+	# the player's own turn, and resolved before it begins.
+	engine.tick_statuses(true)
+	await _drain(engine, tree)
+	if not _engine_alive(engine):
+		return
+
 	Events.enemy_turn_over.emit()
 
 

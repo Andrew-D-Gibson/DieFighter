@@ -78,9 +78,13 @@ static func vitals(node: Node) -> String:
 static func player_summary(player: Player) -> String:
 	if not is_instance_valid(player):
 		return "Player: -"
-	return "Player: %s, charge %d/%d, money %d" % [
+	var text: String = "Player: %s, charge %d/%d, money %d" % [
 		vitals(player), player.engine_charge, player.max_engine_charge, player.money
 	]
+	var status_text: String = statuses(player, ScenarioEngine.current())
+	if status_text != "":
+		text += ", statuses: %s" % status_text
+	return text
 
 
 static func statuses(host: Node, engine: ScenarioEngine) -> String:

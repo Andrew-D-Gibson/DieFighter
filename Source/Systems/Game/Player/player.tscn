@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://skeakddxfvao" path="res://Source/Systems/Game/Player/PlayerHealthBar/player_health_bar.tscn" id="5_83hls"]
 [ext_resource type="Texture2D" uid="uid://d32kfgfc7nejp" path="res://Assets/Textures/UI/Buttons/button_small_blue_longer.png" id="6_0xxso"]
 [ext_resource type="Texture2D" uid="uid://o3hohympgf3q" path="res://Assets/Textures/UI/Buttons/button_small_blue_longer_disabled.png" id="7_vc188"]
+[ext_resource type="Script" uid="uid://dm50m071qu6kk" path="res://Source/Behavior/Modifiers/Statuses/StatusBadge/status_bar.gd" id="8_status"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0xxso"]
 resource_local_to_scene = true
@@ -75,6 +76,13 @@ starting_health = 16
 [node name="PlayerHealthBar" parent="." unique_id=924294972 node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
 position = Vector2(-22, 21)
 health_component = NodePath("../Health")
+
+[node name="StatusBar" type="Node2D" parent="." unique_id=1462093118]
+unique_name_in_owner = true
+z_index = 1
+position = Vector2(-35, -15)
+script = ExtResource("8_status")
+per_row = 3
 
 [connection signal="pressed_within_window" from="DiceQueue/EndTurnButton" to="." method="end_turn"]
 

@@ -428,14 +428,17 @@ func _shield_enemies(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Shielded all enemies.[/center]')
 
 
-## Applies a status to the targeted enemy through the engine, exactly as a
-## tile would, so it merges with stacks already there.
+## Applies a status to the targeted enemy (or, with "me", the player)
+## through the engine, exactly as a tile would, so it merges with stacks
+## already there.
 func _status(command_args: Array[String] = []) -> void:
 	if command_args.is_empty() or not StatusCatalog.has(StringName(command_args[0])):
-		command_history.append_text('\n\t\tUsage: status <%s> [stacks]' % '|'.join(PackedStringArray(StatusCatalog.ids())))
+		command_history.append_text('\n\t\tUsage: status <%s> [stacks] [me]' % '|'.join(PackedStringArray(StatusCatalog.ids())))
 		return
+	var on_player: bool = command_args.has("me")
 	var engine: ScenarioEngine = ScenarioEngine.current()
-	var target: Enemy = Globals.targeting_computer.targeted_enemy if Globals.targeting_computer else null
+	var target: Node2D = Globals.player if on_player \
+		else (Globals.targeting_computer.targeted_enemy if Globals.targeting_computer else null)
 	if engine == null or target == null:
 		command_history.append_text('\n\t\tNeeds a fight with a targeted enemy.')
 		return
@@ -528,7 +531,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]shield_enemies[/b] [amount]       add shields to all enemies')
 	command_history.append_text('\n[b]spawn_dice[/b] [amount]           spawn extra dice')
 	command_history.append_text('\n[b]spawn_enemy[/b] <type>            (not yet implemented)')
-	command_history.append_text('\n[b]status[/b] <id> [stacks]          apply a status to the targeted enemy')
+	command_history.append_text('\n[b]status[/b] <id> [stacks] [me]     apply a status to the targeted enemy, or to you')
 	command_history.append_text('\n[b]timescale[/b] [scale]             set game speed (e.g. 0.25; no arg: reset to 1)')
 	command_history.append_text('\n[b]unlock_tiles[/b] <a|b|c>          allow tiles to be moved')
 	command_history.append_text('\n[color=gray]Up/Down arrows cycle command history.[/color]')

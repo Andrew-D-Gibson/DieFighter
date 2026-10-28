@@ -17,9 +17,10 @@ func on_status_tick() -> void:
 	if ship == null or _host_engine == null:
 		return
 
-	# The player lit it, so it is the player's damage: hitting a neutral ship
-	# with it angers that ship like any other attack. No tile is the source,
-	# so it never cashes in Exposed or a tile's Amplifier.
+	# On an enemy, the player lit it, so it is the player's damage: hitting a
+	# neutral ship with it angers that ship like any other attack. On the
+	# player it is the ship's own fire, like the redline's bleed. Either way no
+	# tile or ship is the source, so it never cashes in Exposed or an Amplifier.
 	var event: DamageEvent = DamageEvent.new()
 	event.actor = Globals.player
 	event.amount = stacks

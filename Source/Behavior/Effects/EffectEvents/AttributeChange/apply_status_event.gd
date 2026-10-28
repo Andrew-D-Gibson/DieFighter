@@ -11,21 +11,30 @@ extends EffectEvent
 var status_id: StringName
 
 
+## A status a tile puts on its own ship is a cost (Blowtorch's Burn), and a
+## boost never grows a cost.
+func is_amplifiable() -> bool:
+	return actor == null or not targets.has(actor)
+
+
 func resolve(engine: ScenarioEngine) -> void:
 	if amount <= 0:
 		return
 
 	for target: Node in targets:
-		# Statuses are enemy-side for now: only Enemy has a StatusBar.
-		if not is_instance_valid(target) or target is not Enemy:
+		# Ships carry statuses; tiles and dice don't.
+		if not is_instance_valid(target) or not (target is Enemy or target is Player):
 			continue
-		if (target as Enemy).health.health <= 0:
+		if target.health.health <= 0:
 			continue
 
-		var incoming: StatusModifier = StatusCatalog.create(status_id, target as Enemy, amount)
+		var incoming: StatusModifier = StatusCatalog.create(status_id, target as Node2D, amount)
 		if incoming == null:
 			return
 		provoke(target)
+		# An enemy putting a status on the player is as hostile as a hit.
+		if actor is Enemy and target is Player and Globals.state_manager:
+			Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
 
 		var existing: StatusModifier = engine.find_status(target, status_id)
 		if existing:

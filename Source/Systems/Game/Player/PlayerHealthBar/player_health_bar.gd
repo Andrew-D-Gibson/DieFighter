@@ -75,8 +75,24 @@ func _show_hull_info() -> void:
 	info.title_label_text = "[color=red]Hull[/color]"
 	info.texture = _HULL_INFO_TEXTURE
 	info.bottom_label_text = "If [color=red]Hull[/color] reaches 0, your ship is destroyed"
+	var statuses: String = _status_summary()
+	if not statuses.is_empty():
+		info.bottom_label_text += "\n\n" + tr("INFO_HULL_STATUSES").format({"statuses": statuses})
 	
 	Events.show_info.emit(info)
+
+
+## The statuses on the player's ship, each in its colour with its stacks
+## ("Burn 3, Jammed 1"), or "" with none. Each badge explains its own.
+func _status_summary() -> String:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine == null or not is_instance_valid(Globals.player):
+		return ""
+	var parts: PackedStringArray = []
+	for status: StatusModifier in engine.statuses_on(Globals.player):
+		# A non-breaking space keeps each name with its count when the line wraps.
+		parts.append("[color=#%s]%s\u00A0%d[/color]" % [status.color.to_html(false), status.display_name, status.stacks])
+	return ", ".join(parts)
 	
 	
 func _show_shield_info() -> void:
