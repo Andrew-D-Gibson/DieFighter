@@ -1,0 +1,68 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_ntegh"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_o36jr"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_cv53y"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_mf41w"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_6w0lq"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="6_vrqhp"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/PurpleTiles/reactor.png" id="7_m5d5x"]
+
+[sub_resource type="Resource" id="Resource_emfni"]
+script = ExtResource("1_ntegh")
+
+[sub_resource type="Resource" id="Resource_vkc86"]
+script = ExtResource("2_o36jr")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_knjhl"]
+script = ExtResource("2_o36jr")
+category = 4
+subtype = 1
+color = Color(0.77254903, 0.32156864, 0.94509804, 1)
+
+[sub_resource type="Resource" id="Resource_rs3o6"]
+script = ExtResource("2_o36jr")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_ao7hd"]
+script = ExtResource("2_o36jr")
+category = 1
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_epje4"]
+script = ExtResource("2_o36jr")
+category = 5
+subtype = 11
+
+[sub_resource type="Resource" id="Resource_up68c"]
+script = ExtResource("4_mf41w")
+effects = Array[ExtResource("2_o36jr")]([SubResource("Resource_vkc86"), SubResource("Resource_knjhl"), SubResource("Resource_rs3o6"), SubResource("Resource_ao7hd"), SubResource("Resource_epje4")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5esad"]
+atlas = ExtResource("7_m5d5x")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3b6ch"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5esad")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("6_vrqhp")
+tile_name = "[color=purple]Reactor[/color]"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge[/color] equal to die. (feed_up) into the [color=orange]ignition[/color] slot"
+offered_as_reward = false
+textures = SubResource("SpriteFrames_3b6ch")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_ntegh")]([SubResource("Resource_emfni")])
+effect_chain = SubResource("Resource_up68c")
+dragging_allowed = false
+can_be_locked_out = false

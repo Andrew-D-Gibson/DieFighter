@@ -1,0 +1,132 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_1qae8"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_pklwb"]
+[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_7awul"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_qctx4"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_r2r8p"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_rsklg"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="7_u3v0s"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/RedTiles/slingshot.png" id="8_2q38o"]
+
+[sub_resource type="Resource" id="Resource_6srxo"]
+script = ExtResource("1_1qae8")
+
+[sub_resource type="Resource" id="Resource_ew80w"]
+script = ExtResource("1_1qae8")
+type = 4
+
+[sub_resource type="Resource" id="Resource_1qjgb"]
+script = ExtResource("2_pklwb")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_2lmg4"]
+script = ExtResource("2_pklwb")
+category = 4
+subtype = 1
+color = Color(0.31764707, 0.08235294, 0.12941177, 1)
+
+[sub_resource type="Resource" id="Resource_ruiod"]
+script = ExtResource("2_pklwb")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_7awul")
+
+[sub_resource type="Resource" id="Resource_awhwp"]
+script = ExtResource("2_pklwb")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_er1pq"]
+script = ExtResource("2_pklwb")
+category = 4
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_142oo"]
+script = ExtResource("2_pklwb")
+category = 2
+
+[sub_resource type="Resource" id="Resource_t8667"]
+script = ExtResource("2_pklwb")
+category = 2
+subtype = 4
+string_param = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_h77rv"]
+script = ExtResource("2_pklwb")
+category = 2
+subtype = 2
+multiplier = 3.0
+
+[sub_resource type="Resource" id="Resource_6g4gq"]
+script = ExtResource("2_pklwb")
+category = 4
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_6u7sb"]
+script = ExtResource("2_pklwb")
+category = 4
+subtype = 7
+amount = 60
+
+[sub_resource type="Resource" id="Resource_qufwy"]
+script = ExtResource("2_pklwb")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.80784315, 0.9411765, 0.94509804, 1)
+
+[sub_resource type="Resource" id="Resource_erli3"]
+script = ExtResource("2_pklwb")
+category = 1
+
+[sub_resource type="Resource" id="Resource_yve2m"]
+script = ExtResource("2_pklwb")
+category = 4
+subtype = 9
+multiplier = 1.03
+
+[sub_resource type="Resource" id="Resource_snrn5"]
+script = ExtResource("2_pklwb")
+category = 2
+
+[sub_resource type="Resource" id="Resource_voo1r"]
+script = ExtResource("2_pklwb")
+category = 5
+subtype = 9
+string_param = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_7xnvo"]
+script = ExtResource("2_pklwb")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_htmuc"]
+script = ExtResource("5_r2r8p")
+effects = Array[ExtResource("2_pklwb")]([SubResource("Resource_1qjgb"), SubResource("Resource_2lmg4"), SubResource("Resource_ruiod"), SubResource("Resource_awhwp"), SubResource("Resource_er1pq"), SubResource("Resource_142oo"), SubResource("Resource_t8667"), SubResource("Resource_h77rv"), SubResource("Resource_6g4gq"), SubResource("Resource_6u7sb"), SubResource("Resource_qufwy"), SubResource("Resource_erli3"), SubResource("Resource_yve2m"), SubResource("Resource_snrn5"), SubResource("Resource_voo1r"), SubResource("Resource_7xnvo")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_q5tbb"]
+atlas = ExtResource("8_2q38o")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_fyb5d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_q5tbb")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_u3v0s")
+tile_name = "[color=red]Slingshot[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color] per ring step since last fired ([data]ring_steps[/data]). Reset count. [color=orange]Give[/color] die"
+rarity = 1
+offered_as_reward = false
+textures = SubResource("SpriteFrames_fyb5d")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_1qae8")]([SubResource("Resource_6srxo"), SubResource("Resource_ew80w")])
+effect_chain = SubResource("Resource_htmuc")

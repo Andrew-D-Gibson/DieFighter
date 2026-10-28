@@ -1,0 +1,137 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_a225x"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_14w7d"]
+[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres" id="3_dae3a"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_guf76"]
+[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_m0k0f"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_nuump"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="7_npvoy"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/GreenTiles/gearbox-Sheet.png" id="8_27siq"]
+
+[sub_resource type="Resource" id="Resource_v5e6q"]
+script = ExtResource("1_a225x")
+
+[sub_resource type="Resource" id="Resource_2770q"]
+script = ExtResource("1_a225x")
+type = 2
+
+[sub_resource type="Resource" id="Resource_ocde2"]
+script = ExtResource("1_a225x")
+type = 4
+
+[sub_resource type="Resource" id="Resource_wrq8b"]
+script = ExtResource("2_14w7d")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_bpfgs"]
+script = ExtResource("2_14w7d")
+category = 4
+subtype = 1
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_7x5in"]
+script = ExtResource("2_14w7d")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_dae3a")
+
+[sub_resource type="Resource" id="Resource_pc12k"]
+script = ExtResource("2_14w7d")
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_5110r"]
+script = ExtResource("2_14w7d")
+category = 4
+subtype = 14
+amount = 16
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_67e31"]
+script = ExtResource("2_14w7d")
+category = 2
+amount = 1
+
+[sub_resource type="Resource" id="Resource_i6uop"]
+script = ExtResource("2_14w7d")
+category = 5
+subtype = 9
+string_param = "ring_reverse"
+
+[sub_resource type="Resource" id="Resource_ie5tu"]
+script = ExtResource("2_14w7d")
+category = 4
+subtype = 16
+string_param = "REVERSE"
+color = Color(0.93333334, 0.49803922, 0.18431373, 1)
+
+[sub_resource type="Resource" id="Resource_pwwfp"]
+script = ExtResource("2_14w7d")
+category = 2
+amount = 1
+
+[sub_resource type="Resource" id="Resource_g4562"]
+script = ExtResource("2_14w7d")
+category = 5
+subtype = 9
+string_param = "ring_hold"
+
+[sub_resource type="Resource" id="Resource_u6jik"]
+script = ExtResource("2_14w7d")
+category = 4
+subtype = 16
+string_param = "HOLD"
+color = Color(0.8156863, 0.21176471, 0.3372549, 1)
+
+[sub_resource type="Resource" id="Resource_0t0l3"]
+script = ExtResource("4_guf76")
+if_true_effects = Array[ExtResource("2_14w7d")]([SubResource("Resource_pwwfp"), SubResource("Resource_g4562"), SubResource("Resource_u6jik")])
+if_false_effects = Array[ExtResource("2_14w7d")]([SubResource("Resource_67e31"), SubResource("Resource_i6uop"), SubResource("Resource_ie5tu")])
+category = 7
+
+[sub_resource type="Resource" id="Resource_w00mg"]
+script = ExtResource("2_14w7d")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_52if1"]
+script = ExtResource("2_14w7d")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_pc6ro"]
+script = ExtResource("5_m0k0f")
+effects = Array[ExtResource("2_14w7d")]([SubResource("Resource_wrq8b"), SubResource("Resource_bpfgs"), SubResource("Resource_7x5in"), SubResource("Resource_pc12k"), SubResource("Resource_5110r"), SubResource("Resource_0t0l3"), SubResource("Resource_w00mg"), SubResource("Resource_52if1")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x6o0m"]
+atlas = ExtResource("8_27siq")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ys7mu"]
+atlas = ExtResource("8_27siq")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_pqhcq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x6o0m")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ys7mu")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_npvoy")
+tile_name = "[color=green]Gearbox[/color]"
+description = "[color=yellow]Any die[/color] -> [color=yellow]Odd[/color]: [color=green]hold the ring[/color] next turn. [color=yellow]Even[/color]: [color=green]turn the ring back[/color] next turn. [color=orange]Give[/color] die"
+rarity = 1
+offered_as_reward = false
+textures = SubResource("SpriteFrames_pqhcq")
+uses_per_turn = 1
+activation_checks = Array[ExtResource("1_a225x")]([SubResource("Resource_v5e6q"), SubResource("Resource_2770q"), SubResource("Resource_ocde2")])
+effect_chain = SubResource("Resource_pc6ro")
