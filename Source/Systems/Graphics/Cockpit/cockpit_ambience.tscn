@@ -5,8 +5,10 @@
 [ext_resource type="Script" uid="uid://b8usdgidu28k4" path="res://Source/Systems/Graphics/Cockpit/HangingDice/hanging_dice.gd" id="3_dice"]
 [ext_resource type="Texture2D" uid="uid://bmxf8dsnoum52" path="res://Assets/Textures/UI/Cockpit/hanging_dice-Sheet.png" id="4_sheet"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/Cockpit/CockpitDamage/cockpit_damage.tscn" id="5_damage"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/cockpit.gd" id="6_cockpit"]
 
 [node name="CockpitAmbience" type="Node2D" unique_id=1217412505]
+script = ExtResource("6_cockpit")
 
 [node name="CockpitLights" type="Node2D" parent="." unique_id=672787569]
 script = ExtResource("1_lights")

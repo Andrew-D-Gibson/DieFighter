@@ -1,16 +1,24 @@
 class_name CockpitWalls
 extends Sprite2D
-## The cockpit shell, repainted in the colours of the ship this run flies.
+## The cockpit shell. The game scene holds one, and the ship's Cockpit dresses
+## it: a shell of its own, or this default one repainted in the ship's colours.
 ##
-## The texture itself is recoloured once, rather than shaded, because the
-## cockpit's destruction and glass shards cut themselves out of it: they pick
-## up the ship's colours for free.
+## The shell is a real texture, recoloured once rather than shaded, because the
+## cockpit's destruction and glass shards cut themselves out of it and land on
+## its opaque pixels: they pick up whatever the ship flies for free.
+
+const GROUP: StringName = &"cockpit_walls"
 
 
-func _ready() -> void:
-	var ship: ShipResource = Globals.current_ship()
-	if ship and not ship.cockpit_palette.is_empty():
-		texture = recolor(texture, ship.cockpit_palette)
+func _enter_tree() -> void:
+	add_to_group(GROUP)
+
+
+## The shell in [param from]'s tree, or null outside the game scene.
+static func find(from: Node) -> CockpitWalls:
+	if not from or not from.is_inside_tree():
+		return null
+	return from.get_tree().get_first_node_in_group(GROUP) as CockpitWalls
 
 
 ## A copy of the texture with each colour in the palette's keys swapped for

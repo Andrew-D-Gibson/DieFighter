@@ -199,7 +199,7 @@ shader_parameter/clock_feather = 0.0
 shader_parameter/progress = 26.0
 shader_parameter/progress_bias = Vector2(10, 10)
 
-[node name="TargetingComputer" type="Node2D" unique_id=466305210 node_paths=PackedStringArray("targeting_indicator")]
+[node name="TargetingComputer" type="Node2D" unique_id=466305210 node_paths=PackedStringArray("targeting_indicator") groups=["hud_targeting_computer"]]
 script = ExtResource("1_8ig5e")
 targeting_indicator = NodePath("TargetingIndicator")
 unknown_intent_indicator = ExtResource("2_g8xi5")

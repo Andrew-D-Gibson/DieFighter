@@ -73,11 +73,11 @@ position = Vector2(34, -24)
 max_health = 16
 starting_health = 16
 
-[node name="PlayerHealthBar" parent="." unique_id=924294972 node_paths=PackedStringArray("health_component") instance=ExtResource("5_83hls")]
+[node name="PlayerHealthBar" parent="." unique_id=924294972 node_paths=PackedStringArray("health_component") groups=["hud_hull_gauge"] instance=ExtResource("5_83hls")]
 position = Vector2(-22, 21)
 health_component = NodePath("../Health")
 
-[node name="StatusBar" type="Node2D" parent="." unique_id=1462093118]
+[node name="StatusBar" type="Node2D" parent="." unique_id=1462093118 groups=["hud_status_bar"]]
 unique_name_in_owner = true
 z_index = 1
 position = Vector2(-35, -15)

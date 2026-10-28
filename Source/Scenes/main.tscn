@@ -63,7 +63,7 @@
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.tscn" id="boss_intro_card"]
-[ext_resource type="PackedScene" uid="uid://2n2lytv0vdqc" path="res://Source/Systems/Graphics/Cockpit/cockpit_ambience.tscn" id="cockpit_ambience"]
+[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/cockpit_mount.gd" id="cockpit_mount"]
 [ext_resource type="Resource" uid="uid://cleaatku88rbu" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BlockadeRunner/COMBAT_blockade_runner.tres" id="combat_blockade_runner"]
 [ext_resource type="Resource" uid="uid://br4j63c7vl8h" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
 [ext_resource type="Resource" uid="uid://c6swfwrjfa55" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
@@ -328,7 +328,8 @@ position = Vector2(0.5, 82.5)
 texture = ExtResource("13_nfx0x")
 script = ExtResource("14_jblvd")
 
-[node name="CockpitAmbience" parent="Graphics" unique_id=339508340 instance=ExtResource("cockpit_ambience")]
+[node name="Cockpit" type="Node2D" parent="Graphics" unique_id=339508340]
+script = ExtResource("cockpit_mount")
 
 [node name="BackgroundManager" parent="Graphics" unique_id=753734428 instance=ExtResource("5_flage")]
 z_index = -24

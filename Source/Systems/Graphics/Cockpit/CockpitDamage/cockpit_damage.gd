@@ -214,10 +214,7 @@ func get_sites() -> Array[CockpitDamageSite]:
 	return _sites
 
 
-## The cockpit shell sprite, a sibling of the ambience in the Graphics layer:
-## what glass lands on, and what the destruction breaks apart.
+## The cockpit shell sprite: what glass lands on, and what the destruction
+## breaks apart.
 func get_walls() -> Sprite2D:
-	var ambience: Node = get_parent()
-	if not ambience or not ambience.get_parent():
-		return null
-	return ambience.get_parent().get_node_or_null("Cockpit Walls") as Sprite2D
+	return CockpitWalls.find(self)

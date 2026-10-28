@@ -48,10 +48,16 @@ extends Resource
 @export_category("Art")
 ## The ship's signature colour: its ship-select card is drawn in it.
 @export var theme_color: Color = Color("#7abd33")
-## Repaints the cockpit shell for this ship: each key, one of the default
+## The cockpit around the systems panel: its shell, ambience, breaks and where
+## its instruments sit. The root is a Cockpit (see cockpit.gd). Null flies the
+## default cockpit.
+@export var cockpit_scene: PackedScene
+## Repaints the shared cockpit art for this ship: each key, one of the default
 ## cockpit's colours (its navy ramp #463c91 #251c6b #191347 #130f38), becomes
-## its value. Approved palette only. Leave #0f0c2e alone: the cockpit lights
-## paint it as their "off" colour. Empty keeps the default cockpit.
+## its value. Covers the default shell (when cockpit_scene brings none of its
+## own) and the instruments' frames. Approved palette only. Leave #0f0c2e
+## alone: the cockpit lights paint it as their "off" colour. Empty keeps the
+## default colours.
 @export var cockpit_palette: Dictionary[Color, Color] = {}
 ## The ship in the opening cutscene. Needs a "boost" animation, nose up.
 ## Null keeps the cutscene's own.
