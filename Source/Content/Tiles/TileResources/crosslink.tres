@@ -1,0 +1,102 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Texture2D" uid="uid://bv687bn32ypa8" path="res://Assets/Textures/Tiles/GreenTiles/crosslink-Sheet.png" id="tex"]
+[ext_resource type="Resource" uid="uid://dhdiec4h8tjs3" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="sfx_bump"]
+
+[sub_resource type="Resource" id="Resource_act_1"]
+script = ExtResource("script_act")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_set_1"]
+script = ExtResource("script_effect")
+category = 2
+amount = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_flare"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 22
+color = Color(0.4784, 0.7412, 0.2, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_sound"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_bump")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_add"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 16
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_mirror"]
+script = ExtResource("script_effect")
+subtype = 17
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_zap"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 18
+amount = 110
+color = Color(0.9333, 0.498, 0.1843, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_pass"]
+script = ExtResource("script_effect")
+category = 5
+subtype = 11
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_set_1"), SubResource("Resource_flare"), SubResource("Resource_sound"), SubResource("Resource_add"), SubResource("Resource_mirror"), SubResource("Resource_zap"), SubResource("Resource_pass")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1"]
+atlas = ExtResource("tex")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f2"]
+atlas = ExtResource("tex")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tile"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f2")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+tile_name = "[color=green]Crosslink[/color]"
+description = "[color=yellow]Any die[/color] -> Add 1 to die. (feed_across)"
+rarity = 1
+textures = SubResource("SpriteFrames_tile")
+uses_per_turn = 2
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1")])
+effect_chain = SubResource("Resource_chain")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

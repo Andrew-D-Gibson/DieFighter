@@ -19,6 +19,7 @@ extends RefCounted
 ## tile text: say what happens to the die, and what happens when it can't.
 const _DEFINITIONS: Dictionary[String, String] = {
 	"Feed": "The next tile that way uses the die. If it can't, [color=purple]target[/color] gets it.",
+	"Feed across": "The tile in the mirrored cell (same row, other side of the grid) uses the die. If it can't, [color=purple]target[/color] gets it.",
 	"Fed": "Passed here by another tile's Feed.",
 	"Burn": "At the start of their turn, burned ships take [color=red]damage[/color] equal to Burn, then lose 1 Burn.",
 	"Scrambled": "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled.",
@@ -38,6 +39,7 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(feed_up)":    {"label": "Feed up",    "term": "Feed"},
 	"(feed_down)":  {"label": "Feed down",  "term": "Feed"},
 	"(feed_random)": {"label": "Feed a random neighbour", "term": "Feed"},
+	"(feed_across)": {"label": "Feed across", "term": "Feed across"},
 	"(fed)":        {"label": "Fed",        "term": "Fed"},
 	"(burn)":       {"label": "Burn",       "term": "Burn"},
 	"(scrambled)":  {"label": "Scrambled",  "term": "Scrambled"},

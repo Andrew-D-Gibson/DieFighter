@@ -36,6 +36,14 @@ var _empty_cell_sprites: Dictionary[Vector2i, Sprite2D] = {}
 ## The ship's own rules (ShipResource.behavior_scene), if it has any.
 var ship_behavior: Node = null
 
+## How many pixels wide a column holding none of the cells is drawn: the gap
+## between two pods (ShipResource.hole_column_width). -1 draws it grid_spacing
+## wide like every other column, which is how every grid looked before ships
+## could have one. Set before the grid enters the tree.
+var hole_column_width: int = -1
+## Columns with at least one cell in them, from set_cells().
+var _columns_with_cells: Dictionary[int, bool] = {}
+
 
 func _ready() -> void:
 	Globals.tile_grid = self
@@ -65,6 +73,7 @@ func _apply_ship(ship: ShipResource) -> void:
 	position += ship.grid_offset
 	grid_width = ship.grid_size.x
 	grid_height = ship.grid_size.y
+	hole_column_width = ship.hole_column_width
 	set_cells(ship.get_cells())
 
 
@@ -84,8 +93,10 @@ func set_cells(cells: Array[Vector2i]) -> void:
 		for cell: Vector2i in _cells:
 			grid_width = maxi(grid_width, cell.x + 1)
 			grid_height = maxi(grid_height, cell.y + 1)
+	_columns_with_cells.clear()
 	for cell: Vector2i in _cells:
 		_cell_set[cell] = true
+		_columns_with_cells[cell.x] = true
 	_cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
 		return a.y < b.y or (a.y == b.y and a.x < b.x)
 	)
@@ -158,10 +169,7 @@ func _setup_grid_graphics() -> void:
 		var empty_cell: Sprite2D = Sprite2D.new()
 		empty_cell.texture = empty_cell_texture
 		empty_cell.z_index = -1
-		empty_cell.position = Vector2(
-			(cell.x + 0.5) * grid_spacing,		# The added 0.5 is to offset the tiles 
-			(cell.y + 0.5) * grid_spacing		# to their top left, rather than their center 
-		)
+		empty_cell.position = grid_to_local_pos(cell)
 		add_child(empty_cell)
 		_empty_cell_sprites[cell] = empty_cell
 	
@@ -297,16 +305,58 @@ func move_tile(tile: Tile, new_pos: Vector2i) -> void:
 func global_pos_to_grid(global_pos: Vector2) -> Vector2i:
 	var local_pos: Vector2 = global_pos - global_position
 	return Vector2i(
-		floor(local_pos.x / grid_spacing),
+		_column_at(local_pos.x),
 		floor(local_pos.y / grid_spacing)
 	)
 	
 	
 func grid_to_global_pos(grid_pos: Vector2i) -> Vector2:
+	return grid_to_local_pos(grid_pos) + global_position
+
+
+## The middle of a cell, relative to the grid's origin (its top-left corner).
+func grid_to_local_pos(grid_pos: Vector2i) -> Vector2:
 	return Vector2(
-		((grid_pos.x + 0.5) * grid_spacing) + global_position.x,
-		((grid_pos.y + 0.5) * grid_spacing) + global_position.y
+		_column_left(grid_pos.x) + _column_width(grid_pos.x) / 2.0,
+		(grid_pos.y + 0.5) * grid_spacing
 	)
+
+
+# ── Column widths ─────────────────────────────────────────────────────────────
+# Rows are always grid_spacing tall. Columns are too, except that a ship may
+# draw a column with none of its cells (the hull gap between two pods) at
+# hole_column_width instead. Nothing ever sits in such a column, so only the
+# grid <-> pixel mapping has to know.
+
+func _column_width(x: int) -> float:
+	if hole_column_width >= 0 and x >= 0 and x < grid_width and not _columns_with_cells.has(x):
+		return hole_column_width
+	return grid_spacing
+
+
+## The left edge of column [param x], in pixels from the grid's origin.
+func _column_left(x: int) -> float:
+	if x <= 0 or hole_column_width < 0:
+		return x * grid_spacing
+	var left: float = 0.0
+	for column: int in mini(x, grid_width):
+		left += _column_width(column)
+	return left + maxi(0, x - grid_width) * grid_spacing
+
+
+## The column under a pixel [param local_x] from the grid's origin. Off either
+## side it keeps counting in grid_spacing steps, so an off-grid drop still
+## reads as off the grid.
+func _column_at(local_x: float) -> int:
+	if local_x < 0.0 or hole_column_width < 0:
+		return floori(local_x / grid_spacing)
+	var left: float = 0.0
+	for column: int in grid_width:
+		var right: float = left + _column_width(column)
+		if local_x < right:
+			return column
+		left = right
+	return grid_width + floori((local_x - left) / grid_spacing)
 	
 	
 func is_grid_pos_open(grid_pos: Vector2i) -> bool:
@@ -380,6 +430,13 @@ func find_available_grid_pos() -> Vector2i:
 ## layout or off its edge.
 func is_grid_pos_valid(pos: Vector2i) -> bool:
 	return _cell_set.has(pos)
+
+
+## The cell in the same row on the other side of the grid: column x mirrors
+## to grid_width - 1 - x. On the Outrigger that's the matching cell across the
+## hull gap. A cell in a centre column mirrors onto itself.
+func mirror_of(pos: Vector2i) -> Vector2i:
+	return Vector2i(grid_width - 1 - pos.x, pos.y)
 
 
 func find_tile_pos(tile_to_find: Tile) -> Vector2i:

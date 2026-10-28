@@ -28,6 +28,10 @@ extends Resource
 @export var grid_spacing: int = 24
 ## Shifts the grid's top-left away from where the main viewer puts it.
 @export var grid_offset: Vector2 = Vector2.ZERO
+## How many pixels wide a column with none of the cells in it is drawn, so a
+## hull gap between two pods can be narrower than a tile. -1 draws it
+## grid_spacing wide, like every other column.
+@export var hole_column_width: int = -1
 
 @export_category("Rules")
 ## Optional. Instanced as a child of the TileGrid when the game scene starts,
@@ -36,6 +40,10 @@ extends Resource
 @export var behavior_scene: PackedScene
 ## The first-run tutorial is written around the default ship's grid.
 @export var supports_tutorial: bool = false
+## End Turn lights with dice still in hand, instead of only once the hand is
+## spent. For a ship whose rules give an unplayed die a use (the Outrigger's
+## sail charges the engine with them).
+@export var hand_may_be_kept: bool = false
 
 @export_category("Art")
 ## Repaints the cockpit shell for this ship: each key, one of the default

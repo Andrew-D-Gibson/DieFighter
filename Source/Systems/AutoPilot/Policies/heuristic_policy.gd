@@ -215,8 +215,14 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 			return purchase
 	if by_kind.has(AutoPilotMove.Kind.REPAIR) and _wants_repair():
 		return by_kind[AutoPilotMove.Kind.REPAIR][0]
+	# On most ships End Turn only lights once the hand is spent. A ship that
+	# may keep its hand (the Outrigger's sail) lights it early: ending then
+	# banks the rest, so it's weighed against the best play below instead.
+	var end_turn: AutoPilotMove = null
 	if by_kind.has(AutoPilotMove.Kind.END_TURN):
-		return by_kind[AutoPilotMove.Kind.END_TURN][0]
+		end_turn = by_kind[AutoPilotMove.Kind.END_TURN][0]
+		if AutoPilotMove.dice_in_hand().is_empty():
+			return end_turn
 
 	if _gate_still_opening():
 		# The ring comes up a moment after the boss goes down; jumping before
@@ -236,6 +242,8 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 		# the least bad one is taken.
 		placements = placements.filter(_is_jump)
 	var best: Dictionary = _best_placement(placements)
+	if end_turn and not on_map and (best.is_empty() or best["score"] <= _bank_value(best["move"].die)):
+		return end_turn
 	# No jump at all: there's something to do on the systems tab first.
 	if on_map and (best.is_empty() or best["score"] <= _NOWHERE / 2.0) \
 	and by_kind.has(AutoPilotMove.Kind.VIEW_SYSTEMS):
@@ -443,6 +451,25 @@ func _only_wastes_charge(forecast: AutoPilotForecast, in_combat: bool) -> bool:
 			return false
 	return forecast.shields <= 0.0 and forecast.heal <= 0.0 and forecast.statuses.is_empty() \
 		and forecast.dice_back <= 0.0 and forecast.jump == 0
+
+
+## What keeping [param die] in hand through End Turn is worth on a ship with
+## a sail (OutriggerSail): its charge while the sail has room, and nothing
+## handed to the enemy; once the sail is full it drifts to the target instead.
+func _bank_value(die: Dice) -> float:
+	if not OutriggerSail.is_sail_up():
+		return 0.0
+	var hand: Array[Dice] = OutriggerSail.banked_dice()
+	var faces: Array[int] = []
+	for held: Dice in hand:
+		faces.append(held.value)
+	var plan: Array[int] = OutriggerSail.charge_plan(faces,
+			Globals.player.engine_charge, Globals.player.max_engine_charge)
+	var index: int = hand.find(die)
+	if index >= 0 and plan[index] > 0:
+		return _charge_value(plan[index], true)
+	var target: Enemy = _targeted()
+	return -AutoPilotThreat.of_face(target, die.value) * _persona.hull if is_instance_valid(target) else 0.0
 
 
 # ── The map ────────────────────────────────────────────────────────────────────

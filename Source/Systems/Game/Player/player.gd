@@ -358,14 +358,28 @@ func _check_for_end_of_turn() -> void:
 	var activations_pending: bool = engine != null and engine.has_pending_tile_activation()
 	# The die that fired a jump finishes its activation while the map is still
 	# panning, with the hand empty; the turn still mustn't end.
-	if len(dice_manager.queue) == 0 and not activations_pending and not _jump_committed \
+	var hand_spent: bool = len(dice_manager.queue) == 0
+	if (hand_spent or _hand_may_be_kept()) and not activations_pending and not _jump_committed \
 	and not _between_turns:
 		%EndTurnButton.disabled = false
 		%EndTurnButton.update_ui()
-		%EndTurnButton.soft_highlight()
+		# The nudge says "you're done". With dice still in hand that's the
+		# player's call, not a prompt.
+		if hand_spent:
+			%EndTurnButton.soft_highlight()
 	else:
 		%EndTurnButton.disabled = true
 		%EndTurnButton.update_ui()
+
+
+## Whether this ship lets the turn end with dice still in hand
+## (ShipResource.hand_may_be_kept). Every other ship plays its whole hand.
+## Only in a fight: out of one, ending turns at will would refill every tile's
+## uses and reroll the hand for free.
+func _hand_may_be_kept() -> bool:
+	var ship: ShipResource = Globals.current_ship()
+	return ship != null and ship.hand_may_be_kept and Globals.state_manager != null \
+		and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
 
 
 func reroll_dice() -> void:

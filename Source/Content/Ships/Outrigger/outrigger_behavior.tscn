@@ -1,0 +1,17 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Ships/Outrigger/outrigger_sail.gd" id="1_sail"]
+[ext_resource type="Script" path="res://Source/Content/Ships/Outrigger/outrigger_cockpit.gd" id="2_cockpit"]
+[ext_resource type="Script" path="res://Source/Content/Ships/Outrigger/sail_gauge.gd" id="3_gauge"]
+
+[node name="ShipBehavior" type="Node2D"]
+
+[node name="Sail" type="Node" parent="."]
+script = ExtResource("1_sail")
+
+[node name="Cockpit" type="Node2D" parent="."]
+script = ExtResource("2_cockpit")
+
+[node name="SailGauge" type="Node2D" parent="Cockpit"]
+unique_name_in_owner = true
+script = ExtResource("3_gauge")
