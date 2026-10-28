@@ -82,7 +82,7 @@ unique_name_in_owner = true
 z_index = 1
 position = Vector2(-35, -15)
 script = ExtResource("8_status")
-per_row = 3
+per_row = 2
 
 [connection signal="pressed_within_window" from="DiceQueue/EndTurnButton" to="." method="end_turn"]
 

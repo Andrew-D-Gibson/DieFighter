@@ -16,6 +16,12 @@ script = ExtResource("1_1qae8")
 script = ExtResource("1_1qae8")
 type = 4
 
+[sub_resource type="Resource" id="Resource_wound_up"]
+script = ExtResource("1_1qae8")
+type = 14
+threshold = 1
+data_key = "ring_steps"
+
 [sub_resource type="Resource" id="Resource_1qjgb"]
 script = ExtResource("2_pklwb")
 category = 2
@@ -123,10 +129,10 @@ animations = [{
 [resource]
 script = ExtResource("7_u3v0s")
 tile_name = "[color=red]Slingshot[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color] per ring step since last fired ([data]ring_steps[/data]). Reset count. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die after a ring step[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color] per ring step since last fired ([data]ring_steps[/data]). Reset count. [color=orange]Give[/color] die"
 rarity = 1
 offered_as_reward = false
 textures = SubResource("SpriteFrames_fyb5d")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("1_1qae8")]([SubResource("Resource_6srxo"), SubResource("Resource_ew80w")])
+activation_checks = Array[ExtResource("1_1qae8")]([SubResource("Resource_6srxo"), SubResource("Resource_ew80w"), SubResource("Resource_wound_up")])
 effect_chain = SubResource("Resource_htmuc")

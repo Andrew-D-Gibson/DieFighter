@@ -273,7 +273,7 @@ func activation_refusal(activator_die: Dice = null) -> String:
 		return "NO USES REMAINING"
 
 	for check: ActivationResource in tile_resource.activation_checks:
-		if not check.criteria_satisfied(activator_die):
+		if not check.criteria_satisfied(activator_die, self):
 			return check.get_criteria_fail_text()
 
 	return ""

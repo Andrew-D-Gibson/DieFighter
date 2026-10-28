@@ -23,6 +23,10 @@ enum ActivationType {
 	## The player has [member threshold] shields or more. Gates tiles that
 	## spend or cash in shields, so they refuse rather than fire for nothing.
 	SHIELDS_AT_LEAST,
+	## The tile's own effect_data[[member data_key]] is [member threshold] or
+	## more. For a tile whose payoff is a count it builds up (Slingshot's ring
+	## steps): it refuses a die rather than fire for nothing.
+	TILE_DATA_AT_LEAST,
 }
 
 @export var type: ActivationType
@@ -31,8 +35,11 @@ enum ActivationType {
 # VALUE activation values
 @export var acceptable_values: Array[int]
 
-# CHARGE_AT_LEAST / DICE_OWNED_AT_MOST / SHIELDS_AT_LEAST activation values
+# CHARGE_AT_LEAST / DICE_OWNED_AT_MOST / SHIELDS_AT_LEAST / TILE_DATA_AT_LEAST activation values
 @export var threshold: int = 0
+
+# TILE_DATA_AT_LEAST: the tile data entry to read.
+@export var data_key: String = ""
 
 
 var activation_functions: Dictionary[ActivationType, Callable] = {
@@ -181,10 +188,16 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.SHIELDS_AT_LEAST:
 		"NOT ENOUGH SHIELDS",
+
+	ActivationType.TILE_DATA_AT_LEAST:
+		"NOT READY",
 }
 
 
-func criteria_satisfied(die: Dice) -> bool:
+## [param tile] is the tile asking, for checks that read the tile itself.
+func criteria_satisfied(die: Dice, tile: Tile = null) -> bool:
+	if type == ActivationType.TILE_DATA_AT_LEAST:
+		return tile != null and int(tile.effect_data.get(data_key, 0)) >= threshold
 	return activation_functions[type].call(die)
 	
 

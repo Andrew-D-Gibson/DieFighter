@@ -423,7 +423,7 @@ static func _would_take(tile: Tile, face: int, hologram: bool) -> bool:
 			ActivationResource.ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
 				return false
 			_:
-				if not check.criteria_satisfied(null):
+				if not check.criteria_satisfied(null, tile):
 					return false
 	return true
 
