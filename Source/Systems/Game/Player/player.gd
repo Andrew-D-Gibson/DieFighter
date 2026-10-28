@@ -374,9 +374,12 @@ func _check_for_end_of_turn() -> void:
 
 ## Whether this ship lets the turn end with dice still in hand
 ## (ShipResource.hand_may_be_kept). Every other ship plays its whole hand.
+## Only in a fight: out of one, ending turns at will would refill every tile's
+## uses and reroll the hand for free.
 func _hand_may_be_kept() -> bool:
 	var ship: ShipResource = Globals.current_ship()
-	return ship != null and ship.hand_may_be_kept
+	return ship != null and ship.hand_may_be_kept and Globals.state_manager != null \
+		and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
 
 
 func reroll_dice() -> void:

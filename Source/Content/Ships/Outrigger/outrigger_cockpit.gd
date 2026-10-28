@@ -12,6 +12,11 @@ extends Node2D
 
 const _PANEL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_panel.png")
 const _PANEL_REVEAL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_panel_reveal.png")
+## The map tab's frame, recoloured and widened to match the systems panel,
+## with a sail emblem where the charger's tile sat.
+const _MAP_FRAME: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_map_frame.png")
+const _CHARGER_FILL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_fill_sail.png")
+const _CHARGER_CHARGED: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_charged_sail.png")
 
 ## The panel is drawn centred on the main viewer's origin.
 const _PANEL_CENTRE: Vector2 = Vector2.ZERO
@@ -29,8 +34,7 @@ const _STARBOARD_COLOR: Color = Color("#7abd33")
 
 var _viewer: MainViewer
 var _systems_frames: SpriteFrames
-var _default_frames: SpriteFrames
-var _default_offset: Vector2
+var _map_frames: SpriteFrames
 var _readout: RichTextLabel
 var _time: float = 0.0
 
@@ -44,8 +48,8 @@ func _ready() -> void:
 
 	_systems_frames = SpriteFrames.new()
 	_systems_frames.add_frame(&"default", _PANEL)
-	_default_frames = _viewer.background.sprite_frames
-	_default_offset = _viewer.background.offset
+	_map_frames = SpriteFrames.new()
+	_map_frames.add_frame(&"default", _MAP_FRAME)
 
 	_retire_engine_charger()
 	_restyle_reveal_overlay()
@@ -69,7 +73,8 @@ func _process(delta: float) -> void:
 
 
 ## The charger's tile goes: nothing should take a die there, and its socket
-## is covered by the starboard pod. Its gauge waits for the map tab.
+## is covered by the starboard pod. Its gauge waits for the map tab, filling
+## sail-orange there.
 func _retire_engine_charger() -> void:
 	var charger: Node2D = _viewer.get_node_or_null("EngineCharger") as Node2D
 	if not charger:
@@ -79,6 +84,12 @@ func _retire_engine_charger() -> void:
 		tile.queue_free()
 	charger.remove_from_group(&"engine_charger")
 	gauge.charger = charger
+	var bar: TextureProgressBar = charger.get("progress_bar")
+	if bar:
+		bar.texture_progress = _CHARGER_FILL
+	var lit: Sprite2D = charger.get("charged_indicator")
+	if lit:
+		lit.texture = _CHARGER_CHARGED
 
 
 ## The startup wipe peels a dark cover off the panel; it has to be this
@@ -116,9 +127,9 @@ func _dress_systems() -> void:
 
 
 func _dress_map() -> void:
-	_viewer.background.sprite_frames = _default_frames
-	_viewer.background.frame = 2
-	_viewer.background.offset = _default_offset
+	_viewer.background.sprite_frames = _map_frames
+	_viewer.background.frame = 0
+	_viewer.background.offset = _panel_offset()
 	var charger: Node2D = gauge.charger
 	if is_instance_valid(charger):
 		charger.visible = true
