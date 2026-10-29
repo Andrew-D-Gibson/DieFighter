@@ -259,36 +259,19 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 		return
 
 	var chosen_reward: Node = draggable.get_parent()
-	# No cell for it: the offer stands, and the tile drifts back into it.
-	if chosen_reward is Tile and not Globals.tile_grid.has_free_cell() \
-	and not Globals.tile_grid.merge_target_at(chosen_reward, end_position):
-		Events.error_text_popup.emit("GRID FULL", end_position)
-		return
-	# A slot opens the sealed cell it's dropped on, and only that.
-	var slot_cell: Vector2i = Globals.tile_grid.locked_cell_at(end_position)
-	if chosen_reward is GridSlot and not Globals.tile_grid.is_cell_locked(slot_cell):
-		Events.error_text_popup.emit(tr("ERROR_PICK_SEALED_CELL"), end_position)
+	# Nowhere for it to go: the offer stands, and it drifts back into it.
+	var refusal: String = OfferIntake.refusal(chosen_reward, end_position)
+	if not refusal.is_empty():
+		Events.error_text_popup.emit(refusal, end_position)
 		return
 	draggable.drag_started.disconnect(Events.show_systems.emit)
 	draggable.drag_ended.disconnect(_end_reward)
-	
-	
-	if chosen_reward is Tile:
-		Globals.tile_grid.receive_tile(chosen_reward, end_position)
-		Events.reward_tile_taken.emit()
-		
-	elif chosen_reward is Dice:
-		chosen_reward.reparent(Globals.player, true)
-		Globals.player.dice_manager.add(chosen_reward)
-		Globals.player.num_of_dice += 1
-		
-	elif chosen_reward is MoneyPickup:
-		chosen_reward.claim()
-		Events.reward_money_taken.emit()
 
-	elif chosen_reward is GridSlot:
-		chosen_reward.install(slot_cell)
-		
+	OfferIntake.take(chosen_reward, end_position)
+	if chosen_reward is Tile:
+		Events.reward_tile_taken.emit()
+	elif chosen_reward is MoneyPickup:
+		Events.reward_money_taken.emit()
 	Events.reward_picked.emit()
 	_clear_away(chosen_reward)
 

@@ -435,15 +435,11 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 		if not _item_prices.has(item):
 			return
 		var price: int = _item_prices[item]
-		# No cell for it: refused before any money changes hands, and it
-		# drifts back to its shelf.
-		if item is Tile and not Globals.tile_grid.has_free_cell() \
-		and not Globals.tile_grid.merge_target_at(item, end_position):
-			Events.error_text_popup.emit("GRID FULL", end_position)
-			return
-		var slot_cell: Vector2i = Globals.tile_grid.locked_cell_at(end_position)
-		if item is GridSlot and not Globals.tile_grid.is_cell_locked(slot_cell):
-			Events.error_text_popup.emit(tr("ERROR_PICK_SEALED_CELL"), end_position)
+		# Nowhere for it to go: refused before any money changes hands, and
+		# it drifts back to its shelf.
+		var refusal: String = OfferIntake.refusal(item, end_position)
+		if not refusal.is_empty():
+			Events.error_text_popup.emit(refusal, end_position)
 			return
 
 		if Globals.player.money >= price:
@@ -459,16 +455,5 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			# mustn't arrive still hidden.
 			_release_from_reveal(item)
 			_forget(item)
-			
-			if item is Tile:
-				Globals.tile_grid.receive_tile(item, end_position)
-
-			elif item is Dice:
-				item.reparent(Globals.player, true)
-				Globals.player.dice_manager.add(item)
-				Globals.player.num_of_dice += 1
-
-			elif item is GridSlot:
-				item.install(slot_cell)
-
+			OfferIntake.take(item, end_position)
 			Events.reward_picked.emit()
