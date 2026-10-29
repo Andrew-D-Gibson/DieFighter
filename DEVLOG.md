@@ -4,6 +4,40 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Hull retune: longer fights
+
+**Why.** Fights were ending before most enemies acted: 24/32 hull, sector 1
+ships of 5-18 HP, and three dice with a couple of synergies doing 15+ a turn.
+The enemy spending your dice, the game's main hook, mostly went unseen.
+
+**Everything measured in hull is 2.5x.** Hit sizes are unchanged.
+
+| What | Was | Now |
+|---|---|---|
+| Player hull (all ships) | 24/32 | 60/80 |
+| Tutorial start | 20/32 | 50/80 |
+| Enemy `max_health`, `starting_shields` | e.g. Raider 18, Warden 40, Arc Dynamo 58 | 45, 100, 145 |
+| `sector_clear_repair` | 12 | 30 |
+| `hull_per_repair` (price unchanged) | 6 | 15 |
+| Mercy Call medic repair | 6 | 15 |
+| Mayday raider's self-repair | 12 | 30 |
+
+Not scaled: enemy attack amounts, enemy shield and heal actions, every tile
+number (shields, Leeching Shot's heal, Emergency Shield), the opening strike
+(4) and hazards. These all trade per hit or per turn, so they keep their
+weight against each other while fights run about 2.5x longer, and attrition
+per fight comes out about the same. Fate Attackers stay at 1 HP, as chaff.
+
+**Opening ambush.** Its raider now starts at 25% (12 of 45), so the
+tutorial's script still holds: turn one tops out at 10 damage, and turn two
+kills it.
+
+**Three-digit hull rings.** The enemy hull label wrapped "145" after the
+"1". Labels no longer wrap, and a hull of 100+ draws in light, since its
+outer digits cross the red ring.
+
+---
+
 ## 2026-10-29 — Use lights, shop close, codex ship art, shield count
 
 **Use lights move.** A light going out on a limited tile now pops in a burst

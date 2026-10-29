@@ -1479,7 +1479,7 @@ layer than that effect, not just at a higher z_index.
 on the cockpit. Each child `CockpitDamageSite` is one full-screen overlay
 (a canopy crack or a split frame seam) with `emit_points` for its particles.
 Sites open in child order as hull falls, evenly spread over the hull below
-`intact_from` (`sites_open_at()`; 75%, so a new run's 24/32 shows nothing), and close in reverse on a heal. A hit or heal animates
+`intact_from` (`sites_open_at()`; 75%, so a new run's 60/80 shows nothing), and close in reverse on a heal. A hit or heal animates
 (debris in, green sparks out); a hull set directly (load, new run) snaps. A
 hull hit of at least `big_hit_fraction` of max billows smoke from torn seams,
 and open seams keep leaking a thin trail. The smoke is `smoke_puff-Sheet.png`

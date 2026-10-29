@@ -285,7 +285,11 @@ value before its STREAM.
 - `enemy_name`, `description`.
 - `in_codex`: untick for a ship that isn't a foe (the shop, the repair dock,
   the civilian transport), so the codex leaves it out of its enemy list.
-- `max_health`, `starting_shields`. Both are scaled +35% per sector.
+- `max_health`, `starting_shields`. Both are scaled +35% per sector. Size
+  them against an 80-hull player whose turn does about 15 damage: a normal
+  fight should last two or three turns. Sector 1 ships run about 13-60
+  (Interceptor 13, Raider 45), gate bosses 100 and up. Per-hit numbers
+  (attacks, shields, heals per turn) stay on the smaller scale tiles use.
 - **`action_options`**: one or more `EnemyTurnActionList` pools. Each holds
   `EnemyActionOptionResource`s:
   - `base_action`, `weight`.
