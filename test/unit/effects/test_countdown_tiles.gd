@@ -147,3 +147,25 @@ func test_countdown_cannon_plus_counts_from_fifteen() -> void:
 	assert_eq(tile.countdown_remaining(), 15)
 	_wind_to_one(tile)
 	assert_eq(_amounts(await _drop(tile, 1), DamageEvent), [25])
+
+
+# ── Capacitor Bank ───────────────────────────────────────────────────────
+
+func test_capacitor_bank_gains_fifteen_shields_at_zero() -> void:
+	var tile: Tile = _tile("capacitor_bank")
+	assert_eq(tile.countdown_remaining(), 12)
+	_wind_to_one(tile)
+	var events: Array[EffectEvent] = await _drop(tile, 3)
+	assert_eq(_amounts(events, ShieldEvent), [15])
+	var shields: Array[EffectEvent] = _of(events, ShieldEvent)
+	if shields.size() == 1:
+		assert_eq(shields[0].targets, [Globals.player] as Array[Node], "for the player")
+	assert_eq(tile.countdown_remaining(), 10, "the 2 past zero carry over")
+	_gives_die_to_target(events)
+
+
+func test_capacitor_bank_plus_counts_from_ten() -> void:
+	var tile: Tile = _tile("capacitor_bank_plus")
+	assert_eq(tile.countdown_remaining(), 10)
+	_wind_to_one(tile)
+	assert_eq(_amounts(await _drop(tile, 1), ShieldEvent), [15])
