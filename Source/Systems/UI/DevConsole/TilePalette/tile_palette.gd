@@ -6,7 +6,7 @@ extends Control
 ## handled by the same [Draggable] plumbing a shop purchase goes through. That
 ## keeps the palette from needing its own placement rules.
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 const _TILE_RESOURCE_DIR: String = "res://Source/Content/Tiles/TileResources/"
 

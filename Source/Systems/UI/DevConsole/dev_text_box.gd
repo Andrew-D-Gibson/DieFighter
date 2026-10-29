@@ -11,7 +11,7 @@ extends HBoxContainer
 signal text_changed(new_text: String)
 signal text_submitted(submitted_text: String)
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 const _FONT_SIZE: int = 40
 const _HEIGHT: float = 64.0
 const _FIELD_COLOR: Color = Color(0.09, 0.22, 0.42, 0.85)

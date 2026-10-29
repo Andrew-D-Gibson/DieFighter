@@ -2,7 +2,7 @@
 class_name AmplifierVisual
 extends Node2D
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 ## m5x7 at 16 keeps one font pixel to one world pixel.
 const _FONT_SIZE: int = 16
 

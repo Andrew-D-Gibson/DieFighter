@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://87ld1okihf31"]
 
 [ext_resource type="Script" uid="uid://dtjw0hgtw64u2" path="res://Source/Systems/UI/DevConsole/dev_console.gd" id="1_jywx7"]
-[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_ynq24"]
+[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="2_ynq24"]
 [ext_resource type="Script" uid="uid://u88vdxrgl8j0" path="res://Source/Systems/UI/DevConsole/dev_text_box.gd" id="3_dtb"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4eq4m"]

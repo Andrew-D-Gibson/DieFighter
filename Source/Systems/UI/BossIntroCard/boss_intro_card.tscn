@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.gd" id="1_card"]
-[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_font"]
+[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="2_font"]
 
 [node name="BossIntroCard" type="Control" node_paths=PackedStringArray("band", "portrait", "title_label", "subtitle_label", "dim")]
 visible = false

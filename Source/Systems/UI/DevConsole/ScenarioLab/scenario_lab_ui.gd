@@ -3,7 +3,7 @@ extends RefCounted
 ## Builders for the Scenario Lab's code-built controls, styled like the other
 ## dev tools (TilePalette) so they read as one set.
 
-const FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 const PANEL_COLOR: Color = Color(0.144, 0.3416, 0.6, 0.843137)
 const ENTRY_COLOR: Color = Color(0.09, 0.22, 0.42, 0.85)

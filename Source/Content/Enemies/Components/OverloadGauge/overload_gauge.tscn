@@ -1,7 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://Source/Content/Enemies/Components/OverloadGauge/overload_gauge.gd" id="1_gauge"]
-[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_font"]
+[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="2_font"]
 
 [node name="OverloadGauge" type="Node2D" node_paths=PackedStringArray("label")]
 z_index = 2
