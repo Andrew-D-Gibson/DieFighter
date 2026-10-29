@@ -34,6 +34,7 @@ higher; good for chains, ticks and combos).
 | `tractor_lock`, `die_dread_thunk`, `die_dead_click` | Tractor beam handing a die to a ship. `tractor_lock` also plays for Repo Beam, and `die_dread_thunk` for dice left behind on a jump |
 | `hover_thump`, `text_blip`, `money_tick`, `alarm_klaxon` | UI hover, dialogue/tutorial text, money counting, red alert |
 | `upgrade_trigger` | **Placeholder** (the reroll blip, pitched up): an upgrade tile's modifier firing |
+| `shop_stock_pop` | **Placeholder** (the reroll blip, escalating): each item popping onto the shop's shelves as it opens (`Shop._pop_in`); the panel unfolding plays `tile_dropped` |
 | `glass_tinkle` | **Placeholder** (synthesised): cockpit glass shards landing inside the cockpit, once per spill (`CockpitGlassShards`) |
 | `glass_crack` | **Placeholder** (synthesised): each canopy crack coming back during the death sequence, rising in pitch as they quicken (`CockpitDamageSite.flare_back`) |
 
