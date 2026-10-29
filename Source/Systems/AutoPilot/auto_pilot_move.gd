@@ -4,13 +4,14 @@ extends RefCounted
 ## player's input reaches: drop a die from the hand on a tile, retarget the
 ## targeting computer, flip between the systems and map tabs, take a choice
 ## from a salvage offer, buy from the shop, buy a repair or sell a tile at a
-## repair station, or press End Turn.
+## repair station, drag a tile to another cell out of a fight, or press End
+## Turn.
 ##
 ## Moves are listed fresh every time the AutoPilot acts and used at once, so
 ## they hold live node references rather than ids.
 
 ## Append only: transcripts and replays name kinds by their position.
-enum Kind { PLACE_DIE, TARGET, VIEW_MAP, VIEW_SYSTEMS, END_TURN, CLAIM, BUY, REPAIR, SELL }
+enum Kind { PLACE_DIE, TARGET, VIEW_MAP, VIEW_SYSTEMS, END_TURN, CLAIM, BUY, REPAIR, SELL, MOVE_TILE }
 
 var kind: Kind
 var die: Dice
@@ -20,6 +21,11 @@ var enemy: Enemy
 ## MoneyPickup. For SELL, the grid tile.
 var item: Node2D
 var price: int = 0
+## Where a claimed or bought tile is let go (an open cell) or a Grid Slot
+## (a sealed one), or where MOVE_TILE drags its tile. (-1, -1) for a claim
+## or purchase lets it go where a player in a hurry would: the first free
+## cell, the first sealed one.
+var cell: Vector2i = Vector2i(-1, -1)
 
 
 static func place_die(on_die: Dice, on_tile: Tile) -> AutoPilotMove:
@@ -69,6 +75,15 @@ static func sell(grid_tile: Tile, pay: int) -> AutoPilotMove:
 	return move
 
 
+## Drags [param grid_tile] to [param to_cell], swapping with any tile there.
+static func move_tile(grid_tile: Tile, to_cell: Vector2i) -> AutoPilotMove:
+	var move := AutoPilotMove.new()
+	move.kind = Kind.MOVE_TILE
+	move.tile = grid_tile
+	move.cell = to_cell
+	return move
+
+
 static func end_turn() -> AutoPilotMove:
 	return _of_kind(Kind.END_TURN)
 
@@ -98,21 +113,21 @@ static func list_legal() -> Array[AutoPilotMove]:
 			if ship != Globals.targeting_computer.targeted_enemy:
 				moves.append(target(ship))
 
-	# A tile with no free cell to go to is refused, as a player can see, and
-	# so is a Grid Slot with no sealed cell left to open.
-	var room: bool = Globals.tile_grid.has_free_cell()
-	var sealed: bool = Globals.tile_grid.has_locked_cell()
+	# A tile with no free cell to go to is refused, as a player can see,
+	# unless it can upgrade its twin; so is a Grid Slot with no sealed cell
+	# left to open.
 	for choice: Node2D in _salvage_on_offer():
-		if (room or choice is not Tile) and (sealed or choice is not GridSlot):
+		if _has_somewhere_to_go(choice):
 			moves.append(claim(choice))
 	if is_instance_valid(Globals.shop) and Globals.shop.is_visible_in_tree():
 		for stock: Node in Globals.shop.item_to_shop_index:
 			var cost: int = Globals.shop.price_of(stock)
 			if cost >= 0 and cost <= Globals.player.money and _can_pick_up(stock as Node2D) \
-			and (room or stock is not Tile) and (sealed or stock is not GridSlot):
+			and _has_somewhere_to_go(stock as Node2D):
 				moves.append(buy(stock as Node2D, cost))
 
 	moves.append_array(_repair_station_moves())
+	moves.append_array(_rearrangements())
 
 	# The map's controls are tiles, but only while its tab is showing.
 	moves.append(_of_kind(Kind.VIEW_SYSTEMS if Globals.map.visible else Kind.VIEW_MAP))
@@ -138,13 +153,16 @@ func perform() -> void:
 		# the grid, a Grid Slot over a sealed cell, anything else over the hand.
 		Kind.CLAIM, Kind.BUY:
 			var draggable: Draggable = item.get("draggable")
-			draggable.drag_ended.emit(draggable, _drop_point_for(item))
+			draggable.drag_ended.emit(draggable, _drop_point_for(item, cell))
 		# The button's own handler.
 		Kind.REPAIR:
 			Globals.repair_station.repair()
 		# Dragged off the grid and let go over the SELL slot.
 		Kind.SELL:
 			tile.draggable.drag_ended.emit(tile.draggable, Globals.repair_station.sell_zone_centre())
+		# Picked up off the grid and let go over another cell.
+		Kind.MOVE_TILE:
+			tile.draggable.drag_ended.emit(tile.draggable, Globals.tile_grid.grid_to_global_pos(cell))
 
 
 ## A readable, replay-stable record of the move for the transcript.
@@ -164,10 +182,15 @@ func describe() -> Dictionary:
 			return {"move": "repair", "price": price}
 		Kind.SELL:
 			return {"move": "sell", "item": item_name(tile), "price": price, "cell": _tile_cell(tile)}
+		Kind.MOVE_TILE:
+			return {"move": "move_tile", "item": item_name(tile), "from": _tile_cell(tile),
+				"cell": "%d,%d" % [cell.x, cell.y]}
 		Kind.CLAIM, Kind.BUY:
 			var entry: Dictionary = {"move": Kind.keys()[kind].to_lower(), "item": item_name(item)}
 			if kind == Kind.BUY:
 				entry["price"] = price
+			if cell != Vector2i(-1, -1):
+				entry["cell"] = "%d,%d" % [cell.x, cell.y]
 			return entry
 	return {"move": Kind.keys()[kind].to_lower()}
 
@@ -201,6 +224,32 @@ static func _repair_station_moves() -> Array[AutoPilotMove]:
 	return moves
 
 
+static func _has_somewhere_to_go(thing: Node2D) -> bool:
+	if thing is Tile:
+		return Globals.tile_grid.has_free_cell() or AutoPilotBuild.twin_for((thing as Tile).tile_resource) != null
+	if thing is GridSlot:
+		return Globals.tile_grid.has_locked_cell()
+	return true
+
+
+## Every drag of a grid tile to another cell, out of a fight with the grid on
+## show: tiles are locked in place for as long as a fight lasts.
+static func _rearrangements() -> Array[AutoPilotMove]:
+	var moves: Array[AutoPilotMove] = []
+	var grid: TileGrid = Globals.tile_grid
+	if Tile.grid_locked() or not grid.is_visible_in_tree():
+		return moves
+	var cells: Array[Vector2i] = grid.get_cells()
+	for from: Vector2i in grid.tile_locations:
+		var grid_tile: Tile = grid.tile_locations[from]
+		if not _can_pick_up(grid_tile):
+			continue
+		for to: Vector2i in cells:
+			if to != from:
+				moves.append(move_tile(grid_tile, to))
+	return moves
+
+
 ## Choices in the salvage offers on show.
 static func _salvage_on_offer() -> Array[Node2D]:
 	var choices: Array[Node2D] = []
@@ -224,16 +273,27 @@ static func _can_pick_up(thing: Node2D) -> bool:
 		and draggable.state == Draggable.DragState.DEFAULT
 
 
-## Where a player would let go of [param thing]: a tile on the first open cell
-## of the grid (list_legal() offers no tile without one), a Grid Slot on the
-## first sealed cell, anything else on the hand. All are well clear of the
-## offer and the shelves.
-static func _drop_point_for(thing: Node2D) -> Vector2:
+## Where a player would let go of [param thing]: a tile on [param at] if it's
+## an open, empty cell or its twin, else the first empty cell, else its twin
+## (list_legal() offers no tile with neither); a Grid Slot on [param at] if
+## it's sealed, else the first sealed cell; anything else on the hand. All
+## are well clear of the offer and the shelves.
+static func _drop_point_for(thing: Node2D, at: Vector2i = Vector2i(-1, -1)) -> Vector2:
 	var grid: TileGrid = Globals.tile_grid
 	if thing is Tile:
-		return grid.grid_to_global_pos(grid.find_available_grid_pos())
+		var resource: TileResource = (thing as Tile).tile_resource
+		var there: Tile = grid.tile_locations.get(at)
+		var takes_it: bool = grid.is_grid_pos_valid(at) \
+			and (there == null or (is_instance_valid(there) and there.can_merge(resource)))
+		if not takes_it:
+			at = grid.find_available_grid_pos()
+			if not grid.is_grid_pos_valid(at):
+				at = grid.find_tile_pos(AutoPilotBuild.twin_for(resource))
+		return grid.grid_to_global_pos(at)
 	if thing is GridSlot:
-		return grid.grid_to_global_pos(grid.get_locked_cells()[0])
+		if not grid.is_cell_locked(at):
+			at = grid.get_locked_cells()[0]
+		return grid.grid_to_global_pos(at)
 	return Globals.player.dice_manager.global_position
 
 

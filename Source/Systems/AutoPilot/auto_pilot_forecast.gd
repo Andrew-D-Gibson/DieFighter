@@ -58,15 +58,21 @@ var destroys_itself: bool = false
 var _target: Enemy
 ## Every enemy a random draw could land on.
 var _roster: Array[Enemy] = []
+## Reads the board as if a fight were on, whatever the state: for valuing a
+## tile with a stand-in enemy between fights.
+var _as_in_a_fight: bool = false
 
 
 ## A forecast of [param die] dropped on [param tile] while [param target] is
 ## the targeted ship. [param roster] is the living enemies (default: the live
-## game's).
-static func of(tile: Tile, die: Node, target: Enemy, roster: Array[Enemy] = []) -> AutoPilotForecast:
+## game's). [param as_in_a_fight] reads the board as mid-fight, for valuing
+## tiles against a stand-in enemy.
+static func of(tile: Tile, die: Node, target: Enemy, roster: Array[Enemy] = [],
+		as_in_a_fight: bool = false) -> AutoPilotForecast:
 	var forecast := AutoPilotForecast.new()
 	forecast._target = target
 	forecast._roster = roster if not roster.is_empty() else _live_roster()
+	forecast._as_in_a_fight = as_in_a_fight
 	var hologram: bool = die.get("holographic") == true
 	var face: int = int(die.get("value"))
 	# The player's own statuses act as the die lands: Scrambled flips it,
@@ -75,7 +81,7 @@ static func of(tile: Tile, die: Node, target: Enemy, roster: Array[Enemy] = []) 
 	if engine and is_instance_valid(Globals.player) and JammedStatus.is_ship_system(tile):
 		if engine.find_status(Globals.player, &"scrambled"):
 			face = 7 - face
-		if engine.find_status(Globals.player, &"jammed") and _would_take(tile, face, hologram):
+		if engine.find_status(Globals.player, &"jammed") and forecast._would_take(tile, face, hologram):
 			forecast._jammed(target, face, hologram)
 			return forecast
 	forecast._follow(tile, die, face, hologram, 0, [])
@@ -428,8 +434,11 @@ func _feed(next: Tile, walk: _Walk, face: int, hologram: bool) -> void:
 
 
 ## Tile.activation_refusal() for a die that may not be the one in hand: the
-## checks that read the die read [param face] instead.
-static func _would_take(tile: Tile, face: int, hologram: bool) -> bool:
+## checks that read the die read [param face] instead, and the ones that read
+## the targeting computer read the ship this forecast is aimed at (a policy
+## aims before it plays; between fights the computer holds nobody, and a
+## stand-in enemy would read as no target at all).
+func _would_take(tile: Tile, face: int, hologram: bool) -> bool:
 	if tile.uses_remaining == 0:
 		return false
 	for check: ActivationResource in tile.tile_resource.activation_checks:
@@ -444,6 +453,15 @@ static func _would_take(tile: Tile, face: int, hologram: bool) -> bool:
 					return false
 			ActivationResource.ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
 				return false
+			ActivationResource.ActivationType.SHIP_TARGETED:
+				if not is_instance_valid(_target):
+					return false
+			ActivationResource.ActivationType.OTHER_SHIPS_EXIST:
+				if _roster.is_empty():
+					return false
+			ActivationResource.ActivationType.IN_COMBAT:
+				if not _as_in_a_fight and not check.criteria_satisfied(null, tile):
+					return false
 			_:
 				if not check.criteria_satisfied(null, tile):
 					return false

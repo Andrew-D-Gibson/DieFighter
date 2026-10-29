@@ -4,10 +4,13 @@ extends AutoPilotPolicy
 ## tile does with it, less what the ship it's handed to will do with it next.
 ## It aims the targeting computer at whichever ship makes that trade best,
 ## finishes ships off, banks shields against the hits it can see coming,
-## takes salvage, shops, patches the hull at repair stations (it never sells),
-## and charges up and jumps toward good stops on the
-## map. It reads only what a player can see: intents a "?" hides cost the
-## same whatever the face (AutoPilotThreat).
+## and charges up and jumps toward good stops on the map. Between fights it
+## builds the grid (AutoPilotBuild): a tile taken goes in the cell where it
+## adds most, a Grid Slot opens the sealed cell that pays best, and tiles are
+## dragged about while a drag still improves the board. It takes salvage,
+## shops, patches the hull at repair stations, and sells a tile there when
+## the credits are worth more than the tile. It reads only what a player can
+## see: intents a "?" hides cost the same whatever the face (AutoPilotThreat).
 ##
 ## Greedy, one move at a time, with no lookahead. The point isn't strong play
 ## but a fixed, believable standard, so that the gap between it and the
@@ -127,6 +130,10 @@ const _REPAIR_STOP_MIN_CREDITS: int = 10
 ## times the slope: smart 0.77, aggressive 0.68, turtle 0.89.
 const _REPAIR_BELOW: float = 0.5
 const _REPAIR_BELOW_PER_HEAL: float = 0.3
+## With the sector's boss this few stops off, it tops up this much further:
+## the next station may be past the gate.
+const _BOSS_NEAR_STOPS: int = 4
+const _REPAIR_BEFORE_BOSS: float = 0.15
 ## Per tile forward: staying ahead of Fate. Small, since stops are the point.
 const _PROGRESS: float = 0.3
 ## Per stop worth visiting that a jump flies past.
@@ -145,12 +152,23 @@ const _DIE_WORTH: float = 5.0
 const _CREDITS_PER_POINT: float = 8.0
 const _RARITY_WORTH: float = 1.0
 const _PASSIVE_TILE_WORTH: float = 3.0
-## A Grid Slot is room for a tile later; on a full grid it's room for the next
-## one at once, so it's worth twice as much.
+## A Grid Slot is room for a tile later: worth about a tile once the grid is
+## full, and a share of that for each free cell still left. In a shop, on a
+## full grid, it's also the way to the best tile on the shelf.
 const _GRID_SLOT_WORTH: float = 4.0
+## Uses a tile that fires all turn counts as, when weighing how many dice the
+## grid can put to work.
+const _UNLIMITED_USES: int = 4
 ## Credits per point a purchase must clear, and by how much.
 const _PRICE_PER_POINT: float = 10.0
 const _BUY_BAR: float = 1.0
+## A sale must clear what the tile adds to the board by this much.
+const _SELL_BAR: float = 1.0
+## A tile's worth is per use, and a kept tile pays out turn after turn where
+## credits or a repair pay once: a sale weighs it as this many turns of use.
+const _KEPT_TILE_TURNS: float = 3.0
+## Below this many tiles it only sells one that does harm.
+const _KEEP_TILES: int = 3
 
 ## Takes salvage and shop stock at random instead of by worth, playing the
 ## rest as usual, so every tile gets taken often enough to measure, not only
@@ -174,10 +192,15 @@ var _fled_at_hull: Dictionary[String, int] = {}
 var _nominal_enemy: Enemy
 ## Shops a random picker has walked away from, by sector and map stop.
 var _done_shopping: Dictionary[String, bool] = {}
+## Plans where tiles go, valuing each with _tile_worth().
+var _build: AutoPilotBuild
+## Grid layouts already found as good as a single drag can make them.
+var _settled_layouts: Dictionary[String, bool] = {}
 
 
 func _init(style: Persona) -> void:
 	_persona = style
+	_build = AutoPilotBuild.new(_tile_worth, _room_worth)
 	# A bounce is a refusal within one hand. Across hands the same die rolls the
 	# same face often enough that a lasting tally would read every repeat as a
 	# bounce and blacklist the best tile for the rest of the run.
@@ -200,6 +223,7 @@ func _notification(what: int) -> void:
 
 
 func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilotMove:
+	_build.reset()
 	var by_kind: Dictionary[AutoPilotMove.Kind, Array] = {}
 	for move: AutoPilotMove in moves:
 		if not by_kind.has(move.kind):
@@ -207,17 +231,26 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 		by_kind[move.kind].append(move)
 
 	if by_kind.has(AutoPilotMove.Kind.CLAIM):
-		var claim: AutoPilotMove = _random_claim(by_kind[AutoPilotMove.Kind.CLAIM], rng) \
-			if random_picks else _best_item(by_kind[AutoPilotMove.Kind.CLAIM], false)
+		var claims: Array = by_kind[AutoPilotMove.Kind.CLAIM]
+		var claim: AutoPilotMove = _random_claim(claims, rng) if random_picks else _best_item(claims, false)
 		if claim:
-			return claim
+			return _aim(claim, false)
 	if by_kind.has(AutoPilotMove.Kind.BUY):
-		var purchase: AutoPilotMove = _random_purchase(by_kind[AutoPilotMove.Kind.BUY], rng) \
-			if random_picks else _best_item(by_kind[AutoPilotMove.Kind.BUY], true)
+		var stock: Array = by_kind[AutoPilotMove.Kind.BUY]
+		var purchase: AutoPilotMove = _random_purchase(stock, rng) if random_picks else _best_item(stock, true)
 		if purchase:
-			return purchase
+			return _aim(purchase, true)
+	if by_kind.has(AutoPilotMove.Kind.SELL):
+		var sale: AutoPilotMove = _best_sale(by_kind[AutoPilotMove.Kind.SELL],
+			by_kind.get(AutoPilotMove.Kind.REPAIR, []))
+		if sale:
+			return sale
 	if by_kind.has(AutoPilotMove.Kind.REPAIR) and _wants_repair():
 		return by_kind[AutoPilotMove.Kind.REPAIR][0]
+	if by_kind.has(AutoPilotMove.Kind.MOVE_TILE):
+		var rearrangement: AutoPilotMove = _best_rearrangement(by_kind[AutoPilotMove.Kind.MOVE_TILE])
+		if rearrangement:
+			return rearrangement
 	# On most ships End Turn only lights once the hand is spent. A ship that
 	# may keep its hand (the Outrigger's sail) lights it early: ending then
 	# banks the rest, so it's weighed against the best play below instead.
@@ -611,9 +644,28 @@ func _board_key() -> String:
 ## Whether to buy another repair: while the hull is low enough for this style
 ## to care. The station only offers one it can pay for and has room for.
 func _wants_repair() -> bool:
+	return _hull_share() < _repair_line()
+
+
+func _hull_share() -> float:
 	var health: Health = Globals.player.health
-	var hull_share: float = float(health.health) / maxf(1.0, float(health.max_health))
-	return hull_share < _REPAIR_BELOW + _REPAIR_BELOW_PER_HEAL * _persona.heal
+	return float(health.health) / maxf(1.0, float(health.max_health))
+
+
+## The hull share it repairs up to.
+func _repair_line() -> float:
+	var line: float = _REPAIR_BELOW + _REPAIR_BELOW_PER_HEAL * _persona.heal
+	if _boss_near():
+		line += _REPAIR_BEFORE_BOSS
+	return line
+
+
+## Whether the sector's gate is only a jump or two off.
+static func _boss_near() -> bool:
+	var map: Map = Globals.map
+	if not is_instance_valid(map) or map.scenario_list.is_empty():
+		return false
+	return map.scenario_list.size() - 1 - map.current_scenario_index <= _BOSS_NEAR_STOPS
 
 
 ## The best of [param offers] worth having; for purchases, only one that
@@ -622,7 +674,8 @@ func _best_item(offers: Array, buying: bool) -> AutoPilotMove:
 	var best: AutoPilotMove = null
 	var best_score: float = -INF
 	for offer: AutoPilotMove in offers:
-		var score: float = item_value(offer.item)
+		var score: float = _slot_value(offer.price if buying else -1) if offer.item is GridSlot \
+			else item_value(offer.item)
 		if score < 0.0:
 			continue
 		if buying:
@@ -654,16 +707,141 @@ func _random_purchase(stock: Array, rng: RandomNumberGenerator) -> AutoPilotMove
 	return stock[pick]
 
 
-## What having [param item] is worth: a tile by what it does with an average
-## die, a die, or credits.
+## What having [param item] is worth: a tile by what it adds to the board in
+## the best cell for it, a Grid Slot by the room it makes, a die by the work
+## the grid has for it, or credits.
 func item_value(item: Node) -> float:
 	if item is MoneyPickup:
 		return (item as MoneyPickup).amount / _CREDITS_PER_POINT
 	if item is Tile:
-		return _tile_worth(item as Tile)
+		return _offer_worth(item as Tile)
 	if item is GridSlot:
-		return _GRID_SLOT_WORTH * (1.0 if Globals.tile_grid.has_free_cell() else 2.0)
-	return _DIE_WORTH
+		return _slot_value()
+	return _die_worth()
+
+
+## A Grid Slot: a share of a tile's room for every free cell the grid still
+## has. Bought on a full grid for [param slot_price] (-1: not buying), add
+## the best tile on the shelf it makes room for, if there's money for both.
+func _slot_value(slot_price: int = -1) -> float:
+	var free: int = _free_cells()
+	var worth: float = _room_worth()
+	if free > 0 or slot_price < 0:
+		return worth
+	var best_tile: float = 0.0
+	for tile: Tile in _shelf_tiles():
+		var price: int = Globals.shop.price_of(tile)
+		if price + slot_price <= Globals.player.money:
+			best_tile = maxf(best_tile, _offer_worth(tile, true) - price / _PRICE_PER_POINT)
+	return worth + best_tile
+
+
+## What [param tile], on offer, would add in the best cell for it; with
+## [param sealed], counting the sealed cells a Grid Slot could open. A tile
+## is only ever valued in a cell: off the grid, a relay has nothing to feed.
+func _offer_worth(tile: Tile, sealed: bool = false) -> float:
+	var spot: Dictionary = _build.best_cell_for(tile, sealed)
+	return spot["gain"] if not spot.is_empty() else 0.0
+
+
+## Tiles on the shop's shelves, room for them or not.
+static func _shelf_tiles() -> Array[Tile]:
+	var tiles: Array[Tile] = []
+	if not is_instance_valid(Globals.shop) or not Globals.shop.is_visible_in_tree():
+		return tiles
+	for item: Node in Globals.shop.item_to_shop_index:
+		if item is Tile and is_instance_valid(item) and Globals.shop.price_of(item) >= 0:
+			tiles.append(item as Tile)
+	return tiles
+
+
+## One more free cell: a Grid Slot's worth before its price.
+func _room_worth() -> float:
+	return _GRID_SLOT_WORTH / (1.0 + _free_cells())
+
+
+static func _free_cells() -> int:
+	var grid: TileGrid = Globals.tile_grid
+	return grid.get_cells().size() - grid.tile_locations.size()
+
+
+## A die is worth _DIE_WORTH while the grid has the uses to put it to work
+## every turn, and less as the dice owned outgrow them: the rest only end up
+## with the enemy.
+func _die_worth() -> float:
+	var uses: int = 0
+	for cell: Vector2i in Globals.tile_grid.tile_locations:
+		var tile: Tile = Globals.tile_grid.tile_locations[cell]
+		if not is_instance_valid(tile) or _refuses_dice(tile.tile_resource):
+			continue
+		var per_turn: int = tile.tile_resource.uses_per_turn
+		uses += _UNLIMITED_USES if per_turn < 0 else per_turn
+	var spare: int = uses - Globals.player.num_of_dice
+	return _DIE_WORTH * clampf(spare / 2.0, 0.25, 1.0)
+
+
+## Sets where [param move]'s tile or Grid Slot is let go: the cell where the
+## tile adds most, or the sealed cell that pays best for the shelf's tiles
+## (when buying) or the grid's own.
+func _aim(move: AutoPilotMove, buying: bool) -> AutoPilotMove:
+	if move.item is Tile:
+		var spot: Dictionary = _build.best_cell_for(move.item as Tile)
+		if not spot.is_empty():
+			move.cell = spot["cell"]
+	elif move.item is GridSlot:
+		var on_offer: Array[Tile] = []
+		if buying:
+			on_offer = _shelf_tiles()
+		move.cell = _build.best_sealed_cell(on_offer)
+	return move
+
+
+## The sale most worth making, or null: one whose credits beat what the tile
+## adds to the board, or that pays for a repair it wants and can't afford.
+## [param repairs] is the repair on offer, if any.
+func _best_sale(sales: Array, repairs: Array) -> AutoPilotMove:
+	var station: RepairStation = Globals.repair_station
+	var short_of_repair: bool = repairs.is_empty() and _wants_repair() \
+		and station.repair_amount() > 0 and Globals.player.money < station.repair_cost()
+	var tiles: int = Globals.tile_grid.tile_locations.size()
+	var best: AutoPilotMove = null
+	var best_score: float = -INF
+	for sale: AutoPilotMove in sales:
+		var adds: float = _build.contribution(sale.tile)
+		if tiles <= _KEEP_TILES and adds >= 0.0:
+			continue
+		var score: float = sale.price / _CREDITS_PER_POINT - adds * _KEPT_TILE_TURNS
+		if short_of_repair and Globals.player.money + sale.price >= station.repair_cost():
+			score += station.repair_amount() * _persona.heal
+		if score >= _SELL_BAR and score > best_score:
+			best_score = score
+			best = sale
+	return best
+
+
+## The drag among [param moves] that improves the board most, or null once a
+## single drag can't.
+func _best_rearrangement(moves: Array) -> AutoPilotMove:
+	var key: String = _layout_key()
+	if _settled_layouts.has(key):
+		return null
+	var best: Dictionary = _build.best_rearrangement()
+	if not best.is_empty():
+		for move: AutoPilotMove in moves:
+			if move.tile == best["tile"] and move.cell == best["cell"]:
+				return move
+	_settled_layouts[key] = true
+	return null
+
+
+## The grid as it stands: which tile in which cell, and which cells are open.
+static func _layout_key() -> String:
+	var grid: TileGrid = Globals.tile_grid
+	var parts: PackedStringArray = []
+	for cell: Vector2i in grid.get_cells():
+		var tile: Tile = grid.tile_locations.get(cell)
+		parts.append("%d,%d:%d" % [cell.x, cell.y, tile.get_instance_id() if is_instance_valid(tile) else 0])
+	return "|".join(parts)
 
 
 func _tile_worth(tile: Tile) -> float:
@@ -692,7 +870,7 @@ func _tile_worth(tile: Tile) -> float:
 func _nominal_score(tile: Tile, face: int, nominal: Array[Enemy]) -> float:
 	var die: _NominalDie = _NominalDie.new()
 	die.value = face
-	var forecast: AutoPilotForecast = AutoPilotForecast.of(tile, die, _nominal_enemy, nominal)
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(tile, die, _nominal_enemy, nominal, true)
 	die.free()
 	var score: float = 0.0
 	for hit: Node in forecast.damage:

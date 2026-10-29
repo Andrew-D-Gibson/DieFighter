@@ -22,6 +22,8 @@ const _KIND_WEIGHTS: Dictionary[AutoPilotMove.Kind, float] = {
 	# Rare: a random seller would strip its own grid at every station, and
 	# the point is to exercise the path, not to lose every run to it.
 	AutoPilotMove.Kind.SELL: 0.05,
+	# Rare too: enough to exercise dragging tiles about between fights.
+	AutoPilotMove.Kind.MOVE_TILE: 0.05,
 }
 
 

@@ -152,8 +152,11 @@ def _describe(entry):
             return [f"repair for {entry.get('price')}"]
         if move == "sell":
             return [f"sell {_strip(entry['item'])} [{entry.get('cell')}] for {entry.get('price')}"]
+        if move == "move_tile":
+            return [f"move {_strip(entry['item'])} [{entry.get('from')}] → [{entry.get('cell')}]"]
         if move in ("claim", "buy"):
-            return [f"{move} {_strip(entry['item'])}" + (f" for {entry['price']}" if "price" in entry else "")]
+            return [f"{move} {_strip(entry['item'])}" + (f" for {entry['price']}" if "price" in entry else "")
+                    + (f" → [{entry['cell']}]" if "cell" in entry else "")]
         return [move.replace("_", " ")]
     if kind == "arrive":
         return [f"Arrived at {entry['scenario']} (map tile {entry.get('map_index')})"]
