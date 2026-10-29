@@ -4,6 +4,36 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Die tricks: Die Splitter, Doubler, Nudge Down
+
+The first tiles built from the tile gap analysis (`Planning Documents/
+Tile_Gap_Analysis_StS_Dicey.xlsx`, sheet Proposed Tiles, G04/G19/G20). All
+three are Green, limited, and have a `_plus` with one more use.
+
+| Tile | Rarity | Uses | Takes | Does |
+|---|---|---|---|---|
+| Die Splitter | Common | 1 (+: 2) | 2-6 (`>1`) | Die keeps half rounded up, a hologram gets the rest. Return both |
+| Doubler | Uncommon | 1 (+: 2) | 1-3 (`<4`) | Double die. Feed right |
+| Nudge Down | Common | 2 (+: 3) | 2-6 (`>1`) | Subtract 1. Feed right |
+
+**Die Splitter** uses a new effect, `SPLIT_ACTIVATOR` (DiceControl 17). The
+split is fixed (5 = 3 + 2) so there is no UI. The second half is a hologram,
+so a split never grows the fleet. It's one event, so Flash Freeze cancels both
+halves rather than minting a free hologram.
+
+**Doubler and Nudge Down** are authored from `ADD_TO_ACTIVATOR_VALUE`.
+`AddToActivatorValueEvent.is_amplifiable()` is now `amount > 0`: an
+Amplifier's +2 would otherwise turn Nudge Down's -1 into +1. Bump is
+unchanged.
+
+**AutoPilot.** The forecast clamps a stepped face to 1-6 (a negative step
+used to forecast a 0), and counts a split's hologram as a die back in hand.
+
+**Tested.** 14 GUT tests (`test_die_tricks.gd`). Live: 5 on Die Splitter gave
+3 + hologram 2; a 4 through Nudge Down, Doubler and Dice Cannon dealt 6.
+
+---
+
 ## 2026-10-29 — Shop reroll
 
 **Why.** The tile gap analysis (`Planning Documents/Tile_Gap_Analysis_StS_Dicey.xlsx`)
