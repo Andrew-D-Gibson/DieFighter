@@ -121,8 +121,9 @@ Seven parallel branches, merged together.
   cell open, and `open_cells` in the dev console opens them by hand.
 - **Tiles upgrade.** Salvage and shops now offer tiles you already own.
   Drop a copy on its twin and the two merge into a "+" version, even on a
-  full grid. Carrying a copy lights its twin, and the info panel shows what
-  the upgrade does. Upgraded tiles shimmer round the edge and give off sparks.
+  full grid. Carrying a copy lights its twin, and while a copy is on offer
+  the info panel shows what the upgrade does. Upgraded tiles shimmer round
+  the edge and give off sparks.
 - **First twelve upgrades**, mostly bigger numbers: Dice Cannon+ (+2), Bump+
   (add 2), Chain Cannon+, Deflector Array+ (+2), Reactive Armor+,
   Counterweight Battery+, Overshield Relay+, Signal Relay+, Toll Relay+ and
