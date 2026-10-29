@@ -8,5 +8,5 @@ func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(effect_source) or effect_source is not Tile:
 		return
 
-	(effect_source as Tile).dice_queue.add(activator_die, true, false)
+	(effect_source as Tile).hold_die(activator_die)
 	activator_die.draggable.state = Draggable.DragState.DEFAULT

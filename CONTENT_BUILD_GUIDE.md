@@ -142,6 +142,17 @@ registration to testing. For how the systems work underneath, see
     the core trade of the game.
   - Feed tiles end with `PASS_DIE_TO_TILE` instead.
   - Holding tiles end with `KEEP_DIE_WITH_TILE`.
+  - **Twin dice** (Twin Barrel, Pair Lock, Lucky Seven): the first die is
+    held, the next pays out on both. Tick `holds_first_die` and wrap the
+    chain in `IF_SOURCE_HOLDS_DIE`: false branch `CALLOUT` "HOLD" then
+    `KEEP_DIE_WITH_TILE`; true branch the payout, reading the held die with
+    `ADD_HELD_DIE_VALUE` and handing it over with `GIVE_HELD_DIE_TO_TARGET`
+    (or leaving it to go home). The hold spends no use, so a 1-use tile's use
+    goes on the payout, and an echo waits for the payout. A held die goes back
+    to the hand at turn end, so a hold can't be banked. To restrict the second
+    die, add `MATCHES_HELD_DIE` or `SUMS_WITH_HELD_DIE` (`threshold` = the
+    total): it refuses a die that doesn't pair, back to the hand, and takes
+    any die while nothing is held. The lower panel shows two blank slots.
   - **Boost** (an optional charge cost): an `IF_CHARGE_AT_LEAST` conditional
     (`amount` = cost) whose true branch spends it (`TARGET_PLAYER`, an Engine
     `STREAM`, `SPEND_ENGINE_CHARGE`) then does the extra. The tile still works
@@ -174,6 +185,22 @@ registration to testing. For how the systems work underneath, see
   - A tile that spends or cashes in shields gates on `SHIELDS_AT_LEAST`, and
     pays with `SPEND_SHIELDS`, not a negative `SHIELD`: that would read as a
     hit and set off anything listening for one.
+  - **Per-fight counters**: a tile that builds something up over a fight
+    keeps it in its own tile data (`INCREMENT_TILE_DATA`, shown with
+    `[data]key[/data]`) and zeroes it in an `ON_COMBAT_START` response, which
+    is queued ahead of the fight's first `ON_TURN_START` (Ratchet Cannon).
+    Overclock Coil does the same per turn with `ON_TURN_START`.
+  - **Responses about a ship** (`ON_STATUS_APPLIED_TO_ENEMY`) start with that
+    ship as the chain's target, so `that ship` needs no targeting step: go
+    straight to the effect (Hex Coil: ZAP, `SET 2`, `DAMAGE`). It fires once
+    per ship per application, only for statuses the player puts on an enemy
+    (not on themselves), so a payoff that only deals damage can't loop.
+  - **Family boosts**: `TILE_CONTROL / ADD_FAMILY_BOOST` (`string_param` =
+    `red`, `blue`, ...; `range_max` = cap; running amount = step, negative to
+    take it back) gives every tile whose art is in that colour's folder +N
+    damage per hit for the rest of the fight (`FamilyBoostModifier`, one per
+    source tile, shown on each boosted tile's info panel). War Footing builds
+    it on `ON_TURN_START` and loses it on `ON_PLAYER_HEALTH_HIT`.
 - **`dragging_allowed`, `max_dice_in_queue`**: rarely touched.
 
 **Upgrades.** A tile can have an upgraded version, which the player gets by
@@ -762,6 +789,9 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
   into a rise). `SPLIT_ACTIVATOR` (Die Splitter) leaves the die the bigger
   half and hands the player a hologram of the rest, as one event so a freeze
   stops both.
+- **The die a tile holds:** read it with `Tile.get_held_die()`, which counts
+  only dice put there by `KEEP_DIE_WITH_TILE` (`Tile.hold_die()`), not dice
+  merely dropped on the tile and waiting for their activation.
 - **Data a chain needs from its caller:** add a field to `EffectContext`
   (`effect_context.gd`).
 
@@ -802,6 +832,13 @@ statuses onto the player (`TRANSFER_STATUSES`); gate it on
 `SELF_HAS_STATUS`. A tile that puts a status on its own ship (Blowtorch)
 targets the player for that step; its Amplifier doesn't grow it.
 
+**Status payoffs.** `MULTIPLY_STATUSES` (`multiplier`, x2 doubles) grows
+every status on the targets by applying the difference, one `APPLY_STATUS`
+per status, so it lands like any application (Status Catalyst; gate it on
+`TARGETED_SHIP_HAS_STATUS`). A tile answering the player applying a status
+listens for `ON_STATUS_APPLIED_TO_ENEMY` (Hex Coil); `APPLY_STATUS`,
+`TRANSFER_STATUSES` and `MULTIPLY_STATUSES` all set it off.
+
 ## 9. Keywords
 
 In `Source/Systems/keywords.gd`:
@@ -823,7 +860,8 @@ blue). Keep the rule to a sentence or two in the same terse style.
      are free; `ON_PLAYER_FATAL_DAMAGE` is pinned at 100.
   2. Fire it from `tile.gd` by connecting the triggering signal to
      `handle_tile_event(self, TileEvent.EventType.MY_EVENT)` alongside the
-     others (~line 85).
+     others (~line 115). Pass the ship the event is about as `subject` and
+     the response starts aimed at it.
 - **ActivationResource:** append to `ActivationType` and add its lambda to
   `activation_functions` (`Source/Content/Tiles/activation_resource.gd`).
   Add any new parameter as an `@export`.

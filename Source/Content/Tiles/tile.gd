@@ -49,6 +49,12 @@ var _setting_up: bool = false
 		else:
 			_use_lights.show_lit(uses_remaining, not _setting_up)
 
+## The dice this tile is holding (KEEP_DIE_WITH_TILE). A die dropped on the
+## tile also waits in dice_queue until its activation resolves, so the queue
+## alone can't tell a held die from one that's only been dropped: two dice
+## dropped in quick succession would read as a held pair.
+var _held_dice: Array[Dice] = []
+
 ## tile_data holds any necessary data that a tile's effects might need
 ## e.g. "turns_since_last_activation", "last_activator_value", etc.
 var effect_data: Dictionary[String, int]
@@ -105,7 +111,7 @@ func _ready() -> void:
 	# Hand it back before the enemies act, and before a jump frees every die.
 	# One held over to a later turn (HOLD_DIE_FOR_TURNS) stays put until its
 	# turn comes, but never outlasts the fight.
-	Events.player_turn_over.connect(_release_dice_held_for_the_turn)
+	Events.player_turn_over.connect(release_dice_held_for_the_turn)
 	Events.combat_finished.connect(release_held_dice)
 	# A countdown lasts from turn to turn, but every fight starts it afresh.
 	Events.start_combat.connect(_countdown.reset)
@@ -115,14 +121,23 @@ func _ready() -> void:
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_forget_dice_no_longer_held)
+	dice_queue.die_removed.connect(_forget_departed_dice)
 	
 
 func _connect_tile_event_signals() -> void:
 	Events.player_turn_start.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_TURN_START)
 	)
+	# Connected ahead of the ON_TURN_START listener below, so a fight's reset
+	# is queued before anything its first turn does.
+	Events.first_turn_start.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_COMBAT_START)
+	)
 	Events.first_turn_start.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_TURN_START)
+	)
+	Events.status_applied_to_enemy.connect(func(ship: Enemy, _status_id: StringName, _stacks: int) -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_STATUS_APPLIED_TO_ENEMY, false, ship)
 	)
 	Events.tile_pushed.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_PUSHED)
@@ -311,8 +326,10 @@ func _on_player_fatal_damage() -> void:
 
 
 ## [param immediate] resolves the response right after the event currently
-## resolving instead of at the back of the queue.
-func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false) -> void:
+## resolving instead of at the back of the queue. [param subject] is the ship
+## the event happened to, if any: the response starts with it as its target.
+func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false,
+		subject: Node = null) -> void:
 	if on_offer:
 		return
 	var event_check: TileEvent = _find_matching_event_response(tile, event)
@@ -323,6 +340,7 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool =
 	var trigger_event: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
 	trigger_event.responder = self
 	trigger_event.chain = tile_resource.event_responses[event_check]
+	trigger_event.subject = subject
 	if immediate:
 		engine.inject_event(trigger_event)
 	else:
@@ -499,7 +517,7 @@ func release_held_dice() -> void:
 
 ## The turn is over: every die held for it goes home, and any held over to a
 ## later turn stays.
-func _release_dice_held_for_the_turn() -> void:
+func release_dice_held_for_the_turn() -> void:
 	for die: Dice in dice_queue.queue.duplicate():
 		if die in _held_over:
 			continue
@@ -529,12 +547,39 @@ func _forget_dice_no_longer_held() -> void:
 			_held_over.erase(entry)
 
 
-## The first die this tile is holding other than `except`, or null.
-func get_held_die(except: Dice = null) -> Dice:
-	for die: Dice in dice_queue.queue:
-		if is_instance_valid(die) and die != except:
+## Keeps [param die] on this tile, held for a later activation (Welder, the
+## twin-dice tiles) until the tile uses it or the turn ends.
+func hold_die(die: Dice) -> void:
+	dice_queue.add(die, true, false)
+	if die not in _held_dice:
+		_held_dice.append(die)
+
+
+## The first die this tile is holding other than [param except], or null.
+## [param except] is a Node so the AutoPilot can ask about a stand-in die.
+func get_held_die(except: Node = null) -> Dice:
+	for die: Dice in _held_dice:
+		if is_instance_valid(die) and die != except and die in dice_queue.queue:
 			return die
 	return null
+
+
+## Whether [param die] would only be held here: the tile pays out on a pair
+## (TileResource.holds_first_die) and isn't holding another die yet. A hold
+## spends no use, and an echo waits for the payout instead.
+func is_hold(die: Node) -> bool:
+	return tile_resource != null and tile_resource.holds_first_die \
+		and get_held_die(die) == null
+
+
+## A held die that left the queue (paid out, given away, picked back up) is
+## no longer held, even if it's dropped here again later.
+func _forget_departed_dice() -> void:
+	var still_here: Array[Dice] = []
+	for die: Dice in _held_dice:
+		if is_instance_valid(die) and die in dice_queue.queue:
+			still_here.append(die)
+	_held_dice = still_here
 
 
 func _update_dice_queue_locations() -> void:
