@@ -141,7 +141,44 @@ func test_a_held_die_picked_back_up_is_no_longer_held() -> void:
 	assert_null(tile.get_held_die(), "only a hold makes a die held")
 
 
+func test_a_held_die_goes_back_to_the_hand_when_the_turn_or_fight_ends() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var first: Dice = _die(3)
+	await _play(_place(tile, first))
+	assert_true(Events.player_turn_over.is_connected(tile.release_held_dice))
+	assert_true(Events.combat_finished.is_connected(tile.release_held_dice))
+	tile.release_held_dice()
+	assert_has(player.dice_manager.queue, first)
+	assert_null(tile.get_held_die(), "nothing banked for next turn")
+	assert_eq(tile.uses_remaining, 1, "and the hold cost nothing")
+
+
+# ── Uses ─────────────────────────────────────────────────────────────────────
+
+func test_a_hold_spends_no_use_and_the_payout_spends_it() -> void:
+	var tile: Tile = _tile("pair_lock")
+	assert_eq(tile.uses_remaining, 1)
+	await _drop(tile, 3)
+	assert_eq(tile.uses_remaining, 1, "holding is free")
+	assert_eq(_damage(await _drop(tile, 3)), [12])
+	assert_eq(tile.uses_remaining, 0, "the payout spends the use")
+	assert_ne(tile.activation_refusal(_die(5)), "", "and a spent tile takes no new hold")
+
+
 # ── Refusals ─────────────────────────────────────────────────────────────────
+
+func test_pair_lock_refuses_a_die_that_does_not_match_and_hands_it_back() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var held: Dice = _die(3)
+	await _play(_place(tile, held))
+	var wrong: Dice = _die(5)
+	var events: Array[EffectEvent] = await _play(_place(tile, wrong))
+	assert_eq(_damage(events), [] as Array[int])
+	assert_has(player.dice_manager.queue, wrong, "back in the hand, not eaten")
+	assert_does_not_have(tile.dice_queue.queue, wrong)
+	assert_eq(tile.get_held_die(), held, "the held die waits on")
+	assert_eq(tile.uses_remaining, 1)
+
 
 func test_pairs_with_reads_matches_and_sums() -> void:
 	var match_check := ActivationResource.new()
@@ -177,6 +214,23 @@ func test_twin_barrel_plus_adds_six() -> void:
 	var tile: Tile = _tile("twin_barrel_plus")
 	await _drop(tile, 1)
 	assert_eq(_damage(await _drop(tile, 2)), [9])
+
+
+func test_pair_lock_hits_for_four_times_the_die_and_gives_both() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var first: Dice = _die(6)
+	await _play(_place(tile, first))
+	var second: Dice = _die(6)
+	var events: Array[EffectEvent] = await _play(_place(tile, second))
+	assert_eq(_damage(events), [24])
+	assert_has(enemy.dice_manager.queue, first)
+	assert_has(enemy.dice_manager.queue, second)
+
+
+func test_pair_lock_plus_hits_for_five_times() -> void:
+	var tile: Tile = _tile("pair_lock_plus")
+	await _drop(tile, 2)
+	assert_eq(_damage(await _drop(tile, 2)), [10])
 
 
 func test_a_repeated_payout_hits_twice_and_gives_each_die_once() -> void:
@@ -217,3 +271,24 @@ func test_the_forecast_reads_the_payout_off_the_held_die() -> void:
 	var forecast: AutoPilotForecast = AutoPilotForecast.of(tile, _die(5), enemy)
 	assert_almost_eq(forecast.damage.get(enemy, 0.0), 12.0, 0.01)
 	assert_eq(forecast.handoffs.size(), 2, "both dice go to the target")
+
+
+func test_the_forecast_values_a_pair_lock_hold_only_with_a_match_in_hand() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var first: Dice = _die(3)
+	_die(5)
+	assert_eq(AutoPilotForecast.of(tile, first, enemy).damage.get(enemy, 0.0), 0.0)
+	_die(3)
+	assert_almost_eq(AutoPilotForecast.of(tile, first, enemy).damage.get(enemy, 0.0), 6.0, 0.01)
+
+
+func test_a_tile_on_offer_is_valued_for_the_pair_a_typical_hand_would_find() -> void:
+	# A stand-in die, as the policy prices tiles: no hand to read.
+	var stand_in: Node = autofree(FakeDie.new(4))
+	var twin: AutoPilotForecast = AutoPilotForecast.of(_tile("twin_barrel"), stand_in, enemy, [enemy], true)
+	assert_almost_eq(twin.damage.get(enemy, 0.0), 5.25, 0.01, "half of 4 + 3.5 + 3, any die pairs")
+	var stand_in_three: Node = autofree(FakeDie.new(3))
+	var lock: AutoPilotForecast = AutoPilotForecast.of(_tile("pair_lock"), stand_in_three, enemy, [enemy], true)
+	var odds: float = 1.0 - pow(5.0 / 6.0, 4.0)
+	assert_almost_eq(lock.damage.get(enemy, 0.0), 0.5 * odds * 12.0, 0.01,
+		"half of 4 x 3, when one of four other dice shows a 3")
