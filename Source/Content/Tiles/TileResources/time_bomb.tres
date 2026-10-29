@@ -1,0 +1,173 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bxlxb5nuwl0d"]
+
+[ext_resource type="Texture2D" uid="uid://430puqfg2y1p" path="res://Assets/Textures/Tiles/RedTiles/time_bomb-Sheet.png" id="tex"]
+[ext_resource type="Texture2D" uid="uid://db5e8ott4cjt8" path="res://Assets/Textures/Statuses/time_bomb.png" id="icon"]
+[ext_resource type="Resource" uid="uid://r1fdvf4rxfcc" path="res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres" id="sfx_lock"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_boom"]
+[ext_resource type="Script" uid="uid://du0tif2ka5hlr" path="res://Source/Behavior/Effects/delayed_effect_data.gd" id="delayed"]
+[ext_resource type="Resource" uid="uid://buyxx5re8w6n" path="res://Source/Content/Tiles/TileResources/time_bomb_plus.tres" id="upgrade_plus"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="act"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="chain"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="tile"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1"]
+atlas = ExtResource("tex")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tile"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0")
+},
+{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("act")
+type = 0
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("act")
+type = 1
+acceptable_values = Array[int]([5, 6])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_6"]
+script = ExtResource("act")
+type = 2
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_7"]
+script = ExtResource("act")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_8"]
+script = ExtResource("effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_boom")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_9"]
+script = ExtResource("effect")
+category = 4
+subtype = 1
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_10"]
+script = ExtResource("effect")
+category = 4
+subtype = 10
+color = Color(0.9490, 0.6118, 0.3647, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_11"]
+script = ExtResource("effect")
+category = 4
+subtype = 7
+amount = 60
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_12"]
+script = ExtResource("effect")
+category = 4
+subtype = 11
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_13"]
+script = ExtResource("effect")
+category = 1
+subtype = 0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_14"]
+script = ExtResource("delayed")
+category = 9
+subtype = 2
+amount = 2
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://du0tif2ka5hlr"
+delayed_effects = Array[ExtResource("effect")]([SubResource("Resource_8"), SubResource("Resource_9"), SubResource("Resource_10"), SubResource("Resource_11"), SubResource("Resource_12"), SubResource("Resource_13")])
+badge_icon = ExtResource("icon")
+badge_info_icon = SubResource("AtlasTexture_f0")
+badge_title = "Time Bomb"
+badge_text = "Deal [color=red]{amount} damage[/color] to this ship. If it leaves first, the bomb moves to another enemy"
+
+[sub_resource type="Resource" id="Resource_15"]
+script = ExtResource("effect")
+category = 0
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_16"]
+script = ExtResource("effect")
+category = 2
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_17"]
+script = ExtResource("effect")
+category = 2
+subtype = 2
+multiplier = 4.0
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_18"]
+script = ExtResource("effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_lock")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_19"]
+script = ExtResource("effect")
+category = 4
+subtype = 14
+amount = -18
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_20"]
+script = ExtResource("effect")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_21"]
+script = ExtResource("effect")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_22"]
+script = ExtResource("chain")
+effects = Array[ExtResource("effect")]([SubResource("Resource_15"), SubResource("Resource_16"), SubResource("Resource_17"), SubResource("Resource_18"), SubResource("Resource_19"), SubResource("Resource_20"), SubResource("Resource_14"), SubResource("Resource_21")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("tile")
+upgraded_version = ExtResource("upgrade_plus")
+tile_name = "[color=red]Time Bomb[/color]"
+description = "(die_5) or (die_6) -> Plant a bomb on [color=purple]target[/color]. [color=yellow]In 2 turns[/color]: Deal [color=red]damage[/color] to it equal to 4x die. [color=orange]Give[/color] die"
+rarity = 2
+textures = SubResource("SpriteFrames_tile")
+uses_per_turn = 1
+activation_checks = Array[ExtResource("act")]([SubResource("Resource_4"), SubResource("Resource_5"), SubResource("Resource_6"), SubResource("Resource_7")])
+effect_chain = SubResource("Resource_22")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

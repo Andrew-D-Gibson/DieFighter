@@ -145,7 +145,7 @@ func test_a_held_die_goes_back_to_the_hand_when_the_turn_or_fight_ends() -> void
 	var tile: Tile = _tile("pair_lock")
 	var first: Dice = _die(3)
 	await _play(_place(tile, first))
-	assert_true(Events.player_turn_over.is_connected(tile.release_held_dice))
+	assert_true(Events.player_turn_over.is_connected(tile.release_dice_held_for_the_turn))
 	assert_true(Events.combat_finished.is_connected(tile.release_held_dice))
 	tile.release_held_dice()
 	assert_has(player.dice_manager.queue, first)
