@@ -321,7 +321,8 @@ func _amount_step(data: EffectData, walk: _Walk) -> void:
 func _attribute_step(data: EffectData, walk: _Walk) -> void:
 	var amount: float = float(walk.context.running_amount * walk.scale)
 	match data.subtype:
-		EffectEnums.AttributeChangeSubtype.DAMAGE:
+		EffectEnums.AttributeChangeSubtype.DAMAGE, \
+		EffectEnums.AttributeChangeSubtype.BOUNTY_DAMAGE:
 			for target: Node in walk.context.targets:
 				if is_instance_valid(target):
 					damage[target] = damage.get(target, 0.0) + amount * walk.share

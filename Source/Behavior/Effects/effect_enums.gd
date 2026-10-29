@@ -129,6 +129,9 @@ enum AttributeChangeSubtype {
 	## grows, shrinks or dodges a hit touches it. Refuses rather than kill;
 	## tiles gate on HULL_AT_LEAST.
 	SPEND_HULL,
+	## DAMAGE that pays a bounty: `amount` credits for each hostile warship
+	## this very hit destroys (Bounty Scanner). See BountyDamageEvent.
+	BOUNTY_DAMAGE,
 }
 
 
