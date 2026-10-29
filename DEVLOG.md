@@ -4,6 +4,43 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Later turns: Time Bomb, Holding Bay
+
+Gap analysis G02g and G10: payouts and dice that wait for a later turn.
+
+**The mechanism.** A `DelayedEffect` modifier counts down at each player turn
+start, just after the hand is re-rolled (a fight's opening turn doesn't
+count). It is dropped when the fight ends, on a turn that starts outside a
+fight, and on a jump; saves are never taken mid-fight, so nothing is saved.
+Two effects use it:
+- `HOLD_DIE_FOR_TURNS` (DiceControl 19): the die stays on its tile past turn
+  end and comes back at its face, not re-rolled.
+- `DELAY_EFFECTS` (Utility 2, a `DelayedEffectData` holding a sub-chain):
+  plants a payload on a ship, shown as a countdown badge beside its hull. If
+  that ship leaves, the payload moves to a random other hostile ship, or
+  fizzles if none is left; never to a neutral one.
+- AutoPilot: a delayed payload is worth 0.6 per turn of waiting; a held die
+  adds 0.5.
+
+| Tile | Colour, rarity | Uses | Does | Upgrade |
+|---|---|---|---|---|
+| Time Bomb | Red, Rare | 1 | 5 or 6: arm; two turns later deal 4x die. Give die now | 5x |
+| Holding Bay | Green, Uncommon | 1 | Hold die until next turn, then return it unrolled | 2 uses |
+
+The held die counts as owned and as a die to play, but doesn't block End
+Turn. CONTENT_BUILD_GUIDE has a new "Later turns" section.
+
+**Skipped: Turn Primer (G17).** Shields already persist, so delayed shields
+are Deflector Array arriving later, and a bonus for waiting would only reward
+guessing how long the fight lasts. It can be built from data alone now.
+
+**Tested.** GUT 1359 on the branch. Live (Wolfpack): a 6 on Time Bomb put a
+"2" badge on the target and gave it the die; Holding Bay kept a 4 on the
+tile; two turns later the target took 24 at turn start and the 4 was back in
+hand.
+
+---
+
 ## 2026-10-29 — Twin dice, ramp and status payoffs
 
 Seven more tiles from the gap analysis (G09a-c, G05, G06, G11, G18).

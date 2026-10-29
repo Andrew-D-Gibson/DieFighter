@@ -172,6 +172,7 @@ at once, with no per-tile authoring.
 | Grudge Cannon | dice_cannon | Angry heavy shot on a grudge, normal otherwise | grudge branch |
 | Heat Sink | player_shield | Hiss of heat being drawn off | before `TARGET_PLAYER` |
 | Hex Coil | — | Crackle on each hit | before `DAMAGE` |
+| Holding Bay | tractor_lock | Clamp lock / stasis hum; clamp release when the die returns | first step; `HeldDieDelay._on_due` |
 | Holo-Duplicator | — | Holographic copy shimmer ×2 | before `SPAWN_HOLOGRAPHIC_DIE` |
 | Incendiary Round | dice_cannon | Incendiary whoosh + crackle | before `APPLY_STATUS` |
 | Inertial Feedback | dice_cannon | Rolling rumble release | before `DAMAGE` |
@@ -223,6 +224,7 @@ at once, with no per-tile authoring.
 | Sweeping Battery | dice_cannon | Wide sweeping beam | before `DAMAGE` |
 | Tactical Boomerang | dice_cannon | Throw "whirr" out and back | before `PUSH_TILE_IN_DIRECTION` |
 | Target Painter | tile_dropped | Laser-paint hum | before `APPLY_STATUS` |
+| Time Bomb | tractor_lock (arm), dice_cannon (blast) | Magnetic clamp + arming beep, soft tick each turn, heavy delayed blast | before SHOCKWAVE; `DelayedPayload._on_turns_changed`; first payload step |
 | Toll Relay | — | Coin-toll ding | chain start |
 | Turncoat Cannon | dice_cannon | Betrayal sting on the scrambled hit | turncoat branch |
 | Twin Barrel | dice_cannon | Double-barrel blast; a "hold" clack on the first die | before `DAMAGE`; hold step |
