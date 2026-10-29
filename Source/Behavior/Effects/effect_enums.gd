@@ -222,6 +222,10 @@ enum DiceControlSubtype {
 	## GIVE_DIE_TO_TARGET sends the activator. Twin-dice tiles pay out with
 	## both dice handed over.
 	GIVE_HELD_DIE_TO_TARGET,
+	## The source tile keeps the activator die past the end of the turn, at
+	## its face, and hands it back to the hand as the player's turn starts
+	## `amount` turns from now (1 when unset). A HeldDieDelay counts it down.
+	HOLD_DIE_FOR_TURNS,
 }
 
 
@@ -351,6 +355,10 @@ enum RepetitionSubtype {
 enum UtilitySubtype {
 	DESTROY_SOURCE, ## Queue-free the effect source node (e.g. a one-time tile)
 	PRINT_DEBUG,    ## Print a debug string to the console (for testing)
+	## A DelayedEffectData: its delayed_effects play against the first target
+	## as the player's turn starts `amount` turns from now, with the running
+	## amount as it stands now (see DelayedPayload).
+	DELAY_EFFECTS,
 }
 
 

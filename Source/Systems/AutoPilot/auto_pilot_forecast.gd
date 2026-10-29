@@ -31,6 +31,11 @@ const _MAX_PAYOUT_DEPTH: int = 2
 ## share of that payout: it only pays if the fight lasts that long.
 const _COUNTDOWN_PROGRESS_WORTH: float = 0.5
 
+## What a payload put off for one turn is worth now, per turn it waits
+## (DELAY_EFFECTS). Fights run two or three turns, so a late payoff may land
+## on a ship already gone, or not at all.
+const _DELAY_DISCOUNT_PER_TURN: float = 0.6
+
 ## Where a die, or a hologram, ends up with an enemy.
 class Handoff:
 	## null: a random ship.
@@ -234,6 +239,24 @@ func _run(effects: Array[EffectData], walk: _Walk) -> void:
 			EffectEnums.Category.UTILITY:
 				if data.subtype == EffectEnums.UtilitySubtype.DESTROY_SOURCE:
 					destroys_itself = true
+				elif data.subtype == EffectEnums.UtilitySubtype.DELAY_EFFECTS:
+					_delayed(data as DelayedEffectData, walk)
+
+
+## A payload planted for a later turn (DELAY_EFFECTS), walked now against the
+## same target and amount but discounted per turn of waiting: the fight may
+## be over before it goes off.
+func _delayed(delayed: DelayedEffectData, walk: _Walk) -> void:
+	if delayed == null or walk.context.targets.is_empty():
+		return
+	var targets: Array[Node] = walk.context.targets.duplicate()
+	var running: int = walk.context.running_amount
+	var share: float = walk.share
+	walk.share *= pow(_DELAY_DISCOUNT_PER_TURN, maxi(1, delayed.amount))
+	_run(delayed.delayed_effects, walk)
+	walk.context.targets = targets
+	walk.context.running_amount = running
+	walk.share = share
 
 
 func _target_step(data: EffectData, walk: _Walk) -> void:
@@ -443,6 +466,12 @@ func _dice_step(data: EffectData, walk: _Walk) -> void:
 			_value_hold(walk)
 		EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR:
 			walk.disposed = true
+		EffectEnums.DiceControlSubtype.HOLD_DIE_FOR_TURNS:
+			# Kept from the ships this turn and back in hand, face and all,
+			# on a later one: worth something, though not a die to play now.
+			if not walk.disposed:
+				walk.disposed = true
+				tile_tricks += 0.5
 		EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE:
 			dice_back += walk.scale
 		EffectEnums.DiceControlSubtype.RECEIVE_DIE_FROM_TARGET:

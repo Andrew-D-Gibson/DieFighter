@@ -134,6 +134,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.ADD_TO_ACTIVATOR_VALUE, label = "Add to Activator Value", handler = AddToActivatorValueHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.SPLIT_ACTIVATOR, label = "Split Activator", handler = SplitActivatorHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.GIVE_HELD_DIE_TO_TARGET, label = "Give Held Die to Target", handler = GiveHeldDieToTargetHandler},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.HOLD_DIE_FOR_TURNS, label = "Hold Die for Turns", handler = HoldDieForTurnsHandler, fields = ["amount"]},
 
 	# ── AUDIO_VISUAL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES, label = "Spawn Hit Particles", handler = SpawnHitParticlesHandler, fields = ["color"]},
@@ -214,6 +215,7 @@ static var _entries: Array[Dictionary] = [
 	# ── UTILITY ───────────────────────────────────────────────────
 	{category = EffectEnums.Category.UTILITY, subtype = EffectEnums.UtilitySubtype.DESTROY_SOURCE, label = "Destroy Source", handler = DestroySourceHandler},
 	{category = EffectEnums.Category.UTILITY, subtype = EffectEnums.UtilitySubtype.PRINT_DEBUG, label = "Print Debug", handler = PrintDebugHandler, fields = ["string_param"]},
+	{category = EffectEnums.Category.UTILITY, subtype = EffectEnums.UtilitySubtype.DELAY_EFFECTS, label = "Delay Effects", handler = DelayEffectsHandler, fields = ["amount", "color"]},
 ]
 
 # Lazily-built lookups, keyed for the two access patterns that matter:

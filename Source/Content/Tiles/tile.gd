@@ -22,6 +22,8 @@ var _flash_tween: Tween
 var _last_trigger_callout_msec: int = -_TRIGGER_CALLOUT_COOLDOWN_MSEC
 ## Set once this tile has caught a killing blow (see _on_player_fatal_damage).
 var _death_save_spent: bool = false
+## Dice in this tile's queue kept past the end of the turn (hold_over()).
+var _held_over: Array[Dice] = []
 var _use_lights: TileUseLights = TileUseLights.new(self)
 ## The count of a countdown tile (TileResource.countdown), and its readout.
 var _countdown: TileCountdown = TileCountdown.new(self)
@@ -107,7 +109,9 @@ func _ready() -> void:
 	Events.combat_finished.connect(update_dragging_allowed)
 	# A die a tile is holding (KEEP_DIE_WITH_TILE) is the player's, on loan.
 	# Hand it back before the enemies act, and before a jump frees every die.
-	Events.player_turn_over.connect(release_held_dice)
+	# One held over to a later turn (HOLD_DIE_FOR_TURNS) stays put until its
+	# turn comes, but never outlasts the fight.
+	Events.player_turn_over.connect(release_dice_held_for_the_turn)
 	Events.combat_finished.connect(release_held_dice)
 	# A countdown lasts from turn to turn, but every fight starts it afresh.
 	Events.start_combat.connect(_countdown.reset)
@@ -116,6 +120,7 @@ func _ready() -> void:
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
+	dice_queue.die_removed.connect(_forget_dice_no_longer_held)
 	dice_queue.die_removed.connect(_forget_departed_dice)
 	
 
@@ -507,11 +512,44 @@ func try_to_activate() -> void:
 
 ## Returns every die this tile is holding to the player's hand.
 func release_held_dice() -> void:
+	_held_over.clear()
 	for die: Dice in dice_queue.queue.duplicate():
 		if is_instance_valid(die) and is_instance_valid(Globals.player):
 			Globals.player.dice_manager.add(die, true, false)
 		else:
 			dice_queue.remove(die)
+
+
+## The turn is over: every die held for it goes home, and any held over to a
+## later turn stays.
+func release_dice_held_for_the_turn() -> void:
+	for die: Dice in dice_queue.queue.duplicate():
+		if die in _held_over:
+			continue
+		if is_instance_valid(die) and is_instance_valid(Globals.player):
+			Globals.player.dice_manager.add(die, true, false)
+		else:
+			dice_queue.remove(die)
+
+
+## Keeps [param die], already in this tile's queue, past the end of the turn
+## (HOLD_DIE_FOR_TURNS). Whatever hands it back (HeldDieDelay, the fight
+## ending, a jump) takes it out of the queue, which lets it go.
+func hold_over(die: Dice) -> void:
+	if die in dice_queue.queue and die not in _held_over:
+		_held_over.append(die)
+
+
+## Whether [param die] is being kept here past the end of the turn.
+func is_holding_over(die: Dice) -> bool:
+	return die in _held_over
+
+
+func _forget_dice_no_longer_held() -> void:
+	# Variant, not Dice: a freed die can't be typed.
+	for entry: Variant in _held_over.duplicate():
+		if not is_instance_valid(entry) or entry not in dice_queue.queue:
+			_held_over.erase(entry)
 
 
 ## Keeps [param die] on this tile, held for a later activation (Welder, the
