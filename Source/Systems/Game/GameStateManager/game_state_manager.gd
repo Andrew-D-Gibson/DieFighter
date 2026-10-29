@@ -222,6 +222,8 @@ func _ready() -> void:
 	# flies in holding it.
 	if _opening_strike_owed > 0:
 		_opening_strike = OpeningStrike.arm(_opening_strike_owed)
+		if _opening_strike == null:
+			_forgive_opening_strike()
 
 
 ## The scenario a (re)started game scene opens in: the map slot, unless the
@@ -251,6 +253,17 @@ func _owe_opening_strike() -> void:
 		0, OpeningStrike.DAMAGE
 	)
 	current_game_save.player_health += _opening_strike_owed
+
+
+## Takes back the hull raised for an opening shot that will never fire (no
+## hostile ship in the arrival to fire it). Left owed, the run would keep the
+## extra hull while every checkpoint subtracted it, down to a saved hull of
+## zero or less for a player who'd since taken that much damage.
+func _forgive_opening_strike() -> void:
+	current_game_save.player_health -= _opening_strike_owed
+	if is_instance_valid(Globals.player):
+		Globals.player.health.health -= _opening_strike_owed
+	_opening_strike_owed = 0
 
 
 ## Plays the opening shot, the one time there is one, and returns once it
