@@ -152,3 +152,4 @@ INFO_TILE_COUNTDOWN,(countdown): [color=yellow]{left}[/color] to go,,,,,,,,"Tile
 ERROR_NOT_A_PAIR,NEEDS A MATCHING DIE,,,,,,,,"Error popup: a tile holding one die only takes a second die showing the same face, and this one does not match",,,
 ERROR_WRONG_SUM,MUST ADD UP TO {total},,,,,,,,"Error popup: a tile holding one die only takes a second die that adds up to {total} (a number) with it, and this one does not. Keep {total}.",,,
 ERROR_TARGET_NO_STATUS,TARGETED SHIP HAS NO STATUSES,,,,,,,,"Error popup: a tile that works the statuses on the targeted ship was given a die, but that ship has none",,,
+ERROR_TARGET_NO_BIG_DIE,TARGETED SHIP HOLDS NO DIE TO CHANGE,,,,,,,,"Error popup: a tile that changes the dice the targeted ship holds was given a die, but that ship holds none it could change",,,

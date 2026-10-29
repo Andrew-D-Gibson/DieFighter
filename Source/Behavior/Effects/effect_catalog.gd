@@ -134,6 +134,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.SPLIT_ACTIVATOR, label = "Split Activator", handler = SplitActivatorHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.GIVE_HELD_DIE_TO_TARGET, label = "Give Held Die to Target", handler = GiveHeldDieToTargetHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.HOLD_DIE_FOR_TURNS, label = "Hold Die for Turns", handler = HoldDieForTurnsHandler, fields = ["amount"]},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.SET_TARGETS_HIGHEST_DIE, label = "Set Targets' Highest Die", handler = SetTargetsHighestDieHandler, fields = ["amount", "color"]},
 
 	# ── AUDIO_VISUAL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES, label = "Spawn Hit Particles", handler = SpawnHitParticlesHandler, fields = ["color"]},

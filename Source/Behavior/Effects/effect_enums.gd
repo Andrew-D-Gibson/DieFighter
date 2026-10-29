@@ -220,6 +220,9 @@ enum DiceControlSubtype {
 	## its face, and hands it back to the hand as the player's turn starts
 	## `amount` turns from now (1 when unset). A HeldDieDelay counts it down.
 	HOLD_DIE_FOR_TURNS,
+	## The highest die each target is holding turns to `amount` (Cryo Lance:
+	## a 1). The big die an enemy already holds is defused before it acts.
+	SET_TARGETS_HIGHEST_DIE,
 }
 
 

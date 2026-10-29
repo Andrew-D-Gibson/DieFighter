@@ -41,6 +41,14 @@ enum ActivationType {
 	## a tile that works whatever statuses are there (Status Catalyst): with
 	## none it would eat the die.
 	TARGETED_SHIP_HAS_STATUS,
+	## Placeholder for tiles/defense's check of the same ordinal; its own line
+	## replaces this one when that branch merges.
+	HULL_AT_LEAST,
+	## The ship this die was dropped against holds a die showing more than
+	## [member threshold]. For a tile that works the dice a ship holds (Cryo
+	## Lance turns its highest to a 1): with nothing to change it would eat
+	## the die.
+	TARGETED_SHIP_HOLDS_DIE_ABOVE,
 }
 
 @export var type: ActivationType
@@ -166,6 +174,22 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			if not target or not engine:
 				return false
 			return not engine.statuses_on(target).is_empty(),
+
+	ActivationType.HULL_AT_LEAST:
+		func(_die: Dice) -> bool:
+			return true,
+
+	ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE:
+		func(die: Dice) -> bool:
+			if not Globals.targeting_computer:
+				return false
+			var target: Enemy = Globals.targeting_computer.target_for(die)
+			if not target or not target.dice_manager:
+				return false
+			for held: Dice in target.dice_manager.queue:
+				if is_instance_valid(held) and held != die and held.value > threshold:
+					return true
+			return false,
 }
 
 
@@ -229,6 +253,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.TARGETED_SHIP_HAS_STATUS:
 		"ERROR_TARGET_NO_STATUS",
+
+	ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE:
+		"ERROR_TARGET_NO_BIG_DIE",
 }
 
 

@@ -63,6 +63,8 @@ var handoffs: Array[Handoff] = []
 ## Ships whose held dice get rerolled, flipped (1s and 6s), or taken back.
 var rerolled: Array[Enemy] = []
 var flipped: Array[Enemy] = []
+## Ships whose highest held die turns to a 1 (Cryo Lance).
+var frozen: Array[Enemy] = []
 var reclaimed: Array[Enemy] = []
 ## Map jump distance, signed.
 var jump: int = 0
@@ -477,6 +479,10 @@ func _dice_step(data: EffectData, walk: _Walk) -> void:
 			for target: Node in walk.context.targets:
 				if target is Enemy and not flipped.has(target):
 					flipped.append(target as Enemy)
+		EffectEnums.DiceControlSubtype.SET_TARGETS_HIGHEST_DIE:
+			for target: Node in walk.context.targets:
+				if target is Enemy and not frozen.has(target):
+					frozen.append(target as Enemy)
 		EffectEnums.DiceControlSubtype.REROLL_ALL:
 			tile_tricks += 0.5
 

@@ -407,6 +407,8 @@ func score_placement(die: Dice, tile: Tile, aim: Enemy) -> float:
 			score += (AutoPilotThreat.held(ship) - AutoPilotThreat.held_if_rerolled(ship)) * _persona.hull
 		for ship: Enemy in forecast.flipped:
 			score += (AutoPilotThreat.held(ship) - AutoPilotThreat.held_if_flipped(ship)) * _persona.hull
+		for ship: Enemy in forecast.frozen:
+			score += (AutoPilotThreat.held(ship) - AutoPilotThreat.held_if_highest_set(ship)) * _persona.hull
 		for ship: Enemy in forecast.reclaimed:
 			score += AutoPilotThreat.worst_held(ship) * _persona.hull + _persona.dice_back
 	score += forecast.dice_back * _persona.dice_back
