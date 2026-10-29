@@ -25,11 +25,13 @@ const ESCAPE_PER_DIE: float = 3.0
 
 ## Hull a stack of a status on the player is worth, beyond Burn (which is
 ## n + (n - 1) + ... + 1). Jammed throws away a die and hands it over;
-## Exposed adds to the next hits; Scrambled only flips faces.
+## Exposed adds to the next hits; Scrambled only flips faces; Weakened takes
+## a quarter off one turn of the player's own hits.
 const _STATUS_STACK_COST: Dictionary[StringName, float] = {
 	&"jammed": 3.5,
 	&"exposed": 1.5,
 	&"scrambled": 1.0,
+	&"weakened": 1.5,
 }
 
 
@@ -136,6 +138,9 @@ static func _cost_of_action(action: EnemyActionResource, ship: Enemy, face: int)
 				return status_cost(applied, action.intent_amount)
 			# An attack worth its die's face authors no amount of its own.
 			var amount: int = action.intent_amount if action.intent_amount > 0 else face
+			# Weakened lasts out the ship's turn, so every die it spends is weakened.
+			if _stacks(ship, &"weakened") > 0:
+				amount = WeakenedStatus.weakened(amount)
 			var hits: int = action.effect_chain.base_repetitions if action.effect_chain else 1
 			return float(amount * maxi(hits, 1))
 		EnemyActionResource.Threat.NEUTRAL:

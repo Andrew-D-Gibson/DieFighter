@@ -302,6 +302,61 @@ func test_exposed_ignores_sourceless_area_and_other_ships_hits() -> void:
 	assert_eq(exposed.stacks, 4)
 
 
+# ── Weakened ──────────────────────────────────────────────────────────────────
+
+func test_weakened_takes_a_quarter_off_rounded_down_but_never_below_one() -> void:
+	# A quarter off, the cut rounding up: even a 2 loses one.
+	var expected: Dictionary[int, int] = {0: 0, 1: 1, 2: 1, 3: 2, 4: 3, 5: 3, 6: 4, 8: 6, 10: 7, 12: 9}
+	for hit: int in expected:
+		assert_eq(WeakenedStatus.weakened(hit), expected[hit], "a weakened %d" % hit)
+
+
+func test_weakened_shrinks_its_own_ships_hits_and_keeps_its_stacks() -> void:
+	var enemy := _enemy()
+	var other := _enemy()
+	await _apply(enemy, &"weakened", 2)
+	var weakened: StatusModifier = engine.find_status(enemy, &"weakened")
+
+	var on_player := _hit(enemy, [make_player()], 6)
+	var on_ally := _hit(enemy, [other], 4)
+	for hit: DamageEvent in [on_player, on_ally]:
+		weakened.on_before_event(hit, engine)
+	assert_eq(on_player.amount, 4)
+	assert_eq(on_ally.amount, 3, "any ship it hits")
+	assert_eq(weakened.stacks, 2, "hits don't spend it; turns do")
+
+
+func test_weakened_leaves_hits_it_didnt_throw_alone() -> void:
+	var enemy := _enemy()
+	var other := _enemy()
+	var tile: Tile = autofree(TILE_SCENE.instantiate())
+	await _apply(enemy, &"weakened", 1)
+	var weakened: StatusModifier = engine.find_status(enemy, &"weakened")
+
+	var taken := _hit(tile, [enemy], 6)
+	var burn_tick := _hit(null, [enemy], 6)
+	var someone_else := _hit(other, [enemy], 6)
+	for hit: DamageEvent in [taken, burn_tick, someone_else]:
+		weakened.on_before_event(hit, engine)
+		assert_eq(hit.amount, 6)
+
+
+func test_an_enemys_weakened_wears_off_as_its_turn_ends() -> void:
+	var enemy := _enemy()
+	await _apply(enemy, &"weakened", 2)
+	var weakened: StatusModifier = engine.find_status(enemy, &"weakened")
+
+	engine.tick_statuses()
+	Events.player_turn_over.emit()
+	assert_eq(weakened.stacks, 2, "it waits for the ship to have fired its turn")
+	Events.enemy_turn_over.emit()
+	assert_eq(weakened.stacks, 1)
+	Events.enemy_turn_over.emit()
+	assert_null(engine.find_status(enemy, &"weakened"))
+	assert_false(Events.enemy_turn_over.is_connected(weakened._on_own_turn_end),
+		"a spent status stops listening")
+
+
 # ── Reading statuses from effects ─────────────────────────────────────────────
 
 func test_effects_can_read_a_targets_status() -> void:

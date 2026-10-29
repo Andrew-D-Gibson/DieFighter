@@ -233,6 +233,21 @@ func test_jammed_only_waits_behind_held_dice_that_would_act() -> void:
 	assert_eq(AutoPilotThreat.of_face(ship, 2), 4.0, "the held attack takes the jam first")
 
 
+func test_a_weakened_ships_attacks_cost_a_quarter_less() -> void:
+	var engine: ScenarioEngine = add_child_autofree(ScenarioEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = engine
+	Globals.scenario_manager = manager
+	var ship: Enemy = _ship()
+	_table(ship, [_idle(), _attack(4), _idle(), _idle(), _idle(), _idle()])
+	engine.add_modifier(StatusCatalog.create(&"weakened", ship, 1))
+	assert_eq(AutoPilotThreat.of_face(ship, 2), 3.0)
+
+
+func test_weakened_on_the_player_is_priced_per_stack() -> void:
+	assert_eq(AutoPilotThreat.status_cost(&"weakened", 2), 3.0)
+
+
 ## A live engine holding [param status_ids] on the player, and [param tile]
 ## on the grid, so the forecast sees what the game would.
 func _player_with(status_ids: Array[StringName], tile: Tile) -> void:
