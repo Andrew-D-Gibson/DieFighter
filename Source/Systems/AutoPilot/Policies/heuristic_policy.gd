@@ -85,6 +85,8 @@ const _STATUS_WORTH: Dictionary[StringName, float] = {
 	&"exposed": 1.0,
 	&"scrambled": 1.5,
 	&"jammed": 2.5,
+	# A quarter off one turn of a ship's hits: about a typical turn's worth.
+	&"weakened": 1.5,
 }
 const _STATUS_WORTH_DEFAULT: float = 1.0
 ## Spare shields, beyond what the coming enemy turn needs, still soak a later

@@ -83,7 +83,8 @@ registration to testing. For how the systems work underneath, see
     - one value: that die face (Flashpoint 6, Chaff Pod 1);
     - two values: both faces side by side, slots at x=3 and x=11
       (Chaos Explosion 5+6, Leeching Shot 1+2);
-    - a run: a 4×7 `<` or `>` chevron before the face (Bump `<6` for 1-5).
+    - a run: a 4×7 `<` or `>` chevron before the face (Bump `<6` for 1-5,
+      Doubler `<4` for 1-3, Nudge Down `>1` for 2-6).
     - `CANT_BE_ACTIVATED_WITH_DIE`: no lower panel at all, only the
       coloured outline, with the art centred in the tile (Emergency Shield).
   - **A limited-use tile must show its uses.** It is a horizontal strip,
@@ -730,6 +731,11 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
     lists in `EnemyActionResource._has_consequence()`.
   - If it removes the ship from play, add it to `is_safe_while_hidden()`
     (`FLEE`, `JUMP` and `ESCAPE_WITH_DICE` are there).
+- **Changing a die's face:** `ADD_TO_ACTIVATOR_VALUE` steps it (a negative
+  step, as in Nudge Down, is never amplified, so an Amplifier can't turn it
+  into a rise). `SPLIT_ACTIVATOR` (Die Splitter) leaves the die the bigger
+  half and hands the player a hologram of the rest, as one event so a freeze
+  stops both.
 - **Data a chain needs from its caller:** add a field to `EffectContext`
   (`effect_context.gd`).
 
@@ -746,6 +752,11 @@ a new one needs a rule for each side.
    and implement its hook. Where it touches dice, branch on
    `is_on_player()`: an enemy spends dice on its table, the player places
    them on tiles (`JammedStatus` and `ScrambledStatus` show both).
+   - A status that lasts a number of the ship's turns counts down as that
+     ship's own turn ends (`Events.enemy_turn_over` for an enemy,
+     `Events.player_turn_over` for the player), not in `on_status_tick()`:
+     that tick runs before an enemy acts and after the player's turn, so it
+     would spend a stack before the status ever did anything (`WeakenedStatus`).
 2. Add it to `StatusCatalog._statuses` (`status_catalog.gd`), keyed by id.
 3. Art: `Assets/Textures/Statuses/` (11×11 badge, 24×24 info).
 4. Add a keyword for it (§9). If it reads differently on the player, add a

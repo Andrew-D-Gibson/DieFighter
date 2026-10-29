@@ -12,6 +12,27 @@ var _item_prices: Dictionary[Node, int]
 @export var grid_slot_scene: PackedScene
 @export var bounding_box: CollisionShape2D
 
+## The game's pixel button (no class_name of its own).
+const PixelButton: GDScript = preload("res://Source/Systems/UI/Buttons/button.gd")
+
+@export_category("Reroll")
+## Swaps the four tile shelves for fresh stock, for credits. Lives on a tab
+## above the panel, with its price tag beside it.
+@export var reroll_tab: Node2D
+@export var reroll_button: PixelButton
+## A coin sprite with a RichTextLabel child, as on the shelves.
+@export var reroll_price_tag: Node2D
+## What the first reroll at a shop costs: under the cheapest tile, so digging
+## for a build is a real option with a thin wallet.
+@export var base_reroll_cost: int = 8
+## Added after each reroll at the same shop (8, 12, 16, ...), so fishing for
+## one tile gets dear. The next shop starts cheap again.
+@export var reroll_cost_growth: int = 4
+
+## Rerolls bought at this shop. Drives the price, so the save keeps it
+## (capture_stock()).
+var rerolls_bought: int = 0
+
 const DICE_PRICE: int = 25
 ## A cell to grow the grid by. Dearer than a tile: it's room for every tile
 ## the run finds from here on.
@@ -64,6 +85,14 @@ const _STOCK_OUT_STAGGER: float = 0.05
 const _STOCK_OUT_TIME: float = 0.14
 const _PANEL_CLOSE_TIME: float = 0.18
 
+## --- Rerolling ---
+## The tile shelves empty (the closing's pop, last first) and refill (the
+## opening's pop, first first). The die and the Grid Slot stay put.
+
+const _MONEY_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/money_tick.tres")
+
+var _restock_tween: Tween
+
 var _reveal_tween: Tween
 var _close_tween: Tween
 ## Stock held still and out of reach until it pops in, with what its
@@ -78,6 +107,10 @@ func _ready() -> void:
 	Events.jump.connect(_close_shop)
 	Events.player_destroyed.connect(_fade_out_for_death)
 	Events.start_scenario.connect(_reopen_saved_shop)
+	Events.locale_changed.connect(func(_locale: String) -> void: _refresh_reroll())
+	Events.set_money.connect(func(_money: int) -> void: _refresh_reroll())
+	if reroll_button:
+		reroll_button.pressed_within_window.connect(reroll)
 
 
 ## Continuing a save taken in an open shop. Normally the shopkeeper's arrival
@@ -96,11 +129,13 @@ func _open_shop() -> void:
 		saved_stock = Globals.state_manager.get_restore().get("shop")
 
 	_stop_closing()
+	_stop_restock()
 	_end_reveal()
 	_clear_stock()
 	if saved_stock is Dictionary:
 		_restore_stock(saved_stock)
 	else:
+		rerolls_bought = 0
 		_create_shop_tiles()
 		_create_dice_buy_zone()
 		_create_grid_slot_stock()
@@ -108,12 +143,15 @@ func _open_shop() -> void:
 	show()
 	_claim_formation_space()
 	_play_reveal()
+	# Greyed out until the stock has popped in (_end_reveal refreshes it).
+	_refresh_reroll()
 
 
 ## Every ship leaving the scenario asks for this too, open shop or not.
 func _close_shop() -> void:
 	if is_closing():
 		return
+	_stop_restock()
 	_end_reveal()
 	if visible:
 		_play_close()
@@ -145,6 +183,8 @@ func _play_close() -> void:
 	_close_tween.tween_interval(_STOCK_OUT_TIME)
 	_close_tween.tween_callback(Events.play_sound.emit.bind(_PANEL_OPEN_SFX))
 	_close_tween.tween_property($RichTextLabel, "modulate:a", 0.0, _PANEL_CLOSE_TIME * 0.5)
+	if reroll_tab:
+		_close_tween.parallel().tween_property(reroll_tab, "modulate:a", 0.0, _PANEL_CLOSE_TIME * 0.5)
 	_close_tween.tween_property($Background, "scale", Vector2(1.0, 0.0), _PANEL_CLOSE_TIME) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 	_close_tween.parallel().tween_property($Background, "modulate:a", 0.0, _PANEL_CLOSE_TIME)
@@ -193,6 +233,8 @@ func _play_reveal() -> void:
 	background.scale = Vector2(1.0, 0.0)
 	background.modulate.a = 0.0
 	title.modulate.a = 0.0
+	if reroll_tab:
+		reroll_tab.modulate.a = 0.0
 
 	var stock: Array[Node2D] = _stock_in_shelf_order()
 	for item: Node2D in stock:
@@ -207,6 +249,8 @@ func _play_reveal() -> void:
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	_reveal_tween.parallel().tween_property(background, "modulate:a", 1.0, _PANEL_OPEN_TIME * 0.5)
 	_reveal_tween.tween_property(title, "modulate:a", 1.0, _PANEL_OPEN_TIME * 0.5)
+	if reroll_tab:
+		_reveal_tween.parallel().tween_property(reroll_tab, "modulate:a", 1.0, _PANEL_OPEN_TIME * 0.5)
 
 	for item: Node2D in stock:
 		_reveal_tween.tween_callback(_pop_in.bind(item))
@@ -286,6 +330,8 @@ func _end_reveal() -> void:
 	$Background.scale = Vector2.ONE
 	$Background.modulate.a = 1.0
 	$RichTextLabel.modulate.a = 1.0
+	if reroll_tab:
+		reroll_tab.modulate.a = 1.0
 	for tag: Node2D in prices:
 		tag.scale = Vector2.ONE
 	for item: Node in _held_for_reveal.keys():
@@ -293,6 +339,7 @@ func _end_reveal() -> void:
 	for item: Node in item_to_shop_index:
 		if is_instance_valid(item) and item is Node2D:
 			(item as Node2D).scale = Vector2.ONE
+	_refresh_reroll()
 
 
 ## The death sequence wants the whole screen, so the panel gets out of its way
@@ -320,8 +367,10 @@ func _claim_formation_space() -> void:
 	)
 
 
-func _get_possible_shop_tiles() -> Array[TileResource]:
-	var shop_tile_resources: Array[TileResource] = []
+## [param also_excluded]: tiles kept off the shelves besides those on them,
+## such as the stock a reroll just cleared.
+func _get_possible_shop_tiles(also_excluded: Array[TileResource] = []) -> Array[TileResource]:
+	var shop_tile_resources: Array[TileResource] = also_excluded.duplicate()
 	for item: Node in item_to_shop_index:
 		if item is Tile:
 			shop_tile_resources.append(item.tile_resource)
@@ -351,12 +400,16 @@ static func base_price(rarity: TileResource.Rarity) -> int:
 	return (price_range.x + price_range.y) / 2
 
 
-func _create_shop_tiles() -> void:
+## [param cleared]: the stock a reroll just took away, kept off the new
+## shelves unless nothing else is left to offer.
+func _create_shop_tiles(cleared: Array[TileResource] = []) -> void:
 	for row: int in range(2):
 		for col: int in range(2):
 			var shop_index: int = (col*2) + row
 			
-			var possible_shop_tiles: Array[TileResource] = _get_possible_shop_tiles()
+			var possible_shop_tiles: Array[TileResource] = _get_possible_shop_tiles(cleared)
+			if possible_shop_tiles.is_empty():
+				possible_shop_tiles = _get_possible_shop_tiles()
 			if len(possible_shop_tiles) == 0:
 				prices[shop_index].visible = false
 				continue
@@ -430,7 +483,7 @@ func capture_stock() -> Dictionary:
 			dice_for_sale = true
 		elif item is GridSlot:
 			slot_for_sale = true
-	return {"tiles": tiles, "dice": dice_for_sale, "slot": slot_for_sale}
+	return {"tiles": tiles, "dice": dice_for_sale, "slot": slot_for_sale, "rerolls": rerolls_bought}
 
 
 ## Frees whatever the last shop left unsold. Closing only hides the panel, so
@@ -448,6 +501,7 @@ func _clear_stock() -> void:
 func _restore_stock(stock: Dictionary) -> void:
 	for price_node: Node2D in prices:
 		price_node.visible = false
+	rerolls_bought = int(stock.get("rerolls", 0))
 
 	for entry: Variant in stock.get("tiles", []):
 		var path: String = ContentRegistry.get_tile_path(str(entry["tile"]))
@@ -536,3 +590,109 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			_forget(item)
 			OfferIntake.take(item, end_position)
 			Events.reward_picked.emit()
+
+
+# ── Rerolling ─────────────────────────────────────────────────────────────────
+
+func reroll_cost() -> int:
+	return base_reroll_cost + reroll_cost_growth * rerolls_bought
+
+
+## Whether the shelves are mid-swap: the old stock popping off, or the new
+## popping on.
+func is_restocking() -> bool:
+	return _restock_tween != null and _restock_tween.is_valid()
+
+
+## Why a reroll can't be bought right now, or "" if it can. "busy" covers the
+## shop still opening, closing or restocking, and anything in hand: a carried
+## shelf tile would otherwise land on the button and try to sell.
+func reroll_refusal() -> String:
+	if not is_open() or is_revealing() or is_restocking() or Draggable.holding() != null:
+		return "busy"
+	if Globals.player.money < reroll_cost():
+		return tr("REPAIR_NO_CREDITS")
+	return ""
+
+
+## Pays for a reroll and swaps the tile shelves for fresh stock. False, and
+## nothing paid, if reroll_refusal() objects.
+func reroll() -> bool:
+	if not reroll_refusal().is_empty():
+		return false
+
+	Globals.player.money -= reroll_cost()
+	rerolls_bought += 1
+	Events.play_sound.emit(_MONEY_SFX)
+	if reroll_button:
+		Juice.ring(self, reroll_button.global_position + reroll_button.size / 2.0, Globals.green, 16.0)
+
+	# The tiles still on the shelves, last first, as the closing pops them.
+	var outgoing: Array[Node2D] = []
+	var cleared: Array[TileResource] = []
+	for item: Node2D in _stock_in_shelf_order():
+		if item is Tile:
+			outgoing.append(item)
+			cleared.append((item as Tile).tile_resource)
+			item.draggable.dragging_allowed = false
+	outgoing.reverse()
+
+	_restock_tween = create_tween()
+	for item: Node2D in outgoing:
+		_restock_tween.tween_callback(_pop_out.bind(item))
+		_restock_tween.tween_interval(_STOCK_OUT_STAGGER)
+	_restock_tween.tween_interval(_STOCK_OUT_TIME)
+	_restock_tween.tween_callback(_refill_tile_shelves.bind(cleared))
+	_refresh_reroll()
+	return true
+
+
+## The second half of a reroll: the old tiles go, new ones are shelved out of
+## sight, and they pop in one by one as the opening's do.
+func _refill_tile_shelves(cleared: Array[TileResource]) -> void:
+	for item: Node in item_to_shop_index.keys():
+		if item is Tile and is_instance_valid(item) and item.get_parent() == self:
+			item.queue_free()
+			_forget(item)
+	for shop_index: int in range(_DICE_SHELF):
+		prices[shop_index].visible = false
+	_create_shop_tiles(cleared)
+
+	var incoming: Array[Node2D] = []
+	for item: Node2D in _stock_in_shelf_order():
+		if item is Tile:
+			incoming.append(item)
+			_hold_for_reveal(item)
+			prices[item_to_shop_index[item]].scale = Vector2.ZERO
+
+	# The same checkpoint a purchase takes, so a Continue keeps the new stock
+	# and the rising price.
+	Events.reward_picked.emit()
+
+	_reveal_tween = create_tween()
+	for item: Node2D in incoming:
+		_reveal_tween.tween_callback(_pop_in.bind(item))
+		_reveal_tween.tween_interval(_STOCK_STAGGER)
+	_reveal_tween.tween_interval(_STOCK_POP_TIME)
+	_reveal_tween.tween_callback(_end_reveal)
+
+
+## Cuts a reroll short (the shop closing or reopening): the old stock is
+## dropped from the books, so nothing half-popped can still be bought.
+func _stop_restock() -> void:
+	if _restock_tween:
+		_restock_tween.kill()
+		_restock_tween = null
+
+
+func _refresh_reroll() -> void:
+	if not reroll_button or not is_instance_valid(Globals.player):
+		return
+	var affordable: bool = Globals.player.money >= reroll_cost()
+	reroll_button.set_button_text(tr("SHOP_REROLL_BUTTON"))
+	reroll_button.disabled = not reroll_refusal().is_empty()
+	reroll_button.update_ui()
+	if reroll_price_tag:
+		var label: RichTextLabel = reroll_price_tag.get_child(0) as RichTextLabel
+		label.text = str(reroll_cost())
+		label.add_theme_color_override("default_color", Globals.white if affordable else Globals.red)

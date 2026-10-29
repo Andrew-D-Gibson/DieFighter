@@ -1,0 +1,117 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dvk8bv8an0qi1"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Texture2D" uid="uid://bio6mu8ui7db2" path="res://Assets/Textures/Tiles/GreenTiles/nudge_down_plus-Sheet.png" id="tex"]
+[ext_resource type="Resource" uid="uid://dhdiec4h8tjs3" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="sfx"]
+
+[sub_resource type="Resource" id="Resource_any_die"]
+script = ExtResource("script_act")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_faces"]
+script = ExtResource("script_act")
+type = 1
+acceptable_values = Array[int]([2, 3, 4, 5, 6])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_step"]
+script = ExtResource("script_effect")
+category = 2
+amount = -1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_flare"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 22
+color = Color(0.4784, 0.7412, 0.2, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_sound"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_add"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 16
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_target_right"]
+script = ExtResource("script_effect")
+subtype = 9
+grid_offset = Vector2i(1, 0)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_zap"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 18
+amount = 80
+color = Color(0.4784, 0.7412, 0.2, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_feed"]
+script = ExtResource("script_effect")
+category = 5
+subtype = 11
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step"), SubResource("Resource_flare"), SubResource("Resource_sound"), SubResource("Resource_add"), SubResource("Resource_target_right"), SubResource("Resource_zap"), SubResource("Resource_feed")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_0"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1"]
+atlas = ExtResource("tex")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2"]
+atlas = ExtResource("tex")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3"]
+atlas = ExtResource("tex")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tile"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+tile_name = "[color=green]Nudge Down+[/color]"
+description = "[color=yellow]Die above[/color] (die_1) -> Subtract 1 from die. (feed_right)"
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_tile")
+uses_per_turn = 3
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_any_die"), SubResource("Resource_faces")])
+effect_chain = SubResource("Resource_chain")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

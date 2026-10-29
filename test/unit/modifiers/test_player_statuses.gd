@@ -93,8 +93,11 @@ func test_the_player_bar_wraps_clear_of_the_systems_panel() -> void:
 	for badge: Node in player.get_status_bar().get_children():
 		var y: float = (badge as Node2D).position.y
 		rows[y] = rows.get(y, 0) + 1
-	assert_eq(rows.size(), 2, "four statuses take two rows")
-	assert_true(rows.values().all(func(count: int) -> bool: return count <= 3))
+	var per_row: int = player.get_status_bar().per_row
+	assert_gt(per_row, 0, "the player's bar wraps")
+	var expected_rows: int = ceili(StatusCatalog.ids().size() / float(per_row))
+	assert_eq(rows.size(), expected_rows, "every status, %d to a row" % per_row)
+	assert_true(rows.values().all(func(count: int) -> bool: return count <= per_row))
 
 
 func test_a_status_a_tile_puts_on_its_own_ship_is_not_amplified() -> void:
@@ -160,6 +163,80 @@ func test_exposed_on_the_player_grows_enemy_hits_only() -> void:
 	exposed.on_before_event(shot, engine)
 	assert_eq(shot.amount, 5)
 	assert_eq(exposed.stacks, 1)
+
+
+# ── Weakened ──────────────────────────────────────────────────────────────────
+
+func _tile_hit(targets: Array[Node], amount: int) -> DamageEvent:
+	var hit: DamageEvent = DamageEvent.new()
+	hit.effect_source = _tile(DAMAGE_TILE, false)
+	hit.targets = targets
+	hit.amount = amount
+	return hit
+
+
+func test_weakened_on_the_player_shrinks_tile_hits_on_other_ships() -> void:
+	var weakened: StatusModifier = await _apply(player, &"weakened", 1)
+	var enemy := _enemy()
+	assert_eq(weakened.rule_term(), "Weakened (you)")
+
+	var shot := _tile_hit([enemy], 8)
+	var blast := _tile_hit([enemy, player], 4)
+	var own_cost := _tile_hit([player], 4)
+	var enemy_fire: DamageEvent = DamageEvent.new()
+	enemy_fire.effect_source = enemy
+	enemy_fire.targets = [player]
+	enemy_fire.amount = 4
+	for hit: DamageEvent in [shot, blast, own_cost, enemy_fire]:
+		weakened.on_before_event(hit, engine)
+	assert_eq(shot.amount, 6)
+	assert_eq(blast.amount, 3, "an all-ships blast is still the player's attack")
+	assert_eq(own_cost.amount, 4, "a tile's cost to the hull isn't an attack")
+	assert_eq(enemy_fire.amount, 4, "the enemy's hits are its own business")
+
+
+func test_the_players_weakened_wears_off_as_they_end_their_turn() -> void:
+	var weakened: StatusModifier = await _apply(player, &"weakened", 2)
+	engine.tick_statuses(true)
+	Events.enemy_turn_over.emit()
+	assert_eq(weakened.stacks, 2, "put on during the enemy turn, it lasts the player's next one")
+	Events.player_turn_over.emit()
+	assert_eq(weakened.stacks, 1)
+	Events.player_turn_over.emit()
+	assert_null(engine.find_status(player, &"weakened"))
+
+
+func test_weakened_cuts_the_hit_after_exposed_grows_it() -> void:
+	var enemy := _enemy()
+	await _apply(player, &"weakened", 1)
+	await _apply(enemy, &"exposed", 2)
+	var hit := _tile_hit([enemy], 4)
+	engine.sort_modifiers()
+	for mod: Modifier in engine.modifiers.duplicate():
+		mod.on_before_event(hit, engine)
+	assert_eq(hit.amount, 4, "(4 + 2 Exposed) less a quarter")
+
+
+func test_countermeasures_hand_weakened_to_the_enemy_and_its_turn_clock() -> void:
+	var enemy := _enemy()
+	await _apply(player, &"weakened", 2)
+	await _transfer(player, enemy)
+	assert_null(engine.find_status(player, &"weakened"))
+	var moved: StatusModifier = engine.find_status(enemy, &"weakened")
+	assert_eq(moved.stacks, 2)
+	assert_eq(moved.rule_term(), "Weakened")
+
+	var shot: DamageEvent = DamageEvent.new()
+	shot.effect_source = enemy
+	shot.targets = [player]
+	shot.amount = 4
+	moved.on_before_event(shot, engine)
+	assert_eq(shot.amount, 3, "now it's the enemy's hits that shrink")
+
+	Events.player_turn_over.emit()
+	assert_eq(moved.stacks, 2, "the player's turn ending no longer counts it down")
+	Events.enemy_turn_over.emit()
+	assert_eq(moved.stacks, 1)
 
 
 # ── Jammed ────────────────────────────────────────────────────────────────────
