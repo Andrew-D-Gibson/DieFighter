@@ -38,6 +38,8 @@ var _entries: Array[CodexEntry] = []
 ## The entry last picked on each tab, so switching back finds it again.
 var _picked_ids: Dictionary[Tab, String] = {}
 var _warmed_up: bool = false
+## Stands in for the portrait on the enemies tab, in the same spot.
+var _ship_portrait: CodexShipPortrait = CodexShipPortrait.new()
 
 
 func _ready() -> void:
@@ -46,6 +48,9 @@ func _ready() -> void:
 	# first open for seconds; not preloaded, which would slow the menu down.
 	CodexCatalog.warm_up()
 	tree_exiting.connect(CodexCatalog.release)
+	%Portrait.add_sibling(_ship_portrait)
+	_ship_portrait.position = %Portrait.position
+	_ship_portrait.size = %Portrait.size
 	%TilesTab.pressed.connect(_show_tab.bind(Tab.TILES))
 	%EnemiesTab.pressed.connect(_show_tab.bind(Tab.ENEMIES))
 	%PrevPage.pressed.connect(_turn_page.bind(-1))
@@ -159,8 +164,10 @@ func _entry_name(id: String) -> String:
 func _show_detail(id: String) -> void:
 	%KeywordPopup.hide()
 	var has_entry: bool = not id.is_empty()
-	for node: CanvasItem in [%Portrait, %NameLabel, %SubLabel, %BodyLabel]:
+	for node: CanvasItem in [%NameLabel, %SubLabel, %BodyLabel]:
 		node.visible = has_entry
+	%Portrait.visible = has_entry and _tab == Tab.TILES
+	_ship_portrait.visible = has_entry and _tab == Tab.ENEMIES
 	%StatsLabel.visible = has_entry and _tab == Tab.ENEMIES
 	%EmptyLabel.visible = not has_entry
 	if not has_entry:
@@ -190,7 +197,7 @@ func _show_tile(tile: TileResource) -> void:
 
 
 func _show_enemy(id: String, enemy: EnemyResource) -> void:
-	%Portrait.texture = enemy.targeting_computer_image
+	_ship_portrait.show_ship(enemy)
 	var stats: Array[String] = [
 		"[color=red]%s[/color]" % tr("CODEX_HULL").format({"health": enemy.max_health}),
 	]
