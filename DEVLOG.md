@@ -4,6 +4,26 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — Grid Slots and tile upgrades
+
+- **The Die Fighter starts on its middle 3x3.** The outer columns are sealed
+  hull plates that hold no tiles and count as holes for adjacency and pushes.
+  A **Grid Slot** opens one: it's sometimes the last choice in a salvage offer
+  (25%, and always when the grid is full), and it's on a new shop shelf for
+  30 credits. Carrying one lights every sealed cell, and you pick where the
+  grid grows. The starter kit moved one column right. Old saves keep every
+  cell open, and `open_cells` in the dev console opens them by hand.
+- **Tiles upgrade.** Salvage and shops now offer tiles you already own.
+  Drop a copy on its twin and the two merge into a "+" version, even on a
+  full grid. Carrying a copy lights its twin, and the info panel shows what
+  the upgrade does. Upgraded tiles shimmer round the edge and give off sparks.
+- **First twelve upgrades**, mostly bigger numbers: Dice Cannon+ (+2), Bump+
+  (add 2), Chain Cannon+, Deflector Array+ (+2), Reactive Armor+,
+  Counterweight Battery+, Overshield Relay+, Signal Relay+, Toll Relay+ and
+  Incendiary Round+. Re-Roll+ gets a third use, and Shield Burst+ also takes a 4.
+
+---
+
 ## 2026-10-28 — A real options menu: five tabs, pixel-perfect, accessibility, controllers
 
 - **The options menu is rebuilt in code** with five tabs (Game, Graphics,

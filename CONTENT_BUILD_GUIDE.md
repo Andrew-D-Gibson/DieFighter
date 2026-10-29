@@ -161,6 +161,22 @@ registration to testing. For how the systems work underneath, see
     hit and set off anything listening for one.
 - **`dragging_allowed`, `max_dice_in_queue`**: rarely touched.
 
+**Upgrades.** A tile can have an upgraded version, which the player gets by
+dropping a second copy of the tile on the first.
+- Make `<name>_plus.tres` beside the tile: a copy of its `.tres` with the
+  header `uid` removed (the editor stamps a new one), `is_upgrade = true`,
+  `offered_as_reward = false`, the name with a `+` (`Dice Cannon+`) and the
+  description updated. Then set the base tile's `upgraded_version` to it.
+- Upgrade levers, cheapest first: **numbers** (an amount, or an `ADD` after
+  `SET_TO_DIE_VALUE`) reuse the base art; **uses** need a new light sheet
+  (`<name>_plus-Sheet.png`, frame 0 of the base sheet through
+  `add_use_lights.lua`, still 3 at most, and relays stay at 1-2);
+  **looser activation** needs a new lower panel showing the new faces
+  (Shield Burst+ borrows Keel Plating's 3+4 slots).
+- No art for the shimmer: every upgraded tile gets it from `tile.gdshader`.
+- `test_tile_upgrades.gd` checks each upgrade is marked, held out of offers,
+  named apart, and has one frame per light.
+
 **Loop rule for Feed tiles:** a tile with unlimited uses may only Feed
 **right**. Feeding up, down, left or randomly needs limited uses, so every loop
 on the grid runs dry.
@@ -797,7 +813,10 @@ AudioStreamPlayer.
    to saves: never rename one that has shipped. `sort_order` places its card.
 2. Give it a starting kit: a `GameSaveResource` with hull, max hull, dice and
    `tile_locations` (every position must be one of the ship's cells;
-   `test_ship_layouts.gd` checks).
+   `test_ship_layouts.gd` checks). `unlocked_cells` lists the cells open at
+   the start; the rest of the layout is sealed until the player buys or finds
+   Grid Slots. Leave it empty to open every cell. The Die Fighter opens its
+   middle 3x3.
 3. Lay out the grid with `grid_cells` (holes allowed) or `grid_size`. Holes
    need no handler work: adjacency, pushes and Feeds stop at them.
 4. Rules of its own go in a `behavior_scene` (child of the TileGrid) that

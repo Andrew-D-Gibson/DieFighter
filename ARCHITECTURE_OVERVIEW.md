@@ -929,7 +929,7 @@ back to `die_fighter`.
 
 | Ship | Grid | Engine | Behaviour |
 |---|---|---|---|
-| Die Fighter | 5x3 | Engine Charger tile | none |
+| Die Fighter | 5x3, starting on the middle 3x3 (the outer columns sealed, see Grid Slots) | Engine Charger tile | none |
 | Outrigger | two 3x3 pods, x 0-2 and 4-6 (column 3 a 16 px hole) | `OutriggerSail`: dice in hand at End Turn charge the drive by face (to the gate), then go to the target. `SailCatchEvent` per die, `SailSettleEvent` holds the queue until they land | `Outrigger/`: sail, `SailGauge` (mast in the gap; takes the `engine_charger` juice group), `OutriggerPanel` (runtime restyle of the systems panel, frees the charger tile) |
 | Carousel | 5x3 minus (2,1): 12-cell ring + hub slots (1,1), (3,1) | The Reactor: the charger tile moved to (2,1), re-dressed with `reactor.tres`; charges, then Feeds up to the ignition slot (2,0). `ReactorIgnitionModifier` points that Feed at the ignition tile | `CarouselBehavior`: turns the ring at `player_turn_refresh` (fight turns after the first) via `TileGrid.relocate_tiles()`, winds it home on `combat_finished`/`jump`; `CarouselTrackLights` |
 
@@ -947,6 +947,31 @@ is ready, because Graphics comes first in the scene.
 | Die Fighter | `cockpit_ambience.tscn`: the navy canopy, dash LEDs and CRT, hanging dice | hull left, target right |
 | Outrigger | `Outrigger/Cockpit/`: gold solar-sail hem across the top, `SailTelltales` (ribbons on the bolt rope, a sun glint), blue pods, teak deck | swapped: target to port, hull to starboard |
 | Carousel | `Carousel/Cockpit/`: a gyroscopic viewport, a segmented ring with `ChaseLights` (race on `CarouselBehavior.ring_turned`), gimbal ring and bearing hubs, a `HangingDice` gyroscope | pulled in between the struts |
+
+**Grid Slots.** A ship's layout can start partly sealed: its starting kit's
+`GameSaveResource.unlocked_cells` lists the open cells (empty opens them all,
+which is also what a save from before Grid Slots means). A sealed cell is kept
+out of `TileGrid._cells`, so to placement, adjacency, pushes and Feeds it is a
+hole; it is drawn as a hull plate (`locked_cell.png`) over the panel art. A
+`GridSlot` (`Source/Systems/Game/GridSlot/`) is a draggable item: the last
+choice of a salvage offer (`RewardResource.grid_slot_probability`, and always
+when the grid is full) or a shop shelf (`Shop.GRID_SLOT_PRICE`). Carrying one
+lights every sealed cell; dropped on one, `GridSlot.install()` opens it at once
+(so the checkpoint the pick triggers saves it) and flies in while the plate
+blows off. The open cells are saved with each checkpoint. Loading opens any
+cell a saved tile sits on, so a loadout written for the whole grid still loads.
+
+**Tile upgrades.** A `TileResource` may name an `upgraded_version`: a "+"
+`TileResource` beside it (`<name>_plus.tres`, `is_upgrade`, never offered).
+Salvage and shops offer tiles the player already owns, and a copy let go on an
+un-upgraded twin merges into it (`TileGrid.receive_tile` for offers,
+`_drop_tile_on_grid_pos` for two copies on the grid): the copy goes and the
+twin calls `Tile.upgrade()`, which swaps its resource (uses refill,
+`effect_data` stays) and emits `Events.tile_upgraded`. It works on a full grid.
+Carrying a copy lights its twin, and a tile's info panel previews its upgrade.
+An upgraded tile sets `tile.gdshader`'s `upgraded` (bright bands chase round
+the shared 22x24 silhouette's border) and carries `UpgradeSparks` particles in
+its family colour.
 
 `TileGrid.relocate_tiles(moves)` moves many tiles at once (all leave before any
 arrive, so a closed loop can shift) and emits no push or manual-move events.
@@ -1560,12 +1585,17 @@ func move_tile(tile, new_pos) -> void              # Swap or move to new cell
 func push_tile(tile, direction) -> void            # Cardinal push (Asteroids style)
 func can_push_tile(tile, direction) -> bool        # Whether that push would move anything
 func find_available_grid_pos() -> Vector2i         # First empty cell, top row first
-func is_grid_pos_valid(pos) -> bool                # One of the ship's cells (not a hole)
-func get_cells() -> Array[Vector2i]                # Every cell, from the ship's layout
+func is_grid_pos_valid(pos) -> bool                # An open cell of the ship (not a hole, not sealed)
+func get_cells() -> Array[Vector2i]                # Every open cell
+func set_open_cells(open) -> void                  # Seals the rest of the layout (empty: all open)
+func get_locked_cells() / is_cell_locked(pos) / locked_cell_at(global_pos)  # Sealed cells
+func unlock_cell(pos, plate_delay = 0.0) -> bool   # A Grid Slot opens a sealed cell
+func show_slot_targets(shown) -> void              # Brackets on sealed cells while a slot is carried
+func merge_target_at(tile, global_pos) -> Tile     # The un-upgraded twin a copy dropped there upgrades
 func relocate_tiles(moves) -> void                 # Many tiles at once (the Carousel's ring)
 func mirror_of(pos) -> Vector2i                    # Same row, mirrored across the grid
 func remove_tile(tile) -> void                     # A tile leaving for good (sold): releases dice, forgets the cell, frees it
-# signals: tile_lifted(tile), tile_dropped_off_grid(tile, position)
+# signals: tile_lifted(tile), tile_dropped_off_grid(tile, position), cell_unlocked(cell)
 ```
 
 ### 8.4 Enemy (`Source/Content/Enemies/enemy.gd`)
