@@ -23,8 +23,8 @@ func before_each() -> void:
 
 	player = make_player()
 	var health: Health = autofree(Health.new())
-	health.max_health = 32
-	health.health = 20
+	health.max_health = 80
+	health.health = 50
 	player.health = health
 	Globals.player = player
 
@@ -50,7 +50,7 @@ func _place(tile: Tile, cell: Vector2i) -> Tile:
 func test_a_repair_heals_and_charges() -> void:
 	player.money = 50
 	assert_true(station.repair())
-	assert_eq(player.health.health, 26)
+	assert_eq(player.health.health, 65)
 	assert_eq(player.money, 40)
 	assert_eq(station.repairs_bought, 1)
 
@@ -64,20 +64,20 @@ func test_each_repair_costs_more_than_the_last() -> void:
 		assert_true(station.repair())
 	assert_eq(costs, [10, 15, 20] as Array[int])
 	assert_eq(player.money, 100 - 45)
-	assert_eq(player.health.health, 20)
+	assert_eq(player.health.health, 47)
 
 
 func test_a_repair_never_heals_past_max() -> void:
-	player.health.health = 29
+	player.health.health = 77
 	player.money = 50
 	assert_eq(station.repair_amount(), 3)
 	assert_true(station.repair())
-	assert_eq(player.health.health, 32)
+	assert_eq(player.health.health, 80)
 	assert_eq(player.money, 40, "a part repair still costs the full price")
 
 
 func test_a_full_hull_is_refused() -> void:
-	player.health.health = 32
+	player.health.health = 80
 	player.money = 50
 	watch_signals(Events)
 	assert_false(station.repair_refusal().is_empty())
@@ -91,14 +91,14 @@ func test_a_repair_the_player_cant_afford_is_refused() -> void:
 	player.money = 9
 	assert_false(station.repair())
 	assert_eq(player.money, 9)
-	assert_eq(player.health.health, 20)
+	assert_eq(player.health.health, 50)
 
 
 func test_the_button_greys_out_when_a_repair_cant_be_had() -> void:
 	player.money = 50
 	station._refresh()
 	assert_false(station.repair_button.disabled)
-	player.health.health = 32
+	player.health.health = 80
 	station._refresh()
 	assert_true(station.repair_button.disabled, "full hull")
 	player.health.health = 10

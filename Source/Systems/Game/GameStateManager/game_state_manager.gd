@@ -46,7 +46,7 @@ extends Node2D
 ## sector; across three it makes attrition, not skill, the thing that ends most
 ## runs. Clearing a gate is the hardest milestone in a sector, so it's the right
 ## place to pay hull back.
-@export var sector_clear_repair: int = 12
+@export var sector_clear_repair: int = 30
 
 ## Added to the enemy damage multiplier for each sector past the first. Kept
 ## lower than the health scale on purpose: tankier enemies just lengthen a

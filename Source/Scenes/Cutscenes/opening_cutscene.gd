@@ -387,7 +387,8 @@ func _ship_hit(ship_name: StringName) -> void:
 
 
 ## A hit that leaves the ship trailing smoke for the rest of the cutscene.
-## The ambush starts its Attacker on 65% hull; this is where it lost the rest.
+## The ambush starts its Attacker on a quarter of its hull; this is where it
+## lost the rest.
 func _ship_damaged(ship_name: StringName) -> void:
 	_ship_hit(ship_name)
 	TimeDirector.hitstop(70)

@@ -20,8 +20,8 @@ func before_each() -> void:
 
 	player = make_player()
 	var health: Health = autofree(Health.new())
-	health.max_health = 32
-	health.health = 12
+	health.max_health = 80
+	health.health = 30
 	player.health = health
 	player.money = 40
 	Globals.player = player
@@ -56,9 +56,9 @@ func test_a_repair_is_offered_when_hurt_and_affordable() -> void:
 
 
 func test_no_repair_is_offered_at_full_hull_or_when_broke() -> void:
-	player.health.health = 32
+	player.health.health = 80
 	assert_eq(_of_kind(AutoPilotMove._repair_station_moves(), AutoPilotMove.Kind.REPAIR).size(), 0)
-	player.health.health = 12
+	player.health.health = 30
 	player.money = 5
 	assert_eq(_of_kind(AutoPilotMove._repair_station_moves(), AutoPilotMove.Kind.REPAIR).size(), 0)
 
@@ -85,7 +85,7 @@ func test_a_lone_tile_is_never_offered_for_sale() -> void:
 
 func test_a_repair_move_buys_a_repair() -> void:
 	AutoPilotMove.repair(station.repair_cost()).perform()
-	assert_eq(player.health.health, 18)
+	assert_eq(player.health.health, 45)
 	assert_eq(player.money, 30)
 
 
@@ -99,13 +99,13 @@ func test_a_sell_move_drops_the_tile_on_the_slot() -> void:
 
 func test_the_smart_bot_repairs_a_low_hull_and_stops_near_full() -> void:
 	var smart: HeuristicPolicy = HeuristicPolicy.new(HeuristicPolicy.persona("smart"))
-	player.health.health = 12
+	player.health.health = 30
 	assert_true(smart._wants_repair())
-	player.health.health = 26
+	player.health.health = 65
 	assert_false(smart._wants_repair())
 
 
 func test_a_turtle_tops_up_further_than_an_aggressive_bot() -> void:
-	player.health.health = 24
+	player.health.health = 60
 	assert_true(HeuristicPolicy.new(HeuristicPolicy.persona("turtle"))._wants_repair())
 	assert_false(HeuristicPolicy.new(HeuristicPolicy.persona("aggressive"))._wants_repair())

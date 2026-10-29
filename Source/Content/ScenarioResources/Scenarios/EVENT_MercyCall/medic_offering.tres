@@ -35,7 +35,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_step5"]
 script = ExtResource("script_2")
 category = 2
-amount = 6
+amount = 15
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step6"]

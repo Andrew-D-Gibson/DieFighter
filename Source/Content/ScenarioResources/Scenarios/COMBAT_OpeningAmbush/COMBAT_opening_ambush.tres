@@ -27,7 +27,7 @@ script = ExtResource("2_ambush")
 enemy_resource = ExtResource("7_ambush")
 starting_state = ExtResource("8_ambush")
 reward_resource = SubResource("Resource_ambush_reward")
-starting_health_fraction = 0.65
+starting_health_fraction = 0.25
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]

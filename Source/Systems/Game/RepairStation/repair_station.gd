@@ -22,9 +22,9 @@ const _FORMATION_KEY: StringName = &"repair_station"
 const _FORMATION_PADDING: float = 6.0
 
 @export_category("Repairs")
-## Hull restored per repair. A sixth of the starting 32: enough that one repair
-## is worth a stop, small enough that a full patch-up takes several.
-@export var hull_per_repair: int = 6
+## Hull restored per repair. Under a fifth of the starting 80: enough that one
+## repair is worth a stop, small enough that a full patch-up takes several.
+@export var hull_per_repair: int = 15
 ## What the first repair at a station costs. Below the cheapest shop tile (10),
 ## so even a thin wallet can buy one.
 @export var base_repair_cost: int = 10

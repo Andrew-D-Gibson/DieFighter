@@ -9,8 +9,8 @@
 [resource]
 script = ExtResource("1_save")
 ship_id = &"outrigger"
-player_health = 24
-player_max_health = 32
+player_health = 60
+player_max_health = 80
 num_of_dice = 3
 tile_locations = Dictionary[Vector2i, ExtResource("2_tile")]({
 Vector2i(1, 1): ExtResource("3_sunlance"),
