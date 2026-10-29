@@ -110,6 +110,32 @@ static func held_if_flipped(ship: Enemy) -> float:
 	return total
 
 
+## The same dice with the highest turned to [param face] (Cryo Lance), the
+## one ChangeHeldDiceEvent picks.
+static func held_if_highest_set(ship: Enemy, face: int = 1) -> float:
+	if not is_instance_valid(ship) or not ship.dice_manager:
+		return 0.0
+	var highest: Dice = ChangeHeldDiceEvent.highest_die(ship.dice_manager)
+	var total: float = 0.0
+	for die: Dice in ship.dice_manager.queue:
+		if is_instance_valid(die):
+			total += of_face(ship, face if die == highest else die.value, false)
+	return total
+
+
+## What silencing [param ship]'s intent for [param face] saves (Counter-
+## Battery): the cost of each die of that face it holds, and of [param
+## arriving] more about to land there.
+static func silenced_value(ship: Enemy, face: int, arriving: int = 0) -> float:
+	if not is_instance_valid(ship) or not ship.dice_manager:
+		return 0.0
+	var count: int = arriving
+	for die: Dice in ship.dice_manager.queue:
+		if is_instance_valid(die) and die.value == face:
+			count += 1
+	return of_face(ship, face, false) * count
+
+
 ## The costliest die [param ship] holds: the one a player would take back.
 static func worst_held(ship: Enemy) -> float:
 	var worst: float = 0.0

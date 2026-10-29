@@ -47,6 +47,11 @@ class Handoff:
 	## The chance it goes there, when the destination was a random draw.
 	var share: float = 1.0
 
+## A ship's intent for a face, silenced (Counter-Battery).
+class Silence:
+	var ship: Enemy
+	var face: int
+
 ## Expected damage by target: enemies, or the player. A shield given to an
 ## enemy counts as negative damage.
 var damage: Dictionary[Node, float] = {}
@@ -63,6 +68,9 @@ var handoffs: Array[Handoff] = []
 ## Ships whose held dice get rerolled, flipped (1s and 6s), or taken back.
 var rerolled: Array[Enemy] = []
 var flipped: Array[Enemy] = []
+## Ships whose highest held die turns to a 1 (Cryo Lance).
+var frozen: Array[Enemy] = []
+var silenced: Array[Silence] = []
 var reclaimed: Array[Enemy] = []
 ## Map jump distance, signed.
 var jump: int = 0
@@ -313,7 +321,8 @@ func _amount_step(data: EffectData, walk: _Walk) -> void:
 func _attribute_step(data: EffectData, walk: _Walk) -> void:
 	var amount: float = float(walk.context.running_amount * walk.scale)
 	match data.subtype:
-		EffectEnums.AttributeChangeSubtype.DAMAGE:
+		EffectEnums.AttributeChangeSubtype.DAMAGE, \
+		EffectEnums.AttributeChangeSubtype.BOUNTY_DAMAGE:
 			for target: Node in walk.context.targets:
 				if is_instance_valid(target):
 					damage[target] = damage.get(target, 0.0) + amount * walk.share
@@ -486,6 +495,17 @@ func _dice_step(data: EffectData, walk: _Walk) -> void:
 			for target: Node in walk.context.targets:
 				if target is Enemy and not flipped.has(target):
 					flipped.append(target as Enemy)
+		EffectEnums.DiceControlSubtype.SILENCE_TARGETS_FACE:
+			for target: Node in walk.context.targets:
+				if target is Enemy:
+					var silence := Silence.new()
+					silence.ship = target as Enemy
+					silence.face = data.amount if data.amount > 0 else walk.face
+					silenced.append(silence)
+		EffectEnums.DiceControlSubtype.SET_TARGETS_HIGHEST_DIE:
+			for target: Node in walk.context.targets:
+				if target is Enemy and not frozen.has(target):
+					frozen.append(target as Enemy)
 		EffectEnums.DiceControlSubtype.REROLL_ALL:
 			tile_tricks += 0.5
 

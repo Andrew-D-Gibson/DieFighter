@@ -1,0 +1,121 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://d1t0tu3607dmp"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Texture2D" uid="uid://cbl724ob1fiti" path="res://Assets/Textures/Tiles/BlueTiles/cryo_lance-Sheet.png" id="tex"]
+[ext_resource type="Resource" uid="uid://jjteq7hw548o" path="res://Source/Resources/SoundEffectResources/SoundEffects/glass_tinkle.tres" id="sfx_ice"]
+[ext_resource type="Resource" uid="uid://c0gtml1h6hxcr" path="res://Source/Content/Tiles/TileResources/cryo_lance_plus.tres" id="upgrade_plus"]
+
+[sub_resource type="Resource" id="Resource_act_1"]
+script = ExtResource("script_act")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act_2"]
+script = ExtResource("script_act")
+type = 1
+acceptable_values = Array[int]([1])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act_3"]
+script = ExtResource("script_act")
+type = 2
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act_4"]
+script = ExtResource("script_act")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_act_5"]
+script = ExtResource("script_act")
+type = 20
+threshold = 1
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_step_1"]
+script = ExtResource("script_effect")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_2"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_ice")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_3"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 23
+color = Color(0.5529, 0.9451, 0.9569, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_4"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 20
+amount = 1
+color = Color(0.5529, 0.9451, 0.9569, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_5"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "FROZEN"
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_6"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_7"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_1"), SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1"]
+atlas = ExtResource("tex")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tile"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
+tile_name = "[color=blue]Cryo Lance[/color]"
+description = "(die_1) -> Turn the highest die [color=purple]target[/color] holds to (die_1). [color=orange]Give[/color] die"
+rarity = 1
+uses_per_turn = 1
+textures = SubResource("SpriteFrames_tile")
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3"), SubResource("Resource_act_4"), SubResource("Resource_act_5")])
+effect_chain = SubResource("Resource_chain")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

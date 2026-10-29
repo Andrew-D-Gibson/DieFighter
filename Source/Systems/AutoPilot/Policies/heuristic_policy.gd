@@ -407,6 +407,11 @@ func score_placement(die: Dice, tile: Tile, aim: Enemy) -> float:
 			score += (AutoPilotThreat.held(ship) - AutoPilotThreat.held_if_rerolled(ship)) * _persona.hull
 		for ship: Enemy in forecast.flipped:
 			score += (AutoPilotThreat.held(ship) - AutoPilotThreat.held_if_flipped(ship)) * _persona.hull
+		for ship: Enemy in forecast.frozen:
+			score += (AutoPilotThreat.held(ship) - AutoPilotThreat.held_if_highest_set(ship)) * _persona.hull
+		for silence: AutoPilotForecast.Silence in forecast.silenced:
+			score += AutoPilotThreat.silenced_value(silence.ship, silence.face,
+				_arriving(forecast, silence.ship, silence.face)) * _persona.hull
 		for ship: Enemy in forecast.reclaimed:
 			score += AutoPilotThreat.worst_held(ship) * _persona.hull + _persona.dice_back
 	score += forecast.dice_back * _persona.dice_back
@@ -432,6 +437,15 @@ func _peacetime_damage(ship: Enemy) -> float:
 
 ## Expected hull the die costs where it lands. A ship this move finishes off
 ## can't take it: it goes to another at random, or home if none are left.
+## How many real dice of [param face] this move hands to [param ship].
+func _arriving(forecast: AutoPilotForecast, ship: Enemy, face: int) -> int:
+	var count: int = 0
+	for handoff: AutoPilotForecast.Handoff in forecast.handoffs:
+		if handoff.ship == ship and handoff.face == face and not handoff.hologram:
+			count += 1
+	return count
+
+
 func _handoff_cost(handoff: AutoPilotForecast.Handoff, finished: Array[Enemy]) -> float:
 	if handoff.hologram:
 		return 0.0

@@ -44,6 +44,11 @@ enum ActivationType {
 	## The player has [member threshold] hull or more. Gates tiles that spend
 	## hull (SPEND_HULL): set it one above the cost, so paying never kills.
 	HULL_AT_LEAST,
+	## The ship this die was dropped against holds a die showing more than
+	## [member threshold]. For a tile that works the dice a ship holds (Cryo
+	## Lance turns its highest to a 1): with nothing to change it would eat
+	## the die.
+	TARGETED_SHIP_HOLDS_DIE_ABOVE,
 }
 
 @export var type: ActivationType
@@ -176,6 +181,18 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 
 			return Globals.player.health.health >= threshold,
+
+	ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE:
+		func(die: Dice) -> bool:
+			if not Globals.targeting_computer:
+				return false
+			var target: Enemy = Globals.targeting_computer.target_for(die)
+			if not target or not target.dice_manager:
+				return false
+			for held: Dice in target.dice_manager.queue:
+				if is_instance_valid(held) and held != die and held.value > threshold:
+					return true
+			return false,
 }
 
 
@@ -242,6 +259,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.HULL_AT_LEAST:
 		"ERROR_LOW_HULL",
+
+	ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE:
+		"ERROR_TARGET_NO_BIG_DIE",
 }
 
 

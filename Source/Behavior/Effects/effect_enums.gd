@@ -129,6 +129,9 @@ enum AttributeChangeSubtype {
 	## grows, shrinks or dodges a hit touches it. Refuses rather than kill;
 	## tiles gate on HULL_AT_LEAST.
 	SPEND_HULL,
+	## DAMAGE that pays a bounty: `amount` credits for each hostile warship
+	## this very hit destroys (Bounty Scanner). See BountyDamageEvent.
+	BOUNTY_DAMAGE,
 }
 
 
@@ -226,6 +229,13 @@ enum DiceControlSubtype {
 	## its face, and hands it back to the hand as the player's turn starts
 	## `amount` turns from now (1 when unset). A HeldDieDelay counts it down.
 	HOLD_DIE_FOR_TURNS,
+	## The highest die each target is holding turns to `amount` (Cryo Lance:
+	## a 1). The big die an enemy already holds is defused before it acts.
+	SET_TARGETS_HIGHEST_DIE,
+	## Each target's intent for the activator die's face (or `amount`, when
+	## set) does nothing until its table is next rolled (Counter-Battery).
+	## See Enemy.silence_face().
+	SILENCE_TARGETS_FACE,
 }
 
 

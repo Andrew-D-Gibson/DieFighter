@@ -33,6 +33,10 @@ var _bound_arrows: Array[BoundIntentArrow] = []
 
 ## Intents no die is lighting sit back so the live ones stand out.
 const _DIMMED_INTENT: Color = Color(1.0, 1.0, 1.0, 0.45)
+## A silenced intent (Counter-Battery) keeps its icon, greyed and crossed out,
+## so the player can see what they cancelled.
+const _SILENCED_INTENT: Color = Color(0.45, 0.45, 0.45, 1.0)
+const _SILENCED_MARK: Texture2D = preload("res://Assets/Textures/Enemies/IntentIndicator/silenced.png")
 
 ## The ship acting right now and the slot it's playing. The die leaves its hand
 ## as the action starts, but the intent stays lit until the action's effects
@@ -69,6 +73,10 @@ func _ready() -> void:
 	Events.enemy_received_die.connect(_update_ui)
 	Events.enemy_lost_die.connect(_refresh_intent_highlights)
 	Events.enemy_held_dice_changed.connect(_refresh_intent_highlights)
+	Events.enemy_intents_changed.connect(func(ship: Enemy) -> void:
+		if ship == targeted_enemy:
+			_update_ui()
+	)
 	Events.start_scenario.connect(_update_ui)
 	# A fight breaking out mid-turn (firing on a civilian) reveals the tables
 	# that were rolled while they read "?". A frame later, because combat
@@ -356,6 +364,7 @@ func _update_ui() -> void:
 			# De-highlight the die sprites
 			die_sprites[i].frame = i
 			_intent(i).modulate = Color.WHITE
+			_show_silenced(i, false)
 			_set_intent_clickable(_intent_clickable(i), false)
 
 		$TargetImageFill.z_index = 1
@@ -374,6 +383,7 @@ func _update_ui() -> void:
 				
 				# Set up the action amount text
 				_intent_amount(i).text = targeted_enemy.turn_actions[i].get_intent_amount_text()
+				_show_silenced(i, targeted_enemy.turn_actions[i].silenced_action != null)
 
 				# Change over the info on clicking this particular action indicator 
 				var clickable: Clickable = _intent_clickable(i)
@@ -383,6 +393,7 @@ func _update_ui() -> void:
 			else:
 				_intent(i).texture = unknown_intent_indicator
 				_intent(i).modulate = Color.WHITE
+				_show_silenced(i, false)
 				_intent_amount(i).text = ""
 				Utils.disconnect_all_callables(_intent_clickable(i).clicked)
 				_set_intent_clickable(_intent_clickable(i), false)
@@ -469,6 +480,22 @@ func _show_bound_arrows() -> void:
 			arrows_by_ship[ship] = arrow
 			_bound_arrows.append(arrow)
 		arrows_by_ship[ship].slots.append(i)
+
+
+## Greys slot [param i]'s icon and crosses it out while [param silenced]. The
+## mark is made the first time a slot needs it.
+func _show_silenced(i: int, silenced: bool) -> void:
+	var intent: Sprite2D = _intent(i)
+	intent.self_modulate = _SILENCED_INTENT if silenced else Color.WHITE
+	var mark: Sprite2D = intent.get_node_or_null(^"SilencedMark") as Sprite2D
+	if mark == null:
+		if not silenced:
+			return
+		mark = Sprite2D.new()
+		mark.name = &"SilencedMark"
+		mark.texture = _SILENCED_MARK
+		intent.add_child(mark)
+	mark.visible = silenced
 
 
 ## Slot [param i]'s intent icon on the screen, and the parts hung off it.

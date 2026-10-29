@@ -173,6 +173,22 @@ registration to testing. For how the systems work underneath, see
     Untick `can_be_echoed` on a tile whose effect compounds on itself, where a
     second pass multiplies (Fortress Protocol), and say `Ignores (echo)` in
     its text. Text: `(echo) the next tile you activate`.
+  - **Enemy dice and intents** (aim with `TARGET_WITH_TARGETING_COMPUTER`
+    first, then hand the die over as usual):
+    - `SET_TARGETS_HIGHEST_DIE` (`amount` = the new face) turns the highest
+      die each target holds to that face, before the ship can spend it
+      (Cryo Lance: a 1). Gate it on `TARGETED_SHIP_HOLDS_DIE_ABOVE`
+      (`threshold` 1), so it refuses a die when there's nothing to freeze.
+    - `SILENCE_TARGETS_FACE` makes each target's intent for the activator's
+      face (or `amount`) do nothing until its table is next rolled
+      (Counter-Battery). `Enemy.silence_face()` swaps the slot for a Do
+      Nothing that keeps the old action in `silenced_action`, so threat,
+      Jammed and the AutoPilot read it as idle, and the targeting computer
+      shows the old icon greyed and crossed out. Text: `intent for that face
+      does nothing on its next turn`.
+  - **Bounties**: `BOUNTY_DAMAGE` is `DAMAGE` (running amount) that pays
+    `amount` credits for each ship that very hit destroys, as coins off the
+    wreck. Civilians and launched fighters carry none (Bounty Scanner).
 - **`event_responses`**: `TileEvent` → `EffectChain` for reactive tiles
   (`ON_TURN_START`, `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, ...). A tile
   can take no dice at all and live only on these. `ON_TURN_START` also fires
