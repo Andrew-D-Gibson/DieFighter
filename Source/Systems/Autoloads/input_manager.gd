@@ -18,8 +18,8 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed('PauseMenu'):
 		Events.toggle_pause_menu.emit()
 	elif event.is_action_pressed('EndTurn'):
-		# Whenever the button would take a click, and only then: not mid-jump,
-		# and not while dice already dropped are still to fire.
-		if Globals.player.can_end_turn():
-			Globals.player.end_turn()
+		# Exactly as the button: only when it would take a click (not mid-jump,
+		# not while dropped dice are still to fire), and asking first when
+		# playable dice would go unused.
+		Globals.player.request_end_turn()
 			

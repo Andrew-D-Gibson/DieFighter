@@ -143,6 +143,24 @@ func _register_options() -> void:
 	register(MUTE_ALL, false,
 		func() -> bool: return AudioServer.is_bus_mute(AudioServer.get_bus_index("Master")),
 		func(value: Variant) -> void: AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), bool(value)))
+	_register_dice_input_options()
+
+
+## Dice placement and the End Turn check. Both live values are statics on
+## the classes that read them, so they're set before any die or player exists.
+const DICE_PLACEMENT: StringName = &"Controls/dice_placement"
+const CONFIRM_END_TURN: StringName = &"Game/confirm_end_turn"
+
+func _register_dice_input_options() -> void:
+	register(DICE_PLACEMENT, Draggable.PlacementMode.DRAG,
+		func() -> int: return Draggable.placement_mode,
+		func(value: Variant) -> void:
+			var mode: int = int(value)
+			Draggable.placement_mode = mode as Draggable.PlacementMode \
+				if Draggable.PlacementMode.values().has(mode) else Draggable.PlacementMode.DRAG)
+	register(CONFIRM_END_TURN, true,
+		func() -> bool: return EndTurnConfirm.enabled,
+		func(value: Variant) -> void: EndTurnConfirm.enabled = bool(value))
 
 
 func _register_window_options() -> void:

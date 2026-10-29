@@ -66,6 +66,8 @@ func _build_pages() -> void:
 	game.next_column()
 	game.check(OptionsSettings.SHOW_TUTORIAL, "OPT_SHOW_TUTORIAL", "OPT_SHOW_TUTORIAL_HINT")
 	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
+	# Dice input: asking before a turn ends with dice unplayed.
+	game.check(OptionsSettings.CONFIRM_END_TURN, "OPT_CONFIRM_END_TURN", "OPT_CONFIRM_END_TURN_HINT")
 
 	var graphics: OptionsPage = _pages[Tab.GRAPHICS]
 	graphics.check(OptionsSettings.FULLSCREEN, "OPT_FULLSCREEN")
@@ -95,7 +97,10 @@ func _build_pages() -> void:
 	audio.check(OptionsSettings.MUTE_ALL, "OPT_MUTE_ALL")
 
 	var controls: OptionsPage = _pages[Tab.CONTROLS]
-	controls.note("OPT_CONTROLS_EMPTY")
+	# Dice input: how dice and tiles are picked up and put down.
+	controls.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
+		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
+		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
 
 	var accessibility: OptionsPage = _pages[Tab.ACCESSIBILITY]
 	accessibility.check(OptionsSettings.SCREENSHAKE, "OPT_SCREENSHAKE", "OPT_SCREENSHAKE_HINT")
