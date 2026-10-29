@@ -2,7 +2,8 @@ extends Node
 
 ## What the player has found across every run, for the codex on the main menu:
 ## each tile they've had on their grid, and each enemy they've met with how
-## often they've met and destroyed it. Kept in its own file, since the run's
+## often they've met and destroyed it. Also which region rules and hazards
+## they've read the arrival card for, so the first one waits for them. Kept in its own file, since the run's
 ## save is deleted when the run ends and this has to outlive it.
 ##
 ## Only the player's own runs count. The Scenario Lab and the AutoPilot point
@@ -25,6 +26,9 @@ var collection_path: String = COLLECTION_PATH:
 var _tiles: Dictionary[String, bool] = {}
 ## Enemy id -> {"encountered": int, "destroyed": int}.
 var _enemies: Dictionary[String, Dictionary] = {}
+## Region id (EnvironmentMonitor.region_id) -> true, for every rule or hazard
+## whose arrival card the player has read.
+var _regions: Dictionary[String, bool] = {}
 var _write_queued: bool = false
 
 
@@ -60,6 +64,17 @@ func record_tile(id: String) -> void:
 	_queue_write()
 
 
+func has_read_region(id: String) -> bool:
+	return _regions.has(id)
+
+
+func record_region(id: String) -> void:
+	if id.is_empty() or _regions.has(id):
+		return
+	_regions[id] = true
+	_queue_write()
+
+
 func record_encounter(id: String) -> void:
 	_count(id, "encountered")
 
@@ -72,6 +87,7 @@ func record_destroyed(id: String) -> void:
 func clear() -> void:
 	_tiles.clear()
 	_enemies.clear()
+	_regions.clear()
 	_write()
 
 
@@ -128,6 +144,7 @@ func _write() -> void:
 		"version": COLLECTION_VERSION,
 		"tiles": _tiles.keys(),
 		"enemies": _enemies,
+		"regions": _regions.keys(),
 	}
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.WRITE)
 	if not file:
@@ -141,6 +158,7 @@ func _write() -> void:
 func load_collection() -> void:
 	_tiles.clear()
 	_enemies.clear()
+	_regions.clear()
 	if not FileAccess.file_exists(collection_path):
 		return
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.READ)
@@ -156,6 +174,8 @@ func load_collection() -> void:
 	var data: Dictionary = json.data
 	for id: Variant in data.get("tiles", []):
 		_tiles[str(id)] = true
+	for id: Variant in data.get("regions", []):
+		_regions[str(id)] = true
 	var enemies: Variant = data.get("enemies", {})
 	if enemies is Dictionary:
 		for id: Variant in enemies:

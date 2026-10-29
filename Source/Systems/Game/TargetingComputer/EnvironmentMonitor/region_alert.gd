@@ -5,7 +5,12 @@ extends Node2D
 ## for it; see ArrivalIntro), holds while the player reads, then folds back
 ## into the screen, so the player learns both what the rule says and where to
 ## look it up again. The rest of the cockpit dims a little while it's up, and
-## a click anywhere sends it back at once.
+## a click anywhere (or its Close button) sends it back at once.
+##
+## The first time a player meets a rule or hazard the card doesn't time out:
+## a new player reads slowly, and the hold that suits a returning one is gone
+## before they're done. It waits for Close or a click (wait_for_close; the
+## monitor decides from CollectionManager).
 ##
 ## Players who know the backgrounds by heart can turn it off in the options
 ## (Globals.show_region_alerts); the monitor still swings up either way.
@@ -15,6 +20,10 @@ extends Node2D
 signal landed()
 
 const _PANEL_TEXTURE: Texture2D = preload("res://Assets/Textures/TutorialManager/background.png")
+const _BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/small_button.tscn")
+## The tutorial card's blue button: this card wears the same panel.
+const _BUTTON_TEXTURE: Texture2D = preload("res://Assets/Textures/UI/Buttons/button_small_blue.png")
+const _BUTTON_HOVER_COLOR: Color = Color(0.262745, 0.65098, 0.988235, 1)
 
 ## Where the card shows: the sky above the main viewer, which is empty while
 ## the ships hold off, rather than over the busy tile grid.
@@ -45,11 +54,17 @@ var description: String = ""
 var footnote: String = ""
 ## The monitor's screen, asked as each flight starts.
 var landing_point: Callable
+## Stay up until the player closes it, instead of folding away on a timer.
+var wait_for_close: bool = false
 
 var _dim: ColorRect
 ## Everything that flies: the panel and its text.
 var _card: Node2D
 var _panel: PanelContainer
+var _close_button: Button
+## Folds the card once the player has had time to read it. Null while it
+## waits for Close.
+var _hold_timer: SceneTreeTimer
 var _folding: bool = false
 
 
@@ -101,10 +116,33 @@ func _build() -> void:
 	lines.add_child(_label(Utils.format_text(description)))
 	if not footnote.is_empty():
 		lines.add_child(_label(Utils.format_text(footnote)))
+	var gap: Control = Control.new()
+	gap.custom_minimum_size = Vector2(0, 2)
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	lines.add_child(gap)
+	lines.add_child(_build_close_button())
 
 	# Centred on the card's origin, so scaling it shrinks toward its middle.
 	_panel.reset_size()
 	_panel.position = -(_panel.size / 2.0).round()
+
+
+## The project's small button, in the tutorial card's blue. Shown on every
+## card, so a returning player can skip the hold too.
+func _build_close_button() -> Button:
+	var button: Button = _BUTTON_SCENE.instantiate()
+	var face: AtlasTexture = AtlasTexture.new()
+	face.atlas = _BUTTON_TEXTURE
+	face.region = Rect2(0, 0, 35, 12)
+	var frames: SpriteFrames = SpriteFrames.new()
+	frames.add_frame(&"default", face)
+	button.get_node("AnimatedSprite2D").sprite_frames = frames
+	button.hover_text_color = _BUTTON_HOVER_COLOR
+	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	button.set_button_text("REGION_ALERT_CLOSE")
+	button.pressed_within_window.connect(_fold)
+	_close_button = button
+	return button
 
 
 func _label(text: String) -> RichTextLabel:
@@ -138,10 +176,12 @@ func _unfold() -> void:
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_card, "modulate:a", 1.0, _UNFOLD_SECONDS * 0.4)
 	tween.tween_property(_dim, "modulate:a", 1.0, _UNFOLD_SECONDS)
+	if wait_for_close:
+		return
 	# Paused with the game, so a pause mid-read doesn't send it away.
 	var hold_seconds: float = _HOLD_SECONDS + (0.0 if footnote.is_empty() else _FOOTNOTE_HOLD_SECONDS)
-	var hold: SceneTreeTimer = get_tree().create_timer(_UNFOLD_SECONDS + hold_seconds, false)
-	hold.timeout.connect(_fold)
+	_hold_timer = get_tree().create_timer(_UNFOLD_SECONDS + hold_seconds, false)
+	_hold_timer.timeout.connect(_fold)
 
 
 func _on_click(event: InputEvent) -> void:
@@ -159,6 +199,7 @@ func _fold() -> void:
 	# The cockpit is the player's again as soon as the card starts to leave.
 	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_close_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var tween: Tween = create_tween().set_parallel()
 	# Slow to start, fast to finish: it gets sucked in rather than drifting.

@@ -56,6 +56,17 @@ func test_what_was_found_survives_a_reload() -> void:
 	assert_eq(reloaded.times_encountered("raider"), 0)
 
 
+func test_a_read_region_card_survives_a_reload() -> void:
+	var collection: Node = _fresh_collection()
+	collection.clear()
+	collection.record_region("rule:dead_systems")
+	collection._write()
+
+	var reloaded: Node = _fresh_collection()
+	assert_true(reloaded.has_read_region("rule:dead_systems"))
+	assert_false(reloaded.has_read_region("hazard:solar_flare"))
+
+
 func test_a_corrupt_file_reads_as_empty() -> void:
 	var file: FileAccess = FileAccess.open(RELOAD_PATH, FileAccess.WRITE)
 	file.store_string("{not json")

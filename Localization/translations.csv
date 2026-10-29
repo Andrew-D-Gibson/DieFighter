@@ -120,3 +120,4 @@ OPT_READABLE_FONT,Readable Font,,,,,,,,Options > Accessibility tab: label beside
 OPT_READABLE_FONT_HINT,Use a clearer font instead of the pixel font.,,,,,,,,Options > Accessibility tab: hint line for Readable Font,,,
 MOD_TRIGGER_FROZEN,FROZEN,,,,,,,,"Callout floated off the environment monitor when the Flash Freeze region rule stops a die's value from changing (a reroll, a bump, a flip). Short, shouted, like NO SHIELDS.",10,,
 TILE_INFO_ONCE_PER_TURN,"{rule}: activates [color=yellow]once a turn[/color] here",,,,,,,,"Tile info panel, a line added under the tile's description while a region rule (e.g. Dead Systems) limits every tile to one activation per turn. {rule} is the rule's name. Keep the [color] tags.",40,,
+REGION_ALERT_CLOSE,CLOSE,,,,,,,,"Button on the arrival card that explains a region rule or hazard; closes the card (all caps, fits a 35px button)",6,,

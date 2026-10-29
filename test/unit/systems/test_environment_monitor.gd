@@ -253,3 +253,71 @@ func test_a_rule_card_has_no_footnote() -> void:
 	await _arrive_with_rule()
 	await _finish_swing()
 	assert_eq(_alerts()[0].footnote, "")
+
+
+# ── The first sighting waits to be closed ────────────────────────────────────
+
+func _card_for(modifier: BackgroundModifierResource) -> RegionAlert:
+	Globals.show_region_alerts = true
+	Globals.background_manager.current_background = BackgroundResource.new()
+	Events.start_scenario.emit()
+	Events.background_modifier_applied.emit(modifier)
+	await _settle()
+	await _finish_swing()
+	return _alerts()[0]
+
+
+func _rule(rule_name: String) -> BackgroundModifierResource:
+	var modifier: BackgroundModifierResource = BackgroundModifierResource.new()
+	modifier.modifier_name = rule_name
+	return modifier
+
+
+func test_a_rule_never_read_waits_for_close() -> void:
+	CollectionManager.clear()
+	var card: RegionAlert = await _card_for(_rule("Pulsar Wash"))
+	assert_true(card.wait_for_close)
+	assert_null(card._hold_timer, "no timer to fold it before the player is done")
+
+
+func test_closing_it_counts_as_read_for_good() -> void:
+	CollectionManager.clear()
+	var modifier: BackgroundModifierResource = _rule("Pulsar Wash")
+	var card: RegionAlert = await _card_for(modifier)
+	card.landed.emit()
+	assert_true(CollectionManager.has_read_region(EnvironmentMonitor.region_id(modifier)))
+	CollectionManager.clear()
+
+
+func test_a_rule_read_before_folds_away_on_its_own() -> void:
+	CollectionManager.clear()
+	var modifier: BackgroundModifierResource = _rule("Pulsar Wash")
+	CollectionManager.record_region(EnvironmentMonitor.region_id(modifier))
+	var card: RegionAlert = await _card_for(modifier)
+	assert_false(card.wait_for_close)
+	assert_not_null(card._hold_timer)
+	CollectionManager.clear()
+
+
+func test_bots_and_the_lab_never_wait() -> void:
+	CollectionManager.clear()
+	SaveManager.save_path = "user://test_somewhere_else.json"
+	var card: RegionAlert = await _card_for(_rule("Pulsar Wash"))
+	SaveManager.save_path = SaveManager.SAVE_PATH
+	assert_false(card.wait_for_close)
+
+
+func test_every_card_has_a_close_button_that_folds_it() -> void:
+	CollectionManager.clear()
+	var card: RegionAlert = await _card_for(_rule("Pulsar Wash"))
+	assert_not_null(card._close_button)
+	card._close_button.pressed_within_window.emit()
+	assert_true(card._folding)
+
+
+func test_rules_and_hazards_are_remembered_apart() -> void:
+	var rule: BackgroundModifierResource = load(
+		"res://Source/Resources/BackgroundResources/BackgroundModifiers/dead_systems.tres"
+	)
+	assert_eq(EnvironmentMonitor.region_id(rule), "rule:dead_systems")
+	assert_eq(EnvironmentMonitor.region_id(hazard), "hazard:Test Flare", "an unsaved one goes by name")
