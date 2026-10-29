@@ -4,6 +4,56 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — AutoPilot: the smart bot builds its grid, and shops again
+
+**The bot had stopped shopping.** Two openings from the recent merges ran
+after the AutoPilot's first move at a stop: a shop opens only once the
+shopkeeper has flown in (`EnemyManager.arrival_in_progress`), and its stock
+now pops onto the shelves one item at a time. The bot jumped away before
+either, so it bought almost nothing (0.6 purchases per run). It now waits for
+arriving ships to land and for `Shop.is_revealing()` to clear, as a patient
+player would. That alone took 96 smart runs from stop 20 to stop 24 on
+average.
+
+**Building the grid** (`AutoPilotBuild`, new). The smart bot used to value a
+tile off the grid, drop it in the first free cell, open the first sealed
+cell, never move a tile and never sell. Now:
+- The board is worth the sum of what each tile does with a die, read with
+  the tiles where they stand, so a relay counts what it feeds and adjacency
+  tiles count their neighbours. Other layouts are tried by swapping them into
+  the grid for one synchronous valuation and straight back.
+- A tile taken goes in the cell where it adds most, or onto its twin when the
+  upgrade is worth more; a copy can upgrade a twin on a full grid.
+- A Grid Slot opens the sealed cell that pays best, and is worth more the
+  fuller the grid (on a full grid in a shop, plus the tile it makes room for).
+- Out of a fight it drags tiles about (moves, swaps, or merging two copies)
+  while a drag still gains. New move kind `MOVE_TILE`; the random bot does it
+  rarely, to exercise the path.
+- A die is worth less once the dice owned outgrow the grid's uses per turn.
+- At a repair station it tops up further with the sector's gate near, and
+  sells a tile only when the credits (or a repair it can't otherwise afford)
+  beat a few turns of what the tile adds.
+
+**Forecast fix.** A Feed asked the live targeting computer whether its target
+would take the die. Between fights nobody is targeted, so every relay looked
+like it fed nothing when tiles were valued. It now answers from the ship the
+forecast is aimed at. Valuing an off-grid relay also printed thousands of
+"couldn't find source tile position" lines per batch; tiles are now only ever
+valued in a cell.
+
+**Result.** 200 paired seeds on the same content, smart bot before vs after
+(both with the shop wait): furthest stop 24.9 → 26.2 (ahead on 49 seeds,
+behind on 32), fights won 5.0 → 5.45, Sector 3 reached 66 → 78, wins 9 → 10.
+About half a tile upgraded per run.
+
+**Found along the way (not fixed):** two runs stalled into 150+ turn fights
+against enemies stacking shields without limit (Bamba Defender at 545
+shields; Bastion with 323 of the player's own while Impound drained the hand
+to one die). The 300 s time limit kills them mid-line, which leaves a
+truncated transcript that `tools/autoplay_report.py` can't parse.
+
+---
+
 ## 2026-10-28 — Tweaks batch 2: clearer combat, kinder first runs, sharper HUD
 
 Seven parallel branches, merged together.

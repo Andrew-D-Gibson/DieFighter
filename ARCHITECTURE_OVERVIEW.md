@@ -669,14 +669,21 @@ could do now: drop a die from the hand on a tile that would take it
 (`Tile.activation_refusal()`, the pure half of `clears_activation_criteria()`),
 retarget, switch the map/systems tab, take a salvage choice
 (`Reward.can_take()`), buy from the shop (`Shop.price_of()`, if affordable),
-or press End Turn (`Player.can_end_turn()`). `perform()` goes through the
-same entry points as input. A drop emits the die's `drag_ended`, as letting
-go of the mouse does; a claim or a purchase emits the item's, over the grid
-(a tile) or the hand (anything else). The AutoPilot is patient: it waits for
+repair or sell at a repair station, drag a grid tile to another cell out of
+a fight (`MOVE_TILE`, a swap if the cell is taken), or press End Turn
+(`Player.can_end_turn()`). `perform()` goes through the same entry points as
+input. A drop emits the die's `drag_ended`, as letting go of the mouse does;
+a claim or a purchase emits the item's over the cell the move names
+(`AutoPilotMove.cell`: a tile's cell, the twin it upgrades, or the sealed
+cell a Grid Slot opens; the first that fits if it names none), or over the
+hand (anything else). The AutoPilot is patient: it waits for
 the engine to go idle, for its turn, for a jump from the moment it's decided
 (`Player.is_jump_committed()`) until it lands, for the hand to be dealt
-(`Player.is_dealing_hand()`) and for salvage to show
-(`Reward.is_on_its_way()`). At each turn start, arrival and won fight it
+(`Player.is_dealing_hand()`), for salvage to show
+(`Reward.is_on_its_way()`), for arriving ships to land
+(`EnemyManager.arrival_in_progress`: a shop opens, or a toll is taken, only
+then) and for the shop's stock to pop onto the shelves
+(`Shop.is_revealing()`). At each turn start, arrival and won fight it
 spends one frame looking at the board before moving, which is when a replay
 takes its picture. Headless runs look too, so both keep the same timing.
 
@@ -706,7 +713,9 @@ believable standard to measure the random bot against, not strong play.
   the die ends up (following Feeds) and tricks. Random targets are spread
   over the candidates, so a forecast never draws from a gameplay bucket.
   Reads see the face the die arrived with; the hand-off sees it after any
-  change, as the queued events would.
+  change, as the queued events would. A Feed's target is asked whether it
+  takes the die with the forecast's own ship as the target (a policy aims
+  before it plays), so relays still feed between fights.
 - **`AutoPilotThreat`** prices a face: an attack's damage, a share of anything
   else, and a steep toll for a die kept or flown off with. It follows relays,
   Scrambled and Jammed. A hidden ("?") face costs a flat average, so the bot
@@ -723,9 +732,27 @@ believable standard to measure the random bot against, not strong play.
   takes next. A small push forward is offset by a cost for each stop it
   skips. Below its style's hull share it flees a fight, but never in a
   gauntlet (`set_may_flee()`).
-- **Salvage and shops.** A tile is valued by its forecast over every face it
-  takes, a die and credits at flat rates. It buys what clears its price, and
-  never a tile with no free cell.
+- **Building the grid** (`AutoPilotBuild`). The board is worth the sum of
+  what each tile does with a die, read with the tiles where they stand, so
+  a relay counts what it feeds and adjacency tiles count their neighbours.
+  Other layouts are tried by swapping them into `TileGrid.tile_locations`
+  (and sealed cells into its open set) for one synchronous valuation and
+  straight back; only tiles whose chain reads the grid are revalued. A tile
+  taken goes in the cell where it adds most, or onto its twin when the
+  upgrade is worth more (plus the cell it saves). A Grid Slot opens the
+  sealed cell that pays best for the shelf's tiles or the grid's own. Out of
+  a fight it drags tiles about (a move or a swap, or two copies merged) while
+  a drag gains at least `AutoPilotBuild.MIN_GAIN`.
+- **Salvage and shops.** A tile is valued by what it adds in its best cell,
+  never off the grid (a relay there has nothing to feed). A Grid Slot is
+  worth a tile's room shared over the free cells left; on a full grid in a
+  shop, plus the best tile it makes room for. A die is worth less once the
+  dice owned outgrow the grid's uses per turn; credits at a flat rate. It
+  buys what clears its price.
+- **Repair stations.** It repairs below a hull share set by its style, a
+  little higher with the sector's gate a few stops off. It sells a tile
+  whose credits beat what it adds to the board, or that pays for a repair it
+  wants and can't afford, keeping at least three tiles.
 - **Two things the legal move list can't see.** A tile showing a Lockout, and
   a placement that bounced back (same die, tile, face, uses and hand).
 - **Styles** (`HeuristicPolicy.persona()`) reweigh the same tally:
