@@ -41,6 +41,9 @@ enum ActivationType {
 	## a tile that works whatever statuses are there (Status Catalyst): with
 	## none it would eat the die.
 	TARGETED_SHIP_HAS_STATUS,
+	## The player has [member threshold] hull or more. Gates tiles that spend
+	## hull (SPEND_HULL): set it one above the cost, so paying never kills.
+	HULL_AT_LEAST,
 }
 
 @export var type: ActivationType
@@ -49,7 +52,7 @@ enum ActivationType {
 # VALUE activation values
 @export var acceptable_values: Array[int]
 
-# CHARGE_AT_LEAST / DICE_OWNED_AT_MOST / SHIELDS_AT_LEAST / TILE_DATA_AT_LEAST activation values
+# CHARGE_AT_LEAST / DICE_OWNED_AT_MOST / SHIELDS_AT_LEAST / TILE_DATA_AT_LEAST / HULL_AT_LEAST activation values
 @export var threshold: int = 0
 
 # TILE_DATA_AT_LEAST: the tile data entry to read.
@@ -166,6 +169,13 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			if not target or not engine:
 				return false
 			return not engine.statuses_on(target).is_empty(),
+
+	ActivationType.HULL_AT_LEAST:
+		func(_die: Dice) -> bool:
+			if not Globals.player:
+				return false
+
+			return Globals.player.health.health >= threshold,
 }
 
 
@@ -229,6 +239,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.TARGETED_SHIP_HAS_STATUS:
 		"ERROR_TARGET_NO_STATUS",
+
+	ActivationType.HULL_AT_LEAST:
+		"ERROR_LOW_HULL",
 }
 
 

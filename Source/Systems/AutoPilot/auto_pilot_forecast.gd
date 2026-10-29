@@ -305,6 +305,11 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 					damage[target] = damage.get(target, 0.0) - amount * walk.share
 		EffectEnums.AttributeChangeSubtype.SPEND_SHIELDS:
 			shields -= float(data.amount * walk.scale) if data.amount != 0 else amount
+		EffectEnums.AttributeChangeSubtype.SPEND_HULL:
+			# Hull paid is hull lost, the same as a hit that gets through.
+			var price: float = float(data.amount * walk.scale) if data.amount != 0 else amount
+			if Globals.player != null:
+				damage[Globals.player] = damage.get(Globals.player, 0.0) + price
 		EffectEnums.AttributeChangeSubtype.CHANGE_ENGINE_CHARGE, \
 		EffectEnums.AttributeChangeSubtype.ADD_OVERCHARGE:
 			charge += amount
