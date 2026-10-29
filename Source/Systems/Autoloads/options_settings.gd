@@ -40,6 +40,10 @@ const MASTER_VOLUME: StringName = &"Audio/master_volume"
 const MUSIC_VOLUME: StringName = &"Audio/music_volume"
 const SFX_VOLUME: StringName = &"Audio/sfx_volume"
 const MUTE_ALL: StringName = &"Audio/mute_all"
+const CURSOR_SPEED: StringName = &"Controls/cursor_speed"
+## The Cursor Speed slider's range, as a multiplier on the controller
+## pointer's speed.
+const CURSOR_SPEEDS: Vector2 = Vector2(0.5, 2.0)
 
 
 class _Option:
@@ -143,6 +147,20 @@ func _register_options() -> void:
 	register(MUTE_ALL, false,
 		func() -> bool: return AudioServer.is_bus_mute(AudioServer.get_bus_index("Master")),
 		func(value: Variant) -> void: AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), bool(value)))
+	_register_controls_options()
+
+
+## Key and controller bindings, one option per action (InputBindings), and the
+## controller pointer's speed.
+func _register_controls_options() -> void:
+	for action: StringName in InputBindings.ACTIONS:
+		register(InputBindings.option_key(action), InputBindings.default_value(action),
+			func() -> Array: return InputBindings.read(action),
+			func(value: Variant) -> void: InputBindings.write(action, value))
+	register(CURSOR_SPEED, 1.0,
+		func() -> float: return InputManager.cursor.speed_scale,
+		func(value: Variant) -> void:
+			InputManager.cursor.speed_scale = clampf(float(value), CURSOR_SPEEDS.x, CURSOR_SPEEDS.y))
 
 
 func _register_window_options() -> void:

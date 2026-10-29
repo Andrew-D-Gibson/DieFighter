@@ -155,6 +155,21 @@ func button(label_key: String, text_key: String, on_pressed: Callable, hint_key:
 	return pressable
 
 
+## A button styled like button()'s but not put in a row, for widgets that
+## hold several (BindingSlots).
+func styled_button(text_key: String = "") -> Button:
+	var pressable: Button = Button.new()
+	pressable.text = text_key
+	pressable.focus_mode = Control.FOCUS_NONE
+	var background: Texture2D = _widget_texture("OptionButton/option_button_%s_background_.png", true)
+	for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
+		pressable.add_theme_stylebox_override(state, _texture_style(background))
+	pressable.add_theme_color_override("font_color", accent)
+	pressable.add_theme_color_override("font_hover_color", Color.WHITE)
+	pressable.add_theme_color_override("font_disabled_color", accent.darkened(0.5))
+	return pressable
+
+
 ## Any other control, for rows the helpers above don't cover. Bind it to an
 ## option with [param refresh] (called whenever the menu re-reads options)
 ## and [param key] (so "Reset to defaults" resets it).

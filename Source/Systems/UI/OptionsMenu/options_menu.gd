@@ -95,7 +95,17 @@ func _build_pages() -> void:
 	audio.check(OptionsSettings.MUTE_ALL, "OPT_MUTE_ALL")
 
 	var controls: OptionsPage = _pages[Tab.CONTROLS]
-	controls.note("OPT_CONTROLS_EMPTY")
+	# Controls: a row per rebindable action (key, controller), then the cursor.
+	for action: StringName in InputBindings.ACTIONS:
+		if action == InputBindings.PAD_ONLY[0]:
+			controls.next_column()
+		var slots: BindingSlots = BindingSlots.new(action, controls.styled_button)
+		controls.custom(slots, InputBindings.LABEL_KEYS[action], "OPT_BINDING_HINT",
+			InputBindings.option_key(action), slots.refresh)
+	var cursor_speed: HSlider = controls.slider(OptionsSettings.CURSOR_SPEED, "OPT_CURSOR_SPEED",
+		"OPT_CURSOR_SPEED_HINT", OptionsSettings.CURSOR_SPEEDS.x, OptionsSettings.CURSOR_SPEEDS.y, 0.1)
+	# Narrower than on the one-column Audio tab, to fit beside its label.
+	cursor_speed.custom_minimum_size.x = OptionsPage.WIDGET_WIDTH
 
 	var accessibility: OptionsPage = _pages[Tab.ACCESSIBILITY]
 	accessibility.check(OptionsSettings.SCREENSHAKE, "OPT_SCREENSHAKE", "OPT_SCREENSHAKE_HINT")
