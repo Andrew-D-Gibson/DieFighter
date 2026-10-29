@@ -274,3 +274,16 @@ func test_the_forecast_reads_what_is_left_not_the_full_count() -> void:
 	tile.count_down(4)
 	# 2 left: a 3 fires it and leaves 1 of the next 6 done.
 	assert_almost_eq(_forecast_damage(tile, 3), 8.0 + 8.0 * 0.5 / 6.0, 0.001)
+
+
+func test_the_readout_lights_its_digits_inside_the_window() -> void:
+	var window: Rect2i = CountdownReadout.WINDOW
+	# "1" is 8 lit pixels, "8" is 13.
+	var eighteen: Array[Vector2i] = CountdownReadout.lit_pixels(18)
+	assert_eq(eighteen.size(), 8 + 13)
+	for pixel: Vector2i in eighteen:
+		assert_true(window.has_point(pixel), "%s inside the window" % pixel)
+	var six: Array[Vector2i] = CountdownReadout.lit_pixels(6)
+	assert_eq(six.size(), 12)
+	assert_true(six.has(Vector2i(9, 16)), "a lone digit is centred")
+	assert_true(CountdownReadout.lit_pixels(0).size() > 0, "every digit has a glyph")

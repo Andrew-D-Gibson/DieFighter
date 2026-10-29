@@ -14,18 +14,18 @@ const WINDOW: Rect2i = Rect2i(6, 15, 9, 7)
 const _DIGIT_WIDTH: int = 3
 const _DIGIT_HEIGHT: int = 5
 
-## 3x5 digits, one string per row, "#" lit.
-const _DIGITS: Array[PackedStringArray] = [
-	["###", "#.#", "#.#", "#.#", "###"],
-	[".#.", "##.", ".#.", ".#.", "###"],
-	["###", "..#", "###", "#..", "###"],
-	["###", "..#", ".##", "..#", "###"],
-	["#.#", "#.#", "###", "..#", "..#"],
-	["###", "#..", "###", "..#", "###"],
-	["###", "#..", "###", "#.#", "###"],
-	["###", "..#", ".#.", ".#.", ".#."],
-	["###", "#.#", "###", "#.#", "###"],
-	["###", "#.#", "###", "..#", "###"],
+## 3x5 digits, row by row, "#" lit.
+const _DIGITS: Array[String] = [
+	"####.##.##.####",
+	".#.##..#..#.###",
+	"###..#####..###",
+	"###..#.##..####",
+	"#.##.####..#..#",
+	"####..###..####",
+	"####..####.####",
+	"###..#.#..#..#.",
+	"####.#####.####",
+	"####.####..####",
 ]
 
 var value: int = 0:
@@ -41,14 +41,22 @@ func centre() -> Vector2:
 
 
 func _draw() -> void:
-	var text: String = str(value)
+	for pixel: Vector2i in lit_pixels(value):
+		draw_rect(Rect2(pixel, Vector2.ONE), Globals.white)
+
+
+## The art pixels lit to show [param shown], centred in the window.
+static func lit_pixels(shown: int) -> Array[Vector2i]:
+	var text: String = str(clampi(shown, 0, 99))
 	var width: int = text.length() * (_DIGIT_WIDTH + 1) - 1
 	var left: int = WINDOW.position.x + (WINDOW.size.x - width) / 2
 	var top: int = WINDOW.position.y + (WINDOW.size.y - _DIGIT_HEIGHT) / 2
+	var lit: Array[Vector2i] = []
 	for i: int in text.length():
-		var rows: PackedStringArray = _DIGITS[int(text[i])]
+		var glyph: String = _DIGITS[int(text[i])]
 		var x0: int = left + i * (_DIGIT_WIDTH + 1)
 		for row: int in _DIGIT_HEIGHT:
 			for column: int in _DIGIT_WIDTH:
-				if rows[row][column] == "#":
-					draw_rect(Rect2(x0 + column, top + row, 1, 1), Globals.white)
+				if glyph[row * _DIGIT_WIDTH + column] == "#":
+					lit.append(Vector2i(x0 + column, top + row))
+	return lit
