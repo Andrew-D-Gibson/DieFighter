@@ -23,7 +23,6 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/ShipSelect/ship_select_popup.tscn" id="20_shipselect"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/Codex/codex_popup.tscn" id="21_codex"]
 [ext_resource type="Texture2D" uid="uid://ccwljuf14y1ag" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="22_blue"]
-[ext_resource type="Texture2D" uid="uid://co7qxupcq3hlo" path="res://Assets/Textures/UI/Buttons/button_medium_dark_blue.png" id="23_dark_blue"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -99,21 +98,6 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_blue")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_dark_blue"]
-atlas = ExtResource("23_dark_blue")
-region = Rect2(0, 0, 56, 14)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_dark_blue"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_dark_blue")
 }],
 "loop": 1,
 "name": &"default",
@@ -349,10 +333,10 @@ text = "OPTIONS"
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
-hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
+hover_text_color = Color(0.262745, 0.65098, 0.988235, 1)
 
 [node name="AnimatedSprite2D" parent="VBoxContainer/QuitButton" index="0" unique_id=937158098]
-sprite_frames = SubResource("SpriteFrames_dark_blue")
+sprite_frames = SubResource("SpriteFrames_blue")
 
 [node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1" unique_id=604948362]
 text = "QUIT"

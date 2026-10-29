@@ -35,6 +35,31 @@ const _FORMATION_KEY: StringName = &"shop"
 ## along its edge.
 const _FORMATION_PADDING: float = 6.0
 
+## --- Opening ---
+## The shop opens in three beats: the shopkeeper slides aside, the panel
+## unfolds into the space it cleared, then the stock pops onto the shelves one
+## by one. Everything is stocked (and saveable) at once; only the showing waits.
+
+## From the shop opening until the panel starts to unfold: most of the
+## formation's slide (EnemyManager.reflow_time), so the panel opens as the
+## ship arrives beside it rather than on top of it.
+const _OPEN_DELAY: float = 0.45
+const _PANEL_OPEN_TIME: float = 0.22
+## Between one item popping onto its shelf and the next.
+const _STOCK_STAGGER: float = 0.09
+## One item's pop: up past full size, then back.
+const _STOCK_POP_TIME: float = 0.26
+const _STOCK_POP_OVERSHOOT: float = 1.35
+const _STOCK_SPARKLE_COLOR: Color = Color("#eed35d")
+const _PANEL_OPEN_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
+## Escalates in pitch, so the stock rings up the shelves.
+const _STOCK_POP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/shop_stock_pop.tres")
+
+var _reveal_tween: Tween
+## Stock held still and out of reach until it pops in, with what its
+## Draggable allowed before: [dragging_allowed, floating_enabled].
+var _held_for_reveal: Dictionary[Node, Array] = {}
+
 
 func _ready() -> void:
 	Globals.shop = self
@@ -60,6 +85,7 @@ func _open_shop() -> void:
 	if Globals.state_manager:
 		saved_stock = Globals.state_manager.get_restore().get("shop")
 
+	_end_reveal()
 	_clear_stock()
 	if saved_stock is Dictionary:
 		_restore_stock(saved_stock)
@@ -70,12 +96,118 @@ func _open_shop() -> void:
 	modulate.a = 1.0
 	show()
 	_claim_formation_space()
+	_play_reveal()
 
 
 func _close_shop() -> void:
+	_end_reveal()
 	hide()
 	if Globals.enemy_manager:
 		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)
+
+
+## Hides the panel and the stock, then shows them again in the opening's
+## three beats (see _OPEN_DELAY).
+func _play_reveal() -> void:
+	var background: Sprite2D = $Background
+	var title: CanvasItem = $RichTextLabel
+	background.scale = Vector2(1.0, 0.0)
+	background.modulate.a = 0.0
+	title.modulate.a = 0.0
+
+	var stock: Array[Node2D] = _stock_in_shelf_order()
+	for item: Node2D in stock:
+		_hold_for_reveal(item)
+	for tag: Node2D in prices:
+		tag.scale = Vector2.ZERO
+
+	_reveal_tween = create_tween()
+	_reveal_tween.tween_interval(_OPEN_DELAY)
+	_reveal_tween.tween_callback(Events.play_sound.emit.bind(_PANEL_OPEN_SFX))
+	_reveal_tween.tween_property(background, "scale", Vector2.ONE, _PANEL_OPEN_TIME) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_reveal_tween.parallel().tween_property(background, "modulate:a", 1.0, _PANEL_OPEN_TIME * 0.5)
+	_reveal_tween.tween_property(title, "modulate:a", 1.0, _PANEL_OPEN_TIME * 0.5)
+
+	for item: Node2D in stock:
+		_reveal_tween.tween_callback(_pop_in.bind(item))
+		_reveal_tween.tween_interval(_STOCK_STAGGER)
+	# A tag over an empty slot is hidden; one whose stock is gone pops anyway.
+	_reveal_tween.tween_interval(_STOCK_POP_TIME)
+	_reveal_tween.tween_callback(_end_reveal)
+
+
+## What's on the shelves, slot by slot: down the left column, down the right,
+## then the die.
+func _stock_in_shelf_order() -> Array[Node2D]:
+	var stock: Array[Node2D] = []
+	for item: Node in item_to_shop_index:
+		if is_instance_valid(item) and item is Node2D:
+			stock.append(item)
+	stock.sort_custom(func(a: Node2D, b: Node2D) -> bool:
+		return item_to_shop_index[a] < item_to_shop_index[b])
+	return stock
+
+
+func _hold_for_reveal(item: Node2D) -> void:
+	var draggable: Draggable = item.draggable
+	_held_for_reveal[item] = [draggable.dragging_allowed, draggable.floating_enabled]
+	draggable.dragging_allowed = false
+	item.hide()
+
+
+## Lets [param item] be bought, as it was before the reveal held it.
+func _release_from_reveal(item: Node) -> void:
+	if not _held_for_reveal.has(item):
+		return
+	var allowed: Array = _held_for_reveal[item]
+	_held_for_reveal.erase(item)
+	if not is_instance_valid(item):
+		return
+	item.show()
+	# In this order: allowing a drag switches floating on as well.
+	item.draggable.dragging_allowed = allowed[0]
+	item.draggable.floating_enabled = allowed[1]
+
+
+## Pops [param item] onto its shelf, with its price tag, a few sparks and a
+## blip that climbs with each one.
+func _pop_in(item: Node2D) -> void:
+	if not is_instance_valid(item) or not item_to_shop_index.has(item):
+		return
+	_release_from_reveal(item)
+	var tag: Node2D = prices[item_to_shop_index[item]]
+	for node: Node2D in [item, tag]:
+		var rest: Vector2 = Vector2.ONE
+		node.scale = Vector2.ZERO
+		# A die's flourish tween, which handing it over kills: one bought
+		# mid-pop would otherwise go on being resized in the player's hand.
+		var tween: Tween = (node as Dice).create_flourish_tween() if node is Dice else node.create_tween()
+		tween.tween_property(node, "scale", rest * _STOCK_POP_OVERSHOOT, _STOCK_POP_TIME * 0.55) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tween.tween_property(node, "scale", rest, _STOCK_POP_TIME * 0.45) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	Juice.sparkle(self, item.global_position, _STOCK_SPARKLE_COLOR, 5, 18.0)
+	Events.play_sound.emit(_STOCK_POP_SFX)
+
+
+## Skips to the end of the opening, whatever beat it's on: the panel open,
+## every price tag and item at full size and buyable. Also the cleanup when
+## the shop closes or restocks mid-opening.
+func _end_reveal() -> void:
+	if _reveal_tween:
+		_reveal_tween.kill()
+		_reveal_tween = null
+	$Background.scale = Vector2.ONE
+	$Background.modulate.a = 1.0
+	$RichTextLabel.modulate.a = 1.0
+	for tag: Node2D in prices:
+		tag.scale = Vector2.ONE
+	for item: Node in _held_for_reveal.keys():
+		_release_from_reveal(item)
+	for item: Node in item_to_shop_index:
+		if is_instance_valid(item) and item is Node2D:
+			(item as Node2D).scale = Vector2.ONE
 
 
 ## The death sequence wants the whole screen, so the panel gets out of its way
@@ -284,6 +416,7 @@ func _stock(item: Node, shop_index: int) -> void:
 func _forget(item: Node) -> void:
 	item_to_shop_index.erase(item)
 	_item_prices.erase(item)
+	_held_for_reveal.erase(item)
 
 
 func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
@@ -315,6 +448,9 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			# Sold: it's the player's now, and off the shelves for good. (The
 			# reparent below fires the one-shot _forget again, harmlessly.)
 			prices[item_to_shop_index[item]].visible = false
+			# Bought before its pop (the AutoPilot doesn't wait for one): it
+			# mustn't arrive still hidden.
+			_release_from_reveal(item)
 			_forget(item)
 			
 			if item is Tile:

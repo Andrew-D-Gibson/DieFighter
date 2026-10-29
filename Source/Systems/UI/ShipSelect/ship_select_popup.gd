@@ -3,13 +3,22 @@ extends Node2D
 
 ## Picks the ship for a new run, between Play on the main menu and the opening
 ## cutscene. One card per ship in ShipCatalog; Launch flies the picked one.
+##
+## Once the tutorial has been played, Replay Tutorial sits under the ship it
+## teaches on and flies that ship into the tutorial run. Before then Play skips
+## this popup altogether (see MainMenu).
 
 signal launched(ship: ShipResource)
+## Replay Tutorial was pressed: fly [param ship] into the tutorial run.
+signal tutorial_launched(ship: ShipResource)
 signal cancelled()
 
 const _MEDIUM_BUTTON: PackedScene = preload("res://Source/Systems/UI/Buttons/medium_button.tscn")
 const _CARD_GAP: float = 5.0
 const _CARD_TOP: float = -66.0
+## Gap between a card's bottom and the Replay Tutorial button under it, which
+## puts the button level with Launch and Back.
+const _TUTORIAL_BUTTON_GAP: float = 5.0
 
 var _cards: Array[ShipCard] = []
 var _picked: ShipCard
@@ -19,6 +28,7 @@ func _ready() -> void:
 	hide()
 	%LaunchButton.pressed_within_window.connect(_on_launch)
 	%BackButton.pressed_within_window.connect(_on_back)
+	%ReplayTutorialButton.pressed_within_window.connect(_on_replay_tutorial)
 
 
 ## Lays out a card per ship and shows the popup, with the last ship flown
@@ -48,7 +58,40 @@ func open() -> void:
 			first = card
 	if first:
 		_pick(first)
+	_place_tutorial_button()
 	show()
+
+
+## The tutorial's ship, if it's on the row and the tutorial has been played.
+func tutorial_card() -> ShipCard:
+	if not Globals.tutorial_completed:
+		return null
+	for card: ShipCard in _cards:
+		if card.ship.supports_tutorial:
+			return card
+	return null
+
+
+func _place_tutorial_button() -> void:
+	var button: Button = %ReplayTutorialButton
+	var card: ShipCard = tutorial_card()
+	button.visible = card != null
+	if not card:
+		return
+	# From the row's top, not the card's: the card is still sliding up into
+	# place from below.
+	button.position = Vector2(
+		card.position.x + (ShipCard.SIZE.x - button.size.x) / 2.0,
+		_CARD_TOP + ShipCard.SIZE.y + _TUTORIAL_BUTTON_GAP
+	).floor()
+
+
+func _on_replay_tutorial() -> void:
+	var card: ShipCard = tutorial_card()
+	if not card:
+		return
+	hide()
+	tutorial_launched.emit(card.ship)
 
 
 func _pick(card: ShipCard) -> void:

@@ -72,9 +72,16 @@ var screenshake_enabled: bool:
 var reduce_flashing: bool = false
 var animation_speed: float = 4
 var times_run: int = 0
-## Whether the next new game opens with the tutorial. On until the player
-## finishes it once; the Options menu turns it back on.
-var show_tutorial: bool = true 
+## Whether the player has played the tutorial through once. Until they have,
+## Play on the main menu starts the tutorial run instead of opening ship
+## select. Player progress, not an option: saved by OptionsSettings beside
+## the launch counter, and never reset by Defaults.
+var tutorial_completed: bool = false
+## Set by the main menu for one new game: the run about to start is the
+## tutorial's. TutorialManager clears it as it starts, so only a run launched
+## as the tutorial (never a Continue, a lab run or a direct boot of the game
+## scene) is narrated.
+var tutorial_requested: bool = false
 ## Whether arriving somewhere with a background rule or hazard pops up a card
 ## spelling it out (RegionAlert). Players who know the backgrounds can turn it
 ## off in the Options menu.

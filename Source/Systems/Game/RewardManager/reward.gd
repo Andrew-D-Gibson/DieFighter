@@ -24,22 +24,44 @@ const _REWARD_SPACING: int = 26
 ## Extra room either side of the offer that the ships leave clear.
 const _FORMATION_PADDING: float = 4.0
 
-## Gap between each choice popping when the player jumps away, left to right,
-## so the offer reads as going out rather than vanishing in one frame.
+## Gap between each choice left over popping once one is taken, left to
+## right, so the offer reads as going out rather than vanishing in one frame.
 const _DISMISS_STAGGER: float = 0.06
 
 ## One choice's whole pop: squash, stretch, gone.
 const _DISMISS_POP_TIME: float = 0.28
 
-## Set once the player has jumped away with this offer still up. The choices
-## are on their way out and can no longer be taken.
+## How long an offer the player jumps away from takes to shrink into the
+## distance and fade, while it falls behind with the departing ships. Long
+## enough to see it go: the drive spools up slowly, so for the first second
+## or two everything is still close by.
+const _LEFT_BEHIND_TIME: float = 2.6
+## How small it has got by the time it's gone, as a share of its size.
+const _LEFT_BEHIND_SCALE: float = 0.45
+## The background layer an offer left behind falls with, the same one the
+## departing ships match (EnemyManager._update_jumping_enemies), so the
+## wreckage, its salvage and the ships all drop away together.
+const _LEFT_BEHIND_PARALLAX: int = 1
+## Fall speed, in pixels a second, when there's no background to match.
+const _LEFT_BEHIND_FALLBACK_SPEED: float = 60.0
+
+## Set once the offer is going: a choice was taken, or the player jumped away
+## with it still up. The choices can no longer be taken.
 var _dismissing: bool = false
+## Set while an offer left behind by a jump is falling away.
+var _falling_behind: bool = false
 
 
 func _ready() -> void:
 	hide()
+	set_process(false)
 	
 	Events.jump.connect(_dismiss)
+
+
+func _process(delta: float) -> void:
+	if _falling_behind:
+		global_position.y += delta * _left_behind_speed()
 
 
 func _exit_tree() -> void:
@@ -267,7 +289,7 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 		chosen_reward.install(slot_cell)
 		
 	Events.reward_picked.emit()
-	queue_free()
+	_clear_away(chosen_reward)
 
 
 ## An offer drops where the ship that paid it out used to be. Without holding
@@ -290,9 +312,38 @@ func _formation_key() -> StringName:
 	return StringName("reward_%d" % get_instance_id())
 
 
-## Jumping away abandons the offer. Each choice still on show squashes,
-## stretches and blinks out in turn, the way the environment monitor answers a
-## rule biting, instead of the whole offer snapping off screen.
+## A choice was taken: the rest of the offer squashes, stretches and blinks
+## out in turn, the way the environment monitor answers a rule biting, instead
+## of snapping off screen the moment [param chosen] leaves it.
+func _clear_away(chosen: Node) -> void:
+	_dismissing = true
+	# Nothing left to save: the offer is spent.
+	items.clear()
+	# A money pickup was paid out as particles; there's nothing left of it to
+	# pop.
+	if chosen is MoneyPickup:
+		chosen.hide()
+
+	var label: RichTextLabel = $RichTextLabel
+	label.pivot_offset = (label.size / 2.0).round()
+	_pop(label, 0.0)
+
+	var delay: float = _DISMISS_STAGGER
+	for reward: Node2D in rewards:
+		if not is_instance_valid(reward) or reward == chosen or reward.get_parent() != self:
+			continue
+		# Keep it bobbing, but out of reach.
+		reward.draggable.dragging_allowed = false
+		reward.draggable.floating_enabled = true
+		_pop(reward, delay)
+		delay += _DISMISS_STAGGER
+
+	get_tree().create_timer(delay + _DISMISS_POP_TIME).timeout.connect(queue_free)
+
+
+## Jumping away abandons the offer. It's left behind with the wreck it came
+## from: it falls away down the screen with the departing ships, shrinking
+## into the distance and fading, instead of vanishing.
 func _dismiss() -> void:
 	if _dismissing:
 		return
@@ -305,21 +356,31 @@ func _dismiss() -> void:
 		queue_free()
 		return
 
-	var label: RichTextLabel = $RichTextLabel
-	label.pivot_offset = (label.size / 2.0).round()
-	_pop(label, 0.0)
-
-	var delay: float = _DISMISS_STAGGER
 	for reward: Node2D in rewards:
-		if not is_instance_valid(reward):
+		if not is_instance_valid(reward) or reward.get_parent() != self:
 			continue
-		# Keep it bobbing, but out of reach.
 		reward.draggable.dragging_allowed = false
-		reward.draggable.floating_enabled = true
-		_pop(reward, delay)
-		delay += _DISMISS_STAGGER
+		# Otherwise it keeps pulling its choice back to the spot it was
+		# offered at, and the choice stays put while the offer falls away.
+		reward.draggable.set_process(false)
 
-	get_tree().create_timer(delay + _DISMISS_POP_TIME).timeout.connect(queue_free)
+	_falling_behind = true
+	set_process(true)
+	var tween: Tween = create_tween().set_parallel()
+	tween.tween_property(self, "scale", Vector2.ONE * _LEFT_BEHIND_SCALE, _LEFT_BEHIND_TIME) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_property(self, "modulate:a", 0.0, _LEFT_BEHIND_TIME) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.chain().tween_callback(queue_free)
+
+
+## How fast an offer left behind falls: the ships' speed, which ramps up
+## with the background as the drive spools.
+func _left_behind_speed() -> float:
+	var background: BackgroundManager = Globals.background_manager
+	if not is_instance_valid(background):
+		return _LEFT_BEHIND_FALLBACK_SPEED
+	return background.global_speed * background.get_parallax_speed(_LEFT_BEHIND_PARALLAX)
 
 
 ## Squashes [param node] wide, stretches it tall and thin, then pinches it to

@@ -32,7 +32,7 @@ func _ready() -> void:
 ## tick up there rather than silently appearing on the counter.
 ##
 ## The particles are parented to the RewardManager, not to this node: Reward
-## frees the whole offer the moment something is taken, which would take
+## frees the whole offer moments after something is taken, which would take
 ## freshly spawned children down with it before they ever reached the counter.
 func claim() -> void:
 	var particle_parent: Node = Globals.reward_manager

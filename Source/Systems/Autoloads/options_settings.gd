@@ -1,6 +1,6 @@
 extends Node
-## Persists the player's options (plus the launch counter) to a ConfigFile and
-## applies them at startup.
+## Persists the player's options (plus the launch counter and whether the
+## tutorial has been played) to a ConfigFile and applies them at startup.
 ##
 ## An autoload so settings take effect when the game boots. It used to live
 ## inside the OptionsMenu scene, so nothing was applied — window size, volume,
@@ -13,13 +13,21 @@ extends Node
 ##
 ## An option's live value stays wherever the game reads it (Globals, the
 ## AudioServer, the window): the registry only knows how to get and set it.
-## So code that changes one directly (the tutorial turning itself off) is
-## still saved correctly.
+## So code that changes one directly (the dev console, the window's title
+## bar) is still saved correctly.
+##
+## Player progress kept here (the launch counter, tutorial_completed) isn't
+## registered: it has no menu row and Defaults never touches it.
 
 ## Emitted after an option is set through set_option() or reset_options().
 signal option_changed(key: StringName, value: Variant)
 
 const _SETTINGS_PATH: String = "user://options_settings.cfg"
+
+const _PROGRESS_SECTION: String = "Progress"
+const _TUTORIAL_COMPLETED: String = "tutorial_completed"
+## The Game-section key of the old Show Tutorial option, read once to migrate.
+const _LEGACY_SHOW_TUTORIAL: String = "show_tutorial"
 
 ## Window scales offered, in screen multiples of Globals.SCREEN_SIZE.
 const WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
@@ -27,7 +35,6 @@ const WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
 ## Option keys are "Section/name", the section and key they're saved under.
 const ANIMATION_SPEED: StringName = &"Game/animation_speed"
 const LANGUAGE: StringName = &"Game/language"
-const SHOW_TUTORIAL: StringName = &"Game/show_tutorial"
 const REGION_ALERTS: StringName = &"Game/region_alerts"
 const FULLSCREEN: StringName = &"Graphics/fullscreen"
 const PIXEL_PERFECT: StringName = &"Graphics/pixel_perfect"
@@ -134,9 +141,6 @@ func _register_options() -> void:
 	register(LANGUAGE, "",
 		Localization.get_locale,
 		func(value: Variant) -> void: Localization.set_locale(str(value)))
-	register(SHOW_TUTORIAL, true,
-		func() -> bool: return Globals.show_tutorial,
-		func(value: Variant) -> void: Globals.show_tutorial = bool(value))
 	register(REGION_ALERTS, true,
 		func() -> bool: return Globals.show_region_alerts,
 		func(value: Variant) -> void: Globals.show_region_alerts = bool(value))
@@ -348,6 +352,7 @@ func save_options_settings() -> void:
 		config.set_value("Graphics", "window_pos", DisplayServer.window_get_position())
 
 	config.set_value("Misc", "times_run", Globals.times_run)
+	config.set_value(_PROGRESS_SECTION, _TUTORIAL_COMPLETED, Globals.tutorial_completed)
 
 	config.save(_SETTINGS_PATH)
 
@@ -368,6 +373,7 @@ func load_options_settings() -> void:
 		_restore_window(config)
 
 	Globals.times_run = config.get_value("Misc", "times_run", 0)
+	Globals.tutorial_completed = read_tutorial_completed(config)
 
 
 func _restore_window(config: ConfigFile) -> void:
@@ -378,6 +384,16 @@ func _restore_window(config: ConfigFile) -> void:
 		DisplayServer.window_set_position(config.get_value("Graphics", "window_pos"))
 	else:
 		_centre_window(window_size)
+
+
+## Whether [param config] says the tutorial has been played. Files from before
+## it was progress had a Show Tutorial option instead, switched off when the
+## tutorial finished (or by hand): either way that player shouldn't be put
+## back through it.
+static func read_tutorial_completed(config: ConfigFile) -> bool:
+	if config.has_section_key(_PROGRESS_SECTION, _TUTORIAL_COMPLETED):
+		return bool(config.get_value(_PROGRESS_SECTION, _TUTORIAL_COMPLETED))
+	return not bool(config.get_value("Game", _LEGACY_SHOW_TUTORIAL, true))
 
 
 static func _section(key: StringName) -> String:

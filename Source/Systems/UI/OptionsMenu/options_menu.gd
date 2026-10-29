@@ -11,6 +11,11 @@ extends Node2D
 
 const _SMALL_BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/small_button.tscn")
 const _MEDIUM_BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/medium_button.tscn")
+const _GREEN_BUTTON_TEXTURE: Texture2D = preload("res://Assets/Textures/UI/Buttons/button_medium_green.png")
+## The bottom bar reads like every other confirm/cancel pair in the game: a
+## red button that undoes things, a green one that carries on.
+const _DEFAULTS_COLOR: Color = Color("#D03656")
+const _CLOSE_COLOR: Color = Color("#7ABD33")
 
 ## The panel, centred on this node, in world pixels.
 const PANEL_SIZE: Vector2 = Vector2(256, 140)
@@ -64,7 +69,6 @@ func _build_pages() -> void:
 		locale_names.append(Localization.get_locale_name(locale))
 	game.choice(OptionsSettings.LANGUAGE, "OPT_LANGUAGE", locale_names, locales)
 	game.next_column()
-	game.check(OptionsSettings.SHOW_TUTORIAL, "OPT_SHOW_TUTORIAL", "OPT_SHOW_TUTORIAL_HINT")
 	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
 	# Comfort: background behaviour.
 	game.check(OptionsSettings.PAUSE_IN_BACKGROUND, "OPT_PAUSE_IN_BACKGROUND", "OPT_PAUSE_IN_BACKGROUND_HINT")
@@ -176,7 +180,10 @@ func _build_panel() -> void:
 	_defaults_button = _add_bottom_button("OPT_DEFAULTS", Vector2(body.position.x, bottom_bar_top), _on_defaults_pressed)
 	_defaults_button.mouse_entered.connect(func() -> void: _on_hint_changed(tr("OPT_DEFAULTS_HINT")))
 	_defaults_button.mouse_exited.connect(func() -> void: _on_hint_changed(""))
-	_add_bottom_button("OPT_CLOSE", Vector2(body.end.x - _BUTTON_SIZE.x, bottom_bar_top), _on_close_button_pressed)
+	_defaults_button.hover_text_color = _DEFAULTS_COLOR
+	var close_button: Button = _add_bottom_button("OPT_CLOSE", Vector2(body.end.x - _BUTTON_SIZE.x, bottom_bar_top), _on_close_button_pressed)
+	close_button.hover_text_color = _CLOSE_COLOR
+	_set_button_texture(close_button, _GREEN_BUTTON_TEXTURE)
 
 
 func _build_tabs(panel_rect: Rect2) -> void:
@@ -234,6 +241,17 @@ func _add_bottom_button(text_key: String, at: Vector2, on_pressed: Callable) -> 
 	return button
 
 
+## Swaps a button scene's sprite (the scenes come in red) for one of the other
+## coloured textures, cut to the button's own size.
+static func _set_button_texture(button: Button, texture: Texture2D) -> void:
+	var atlas: AtlasTexture = AtlasTexture.new()
+	atlas.atlas = texture
+	atlas.region = Rect2(Vector2.ZERO, button.custom_minimum_size)
+	var frames: SpriteFrames = SpriteFrames.new()
+	frames.add_frame(&"default", atlas)
+	button.get_node("AnimatedSprite2D").sprite_frames = frames
+
+
 ## --- Behaviour ---
 
 func _show_tab(tab: Tab) -> void:
@@ -241,7 +259,6 @@ func _show_tab(tab: Tab) -> void:
 	for each: Tab in _pages:
 		_pages[each].visible = each == tab
 	_frame.active_tab = tab
-	_defaults_button.hover_text_color = _TABS[tab][1]
 	_hint_label.text = ""
 	_pages[tab].refresh()
 
@@ -261,8 +278,8 @@ func _on_option_changed(key: StringName, _value: Variant) -> void:
 
 func _on_visibility_changed() -> void:
 	if visible:
-		# Options can change while the menu is shut (the tutorial turning
-		# itself off, the window going fullscreen from its title bar).
+		# Options can change while the menu is shut (the dev console, the
+		# window going fullscreen from its title bar).
 		_pages[_open_tab].refresh()
 
 

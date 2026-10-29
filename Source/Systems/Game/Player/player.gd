@@ -571,7 +571,10 @@ func _carry_dice_through_jump() -> void:
 			continue
 
 		if die.host_queue == null:
-			die.queue_free()
+			# Salvage on offer is left behind with its offer, which carries it
+			# off screen and frees it (Reward._dismiss).
+			if not die.get_parent() is Reward:
+				die.queue_free()
 		elif die.host_queue is EnemyDiceManager:
 			_strand_die(die, die.host_queue.get_parent() as Enemy)
 			if not die.holographic:
