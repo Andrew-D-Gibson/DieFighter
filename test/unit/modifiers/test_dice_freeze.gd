@@ -142,7 +142,7 @@ func test_scrambled_cant_turn_a_die_over_under_the_freeze() -> void:
 func test_a_merge_sends_the_held_die_home_as_its_own_event() -> void:
 	var held: Dice = autofree(DICE_SCENE.instantiate())
 	held.value = 3
-	tile.dice_queue.queue.append(held)
+	tile.hold_die(held)
 	var activator: Dice = autofree(DICE_SCENE.instantiate())
 	activator.value = 2
 

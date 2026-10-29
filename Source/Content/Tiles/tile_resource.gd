@@ -38,6 +38,12 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 ## runs out. 0 for a tile that doesn't count down. See TileCountdown.
 @export_range(0, 99) var countdown: int = 0
 
+## A twin-dice tile: its chain holds the first die (IF_SOURCE_HOLDS_DIE false
+## -> KEEP_DIE_WITH_TILE) and pays out on the next. The hold spends no use,
+## so a limited tile's use goes on the payout, and an echo skips the hold. A
+## held die goes back to the hand when the turn ends, so it can't be banked.
+@export var holds_first_die: bool = false
+
 @export var dragging_allowed: bool = true
 
 ## Untick for a tile that must never be locked out. The Engine Charger is the
