@@ -98,16 +98,18 @@ static func list_legal() -> Array[AutoPilotMove]:
 			if ship != Globals.targeting_computer.targeted_enemy:
 				moves.append(target(ship))
 
-	# A tile with no free cell to go to is refused, as a player can see.
+	# A tile with no free cell to go to is refused, as a player can see, and
+	# so is a Grid Slot with no sealed cell left to open.
 	var room: bool = Globals.tile_grid.has_free_cell()
+	var sealed: bool = Globals.tile_grid.has_locked_cell()
 	for choice: Node2D in _salvage_on_offer():
-		if room or choice is not Tile:
+		if (room or choice is not Tile) and (sealed or choice is not GridSlot):
 			moves.append(claim(choice))
 	if is_instance_valid(Globals.shop) and Globals.shop.is_visible_in_tree():
 		for stock: Node in Globals.shop.item_to_shop_index:
 			var cost: int = Globals.shop.price_of(stock)
 			if cost >= 0 and cost <= Globals.player.money and _can_pick_up(stock as Node2D) \
-			and (room or stock is not Tile):
+			and (room or stock is not Tile) and (sealed or stock is not GridSlot):
 				moves.append(buy(stock as Node2D, cost))
 
 	moves.append_array(_repair_station_moves())
@@ -133,7 +135,7 @@ func perform() -> void:
 		Kind.END_TURN:
 			Globals.player.end_turn()
 		# Dragged out of the offer or off the shelf and let go: a tile over
-		# the grid, anything else over the hand.
+		# the grid, a Grid Slot over a sealed cell, anything else over the hand.
 		Kind.CLAIM, Kind.BUY:
 			var draggable: Draggable = item.get("draggable")
 			draggable.drag_ended.emit(draggable, _drop_point_for(item))
@@ -170,12 +172,14 @@ func describe() -> Dictionary:
 	return {"move": Kind.keys()[kind].to_lower()}
 
 
-## A tile by name, a die, or credits by amount.
+## A tile by name, a die, a grid slot, or credits by amount.
 static func item_name(thing: Node) -> String:
 	if thing is Tile:
 		return DebugLogFormat.label(thing).trim_prefix("[").trim_suffix("]")
 	if thing is MoneyPickup:
 		return "%d credits" % (thing as MoneyPickup).amount
+	if thing is GridSlot:
+		return "grid slot"
 	return "die"
 
 
@@ -221,12 +225,15 @@ static func _can_pick_up(thing: Node2D) -> bool:
 
 
 ## Where a player would let go of [param thing]: a tile on the first open cell
-## of the grid (list_legal() offers no tile without one), anything else on the
-## hand. Both are well clear of the offer and the shelves.
+## of the grid (list_legal() offers no tile without one), a Grid Slot on the
+## first sealed cell, anything else on the hand. All are well clear of the
+## offer and the shelves.
 static func _drop_point_for(thing: Node2D) -> Vector2:
+	var grid: TileGrid = Globals.tile_grid
 	if thing is Tile:
-		var grid: TileGrid = Globals.tile_grid
 		return grid.grid_to_global_pos(grid.find_available_grid_pos())
+	if thing is GridSlot:
+		return grid.grid_to_global_pos(grid.get_locked_cells()[0])
 	return Globals.player.dice_manager.global_position
 
 

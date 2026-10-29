@@ -1,0 +1,35 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Game/GridSlot/grid_slot.gd" id="1_slot"]
+[ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_drag"]
+[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="3_click"]
+[ext_resource type="Texture2D" uid="uid://bhtxpljaw0e3o" path="res://Assets/Textures/TileGrid/grid_slot.png" id="4_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_drag"]
+size = Vector2(20, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_click"]
+size = Vector2(20, 20)
+
+[node name="GridSlot" type="Node2D" node_paths=PackedStringArray("draggable", "clickable", "sprite")]
+script = ExtResource("1_slot")
+draggable = NodePath("Draggable")
+clickable = NodePath("Clickable")
+sprite = NodePath("Sprite2D")
+
+[node name="Draggable" parent="." instance=ExtResource("2_drag")]
+bob_amplitude = 1.0
+drift_amplitude = 0.75
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
+visible = false
+shape = SubResource("RectangleShape2D_drag")
+
+[node name="Clickable" parent="." instance=ExtResource("3_click")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+visible = false
+shape = SubResource("RectangleShape2D_click")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("4_tex")

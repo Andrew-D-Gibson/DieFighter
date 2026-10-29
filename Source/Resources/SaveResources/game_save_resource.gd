@@ -15,6 +15,11 @@ extends Resource
 
 @export var tile_locations: Dictionary[Vector2i, TileResource]
 
+## The grid cells open for tiles. The rest of the ship's layout is sealed
+## until a Grid Slot opens it. Empty opens the whole layout: a ship that
+## starts with every cell, or a save from before Grid Slots.
+@export var unlocked_cells: Array[Vector2i] = []
+
 @export_category('Map Info')
 @export var current_scenario_index: int
 @export var sector_scenarios: Array[ScenarioResource]

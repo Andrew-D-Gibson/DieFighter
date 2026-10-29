@@ -3,13 +3,14 @@ extends Node2D
 
 @export var dice_scene: PackedScene
 @export var money_pickup_scene: PackedScene
+@export var grid_slot_scene: PackedScene
 @export var money_particle_scene: PackedScene
 @export var bounding_box: CollisionShape2D
 
 var rewards: Array[Node2D]
 
 ## What this offer holds, as save data: one entry per choice, left to right —
-## {"tile": id}, {"dice": true} or {"money": amount}. Set the moment the offer
+## {"tile": id}, {"dice": true}, {"slot": true} or {"money": amount}. Set the moment the offer
 ## is decided, not when it appears, so a checkpoint taken during the reveal
 ## delay still records it.
 var items: Array = []
@@ -106,6 +107,9 @@ func _node_for_item(entry: Dictionary) -> Node2D:
 	if entry.has("dice"):
 		items.append(entry)
 		return dice_scene.instantiate()
+	if entry.has("slot"):
+		items.append(entry)
+		return grid_slot_scene.instantiate()
 	if entry.has("money") and money_pickup_scene:
 		var pickup: MoneyPickup = money_pickup_scene.instantiate()
 		pickup.amount = int(entry["money"])
@@ -159,7 +163,13 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 		reward_resource.minimum_rarity
 	)
 
+	var offers_slot: bool = rolls_grid_slot(reward_resource)
 	for i in range(reward_resource.num_of_rewards):
+		if offers_slot and i == reward_resource.num_of_rewards - 1:
+			offered.append(grid_slot_scene.instantiate())
+			items.append({"slot": true})
+			continue
+
 		# Give the player a dice instead of a tile if we can't fit another tile, 
 		# we can't give the player a tile they don't already have,
 		# or randomly otherwise
@@ -196,6 +206,20 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 	return offered
 
 
+## Whether this offer's last choice is a Grid Slot. A full grid always gets
+## one while there's a sealed cell left; otherwise it's a roll, drawn only
+## when it could come up, so a ship with no sealed cells rolls as it always has.
+static func rolls_grid_slot(reward_resource: RewardResource) -> bool:
+	var grid: TileGrid = Globals.tile_grid
+	if reward_resource.num_of_rewards <= 0 or not grid.has_locked_cell():
+		return false
+	if not grid.has_free_cell():
+		return true
+	if reward_resource.grid_slot_probability <= 0.0:
+		return false
+	return RNGManager.randf(RNGManager.Bucket.REWARDS) < reward_resource.grid_slot_probability
+
+
 ## A certain pickup draws nothing, so offers authored before the chance existed
 ## keep the same rolls (and the same seeded runs) as they always had.
 static func rolls_money_pickup(reward_resource: RewardResource) -> bool:
@@ -217,6 +241,11 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	if chosen_reward is Tile and not Globals.tile_grid.has_free_cell():
 		Events.error_text_popup.emit("GRID FULL", end_position)
 		return
+	# A slot opens the sealed cell it's dropped on, and only that.
+	var slot_cell: Vector2i = Globals.tile_grid.locked_cell_at(end_position)
+	if chosen_reward is GridSlot and not Globals.tile_grid.is_cell_locked(slot_cell):
+		Events.error_text_popup.emit(tr("ERROR_PICK_SEALED_CELL"), end_position)
+		return
 	draggable.drag_started.disconnect(Events.show_systems.emit)
 	draggable.drag_ended.disconnect(_end_reward)
 	
@@ -233,6 +262,9 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	elif chosen_reward is MoneyPickup:
 		chosen_reward.claim()
 		Events.reward_money_taken.emit()
+
+	elif chosen_reward is GridSlot:
+		chosen_reward.install(slot_cell)
 		
 	Events.reward_picked.emit()
 	queue_free()

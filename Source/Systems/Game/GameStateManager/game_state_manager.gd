@@ -612,6 +612,7 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 			tile_effect_data[pos] = tile.effect_data.duplicate()
 	current_game_save.tile_locations = tile_locations
 	current_game_save.tile_effect_data = tile_effect_data
+	current_game_save.unlocked_cells = Globals.tile_grid.get_cells()
 
 	# Captured after the settling frame, not before: the pickup that triggered
 	# this checkpoint frees its offer at the end of the frame it happened in.

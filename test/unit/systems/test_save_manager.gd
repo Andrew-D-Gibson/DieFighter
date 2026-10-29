@@ -101,6 +101,22 @@ func test_a_save_from_before_ships_flies_the_default_ship() -> void:
 	assert_eq(saves.read_save().ship_id, ShipCatalog.DEFAULT_ID)
 
 
+func test_open_grid_cells_round_trip() -> void:
+	var save: GameSaveResource = _sample_save()
+	var cells: Array[Vector2i] = [Vector2i(1, 0), Vector2i(4, 2)]
+	save.unlocked_cells = cells
+	saves.write_save(save)
+	assert_eq(saves.read_save().unlocked_cells, cells)
+
+
+func test_a_save_from_before_grid_slots_opens_every_cell() -> void:
+	saves.write_save(_sample_save())
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_SAVE_PATH))
+	raw.erase("unlocked_cells")
+	_write_raw(raw)
+	assert_true(saves.read_save().unlocked_cells.is_empty())
+
+
 func test_numbers_come_back_as_ints_not_json_floats() -> void:
 	saves.write_save(_sample_save())
 	var loaded: GameSaveResource = saves.read_save()

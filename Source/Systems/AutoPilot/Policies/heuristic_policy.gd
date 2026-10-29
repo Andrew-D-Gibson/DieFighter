@@ -145,6 +145,9 @@ const _DIE_WORTH: float = 5.0
 const _CREDITS_PER_POINT: float = 8.0
 const _RARITY_WORTH: float = 1.0
 const _PASSIVE_TILE_WORTH: float = 3.0
+## A Grid Slot is room for a tile later; on a full grid it's room for the next
+## one at once, so it's worth twice as much.
+const _GRID_SLOT_WORTH: float = 4.0
 ## Credits per point a purchase must clear, and by how much.
 const _PRICE_PER_POINT: float = 10.0
 const _BUY_BAR: float = 1.0
@@ -658,6 +661,8 @@ func item_value(item: Node) -> float:
 		return (item as MoneyPickup).amount / _CREDITS_PER_POINT
 	if item is Tile:
 		return _tile_worth(item as Tile)
+	if item is GridSlot:
+		return _GRID_SLOT_WORTH * (1.0 if Globals.tile_grid.has_free_cell() else 2.0)
 	return _DIE_WORTH
 
 

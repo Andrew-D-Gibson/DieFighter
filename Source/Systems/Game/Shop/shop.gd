@@ -1,16 +1,24 @@
 class_name Shop
 extends Node2D
 
-## The price tag shown under each slot. Slots 0-3 hold tiles, 4 the extra die.
+## The price tag shown under each shelf. Shelves 0-3 hold tiles, 4 the extra
+## die, 5 a Grid Slot.
 @export var prices: Array[Node2D]
 var item_to_shop_index: Dictionary[Node, int]
 ## What each item on the shelves costs. The tag only displays it.
 var _item_prices: Dictionary[Node, int]
 
 @export var dice_scene: PackedScene
+@export var grid_slot_scene: PackedScene
 @export var bounding_box: CollisionShape2D
 
 const DICE_PRICE: int = 25
+## A cell to grow the grid by. Dearer than a tile: it's room for every tile
+## the run finds from here on.
+const GRID_SLOT_PRICE: int = 30
+
+const _DICE_SHELF: int = 4
+const _GRID_SLOT_SHELF: int = 5
 
 ## What a tile on the shelf costs, by rarity, inclusive on both ends.
 const PRICE_RANGES: Dictionary[TileResource.Rarity, Vector2i] = {
@@ -58,6 +66,7 @@ func _open_shop() -> void:
 	else:
 		_create_shop_tiles()
 		_create_dice_buy_zone()
+		_create_grid_slot_stock()
 	modulate.a = 1.0
 	show()
 	_claim_formation_space()
@@ -152,7 +161,7 @@ func _create_shop_tiles() -> void:
 func _place_shop_tile(shop_index: int, tile_resource: TileResource) -> Tile:
 	var tile_spacing_x: int = 46
 	var tile_spacing_y: int = 27
-	var start_pos: Vector2 = Vector2(-50,-13.5)
+	var start_pos: Vector2 = Vector2(-67,-13.5)
 	var col: int = shop_index / 2
 	var row: int = shop_index % 2
 
@@ -183,10 +192,11 @@ func _set_price(item: Node, price: int) -> void:
 
 
 ## What's still for sale, for the save: each unsold tile with its slot and
-## price, and whether the extra die is still on offer.
+## price, and whether the extra die and the Grid Slot are still on offer.
 func capture_stock() -> Dictionary:
 	var tiles: Array = []
 	var dice_for_sale: bool = false
+	var slot_for_sale: bool = false
 	for item: Node in item_to_shop_index:
 		if not is_instance_valid(item) or item.get_parent() != self:
 			continue
@@ -201,7 +211,9 @@ func capture_stock() -> Dictionary:
 			})
 		elif item is Dice:
 			dice_for_sale = true
-	return {"tiles": tiles, "dice": dice_for_sale}
+		elif item is GridSlot:
+			slot_for_sale = true
+	return {"tiles": tiles, "dice": dice_for_sale, "slot": slot_for_sale}
 
 
 ## Frees whatever the last shop left unsold. Closing only hides the panel, so
@@ -229,18 +241,35 @@ func _restore_stock(stock: Dictionary) -> void:
 
 	if stock.get("dice", false):
 		_create_dice_buy_zone()
+	if stock.get("slot", false):
+		_create_grid_slot_stock()
 
 
 func _create_dice_buy_zone() -> void:
 	var dice: Dice = dice_scene.instantiate()
 	add_child(dice)
-	dice.global_position = global_position + Vector2(46, -16)
+	dice.global_position = global_position + Vector2(63, -16)
 	dice.draggable.home_position = dice.global_position
 	dice.draggable.drag_started.connect(Events.show_systems.emit)
 	dice.draggable.drag_ended.connect(_on_shop_item_dragged)
 	
-	_stock(dice, 4)
+	_stock(dice, _DICE_SHELF)
 	_set_price(dice, DICE_PRICE)
+
+
+## Shelves a Grid Slot while the grid has a sealed cell to open.
+func _create_grid_slot_stock() -> void:
+	prices[_GRID_SLOT_SHELF].visible = false
+	if not Globals.tile_grid.has_locked_cell():
+		return
+	var slot: GridSlot = grid_slot_scene.instantiate()
+	add_child(slot)
+	slot.global_position = global_position + Vector2(29, -12)
+	slot.draggable.home_position = slot.global_position
+	slot.draggable.drag_ended.connect(_on_shop_item_dragged)
+
+	_stock(slot, _GRID_SLOT_SHELF)
+	_set_price(slot, GRID_SLOT_PRICE)
 
 
 ## Shelves [param item] in [param shop_index]. An item can leave without being
@@ -272,11 +301,16 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 		if item is Tile and not Globals.tile_grid.has_free_cell():
 			Events.error_text_popup.emit("GRID FULL", end_position)
 			return
+		var slot_cell: Vector2i = Globals.tile_grid.locked_cell_at(end_position)
+		if item is GridSlot and not Globals.tile_grid.is_cell_locked(slot_cell):
+			Events.error_text_popup.emit(tr("ERROR_PICK_SEALED_CELL"), end_position)
+			return
 
 		if Globals.player.money >= price:
 			Globals.player.money -= price
 			
-			item.draggable.drag_started.disconnect(Events.show_systems.emit)
+			if item.draggable.drag_started.is_connected(Events.show_systems.emit):
+				item.draggable.drag_started.disconnect(Events.show_systems.emit)
 			item.draggable.drag_ended.disconnect(_on_shop_item_dragged)
 			# Sold: it's the player's now, and off the shelves for good. (The
 			# reparent below fires the one-shot _forget again, harmlessly.)
@@ -290,5 +324,8 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 				item.reparent(Globals.player, true)
 				Globals.player.dice_manager.add(item)
 				Globals.player.num_of_dice += 1
+
+			elif item is GridSlot:
+				item.install(slot_cell)
 
 			Events.reward_picked.emit()

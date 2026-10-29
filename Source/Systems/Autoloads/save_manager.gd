@@ -66,6 +66,9 @@ func write_save(game_save: GameSaveResource) -> void:
 		"sector_index": game_save.sector_index,
 		"sector_scenarios": sector_scenarios_data,
 		"tile_locations": tile_locations_data,
+		"unlocked_cells": game_save.unlocked_cells.map(
+			func(cell: Vector2i) -> Array: return [cell.x, cell.y]
+		),
 		"map_state": game_save.map_state,
 		"run_stats": game_save.run_stats,
 		"rng_states": game_save.rng_states,
@@ -135,6 +138,12 @@ func read_save() -> GameSaveResource:
 			tile_effect_data[pos] = _ints(entry["data"])
 	game_save.tile_locations = tile_locations
 	game_save.tile_effect_data = tile_effect_data
+
+	# Missing from a save made before Grid Slots: every cell open, as then.
+	var unlocked_cells: Array[Vector2i] = []
+	for cell: Variant in data.get("unlocked_cells", []):
+		unlocked_cells.append(Vector2i(int(cell[0]), int(cell[1])))
+	game_save.unlocked_cells = unlocked_cells
 
 	game_save.map_state = _ints(data.get("map_state", {}))
 	game_save.run_stats = _ints(data.get("run_stats", {}))

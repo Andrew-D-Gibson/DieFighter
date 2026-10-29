@@ -12,6 +12,8 @@ signal tile_lifted(tile: Tile)
 ## A tile from the grid was let go of somewhere off the grid. It floats back to
 ## its cell unless a listener takes it.
 signal tile_dropped_off_grid(tile: Tile, global_drop_pos: Vector2)
+## A sealed cell was opened (a Grid Slot dropped on it) and can hold a tile.
+signal cell_unlocked(cell: Vector2i)
 
 ## The rectangle the grid's cells span. Set from the ship's layout, which may
 ## leave holes in it: ask is_grid_pos_valid() whether a tile can sit somewhere.
@@ -27,12 +29,31 @@ var tile_locations: Dictionary[Vector2i, Tile] = {}
 var activations_this_turn: int = 0
 
 @export var empty_cell_texture: Texture2D
+## Drawn over a sealed cell: part of the ship, but not open for tiles yet.
+@export var locked_cell_texture: Texture2D
+## Brackets over every sealed cell while a Grid Slot is being carried.
+@export var slot_target_texture: Texture2D
 
 ## Every cell a tile can sit in, top row first. Set from the ship in _ready,
 ## or by set_cells() before the grid enters the tree.
 var _cells: Array[Vector2i] = []
 var _cell_set: Dictionary[Vector2i, bool] = {}
 var _empty_cell_sprites: Dictionary[Vector2i, Sprite2D] = {}
+## Every cell of the ship's layout, open or sealed.
+var _layout_cells: Array[Vector2i] = []
+## The layout's sealed cells and the plate drawn over each. A sealed cell is
+## a hole to everything else (no tile, no adjacency, no pushes) until a Grid
+## Slot opens it, which is why it's kept out of _cells rather than flagged.
+var _locked_cells: Dictionary[Vector2i, Sprite2D] = {}
+## True while a Grid Slot is being carried, so the sealed cells show as targets.
+var _showing_slot_targets: bool = false
+var _slot_target_tween: Tween
+## The sealed cell under the pointer while targets are showing.
+var _hovered_slot_target: Vector2i = Vector2i(-1, -1)
+
+## How much bigger the bracket over the sealed cell under the pointer draws.
+const _HOVERED_TARGET_SCALE: float = 1.15
+const _CELL_OPENED_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
 ## The ship's own rules (ShipResource.behavior_scene), if it has any.
 var ship_behavior: Node = null
 
@@ -47,6 +68,8 @@ var _columns_with_cells: Dictionary[int, bool] = {}
 
 func _ready() -> void:
 	Globals.tile_grid = self
+	# Runs only while a Grid Slot is carried (show_slot_targets).
+	set_process(false)
 	
 	Events.load_game_save.connect(_load_game_save)
 	# Through a lambda, not Events.show_systems.emit directly: that callable
@@ -77,34 +100,188 @@ func _apply_ship(ship: ShipResource) -> void:
 	set_cells(ship.get_cells())
 
 
-## Sets which cells exist. Empty fills the grid_width x grid_height rectangle.
-## Only before the grid enters the tree: the empty-cell art is laid in _ready.
+## Sets which cells exist, every one of them open. Empty fills the grid_width
+## x grid_height rectangle. Only before the grid enters the tree: the
+## empty-cell art is laid in _ready. Seal some with set_open_cells().
 func set_cells(cells: Array[Vector2i]) -> void:
-	_cells.clear()
-	_cell_set.clear()
+	_layout_cells.clear()
 	if cells.is_empty():
 		for y: int in grid_height:
 			for x: int in grid_width:
-				_cells.append(Vector2i(x, y))
+				_layout_cells.append(Vector2i(x, y))
 	else:
-		_cells.assign(cells)
+		_layout_cells.assign(cells)
 		grid_width = 0
 		grid_height = 0
-		for cell: Vector2i in _cells:
+		for cell: Vector2i in _layout_cells:
 			grid_width = maxi(grid_width, cell.x + 1)
 			grid_height = maxi(grid_height, cell.y + 1)
+	_layout_cells.sort_custom(_reading_order)
+	# A sealed column still draws full width: it's hull waiting to be opened.
 	_columns_with_cells.clear()
+	for cell: Vector2i in _layout_cells:
+		_columns_with_cells[cell.x] = true
+	_set_open(_layout_cells)
+
+
+## Seals every cell of the layout except [param open]. Empty opens them all,
+## which is what a save from before Grid Slots means. Cells that aren't part of
+## the layout are ignored.
+func set_open_cells(open: Array[Vector2i]) -> void:
+	if open.is_empty():
+		_set_open(_layout_cells)
+		return
+	var wanted: Dictionary[Vector2i, bool] = {}
+	for cell: Vector2i in open:
+		wanted[cell] = true
+	var cells: Array[Vector2i] = []
+	for cell: Vector2i in _layout_cells:
+		if wanted.has(cell):
+			cells.append(cell)
+	_set_open(cells)
+
+
+func _set_open(cells: Array[Vector2i]) -> void:
+	_cells.assign(cells)
+	_cells.sort_custom(_reading_order)
+	_cell_set.clear()
 	for cell: Vector2i in _cells:
 		_cell_set[cell] = true
-		_columns_with_cells[cell.x] = true
-	_cells.sort_custom(func(a: Vector2i, b: Vector2i) -> bool:
-		return a.y < b.y or (a.y == b.y and a.x < b.x)
-	)
+	for plate: Sprite2D in _locked_cells.values():
+		if is_instance_valid(plate):
+			plate.queue_free()
+	_locked_cells.clear()
+	for cell: Vector2i in _layout_cells:
+		if not _cell_set.has(cell):
+			_locked_cells[cell] = _make_locked_plate(cell) if is_inside_tree() else null
+
+
+func _reading_order(a: Vector2i, b: Vector2i) -> bool:
+	return a.y < b.y or (a.y == b.y and a.x < b.x)
 
 
 ## Every cell a tile can sit in, top row first, left to right.
 func get_cells() -> Array[Vector2i]:
 	return _cells.duplicate()
+
+
+## The layout's sealed cells, top row first.
+func get_locked_cells() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = []
+	cells.assign(_locked_cells.keys())
+	cells.sort_custom(_reading_order)
+	return cells
+
+
+func has_locked_cell() -> bool:
+	return not _locked_cells.is_empty()
+
+
+func is_cell_locked(pos: Vector2i) -> bool:
+	return _locked_cells.has(pos)
+
+
+## The sealed cell under [param global_pos], or (-1, -1) if it isn't over one.
+func locked_cell_at(global_pos: Vector2) -> Vector2i:
+	var cell: Vector2i = global_pos_to_grid(global_pos)
+	return cell if is_cell_locked(cell) else Vector2i(-1, -1)
+
+
+## Opens a sealed cell for tiles at once, with the plate over it blowing away
+## after [param plate_delay] seconds (the slot opening it flying in). Returns
+## false if [param pos] wasn't sealed.
+func unlock_cell(pos: Vector2i, plate_delay: float = 0.0) -> bool:
+	if not is_cell_locked(pos):
+		return false
+	var plate: Sprite2D = _locked_cells[pos]
+	_locked_cells.erase(pos)
+	_cells.append(pos)
+	_cells.sort_custom(_reading_order)
+	_cell_set[pos] = true
+	if is_instance_valid(plate):
+		_blow_off_plate(plate, plate_delay)
+	cell_unlocked.emit(pos)
+	return true
+
+
+## Lights every sealed cell as a place to drop the Grid Slot being carried.
+func show_slot_targets(shown: bool) -> void:
+	_showing_slot_targets = shown
+	_hovered_slot_target = Vector2i(-1, -1)
+	set_process(shown)
+	if _slot_target_tween:
+		_slot_target_tween.kill()
+	for plate: Sprite2D in _locked_cells.values():
+		if not is_instance_valid(plate):
+			continue
+		var target: Sprite2D = plate.get_node("Target")
+		target.visible = shown
+		target.scale = Vector2.ONE
+	if not shown or _locked_cells.is_empty():
+		return
+	# One tween breathes every bracket together, so they read as one set.
+	_slot_target_tween = create_tween().set_loops()
+	_slot_target_tween.tween_method(_set_slot_target_alpha, 1.0, 0.45, 0.45) \
+		.set_trans(Tween.TRANS_SINE)
+	_slot_target_tween.tween_method(_set_slot_target_alpha, 0.45, 1.0, 0.45) \
+		.set_trans(Tween.TRANS_SINE)
+
+
+func _set_slot_target_alpha(alpha: float) -> void:
+	for cell: Vector2i in _locked_cells:
+		var plate: Sprite2D = _locked_cells[cell]
+		if is_instance_valid(plate):
+			plate.get_node("Target").modulate.a = 1.0 if cell == _hovered_slot_target else alpha
+
+
+func _process(_delta: float) -> void:
+	if not _showing_slot_targets:
+		set_process(false)
+		return
+	var hovered: Vector2i = locked_cell_at(InputManager.pointer_position(get_viewport()))
+	if hovered == _hovered_slot_target:
+		return
+	_hovered_slot_target = hovered
+	for cell: Vector2i in _locked_cells:
+		var plate: Sprite2D = _locked_cells[cell]
+		if is_instance_valid(plate):
+			var target: Sprite2D = plate.get_node("Target")
+			target.scale = Vector2.ONE * (_HOVERED_TARGET_SCALE if cell == hovered else 1.0)
+
+
+func _make_locked_plate(cell: Vector2i) -> Sprite2D:
+	var plate: Sprite2D = Sprite2D.new()
+	plate.texture = locked_cell_texture
+	plate.position = grid_to_local_pos(cell)
+	var target: Sprite2D = Sprite2D.new()
+	target.name = "Target"
+	target.texture = slot_target_texture
+	target.visible = _showing_slot_targets
+	plate.add_child(target)
+	add_child(plate)
+	# Under the tiles, which are added after it, but over the panel art.
+	move_child(plate, 0)
+	return plate
+
+
+## The plate pops off the hull the way a reward choice pops when it's left
+## behind: squash, stretch, gone, with sparks where it was.
+func _blow_off_plate(plate: Sprite2D, delay: float) -> void:
+	plate.get_node("Target").hide()
+	var tween: Tween = plate.create_tween()
+	tween.tween_interval(delay)
+	tween.tween_callback(Events.play_sound.emit.bind(_CELL_OPENED_SFX))
+	tween.tween_property(plate, "scale", Vector2(1.3, 0.7), 0.08) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	tween.tween_property(plate, "scale", Vector2(0.6, 1.5), 0.08) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN_OUT)
+	tween.tween_property(plate, "scale", Vector2(0.0, 1.8), 0.1) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	tween.tween_callback(func() -> void:
+		Juice.sparkle(self, plate.global_position, Globals.green, 10, 40.0)
+		Juice.ring(self, plate.global_position, Globals.green)
+	)
+	tween.tween_callback(plate.queue_free)
 
 
 ## The dark socket drawn under an empty cell, for ship art that restyles it.
@@ -130,6 +307,14 @@ func _count_activation(_tile: Tile) -> void:
 
 
 func _load_game_save(game_save: GameSaveResource) -> void:
+	# A cell a saved tile sits on is open whatever the list says, so a loadout
+	# written for the full grid (a gauntlet, an older kit) never loses a tile.
+	var open: Array[Vector2i] = game_save.unlocked_cells.duplicate()
+	if not open.is_empty():
+		for pos: Vector2i in game_save.tile_locations:
+			if not pos in open:
+				open.append(pos)
+	set_open_cells(open)
 	_setup_tiles(game_save.tile_locations)
 
 	# Counters a tile keeps across scenarios (Tile.effect_data) aren't part of
@@ -165,13 +350,16 @@ func _restore_tile_uses() -> void:
 	
 	
 func _setup_grid_graphics() -> void:
-	for cell: Vector2i in _cells:
+	for cell: Vector2i in _layout_cells:
 		var empty_cell: Sprite2D = Sprite2D.new()
 		empty_cell.texture = empty_cell_texture
 		empty_cell.z_index = -1
 		empty_cell.position = grid_to_local_pos(cell)
 		add_child(empty_cell)
 		_empty_cell_sprites[cell] = empty_cell
+	for cell: Vector2i in _locked_cells:
+		if not is_instance_valid(_locked_cells[cell]):
+			_locked_cells[cell] = _make_locked_plate(cell)
 	
 	
 func _setup_tiles(_tile_locations: Dictionary[Vector2i, TileResource]) -> void:

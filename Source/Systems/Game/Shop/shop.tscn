@@ -4,14 +4,16 @@
 [ext_resource type="PackedScene" uid="uid://b8ppehbls7stu" path="res://Source/Systems/Game/Dice/dice.tscn" id="3_0o0y8"]
 [ext_resource type="Texture2D" uid="uid://d33kyk4uuloux" path="res://Assets/Textures/Shop/shop_tabbed_background.png" id="4_uu5u6"]
 [ext_resource type="Texture2D" uid="uid://b41a3gdbfjgrk" path="res://Assets/Textures/Money/money_symbol.png" id="5_uu5u6"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/GridSlot/grid_slot.tscn" id="6_slot"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yjpg7"]
-size = Vector2(126, 56)
+size = Vector2(160, 56)
 
 [node name="Shop" type="Node2D" unique_id=468732449 node_paths=PackedStringArray("prices", "bounding_box")]
 script = ExtResource("1_shop")
-prices = [NodePath("Price1"), NodePath("Price2"), NodePath("Price3"), NodePath("Price4"), NodePath("Price5")]
+prices = [NodePath("Price1"), NodePath("Price2"), NodePath("Price3"), NodePath("Price4"), NodePath("Price5"), NodePath("Price6")]
 dice_scene = ExtResource("3_0o0y8")
+grid_slot_scene = ExtResource("6_slot")
 bounding_box = NodePath("CollisionShape2D2")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=1821342925]
@@ -22,7 +24,7 @@ position = Vector2(0, -5)
 texture = ExtResource("4_uu5u6")
 
 [node name="Price1" type="Sprite2D" parent="." unique_id=1872731673]
-position = Vector2(-22, -13)
+position = Vector2(-39, -13)
 texture = ExtResource("5_uu5u6")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Price1" unique_id=552404917]
@@ -37,7 +39,7 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Price2" type="Sprite2D" parent="." unique_id=1705278449]
-position = Vector2(-22, 14)
+position = Vector2(-39, 14)
 texture = ExtResource("5_uu5u6")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Price2" unique_id=319746809]
@@ -51,7 +53,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Price3" type="Sprite2D" parent="." unique_id=1685775363]
-position = Vector2(24, -13)
+position = Vector2(7, -13)
 texture = ExtResource("5_uu5u6")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Price3" unique_id=1150755078]
@@ -66,7 +68,7 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Price4" type="Sprite2D" parent="." unique_id=2119209048]
-position = Vector2(24, 14)
+position = Vector2(7, 14)
 texture = ExtResource("5_uu5u6")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Price4" unique_id=1143576875]
@@ -80,7 +82,7 @@ horizontal_alignment = 2
 vertical_alignment = 1
 
 [node name="Price5" type="Sprite2D" parent="." unique_id=1858895159]
-position = Vector2(53, 10)
+position = Vector2(70, 10)
 texture = ExtResource("5_uu5u6")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="Price5" unique_id=1026898877]
@@ -93,10 +95,24 @@ text = "100"
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="Price6" type="Sprite2D" parent="."]
+position = Vector2(36, 10)
+texture = ExtResource("5_uu5u6")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Price6"]
+offset_left = -17.0
+offset_top = -14.0
+offset_right = -4.0
+offset_bottom = 11.0
+bbcode_enabled = true
+text = "100"
+horizontal_alignment = 2
+vertical_alignment = 1
+
 [node name="RichTextLabel" type="RichTextLabel" parent="." unique_id=1278372073]
-offset_left = -63.0
+offset_left = -80.0
 offset_top = -38.0
-offset_right = -16.0
+offset_right = -33.0
 offset_bottom = -25.0
 theme_override_colors/default_color = Color(0.478431, 0.741176, 0.2, 1)
 bbcode_enabled = true

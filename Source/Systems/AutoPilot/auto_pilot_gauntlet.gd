@@ -93,6 +93,7 @@ func build_save() -> GameSaveResource:
 	else:
 		tiles = start.tile_locations.duplicate()
 	game_save.tile_locations = tiles
+	game_save.unlocked_cells = start.unlocked_cells.duplicate()
 	return game_save
 
 

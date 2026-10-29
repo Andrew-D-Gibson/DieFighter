@@ -140,6 +140,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'lock_tiles':
 			_lock_tiles()
 
+		'open_cells':
+			_open_cells(command.slice(1))
+
 		'reroll':
 			_reroll(command.slice(1))
 			
@@ -276,6 +279,8 @@ func _load_grid(command_args: Array[String] = []) -> void:
 		if parts.size() != 2:
 			continue
 		var pos := Vector2i(int(parts[0]), int(parts[1]))
+		# A layout saved on a bigger grid opens the cells it needs.
+		Globals.tile_grid.unlock_cell(pos)
 		if not Globals.tile_grid.is_grid_pos_valid(pos):
 			continue
 		var resource := ResourceLoader.load(data[key])
@@ -287,6 +292,21 @@ func _load_grid(command_args: Array[String] = []) -> void:
 		Globals.tile_grid.receive_tile(tile, tile.global_position)
 
 	command_history.append_text('\n[center]Loaded grid from slot ' + slot.to_upper() + '.[/center]')
+
+
+## Opens one sealed cell, or every one, as a Grid Slot would.
+func _open_cells(command_args: Array[String] = []) -> void:
+	var cells: Array[Vector2i] = Globals.tile_grid.get_locked_cells()
+	if command_args.size() == 2:
+		cells = [Vector2i(int(command_args[0]), int(command_args[1]))]
+	elif not command_args.is_empty():
+		command_history.append_text('\n\t\tUsage: open_cells [x y]')
+		return
+	var opened: int = 0
+	for cell: Vector2i in cells:
+		if Globals.tile_grid.unlock_cell(cell):
+			opened += 1
+	command_history.append_text('\n[center]Opened %d cell%s.[/center]' % [opened, "" if opened == 1 else "s"])
 
 
 # ── Player ───────────────────────────────────────────────────────────────────
@@ -521,6 +541,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]lang[/b] <locale|pseudo>          switch language (pseudo: stretched English, debug)')
 	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
 	command_history.append_text('\n[b]lock_tiles[/b]		            stop tiles from being moved')
+	command_history.append_text('\n[b]open_cells[/b] [x y]              open a sealed grid cell, or all of them')
 	command_history.append_text('\n[b]reroll[/b] [value]                reroll dice, or set all to value')
 	command_history.append_text('\n[b]reset_uses[/b] 					reset the number of times a tile can be used')
 	command_history.append_text('\n[b]save_grid[/b] <a|b|c>             save grid layout to file (persists across runs)')

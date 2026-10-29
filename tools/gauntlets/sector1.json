@@ -15,17 +15,17 @@
   ],
   "loadouts": {
     "starter": {
-      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield"}
+      "tiles": {"1,1": "damage", "2,1": "bump", "3,1": "shield"}
     },
     "fourth_die": {
-      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield"},
+      "tiles": {"1,1": "damage", "2,1": "bump", "3,1": "shield"},
       "dice": 4
     },
     "second_cannon": {
-      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield", "3,1": "damage"}
+      "tiles": {"1,1": "damage", "2,1": "bump", "3,1": "shield", "4,1": "damage"}
     },
     "second_shield": {
-      "tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield", "3,1": "shield"}
+      "tiles": {"1,1": "damage", "2,1": "bump", "3,1": "shield", "4,1": "shield"}
     }
   }
 }

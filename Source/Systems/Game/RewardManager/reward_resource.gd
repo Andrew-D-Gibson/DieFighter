@@ -5,6 +5,10 @@ extends Resource
 @export var max_money: int = 0
 @export var num_of_rewards: int = 3
 @export_range(0.0, 1.0) var dice_probability: float = 0
+## Chance the offer's last choice is a Grid Slot instead, while the grid has a
+## sealed cell to open. Always offered when the grid is full, since a tile
+## would have nowhere to go.
+@export_range(0.0, 1.0) var grid_slot_probability: float = 0.25
 
 ## The lowest rarity this offer's tiles can be. Elites and bosses raise it so
 ## beating them pays out in tiles a normal fight rarely shows. Rarity weighting
