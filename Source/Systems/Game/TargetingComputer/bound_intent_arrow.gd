@@ -121,8 +121,13 @@ func _ships_present() -> bool:
 	return _alive(source) and _alive(target)
 
 
-static func _alive(ship: Enemy) -> bool:
-	return is_instance_valid(ship) and ship.health != null and ship.health.health > 0
+## Untyped on purpose: a freed ship passed into an Enemy-typed parameter is a
+## script error, not false, and the arrow can outlive either end for a frame.
+static func _alive(ship: Variant) -> bool:
+	if not is_instance_valid(ship):
+		return false
+	var enemy: Enemy = ship as Enemy
+	return enemy != null and enemy.health != null and enemy.health.health > 0
 
 
 func _any_live() -> bool:
