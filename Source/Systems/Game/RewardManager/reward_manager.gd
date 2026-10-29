@@ -73,12 +73,10 @@ static func filter_by_minimum_rarity(
 	return filtered if not filtered.is_empty() else pool
 
 
+## Every tile an offer can hold. Tiles the player already has are in it: a
+## copy dropped on its twin upgrades it (Tile.upgrade()).
 func get_possible_tile_rewards() -> Array[TileResource]:
-	var player_tile_resources: Array[TileResource] = []
-	for tile: Tile in Globals.tile_grid.tile_locations.values():
-		player_tile_resources.append(tile.tile_resource)
-		
-	return Utils.array_while_excluding(_all_tile_resources, player_tile_resources)
+	return _all_tile_resources.duplicate()
 		
 
 func _spawn_reward(pos: Vector2, reward_resource: RewardResource) -> void:

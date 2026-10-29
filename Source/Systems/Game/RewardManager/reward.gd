@@ -193,7 +193,7 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 			continue
 
 		# Give the player a dice instead of a tile if we can't fit another tile, 
-		# we can't give the player a tile they don't already have,
+		# there's no tile left to offer,
 		# or randomly otherwise
 		if Globals.tile_grid.find_available_grid_pos() == Vector2i(-1,-1)\
 		or len(possible_tile_rewards) == 0\
@@ -260,7 +260,8 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 
 	var chosen_reward: Node = draggable.get_parent()
 	# No cell for it: the offer stands, and the tile drifts back into it.
-	if chosen_reward is Tile and not Globals.tile_grid.has_free_cell():
+	if chosen_reward is Tile and not Globals.tile_grid.has_free_cell() \
+	and not Globals.tile_grid.merge_target_at(chosen_reward, end_position):
 		Events.error_text_popup.emit("GRID FULL", end_position)
 		return
 	# A slot opens the sealed cell it's dropped on, and only that.

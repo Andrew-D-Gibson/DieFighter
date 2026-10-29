@@ -241,7 +241,7 @@ func _get_possible_shop_tiles() -> Array[TileResource]:
 		if item is Tile:
 			shop_tile_resources.append(item.tile_resource)
 
-	# Tiles the player doesn't own yet, minus what's already on the shelves.
+	# Every offerable tile, owned ones included, minus what's on the shelves.
 	var possible_tile_rewards: Array[TileResource] = Globals.reward_manager.get_possible_tile_rewards()
 	return Utils.array_while_excluding(possible_tile_rewards, shop_tile_resources)
 	
@@ -431,7 +431,8 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 		var price: int = _item_prices[item]
 		# No cell for it: refused before any money changes hands, and it
 		# drifts back to its shelf.
-		if item is Tile and not Globals.tile_grid.has_free_cell():
+		if item is Tile and not Globals.tile_grid.has_free_cell() \
+		and not Globals.tile_grid.merge_target_at(item, end_position):
 			Events.error_text_popup.emit("GRID FULL", end_position)
 			return
 		var slot_cell: Vector2i = Globals.tile_grid.locked_cell_at(end_position)

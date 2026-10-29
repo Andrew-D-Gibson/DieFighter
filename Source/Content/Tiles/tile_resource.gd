@@ -13,6 +13,15 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 ## tested and a run that already owns it keeps working.
 @export var offered_as_reward: bool = true
 
+@export_category('Upgrade')
+## The better version of this tile: its own TileResource beside this one, with
+## is_upgrade ticked and offered_as_reward unticked. A copy of this tile
+## dropped on one already on the grid merges into this. Null for a tile that
+## can't be upgraded.
+@export var upgraded_version: TileResource
+## Ticked on an upgraded version: drawn with the upgrade shimmer and sparks.
+@export var is_upgrade: bool = false
+
 @export_category('Graphics')
 @export var textures: SpriteFrames
 

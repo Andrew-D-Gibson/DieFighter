@@ -21,6 +21,32 @@ uniform float time_offset = 0.0;
 uniform vec4 flash_color : source_color = vec4(1.0);
 uniform float flash_amount : hint_range(0.0, 1.0) = 0.0;
 
+// An upgraded tile: two bright bands chase round its border and spill a pixel
+// past it, and the border breathes. Every tile shares one 22x24 rounded
+// silhouette, so the border is worked out here rather than drawn into the art.
+uniform bool upgraded = false;
+uniform vec4 upgrade_color : source_color = vec4(0.808, 0.941, 0.945, 1.0);
+uniform float upgrade_speed = 0.35;
+
+bool in_silhouette(vec2 p) {
+	if (p.x < 1.0 || p.x > 22.0 || p.y < 0.0 || p.y > 23.0) return false;
+	if ((p.y < 1.0 || p.y > 22.0) && (p.x < 3.0 || p.x > 20.0)) return false;
+	if ((p.y < 2.0 || p.y > 21.0) && (p.x < 2.0 || p.x > 21.0)) return false;
+	return true;
+}
+
+int silhouette_neighbours(vec2 p) {
+	return int(in_silhouette(p + vec2(1.0, 0.0))) + int(in_silhouette(p - vec2(1.0, 0.0)))
+		+ int(in_silhouette(p + vec2(0.0, 1.0))) + int(in_silhouette(p - vec2(0.0, 1.0)));
+}
+
+// How lit the chasing bands are at tile pixel p: 1 inside a band, else 0.
+float upgrade_bands(vec2 p) {
+	float angle = atan(p.y - 11.5, p.x - 11.5) / 6.28318 + 0.5;
+	float t = fract(angle - TIME * upgrade_speed);
+	return step(t, 0.07) + step(0.5, t) * step(t, 0.57);
+}
+
 void fragment() {
 	vec4 tex_color = texture(TEXTURE, UV);
 
@@ -78,8 +104,25 @@ void fragment() {
 		final_color = mix(final_color, grad_color.rgb, effect_distance * highlight_strength * grad_alpha);
 	}
 
+	float alpha = tex_color.a;
+	if (upgraded) {
+		// Tile frames are 24px cells of a horizontal strip, so the pixel
+		// within this frame is the atlas pixel modulo the cell.
+		vec2 p = floor(mod(UV / TEXTURE_PIXEL_SIZE, texture_size));
+		bool inside = in_silhouette(p);
+		int neighbours = silhouette_neighbours(p);
+		float bands = upgrade_bands(p);
+		if (inside && neighbours < 4) {
+			float breathe = 0.2 + 0.15 * sin(TIME * 3.0);
+			final_color = mix(final_color, upgrade_color.rgb, clamp(bands * 0.9 + breathe, 0.0, 1.0));
+		} else if (!inside && neighbours > 0) {
+			final_color = upgrade_color.rgb;
+			alpha = max(alpha, bands * 0.85);
+		}
+	}
+
 	final_color = mix(final_color, flash_color.rgb, flash_amount);
 
 	COLOR.rgb = final_color;
-	COLOR.a = tex_color.a;
+	COLOR.a = alpha;
 }

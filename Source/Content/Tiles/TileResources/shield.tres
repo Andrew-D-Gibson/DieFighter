@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="11_q67gt"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="12_534nq"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="12_cnb1i"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_p7d6s"]
 script = ExtResource("1_854mr")
@@ -100,6 +101,7 @@ animations = [{
 
 [resource]
 script = ExtResource("8_8vpcq")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Shield Burst[/color]"
 description = "(die_3) -> Gain [color=blue]8 shields[/color]"
 textures = SubResource("SpriteFrames_p7d6s")

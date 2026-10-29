@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" uid="uid://dtgrujxduixa8" path="res://Assets/Textures/Tiles/BlueTiles/reactive_armor.png" id="tex"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_shield"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/reactive_armor_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -94,6 +95,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Reactive Armor[/color]"
 description = "[color=yellow]Hull hit[/color] -> Gain [color=blue]4 shields[/color]"
 textures = SubResource("SpriteFrames_tile")

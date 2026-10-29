@@ -395,6 +395,13 @@ func create_tile(tile_resource: TileResource) -> Tile:
 
 
 func receive_tile(tile: Tile, drop_position: Vector2) -> void:
+	# Let go on its own twin, a copy upgrades that tile instead of taking a cell.
+	var twin: Tile = merge_target_at(tile, drop_position)
+	if twin:
+		tile.queue_free()
+		twin.upgrade()
+		return
+
 	tile.on_offer = false
 	tile.reparent(self, true)
 	tile.update_dragging_allowed()
@@ -578,6 +585,12 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 			_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos) # Just reaffirm position
 			return
 
+		# Two copies of a tile on the grid merge into its upgrade.
+		if is_grid_pos_valid(old_grid_pos) and existing_tile.can_merge(tile_to_move.tile_resource):
+			remove_tile(tile_to_move)
+			existing_tile.upgrade()
+			return
+
 		# Determine where the existing tile should go
 		var target_pos_for_existing_tile: Vector2i
 		if is_grid_pos_valid(old_grid_pos):
@@ -599,6 +612,16 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 		# Target position is open, just move the tile there
 		_assign_tile_to_grid_pos(tile_to_move, grid_drop_pos)
 		Events.tile_manually_moved.emit(tile_to_move)
+
+
+## The tile on the grid [param tile] would upgrade if let go at
+## [param global_pos]: a copy of it that isn't upgraded yet. Null if there's
+## none there.
+func merge_target_at(tile: Tile, global_pos: Vector2) -> Tile:
+	var twin: Tile = tile_locations.get(global_pos_to_grid(global_pos))
+	if twin and twin != tile and is_instance_valid(twin) and twin.can_merge(tile.tile_resource):
+		return twin
+	return null
 
 
 ## Whether a new tile has somewhere to go. A shop or salvage tile taken onto a

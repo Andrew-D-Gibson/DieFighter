@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_4"]
 [ext_resource type="Texture2D" uid="uid://bibel1ft5whhk" path="res://Assets/Textures/Tiles/BlueTiles/counterweight_battery.png" id="tex_2"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/counterweight_battery_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")
@@ -150,6 +151,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_0")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Counterweight Battery[/color]"
 description = "[color=yellow]Enemy turn ends[/color] -> Gain [color=blue]3 shields[/color]"
 rarity = 1

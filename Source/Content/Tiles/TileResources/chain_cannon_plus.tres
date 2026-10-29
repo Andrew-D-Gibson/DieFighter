@@ -1,0 +1,148 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_g62jg"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_og7ys"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_x5guy"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="11_5tyjx"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="12_26nv3"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="12_f7e78"]
+[ext_resource type="Texture2D" uid="uid://bajiqlioyp6wv" path="res://Assets/Textures/Tiles/RedTiles/chain_cannon-Sheet.png" id="12_na2wt"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="13_f7e78"]
+
+[sub_resource type="Resource" id="Resource_istkj"]
+script = ExtResource("1_g62jg")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_en0w8"]
+script = ExtResource("1_g62jg")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_uqnk8"]
+script = ExtResource("1_g62jg")
+type = 1
+acceptable_values = Array[int]([4])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_5t1r3"]
+script = ExtResource("11_5tyjx")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cenje"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 1
+color = Color(0.31764707, 0.08235294, 0.13333334, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_dqt2m"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 5
+sound_resource = ExtResource("12_f7e78")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_7kkex"]
+script = ExtResource("11_5tyjx")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_k2ilm"]
+script = ExtResource("11_5tyjx")
+category = 2
+amount = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_2g6t7"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_y2dp7"]
+script = ExtResource("11_5tyjx")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_dapn3"]
+script = ExtResource("11_5tyjx")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 18
+amount = 70
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 7
+amount = 40
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("11_5tyjx")
+category = 4
+subtype = 17
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_j3pel"]
+script = ExtResource("12_26nv3")
+effects = Array[ExtResource("11_5tyjx")]([SubResource("Resource_5t1r3"), SubResource("Resource_cenje"), SubResource("Resource_dqt2m"), SubResource("Resource_7kkex"), SubResource("Resource_k2ilm"), SubResource("Resource_2g6t7"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_y2dp7"), SubResource("Resource_dapn3")])
+base_repetitions = 2
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fl5br"]
+atlas = ExtResource("12_na2wt")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_lymfw"]
+atlas = ExtResource("12_na2wt")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_elg6t"]
+atlas = ExtResource("12_na2wt")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_equ74"]
+atlas = ExtResource("12_na2wt")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ha28q"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fl5br")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_lymfw")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_elg6t")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_equ74")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_x5guy")
+offered_as_reward = false
+is_upgrade = true
+tile_name = "[color=red]Chain Cannon+[/color]"
+description = "(die_4) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color] twice"
+textures = SubResource("SpriteFrames_ha28q")
+uses_per_turn = 3
+activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])
+effect_chain = SubResource("Resource_j3pel")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

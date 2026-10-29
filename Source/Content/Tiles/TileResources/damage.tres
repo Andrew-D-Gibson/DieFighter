@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="11_2fv8l"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="12_28674"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="12_oji76"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_mkcsn"]
 script = ExtResource("1_q4v50")
@@ -116,6 +117,7 @@ animations = [{
 
 [resource]
 script = ExtResource("8_2fv8l")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Dice Cannon[/color]"
 description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die"
 rarity = 1

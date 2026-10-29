@@ -131,6 +131,8 @@ signal reward_picked()
 ## turns these into ScenarioEvents so an encounter can react to being robbed.
 signal reward_tile_taken()
 signal reward_money_taken()
+## A tile on the grid became its upgraded version (a copy merged into it).
+signal tile_upgraded(tile: Tile)
 signal set_money(value: int)
 
 

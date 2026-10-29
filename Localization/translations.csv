@@ -123,3 +123,5 @@ SHIP_SELECT_REPLAY_TUTORIAL,TUTORIAL,,,,,,,,"Ship select: button under the start
 MAP_HINT_YOU_ARE_HERE,You are here,,,,,,,,"Map caption strip, beside a small down arrow that also hangs over the player's own marker on the map, while nothing on the map is hovered: where the ship is now. The strip is very narrow: keep it as short as English",12,,
 CURSOR_HINT_CLICK_FOR_INFO,Click again for info,,,,,,,,"One-line hint beside the mouse cursor, shown the first few times a die or tile is picked up with Click placement, while the cursor is still where it was picked up: clicking there puts it back and opens its info panel",22,,
 CURSOR_HINT_CLICK_TO_PLACE,Click to place it,,,,,,,,"One-line hint beside the mouse cursor, shown the first few times a die or tile is picked up with Click placement, once the cursor has moved: the next click puts it down there",22,,
+CALLOUT_UPGRADED,UPGRADED!,,,,,,,,"Callout over a tile the moment it becomes its upgraded version",,,
+INFO_TILE_UPGRADE,[color=yellow]Drop a copy on it[/color] -> Upgrade:,,,,,,,,"Info panel, under a tile's description: heads the line showing what the tile does once upgraded. BBCode stays as is.",,,

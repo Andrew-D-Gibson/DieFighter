@@ -1,0 +1,111 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_854mr"]
+[ext_resource type="Texture2D" uid="uid://y2tp7uupychk" path="res://Assets/Textures/Tiles/BlueTiles/shield_plus.png" id="2_7qkaa"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="4_77b16"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="8_8vpcq"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="8_p7d6s"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="11_q67gt"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="12_534nq"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="12_cnb1i"]
+
+[sub_resource type="Resource" id="Resource_p7d6s"]
+script = ExtResource("1_854mr")
+type = 1
+acceptable_values = Array[int]([3, 4])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_3phsw"]
+script = ExtResource("11_q67gt")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cefd1"]
+script = ExtResource("11_q67gt")
+category = 4
+subtype = 1
+color = Color(0.24705882, 0.5568628, 0.80784315, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_5line"]
+script = ExtResource("11_q67gt")
+category = 4
+subtype = 5
+sound_resource = ExtResource("4_77b16")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_pqxiy"]
+script = ExtResource("11_q67gt")
+category = 2
+amount = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_dva43"]
+script = ExtResource("11_q67gt")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("11_q67gt")
+category = 4
+subtype = 14
+amount = 24
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("11_q67gt")
+category = 4
+subtype = 12
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_prfmf"]
+script = ExtResource("11_q67gt")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_e0xis"]
+script = ExtResource("11_q67gt")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_24nbl"]
+script = ExtResource("11_q67gt")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_m0r4a"]
+script = ExtResource("12_534nq")
+effects = Array[ExtResource("11_q67gt")]([SubResource("Resource_3phsw"), SubResource("Resource_cefd1"), SubResource("Resource_5line"), SubResource("Resource_pqxiy"), SubResource("Resource_dva43"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_prfmf"), SubResource("Resource_e0xis"), SubResource("Resource_24nbl")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7qkaa"]
+atlas = ExtResource("2_7qkaa")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_p7d6s"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7qkaa")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("8_8vpcq")
+offered_as_reward = false
+is_upgrade = true
+tile_name = "[color=blue]Shield Burst+[/color]"
+description = "(die_3) or (die_4) -> Gain [color=blue]10 shields[/color]"
+textures = SubResource("SpriteFrames_p7d6s")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])
+effect_chain = SubResource("Resource_m0r4a")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
