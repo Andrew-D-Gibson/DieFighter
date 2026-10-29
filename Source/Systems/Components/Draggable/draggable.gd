@@ -13,7 +13,16 @@ enum DragState {
 	MOVING_WITH_CODE,
 	DRAGGING
 }
-var state: DragState = DragState.DEFAULT
+## Code takes a thing over by setting this (an enemy grabbing a die, the
+## tractor beam, a jump), sometimes while the player is holding it. Leaving
+## DRAGGING lets go of the hold however it happens, dropped or taken, so the
+## lift, the wiggle and the game-wide dragging flag never outlive it.
+var state: DragState = DragState.DEFAULT:
+	set(new_state):
+		var was_dragging: bool = state == DragState.DRAGGING
+		state = new_state
+		if was_dragging and new_state != DragState.DRAGGING:
+			_let_go()
 
 ## How the player moves things about, an option shared by every Draggable.
 ## DRAG is press, hold and let go over the target. CLICK picks a thing up with
@@ -88,11 +97,6 @@ func set_home(new_home: Vector2, announce_arrival: bool = false) -> void:
 
 
 func _process(delta: float) -> void:
-	# Code took a carried thing out of the player's hands (an enemy grabbed
-	# the die, the ship stood down): the next click is no longer a drop.
-	if _carried and state != DragState.DRAGGING:
-		_stop_carrying()
-
 	# Don't handle moving the draggable object if it's being moved with code
 	if state == DragState.MOVING_WITH_CODE or held_by_code:
 		return
@@ -203,17 +207,23 @@ func put_back() -> void:
 		_end_drag(home_position)
 
 
-## Lets go at [param end_position]: squares the parent back up, then lets the
-## drop handlers decide what landing there means.
+## Lets go at [param end_position], then lets the drop handlers decide what
+## landing there means.
 func _end_drag(end_position: Vector2) -> void:
 	state = DragState.DEFAULT
+	drag_ended.emit(self, end_position)
+
+
+## Undoes the pick-up: the parent squared back up at its usual depth, the
+## carry over, and nothing held. Run by the state setter on leaving DRAGGING.
+func _let_go() -> void:
 	_stop_carrying()
 	if held == self:
 		held = null
 	Globals.mouse_is_dragging_something = false
-	
+
 	var parent_node: Node2D = get_parent()
-	
+
 	# Stop the wiggle tween
 	if tween:
 		tween.kill()
@@ -222,8 +232,6 @@ func _end_drag(end_position: Vector2) -> void:
 	# Move the parent's render index back to its original
 	parent_node.z_index -= 10
 	parent_node.scale = Vector2(1, 1)
-	
-	drag_ended.emit(self, end_position)
 
 
 func _parent_clickable() -> Clickable:
