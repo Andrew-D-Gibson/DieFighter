@@ -1,0 +1,140 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://t2wxp8eykb68r"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_check"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
+[ext_resource type="Texture2D" uid="uid://p3aot3sjtsfi" path="res://Assets/Textures/Tiles/GreenTiles/fabricator.png" id="tex"]
+
+[sub_resource type="Resource" id="Resource_check_1"]
+script = ExtResource("script_check")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_check_2"]
+script = ExtResource("script_check")
+type = 2
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_check_3"]
+script = ExtResource("script_check")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_check_4"]
+script = ExtResource("script_check")
+type = 5
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_step_5"]
+script = ExtResource("script_effect")
+subtype = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_6"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 15
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_7"]
+script = ExtResource("script_effect")
+category = 2
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_8"]
+script = ExtResource("script_effect")
+category = 5
+subtype = 14
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_9"]
+script = ExtResource("script_effect")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_10"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain_11"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_event_12"]
+script = ExtResource("script_event")
+event = 9
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_step_13"]
+script = ExtResource("script_effect")
+subtype = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_14"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.4784, 0.7412, 0.2, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_15"]
+script = ExtResource("script_effect")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_16"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_17"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain_18"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_13"), SubResource("Resource_step_14"), SubResource("Resource_step_15"), SubResource("Resource_step_16"), SubResource("Resource_step_17")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_19"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_19")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+tile_name = "[color=green]Fabricator+[/color]"
+description = "(countdown) 10. [color=yellow]Any die[/color] -> Count down by die. At 0: Spawn 2 (holograms) (die_6)"
+rarity = 1
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_1")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("script_check")]([SubResource("Resource_check_1"), SubResource("Resource_check_2"), SubResource("Resource_check_3"), SubResource("Resource_check_4")])
+effect_chain = SubResource("Resource_chain_11")
+event_responses = Dictionary[ExtResource("script_event"), ExtResource("script_chain")]({
+SubResource("Resource_event_12"): SubResource("Resource_chain_18")
+})
+countdown = 10
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

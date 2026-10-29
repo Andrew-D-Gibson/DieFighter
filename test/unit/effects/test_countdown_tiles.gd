@@ -232,3 +232,31 @@ func test_fuse_payload_burns_and_jams_the_target_at_zero() -> void:
 func test_fuse_payload_plus_counts_from_eight() -> void:
 	var tile: Tile = _tile("fuse_payload_plus")
 	assert_eq(tile.countdown_remaining(), 8)
+
+
+# ── Fabricator ───────────────────────────────────────────────────────────
+
+func test_fabricator_spawns_two_sixes_at_zero() -> void:
+	var tile: Tile = _tile("fabricator")
+	assert_eq(tile.countdown_remaining(), 12)
+	_wind_to_one(tile)
+	var events: Array[EffectEvent] = await _drop(tile, 1)
+	assert_eq(_amounts(events, SpawnHolographicDieEvent), [6, 6])
+	_gives_die_to_target(events)
+
+
+func test_fabricator_refuses_holograms_so_it_cant_feed_itself() -> void:
+	var tile: Tile = _tile("fabricator")
+	var hologram: Dice = autofree(DICE_SCENE.instantiate())
+	hologram.value = 6
+	hologram.holographic = true
+	var refuses: bool = false
+	for check: ActivationResource in tile.tile_resource.activation_checks:
+		if check.type == ActivationResource.ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC:
+			refuses = not check.criteria_satisfied(hologram, tile)
+	assert_true(refuses)
+
+
+func test_fabricator_plus_counts_from_ten() -> void:
+	var tile: Tile = _tile("fabricator_plus")
+	assert_eq(tile.countdown_remaining(), 10)
