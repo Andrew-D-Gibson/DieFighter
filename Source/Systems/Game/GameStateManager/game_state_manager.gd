@@ -264,6 +264,12 @@ func play_opening_strike() -> void:
 	_opening_strike_owed = 0
 
 
+## True while the opening ambusher is flying in holding one of the player's
+## dice, which the hand being dealt must leave room for.
+func opening_strike_holds_die() -> bool:
+	return _opening_strike != null
+
+
 ## Called one frame into the game_start animation, once every system's _ready()
 ## has run. There is no fade and no boot sequence: a run opens in the middle of
 ## an ambush, so the cockpit snaps on already lit and already screaming.

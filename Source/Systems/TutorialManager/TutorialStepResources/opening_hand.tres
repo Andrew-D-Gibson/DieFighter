@@ -7,6 +7,6 @@
 
 [resource]
 script = ExtResource("1_s")
-forced_dice = Array[int]([4, 2, 1])
+forced_dice = Array[int]([2, 1])
 forced_enemy_actions = Array[ExtResource("act_script")]([ExtResource("attack"), ExtResource("attack"), ExtResource("attack"), ExtResource("attack"), ExtResource("nothing"), ExtResource("nothing")])
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

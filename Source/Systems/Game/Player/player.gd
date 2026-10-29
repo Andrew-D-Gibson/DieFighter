@@ -529,10 +529,14 @@ func _restore_saved_hand() -> void:
 ## Arriving keeps whatever dice made the jump and rolls them fresh, rather
 ## than swapping in a new set. The hand only grows here when it has to: the
 ## first scenario of a run, a Continue from an arrival checkpoint, or a die
-## bought since the last arrival that never reached the hand.
+## bought since the last arrival that never reached the hand. A new run's
+## ambusher arrives holding one of the hand (OpeningStrike), so that one isn't
+## dealt.
 func _arrive_with_hand() -> void:
 	var carried: Array[Dice] = _real_dice_in_hand()
 	var shortfall: int = num_of_dice - carried.size()
+	if shortfall > 0 and Globals.state_manager and Globals.state_manager.opening_strike_holds_die():
+		shortfall -= 1
 
 	# More dice in hand than owned would mean a die was double-counted
 	# somewhere. Trust the count, which is what the save records.
