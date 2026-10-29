@@ -48,14 +48,16 @@ func _tile(tile_id: String, pos: Vector2i = Vector2i(0, 0)) -> Tile:
 
 
 ## Drops a die showing [param face] on [param tile] and plays out everything
-## it sets off. Returns every event, in the order they were made.
-func _drop(tile: Tile, face: int) -> Array[EffectEvent]:
+## it sets off, the chain [param passes] times (an echo). Returns every event,
+## in the order they were made.
+func _drop(tile: Tile, face: int, passes: int = 1) -> Array[EffectEvent]:
 	engine.injected.clear()
 	var die: Dice = autofree(DICE_SCENE.instantiate())
 	die.value = face
 	var context := EffectContext.new()
 	context.effect_source = tile
 	context.activator_die = die
+	context.repetitions = passes
 	await tile.tile_resource.effect_chain.play(context, engine)
 	var i: int = 0
 	while i < engine.injected.size():
@@ -260,3 +262,23 @@ func test_fabricator_refuses_holograms_so_it_cant_feed_itself() -> void:
 func test_fabricator_plus_counts_from_ten() -> void:
 	var tile: Tile = _tile("fabricator_plus")
 	assert_eq(tile.countdown_remaining(), 10)
+
+
+# ── Echo ─────────────────────────────────────────────────────────────────
+
+func test_an_echoed_countdown_tile_counts_down_twice_and_hands_its_die_on_once() -> void:
+	var state: GameStateManager = autofree(GameStateManager.new())
+	state.state = GameStateManager.GameState.IN_COMBAT
+	Globals.state_manager = state
+	var tile: Tile = _tile("pulse_repeater")
+	var activation := TileActivationEvent.new()
+	activation.tile = tile
+	activation.activator_die = autofree(DICE_SCENE.instantiate())
+	activation.activator_die.value = 4
+	EchoModifier.new(tile).on_before_event(activation, engine)
+	assert_eq(activation.activation_repetitions, 2, "the echo takes")
+	var events: Array[EffectEvent] = await _drop(tile, 4, activation.activation_repetitions)
+	assert_eq(_amounts(events, CountDownEvent), [4, 4])
+	assert_eq(_amounts(events, DamageEvent), [7], "4 and 4 run a 6 out once")
+	assert_eq(tile.countdown_remaining(), 4)
+	_gives_die_to_target(events)
