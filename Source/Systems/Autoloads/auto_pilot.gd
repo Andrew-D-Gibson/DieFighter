@@ -304,6 +304,13 @@ func _waiting_on_player() -> bool:
 	# patient player sees what's on offer before moving on.
 	if _salvage_on_its_way():
 		return false
+	# Likewise the ships flying in: what they do on arrival (a toll, a shop
+	# opening) waits for them to land. And the shop's stock, which then pops
+	# onto the shelves one item at a time.
+	if is_instance_valid(Globals.enemy_manager) and Globals.enemy_manager.arrival_in_progress:
+		return false
+	if is_instance_valid(Globals.shop) and Globals.shop.is_revealing():
+		return false
 	return state == GameStateManager.GameState.OUT_OF_COMBAT or _player_turn_active
 
 

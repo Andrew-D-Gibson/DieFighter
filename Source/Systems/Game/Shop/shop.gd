@@ -191,6 +191,12 @@ func _pop_in(item: Node2D) -> void:
 	Events.play_sound.emit(_STOCK_POP_SFX)
 
 
+## Whether some stock is still waiting to pop onto its shelf: out of sight
+## and out of reach until it does.
+func is_revealing() -> bool:
+	return not _held_for_reveal.is_empty()
+
+
 ## Skips to the end of the opening, whatever beat it's on: the panel open,
 ## every price tag and item at full size and buyable. Also the cleanup when
 ## the shop closes or restocks mid-opening.
