@@ -183,3 +183,45 @@ func test_the_arm_step_arms_once_per_pass() -> void:
 	await Effects.chain(effects).play(context, recorder)
 	assert_eq(recorder.injected_of(ArmEchoEvent).size(), 2)
 	assert_eq(recorder.injected[0].effect_source, source)
+
+
+## Plays [param resource]'s chain from the source cell (0, 0), with the Dice
+## Cannon to its right, [param passes] times over, and returns what it made.
+func _play_from_source(resource: TileResource, passes: int = 1) -> Array[EffectEvent]:
+	var recorder: RecordingEngine = autofree(RecordingEngine.new())
+	Globals.tile_grid.set_cells([Vector2i(0, 0), Vector2i(1, 0)] as Array[Vector2i])
+	Globals.player = make_player()
+	source.tile_resource = resource
+	var context := EffectContext.new()
+	context.effect_source = source
+	context.activator_die = _die(2)
+	context.repetitions = passes
+	await resource.effect_chain.play(context, recorder)
+	return recorder.injected.duplicate()
+
+
+func _of(events: Array[EffectEvent], script: Script) -> Array[EffectEvent]:
+	return events.filter(func(e: EffectEvent) -> bool: return is_instance_of(e, script))
+
+
+func test_echo_relay_arms_before_it_feeds_right() -> void:
+	var events: Array[EffectEvent] = await _play_from_source(load("res://Source/Content/Tiles/TileResources/echo_relay.tres"))
+	var arm: Array[EffectEvent] = _of(events, ArmEchoEvent)
+	var feed: Array[EffectEvent] = _of(events, PassDieToTileEvent)
+	assert_eq(arm.size(), 1)
+	assert_eq(feed.size(), 1)
+	assert_lt(events.find(arm[0]), events.find(feed[0]), "the fed tile is the one it echoes")
+	assert_eq(feed[0].targets, [cannon] as Array[Node])
+
+
+func test_an_echoed_echo_relay_arms_two_and_feeds_once() -> void:
+	var events: Array[EffectEvent] = await _play_from_source(load("res://Source/Content/Tiles/TileResources/echo_relay.tres"), 2)
+	assert_eq(_of(events, ArmEchoEvent).size(), 2)
+	assert_eq(_of(events, PassDieToTileEvent).size(), 1)
+
+
+func test_echo_relay_plus_has_a_second_use() -> void:
+	var base: TileResource = load("res://Source/Content/Tiles/TileResources/echo_relay.tres")
+	assert_eq(base.uses_per_turn, 1)
+	assert_eq(base.upgraded_version.uses_per_turn, 2, "relays stay at 1-2 uses")
+
