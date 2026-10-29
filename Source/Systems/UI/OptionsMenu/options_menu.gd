@@ -66,6 +66,8 @@ func _build_pages() -> void:
 	game.next_column()
 	game.check(OptionsSettings.SHOW_TUTORIAL, "OPT_SHOW_TUTORIAL", "OPT_SHOW_TUTORIAL_HINT")
 	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
+	# Comfort: background behaviour.
+	game.check(OptionsSettings.PAUSE_IN_BACKGROUND, "OPT_PAUSE_IN_BACKGROUND", "OPT_PAUSE_IN_BACKGROUND_HINT")
 
 	var graphics: OptionsPage = _pages[Tab.GRAPHICS]
 	graphics.check(OptionsSettings.FULLSCREEN, "OPT_FULLSCREEN")
@@ -93,12 +95,17 @@ func _build_pages() -> void:
 	audio.slider(OptionsSettings.MUSIC_VOLUME, "OPT_MUSIC_VOLUME")
 	audio.slider(OptionsSettings.SFX_VOLUME, "OPT_SFX_VOLUME")
 	audio.check(OptionsSettings.MUTE_ALL, "OPT_MUTE_ALL")
+	# Comfort: background behaviour.
+	audio.check(OptionsSettings.MUTE_IN_BACKGROUND, "OPT_MUTE_IN_BACKGROUND", "OPT_MUTE_IN_BACKGROUND_HINT")
 
 	var controls: OptionsPage = _pages[Tab.CONTROLS]
 	controls.note("OPT_CONTROLS_EMPTY")
 
 	var accessibility: OptionsPage = _pages[Tab.ACCESSIBILITY]
-	accessibility.check(OptionsSettings.SCREENSHAKE, "OPT_SCREENSHAKE", "OPT_SCREENSHAKE_HINT")
+	# Comfort: screenshake, flashing and hit pause.
+	accessibility.slider(OptionsSettings.SCREENSHAKE_INTENSITY, "OPT_SCREENSHAKE", "OPT_SCREENSHAKE_HINT")
+	accessibility.check(OptionsSettings.REDUCE_FLASHING, "OPT_REDUCE_FLASHING", "OPT_REDUCE_FLASHING_HINT")
+	accessibility.check(OptionsSettings.HIT_PAUSE, "OPT_HIT_PAUSE", "OPT_HIT_PAUSE_HINT")
 
 
 ## The window scales offered here: those that fit on this display.

@@ -495,7 +495,7 @@ func flash(color: Color, strength: float = 1.0, duration: float = 0.25) -> void:
 	if mat == null:
 		return
 	mat.set_shader_parameter("flash_color", color)
-	mat.set_shader_parameter("flash_amount", strength)
+	mat.set_shader_parameter("flash_amount", Juice.soften_flash(strength))
 	_flash_tween = create_tween()
 	_flash_tween.tween_property(mat, "shader_parameter/flash_amount", 0.0, duration) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)

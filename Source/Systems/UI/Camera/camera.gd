@@ -25,13 +25,15 @@ var _punch_tween: Tween
 func _ready() -> void:
 	_resting_zoom = zoom
 
+	# Every camera move here scales with the screenshake setting; at zero
+	# there's none at all.
 	Events.camera_shake_small.connect(func() -> void:
 		if Globals.screenshake_enabled:
-			$Shakeable.small_shake()
+			$Shakeable.small_shake(Globals.screenshake_intensity)
 	)
 	Events.camera_shake_large.connect(func(glitch: bool = false) -> void:
 		if Globals.screenshake_enabled:
-			$Shakeable.large_shake()
+			$Shakeable.large_shake(Globals.screenshake_intensity)
 
 			if glitch:
 				Events.set_glitch.emit(true)
@@ -46,8 +48,9 @@ func _ready() -> void:
 ## Snaps in fast and eases back out. The lean goes through `offset` rather than
 ## position, because Shakeable owns position while a shake is running.
 func _zoom_punch(peak_zoom: float, focus: Vector2, has_focus: bool) -> void:
-	# A punch is camera motion; players who turned shake off turned this off too.
-	if not Globals.screenshake_enabled or peak_zoom <= 1.0:
+	# A punch is camera motion, so it shrinks with the screenshake setting.
+	peak_zoom = scaled_zoom(peak_zoom, Globals.screenshake_intensity)
+	if peak_zoom <= 1.0:
 		return
 
 	if _punch_tween and _punch_tween.is_valid():
@@ -55,7 +58,7 @@ func _zoom_punch(peak_zoom: float, focus: Vector2, has_focus: bool) -> void:
 
 	var lean: Vector2 = Vector2.ZERO
 	if has_focus:
-		lean = (focus - get_screen_center_position()) * _PUNCH_FOCUS_LEAN
+		lean = (focus - get_screen_center_position()) * _PUNCH_FOCUS_LEAN * Globals.screenshake_intensity
 
 	_punch_tween = create_tween().set_parallel(true)
 	_punch_tween.tween_property(self, "zoom", _resting_zoom * peak_zoom, _PUNCH_IN_SECONDS) \
@@ -78,17 +81,24 @@ func _kill_cam(focus: Vector2, hold_seconds: float) -> void:
 	if _punch_tween and _punch_tween.is_valid():
 		_punch_tween.kill()
 
-	var lean: Vector2 = (focus - get_screen_center_position() + offset) * _KILL_CAM_FOCUS_LEAN
+	var intensity: float = Globals.screenshake_intensity
+	var lean: Vector2 = (focus - get_screen_center_position() + offset) * _KILL_CAM_FOCUS_LEAN * intensity
 	var creep_seconds: float = maxf(hold_seconds - _KILL_CAM_SNAP_SECONDS, 0.0)
 
 	# Effect time throughout: the hold is a hitstop, where game time stands still.
 	_punch_tween = TimeDirector.effect_tween(self)
-	_punch_tween.tween_property(self, "zoom", _resting_zoom * _KILL_CAM_SNAP_ZOOM, _KILL_CAM_SNAP_SECONDS) \
+	_punch_tween.tween_property(self, "zoom", _resting_zoom * scaled_zoom(_KILL_CAM_SNAP_ZOOM, intensity), _KILL_CAM_SNAP_SECONDS) \
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	_punch_tween.parallel().tween_property(self, "offset", lean, _KILL_CAM_SNAP_SECONDS) \
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	_punch_tween.tween_property(self, "zoom", _resting_zoom * _KILL_CAM_PEAK_ZOOM, creep_seconds)
+	_punch_tween.tween_property(self, "zoom", _resting_zoom * scaled_zoom(_KILL_CAM_PEAK_ZOOM, intensity), creep_seconds)
 	_punch_tween.tween_property(self, "zoom", _resting_zoom, _KILL_CAM_OUT_SECONDS) \
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	_punch_tween.parallel().tween_property(self, "offset", Vector2.ZERO, _KILL_CAM_OUT_SECONDS) \
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
+
+
+## A zoom of [param zoom] times the resting one, pulled back toward no zoom
+## at all as [param intensity] drops from 1 to 0.
+static func scaled_zoom(zoom: float, intensity: float) -> float:
+	return 1.0 + (zoom - 1.0) * clampf(intensity, 0.0, 1.0)

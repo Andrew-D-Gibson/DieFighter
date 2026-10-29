@@ -40,6 +40,10 @@ const _BOB_TIME: float = 1.6
 ## The portal turning gold before the rush, and the white-out after it.
 const _CHARGE_TIME: float = 0.35
 const _WHITE_OUT_TIME: float = 0.08
+## Under Reduce Flashing the passage fades to the dark of space instead, and
+## more gently: the screen still has to be covered while hyperspace swaps in.
+const _REDUCED_FADE_OUT_TIME: float = 0.3
+const _REDUCED_FADE_COLOR: Color = Color("#040217")
 
 var _open: bool = false
 ## True from the moment a passage begins until the next sector starts. The
@@ -187,7 +191,7 @@ func begin_passage() -> void:
 
 ## How long play_passage() runs, from the portal charging to the white frame.
 func passage_duration() -> float:
-	return _CHARGE_TIME + passage_time + _WHITE_OUT_TIME
+	return _CHARGE_TIME + passage_time + _cover_time()
 
 
 ## The ship flies through: the portal turns gold, the ring rushes at the
@@ -218,9 +222,10 @@ func play_passage() -> void:
 	_tweens.append(rush)
 	await rush.finished
 
+	flash.color = Color(_REDUCED_FADE_COLOR if Globals.reduce_flashing else Globals.white, 0.0)
 	flash.show()
 	var white: Tween = create_tween()
-	white.tween_property(flash, "color:a", 1.0, _WHITE_OUT_TIME)
+	white.tween_property(flash, "color:a", 1.0, _cover_time())
 	_tweens.append(white)
 	await white.finished
 
@@ -277,6 +282,11 @@ func _hide_all_but_flash() -> void:
 	ring.stop()
 	portal.stop()
 	portal_charged.stop()
+
+
+## How long the screen takes to be covered at the end of the passage.
+func _cover_time() -> float:
+	return _REDUCED_FADE_OUT_TIME if Globals.reduce_flashing else _WHITE_OUT_TIME
 
 
 func _kill_tweens() -> void:

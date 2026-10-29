@@ -248,7 +248,7 @@ func flash(color: Color, duration: float = 0.25) -> void:
 		_flash_tween.kill()
 
 	ship_graphics.material.set_shader_parameter('flash_color', color)
-	ship_graphics.material.set_shader_parameter('flash_amount', 1.0)
+	ship_graphics.material.set_shader_parameter('flash_amount', Juice.soften_flash(1.0))
 
 	_flash_tween = create_tween()
 	_flash_tween.tween_property(ship_graphics, "material:shader_parameter/flash_amount", 0, duration).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

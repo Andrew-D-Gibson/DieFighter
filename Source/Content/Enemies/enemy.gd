@@ -295,15 +295,18 @@ func _on_death() -> void:
 ## Everything after it waits too: anything spawned into a stopped clock would
 ## hang on its first frame instead of bursting out when time resumes.
 func _play_kill_confirm() -> Vector2:
-	var hold_seconds: float = _KILL_HOLD_MSEC / 1000.0
+	# With Hit Pause off there's no freeze, so nothing is held for one: the
+	# kill cam becomes a plain punch, and the focus and shudder are skipped.
+	var hold_seconds: float = _KILL_HOLD_MSEC / 1000.0 if TimeDirector.hitstop_enabled else 0.0
 	var direction: Vector2 = _kick_direction()
 
 	graphics_manager.set_ship_raised(true)
 	# Game-time fade, so it holds at full white through the freeze and only
 	# fades as the ship flies.
 	graphics_manager.flash(Color.WHITE, _KILL_FLASH_FADE_SECONDS)
-	graphics_manager.play_kill_focus(hold_seconds)
-	graphics_manager.play_kill_shudder(direction, hold_seconds)
+	if hold_seconds > 0.0:
+		graphics_manager.play_kill_focus(hold_seconds)
+		graphics_manager.play_kill_shudder(direction, hold_seconds)
 	Events.camera_kill_cam.emit(global_position, hold_seconds)
 	await TimeDirector.hitstop(_KILL_HOLD_MSEC)
 

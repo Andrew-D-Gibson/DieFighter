@@ -13,6 +13,10 @@ extends ColorRect
 @export var alert_pulse_time: float = 0.55
 @export var alert_alpha: float = 0.55
 
+## Under Reduce Flashing every pulse rises this many times slower, so the
+## edges swell rather than flash.
+const _REDUCED_RISE_FACTOR: float = 4.0
+
 ## Kept so a new red alert can cut off one already running rather than fighting
 ## it for the same shader parameter.
 var _alert_tween: Tween
@@ -33,9 +37,7 @@ func _ready() -> void:
 func _shield_break_vignette() -> void:
 	material.set_shader_parameter('color', Color.html('#8df1f4'))
 
-	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(self, "material:shader_parameter/alpha", break_alpha, break_flash_time * 0.06).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(self, "material:shader_parameter/alpha", 0, break_flash_time * 0.94).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_swell(break_alpha, break_flash_time * 0.06, break_flash_time * 0.94)
 
 
 ## A hazard building to its strike: the edges swell in its colour in pulses
@@ -45,6 +47,11 @@ func _hazard_wind_up(hazard: BackgroundHazardResource, seconds: float) -> void:
 		_alert_tween.kill()
 	material.set_shader_parameter('color', hazard.color)
 	_alert_tween = get_tree().create_tween()
+	if Globals.reduce_flashing:
+		# One steady swell instead of quickening pulses.
+		_alert_tween.tween_property(self, "material:shader_parameter/alpha", _soft(alert_alpha), seconds) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		return
 	# Fractions of the wind-up each pulse takes: long, shorter, shortest.
 	var pulses: Array[float] = [0.45, 0.3, 0.25]
 	for i: int in range(pulses.size()):
@@ -63,7 +70,7 @@ func _hazard_strike(hazard: BackgroundHazardResource) -> void:
 		_alert_tween.kill()
 	material.set_shader_parameter('color', hazard.color)
 	_alert_tween = get_tree().create_tween()
-	_alert_tween.tween_property(self, "material:shader_parameter/alpha", 0.85, 0.05)
+	_alert_tween.tween_property(self, "material:shader_parameter/alpha", _soft(0.85), _rise(0.05))
 	_alert_tween.tween_property(self, "material:shader_parameter/alpha", 0.0, break_flash_time) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
@@ -72,9 +79,7 @@ func _hazard_strike(hazard: BackgroundHazardResource) -> void:
 func _pulse_vignette(tint: Color) -> void:
 	material.set_shader_parameter('color', tint)
 
-	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(self, "material:shader_parameter/alpha", vignette_alpha, vignette_flash_time * 0.1).from(0).set_trans(Tween.TRANS_QUAD)
-	tween.tween_property(self, "material:shader_parameter/alpha", 0, vignette_flash_time * 0.9).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_swell(vignette_alpha, vignette_flash_time * 0.1, vignette_flash_time * 0.9)
 
 
 ## Pulses red for `duration` seconds, then settles back to clear. Used by the
@@ -86,8 +91,17 @@ func _red_alert_vignette(duration: float) -> void:
 
 	material.set_shader_parameter('color', Globals.red)
 
-	var pulses: int = maxi(1, int(round(duration / alert_pulse_time)))
 	_alert_tween = get_tree().create_tween()
+	if Globals.reduce_flashing:
+		# A steady glow for the whole alarm rather than a run of pulses.
+		var rise: float = minf(alert_pulse_time, duration * 0.5)
+		_alert_tween.tween_property(self, "material:shader_parameter/alpha", _soft(alert_alpha), rise) \
+			.set_trans(Tween.TRANS_SINE)
+		_alert_tween.tween_property(self, "material:shader_parameter/alpha", 0.0, rise) \
+			.set_trans(Tween.TRANS_SINE).set_delay(maxf(duration - rise * 2.0, 0.0))
+		return
+
+	var pulses: int = maxi(1, int(round(duration / alert_pulse_time)))
 
 	for i: int in range(pulses):
 		# The last pulse fades to nothing; the ones before it stay slightly lit
@@ -99,3 +113,19 @@ func _red_alert_vignette(duration: float) -> void:
 		_alert_tween.tween_property(
 			self, "material:shader_parameter/alpha", trough, alert_pulse_time * 0.65
 		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## Rises from nothing to [param peak] in [param rise] seconds and fades back
+## over [param fade]. Under Reduce Flashing, dimmer and slower to rise.
+func _swell(peak: float, rise: float, fade: float) -> void:
+	var tween: Tween = get_tree().create_tween()
+	tween.tween_property(self, "material:shader_parameter/alpha", _soft(peak), _rise(rise)).from(0).set_trans(Tween.TRANS_QUAD)
+	tween.tween_property(self, "material:shader_parameter/alpha", 0, fade).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+func _soft(alpha: float) -> float:
+	return Juice.soften_flash(alpha)
+
+
+func _rise(seconds: float) -> float:
+	return seconds * _REDUCED_RISE_FACTOR if Globals.reduce_flashing else seconds

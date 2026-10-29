@@ -445,7 +445,7 @@ func _charge_jump(ship_name: StringName, seconds: float, color: Color = _BLUE_JU
 	var tween: Tween = create_tween()
 	var pulses: int = 5
 	for i: int in range(pulses):
-		var peak: float = lerpf(0.15, 0.7, float(i) / (pulses - 1))
+		var peak: float = Juice.soften_flash(lerpf(0.15, 0.7, float(i) / (pulses - 1)))
 		var beat: float = seconds / pulses
 		tween.tween_property(material, "shader_parameter/flash_amount", peak, beat * 0.3)
 		tween.tween_property(material, "shader_parameter/flash_amount", 0.0, beat * 0.7)
@@ -568,13 +568,13 @@ func _flash_ship(ship: Node2D, color: Color, seconds: float) -> void:
 		return
 	material.set_shader_parameter("flash_color", color)
 	var tween: Tween = create_tween()
-	tween.tween_property(material, "shader_parameter/flash_amount", 0.0, seconds).from(1.0) \
+	tween.tween_property(material, "shader_parameter/flash_amount", 0.0, seconds).from(Juice.soften_flash(1.0)) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 func _flash_screen(color: Color, peak: float, seconds: float) -> void:
 	var flash: ColorRect = %Flash
-	flash.color = Color(color, peak)
+	flash.color = Color(color, Juice.screen_wash_alpha(peak))
 	var tween: Tween = create_tween()
 	tween.tween_property(flash, "color:a", 0.0, seconds).set_ease(Tween.EASE_OUT)
 

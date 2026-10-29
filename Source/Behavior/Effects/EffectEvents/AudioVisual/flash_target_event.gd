@@ -31,7 +31,8 @@ func resolve(_engine: ScenarioEngine) -> void:
 ## hitstop, where an ease-in would still be at zero when the freeze ends.
 func _flash_canvas_item(item: CanvasItem) -> void:
 	var resting: Color = item.modulate
-	item.modulate = Color(color.r * 2.0, color.g * 2.0, color.b * 2.0, resting.a)
+	var boost: float = 1.0 + Juice.soften_flash(1.0)
+	item.modulate = Color(color.r * boost, color.g * boost, color.b * boost, resting.a)
 	var tween: Tween = item.create_tween()
 	tween.tween_property(item, "modulate", resting, _FLASH_SECONDS) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)

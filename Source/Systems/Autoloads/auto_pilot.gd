@@ -510,6 +510,12 @@ func _shoot(label: String) -> void:
 	_shot_label = label
 
 
+## Whether the bot is at the controls: false once it has handed the game
+## over (--stop-at-turn).
+func is_playing() -> bool:
+	return not _handed_over
+
+
 ## Stops playing (--stop-at-turn) and leaves the game as it is.
 func _hand_over() -> void:
 	_handed_over = true
