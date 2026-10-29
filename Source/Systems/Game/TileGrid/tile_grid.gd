@@ -706,7 +706,9 @@ func push_tile(tile: Tile, direction: Vector2i) -> void:
 ## move_tile() (one tile, swapping with whatever is there), every listed tile
 ## leaves before any arrives, so a whole loop of tiles can shift one cell
 ## along in a single step (the Carousel's ring). New cells must be valid and
-## either listed as vacated or empty; anything else is skipped with an error.
+## either listed as vacated or empty; if any isn't, nothing moves and it's
+## reported as an error. (Skipping just the bad move could land a tile on one
+## that stayed put, and the grid would lose track of it.)
 ## Homes move but the tiles don't announce their arrival: the caller decides
 ## how the motion looks (it can take the tiles over with MOVING_WITH_CODE).
 ## Emits no tile_pushed / tile_manually_moved: nothing was pushed or dragged.
@@ -716,10 +718,10 @@ func relocate_tiles(moves: Dictionary[Vector2i, Vector2i]) -> void:
 		var to_pos: Vector2i = moves[from_pos]
 		if not tile_locations.has(from_pos) or not is_grid_pos_valid(to_pos):
 			push_error("TileGrid.relocate_tiles: bad move %s -> %s" % [from_pos, to_pos])
-			continue
+			return
 		if tile_locations.has(to_pos) and not moves.has(to_pos):
 			push_error("TileGrid.relocate_tiles: %s is taken by a tile that isn't moving" % to_pos)
-			continue
+			return
 		moving[from_pos] = tile_locations[from_pos]
 	for from_pos: Vector2i in moving:
 		tile_locations.erase(from_pos)
