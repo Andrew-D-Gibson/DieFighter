@@ -5,16 +5,44 @@
 [ext_resource type="Texture2D" uid="uid://d33kyk4uuloux" path="res://Assets/Textures/Shop/shop_tabbed_background.png" id="4_uu5u6"]
 [ext_resource type="Texture2D" uid="uid://b41a3gdbfjgrk" path="res://Assets/Textures/Money/money_symbol.png" id="5_uu5u6"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/GridSlot/grid_slot.tscn" id="6_slot"]
+[ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="7_button"]
+[ext_resource type="Texture2D" uid="uid://66npl6ypq2vo" path="res://Assets/Textures/UI/Buttons/button_medium_green.png" id="8_green"]
+[ext_resource type="Texture2D" uid="uid://cf21ufj3oos4n" path="res://Assets/Textures/UI/Buttons/button_medium_purple_disabled.png" id="9_disabled"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yjpg7"]
 size = Vector2(160, 56)
 
-[node name="Shop" type="Node2D" unique_id=468732449 node_paths=PackedStringArray("prices", "bounding_box")]
+[sub_resource type="AtlasTexture" id="AtlasTexture_reroll_green"]
+atlas = ExtResource("8_green")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_reroll_disabled"]
+atlas = ExtResource("9_disabled")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_reroll"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_reroll_green")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_reroll_disabled")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 0.0
+}]
+
+[node name="Shop" type="Node2D" unique_id=468732449 node_paths=PackedStringArray("prices", "bounding_box", "reroll_tab", "reroll_button", "reroll_price_tag")]
 script = ExtResource("1_shop")
 prices = [NodePath("Price1"), NodePath("Price2"), NodePath("Price3"), NodePath("Price4"), NodePath("Price5"), NodePath("Price6")]
 dice_scene = ExtResource("3_0o0y8")
 grid_slot_scene = ExtResource("6_slot")
 bounding_box = NodePath("CollisionShape2D2")
+reroll_tab = NodePath("RerollTab")
+reroll_button = NodePath("RerollTab/RerollButton")
+reroll_price_tag = NodePath("RerollTab/RerollPrice")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="." unique_id=1821342925]
 shape = SubResource("RectangleShape2D_yjpg7")
@@ -119,3 +147,36 @@ bbcode_enabled = true
 text = "SHOP"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="RerollTab" type="Node2D" parent="."]
+
+[node name="RerollButton" parent="RerollTab" instance=ExtResource("7_button")]
+offset_left = 24.0
+offset_top = -41.0
+offset_right = 80.0
+offset_bottom = -27.0
+button_size = 2
+hover_text_color = Color(0.478431, 0.741176, 0.2, 1)
+
+[node name="AnimatedSprite2D" parent="RerollTab/RerollButton" index="0"]
+sprite_frames = SubResource("SpriteFrames_reroll")
+
+[node name="RichTextLabel" parent="RerollTab/RerollButton" index="1"]
+text = "SHOP_REROLL_BUTTON"
+
+[node name="RerollPrice" type="Sprite2D" parent="RerollTab"]
+position = Vector2(17, -34)
+texture = ExtResource("5_uu5u6")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="RerollTab/RerollPrice"]
+offset_left = -21.0
+offset_top = -14.0
+offset_right = -4.0
+offset_bottom = 11.0
+mouse_filter = 2
+bbcode_enabled = true
+text = "8"
+horizontal_alignment = 2
+vertical_alignment = 1
+
+[editable path="RerollTab/RerollButton"]

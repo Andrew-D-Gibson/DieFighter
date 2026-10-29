@@ -309,7 +309,14 @@ func _dice_step(data: EffectData, walk: _Walk) -> void:
 			walk.final_face = clampi(walk.context.running_amount, 1, 6)
 		EffectEnums.DiceControlSubtype.ADD_TO_ACTIVATOR_VALUE:
 			if walk.final_face > 0:
-				walk.final_face = mini(walk.final_face + walk.context.running_amount, 6)
+				walk.final_face = clampi(walk.final_face + walk.context.running_amount, 1, 6)
+		EffectEnums.DiceControlSubtype.SPLIT_ACTIVATOR:
+			# The die leaves with the bigger half; the hologram is one more
+			# die back in hand. A rerolled face may be a 1, which can't split.
+			if walk.final_face != 1:
+				dice_back += 1.0
+			if walk.final_face > 0:
+				walk.final_face = SplitActivatorEvent.halves(walk.final_face).x
 		EffectEnums.DiceControlSubtype.REROLL_ACTIVATOR:
 			walk.final_face = 0
 		EffectEnums.DiceControlSubtype.FLIP_ONES_AND_SIXES:

@@ -1,10 +1,16 @@
 class_name AddToActivatorValueEvent
 extends EffectEvent
-## Raises the activator die's face by amount, capped at 6 like every die.
+## Moves the activator die's face by amount, kept to 1-6 like every die.
 ##
 ## amount is the step, so it stays amplifiable: an Amplifier's +2 turns a +1
 ## into a +3. The callout is spawned here rather than authored on the tile, so
 ## it shows the step that actually landed — after modifiers and the cap.
+
+
+## A step down (Nudge Down) isn't amplified: the Amplifier's +N would turn a
+## -1 into a rise, the opposite of what the tile says.
+func is_amplifiable() -> bool:
+	return amount > 0
 
 
 ## See EffectEvent.changes_die_values().

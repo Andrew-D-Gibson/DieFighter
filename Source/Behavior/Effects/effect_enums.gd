@@ -200,6 +200,10 @@ enum DiceControlSubtype {
 	## CHANGE_ACTIVATOR_VALUE the amount is the step, not the face, so an
 	## Amplifier on the tile grows the step.
 	ADD_TO_ACTIVATOR_VALUE,
+	## Split the activator die in two that add up to it: it keeps the bigger
+	## half (rounded up) and a hologram showing the rest joins the player's
+	## hand. A 1 can't split and is left as it is.
+	SPLIT_ACTIVATOR,
 }
 
 

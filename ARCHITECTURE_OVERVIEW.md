@@ -515,7 +515,8 @@ enemies, intents and dice.
 - the scenario id and seed, and the cleared flag;
 - ships by `starting_enemies` index (state resource path, HP, shields,
   squad_losses, turns_alive; a missing index means the ship is gone);
-- untaken reward offers item by item, and the shop's unsold stock and prices;
+- untaken reward offers item by item, and the shop's unsold stock and prices
+  (plus its reroll count, which sets the next reroll's price);
 - the dice in hand, and tile `uses_remaining`;
 - the per-scenario RNG states.
 
