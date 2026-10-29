@@ -225,3 +225,40 @@ func test_echo_relay_plus_has_a_second_use() -> void:
 	assert_eq(base.uses_per_turn, 1)
 	assert_eq(base.upgraded_version.uses_per_turn, 2, "relays stay at 1-2 uses")
 
+
+
+## Plays [param resource]'s turn-start response from the source tile.
+func _turn_start(resource: TileResource) -> Array[EffectEvent]:
+	var recorder: RecordingEngine = autofree(RecordingEngine.new())
+	source.tile_resource = resource
+	var chain: EffectChain = null
+	for trigger: TileEvent in resource.event_responses:
+		if trigger.event == TileEvent.EventType.ON_TURN_START:
+			chain = resource.event_responses[trigger]
+	assert_not_null(chain, "answers the turn starting")
+	var context := EffectContext.new()
+	context.effect_source = source
+	await chain.play(context, recorder)
+	return recorder.injected.duplicate()
+
+
+func test_opening_salvo_arms_an_echo_as_the_turn_starts() -> void:
+	var salvo: TileResource = load("res://Source/Content/Tiles/TileResources/opening_salvo.tres")
+	var arms: Array[EffectEvent] = _of(await _turn_start(salvo), ArmEchoEvent)
+	assert_eq(arms.size(), 1)
+	assert_eq(arms[0].effect_source, source)
+	assert_eq(_of(await _turn_start(salvo.upgraded_version), ArmEchoEvent).size(), 2,
+		"the upgrade echoes the first two tiles")
+
+
+func test_opening_salvo_takes_no_dice() -> void:
+	source.tile_resource = load("res://Source/Content/Tiles/TileResources/opening_salvo.tres")
+	assert_ne(source.activation_refusal(_die()), "")
+
+
+## The turn-start sweep of temporary modifiers runs on the same beat Opening
+## Salvo arms its echo, so the echo must not be one of them.
+func test_an_echo_armed_at_turn_start_survives_the_turn_start_sweep() -> void:
+	await _arm()
+	engine.clear_temporary_modifiers()
+	assert_eq(EchoModifier.armed_count(engine), 1)
