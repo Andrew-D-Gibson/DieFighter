@@ -478,9 +478,9 @@ func _pick_arrival_scenario() -> ScenarioResource:
 
 
 ## Whether map [param slot] of the current sector must be free of place
-## rules: sector 1, within one jump of where the run began. A new player's
-## first jump (the tutorial's included) is the first fight they choose, and a
-## rule on top of it is one new thing too many. Worked out from the save, not
+## rules and hazards: sector 1, within one jump of where the run began. A new
+## player's first jump (the tutorial's included) is the first fight they
+## choose, and a rule on top of it is one new thing too many. Worked out from the save, not
 ## from whether the tutorial is running, so a Continue lands under the same
 ## sky. See RandomBackgroundResource.get_random_background().
 func is_rule_free_slot(slot: int) -> bool:

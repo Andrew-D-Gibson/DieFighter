@@ -129,12 +129,14 @@ func test_the_gate_keeps_a_seeded_maps_layout() -> void:
 const BASIC_BACKGROUNDS: String = "res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres"
 
 
-func test_a_rule_free_draw_never_lands_under_a_rule() -> void:
+func test_a_rule_free_draw_never_lands_under_a_rule_or_a_hazard() -> void:
 	var pool: RandomBackgroundResource = load(BASIC_BACKGROUNDS)
 	var rng := RandomNumberGenerator.new()
 	for i: int in range(200):
 		rng.seed = i
-		assert_null(pool.get_random_background(rng, true).global_modifier)
+		var background: BackgroundResource = pool.get_random_background(rng, true)
+		assert_null(background.global_modifier)
+		assert_null(background.hazard)
 
 
 func test_an_ordinary_draw_still_can() -> void:
@@ -206,3 +208,5 @@ func test_the_tutorials_first_jump_lands_rule_free() -> void:
 			RNGManager.get_rng(RNGManager.Bucket.BACKGROUND), manager.is_rule_free_slot(slot)
 		)
 		assert_null(background.global_modifier, "%s at +%d" % [scenario.resource_path.get_file(), distance])
+		if pool.get_backgrounds().size() > 1:
+			assert_null(background.hazard, "%s at +%d" % [scenario.resource_path.get_file(), distance])
