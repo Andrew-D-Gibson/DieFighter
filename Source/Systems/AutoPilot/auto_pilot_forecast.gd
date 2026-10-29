@@ -10,6 +10,9 @@ extends RefCounted
 ## over the candidates rather than drawn, so a forecast never draws from a
 ## gameplay RNG bucket and a replay still plays the same.
 ##
+## Echoes are followed: one already waiting, or one this move arms before its
+## Feed, doubles the next tile the walk reaches.
+##
 ## It's an estimate. Modifiers (amplifiers, statuses) aren't applied, a
 ## rerolled die's new face is unknown, and a tile activated without a die
 ## counts as a trick rather than being followed.
@@ -61,6 +64,10 @@ var _roster: Array[Enemy] = []
 ## Reads the board as if a fight were on, whatever the state: for valuing a
 ## tile with a stand-in enemy between fights.
 var _as_in_a_fight: bool = false
+## Echoes waiting for the next tile the walk reaches (EchoModifier).
+var _echoes: int = 0
+## Of those, how many this move armed itself.
+var _echoes_armed: int = 0
 
 
 ## A forecast of [param die] dropped on [param tile] while [param target] is
@@ -73,6 +80,7 @@ static func of(tile: Tile, die: Node, target: Enemy, roster: Array[Enemy] = [],
 	forecast._target = target
 	forecast._roster = roster if not roster.is_empty() else _live_roster()
 	forecast._as_in_a_fight = as_in_a_fight
+	forecast._echoes = EchoModifier.armed_count(ScenarioEngine.current())
 	var hologram: bool = die.get("holographic") == true
 	var face: int = int(die.get("value"))
 	# The player's own statuses act as the die lands: Scrambled flips it,
@@ -85,6 +93,8 @@ static func of(tile: Tile, die: Node, target: Enemy, roster: Array[Enemy] = [],
 			forecast._jammed(target, face, hologram)
 			return forecast
 	forecast._follow(tile, die, face, hologram, 0, [])
+	# An echo this move armed and nothing here spent pays off on a later tile.
+	forecast.tile_tricks += float(mini(forecast._echoes_armed, forecast._echoes))
 	return forecast
 
 
@@ -154,6 +164,10 @@ func _follow(tile: Tile, die: Node, face: int, hologram: bool, depth: int, visit
 		var rule_steps: Array[EffectData] = [rule]
 		_run(rule_steps, walk)
 	walk.scale = repetitions + walk.extra_repetitions
+	if _echoes > 0 and _takes_echo(tile):
+		_echoes -= 1
+		_echoes_armed = mini(_echoes_armed, _echoes)
+		walk.scale *= 2
 
 	walk.context.running_amount = 0
 	walk.context.targets = _none()
@@ -381,6 +395,10 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.TileControlSubtype.ADD_AMPLIFIER_MODIFIER, \
 		EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER:
 			tile_tricks += 1.0
+		EffectEnums.TileControlSubtype.ARM_ECHO:
+			# One per pass, each for a tile further down the line.
+			_echoes += walk.scale
+			_echoes_armed += walk.scale
 		EffectEnums.TileControlSubtype.LOCKOUT_TILE:
 			tile_tricks -= _tiles_in(walk)
 		EffectEnums.TileControlSubtype.MOVE_TILE_WITH_OFFSET, \
@@ -388,6 +406,13 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.TileControlSubtype.PUSH_TARGETED_TILES, \
 		EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN:
 			tile_tricks += 0.25
+
+
+## Whether an echo would repeat [param tile] (see EchoModifier.can_echo(); the
+## die was already checked against it).
+func _takes_echo(tile: Tile) -> bool:
+	return tile.tile_resource.can_be_echoed \
+		and not EchoModifier.repetitions_held(tile, ScenarioEngine.current())
 
 
 ## The tile a Feed goes to: the chain's own target, or, when it has none, the
