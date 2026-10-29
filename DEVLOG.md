@@ -4,6 +4,47 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — The AutoPilot rerolls shops
+
+**The move.** `AutoPilotMove.Kind.REROLL` (appended) presses the shop's
+REROLL button through `Shop.reroll()`, while `Shop.reroll_refusal()` allows
+it. The transcript logs the shop's stock again after each reroll (its
+`offer` entry carries `rerolls`), and each visit counts `rerolls`. The random
+bot rerolls now and then (kind weight 0.15).
+
+**When the smart bot rerolls.** Only once nothing on the shelves is worth
+buying. It values every tile the shop could stock as it values a purchase:
+what it adds in its best cell, less its rarity's average price. Then it
+takes the expected best buy across a fresh shelf of four, weighting each
+tile by its drop weight. It rerolls when that beats the reroll's price by
+half a point, counting the price at half rate because smart runs end with
+70-130 credits unspent. It never rerolls into a reserve of 20 credits plus
+what repairs up to its repair line would cost. The `-randpick` balance bot
+never rerolls, so tile-balance batches stay comparable.
+
+**What it did** (199 paired seeds, 7000-7199, smart, against main without
+bot rerolls):
+
+| | With reroll | Without |
+|---|---|---|
+| Seeds where it rerolled | 39 | |
+| Rerolls per shop visit, in those seeds | 0.86 | |
+| Tiles bought per run | 2.83 | 2.73 |
+| Credits left at the end | 71 | 82 |
+| Hull / credits arriving at the Sector Warden | 52 / 36 | 52 / 38 |
+| Full-run wins | 4 | 10 |
+
+In the 39 seeds that rerolled, it finished further ahead in 4 and further
+behind in 13 (sign test p ≈ 0.05). The first version, with only a flat
+20-credit reserve, arrived at the last boss with 9 less hull. Keeping back
+the repair money fixed that, but the harm stayed. Tiles bought off rerolled
+shelves include Arc Tap (6) and other charge spenders, which the bot rates
+highly but uses poorly (it doesn't bank charge mid-fight). More shopping gives
+its valuation errors more chances. Read this as a limit of the bot, not a
+verdict on the reroll.
+
+---
+
 ## 2026-10-29 — Enemy dice and bounties: Cryo Lance, Counter-Battery, Bounty Scanner
 
 The last three tiles from the gap analysis's build list (G16a, G16b, G14).

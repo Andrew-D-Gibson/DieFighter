@@ -678,6 +678,7 @@ could do now: drop a die from the hand on a tile that would take it
 (`Tile.activation_refusal()`, the pure half of `clears_activation_criteria()`),
 retarget, switch the map/systems tab, take a salvage choice
 (`Reward.can_take()`), buy from the shop (`Shop.price_of()`, if affordable),
+reroll its tile shelves (`REROLL`, while `Shop.reroll_refusal()` allows),
 repair or sell at a repair station, drag a grid tile to another cell out of
 a fight (`MOVE_TILE`, a swap if the cell is taken), or press End Turn
 (`Player.can_end_turn()`). `perform()` goes through the same entry points as
@@ -760,7 +761,14 @@ believable standard to measure the random bot against, not strong play.
   worth a tile's room shared over the free cells left; on a full grid in a
   shop, plus the best tile it makes room for. A die is worth less once the
   dice owned outgrow the grid's uses per turn; credits at a flat rate. It
-  buys what clears its price.
+  buys what clears its price. With nothing left worth buying it rerolls
+  when a fresh shelf is expected to pay: every tile the shop could stock
+  (minus what's on the shelves) valued as a purchase at its rarity's
+  average price, and the expected best of four weighted draws
+  (`HeuristicPolicy.expected_best_of()`) set against the reroll's price in
+  spare credits, half rate. It never rerolls into a reserve of 20 credits
+  plus what repairing up to its repair line would cost. The `-randpick`
+  styles never reroll.
 - **Repair stations.** It repairs below a hull share set by its style, a
   little higher with the sector's gate a few stops off. It sells a tile
   whose credits beat what it adds to the board, or that pays for a repair it
