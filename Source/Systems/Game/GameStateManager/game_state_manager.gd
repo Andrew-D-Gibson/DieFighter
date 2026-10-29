@@ -98,13 +98,9 @@ var _restore: Dictionary = {}
 ## slot is never overwritten with an empty one.
 var _scenario_cleared: bool = false
 
-## Hull the opening ambusher's first shot still owes a fresh run (see
-## OpeningStrike). The run starts this much over the save's hull, and until
-## the shot lands checkpoints record the hull as it will be after it, so a
-## Continue never replays the shot or keeps the extra.
-var _opening_strike_owed: int = 0
-## Armed once the opening ships have spawned; null once played, or when
-## there's nothing to fire.
+## The opening ambusher's first shot of a fresh run, which keeps its own
+## books (see OpeningStrike). Null on a Continue, once the player jumps, or
+## when there's nothing to fire.
 var _opening_strike: OpeningStrike
 
 ## Set between leaving a scenario and arriving at the next, including a trip
@@ -169,7 +165,7 @@ func _ready() -> void:
 		current_game_save = current_game_save.duplicate()
 		if ship:
 			current_game_save.ship_id = ship.id
-		_owe_opening_strike()
+		_opening_strike = OpeningStrike.owe(current_game_save)
 
 	if len(current_game_save.sector_scenarios) == 0:
 		RNGManager.start_new_run()
@@ -180,7 +176,7 @@ func _ready() -> void:
 	Events.combat_finished.connect(_checkpoint_after_combat)
 	Events.reward_picked.connect(_checkpoint_mid_scenario)
 	Events.jump.connect(func() -> void:
-		_opening_strike_owed = 0
+		_opening_strike = null
 		_restore = {}
 		_scenario_cleared = false
 		_in_transit = true
@@ -220,10 +216,8 @@ func _ready() -> void:
 	Events.load_scenario.emit(_scenario_to_load())
 	# The scenario's ships have spawned: the ambusher takes its die now, so it
 	# flies in holding it.
-	if _opening_strike_owed > 0:
-		_opening_strike = OpeningStrike.arm(_opening_strike_owed)
-		if _opening_strike == null:
-			_forgive_opening_strike()
+	if _opening_strike and not _opening_strike.arm(current_game_save):
+		_opening_strike = null
 
 
 ## The scenario a (re)started game scene opens in: the map slot, unless the
@@ -245,42 +239,17 @@ func _scenario_to_load() -> ScenarioResource:
 	return scenario
 
 	
-## Raises the new run's hull by the opening shot it's about to take, short
-## of max_health, so the shot lands it on the save's starting hull.
-func _owe_opening_strike() -> void:
-	_opening_strike_owed = clampi(
-		current_game_save.player_max_health - current_game_save.player_health,
-		0, OpeningStrike.DAMAGE
-	)
-	current_game_save.player_health += _opening_strike_owed
-
-
-## Takes back the hull raised for an opening shot that will never fire (no
-## hostile ship in the arrival to fire it). Left owed, the run would keep the
-## extra hull while every checkpoint subtracted it, down to a saved hull of
-## zero or less for a player who'd since taken that much damage.
-func _forgive_opening_strike() -> void:
-	current_game_save.player_health -= _opening_strike_owed
-	if is_instance_valid(Globals.player):
-		Globals.player.health.health -= _opening_strike_owed
-	_opening_strike_owed = 0
-
-
 ## Plays the opening shot, the one time there is one, and returns once it
 ## has landed. The hull is the save's after it.
 func play_opening_strike() -> void:
-	if not _opening_strike:
-		return
-	var strike: OpeningStrike = _opening_strike
-	_opening_strike = null
-	await strike.play()
-	_opening_strike_owed = 0
+	if _opening_strike:
+		await _opening_strike.play()
 
 
 ## True while the opening ambusher is flying in holding one of the player's
 ## dice, which the hand being dealt must leave room for.
 func opening_strike_holds_die() -> bool:
-	return _opening_strike != null
+	return _opening_strike != null and _opening_strike.holds_die()
 
 
 ## Called one frame into the game_start animation, once every system's _ready()
@@ -625,7 +594,9 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 	if _in_transit and mid_scenario:
 		return
 
-	current_game_save.player_health = Globals.player.health.health - _opening_strike_owed
+	# Until the opening shot lands, the hull it's about to take isn't the run's.
+	var owed: int = _opening_strike.hull_owed() if _opening_strike else 0
+	current_game_save.player_health = Globals.player.health.health - owed
 	current_game_save.player_max_health = Globals.player.health.max_health
 	current_game_save.player_defense = Globals.player.health.shields
 	current_game_save.player_engine_charge = Globals.player.engine_charge

@@ -6,12 +6,17 @@ extends RefCounted
 ## before the player's first turn. The cannon hands the die on to its target
 ## as it always does, so the die drops into the player's hand: the first thing
 ## a run shows is the game's loop of a die used against you coming back to you.
-## The player is dealt one die fewer to make room for it (see
-## Player._arrive_with_hand()).
 ##
-## GameStateManager starts a fresh run this much over the save's hull (see
-## GameStateManager._owe_opening_strike()), so the shot leaves the player
-## exactly where the save says a run begins.
+## It owns the whole of that, start to finish, so nothing else has to keep
+## its books:
+##   owe()   A fresh run's save starts this much over its hull, so the shot
+##           leaves the player exactly where the save says a run begins.
+##   arm()   Once the ships have spawned, the ambusher takes the die. With no
+##           ship to fire, the extra hull is taken back.
+##   play()  Before the first turn, the shot. The hull is the save's after it.
+## Until the shot lands, hull_owed() is what a checkpoint takes off the hull,
+## so a Continue never replays the shot or keeps the extra. The hand is dealt
+## one die fewer while holds_die() (see Player._arrive_with_hand()).
 
 ## The shot it fires, whose chain hands the die back to the player. Loaded
 ## when it fires rather than preloaded: GameStateManager holds one of these,
@@ -25,36 +30,77 @@ const DAMAGE: int = 4
 ## first move rather than part of the fly-in.
 const _WIND_UP_SECONDS: float = 0.5
 
+## What the shot takes, set when it's owed.
 var _damage: int = 0
+## Hull the run is carrying for the shot until it lands.
+var _owed: int = 0
+## Set once play() starts: the die is on its way back from then on.
+var _fired: bool = false
 var _shooter: Enemy
 var _die: Dice
 
 
-## Hands the first hostile ship the player's die, to fly in with. Call once
-## the scenario's ships have spawned and before the hand is dealt. Null when
-## there's no ship to fire.
-static func arm(damage: int) -> OpeningStrike:
-	var shooter: Enemy = _find_shooter()
-	if damage <= 0 or shooter == null or not is_instance_valid(Globals.player):
+## Raises a fresh run's [param save] by the shot it's about to take, short of
+## max hull, and returns the strike that owes it. Null if there's no room for
+## any extra hull (a run starting at full).
+static func owe(save: GameSaveResource) -> OpeningStrike:
+	var owed: int = clampi(save.player_max_health - save.player_health, 0, DAMAGE)
+	if owed <= 0:
 		return null
-
 	var strike: OpeningStrike = OpeningStrike.new()
-	strike._damage = damage
-	strike._shooter = shooter
-	strike._die = Globals.player.dice_scene.instantiate()
-	# Set before it enters the tree, so it neither rolls nor takes a die the
-	# tutorial forced for the rest of the hand. Showing the hit lets the die
-	# read as the shot.
-	strike._die.value = clampi(damage, 1, 6)
-	Globals.player.add_child(strike._die)
-	shooter.dice_manager.add(strike._die)
-	strike._die.global_position = strike._die.draggable.home_position
+	strike._damage = owed
+	strike._owed = owed
+	save.player_health += owed
 	return strike
 
 
+## Hands the first hostile ship the player's die, to fly in with. Call once
+## the scenario's ships have spawned and before the hand is dealt. With no
+## ship to fire, takes the extra hull back off [param save] and the player
+## and returns false: there will be no shot.
+func arm(save: GameSaveResource) -> bool:
+	_shooter = _find_shooter()
+	if _shooter == null or not is_instance_valid(Globals.player):
+		_forgive(save)
+		return false
+
+	_die = Globals.player.dice_scene.instantiate()
+	# Set before it enters the tree, so it neither rolls nor takes a die the
+	# tutorial forced for the rest of the hand. Showing the hit lets the die
+	# read as the shot.
+	_die.value = clampi(_damage, 1, 6)
+	Globals.player.add_child(_die)
+	_shooter.dice_manager.add(_die)
+	_die.global_position = _die.draggable.home_position
+	return true
+
+
+## Hull a checkpoint should take off the player's, so the save shows the hull
+## as it will be once the shot lands. 0 once it has, or was never coming.
+func hull_owed() -> int:
+	return _owed
+
+
+## True while the ambusher is flying in holding one of the player's dice,
+## which the hand being dealt must leave room for.
+func holds_die() -> bool:
+	return not _fired and is_instance_valid(_die)
+
+
 ## Fires the shot, and returns once the hit and everything it sets off have
-## resolved and the die is back in the player's hand.
+## resolved and the die is back in the player's hand. Only the first call
+## does anything.
 func play() -> void:
+	if _fired:
+		return
+	_fired = true
+	await _fire()
+	# Whether it hit or never got off (the ship died first), the run carries
+	# no more hull on its account.
+	_owed = 0
+
+
+func _fire() -> void:
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if not engine or not _usable():
 		_return_die()
@@ -76,6 +122,16 @@ func play() -> void:
 	if engine.currently_processing_queue:
 		await engine.finished_processing_queue
 	_return_die()
+
+
+## Takes back the extra hull for a shot that will never fire. Left owed, the
+## run would keep it while every checkpoint subtracted it, down to a saved
+## hull of zero or less for a player who'd since taken that much damage.
+func _forgive(save: GameSaveResource) -> void:
+	save.player_health -= _owed
+	if is_instance_valid(Globals.player):
+		Globals.player.health.health -= _owed
+	_owed = 0
 
 
 ## The cannon's chain for [member _damage].
