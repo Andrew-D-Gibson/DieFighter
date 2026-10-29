@@ -215,7 +215,8 @@ func _light(strike_now: Strike) -> float:
 				level = 0.6 * exp(-(t - 0.05) / 0.1)
 			if t > 0.18:
 				level = maxf(level, exp(-(t - 0.18) / 0.22))
-	return clampf(level * strike_now.strength, 0.0, 1.0)
+	# Reduce Flashing keeps the storm's lightning but dims it well down.
+	return clampf(level * strike_now.strength, 0.0, 1.0) * Juice.soften_flash(1.0)
 
 
 func _show() -> void:

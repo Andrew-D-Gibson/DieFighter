@@ -59,7 +59,17 @@ var mouse_is_dragging_something: bool = false
 
 
 # Game Settings
-var screenshake_enabled: bool = true
+## How hard camera motion plays (shakes, zoom punches, the kill cam, screen
+## ripples), 0 to 1. Zero turns it off.
+var screenshake_intensity: float = 1.0
+## Whether there's any camera motion at all. Kept for code that only needs
+## on or off; set screenshake_intensity instead.
+var screenshake_enabled: bool:
+	get:
+		return screenshake_intensity > 0.0
+## Accessibility: full-screen flashes drop to a faint tint, rapid flicker
+## stops, and sprite flashes are toned down (see Juice.soften_flash()).
+var reduce_flashing: bool = false
 var animation_speed: float = 4
 var times_run: int = 0
 ## Whether the next new game opens with the tutorial. On until the player

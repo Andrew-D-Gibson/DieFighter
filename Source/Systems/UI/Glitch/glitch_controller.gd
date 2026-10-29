@@ -12,8 +12,9 @@ func _ready() -> void:
 	Events.glitch_burst.connect(_burst)
 
 
+## Never shown under Reduce Flashing: the glitch flickers the whole screen.
 func _set_glitch(glitch_state: bool) -> void:
-	visible = glitch_state
+	visible = glitch_state and not Globals.reduce_flashing
 
 
 ## Timed in real time, so a burst fired inside a hitstop doesn't freeze on.

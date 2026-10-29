@@ -56,15 +56,17 @@ func _process(delta: float) -> void:
 	
 	
 		
-func small_shake() -> void:
-	shake_intensity = small_shake_intensity
+## [param strength] scales how far it shakes: the camera passes the
+## screenshake setting.
+func small_shake(strength: float = 1.0) -> void:
+	shake_intensity = small_shake_intensity * strength
 	shake_time_remaining = small_shake_duration
 	shake_duration = small_shake_duration
 	_start_shake()
 
 
-func large_shake() -> void:
-	shake_intensity = large_shake_intensity
+func large_shake(strength: float = 1.0) -> void:
+	shake_intensity = large_shake_intensity * strength
 	shake_time_remaining = large_shake_duration
 	shake_duration = large_shake_duration
 	_start_shake()

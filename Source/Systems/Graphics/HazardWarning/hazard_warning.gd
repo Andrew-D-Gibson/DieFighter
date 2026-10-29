@@ -77,7 +77,8 @@ func _beat() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(_label, "scale", Vector2.ONE * _REST_SCALE, 0.16) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_label.modulate = Color(2.0, 2.0, 2.0, 1.0)
+	var flare: float = 1.0 + Juice.soften_flash(1.0)
+	_label.modulate = Color(flare, flare, flare, 1.0)
 	tween.parallel().tween_property(_label, "modulate", Color.WHITE, 0.16)
 
 

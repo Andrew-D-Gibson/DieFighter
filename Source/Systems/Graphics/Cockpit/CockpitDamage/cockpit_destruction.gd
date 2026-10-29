@@ -349,7 +349,7 @@ func _process(delta: float) -> void:
 
 func _flash() -> void:
 	var flash: ColorRect = ColorRect.new()
-	flash.color = Globals.white
+	flash.color = Color(Globals.white, Juice.screen_wash_alpha(1.0))
 	flash.size = Vector2(320, 180)
 	flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(flash)

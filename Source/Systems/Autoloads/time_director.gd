@@ -44,6 +44,11 @@ var _last_real_msec: int = -1
 ## See use_frame_clock().
 var _frame_clock: bool = false
 
+## The Hit Pause option. Off, hitstop() does nothing: some players find the
+## game freezing on every impact jarring. Slow-mo is left alone, since it
+## never stops the game outright.
+var hitstop_enabled: bool = true
+
 
 func _ready() -> void:
 	# Must keep ticking while the game is slowed (or paused) to end the slow.
@@ -67,8 +72,9 @@ func _process(_delta: float) -> void:
 
 ## Freezes the game for `duration_ms` of effect time, and resolves when it's
 ## over. Awaited by HitstopEvent, so the effect chain holds on the impact frame.
+## Resolves at once with Hit Pause off (hitstop_enabled).
 func hitstop(duration_ms: int) -> void:
-	if duration_ms <= 0:
+	if duration_ms <= 0 or not hitstop_enabled:
 		return
 	_add_request(_HITSTOP_SCALE, duration_ms)
 	await effect_timer(duration_ms / 1000.0).timeout

@@ -35,6 +35,8 @@ const WINDOW_SCALE: StringName = &"Graphics/window_scale"
 const MONITOR: StringName = &"Graphics/monitor"
 const VSYNC: StringName = &"Graphics/vsync"
 const MAX_FPS: StringName = &"Graphics/max_fps"
+## The old on/off screenshake. Still saved, derived from the intensity, so
+## older settings files migrate (see _register_comfort_options()).
 const SCREENSHAKE: StringName = &"Graphics/screenshake"
 const MASTER_VOLUME: StringName = &"Audio/master_volume"
 const MUSIC_VOLUME: StringName = &"Audio/music_volume"
@@ -42,6 +44,11 @@ const SFX_VOLUME: StringName = &"Audio/sfx_volume"
 const MUTE_ALL: StringName = &"Audio/mute_all"
 # Colorblind support
 const COLOR_SYMBOLS: StringName = &"Accessibility/color_symbols"
+const SCREENSHAKE_INTENSITY: StringName = &"Accessibility/screenshake"
+const REDUCE_FLASHING: StringName = &"Accessibility/reduce_flashing"
+const HIT_PAUSE: StringName = &"Accessibility/hit_pause"
+const MUTE_IN_BACKGROUND: StringName = &"Audio/mute_in_background"
+const PAUSE_IN_BACKGROUND: StringName = &"Game/pause_in_background"
 
 
 class _Option:
@@ -54,6 +61,7 @@ class _Option:
 
 
 var pixel_perfect_scaler: PixelPerfectScaler
+var background_focus: BackgroundFocus
 
 ## In registration order, which is also the order they're applied on load:
 ## the monitor before the window goes fullscreen on it, and so on.
@@ -135,9 +143,6 @@ func _register_options() -> void:
 	register(MAX_FPS, 60,
 		func() -> int: return Engine.max_fps,
 		func(value: Variant) -> void: Engine.max_fps = int(_read_number(value)))
-	register(SCREENSHAKE, true,
-		func() -> bool: return Globals.screenshake_enabled,
-		func(value: Variant) -> void: Globals.screenshake_enabled = bool(value))
 
 	_register_bus_volume(MASTER_VOLUME, "Master")
 	_register_bus_volume(MUSIC_VOLUME, "Music")
@@ -146,6 +151,39 @@ func _register_options() -> void:
 		func() -> bool: return AudioServer.is_bus_mute(AudioServer.get_bus_index("Master")),
 		func(value: Variant) -> void: AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), bool(value)))
 	_register_colorblind_options()
+
+	_register_comfort_options()
+
+
+## Screenshake, flashing, hit pause, and what happens in the background.
+func _register_comfort_options() -> void:
+	register(SCREENSHAKE_INTENSITY, 1.0,
+		func() -> float: return Globals.screenshake_intensity,
+		func(value: Variant) -> void: Globals.screenshake_intensity = clampf(float(value), 0.0, 1.0))
+	# The old checkbox, loaded after the slider: a file from before the slider
+	# has no intensity, so it comes in at full, and the old "off" then takes
+	# it to zero. Saved as "intensity above zero", so in a newer file it always
+	# agrees with the slider and loading it changes nothing.
+	register(SCREENSHAKE, true,
+		func() -> bool: return Globals.screenshake_enabled,
+		func(value: Variant) -> void:
+			if not bool(value):
+				Globals.screenshake_intensity = 0.0)
+	register(REDUCE_FLASHING, false,
+		func() -> bool: return Globals.reduce_flashing,
+		func(value: Variant) -> void: Globals.reduce_flashing = bool(value))
+	register(HIT_PAUSE, true,
+		func() -> bool: return TimeDirector.hitstop_enabled,
+		func(value: Variant) -> void: TimeDirector.hitstop_enabled = bool(value))
+
+	background_focus = BackgroundFocus.new()
+	add_child(background_focus)
+	register(MUTE_IN_BACKGROUND, true,
+		func() -> bool: return background_focus.mute_in_background,
+		func(value: Variant) -> void: background_focus.mute_in_background = bool(value))
+	register(PAUSE_IN_BACKGROUND, false,
+		func() -> bool: return background_focus.pause_in_background,
+		func(value: Variant) -> void: background_focus.pause_in_background = bool(value))
 
 
 func _register_window_options() -> void:

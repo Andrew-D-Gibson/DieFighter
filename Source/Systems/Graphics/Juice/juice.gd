@@ -18,6 +18,19 @@ const _WIGGLE_TWEEN_META: StringName = &"_juice_wiggle_tween"
 ## sits under a ship that flies over the grid.
 const _FX_Z_INDEX: int = 20
 
+## Reduce Flashing: the brightest a full-screen wash may get, a faint tint...
+const _REDUCED_WASH_ALPHA: float = 0.08
+## ...the quickest it may fade, so it never reads as a blink...
+const _REDUCED_WASH_MIN_SECONDS: float = 0.35
+## ...and how long after one before another may play, so a storm's bolts
+## can't strobe the screen.
+const _REDUCED_WASH_GAP_MSEC: int = 600
+## The share of its strength a sprite or screen-edge flash keeps.
+const _REDUCED_FLASH_SHARE: float = 0.4
+
+## When the last softened wash started, in real ms. See screen_flash().
+static var _last_reduced_wash_msec: int = -_REDUCED_WASH_GAP_MSEC
+
 
 ## Squash-and-stretch: snaps `node` wide and flat by `strength`, overshoots
 ## the other way, then springs back. A bump landing mid-bump restarts from the
@@ -213,19 +226,21 @@ static func grid_ripple(origin: Tile, color: Color, step_msec: int = 60) -> void
 
 ## A screen-space shockwave, centred on a world position, that bends
 ## everything on screen — UI included — as it passes. Counts as camera
-## motion, so it honours the screenshake setting.
+## motion, so it scales with the screenshake setting.
 static func screen_ripple(context_node: Node, world_pos: Vector2, strength: float = 1.0) -> void:
-	if not Globals.screenshake_enabled or not _usable(context_node):
+	var scaled: float = strength * Globals.screenshake_intensity
+	if scaled <= 0.0 or not _usable(context_node):
 		return
-	JuiceScreenRipple.spawn(context_node, world_pos, strength)
+	JuiceScreenRipple.spawn(context_node, world_pos, scaled)
 
 
 ## Dims the world and rushes speed lines in on [param target] for
 ## [param hold_seconds] of effect time, then cuts them away. Meant to run inside
 ## a hitstop. Drawn at [param z_index] relative to [param target], so pass one
-## just under whatever should stay lit.
+## just under whatever should stay lit. Skipped under Reduce Flashing: its
+## speed lines flicker across most of the screen many times a second.
 static func kill_focus(target: Node2D, z_index: int, hold_seconds: float, accent: Color) -> void:
-	if not _usable(target):
+	if Globals.reduce_flashing or hold_seconds <= 0.0 or not _usable(target):
 		return
 	var focus: JuiceKillFocus = JuiceKillFocus.new()
 	focus.hold_seconds = hold_seconds
@@ -235,10 +250,19 @@ static func kill_focus(target: Node2D, z_index: int, hold_seconds: float, accent
 
 ## A full-screen wash of [param color] that fades over [param seconds] of real
 ## time: one bright frame to mark the instant something gives way. Kept faint,
-## since the whole screen flashing at full strength is harsh.
+## since the whole screen flashing at full strength is harsh. Under Reduce
+## Flashing it's a faint tint that fades slowly, and one that lands too soon
+## after the last is dropped.
 static func screen_flash(context_node: Node, color: Color, alpha: float = 0.3, seconds: float = 0.12) -> void:
 	if not _usable(context_node):
 		return
+	if Globals.reduce_flashing:
+		var now: int = Time.get_ticks_msec()
+		if now - _last_reduced_wash_msec < _REDUCED_WASH_GAP_MSEC:
+			return
+		_last_reduced_wash_msec = now
+		alpha = screen_wash_alpha(alpha)
+		seconds = maxf(seconds, _REDUCED_WASH_MIN_SECONDS)
 	var layer: CanvasLayer = CanvasLayer.new()
 	# Over the game and UI, alongside the screen ripple.
 	layer.layer = 90
@@ -335,6 +359,20 @@ static func body_of(node: Node2D) -> Node2D:
 	if node.has_method("get_juice_body"):
 		return node.get_juice_body()
 	return node
+
+
+## How strong a sprite or screen-edge flash of [param strength] should play:
+## as authored, or toned down under Reduce Flashing. For flashes small or
+## soft enough to keep, just not at full brightness.
+static func soften_flash(strength: float) -> float:
+	return strength * _REDUCED_FLASH_SHARE if Globals.reduce_flashing else strength
+
+
+## How opaque a full-screen wash of [param alpha] should be: as authored, or
+## no more than a faint tint under Reduce Flashing. For washes drawn outside
+## screen_flash().
+static func screen_wash_alpha(alpha: float) -> float:
+	return minf(alpha, _REDUCED_WASH_ALPHA) if Globals.reduce_flashing else alpha
 
 
 ## Alpha 1 to 0 over a particle's life, shared by every sparkle.
