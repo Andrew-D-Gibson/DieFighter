@@ -22,6 +22,10 @@ var _flash_tween: Tween
 var _last_trigger_callout_msec: int = -_TRIGGER_CALLOUT_COOLDOWN_MSEC
 ## Set once this tile has caught a killing blow (see _on_player_fatal_damage).
 var _death_save_spent: bool = false
+var _use_lights: TileUseLights = TileUseLights.new(self)
+## True while a new resource is being put on, when the lights are just set
+## rather than played.
+var _setting_up: bool = false
 @export var uses_remaining: int = -1:
 	set(new_value):
 		var most: int = max_uses_per_turn()
@@ -37,9 +41,9 @@ var _death_save_spent: bool = false
 
 		# Only a tile with a budget of its own has light frames to show.
 		if uses_remaining == -1 or tile_resource.uses_per_turn < 0:
-			sprite_frames.frame = 0
+			_use_lights.show_lit(0, false)
 		else:
-			sprite_frames.frame = uses_remaining
+			_use_lights.show_lit(uses_remaining, not _setting_up)
 
 ## tile_data holds any necessary data that a tile's effects might need
 ## e.g. "turns_since_last_activation", "last_activator_value", etc.
@@ -175,7 +179,9 @@ func _grid_distance_to(other: Tile) -> Vector2i:
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
 	ColorSymbolBadge.attach_to_tile_sprite(sprite_frames, tile_resource)
+	_setting_up = true
 	uses_remaining = max_uses_per_turn()
+	_setting_up = false
 	update_dragging_allowed()
 	TileUpgradeLook.apply(sprite_frames, tile_resource)
 

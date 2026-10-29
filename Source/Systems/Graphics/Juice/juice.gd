@@ -139,6 +139,31 @@ static func sparkle(parent: Node, global_pos: Vector2, color: Color,
 	particles.emitting = true
 
 
+## The reverse of a sparkle: `count` single-pixel motes fade in on a ring of
+## `radius` round `global_pos` and fall into it over `duration`, for something
+## charging back up. The ring is evenly spaced rather than rolled, so it costs
+## nothing from any RNG and every charge-up looks the same.
+static func gather(parent: Node, global_pos: Vector2, color: Color,
+		count: int = 5, radius: float = 7.0, duration: float = 0.2) -> void:
+	if not _usable(parent) or count <= 0:
+		return
+	# Turned a little off the axes, so no mote starts dead level with the point.
+	var first_angle: float = 0.4
+	for i: int in count:
+		var mote: Sprite2D = Sprite2D.new()
+		mote.texture = _PIXEL_TEXTURE
+		mote.modulate = Color(color, 0.0)
+		mote.z_index = _FX_Z_INDEX
+		parent.add_child(mote)
+		var angle: float = first_angle + TAU * i / count
+		mote.global_position = global_pos + Vector2.from_angle(angle) * radius
+		var tween: Tween = mote.create_tween().set_parallel(true)
+		tween.tween_property(mote, "global_position", global_pos, duration) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		tween.tween_property(mote, "modulate:a", 1.0, duration * 0.5)
+		tween.chain().tween_callback(mote.queue_free)
+
+
 ## Floats a short label off `anchor` (a status name, "x2", "+3").
 static func callout(anchor: Node2D, text: String, color: Color, big: bool = false) -> void:
 	DamageNumber.spawn_text(anchor, text, color, big)
