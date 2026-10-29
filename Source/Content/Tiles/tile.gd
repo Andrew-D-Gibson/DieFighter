@@ -164,6 +164,7 @@ func _grid_distance_to(other: Tile) -> Vector2i:
 
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
+	ColorSymbolBadge.attach_to_tile_sprite(sprite_frames, tile_resource)
 	uses_remaining = tile_resource.uses_per_turn
 	update_dragging_allowed()
 

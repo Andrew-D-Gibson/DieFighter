@@ -23,6 +23,8 @@ func _show_info(info: InfoResource) -> void:
 	%TextureDisplay.texture = info.texture
 	%TextureDisplay.modulate.a = 0
 	%TweenableTextureDisplay.texture = info.texture
+	ColorSymbolBadge.attach_to_rect(%TextureDisplay)
+	ColorSymbolBadge.attach_to_rect(%TweenableTextureDisplay)
 	%TweenableTextureDisplay.show()
 	
 	var starting_pos: Vector2 = get_global_mouse_position()

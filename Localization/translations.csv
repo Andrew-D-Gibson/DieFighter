@@ -79,3 +79,5 @@ OPT_MUTE_ALL,Mute All Sounds,,,,,,,,Options > Audio tab: label beside a checkbox
 OPT_CONTROLS_EMPTY,Nothing to set here yet.,,,,,,,,Options > Controls tab: placeholder while the tab is empty,,,
 OPT_SCREENSHAKE,Screenshake,,,,,,,,Options > Accessibility tab: label beside a checkbox,,,
 OPT_SCREENSHAKE_HINT,Shake the screen on big hits.,,,,,,,,Options > Accessibility tab: hint line for Screenshake,,,
+OPT_COLOR_SYMBOLS,Color Symbols,,,,,,,,Options > Accessibility tab: label beside a checkbox,,,
+OPT_COLOR_SYMBOLS_HINT,Give each tile color its own shape.,,,,,,,,"Options > Accessibility tab: hint line for Color Symbols, which adds a small shape (triangle, shield, diamond, ring, star) to the corner of every tile, one per tile color",,,

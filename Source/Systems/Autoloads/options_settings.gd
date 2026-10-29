@@ -40,6 +40,8 @@ const MASTER_VOLUME: StringName = &"Audio/master_volume"
 const MUSIC_VOLUME: StringName = &"Audio/music_volume"
 const SFX_VOLUME: StringName = &"Audio/sfx_volume"
 const MUTE_ALL: StringName = &"Audio/mute_all"
+# Colorblind support
+const COLOR_SYMBOLS: StringName = &"Accessibility/color_symbols"
 
 
 class _Option:
@@ -143,6 +145,7 @@ func _register_options() -> void:
 	register(MUTE_ALL, false,
 		func() -> bool: return AudioServer.is_bus_mute(AudioServer.get_bus_index("Master")),
 		func(value: Variant) -> void: AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), bool(value)))
+	_register_colorblind_options()
 
 
 func _register_window_options() -> void:
@@ -157,6 +160,13 @@ func _register_window_options() -> void:
 		pixel_perfect_scaler.is_wanted,
 		func(value: Variant) -> void: pixel_perfect_scaler.set_wanted(bool(value)))
 	register(WINDOW_SCALE, largest_window_scale(), current_window_scale, _set_window_scale, false)
+
+
+## Shapes beside colours for players who can't rely on colour alone.
+func _register_colorblind_options() -> void:
+	register(COLOR_SYMBOLS, false,
+		func() -> bool: return ColorSymbolBadge.symbols_enabled,
+		func(value: Variant) -> void: ColorSymbolBadge.symbols_enabled = bool(value))
 
 
 func _register_bus_volume(key: StringName, bus: StringName) -> void:

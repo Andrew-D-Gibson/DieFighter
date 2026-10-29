@@ -53,6 +53,9 @@ func setup(entry_id: String, entry_number: int, icon: Texture2D, is_found: bool,
 		material.set_shader_parameter(&"darken", darken)
 		art.material = material
 	add_child(art)
+	# Only once found: a locked entry is grey, so its family stays hidden too.
+	if found:
+		ColorSymbolBadge.attach_to_rect(art)
 
 	mouse_entered.connect(func() -> void:
 		_hovered = true

@@ -172,6 +172,7 @@ func _show_detail(id: String) -> void:
 		_show_tile(CodexCatalog.tile_resource(id))
 	else:
 		_show_enemy(id, CodexCatalog.enemy_resource(id))
+	ColorSymbolBadge.attach_to_rect(%Portrait)
 	%BodyLabel.scroll_to_line(0)
 
 

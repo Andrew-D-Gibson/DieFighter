@@ -99,6 +99,8 @@ func _build_pages() -> void:
 
 	var accessibility: OptionsPage = _pages[Tab.ACCESSIBILITY]
 	accessibility.check(OptionsSettings.SCREENSHAKE, "OPT_SCREENSHAKE", "OPT_SCREENSHAKE_HINT")
+	# Colorblind support
+	accessibility.check(OptionsSettings.COLOR_SYMBOLS, "OPT_COLOR_SYMBOLS", "OPT_COLOR_SYMBOLS_HINT")
 
 
 ## The window scales offered here: those that fit on this display.
