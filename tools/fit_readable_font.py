@@ -21,6 +21,11 @@ wght 500:
         Assets/Fonts/m3x6/m3x6.ttf \
         Assets/Fonts/AtkinsonHyperlegibleNext/AtkinsonHyperlegibleNext-Medium-m3x6.ttf
     (and the same with m5x7)
+
+Import the result with multichannel_signed_distance_field on and msdf_size
+192 (not the default 64): the game samples textures with nearest filtering,
+and through the 6x camera a coarser field shows as stair-stepped strokes.
+test_font_swap.gd checks it.
 """
 import argparse
 import math
