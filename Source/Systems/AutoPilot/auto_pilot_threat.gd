@@ -151,6 +151,53 @@ static func _cost_of_action(action: EnemyActionResource, ship: Enemy, face: int)
 	return 0.0
 
 
+## The hull [param stacks] of Phased on the player would save: the biggest
+## hits the dice the enemies already hold will throw at them, past any
+## Phased already there (each stack lets the next hit through, but read as
+## the biggest, which is what a cloak is played for).
+static func phased_worth(stacks: int) -> float:
+	if stacks <= 0 or not _intents_visible() or not is_instance_valid(Globals.enemy_manager):
+		return 0.0
+	var hits: Array[float] = []
+	for ship: Enemy in Globals.enemy_manager.get_alive_enemies():
+		if not is_instance_valid(ship) or not ship.dice_manager:
+			continue
+		for die: Dice in ship.dice_manager.queue:
+			if is_instance_valid(die):
+				hits.append_array(_hits_of_face(ship, die.value))
+	hits.sort()
+	hits.reverse()
+	var skip: int = 0
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine and is_instance_valid(Globals.player):
+		var cloak: StatusModifier = engine.find_status(Globals.player, &"phased")
+		skip = cloak.stacks if cloak else 0
+	var worth: float = 0.0
+	for i: int in range(skip, mini(skip + stacks, hits.size())):
+		worth += hits[i]
+	return worth
+
+
+## Each hit [param ship]'s slot for [param face] throws at the player: one
+## entry per shot of a plain attack, none for anything else.
+static func _hits_of_face(ship: Enemy, face: int) -> Array[float]:
+	var hits: Array[float] = []
+	if face < 1 or face > ship.turn_actions.size() or ship.turn_actions[face - 1] == null:
+		return hits
+	var action: EnemyActionResource = ship.turn_actions[face - 1]
+	if action.get_threat() != EnemyActionResource.Threat.DANGEROUS or not _acts(ship, face):
+		return hits
+	if _escapes(action) or _vents(action) or not _status_applied(action).is_empty():
+		return hits
+	var amount: int = action.intent_amount if action.intent_amount > 0 else face
+	if _stacks(ship, &"weakened") > 0:
+		amount = WeakenedStatus.weakened(amount)
+	var shots: int = maxi(action.effect_chain.base_repetitions if action.effect_chain else 1, 1)
+	for _shot: int in range(shots):
+		hits.append(float(amount))
+	return hits
+
+
 ## What [param stacks] of [param status_id] on the player will cost, in hull.
 static func status_cost(status_id: StringName, stacks: int) -> float:
 	if status_id == &"burn":

@@ -13,6 +13,7 @@ static var _statuses: Dictionary[StringName, GDScript] = {
 	&"jammed": JammedStatus,
 	&"exposed": ExposedStatus,
 	&"weakened": WeakenedStatus,
+	&"phased": PhasedStatus,
 }
 
 

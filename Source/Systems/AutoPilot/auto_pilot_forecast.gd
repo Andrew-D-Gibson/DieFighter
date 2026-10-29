@@ -301,6 +301,10 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 					# lost over the next turns, and stacks onto any Burn
 					# already there: what it adds to n + (n - 1) + ... + 1.
 					damage[target] = damage.get(target, 0.0) + _added_burn_cost(amount) * walk.share
+				elif target == Globals.player and status == &"phased":
+					# A cloak saves the hull the biggest coming hits would
+					# have cost: worth what the same in shields would be.
+					shields += AutoPilotThreat.phased_worth(roundi(amount)) * walk.share
 
 
 ## Hull the player loses to Burn over the coming turns if [param added]
