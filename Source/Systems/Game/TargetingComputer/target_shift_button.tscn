@@ -1,0 +1,40 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Game/TargetingComputer/target_shift_button.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/TargetingComputer/target_shift_button_base.png" id="2_base"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/TargetingComputer/target_shift_button_cap.png" id="3_cap"]
+[ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="4_click"]
+
+[node name="TargetShiftButton" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Arm" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="Visual" type="Node2D" parent="Arm"]
+unique_name_in_owner = true
+
+[node name="Base" type="Sprite2D" parent="Arm/Visual"]
+texture = ExtResource("2_base")
+centered = false
+offset = Vector2(-14, -8)
+
+[node name="Cap" type="Sprite2D" parent="Arm/Visual"]
+unique_name_in_owner = true
+texture = ExtResource("3_cap")
+centered = false
+offset = Vector2(-14, -8)
+
+[node name="Clickable" type="Area2D" parent="Arm"]
+unique_name_in_owner = true
+input_pickable = false
+script = ExtResource("4_click")
+hover_for_info = false
+
+[node name="Hitbox" type="CollisionPolygon2D" parent="Arm/Clickable"]
+unique_name_in_owner = true
+polygon = PackedVector2Array(-14, -1, -7, -8, -6, -8, -6, -3, -2, -3, -2, 6, -6, 6, -6, 11, -7, 11, -14, 4)
+
+[connection signal="input_event" from="Arm/Clickable" to="Arm/Clickable" method="_on_input_event"]
+[connection signal="mouse_entered" from="Arm/Clickable" to="Arm/Clickable" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="Arm/Clickable" to="Arm/Clickable" method="_on_mouse_exited"]

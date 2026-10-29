@@ -399,3 +399,81 @@ func test_the_arc_rises_over_the_ships_but_stays_on_screen() -> void:
 	var high: Vector2 = BoundIntentArrow.control_point(Vector2(40, 6), Vector2(280, 6))
 	var apex_y: float = (6.0 + high.y) * 0.5
 	assert_gte(apex_y, BoundIntentArrow._MIN_APEX_Y - 0.001)
+
+
+# ── The arrows that step the target ───────────────────────────────────────────
+
+func _shift_buttons() -> Array[TargetShiftButton]:
+	return [computer.get_node("%LeftShiftButton"), computer.get_node("%RightShiftButton")]
+
+
+## Long enough for both to slide out, swing level and pop up.
+func _let_buttons_settle() -> void:
+	await wait_seconds(1.4)
+
+
+func test_one_ship_leaves_the_arrows_folded_away() -> void:
+	_target(_ship())
+	await _let_buttons_settle()
+	for button: TargetShiftButton in _shift_buttons():
+		assert_false(button.is_out())
+		assert_false(button.visible)
+
+
+func test_a_second_ship_brings_both_arrows_out_and_live() -> void:
+	var first: Enemy = _ship()
+	_target(first)
+	_ship()
+	computer.ensure_target()
+	for button: TargetShiftButton in _shift_buttons():
+		assert_true(button.visible)
+		assert_false(button.is_live(), "pushed in until both are out")
+	await _let_buttons_settle()
+	for button: TargetShiftButton in _shift_buttons():
+		assert_true(button.is_live())
+		assert_eq(button._cap.position.y, 0.0, "popped up proud")
+
+
+func test_down_to_one_ship_folds_the_arrows_away() -> void:
+	var first: Enemy = _ship()
+	var second: Enemy = _ship()
+	_target(first)
+	await _let_buttons_settle()
+
+	manager.enemies.erase(second)
+	computer.check_target_is_valid()
+	await wait_seconds(0.6)
+	for button: TargetShiftButton in _shift_buttons():
+		assert_false(button.is_out())
+		assert_false(button.visible)
+
+
+func test_clicking_an_arrow_steps_the_target_and_bottoms_it_out() -> void:
+	var first: Enemy = _ship()
+	var second: Enemy = _ship()
+	_target(first)
+	await _let_buttons_settle()
+
+	var click: InputEventMouseButton = InputEventMouseButton.new()
+	click.button_index = MOUSE_BUTTON_LEFT
+	click.pressed = true
+	var right: TargetShiftButton = _shift_buttons()[1]
+	right._clickable.input_event.emit(get_viewport(), click, 0)
+	assert_eq(computer.targeted_enemy, second)
+	assert_eq(right._cap.position.y, TargetShiftButton._TRAVEL)
+
+
+func test_a_folded_arrow_ignores_presses() -> void:
+	_target(_ship())
+	var left: TargetShiftButton = _shift_buttons()[0]
+	left.press()
+	assert_false(left.is_live())
+	assert_false(left.visible)
+
+
+func test_the_right_arrow_hitbox_mirrors_the_left() -> void:
+	var left: PackedVector2Array = _shift_buttons()[0]._hitbox.polygon
+	var right: PackedVector2Array = _shift_buttons()[1]._hitbox.polygon
+	assert_eq(left.size(), right.size())
+	for i: int in range(left.size()):
+		assert_eq(right[i], Vector2(-left[i].x, left[i].y))

@@ -99,6 +99,11 @@ func _ready() -> void:
 	%CommsButton.clicked.connect(_on_comms_clicked)
 	_listen_for_comms()
 
+	%LeftShiftButton.pushed.connect(_shift_target.bind(-1))
+	%RightShiftButton.pushed.connect(_shift_target.bind(1))
+	for button: TargetShiftButton in _shift_buttons():
+		button.extended.connect(_on_shift_button_extended)
+
 	%RevealOverlay.material = %RevealOverlay.material.duplicate()
 	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
 
@@ -111,6 +116,9 @@ func ensure_target() -> void:
 	if !targeted_enemy:
 		targeted_enemy_index = 0
 		check_target_is_valid()
+	else:
+		# A second ship arriving gives the player a choice to make.
+		_refresh_shift_buttons()
 		
 
 ## The ship a tile activated by [param die] should act on. That's the ship
@@ -199,28 +207,44 @@ func _reset_icon_tweens() -> void:
 	
 
 func _unhandled_input(event: InputEvent) -> void:
+	# The keys push the matching button too, so the player sees which way the
+	# target went.
 	if event.is_action_pressed('target_left'):
-		targeted_enemy_index -= 1
-		check_target_is_valid()
+		%LeftShiftButton.press()
+		_shift_target(-1)
 
-		
 	if event.is_action_pressed('target_right'):
-		targeted_enemy_index += 1
-		check_target_is_valid()
-		
-
-func _on_left_button_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	# Check for the left mouse pressed event
-	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
-		targeted_enemy_index -= 1
-		check_target_is_valid()
+		%RightShiftButton.press()
+		_shift_target(1)
 
 
-func _on_right_button_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	# Check for the left mouse pressed event
-	if event is InputEventMouseButton and event.pressed and event.button_index == 1:
-		targeted_enemy_index += 1
-		check_target_is_valid()
+## Steps the target [param step] ships along the roster, wrapping at the ends.
+func _shift_target(step: int) -> void:
+	targeted_enemy_index += step
+	check_target_is_valid()
+
+
+func _shift_buttons() -> Array[TargetShiftButton]:
+	return [%LeftShiftButton, %RightShiftButton]
+
+
+## The arrows are only out while there's another ship to switch to.
+func _refresh_shift_buttons() -> void:
+	var has_choice: bool = is_instance_valid(targeted_enemy) and Globals.enemy_manager != null \
+		and Globals.enemy_manager.get_alive_enemies().size() > 1
+	for button: TargetShiftButton in _shift_buttons():
+		if has_choice:
+			button.deploy()
+		else:
+			button.stow()
+
+
+## They slide out pushed in, and pop up together once both are out.
+func _on_shift_button_extended() -> void:
+	var buttons: Array[TargetShiftButton] = _shift_buttons()
+	if buttons.all(func(button: TargetShiftButton) -> bool: return button.is_extended()):
+		for button: TargetShiftButton in buttons:
+			button.pop_up()
 
 
 func check_target_is_valid() -> void:
@@ -318,6 +342,7 @@ func target_enemy(enemy: Enemy) -> void:
 func _update_ui() -> void:
 	_redraw_generation += 1
 	var generation: int = _redraw_generation
+	_refresh_shift_buttons()
 	_show_bound_arrows()
 	_show_attitude()
 	if !targeted_enemy or targeted_enemy_index == -1:
