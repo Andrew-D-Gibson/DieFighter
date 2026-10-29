@@ -14,7 +14,7 @@ static func refusal(item: Node, drop_position: Vector2) -> String:
 	var grid: TileGrid = Globals.tile_grid
 	# A tile needs a free cell, unless it's let go on a twin it upgrades.
 	if item is Tile and not grid.has_free_cell() and not grid.merge_target_at(item, drop_position):
-		return "GRID FULL"
+		return TranslationServer.translate(&"ERROR_GRID_FULL")
 	# A slot opens the sealed cell it's dropped on, and only that.
 	if item is GridSlot and not grid.is_cell_locked(grid.locked_cell_at(drop_position)):
 		return TranslationServer.translate(&"ERROR_PICK_SEALED_CELL")

@@ -34,7 +34,9 @@ func test_not_enough_engine_charge_wraps_inside_the_box() -> void:
 
 func test_every_refusal_fits() -> void:
 	var activation: ActivationResource = ActivationResource.new()
-	for message: String in activation.failed_activation_messages.values():
+	for key: String in activation.failed_activation_messages.values():
+		var message: String = TranslationServer.translate(key)
+		assert_ne(message, key, "%s has English text" % key)
 		var popup: ErrorTextPopup = _show(message)
 		await _assert_fits(popup, message)
 		popup.queue_free()

@@ -145,52 +145,54 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 }
 
 
+## Why each check turned a die away, as translation keys (the popup's text
+## comes from get_criteria_fail_text()).
 var failed_activation_messages: Dictionary[ActivationType, String] = {
 	
 	ActivationType.REQUIRES_ACTIVATOR_DIE: 
-		"REQUIRES DIE",
+		"ERROR_REQUIRES_DIE",
 			
 	ActivationType.VALUE: 
-		"REQUIRES CORRECT VALUE DIE",
+		"ERROR_REQUIRES_VALUE",
 	
 	ActivationType.IN_COMBAT: 
-		"MUST BE IN COMBAT",
+		"ERROR_MUST_BE_IN_COMBAT",
 		
 	ActivationType.OTHER_SHIPS_EXIST: 
-		"OTHER SHIPS MUST BE PRESENT",
+		"ERROR_NEEDS_OTHER_SHIPS",
 
 	ActivationType.SHIP_TARGETED: 
-		"NO VALID TARGET IN COMPUTER",
+		"ERROR_NO_TARGET",
 			
 	ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC: 
-		"CAN'T BE ACTIVATED WITH HOLOGRAPHIC DIE",
+		"ERROR_NOT_WITH_HOLOGRAM",
 			
 	ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
-		"CAN'T BE ACTIVATED WITH DIE",
+		"ERROR_NOT_WITH_DIE",
 			
 	ActivationType.TARGETED_SHIP_HAS_SHIELDS:
-		"TARGETED SHIP HAS NO SHIELDS",
+		"ERROR_TARGET_UNSHIELDED",
 		
 	ActivationType.ENGINE_NOT_CHARGED:
-		"ENGINE IS FULLY CHARGED",
+		"ERROR_ENGINE_FULL",
 		
 	ActivationType.ENGINE_CHARGED:
-		"ENGINE IS NOT CHARGED",
+		"ERROR_ENGINE_EMPTY",
 		
 	ActivationType.CHARGE_AT_LEAST:
-		"NOT ENOUGH ENGINE CHARGE",
+		"ERROR_LOW_CHARGE",
 		
 	ActivationType.OVERCHARGED:
-		"ENGINE IS NOT OVERCHARGED",
+		"ERROR_NOT_OVERCHARGED",
 
 	ActivationType.DICE_OWNED_AT_MOST:
-		"TOO MANY DICE",
+		"ERROR_TOO_MANY_DICE",
 
 	ActivationType.SHIELDS_AT_LEAST:
-		"NOT ENOUGH SHIELDS",
+		"ERROR_LOW_SHIELDS",
 
 	ActivationType.TILE_DATA_AT_LEAST:
-		"NOT READY",
+		"ERROR_NOT_READY",
 }
 
 
@@ -202,4 +204,4 @@ func criteria_satisfied(die: Dice, tile: Tile = null) -> bool:
 	
 
 func get_criteria_fail_text() -> String:
-	return failed_activation_messages[type]
+	return TranslationServer.translate(failed_activation_messages[type])

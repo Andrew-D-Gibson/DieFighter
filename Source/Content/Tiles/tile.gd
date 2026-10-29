@@ -334,7 +334,7 @@ func clears_activation_criteria(activator_die: Dice = null) -> bool:
 func activation_refusal(activator_die: Dice = null) -> String:
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
-		return "NO USES REMAINING"
+		return tr("ERROR_NO_USES")
 
 	for check: ActivationResource in tile_resource.activation_checks:
 		if not check.criteria_satisfied(activator_die, self):

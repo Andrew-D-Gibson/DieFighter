@@ -20,20 +20,21 @@ func resolve(_engine: ScenarioEngine) -> void:
 			Globals.player.commit_to_jump(activator_die)
 			Globals.state_manager.go_through_gate()
 		else:
-			_refuse("GATE LOCKED")
+			_refuse("ERROR_GATE_LOCKED")
 		return
 
 	if not Globals.map.is_valid_destination(desired_index):
-		_refuse("INVALID DESTINATION")
+		_refuse("ERROR_INVALID_DESTINATION")
 		return
 
 	Globals.player.commit_to_jump(activator_die)
 	Globals.map.jump(desired_index)
 
 
-## Hands the die back and says why nothing happened.
+## Hands the die back and says why nothing happened ([param reason] is a
+## translation key).
 func _refuse(reason: String) -> void:
 	if is_instance_valid(activator_die):
 		Globals.player.dice_manager.add(activator_die, true, false)
 	if is_instance_valid(effect_source):
-		Events.error_text_popup.emit(reason, effect_source.global_position)
+		Events.error_text_popup.emit(TranslationServer.translate(reason), effect_source.global_position)

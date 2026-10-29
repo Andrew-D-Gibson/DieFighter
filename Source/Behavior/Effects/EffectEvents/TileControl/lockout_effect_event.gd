@@ -30,7 +30,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		# Enforce the Lockout
 		var tile: Tile = effect_source as Tile
 		tile.dice_queue.remove(activator_die)
-		Events.error_text_popup.emit("TILE LOCKED", tile.global_position)
+		Events.error_text_popup.emit(TranslationServer.translate(&"ERROR_TILE_LOCKED"), tile.global_position)
 		tile.play_refusal_feedback()
 		Globals.player.dice_manager.add(activator_die, true, false)
 
