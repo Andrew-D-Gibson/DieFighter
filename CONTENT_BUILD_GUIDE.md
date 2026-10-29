@@ -735,6 +735,11 @@ a new one needs a rule for each side.
    and implement its hook. Where it touches dice, branch on
    `is_on_player()`: an enemy spends dice on its table, the player places
    them on tiles (`JammedStatus` and `ScrambledStatus` show both).
+   - A status that lasts a number of the ship's turns counts down as that
+     ship's own turn ends (`Events.enemy_turn_over` for an enemy,
+     `Events.player_turn_over` for the player), not in `on_status_tick()`:
+     that tick runs before an enemy acts and after the player's turn, so it
+     would spend a stack before the status ever did anything (`WeakenedStatus`).
 2. Add it to `StatusCatalog._statuses` (`status_catalog.gd`), keyed by id.
 3. Art: `Assets/Textures/Statuses/` (11×11 badge, 24×24 info).
 4. Add a keyword for it (§9). If it reads differently on the player, add a
