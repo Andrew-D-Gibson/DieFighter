@@ -168,7 +168,14 @@ on the grid runs dry.
 **Relays are always limited, to 1 or 2 uses.** A relay takes any die, acts and
 Feeds it on, so with unlimited uses one die chains through every relay for
 free. Use 2 for modest effects (Signal, Surge, Toll, Afterburner Relay, and
-Relay Terminal) and 1 for the biggest per-die hit (Leech Relay).
+Relay Terminal) and 1 for the biggest per-die hit (Leech Relay, Ballast Tanks).
+
+**Every play should be a choice.** A tile that pays out and hands the die
+straight back (old Ballast Tanks: 3 shields, Return) is free value: the right
+play is always "feed it", so it adds nothing to think about. Make the die cost
+something (it goes to `target`, it drops in value, it Feeds on), or tie the
+payout to position, sequence or a resource. Passives can't cost a die, so give
+them a side to manage (Static Bloom scrambles you as well as an enemy).
 
 **Test:** run the game and get the tile onto the grid, then open the dev console
 with `` ` ``. `set_dice 1 2 3`, `reset_uses` and `charge_engines` help set up a case.
