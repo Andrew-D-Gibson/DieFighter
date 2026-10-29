@@ -55,7 +55,6 @@ var white: Color = Color.html('#cef0f1')
 
 var medium_purple: Color = Color.html('#a846ce')
 
-var mouse_is_dragging_something: bool = false
 
 
 # Game Settings

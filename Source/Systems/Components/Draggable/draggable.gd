@@ -132,40 +132,47 @@ func _process(delta: float) -> void:
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
 	if dragging_allowed and state == DragState.DEFAULT and not held_by_code \
 	and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		state = DragState.DRAGGING
-		Globals.mouse_is_dragging_something = true
-		
-		var parent_node: Node2D = get_parent()
-		
-		# Reset the info cursor if needed
-		if parent_node.has_node("Clickable") and parent_node.clickable:
-			parent_node.clickable.reset_hover_state()
-		
-		# Move the parent's render index to be above where it usually sits
-		parent_node.z_index += 10
-		parent_node.scale = Vector2(1.3,1.3)
-		
-		# Set the parent to wiggle a bit
-		parent_node.rotation_degrees = 0
-		if tween:
-			tween.kill()
-		var tween_time: float = 0.5
-		tween = create_tween()
-		tween.tween_property(parent_node, "global_rotation_degrees", 3, tween_time).set_trans(Tween.TRANS_SINE)
-		tween.tween_property(parent_node, "global_rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		tween.tween_interval(tween_time)
-		tween.tween_property(parent_node, "global_rotation_degrees", -3, tween_time).set_trans(Tween.TRANS_SINE)
-		tween.tween_property(parent_node, "global_rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
-		tween.tween_interval(tween_time)
-		tween.set_loops()
+		begin_drag(_global_position_of(event as InputEventMouseButton))
 
-		if placement_mode == PlacementMode.CLICK:
-			_carried = true
-			_picked_up_at = _global_position_of(event as InputEventMouseButton)
-			set_process_input(true)
-		held = self
-		
-		drag_started.emit()
+
+## Puts the parent in the player's hand as if they'd just pressed on it at
+## [param at]: lifted, wiggling, and dropped the way the placement option
+## says. A press on it does this; so does code handing the player something
+## straight into their hand (the dev console's tile palette).
+func begin_drag(at: Vector2) -> void:
+	state = DragState.DRAGGING
+
+	var parent_node: Node2D = get_parent()
+	
+	# Reset the info cursor if needed
+	if parent_node.has_node("Clickable") and parent_node.clickable:
+		parent_node.clickable.reset_hover_state()
+	
+	# Move the parent's render index to be above where it usually sits
+	parent_node.z_index += 10
+	parent_node.scale = Vector2(1.3,1.3)
+	
+	# Set the parent to wiggle a bit
+	parent_node.rotation_degrees = 0
+	if tween:
+		tween.kill()
+	var tween_time: float = 0.5
+	tween = create_tween()
+	tween.tween_property(parent_node, "global_rotation_degrees", 3, tween_time).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(parent_node, "global_rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_interval(tween_time)
+	tween.tween_property(parent_node, "global_rotation_degrees", -3, tween_time).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(parent_node, "global_rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
+	tween.tween_interval(tween_time)
+	tween.set_loops()
+
+	if placement_mode == PlacementMode.CLICK:
+		_carried = true
+		_picked_up_at = at
+		set_process_input(true)
+	held = self
+	
+	drag_started.emit()
 
 
 ## Puts a carried thing down on the next click, wherever that is: on a target
@@ -220,7 +227,6 @@ func _let_go() -> void:
 	_stop_carrying()
 	if held == self:
 		held = null
-	Globals.mouse_is_dragging_something = false
 
 	var parent_node: Node2D = get_parent()
 
@@ -283,7 +289,7 @@ func is_over_info_spot() -> bool:
 
 func _on_mouse_entered() -> void:
 	# Only scale on hover if not currently dragging
-	if dragging_allowed and state == DragState.DEFAULT and not Globals.mouse_is_dragging_something:
+	if dragging_allowed and state == DragState.DEFAULT and not holding():
 		Events.play_sound.emit(_HOVER_THUMP_SFX)
 		
 		var parent: Node = get_parent()

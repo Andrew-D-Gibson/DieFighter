@@ -229,7 +229,6 @@ func test_asking_puts_a_carried_die_back_so_the_dialog_gets_the_click() -> void:
 	assert_true(confirm.is_asking())
 	assert_false(die.draggable.is_carried())
 	assert_has(player.dice_manager.queue, die)
-	Globals.mouse_is_dragging_something = false
 
 
 # ── The option ────────────────────────────────────────────────────────────────

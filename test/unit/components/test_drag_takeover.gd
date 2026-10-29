@@ -20,7 +20,6 @@ func before_each() -> void:
 
 func after_each() -> void:
 	Draggable.placement_mode = Draggable.PlacementMode.DRAG
-	Globals.mouse_is_dragging_something = false
 	super()
 
 
@@ -35,16 +34,24 @@ func test_picking_up_lifts_and_holds() -> void:
 	var resting_z: int = die.z_index
 	_pick_up()
 	assert_eq(die.draggable.state, Draggable.DragState.DRAGGING)
-	assert_true(Globals.mouse_is_dragging_something)
 	assert_eq(Draggable.holding(), die.draggable)
 	assert_eq(die.z_index, resting_z + 10)
+
+
+func test_code_can_put_something_straight_in_the_hand() -> void:
+	watch_signals(die.draggable)
+	die.draggable.begin_drag(die.global_position)
+	assert_eq(Draggable.holding(), die.draggable, "held, as if the player had pressed on it")
+	assert_signal_emitted(die.draggable, "drag_started")
+	die.draggable.put_back()
+	assert_null(Draggable.holding())
 
 
 func test_code_taking_it_lets_go_of_the_hold() -> void:
 	var resting_z: int = die.z_index
 	_pick_up()
 	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
-	assert_false(Globals.mouse_is_dragging_something, "other things can be hovered and picked up again")
+	assert_null(Draggable.holding(), "other things can be hovered and picked up again")
 	assert_null(Draggable.held)
 	assert_eq(die.z_index, resting_z, "back at its usual depth")
 	assert_eq(die.scale, Vector2.ONE)
@@ -67,7 +74,7 @@ func test_a_drop_lets_go_once() -> void:
 	die.draggable.put_back()
 	assert_eq(drops, 1)
 	assert_eq(die.z_index, resting_z)
-	assert_false(Globals.mouse_is_dragging_something)
+	assert_null(Draggable.holding())
 	# A later takeover of a die no longer held changes nothing.
 	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	assert_eq(die.z_index, resting_z)

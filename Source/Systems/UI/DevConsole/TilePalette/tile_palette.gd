@@ -305,20 +305,14 @@ func _is_drag_start(event: InputEvent) -> bool:
 		and event.button_index == MOUSE_BUTTON_LEFT
 
 
-## Puts a freshly spawned node under the cursor in the same state Draggable sets
-## up when a drag begins normally, so its own release handling finishes the drop.
+## Puts a freshly spawned node under the cursor and into the player's hand,
+## so Draggable's own drop handling finishes the job.
 func _grab_with_cursor(draggable: Draggable) -> void:
 	var node: Node2D = draggable.get_parent()
 	var cursor_position: Vector2 = node.get_global_mouse_position()
-
 	node.global_position = cursor_position
-	node.z_index += 10
-	node.scale = Vector2(1.3, 1.3)
-
 	draggable.home_position = cursor_position
-	draggable.state = Draggable.DragState.DRAGGING
-
-	Globals.mouse_is_dragging_something = true
+	draggable.begin_drag(cursor_position)
 
 
 func _on_dragged_tile_dropped(draggable: Draggable, end_position: Vector2) -> void:

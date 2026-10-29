@@ -54,7 +54,6 @@ func after_each() -> void:
 	# Never leave the button held down for the next test.
 	_send(_button(MOUSE_BUTTON_LEFT, false, _NOWHERE))
 	Draggable.placement_mode = Draggable.PlacementMode.DRAG
-	Globals.mouse_is_dragging_something = false
 	super()
 
 
@@ -137,7 +136,7 @@ func test_a_click_picks_a_die_up_and_letting_go_leaves_it_up() -> void:
 
 	assert_eq(die.draggable.state, Draggable.DragState.DRAGGING, "still in hand after the release")
 	assert_true(die.draggable.is_carried())
-	assert_true(Globals.mouse_is_dragging_something)
+	assert_not_null(Draggable.holding())
 	assert_eq(drops.size(), 0, "the pick-up's own release isn't a drop")
 
 
@@ -153,7 +152,7 @@ func test_the_next_click_on_a_tile_places_the_die() -> void:
 	assert_false(player.dice_manager.queue.has(die))
 	assert_eq(die.draggable.state, Draggable.DragState.DEFAULT)
 	assert_false(die.draggable.is_carried())
-	assert_false(Globals.mouse_is_dragging_something)
+	assert_null(Draggable.holding())
 
 
 func test_the_placing_click_goes_no_further() -> void:
@@ -215,7 +214,7 @@ func test_cancel_puts_the_die_back() -> void:
 	assert_eq(drops.size(), 1)
 	assert_has(player.dice_manager.queue, die)
 	assert_eq(die.draggable.state, Draggable.DragState.DEFAULT)
-	assert_false(Globals.mouse_is_dragging_something)
+	assert_null(Draggable.holding())
 
 
 func test_a_die_taken_by_code_mid_carry_ignores_the_next_click() -> void:
@@ -357,7 +356,7 @@ func test_drag_mode_drops_on_the_release() -> void:
 	assert_eq(die.draggable.state, Draggable.DragState.DEFAULT)
 	assert_eq(drops.size(), 1, "let go on the release")
 	assert_has(player.dice_manager.queue, die)
-	assert_false(Globals.mouse_is_dragging_something)
+	assert_null(Draggable.holding())
 
 
 func test_drag_mode_never_waits_for_a_second_click() -> void:

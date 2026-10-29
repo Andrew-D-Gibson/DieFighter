@@ -219,7 +219,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		match button.button_index:
 			MOUSE_BUTTON_LEFT:
 				if button.pressed:
-					if not Globals.mouse_is_dragging_something and _mouse_in_map():
+					if not Draggable.holding() and _mouse_in_map():
 						_panning = true
 						_pan_last_x = get_local_mouse_position().x
 				else:

@@ -156,7 +156,7 @@ func _disconnect_from_clickable(clickable: Clickable) -> void:
 
 
 func _on_hover_delay_completed() -> void:
-	if not Globals.mouse_is_dragging_something:
+	if not Draggable.holding():
 		_hover_info = true
 
 
