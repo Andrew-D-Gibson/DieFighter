@@ -282,3 +282,130 @@ func test_the_forecast_values_a_cloak_as_shields() -> void:
 		[enemy] as Array[Enemy])
 	assert_eq(forecast.shields, 7.0)
 	assert_eq(forecast.handoffs.size(), 1)
+
+
+# ── Spiked Hull ───────────────────────────────────────────────────────────────
+
+## Who attacked the player, in order, while [method _watch_attacks] listens.
+var attackers: Array[Enemy] = []
+
+
+func _watch_attacks() -> void:
+	attackers.clear()
+	Events.player_attacked.connect(_on_attacked)
+
+
+func _on_attacked(attacker: Enemy) -> void:
+	attackers.append(attacker)
+
+
+func after_each() -> void:
+	if Events.player_attacked.is_connected(_on_attacked):
+		Events.player_attacked.disconnect(_on_attacked)
+	super()
+
+
+## A Spiked Hull (or [param tile_id]) on the grid and listening, with the
+## engine swapped for the recorder so its response can be read back.
+func _spikes(tile_id: String = "spiked_hull") -> Tile:
+	# In the tree, so it hooks the events it answers.
+	var tile: Tile = TILE_SCENE.instantiate()
+	tile.tile_resource = load(TILES % tile_id)
+	add_child_autofree(tile)
+	Globals.tile_grid.tile_locations[Vector2i(0, 0)] = tile
+	Globals.scenario_manager.engine = recorder
+	recorder.injected.clear()
+	return tile
+
+
+## Plays every tile response the recorder caught, and returns what they did.
+func _responses() -> Array[EffectEvent]:
+	var triggered: Array[EffectEvent] = _of(recorder.injected, TileEventTriggeredEvent)
+	recorder.injected.clear()
+	for event: EffectEvent in triggered:
+		await event.resolve(recorder)
+	return recorder.injected.duplicate()
+
+
+func test_an_enemy_hit_counts_as_an_attack_even_when_the_shields_take_it() -> void:
+	_watch_attacks()
+	player.health.shields = 10
+	await _land(_hit(enemy, [player] as Array[Node], 4))
+	assert_eq(player.health.health, 30, "the shields took it all")
+	assert_eq(attackers, [enemy] as Array[Enemy])
+
+
+func test_one_hit_is_one_attack_however_big_or_wide() -> void:
+	_watch_attacks()
+	await _land(_hit(enemy, [player, other] as Array[Node], 9))
+	assert_eq(attackers, [enemy] as Array[Enemy])
+
+
+func test_ion_fire_is_an_attack() -> void:
+	_watch_attacks()
+	player.health.shields = 6
+	var ion: IonDamageEvent = IonDamageEvent.new()
+	ion.actor = enemy
+	ion.effect_source = enemy
+	ion.targets = [player] as Array[Node]
+	ion.amount = 2
+	await _land(ion)
+	assert_eq(attackers, [enemy] as Array[Enemy])
+
+
+func test_burn_your_own_tiles_and_ships_fighting_each_other_are_not_attacks_on_you() -> void:
+	_watch_attacks()
+	await _land(_hit(player, [player] as Array[Node], 2))
+	await _land(_hit(enemy, [other] as Array[Node], 2))
+	var thorn: DamageEvent = _hit(player, [enemy] as Array[Node], 2)
+	thorn.effect_source = _tile("damage")
+	await _land(thorn)
+	assert_eq(attackers.size(), 0)
+
+
+func test_a_phased_hit_never_reached_you_so_it_is_no_attack() -> void:
+	_watch_attacks()
+	await _apply(player, &"phased", 1)
+	await _land(_hit(enemy, [player] as Array[Node], 5))
+	assert_eq(attackers.size(), 0)
+
+
+func test_spiked_hull_hits_back_at_the_attacker() -> void:
+	_spikes()
+	player.health.shields = 10
+	Events.player_attacked.emit(enemy)
+	var triggered: Array[EffectEvent] = _of(recorder.injected, TileEventTriggeredEvent)
+	assert_eq(triggered.size(), 1, "queued, behind the rest of the attacker's chain")
+	var events: Array[EffectEvent] = await _responses()
+	var hits: Array[EffectEvent] = _of(events, DamageEvent)
+	assert_eq(hits.size(), 1)
+	assert_eq(hits[0].amount, 2)
+	assert_eq(hits[0].targets, [enemy] as Array[Node], "the attacker, not the target or a random ship")
+	assert_eq(hits[0].actor, player, "your hit, so it can't set off another attack on you")
+
+
+func test_spiked_hull_plus_hits_for_three() -> void:
+	_spikes("spiked_hull_plus")
+	Events.player_attacked.emit(other)
+	var hits: Array[EffectEvent] = _of(await _responses(), DamageEvent)
+	assert_eq(hits[0].amount, 3)
+	assert_eq(hits[0].targets, [other] as Array[Node])
+
+
+func test_spiked_hull_hits_nothing_once_the_attacker_is_gone() -> void:
+	_spikes()
+	Events.player_attacked.emit(enemy)
+	Events.player_attacked.emit(other)
+	# Before the responses play, one attacker dies and the other flees.
+	enemy.health.health = 0
+	Globals.enemy_manager.enemies.erase(other)
+	assert_eq(_of(recorder.injected, TileEventTriggeredEvent).size(), 2)
+	var struck: Array[Node] = []
+	for hit: EffectEvent in _of(await _responses(), DamageEvent):
+		struck.append_array(hit.targets)
+	assert_eq(struck.size(), 0, "a wreck or a ship that fled isn't hit")
+
+
+func test_spiked_hull_takes_no_dice() -> void:
+	for face: int in range(1, 7):
+		assert_false(_takes("spiked_hull", face))

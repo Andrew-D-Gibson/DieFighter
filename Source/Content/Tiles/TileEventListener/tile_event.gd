@@ -29,6 +29,13 @@ enum EventType {
 	## countdown tile's payout. Fired once per time it runs out, straight after
 	## the count that did it (TileCountdown).
 	ON_COUNTDOWN_ZERO,
+	ON_COMBAT_START,              # placeholder, owned by tiles/ramp-status
+	ON_STATUS_APPLIED_TO_ENEMY,   # placeholder, owned by tiles/ramp-status
+	## An enemy's damage was aimed at the player: once per hit, whether the
+	## shields or the hull take it (ion damage included). A hit that misses
+	## (Phased) never reached the player and doesn't count. The response's
+	## context carries the attacker as trigger_ship (TARGET_TRIGGERING_SHIP).
+	ON_PLAYER_ATTACKED,
 	## The player just took a killing blow. Answering it is a death save: the
 	## tile holds the hull at 1 on the spot, then its chain plays and should
 	## spend the tile (Tile._on_player_fatal_damage).

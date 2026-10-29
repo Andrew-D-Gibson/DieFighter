@@ -138,6 +138,11 @@ func _connect_tile_event_signals() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_SHIELDS_GAINED)
 	)
 	Events.player_fatal_damage.connect(_on_player_fatal_damage)
+	# Queued, not injected: the attacker's own chain finishes first, so a
+	# ship that dies to its own shot is gone before anything hits back.
+	Events.player_attacked.connect(func(attacker: Enemy) -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_ATTACKED, false, attacker)
+	)
 	# Answered straight after the neighbour's activation rather than at the back
 	# of the queue. A relay chain winding past this tile activates several
 	# neighbours in one pass; queued, every response would wait for the chain
@@ -306,8 +311,11 @@ func _on_player_fatal_damage() -> void:
 
 
 ## [param immediate] resolves the response right after the event currently
-## resolving instead of at the back of the queue.
-func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false) -> void:
+## resolving instead of at the back of the queue. [param trigger_ship] is the
+## ship the event was about, for the response to aim at
+## (TARGET_TRIGGERING_SHIP).
+func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false,
+		trigger_ship: Node = null) -> void:
 	if on_offer:
 		return
 	var event_check: TileEvent = _find_matching_event_response(tile, event)
@@ -318,6 +326,7 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool =
 	var trigger_event: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
 	trigger_event.responder = self
 	trigger_event.chain = tile_resource.event_responses[event_check]
+	trigger_event.trigger_ship = trigger_ship
 	if immediate:
 		engine.inject_event(trigger_event)
 	else:

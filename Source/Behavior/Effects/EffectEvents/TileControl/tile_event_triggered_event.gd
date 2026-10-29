@@ -7,6 +7,10 @@ var responder: Tile
 ## The chain to play (already resolved to the matching TileEvent's response).
 var chain: EffectChain
 
+## The ship the event was about (the attacker, for ON_PLAYER_ATTACKED), handed
+## to the chain as EffectContext.trigger_ship. Null for most events.
+var trigger_ship: Node = null
+
 
 func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(responder):
@@ -15,6 +19,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	var context: EffectContext = EffectContext.new()
 	context.actor = Globals.player
 	context.effect_source = responder
+	context.trigger_ship = trigger_ship
 
 	# A reactive chain is often conditional ("if the engine is charged..."),
 	# so the tile only lights up if the chain actually queued something.

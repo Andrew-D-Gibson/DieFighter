@@ -74,6 +74,10 @@ enum TargetingSubtype {
 	## Every countdown tile on the grid (TileResource.countdown) other than
 	## the source. The Fuse Cutter counts them all down at once.
 	TARGET_OTHER_COUNTDOWN_TILES,
+	## The ship the tile event behind this chain was about
+	## (EffectContext.trigger_ship): the attacker, for ON_PLAYER_ATTACKED.
+	## Nothing once that ship is gone, destroyed or fled.
+	TARGET_TRIGGERING_SHIP,
 }
 
 

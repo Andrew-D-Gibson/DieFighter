@@ -68,6 +68,9 @@ signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction)
 ## involved; see player_attacked_ship for that.
 signal ship_attacked_ship(attacker: Enemy, target: Enemy)
 signal player_fatal_damage()
+## An enemy's hit was aimed at the player, whether the shields or the hull take
+## it: once per hit, not per point. A hit that missed (Phased) isn't one.
+signal player_attacked(attacker: Enemy)
 
 # Enemy Events
 signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)
