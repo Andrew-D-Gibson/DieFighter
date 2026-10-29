@@ -58,6 +58,10 @@ var activating_die_number: int:
 ## can name it before the player commits a die. See EnemyTargetBinder.
 var bound_target: Enemy = null
 
+## The action this slot held before it was silenced (Enemy.silence_face()):
+## this one is then a Do Nothing standing in for it. Null otherwise.
+var silenced_action: EnemyActionResource = null
+
 ## The ship get_outcome() is asking about, only while it asks.
 var _acting_ship: Enemy = null
 

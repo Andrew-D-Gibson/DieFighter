@@ -1,6 +1,7 @@
 extends "res://test/helpers/die_fighter_test.gd"
-## The tiles that work the dice an enemy already holds. Cryo Lance turns the
-## highest die the target holds to a 1. Played whole through
+## The tiles that work an enemy's dice and intents. Cryo Lance turns the
+## highest die the target holds to a 1; Counter-Battery silences the target's
+## intent for the face it hands over. Played whole through
 ## TileActivationEvent, so the use budget and the activation checks run as in
 ## a game; the engine records instead of resolving, and the events that move
 ## or change dice are resolved by hand so the dice really change.
@@ -92,7 +93,7 @@ func _drop(tile: Tile, face: int) -> Array[EffectEvent]:
 	var speed: float = Globals.animation_speed
 	Globals.animation_speed = 50.0
 	for each: EffectEvent in made:
-		if each is ChangeHeldDiceEvent or each is GiveDieToTargetEvent:
+		if each is ChangeHeldDiceEvent or each is GiveDieToTargetEvent or each is SilenceFaceEvent:
 			await each.resolve(engine)
 		if each is GiveDieToTargetEvent:
 			TractorBeam.release(each.activator_die)
@@ -177,3 +178,88 @@ func test_the_autopilot_values_a_freeze_by_the_threat_it_removes() -> void:
 	var forecast: AutoPilotForecast = AutoPilotForecast.of(_tile("cryo_lance"), _die(1),
 		enemy, [enemy] as Array[Enemy])
 	assert_has(forecast.frozen, enemy)
+
+
+# ── Counter-Battery ──────────────────────────────────────────────────────────
+
+## A table whose 6 is an attack and every other face does nothing.
+func _table(ship: Enemy) -> EnemyActionResource:
+	var actions: Array[EnemyActionResource] = []
+	for face: int in range(1, 7):
+		actions.append(Ships.attack() if face == 6 else DO_NOTHING.duplicate(true))
+	Ships.set_table(ship, actions)
+	return actions[5]
+
+
+func test_counter_battery_silences_the_face_it_hands_over() -> void:
+	var attack: EnemyActionResource = _table(enemy)
+	var events: Array[EffectEvent] = await _drop(_tile("counter_battery"), 6)
+	assert_eq(events.filter(func(e: EffectEvent) -> bool: return e is SilenceFaceEvent).size(), 1)
+	var slot: EnemyActionResource = enemy.turn_actions[5]
+	assert_eq(slot.silenced_action, attack, "the slot remembers what it cancelled")
+	assert_eq(EnemyActionResource.outcome_of(slot, enemy), EnemyActionResource.Outcome.IDLE,
+		"and does nothing")
+	assert_eq(enemy.threat_of_face(6), EnemyActionResource.Threat.DEAD)
+	assert_eq(_faces(enemy.dice_manager), [6] as Array[int], "the 6 went over")
+
+
+func test_a_silenced_face_costs_the_player_nothing() -> void:
+	_table(enemy)
+	assert_gt(AutoPilotThreat.of_face(enemy, 6, false), 0.0)
+	enemy.silence_face(6)
+	assert_eq(AutoPilotThreat.of_face(enemy, 6, false), 0.0)
+	assert_eq(EnemyActionResource.outcome_of(enemy.turn_actions[5], enemy),
+		EnemyActionResource.Outcome.IDLE, "so Jammed passes it by")
+
+
+func test_silencing_only_touches_that_face_and_only_once() -> void:
+	_table(enemy)
+	var before: Array[EnemyActionResource] = enemy.turn_actions.duplicate()
+	assert_true(enemy.silence_face(3))
+	assert_false(enemy.silence_face(3), "already silenced")
+	assert_false(enemy.silence_face(7), "no such face")
+	for face: int in [1, 2, 4, 5, 6]:
+		assert_eq(enemy.turn_actions[face - 1], before[face - 1])
+
+
+func test_the_next_roll_clears_a_silence() -> void:
+	# A copy first: the Interceptor's resource is shared.
+	enemy.enemy_resource = enemy.enemy_resource.duplicate()
+	Ships.give_pool(enemy, [Ships.option(Ships.attack())] as Array[EnemyActionOptionResource])
+	_table(enemy)
+	enemy.silence_face(6)
+	enemy.generate_turn_actions(EnemyActionSituation.for_ship(enemy, [enemy] as Array[Enemy]))
+	for action: EnemyActionResource in enemy.turn_actions:
+		assert_null(action.silenced_action)
+
+
+func test_counter_battery_plus_silences_the_face_on_every_enemy() -> void:
+	var second: Enemy = ENEMY_SCENE.instantiate()
+	second.enemy_resource = INTERCEPTOR
+	second.scenario_state = ScenarioShipState.new()
+	# Brought in the way before_each() brings in the first: before there is a
+	# game state to scale its hull by.
+	var state: GameStateManager = Globals.state_manager
+	Globals.state_manager = null
+	add_child_autofree(second)
+	Globals.state_manager = state
+	Globals.enemy_manager.enemies = [enemy, second] as Array[Enemy]
+	_table(enemy)
+	_table(second)
+	await _drop(_tile("counter_battery_plus"), 6)
+	assert_not_null(enemy.turn_actions[5].silenced_action)
+	assert_not_null(second.turn_actions[5].silenced_action)
+	assert_eq(_faces(enemy.dice_manager), [6] as Array[int], "the die still goes to the target")
+	assert_eq(_faces(second.dice_manager), [] as Array[int])
+
+
+func test_the_autopilot_values_a_silence_by_the_threat_it_cancels() -> void:
+	_table(enemy)
+	_held(6)
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(_tile("counter_battery"), _die(6),
+		enemy, [enemy] as Array[Enemy])
+	assert_eq(forecast.silenced.size(), 1)
+	assert_eq(forecast.silenced[0].face, 6)
+	assert_eq(AutoPilotThreat.silenced_value(enemy, 6, 1), 2.0 * AutoPilotThreat.of_face(enemy, 6, false),
+		"the 6 it holds and the 6 it is handed")
+	assert_eq(AutoPilotThreat.silenced_value(enemy, 2, 0), 0.0, "a face it isn't using saves nothing")

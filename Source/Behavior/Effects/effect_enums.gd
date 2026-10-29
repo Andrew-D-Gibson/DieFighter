@@ -229,6 +229,10 @@ enum DiceControlSubtype {
 	## The highest die each target is holding turns to `amount` (Cryo Lance:
 	## a 1). The big die an enemy already holds is defused before it acts.
 	SET_TARGETS_HIGHEST_DIE,
+	## Each target's intent for the activator die's face (or `amount`, when
+	## set) does nothing until its table is next rolled (Counter-Battery).
+	## See Enemy.silence_face().
+	SILENCE_TARGETS_FACE,
 }
 
 

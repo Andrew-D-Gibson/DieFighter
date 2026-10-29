@@ -5,6 +5,11 @@ const _SHIELDS_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/So
 const _HEALTH_HIT_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_health_hit.tres")
 const _DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_death_explosion.tres")
 const _PRE_DEATH_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_pre_death.tres")
+## What a silenced slot plays (silence_face()), and the icon it shows when
+## spent. A path, loaded when needed: preloading an action here would make
+## EnemyActionResource and Enemy load each other.
+const _DO_NOTHING_PATH: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres"
+const _SILENCED_INFO: Texture2D = preload("res://Assets/Textures/Enemies/IntentIndicator/silenced_info.png")
 
 ## How long the finishing blow holds the frame, in real time.
 const _KILL_HOLD_MSEC: int = 340
@@ -498,6 +503,30 @@ func reroll_slot_without_relays(slot: int, situation: EnemyActionSituation) -> v
 		turn_actions,
 		slot
 	)
+
+
+## Silences this turn's intent for [param face]: the slot becomes a Do Nothing
+## that remembers the action it replaced (silenced_action), so the table still
+## shows what was cancelled, and every reader of the table (the threat
+## colours, Jammed, the AutoPilot) sees a slot that does nothing. The next roll
+## replaces it like any other slot. Returns whether anything changed.
+func silence_face(face: int) -> bool:
+	if face < 1 or face > turn_actions.size():
+		return false
+	var original: EnemyActionResource = turn_actions[face - 1]
+	if original == null or original.silenced_action != null:
+		return false
+	# A copy, like every rolled action: the preloaded one is shared.
+	var silenced: EnemyActionResource = (load(_DO_NOTHING_PATH) as EnemyActionResource).duplicate(true)
+	silenced.silenced_action = original
+	silenced.name = original.name
+	silenced.indicator_texture = original.indicator_texture
+	silenced.info_texture = _SILENCED_INFO
+	silenced.description = "Silenced: does nothing this turn"
+	silenced.activating_die_number = face
+	turn_actions[face - 1] = silenced
+	Events.enemy_intents_changed.emit(self)
+	return true
 
 
 ## What a die of [param face] does once this ship spends it: the worst of

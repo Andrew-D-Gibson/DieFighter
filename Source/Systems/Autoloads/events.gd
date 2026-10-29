@@ -100,6 +100,9 @@ signal enemy_lost_die()
 ## flipped it). Lets the targeting computer move the intent highlight to the
 ## action the ship will now play.
 signal enemy_held_dice_changed()
+## A slot of an enemy's intent table was swapped after the roll (Counter-
+## Battery silenced it). Lets the targeting computer redraw the table.
+signal enemy_intents_changed(enemy: Enemy)
 ## The enemy turn is about to start: the dice the player spent have landed and
 ## no ship has acted yet. The beat for anything that should change what the
 ## ships are holding before they use it (turn-end hazards).
