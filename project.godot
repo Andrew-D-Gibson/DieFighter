@@ -49,9 +49,9 @@ CollectionManager="*res://Source/Systems/Autoloads/collection_manager.gd"
 
 [debug]
 
+settings/gdscript/always_track_call_stacks=true
 gdscript/warnings/untyped_declaration=1
 gdscript/warnings/confusable_local_declaration=2
-settings/gdscript/always_track_call_stacks=true
 
 [display]
 

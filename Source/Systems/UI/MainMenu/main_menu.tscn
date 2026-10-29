@@ -22,8 +22,8 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/LoadingPopup/loading_popup.tscn" id="19_loading"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/ShipSelect/ship_select_popup.tscn" id="20_shipselect"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/Codex/codex_popup.tscn" id="21_codex"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="22_blue"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/UI/Buttons/button_medium_dark_blue.png" id="23_dark_blue"]
+[ext_resource type="Texture2D" uid="uid://ccwljuf14y1ag" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="22_blue"]
+[ext_resource type="Texture2D" uid="uid://co7qxupcq3hlo" path="res://Assets/Textures/UI/Buttons/button_medium_dark_blue.png" id="23_dark_blue"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -90,21 +90,6 @@ _data = {
 &"on_application_start": SubResource("Animation_5pv2g")
 }
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_e7dir"]
-atlas = ExtResource("9_m0vyx")
-region = Rect2(0, 0, 56, 14)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_3xxk1"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_e7dir")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}]
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_blue"]
 atlas = ExtResource("22_blue")
 region = Rect2(0, 0, 56, 14)
@@ -129,6 +114,21 @@ animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_dark_blue")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_e7dir"]
+atlas = ExtResource("9_m0vyx")
+region = Rect2(0, 0, 56, 14)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3xxk1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_e7dir")
 }],
 "loop": 1,
 "name": &"default",
@@ -316,12 +316,12 @@ unique_name_in_owner = true
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
-[node name="Spacer" type="Control" parent="VBoxContainer"]
+[node name="Spacer" type="Control" parent="VBoxContainer" unique_id=1153998966]
 custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
 mouse_filter = 2
 
-[node name="CodexButton" parent="VBoxContainer" instance=ExtResource("7_vm02d")]
+[node name="CodexButton" parent="VBoxContainer" unique_id=1485335342 instance=ExtResource("7_vm02d")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -333,7 +333,7 @@ sprite_frames = SubResource("SpriteFrames_blue")
 [node name="RichTextLabel" parent="VBoxContainer/CodexButton" index="1" unique_id=604948362]
 text = "MENU_CODEX"
 
-[node name="OptionsButton" parent="VBoxContainer" instance=ExtResource("7_vm02d")]
+[node name="OptionsButton" parent="VBoxContainer" unique_id=1192518066 instance=ExtResource("7_vm02d")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -345,7 +345,7 @@ sprite_frames = SubResource("SpriteFrames_blue")
 [node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="1" unique_id=604948362]
 text = "OPTIONS"
 
-[node name="QuitButton" parent="VBoxContainer" instance=ExtResource("7_vm02d")]
+[node name="QuitButton" parent="VBoxContainer" unique_id=272948692 instance=ExtResource("7_vm02d")]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -400,11 +400,11 @@ position = Vector2(160, 90)
 unique_name_in_owner = true
 position = Vector2(160, 90)
 
-[node name="ShipSelectPopup" parent="." instance=ExtResource("20_shipselect")]
+[node name="ShipSelectPopup" parent="." unique_id=966406696 instance=ExtResource("20_shipselect")]
 unique_name_in_owner = true
 position = Vector2(160, 90)
 
-[node name="CodexPopup" parent="." instance=ExtResource("21_codex")]
+[node name="CodexPopup" parent="." unique_id=819407393 instance=ExtResource("21_codex")]
 unique_name_in_owner = true
 position = Vector2(160, 90)
 

@@ -1,11 +1,11 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://l8jf73xqyv21"]
 
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_action"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_data"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="2_wsyvc"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_chain"]
-[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="4_sound"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/IntentIndicator/jamming.png" id="5_icon"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/IntentIndicator/jamming_info.png" id="6_info"]
+[ext_resource type="Texture2D" uid="uid://dkeheawe86my1" path="res://Assets/Textures/Enemies/IntentIndicator/jamming.png" id="5_icon"]
+[ext_resource type="Texture2D" uid="uid://das46bs5e7cpv" path="res://Assets/Textures/Enemies/IntentIndicator/jamming_info.png" id="6_info"]
 
 [sub_resource type="Resource" id="Resource_jamming_pulse_0"]
 script = ExtResource("2_data")

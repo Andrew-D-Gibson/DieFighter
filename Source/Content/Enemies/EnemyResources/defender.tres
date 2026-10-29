@@ -10,7 +10,7 @@
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="4_jikpo"]
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_id1ge"]
 [ext_resource type="PackedScene" uid="uid://dueij0vemaxof" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/defender_ship_graphics.tscn" id="6_o11wk"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres" id="new_purge_vents"]
+[ext_resource type="Resource" uid="uid://bnbf1kix4d3i" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres" id="new_purge_vents"]
 
 [sub_resource type="Resource" id="Resource_xua28"]
 script = ExtResource("1_6pw6j")
@@ -51,8 +51,6 @@ type = 6
 script = ExtResource("1_6pw6j")
 base_action = ExtResource("new_purge_vents")
 weight = 2.0
-min_amount = 0
-max_amount = 0
 conditions = Array[ExtResource("4_4x72i")]([SubResource("Resource_purge_vents_Resource_ufue1_cond")])
 
 [sub_resource type="Resource" id="Resource_ufue1"]

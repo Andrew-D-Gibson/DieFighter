@@ -11,7 +11,7 @@
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_pprml"]
 [ext_resource type="Texture2D" uid="uid://35lb5bt8fxo1" path="res://Assets/Textures/Enemies/Disabler/Disabler_targeting_image.png" id="6_1ll6j"]
 [ext_resource type="Resource" uid="uid://banpownpi5wfm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/ion_shot.tres" id="act_ion"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/jamming_pulse.tres" id="new_jamming_pulse"]
+[ext_resource type="Resource" uid="uid://l8jf73xqyv21" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/jamming_pulse.tres" id="new_jamming_pulse"]
 
 [sub_resource type="Resource" id="Resource_1ll6j"]
 script = ExtResource("1_hbxdm")

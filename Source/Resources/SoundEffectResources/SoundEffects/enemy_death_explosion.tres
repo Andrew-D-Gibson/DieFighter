@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_fgsev")
 name = "enemy_death_explosion"
-limit = 3
+limit = 10
 sound_effect = ExtResource("2_j071a")
 pitch_randomness = 0.2
 metadata/_custom_type_script = "uid://d2n1utrxjvsq6"
