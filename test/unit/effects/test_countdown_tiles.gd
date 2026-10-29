@@ -211,3 +211,24 @@ func test_fuse_cutter_has_one_use() -> void:
 	var cutter: Tile = _tile("fuse_cutter")
 	assert_eq(cutter.tile_resource.uses_per_turn, 1)
 	assert_eq(cutter.tile_resource.textures.get_frame_count(&"default"), 2)
+
+
+# ── Fuse Payload ─────────────────────────────────────────────────────────
+
+func test_fuse_payload_burns_and_jams_the_target_at_zero() -> void:
+	var tile: Tile = _tile("fuse_payload")
+	assert_eq(tile.countdown_remaining(), 10)
+	_wind_to_one(tile)
+	var events: Array[EffectEvent] = await _drop(tile, 2)
+	var applied: Dictionary = {}
+	for event: EffectEvent in _of(events, ApplyStatusEvent):
+		assert_eq(event.targets, [enemy] as Array[Node])
+		applied[(event as ApplyStatusEvent).status_id] = event.amount
+	assert_eq(applied, {&"burn": 4, &"jammed": 1})
+	assert_eq(_of(events, DamageEvent).size(), 0, "no hit of its own")
+	_gives_die_to_target(events)
+
+
+func test_fuse_payload_plus_counts_from_eight() -> void:
+	var tile: Tile = _tile("fuse_payload_plus")
+	assert_eq(tile.countdown_remaining(), 8)
