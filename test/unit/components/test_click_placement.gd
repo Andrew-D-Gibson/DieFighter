@@ -369,6 +369,122 @@ func test_drag_mode_never_waits_for_a_second_click() -> void:
 	assert_eq(drops.size(), 1)
 
 
+# ── The cursor's grip ─────────────────────────────────────────────────────────
+
+const _CURSOR_SCRIPT: GDScript = preload("res://Source/Systems/UI/MouseCursor/mouse_cursor.gd")
+const _GRAB: Texture2D = preload("res://Assets/Textures/UI/MouseCursors/grab_cursor_raw.png")
+const _GRAB_INFO: Texture2D = preload("res://Assets/Textures/UI/MouseCursors/grab_info_cursor_raw.png")
+
+
+## The game's cursor, as main.tscn mounts it: on its own layer, 6x.
+func _cursor() -> Sprite2D:
+	var layer: CanvasLayer = add_child_autofree(CanvasLayer.new())
+	var cursor: Sprite2D = Sprite2D.new()
+	cursor.scale = Vector2(6, 6)
+	cursor.centered = false
+	cursor.set_script(_CURSOR_SCRIPT)
+	layer.add_child(cursor)
+	_CURSOR_SCRIPT.set("_carry_hints_given", 0)
+	return cursor
+
+
+func _point_at(at: Vector2) -> void:
+	var motion: InputEventMouseMotion = InputEventMouseMotion.new()
+	var on_window: Vector2 = get_tree().root.get_final_transform() * at
+	motion.position = on_window
+	motion.global_position = on_window
+	_send(motion)
+	await wait_process_frames(2)
+
+
+func _hint_of(cursor: Sprite2D) -> Label:
+	for child: Node in cursor.get_children():
+		if child is Label:
+			return child
+	return null
+
+
+func test_whatever_is_lifted_is_held_until_it_lands() -> void:
+	var die: Dice = _hand_die()
+	assert_null(Draggable.holding())
+	await _pick_up_by_click(die.draggable)
+	assert_eq(Draggable.holding(), die.draggable)
+
+	await _click(_NOWHERE)
+	assert_null(Draggable.holding())
+
+
+func test_a_die_taken_by_code_is_no_longer_held() -> void:
+	var die: Dice = _hand_die()
+	await _pick_up_by_click(die.draggable)
+	die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+	assert_null(Draggable.holding())
+
+
+func test_the_info_spot_is_where_the_lift_landed() -> void:
+	var tile: Tile = _open_tile(Vector2i(1, 1), ABLATIVE_CHARGE)
+	tile.draggable.drag_ended.connect(grid._drop_tile_on_grid_pos)
+	var cell_centre: Vector2 = tile.global_position
+	await _click_tile(tile)
+	await _point_at(cell_centre)
+	assert_true(tile.draggable.is_over_info_spot(), "a click here would show its info")
+
+	await _point_at(grid.grid_to_global_pos(Vector2i(3, 0)))
+	assert_false(tile.draggable.is_over_info_spot(), "a click here would move it")
+
+
+func test_a_drag_has_no_info_spot() -> void:
+	Draggable.placement_mode = Draggable.PlacementMode.DRAG
+	var tile: Tile = _open_tile(Vector2i(1, 1), ABLATIVE_CHARGE)
+	await wait_physics_frames(2)
+	_send(_button(MOUSE_BUTTON_LEFT, true, tile.global_position))
+	await wait_physics_frames(2)
+	assert_eq(Draggable.holding(), tile.draggable, "held while the button is down")
+	assert_false(tile.draggable.is_over_info_spot())
+	_send(_button(MOUSE_BUTTON_LEFT, false, tile.global_position))
+	await wait_physics_frames(2)
+
+
+func test_the_cursor_is_a_fist_while_holding_with_an_i_on_the_info_spot() -> void:
+	var cursor: Sprite2D = _cursor()
+	var tile: Tile = _open_tile(Vector2i(1, 1), ABLATIVE_CHARGE)
+	tile.draggable.drag_ended.connect(grid._drop_tile_on_grid_pos)
+	var cell_centre: Vector2 = tile.global_position
+	await _click_tile(tile)
+	await _point_at(cell_centre)
+	assert_eq(cursor.texture, _GRAB_INFO)
+	assert_eq(_hint_of(cursor).text, tr("CURSOR_HINT_CLICK_FOR_INFO"))
+
+	await _point_at(grid.grid_to_global_pos(Vector2i(3, 0)))
+	assert_eq(cursor.texture, _GRAB)
+	assert_eq(_hint_of(cursor).text, tr("CURSOR_HINT_CLICK_TO_PLACE"))
+
+	await _click(grid.grid_to_global_pos(Vector2i(3, 0)))
+	await wait_process_frames(1)
+	assert_ne(cursor.texture, _GRAB, "let go, the fist opens")
+	assert_ne(cursor.texture, _GRAB_INFO)
+
+
+func test_the_hint_line_teaches_the_first_few_lifts_only() -> void:
+	var cursor: Sprite2D = _cursor()
+	var die: Dice = _hand_die()
+	for lift: int in _CURSOR_SCRIPT.CARRY_HINT_PICKUPS:
+		await _pick_up_by_click(die.draggable)
+		await wait_process_frames(1)
+		var hint: Label = _hint_of(cursor)
+		assert_true(hint.visible, "lift %d is told" % lift)
+		# A die has no info panel, so there's no spot to click for one.
+		assert_eq(hint.text, tr("CURSOR_HINT_CLICK_TO_PLACE"))
+		await _click(_NOWHERE)
+		await wait_process_frames(1)
+		assert_false(hint.visible, "gone with the drop")
+		die.global_position = die.draggable.home_position
+
+	await _pick_up_by_click(die.draggable)
+	await wait_process_frames(1)
+	assert_false(_hint_of(cursor).visible, "by now the player knows")
+
+
 # ── The option ────────────────────────────────────────────────────────────────
 
 func test_the_option_sets_the_mode_and_defaults_to_drag() -> void:

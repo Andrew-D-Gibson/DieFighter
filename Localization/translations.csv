@@ -119,3 +119,5 @@ CONFIRM_END_TURN_UNUSED_DICE,End turn with dice unused?,,,,,,,,"In-game confirma
 OPT_READABLE_FONT,Readable Font,,,,,,,,Options > Accessibility tab: label beside a checkbox that swaps the pixel font for a plainer one,,,
 OPT_READABLE_FONT_HINT,Use a clearer font instead of the pixel font.,,,,,,,,Options > Accessibility tab: hint line for Readable Font,,,
 MAP_HINT_YOU_ARE_HERE,You are here,,,,,,,,"Map caption strip, beside a small down arrow that also hangs over the player's own marker on the map, while nothing on the map is hovered: where the ship is now. The strip is very narrow: keep it as short as English",12,,
+CURSOR_HINT_CLICK_FOR_INFO,Click again for info,,,,,,,,"One-line hint beside the mouse cursor, shown the first few times a die or tile is picked up with Click placement, while the cursor is still where it was picked up: clicking there puts it back and opens its info panel",22,,
+CURSOR_HINT_CLICK_TO_PLACE,Click to place it,,,,,,,,"One-line hint beside the mouse cursor, shown the first few times a die or tile is picked up with Click placement, once the cursor has moved: the next click puts it down there",22,,
