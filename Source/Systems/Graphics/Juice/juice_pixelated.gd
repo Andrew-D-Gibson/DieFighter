@@ -60,12 +60,15 @@ func _process(_delta: float) -> void:
 
 
 ## Points the effect's viewport through the main camera, shrunk down to the
-## base grid, and puts the effect where this node is in the world.
+## base grid, and puts the effect where this node is in the world. The
+## viewport covers the screen frame, which pixel-perfect fullscreen insets
+## from the window's corner.
 func _sync() -> void:
 	if not is_instance_valid(_effect):
 		return
 	var downscale: Transform2D = Transform2D.IDENTITY.scaled(Vector2.ONE / _pixel_size())
-	_viewport.canvas_transform = downscale * get_canvas_transform()
+	var from_frame: Transform2D = Transform2D.IDENTITY.translated(-_frame_origin())
+	_viewport.canvas_transform = downscale * from_frame * get_canvas_transform()
 	_effect.transform = global_transform
 	queue_redraw()
 
@@ -74,10 +77,15 @@ func _draw() -> void:
 	# Undo this node's own placement, so the texture lands one texel per game
 	# pixel, square to the screen.
 	var to_screen: Transform2D = get_global_transform_with_canvas()
-	draw_set_transform_matrix(to_screen.affine_inverse() * Transform2D.IDENTITY.scaled(Vector2.ONE * _pixel_size()))
+	var to_frame: Transform2D = Transform2D.IDENTITY.translated(_frame_origin())
+	draw_set_transform_matrix(to_screen.affine_inverse() * to_frame * Transform2D.IDENTITY.scaled(Vector2.ONE * _pixel_size()))
 	draw_texture(_viewport.get_texture(), Vector2.ZERO)
 
 
-## How many screen pixels make up one game pixel.
+## How many canvas units make up one game pixel.
 func _pixel_size() -> float:
-	return get_viewport_rect().size.x / BASE_RESOLUTION.x
+	return ScreenFrame.SIZE.x / BASE_RESOLUTION.x
+
+
+func _frame_origin() -> Vector2:
+	return ScreenFrame.rect_in_viewport(get_viewport()).position

@@ -30,6 +30,15 @@ signal item_selected(index: int)
 
 @export var alignment: HorizontalAlignment = HORIZONTAL_ALIGNMENT_CENTER
 
+## Greyed out: the button shows its value but won't open.
+@export var disabled: bool = false:
+	set(value):
+		disabled = value
+		if is_node_ready():
+			_main_button.disabled = value
+		if value:
+			_close_popup()
+
 @export var normal_style: StyleBox
 @export var hover_style: StyleBox
 @export var pressed_style: StyleBox
@@ -64,6 +73,7 @@ var _click_catcher: Control
 func _ready() -> void:
 	_style_main_button()
 	_update_main_button_text()
+	_main_button.disabled = disabled
 	update_minimum_size()
 
 
@@ -322,7 +332,7 @@ func _close_if_hidden() -> void:
 ## The part of this canvas currently on screen, in the same coordinates as
 ## global_position.
 func _visible_canvas_rect() -> Rect2:
-	return get_canvas_transform().affine_inverse() * get_viewport_rect()
+	return ScreenFrame.canvas_rect(self)
 
 
 ## Escape backs out of the open list without changing anything.

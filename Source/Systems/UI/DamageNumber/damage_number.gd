@@ -146,7 +146,7 @@ static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color:
 ## wide word on a ship at the end of the formation), then shortens the drift
 ## so the label never carries itself out of frame before it has faded.
 func _keep_on_screen() -> void:
-	var screen: Rect2 = get_canvas_transform().affine_inverse() * get_viewport_rect()
+	var screen: Rect2 = ScreenFrame.canvas_rect(self)
 	var half_size: Vector2 = _label.size * 0.5 * _rest_scale * _POP_SCALE + Vector2.ONE * _SCREEN_MARGIN_PIXELS
 	var safe: Rect2 = screen.grow_individual(-half_size.x, -half_size.y, -half_size.x, -half_size.y)
 	if safe.size.x <= 0.0 or safe.size.y <= 0.0:

@@ -1,212 +1,242 @@
 class_name OptionsMenu
 extends Node2D
+## The options menu: a tab per area, each an OptionsPage of rows bound to
+## OptionsSettings, plus a hint line, "Reset to defaults" for the open tab, and
+## Close.
+##
+## Everything is built in code (_build_pages()) so a new option is one line
+## there; the panel is drawn by OptionsFrame to fit however many tabs there
+## are. Settings were loaded and applied at startup by the OptionsSettings
+## autoload: the menu only shows and changes them.
 
-const _HOVER_THUMP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/hover_thump.tres")
+const _SMALL_BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/small_button.tscn")
+const _MEDIUM_BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/medium_button.tscn")
 
-@export var _game_options: Control
-@export var _graphics_options: Control
-@export var _audio_options: Control
+## The panel, centred on this node, in world pixels.
+const PANEL_SIZE: Vector2 = Vector2(256, 140)
+const TAB_HEIGHT: float = 12.0
+const _BODY_MARGIN: float = 6.0
+const _BUTTON_SIZE: Vector2 = Vector2(56, 14)
+const _TAB_FONT_SIZE: int = 16
+const _TAB_PADDING: float = 10.0
 
-enum ScreenShowing {GAME, GRAPHICS, AUDIO}
-var screen_showing: ScreenShowing
+enum Tab {GAME, GRAPHICS, AUDIO, CONTROLS, ACCESSIBILITY}
 
-# What each dropdown row means, by index. Rows are matched by position, not by
-# their text, so the text can be translated.
-const _ANIMATION_SPEEDS: Array[float] = [0.5, 1.0, 2.0, 4.0]
-const _FPS_LIMITS: Array[int] = [30, 60, 120, 0] # 0 means unlimited
+## Per tab: title key, accent colour, widget sprite colour.
+const _TABS: Dictionary[Tab, Array] = {
+	Tab.GAME: ["OPT_TAB_GAME", Color("#F29C5D"), "orange"],
+	Tab.GRAPHICS: ["OPT_TAB_GRAPHICS", Color("#7ABD33"), "green"],
+	Tab.AUDIO: ["OPT_TAB_AUDIO", Color("#C552F1"), "purple"],
+	Tab.CONTROLS: ["OPT_TAB_CONTROLS", Color("#43A6FC"), "blue"],
+	Tab.ACCESSIBILITY: ["OPT_TAB_ACCESSIBILITY", Color("#EED35D"), "yellow"],
+}
 
-## Locale codes in the language dropdown's row order.
-var _language_locales: Array[String] = []
+## Rows by index, not text, so the text can be translated.
+const _ANIMATION_SPEEDS: Array = [0.5, 1.0, 2.0, 4.0]
+const _FPS_LIMITS: Array = [30, 60, 120, 0] # 0 means unlimited
+
+var _frame: OptionsFrame
+var _tab_buttons: Array[Button] = []
+var _pages: Dictionary[Tab, OptionsPage] = {}
+var _hint_label: RichTextLabel
+var _defaults_button: Button
+var _open_tab: Tab = Tab.GAME
 
 
 func _ready() -> void:
-	# Settings were loaded and applied at startup by the OptionsSettings
-	# autoload; the UI just reflects them.
-	_setup_game_options_UI()
-	_setup_graphics_options_UI()
-	_setup_audio_sliders()
-	
-	# Start the options menu on the Game tab
-	_on_audio_button_pressed()
-		
-	
+	_build_panel()
+	_build_pages()
+	_show_tab(Tab.GAME)
+	OptionsSettings.option_changed.connect(_on_option_changed)
+	get_tree().root.size_changed.connect(_refresh_open_page)
+	visibility_changed.connect(_on_visibility_changed)
+
+
+## --- The options ---
+
+func _build_pages() -> void:
+	var game: OptionsPage = _pages[Tab.GAME]
+	game.choice(OptionsSettings.ANIMATION_SPEED, "OPT_ANIMATION_SPEED",
+		["0.5x", "1x", "2x", "4x"], _ANIMATION_SPEEDS, "OPT_ANIMATION_SPEED_HINT")
+	var locales: Array[String] = Localization.get_available_locales()
+	var locale_names: Array[String] = []
+	for locale: String in locales:
+		locale_names.append(Localization.get_locale_name(locale))
+	game.choice(OptionsSettings.LANGUAGE, "OPT_LANGUAGE", locale_names, locales)
+	game.next_column()
+	game.check(OptionsSettings.SHOW_TUTORIAL, "OPT_SHOW_TUTORIAL", "OPT_SHOW_TUTORIAL_HINT")
+	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
+
+	var graphics: OptionsPage = _pages[Tab.GRAPHICS]
+	graphics.check(OptionsSettings.FULLSCREEN, "OPT_FULLSCREEN")
+	# In a browser the page owns the window: only fullscreen is ours.
+	if OptionsSettings.has_option(OptionsSettings.PIXEL_PERFECT):
+		var pixel_perfect: CheckBox = graphics.check(OptionsSettings.PIXEL_PERFECT, "OPT_PIXEL_PERFECT", "OPT_PIXEL_PERFECT_HINT")
+		graphics.enable_when(pixel_perfect, OptionsSettings.is_fullscreen)
+		var scales: Array = _window_scales()
+		var scale_labels: Array = scales.map(func(scale: int) -> String: return "%dx" % scale)
+		var window_scale: PixelDropdown = graphics.choice(OptionsSettings.WINDOW_SCALE, "OPT_WINDOW_SCALE",
+			scale_labels, scales, "OPT_WINDOW_SCALE_HINT")
+		graphics.enable_when(window_scale, func() -> bool: return not OptionsSettings.is_fullscreen())
+		graphics.next_column()
+		var monitors: Array = range(DisplayServer.get_screen_count())
+		var monitor_labels: Array = monitors.map(func(screen: int) -> String: return tr("OPT_MONITOR_N").format({"n": screen + 1}))
+		var monitor: PixelDropdown = graphics.choice(OptionsSettings.MONITOR, "OPT_MONITOR", monitor_labels, monitors)
+		graphics.enable_when(monitor, func() -> bool: return DisplayServer.get_screen_count() > 1)
+		graphics.check(OptionsSettings.VSYNC, "OPT_VSYNC", "OPT_VSYNC_HINT")
+	else:
+		graphics.next_column()
+	graphics.choice(OptionsSettings.MAX_FPS, "OPT_FPS_LIMIT", ["30", "60", "120", "OPT_FPS_UNLIMITED"], _FPS_LIMITS)
+
+	var audio: OptionsPage = _pages[Tab.AUDIO]
+	audio.slider(OptionsSettings.MASTER_VOLUME, "OPT_GAME_VOLUME")
+	audio.slider(OptionsSettings.MUSIC_VOLUME, "OPT_MUSIC_VOLUME")
+	audio.slider(OptionsSettings.SFX_VOLUME, "OPT_SFX_VOLUME")
+	audio.check(OptionsSettings.MUTE_ALL, "OPT_MUTE_ALL")
+
+	var controls: OptionsPage = _pages[Tab.CONTROLS]
+	controls.note("OPT_CONTROLS_EMPTY")
+
+	var accessibility: OptionsPage = _pages[Tab.ACCESSIBILITY]
+	accessibility.check(OptionsSettings.SCREENSHAKE, "OPT_SCREENSHAKE", "OPT_SCREENSHAKE_HINT")
+
+
+## The window scales offered here: those that fit on this display.
+func _window_scales() -> Array:
+	var largest: int = OptionsSettings.largest_window_scale()
+	return OptionsSettings.WINDOW_SCALES.filter(func(scale: int) -> bool: return scale <= largest)
+
+
+## --- Layout ---
+
+func _build_panel() -> void:
+	var dim: ColorRect = ColorRect.new()
+	dim.color = Color(0.027451, 0.0117647, 0.054902, 0.827451)
+	dim.position = -Globals.SCREEN_SIZE / 2.0
+	dim.size = Globals.SCREEN_SIZE
+	add_child(dim)
+
+	var panel_rect: Rect2 = Rect2(-PANEL_SIZE / 2.0, PANEL_SIZE)
+	_frame = OptionsFrame.new()
+	add_child(_frame)
+	_frame.body_rect = Rect2(panel_rect.position + Vector2(0, TAB_HEIGHT), panel_rect.size - Vector2(0, TAB_HEIGHT))
+
+	_build_tabs(panel_rect)
+
+	var body: Rect2 = _frame.body_rect.grow(-_BODY_MARGIN)
+	var bottom_bar_top: float = body.end.y - _BUTTON_SIZE.y
+	for tab: Tab in _TABS:
+		var page: OptionsPage = OptionsPage.new(1 if tab == Tab.AUDIO else 2)
+		page.accent = _TABS[tab][1]
+		page.widget_color = _TABS[tab][2]
+		page.position = body.position
+		page.size = Vector2(body.size.x, bottom_bar_top - 12 - body.position.y)
+		page.hint_changed.connect(_on_hint_changed)
+		add_child(page)
+		_pages[tab] = page
+
+	_hint_label = RichTextLabel.new()
+	_hint_label.fit_content = true
+	_hint_label.scroll_active = false
+	_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hint_label.add_theme_color_override("default_color", Color("#A5A29D"))
+	_hint_label.position = Vector2(body.position.x, bottom_bar_top - 12)
+	_hint_label.size = Vector2(body.size.x, 12)
+	add_child(_hint_label)
+
+	_defaults_button = _add_bottom_button("OPT_DEFAULTS", Vector2(body.position.x, bottom_bar_top), _on_defaults_pressed)
+	_defaults_button.mouse_entered.connect(func() -> void: _on_hint_changed(tr("OPT_DEFAULTS_HINT")))
+	_defaults_button.mouse_exited.connect(func() -> void: _on_hint_changed(""))
+	_add_bottom_button("OPT_CLOSE", Vector2(body.end.x - _BUTTON_SIZE.x, bottom_bar_top), _on_close_button_pressed)
+
+
+## Lays the tabs out across the panel's top, each as wide as its title, with
+## the leftover width shared out between them.
+func _build_tabs(panel_rect: Rect2) -> void:
+	var font: Font = _frame.get_theme_default_font()
+	var widths: Array[float] = []
+	var total: float = 0.0
+	for tab: Tab in _TABS:
+		var width: float = ceilf(font.get_string_size(tr(_TABS[tab][0]), HORIZONTAL_ALIGNMENT_LEFT, -1, _TAB_FONT_SIZE).x + _TAB_PADDING)
+		widths.append(width)
+		total += width
+	var gap: float = floorf((panel_rect.size.x - total) / maxf(1.0, _TABS.size() - 1))
+
+	var rects: Array[Rect2] = []
+	var colors: Array[Color] = []
+	var x: float = panel_rect.position.x
+	for tab: Tab in _TABS:
+		var width: float = widths[tab]
+		# The last tab ends flush with the panel.
+		if tab == _TABS.size() - 1:
+			width = panel_rect.end.x - x
+		var rect: Rect2 = Rect2(x, panel_rect.position.y, width, TAB_HEIGHT)
+		rects.append(rect)
+		colors.append(_TABS[tab][1])
+
+		var button: Button = _SMALL_BUTTON_SCENE.instantiate()
+		button.get_node("AnimatedSprite2D").sprite_frames = null
+		button.custom_minimum_size = rect.size
+		button.position = rect.position
+		button.size = rect.size
+		button.hover_text_color = _TABS[tab][1]
+		add_child(button)
+		button.set_button_text(_TABS[tab][0])
+		button.pressed_within_window.connect(_show_tab.bind(tab))
+		_tab_buttons.append(button)
+		x += width + gap
+	_frame.tab_rects = rects
+	_frame.tab_colors = colors
+
+
+func _add_bottom_button(text_key: String, at: Vector2, on_pressed: Callable) -> Button:
+	var button: Button = _MEDIUM_BUTTON_SCENE.instantiate()
+	button.position = at
+	add_child(button)
+	button.set_button_text(text_key)
+	button.pressed_within_window.connect(on_pressed)
+	return button
+
+
+## --- Behaviour ---
+
+func _show_tab(tab: Tab) -> void:
+	_open_tab = tab
+	for each: Tab in _pages:
+		_pages[each].visible = each == tab
+	_frame.active_tab = tab
+	_defaults_button.hover_text_color = _TABS[tab][1]
+	_hint_label.text = ""
+	_pages[tab].refresh()
+
+
+func _refresh_open_page() -> void:
+	if visible:
+		_pages[_open_tab].refresh()
+
+
+func _on_option_changed(_key: StringName, _value: Variant) -> void:
+	# One option can change what another may do (fullscreen and the window
+	# scale), so the whole page is re-read.
+	_refresh_open_page()
+
+
+func _on_visibility_changed() -> void:
+	if visible:
+		# Options can change while the menu is shut (the tutorial turning
+		# itself off, the window going fullscreen from its title bar).
+		_pages[_open_tab].refresh()
+
+
+func _on_hint_changed(text: String) -> void:
+	_hint_label.text = text
+
+
+func _on_defaults_pressed() -> void:
+	OptionsSettings.reset_options(_pages[_open_tab].option_keys())
+
+
 func _on_close_button_pressed() -> void:
 	OptionsSettings.save_options_settings()
 	hide()
-
-
-func _on_item_hover() -> void:
-	Events.play_sound.emit(_HOVER_THUMP_SFX)
-
-
-func _setup_game_options_UI() -> void:
-	%AnimationSpeedOptionButton.select(_ANIMATION_SPEEDS.find(Globals.animation_speed))
-
-	var fps_index: int = _FPS_LIMITS.find(Engine.max_fps)
-	%FPSLimitOptions.select(fps_index if fps_index >= 0 else _FPS_LIMITS.find(60))
-
-	_setup_language_options()
-	%TutorialCheckBox.button_pressed = Globals.show_tutorial
-	%RegionAlertsCheckBox.button_pressed = Globals.show_region_alerts
-			
-	var bus_idx: int = AudioServer.get_bus_index("Master")
-	%MuteAllSoundsCheckBox.button_pressed = AudioServer.is_bus_mute(bus_idx)
-
-
-func _setup_graphics_options_UI() -> void:
-	%ScreenshakeCheckBox.button_pressed = Globals.screenshake_enabled
-	%FullscreenCheckBox.button_pressed = (DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN)
-
-	# In a browser the page owns the window: its size and vsync aren't ours to
-	# set. (Fullscreen stays: the checkbox is a click, which browsers allow.)
-	if not OptionsSettings.controls_window():
-		%ScaleOptionButton.get_parent().hide()
-		%VSyncCheckBox.get_parent().get_parent().hide()
-		return
-
-	%VSyncCheckBox.button_pressed = (DisplayServer.window_get_vsync_mode() == DisplayServer.VSyncMode.VSYNC_ENABLED)
-	_reduce_scale_options()
-	_set_scale_choice_label()
-
-
-## Drops the window scales too big for this display.
-func _reduce_scale_options() -> void:
-	var max_scale_index: int = OptionsSettings.WINDOW_SCALES.find(OptionsSettings.largest_window_scale())
-	for idx: int in range(OptionsSettings.WINDOW_SCALES.size() - 1, max_scale_index, -1):
-		%ScaleOptionButton.remove_item(idx)
-
-
-func _set_scale_choice_label() -> void:
-	var screen_scale: int = 1
-	var current_window_size: Vector2 = DisplayServer.window_get_size()
-	if current_window_size.x / Globals.SCREEN_SIZE.x == current_window_size.y / Globals.SCREEN_SIZE.y:
-		screen_scale = floori(current_window_size.x / Globals.SCREEN_SIZE.x)
-
-	%ScaleOptionButton.select(OptionsSettings.WINDOW_SCALES.find(screen_scale))
-
-
-## Takes effect on the next new game: a run already under way keeps going
-## with or without the tutorial it started with.
-func _on_tutorial_check_box_toggled(toggled_on: bool) -> void:
-	Globals.show_tutorial = toggled_on
-
-
-func _on_region_alerts_check_box_toggled(toggled_on: bool) -> void:
-	Globals.show_region_alerts = toggled_on
-
-
-func _on_screenshake_check_box_toggled(toggled_on: bool) -> void:
-	Globals.screenshake_enabled = toggled_on
-	
-	
-func _on_v_sync_check_box_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSyncMode.VSYNC_ENABLED)
-	else:
-		DisplayServer.window_set_vsync_mode(DisplayServer.VSyncMode.VSYNC_DISABLED)
-	
-	
-func _on_fullscreen_check_box_toggled(toggled_on: bool) -> void:
-	if toggled_on:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-		%ScaleLabel.add_theme_color_override("default_color", Globals.dark_gray)
-		%ScaleOptionButton.select(-1)
-	else:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		%ScaleLabel.add_theme_color_override("default_color", Globals.red)
-		_set_scale_choice_label()
-	
-
-func _setup_audio_sliders() -> void:
-	var master_bus_index: int = AudioServer.get_bus_index("Master")
-	var music_bus_index: int = AudioServer.get_bus_index("Music")
-	var sfx_bus_index: int = AudioServer.get_bus_index("SFX")
-	
-	%GameVolumeSlider.value = AudioServer.get_bus_volume_linear(master_bus_index)
-	%MusicVolumeSlider.value = AudioServer.get_bus_volume_linear(music_bus_index)
-	%SFXVolumeSlider.value = AudioServer.get_bus_volume_linear(sfx_bus_index)
-	
-	
-func _on_game_volume_slider_value_changed(value: float) -> void:
-	_set_bus_volume("Master", value, %GameVolumeSlider, %GameVolumeKnobLabel)
-
-
-func _on_music_volume_slider_value_changed(value: float) -> void:
-	_set_bus_volume("Music", value, %MusicVolumeSlider, %MusicVolumeKnobLabel)
-
-
-func _on_sfx_volume_slider_value_changed(value: float) -> void:
-	_set_bus_volume("SFX", value, %SFXVolumeSlider, %SFXVolumeKnobLabel)
-
-
-## Applies a volume slider to its bus and keeps the percentage riding the knob.
-func _set_bus_volume(bus: StringName, value: float, slider: Range, knob_label: RichTextLabel) -> void:
-	AudioServer.set_bus_volume_linear(AudioServer.get_bus_index(bus), value)
-	knob_label.text = str(int(value * 100)) + '%'
-	knob_label.global_position.x = slider.global_position.x \
-		+ (value / slider.max_value) * (slider.size.x - 24)
-
-
-func _on_game_button_pressed() -> void:
-	_game_options.show()
-	_graphics_options.hide()
-	_audio_options.hide()
-	
-	%Background.frame = 0
-	screen_showing = ScreenShowing.GAME
-
-
-func _on_graphics_button_pressed() -> void:
-	_game_options.hide()
-	_graphics_options.show()
-	_audio_options.hide()
-	
-	%Background.frame = 1
-	screen_showing = ScreenShowing.GRAPHICS
-	
-
-func _on_audio_button_pressed() -> void:
-	_game_options.hide()
-	_graphics_options.hide()
-	_audio_options.show()
-	
-	%Background.frame = 2
-	screen_showing = ScreenShowing.AUDIO
-
-
-func _on_animation_speed_option_button_item_selected(index: int) -> void:
-	Globals.animation_speed = _ANIMATION_SPEEDS[index]
-
-
-func _on_fps_limit_options_item_selected(index: int) -> void:
-	Engine.max_fps = _FPS_LIMITS[index]
-
-
-func _setup_language_options() -> void:
-	_language_locales = Localization.get_available_locales()
-	%LanguageOptionButton.clear()
-	for locale: String in _language_locales:
-		%LanguageOptionButton.add_item(Localization.get_locale_name(locale))
-	%LanguageOptionButton.select(_language_locales.find(Localization.get_locale()))
-
-
-func _on_language_option_button_item_selected(index: int) -> void:
-	Localization.set_locale(_language_locales[index])
-
-
-func _on_mute_all_sounds_check_box_toggled(toggled_on: bool) -> void:
-	var bus_idx: int = AudioServer.get_bus_index("Master")
-	AudioServer.set_bus_mute(bus_idx, toggled_on)
-
-
-func _on_scale_option_button_item_selected(index: int) -> void:
-	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-
-	var window_size: Vector2 = Globals.SCREEN_SIZE * OptionsSettings.WINDOW_SCALES[index]
-	DisplayServer.window_set_size(window_size)
-
-	var display_size: Vector2 = DisplayServer.screen_get_size()
-	DisplayServer.window_set_position((display_size - window_size) / 2)
-	
-	%ScaleLabel.add_theme_color_override("default_color", Globals.red)
-	%FullscreenCheckBox.button_pressed = false
