@@ -40,6 +40,7 @@ const MASTER_VOLUME: StringName = &"Audio/master_volume"
 const MUSIC_VOLUME: StringName = &"Audio/music_volume"
 const SFX_VOLUME: StringName = &"Audio/sfx_volume"
 const MUTE_ALL: StringName = &"Audio/mute_all"
+const READABLE_FONT: StringName = &"Accessibility/readable_font"
 
 
 class _Option:
@@ -143,6 +144,12 @@ func _register_options() -> void:
 	register(MUTE_ALL, false,
 		func() -> bool: return AudioServer.is_bus_mute(AudioServer.get_bus_index("Master")),
 		func(value: Variant) -> void: AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), bool(value)))
+	_register_readable_font_options()
+
+
+func _register_readable_font_options() -> void:
+	register(READABLE_FONT, false, FontSwap.is_readable,
+		func(value: Variant) -> void: FontSwap.set_readable(bool(value)))
 
 
 func _register_window_options() -> void:

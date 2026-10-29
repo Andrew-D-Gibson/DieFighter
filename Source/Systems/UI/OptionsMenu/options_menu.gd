@@ -99,6 +99,8 @@ func _build_pages() -> void:
 
 	var accessibility: OptionsPage = _pages[Tab.ACCESSIBILITY]
 	accessibility.check(OptionsSettings.SCREENSHAKE, "OPT_SCREENSHAKE", "OPT_SCREENSHAKE_HINT")
+	# Readable font
+	accessibility.check(OptionsSettings.READABLE_FONT, "OPT_READABLE_FONT", "OPT_READABLE_FONT_HINT")
 
 
 ## The window scales offered here: those that fit on this display.
@@ -151,9 +153,22 @@ func _build_panel() -> void:
 	_add_bottom_button("OPT_CLOSE", Vector2(body.end.x - _BUTTON_SIZE.x, bottom_bar_top), _on_close_button_pressed)
 
 
-## Lays the tabs out across the panel's top, each as wide as its title, with
-## the leftover width shared out between them.
 func _build_tabs(panel_rect: Rect2) -> void:
+	for tab: Tab in _TABS:
+		var button: Button = _SMALL_BUTTON_SCENE.instantiate()
+		button.get_node("AnimatedSprite2D").sprite_frames = null
+		button.hover_text_color = _TABS[tab][1]
+		add_child(button)
+		button.set_button_text(_TABS[tab][0])
+		button.pressed_within_window.connect(_show_tab.bind(tab))
+		_tab_buttons.append(button)
+	_layout_tabs(panel_rect)
+
+
+## Lays the tabs out across the panel's top, each as wide as its title, with
+## the leftover width shared out between them. Again whenever the font
+## changes, which changes the titles' widths.
+func _layout_tabs(panel_rect: Rect2) -> void:
 	var font: Font = _frame.get_theme_default_font()
 	var widths: Array[float] = []
 	var total: float = 0.0
@@ -175,16 +190,10 @@ func _build_tabs(panel_rect: Rect2) -> void:
 		rects.append(rect)
 		colors.append(_TABS[tab][1])
 
-		var button: Button = _SMALL_BUTTON_SCENE.instantiate()
-		button.get_node("AnimatedSprite2D").sprite_frames = null
+		var button: Button = _tab_buttons[tab]
 		button.custom_minimum_size = rect.size
 		button.position = rect.position
 		button.size = rect.size
-		button.hover_text_color = _TABS[tab][1]
-		add_child(button)
-		button.set_button_text(_TABS[tab][0])
-		button.pressed_within_window.connect(_show_tab.bind(tab))
-		_tab_buttons.append(button)
 		x += width + gap
 	_frame.tab_rects = rects
 	_frame.tab_colors = colors
@@ -216,7 +225,9 @@ func _refresh_open_page() -> void:
 		_pages[_open_tab].refresh()
 
 
-func _on_option_changed(_key: StringName, _value: Variant) -> void:
+func _on_option_changed(key: StringName, _value: Variant) -> void:
+	if key == OptionsSettings.READABLE_FONT:
+		_layout_tabs(Rect2(-PANEL_SIZE / 2.0, PANEL_SIZE))
 	# One option can change what another may do (fullscreen and the window
 	# scale), so the whole page is re-read.
 	_refresh_open_page()

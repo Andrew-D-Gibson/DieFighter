@@ -79,3 +79,5 @@ OPT_MUTE_ALL,Mute All Sounds,,,,,,,,Options > Audio tab: label beside a checkbox
 OPT_CONTROLS_EMPTY,Nothing to set here yet.,,,,,,,,Options > Controls tab: placeholder while the tab is empty,,,
 OPT_SCREENSHAKE,Screenshake,,,,,,,,Options > Accessibility tab: label beside a checkbox,,,
 OPT_SCREENSHAKE_HINT,Shake the screen on big hits.,,,,,,,,Options > Accessibility tab: hint line for Screenshake,,,
+OPT_READABLE_FONT,Readable Font,,,,,,,,Options > Accessibility tab: label beside a checkbox that swaps the pixel font for a plainer one,,,
+OPT_READABLE_FONT_HINT,Use a clearer font instead of the pixel font.,,,,,,,,Options > Accessibility tab: hint line for Readable Font,,,
