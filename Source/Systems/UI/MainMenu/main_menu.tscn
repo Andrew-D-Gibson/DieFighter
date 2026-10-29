@@ -386,10 +386,12 @@ position = Vector2(160, 90)
 
 [node name="ShipSelectPopup" parent="." unique_id=966406696 instance=ExtResource("20_shipselect")]
 unique_name_in_owner = true
+visible = false
 position = Vector2(160, 90)
 
 [node name="CodexPopup" parent="." unique_id=819407393 instance=ExtResource("21_codex")]
 unique_name_in_owner = true
+visible = false
 position = Vector2(160, 90)
 
 [node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=952747932]

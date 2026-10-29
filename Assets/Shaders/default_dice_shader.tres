@@ -34,3 +34,6 @@ shader_parameter/brightness_period = 2.0
 shader_parameter/time_offset = 0.0
 shader_parameter/flash_color = Color(1, 1, 1, 1)
 shader_parameter/flash_amount = 0.0
+shader_parameter/upgraded = false
+shader_parameter/upgrade_color = Color(0.808, 0.941, 0.945, 1)
+shader_parameter/upgrade_speed = 0.35
