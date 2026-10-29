@@ -3,15 +3,15 @@ extends RefCounted
 ## One thing the AutoPilot could do right now, through the same entry points a
 ## player's input reaches: drop a die from the hand on a tile, retarget the
 ## targeting computer, flip between the systems and map tabs, take a choice
-## from a salvage offer, buy from the shop, buy a repair or sell a tile at a
-## repair station, drag a tile to another cell out of a fight, or press End
-## Turn.
+## from a salvage offer, buy from the shop or reroll its tile shelves, buy a
+## repair or sell a tile at a repair station, drag a tile to another cell out
+## of a fight, or press End Turn.
 ##
 ## Moves are listed fresh every time the AutoPilot acts and used at once, so
 ## they hold live node references rather than ids.
 
 ## Append only: transcripts and replays name kinds by their position.
-enum Kind { PLACE_DIE, TARGET, VIEW_MAP, VIEW_SYSTEMS, END_TURN, CLAIM, BUY, REPAIR, SELL, MOVE_TILE }
+enum Kind { PLACE_DIE, TARGET, VIEW_MAP, VIEW_SYSTEMS, END_TURN, CLAIM, BUY, REPAIR, SELL, MOVE_TILE, REROLL }
 
 var kind: Kind
 var die: Dice
@@ -61,6 +61,13 @@ static func buy(stock: Node2D, cost: int) -> AutoPilotMove:
 static func repair(cost: int) -> AutoPilotMove:
 	var move := AutoPilotMove.new()
 	move.kind = Kind.REPAIR
+	move.price = cost
+	return move
+
+
+static func reroll(cost: int) -> AutoPilotMove:
+	var move := AutoPilotMove.new()
+	move.kind = Kind.REROLL
 	move.price = cost
 	return move
 
@@ -125,6 +132,8 @@ static func list_legal() -> Array[AutoPilotMove]:
 			if cost >= 0 and cost <= Globals.player.money and _can_pick_up(stock as Node2D) \
 			and _has_somewhere_to_go(stock as Node2D):
 				moves.append(buy(stock as Node2D, cost))
+		if Globals.shop.reroll_refusal().is_empty():
+			moves.append(reroll(Globals.shop.reroll_cost()))
 
 	moves.append_array(_repair_station_moves())
 	moves.append_array(_rearrangements())
@@ -157,6 +166,8 @@ func perform() -> void:
 		# The button's own handler.
 		Kind.REPAIR:
 			Globals.repair_station.repair()
+		Kind.REROLL:
+			Globals.shop.reroll()
 		# Dragged off the grid and let go over the SELL slot.
 		Kind.SELL:
 			tile.draggable.drag_ended.emit(tile.draggable, Globals.repair_station.sell_zone_centre())
@@ -180,6 +191,8 @@ func describe() -> Dictionary:
 			return {"move": "target", "ship": AutoPilotSnapshot.ship_label(enemy)}
 		Kind.REPAIR:
 			return {"move": "repair", "price": price}
+		Kind.REROLL:
+			return {"move": "reroll", "price": price}
 		Kind.SELL:
 			return {"move": "sell", "item": item_name(tile), "price": price, "cell": _tile_cell(tile)}
 		Kind.MOVE_TILE:

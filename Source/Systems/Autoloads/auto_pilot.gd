@@ -262,6 +262,10 @@ func _process(_delta: float) -> void:
 		_telemetry.on_item_taken(move.kind == AutoPilotMove.Kind.BUY)
 	elif move.kind == AutoPilotMove.Kind.REPAIR or move.kind == AutoPilotMove.Kind.SELL:
 		_telemetry.on_station_used(move.kind == AutoPilotMove.Kind.SELL)
+	elif move.kind == AutoPilotMove.Kind.REROLL:
+		_telemetry.on_rerolled()
+		# The fresh stock goes in the transcript too, once it's on the shelves.
+		_shop_written = false
 	move.perform()
 	_idle_frames = 0
 	_settle = _SETTLE_FRAMES
@@ -283,7 +287,7 @@ static func _stays_in_the_fight(move: AutoPilotMove) -> bool:
 static func _advances_play(move: AutoPilotMove) -> bool:
 	return move.kind in [AutoPilotMove.Kind.PLACE_DIE, AutoPilotMove.Kind.END_TURN,
 		AutoPilotMove.Kind.CLAIM, AutoPilotMove.Kind.BUY, AutoPilotMove.Kind.REPAIR,
-		AutoPilotMove.Kind.SELL]
+		AutoPilotMove.Kind.SELL, AutoPilotMove.Kind.REROLL]
 
 
 ## Whether a patient player would act: the game scene is up and not over,
@@ -333,11 +337,11 @@ func _count_salvage_offers() -> void:
 				"room": Globals.tile_grid.has_free_cell()})
 
 
-## Writes what the shop has, and at what price, once per stop: with the
-## salvage offers, what a tile taken was chosen over.
+## Writes what the shop has, and at what price, once per stop and again after
+## each reroll: with the salvage offers, what a tile taken was chosen over.
 func _write_shop_stock() -> void:
 	if _shop_written or not is_instance_valid(Globals.shop) or not Globals.shop.is_open() \
-	or Globals.shop.item_to_shop_index.is_empty():
+	or Globals.shop.item_to_shop_index.is_empty() or Globals.shop.is_restocking():
 		return
 	_shop_written = true
 	var items: Array[Dictionary] = []
@@ -345,7 +349,8 @@ func _write_shop_stock() -> void:
 		if is_instance_valid(stock):
 			items.append({"item": AutoPilotMove.item_name(stock), "price": Globals.shop.price_of(stock)})
 	_write({"type": "offer", "source": "shop", "turn": _player_turn, "items": items,
-		"money": AutoPilotSnapshot.credits(), "room": Globals.tile_grid.has_free_cell()})
+		"money": AutoPilotSnapshot.credits(), "room": Globals.tile_grid.has_free_cell(),
+		"rerolls": Globals.shop.rerolls_bought})
 
 
 func _salvage_on_its_way() -> bool:

@@ -24,6 +24,9 @@ const _KIND_WEIGHTS: Dictionary[AutoPilotMove.Kind, float] = {
 	AutoPilotMove.Kind.SELL: 0.05,
 	# Rare too: enough to exercise dragging tiles about between fights.
 	AutoPilotMove.Kind.MOVE_TILE: 0.05,
+	# Now and then: a random player sometimes tries its luck, and the price
+	# climbing each time stops it emptying the wallet in one shop.
+	AutoPilotMove.Kind.REROLL: 0.15,
 }
 
 

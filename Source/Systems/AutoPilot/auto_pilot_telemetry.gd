@@ -50,6 +50,7 @@ func begin_visit(scenario: String, sector: int, map_index: int, turn: int) -> vo
 		"bought": 0,
 		"repairs": 0,
 		"sold": 0,
+		"rerolls": 0,
 		"hull_start": player.health.health,
 		"money_start": AutoPilotSnapshot.credits(),
 		"dice_start": player.num_of_dice,
@@ -82,6 +83,12 @@ func on_item_taken(bought: bool) -> void:
 func on_station_used(sold: bool) -> void:
 	if not _visit.is_empty():
 		_visit["sold" if sold else "repairs"] += 1
+
+
+## The player rerolled the shop's tile shelves.
+func on_rerolled() -> void:
+	if not _visit.is_empty():
+		_visit["rerolls"] += 1
 
 
 func on_combat_won() -> void:

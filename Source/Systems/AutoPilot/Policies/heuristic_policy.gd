@@ -8,8 +8,9 @@ extends AutoPilotPolicy
 ## builds the grid (AutoPilotBuild): a tile taken goes in the cell where it
 ## adds most, a Grid Slot opens the sealed cell that pays best, and tiles are
 ## dragged about while a drag still improves the board. It takes salvage,
-## shops, patches the hull at repair stations, and sells a tile there when
-## the credits are worth more than the tile. It reads only what a player can
+## shops (rerolling the shelves when a fresh set is likely to hold a buy
+## worth the price), patches the hull at repair stations, and sells a tile
+## there when the credits are worth more than the tile. It reads only what a player can
 ## see: intents a "?" hides cost the same whatever the face (AutoPilotThreat).
 ##
 ## Greedy, one move at a time, with no lookahead. The point isn't strong play
@@ -171,6 +172,21 @@ const _SELL_BAR: float = 1.0
 const _KEPT_TILE_TURNS: float = 3.0
 ## Below this many tiles it only sells one that does harm.
 const _KEEP_TILES: int = 3
+## A reroll must clear its price by this much in expected gain. Lower than a
+## purchase's bar: most fresh shelves hold nothing worth buying (on a typical
+## grid only one tile in ten clears the purchase bar), so the expected best
+## buy rarely tops a point, and a higher bar would never reroll.
+const _REROLL_BAR: float = 0.5
+## Credits it keeps back from rerolling: about a cheap tile at the next shop.
+## On top of this it keeps what patching the hull up to its repair line would
+## cost (_repair_fund()).
+const _REROLL_RESERVE: int = 20
+## Credits above the reserve cost a reroll this share of what they'd cost a
+## purchase. Purchases price every credit alike, yet smart runs end with
+## 70-130 credits unspent, so spare credits are worth less than that.
+const _SPARE_CREDIT_RATE: float = 0.5
+## Tiles a reroll puts on the shelves.
+const _SHELF_TILES: int = 4
 
 ## Takes salvage and shop stock at random instead of by worth, playing the
 ## rest as usual, so every tile gets taken often enough to measure, not only
@@ -198,6 +214,11 @@ var _done_shopping: Dictionary[String, bool] = {}
 var _build: AutoPilotBuild
 ## Grid layouts already found as good as a single drag can make them.
 var _settled_layouts: Dictionary[String, bool] = {}
+## Off-grid tiles of each resource the shop could stock, standing in for a
+## tile not on offer yet while a reroll is weighed.
+var _pool_stand_ins: Dictionary[TileResource, Tile] = {}
+## What a reroll is expected to gain, by shop state (see _reroll_gain()).
+var _reroll_gains: Dictionary[String, float] = {}
 
 
 func _init(style: Persona) -> void:
@@ -220,8 +241,13 @@ func set_may_flee(allowed: bool) -> void:
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_PREDELETE and is_instance_valid(_nominal_enemy):
+	if what != NOTIFICATION_PREDELETE:
+		return
+	if is_instance_valid(_nominal_enemy):
 		_nominal_enemy.free()
+	for stand_in: Tile in _pool_stand_ins.values():
+		if is_instance_valid(stand_in):
+			stand_in.free()
 
 
 func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilotMove:
@@ -242,6 +268,12 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 		var purchase: AutoPilotMove = _random_purchase(stock, rng) if random_picks else _best_item(stock, true)
 		if purchase:
 			return _aim(purchase, true)
+	# Only once nothing on the shelves is worth buying: a reroll throws away
+	# what's there.
+	if by_kind.has(AutoPilotMove.Kind.REROLL) and not random_picks:
+		var reroll: AutoPilotMove = by_kind[AutoPilotMove.Kind.REROLL][0]
+		if _reroll_gain(reroll.price) >= _REROLL_BAR:
+			return reroll
 	if by_kind.has(AutoPilotMove.Kind.SELL):
 		var sale: AutoPilotMove = _best_sale(by_kind[AutoPilotMove.Kind.SELL],
 			by_kind.get(AutoPilotMove.Kind.REPAIR, []))
@@ -810,6 +842,88 @@ func _aim(move: AutoPilotMove, buying: bool) -> AutoPilotMove:
 			on_offer = _shelf_tiles()
 		move.cell = _build.best_sealed_cell(on_offer)
 	return move
+
+
+## What rerolling the shop for [param cost] is expected to gain, in the same
+## points as a purchase: the best buy a fresh set of shelves would hold, less
+## the price. Read off what a player can know, not the shop's next roll:
+## every tile the shop could stock (what's on the shelves now is kept off
+## the new ones), each valued in the best cell for it as purchases are, at
+## its rarity's average price and drop weight. Only tiles it could still
+## afford after paying, and would buy (clearing the purchase bar), count. It
+## never rerolls into its reserve (_REROLL_RESERVE and _repair_fund()), and
+## pays for a reroll in spare credits (_SPARE_CREDIT_RATE).
+##
+## The best of _SHELF_TILES weighted draws (expected_best_of()), drawn with
+## replacement, which the shop doesn't quite do, so it's a touch
+## pessimistic. It only counts the best tile, though a good shelf can hold
+## two buys.
+func _reroll_gain(cost: int) -> float:
+	var budget: int = Globals.player.money - cost
+	if budget < _REROLL_RESERVE + _repair_fund():
+		return -INF
+	var on_shelves: Array[TileResource] = []
+	for tile: Tile in _shelf_tiles():
+		on_shelves.append(tile.tile_resource)
+	var key: String = "%s/%d/%s" % [_board_key(), budget, on_shelves]
+	if _reroll_gains.has(key):
+		return _reroll_gains[key]
+
+	var nets: Array[Vector2] = []
+	var total_weight: float = 0.0
+	for resource: TileResource in Globals.reward_manager.get_possible_tile_rewards():
+		if resource in on_shelves:
+			continue
+		var weight: float = RewardManager._RARITY_WEIGHTS.get(resource.rarity, 1.0)
+		total_weight += weight
+		var price: int = Shop.base_price(resource.rarity)
+		var net: float = 0.0
+		if price <= budget:
+			net = _offer_worth(_pool_stand_in(resource)) - price / _PRICE_PER_POINT
+		nets.append(Vector2(net if net >= _BUY_BAR else 0.0, weight))
+
+	var expected_best: float = expected_best_of(nets, total_weight, _SHELF_TILES)
+	var gain: float = expected_best - cost * _SPARE_CREDIT_RATE / _PRICE_PER_POINT
+	_reroll_gains[key] = gain
+	return gain
+
+
+## What the repairs to bring the hull up to its repair line would cost at a
+## fresh station, so a reroll never spends what the next station would want.
+func _repair_fund() -> int:
+	var station: RepairStation = Globals.repair_station
+	if not is_instance_valid(station):
+		return 0
+	var health: Health = Globals.player.health
+	var missing: float = _repair_line() * health.max_health - health.health
+	var repairs: int = ceili(maxf(missing, 0.0) / maxf(1.0, float(station.hull_per_repair)))
+	var fund: int = 0
+	for i: int in repairs:
+		fund += station.base_repair_cost + station.repair_cost_growth * i
+	return fund
+
+
+## The expected best of [param draws] weighted draws from [param nets]
+## (each Vector2(value, drop weight); [param total_weight] their weights'
+## sum), with replacement: with the values sorted and F the share of the
+## weight at or below each, sum of value_k * (F_k^draws - F_(k-1)^draws).
+static func expected_best_of(nets: Array[Vector2], total_weight: float, draws: int) -> float:
+	if total_weight <= 0.0:
+		return 0.0
+	var sorted: Array[Vector2] = nets.duplicate()
+	sorted.sort_custom(func(a: Vector2, b: Vector2) -> bool: return a.x < b.x)
+	var expected: float = 0.0
+	var below: float = 0.0
+	for entry: Vector2 in sorted:
+		var share: float = below + entry.y / total_weight
+		expected += entry.x * (pow(share, draws) - pow(below, draws))
+		below = share
+	return expected
+
+func _pool_stand_in(resource: TileResource) -> Tile:
+	if not is_instance_valid(_pool_stand_ins.get(resource)):
+		_pool_stand_ins[resource] = Globals.tile_grid.create_tile(resource)
+	return _pool_stand_ins[resource]
 
 
 ## The sale most worth making, or null: one whose credits beat what the tile
