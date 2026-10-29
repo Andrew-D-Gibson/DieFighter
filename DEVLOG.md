@@ -4,6 +4,47 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Defence: Phase Cloak, Spiked Hull, Blood Valve
+
+Gap analysis G12, G08 and G13. Emergency Shield and Dead Man's Switch only
+stop fatal blows, Spite Coil only answers hull hits, and nothing turned hull
+into dice.
+
+**New systems.** Player status `phased` (badge, keyword, hover rule): each
+stack makes the next enemy hit above 0 miss completely, so shields keep every
+point and Dead Man's Switch never sees it; Burn, hazards and your own tiles'
+costs still land. It wears off when the enemy turn ends. TileEvent
+`ON_PLAYER_ATTACKED` (12) fires once per enemy hit aimed at you, shields or
+hull, ion included; a phased hit doesn't count. `SPEND_HULL` (AttributeChange
+14) pays hull past shields and counts as a hull hit; `HULL_AT_LEAST`
+(activation 19) refuses a payment that would kill you. A tile reaction no
+longer aims at a ship that died or fled before it plays (Hex Coil too).
+
+| Tile | Colour, rarity | Uses | Does | Upgrade |
+|---|---|---|---|---|
+| Phase Cloak | Blue, Uncommon | 1 | 6, in a fight: Phased 1. Give die | Phased 2 |
+| Spiked Hull | Red, Uncommon | passive | Enemy hit aimed at you: 2 damage to the attacker | 3 |
+| Blood Valve | Purple, Uncommon | 1 | Any die: spend 3 hull, hologram of the die, return die | 2 hull |
+
+Blood Valve sets off Spite Coil, Reactive Armor and Regenerative Brake, and
+ignores echo, so one payment always buys one hologram. Spiked Hull's return
+hit is the player's damage, so it can't loop. The AutoPilot values Phase
+Cloak as the biggest hits the enemies already hold.
+
+**Known edge.** A background rule that makes a tile activate twice can run
+Blood Valve twice at low hull: the second payment refuses but its hologram
+still appears.
+
+**Tested.** GUT 1390/1390 on the branch. Live (Wolfpack): a 5 on Blood Valve
+cost 3 hull with 10 shields untouched and gave a hologram 5 plus the 5 back;
+a 6 on Phase Cloak gave Phased 1; with the target holding two attack dice,
+the first shot made no damage event, the second hit the shields for 2, and
+Spiked Hull hit the attacker back for 2. One early attempt stalled the game
+in a single long eval; the same steps split into short evals ran cleanly and
+the log has no errors, so the cause is unknown.
+
+---
+
 ## 2026-10-29 — Later turns: Time Bomb, Holding Bay
 
 Gap analysis G02g and G10: payouts and dice that wait for a later turn.

@@ -131,6 +131,7 @@ at once, with no per-tile authoring.
 | Amplifier | — | Power-up hum, twice | before each `ADD_AMPLIFIER_MODIFIER` |
 | Arc Tap | dice_cannon | High-voltage arc snap | before `DAMAGE` |
 | Beam Splitter | — | Prism split chime + hologram shimmer | before `PASS_DIE_TO_TILE`, `FEED_HOLOGRAM` |
+| Blood Valve | — | Valve hiss + wet clunk as hull is paid, then a hologram shimmer | before `SPEND_HULL`; before `SPAWN_HOLOGRAPHIC_DIE` |
 | Blowtorch | dice_cannon | A roaring torch jet, then a hiss of flame back on you | before `DAMAGE`; before `APPLY_STATUS` |
 | Booster Stage | — | Rocket-stage ignition | before `ADD_AMPLIFIER_MODIFIER` |
 | Bootstrap Injector | — | Digital materialise + engine drain | before `SPAWN_HOLOGRAPHIC_DIE` |
@@ -191,6 +192,7 @@ at once, with no per-tile authoring.
 | Pair Lock | dice_cannon | Lock "clunk" as the pair matches | before `DAMAGE` |
 | Parity Junction | dice_cannon | Switch click (two pitches for odd/even) | each branch |
 | Phantom Squadron | — | Ghostly shimmer per hologram | before each `SPAWN_HOLOGRAPHIC_DIE` |
+| Phase Cloak | — | Phase-out shimmer; a whoosh as a hit passes through | before `APPLY_STATUS`; Phased miss |
 | Pilot Light | — | Pilot flame "fwump" | before `FEED_HOLOGRAM` |
 | Polarizer | reroll blip | Magnetic snap | before `CHANGE_ACTIVATOR_VALUE` |
 | Preflight Interlock | dice_cannon | Checklist beeps → triple shot | before `DAMAGE` |
@@ -214,6 +216,7 @@ at once, with no per-tile authoring.
 | Skeleton Crew | player_shield | Hollow, sparse shield hum | before `SHIELD` |
 | Solar Sail | player_shield | Sail unfurl + shimmer | before `SHIELD` |
 | Spark Gap | — | Spark snap | before `DAMAGE` |
+| Spiked Hull | — | Metallic spike "shink" on the return hit | before `DAMAGE` |
 | Spite Coil | dice_cannon | Snarling zap | before `DAMAGE` |
 | Spotter Drone | — | Drone beep + lock | before `APPLY_STATUS` |
 | Static Bloom | — | Static wash | before `APPLY_STATUS` |
@@ -271,6 +274,7 @@ at once, with no per-tile authoring.
 | Scrambled | Static warble | Glitch pitch-bend as a die flips |
 | Jammed | Clank / gears catching | Grinding stall as an action becomes nothing |
 | Exposed | Target-lock beep | Critical "shink" when cashed in |
+| Phased | Phase-out shimmer | Whoosh as the hit passes through |
 | Weakened | Power-down droop | Muffled, flattened impact on a weakened hit |
 
 The same statuses on the player use the same sounds. Jammed and Scrambled
