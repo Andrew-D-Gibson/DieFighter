@@ -89,6 +89,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ION_DAMAGE, label = "Ion Damage", handler = IonDamageHandler},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SIPHON_ENGINE_CHARGE, label = "Siphon Engine Charge", handler = SiphonEngineChargeHandler, fields = ["color"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES, label = "Transfer Statuses", handler = TransferStatusesHandler},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.MULTIPLY_STATUSES, label = "Multiply Statuses", handler = MultiplyStatusesHandler, fields = ["multiplier"]},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
@@ -176,6 +177,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.FEED_HOLOGRAM, label = "Feed Hologram", handler = FeedHologramHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.COUNT_DOWN, label = "Count Down", handler = CountDownHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ARM_ECHO, label = "Arm Echo", handler = ArmEchoHandler},
+	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ADD_FAMILY_BOOST, label = "Add Family Boost", handler = AddFamilyBoostHandler, fields = ["string_param", "range_max"]},
 
 	# ── SCENARIO_CONTROL ──────────────────────────────────────────
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.OPEN_SHOP, label = "Open Shop", handler = OpenShopHandler},

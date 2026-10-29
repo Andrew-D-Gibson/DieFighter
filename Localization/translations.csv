@@ -149,3 +149,4 @@ REGION_ALERT_CLOSE,CLOSE,,,,,,,,"Button on the arrival card that explains a regi
 SHOP_REROLL_BUTTON,REROLL,刷新,入れ替え,ОБНОВИТЬ,NEUE WARE,RENOUVELER,RENOVAR,RENOVAR,"Shop: button on the tab above the shop panel that pays credits to swap the four tiles for sale for new ones (a 'reroll' or 'restock'), about 10 characters fit",10,,
 ERROR_NO_COUNTDOWNS,NO OTHER COUNTDOWNS,,,,,,,,"Error popup: a tile that counts down the player's other countdown tiles was given a die, but there are none on the grid",,,
 INFO_TILE_COUNTDOWN,(countdown): [color=yellow]{left}[/color] to go,,,,,,,,"Tile info panel, a line under a countdown tile's description: how much more the dice placed on it must add up to before it fires. {left} is a number. Keep (countdown) and the [color] tags.",28,,
+ERROR_TARGET_NO_STATUS,TARGETED SHIP HAS NO STATUSES,,,,,,,,"Error popup: a tile that works the statuses on the targeted ship was given a die, but that ship has none",,,

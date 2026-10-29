@@ -49,3 +49,4 @@ func resolve(engine: ScenarioEngine) -> void:
 		else:
 			engine.add_modifier(incoming)
 			incoming.play_applied_feedback(incoming.stacks)
+		announce_status_applied(target, incoming.status_id, incoming.stacks)

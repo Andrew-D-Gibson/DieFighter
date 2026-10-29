@@ -119,6 +119,10 @@ enum AttributeChangeSubtype {
 	## merging into any it already has. The player can hand an enemy their
 	## Burn; an enemy can vent the player's Burn back at them.
 	TRANSFER_STATUSES,
+	## Multiply every status on the targets by multiplier (x2 doubles), by
+	## applying the difference: each status gets an ApplyStatusEvent of its
+	## own, so it lands, shows and is heard like any other application.
+	MULTIPLY_STATUSES,
 }
 
 
@@ -268,6 +272,11 @@ enum TileControlSubtype {
 	## its whole chain twice and hands its die on once. Each echo is spent by
 	## one activation; unspent ones lapse when the turn or the fight ends.
 	ARM_ECHO,
+	## Give every tile of the colour family named by string_param ("red",
+	## "blue", ...) running_amount more damage for the rest of the fight, held
+	## between 0 and range_max (FamilyBoostModifier, one per source tile). A
+	## negative amount takes it back down.
+	ADD_FAMILY_BOOST,
 }
 
 

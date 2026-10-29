@@ -30,6 +30,14 @@ enum ActivationType {
 	## Another countdown tile (TileResource.countdown) is on the grid. For a
 	## tile that works the other countdowns: with none it would eat the die.
 	OTHER_COUNTDOWN_ON_GRID,
+	## placeholder, owned by tiles/twindice
+	MATCHES_HELD_DIE,
+	## placeholder, owned by tiles/twindice
+	SUMS_WITH_HELD_DIE,
+	## The ship this die was dropped against carries a status, any status. For
+	## a tile that works whatever statuses are there (Status Catalyst): with
+	## none it would eat the die.
+	TARGETED_SHIP_HAS_STATUS,
 }
 
 @export var type: ActivationType
@@ -145,6 +153,24 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 
 			return Globals.player.health.shields >= threshold,
+
+	## placeholder, owned by tiles/twindice
+	ActivationType.MATCHES_HELD_DIE:
+		func(_die: Dice) -> bool: return true,
+
+	## placeholder, owned by tiles/twindice
+	ActivationType.SUMS_WITH_HELD_DIE:
+		func(_die: Dice) -> bool: return true,
+
+	ActivationType.TARGETED_SHIP_HAS_STATUS:
+		func(die: Dice) -> bool:
+			if not Globals.targeting_computer:
+				return false
+			var target: Enemy = Globals.targeting_computer.target_for(die)
+			var engine: ScenarioEngine = ScenarioEngine.current()
+			if not target or not engine:
+				return false
+			return not engine.statuses_on(target).is_empty(),
 }
 
 
@@ -199,6 +225,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.OTHER_COUNTDOWN_ON_GRID:
 		"ERROR_NO_COUNTDOWNS",
+
+	ActivationType.TARGETED_SHIP_HAS_STATUS:
+		"ERROR_TARGET_NO_STATUS",
 }
 
 
