@@ -205,11 +205,31 @@ func test_a_missile_lands_after_a_laser_and_its_length_is_its_flight() -> void:
 	var missile := JuiceProjectile.new()
 	missile.style = JuiceProjectile.Style.MISSILE
 	assert_lt(laser.impact_seconds(), missile.impact_seconds(),
-		"a beam strikes as it fires; a missile has to get there")
+		"a blaster bolt is quicker than a missile")
 	missile.duration = 0.8
 	assert_eq(missile.impact_seconds(), 0.8)
 	laser.free()
 	missile.free()
+
+
+func test_a_blaster_bolt_travels_so_a_farther_target_is_hit_later() -> void:
+	var near := JuiceProjectile.new()
+	near.from = Vector2(150, 150)
+	near.to = Vector2(150, 110)
+	var far := JuiceProjectile.new()
+	far.from = Vector2(150, 150)
+	far.to = Vector2(150, 50)
+	assert_gt(near.impact_seconds(), 0.06, "even point blank, it has to cross the gap")
+	assert_lt(near.impact_seconds(), far.impact_seconds(), "farther targets are hit later")
+	assert_lt(far.impact_seconds(), 0.4, "a long shot doesn't stall the chain")
+	# The impact the chain waits on is fixed at launch, even if the target slides.
+	var landing: float = far.impact_seconds()
+	far.to = Vector2(150, 140)
+	assert_eq(far.impact_seconds(), landing)
+	far.duration = 0.5
+	assert_almost_eq(far.impact_seconds(), 0.55, 0.001, "an authored flight time wins")
+	near.free()
+	far.free()
 
 
 func test_the_inspector_shows_juice_flags_only_where_they_are_read() -> void:
