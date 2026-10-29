@@ -169,3 +169,45 @@ func test_capacitor_bank_plus_counts_from_ten() -> void:
 	assert_eq(tile.countdown_remaining(), 10)
 	_wind_to_one(tile)
 	assert_eq(_amounts(await _drop(tile, 1), ShieldEvent), [15])
+
+
+# ── Fuse Cutter ──────────────────────────────────────────────────────────
+
+func test_fuse_cutter_counts_down_every_other_countdown_by_die() -> void:
+	var cutter: Tile = _tile("fuse_cutter")
+	var repeater: Tile = _tile("pulse_repeater", Vector2i(1, 0))
+	var cannon: Tile = _tile("countdown_cannon", Vector2i(2, 0))
+	_tile("damage", Vector2i(0, 1))
+	var events: Array[EffectEvent] = await _drop(cutter, 6)
+	assert_eq(_amounts(events, DamageEvent), [7], "the repeater runs out, the cannon doesn't")
+	assert_eq(repeater.countdown_remaining(), 6)
+	assert_eq(cannon.countdown_remaining(), 12)
+	_gives_die_to_target(events)
+
+
+func test_fuse_cutter_plus_adds_two() -> void:
+	var cutter: Tile = _tile("fuse_cutter_plus")
+	var cannon: Tile = _tile("countdown_cannon", Vector2i(1, 0))
+	await _drop(cutter, 4)
+	assert_eq(cannon.countdown_remaining(), 12)
+
+
+func test_fuse_cutter_refuses_a_die_without_another_countdown() -> void:
+	var cutter: Tile = _tile("fuse_cutter")
+	var needs_others: ActivationResource = null
+	for check: ActivationResource in cutter.tile_resource.activation_checks:
+		if check.type == ActivationResource.ActivationType.OTHER_COUNTDOWN_ON_GRID:
+			needs_others = check
+	assert_not_null(needs_others, "it checks for other countdowns")
+	if needs_others == null:
+		return
+	_tile("damage", Vector2i(1, 0))
+	assert_false(needs_others.criteria_satisfied(null, cutter), "a plain tile doesn't count")
+	_tile("capacitor_bank", Vector2i(2, 0))
+	assert_true(needs_others.criteria_satisfied(null, cutter))
+
+
+func test_fuse_cutter_has_one_use() -> void:
+	var cutter: Tile = _tile("fuse_cutter")
+	assert_eq(cutter.tile_resource.uses_per_turn, 1)
+	assert_eq(cutter.tile_resource.textures.get_frame_count(&"default"), 2)
