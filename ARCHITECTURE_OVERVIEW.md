@@ -582,6 +582,11 @@ in the pane alongside. The rest are redrawn in the palette's greys by
   checks for that. Tests use a scratch file (`die_fighter_test.gd`).
 - An enemy's page lists its actions once each, with the range its options
   roll (`CodexCatalog.enemy_action_lines`), before run depth scales them.
+- An enemy's page shows its full ship art, not the targeting-computer
+  silhouette the grid uses: `CodexShipPortrait` instances the
+  `ship_graphics_scene` live in a 48x48 SubViewport (engines and moving parts
+  included) at the largest whole-number scale that fits; the two ships wider
+  than that (Arc Dynamo, the Sector Warden) shrink with linear filtering.
 
 ## Tutorial
 
@@ -686,7 +691,10 @@ the engine to go idle, for its turn, for a jump from the moment it's decided
 (`Reward.is_on_its_way()`), for arriving ships to land
 (`EnemyManager.arrival_in_progress`: a shop opens, or a toll is taken, only
 then) and for the shop's stock to pop onto the shelves
-(`Shop.is_revealing()`). At each turn start, arrival and won fight it
+(`Shop.is_revealing()`). An open shop is `Shop.is_open()`: shown and not
+closing (on a jump or when the shopkeeper is drawn into a fight, the stock
+pops off last-first, the panel folds, and only then does the shopkeeper slide
+back; nothing sells meanwhile). At each turn start, arrival and won fight it
 spends one frame looking at the board before moving, which is when a replay
 takes its picture. Headless runs look too, so both keep the same timing.
 
@@ -1029,6 +1037,10 @@ An upgraded tile sets `tile.gdshader`'s `upgraded` (bright bands chase round
 the shared 22x24 silhouette's border) and carries `UpgradeSparks` particles in
 its family colour (`ColorSymbolBadge.color_of_tile()`). That look, and the
 burst on upgrading, live in `TileUpgradeLook`; Tile keeps the rules.
+Likewise the use lights: `TileUseLights` shows `uses_remaining` on the sprite,
+popping white sparks off a light that goes out and switching refilled lights
+on one at a time as `Juice.gather()` motes fall into each. The count itself
+changes at once; only the lights trail it.
 
 `TileGrid.relocate_tiles(moves)` moves many tiles at once (all leave before any
 arrive, so a closed loop can shift) and emits no push or manual-move events.
@@ -1570,7 +1582,9 @@ shows the target's attitude as a 5x6 face and tints the bezel and portrait
 frame (two white masks) red / grey / green; it blinks when the targeted ship
 changes its mind. Enemy health bars no longer carry a face, and their backing
 has a soft `CEF0F1` outline. `HullInfoArt` draws the hull info panel's picture
-from the live hull (ring share + 3x6 digits).
+from the live hull (ring share + 3x6 digits); `ShieldInfoArt` does the same
+for the shield panel, drawing the live shield count in those digits, tinted
+blue, on `shield_info_base.png`.
 
 **Controllers and rebinding** (Systems/Input/). `VirtualCursor` turns stick
 and d-pad into a pointer (in frame units, clamped to the frame, real time),

@@ -4,6 +4,33 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Use lights, shop close, codex ship art, shield count
+
+**Use lights move.** A light going out on a limited tile now pops in a burst
+of white sparks, and at the start of a turn the spent lights come back on one
+after another (0.14 s apart), each with a ring of motes falling into it
+(`Juice.gather()`). `TileUseLights` owns the look; the uses themselves still
+refill at once, so a die dropped mid-refill is judged on the real count.
+
+**Re-Roll replaces Bump in the starting kit** (`run_start.tres`), for play
+testing how the opening feels. Only new runs pick it up.
+
+**The shop animates out.** On a jump, or when the shopkeeper is drawn into a
+fight, the shop plays its opening backwards and quicker: the stock pops off
+the shelves last-first, the panel folds shut, then the shopkeeper slides back.
+Nothing sells during it (`Shop.is_open()` is false, and the save and the
+AutoPilot ask that now). A jump frees the die on offer partway through, so the
+pop-off callback takes its item untyped.
+
+**Codex enemy pages show the whole ship**, drawn live from its graphics scene
+(`CodexShipPortrait`), instead of the 16x16 targeting-computer icon. The enemy
+shader draws nothing until its `alpha` is set (the graphics manager does that
+in a fight), so the portrait sets it too.
+
+**The shield info panel shows the real count**, as the hull's does:
+`ShieldInfoArt` draws it in `HullInfoArt`'s digit glyphs, tinted shield blue,
+on a copy of the old art with its fixed "10" painted out.
+
 ## 2026-10-29 — Tutorial: a cold-reader pass with local vision models
 
 Three local vision models (gemma4:31b, qwen3.8:27b, qwen3-vl:8b) read the

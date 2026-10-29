@@ -92,7 +92,10 @@ registration to testing. For how the systems work underneath, see
     none. Bump is the reference. The lights are 2×2 slots on the right edge
     of the lower panel, stacked up from the bottom, lit `#cef0f1` and unlit
     `#070326`, outlined in the tile's own border colour. There is room for
-    three, so uses top out at 3.
+    three, so uses top out at 3. `TileUseLights` knows where the slots are
+    (to burst sparks off a spent light and gather them into a refilled one),
+    so a change to the script's layout means updating its `_BOTTOM_LIGHT` and
+    `_LIGHT_STEP` too.
   - Don't draw the lights by hand. Draw the tile as one frame, then run
     `tools/add_use_lights.lua` (usage at the top of the script). It turns the
     `.aseprite` into the frames and exports the sheet. Then import
