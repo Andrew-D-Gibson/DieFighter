@@ -9,8 +9,12 @@ var _saved: Dictionary[StringName, Array] = {}
 
 func before_each() -> void:
 	super()
+	# Every test starts from project.godot's bindings, not whatever the
+	# player's options file loaded at boot: a key they rebound would
+	# otherwise break the clash tests.
 	for action: StringName in InputBindings.ACTIONS:
 		_saved[action] = InputBindings.read(action)
+		InputBindings.write(action, InputBindings.default_value(action))
 
 
 func after_each() -> void:
