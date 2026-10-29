@@ -229,7 +229,8 @@ func _apply_upgrade_look() -> void:
 		mat.set_shader_parameter("upgraded", upgraded)
 	var sparks: CPUParticles2D = sprite_frames.get_node_or_null(NodePath(_UPGRADE_SPARKS_NAME))
 	if upgraded and sparks == null:
-		sparks = _make_upgrade_sparks(family_color(tile_resource))
+		# Lightened, or the family's deeper colours vanish against the art.
+		sparks = _make_upgrade_sparks(family_color(tile_resource).lerp(Globals.white, 0.5))
 		sprite_frames.add_child(sparks)
 	elif not upgraded and sparks:
 		sparks.queue_free()
@@ -239,8 +240,8 @@ func _make_upgrade_sparks(color: Color) -> CPUParticles2D:
 	var sparks: CPUParticles2D = CPUParticles2D.new()
 	sparks.name = _UPGRADE_SPARKS_NAME
 	sparks.texture = _SPARK_TEXTURE
-	sparks.amount = 4
-	sparks.lifetime = 1.4
+	sparks.amount = 5
+	sparks.lifetime = 1.6
 	sparks.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
 	sparks.emission_rect_extents = Vector2(10, 11)
 	sparks.direction = Vector2.UP
