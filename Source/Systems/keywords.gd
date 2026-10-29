@@ -44,6 +44,8 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Boost": "If you have that much [color=purple]engine charge[/color], it's spent for the extra effect. If not, the tile works without it.",
 	"Locked": "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
 	"Echo": "That tile activates twice, but hands its die on once. Tiles that ignore Echo are skipped. Lapses when your turn ends.",
+	"Phased": "The next hit from the player's tiles passes through this ship and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when its turn starts.",
+	"Phased (you)": "The next enemy hit passes through you and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when your next turn starts.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -81,6 +83,8 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(countdown)":  {"label": "Countdown",  "term": "Countdown"},
 	"(countdowns)": {"label": "countdowns", "term": "Countdown"},
 	"(echo)":       {"label": "Echo",       "term": "Echo"},
+	"(phased)":     {"label": "Phased",     "term": "Phased"},
+	"(phased_you)": {"label": "Phased",     "term": "Phased (you)"},
 }
 
 const _KEYWORD_COLOR: String = "orange"

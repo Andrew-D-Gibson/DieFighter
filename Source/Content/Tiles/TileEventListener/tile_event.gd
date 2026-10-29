@@ -37,6 +37,11 @@ enum EventType {
 	## application, with that ship as the response's starting target. A
 	## status the player puts on their own ship doesn't count (Hex Coil).
 	ON_STATUS_APPLIED_TO_ENEMY,
+	## An enemy's damage was aimed at the player: once per hit, whether the
+	## shields or the hull take it (ion damage included). A hit that misses
+	## (Phased) never reached the player and doesn't count. The attacker is
+	## the response's starting target.
+	ON_PLAYER_ATTACKED,
 	## The player just took a killing blow. Answering it is a death save: the
 	## tile holds the hull at 1 on the spot, then its chain plays and should
 	## spend the tile (Tile._on_player_fatal_damage).

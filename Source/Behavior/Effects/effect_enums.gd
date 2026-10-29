@@ -123,6 +123,12 @@ enum AttributeChangeSubtype {
 	## applying the difference: each status gets an ApplyStatusEvent of its
 	## own, so it lands, shows and is heard like any other application.
 	MULTIPLY_STATUSES,
+	## Spend the player's hull as a cost: amount when authored, else
+	## running_amount. It goes straight past the shields, and it is a hull
+	## hit (whatever answers one hears it), but not damage: nothing that
+	## grows, shrinks or dodges a hit touches it. Refuses rather than kill;
+	## tiles gate on HULL_AT_LEAST.
+	SPEND_HULL,
 }
 
 
