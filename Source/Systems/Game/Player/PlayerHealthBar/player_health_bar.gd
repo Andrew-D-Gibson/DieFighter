@@ -1,8 +1,6 @@
 class_name PlayerHealthBar
 extends HealthBarController
 
-const _SHIELDS_INFO_TEXTURE: Texture2D = preload("uid://cm0dbq7jogf17")
-
 ## Shield sprite frames, strongest first.
 const SHIELD_FRAME_FULL: int = 0
 const SHIELD_FRAME_MEDIUM: int = 1
@@ -104,7 +102,8 @@ func _status_summary() -> String:
 func _show_shield_info() -> void:
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = "[color=blue]Shields[/color]"
-	info.texture = _SHIELDS_INFO_TEXTURE
+	# The shields as they stand, as the hull's picture shows the hull.
+	info.texture = ShieldInfoArt.texture_for(health_component.shields)
 	info.bottom_label_text = "[color=blue]Shields[/color] absorb [color=red]damage[/color] before it reaches your [color=red]Hull[/color]. Resets after jumping"
 	
 	Events.show_info.emit(info)

@@ -55,7 +55,7 @@ static func fill_fraction(health: int, max_health: int) -> float:
 ## driven below zero reads 0, as the cockpit gauge's ring does.
 static func count_text(health: int, max_health: int) -> String:
 	var both: String = "%d/%d" % [maxi(health, 0), maxi(max_health, 0)]
-	if _text_width(both) <= _COUNT_MAX_WIDTH:
+	if text_width(both) <= _COUNT_MAX_WIDTH:
 		return both
 	return str(maxi(health, 0))
 
@@ -81,19 +81,34 @@ static func _light_ring(image: Image, fraction: float) -> void:
 
 
 static func _draw_count(image: Image, text: String) -> void:
-	var glyphs: Image = _glyph_sheet()
 	# Centred on its ink; an odd leftover pixel goes to the left margin, as
 	# the original art had it.
-	var x: int = ceili((image.get_width() - _text_width(text)) / 2.0)
+	var x: int = ceili((image.get_width() - text_width(text)) / 2.0)
+	draw_glyphs(image, text, Vector2i(x, _COUNT_TOP))
+
+
+## Draws [param text] (digits and "/") in the strip's glyphs with their top
+## left at [param at], in [param tint] if one is given (the strip's own red
+## otherwise). Other info pictures borrow it, so every count reads alike.
+static func draw_glyphs(image: Image, text: String, at: Vector2i, tint: Color = Color(0, 0, 0, 0)) -> void:
+	var glyphs: Image = _glyph_sheet()
+	if tint.a > 0.0:
+		glyphs = glyphs.duplicate()
+		for y: int in glyphs.get_height():
+			for x: int in glyphs.get_width():
+				if glyphs.get_pixel(x, y).a > 0.0:
+					glyphs.set_pixel(x, y, tint)
+	var x: int = at.x
 	for character: String in text:
 		var cell: int = _GLYPH_ORDER.find(character)
 		var width: int = _ink_width(cell)
 		var source: Rect2i = Rect2i(Vector2i(cell * _GLYPH_CELL.x, 0), Vector2i(width, _GLYPH_CELL.y))
-		image.blend_rect(glyphs, source, Vector2i(x, _COUNT_TOP))
+		image.blend_rect(glyphs, source, Vector2i(x, at.y))
 		x += width + _GLYPH_GAP
 
 
-static func _text_width(text: String) -> int:
+## How many pixels across [param text] runs in the strip's glyphs.
+static func text_width(text: String) -> int:
 	var width: int = 0
 	for character: String in text:
 		width += _ink_width(_GLYPH_ORDER.find(character)) + _GLYPH_GAP
