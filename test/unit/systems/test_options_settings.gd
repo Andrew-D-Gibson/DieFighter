@@ -72,3 +72,40 @@ func test_art_scale_is_the_largest_whole_fit() -> void:
 	assert_eq(PixelPerfectScaler.art_scale_for(Vector2i(1920, 1080)), 6)
 	assert_eq(PixelPerfectScaler.art_scale_for(Vector2i(5120, 1440)), 8)
 	assert_eq(PixelPerfectScaler.art_scale_for(Vector2i(200, 100)), 1)
+
+
+## --- Window recovery ---
+
+const _LAPTOP: Rect2i = Rect2i(0, 25, 1440, 875)
+const _MONITOR_TO_THE_RIGHT: Rect2i = Rect2i(1440, 0, 2560, 1415)
+
+
+func test_a_window_on_a_screen_stays_put() -> void:
+	var screens: Array[Rect2i] = [_LAPTOP]
+	assert_true(OptionsSettings.is_on_screens(Rect2i(80, 100, 1280, 720), screens))
+
+
+func test_a_window_straddling_two_screens_counts_both() -> void:
+	var screens: Array[Rect2i] = [_LAPTOP, _MONITOR_TO_THE_RIGHT]
+	assert_true(OptionsSettings.is_on_screens(Rect2i(1000, 100, 1280, 720), screens))
+
+
+func test_a_window_left_on_an_unplugged_monitor_is_off_screen() -> void:
+	var screens: Array[Rect2i] = [_LAPTOP]
+	assert_false(OptionsSettings.is_on_screens(Rect2i(2000, 200, 1920, 1080), screens))
+
+
+func test_a_window_mostly_off_the_edge_is_off_screen() -> void:
+	var screens: Array[Rect2i] = [_LAPTOP]
+	assert_false(OptionsSettings.is_on_screens(Rect2i(1200, 100, 1280, 720), screens))
+	assert_false(OptionsSettings.is_on_screens(Rect2i(0, 0, 0, 0), screens), "an empty window is never on screen")
+
+
+func test_a_brought_back_window_takes_the_largest_scale_that_fits() -> void:
+	assert_eq(OptionsSettings.scale_to_fit(_LAPTOP.size), 4)
+	assert_eq(OptionsSettings.scale_to_fit(_MONITOR_TO_THE_RIGHT.size), 6)
+	assert_eq(OptionsSettings.scale_to_fit(Vector2i(500, 300)), 2, "the smallest when none fits")
+
+
+func test_a_screen_of_unknown_size_gets_four_times() -> void:
+	assert_eq(OptionsSettings.scale_to_fit(Vector2i.ZERO), 4)

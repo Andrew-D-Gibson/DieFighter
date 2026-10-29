@@ -29,40 +29,62 @@ const _TUTORIAL_COMPLETED: String = "tutorial_completed"
 ## The Game-section key of the old Show Tutorial option, read once to migrate.
 const _LEGACY_SHOW_TUTORIAL: String = "show_tutorial"
 
-## Window scales offered, in screen multiples of Globals.SCREEN_SIZE.
-const WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
+## --- Option keys ---
+## "Section/name", the section and key each is saved under, grouped by the
+## options menu tab that shows it. Renaming a key loses what players saved
+## under it, so a few keep a section that isn't their tab's.
 
-## Option keys are "Section/name", the section and key they're saved under.
+# Game
 const ANIMATION_SPEED: StringName = &"Game/animation_speed"
 const LANGUAGE: StringName = &"Game/language"
 const REGION_ALERTS: StringName = &"Game/region_alerts"
+const PAUSE_IN_BACKGROUND: StringName = &"Game/pause_in_background"
+const CONFIRM_END_TURN: StringName = &"Game/confirm_end_turn"
+
+# Graphics
 const FULLSCREEN: StringName = &"Graphics/fullscreen"
 const PIXEL_PERFECT: StringName = &"Graphics/pixel_perfect"
 const WINDOW_SCALE: StringName = &"Graphics/window_scale"
 const MONITOR: StringName = &"Graphics/monitor"
 const VSYNC: StringName = &"Graphics/vsync"
 const MAX_FPS: StringName = &"Graphics/max_fps"
-## The old on/off screenshake. Still saved, derived from the intensity, so
-## older settings files migrate (see _register_comfort_options()).
-const SCREENSHAKE: StringName = &"Graphics/screenshake"
+## Window scales offered, in screen multiples of Globals.SCREEN_SIZE.
+const WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
+
+# Audio
 const MASTER_VOLUME: StringName = &"Audio/master_volume"
 const MUSIC_VOLUME: StringName = &"Audio/music_volume"
 const SFX_VOLUME: StringName = &"Audio/sfx_volume"
 const MUTE_ALL: StringName = &"Audio/mute_all"
-# Colorblind support
-const COLOR_SYMBOLS: StringName = &"Accessibility/color_symbols"
-const SCREENSHAKE_INTENSITY: StringName = &"Accessibility/screenshake"
-const REDUCE_FLASHING: StringName = &"Accessibility/reduce_flashing"
-const HIT_PAUSE: StringName = &"Accessibility/hit_pause"
 const MUTE_IN_BACKGROUND: StringName = &"Audio/mute_in_background"
-const PAUSE_IN_BACKGROUND: StringName = &"Game/pause_in_background"
-const DICE_PLACEMENT: StringName = &"Controls/dice_placement"
-const CONFIRM_END_TURN: StringName = &"Game/confirm_end_turn"
+
+# Controls (plus a binding per action: InputBindings.option_key())
 const CURSOR_SPEED: StringName = &"Controls/cursor_speed"
 ## The Cursor Speed slider's range, as a multiplier on the controller
 ## pointer's speed.
 const CURSOR_SPEEDS: Vector2 = Vector2(0.5, 2.0)
+const DICE_PLACEMENT: StringName = &"Controls/dice_placement"
+
+# Accessibility
+const SCREENSHAKE_INTENSITY: StringName = &"Accessibility/screenshake"
+## The old on/off screenshake, from when it was a Graphics checkbox. Still
+## saved, derived from the intensity, so older settings files migrate (see
+## _register_accessibility_options()).
+const SCREENSHAKE: StringName = &"Graphics/screenshake"
+const REDUCE_FLASHING: StringName = &"Accessibility/reduce_flashing"
+const HIT_PAUSE: StringName = &"Accessibility/hit_pause"
+const COLOR_SYMBOLS: StringName = &"Accessibility/color_symbols"
 const READABLE_FONT: StringName = &"Accessibility/readable_font"
+
+## --- Window recovery ---
+
+## How much of a restored window has to land on a screen for it to count as
+## where the player left it. Less, and it was left on a monitor that's gone
+## (or off the edge of one that's shrunk), so it's brought back.
+const _MIN_ON_SCREEN_SHARE: float = 0.5
+## The scale a brought-back window takes when its screen can't say how big
+## it is.
+const _FALLBACK_WINDOW_SCALE: int = 4
 
 
 class _Option:
@@ -85,6 +107,8 @@ var _options: Dictionary[StringName, _Option] = {}
 func _ready() -> void:
 	pixel_perfect_scaler = PixelPerfectScaler.new()
 	add_child(pixel_perfect_scaler)
+	background_focus = BackgroundFocus.new()
+	add_child(background_focus)
 	_register_options()
 	Events.save_options_config.connect(save_options_settings)
 	load_options_settings()
@@ -133,7 +157,18 @@ func reset_options(keys: Array[StringName]) -> void:
 
 ## --- The options ---
 
+## Tab by tab, in the menu's order. Load order matters in two places, both
+## kept within a tab: the monitor before fullscreen, and the old screenshake
+## checkbox after the slider.
 func _register_options() -> void:
+	_register_game_options()
+	_register_graphics_options()
+	_register_audio_options()
+	_register_controls_options()
+	_register_accessibility_options()
+
+
+func _register_game_options() -> void:
 	register(ANIMATION_SPEED, 1.0,
 		func() -> float: return Globals.animation_speed,
 		func(value: Variant) -> void: Globals.animation_speed = _read_number(value))
@@ -144,9 +179,29 @@ func _register_options() -> void:
 	register(REGION_ALERTS, true,
 		func() -> bool: return Globals.show_region_alerts,
 		func(value: Variant) -> void: Globals.show_region_alerts = bool(value))
+	register(PAUSE_IN_BACKGROUND, false,
+		func() -> bool: return background_focus.pause_in_background,
+		func(value: Variant) -> void: background_focus.pause_in_background = bool(value))
+	# The live value is a static on the class that reads it, so it's set
+	# before any player exists.
+	register(CONFIRM_END_TURN, true,
+		func() -> bool: return EndTurnConfirm.enabled,
+		func(value: Variant) -> void: EndTurnConfirm.enabled = bool(value))
 
+
+func _register_graphics_options() -> void:
 	if controls_window():
-		_register_window_options()
+		register(MONITOR, DisplayServer.get_primary_screen(),
+			DisplayServer.window_get_current_screen,
+			_move_to_monitor)
+		register(VSYNC, true,
+			func() -> bool: return DisplayServer.window_get_vsync_mode() == DisplayServer.VSYNC_ENABLED,
+			func(value: Variant) -> void:
+				DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if value else DisplayServer.VSYNC_DISABLED))
+		register(PIXEL_PERFECT, true,
+			pixel_perfect_scaler.is_wanted,
+			func(value: Variant) -> void: pixel_perfect_scaler.set_wanted(bool(value)))
+		register(WINDOW_SCALE, largest_window_scale(), current_window_scale, _set_window_scale, false)
 	# After the monitor, so it goes fullscreen on the right one. Works in a
 	# browser too (the checkbox is a click, which browsers allow), but can't
 	# be restored at boot there.
@@ -155,22 +210,48 @@ func _register_options() -> void:
 		func() -> int: return Engine.max_fps,
 		func(value: Variant) -> void: Engine.max_fps = int(_read_number(value)))
 
+
+func _register_audio_options() -> void:
 	_register_bus_volume(MASTER_VOLUME, "Master")
 	_register_bus_volume(MUSIC_VOLUME, "Music")
 	_register_bus_volume(SFX_VOLUME, "SFX")
 	register(MUTE_ALL, false,
 		func() -> bool: return AudioServer.is_bus_mute(AudioServer.get_bus_index("Master")),
 		func(value: Variant) -> void: AudioServer.set_bus_mute(AudioServer.get_bus_index("Master"), bool(value)))
-	_register_colorblind_options()
-
-	_register_comfort_options()
-	_register_controls_options()
-	_register_dice_input_options()
-	_register_readable_font_options()
+	register(MUTE_IN_BACKGROUND, true,
+		func() -> bool: return background_focus.mute_in_background,
+		func(value: Variant) -> void: background_focus.mute_in_background = bool(value))
 
 
-## Screenshake, flashing, hit pause, and what happens in the background.
-func _register_comfort_options() -> void:
+func _register_bus_volume(key: StringName, bus: StringName) -> void:
+	register(key, 0.5,
+		func() -> float: return AudioServer.get_bus_volume_linear(AudioServer.get_bus_index(bus)),
+		func(value: Variant) -> void: AudioServer.set_bus_volume_linear(AudioServer.get_bus_index(bus), float(value)))
+
+
+## Key and controller bindings, one option per action (InputBindings), the
+## controller pointer's speed, and how dice are picked up and put down.
+func _register_controls_options() -> void:
+	for action: StringName in InputBindings.ACTIONS:
+		register(InputBindings.option_key(action), InputBindings.default_value(action),
+			func() -> Array: return InputBindings.read(action),
+			func(value: Variant) -> void: InputBindings.write(action, value))
+	register(CURSOR_SPEED, 1.0,
+		func() -> float: return InputManager.cursor.speed_scale,
+		func(value: Variant) -> void:
+			InputManager.cursor.speed_scale = clampf(float(value), CURSOR_SPEEDS.x, CURSOR_SPEEDS.y))
+	# A static on Draggable, so it's set before any die exists.
+	register(DICE_PLACEMENT, Draggable.PlacementMode.DRAG,
+		func() -> int: return Draggable.placement_mode,
+		func(value: Variant) -> void:
+			var mode: int = int(value)
+			Draggable.placement_mode = mode as Draggable.PlacementMode \
+				if Draggable.PlacementMode.values().has(mode) else Draggable.PlacementMode.DRAG)
+
+
+## Comfort (screenshake, flashing, hit pause), colour symbols for players who
+## can't rely on colour alone, and the readable font.
+func _register_accessibility_options() -> void:
 	register(SCREENSHAKE_INTENSITY, 1.0,
 		func() -> float: return Globals.screenshake_intensity,
 		func(value: Variant) -> void: Globals.screenshake_intensity = clampf(float(value), 0.0, 1.0))
@@ -189,74 +270,11 @@ func _register_comfort_options() -> void:
 	register(HIT_PAUSE, true,
 		func() -> bool: return TimeDirector.hitstop_enabled,
 		func(value: Variant) -> void: TimeDirector.hitstop_enabled = bool(value))
-
-	background_focus = BackgroundFocus.new()
-	add_child(background_focus)
-	register(MUTE_IN_BACKGROUND, true,
-		func() -> bool: return background_focus.mute_in_background,
-		func(value: Variant) -> void: background_focus.mute_in_background = bool(value))
-	register(PAUSE_IN_BACKGROUND, false,
-		func() -> bool: return background_focus.pause_in_background,
-		func(value: Variant) -> void: background_focus.pause_in_background = bool(value))
-
-
-## Key and controller bindings, one option per action (InputBindings), and the
-## controller pointer's speed.
-func _register_controls_options() -> void:
-	for action: StringName in InputBindings.ACTIONS:
-		register(InputBindings.option_key(action), InputBindings.default_value(action),
-			func() -> Array: return InputBindings.read(action),
-			func(value: Variant) -> void: InputBindings.write(action, value))
-	register(CURSOR_SPEED, 1.0,
-		func() -> float: return InputManager.cursor.speed_scale,
-		func(value: Variant) -> void:
-			InputManager.cursor.speed_scale = clampf(float(value), CURSOR_SPEEDS.x, CURSOR_SPEEDS.y))
-
-
-## Dice placement and the End Turn check. Both live values are statics on
-## the classes that read them, so they're set before any die or player exists.
-func _register_dice_input_options() -> void:
-	register(DICE_PLACEMENT, Draggable.PlacementMode.DRAG,
-		func() -> int: return Draggable.placement_mode,
-		func(value: Variant) -> void:
-			var mode: int = int(value)
-			Draggable.placement_mode = mode as Draggable.PlacementMode \
-				if Draggable.PlacementMode.values().has(mode) else Draggable.PlacementMode.DRAG)
-	register(CONFIRM_END_TURN, true,
-		func() -> bool: return EndTurnConfirm.enabled,
-		func(value: Variant) -> void: EndTurnConfirm.enabled = bool(value))
-
-
-func _register_readable_font_options() -> void:
-	register(READABLE_FONT, false, FontSwap.is_readable,
-		func(value: Variant) -> void: FontSwap.set_readable(bool(value)))
-
-
-func _register_window_options() -> void:
-	register(MONITOR, DisplayServer.get_primary_screen(),
-		DisplayServer.window_get_current_screen,
-		_move_to_monitor)
-	register(VSYNC, true,
-		func() -> bool: return DisplayServer.window_get_vsync_mode() == DisplayServer.VSYNC_ENABLED,
-		func(value: Variant) -> void:
-			DisplayServer.window_set_vsync_mode(DisplayServer.VSYNC_ENABLED if value else DisplayServer.VSYNC_DISABLED))
-	register(PIXEL_PERFECT, true,
-		pixel_perfect_scaler.is_wanted,
-		func(value: Variant) -> void: pixel_perfect_scaler.set_wanted(bool(value)))
-	register(WINDOW_SCALE, largest_window_scale(), current_window_scale, _set_window_scale, false)
-
-
-## Shapes beside colours for players who can't rely on colour alone.
-func _register_colorblind_options() -> void:
 	register(COLOR_SYMBOLS, false,
 		func() -> bool: return ColorSymbolBadge.symbols_enabled,
 		func(value: Variant) -> void: ColorSymbolBadge.symbols_enabled = bool(value))
-
-
-func _register_bus_volume(key: StringName, bus: StringName) -> void:
-	register(key, 0.5,
-		func() -> float: return AudioServer.get_bus_volume_linear(AudioServer.get_bus_index(bus)),
-		func(value: Variant) -> void: AudioServer.set_bus_volume_linear(AudioServer.get_bus_index(bus), float(value)))
+	register(READABLE_FONT, false, FontSwap.is_readable,
+		func(value: Variant) -> void: FontSwap.set_readable(bool(value)))
 
 
 ## --- Window ---
@@ -275,14 +293,40 @@ func is_fullscreen() -> bool:
 
 ## The largest window scale that still fits on the current display.
 func largest_window_scale() -> int:
-	var display_size: Vector2 = DisplayServer.screen_get_size()
-	var best: int = WINDOW_SCALES[0]
+	return maxi(_largest_scale_within(DisplayServer.screen_get_size()), WINDOW_SCALES[0])
+
+
+## The largest offered scale whose window fits in [param area], or
+## _FALLBACK_WINDOW_SCALE when the area is unknown (zero). The smallest scale
+## if none fits.
+static func scale_to_fit(area: Vector2i) -> int:
+	if area.x <= 0 or area.y <= 0:
+		return _FALLBACK_WINDOW_SCALE
+	return maxi(_largest_scale_within(area), WINDOW_SCALES[0])
+
+
+## 0 if not even the smallest scale fits.
+static func _largest_scale_within(area: Vector2i) -> int:
+	var best: int = 0
 	for scale: int in WINDOW_SCALES:
 		var size: Vector2 = Globals.SCREEN_SIZE * scale
-		if size.x > display_size.x or size.y > display_size.y:
+		if size.x > area.x or size.y > area.y:
 			break
 		best = scale
 	return best
+
+
+## Whether enough of [param window] lies on [param screens] to call it on
+## screen (see _MIN_ON_SCREEN_SHARE). Screens never overlap, so a window
+## straddling two counts what's on each.
+static func is_on_screens(window: Rect2i, screens: Array[Rect2i]) -> bool:
+	var area: int = window.get_area()
+	if area <= 0:
+		return false
+	var on_screen: int = 0
+	for screen: Rect2i in screens:
+		on_screen += window.intersection(screen).get_area()
+	return on_screen >= area * _MIN_ON_SCREEN_SHARE
 
 
 ## The window's scale when it's exactly one of the offered sizes, else 0 (a
@@ -314,10 +358,19 @@ func _set_window_scale(value: Variant) -> void:
 	_centre_window(window_size)
 
 
+## Centres the window in the part of its screen the menu bar, dock or
+## taskbar leave free.
 func _centre_window(window_size: Vector2i) -> void:
+	var usable: Rect2i = DisplayServer.screen_get_usable_rect(_window_screen())
+	DisplayServer.window_set_position(usable.position + (usable.size - window_size) / 2)
+
+
+## The screen the window is on, or the primary one if that can't be told.
+func _window_screen() -> int:
 	var screen: int = DisplayServer.window_get_current_screen()
-	var screen_rect: Rect2i = Rect2i(DisplayServer.screen_get_position(screen), DisplayServer.screen_get_size(screen))
-	DisplayServer.window_set_position(screen_rect.position + (screen_rect.size - window_size) / 2)
+	if screen < 0 or screen >= DisplayServer.get_screen_count():
+		return DisplayServer.get_primary_screen()
+	return screen
 
 
 ## Moves the window to another monitor, staying fullscreen if it was. A saved
@@ -336,6 +389,34 @@ func _move_to_monitor(value: Variant) -> void:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	else:
 		_centre_window(DisplayServer.window_get_size())
+
+
+## Puts a windowed game back where it was and at the size it was. A saved
+## spot that's no longer on any screen (its monitor unplugged, or the display
+## shrunk) brings it back instead: centred on the screen it's on now, at the
+## largest offered scale that fits there.
+func _restore_window(config: ConfigFile) -> void:
+	var default_size: Vector2i = Vector2i(Globals.SCREEN_SIZE * largest_window_scale())
+	var window_size: Vector2i = config.get_value("Graphics", "window_size", default_size)
+	if config.has_section_key("Graphics", "window_pos"):
+		var window_pos: Vector2i = config.get_value("Graphics", "window_pos")
+		if is_on_screens(Rect2i(window_pos, window_size), _usable_screen_rects()):
+			DisplayServer.window_set_size(window_size)
+			DisplayServer.window_set_position(window_pos)
+			return
+		var usable: Vector2i = DisplayServer.screen_get_usable_rect(_window_screen()).size
+		window_size = Vector2i(Globals.SCREEN_SIZE * scale_to_fit(usable))
+	DisplayServer.window_set_size(window_size)
+	_centre_window(window_size)
+
+
+## Every screen's area free of menu bars, docks and taskbars, in the same
+## desktop coordinates as the window's position.
+func _usable_screen_rects() -> Array[Rect2i]:
+	var rects: Array[Rect2i] = []
+	for screen: int in DisplayServer.get_screen_count():
+		rects.append(DisplayServer.screen_get_usable_rect(screen))
+	return rects
 
 
 ## --- Saving and loading ---
@@ -374,16 +455,6 @@ func load_options_settings() -> void:
 
 	Globals.times_run = config.get_value("Misc", "times_run", 0)
 	Globals.tutorial_completed = read_tutorial_completed(config)
-
-
-func _restore_window(config: ConfigFile) -> void:
-	var default_size: Vector2i = Vector2i(Globals.SCREEN_SIZE * largest_window_scale())
-	var window_size: Vector2i = config.get_value("Graphics", "window_size", default_size)
-	DisplayServer.window_set_size(window_size)
-	if config.has_section_key("Graphics", "window_pos"):
-		DisplayServer.window_set_position(config.get_value("Graphics", "window_pos"))
-	else:
-		_centre_window(window_size)
 
 
 ## Whether [param config] says the tutorial has been played. Files from before
