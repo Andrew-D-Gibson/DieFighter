@@ -2,11 +2,11 @@
 
 [ext_resource type="Script" path="res://Source/Resources/SaveResources/game_save_resource.gd" id="1_save"]
 [ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_tile"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="3_apex"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/keel_plating.tres" id="4_keel"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/slingshot.tres" id="5_sling"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/gearbox.tres" id="6_gear"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/flywheel.tres" id="7_flywheel"]
+[ext_resource type="Resource" uid="uid://ceoh1rwvv0k6v" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="3_apex"]
+[ext_resource type="Resource" uid="uid://brdqenevbqke3" path="res://Source/Content/Tiles/TileResources/keel_plating.tres" id="4_keel"]
+[ext_resource type="Resource" uid="uid://c2mtj70jt2emj" path="res://Source/Content/Tiles/TileResources/slingshot.tres" id="5_sling"]
+[ext_resource type="Resource" uid="uid://cirvp71bnhv2t" path="res://Source/Content/Tiles/TileResources/gearbox.tres" id="6_gear"]
+[ext_resource type="Resource" uid="uid://re1i3bl118gd" path="res://Source/Content/Tiles/TileResources/flywheel.tres" id="7_flywheel"]
 
 [resource]
 script = ExtResource("1_save")

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://g6226xkq5ga4"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]

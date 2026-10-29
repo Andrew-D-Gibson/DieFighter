@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_6"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_7"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/brownout_plating_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://blf7m5lkxptei" path="res://Source/Content/Tiles/TileResources/brownout_plating_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")

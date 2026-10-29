@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" uid="uid://dxkqfdmh8psqp" path="res://Source/Resources/SaveResources/game_save_resource.gd" id="1_save"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_tile"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/sunlance.tres" id="3_sunlance"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/solar_shroud.tres" id="4_shroud"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/crosslink.tres" id="5_crosslink"]
+[ext_resource type="Resource" uid="uid://cnjcpaq5mlgo8" path="res://Source/Content/Tiles/TileResources/sunlance.tres" id="3_sunlance"]
+[ext_resource type="Resource" uid="uid://lsb4hv80bgs0" path="res://Source/Content/Tiles/TileResources/solar_shroud.tres" id="4_shroud"]
+[ext_resource type="Resource" uid="uid://ccsnlp5ri8vaq" path="res://Source/Content/Tiles/TileResources/crosslink.tres" id="5_crosslink"]
 
 [resource]
 script = ExtResource("1_save")

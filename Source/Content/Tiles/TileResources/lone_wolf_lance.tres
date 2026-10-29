@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
 [ext_resource type="Texture2D" uid="uid://cigmm7vecvxsn" path="res://Assets/Textures/Tiles/RedTiles/lone_wolf_lance-Sheet.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/lone_wolf_lance_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://cked5jmnaih3g" path="res://Source/Content/Tiles/TileResources/lone_wolf_lance_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_28"]
 script = ExtResource("script_act")

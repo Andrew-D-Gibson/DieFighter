@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Texture2D" uid="uid://cf5ko56ufwxul" path="res://Assets/Textures/Tiles/GreenTiles/static_bloom.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/static_bloom_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://s6w8rgnd6llw" path="res://Source/Content/Tiles/TileResources/static_bloom_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")

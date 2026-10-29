@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://pgoxac036uit"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_854mr"]
 [ext_resource type="Texture2D" uid="uid://y2tp7uupychk" path="res://Assets/Textures/Tiles/BlueTiles/shield_plus.png" id="2_7qkaa"]
@@ -100,10 +100,10 @@ animations = [{
 
 [resource]
 script = ExtResource("8_8vpcq")
-offered_as_reward = false
-is_upgrade = true
 tile_name = "[color=blue]Shield Burst+[/color]"
 description = "(die_3) or (die_4) -> Gain [color=blue]10 shields[/color]"
+offered_as_reward = false
+is_upgrade = true
 textures = SubResource("SpriteFrames_p7d6s")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_854mr")]([SubResource("Resource_p7d6s")])

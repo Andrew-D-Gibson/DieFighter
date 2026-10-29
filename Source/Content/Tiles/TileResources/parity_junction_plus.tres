@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://c2ane3podxx2y"]
 
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/GreenTiles/parity_junction-Sheet.png" id="tex"]
+[ext_resource type="Texture2D" uid="uid://c0thsu136lepp" path="res://Assets/Textures/Tiles/GreenTiles/parity_junction-Sheet.png" id="tex"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_dice_cannon"]
 
 [sub_resource type="Resource" id="Resource_act_1"]

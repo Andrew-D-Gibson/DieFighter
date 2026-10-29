@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://d0kala8amqtw6"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_g62jg"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_og7ys"]

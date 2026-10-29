@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://l58smvkqapfp"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u36sv"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_rp1c6"]
@@ -94,10 +94,10 @@ animations = [{
 
 [resource]
 script = ExtResource("4_m7a5a")
-offered_as_reward = false
-is_upgrade = true
 tile_name = "[color=green]Bump+[/color]"
 description = "[color=yellow]Die below[/color] (die_6) -> Add 2 to die"
+offered_as_reward = false
+is_upgrade = true
 textures = SubResource("SpriteFrames_j21c8")
 uses_per_turn = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])

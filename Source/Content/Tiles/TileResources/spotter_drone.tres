@@ -6,8 +6,8 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/YellowTiles/spotter_drone.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/spotter_drone_plus.tres" id="upgrade_plus"]
+[ext_resource type="Texture2D" uid="uid://dm7kh6i5ihlpf" path="res://Assets/Textures/Tiles/YellowTiles/spotter_drone.png" id="tex"]
+[ext_resource type="Resource" uid="uid://dxc5hfvrhog0i" path="res://Source/Content/Tiles/TileResources/spotter_drone_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")

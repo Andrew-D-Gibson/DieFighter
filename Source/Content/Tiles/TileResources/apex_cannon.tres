@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://ceoh1rwvv0k6v"]
 
-[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_cjofy"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_k6rn8"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_tsjhu"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_56v0q"]
-[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_bgqxb"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="4_k6rn8"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_xhp2m"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/RedTiles/apex_cannon.png" id="5_bgqxb"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_cjofy"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_k6rn8"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_tsjhu"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_56v0q"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_bgqxb"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_k6rn8"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_xhp2m"]
+[ext_resource type="Texture2D" uid="uid://dbnecglwnjc17" path="res://Assets/Textures/Tiles/RedTiles/apex_cannon.png" id="5_bgqxb"]
 
 [sub_resource type="Resource" id="Resource_k6rn8"]
 script = ExtResource("1_cjofy")

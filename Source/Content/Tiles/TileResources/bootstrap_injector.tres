@@ -5,7 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cg2o01okexetu" path="res://Assets/Textures/Tiles/PurpleTiles/bootstrap_injector.png" id="tex_2"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bootstrap_injector_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://bhtcjgfllpjmr" path="res://Source/Content/Tiles/TileResources/bootstrap_injector_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")

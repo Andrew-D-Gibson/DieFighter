@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
 [ext_resource type="Texture2D" uid="uid://b5jyp441mq8d1" path="res://Assets/Textures/Tiles/PurpleTiles/regenerative_brake.png" id="tex_2"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/regenerative_brake_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://vy1kxdn0hjdb" path="res://Source/Content/Tiles/TileResources/regenerative_brake_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")

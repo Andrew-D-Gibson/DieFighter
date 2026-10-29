@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://c2mtj70jt2emj"]
 
-[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_1qae8"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_pklwb"]
-[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_7awul"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_qctx4"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_r2r8p"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_rsklg"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="7_u3v0s"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/RedTiles/slingshot.png" id="8_2q38o"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_1qae8"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_pklwb"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_7awul"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_qctx4"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_r2r8p"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_rsklg"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_u3v0s"]
+[ext_resource type="Texture2D" uid="uid://cjkc0ie7uch64" path="res://Assets/Textures/Tiles/RedTiles/slingshot.png" id="8_2q38o"]
 
 [sub_resource type="Resource" id="Resource_6srxo"]
 script = ExtResource("1_1qae8")

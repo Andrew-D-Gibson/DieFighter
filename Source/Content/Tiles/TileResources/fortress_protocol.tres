@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_shield"]
 [ext_resource type="Texture2D" uid="uid://cmab08krc867v" path="res://Assets/Textures/Tiles/BlueTiles/fortress_protocol-Sheet.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fortress_protocol_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://choy2b6g0hw5v" path="res://Source/Content/Tiles/TileResources/fortress_protocol_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")

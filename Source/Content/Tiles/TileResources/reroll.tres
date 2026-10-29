@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="6_mwp2x"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="7_8dutl"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="7_i7nom"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/reroll_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://c0gbpe4rg8tk" path="res://Source/Content/Tiles/TileResources/reroll_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_ecbfa"]
 script = ExtResource("1_cuubr")

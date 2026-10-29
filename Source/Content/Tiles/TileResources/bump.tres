@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="9_u271i"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="10_gm6wk"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="10_pmkt1"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://l58smvkqapfp" path="res://Source/Content/Tiles/TileResources/bump_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_7xmxb"]
 script = ExtResource("1_u36sv")
@@ -95,9 +95,9 @@ animations = [{
 
 [resource]
 script = ExtResource("4_m7a5a")
-upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Bump[/color]"
 description = "[color=yellow]Die below[/color] (die_6) -> Add 1 to die"
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_j21c8")
 uses_per_turn = 3
 activation_checks = Array[ExtResource("1_u36sv")]([SubResource("Resource_7xmxb"), SubResource("Resource_c3unh")])

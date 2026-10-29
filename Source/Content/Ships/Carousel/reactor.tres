@@ -1,12 +1,12 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://ckfcchslv5d1u"]
 
-[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_ntegh"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_o36jr"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_cv53y"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_mf41w"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_6w0lq"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="6_vrqhp"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/PurpleTiles/reactor.png" id="7_m5d5x"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_ntegh"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_o36jr"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_cv53y"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_mf41w"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_6w0lq"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_vrqhp"]
+[ext_resource type="Texture2D" uid="uid://m75xlydw5hfc" path="res://Assets/Textures/Tiles/PurpleTiles/reactor.png" id="7_m5d5x"]
 
 [sub_resource type="Resource" id="Resource_emfni"]
 script = ExtResource("1_ntegh")

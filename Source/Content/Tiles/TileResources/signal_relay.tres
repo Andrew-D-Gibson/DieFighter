@@ -7,7 +7,7 @@
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_4"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/signal_relay_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://cmaax5gj4l2gk" path="res://Source/Content/Tiles/TileResources/signal_relay_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")

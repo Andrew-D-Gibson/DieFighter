@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_data"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_q5o6s"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/governor_coil_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://bx5jgigbdqq7n" path="res://Source/Content/Tiles/TileResources/governor_coil_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_die"]
 script = ExtResource("1_act")

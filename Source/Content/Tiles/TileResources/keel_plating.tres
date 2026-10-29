@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://brdqenevbqke3"]
 
-[ext_resource type="Script" path="res://Source/Content/Tiles/activation_resource.gd" id="1_npb3o"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_bg44j"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/effect_data.gd" id="2_ddadk"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_ushpr"]
-[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="3_xcvtl"]
-[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="4_ddadk"]
-[ext_resource type="Script" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_oe480"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/BlueTiles/keel_plating.png" id="5_xcvtl"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_npb3o"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_bg44j"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_ddadk"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_ushpr"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="3_xcvtl"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_ddadk"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_oe480"]
+[ext_resource type="Texture2D" uid="uid://e3w0wlr5moh2" path="res://Assets/Textures/Tiles/BlueTiles/keel_plating.png" id="5_xcvtl"]
 
 [sub_resource type="Resource" id="Resource_ddadk"]
 script = ExtResource("1_npb3o")

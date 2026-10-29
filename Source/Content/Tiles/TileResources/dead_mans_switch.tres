@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_7"]
 [ext_resource type="Texture2D" uid="uid://6wgpc2s6i81o" path="res://Assets/Textures/Tiles/PurpleTiles/dead_mans_switch.png" id="tex_2"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/dead_mans_switch_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://72ocf4xlr6vu" path="res://Source/Content/Tiles/TileResources/dead_mans_switch_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")

@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_4"]
 [ext_resource type="Texture2D" uid="uid://b0k1gfun1oxlg" path="res://Assets/Textures/Tiles/PurpleTiles/preflight_interlock.png" id="tex_2"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/preflight_interlock_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://c7ahi6bgkbks" path="res://Source/Content/Tiles/TileResources/preflight_interlock_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")

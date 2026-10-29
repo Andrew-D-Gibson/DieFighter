@@ -8,7 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_shield"]
 [ext_resource type="Texture2D" uid="uid://b8ibcdp5dcvoy" path="res://Assets/Textures/Tiles/BlueTiles/deflector_array.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/deflector_array_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://du40rimtmkl28" path="res://Source/Content/Tiles/TileResources/deflector_array_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -100,9 +100,9 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
-upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Deflector Array[/color]"
 description = "[color=yellow]Any die[/color] -> Gain [color=blue]shields[/color] equal to die"
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1")])

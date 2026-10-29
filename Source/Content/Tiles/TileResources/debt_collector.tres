@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" format=3]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bdfd733qwy0gm"]
 
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
@@ -7,8 +7,8 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" uid="uid://c7264ve0f2xiv" path="res://Assets/Textures/Tiles/GreenTiles/debt_collector-Sheet.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/debt_collector_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
+[ext_resource type="Resource" uid="uid://b3urokei4v38e" path="res://Source/Content/Tiles/TileResources/debt_collector_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_step_1"]
 script = ExtResource("script_effect")
