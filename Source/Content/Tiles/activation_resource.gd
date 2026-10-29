@@ -30,6 +30,13 @@ enum ActivationType {
 	## Another countdown tile (TileResource.countdown) is on the grid. For a
 	## tile that works the other countdowns: with none it would eat the die.
 	OTHER_COUNTDOWN_ON_GRID,
+	## A twin-dice tile (Pair Lock): while it holds a die, it takes only a die
+	## of the same face. With nothing held it takes any die.
+	MATCHES_HELD_DIE,
+	## A twin-dice tile (Lucky Seven): while it holds a die, it takes only a
+	## die that adds up to [member threshold] with it. With nothing held it
+	## takes any die.
+	SUMS_WITH_HELD_DIE,
 }
 
 @export var type: ActivationType
@@ -199,6 +206,12 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.OTHER_COUNTDOWN_ON_GRID:
 		"ERROR_NO_COUNTDOWNS",
+
+	ActivationType.MATCHES_HELD_DIE:
+		"ERROR_NOT_A_PAIR",
+
+	ActivationType.SUMS_WITH_HELD_DIE:
+		"ERROR_WRONG_SUM",
 }
 
 
@@ -208,8 +221,27 @@ func criteria_satisfied(die: Dice, tile: Tile = null) -> bool:
 		return tile != null and int(tile.effect_data.get(data_key, 0)) >= threshold
 	if type == ActivationType.OTHER_COUNTDOWN_ON_GRID:
 		return not TileCountdown.others_on_grid(tile).is_empty()
+	if type == ActivationType.MATCHES_HELD_DIE or type == ActivationType.SUMS_WITH_HELD_DIE:
+		var held: Dice = tile.get_held_die(die) if tile else null
+		return held == null or die == null or pairs_with(die.value, held.value)
 	return activation_functions[type].call(die)
-	
+
+
+## Whether a die showing [param face] pairs with a held die showing
+## [param held_face] under a held-die check (MATCHES_HELD_DIE,
+## SUMS_WITH_HELD_DIE). Any other check pairs with anything. Takes faces so
+## the AutoPilot can ask about a die it's only imagining.
+func pairs_with(face: int, held_face: int) -> bool:
+	match type:
+		ActivationType.MATCHES_HELD_DIE:
+			return face == held_face
+		ActivationType.SUMS_WITH_HELD_DIE:
+			return face + held_face == threshold
+	return true
+
 
 func get_criteria_fail_text() -> String:
-	return TranslationServer.translate(failed_activation_messages[type])
+	var text: String = TranslationServer.translate(failed_activation_messages[type])
+	if type == ActivationType.SUMS_WITH_HELD_DIE:
+		text = text.format({"total": threshold})
+	return text

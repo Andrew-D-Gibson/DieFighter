@@ -1,0 +1,328 @@
+extends "res://test/helpers/die_fighter_test.gd"
+## The twin-dice tiles (TileResource.holds_first_die): the first die is held,
+## the next pays out. Played whole through TileActivationEvent, so the use
+## budget, the activation checks and the hold all run as in a game. The
+## engine records instead of resolving; the hold and hand-off events are
+## resolved by hand so the dice really move.
+
+const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
+const PLAYER_SCENE: PackedScene = preload("res://Source/Systems/Game/Player/player.tscn")
+const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
+const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
+const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
+const INTERCEPTOR: EnemyResource = preload("res://Source/Content/Enemies/EnemyResources/interceptor.tres")
+const TILES: String = "res://Source/Content/Tiles/TileResources/%s.tres"
+
+var engine: RecordingEngine
+var enemy: Enemy
+var player: Player
+
+
+func before_each() -> void:
+	super()
+	engine = autofree(RecordingEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = engine
+	Globals.scenario_manager = manager
+	player = add_child_autofree(PLAYER_SCENE.instantiate())
+	Globals.player = player
+	enemy = ENEMY_SCENE.instantiate()
+	enemy.enemy_resource = INTERCEPTOR
+	enemy.scenario_state = ScenarioShipState.new()
+	add_child_autofree(enemy)
+	var computer: TargetingComputer = autofree(TargetingComputer.new())
+	computer.targeted_enemy = enemy
+	Globals.targeting_computer = computer
+	var roster: EnemyManager = autofree(EnemyManager.new())
+	roster.enemies = [enemy] as Array[Enemy]
+	Globals.enemy_manager = roster
+	Globals.tile_grid = autofree(TileGrid.new())
+
+
+func after_each() -> void:
+	Globals.enemy_manager = null
+	super()
+
+
+func _tile(tile_id: String) -> Tile:
+	var tile: Tile = TILE_SCENE.instantiate()
+	tile.tile_resource = load(TILES % tile_id)
+	add_child_autofree(tile)
+	return tile
+
+
+## A die in the player's hand.
+func _die(face: int) -> Dice:
+	var die: Dice = DICE_SCENE.instantiate()
+	die.value = face
+	# Under the player node, where every die in the game lives.
+	player.add_child(die)
+	player.dice_manager.add(die)
+	return die
+
+
+## Drops [param die] on [param tile] as Tile._on_die_accepted does, without
+## playing it yet.
+func _place(tile: Tile, die: Dice) -> TileActivationEvent:
+	tile.dice_queue.add(die, true, false)
+	var event := TileActivationEvent.new()
+	event.tile = tile
+	event.activator_die = die
+	event.die_value = die.value
+	return event
+
+
+## Plays a placed die's activation, then moves the dice the way the recorded
+## hold and hand-off events say. Returns the events it made.
+func _play(event: TileActivationEvent) -> Array[EffectEvent]:
+	engine.injected.clear()
+	await event.resolve(engine)
+	var made: Array[EffectEvent] = engine.injected.duplicate()
+	for each: EffectEvent in made:
+		if each is KeepDieWithTileEvent or each is GiveDieToTargetEvent or each is GiveDieToPlayerEvent:
+			await each.resolve(engine)
+		# Land a die handed over at once, and let its beam go before the test
+		# ends: a beam freed after its die trips over the freed die.
+		if each is GiveDieToTargetEvent:
+			TractorBeam.release(each.activator_die)
+			await get_tree().process_frame
+	return made
+
+
+func _drop(tile: Tile, face: int) -> Array[EffectEvent]:
+	return await _play(_place(tile, _die(face)))
+
+
+func _of(events: Array[EffectEvent], script: Script) -> Array[EffectEvent]:
+	return events.filter(func(e: EffectEvent) -> bool: return is_instance_of(e, script))
+
+
+func _damage(events: Array[EffectEvent]) -> Array[int]:
+	var out: Array[int] = []
+	for event: EffectEvent in _of(events, DamageEvent):
+		out.append(event.amount)
+	return out
+
+
+# ── The hold ─────────────────────────────────────────────────────────────────
+
+func test_the_first_die_is_held_on_the_tile_and_deals_nothing() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var first: Dice = _die(4)
+	var events: Array[EffectEvent] = await _play(_place(tile, first))
+	assert_eq(_damage(events), [] as Array[int])
+	assert_eq(tile.get_held_die(), first, "it waits on the tile, where Welder's does")
+	assert_has(tile.dice_queue.queue, first)
+	assert_does_not_have(player.dice_manager.queue, first)
+
+
+func test_a_die_only_dropped_on_the_tile_is_not_held() -> void:
+	# Two dice dropped before the first one's activation resolves: the
+	# second is waiting its turn, not held, so the first doesn't pay out on it.
+	var tile: Tile = _tile("twin_barrel")
+	var first: Dice = _die(2)
+	var second: Dice = _die(5)
+	var first_drop: TileActivationEvent = _place(tile, first)
+	var second_drop: TileActivationEvent = _place(tile, second)
+	assert_null(tile.get_held_die(first))
+	assert_eq(_damage(await _play(first_drop)), [] as Array[int], "the first is held")
+	assert_eq(tile.get_held_die(second), first)
+	assert_eq(_damage(await _play(second_drop)), [10], "the second pays out: 2 + 5 + 3")
+
+
+func test_a_held_die_picked_back_up_is_no_longer_held() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var first: Dice = _die(3)
+	await _play(_place(tile, first))
+	player.dice_manager.add(first)
+	assert_null(tile.get_held_die())
+	# Dropped here again it's a fresh hold, not a pair with itself.
+	tile.dice_queue.add(first, true, false)
+	assert_null(tile.get_held_die(), "only a hold makes a die held")
+
+
+func test_a_held_die_goes_back_to_the_hand_when_the_turn_or_fight_ends() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var first: Dice = _die(3)
+	await _play(_place(tile, first))
+	assert_true(Events.player_turn_over.is_connected(tile.release_held_dice))
+	assert_true(Events.combat_finished.is_connected(tile.release_held_dice))
+	tile.release_held_dice()
+	assert_has(player.dice_manager.queue, first)
+	assert_null(tile.get_held_die(), "nothing banked for next turn")
+	assert_eq(tile.uses_remaining, 1, "and the hold cost nothing")
+
+
+# ── Uses ─────────────────────────────────────────────────────────────────────
+
+func test_a_hold_spends_no_use_and_the_payout_spends_it() -> void:
+	var tile: Tile = _tile("pair_lock")
+	assert_eq(tile.uses_remaining, 1)
+	await _drop(tile, 3)
+	assert_eq(tile.uses_remaining, 1, "holding is free")
+	assert_eq(_damage(await _drop(tile, 3)), [12])
+	assert_eq(tile.uses_remaining, 0, "the payout spends the use")
+	assert_ne(tile.activation_refusal(_die(5)), "", "and a spent tile takes no new hold")
+
+
+# ── Refusals ─────────────────────────────────────────────────────────────────
+
+func test_pair_lock_refuses_a_die_that_does_not_match_and_hands_it_back() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var held: Dice = _die(3)
+	await _play(_place(tile, held))
+	var wrong: Dice = _die(5)
+	var events: Array[EffectEvent] = await _play(_place(tile, wrong))
+	assert_eq(_damage(events), [] as Array[int])
+	assert_has(player.dice_manager.queue, wrong, "back in the hand, not eaten")
+	assert_does_not_have(tile.dice_queue.queue, wrong)
+	assert_eq(tile.get_held_die(), held, "the held die waits on")
+	assert_eq(tile.uses_remaining, 1)
+
+
+func test_lucky_seven_takes_only_a_die_that_makes_seven() -> void:
+	var tile: Tile = _tile("lucky_seven")
+	var held: Dice = _die(2)
+	await _play(_place(tile, held))
+	var four: Dice = _die(4)
+	assert_eq(_damage(await _play(_place(tile, four))), [] as Array[int])
+	assert_has(player.dice_manager.queue, four)
+	var five: Dice = _die(5)
+	assert_eq(_damage(await _play(_place(tile, five))), [14])
+
+
+func test_held_die_checks_take_any_die_while_nothing_is_held() -> void:
+	var tile: Tile = _tile("lucky_seven")
+	for face: int in range(1, 7):
+		assert_eq(tile.activation_refusal(_die(face)), "", "a %d starts a hold" % face)
+
+
+func test_pairs_with_reads_matches_and_sums() -> void:
+	var match_check := ActivationResource.new()
+	match_check.type = ActivationResource.ActivationType.MATCHES_HELD_DIE
+	assert_true(match_check.pairs_with(4, 4))
+	assert_false(match_check.pairs_with(4, 3))
+	var sum_check := ActivationResource.new()
+	sum_check.type = ActivationResource.ActivationType.SUMS_WITH_HELD_DIE
+	sum_check.threshold = 7
+	assert_true(sum_check.pairs_with(6, 1))
+	assert_false(sum_check.pairs_with(6, 6))
+
+
+# ── Payouts ──────────────────────────────────────────────────────────────────
+
+func test_twin_barrel_hits_for_both_dice_plus_three_and_gives_both() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var first: Dice = _die(4)
+	await _play(_place(tile, first))
+	var second: Dice = _die(6)
+	var events: Array[EffectEvent] = await _play(_place(tile, second))
+	assert_eq(_damage(events), [13])
+	var gives: Array[EffectEvent] = _of(events, GiveDieToTargetEvent)
+	assert_eq(gives.size(), 2)
+	for give: EffectEvent in gives:
+		assert_eq(give.targets, [enemy] as Array[Node])
+	assert_has(enemy.dice_manager.queue, first)
+	assert_has(enemy.dice_manager.queue, second)
+	assert_null(tile.get_held_die())
+
+
+func test_twin_barrel_plus_adds_six() -> void:
+	var tile: Tile = _tile("twin_barrel_plus")
+	await _drop(tile, 1)
+	assert_eq(_damage(await _drop(tile, 2)), [9])
+
+
+func test_pair_lock_hits_for_four_times_the_die_and_gives_both() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var first: Dice = _die(6)
+	await _play(_place(tile, first))
+	var second: Dice = _die(6)
+	var events: Array[EffectEvent] = await _play(_place(tile, second))
+	assert_eq(_damage(events), [24])
+	assert_has(enemy.dice_manager.queue, first)
+	assert_has(enemy.dice_manager.queue, second)
+
+
+func test_pair_lock_plus_hits_for_five_times() -> void:
+	var tile: Tile = _tile("pair_lock_plus")
+	await _drop(tile, 2)
+	assert_eq(_damage(await _drop(tile, 2)), [10])
+
+
+func test_lucky_seven_gives_the_held_die_and_returns_the_other() -> void:
+	var tile: Tile = _tile("lucky_seven")
+	var held: Dice = _die(1)
+	await _play(_place(tile, held))
+	var six: Dice = _die(6)
+	var events: Array[EffectEvent] = await _play(_place(tile, six))
+	assert_eq(_damage(events), [14])
+	assert_has(enemy.dice_manager.queue, held, "the held die goes to the target")
+	assert_has(player.dice_manager.queue, six, "the one that made seven comes home")
+
+
+func test_lucky_seven_plus_hits_for_twenty() -> void:
+	var tile: Tile = _tile("lucky_seven_plus")
+	await _drop(tile, 3)
+	assert_eq(_damage(await _drop(tile, 4)), [20])
+
+
+func test_a_repeated_payout_hits_twice_and_gives_each_die_once() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	await _drop(tile, 2)
+	var event: TileActivationEvent = _place(tile, _die(3))
+	event.activation_repetitions = 2
+	var events: Array[EffectEvent] = await _play(event)
+	assert_eq(_damage(events), [8, 8])
+	assert_eq(_of(events, GiveDieToTargetEvent).size(), 2)
+
+
+# ── Echo ─────────────────────────────────────────────────────────────────────
+
+func test_an_echo_waits_out_the_hold_for_the_payout() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var hold: TileActivationEvent = _place(tile, _die(2))
+	assert_false(EchoModifier.can_echo(hold, engine), "a hold has nothing to repeat")
+	await _play(hold)
+	assert_true(EchoModifier.can_echo(_place(tile, _die(3)), engine))
+
+
+# ── AutoPilot ────────────────────────────────────────────────────────────────
+
+func test_the_forecast_credits_a_hold_with_half_the_payout_it_sets_up() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var first: Dice = _die(4)
+	var alone: AutoPilotForecast = AutoPilotForecast.of(tile, first, enemy)
+	assert_eq(alone.damage.get(enemy, 0.0), 0.0, "nothing in hand to pay it out")
+	_die(5)
+	var paired: AutoPilotForecast = AutoPilotForecast.of(tile, first, enemy)
+	assert_almost_eq(paired.damage.get(enemy, 0.0), 6.0, 0.01, "half of 4 + 5 + 3")
+
+
+func test_the_forecast_reads_the_payout_off_the_held_die() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	await _drop(tile, 4)
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(tile, _die(5), enemy)
+	assert_almost_eq(forecast.damage.get(enemy, 0.0), 12.0, 0.01)
+	assert_eq(forecast.handoffs.size(), 2, "both dice go to the target")
+
+
+func test_the_forecast_values_a_pair_lock_hold_only_with_a_match_in_hand() -> void:
+	var tile: Tile = _tile("pair_lock")
+	var first: Dice = _die(3)
+	_die(5)
+	assert_eq(AutoPilotForecast.of(tile, first, enemy).damage.get(enemy, 0.0), 0.0)
+	_die(3)
+	assert_almost_eq(AutoPilotForecast.of(tile, first, enemy).damage.get(enemy, 0.0), 6.0, 0.01)
+
+
+func test_a_tile_on_offer_is_valued_for_the_pair_a_typical_hand_would_find() -> void:
+	# A stand-in die, as the policy prices tiles: no hand to read.
+	var stand_in: Node = autofree(FakeDie.new(4))
+	var twin: AutoPilotForecast = AutoPilotForecast.of(_tile("twin_barrel"), stand_in, enemy, [enemy], true)
+	assert_almost_eq(twin.damage.get(enemy, 0.0), 5.25, 0.01, "half of 4 + 3.5 + 3, any die pairs")
+	var stand_in_three: Node = autofree(FakeDie.new(3))
+	var lock: AutoPilotForecast = AutoPilotForecast.of(_tile("pair_lock"), stand_in_three, enemy, [enemy], true)
+	var odds: float = 1.0 - pow(5.0 / 6.0, 4.0)
+	assert_almost_eq(lock.damage.get(enemy, 0.0), 0.5 * odds * 12.0, 0.01,
+		"half of 4 x 3, when one of four other dice shows a 3")

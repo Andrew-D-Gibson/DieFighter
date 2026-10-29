@@ -110,6 +110,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_DICE_HELD, label = "Set to Target Dice Held", handler = SetAmountToTargetDiceHeldHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_RANDOM, label = "Set Random", handler = SetAmountToRandomHandler, fields = ["range_min", "range_max"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_SHIELDS, label = "Set to Target Shields", handler = SetAmountToTargetShieldsHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_HELD_DIE_VALUE, label = "Add Held Die Value", handler = AddHeldDieValueHandler},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
@@ -130,6 +131,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.FLIP_TARGETS_ONES_AND_SIXES, label = "Flip Targets' Ones and Sixes", handler = FlipTargetsOnesAndSixesHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.ADD_TO_ACTIVATOR_VALUE, label = "Add to Activator Value", handler = AddToActivatorValueHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.SPLIT_ACTIVATOR, label = "Split Activator", handler = SplitActivatorHandler},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.GIVE_HELD_DIE_TO_TARGET, label = "Give Held Die to Target", handler = GiveHeldDieToTargetHandler},
 
 	# ── AUDIO_VISUAL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES, label = "Spawn Hit Particles", handler = SpawnHitParticlesHandler, fields = ["color"]},

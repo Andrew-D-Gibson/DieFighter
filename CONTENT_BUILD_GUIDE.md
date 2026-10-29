@@ -142,6 +142,17 @@ registration to testing. For how the systems work underneath, see
     the core trade of the game.
   - Feed tiles end with `PASS_DIE_TO_TILE` instead.
   - Holding tiles end with `KEEP_DIE_WITH_TILE`.
+  - **Twin dice** (Twin Barrel, Pair Lock, Lucky Seven): the first die is
+    held, the next pays out on both. Tick `holds_first_die` and wrap the
+    chain in `IF_SOURCE_HOLDS_DIE`: false branch `CALLOUT` "HOLD" then
+    `KEEP_DIE_WITH_TILE`; true branch the payout, reading the held die with
+    `ADD_HELD_DIE_VALUE` and handing it over with `GIVE_HELD_DIE_TO_TARGET`
+    (or leaving it to go home). The hold spends no use, so a 1-use tile's use
+    goes on the payout, and an echo waits for the payout. A held die goes back
+    to the hand at turn end, so a hold can't be banked. To restrict the second
+    die, add `MATCHES_HELD_DIE` or `SUMS_WITH_HELD_DIE` (`threshold` = the
+    total): it refuses a die that doesn't pair, back to the hand, and takes
+    any die while nothing is held. The lower panel shows two blank slots.
   - **Boost** (an optional charge cost): an `IF_CHARGE_AT_LEAST` conditional
     (`amount` = cost) whose true branch spends it (`TARGET_PLAYER`, an Engine
     `STREAM`, `SPEND_ENGINE_CHARGE`) then does the extra. The tile still works
@@ -762,6 +773,9 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
   into a rise). `SPLIT_ACTIVATOR` (Die Splitter) leaves the die the bigger
   half and hands the player a hologram of the rest, as one event so a freeze
   stops both.
+- **The die a tile holds:** read it with `Tile.get_held_die()`, which counts
+  only dice put there by `KEEP_DIE_WITH_TILE` (`Tile.hold_die()`), not dice
+  merely dropped on the tile and waiting for their activation.
 - **Data a chain needs from its caller:** add a field to `EffectContext`
   (`effect_context.gd`).
 

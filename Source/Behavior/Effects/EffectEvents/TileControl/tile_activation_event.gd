@@ -27,8 +27,9 @@ func resolve(engine: ScenarioEngine) -> void:
 		tile.dice_queue.remove(activator_die)
 		return
 		
-	# Decrement uses now that we're committed to activating
-	if tile.uses_remaining != -1:
+	# Decrement uses now that we're committed to activating. A twin-dice
+	# tile's hold is free: the use goes on the die that pays out.
+	if tile.uses_remaining != -1 and not tile.is_hold(activator_die):
 		tile.uses_remaining -= 1
 	Events.tile_activated.emit(tile)
 
