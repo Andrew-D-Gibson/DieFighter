@@ -3,9 +3,10 @@ extends DelayedEffect
 ## A die a tile keeps past the end of the turn (HOLD_DIE_FOR_TURNS, the
 ## Holding Bay), handed back to the hand as a later turn starts.
 ##
-## It comes back at the face it was held at. The hand is re-rolled before
-## player_turn_start, and the die is still on the tile then, so it misses the
-## re-roll: keeping a face for later is the point.
+## It comes back at the face it was held at. The hand is re-rolled just
+## before the countdown runs (player_turn_refresh), and the die is still on
+## the tile then, so it misses the re-roll: keeping a face for later is the
+## point.
 ##
 ## While it waits it sits in the tile's queue, where the player can see it.
 ## It is still the player's (Player.dice_owned() counts it, and a jump brings

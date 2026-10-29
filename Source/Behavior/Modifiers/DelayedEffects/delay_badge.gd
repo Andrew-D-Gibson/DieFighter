@@ -24,6 +24,8 @@ func _show_info() -> void:
 	info.title_label_text = "[color=#%s]%s[/color]" % [_delay.color().to_html(false), _delay.title()]
 	var turns: int = _delay.turns_left
 	info.top_label_text = "Next turn" if turns <= 1 else "In %d turns" % turns
-	info.texture = _delay.payload.badge_icon if _delay.payload else null
+	if _delay.payload:
+		info.texture = _delay.payload.badge_info_icon if _delay.payload.badge_info_icon \
+			else _delay.payload.badge_icon
 	info.bottom_label_text = "[color=yellow]%s[/color] -> %s" % [info.top_label_text, _delay.describe()]
 	Events.show_info.emit(info)

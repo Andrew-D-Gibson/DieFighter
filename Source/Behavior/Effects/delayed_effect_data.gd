@@ -30,6 +30,10 @@ extends EffectData
 ## 11x11 icon for the countdown badge on the ship it's planted on.
 @export var badge_icon: Texture2D
 
+## 24x24 picture for the badge's info panel (usually the tile's own art).
+## Falls back to badge_icon.
+@export var badge_info_icon: Texture2D
+
 ## Name shown on the badge's info panel ("Time Bomb").
 @export var badge_title: String = ""
 

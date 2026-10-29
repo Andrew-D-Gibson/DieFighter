@@ -3,11 +3,14 @@ extends Modifier
 ## Something set up now to happen on a later turn of the same fight: a die
 ## held over (HeldDieDelay), a payload armed on a ship (DelayedPayload).
 ##
-## The countdown is in the player's turns. Each player_turn_start takes one
+## The countdown is in the player's turns. Each player_turn_refresh takes one
 ## off, and the one that reaches zero is the turn it happens on, before the
-## player acts. The turn it was set up on never counts: a fight's opening turn
-## announces itself with first_turn_start instead, which this doesn't hear,
-## so a delay set up while the ships fly in still waits a whole turn.
+## player acts. That's the beat just before player_turn_start, after the hand
+## is re-rolled: a die coming back is in hand before anything reads the hand
+## at turn start (ON_TURN_START tiles, the AutoPilot's checks). The turn it
+## was set up on never counts: a fight's opening turn has no refresh of its
+## own (only first_turn_start), so a delay set up while the ships fly in still
+## waits a whole turn.
 ##
 ## It lives in the scenario engine like any modifier, so it goes wherever the
 ## fight goes:
@@ -32,13 +35,13 @@ var _engine: ScenarioEngine = null
 func on_registered(engine: ScenarioEngine) -> void:
 	_engine = engine
 	super(engine)
-	Events.player_turn_start.connect(_on_player_turn_start)
+	Events.player_turn_refresh.connect(_on_turn_refresh)
 	Events.combat_finished.connect(_drop)
 
 
 func on_unregistered(engine: ScenarioEngine) -> void:
-	if Events.player_turn_start.is_connected(_on_player_turn_start):
-		Events.player_turn_start.disconnect(_on_player_turn_start)
+	if Events.player_turn_refresh.is_connected(_on_turn_refresh):
+		Events.player_turn_refresh.disconnect(_on_turn_refresh)
 	if Events.combat_finished.is_connected(_drop):
 		Events.combat_finished.disconnect(_drop)
 	_engine = null
@@ -61,7 +64,7 @@ static func all_in(engine: ScenarioEngine) -> Array[DelayedEffect]:
 	return found
 
 
-func _on_player_turn_start() -> void:
+func _on_turn_refresh() -> void:
 	if not is_pending():
 		return
 	if not _in_combat():

@@ -99,14 +99,14 @@ func _payloads() -> Array[DelayedPayload]:
 
 func test_it_comes_due_on_the_turn_start_its_count_reaches() -> void:
 	var delay: CountingDelay = _delay(2)
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(delay.due, 0, "one turn still to go")
 	assert_eq(delay.turns_left, 1)
 	assert_eq(delay.ticks, 1)
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(delay.due, 1)
 	assert_false(delay.is_pending(), "it leaves the engine as it goes off")
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(delay.due, 1, "once only")
 
 
@@ -122,7 +122,7 @@ func test_the_fight_ending_drops_it() -> void:
 	state.state = GameStateManager.GameState.OUT_OF_COMBAT
 	assert_eq(delay.dropped, 1)
 	assert_false(delay.is_pending())
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(delay.due, 0, "never goes off after the fight")
 
 
@@ -130,7 +130,7 @@ func test_a_turn_starting_out_of_a_fight_drops_it() -> void:
 	var delay: CountingDelay = _delay(1)
 	# A turn handed back after an enemy turn run out of combat.
 	Globals.state_manager = null
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(delay.due, 0)
 	assert_eq(delay.dropped, 1)
 
@@ -138,7 +138,7 @@ func test_a_turn_starting_out_of_a_fight_drops_it() -> void:
 func test_a_jump_shutting_the_engine_down_drops_it_silently() -> void:
 	var delay: CountingDelay = _delay(1)
 	engine.shutdown()
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(delay.due, 0)
 	assert_false(delay.is_pending())
 
@@ -191,7 +191,7 @@ func test_a_held_die_comes_home_at_its_face_as_the_next_turn_starts() -> void:
 	var die: Dice = _die(player, 5)
 	await _hold(bay, die)
 	Events.player_turn_over.emit()
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_true(die in player.dice_manager.queue)
 	assert_eq(die.value, 5, "kept at its face")
 	assert_false(bay.is_holding_over(die))
@@ -204,10 +204,10 @@ func test_a_die_held_for_two_turns_waits_two() -> void:
 	var die: Dice = _die(player, 2)
 	await _hold(bay, die, 2)
 	Events.player_turn_over.emit()
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_true(die in bay.dice_queue.queue)
 	Events.player_turn_over.emit()
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_true(die in player.dice_manager.queue)
 
 
@@ -252,7 +252,7 @@ func test_a_held_die_taken_off_the_tile_early_is_left_alone() -> void:
 	await _hold(bay, die)
 	other.dice_queue.add(die, true, false)
 	assert_false(bay.is_holding_over(die))
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_true(die in other.dice_queue.queue, "the delay doesn't snatch it back")
 
 
@@ -274,9 +274,9 @@ func test_arming_plants_a_badge_on_the_ship() -> void:
 func test_it_goes_off_against_its_ship_with_the_armed_amount() -> void:
 	var ship: Enemy = _enemy()
 	await _arm(ship, 2, 20)
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(engine.injected_of(DelayedPayloadEvent).size(), 0)
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	var fired: Array[EffectEvent] = engine.injected_of(DelayedPayloadEvent)
 	assert_eq(fired.size(), 1)
 	assert_eq(fired[0].targets, [ship] as Array[Node])
@@ -316,7 +316,7 @@ func test_with_no_hostile_ship_left_it_fizzles() -> void:
 	var armed: DelayedPayload = await _arm(ship, 1, 12)
 	Events.enemy_left.emit(ship, ScenarioManager.Faction.PIRATE)
 	assert_false(armed.is_pending())
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(engine.injected_of(DelayedPayloadEvent).size(), 0)
 
 
@@ -325,7 +325,7 @@ func test_an_armed_payload_never_outlasts_the_fight() -> void:
 	var armed: DelayedPayload = await _arm(ship, 1, 12)
 	state.state = GameStateManager.GameState.OUT_OF_COMBAT
 	assert_false(armed.is_pending())
-	Events.player_turn_start.emit()
+	Events.player_turn_refresh.emit()
 	assert_eq(engine.injected_of(DelayedPayloadEvent).size(), 0)
 
 
