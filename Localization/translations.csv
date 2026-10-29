@@ -119,3 +119,4 @@ CONFIRM_END_TURN_UNUSED_DICE,End turn with dice unused?,,,,,,,,"In-game confirma
 OPT_READABLE_FONT,Readable Font,,,,,,,,Options > Accessibility tab: label beside a checkbox that swaps the pixel font for a plainer one,,,
 OPT_READABLE_FONT_HINT,Use a clearer font instead of the pixel font.,,,,,,,,Options > Accessibility tab: hint line for Readable Font,,,
 MOD_TRIGGER_FROZEN,FROZEN,,,,,,,,"Callout floated off the environment monitor when the Flash Freeze region rule stops a die's value from changing (a reroll, a bump, a flip). Short, shouted, like NO SHIELDS.",10,,
+TILE_INFO_ONCE_PER_TURN,"{rule}: activates [color=yellow]once a turn[/color] here",,,,,,,,"Tile info panel, a line added under the tile's description while a region rule (e.g. Dead Systems) limits every tile to one activation per turn. {rule} is the rule's name. Keep the [color] tags.",40,,

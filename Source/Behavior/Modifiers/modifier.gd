@@ -93,6 +93,19 @@ func get_info_text() -> String:
 	return ""
 
 
+## The most uses a turn this rule allows [param tile], or -1 for no limit.
+## Tile.max_uses_per_turn() takes the lowest over every modifier in play, so
+## a cap shows in the tile's lights and refusals like its own budget.
+func get_tile_use_cap(_tile: Tile) -> int:
+	return -1
+
+
+## A line for [param tile]'s info panel from a rule that applies to tiles it
+## doesn't own (get_info_text() is for its own affected_node). Empty for none.
+func get_rule_info_text(_tile: Tile) -> String:
+	return ""
+
+
 ## Called by ScenarioEngine.add_modifier(). Override to add extra setup logic,
 ## but always call super.on_registered(engine) to ensure the visual spawns.
 func on_registered(_engine: ScenarioEngine) -> void:

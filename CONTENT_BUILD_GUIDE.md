@@ -574,7 +574,11 @@ minus some backgrounds (`excluded_backgrounds`).
   optional `icon`.
 - `effect`: SHIELD_BLACKOUT, DOUBLE_DAMAGE, REPAIR_BLACKOUT, ENGINE_BLACKOUT,
   REROLL_BLACKOUT, NO_REPETITION, AMOUNT_CAP (with `amount_cap`) or
-  DICE_FREEZE (no face changes at all; Flash Freeze).
+  DICE_FREEZE (no face changes at all; Flash Freeze) or ONCE_PER_TURN
+  (every grid tile activates once a turn, the engine is immune; Dead
+  Systems). A rule that caps tile uses overrides
+  `Modifier.get_tile_use_cap(tile)`: `Tile.max_uses_per_turn()` reads it, so
+  the lights, gray-out and refusal follow with no art changes.
 
 **A new way to change a die's face** (a new event) must override
 `EffectEvent.changes_die_values()` to return true, or Flash Freeze won't stop

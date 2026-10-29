@@ -15,7 +15,7 @@ const RULES: Dictionary[String, String] = {
 	"blue_nebula": "AmountCapModifier",
 	"cryo_belt": "DiceFreezeModifier",
 	"debris_field": "DoubleDamageModifier",
-	"derelict_boneyard": "NoRepetitionModifier",
+	"derelict_boneyard": "OncePerTurnModifier",
 	"fate_infection": "EngineBlackoutModifier",
 	"pulsar_field": "ShieldBlackoutModifier",
 	"red_nebula": "RepairBlackoutModifier",

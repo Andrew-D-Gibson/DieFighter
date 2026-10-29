@@ -39,6 +39,8 @@ enum Effect {
 	AMOUNT_CAP,
 	## No die's face can change: rerolls, Bumps, flips, merges, Scrambled.
 	DICE_FREEZE,
+	## Every grid tile activates at most once a turn; the engine is immune.
+	ONCE_PER_TURN,
 }
 
 @export_category('Info')
@@ -88,6 +90,8 @@ func create_modifier() -> Modifier:
 			mod = AmountCapModifier.new(amount_cap)
 		Effect.DICE_FREEZE:
 			mod = DiceFreezeModifier.new()
+		Effect.ONCE_PER_TURN:
+			mod = OncePerTurnModifier.new()
 		_:
 			push_error("BackgroundModifierResource: unhandled effect %d" % effect)
 			return null
