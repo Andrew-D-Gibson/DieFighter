@@ -4,6 +4,37 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Shop reroll
+
+**Why.** The tile gap analysis (`Planning Documents/Tile_Gap_Analysis_StS_Dicey.xlsx`)
+found that a full run is offered about 26 tiles, a third of the pool, so a
+build is hard to dig for. Runs also finish with credits to spare (about 225
+in AutoPilot runs that reach sector 3). A reroll turns spare credits into
+more looks at the pool.
+
+**How it plays.** A REROLL button sits on a tab above the shop panel, right of
+the SHOP tab, with its price beside it. It pays, pops the four tile shelves
+off (last first, as the closing does), then pops fresh stock on (as the
+opening does). Shelves already sold out refill too. The die and the Grid Slot
+stay. The tiles just cleared are kept off the new shelves unless nothing else
+is left.
+
+**Price.** 8 for the first reroll at a shop, +4 for each after (8, 12, 16,
+...), and the next shop starts at 8 again (`base_reroll_cost`,
+`reroll_cost_growth` on the Shop). The button greys out, and the price turns
+red, when the player can't pay, while the shop is opening, closing or
+restocking, and while anything is in hand (a carried shelf tile would
+otherwise land on the button and try to sell).
+
+**Saving.** `capture_stock()` saves the reroll count as `rerolls`, so a Continue
+keeps the price. A reroll takes the purchase checkpoint once the new stock is
+shelved.
+
+**Not done.** The AutoPilot doesn't reroll, and its transcript logs a stop's
+shop stock once, so later stock isn't recorded.
+
+---
+
 ## 2026-10-29 — Hull retune: longer fights
 
 **Why.** Fights were ending before most enemies acted: 24/32 hull, sector 1
