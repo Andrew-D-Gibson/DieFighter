@@ -141,14 +141,18 @@ at once, with no per-tile authoring.
 | Chain Cannon | dice_cannon | Rapid chained shot (escalating pitch) | before `DAMAGE` |
 | Chaos Explosion | — | Massive slowed-down explosion | before `DAMAGE` |
 | Cinder Turbine | — | A turbine spinning up on the heat | before `CHANGE_ENGINE_CHARGE` |
+| Concussion Round | dice_cannon | Blunt thud + ringing shockwave | before `DAMAGE` |
 | Countermeasures | — | Countermeasure flares popping, a whoosh across | before `TRANSFER_STATUSES` |
 | Counterweight Battery | player_shield | Pendulum clunk + shield | before `SHIELD` |
 | Crescendo Cannon | dice_cannon | Shot whose pitch climbs with the crescendo (escalation) | before `DAMAGE` |
 | Crossed Wires | reroll blip | Electrical short buzz | before `APPLY_STATUS` |
+| Dampener | error | Falling "wah" as the signal dies away | before `APPLY_STATUS` |
 | Dead Man's Switch | — | Arming click (quiet; it re-arms every turn) | chain start |
 | Deadweight Drive | dice_cannon | Very heavy, slow thud | before `DAMAGE` |
 | Debt Collector | dice_cannon | Cash-register clunk as the motes land | before `DAMAGE` |
 | Dice Cannon | dice_cannon | Keep (the baseline shot) | — |
+| Die Splitter | — | Cutter whine, then a hologram shimmer | before `SPLIT_ACTIVATOR` |
+| Doubler | — | Rising two-step chime | before `ADD_TO_ACTIVATOR_VALUE` |
 | Emergency Shield | — | Klaxon → slowed shield slam → burn-out | before `HEAL`, `SHIELD`, `DESTROY_SOURCE` |
 | Emergency Transfer | — | Power-transfer whine | before `SHIELD` |
 | Feedback Cowl | dice_cannon | Feedback screech | before `DAMAGE` |
@@ -169,6 +173,7 @@ at once, with no per-tile authoring.
 | Leeching Shot | dice_cannon | Shot + drain slurp | before `TARGET_PLAYER` |
 | Lone Wolf Lance | dice_cannon | Thin lance; a howl or overdriven crack on the tripled shot | before `DAMAGE`; in the Fleet branch |
 | Napalm Vent | — | Vent hiss + flame | before `APPLY_STATUS` |
+| Nudge Down | — | Little "tick-down" (Bump reversed) | before `ADD_TO_ACTIVATOR_VALUE` |
 | Overclock Coil | dice_cannon | Coil whine rising with each use | chain start |
 | Overdraw Coil | dice_cannon | Huge drain → discharge | before `DAMAGE` |
 | Overpressure Lance | dice_cannon | Pressure hiss → lance blast | before `DAMAGE` |
@@ -198,6 +203,7 @@ at once, with no per-tile authoring.
 | Spite Coil | dice_cannon | Snarling zap | before `DAMAGE` |
 | Spotter Drone | — | Drone beep + lock | before `APPLY_STATUS` |
 | Static Bloom | — | Static wash | before `APPLY_STATUS` |
+| Suppression Pulse | tile_dropped | Deep pulse that ducks the mix | before `APPLY_STATUS` |
 | Surge Relay | reroll blip | Surge buzz | before `REROLL_ACTIVATOR` |
 | Swarm Battery | dice_cannon (every shot) | Small rapid pops, pitch escalating across the volley | before each `DAMAGE` |
 | Tactical Boomerang | dice_cannon | Throw "whirr" out and back | before `PUSH_TILE_IN_DIRECTION` |
@@ -246,6 +252,7 @@ at once, with no per-tile authoring.
 | Scrambled | Static warble | Glitch pitch-bend as a die flips |
 | Jammed | Clank / gears catching | Grinding stall as an action becomes nothing |
 | Exposed | Target-lock beep | Critical "shink" when cashed in |
+| Weakened | Power-down droop | Muffled, flattened impact on a weakened hit |
 
 The same statuses on the player use the same sounds. Jammed and Scrambled
 fire on a tile there (a jammed tile's refusal, a die flipping as it lands).
