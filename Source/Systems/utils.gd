@@ -62,6 +62,7 @@ static var deflector_array_image_path: String = "res://Assets/Textures/Tiles/Blu
 static var credits_image_path: String = "res://Assets/Textures/Money/money_symbol.png"
 static var right_controls_image_path: String = "res://Assets/Textures/Map/right_arrow_tile.png"
 static var left_controls_image_path: String = "res://Assets/Textures/Map/left_arrow_tile.png"
+static var engine_charger_image_path: String = "res://Assets/Textures/Tiles/PurpleTiles/engine_charger.png"
 
 
 ## Icon heights as a fraction of the surrounding font size, so an icon reads
@@ -97,6 +98,7 @@ static var _inline_icons: Dictionary = {
 	'(credits)': [credits_image_path, _SMALL_ICON_HEIGHT_EM],
 	'(right_controls)': [right_controls_image_path, _TILE_ICON_HEIGHT_EM],
 	'(left_controls)': [left_controls_image_path, _TILE_ICON_HEIGHT_EM],
+	'(engine_charger)': [engine_charger_image_path, _TILE_ICON_HEIGHT_EM],
 }
 
 

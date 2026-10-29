@@ -7,7 +7,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "The [color=purple]targeting computer[/color] shows what each die value does.(delay=0.3) Blank values are [color=yellow]wasted[/color]."
+tutorial_text = "Under each die value, the [color=purple]targeting computer[/color] shows what the raider does with it.(delay=0.3) Empty values do [color=yellow]nothing[/color]."
 text_position = Vector2(100, 65)
 close_on_signal = 1
 highlight_texture = ExtResource("highlight")

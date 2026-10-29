@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "With the fight over, your [color=purple]engines[/color] are charged.(delay=0.3) [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) the [wave amp=4.0 freq=5.0 connected=1][color=purple]MAP[/color][/wave] tab:"
+tutorial_text = "Fight won: your [color=purple]engines[/color] are charged.(delay=0.3) Mid-fight, dice on the (engine_charger) charge them, to flee.(delay=0.3) [wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) the [wave amp=4.0 freq=5.0 connected=1][color=purple]MAP[/color][/wave] tab:"
 time_delay = 1.0
 close_on_signal = 10
 highlight_texture = ExtResource("highlight")
