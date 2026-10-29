@@ -73,6 +73,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP, label = "Target Bound Hostile Ship", handler = TargetBoundShipHandler},
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_RANDOM_LOCKABLE_TILE, label = "Target Random Lockable Tile", handler = TargetRandomLockableTileHandler},
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_MIRRORED_TILE, label = "Target Mirrored Tile", handler = TargetMirroredTileHandler},
+	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_OTHER_COUNTDOWN_TILES, label = "Target Other Countdown Tiles", handler = TargetOtherCountdownTilesHandler},
 
 	# ── ATTRIBUTE_CHANGE ──────────────────────────────────────────
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.DAMAGE, label = "Damage", handler = DealDamageHandler},
@@ -172,6 +173,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.PASS_DIE_TO_TILE, label = "Pass Die to Tile", handler = PassDieToTileHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER, label = "Add Death Save Modifier", handler = AddDeathSaveModifierHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.FEED_HOLOGRAM, label = "Feed Hologram", handler = FeedHologramHandler},
+	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.COUNT_DOWN, label = "Count Down", handler = CountDownHandler},
 
 	# ── SCENARIO_CONTROL ──────────────────────────────────────────
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.OPEN_SHOP, label = "Open Shop", handler = OpenShopHandler},

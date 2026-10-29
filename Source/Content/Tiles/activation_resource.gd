@@ -27,6 +27,9 @@ enum ActivationType {
 	## more. For a tile whose payoff is a count it builds up (Slingshot's ring
 	## steps): it refuses a die rather than fire for nothing.
 	TILE_DATA_AT_LEAST,
+	## Another countdown tile (TileResource.countdown) is on the grid. For a
+	## tile that works the other countdowns: with none it would eat the die.
+	OTHER_COUNTDOWN_ON_GRID,
 }
 
 @export var type: ActivationType
@@ -193,6 +196,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.TILE_DATA_AT_LEAST:
 		"ERROR_NOT_READY",
+
+	ActivationType.OTHER_COUNTDOWN_ON_GRID:
+		"ERROR_NO_COUNTDOWNS",
 }
 
 
@@ -200,6 +206,8 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 func criteria_satisfied(die: Dice, tile: Tile = null) -> bool:
 	if type == ActivationType.TILE_DATA_AT_LEAST:
 		return tile != null and int(tile.effect_data.get(data_key, 0)) >= threshold
+	if type == ActivationType.OTHER_COUNTDOWN_ON_GRID:
+		return not TileCountdown.others_on_grid(tile).is_empty()
 	return activation_functions[type].call(die)
 	
 

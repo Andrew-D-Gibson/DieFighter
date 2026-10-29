@@ -23,6 +23,8 @@ var _last_trigger_callout_msec: int = -_TRIGGER_CALLOUT_COOLDOWN_MSEC
 ## Set once this tile has caught a killing blow (see _on_player_fatal_damage).
 var _death_save_spent: bool = false
 var _use_lights: TileUseLights = TileUseLights.new(self)
+## The count of a countdown tile (TileResource.countdown), and its readout.
+var _countdown: TileCountdown = TileCountdown.new(self)
 ## True while a new resource is being put on, when the lights are just set
 ## rather than played.
 var _setting_up: bool = false
@@ -101,6 +103,9 @@ func _ready() -> void:
 	# Hand it back before the enemies act, and before a jump frees every die.
 	Events.player_turn_over.connect(release_held_dice)
 	Events.combat_finished.connect(release_held_dice)
+	# A countdown lasts from turn to turn, but every fight starts it afresh.
+	Events.start_combat.connect(_countdown.reset)
+	Events.combat_finished.connect(_countdown.reset)
 	_connect_tile_event_signals()
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
@@ -182,6 +187,7 @@ func _set_up_resource() -> void:
 	_setting_up = true
 	uses_remaining = max_uses_per_turn()
 	_setting_up = false
+	_countdown.refresh()
 	update_dragging_allowed()
 	TileUpgradeLook.apply(sprite_frames, tile_resource)
 
@@ -258,6 +264,9 @@ func _get_tile_info() -> InfoResource:
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
 	info.bottom_label_text = fill_data_tokens(tile_resource.description, effect_data)
+	if is_countdown():
+		info.bottom_label_text += "\n\n" + tr("INFO_TILE_COUNTDOWN").format(
+			{"left": countdown_remaining()})
 	if _copy_to_merge_with():
 		info.bottom_label_text += "\n\n%s\n%s" % [
 			tr("INFO_TILE_UPGRADE"), tile_resource.upgraded_version.description
@@ -372,6 +381,23 @@ func is_locked_out() -> bool:
 ## locked already. Random lockouts pick only from these.
 func accepts_lockout() -> bool:
 	return can_be_locked_out() and not is_locked_out()
+
+
+## Whether this is a countdown tile (see TileCountdown).
+func is_countdown() -> bool:
+	return _countdown.is_countdown()
+
+
+## What's left of this tile's countdown before it fires; 0 if it has none.
+func countdown_remaining() -> int:
+	return _countdown.remaining()
+
+
+## Takes [param amount] off this tile's countdown and returns how many times
+## it ran out (extra counts carry over). Only the count: CountDownEvent fires
+## the payout.
+func count_down(amount: int) -> int:
+	return _countdown.count_down(amount)
 
 
 func reset_uses_remaining() -> void:

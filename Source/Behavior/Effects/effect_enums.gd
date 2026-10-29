@@ -71,6 +71,9 @@ enum TargetingSubtype {
 	## matching cell across the hull gap. Nothing in a centre column, which
 	## mirrors onto itself. The "Feed across" relays use it.
 	TARGET_MIRRORED_TILE,
+	## Every countdown tile on the grid (TileResource.countdown) other than
+	## the source. The Fuse Cutter counts them all down at once.
+	TARGET_OTHER_COUNTDOWN_TILES,
 }
 
 
@@ -253,6 +256,10 @@ enum TileControlSubtype {
 	## Feed it to the first target, exactly as PASS_DIE_TO_TILE would pass a
 	## real one.
 	FEED_HOLOGRAM,
+	## Count down every countdown tile among the targets by running_amount.
+	## Each one that reaches 0 fires its ON_COUNTDOWN_ZERO response and starts
+	## again, with any extra counts carried over. See TileCountdown.
+	COUNT_DOWN,
 }
 
 
