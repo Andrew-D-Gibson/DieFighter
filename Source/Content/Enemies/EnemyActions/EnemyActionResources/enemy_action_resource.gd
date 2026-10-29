@@ -274,6 +274,17 @@ func _compute_binding() -> Binding:
 	return Binding.NONE
 
 
+## Whether this action moves the acting ship's own statuses onto someone
+## (Purge Vents). With nothing on the ship it would do nothing, so the
+## selector never rolls it for a ship that has no status to give.
+func vents_own_statuses() -> bool:
+	if not _derived.has(&"vents_statuses"):
+		_derived[&"vents_statuses"] = int(_has_step(
+			EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES
+		))
+	return bool(_derived[&"vents_statuses"])
+
+
 func get_relay() -> Relay:
 	if not _derived.has(&"relay"):
 		_derived[&"relay"] = _compute_relay()

@@ -378,3 +378,44 @@ func test_the_siege_mortar_only_fires_siege_shot_from_a_loaded_die() -> void:
 	var loaded := EnemyActionSelector.roll(mortar.action_options[1], _keeping([3]), [], mortar.face_bias)
 	assert_eq(_names(loaded).count("Siege Shot"), 1)
 	assert_eq(loaded[2].name, "Siege Shot")
+
+
+# ── Venting statuses: only a ship with a status to give rolls it ────────────
+
+const PURGE_VENTS := "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres"
+const DEFENDER := "res://Source/Content/Enemies/EnemyResources/defender.tres"
+
+
+func _with_statuses(ids: Array[StringName]) -> EnemyActionSituation:
+	var situation := _situation(true)
+	situation.statuses = ids
+	return situation
+
+
+func test_purge_vents_is_read_as_venting_its_statuses() -> void:
+	assert_true((load(PURGE_VENTS) as EnemyActionResource).vents_own_statuses())
+	assert_false(_action("Attack", [Effects.die_value(), Effects.damage()]).vents_own_statuses())
+
+
+func test_a_vent_is_never_rolled_for_a_ship_with_no_status() -> void:
+	# No authored condition: the gate is read off the chain, so a new vent
+	# can't forget it.
+	var pool := _pool([_option(_action("Wait"), 1.0), _option(load(PURGE_VENTS), 5.0, true)])
+	for i: int in range(50):
+		assert_does_not_have(_names(EnemyActionSelector.roll(pool, _with_statuses([]))), "Purge Vents")
+
+
+func test_a_vent_is_rolled_once_the_ship_has_a_status() -> void:
+	var pool := _pool([_option(_action("Wait"), 1.0), _option(load(PURGE_VENTS), 5.0, true)])
+	assert_has(_names(EnemyActionSelector.roll(pool, _with_statuses([&"burn"]))), "Purge Vents")
+
+
+func test_the_defender_only_vents_when_it_has_something_to_vent() -> void:
+	var defender: EnemyResource = load(DEFENDER)
+	var vented_with_status: bool = false
+	for pool: EnemyTurnActionList in defender.action_options:
+		for i: int in range(50):
+			assert_does_not_have(_names(EnemyActionSelector.roll(pool, _with_statuses([]))), "Purge Vents")
+			if "Purge Vents" in _names(EnemyActionSelector.roll(pool, _with_statuses([&"jammed"]))):
+				vented_with_status = true
+	assert_true(vented_with_status, "a defender with a status vents now and then")

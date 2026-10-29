@@ -276,7 +276,9 @@ value before its STREAM.
     `ALLY_EXISTS`, `HOSTILE_SHIP_EXISTS`, `ALLY_HURT`, `SELF_HURT` (with
     `hull_fraction`), `ATTITUDE_IS`, `ALLIES_AT_MOST` (with `count`; gate a
     launcher on it so it can't fill the board), `SELF_HAS_STATUS` (with an
-    optional `status_id`; gates Purge Vents), plus `invert`.
+    optional `status_id`), plus `invert`. An action that vents its own
+    statuses (`TRANSFER_STATUSES`, Purge Vents) is only rolled while the
+    ship has one, read off the chain; nothing to set.
   - `situational_weights`: `EnemyActionWeightRule` = a condition and a
     multiplier.
   - `strength_tier_override`: how strong the action counts as for

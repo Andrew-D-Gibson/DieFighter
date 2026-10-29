@@ -151,6 +151,10 @@ static func _passes_gates(option: EnemyActionOptionResource, situation: EnemyAct
 		EnemyActionResource.Binding.HOSTILE_SHIP:
 			if situation.hostile_ships.is_empty():
 				return false
+	# A vent with nothing to vent would only ever pop a "?", so it's read off
+	# the chain rather than left to each author to gate.
+	if action.vents_own_statuses() and not situation.has_status():
+		return false
 	return option.conditions_met(situation)
 
 
