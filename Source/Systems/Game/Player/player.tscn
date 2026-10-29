@@ -10,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://d32kfgfc7nejp" path="res://Assets/Textures/UI/Buttons/button_small_blue_longer.png" id="6_0xxso"]
 [ext_resource type="Texture2D" uid="uid://o3hohympgf3q" path="res://Assets/Textures/UI/Buttons/button_small_blue_longer_disabled.png" id="7_vc188"]
 [ext_resource type="Script" uid="uid://dm50m071qu6kk" path="res://Source/Behavior/Modifiers/Statuses/StatusBadge/status_bar.gd" id="8_status"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/Player/EndTurnConfirm/end_turn_confirm.tscn" id="9_confirm"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0xxso"]
 resource_local_to_scene = true
@@ -84,6 +85,9 @@ position = Vector2(-35, -15)
 script = ExtResource("8_status")
 per_row = 2
 
-[connection signal="pressed_within_window" from="DiceQueue/EndTurnButton" to="." method="end_turn"]
+[node name="EndTurnConfirm" parent="." unique_id=1730214902 instance=ExtResource("9_confirm")]
+unique_name_in_owner = true
+
+[connection signal="pressed_within_window" from="DiceQueue/EndTurnButton" to="." method="request_end_turn"]
 
 [editable path="DiceQueue/EndTurnButton"]

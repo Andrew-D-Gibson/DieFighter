@@ -68,6 +68,8 @@ func _build_pages() -> void:
 	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
 	# Comfort: background behaviour.
 	game.check(OptionsSettings.PAUSE_IN_BACKGROUND, "OPT_PAUSE_IN_BACKGROUND", "OPT_PAUSE_IN_BACKGROUND_HINT")
+	# Dice input: asking before a turn ends with dice unplayed.
+	game.check(OptionsSettings.CONFIRM_END_TURN, "OPT_CONFIRM_END_TURN", "OPT_CONFIRM_END_TURN_HINT")
 
 	var graphics: OptionsPage = _pages[Tab.GRAPHICS]
 	graphics.check(OptionsSettings.FULLSCREEN, "OPT_FULLSCREEN")
@@ -110,6 +112,10 @@ func _build_pages() -> void:
 		"OPT_CURSOR_SPEED_HINT", OptionsSettings.CURSOR_SPEEDS.x, OptionsSettings.CURSOR_SPEEDS.y, 0.1)
 	# Narrower than on the one-column Audio tab, to fit beside its label.
 	cursor_speed.custom_minimum_size.x = OptionsPage.WIDGET_WIDTH
+	# Dice input: how dice and tiles are picked up and put down.
+	controls.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
+		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
+		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
 
 	var accessibility: OptionsPage = _pages[Tab.ACCESSIBILITY]
 	# Comfort: screenshake, flashing and hit pause.

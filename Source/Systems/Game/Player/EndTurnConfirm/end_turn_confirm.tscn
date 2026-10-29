@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Game/Player/EndTurnConfirm/end_turn_confirm.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/ConfirmDialog/confirm_dialog.tscn" id="2_dialog"]
+
+[node name="EndTurnConfirm" type="CanvasLayer"]
+layer = 90
+follow_viewport_enabled = true
+script = ExtResource("1_script")
+
+[node name="ConfirmDialog" parent="." instance=ExtResource("2_dialog")]
+position = Vector2(160, 90)

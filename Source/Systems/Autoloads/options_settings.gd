@@ -49,6 +49,8 @@ const REDUCE_FLASHING: StringName = &"Accessibility/reduce_flashing"
 const HIT_PAUSE: StringName = &"Accessibility/hit_pause"
 const MUTE_IN_BACKGROUND: StringName = &"Audio/mute_in_background"
 const PAUSE_IN_BACKGROUND: StringName = &"Game/pause_in_background"
+const DICE_PLACEMENT: StringName = &"Controls/dice_placement"
+const CONFIRM_END_TURN: StringName = &"Game/confirm_end_turn"
 const CURSOR_SPEED: StringName = &"Controls/cursor_speed"
 ## The Cursor Speed slider's range, as a multiplier on the controller
 ## pointer's speed.
@@ -158,6 +160,7 @@ func _register_options() -> void:
 
 	_register_comfort_options()
 	_register_controls_options()
+	_register_dice_input_options()
 
 
 ## Screenshake, flashing, hit pause, and what happens in the background.
@@ -202,6 +205,20 @@ func _register_controls_options() -> void:
 		func() -> float: return InputManager.cursor.speed_scale,
 		func(value: Variant) -> void:
 			InputManager.cursor.speed_scale = clampf(float(value), CURSOR_SPEEDS.x, CURSOR_SPEEDS.y))
+
+
+## Dice placement and the End Turn check. Both live values are statics on
+## the classes that read them, so they're set before any die or player exists.
+func _register_dice_input_options() -> void:
+	register(DICE_PLACEMENT, Draggable.PlacementMode.DRAG,
+		func() -> int: return Draggable.placement_mode,
+		func(value: Variant) -> void:
+			var mode: int = int(value)
+			Draggable.placement_mode = mode as Draggable.PlacementMode \
+				if Draggable.PlacementMode.values().has(mode) else Draggable.PlacementMode.DRAG)
+	register(CONFIRM_END_TURN, true,
+		func() -> bool: return EndTurnConfirm.enabled,
+		func(value: Variant) -> void: EndTurnConfirm.enabled = bool(value))
 
 
 func _register_window_options() -> void:

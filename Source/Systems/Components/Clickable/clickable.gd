@@ -39,8 +39,16 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 			click_down_location = get_global_mouse_position()
 			
 		elif click_time_remaining > 0 \
-		and click_down_location.distance_to(get_global_mouse_position()) <= click_movement_radius:
+		and click_down_location.distance_to(get_global_mouse_position()) <= click_movement_radius \
+		and not _lifted_by_click():
 			clicked.emit()
+
+
+## Whether this click just picked the owner up (click placement): a lift, not
+## a request for info. Draggable shows the info for a second click in place.
+func _lifted_by_click() -> bool:
+	var draggable: Draggable = get_parent().get("draggable") as Draggable
+	return draggable != null and draggable.is_carried()
 
 
 func _on_mouse_entered() -> void:

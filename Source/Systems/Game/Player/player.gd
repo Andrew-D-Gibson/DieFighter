@@ -836,6 +836,19 @@ func can_end_turn() -> bool:
 	return not %EndTurnButton.disabled
 
 
+## The player's own End Turn press, from the button or its key. With dice
+## left that a tile would take, it asks first (the Game/confirm_end_turn
+## option). Code ending the turn for its own reasons (the AutoPilot, the
+## tutorial) calls end_turn() and is never asked.
+func request_end_turn() -> void:
+	if not can_end_turn():
+		return
+	# Checked again on confirming: the turn may have moved on while asking.
+	%EndTurnConfirm.request(self, func() -> void:
+		if can_end_turn():
+			end_turn())
+
+
 func end_turn() -> void:
 	_between_turns = true
 	_turn_generation_at_end = _turn_generation
