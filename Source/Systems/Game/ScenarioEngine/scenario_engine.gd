@@ -238,6 +238,7 @@ func process_event_queue() -> void:
 				"Dropping %d queued events to keep the game responsive." % event_queue.size()
 			)
 			event_queue.clear()
+			_chain_starts.clear()
 			break
 
 		_inject_index = 0
