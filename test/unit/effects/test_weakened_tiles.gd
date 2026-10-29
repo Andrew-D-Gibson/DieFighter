@@ -124,3 +124,30 @@ func test_dampener_takes_any_die_but_needs_a_target() -> void:
 
 func test_dampener_plus_applies_three() -> void:
 	assert_eq(_weakens(await _play("dampener_plus", 2))[0].amount, 3)
+
+
+# ── Concussion Round ──────────────────────────────────────────────────────────
+
+func test_concussion_round_hits_then_weakens_the_target() -> void:
+	var events: Array[EffectEvent] = await _play("concussion_round", 3)
+	var hits: Array[EffectEvent] = _of(events, DamageEvent)
+	assert_eq(hits.size(), 1)
+	assert_eq(hits[0].amount, 4, "a flat 4, whichever face")
+	assert_eq(hits[0].targets, [enemy] as Array[Node])
+	var weakens: Array[ApplyStatusEvent] = _weakens(events)
+	assert_eq(weakens.size(), 1)
+	assert_eq(weakens[0].amount, 1)
+	assert_eq(weakens[0].targets, [enemy] as Array[Node])
+	assert_lt(events.find(hits[0]), events.find(weakens[0]), "the hit lands first")
+	assert_eq(_of(events, GiveDieToTargetEvent)[0].targets, [enemy] as Array[Node])
+
+
+func test_concussion_round_takes_only_threes_and_fours() -> void:
+	for face: int in range(1, 7):
+		assert_eq(_takes("concussion_round", face), face == 3 or face == 4, "a %d" % face)
+
+
+func test_concussion_round_plus_hits_for_six() -> void:
+	var events: Array[EffectEvent] = await _play("concussion_round_plus", 4)
+	assert_eq(_of(events, DamageEvent)[0].amount, 6)
+	assert_eq(_weakens(events)[0].amount, 1)
