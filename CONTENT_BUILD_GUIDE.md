@@ -180,6 +180,29 @@ dropping a second copy of the tile on the first.
 - `test_tile_upgrades.gd` checks each upgrade is marked, held out of offers,
   named apart, and has one frame per light.
 
+**Countdown tiles** (`(countdown) N`, Pulse Repeater is the reference) save
+up dice for a payout. Set `countdown` = N on the resource. Dice count it
+down by their value; each time it reaches 0 it fires and starts again from
+N, extra counts carried over (one count can fire it twice). The count lasts
+between turns and starts full every fight (`TileCountdown`, kept in
+`effect_data["countdown"]` as what's left).
+- `effect_chain`: `TARGET_EFFECT_SOURCE`, `SET_TO_DIE_VALUE`,
+  `COUNT_DOWN`, then the usual `TARGET_WITH_TARGETING_COMPUTER`,
+  `GIVE_DIE_TO_TARGET`. Checks: `REQUIRES_ACTIVATOR_DIE`, `IN_COMBAT`
+  (the count only means something in a fight), `SHIP_TARGETED`.
+- The payout is an `ON_COUNTDOWN_ZERO` event response. It resolves straight
+  after the count, before the die is handed on. No die rides with it, so
+  fire a LASER or MISSILE, never ATTACK_TWEEN.
+- Anything can count a tile down: `COUNT_DOWN` acts on every countdown tile
+  in `targets` (Fuse Cutter uses `TARGET_OTHER_COUNTDOWN_TILES` and gates
+  on `OTHER_COUNTDOWN_ON_GRID`). A tile that activates twice counts twice.
+- Art: no die slot. Leave a 9×7 readout window at (6, 15) in the panel's
+  darkest shade; `CountdownReadout` draws what's left there in lit 3×5
+  digits (two at most, so N ≤ 99).
+- Text: `(countdown) 6. [color=yellow]Any die[/color] -> Count down by
+  die. At 0: Deal [color=red]7 damage[/color] to [color=purple]target[/color]`.
+  The info panel adds how much is left. Upgrade by lowering N.
+
 **Loop rule for Feed tiles:** a tile with unlimited uses may only Feed
 **right**. Feeding up, down, left or randomly needs limited uses, so every loop
 on the grid runs dry.
