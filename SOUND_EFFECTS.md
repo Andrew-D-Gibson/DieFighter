@@ -137,11 +137,13 @@ at once, with no per-tile authoring.
 | Broadside | dice_cannon | Rolling multi-gun volley, one report per die in hand | before `DAMAGE` |
 | Brownout Plating | — | Flickering power-down + shield hum | before `SHIELD` |
 | Bump | — | Little "tick-up" | before `CHANGE_ACTIVATOR_VALUE` |
+| Capacitor Bank | player_shield (payout) | Capacitor charge whine on each count, discharge thump at 0 | before `COUNT_DOWN`; payout `SHIELD` |
 | Chaff Pod | error | Chaff-pop burst | before `APPLY_STATUS` |
 | Chain Cannon | dice_cannon | Rapid chained shot (escalating pitch) | before `DAMAGE` |
 | Chaos Explosion | — | Massive slowed-down explosion | before `DAMAGE` |
 | Cinder Turbine | — | A turbine spinning up on the heat | before `CHANGE_ENGINE_CHARGE` |
 | Concussion Round | dice_cannon | Blunt thud + ringing shockwave | before `DAMAGE` |
+| Countdown Cannon | dice_cannon (payout) | Rising tick per count, a heavy cannon at 0 | before `COUNT_DOWN`; payout `DAMAGE` |
 | Countermeasures | — | Countermeasure flares popping, a whoosh across | before `TRANSFER_STATUSES` |
 | Counterweight Battery | player_shield | Pendulum clunk + shield | before `SHIELD` |
 | Crescendo Cannon | dice_cannon | Shot whose pitch climbs with the crescendo (escalation) | before `DAMAGE` |
@@ -153,17 +155,23 @@ at once, with no per-tile authoring.
 | Dice Cannon | dice_cannon | Keep (the baseline shot) | — |
 | Die Splitter | — | Cutter whine, then a hologram shimmer | before `SPLIT_ACTIVATOR` |
 | Doubler | — | Rising two-step chime | before `ADD_TO_ACTIVATOR_VALUE` |
+| Echo Relay | — | Reverb "ping" as the echo arms | before `ARM_ECHO` |
 | Emergency Shield | — | Klaxon → slowed shield slam → burn-out | before `HEAL`, `SHIELD`, `DESTROY_SOURCE` |
 | Emergency Transfer | — | Power-transfer whine | before `SHIELD` |
+| Fabricator | — | Fabrication hum, then a hologram shimmer at 0 | payout `SPAWN_HOLOGRAPHIC_DIE` |
 | Feedback Cowl | dice_cannon | Feedback screech | before `DAMAGE` |
 | Filter Gate | dice_cannon | Gate open (pass) / gate slam (filtered) | branch starts |
 | Flak Cannon | dice_cannon | Shrapnel spray, more pops per neighbour | before `DAMAGE` |
 | Flare Burst | tile_dropped | Flare ignition whoosh | before `APPLY_STATUS` |
 | Flashpoint | dice_cannon | Ignition "fwoomp" | before `DAMAGE` |
+| Fume Vent | — | Hissing vent at turn start | before `APPLY_STATUS` |
+| Fuse Cutter | — | Fuse fizz running across the grid | before `COUNT_DOWN` |
+| Fuse Payload | — | Fuse burn-down, then an incendiary pop | payout `APPLY_STATUS` |
 | Governor Coil | — | Governor whirr winding down | before `CHANGE_ENGINE_CHARGE` |
 | Grounding Rod | dice_cannon | Lightning strike + ground thunk | before `DAMAGE`; before `CHANGE_ACTIVATOR_VALUE` |
 | Grudge Cannon | dice_cannon | Angry heavy shot on a grudge, normal otherwise | grudge branch |
 | Heat Sink | player_shield | Hiss of heat being drawn off | before `TARGET_PLAYER` |
+| Hex Coil | — | Crackle on each hit | before `DAMAGE` |
 | Holo-Duplicator | — | Holographic copy shimmer ×2 | before `SPAWN_HOLOGRAPHIC_DIE` |
 | Incendiary Round | dice_cannon | Incendiary whoosh + crackle | before `APPLY_STATUS` |
 | Inertial Feedback | dice_cannon | Rolling rumble release | before `DAMAGE` |
@@ -172,17 +180,22 @@ at once, with no per-tile authoring.
 | Leech Relay | dice_cannon | Suction slurp ×2 | before each `ADD_USES_REMAINING` |
 | Leeching Shot | dice_cannon | Shot + drain slurp | before `TARGET_PLAYER` |
 | Lone Wolf Lance | dice_cannon | Thin lance; a howl or overdriven crack on the tripled shot | before `DAMAGE`; in the Fleet branch |
+| Lucky Seven | dice_cannon | Slot-machine "ding" on a 7 | before `DAMAGE` |
 | Napalm Vent | — | Vent hiss + flame | before `APPLY_STATUS` |
 | Nudge Down | — | Little "tick-down" (Bump reversed) | before `ADD_TO_ACTIVATOR_VALUE` |
+| Opening Salvo | — | Brass "ready" chime at turn start | before `ARM_ECHO` |
 | Overclock Coil | dice_cannon | Coil whine rising with each use | chain start |
 | Overdraw Coil | dice_cannon | Huge drain → discharge | before `DAMAGE` |
 | Overpressure Lance | dice_cannon | Pressure hiss → lance blast | before `DAMAGE` |
+| Pair Lock | dice_cannon | Lock "clunk" as the pair matches | before `DAMAGE` |
 | Parity Junction | dice_cannon | Switch click (two pitches for odd/even) | each branch |
 | Phantom Squadron | — | Ghostly shimmer per hologram | before each `SPAWN_HOLOGRAPHIC_DIE` |
 | Pilot Light | — | Pilot flame "fwump" | before `FEED_HOLOGRAM` |
 | Polarizer | reroll blip | Magnetic snap | before `CHANGE_ACTIVATOR_VALUE` |
 | Preflight Interlock | dice_cannon | Checklist beeps → triple shot | before `DAMAGE` |
+| Pulse Repeater | dice_cannon (payout) | Soft tick per count, a pulse shot at 0 | before `COUNT_DOWN`; payout `DAMAGE` |
 | Ram Scoop | — | Intake whoosh | before `CHANGE_ENGINE_CHARGE` |
+| Ratchet Cannon | dice_cannon | Ratchet click that tightens each use | before `DAMAGE` |
 | Re-Roll | — | Dice rattle | before `REROLL_ACTIVATOR` |
 | Receiver Dish | dice_cannon | Signal-received chirp when Fed | Fed branch |
 | Redline Governor | — | Redline engine scream | before `ADD_OVERCHARGE` |
@@ -203,16 +216,20 @@ at once, with no per-tile authoring.
 | Spite Coil | dice_cannon | Snarling zap | before `DAMAGE` |
 | Spotter Drone | — | Drone beep + lock | before `APPLY_STATUS` |
 | Static Bloom | — | Static wash | before `APPLY_STATUS` |
+| Status Catalyst | tractor_lock | Fizzing, bubbling reaction | before `MULTIPLY_STATUSES` |
 | Suppression Pulse | tile_dropped | Deep pulse that ducks the mix | before `APPLY_STATUS` |
 | Surge Relay | reroll blip | Surge buzz | before `REROLL_ACTIVATOR` |
 | Swarm Battery | dice_cannon (every shot) | Small rapid pops, pitch escalating across the volley | before each `DAMAGE` |
+| Sweeping Battery | dice_cannon | Wide sweeping beam | before `DAMAGE` |
 | Tactical Boomerang | dice_cannon | Throw "whirr" out and back | before `PUSH_TILE_IN_DIRECTION` |
 | Target Painter | tile_dropped | Laser-paint hum | before `APPLY_STATUS` |
 | Toll Relay | — | Coin-toll ding | chain start |
 | Turncoat Cannon | dice_cannon | Betrayal sting on the scrambled hit | turncoat branch |
+| Twin Barrel | dice_cannon | Double-barrel blast; a "hold" clack on the first die | before `DAMAGE`; hold step |
 | Unstable Shield Array | player_shield | Shield hum that wobbles more each use | before `SHIELD` |
 | Value Exchange | — | Swap "shwip" | before `FLIP_ONES_AND_SIXES` |
 | Value Sorter | dice_cannon | Sorting click, three pitches | each branch |
+| War Footing | — | Rank-up chime as the bonus builds | turn-start response |
 | Welder | reroll blip | Arc-weld sizzle | before `MERGE_HELD_DIE` |
 
 ## Enemy actions

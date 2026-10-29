@@ -4,6 +4,57 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Twin dice, ramp and status payoffs
+
+Seven more tiles from the gap analysis (G09a-c, G05, G06, G11, G18).
+
+**Twin dice.** A tile can now hold its first die and pay out on the second:
+`TileResource.holds_first_die`. `Tile` tracks the held die explicitly
+(`hold_die` / `get_held_die`), which also fixes a latent Welder bug (a die
+dropped but not yet activated counted as held). The hold spends no use, so a
+1-use tile spends it on the payout; turn end, combat end and a jump send the
+held die home, so a hold can't be banked. New: `ADD_HELD_DIE_VALUE`,
+`GIVE_HELD_DIE_TO_TARGET`, activation checks `MATCHES_HELD_DIE` and
+`SUMS_WITH_HELD_DIE` (a refused second die goes back to the hand).
+
+| Tile | Rarity | Uses | Does | Upgrade |
+|---|---|---|---|---|
+| Twin Barrel | Common | ∞ | Hold a die; next die: damage = both +3, give both | +6 |
+| Pair Lock | Uncommon | 1 | Hold; a matching die: 4x one die, give both | 5x |
+| Lucky Seven | Uncommon | 1 | Hold; a die summing to 7: 14 damage, give the held die, return the other | 20 |
+
+Pair Lock pays 4x, not the sheet's 3x: at 3x it only beat Twin Barrel on 4s
+or higher. Lucky Seven gives away the held die and returns the other, so
+which die you hold decides what the enemy gets.
+
+**Ramp and status payoffs.** New TileEvents `ON_COMBAT_START` (10) and
+`ON_STATUS_APPLIED_TO_ENEMY` (11); a response about a ship starts with that
+ship as its target. New `MULTIPLY_STATUSES`, `ADD_FAMILY_BOOST`
+(`FamilyBoostModifier`: combat-long +N per hit for a colour family) and
+activation `TARGETED_SHIP_HAS_STATUS`.
+
+| Tile | Colour, rarity | Does | Upgrade |
+|---|---|---|---|
+| Ratchet Cannon | Red, Uncommon, takes 4 | 3 damage, +2 per earlier use this fight | +3 per use |
+| War Footing | Yellow, Rare, passive | Turn start: Red tiles +1 damage a hit for the fight (max 5); each hull hit takes 1 off | +2 a turn, max 6 |
+| Status Catalyst | Yellow, Rare, 1 use, takes 6 | Double every status on target; refuses a target with none | takes 5 or 6 |
+| Hex Coil | Red, Uncommon, passive | 2 damage to an enemy whenever you put a status on it | 3 |
+
+Hex Coil ignores statuses you put on yourself and ones enemies apply, and its
+own hit applies nothing, so it can't loop.
+
+**Known edge.** Ratchet Cannon's text shows the last fight's bonus in the
+shop until the next fight starts. TractorBeam throws engine errors if a die
+is freed before its beam lands (seen only in tests).
+
+**Tested.** GUT 1331/1331 after both merges. Live (Wolfpack): Twin Barrel
+held a 4 and hit for 13 with a 6; Lucky Seven held a 2, refused a 4, and a 5
+dealt 14 and came home; Ratchet Cannon hit 3, 5, 7; Status Catalyst took 3
+Burn to 6 and set off Hex Coil; at the next turn start Fume Vent's Burn set
+off Hex Coil for 3 (2 + War Footing's 1).
+
+---
+
 ## 2026-10-29 — Countdown tiles
 
 The gap analysis's biggest family (G02a-f): Dicey Dungeons' countdown
