@@ -130,3 +130,31 @@ func test_tiles_already_owned_are_still_offered() -> void:
 	assert_has(rewards.get_possible_tile_rewards(), DAMAGE)
 	for offered: TileResource in rewards.get_possible_tile_rewards():
 		assert_false(offered.is_upgrade, "%s: upgrades come only from merging" % offered.tile_name)
+
+
+func _previews_upgrade(tile: Tile) -> bool:
+	return tile._get_tile_info().bottom_label_text.contains(DAMAGE.upgraded_version.description)
+
+
+func test_a_lone_tile_doesnt_preview_its_upgrade() -> void:
+	assert_false(_previews_upgrade(_on_grid(DAMAGE, Vector2i(1, 1))))
+
+
+func test_a_copy_on_offer_previews_the_upgrade_on_both() -> void:
+	var twin: Tile = _on_grid(DAMAGE, Vector2i(1, 1))
+	var copy: Tile = _on_offer(DAMAGE)
+	assert_true(_previews_upgrade(twin))
+	assert_true(_previews_upgrade(copy))
+	copy.free()
+	assert_false(_previews_upgrade(twin), "gone once the copy is")
+
+
+func test_two_copies_on_the_grid_preview_it_only_out_of_a_fight() -> void:
+	var first: Tile = _on_grid(DAMAGE, Vector2i(1, 1))
+	_on_grid(DAMAGE, Vector2i(3, 1))
+	assert_true(_previews_upgrade(first))
+	var manager: GameStateManager = autofree(GameStateManager.new())
+	manager.state = GameStateManager.GameState.IN_COMBAT
+	Globals.state_manager = manager
+	assert_false(_previews_upgrade(first), "the grid is locked mid-fight")
+	Globals.state_manager = null

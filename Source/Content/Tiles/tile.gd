@@ -204,6 +204,27 @@ func upgrade() -> void:
 	Events.tile_upgraded.emit(self)
 
 
+## Another copy of this tile that would merge with it right now, if any: one
+## on offer (salvage, a shop) to drop on a twin on the grid, or, while the
+## grid can be rearranged, a second copy on it. The info panel previews the
+## upgrade only then, when it's a choice the player actually has.
+func _copy_to_merge_with() -> Tile:
+	if tile_resource.upgraded_version == null or not is_inside_tree():
+		return null
+	var mine_on_grid: bool = not on_offer and get_parent() is TileGrid
+	for node: Node in get_tree().get_nodes_in_group(&"Tile"):
+		var other: Tile = node as Tile
+		if other == null or other == self or other.is_queued_for_deletion() \
+		or not other.is_visible_in_tree() or not other.can_merge(tile_resource):
+			continue
+		var other_on_grid: bool = not other.on_offer and other.get_parent() is TileGrid
+		if mine_on_grid and other_on_grid and not grid_locked():
+			return other
+		if mine_on_grid != other_on_grid and (on_offer or other.on_offer):
+			return other
+	return null
+
+
 ## The colour of [param resource]'s family, for effects that should match it.
 static func family_color(resource: TileResource) -> Color:
 	match ColorSymbolBadge.family_of_tile(resource):
@@ -293,9 +314,10 @@ func _get_tile_info() -> InfoResource:
 	info.top_label_text = tile_resource.activation_description
 	info.texture = tile_resource.textures.get_frame_texture('default', 0)
 	info.bottom_label_text = fill_data_tokens(tile_resource.description, effect_data)
-	var upgrade: TileResource = tile_resource.upgraded_version
-	if upgrade:
-		info.bottom_label_text += "\n\n%s\n%s" % [tr("INFO_TILE_UPGRADE"), upgrade.description]
+	if _copy_to_merge_with():
+		info.bottom_label_text += "\n\n%s\n%s" % [
+			tr("INFO_TILE_UPGRADE"), tile_resource.upgraded_version.description
+		]
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine:
 		for mod: Modifier in engine.modifiers:

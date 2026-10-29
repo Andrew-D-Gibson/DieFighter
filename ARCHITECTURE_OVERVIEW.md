@@ -987,7 +987,9 @@ un-upgraded twin merges into it (`TileGrid.receive_tile` for offers,
 `_drop_tile_on_grid_pos` for two copies on the grid): the copy goes and the
 twin calls `Tile.upgrade()`, which swaps its resource (uses refill,
 `effect_data` stays) and emits `Events.tile_upgraded`. It works on a full grid.
-Carrying a copy lights its twin, and a tile's info panel previews its upgrade.
+Carrying a copy lights its twin. A tile's info panel previews its upgrade
+only while a merge is on the table (`Tile._copy_to_merge_with()`: a copy on
+offer, or a second copy on the grid outside a fight).
 An upgraded tile sets `tile.gdshader`'s `upgraded` (bright bands chase round
 the shared 22x24 silhouette's border) and carries `UpgradeSparks` particles in
 its family colour.
