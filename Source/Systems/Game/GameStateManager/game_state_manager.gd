@@ -661,7 +661,7 @@ func _capture_scenario_progress() -> Dictionary:
 		"tile_uses": Globals.tile_grid.capture_tile_uses(),
 		"rng": RNGManager.capture_scenario_states(),
 	}
-	if is_instance_valid(Globals.shop) and Globals.shop.visible:
+	if is_instance_valid(Globals.shop) and Globals.shop.is_open():
 		progress["shop"] = Globals.shop.capture_stock()
 	if is_instance_valid(Globals.repair_station) and Globals.repair_station.visible:
 		progress["repair_station"] = Globals.repair_station.capture_state()

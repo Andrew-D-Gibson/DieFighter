@@ -119,7 +119,7 @@ static func list_legal() -> Array[AutoPilotMove]:
 	for choice: Node2D in _salvage_on_offer():
 		if _has_somewhere_to_go(choice):
 			moves.append(claim(choice))
-	if is_instance_valid(Globals.shop) and Globals.shop.is_visible_in_tree():
+	if is_instance_valid(Globals.shop) and Globals.shop.is_open():
 		for stock: Node in Globals.shop.item_to_shop_index:
 			var cost: int = Globals.shop.price_of(stock)
 			if cost >= 0 and cost <= Globals.player.money and _can_pick_up(stock as Node2D) \

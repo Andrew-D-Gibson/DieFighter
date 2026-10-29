@@ -336,7 +336,7 @@ func _count_salvage_offers() -> void:
 ## Writes what the shop has, and at what price, once per stop: with the
 ## salvage offers, what a tile taken was chosen over.
 func _write_shop_stock() -> void:
-	if _shop_written or not is_instance_valid(Globals.shop) or not Globals.shop.is_visible_in_tree() \
+	if _shop_written or not is_instance_valid(Globals.shop) or not Globals.shop.is_open() \
 	or Globals.shop.item_to_shop_index.is_empty():
 		return
 	_shop_written = true

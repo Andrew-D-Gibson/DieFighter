@@ -55,7 +55,17 @@ const _PANEL_OPEN_SFX: SoundEffectResource = preload("res://Source/Resources/Sou
 ## Escalates in pitch, so the stock rings up the shelves.
 const _STOCK_POP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/shop_stock_pop.tres")
 
+## --- Closing ---
+## The opening backwards, and quicker: the stock pops off its shelves last
+## first, the panel folds shut, and only then does the shopkeeper slide back
+## to centre (or into the fight it just started).
+
+const _STOCK_OUT_STAGGER: float = 0.05
+const _STOCK_OUT_TIME: float = 0.14
+const _PANEL_CLOSE_TIME: float = 0.18
+
 var _reveal_tween: Tween
+var _close_tween: Tween
 ## Stock held still and out of reach until it pops in, with what its
 ## Draggable allowed before: [dragging_allowed, floating_enabled].
 var _held_for_reveal: Dictionary[Node, Array] = {}
@@ -85,6 +95,7 @@ func _open_shop() -> void:
 	if Globals.state_manager:
 		saved_stock = Globals.state_manager.get_restore().get("shop")
 
+	_stop_closing()
 	_end_reveal()
 	_clear_stock()
 	if saved_stock is Dictionary:
@@ -99,11 +110,79 @@ func _open_shop() -> void:
 	_play_reveal()
 
 
+## Every ship leaving the scenario asks for this too, open shop or not.
 func _close_shop() -> void:
+	if is_closing():
+		return
 	_end_reveal()
+	if visible:
+		_play_close()
+	else:
+		_finish_closing()
+
+
+## Whether the shop is open for business: shown, and not on its way out.
+func is_open() -> bool:
+	return is_visible_in_tree() and not is_closing()
+
+
+func is_closing() -> bool:
+	return _close_tween != null and _close_tween.is_valid()
+
+
+## Plays the closing's three beats (see _STOCK_OUT_STAGGER). The stock stops
+## being for sale the moment it starts.
+func _play_close() -> void:
+	var stock: Array[Node2D] = _stock_in_shelf_order()
+	stock.reverse()
+	for item: Node2D in stock:
+		item.draggable.dragging_allowed = false
+
+	_close_tween = create_tween()
+	for item: Node2D in stock:
+		_close_tween.tween_callback(_pop_out.bind(item))
+		_close_tween.tween_interval(_STOCK_OUT_STAGGER)
+	_close_tween.tween_interval(_STOCK_OUT_TIME)
+	_close_tween.tween_callback(Events.play_sound.emit.bind(_PANEL_OPEN_SFX))
+	_close_tween.tween_property($RichTextLabel, "modulate:a", 0.0, _PANEL_CLOSE_TIME * 0.5)
+	_close_tween.tween_property($Background, "scale", Vector2(1.0, 0.0), _PANEL_CLOSE_TIME) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	_close_tween.parallel().tween_property($Background, "modulate:a", 0.0, _PANEL_CLOSE_TIME)
+	_close_tween.tween_callback(_finish_closing)
+
+
+## Pops [param stocked] and its price tag off the shelf: a swell, then gone.
+## Untyped, since a jump frees the die on offer partway through the closing,
+## and a freed node won't pass as a typed argument.
+func _pop_out(stocked: Variant) -> void:
+	if not is_instance_valid(stocked) or not item_to_shop_index.has(stocked):
+		return
+	var item: Node2D = stocked
+	var tag: Node2D = prices[item_to_shop_index[item]]
+	for node: Node2D in [item, tag]:
+		var tween: Tween = (node as Dice).create_flourish_tween() if node is Dice else node.create_tween()
+		tween.tween_property(node, "scale", Vector2.ONE * 1.2, _STOCK_OUT_TIME * 0.35) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		tween.tween_property(node, "scale", Vector2.ZERO, _STOCK_OUT_TIME * 0.65) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	Juice.sparkle(self, item.global_position, _STOCK_SPARKLE_COLOR, 4, 14.0)
+
+
+## The shop shut: hidden, put back to its resting look for next time, and
+## the formation's gap handed back.
+func _finish_closing() -> void:
+	_close_tween = null
 	hide()
+	_end_reveal()
 	if Globals.enemy_manager:
 		Globals.enemy_manager.clear_formation_space(_FORMATION_KEY)
+
+
+## Cuts a closing short, for a shop opening again before it finished.
+func _stop_closing() -> void:
+	if _close_tween:
+		_close_tween.kill()
+		_close_tween = null
 
 
 ## Hides the panel and the stock, then shows them again in the opening's
@@ -430,9 +509,9 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 	
 	if not bounding_box.shape.get_rect().has_point(local_end_position):
 		var item: Node = draggable.get_parent()
-		# A drag that outlives its shelf (the shop restocked mid-drag) sells
-		# nothing.
-		if not _item_prices.has(item):
+		# A drag that outlives its shelf (the shop restocked mid-drag, or is
+		# closing) sells nothing.
+		if not _item_prices.has(item) or is_closing():
 			return
 		var price: int = _item_prices[item]
 		# Nowhere for it to go: refused before any money changes hands, and
