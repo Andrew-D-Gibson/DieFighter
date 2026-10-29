@@ -60,6 +60,27 @@ func test_toggling_swaps_every_wrapper_and_restores_the_same_fonts() -> void:
 	assert_same(M5X7_UI.base_font, originals[1])
 
 
+## The readable fonts ride up or down so their capitals centre where the
+## pixel fonts' do; the pixel look comes back with no offset at all.
+func test_readable_fonts_wear_their_cap_centring_offset() -> void:
+	FontSwap.set_readable(true)
+	for wrapper: FontVariation in FontSwap.wrappers():
+		assert_ne(wrapper.baseline_offset, 0.0, wrapper.resource_path)
+		assert_almost_eq(wrapper.baseline_offset, FontSwap.baseline_offset_for(wrapper, true), 0.0001)
+	FontSwap.set_readable(false)
+	for wrapper: FontVariation in FontSwap.wrappers():
+		assert_eq(wrapper.baseline_offset, 0.0, wrapper.resource_path)
+
+
+## Nearest-filtered MSDF needs a field finer than the screen: at the stock 64
+## the strokes stair-step through the 6x camera.
+func test_readable_fonts_import_a_fine_enough_msdf() -> void:
+	for wrapper: FontVariation in FontSwap.wrappers():
+		var readable: FontFile = FontSwap.font_for(wrapper, true) as FontFile
+		assert_true(readable.multichannel_signed_distance_field, readable.resource_path)
+		assert_gte(readable.msdf_size, 128, readable.resource_path)
+
+
 func test_the_option_drives_the_swap_and_defaults_to_off() -> void:
 	assert_true(OptionsSettings.has_option(OptionsSettings.READABLE_FONT))
 	assert_eq(OptionsSettings.get_default(OptionsSettings.READABLE_FONT), false)
