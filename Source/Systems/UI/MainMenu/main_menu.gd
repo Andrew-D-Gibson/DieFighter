@@ -15,6 +15,10 @@ var opening_cutscene: String = "uid://b1j8blia5iw65"
 var main_game_scene: String = "uid://deisauteocrjl"
 
 var _is_loading: bool = false
+## Whether the new game being launched is the tutorial run. Only handed to
+## Globals once the game actually starts, so backing out of the overwrite
+## check leaves nothing queued.
+var _launching_tutorial: bool = false
 
 const _MENU_TRACK: StringName = &"game_start_theme"
 ## Brought in by the opening cutscene on a new game.
@@ -34,6 +38,7 @@ func _ready() -> void:
 	%ConfirmDialog.hide()
 	%ConfirmDialog.confirmed.connect(_on_new_game_confirmed)
 	%ShipSelectPopup.launched.connect(_on_ship_launched)
+	%ShipSelectPopup.tutorial_launched.connect(_on_tutorial_launched)
 
 	if SaveManager.has_save():
 		%ContinueButton.visible = true
@@ -97,13 +102,27 @@ func _input(event: InputEvent) -> void:
 
 
 ## A new run starts by picking its ship. The save is only put at risk once
-## one is picked, so backing out of the picker loses nothing.
+## one is picked, so backing out of the picker loses nothing. A player who
+## hasn't played the tutorial yet goes straight into it instead: a ship
+## picker means nothing before they know what a ship does.
 func _on_play_button_pressed() -> void:
+	if not Globals.tutorial_completed:
+		_on_tutorial_launched(ShipCatalog.find(ShipCatalog.DEFAULT_ID))
+		return
 	%ShipSelectPopup.open()
 
 
+func _on_tutorial_launched(ship: ShipResource) -> void:
+	_launch(ship, true)
+
+
 func _on_ship_launched(ship: ShipResource) -> void:
+	_launch(ship, false)
+
+
+func _launch(ship: ShipResource, as_tutorial: bool) -> void:
 	Globals.selected_ship = ship
+	_launching_tutorial = as_tutorial
 	if SaveManager.has_save():
 		%ConfirmDialog.open("Starting a new game will overwrite your existing save. Continue?")
 		return
@@ -117,6 +136,7 @@ func _on_new_game_confirmed() -> void:
 
 
 func _start_new_game() -> void:
+	Globals.tutorial_requested = _launching_tutorial
 	SceneLoader.switch_to(get_tree(), opening_cutscene)
 
 

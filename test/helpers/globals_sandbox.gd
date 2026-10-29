@@ -10,7 +10,8 @@ const _FIELDS: Array[String] = [
 	"money_indicator", "enemy_manager", "scenario_manager", "state_manager",
 	"background_manager", "jump_manager", "jump_gate", "hazard_manager",
 	"background_modifier_manager", "run_stats", "shop", "repair_station",
-	"tutorial_controls_enemy_turns", "show_tutorial", "show_region_alerts",
+	"tutorial_controls_enemy_turns", "tutorial_completed", "tutorial_requested",
+	"show_region_alerts",
 	"pending_load_save", "selected_ship",
 ]
 

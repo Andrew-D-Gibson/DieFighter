@@ -69,7 +69,6 @@ func _build_pages() -> void:
 		locale_names.append(Localization.get_locale_name(locale))
 	game.choice(OptionsSettings.LANGUAGE, "OPT_LANGUAGE", locale_names, locales)
 	game.next_column()
-	game.check(OptionsSettings.SHOW_TUTORIAL, "OPT_SHOW_TUTORIAL", "OPT_SHOW_TUTORIAL_HINT")
 	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
 	# Comfort: background behaviour.
 	game.check(OptionsSettings.PAUSE_IN_BACKGROUND, "OPT_PAUSE_IN_BACKGROUND", "OPT_PAUSE_IN_BACKGROUND_HINT")
@@ -279,8 +278,8 @@ func _on_option_changed(key: StringName, _value: Variant) -> void:
 
 func _on_visibility_changed() -> void:
 	if visible:
-		# Options can change while the menu is shut (the tutorial turning
-		# itself off, the window going fullscreen from its title bar).
+		# Options can change while the menu is shut (the dev console, the
+		# window going fullscreen from its title bar).
 		_pages[_open_tab].refresh()
 
 

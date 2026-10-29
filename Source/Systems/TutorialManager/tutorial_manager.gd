@@ -18,9 +18,9 @@ extends Node2D
 signal _open_wait_over
 
 ## Whether the tutorial narrates this run at all. Off means the cold open plays
-## exactly as it would for a returning player. Even when on, it only runs while
-## Globals.show_tutorial is set: a player's first game, or after they turn it
-## back on in Options.
+## exactly as it would for a returning player. Even when on, it only runs for a
+## run the main menu launched as the tutorial (Globals.tutorial_requested): a
+## new player's Play, or Replay Tutorial on ship select.
 @export var auto_start: bool = true
 
 ## The run the tutorial plays in. The forced dice and intents fix the opening
@@ -125,10 +125,11 @@ func _ready() -> void:
 	Reward.forced_rewards.clear()
 	Globals.tutorial_controls_enemy_turns = false
 
-	# A player who picked Continue has seen all of this already. The steps
-	# point at the default ship's grid, so another ship flies without them.
-	if not auto_start or not Globals.show_tutorial or tutorial_steps.is_empty() \
-	or Globals.pending_load_save or not Globals.current_ship().supports_tutorial:
+	var playing: bool = should_play()
+	# Spent here either way, so the next run from the menu is an ordinary one
+	# unless the menu asks again.
+	Globals.tutorial_requested = false
+	if not playing:
 		return
 
 	# GameStateManager rolls the run after this, in its own _ready().
@@ -158,6 +159,14 @@ func _ready() -> void:
 			tutorial_functions[step.tutorial_function].call()
 
 	start_tutorial()
+
+
+## Whether this run is the tutorial's. A player who picked Continue has seen
+## all of this already. The steps point at the default ship's grid, so another
+## ship flies without them.
+func should_play() -> bool:
+	return auto_start and Globals.tutorial_requested and not tutorial_steps.is_empty() \
+		and not Globals.pending_load_save and Globals.current_ship().supports_tutorial
 
 
 func _on_player_turn_over() -> void:
@@ -474,8 +483,9 @@ func _finish_tutorial() -> void:
 	Enemy.forced_actions.clear()
 	Reward.forced_rewards.clear()
 
-	# Seen once is enough; Options can turn it back on.
-	Globals.show_tutorial = false
+	# Seen once is enough: from now on Play opens ship select, which offers
+	# Replay Tutorial.
+	Globals.tutorial_completed = true
 	Events.save_options_config.emit()
 
 	# Normally given back at the jump already; this covers a skipped or
