@@ -36,10 +36,16 @@ var apply_in_window: bool = false:
 		apply_in_window = value
 		_apply()
 var _mask_layer: CanvasLayer
+## The window mode _apply() last saw. On macOS the window reaches its
+## fullscreen size a few frames before it reports being fullscreen, so a size
+## change alone can come too early.
+var _last_mode: Window.Mode = Window.MODE_WINDOWED
 var _mask: _FrameMask
 
 
 func _ready() -> void:
+	# Fullscreen can be toggled from the pause menu, with the tree paused.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_mask_layer = CanvasLayer.new()
 	_mask_layer.layer = _MASK_LAYER
 	_mask_layer.visible = false
@@ -71,10 +77,16 @@ static func art_scale_for(window_size: Vector2i) -> int:
 	return maxi(1, floori(minf(fit.x, fit.y)))
 
 
-## Rechecked whenever the window changes size, which is also how it notices
-## the window entering or leaving fullscreen (the macOS green button, too).
+func _process(_delta: float) -> void:
+	if get_tree().root.mode != _last_mode:
+		_apply()
+
+
+## Rechecked whenever the window changes size or mode, including fullscreen
+## entered from outside the menu (the macOS green button).
 func _apply() -> void:
 	var root: Window = get_tree().root
+	_last_mode = root.mode
 	var fullscreen: bool = root.mode in [Window.MODE_FULLSCREEN, Window.MODE_EXCLUSIVE_FULLSCREEN]
 	_active = _wanted and (fullscreen or apply_in_window)
 	if _active:
