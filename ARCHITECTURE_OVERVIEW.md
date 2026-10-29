@@ -1213,9 +1213,9 @@ rule the enemy intent telegraph follows. Three things carry it:
   screen into the empty sky, the cockpit dims slightly, and it holds ~2 s (a
   click anywhere or its Close button skips it; the first time the player ever
   reads a given rule or hazard, recorded by `CollectionManager.record_region`
-  as `rule:<file>` / `hazard:<file>`, it has no timer and waits for Close; a hazard's card adds when it first hits and how
-  often after, from `EnvironmentMonitor.hazard_timing_text()` /
-  `hazard_repeat_text()`, and holds 1.3 s longer) before folding back in, which kicks the monitor
+  as `rule:<file>` / `hazard:<file>`, it has no timer and waits for Close; a hazard's card adds when it next hits, the same
+  `EnvironmentMonitor.hazard_timing_text()` line the monitor's info panel shows,
+  and holds 1.3 s longer) before folding back in, which kicks the monitor
   and counts as read. A card from a region the player has since left fades or
   lands without effect.
 - **`ArrivalIntro`** (`ScenarioManager/arrival_intro.gd`) plays an arrival's
