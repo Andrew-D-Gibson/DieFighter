@@ -128,6 +128,14 @@ Seven parallel branches, merged together.
   (add 2), Chain Cannon+, Deflector Array+ (+2), Reactive Armor+,
   Counterweight Battery+, Overshield Relay+, Signal Relay+, Toll Relay+ and
   Incendiary Round+. Re-Roll+ gets a third use, and Shield Burst+ also takes a 4.
+- **Then the other 70 offerable tiles.** Most get bigger numbers. A few get
+  cheaper charge costs (Bootstrap Injector, Repo Beam, Sabotage Charge) or
+  looser conditions (Lone Wolf Lance at 3 or fewer dice, Phantom Squadron
+  fills to 6, Polarizer turns 3s into 6s). Some get something new: Chaos
+  Explosion+ spares you, Countermeasures+ also shields, Surge Relay+ and
+  Welder+ add 1 to the die, Dead Man's Switch+ charges 2 a turn. Reloader,
+  Shield Siphon, Value Exchange and Holographic Duplicator get an extra use.
+  Tiles held out of offers have none.
 
 ---
 
