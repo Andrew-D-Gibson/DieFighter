@@ -180,6 +180,23 @@ func test_pair_lock_refuses_a_die_that_does_not_match_and_hands_it_back() -> voi
 	assert_eq(tile.uses_remaining, 1)
 
 
+func test_lucky_seven_takes_only_a_die_that_makes_seven() -> void:
+	var tile: Tile = _tile("lucky_seven")
+	var held: Dice = _die(2)
+	await _play(_place(tile, held))
+	var four: Dice = _die(4)
+	assert_eq(_damage(await _play(_place(tile, four))), [] as Array[int])
+	assert_has(player.dice_manager.queue, four)
+	var five: Dice = _die(5)
+	assert_eq(_damage(await _play(_place(tile, five))), [14])
+
+
+func test_held_die_checks_take_any_die_while_nothing_is_held() -> void:
+	var tile: Tile = _tile("lucky_seven")
+	for face: int in range(1, 7):
+		assert_eq(tile.activation_refusal(_die(face)), "", "a %d starts a hold" % face)
+
+
 func test_pairs_with_reads_matches_and_sums() -> void:
 	var match_check := ActivationResource.new()
 	match_check.type = ActivationResource.ActivationType.MATCHES_HELD_DIE
@@ -231,6 +248,23 @@ func test_pair_lock_plus_hits_for_five_times() -> void:
 	var tile: Tile = _tile("pair_lock_plus")
 	await _drop(tile, 2)
 	assert_eq(_damage(await _drop(tile, 2)), [10])
+
+
+func test_lucky_seven_gives_the_held_die_and_returns_the_other() -> void:
+	var tile: Tile = _tile("lucky_seven")
+	var held: Dice = _die(1)
+	await _play(_place(tile, held))
+	var six: Dice = _die(6)
+	var events: Array[EffectEvent] = await _play(_place(tile, six))
+	assert_eq(_damage(events), [14])
+	assert_has(enemy.dice_manager.queue, held, "the held die goes to the target")
+	assert_has(player.dice_manager.queue, six, "the one that made seven comes home")
+
+
+func test_lucky_seven_plus_hits_for_twenty() -> void:
+	var tile: Tile = _tile("lucky_seven_plus")
+	await _drop(tile, 3)
+	assert_eq(_damage(await _drop(tile, 4)), [20])
 
 
 func test_a_repeated_payout_hits_twice_and_gives_each_die_once() -> void:
