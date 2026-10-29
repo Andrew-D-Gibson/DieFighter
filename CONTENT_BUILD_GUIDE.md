@@ -67,6 +67,13 @@ registration to testing. For how the systems work underneath, see
   beside it).
   - Colour by role: Red attack, Blue defence, Green die tricks/movement,
     Purple engine, Yellow support/buffs.
+  - The folder is the tile's colour as far as the game is concerned: the
+    codex sorts by it, and the Color Symbols option badges the tile's
+    top-left corner with its family's shape (`ColorSymbolBadge`). So file
+    the art by what it looks like, and keep the top-left 7×7 inside the
+    frame free of anything vital. A new colour family needs an entry in
+    `ColorSymbolBadge._FAMILY_FOLDERS` and `CodexCatalog._TILE_COLOUR_ORDER`,
+    and a frame in `Tiles/ColorSymbols/color_symbols.aseprite`.
   - Tiles are 24×24. An unlimited tile is a single frame, `<name>.png`.
   - **The lower panel shows which dice the tile takes**, matching its
     `activation_checks`. The marker is a 7×7 slot in the darkest shade of the
