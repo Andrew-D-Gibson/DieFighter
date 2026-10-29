@@ -28,7 +28,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs (the file name) to `res://` paths for tiles, scenarios and enemies, so saves and the codex's collection survive `.tres` renames/moves; stores IDs in save instead of raw paths. Scans with `Utils.list_resource_paths()` (`ResourceLoader.list_directory()`), which still sees `.tres` names in an export, where `DirAccess` sees `.remap` |
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
-| `CollectionManager` | `Autoloads/collection_manager.gd` | What the player has found across every run, for the codex: tiles they've owned and enemies met/destroyed. Kept in `user://collection.json`, outside the run save (see Codex below) |
+| `CollectionManager` | `Autoloads/collection_manager.gd` | What the player has found across every run, for the codex: tiles they've owned, enemies met/destroyed and region rules/hazards read. Kept in `user://collection.json`, outside the run save (see Codex below) |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Registry of player options (see 7.4): each registered once with its default and how to read and apply its live value, keyed "Section/name" as saved in `user://options_settings.cfg`. Loads and applies them at boot, saves on `Events.save_options_config`, resets them for the menu's Defaults. Owns `PixelPerfectScaler` and `BackgroundFocus`. Also holds the `times_run` counter. Window options (size, monitor, vsync, pixel perfect) aren't registered on the web (`controls_window()`) |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS`. Editor-launched runs only: in any exported build (debug or release) it frees itself without opening the port |
 | `AutoPilot` | `Autoloads/auto_pilot.gd`, helpers in `Systems/AutoPilot/` | Plays runs by itself for QA and balance testing (see AutoPilot below). Editor binaries with `-- --autoplay` only; otherwise it frees itself |
@@ -406,7 +406,15 @@ length; an ion bolt aims at `Juice.shield_anchor()`, the player's shield
 counter) drawn through
 `JuicePixelated` and re-aimed at its target node each frame;
 `Juice.projectile()` is the entry point, so an enemy shot that isn't a die
-can reuse it. `Juice.anchor_of()` / `body_of()` decide where an
+can reuse it. A `LASER` is a travelling blaster bolt (a 9 px streak, 460
+px/s): its flight time comes from the launch distance, clamped to 0.09-0.26 s,
+and is locked at launch, so `impact_seconds()` lands the damage as it hits. A
+LASER's `amount` is its flight time in ms, like MISSILE and ION_BOLT. Enemy dice
+shots at the player (`AttackTweenEvent`) strike `Player.get_hull_anchor()`, the
+hull readout on whichever cockpit's health bar, re-read every frame; a die an
+enemy carries to its own action (`EnemyActionEvent`) is moved by
+`tween_method` re-reading the ship's position, so it follows a ship that slides
+mid-flight. `Juice.anchor_of()` / `body_of()` decide where an
 effect on a node is drawn and what gets squashed (`Player` routes both to its
 health bar; `Juice.engine_anchor()` is the engine gauge's centre). A dying
 enemy's ship graphics move into a `JuicePixelated` (`pixelate()`) so the kill
@@ -578,13 +586,24 @@ in the pane alongside. The rest are redrawn in the palette's greys by
 ## Tutorial
 
 `TutorialManager` (in main.tscn) narrates the opening ambush, then hands the
-run back mid-sector. It plays only on a new game while `Globals.show_tutorial`
-is on. That flag is saved in the options file, cleared when the tutorial
-finishes, and switched back on by the Options menu's Show Tutorial box.
+run back mid-sector. It's progress, not an option: `Globals.tutorial_completed`
+(options file, `[Progress]`, untouched by Defaults; an old `show_tutorial=false`
+counts as completed) and `Globals.tutorial_requested` (one new game only: the
+main menu sets it, `TutorialManager._ready` clears it, so a Continue, lab or
+AutoPilot run is never narrated). Until it's completed, Play skips ship select
+and starts the tutorial on the Die Fighter; after that ship select shows a
+TUTORIAL button under the ship with `supports_tutorial`.
 
 **Hard-seeded.** The manager sits above GameStateManager in the tree, so its
 `_ready` sets `RNGManager.next_run_seed = run_seed` (21) before the run starts.
-The map, encounters and backgrounds are the same for every new player. The
+The map, encounters and backgrounds are the same for every new player (and
+the rest of that run too, since the RUN bucket keeps that seed). Content
+changes shift what the seed rolls: re-check the jump step's promises after
+editing encounter or background pools. Independently of the tutorial, every
+sector-1 slot within one jump of `GameSaveResource.arrival_index` draws a
+background with no rule and no hazard (`GameStateManager.is_rule_free_slot`),
+and an encounter waits for `ScenarioResource.earliest_sector()` (a ship with an
+ally-bound action, `Binding.ALLY`, can't appear before sector 2). The
 `opening_setup` step then forces the hand (4/2/1) and the raider's intent table,
 because both are generated during scene setup, before any ordinary step runs.
 
@@ -1142,7 +1161,9 @@ rule the enemy intent telegraph follows. Three things carry it:
   Game > Region Alerts, is off). On arrival it is the first beat of the
   `ArrivalIntro`: once the monitor has swung up, the card unfolds out of its
   screen into the empty sky, the cockpit dims slightly, and it holds ~2 s (a
-  click anywhere skips it; a hazard's card adds when it first hits and how
+  click anywhere or its Close button skips it; the first time the player ever
+  reads a given rule or hazard, recorded by `CollectionManager.record_region`
+  as `rule:<file>` / `hazard:<file>`, it has no timer and waits for Close; a hazard's card adds when it first hits and how
   often after, from `EnvironmentMonitor.hazard_timing_text()` /
   `hazard_repeat_text()`, and holds 1.3 s longer) before folding back in, which kicks the monitor
   and counts as read. A card from a region the player has since left fades or
@@ -1158,7 +1179,10 @@ rule the enemy intent telegraph follows. Three things carry it:
   for background art that reacts: `_urgency_changed()` when it becomes
   imminent or calms, `_fired()` when it goes off. The flare star throbs hot
   and its limb erupts, the ion storm strikes more often, the meteor shower
-  thickens and sends one rock at the cockpit, the rift tear quickens.
+  thickens and sends one rock at the cockpit, the rift tear quickens. The tear
+  (`FateRiftTear` + `fate_rift_tear.gdshader`) breathes on its own (rest, open,
+  hold, close, durations picked fresh each breath); the build-up tears it wide
+  and holds it, the strike rips it past full with a blaze and sparks.
 - **The strike gets a build-up.** `HazardManager` emits `hazard_triggered`
   (the monitor pops) and queues a `HazardEvent`. When the engine reaches it,
   it emits `hazard_winding_up(hazard, seconds)` and waits
@@ -1220,6 +1244,29 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 > `_MAX_EVENTS_PER_RUN` (2000) events in one drain and logs the likely cause.
 > Without it, two tiles activating each other hard-freezes the game silently.
 > Relevant to anything using `ACTIVATE_TARGETED_TILES` or `PASS_DIE_TO_TILE`.
+
+> **Chains and the settle.** `queue_event()` marks a chain start; `inject_event()`
+> doesn't. Before popping a chain start, `process_event_queue()` waits the longer
+> of the settle the last chain owes (`CHAIN_SETTLE_SECONDS`, 0.2 s over animation
+> speed, owed only by chains in `_settles_after()`: tile activations and
+> responses, enemy actions, overloads, hazards, arrival effects, root
+> `DamageEvent`s) and any `hold_next_chain(seconds)` still running. A queued
+> `WaitEvent` stands in for the settle. A ship's death holds the next chain while
+> its dice hang at the wreck and cross over (`Dice.hand_off_after_death()`,
+> `Draggable.held_by_code` keeps holders from arranging them meanwhile). All of it
+> is game time (hitstop freezes it, AutoPilot's fixed fps fast-forwards it), and
+> an engine outside the tree never waits.
+
+> **Rules that cap or freeze.** `Modifier.get_tile_use_cap(tile)` lets a rule cap
+> tile uses; `Tile.max_uses_per_turn()` takes the lowest cap in play (Dead
+> Systems' `OncePerTurnModifier`: every ship system once a turn, engines and map
+> arrows immune, refunds blocked). `Modifier.get_rule_info_text(tile)` adds an
+> info line from a rule that doesn't own the tile. `EffectEvent.changes_die_values()`
+> is the one gate for face changes; Flash Freeze's `DiceFreezeModifier` cancels
+> every such event (Scrambled asks `DiceFreezeModifier.active_on()`), calling
+> FROZEN off the environment monitor. `EnemyActionSelector` only offers an action
+> that vents its own statuses (`EnemyActionResource.vents_own_statuses()`) to a
+> ship that has one.
 
 **Flow when EffectChain executes:**
 
@@ -1464,7 +1511,23 @@ colour family from its art folder (`<Colour>Tiles`) and draws its glyph:
 wrappers `m3x6_ui.tres` / `m5x7_ui.tres` between the pixel fonts and the
 readable font; text must use the wrappers, never the .ttf files
 (`test_font_swap.gd` checks). CJK/Cyrillic fonts should go in as fallbacks on
-the wrappers, fitted with `tools/fit_readable_font.py`.
+the wrappers, fitted with `tools/fit_readable_font.py`. Atkinson is imported
+as MSDF at `msdf_size` 192 (64 stair-stepped under nearest filtering at 6x),
+and while readable `FontSwap` sets each wrapper's `baseline_offset` so
+capitals centre where the pixel fonts' do.
+
+**Held things and the cursor.** `Draggable.held` / `holding()` say what's in
+hand (drag or click placement); `MouseCursor` shows a fist while something is
+held, with an "i" badge while a click-placed tile is still over its lift spot
+(`is_over_info_spot()`, the click that puts it back and opens its info). The
+first three click pick-ups each launch show a one-line hint.
+
+**Targeting computer attitude.** `AttitudeDisplay` (under TargetingComputer)
+shows the target's attitude as a 5x6 face and tints the bezel and portrait
+frame (two white masks) red / grey / green; it blinks when the targeted ship
+changes its mind. Enemy health bars no longer carry a face, and their backing
+has a soft `CEF0F1` outline. `HullInfoArt` draws the hull info panel's picture
+from the live hull (ring share + 3x6 digits).
 
 **Controllers and rebinding** (Systems/Input/). `VirtualCursor` turns stick
 and d-pad into a pointer (in frame units, clamped to the frame, real time),

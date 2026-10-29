@@ -4,6 +4,112 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — Tweaks batch 2: clearer combat, kinder first runs, sharper HUD
+
+Seven parallel branches, merged together.
+
+**Pacing and combat clarity**
+- **A beat between effect chains.** The engine now waits 0.2 s between one
+  chain and the next when the last one showed something happening (a tile
+  activation, an enemy action, a hazard, a burn tick), never between the
+  events inside one chain. A queued wait stands in for it, so the existing
+  0.5 s settle after each enemy action doesn't stack.
+- **A wreck's dice hang, then cross.** A destroyed ship's dice change hands at
+  once as before, but visibly hang at the wreck for 0.55 s, then cross over
+  0.5 s to their new holder, and the next chain waits for them to land. The
+  kill's hitstop freezes it, so it never overlaps Hit Pause.
+- **Enemy shots hit the hull.** Dice Cannon, Siege Shot, Impound and Pilfer
+  shots now strike the hull readout on the player's health bar, wherever
+  that ship's cockpit puts it.
+- **Dice follow a moving ship.** A die flying to an enemy that slides across
+  the formation (because another ship died) now follows it, instead of
+  landing where the ship used to be. Retargeting each frame, not reparenting:
+  the die would have picked up the ship's bob and had to be rescued on every
+  exit path.
+- **A gentler kill cam:** 1.16x peak (was 1.4x), half the lean, still scaled
+  by the Screenshake slider (0 = none).
+- **Lasers are blaster bolts.** Leech Relay, Sensor Spike, Parity Junction,
+  Signal Relay, Afterburner Relay and Target Lock fire a short bright streak
+  that travels to the target; the damage lands on impact. Shots take about
+  0.2-0.3 s instead of 0.06 s.
+
+**First runs**
+- **The tutorial is progress, not an option.** Until it's finished once, Play
+  goes straight into it on the Die Fighter; afterwards ship select has a
+  TUTORIAL button under that ship. The Show Tutorial checkbox is gone. An old
+  settings file with the tutorial switched off counts as finished. To test a
+  first boot, delete `options_settings.cfg` and `save_game.json` from
+  `user://` (`collection.json` too to reset the codex and region cards).
+- **The first jump lands in plain space.** Every sector-1 stop one jump from
+  the start draws a background with no rule and no hazard (in every run, so a
+  Continue sees the same sky). Design call: hazards are excluded too, or the
+  tutorial's three targets all landed under a countdown.
+- **Ally-support ships wait for sector 2.** Any ship that shields, repairs or
+  feeds an ally keeps its encounter out of sector 1 (read off its actions:
+  Tender Escort, Carrier, Smash and Grab, Blockade Runner, Mercy Call, Ghost
+  Carrier, Mortar Nest). The tutorial's jump targets are now Attacker, Siege
+  Battery and Tithe Escort.
+- **Region cards wait the first time.** The first time a rule or hazard is
+  ever read, its card waits for the new Close button; later it folds away on
+  its timer, and Close skips the wait. Remembered in the collection.
+
+**Region rules**
+- **Dead Systems:** every grid tile activates once a turn, limited or not;
+  the engine charger and map arrows are immune, and refunds are blocked. The
+  lights read 1 of N, unlimited tiles grey out once used, and the info says
+  why.
+- **Flash Freeze:** no die can change face: Bump, rerolls, set-face hand-offs,
+  merges and Scrambled's flip are all blocked, with FROZEN off the monitor.
+  Turn-start rolls still roll.
+- **Purge Vents** (shift statuses to the player) is only chosen by a ship with
+  a status to give, now read off the action rather than a hand-set condition.
+
+**Tiles**
+- **Ballast Tanks is a 1-use relay:** shields equal to the die, then it feeds
+  down as a 1. A big die buys big shields but starves the tile below, and it
+  sets up the die_1 tiles.
+- **Crossed Wires:** applies 2 Scrambled then gives the die, so it arrives
+  flipped. **Static Bloom** also scrambles you, so your first die each turn
+  flips.
+- A sweep of all 98 tiles for "always feed it" plays; proposals the user hasn't
+  decided on: Counterweight Battery, Skeleton Crew, the hull-hit passives
+  (Reactive Armor, Regenerative Brake, Spite Coil, Interdiction Net), Spotter
+  Drone, Holo-Duplicator, Swarm Battery, and a die tax for the free-bonus
+  relays (Overshield, Toll, Signal, Booster Stage, Sensor Spike).
+  CONTENT_BUILD_GUIDE §1 gains "every play should be a choice".
+
+**HUD and feel**
+- **Attitude moves to the targeting computer.** The faces over each enemy are
+  gone; the computer shows a tiny face beside the target's portrait and tints
+  its bezel and frame red, grey or green, blinking when a ship changes its
+  mind. Formations pack slightly tighter without the face.
+- **Enemy bars have a soft light outline** for contrast on dark space.
+- **The hull info panel shows the real hull:** the ring fills for the share
+  left, with the actual count in pixel digits.
+- **Map:** the default caption is a purple "You are here" with a small purple
+  down arrow, and the same arrow bobs over the white dot. ("Current location"
+  doesn't fit beside the arrow in the caption strip.)
+- **A closed fist while holding something.** In click placement, the fist
+  wears an "i" while a tile is still over its lift spot (clicking there opens
+  its info), and the first three pick-ups each launch show a one-line hint.
+  The controller cursor gets the same states.
+- **Readable Font is clean now.** The fuzz was the import (MSDF at 64 sampled
+  with nearest filtering at 6x stair-stepped); 192 fixes it, no new font
+  needed. Readable text is re-centred to sit where the pixel fonts do, and
+  the cockpit MAP tab is level with SYSTEMS on every ship.
+- **The shop opens in beats:** the panel unfolds as the shopkeeper slides
+  over, then the stock pops onto the shelves one by one with sparks and a
+  climbing blip (placeholder sound). It still vanishes at once on a jump.
+- **Salvage is left behind.** On a jump an untaken offer falls away with the
+  departing ships; taking one choice pops the others out in turn.
+- **The Fate rift tear breathes:** it rips open in jolts, holds, and knits
+  shut on an uneven loop, with a hot lip, crackle, sparks and scrap; the
+  hazard's build-up holds it wide and the strike rips it past full.
+- **Button colours:** Options Defaults red, Options and Pause Menu Close
+  green, main menu Quit blue, each with matching hover text.
+
+---
+
 ## 2026-10-28 — Grid Slots and tile upgrades
 
 - **The Die Fighter starts on its middle 3x3.** The outer columns are sealed
