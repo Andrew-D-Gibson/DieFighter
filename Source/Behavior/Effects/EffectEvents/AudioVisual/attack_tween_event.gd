@@ -19,7 +19,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 		return
 
 	_target = targets[0] as Node2D
-	_target_position = _target.global_position
+	_target_position = _aim_point(_target)
 	_start = activator_die.global_position
 	var adjusted_time: float = _tween_time / Globals.animation_speed
 
@@ -42,5 +42,17 @@ func _fly(progress: float) -> void:
 	if not is_instance_valid(activator_die):
 		return
 	if is_instance_valid(_target):
-		_target_position = _target.global_position
+		_target_position = _aim_point(_target)
 	activator_die.global_position = _start.lerp(_target_position, progress)
+
+
+## Where on [param target] the die strikes. The player's ship has no body on
+## screen, so a die fired at it hits the hull readout on its health bar: the
+## number the shot is about to knock down. Every attack tween aimed at the
+## player today is a hull shot (status shots, ion bolts and the like fly with
+## their own juice), and the bar moves with each ship's cockpit, so it's read
+## live rather than fixed.
+func _aim_point(target: Node2D) -> Vector2:
+	if target is Player:
+		return (target as Player).get_hull_anchor()
+	return target.global_position

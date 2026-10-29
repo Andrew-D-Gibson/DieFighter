@@ -168,6 +168,13 @@ func get_shield_anchor() -> Vector2:
 	return bar.get_shield_anchor() if bar else get_juice_anchor()
 
 
+## Where shots at the player's hull land (an enemy's dice cannon): the hull
+## readout on the health bar, wherever this ship's cockpit mounts it.
+func get_hull_anchor() -> Vector2:
+	var bar: PlayerHealthBar = get_node_or_null("PlayerHealthBar") as PlayerHealthBar
+	return bar.get_hull_anchor() if bar else get_juice_anchor()
+
+
 ## Where the player's status badges go: above the health ring.
 func get_status_bar() -> StatusBar:
 	return get_node_or_null("%StatusBar") as StatusBar

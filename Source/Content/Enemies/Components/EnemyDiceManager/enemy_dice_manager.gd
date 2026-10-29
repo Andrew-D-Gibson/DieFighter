@@ -49,7 +49,11 @@ func update_dice_locations() -> void:
 ## [param in_hand] is a die this ship took out of the queue to spend (an
 ## EnemyActionEvent's activator, floating in front of the ship). It goes too,
 ## unless the chain already handed it on somewhere else.
-func give_away_dice(in_hand: Node = null) -> void:
+##
+## With [param after_death], the dice hang at the wreck before they cross
+## (Dice.hand_off_after_death()). Their new holders take them at once either
+## way: only the trip waits.
+func give_away_dice(in_hand: Node = null, after_death: bool = false) -> void:
 	# A fleeing ship is still alive while it empties its hold, and must not
 	# hand its dice to itself: they'd leave with it.
 	var recipients: Array[Enemy] = []
@@ -71,6 +75,9 @@ func give_away_dice(in_hand: Node = null) -> void:
 			Globals.player.dice_manager.add(die, true, true)
 		else:
 			RNGManager.pick_random(RNGManager.Bucket.TARGETING, recipients).dice_manager.add(die, true, true)
+		# A hologram is destroyed on arrival rather than handed on.
+		if after_death and not die.is_queued_for_deletion():
+			die.hand_off_after_death()
 
 
 ## Hands every die straight back to the player with the face it holds: the

@@ -32,6 +32,12 @@ func get_shield_anchor() -> Vector2:
 	return ($ShieldsClickable/CollisionShape2D as Node2D).global_position
 
 
+## The middle of the hull readout: where a shot at the hull strikes. Read
+## live, since each ship's cockpit mounts the gauge somewhere else.
+func get_hull_anchor() -> Vector2:
+	return ($HullClickable/CollisionShape2D as Node2D).global_position
+
+
 ## Which shield sprite frame [param shields] reads as, measured against the
 ## hull's [param max_health]: full from half the hull up, medium from a
 ## quarter, low below that.

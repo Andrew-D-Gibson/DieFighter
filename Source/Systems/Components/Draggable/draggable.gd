@@ -35,6 +35,11 @@ var _picked_up_at: Vector2
 		floating_enabled = dragging_allowed
 
 var follow_strength: float = 20
+## While true, code is carrying the parent between holders across frames
+## (Dice.hand_off_after_death()): it's left where the code puts it whatever
+## the state says, since a holder resets the state as it arranges its dice,
+## and it can't be picked up.
+var held_by_code: bool = false
 var home_position: Vector2
 ## Set by set_home() when the parent's next arrival home should be announced.
 var _announce_arrival: bool = false
@@ -85,7 +90,7 @@ func _process(delta: float) -> void:
 		_stop_carrying()
 
 	# Don't handle moving the draggable object if it's being moved with code
-	if state == DragState.MOVING_WITH_CODE:
+	if state == DragState.MOVING_WITH_CODE or held_by_code:
 		return
 						
 	# Handle moving the object with the mouse
@@ -117,8 +122,8 @@ func _process(delta: float) -> void:
 	
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if dragging_allowed and state == DragState.DEFAULT and event is InputEventMouseButton \
-	and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+	if dragging_allowed and state == DragState.DEFAULT and not held_by_code \
+	and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		state = DragState.DRAGGING
 		Globals.mouse_is_dragging_something = true
 		

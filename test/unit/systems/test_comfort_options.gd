@@ -136,6 +136,26 @@ func test_no_camera_motion_at_zero() -> void:
 	assert_null(camera.get("_punch_tween"))
 
 
+func test_kill_cam_push_in_is_gentle_and_scales_with_intensity() -> void:
+	var camera: Camera2D = _make_camera()
+	Globals.screenshake_intensity = 1.0
+	Events.camera_kill_cam.emit(Vector2.ZERO, 0.3)
+	var tween: Tween = camera.get("_punch_tween")
+	# To the end of the hold, where the push-in peaks.
+	tween.custom_step(0.3)
+	var full_peak: float = camera.zoom.x
+	assert_lt(full_peak, 1.2, "a kill pushes in a little, not a lot")
+	assert_gt(full_peak, 1.0)
+	tween.kill()
+	camera.zoom = Vector2.ONE
+
+	Globals.screenshake_intensity = 0.5
+	Events.camera_kill_cam.emit(Vector2.ZERO, 0.3)
+	(camera.get("_punch_tween") as Tween).custom_step(0.3)
+	assert_almost_eq(camera.zoom.x - 1.0, (full_peak - 1.0) * 0.5, 0.005,
+		"half Screenshake, half the push-in")
+
+
 func _make_camera() -> Camera2D:
 	var camera: Camera2D = Camera2D.new()
 	camera.set_script(_CAMERA_SCRIPT)

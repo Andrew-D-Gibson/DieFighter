@@ -7,14 +7,18 @@ const _PUNCH_IN_SECONDS: float = 0.05
 const _PUNCH_OUT_SECONDS: float = 0.3
 
 ## The kill cam snaps most of the way in at once, then creeps the rest of the
-## way through the hold, so the held frame never sits dead still.
-const _KILL_CAM_SNAP_ZOOM: float = 1.3
-const _KILL_CAM_PEAK_ZOOM: float = 1.4
+## way through the hold, so the held frame never sits dead still. Kept gentle
+## (it was 1.3 to 1.4): a kill comes several times a fight, and a deep push-in
+## each time read as jarring rather than punchy. At full Screenshake; the
+## setting scales it down from there, to nothing at 0.
+const _KILL_CAM_SNAP_ZOOM: float = 1.12
+const _KILL_CAM_PEAK_ZOOM: float = 1.16
 const _KILL_CAM_SNAP_SECONDS: float = 0.06
 const _KILL_CAM_OUT_SECONDS: float = 0.45
-## Leans much harder than a punch: the dying ship should end up near the middle
-## of the frame, the way a fighting game frames its finishing blow.
-const _KILL_CAM_FOCUS_LEAN: float = 0.6
+## Leans harder than a punch, toward the dying ship, the way a fighting game
+## frames its finishing blow. Eased off with the zoom (it was 0.6): a big lean
+## at a small zoom reads as the camera lurching sideways.
+const _KILL_CAM_FOCUS_LEAN: float = 0.3
 
 ## Zoom the camera rests at. Punches are relative to it, so an overlapping
 ## punch can't ratchet the camera further in each time.

@@ -253,7 +253,7 @@ func _on_death() -> void:
 	# spending_die is left stale on purpose (see its comment), so it may be a
 	# hologram that's been spent and freed since; a freed object can't even
 	# be passed as a Dice.
-	dice_manager.give_away_dice(spending_die if is_instance_valid(spending_die) else null)
+	dice_manager.give_away_dice(spending_die if is_instance_valid(spending_die) else null, true)
 	Events.enemy_left.emit(self, scenario_state.faction)
 	Events.enemy_destroyed.emit(self)
 	
