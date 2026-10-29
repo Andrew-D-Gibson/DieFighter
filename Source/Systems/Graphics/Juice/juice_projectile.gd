@@ -1,6 +1,6 @@
 class_name JuiceProjectile
 extends Node2D
-## A shot that isn't a die: a laser beam or a missile, fired from one global
+## A shot that isn't a die: a blaster bolt or a missile, fired from one global
 ## point at another. Spawned through Juice.projectile(), which draws it on the
 ## game's pixel grid.
 ##
@@ -13,16 +13,24 @@ extends Node2D
 ## be would miss. Frees itself once its impact has faded.
 
 enum Style {
-	LASER,   ## A beam that charges at the muzzle, then lashes across at once
+	## A blaster bolt: a short bright streak that flashes from the muzzle and
+	## travels to the target, rather than a beam that connects at once.
+	LASER,
 	MISSILE, ## A small rocket that lobs out to one side and accelerates in
 	## A crackling orb that swells at the muzzle, then drifts in and bursts on
 	## the target's shields (Juice.shield_anchor) rather than its middle.
 	ION,
 }
 
-const _LASER_CHARGE_SECONDS: float = 0.06
-const _LASER_DEFAULT_HOLD_SECONDS: float = 0.16
-const _LASER_FADE_SECONDS: float = 0.14
+## The muzzle flash before the bolt leaves.
+const _BOLT_MUZZLE_SECONDS: float = 0.05
+## How fast a bolt travels, in game pixels a second, and the bounds on its
+## flight so a point-blank shot still reads as travelling and a long one
+## doesn't stall the chain.
+const _BOLT_SPEED: float = 460.0
+const _BOLT_FLIGHT_SECONDS: Vector2 = Vector2(0.09, 0.26)
+## The streak's length, tail to tip, in game pixels.
+const _BOLT_LENGTH: float = 9.0
 
 const _MISSILE_DEFAULT_FLIGHT_SECONDS: float = 0.45
 ## How far the lob bows off the straight line, as a share of the distance.
@@ -57,12 +65,15 @@ var to: Vector2
 ## Optional. While it's valid, its Juice anchor overrides [member to].
 var target: Node2D
 var color: Color = Color.WHITE
-## How long the beam holds (LASER) or the flight takes (MISSILE). Zero or
-## less uses the style's default.
+## How long the flight takes. Zero or less uses the style's default: for a
+## LASER bolt, its distance at _BOLT_SPEED.
 var duration: float = 0.0
 
 var _age: float = 0.0
 var _bow_side: float = 1.0
+## LASER only: the flight time, fixed on first ask from the launch distance,
+## so a target that slides over doesn't move the impact the chain waits on.
+var _bolt_flight: float = -1.0
 ## Missile only: where the smoke was shed, and when.
 var _smoke: Array[Vector2] = []
 var _smoke_ages: PackedFloat32Array = PackedFloat32Array()
@@ -76,7 +87,7 @@ func impact_seconds() -> float:
 			return _flight_seconds()
 		Style.ION:
 			return _ION_CHARGE_SECONDS + _flight_seconds()
-	return _LASER_CHARGE_SECONDS
+	return _BOLT_MUZZLE_SECONDS + _flight_seconds()
 
 
 func _ready() -> void:
@@ -112,44 +123,61 @@ func _lifetime() -> float:
 	match style:
 		Style.MISSILE:
 			return _flight_seconds() + maxf(_IMPACT_SECONDS, _MISSILE_SMOKE_SECONDS)
-		Style.ION:
-			return impact_seconds() + _IMPACT_SECONDS
-	return _LASER_CHARGE_SECONDS + _hold_seconds() + _LASER_FADE_SECONDS
-
-
-func _hold_seconds() -> float:
-	return duration if duration > 0.0 else _LASER_DEFAULT_HOLD_SECONDS
+	return impact_seconds() + _IMPACT_SECONDS
 
 
 func _flight_seconds() -> float:
 	if duration > 0.0:
 		return duration
-	return _ION_DEFAULT_FLIGHT_SECONDS if style == Style.ION else _MISSILE_DEFAULT_FLIGHT_SECONDS
+	match style:
+		Style.ION:
+			return _ION_DEFAULT_FLIGHT_SECONDS
+		Style.LASER:
+			if _bolt_flight < 0.0:
+				_bolt_flight = clampf(from.distance_to(to) / _BOLT_SPEED,
+						_BOLT_FLIGHT_SECONDS.x, _BOLT_FLIGHT_SECONDS.y)
+			return _bolt_flight
+	return _MISSILE_DEFAULT_FLIGHT_SECONDS
 
 
 # ── Laser ──────────────────────────────────────────────────────────────────────
 
+## Where the bolt's tip is at [param progress] (0 at the muzzle, 1 on the
+## target). Constant speed, like a blaster shot: no easing.
+func _bolt_tip(progress: float) -> Vector2:
+	return from.lerp(to, progress)
+
+
 func _draw_laser() -> void:
 	var start: Vector2 = to_local(from)
-	var end: Vector2 = to_local(to)
-	if _age < _LASER_CHARGE_SECONDS:
-		# A glow swelling at the muzzle, so the beam reads as fired from here.
-		var swell: float = _age / _LASER_CHARGE_SECONDS
-		draw_circle(start, lerpf(1.0, 3.0, swell), color, true, -1.0, false)
-		draw_circle(start, lerpf(0.0, 1.5, swell), _CORE_COLOR, true, -1.0, false)
+	if _age < _BOLT_MUZZLE_SECONDS:
+		# A flash at the muzzle, so the bolt reads as fired from here.
+		var swell: float = _age / _BOLT_MUZZLE_SECONDS
+		var flash: float = Juice.soften_flash(1.0)
+		draw_circle(start, lerpf(1.0, 3.0, swell), Color(color, flash), true, -1.0, false)
+		draw_circle(start, lerpf(0.0, 1.5, swell), Color(_CORE_COLOR, flash), true, -1.0, false)
 		return
+	var progress: float = (_age - _BOLT_MUZZLE_SECONDS) / _flight_seconds()
+	if progress >= 1.0:
+		return
+	# The muzzle glow dies off as the bolt leaves it.
+	if progress < 0.3:
+		draw_circle(start, lerpf(2.0, 0.0, progress / 0.3), Color(color, Juice.soften_flash(0.8)), true, -1.0, false)
 
-	var beam_age: float = _age - _LASER_CHARGE_SECONDS
-	var fade: float = clampf((beam_age - _hold_seconds()) / _LASER_FADE_SECONDS, 0.0, 1.0)
-	var alpha: float = 1.0 - fade
-	# Flickers between widths on alternate frames: a steady line reads as a
-	# drawn line, a shimmering one as energy.
-	var flicker: bool = Engine.get_frames_drawn() % 2 == 0
-	var halo: float = lerpf(3.0 if flicker else 4.0, 1.0, fade)
-	draw_line(start, end, Color(color, alpha), halo, false)
-	if fade < 0.6:
-		draw_line(start, end, Color(_CORE_COLOR, alpha), 1.0, false)
-	draw_circle(start, lerpf(3.0, 1.0, fade), Color(color, alpha), true, -1.0, false)
+	var tip_point: Vector2 = _bolt_tip(progress)
+	var heading: Vector2 = (to - from).normalized()
+	if heading == Vector2.ZERO:
+		return
+	# The streak grows out of the muzzle to full length, then keeps it.
+	var length: float = minf(_BOLT_LENGTH, from.distance_to(tip_point))
+	var tip: Vector2 = to_local(tip_point)
+	var tail: Vector2 = to_local(tip_point - heading * length)
+	# A soft halo, a coloured glow, and a hot core that stops short of the
+	# tail, so the bolt has a white head and a coloured trailing edge.
+	draw_line(tail, tip, Color(color, 0.35), 5.0, false)
+	draw_line(tail, tip, color, 3.0, false)
+	draw_line(to_local(tip_point - heading * maxf(0.0, length - 3.0)), tip, _CORE_COLOR, 1.0, false)
+	draw_rect(Rect2(tip.floor(), Vector2.ONE), _CORE_COLOR)
 
 
 # ── Missile ────────────────────────────────────────────────────────────────────
@@ -277,7 +305,7 @@ func _draw_impact(progress: float) -> void:
 	var reach: float = lerpf(2.0, 9.0 if big else 6.0, sqrt(progress))
 	var core: float = lerpf(3.0 if big else 2.0, 0.0, progress)
 	if core > 0.5:
-		draw_circle(at, core, Color(_CORE_COLOR, alpha), true, -1.0, false)
+		draw_circle(at, core, Color(_CORE_COLOR, Juice.soften_flash(alpha)), true, -1.0, false)
 	for i: int in range(8):
 		var direction: Vector2 = Vector2.RIGHT.rotated(TAU * i / 8.0 + 0.4)
 		var spoke_color: Color = _FLAME_COLOR if big and i % 2 == 0 else color

@@ -37,8 +37,8 @@ extends Resource
 ## The base numeric amount for this effect.
 ## For HITSTOP, SLOW_MO and GLITCH_BURST it is a duration in milliseconds;
 ## for SCREEN_SHAKE it is the strength (1 small, 2 large, 3 large + glitch);
-## for LASER how long the beam holds and for MISSILE how long it flies, in
-## milliseconds (0 takes the default).
+## for LASER, MISSILE and ION_BOLT how long the shot flies, in milliseconds
+## (0 takes the default: a LASER bolt's comes from its distance).
 @export var amount: int = 0
 
 ## Floating-point multiplier. Used by AMOUNT_MODIFIER/MULTIPLY.

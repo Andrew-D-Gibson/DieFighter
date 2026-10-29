@@ -183,9 +183,9 @@ static func stream(parent: Node, from: Vector2, to: Vector2, color: Color, count
 	return flow.total_seconds()
 
 
-## A laser or missile (see JuiceProjectile.Style) from `from` to `to`, on the
-## game's pixel grid. With a `target`, the shot follows that node's anchor in
-## flight instead of `to`. `seconds` is how long a laser holds or a missile
+## A blaster bolt, missile or ion orb (see JuiceProjectile.Style) from `from`
+## to `to`, on the game's pixel grid. With a `target`, the shot follows that
+## node's anchor in flight instead of `to`. `seconds` is how long the shot
 ## flies; zero takes the style's default. Returns the seconds until impact.
 static func projectile(parent: Node, from: Vector2, to: Vector2, color: Color,
 		style: JuiceProjectile.Style, seconds: float = 0.0, target: Node2D = null) -> float:
