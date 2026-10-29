@@ -208,6 +208,9 @@ between turns and starts full every fight (`TileCountdown`, kept in
 - Anything can count a tile down: `COUNT_DOWN` acts on every countdown tile
   in `targets` (Fuse Cutter uses `TARGET_OTHER_COUNTDOWN_TILES` and gates
   on `OTHER_COUNTDOWN_ON_GRID`). A tile that activates twice counts twice.
+- A payout that hands out dice must refuse holograms
+  (`ACTIVATOR_DIE_NOT_HOLOGRAPHIC`), or its own holograms can run it out
+  again forever (Fabricator).
 - Art: no die slot. Leave a 9×7 readout window at (6, 15) in the panel's
   darkest shade; `CountdownReadout` draws what's left there in lit 3×5
   digits (two at most, so N ≤ 99).
