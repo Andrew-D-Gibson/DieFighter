@@ -363,6 +363,7 @@ func _randomize_sector_scenarios() -> void:
 	)
 
 	current_game_save.current_scenario_index = starting_scenario_index
+	current_game_save.arrival_index = starting_scenario_index
 	current_game_save.sector_scenarios.insert(
 		current_game_save.current_scenario_index,
 		_pick_arrival_scenario()
@@ -474,6 +475,19 @@ func _pick_arrival_scenario() -> ScenarioResource:
 		unused = question_scenarios
 
 	return RNGManager.pick_random(RNGManager.Bucket.RUN, unused)
+
+
+## Whether map [param slot] of the current sector must be free of place
+## rules: sector 1, within one jump of where the run began. A new player's
+## first jump (the tutorial's included) is the first fight they choose, and a
+## rule on top of it is one new thing too many. Worked out from the save, not
+## from whether the tutorial is running, so a Continue lands under the same
+## sky. See RandomBackgroundResource.get_random_background().
+func is_rule_free_slot(slot: int) -> bool:
+	if current_game_save == null or current_game_save.sector_index != 0:
+		return false
+	var start: int = current_game_save.arrival_index
+	return start >= 0 and absi(slot - start) <= _LONGEST_JUMP
 
 
 ## Enemy health and shields are multiplied by this at spawn time

@@ -558,6 +558,11 @@ encounter.
 - `hazard`: an optional timed event (§6). Never both: the environment monitor
   has one screen.
 
+A run's first stops are rule-free: in sector 1, any stop within one jump of
+the arrival draws only from its pool's backgrounds without a
+`global_modifier` (`GameStateManager.is_rule_free_slot`). Keep at least one
+rule-free background in `all_basic_backgrounds.tres`.
+
 To make a background appear, add it to a pool's `eligible_backgrounds`
 (`RandomBackgroundResources/all_basic_backgrounds.tres`), or make a new pool
 for specific scenarios. A pool can also take in another (`includes_pool`)

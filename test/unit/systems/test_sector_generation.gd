@@ -122,3 +122,87 @@ func test_the_gate_keeps_a_seeded_maps_layout() -> void:
 	for distance: int in [4, 5, 6]:
 		assert_true(sector[arrival + distance] in manager.combat_scenarios,
 			"and an ordinary fight %d to the right" % distance)
+
+
+# ── A run's first stops are free of place rules ──────────────────────────────
+
+const BASIC_BACKGROUNDS: String = "res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres"
+
+
+func test_a_rule_free_draw_never_lands_under_a_rule() -> void:
+	var pool: RandomBackgroundResource = load(BASIC_BACKGROUNDS)
+	var rng := RandomNumberGenerator.new()
+	for i: int in range(200):
+		rng.seed = i
+		assert_null(pool.get_random_background(rng, true).global_modifier)
+
+
+func test_an_ordinary_draw_still_can() -> void:
+	var pool: RandomBackgroundResource = load(BASIC_BACKGROUNDS)
+	var rng := RandomNumberGenerator.new()
+	var ruled: bool = false
+	for i: int in range(200):
+		rng.seed = i
+		ruled = ruled or pool.get_random_background(rng).global_modifier != null
+	assert_true(ruled)
+
+
+func test_a_rule_free_draw_is_still_one_draw() -> void:
+	var pool: RandomBackgroundResource = load(BASIC_BACKGROUNDS)
+	var plain := RandomNumberGenerator.new()
+	var calm := RandomNumberGenerator.new()
+	plain.seed = 7
+	calm.seed = 7
+	pool.get_random_background(plain)
+	pool.get_random_background(calm, true)
+	assert_eq(calm.state, plain.state, "the stream after the pick is unchanged")
+
+
+func test_a_pool_with_only_ruled_backgrounds_draws_as_usual() -> void:
+	var pool := RandomBackgroundResource.new()
+	pool.eligible_backgrounds = [load("res://Source/Resources/BackgroundResources/pulsar_field.tres")]
+	assert_not_null(pool.get_random_background(RandomNumberGenerator.new(), true))
+
+
+func test_slots_within_a_jump_of_the_arrival_are_rule_free() -> void:
+	var manager: GameStateManager = _main_state_manager()
+	_roll_sector(manager, TUTORIAL_SEED, 0)
+	var arrival: int = manager.current_game_save.arrival_index
+	assert_eq(arrival, manager.current_game_save.current_scenario_index)
+	for distance: int in range(-6, 7):
+		assert_true(manager.is_rule_free_slot(arrival + distance), "%+d" % distance)
+	assert_false(manager.is_rule_free_slot(arrival + 7))
+	# The slot is emptied once the player leaves it; the record isn't.
+	manager.current_game_save.current_scenario_index = arrival + 4
+	assert_true(manager.is_rule_free_slot(arrival + 4))
+
+
+func test_later_sectors_have_no_rule_free_slots() -> void:
+	var manager: GameStateManager = _main_state_manager()
+	_roll_sector(manager, TUTORIAL_SEED, 1)
+	assert_false(manager.is_rule_free_slot(manager.current_game_save.arrival_index))
+
+
+func test_an_old_save_without_an_arrival_has_none() -> void:
+	var manager: GameStateManager = _main_state_manager()
+	manager.current_game_save.arrival_index = -1
+	assert_false(manager.is_rule_free_slot(0))
+
+
+func test_the_tutorials_first_jump_lands_rule_free() -> void:
+	# The jump step promises a fight 4, 5 or 6 to the right. Drawn the way
+	# BackgroundManager draws it: the slot's own seed, then the pick.
+	var manager: GameStateManager = _main_state_manager()
+	var sector: Array[ScenarioResource] = _roll_sector(manager, TUTORIAL_SEED, 0)
+	var arrival: int = manager.current_game_save.arrival_index
+	for distance: int in [4, 5, 6]:
+		var slot: int = arrival + distance
+		var scenario: ScenarioResource = sector[slot]
+		var pool: RandomBackgroundResource = scenario.background_resource as RandomBackgroundResource
+		if pool == null:
+			continue
+		RNGManager.seed_scenario(hash([scenario.scenario_seed, slot]))
+		var background: BackgroundResource = pool.get_random_background(
+			RNGManager.get_rng(RNGManager.Bucket.BACKGROUND), manager.is_rule_free_slot(slot)
+		)
+		assert_null(background.global_modifier, "%s at +%d" % [scenario.resource_path.get_file(), distance])

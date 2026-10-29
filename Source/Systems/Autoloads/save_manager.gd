@@ -64,6 +64,7 @@ func write_save(game_save: GameSaveResource) -> void:
 		"money": game_save.money,
 		"current_scenario_index": game_save.current_scenario_index,
 		"sector_index": game_save.sector_index,
+		"arrival_index": game_save.arrival_index,
 		"sector_scenarios": sector_scenarios_data,
 		"tile_locations": tile_locations_data,
 		"map_state": game_save.map_state,
@@ -109,6 +110,7 @@ func read_save() -> GameSaveResource:
 	game_save.money = int(data.get("money", 0))
 	game_save.current_scenario_index = int(data.get("current_scenario_index", 0))
 	game_save.sector_index = int(data.get("sector_index", 0))
+	game_save.arrival_index = int(data.get("arrival_index", -1))
 	# A save from before ships had none: it flew the default one.
 	game_save.ship_id = StringName(data.get("ship_id", ShipCatalog.DEFAULT_ID))
 
