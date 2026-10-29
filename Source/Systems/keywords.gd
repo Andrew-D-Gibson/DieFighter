@@ -42,6 +42,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Ion": "Deals double [color=blue]damage[/color] to shields and none to the hull. Damage the shields can't absorb is lost.",
 	"Boost": "If you have that much [color=purple]engine charge[/color], it's spent for the extra effect. If not, the tile works without it.",
 	"Locked": "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
+	"Echo": "That tile activates twice, but hands its die on once. Tiles that ignore Echo are skipped. Lapses when your turn ends.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
@@ -76,6 +77,7 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(locked)":     {"label": "Locked",     "term": "Locked"},
 	"(lock)":       {"label": "Lock",       "term": "Locked"},
 	"(boost)":      {"label": "Boost",      "term": "Boost"},
+	"(echo)":       {"label": "Echo",       "term": "Echo"},
 }
 
 const _KEYWORD_COLOR: String = "orange"

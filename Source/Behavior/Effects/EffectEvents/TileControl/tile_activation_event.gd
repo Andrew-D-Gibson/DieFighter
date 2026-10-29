@@ -8,6 +8,10 @@ var tile: Tile
 ## "tiles activated by a 4 activate twice").
 var activation_repetitions: int = 1
 
+## Set by the echo that doubled this activation, so a second echo in play
+## leaves it alone and waits for the next tile (echoes queue, not stack).
+var echoed: bool = false
+
 ## How many Feeds brought the die here; see EffectContext.feed_depth.
 var feed_depth: int = 0
 

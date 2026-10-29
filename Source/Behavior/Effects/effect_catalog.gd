@@ -173,6 +173,8 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.PASS_DIE_TO_TILE, label = "Pass Die to Tile", handler = PassDieToTileHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER, label = "Add Death Save Modifier", handler = AddDeathSaveModifierHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.FEED_HOLOGRAM, label = "Feed Hologram", handler = FeedHologramHandler},
+	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.COUNT_DOWN, label = "Count down (reserved)", reserved = true},
+	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ARM_ECHO, label = "Arm Echo", handler = ArmEchoHandler},
 
 	# ── SCENARIO_CONTROL ──────────────────────────────────────────
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.OPEN_SHOP, label = "Open Shop", handler = OpenShopHandler},

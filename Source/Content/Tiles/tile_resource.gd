@@ -43,5 +43,11 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 ## need a lockable-only random pick, or a random lockout would fizzle on it.
 @export var can_be_locked_out: bool = true
 
+## Whether an echo (EchoModifier) may repeat this tile. Off for a tile whose
+## effect compounds on itself (Fortress Protocol doubling shields), where a
+## second pass multiplies rather than adds. An echo skips such a tile and
+## waits for the next one.
+@export var can_be_echoed: bool = true
+
 ## This limit is ignored when the max dice allowed in queue is -1
 @export var max_dice_in_queue: int = -1

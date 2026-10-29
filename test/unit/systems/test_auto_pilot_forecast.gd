@@ -281,3 +281,52 @@ func test_a_jammed_player_forecasts_only_the_hand_off() -> void:
 	assert_eq(forecast.damage.get(ship, 0.0), 0.0)
 	assert_eq(forecast.handoffs.size(), 1)
 	assert_eq(forecast.handoffs[0].ship, ship)
+
+
+func _arm_echo_step() -> EffectData:
+	return Effects.data(Cat.TILE_CONTROL, EffectEnums.TileControlSubtype.ARM_ECHO)
+
+
+## A relay that arms an echo and Feeds right, at (0, 0), with [param next] at
+## (1, 0) on a live engine.
+func _echo_relay_into(next: Tile) -> Tile:
+	var feed_right := Effects.data(Cat.TARGETING, Targeting.TARGET_TILE_WITH_OFFSET)
+	feed_right.grid_offset = Vector2i(1, 0)
+	var effects: Array[EffectData] = [
+		_arm_echo_step(), feed_right,
+		Effects.data(Cat.TILE_CONTROL, EffectEnums.TileControlSubtype.PASS_DIE_TO_TILE),
+	]
+	var relay: Tile = _tile(effects)
+	_player_with([] as Array[StringName], relay)
+	Globals.tile_grid.set_cells([Vector2i(0, 0), Vector2i(1, 0)] as Array[Vector2i])
+	Globals.tile_grid.tile_locations[Vector2i(1, 0)] = next
+	next.tile_resource.uses_per_turn = -1
+	next.uses_remaining = -1
+	return relay
+
+
+func test_an_echo_waiting_doubles_the_next_tile() -> void:
+	var ship: Enemy = _ship()
+	var cannon: Tile = _cannon()
+	_player_with([] as Array[StringName], cannon)
+	ScenarioEngine.current().add_modifier(EchoModifier.new())
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(cannon, _die(5), ship, Ships.roster([ship]))
+	assert_eq(forecast.damage.get(ship, 0.0), 10.0)
+	assert_eq(forecast.handoffs.size(), 1, "the die still goes once")
+
+
+func test_an_echo_relay_doubles_the_tile_it_feeds() -> void:
+	var ship: Enemy = _ship()
+	var relay: Tile = _echo_relay_into(_cannon())
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(relay, _die(4), ship, Ships.roster([ship]))
+	assert_eq(forecast.damage.get(ship, 0.0), 8.0)
+	assert_eq(forecast.tile_tricks, 0.0, "the echo was spent on the forecast's own tile")
+
+
+func test_an_echo_with_nothing_to_feed_counts_as_a_trick() -> void:
+	var ship: Enemy = _ship()
+	var effects: Array[EffectData] = [_arm_echo_step(), _targeted(), _give()]
+	var tile: Tile = _tile(effects)
+	_player_with([] as Array[StringName], tile)
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(tile, _die(4), ship, Ships.roster([ship]))
+	assert_eq(forecast.tile_tricks, 1.0)
