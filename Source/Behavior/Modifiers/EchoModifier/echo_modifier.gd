@@ -74,6 +74,9 @@ static func can_echo(activation: TileActivationEvent, engine: ScenarioEngine) ->
 	# Spending it on a die the tile turns away would waste it for nothing.
 	if not tile.activation_refusal(activation.activator_die).is_empty():
 		return false
+	# A twin-dice tile's first die is only held: the echo waits for the payout.
+	if tile.is_hold(activation.activator_die):
+		return false
 	return not repetitions_held(tile, engine)
 
 

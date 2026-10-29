@@ -169,6 +169,10 @@ enum AmountModifierSubtype {
 	SET_RANDOM,
 	## Set running_amount to the first target's shields (0 without a target).
 	SET_TO_TARGET_SHIELDS,
+	## Add the face of the die the source tile is holding (KEEP_DIE_WITH_TILE)
+	## to running_amount; adds nothing when it holds none. The twin-dice tiles
+	## pay out on both dice with it.
+	ADD_HELD_DIE_VALUE,
 }
 
 
@@ -208,6 +212,10 @@ enum DiceControlSubtype {
 	## half (rounded up) and a hologram showing the rest joins the player's
 	## hand. A 1 can't split and is left as it is.
 	SPLIT_ACTIVATOR,
+	## The die the source tile is holding goes to the first target, the way
+	## GIVE_DIE_TO_TARGET sends the activator. Twin-dice tiles pay out with
+	## both dice handed over.
+	GIVE_HELD_DIE_TO_TARGET,
 }
 
 
