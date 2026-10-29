@@ -7,49 +7,11 @@
 [ext_resource type="Texture2D" uid="uid://du6m84ww3qom3" path="res://Assets/Textures/Enemies/EnemyHealthBar/health_change.png" id="4_a8y0g"]
 [ext_resource type="Texture2D" uid="uid://dd2n0ygx4cd8m" path="res://Assets/Textures/Enemies/EnemyHealthBar/Health fill.png" id="5_4clo8"]
 [ext_resource type="Texture2D" uid="uid://cpt07rjx3fdiq" path="res://Assets/Textures/Enemies/EnemyHealthBar/bar_over.png" id="6_eq3o7"]
-[ext_resource type="Texture2D" uid="uid://du7woevewptwn" path="res://Assets/Textures/Enemies/AttitudeIndicator/attitidue_indicator-Sheet.png" id="8_8maxl"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_02ocs"]
-atlas = ExtResource("8_8maxl")
-region = Rect2(0, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_p42et"]
-atlas = ExtResource("8_8maxl")
-region = Rect2(16, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_nigrb"]
-atlas = ExtResource("8_8maxl")
-region = Rect2(32, 0, 16, 16)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_cn5vf"]
-atlas = ExtResource("8_8maxl")
-region = Rect2(48, 0, 16, 16)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_updgl"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_02ocs")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_p42et")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_nigrb")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_cn5vf")
-}],
-"loop": 1,
-"name": &"default",
-"speed": 5.0
-}]
 
 [node name="EnemyHealthBar" type="Node2D" unique_id=781179634]
 script = ExtResource("1_xmwdm")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=932578153]
-position = Vector2(-12, -12)
 texture = ExtResource("2_6xma5")
 
 [node name="Shields" type="Sprite2D" parent="." unique_id=1197467291]
@@ -113,9 +75,3 @@ bbcode_enabled = true
 text = "10
 "
 horizontal_alignment = 1
-
-[node name="AttitudeIndicator" type="AnimatedSprite2D" parent="." unique_id=797070171]
-z_index = 1
-position = Vector2(-13, -7)
-sprite_frames = SubResource("SpriteFrames_updgl")
-frame = 1

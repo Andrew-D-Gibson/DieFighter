@@ -13,7 +13,8 @@ extends Node2D
 ## The scene to instantiate when the enemy dies
 @export var death_explosion: PackedScene
 
-## The component that displays the enemy's health and attitude
+## The component that displays the enemy's health and shields. Its attitude
+## shows on the targeting computer instead (AttitudeDisplay).
 @export var health_bar: EnemyHealthBar
 
 ## How far set_ship_raised() lifts the ship: past the dice (two above a ship),
@@ -165,11 +166,6 @@ func set_health_bar_position(pos: Vector2, duration: float = 0.0) -> void:
 	_health_bar_tween.tween_property(health_bar, "position", pos, duration)\
 		.set_trans(Tween.TRANS_QUAD)\
 		.set_ease(Tween.EASE_IN_OUT)
-
-
-## Updates the health bar's attitude indicator
-func set_health_bar_attitude(attitude: Enemy.Attitude) -> void:
-	health_bar.set_attitude_indicator(attitude)
 
 
 ## Sets up the health bar with the given health component

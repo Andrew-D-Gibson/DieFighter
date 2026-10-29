@@ -15,6 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://brya2gd3t851s" path="res://Assets/Textures/TargetingComputer/reveal_overlay.png" id="13_du4uj"]
 [ext_resource type="Shader" uid="uid://4sn3gy37h8dt" path="res://Assets/Shaders/targeting_computer_reveal_shader.gdshader" id="13_y72xu"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/TargetingComputer/EnvironmentMonitor/environment_monitor.tscn" id="14_envmon"]
+[ext_resource type="PackedScene" uid="uid://ctdaxn5103h74" path="res://Source/Systems/Game/TargetingComputer/attitude_display.tscn" id="15_attitude"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_du4uj"]
 shader = ExtResource("10_chiev")
@@ -228,13 +229,17 @@ material = SubResource("ShaderMaterial_du4uj")
 position = Vector2(0, 0.6)
 texture = ExtResource("11_ysc67")
 
+[node name="AttitudeDisplay" parent="." instance=ExtResource("15_attitude")]
+unique_name_in_owner = true
+z_index = -1
+
 [node name="TargetImage" type="Sprite2D" parent="." unique_id=1311294319]
-position = Vector2(0, -7.5)
+position = Vector2(1, -7.5)
 texture = ExtResource("4_8uv0v")
 
 [node name="TargetImageFill" type="AnimatedSprite2D" parent="." unique_id=72504211]
 z_index = -2
-position = Vector2(5, 0.5)
+position = Vector2(6, 0.5)
 sprite_frames = SubResource("SpriteFrames_0asw0")
 animation = &"static"
 autoplay = "static"
@@ -270,7 +275,7 @@ hover_for_info = false
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CommsButton" unique_id=1720448303]
-position = Vector2(2.5, -7.5)
+position = Vector2(3.5, -7.5)
 shape = SubResource("RectangleShape2D_comms")
 
 [node name="Intents" type="Node2D" parent="." unique_id=768132844]

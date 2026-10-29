@@ -82,6 +82,12 @@ func _ready() -> void:
 		_update_ui()
 	)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
+	# A civilian turning hostile (or a raider standing down) recolours the
+	# computer straight away, not at the next redraw.
+	Events.ship_scenario_state_changed.connect(func(ship: Enemy) -> void:
+		if ship == targeted_enemy:
+			_show_attitude()
+	)
 
 	Events.jump.connect(_target_nothing)
 
@@ -313,6 +319,7 @@ func _update_ui() -> void:
 	_redraw_generation += 1
 	var generation: int = _redraw_generation
 	_show_bound_arrows()
+	_show_attitude()
 	if !targeted_enemy or targeted_enemy_index == -1:
 		_hide_indicator()
 		
@@ -362,6 +369,11 @@ func _update_ui() -> void:
 		# A later redraw owns the fill now; with no target it has to stay up.
 		if generation == _redraw_generation:
 			$TargetImageFill.z_index = -2
+
+
+func _show_attitude() -> void:
+	var ship: Enemy = targeted_enemy if is_instance_valid(targeted_enemy) and targeted_enemy_index != -1 else null
+	%AttitudeDisplay.show_ship(ship)
 
 
 ## Lights slot [param i]'s die face and intent when the targeted enemy holds

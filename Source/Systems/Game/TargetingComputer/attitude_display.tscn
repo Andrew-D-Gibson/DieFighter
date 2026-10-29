@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://ctdaxn5103h74"]
+
+[ext_resource type="Script" uid="uid://chdhw2oxmuqiv" path="res://Source/Systems/Game/TargetingComputer/attitude_display.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://clx17o01llit0" path="res://Assets/Textures/TargetingComputer/targeting_computer_bezel_mask.png" id="2_bezel"]
+[ext_resource type="Texture2D" uid="uid://dpmgkohhwcxf5" path="res://Assets/Textures/TargetingComputer/targeting_computer_image_frame_mask.png" id="3_frame"]
+[ext_resource type="Texture2D" uid="uid://f0c51a8w0u6m" path="res://Assets/Textures/TargetingComputer/attitude_face-Sheet.png" id="4_face"]
+
+[node name="AttitudeDisplay" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="BezelTint" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("2_bezel")
+offset = Vector2(0, 0.6)
+
+[node name="ImageFrameTint" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("3_frame")
+offset = Vector2(0, 0.6)
+
+[node name="Face" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(-15, -15.5)
+texture = ExtResource("4_face")
+centered = false
+hframes = 3
