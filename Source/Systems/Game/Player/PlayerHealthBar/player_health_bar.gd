@@ -1,7 +1,6 @@
 class_name PlayerHealthBar
 extends HealthBarController
 
-const _HULL_INFO_TEXTURE: Texture2D = preload("uid://cdul5hb8yotks")
 const _SHIELDS_INFO_TEXTURE: Texture2D = preload("uid://cm0dbq7jogf17")
 
 ## Shield sprite frames, strongest first.
@@ -73,7 +72,8 @@ func _snap_online() -> void:
 func _show_hull_info() -> void:
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = "[color=red]Hull[/color]"
-	info.texture = _HULL_INFO_TEXTURE
+	# The hull as it stands, not a stock picture of one.
+	info.texture = HullInfoArt.texture_for(health_component.health, health_component.max_health)
 	info.bottom_label_text = "If [color=red]Hull[/color] reaches 0, your ship is destroyed"
 	var statuses: String = _status_summary()
 	if not statuses.is_empty():
