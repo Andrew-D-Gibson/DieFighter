@@ -283,7 +283,9 @@ value before its STREAM.
     `ALLY_EXISTS`, `HOSTILE_SHIP_EXISTS`, `ALLY_HURT`, `SELF_HURT` (with
     `hull_fraction`), `ATTITUDE_IS`, `ALLIES_AT_MOST` (with `count`; gate a
     launcher on it so it can't fill the board), `SELF_HAS_STATUS` (with an
-    optional `status_id`; gates Purge Vents), plus `invert`.
+    optional `status_id`), plus `invert`. An action that vents its own
+    statuses (`TRANSFER_STATUSES`, Purge Vents) is only rolled while the
+    ship has one, read off the chain; nothing to set.
   - `situational_weights`: `EnemyActionWeightRule` = a condition and a
     multiplier.
   - `strength_tier_override`: how strong the action counts as for
@@ -318,6 +320,12 @@ value before its STREAM.
   hang off the side without landing on a neighbour; when a crowded board
   can't fit that, every bar moves to `compact_health_bar_position` (default
   just above a 32px hull). Set it for a ship whose hull is much taller.
+
+**Ally support waits for sector 2.** A ship with any action bound to an
+ally (Repair Beam, Aegis Link, Relay, Holo Loader: `Binding.ALLY`) is never
+dealt into sector 1, and neither is any encounter it starts in
+(`EnemyResource.earliest_sector()`, `ScenarioResource.allowed_in_sector()`).
+Read off the actions, nothing to set; `test_sector_generation.gd` checks it.
 
 **Faction** isn't on the enemy; it's on the scenario's ship state (§4). Who
 allies with whom, and who raids whom, is `FactionRelations`
@@ -557,6 +565,12 @@ encounter.
 - `hazard`: an optional timed event (§6). Never both: the environment monitor
   has one screen.
 
+A run's first stops are rule-free: in sector 1, any stop within one jump of
+the arrival draws only from its pool's backgrounds with neither a
+`global_modifier` nor a `hazard` (`GameStateManager.is_rule_free_slot`). A
+one-background pool built around its hazard keeps it. Keep at least one
+plain background (star field) in `all_basic_backgrounds.tres`.
+
 To make a background appear, add it to a pool's `eligible_backgrounds`
 (`RandomBackgroundResources/all_basic_backgrounds.tres`), or make a new pool
 for specific scenarios. A pool can also take in another (`includes_pool`)
@@ -567,7 +581,17 @@ minus some backgrounds (`excluded_backgrounds`).
 - `modifier_name` (a place name, caps on the banner), `description`, `color`,
   optional `icon`.
 - `effect`: SHIELD_BLACKOUT, DOUBLE_DAMAGE, REPAIR_BLACKOUT, ENGINE_BLACKOUT,
-  REROLL_BLACKOUT, NO_REPETITION or AMOUNT_CAP (with `amount_cap`).
+  REROLL_BLACKOUT, NO_REPETITION, AMOUNT_CAP (with `amount_cap`) or
+  DICE_FREEZE (no face changes at all; Flash Freeze) or ONCE_PER_TURN
+  (every grid tile activates once a turn, the engine is immune; Dead
+  Systems). A rule that caps tile uses overrides
+  `Modifier.get_tile_use_cap(tile)`: `Tile.max_uses_per_turn()` reads it, so
+  the lights, gray-out and refusal follow with no art changes.
+
+**A new way to change a die's face** (a new event) must override
+`EffectEvent.changes_die_values()` to return true, or Flash Freeze won't stop
+it. A face change outside an event (Scrambled's) asks
+`DiceFreezeModifier.active_on(engine)` and calls `announce_triggered()` on it.
 
 **New kind of rule:**
 1. Write a `Modifier` subclass in `Source/Behavior/Modifiers/BackgroundModifiers/`.

@@ -41,6 +41,7 @@ func _sample_save() -> GameSaveResource:
 	save.money = 42
 	save.current_scenario_index = 3
 	save.sector_index = 1
+	save.arrival_index = 2
 
 	var scenario: ScenarioResource = load(SCENARIO_PATH)
 	scenario.scenario_seed = 123456
@@ -76,6 +77,7 @@ func test_a_save_round_trips() -> void:
 	assert_eq(loaded.money, 42)
 	assert_eq(loaded.current_scenario_index, 3)
 	assert_eq(loaded.sector_index, 1)
+	assert_eq(loaded.arrival_index, 2)
 
 	assert_eq(loaded.sector_scenarios.size(), 1)
 	assert_eq(loaded.sector_scenarios[0].resource_path, SCENARIO_PATH)
@@ -91,6 +93,14 @@ func test_the_ship_round_trips() -> void:
 	save.ship_id = &"outrigger"
 	saves.write_save(save)
 	assert_eq(saves.read_save().ship_id, &"outrigger")
+
+
+func test_a_save_from_before_arrival_index_knows_no_arrival() -> void:
+	saves.write_save(_sample_save())
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(TEST_SAVE_PATH))
+	raw.erase("arrival_index")
+	_write_raw(raw)
+	assert_eq(saves.read_save().arrival_index, -1)
 
 
 func test_a_save_from_before_ships_flies_the_default_ship() -> void:

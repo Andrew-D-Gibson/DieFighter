@@ -2,6 +2,11 @@ class_name RerollAllDiceEvent
 extends EffectEvent
 
 
+## See EffectEvent.changes_die_values().
+func changes_die_values() -> bool:
+	return true
+
+
 func resolve(engine: ScenarioEngine) -> void:
 	var all_dice: Array[Node] = engine.get_tree().get_nodes_in_group("Dice")
 

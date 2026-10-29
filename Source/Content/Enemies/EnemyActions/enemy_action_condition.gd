@@ -23,7 +23,8 @@ enum Type {
 	## launcher from filling the board.
 	ALLIES_AT_MOST,
 	## This ship has a status on it ([member status_id], or any when empty).
-	## Gates an action that vents its statuses at the player.
+	## A vent (TRANSFER_STATUSES) already needs some status, read off its
+	## chain; use this to wait for a particular one.
 	SELF_HAS_STATUS,
 }
 

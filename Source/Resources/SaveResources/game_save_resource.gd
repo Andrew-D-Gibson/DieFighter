@@ -29,6 +29,11 @@ extends Resource
 ## win condition.
 @export var sector_index: int = 0
 
+## The slot the player dropped into when this sector was rolled. The map
+## empties that slot once it's left, so this is the only record of where the
+## sector began. -1 in a save that predates it.
+@export var arrival_index: int = -1
+
 @export_category('Run State')
 ## Per-tile persistent counters (Tile.effect_data), keyed by grid position.
 ## They outlive a scenario, so a tile rebuilt from its resource on load would

@@ -58,7 +58,7 @@ func _ready() -> void:
 		_set_background(starting_background)
 
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
-		_set_background(scenario.background_resource)
+		_set_background(scenario.background_resource, _arrival_is_rule_free())
 	)
 	
 	
@@ -187,12 +187,21 @@ func _clear_children() -> void:
 			children[i].queue_free()
 	
 	
-func _set_background(background_resource: Resource) -> void:
+## A run's first stops never land under a rule; see
+## GameStateManager.is_rule_free_slot(). Globals.map already points at the
+## destination when load_scenario fires.
+func _arrival_is_rule_free() -> bool:
+	return Globals.state_manager != null and is_instance_valid(Globals.map) \
+		and Globals.state_manager.is_rule_free_slot(Globals.map.current_scenario_index)
+
+
+## [param rule_free]: draw from a random pool's backgrounds without a rule.
+func _set_background(background_resource: Resource, rule_free: bool = false) -> void:
 	_clear_children()
 
 	if background_resource.has_method("get_random_background"):
 		var selected_bg: Resource = background_resource.get_random_background(
-			RNGManager.get_rng(RNGManager.Bucket.BACKGROUND)
+			RNGManager.get_rng(RNGManager.Bucket.BACKGROUND), rule_free
 		)
 		if selected_bg:
 			_set_background(selected_bg)

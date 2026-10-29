@@ -274,6 +274,24 @@ func _compute_binding() -> Binding:
 	return Binding.NONE
 
 
+## Whether this action helps another ship on its own side: repairs or
+## shields it, feeds it a die or conjures it one. Read off the binding, since
+## every one of those acts on a bound ally.
+func assists_ally() -> bool:
+	return get_binding() == Binding.ALLY
+
+
+## Whether this action moves the acting ship's own statuses onto someone
+## (Purge Vents). With nothing on the ship it would do nothing, so the
+## selector never rolls it for a ship that has no status to give.
+func vents_own_statuses() -> bool:
+	if not _derived.has(&"vents_statuses"):
+		_derived[&"vents_statuses"] = int(_has_step(
+			EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES
+		))
+	return bool(_derived[&"vents_statuses"])
+
+
 func get_relay() -> Relay:
 	if not _derived.has(&"relay"):
 		_derived[&"relay"] = _compute_relay()

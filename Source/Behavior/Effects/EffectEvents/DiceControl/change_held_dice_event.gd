@@ -28,6 +28,11 @@ const _ROLL_SFX: SoundEffectResource = preload(
 )
 
 
+## See EffectEvent.changes_die_values().
+func changes_die_values() -> bool:
+	return true
+
+
 func resolve(engine: ScenarioEngine) -> void:
 	var dice: Array[Dice] = []
 	for target: Node in targets:

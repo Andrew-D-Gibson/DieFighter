@@ -125,3 +125,6 @@ CURSOR_HINT_CLICK_FOR_INFO,Click again for info,,,,,,,,"One-line hint beside the
 CURSOR_HINT_CLICK_TO_PLACE,Click to place it,,,,,,,,"One-line hint beside the mouse cursor, shown the first few times a die or tile is picked up with Click placement, once the cursor has moved: the next click puts it down there",22,,
 CALLOUT_UPGRADED,UPGRADED!,,,,,,,,"Callout over a tile the moment it becomes its upgraded version",,,
 INFO_TILE_UPGRADE,[color=yellow]Drop a copy on it[/color] -> Upgrade:,,,,,,,,"Info panel, under a tile's description: heads the line showing what the tile does once upgraded. BBCode stays as is.",,,
+MOD_TRIGGER_FROZEN,FROZEN,,,,,,,,"Callout floated off the environment monitor when the Flash Freeze region rule stops a die's value from changing (a reroll, a bump, a flip). Short, shouted, like NO SHIELDS.",10,,
+TILE_INFO_ONCE_PER_TURN,"{rule}: activates [color=yellow]once a turn[/color] here",,,,,,,,"Tile info panel, a line added under the tile's description while a region rule (e.g. Dead Systems) limits every tile to one activation per turn. {rule} is the rule's name. Keep the [color] tags.",40,,
+REGION_ALERT_CLOSE,CLOSE,,,,,,,,"Button on the arrival card that explains a region rule or hazard; closes the card (all caps, fits a 35px button)",6,,

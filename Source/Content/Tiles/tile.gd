@@ -26,14 +26,19 @@ var _last_trigger_callout_msec: int = -_TRIGGER_CALLOUT_COOLDOWN_MSEC
 var _death_save_spent: bool = false
 @export var uses_remaining: int = -1:
 	set(new_value):
-		uses_remaining = clampi(new_value, -1, tile_resource.uses_per_turn)
+		var most: int = max_uses_per_turn()
+		# A rule capping an unlimited tile turns "unlimited" into its cap.
+		if new_value < 0 and most != tile_resource.uses_per_turn:
+			new_value = most
+		uses_remaining = clampi(new_value, -1, most)
 
 		if uses_remaining == 0:
 			set_gray_out(true)
 		else:
 			set_gray_out(false)
 
-		if uses_remaining == -1:
+		# Only a tile with a budget of its own has light frames to show.
+		if uses_remaining == -1 or tile_resource.uses_per_turn < 0:
 			sprite_frames.frame = 0
 		else:
 			sprite_frames.frame = uses_remaining
@@ -172,7 +177,7 @@ func _grid_distance_to(other: Tile) -> Vector2i:
 func _set_up_resource() -> void:
 	sprite_frames.sprite_frames = tile_resource.textures
 	ColorSymbolBadge.attach_to_tile_sprite(sprite_frames, tile_resource)
-	uses_remaining = tile_resource.uses_per_turn
+	uses_remaining = max_uses_per_turn()
 	update_dragging_allowed()
 	_apply_upgrade_look()
 
@@ -293,7 +298,8 @@ func _get_tile_info() -> InfoResource:
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine:
 		for mod: Modifier in engine.modifiers:
-			var line: String = mod.get_info_text() if mod.affected_node == self else ""
+			var line: String = mod.get_info_text() if mod.affected_node == self \
+				else mod.get_rule_info_text(self)
 			if not line.is_empty():
 				info.bottom_label_text += "\n\n" + line
 	return info
@@ -402,7 +408,35 @@ func accepts_lockout() -> bool:
 
 
 func reset_uses_remaining() -> void:
-	uses_remaining = tile_resource.uses_per_turn
+	uses_remaining = max_uses_per_turn()
+
+
+## The most uses this tile gets a turn: its own budget, cut down by any rule
+## in play that caps it (Dead Systems, see Modifier.get_tile_use_cap()). -1
+## for unlimited.
+func max_uses_per_turn() -> int:
+	var most: int = tile_resource.uses_per_turn
+	if Engine.is_editor_hint():
+		return most
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine == null:
+		return most
+	for mod: Modifier in engine.modifiers:
+		var cap: int = mod.get_tile_use_cap(self)
+		if cap >= 0 and (most < 0 or cap < most):
+			most = cap
+	return most
+
+
+## Brings the uses left in line with max_uses_per_turn() after a cap comes or
+## goes mid-turn: down to the cap, or an unlimited tile back to unlimited. A
+## tile with its own budget keeps what it had left once a cap lifts.
+func refresh_use_cap() -> void:
+	var most: int = max_uses_per_turn()
+	if most < 0:
+		uses_remaining = -1
+	elif uses_remaining < 0 or uses_remaining > most:
+		uses_remaining = most
 
 
 ## Works out each [data]expression[/data] in [param text] from a tile's

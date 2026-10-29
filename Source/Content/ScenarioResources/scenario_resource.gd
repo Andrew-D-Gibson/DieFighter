@@ -42,3 +42,23 @@ extends Resource
 @export var boss_subtitle: String
 
 var scenario_seed: int = 0
+
+
+## The earliest sector (0 is the first) this encounter may be dealt into: the
+## latest any of its starting ships allows (EnemyResource.earliest_sector).
+func earliest_sector() -> int:
+	var earliest: int = 0
+	for ship: EnemyStateRewardResource in starting_enemies:
+		if ship and ship.enemy_resource:
+			earliest = maxi(earliest, ship.enemy_resource.earliest_sector())
+	return earliest
+
+
+## Only the encounters in [param scenarios] that may be dealt into sector
+## [param sector_index]. See earliest_sector().
+static func allowed_in_sector(scenarios: Array[ScenarioResource], sector_index: int) -> Array[ScenarioResource]:
+	var allowed: Array[ScenarioResource] = []
+	for scenario: ScenarioResource in scenarios:
+		if scenario and scenario.earliest_sector() <= sector_index:
+			allowed.append(scenario)
+	return allowed

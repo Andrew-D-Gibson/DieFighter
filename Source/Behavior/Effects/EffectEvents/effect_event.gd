@@ -42,6 +42,14 @@ func is_amplifiable() -> bool:
 	return true
 
 
+## Whether resolving this changes the face of any die already in play: a
+## reroll, a Bump, a flip, a merge. Flash Freeze (DiceFreezeModifier) cancels
+## every event that says so, so a new way to change a face only has to say so
+## here to be frozen with the rest.
+func changes_die_values() -> bool:
+	return false
+
+
 ## Override this in each concrete event class.
 ## The engine calls this after all before-hooks have run (and not canceled).
 ## Use 'await' here for animations, tweens, or any async work.

@@ -14,13 +14,31 @@ extends Resource
 @export var excluded_backgrounds: Array[BackgroundResource] = []
 
 
-func get_random_background(rng: RandomNumberGenerator) -> BackgroundResource:
+## [param rule_free] leaves out every background with a rule of its own, a
+## permanent one (BackgroundModifierResource) or a timed hazard, for a run's
+## first stops. A pool with nothing else to offer (an encounter built around
+## its hazard) draws as usual. Either way it's one draw, so the stream after it
+## is the same.
+func get_random_background(rng: RandomNumberGenerator, rule_free: bool = false) -> BackgroundResource:
 	var pool: Array[BackgroundResource] = get_backgrounds()
 	if pool.size() == 0:
 		push_error("RandomBackgroundResource: No eligible backgrounds defined!")
 		return null
+	if rule_free:
+		var calm: Array[BackgroundResource] = without_rules(pool)
+		if not calm.is_empty():
+			pool = calm
 
 	return pool[rng.randi() % pool.size()]
+
+
+## [param backgrounds] minus the ones that carry a rule or a hazard.
+static func without_rules(backgrounds: Array[BackgroundResource]) -> Array[BackgroundResource]:
+	var calm: Array[BackgroundResource] = []
+	for background: BackgroundResource in backgrounds:
+		if background.global_modifier == null and background.hazard == null:
+			calm.append(background)
+	return calm
 
 
 ## Every background this pool can draw, in a stable order so a seed always

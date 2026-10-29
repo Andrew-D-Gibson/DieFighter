@@ -308,11 +308,33 @@ func _announce(shown: Resource) -> void:
 		alert.color = modifier.color
 		alert.description = tr(modifier.description)
 	alert.landing_point = func() -> Vector2: return _glyph.global_position
+	# The first sighting waits to be closed. Only the player's own runs count:
+	# a bot or the Scenario Lab would wait on it forever.
+	var id: String = region_id(shown)
+	alert.wait_for_close = CollectionManager.is_recording() and not CollectionManager.has_read_region(id)
 	alert.landed.connect(_on_alert_landed.bind(shown))
+	alert.landed.connect(_record_read.bind(id))
 	# Beside the monitor rather than on it: the monitor hides itself while
 	# stowed, and would take the card with it.
 	get_parent().add_child(alert)
 	await alert.tree_exited
+
+
+## How CollectionManager remembers a rule or hazard the player has read: its
+## file name, under a prefix so a rule and a hazard can share one.
+static func region_id(shown: Resource) -> String:
+	var prefix: String = "hazard:" if shown is BackgroundHazardResource else "rule:"
+	var key: String = shown.resource_path.get_file().get_basename()
+	if key.is_empty():
+		key = (shown as BackgroundHazardResource).hazard_name if shown is BackgroundHazardResource \
+			else (shown as BackgroundModifierResource).modifier_name
+	return prefix + key
+
+
+## Read once is read for good: later cards fold away on their own.
+func _record_read(id: String) -> void:
+	if CollectionManager.is_recording():
+		CollectionManager.record_region(id)
 
 
 ## The card has delivered the rule: the screen takes it in with a knock and a
