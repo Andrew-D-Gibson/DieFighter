@@ -4,6 +4,43 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Echo and AoE: Echo Relay, Opening Salvo, Sweeping Battery, Fume Vent
+
+Gap analysis G01a/b and G03a/b. Die Fighter had flat +N buffs but nothing
+that repeats a whole effect, and only two tiles that hit every enemy.
+
+**Echo.** `ARM_ECHO` (TileControl 15) puts an `EchoModifier` on the board
+that doubles the next `TileActivationEvent.activation_repetitions`. Die
+hand-offs already act only on the last repetition, so an echoed tile does its
+effect twice and gives its die once.
+- Echoes queue rather than stack: two echoes double two tiles, never one x4.
+- It isn't spent on a refused die, a locked tile, a tile with the new
+  `can_be_echoed = false` (Fortress Protocol, whose shields would run away;
+  its text now ends "Ignores (echo)"), or under Dead Systems.
+- It lapses when your turn ends or the fight does. While it waits, yellow
+  outlines ripple off the tile that armed it; spent, the armer flashes "x2"
+  and the echoed tile "ECHO". New `(echo)` keyword.
+- AutoPilot forecast doubles the next tile it walks after an armed echo.
+
+| Tile | Colour | Rarity | Uses | Takes | Does | Upgrade |
+|---|---|---|---|---|---|---|
+| Echo Relay | Yellow | Uncommon | 1 | any | Echo the next tile. Feed right | 2 uses |
+| Opening Salvo | Yellow | Rare | passive | — | Turn start: echo the first tile you activate | first 2 tiles |
+| Sweeping Battery | Red | Uncommon | 2 | 5, 6 | 4 damage to every enemy. Give die | 6 damage |
+| Fume Vent | Red | Rare | passive | — | Turn start: 1 Burn on every enemy and 1 on you | 2 on enemies |
+
+Echo Relay arms before it feeds, so the tile it feeds is the echoed one.
+Fume Vent's Burn on you is its side to manage (like Static Bloom): with Burn
+dropping 1 a round, it holds everyone's Burn up, yours included.
+
+**Tested.** GUT 1244 on the branch. Live (Wolfpack): a 4 on Echo Relay fed
+Dice Cannon for 4 twice and handed off one die; Sweeping Battery hit both
+ships for 4; Fume Vent put 1 Burn on each enemy and on the player at turn
+start; with Opening Salvo the turn's first Dice Cannon hit twice and the
+second once.
+
+---
+
 ## 2026-10-29 — Weakened: Dampener, Concussion Round, Suppression Pulse
 
 The defensive half of the debuff set (gap analysis G07a-c). Die Fighter had
