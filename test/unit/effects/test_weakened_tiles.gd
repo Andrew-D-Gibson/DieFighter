@@ -151,3 +151,32 @@ func test_concussion_round_plus_hits_for_six() -> void:
 	var events: Array[EffectEvent] = await _play("concussion_round_plus", 4)
 	assert_eq(_of(events, DamageEvent)[0].amount, 6)
 	assert_eq(_weakens(events)[0].amount, 1)
+
+
+# ── Suppression Pulse ─────────────────────────────────────────────────────────
+
+func test_suppression_pulse_weakens_every_enemy_and_gives_the_die_to_one() -> void:
+	var events: Array[EffectEvent] = await _play("suppression_pulse", 6)
+	var weakens: Array[ApplyStatusEvent] = _weakens(events)
+	assert_eq(weakens.size(), 1)
+	assert_eq(weakens[0].amount, 2)
+	assert_eq(weakens[0].targets.size(), 2)
+	assert_true(enemy in weakens[0].targets and other in weakens[0].targets)
+	var gives: Array[EffectEvent] = _of(events, GiveDieToTargetEvent)
+	assert_eq(gives.size(), 1)
+	assert_eq(gives[0].targets.size(), 1)
+	assert_true(gives[0].targets[0] in [enemy, other], "a random enemy gets the die")
+
+	await weakens[0].resolve(engine)
+	assert_eq(_next_shot_from(enemy), 6)
+	assert_eq(_next_shot_from(other), 6)
+
+
+func test_suppression_pulse_takes_only_sixes_and_needs_no_target() -> void:
+	Globals.targeting_computer.targeted_enemy = null
+	for face: int in range(1, 7):
+		assert_eq(_takes("suppression_pulse", face), face == 6, "a %d" % face)
+
+
+func test_suppression_pulse_plus_applies_three() -> void:
+	assert_eq(_weakens(await _play("suppression_pulse_plus", 6))[0].amount, 3)
