@@ -68,6 +68,10 @@ signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction)
 ## involved; see player_attacked_ship for that.
 signal ship_attacked_ship(attacker: Enemy, target: Enemy)
 signal player_fatal_damage()
+## The player just put [param stacks] of a status on an enemy ship (not on
+## themselves). Once per ship per application, so a status put on every enemy
+## at once is heard once for each. Hex Coil answers it.
+signal status_applied_to_enemy(ship: Enemy, status_id: StringName, stacks: int)
 ## An enemy's hit was aimed at the player, whether the shields or the hull take
 ## it: once per hit, not per point. A hit that missed (Phased) isn't one.
 signal player_attacked(attacker: Enemy)

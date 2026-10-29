@@ -20,25 +20,20 @@ metadata/_custom_type_script = "uid://cfken75wevu1a"
 
 [sub_resource type="Resource" id="Resource_3"]
 script = ExtResource("script_effect")
-subtype = 19
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_4"]
-script = ExtResource("script_effect")
 category = 4
 subtype = 23
 amount = 90
 color = Color(0.8157, 0.2118, 0.3373, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_5"]
+[sub_resource type="Resource" id="Resource_4"]
 script = ExtResource("script_effect")
 category = 4
 subtype = 5
 sound_resource = ExtResource("sfx_0")
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_6"]
+[sub_resource type="Resource" id="Resource_5"]
 script = ExtResource("script_effect")
 category = 4
 subtype = 15
@@ -46,7 +41,7 @@ amount = 10
 color = Color(0.8078, 0.9412, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_7"]
+[sub_resource type="Resource" id="Resource_6"]
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
@@ -54,31 +49,31 @@ string_param = "SPIKED"
 color = Color(0.8157, 0.2118, 0.3373, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_8"]
+[sub_resource type="Resource" id="Resource_7"]
 script = ExtResource("script_effect")
 category = 2
 amount = 3
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_9"]
+[sub_resource type="Resource" id="Resource_8"]
 script = ExtResource("script_effect")
 category = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_10"]
+[sub_resource type="Resource" id="Resource_9"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_3"), SubResource("Resource_4"), SubResource("Resource_5"), SubResource("Resource_6"), SubResource("Resource_7"), SubResource("Resource_8"), SubResource("Resource_9")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_3"), SubResource("Resource_4"), SubResource("Resource_5"), SubResource("Resource_6"), SubResource("Resource_7"), SubResource("Resource_8")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_11"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_10"]
 atlas = ExtResource("tex")
 region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_12"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_11"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_11")
+"texture": SubResource("AtlasTexture_10")
 }],
 "loop": true,
 "name": &"default",
@@ -92,10 +87,10 @@ description = "[color=yellow]Enemy hits you or your shields[/color] -> Deal [col
 rarity = 1
 offered_as_reward = false
 is_upgrade = true
-textures = SubResource("SpriteFrames_12")
+textures = SubResource("SpriteFrames_11")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_1")])
 event_responses = Dictionary[ExtResource("script_event"), ExtResource("script_chain")]({
-SubResource("Resource_2"): SubResource("Resource_10")
+SubResource("Resource_2"): SubResource("Resource_9")
 })
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

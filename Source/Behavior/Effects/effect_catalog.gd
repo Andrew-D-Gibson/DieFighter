@@ -74,7 +74,6 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_RANDOM_LOCKABLE_TILE, label = "Target Random Lockable Tile", handler = TargetRandomLockableTileHandler},
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_MIRRORED_TILE, label = "Target Mirrored Tile", handler = TargetMirroredTileHandler},
 	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_OTHER_COUNTDOWN_TILES, label = "Target Other Countdown Tiles", handler = TargetOtherCountdownTilesHandler},
-	{category = EffectEnums.Category.TARGETING, subtype = EffectEnums.TargetingSubtype.TARGET_TRIGGERING_SHIP, label = "Target Triggering Ship", handler = TargetTriggeringShipHandler},
 
 	# ── ATTRIBUTE_CHANGE ──────────────────────────────────────────
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.DAMAGE, label = "Damage", handler = DealDamageHandler},
@@ -90,6 +89,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ION_DAMAGE, label = "Ion Damage", handler = IonDamageHandler},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SIPHON_ENGINE_CHARGE, label = "Siphon Engine Charge", handler = SiphonEngineChargeHandler, fields = ["color"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES, label = "Transfer Statuses", handler = TransferStatusesHandler},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.MULTIPLY_STATUSES, label = "Multiply Statuses", handler = MultiplyStatusesHandler, fields = ["multiplier"]},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
@@ -111,6 +111,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_DICE_HELD, label = "Set to Target Dice Held", handler = SetAmountToTargetDiceHeldHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_RANDOM, label = "Set Random", handler = SetAmountToRandomHandler, fields = ["range_min", "range_max"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_SHIELDS, label = "Set to Target Shields", handler = SetAmountToTargetShieldsHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_HELD_DIE_VALUE, label = "Add Held Die Value", handler = AddHeldDieValueHandler},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
@@ -131,6 +132,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.FLIP_TARGETS_ONES_AND_SIXES, label = "Flip Targets' Ones and Sixes", handler = FlipTargetsOnesAndSixesHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.ADD_TO_ACTIVATOR_VALUE, label = "Add to Activator Value", handler = AddToActivatorValueHandler},
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.SPLIT_ACTIVATOR, label = "Split Activator", handler = SplitActivatorHandler},
+	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.GIVE_HELD_DIE_TO_TARGET, label = "Give Held Die to Target", handler = GiveHeldDieToTargetHandler},
 
 	# ── AUDIO_VISUAL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_HIT_PARTICLES, label = "Spawn Hit Particles", handler = SpawnHitParticlesHandler, fields = ["color"]},
@@ -177,6 +179,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.FEED_HOLOGRAM, label = "Feed Hologram", handler = FeedHologramHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.COUNT_DOWN, label = "Count Down", handler = CountDownHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ARM_ECHO, label = "Arm Echo", handler = ArmEchoHandler},
+	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ADD_FAMILY_BOOST, label = "Add Family Boost", handler = AddFamilyBoostHandler, fields = ["string_param", "range_max"]},
 
 	# ── SCENARIO_CONTROL ──────────────────────────────────────────
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.OPEN_SHOP, label = "Open Shop", handler = OpenShopHandler},

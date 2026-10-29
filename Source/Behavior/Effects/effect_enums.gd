@@ -74,10 +74,6 @@ enum TargetingSubtype {
 	## Every countdown tile on the grid (TileResource.countdown) other than
 	## the source. The Fuse Cutter counts them all down at once.
 	TARGET_OTHER_COUNTDOWN_TILES,
-	## The ship the tile event behind this chain was about
-	## (EffectContext.trigger_ship): the attacker, for ON_PLAYER_ATTACKED.
-	## Nothing once that ship is gone, destroyed or fled.
-	TARGET_TRIGGERING_SHIP,
 }
 
 
@@ -123,6 +119,10 @@ enum AttributeChangeSubtype {
 	## merging into any it already has. The player can hand an enemy their
 	## Burn; an enemy can vent the player's Burn back at them.
 	TRANSFER_STATUSES,
+	## Multiply every status on the targets by multiplier (x2 doubles), by
+	## applying the difference: each status gets an ApplyStatusEvent of its
+	## own, so it lands, shows and is heard like any other application.
+	MULTIPLY_STATUSES,
 }
 
 
@@ -169,6 +169,10 @@ enum AmountModifierSubtype {
 	SET_RANDOM,
 	## Set running_amount to the first target's shields (0 without a target).
 	SET_TO_TARGET_SHIELDS,
+	## Add the face of the die the source tile is holding (KEEP_DIE_WITH_TILE)
+	## to running_amount; adds nothing when it holds none. The twin-dice tiles
+	## pay out on both dice with it.
+	ADD_HELD_DIE_VALUE,
 }
 
 
@@ -208,6 +212,10 @@ enum DiceControlSubtype {
 	## half (rounded up) and a hologram showing the rest joins the player's
 	## hand. A 1 can't split and is left as it is.
 	SPLIT_ACTIVATOR,
+	## The die the source tile is holding goes to the first target, the way
+	## GIVE_DIE_TO_TARGET sends the activator. Twin-dice tiles pay out with
+	## both dice handed over.
+	GIVE_HELD_DIE_TO_TARGET,
 }
 
 
@@ -272,6 +280,11 @@ enum TileControlSubtype {
 	## its whole chain twice and hands its die on once. Each echo is spent by
 	## one activation; unspent ones lapse when the turn or the fight ends.
 	ARM_ECHO,
+	## Give every tile of the colour family named by string_param ("red",
+	## "blue", ...) running_amount more damage for the rest of the fight, held
+	## between 0 and range_max (FamilyBoostModifier, one per source tile). A
+	## negative amount takes it back down.
+	ADD_FAMILY_BOOST,
 }
 
 

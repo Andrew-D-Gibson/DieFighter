@@ -51,11 +51,6 @@ var feed_depth: int = 0
 ## Null for anything that isn't an enemy action, or one that binds nothing.
 var bound_target: Node = null
 
-## The ship the tile event that started this chain was about: the attacker,
-## for an ON_PLAYER_ATTACKED response. Null for anything else. Read by
-## TARGET_TRIGGERING_SHIP.
-var trigger_ship: Node = null
-
 ## The ships that have already acted with the activator die in this relay
 ## chain, oldest first. A Feed never hands the die back to one of them, so a
 ## chain of enemies passing a die along always ends. Turn tables are bound so

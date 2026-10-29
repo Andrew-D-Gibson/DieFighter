@@ -19,6 +19,12 @@ extends RefCounted
 
 ## How far a die is followed through Feeds.
 const _MAX_FEED_DEPTH: int = 6
+## How much of the payout a twin-dice hold is credited with, when a die in
+## hand could pay it out: the hold and the payout die each claim half.
+const _HOLD_PAYOUT_SHARE: float = 0.5
+## The rest of a typical hand, when a tile on offer is valued without one:
+## the dice that might pair with the one it holds.
+const _NOMINAL_OTHER_DICE: float = 4.0
 ## How deep countdown payouts are followed into payouts they set off in turn.
 const _MAX_PAYOUT_DEPTH: int = 2
 ## What the progress a count leaves toward the next payout is worth, as a
@@ -75,6 +81,9 @@ var _payout_depth: int = 0
 var _echoes: int = 0
 ## Of those, how many this move armed itself.
 var _echoes_armed: int = 0
+## Set while walking a tile's answer to a status landing (Hex Coil), so an
+## answer that applied a status itself couldn't set the walk going round.
+var _answering_status: bool = false
 
 
 ## A forecast of [param die] dropped on [param tile] while [param target] is
@@ -143,9 +152,16 @@ class _Walk:
 	## Extra repetitions found while counting them.
 	var extra_repetitions: int = 0
 	var visited: Array[Tile] = []
+	## The die the tile holds, for a payout the forecast is only imagining:
+	## its face (0: none), or -1 to read the tile's real held die.
+	var held_face: int = -1
+	var held_hologram: bool = false
 
 
-func _follow(tile: Tile, die: Node, face: int, hologram: bool, depth: int, visited: Array[Tile]) -> void:
+## [param held_face] imagines the tile holding a die of that face (see
+## _Walk.held_face).
+func _follow(tile: Tile, die: Node, face: int, hologram: bool, depth: int, visited: Array[Tile],
+		held_face: int = -1, held_hologram: bool = false) -> void:
 	deepest_feed = maxi(deepest_feed, depth)
 	var chain: EffectChain = tile.tile_resource.effect_chain if tile.tile_resource else null
 	if chain == null:
@@ -162,6 +178,8 @@ func _follow(tile: Tile, die: Node, face: int, hologram: bool, depth: int, visit
 	walk.face = face
 	walk.final_face = face
 	walk.hologram = hologram
+	walk.held_face = held_face
+	walk.held_hologram = held_hologram
 	walk.visited = visited.duplicate()
 	walk.visited.append(tile)
 
@@ -261,6 +279,8 @@ func _amount_step(data: EffectData, walk: _Walk) -> void:
 			walk.context.running_amount = walk.face if walk.face > 0 else 3
 		EffectEnums.AmountModifierSubtype.SET_RANDOM:
 			walk.context.running_amount = roundi((data.range_min + data.range_max) / 2.0)
+		EffectEnums.AmountModifierSubtype.ADD_HELD_DIE_VALUE:
+			walk.context.running_amount += _held_face(walk)
 		_:
 			var handler: EffectHandler = EffectRegistry.get_handler(data.category, data.subtype)
 			if handler:
@@ -296,6 +316,8 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 			for target: Node in walk.context.targets:
 				if target is Enemy:
 					statuses[status] = statuses.get(status, 0.0) + amount * walk.share
+					if amount > 0.0:
+						_answer_status_applied(target, walk)
 				elif target == Globals.player and status == &"burn":
 					# Burn the player puts on themselves (Blowtorch) is hull
 					# lost over the next turns, and stacks onto any Burn
@@ -305,6 +327,48 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 					# A cloak saves the hull the biggest coming hits would
 					# have cost: worth what the same in shields would be.
 					shields += AutoPilotThreat.phased_worth(roundi(amount)) * walk.share
+		EffectEnums.AttributeChangeSubtype.MULTIPLY_STATUSES:
+			# What it adds to the enemy's statuses as they stand now. A
+			# repeat multiplies again, so each pass scales the last.
+			var engine: ScenarioEngine = ScenarioEngine.current()
+			if engine == null:
+				return
+			for target: Node in walk.context.targets:
+				if target is not Enemy or not is_instance_valid(target):
+					continue
+				for status: StatusModifier in engine.statuses_on(target):
+					var stacks: float = float(status.stacks)
+					var grown: float = stacks * pow(maxf(data.multiplier, 1.0), walk.scale)
+					statuses[status.status_id] = statuses.get(status.status_id, 0.0) \
+						+ (grown - stacks) * walk.share
+					if grown > stacks:
+						_answer_status_applied(target, walk)
+
+
+## Tallies what the grid's answers to a status landing on [param target]
+## (ON_STATUS_APPLIED_TO_ENEMY: Hex Coil's hit) add, once per pass of the
+## chain that applied it. Each answer starts aimed at that ship.
+func _answer_status_applied(target: Node, walk: _Walk) -> void:
+	if _answering_status or not is_instance_valid(Globals.tile_grid):
+		return
+	_answering_status = true
+	for tile: Tile in Globals.tile_grid.tile_locations.values():
+		if not is_instance_valid(tile) or tile.tile_resource == null:
+			continue
+		for trigger: TileEvent in tile.tile_resource.event_responses:
+			if trigger.event != TileEvent.EventType.ON_STATUS_APPLIED_TO_ENEMY:
+				continue
+			var answer := _Walk.new()
+			answer.context = EffectContext.new()
+			answer.context.actor = Globals.player
+			answer.context.effect_source = tile
+			answer.context.targets = [target] as Array[Node]
+			answer.share = walk.share
+			answer.scale = walk.scale
+			# The answer has no die of its own to hand anywhere.
+			answer.disposed = true
+			_run(tile.tile_resource.event_responses[trigger].effects, answer)
+	_answering_status = false
 
 
 ## Hull the player loses to Burn over the coming turns if [param added]
@@ -343,11 +407,17 @@ func _dice_step(data: EffectData, walk: _Walk) -> void:
 			elif walk.final_face == 6:
 				walk.final_face = 1
 		EffectEnums.DiceControlSubtype.MERGE_HELD_DIE:
-			var tile: Tile = walk.context.effect_source as Tile
-			var held: Dice = tile.get_held_die(walk.context.activator_die as Dice) if tile else null
-			if held and walk.final_face > 0:
-				walk.final_face = mini(walk.final_face + held.value, 6)
+			var held_face: int = _held_face(walk)
+			if held_face > 0 and walk.final_face > 0:
+				walk.final_face = mini(walk.final_face + held_face, 6)
 				dice_back += 1.0
+		EffectEnums.DiceControlSubtype.GIVE_HELD_DIE_TO_TARGET:
+			var held_face: int = _held_face(walk)
+			if held_face > 0:
+				if walk.context.targets.is_empty() or walk.context.targets[0] is Enemy:
+					_hand_off(walk.context.targets, walk, held_face, _held_hologram(walk))
+				else:
+					dice_back += 1.0
 		EffectEnums.DiceControlSubtype.GIVE_DIE_TO_TARGET:
 			if not walk.disposed:
 				walk.disposed = true
@@ -363,7 +433,9 @@ func _dice_step(data: EffectData, walk: _Walk) -> void:
 			if not walk.disposed:
 				walk.disposed = true
 				dice_back += 1.0
-		EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_TILE, \
+		EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_TILE:
+			walk.disposed = true
+			_value_hold(walk)
 		EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR:
 			walk.disposed = true
 		EffectEnums.DiceControlSubtype.SPAWN_HOLOGRAPHIC_DIE:
@@ -411,7 +483,8 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 			tile_tricks += _tiles_in(walk)
 		EffectEnums.TileControlSubtype.ACTIVATE_SELF, \
 		EffectEnums.TileControlSubtype.ADD_AMPLIFIER_MODIFIER, \
-		EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER:
+		EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER, \
+		EffectEnums.TileControlSubtype.ADD_FAMILY_BOOST:
 			tile_tricks += 1.0
 		EffectEnums.TileControlSubtype.ARM_ECHO:
 			# One per pass, each for a tile further down the line.
@@ -480,16 +553,7 @@ func _add_payout(tile: Tile, weight: float) -> void:
 	walk.visited = [tile] as Array[Tile]
 	walk.scale = maxi(chain.base_repetitions, 1)
 	payout._run(chain.effects, walk)
-
-	for ship: Node in payout.damage:
-		damage[ship] = damage.get(ship, 0.0) + payout.damage[ship] * weight
-	for status: StringName in payout.statuses:
-		statuses[status] = statuses.get(status, 0.0) + payout.statuses[status] * weight
-	shields += payout.shields * weight
-	heal += payout.heal * weight
-	charge += payout.charge * weight
-	dice_back += payout.dice_back * weight
-	tile_tricks += payout.tile_tricks * weight
+	_absorb(payout, weight)
 
 
 ## Whether an echo would repeat [param tile] (see EchoModifier.can_echo(); the
@@ -542,16 +606,135 @@ func _feed(next: Tile, walk: _Walk, face: int, hologram: bool) -> void:
 	_hand_off(targeted, direct, face, hologram)
 
 
+## The face of the die the walk's tile holds, real or imagined; 0 for none.
+func _held_face(walk: _Walk) -> int:
+	if walk.held_face >= 0:
+		return walk.held_face
+	var tile: Tile = walk.context.effect_source as Tile
+	var held: Dice = tile.get_held_die(walk.context.activator_die) if tile else null
+	return held.value if held else 0
+
+
+func _held_hologram(walk: _Walk) -> bool:
+	if walk.held_face >= 0:
+		return walk.held_hologram
+	var tile: Tile = walk.context.effect_source as Tile
+	var held: Dice = tile.get_held_die(walk.context.activator_die) if tile else null
+	return held != null and held.holographic
+
+
+## A twin-dice tile's hold pays nothing by itself. When a die in hand could
+## pay it out, the hold is credited with a share of the best such payout, so
+## the policy doesn't pass up a pair it's holding the makings of. Valuing a
+## tile with a stand-in die (an offer, no hand to read), it's credited with
+## the payout a typical hand would find a partner for. Only for a real hold:
+## an imagined payout never values another hold, so this can't recurse.
+func _value_hold(walk: _Walk) -> void:
+	var tile: Tile = walk.context.effect_source as Tile
+	if tile == null or not tile.tile_resource.holds_first_die or walk.held_face >= 0 \
+	or walk.final_face <= 0 or _payout_depth >= _MAX_PAYOUT_DEPTH:
+		return
+	if walk.context.activator_die is not Dice:
+		_value_nominal_hold(tile, walk)
+		return
+	if not is_instance_valid(Globals.player):
+		return
+	var best: AutoPilotForecast = null
+	var best_damage: float = 0.0
+	for partner: Dice in AutoPilotMove.dice_in_hand():
+		if partner == walk.context.activator_die \
+		or not _would_take(tile, partner.value, partner.holographic, walk.final_face):
+			continue
+		var payout: AutoPilotForecast = _imagine_payout(tile, partner, partner.value, partner.holographic, walk)
+		var dealt: float = payout._damage_to_enemies()
+		if best == null or dealt > best_damage:
+			best = payout
+			best_damage = dealt
+	if best == null:
+		return
+	_absorb(best, _HOLD_PAYOUT_SHARE)
+	# Both dice go somewhere on the payout, the held one included.
+	for handoff: Handoff in best.handoffs:
+		var share := Handoff.new()
+		share.ship = handoff.ship
+		share.face = handoff.face
+		share.hologram = handoff.hologram
+		share.share = handoff.share * _HOLD_PAYOUT_SHARE
+		handoffs.append(share)
+
+
+## The hold's share of a payout for a stand-in die: averaged over the faces
+## that would pay it out, times the chance that one of the rest of a typical
+## hand shows one of them.
+func _value_nominal_hold(tile: Tile, walk: _Walk) -> void:
+	var pairing: Array[int] = []
+	for face: int in range(1, 7):
+		if _would_take(tile, face, false, walk.final_face):
+			pairing.append(face)
+	if pairing.is_empty():
+		return
+	var miss: float = 1.0 - pairing.size() / 6.0
+	var found: float = 1.0 - pow(miss, _NOMINAL_OTHER_DICE)
+	var weight: float = _HOLD_PAYOUT_SHARE * found / pairing.size()
+	for face: int in pairing:
+		_absorb(_imagine_payout(tile, walk.context.activator_die, face, false, walk), weight)
+
+
+## A forecast of [param partner] (showing [param face]) paying out the hold
+## [param walk] is making on [param tile].
+func _imagine_payout(tile: Tile, partner: Node, face: int, hologram: bool, walk: _Walk) -> AutoPilotForecast:
+	var payout := AutoPilotForecast.new()
+	payout._target = _target
+	payout._roster = _roster
+	payout._as_in_a_fight = _as_in_a_fight
+	payout._payout_depth = _payout_depth + 1
+	payout._follow(tile, partner, face, hologram, walk.context.feed_depth,
+			walk.visited, walk.final_face, walk.hologram)
+	return payout
+
+
+func _damage_to_enemies() -> float:
+	var total: float = 0.0
+	for hit: Node in damage:
+		if hit is Enemy:
+			total += damage[hit]
+	return total
+
+
+## Adds [param weight] of [param other]'s outcome to this forecast: what it
+## does, not where its dice go.
+func _absorb(other: AutoPilotForecast, weight: float) -> void:
+	for hit: Node in other.damage:
+		damage[hit] = damage.get(hit, 0.0) + other.damage[hit] * weight
+	for status: StringName in other.statuses:
+		statuses[status] = statuses.get(status, 0.0) + other.statuses[status] * weight
+	shields += other.shields * weight
+	heal += other.heal * weight
+	charge += other.charge * weight
+	dice_back += other.dice_back * weight
+	tile_tricks += other.tile_tricks * weight
+
+
 ## Tile.activation_refusal() for a die that may not be the one in hand: the
 ## checks that read the die read [param face] instead, and the ones that read
 ## the targeting computer read the ship this forecast is aimed at (a policy
 ## aims before it plays; between fights the computer holds nobody, and a
 ## stand-in enemy would read as no target at all).
-func _would_take(tile: Tile, face: int, hologram: bool) -> bool:
+##
+## [param held_face] imagines the tile holding a die of that face, as
+## _Walk.held_face does.
+func _would_take(tile: Tile, face: int, hologram: bool, held_face: int = -1) -> bool:
 	if tile.uses_remaining == 0:
 		return false
+	if held_face < 0:
+		var held: Dice = tile.get_held_die()
+		held_face = held.value if held else 0
 	for check: ActivationResource in tile.tile_resource.activation_checks:
 		match check.type:
+			ActivationResource.ActivationType.MATCHES_HELD_DIE, \
+			ActivationResource.ActivationType.SUMS_WITH_HELD_DIE:
+				if held_face > 0 and (face <= 0 or not check.pairs_with(face, held_face)):
+					return false
 			ActivationResource.ActivationType.REQUIRES_ACTIVATOR_DIE:
 				continue
 			ActivationResource.ActivationType.VALUE:
@@ -591,15 +774,7 @@ func _holds(data: ConditionalEffectData, walk: _Walk) -> bool:
 			var queue: DiceQueue = walk.context.targets[0].get("dice_manager") as DiceQueue
 			return queue != null and queue.has_value(walk.face)
 		EffectEnums.ConditionalSubtype.IF_SOURCE_HOLDS_DIE:
-			# Asked here rather than of Tile.get_held_die(), which takes only a
-			# real Dice and the policy may walk a stand-in.
-			var source: Tile = walk.context.effect_source as Tile
-			if source == null:
-				return false
-			for held: Dice in source.dice_queue.queue:
-				if is_instance_valid(held) and held != walk.context.activator_die:
-					return true
-			return false
+			return _held_face(walk) > 0
 		EffectEnums.ConditionalSubtype.IF_TARGET_HAS_STATUS:
 			var engine: ScenarioEngine = ScenarioEngine.current()
 			return engine != null and not walk.context.targets.is_empty() \
