@@ -45,12 +45,14 @@ func test_it_breathes_open_and_shut_on_its_own() -> void:
 func test_the_open_tear_and_its_sparks_stay_inside_its_frame() -> void:
 	var frame: Rect2 = Rect2(tear.get_node("Tear").position, tear.get_node("Tear").size)
 	tear._fired()
+	# Checked before stepping: a spark lives at most 0.6 s, so after the
+	# 20 frames below the burst may all have burnt out.
+	assert_gt(tear._sparks.size(), 0, "the strike threw sparks")
 	for i: int in range(20):
 		tear._process(1.0 / 30.0)
 		for y: float in [-30.0, -10.0, 0.0, 10.0, 30.0]:
 			var x: float = absf(FateRiftTear.spine_x(y)) + tear.lip_offset(y)
 			assert_lt(x + 4.0, frame.size.x / 2.0, "lip at row %d fits with its glow" % y)
-	assert_gt(tear._sparks.size(), 0, "the strike threw sparks")
 
 
 func test_the_build_up_holds_it_wide_until_the_strike() -> void:
