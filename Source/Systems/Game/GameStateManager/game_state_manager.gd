@@ -297,15 +297,25 @@ func _randomize_sector_scenarios() -> void:
 
 	_add_elites()
 
+	# Some ships wait for a later sector (ScenarioResource.earliest_sector).
+	# Filtering the lists rather than the picks keeps every draw in place, so
+	# a seeded map keeps its layout and only who is in a fight changes.
+	var questions: Array[ScenarioResource] = ScenarioResource.allowed_in_sector(
+		question_scenarios, current_game_save.sector_index
+	)
+	var combats: Array[ScenarioResource] = ScenarioResource.allowed_in_sector(
+		combat_scenarios, current_game_save.sector_index
+	)
+
 	# Add the blend of combat and question scenarios
 	for i: int in range(sector_size - len(current_game_save.sector_scenarios)):
 		var question_scenario_options: Array[ScenarioResource] = Utils.array_while_excluding(
-			question_scenarios, 
+			questions,
 			current_game_save.sector_scenarios
 		)
 			
 		var combat_scenario_options: Array[ScenarioResource] = Utils.array_while_excluding(
-			combat_scenarios,
+			combats,
 			current_game_save.sector_scenarios
 		)
 		
@@ -325,8 +335,8 @@ func _randomize_sector_scenarios() -> void:
 		# just add a random question or combat scenario
 		else:
 			var all_scenarios: Array[ScenarioResource] = []
-			all_scenarios.append_array(combat_scenarios)
-			all_scenarios.append_array(question_scenarios)
+			all_scenarios.append_array(combats)
+			all_scenarios.append_array(questions)
 			if all_scenarios.size() > 0:
 				current_game_save.sector_scenarios.append(
 					RNGManager.pick_random(RNGManager.Bucket.RUN, all_scenarios)
@@ -423,9 +433,12 @@ func _add_elites() -> void:
 	var count: int = RNGManager.randi_range(
 		RNGManager.Bucket.RUN, elites_per_sector.x, elites_per_sector.y
 	)
+	var elites: Array[ScenarioResource] = ScenarioResource.allowed_in_sector(
+		elite_scenarios, current_game_save.sector_index
+	)
 	for i: int in range(count):
 		var options: Array[ScenarioResource] = Utils.array_while_excluding(
-			elite_scenarios, current_game_save.sector_scenarios
+			elites, current_game_save.sector_scenarios
 		)
 		if options.is_empty():
 			return

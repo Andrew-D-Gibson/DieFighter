@@ -43,6 +43,12 @@ enum PoolSelection {
 @export_range(-3.0, 3.0, 0.05, "or_greater", "or_less") var face_bias: float = 0.3
 
 
+## The earliest sector (0 is the first) a ship that helps its allies may be met
+## in. Shielding, repairing or feeding another ship asks the player to read two
+## tables at once and work out which ship to kill first; sector 1 is for
+## learning to read one.
+const ALLY_SUPPORT_EARLIEST_SECTOR: int = 1
+
 @export_category('Overload')
 ## When the dice this ship holds at the start of its turn add up to this much,
 ## it overloads instead of acting: it skips the turn, vents every die it holds
@@ -74,3 +80,21 @@ enum PoolSelection {
 ## 32px across; a capital ship needs its real width here, or the formation
 ## parks its escorts underneath it.
 @export var formation_width: float = 32.0
+
+
+## Whether any action this ship can roll helps another ship on its side
+## (EnemyActionResource.assists_ally).
+func supports_allies() -> bool:
+	for pool: EnemyTurnActionList in action_options:
+		if pool == null:
+			continue
+		for option: EnemyActionOptionResource in pool.actions_possible:
+			if option and option.base_action and option.base_action.assists_ally():
+				return true
+	return false
+
+
+## The earliest sector (0 is the first) this ship may turn up in, read off
+## what it can do. See ALLY_SUPPORT_EARLIEST_SECTOR.
+func earliest_sector() -> int:
+	return ALLY_SUPPORT_EARLIEST_SECTOR if supports_allies() else 0

@@ -314,6 +314,12 @@ value before its STREAM.
   can't fit that, every bar moves to `compact_health_bar_position` (default
   just above a 32px hull). Set it for a ship whose hull is much taller.
 
+**Ally support waits for sector 2.** A ship with any action bound to an
+ally (Repair Beam, Aegis Link, Relay, Holo Loader: `Binding.ALLY`) is never
+dealt into sector 1, and neither is any encounter it starts in
+(`EnemyResource.earliest_sector()`, `ScenarioResource.allowed_in_sector()`).
+Read off the actions, nothing to set; `test_sector_generation.gd` checks it.
+
 **Faction** isn't on the enemy; it's on the scenario's ship state (§4). Who
 allies with whom, and who raids whom, is `FactionRelations`
 (`Source/Systems/Game/ScenarioManager/faction_relations.gd`). Behaviour that
