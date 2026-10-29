@@ -151,6 +151,17 @@ registration to testing. For how the systems work underneath, see
     that does more in part of the grid. On the Carousel's turning ring that's
     part of each lap (Apex Cannon, Keel Plating). Text: `[color=yellow]Top
     row[/color]: +3`.
+  - **Echo**: `TILE_CONTROL / ARM_ECHO` arms an `EchoModifier`. The next tile
+    the player activates this turn plays its whole chain twice (its
+    `activation_repetitions` doubles, so the die is handed on once). Echoes
+    queue: each is spent by one activation, so a chain that repeats arms
+    one per pass. An echo waits out a refused die, a lock, and any rule that
+    holds tiles to one pass, and lapses at turn or fight end. Put `ARM_ECHO`
+    before a Feed and the fed tile is the one echoed (Echo Relay); in an
+    `ON_TURN_START` response it echoes the first tile played (Opening Salvo).
+    Untick `can_be_echoed` on a tile whose effect compounds on itself, where a
+    second pass multiplies (Fortress Protocol), and say `Ignores (echo)` in
+    its text. Text: `(echo) the next tile you activate`.
 - **`event_responses`**: `TileEvent` → `EffectChain` for reactive tiles
   (`ON_TURN_START`, `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, ...). A tile
   can take no dice at all and live only on these. `ON_TURN_START` also fires

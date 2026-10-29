@@ -4,6 +4,44 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Weakened: Dampener, Concussion Round, Suppression Pulse
+
+The defensive half of the debuff set (gap analysis G07a-c). Die Fighter had
+Exposed (take more) but nothing short of Jammed for "hit less".
+
+**Weakened (`weakened`).** A weakened ship's own hits deal 75%, rounded down,
+never below 1: 2→1, 4→3, 6→4, 8→6. Round-down because most hits are
+dice-sized and round-to-nearest leaves 2 and 6 almost untouched; the floor of
+1 keeps a weakened hit a hit for Exposed and on-hit tiles. It runs at
+priority 60, after flat bonuses, so 4 + 2 Exposed = 6 becomes 4.
+- An enemy's counts are every hit it deals. The player's are tile hits that
+  land on another ship; Burn, hazards and self-costs don't count.
+- It drops by 1 when the ship's *own* turn ends (not the shared status tick,
+  which would spend a stack before the ship fired). N stacks = the next N
+  turns. Hits don't spend it.
+- Purple down-arrow badge. Keywords `(weakened)`, `(weaken)`,
+  `(weakened_you)`. Intent numbers don't show the reduction (nor does
+  Exposed's; there's no modifier-aware intent preview yet).
+- Countermeasures moves it across, and it re-hooks to the new ship's turn.
+
+| Tile | Colour | Rarity | Uses | Takes | Does | Upgrade |
+|---|---|---|---|---|---|---|
+| Dampener | Blue | Common | 2 | any | Apply 2 Weakened. Give die | Apply 3 |
+| Concussion Round | Red | Uncommon | ∞ | 3, 4 | 4 damage, apply 1 Weakened. Give die | 6 damage |
+| Suppression Pulse | Blue | Rare | 1 | 6 | Apply 2 Weakened to every enemy. Give die to random enemy | Apply 3 |
+
+**AutoPilot.** Weakened on the player costs 1.5 hull per stack in
+`AutoPilotThreat`; putting it on an enemy is worth 1.5 per stack to
+`HeuristicPolicy`, and a weakened enemy's attacks are costed reduced.
+
+**Tested.** GUT 1218/1218 on the branch. Live (Wolfpack): Dampener, Concussion
+Round and Suppression Pulse stacked 5 on the target and 2 on the other ship;
+after End Turn each ship had lost one stack and the one hit that landed did 1.
+The player's bar holds all five statuses in three rows, clear of the systems
+panel. Sounds are borrowed for now (SOUND_EFFECTS.md lists what they want).
+
+---
+
 ## 2026-10-29 — Die tricks: Die Splitter, Doubler, Nudge Down
 
 The first tiles built from the tile gap analysis (`Planning Documents/

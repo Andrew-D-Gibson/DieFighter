@@ -264,6 +264,10 @@ enum TileControlSubtype {
 	## Each one that reaches 0 fires its ON_COUNTDOWN_ZERO response and starts
 	## again, with any extra counts carried over. See TileCountdown.
 	COUNT_DOWN,
+	## Arm an echo (EchoModifier): the next tile activation this turn plays
+	## its whole chain twice and hands its die on once. Each echo is spent by
+	## one activation; unspent ones lapse when the turn or the fight ends.
+	ARM_ECHO,
 }
 
 
