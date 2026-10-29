@@ -173,7 +173,6 @@ func disconnect_scenario_signals() -> void:
 
 func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
 		var new_state: ScenarioShipState = scenario_state.handle_scenario_event(event)
-		graphics_manager.set_health_bar_attitude(new_state.attitude)
 		
 		if new_state != scenario_state:
 			_enter_scenario_state(new_state)
@@ -183,7 +182,6 @@ func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
 ## there. For the Scenario Lab, which forces each outcome of a weighted
 ## transition rather than rolling for it.
 func force_scenario_state(state: ScenarioShipState) -> void:
-	graphics_manager.set_health_bar_attitude(state.attitude)
 	if state != scenario_state:
 		_enter_scenario_state(state)
 
@@ -401,7 +399,6 @@ func _update_health_from_resource() -> void:
 
 ## Updates the health bar's position and values
 func _update_health_bar() -> void:
-	graphics_manager.set_health_bar_attitude(scenario_state.attitude)
 	graphics_manager.set_health_bar_position(_health_bar_position())
 	graphics_manager.set_health_bar_health(health)
 
@@ -671,7 +668,6 @@ func restore_state(entry: Dictionary, starting_state: ScenarioShipState) -> void
 	_skip_next_enter_effects = true
 	if saved_state and saved_state != scenario_state:
 		scenario_state = saved_state
-		graphics_manager.set_health_bar_attitude(scenario_state.attitude)
 
 	health.health = int(entry.get("health", health.health))
 	health.shields = int(entry.get("shields", health.shields))

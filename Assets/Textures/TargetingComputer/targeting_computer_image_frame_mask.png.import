@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://du7woevewptwn"
-path="res://.godot/imported/attitidue_indicator-Sheet.png-09a9319a2dce9a40bf9797404f5ad0b3.ctex"
+uid="uid://dpmgkohhwcxf5"
+path="res://.godot/imported/targeting_computer_image_frame_mask.png-51e9d0a67aaa085ca6e7b1fa70cf2e86.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Enemies/AttitudeIndicator/attitidue_indicator-Sheet.png"
-dest_files=["res://.godot/imported/attitidue_indicator-Sheet.png-09a9319a2dce9a40bf9797404f5ad0b3.ctex"]
+source_file="res://Assets/Textures/TargetingComputer/targeting_computer_image_frame_mask.png"
+dest_files=["res://.godot/imported/targeting_computer_image_frame_mask.png-51e9d0a67aaa085ca6e7b1fa70cf2e86.ctex"]
 
 [params]
 
