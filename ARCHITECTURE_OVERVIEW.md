@@ -608,18 +608,21 @@ ally-bound action, `Binding.ALLY`, can't appear before sector 2). The
 because both are generated during scene setup, before any ordinary step runs.
 
 **The opening shot.** Every fresh run (tutorial or not) opens with the
-ambusher firing once, before the first turn. `OpeningStrike.arm()` (called by
-GameStateManager once the opening ships spawn) hands the ship a die of its
-own, out of the `Dice` group, which it flies in holding; `play()` (from
-`Player._announce_first_turn`) fires `attack_player.tres` with it for
-`OpeningStrike.DAMAGE` (4), minus its die-handling steps, and the spent die
-fades. The player's hand is never touched. The action is `load()`ed, not
-preloaded: GameStateManager holds an OpeningStrike, and a preload there puts
-the enemy-action scripts into their own preload cycle. `GameStateManager._owe_opening_strike()` starts
-the run that much over the save's hull, so the shot lands it on
-`run_start.tres`'s 24; until the shot lands, checkpoints save the
-hull minus what's owed, so a Continue never replays the shot. Continues,
-gauntlets and lab runs aren't fresh, so they skip it.
+ambusher firing once, before the first turn, with one of the player's own
+dice; the cannon hands it on to its target as it always does, so it drops
+back into the hand. `OpeningStrike` keeps all of its own books, and
+GameStateManager only holds one. `owe()` starts the run up to
+`OpeningStrike.DAMAGE` (4) over the save's hull, so the shot lands it on
+`run_start.tres`'s 24. `arm()` (once the opening ships spawn) gives the first
+aggressive ship the die to fly in holding, and the hand is dealt one fewer
+while `holds_die()`; with no ship to fire it takes the extra hull back
+instead. `play()` (from `Player._announce_first_turn`) fires
+`attack_player.tres` for the owed amount. Until the shot lands,
+checkpoints save the hull minus `hull_owed()`, so a Continue never replays
+the shot or keeps the extra. The action is `load()`ed, not preloaded:
+GameStateManager holds an OpeningStrike, and a preload there puts the
+enemy-action scripts into their own preload cycle. Continues, gauntlets and
+lab runs aren't fresh, so they skip it.
 Later steps force the turn-two hand and the salvage (`forced_dice`,
 `forced_enemy_actions`, `forced_rewards`). `_finish_tutorial` clears all three
 statics.
@@ -998,13 +1001,18 @@ is ready, because Graphics comes first in the scene.
 `GameSaveResource.unlocked_cells` lists the open cells (empty opens them all,
 which is also what a save from before Grid Slots means). A sealed cell is kept
 out of `TileGrid._cells`, so to placement, adjacency, pushes and Feeds it is a
-hole; it is drawn as a hull plate (`locked_cell.png`) over the panel art. A
+hole; it is drawn as a hull plate (`locked_cell.png`) over the panel art by
+`SealedCellPlates`, a child of the grid that only draws (the plates, the
+target brackets, hover, the blow-off) and is told when the sealed set changes. A
 `GridSlot` (`Source/Systems/Game/GridSlot/`) is a draggable item: the last
 choice of a salvage offer (`RewardResource.grid_slot_probability`, and always
 when the grid is full) or a shop shelf (`Shop.GRID_SLOT_PRICE`). Carrying one
 lights every sealed cell; dropped on one, `GridSlot.install()` opens it at once
 (so the checkpoint the pick triggers saves it) and flies in while the plate
-blows off. The open cells are saved with each checkpoint. Loading opens any
+blows off. Salvage and the shop decide whether a drop counts, and hand the
+item over, through `OfferIntake` (`refusal()`, `take()`), so tiles, dice and
+slots follow the same rules from either. The open cells are saved with each
+checkpoint. Loading opens any
 cell a saved tile sits on, so a loadout written for the whole grid still loads.
 
 **Tile upgrades.** A `TileResource` may name an `upgraded_version`: a "+"
@@ -1019,7 +1027,8 @@ only while a merge is on the table (`Tile._copy_to_merge_with()`: a copy on
 offer, or a second copy on the grid outside a fight).
 An upgraded tile sets `tile.gdshader`'s `upgraded` (bright bands chase round
 the shared 22x24 silhouette's border) and carries `UpgradeSparks` particles in
-its family colour.
+its family colour (`ColorSymbolBadge.color_of_tile()`). That look, and the
+burst on upgrading, live in `TileUpgradeLook`; Tile keeps the rules.
 
 `TileGrid.relocate_tiles(moves)` moves many tiles at once (all leave before any
 arrive, so a closed loop can shift) and emits no push or manual-move events.
@@ -1546,7 +1555,12 @@ and while readable `FontSwap` sets each wrapper's `baseline_offset` so
 capitals centre where the pixel fonts' do.
 
 **Held things and the cursor.** `Draggable.held` / `holding()` say what's in
-hand (drag or click placement); `MouseCursor` shows a fist while something is
+hand (drag or click placement), and are the only record of it: the cursor,
+the map's panning and hover all ask `holding()`. A press calls
+`Draggable.begin_drag()`, which code can call too to put something straight
+in the hand (the tile palette). Code taking a held thing over by setting its
+`state` lets go of the hold in the setter, so the lift and wiggle never
+outlive it. `MouseCursor` shows a fist while something is
 held, with an "i" badge while a click-placed tile is still over its lift spot
 (`is_over_info_spot()`, the click that puts it back and opens its info). The
 first three click pick-ups each launch show a one-line hint.
@@ -1682,7 +1696,7 @@ func get_cells() -> Array[Vector2i]                # Every open cell
 func set_open_cells(open) -> void                  # Seals the rest of the layout (empty: all open)
 func get_locked_cells() / is_cell_locked(pos) / locked_cell_at(global_pos)  # Sealed cells
 func unlock_cell(pos, plate_delay = 0.0) -> bool   # A Grid Slot opens a sealed cell
-func show_slot_targets(shown) -> void              # Brackets on sealed cells while a slot is carried
+var plates: SealedCellPlates                      # Draws sealed cells; plates.show_targets(shown) while a slot is carried
 func merge_target_at(tile, global_pos) -> Tile     # The un-upgraded twin a copy dropped there upgrades
 func relocate_tiles(moves) -> void                 # Many tiles at once (the Carousel's ring)
 func mirror_of(pos) -> Vector2i                    # Same row, mirrored across the grid
