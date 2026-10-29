@@ -68,3 +68,13 @@ func provoke(target: Node) -> void:
 	if Globals.state_manager:
 		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
 	Events.player_attacked_ship.emit(target, (target as Enemy).scenario_state.faction)
+
+
+## Tells the game the player just put [param stacks] of a status on
+## [param target], for the tiles that answer it (Hex Coil). Only the player
+## putting one on an enemy counts: a status a tile puts on its own ship
+## (Blowtorch, Fume Vent) is a cost, not an attack.
+func announce_status_applied(target: Node, status_id: StringName, stacks: int) -> void:
+	if actor is not Player or target is not Enemy or stacks <= 0:
+		return
+	Events.status_applied_to_enemy.emit(target as Enemy, status_id, stacks)

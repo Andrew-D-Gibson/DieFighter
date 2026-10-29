@@ -37,6 +37,10 @@ enum ActivationType {
 	## die that adds up to [member threshold] with it. With nothing held it
 	## takes any die.
 	SUMS_WITH_HELD_DIE,
+	## The ship this die was dropped against carries a status, any status. For
+	## a tile that works whatever statuses are there (Status Catalyst): with
+	## none it would eat the die.
+	TARGETED_SHIP_HAS_STATUS,
 }
 
 @export var type: ActivationType
@@ -152,6 +156,16 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 
 			return Globals.player.health.shields >= threshold,
+
+	ActivationType.TARGETED_SHIP_HAS_STATUS:
+		func(die: Dice) -> bool:
+			if not Globals.targeting_computer:
+				return false
+			var target: Enemy = Globals.targeting_computer.target_for(die)
+			var engine: ScenarioEngine = ScenarioEngine.current()
+			if not target or not engine:
+				return false
+			return not engine.statuses_on(target).is_empty(),
 }
 
 
@@ -212,6 +226,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.SUMS_WITH_HELD_DIE:
 		"ERROR_WRONG_SUM",
+
+	ActivationType.TARGETED_SHIP_HAS_STATUS:
+		"ERROR_TARGET_NO_STATUS",
 }
 
 

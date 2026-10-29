@@ -81,6 +81,9 @@ var _payout_depth: int = 0
 var _echoes: int = 0
 ## Of those, how many this move armed itself.
 var _echoes_armed: int = 0
+## Set while walking a tile's answer to a status landing (Hex Coil), so an
+## answer that applied a status itself couldn't set the walk going round.
+var _answering_status: bool = false
 
 
 ## A forecast of [param die] dropped on [param tile] while [param target] is
@@ -313,11 +316,55 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 			for target: Node in walk.context.targets:
 				if target is Enemy:
 					statuses[status] = statuses.get(status, 0.0) + amount * walk.share
+					if amount > 0.0:
+						_answer_status_applied(target, walk)
 				elif target == Globals.player and status == &"burn":
 					# Burn the player puts on themselves (Blowtorch) is hull
 					# lost over the next turns, and stacks onto any Burn
 					# already there: what it adds to n + (n - 1) + ... + 1.
 					damage[target] = damage.get(target, 0.0) + _added_burn_cost(amount) * walk.share
+		EffectEnums.AttributeChangeSubtype.MULTIPLY_STATUSES:
+			# What it adds to the enemy's statuses as they stand now. A
+			# repeat multiplies again, so each pass scales the last.
+			var engine: ScenarioEngine = ScenarioEngine.current()
+			if engine == null:
+				return
+			for target: Node in walk.context.targets:
+				if target is not Enemy or not is_instance_valid(target):
+					continue
+				for status: StatusModifier in engine.statuses_on(target):
+					var stacks: float = float(status.stacks)
+					var grown: float = stacks * pow(maxf(data.multiplier, 1.0), walk.scale)
+					statuses[status.status_id] = statuses.get(status.status_id, 0.0) \
+						+ (grown - stacks) * walk.share
+					if grown > stacks:
+						_answer_status_applied(target, walk)
+
+
+## Tallies what the grid's answers to a status landing on [param target]
+## (ON_STATUS_APPLIED_TO_ENEMY: Hex Coil's hit) add, once per pass of the
+## chain that applied it. Each answer starts aimed at that ship.
+func _answer_status_applied(target: Node, walk: _Walk) -> void:
+	if _answering_status or not is_instance_valid(Globals.tile_grid):
+		return
+	_answering_status = true
+	for tile: Tile in Globals.tile_grid.tile_locations.values():
+		if not is_instance_valid(tile) or tile.tile_resource == null:
+			continue
+		for trigger: TileEvent in tile.tile_resource.event_responses:
+			if trigger.event != TileEvent.EventType.ON_STATUS_APPLIED_TO_ENEMY:
+				continue
+			var answer := _Walk.new()
+			answer.context = EffectContext.new()
+			answer.context.actor = Globals.player
+			answer.context.effect_source = tile
+			answer.context.targets = [target] as Array[Node]
+			answer.share = walk.share
+			answer.scale = walk.scale
+			# The answer has no die of its own to hand anywhere.
+			answer.disposed = true
+			_run(tile.tile_resource.event_responses[trigger].effects, answer)
+	_answering_status = false
 
 
 ## Hull the player loses to Burn over the coming turns if [param added]
@@ -432,7 +479,8 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 			tile_tricks += _tiles_in(walk)
 		EffectEnums.TileControlSubtype.ACTIVATE_SELF, \
 		EffectEnums.TileControlSubtype.ADD_AMPLIFIER_MODIFIER, \
-		EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER:
+		EffectEnums.TileControlSubtype.ADD_DEATH_SAVE_MODIFIER, \
+		EffectEnums.TileControlSubtype.ADD_FAMILY_BOOST:
 			tile_tricks += 1.0
 		EffectEnums.TileControlSubtype.ARM_ECHO:
 			# One per pass, each for a tile further down the line.

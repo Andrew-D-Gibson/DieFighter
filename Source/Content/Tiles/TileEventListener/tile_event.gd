@@ -29,6 +29,14 @@ enum EventType {
 	## countdown tile's payout. Fired once per time it runs out, straight after
 	## the count that did it (TileCountdown).
 	ON_COUNTDOWN_ZERO,
+	## A fight's first turn is about to start: queued ahead of that turn's
+	## ON_TURN_START. The hook for resetting anything a tile builds up over one
+	## fight (Ratchet Cannon's bonus).
+	ON_COMBAT_START,
+	## The player just put a status on an enemy: once per ship per
+	## application, with that ship as the response's starting target. A
+	## status the player puts on their own ship doesn't count (Hex Coil).
+	ON_STATUS_APPLIED_TO_ENEMY,
 	## The player just took a killing blow. Answering it is a death save: the
 	## tile holds the hull at 1 on the spot, then its chain plays and should
 	## spend the tile (Tile._on_player_fatal_damage).

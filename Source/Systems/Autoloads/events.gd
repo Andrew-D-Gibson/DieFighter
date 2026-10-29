@@ -68,6 +68,10 @@ signal player_attacked_ship(ship: Enemy, ship_faction: ScenarioManager.Faction)
 ## involved; see player_attacked_ship for that.
 signal ship_attacked_ship(attacker: Enemy, target: Enemy)
 signal player_fatal_damage()
+## The player just put [param stacks] of a status on an enemy ship (not on
+## themselves). Once per ship per application, so a status put on every enemy
+## at once is heard once for each. Hex Coil answers it.
+signal status_applied_to_enemy(ship: Enemy, status_id: StringName, stacks: int)
 
 # Enemy Events
 signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)

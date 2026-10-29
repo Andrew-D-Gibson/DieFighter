@@ -123,8 +123,16 @@ func _connect_tile_event_signals() -> void:
 	Events.player_turn_start.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_TURN_START)
 	)
+	# Connected ahead of the ON_TURN_START listener below, so a fight's reset
+	# is queued before anything its first turn does.
+	Events.first_turn_start.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_COMBAT_START)
+	)
 	Events.first_turn_start.connect(func() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_TURN_START)
+	)
+	Events.status_applied_to_enemy.connect(func(ship: Enemy, _status_id: StringName, _stacks: int) -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_STATUS_APPLIED_TO_ENEMY, false, ship)
 	)
 	Events.tile_pushed.connect(func(tile: Tile) -> void:
 		handle_tile_event(tile, TileEvent.EventType.ON_TILE_PUSHED)
@@ -313,8 +321,10 @@ func _on_player_fatal_damage() -> void:
 
 
 ## [param immediate] resolves the response right after the event currently
-## resolving instead of at the back of the queue.
-func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false) -> void:
+## resolving instead of at the back of the queue. [param subject] is the ship
+## the event happened to, if any: the response starts with it as its target.
+func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool = false,
+		subject: Node = null) -> void:
 	if on_offer:
 		return
 	var event_check: TileEvent = _find_matching_event_response(tile, event)
@@ -325,6 +335,7 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool =
 	var trigger_event: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
 	trigger_event.responder = self
 	trigger_event.chain = tile_resource.event_responses[event_check]
+	trigger_event.subject = subject
 	if immediate:
 		engine.inject_event(trigger_event)
 	else:
