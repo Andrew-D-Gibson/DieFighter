@@ -71,6 +71,9 @@ func resolve(engine: ScenarioEngine) -> void:
 	# Remove die from the visual stacking queue
 	# It's about to fly in front of the enemy
 	TractorBeam.release(activator_die)
+	# A die still crossing from a destroyed ship is this ship's to spend now.
+	if activator_die is Dice:
+		(activator_die as Dice).cancel_handoff()
 	activator_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	enemy.dice_manager.remove(activator_die)
 

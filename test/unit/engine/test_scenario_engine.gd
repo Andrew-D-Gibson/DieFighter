@@ -237,3 +237,165 @@ func test_a_queued_tile_activation_counts_as_pending() -> void:
 func test_an_activation_still_owed_its_completion_counts_as_pending() -> void:
 	engine.event_queue.append(TileActivationCompleteEvent.new())
 	assert_true(engine.has_pending_tile_activation())
+
+
+# ── The beat between chains ───────────────────────────────────────────────────
+#
+# Only an engine in the tree waits (a bare one has no clock, and every test
+# above relies on it running straight through). These run on game time, at
+# Animation Speed 1.
+
+## An event that counts as something happening on screen (ScenarioEngine
+## gives a DamageEvent's chain a settle), and records itself like a
+## RecordingEvent.
+class ActingEvent extends DamageEvent:
+	var label: String
+	var record: Array
+	var on_resolve: Callable
+
+	func _init(event_label: String, shared_log: Array) -> void:
+		label = event_label
+		record = shared_log
+
+	func resolve(engine: ScenarioEngine) -> void:
+		record.append(label)
+		if on_resolve.is_valid():
+			await on_resolve.call(engine)
+
+
+var _saved_animation_speed: float
+
+
+func _live_engine() -> ScenarioEngine:
+	_saved_animation_speed = Globals.animation_speed
+	Globals.animation_speed = 1.0
+	return add_child_autofree(ScenarioEngine.new())
+
+
+func after_each() -> void:
+	if _saved_animation_speed > 0.0:
+		Globals.animation_speed = _saved_animation_speed
+		_saved_animation_speed = 0.0
+	super()
+
+
+func _acting(label: String) -> ActingEvent:
+	return ActingEvent.new(label, record)
+
+
+## Queues [param events] behind a gate and opens it, so they all resolve in one
+## drain, the way a burst of dropped dice or a ship's actions do.
+func _drain_together(live: ScenarioEngine, events: Array[EffectEvent]) -> void:
+	var gate := GatedEvent.new()
+	live.queue_event(gate)
+	for event: EffectEvent in events:
+		live.queue_event(event)
+	gate.released.emit()
+
+
+func test_a_chain_that_acts_gets_a_beat_before_the_next() -> void:
+	var live: ScenarioEngine = _live_engine()
+	_drain_together(live, [_acting("A"), _acting("B")] as Array[EffectEvent])
+
+	assert_eq(record, ["A"], "B waits for the settle")
+	await wait_seconds(ScenarioEngine.CHAIN_SETTLE_SECONDS * 0.5)
+	assert_eq(record, ["A"])
+	await wait_seconds(ScenarioEngine.CHAIN_SETTLE_SECONDS)
+	assert_eq(record, ["A", "B"])
+
+
+func test_injected_events_belong_to_the_chain_and_never_wait() -> void:
+	var live: ScenarioEngine = _live_engine()
+	var a: ActingEvent = _acting("A")
+	a.on_resolve = func(e: ScenarioEngine) -> void:
+		e.inject_event(_event("A1"))
+		e.inject_event(_event("A2"))
+	_drain_together(live, [a, _acting("B")] as Array[EffectEvent])
+
+	assert_eq(record, ["A", "A1", "A2"], "the whole chain plays, then the beat")
+	await wait_seconds(ScenarioEngine.CHAIN_SETTLE_SECONDS * 1.5)
+	assert_eq(record, ["A", "A1", "A2", "B"])
+
+
+func test_plumbing_chains_run_straight_on() -> void:
+	var live: ScenarioEngine = _live_engine()
+	_drain_together(live, [_event("A"), _event("B")] as Array[EffectEvent])
+	assert_eq(record, ["A", "B"])
+
+
+func test_a_canceled_chain_owes_no_beat() -> void:
+	var live: ScenarioEngine = _live_engine()
+	var skipped: ActingEvent = _acting("skipped")
+	skipped.canceled = true
+	_drain_together(live, [skipped, _acting("B")] as Array[EffectEvent])
+	assert_eq(record, ["B"])
+
+
+func test_a_queued_wait_stands_in_for_the_beat() -> void:
+	# A ship's actions are each followed by a WaitEvent settle. The engine's
+	# beat must not stack on top of it.
+	var live: ScenarioEngine = _live_engine()
+	var wait: WaitEvent = WaitEvent.new()
+	wait.amount = 100
+	_drain_together(live, [_acting("A"), wait, _acting("B")] as Array[EffectEvent])
+
+	assert_eq(record, ["A"])
+	await wait_seconds(0.1 + ScenarioEngine.CHAIN_SETTLE_SECONDS * 0.5)
+	assert_eq(record, ["A", "B"], "B follows the wait alone, not the wait plus a settle")
+
+
+func test_a_held_chain_waits_even_at_the_start_of_a_drain() -> void:
+	var live: ScenarioEngine = _live_engine()
+	live.hold_next_chain(0.3)
+	live.queue_event(_event("B"))
+
+	assert_eq(record, [], "held back")
+	assert_true(live.currently_processing_queue, "but already draining, so nothing else starts one")
+	await wait_seconds(0.45)
+	assert_eq(record, ["B"])
+
+
+func test_a_hold_and_a_settle_overlap_rather_than_add_up() -> void:
+	var live: ScenarioEngine = _live_engine()
+	var a: ActingEvent = _acting("A")
+	a.on_resolve = func(e: ScenarioEngine) -> void: e.hold_next_chain(0.3)
+	_drain_together(live, [a, _acting("B")] as Array[EffectEvent])
+
+	await wait_seconds(0.2)
+	assert_eq(record, ["A"], "the hold is longer than the settle")
+	await wait_seconds(0.2)
+	assert_eq(record, ["A", "B"], "and B goes when it runs out, not a settle after")
+
+
+func test_a_destroyed_ship_holds_the_next_chain_for_its_dice() -> void:
+	var live: ScenarioEngine = _live_engine()
+	Events.enemy_destroyed.emit(null)
+	live.queue_event(_event("B"))
+
+	assert_eq(record, [], "the dice are still crossing")
+	await wait_seconds(Dice.death_handoff_seconds() + 0.3)
+	assert_eq(record, ["B"])
+
+
+func test_a_chain_waiting_out_the_beat_stays_in_the_queue() -> void:
+	var live: ScenarioEngine = _live_engine()
+	live.hold_next_chain(0.3)
+	var activation: ActingEvent = _acting("activation")
+	live.queue_event(activation)
+	assert_true(activation in live.event_queue, "it waits in the queue, not in limbo")
+	await wait_seconds(0.45)
+
+
+func test_a_bare_engine_never_waits() -> void:
+	engine.hold_next_chain(5.0)
+	_drain_together(engine, [_acting("A"), _acting("B")] as Array[EffectEvent])
+	assert_eq(record, ["A", "B"])
+
+
+func test_shutting_down_mid_beat_drops_the_rest() -> void:
+	var live: ScenarioEngine = _live_engine()
+	_drain_together(live, [_acting("A"), _acting("never")] as Array[EffectEvent])
+	live.shutdown()
+	await wait_seconds(ScenarioEngine.CHAIN_SETTLE_SECONDS * 1.5)
+	assert_eq(record, ["A"])
+	assert_false(live.currently_processing_queue)

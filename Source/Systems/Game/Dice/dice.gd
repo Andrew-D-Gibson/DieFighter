@@ -70,6 +70,19 @@ const HELD_SCALE: float = 0.75
 ## would go on writing the old holder's scale after the handover.
 var _flourish_tween: Tween
 
+## A destroyed ship's dice hang at the wreck while it blows apart, then cross
+## to their new holders at a pace the eye can follow. They used to be yanked
+## across in the same instant as the explosion, and the player couldn't tell
+## who had got what. Game time, so the kill's hitstop holds them too.
+const _DEATH_LINGER_SECONDS: float = 0.55
+const _DEATH_CROSSING_SECONDS: float = 0.5
+
+## Carries the die from a destroyed ship to its new holder. See
+## hand_off_after_death().
+var _handoff_tween: Tween
+## Where the crossing to the new holder began.
+var _handoff_from: Vector2
+
 
 func _ready() -> void:
 	set_process(false)
@@ -94,6 +107,9 @@ static func get_random_die_value() -> int:
 
 
 func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
+	# A player can't pick up a die still crossing from a wreck, but the
+	# AutoPilot drops dice by code; wherever it lands now owns its movement.
+	cancel_handoff()
 	var dice_acceptors: Array[Node] = get_tree().get_nodes_in_group('CanAcceptDice')
 	for acceptor: CanAcceptDice  in dice_acceptors:
 		acceptor.check_die_drop(self, end_position)
@@ -164,6 +180,51 @@ func create_flourish_tween() -> Tween:
 		_flourish_tween.kill()
 	_flourish_tween = create_tween()
 	return _flourish_tween
+
+
+## How long a destroyed ship's dice take to reach their new holders, from
+## the moment it dies: the linger at the wreck plus the crossing.
+static func death_handoff_seconds() -> float:
+	return (_DEATH_LINGER_SECONDS + _DEATH_CROSSING_SECONDS) / Globals.animation_speed
+
+
+## Called once a destroyed ship has handed this die on: it hangs where it is
+## while the wreck goes up, then crosses to its new holder. The holder is read
+## every frame of the crossing (Draggable.home_position), since the survivors
+## close the gap the dead ship left at the same moment. Until it lands, its
+## Draggable leaves it alone, and it can't be picked up.
+func hand_off_after_death() -> void:
+	cancel_handoff()
+	draggable.held_by_code = true
+	var speed: float = Globals.animation_speed
+	_handoff_tween = create_tween()
+	_handoff_tween.tween_interval(_DEATH_LINGER_SECONDS / speed)
+	_handoff_tween.tween_callback(func() -> void: _handoff_from = global_position)
+	_handoff_tween.tween_method(_cross_to_holder, 0.0, 1.0, _DEATH_CROSSING_SECONDS / speed) \
+		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_handoff_tween.tween_callback(_end_handoff)
+
+
+## Cuts a death hand-off short and gives the die back to its Draggable: for
+## code that takes the die somewhere else first (a ship spending it).
+func cancel_handoff() -> void:
+	if _handoff_tween and _handoff_tween.is_valid():
+		_handoff_tween.kill()
+	_end_handoff()
+
+
+## Whether the die is still on its way from a destroyed ship.
+func is_handing_off() -> bool:
+	return _handoff_tween != null
+
+
+func _cross_to_holder(progress: float) -> void:
+	global_position = _handoff_from.lerp(draggable.home_position, progress)
+
+
+func _end_handoff() -> void:
+	_handoff_tween = null
+	draggable.held_by_code = false
 
 
 ## A quick squash on the face, for the moments a die matters: landing in a
