@@ -51,7 +51,7 @@ func install(cell: Vector2i) -> void:
 
 func _show_targets(shown: bool) -> void:
 	if is_instance_valid(Globals.tile_grid):
-		Globals.tile_grid.show_slot_targets(shown)
+		Globals.tile_grid.plates.show_targets(shown)
 	# The player needs to see the grid to pick a cell.
 	if shown:
 		Events.show_systems.emit()

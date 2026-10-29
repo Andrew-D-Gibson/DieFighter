@@ -84,12 +84,27 @@ func test_a_full_open_grid_still_has_room_to_grow() -> void:
 
 
 func test_slot_targets_light_only_while_carried() -> void:
-	grid.show_slot_targets(true)
+	grid.plates.show_targets(true)
 	for cell: Vector2i in grid.get_locked_cells():
-		assert_true(grid._locked_cells[cell].get_node("Target").visible)
-	grid.show_slot_targets(false)
+		assert_true(grid.plates.is_target_shown(cell))
+	grid.plates.show_targets(false)
 	for cell: Vector2i in grid.get_locked_cells():
-		assert_false(grid._locked_cells[cell].get_node("Target").visible)
+		assert_false(grid.plates.is_target_shown(cell))
+
+
+func test_an_opened_cell_loses_its_plate() -> void:
+	grid.plates.show_targets(true)
+	grid.unlock_cell(Vector2i(0, 1))
+	assert_false(grid.plates.is_target_shown(Vector2i(0, 1)))
+	assert_true(grid.plates.is_target_shown(Vector2i(4, 1)), "the others still show")
+
+
+func test_resealing_redraws_the_plates() -> void:
+	var none: Array[Vector2i] = []
+	grid.set_open_cells(none)
+	grid.plates.show_targets(true)
+	for x: int in 5:
+		assert_false(grid.plates.is_target_shown(Vector2i(x, 1)), "nothing sealed, nothing drawn")
 
 
 func test_the_die_fighter_starts_on_its_middle_3x3() -> void:
