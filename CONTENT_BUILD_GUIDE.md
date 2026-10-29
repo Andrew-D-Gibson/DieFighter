@@ -245,6 +245,27 @@ between turns and starts full every fight (`TileCountdown`, kept in
   die. At 0: Deal [color=red]7 damage[/color] to [color=purple]target[/color]`.
   The info panel adds how much is left. Upgrade by lowering N.
 
+**Later turns** (Time Bomb, Holding Bay): something set up now that happens
+as one of the player's later turns starts. Both run on `DelayedEffect`, a
+modifier that counts the player's turns down (the beat after the hand is
+re-rolled, before `ON_TURN_START`; a fight's opening turn never counts). It
+is dropped when the fight ends or the player jumps, and never goes off out
+of a fight, so give the tile an `IN_COMBAT` check. Nothing is saved mid-fight,
+so there's nothing to save.
+- **A payload on a ship**: `UTILITY / DELAY_EFFECTS`, authored as a
+  `DelayedEffectData` (like a conditional). Target the ship and build the
+  running amount first; both are captured. `amount` = turns, `color` tints
+  the countdown badge on the ship (`badge_icon` 11×11, `badge_info_icon`,
+  `badge_title`, `badge_text` with `{amount}`). `delayed_effects` then play
+  on that ship with that amount: flourishes and the hit, no targeting, no
+  die steps. If the ship leaves first the payload moves to another hostile
+  ship, or fizzles. Hand the die over as usual.
+- **A die kept for later**: end with `DICE_CONTROL / HOLD_DIE_FOR_TURNS`
+  (`amount` = turns, 1 if unset) instead of a hand-off. The die waits on the
+  tile and comes back to the hand at its face. It isn't a held die for
+  `get_held_die()`. Keep the uses low (a free bank is no choice).
+- Text: `[color=yellow]In 2 turns[/color]: Deal ...`.
+
 **Loop rule for Feed tiles:** a tile with unlimited uses may only Feed
 **right**. Feeding up, down, left or randomly needs limited uses, so every loop
 on the grid runs dry.
@@ -792,6 +813,9 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
 - **The die a tile holds:** read it with `Tile.get_held_die()`, which counts
   only dice put there by `KEEP_DIE_WITH_TILE` (`Tile.hold_die()`), not dice
   merely dropped on the tile and waiting for their activation.
+- **Something for a later turn:** subclass `DelayedEffect`
+  (`Modifiers/DelayedEffects/`), set `turns_left` and override `_on_due()`;
+  see "Later turns" in §1 for the two that exist.
 - **Data a chain needs from its caller:** add a field to `EffectContext`
   (`effect_context.gd`).
 
