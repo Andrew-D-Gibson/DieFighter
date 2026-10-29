@@ -26,6 +26,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 			Events.ship_attacked_ship.emit(actor, target)
 		if target is Enemy:
 			(target as Enemy).last_damaged_by = actor
+		_announce_attack_on(target)
 
 		var stripped: int = (target.health as Health).take_ion_damage(amount)
 		if stripped > 0:

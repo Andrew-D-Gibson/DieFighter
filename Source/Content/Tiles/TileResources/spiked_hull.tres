@@ -1,0 +1,96 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://cgsjucwmrdwux"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
+[ext_resource type="Texture2D" uid="uid://cvscesjfujpdg" path="res://Assets/Textures/Tiles/RedTiles/spiked_hull.png" id="tex"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_0"]
+[ext_resource type="Resource" uid="uid://dmdaatmlxshpt" path="res://Source/Content/Tiles/TileResources/spiked_hull_plus.tres" id="upgrade_plus"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("script_act")
+type = 6
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("script_event")
+event = 12
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 23
+amount = 90
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_0")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 15
+amount = 10
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_6"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 16
+string_param = "SPIKED"
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_7"]
+script = ExtResource("script_effect")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_8"]
+script = ExtResource("script_effect")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_9"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_3"), SubResource("Resource_4"), SubResource("Resource_5"), SubResource("Resource_6"), SubResource("Resource_7"), SubResource("Resource_8")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_10"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_11"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_10")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
+tile_name = "[color=red]Spiked Hull[/color]"
+description = "[color=yellow]Enemy hits you or your shields[/color] -> Deal [color=red]2 damage[/color] to it"
+rarity = 1
+textures = SubResource("SpriteFrames_11")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_1")])
+event_responses = Dictionary[ExtResource("script_event"), ExtResource("script_chain")]({
+SubResource("Resource_2"): SubResource("Resource_9")
+})
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

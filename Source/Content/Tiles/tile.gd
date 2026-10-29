@@ -158,6 +158,11 @@ func _connect_tile_event_signals() -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_SHIELDS_GAINED)
 	)
 	Events.player_fatal_damage.connect(_on_player_fatal_damage)
+	# Queued, not injected: the attacker's own chain finishes first, so a
+	# ship that dies to its own shot is gone before anything hits back.
+	Events.player_attacked.connect(func(attacker: Enemy) -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_ATTACKED, false, attacker)
+	)
 	# Answered straight after the neighbour's activation rather than at the back
 	# of the queue. A relay chain winding past this tile activates several
 	# neighbours in one pass; queued, every response would wait for the chain

@@ -30,6 +30,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 			Events.ship_attacked_ship.emit(actor, target)
 		if target is Enemy:
 			(target as Enemy).last_damaged_by = actor
+		_announce_attack_on(target)
 
 		# Read before the hit lands: afterwards the shields it spent are gone.
 		var number_color: Color = Globals.blue if target.health.shields >= amount else Globals.red
@@ -41,6 +42,14 @@ func resolve(_engine: ScenarioEngine) -> void:
 		# a hit to the hull gets a short one here to give it weight.
 		if target is Player and target.health.health < hull_before:
 			TimeDirector.hitstop(45)
+
+
+## Tells the world an enemy's hit was aimed at the player. Sent before the hit
+## lands, so the shields that take it don't change whether it counts; anything
+## answering it is queued behind the rest of the attacker's chain anyway.
+func _announce_attack_on(target: Node) -> void:
+	if target is Player and actor is Enemy and is_instance_valid(actor) and amount > 0:
+		Events.player_attacked.emit(actor as Enemy)
 
 
 ## Spawn directional hit particles + an explosion at the target's position.
