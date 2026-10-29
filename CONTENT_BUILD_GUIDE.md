@@ -185,6 +185,13 @@ registration to testing. For how the systems work underneath, see
   - A tile that spends or cashes in shields gates on `SHIELDS_AT_LEAST`, and
     pays with `SPEND_SHIELDS`, not a negative `SHIELD`: that would read as a
     hit and set off anything listening for one.
+  - **Hull as a cost**: `SPEND_HULL` (`amount`) comes straight off the hull,
+    past the shields, and gates on `HULL_AT_LEAST` set one above the price,
+    so paying never kills (it refuses rather than kill if they disagree). It
+    is a hull hit, so `ON_PLAYER_HEALTH_HIT` tiles answer it, but it isn't
+    damage: Phased, Exposed and Double Damage leave it alone. A repeat would
+    pay twice past a check made once, so untick `can_be_echoed` (Blood
+    Valve). Text: `Spend [color=red]3 hull[/color]`.
   - **Per-fight counters**: a tile that builds something up over a fight
     keeps it in its own tile data (`INCREMENT_TILE_DATA`, shown with
     `[data]key[/data]`) and zeroes it in an `ON_COMBAT_START` response, which
@@ -195,6 +202,12 @@ registration to testing. For how the systems work underneath, see
     straight to the effect (Hex Coil: ZAP, `SET 2`, `DAMAGE`). It fires once
     per ship per application, only for statuses the player puts on an enemy
     (not on themselves), so a payoff that only deals damage can't loop.
+    `ON_PLAYER_ATTACKED` works the same way with the attacker (Spiked Hull):
+    once per enemy hit aimed at the player, whether the shields or the hull
+    take it, ion fire included, but not a hit Phased dodged. A response is
+    queued behind the chain that set it off, and starts with no target if
+    that ship has died or fled by then. Text: `[color=yellow]Enemy hits you
+    or your shields[/color] -> Deal [color=red]2 damage[/color] to it`.
   - **Family boosts**: `TILE_CONTROL / ADD_FAMILY_BOOST` (`string_param` =
     `red`, `blue`, ...; `range_max` = cap; running amount = step, negative to
     take it back) gives every tile whose art is in that colour's folder +N
@@ -831,6 +844,14 @@ MISSILE), `SET_TO_ENEMY_INTENT`, `APPLY_STATUS`, then `GIVE_DIE_TO_PLAYER`
 statuses onto the player (`TRANSFER_STATUSES`); gate it on
 `SELF_HAS_STATUS`. A tile that puts a status on its own ship (Blowtorch)
 targets the player for that step; its Amplifier doesn't grow it.
+
+**Phased** (Phase Cloak) is the defensive one: the next hit from the other
+side (an enemy's on the player, a tile's on an enemy) drops the ship from its
+targets before anything reads it, so shields keep every point and a death
+save never fires. Each stack takes one hit; all of it wears off at the status
+tick (for the player, as the enemy turn ends). Burn, hazards and a tile's own
+cost get through. The tile applies it to the player with `TARGET_PLAYER`,
+`SET N`, `APPLY_STATUS` `phased`; its text uses `(phased_you)`.
 
 **Status payoffs.** `MULTIPLY_STATUSES` (`multiplier`, x2 doubles) grows
 every status on the targets by applying the difference, one `APPLY_STATUS`
