@@ -409,3 +409,86 @@ func test_spiked_hull_hits_nothing_once_the_attacker_is_gone() -> void:
 func test_spiked_hull_takes_no_dice() -> void:
 	for face: int in range(1, 7):
 		assert_false(_takes("spiked_hull", face))
+
+
+# ── Blood Valve ───────────────────────────────────────────────────────────────
+
+func _spend_hull(amount: int) -> SpendHullEvent:
+	var cost: SpendHullEvent = SpendHullEvent.new()
+	cost.actor = player
+	cost.targets = [player] as Array[Node]
+	cost.amount = amount
+	return cost
+
+
+func test_blood_valve_pays_hull_for_a_hologram_and_returns_the_die() -> void:
+	var events: Array[EffectEvent] = await _play("blood_valve", 5)
+	var costs: Array[EffectEvent] = _of(events, SpendHullEvent)
+	assert_eq(costs.size(), 1)
+	assert_eq(costs[0].amount, 3)
+	var holograms: Array[EffectEvent] = _of(events, SpawnHolographicDieEvent)
+	assert_eq(holograms.size(), 1)
+	assert_eq(holograms[0].amount, 5, "a copy of the die")
+	assert_eq(_of(events, GiveDieToPlayerEvent).size(), 1, "the die comes back")
+	assert_eq(_of(events, GiveDieToTargetEvent).size(), 0)
+	assert_eq(events.find(costs[0]) < events.find(holograms[0]), true, "it pays first")
+
+
+func test_blood_valve_plus_costs_two() -> void:
+	var events: Array[EffectEvent] = await _play("blood_valve_plus", 2)
+	assert_eq(_of(events, SpendHullEvent)[0].amount, 2)
+
+
+func test_blood_valve_refuses_a_die_it_would_kill_you_paying_for() -> void:
+	assert_true(_takes("blood_valve", 1), "takes any die")
+	player.health.health = 4
+	assert_true(_takes("blood_valve", 6), "4 hull pays 3 and leaves 1")
+	player.health.health = 3
+	assert_false(_takes("blood_valve", 6))
+	assert_true(_takes("blood_valve_plus", 6), "the cheaper valve still can")
+	player.health.health = 30
+	Globals.state_manager.state = GameStateManager.GameState.OUT_OF_COMBAT
+	assert_false(_takes("blood_valve", 6), "a hologram is no use outside a fight")
+
+
+func test_blood_valve_ignores_echo() -> void:
+	assert_false(_tile("blood_valve").tile_resource.can_be_echoed,
+		"one payment, one hologram: an echo would double the cost past the hull check")
+	assert_false(_tile("blood_valve_plus").tile_resource.can_be_echoed)
+
+
+func test_spending_hull_goes_past_the_shields_and_is_a_hull_hit() -> void:
+	player.health.shields = 10
+	var hits: Array[int] = [0]
+	var count_hit: Callable = func() -> void: hits[0] += 1
+	Events.player_health_hit.connect(count_hit)
+	await _land(_spend_hull(3))
+	Events.player_health_hit.disconnect(count_hit)
+	assert_eq(player.health.health, 27)
+	assert_eq(player.health.shields, 10, "the shields don't pay it")
+	assert_eq(hits[0], 1, "Spite Coil, Reactive Armor and Regenerative Brake hear it")
+
+
+func test_spending_hull_is_no_attack_and_nothing_dodges_it() -> void:
+	_watch_attacks()
+	await _apply(player, &"phased", 1)
+	await _land(_spend_hull(3))
+	assert_eq(player.health.health, 27)
+	assert_eq(_phased_on(player), 1, "the cloak is still waiting for an enemy")
+	assert_eq(attackers.size(), 0)
+	assert_false(_spend_hull(3).is_amplifiable(), "a price, not an output")
+
+
+func test_spending_hull_refuses_rather_than_kill() -> void:
+	player.health.health = 3
+	await _land(_spend_hull(3))
+	assert_eq(player.health.health, 3)
+	assert_false(player.health.is_dead)
+
+
+func test_the_forecast_counts_the_hull_paid_and_both_dice_back() -> void:
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(_tile("blood_valve"), _die(4), enemy,
+		[enemy] as Array[Enemy])
+	assert_eq(forecast.damage.get(player, 0.0), 3.0)
+	assert_eq(forecast.dice_back, 2.0, "the die and its hologram")
+	assert_eq(forecast.handoffs.size(), 0)

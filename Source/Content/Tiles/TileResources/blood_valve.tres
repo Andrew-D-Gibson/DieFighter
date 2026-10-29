@@ -1,0 +1,124 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://cgcll36203axm"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Texture2D" uid="uid://c0mewegeompm1" path="res://Assets/Textures/Tiles/PurpleTiles/blood_valve-Sheet.png" id="tex"]
+[ext_resource type="Resource" uid="uid://dfvhedxxd7fmn" path="res://Source/Content/Tiles/TileResources/blood_valve_plus.tres" id="upgrade_plus"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("script_act")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("script_act")
+type = 2
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("script_act")
+type = 19
+threshold = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("script_effect")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 21
+amount = 8
+color = Color(0.8157, 0.2118, 0.3373, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_6"]
+script = ExtResource("script_effect")
+category = 1
+subtype = 14
+amount = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_7"]
+script = ExtResource("script_effect")
+category = 2
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_8"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 22
+color = Color(0.7725, 0.3216, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_9"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 13
+amount = 80
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_10"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 15
+amount = 10
+color = Color(0.2627, 0.6510, 0.9882, 1)
+juice_flags = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_11"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_12"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_13"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_4"), SubResource("Resource_5"), SubResource("Resource_6"), SubResource("Resource_7"), SubResource("Resource_8"), SubResource("Resource_9"), SubResource("Resource_10"), SubResource("Resource_11"), SubResource("Resource_12")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_14"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_15"]
+atlas = ExtResource("tex")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_16"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_14")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_15")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
+tile_name = "[color=purple]Blood Valve[/color]"
+description = "[color=yellow]Any die[/color] -> Spend [color=red]3 hull[/color]. Spawn a (hologram) of die. [color=orange]Return[/color] die. Ignores (echo)"
+rarity = 1
+textures = SubResource("SpriteFrames_16")
+uses_per_turn = 1
+can_be_echoed = false
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")])
+effect_chain = SubResource("Resource_13")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
