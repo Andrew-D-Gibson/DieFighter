@@ -4,6 +4,50 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Countdown tiles
+
+The gap analysis's biggest family (G02a-f): Dicey Dungeons' countdown
+weapons. Dice count a tile down by their face; at 0 it pays out and starts
+again. A multi-turn plan, and a home for low dice.
+
+**The system.** `TileResource.countdown` = N. `COUNT_DOWN` (TileControl 14)
+counts the target tile down by the running amount; at 0 the tile's
+`ON_COUNTDOWN_ZERO` (TileEvent 9) payout fires before the die is handed on.
+- Extra counts carry over on every countdown tile, so a big die can fire a
+  tile twice. An echoed countdown counts down twice and hands its die on once.
+- The count keeps between turns and resets when a fight starts or ends
+  (saves are only written out of combat, so it never has to survive one).
+- `TileCountdown` draws lit digits in a 9x7 readout where the die slot would
+  be; the info panel adds "(countdown): N to go". Keywords `(countdown)`,
+  `(countdowns)`. Countdown tiles only take dice in combat.
+- `TARGET_OTHER_COUNTDOWN_TILES` and `OTHER_COUNTDOWN_ON_GRID` (activation 15)
+  serve Fuse Cutter. CONTENT_BUILD_GUIDE §1 has the authoring recipe.
+- AutoPilot: a payout the die sets off counts in full; partial progress at
+  half its share of the next payout. Payout walks stop at depth 2.
+
+| Tile | Colour, rarity | N | Payout | Upgrade |
+|---|---|---|---|---|
+| Pulse Repeater | Red, Common | 6 | 7 damage | N 5 |
+| Countdown Cannon | Red, Uncommon | 18 | 25 damage | N 15 |
+| Capacitor Bank | Blue, Uncommon | 12 | 15 shields | N 10 |
+| Fuse Payload | Red, Uncommon | 10 | 4 Burn + 1 Jammed | N 8 |
+| Fabricator | Green, Uncommon | 12 | two hologram 6s | N 10 |
+| Fuse Cutter | Yellow, Uncommon, 1 use | — | counts every other countdown down by the die | die +2 |
+
+Every countdown tile gives its die to the target, the usual cost. Pulse
+Repeater pays 7, not the sheet's 8: 1.17 damage a pip against Dice Cannon's
+1.0, to make up for lumpy payouts and progress lost when a fight ends.
+Fabricator refuses holograms, or its own two 6s would set it off again
+forever. Fuse Cutter refuses a die with no other countdown on the grid.
+
+**Tested.** GUT 1282 on the branch. Live (Wolfpack): 4 then 4 on Pulse
+Repeater fired once (7) and read 4; a 6 on Fuse Cutter fired the repeater
+again and took the cannon to 12 and the rest down by 6. Counts held across
+End Turn; a 6 each on Capacitor Bank and Fabricator paid 15 shields and two
+hologram 6s, and both read 12 again.
+
+---
+
 ## 2026-10-29 — Echo and AoE: Echo Relay, Opening Salvo, Sweeping Battery, Fume Vent
 
 Gap analysis G01a/b and G03a/b. Die Fighter had flat +N buffs but nothing
