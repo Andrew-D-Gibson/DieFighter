@@ -7,7 +7,7 @@
 class_name DamageNumber
 extends Node2D
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 ## m5x7 is drawn at 16 so one font pixel is one world pixel; larger hits scale
 ## the whole node by whole numbers to stay crisp.

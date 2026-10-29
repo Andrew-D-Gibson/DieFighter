@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b4bhqmwyiaq22"]
 
 [ext_resource type="Script" uid="uid://bs4wmdp5e1fwu" path="res://Source/Systems/UI/GameOver/game_over.gd" id="1_i78pc"]
-[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="1_p6ygr"]
+[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="1_p6ygr"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="3_ah4je"]
 [ext_resource type="Script" uid="uid://dejwpip3qhauo" path="res://Source/Systems/UI/button_rotator.gd" id="4_t5hyd"]
 [ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="5_64ib7"]

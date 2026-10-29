@@ -55,6 +55,7 @@ const CURSOR_SPEED: StringName = &"Controls/cursor_speed"
 ## The Cursor Speed slider's range, as a multiplier on the controller
 ## pointer's speed.
 const CURSOR_SPEEDS: Vector2 = Vector2(0.5, 2.0)
+const READABLE_FONT: StringName = &"Accessibility/readable_font"
 
 
 class _Option:
@@ -161,6 +162,7 @@ func _register_options() -> void:
 	_register_comfort_options()
 	_register_controls_options()
 	_register_dice_input_options()
+	_register_readable_font_options()
 
 
 ## Screenshake, flashing, hit pause, and what happens in the background.
@@ -219,6 +221,11 @@ func _register_dice_input_options() -> void:
 	register(CONFIRM_END_TURN, true,
 		func() -> bool: return EndTurnConfirm.enabled,
 		func(value: Variant) -> void: EndTurnConfirm.enabled = bool(value))
+
+
+func _register_readable_font_options() -> void:
+	register(READABLE_FONT, false, FontSwap.is_readable,
+		func(value: Variant) -> void: FontSwap.set_readable(bool(value)))
 
 
 func _register_window_options() -> void:

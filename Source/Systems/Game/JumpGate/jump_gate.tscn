@@ -4,7 +4,7 @@
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_ring-Sheet.png" id="2_ring"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal-Sheet.png" id="3_portal"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal_charged-Sheet.png" id="5_charged"]
-[ext_resource type="FontFile" uid="uid://bekus7kljl5ap" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="4_font"]
+[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="4_font"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ring0"]
 atlas = ExtResource("2_ring")

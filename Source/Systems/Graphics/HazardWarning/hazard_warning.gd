@@ -6,7 +6,7 @@ extends CanvasLayer
 ## Spawned by HazardEvent and gone once the hazard has struck. It sits over
 ## the game but under Juice.screen_flash, so the strike's flash washes it out.
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 const _BEAT_SFX: SoundEffectResource = preload(
 	"res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres"
 )

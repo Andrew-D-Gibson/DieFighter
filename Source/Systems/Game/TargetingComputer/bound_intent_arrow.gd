@@ -25,7 +25,7 @@ const _DIE_FACES_LIT: Texture2D = preload(
 const _DIE_FACES_DIM: Texture2D = preload(
 	"res://Assets/Textures/TargetingComputer/intent_dice_indicator_default-Sheet.png"
 )
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 const _FONT_SIZE: int = 16
 
 ## Approved palette: the bright colour and its dark shade, per binding.

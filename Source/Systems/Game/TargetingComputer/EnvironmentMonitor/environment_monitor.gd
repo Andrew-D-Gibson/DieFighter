@@ -46,7 +46,7 @@ const _FLARE_BRIGHTNESS: float = 2.2
 ## housing, so it rises clear of the monitor.
 const _CALLOUT_OFFSET: Vector2 = Vector2(0, -12)
 
-const _COUNTDOWN_FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7.ttf")
+const _COUNTDOWN_FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 ## Where the glyph sits on the screen, alone or sharing it with a countdown.
 const _GLYPH_CENTRED: Vector2 = Vector2(0, -22)
