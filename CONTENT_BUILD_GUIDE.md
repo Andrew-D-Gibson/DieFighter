@@ -573,7 +573,13 @@ minus some backgrounds (`excluded_backgrounds`).
 - `modifier_name` (a place name, caps on the banner), `description`, `color`,
   optional `icon`.
 - `effect`: SHIELD_BLACKOUT, DOUBLE_DAMAGE, REPAIR_BLACKOUT, ENGINE_BLACKOUT,
-  REROLL_BLACKOUT, NO_REPETITION or AMOUNT_CAP (with `amount_cap`).
+  REROLL_BLACKOUT, NO_REPETITION, AMOUNT_CAP (with `amount_cap`) or
+  DICE_FREEZE (no face changes at all; Flash Freeze).
+
+**A new way to change a die's face** (a new event) must override
+`EffectEvent.changes_die_values()` to return true, or Flash Freeze won't stop
+it. A face change outside an event (Scrambled's) asks
+`DiceFreezeModifier.active_on(engine)` and calls `announce_triggered()` on it.
 
 **New kind of rule:**
 1. Write a `Modifier` subclass in `Source/Behavior/Modifiers/BackgroundModifiers/`.

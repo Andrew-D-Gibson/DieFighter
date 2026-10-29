@@ -5,6 +5,6 @@
 [resource]
 script = ExtResource("script_0")
 modifier_name = "Flash Freeze"
-description = "Dice cannot be [color=green]re-rolled[/color]"
+description = "Dice values [color=blue]cannot change[/color]: no rerolls, bumps or flips"
 color = Color(0.807843, 0.941176, 0.945098, 1)
-effect = 4
+effect = 7

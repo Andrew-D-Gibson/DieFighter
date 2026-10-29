@@ -9,6 +9,11 @@ func is_amplifiable() -> bool:
 	return false
 
 
+## See EffectEvent.changes_die_values().
+func changes_die_values() -> bool:
+	return true
+
+
 func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(activator_die):
 		return

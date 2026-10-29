@@ -28,14 +28,14 @@ func _init() -> void:
 	priority = 6
 
 
-func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
+func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	if stacks <= 0 or not is_on_player() or event is not TileActivationEvent:
 		return
 	var activation: TileActivationEvent = event as TileActivationEvent
 	if activation.feed_depth > 0 or not JammedStatus.is_ship_system(activation.tile):
 		return
 	var die: Node = activation.activator_die
-	if not is_instance_valid(die):
+	if not is_instance_valid(die) or _frozen(engine):
 		return
 	die.value = 7 - die.value
 	activation.die_value = die.value
@@ -61,13 +61,23 @@ func on_unregistered(engine: ScenarioEngine) -> void:
 
 ## Typed as Node and read by duck typing, like an event's activator_die.
 func on_die_arriving(die: Node) -> void:
-	if stacks <= 0 or not is_instance_valid(die):
+	if stacks <= 0 or not is_instance_valid(die) or _frozen(_host_engine):
 		return
 	die.value = 7 - die.value
 	if die.has_method("play_pop"):
 		die.play_pop(0.5)
 	announce_triggered()
 	consume(1)
+
+
+## Flash Freeze stops the flip too, and says so. The stack isn't spent: the
+## die it was waiting for never turned over.
+func _frozen(engine: ScenarioEngine) -> bool:
+	var freeze: DiceFreezeModifier = DiceFreezeModifier.active_on(engine)
+	if freeze == null:
+		return false
+	freeze.announce_triggered()
+	return true
 
 
 func _intake() -> EnemyDiceManager:

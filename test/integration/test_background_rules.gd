@@ -13,7 +13,7 @@ const BACKGROUND_ROOT: String = "res://Source/Resources/BackgroundResources/"
 ## Background -> the Modifier class its rule builds (or "" for none).
 const RULES: Dictionary[String, String] = {
 	"blue_nebula": "AmountCapModifier",
-	"cryo_belt": "RerollBlackoutModifier",
+	"cryo_belt": "DiceFreezeModifier",
 	"debris_field": "DoubleDamageModifier",
 	"derelict_boneyard": "NoRepetitionModifier",
 	"fate_infection": "EngineBlackoutModifier",

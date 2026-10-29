@@ -2,6 +2,11 @@ class_name FlipOnesAndSixesEvent
 extends EffectEvent
 
 
+## See EffectEvent.changes_die_values().
+func changes_die_values() -> bool:
+	return true
+
+
 func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(actor):
 		return
