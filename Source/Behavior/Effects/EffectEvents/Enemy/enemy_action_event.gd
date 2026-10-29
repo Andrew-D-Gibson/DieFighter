@@ -32,6 +32,12 @@ const SETTLE_SECONDS: float = 0.5
 ## so it lands upright.
 const _USE_SPIN: float = TAU
 
+## Where the die waits, relative to the ship it's about to be spent by.
+const _FRONT_OF_SHIP_OFFSET: Vector2 = Vector2(0, 12)
+
+## Where the die is headed, refreshed every frame of the trip. See _carry_out().
+var _front_of_ship: Vector2 = Vector2.ZERO
+
 ## How many times the full effect chain plays for this single activation.
 ## Defaults to 1; modifiers may multiply this in on_before_event() (e.g.
 ## "tiles activated by a 4 activate twice").
@@ -69,14 +75,19 @@ func resolve(engine: ScenarioEngine) -> void:
 	enemy.dice_manager.remove(activator_die)
 
 	# Tween the die to in front of the enemy, weighted by its face value.
+	# The spot is read every frame rather than once at launch: when another
+	# ship dies the survivors slide over, often just as this one's turn
+	# starts, and a die aimed at where the ship used to be would land in
+	# empty space and hang there while the ship acted from somewhere else.
 	var weight: float = (clampf(die_value, 1, 6) - 1.0) / 5.0
 	var tween_time: float = lerpf(_LIGHT_HANDOVER_SECONDS, _HEAVY_HANDOVER_SECONDS, weight)
 	var adjusted_tween_time: float = tween_time / Globals.animation_speed
+	_front_of_ship = _read_front_of_ship()
 	var tween: Tween = enemy.get_tree().create_tween()
-	tween.tween_property(
-		activator_die, 
-		"global_position", 
-		enemy.global_position + Vector2(0,12), 
+	tween.tween_method(
+		_carry_out.bind(activator_die.global_position),
+		0.0,
+		1.0,
 		adjusted_tween_time
 	).set_ease(Tween.EASE_IN_OUT)
 	# A heavy die also grows slightly as it arrives, so the value reads even
@@ -96,19 +107,21 @@ func resolve(engine: ScenarioEngine) -> void:
 	tween.parallel().tween_property(activator_die, "rotation", _USE_SPIN, adjusted_tween_time) \
 		.set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_callback(activator_die.set_rotation.bind(0.0))
+	# The beat before the action fires. Part of the same tween so the die
+	# keeps station in front of a ship still sliding into place, and so a
+	# death mid-hold finishes it along with the flight (Enemy._on_death).
+	tween.tween_method(
+		_keep_station,
+		0.0,
+		1.0,
+		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight) / Globals.animation_speed
+	)
 	enemy.spending_die = activator_die as Dice
 	enemy.spending_tween = tween
 	await tween.finished
-	
+
 	# The ship can be freed while its die is in flight — fleeing with dice
 	# still queued, or killed by something that resolved in the meantime.
-	if not _can_still_act():
-		return
-		
-	await enemy.get_tree().create_timer(
-		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight) / Globals.animation_speed
-	).timeout
-
 	if not _can_still_act():
 		return
 	
@@ -160,6 +173,30 @@ func settle_action() -> Texture2D:
 	# A copy, like every rolled action: the preloaded one is shared.
 	action = _DO_NOTHING.duplicate(true)
 	return BLOCKED_ICON
+
+
+## One frame of the die's trip out in front of the ship: [param progress] of
+## the way from [param start] to wherever the ship is now.
+func _carry_out(progress: float, start: Vector2) -> void:
+	if not is_instance_valid(activator_die):
+		return
+	_front_of_ship = _read_front_of_ship()
+	activator_die.global_position = start.lerp(_front_of_ship, progress)
+
+
+## One frame of the hold before the action fires: the die stays in front of
+## the ship, wherever it has got to.
+func _keep_station(_progress: float) -> void:
+	_carry_out(1.0, Vector2.ZERO)
+
+
+## Where the die waits before the action fires: just below the hull. The last
+## place it was seen once the ship is gone, so a die whose ship was freed
+## mid-flight (a flee) still lands somewhere sensible.
+func _read_front_of_ship() -> Vector2:
+	if is_instance_valid(enemy):
+		return enemy.global_position + _FRONT_OF_SHIP_OFFSET
+	return _front_of_ship
 
 
 ## A ship killed while its die was in flight is still a valid node through its
