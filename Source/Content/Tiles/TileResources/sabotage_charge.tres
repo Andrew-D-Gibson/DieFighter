@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://b1ojv70l21glb" path="res://Source/Resources/SoundEffectResources/SoundEffects/error.tres" id="sfx_error"]
 [ext_resource type="Texture2D" uid="uid://buutqi8r7pkm8" path="res://Assets/Textures/Tiles/PurpleTiles/sabotage_charge.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/sabotage_charge_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -132,6 +133,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Sabotage Charge[/color]"
 description = "[color=yellow]Any die[/color] -> Spend [color=purple]8 engine charge[/color] to apply 2 (jammed) to [color=purple]target[/color]"
 rarity = 1

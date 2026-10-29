@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://b20hbpbd0v7jl" path="res://Assets/Textures/Tiles/BlueTiles/emergency_shield.png" id="10_rg6sh"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="11_55lg7"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="12_esdata"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/emergency_shield_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_4tha5"]
 script = ExtResource("1_wphb4")
@@ -190,6 +191,7 @@ animations = [{
 
 [resource]
 script = ExtResource("4_k7gdr")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "Emergency Shield"
 description = "[color=yellow]Fatal hit[/color] -> Survive at 1 [color=red]hull[/color]. Gain [color=blue]12 shields[/color]. Single use"
 rarity = 1

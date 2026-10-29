@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/YellowTiles/sensor_spike.png" id="tex"]
 [ext_resource type="Resource" uid="uid://dmov75b4snh4y" path="res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres" id="sfx_tile_dropped"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/sensor_spike_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -119,6 +120,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=yellow]Sensor Spike[/color]"
 description = "[color=yellow]Any die[/color] -> Apply 2 (exposed) to [color=purple]target[/color]. (feed_right)"
 rarity = 1

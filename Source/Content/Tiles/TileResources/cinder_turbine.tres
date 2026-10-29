@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/PurpleTiles/cinder_turbine.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/cinder_turbine_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -88,6 +89,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Cinder Turbine[/color]"
 description = "[color=yellow]Your turn starts[/color] -> Gain [color=purple]2 engine charge[/color] per (burn) on you"
 rarity = 1

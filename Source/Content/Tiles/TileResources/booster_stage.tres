@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Texture2D" uid="uid://1lu0qrnkskrc" path="res://Assets/Textures/Tiles/YellowTiles/booster_stage-Sheet.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/booster_stage_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -96,6 +97,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=yellow]Booster Stage[/color]"
 description = "[color=yellow]Any die[/color] -> Tile to the right gets +2 to effects this turn. (feed_right)"
 rarity = 1

@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Texture2D" uid="uid://bvew84gj30xu7" path="res://Assets/Textures/Tiles/BlueTiles/ballast_tanks-Sheet.png" id="tex"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_shield"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/ballast_tanks_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -110,6 +111,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Ballast Tanks[/color]"
 description = "[color=yellow]Any die[/color] -> Gain [color=blue]shields[/color] equal to die. (feed_down) as (die_1)"
 rarity = 1

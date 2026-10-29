@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/Tiles/RedTiles/napalm_vent.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/napalm_vent_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -137,6 +138,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Napalm Vent[/color]"
 description = "[color=yellow]Surrounding tile activates[/color] -> Apply 1 (burn) to [color=purple]target[/color]"
 rarity = 1

@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://b1ojv70l21glb" path="res://Source/Resources/SoundEffectResources/SoundEffects/error.tres" id="sfx_error"]
 [ext_resource type="Texture2D" uid="uid://k1rauymb3uou" path="res://Assets/Textures/Tiles/BlueTiles/chaff_pod-Sheet.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chaff_pod_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -125,6 +126,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Chaff Pod[/color]"
 description = "(die_1) -> Apply 1 (jammed) to [color=purple]target[/color]"
 textures = SubResource("SpriteFrames_tile")

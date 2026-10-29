@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
 [ext_resource type="Texture2D" uid="uid://c21vtmsysl2v3" path="res://Assets/Textures/Tiles/RedTiles/swarm_battery-Sheet.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/swarm_battery_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_17"]
 script = ExtResource("script_act")
@@ -148,6 +149,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Swarm Battery[/color]"
 description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color] for every die in play"
 rarity = 1

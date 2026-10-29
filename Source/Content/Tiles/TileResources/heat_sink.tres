@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_shield"]
 [ext_resource type="Texture2D" uid="uid://dubvespbhgfs7" path="res://Assets/Textures/Tiles/BlueTiles/heat_sink.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/heat_sink_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -123,6 +124,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Heat Sink[/color]"
 description = "(die_4) -> Gain [color=blue]2 shields[/color] per (burn) on [color=purple]target[/color]"
 rarity = 1

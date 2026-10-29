@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" uid="uid://d3odqgc503hsx" path="res://Assets/Textures/Tiles/GreenTiles/surge_relay-Sheet.png" id="tex"]
 [ext_resource type="Resource" uid="uid://dlyq377oa6gb3" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres" id="sfx_reroll"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/surge_relay_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -89,6 +90,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Surge Relay[/color]"
 description = "[color=yellow]Any die[/color] -> [color=green]Re-roll[/color] die. (feed_right)"
 textures = SubResource("SpriteFrames_tile")

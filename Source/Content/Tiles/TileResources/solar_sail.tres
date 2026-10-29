@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_6"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_4"]
 [ext_resource type="Texture2D" uid="uid://ce2us2s32ip8f" path="res://Assets/Textures/Tiles/BlueTiles/solar_sail.png" id="tex_2"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/solar_sail_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")
@@ -123,6 +124,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_0")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Solar Sail[/color]"
 description = "(die_2) -> Gain [color=blue]2 shields[/color] per surrounding empty cell"
 rarity = 1

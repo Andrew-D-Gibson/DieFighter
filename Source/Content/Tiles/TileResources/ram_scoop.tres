@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://cwa1lwuck37em" path="res://Assets/Textures/Tiles/PurpleTiles/ram_scoop.png" id="3_tex"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_data"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_chain"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/ram_scoop_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_die"]
 script = ExtResource("1_act")
@@ -110,6 +111,7 @@ animations = [{
 
 [resource]
 script = ExtResource("2_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Ram Scoop[/color]"
 description = "[color=yellow]Any die[/color] -> Gain [color=purple]2 engine charge[/color] per surrounding empty cell"
 textures = SubResource("SpriteFrames_ram_scoop")

@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" uid="uid://deagw7t472ps5" path="res://Assets/Textures/Tiles/RedTiles/leech_relay-Sheet.png" id="tex"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_dice_cannon"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/leech_relay_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -176,6 +177,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Leech Relay[/color]"
 description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color] to [color=purple]target[/color]. Tiles above and below lose 1 use. (feed_right)"
 rarity = 1

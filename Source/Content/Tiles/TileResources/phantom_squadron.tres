@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Texture2D" uid="uid://cuq8a3doxbksg" path="res://Assets/Textures/Tiles/YellowTiles/phantom_squadron-Sheet.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/phantom_squadron_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_14"]
 script = ExtResource("script_act")
@@ -133,6 +134,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=yellow]Phantom Squadron[/color]"
 description = "[color=yellow]Any die[/color] -> If there are 4 or fewer dice in play, spawn (holograms) until 5 dice are in play"
 rarity = 2

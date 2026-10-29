@@ -8,6 +8,7 @@
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="11_qp02v"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="11_xm7fs"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="11_y0stg"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/leeching_shot_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_r2sor"]
 script = ExtResource("1_u0h2o")
@@ -115,6 +116,7 @@ animations = [{
 
 [resource]
 script = ExtResource("3_cy0vr")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Leeching Shot[/color]"
 description = "(die_1) or (die_2) -> Steal [color=red]2 hull[/color] from [color=purple]target[/color]"
 rarity = 1

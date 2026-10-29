@@ -1,0 +1,107 @@
+[gd_resource type="Resource" script_class="TileResource" format=3]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_ltqic"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_uekf7"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="7_03xhp"]
+[ext_resource type="Texture2D" uid="uid://btlchmlig4w3v" path="res://Assets/Textures/Tiles/GreenTiles/holographic_duplicator_plus-Sheet.png" id="7_m4gsi"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="7_oymyf"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="8_2vvbj"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="8_87uef"]
+
+[sub_resource type="Resource" id="Resource_nrdn6"]
+script = ExtResource("1_ltqic")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_1kud3"]
+script = ExtResource("7_oymyf")
+category = 2
+subtype = 6
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_qtm42"]
+script = ExtResource("7_oymyf")
+category = 3
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_3phsw"]
+script = ExtResource("7_oymyf")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_j6chx"]
+script = ExtResource("7_oymyf")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("7_oymyf")
+category = 4
+subtype = 22
+color = Color(0.7725, 0.3216, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("7_oymyf")
+category = 4
+subtype = 13
+amount = 80
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_3"]
+script = ExtResource("7_oymyf")
+category = 4
+subtype = 15
+amount = 10
+juice_flags = 1
+color = Color(0.7725, 0.3216, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_f3imi"]
+script = ExtResource("8_2vvbj")
+effects = Array[ExtResource("7_oymyf")]([SubResource("Resource_1kud3"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_qtm42"), SubResource("Resource_3phsw"), SubResource("Resource_j6chx")])
+base_repetitions = 2
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_nrdn6"]
+atlas = ExtResource("7_m4gsi")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_03xhp"]
+atlas = ExtResource("7_m4gsi")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_upgrade_2"]
+atlas = ExtResource("7_m4gsi")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2vvbj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_nrdn6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_03xhp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_upgrade_2")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("3_uekf7")
+offered_as_reward = false
+is_upgrade = true
+tile_name = "[color=yellow]Holo-Duplicator+[/color]"
+description = "[color=yellow]Any die[/color] -> Spawn 2 (holograms) of die"
+textures = SubResource("SpriteFrames_2vvbj")
+uses_per_turn = 2
+activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6")])
+effect_chain = SubResource("Resource_f3imi")
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="10_1rls6"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="10_2itrs"]
 [ext_resource type="Texture2D" uid="uid://nbot7n72yi2" path="res://Assets/Textures/Tiles/GreenTiles/chaos_explosion-Sheet.png" id="12_1rls6"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chaos_explosion_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_il8a7"]
 script = ExtResource("1_q8v5r")
@@ -141,6 +142,7 @@ animations = [{
 
 [resource]
 script = ExtResource("4_rsbqf")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Chaos Explosion[/color]"
 description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to [color=purple]all ships[/color]. [color=green]Re-roll[/color] all dice"
 rarity = 2

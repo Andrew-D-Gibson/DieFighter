@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_seowo"]
 [ext_resource type="Texture2D" uid="uid://1e767ya4c7na" path="res://Assets/Textures/Tiles/YellowTiles/amplifier-Sheet.png" id="5_xicoq"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="8_rj18t"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/amplifier_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_f3imi"]
 script = ExtResource("2_seowo")
@@ -114,6 +115,7 @@ animations = [{
 
 [resource]
 script = ExtResource("4_seowo")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=yellow]Amplifier[/color]"
 description = "[color=yellow]Any die[/color] -> Tiles above and below get +2 to effects this turn"
 textures = SubResource("SpriteFrames_f1pqj")

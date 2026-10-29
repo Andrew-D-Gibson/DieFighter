@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_dice_cannon"]
 [ext_resource type="Texture2D" uid="uid://dfkmds01tsm48" path="res://Assets/Textures/Tiles/GreenTiles/value_sorter-Sheet.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/value_sorter_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_1"]
 script = ExtResource("script_act")
@@ -220,6 +221,7 @@ animations = [{
 
 [resource]
 script = ExtResource("script_tile")
+upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Value Sorter[/color]"
 description = "[color=yellow]Any die[/color] -> Deal [color=red]1 damage[/color] to [color=purple]target[/color]. [color=yellow]1-2[/color]: (feed_up). [color=yellow]3-4[/color]: (feed_right). [color=yellow]5-6[/color]: (feed_down)"
 rarity = 1
