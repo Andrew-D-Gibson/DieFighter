@@ -19,7 +19,9 @@ func _ready() -> void:
 	
 	
 func _process(_delta: float) -> void:
-	global_position = get_global_mouse_position()
+	# Not get_global_mouse_position(): that's the OS pointer, which may lag a
+	# controller's virtual one (InputManager.cursor).
+	global_position = get_canvas_transform().affine_inverse() * InputManager.pointer_position(get_viewport())
 
 
 func set_current_clickable(clickable: Clickable) -> void:

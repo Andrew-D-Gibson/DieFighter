@@ -49,6 +49,10 @@ const REDUCE_FLASHING: StringName = &"Accessibility/reduce_flashing"
 const HIT_PAUSE: StringName = &"Accessibility/hit_pause"
 const MUTE_IN_BACKGROUND: StringName = &"Audio/mute_in_background"
 const PAUSE_IN_BACKGROUND: StringName = &"Game/pause_in_background"
+const CURSOR_SPEED: StringName = &"Controls/cursor_speed"
+## The Cursor Speed slider's range, as a multiplier on the controller
+## pointer's speed.
+const CURSOR_SPEEDS: Vector2 = Vector2(0.5, 2.0)
 
 
 class _Option:
@@ -153,6 +157,7 @@ func _register_options() -> void:
 	_register_colorblind_options()
 
 	_register_comfort_options()
+	_register_controls_options()
 
 
 ## Screenshake, flashing, hit pause, and what happens in the background.
@@ -184,6 +189,19 @@ func _register_comfort_options() -> void:
 	register(PAUSE_IN_BACKGROUND, false,
 		func() -> bool: return background_focus.pause_in_background,
 		func(value: Variant) -> void: background_focus.pause_in_background = bool(value))
+
+
+## Key and controller bindings, one option per action (InputBindings), and the
+## controller pointer's speed.
+func _register_controls_options() -> void:
+	for action: StringName in InputBindings.ACTIONS:
+		register(InputBindings.option_key(action), InputBindings.default_value(action),
+			func() -> Array: return InputBindings.read(action),
+			func(value: Variant) -> void: InputBindings.write(action, value))
+	register(CURSOR_SPEED, 1.0,
+		func() -> float: return InputManager.cursor.speed_scale,
+		func(value: Variant) -> void:
+			InputManager.cursor.speed_scale = clampf(float(value), CURSOR_SPEEDS.x, CURSOR_SPEEDS.y))
 
 
 func _register_window_options() -> void:
