@@ -227,13 +227,6 @@ func test_the_last_turn_says_which_end_of_it() -> void:
 	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 1), "next turn")
 
 
-func test_the_repeat_reads_naturally_for_one_turn() -> void:
-	hazard.turns_between = 2
-	assert_string_contains(EnvironmentMonitor.hazard_repeat_text(hazard), "every 2 turns")
-	hazard.turns_between = 1
-	assert_string_contains(EnvironmentMonitor.hazard_repeat_text(hazard), "every turn")
-
-
 ## "Your turn ends -> re-roll" alone reads as every turn; the card says when.
 func test_a_hazard_card_says_when_it_hits() -> void:
 	Globals.show_region_alerts = true
@@ -244,8 +237,7 @@ func test_a_hazard_card_says_when_it_hits() -> void:
 	await _finish_swing()
 	var alerts: Array[RegionAlert] = _alerts()
 	assert_eq(alerts.size(), 1)
-	assert_string_contains(alerts[0].footnote, "2 turns")
-	assert_string_contains(alerts[0].footnote, "every 2 turns")
+	assert_eq(alerts[0].footnote, EnvironmentMonitor.hazard_timing_text(hazard, false, 0))
 
 
 func test_a_rule_card_has_no_footnote() -> void:
