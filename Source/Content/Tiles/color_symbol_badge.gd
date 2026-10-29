@@ -65,6 +65,23 @@ static func family_of_tile(tile: TileResource) -> Family:
 	return family_of(_tile_art(tile))
 
 
+## The colour of [param tile]'s family, for effects that should match it.
+## White for a tile outside the families.
+static func color_of_tile(tile: TileResource) -> Color:
+	match family_of_tile(tile):
+		Family.RED:
+			return Globals.red
+		Family.BLUE:
+			return Globals.blue
+		Family.GREEN:
+			return Globals.green
+		Family.PURPLE:
+			return Globals.purple
+		Family.YELLOW:
+			return Globals.yellow
+	return Globals.white
+
+
 ## Puts a badge on [param sprite], a centred sprite drawing [param tile], or
 ## updates the one already there.
 static func attach_to_tile_sprite(sprite: Node2D, tile: TileResource) -> ColorSymbolBadge:

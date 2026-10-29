@@ -4,8 +4,6 @@ extends Node2D
 
 const _TILE_DROPPED_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
 const _TRIGGER_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/upgrade_trigger.tres")
-const _SPARK_TEXTURE: Texture2D = preload("res://Assets/Particles/hit_particle_pixel.png")
-const _UPGRADE_SPARKS_NAME: StringName = &"UpgradeSparks"
 
 ## One modifier can fire on several events of a single activation (an
 ## Amplifier touches every amplifiable event in the chain). Within this window
@@ -179,7 +177,7 @@ func _set_up_resource() -> void:
 	ColorSymbolBadge.attach_to_tile_sprite(sprite_frames, tile_resource)
 	uses_remaining = max_uses_per_turn()
 	update_dragging_allowed()
-	_apply_upgrade_look()
+	TileUpgradeLook.apply(sprite_frames, tile_resource)
 
 
 ## Whether a copy of [param other] dropped on this tile would upgrade it: the
@@ -194,13 +192,7 @@ func upgrade() -> void:
 	if tile_resource.upgraded_version == null:
 		return
 	tile_resource = tile_resource.upgraded_version
-	var color: Color = family_color(tile_resource)
-	Juice.bump(sprite_frames, 0.35, 0.35)
-	flash(Globals.white, 1.0, 0.4)
-	Juice.sparkle(self, global_position, color, 16, 50.0, true)
-	Juice.ring(self, global_position, Globals.white, 20.0, 0.35, 6.0)
-	Juice.callout(self, tr("CALLOUT_UPGRADED"), color, true)
-	Events.play_sound.emit(_TRIGGER_SFX)
+	TileUpgradeLook.burst(self)
 	Events.tile_upgraded.emit(self)
 
 
@@ -223,60 +215,6 @@ func _copy_to_merge_with() -> Tile:
 		if mine_on_grid != other_on_grid and (on_offer or other.on_offer):
 			return other
 	return null
-
-
-## The colour of [param resource]'s family, for effects that should match it.
-static func family_color(resource: TileResource) -> Color:
-	match ColorSymbolBadge.family_of_tile(resource):
-		ColorSymbolBadge.Family.RED:
-			return Globals.red
-		ColorSymbolBadge.Family.BLUE:
-			return Globals.blue
-		ColorSymbolBadge.Family.GREEN:
-			return Globals.green
-		ColorSymbolBadge.Family.PURPLE:
-			return Globals.purple
-		ColorSymbolBadge.Family.YELLOW:
-			return Globals.yellow
-	return Globals.white
-
-
-## An upgraded tile shimmers round its edge (tile.gdshader) and gives off a
-## few sparks in its family's colour, so it reads as upgraded at a glance.
-func _apply_upgrade_look() -> void:
-	var upgraded: bool = tile_resource.is_upgrade
-	var mat: ShaderMaterial = sprite_frames.material as ShaderMaterial
-	if mat:
-		mat.set_shader_parameter("upgraded", upgraded)
-	var sparks: CPUParticles2D = sprite_frames.get_node_or_null(NodePath(_UPGRADE_SPARKS_NAME))
-	if upgraded and sparks == null:
-		# Lightened, or the family's deeper colours vanish against the art.
-		sparks = _make_upgrade_sparks(family_color(tile_resource).lerp(Globals.white, 0.5))
-		sprite_frames.add_child(sparks)
-	elif not upgraded and sparks:
-		sparks.queue_free()
-
-
-func _make_upgrade_sparks(color: Color) -> CPUParticles2D:
-	var sparks: CPUParticles2D = CPUParticles2D.new()
-	sparks.name = _UPGRADE_SPARKS_NAME
-	sparks.texture = _SPARK_TEXTURE
-	sparks.amount = 5
-	sparks.lifetime = 1.6
-	sparks.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
-	sparks.emission_rect_extents = Vector2(10, 11)
-	sparks.direction = Vector2.UP
-	sparks.spread = 20.0
-	sparks.gravity = Vector2(0, -6)
-	sparks.initial_velocity_min = 3.0
-	sparks.initial_velocity_max = 7.0
-	sparks.color = color
-	var ramp: Gradient = Gradient.new()
-	ramp.set_color(0, Color(1.0, 1.0, 1.0, 1.0))
-	ramp.set_color(1, Color(1.0, 1.0, 1.0, 0.0))
-	sparks.color_ramp = ramp
-	sparks.z_index = 1
-	return sparks
 
 
 ## Lights the tile on the grid this one would upgrade, while a copy on offer

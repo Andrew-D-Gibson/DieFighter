@@ -114,7 +114,7 @@ func test_an_upgraded_tile_shimmers_and_sparks() -> void:
 	assert_false(mat.get_shader_parameter("upgraded"))
 	twin.upgrade()
 	assert_true(mat.get_shader_parameter("upgraded"))
-	assert_not_null(twin.sprite_frames.get_node_or_null(^"UpgradeSparks"))
+	assert_not_null(twin.sprite_frames.get_node_or_null(NodePath(TileUpgradeLook.SPARKS_NAME)))
 
 
 func test_an_upgrade_refills_uses_for_its_new_count() -> void:
