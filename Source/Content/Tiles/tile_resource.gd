@@ -33,6 +33,11 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 @export var effect_chain: EffectChain
 @export var event_responses: Dictionary[TileEvent, EffectChain]
 
+## A countdown tile counts down from this (dice on it, COUNT_DOWN, take
+## their value off) and fires its ON_COUNTDOWN_ZERO response each time it
+## runs out. 0 for a tile that doesn't count down. See TileCountdown.
+@export_range(0, 99) var countdown: int = 0
+
 @export var dragging_allowed: bool = true
 
 ## Untick for a tile that must never be locked out. The Engine Charger is the

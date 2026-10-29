@@ -40,6 +40,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Load": "This ship keeps the die and uses it again next turn. Its Siege Shot is placed on that die's face.",
 	"Steal": "This ship keeps the die. Next turn it uses it to Steal again. It drops what it holds if destroyed.",
 	"Ion": "Deals double [color=blue]damage[/color] to shields and none to the hull. Damage the shields can't absorb is lost.",
+	"Countdown": "Dice placed on a countdown tile count it down by their value. At 0 it goes off and starts again, extra counts carried over. Starts full each fight.",
 	"Boost": "If you have that much [color=purple]engine charge[/color], it's spent for the extra effect. If not, the tile works without it.",
 	"Locked": "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
 	"Echo": "That tile activates twice, but hands its die on once. Tiles that ignore Echo are skipped. Lapses when your turn ends.",
@@ -77,6 +78,8 @@ const _TOKENS: Dictionary[String, Dictionary] = {
 	"(locked)":     {"label": "Locked",     "term": "Locked"},
 	"(lock)":       {"label": "Lock",       "term": "Locked"},
 	"(boost)":      {"label": "Boost",      "term": "Boost"},
+	"(countdown)":  {"label": "Countdown",  "term": "Countdown"},
+	"(countdowns)": {"label": "countdowns", "term": "Countdown"},
 	"(echo)":       {"label": "Echo",       "term": "Echo"},
 }
 

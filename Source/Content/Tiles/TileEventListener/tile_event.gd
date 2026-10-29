@@ -25,6 +25,10 @@ enum EventType {
 	## The player gained shields, from any source. The hook for tiles that
 	## turn bracing into pressure.
 	ON_PLAYER_SHIELDS_GAINED,
+	## This tile's countdown (TileResource.countdown) just reached 0. The
+	## countdown tile's payout. Fired once per time it runs out, straight after
+	## the count that did it (TileCountdown).
+	ON_COUNTDOWN_ZERO,
 	## The player just took a killing blow. Answering it is a death save: the
 	## tile holds the hull at 1 on the spot, then its chain plays and should
 	## spend the tile (Tile._on_player_fatal_damage).
