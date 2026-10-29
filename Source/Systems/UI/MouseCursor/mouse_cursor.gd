@@ -18,16 +18,16 @@ const _GRAB_INFO_TEXTURE: Texture2D = preload("res://Assets/Textures/UI/MouseCur
 ## The info cursor is drawn up and left of the pointer, so it sits in the
 ## circle.
 const _INFO_OFFSET: Vector2 = Vector2(-3, -3)
-## The held thing follows the pointer, centred on it, so the fist grips its
-## lower right corner instead of covering the face the player is placing.
-const _GRAB_OFFSET: Vector2 = Vector2(2, 2)
+## The fist (the top-left 13x12 of both grab textures) is centred on the
+## pointer, as the held thing is, so the hand reads as gripping where it points.
+const _GRAB_OFFSET: Vector2 = Vector2(-6, -6)
 
 ## How many click-mode pick-ups each launch get the hint line. Enough to learn
 ## both clicks, few enough not to nag.
 const CARRY_HINT_PICKUPS: int = 3
 ## Where the hint line starts, right of the pointer and clear of the fist and
 ## its badge, in cursor pixels. It flips to the left near the screen's edge.
-const _HINT_GAP: Vector2 = Vector2(19, 2)
+const _HINT_GAP: Vector2 = Vector2(12, -6)
 ## How far left of the pointer a flipped hint line ends: clear of the held
 ## thing, a lifted die or tile being about this wide either side.
 const _HINT_FLIPPED_GAP: float = 10.0
