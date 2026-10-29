@@ -127,3 +127,23 @@ func test_pulse_repeater_plus_counts_from_five() -> void:
 	var tile: Tile = _tile("pulse_repeater_plus")
 	assert_eq(tile.countdown_remaining(), 5)
 	assert_eq(_amounts(await _drop(tile, 5), DamageEvent), [7])
+
+
+# ── Countdown Cannon ─────────────────────────────────────────────────────
+
+func test_countdown_cannon_waits_out_eighteen_then_deals_twenty_five() -> void:
+	var tile: Tile = _tile("countdown_cannon")
+	for face: int in [6, 6, 5]:
+		assert_eq(_amounts(await _drop(tile, face), DamageEvent), [] as Array[int])
+	assert_eq(tile.countdown_remaining(), 1)
+	var events: Array[EffectEvent] = await _drop(tile, 1)
+	assert_eq(_amounts(events, DamageEvent), [25])
+	assert_eq(tile.countdown_remaining(), 18, "and starts again")
+	_gives_die_to_target(events)
+
+
+func test_countdown_cannon_plus_counts_from_fifteen() -> void:
+	var tile: Tile = _tile("countdown_cannon_plus")
+	assert_eq(tile.countdown_remaining(), 15)
+	_wind_to_one(tile)
+	assert_eq(_amounts(await _drop(tile, 1), DamageEvent), [25])
