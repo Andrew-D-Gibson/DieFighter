@@ -1,6 +1,6 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## The wave-fight answers: Sweeping Battery hits every enemy and gives its die
-## to the target alone.
+## to the target alone; Fume Vent burns every enemy, and you, each turn.
 
 const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
 const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
@@ -99,3 +99,23 @@ func test_sweeping_battery_plus_hits_for_six() -> void:
 	var hits: Array[EffectEvent] = _of(await _play("sweeping_battery_plus", 6), DamageEvent)
 	assert_eq(hits[0].amount, 6)
 
+
+func test_fume_vent_burns_every_enemy_and_you() -> void:
+	var burns: Array[EffectEvent] = _of(await _turn_start("fume_vent"), ApplyStatusEvent)
+	assert_eq(burns.size(), 2)
+	assert_eq(burns[0].targets, [targeted, other] as Array[Node])
+	assert_eq(burns[0].amount, 1)
+	assert_eq(burns[1].targets, [Globals.player] as Array[Node], "the vent vents on its own ship too")
+	assert_eq(burns[1].amount, 1)
+
+
+func test_fume_vent_plus_burns_enemies_harder_but_you_the_same() -> void:
+	var burns: Array[EffectEvent] = _of(await _turn_start("fume_vent_plus"), ApplyStatusEvent)
+	assert_eq(burns[0].amount, 2)
+	assert_eq(burns[1].amount, 1)
+
+
+func test_fume_vent_takes_no_dice() -> void:
+	tile.tile_resource = load(TILES % "fume_vent")
+	var die: Dice = autofree(DICE_SCENE.instantiate())
+	assert_ne(tile.activation_refusal(die), "")
