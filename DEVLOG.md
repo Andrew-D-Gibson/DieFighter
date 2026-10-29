@@ -4,6 +4,36 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Tutorial: a cold-reader pass with local vision models
+
+Three local vision models (gemma4:31b, qwen3.8:27b, qwen3-vl:8b) read the
+tutorial as screenshots, one running conversation each, with only neutral
+notes on what the player clicked. After each step they described the screen
+and said what they'd learned. A fixed 15-question quiz and a "what would you
+do now" test on the first fight after the tutorial followed. The harness
+lives outside the repo; it took four rounds (v0 baseline, v1-v3).
+
+**What they got from the start:** the goal, dragging dice onto systems,
+damage equals the die, used dice go to the target, End Turn, click to read,
+salvage, jumping by die value, picking a target.
+
+**What none of them got:** the targeting computer. Every model read its
+numbers as dice the raider already held. "Blank values are wasted" read as
+"bad for me". Nobody reasoned about giving the raider values it can't use,
+which is the game's core decision. The text now puts an action under each
+die value and calls the empty ones safe. The first-turn prompt says Bump
+hands its die back and nudges the player to bump onto an empty value.
+
+**Also taught now** (no model knew them): fleeing via the Engine Charger,
+Corruption spreading every jump, and systems recharging each turn.
+
+**What the numbers don't show:** at 1280x720 the panel's die faces are about
+3 px of pips, so the models misread which values were empty even when they
+had the rule right. Given a zoomed crop, gemma and qwen3.8 both got the rule
+on first sight. Run-to-run noise was also large: identical screenshots gave
+different readings between runs. Take any single run's score loosely; the
+consistent misunderstandings are the signal.
+
 ## 2026-10-29 — AutoPilot: the smart bot builds its grid, and shops again
 
 **The bot had stopped shopping.** Two openings from the recent merges ran
