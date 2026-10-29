@@ -1,7 +1,7 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## EnemyHealthBar's REACH constants space the formation, so they have to
-## match the bar's art: the backing behind the rings is the widest thing the
-## bar draws.
+## match the bar's art: the backing behind the rings, with its outline, is the
+## widest thing the bar draws.
 
 const BAR_SCENE: PackedScene = preload("res://Source/Content/Enemies/Components/EnemyHealthBar/enemy_health_bar.tscn")
 
