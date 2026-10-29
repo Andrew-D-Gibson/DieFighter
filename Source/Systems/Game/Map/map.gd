@@ -75,7 +75,7 @@ const _GATE_PULSE_SECONDS: float = 1.1
 ## way the Black Hole sits out past the first.
 const _GATE_SHIFT: float = 14.0
 const _PORTAL_SHADER: Shader = preload("res://Assets/Shaders/jump_gate_portal.gdshader")
-## The caption's gate icon: what "Gate ahead" and a hovered gate show.
+## The caption's gate icon: what a hovered gate shows.
 const _GATE_CAPTION_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/jump_gate.png")
 ## How lit the portal is while the gate is shut, and once it's open.
 const _PORTAL_ENERGY: float = 0.45
@@ -103,6 +103,13 @@ const _DANGER_SPREAD_TIME: float = 0.7
 ## The player's marker breathes between these scales so it's easy to find.
 const _PIP_PULSE_SCALE: float = 1.25
 const _PIP_PULSE_TIME: float = 0.6
+## Points down at the player's marker, and leads the caption when nothing is
+## hovered, so "You are here" and the dot it means read as one thing.
+const _HERE_ARROW: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/current_location_arrow.png")
+## The arrow rises this far as the marker breathes in, in step with it.
+const _HERE_ARROW_BOB: float = 1.0
+## Clear air between the arrow's tip and the top of what it points at.
+const _HERE_ARROW_GAP: int = 1
 ## A hovered location grows and drifts up and down while under the cursor.
 const _HOVER_SCALE: float = 1.3
 const _HOVER_BOB_HEIGHT: float = 1.0
@@ -294,7 +301,7 @@ func _compute_hint(hovered: int) -> Array:
 
 	if Globals.jump_gate and Globals.jump_gate.is_open():
 		return [_NEXT_SECTOR_ICON, tr("MAP_HINT_JUMP_RIGHT"), Globals.yellow]
-	return [scenario_list.back().map_icon, "Gate ahead", Globals.blue]
+	return [_HERE_ARROW, tr("MAP_HINT_YOU_ARE_HERE"), Globals.purple]
 
 
 ## Whether Fate takes this scenario on the next jump. Mirrors jump(), which
@@ -609,6 +616,7 @@ func _update_map_sprites() -> void:
 		if current_scenario_index == i:
 			_pip = scenario_sprite
 			_pulse_pip(scenario_sprite)
+			_add_here_arrow(scenario_sprite, is_gate)
 		scenario_sprites.append(scenario_sprite)
 
 		
@@ -743,6 +751,32 @@ func _pulse_pip(pip: Sprite2D) -> void:
 		.set_ease(Tween.EASE_IN_OUT)
 	_pip_tween.tween_property(pip, "scale", Vector2.ONE * _PIP_PULSE_SCALE, _PIP_PULSE_TIME)
 	_pip_tween.tween_property(pip, "scale", Vector2.ONE, _PIP_PULSE_TIME)
+
+
+## Hangs the "you are here" arrow over [param pip], above the gate when the
+## player stands on it. The arrow bobs with the pip's breathing; its tween is
+## its own, so it goes when the map is rebuilt.
+func _add_here_arrow(pip: Sprite2D, on_gate: bool) -> void:
+	var arrow: Sprite2D = Sprite2D.new()
+	arrow.texture = _HERE_ARROW
+	# Top-left anchored: the arrow and the pip are both an even number of
+	# pixels wide, so their centre columns line up on whole pixels.
+	arrow.centered = false
+	arrow.z_index = 1
+	var under: Texture2D = gate_map_icon if on_gate else pip.texture
+	# Measured from the pip at full breath, so the two never touch.
+	var under_half_height: float = under.get_height() / 2.0 * (1.0 if on_gate else _PIP_PULSE_SCALE)
+	var rest: Vector2 = Vector2(
+		pip.position.x - _HERE_ARROW.get_width() / 2.0,
+		floorf(pip.position.y - under_half_height) - _HERE_ARROW_GAP - _HERE_ARROW.get_height())
+	arrow.position = rest
+	map_viewport.add_child(arrow)
+
+	var bob: Tween = arrow.create_tween().set_loops()\
+		.set_trans(Tween.TRANS_SINE)\
+		.set_ease(Tween.EASE_IN_OUT)
+	bob.tween_property(arrow, "position:y", rest.y - _HERE_ARROW_BOB, _PIP_PULSE_TIME)
+	bob.tween_property(arrow, "position:y", rest.y, _PIP_PULSE_TIME)
 
 
 func is_valid_destination(desired_scenario_index: int) -> bool:

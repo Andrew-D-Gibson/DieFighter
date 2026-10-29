@@ -29,6 +29,10 @@ var _carried: bool = false
 ## the cursor having gone anywhere, asks for the thing's info instead.
 var _picked_up_at: Vector2
 
+## Whatever the player has in hand, dragged or carried, or null. Only one
+## thing is ever held, so the cursor can dress itself from this alone.
+static var held: Draggable = null
+
 @export var dragging_allowed: bool = true:
 	set(new_value):
 		dragging_allowed = new_value
@@ -155,6 +159,7 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 			_carried = true
 			_picked_up_at = _global_position_of(event as InputEventMouseButton)
 			set_process_input(true)
+		held = self
 		
 		drag_started.emit()
 
@@ -203,6 +208,8 @@ func put_back() -> void:
 func _end_drag(end_position: Vector2) -> void:
 	state = DragState.DEFAULT
 	_stop_carrying()
+	if held == self:
+		held = null
 	Globals.mouse_is_dragging_something = false
 	
 	var parent_node: Node2D = get_parent()
@@ -241,6 +248,29 @@ func _global_position_of(click: InputEventMouse) -> Vector2:
 ## puts it down.
 func is_carried() -> bool:
 	return _carried
+
+
+## Whether the player has something in hand right now: [member held], if it
+## is still being dragged or carried. Code can take a held thing away without
+## a drop (an enemy grabs the die), so the state is checked, not just the
+## reference.
+static func holding() -> Draggable:
+	if is_instance_valid(held) and held.state == DragState.DRAGGING:
+		return held
+	return null
+
+
+## Whether a click now would put this back and show its info rather than
+## move it: it was lifted by a click, it has info to show, and the pointer
+## is still where that click landed. See _input().
+func is_over_info_spot() -> bool:
+	if not _carried or state != DragState.DRAGGING:
+		return false
+	var clickable: Clickable = _parent_clickable()
+	if not clickable:
+		return false
+	var pointer: Vector2 = get_canvas_transform().affine_inverse() * InputManager.pointer_position(get_viewport())
+	return pointer.distance_to(_picked_up_at) <= clickable.click_movement_radius
 
 
 func _on_mouse_entered() -> void:
