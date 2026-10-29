@@ -15,6 +15,20 @@ enum DragState {
 }
 var state: DragState = DragState.DEFAULT
 
+## How the player moves things about, an option shared by every Draggable.
+## DRAG is press, hold and let go over the target. CLICK picks a thing up with
+## one click and puts it down with the next, for trackpads, tired hands and
+## a gamepad's virtual cursor, which sends plain mouse clicks.
+enum PlacementMode { DRAG, CLICK }
+static var placement_mode: PlacementMode = PlacementMode.DRAG
+
+## True while a click has picked this up. The button isn't held in between, so
+## the next press puts it down (see _input) instead of the release.
+var _carried: bool = false
+## Where the click that picked this up landed. A second click there, without
+## the cursor having gone anywhere, asks for the thing's info instead.
+var _picked_up_at: Vector2
+
 @export var dragging_allowed: bool = true:
 	set(new_value):
 		dragging_allowed = new_value
@@ -48,6 +62,8 @@ var _floating_time: float = 0.0
 
 
 func _ready() -> void:
+	# Listening to every click only matters while something is carried.
+	set_process_input(false)
 	if not home_position:
 		home_position = global_position
 
@@ -63,6 +79,11 @@ func set_home(new_home: Vector2, announce_arrival: bool = false) -> void:
 
 
 func _process(delta: float) -> void:
+	# Code took a carried thing out of the player's hands (an enemy grabbed
+	# the die, the ship stood down): the next click is no longer a drop.
+	if _carried and state != DragState.DRAGGING:
+		_stop_carrying()
+
 	# Don't handle moving the draggable object if it's being moved with code
 	if state == DragState.MOVING_WITH_CODE:
 		return
@@ -71,23 +92,10 @@ func _process(delta: float) -> void:
 	if state == DragState.DRAGGING:
 		get_parent().global_position = lerp(global_position, get_global_mouse_position(), follow_strength * delta)
 		
-		# Handle dropping this object if the mouse is no longer down
-		if not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-			state = DragState.DEFAULT
-			Globals.mouse_is_dragging_something = false
-			
-			var parent_node: Node2D = get_parent()
-			
-			# Stop the wiggle tween
-			if tween:
-				tween.kill()
-			parent_node.rotation_degrees = 0
-
-			# Move the parent's render index back to its original
-			parent_node.z_index -= 10
-			parent_node.scale = Vector2(1, 1)
-			
-			drag_ended.emit(self, get_global_mouse_position())
+		# Handle dropping this object if the mouse is no longer down. A
+		# carried one waits for the next click instead.
+		if not _carried and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+			_end_drag(get_global_mouse_position())
 		return
 	
 	if _announce_arrival \
@@ -137,8 +145,97 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 		tween.tween_property(parent_node, "global_rotation_degrees", 0, tween_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 		tween.tween_interval(tween_time)
 		tween.set_loops()
+
+		if placement_mode == PlacementMode.CLICK:
+			_carried = true
+			_picked_up_at = _global_position_of(event as InputEventMouseButton)
+			set_process_input(true)
 		
 		drag_started.emit()
+
+
+## Puts a carried thing down on the next click, wherever that is: on a target
+## it lands as if dragged there, and anywhere else the usual drop rules apply.
+## A right click or cancel puts it straight back where it came from. Either
+## click is used up here, so it can't also press a button or pick up what's
+## underneath.
+##
+## A click is also how a tile shows its info. The one that picks it up doesn't
+## (Clickable leaves a carried owner alone), so clicking it again in place, the
+## click-mode twin of a drag that never moved, shows it instead.
+func _input(event: InputEvent) -> void:
+	if not _carried or state != DragState.DRAGGING:
+		return
+	var click: InputEventMouseButton = event as InputEventMouseButton
+	if click and click.pressed and click.button_index == MOUSE_BUTTON_LEFT:
+		get_viewport().set_input_as_handled()
+		var at: Vector2 = _global_position_of(click)
+		var clickable: Clickable = _parent_clickable()
+		if clickable and at.distance_to(_picked_up_at) <= clickable.click_movement_radius:
+			put_back()
+			# Its release mustn't count as a click of its own.
+			clickable.click_time_remaining = 0.0
+			clickable.clicked.emit()
+		else:
+			_end_drag(at)
+	elif (click and click.pressed and click.button_index == MOUSE_BUTTON_RIGHT) \
+	or event.is_action_pressed("ui_cancel"):
+		get_viewport().set_input_as_handled()
+		put_back()
+
+
+## Ends a drag or carry by dropping the thing where it came from. Every drop
+## handler already treats that as no move (a tile back on its own cell, an
+## offer back on its shelf, a die back in the hand), so it's a cancel that
+## still lets them tidy up after the drag.
+func put_back() -> void:
+	if state == DragState.DRAGGING:
+		_end_drag(home_position)
+
+
+## Lets go at [param end_position]: squares the parent back up, then lets the
+## drop handlers decide what landing there means.
+func _end_drag(end_position: Vector2) -> void:
+	state = DragState.DEFAULT
+	_stop_carrying()
+	Globals.mouse_is_dragging_something = false
+	
+	var parent_node: Node2D = get_parent()
+	
+	# Stop the wiggle tween
+	if tween:
+		tween.kill()
+	parent_node.rotation_degrees = 0
+
+	# Move the parent's render index back to its original
+	parent_node.z_index -= 10
+	parent_node.scale = Vector2(1, 1)
+	
+	drag_ended.emit(self, end_position)
+
+
+func _parent_clickable() -> Clickable:
+	var parent_node: Node = get_parent()
+	if parent_node.has_node("Clickable"):
+		return parent_node.get("clickable") as Clickable
+	return null
+
+
+func _stop_carrying() -> void:
+	_carried = false
+	set_process_input(false)
+
+
+## Where [param click] landed in the world. Read from the event rather than
+## the mouse, so a click sent by a virtual cursor lands where it says.
+func _global_position_of(click: InputEventMouse) -> Vector2:
+	return get_canvas_transform().affine_inverse() * click.position
+
+
+## Whether this was picked up by a click and is waiting for the click that
+## puts it down.
+func is_carried() -> bool:
+	return _carried
 
 
 func _on_mouse_entered() -> void:
