@@ -16,7 +16,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | Node | File | Responsibility |
 |------|------|----------------|
-| `InputManager` | `Autoloads/input_manager.gd` | Global input actions (screenshot, pause menu, end turn) |
+| `InputManager` | `Autoloads/input_manager.gd` | Global input actions (screenshot, pause menu, end turn via `Player.request_end_turn()`), the controller's `VirtualCursor`, `pointer_position()` (what the drawn cursor follows) and listening for rebinds (`listen_for_binding()`, `binding_captured`) |
 | `Globals` | `Autoloads/globals.gd` | Central registry for all system singletons and global constants (colors, settings) |
 | `Events` | `Autoloads/events.gd` | Central event bus—75+ signals for all game events (combat start, player health hit, dice placed, etc.) |
 | `SFXPlayer` | `Autoloads/sound_effects_player.gd` | Audio playback through SoundEffectResource and AudioStreamPlayer |
@@ -29,7 +29,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `CollectionManager` | `Autoloads/collection_manager.gd` | What the player has found across every run, for the codex: tiles they've owned and enemies met/destroyed. Kept in `user://collection.json`, outside the run save (see Codex below) |
-| `OptionsSettings` | `Autoloads/options_settings.gd` | Loads and applies player options from `user://options_settings.cfg` at boot; saves on `Events.save_options_config`. Also holds the `times_run` counter. Skips window size, position, vsync and boot fullscreen on the web (`controls_window()`) |
+| `OptionsSettings` | `Autoloads/options_settings.gd` | Registry of player options (see 7.4): each registered once with its default and how to read and apply its live value, keyed "Section/name" as saved in `user://options_settings.cfg`. Loads and applies them at boot, saves on `Events.save_options_config`, resets them for the menu's Defaults. Owns `PixelPerfectScaler` and `BackgroundFocus`. Also holds the `times_run` counter. Window options (size, monitor, vsync, pixel perfect) aren't registered on the web (`controls_window()`) |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS`. Editor-launched runs only: in any exported build (debug or release) it frees itself without opening the port |
 | `AutoPilot` | `Autoloads/auto_pilot.gd`, helpers in `Systems/AutoPilot/` | Plays runs by itself for QA and balance testing (see AutoPilot below). Editor binaries with `-- --autoplay` only; otherwise it frees itself |
 
@@ -1333,6 +1333,11 @@ layer than that effect, not just at a higher z_index.
 - `draggable.set_home(pos, announce_arrival)` moves where it floats back to;
   only with `announce_arrival` does `reached_new_home` fire when it settles
   (a tile landing in a new grid cell thumps, one placed by code doesn't)
+- Click placement (`Draggable.placement_mode`, the Dice Placement option):
+  one click picks up, the next drops through the same `_end_drag()`, so every
+  drop rule applies. The drop point comes from the click event, not the OS
+  mouse. `put_back()` cancels by dropping at `home_position`, which every
+  drop handler reads as "no move"
 
 **Click-to-Show (Targeting)**
 
@@ -1393,6 +1398,56 @@ then emits `game_over`. By then the fight has already stopped:
 `player_destroyed` shut the engine down, so an enemy turn in progress ends
 without starting another player turn, while ships, shots in flight and the
 background carry on.
+
+### 7.4 Options, Display and Input
+
+**Options.** `OptionsSettings` registers every option in `_register_*_options()`
+functions (one per area), and `OptionsMenu._build_pages()` builds every tab
+from `OptionsPage` row helpers (`check`, `choice`, `slider`, `button`,
+`custom`, `note`, `next_column`, `enable_when`). A row writes through
+`set_option()` and re-reads through `refresh()`, so the menu shows live
+values after Defaults or a change made elsewhere. `OptionsFrame` draws the
+panel to fit however many tabs there are. To add an option: one `register()`
+call, one row, and its label and hint keys in `translations.csv`.
+
+**Pixel-perfect fullscreen.** The game is a 1920x1080 canvas
+(`ScreenFrame.SIZE`: Globals.SCREEN_SIZE through the 6x cameras). Godot can't
+scale it by k/6 (content_scale_factor clamps below 1; integer stretch counts
+multiples of 1920x1080), so `PixelPerfectScaler` switches the window to
+canvas_items stretching with a base of six window sizes and factor k: the
+canvas scales by exactly k/6 and renders at native resolution. The window then
+shows extra canvas around the frame: a mask layer (127) blacks it out,
+CanvasLayers in the `frame_ui` group (main.tscn's UI layer) are offset onto
+the frame, and anything keeping itself on screen (dropdowns, damage numbers,
+`JuicePixelated`) measures against `ScreenFrame.canvas_rect()` /
+`rect_in_viewport()`, not the viewport. It applies only in fullscreen and
+rechecks on size and mode changes (macOS reports fullscreen a few frames
+after the resize).
+
+**Comfort.** `Globals.screenshake_intensity` scales every shake, zoom punch and
+ripple (`Shakeable` shakes take a strength). Reduce Flashing goes through
+`Juice.soften_flash(strength)` for sprite flashes and
+`Juice.screen_wash_alpha(alpha)` for full-screen washes: new flash code
+should use one of them. `TimeDirector.hitstop_enabled` gates hitstop.
+`BackgroundFocus` (Display/) mutes with a -80 dB Amplify on Master (never the
+Mute All flag) and opens the pause menu on focus loss, only in a live run.
+
+**Accessibility visuals.** `ColorSymbolBadge` (Content/Tiles/) reads a tile's
+colour family from its art folder (`<Colour>Tiles`) and draws its glyph:
+`attach_to_tile_sprite()` from `Tile`, `attach_to_rect()` for TextureRects
+(codex, info panel). `FontSwap` (Display/) swaps the `base_font` of the
+wrappers `m3x6_ui.tres` / `m5x7_ui.tres` between the pixel fonts and the
+readable font; text must use the wrappers, never the .ttf files
+(`test_font_swap.gd` checks). CJK/Cyrillic fonts should go in as fallbacks on
+the wrappers, fitted with `tools/fit_readable_font.py`.
+
+**Controllers and rebinding** (Systems/Input/). `VirtualCursor` turns stick
+and d-pad into a pointer (in frame units, clamped to the frame, real time),
+warps the OS mouse and feeds real mouse events to `Input`, so clicks, drags,
+hover and physics picking all work unchanged. `InputBindings` lists the
+rebindable actions, serializes their events (one option per action,
+"Controls/bind_<action>", defaults from project.godot) and resolves clashes
+by swapping. `BindingSlots` is the Controls tab row.
 
 ## Core Classes Reference
 

@@ -4,6 +4,39 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-28 — A real options menu: five tabs, pixel-perfect, accessibility, controllers
+
+- **The options menu is rebuilt in code** with five tabs (Game, Graphics,
+  Audio, Controls, Accessibility), each with its own accent colour and
+  recoloured checkboxes, dropdowns and slider knobs. A hint line describes the
+  hovered row, **Defaults** resets the open tab, and every label is a
+  translation key. Behind it, `OptionsSettings` is a registry of options
+  (default, read, write), so saving, loading, the menu and Defaults share one
+  list. Old settings files load unchanged.
+- **Dropdowns never run off screen**: a list that fits neither below nor
+  above its button slides so the current value sits on the button, and one
+  taller than the screen wraps into columns. Escape closes it.
+- **Graphics:** **Pixel Perfect** fullscreen (on by default) shows the game
+  at a whole number of screen pixels per art pixel with black bars: 10x on a
+  3456x2234 MacBook instead of a smeared 1.8x. **Monitor** picks the display.
+  Window Scale greys out in fullscreen, Pixel Perfect when windowed.
+- **Accessibility:** a 0-100% **Screenshake** slider (zoom punches and
+  ripples too), **Reduce Flashing** (faint tints instead of full-screen
+  flashes, no strobing, no glitch overlay), **Hit Pause**, **Color Symbols**
+  (a shape badge per tile colour: red triangle, blue shield, green diamond,
+  purple ring, yellow star) and **Readable Font** (Atkinson Hyperlegible
+  Next in place of the pixel fonts, live, fitted to the same line heights).
+- **Controls:** **controller support** through a virtual cursor (left stick
+  and d-pad move it; A clicks and drags, B backs out, Y ends the turn, Start
+  pauses, LB/RB target), a **Cursor Speed** slider, **key and button
+  rebinding** for every player action, and **Dice Placement: Drag / Click**
+  (click a die or tile to pick it up, click again to put it down).
+- **Game / Audio:** **Confirm End Turn** asks before a turn ends with a die a
+  tile would still take (only the Outrigger can reach that today), **Pause in
+  Background** and **Mute in Background**.
+
+---
+
 ## 2026-10-28 — Ships get their own cockpits and starting tiles
 
 - **A ship can bring its own cockpit** (`ShipResource.cockpit_scene`). The
