@@ -1,0 +1,157 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://cydur3144bapk"]
+
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_check"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
+[ext_resource type="Texture2D" uid="uid://ci4owl4gj3tn" path="res://Assets/Textures/Tiles/BlueTiles/capacitor_bank.png" id="tex"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_player_shield"]
+[ext_resource type="Resource" uid="uid://p4rg0bmfqjkgh" path="res://Source/Content/Tiles/TileResources/capacitor_bank_plus.tres" id="upgrade_plus"]
+
+[sub_resource type="Resource" id="Resource_check_1"]
+script = ExtResource("script_check")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_check_2"]
+script = ExtResource("script_check")
+type = 2
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_check_3"]
+script = ExtResource("script_check")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_step_4"]
+script = ExtResource("script_effect")
+subtype = 10
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_5"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 15
+color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_6"]
+script = ExtResource("script_effect")
+category = 2
+subtype = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_7"]
+script = ExtResource("script_effect")
+category = 5
+subtype = 14
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_8"]
+script = ExtResource("script_effect")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_9"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain_10"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="Resource" id="Resource_event_11"]
+script = ExtResource("script_event")
+event = 9
+metadata/_custom_type_script = "uid://cfken75wevu1a"
+
+[sub_resource type="Resource" id="Resource_step_12"]
+script = ExtResource("script_effect")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_13"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 1
+color = Color(0.24705882, 0.5568628, 0.80784315, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_14"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 5
+sound_resource = ExtResource("sfx_player_shield")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_15"]
+script = ExtResource("script_effect")
+category = 2
+amount = 15
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_16"]
+script = ExtResource("script_effect")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_17"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 14
+amount = 24
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_18"]
+script = ExtResource("script_effect")
+category = 4
+subtype = 12
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_19"]
+script = ExtResource("script_effect")
+category = 1
+subtype = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain_20"]
+script = ExtResource("script_chain")
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_12"), SubResource("Resource_step_13"), SubResource("Resource_step_14"), SubResource("Resource_step_15"), SubResource("Resource_step_16"), SubResource("Resource_step_17"), SubResource("Resource_step_18"), SubResource("Resource_step_19")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_21"]
+atlas = ExtResource("tex")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_21")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("script_tile")
+tile_name = "[color=blue]Capacitor Bank[/color]"
+description = "(countdown) 12. [color=yellow]Any die[/color] -> Count down by die. At 0: Gain [color=blue]15 shields[/color]"
+rarity = 1
+upgraded_version = ExtResource("upgrade_plus")
+textures = SubResource("SpriteFrames_1")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("script_check")]([SubResource("Resource_check_1"), SubResource("Resource_check_2"), SubResource("Resource_check_3")])
+effect_chain = SubResource("Resource_chain_10")
+event_responses = Dictionary[ExtResource("script_event"), ExtResource("script_chain")]({
+SubResource("Resource_event_11"): SubResource("Resource_chain_20")
+})
+countdown = 12
+metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -19,6 +19,11 @@ extends RefCounted
 
 ## How far a die is followed through Feeds.
 const _MAX_FEED_DEPTH: int = 6
+## How deep countdown payouts are followed into payouts they set off in turn.
+const _MAX_PAYOUT_DEPTH: int = 2
+## What the progress a count leaves toward the next payout is worth, as a
+## share of that payout: it only pays if the fight lasts that long.
+const _COUNTDOWN_PROGRESS_WORTH: float = 0.5
 
 ## What a payload put off for one turn is worth now, per turn it waits
 ## (DELAY_EFFECTS). Fights run two or three turns, so a late payoff may land
@@ -69,6 +74,8 @@ var _roster: Array[Enemy] = []
 ## Reads the board as if a fight were on, whatever the state: for valuing a
 ## tile with a stand-in enemy between fights.
 var _as_in_a_fight: bool = false
+## How many countdown payouts deep this forecast is (see _count_down()).
+var _payout_depth: int = 0
 ## Echoes waiting for the next tile the walk reaches (EchoModifier).
 var _echoes: int = 0
 ## Of those, how many this move armed itself.
@@ -442,6 +449,72 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.TileControlSubtype.PUSH_TARGETED_TILES, \
 		EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN:
 			tile_tricks += 0.25
+		EffectEnums.TileControlSubtype.COUNT_DOWN:
+			_count_down(walk)
+
+
+## A COUNT_DOWN, valued as progress toward each target's payout: every payout
+## it sets off now counts in full, and what it leaves toward the next counts
+## at _COUNTDOWN_PROGRESS_WORTH of its share of one. So a die is worth its
+## pips even when the count doesn't run out, and finishing one is worth more.
+func _count_down(walk: _Walk) -> void:
+	var amount: int = walk.context.running_amount * walk.scale
+	if amount <= 0:
+		return
+	for target: Node in walk.context.targets:
+		var tile: Tile = target as Tile
+		if not is_instance_valid(tile) or not tile.is_countdown():
+			continue
+		var full: int = tile.tile_resource.countdown
+		var left: int = tile.countdown_remaining() - amount
+		var fires: int = 0
+		var progress: int = amount
+		if left <= 0:
+			fires = 1 + (-left) / full
+			left += fires * full
+			progress = full - left
+		var worth: float = fires + _COUNTDOWN_PROGRESS_WORTH * progress / full
+		_add_payout(tile, worth * walk.share)
+
+
+## Adds [param weight] times what [param tile]'s countdown payout would do.
+func _add_payout(tile: Tile, weight: float) -> void:
+	if _payout_depth >= _MAX_PAYOUT_DEPTH or weight <= 0.0:
+		return
+	var chain: EffectChain = null
+	for response: TileEvent in tile.tile_resource.event_responses:
+		if response.event == TileEvent.EventType.ON_COUNTDOWN_ZERO:
+			chain = tile.tile_resource.event_responses[response]
+	if chain == null:
+		return
+
+	var payout := AutoPilotForecast.new()
+	payout._target = _target
+	payout._roster = _roster
+	payout._as_in_a_fight = _as_in_a_fight
+	payout._payout_depth = _payout_depth + 1
+	var walk := _Walk.new()
+	walk.context = EffectContext.new()
+	walk.context.actor = Globals.player
+	walk.context.effect_source = tile
+	walk.context.repetitions = 0
+	walk.context.targets = _none()
+	# A payout has no die of its own; the walk just reads no face.
+	walk.face = 0
+	walk.final_face = 0
+	walk.visited = [tile] as Array[Tile]
+	walk.scale = maxi(chain.base_repetitions, 1)
+	payout._run(chain.effects, walk)
+
+	for ship: Node in payout.damage:
+		damage[ship] = damage.get(ship, 0.0) + payout.damage[ship] * weight
+	for status: StringName in payout.statuses:
+		statuses[status] = statuses.get(status, 0.0) + payout.statuses[status] * weight
+	shields += payout.shields * weight
+	heal += payout.heal * weight
+	charge += payout.charge * weight
+	dice_back += payout.dice_back * weight
+	tile_tricks += payout.tile_tricks * weight
 
 
 ## Whether an echo would repeat [param tile] (see EchoModifier.can_echo(); the
