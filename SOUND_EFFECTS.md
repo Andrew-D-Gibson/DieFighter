@@ -135,6 +135,7 @@ at once, with no per-tile authoring.
 | Blowtorch | dice_cannon | A roaring torch jet, then a hiss of flame back on you | before `DAMAGE`; before `APPLY_STATUS` |
 | Booster Stage | — | Rocket-stage ignition | before `ADD_AMPLIFIER_MODIFIER` |
 | Bootstrap Injector | — | Digital materialise + engine drain | before `SPAWN_HOLOGRAPHIC_DIE` |
+| Bounty Scanner | dice_cannon | Scanner chirp; a cash-register "ka-ching" on a bounty kill | before `BOUNTY_DAMAGE`; on payout |
 | Broadside | dice_cannon | Rolling multi-gun volley, one report per die in hand | before `DAMAGE` |
 | Brownout Plating | — | Flickering power-down + shield hum | before `SHIELD` |
 | Bump | — | Little "tick-up" | before `CHANGE_ACTIVATOR_VALUE` |
@@ -145,10 +146,12 @@ at once, with no per-tile authoring.
 | Cinder Turbine | — | A turbine spinning up on the heat | before `CHANGE_ENGINE_CHARGE` |
 | Concussion Round | dice_cannon | Blunt thud + ringing shockwave | before `DAMAGE` |
 | Countdown Cannon | dice_cannon (payout) | Rising tick per count, a heavy cannon at 0 | before `COUNT_DOWN`; payout `DAMAGE` |
+| Counter-Battery | tractor_lock | Jamming "thunk" as the face locks | before `SILENCE_TARGETS_FACE` |
 | Countermeasures | — | Countermeasure flares popping, a whoosh across | before `TRANSFER_STATUSES` |
 | Counterweight Battery | player_shield | Pendulum clunk + shield | before `SHIELD` |
 | Crescendo Cannon | dice_cannon | Shot whose pitch climbs with the crescendo (escalation) | before `DAMAGE` |
 | Crossed Wires | reroll blip | Electrical short buzz | before `APPLY_STATUS` |
+| Cryo Lance | glass_tinkle | Icy crackle as the die freezes down | before `SET_TARGETS_HIGHEST_DIE` |
 | Dampener | error | Falling "wah" as the signal dies away | before `APPLY_STATUS` |
 | Dead Man's Switch | — | Arming click (quiet; it re-arms every turn) | chain start |
 | Deadweight Drive | dice_cannon | Very heavy, slow thud | before `DAMAGE` |

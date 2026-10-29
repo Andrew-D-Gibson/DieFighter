@@ -4,6 +4,48 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Enemy dice and bounties: Cryo Lance, Counter-Battery, Bounty Scanner
+
+The last three tiles from the gap analysis's build list (G16a, G16b, G14).
+Every row on the Proposed Tiles sheet is now built except Turn Primer (G17:
+it would only reward guessing how long a fight lasts, see the later-turns
+entry) and Repair Drone (G15: the sheet says to add it only if runs feel too
+punishing).
+
+| Tile | Colour, rarity | Uses | Does | Upgrade |
+|---|---|---|---|---|
+| Cryo Lance | Blue, Uncommon | 1 | 1: the target's highest held die becomes a 1. Give die | 2 uses |
+| Counter-Battery | Blue, Uncommon | 1 | Any die: give it; the target's intent for that face does nothing next turn | silences that face on every enemy |
+| Bounty Scanner | Yellow, Uncommon | ∞ | Damage = die -1; a kill pays 8 credits | full die, 12 credits |
+
+- **Cryo Lance** is an immediate effect (`SET_TARGETS_HIGHEST_DIE`, DiceControl
+  20), not a `frozen` status: enemies get dice in your turn and spend them in
+  theirs, so a status would add nothing, and "frozen" would clash with the
+  Flash Freeze background (which also blocks it). It refuses a target that
+  holds nothing above a 1 (`TARGETED_SHIP_HOLDS_DIE_ABOVE`, activation 20).
+- **Counter-Battery** (`SILENCE_TARGETS_FACE`, DiceControl 21) turns that intent
+  slot into a Do Nothing that remembers what it replaced, so threat colours,
+  Jammed and the bot all read it as idle; the next intent roll clears it. The
+  intent panel greys the old icon under a red X. New `Events.enemy_intents_changed`.
+- **Bounty Scanner** (`BOUNTY_DAMAGE`, AttributeChange 15) pays only for the hit
+  that destroys a hostile ship: never for civilians (shops, docks, transports,
+  even angry), launched fighters (no Carrier farming) or a ship that flees.
+  The -1 keeps it from simply beating Dice Cannon.
+- AutoPilot values the freeze and the silence by the threat each removes.
+
+**Tested.** GUT 1411/1411 on a clean checkout of main after this merge.
+Live (Wolfpack): the target held a 6 and a 1 on Cryo Lance made it a 1;
+Counter-Battery with a 5 put a red X on the target's 5 intent; Bounty Scanner
+finished a 3-hull ship with a 4 and credits went 0 → 12 (8 bounty + the kill
+payout).
+
+**Note.** In the main checkout with the editor open, GUT reports "invalid UID"
+for every tile upgrade link (6 failures) even after a headless import; the
+editor's in-memory UID cache wins. A fresh checkout is green. Restart the
+editor to refresh it.
+
+---
+
 ## 2026-10-29 — Defence: Phase Cloak, Spiked Hull, Blood Valve
 
 Gap analysis G12, G08 and G13. Emergency Shield and Dead Man's Switch only
