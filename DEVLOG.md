@@ -4,6 +4,36 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Art sources move to Art/, PNGs are exported
+
+**Why.** Art gets edited on an iPad (Pixquare, synced with GitSync), so
+every texture needs one `.aseprite` to edit and nothing exported by hand.
+
+**The layout.** `Art/` mirrors `Assets/`. `Art/Textures/X/foo.aseprite`
+exports to `Assets/Textures/X/foo.png` with one frame, or `foo-Sheet.png`
+(a horizontal strip) with several. Only visible layers are drawn. Folders
+starting with `_` never export: `_Palettes/` (the approved palette) and
+`_Workfiles/` (layouts like the cockpit mock-up and the button and check-box
+templates, which don't map 1:1 to a PNG). `Art/` has a `.gdignore`.
+
+**The exporter.** `tools/export_art.py` renders every source in one Aseprite
+run (`tools/export_art.lua`, about a second for 605 files) and rewrites a PNG
+only when its pixels change, so unchanged art keeps its bytes and Godot
+doesn't reimport it. `--check` reports stale PNGs and PNGs with no source.
+`tools/githooks` runs it after `git pull` (merge or rebase) for whatever
+came in; turn it on with `git config core.hooksPath tools/githooks`.
+
+**Moving in.** 296 sources moved over and 309 were made from PNGs that had
+none. 17 sources had drifted from the PNG the game ships (the Field Tender's
+source was an unexported grey redesign, the health bar `over` had a shadow
+layer the PNG doesn't, most asteroid/ice/fate pieces had extra draft frames).
+Those were rebuilt from the shipped PNG and the old files kept in
+`Art/_Workfiles/`. Every PNG is pixel-identical to before. Six unreferenced
+PNGs that clash with a source's name (`lockout.png`, five fate `-Sheet`s)
+are left in place and listed in `UNSOURCED_OK` until they're deleted.
+
+---
+
 ## 2026-10-29 — The AutoPilot rerolls shops
 
 **The move.** `AutoPilotMove.Kind.REROLL` (appended) presses the shop's

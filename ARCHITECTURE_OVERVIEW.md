@@ -1509,15 +1509,17 @@ computer backgrounds, which stand in front of the dash). A panel moving away
 drops whatever was resting on it. To make another sprite catch glass, add it
 to that group.
 
-The art is `Assets/Textures/UI/Cockpit/Damage/cockpit_damage.aseprite`, one
-layer per site, exported with
-`aseprite -b cockpit_damage.aseprite --split-layers --save-as "{layer}.png"`.
-To add a site, add a layer, export, add a `CockpitDamageSite` child in
-`cockpit_damage.tscn` at the point in the order it should open, and set its
-`kind` and `emit_points`.
+Each site is its own full-screen `.aseprite` in
+`Art/Textures/UI/Cockpit/Damage/` (`crack_left`, `seam_dash_right`...),
+exported by `tools/export_art.py`. The layered layout they were first cut
+from, one layer per site, is
+`Art/_Workfiles/Textures/UI/Cockpit/Damage/cockpit_damage.aseprite`. To add a
+site, draw a new 320×180 `.aseprite` there, export, add a `CockpitDamageSite`
+child in `cockpit_damage.tscn` at the point in the order it should open, and
+set its `kind` and `emit_points`.
 The smoke puffs and glass shards are `smoke_puff.aseprite` and
-`glass_shard.aseprite` beside it, one frame per variant, exported with
-`aseprite -b <name>.aseprite --sheet <name>-Sheet.png --sheet-type horizontal`.
+`glass_shard.aseprite` beside them, one frame per variant, exported as
+`<name>-Sheet.png`.
 
 On death, the killing blow's cracks open straight to their ghosts and any
 still fading are dimmed. During the rupture, `CockpitDestruction` brings each

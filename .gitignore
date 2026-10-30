@@ -30,3 +30,6 @@ mono_crash.*.json
 
 # AutoPilot run output (tools/autoplay.sh)
 .autoplay/
+
+# Python bytecode from the tools/ scripts
+__pycache__/

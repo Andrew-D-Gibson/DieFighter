@@ -18,8 +18,13 @@ registration to testing. For how the systems work underneath, see
   the subtype.
 - **After adding a script with a new `class_name`**, rebuild the class cache:
   `/Users/drew/Documents/Godot/Godot_4.7_stable.app/Contents/MacOS/Godot --headless --path . --import`.
+- **Art is drawn in `Art/`, never in `Assets/`.** Every PNG the game loads
+  is exported from the `.aseprite` at the mirrored path (`Art/Textures/X/foo`
+  -> `Assets/Textures/X/foo.png`, or `foo-Sheet.png` for several frames) by
+  `python3 tools/export_art.py`. `--check` reports stale PNGs. See
+  `Art/README.md`.
 - **Art uses only the approved palette**, the 33 colours in
-  `Assets/aseprite_palette_final.aseprite`. Outlines are `#040217` (never
+  `Art/_Palettes/aseprite_palette_final.aseprite`. Outlines are `#040217` (never
   pure black). Alpha is free. The exceptions are white masks that get tinted
   in-engine (particle pixels, stars, smoke, shader masks), which stay pure
   white.
@@ -63,8 +68,8 @@ registration to testing. For how the systems work underneath, see
 ## 1. Tiles
 
 **Files**
-- Art: `Assets/Textures/Tiles/<Colour>Tiles/<name>.png` (keep the `.aseprite`
-  beside it).
+- Art: `Art/Textures/Tiles/<Colour>Tiles/<name>.aseprite`, exported to
+  `Assets/Textures/Tiles/<Colour>Tiles/<name>.png`.
   - Colour by role: Red attack, Blue defence, Green die tricks/movement,
     Purple engine, Yellow support/buffs.
   - The folder is the tile's colour as far as the game is concerned: the
@@ -73,7 +78,7 @@ registration to testing. For how the systems work underneath, see
     the art by what it looks like, and keep the top-left 7×7 inside the
     frame free of anything vital. A new colour family needs an entry in
     `ColorSymbolBadge._FAMILY_FOLDERS` and `CodexCatalog._TILE_COLOUR_ORDER`,
-    and a frame in `Tiles/ColorSymbols/color_symbols.aseprite`.
+    and a frame in `Art/Textures/Tiles/ColorSymbols/color_symbols.aseprite`.
   - Tiles are 24×24. An unlimited tile is a single frame, `<name>.png`.
   - **The lower panel shows which dice the tile takes**, matching its
     `activation_checks`. The marker is a 7×7 slot in the darkest shade of the
@@ -99,12 +104,12 @@ registration to testing. For how the systems work underneath, see
     `_LIGHT_STEP` too.
   - Don't draw the lights by hand. Draw the tile as one frame, then run
     `tools/add_use_lights.lua` (usage at the top of the script). It turns the
-    `.aseprite` into the frames and exports the sheet. Then import
-    (`Godot --headless --path . --import`) to get the sheet's uid, and
-    `git rm` the old single-frame png and its `.import`.
-  - If a tile's uses change later, rebuild its sheet from the single-frame
-    art (`git show` the old png, or frame 0 with the lights painted out). The
-    script refuses an already-multi-frame file.
+    `.aseprite` into the frames; `tools/export_art.py` then writes the sheet.
+    Then import (`Godot --headless --path . --import`) to get the sheet's
+    uid, and `git rm` the old single-frame png and its `.import`.
+  - If a tile's uses change later, rebuild its frames from frame 0 with the
+    lights painted out (delete the other frames first). The script refuses
+    an already-multi-frame file.
 - Resource: `Source/Content/Tiles/TileResources/<name>.tres` (a
   `TileResource`). It must sit **directly** in that folder, not in a
   subfolder.
@@ -251,8 +256,9 @@ benched tiles) get none, because no second copy can turn up.
   - **Looser conditions** that aren't die faces (Lone Wolf Lance+ at 3 or
     fewer dice) and **new behaviour** (Countermeasures+ also gives shields)
     reuse the base art too.
-  - **Uses** need a new light sheet: `<name>_plus-Sheet.png`, from frame 0
-    of the base sheet through `add_use_lights.lua`. Uses still top out at 3,
+  - **Uses** need a new light sheet: `<name>_plus-Sheet.png`. Copy the base
+    `.aseprite` to `<name>_plus.aseprite`, keep frame 0 with its lights
+    painted out, and run it through `add_use_lights.lua`. Uses still top out at 3,
     and relays stay at 1-2.
   - **Looser faces** need a new lower panel showing the new faces
     (Shield Burst+ borrows Keel Plating's 3+4 slots).

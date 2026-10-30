@@ -106,6 +106,9 @@ say so explicitly rather than guessing at a plausible-sounding API. Flag it as
 "unconfirmed for 4.8dev" and propose the concrete verification step needed, rather
 than writing code against an assumed signature.
 ## DieFighter-specific
+- Art sources live in `Art/` (see `Art/README.md`). Edit the `.aseprite`,
+  then run `python3 tools/export_art.py`; never edit or hand-export PNGs in
+  `Assets/`.
 - Before adding or changing tiles, enemies or other content, read
   `CONTENT_BUILD_GUIDE.md` for the workflow. In particular, §1 Tiles:
   - Every limited-use tile needs indicator-light frames
