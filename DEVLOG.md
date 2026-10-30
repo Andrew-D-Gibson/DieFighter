@@ -4,6 +4,21 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Tutorial: where used dice go
+
+- **New step, before the Bump prompt:** most systems pass their die on to your
+  target once used; a few, like Bump, hand it back to use again. The steps
+  either side now lean on it: the Cannon "passed your die on to your target",
+  Bump a die to an empty value "then pass it on", and the last step says your
+  target "gets your used dice", so picking one means something.
+- **Popup icons stay in their lines and in their box.** Inline icons are 10px
+  but the theme's line pitch was 9, so they ran into the lines around them,
+  and a four-line card overhung its panel. The popup's label now has a
+  `line_separation` of -2 and no longer overhangs, so the card grows with its
+  text. Icons straight after a word (`Click(left_mouse)`) get a space.
+
+---
+
 ## 2026-10-30 — Faction encounters
 
 Ten encounters, two per fleet faction from `LORE.md`, built on the new faction

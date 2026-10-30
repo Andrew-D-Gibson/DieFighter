@@ -656,6 +656,11 @@ drawn for that spot. The reservation is given back on `Events.jump`, so the
 next fight's ships fly straight to their usual places. The map's jump arrows
 are hidden (`Map.set_jump_arrows_visible`) until the jump step shows the right
 one; the left one returns when the tutorial finishes.
+The card's label has its own `line_separation` (-2, not the theme's -4) so
+the 10px inline icons clear the lines around them, and it doesn't overhang
+the panel, so a card grows with its text: four lines is about the most a card
+at the top of the screen holds before reaching the systems panel. Put a space
+before an icon token so it doesn't touch the word before it.
 
 ---
 
