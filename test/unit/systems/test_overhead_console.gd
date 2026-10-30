@@ -1,9 +1,9 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## OverheadConsole: waits up in the ceiling and drops down only while one of
-## its readouts needs it. Credits moving (a balance change, coins in the air)
-## or a shop being open hold it down for the MoneyIndicator; a region rule
-## holds it down for the EnvironmentMonitor's flap. It goes back up once none
-## of them does.
+## its readouts needs it. The MoneyIndicator holds it down from the run's
+## first credits (or the first payout coin taking off) for the rest of the run;
+## a region rule holds it down for the EnvironmentMonitor's flap. It goes back
+## up once none of them does.
 ##
 ## The console is in the tree, so it listens to the real Events; the signals
 ## the game would send are emitted by hand. The readouts' timings are cut short
@@ -30,7 +30,6 @@ func before_each() -> void:
 	monitor = console.get_node("%EnvironmentMonitor")
 	money.grace_period = 0.01
 	money.max_countdown_time = 0.05
-	money.hold_seconds = 0.1
 
 
 func _settle() -> void:
@@ -38,8 +37,8 @@ func _settle() -> void:
 	await get_tree().process_frame
 
 
-## Long enough for a short count, the hold after it and the deferred answer.
-func _outlast_the_hold() -> void:
+## Long enough for a short count to finish and the deferred answer.
+func _outlast_the_count() -> void:
 	await wait_seconds(0.5)
 	await _settle()
 
@@ -50,46 +49,53 @@ func test_it_starts_up_in_the_ceiling() -> void:
 	assert_false(console.visible)
 
 
-func test_a_balance_change_brings_it_down_and_it_goes_up_once_settled() -> void:
+func test_the_first_credits_bring_it_down_for_good() -> void:
 	Globals.player.money = 12
 	await _settle()
-	assert_true(console._down, "down while credits move")
+	assert_true(console._down, "down once credits come in")
 	assert_true(console.visible)
 
-	await _outlast_the_hold()
+	await _outlast_the_count()
 	assert_eq(money.money_label.text, "12", "the count finished")
-	assert_false(console._down, "back up after the hold")
+	assert_true(console._down, "still down once the count settles")
+
+	Globals.player.money = 0
+	await _outlast_the_count()
+	assert_true(console._down, "still down with the credits spent")
+
+
+func test_a_save_from_partway_through_a_run_brings_it_down() -> void:
+	var save: GameSaveResource = GameSaveResource.new()
+	save.run_stats = {"credits_earned": 20}
+	Events.load_game_save.emit(save)
+	await _settle()
+	assert_true(console._down, "credits were earned, even if they're spent")
+
+
+func test_a_fresh_save_leaves_it_up() -> void:
+	Events.load_game_save.emit(GameSaveResource.new())
+	await _settle()
+	assert_false(console._down)
 
 
 ## A stand-in coin: the readout only cares when it leaves the tree. A real
 ## one drifts and can land in the catch area before the test is done.
-func test_coins_in_the_air_keep_it_down_until_they_land() -> void:
+func test_the_first_coin_brings_it_down_before_any_credits_land() -> void:
 	var coin: Node = autofree(Node.new())
 	add_child(coin)
 	money.track_coin(coin)
-	await _outlast_the_hold()
-	assert_true(console._down, "a coin is still on its way")
+	await _outlast_the_count()
+	assert_true(console._down, "a coin is on its way")
 
 	remove_child(coin)
-	await _outlast_the_hold()
-	assert_false(console._down)
+	await _outlast_the_count()
+	assert_false(console._down, "it never paid out, so no credits yet")
 
 
-func test_an_open_shop_holds_it_down_until_it_closes() -> void:
-	Events.open_shop.emit()
-	await _outlast_the_hold()
-	assert_true(console._down, "credits are about to be spent")
-
-	Events.close_shop.emit()
-	await _outlast_the_hold()
-	assert_false(console._down)
-
-
-func test_a_region_rule_holds_it_down_after_the_credits_let_go() -> void:
+func test_a_region_rule_holds_it_down_before_any_credits() -> void:
 	Events.start_scenario.emit()
 	Events.background_modifier_applied.emit(RULE)
-	Globals.player.money = 5
-	await _outlast_the_hold()
+	await _outlast_the_count()
 	assert_true(console._down, "the rule still needs the flap")
 	assert_true(console.is_requested(&"environment"))
 	assert_false(console.is_requested(&"credits"))
