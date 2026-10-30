@@ -4,6 +4,27 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Enemy hull halved, faction badges explain themselves, salvage falls behind the cockpit
+
+- **Enemy hull is halved.** The 2.5x retune (2026-10-29) overshot. Every
+  enemy's `max_health` is halved, rounded up: Raider 45 → 23, Warden
+  100 → 50, Arc Dynamo 145 → 73. Fate Attackers stay at 1. Starting shields,
+  the player's hull, repairs and the Mayday raider's self-repair (30) are
+  unchanged. The opening ambush's raider now starts at 50% (was 25%), so it
+  still spawns at 12 hull and the tutorial's scripted kill lands on turn two.
+- **Click a faction badge for who that faction is.** The badge on the
+  targeting computer opens the info panel: the faction's name in its accent
+  colour, its answer to the end (LORE.md §2) and a line on who they are.
+  `FactionIdentity` gains `color`, `motto` and `description`; the last two
+  are `FACTION_*` translation keys.
+- **Salvage left behind by a jump falls behind the cockpit.** It used to
+  shrink and fall over the cockpit and main viewer. It now drops to an
+  absolute z of -15 (`Reward._LEFT_BEHIND_Z`): its choices pass behind the
+  cockpit walls (-2) level with the jumping ships (-5), still over the jump's
+  streaks (-18).
+
+---
+
 ## 2026-10-30 — Tutorial: the target arrows swing out on cue
 
 - **The last step is about switching targets, and the player watches the
