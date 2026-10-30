@@ -1,0 +1,177 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bbrdpx6pqnnrk"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_y8vtr"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_bdv4y"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_i1cfl"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_li2ym"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_q6cv8"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_i1cfl"]
+[ext_resource type="Texture2D" uid="uid://drmi2s3nbscxs" path="res://Assets/Textures/Tiles/RedTiles/feint_cannon.png" id="5_li2ym"]
+[ext_resource type="Resource" uid="uid://db6t6878l5vxh" path="res://Source/Content/Tiles/TileResources/feint_cannon_plus.tres" id="6_7vme4"]
+
+[sub_resource type="Resource" id="Resource_j8q5x"]
+script = ExtResource("1_y8vtr")
+
+[sub_resource type="Resource" id="Resource_p2yhx"]
+script = ExtResource("1_y8vtr")
+type = 1
+acceptable_values = Array[int]([1, 2])
+
+[sub_resource type="Resource" id="Resource_ryv58"]
+script = ExtResource("1_y8vtr")
+type = 4
+
+[sub_resource type="Resource" id="Resource_4m6o3"]
+script = ExtResource("2_i1cfl")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_b8fy1"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 1
+color = Color(0.3176, 0.0824, 0.1294, 1)
+
+[sub_resource type="Resource" id="Resource_fu4hq"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_li2ym")
+
+[sub_resource type="Resource" id="Resource_sk2rp"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 17
+multiplier = 1.6
+
+[sub_resource type="Resource" id="Resource_myqi0"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 15
+amount = 10
+color = Color(0.9333, 0.8275, 0.3647, 1)
+juice_flags = 1
+
+[sub_resource type="Resource" id="Resource_j113l"]
+script = ExtResource("2_i1cfl")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_8o2lx"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_vlwti"]
+script = ExtResource("2_i1cfl")
+category = 2
+amount = 2
+
+[sub_resource type="Resource" id="Resource_grs8c"]
+script = ExtResource("2_i1cfl")
+category = 2
+subtype = 4
+string_param = "feint"
+
+[sub_resource type="Resource" id="Resource_3cwcu"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 14
+amount = 20
+color = Color(0.9333, 0.8275, 0.3647, 1)
+
+[sub_resource type="Resource" id="Resource_xxhr5"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 7
+amount = 40
+
+[sub_resource type="Resource" id="Resource_pphp2"]
+script = ExtResource("2_i1cfl")
+category = 1
+
+[sub_resource type="Resource" id="Resource_y1ogb"]
+script = ExtResource("2_i1cfl")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_bhgub"]
+script = ExtResource("3_q6cv8")
+effects = Array[ExtResource("2_i1cfl")]([SubResource("Resource_4m6o3"), SubResource("Resource_b8fy1"), SubResource("Resource_fu4hq"), SubResource("Resource_sk2rp"), SubResource("Resource_myqi0"), SubResource("Resource_j113l"), SubResource("Resource_8o2lx"), SubResource("Resource_vlwti"), SubResource("Resource_grs8c"), SubResource("Resource_3cwcu"), SubResource("Resource_xxhr5"), SubResource("Resource_pphp2"), SubResource("Resource_y1ogb")])
+
+[sub_resource type="Resource" id="Resource_mb1mb"]
+script = ExtResource("2_bdv4y")
+event = 10
+
+[sub_resource type="Resource" id="Resource_5pkvi"]
+script = ExtResource("2_i1cfl")
+category = 2
+
+[sub_resource type="Resource" id="Resource_5fb27"]
+script = ExtResource("2_i1cfl")
+category = 5
+subtype = 9
+string_param = "feint"
+
+[sub_resource type="Resource" id="Resource_1grj6"]
+script = ExtResource("3_q6cv8")
+effects = Array[ExtResource("2_i1cfl")]([SubResource("Resource_5pkvi"), SubResource("Resource_5fb27")])
+
+[sub_resource type="Resource" id="Resource_sj44d"]
+script = ExtResource("2_bdv4y")
+event = 13
+
+[sub_resource type="Resource" id="Resource_0nrkj"]
+script = ExtResource("2_i1cfl")
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_uimc6"]
+script = ExtResource("2_i1cfl")
+category = 2
+amount = 3
+
+[sub_resource type="Resource" id="Resource_fdwx3"]
+script = ExtResource("2_i1cfl")
+category = 5
+subtype = 8
+string_param = "feint"
+
+[sub_resource type="Resource" id="Resource_k265a"]
+script = ExtResource("2_i1cfl")
+category = 4
+subtype = 16
+string_param = "+{amount}"
+color = Color(0.9333, 0.8275, 0.3647, 1)
+
+[sub_resource type="Resource" id="Resource_i1qym"]
+script = ExtResource("3_q6cv8")
+effects = Array[ExtResource("2_i1cfl")]([SubResource("Resource_0nrkj"), SubResource("Resource_uimc6"), SubResource("Resource_fdwx3"), SubResource("Resource_k265a")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_a3501"]
+atlas = ExtResource("5_li2ym")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_gpmt5"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_a3501")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_i1cfl")
+tile_name = "[color=red]Feint Cannon[/color]"
+description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], +3 per enemy hit you evaded this fight (+[data]feint[/data])"
+rarity = 1
+upgraded_version = ExtResource("6_7vme4")
+textures = SubResource("SpriteFrames_gpmt5")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_y8vtr")]([SubResource("Resource_j8q5x"), SubResource("Resource_p2yhx"), SubResource("Resource_ryv58")])
+effect_chain = SubResource("Resource_bhgub")
+event_responses = Dictionary[ExtResource("2_bdv4y"), ExtResource("3_q6cv8")]({
+SubResource("Resource_mb1mb"): SubResource("Resource_1grj6"),
+SubResource("Resource_sj44d"): SubResource("Resource_i1qym")
+})

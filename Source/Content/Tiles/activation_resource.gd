@@ -49,6 +49,9 @@ enum ActivationType {
 	## Lance turns its highest to a 1): with nothing to change it would eat
 	## the die.
 	TARGETED_SHIP_HOLDS_DIE_ABOVE,
+	## The player's evasion (EvasionModifier) is below its cap. For a tile
+	## that adds evasion (Jink Thrusters): at the cap it would eat the die.
+	EVASION_BELOW_CAP,
 }
 
 @export var type: ActivationType
@@ -193,6 +196,11 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				if is_instance_valid(held) and held != die and held.value > threshold:
 					return true
 			return false,
+
+	ActivationType.EVASION_BELOW_CAP:
+		func(_die: Dice) -> bool:
+			var evasion: EvasionModifier = EvasionModifier.find(ScenarioEngine.current())
+			return evasion != null and evasion.chance_percent() < EvasionModifier.MAX_PERCENT,
 }
 
 
@@ -262,6 +270,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE:
 		"ERROR_TARGET_NO_BIG_DIE",
+
+	ActivationType.EVASION_BELOW_CAP:
+		"ERROR_EVASION_MAXED",
 }
 
 

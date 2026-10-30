@@ -1,0 +1,98 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://ctt4g3dsp2vk5"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_oqvfe"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_gnwls"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_5wvew"]
+[ext_resource type="Resource" uid="uid://dhdiec4h8tjs3" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="3_n5qui"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_gnwls"]
+[ext_resource type="Texture2D" uid="uid://768fvb7sdnhf" path="res://Assets/Textures/Tiles/PurpleTiles/jink_thrusters.png" id="5_n5qui"]
+[ext_resource type="Resource" uid="uid://4x48xxr36etu" path="res://Source/Content/Tiles/TileResources/jink_thrusters_plus.tres" id="6_1kaoi"]
+
+[sub_resource type="Resource" id="Resource_veqmu"]
+script = ExtResource("1_oqvfe")
+
+[sub_resource type="Resource" id="Resource_102fv"]
+script = ExtResource("1_oqvfe")
+type = 2
+
+[sub_resource type="Resource" id="Resource_td8yf"]
+script = ExtResource("1_oqvfe")
+type = 4
+
+[sub_resource type="Resource" id="Resource_egqbq"]
+script = ExtResource("1_oqvfe")
+type = 21
+
+[sub_resource type="Resource" id="Resource_f66rd"]
+script = ExtResource("2_gnwls")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_n5qui")
+
+[sub_resource type="Resource" id="Resource_0j2uy"]
+script = ExtResource("2_gnwls")
+category = 4
+subtype = 17
+multiplier = 1.4
+
+[sub_resource type="Resource" id="Resource_1tgwn"]
+script = ExtResource("2_gnwls")
+category = 4
+subtype = 21
+amount = 8
+color = Color(0.7725, 0.3216, 0.9451, 1)
+juice_flags = 6
+
+[sub_resource type="Resource" id="Resource_7yrb7"]
+script = ExtResource("2_gnwls")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_mqgor"]
+script = ExtResource("2_gnwls")
+category = 2
+subtype = 2
+multiplier = 4.0
+
+[sub_resource type="Resource" id="Resource_o5kvt"]
+script = ExtResource("2_gnwls")
+category = 1
+subtype = 16
+
+[sub_resource type="Resource" id="Resource_jpc4v"]
+script = ExtResource("2_gnwls")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_fwecb"]
+script = ExtResource("2_gnwls")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_gubag"]
+script = ExtResource("3_5wvew")
+effects = Array[ExtResource("2_gnwls")]([SubResource("Resource_f66rd"), SubResource("Resource_0j2uy"), SubResource("Resource_1tgwn"), SubResource("Resource_7yrb7"), SubResource("Resource_mqgor"), SubResource("Resource_o5kvt"), SubResource("Resource_jpc4v"), SubResource("Resource_fwecb")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1qb2k"]
+atlas = ExtResource("5_n5qui")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3dhdj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1qb2k")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_gnwls")
+tile_name = "[color=purple]Jink Thrusters[/color]"
+description = "[color=yellow]Any die[/color] -> Gain 4% (evasion) per pip until your next turn. [color=orange]Give[/color] die"
+upgraded_version = ExtResource("6_1kaoi")
+textures = SubResource("SpriteFrames_3dhdj")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_oqvfe")]([SubResource("Resource_veqmu"), SubResource("Resource_102fv"), SubResource("Resource_td8yf"), SubResource("Resource_egqbq")])
+effect_chain = SubResource("Resource_gubag")

@@ -1,0 +1,81 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://cwbdqpqxsg28n"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_kvuse"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_gpsi7"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_408us"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_408us"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_u40on"]
+[ext_resource type="Texture2D" uid="uid://bb5oxu1nadbjy" path="res://Assets/Textures/Tiles/PurpleTiles/slipstream_vane.png" id="5_ga67h"]
+[ext_resource type="Resource" uid="uid://c0wgmfu75rwdj" path="res://Source/Content/Tiles/TileResources/slipstream_vane_plus.tres" id="6_ak1uk"]
+
+[sub_resource type="Resource" id="Resource_ga67h"]
+script = ExtResource("1_kvuse")
+type = 6
+
+[sub_resource type="Resource" id="Resource_ak1uk"]
+script = ExtResource("2_gpsi7")
+event = 13
+
+[sub_resource type="Resource" id="Resource_1ugp4"]
+script = ExtResource("4_408us")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_rcluy"]
+script = ExtResource("4_408us")
+category = 2
+amount = 8
+
+[sub_resource type="Resource" id="Resource_hjsm0"]
+script = ExtResource("4_408us")
+category = 4
+color = Color(0.7725, 0.3216, 0.9451, 1)
+
+[sub_resource type="Resource" id="Resource_ekmqt"]
+script = ExtResource("4_408us")
+category = 2
+amount = 2
+
+[sub_resource type="Resource" id="Resource_7nvdf"]
+script = ExtResource("4_408us")
+category = 4
+subtype = 21
+amount = 8
+color = Color(0.7725, 0.3216, 0.9451, 1)
+juice_flags = 6
+
+[sub_resource type="Resource" id="Resource_5ribb"]
+script = ExtResource("4_408us")
+category = 1
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_8qbl7"]
+script = ExtResource("3_408us")
+effects = Array[ExtResource("4_408us")]([SubResource("Resource_1ugp4"), SubResource("Resource_rcluy"), SubResource("Resource_hjsm0"), SubResource("Resource_ekmqt"), SubResource("Resource_7nvdf"), SubResource("Resource_5ribb")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gyav6"]
+atlas = ExtResource("5_ga67h")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_twk7m"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gyav6")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_u40on")
+tile_name = "[color=purple]Slipstream Vane[/color]"
+description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=purple]2 engine charge[/color]"
+rarity = 1
+upgraded_version = ExtResource("6_ak1uk")
+textures = SubResource("SpriteFrames_twk7m")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_kvuse")]([SubResource("Resource_ga67h")])
+event_responses = Dictionary[ExtResource("2_gpsi7"), ExtResource("3_408us")]({
+SubResource("Resource_ak1uk"): SubResource("Resource_8qbl7")
+})

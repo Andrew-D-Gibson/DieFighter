@@ -1,0 +1,94 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bbwrbreri3wu1"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_hctue"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_2xyu2"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_p2f2v"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_63b5k"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_ea4xd"]
+[ext_resource type="Texture2D" uid="uid://c1v6ni8n2gxit" path="res://Assets/Textures/Tiles/BlueTiles/afterimage.png" id="5_ea4xd"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="5_lctph"]
+
+[sub_resource type="Resource" id="Resource_vs02f"]
+script = ExtResource("1_hctue")
+type = 6
+
+[sub_resource type="Resource" id="Resource_baygw"]
+script = ExtResource("2_2xyu2")
+event = 13
+
+[sub_resource type="Resource" id="Resource_8pl5w"]
+script = ExtResource("4_ea4xd")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_o7ca5"]
+script = ExtResource("4_ea4xd")
+category = 2
+amount = 8
+
+[sub_resource type="Resource" id="Resource_f0xm8"]
+script = ExtResource("4_ea4xd")
+category = 4
+color = Color(0.2627, 0.651, 0.9882, 1)
+
+[sub_resource type="Resource" id="Resource_ompcp"]
+script = ExtResource("4_ea4xd")
+category = 4
+subtype = 5
+sound_resource = ExtResource("5_lctph")
+
+[sub_resource type="Resource" id="Resource_1trwq"]
+script = ExtResource("4_ea4xd")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_mro3j"]
+script = ExtResource("4_ea4xd")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.2627, 0.651, 0.9882, 1)
+
+[sub_resource type="Resource" id="Resource_pqvp8"]
+script = ExtResource("4_ea4xd")
+category = 4
+subtype = 16
+string_param = "+{amount}"
+color = Color(0.2627, 0.651, 0.9882, 1)
+
+[sub_resource type="Resource" id="Resource_dsdkw"]
+script = ExtResource("4_ea4xd")
+category = 1
+subtype = 2
+
+[sub_resource type="Resource" id="Resource_gecal"]
+script = ExtResource("3_p2f2v")
+effects = Array[ExtResource("4_ea4xd")]([SubResource("Resource_8pl5w"), SubResource("Resource_o7ca5"), SubResource("Resource_f0xm8"), SubResource("Resource_ompcp"), SubResource("Resource_1trwq"), SubResource("Resource_mro3j"), SubResource("Resource_pqvp8"), SubResource("Resource_dsdkw")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4jiqj"]
+atlas = ExtResource("5_ea4xd")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_l3onu"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4jiqj")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("4_63b5k")
+tile_name = "[color=blue]Afterimage+[/color]"
+description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=blue]6 shields[/color]"
+rarity = 1
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_l3onu")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_hctue")]([SubResource("Resource_vs02f")])
+event_responses = Dictionary[ExtResource("2_2xyu2"), ExtResource("3_p2f2v")]({
+SubResource("Resource_baygw"): SubResource("Resource_gecal")
+})
