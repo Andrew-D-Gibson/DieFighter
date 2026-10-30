@@ -7,3 +7,6 @@
 script = ExtResource("1_script")
 display_name = "The Rearguard"
 icon = ExtResource("2_icon")
+color = Color(0.262745, 0.65098, 0.988235, 1)
+motto = "FACTION_REARGUARD_MOTTO"
+description = "FACTION_REARGUARD_DESC"

@@ -7,3 +7,6 @@
 script = ExtResource("1_script")
 display_name = "The Inbound"
 icon = ExtResource("2_icon")
+color = Color(0.933333, 0.827451, 0.364706, 1)
+motto = "FACTION_INBOUND_MOTTO"
+description = "FACTION_INBOUND_DESC"

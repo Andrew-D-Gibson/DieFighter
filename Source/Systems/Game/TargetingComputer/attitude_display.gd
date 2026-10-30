@@ -8,7 +8,7 @@ extends Node2D
 ##
 ## Above the face sits the ship's faction badge (EnemyResource.faction), so the
 ## player reads who a ship is and how it feels about them in one place. A ship
-## with no faction shows no badge.
+## with no faction shows no badge. Clicking the badge explains the faction.
 ##
 ## This used to be a face hung off every ship's health bar. On the computer it
 ## reads once, for the ship the player is about to give a die to, which is
@@ -41,6 +41,7 @@ var _blink_tween: Tween
 
 
 func _ready() -> void:
+	%FactionClickable.clicked.connect(_show_faction_info)
 	clear()
 
 
@@ -55,6 +56,7 @@ func show_ship(ship: Enemy) -> void:
 	_shown_attitude = attitude
 
 	%FactionIcon.texture = faction_icon(ship)
+	_set_faction_clickable(%FactionIcon.texture != null)
 	%BezelTint.modulate = bezel_colour(attitude)
 	%ImageFrameTint.modulate = frame_colour(attitude)
 	%Face.frame = face_frame(attitude)
@@ -66,6 +68,7 @@ func show_ship(ship: Enemy) -> void:
 func clear() -> void:
 	_shown_ship = null
 	%FactionIcon.texture = null
+	_set_faction_clickable(false)
 	if _blink_tween:
 		_blink_tween.kill()
 	_blink_tween = null
@@ -85,6 +88,24 @@ static func faction_icon(ship: Enemy) -> Texture2D:
 	if ship.enemy_resource == null or ship.enemy_resource.faction == null:
 		return null
 	return ship.enemy_resource.faction.icon
+
+
+## A ship with no badge has nothing to explain, so the empty corner takes no
+## hover or click.
+func _set_faction_clickable(has_faction: bool) -> void:
+	var clickable: Clickable = %FactionClickable
+	clickable.hover_for_info = has_faction
+	clickable.input_pickable = has_faction
+	if not has_faction and clickable.hovered:
+		clickable.reset_hover_state()
+
+
+func _show_faction_info() -> void:
+	if not is_instance_valid(_shown_ship) or _shown_ship.enemy_resource == null:
+		return
+	var faction: FactionIdentity = _shown_ship.enemy_resource.faction
+	if faction:
+		Events.show_info.emit(faction.info())
 
 
 static func bezel_colour(attitude: Enemy.Attitude) -> Color:

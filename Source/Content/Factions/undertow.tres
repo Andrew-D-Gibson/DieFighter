@@ -7,3 +7,6 @@
 script = ExtResource("1_script")
 display_name = "The Undertow"
 icon = ExtResource("2_icon")
+color = Color(0.815686, 0.211765, 0.337255, 1)
+motto = "FACTION_UNDERTOW_MOTTO"
+description = "FACTION_UNDERTOW_DESC"

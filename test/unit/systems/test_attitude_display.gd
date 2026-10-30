@@ -19,6 +19,15 @@ func before_each() -> void:
 	add_child_autofree(_display)
 
 
+func _faction() -> FactionIdentity:
+	var faction: FactionIdentity = FactionIdentity.new()
+	faction.display_name = "The Test Fleet"
+	faction.icon = PlaceholderTexture2D.new()
+	faction.motto = "Hold still."
+	faction.description = "They only exist in tests."
+	return faction
+
+
 func _ship(attitude: Enemy.Attitude) -> Enemy:
 	var ship: Enemy = Ships.ship(ScenarioManager.Faction.PIRATE, 10, 10, attitude)
 	autofree(ship)
@@ -86,3 +95,41 @@ func test_clearing_mid_blink_leaves_the_parts_lit() -> void:
 	_display.show_ship(_ship(Enemy.Attitude.FRIENDLY))
 	assert_true(_display.get_node("%Face").visible)
 	assert_true(_display.get_node("%BezelTint").visible)
+
+
+func test_the_faction_badge_explains_the_faction_when_clicked() -> void:
+	var ship: Enemy = _ship(Enemy.Attitude.NEUTRAL)
+	ship.enemy_resource.faction = _faction()
+	_display.show_ship(ship)
+	var clickable: Clickable = _display.get_node("%FactionClickable")
+	assert_true(clickable.input_pickable)
+	var shown: Array[InfoResource] = []
+	var catch: Callable = func(info: InfoResource) -> void: shown.append(info)
+	Events.show_info.connect(catch)
+	clickable.clicked.emit()
+	Events.show_info.disconnect(catch)
+	assert_eq(shown.size(), 1)
+	assert_string_contains(shown[0].title_label_text, "The Test Fleet")
+	assert_eq(shown[0].top_label_text, "Hold still.")
+	assert_eq(shown[0].bottom_label_text, "They only exist in tests.")
+
+
+func test_no_badge_takes_no_click() -> void:
+	_display.show_ship(_ship(Enemy.Attitude.NEUTRAL))
+	assert_false(_display.get_node("%FactionClickable").input_pickable, "a ship with no faction")
+	var ship: Enemy = _ship(Enemy.Attitude.NEUTRAL)
+	ship.enemy_resource.faction = _faction()
+	_display.show_ship(ship)
+	_display.clear()
+	assert_false(_display.get_node("%FactionClickable").input_pickable, "nothing targeted")
+
+
+func test_every_faction_has_its_words() -> void:
+	for path: String in DirAccess.get_files_at("res://Source/Content/Factions"):
+		if not path.ends_with(".tres"):
+			continue
+		var faction: FactionIdentity = load("res://Source/Content/Factions/" + path)
+		assert_true(faction.motto.begins_with("FACTION_"), "%s motto is a translation key" % path)
+		assert_true(faction.description.begins_with("FACTION_"), "%s description is a translation key" % path)
+		assert_ne(TranslationServer.translate(faction.description), faction.description,
+			"%s description has English text" % path)

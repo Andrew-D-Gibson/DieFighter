@@ -13,3 +13,21 @@ extends Resource
 ## A 7x7 badge in the faction's own colours, shown beside the target's
 ## portrait on the targeting computer.
 @export var icon: Texture2D
+## The faction's light accent (LORE.md §12), for its name on the info panel.
+@export var color: Color = Color.WHITE
+## Translation key: the faction's answer to the end, in a line (LORE.md §2).
+@export var motto: String
+## Translation key: who they are, in a sentence or two, for a player who
+## clicks the badge to ask who they're facing.
+@export var description: String
+
+
+## The info panel for this faction: what the badge on the targeting computer
+## says when clicked.
+func info() -> InfoResource:
+	var panel: InfoResource = InfoResource.new()
+	panel.title_label_text = "[color=#%s]%s[/color]" % [color.to_html(false), display_name]
+	panel.top_label_text = TranslationServer.translate(motto)
+	panel.texture = icon
+	panel.bottom_label_text = TranslationServer.translate(description)
+	return panel

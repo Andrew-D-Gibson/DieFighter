@@ -7,3 +7,6 @@
 script = ExtResource("1_script")
 display_name = "The Spilled"
 icon = ExtResource("2_icon")
+color = Color(0.772549, 0.321569, 0.945098, 1)
+motto = "FACTION_SPILLED_MOTTO"
+description = "FACTION_SPILLED_DESC"
