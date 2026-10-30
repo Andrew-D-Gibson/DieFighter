@@ -10,6 +10,7 @@
 [ext_resource type="Resource" uid="uid://cesjiwhhl5hh0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/flee.tres" id="6_flee"]
 [ext_resource type="PackedScene" uid="uid://cuqq8i1t2wkwg" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/tender_ship_graphics.tscn" id="7_gfx"]
 [ext_resource type="Texture2D" uid="uid://cu56brsxbsafc" path="res://Assets/Textures/Enemies/Tender/tender_targeting_image.png" id="8_target"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/caravan.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_nothing"]
 script = ExtResource("1_option")
@@ -38,6 +39,7 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("3_enemy")
 enemy_name = "Repair Dock"
+faction = ExtResource("faction_identity")
 description = "Patches hulls for credits. Buys spare tiles."
 in_codex = false
 max_health = 70

@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="ext_6"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/interceptor_ship_graphics.tscn" id="ext_7"]
 [ext_resource type="Texture2D" uid="uid://b3pn1edpqp0sv" path="res://Assets/Textures/Enemies/Interceptor/interceptor_targeting_image.png" id="ext_8"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_cannon"]
 script = ExtResource("ext_2")
@@ -35,6 +36,7 @@ actions_possible = Array[ExtResource("ext_2")]([SubResource("Resource_cannon"), 
 [resource]
 script = ExtResource("ext_6")
 enemy_name = "Interceptor"
+faction = ExtResource("faction_identity")
 description = "Carrier-launched fighter. Fragile, and there is always another."
 max_health = 13
 action_options = Array[ExtResource("ext_5")]([SubResource("Resource_pool_sortie")])

@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/carrier_ship_graphics.tscn" id="ext_10"]
 [ext_resource type="Texture2D" uid="uid://cv0knllfqqj6j" path="res://Assets/Textures/Enemies/Carrier/carrier_targeting_image.png" id="ext_11"]
 [ext_resource type="Resource" uid="uid://bdeme5mueceon" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/target_lock.tres" id="new_target_lock"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_room"]
 script = ExtResource("ext_1")
@@ -69,6 +70,7 @@ actions_possible = Array[ExtResource("ext_3")]([SubResource("Resource_launch"), 
 [resource]
 script = ExtResource("ext_9")
 enemy_name = "Carrier"
+faction = ExtResource("faction_identity")
 description = "A flight deck with engines. Never runs out of fighters, only room for them."
 max_health = 75
 starting_shields = 15

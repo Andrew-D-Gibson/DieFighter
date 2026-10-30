@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_amb7e"]
 [ext_resource type="Resource" uid="uid://cesjiwhhl5hh0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/flee.tres" id="5_itnwa"]
 [ext_resource type="Texture2D" uid="uid://0sj4d82kvgkl" path="res://Assets/Textures/Enemies/Shop/shop_targeting_image.png" id="6_03d4b"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/caravan.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_itnwa"]
 script = ExtResource("1_2n4kh")
@@ -38,6 +39,7 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("2_00gar")
 enemy_name = "Shop"
+faction = ExtResource("faction_identity")
 description = "Buy your desires!"
 in_codex = false
 max_health = 80

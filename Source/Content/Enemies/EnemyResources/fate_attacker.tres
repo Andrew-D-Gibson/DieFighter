@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://ds03fs4txnc1c" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_enemy_graphics.tscn" id="5_00tck"]
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_patpg"]
 [ext_resource type="Texture2D" uid="uid://deoaj6bxuv4i4" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="6_patpg"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/spilled.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_behws"]
 script = ExtResource("2_2edq1")
@@ -24,6 +25,7 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("2_ogj8x")
 enemy_name = "Fate Attacker"
+faction = ExtResource("faction_identity")
 max_health = 1
 action_options = Array[ExtResource("1_np161")]([SubResource("Resource_kybbh")])
 ship_graphics_scene = ExtResource("5_00tck")

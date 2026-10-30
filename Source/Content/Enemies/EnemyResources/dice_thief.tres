@@ -12,6 +12,7 @@
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="ext_8"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/dice_thief_ship_graphics.tscn" id="ext_9"]
 [ext_resource type="Texture2D" uid="uid://c6yhaeu0wxymd" path="res://Assets/Textures/Enemies/DiceThief/dice_thief_targeting_image.png" id="ext_10"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_pilfer"]
 script = ExtResource("ext_2")
@@ -89,6 +90,7 @@ actions_possible = Array[ExtResource("ext_2")]([SubResource("Resource_getaway_ke
 [resource]
 script = ExtResource("ext_8")
 enemy_name = "Cutpurse"
+faction = ExtResource("faction_identity")
 description = "Pockets the dice you hand it. Hangs around three rounds, then bolts with the haul."
 max_health = 35
 starting_shields = 5

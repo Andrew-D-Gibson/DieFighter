@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_id1ge"]
 [ext_resource type="PackedScene" uid="uid://dueij0vemaxof" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/defender_ship_graphics.tscn" id="6_o11wk"]
 [ext_resource type="Resource" uid="uid://bnbf1kix4d3i" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres" id="new_purge_vents"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_xua28"]
 script = ExtResource("1_6pw6j")
@@ -61,6 +62,7 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("2_62y4q")
 enemy_name = "Bamba Defender"
+faction = ExtResource("faction_identity")
 description = "Gonna defend against ya boi"
 max_health = 20
 starting_shields = 20

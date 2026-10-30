@@ -6,6 +6,10 @@ extends Node2D
 ## friendly). With nothing targeted the tints come off and the computer shows
 ## its own purple.
 ##
+## Above the face sits the ship's faction badge (EnemyResource.faction), so the
+## player reads who a ship is and how it feels about them in one place. A ship
+## with no faction shows no badge.
+##
 ## This used to be a face hung off every ship's health bar. On the computer it
 ## reads once, for the ship the player is about to give a die to, which is
 ## the only one whose mood changes what a die does.
@@ -50,6 +54,7 @@ func show_ship(ship: Enemy) -> void:
 	_shown_ship = ship
 	_shown_attitude = attitude
 
+	%FactionIcon.texture = faction_icon(ship)
 	%BezelTint.modulate = bezel_colour(attitude)
 	%ImageFrameTint.modulate = frame_colour(attitude)
 	%Face.frame = face_frame(attitude)
@@ -60,6 +65,7 @@ func show_ship(ship: Enemy) -> void:
 
 func clear() -> void:
 	_shown_ship = null
+	%FactionIcon.texture = null
 	if _blink_tween:
 		_blink_tween.kill()
 	_blink_tween = null
@@ -73,6 +79,12 @@ static func attitude_of(ship: Enemy) -> Enemy.Attitude:
 	if ship.scenario_state == null:
 		return Enemy.Attitude.AGGRESSIVE
 	return ship.scenario_state.attitude
+
+
+static func faction_icon(ship: Enemy) -> Texture2D:
+	if ship.enemy_resource == null or ship.enemy_resource.faction == null:
+		return null
+	return ship.enemy_resource.faction.icon
 
 
 static func bezel_colour(attitude: Enemy.Attitude) -> Color:

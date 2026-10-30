@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
 [ext_resource type="Texture2D" uid="uid://d1xh70cpc1d0t" path="res://Assets/Textures/Enemies/CivilianTransport/civilian_transport_targeting_image.png" id="tex_4"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -81,6 +82,7 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("script_2")
 enemy_name = "Bounty Runner"
+faction = ExtResource("faction_identity")
 description = "Smuggler hauling something worth more than the ship. Not interested in a fight — interested in leaving."
 max_health = 60
 starting_shields = 15

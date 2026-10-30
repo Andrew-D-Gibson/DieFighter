@@ -7,6 +7,10 @@ extends Resource
 ## Untick for a ship that isn't a foe (a shop, a dock, a transport you
 ## escort), so the main menu's codex doesn't list it among the enemies.
 @export var in_codex: bool = true
+## Which fleet faction built and flies this ship (LORE.md §2). Drives its badge
+## on the targeting computer; who it fights for in an encounter is still the
+## scenario's ship state.
+@export var faction: FactionIdentity
 
 ## How this enemy decides which action pool to draw its six turn slots from
 ## when it has more than one.
