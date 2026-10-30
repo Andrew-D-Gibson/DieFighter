@@ -230,6 +230,14 @@ registration to testing. For how the systems work underneath, see
     queued behind the chain that set it off, and starts with no target if
     that ship has died or fled by then. Text: `[color=yellow]Enemy hits you
     or your shields[/color] -> Deal [color=red]2 damage[/color] to it`.
+  - **Evasion** (`EvasionModifier`, ARCHITECTURE 4.5.1): `ON_PLAYER_EVADED`
+    fires once per enemy hit the engines dodged, with the attacker as the
+    starting target, like `ON_PLAYER_ATTACKED` (which a miss never fires).
+    Text: `[color=yellow]Enemy hit misses you[/color] -> ...` (Afterimage,
+    Slipstream Vane; Feint Cannon banks it in tile data). To raise the
+    chance, `ADD_EVASION` adds the running amount in percentage points until
+    the player's next turn; gate it on `EVASION_BELOW_CAP` so a die isn't
+    wasted at the 50% cap (Jink Thrusters). Write it `(evasion)`.
   - **Family boosts**: `TILE_CONTROL / ADD_FAMILY_BOOST` (`string_param` =
     `red`, `blue`, ...; `range_max` = cap; running amount = step, negative to
     take it back) gives every tile whose art is in that colour's folder +N

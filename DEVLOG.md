@@ -4,6 +4,39 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Engines evade, and four tiles that build on it
+
+- **A charged drive dodges.** Each enemy hit on the player has a 3% chance
+  per point of engine charge to miss outright, up to 50% (a full 3-dice drive
+  is 30%). Charge past the gate adds nothing. FTL's engines-to-evasion,
+  kept quiet for new players: no badge or tutorial step, just a big purple
+  `EVADED!` over the health bar and the Engine Charger when it happens, and
+  the live chance on the Engine Charger's info panel. A miss works like
+  Phased (shields keep every point, no death save, no Spiked Hull), and
+  Phased takes a hit first so a sure miss doesn't waste the roll.
+  `EvasionModifier` rides on every scenario's engine and rolls from a new
+  seeded `EVASION` RNG bucket, so replays dodge the same hits.
+- **New hooks:** `Events.player_evaded` / `ON_PLAYER_EVADED`,
+  `ATTRIBUTE_CHANGE/ADD_EVASION`, the `EVASION_BELOW_CAP` check and the
+  `(evasion)` keyword.
+- **Four tiles** (all offered, each with an upgrade):
+
+| Tile | Colour, rarity | Does | Upgrade |
+|---|---|---|---|
+| Jink Thrusters | Purple, Common | Any die: +4% (evasion) per pip until your next turn. Give die. Refuses a die at the cap | +6% per pip |
+| Afterimage | Blue, Uncommon | Enemy hit misses you: gain 4 shields | 6 shields |
+| Slipstream Vane | Purple, Uncommon | Enemy hit misses you: gain 2 engine charge (+6% evasion) | 3 charge |
+| Feint Cannon | Red, Uncommon | 1 or 2: deal 2 damage to target, +3 per hit evaded this fight | +4 per hit |
+
+  Feint Cannon only takes 1s and 2s so it can't simply outclass Dice Cannon.
+  Art is first-pass, drawn over Arc Tap, Brownout Plating, Counterweight
+  Battery and Leeching Shot frames.
+- **Not done yet:** the AutoPilot doesn't value evasion (its forecast skips
+  `ADD_EVASION` and its threat model doesn't discount hits), so an A/B run
+  would undersell these tiles until it does.
+
+---
+
 ## 2026-10-30 — A narrower shop, and a greener reroll button
 
 - **The die and the Grid Slot share a shelf.** Each had its own column, which

@@ -26,7 +26,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `QuitManager` | `Autoloads/quit_manager.gd` | Graceful application quit. `can_quit()` is false on the web, where the Quit buttons hide |
 | `EffectRegistry` | `Autoloads/effect_registry.gd` | Maps effect categories/subtypes to handler classes |
 | `ContentRegistry` | `Autoloads/content_registry.gd` | Maps stable string IDs (the file name) to `res://` paths for tiles, scenarios and enemies, so saves and the codex's collection survive `.tres` renames/moves; stores IDs in save instead of raw paths. Scans with `Utils.list_resource_paths()` (`ResourceLoader.list_directory()`), which still sees `.tres` names in an export, where `DirAccess` sees `.remap` |
-| `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
+| `RNGManager` | `Autoloads/rng_manager.gd` | Owns all RNG "buckets" (`RUN`, `DICE`, `ENEMY_AI`, `TARGETING`, `REWARDS`, `BACKGROUND`, `COSMETIC`, `EVASION`); keeps gameplay randomness reproducible from a seed, cosmetic free-running; re-seeds on `Events.load_scenario` |
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `CollectionManager` | `Autoloads/collection_manager.gd` | What the player has found across every run, for the codex: tiles they've owned, enemies met/destroyed and region rules/hazards read. Kept in `user://collection.json`, outside the run save (see Codex below) |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Registry of player options (see 7.4): each registered once with its default and how to read and apply its live value, keyed "Section/name" as saved in `user://options_settings.cfg`. Loads and applies them at boot, saves on `Events.save_options_config`, resets them for the menu's Defaults. Owns `PixelPerfectScaler` and `BackgroundFocus`. Also holds the `times_run` counter. Window options (size, monitor, vsync, pixel perfect) aren't registered on the web (`controls_window()`) |
@@ -343,6 +343,40 @@ instead, for a player status that acts there.
 `StatusCatalog`, give it a keyword in `Keywords`, and decide what it does on
 the player (a "(you)" keyword if that reads differently).
 
+### 4.5.1 Evasion
+
+**Location:** `Source/Behavior/Modifiers/EvasionModifier/evasion_modifier.gd`
+
+A charged drive makes the player harder to hit. Each enemy hit on the player
+has `EvasionModifier.chance_percent()` chance to miss: 3% per point of engine
+charge, up to 50%. Charge past the gate (redline) adds nothing.
+`ScenarioManager._load_scenario` puts one on every fresh engine, so it is a
+standing rule rather than something a tile grants, and there is no badge.
+
+- **The roll:** priority 2, behind Phased (1, a sure miss that shouldn't
+  waste a roll) and ahead of the death save (5). Only a `DamageEvent` with an
+  `Enemy` actor, a positive amount and the player among its targets is
+  rolled for. A miss takes the player out of the targets, like Phased, so
+  shields, death saves and `player_attacked` never see it. At 0% nothing is
+  drawn. Rolls come from their own `RNGManager.Bucket.EVASION`, seeded per
+  scenario and checkpointed, so a replay dodges the same hits and a miss never
+  shifts the enemies' own rolls.
+- **Feedback:** a big `EVADED!` callout (`CALLOUT_EVADED`) over the health
+  bar and the Engine Charger tile (`EvasionModifier.engine_display()`: the
+  Outrigger's sail gauge stands in), plus a purple vignette pulse.
+- **Display:** `get_rule_info_text()` adds `INFO_ENGINE_EVASION`, the live
+  chance, to the Engine Charger's info panel. The Outrigger has no charger
+  tile, so its pilots don't see the number. `(evasion)` is a keyword.
+- **Tiles:** `ATTRIBUTE_CHANGE/ADD_EVASION` (`AddEvasionEvent`) adds
+  percentage points (`bonus`) until `enemy_turn_over` or `combat_finished`,
+  still held to the cap; not amplifiable. The `EVASION_BELOW_CAP` activation
+  check refuses a die at the cap. A miss emits `Events.player_evaded(attacker)`,
+  which tiles hear as `ON_PLAYER_EVADED` with the attacker as the starting
+  target. Jink Thrusters, Afterimage, Slipstream Vane and Feint Cannon build
+  on it.
+- **AutoPilot:** the forecast and threat model ignore evasion for now, so the
+  bot neither values Jink Thrusters nor discounts incoming hits by the chance.
+
 ### 4.6 Enemy Turn Flow
 
 1. `Events.player_turn_over` triggers `EnemyManager.run_enemy_turn()`, which
@@ -435,7 +469,7 @@ sound should go is in `SOUND_EFFECTS.md`.
 | `BackgroundHazardResource` | `Source/Resources/BackgroundResources/BackgroundHazards/*.tres` | A timed environmental event that belongs to a background (solar flare, ion storm, asteroid impact, fate rift): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | `TileResource.effect_chain`, `event_responses`, enemy actions, hazards | Ordered list of `EffectData` entries dispatched through `EffectRegistry` |
-| `ActivationResource` | In TileResource.activation_checks | Criteria checks: requires a die / takes no die, specific values, in combat, a ship targeted, engine charged / not charged, can afford N charge, overcharged, Fleet of N or fewer |
+| `ActivationResource` | In TileResource.activation_checks | Criteria checks: requires a die / takes no die, specific values, in combat, a ship targeted, engine charged / not charged, can afford N charge, overcharged, Fleet of N or fewer, evasion below its cap |
 
 ### 5.2 Tile Resource Fields
 
@@ -545,8 +579,8 @@ in flight when the save was taken is never lost to it.
 
 ### Determinism
 
-`RNGManager` reseeds DICE, ENEMY_AI, TARGETING, REWARDS and BACKGROUND from the
-scenario seed mixed with the map slot. Shared ScenarioResources (shops, Fate,
+`RNGManager` reseeds DICE, ENEMY_AI, TARGETING, REWARDS, BACKGROUND and EVASION
+from the scenario seed mixed with the map slot. Shared ScenarioResources (shops, Fate,
 empty) would otherwise share one seed. BACKGROUND is included because a
 background can carry a gameplay rule. Shop prices draw from REWARDS, not RUN.
 
@@ -1962,6 +1996,8 @@ the *table they were drawn from* changes.
 | `player_shields_hit` | Shield damage taken | SFX + small shake |
 | `player_shields_broken` | Shields hit zero (protected → exposed) | Large shake + long cyan vignette |
 | `player_fatal_damage` | Hull reaches 0, before death is declared | Tiles (`ON_PLAYER_FATAL_DAMAGE`, which can save the player) |
+| `player_attacked(attacker)` | An enemy hit aimed at the player landed on shields or hull | Tiles (`ON_PLAYER_ATTACKED`) |
+| `player_evaded(attacker)` | An enemy hit missed because the engines dodged it (`EvasionModifier`) | Tiles (`ON_PLAYER_EVADED`) |
 | `engine_charge_changed` | Engine charge changed | Update engine bar, map unlock indicators |
 
 ### 9.3 Tile Signals
@@ -1978,7 +2014,9 @@ the *table they were drawn from* changes.
 Tiles also respond to `TileEvent.EventType` hooks via `event_responses`:
 `ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`,
 `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_ENGINE_CHARGE_DRAINED`,
-`ON_ADJACENT_TILE_ACTIVATED`, `ON_SURROUNDING_TILE_ACTIVATED`, `ON_PLAYER_FATAL_DAMAGE`. Most of these enable
+`ON_ADJACENT_TILE_ACTIVATED`, `ON_SURROUNDING_TILE_ACTIVATED`, `ON_PLAYER_ATTACKED`,
+`ON_PLAYER_EVADED` (an enemy hit missed because the engines dodged it),
+`ON_PLAYER_FATAL_DAMAGE`. Most of these enable
 tiles that take **no dice at all** and pay out reactively — they cost a grid
 cell instead of a die. `TileEvent.EventType` is stored as a raw int, so append
 new values; `ON_PLAYER_FATAL_DAMAGE` is pinned at `= 100` to leave room.
