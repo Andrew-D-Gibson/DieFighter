@@ -110,7 +110,8 @@ registration to testing. For how the systems work underneath, see
   subfolder.
 
 **Registration:** none. Any `TileResource` in that folder is automatically:
-- in the reward and shop pools (`RewardManager`), weighted by `rarity`;
+- in the reward and shop pools (`RewardManager`), weighted by `rarity`,
+  unless `offered_as_reward` is off (upgrades, ship-only and benched tiles);
 - saved by its filename id (`ContentRegistry`). Filenames must be unique, and
   renaming one breaks existing saves that hold it.
 
@@ -232,21 +233,35 @@ registration to testing. For how the systems work underneath, see
     it on `ON_TURN_START` and loses it on `ON_PLAYER_HEALTH_HIT`.
 - **`dragging_allowed`, `max_dice_in_queue`**: rarely touched.
 
-**Upgrades.** A tile can have an upgraded version, which the player gets by
-dropping a second copy of the tile on the first.
-- Make `<name>_plus.tres` beside the tile: a copy of its `.tres` with the
-  header `uid` removed (the editor stamps a new one), `is_upgrade = true`,
+**Upgrades.** Every tile offered as a reward has an upgraded version, which
+the player gets by dropping a second copy of the tile on the first. A new
+offered tile needs one too. Tiles that are never offered (ship-only tiles,
+benched tiles) get none, because no second copy can turn up.
+- Make `<name>_plus.tres` beside the tile: a copy of its `.tres` with a
+  fresh header `uid` (duplicate it in the FileSystem dock, or remove the uid
+  and save it once in the editor before committing), `is_upgrade = true`,
   `offered_as_reward = false`, the name with a `+` (`Dice Cannon+`) and the
   description updated. Then set the base tile's `upgraded_version` to it.
-- Upgrade levers, cheapest first: **numbers** (an amount, or an `ADD` after
-  `SET_TO_DIE_VALUE`) reuse the base art; **uses** need a new light sheet
-  (`<name>_plus-Sheet.png`, frame 0 of the base sheet through
-  `add_use_lights.lua`, still 3 at most, and relays stay at 1-2);
-  **looser activation** needs a new lower panel showing the new faces
-  (Shield Burst+ borrows Keel Plating's 3+4 slots).
-- No art for the shimmer: every upgraded tile gets it from `tile.gdshader`.
+  Every tile file carries a uid, and every reference to one names it as well
+  as the path. A file without one gets a uid stamped into some unrelated
+  diff the next time the editor opens it.
+- Upgrade levers, cheapest first:
+  - **Numbers** (an amount, or an `ADD` after `SET_TO_DIE_VALUE`) and
+    **cheaper costs** (less charge spent) reuse the base art.
+  - **Looser conditions** that aren't die faces (Lone Wolf Lance+ at 3 or
+    fewer dice) and **new behaviour** (Countermeasures+ also gives shields)
+    reuse the base art too.
+  - **Uses** need a new light sheet: `<name>_plus-Sheet.png`, from frame 0
+    of the base sheet through `add_use_lights.lua`. Uses still top out at 3,
+    and relays stay at 1-2.
+  - **Looser faces** need a new lower panel showing the new faces
+    (Shield Burst+ borrows Keel Plating's 3+4 slots).
+- No art for the upgraded look: `TileUpgradeLook` gives every upgraded tile
+  the shimmer (`tile.gdshader`) and sparks in its family's colour.
 - `test_tile_upgrades.gd` checks each upgrade is marked, held out of offers,
-  named apart, and has one frame per light.
+  named apart, goes no further, and has one frame per light.
+  `test_tile_upgrade_chains.gd` plays one upgrade of each kind whole. Add a
+  case there when an upgrade changes what the chain does, not just a number.
 
 **Countdown tiles** (`(countdown) N`, Pulse Repeater is the reference) save
 up dice for a payout. Set `countdown` = N on the resource. Dice count it
@@ -1005,8 +1020,9 @@ AudioStreamPlayer.
    `test_ship_cockpits.gd` holds every cockpit to this.
 7. Write a two-line card `description` in tile-text style.
 8. Tiles only the ship should see live in `TileResources/` like any other (so
-   saves can name them) with `offered_as_reward = false`. The codex still lists
-   them, because a ship's starting kit is read from `ShipCatalog`.
+   saves can name them) with `offered_as_reward = false` and no upgrade. The
+   codex still lists them, because a ship's starting kit is read from
+   `ShipCatalog`.
 9. Check balance against the Die Fighter on the same seeds:
    `tools/autoplay.sh --seed 1 --runs 24 --policy smart -- --ship=<id>`.
    Teach the bot the ship's rule if it plays it badly.

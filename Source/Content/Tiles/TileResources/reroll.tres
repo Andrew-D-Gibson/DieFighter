@@ -7,23 +7,11 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="6_mwp2x"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="7_8dutl"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="7_i7nom"]
-[ext_resource type="Resource" uid="uid://c0gbpe4rg8tk" path="res://Source/Content/Tiles/TileResources/reroll_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://vqvdj8fkly8j" path="res://Source/Content/Tiles/TileResources/reroll_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_ecbfa"]
 script = ExtResource("1_cuubr")
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_1kud3"]
-script = ExtResource("6_mwp2x")
-category = 3
-subtype = 1
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_qtm42"]
-script = ExtResource("6_mwp2x")
-category = 3
-subtype = 4
-metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
 script = ExtResource("6_mwp2x")
@@ -38,6 +26,18 @@ category = 4
 subtype = 15
 amount = 10
 color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_1kud3"]
+script = ExtResource("6_mwp2x")
+category = 3
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_qtm42"]
+script = ExtResource("6_mwp2x")
+category = 3
+subtype = 4
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_f3imi"]
@@ -76,9 +76,9 @@ animations = [{
 
 [resource]
 script = ExtResource("3_1nta3")
-upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Re-Roll[/color]"
 description = "[color=yellow]Any die[/color] -> [color=green]Re-roll[/color] die"
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa")])

@@ -18,16 +18,19 @@ const _GRAB_INFO_TEXTURE: Texture2D = preload("res://Assets/Textures/UI/MouseCur
 ## The info cursor is drawn up and left of the pointer, so it sits in the
 ## circle.
 const _INFO_OFFSET: Vector2 = Vector2(-3, -3)
-## The fist (the top-left 13x12 of both grab textures) is centred on the
-## pointer, as the held thing is, so the hand reads as gripping where it points.
-const _GRAB_OFFSET: Vector2 = Vector2(-6, -6)
+## The fist (the top-left 13x12 of both grab textures) sits a little down and
+## right of the pointer: near enough to read as gripping where it points, far
+## enough to leave most of the held face (a die's value) in view.
+const _GRAB_OFFSET: Vector2 = Vector2(-2, -2)
+## The fist is see-through so what shows through it is still the held face.
+const _GRAB_ALPHA: float = 0.6
 
 ## How many click-mode pick-ups each launch get the hint line. Enough to learn
 ## both clicks, few enough not to nag.
 const CARRY_HINT_PICKUPS: int = 3
 ## Where the hint line starts, right of the pointer and clear of the fist and
 ## its badge, in cursor pixels. It flips to the left near the screen's edge.
-const _HINT_GAP: Vector2 = Vector2(12, -6)
+const _HINT_GAP: Vector2 = Vector2(16, -2)
 ## How far left of the pointer a flipped hint line ends: clear of the held
 ## thing, a lifted die or tile being about this wide either side.
 const _HINT_FLIPPED_GAP: float = 10.0
@@ -77,7 +80,7 @@ func _update_look() -> void:
 
 	if hand:
 		var on_info_spot: bool = hand.is_over_info_spot()
-		_wear(_GRAB_INFO_TEXTURE if on_info_spot else _GRAB_TEXTURE, _GRAB_OFFSET)
+		_wear(_GRAB_INFO_TEXTURE if on_info_spot else _GRAB_TEXTURE, _GRAB_OFFSET, _GRAB_ALPHA)
 		if _hinting:
 			_show_hint(tr(&"CURSOR_HINT_CLICK_FOR_INFO") if on_info_spot else tr(&"CURSOR_HINT_CLICK_TO_PLACE"))
 	elif _hover_info:
@@ -96,9 +99,11 @@ func _on_hand_changed(hand: Draggable) -> void:
 		_hinting = true
 
 
-func _wear(cursor_texture: Texture2D, cursor_offset: Vector2) -> void:
+func _wear(cursor_texture: Texture2D, cursor_offset: Vector2, alpha: float = 1.0) -> void:
 	texture = cursor_texture
 	offset = cursor_offset
+	# self_modulate, so the hint line (a child) stays solid.
+	self_modulate.a = alpha
 
 
 func _show_hint(text: String) -> void:

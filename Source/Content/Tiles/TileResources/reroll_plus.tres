@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://c0gbpe4rg8tk"]
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://vqvdj8fkly8j"]
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_cuubr"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="3_1nta3"]
@@ -11,18 +11,6 @@
 [sub_resource type="Resource" id="Resource_ecbfa"]
 script = ExtResource("1_cuubr")
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
-
-[sub_resource type="Resource" id="Resource_1kud3"]
-script = ExtResource("6_mwp2x")
-category = 3
-subtype = 1
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_qtm42"]
-script = ExtResource("6_mwp2x")
-category = 3
-subtype = 4
-metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
 script = ExtResource("6_mwp2x")
@@ -37,6 +25,18 @@ category = 4
 subtype = 15
 amount = 10
 color = Color(0.8078, 0.9412, 0.9451, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_1kud3"]
+script = ExtResource("6_mwp2x")
+category = 3
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_qtm42"]
+script = ExtResource("6_mwp2x")
+category = 3
+subtype = 4
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_f3imi"]
@@ -82,10 +82,10 @@ animations = [{
 
 [resource]
 script = ExtResource("3_1nta3")
-offered_as_reward = false
-is_upgrade = true
 tile_name = "[color=green]Re-Roll+[/color]"
 description = "[color=yellow]Any die[/color] -> [color=green]Re-roll[/color] die"
+offered_as_reward = false
+is_upgrade = true
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 3
 activation_checks = Array[ExtResource("1_cuubr")]([SubResource("Resource_ecbfa")])
