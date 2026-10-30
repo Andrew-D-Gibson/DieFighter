@@ -372,7 +372,7 @@ position = Vector2(216, 12)
 
 [node name="OverheadConsole" parent="Systems/Player" unique_id=456217975 instance=ExtResource("15_cshgf")]
 z_index = 9
-position = Vector2(-39, -120)
+position = Vector2(-39, -125)
 
 [node name="MainViewer" parent="Systems/Player" unique_id=537874798 instance=ExtResource("19_okrb4")]
 position = Vector2(96, 7)

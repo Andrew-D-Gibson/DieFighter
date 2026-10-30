@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://pt7daun04sgd"]
 
 [ext_resource type="Script" uid="uid://lxeyxahlkpg5" path="res://Source/Systems/Game/OverheadConsole/MoneyIndicator/money_indicator.gd" id="1_837oe"]
+[ext_resource type="Texture2D" uid="uid://b41a3gdbfjgrk" path="res://Assets/Textures/Money/money_symbol.png" id="2_coin"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qyfr0"]
 size = Vector2(38, 12)
@@ -9,6 +10,10 @@ size = Vector2(38, 12)
 script = ExtResource("1_837oe")
 money_label = NodePath("MoneyLabel")
 money_change_label = NodePath("MoneyChangeLabel")
+
+[node name="Coin" type="Sprite2D" parent="."]
+position = Vector2(-12, 0)
+texture = ExtResource("2_coin")
 
 [node name="MoneyLabel" type="RichTextLabel" parent="." unique_id=465731418]
 offset_left = -8.0

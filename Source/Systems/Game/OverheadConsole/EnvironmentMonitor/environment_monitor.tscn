@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://hts4ayfgd5jk" path="res://Source/Systems/Components/Clickable/clickable.gd" id="5_click"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_housing"]
-size = Vector2(26, 19)
+size = Vector2(30, 20)
 
 [node name="EnvironmentMonitor" type="Node2D"]
 script = ExtResource("1_script")
@@ -21,17 +21,17 @@ unique_name_in_owner = true
 [node name="Body" type="Sprite2D" parent="Arm/Face"]
 texture = ExtResource("2_body")
 centered = false
-offset = Vector2(-13, 0)
+offset = Vector2(-15, 0)
 
 [node name="Lamp" type="Sprite2D" parent="Arm/Face"]
 unique_name_in_owner = true
 texture = ExtResource("3_lamp")
 centered = false
-offset = Vector2(-13, 0)
+offset = Vector2(-15, 0)
 
 [node name="Glyph" type="Sprite2D" parent="Arm/Face"]
 unique_name_in_owner = true
-position = Vector2(0, 12)
+position = Vector2(0, 13)
 texture = ExtResource("4_glyph")
 
 [node name="Clickable" type="Area2D" parent="Arm"]
@@ -41,7 +41,7 @@ script = ExtResource("5_click")
 hover_for_info = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Arm/Clickable"]
-position = Vector2(0, 12.5)
+position = Vector2(0, 13)
 shape = SubResource("RectangleShape2D_housing")
 
 [connection signal="input_event" from="Arm/Clickable" to="Arm/Clickable" method="_on_input_event"]

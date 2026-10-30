@@ -13,7 +13,7 @@ unique_name_in_owner = true
 
 [node name="EnvironmentMonitor" parent="Swing" instance=ExtResource("3_envmon")]
 unique_name_in_owner = true
-position = Vector2(0, 31)
+position = Vector2(0, 29)
 
 [node name="Body" type="Sprite2D" parent="Swing"]
 texture = ExtResource("2_body")

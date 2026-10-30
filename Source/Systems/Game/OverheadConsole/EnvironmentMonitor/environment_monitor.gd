@@ -53,9 +53,9 @@ const _CALLOUT_OFFSET: Vector2 = Vector2(18, 0)
 const _COUNTDOWN_FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 ## Where the glyph sits on the screen, alone or sharing it with a countdown.
-const _GLYPH_CENTRED: Vector2 = Vector2(0, 12)
-const _GLYPH_BESIDE_COUNTDOWN: Vector2 = Vector2(-4, 12)
-const _COUNTDOWN_POSITION: Vector2 = Vector2(5, 12)
+const _GLYPH_CENTRED: Vector2 = Vector2(0, 13)
+const _GLYPH_BESIDE_COUNTDOWN: Vector2 = Vector2(-4, 13)
+const _COUNTDOWN_POSITION: Vector2 = Vector2(5, 13)
 
 ## What the flap asks the console for while it has something to show.
 const _CONSOLE_REQUEST: StringName = &"environment"
