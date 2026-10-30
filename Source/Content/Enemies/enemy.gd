@@ -13,6 +13,14 @@ const _SILENCED_INFO: Texture2D = preload("res://Assets/Textures/Enemies/IntentI
 
 ## How long the finishing blow holds the frame, in real time.
 const _KILL_HOLD_MSEC: int = 340
+
+## PLAYTEST (2026-10-30): every enemy spawns with about 2/3 of its authored
+## hull and a quarter of its authored shields, to try a faster game without
+## re-authoring every EnemyResource. Set both back to 1.0 to undo. The codex
+## still lists the authored numbers.
+const PLAYTEST_HULL_SCALE: float = 2.0 / 3.0
+const PLAYTEST_SHIELD_SCALE: float = 0.25
+
 ## How long the kill's white flash takes to fade once time resumes.
 const _KILL_FLASH_FADE_SECONDS: float = 0.3
 ## How close to the middle of the screen a ship has to be to pick the side
@@ -392,9 +400,9 @@ func _update_health_from_resource() -> void:
 	if Globals.state_manager:
 		scale_factor = Globals.state_manager.get_difficulty_multiplier()
 
-	health.max_health = ceili(enemy_resource.max_health * scale_factor)
+	health.max_health = ceili(enemy_resource.max_health * PLAYTEST_HULL_SCALE * scale_factor)
 	health.health = starting_hull(health.max_health, starting_health_fraction)
-	health.starting_shields = ceili(enemy_resource.starting_shields * scale_factor)
+	health.starting_shields = ceili(enemy_resource.starting_shields * PLAYTEST_SHIELD_SCALE * scale_factor)
 	health.shields = health.starting_shields
 	graphics_manager.track_hull_damage(health)
 
