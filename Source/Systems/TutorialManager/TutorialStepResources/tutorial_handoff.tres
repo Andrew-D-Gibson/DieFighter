@@ -1,11 +1,13 @@
-[gd_resource type="Resource" script_class="TutorialStep" format=3]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://cktt10gvd1eve"]
 
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_q8nxd"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/TutorialManager/Highlights/highlight_targeting_computer.png" id="highlight"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_wsy4v"]
+[ext_resource type="Texture2D" uid="uid://dxw31sp1lx64m" path="res://Assets/Textures/TutorialManager/Highlights/highlight_targeting_computer.png" id="highlight"]
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) a ship, or the arrows (targeting_arrows), to switch your [color=purple]target[/color] (target_indicator): it gets your used dice."
+tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) a ship or the arrows (targeting_arrows), to switch your [color=purple]target[/color] (target_indicator): it gets your used dice."
 text_position = Vector2(160, 120)
 time_delay = 0.5
 open_on_signal = 16
