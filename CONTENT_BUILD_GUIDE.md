@@ -1026,8 +1026,10 @@ AudioStreamPlayer.
      highlight sits on it, and leave the systems panel's area clear: anything
      opaque under it flies apart as debris on death.
    - `HudSlots`: a `Marker2D` per instrument the ship moves, named after its
-     group (`hud_hull_gauge`, `hud_targeting_computer`, `hud_status_bar`;
-     `Cockpit.HUD_GROUPS`). An instrument with no slot stays put.
+     group (`hud_hull_gauge`, `hud_targeting_computer`, `hud_status_bar`,
+     `hud_overhead_console`; `Cockpit.HUD_GROUPS`). An instrument with no slot
+     stays put. The overhead console's marker is its ceiling mount, just above
+     the top edge of the screen: it hangs down about 46 px from there.
    - A `CockpitDamage` with its own `CockpitDamageSite`s (full-screen
      overlays: GLASS cracks in the open view, FRAME splits on the shell, in
      the order they open) plus `GlassShards` and `Destruction` children.

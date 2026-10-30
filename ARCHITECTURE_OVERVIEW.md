@@ -54,7 +54,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
 | `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. Keywords in it are hoverable and pop up their rule. While open it consumes Esc (`PauseMenu` action) to close itself, so the pause menu doesn't open |
-| `MoneyIndicator` | `Systems/Player/MoneyIndicator` | Displays current money with spawn particles |
+| `OverheadConsole` | `Systems/Player/OverheadConsole` | A display hanging from the canopy ceiling in the top-left. It waits out of sight and drops down while any readout holds it there (`request_down(reason, wanted)`): the `MoneyIndicator` credit readout in its case (balance changes, payout/loss coins in flight, an open shop or repair station; it goes back up `hold_seconds` after the count settles) and the `EnvironmentMonitor` flap under it (a region rule or hazard). Coins aim at `MoneyIndicator.coin_target()`, its resting place, so they meet it even while it's still dropping |
 | `PlayerHealthBar` | `Systems/Player/PlayerHealthBar` | HP/shields UI with reveal animations |
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
 | `PauseMenu` | `PauseLayer/PauseMenu` | Pause state toggle, save/quit, option screen |
@@ -1225,9 +1225,11 @@ unannounced board-wide flare is a dice roll; one the player watched approach
 for two turns while deciding whether to spend on shields is a decision. Same
 rule the enemy intent telegraph follows. Three things carry it:
 
-- **`EnvironmentMonitor`** swings up on arrival in any region with a rule or
-  a hazard, fight or not, and stays until the jump out; nothing shows in
-  hyperspace. A hazard shows its icon alone outside a fight, and with the
+- **`EnvironmentMonitor`**, the `OverheadConsole`'s hinged flap, flips down
+  under the credit readout on arrival in any region with a rule or a hazard,
+  fight or not (bringing the console down first if it's up), and stays until
+  the jump out; nothing shows in hyperspace. Its screen's bezel is the lamp.
+  Knocks swing the whole console on its rod. A hazard shows its icon alone outside a fight, and with the
   turns left beside it once `hazard_armed` starts the countdown. Every tick
   down flashes the unit and pops the digit; at one turn left
   the digit goes red and the lamp keeps blinking even once read; when it fires
@@ -1235,7 +1237,7 @@ rule the enemy intent telegraph follows. Three things carry it:
   it explains the hazard and its interval. Each fresh rule or hazard also
   spawns a `RegionAlert` card (unless `Globals.show_region_alerts`, Options >
   Game > Region Alerts, is off). On arrival it is the first beat of the
-  `ArrivalIntro`: once the monitor has swung up, the card unfolds out of its
+  `ArrivalIntro`: once the flap is down, the card unfolds out of its
   screen into the empty sky, the cockpit dims slightly, and it holds ~2 s (a
   click anywhere or its Close button skips it; the first time the player ever
   reads a given rule or hazard, recorded by `CollectionManager.record_region`
@@ -1446,7 +1448,7 @@ Main (Node2D)
 │   │   ├── DiceQueue
 │   │   ├── Health (Health.gd)
 │   │   ├── TargetingComputer
-│   │   ├── MoneyIndicator
+│   │   ├── OverheadConsole (MoneyIndicator + EnvironmentMonitor flap)
 │   │   └── MainViewer (Systems map toggle)
 │   │       ├── TileGrid
 │   │       └── Map

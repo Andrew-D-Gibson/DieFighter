@@ -118,7 +118,8 @@ at once, with no per-tile authoring.
 | Sector advanced | `Events.sector_advanced` | Bigger arrival sting |
 | Victory / game over | `GameOver` | Fanfare / defeat drone |
 | Info panel open / close | `InfoShower` | Paper/hologram swish |
-| Environment monitor swings up out of the targeting computer | `EnvironmentMonitor._deploy` | Mechanical clunk, then a warning chime |
+| Overhead console drops out of the ceiling / goes back up | `OverheadConsole._drop` / `_rise` | Servo whine and a soft clunk as it lands; the reverse going up |
+| Environment flap flips down under the credit readout | `EnvironmentMonitor._deploy` | Hinge clack, then a warning chime |
 
 ## Tiles
 

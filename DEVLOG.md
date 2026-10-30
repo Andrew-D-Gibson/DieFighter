@@ -39,6 +39,27 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — The credit counter and environment monitor become one overhead console
+
+- **The credit counter is part of the cockpit now.** It was a flat HUD strip
+  in the top-left corner. Now it's a readout in a navy case hanging from the
+  canopy ceiling on a rod, opposite the hanging dice. It waits up in the
+  ceiling and drops in, swinging a little as it lands, whenever credits move:
+  a balance change, coins in the air, or a shop or the repair station open.
+  It goes back up about 2.5 s after the count settles. Each coin that lands
+  gives it a small knock.
+- **The environment monitor moved onto it.** It used to swing up out of the
+  targeting computer, the busiest corner of the screen. Now it's a hinged
+  flap that flips down under the credit readout whenever a region has a rule
+  or hazard, and brings the console down with it. Its screen's bezel is the
+  lamp: it blinks in the rule's colour until read and goes red when a hazard
+  is imminent. Ticks and triggers knock the whole console swinging on its
+  rod. The region card still unfolds out of its screen and folds back in.
+- Coins aim at where the readout will hang, so a payout never misses a
+  console that's still dropping in.
+
+---
+
 ## 2026-10-30 — Tutorial: the target arrows swing out on cue
 
 - **The last step is about switching targets, and the player watches the
