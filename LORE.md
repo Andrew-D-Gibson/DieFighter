@@ -84,6 +84,9 @@ in pieces across many runs, what's on the other side.
 
 Each choice you make favours someone and hurts someone else.
 
+How each faction *looks* (colours, shapes, symmetry, and the badge on the targeting
+computer) is in §12.
+
 ---
 
 ## 3. The Fleet's Geography
@@ -301,6 +304,9 @@ Per faction:
 
 ## 10. Mapping to the Current Code
 
+- Each ship's lore faction is `EnemyResource.faction`, a `FactionIdentity`
+  (`Source/Content/Factions/`) holding its name and badge. That is who *built and flies*
+  the ship; who it fights for in an encounter is still the scenario's ship state below.
 - `ScenarioManager.Faction` is currently `PIRATE / CIVILIAN / BOSS`. It would grow to
   something like `REARGUARD / UNDERTOW / CARAVAN / INBOUND / SPILLED` (with `BOSS`
   possibly folded into the boss's own faction).
@@ -332,3 +338,70 @@ Per faction:
   explain why dice matter in-world, and could be who the Spilled once were.
 - **Throw count:** the menu counts runs as "Throw #37" rather than "Run 37", hinting
   that every run is the universe being re-rolled.
+
+---
+
+## 12. Visual Language
+
+A ship should say which faction it belongs to before the player reads a word. Each
+faction owns **one accent colour, one shape vocabulary and one symmetry rule**, and its
+badge on the targeting computer is drawn from the same three things.
+
+### Shared rules
+
+- Ships face down at the player, engines at the top. Outlines are `#040217`, colours come
+  only from the approved palette (`Art/_Palettes/aseprite_palette_final.aseprite`).
+- Hulls are machined grey by default. The faction's accent goes on **lights, stripes,
+  windows and emitters**, a small share of the pixels, not the whole hull. The two
+  exceptions are deliberate: the Undertow's hulls are darker, and the Spilled's aren't
+  grey at all.
+- The 16×16 targeting portrait is a pale `#CEF0F1` silhouette; accent features (stripes,
+  windows, slits, voids) are cut out of it as the interior detail.
+- A ship's `cloak_main_color` / `cloak_bg_color` are its faction's light and middle
+  accent, so a cloaked ship still shimmers in its own colour.
+
+### The five factions
+
+| | Rearguard | Undertow | Caravan | Inbound | Spilled |
+|---|---|---|---|---|---|
+| **Idea** | Hold the line | Pick off the slow | Keep everyone together | Fly toward the end | Came back wrong |
+| **Accent** | Regulation blue `#43A6FC` `#3789CC` `#2C71AA` | Venom red `#D03656` `#90263C`, rust `#563226` | Lantern green `#7ABD33` `#659C2A`, warm window orange `#F29C5D`, cargo yellow `#CCB550` | Pilgrim gold `#EED35D` `#CCB550` `#98873B`, bleached white `#C4C1BC` `#CEF0F1` | Fate purple `#C552F1` `#A846CE` `#80359D`, void `#000000`, flesh navy `#463C91` |
+| **Hull** | Light machined grey (`#C4C1BC`/`#A5A29D`), clean and even | Dark salvage (`#63605C`/`#343330`) with odd lighter plates bolted on | Mid grey, soft and rounded | Bleached, almost white; dark only at the tip | No grey, or a stolen grey scrap at most |
+| **Shapes** | Chevrons and wedges pointing at the target; a horizontal band across the hull (*the line*); square shoulders; stacked armour plates | Hooks, barbs, cranes and rams; swept, jagged edges; one oversized part | Circles, capsules and pods strung together; wide and low; rows of lit windows | Rings and halos around a single tall spine; thin spokes; a point aimed down, at Fate | Voids punched through the body; tendrils; ragged edges with no panel lines |
+| **Symmetry** | Strict mirror symmetry. Nothing out of place | Asymmetric on purpose: mismatched engines, one side bigger | Mirror symmetry, but soft, never pointed | Radial: the ring is the same all the way round | *Almost* mirrored, then skewed a pixel or two |
+| **Badge** | A bar over a chevron (the line) | A barbed hook | A round pod with a row of lit windows | A halo over a descending spine | A void with a ragged, tendrilled rim |
+
+The badge sits top-left of the targeting computer's screen, above the attitude face, so
+the player reads *who* a ship is and *how it feels about them* in one glance. Its colour
+is the faction's, independent of the attitude tint; the overlap is intentional (the
+Undertow's red badge usually sits in a hostile red frame, the Caravan's green one in a
+friendly green frame), so a red badge in a green frame is itself news.
+
+### Ships by faction
+
+| Faction | Built to the language | Older ships (assigned, predate it) |
+|---|---|---|
+| **Rearguard** | **Picket** (line ship: Aegis Link on an ally, light fire), **Conscriptor** (draft ship: Impound + Lockout) | Sector Warden, Tithe Collector, Bamba Defender, Disabler, Siege Mortar, Cannon Drone, Ion Lance, the Bastion |
+| **Undertow** | **Gaff** (crane-and-hook scavenger: Pilfer + Siphon), **Wrecker** (ram-jawed breaker: attack, Incendiary, Grid Quake) | Venom Fighter/Raider, Cutpurse, Bounty Runner, Carrier, Interceptor |
+| **Caravan** | **Hauler** (three-pod freighter: shields, then flees), **Claims Adjuster** (Compact enforcer: attack + Lockout as the lien) | Shop, Repair Dock, Civilian Transport, Field Tender, Arc Dynamo |
+| **Inbound** | **Pilgrim** (haloed skiff: Siphon + Relay + Scrambler), **Zealot** (ring-and-lance: big hits, Overloads into its own hull) | none yet |
+| **Spilled** | **Fate Wisp** (void with legs: Scrambler + Siphon), **Fate Shroud** (manta of voids: attack, Lockout, Target Lock) | Fate Attacker, Husk, Leech, Maw |
+
+Encounters for the new pairs: `COMBAT_PicketLine`, `COMBAT_Wreckers`,
+`COMBAT_LienCollection`, `COMBAT_Pilgrimage`, and the Fate variant `FATE_Shroud`.
+
+### Retrofit candidates
+
+Older ships were drawn before this language and some disagree with it. None of these are
+changed yet; each is a small palette swap or detail pass if wanted:
+
+- **Rearguard in red:** the Sector Warden and Tithe Collector run red lights, and the
+  Siege Mortar orange. Blue would claim them for the Rearguard.
+- **Undertow off-colour:** the Cutpurse's accent is purple (reads as Spilled), and the
+  Carrier and Interceptor are orange. Their hulls are also the clean light grey of the
+  Rearguard rather than dark salvage.
+- **Caravan:** the Arc Dynamo's furnaces are orange; a green running-light pass would tie
+  it to the Belly.
+- **Symmetry:** most older Undertow hulls are mirror-symmetric. An asymmetric patch,
+  a mismatched engine or a single hook, would be enough.
+

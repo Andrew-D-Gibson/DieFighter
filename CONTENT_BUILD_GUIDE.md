@@ -408,6 +408,8 @@ value before its STREAM.
   - Hull sprite: ~32×32 (wider for capital ships).
   - `<name>_targeting_image.png`: 16×16. It is also the enemy's portrait in
     the main menu's codex, drawn grey until the player meets the ship.
+  - Draw both to the ship's faction's visual language (`LORE.md` §12): its
+    accent colour, shapes and symmetry rule.
 - Ship graphics scene: `Source/Content/Enemies/EnemyShipGraphicScenes/<name>_ship_graphics.tscn`.
   Copy `attacker_ship_graphics.tscn`.
   - The root **must** be a `Sprite2D` whose material is a
@@ -419,6 +421,9 @@ value before its STREAM.
 
 **Fields**
 - `enemy_name`, `description`.
+- `faction`: the fleet faction that built the ship, one of the
+  `FactionIdentity` resources in `Source/Content/Factions/`. It puts the
+  faction's badge on the targeting computer. A variant (`raider.tres`) copies it.
 - `in_codex`: untick for a ship that isn't a foe (the shop, the repair dock,
   the civilian transport), so the codex leaves it out of its enemy list.
 - `max_health`, `starting_shields`. Both are scaled +35% per sector. Size
@@ -486,7 +491,8 @@ dealt into sector 1, and neither is any encounter it starts in
 (`EnemyResource.earliest_sector()`, `ScenarioResource.allowed_in_sector()`).
 Read off the actions, nothing to set; `test_sector_generation.gd` checks it.
 
-**Faction** isn't on the enemy; it's on the scenario's ship state (§4). Who
+**Which side a ship fights on** isn't on the enemy (its `faction` is only
+who built it); it's on the scenario's ship state (§4). Who
 allies with whom, and who raids whom, is `FactionRelations`
 (`Source/Systems/Game/ScenarioManager/faction_relations.gd`). Behaviour that
 only makes sense in some encounters, like raiding, should go on a variant
