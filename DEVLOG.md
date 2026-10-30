@@ -4,6 +4,30 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Faction encounters
+
+Ten encounters, two per fleet faction from `LORE.md`, built on the new faction
+ships. Details and authoring notes in `Planning Documents/FACTION_SCENARIOS.md`.
+
+- **Each one turns on a single choice made with the game's own verbs**: who
+  you shoot, who you hand dice to, the pick or the money, staying or jumping.
+  Kindness always pays more; cruelty is quicker or safer.
+- **Rearguard:** *Deniable Assets* (a Conscriptor takes hush money to look
+  away from a Gaff robbing a Hauler) and *The Last Picket* (give loyal Pickets
+  your dice and they fire on the Spilled; if they live, they fill your drive).
+- **Undertow:** *The Straggler* (strip a dying Hauler with a Wrecker, or
+  defend it) and the *Wake Riders* elite.
+- **Caravan:** *Convoy* (every Hauler you keep alive patches you) and *Cut
+  Loose* (the Compact rules the broken tow must be cut).
+- **Inbound:** *The Pilgrim* (a die from someone flying into the hole) and
+  *The Pact* (a rare tile for 12 hull, said up front).
+- **Spilled:** *Signal* (a Wisp gives up one of three lore fragments) and
+  *What Came Back* (a Shroud returns a Hauler that fell in).
+- **Taking a die or grid slot from an offer** now counts as taking the pick,
+  so encounters that react to their cargo being taken (Mayday too) hear it.
+
+---
+
 ## 2026-10-29 — Pixel-perfect fixed, options menu polish
 
 - **Pixel Perfect no longer breaks the picture.** It used to show more of
