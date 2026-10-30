@@ -44,6 +44,13 @@ const _LEFT_BEHIND_SCALE: float = 0.45
 const _LEFT_BEHIND_PARALLAX: int = 1
 ## Fall speed, in pixels a second, when there's no background to match.
 const _LEFT_BEHIND_FALLBACK_SPEED: float = 60.0
+## The z an offer left behind drops to, absolute rather than on top of the
+## RewardManager's. On offer it draws over everything; falling off the bottom
+## of the screen it has to pass behind the cockpit walls (z -2), like the
+## ships it falls with (EnemyManager.jump_z_index). Its dice and money sit 10
+## above the offer, so this leaves them level with the ships, and the offer
+## itself still over the jump's streaks (z -18).
+const _LEFT_BEHIND_Z: int = -15
 
 ## Set once the offer is going: a choice was taken, or the player jumped away
 ## with it still up. The choices can no longer be taken.
@@ -351,6 +358,8 @@ func _dismiss() -> void:
 		reward.draggable.set_process(false)
 
 	_falling_behind = true
+	z_as_relative = false
+	z_index = _LEFT_BEHIND_Z
 	set_process(true)
 	var tween: Tween = create_tween().set_parallel()
 	tween.tween_property(self, "scale", Vector2.ONE * _LEFT_BEHIND_SCALE, _LEFT_BEHIND_TIME) \

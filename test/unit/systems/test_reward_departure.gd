@@ -76,3 +76,14 @@ func test_an_offer_still_on_its_way_just_goes() -> void:
 	offer.items = [{"dice": true}]
 	offer._dismiss()
 	assert_true(offer.is_queued_for_deletion(), "nothing on screen to animate")
+
+
+## On offer it draws over everything; falling off the bottom of the screen it
+## has to pass behind the cockpit walls, choices and all, like the ships.
+func test_an_offer_left_behind_drops_behind_the_cockpit() -> void:
+	var offer: Reward = _offer()
+	offer._dismiss()
+	assert_false(offer.z_as_relative, "its own z, not on top of the RewardManager's")
+	var walls_z: int = -2
+	for choice: Node2D in offer.rewards:
+		assert_lt(offer.z_index + choice.z_index, walls_z, "its choices pass behind the walls too")
