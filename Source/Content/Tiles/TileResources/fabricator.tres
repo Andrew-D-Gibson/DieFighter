@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" uid="uid://p3aot3sjtsfi" path="res://Assets/Textures/Tiles/GreenTiles/fabricator.png" id="tex"]
-[ext_resource type="Resource" uid="uid://t2wxp8eykb68r" path="res://Source/Content/Tiles/TileResources/fabricator_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://qvlrxspqbtgx" path="res://Source/Content/Tiles/TileResources/fabricator_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_check_1"]
 script = ExtResource("script_check")

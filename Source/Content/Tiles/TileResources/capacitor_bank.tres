@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
 [ext_resource type="Texture2D" uid="uid://ci4owl4gj3tn" path="res://Assets/Textures/Tiles/BlueTiles/capacitor_bank.png" id="tex"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="sfx_player_shield"]
-[ext_resource type="Resource" uid="uid://p4rg0bmfqjkgh" path="res://Source/Content/Tiles/TileResources/capacitor_bank_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://n4ym2xfhp2ff" path="res://Source/Content/Tiles/TileResources/capacitor_bank_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_check_1"]
 script = ExtResource("script_check")

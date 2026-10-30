@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Texture2D" uid="uid://c8iumbl5p0j6e" path="res://Assets/Textures/Tiles/GreenTiles/doubler-Sheet.png" id="tex"]
 [ext_resource type="Resource" uid="uid://dhdiec4h8tjs3" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="sfx"]
-[ext_resource type="Resource" uid="uid://d4ooyqlaynmd7" path="res://Source/Content/Tiles/TileResources/doubler_plus.tres" id="upgrade_plus"]
+[ext_resource type="Resource" uid="uid://teon1fgqmg" path="res://Source/Content/Tiles/TileResources/doubler_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_any_die"]
 script = ExtResource("script_act")
