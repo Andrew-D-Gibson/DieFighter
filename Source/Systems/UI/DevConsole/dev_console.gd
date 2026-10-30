@@ -131,6 +131,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'lang':
 			_lang(command.slice(1))
 
+		'jump':
+			_jump(command.slice(1))
+
 		'kill_enemies':
 			_kill_enemies()
 
@@ -486,6 +489,37 @@ func _clear() -> void:
 	command_history.text = ''
 
 
+## Jumps along the map as a die on a jump arrow would, without the die or the
+## engine charge: +N goes N places right, -N left. Forward from the gate goes
+## through it, if it's open.
+func _jump(command_args: Array[String] = []) -> void:
+	if command_args.size() != 1 or not command_args[0].is_valid_int() or int(command_args[0]) == 0:
+		command_history.append_text('\n\t\tUsage: jump <+N|-N>  (e.g. jump +3, jump -2)')
+		return
+	if not Globals.map or not is_instance_valid(Globals.player):
+		command_history.append_text('\n\t\tNo map to jump on here.')
+		return
+
+	var delta: int = int(command_args[0])
+	var from: int = Globals.map.current_scenario_index
+	var to: int = clampi(from + delta, 0, len(Globals.map.scenario_list) - 1)
+	var through_gate: bool = delta > 0 and from == len(Globals.map.scenario_list) - 1
+	if through_gate and not (Globals.jump_gate and Globals.jump_gate.is_open()):
+		command_history.append_text('\n\t\tThe gate is locked.')
+		return
+	if not through_gate and not Globals.map.is_valid_destination(to):
+		command_history.append_text('\n\t\tCan\'t jump %+d from place %d.' % [delta, from])
+		return
+
+	var event: JumpEvent = JumpEvent.new()
+	event.jump_delta = delta
+	event.resolve(ScenarioEngine.current())
+	if through_gate:
+		command_history.append_text('\n[center]Jumping through the gate.[/center]')
+	else:
+		command_history.append_text('\n[center]Jumping %+d: place %d to %d.[/center]' % [delta, from, to])
+
+
 func _toggle_fps_display() -> void:
 	Events.toggle_fps_display.emit()
 
@@ -537,6 +571,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]fps[/b]                           toggle FPS display')
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')
+	command_history.append_text('\n[b]jump[/b] <+N|-N>                 jump N places right (+) or left (-)')
 	command_history.append_text('\n[b]kill_enemies[/b]                  kill all enemies')
 	command_history.append_text('\n[b]lang[/b] <locale|pseudo>          switch language (pseudo: stretched English, debug)')
 	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
