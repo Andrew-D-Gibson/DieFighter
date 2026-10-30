@@ -15,16 +15,16 @@ script = ExtResource("1_script")
 [node name="BezelTint" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture = ExtResource("2_bezel")
-offset = Vector2(0, 0.6)
+offset = Vector2(0, 1)
 
 [node name="ImageFrameTint" type="Sprite2D" parent="."]
 unique_name_in_owner = true
 texture = ExtResource("3_frame")
-offset = Vector2(0, 0.6)
+offset = Vector2(0, 1)
 
 [node name="FactionIcon" type="Sprite2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(-15, -16.5)
+position = Vector2(-15, -16)
 centered = false
 
 [node name="FactionClickable" parent="FactionIcon" instance=ExtResource("5_click")]
@@ -36,7 +36,7 @@ shape = SubResource("RectangleShape2D_badge")
 
 [node name="Face" type="Sprite2D" parent="."]
 unique_name_in_owner = true
-position = Vector2(-14, -7.5)
+position = Vector2(-14, -7)
 texture = ExtResource("4_face")
 centered = false
 hframes = 3

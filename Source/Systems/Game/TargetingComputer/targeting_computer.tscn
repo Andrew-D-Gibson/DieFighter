@@ -208,7 +208,7 @@ unknown_intent_indicator = ExtResource("2_g8xi5")
 [node name="Background" type="Sprite2D" parent="." unique_id=1820618632 groups=["cockpit_surface"]]
 z_index = -1
 texture = ExtResource("3_oioga")
-offset = Vector2(0, 0.6)
+offset = Vector2(0, 1)
 
 [node name="TargetText" type="RichTextLabel" parent="Background" unique_id=254710064]
 z_index = 1
@@ -222,7 +222,7 @@ text = "TARGET"
 [node name="CRTShader" type="Sprite2D" parent="Background" unique_id=500653232]
 z_index = 1
 material = SubResource("ShaderMaterial_du4uj")
-position = Vector2(0, 0.6)
+position = Vector2(0, 1)
 texture = ExtResource("11_ysc67")
 
 [node name="AttitudeDisplay" parent="." instance=ExtResource("15_attitude")]
@@ -230,12 +230,12 @@ unique_name_in_owner = true
 z_index = -1
 
 [node name="TargetImage" type="Sprite2D" parent="." unique_id=1311294319]
-position = Vector2(4, -7.5)
+position = Vector2(4, -7)
 texture = ExtResource("4_8uv0v")
 
 [node name="TargetImageFill" type="AnimatedSprite2D" parent="." unique_id=72504211]
 z_index = -2
-position = Vector2(9, 0.5)
+position = Vector2(9, 1)
 sprite_frames = SubResource("SpriteFrames_0asw0")
 animation = &"static"
 autoplay = "static"
@@ -270,7 +270,7 @@ position = Vector2(4.5, -7.5)
 shape = SubResource("RectangleShape2D_comms")
 
 [node name="Intents" type="Node2D" parent="." unique_id=768132844]
-position = Vector2(0.5, 0)
+position = Vector2(0.5, 0.5)
 
 [node name="1" type="Sprite2D" parent="Intents" unique_id=1807121573]
 position = Vector2(-23, 17)
@@ -443,7 +443,7 @@ frame = 5
 unique_name_in_owner = true
 z_index = 9
 material = SubResource("ShaderMaterial_up1nx")
-position = Vector2(0, 0.5)
+position = Vector2(0, 1)
 texture = ExtResource("13_du4uj")
 
 [node name="Control" type="Control" parent="RevealOverlay" unique_id=2019216845]
