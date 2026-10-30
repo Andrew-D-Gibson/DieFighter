@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_fading_ahead.tres" id="ext_1"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_fading_bones.tres" id="ext_2"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_fading_wrong.tres" id="ext_3"]
+[ext_resource type="Script" uid="uid://meeikumym0ie" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_probability_transition.gd" id="ext_4"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_screaming.tres" id="ext_5"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_6"]
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("ext_4")
+weighted_probabilities = Dictionary[ExtResource("ext_0"), float]({
+ExtResource("ext_1"): 1.0,
+ExtResource("ext_2"): 1.0,
+ExtResource("ext_3"): 1.0
+})
+
+[resource]
+script = ExtResource("ext_0")
+dialogue = "...you... are falling too..."
+attitude = 1
+transitions = Dictionary[int, ExtResource("ext_6")]({
+7: SubResource("Resource_1"),
+8: SubResource("Resource_1"),
+0: ExtResource("ext_5")
+})

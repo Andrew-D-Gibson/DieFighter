@@ -69,6 +69,16 @@
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wreckers/COMBAT_wreckers.tres" id="faction_wreckers"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LienCollection/COMBAT_lien_collection.tres" id="faction_lien_collection"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Pilgrimage/COMBAT_pilgrimage.tres" id="faction_pilgrimage"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_DeniableAssets/EVENT_deniable_assets.tres" id="faction_event_deniable_assets"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_LastPicket/EVENT_last_picket.tres" id="faction_event_last_picket"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/EVENT_straggler.tres" id="faction_event_straggler"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/EVENT_convoy.tres" id="faction_event_convoy"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_CutLoose/EVENT_cut_loose.tres" id="faction_event_cut_loose"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pilgrim/EVENT_pilgrim.tres" id="faction_event_pilgrim"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pact/EVENT_pact.tres" id="faction_event_pact"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/EVENT_signal.tres" id="faction_event_signal"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WhatCameBack/EVENT_what_came_back.tres" id="faction_event_what_came_back"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_WakeRiders/ELITE_wake_riders.tres" id="faction_elite_wake_riders"]
 [ext_resource type="Resource" uid="uid://br4j63c7vl8h" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
 [ext_resource type="Resource" uid="uid://c6swfwrjfa55" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
 [ext_resource type="Resource" uid="uid://kbe4skjmrnlm" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LooseWing/COMBAT_loose_wing.tres" id="combat_loose_wing"]
@@ -404,8 +414,8 @@ empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
 repair_scenario = ExtResource("repair_station_scenario")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier"), ExtResource("combat_loose_wing"), ExtResource("combat_smash_and_grab"), ExtResource("combat_blockade_runner"), ExtResource("combat_spotter"), ExtResource("faction_picket_line"), ExtResource("faction_wreckers"), ExtResource("faction_lien_collection"), ExtResource("faction_pilgrimage")])
-question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck"), ExtResource("event_ghost_carrier"), ExtResource("event_black_market"), ExtResource("event_pickpocket"), ExtResource("event_mayday")])
-elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter")])
+question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck"), ExtResource("event_ghost_carrier"), ExtResource("event_black_market"), ExtResource("event_pickpocket"), ExtResource("event_mayday"), ExtResource("faction_event_deniable_assets"), ExtResource("faction_event_last_picket"), ExtResource("faction_event_straggler"), ExtResource("faction_event_convoy"), ExtResource("faction_event_cut_loose"), ExtResource("faction_event_pilgrim"), ExtResource("faction_event_pact"), ExtResource("faction_event_signal"), ExtResource("faction_event_what_came_back")])
+elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter"), ExtResource("faction_elite_wake_riders")])
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
 starting_scenario = ExtResource("75_imw1m")

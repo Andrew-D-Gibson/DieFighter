@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/wrecker_fighting.tres" id="ext_1"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/wrecker_partner.tres" id="ext_2"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_3"]
+
+[resource]
+script = ExtResource("ext_0")
+dialogue = "It's dead already. Strip it, we split."
+attitude = 1
+transitions = Dictionary[int, ExtResource("ext_3")]({
+0: ExtResource("ext_1"),
+1: ExtResource("ext_2")
+})

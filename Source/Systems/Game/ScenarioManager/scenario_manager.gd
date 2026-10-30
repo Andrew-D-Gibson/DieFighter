@@ -14,6 +14,7 @@ enum ScenarioEvent {
 	
 	# Appended, never inserted: authored .tres transition dictionaries store
 	# these as raw ints, so reordering silently rewires every encounter.
+	## Took an offer's pick: a tile, a die or a grid slot.
 	PLAYER_TOOK_REWARD_TILE,
 	PLAYER_TOOK_REWARD_MONEY,
 	## A pirate (or their boss) fired on a civilian ship.

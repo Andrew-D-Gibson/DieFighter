@@ -268,10 +268,12 @@ func _end_reward(draggable: Draggable, end_position: Vector2) -> void:
 	draggable.drag_ended.disconnect(_end_reward)
 
 	OfferIntake.take(chosen_reward, end_position)
-	if chosen_reward is Tile:
-		Events.reward_tile_taken.emit()
-	elif chosen_reward is MoneyPickup:
+	# A die or grid slot is the pick just as a tile is: an encounter that
+	# reacts to its cargo being taken (Mayday, the Pilgrim's die) hears it too.
+	if chosen_reward is MoneyPickup:
 		Events.reward_money_taken.emit()
+	else:
+		Events.reward_tile_taken.emit()
 	Events.reward_picked.emit()
 	_clear_away(chosen_reward)
 

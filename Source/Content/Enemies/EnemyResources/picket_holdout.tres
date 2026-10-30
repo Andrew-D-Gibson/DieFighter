@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/picket_ship_graphics.tscn" id="gfx"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Picket/picket_targeting_image.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
+[ext_resource type="Resource" uid="uid://cnsicvupexlcv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/aegis_ally.tres" id="act_aegis_ally"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield_self"]
+[ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="act_raid"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="cond_script"]
+
+[sub_resource type="Resource" id="Resource_if_turned"]
+script = ExtResource("cond_script")
+type = 4
+
+[sub_resource type="Resource" id="Resource_if_loyal"]
+script = ExtResource("cond_script")
+type = 4
+invert = true
+
+[sub_resource type="Resource" id="Resource_raid"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_raid")
+weight = 2.5
+min_amount = 3
+max_amount = 5
+conditions = Array[ExtResource("cond_script")]([SubResource("Resource_if_loyal")])
+
+[sub_resource type="Resource" id="Resource_turned"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_attack_player")
+weight = 3.0
+min_amount = 2
+max_amount = 4
+conditions = Array[ExtResource("cond_script")]([SubResource("Resource_if_turned")])
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_aegis_ally")
+weight = 2.0
+min_amount = 3
+max_amount = 5
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt2"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_shield_self")
+weight = 1.0
+min_amount = 3
+max_amount = 4
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt3"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_do_nothing")
+weight = 1.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_raid"), SubResource("Resource_turned"), SubResource("Resource_opt0"), SubResource("Resource_opt2"), SubResource("Resource_opt3")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("script_2")
+in_codex = false
+enemy_name = "Picket"
+faction = ExtResource("faction_identity")
+description = "Rearguard line ship, holding against the Spilled. Shields whoever stands beside it, and fires on whatever comes through."
+max_health = 34
+starting_shields = 10
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+ship_graphics_scene = ExtResource("gfx")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex")
+health_bar_position = Vector2(-22, -12)
+dice_queue_position = Vector2(26, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

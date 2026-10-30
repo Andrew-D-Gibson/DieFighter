@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_CutLoose/tug_betrayed.tres" id="ext_1"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_2"]
+
+[resource]
+script = ExtResource("ext_0")
+dialogue = "...we'll remember them."
+faction = 1
+attitude = 1
+transitions = Dictionary[int, ExtResource("ext_2")]({
+1: ExtResource("ext_1")
+})
