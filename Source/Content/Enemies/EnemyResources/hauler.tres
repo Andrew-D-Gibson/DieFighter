@@ -1,0 +1,87 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3]
+
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/hauler_ship_graphics.tscn" id="gfx"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Hauler/hauler_targeting_image.png" id="tex"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/caravan.tres" id="faction_identity"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" uid="uid://cesjiwhhl5hh0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/flee.tres" id="act_flee"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield_self"]
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_shield_self")
+weight = 0.0
+min_amount = 3
+max_amount = 5
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt1"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_do_nothing")
+weight = 3.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt2"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_attack_player")
+weight = 1.0
+min_amount = 1
+max_amount = 2
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[sub_resource type="Resource" id="Resource_opt3"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_shield_self")
+weight = 0.0
+min_amount = 4
+max_amount = 6
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt4"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_do_nothing")
+weight = 2.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool1"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt3"), SubResource("Resource_opt4")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[sub_resource type="Resource" id="Resource_opt5"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_flee")
+weight = 1.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool2"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt5")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Hauler"
+faction = ExtResource("faction_identity")
+description = "Caravan freighter. Hauls the Belly's water and grain. Raises its shields, keeps its head down, and runs once it's hurt."
+max_health = 45
+starting_shields = 15
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1"), SubResource("Resource_pool2")])
+pool_selection = 1
+ship_graphics_scene = ExtResource("gfx")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex")
+health_bar_position = Vector2(-24, -12)
+dice_queue_position = Vector2(28, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

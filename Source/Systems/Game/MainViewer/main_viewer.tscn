@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="fate_rift"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Hollows/FATE_hollows.tres" id="fate_hollows"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Maw/FATE_maw.tres" id="fate_maw"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Shroud/FATE_shroud.tres" id="fate_shroud"]
 [ext_resource type="Resource" uid="uid://crph25pv1d7aa" path="res://Source/Content/Tiles/MapTileResources/map_arrow_left.tres" id="10_tmld6"]
 [ext_resource type="PackedScene" uid="uid://dea60jodfomvg" path="res://Source/Systems/Game/TileGrid/tile_grid.tscn" id="11_bkkgo"]
 [ext_resource type="Script" uid="uid://dplooim5t4fni" path="res://Source/Systems/Game/EngineCharger/engine_charger.gd" id="11_foiuu"]
@@ -208,7 +209,7 @@ right_arrow_tile = NodePath("RightArrowTile")
 hint = NodePath("ViewportTexture/MapViewport/HintLayer/MapHint")
 empty_scenario = ExtResource("14_mm1jt")
 fate_scenario = ExtResource("8_5ksti")
-fate_variants = Array[ExtResource("script_scenario_resource")]([ExtResource("fate_rift"), ExtResource("fate_hollows"), ExtResource("fate_maw")])
+fate_variants = Array[ExtResource("script_scenario_resource")]([ExtResource("fate_rift"), ExtResource("fate_hollows"), ExtResource("fate_maw"), ExtResource("fate_shroud")])
 open_gate_scenario = ExtResource("open_gate")
 
 [node name="ViewportTexture" type="TextureRect" parent="Map" unique_id=159515092]

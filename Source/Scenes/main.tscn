@@ -65,6 +65,10 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.tscn" id="boss_intro_card"]
 [ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/cockpit_mount.gd" id="cockpit_mount"]
 [ext_resource type="Resource" uid="uid://cleaatku88rbu" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BlockadeRunner/COMBAT_blockade_runner.tres" id="combat_blockade_runner"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_PicketLine/COMBAT_picket_line.tres" id="faction_picket_line"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wreckers/COMBAT_wreckers.tres" id="faction_wreckers"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LienCollection/COMBAT_lien_collection.tres" id="faction_lien_collection"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Pilgrimage/COMBAT_pilgrimage.tres" id="faction_pilgrimage"]
 [ext_resource type="Resource" uid="uid://br4j63c7vl8h" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
 [ext_resource type="Resource" uid="uid://c6swfwrjfa55" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
 [ext_resource type="Resource" uid="uid://kbe4skjmrnlm" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LooseWing/COMBAT_loose_wing.tres" id="combat_loose_wing"]
@@ -399,7 +403,7 @@ sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
 repair_scenario = ExtResource("repair_station_scenario")
-combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier"), ExtResource("combat_loose_wing"), ExtResource("combat_smash_and_grab"), ExtResource("combat_blockade_runner"), ExtResource("combat_spotter")])
+combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier"), ExtResource("combat_loose_wing"), ExtResource("combat_smash_and_grab"), ExtResource("combat_blockade_runner"), ExtResource("combat_spotter"), ExtResource("faction_picket_line"), ExtResource("faction_wreckers"), ExtResource("faction_lien_collection"), ExtResource("faction_pilgrimage")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck"), ExtResource("event_ghost_carrier"), ExtResource("event_black_market"), ExtResource("event_pickpocket"), ExtResource("event_mayday")])
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter")])
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])

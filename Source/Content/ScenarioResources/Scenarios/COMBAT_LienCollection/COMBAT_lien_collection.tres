@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/claims_adjuster.tres" id="enemy_claims_adjuster"]
+[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/hauler.tres" id="enemy_hauler"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state"]
+[ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="icon"]
+
+[sub_resource type="Resource" id="Resource_bounty"]
+script = ExtResource("script_2")
+dice_probability = 0.25
+min_money_pickup = 12
+max_money_pickup = 20
+money_pickup_probability = 0.5
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_reward0"]
+script = ExtResource("script_2")
+min_money = 12
+max_money = 24
+num_of_rewards = 0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_spawn0"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_claims_adjuster")
+starting_state = ExtResource("state")
+reward_resource = SubResource("Resource_reward0")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[sub_resource type="Resource" id="Resource_reward1"]
+script = ExtResource("script_2")
+min_money = 8
+max_money = 14
+num_of_rewards = 0
+metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
+
+[sub_resource type="Resource" id="Resource_spawn1"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_hauler")
+starting_state = ExtResource("state")
+reward_resource = SubResource("Resource_reward1")
+metadata/_custom_type_script = "uid://up0oyqfrjcpu"
+
+[resource]
+script = ExtResource("script_0")
+map_icon = ExtResource("icon")
+background_resource = ExtResource("bg")
+starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])
+rewards = Dictionary[int, ExtResource("script_2")]({
+0: SubResource("Resource_bounty")
+})
+metadata/_custom_type_script = "uid://bidpx7urxb1md"
