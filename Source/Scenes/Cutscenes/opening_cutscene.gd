@@ -102,6 +102,9 @@ const _RED_JUMP: Color = Color("#d03656")
 const _FATE_PURPLE: Color = Color("#c552f1")
 
 var main_game_scene: String = "uid://deisauteocrjl"
+## The fight this cuts into (main.tscn's starting_scenario). Its Attacker is
+## the Survivor, so the Survivor is holed down to that Attacker's hull.
+var ambush_scenario: String = "res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres"
 
 var _stars: Array[Node2D] = []
 ## Per star: how near it is. Near stars stream faster and streak longer.
@@ -118,6 +121,8 @@ var _speed_lines: SpeedLines = null
 ## Smoke trails, each following the ship it was lit on.
 var _smoke_trails: Dictionary[Node2D, CPUParticles2D] = {}
 var _reticle: LockOnReticle = null
+## How much hull the Survivor is left with once it's holed. See _ship_damaged().
+var _survivor_hull_fraction: float = 1.0
 
 @onready var _effects: Node2D = %Effects
 @onready var _pixel_layer: CanvasLayer = $PixelLayer
@@ -128,6 +133,9 @@ var _reticle: LockOnReticle = null
 
 
 func _ready() -> void:
+	# Before the game starts loading in the background: the ambush is part of
+	# it, and loading it here meanwhile would wait on the whole game.
+	_survivor_hull_fraction = _ambush_hull_fraction()
 	SceneLoader.request(main_game_scene)
 	_spawn_stars()
 	_spawn_debris()
@@ -386,17 +394,15 @@ func _ship_hit(ship_name: StringName) -> void:
 	_ring(ship.global_position, Globals.red, 3.0, 16.0, 0.3)
 
 
-## A hit that leaves the ship trailing smoke for the rest of the cutscene.
-## The ambush starts its Attacker on a quarter of its hull; this is where it
-## lost the rest.
+## A hit that leaves the ship smoking for the rest of the cutscene. The ambush
+## starts its Attacker on a fraction of its hull; this is where it lost the
+## rest. The smoke is the game's own (ShipDamageSmoke), lit for that hull, so
+## the ship carries the same plumes into the fight.
 func _ship_damaged(ship_name: StringName) -> void:
 	_ship_hit(ship_name)
 	TimeDirector.hitstop(70)
-	var ship: Node2D = _ship(ship_name)
-	var smoke: CPUParticles2D = _smoke_particles()
-	_effects.add_child(smoke)
-	smoke.global_position = ship.global_position
-	_smoke_trails[ship] = smoke
+	var ship: Sprite2D = _ship(ship_name) as Sprite2D
+	ShipDamageSmoke.attach(ship).set_hull_fraction(_survivor_hull_fraction)
 
 
 ## The doomed Attacker's drive gives out against the pull. From here the
@@ -549,6 +555,16 @@ func _ship(ship_name: StringName) -> Node2D:
 	return get_node("%" + ship_name) as Node2D
 
 
+## The hull the ambush's Attacker spawns on, as a fraction of full. Worked out
+## the way Enemy does it, at the first sector's difficulty, where the ambush
+## always falls.
+func _ambush_hull_fraction() -> float:
+	var ambush: ScenarioResource = load(ambush_scenario) as ScenarioResource
+	var attacker: EnemyStateRewardResource = ambush.starting_enemies[0]
+	var max_health: int = attacker.enemy_resource.max_health
+	return float(Enemy.starting_hull(max_health, attacker.starting_health_fraction)) / float(max_health)
+
+
 ## The way the ship's nose points. The player's sheet is drawn nose-up and
 ## the Attacker's nose-down, so their headings come off opposite axes.
 func _heading(ship: Node2D) -> Vector2:
@@ -677,12 +693,7 @@ func _smoke_particles() -> CPUParticles2D:
 	smoke.initial_velocity_max = 35.0
 	smoke.scale_amount_min = 1.0
 	smoke.scale_amount_max = 3.0
-	var ramp: Gradient = Gradient.new()
-	ramp.offsets = PackedFloat32Array([0.0, 0.12, 0.5, 1.0])
-	ramp.colors = PackedColorArray([
-		Globals.orange, Color("#a5a29d"), Color("#63605c"), Color(Color("#63605c"), 0.0)
-	])
-	smoke.color_ramp = ramp
+	smoke.color_ramp = ShipDamageSmoke.smoke_ramp()
 	smoke.z_index = -1
 	return smoke
 

@@ -393,13 +393,17 @@ func _update_health_from_resource() -> void:
 		scale_factor = Globals.state_manager.get_difficulty_multiplier()
 
 	health.max_health = ceili(enemy_resource.max_health * scale_factor)
-	# Clamped to at least 1: a ship authored as badly damaged should still need
-	# one more hit, never spawn already dead.
-	health.health = clampi(
-		ceili(health.max_health * starting_health_fraction), 1, health.max_health
-	)
+	health.health = starting_hull(health.max_health, starting_health_fraction)
 	health.starting_shields = ceili(enemy_resource.starting_shields * scale_factor)
 	health.shields = health.starting_shields
+	graphics_manager.track_hull_damage(health)
+
+
+## The hull a ship spawns with: [param fraction] of [param max_health], rounded
+## up. Clamped to at least 1: a ship authored as badly damaged should still need
+## one more hit, never spawn already dead.
+static func starting_hull(max_health: int, fraction: float) -> int:
+	return clampi(ceili(max_health * fraction), 1, max_health)
 
 
 ## Updates the health bar's position and values

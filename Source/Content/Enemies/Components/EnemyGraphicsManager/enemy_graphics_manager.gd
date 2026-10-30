@@ -68,6 +68,10 @@ var _pixel_body: Node2D
 ## Where the wreck goes. See wreck_layer().
 var _wreck_layer: Node2D
 
+## The hull's damage smoke. Rebuilt with each new hull, since its spots are
+## that hull's.
+var _damage_smoke: ShipDamageSmoke
+
 ## Sets up the ship graphics and associated components
 func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 	if ship_graphics:
@@ -78,6 +82,14 @@ func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 	_set_transparency(1)
 	
 	shakeable.node_to_shake = ship_graphics
+	if ship_graphics is Sprite2D:
+		_damage_smoke = ShipDamageSmoke.attach(ship_graphics as Sprite2D)
+
+
+## Smokes the hull as [param health] runs down. See ShipDamageSmoke.
+func track_hull_damage(health: Health) -> void:
+	if is_instance_valid(_damage_smoke):
+		_damage_smoke.track(health)
 
 
 ## Cracks the ship into pieces that drift apart and blow up one by one,
