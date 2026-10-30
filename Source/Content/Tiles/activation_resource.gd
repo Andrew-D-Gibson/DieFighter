@@ -50,7 +50,7 @@ enum ActivationType {
 	## the die.
 	TARGETED_SHIP_HOLDS_DIE_ABOVE,
 	## The player's evasion (EvasionModifier) is below its cap. For a tile
-	## that adds evasion (Jink Thrusters): at the cap it would eat the die.
+	## that adds evasion (Juke Thrusters): at the cap it would eat the die.
 	EVASION_BELOW_CAP,
 }
 

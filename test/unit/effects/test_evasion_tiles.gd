@@ -1,5 +1,5 @@
 extends "res://test/helpers/die_fighter_test.gd"
-## The tiles built on the engines' evasion: Jink Thrusters raises it for a
+## The tiles built on the engines' evasion: Juke Thrusters raises it for a
 ## round, and Afterimage, Slipstream Vane and Feint Cannon pay out on a miss.
 
 const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
@@ -101,10 +101,10 @@ func _responses() -> Array[EffectEvent]:
 	return recorder.injected.duplicate()
 
 
-# ── Jink Thrusters ────────────────────────────────────────────────────────────
+# ── Juke Thrusters ────────────────────────────────────────────────────────────
 
-func test_jink_thrusters_adds_four_percent_a_pip_and_hands_the_target_the_die() -> void:
-	var events: Array[EffectEvent] = await _play_tile(_tile("jink_thrusters"), 5)
+func test_juke_thrusters_adds_four_percent_a_pip_and_hands_the_target_the_die() -> void:
+	var events: Array[EffectEvent] = await _play_tile(_tile("juke_thrusters"), 5)
 	var adds: Array[EffectEvent] = _of(events, AddEvasionEvent)
 	assert_eq(adds.size(), 1)
 	assert_eq(adds[0].amount, 20)
@@ -113,8 +113,8 @@ func test_jink_thrusters_adds_four_percent_a_pip_and_hands_the_target_the_die() 
 	assert_eq(gives[0].targets, [enemy] as Array[Node], "the core trade: the die goes to the target")
 
 
-func test_jink_thrusters_plus_adds_six_percent_a_pip() -> void:
-	var events: Array[EffectEvent] = await _play_tile(_tile("jink_thrusters_plus"), 5)
+func test_juke_thrusters_plus_adds_six_percent_a_pip() -> void:
+	var events: Array[EffectEvent] = await _play_tile(_tile("juke_thrusters_plus"), 5)
 	assert_eq(_of(events, AddEvasionEvent)[0].amount, 30)
 
 
@@ -133,18 +133,18 @@ func test_an_amplifier_does_not_grow_the_boost() -> void:
 	assert_false(AddEvasionEvent.new().is_amplifiable())
 
 
-func test_jink_thrusters_refuses_a_die_it_would_waste() -> void:
-	assert_true(_takes("jink_thrusters", 3))
+func test_juke_thrusters_refuses_a_die_it_would_waste() -> void:
+	assert_true(_takes("juke_thrusters", 3))
 	player.num_of_dice = 6
 	player.engine_charge = player.max_engine_charge
 	assert_eq(evasion.chance_percent(), EvasionModifier.MAX_PERCENT)
-	assert_false(_takes("jink_thrusters", 3), "already at the cap")
+	assert_false(_takes("juke_thrusters", 3), "already at the cap")
 	player.engine_charge = 0
 	Globals.state_manager.state = GameStateManager.GameState.OUT_OF_COMBAT
-	assert_false(_takes("jink_thrusters", 3), "nothing to dodge outside a fight")
+	assert_false(_takes("juke_thrusters", 3), "nothing to dodge outside a fight")
 	Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
 	Globals.targeting_computer.targeted_enemy = null
-	assert_false(_takes("jink_thrusters", 3), "needs a ship to give the die to")
+	assert_false(_takes("juke_thrusters", 3), "needs a ship to give the die to")
 
 
 # ── Afterimage and Slipstream Vane ───────────────────────────────────────────
@@ -242,7 +242,7 @@ func test_feint_cannon_starts_every_fight_empty() -> void:
 # ── Upgrades ─────────────────────────────────────────────────────────────────
 
 func test_every_evasion_tile_upgrades() -> void:
-	for tile_id: String in ["jink_thrusters", "afterimage", "slipstream_vane", "feint_cannon"]:
+	for tile_id: String in ["juke_thrusters", "afterimage", "slipstream_vane", "feint_cannon"]:
 		var base: TileResource = load(TILES % tile_id)
 		assert_true(base.offered_as_reward, tile_id)
 		assert_eq(base.upgraded_version, load(TILES % (tile_id + "_plus")), tile_id)

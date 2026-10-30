@@ -237,7 +237,7 @@ registration to testing. For how the systems work underneath, see
     Slipstream Vane; Feint Cannon banks it in tile data). To raise the
     chance, `ADD_EVASION` adds the running amount in percentage points until
     the player's next turn; gate it on `EVASION_BELOW_CAP` so a die isn't
-    wasted at the 50% cap (Jink Thrusters). Write it `(evasion)`.
+    wasted at the 50% cap (Juke Thrusters). Write it `(evasion)`.
   - **Family boosts**: `TILE_CONTROL / ADD_FAMILY_BOOST` (`string_param` =
     `red`, `blue`, ...; `range_max` = cap; running amount = step, negative to
     take it back) gives every tile whose art is in that colour's folder +N

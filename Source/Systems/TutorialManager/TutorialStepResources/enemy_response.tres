@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "[color=red]Enemy turn.[/color] Each die it holds does what's under its value. Watch:"
+tutorial_text = "[color=red]Enemy turn.[/color] Each die it holds does what's under its value in the [color=purple]targeting computer[/color]. Watch:"
 text_position = Vector2(100, 40)
 forced_dice = Array[int]([6, 6, 6])
 close_on_signal = 15

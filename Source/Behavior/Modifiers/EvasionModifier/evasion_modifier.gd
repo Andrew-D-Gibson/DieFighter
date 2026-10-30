@@ -14,7 +14,7 @@ extends Modifier
 ## ship behind them and always land, as they get through Phased.
 ##
 ## Charge past the jump gate (redline) adds nothing. Tiles can add a bonus on
-## top (Jink Thrusters, add_bonus()) that lasts until the enemy turn ends, and
+## top (Juke Thrusters, add_bonus()) that lasts until the enemy turn ends, and
 ## the total is still held to the cap.
 ##
 ## Rolls come from their own RNG bucket, seeded per scenario, so a replay

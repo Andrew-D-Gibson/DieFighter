@@ -372,10 +372,10 @@ standing rule rather than something a tile grants, and there is no badge.
   still held to the cap; not amplifiable. The `EVASION_BELOW_CAP` activation
   check refuses a die at the cap. A miss emits `Events.player_evaded(attacker)`,
   which tiles hear as `ON_PLAYER_EVADED` with the attacker as the starting
-  target. Jink Thrusters, Afterimage, Slipstream Vane and Feint Cannon build
+  target. Juke Thrusters, Afterimage, Slipstream Vane and Feint Cannon build
   on it.
 - **AutoPilot:** the forecast and threat model ignore evasion for now, so the
-  bot neither values Jink Thrusters nor discounts incoming hits by the chance.
+  bot neither values Juke Thrusters nor discounts incoming hits by the chance.
 
 ### 4.6 Enemy Turn Flow
 

@@ -1,7 +1,7 @@
 class_name AddEvasionHandler
 extends EffectHandler
 ## Adds running_amount percentage points to the player's evasion until the
-## enemy turn ends (AddEvasionEvent, Jink Thrusters).
+## enemy turn ends (AddEvasionEvent, Juke Thrusters).
 
 
 func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:

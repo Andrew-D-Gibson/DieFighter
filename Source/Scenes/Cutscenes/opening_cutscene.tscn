@@ -648,7 +648,7 @@ tracks/18/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:posi
 tracks/18/interp = 1
 tracks/18/loop_wrap = true
 tracks/18/keys = {
-"times": PackedFloat32Array(0.0, 1.8, 3.6, 5.4, 7.4, 9.2, 10.2, 11.2, 12.4, 13.1, 14.6, 16.1, 18.4, 18.75, 20.1, 21.1, 21.9, 24.05, 24.6, 25.65, 27.0),
+"times": PackedFloat32Array(0.0, 1.8, 3.6, 5.4, 7.4, 9.2, 10.2, 11.2, 12.4, 13.1, 14.6, 16.1, 18.4, 18.75, 20.1, 21.1, 21.9, 24.35, 24.6, 25.65, 27.0),
 "transitions": PackedFloat32Array(-2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, -2.0, 0.5, -2.0, -2.0, -2.0, 4.0, 1.0, -2.0, -2.0, 1.0, 0.5, -2.0, 1.0, 1.0),
 "update": 0,
 "values": [Vector2(84, 44), Vector2(88, 42), Vector2(85, 45), Vector2(91, 46), Vector2(95, 49), Vector2(98, 46), Vector2(94, 50), Vector2(97, 52), Vector2(94, 50), Vector2(80, 56), Vector2(100, 56), Vector2(112, 66), Vector2(112, 70), Vector2(170, 84), Vector2(80, 96), Vector2(100, 92), Vector2(110, 95), Vector2(70, 86), Vector2(92, 90), Vector2(98, 90), Vector2(101, 90)]
@@ -672,7 +672,7 @@ tracks/20/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Ships/Survivor:visi
 tracks/20/interp = 1
 tracks/20/loop_wrap = true
 tracks/20/keys = {
-"times": PackedFloat32Array(0.0, 18.85, 20.1, 22.0, 24.05),
+"times": PackedFloat32Array(0.0, 18.85, 20.1, 22.0, 24.35),
 "transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0),
 "update": 1,
 "values": [true, false, true, false, true]

@@ -18,6 +18,12 @@ next export overwrites them.
 - Changing a file from 1 frame to several (or back) changes its PNG's name.
   The scene or resource that loads it has to point at the new name, and the old
   PNG has to be deleted.
+- Renaming or moving a texture in Godot's FileSystem dock moves the PNG and
+  fixes everything that loads it, but Godot can't see this folder, so its
+  `.aseprite` keeps the old name. Rename the source to match, or the next
+  export recreates the old PNG and edits never reach the new one.
+  `--check` catches it: the old PNG shows as `stale` and the new one as
+  `no source`.
 - Folders starting with `_` are never exported:
   - `_Palettes/`: `aseprite_palette_final.aseprite` holds the 33 approved
     colours (see `CONTENT_BUILD_GUIDE.md`).

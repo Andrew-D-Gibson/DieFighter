@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://768fvb7sdnhf"
-path="res://.godot/imported/jink_thrusters.png-830f4cd1c43a5d4fb9efc706de4664b7.ctex"
+path="res://.godot/imported/juke_thrusters.png-e82c45e5432b9117aab05d2472d8ea65.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/PurpleTiles/jink_thrusters.png"
-dest_files=["res://.godot/imported/jink_thrusters.png-830f4cd1c43a5d4fb9efc706de4664b7.ctex"]
+source_file="res://Assets/Textures/Tiles/PurpleTiles/juke_thrusters.png"
+dest_files=["res://.godot/imported/juke_thrusters.png-e82c45e5432b9117aab05d2472d8ea65.ctex"]
 
 [params]
 
