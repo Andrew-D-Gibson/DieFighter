@@ -36,8 +36,13 @@ signal _target_switched
 ## fight, but the map the player is shown, the credits they're paid and the
 ## fight they jump into come from the run's RNG. Seeding it means every new
 ## player sees the same thing and the steps can promise what's on screen. 21
-## puts a shop beside the opening fight and an ordinary fight at every distance
-## the hand they leave it with can jump (4, 5 or 6).
+## puts a shop beside the opening fight and, six places on, an ordinary
+## two-ship fight under a sky with no rule of its own (COMBAT_wreckers).
+## The hand the player finishes the raider with (enemy_response's forced
+## dice) is all 6s, and the dice come home from the wreck with the faces they
+## had, so 6 is the only jump on offer. Not 4, though that fight is calm too:
+## Bump turns a 4 into a 5, and 5 places on (like 2 and 3) is a fight built
+## round its hazard, which the rule-free first jump can't calm.
 @export var run_seed: int = 21
 
 ## Debug aid: drop this many steps, applying their forced dice/actions/rewards

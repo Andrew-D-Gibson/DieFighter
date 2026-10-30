@@ -146,6 +146,7 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> Array[E
 		enemy.scenario_state = spawn.starting_state
 		# Set before add_child: Enemy._ready() bakes health off this.
 		enemy.starting_health_fraction = spawn.starting_health_fraction
+		enemy.unscaled_hull = spawn.unscaled_hull
 
 		# A part of a bigger ship rides its hull (see _spawn_hull), and never
 		# bobs on its own: it moves when the hull does.

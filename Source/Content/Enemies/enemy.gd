@@ -17,7 +17,8 @@ const _KILL_HOLD_MSEC: int = 340
 ## PLAYTEST (2026-10-30): every enemy spawns with about 2/3 of its authored
 ## hull and a quarter of its authored shields, to try a faster game without
 ## re-authoring every EnemyResource. Set both back to 1.0 to undo. The codex
-## still lists the authored numbers.
+## still lists the authored numbers, and a ship spawned with unscaled_hull
+## (the tutorial's opening raider) keeps them.
 const PLAYTEST_HULL_SCALE: float = 2.0 / 3.0
 const PLAYTEST_SHIELD_SCALE: float = 0.25
 
@@ -115,6 +116,8 @@ static var forced_actions: Array[EnemyActionResource] = []
 ## Set by EnemyManager from the scenario's EnemyStateRewardResource before this
 ## node enters the tree. See that resource for why it exists.
 var starting_health_fraction: float = 1.0
+## Set the same way. See EnemyStateRewardResource.unscaled_hull.
+var unscaled_hull: bool = false
 
 ## Whoever landed the latest hit: the player, another ship, or null for
 ## something with no shooter (a hazard). Set by DamageEvent.
@@ -396,13 +399,18 @@ func vent_overload() -> void:
 ## player is. This is the single choke point every spawned enemy passes through,
 ## so it's the one place run difficulty needs to be applied.
 func _update_health_from_resource() -> void:
-	var scale_factor: float = 1.0
-	if Globals.state_manager:
-		scale_factor = Globals.state_manager.get_difficulty_multiplier()
+	var hull_scale: float = 1.0
+	var shield_scale: float = 1.0
+	if not unscaled_hull:
+		var scale_factor: float = 1.0
+		if Globals.state_manager:
+			scale_factor = Globals.state_manager.get_difficulty_multiplier()
+		hull_scale = PLAYTEST_HULL_SCALE * scale_factor
+		shield_scale = PLAYTEST_SHIELD_SCALE * scale_factor
 
-	health.max_health = ceili(enemy_resource.max_health * PLAYTEST_HULL_SCALE * scale_factor)
+	health.max_health = ceili(enemy_resource.max_health * hull_scale)
 	health.health = starting_hull(health.max_health, starting_health_fraction)
-	health.starting_shields = ceili(enemy_resource.starting_shields * PLAYTEST_SHIELD_SCALE * scale_factor)
+	health.starting_shields = ceili(enemy_resource.starting_shields * shield_scale)
 	health.shields = health.starting_shields
 	graphics_manager.track_hull_damage(health)
 

@@ -11,6 +11,12 @@ extends Resource
 ## unchanged, so the damage is visible on the ship's health bar.
 @export_range(0.05, 1.0, 0.05) var starting_health_fraction: float = 1.0
 
+## Spawns on exactly the hull and shields its EnemyResource authors (and
+## starting_health_fraction cuts), whatever sector difficulty or a balance
+## pass scales everyone else by. For scripted fights whose turns are counted
+## out: the tutorial's opening ambush has to take two turns to win.
+@export var unscaled_hull: bool = false
+
 
 ## Nails this ship to one spot along the enemy path, 0.0 (far left) to 1.0
 ## (far right). Negative means "wherever the formation puts you", which is the

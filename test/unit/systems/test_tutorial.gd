@@ -169,3 +169,23 @@ func test_target_cutout_clears_an_ellipse_and_nothing_else() -> void:
 	assert_eq(image.get_pixel(7, 5).a, 0.0, "the middle is cleared")
 	assert_eq(image.get_pixel(2, 2).a, 1.0, "the box's corner stays dark")
 	assert_eq(image.get_pixel(15, 5).a, 1.0, "outside the box stays dark")
+
+
+## The opening raider has to survive the first turn and fall on the second:
+## the steps between are about its turn. It spawns on its authored hull, so a
+## balance pass on everyone else can't shorten the fight.
+func test_opening_raider_arrives_on_twelve_hull() -> void:
+	var ambush: ScenarioResource = load("res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres")
+	var raider: EnemyStateRewardResource = ambush.starting_enemies[0]
+	assert_true(raider.unscaled_hull)
+	assert_eq(Enemy.starting_hull(raider.enemy_resource.max_health, raider.starting_health_fraction), 12)
+
+
+## The hand that finishes the raider is the hand the player jumps with, faces
+## and all. Only 6s are safe: Bump would turn a 4 into a 5, and 5 places on
+## the seeded map is a fight built round a hazard. See TutorialManager.run_seed.
+func test_raider_is_finished_with_dice_bump_cant_change() -> void:
+	var step: TutorialStep = load(STEP_DIR.path_join("enemy_response.tres"))
+	assert_false(step.forced_dice.is_empty())
+	for face: int in step.forced_dice:
+		assert_eq(face, 6)

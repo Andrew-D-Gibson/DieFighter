@@ -8,7 +8,7 @@
 script = ExtResource("1_s")
 tutorial_text = "[color=red]Enemy turn.[/color] Each die it holds does what's under its value. Watch:"
 text_position = Vector2(100, 40)
-forced_dice = Array[int]([5, 6, 4])
+forced_dice = Array[int]([6, 6, 6])
 close_on_signal = 15
 tutorial_function = 7
 metadata/_custom_type_script = "uid://eyoqrls6ero4"
