@@ -77,6 +77,12 @@ const _ALARM_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEff
 ## The furthest one jump goes: a die's top face.
 const _LONGEST_JUMP: int = 6
 
+## Stops dealt into the next new run's first sector over whatever the draw put
+## there, keyed by places from the arrival (positive is right). Set before the
+## run is rolled, like RNGManager.next_run_seed, and used up by it. The
+## tutorial pins the fight its jump lands in here.
+static var next_run_pinned_stops: Dictionary[int, ScenarioResource] = {}
+
 ## True when this is a brand new run rather than a loaded save. Only a new run
 ## gets the alarm: a continued save is resuming a fight it already knows about.
 var _is_fresh_run: bool = true
@@ -249,6 +255,13 @@ func play_opening_strike() -> void:
 		# The fight can be over by the time a held shot is let go.
 		if is_instance_valid(_opening_strike):
 			await _opening_strike.play()
+		Events.opening_strike_landed.emit()
+
+
+## True from the start of a new run until its opening shot has landed. False
+## for a run with no shot to fire.
+func opening_strike_pending() -> bool:
+	return _opening_strike != null and _opening_strike.hull_owed() > 0
 
 
 ## True while the opening ambusher is flying in holding one of the player's
@@ -362,6 +375,8 @@ func _randomize_sector_scenarios() -> void:
 		_pick_arrival_scenario()
 	)
 
+	_place_pinned_stops()
+
 	# Seed all the scenarios
 	for scenario: ScenarioResource in current_game_save.sector_scenarios:
 		scenario.scenario_seed = RNGManager.randi(RNGManager.Bucket.RUN)
@@ -381,6 +396,23 @@ func _randomize_sector_scenarios() -> void:
 	
 	
 	
+## Puts next_run_pinned_stops in their places, and spends them. Each replaces
+## a stop rather than adding a draw, so the RUN stream, and with it the rest
+## of a seeded map, comes out exactly as the seed has it. Never the arrival or
+## the gate.
+func _place_pinned_stops() -> void:
+	var pinned: Dictionary[int, ScenarioResource] = next_run_pinned_stops
+	next_run_pinned_stops = {}
+	var scenarios: Array[ScenarioResource] = current_game_save.sector_scenarios
+	for offset: int in pinned:
+		var slot: int = current_game_save.current_scenario_index + offset
+		if offset == 0 or slot < 0 or slot >= scenarios.size() - 1:
+			push_warning("GameStateManager: no stop %+d from the arrival to pin %s to." % [
+				offset, pinned[offset].resource_path.get_file()])
+			continue
+		scenarios[slot] = pinned[offset]
+
+
 ## Swaps [param count_range] ordinary stops in a finished sector for repair
 ## stations: combats or events (anything in [param replaceable]) that sit
 ## further from the arrival than one jump can reach, before the gate.

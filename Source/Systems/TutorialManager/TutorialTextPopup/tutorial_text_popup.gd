@@ -18,6 +18,10 @@ var target_character: int = 0
 
 var popup_completed: bool = false
 
+## Set while the Close button waits on something besides the text (see
+## hold_close_button()).
+var _close_held: bool = false
+
 var time_between_blip_sounds: float = 0.1
 var last_blip_time: int = 0
 
@@ -147,16 +151,34 @@ func when_text_shown() -> void:
 	%ComputerTalking.stop()
 	all_text_displayed.emit()
 
-	%CloseButton.disabled = false
-	%CloseButton.update_ui()
-	%CloseButton.soft_highlight()
-		
-		# Auto-close if delay is set
+	if not _close_held:
+		_enable_close_button()
+
+	# Auto-close if delay is set
 	if time_to_wait_after_text_shown > 0:
 		await get_tree().create_timer(time_to_wait_after_text_shown).timeout
 		close()
 	
 	
+## Keeps the Close button disabled, even once the text is all in, until
+## release_close_button(): for a card that mustn't be closed before something
+## on screen has played out.
+func hold_close_button() -> void:
+	_close_held = true
+
+
+func release_close_button() -> void:
+	_close_held = false
+	if popup_completed:
+		_enable_close_button()
+
+
+func _enable_close_button() -> void:
+	%CloseButton.disabled = false
+	%CloseButton.update_ui()
+	%CloseButton.soft_highlight()
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and \
 		event.button_index == MOUSE_BUTTON_LEFT and \

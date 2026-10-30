@@ -6,8 +6,8 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "Salvage! Spend [color=green]credits[/color] (credits) at shops.(delay=0.3) [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave] (left_mouse) your new system (deflector_array) into a slot:"
-text_position = Vector2(120, 40)
+tutorial_text = "Salvage! Spend [color=green]credits[/color] (credits) at shops.(delay=0.3) [wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave] (left_mouse) your new system into a slot: (deflector_array)"
+text_position = Vector2(124, 43)
 time_delay = 2.0
 close_on_signal = 9
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

@@ -100,5 +100,6 @@ enum TutorialFunctions {
 
 ## The tutorial holds the ambusher's opening shot (OpeningStrike) until this
 ## step's text has all come in, so the player reads who's attacking before
-## the shot lands.
+## the shot lands. The card's Close button stays off until the shot has
+## landed, so the player sees the attack the card is about.
 @export var releases_opening_strike: bool = false

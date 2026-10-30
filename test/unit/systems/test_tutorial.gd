@@ -189,3 +189,35 @@ func test_raider_is_finished_with_dice_bump_cant_change() -> void:
 	assert_false(step.forced_dice.is_empty())
 	for face: int in step.forced_dice:
 		assert_eq(face, 6)
+
+
+## The fight the tutorial's jump lands in teaches nothing but switching
+## targets: two ships that only shoot and shield, under a sky with no rule.
+func test_jump_lands_in_a_plain_two_ship_fight() -> void:
+	var tutorial: TutorialManager = autofree(
+		(load("res://Source/Systems/TutorialManager/tutorial_manager.tscn") as PackedScene).instantiate()
+	)
+	var fight: ScenarioResource = tutorial.jump_destination
+	assert_not_null(fight)
+	assert_eq(fight.starting_enemies.size(), 2)
+	var plain: Array[String] = ["attack_player.tres", "shield_self.tres", "do_nothing.tres"]
+	for ship: EnemyStateRewardResource in fight.starting_enemies:
+		for table: EnemyTurnActionList in ship.enemy_resource.action_options:
+			for option: EnemyActionOptionResource in table.actions_possible:
+				assert_has(plain, option.base_action.resource_path.get_file(),
+					"%s can only shoot and shield" % ship.enemy_resource.enemy_name)
+	for background: BackgroundResource in fight.background_resource.get_backgrounds():
+		assert_null(background.global_modifier)
+		assert_null(background.hazard)
+
+
+## The first card can't be closed until the shot it introduces has landed.
+func test_a_held_close_button_waits_for_its_release() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	popup.setup("A raider is attacking!", Vector2(100, 40), null, true)
+	popup.hold_close_button()
+	popup._finish_showing_text()
+	var close_button: Node = popup.get_node("%CloseButton")
+	assert_true(close_button.disabled, "still held once the text is in")
+	popup.release_close_button()
+	assert_false(close_button.disabled)

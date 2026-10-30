@@ -33,17 +33,24 @@ signal _target_switched
 @export var auto_start: bool = true
 
 ## The run the tutorial plays in. The forced dice and intents fix the opening
-## fight, but the map the player is shown, the credits they're paid and the
-## fight they jump into come from the run's RNG. Seeding it means every new
-## player sees the same thing and the steps can promise what's on screen. 21
-## puts a shop beside the opening fight and, six places on, an ordinary
-## two-ship fight under a sky with no rule of its own (COMBAT_wreckers).
-## The hand the player finishes the raider with (enemy_response's forced
-## dice) is all 6s, and the dice come home from the wreck with the faces they
-## had, so 6 is the only jump on offer. Not 4, though that fight is calm too:
-## Bump turns a 4 into a 5, and 5 places on (like 2 and 3) is a fight built
-## round its hazard, which the rule-free first jump can't calm.
+## fight, but the map the player is shown and the credits they're paid come
+## from the run's RNG. Seeding it means every new player sees the same thing
+## and the steps can promise what's on screen. 21 puts a shop beside the
+## opening fight. The hand the player finishes the raider with
+## (enemy_response's forced dice) is all 6s, and the dice come home from the
+## wreck with the faces they had, so 6 is the only jump on offer: Bump can't
+## turn a 6 into anything else.
 @export var run_seed: int = 21
+
+## The fight the tutorial's jump lands in, pinned over whatever the seeded map
+## has [member jump_distance] places right of the opening fight. Two ships that
+## only shoot and shield, under a sky with no rule, so the only new thing in
+## the first fight the player picks is the one the last steps teach: switching
+## targets.
+@export var jump_destination: ScenarioResource
+## How far right the tutorial's jump goes: the face on every die it hands the
+## player for it.
+@export var jump_distance: int = 6
 
 ## Debug aid: drop this many steps, applying their forced dice/actions/rewards
 ## so the run state stays consistent, and start from the one after.
@@ -110,6 +117,10 @@ const _MARKER_CUTOUT_PADDING: float = 3.0
 ## The pause between a releases_opening_strike step's text finishing and the
 ## ambusher starting its wind-up.
 const _OPENING_STRIKE_BEAT_SECONDS: float = 0.4
+## How long a releases_opening_strike card keeps its Close button off waiting
+## for the shot to land. Only reached if the shot never resolves, so the
+## player isn't left with a card they can't close.
+const _OPENING_STRIKE_CLOSE_DEADLINE_SECONDS: float = 20.0
 
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
@@ -126,6 +137,9 @@ var _turn_ended: bool = false
 
 ## Set once the ambush's salvage has been taken.
 var _reward_claimed: bool = false
+
+## The card whose Close button waits on the opening shot, until it lands.
+var _card_awaiting_strike: TutorialTextPopup
 
 ## Bumped by every _await_open_signal(), so a stale timeout from an earlier
 ## wait can't end a later one.
@@ -167,6 +181,7 @@ func _ready() -> void:
 	Globals.tutorial_controls_enemy_turns = false
 	Globals.tutorial_holds_target_arrows = false
 	Globals.tutorial_holds_opening_strike = false
+	GameStateManager.next_run_pinned_stops.clear()
 
 	var playing: bool = should_play()
 	# Spent here either way, so the next run from the menu is an ordinary one
@@ -177,6 +192,8 @@ func _ready() -> void:
 
 	# GameStateManager rolls the run after this, in its own _ready().
 	RNGManager.next_run_seed = run_seed
+	if jump_destination:
+		GameStateManager.next_run_pinned_stops[jump_distance] = jump_destination
 	Globals.tutorial_controls_enemy_turns = true
 	# Out of sight until the step that shows them swinging out.
 	Globals.tutorial_holds_target_arrows = true
@@ -336,6 +353,7 @@ func play_step(step: TutorialStep) -> void:
 
 	if step.releases_opening_strike:
 		current_popup.all_text_displayed.connect(_release_opening_strike_after_beat)
+		_hold_close_until_strike_lands(current_popup)
 
 	# Handle calling tutorial functions
 	if step.tutorial_function in tutorial_functions:
@@ -475,6 +493,26 @@ func _stop_watching_target() -> void:
 func _release_opening_strike_after_beat() -> void:
 	await get_tree().create_timer(_OPENING_STRIKE_BEAT_SECONDS).timeout
 	_release_opening_strike()
+
+
+## Keeps [param card] from being closed until the opening shot it introduces
+## has landed, so the player watches the attack rather than clicking past it.
+func _hold_close_until_strike_lands(card: TutorialTextPopup) -> void:
+	if not Globals.state_manager or not Globals.state_manager.opening_strike_pending():
+		return
+	_card_awaiting_strike = card
+	card.hold_close_button()
+	if not Events.opening_strike_landed.is_connected(_release_card_awaiting_strike):
+		Events.opening_strike_landed.connect(_release_card_awaiting_strike, CONNECT_ONE_SHOT)
+	get_tree().create_timer(_OPENING_STRIKE_CLOSE_DEADLINE_SECONDS).timeout.connect(
+		_release_card_awaiting_strike
+	)
+
+
+func _release_card_awaiting_strike() -> void:
+	if is_instance_valid(_card_awaiting_strike):
+		_card_awaiting_strike.release_close_button()
+	_card_awaiting_strike = null
 
 
 ## Lets the ambusher fire. Safe to call more than once, and before the strike

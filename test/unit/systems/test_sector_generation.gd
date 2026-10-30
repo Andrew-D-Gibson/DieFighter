@@ -22,6 +22,7 @@ func before_each() -> void:
 
 func after_each() -> void:
 	RNGManager.get_rng(RNGManager.Bucket.RUN).state = _run_rng_state
+	GameStateManager.next_run_pinned_stops.clear()
 	super()
 
 
@@ -122,6 +123,25 @@ func test_the_gate_keeps_a_seeded_maps_layout() -> void:
 	for distance: int in [4, 5, 6]:
 		assert_true(sector[arrival + distance] in manager.combat_scenarios,
 			"and an ordinary fight %d to the right" % distance)
+
+
+## The tutorial pins the fight its jump lands in over the seeded map. The pin
+## replaces that one stop and leaves every other where the seed put it.
+func test_a_pinned_stop_replaces_only_its_slot() -> void:
+	var manager: GameStateManager = _main_state_manager()
+	var dealt: Array[ScenarioResource] = _roll_sector(manager, TUTORIAL_SEED, 0).duplicate()
+	var arrival: int = manager.current_game_save.current_scenario_index
+	var pinned: ScenarioResource = manager.empty_scenario
+
+	GameStateManager.next_run_pinned_stops[6] = pinned
+	var with_pin: Array[ScenarioResource] = _roll_sector(manager, TUTORIAL_SEED, 0)
+	assert_true(GameStateManager.next_run_pinned_stops.is_empty(), "the pin is spent on the run it was set for")
+	assert_eq(with_pin.size(), dealt.size())
+	for slot: int in dealt.size():
+		if slot == arrival + 6:
+			assert_eq(with_pin[slot], pinned)
+		else:
+			assert_eq(with_pin[slot], dealt[slot], "slot %d is the seed's" % slot)
 
 
 # ── A run's first stops are free of place rules ──────────────────────────────
