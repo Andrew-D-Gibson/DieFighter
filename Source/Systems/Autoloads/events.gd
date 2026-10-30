@@ -75,6 +75,9 @@ signal status_applied_to_enemy(ship: Enemy, status_id: StringName, stacks: int)
 ## An enemy's hit was aimed at the player, whether the shields or the hull take
 ## it: once per hit, not per point. A hit that missed (Phased) isn't one.
 signal player_attacked(attacker: Enemy)
+## An enemy's hit on the player missed because the engines dodged it
+## (EvasionModifier): once per hit. A Phased hit isn't one; that's the cloak.
+signal player_evaded(attacker: Enemy)
 
 # Enemy Events
 signal enemy_left(ship: Enemy, faction: ScenarioManager.Faction)

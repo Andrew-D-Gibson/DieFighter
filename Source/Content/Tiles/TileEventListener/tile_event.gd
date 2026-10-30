@@ -42,6 +42,10 @@ enum EventType {
 	## (Phased) never reached the player and doesn't count. The attacker is
 	## the response's starting target.
 	ON_PLAYER_ATTACKED,
+	## An enemy's hit on the player missed because the engines dodged it
+	## (EvasionModifier): once per hit, with the attacker as the response's
+	## starting target. A hit Phased let through doesn't count.
+	ON_PLAYER_EVADED,
 	## The player just took a killing blow. Answering it is a death save: the
 	## tile holds the hull at 1 on the spot, then its chain plays and should
 	## spend the tile (Tile._on_player_fatal_damage).

@@ -63,7 +63,10 @@ func _load_scenario(scenario: ScenarioResource) -> void:
 	# Make a new engine
 	engine = engine_scene.instantiate()
 	add_child(engine)
-	
+	# The drive's evasion is a standing rule of every scenario, not something a
+	# tile grants, so it goes on each fresh engine.
+	engine.add_modifier(EvasionModifier.new())
+
 	
 func _start_scenario() -> void:
 	_spawn_starting_reward()

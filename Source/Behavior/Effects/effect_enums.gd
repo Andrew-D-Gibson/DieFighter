@@ -132,6 +132,10 @@ enum AttributeChangeSubtype {
 	## DAMAGE that pays a bounty: `amount` credits for each hostile warship
 	## this very hit destroys (Bounty Scanner). See BountyDamageEvent.
 	BOUNTY_DAMAGE,
+	## Add running_amount percentage points to the player's evasion (the
+	## engines' chance to dodge an enemy hit) until the enemy turn ends. The
+	## total stays capped. See EvasionModifier.
+	ADD_EVASION,
 }
 
 

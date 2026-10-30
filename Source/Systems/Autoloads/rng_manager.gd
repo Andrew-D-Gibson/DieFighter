@@ -3,7 +3,11 @@ extends Node
 ## Owns every RandomNumberGenerator "bucket" used by the game, keeping
 ## gameplay-affecting randomness reproducible from a seed while cosmetic/
 ## background randomness stays free-running.
-enum Bucket { RUN, DICE, ENEMY_AI, TARGETING, REWARDS, BACKGROUND, COSMETIC }
+##
+## Saves store buckets by name, so new ones go on the end. EVASION is the
+## engines' dodge rolls (EvasionModifier), kept apart so whether a hit misses
+## never shifts what the enemies or the targeting roll next.
+enum Bucket { RUN, DICE, ENEMY_AI, TARGETING, REWARDS, BACKGROUND, COSMETIC, EVASION }
 
 var _rngs: Dictionary = {}
 
@@ -20,13 +24,14 @@ var next_run_seed: int = -1
 ## picking it from a free-running stream meant reloading a scenario could land
 ## the player under a different rule.
 const _SCENARIO_BUCKETS: Array[Bucket] = [
-	Bucket.DICE, Bucket.ENEMY_AI, Bucket.TARGETING, Bucket.REWARDS, Bucket.BACKGROUND
+	Bucket.DICE, Bucket.ENEMY_AI, Bucket.TARGETING, Bucket.REWARDS, Bucket.BACKGROUND,
+	Bucket.EVASION
 ]
 
 ## The per-scenario buckets a mid-scenario checkpoint saves. BACKGROUND is left
 ## out: it's only drawn at arrival, and cosmetic effects draw on it afterwards.
 const _CHECKPOINT_BUCKETS: Array[Bucket] = [
-	Bucket.DICE, Bucket.ENEMY_AI, Bucket.TARGETING, Bucket.REWARDS
+	Bucket.DICE, Bucket.ENEMY_AI, Bucket.TARGETING, Bucket.REWARDS, Bucket.EVASION
 ]
 
 

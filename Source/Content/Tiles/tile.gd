@@ -163,6 +163,9 @@ func _connect_tile_event_signals() -> void:
 	Events.player_attacked.connect(func(attacker: Enemy) -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_ATTACKED, false, attacker)
 	)
+	Events.player_evaded.connect(func(attacker: Enemy) -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_EVADED, false, attacker)
+	)
 	# Answered straight after the neighbour's activation rather than at the back
 	# of the queue. A relay chain winding past this tile activates several
 	# neighbours in one pass; queued, every response would wait for the chain
