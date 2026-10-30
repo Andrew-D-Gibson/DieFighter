@@ -46,7 +46,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Echo": "That tile activates twice, but hands its die on once. Tiles that ignore Echo are skipped. Lapses when your turn ends.",
 	"Phased": "The next hit from the player's tiles passes through this ship and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when its turn starts.",
 	"Phased (you)": "The next enemy hit passes through you and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when your next turn starts.",
-	"Evasion": "The chance each enemy hit misses you, shields and all: 3% per [color=purple]engine charge[/color], up to 50%. The Engine Charger shows it.",
+	"Evasion": "The chance each enemy hit misses you: 3% per [color=purple]engine charge[/color], up to 50%.",
 }
 
 ## Token -> {label shown in the text, term it belongs to}.
