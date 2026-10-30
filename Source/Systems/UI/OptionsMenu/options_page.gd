@@ -150,7 +150,9 @@ func button(label_key: String, text_key: String, on_pressed: Callable, hint_key:
 		pressable.add_theme_stylebox_override(state, _texture_style(background))
 	pressable.add_theme_color_override("font_color", accent)
 	pressable.add_theme_color_override("font_hover_color", Color.WHITE)
-	pressable.pressed.connect(on_pressed)
+	# Callers that need the button itself in the handler connect their own.
+	if on_pressed.is_valid():
+		pressable.pressed.connect(on_pressed)
 	_add_row(label_key, hint_key, pressable, true)
 	return pressable
 

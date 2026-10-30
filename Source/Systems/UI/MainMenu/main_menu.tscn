@@ -375,6 +375,7 @@ texture = ExtResource("12_dn166")
 unique_name_in_owner = true
 visible = false
 position = Vector2(160, 90)
+show_progress_tools = true
 
 [node name="ConfirmDialog" parent="." unique_id=330426674 instance=ExtResource("18_confirm")]
 unique_name_in_owner = true

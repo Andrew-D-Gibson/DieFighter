@@ -2,12 +2,18 @@ class_name OptionsMenu
 extends Node2D
 ## The options menu: a tab per area, each an OptionsPage of rows bound to
 ## OptionsSettings, plus a hint line, "Reset to defaults" for the open tab, and
-## Close.
+## Close. Opened from the main menu, the Game tab also has Erase Progress and
+## Unlock All (ProgressTools), for putting the game back to a first launch or
+## seeing all of it.
 ##
 ## Everything is built in code (_build_pages()) so a new option is one line
 ## there; the panel is drawn by OptionsFrame to fit however many tabs there
 ## are. Settings were loaded and applied at startup by the OptionsSettings
 ## autoload: the menu only shows and changes them.
+
+## Erase Progress or Unlock All has just changed the player's progress, so
+## the screen behind can catch up (Continue, for one).
+signal progress_changed()
 
 const _SMALL_BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/small_button.tscn")
 const _MEDIUM_BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/medium_button.tscn")
@@ -40,12 +46,23 @@ const _TABS: Dictionary[Tab, Array] = {
 const _ANIMATION_SPEEDS: Array = [0.5, 1.0, 2.0, 4.0]
 const _FPS_LIMITS: Array = [30, 60, 120, 0] # 0 means unlimited
 
+## How long a progress button waits for the second press that confirms it,
+## and how long it then says it's done, in seconds.
+const _CONFIRM_WINDOW: float = 3.0
+const _DONE_TIME: float = 1.5
+
+## Shows Erase Progress and Unlock All on the Game tab. Only the main menu's
+## copy does: mid-run, erasing would pull the save out from under the run.
+@export var show_progress_tools: bool = false
+
 var _frame: OptionsFrame
 var _tab_buttons: Array[Button] = []
 var _pages: Dictionary[Tab, OptionsPage] = {}
 var _hint_label: RichTextLabel
 var _defaults_button: Button
 var _open_tab: Tab = Tab.GAME
+## Each progress button -> its text, to put back when it disarms.
+var _progress_buttons: Dictionary[Button, String] = {}
 
 
 func _ready() -> void:
@@ -68,6 +85,9 @@ func _build_pages() -> void:
 	for locale: String in locales:
 		locale_names.append(Localization.get_locale_name(locale))
 	game.choice(OptionsSettings.LANGUAGE, "OPT_LANGUAGE", locale_names, locales)
+	if show_progress_tools:
+		_add_progress_button(game, "OPT_ERASE_PROGRESS", "OPT_ERASE", "OPT_ERASE_PROGRESS_HINT", ProgressTools.erase)
+		_add_progress_button(game, "OPT_UNLOCK_ALL", "OPT_UNLOCK", "OPT_UNLOCK_ALL_HINT", ProgressTools.unlock_all)
 	game.next_column()
 	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
 	# Comfort: background behaviour.
@@ -131,6 +151,16 @@ func _build_pages() -> void:
 	accessibility.check(OptionsSettings.COLOR_SYMBOLS, "OPT_COLOR_SYMBOLS", "OPT_COLOR_SYMBOLS_HINT")
 	# Readable font
 	accessibility.check(OptionsSettings.READABLE_FONT, "OPT_READABLE_FONT", "OPT_READABLE_FONT_HINT")
+
+
+## A row whose button changes the player's progress for good, so the first
+## press only arms it ("Sure?") and a second, within _CONFIRM_WINDOW, does
+## [param action].
+func _add_progress_button(page: OptionsPage, label_key: String, text_key: String,
+		hint_key: String, action: Callable) -> void:
+	var button: Button = page.button(label_key, text_key, Callable(), hint_key)
+	button.pressed.connect(_on_progress_pressed.bind(button, action))
+	_progress_buttons[button] = text_key
 
 
 ## The window scales offered here: those that fit on this display.
@@ -255,6 +285,7 @@ static func _set_button_texture(button: Button, texture: Texture2D) -> void:
 ## --- Behaviour ---
 
 func _show_tab(tab: Tab) -> void:
+	_disarm_progress_buttons()
 	_open_tab = tab
 	for each: Tab in _pages:
 		_pages[each].visible = each == tab
@@ -277,6 +308,7 @@ func _on_option_changed(key: StringName, _value: Variant) -> void:
 
 
 func _on_visibility_changed() -> void:
+	_disarm_progress_buttons()
 	if visible:
 		# Options can change while the menu is shut (the dev console, the
 		# window going fullscreen from its title bar).
@@ -289,6 +321,35 @@ func _on_hint_changed(text: String) -> void:
 
 func _on_defaults_pressed() -> void:
 	OptionsSettings.reset_options(_pages[_open_tab].option_keys())
+
+
+func _on_progress_pressed(button: Button, action: Callable) -> void:
+	if not button.has_meta(&"armed_at"):
+		var armed_at: int = Time.get_ticks_msec()
+		button.set_meta(&"armed_at", armed_at)
+		button.text = "OPT_SURE"
+		await get_tree().create_timer(_CONFIRM_WINDOW).timeout
+		# Unless it was pressed again, or disarmed and armed afresh, meanwhile.
+		if button.get_meta(&"armed_at", -1) == armed_at:
+			_disarm(button)
+		return
+	_disarm(button)
+	action.call()
+	progress_changed.emit()
+	button.text = "OPT_DONE"
+	await get_tree().create_timer(_DONE_TIME).timeout
+	if not button.has_meta(&"armed_at"):
+		button.text = _progress_buttons[button]
+
+
+func _disarm(button: Button) -> void:
+	button.remove_meta(&"armed_at")
+	button.text = _progress_buttons[button]
+
+
+func _disarm_progress_buttons() -> void:
+	for button: Button in _progress_buttons:
+		_disarm(button)
 
 
 func _on_close_button_pressed() -> void:

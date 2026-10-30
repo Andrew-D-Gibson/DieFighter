@@ -39,13 +39,9 @@ func _ready() -> void:
 	%ConfirmDialog.confirmed.connect(_on_new_game_confirmed)
 	%ShipSelectPopup.launched.connect(_on_ship_launched)
 	%ShipSelectPopup.tutorial_launched.connect(_on_tutorial_launched)
-
-	if SaveManager.has_save():
-		%ContinueButton.visible = true
-		%PlayButton.set_button_text("NEW GAME")
-	else:
-		%ContinueButton.visible = false
-		%PlayButton.set_button_text("PLAY")
+	# Erase Progress can take the save away while the menu is up.
+	%OptionsMenu.progress_changed.connect(_refresh_play_buttons)
+	_refresh_play_buttons()
 
 	# Set up the background
 	#self.self_modulate = background_color
@@ -70,6 +66,15 @@ func _ready() -> void:
 	MusicDirector.play_track(_MENU_TRACK, 2.0, true)
 	
 	
+func _refresh_play_buttons() -> void:
+	if SaveManager.has_save():
+		%ContinueButton.visible = true
+		%PlayButton.set_button_text("NEW GAME")
+	else:
+		%ContinueButton.visible = false
+		%PlayButton.set_button_text("PLAY")
+
+
 func _clear_stars() -> void:
 	for star: Node2D in _stars:
 		star.queue_free()

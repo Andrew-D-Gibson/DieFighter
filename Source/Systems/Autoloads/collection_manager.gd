@@ -88,7 +88,21 @@ func clear() -> void:
 	_tiles.clear()
 	_enemies.clear()
 	_regions.clear()
+	changed.emit()
 	_write()
+
+
+## Marks every id given as found, in one write. Counts already earned are
+## kept; an enemy never met counts as met once, so the codex shows it.
+func unlock(tile_ids: Array[String], enemy_ids: Array[String], region_ids: Array[String]) -> void:
+	for id: String in tile_ids:
+		_tiles[id] = true
+	for id: String in enemy_ids:
+		if not _enemies.has(id):
+			_enemies[id] = {"encountered": 1, "destroyed": 0}
+	for id: String in region_ids:
+		_regions[id] = true
+	_queue_write()
 
 
 ## Whether what happens now is the player's own run, worth remembering.

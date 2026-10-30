@@ -86,17 +86,15 @@ func test_replay_is_hidden_until_the_tutorial_is_played() -> void:
 	assert_false(popup.get_node("%ReplayTutorialButton").visible)
 
 
-func test_replay_sits_under_the_tutorials_ship() -> void:
+func test_replay_sits_in_the_corner_away_from_launch() -> void:
 	var popup: ShipSelectPopup = _open_ship_select(true)
 	var card: ShipCard = popup.tutorial_card()
 	assert_not_null(card)
 	assert_true(card.ship.supports_tutorial)
 	var button: Button = popup.get_node("%ReplayTutorialButton")
 	assert_true(button.visible)
-	# The card's resting top: open() starts it sliding up from lower down.
-	assert_gt(button.position.y, ShipSelectPopup._CARD_TOP + ShipCard.SIZE.y, "below the card")
-	assert_between(button.position.x + button.size.x / 2.0,
-		card.position.x, card.position.x + ShipCard.SIZE.x, "under the card, not beside it")
+	assert_lt(button.position.y + button.size.y, ShipSelectPopup._CARD_TOP, "above the cards")
+	assert_lt(button.position.x + button.size.x, 0.0, "on the left")
 
 
 func test_replay_flies_the_tutorials_ship() -> void:

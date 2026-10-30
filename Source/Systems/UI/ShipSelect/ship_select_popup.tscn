@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://Source/Systems/UI/ShipSelect/ship_select_popup.gd" id="1_script"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="2_button"]
 [ext_resource type="Texture2D" uid="uid://66npl6ypq2vo" path="res://Assets/Textures/UI/Buttons/button_medium_green.png" id="3_green"]
-[ext_resource type="Texture2D" uid="uid://ccwljuf14y1ag" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="4_blue"]
+[ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="4_purple"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_green"]
 atlas = ExtResource("3_green")
@@ -20,15 +20,15 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_blue"]
-atlas = ExtResource("4_blue")
+[sub_resource type="AtlasTexture" id="AtlasTexture_purple"]
+atlas = ExtResource("4_purple")
 region = Rect2(0, 0, 56, 14)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_blue"]
+[sub_resource type="SpriteFrames" id="SpriteFrames_purple"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_blue")
+"texture": SubResource("AtlasTexture_purple")
 }],
 "loop": 1,
 "name": &"default",
@@ -97,12 +97,14 @@ text = "BACK"
 [node name="ReplayTutorialButton" parent="." instance=ExtResource("2_button")]
 unique_name_in_owner = true
 visible = false
-offset_right = 56.0
-offset_bottom = 14.0
-hover_text_color = Color(0.262745, 0.65098, 0.988235, 1)
+offset_left = -156.0
+offset_top = -84.0
+offset_right = -100.0
+offset_bottom = -70.0
+hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 
 [node name="AnimatedSprite2D" parent="ReplayTutorialButton" index="0"]
-sprite_frames = SubResource("SpriteFrames_blue")
+sprite_frames = SubResource("SpriteFrames_purple")
 
 [node name="RichTextLabel" parent="ReplayTutorialButton" index="1"]
 text = "SHIP_SELECT_REPLAY_TUTORIAL"
