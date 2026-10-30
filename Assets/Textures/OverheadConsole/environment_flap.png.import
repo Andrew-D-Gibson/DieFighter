@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://s0qo2q45nmq0"
-path="res://.godot/imported/environment_monitor_lamp.png-c2029c3712daca30a8284b707cb263c4.ctex"
+uid="uid://diy6wdw1hkmo2"
+path="res://.godot/imported/environment_flap.png-78a5bf69ae5ed8807d419492298e94a2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/TargetingComputer/environment_monitor_lamp.png"
-dest_files=["res://.godot/imported/environment_monitor_lamp.png-c2029c3712daca30a8284b707cb263c4.ctex"]
+source_file="res://Assets/Textures/OverheadConsole/environment_flap.png"
+dest_files=["res://.godot/imported/environment_flap.png-78a5bf69ae5ed8807d419492298e94a2.ctex"]
 
 [params]
 

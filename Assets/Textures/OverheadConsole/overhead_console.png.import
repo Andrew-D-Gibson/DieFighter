@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cupbueng6dl25"
-path="res://.godot/imported/money_indicator.png-019be043d7293ad415fe10fa962c2aaa.ctex"
+uid="uid://c3w4lq5bxehwu"
+path="res://.godot/imported/overhead_console.png-4a577340f56b038db07b270c86909df7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Money/MoneyIndicator/money_indicator.png"
-dest_files=["res://.godot/imported/money_indicator.png-019be043d7293ad415fe10fa962c2aaa.ctex"]
+source_file="res://Assets/Textures/OverheadConsole/overhead_console.png"
+dest_files=["res://.godot/imported/overhead_console.png-4a577340f56b038db07b270c86909df7.ctex"]
 
 [params]
 

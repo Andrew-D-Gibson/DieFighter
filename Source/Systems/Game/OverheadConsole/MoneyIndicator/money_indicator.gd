@@ -1,5 +1,15 @@
 class_name MoneyIndicator
 extends Node2D
+## The credit readout in the OverheadConsole's case. Changes collect for a
+## moment, then count across into the balance. It brings the console down
+## whenever credits move (coins in the air, a balance change) and while a shop
+## or the repair station is open, and lets it go back up a little after the
+## count settles.
+
+## What the readout asks the console for while it has something to show.
+const _CONSOLE_REQUEST: StringName = &"credits"
+## The knock a coin gives the console as it lands.
+const _COIN_SWAY_DEGREES: float = 2.0
 
 @export var money_label: RichTextLabel
 @export var money_change_label: RichTextLabel
@@ -7,6 +17,8 @@ extends Node2D
 # Configuration
 @export var grace_period: float = 1.0  # Time window to accumulate changes
 @export var max_countdown_time: float = 2.0  # Maximum time a countdown is allowed to take
+## How long the settled balance stays on show before the console goes up.
+@export var hold_seconds: float = 2.5
 
 var countdown_tick_duration: float = 0.03 
 
@@ -27,6 +39,17 @@ var total_change: int = 0
 var grace_timer: Timer
 var countdown_tween: Tween
 
+## Set by the console that carries the readout. Null when it stands alone.
+var console: OverheadConsole = null
+
+## Payout and loss coins still in the air, which the readout has to stay down
+## to catch (or to be seen losing).
+var _coins_in_flight: int = 0
+## A shop or the repair station is open: credits are about to be spent.
+var _shop_open: bool = false
+var _repair_open: bool = false
+var _hold_timer: Timer
+
 func _ready() -> void:
 	Globals.money_indicator = self
 	
@@ -38,37 +61,90 @@ func _ready() -> void:
 	grace_timer.one_shot = true
 	grace_timer.timeout.connect(_on_grace_period_expired)
 	add_child(grace_timer)
-	
+
+	_hold_timer = Timer.new()
+	_hold_timer.one_shot = true
+	_hold_timer.timeout.connect(_refresh_request)
+	add_child(_hold_timer)
+
 	Events.set_money.connect(_on_money_changed)
-	Events.spawn_reward.connect(
-		func(_pos: Vector2, reward_resource: RewardResource) -> void:
-			if reward_resource.max_money > 0:
-				_fade_in()
-	)
 	Events.load_game_save.connect(
 		func(game_save: GameSaveResource) -> void:
 			_update_money_display(game_save.money)
-			if game_save.money > 0:
-				_fade_in()
 	)
+	Events.open_shop.connect(_set_shop_open.bind(true))
+	Events.close_shop.connect(_set_shop_open.bind(false))
+	Events.open_repair_station.connect(_set_repair_open.bind(true))
+	Events.close_repair_station.connect(_set_repair_open.bind(false))
 
-	hide()
-	
+
+## Where coins should fly to (and lost ones start from): the readout's place
+## once the console is down, even while it is still on its way.
+func coin_target() -> Vector2:
+	return console.rest_global_position(self) if console else global_position
+
+
+## A payout or loss coin has taken off. The readout stays down until every one
+## of them has landed or gone.
+func track_coin(coin: Node) -> void:
+	_coins_in_flight += 1
+	coin.tree_exiting.connect(_on_coin_gone, CONNECT_ONE_SHOT)
+	_refresh_request()
+
+
+func _on_coin_gone() -> void:
+	_coins_in_flight = maxi(0, _coins_in_flight - 1)
+	_hold()
+
+
+func _set_shop_open(open: bool) -> void:
+	_shop_open = open
+	_hold()
+
+
+func _set_repair_open(open: bool) -> void:
+	_repair_open = open
+	_hold()
+
+
+## Keeps the balance on show for a moment after the last thing that moved it.
+func _hold() -> void:
+	_hold_timer.start(hold_seconds)
+	_refresh_request()
+
+
+func _is_counting() -> bool:
+	return not grace_timer.is_stopped() \
+		or (countdown_tween != null and countdown_tween.is_valid() and countdown_tween.is_running())
+
+
+func _refresh_request() -> void:
+	if console == null:
+		return
+	var wanted: bool = _coins_in_flight > 0 or _shop_open or _repair_open \
+		or _is_counting() or not _hold_timer.is_stopped()
+	console.request_down(_CONSOLE_REQUEST, wanted)
+
 
 func _on_money_changed(new_value: int) -> void:
+	var previous_change: int = total_change if _is_counting() else 0
 	total_change = new_value - int(money_label.text)
-	
-	# Any real balance change (reward, shop, dev tools) should surface the
-	# indicator, rather than relying on each source to announce itself.
-	if total_change != 0:
-		_fade_in()
-	
+
+	# Any real balance change (reward, shop, dev tools) brings the readout
+	# down, rather than relying on each source to announce itself.
+	if total_change == 0:
+		return
+	# Each coin landing knocks the console a little.
+	if console and total_change > previous_change:
+		console.sway(_COIN_SWAY_DEGREES)
+
 	if countdown_tween:
 		countdown_tween.kill()
 		
 	# Start grace period
 	grace_timer.start(grace_period)
-		
+	_hold()
+
 	# Show the change label with the total change
 	_show_change_label(total_change)
 
@@ -134,9 +210,12 @@ func _start_countdown_animation() -> void:
 		countdown_duration * 0.5
 	).set_delay(countdown_duration * 0.5)
 	
-	# Hide the change label when animation completes
+	# Hide the change label when animation completes, and keep the settled
+	# balance up a moment longer.
 	countdown_tween.tween_callback(
-		func() -> void: money_change_label.visible = false
+		func() -> void:
+			money_change_label.visible = false
+			_hold()
 	).set_delay(countdown_duration)
 
 
@@ -170,23 +249,3 @@ func _build_change_outline() -> void:
 
 func _update_money_display(value: int) -> void:
 	money_label.text = str(value)
-	
-
-func _fade_in() -> void:
-	if self.is_visible_in_tree():
-		return
-		
-	self_modulate.a = 0
-	show()
-	
-	var fade_time: float = 2
-	
-	var tween: Tween = get_tree().create_tween()
-	tween.tween_property(
-		self,
-		"modulate:a",
-		1,
-		fade_time
-	).from(0)\
-	.set_trans(Tween.TRANS_LINEAR)\
-	.set_ease(Tween.EASE_IN_OUT)

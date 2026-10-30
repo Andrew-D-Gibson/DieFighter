@@ -1,5 +1,5 @@
 extends "res://test/helpers/die_fighter_test.gd"
-## EnvironmentMonitor: swings up whenever the player arrives somewhere with a
+## EnvironmentMonitor: flips down whenever the player arrives somewhere with a
 ## rule or a hazard, fight or no fight, and folds away for the jump out. A
 ## hazard's countdown shows only while a fight has it counting down.
 ##
@@ -8,7 +8,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## with one deferred present, so each step waits a frame before checking.
 
 const MONITOR_SCENE: PackedScene = preload(
-	"res://Source/Systems/Game/TargetingComputer/EnvironmentMonitor/environment_monitor.tscn"
+	"res://Source/Systems/Game/OverheadConsole/EnvironmentMonitor/environment_monitor.tscn"
 )
 
 var monitor: EnvironmentMonitor

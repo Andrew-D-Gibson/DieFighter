@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/Game/OverheadConsole/overhead_console.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/OverheadConsole/overhead_console.png" id="2_body"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/OverheadConsole/EnvironmentMonitor/environment_monitor.tscn" id="3_envmon"]
+[ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/Systems/Game/OverheadConsole/MoneyIndicator/money_indicator.tscn" id="4_money"]
+
+[node name="OverheadConsole" type="Node2D" groups=["hud_overhead_console"]]
+script = ExtResource("1_script")
+
+[node name="Swing" type="Node2D" parent="."]
+unique_name_in_owner = true
+
+[node name="EnvironmentMonitor" parent="Swing" instance=ExtResource("3_envmon")]
+unique_name_in_owner = true
+position = Vector2(0, 31)
+
+[node name="Body" type="Sprite2D" parent="Swing"]
+texture = ExtResource("2_body")
+centered = false
+offset = Vector2(-21, 0)
+
+[node name="MoneyIndicator" parent="Swing" instance=ExtResource("4_money")]
+unique_name_in_owner = true
+position = Vector2(0, 22)

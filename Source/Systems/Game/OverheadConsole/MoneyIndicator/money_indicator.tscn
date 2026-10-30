@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://pt7daun04sgd"]
 
-[ext_resource type="Script" uid="uid://lxeyxahlkpg5" path="res://Source/Systems/Game/MoneyIndicator/money_indicator.gd" id="1_837oe"]
-[ext_resource type="Texture2D" uid="uid://cupbueng6dl25" path="res://Assets/Textures/Money/MoneyIndicator/money_indicator.png" id="2_lc17p"]
+[ext_resource type="Script" uid="uid://lxeyxahlkpg5" path="res://Source/Systems/Game/OverheadConsole/MoneyIndicator/money_indicator.gd" id="1_837oe"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qyfr0"]
 size = Vector2(38, 12)
@@ -11,23 +10,20 @@ script = ExtResource("1_837oe")
 money_label = NodePath("MoneyLabel")
 money_change_label = NodePath("MoneyChangeLabel")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=362677576]
-texture = ExtResource("2_lc17p")
-
 [node name="MoneyLabel" type="RichTextLabel" parent="." unique_id=465731418]
-offset_left = -9.0
-offset_top = -8.0
-offset_right = 17.0
-offset_bottom = 5.0
+offset_left = -8.0
+offset_top = -7.0
+offset_right = 16.0
+offset_bottom = 6.0
 text = "10000"
 horizontal_alignment = 2
 
 [node name="MoneyChangeLabel" type="RichTextLabel" parent="." unique_id=720187404]
 visible = false
-offset_left = 20.0
-offset_top = -8.0
-offset_right = 46.0
-offset_bottom = 5.0
+offset_left = 23.0
+offset_top = -7.0
+offset_right = 49.0
+offset_bottom = 6.0
 text = "+10"
 
 [node name="MoneyParticleCollisionArea" type="Area2D" parent="." unique_id=383486439]

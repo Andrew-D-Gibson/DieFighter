@@ -1,10 +1,11 @@
 class_name EnvironmentMonitor
 extends Node2D
-## A hinged monitor that swings up out of the targeting computer when the
-## player arrives in a region whose background has a rule
+## The OverheadConsole's hinged flap: its screen flips down under the credit
+## readout when the player arrives in a region whose background has a rule
 ## (BackgroundModifierResource) or a timed hazard (BackgroundHazardResource).
 ## Backgrounds are random, so the rule has to announce itself or it reads as a
-## bug. It stays folded away in plain space, its lamp blinks until clicked
+## bug. It stays folded away in plain space (and the console stays up in the
+## ceiling unless credits need it), its bezel lamp blinks until clicked
 ## (which opens the usual InfoShower panel), then stays lit while the player is
 ## in the region. Unless the player turned them off, a RegionAlert card spells
 ## the rule out on arrival: it unfolds out of the screen once the monitor is
@@ -12,7 +13,9 @@ extends Node2D
 ## in, which counts as read. A hazard only counts down during a fight, so its
 ## countdown shows only while one is on.
 ##
-## The node's origin is the hinge; everything that moves hangs off %Arm.
+## The node's origin is the flap's hinge, under the credit readout. %Arm flips
+## (its scale) and %Face takes the squash-and-stretch, so the two never fight
+## over one scale.
 
 ## Shown on the screen when a rule ships no art of its own. White, so it can
 ## take the rule's colour.
@@ -42,16 +45,22 @@ const _TRIGGER_COOLDOWN_MSEC: int = 150
 ## How far over-bright the unit flares when the rule bites.
 const _FLARE_BRIGHTNESS: float = 2.2
 
-## Where the callout starts, from the centre of the screen glyph: just above the
-## housing, so it rises clear of the monitor.
-const _CALLOUT_OFFSET: Vector2 = Vector2(0, -12)
+## Where the callout starts, from the centre of the screen glyph: off the
+## flap's open side, so it rises clear of the console instead of over the
+## credit readout.
+const _CALLOUT_OFFSET: Vector2 = Vector2(18, 0)
 
 const _COUNTDOWN_FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 ## Where the glyph sits on the screen, alone or sharing it with a countdown.
-const _GLYPH_CENTRED: Vector2 = Vector2(0, -22)
-const _GLYPH_BESIDE_COUNTDOWN: Vector2 = Vector2(-4, -22)
-const _COUNTDOWN_POSITION: Vector2 = Vector2(4, -22)
+const _GLYPH_CENTRED: Vector2 = Vector2(0, 12)
+const _GLYPH_BESIDE_COUNTDOWN: Vector2 = Vector2(-4, 12)
+const _COUNTDOWN_POSITION: Vector2 = Vector2(5, 12)
+
+## What the flap asks the console for while it has something to show.
+const _CONSOLE_REQUEST: StringName = &"environment"
+## How far the console swings on its rod when the flap gets a knock.
+const _KICK_DEGREES: float = 7.0
 
 ## The countdown ticking down. The last tick before it fires is a heavier one.
 const _TICK_SFX: SoundEffectResource = preload(
@@ -61,18 +70,14 @@ const _URGENT_TICK_SFX: SoundEffectResource = preload(
 	"res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres"
 )
 
-## How far below the hinge the arm sits when stowed — far enough that the whole
-## monitor hides behind the targeting computer's body.
-@export var stowed_drop: float = 40.0
-
-## The tilt the arm starts its swing from, in degrees. It rises leaning over,
-## then swings upright, so it reads as unfolding rather than sliding.
-@export var swing_from_degrees: float = -24.0
+## How long the flap takes to flip down once the console is down.
+@export var flip_seconds: float = 0.35
 
 ## One full lamp on/off cycle while the rule is unread, in seconds.
 @export var blink_period: float = 0.8
 
 @onready var _arm: Node2D = %Arm
+@onready var _face: Node2D = %Face
 @onready var _lamp: Sprite2D = %Lamp
 @onready var _glyph: Sprite2D = %Glyph
 @onready var _clickable: Clickable = %Clickable
@@ -113,6 +118,10 @@ var _flare_tween: Tween
 var _countdown_tween: Tween
 
 var _last_trigger_msec: int = -_TRIGGER_COOLDOWN_MSEC
+
+## Set by the console that carries the flap. Null when the flap stands alone
+## (its tests), in which case it just flips.
+var console: OverheadConsole = null
 
 
 func _ready() -> void:
@@ -188,7 +197,7 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 		return
 
 	var color: Color = _current_color()
-	Juice.bump(_arm, 0.25, 0.3)
+	Juice.bump(_face, 0.25, 0.3)
 	_kick()
 	_flare(color)
 	_pop_countdown()
@@ -312,8 +321,8 @@ func _announce(shown: Resource) -> void:
 	alert.wait_for_close = CollectionManager.is_recording() and not CollectionManager.has_read_region(id)
 	alert.landed.connect(_on_alert_landed.bind(shown))
 	alert.landed.connect(_record_read.bind(id))
-	# Beside the monitor rather than on it: the monitor hides itself while
-	# stowed, and would take the card with it.
+	# Beside the flap rather than on it: the flap hides itself while folded,
+	# and would take the card with it.
 	get_parent().add_child(alert)
 	await alert.tree_exited
 
@@ -376,8 +385,8 @@ func _on_modifier_triggered(mod: Modifier) -> void:
 ## several times over, so the ring, callout and sound are rate-limited; the
 ## squash and flare still answer every trip.
 func _play_trigger_feedback(callout_text: String, color: Color) -> void:
-	Juice.bump(_arm, 0.3, 0.35)
-	# Mid-deploy the arm's swing belongs to the motion tween.
+	Juice.bump(_face, 0.3, 0.35)
+	# Mid-deploy the console's swing belongs to its drop.
 	if not (_motion_tween and _motion_tween.is_running()):
 		_kick()
 	_flare(color)
@@ -455,54 +464,64 @@ static func hazard_timing_text(
 	return TranslationServer.translate("HAZARD_NEXT_IN_TURNS").format({"turns": turns_remaining})
 
 
-## Rises out from behind the targeting computer leaning over, then swings
-## upright on the hinge and settles with a wobble.
+## Asks the console down, then flips open on the hinge once it's there, and
+## gives the console a knock so it swings on its rod.
 func _deploy() -> void:
 	_deployed = true
 	show()
 	_kill_motion()
+	var wait: float = 0.0
+	if console:
+		console.request_down(_CONSOLE_REQUEST, true)
+		wait = console.seconds_until_down()
 
-	_motion_tween = create_tween().set_parallel()
-	_motion_tween.tween_property(_arm, "position:y", 0.0, 0.45) \
-		.from(stowed_drop).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	_motion_tween.tween_property(_arm, "rotation", 0.0, 0.9) \
-		.from(deg_to_rad(swing_from_degrees)).set_delay(0.2) \
-		.set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	_motion_tween = create_tween()
+	_motion_tween.tween_interval(wait)
+	_motion_tween.tween_property(_arm, "scale:y", 1.0, flip_seconds) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	_motion_tween.parallel().tween_callback(_sway_console.bind(_KICK_DEGREES))
 	# Not clickable until it has finished arriving, so a click aimed at the
-	# targeting computer never lands on a monitor still in transit.
-	_motion_tween.chain().tween_callback(_set_clickable.bind(true))
+	# sky never lands on a flap still in transit.
+	_motion_tween.tween_callback(_set_clickable.bind(true))
 
 
-## Leans back over and drops out of sight behind the targeting computer.
+## Folds shut, then lets the console go back up (if the credits don't still
+## want it down).
 func _stow() -> void:
 	_deployed = false
 	_set_clickable(false)
 	_kill_motion()
 
-	_motion_tween = create_tween().set_parallel()
-	_motion_tween.tween_property(
-		_arm, "rotation", deg_to_rad(swing_from_degrees * 0.6), 0.15
-	).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	_motion_tween.tween_property(_arm, "position:y", stowed_drop, 0.3) \
-		.set_delay(0.1).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-	_motion_tween.chain().tween_callback(hide)
+	_motion_tween = create_tween()
+	_motion_tween.tween_property(_arm, "scale:y", 0.0, 0.2) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_motion_tween.tween_callback(hide)
+	_motion_tween.tween_callback(_release_console)
 
 
 func _stow_instantly() -> void:
 	_deployed = false
 	_set_clickable(false)
-	_arm.position.y = stowed_drop
-	_arm.rotation = deg_to_rad(swing_from_degrees)
+	_arm.scale.y = 0.0
 	hide()
 
 
-## A knock on the hinge and a flare of the screen.
+func _release_console() -> void:
+	if console:
+		console.request_down(_CONSOLE_REQUEST, false)
+
+
+func _sway_console(degrees: float) -> void:
+	if console:
+		console.sway(degrees)
+
+
+## A knock that swings the console on its rod, and a flare of the screen.
 func _kick() -> void:
+	_sway_console(_KICK_DEGREES)
 	if _kick_tween and _kick_tween.is_valid():
 		_kick_tween.kill()
-	_kick_tween = create_tween().set_parallel()
-	_kick_tween.tween_property(_arm, "rotation", 0.0, 0.6) \
-		.from(deg_to_rad(10.0)).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	_kick_tween = create_tween()
 	_kick_tween.tween_property(_glyph, "self_modulate", Color.WHITE, 0.35) \
 		.from(Color(2.5, 2.5, 2.5)).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
@@ -554,7 +573,7 @@ func _build_countdown() -> void:
 	_countdown.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_countdown.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_countdown.text = "0"
-	_arm.add_child(_countdown)
+	_face.add_child(_countdown)
 	_countdown.reset_size()
 	_countdown.pivot_offset = (_countdown.size / 2.0).round()
 	_countdown.position = (_COUNTDOWN_POSITION - _countdown.size / 2.0).round()

@@ -11,7 +11,8 @@ extends Node2D
 ## - HUD slots: a Marker2D under a node named [constant HUD_SLOTS] for each
 ##   instrument the ship mounts somewhere else. A marker's name is the group
 ##   its instrument joins ([constant HULL_GAUGE], [constant TARGETING_COMPUTER],
-##   [constant STATUS_BAR]), and the instrument is moved onto the marker
+##   [constant STATUS_BAR], [constant OVERHEAD_CONSOLE]), and the instrument is
+##   moved onto the marker
 ##   before any of it is ready. An instrument with no marker stays where the
 ##   game scene puts it.
 ##
@@ -22,7 +23,9 @@ const HUD_SLOTS: StringName = &"HudSlots"
 const HULL_GAUGE: StringName = &"hud_hull_gauge"
 const TARGETING_COMPUTER: StringName = &"hud_targeting_computer"
 const STATUS_BAR: StringName = &"hud_status_bar"
-const HUD_GROUPS: Array[StringName] = [HULL_GAUGE, TARGETING_COMPUTER, STATUS_BAR]
+## The marker is the console's ceiling mount: it hangs down from there.
+const OVERHEAD_CONSOLE: StringName = &"hud_overhead_console"
+const HUD_GROUPS: Array[StringName] = [HULL_GAUGE, TARGETING_COMPUTER, STATUS_BAR, OVERHEAD_CONSOLE]
 
 ## The shell. Null keeps the default shell, repainted with the ship's
 ## cockpit_palette. A shell of the ship's own is drawn in its own colours.

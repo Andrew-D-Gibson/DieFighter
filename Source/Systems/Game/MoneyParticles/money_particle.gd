@@ -64,6 +64,8 @@ static func spawn_payout(
 
 		parent.add_child(particle)
 		particle.global_position = global_pos
+		if is_instance_valid(Globals.money_indicator):
+			Globals.money_indicator.track_coin(particle)
 
 
 ## The reverse of [method spawn_payout]: [param total] credits burst off the
@@ -83,7 +85,8 @@ static func spawn_loss(
 		particle._leaving = true
 		particle._destination = destination
 		parent.add_child(particle)
-		particle.global_position = Globals.money_indicator.global_position
+		particle.global_position = Globals.money_indicator.coin_target()
+		Globals.money_indicator.track_coin(particle)
 
 
 ## Whether this coin is on its way to the player's balance, rather than
@@ -118,10 +121,12 @@ func _process(delta: float) -> void:
 			
 			var tween_time: float = 0.75
 			var tween: Tween = get_tree().create_tween()
+			# The readout's resting place: the console may still be dropping
+			# in, and its catch area arrives there to meet the coin.
 			tween.tween_property(
 				self, 
 				"global_position", 
-				Globals.money_indicator.global_position, 
+				Globals.money_indicator.coin_target(), 
 				tween_time
 			).set_trans(Tween.TRANS_QUART)\
 			.set_ease(Tween.EASE_IN)

@@ -27,7 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://y7qaivofieux" path="res://Assets/Textures/UI/Cockpit/dice_area_highlight.png" id="13_nfx0x"]
 [ext_resource type="Script" uid="uid://b16yw1mkocqnu" path="res://Source/Systems/UI/dice_area_highlight.gd" id="14_jblvd"]
 [ext_resource type="Script" uid="uid://dadh0h1qi45h8" path="res://Source/Systems/UI/MouseCursor/mouse_cursor.gd" id="14_ql5sb"]
-[ext_resource type="PackedScene" uid="uid://pt7daun04sgd" path="res://Source/Systems/Game/MoneyIndicator/money_indicator.tscn" id="15_cshgf"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Game/OverheadConsole/overhead_console.tscn" id="15_cshgf"]
 [ext_resource type="PackedScene" uid="uid://bgfodlvhkbfhi" path="res://Source/Systems/Game/ScenarioManager/scenario_manager.tscn" id="19_3g417"]
 [ext_resource type="PackedScene" uid="uid://bq0eop4cxspu2" path="res://Source/Systems/Game/MainViewer/main_viewer.tscn" id="19_okrb4"]
 [ext_resource type="Resource" uid="uid://f2rm5hk1yt2q" path="res://Source/Content/ScenarioResources/Scenarios/EmptyScenario/empty_scenario.tres" id="20_grfux"]
@@ -369,9 +369,9 @@ position = Vector2(65, 114)
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]
 position = Vector2(216, 12)
 
-[node name="MoneyIndicator" parent="Systems/Player" unique_id=456217975 instance=ExtResource("15_cshgf")]
+[node name="OverheadConsole" parent="Systems/Player" unique_id=456217975 instance=ExtResource("15_cshgf")]
 z_index = 9
-position = Vector2(-44, -106)
+position = Vector2(-39, -120)
 
 [node name="MainViewer" parent="Systems/Player" unique_id=537874798 instance=ExtResource("19_okrb4")]
 position = Vector2(96, 7)
