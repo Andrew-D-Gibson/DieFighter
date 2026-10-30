@@ -6,19 +6,19 @@ extends Node
 ## The project renders a 1920x1080 canvas through a 6x camera and letterboxes
 ## it by whatever factor fits, so on a screen that isn't a multiple of 320x180
 ## (a 3456x2234 MacBook: 1.8x) art pixels come out 10 and 11 screen pixels
-## wide. Godot's own integer stretch can't help: it counts in multiples of the
-## 1920x1080 canvas, which leaves that MacBook at 1x.
+## wide. Godot's own stretch settings can't fix that: integer stretch counts
+## in multiples of the 1920x1080 canvas (1x on that MacBook) and rounds the
+## content scale factor down to a whole number, and fractional stretch always
+## fills the screen.
 ##
-## Instead the window switches to canvas_items stretching, set up so the
-## canvas scales by exactly k/6 (k = the largest whole art scale that fits).
-## Content scale factor below 1 isn't allowed, so the base size is six screens
-## and the factor is k. The window then shows a little more canvas than the
-## 1920x1080 frame; cameras centre on the frame anyway, a mask covers the
-## extra, and screen-space layers in FRAME_UI_GROUP are moved onto the frame.
-
-## CanvasLayers that don't follow the camera but were laid out for a
-## 1920x1080 screen at the origin: shifted onto the frame when it's inset.
-const FRAME_UI_GROUP: StringName = &"frame_ui"
+## Instead the window switches to canvas_items stretching (so it draws at the
+## screen's own resolution) on the usual 1920x1080 base, which keeps the
+## viewport exactly as the rest of the game expects it, and the root's global
+## canvas transform then shrinks that fitted picture to k/6 (k = the largest
+## whole art scale that fits) and centres it. The global canvas transform
+## also moves every CanvasLayer and maps the mouse, so nothing else needs to
+## know. A mask blacks out the band it leaves, where anything drawn past the
+## frame's edge would otherwise show.
 
 ## Under the cursor (layer 128), over everything else.
 const _MASK_LAYER: int = 127
@@ -40,7 +40,6 @@ var _mask_layer: CanvasLayer
 ## fullscreen size a few frames before it reports being fullscreen, so a size
 ## change alone can come too early.
 var _last_mode: Window.Mode = Window.MODE_WINDOWED
-var _mask: _FrameMask
 
 
 func _ready() -> void:
@@ -49,12 +48,10 @@ func _ready() -> void:
 	_mask_layer = CanvasLayer.new()
 	_mask_layer.layer = _MASK_LAYER
 	_mask_layer.visible = false
-	_mask = _FrameMask.new()
-	_mask_layer.add_child(_mask)
+	_mask_layer.add_child(_FrameMask.new())
 	add_child(_mask_layer)
 
 	get_tree().root.size_changed.connect(_apply)
-	get_tree().node_added.connect(_on_node_added)
 
 
 func set_wanted(wanted: bool) -> void:
@@ -77,6 +74,13 @@ static func art_scale_for(window_size: Vector2i) -> int:
 	return maxi(1, floori(minf(fit.x, fit.y)))
 
 
+## Where the frame goes in a [param window_size] window: [param art_scale]
+## screen pixels per art pixel, centred on whole pixels.
+static func frame_rect_for(window_size: Vector2i, art_scale: int) -> Rect2i:
+	var frame_size: Vector2i = Vector2i(Globals.SCREEN_SIZE) * art_scale
+	return Rect2i((window_size - frame_size) / 2, frame_size)
+
+
 func _process(_delta: float) -> void:
 	if get_tree().root.mode != _last_mode:
 		_apply()
@@ -89,49 +93,37 @@ func _apply() -> void:
 	_last_mode = root.mode
 	var fullscreen: bool = root.mode in [Window.MODE_FULLSCREEN, Window.MODE_EXCLUSIVE_FULLSCREEN]
 	_active = _wanted and (fullscreen or apply_in_window)
+	root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS if _active else Window.CONTENT_SCALE_MODE_VIEWPORT
+	root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
+	root.content_scale_stretch = Window.CONTENT_SCALE_STRETCH_FRACTIONAL
+	root.content_scale_size = Vector2i(ScreenFrame.SIZE)
+	root.content_scale_factor = 1.0
+	root.global_canvas_transform = Transform2D.IDENTITY
 	if _active:
-		var art_scale: int = art_scale_for(root.size)
-		root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-		root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
-		root.content_scale_stretch = Window.CONTENT_SCALE_STRETCH_FRACTIONAL
-		root.content_scale_size = root.size * int(ScreenFrame.ART_PIXEL_SCALE)
-		root.content_scale_factor = art_scale
-	else:
-		root.content_scale_mode = Window.CONTENT_SCALE_MODE_VIEWPORT
-		root.content_scale_aspect = Window.CONTENT_SCALE_ASPECT_KEEP
-		root.content_scale_stretch = Window.CONTENT_SCALE_STRETCH_FRACTIONAL
-		root.content_scale_size = Vector2i(ScreenFrame.SIZE)
-		root.content_scale_factor = 1.0
-
+		# The window's own fit, viewport to window pixels, is the final
+		# transform while the global one is the identity.
+		var fitted: Transform2D = root.get_final_transform()
+		var frame: Rect2i = frame_rect_for(root.size, art_scale_for(root.size))
+		var wanted: Transform2D = Transform2D(0.0, Vector2(frame.size) / ScreenFrame.SIZE, 0.0, Vector2(frame.position))
+		root.global_canvas_transform = fitted.affine_inverse() * wanted
 	_mask_layer.visible = _active
-	_mask.queue_redraw()
-	for layer: Node in get_tree().get_nodes_in_group(FRAME_UI_GROUP):
-		_place_frame_layer(layer as CanvasLayer)
 
 
-func _place_frame_layer(layer: CanvasLayer) -> void:
-	if not layer:
-		return
-	layer.offset = ScreenFrame.rect_in_viewport(get_viewport()).position if _active else Vector2.ZERO
-
-
-func _on_node_added(node: Node) -> void:
-	if node is CanvasLayer and node.is_in_group(FRAME_UI_GROUP):
-		_place_frame_layer.call_deferred(node)
-
-
-## Paints black over everything outside the frame.
+## Paints black over everything outside the frame. It sits under the global
+## canvas transform like every other layer, so it masks in viewport units.
 class _FrameMask:
 	extends Control
+
+	## Far enough out to cover any window around the frame.
+	const _REACH: float = 100000.0
 
 	func _ready() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	func _draw() -> void:
-		var visible: Rect2 = get_viewport().get_visible_rect()
-		var frame: Rect2 = ScreenFrame.rect_in_viewport(get_viewport())
+		var frame: Rect2 = Rect2(Vector2.ZERO, ScreenFrame.SIZE)
 		var black: Color = Color.BLACK
-		draw_rect(Rect2(visible.position, Vector2(visible.size.x, frame.position.y - visible.position.y)), black)
-		draw_rect(Rect2(Vector2(visible.position.x, frame.end.y), Vector2(visible.size.x, visible.end.y - frame.end.y)), black)
-		draw_rect(Rect2(Vector2(visible.position.x, frame.position.y), Vector2(frame.position.x - visible.position.x, frame.size.y)), black)
-		draw_rect(Rect2(Vector2(frame.end.x, frame.position.y), Vector2(visible.end.x - frame.end.x, frame.size.y)), black)
+		draw_rect(Rect2(-_REACH, -_REACH, 2.0 * _REACH, _REACH), black)
+		draw_rect(Rect2(-_REACH, frame.end.y, 2.0 * _REACH, _REACH), black)
+		draw_rect(Rect2(-_REACH, 0.0, _REACH, frame.size.y), black)
+		draw_rect(Rect2(frame.end.x, 0.0, _REACH, frame.size.y), black)

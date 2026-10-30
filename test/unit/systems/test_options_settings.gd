@@ -74,6 +74,12 @@ func test_art_scale_is_the_largest_whole_fit() -> void:
 	assert_eq(PixelPerfectScaler.art_scale_for(Vector2i(200, 100)), 1)
 
 
+func test_pixel_perfect_frame_is_centred_on_whole_pixels() -> void:
+	assert_eq(PixelPerfectScaler.frame_rect_for(Vector2i(3456, 2168), 10), Rect2i(128, 184, 3200, 1800))
+	assert_eq(PixelPerfectScaler.frame_rect_for(Vector2i(1920, 1080), 6), Rect2i(0, 0, 1920, 1080))
+	assert_eq(PixelPerfectScaler.frame_rect_for(Vector2i(5120, 1440), 8), Rect2i(1280, 0, 2560, 1440))
+
+
 ## --- Window recovery ---
 
 const _LAPTOP: Rect2i = Rect2i(0, 25, 1440, 875)

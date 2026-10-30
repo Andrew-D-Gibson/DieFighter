@@ -61,8 +61,7 @@ func _process(_delta: float) -> void:
 
 ## Points the effect's viewport through the main camera, shrunk down to the
 ## base grid, and puts the effect where this node is in the world. The
-## viewport covers the screen frame, which pixel-perfect fullscreen insets
-## from the window's corner.
+## viewport covers the screen frame (ScreenFrame).
 func _sync() -> void:
 	if not is_instance_valid(_effect):
 		return
