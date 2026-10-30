@@ -129,7 +129,7 @@ func _launch(ship: ShipResource, as_tutorial: bool) -> void:
 	Globals.selected_ship = ship
 	_launching_tutorial = as_tutorial
 	if SaveManager.has_save():
-		%ConfirmDialog.open("Starting a new game will overwrite your existing save. Continue?")
+		%ConfirmDialog.open(tr("MENU_OVERWRITE_SAVE"), true)
 		return
 	_start_new_game()
 

@@ -1,28 +1,44 @@
 class_name OptionsPage
-extends HBoxContainer
+extends VBoxContainer
 ## One tab of the options menu: rows of labelled controls in one or two
-## columns, each bound to an option in OptionsSettings.
+## columns, each bound to an option in OptionsSettings, optionally split into
+## headed sections.
 ##
 ## Rows are built in code, one call each (see OptionsMenu._build_pages()):
 ##
 ##     page.check(OptionsSettings.VSYNC, "OPT_VSYNC", "OPT_VSYNC_HINT")
 ##     page.next_column()
 ##     page.choice(OptionsSettings.MAX_FPS, "OPT_FPS_LIMIT", ["30", "60"], [30, 60])
+##     page.section("OPT_SECTION_PROGRESS")
+##     page.custom(erase_button, "OPT_ERASE_PROGRESS")
 ##
 ## A bound row writes through OptionsSettings.set_option() and is refreshed
 ## from it (refresh()), so the menu always shows live values, including after
 ## "Reset to defaults" or a change made elsewhere. Labels and hints are
 ## translation keys.
+##
+## Within a column every dropdown and button is as wide as the widest, so
+## their right edges and their text line up down the page.
 
 ## The hovered row's hint, or "" when the mouse leaves it.
 signal hint_changed(text: String)
 
 const ROW_HEIGHT: float = 16.0
 const WIDGET_WIDTH: float = 40.0
+const SECTION_HEIGHT: float = 12.0
 
 const _HOVER_THUMP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/hover_thump.tres")
 const _DROPDOWN_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/pixel_dropdown.tscn")
 const _TEXTURE_DIR: String = "res://Assets/Textures/UI/OptionsMenu/"
+## Text on a light (hovered or dragged) slider knob.
+const _KNOB_TEXT_LIGHT: Color = Color("#CEF0F1")
+## The pixel fonts' glyphs sit low in their line box; this centres them in
+## the knob.
+const _KNOB_TEXT_RAISE: float = 2.0
+## The hovered row's backing, over the panel's fill.
+const _HOVER_ALPHA: float = 0.14
+## Rows are lined up by width in these; marked by _add_row().
+const _EQUAL_WIDTH_META: StringName = &"options_equal_width"
 
 ## The page's accent: its tab's colour, and the colour of its controls.
 var accent: Color = Color.WHITE
@@ -30,24 +46,25 @@ var accent: Color = Color.WHITE
 ## "purple", "blue" or "yellow".
 var widget_color: String = "red"
 
+var _column_count: int
+## The current section's columns; rows go in _columns[_column_index].
 var _columns: Array[VBoxContainer] = []
 var _column_index: int = 0
+## Every column on the page, for lining widths up.
+var _all_columns: Array[VBoxContainer] = []
 ## Option keys this page shows, for "Reset to defaults".
 var _keys: Array[StringName] = []
 ## Called on refresh() to pull each row's value back from OptionsSettings.
 var _refreshers: Array[Callable] = []
 ## Rows that are only usable some of the time: [row, predicate].
 var _conditional_rows: Array[Array] = []
+var _hovered_row: Control
 
 
 func _init(column_count: int = 2) -> void:
-	add_theme_constant_override("separation", 12)
-	for i: int in range(column_count):
-		var column: VBoxContainer = VBoxContainer.new()
-		column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		column.add_theme_constant_override("separation", 0)
-		add_child(column)
-		_columns.append(column)
+	_column_count = column_count
+	add_theme_constant_override("separation", 0)
+	_start_columns()
 
 
 ## --- Building ---
@@ -97,8 +114,8 @@ func choice(key: StringName, label_key: String, labels: Array, values: Array, hi
 	return dropdown
 
 
-## A slider for a number option. [param format] turns the value into the
-## text shown beside it (a percentage by default).
+## A slider for a number option, its value written on the knob.
+## [param format] turns the value into that text (a percentage by default).
 func slider(key: StringName, label_key: String, hint_key: String = "", min_value: float = 0.0,
 		max_value: float = 1.0, step: float = 0.01, format: Callable = Callable()) -> HSlider:
 	if not format.is_valid():
@@ -110,46 +127,45 @@ func slider(key: StringName, label_key: String, hint_key: String = "", min_value
 	bar.focus_mode = Control.FOCUS_NONE
 	bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	bar.custom_minimum_size.x = WIDGET_WIDTH * 2.0
-	bar.add_theme_icon_override("grabber", _widget_texture("slider_knob_%s_dark.png", true))
+	# Narrower beside a label in a two-column page, but always with room for
+	# the knob to travel well past its own width.
+	bar.custom_minimum_size.x = WIDGET_WIDTH * (2.0 if _column_count == 1 else 1.6)
+	var knob: Texture2D = _widget_texture("slider_knob_%s_dark.png", true)
+	bar.add_theme_icon_override("grabber", knob)
 	bar.add_theme_icon_override("grabber_highlight", _widget_texture("slider_knob_%s_light.png", true))
-	bar.add_theme_icon_override("grabber_disabled", _widget_texture("slider_knob_%s_dark.png", true))
+	bar.add_theme_icon_override("grabber_disabled", knob)
 	bar.add_theme_stylebox_override("grabber_area", _flat_style(accent.darkened(0.4)))
 	bar.add_theme_stylebox_override("grabber_area_highlight", _flat_style(accent))
 
-	var readout: RichTextLabel = _new_label("")
-	readout.custom_minimum_size.x = 18
-	readout.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
-	readout.size_flags_horizontal = Control.SIZE_SHRINK_END
-	readout.add_theme_color_override("default_color", accent)
+	var readout: Label = Label.new()
+	readout.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	readout.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	readout.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	readout.size = knob.get_size()
+	readout.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	readout.add_theme_color_override("font_color", accent)
+	bar.add_child(readout)
+	var place_readout: Callable = func() -> void:
+		readout.text = format.call(bar.value)
+		readout.position = _grabber_position(bar, knob.get_size())
+	# The knob lights up while the mouse is on the slider; so does its text.
+	bar.mouse_entered.connect(func() -> void: readout.add_theme_color_override("font_color", _KNOB_TEXT_LIGHT))
+	bar.mouse_exited.connect(func() -> void: readout.add_theme_color_override("font_color", accent))
+	bar.resized.connect(place_readout)
 
 	bar.value_changed.connect(func(value: float) -> void:
-		readout.text = format.call(value)
+		place_readout.call()
 		OptionsSettings.set_option(key, value))
 	_bind(key, func() -> void:
 		bar.set_value_no_signal(float(OptionsSettings.get_option(key)))
-		readout.text = format.call(bar.value))
-
-	var widget: HBoxContainer = HBoxContainer.new()
-	widget.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	widget.add_child(bar)
-	widget.add_child(readout)
-	_add_row(label_key, hint_key, widget, true)
+		place_readout.call())
+	_add_row(label_key, hint_key, bar, true)
 	return bar
 
 
-## A button that does something rather than holding a value (open the key
-## bindings, reset the save).
+## A button that does something rather than holding a value.
 func button(label_key: String, text_key: String, on_pressed: Callable, hint_key: String = "") -> Button:
-	var pressable: Button = Button.new()
-	pressable.text = text_key
-	pressable.focus_mode = Control.FOCUS_NONE
-	pressable.custom_minimum_size.x = WIDGET_WIDTH
-	var background: Texture2D = _widget_texture("OptionButton/option_button_%s_background_.png", true)
-	for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
-		pressable.add_theme_stylebox_override(state, _texture_style(background))
-	pressable.add_theme_color_override("font_color", accent)
-	pressable.add_theme_color_override("font_hover_color", Color.WHITE)
+	var pressable: Button = styled_button(text_key)
 	# Callers that need the button itself in the handler connect their own.
 	if on_pressed.is_valid():
 		pressable.pressed.connect(on_pressed)
@@ -158,7 +174,7 @@ func button(label_key: String, text_key: String, on_pressed: Callable, hint_key:
 
 
 ## A button styled like button()'s but not put in a row, for widgets that
-## hold several (BindingSlots).
+## hold their own (BindingSlots).
 func styled_button(text_key: String = "") -> Button:
 	var pressable: Button = Button.new()
 	pressable.text = text_key
@@ -174,12 +190,51 @@ func styled_button(text_key: String = "") -> Button:
 
 ## Any other control, for rows the helpers above don't cover. Bind it to an
 ## option with [param refresh] (called whenever the menu re-reads options)
-## and [param key] (so "Reset to defaults" resets it).
+## and [param key] (so "Reset to defaults" resets it). [param equal_width]
+## lines its width up with the column's dropdowns and buttons.
 func custom(control: Control, label_key: String = "", hint_key: String = "",
-		key: StringName = &"", refresh: Callable = Callable()) -> Control:
+		key: StringName = &"", refresh: Callable = Callable(), equal_width: bool = true) -> Control:
 	if key != &"" or refresh.is_valid():
 		_bind(key, refresh)
-	return _add_row(label_key, hint_key, control, true)
+	return _add_row(label_key, hint_key, control, equal_width)
+
+
+## Further rows go under a full-width heading, in a fresh set of columns.
+## [param color] tints the heading (the page's accent by default), so a
+## section with weightier buttons can look it.
+func section(title_key: String, color: Color = Color.TRANSPARENT) -> void:
+	var tint: Color = accent if color == Color.TRANSPARENT else color
+	var header: HBoxContainer = HBoxContainer.new()
+	header.custom_minimum_size.y = SECTION_HEIGHT
+	header.add_theme_constant_override("separation", 4)
+	header.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var title: RichTextLabel = _new_label(title_key)
+	title.add_theme_color_override("default_color", tint)
+	title.size_flags_vertical = Control.SIZE_SHRINK_END
+	header.add_child(title)
+	var rule: ColorRect = ColorRect.new()
+	rule.color = tint.darkened(0.45)
+	rule.custom_minimum_size.y = 1
+	rule.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rule.size_flags_vertical = Control.SIZE_SHRINK_END
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Sits on the text's baseline rather than the box's floor.
+	var rule_holder: MarginContainer = MarginContainer.new()
+	rule_holder.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	rule_holder.add_theme_constant_override("margin_bottom", 3)
+	rule_holder.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rule_holder.add_child(rule)
+	header.add_child(rule_holder)
+	add_child(header)
+	_start_columns()
+
+
+## Pushes whatever follows to the page's bottom edge.
+func spacer() -> void:
+	var gap: Control = Control.new()
+	gap.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	add_child(gap)
 
 
 ## Plain text, for a note or a heading.
@@ -198,10 +253,7 @@ func next_column() -> void:
 ## Greys [param row_widget]'s row out (and stops it taking input) whenever
 ## [param usable] returns false. Rechecked on refresh().
 func enable_when(row_widget: Control, usable: Callable) -> void:
-	var row: Control = row_widget
-	while row and not row.has_meta(&"options_row"):
-		row = row.get_parent() as Control
-	_conditional_rows.append([row if row else row_widget, usable])
+	_conditional_rows.append([_row_of(row_widget), usable])
 
 
 ## --- Reading back ---
@@ -218,6 +270,7 @@ func refresh() -> void:
 		refresher.call()
 	for entry: Array in _conditional_rows:
 		_set_row_enabled(entry[0], entry[1].call())
+	_line_up_widths()
 
 
 ## Where [param value] sits in [param values], comparing numbers by value so
@@ -235,6 +288,33 @@ static func index_of(values: Array, value: Variant) -> int:
 
 ## --- Internals ---
 
+func _draw() -> void:
+	if not is_instance_valid(_hovered_row) or not _hovered_row.is_visible_in_tree():
+		return
+	var rect: Rect2 = get_global_transform().affine_inverse() * _hovered_row.get_global_rect()
+	# A little past the row's ends, so the label and widget sit inside it.
+	rect = rect.grow_individual(2, 0, 2, 0)
+	draw_rect(rect, Color(accent, _HOVER_ALPHA))
+	draw_rect(Rect2(rect.position, Vector2(1, rect.size.y)), accent)
+
+
+func _start_columns() -> void:
+	var block: HBoxContainer = HBoxContainer.new()
+	block.add_theme_constant_override("separation", 12)
+	block.mouse_filter = Control.MOUSE_FILTER_PASS
+	add_child(block)
+	_columns.clear()
+	for i: int in range(_column_count):
+		var column: VBoxContainer = VBoxContainer.new()
+		column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		column.add_theme_constant_override("separation", 0)
+		column.mouse_filter = Control.MOUSE_FILTER_PASS
+		block.add_child(column)
+		_columns.append(column)
+		_all_columns.append(column)
+	_column_index = 0
+
+
 func _current_column() -> VBoxContainer:
 	return _columns[_column_index]
 
@@ -246,7 +326,7 @@ func _bind(key: StringName, refresh_row: Callable) -> void:
 		_refreshers.append(refresh_row)
 
 
-func _add_row(label_key: String, hint_key: String, widget: Control, fixed_width: bool) -> HBoxContainer:
+func _add_row(label_key: String, hint_key: String, widget: Control, equal_width: bool) -> HBoxContainer:
 	var row: HBoxContainer = HBoxContainer.new()
 	row.set_meta(&"options_row", true)
 	row.custom_minimum_size.y = ROW_HEIGHT
@@ -258,17 +338,73 @@ func _add_row(label_key: String, hint_key: String, widget: Control, fixed_width:
 		label.add_theme_color_override("default_color", accent)
 		label.set_meta(&"options_label", true)
 		row.add_child(label)
-	if fixed_width and widget.custom_minimum_size.x == 0.0:
-		widget.custom_minimum_size.x = WIDGET_WIDTH
+	if equal_width and not widget is Slider:
+		widget.set_meta(_EQUAL_WIDTH_META, true)
+		widget.custom_minimum_size.x = maxf(widget.custom_minimum_size.x, WIDGET_WIDTH)
 	widget.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	if label_key == "":
 		widget.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	elif not widget is Slider:
+		# Hard against the column's right edge, at its own width: the label
+		# takes up the slack, so widgets line up down the column.
+		widget.size_flags_horizontal = Control.SIZE_SHRINK_END
 	row.add_child(widget)
-	if hint_key != "":
-		row.mouse_entered.connect(func() -> void: hint_changed.emit(tr(hint_key)))
-		row.mouse_exited.connect(func() -> void: hint_changed.emit(""))
+	row.mouse_entered.connect(_on_row_entered.bind(row, hint_key))
+	row.mouse_exited.connect(_on_row_exited.bind(row))
 	_current_column().add_child(row)
 	return row
+
+
+func _on_row_entered(row: Control, hint_key: String) -> void:
+	_hovered_row = row
+	queue_redraw()
+	if hint_key != "":
+		hint_changed.emit(tr(hint_key))
+
+
+func _on_row_exited(row: Control) -> void:
+	if _hovered_row != row:
+		return
+	_hovered_row = null
+	queue_redraw()
+	hint_changed.emit("")
+
+
+## Makes every marked widget in a column as wide as the widest one wants to
+## be. Again on every refresh, as a language or font change changes widths.
+func _line_up_widths() -> void:
+	for column: VBoxContainer in _all_columns:
+		var widgets: Array[Control] = []
+		var widest: float = WIDGET_WIDTH
+		for row: Node in column.get_children():
+			for child: Node in row.get_children():
+				if child is Control and child.has_meta(_EQUAL_WIDTH_META):
+					widgets.append(child)
+					widest = maxf(widest, _natural_width(child))
+		for widget: Control in widgets:
+			widget.custom_minimum_size.x = widest
+
+
+## How wide [param widget] wants to be with nothing cut off.
+static func _natural_width(widget: Control) -> float:
+	if widget is PixelDropdown:
+		return (widget as PixelDropdown).content_width()
+	return widget.get_minimum_size().x
+
+
+## Where an HSlider draws its grabber, as Slider does: the knob's left edge
+## slides from the bar's left end to its right end less the knob's width.
+## Raised by _KNOB_TEXT_RAISE for text, whose glyphs sit low in their line.
+static func _grabber_position(bar: HSlider, knob_size: Vector2) -> Vector2:
+	var ratio: float = 0.0 if is_nan(bar.get_as_ratio()) else bar.get_as_ratio()
+	return Vector2(roundf(ratio * (bar.size.x - knob_size.x)), roundf((bar.size.y - knob_size.y) / 2.0) - _KNOB_TEXT_RAISE)
+
+
+func _row_of(widget: Control) -> Control:
+	var row: Control = widget
+	while row and not row.has_meta(&"options_row"):
+		row = row.get_parent() as Control
+	return row if row else widget
 
 
 func _set_row_enabled(row: Control, enabled: bool) -> void:

@@ -1,11 +1,14 @@
 class_name BindingSlots
 extends HBoxContainer
-## The two buttons on a Controls tab row: the action's key and its controller
-## button. Clicking one listens for the next press (InputManager) and binds
-## it through OptionsSettings, so it's saved, reset by "Defaults", and any
-## action it was taken from shows its swapped binding when the page refreshes.
+## The binding buttons on a Controls row: by default the action's key and its
+## controller button, or just one of them (the Controls tab shows keyboard
+## and controller bindings on separate pages). Clicking a slot listens for
+## the next press (InputManager) and binds it through OptionsSettings, so
+## it's saved, reset by "Defaults", and any action it was taken from shows
+## its swapped binding when the page refreshes.
 
 const SLOT_SIZE: Vector2 = Vector2(30, 14)
+const _GAP: int = 2
 const _LISTENING_TEXT: String = "..."
 
 var action: StringName
@@ -13,14 +16,16 @@ var _slots: Dictionary[InputBindings.Kind, Button] = {}
 
 
 ## [param make_button] styles a button for the page (OptionsPage.styled_button).
-func _init(bound_action: StringName, make_button: Callable) -> void:
+func _init(bound_action: StringName, make_button: Callable,
+		kinds: Array[InputBindings.Kind] = [InputBindings.Kind.KEY, InputBindings.Kind.PAD]) -> void:
 	action = bound_action
-	add_theme_constant_override("separation", 2)
-	custom_minimum_size.x = SLOT_SIZE.x * 2 + 2
-	for kind: InputBindings.Kind in [InputBindings.Kind.KEY, InputBindings.Kind.PAD]:
+	add_theme_constant_override("separation", _GAP)
+	custom_minimum_size.x = SLOT_SIZE.x * kinds.size() + _GAP * (kinds.size() - 1)
+	for kind: InputBindings.Kind in kinds:
 		var slot: Button = make_button.call("")
 		# A little shorter than a row, so stacked rows' slots don't touch.
 		slot.custom_minimum_size = SLOT_SIZE
+		slot.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		for state: String in ["normal", "hover", "pressed", "disabled", "focus"]:
 			var style: StyleBox = slot.get_theme_stylebox(state)
 			style.content_margin_top = 0.0
@@ -48,7 +53,7 @@ func slot(kind: InputBindings.Kind) -> Button:
 	return _slots[kind]
 
 
-## Re-reads both slots' bindings from the InputMap.
+## Re-reads the slots' bindings from the InputMap.
 func refresh() -> void:
 	for kind: InputBindings.Kind in _slots:
 		var button: Button = _slots[kind]

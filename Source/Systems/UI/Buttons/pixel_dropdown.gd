@@ -155,6 +155,21 @@ func _style_main_button() -> void:
 	_main_button.pressed.connect(_on_main_button_pressed)
 
 
+## How wide the closed button needs to be to show its longest item in full,
+## arrow and frame included. Its minimum size doesn't say: the text clips.
+func content_width() -> float:
+	if not is_node_ready():
+		return 0.0
+	var font: Font = _main_button.get_theme_font("font")
+	var font_size: int = _main_button.get_theme_font_size("font_size")
+	var widest: float = 0.0
+	for item: String in items:
+		widest = maxf(widest, font.get_string_size(_main_button.atr(item), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x)
+	var style: StyleBox = _main_button.get_theme_stylebox("normal")
+	var icon_width: float = _main_button.icon.get_width() if _main_button.icon else 0.0
+	return ceilf(widest + icon_width + _main_button.get_theme_constant("h_separation") + style.get_minimum_size().x)
+
+
 func _update_main_button_text() -> void:
 	if not is_node_ready():
 		return
