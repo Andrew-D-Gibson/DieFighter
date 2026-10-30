@@ -1,16 +1,18 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://ddooc0v5tdowt"]
 
-[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
-[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
-[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
-[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/wrecker_ship_graphics.tscn" id="gfx"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Wrecker/wrecker_targeting_image.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_0qpsb"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_np86l"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
 [ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_grid_quake"]
 [ext_resource type="Resource" uid="uid://dk1u1klmotlij" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/incendiary_shot.tres" id="act_incendiary_shot"]
 [ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="act_raid"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/wrecker_ship_graphics.tscn" id="gfx"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://b87bnvif7knpb" path="res://Assets/Textures/Enemies/Wrecker/wrecker_targeting_image.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_raid"]
 script = ExtResource("script_0")
@@ -38,7 +40,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt2"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_grid_quake")
-weight = 1.0
 min_amount = 1
 max_amount = 1
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -46,7 +47,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt3"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_do_nothing")
-weight = 1.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_pool0"]
@@ -56,10 +56,10 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [resource]
 script = ExtResource("script_2")
-in_codex = false
 enemy_name = "Wrecker"
-faction = ExtResource("faction_identity")
 description = "Breaker. Rams first, sets you burning, and salvages whatever shakes loose."
+in_codex = false
+faction = ExtResource("faction_identity")
 max_health = 50
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
 ship_graphics_scene = ExtResource("gfx")

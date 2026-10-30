@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://ekp537sqlsvu"]
 
 [ext_resource type="Resource" uid="uid://c440n0q257p8h" path="res://Source/Resources/BackgroundResources/fate_infection.tres" id="bg_fate"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/fate_shroud.tres" id="enemy_fate_shroud"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="enemy_fate_wisp"]
+[ext_resource type="Resource" uid="uid://b01a4mnrj68hc" path="res://Source/Content/Enemies/EnemyResources/fate_shroud.tres" id="enemy_fate_shroud"]
+[ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="enemy_fate_wisp"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]

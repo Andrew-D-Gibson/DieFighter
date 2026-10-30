@@ -1,14 +1,24 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://clx055npg5nxq"]
 
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="ext_0"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/gaff.tres" id="ext_1"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="ext_2"]
+[ext_resource type="Resource" uid="uid://f8qaeahga6og" path="res://Source/Content/Enemies/EnemyResources/gaff.tres" id="ext_1"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="ext_2"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="ext_3"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/wrecker.tres" id="ext_4"]
+[ext_resource type="Resource" uid="uid://w0ppni12jr8h" path="res://Source/Content/Enemies/EnemyResources/wrecker.tres" id="ext_4"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_WakeRiders/wrecker_hunting.tres" id="ext_5"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="ext_6"]
 [ext_resource type="Texture2D" uid="uid://c8n5rlrs468on" path="res://Assets/Textures/Map/EncounterIcons/elite_encounter.png" id="ext_7"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="ext_8"]
+
+[sub_resource type="Resource" id="Resource_7"]
+script = ExtResource("ext_3")
+min_money = 35
+max_money = 50
+dice_probability = 0.25
+minimum_rarity = 2
+min_money_pickup = 25
+max_money_pickup = 40
+money_pickup_probability = 0.5
 
 [sub_resource type="Resource" id="Resource_1"]
 script = ExtResource("ext_3")
@@ -45,16 +55,6 @@ script = ExtResource("ext_0")
 enemy_resource = ExtResource("ext_1")
 starting_state = ExtResource("ext_2")
 reward_resource = SubResource("Resource_5")
-
-[sub_resource type="Resource" id="Resource_7"]
-script = ExtResource("ext_3")
-min_money = 35
-max_money = 50
-dice_probability = 0.25
-minimum_rarity = 2
-min_money_pickup = 25
-max_money_pickup = 40
-money_pickup_probability = 0.5
 
 [resource]
 script = ExtResource("ext_6")

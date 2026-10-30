@@ -4,6 +4,23 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Tutorial: the target arrows swing out on cue
+
+- **The last step is about switching targets, and the player watches the
+  arrows arrive.** Once both ships of the fight after the jump have landed,
+  the targeting computer is highlighted on its own, its target arrows swing
+  out under the highlight, and only then does the card pop up: click a ship,
+  or an arrow, to switch your target. The tutorial holds the arrows back
+  until then (they used to come out with the second ship's fly-in).
+- **The Bump prompt shows its icons:** "Bump a die (bump) then use it
+  (dice cannon)!"
+- **The ambusher waits for the first card.** Its opening shot used to go off
+  half a second after it landed, while "A raider is attacking!" was still
+  typing out. The tutorial now holds the shot until the card's text has all
+  come in, then a 0.4s beat, then the usual wind-up.
+
+---
+
 ## 2026-10-30 — Tutorial: where used dice go
 
 - **New step, before the Bump prompt:** most systems pass their die on to your

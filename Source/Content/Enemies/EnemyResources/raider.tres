@@ -11,8 +11,8 @@
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_rbrlx"]
 [ext_resource type="Texture2D" uid="uid://deoaj6bxuv4i4" path="res://Assets/Textures/Enemies/Attacker/Attacker_targeting_image.png" id="7_7a4d7"]
 [ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="8_raid"]
-[ext_resource type="Resource" uid="uid://dk1u1klmotlij" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/incendiary_shot.tres" id="new_incendiary_shot"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
+[ext_resource type="Resource" uid="uid://dk1u1klmotlij" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/incendiary_shot.tres" id="new_incendiary_shot"]
 
 [sub_resource type="Resource" id="Resource_81dy1"]
 script = ExtResource("1_apn3a")
@@ -98,8 +98,8 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("2_mo0f0")
 enemy_name = "Venom Raider"
-faction = ExtResource("faction_identity")
 description = "A Venom Fighter rigged for piracy. Shoots whatever is worth robbing."
+faction = ExtResource("faction_identity")
 max_health = 45
 action_options = Array[ExtResource("1_0pkcg")]([SubResource("Resource_l7vxx"), SubResource("Resource_ej0m4")])
 ship_graphics_scene = ExtResource("3_sf3u5")

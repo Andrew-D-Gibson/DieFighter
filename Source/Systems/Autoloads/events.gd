@@ -171,6 +171,9 @@ signal close_repair_station()
 
 # Info/Tutorial Events
 signal error_text_popup(text: String, global_pos: Vector2)
+## The tutorial has let the opening ambusher fire (see
+## Globals.tutorial_holds_opening_strike).
+signal opening_strike_released()
 
 
 # Interaction Events

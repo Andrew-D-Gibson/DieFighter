@@ -1,13 +1,16 @@
 [gd_resource type="Resource" script_class="TutorialStep" format=3]
 
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/TutorialManager/Highlights/highlight_targeting_computer.png" id="highlight"]
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) a ship to make it your [color=purple]target[/color]: it gets your used dice.(delay=0.3) The rest is up to you. [wave amp=10.0 freq=3.0 connected=1][color=yellow]Good luck, pilot![/color][/wave]"
+tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) a ship, or an arrow, to switch your [color=purple]target[/color]: it gets your used dice.(delay=0.3) The rest is up to you. [wave amp=10.0 freq=3.0 connected=1][color=yellow]Good luck, pilot![/color][/wave]"
 text_position = Vector2(160, 120)
 time_delay = 0.5
-open_on_signal = 12
+open_on_signal = 16
 close_on_signal = 1
 tutorial_function = 14
+highlight_texture = ExtResource("highlight")
+reveal_target_arrows = true
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

@@ -31,6 +31,20 @@ var _bob_time: float = 0.0
 signal all_text_displayed()
 signal popup_closed()
 
+## Highlight masks draw just under the cards (z 12 in tutorial_text_popup.tscn)
+## and over everything else, wherever in the tree they hang.
+const _HIGHLIGHT_Z_INDEX: int = 11
+
+
+## A full-screen highlight mask: dims the screen except for its cutouts. A card
+## brings its step's own; the TutorialManager can also put one up ahead of a card.
+static func make_highlight(texture: Texture2D) -> Sprite2D:
+	var sprite: Sprite2D = Sprite2D.new()
+	sprite.texture = texture
+	sprite.z_as_relative = false
+	sprite.z_index = _HIGHLIGHT_Z_INDEX
+	return sprite
+
 
 func _ready() -> void:
 	_head_rest = %ComputerTalking.position
@@ -49,9 +63,7 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 	
 	# Handle highlighting
 	if highlight_texture:
-		var highlight_sprite: Sprite2D = Sprite2D.new()
-		highlight_sprite.texture = highlight_texture
-		highlight_sprite.z_index = -1
+		var highlight_sprite: Sprite2D = make_highlight(highlight_texture)
 		add_child(highlight_sprite)
 		highlight_sprite.global_position = Vector2(160, 90)
 

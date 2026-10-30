@@ -6,12 +6,12 @@
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack"]
 [ext_resource type="Resource" uid="uid://brr01wenpqywh" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/repair_ally.tres" id="act_repair"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/bastion_aegis_ship_graphics.tscn" id="gfx"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
 [ext_resource type="Texture2D" uid="uid://ng11g05wgoew" path="res://Assets/Textures/Enemies/Bastion/bastion_aegis_targeting_image.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -50,8 +50,8 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("script_2")
 enemy_name = "Bastion Aegis"
-faction = ExtResource("faction_identity")
 description = "Shield generator. It throws shields over the rest of the Bastion and patches its hull. Break it first and the others stay broken."
+faction = ExtResource("faction_identity")
 max_health = 60
 starting_shields = 20
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])

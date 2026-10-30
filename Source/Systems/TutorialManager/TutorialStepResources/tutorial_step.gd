@@ -31,6 +31,9 @@ enum TutorialSignals {
 	## The player's next turn has begun: the enemy turn is over and the new
 	## hand is dealt. Lets a step stay up for a whole enemy turn, however long.
 	PLAYER_TURN_STARTED,
+	## Every ship in a fight's fly-in has landed. Unlike ON_ENEMY_FLY_IN (the
+	## first ship), the whole roster is on screen.
+	ENEMIES_ARRIVED,
 }
 @export var open_on_signal: TutorialSignals
 @export var close_on_signal: TutorialSignals 
@@ -71,3 +74,14 @@ enum TutorialFunctions {
 
 # Optional: Highlight specific UI elements
 @export var highlight_texture: Texture2D
+
+## For the step that introduces switching targets. The tutorial holds the
+## targeting computer's target arrows back until this step: it puts up the
+## highlight on its own, lets the arrows swing out under it, and only then
+## shows the card, so the card explains something the player just watched.
+@export var reveal_target_arrows: bool = false
+
+## The tutorial holds the ambusher's opening shot (OpeningStrike) until this
+## step's text has all come in, so the player reads who's attacking before
+## the shot lands.
+@export var releases_opening_strike: bool = false

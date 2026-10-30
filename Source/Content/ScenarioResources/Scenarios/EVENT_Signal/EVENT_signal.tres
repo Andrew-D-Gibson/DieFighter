@@ -1,12 +1,18 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://bfryj18jdgox0"]
 
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="ext_0"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="ext_1"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_broadcasting.tres" id="ext_2"]
+[ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="ext_1"]
+[ext_resource type="Resource" uid="uid://d2h4x6d5clhsg" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_broadcasting.tres" id="ext_2"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="ext_3"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="ext_4"]
 [ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="ext_5"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="ext_6"]
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("ext_3")
+min_money = 10
+max_money = 16
+num_of_rewards = 0
 
 [sub_resource type="Resource" id="Resource_1"]
 script = ExtResource("ext_3")
@@ -20,18 +26,12 @@ enemy_resource = ExtResource("ext_1")
 starting_state = ExtResource("ext_2")
 reward_resource = SubResource("Resource_1")
 
-[sub_resource type="Resource" id="Resource_3"]
-script = ExtResource("ext_3")
-min_money = 10
-max_money = 16
-num_of_rewards = 0
-
 [sub_resource type="Resource" id="Resource_4"]
 script = ExtResource("ext_3")
 num_of_rewards = 2
 dice_probability = 0.5
-minimum_rarity = 1
 grid_slot_probability = 0.0
+minimum_rarity = 1
 
 [resource]
 script = ExtResource("ext_4")

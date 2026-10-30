@@ -36,8 +36,8 @@ actions_possible = Array[ExtResource("ext_2")]([SubResource("Resource_cannon"), 
 [resource]
 script = ExtResource("ext_6")
 enemy_name = "Interceptor"
-faction = ExtResource("faction_identity")
 description = "Carrier-launched fighter. Fragile, and there is always another."
+faction = ExtResource("faction_identity")
 max_health = 13
 action_options = Array[ExtResource("ext_5")]([SubResource("Resource_pool_sortie")])
 ship_graphics_scene = ExtResource("ext_7")

@@ -240,9 +240,12 @@ func _scenario_to_load() -> ScenarioResource:
 
 	
 ## Plays the opening shot, the one time there is one, and returns once it
-## has landed. The hull is the save's after it.
+## has landed. The hull is the save's after it. The tutorial can hold it
+## until its first card has been read.
 func play_opening_strike() -> void:
 	if _opening_strike:
+		if Globals.tutorial_holds_opening_strike:
+			await Events.opening_strike_released
 		await _opening_strike.play()
 
 

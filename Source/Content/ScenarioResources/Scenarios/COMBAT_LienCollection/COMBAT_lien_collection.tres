@@ -1,13 +1,13 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://b1uv43ran17tp"]
 
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/claims_adjuster.tres" id="enemy_claims_adjuster"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/hauler.tres" id="enemy_hauler"]
+[ext_resource type="Resource" uid="uid://cbur0h3t84tff" path="res://Source/Content/Enemies/EnemyResources/claims_adjuster.tres" id="enemy_claims_adjuster"]
+[ext_resource type="Resource" uid="uid://vorhx5fs2edm" path="res://Source/Content/Enemies/EnemyResources/hauler.tres" id="enemy_hauler"]
+[ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="icon"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state"]
-[ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="icon"]
 
 [sub_resource type="Resource" id="Resource_bounty"]
 script = ExtResource("script_2")

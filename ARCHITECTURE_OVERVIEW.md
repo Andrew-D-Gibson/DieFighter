@@ -628,7 +628,11 @@ checkpoints save the hull minus `hull_owed()`, so a Continue never replays
 the shot or keeps the extra. The action is `load()`ed, not preloaded:
 GameStateManager holds an OpeningStrike, and a preload there puts the
 enemy-action scripts into their own preload cycle. Continues, gauntlets and
-lab runs aren't fresh, so they skip it.
+lab runs aren't fresh, so they skip it. In the tutorial,
+`GameStateManager.play_opening_strike` waits while
+`Globals.tutorial_holds_opening_strike` is set, until
+`Events.opening_strike_released`: the step with `releases_opening_strike`
+(the first card) sends it 0.4s after its text has all come in.
 Later steps force the turn-two hand and the salvage (`forced_dice`,
 `forced_enemy_actions`, `forced_rewards`). `_finish_tutorial` clears all three
 statics.
@@ -655,7 +659,14 @@ enemy highlight masks in `Assets/Textures/TutorialManager/Highlights/` are
 drawn for that spot. The reservation is given back on `Events.jump`, so the
 next fight's ships fly straight to their usual places. The map's jump arrows
 are hidden (`Map.set_jump_arrows_visible`) until the jump step shows the right
-one; the left one returns when the tutorial finishes.
+one; the left one returns when the tutorial finishes. The targeting computer's
+target arrows are held back too (`Globals.tutorial_holds_target_arrows`, read
+by `TargetingComputer.refresh_shift_buttons`). The last step opens on
+`ENEMIES_ARRIVED` in the two-ship fight after the jump (every distance the
+seeded hand can jump lands in one) and has `reveal_target_arrows`: the manager
+puts the step's highlight up on its own, releases the arrows, waits for the
+computer's `shift_buttons_live` (4s deadline), then shows the card under the
+same highlight and fades it out when the card closes.
 The card's label has its own `line_separation` (-2, not the theme's -4) so
 the 10px inline icons clear the lines around them, and it doesn't overhang
 the panel, so a card grows with its text: four lines is about the most a card

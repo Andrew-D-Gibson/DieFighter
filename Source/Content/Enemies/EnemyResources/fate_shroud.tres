@@ -1,15 +1,17 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://b01a4mnrj68hc"]
 
-[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
-[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
-[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
-[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_shroud_ship_graphics.tscn" id="gfx"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Fate/fate_shroud_targeting_image.png" id="tex"]
-[ext_resource type="Resource" path="res://Source/Content/Factions/spilled.tres" id="faction_identity"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_sh85c"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_p1l1w"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
 [ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="act_lockout_grid_pos"]
 [ext_resource type="Resource" uid="uid://bdeme5mueceon" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/target_lock.tres" id="act_target_lock"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/spilled.tres" id="faction_identity"]
+[ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_shroud_ship_graphics.tscn" id="gfx"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://d2c04uyo3bqla" path="res://Assets/Textures/Enemies/Fate/fate_shroud_targeting_image.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -29,7 +31,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt2"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_target_lock")
-weight = 1.0
 min_amount = 1
 max_amount = 2
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
@@ -37,7 +38,6 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 [sub_resource type="Resource" id="Resource_opt3"]
 script = ExtResource("script_0")
 base_action = ExtResource("act_do_nothing")
-weight = 1.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_pool0"]
@@ -48,8 +48,8 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("script_2")
 enemy_name = "Fate Shroud"
-faction = ExtResource("faction_identity")
 description = "A wide dark thing from the far side of Fate. Where it passes, your systems go dark."
+faction = ExtResource("faction_identity")
 max_health = 60
 starting_shields = 10
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])

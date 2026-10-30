@@ -1,6 +1,9 @@
 class_name TargetingComputer
 extends Node2D
 
+## Both target arrows are out and live: the player can switch targets with them.
+signal shift_buttons_live
+
 @export var targeting_indicator: Sprite2D
 @export var unknown_intent_indicator: Texture2D
 @export var targeting_indicator_offset: Vector2 = Vector2(20, 18)
@@ -126,7 +129,7 @@ func ensure_target() -> void:
 		check_target_is_valid()
 	else:
 		# A second ship arriving gives the player a choice to make.
-		_refresh_shift_buttons()
+		refresh_shift_buttons()
 		
 
 ## The ship a tile activated by [param die] should act on. That's the ship
@@ -236,10 +239,13 @@ func _shift_buttons() -> Array[TargetShiftButton]:
 	return [%LeftShiftButton, %RightShiftButton]
 
 
-## The arrows are only out while there's another ship to switch to.
-func _refresh_shift_buttons() -> void:
+## The arrows are only out while there's another ship to switch to, and the
+## tutorial isn't holding them back (Globals.tutorial_holds_target_arrows).
+func refresh_shift_buttons() -> void:
 	var has_choice: bool = is_instance_valid(targeted_enemy) and Globals.enemy_manager != null \
 		and Globals.enemy_manager.get_alive_enemies().size() > 1
+	if Globals.tutorial_holds_target_arrows:
+		has_choice = false
 	for button: TargetShiftButton in _shift_buttons():
 		if has_choice:
 			button.deploy()
@@ -253,6 +259,7 @@ func _on_shift_button_extended() -> void:
 	if buttons.all(func(button: TargetShiftButton) -> bool: return button.is_extended()):
 		for button: TargetShiftButton in buttons:
 			button.pop_up()
+		shift_buttons_live.emit()
 
 
 func check_target_is_valid() -> void:
@@ -350,7 +357,7 @@ func target_enemy(enemy: Enemy) -> void:
 func _update_ui() -> void:
 	_redraw_generation += 1
 	var generation: int = _redraw_generation
-	_refresh_shift_buttons()
+	refresh_shift_buttons()
 	_show_bound_arrows()
 	_show_attitude()
 	if !targeted_enemy or targeted_enemy_index == -1:

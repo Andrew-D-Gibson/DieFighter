@@ -11,7 +11,6 @@
 [ext_resource type="Shader" uid="uid://b325sq1hvbhpv" path="res://Assets/Shaders/glitch.gdshader" id="4_o33d5"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
 [ext_resource type="PackedScene" uid="uid://c6xh4tyxli6ko" path="res://Source/Systems/UI/SaveIndicator/save_indicator.tscn" id="4_svind"]
-[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/CockpitWalls/cockpit_walls.gd" id="cockpit_walls_script"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
 [ext_resource type="Script" uid="uid://chphrqxy6veu0" path="res://Source/Systems/UI/Glitch/glitch_controller.gd" id="5_aaucc"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
@@ -63,22 +62,9 @@
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/BossIntroCard/boss_intro_card.tscn" id="boss_intro_card"]
-[ext_resource type="Script" path="res://Source/Systems/Graphics/Cockpit/cockpit_mount.gd" id="cockpit_mount"]
+[ext_resource type="Script" uid="uid://bnwti2a2666n6" path="res://Source/Systems/Graphics/Cockpit/cockpit_mount.gd" id="cockpit_mount"]
+[ext_resource type="Script" uid="uid://82b51k7p1ntg" path="res://Source/Systems/Graphics/Cockpit/CockpitWalls/cockpit_walls.gd" id="cockpit_walls_script"]
 [ext_resource type="Resource" uid="uid://cleaatku88rbu" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BlockadeRunner/COMBAT_blockade_runner.tres" id="combat_blockade_runner"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_PicketLine/COMBAT_picket_line.tres" id="faction_picket_line"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wreckers/COMBAT_wreckers.tres" id="faction_wreckers"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LienCollection/COMBAT_lien_collection.tres" id="faction_lien_collection"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Pilgrimage/COMBAT_pilgrimage.tres" id="faction_pilgrimage"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_DeniableAssets/EVENT_deniable_assets.tres" id="faction_event_deniable_assets"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_LastPicket/EVENT_last_picket.tres" id="faction_event_last_picket"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/EVENT_straggler.tres" id="faction_event_straggler"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/EVENT_convoy.tres" id="faction_event_convoy"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_CutLoose/EVENT_cut_loose.tres" id="faction_event_cut_loose"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pilgrim/EVENT_pilgrim.tres" id="faction_event_pilgrim"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pact/EVENT_pact.tres" id="faction_event_pact"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/EVENT_signal.tres" id="faction_event_signal"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WhatCameBack/EVENT_what_came_back.tres" id="faction_event_what_came_back"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_WakeRiders/ELITE_wake_riders.tres" id="faction_elite_wake_riders"]
 [ext_resource type="Resource" uid="uid://br4j63c7vl8h" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Carrier/COMBAT_carrier.tres" id="combat_carrier"]
 [ext_resource type="Resource" uid="uid://c6swfwrjfa55" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Cutpurse/COMBAT_cutpurse.tres" id="combat_cutpurse"]
 [ext_resource type="Resource" uid="uid://kbe4skjmrnlm" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LooseWing/COMBAT_loose_wing.tres" id="combat_loose_wing"]
@@ -92,6 +78,20 @@
 [ext_resource type="Resource" uid="uid://dj6wn2sr12huo" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_GhostCarrier/EVENT_ghost_carrier.tres" id="event_ghost_carrier"]
 [ext_resource type="Resource" uid="uid://bokjx2i8fcamy" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Mayday/EVENT_mayday.tres" id="event_mayday"]
 [ext_resource type="Resource" uid="uid://dog38o3ouenl" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pickpocket/EVENT_pickpocket.tres" id="event_pickpocket"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_WakeRiders/ELITE_wake_riders.tres" id="faction_elite_wake_riders"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/EVENT_convoy.tres" id="faction_event_convoy"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_CutLoose/EVENT_cut_loose.tres" id="faction_event_cut_loose"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_DeniableAssets/EVENT_deniable_assets.tres" id="faction_event_deniable_assets"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_LastPicket/EVENT_last_picket.tres" id="faction_event_last_picket"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pact/EVENT_pact.tres" id="faction_event_pact"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pilgrim/EVENT_pilgrim.tres" id="faction_event_pilgrim"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/EVENT_signal.tres" id="faction_event_signal"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/EVENT_straggler.tres" id="faction_event_straggler"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WhatCameBack/EVENT_what_came_back.tres" id="faction_event_what_came_back"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LienCollection/COMBAT_lien_collection.tres" id="faction_lien_collection"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_PicketLine/COMBAT_picket_line.tres" id="faction_picket_line"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Pilgrimage/COMBAT_pilgrimage.tres" id="faction_pilgrimage"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wreckers/COMBAT_wreckers.tres" id="faction_wreckers"]
 [ext_resource type="Resource" uid="uid://dq0xed2ajxje" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/GATE_bastion.tres" id="gate_bastion"]
 [ext_resource type="Resource" uid="uid://c8gl2266ni6co" path="res://Source/Content/ScenarioResources/Scenarios/GATE_ArcDynamo/GATE_arc_dynamo.tres" id="gate_dynamo"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
@@ -134,7 +134,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_8vg7b"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oym6b"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -363,7 +363,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_8vg7b")
+material = SubResource("ShaderMaterial_oym6b")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]

@@ -7,13 +7,13 @@
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_7"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_8"]
 [ext_resource type="Resource" uid="uid://banpownpi5wfm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/ion_shot.tres" id="act_ion"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 [ext_resource type="PackedScene" uid="uid://dx6ohmackmhwg" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/ion_lance_ship_graphics.tscn" id="gfx_3"]
 [ext_resource type="Resource" uid="uid://c4023q0s4rc3k" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/scrambler.tres" id="new_scrambler"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
 [ext_resource type="Texture2D" uid="uid://dmwvhly1a8jbt" path="res://Assets/Textures/Enemies/FighterJet/fighter_jet_targeting_image.png" id="tex_4"]
-[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
@@ -118,8 +118,8 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("script_2")
 enemy_name = "Ion Lance"
-faction = ExtResource("faction_identity")
 description = "Fast interceptor. Goes for the engines, not the hull. Flies in pairs, badly alone."
+faction = ExtResource("faction_identity")
 max_health = 23
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1")])
 pool_selection = 2

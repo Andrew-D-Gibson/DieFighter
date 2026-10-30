@@ -17,6 +17,10 @@ extends Node2D
 ## timeout comes first.
 signal _open_wait_over
 
+## Ends _reveal_target_arrows()'s wait, whichever of the arrows going live and
+## its deadline comes first.
+signal _target_arrows_settled
+
 ## Whether the tutorial narrates this run at all. Off means the cold open plays
 ## exactly as it would for a returning player. Even when on, it only runs for a
 ## run the main menu launched as the tutorial (Globals.tutorial_requested): a
@@ -79,10 +83,27 @@ const _PLAYER_DRIVEN: Array[TutorialStep.TutorialSignals] = [
 ## Identifies the space the tutorial holds against the enemy formation.
 const _FORMATION_KEY: StringName = &"tutorial"
 
+## How long a reveal_target_arrows step's highlight is up before the arrows
+## start to move, so the player is looking at the computer when they do.
+const _ARROWS_LEAD_SECONDS: float = 0.6
+## The pause between the arrows lighting up and the card popping up.
+const _ARROWS_SETTLE_SECONDS: float = 0.4
+## Long past the arrows' swing. Only reached if they never come out (no second
+## ship to switch to), so the card isn't held back forever.
+const _ARROWS_DEADLINE_SECONDS: float = 4.0
+const _HIGHLIGHT_FADE_SECONDS: float = 0.3
+## The pause between a releases_opening_strike step's text finishing and the
+## ambusher starting its wind-up.
+const _OPENING_STRIKE_BEAT_SECONDS: float = 0.4
+
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
 var current_step_index: int = -1
 var current_popup: TutorialTextPopup
+
+## A highlight the manager put up ahead of its step's card, rather than the
+## card's own. It stays until the card closes.
+var _lead_highlight: Sprite2D
 
 ## Set when the player presses End Turn, cleared when their next turn starts.
 ## A step that asks them to end the turn may open after they already have.
@@ -124,6 +145,8 @@ func _ready() -> void:
 	Enemy.forced_actions.clear()
 	Reward.forced_rewards.clear()
 	Globals.tutorial_controls_enemy_turns = false
+	Globals.tutorial_holds_target_arrows = false
+	Globals.tutorial_holds_opening_strike = false
 
 	var playing: bool = should_play()
 	# Spent here either way, so the next run from the menu is an ordinary one
@@ -135,6 +158,10 @@ func _ready() -> void:
 	# GameStateManager rolls the run after this, in its own _ready().
 	RNGManager.next_run_seed = run_seed
 	Globals.tutorial_controls_enemy_turns = true
+	# Out of sight until the step that shows them swinging out.
+	Globals.tutorial_holds_target_arrows = true
+	# Fired once the step that introduces the ambusher has been read.
+	Globals.tutorial_holds_opening_strike = true
 	Events.player_turn_over.connect(_on_player_turn_over)
 	Events.player_turn_start.connect(_on_player_turn_start)
 	Events.reward_picked.connect(_on_reward_picked)
@@ -155,6 +182,8 @@ func _ready() -> void:
 	for _skipped: int in range(mini(skip_to_step, tutorial_steps.size())):
 		var step: TutorialStep = tutorial_steps.pop_front()
 		_apply_step_forcing(step)
+		if step.releases_opening_strike:
+			_release_opening_strike()
 		if step.tutorial_function in tutorial_functions:
 			tutorial_functions[step.tutorial_function].call()
 
@@ -230,6 +259,7 @@ func start_tutorial() -> void:
 
 		await play_step(step)
 		await _await_popup_closed(step)
+		_clear_lead_highlight()
 
 
 func play_step(step: TutorialStep) -> void:
@@ -243,15 +273,24 @@ func play_step(step: TutorialStep) -> void:
 		TutorialStep.TutorialSignals.REWARD_CLAIMED:
 			await _await_open_signal(Events.reward_picked, step)
 
+		TutorialStep.TutorialSignals.ENEMIES_ARRIVED:
+			await _await_open_signal(Events.enemies_arrived, step)
+
 	_apply_step_forcing(step)
+
+	if step.reveal_target_arrows:
+		await _reveal_target_arrows(step)
+
+	# A highlight already up stays put; the card doesn't bring a second one.
+	var highlight: Texture2D = null if _lead_highlight else step.highlight_texture
 
 	# Create the text popup
 	if step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_MANUALLY:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, true)
+		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, true)
 	elif step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_AFTER_TIME:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false, step.time_to_auto_close)
+		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, false, step.time_to_auto_close)
 	else:
-		create_tutorial_popup(step.tutorial_text, step.text_position, step.highlight_texture, false)
+		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, false)
 
 		var closing_signal: Signal = _closing_signal_for(step)
 		if _already_satisfied(step):
@@ -261,11 +300,86 @@ func play_step(step: TutorialStep) -> void:
 		elif closing_signal:
 			closing_signal.connect(current_popup.close)
 
+	if step.releases_opening_strike:
+		current_popup.all_text_displayed.connect(_release_opening_strike_after_beat)
+
 	# Handle calling tutorial functions
 	if step.tutorial_function in tutorial_functions:
 		current_popup.all_text_displayed.connect(
 			tutorial_functions[step.tutorial_function]
 		)
+
+
+## Points the player at the targeting computer, then lets its target arrows
+## swing out while they watch. The card comes once the arrows are live, so it
+## explains what the player just saw arrive.
+func _reveal_target_arrows(step: TutorialStep) -> void:
+	if step.highlight_texture:
+		_lead_highlight = _show_highlight(step.highlight_texture)
+	await get_tree().create_timer(_ARROWS_LEAD_SECONDS).timeout
+
+	var computer: TargetingComputer = Globals.targeting_computer
+	if not computer:
+		_release_target_arrows()
+		return
+
+	var settled: Array[bool] = [false]
+	var settle: Callable = func() -> void:
+		if settled[0]:
+			return
+		settled[0] = true
+		_target_arrows_settled.emit()
+	computer.shift_buttons_live.connect(settle, CONNECT_ONE_SHOT)
+	get_tree().create_timer(_ARROWS_DEADLINE_SECONDS).timeout.connect(settle)
+	_release_target_arrows()
+	await _target_arrows_settled
+	if computer.shift_buttons_live.is_connected(settle):
+		computer.shift_buttons_live.disconnect(settle)
+		push_warning("TutorialManager: the target arrows never came out; showing the card anyway.")
+		return
+
+	await get_tree().create_timer(_ARROWS_SETTLE_SECONDS).timeout
+
+
+func _release_opening_strike_after_beat() -> void:
+	await get_tree().create_timer(_OPENING_STRIKE_BEAT_SECONDS).timeout
+	_release_opening_strike()
+
+
+## Lets the ambusher fire. Safe to call more than once, and before the strike
+## is waiting: with the hold off, it doesn't wait at all.
+func _release_opening_strike() -> void:
+	if not Globals.tutorial_holds_opening_strike:
+		return
+	Globals.tutorial_holds_opening_strike = false
+	Events.opening_strike_released.emit()
+
+
+func _release_target_arrows() -> void:
+	Globals.tutorial_holds_target_arrows = false
+	if Globals.targeting_computer:
+		Globals.targeting_computer.refresh_shift_buttons()
+
+
+## Puts up a full-screen highlight mask the same way a card does, fading in.
+func _show_highlight(texture: Texture2D) -> Sprite2D:
+	var sprite: Sprite2D = TutorialTextPopup.make_highlight(texture)
+	sprite.modulate.a = 0.0
+	add_child(sprite)
+	sprite.global_position = Vector2(160, 90)
+	create_tween().tween_property(sprite, "modulate:a", 1.0, _HIGHLIGHT_FADE_SECONDS)
+	return sprite
+
+
+func _clear_lead_highlight() -> void:
+	if not is_instance_valid(_lead_highlight):
+		_lead_highlight = null
+		return
+	var sprite: Sprite2D = _lead_highlight
+	_lead_highlight = null
+	var tween: Tween = create_tween()
+	tween.tween_property(sprite, "modulate:a", 0.0, _HIGHLIGHT_FADE_SECONDS)
+	tween.tween_callback(sprite.queue_free)
 
 
 ## Applies whatever this step rigs about the run: the player's next dice, the
@@ -474,6 +588,8 @@ func _unlock_dice() -> void:
 func _finish_tutorial() -> void:
 	_unlock_dice()
 	Globals.tutorial_controls_enemy_turns = false
+	_release_target_arrows()
+	_release_opening_strike()
 	Globals.map.set_jump_arrows_visible(true, true)
 	Globals.map.enable_controls()
 

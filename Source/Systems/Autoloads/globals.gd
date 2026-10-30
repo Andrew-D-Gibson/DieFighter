@@ -23,6 +23,16 @@ var repair_station: RepairStation
 ## not fire one off the back of player_turn_over.
 var tutorial_controls_enemy_turns: bool = false
 
+## While true, the targeting computer keeps its target arrows folded away even
+## with a choice to make, so the tutorial can point the player at the computer
+## before they swing out. See TargetingComputer.refresh_shift_buttons().
+var tutorial_holds_target_arrows: bool = false
+
+## While true, the opening ambusher holds its first shot (OpeningStrike) until
+## Events.opening_strike_released, so the tutorial's first card can be read
+## before the shot lands.
+var tutorial_holds_opening_strike: bool = false
+
 # Set by MainMenu's Continue button before switching to the main game scene,
 # and consumed by GameStateManager._ready() in place of its scene-baked default.
 var pending_load_save: GameSaveResource = null
