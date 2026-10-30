@@ -4,6 +4,34 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-29 — Pixel-perfect fixed, options menu polish
+
+- **Pixel Perfect no longer breaks the picture.** It used to show more of
+  the canvas than the 1920x1080 frame and mask the rest, so anything that
+  measured the viewport drew wrong: the opening cutscene's shots were framed
+  off-centre, and screen-space layers needed nudging. Now the viewport stays
+  1920x1080 and the root's global canvas transform shrinks and centres the
+  picture at exactly k/6 (10 screen pixels per art pixel on a MacBook), so
+  every scene draws exactly as it does without it. Mouse input follows the
+  same transform. The `frame_ui` group is gone.
+- **Erase Progress and Unlock All** moved into their own red-headed
+  **Progress** section at the foot of the Game tab, as proper buttons (red
+  ERASE, purple UNLOCK). Each asks in a confirmation dialog instead of
+  turning into "SURE?", and the hint line reports what was done.
+- **Confirmation dialogs** sit on a pixel panel. Destructive ones (erasing,
+  overwriting a save with New Game) get a red confirm and a blue Cancel.
+- **Controls** split into **Keyboard & Mouse** and **Controller** pages,
+  switched by toggles with small pixel icons, so each page shows only its
+  own bindings (no more greyed-out key slots for controller-only actions)
+  and its own settings (Dice Placement, Cursor Speed).
+- **Sliders** show their value on the knob; the knob and its text light up
+  under the mouse.
+- **Polish:** dropdowns and buttons line up at one width per column, the
+  hovered row gets a soft highlight with an accent edge, and pages can have
+  headed sections.
+
+---
+
 ## 2026-10-29 — Art sources move to Art/, PNGs are exported
 
 **Why.** Art gets edited on an iPad (Pixquare, synced with GitSync), so

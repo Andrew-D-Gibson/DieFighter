@@ -1537,25 +1537,37 @@ background carry on.
 **Options.** `OptionsSettings` registers every option in `_register_*_options()`
 functions (one per area), and `OptionsMenu._build_pages()` builds every tab
 from `OptionsPage` row helpers (`check`, `choice`, `slider`, `button`,
-`custom`, `note`, `next_column`, `enable_when`). A row writes through
-`set_option()` and re-reads through `refresh()`, so the menu shows live
-values after Defaults or a change made elsewhere. `OptionsFrame` draws the
-panel to fit however many tabs there are. To add an option: one `register()`
-call, one row, and its label and hint keys in `translations.csv`.
+`custom`, `section`, `spacer`, `note`, `next_column`, `enable_when`). A row
+writes through `set_option()` and re-reads through `refresh()`, so the menu
+shows live values after Defaults or a change made elsewhere. Within a column
+the page makes every dropdown and button as wide as the widest
+(`PixelDropdown.content_width()` measures a dropdown's longest item), and a
+slider writes its value on its knob. A tab listed in `OptionsMenu._SUB_TABS`
+gets several pages and an `OptionsSubTabs` row to switch them (Controls:
+keyboard & mouse, controller; `BindingSlots` takes the input kinds to show).
+`OptionsFrame` draws the panel to fit however many tabs there are, and its
+static `draw_box()` is the pixel panel `OptionsSubTabs` and `ConfirmDialog`
+draw too. Progress tools (main menu only) sit in their own section and ask in
+a `ConfirmDialog` (`open(message, destructive, confirm_text)`) before acting.
+To add an option: one `register()` call, one row, and its label and hint keys
+in `translations.csv`.
 
 **Pixel-perfect fullscreen.** The game is a 1920x1080 canvas
-(`ScreenFrame.SIZE`: Globals.SCREEN_SIZE through the 6x cameras). Godot can't
-scale it by k/6 (content_scale_factor clamps below 1; integer stretch counts
-multiples of 1920x1080), so `PixelPerfectScaler` switches the window to
-canvas_items stretching with a base of six window sizes and factor k: the
-canvas scales by exactly k/6 and renders at native resolution. The window then
-shows extra canvas around the frame: a mask layer (127) blacks it out,
-CanvasLayers in the `frame_ui` group (main.tscn's UI layer) are offset onto
-the frame, and anything keeping itself on screen (dropdowns, damage numbers,
-`JuicePixelated`) measures against `ScreenFrame.canvas_rect()` /
-`rect_in_viewport()`, not the viewport. It applies only in fullscreen and
-rechecks on size and mode changes (macOS reports fullscreen a few frames
-after the resize).
+(`ScreenFrame.SIZE`: Globals.SCREEN_SIZE through the 6x cameras), letterboxed
+by whatever factor fits, so art pixels come out uneven (10 and 11 screen
+pixels at 1.8x). Godot's stretch settings can't scale it by exactly k/6:
+integer stretch counts multiples of 1920x1080 and floors the content scale
+factor, and fractional stretch always fills the screen. So
+`PixelPerfectScaler` switches the window to canvas_items stretching on the
+usual 1920x1080 base (native-resolution rendering, viewport unchanged) and
+sets the root's `global_canvas_transform` to shrink that fit to k/6 and
+centre it on whole pixels (`frame_rect_for()`). The global canvas transform
+moves every CanvasLayer and maps mouse input too, so no other code knows; a
+mask layer (127) blacks out the band left around the frame. It applies only
+in fullscreen and rechecks on size and mode changes (macOS reports
+fullscreen a few frames after the resize). An earlier version enlarged the
+viewport instead, and everything that measured the viewport (the opening
+cutscene's framing, screen-space layers) drew wrong.
 
 **Comfort.** `Globals.screenshake_intensity` scales every shake, zoom punch and
 ripple (`Shakeable` shakes take a strength). Reduce Flashing goes through
