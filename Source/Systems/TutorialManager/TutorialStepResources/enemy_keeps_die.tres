@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "Used dice go to your [color=purple]target[/color].(delay=0.3) [color=yellow]On its turn, the raider fights back with them.[/color]"
+tutorial_text = "The [color=red]Dice Cannon[/color] (dice_cannon) passed your die on to your [color=purple]target[/color].(delay=0.3) [color=yellow]On its turn, the raider fights back with it.[/color]"
 text_position = Vector2(100, 40)
 close_on_signal = 1
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

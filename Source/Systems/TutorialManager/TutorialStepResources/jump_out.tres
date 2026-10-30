@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave](left_mouse) a die onto the arrow (right_controls) to jump that many places right:"
+tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][/wave] (left_mouse) a die onto the arrow (right_controls) to jump that many places right:"
 close_on_signal = 11
 tutorial_function = 10
 highlight_texture = ExtResource("highlight")

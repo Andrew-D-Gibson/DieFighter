@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="TutorialStep" format=3]
+
+[ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+
+[resource]
+script = ExtResource("1_s")
+tutorial_text = "Most systems pass their die on to your [color=purple]target[/color] once used.(delay=0.3) A few, like [color=green]Bump[/color] (bump), hand it back to you to use again."
+text_position = Vector2(100, 40)
+close_on_signal = 1
+metadata/_custom_type_script = "uid://eyoqrls6ero4"

@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) a ship to make it your [color=purple]target[/color].(delay=0.3) The rest is up to you. [wave amp=10.0 freq=3.0 connected=1][color=yellow]Good luck, pilot![/color][/wave]"
+tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) a ship to make it your [color=purple]target[/color]: it gets your used dice.(delay=0.3) The rest is up to you. [wave amp=10.0 freq=3.0 connected=1][color=yellow]Good luck, pilot![/color][/wave]"
 text_position = Vector2(160, 120)
 time_delay = 0.5
 open_on_signal = 12

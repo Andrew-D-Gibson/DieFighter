@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave](left_mouse) a system to read it.(delay=0.3) (bump) gives dice back: bump one to an empty value!(delay=0.3) Use every die, then [color=yellow]End Turn[/color]:"
+tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) a system to read it.(delay=0.3) Bump a die to an empty value, then pass it on!(delay=0.3) Use every die, then [color=yellow]End Turn[/color]:"
 text_position = Vector2(100, 40)
 close_on_signal = 6
 metadata/_custom_type_script = "uid://eyoqrls6ero4"
