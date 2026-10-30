@@ -133,7 +133,7 @@ script = ExtResource("script_2")
 enemy_name = "Arc Dynamo"
 description = "Reactor barge. Its biggest guns sit on its highest faces. Hand it more than its breaker can take in one turn and it [color=yellow]Overloads[/color]: no attack, every die vented home, and a jolt to its own hull. Each overload raises the limit."
 faction = ExtResource("faction_identity")
-max_health = 145
+max_health = 73
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1")])
 pool_selection = 1
 face_bias = 1.5
