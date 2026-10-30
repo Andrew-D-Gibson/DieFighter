@@ -57,13 +57,18 @@ func _ready() -> void:
 		_add_star(star_twinkle_scene)
 		
 	%AnimationPlayer.play("on_application_start")
+	# A new scene is drawn once before its AnimationPlayer first processes,
+	# which flashed the finished menu ahead of the fade. Pose the first frame
+	# now instead.
+	%AnimationPlayer.advance(0.0)
 	
 	SceneLoader.request(opening_cutscene)
 	$VBoxContainer/QuitButton.visible = QuitManager.can_quit()
 
-	# The menu always opens on the start theme, from the top when coming back
-	# from a run.
-	MusicDirector.play_track(_MENU_TRACK, 2.0, true)
+	# Whatever is playing carries on into the menu. Only silence (a run's
+	# playlist ran out, say) is filled with the start theme.
+	if MusicDirector.current_track_id() == &"":
+		MusicDirector.play_track(_MENU_TRACK, 2.0)
 	
 	
 func _refresh_play_buttons() -> void:

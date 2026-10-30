@@ -35,6 +35,11 @@ const _UNLOCK_COLOR: Color = Color("#C552F1")
 const _HINT_COLOR: Color = Color("#A5A29D")
 ## How long the hint line reports a progress tool's result, in seconds.
 const _STATUS_TIME: float = 2.5
+## Played as the SFX slider moves, so the player hears the level they're
+## setting rather than guessing at it.
+const _SFX_PREVIEW: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres")
+## A drag changes the value every frame; the sample plays at most this often.
+const _SFX_PREVIEW_INTERVAL_MSEC: int = 150
 
 ## The panel, centred on this node, in world pixels.
 const PANEL_SIZE: Vector2 = Vector2(256, 140)
@@ -91,6 +96,7 @@ var _confirm_dialog: ConfirmDialog
 var _pending_progress: Array = []
 ## Bumped by every hint change, so a status message only clears itself.
 var _hint_serial: int = 0
+var _last_sfx_preview_msec: int = -_SFX_PREVIEW_INTERVAL_MSEC
 
 
 func _ready() -> void:
@@ -152,7 +158,8 @@ func _build_pages() -> void:
 	var audio: OptionsPage = _page(Tab.AUDIO)
 	audio.slider(OptionsSettings.MASTER_VOLUME, "OPT_GAME_VOLUME")
 	audio.slider(OptionsSettings.MUSIC_VOLUME, "OPT_MUSIC_VOLUME")
-	audio.slider(OptionsSettings.SFX_VOLUME, "OPT_SFX_VOLUME")
+	var sfx: HSlider = audio.slider(OptionsSettings.SFX_VOLUME, "OPT_SFX_VOLUME")
+	sfx.value_changed.connect(_preview_sfx_volume.unbind(1))
 	audio.check(OptionsSettings.MUTE_ALL, "OPT_MUTE_ALL")
 	# Comfort: background behaviour.
 	audio.check(OptionsSettings.MUTE_IN_BACKGROUND, "OPT_MUTE_IN_BACKGROUND", "OPT_MUTE_IN_BACKGROUND_HINT")
@@ -445,3 +452,13 @@ func _show_status(text: String, color: Color) -> void:
 func _on_close_button_pressed() -> void:
 	OptionsSettings.save_options_settings()
 	hide()
+
+
+## Plays a sample on the SFX bus at the level just set. Connected after the
+## slider's own handler, so the bus already has the new volume.
+func _preview_sfx_volume() -> void:
+	var now: int = Time.get_ticks_msec()
+	if now - _last_sfx_preview_msec < _SFX_PREVIEW_INTERVAL_MSEC:
+		return
+	_last_sfx_preview_msec = now
+	Events.play_sound.emit(_SFX_PREVIEW)

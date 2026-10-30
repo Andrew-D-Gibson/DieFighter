@@ -61,6 +61,15 @@ extends Node2D
 ## Negative, because the sheet is turned on its side.
 @export var nebula_drift: float = -0.015
 
+@export_category('Music')
+## The cutscene opens on a beat of black: whatever music the player arrived
+## with fades out over this long first.
+@export var music_fade_out_seconds: float = 1.5
+## Then the run's track fades in over this long...
+@export var music_fade_in_seconds: float = 3.0
+## ...and this long after it starts, the timeline rolls.
+@export var music_lead_seconds: float = 1.5
+
 const _DIE_TEXTURE: Texture2D = preload("res://Assets/Textures/Dice/Cutscene/cutscene_dice.png")
 const _PIXEL_TEXTURE: Texture2D = preload("res://Assets/Particles/hit_particle_pixel.png")
 const _HYPERSPACE_STREAKS: Texture2D = preload("res://Assets/SpriteMancer/JumpTransition/jump_particles.png")
@@ -100,6 +109,9 @@ const _DEBRIS_MAX_SPIN: float = 1.5
 const _BLUE_JUMP: Color = Color("#8df1f4")
 const _RED_JUMP: Color = Color("#d03656")
 const _FATE_PURPLE: Color = Color("#c552f1")
+## Played once, on into the run; when it ends the playlist brings the start
+## theme back and holds it.
+const _RUN_TRACK: StringName = &"trailer_1"
 
 var main_game_scene: String = "uid://deisauteocrjl"
 ## The fight this cuts into (main.tscn's starting_scenario). Its Attacker is
@@ -130,6 +142,7 @@ var _survivor_hull_fraction: float = 1.0
 @onready var _star_camera: Camera2D = $Camera2D
 @onready var _fate: Node2D = %Fate
 @onready var _storm: FateStorm = %FateStorm
+@onready var _timeline: AnimationPlayer = $AnimationPlayer
 
 
 func _ready() -> void:
@@ -146,6 +159,7 @@ func _ready() -> void:
 	_dress_player_ship(Globals.current_ship())
 	_add_exhaust(%PlayerShip)
 	%RiftNebula.speed = nebula_drift
+	_play_after_music_beat()
 
 
 func _process(delta: float) -> void:
@@ -172,6 +186,22 @@ func _input(event: InputEvent) -> void:
 	event.button_index == MOUSE_BUTTON_LEFT and \
 	event.pressed:
 		_switch_to_next_scene()
+
+
+## Holds the first frame (black) while the old music fades out and the run's
+## track fades in, so the cutscene starts on its own music rather than over
+## the tail of the menu's. A tween rather than awaits: a skip frees the scene
+## mid-beat, and the tween goes with it.
+func _play_after_music_beat() -> void:
+	_timeline.play(&"cutscene_anim")
+	_timeline.advance(0.0)
+	_timeline.pause()
+	MusicDirector.stop(music_fade_out_seconds)
+	var beat: Tween = create_tween()
+	beat.tween_interval(music_fade_out_seconds)
+	beat.tween_callback(MusicDirector.play_track.bind(_RUN_TRACK, music_fade_in_seconds))
+	beat.tween_interval(music_lead_seconds)
+	beat.tween_callback(_timeline.play)
 
 
 # --- Shot -------------------------------------------------------------------
@@ -315,11 +345,6 @@ func _build_hyperspace_streaks() -> void:
 
 # --- Timeline calls ---------------------------------------------------------
 
-## Keyed on the cutscene's method track at 0 s, so the fade can be retimed in
-## the AnimationPlayer. The trailer plays once, on into the run; when it ends
-## the playlist brings the start theme back and holds it.
-func _start_music() -> void:
-	MusicDirector.play_track(&"trailer_1", 4.0)
 
 
 ## Fate breathing: a ring rolls out of the hole, lightning cracks off it and
@@ -546,6 +571,8 @@ func _lock_on(target: StringName) -> void:
 
 
 func _switch_to_next_scene() -> void:
+	# A skip during the opening beat would otherwise reach the game in silence.
+	MusicDirector.play_track(_RUN_TRACK, music_fade_in_seconds)
 	SceneLoader.switch_to(get_tree(), main_game_scene)
 
 
