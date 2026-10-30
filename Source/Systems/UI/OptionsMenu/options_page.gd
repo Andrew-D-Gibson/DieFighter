@@ -78,16 +78,17 @@ func check(key: StringName, label_key: String, hint_key: String = "") -> CheckBo
 	box.add_theme_icon_override("unchecked", _widget_texture("CheckBox/check_box_unchecked%s.png"))
 	box.add_theme_icon_override("checked_disabled", _widget_texture("CheckBox/check_box_checked%s.png"))
 	box.add_theme_icon_override("unchecked_disabled", _widget_texture("CheckBox/check_box_unchecked%s.png"))
+	# No stylebox padding, so the box is exactly its art: padding round a
+	# 16px box in a 16px row reaches into the rows above and below, where it
+	# took clicks meant for their widgets.
+	var empty: StyleBoxEmpty = StyleBoxEmpty.new()
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "disabled", "focus"]:
+		box.add_theme_stylebox_override(state, empty)
 	box.toggled.connect(func(on: bool) -> void:
 		Events.play_sound.emit(_HOVER_THUMP_SFX)
 		OptionsSettings.set_option(key, on))
 	_bind(key, func() -> void: box.set_pressed_no_signal(bool(OptionsSettings.get_option(key))))
-	# The art has a pixel of air round it; let it hang into the row's margin.
-	var holder: MarginContainer = MarginContainer.new()
-	for side: String in ["left", "top", "right", "bottom"]:
-		holder.add_theme_constant_override("margin_" + side, -4)
-	holder.add_child(box)
-	_add_row(label_key, hint_key, holder, false)
+	_add_row(label_key, hint_key, box, false)
 	return box
 
 
