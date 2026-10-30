@@ -85,6 +85,10 @@ const _MIN_ON_SCREEN_SHARE: float = 0.5
 ## The scale a brought-back window takes when its screen can't say how big
 ## it is.
 const _FALLBACK_WINDOW_SCALE: int = 4
+## The buses the volume options set. project.godot names the layout by uid,
+## and when the uid cache can't resolve it Godot quietly starts with only
+## Master, so the Music and SFX sliders snap back. This file is the fallback.
+const _BUS_LAYOUT_PATH: String = "res://default_bus_layout.tres"
 
 
 class _Option:
@@ -212,6 +216,7 @@ func _register_graphics_options() -> void:
 
 
 func _register_audio_options() -> void:
+	_ensure_bus_layout()
 	_register_bus_volume(MASTER_VOLUME, "Master")
 	_register_bus_volume(MUSIC_VOLUME, "Music")
 	_register_bus_volume(SFX_VOLUME, "SFX")
@@ -221,6 +226,14 @@ func _register_audio_options() -> void:
 	register(MUTE_IN_BACKGROUND, true,
 		func() -> bool: return background_focus.mute_in_background,
 		func(value: Variant) -> void: background_focus.mute_in_background = bool(value))
+
+
+## Loads the project's bus layout by path if the engine started without it.
+func _ensure_bus_layout() -> void:
+	if AudioServer.get_bus_index("Music") != -1 and AudioServer.get_bus_index("SFX") != -1:
+		return
+	push_warning("Audio buses missing at boot (bus layout uid unresolved); loading %s" % _BUS_LAYOUT_PATH)
+	AudioServer.set_bus_layout(load(_BUS_LAYOUT_PATH) as AudioBusLayout)
 
 
 func _register_bus_volume(key: StringName, bus: StringName) -> void:
