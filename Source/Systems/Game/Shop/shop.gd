@@ -2,7 +2,7 @@ class_name Shop
 extends Node2D
 
 ## The price tag shown under each shelf. Shelves 0-3 hold tiles, 4 the extra
-## die, 5 a Grid Slot.
+## die or a Grid Slot.
 @export var prices: Array[Node2D]
 var item_to_shop_index: Dictionary[Node, int]
 ## What each item on the shelves costs. The tag only displays it.
@@ -16,7 +16,7 @@ var _item_prices: Dictionary[Node, int]
 const PixelButton: GDScript = preload("res://Source/Systems/UI/Buttons/button.gd")
 
 @export_category("Reroll")
-## Swaps the four tile shelves for fresh stock, for credits. Lives on a tab
+## Swaps every shelf for fresh stock, for credits. Lives on a tab
 ## above the panel, with its price tag beside it.
 @export var reroll_tab: Node2D
 @export var reroll_button: PixelButton
@@ -38,8 +38,12 @@ const DICE_PRICE: int = 25
 ## the run finds from here on.
 const GRID_SLOT_PRICE: int = 30
 
-const _DICE_SHELF: int = 4
-const _GRID_SLOT_SHELF: int = 5
+## Holds the extra die or a Grid Slot, never both, which keeps the panel
+## narrow enough to clear the credit readout and the shopkeeper's bubble.
+const _EXTRA_SHELF: int = 4
+## How often the extra shelf holds a Grid Slot rather than the die, while the
+## grid has a sealed cell to open.
+const GRID_SLOT_CHANCE: float = 0.5
 
 ## What a tile on the shelf costs, by rarity, inclusive on both ends.
 const PRICE_RANGES: Dictionary[TileResource.Rarity, Vector2i] = {
@@ -86,8 +90,8 @@ const _STOCK_OUT_TIME: float = 0.14
 const _PANEL_CLOSE_TIME: float = 0.18
 
 ## --- Rerolling ---
-## The tile shelves empty (the closing's pop, last first) and refill (the
-## opening's pop, first first). The die and the Grid Slot stay put.
+## The shelves empty (the closing's pop, last first) and refill (the
+## opening's pop, first first). The extra shelf is rolled again too.
 
 const _MONEY_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/money_tick.tres")
 
@@ -137,8 +141,7 @@ func _open_shop() -> void:
 	else:
 		rerolls_bought = 0
 		_create_shop_tiles()
-		_create_dice_buy_zone()
-		_create_grid_slot_stock()
+		_stock_extra_shelf()
 	modulate.a = 1.0
 	show()
 	_claim_formation_space()
@@ -261,7 +264,7 @@ func _play_reveal() -> void:
 
 
 ## What's on the shelves, slot by slot: down the left column, down the right,
-## then the die.
+## then the extra shelf.
 func _stock_in_shelf_order() -> Array[Node2D]:
 	var stock: Array[Node2D] = []
 	for item: Node in item_to_shop_index:
@@ -431,7 +434,7 @@ func _create_shop_tiles(cleared: Array[TileResource] = []) -> void:
 func _place_shop_tile(shop_index: int, tile_resource: TileResource) -> Tile:
 	var tile_spacing_x: int = 46
 	var tile_spacing_y: int = 27
-	var start_pos: Vector2 = Vector2(-67,-13.5)
+	var start_pos: Vector2 = Vector2(-50,-13.5)
 	var col: int = shop_index / 2
 	var row: int = shop_index % 2
 
@@ -510,36 +513,48 @@ func _restore_stock(stock: Dictionary) -> void:
 		var tile: Tile = _place_shop_tile(int(entry["slot"]), ResourceLoader.load(path))
 		_set_price(tile, int(entry["price"]))
 
+	# One or the other: a save from before the shelves were merged may claim
+	# both, and they'd stack on the one shelf.
 	if stock.get("dice", false):
 		_create_dice_buy_zone()
-	if stock.get("slot", false):
+	elif stock.get("slot", false):
 		_create_grid_slot_stock()
+
+
+## Rolls what the extra shelf holds. Drawn from REWARDS like the prices, so a
+## shop reloaded from its seed offers the same thing.
+func _stock_extra_shelf() -> void:
+	if Globals.tile_grid.has_locked_cell() \
+	and RNGManager.randf(RNGManager.Bucket.REWARDS) < GRID_SLOT_CHANCE:
+		_create_grid_slot_stock()
+	else:
+		_create_dice_buy_zone()
 
 
 func _create_dice_buy_zone() -> void:
 	var dice: Dice = dice_scene.instantiate()
 	add_child(dice)
-	dice.global_position = global_position + Vector2(63, -16)
+	dice.global_position = global_position + Vector2(46, -16)
 	dice.draggable.home_position = dice.global_position
 	dice.draggable.drag_started.connect(Events.show_systems.emit)
 	dice.draggable.drag_ended.connect(_on_shop_item_dragged)
 	
-	_stock(dice, _DICE_SHELF)
+	_stock(dice, _EXTRA_SHELF)
 	_set_price(dice, DICE_PRICE)
 
 
 ## Shelves a Grid Slot while the grid has a sealed cell to open.
 func _create_grid_slot_stock() -> void:
-	prices[_GRID_SLOT_SHELF].visible = false
+	prices[_EXTRA_SHELF].visible = false
 	if not Globals.tile_grid.has_locked_cell():
 		return
 	var slot: GridSlot = grid_slot_scene.instantiate()
 	add_child(slot)
-	slot.global_position = global_position + Vector2(29, -12)
+	slot.global_position = global_position + Vector2(46, -12)
 	slot.draggable.home_position = slot.global_position
 	slot.draggable.drag_ended.connect(_on_shop_item_dragged)
 
-	_stock(slot, _GRID_SLOT_SHELF)
+	_stock(slot, _EXTRA_SHELF)
 	_set_price(slot, GRID_SLOT_PRICE)
 
 
@@ -615,7 +630,7 @@ func reroll_refusal() -> String:
 	return ""
 
 
-## Pays for a reroll and swaps the tile shelves for fresh stock. False, and
+## Pays for a reroll and swaps every shelf for fresh stock. False, and
 ## nothing paid, if reroll_refusal() objects.
 func reroll() -> bool:
 	if not reroll_refusal().is_empty():
@@ -627,14 +642,13 @@ func reroll() -> bool:
 	if reroll_button:
 		Juice.ring(self, reroll_button.global_position + reroll_button.size / 2.0, Globals.green, 16.0)
 
-	# The tiles still on the shelves, last first, as the closing pops them.
-	var outgoing: Array[Node2D] = []
+	# What's still on the shelves, last first, as the closing pops it.
+	var outgoing: Array[Node2D] = _stock_in_shelf_order()
 	var cleared: Array[TileResource] = []
-	for item: Node2D in _stock_in_shelf_order():
+	for item: Node2D in outgoing:
 		if item is Tile:
-			outgoing.append(item)
 			cleared.append((item as Tile).tile_resource)
-			item.draggable.dragging_allowed = false
+		item.draggable.dragging_allowed = false
 	outgoing.reverse()
 
 	_restock_tween = create_tween()
@@ -642,28 +656,27 @@ func reroll() -> bool:
 		_restock_tween.tween_callback(_pop_out.bind(item))
 		_restock_tween.tween_interval(_STOCK_OUT_STAGGER)
 	_restock_tween.tween_interval(_STOCK_OUT_TIME)
-	_restock_tween.tween_callback(_refill_tile_shelves.bind(cleared))
+	_restock_tween.tween_callback(_refill_shelves.bind(cleared))
 	_refresh_reroll()
 	return true
 
 
-## The second half of a reroll: the old tiles go, new ones are shelved out of
-## sight, and they pop in one by one as the opening's do.
-func _refill_tile_shelves(cleared: Array[TileResource]) -> void:
+## The second half of a reroll: the old stock goes, new stock is shelved out
+## of sight, and it pops in one by one as the opening's does.
+func _refill_shelves(cleared: Array[TileResource]) -> void:
 	for item: Node in item_to_shop_index.keys():
-		if item is Tile and is_instance_valid(item) and item.get_parent() == self:
+		if is_instance_valid(item) and item.get_parent() == self:
 			item.queue_free()
-			_forget(item)
-	for shop_index: int in range(_DICE_SHELF):
-		prices[shop_index].visible = false
+		_forget(item)
+	for tag: Node2D in prices:
+		tag.visible = false
 	_create_shop_tiles(cleared)
+	_stock_extra_shelf()
 
-	var incoming: Array[Node2D] = []
-	for item: Node2D in _stock_in_shelf_order():
-		if item is Tile:
-			incoming.append(item)
-			_hold_for_reveal(item)
-			prices[item_to_shop_index[item]].scale = Vector2.ZERO
+	var incoming: Array[Node2D] = _stock_in_shelf_order()
+	for item: Node2D in incoming:
+		_hold_for_reveal(item)
+		prices[item_to_shop_index[item]].scale = Vector2.ZERO
 
 	# The same checkpoint a purchase takes, so a Continue keeps the new stock
 	# and the rising price.
