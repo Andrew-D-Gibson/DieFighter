@@ -416,6 +416,12 @@ value before its STREAM.
     `resource_local_to_scene` ShaderMaterial using `enemy_shader.gdshader`.
     The flash, fade and cloak effects drive its parameters.
   - Add `engine_particles.tscn` children at the exhausts.
+  - Damage smoke is automatic (`ShipDamageSmoke`): a plume breaks out at
+    75%, 50% and 25% hull, from spots picked off the hull's opaque pixels
+    (the same spots for every ship of that kind). If they land somewhere
+    odd, pin them: add a `Node2D` named `DamageSmokePoints` with one
+    `Marker2D` per plume, in the order they should light. Draw the sheet
+    nose-down; the smoke drifts out of the tail (local up).
 - Resource: `Source/Content/Enemies/EnemyResources/<name>.tres` (an
   `EnemyResource`).
 
