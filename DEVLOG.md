@@ -4,6 +4,20 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — A narrower shop, and a greener reroll button
+
+- **The die and the Grid Slot share a shelf.** Each had its own column, which
+  pushed the shop panel into the credit readout on the left and the
+  shopkeeper's speech bubble off screen on the right. A shop now offers four
+  tiles plus the extra die *or* a Grid Slot (`Shop.GRID_SLOT_CHANCE`, half the
+  time, and only while the grid has a sealed cell). A reroll restocks that
+  shelf with the tiles. The panel is 34px narrower and centred, giving back
+  17px on each side.
+- **The reroll button greys out dark green**, not purple, when it can't be
+  pressed (`button_medium_green_disabled`).
+
+---
+
 ## 2026-10-30 — Enemy hull halved, faction badges explain themselves, salvage falls behind the cockpit
 
 - **Enemy hull is halved.** The 2.5x retune (2026-10-29) overshot. Every

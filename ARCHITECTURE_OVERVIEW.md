@@ -694,7 +694,7 @@ could do now: drop a die from the hand on a tile that would take it
 (`Tile.activation_refusal()`, the pure half of `clears_activation_criteria()`),
 retarget, switch the map/systems tab, take a salvage choice
 (`Reward.can_take()`), buy from the shop (`Shop.price_of()`, if affordable),
-reroll its tile shelves (`REROLL`, while `Shop.reroll_refusal()` allows),
+reroll its shelves (`REROLL`, while `Shop.reroll_refusal()` allows),
 repair or sell at a repair station, drag a grid tile to another cell out of
 a fight (`MOVE_TILE`, a swap if the cell is taken), or press End Turn
 (`Player.can_end_turn()`). `perform()` goes through the same entry points as
@@ -1039,7 +1039,8 @@ hole; it is drawn as a hull plate (`locked_cell.png`) over the panel art by
 target brackets, hover, the blow-off) and is told when the sealed set changes. A
 `GridSlot` (`Source/Systems/Game/GridSlot/`) is a draggable item: the last
 choice of a salvage offer (`RewardResource.grid_slot_probability`, and always
-when the grid is full) or a shop shelf (`Shop.GRID_SLOT_PRICE`). Carrying one
+when the grid is full) or the shop's fifth shelf, which holds it or the
+extra die (`Shop.GRID_SLOT_CHANCE`, `Shop.GRID_SLOT_PRICE`). Carrying one
 lights every sealed cell; dropped on one, `GridSlot.install()` opens it at once
 (so the checkpoint the pick triggers saves it) and flies in while the plate
 blows off. Salvage and the shop decide whether a drop counts, and hand the
