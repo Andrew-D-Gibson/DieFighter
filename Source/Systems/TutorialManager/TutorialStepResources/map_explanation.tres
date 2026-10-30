@@ -5,7 +5,7 @@
 
 [resource]
 script = ExtResource("1_s")
-tutorial_text = "Hover markers to scout.(delay=0.3) Outrun [color=purple]Corruption[/color] (fate_scenario), which spreads every jump, to the [color=blue]Boss Gate[/color] (jump_gate_scenario)."
+tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) and drag on the map to scout.(delay=0.3) Outrun [color=purple]Corruption[/color] (fate_scenario), which spreads every jump, to the [color=blue]Boss Gate[/color] (jump_gate_scenario)."
 close_on_signal = 1
 highlight_texture = ExtResource("highlight")
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

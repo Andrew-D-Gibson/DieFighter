@@ -553,6 +553,14 @@ func _process(delta: float) -> void:
 	targeting_indicator.global_position = indicator_position()
 
 
+## The screen area the reticle covers while it hovers on [param ship], its
+## whole bob included.
+func indicator_reach(ship: Enemy) -> Rect2:
+	var size: Vector2 = targeting_indicator.texture.get_size() if targeting_indicator.texture else Vector2.ZERO
+	var corner: Vector2 = ship.global_position + targeting_indicator_offset - size / 2.0
+	return Rect2(corner, size + _INDICATOR_BOB)
+
+
 ## Where the reticle belongs this frame: partway along its glide, or hovering
 ## on the ship. Both are measured from where the ship is now.
 func indicator_position() -> Vector2:

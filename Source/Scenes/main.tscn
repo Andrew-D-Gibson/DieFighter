@@ -111,6 +111,7 @@
 [ext_resource type="Resource" uid="uid://pf1dsr7b31jw" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/dice_return.tres" id="tut_dice_return"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_handoff.tres" id="tut_tutorial_handoff"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_good_luck.tres" id="tut_good_luck"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -405,7 +406,7 @@ script = ExtResource("93_runstats")
 
 [node name="TutorialManager" parent="Systems" unique_id=1846484380 instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
-tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("tut_ambush_intro"), ExtResource("tut_activate_tile"), ExtResource("tut_enemy_keeps_die"), ExtResource("tut_read_intents"), ExtResource("tut_dice_return"), ExtResource("tut_end_turn_prompt"), ExtResource("tut_enemy_response"), ExtResource("tut_finish_the_raider"), ExtResource("tut_claim_salvage"), ExtResource("tut_open_the_map"), ExtResource("tut_map_explanation"), ExtResource("tut_jump_out"), ExtResource("tut_tutorial_handoff")])
+tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("tut_ambush_intro"), ExtResource("tut_activate_tile"), ExtResource("tut_enemy_keeps_die"), ExtResource("tut_read_intents"), ExtResource("tut_dice_return"), ExtResource("tut_end_turn_prompt"), ExtResource("tut_enemy_response"), ExtResource("tut_finish_the_raider"), ExtResource("tut_claim_salvage"), ExtResource("tut_open_the_map"), ExtResource("tut_map_explanation"), ExtResource("tut_jump_out"), ExtResource("tut_tutorial_handoff"), ExtResource("tut_good_luck")])
 opening_setup = ExtResource("tut_opening")
 
 [node name="GameStateManager" parent="Systems" unique_id=1522777559 instance=ExtResource("12_6ebjm")]

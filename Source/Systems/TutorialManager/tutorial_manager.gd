@@ -21,6 +21,11 @@ signal _open_wait_over
 ## its deadline comes first.
 signal _target_arrows_settled
 
+## Closes an ON_TARGET_SWITCH step: the player has picked another ship.
+## targeting_computer_retargeted alone can't tell, since the computer re-checks
+## its target for reasons of its own.
+signal _target_switched
+
 ## Whether the tutorial narrates this run at all. Off means the cold open plays
 ## exactly as it would for a returning player. Even when on, it only runs for a
 ## run the main menu launched as the tutorial (Globals.tutorial_requested): a
@@ -92,6 +97,11 @@ const _ARROWS_SETTLE_SECONDS: float = 0.4
 ## ship to switch to), so the card isn't held back forever.
 const _ARROWS_DEADLINE_SECONDS: float = 4.0
 const _HIGHLIGHT_FADE_SECONDS: float = 0.3
+## Clear space a cut_out_targets cutout leaves round a ship's drawing, and
+## extra height on top of that for the ship's idle bob.
+const _TARGET_CUTOUT_PADDING: float = 3.0
+const _TARGET_CUTOUT_BOB_ROOM: float = 2.0
+const _MARKER_CUTOUT_PADDING: float = 3.0
 ## The pause between a releases_opening_strike step's text finishing and the
 ## ambusher starting its wind-up.
 const _OPENING_STRIKE_BEAT_SECONDS: float = 0.4
@@ -116,6 +126,10 @@ var _reward_claimed: bool = false
 ## wait can't end a later one.
 var _open_wait_id: int = 0
 
+## The ship targeted when an ON_TARGET_SWITCH step opened, by instance id: it
+## may be shot down and freed before the player switches.
+var _target_id_at_step_open: int = 0
+
 var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.REVEAL_HEALTH_BAR: _reveal_health_bar,
 	TutorialStep.TutorialFunctions.TRIGGER_ENEMY_SPAWN: _spawn_enemy,
@@ -132,6 +146,7 @@ var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.UNLOCK_DICE: _unlock_dice,
 	TutorialStep.TutorialFunctions.FINISH_TUTORIAL: _finish_tutorial,
 	TutorialStep.TutorialFunctions.REROLL_ENEMY_INTENTS: _reroll_enemy_intents,
+	TutorialStep.TutorialFunctions.CALL_OUT_MAP_TAB: _call_out_map_tab,
 }
 
 
@@ -184,6 +199,8 @@ func _ready() -> void:
 		_apply_step_forcing(step)
 		if step.releases_opening_strike:
 			_release_opening_strike()
+		if step.opening_function in tutorial_functions:
+			tutorial_functions[step.opening_function].call()
 		if step.tutorial_function in tutorial_functions:
 			tutorial_functions[step.tutorial_function].call()
 
@@ -259,6 +276,7 @@ func start_tutorial() -> void:
 
 		await play_step(step)
 		await _await_popup_closed(step)
+		_stop_watching_target()
 		_clear_lead_highlight()
 
 
@@ -278,16 +296,27 @@ func play_step(step: TutorialStep) -> void:
 
 	_apply_step_forcing(step)
 
+	if step.opening_function in tutorial_functions:
+		tutorial_functions[step.opening_function].call()
+
 	if step.reveal_target_arrows:
 		await _reveal_target_arrows(step)
 
 	# A highlight already up stays put; the card doesn't bring a second one.
 	var highlight: Texture2D = null if _lead_highlight else step.highlight_texture
 
+	var close_on: TutorialStep.TutorialSignals = step.close_on_signal
+	if close_on == TutorialStep.TutorialSignals.ON_TARGET_SWITCH:
+		if _can_switch_target():
+			_watch_for_target_switch()
+		else:
+			# Nobody else to pick: a card asking for it would never close.
+			close_on = TutorialStep.TutorialSignals.CLOSED_MANUALLY
+
 	# Create the text popup
-	if step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_MANUALLY:
+	if close_on == TutorialStep.TutorialSignals.CLOSED_MANUALLY:
 		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, true)
-	elif step.close_on_signal == TutorialStep.TutorialSignals.CLOSED_AFTER_TIME:
+	elif close_on == TutorialStep.TutorialSignals.CLOSED_AFTER_TIME:
 		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, false, step.time_to_auto_close)
 	else:
 		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, false)
@@ -338,7 +367,104 @@ func _reveal_target_arrows(step: TutorialStep) -> void:
 		push_warning("TutorialManager: the target arrows never came out; showing the card anyway.")
 		return
 
+	if step.cut_out_targets and step.highlight_texture:
+		_open_highlight_around_targets(step.highlight_texture)
 	await get_tree().create_timer(_ARROWS_SETTLE_SECONDS).timeout
+
+
+## Swaps the lead highlight for one that also leaves every ship in the fight,
+## and the reticle beside it, clear. The new mask goes up on top at full strength, identical to the old
+## one but for the ships, and the old one fades: so only the ships change,
+## coming up out of the dark.
+func _open_highlight_around_targets(base: Texture2D) -> void:
+	if not Globals.enemy_manager:
+		return
+	var image: Image = base.get_image()
+	if image.is_compressed():
+		image.decompress()
+	image.convert(Image.FORMAT_RGBA8)
+	for ship: Enemy in Globals.enemy_manager.get_alive_enemies():
+		_cut_ellipse(image, _ship_drawn_rect(ship).grow_individual(
+			_TARGET_CUTOUT_PADDING, _TARGET_CUTOUT_PADDING + _TARGET_CUTOUT_BOB_ROOM,
+			_TARGET_CUTOUT_PADDING, _TARGET_CUTOUT_PADDING + _TARGET_CUTOUT_BOB_ROOM))
+		# The card points at the reticle too, wherever the player moves it. It
+		# hangs off the ship's corner, outside an ellipse round the ship, so
+		# it gets one of its own.
+		if Globals.targeting_computer:
+			_cut_ellipse(image, Globals.targeting_computer.indicator_reach(ship).grow(_MARKER_CUTOUT_PADDING))
+
+	var opened: Sprite2D = TutorialTextPopup.make_highlight(ImageTexture.create_from_image(image))
+	add_child(opened)
+	opened.global_position = Vector2(160, 90)
+	_clear_lead_highlight()
+	_lead_highlight = opened
+
+
+## The screen rectangle a ship's sprites cover: its hull and its health bar.
+static func _ship_drawn_rect(ship: Enemy) -> Rect2:
+	var drawn: Rect2 = Rect2(ship.global_position, Vector2.ZERO)
+	var pending: Array[Node] = [ship.graphics_manager]
+	while not pending.is_empty():
+		var node: Node = pending.pop_back()
+		pending.append_array(node.get_children())
+		if node is Sprite2D and (node as Sprite2D).texture and (node as Sprite2D).is_visible_in_tree():
+			var sprite: Sprite2D = node
+			drawn = drawn.merge(sprite.get_global_transform() * sprite.get_rect())
+		elif node is AnimatedSprite2D and (node as AnimatedSprite2D).is_visible_in_tree():
+			var animated: AnimatedSprite2D = node
+			if not animated.sprite_frames:
+				continue
+			var frame: Texture2D = animated.sprite_frames.get_frame_texture(animated.animation, animated.frame)
+			if not frame:
+				continue
+			var size: Vector2 = frame.get_size()
+			var corner: Vector2 = animated.offset - (size / 2.0 if animated.centered else Vector2.ZERO)
+			drawn = drawn.merge(animated.get_global_transform() * Rect2(corner, size))
+	return drawn
+
+
+## Clears the ellipse inscribed in [param area] out of a highlight mask, with
+## hard pixel edges like the hand-drawn cutouts.
+static func _cut_ellipse(image: Image, area: Rect2) -> void:
+	var centre: Vector2 = area.get_center()
+	var radii: Vector2 = area.size / 2.0
+	if radii.x <= 0.0 or radii.y <= 0.0:
+		return
+	var first: Vector2i = Vector2i(area.position.floor()).max(Vector2i.ZERO)
+	var last: Vector2i = Vector2i(area.end.ceil()).min(image.get_size() - Vector2i.ONE)
+	for y: int in range(first.y, last.y + 1):
+		for x: int in range(first.x, last.x + 1):
+			var from_centre: Vector2 = (Vector2(x, y) + Vector2(0.5, 0.5) - centre) / radii
+			if from_centre.length_squared() <= 1.0:
+				image.set_pixel(x, y, Color(0, 0, 0, 0))
+
+
+func _can_switch_target() -> bool:
+	return Globals.targeting_computer != null and Globals.enemy_manager != null \
+		and Globals.enemy_manager.get_alive_enemies().size() > 1
+
+
+func _watch_for_target_switch() -> void:
+	var target: Enemy = Globals.targeting_computer.targeted_enemy
+	_target_id_at_step_open = target.get_instance_id() if is_instance_valid(target) else 0
+	if not Events.targeting_computer_retargeted.is_connected(_on_retargeted):
+		Events.targeting_computer_retargeted.connect(_on_retargeted)
+
+
+## Also lets the step go once there's no one left to switch to, so a fight
+## that thins out under the card can't strand the player on it.
+func _on_retargeted() -> void:
+	var target: Enemy = Globals.targeting_computer.targeted_enemy if Globals.targeting_computer else null
+	var switched: bool = is_instance_valid(target) and target.get_instance_id() != _target_id_at_step_open
+	if not switched and _can_switch_target():
+		return
+	_stop_watching_target()
+	_target_switched.emit()
+
+
+func _stop_watching_target() -> void:
+	if Events.targeting_computer_retargeted.is_connected(_on_retargeted):
+		Events.targeting_computer_retargeted.disconnect(_on_retargeted)
 
 
 func _release_opening_strike_after_beat() -> void:
@@ -415,7 +541,7 @@ func _closing_signal_for(step: TutorialStep) -> Signal:
 		TutorialStep.TutorialSignals.ON_JUMP:
 			return Events.jump
 		TutorialStep.TutorialSignals.ON_TARGET_SWITCH:
-			return Events.targeting_computer_retargeted
+			return _target_switched
 		TutorialStep.TutorialSignals.ENEMY_RECEIVED_DIE:
 			return Events.enemy_received_die
 		TutorialStep.TutorialSignals.PLAYER_TURN_STARTED:
@@ -550,6 +676,10 @@ func _enable_controls() -> void:
 	Globals.map.set_jump_arrows_visible(true, true)
 	Globals.map.enable_controls()
 	Events.show_map.emit()
+
+
+func _call_out_map_tab() -> void:
+	Events.call_out_map_tab.emit()
 
 
 ## Re-rolls every live enemy's intent table so a step's forced_enemy_actions

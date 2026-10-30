@@ -53,8 +53,12 @@ static var mouse_indicator_path: String = "res://Assets/Textures/TutorialManager
 static var attack_indicator_path: String = "res://Assets/Textures/Enemies/IntentIndicator/attack.png"
 static var fate_scenario_image_path: String = "res://Assets/Textures/Map/EncounterIcons/fate_encounter.png"
 static var targeting_arrows_image_path: String = "res://Assets/Textures/TutorialManager/targeting_computer_arrows_icon.png"
+## The purple marker that bobs beside the targeted ship.
+static var target_indicator_image_path: String = "res://Assets/Textures/TargetingComputer/targeting_indicator.png"
 static var arrow_keys_image_path: String = "res://Assets/Textures/TutorialManager/arrow_keys_icon.png"
-static var jump_gate_scenario_image_path: String = "res://Assets/Textures/Map/EncounterIcons/jump_gate.png"
+## The gate as the map draws it at the end of the sector, not its small
+## encounter icon, so the tutorial shows the thing the player is to look for.
+static var jump_gate_scenario_image_path: String = "res://Assets/Textures/Map/EncounterIcons/jump_gate_map.png"
 static var dice_cannon_image_path: String = "res://Assets/Textures/Tiles/RedTiles/damage.png"
 static var shield_burst_image_path: String = "res://Assets/Textures/Tiles/BlueTiles/shield.png"
 static var bump_image_path: String = "res://Assets/Textures/Tiles/GreenTiles/bump-Sheet.png"
@@ -88,6 +92,7 @@ static var _inline_icons: Dictionary = {
 	'(attack_indicator)': [attack_indicator_path, _SMALL_ICON_HEIGHT_EM],
 	'(fate_scenario)': [fate_scenario_image_path, _TILE_ICON_HEIGHT_EM],
 	'(targeting_arrows)': [targeting_arrows_image_path, _TILE_ICON_HEIGHT_EM],
+	'(target_indicator)': [target_indicator_image_path, _SMALL_ICON_HEIGHT_EM],
 	'(arrow_keys)': [arrow_keys_image_path, _TILE_ICON_HEIGHT_EM],
 	'(jump_gate_scenario)': [jump_gate_scenario_image_path, _TILE_ICON_HEIGHT_EM],
 	'(dice_cannon)': [dice_cannon_image_path, _TILE_ICON_HEIGHT_EM],

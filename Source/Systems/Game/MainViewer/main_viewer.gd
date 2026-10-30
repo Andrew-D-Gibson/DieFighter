@@ -13,6 +13,10 @@ var screen_showing: ScreenShowing = ScreenShowing.SYSTEMS
 @export var systems_button_label: RichTextLabel
 @export var map_button_label: RichTextLabel
 
+## Set by Events.call_out_map_tab, cleared once the map is opened. While set,
+## the Map tab keeps the call-out's look whatever the mouse does.
+var _map_tab_called_out: bool = false
+
 
 func _ready() -> void:
 	%SystemsRevealOverlay.show()
@@ -34,6 +38,7 @@ func _ready() -> void:
 		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
 	)
 	Events.show_map.connect(_show_map)
+	Events.call_out_map_tab.connect(_call_out_map_tab)
 	Events.show_systems.connect(_show_systems)
 	
 	Events.systems_startup.connect(_systems_startup)
@@ -68,6 +73,7 @@ func _systems_hovered(is_hovered: bool) -> void:
 func _show_map() -> void:
 	background.frame = 2
 	screen_showing = ScreenShowing.MAP
+	_map_tab_called_out = false
 	
 	map_button_label.add_theme_color_override('default_color', Globals.white)
 	map_button_label.text = 'MAP'
@@ -83,9 +89,12 @@ func _map_hovered(is_hovered: bool) -> void:
 		map_button_label.add_theme_color_override('default_color', Globals.purple)
 		map_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]MAP[/wave]'
 
-	else:
+	elif screen_showing == ScreenShowing.MAP:
 		map_button_label.add_theme_color_override('default_color', Globals.white)
 		map_button_label.text = 'MAP'
+	else:
+		# Back to whatever the tab was saying before the mouse came by.
+		_check_for_engine_charge()
 
 
 func _check_for_engine_charge() -> void:
@@ -95,12 +104,27 @@ func _check_for_engine_charge() -> void:
 	# The highlight is a claim that the player can leave right now, so it has to
 	# come back down when charge does. Partial charge spends make this reachable
 	# mid-combat, where it used to only ever move at scenario boundaries.
-	if Globals.player.is_engine_charged():
+	if _map_tab_called_out:
+		_show_map_tab_call_out()
+	elif Globals.player.is_engine_charged():
 		map_button_label.add_theme_color_override('default_color', Globals.medium_purple)
 		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
 	else:
 		map_button_label.add_theme_color_override('default_color', Globals.white)
 		map_button_label.text = 'MAP'
+
+
+func _call_out_map_tab() -> void:
+	if screen_showing == ScreenShowing.MAP:
+		return
+	_map_tab_called_out = true
+	_show_map_tab_call_out()
+
+
+## In the tutorial text's purple, and bobbing like the charged tab does.
+func _show_map_tab_call_out() -> void:
+	map_button_label.add_theme_color_override('default_color', Globals.purple)
+	map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
 		
 		
 func _systems_startup() -> void:

@@ -158,3 +158,14 @@ func test_steps_waiting_on_the_game_keep_the_backstop() -> void:
 	assert_eq(manager._closing_timeout(step), manager.default_step_timeout)
 	step.max_wait_time = 7.0
 	assert_eq(manager._closing_timeout(step), 7.0)
+
+
+## The retarget step opens the highlight round each ship with an ellipse
+## worked out on the spot, so it can't be checked by eye in the art.
+func test_target_cutout_clears_an_ellipse_and_nothing_else() -> void:
+	var image := Image.create(20, 10, false, Image.FORMAT_RGBA8)
+	image.fill(Color.BLACK)
+	TutorialManager._cut_ellipse(image, Rect2(2, 2, 10, 6))
+	assert_eq(image.get_pixel(7, 5).a, 0.0, "the middle is cleared")
+	assert_eq(image.get_pixel(2, 2).a, 1.0, "the box's corner stays dark")
+	assert_eq(image.get_pixel(15, 5).a, 1.0, "outside the box stays dark")

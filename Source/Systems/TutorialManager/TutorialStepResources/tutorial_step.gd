@@ -23,6 +23,9 @@ enum TutorialSignals {
 	MAP_OPENED,
 	ON_JUMP,
 	ON_ENEMY_FLY_IN,
+	## The player has picked a different ship than the one targeted when the
+	## step opened. With no second ship to pick, the card gets a Close button
+	## instead, rather than asking for something that can't be done.
 	ON_TARGET_SWITCH,
 	## A ship was handed a die. Unlike TILE_ACTIVATED, a Bump (which hands its
 	## die back) doesn't count, so a step that explains the hand-off can't
@@ -61,8 +64,17 @@ enum TutorialFunctions {
 	## Re-rolls live enemies' intent tables so this step's forced_enemy_actions
 	## apply to the turn already telegraphed, not the one after.
 	REROLL_ENEMY_INTENTS,
+	## Lights the Map tab in the tutorial's purple and sets it bobbing until
+	## the map is opened, whatever the mouse did to it before.
+	CALL_OUT_MAP_TAB,
 }
+## Runs once the card's text has all come in.
 @export var tutorial_function: TutorialFunctions 
+
+## Runs as the step opens, before its card appears: for what the card's first
+## words count on, like the tab it names already lit, or the hand held still
+## while it asks for something else.
+@export var opening_function: TutorialFunctions
 
 @export var time_to_auto_close: float = 0
 
@@ -80,6 +92,11 @@ enum TutorialFunctions {
 ## highlight on its own, lets the arrows swing out under it, and only then
 ## shows the card, so the card explains something the player just watched.
 @export var reveal_target_arrows: bool = false
+
+## With reveal_target_arrows: once the arrows are out, the highlight opens up
+## around every ship in the fight as well, so the card can talk about them.
+## The ships move between fights, so these cutouts are made on the spot.
+@export var cut_out_targets: bool = false
 
 ## The tutorial holds the ambusher's opening shot (OpeningStrike) until this
 ## step's text has all come in, so the player reads who's attacking before

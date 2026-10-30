@@ -163,6 +163,10 @@ signal dev_console_toggled(is_open: bool)
 signal dev_console_close_requested()
 signal highlight_dice_area()
 signal show_map()
+## Points the player at the Map tab (the tutorial does, when it asks them to
+## open it): the tab takes the tutorial text's purple and bobs until the map
+## is opened.
+signal call_out_map_tab()
 signal show_systems()
 signal systems_shown()
 signal map_shown()

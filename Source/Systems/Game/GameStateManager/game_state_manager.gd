@@ -246,7 +246,9 @@ func play_opening_strike() -> void:
 	if _opening_strike:
 		if Globals.tutorial_holds_opening_strike:
 			await Events.opening_strike_released
-		await _opening_strike.play()
+		# The fight can be over by the time a held shot is let go.
+		if is_instance_valid(_opening_strike):
+			await _opening_strike.play()
 
 
 ## True while the opening ambusher is flying in holding one of the player's
