@@ -139,8 +139,8 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
-tile_name = "[color=green]Grudge Cannon+[/color]"
-description = "(die_5) -> Deal [color=red]6 damage[/color] to [color=purple]target[/color], or [color=red]12[/color] if it holds a (die_5)"
+tile_name = "[color=red]Grudge Cannon+[/color]"
+description = "(die_5) -> Deal [color=red]6 damage[/color], or [color=red]12[/color] if [color=purple]target[/color] holds a (die_5)"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = -1

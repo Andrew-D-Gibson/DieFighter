@@ -152,7 +152,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Grounding Rod[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. [color=orange]Give[/color] die as (die_1)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die. [color=orange]Give[/color] die as (die_1)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

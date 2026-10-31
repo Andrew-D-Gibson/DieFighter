@@ -118,7 +118,7 @@ animations = [{
 [resource]
 script = ExtResource("8_2fv8l")
 tile_name = "[color=red]Dice Cannon[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die"
 rarity = 1
 upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_mkcsn")

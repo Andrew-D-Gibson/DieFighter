@@ -181,7 +181,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Ablative Charge+[/color]"
-description = "(die_6) -> Deal [color=red]16 damage[/color] to [color=purple]target[/color]. Take [color=red]3 damage[/color]"
+description = "(die_6) -> Deal [color=red]16 damage[/color]. Take [color=red]3 damage[/color]"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = 2

@@ -65,7 +65,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Hex Coil+[/color]"
-description = "[color=yellow]You apply a status[/color] -> Deal [color=red]3 damage[/color] to that ship"
+description = "[color=yellow]You apply a status to an enemy[/color] -> Deal [color=red]3 damage[/color] to it"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

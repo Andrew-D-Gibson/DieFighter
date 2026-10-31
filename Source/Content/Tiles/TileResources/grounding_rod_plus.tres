@@ -158,7 +158,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Grounding Rod+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die +3. [color=orange]Give[/color] die as (die_1)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die +3. [color=orange]Give[/color] die as (die_1)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

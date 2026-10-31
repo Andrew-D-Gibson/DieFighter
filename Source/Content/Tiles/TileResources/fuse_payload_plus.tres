@@ -162,7 +162,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Fuse Payload+[/color]"
-description = "(countdown) 8. [color=yellow]Any die[/color] -> Count down by die. At 0: Apply 4 (burn) and 1 (jammed) to [color=purple]target[/color]"
+description = "(countdown) 8. [color=yellow]Any die[/color] -> Count down by die. At 0: Apply 4 (burn) and 1 (jammed)"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

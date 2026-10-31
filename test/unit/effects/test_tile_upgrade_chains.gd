@@ -11,10 +11,16 @@ const TILES: String = "res://Source/Content/Tiles/TileResources/%s.tres"
 
 var engine: RecordingEngine
 var enemy: Enemy
+## Dice the player owns in the next _play.
+var dice_owned: int = 3
+## Called with the grid before the chain plays, to set up what the tile reads.
+var prepare_grid: Callable = Callable()
 
 
 func before_each() -> void:
 	super()
+	dice_owned = 3
+	prepare_grid = Callable()
 	engine = autofree(RecordingEngine.new())
 	enemy = autofree(ENEMY_SCENE.instantiate())
 	enemy.health.max_health = 20
@@ -39,9 +45,11 @@ func after_each() -> void:
 func _play(tile_id: String, face: int, charge: int = 0) -> Array[EffectEvent]:
 	engine.injected.clear()
 	var resource: TileResource = load(TILES % tile_id)
-	Globals.player = make_player(3, charge)
+	Globals.player = make_player(dice_owned, charge)
 	var grid: TileGrid = autofree(TileGrid.new())
 	Globals.tile_grid = grid
+	if prepare_grid.is_valid():
+		prepare_grid.call(grid)
 	var tile: Tile = autofree(TILE_SCENE.instantiate())
 	tile.sprite_frames = null
 	tile.tile_resource = resource
@@ -114,3 +122,32 @@ func test_surge_relay_plus_rerolls_then_adds_one() -> void:
 
 func test_grudge_cannon_plus_raises_its_plain_shot() -> void:
 	assert_eq(_amounts(await _play("grudge_cannon_plus", 5), DamageEvent), [6])
+
+
+func test_crescendo_cannon_deals_per_activation_this_turn() -> void:
+	prepare_grid = func(grid: TileGrid) -> void: grid.activations_this_turn = 3
+	assert_eq(_amounts(await _play("crescendo_cannon", 1), DamageEvent), [6])
+	assert_eq(_amounts(await _play("crescendo_cannon_plus", 1), DamageEvent), [9])
+
+
+func test_flak_cannon_adds_one_per_surrounding_tile() -> void:
+	prepare_grid = func(grid: TileGrid) -> void:
+		var cells: Array[Vector2i] = []
+		for y: int in 3:
+			for x: int in 5:
+				cells.append(Vector2i(x, y))
+		grid.set_cells(cells)
+		# Two diagonal and one orthogonal neighbour, plus one out of reach.
+		for pos: Vector2i in [Vector2i(0, 0), Vector2i(2, 2), Vector2i(1, 0), Vector2i(4, 1)]:
+			grid.tile_locations[pos] = autofree(TILE_SCENE.instantiate())
+	assert_eq(_amounts(await _play("flak_cannon", 5), DamageEvent), [6])
+	assert_eq(_amounts(await _play("flak_cannon_plus", 5), DamageEvent), [8])
+
+
+func test_lone_wolf_lance_multiplies_only_on_three_dice_or_fewer() -> void:
+	dice_owned = 3
+	assert_eq(_amounts(await _play("lone_wolf_lance", 4), DamageEvent), [8])
+	assert_eq(_amounts(await _play("lone_wolf_lance_plus", 4), DamageEvent), [12])
+	dice_owned = 4
+	assert_eq(_amounts(await _play("lone_wolf_lance", 4), DamageEvent), [4])
+	assert_eq(_amounts(await _play("lone_wolf_lance_plus", 4), DamageEvent), [4])

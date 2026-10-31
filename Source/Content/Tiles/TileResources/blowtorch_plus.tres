@@ -130,7 +130,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Blowtorch+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to 2x die. Apply 1 (burn) to you"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to 2x die. Apply 1 (burn) to you"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

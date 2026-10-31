@@ -140,7 +140,7 @@ script = ExtResource("4_x5guy")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Chain Cannon+[/color]"
-description = "(die_4) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color] twice"
+description = "(die_4) -> Deal [color=red]4 damage[/color] twice"
 textures = SubResource("SpriteFrames_ha28q")
 uses_per_turn = 3
 activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])

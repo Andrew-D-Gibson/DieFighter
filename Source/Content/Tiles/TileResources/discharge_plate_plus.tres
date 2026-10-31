@@ -151,7 +151,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Discharge Plate+[/color]"
-description = "(die_1) -> Spend all [color=blue]shields[/color]. Deal [color=red]damage[/color] to [color=purple]target[/color] equal to 3x [color=blue]shields[/color] spent"
+description = "(die_1) -> Spend all [color=blue]shields[/color]. Deal [color=red]damage[/color] equal to 3x [color=blue]shields[/color] spent"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
