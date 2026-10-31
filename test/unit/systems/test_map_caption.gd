@@ -45,6 +45,26 @@ func test_idle_caption_says_you_are_here_beside_the_arrow() -> void:
 	assert_eq(caption[2], Globals.purple)
 
 
+func test_idle_caption_asks_for_charge_until_the_engine_can_jump() -> void:
+	_load(3)
+	var previous: Player = Globals.player
+	# Built by hand, not with make_player(): the viewer's engine gauge reacts
+	# to every charge change and reads Globals.player, so it must be in place
+	# before the first one. A fresh Player starts empty.
+	var player: Player = autofree(Player.new())
+	Globals.player = player
+	Events.engine_charge_changed.emit()
+	var caption: Array = _map._compute_hint(-1)
+	assert_null(caption[0], "no arrow: it would point at the player's dot")
+	assert_eq(caption[1], tr("MAP_HINT_CHARGE_ENGINES"))
+	assert_ne(caption[1], "MAP_HINT_CHARGE_ENGINES", "the key has an English line")
+
+	# The setter emits engine_charge_changed, which flips the caption back.
+	player.engine_charge = player.max_engine_charge
+	assert_eq(_map._compute_hint(-1)[1], tr("MAP_HINT_YOU_ARE_HERE"))
+	Globals.player = previous
+
+
 func test_one_arrow_hangs_centred_just_above_the_marker() -> void:
 	_load(3)
 	var arrows: Array[Sprite2D] = _here_arrows()
