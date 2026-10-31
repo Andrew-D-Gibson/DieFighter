@@ -320,6 +320,8 @@ func get_criteria_fail_text() -> String:
 	var text: String = TranslationServer.translate(failed_activation_messages[type])
 	if type == ActivationType.SUMS_WITH_HELD_DIE:
 		text = text.format({"total": threshold})
+	elif type == ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE and threshold <= 0:
+		text = TranslationServer.translate("ERROR_TARGET_NO_DICE")
 	elif type == ActivationType.TARGETED_SHIP_HAS_STATUS and not data_key.is_empty():
 		text = TranslationServer.translate("ERROR_TARGET_LACKS_STATUS").format({"status": data_key.to_upper()})
 	return text
