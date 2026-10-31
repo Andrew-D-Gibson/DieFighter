@@ -4,6 +4,25 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-31 — Tweak run: echo for all, refunds, dice volleys, readable hazards
+
+Seventeen tweaks across nine parallel chunks (plan: `~/.claude/plans/chunks/diefighter-tweaks-2026-10-31.md`). The guiding call: fun over balance.
+
+- **Echo repeats every tile.** `can_be_echoed` is gone; Fortress Protocol quadrupling shields is intended. An echoed spender's second pass pays nothing if the player can't afford it, but its payoff still lands (Arc Tap and Afterburner hit twice for one payment).
+- **Spark Gap** hits only a random AGGRESSIVE ship (`TargetingSubtype.TARGET_RANDOM_HOSTILE_ENEMY`, 19): it never starts a fight or zaps an ally.
+- **Relays** unlock as two families: Basic (Signal, Overshield, Toll, Surge) first, Advanced (Afterburner, Booster Stage, Leech, Ballast Tanks) last. An old save's `relays` claim maps to both.
+- **Shops and repair docks** tally what the player spent (`Enemy.credits_paid`, saved). Beat the keeper and the tally is paid on top of its loot. The dock's unavailable button shares the shop reroll's dark green (`medium_green_button.tscn`).
+- **Map:** Fate's stray corruption stops at half the tiles ahead of the danger zone (the gate doesn't count). A beaten boss gate slides to the centre once its salvage is taken.
+- **Dice on death:** every die a dead ship held is beamed to its heir together, 0.07 s apart, pinned until it lands. Other ships inherit only while a hostile one remains, so a dead pirate's dice go straight home.
+- **Encounter start:** a first-sighting rule card holds the fly-in until it's closed (the 8 s cap no longer cuts it off). By the pulsar the ships already there start with 0 shields. The tutorial's opening die shows through the ambush card's dim.
+- **Attitude at a glance:** the health-bar ring is tinted green / grey / red and blinks when a ship changes sides. The targeting computer portrait carries a comms badge, a comms cursor and "Click to replay comms".
+- **Star field** varies per visit: set pieces can list `scene_variants` (Jade and Dune worlds, Amber star, White dwarf), and `tinted_star_share` colours a share of the dots.
+- **Hazards** read like rules: a countdown-first headline ("In 2 turns: shields drop, 3 dmg to all") on the card and a pop-out monitor strip, and the strike banner names its effect. Fate Rift now only swaps enemy 1s and 6s (no self-damage; its own commit).
+- **Overload gauge** redrawn: count, cells of five, and a breaker glyph; yellow, then orange at 3 to go, then a red/white blink when full, and a white flash on the trip (`Enemy.overloaded`). Hover explains it; click opens the rule.
+- Open: a faction-standing system (only the angry state exists today), the icon consistency pass (audit running), and the questions the run raised (shop refund edge cases, echo combos, hazard strip timing).
+
+---
+
 ## 2026-10-31 — Sectors become layers of the fleet
 
 Every encounter now lives in the layer of the Long Retreat its story belongs to (LORE.md §3): the Tail (Undertow, stragglers, Fate on the horizon), the Belly (the Caravan and everyone who preys on it), the Spine (the Rearguard's checkpoints). Rosters and stories: `Planning Documents/FACTION_SCENARIOS.md`.
