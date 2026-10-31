@@ -26,6 +26,8 @@ extends Resource
 ## Where one piece ends up, before it is instanced.
 class Placement:
 	var object: StaticBackgroundObjectResource
+	## The design shown: the object's scene or one of its scene_variants.
+	var scene: PackedScene
 	var position: Vector2
 	## Flips the piece left to right on top of its authored scale.
 	var mirrored: bool = false
@@ -55,8 +57,8 @@ static func pick(
 
 
 ## Rolls this layout's variation and returns where each piece goes. Draws a
-## fixed number of values per piece, so the same rng state always lays it out
-## the same way.
+## fixed number of values per piece (one more for a piece with
+## scene_variants), so the same rng state always lays it out the same way.
 func place(rng: RandomNumberGenerator, screen_width: float) -> Array[Placement]:
 	var mirrored: bool = mirrorable and rng.randf() < 0.5
 	var offset: Vector2 = Vector2(
@@ -81,5 +83,12 @@ func place(rng: RandomNumberGenerator, screen_width: float) -> Array[Placement]:
 		placement.size_scale = 1.0 + rng.randf_range(-object.size_jitter, object.size_jitter)
 		placement.light_tilt = tilt
 		placement.face = rng.randf() * TAU
+		# Drawn last, and only where there is a choice, so pieces without
+		# variants keep the layouts their seeds always gave.
+		placement.scene = object.scene
+		if not object.scene_variants.is_empty():
+			var choices: Array[PackedScene] = object.get_scene_choices()
+			if not choices.is_empty():
+				placement.scene = choices[rng.randi_range(0, choices.size() - 1)]
 		placements.append(placement)
 	return placements

@@ -27,6 +27,12 @@ extends Resource
 @export var stars: bool
 @export var num_of_stars: int
 @export var num_of_twinkling_stars: int
+## Palette colours that a share of the stars take instead of white, so the
+## sky holds a few blue, gold and orange suns. Empty keeps every star white.
+@export var star_tints: Array[Color] = []
+## The fraction of stars, picked afresh each visit, that take one of
+## star_tints.
+@export_range(0.0, 1.0, 0.01) var tinted_star_share: float = 0.0
 
 @export_category('Scrolling Objects')
 ## What drifts past at varying depths: debris, asteroids, ice. Leave null for

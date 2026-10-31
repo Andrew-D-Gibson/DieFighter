@@ -16,6 +16,21 @@ extends Resource
 ## (0.15 = up to 15% either way). It stays on whole pixels. Only used inside a
 ## SetPieceComposition.
 @export_range(0.0, 0.5, 0.01) var size_jitter: float = 0.0
+## Other designs that may stand in for scene on a visit, each as likely as
+## scene itself, e.g. a choice of suns. Authored for the same slot, so they
+## should fit where scene does. Only used inside a SetPieceComposition.
+@export var scene_variants: Array[PackedScene] = []
 
 func get_parallax_level() -> int:
 	return parallax_level
+
+
+## Every design this piece may show: scene first, then its variants.
+func get_scene_choices() -> Array[PackedScene]:
+	var choices: Array[PackedScene] = []
+	if scene:
+		choices.append(scene)
+	for variant: PackedScene in scene_variants:
+		if variant:
+			choices.append(variant)
+	return choices
