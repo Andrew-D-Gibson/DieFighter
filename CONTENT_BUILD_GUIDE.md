@@ -228,7 +228,11 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
   - Event responses skip `activation_checks`. A response that can fire
     outside combat (`ON_PLAYER_SHIELDS_GAINED`, since shield tiles work
     anywhere) and hits a random enemy must wrap its chain in `IF_IN_COMBAT`,
-    or it can attack a merchant (Repulsor Field).
+    or it can attack a merchant (Repulsor Field). Mid-fight a random enemy
+    can still be an ally or a bystander; a passive that must only hit the
+    ships fighting the player aims with `TARGET_RANDOM_HOSTILE_ENEMY`
+    (AGGRESSIVE ships only, nothing when there are none) and says
+    `random hostile enemy` (Spark Gap).
   - A tile that spends or cashes in shields gates on `SHIELDS_AT_LEAST`, and
     pays with `SPEND_SHIELDS`, not a negative `SHIELD`: that would read as a
     hit and set off anything listening for one.

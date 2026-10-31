@@ -74,6 +74,10 @@ enum TargetingSubtype {
 	## Every countdown tile on the grid (TileResource.countdown) other than
 	## the source. The Fuse Cutter counts them all down at once.
 	TARGET_OTHER_COUNTDOWN_TILES,
+	## One random living enemy that is hostile (AGGRESSIVE), or nothing when
+	## none is. A passive that lashes out on its own (Spark Gap) uses it, so
+	## it can never pick a fight with a neutral ship or hit an ally mid-fight.
+	TARGET_RANDOM_HOSTILE_ENEMY,
 }
 
 

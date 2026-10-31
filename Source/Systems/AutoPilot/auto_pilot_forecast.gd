@@ -278,6 +278,8 @@ func _target_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_ENEMY, \
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_OTHER_ENEMY:
 			_spread(walk, _roster)
+		EffectEnums.TargetingSubtype.TARGET_RANDOM_HOSTILE_ENEMY:
+			_spread(walk, TargetRandomHostileEnemyHandler.hostiles_in(_roster))
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_SHIP:
 			var ships: Array[Node] = [Globals.player]
 			ships.append_array(_roster)
