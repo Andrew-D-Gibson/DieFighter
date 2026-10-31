@@ -8,6 +8,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## pinned here. Change the table when the design changes, not to make the
 ## suite pass.
 
+const Ships := preload("res://test/helpers/ships.gd")
+
 const BACKGROUND_ROOT: String = "res://Source/Resources/BackgroundResources/"
 
 ## Background -> the Modifier class its rule builds (or "" for none).
@@ -99,6 +101,42 @@ func test_by_the_pulsar_no_shield_goes_up() -> void:
 	assert_true(manager.get_active_modifier() is ShieldBlackoutModifier)
 	await Effects.chain([Effects.set_amount(3), Effects.shield()]).play(context, engine)
 	assert_eq(ship.health.shields, 0)
+
+
+## The ships already in the region arrive with their shields flat, as the
+## player does.
+func test_by_the_pulsar_the_ships_already_there_start_bare() -> void:
+	var raider: Enemy = _ship_with_shields(4)
+	_arrive_at("pulsar_field")
+	assert_eq(raider.health.shields, 0)
+
+
+func test_elsewhere_the_ships_keep_their_shields() -> void:
+	var raider: Enemy = _ship_with_shields(4)
+	_arrive_at("debris_field")
+	assert_eq(raider.health.shields, 4)
+
+
+## A ship the scenario would raise shields on as it arrives gets none either.
+func test_by_the_pulsar_an_arrival_shield_grant_is_blocked() -> void:
+	var raider: Enemy = _ship_with_shields(0)
+	_arrive_at("pulsar_field")
+	var grant: EffectContext = EffectContext.new()
+	grant.actor = raider
+	grant.targets = [raider]
+	await Effects.chain([Effects.set_amount(3), Effects.shield()]).play(grant, engine)
+	assert_eq(raider.health.shields, 0)
+
+
+## An enemy in the arriving roster, with [param shields] up.
+func _ship_with_shields(shields: int) -> Enemy:
+	var raider: Enemy = autofree(Ships.ship(ScenarioManager.Faction.PIRATE))
+	autofree(raider.health)
+	raider.health.shields = shields
+	var enemy_manager: EnemyManager = autofree(EnemyManager.new())
+	enemy_manager.enemies = [raider]
+	Globals.enemy_manager = enemy_manager
+	return raider
 
 
 func test_in_the_blue_nebula_nothing_exceeds_three() -> void:

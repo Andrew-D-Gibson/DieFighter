@@ -1,6 +1,18 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## ArrivalIntro: the beats between arriving and the ships flying in play one
-## at a time, in order, and nothing can hold the ships forever.
+## at a time, in order, and nothing but the player can hold the ships forever.
+
+## A card whose beat only ever ends with the card.
+class NeverEndingCard:
+	extends Node
+
+	signal _never()
+
+	func play() -> void:
+		await _never
+
+
+signal _closed()
 
 var intro: ArrivalIntro
 var played: Array[String] = []
@@ -57,6 +69,34 @@ func test_a_beat_that_never_ends_is_given_up_on() -> void:
 	intro.add(ArrivalIntro.Beat.BOSS, _beat("boss"))
 	await intro.wait()
 	assert_eq(played, ["boss starts", "boss ends"] as Array[String])
+
+
+func test_a_beat_waiting_on_the_player_holds_the_ships_past_the_deadline() -> void:
+	intro.max_beat_seconds = 0.1
+	var never_until_closed: Callable = func() -> void:
+		await _closed
+	Events.start_scenario.emit()
+	intro.add(ArrivalIntro.Beat.REGION_RULE, never_until_closed, true)
+	await wait_seconds(0.3)
+	assert_true(intro._playing, "the ships wait as long as the player reads")
+	_closed.emit()
+	await get_tree().process_frame
+	assert_false(intro._playing, "closed: the ships may come in")
+
+
+func test_a_beat_whose_node_leaves_is_given_up_on_even_untimed() -> void:
+	var card: NeverEndingCard = NeverEndingCard.new()
+	add_child(card)
+	Events.start_scenario.emit()
+	intro.add(ArrivalIntro.Beat.REGION_RULE, card.play, true)
+	await get_tree().process_frame
+	await get_tree().process_frame
+	await get_tree().process_frame
+	assert_true(intro._playing)
+	card.queue_free()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	assert_false(intro._playing, "a beat whose node is gone can't strand the ships")
 
 
 func test_a_jump_lets_the_ships_go_and_drops_the_rest() -> void:

@@ -87,6 +87,12 @@ func holds_die() -> bool:
 	return not _fired and is_instance_valid(_die)
 
 
+## The player's die the ambusher fires, from arm() until it's back in the
+## hand. Null for a strike that was never armed.
+func die() -> Dice:
+	return _die if is_instance_valid(_die) else null
+
+
 ## Fires the shot, and returns once the hit and everything it sets off have
 ## resolved and the die is back in the player's hand. Only the first call
 ## does anything.

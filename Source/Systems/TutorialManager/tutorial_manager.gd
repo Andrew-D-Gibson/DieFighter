@@ -356,6 +356,7 @@ func play_step(step: TutorialStep) -> void:
 		if step.opening_strike_deadline > 0.0:
 			get_tree().create_timer(step.opening_strike_deadline).timeout.connect(_release_opening_strike)
 		_hold_close_until_strike_lands(current_popup)
+		_show_strike_through_dim(current_popup)
 
 	# Handle calling tutorial functions
 	if step.tutorial_function in tutorial_functions:
@@ -509,6 +510,17 @@ func _hold_close_until_strike_lands(card: TutorialTextPopup) -> void:
 	get_tree().create_timer(_OPENING_STRIKE_CLOSE_DEADLINE_SECONDS).timeout.connect(
 		_release_card_awaiting_strike
 	)
+
+
+## The card introducing the ambusher dims all but the raider and the hull, but
+## the shot's die leaves the raider and drops into the hand: it's lifted over
+## the dim while the card is up, so the player watches it come back.
+func _show_strike_through_dim(card: TutorialTextPopup) -> void:
+	if not Globals.state_manager:
+		return
+	var die: Dice = Globals.state_manager.opening_strike_die()
+	if die:
+		card.show_through_dim(die)
 
 
 func _release_card_awaiting_strike() -> void:

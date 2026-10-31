@@ -13,10 +13,18 @@ extends RefCounted
 ## start_scenario listener, or in the deferred work it sets off. The beats
 ## play a couple of frames later, in [enum Beat] order. A beat is a Callable,
 ## usually a coroutine; the next one starts when it returns.
+##
+## A beat that waits on the player (a rule card shown for the first time,
+## which stays up until it's closed) holds the ships for as long as it takes.
+## Any other is given up on after max_beat_seconds, so a card that goes
+## missing can't strand the ships off-screen.
 
 ## This arrival's beats are done (or a jump cut them short): the ships may
 ## come in.
 signal finished()
+
+## A new arrival or a jump has made whatever beat is playing moot.
+signal _cut()
 
 ## The order the beats play in.
 enum Beat {
@@ -27,13 +35,15 @@ enum Beat {
 	BOSS,
 }
 
-## Longest any one beat may hold the ships. A beat whose card goes missing
-## must not strand the ships off-screen.
+## Longest any one beat may hold the ships, unless it waits on the player. A
+## beat whose card goes missing must not strand the ships off-screen.
 var max_beat_seconds: float = 8.0
 
 static var _shared: ArrivalIntro
 
 var _beats: Dictionary[int, Callable] = {}
+## The beats added as waiting on the player, which no deadline cuts short.
+var _untimed: Dictionary[int, bool] = {}
 ## From an arrival until its beats start playing: the window in which a
 ## system adds its beat instead of playing it straight away.
 var _collecting: bool = false
@@ -56,9 +66,12 @@ func _init() -> void:
 
 
 ## Plays [param play] as this arrival's [param beat]. Adding the same beat
-## twice keeps the later one.
-func add(beat: Beat, play: Callable) -> void:
+## twice keeps the later one. A beat that [param waits_on_player] holds the
+## ships until it returns, however long the player takes; any other is given
+## up on after max_beat_seconds.
+func add(beat: Beat, play: Callable, waits_on_player: bool = false) -> void:
 	_beats[beat] = play
+	_untimed[beat] = waits_on_player
 
 
 ## True while an arrival is still gathering its beats.
@@ -78,6 +91,7 @@ func wait() -> void:
 
 func _on_arrival() -> void:
 	_generation += 1
+	_cut.emit()
 	_collecting = true
 	_playing = true
 	_play(_generation)
@@ -94,39 +108,56 @@ func _play(generation: int) -> void:
 	_collecting = false
 
 	var beats: Dictionary[int, Callable] = _beats.duplicate()
+	var untimed: Dictionary[int, bool] = _untimed.duplicate()
 	_beats.clear()
+	_untimed.clear()
 	var order: Array[int] = beats.keys()
 	order.sort()
 	for beat: int in order:
-		await _run(beats[beat], generation, tree)
+		await _run(beats[beat], untimed.get(beat, false), tree)
 		if generation != _generation:
 			return
 	_playing = false
 	finished.emit()
 
 
-## Plays one beat, giving up on it if it outlives max_beat_seconds or the
-## node it belongs to is freed partway.
-func _run(play: Callable, generation: int, tree: SceneTree) -> void:
+## Plays one beat and returns on the first of: it returning, the node it
+## belongs to leaving the tree partway, an arrival or jump cutting it short,
+## or (unless it [param waits_on_player]) max_beat_seconds running out.
+func _run(play: Callable, waits_on_player: bool, tree: SceneTree) -> void:
 	if not play.is_valid():
 		return
-	var done: Array[bool] = [false]
+	var over: _Latch = _Latch.new()
 	var run: Callable = func() -> void:
 		await play.call()
-		done[0] = true
+		over.trip()
 	run.call()
-	# Stops with the game while it's paused, as the card and band do.
-	var deadline: SceneTreeTimer = tree.create_timer(max_beat_seconds, false)
-	while not done[0] and play.is_valid() and deadline.time_left > 0.0 \
-	and generation == _generation:
-		await tree.process_frame
+	if over.is_tripped:
+		return
+
+	_cut.connect(over.trip)
+	var owner: Node = play.get_object() as Node
+	var watch_owner: bool = owner != null and owner.is_inside_tree()
+	if watch_owner:
+		owner.tree_exited.connect(over.trip)
+	if not waits_on_player:
+		# Stops with the game while it's paused, as the card and band do.
+		tree.create_timer(max_beat_seconds, false).timeout.connect(over.trip)
+
+	await over.tripped
+
+	_cut.disconnect(over.trip)
+	if watch_owner and is_instance_valid(owner) and owner.tree_exited.is_connected(over.trip):
+		owner.tree_exited.disconnect(over.trip)
 
 
 ## Jumping away makes the intro moot: whoever is waiting on it is let go, and
 ## each beat's own node clears itself off the screen.
 func _on_jump() -> void:
 	_generation += 1
+	_cut.emit()
 	_beats.clear()
+	_untimed.clear()
 	_collecting = false
 	if _playing:
 		_playing = false
@@ -135,3 +166,19 @@ func _on_jump() -> void:
 
 func _tree() -> SceneTree:
 	return Engine.get_main_loop() as SceneTree
+
+
+## Trips once, on the first of the signals connected to trip(), so a beat can
+## end any of the ways it can without anything checking every frame.
+class _Latch:
+	extends RefCounted
+
+	signal tripped()
+
+	var is_tripped: bool = false
+
+	func trip() -> void:
+		if is_tripped:
+			return
+		is_tripped = true
+		tripped.emit()

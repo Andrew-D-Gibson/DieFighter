@@ -38,6 +38,13 @@ signal popup_closed()
 ## Highlight masks draw just under the cards (z 12 in tutorial_text_popup.tscn)
 ## and over everything else, wherever in the tree they hang.
 const _HIGHLIGHT_Z_INDEX: int = 11
+## Where something shown through a card's dim draws: over the mask, and level
+## with the card, which hangs later in the tree and so still covers it.
+const SHOWN_THROUGH_DIM_Z_INDEX: int = _HIGHLIGHT_Z_INDEX + 1
+
+## What show_through_dim() lifted, and the z each had before, put back as the
+## card leaves.
+var _shown_through: Dictionary[CanvasItem, Vector2i] = {}
 
 
 ## A full-screen highlight mask: dims the screen except for its cutouts. A card
@@ -52,6 +59,29 @@ static func make_highlight(texture: Texture2D) -> Sprite2D:
 
 func _ready() -> void:
 	_head_rest = %ComputerTalking.position
+
+
+## The card is gone, and its dim with it: everything lifted through the dim
+## goes back to its own place in the draw order.
+func _exit_tree() -> void:
+	for item: CanvasItem in _shown_through:
+		if is_instance_valid(item):
+			var was: Vector2i = _shown_through[item]
+			item.z_index = was.x
+			item.z_as_relative = was.y != 0
+	_shown_through.clear()
+
+
+## Lifts [param item] over this card's dim for as long as the card is up, so
+## the player can watch something move through a dimmed part of the screen
+## (the opening shot's die, flying from the raider to the hand). It stays
+## under the card itself.
+func show_through_dim(item: CanvasItem) -> void:
+	if not is_instance_valid(item) or _shown_through.has(item):
+		return
+	_shown_through[item] = Vector2i(item.z_index, 1 if item.z_as_relative else 0)
+	item.z_as_relative = false
+	item.z_index = SHOWN_THROUGH_DIM_Z_INDEX
 
 
 func _process(delta: float) -> void:

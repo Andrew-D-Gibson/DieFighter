@@ -272,6 +272,37 @@ func test_a_rule_never_read_waits_for_close() -> void:
 	assert_null(card._hold_timer, "no timer to fold it before the player is done")
 
 
+## A new player can read the first card as slowly as they like: the ships
+## don't fly in under it, however long it stays up.
+func test_a_card_waiting_for_close_holds_the_ships_until_it_is() -> void:
+	CollectionManager.clear()
+	var intro: ArrivalIntro = ArrivalIntro.shared()
+	var backstop: float = intro.max_beat_seconds
+	intro.max_beat_seconds = 0.1
+	var card: RegionAlert = await _card_for(_rule("Pulsar Wash"))
+	await wait_seconds(0.3)
+	assert_true(intro._playing, "still held past the backstop")
+	card._fold()
+	await wait_seconds(RegionAlert._FOLD_SECONDS + 0.1)
+	intro.max_beat_seconds = backstop
+	assert_false(intro._playing, "closed: the ships may come in")
+	CollectionManager.clear()
+
+
+func test_a_card_that_folds_on_its_own_keeps_the_backstop() -> void:
+	CollectionManager.clear()
+	var modifier: BackgroundModifierResource = _rule("Pulsar Wash")
+	CollectionManager.record_region(EnvironmentMonitor.region_id(modifier))
+	var intro: ArrivalIntro = ArrivalIntro.shared()
+	var backstop: float = intro.max_beat_seconds
+	intro.max_beat_seconds = 0.1
+	await _card_for(modifier)
+	await wait_seconds(0.3)
+	intro.max_beat_seconds = backstop
+	assert_false(intro._playing, "a card on a timer can't hold the ships forever")
+	CollectionManager.clear()
+
+
 func test_closing_it_counts_as_read_for_good() -> void:
 	CollectionManager.clear()
 	var modifier: BackgroundModifierResource = _rule("Pulsar Wash")

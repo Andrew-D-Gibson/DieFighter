@@ -70,6 +70,10 @@ const _URGENT_TICK_SFX: SoundEffectResource = preload(
 	"res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres"
 )
 
+## The flap has finished flipping open or folding shut. Not sent for a swing
+## cut short: whatever cut it starts the next one.
+signal _motion_settled()
+
 ## How long the flap takes to flip down once the console is down.
 @export var flip_seconds: float = 0.35
 
@@ -275,7 +279,8 @@ func _present() -> void:
 		if Globals.show_region_alerts and _arrival_announces_region():
 			var intro: ArrivalIntro = ArrivalIntro.shared()
 			if intro.is_collecting():
-				intro.add(ArrivalIntro.Beat.REGION_RULE, _announce.bind(shown))
+				# A card waiting to be closed holds the ships until it is.
+				intro.add(ArrivalIntro.Beat.REGION_RULE, _announce.bind(shown), _waits_for_close(shown))
 			else:
 				_announce(shown)
 	_refresh_blink()
@@ -293,10 +298,12 @@ func _arrival_announces_region() -> bool:
 ## Spells the new rule out in a card that unfolds out of the screen and
 ## later shrinks back into it, returning once it has. See RegionAlert.
 func _announce(shown: Resource) -> void:
-	# Out of the screen, so the monitor has to be up first. Killed (a jump
-	# stowing it) ends the wait as well as finishing does.
-	while _motion_tween and _motion_tween.is_valid() and _motion_tween.is_running():
-		await get_tree().process_frame
+	# Out of the screen, so the monitor has to be up first. A jump stowing it
+	# mid-swing ends the wait too, once the fold is done. (Settled is sent
+	# from the swing's last step, while it still counts as moving, so this
+	# waits once rather than re-checking.)
+	if _is_moving():
+		await _motion_settled
 	if shown != _shown or not _deployed:
 		return
 
@@ -315,16 +322,20 @@ func _announce(shown: Resource) -> void:
 		alert.color = modifier.color
 		alert.description = tr(modifier.description)
 	alert.landing_point = func() -> Vector2: return _glyph.global_position
-	# The first sighting waits to be closed. Only the player's own runs count:
-	# a bot or the Scenario Lab would wait on it forever.
 	var id: String = region_id(shown)
-	alert.wait_for_close = CollectionManager.is_recording() and not CollectionManager.has_read_region(id)
+	alert.wait_for_close = _waits_for_close(shown)
 	alert.landed.connect(_on_alert_landed.bind(shown))
 	alert.landed.connect(_record_read.bind(id))
 	# Beside the flap rather than on it: the flap hides itself while folded,
 	# and would take the card with it.
 	get_parent().add_child(alert)
 	await alert.tree_exited
+
+
+## The first sighting of a rule or hazard waits to be closed. Only the
+## player's own runs count: a bot or the Scenario Lab would wait on it forever.
+func _waits_for_close(shown: Resource) -> bool:
+	return CollectionManager.is_recording() and not CollectionManager.has_read_region(region_id(shown))
 
 
 ## How CollectionManager remembers a rule or hazard the player has read: its
@@ -483,6 +494,7 @@ func _deploy() -> void:
 	# Not clickable until it has finished arriving, so a click aimed at the
 	# sky never lands on a flap still in transit.
 	_motion_tween.tween_callback(_set_clickable.bind(true))
+	_motion_tween.tween_callback(_motion_settled.emit)
 
 
 ## Folds shut, then lets the console go back up (if the credits don't still
@@ -497,6 +509,7 @@ func _stow() -> void:
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
 	_motion_tween.tween_callback(hide)
 	_motion_tween.tween_callback(_release_console)
+	_motion_tween.tween_callback(_motion_settled.emit)
 
 
 func _stow_instantly() -> void:
@@ -614,6 +627,10 @@ func _set_clickable(clickable: bool) -> void:
 	_clickable.input_pickable = clickable
 	if not clickable and _clickable.hovered:
 		_clickable.reset_hover_state()
+
+
+func _is_moving() -> bool:
+	return _motion_tween != null and _motion_tween.is_valid() and _motion_tween.is_running()
 
 
 func _kill_motion() -> void:
