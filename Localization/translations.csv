@@ -208,3 +208,4 @@ ERROR_TARGET_LACKS_STATUS,TARGETED SHIP HAS NO {status},,,,,,,,"Error popup: a t
 ERROR_TARGET_NO_DICE,TARGETED SHIP HOLDS NO DICE,,,,,,,,"Error popup: a tile that pays out per die the targeted ship holds (Debt Collector) was given a die, but that ship holds none",,,
 TILE_FAMILY_RELAYS_ADVANCED,ADVANCED RELAYS,,,,,,,,"Tile unlock card: name of a second, later family of relay tiles (tiles that pass their die on) with a bigger effect or a catch",,,
 TILE_FAMILY_RELAYS_ADVANCED_DESC,"Bigger relays with a twist: burn charge, boost the next tile, or feed the die down instead.",,,,,,,,Tile unlock card: what the Advanced Relays family does,,,
+CURSOR_HINT_REPLAY_COMMS,Click to replay comms,,,,,,,,"One-line hint beside the mouse cursor while it rests on the targeting computer's portrait of a ship that has said something: clicking the portrait has that ship say its last line again",22,,

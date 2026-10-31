@@ -9,6 +9,14 @@ var click_time_remaining: float = 0
 
 @export var hover_for_info: bool = true
 @export var hover_delay: float = 0.5
+
+## A click that does something other than show info (the targeting
+## computer's comms replay) says so on hover: the pointer wears this instead
+## of the arrow at once, and after [member hover_delay] this translation key
+## shows as a hint line beside it. Both are off when empty. Only while the
+## clickable takes input (input_pickable), so a dead spot promises nothing.
+@export var hover_cursor: Texture2D
+@export var hover_hint: StringName = &""
 var hover_time_elapsed: float = 0
 var hovered: bool = false
 var hover_delay_reached: bool = false

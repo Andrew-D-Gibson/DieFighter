@@ -51,6 +51,16 @@ var _acting_slot: int = -1
 ## is the ship the portrait is listening to.
 var _comms_ship: Enemy
 
+## The comms badge in the portrait's corner says the portrait can be clicked:
+## a waveform chip, dim at rest, lit under the pointer. Its sheet's frames.
+const _BADGE_IDLE: int = 0
+const _BADGE_LIT: int = 1
+## The first time a ship's line runs out, the badge's waveform plays once, so
+## the player notices where the line can be had again just as it fades.
+const _BADGE_PULSE_FRAMES: Array[int] = [1, 2, 1, 3, 1, 2, 1, 3, 1]
+const _BADGE_PULSE_FRAME_SECONDS: float = 0.09
+var _badge_pulse_tween: Tween
+
 @onready var die_sprites: Array[AnimatedSprite2D] = [
 	%DieSprite1, 
 	%DieSprite2, 
@@ -108,6 +118,7 @@ func _ready() -> void:
 	)
 
 	%CommsButton.clicked.connect(_on_comms_clicked)
+	%CommsButton.is_hovered.connect(_rest_badge.unbind(1))
 	_listen_for_comms()
 
 	%LeftShiftButton.pushed.connect(_shift_target.bind(-1))
@@ -180,12 +191,17 @@ func _after_retarget(previous: Enemy) -> void:
 func _listen_for_comms() -> void:
 	var ship: Enemy = targeted_enemy if is_instance_valid(targeted_enemy) else null
 	if ship != _comms_ship:
-		if is_instance_valid(_comms_ship) \
-		and _comms_ship.dialogue_manager.line_shown.is_connected(_on_target_spoke):
-			_comms_ship.dialogue_manager.line_shown.disconnect(_on_target_spoke)
+		if is_instance_valid(_comms_ship):
+			var old_comms: EnemyDialogueManager = _comms_ship.dialogue_manager
+			if old_comms.line_shown.is_connected(_on_target_spoke):
+				old_comms.line_shown.disconnect(_on_target_spoke)
+			if old_comms.line_finished.is_connected(_on_target_line_finished):
+				old_comms.line_finished.disconnect(_on_target_line_finished)
 		_comms_ship = ship
+		_stop_badge_pulse()
 		if ship:
 			ship.dialogue_manager.line_shown.connect(_on_target_spoke)
+			ship.dialogue_manager.line_finished.connect(_on_target_line_finished)
 	_refresh_comms()
 
 
@@ -193,15 +209,59 @@ func _has_comms() -> bool:
 	return is_instance_valid(_comms_ship) and _comms_ship.dialogue_manager.has_line_to_replay()
 
 
-## Clickable while there's a line to replay; no hover when there isn't.
+## Clickable, and badged, while there's a line to replay; no hover and no
+## badge when there isn't.
 func _refresh_comms() -> void:
-	_set_intent_clickable(%CommsButton, _has_comms())
-	# The intents' clickables show info on hover; this one only replays.
+	var has_comms: bool = _has_comms()
+	_set_intent_clickable(%CommsButton, has_comms)
+	# The intents' clickables show info on hover; this one only replays, and
+	# says so with its own pointer and hint (Clickable.hover_cursor).
 	%CommsButton.hover_for_info = false
+	%CommsBadge.visible = has_comms
+	if not has_comms:
+		_stop_badge_pulse()
+	_rest_badge()
 
 
 func _on_target_spoke() -> void:
 	_refresh_comms()
+
+
+func _on_target_line_finished() -> void:
+	if is_instance_valid(_comms_ship) and _comms_ship.dialogue_manager.lines_finished == 1:
+		_pulse_badge()
+
+
+## Whether the badge's waveform is playing its one-time pulse.
+func is_badge_pulsing() -> bool:
+	return _badge_pulse_tween != null and _badge_pulse_tween.is_running()
+
+
+func _pulse_badge() -> void:
+	_stop_badge_pulse()
+	if not %CommsBadge.visible:
+		return
+	_badge_pulse_tween = create_tween()
+	for badge_frame: int in _BADGE_PULSE_FRAMES:
+		_badge_pulse_tween.tween_callback(func() -> void: %CommsBadge.frame = badge_frame)
+		_badge_pulse_tween.tween_interval(_BADGE_PULSE_FRAME_SECONDS)
+	_badge_pulse_tween.tween_callback(func() -> void:
+		_badge_pulse_tween = null
+		_rest_badge()
+	)
+
+
+func _stop_badge_pulse() -> void:
+	if _badge_pulse_tween:
+		_badge_pulse_tween.kill()
+	_badge_pulse_tween = null
+
+
+## Lit under the pointer, dim otherwise; a pulse in progress keeps the frame.
+func _rest_badge() -> void:
+	if is_badge_pulsing():
+		return
+	%CommsBadge.frame = _BADGE_LIT if %CommsButton.hovered else _BADGE_IDLE
 
 
 func _on_comms_clicked() -> void:
