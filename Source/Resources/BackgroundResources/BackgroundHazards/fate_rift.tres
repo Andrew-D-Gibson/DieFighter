@@ -23,40 +23,18 @@ subtype = 15
 color = Color(0.773, 0.322, 0.945, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step2"]
-script = ExtResource("script_1")
-subtype = 1
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_step3"]
-script = ExtResource("script_1")
-category = 4
-subtype = 1
-color = Color(0.773, 0.322, 0.945, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_step6"]
-script = ExtResource("script_1")
-category = 2
-amount = 3
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_step7"]
-script = ExtResource("script_1")
-category = 1
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_chain8"]
 script = ExtResource("script_3")
-effects = Array[ExtResource("script_1")]([SubResource("Resource_step1"), SubResource("Resource_enemies"), SubResource("Resource_step5"), SubResource("Resource_step2"), SubResource("Resource_step3"), SubResource("Resource_step6"), SubResource("Resource_step7")])
+effects = Array[ExtResource("script_1")]([SubResource("Resource_step1"), SubResource("Resource_enemies"), SubResource("Resource_step5")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
 script = ExtResource("script_0")
 hazard_name = "Fate Rift"
 description = "[color=yellow]Your turn ends[/color] ->
-Flip all enemy (die_1) and (die_6).
-Take [color=red]3 damage[/color]"
+Flip all enemy (die_1) and (die_6)"
+headline = "HAZARD_FATE_RIFT_HEADLINE"
+banner = "HAZARD_FATE_RIFT_BANNER"
 icon = ExtResource("icon_tex")
 color = Color(0.773, 0.322, 0.945, 1)
 timing = 1

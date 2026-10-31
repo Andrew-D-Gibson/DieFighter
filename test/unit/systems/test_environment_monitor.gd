@@ -206,38 +206,69 @@ func test_a_card_for_the_last_region_landing_late_changes_nothing() -> void:
 	assert_true(monitor._unread, "the new region's rule is still unread")
 
 
-# ── When a hazard hits ────────────────────────────────────────────────────────
+# ── The headline: when, then what ────────────────────────────────────────────
 
 func test_before_a_fight_it_says_how_far_into_one_it_hits() -> void:
 	hazard.turns_until_first = 2
-	var text: String = EnvironmentMonitor.hazard_timing_text(hazard, false, 0)
+	var text: String = EnvironmentMonitor.hazard_when_text(hazard, false, 0)
 	assert_string_contains(text, "2 turns")
 	assert_string_contains(text, "fight")
 
 
 func test_during_a_fight_it_counts_the_turns_left() -> void:
-	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 3), "Next in")
-	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 3), "3 turns")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 3), "In 3 turns")
 
 
 func test_the_last_turn_says_which_end_of_it() -> void:
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_ENDS
-	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 1), "end this turn")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 1), "At end of turn")
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_STARTS
-	assert_string_contains(EnvironmentMonitor.hazard_timing_text(hazard, true, 1), "next turn")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 1), "Next turn")
 
 
-## "Your turn ends -> re-roll" alone reads as every turn; the card says when.
-func test_a_hazard_card_says_when_it_hits() -> void:
+## Two turn ends away is the end of the next turn, not "in 2 turns", which
+## would read as the turn after that.
+func test_a_turn_end_hazard_two_away_says_next_turn() -> void:
+	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_ENDS
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), "End of next turn")
+	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_STARTS
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), "In 2 turns")
+
+
+func test_the_headline_leads_with_the_countdown() -> void:
+	hazard.headline = "HAZARD_SOLAR_FLARE_HEADLINE"
+	var headline: String = Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_headline(hazard, true, 2))
+	assert_true(headline.begins_with("In 2 turns: "), headline)
+	assert_string_contains(headline, "shields drop")
+
+
+func test_a_hazard_without_a_headline_falls_back_to_its_name() -> void:
+	var headline: String = Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_headline(hazard, true, 1))
+	assert_eq(headline, "Next turn: Test Flare")
+
+
+func test_the_info_panel_says_how_often_it_comes_back() -> void:
+	hazard.turns_between = 2
+	assert_string_contains(Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_repeat_text(hazard)), "every 2 turns")
+	hazard.turns_between = 1
+	assert_string_contains(Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_repeat_text(hazard)), "every turn")
+
+
+## The card carries the headline and nothing else: the full rule waits in the
+## info panel, so the card reads as fast as a rule's one line.
+func test_a_hazard_card_is_its_headline() -> void:
 	Globals.show_region_alerts = true
 	hazard.turns_until_first = 2
-	hazard.turns_between = 2
+	hazard.headline = "HAZARD_ION_STORM_HEADLINE"
+	hazard.description = "The long version"
 	Events.start_scenario.emit()
 	await _settle()
 	await _finish_swing()
 	var alerts: Array[RegionAlert] = _alerts()
 	assert_eq(alerts.size(), 1)
-	assert_eq(alerts[0].footnote, EnvironmentMonitor.hazard_timing_text(hazard, false, 0))
+	assert_eq(alerts[0].description, EnvironmentMonitor.hazard_headline(hazard, false, 0))
+	assert_eq(alerts[0].footnote, "")
+	assert_false(alerts[0].description.contains("long version"))
 
 
 func test_a_rule_card_has_no_footnote() -> void:
@@ -245,6 +276,74 @@ func test_a_rule_card_has_no_footnote() -> void:
 	await _arrive_with_rule()
 	await _finish_swing()
 	assert_eq(_alerts()[0].footnote, "")
+
+
+# ── The readout ───────────────────────────────────────────────────────────────
+
+func _arrive_and_fight() -> void:
+	Events.start_scenario.emit()
+	await _settle()
+	await _finish_swing()
+	Events.hazard_armed.emit(hazard, 3)
+	await _settle()
+
+
+func _readout_text() -> String:
+	return Utils.strip_bbcode_tags(monitor._readout_text.text)
+
+
+func test_the_readout_comes_out_when_the_fight_starts_counting() -> void:
+	await _arrive_and_fight()
+	assert_true(monitor._readout_holder.visible)
+	assert_eq(_readout_text(), "In 3 turns: Test Flare")
+
+
+func test_each_tick_brings_the_readout_out_with_the_new_count() -> void:
+	await _arrive_and_fight()
+	monitor._hide_readout(true)
+	Events.hazard_countdown_changed.emit(hazard, 1)
+	await _settle()
+	assert_true(monitor._readout_holder.visible)
+	assert_eq(_readout_text(), "Next turn: Test Flare")
+
+
+func test_the_readout_goes_back_in_on_its_own() -> void:
+	await _arrive_and_fight()
+	monitor._readout_left = 0.05
+	await wait_seconds(0.4)
+	assert_false(monitor._readout_holder.visible)
+
+
+func test_hovering_keeps_the_readout_out_until_the_pointer_leaves() -> void:
+	await _arrive_and_fight()
+	monitor._hide_readout(true)
+	monitor._on_hovered(true)
+	assert_true(monitor._readout_holder.visible)
+	await wait_seconds(0.2)
+	assert_true(monitor._readout_holder.visible, "no timer while hovered")
+	monitor._on_hovered(false)
+	await wait_seconds(EnvironmentMonitor._READOUT_HOVER_LINGER_SECONDS + 0.4)
+	assert_false(monitor._readout_holder.visible)
+
+
+func test_the_readout_steps_aside_for_the_banner() -> void:
+	await _arrive_and_fight()
+	Events.hazard_triggered.emit(hazard)
+	await wait_seconds(0.3)
+	assert_false(monitor._readout_holder.visible)
+
+
+func test_the_jump_takes_the_readout_with_it() -> void:
+	await _arrive_and_fight()
+	Events.jump.emit()
+	await _settle()
+	assert_false(monitor._readout_holder.visible)
+
+
+func test_a_rule_has_no_readout() -> void:
+	await _arrive_with_rule()
+	monitor._on_hovered(true)
+	assert_false(monitor._readout_holder.visible)
 
 
 # ── The first sighting waits to be closed ────────────────────────────────────

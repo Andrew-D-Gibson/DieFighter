@@ -18,7 +18,19 @@ extends Resource
 
 @export_category('Info')
 @export var hazard_name: String
+## The full rule, for the info panel the environment monitor opens. Say when
+## and how it works here; the headline is what gets read at a glance.
 @export_multiline var description: String
+
+## Translation key: what the hazard does, in a few words, read straight after
+## its countdown ("In 2 turns: " + this). Lower case, no full stop, keyword
+## tokens welcome. Keep it to one effect a player can picture: the arrival
+## card and the monitor's readout lead with it, and a long one wraps.
+@export var headline: String
+
+## Translation key: the effect named in capitals under the hazard's title on
+## the turn it goes off ("SHIELDS DOWN!"). Plain text: the banner is a Label.
+@export var banner: String
 
 ## Art for the environment monitor's screen, beside the countdown, and for the
 ## info panel it opens. Keep it within 9x9 so it fits next to the digit. Left
