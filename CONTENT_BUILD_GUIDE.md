@@ -198,8 +198,10 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     before a Feed and the fed tile is the one echoed (Echo Relay); in an
     `ON_TURN_START` response it echoes the first tile played (Opening Salvo).
     Untick `can_be_echoed` on a tile whose effect compounds on itself, where a
-    second pass multiplies (Fortress Protocol), and say `Ignores (echo)` in
-    its text. Text: `(echo) the next tile you activate`.
+    second pass multiplies (Fortress Protocol), and on any tile that spends or
+    reads charge or hull: activation checks run once, so an echo would pay out
+    twice for one payment (Arc Tap, Blood Valve). Say `Ignores (echo)` in its
+    text. Text: `(echo) the next tile you activate`.
   - **Enemy dice and intents** (aim with `TARGET_WITH_TARGETING_COMPUTER`
     first, then hand the die over as usual):
     - `SET_TARGETS_HIGHEST_DIE` (`amount` = the new face) turns the highest
@@ -282,8 +284,7 @@ benched tiles) get none, because no second copy can turn up.
 - Upgrade levers, cheapest first:
   - **Numbers** (an amount, or an `ADD` after `SET_TO_DIE_VALUE`) and
     **cheaper costs** (less charge spent) reuse the base art.
-  - **Looser conditions** that aren't die faces (Lone Wolf Lance+ at 3 or
-    fewer dice) and **new behaviour** (Countermeasures+ also gives shields)
+  - **Looser conditions** that aren't die faces and **new behaviour** (Countermeasures+ also gives shields)
     reuse the base art too.
   - **Uses** need a new light sheet: `<name>_plus-Sheet.png`. Copy the base
     `.aseprite` to `<name>_plus.aseprite`, keep frame 0 with its lights
@@ -960,7 +961,11 @@ cost get through. The tile applies it to the player with `TARGET_PLAYER`,
 **Status payoffs.** `MULTIPLY_STATUSES` (`multiplier`, x2 doubles) grows
 every status on the targets by applying the difference, one `APPLY_STATUS`
 per status, so it lands like any application (Status Catalyst; gate it on
-`TARGETED_SHIP_HAS_STATUS`). A tile answering the player applying a status
+`TARGETED_SHIP_HAS_STATUS`). That check takes a status id in `data_key` for a
+tile that pays per stack of one status (Flashpoint, Heat Sink: `burn`); empty
+means any status. `TRANSFER_STATUSES` moves only harmful statuses
+(`StatusModifier.is_harmful()`, false for Phased), so a cloak stays put;
+Countermeasures gates on `PLAYER_HAS_HARMFUL_STATUS`. A tile answering the player applying a status
 listens for `ON_STATUS_APPLIED_TO_ENEMY` (Hex Coil); `APPLY_STATUS`,
 `TRANSFER_STATUSES` and `MULTIPLY_STATUSES` all set it off.
 
