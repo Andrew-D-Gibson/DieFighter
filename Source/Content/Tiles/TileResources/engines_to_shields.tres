@@ -44,6 +44,23 @@ script = ExtResource("13_dymuh")
 subtype = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("13_dymuh")
+category = 4
+subtype = 21
+amount = 12
+color = Color(0.2627, 0.651, 0.9882, 1)
+juice_flags = 12
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_2"]
+script = ExtResource("13_dymuh")
+category = 4
+subtype = 16
+string_param = "TRANSFER"
+color = Color(0.2627, 0.651, 0.9882, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_sy1le"]
 script = ExtResource("13_dymuh")
 category = 1
@@ -74,23 +91,6 @@ category = 3
 subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("13_dymuh")
-category = 4
-subtype = 21
-amount = 12
-juice_flags = 12
-color = Color(0.2627, 0.6510, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("13_dymuh")
-category = 4
-subtype = 16
-string_param = "TRANSFER"
-color = Color(0.2627, 0.6510, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_e2rem"]
 script = ExtResource("14_ougyd")
 effects = Array[ExtResource("13_dymuh")]([SubResource("Resource_4nsdf"), SubResource("Resource_iur0g"), SubResource("Resource_jippl"), SubResource("Resource_k4fy2"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_sy1le"), SubResource("Resource_ranjh"), SubResource("Resource_vqfph"), SubResource("Resource_sjank"), SubResource("Resource_hg50f")])
@@ -109,9 +109,10 @@ animations = [{
 
 [resource]
 script = ExtResource("3_r846u")
-upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Emergency Transfer[/color]"
 description = "(die_1) -> Convert all [color=purple]engine charge[/color] to [color=blue]shields[/color]. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
+offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_lpymo")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_wsqrt")]([SubResource("Resource_r846u"), SubResource("Resource_u10cf")])

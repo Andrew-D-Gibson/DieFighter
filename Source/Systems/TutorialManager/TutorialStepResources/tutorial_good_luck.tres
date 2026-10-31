@@ -1,6 +1,8 @@
-[gd_resource type="Resource" script_class="TutorialStep" format=3]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://b3yf2amnw4je3"]
 
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_fnpe3"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_tw7kp"]
 [ext_resource type="Texture2D" uid="uid://cfa3hmb86qi5w" path="res://Assets/Textures/TutorialManager/Highlights/highlight_dim_all.png" id="highlight"]
 
 [resource]

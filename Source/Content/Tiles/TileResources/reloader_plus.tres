@@ -95,11 +95,11 @@ animations = [{
 
 [resource]
 script = ExtResource("4_ymfbh")
-offered_as_reward = false
-is_upgrade = true
 tile_name = "[color=yellow]Reloader+[/color]"
 description = "[color=yellow]Any die[/color] -> Surrounding tiles gain 1 use"
 rarity = 2
+offered_as_reward = false
+is_upgrade = true
 textures = SubResource("SpriteFrames_0qwli")
 uses_per_turn = 2
 effect_chain = SubResource("Resource_f3imi")

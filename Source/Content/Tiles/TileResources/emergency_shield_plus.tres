@@ -190,11 +190,11 @@ animations = [{
 
 [resource]
 script = ExtResource("4_k7gdr")
-offered_as_reward = false
-is_upgrade = true
 tile_name = "Emergency Shield+"
 description = "[color=yellow]Fatal hit[/color] -> Survive at 1 [color=red]hull[/color]. Gain [color=blue]20 shields[/color]. Single use"
 rarity = 1
+offered_as_reward = false
+is_upgrade = true
 textures = SubResource("SpriteFrames_6btq7")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_wphb4")]([SubResource("Resource_4tha5")])
