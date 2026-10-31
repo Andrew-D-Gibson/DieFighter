@@ -1,7 +1,9 @@
 extends Sprite2D
 ## The game's pointer, drawn in place of the OS one so it scales with the
 ## pixels and follows a controller's virtual cursor too. It shows what a click
-## would do: the arrow; an "i" once hovering has something to explain; and a
+## would do: the arrow; an "i" once hovering has something to explain; a
+## clickable's own pointer and hint line for a click that acts rather than
+## explains (Clickable.hover_cursor, e.g. replaying a ship's comms); and a
 ## closed hand while a die or tile is in hand.
 ##
 ## Click placement (Draggable.PlacementMode.CLICK) leaves the button up
@@ -47,6 +49,9 @@ var _hand: Draggable = null
 ## Whether this pick-up is one that shows the hint line.
 var _hinting: bool = false
 var _hint: Label
+## How long the pointer has rested on the current clickable, for its
+## hover_hint, which waits out the clickable's hover_delay.
+var _hover_seconds: float = 0.0
 
 
 func _ready() -> void:
@@ -64,10 +69,11 @@ func _ready() -> void:
 	Events.set_current_clickable.connect(set_current_clickable)
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	# Not get_global_mouse_position(): that's the OS pointer, which may lag a
 	# controller's virtual one (InputManager.cursor).
 	global_position = get_canvas_transform().affine_inverse() * InputManager.pointer_position(get_viewport())
+	_hover_seconds += delta
 	_update_look()
 
 
@@ -83,10 +89,33 @@ func _update_look() -> void:
 		_wear(_GRAB_INFO_TEXTURE if on_info_spot else _GRAB_TEXTURE, _GRAB_OFFSET, _GRAB_ALPHA)
 		if _hinting:
 			_show_hint(tr(&"CURSOR_HINT_CLICK_FOR_INFO") if on_info_spot else tr(&"CURSOR_HINT_CLICK_TO_PLACE"))
+		return
+
+	var acting: Clickable = _acting_clickable()
+	if acting and acting.hover_cursor:
+		# Drawn like the arrow, its tip on the pointer's spot.
+		_wear(acting.hover_cursor, Vector2.ZERO)
 	elif _hover_info:
 		_wear(info_cursor_texture, _INFO_OFFSET)
 	else:
 		_wear(default_cursor_texture, Vector2.ZERO)
+	if acting and acting.hover_hint != &"" and _hover_seconds >= acting.hover_delay:
+		_show_hint(tr(acting.hover_hint))
+	else:
+		_hint.hide()
+
+
+## The hovered clickable, when it has its own pointer or hint and is live;
+## otherwise null. Re-read every frame: a clickable can go dead (a ship's
+## comms cut off by a jump) while the pointer rests on it.
+func _acting_clickable() -> Clickable:
+	if not is_instance_valid(current_clickable):
+		return null
+	if current_clickable.hover_cursor == null and current_clickable.hover_hint == &"":
+		return null
+	if not current_clickable.hovered or not current_clickable.input_pickable:
+		return null
+	return current_clickable
 
 
 func _on_hand_changed(hand: Draggable) -> void:
@@ -134,6 +163,7 @@ func set_current_clickable(clickable: Clickable) -> void:
 		_disconnect_from_clickable(current_clickable)
 
 	current_clickable = clickable
+	_hover_seconds = 0.0
 
 	# Connect to new clickable
 	if clickable:

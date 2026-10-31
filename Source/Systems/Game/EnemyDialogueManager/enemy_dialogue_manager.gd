@@ -6,6 +6,10 @@ const _TEXT_BLIP_SFX: SoundEffectResource = preload("res://Source/Resources/Soun
 ## A line has started showing, fresh or replayed. The targeting computer's
 ## comms lamp listens for it.
 signal line_shown()
+## A line has run its course and starts to fade, fresh or replayed (not one
+## cut off by the next line or a jump). The comms lamp's first-time pulse
+## waits for it: that's when the player can first ask for the line again.
+signal line_finished()
 
 @export var character_reveal_time: float = 0.08
 
@@ -69,11 +73,14 @@ var _silenced: bool = false
 var _last_line: String = ""
 var _last_faction: ScenarioManager.Faction = ScenarioManager.Faction.PIRATE
 
+## How many lines have run their course. See [signal line_finished].
+var lines_finished: int = 0
+
 
 func _ready() -> void:
 	fadeout_timer = Timer.new()
 	fadeout_timer.one_shot = true
-	fadeout_timer.timeout.connect(hide_dialogue)
+	fadeout_timer.timeout.connect(_on_line_ran_out)
 	add_child(fadeout_timer)
 
 	_box_x = %Sprite2D.position.x
@@ -155,6 +162,12 @@ func has_line_to_replay() -> bool:
 func replay_last_line() -> void:
 	if has_line_to_replay():
 		show_dialogue(_last_line, _last_faction, false)
+
+
+func _on_line_ran_out() -> void:
+	lines_finished += 1
+	line_finished.emit()
+	hide_dialogue()
 
 
 func hide_dialogue() -> void:

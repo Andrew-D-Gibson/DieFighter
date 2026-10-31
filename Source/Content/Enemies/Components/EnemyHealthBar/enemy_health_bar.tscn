@@ -7,9 +7,15 @@
 [ext_resource type="Texture2D" uid="uid://du6m84ww3qom3" path="res://Assets/Textures/Enemies/EnemyHealthBar/health_change.png" id="4_a8y0g"]
 [ext_resource type="Texture2D" uid="uid://dd2n0ygx4cd8m" path="res://Assets/Textures/Enemies/EnemyHealthBar/Health fill.png" id="5_4clo8"]
 [ext_resource type="Texture2D" uid="uid://cpt07rjx3fdiq" path="res://Assets/Textures/Enemies/EnemyHealthBar/bar_over.png" id="6_eq3o7"]
+[ext_resource type="Texture2D" uid="uid://rgyhrf1nh3dn" path="res://Assets/Textures/Enemies/EnemyHealthBar/bar_outline.png" id="7_outline"]
 
 [node name="EnemyHealthBar" type="Node2D" unique_id=781179634]
 script = ExtResource("1_xmwdm")
+
+[node name="Outline" type="Sprite2D" parent="." unique_id=1690342218]
+unique_name_in_owner = true
+modulate = Color(0.807843, 0.941176, 0.945098, 0.47)
+texture = ExtResource("7_outline")
 
 [node name="Background" type="Sprite2D" parent="." unique_id=932578153]
 texture = ExtResource("2_6xma5")
