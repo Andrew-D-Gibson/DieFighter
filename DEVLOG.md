@@ -4,6 +4,20 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Tile pass: every reward tile, its words, numbers and art
+
+All 116 offered tiles (and their `+` versions) reviewed for utility, rewritten to one terse style, and redrawn. Six parallel passes, one per colour (red split in two); briefs, contact sheets and per-agent notes in the scratchpad.
+
+- **Text rule** (CONTENT_BUILD_GUIDE §0): the die and the tile's `Deal`/`Apply` go to target by default and that's left unsaid. Only exceptions are written, in orange (`Return`, `Keep`, `Hold`, `Give die to random enemy`, `Give die as (die_1)`, Feeds) or as another ship (`to you`, `to every enemy`). `charge`, not `engine charge`, in costs and gains. Uses are never written.
+- **Art:** every icon redrawn as ship hardware (green keeps its pale-dice diagram language), approved palette, light sheets rebuilt with `add_use_lights.lua`. Recoloured by role: Grudge Cannon, Debt Collector, Signal Relay (green) and Bounty Scanner (yellow) to red; Blood Valve (purple) to green.
+- **Design fixes:** Crescendo Cannon 2/activation; Flak Cannon 3 +1/neighbour; Lone Wolf Lance x2 at 3 or fewer dice owned (it never fired from a 3-dice start); Spark Gap 2; Relay Terminal takes 4-6; Signal Relay common; Counterweight Battery spends 2 charge for 5 shields; Brownout Plating pays only on an empty drive (uncommon); Value Exchange gives its die; Holo-Duplicator takes 1-3; Welder is a twin-dice tile, 1 weld a turn (uncommon); Bootstrap Injector returns its die, 6 charge; Sabotage Charge 6; Repo Beam 5; Spotter Drone also exposes you; Sensor Spike 2 uses (relay rule); Reloader's chain gave a full refill, now 1 use as written.
+- **Refusals instead of eaten dice:** Debt Collector (no dice held), Flashpoint and Heat Sink (no Burn), Countermeasures (nothing on you), Deadweight Drive (full drive), Overdraw Coil (no charge), Repo Beam (target holds nothing). Spark Gap and Napalm Vent stay quiet out of combat.
+- **Engine:** `ActivationType.PLAYER_HAS_HARMFUL_STATUS` (22); `TARGETED_SHIP_HAS_STATUS` takes a status id in `data_key`; `StatusModifier.is_harmful()` (false for Phased), and Transfer Statuses moves only harmful ones, so Countermeasures no longer hands your cloak to the enemy; a holds-no-dice popup.
+- **Echo:** charge spenders (Arc Tap, Afterburner Relay, Bootstrap Injector, Sabotage Charge, Repo Beam, Overdraw Coil) ignore echo: checks run once, so an echo paid out twice for one payment.
+- *Calibration note:* the drive's max is 10 at 3 dice (15 at 4, 21 at 5), not the `max_engine_charge` default of 24. Charge costs were judged against 10.
+- Benched: none. GUT 1545/1545; live pass with 15 changed tiles on the grid, refusal popups checked.
+- Open: Ram Scoop eats a die with no empty neighbour (needs a check); Opening Salvo and Pilot Light are cost-free passives; Fume Vent and Overclock Coil look weak for rares; AutoPilot tile-balance batch not rerun.
+
 ## 2026-10-30 — Co-op arcs: one partner, one plate
 
 - Measured the co-op intent arcs over every scenario (300 rolls/sector): Fate Husk, Picket and Bastion Aegis roll 3.5-4 co-op faces a turn, and one targeted ship could draw 3 arcs and 6 plates, piled over the neighbours' hull badges.
