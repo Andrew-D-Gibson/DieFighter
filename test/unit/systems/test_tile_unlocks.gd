@@ -5,6 +5,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 const _SENSOR_SPIKE: String = "res://Source/Content/Tiles/TileResources/sensor_spike.tres"
 const _SIGNAL_RELAY: String = "res://Source/Content/Tiles/TileResources/signal_relay.tres"
 const _DAMAGE: String = "res://Source/Content/Tiles/TileResources/damage.tres"
+const _AFTERBURNER: String = "res://Source/Content/Tiles/TileResources/afterburner_relay.tres"
 
 
 func before_each() -> void:
@@ -32,13 +33,13 @@ func test_a_new_player_is_only_offered_basic_tiles() -> void:
 
 
 func test_unlocking_a_family_adds_its_tiles() -> void:
-	CollectionManager.record_family("relays")
+	CollectionManager.record_family("relays_basic")
 	assert_true(TileUnlocks.is_tile_available(load(_SIGNAL_RELAY)))
 
 
 func test_a_relay_that_debuffs_waits_for_debuffs() -> void:
 	var spike: TileResource = load(_SENSOR_SPIKE)
-	CollectionManager.record_family("relays")
+	CollectionManager.record_family("relays_basic")
 	assert_false(TileUnlocks.is_tile_available(spike))
 	CollectionManager.record_family("debuffs")
 	assert_true(TileUnlocks.is_tile_available(spike))
@@ -87,6 +88,34 @@ func test_unlocks_survive_a_reload() -> void:
 	CollectionManager.load_collection()
 	assert_true(CollectionManager.has_family("burn"))
 	assert_eq(CollectionManager.family_for_claim("7:1"), "burn")
+
+
+func test_basic_relays_unlock_first_and_advanced_relays_late() -> void:
+	var order: Array[TileFamilyResource] = TileUnlocks.families()
+	assert_eq(order[0], _family("relays_basic"))
+	assert_gt(order.find(_family("relays_advanced")), order.size() / 2,
+		"the relays with a catch wait until the player has met the rest")
+	CollectionManager.record_family("relays_basic")
+	assert_true(TileUnlocks.is_tile_available(load(_SIGNAL_RELAY)))
+	assert_false(TileUnlocks.is_tile_available(load(_AFTERBURNER)))
+
+
+## Collections saved before the split hold the one "relays" family. The player
+## keeps every relay it gave them, and the jump that unlocked it still shows
+## the same card if replayed.
+func test_a_collection_with_the_old_relays_family_keeps_both_halves() -> void:
+	var file: FileAccess = FileAccess.open(CollectionManager.collection_path, FileAccess.WRITE)
+	file.store_string(JSON.stringify({"version": 1, "families": {"relays": "7:1", "burn": "7:2"}}))
+	file.close()
+	CollectionManager.load_collection()
+	assert_false(CollectionManager.has_family("relays"))
+	assert_true(CollectionManager.has_family("relays_basic"))
+	assert_true(CollectionManager.has_family("relays_advanced"))
+	assert_true(CollectionManager.has_family("burn"))
+	assert_eq(CollectionManager.family_for_claim("7:1"), "relays_basic")
+	assert_eq(TileUnlocks.unlock_for(TileUnlocks.claim_for(7, 1)), _family("relays_basic"))
+	assert_true(TileUnlocks.is_tile_available(load(_AFTERBURNER)))
+	assert_eq(TileUnlocks.next_locked_family(), _family("debuffs"))
 
 
 func test_the_run_seed_rides_along_with_the_run_state() -> void:
