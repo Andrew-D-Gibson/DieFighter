@@ -130,6 +130,11 @@ static var forced_actions: Array[EnemyActionResource] = []
 var starting_health_fraction: float = 1.0
 ## Set the same way. See EnemyStateRewardResource.unscaled_hull.
 var unscaled_hull: bool = false
+## Set the same way, from the encounter that spawned this ship (a launched
+## ship takes its launcher's). See ScenarioResource.enemy_hull_multiplier.
+var scenario_hull_multiplier: float = 1.0
+## See ScenarioResource.enemy_damage_multiplier.
+var scenario_damage_multiplier: float = 1.0
 
 ## Whoever landed the latest hit: the player, another ship, or null for
 ## something with no shooter (a hazard). Set by DamageEvent.
@@ -439,8 +444,8 @@ func _update_health_from_resource() -> void:
 		var scale_factor: float = 1.0
 		if Globals.state_manager:
 			scale_factor = Globals.state_manager.get_difficulty_multiplier()
-		hull_scale = PLAYTEST_HULL_SCALE * scale_factor
-		shield_scale = PLAYTEST_SHIELD_SCALE * scale_factor
+		hull_scale = PLAYTEST_HULL_SCALE * scale_factor * scenario_hull_multiplier
+		shield_scale = PLAYTEST_SHIELD_SCALE * scale_factor * scenario_hull_multiplier
 
 	health.max_health = ceili(enemy_resource.max_health * hull_scale)
 	health.health = starting_hull(health.max_health, starting_health_fraction)
@@ -553,7 +558,8 @@ func generate_turn_actions(situation: EnemyActionSituation, take_forced: bool = 
 		forced,
 		_current_face_bias()
 	)
-	
+	_scale_rolled_amounts(turn_actions)
+
 
 ## Swaps one slot for a fresh roll that relays nothing. See
 ## EnemyTargetBinder: it's how a Feed that could only loop gets out of the way.
@@ -564,6 +570,20 @@ func reroll_slot_without_relays(slot: int, situation: EnemyActionSituation) -> v
 		turn_actions,
 		slot
 	)
+	var rerolled: Array[EnemyActionResource] = [turn_actions[slot]]
+	_scale_rolled_amounts(rerolled)
+
+
+## Applies the encounter's damage multiplier to freshly rolled slots, on top of
+## the sector scaling EnemyActionOptionResource.get_action() already did. A
+## hologram's amount is the face it copies, so it stays as rolled.
+func _scale_rolled_amounts(actions: Array[EnemyActionResource]) -> void:
+	if is_equal_approx(scenario_damage_multiplier, 1.0):
+		return
+	for action: EnemyActionResource in actions:
+		if action.intent_amount == 0 or action.get_relay() == EnemyActionResource.Relay.HOLOGRAM:
+			continue
+		action.intent_amount = maxi(1, ceili(action.intent_amount * scenario_damage_multiplier))
 
 
 ## Silences this turn's intent for [param face]: the slot becomes a Do Nothing

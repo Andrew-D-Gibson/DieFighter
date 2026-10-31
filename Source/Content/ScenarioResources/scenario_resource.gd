@@ -44,6 +44,15 @@ extends Resource
 ## How many layers `sectors` names.
 const LAYER_COUNT: int = 3
 
+@export_category('Difficulty')
+## Multiplies the hull and shields of every ship this encounter spawns, on top
+## of the sector's scaling. Lets an elite field the same ships as an ordinary
+## fight and still hit harder, without a second copy of each EnemyResource.
+@export_range(0.25, 4.0, 0.05) var enemy_hull_multiplier: float = 1.0
+## Multiplies every rolled intent amount (damage, shields, repairs) of the
+## ships this encounter spawns, on top of the sector's scaling.
+@export_range(0.25, 4.0, 0.05) var enemy_damage_multiplier: float = 1.0
+
 @export_category('Boss')
 ## The name stamped across the boss intro card when this fight starts. Leave
 ## empty for an encounter that isn't a boss fight: no card plays.

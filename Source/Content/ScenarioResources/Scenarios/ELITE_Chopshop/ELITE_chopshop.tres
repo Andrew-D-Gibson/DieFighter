@@ -72,4 +72,6 @@ rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_bounty")
 })
 sectors = 1
+enemy_hull_multiplier = 1.3
+enemy_damage_multiplier = 1.3
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

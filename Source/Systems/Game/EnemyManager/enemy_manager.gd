@@ -114,7 +114,7 @@ func _ready() -> void:
 
 		# Spawn the starting ships
 		if len(scenario.starting_enemies) > 0:
-			var spawned: Array[Enemy] = spawn_enemies(scenario.starting_enemies)
+			var spawned: Array[Enemy] = spawn_enemies(scenario.starting_enemies, scenario)
 			var restoring: bool = Globals.state_manager != null \
 				and Globals.state_manager.get_restore().has("enemies")
 			_restore_enemies(scenario.starting_enemies)
@@ -135,7 +135,9 @@ func _process(delta: float) -> void:
 		_hull_mounts.carry()
 	
 	
-func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> Array[Enemy]:
+## [param scenario] is the encounter they belong to, for its difficulty
+## multipliers; null spawns them at the sector's plain scaling.
+func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource], scenario: ScenarioResource = null) -> Array[Enemy]:
 	var spawned: Array[Enemy] = []
 	for i: int in range(len(enemies_to_spawn)):
 		var spawn: EnemyStateRewardResource = enemies_to_spawn[i]
@@ -147,6 +149,9 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource]) -> Array[E
 		# Set before add_child: Enemy._ready() bakes health off this.
 		enemy.starting_health_fraction = spawn.starting_health_fraction
 		enemy.unscaled_hull = spawn.unscaled_hull
+		if scenario:
+			enemy.scenario_hull_multiplier = scenario.enemy_hull_multiplier
+			enemy.scenario_damage_multiplier = scenario.enemy_damage_multiplier
 
 		# A part of a bigger ship rides its hull (see _spawn_hull), and never
 		# bobs on its own: it moves when the hull does.
@@ -196,6 +201,8 @@ func launch_ship(resource: EnemyResource, launcher: Enemy) -> Enemy:
 	var ship: Enemy = enemy_base_scene.instantiate()
 	ship.enemy_resource = resource
 	ship.scenario_state = launcher.scenario_state
+	ship.scenario_hull_multiplier = launcher.scenario_hull_multiplier
+	ship.scenario_damage_multiplier = launcher.scenario_damage_multiplier
 	ship.position = launcher.position
 	# Next to its launcher in the roster, which is left-to-right formation
 	# order, so it doesn't cross the board to reach its slot.

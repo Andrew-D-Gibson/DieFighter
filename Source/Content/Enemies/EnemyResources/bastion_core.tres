@@ -77,8 +77,8 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 script = ExtResource("script_0")
 base_action = ExtResource("act_attack")
 weight = 3.0
-min_amount = 9
-max_amount = 14
+min_amount = 8
+max_amount = 12
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_opt8"]
