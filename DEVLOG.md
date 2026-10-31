@@ -4,6 +4,25 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Co-op arcs: one partner, one plate
+
+- Measured the co-op intent arcs over every scenario (300 rolls/sector): Fate Husk, Picket and Bastion Aegis roll 3.5-4 co-op faces a turn, and one targeted ship could draw 3 arcs and 6 plates, piled over the neighbours' hull badges.
+- `EnemyTargetBinder`: a ship binds every ally slot to one ally and every raid to one prey per turn. The first slot picks; a relay that would loop through that ally is rerolled, not re-aimed. At most one green + one red arc per ship, and co-op output per turn is unchanged.
+- `BoundIntentArrow`: one plate per arc (bound faces, an icon per kind, the amount only when every face shares it) sat on top of the arc, clear of the hull badges.
+- *Design call:* no hard cap on co-op faces. A cap of 2 cleared the clutter less well (2 arcs still stacked) and halved support ships' output (Aegis 4.0 -> 2.0, Husk 3.5 -> 2.0 faces/turn). Plan and evidence: scratchpad `g5-coop-lines/PLAN.md`.
+- Open: smarter partner choice (most damaged ally), Bastion gate plate placement, AutoPilot A/B on support fights.
+
+## 2026-10-30 — Co-op arcs: most damaged partner, three faces at most
+
+- `EnemyTargetBinder.most_damaged()`: a ship's ally partner for the turn is the ally with the lowest hull fraction, then the lowest raw hull, then a seeded RNG draw among dead-level ties. Raids keep picking their prey at random.
+- *Design call:* the pick is made when the tables roll at the start of the enemy's planning (after the player's turn ends and the next table is rolled), so it reflects health **then**. Damage the player deals during their turn doesn't re-point the arc; the next roll does. That matches "a binding is never re-pointed", and it means the arc the player reads is the one that plays out.
+- *Design call:* the partner is settled before the Relay loop filter, so it's always the most damaged ally; a Relay that can't reach it without looping is rerolled rather than aimed at a healthier ship.
+- `EnemyActionSelector.MAX_BOUND_SLOTS = 3`: bound slots (ally help and raids together, as the badge counts them) past three are swapped for a weighted draw from the pool's unbound options, or a blank if there are none, before the table is placed on faces. The tutorial's forced slots are never swapped. The badge still lists every face (no count collapse).
+- Map: "Charge Engines" caption now uses the "You are here" purple instead of yellow.
+- Bastion gate badge overlap left alone (user will retarget it).
+- Measured (300 rolls/sector, sectors 2-3, co-op faces per turn / summed co-op amount per turn, before -> after cap): Fate Husk 3.5 / 10.6 -> 2.75 / 8.3 (-21% support); Picket in Last Picket 4.1 / 16.6 -> 2.9 / 11.6 (-30%); Picket in Picket Line 1.9 / 7.8 -> 1.85 / 7.3 (barely touched); Bastion Aegis 4.0 / 28.8 -> 2.9 / 20.9 (-28%); Field Tender 2.6-3.4 / 10.6-15.9 -> 2.1-2.85 / 9.1-14.6. Logs: scratchpad `g5-coop-lines/cap_before.log`, `cap_after.log`.
+- AutoPilot A/B on the support fights not run (budget). Worth one before shipping: the gate boss's Aegis loses ~28% of its support.
+
 ## 2026-10-30 — Enemy damage smoke: out on the kill, off the face
 
 - A dying enemy's damage smoke now goes out the instant its kill starts (top of `Enemy._on_death`, before the red flash, speed lines and hitstop), on both the player's kills and ship-on-ship kills. `ShipDamageSmoke.extinguish()` hides the node, which takes the haze already in the air with it, stops the emitters, unhooks it from the hull's `Health` so a late heal can't relight it, and frees it. `EnemyGraphicsManager.clear_damage_smoke()` is the entry point. The wreck never had smoke (ShipWreck copies only sprites), so nothing returns there.
