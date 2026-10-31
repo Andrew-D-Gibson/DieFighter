@@ -92,6 +92,16 @@ func track_hull_damage(health: Health) -> void:
 		_damage_smoke.track(health)
 
 
+## Puts the hull's damage smoke out at once, haze and all, as the kill
+## begins: the dying ship's flash and focus are about its silhouette, and the
+## wreck is built from the hull's art, not its smoke. For good, since only a
+## dying ship is put out.
+func clear_damage_smoke() -> void:
+	if is_instance_valid(_damage_smoke):
+		_damage_smoke.extinguish()
+	_damage_smoke = null
+
+
 ## Cracks the ship into pieces that drift apart and blow up one by one,
 ## carried along [param kick] (the killing blow's direction, or zero), each
 ## blast sounding [param blast_sound]. Resolves once the last explosion has

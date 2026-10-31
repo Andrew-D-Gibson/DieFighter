@@ -120,6 +120,17 @@ registration to testing. For how the systems work underneath, see
 - saved by its filename id (`ContentRegistry`). Filenames must be unique, and
   renaming one breaks existing saves that hold it.
 
+**Family (does a new player see it?):** a tile in no family is **Basic**,
+offered from a player's first run. A tile whose text uses an advanced
+keyword (Feed/Fed, Burn, Jammed, Scrambled, Exposed, Weakened, Hologram,
+Countdown, Echo) belongs in a `TileFamilyResource` under
+`Source/Content/Tiles/TileFamilies/`: add it to that family's `tiles`. A tile
+sits in one family only (the card shows all its tiles): one that leans on two
+mechanics goes in whichever unlocks later. Evasion and Phased (you) count as Basic. `test_tile_families.gd`
+fails on an advanced tile left in no family. Families unlock in the order
+`tile_unlock_order.tres` lists them, one per new sector reached; reorder
+that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
+
 **Fields**
 - **Info**
   - `tile_name`: bbcode-coloured to match the tile's colour.
@@ -426,8 +437,10 @@ value before its STREAM.
   - Add `engine_particles.tscn` children at the exhausts.
   - Damage smoke is automatic (`ShipDamageSmoke`): a plume breaks out at
     75%, 50% and 25% hull, from spots picked off the hull's opaque pixels
-    (the same spots for every ship of that kind). If they land somewhere
-    odd, pin them: add a `Node2D` named `DamageSmokePoints` with one
+    (the same spots for every ship of that kind), kept off the face: the
+    middle column from just behind the hull's centre to the nose, where the
+    cockpit, eye or core goes. If they land somewhere odd (say, a face drawn
+    off-centre), pin them: add a `Node2D` named `DamageSmokePoints` with one
     `Marker2D` per plume, in the order they should light. Draw the sheet
     nose-down; the smoke drifts out of the tail (local up).
 - Resource: `Source/Content/Enemies/EnemyResources/<name>.tres` (an

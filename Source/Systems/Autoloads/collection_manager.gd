@@ -3,7 +3,8 @@ extends Node
 ## What the player has found across every run, for the codex on the main menu:
 ## each tile they've had on their grid, and each enemy they've met with how
 ## often they've met and destroyed it. Also which region rules and hazards
-## they've read the arrival card for, so the first one waits for them. Kept in its own file, since the run's
+## they've read the arrival card for, so the first one waits for them, and
+## which tile families they've unlocked (TileUnlocks). Kept in its own file, since the run's
 ## save is deleted when the run ends and this has to outlive it.
 ##
 ## Only the player's own runs count. The Scenario Lab and the AutoPilot point
@@ -29,6 +30,10 @@ var _enemies: Dictionary[String, Dictionary] = {}
 ## Region id (EnvironmentMonitor.region_id) -> true, for every rule or hazard
 ## whose arrival card the player has read.
 var _regions: Dictionary[String, bool] = {}
+## Tile family id (TileFamilyResource.id()) -> the claim that unlocked it, a
+## run and sector (TileUnlocks.claim_for()). Kept so a jump replayed from a
+## Continue shows the same family again instead of unlocking a second one.
+var _families: Dictionary[String, String] = {}
 var _write_queued: bool = false
 
 
@@ -83,11 +88,41 @@ func record_destroyed(id: String) -> void:
 	_count(id, "destroyed")
 
 
+func has_family(id: String) -> bool:
+	return _families.has(id)
+
+
+## [param claim] marks what earned it; empty for one given outright (the dev
+## console, the options menu's Unlock All).
+func record_family(id: String, claim: String = "") -> void:
+	if id.is_empty() or _families.has(id):
+		return
+	_families[id] = claim
+	_queue_write()
+
+
+## The family [param claim] unlocked, or "" if it hasn't unlocked one.
+func family_for_claim(claim: String) -> String:
+	if claim.is_empty():
+		return ""
+	for id: String in _families:
+		if _families[id] == claim:
+			return id
+	return ""
+
+
+## Locks every family again, for the dev console.
+func clear_families() -> void:
+	_families.clear()
+	_queue_write()
+
+
 ## Forgets everything found, on disk too.
 func clear() -> void:
 	_tiles.clear()
 	_enemies.clear()
 	_regions.clear()
+	_families.clear()
 	changed.emit()
 	_write()
 
@@ -159,6 +194,7 @@ func _write() -> void:
 		"tiles": _tiles.keys(),
 		"enemies": _enemies,
 		"regions": _regions.keys(),
+		"families": _families,
 	}
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.WRITE)
 	if not file:
@@ -173,6 +209,7 @@ func load_collection() -> void:
 	_tiles.clear()
 	_enemies.clear()
 	_regions.clear()
+	_families.clear()
 	if not FileAccess.file_exists(collection_path):
 		return
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.READ)
@@ -190,6 +227,10 @@ func load_collection() -> void:
 		_tiles[str(id)] = true
 	for id: Variant in data.get("regions", []):
 		_regions[str(id)] = true
+	var families: Variant = data.get("families", {})
+	if families is Dictionary:
+		for id: Variant in families:
+			_families[str(id)] = str(families[id])
 	var enemies: Variant = data.get("enemies", {})
 	if enemies is Dictionary:
 		for id: Variant in enemies:

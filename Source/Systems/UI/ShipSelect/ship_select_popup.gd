@@ -3,6 +3,8 @@ extends Node2D
 
 ## Picks the ship for a new run, between Play on the main menu and the opening
 ## cutscene. One card per ship in ShipCatalog; Launch flies the picked one.
+## A coming-soon ship gets a greyed-out card that clicks, arrow keys and
+## Launch all pass over.
 ##
 ## Once the tutorial has been played, Replay Tutorial sits in the top-left
 ## corner, out of the way of Launch and Back, and flies the ship it teaches on
@@ -30,7 +32,8 @@ func _ready() -> void:
 
 
 ## Lays out a card per ship and shows the popup, with the last ship flown
-## this session already picked.
+## this session already picked, unless that one is coming soon (an AutoPilot
+## gauntlet can fly one): then the first ship that can be picked.
 func open() -> void:
 	for card: ShipCard in _cards:
 		card.queue_free()
@@ -50,9 +53,14 @@ func open() -> void:
 		_cards.append(card)
 
 	var remembered: ShipResource = Globals.current_ship()
-	var first: ShipCard = _cards[0] if not _cards.is_empty() else null
+	var first: ShipCard = null
 	for card: ShipCard in _cards:
+		if card.locked:
+			continue
 		if card.ship == remembered:
+			first = card
+			break
+		if not first:
 			first = card
 	if first:
 		_pick(first)
@@ -79,16 +87,29 @@ func _on_replay_tutorial() -> void:
 
 
 func _pick(card: ShipCard) -> void:
+	if not card or card.locked:
+		return
 	_picked = card
 	for other: ShipCard in _cards:
 		other.is_picked = other == card
 
 
 func _on_launch() -> void:
-	if not _picked:
+	if not _picked or _picked.locked:
 		return
 	hide()
 	launched.emit(_picked.ship)
+
+
+## The nearest card [param step] ways from the picked one that can be picked,
+## wrapping round the row; the picked one itself if no other can be.
+func _next_pickable(step: int) -> ShipCard:
+	var index: int = _cards.find(_picked)
+	for i: int in _cards.size():
+		index = wrapi(index + step, 0, _cards.size())
+		if not _cards[index].locked:
+			return _cards[index]
+	return _picked
 
 
 func _on_back() -> void:
@@ -101,8 +122,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed(&"ui_left") or event.is_action_pressed(&"ui_right"):
 		var step: int = -1 if event.is_action_pressed(&"ui_left") else 1
-		var index: int = wrapi(_cards.find(_picked) + step, 0, _cards.size())
-		_pick(_cards[index])
+		_pick(_next_pickable(step))
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed(&"ui_accept"):
 		_on_launch()

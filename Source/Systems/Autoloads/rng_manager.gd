@@ -11,9 +11,12 @@ enum Bucket { RUN, DICE, ENEMY_AI, TARGETING, REWARDS, BACKGROUND, COSMETIC, EVA
 
 var _rngs: Dictionary = {}
 
-## The seed the current run started from, so any run can be replayed. Not
-## saved: a continued run's RUN stream is restored mid-way instead.
+## The seed the current run started from, so any run can be replayed. Saved
+## with the RUN stream (capture_run_state()), but only as the run's name: a
+## continued run's stream is restored mid-way, not re-seeded.
 var current_run_seed: int = -1
+## Where capture_run_state() keeps current_run_seed, beside the bucket states.
+const _RUN_SEED_KEY: String = "RUN_SEED"
 
 ## The seed the next new run starts from, for replaying one on purpose (the
 ## AutoPilot harness sets it before the game scene loads). Consumed once.
@@ -102,16 +105,23 @@ func capture_states(buckets: Array[Bucket]) -> Dictionary:
 	return out
 
 
+## The RUN bucket plus the seed it started from, so a Continue still knows
+## which run it is (TileUnlocks files a sector's unlock under it).
 func capture_run_state() -> Dictionary:
-	return capture_states([Bucket.RUN])
+	var out: Dictionary = capture_states([Bucket.RUN])
+	out[_RUN_SEED_KEY] = str(current_run_seed)
+	return out
 
 
 func capture_scenario_states() -> Dictionary:
 	return capture_states(_CHECKPOINT_BUCKETS)
 
 
-## Inverse of capture_states(). Unknown names are ignored.
+## Inverse of capture_states() and capture_run_state(). Unknown names are
+## ignored.
 func restore_states(states: Dictionary) -> void:
+	if states.has(_RUN_SEED_KEY):
+		current_run_seed = int(str(states[_RUN_SEED_KEY]))
 	for bucket_name: Variant in states:
 		if not Bucket.has(bucket_name):
 			continue

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TileFamilyResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_73xiv"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_51x30"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/incendiary_round.tres" id="3_yi8h4"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/napalm_vent.tres" id="4_x1k4c"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fume_vent.tres" id="5_bhyir"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/blowtorch.tres" id="6_i0xsv"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/heat_sink.tres" id="7_sg57y"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/cinder_turbine.tres" id="8_6mxyj"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/flashpoint.tres" id="9_glbnn"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/status_catalyst.tres" id="10_j4535"]
+
+[resource]
+script = ExtResource("1_73xiv")
+family_name = "TILE_FAMILY_BURN"
+description = "TILE_FAMILY_BURN_DESC"
+accent_color = Color(0.8156863, 0.21176471, 0.3372549, 1)
+tiles = Array[ExtResource("2_51x30")]([ExtResource("3_yi8h4"), ExtResource("4_x1k4c"), ExtResource("5_bhyir"), ExtResource("6_i0xsv"), ExtResource("7_sg57y"), ExtResource("8_6mxyj"), ExtResource("9_glbnn"), ExtResource("10_j4535")])

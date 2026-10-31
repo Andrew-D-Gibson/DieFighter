@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TileFamilyResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_nimvq"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_7h4dr"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/pulse_repeater.tres" id="3_tlgkt"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/capacitor_bank.tres" id="4_ed8uj"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/countdown_cannon.tres" id="5_euabo"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fuse_cutter.tres" id="6_7p16i"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/time_bomb.tres" id="7_hfk4f"]
+
+[resource]
+script = ExtResource("1_nimvq")
+family_name = "TILE_FAMILY_COUNTDOWN"
+description = "TILE_FAMILY_COUNTDOWN_DESC"
+accent_color = Color(0.93333334, 0.827451, 0.3647059, 1)
+tiles = Array[ExtResource("2_7h4dr")]([ExtResource("3_tlgkt"), ExtResource("4_ed8uj"), ExtResource("5_euabo"), ExtResource("6_7p16i"), ExtResource("7_hfk4f")])

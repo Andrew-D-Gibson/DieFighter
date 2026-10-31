@@ -14,7 +14,8 @@ const _REGION_DIRS: Array[String] = [
 
 
 ## Back to a first launch: no run to continue, the tutorial unplayed, the codex
-## empty and every region's arrival card waiting to be read.
+## empty, only the Basic tiles on offer and every region's arrival card
+## waiting to be read.
 static func erase() -> void:
 	SaveManager.delete_save()
 	CollectionManager.clear()
@@ -23,13 +24,15 @@ static func erase() -> void:
 
 
 ## As if the player had seen everything: the tutorial played, every tile and
-## enemy in the codex and every region's arrival card read. A run in progress
-## is left alone.
+## enemy in the codex, every tile family unlocked and every region's arrival
+## card read. A run in progress is left alone.
 static func unlock_all() -> void:
 	var regions: Array[String] = []
 	for dir: String in _REGION_DIRS:
 		for path: String in Utils.list_resource_paths(dir):
 			regions.append(EnvironmentMonitor.region_id(load(path)))
 	CollectionManager.unlock(CodexCatalog.tile_ids(), CodexCatalog.enemy_ids(), regions)
+	for family: TileFamilyResource in TileUnlocks.families():
+		CollectionManager.record_family(family.id())
 	Globals.tutorial_completed = true
 	OptionsSettings.save_options_settings()

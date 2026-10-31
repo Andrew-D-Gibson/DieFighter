@@ -8,6 +8,7 @@ const _GATE_PARTICLE_TINT: Color = Color(1.0, 0.93, 0.7)
 ## How long the gate's hyperspace holds before the new sector loads. Long
 ## enough for the sector title to be read.
 const _GATE_HYPERSPACE_TIME: float = 2.4
+const _TILE_UNLOCK_POPUP: PackedScene = preload("res://Source/Systems/UI/TileUnlockPopup/tile_unlock_popup.tscn")
 
 func _ready() -> void:
 	Globals.jump_manager = self
@@ -40,12 +41,34 @@ func jump_through_gate(scenario: ScenarioResource, sector_number: int, sector_co
 	Globals.jump_gate.show_sector_title(sector_number, sector_count)
 
 	await get_tree().create_timer(_GATE_HYPERSPACE_TIME).timeout
+	await _unlock_tile_family(sector_number - 1)
 	Events.load_scenario.emit(scenario)
 	await Globals.background_manager.play_jump_outro()
 	Globals.background_manager.reset_jump_tint()
 
 	Globals.jump_gate.end_passage()
 	Events.start_scenario.emit()
+
+
+## Each new sector reached, in any run, unlocks the next tile family for good
+## (TileUnlocks), on a card the jump holds in hyperspace for. Its tiles are on
+## offer from the sector being entered, and one of them is in its first offer.
+func _unlock_tile_family(sector_index: int) -> void:
+	var claim: String = TileUnlocks.claim_for(RNGManager.current_run_seed, sector_index)
+	var family: TileFamilyResource = TileUnlocks.unlock_for(claim)
+	if family == null:
+		return
+	var opened: Array[TileResource] = TileUnlocks.tiles_opened_by(family)
+	var featured: TileResource = Globals.reward_manager.pick_weighted_tile_reward(opened)
+	if featured:
+		Reward.forced_rewards.append(featured)
+
+	var popup: TileUnlockPopup = _TILE_UNLOCK_POPUP.instantiate()
+	add_child(popup)
+	popup.global_position = Vector2.ZERO
+	popup.open(family, opened, TileUnlocks.unlocked_count(), TileUnlocks.families().size())
+	await popup.closed
+	popup.queue_free()
 
 
 ## The last gate: through the ring and out of the run. Leaves the ship in gold

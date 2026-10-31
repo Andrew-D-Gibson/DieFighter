@@ -275,6 +275,7 @@ func _on_death() -> void:
 	# Another ship's kill isn't the player's to celebrate, or to loot.
 	var killed_by_ship: bool = was_killed_by_ship()
 	var kick: Vector2 = Vector2.ZERO
+	graphics_manager.clear_damage_smoke()
 	graphics_manager.pixelate()
 	if not killed_by_ship:
 		kick = await _play_kill_confirm()

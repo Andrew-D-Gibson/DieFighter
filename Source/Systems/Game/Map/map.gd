@@ -61,6 +61,11 @@ var _stray_danger_sprites: Array[Sprite2D] = []
 var _danger_end_x: float
 ## Identifies the caption on screen, so it only re-animates when it changes.
 var _shown_hint: Array = []
+## Whether the drive holds enough charge to jump, kept by _update_ui from
+## engine_charge_changed. Until it does, the idle caption says what's
+## missing instead of "You are here". True with no player yet, so the caption
+## falls back to the plain one.
+var _engines_charged: bool = true
 ## Scenario icons with Fate spliced in, built on demand. See _danger_icon().
 var _danger_icons: Dictionary[Texture2D, Texture2D] = {}
 
@@ -110,9 +115,9 @@ const _HERE_ARROW: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons
 const _HERE_ARROW_BOB: float = 1.0
 ## Clear air between the arrow's tip and the top of what it points at.
 const _HERE_ARROW_GAP: int = 1
-## How long a jump arrow that was hidden takes to fade up out of its dark
+## How long a jump arrow that was hidden takes to build up out of its dark
 ## slot, rather than popping in.
-const _JUMP_ARROW_REVEAL_TIME: float = 0.6
+const _JUMP_ARROW_REVEAL_TIME: float = 0.9
 ## A hovered location grows and drifts up and down while under the cursor.
 const _HOVER_SCALE: float = 1.3
 const _HOVER_BOB_HEIGHT: float = 1.0
@@ -281,7 +286,8 @@ func _mouse_world_position() -> Vector2:
 
 
 ## The caption as [icon, text, colour]. A hovered icon wins, then the
-## purple/red zones; otherwise point at the gate.
+## purple/red zones; then "jump right" at an open gate, "charge engines"
+## while the drive is short, and otherwise where the player is.
 func _compute_hint(hovered: int) -> Array:
 	if hovered >= 0:
 		var texture: Texture2D = scenario_sprites[hovered].texture
@@ -304,6 +310,12 @@ func _compute_hint(hovered: int) -> Array:
 
 	if Globals.jump_gate and Globals.jump_gate.is_open():
 		return [_NEXT_SECTOR_ICON, tr("MAP_HINT_JUMP_RIGHT"), Globals.yellow]
+	if not _engines_charged:
+		# No icon: the here arrow points at the player's dot, which isn't what
+		# this is about, and the strip is too narrow for a 12px icon beside
+		# the text. Yellow, like the other caption that tells the player
+		# what to do.
+		return [null, tr("MAP_HINT_CHARGE_ENGINES"), Globals.yellow]
 	return [_HERE_ARROW, tr("MAP_HINT_YOU_ARE_HERE"), Globals.purple]
 
 
@@ -500,7 +512,8 @@ func _update_ui() -> void:
 	if not Globals.player:
 		return
 	
-	if Globals.player.is_engine_charged():
+	_engines_charged = Globals.player.is_engine_charged()
+	if _engines_charged:
 		left_arrow_tile.set_highlight(true)
 		left_arrow_tile.set_gray_out(false)
 		right_arrow_tile.set_highlight(true)
@@ -1055,7 +1068,8 @@ func enable_controls() -> void:
 ## Shows or hides the jump arrows outright. Disabling them still leaves two
 ## arrows on screen that look usable, which reads as a lock-out when the player
 ## isn't meant to be jumping at all yet (the tutorial's tour of the map). A
-## hidden arrow comes back by fading up; hiding is immediate.
+## hidden arrow comes back with a reveal wipe (JumpArrowReveal); hiding is
+## immediate.
 func set_jump_arrows_visible(left_shown: bool, right_shown: bool) -> void:
 	_set_jump_arrow_visible(left_arrow_tile, left_shown)
 	_set_jump_arrow_visible(right_arrow_tile, right_shown)
@@ -1065,6 +1079,5 @@ func _set_jump_arrow_visible(arrow: Tile, shown: bool) -> void:
 	if not shown or arrow.visible:
 		arrow.visible = shown
 		return
-	arrow.modulate.a = 0.0
 	arrow.visible = true
-	arrow.create_tween().tween_property(arrow, "modulate:a", 1.0, _JUMP_ARROW_REVEAL_TIME)
+	JumpArrowReveal.play(arrow, _JUMP_ARROW_REVEAL_TIME)

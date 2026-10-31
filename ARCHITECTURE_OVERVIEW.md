@@ -594,6 +594,39 @@ background can carry a gameplay rule. Shop prices draw from REWARDS, not RUN.
 
 ---
 
+## Tile Unlocks
+
+A new player is offered only the **Basic** tiles: every offered tile in no
+`TileFamilyResource` (61 at launch). The rest are in eight families under
+`Source/Content/Tiles/TileFamilies/`, unlocked one per new sector reached
+(sector 2 and 3 of every run) in the order `tile_unlock_order.tres` lists
+them. Reordering that list is the whole of changing the order; a player keeps
+what they have and gets the first family in the list they lack.
+
+| Piece | Job |
+|---|---|
+| `TileFamilyResource` | Name and description keys, accent colour, `tiles`. Its filename is its saved id. |
+| `TileUnlocks` (static) | `filter_pool()` for `RewardManager.get_possible_tile_rewards()` (rewards, shop, AutoPilot all read it), `unlock_for(claim)`, `tiles_opened_by(family)`. |
+| `CollectionManager` | Keeps unlocked family ids in `collection.json`, each with the claim that earned it. |
+| `JumpManager._unlock_tile_family()` | In `jump_through_gate()`, after the sector title: unlocks, queues one of the new tiles in `Reward.forced_rewards`, shows `TileUnlockPopup` and waits for Close before the next sector loads. |
+
+- **A tile sits in one family**, since the card shows every tile its family
+  lists. One that leans on two mechanics (Echo Relay, Fuse Payload) is in the
+  later family; reordering the list can break that, so check those when you
+  move a family. `test_tile_families.gd` fails on a tile in two families.
+- **Once per sector.** The claim is `run seed:sector index`, so a Continue
+  that replays a gate jump shows the same family again rather than a second
+  one. The run seed rides in the save's `rng_states` (`RUN_SEED`) for this.
+- **Only the player's own runs are gated** (`CollectionManager.is_recording()`).
+  The Scenario Lab and the AutoPilot see every tile and unlock nothing, so
+  balance batches don't depend on the machine's profile.
+- New tiles join offers straight away, including the sector just entered.
+- Dev console: `families`, `families unlock <id|next|all>`, `families reset`,
+  `families show <id>`. The options menu's Unlock All unlocks every family;
+  Erase Progress locks them again.
+
+---
+
 ## Codex
 
 The main menu's CODEX button opens `CodexPopup`

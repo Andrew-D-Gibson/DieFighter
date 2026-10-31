@@ -65,8 +65,10 @@ extends Node2D
 ## The cutscene opens on a beat of black: whatever music the player arrived
 ## with fades out over this long first.
 @export var music_fade_out_seconds: float = 1.5
-## Then the run's track fades in over this long...
-@export var music_fade_in_seconds: float = 3.0
+## Then the run's track comes in over this long. 0 starts it at full volume
+## the moment the old music is gone: the beat of silence is the transition,
+## and a slow swell on top of it only muddied the run's first notes...
+@export var music_fade_in_seconds: float = 0.0
 ## ...and this long after it starts, the timeline rolls.
 @export var music_lead_seconds: float = 1.5
 
@@ -188,8 +190,8 @@ func _input(event: InputEvent) -> void:
 		_switch_to_next_scene()
 
 
-## Holds the first frame (black) while the old music fades out and the run's
-## track fades in, so the cutscene starts on its own music rather than over
+## Holds the first frame (black) while the old music fades out, then starts
+## the run's track once it has gone, so the cutscene starts on its own music rather than over
 ## the tail of the menu's. A tween rather than awaits: a skip frees the scene
 ## mid-beat, and the tween goes with it.
 func _play_after_music_beat() -> void:

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TileFamilyResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_1ph5p"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_g55aa"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/inverter.tres" id="3_p7kkb"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/nudge_down.tres" id="4_seae4"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/doubler.tres" id="5_rfjlh"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/polarizer.tres" id="6_t45w1"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/welder.tres" id="7_i3it6"]
+
+[resource]
+script = ExtResource("1_1ph5p")
+family_name = "TILE_FAMILY_DIE_SHAPING"
+description = "TILE_FAMILY_DIE_SHAPING_DESC"
+accent_color = Color(0.80784315, 0.9411765, 0.94509804, 1)
+tiles = Array[ExtResource("2_g55aa")]([ExtResource("3_p7kkb"), ExtResource("4_seae4"), ExtResource("5_rfjlh"), ExtResource("6_t45w1"), ExtResource("7_i3it6")])

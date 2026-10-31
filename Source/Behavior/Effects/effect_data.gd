@@ -68,8 +68,8 @@ extends Resource
 @export var color: Color = Color.WHITE
 
 ## How a flourish moves. SPARK_BURST reads RISE; STREAM reads OUTWARD,
-## ENGINE, HULL_HUB and ENGINE_HUB; CALLOUT reads ENGINE. See JuiceEvent.Flag.
-@export_flags("Rise", "Outward", "Engine", "Hull Hub", "Engine Hub") var juice_flags: int = 0
+## ENGINE, HULL_HUB and ENGINE_HUB; CALLOUT reads ENGINE and BIG. See JuiceEvent.Flag.
+@export_flags("Rise", "Outward", "Engine", "Hull Hub", "Engine Hub", "Big") var juice_flags: int = 0
 
 ## The ship to bring into the fight. Used by ScenarioControlSubtype.LAUNCH_SHIP.
 @export var ship_resource: EnemyResource = null

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TileFamilyResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_in2ic"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_c8bs7"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/holographic_duplicator.tres" id="3_i8sgp"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/die_splitter.tres" id="4_sadbk"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bootstrap_injector.tres" id="5_kuiim"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/phantom_squadron.tres" id="6_tyeo7"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/blood_valve.tres" id="7_d7tkd"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/opening_salvo.tres" id="8_wlyty"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/echo_relay.tres" id="9_0wcg0"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/pilot_light.tres" id="10_bjoru"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fabricator.tres" id="11_615yd"]
+
+[resource]
+script = ExtResource("1_in2ic")
+family_name = "TILE_FAMILY_DUPLICATION"
+description = "TILE_FAMILY_DUPLICATION_DESC"
+tiles = Array[ExtResource("2_c8bs7")]([ExtResource("3_i8sgp"), ExtResource("4_sadbk"), ExtResource("5_kuiim"), ExtResource("6_tyeo7"), ExtResource("7_d7tkd"), ExtResource("8_wlyty"), ExtResource("9_0wcg0"), ExtResource("10_bjoru"), ExtResource("11_615yd")])

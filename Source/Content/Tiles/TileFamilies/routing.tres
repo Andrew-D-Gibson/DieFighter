@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="TileFamilyResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_c5ajn"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_avxw3"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/crosslink.tres" id="3_ftv1x"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/parity_junction.tres" id="4_vkjsf"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/value_sorter.tres" id="5_rl3et"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/scatter_router.tres" id="6_6sjua"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/receiver_dish.tres" id="7_ti3ot"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/relay_terminal.tres" id="8_678n8"]
+
+[resource]
+script = ExtResource("1_c5ajn")
+family_name = "TILE_FAMILY_ROUTING"
+description = "TILE_FAMILY_ROUTING_DESC"
+accent_color = Color(0.65882355, 0.27450982, 0.80784315, 1)
+tiles = Array[ExtResource("2_avxw3")]([ExtResource("3_ftv1x"), ExtResource("4_vkjsf"), ExtResource("5_rl3et"), ExtResource("6_6sjua"), ExtResource("7_ti3ot"), ExtResource("8_678n8")])

@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TileFamilyResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_mra6w"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_lejy3"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/afterburner_relay.tres" id="3_pt6px"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/overshield_relay.tres" id="4_lx7ei"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/signal_relay.tres" id="5_xks2p"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/toll_relay.tres" id="6_lulg4"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/surge_relay.tres" id="7_e0dfd"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/ballast_tanks.tres" id="8_ei5kv"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/leech_relay.tres" id="9_jm0xv"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/booster_stage.tres" id="10_loetx"]
+
+[resource]
+script = ExtResource("1_mra6w")
+family_name = "TILE_FAMILY_RELAYS"
+description = "TILE_FAMILY_RELAYS_DESC"
+accent_color = Color(0.47843137, 0.7411765, 0.2, 1)
+tiles = Array[ExtResource("2_lejy3")]([ExtResource("3_pt6px"), ExtResource("4_lx7ei"), ExtResource("5_xks2p"), ExtResource("6_lulg4"), ExtResource("7_e0dfd"), ExtResource("8_ei5kv"), ExtResource("9_jm0xv"), ExtResource("10_loetx")])
