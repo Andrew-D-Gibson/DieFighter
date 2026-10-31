@@ -13,6 +13,7 @@ id = &"carousel"
 display_name = "Carousel"
 description = "Its tile ring [color=#eed35d]turns every turn[/color]. The [color=#d03656]Reactor[/color] fires what passes."
 sort_order = 2
+coming_soon = true
 starting_save = ExtResource("2_start")
 grid_cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(3, 1), Vector2i(4, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2), Vector2i(4, 2)])
 behavior_scene = ExtResource("3_behavior")

@@ -182,3 +182,4 @@ FACTION_SPILLED_DESC,Things that came out of the black hole. Everyone fears them
 CALLOUT_EVADED,EVADED!,,,,,,,,Callout floated over both the health bar and the Engine Charger tile when an enemy hit misses because the engines dodged it,,,
 INFO_ENGINE_EVASION,(evasion): [color=purple]{chance}%[/color] chance each enemy hit misses,,,,,,,,"Engine Charger tile info panel, a line under its description: the live chance that an enemy hit misses the player. {chance} is a number. Keep (evasion) and the [color] tags.",,,
 ERROR_EVASION_MAXED,EVASION ALREADY AT MAX,,,,,,,,Error popup: a tile that adds evasion (the chance enemy hits miss) was given a die while evasion is already at its 50% cap,,,
+SHIP_CARD_COMING_SOON,Coming soon…,,,,,,,,"Ship-select card: replaces the description of a ship that can't be picked yet; the card is shown greyed out. About three short lines fit.",,,
