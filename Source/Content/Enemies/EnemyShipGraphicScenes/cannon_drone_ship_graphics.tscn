@@ -11,8 +11,8 @@ shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
 shader_parameter/cloak_amount = 0.0
 shader_parameter/cloak_key_color = Color(1, 1, 1, 1)
-shader_parameter/cloak_main_color = Color(0, 0.1, 0.6, 1)
-shader_parameter/cloak_bg_color = Color(0.4, 0.8, 1, 0.2)
+shader_parameter/cloak_main_color = Color(0.262745, 0.65098, 0.988235, 1)
+shader_parameter/cloak_bg_color = Color(0.215686, 0.537255, 0.8, 0.247059)
 shader_parameter/cloak_tolerance = 0.1
 
 [node name="CannonDroneShipGraphics" type="Sprite2D" unique_id=1124603253]

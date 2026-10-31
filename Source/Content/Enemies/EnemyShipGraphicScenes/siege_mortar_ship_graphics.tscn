@@ -12,8 +12,8 @@ shader_parameter/flash_color = Color(1, 0, 0, 1)
 shader_parameter/flash_amount = 0.0
 shader_parameter/cloak_amount = 0.0
 shader_parameter/cloak_key_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
-shader_parameter/cloak_main_color = Color(0.933333, 0.498039, 0.184314, 1)
-shader_parameter/cloak_bg_color = Color(0.741176, 0.345098, 0.058824, 0.247059)
+shader_parameter/cloak_main_color = Color(0.262745, 0.65098, 0.988235, 1)
+shader_parameter/cloak_bg_color = Color(0.215686, 0.537255, 0.8, 0.247059)
 shader_parameter/cloak_tolerance = 0.1
 
 [node name="SiegeMortarShipGraphics" type="Sprite2D"]
