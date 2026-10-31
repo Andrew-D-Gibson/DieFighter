@@ -44,12 +44,19 @@ const _WHITE_OUT_TIME: float = 0.08
 ## more gently: the screen still has to be covered while hyperspace swaps in.
 const _REDUCED_FADE_OUT_TIME: float = 0.3
 const _REDUCED_FADE_COLOR: Color = Color("#040217")
+## Once the boss's salvage is taken the ring slides back to the middle of the
+## window, after a beat for the leftover choices to start popping out.
+const _RECENTRE_DELAY: float = 0.25
+const _RECENTRE_TIME: float = 0.7
 
 var _open: bool = false
 ## True from the moment a passage begins until the next sector starts. The
 ## passage emits Events.jump like any jump, which would otherwise close the ring.
 var _passage_active: bool = false
 var _tweens: Array[Tween] = []
+## The slide back toward the centre, so a second pick restarts it rather than
+## racing it.
+var _recentre: Tween
 
 
 func _ready() -> void:
@@ -58,6 +65,7 @@ func _ready() -> void:
 
 	Events.start_scenario.connect(_on_start_scenario)
 	Events.combat_finished.connect(_on_combat_finished)
+	Events.reward_picked.connect(_on_reward_picked)
 	Events.jump.connect(func() -> void:
 		if not _passage_active:
 			close()
@@ -147,15 +155,41 @@ func _start_bob() -> void:
 	_tweens.append(bob)
 
 
+## The ring stood aside for the boss's salvage. A pick spends its offer, so
+## the ring drifts back to the clearest spot left: the centre of the window
+## once nothing remains to dodge. Only its x moves; the bob keeps its y.
+func _on_reward_picked() -> void:
+	# The pick is announced before its offer marks itself spent, so look for
+	# the clear spot once it has.
+	_slide_to_clear_spot.call_deferred()
+
+
+func _slide_to_clear_spot() -> void:
+	if not _open or _passage_active:
+		return
+	var target_x: float = _clear_rest_x()
+	if is_equal_approx(target_x, position.x):
+		return
+	if _recentre and _recentre.is_valid():
+		_recentre.kill()
+	_recentre = create_tween()
+	_recentre.tween_property(self, "position:x", target_x, _RECENTRE_TIME)\
+		.set_delay(_RECENTRE_DELAY).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_tweens.append(_recentre)
+
+
 ## The x along the window farthest from any salvage still floating there, so
 ## the boss's reward doesn't sit on top of the portal. The centre when there's
 ## nothing to avoid, and the spot nearest it when several are equally clear.
+## Offers already spent or left behind don't count: they're on their way out.
 func _clear_rest_x() -> float:
 	var offers: Array[Vector2] = []
 	if Globals.reward_manager:
 		for child: Node in Globals.reward_manager.get_children():
-			if child is Reward and not child.is_queued_for_deletion():
-				var reward: Reward = child
+			if not child is Reward:
+				continue
+			var reward: Reward = child
+			if reward.can_take() or reward.is_on_its_way():
 				var half: float = maxf(1, reward.items.size()) * _OFFER_HALF_SPACING
 				offers.append(Vector2(reward.global_position.x - half, reward.global_position.x + half))
 	if offers.is_empty():
