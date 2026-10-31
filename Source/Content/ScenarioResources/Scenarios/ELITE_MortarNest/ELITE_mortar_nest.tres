@@ -2,7 +2,7 @@
 
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/asteroid_field_only.tres" id="bg_0"]
 [ext_resource type="Resource" uid="uid://bqbs4io5yjaeb" path="res://Source/Content/Enemies/EnemyResources/siege_mortar.tres" id="enemy_siege_mortar"]
-[ext_resource type="Resource" uid="uid://bfqg4bqueelwx" path="res://Source/Content/Enemies/EnemyResources/tender.tres" id="enemy_tender"]
+[ext_resource type="Resource" uid="uid://dllkl3hm4hhx7" path="res://Source/Content/Enemies/EnemyResources/picket.tres" id="enemy_picket"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
@@ -43,7 +43,7 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn1"]
 script = ExtResource("script_1")
-enemy_resource = ExtResource("enemy_tender")
+enemy_resource = ExtResource("enemy_picket")
 starting_state = ExtResource("state_pirate")
 reward_resource = SubResource("Resource_reward1")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"

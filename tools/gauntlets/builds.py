@@ -61,7 +61,7 @@ FULL_SCENARIOS = [
     "COMBAT_wolfpack",
     "COMBAT_carrier",
     "COMBAT_drone_battery",
-    "COMBAT_blockade_runner",
+    "COMBAT_bounty_run",
     "COMBAT_siege_battery",
     "ELITE_mortar_nest",
     "ELITE_tithe_fleet",

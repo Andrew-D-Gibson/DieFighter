@@ -148,7 +148,7 @@ func category(id: String) -> String:
 	return prefix if prefix in _CATEGORY_ORDER else _OTHER_CATEGORY
 
 
-## "COMBAT_blockade_runner" -> "Blockade Runner".
+## "COMBAT_bounty_run" -> "Bounty Run".
 func display_name(id: String) -> String:
 	var name_part: String = id
 	if category(id) != _OTHER_CATEGORY:

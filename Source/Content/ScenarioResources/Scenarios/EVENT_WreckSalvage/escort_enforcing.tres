@@ -6,6 +6,6 @@
 
 [resource]
 script = ExtResource("script_0")
-dialogue = "Hands off. Weapons hot."
+dialogue = "Compact cargo. Hands off."
 attitude = 2
 metadata/_custom_type_script = "uid://cpgidtisgk77q"
