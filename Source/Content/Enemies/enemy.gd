@@ -128,6 +128,13 @@ var last_damaged_by: Node = null
 ## way.
 var spawn_index: int = -1
 
+## Credits the player has paid this ship: what its shop or dock took for
+## stock, rerolls and repairs. Its wreck pays all of it back on top of its
+## usual reward (wreck_reward()), so a player can spend big and claw it back,
+## at the price of a fight. Saved with the ship, so a fight replayed from the
+## last checkpoint still owes it.
+var credits_paid: int = 0
+
 ## Set when a save restores this ship. Whatever state it was in, that state's
 ## effects_on_enter already ran before the save (a medic's arrival heal, a
 ## toll's charge), and their results are in the save; running them again on
@@ -288,11 +295,9 @@ func _on_death() -> void:
 	JuicePixelated.spawn(graphics_manager.wreck_layer(), explosion, 0).global_position = global_position
 
 	# Spawn rewards. A launched fighter carries none of its own.
-	if not killed_by_ship and reward_resource:
-		Events.spawn_reward.emit(
-			global_position,
-			reward_resource
-		)
+	var reward: RewardResource = wreck_reward()
+	if not killed_by_ship and reward:
+		Events.spawn_reward.emit(global_position, reward)
 
 	await graphics_manager.break_apart(kick, _DEATH_SFX)
 	queue_free()
@@ -688,6 +693,26 @@ func trigger_state_effects() -> void:
 	engine.queue_event(event)
 
 
+## What this ship's wreck pays the player: its reward, plus every credit the
+## player paid it (credits_paid). A copy whenever something is owed, since the
+## authored reward is shared by every visit to the scenario. Null for a ship
+## with no reward and nothing owed.
+func wreck_reward() -> RewardResource:
+	if credits_paid <= 0:
+		return reward_resource
+	var reward: RewardResource
+	if reward_resource:
+		reward = reward_resource.duplicate()
+	else:
+		# Owed money but no loot of its own: the money alone, no offer.
+		reward = RewardResource.new()
+		reward.num_of_rewards = 0
+	# Both ends of the roll, so the refund is exact whatever the roll says.
+	reward.min_money += credits_paid
+	reward.max_money += credits_paid
+	return reward
+
+
 ## Where this ship's status badges go. StatusModifier looks for this method.
 func get_status_bar() -> StatusBar:
 	return get_node_or_null("%StatusBar") as StatusBar
@@ -708,6 +733,7 @@ func capture_state() -> Dictionary:
 		"shields": health.shields,
 		"squad_losses": squad_losses,
 		"turns_alive": turns_alive,
+		"credits_paid": credits_paid,
 	}
 
 
@@ -723,6 +749,7 @@ func restore_state(entry: Dictionary, starting_state: ScenarioShipState) -> void
 	health.shields = int(entry.get("shields", health.shields))
 	squad_losses = int(entry.get("squad_losses", 0))
 	turns_alive = int(entry.get("turns_alive", 0))
+	credits_paid = int(entry.get("credits_paid", 0))
 
 
 ## A state's identity across a save: its file for a state saved as its own

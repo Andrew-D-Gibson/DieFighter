@@ -33,6 +33,11 @@ const PixelButton: GDScript = preload("res://Source/Systems/UI/Buttons/button.gd
 ## (capture_stock()).
 var rerolls_bought: int = 0
 
+## The ship running this shop. Every credit spent here is paid to it
+## (Enemy.credits_paid), so turning on it wins the lot back. Null if no ship
+## opened it (a test) or it's gone.
+var keeper: Enemy = null
+
 const DICE_PRICE: int = 25
 ## A cell to grow the grid by. Dearer than a tile: it's room for every tile
 ## the run finds from here on.
@@ -125,12 +130,17 @@ func _reopen_saved_shop() -> void:
 		_open_shop()
 
 
-func _open_shop() -> void:
+func _open_shop(opened_by: Enemy = null) -> void:
 	# Continuing a save taken in this shop puts back what was left on the
 	# shelves, rather than restocking it and re-offering what was bought.
 	var saved_stock: Variant = null
 	if Globals.state_manager:
 		saved_stock = Globals.state_manager.get_restore().get("shop")
+
+	keeper = opened_by
+	# A restored keeper doesn't replay the arrival effect that names it.
+	if keeper == null and saved_stock is Dictionary and Globals.enemy_manager:
+		keeper = Globals.enemy_manager.get_starting_ship(int(saved_stock.get("keeper", -1)))
 
 	_stop_closing()
 	_stop_restock()
@@ -486,7 +496,13 @@ func capture_stock() -> Dictionary:
 			dice_for_sale = true
 		elif item is GridSlot:
 			slot_for_sale = true
-	return {"tiles": tiles, "dice": dice_for_sale, "slot": slot_for_sale, "rerolls": rerolls_bought}
+	return {
+		"tiles": tiles,
+		"dice": dice_for_sale,
+		"slot": slot_for_sale,
+		"rerolls": rerolls_bought,
+		"keeper": keeper.spawn_index if is_instance_valid(keeper) else -1,
+	}
 
 
 ## Frees whatever the last shop left unsold. Closing only hides the panel, so
@@ -591,7 +607,7 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			return
 
 		if Globals.player.money >= price:
-			Globals.player.money -= price
+			_take_payment(price)
 			
 			if item.draggable.drag_started.is_connected(Events.show_systems.emit):
 				item.draggable.drag_started.disconnect(Events.show_systems.emit)
@@ -605,6 +621,13 @@ func _on_shop_item_dragged(draggable: Draggable, end_position: Vector2) -> void:
 			_forget(item)
 			OfferIntake.take(item, end_position)
 			Events.reward_picked.emit()
+
+
+## The player pays [param amount], and the keeper banks it.
+func _take_payment(amount: int) -> void:
+	Globals.player.money -= amount
+	if is_instance_valid(keeper):
+		keeper.credits_paid += amount
 
 
 # ── Rerolling ─────────────────────────────────────────────────────────────────
@@ -636,7 +659,7 @@ func reroll() -> bool:
 	if not reroll_refusal().is_empty():
 		return false
 
-	Globals.player.money -= reroll_cost()
+	_take_payment(reroll_cost())
 	rerolls_bought += 1
 	Events.play_sound.emit(_MONEY_SFX)
 	if reroll_button:

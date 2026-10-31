@@ -228,6 +228,17 @@ func capture_enemies() -> Array:
 	return out
 
 
+## The starting ship with [param index] in its scenario's starting_enemies
+## (Enemy.spawn_index), if it's still here. How a save points at one ship.
+func get_starting_ship(index: int) -> Enemy:
+	if index < 0:
+		return null
+	for enemy: Enemy in get_alive_enemies():
+		if enemy.spawn_index == index:
+			return enemy
+	return null
+
+
 ## Continuing a save taken partway through a scenario: bring each starting ship
 ## back to how it was, and drop the ones that were already gone. Runs straight
 ## after spawn_enemies(), before anything has flown in or acted.
