@@ -1044,15 +1044,41 @@ func _pick_new_danger_ranges() -> void:
 ## Rolls stray_danger_chance for every tile past the danger zone. The tile the
 ## player is arriving at is spared — corrupting it underneath them would read
 ## as a bug, not a threat — as are the gate and tiles Fate already holds.
+## Fate never holds more than half of the road ahead (see
+## _stray_corruption_cap()), so a sector can't rot into a wall of its
+## encounters before the danger zone even gets there.
 func _pick_stray_danger(arriving_index: int) -> void:
 	stray_danger_indices.clear()
-	for idx: int in range(fate_index + scenarios_in_danger + 1, len(scenario_list)):
+	var first_ahead: int = fate_index + scenarios_in_danger + 1
+	var cap: int = _stray_corruption_cap(first_ahead)
+	var corrupted: int = 0
+	for idx: int in range(first_ahead, len(scenario_list)):
+		if is_fate_scenario(scenario_list[idx]):
+			corrupted += 1
+	for idx: int in range(first_ahead, len(scenario_list)):
 		if idx == arriving_index \
 		or scenario_list[idx].sector_gate_scenario \
 		or is_fate_scenario(scenario_list[idx]):
 			continue
-		if RNGManager.randf(RNGManager.Bucket.RUN) < stray_danger_chance:
+		# Roll every tile even once the cap is reached: the RUN stream then
+		# advances exactly as it did before the cap existed, so seeded maps
+		# (the tutorial's, AutoPilot transcripts) only differ where it bites.
+		var marked: bool = RNGManager.randf(RNGManager.Bucket.RUN) < stray_danger_chance
+		if marked and corrupted < cap:
 			stray_danger_indices.append(idx)
+			corrupted += 1
+
+
+## How many tiles past the danger zone Fate may hold, counting its strays:
+## half of them, rounded down. The gate doesn't count, since Fate can never
+## take it. [param first_ahead] is the first tile past the danger zone.
+func _stray_corruption_cap(first_ahead: int) -> int:
+	var ahead: int = 0
+	for idx: int in range(first_ahead, len(scenario_list)):
+		if not scenario_list[idx].sector_gate_scenario:
+			ahead += 1
+	@warning_ignore("integer_division")
+	return ahead / 2
 	
 	
 func disable_controls() -> void:
