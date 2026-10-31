@@ -103,9 +103,9 @@ static func unlock_for(claim: String) -> TileFamilyResource:
 	return family
 
 
-## The tiles [param family] adds to offers, given what's unlocked now. A tile
-## it shares with a family that's still locked waits for that one, and shows
-## up in its unlock instead.
+## The tiles [param family] adds to offers: those it lists that are offered
+## at all. (A tile listed in two families by mistake would wait for both;
+## test_tile_families.gd stops that happening.)
 static func tiles_opened_by(family: TileFamilyResource) -> Array[TileResource]:
 	var opened: Array[TileResource] = []
 	for tile: TileResource in family.tiles:

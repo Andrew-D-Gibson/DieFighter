@@ -5,8 +5,9 @@ extends Resource
 ## in no family) and gains one family each time they jump into a new sector,
 ## in the order tile_unlock_order.tres lists them. See TileUnlocks.
 ##
-## A tile in more than one family (a relay that also spawns holograms) waits
-## for all of them, so it never arrives before the tiles it builds on.
+## A tile sits in one family. One that leans on two mechanics (a relay that
+## spawns holograms) goes in whichever unlocks later, so it never arrives
+## before the tiles it builds on, and its card never shows it early.
 
 ## Translation key for the family's name, shown on the unlock pop-up.
 @export var family_name: String

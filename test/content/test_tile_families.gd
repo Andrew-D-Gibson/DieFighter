@@ -28,6 +28,19 @@ func test_every_family_is_in_the_unlock_order_once() -> void:
 			assert_has(ordered, res.id(), "%s isn't in tile_unlock_order.tres, so it never unlocks" % path)
 
 
+## A card shows every tile its family lists, so a tile in two families would
+## be on the first card but not on offer until the second.
+func test_each_tile_is_in_one_family() -> void:
+	var seen: Dictionary[String, String] = {}
+	for family: TileFamilyResource in TileUnlocks.families():
+		for tile: TileResource in family.tiles:
+			if tile == null:
+				continue
+			assert_false(seen.has(tile.resource_path), "%s is in both %s and %s" % [
+				tile.resource_path, seen.get(tile.resource_path, ""), family.id()])
+			seen[tile.resource_path] = family.id()
+
+
 func test_family_tiles_are_offered_tiles() -> void:
 	for family: TileFamilyResource in TileUnlocks.families():
 		assert_false(family.tiles.is_empty(), "%s has no tiles" % family.id())

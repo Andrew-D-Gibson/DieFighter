@@ -7,12 +7,10 @@
 [ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/countdown_cannon.tres" id="5_euabo"]
 [ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fuse_cutter.tres" id="6_7p16i"]
 [ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/time_bomb.tres" id="7_hfk4f"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fabricator.tres" id="8_wumqg"]
-[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fuse_payload.tres" id="9_kunn8"]
 
 [resource]
 script = ExtResource("1_nimvq")
 family_name = "TILE_FAMILY_COUNTDOWN"
 description = "TILE_FAMILY_COUNTDOWN_DESC"
 accent_color = Color(0.93333334, 0.827451, 0.3647059, 1)
-tiles = Array[ExtResource("2_7h4dr")]([ExtResource("3_tlgkt"), ExtResource("4_ed8uj"), ExtResource("5_euabo"), ExtResource("6_7p16i"), ExtResource("7_hfk4f"), ExtResource("8_wumqg"), ExtResource("9_kunn8")])
+tiles = Array[ExtResource("2_7h4dr")]([ExtResource("3_tlgkt"), ExtResource("4_ed8uj"), ExtResource("5_euabo"), ExtResource("6_7p16i"), ExtResource("7_hfk4f")])

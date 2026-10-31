@@ -36,13 +36,10 @@ func test_unlocking_a_family_adds_its_tiles() -> void:
 	assert_true(TileUnlocks.is_tile_available(load(_SIGNAL_RELAY)))
 
 
-func test_a_tile_in_two_families_waits_for_both() -> void:
+func test_a_relay_that_debuffs_waits_for_debuffs() -> void:
 	var spike: TileResource = load(_SENSOR_SPIKE)
-	assert_eq(TileUnlocks.families_of(spike).size(), 2)
 	CollectionManager.record_family("relays")
 	assert_false(TileUnlocks.is_tile_available(spike))
-	assert_false(_family("relays").tiles.size() == TileUnlocks.tiles_opened_by(_family("relays")).size(),
-		"the relays card shouldn't show tiles still waiting on another family")
 	CollectionManager.record_family("debuffs")
 	assert_true(TileUnlocks.is_tile_available(spike))
 	assert_has(TileUnlocks.tiles_opened_by(_family("debuffs")), spike)
