@@ -590,6 +590,15 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
   panel). It reserves its stretch of the formation, so a lone ship beside a
   centred offer is squeezed toward the screen edge with no room to speak:
   move the offer aside (Mayday's sits at `(230, 60)`).
+- **`sectors`**: the layers of the fleet the encounter belongs to (LORE.md
+  §3): **Tail** (sector 1: the Undertow, stragglers, what the Rearguard left
+  behind), **Belly** (sector 2: the Caravan and everyone come to take from
+  it), **Spine** (sector 3: the Rearguard's checkpoints). Tick every layer
+  its story fits, usually one, at most two. Every combat, event and elite
+  needs at least one; none ticked would deal it everywhere, and a test fails.
+  Pick by whose story it is, not by the ships' strength: the sector's own
+  scaling handles that. See the rosters in
+  `Planning Documents/FACTION_SCENARIOS.md`.
 - **`sector_gate_scenario`**: only for a boss gate (and `GATE_open`). Fate
   never takes these, and winning one opens the gate instead of emptying it.
 - **`boss_title` / `boss_subtitle`**: set on a boss fight to play the intro
@@ -658,6 +667,9 @@ Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
 **Registration** (required): open `Source/Scenes/main.tscn`, select
 **GameStateManager**, and add the scenario to the right list:
 - `combat_scenarios` or `question_scenarios` (events): the random sector mix.
+  Each layer needs at least 7 combats, 4 events and 2 elites to fill a
+  sector without repeats; removing one can drop a layer under that
+  (`test_each_layer_holds_enough_to_fill_its_sector`).
 - `elite_scenarios`: the elite pool (`elites_per_sector` per sector).
 - `gate_boss_scenarios`: the boss guarding each sector's gate, in order.
 - Fate's encounters go on the **Map** instead (`main_viewer.tscn`):

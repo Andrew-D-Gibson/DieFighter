@@ -4,6 +4,21 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-31 — Sectors become layers of the fleet
+
+Every encounter now lives in the layer of the Long Retreat its story belongs to (LORE.md §3): the Tail (Undertow, stragglers, Fate on the horizon), the Belly (the Caravan and everyone who preys on it), the Spine (the Rearguard's checkpoints). Rosters and stories: `Planning Documents/FACTION_SCENARIOS.md`.
+
+- **Mechanism:** `ScenarioResource.sectors` (Tail / Belly / Spine flags; a sector past the Spine deals the Spine's). `allowed_in_sector()` filters by layer as well as `earliest_sector()`, and a later sector's arrival is one of its own events. Most encounters have one home layer and a few have two.
+- **Seeded maps:** `GameStateManager._pick_one()` always spends exactly one RUN draw. `pick_random()` spends none on a single option, and the shorter per-layer lists reach one inside a sector, which moved the tutorial's seed-21 map. With two or more options the picks are identical, so seed 21 lays out exactly as before. The 30% event roll is drawn even when no event is left, and each layer holds at least `elites_per_sector.y` elites.
+- **Recast:** Tender Escort becomes a Conscriptor with the Caravan medic it drafted. Mortar Nest's medic becomes a Picket. Wreck Salvage is guarded by a Claims Adjuster. The Mayday comes from a Bounty Runner (a civilian hull with an Undertow badge; as bait it runs on round 3). The Tollkeeper takes a tithe.
+- **New, from existing ships:** Boneyard (Tail combat), Chopshop (Tail elite: the Warden's breakers), Repossession (Belly elite: two Claims Adjusters and a Field Tender), Deserter (Spine event: a Conscriptor orders you to shoot a Pilgrim flying inward; Duty pays credits, Mercy pays a bounty pick plus charge and hull).
+- **Cut:** Blockade Runner (it overlapped Bounty Run and fit neither faction). The sector-3 gauntlet runs Bounty Run instead.
+- **Bosses** keep their sectors and kits, and gain words: the Sector Warden, *Warlord of the Tail* (*"Everyone back here is already dead."*); the Arc Dynamo, *the Chancellor's reactor barge* (*"The Belly can't wait for one ship."*); the Bastion, *the Marshal's fortress* (*"Four hundred years. Not you."*). Each gate has its own state now (they shared the Warden's).
+- *Design call:* the Rearguard sitting in the Spine, ahead of the Caravan, is deliberate irony (LORE §3), so the Tail and the Belly only meet what they left behind.
+- Open: the recast and new encounters want an AutoPilot balance pass (Tender Escort is tankier than two Venom Fighters; Mortar Nest shields instead of repairing; the Mayday bait now runs). A per-layer event rate (a more event-heavy Belly) is a possible follow-up.
+
+---
+
 ## 2026-10-30 — Enemy art pass, one Venom ship
 
 - **Redrawn** to LORE §12 with perspective (lit top faces over darker front faces and plate lips) and texture (seams, rivets, rust): the Picket (shoulder emitter pods, the band edge to edge, a chevron groove down its plates), Conscriptor (armoured block, impound clamps round a tractor lens), Field Tender (bridge windows, racked spare-parts canisters, green repair lens), Claims Adjuster (pill hull, gun pods, a hazard-banded lien projector), Wrecker (welded hull, mismatched ram-jaws, furnace between them) and Venom Fighter (swept, asymmetric, hooked, kept off the canvas edge). New portraits; engine particles moved to the new nozzles. The Fate Attacker is rebuilt from the new Venom Fighter.

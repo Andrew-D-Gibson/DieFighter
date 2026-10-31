@@ -104,6 +104,18 @@ paid a different price for it.
 
 More sectors later fit in as more layers (the Wings, the Vanguard's Escort, and so on).
 
+Each encounter is dealt only into its layer's sector (`ScenarioResource.sectors`).
+The rosters, and the story each encounter tells, are in
+`Planning Documents/FACTION_SCENARIOS.md`.
+
+**The Rearguard isn't at the rear.** They say they hold the line between the Caravan
+and the horizon, but the Spine sits *ahead* of the Belly, and that's deliberate. They
+tithe everyone who passes from safety. In the Tail and the Belly you meet only what
+they left behind: a sentry drone the line forgot, press-gangs drafting Caravan ships
+(the Conscriptor and its pressed medic), and the few honest Pickets actually holding
+the back (Last Picket). That foreshadows §4: the tithe was never buying the back of
+the fleet anything.
+
 ---
 
 ## 4. The Vanguard and the Secret

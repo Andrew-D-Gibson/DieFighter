@@ -1,9 +1,68 @@
 # Faction Scenarios
 
-Two encounters per faction from `LORE.md`, built on the faction ships (commit
-8b6ac6d6). Folders under `Source/Content/ScenarioResources/Scenarios/`. All ten are
-in GameStateManager's lists: nine in `question_scenarios`, Wake Riders in
-`elite_scenarios`.
+The faction encounters from `LORE.md`, built on the faction ships (commit
+8b6ac6d6), and where every encounter in the game is dealt (below). Folders are
+under `Source/Content/ScenarioResources/Scenarios/`. The faction events are in
+GameStateManager's `question_scenarios`, and Wake Riders is in `elite_scenarios`.
+
+## By sector
+
+Each sector is a layer of the fleet (`LORE.md` §3), and a scenario's `sectors`
+flags keep it to its layers. Every boss is a faction's pack leader racing for the
+front. The Rearguard in the Spine is deliberate irony: they claim to hold the rear,
+but they sit safe ahead of the Caravan and tithe everyone who passes. Behind them you
+meet only what they left: a forgotten sentry drone, their press-gangs, and the few
+honest Pickets. A dagger (†) marks an encounter in two layers.
+
+### Sector 1: The Tail ("Everyone back here is already dead.")
+Stragglers, scavengers and wreckage, with Fate on the horizon. The Undertow's rule:
+slow is dead.
+
+- **Combats:** Attacker, Wolfpack, Loose Wing, Cutpurse†, Wreckers†, Cannon Drone
+  (a Rearguard sentry left behind when the line moved on), Boneyard (a Gaff and a
+  Venom Fighter stripping a wreck field, and you look like more of it).
+- **Events:** Pilgrim (the Fate's Die handover), Straggler, Pirates Attacking
+  Civilian†, Mayday†, Sleeping Drone, Signal, What Came Back†.
+- **Elites:** Wake Riders†, Chopshop (the Warden's breakers: *"The Warden wants your
+  parts."*).
+- **Gate:** the Sector Warden, *Warlord of the Tail*: *"Everyone back here is
+  already dead."*
+
+### Sector 2: The Belly ("Keep everyone together.")
+The Caravan's heart, and the most mixed layer: Compact enforcers, Undertow
+infiltrators, Inbound recruiters and Rearguard press-gangs all come for something.
+
+- **Combats:** Lien Collection, Pilgrimage (Inbound recruiters), Smash and Grab,
+  Carrier†, Picket Line† (a draft sweep), Tender Escort (a Conscriptor and the Caravan
+  medic it drafted), Cutpurse†, Wreckers†.
+- **Events:** Convoy, Cut Loose (the Chancellor's philosophy in miniature), Mercy
+  Call, Pickpocket, Wreck Salvage (under a Claims Adjuster's guard), Pact†, Last
+  Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
+  Pirates Attacking Civilian†, What Came Back†.
+- **Elites:** Hunter-Killers† (an Undertow fighter with a Rearguard drone: someone
+  paid for you), Repossession (two Claims Adjusters kept running by a Field Tender:
+  *"Your lien is due."*), Wake Riders†.
+- **Gate:** the Arc Dynamo, *the Chancellor's reactor barge*: *"The Belly can't wait
+  for one ship."*
+
+### Sector 3: The Spine ("Hold the line, buy time.")
+Checkpoints, tithes and warships, plus the Undertow they hire under the table.
+
+- **Combats:** Tithe Collector, Tithe Escort, Ion Lances, Defender + Disabler, Drone
+  Battery, Siege Battery, Spotter, Bounty Run (a Rearguard lance escorting an Undertow
+  smuggler in civilian clothes), Carrier†, Picket Line†.
+- **Events:** Tollkeeper (*"Tithe taken. It buys us all time."*), Deniable Assets,
+  Black Market (the checkpoint's back door), Deserter, Pact†.
+- **Elites:** Tithe Fleet, Lance Squadron, Mortar Nest (a Picket shields the
+  mortars), Hunter-Killers†.
+- **Gate:** the Bastion, *the Marshal's fortress*: *"Four hundred years. Not you."*
+
+The Mayday comes from a Bounty Runner: a civilian hull with an Undertow badge, the
+tell for anyone reading the targeting computer. Sometimes it's bait (it runs on round
+3), and sometimes an Undertow straggler really is dying.
+
+Blockade Runner was cut. It overlapped Bounty Run, and an Undertow smuggler escorted
+by a Caravan medic fit neither faction.
 
 ## How choices work
 
@@ -46,6 +105,17 @@ Two battered, friendly **Pickets** (`picket_holdout`) hold against a Spilled
   hold."* — Duty
 - **Hit a Picket:** both turn. *"Deserter! Fire!"* Raid is off once they turn, and an
   attack on you comes on.
+
+### Deserter — `EVENT_Deserter` (sector 3)
+A **Pilgrim** (`pilgrim_wandering`) flies inward past a checkpoint. *"Let me pass.
+I'm going home."* A **Conscriptor**: *"Deserter. Fire on it, pilot."* This is the
+Rearguard's hatred of the Inbound, who desert the line by flying the wrong way.
+- **Shoot the Pilgrim:** *"Good. Finish it."* It barely fights back (Siphon and
+  Scrambler), its wreck pays 15-25 credits, and the Conscriptor leaves. *"The line
+  holds. Carry on."* — Duty
+- **Shoot the Conscriptor:** *"Then you desert with it."* Win for the bounty pick,
+  and the Pilgrim gives +4 charge and 8 hull before it flies on. *"Run if you must.
+  Take this."* — Mercy / Hunger
 
 ## Undertow — "The slow ones are already dead, so take their stuff."
 
