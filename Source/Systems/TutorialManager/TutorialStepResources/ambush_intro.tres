@@ -14,4 +14,5 @@ close_on_signal = 1
 tutorial_function = 12
 highlight_texture = ExtResource("highlight")
 releases_opening_strike = true
+opening_strike_deadline = 1.8
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

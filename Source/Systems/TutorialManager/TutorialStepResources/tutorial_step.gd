@@ -103,3 +103,9 @@ enum TutorialFunctions {
 ## the shot lands. The card's Close button stays off until the shot has
 ## landed, so the player sees the attack the card is about.
 @export var releases_opening_strike: bool = false
+
+## With releases_opening_strike: lets the shot go this many seconds after the
+## card appears even if its text is still coming in, so the ambusher doesn't
+## sit idle through the whole line. A player who clicks the text in sooner
+## gets the shot sooner still. 0 waits for the text, however long it takes.
+@export var opening_strike_deadline: float = 0.0
