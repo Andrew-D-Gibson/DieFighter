@@ -47,11 +47,11 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
 script = ExtResource("script_0")
-sectors = 3
 map_icon = ExtResource("icon")
 background_resource = ExtResource("bg")
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])
 rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_bounty")
 })
+sectors = 3
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

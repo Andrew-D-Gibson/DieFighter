@@ -70,10 +70,10 @@ starting_health_fraction = 0.65
 
 [resource]
 script = ExtResource("ext_9")
-sectors = 2
 map_icon = ExtResource("ext_10")
 background_resource = ExtResource("ext_11")
 starting_enemies = Array[ExtResource("ext_0")]([SubResource("Resource_2"), SubResource("Resource_4"), SubResource("Resource_6"), SubResource("Resource_8")])
 rewards = Dictionary[int, ExtResource("ext_3")]({
 0: SubResource("Resource_9")
 })
+sectors = 2

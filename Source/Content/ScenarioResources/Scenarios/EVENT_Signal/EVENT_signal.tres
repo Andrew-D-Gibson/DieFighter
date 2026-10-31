@@ -35,7 +35,6 @@ minimum_rarity = 1
 
 [resource]
 script = ExtResource("ext_4")
-sectors = 1
 map_icon = ExtResource("ext_5")
 background_resource = ExtResource("ext_6")
 starting_enemies = Array[ExtResource("ext_0")]([SubResource("Resource_2")])
@@ -44,3 +43,4 @@ rewards = Dictionary[int, ExtResource("ext_3")]({
 })
 starting_reward = SubResource("Resource_4")
 starting_reward_position = Vector2(230, 60)
+sectors = 1

@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://di7h7e6y545ys"]
 
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
+[ext_resource type="Resource" uid="uid://cbur0h3t84tff" path="res://Source/Content/Enemies/EnemyResources/claims_adjuster.tres" id="enemy_adjuster"]
+[ext_resource type="Resource" uid="uid://bfqg4bqueelwx" path="res://Source/Content/Enemies/EnemyResources/tender.tres" id="enemy_tender"]
+[ext_resource type="Texture2D" uid="uid://c8n5rlrs468on" path="res://Assets/Textures/Map/EncounterIcons/elite_encounter.png" id="icon"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
-[ext_resource type="Resource" uid="uid://cbur0h3t84tff" path="res://Source/Content/Enemies/EnemyResources/claims_adjuster.tres" id="enemy_adjuster"]
-[ext_resource type="Resource" uid="uid://bfqg4bqueelwx" path="res://Source/Content/Enemies/EnemyResources/tender.tres" id="enemy_tender"]
-[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state_pirate"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Repossession/adjuster_collecting.tres" id="state_collector"]
-[ext_resource type="Texture2D" uid="uid://c8n5rlrs468on" path="res://Assets/Textures/Map/EncounterIcons/elite_encounter.png" id="icon"]
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state_pirate"]
 
 [sub_resource type="Resource" id="Resource_bounty"]
 script = ExtResource("script_2")
@@ -65,11 +65,11 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
 script = ExtResource("script_0")
-sectors = 2
 map_icon = ExtResource("icon")
 background_resource = ExtResource("bg")
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1"), SubResource("Resource_spawn2")])
 rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_bounty")
 })
+sectors = 2
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

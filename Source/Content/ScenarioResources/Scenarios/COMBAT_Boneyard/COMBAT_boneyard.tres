@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://pt0u4l7y7lwk"]
 
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
-[ext_resource type="Resource" uid="uid://f8qaeahga6og" path="res://Source/Content/Enemies/EnemyResources/gaff.tres" id="enemy_gaff"]
 [ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="enemy_fighter"]
+[ext_resource type="Resource" uid="uid://f8qaeahga6og" path="res://Source/Content/Enemies/EnemyResources/gaff.tres" id="enemy_gaff"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="icon"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
@@ -47,11 +47,11 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
 script = ExtResource("script_0")
-sectors = 1
 map_icon = ExtResource("icon")
 background_resource = ExtResource("bg")
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])
 rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_bounty")
 })
+sectors = 1
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

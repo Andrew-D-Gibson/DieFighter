@@ -58,10 +58,10 @@ reward_resource = SubResource("Resource_5")
 
 [resource]
 script = ExtResource("ext_6")
-sectors = 3
 map_icon = ExtResource("ext_7")
 background_resource = ExtResource("ext_8")
 starting_enemies = Array[ExtResource("ext_0")]([SubResource("Resource_2"), SubResource("Resource_4"), SubResource("Resource_6")])
 rewards = Dictionary[int, ExtResource("ext_3")]({
 0: SubResource("Resource_7")
 })
+sectors = 3

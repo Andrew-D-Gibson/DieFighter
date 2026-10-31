@@ -36,7 +36,6 @@ max_money_pickup = 25
 
 [resource]
 script = ExtResource("ext_5")
-sectors = 3
 map_icon = ExtResource("ext_6")
 background_resource = ExtResource("ext_7")
 starting_enemies = Array[ExtResource("ext_1")]([SubResource("Resource_spawn0")])
@@ -45,3 +44,4 @@ rewards = Dictionary[int, ExtResource("ext_2")]({
 })
 starting_reward = SubResource("Resource_salvage")
 starting_reward_position = Vector2(230, 60)
+sectors = 3

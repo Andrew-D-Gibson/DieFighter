@@ -9,6 +9,7 @@
 script = ExtResource("1_s")
 tutorial_text = "The rest is up to you. [wave amp=10.0 freq=3.0 connected=1][color=yellow]Good luck, pilot![/color][/wave]"
 text_position = Vector2(160, 120)
+time_delay = 1.5
 close_on_signal = 1
 tutorial_function = 14
 highlight_texture = ExtResource("highlight")
