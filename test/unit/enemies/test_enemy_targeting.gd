@@ -237,6 +237,62 @@ func test_a_slot_that_binds_nothing_stays_unbound() -> void:
 	assert_null(ship.turn_actions[0].bound_target)
 
 
+func test_every_ally_slot_of_a_ship_binds_the_same_ally() -> void:
+	# One partner a turn: the targeting computer draws one arc per bound ship,
+	# so a ship spread over three escorts would draw three.
+	var medic := _ship(Faction.PIRATE)
+	var roster := _roster([medic, _ship(Faction.PIRATE), _ship(Faction.PIRATE), _ship(Faction.PIRATE)])
+	for run: int in range(20):
+		RNGManager.seed_scenario(run)
+		var tables: Array[EnemyActionResource] = []
+		for i: int in range(6):
+			tables.append(_ally_action())
+		medic.turn_actions = tables
+		EnemyTargetBinder.bind(_roster([medic]), roster)
+		for action: EnemyActionResource in medic.turn_actions:
+			assert_eq(action.bound_target, medic.turn_actions[0].bound_target)
+
+
+func test_a_ship_keeps_one_ally_and_one_prey() -> void:
+	var pirate := _ship(Faction.PIRATE)
+	var roster := _roster([pirate, _ship(Faction.PIRATE), _ship(Faction.PIRATE),
+		_ship(Faction.CIVILIAN), _ship(Faction.CIVILIAN)])
+	for run: int in range(20):
+		RNGManager.seed_scenario(run)
+		var tables: Array[EnemyActionResource] = [
+			_ally_action(), _raid_action(), _ally_action(), _raid_action(), _ally_action(), _raid_action(),
+		]
+		pirate.turn_actions = tables
+		EnemyTargetBinder.bind(_roster([pirate]), roster)
+		var ally: Enemy = pirate.turn_actions[0].bound_target
+		var prey: Enemy = pirate.turn_actions[1].bound_target
+		assert_eq(ally.scenario_state.faction, Faction.PIRATE)
+		assert_eq(prey.scenario_state.faction, Faction.CIVILIAN)
+		for slot: int in range(0, 6, 2):
+			assert_eq(pirate.turn_actions[slot].bound_target, ally)
+			assert_eq(pirate.turn_actions[slot + 1].bound_target, prey)
+
+
+func test_each_ship_picks_its_own_partner() -> void:
+	# The one-partner rule is per ship: two medics can still look after
+	# different escorts.
+	var a := _ship(Faction.PIRATE)
+	var b := _ship(Faction.PIRATE)
+	var roster := _roster([a, b, _ship(Faction.PIRATE), _ship(Faction.PIRATE)])
+	var differed: bool = false
+	for run: int in range(30):
+		RNGManager.seed_scenario(run)
+		var table_a: Array[EnemyActionResource] = [_ally_action(), _ally_action()]
+		var table_b: Array[EnemyActionResource] = [_ally_action(), _ally_action()]
+		a.turn_actions = table_a
+		b.turn_actions = table_b
+		EnemyTargetBinder.bind(_roster([a, b]), roster)
+		assert_eq(a.turn_actions[1].bound_target, a.turn_actions[0].bound_target)
+		assert_eq(b.turn_actions[1].bound_target, b.turn_actions[0].bound_target)
+		differed = differed or a.turn_actions[0].bound_target != b.turn_actions[0].bound_target
+	assert_true(differed, "ships don't all share one partner")
+
+
 # ── The targeting step and the intent text ─────────────────────────────────────
 
 func test_the_bound_targeting_step_targets_the_bound_ship() -> void:

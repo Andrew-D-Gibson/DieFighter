@@ -17,6 +17,14 @@ extends RefCounted
 ## ally that can't lead back to it, which keeps the whole graph loop-free by
 ## construction; when no ally qualifies, that one slot is rerolled into
 ## something that relays nothing. No retries, no dice rerolled in flight.
+##
+## A ship works with one partner a turn: every ally slot binds the same ally,
+## every raid the same prey. The targeting computer draws an arc per bound
+## ship, and a Tender spread over three escorts buried the formation in arcs
+## the player had to untangle; "this turn it's guarding *that* one" reads at
+## a glance, and gives the player a pair to break up. The first slot to bind
+## picks the partner; a relay that can't reach it without looping is
+## rerolled like one with no ally at all, rather than opening a second arc.
 
 
 ## Binds every slot of every ship in [param ships] against [param roster].
@@ -24,33 +32,45 @@ static func bind(ships: Array[Enemy], roster: Array[Enemy]) -> void:
 	for ship: Enemy in ships:
 		if not is_instance_valid(ship):
 			continue
+		var partners: Dictionary[EnemyActionResource.Binding, Enemy] = {}
 		for slot: int in range(ship.turn_actions.size()):
-			if bind_slot(ship, slot, roster):
+			if bind_slot(ship, slot, roster, partners):
 				continue
 			if ship.turn_actions[slot].get_relay() == EnemyActionResource.Relay.NONE:
 				continue
 			# A relay with nobody it can safely feed: swap that one slot out.
 			ship.reroll_slot_without_relays(slot, EnemyActionSituation.for_ship(ship, roster))
-			bind_slot(ship, slot, roster)
+			bind_slot(ship, slot, roster, partners)
 
 
 ## Returns false when the slot needs a ship and none can be had.
-static func bind_slot(ship: Enemy, slot: int, roster: Array[Enemy]) -> bool:
+## [param partners] maps each binding to the ship [param ship]'s earlier
+## slots of that binding settled on this turn: the slot joins it, or picks it.
+static func bind_slot(
+	ship: Enemy,
+	slot: int,
+	roster: Array[Enemy],
+	partners: Dictionary[EnemyActionResource.Binding, Enemy] = {}
+) -> bool:
 	var action: EnemyActionResource = ship.turn_actions[slot]
 	if action == null:
 		return true
 	action.bound_target = null
 
+	var binding: EnemyActionResource.Binding = action.get_binding()
 	var candidates: Array[Enemy] = candidates_for(ship, action, roster)
+	if partners.has(binding):
+		candidates = candidates.filter(func(other: Enemy) -> bool: return other == partners[binding])
 	if action.get_relay() != EnemyActionResource.Relay.NONE:
 		var face: int = slot + 1
 		candidates = candidates.filter(func(ally: Enemy) -> bool:
 			return not would_loop(ship, face, ally, action.relay_face(face))
 		)
 	if candidates.is_empty():
-		return action.get_binding() == EnemyActionResource.Binding.NONE
+		return binding == EnemyActionResource.Binding.NONE
 
 	action.bound_target = RNGManager.pick_random(RNGManager.Bucket.ENEMY_AI, candidates)
+	partners[binding] = action.bound_target
 	return true
 
 

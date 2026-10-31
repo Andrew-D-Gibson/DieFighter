@@ -9,6 +9,7 @@ const Ships := preload("res://test/helpers/ships.gd")
 const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
 const Faction := ScenarioManager.Faction
 const Relay := EnemyActionResource.Relay
+const AEGIS_LINK := "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/aegis_ally.tres"
 
 
 func before_each() -> void:
@@ -146,6 +147,38 @@ func test_two_ships_full_of_relays_never_feed_each_other_in_a_circle() -> void:
 	for face: int in range(6):
 		assert_eq(a.turn_actions[face].bound_target, b)
 		assert_eq(b.turn_actions[face].get_relay(), Relay.NONE, "B's %d was rerolled" % (face + 1))
+
+
+func test_a_relay_that_would_loop_through_the_partner_is_rerolled_not_aimed_elsewhere() -> void:
+	# A's first slot settles its partner; a relay that can't go there without
+	# looping gives way rather than open a second arc to another ally.
+	var a := _ship()
+	var b := _ship()
+	var c := _ship()
+	var relay_and_attack: Array[EnemyActionOptionResource] = [Ships.option(Ships.relay(), 5.0), Ships.option(Ships.attack(), 1.0)]
+	Ships.give_pool(a, relay_and_attack)
+	# B feeds every face to A, so A relaying anything to B would loop.
+	Ships.set_table(b, _table_of(Ships.relay))
+	for action: EnemyActionResource in b.turn_actions:
+		action.bound_target = a
+	var roster := Ships.roster([a, b, c])
+	var rerolled_for_b: bool = false
+	for run: int in range(30):
+		RNGManager.seed_scenario(run)
+		var table: Array[EnemyActionResource] = [(load(AEGIS_LINK) as EnemyActionResource).duplicate(true)]
+		for i: int in range(5):
+			table.append(Ships.relay())
+		Ships.set_table(a, table)
+		EnemyTargetBinder.bind(Ships.roster([a]), roster)
+		var partner: Enemy = a.turn_actions[0].bound_target
+		for action: EnemyActionResource in a.turn_actions:
+			if action.bound_ship() != null:
+				assert_eq(action.bound_target, partner)
+		if partner == b:
+			rerolled_for_b = true
+			for slot: int in range(1, 6):
+				assert_eq(a.turn_actions[slot].get_relay(), Relay.NONE, "A's %d gave way" % (slot + 1))
+	assert_true(rerolled_for_b, "some seed made B the partner")
 
 
 func test_every_relay_that_stays_is_bound_to_a_living_ally() -> void:
