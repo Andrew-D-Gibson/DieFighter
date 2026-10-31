@@ -83,7 +83,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Die Splitter[/color]"
-description = "[color=yellow]Die above[/color] (die_1) -> Split die in two: die keeps half (rounded up), a (hologram) gets the rest. [color=orange]Return[/color] both"
+description = "[color=yellow]Die above[/color] (die_1) -> Split die: the smaller half becomes a (hologram). [color=orange]Return[/color] both"
 upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

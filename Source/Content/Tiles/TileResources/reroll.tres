@@ -77,7 +77,7 @@ animations = [{
 [resource]
 script = ExtResource("3_1nta3")
 tile_name = "[color=green]Re-Roll[/color]"
-description = "[color=yellow]Any die[/color] -> [color=green]Re-roll[/color] die"
+description = "[color=yellow]Any die[/color] -> [color=green]Re-roll[/color] die. [color=orange]Return[/color] die"
 upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_ecbfa")
 uses_per_turn = 2

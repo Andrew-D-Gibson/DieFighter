@@ -122,7 +122,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Crossed Wires[/color]"
-description = "[color=yellow]Any die[/color] -> Apply 2 (scrambled) to [color=purple]target[/color]. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die[/color] -> Apply 2 (scrambled)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])

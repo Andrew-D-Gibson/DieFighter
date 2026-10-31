@@ -13,6 +13,12 @@
 script = ExtResource("1_ltqic")
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
+[sub_resource type="Resource" id="Resource_low_faces"]
+script = ExtResource("1_ltqic")
+type = 1
+acceptable_values = Array[int]([1, 2, 3])
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [sub_resource type="Resource" id="Resource_1kud3"]
 script = ExtResource("7_oymyf")
 category = 2
@@ -91,10 +97,10 @@ animations = [{
 [resource]
 script = ExtResource("3_uekf7")
 upgraded_version = ExtResource("upgrade_plus")
-tile_name = "[color=yellow]Holo-Duplicator[/color]"
-description = "[color=yellow]Any die[/color] -> Spawn 2 (holograms) of die"
+tile_name = "[color=green]Holo-Duplicator[/color]"
+description = "[color=yellow]Die below[/color] (die_4) -> Spawn 2 (holograms) of die"
 textures = SubResource("SpriteFrames_2vvbj")
 uses_per_turn = 1
-activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6")])
+activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6"), SubResource("Resource_low_faces")])
 effect_chain = SubResource("Resource_f3imi")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

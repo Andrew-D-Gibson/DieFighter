@@ -183,7 +183,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Parity Junction+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color]. [color=yellow]Odd[/color]: (feed_up). [color=yellow]Even[/color]: (feed_down)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color]. [color=yellow]Odd[/color]: (feed_up). [color=yellow]Even[/color]: (feed_down)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

@@ -8,6 +8,15 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="10_86yy8"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="10_ino2a"]
 
+[sub_resource type="Resource" id="Resource_needs_die"]
+script = ExtResource("1_hoi4y")
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
+[sub_resource type="Resource" id="Resource_needs_target"]
+script = ExtResource("1_hoi4y")
+type = 4
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [sub_resource type="Resource" id="Resource_qtm42"]
 script = ExtResource("9_wohu7")
 category = 2
@@ -61,15 +70,20 @@ category = 4
 subtype = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_aim"]
+script = ExtResource("9_wohu7")
+subtype = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_f06cv"]
 script = ExtResource("9_wohu7")
 category = 3
-subtype = 4
+subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_ino2a"]
 script = ExtResource("10_86yy8")
-effects = Array[ExtResource("9_wohu7")]([SubResource("Resource_qtm42"), SubResource("Resource_1kud3"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_j6chx"), SubResource("Resource_wohu7"), SubResource("Resource_f3imi"), SubResource("Resource_f06cv")])
+effects = Array[ExtResource("9_wohu7")]([SubResource("Resource_qtm42"), SubResource("Resource_1kud3"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_j6chx"), SubResource("Resource_wohu7"), SubResource("Resource_f3imi"), SubResource("Resource_aim"), SubResource("Resource_f06cv")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ve0"]
@@ -106,8 +120,9 @@ script = ExtResource("6_ctsso")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Value Exchange+[/color]"
-description = "[color=yellow]Any die[/color] -> Flip all (die_1) and (die_6). [color=orange]Return[/color] die to hand"
+description = "[color=yellow]Any die[/color] -> Flip every (die_1) and (die_6), enemies' dice too"
 textures = SubResource("SpriteFrames_pgax4")
 uses_per_turn = 2
+activation_checks = Array[ExtResource("1_hoi4y")]([SubResource("Resource_needs_die"), SubResource("Resource_needs_target")])
 effect_chain = SubResource("Resource_ino2a")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
