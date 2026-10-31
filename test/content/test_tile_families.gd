@@ -13,8 +13,6 @@ const _ADVANCED_TOKENS: Array[String] = [
 	"(feed_", "(fed)", "(burn)", "(jam", "(scrambl", "(expos", "(weak",
 	"(hologram", "(Hologram", "(countdown", "(echo)",
 ]
-## A note that a tile is skipped by Echo isn't the tile using Echo.
-const _NOT_A_USE: String = "Ignores (echo)"
 
 
 func test_every_family_is_in_the_unlock_order_once() -> void:
@@ -57,7 +55,7 @@ func test_advanced_tiles_wait_in_a_family() -> void:
 		var tile: TileResource = load(path)
 		if tile == null or not tile.offered_as_reward:
 			continue
-		var text: String = (tile.activation_description + " " + tile.description).replace(_NOT_A_USE, "")
+		var text: String = tile.activation_description + " " + tile.description
 		var advanced: bool = false
 		for token: String in _ADVANCED_TOKENS:
 			advanced = advanced or token in text

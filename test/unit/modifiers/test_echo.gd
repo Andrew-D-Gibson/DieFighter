@@ -7,6 +7,7 @@ const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
 const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
+const PLAYER_SCENE: PackedScene = preload("res://Source/Systems/Game/Player/player.tscn")
 const DAMAGE_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/damage.tres")
 const REROLL_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/reroll.tres")
 const FORTRESS: TileResource = preload("res://Source/Content/Tiles/TileResources/fortress_protocol.tres")
@@ -112,16 +113,42 @@ func test_a_refused_die_leaves_the_echo_waiting() -> void:
 	assert_eq(EchoModifier.armed_count(engine), 1)
 
 
-func test_a_tile_that_ignores_echo_is_skipped() -> void:
+## No tile ignores echo: Fortress Protocol doubling its shields twice (x4) is
+## the fun kind of broken.
+func test_fortress_protocol_takes_the_echo() -> void:
+	_shielded_player(5)
 	var fortress: Tile = _tile(FORTRESS)
-	assert_false(FORTRESS.can_be_echoed)
 	await _arm()
 	var event: TileActivationEvent = _activation(fortress, 6)
 	await _before(event)
-	assert_eq(event.activation_repetitions, 1, "doubling shields twice would be x4")
-	assert_eq(EchoModifier.armed_count(engine), 1)
-	assert_string_contains(engine.modifiers[0].get_rule_info_text(fortress), "skips")
-	assert_eq(engine.modifiers[0].get_rule_info_text(cannon), "")
+	assert_eq(event.activation_repetitions, 2)
+	assert_true(event.echoed)
+	assert_eq(EchoModifier.armed_count(engine), 0)
+
+
+func test_an_echoed_fortress_protocol_quadruples_shields() -> void:
+	var player: Player = _shielded_player(5)
+	# The die goes to the targeted ship once the shields are up.
+	var roster: EnemyManager = autofree(EnemyManager.new())
+	roster.enemies = [enemy] as Array[Enemy]
+	Globals.enemy_manager = roster
+	var context := EffectContext.new()
+	context.effect_source = _tile(FORTRESS)
+	context.activator_die = _die(6)
+	context.repetitions = 2
+	await FORTRESS.effect_chain.play(context, engine)
+	assert_eq(player.health.shields, 20, "5 doubled, then doubled again")
+
+
+## A whole player (with health) holding [param shields], as Fortress Protocol
+## needs one to take a die at all.
+func _shielded_player(shields: int) -> Player:
+	var player: Player = add_child_autofree(PLAYER_SCENE.instantiate())
+	player.health.max_health = 30
+	player.health.health = 30
+	player.health.shields = shields
+	Globals.player = player
+	return player
 
 
 func test_a_rule_holding_tiles_to_one_pass_leaves_the_echo_waiting() -> void:

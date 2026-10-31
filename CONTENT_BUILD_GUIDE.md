@@ -197,11 +197,13 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     holds tiles to one pass, and lapses at turn or fight end. Put `ARM_ECHO`
     before a Feed and the fed tile is the one echoed (Echo Relay); in an
     `ON_TURN_START` response it echoes the first tile played (Opening Salvo).
-    Untick `can_be_echoed` on a tile whose effect compounds on itself, where a
-    second pass multiplies (Fortress Protocol), and on any tile that spends or
-    reads charge or hull: activation checks run once, so an echo would pay out
-    twice for one payment (Arc Tap, Blood Valve). Say `Ignores (echo)` in its
-    text. Text: `(echo) the next tile you activate`.
+    Every tile takes an echo; there is no opt-out. A tile whose effect
+    compounds multiplies on the second pass (Fortress Protocol quadruples
+    shields), and that's welcome: fun over balance. A tile that spends
+    charge, hull or shields runs its activation checks once, so an echoed
+    second pass it can't afford pays nothing and still pays out. Only fix a
+    tile under echo if it breaks mechanically (a crash, a soft-lock, a lost
+    die), never by exempting it. Text: `(echo) the next tile you activate`.
   - **Enemy dice and intents** (aim with `TARGET_WITH_TARGETING_COMPUTER`
     first, then hand the die over as usual):
     - `SET_TARGETS_HIGHEST_DIE` (`amount` = the new face) turns the highest
@@ -234,9 +236,9 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     past the shields, and gates on `HULL_AT_LEAST` set one above the price,
     so paying never kills (it refuses rather than kill if they disagree). It
     is a hull hit, so `ON_PLAYER_HEALTH_HIT` tiles answer it, but it isn't
-    damage: Phased, Exposed and Double Damage leave it alone. A repeat would
-    pay twice past a check made once, so untick `can_be_echoed` (Blood
-    Valve). Text: `Spend [color=red]3 hull[/color]`.
+    damage: Phased, Exposed and Double Damage leave it alone. An echo pays
+    twice past a check made once; a second payment that would kill is
+    refused (Blood Valve). Text: `Spend [color=red]3 hull[/color]`.
   - **Per-fight counters**: a tile that builds something up over a fight
     keeps it in its own tile data (`INCREMENT_TILE_DATA`, shown with
     `[data]key[/data]`) and zeroes it in an `ON_COMBAT_START` response, which

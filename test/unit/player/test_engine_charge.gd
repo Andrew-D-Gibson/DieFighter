@@ -118,6 +118,7 @@ func test_spending_more_than_you_have_refuses_instead_of_clamping() -> void:
 	var event := SpendEngineChargeEvent.new()
 	event.amount = 4
 	event.resolve(null)
-	assert_eq(player.engine_charge, 3, "no free payoff")
-	assert_push_warning("exceeds charge")
+	assert_eq(player.engine_charge, 3, "no underflow")
+	# Quiet: an echoed second pass reaches this on purpose.
+	assert_push_warning_count(0)
 	assert_false(event.is_amplifiable(), "a price must never be amplified")

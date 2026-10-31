@@ -10,7 +10,9 @@ extends EffectEvent
 ## Phased, Double Damage, a death save) touches it.
 ##
 ## Like SpendShieldsEvent it refuses rather than kill: tiles gate it with
-## HULL_AT_LEAST, one above the price, before the die is consumed.
+## HULL_AT_LEAST, one above the price, before the die is consumed. That check
+## runs once, so an echoed second pass that would kill takes nothing and still
+## pays out, quietly: echo's bonus, by design.
 
 
 ## amount is a price, not an output.
@@ -26,11 +28,6 @@ func resolve(_engine: ScenarioEngine) -> void:
 	if health.invulnerable:
 		return
 	if health.health <= amount:
-		push_warning(
-			"SpendHullEvent: cost %d would destroy the ship at %d hull. The tile's "
-			% [amount, health.health]
-			+ "HULL_AT_LEAST threshold disagrees with its authored cost."
-		)
 		return
 
 	health.change_health(-amount)

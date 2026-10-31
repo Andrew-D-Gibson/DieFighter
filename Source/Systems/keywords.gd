@@ -43,7 +43,7 @@ const _DEFINITIONS: Dictionary[String, String] = {
 	"Countdown": "Dice placed on a countdown tile count it down by their value. At 0 it goes off and starts again, extra counts carried over. Starts full each fight.",
 	"Boost": "If you have that much [color=purple]engine charge[/color], it's spent for the extra effect. If not, the tile works without it.",
 	"Locked": "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked.",
-	"Echo": "That tile activates twice, but hands its die on once. Tiles that ignore Echo are skipped. Lapses when your turn ends.",
+	"Echo": "That tile activates twice, but hands its die on once. Lapses when your turn ends.",
 	"Phased": "The next hit from the player's tiles passes through this ship and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when its turn starts.",
 	"Phased (you)": "The next enemy hit passes through you and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when your next turn starts.",
 	"Evasion": "The chance each enemy hit misses you: 3% per [color=purple]engine charge[/color], up to 50%.",

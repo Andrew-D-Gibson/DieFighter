@@ -451,10 +451,15 @@ func test_blood_valve_refuses_a_die_it_would_kill_you_paying_for() -> void:
 	assert_false(_takes("blood_valve", 6), "a hologram is no use outside a fight")
 
 
-func test_blood_valve_ignores_echo() -> void:
-	assert_false(_tile("blood_valve").tile_resource.can_be_echoed,
-		"one payment, one hologram: an echo would double the cost past the hull check")
-	assert_false(_tile("blood_valve_plus").tile_resource.can_be_echoed)
+## Echoed past one hull check, the second payment refuses rather than kill.
+func test_an_echoed_blood_valve_never_spends_the_last_hull() -> void:
+	player.health.health = 4
+	var event := SpendHullEvent.new()
+	event.amount = 3
+	event.resolve(null)
+	assert_eq(player.health.health, 1)
+	event.resolve(null)
+	assert_eq(player.health.health, 1, "the echo's second payment can't kill")
 
 
 func test_spending_hull_goes_past_the_shields_and_is_a_hull_hit() -> void:

@@ -613,8 +613,7 @@ func _add_payout(tile: Tile, weight: float) -> void:
 ## Whether an echo would repeat [param tile] (see EchoModifier.can_echo(); the
 ## die was already checked against it).
 func _takes_echo(tile: Tile) -> bool:
-	return tile.tile_resource.can_be_echoed \
-		and not EchoModifier.repetitions_held(tile, ScenarioEngine.current())
+	return not EchoModifier.repetitions_held(tile, ScenarioEngine.current())
 
 
 ## The tile a Feed goes to: the chain's own target, or, when it has none, the

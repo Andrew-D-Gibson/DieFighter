@@ -130,11 +130,10 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Repo Beam+[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]3 charge[/color]: Take back the last die [color=purple]target[/color] took. [color=orange]Return[/color] both dice. Ignores (echo)"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]3 charge[/color]: Take back the last die [color=purple]target[/color] took. [color=orange]Return[/color] both dice"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1
-can_be_echoed = false
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_12"), SubResource("Resource_act_13"), SubResource("Resource_act_14"), SubResource("Resource_act_holds_die")])
 effect_chain = SubResource("Resource_chain_11")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

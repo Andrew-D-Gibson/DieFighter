@@ -112,13 +112,12 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Blood Valve+[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=red]2 hull[/color]. Spawn a (hologram) of die. [color=orange]Return[/color] die. Ignores (echo)"
+description = "[color=yellow]Any die[/color] -> Spend [color=red]2 hull[/color]. Spawn a (hologram) of die. [color=orange]Return[/color] die"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true
 textures = SubResource("SpriteFrames_16")
 uses_per_turn = 1
-can_be_echoed = false
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")])
 effect_chain = SubResource("Resource_13")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

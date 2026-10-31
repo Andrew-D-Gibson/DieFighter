@@ -25,7 +25,7 @@ func before_each() -> void:
 ## Plays [param chain] as [param tile_id]'s, from (1, 1) of a 5x3 grid, with a
 ## die showing [param face] and a 3-dice player (a 10-charge drive) holding
 ## [param charge].
-func _play(tile_id: String, face: int, charge: int, chain: EffectChain = null) -> Array[EffectEvent]:
+func _play(tile_id: String, face: int, charge: int, chain: EffectChain = null, passes: int = 1) -> Array[EffectEvent]:
 	engine.injected.clear()
 	var resource: TileResource = load(TILES % tile_id)
 	Globals.player = make_player(3, charge)
@@ -40,6 +40,7 @@ func _play(tile_id: String, face: int, charge: int, chain: EffectChain = null) -
 	var context: EffectContext = EffectContext.new()
 	context.effect_source = tile
 	context.activator_die = die
+	context.repetitions = passes
 	await (chain if chain else resource.effect_chain).play(context, engine)
 	return engine.injected.duplicate()
 
@@ -109,12 +110,20 @@ func test_charge_spenders_cost_what_their_text_says() -> void:
 	assert_eq(_amounts(await _play("sabotage_charge_plus", 3, 10), SpendEngineChargeEvent), [4])
 
 
-func test_charge_spenders_ignore_echo() -> void:
-	# An echo plays the chain twice past one charge check, so the second pass
-	# would pay out without being able to pay.
+## Every tile takes an echo now, the charge spenders too. An echoed pass is
+## the chain played twice: each pass asks for its price (one it can't afford
+## takes nothing), and the die is still handed on exactly once.
+func test_echoed_charge_spenders_pay_each_pass_and_hand_the_die_on_once() -> void:
 	for id: String in ["arc_tap", "afterburner_relay", "bootstrap_injector",
 			"sabotage_charge", "repo_beam", "overdraw_coil"]:
 		for suffix: String in ["", "_plus"]:
-			var resource: TileResource = load(TILES % (id + suffix))
-			assert_false(resource.can_be_echoed, id + suffix)
-			assert_string_ends_with(resource.description, "Ignores (echo)")
+			var events: Array[EffectEvent] = await _play(id + suffix, 1, 10, null, 2)
+			var handoffs: int = 0
+			for event: EffectEvent in events:
+				if event is GiveDieToPlayerEvent or event is GiveDieToTargetEvent \
+						or event is PassDieToTileEvent:
+					handoffs += 1
+			assert_eq(handoffs, 1, "%s hands its die on once" % (id + suffix))
+			if id != "overdraw_coil":
+				assert_eq(engine.injected_of(SpendEngineChargeEvent).size(), 2,
+					"%s asks for its price each pass" % (id + suffix))
