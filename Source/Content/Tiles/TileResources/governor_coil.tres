@@ -123,7 +123,7 @@ animations = [{
 script = ExtResource("2_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Governor Coil[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge[/color] equal to die. [color=orange]Give[/color] die as (die_1)"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]charge[/color] equal to die. [color=orange]Give[/color] die as (die_1)"
 rarity = 2
 textures = SubResource("SpriteFrames_governor")
 uses_per_turn = 2

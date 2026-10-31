@@ -129,7 +129,7 @@ script = ExtResource("2_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Governor Coil+[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]engine charge[/color] equal to die +2. [color=orange]Give[/color] die as (die_1)"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]charge[/color] equal to die +2. [color=orange]Give[/color] die as (die_1)"
 rarity = 2
 textures = SubResource("SpriteFrames_governor")
 uses_per_turn = 2

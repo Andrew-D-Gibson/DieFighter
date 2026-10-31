@@ -113,7 +113,7 @@ script = ExtResource("2_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Ram Scoop+[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]3 engine charge[/color] per surrounding empty cell"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]3 charge[/color] per surrounding empty cell"
 textures = SubResource("SpriteFrames_ram_scoop")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_act")]([SubResource("Resource_act_die"), SubResource("Resource_act_combat"), SubResource("Resource_act_target")])

@@ -92,7 +92,7 @@ animations = [{
 [resource]
 script = ExtResource("7_1fn31")
 tile_name = "[color=purple]Juke Thrusters[/color]"
-description = "[color=yellow]Any die[/color] -> Gain 4% (evasion) per pip until your next turn. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die[/color] -> Gain 4% (evasion) per pip until your next turn"
 upgraded_version = ExtResource("9_pfnoh")
 textures = SubResource("SpriteFrames_3dhdj")
 uses_per_turn = -1

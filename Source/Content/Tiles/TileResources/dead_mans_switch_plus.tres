@@ -73,7 +73,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Dead Man's Switch+[/color]"
-description = "[color=yellow]Fatal hit while fully charged[/color] -> Cancel it. Spend all [color=purple]engine charge[/color]. [color=yellow]Your turn starts[/color] -> Gain [color=purple]2 engine charge[/color]"
+description = "[color=yellow]Fatal hit while fully charged[/color] -> Cancel it. Spend all [color=purple]charge[/color]. [color=yellow]Your turn starts[/color] -> Gain [color=purple]2 charge[/color]"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

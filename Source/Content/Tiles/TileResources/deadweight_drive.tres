@@ -134,14 +134,19 @@ script = ExtResource("script_5")
 effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_juice_5"), SubResource("Resource_step10"), SubResource("Resource_step11")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
+[sub_resource type="Resource" id="Resource_act_not_full"]
+script = ExtResource("script_1")
+type = 8
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [resource]
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Deadweight Drive[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to half your missing [color=purple]engine charge[/color]"
+description = "(die_1) or (die_2) -> Deal [color=red]damage[/color] equal to half your missing [color=purple]charge[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
+activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3"), SubResource("Resource_act_not_full")])
 effect_chain = SubResource("Resource_chain12")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

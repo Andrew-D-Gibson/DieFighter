@@ -70,7 +70,7 @@ animations = [{
 [resource]
 script = ExtResource("4_u40on")
 tile_name = "[color=purple]Slipstream Vane[/color]"
-description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=purple]2 engine charge[/color]"
+description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=purple]2 charge[/color]"
 rarity = 1
 upgraded_version = ExtResource("6_ak1uk")
 textures = SubResource("SpriteFrames_twk7m")
