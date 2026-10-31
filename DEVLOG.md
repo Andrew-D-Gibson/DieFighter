@@ -4,6 +4,72 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Enemy damage smoke: out on the kill, off the face
+
+- A dying enemy's damage smoke now goes out the instant its kill starts (top of `Enemy._on_death`, before the red flash, speed lines and hitstop), on both the player's kills and ship-on-ship kills. `ShipDamageSmoke.extinguish()` hides the node, which takes the haze already in the air with it, stops the emitters, unhooks it from the hull's `Health` so a late heal can't relight it, and frees it. `EnemyGraphicsManager.clear_damage_smoke()` is the entry point. The wreck never had smoke (ShipWreck copies only sprites), so nothing returns there.
+- Plume spots keep off the ship's face. The picker now skips the middle column of the hull (44% of its width) from just behind its centre to the nose, where every enemy's cockpit, eye or core sits; sheets are nose-down, so smoke rising from the rear or the wings drifts away from the face. A hull too small to fit three spaced spots off the face still uses it.
+- The plumes' grey is 60% opaque now (`_PLUME_HAZE`); the orange fire at the source stays solid so the damage still reads. `smoke_ramp()` takes the haze, so the opening cutscene's engines-out trail on the Doomed ship keeps its full-strength smoke.
+- *Design call:* one rule in the picker rather than hand-pinned `DamageSmokePoints` on 32 ship scenes. All 32 hulls checked in a before/after gallery; none needed a pin. New enemies get it for free, and `DamageSmokePoints` still overrides for an off-centre face.
+- *Design call:* no edit to `opening_cutscene.gd`. The Survivor is an `attacker_ship_graphics.tscn` instance smoked through `ShipDamageSmoke.attach()`, so its plume moved with the Attacker's (now behind the eyes, trailing aft) and still matches the ambush. Checked in an offline render of the cutscene.
+- Tests: a dying Attacker's smoke is hidden and queued to free on the killing blow and stays out after a heal; picked spots stay off each hull's face (this test fails on 10 hulls with the old picker).
+
+## 2026-10-30 — Map caption asks for charge, pixel halo, a bigger "..."
+
+- **"Charge Engines" on the map.** With nothing hovered, no Fate zone under
+  the cursor and the gate shut, the map caption now reads "Charge Engines"
+  (yellow, no icon) until the drive can jump, then goes back to "You are
+  here". `Map._engines_charged` is kept by `_update_ui()`, which already
+  follows `Events.engine_charge_changed` and `start_scenario`, so the caption
+  flips the moment charge crosses the line, both ways. "Engine charged" means
+  `Player.is_engine_charged()`, the same test the jump arrow tiles use; the
+  Outrigger's sail and the Carousel's reactor both fill that same
+  `engine_charge`, so there's nothing ship-specific. New CSV row
+  `MAP_HINT_CHARGE_ENGINES` (55 px of the 66 px strip in m3x6).
+  `MapHint` drops the icon gap when a caption has no icon, so text-only
+  captions centre properly.
+  - *Design call:* no icon. The here arrow points at the player's dot, and a
+    12 px icon plus the text would be 70 px, wider than the strip. Text alone
+    also leaves translators the whole 66 px.
+  - *Design call:* "Jump right!" at an open gate still outranks "Charge
+    Engines". The request was to replace "You are here"; flag if the open-gate
+    caption should also ask for charge while the drive is short.
+- **Pixelated gate halo.** The map's SubViewport renders at 6x (720x450 for a
+  120x75 map), so the halo's `draw_circle` rings came out smooth. `MapGateAura`
+  now fills whole map pixels, row spans in map-world space (one unit = one
+  game pixel), so the rings and the beat ring step like the art around them,
+  and stay on the grid when the hovered gate scales to 1.3x. The motes stay
+  as they were. No SubViewport needed: `JuicePixelated` is built for the
+  main camera/ScreenFrame, not the map's own viewport.
+- **Bigger wasted-die "...".** New `JuiceEvent.Flag.BIG` (juice_flags bit
+  "Big") makes a CALLOUT print at the big-hit size (2x, whole-number scale,
+  still crisp, same pop). `do_nothing.tres` sets it, so Do Nothing, jams and
+  blocked actions all get the bigger ellipsis. On a ship at the top of the
+  screen the edge clamp keeps it over the hull rather than rising above.
+  - *Design call:* 2x, not 3x: at 3x the outline turns into a slab bigger
+    than the dots.
+
+## 2026-10-30 — Tutorial polish: quicker raider, readable hologram, arrow wipe, dimmed last card
+
+- **First card**: the opening shot no longer waits for the whole line plus a 0.4 s beat. New `TutorialStep.opening_strike_deadline` lets it go a set time after the card appears (whichever of that and "text in + beat" comes first); `ambush_intro.tres` uses 1.8 s. Measured at 60 fps: shot released 1.8 s after the card instead of 2.78 s, lands ~1 s sooner.
+  - *Design call:* "the time the enemy waits" read as the wait inside the card. The step's 1.4 s `time_delay` covers the raider's fly-in, so cutting that instead would put the card up before the ship lands. The shot now fires as the last words type out.
+- **First card's oval**: `highlight_enemy_and_hull.aseprite` loses its bottom row (y 75, x 225-241), which caught the top edge of the Map tab.
+- **Hologram face**: `hologram_figure.gdshader` (used only by the tutorial popup) is lighter. Alpha shimmer is 0.93-1.0 (was 0.78), a new `pixel_drift` (0.25) makes the shimmer move over the face nearly as one instead of as per-pixel speckle, tint 0.03, scanlines 0.025, row tears 0.01. A new `feature_contrast` (1.6, about the face's lit #43A6FC) pushes the eyes and mouth darker.
+  - *Design call:* lessening alone left the face close to the raw art, which is still low-contrast (eyes and mouth are one shade off the skin). The contrast stretch is a small addition so it reads as a face that's talking.
+- **Jump arrow reveal**: the tutorial's right arrow was supposed to fade up out of its dark slot, but `tile.gdshader` writes its own alpha and ignores `modulate`, so it popped in. New `JumpArrowReveal` (Source/Systems/Game/Map/) plays the systems/map "coming online" wipe (map_reveal_shader, inverted, 3 px cells from the top-left) on a stand-in copy of the arrow's frame over 0.9 s, then fades the copy off onto the real sprite, which has the highlight glow the copy lacks. `map.gd` only swaps its modulate tween for the call.
+  - *Design call:* left `tile.gdshader` alone. Making every tile honour modulate would fix the fade too, but would change tiles game-wide.
+- **Last card**: "The rest is up to you" now has a mask with no cutouts (`highlight_dim_all.aseprite`), so the whole screen dims behind it like the other steps.
+- Known nit: going from the retarget card to the last card, the old lead highlight fading out while the new card's mask fades in lets the screen brighten for about 0.2 s. The same crossfade happens elsewhere.
+
+## 2026-10-30 — Coming-soon ships, a clean music cut into a new run, the rift tear question
+
+- **Ship select: Outrigger and Carousel are coming soon.** `ShipResource.coming_soon` (set on `outrigger.tres` and `carousel.tres`) draws the ship's card in the palette's greys: the hull through `codex_locked.gdshader`, its name, stats and grid map in #8E8B85/#63605C/#343330, a dim grey frame, and "Coming soon…" (`SHIP_CARD_COMING_SOON`) in place of its pitch. Clicking it does nothing and plays no hover/pick sound; the arrow keys skip over it (`ShipSelectPopup._next_pickable`); Launch refuses it. If the ship remembered from this session is coming soon (an AutoPilot `--ship carousel` gauntlet leaves it selected), the popup opens on the first pickable ship, the Die Fighter.
+  - *Design call:* the ships aren't hidden or removed. `ShipCatalog.all()/find()` are unchanged, so the AutoPilot's `--ship`, the Scenario Lab, the Codex and GUT still fly them, and **Continue on a save that was flying one still loads it on that ship** (falling back to the Die Fighter would drop its tiles into holes).
+  - Tests: `test_ship_select_coming_soon.gd` (6).
+- **New run: the run's music cuts in at full once the menu's has faded.** The opening cutscene already held a beat of black while `MusicDirector.stop(1.5)` faded the menu track, and only then cued `trailer_1`; but it cued it with a 3 s fade-in. `opening_cutscene.music_fade_in_seconds` is now 0, so the track starts at full volume the moment the menu's is gone. A skip mid-beat also cuts straight in. Continue (2 s crossfade from the menu) and every in-run cue are untouched; they don't share this path.
+  - Tests: two in `test_music_director.gd` (a no-fade cue after a stop is at full gain; the cutscene's defaults).
+- **The Fate rift tear isn't missing; it was never in those skies.** `FateRiftTear` is a static object of `rift_space.tres` only, which only the FATE Rift encounter and the Bastion gate use. Offline renders of both, in the real game scene, show it breathing at (62, 40). The tutorial's two fights (the opening ambush and `COMBAT_tutorial_pair`) fly under `star_field.tres` (blue star / storm giant set pieces), and the opening cutscene's Fate (black hole, storm, rift nebula) has never had the tear either (`git log -S fate_rift_tear`). No code change.
+  - *Open question for the user:* if the tear should appear in the opening cutscene's Fate shot or the tutorial sky, that's a new addition, not a regression fix.
+
 ## 2026-10-30 — Tiles unlock family by family
 
 - **New players start on 61 Basic tiles**: every offered tile without an
