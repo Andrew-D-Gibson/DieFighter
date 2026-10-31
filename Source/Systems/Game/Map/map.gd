@@ -313,9 +313,9 @@ func _compute_hint(hovered: int) -> Array:
 	if not _engines_charged:
 		# No icon: the here arrow points at the player's dot, which isn't what
 		# this is about, and the strip is too narrow for a 12px icon beside
-		# the text. Yellow, like the other caption that tells the player
-		# what to do.
-		return [null, tr("MAP_HINT_CHARGE_ENGINES"), Globals.yellow]
+		# the text. Purple like "You are here", which it stands in for: it's
+		# the resting caption, not a hovered destination.
+		return [null, tr("MAP_HINT_CHARGE_ENGINES"), Globals.purple]
 	return [_HERE_ARROW, tr("MAP_HINT_YOU_ARE_HERE"), Globals.purple]
 
 

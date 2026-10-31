@@ -58,6 +58,7 @@ func test_idle_caption_asks_for_charge_until_the_engine_can_jump() -> void:
 	assert_null(caption[0], "no arrow: it would point at the player's dot")
 	assert_eq(caption[1], tr("MAP_HINT_CHARGE_ENGINES"))
 	assert_ne(caption[1], "MAP_HINT_CHARGE_ENGINES", "the key has an English line")
+	assert_eq(caption[2], Globals.purple, "the resting caption's purple, like You are here")
 
 	# The setter emits engine_charge_changed, which flips the caption back.
 	player.engine_charge = player.max_engine_charge
