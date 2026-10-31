@@ -42,7 +42,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_step7"]
 script = ExtResource("script_3")
 category = 2
-amount = 3
+amount = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -67,9 +67,33 @@ category = 1
 subtype = 2
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_stream_a"]
+script = ExtResource("script_3")
+category = 4
+subtype = 21
+amount = 8
+color = Color(0.77254903, 0.32156864, 0.94509804, 1)
+juice_flags = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_spend_a"]
+script = ExtResource("script_3")
+category = 1
+subtype = 4
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cond_a"]
+script = ExtResource("4_sxh30")
+if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_stream_a"), SubResource("Resource_spend_a"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_step8")])
+category = 7
+subtype = 11
+amount = 2
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
 [sub_resource type="Resource" id="Resource_chain9"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_step8")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_cond_a")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_evt10"]
@@ -104,7 +128,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_step15"]
 script = ExtResource("script_3")
 category = 2
-amount = 3
+amount = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_3"]
@@ -129,9 +153,33 @@ category = 1
 subtype = 2
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_stream_b"]
+script = ExtResource("script_3")
+category = 4
+subtype = 21
+amount = 8
+color = Color(0.77254903, 0.32156864, 0.94509804, 1)
+juice_flags = 4
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_spend_b"]
+script = ExtResource("script_3")
+category = 1
+subtype = 4
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_cond_b"]
+script = ExtResource("4_sxh30")
+if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step11"), SubResource("Resource_stream_b"), SubResource("Resource_spend_b"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step16")])
+category = 7
+subtype = 11
+amount = 2
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
 [sub_resource type="Resource" id="Resource_chain17"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step11"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step16")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_cond_b")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f1_0"]
@@ -153,7 +201,8 @@ animations = [{
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Counterweight Battery[/color]"
-description = "[color=yellow]Enemy turn ends[/color] -> Gain [color=blue]3 shields[/color]"
+description = "[color=yellow]Enemy turn ends[/color] -> Spend [color=purple]2 charge[/color]: Gain [color=blue]5 shields[/color]"
+can_be_echoed = false
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

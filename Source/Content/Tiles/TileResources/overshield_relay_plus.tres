@@ -42,7 +42,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "+3 SHIELDS"
+string_param = "+5 SHIELDS"
 color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

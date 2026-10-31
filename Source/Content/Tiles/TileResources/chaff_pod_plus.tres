@@ -128,7 +128,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Chaff Pod+[/color]"
-description = "(die_1) -> Apply 2 (jammed) to [color=purple]target[/color]"
+description = "(die_1) -> Apply 2 (jammed)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3")])
