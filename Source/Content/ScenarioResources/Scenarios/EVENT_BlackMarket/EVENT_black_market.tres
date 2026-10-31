@@ -40,6 +40,7 @@ dice_probability = 0.25
 
 [resource]
 script = ExtResource("ext_7")
+sectors = 4
 map_icon = ExtResource("ext_8")
 background_resource = ExtResource("ext_9")
 starting_enemies = Array[ExtResource("ext_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])

@@ -22,6 +22,7 @@ reward_resource = SubResource("Resource_reward0")
 
 [resource]
 script = ExtResource("ext_5")
+sectors = 2
 map_icon = ExtResource("ext_6")
 background_resource = ExtResource("ext_7")
 starting_enemies = Array[ExtResource("ext_1")]([SubResource("Resource_spawn0")])

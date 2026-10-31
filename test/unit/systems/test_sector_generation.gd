@@ -125,6 +125,103 @@ func test_the_gate_keeps_a_seeded_maps_layout() -> void:
 			"and an ordinary fight %d to the right" % distance)
 
 
+# ── Each sector is a layer of the fleet ──────────────────────────────────────
+
+const TAIL: int = 1
+const BELLY: int = 2
+const SPINE: int = 4
+const REARGUARD: String = "res://Source/Content/Factions/rearguard.tres"
+
+
+func _pooled(manager: GameStateManager) -> Array[ScenarioResource]:
+	var pooled: Array[ScenarioResource] = []
+	pooled.append_array(manager.combat_scenarios)
+	pooled.append_array(manager.question_scenarios)
+	pooled.append_array(manager.elite_scenarios)
+	return pooled
+
+
+func test_an_untagged_encounter_fits_every_sector() -> void:
+	var anywhere := ScenarioResource.new()
+	for sector_index: int in range(5):
+		assert_true(anywhere.deals_into(sector_index))
+
+
+func test_a_tagged_encounter_keeps_to_its_layers() -> void:
+	var checkpoint := ScenarioResource.new()
+	checkpoint.sectors = BELLY | SPINE
+	assert_false(checkpoint.deals_into(0))
+	assert_true(checkpoint.deals_into(1))
+	assert_true(checkpoint.deals_into(2))
+	assert_true(checkpoint.deals_into(3), "a sector past the Spine is dealt the Spine's encounters")
+
+
+func test_every_dealt_encounter_names_its_layer() -> void:
+	# An untagged encounter would turn up in every sector, which is never
+	# what a fight with a faction behind it means.
+	for scenario: ScenarioResource in _pooled(_main_state_manager()):
+		assert_ne(scenario.sectors, 0, scenario.resource_path.get_file())
+
+
+func test_each_sector_is_dealt_only_its_own_layer() -> void:
+	var manager: GameStateManager = _main_state_manager()
+	for sector_index: int in range(3):
+		for run_seed: int in range(1, 31):
+			for scenario: ScenarioResource in _roll_sector(manager, run_seed, sector_index):
+				assert_true(scenario.deals_into(sector_index),
+					"seed %d dealt %s into sector %d" % [run_seed, scenario.resource_path.get_file(), sector_index + 1])
+
+
+func test_each_layer_holds_enough_to_fill_its_sector() -> void:
+	# A sector draws ~7-9 stops without repeating one. An elite list shorter
+	# than the most elites a sector rolls stops drawing early, which shifts
+	# every later roll of a seeded map (the tutorial's included).
+	var manager: GameStateManager = _main_state_manager()
+	for sector_index: int in range(3):
+		var label: String = "sector %d" % (sector_index + 1)
+		assert_gte(ScenarioResource.allowed_in_sector(manager.elite_scenarios, sector_index).size(),
+			manager.elites_per_sector.y, label + " elites")
+		assert_gte(ScenarioResource.allowed_in_sector(manager.combat_scenarios, sector_index).size(),
+			7, label + " combats")
+		assert_gte(ScenarioResource.allowed_in_sector(manager.question_scenarios, sector_index).size(),
+			4, label + " events")
+
+
+func test_a_sector_pick_always_spends_one_draw() -> void:
+	# A layer's short lists run down to a single option inside a sector, and
+	# pick_random() spends no draw on one. The sector's own pick must.
+	var manager: GameStateManager = _main_state_manager()
+	var one: Array[ScenarioResource] = [manager.empty_scenario]
+	var rng: RandomNumberGenerator = RNGManager.get_rng(RNGManager.Bucket.RUN)
+	RNGManager.start_new_run(TUTORIAL_SEED)
+	var before: int = rng.state
+	GameStateManager._pick_one(one)
+	assert_ne(rng.state, before)
+
+
+func test_a_sector_pick_matches_pick_random_otherwise() -> void:
+	# So every seeded map whose lists never ran that short comes out as it did.
+	var pool: Array[ScenarioResource] = _main_state_manager().combat_scenarios
+	for run_seed: int in range(1, 40):
+		RNGManager.start_new_run(run_seed)
+		var expected: ScenarioResource = RNGManager.pick_random(RNGManager.Bucket.RUN, pool)
+		RNGManager.start_new_run(run_seed)
+		assert_eq(GameStateManager._pick_one(pool), expected, "seed %d" % run_seed)
+
+
+func test_the_tail_meets_no_rearguard_but_what_it_left_behind() -> void:
+	# The Rearguard sits safe in the Spine. In the Tail there is only the
+	# sentry drone the line forgot when it moved on.
+	var manager: GameStateManager = _main_state_manager()
+	for run_seed: int in [TUTORIAL_SEED, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
+		for scenario: ScenarioResource in _roll_sector(manager, run_seed, 0):
+			for ship: EnemyStateRewardResource in scenario.starting_enemies:
+				var enemy: EnemyResource = ship.enemy_resource
+				if enemy and enemy.faction and enemy.faction.resource_path == REARGUARD:
+					assert_eq(enemy.resource_path.get_file(), "cannon_drone.tres",
+						"seed %d dealt %s into the Tail" % [run_seed, scenario.resource_path.get_file()])
+
+
 ## The tutorial pins the fight its jump lands in over the seeded map. The pin
 ## replaces that one stop and leaves every other where the seed put it.
 func test_a_pinned_stop_replaces_only_its_slot() -> void:

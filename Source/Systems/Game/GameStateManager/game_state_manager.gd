@@ -325,16 +325,18 @@ func _randomize_sector_scenarios() -> void:
 			current_game_save.sector_scenarios
 		)
 		
-		# 30% chance of a new question scenario
-		if len(question_scenario_options) > 0 and RNGManager.randf(RNGManager.Bucket.RUN) <= 0.3:
+		# 30% chance of a new question scenario. Rolled even when there are
+		# none left, so running out doesn't shift every later roll.
+		var question_roll: float = RNGManager.randf(RNGManager.Bucket.RUN)
+		if len(question_scenario_options) > 0 and question_roll <= 0.3:
 			current_game_save.sector_scenarios.append(
-				RNGManager.pick_random(RNGManager.Bucket.RUN, question_scenario_options)
+				_pick_one(question_scenario_options)
 			)
 
 		# Otherwise pick a combat scenario
 		elif len(combat_scenario_options) > 0:
 			current_game_save.sector_scenarios.append(
-				RNGManager.pick_random(RNGManager.Bucket.RUN, combat_scenario_options)
+				_pick_one(combat_scenario_options)
 			)
 
 		# If we ever make it here (we really shouldn't but still),
@@ -344,9 +346,7 @@ func _randomize_sector_scenarios() -> void:
 			all_scenarios.append_array(combats)
 			all_scenarios.append_array(questions)
 			if all_scenarios.size() > 0:
-				current_game_save.sector_scenarios.append(
-					RNGManager.pick_random(RNGManager.Bucket.RUN, all_scenarios)
-				)
+				current_game_save.sector_scenarios.append(_pick_one(all_scenarios))
 			else:
 				current_game_save.sector_scenarios.append(empty_scenario)
 
@@ -468,9 +468,17 @@ func _add_elites() -> void:
 		)
 		if options.is_empty():
 			return
-		current_game_save.sector_scenarios.append(
-			RNGManager.pick_random(RNGManager.Bucket.RUN, options)
-		)
+		current_game_save.sector_scenarios.append(_pick_one(options))
+
+
+## One encounter from [param options], always spending exactly one draw of the
+## RUN stream. RNGManager.pick_random() spends none on a single option
+## (randi_range of one value doesn't roll), and each layer's lists are short
+## enough to run down to one inside a sector, which would shift every later
+## roll of a seeded map (the tutorial's included). For two or more options it
+## picks exactly what pick_random() would.
+static func _pick_one(options: Array[ScenarioResource]) -> ScenarioResource:
+	return options[RNGManager.randi(RNGManager.Bucket.RUN) % options.size()]
 
 
 ## Patches the hull for surviving a sector. Health.change_health() clamps to
@@ -489,15 +497,20 @@ func _repair_after_sector() -> void:
 ## on the identical encounter three times in one run makes the jump gate feel
 ## like a reset rather than progress.
 func _pick_arrival_scenario() -> ScenarioResource:
-	if current_game_save.sector_index == 0 or question_scenarios.is_empty():
+	# Only this sector's own events: landing in the Spine on a Tail encounter
+	# would make the jump gate feel like it led nowhere.
+	var events: Array[ScenarioResource] = ScenarioResource.allowed_in_sector(
+		question_scenarios, current_game_save.sector_index
+	)
+	if current_game_save.sector_index == 0 or events.is_empty():
 		return starting_scenario
 
 	var unused: Array[ScenarioResource] = Utils.array_while_excluding(
-		question_scenarios,
+		events,
 		current_game_save.sector_scenarios
 	)
 	if unused.is_empty():
-		unused = question_scenarios
+		unused = events
 
 	return RNGManager.pick_random(RNGManager.Bucket.RUN, unused)
 

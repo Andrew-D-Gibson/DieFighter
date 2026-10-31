@@ -64,6 +64,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
 script = ExtResource("script_0")
+sectors = 6
 map_icon = ExtResource("tex_icon")
 background_resource = ExtResource("bg_0")
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1"), SubResource("Resource_spawn2")])

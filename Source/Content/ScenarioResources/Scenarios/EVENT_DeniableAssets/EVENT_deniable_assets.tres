@@ -65,6 +65,7 @@ max_money_pickup = 30
 
 [resource]
 script = ExtResource("ext_8")
+sectors = 4
 map_icon = ExtResource("ext_9")
 background_resource = ExtResource("ext_10")
 starting_enemies = Array[ExtResource("ext_0")]([SubResource("Resource_2"), SubResource("Resource_4"), SubResource("Resource_6")])

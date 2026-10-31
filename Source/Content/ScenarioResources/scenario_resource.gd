@@ -34,6 +34,16 @@ extends Resource
 ## The environment monitor still comes up, its lamp blinking unread.
 @export var announce_region: bool = true
 
+## The layers of the fleet this encounter belongs to (LORE.md §3): the Tail is
+## sector 1, the Belly sector 2, the Spine sector 3. Each sector is dealt only
+## its own layer's encounters, so the Rearguard's checkpoints stay in the Spine
+## and the Undertow's scavengers in the Tail. None ticked fits every sector.
+## A sector past the last layer is dealt the last layer's encounters.
+@export_flags("Tail", "Belly", "Spine") var sectors: int = 0
+
+## How many layers `sectors` names.
+const LAYER_COUNT: int = 3
+
 @export_category('Boss')
 ## The name stamped across the boss intro card when this fight starts. Leave
 ## empty for an encounter that isn't a boss fight: no card plays.
@@ -54,11 +64,21 @@ func earliest_sector() -> int:
 	return earliest
 
 
+## Whether this encounter belongs to sector [param sector_index]'s layer of the
+## fleet. See `sectors`.
+func deals_into(sector_index: int) -> bool:
+	if sectors == 0:
+		return true
+	var layer: int = clampi(sector_index, 0, LAYER_COUNT - 1)
+	return sectors & (1 << layer) != 0
+
+
 ## Only the encounters in [param scenarios] that may be dealt into sector
-## [param sector_index]. See earliest_sector().
+## [param sector_index]: those of its layer (deals_into()) whose ships it is
+## ready for (earliest_sector()).
 static func allowed_in_sector(scenarios: Array[ScenarioResource], sector_index: int) -> Array[ScenarioResource]:
 	var allowed: Array[ScenarioResource] = []
 	for scenario: ScenarioResource in scenarios:
-		if scenario and scenario.earliest_sector() <= sector_index:
+		if scenario and scenario.earliest_sector() <= sector_index and scenario.deals_into(sector_index):
 			allowed.append(scenario)
 	return allowed

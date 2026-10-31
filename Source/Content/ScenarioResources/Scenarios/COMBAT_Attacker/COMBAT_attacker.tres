@@ -32,6 +32,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 
 [resource]
 script = ExtResource("1_n0owd")
+sectors = 1
 map_icon = ExtResource("2_u3vcg")
 background_resource = ExtResource("1_imak8")
 starting_enemies = Array[ExtResource("2_nencf")]([SubResource("Resource_wdgmr")])
