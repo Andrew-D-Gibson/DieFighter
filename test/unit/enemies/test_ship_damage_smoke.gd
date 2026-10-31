@@ -6,6 +6,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 
 const GRAPHICS := "res://Source/Content/Enemies/EnemyShipGraphicScenes/"
 const ATTACKER_GRAPHICS: PackedScene = preload("res://Source/Content/Enemies/EnemyShipGraphicScenes/attacker_ship_graphics.tscn")
+const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
+const ATTACKER: EnemyResource = preload("res://Source/Content/Enemies/EnemyResources/attacker.tres")
 
 
 func _hull(scene: PackedScene = ATTACKER_GRAPHICS) -> Sprite2D:
@@ -86,3 +88,26 @@ func test_cutscene_survivor_matches_the_ambush_attacker() -> void:
 	var hull: int = Enemy.starting_hull(max_health, attacker.starting_health_fraction)
 	assert_gt(ShipDamageSmoke.plume_count(float(hull) / float(max_health)), 0,
 		"the ambush's Attacker arrives smoking")
+
+
+func test_a_dying_ship_puts_its_smoke_out_at_once() -> void:
+	var ship: Enemy = ENEMY_SCENE.instantiate()
+	ship.enemy_resource = ATTACKER
+	var state: ScenarioShipState = ScenarioShipState.new()
+	state.faction = ScenarioManager.Faction.PIRATE
+	ship.scenario_state = state
+	add_child_autofree(ship)
+	# Its dice go to the survivors on death; there are none.
+	Globals.enemy_manager = autofree(EnemyManager.new())
+	Globals.enemy_manager.enemies = [ship] as Array[Enemy]
+	ship.health.change_health(-ceili(ship.health.max_health * 0.8))
+	var smoke: ShipDamageSmoke = ship.graphics_manager.ship_graphics.get_node("DamageSmoke")
+	assert_eq(_lit(smoke), ShipDamageSmoke.THRESHOLDS.size(), "a fifth of its hull: every plume")
+
+	ship.health.change_health(-ship.health.health)
+	assert_false(smoke.visible, "the haze already in the air goes with it, not just the emitters")
+	assert_true(smoke.is_queued_for_deletion())
+	assert_eq(_lit(smoke), 0)
+	ship.health.change_health(5)
+	assert_eq(_lit(smoke), 0, "nothing relights it on the way out")
+	assert_false(smoke.visible)

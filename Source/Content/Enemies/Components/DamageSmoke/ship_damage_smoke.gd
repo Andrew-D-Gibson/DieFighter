@@ -75,6 +75,19 @@ func set_hull_fraction(fraction: float) -> void:
 		_plumes[i].emitting = i < lit
 
 
+## Puts the smoke out for good, including what's already in the air: the
+## ship is dying, and its kill should read as one clean silhouette. Stops
+## listening to the hull too, so nothing relights it on the way out.
+func extinguish() -> void:
+	if _health and _health.health_set.is_connected(_on_health_set):
+		_health.health_set.disconnect(_on_health_set)
+	_health = null
+	visible = false
+	for plume: CPUParticles2D in _plumes:
+		plume.emitting = false
+	queue_free()
+
+
 ## Keeps the plumes in step with [param health] from here on.
 func track(health: Health) -> void:
 	if _health:
