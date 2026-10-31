@@ -91,7 +91,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]War Footing+[/color]"
-description = "[color=yellow]Your turn starts[/color] -> Red tiles deal +2 damage for the rest of the fight, up to +6. [color=yellow]Hull hit[/color] -> -1"
+description = "[color=yellow]Your turn starts[/color] -> Red tiles deal +2 damage this fight, up to +6. [color=yellow]Hull hit[/color] -> -1"
 rarity = 2
 offered_as_reward = false
 is_upgrade = true

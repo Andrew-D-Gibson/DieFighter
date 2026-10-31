@@ -16,7 +16,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_3phsw"]
 script = ExtResource("8_gicjh")
 category = 2
-amount = 100
+amount = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]

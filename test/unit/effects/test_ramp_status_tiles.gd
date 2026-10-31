@@ -123,6 +123,23 @@ func _stacks(ship: Node, status_id: StringName) -> int:
 	return status.stacks if status else 0
 
 
+# ── Spotter Drone ─────────────────────────────────────────────────────────────
+
+func test_spotter_drone_exposes_the_target_and_you() -> void:
+	for tile_id: String in ["spotter_drone", "spotter_drone_plus"]:
+		var drone: Tile = _tile(tile_id)
+		var applied: Array[EffectEvent] = _of(
+			await _respond(drone, TileEvent.EventType.ON_ENEMY_TURN_OVER), ApplyStatusEvent
+		)
+		assert_eq(applied.size(), 2, tile_id)
+		if applied.size() != 2:
+			continue
+		assert_eq(applied[0].amount, 3 if tile_id == "spotter_drone" else 5, tile_id)
+		assert_true(targeted in applied[0].targets, "the target is exposed")
+		assert_eq(applied[1].amount, 2, "%s costs the same" % tile_id)
+		assert_eq(applied[1].targets, [Globals.player] as Array[Node], "and so are you")
+
+
 # ── Ratchet Cannon ────────────────────────────────────────────────────────────
 
 func test_ratchet_cannon_takes_only_a_four() -> void:

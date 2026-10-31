@@ -127,7 +127,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=yellow]Target Painter+[/color]"
-description = "[color=yellow]Any die[/color] -> Apply (exposed) to [color=purple]target[/color] equal to die +2"
+description = "[color=yellow]Any die[/color] -> Apply (exposed) equal to die +2"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

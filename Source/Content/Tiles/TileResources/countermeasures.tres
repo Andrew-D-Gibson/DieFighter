@@ -14,6 +14,11 @@
 script = ExtResource("script_act")
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
+[sub_resource type="Resource" id="Resource_act_harmful"]
+script = ExtResource("script_act")
+type = 22
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [sub_resource type="Resource" id="Resource_act_2"]
 script = ExtResource("script_act")
 type = 4
@@ -73,6 +78,6 @@ description = "[color=yellow]Any die[/color] -> Move your statuses to [color=pur
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_harmful")])
 effect_chain = SubResource("Resource_chain_7")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
