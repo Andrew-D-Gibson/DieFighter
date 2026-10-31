@@ -24,7 +24,7 @@ texture = ExtResource("2_hull")
 position = Vector2(-7, -13)
 
 [node name="EngineParticles2" parent="." instance=ExtResource("3_engine")]
-position = Vector2(-4, -13)
+position = Vector2(-4, -12)
 
 [node name="EngineParticles3" parent="." instance=ExtResource("3_engine")]
 position = Vector2(4, -14)

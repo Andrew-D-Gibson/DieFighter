@@ -21,7 +21,7 @@ material = SubResource("ShaderMaterial_oknjr")
 texture = ExtResource("1_hx235")
 
 [node name="EngineParticles" parent="." unique_id=1542671433 instance=ExtResource("2_hx235")]
-position = Vector2(-5, -11)
+position = Vector2(-6, -13)
 
 [node name="EngineParticles2" parent="." unique_id=1615275938 instance=ExtResource("2_hx235")]
-position = Vector2(5, -11)
+position = Vector2(6, -11)

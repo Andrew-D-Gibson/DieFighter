@@ -20,7 +20,7 @@ material = SubResource("ShaderMaterial_jir27")
 texture = ExtResource("2_6kq45")
 
 [node name="EngineParticles" parent="." unique_id=959841529 instance=ExtResource("3_1g7le")]
-position = Vector2(-5, -11)
+position = Vector2(-5, -9)
 
 [node name="EngineParticles2" parent="." unique_id=1228155059 instance=ExtResource("3_1g7le")]
-position = Vector2(4, -11)
+position = Vector2(5, -9)
