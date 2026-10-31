@@ -125,8 +125,8 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
-tile_name = "[color=yellow]Bounty Scanner[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die -1. [color=yellow]Destroyed[/color]: Gain 8 credits"
+tile_name = "[color=red]Bounty Scanner[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die -1. [color=yellow]Kill[/color]: Gain 8 credits"
 rarity = 1
 uses_per_turn = -1
 textures = SubResource("SpriteFrames_tile")

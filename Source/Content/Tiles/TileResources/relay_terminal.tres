@@ -22,7 +22,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 [sub_resource type="Resource" id="Resource_act_3"]
 script = ExtResource("script_act")
 type = 1
-acceptable_values = Array[int]([6])
+acceptable_values = Array[int]([4, 5, 6])
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_step_4"]
@@ -153,7 +153,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Relay Terminal[/color]"
-description = "(die_6) -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], +3 per time die was (fed)"
+description = "[color=yellow]Die above[/color] (die_3) -> Deal [color=red]3 damage[/color], +3 per time die was (fed)"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

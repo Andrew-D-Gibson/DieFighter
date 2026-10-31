@@ -10,6 +10,11 @@
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
 [ext_resource type="Resource" uid="uid://b3urokei4v38e" path="res://Source/Content/Tiles/TileResources/debt_collector_plus.tres" id="upgrade_plus"]
 
+[sub_resource type="Resource" id="Resource_act_holds"]
+script = ExtResource("script_act")
+type = 20
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [sub_resource type="Resource" id="Resource_step_1"]
 script = ExtResource("script_effect")
 subtype = 8
@@ -147,11 +152,11 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
-tile_name = "[color=green]Debt Collector[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color] to [color=purple]target[/color] per die it holds"
+tile_name = "[color=red]Debt Collector[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color] per die target holds"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
-activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_16"), SubResource("Resource_act_17")])
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_16"), SubResource("Resource_act_17"), SubResource("Resource_act_holds")])
 effect_chain = SubResource("Resource_chain_15")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

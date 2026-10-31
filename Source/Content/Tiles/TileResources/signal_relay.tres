@@ -118,9 +118,8 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
-tile_name = "[color=green]Signal Relay[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color]. (feed_right)"
-rarity = 2
+tile_name = "[color=red]Signal Relay[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color]. (feed_right)"
 textures = SubResource("Resource_frames3")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2")])

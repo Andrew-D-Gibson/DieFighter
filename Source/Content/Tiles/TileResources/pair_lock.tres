@@ -165,7 +165,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Pair Lock[/color]"
-description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die that matches it[/color]: Deal [color=red]damage[/color] to [color=purple]target[/color] equal to 4x die. [color=orange]Give[/color] both"
+description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die that matches it[/color]: Deal [color=red]damage[/color] equal to 4x die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

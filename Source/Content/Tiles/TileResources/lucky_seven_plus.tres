@@ -160,7 +160,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Lucky Seven+[/color]"
-description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die that adds up to 7 with it[/color]: Deal [color=red]20 damage[/color] to [color=purple]target[/color]. [color=orange]Give[/color] held die. [color=orange]Return[/color] die"
+description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die summing to 7 with it[/color]: Deal [color=red]20 damage[/color]. [color=orange]Return[/color] second die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

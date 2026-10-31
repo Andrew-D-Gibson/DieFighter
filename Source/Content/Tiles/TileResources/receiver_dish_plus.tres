@@ -141,7 +141,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Receiver Dish+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color] to [color=purple]target[/color], or [color=red]11[/color] if die was (fed)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color], or [color=red]11[/color] if die was (fed)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

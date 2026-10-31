@@ -168,7 +168,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Ratchet Cannon+[/color]"
-description = "(die_4) -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], +3 per earlier use this fight (+[data]ratchet[/data])"
+description = "(die_4) -> Deal [color=red]3 damage[/color], +3 per earlier use this fight (+[data]ratchet[/data])"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true
