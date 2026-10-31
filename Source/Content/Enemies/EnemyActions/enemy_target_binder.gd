@@ -22,9 +22,13 @@ extends RefCounted
 ## every raid the same prey. The targeting computer draws an arc per bound
 ## ship, and a Tender spread over three escorts buried the formation in arcs
 ## the player had to untangle; "this turn it's guarding *that* one" reads at
-## a glance, and gives the player a pair to break up. The first slot to bind
-## picks the partner; a relay that can't reach it without looping is
-## rerolled like one with no ally at all, rather than opening a second arc.
+## a glance, and gives the player a pair to break up.
+##
+## The ally partner is the one in worst shape when the tables are rolled
+## (most_damaged()), so a repair or a shield goes where it's needed and the
+## player can see who's being saved. Prey is still picked at random. A relay
+## that can't reach the partner without looping is rerolled like one with no
+## ally at all, rather than opening a second arc.
 
 
 ## Binds every slot of every ship in [param ships] against [param roster].
@@ -59,6 +63,10 @@ static func bind_slot(
 
 	var binding: EnemyActionResource.Binding = action.get_binding()
 	var candidates: Array[Enemy] = candidates_for(ship, action, roster)
+	# Settled before the relay filter below: the partner is whoever needs it
+	# most, not whoever this slot happens to be able to reach.
+	if binding == EnemyActionResource.Binding.ALLY and not partners.has(binding) and not candidates.is_empty():
+		partners[binding] = most_damaged(candidates)
 	if partners.has(binding):
 		candidates = candidates.filter(func(other: Enemy) -> bool: return other == partners[binding])
 	if action.get_relay() != EnemyActionResource.Relay.NONE:
@@ -72,6 +80,34 @@ static func bind_slot(
 	action.bound_target = RNGManager.pick_random(RNGManager.Bucket.ENEMY_AI, candidates)
 	partners[binding] = action.bound_target
 	return true
+
+
+## The ship of [param ships] with the least of its hull left, as a share of
+## its max; then the one with the least hull outright; then a draw. Read at
+## roll time, so it's who was worst off as the turn began.
+static func most_damaged(ships: Array[Enemy]) -> Enemy:
+	var worst: Array[Enemy] = []
+	for ship: Enemy in ships:
+		if worst.is_empty():
+			worst.append(ship)
+			continue
+		var order: int = _compare_damage(ship, worst[0])
+		if order < 0:
+			worst = [ship]
+		elif order == 0:
+			worst.append(ship)
+	if worst.size() == 1:
+		return worst[0]
+	return RNGManager.pick_random(RNGManager.Bucket.ENEMY_AI, worst)
+
+
+## Negative when [param a] is worse off than [param b], 0 when level.
+static func _compare_damage(a: Enemy, b: Enemy) -> int:
+	var fraction_a: float = EnemyActionSituation.hull_fraction(a)
+	var fraction_b: float = EnemyActionSituation.hull_fraction(b)
+	if not is_equal_approx(fraction_a, fraction_b):
+		return -1 if fraction_a < fraction_b else 1
+	return signi(a.health.health - b.health.health)
 
 
 ## The ships [param action] could be bound to.
