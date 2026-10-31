@@ -70,14 +70,16 @@ const HELD_SCALE: float = 0.75
 ## would go on writing the old holder's scale after the handover.
 var _flourish_tween: Tween
 
-## A destroyed ship's dice hang at the wreck while it blows apart, then cross
-## to their new holders at a pace the eye can follow. They used to be yanked
-## across in the same instant as the explosion, and the player couldn't tell
-## who had got what. Game time, so the kill's hitstop holds them too.
+## A destroyed ship's dice going home to the player hang at the wreck while it
+## blows apart, then cross at a pace the eye can follow. They used to be
+## yanked across in the same instant as the explosion, and the player couldn't
+## tell who had got what. Game time, so the kill's hitstop holds them too.
+## (Dice going to another ship hang there under its tractor beam instead.)
 const _DEATH_LINGER_SECONDS: float = 0.55
 const _DEATH_CROSSING_SECONDS: float = 0.5
 
-## Carries the die from a destroyed ship to its new holder. See
+## Holds the die at a destroyed ship's wreck until it leaves: the wait for its
+## turn in the volley of beams, or the linger and crossing home. See
 ## hand_off_after_death().
 var _handoff_tween: Tween
 ## Where the crossing to the new holder began.
@@ -182,27 +184,57 @@ func create_flourish_tween() -> Tween:
 	return _flourish_tween
 
 
-## How long a destroyed ship's dice take to reach their new holders, from
-## the moment it dies: the linger at the wreck plus the crossing.
+## How long a destroyed ship's dice take to cross home to the player, from
+## the moment it dies: the linger at the wreck plus the crossing. The engine
+## holds the next chain at least this long after any death; dice that go to
+## another ship extend that hold to their own landing (EnemyDiceManager).
 static func death_handoff_seconds() -> float:
 	return (_DEATH_LINGER_SECONDS + _DEATH_CROSSING_SECONDS) / Globals.animation_speed
 
 
-## Called once a destroyed ship has handed this die on: it hangs where it is
-## while the wreck goes up, then crosses to its new holder. The holder is read
-## every frame of the crossing (Draggable.home_position), since the survivors
-## close the gap the dead ship left at the same moment. Until it lands, its
-## Draggable leaves it alone, and it can't be picked up.
-func hand_off_after_death() -> void:
+## Called once a destroyed ship has handed this die on, and returns how many
+## game seconds it will take to land. [param delay] is its place in the
+## wreck's volley: a hold of several leaves a beat apart rather than as one.
+##
+## Bound for another ship, it waits out [param delay] where it is, then that
+## ship's tractor beam takes it, so every die reads as taken by whoever took
+## it. Bound for the player, who has no beam, it hangs while the wreck goes
+## up and then crosses home. The holder is read every frame of the crossing
+## (Draggable.home_position), since the survivors close the gap the dead ship
+## left at the same moment. Until it leaves, its Draggable leaves it alone,
+## and it can't be picked up.
+func hand_off_after_death(delay: float = 0.0) -> float:
 	cancel_handoff()
-	draggable.held_by_code = true
 	var speed: float = Globals.animation_speed
+	var holder: Node = host_queue.get_parent() if host_queue else null
+	if holder is Enemy:
+		var heir: Enemy = holder
+		if delay <= 0.0:
+			TractorBeam.pull(self, heir)
+		else:
+			draggable.held_by_code = true
+			_handoff_tween = create_tween()
+			_handoff_tween.tween_interval(delay / speed)
+			_handoff_tween.tween_callback(_beam_to.bind(heir))
+		return delay / speed + TractorBeam.seconds_to_land(value)
+
+	draggable.held_by_code = true
 	_handoff_tween = create_tween()
-	_handoff_tween.tween_interval(_DEATH_LINGER_SECONDS / speed)
+	_handoff_tween.tween_interval((_DEATH_LINGER_SECONDS + delay) / speed)
 	_handoff_tween.tween_callback(func() -> void: _handoff_from = global_position)
 	_handoff_tween.tween_method(_cross_to_holder, 0.0, 1.0, _DEATH_CROSSING_SECONDS / speed) \
 		.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_handoff_tween.tween_callback(_end_handoff)
+	return (_DEATH_LINGER_SECONDS + delay + _DEATH_CROSSING_SECONDS) / speed
+
+
+## The die's turn in a wreck's volley: its new holder's beam takes over. A
+## holder that has since lost it (spent, or died and passed it on) has no
+## claim, and TractorBeam.pull() ignores it.
+func _beam_to(heir: Enemy) -> void:
+	_end_handoff()
+	if is_instance_valid(heir):
+		TractorBeam.pull(self, heir)
 
 
 ## Cuts a death hand-off short and gives the die back to its Draggable: for
@@ -213,7 +245,8 @@ func cancel_handoff() -> void:
 	_end_handoff()
 
 
-## Whether the die is still on its way from a destroyed ship.
+## Whether the die is still waiting at a destroyed ship's wreck, or crossing
+## home from it. A die a beam has taken over is the beam's (TractorBeam).
 func is_handing_off() -> bool:
 	return _handoff_tween != null
 

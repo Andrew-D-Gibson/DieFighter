@@ -24,6 +24,8 @@ func before_each() -> void:
 func _pirate_state() -> ScenarioShipState:
 	var state: ScenarioShipState = ScenarioShipState.new()
 	state.faction = ScenarioManager.Faction.PIRATE
+	# Fighting, so a leaving ship's dice pass to the others rather than home.
+	state.attitude = Enemy.Attitude.AGGRESSIVE
 	return state
 
 

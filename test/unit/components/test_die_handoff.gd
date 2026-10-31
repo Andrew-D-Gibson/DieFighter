@@ -25,6 +25,8 @@ func _ship() -> Enemy:
 	ship.enemy_resource = INTERCEPTOR
 	var state: ScenarioShipState = ScenarioShipState.new()
 	state.faction = ScenarioManager.Faction.PIRATE
+	# Fighting, so a dying ship's dice pass to the next one rather than home.
+	state.attitude = Enemy.Attitude.AGGRESSIVE
 	ship.scenario_state = state
 	return add_child_autofree(ship)
 
