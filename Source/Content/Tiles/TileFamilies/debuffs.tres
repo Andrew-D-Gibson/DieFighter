@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="TileFamilyResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_ypfpw"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_l0xqh"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/target_painter.tres" id="3_wfs35"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/spotter_drone.tres" id="4_ndf7f"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/flare_burst.tres" id="5_7q3eu"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/dampener.tres" id="6_k63td"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/concussion_round.tres" id="7_jtx5d"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/suppression_pulse.tres" id="8_1n4ki"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/hex_coil.tres" id="9_65nty"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/sensor_spike.tres" id="10_0qv8v"]
+
+[resource]
+script = ExtResource("1_ypfpw")
+family_name = "TILE_FAMILY_DEBUFFS"
+description = "TILE_FAMILY_DEBUFFS_DESC"
+accent_color = Color(0.9490196, 0.6117647, 0.3647059, 1)
+tiles = Array[ExtResource("2_l0xqh")]([ExtResource("3_wfs35"), ExtResource("4_ndf7f"), ExtResource("5_7q3eu"), ExtResource("6_k63td"), ExtResource("7_jtx5d"), ExtResource("8_1n4ki"), ExtResource("9_65nty"), ExtResource("10_0qv8v")])

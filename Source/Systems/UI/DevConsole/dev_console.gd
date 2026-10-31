@@ -116,6 +116,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'damage_enemies':
 			_damage_enemies(command.slice(1))
 
+		'families':
+			_families(command.slice(1))
+
 		'fps':
 			_toggle_fps_display()
 
@@ -483,6 +486,55 @@ func _unlock_tiles() -> void:
 		tile.draggable.dragging_allowed = true
 
 
+## Lists the tile families in unlock order, or changes what's unlocked:
+## [code]unlock <id|next|all>[/code], [code]reset[/code], or
+## [code]show <id>[/code] to preview a family's unlock card.
+func _families(command_args: Array[String] = []) -> void:
+	var action: String = command_args[0] if command_args.size() > 0 else ''
+	var target: String = command_args[1] if command_args.size() > 1 else ''
+	match action:
+		'':
+			for family: TileFamilyResource in TileUnlocks.families():
+				command_history.append_text('\n\t\t%s %s (%d tiles)' % [
+					'[color=green]+[/color]' if TileUnlocks.is_unlocked(family) else '[color=gray]-[/color]',
+					family.id(), family.tiles.size()])
+			if not TileUnlocks.is_gated():
+				command_history.append_text('\n\t\t[color=gray]Not the player\'s own run: every tile is on offer.[/color]')
+		'unlock':
+			var unlocking: Array[TileFamilyResource] = []
+			if target == 'all':
+				unlocking = TileUnlocks.families()
+			elif target == 'next' and TileUnlocks.next_locked_family():
+				unlocking = [TileUnlocks.next_locked_family()]
+			elif TileUnlocks.family_by_id(target):
+				unlocking = [TileUnlocks.family_by_id(target)]
+			if unlocking.is_empty():
+				command_history.append_text('\n\t\tUsage: families unlock <id|next|all>')
+				return
+			for family: TileFamilyResource in unlocking:
+				CollectionManager.record_family(family.id())
+			command_history.append_text('\n[center]Unlocked %d tile families.[/center]' % unlocking.size())
+		'reset':
+			CollectionManager.clear_families()
+			command_history.append_text('\n[center]Every tile family locked: Basic tiles only.[/center]')
+		'show':
+			var family: TileFamilyResource = TileUnlocks.family_by_id(target)
+			if family == null:
+				command_history.append_text('\n\t\tUsage: families show <id>')
+				return
+			if not is_instance_valid(Globals.jump_manager):
+				command_history.append_text('\n\t\tNo game running to show it in.')
+				return
+			var popup: TileUnlockPopup = preload("res://Source/Systems/UI/TileUnlockPopup/tile_unlock_popup.tscn").instantiate()
+			Globals.jump_manager.add_child(popup)
+			popup.global_position = Vector2.ZERO
+			popup.open(family, family.tiles, TileUnlocks.families().find(family) + 1, TileUnlocks.families().size())
+			popup.closed.connect(popup.queue_free)
+			_toggle_dev_console()
+		_:
+			command_history.append_text('\n\t\tUsage: families [unlock <id|next|all> | reset | show <id>]')
+
+
 # ── Misc ─────────────────────────────────────────────────────────────────────
 
 func _clear() -> void:
@@ -568,6 +620,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]clear_grid[/b]                    remove all tiles from grid')
 	command_history.append_text('\n[b]damage[/b] <amount>               damage player')
 	command_history.append_text('\n[b]damage_enemies[/b] <amount>       damage all enemies')
+	command_history.append_text('\n[b]families[/b] [unlock|reset|show]   list tile families, unlock/lock them, preview a card')
 	command_history.append_text('\n[b]fps[/b]                           toggle FPS display')
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')

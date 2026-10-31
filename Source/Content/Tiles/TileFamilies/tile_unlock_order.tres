@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="TileUnlockOrderResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_family_resource.gd" id="1_birae"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/relays.tres" id="2_kwshp"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/debuffs.tres" id="3_15i3e"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/burn.tres" id="4_yhhkv"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/countdown.tres" id="5_qo7c4"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/die_shaping.tres" id="6_qky76"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/disruption.tres" id="7_t1rf1"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/duplication.tres" id="8_7bxw7"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileFamilies/routing.tres" id="9_domws"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/TileFamilies/tile_unlock_order_resource.gd" id="10_4uk38"]
+
+[resource]
+script = ExtResource("10_4uk38")
+families = Array[ExtResource("1_birae")]([ExtResource("2_kwshp"), ExtResource("3_15i3e"), ExtResource("4_yhhkv"), ExtResource("5_qo7c4"), ExtResource("6_qky76"), ExtResource("7_t1rf1"), ExtResource("8_7bxw7"), ExtResource("9_domws")])
