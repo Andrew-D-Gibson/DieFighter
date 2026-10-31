@@ -6,7 +6,7 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
-[ext_resource type="Texture2D" uid="uid://c7264ve0f2xiv" path="res://Assets/Textures/Tiles/GreenTiles/debt_collector-Sheet.png" id="tex"]
+[ext_resource type="Texture2D" uid="uid://dkf8k114q0u3l" path="res://Assets/Textures/Tiles/RedTiles/debt_collector-Sheet.png" id="tex"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
 [ext_resource type="Resource" uid="uid://b3urokei4v38e" path="res://Source/Content/Tiles/TileResources/debt_collector_plus.tres" id="upgrade_plus"]
 

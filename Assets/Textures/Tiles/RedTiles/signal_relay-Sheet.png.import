@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://crohbnj8y5oai"
-path="res://.godot/imported/signal_relay-Sheet.png-d94ae35a4c27147d43dcd2d3beb53606.ctex"
+uid="uid://dk3mhrmsjm31"
+path="res://.godot/imported/signal_relay-Sheet.png-db310f48d4af6928fa8b7a3dbee0d9dd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/GreenTiles/signal_relay-Sheet.png"
-dest_files=["res://.godot/imported/signal_relay-Sheet.png-d94ae35a4c27147d43dcd2d3beb53606.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/signal_relay-Sheet.png"
+dest_files=["res://.godot/imported/signal_relay-Sheet.png-db310f48d4af6928fa8b7a3dbee0d9dd.ctex"]
 
 [params]
 
