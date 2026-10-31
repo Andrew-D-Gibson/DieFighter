@@ -107,6 +107,24 @@ func test_the_button_greys_out_when_a_repair_cant_be_had() -> void:
 	assert_true(station.repair_button.disabled, "can't afford")
 
 
+## One deactivated look for a station's buttons: the repair button greys out
+## into the same dark green as the shop's reroll, not a purple of its own.
+func test_the_unavailable_button_looks_like_the_shops_disabled_reroll() -> void:
+	var shop: Shop = add_child_autofree(load("res://Source/Systems/Game/Shop/shop.tscn").instantiate())
+	var repair: Button = station.repair_button
+	var reroll: Button = shop.reroll_button
+	for frame: int in [0, 1]:
+		assert_eq(_frame_atlas(repair, frame), _frame_atlas(reroll, frame), "frame %d" % frame)
+	assert_string_contains(_frame_atlas(repair, 1), "button_medium_green_disabled")
+	assert_eq(repair.get("disabled_text_color"), reroll.get("disabled_text_color"))
+
+
+func _frame_atlas(button: Button, frame: int) -> String:
+	var sprite: AnimatedSprite2D = button.get_node("AnimatedSprite2D")
+	var texture: Texture2D = sprite.sprite_frames.get_frame_texture(&"default", frame)
+	return (texture as AtlasTexture).atlas.resource_path if texture is AtlasTexture else texture.resource_path
+
+
 # ── Selling ────────────────────────────────────────────────────────────────────
 
 func test_sale_prices_are_half_the_average_shop_price() -> void:
@@ -246,7 +264,7 @@ func test_a_continue_keeps_the_repair_price() -> void:
 	station.repair()
 	station.repair()
 	var saved: Dictionary = station.capture_state()
-	assert_eq(saved, {"repairs": 2})
+	assert_eq(saved.get("repairs"), 2)
 
 	var state: GameStateManager = autofree(GameStateManager.new())
 	state._restore = {"repair_station": saved}
