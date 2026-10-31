@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+
+[resource]
+script = ExtResource("ext_0")
+dialogue = "Four hundred years. Not you."
+faction = 2
+attitude = 2

@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("2_73txg")
+dialogue = "Everyone back here is already dead."
 faction = 2
 attitude = 2
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

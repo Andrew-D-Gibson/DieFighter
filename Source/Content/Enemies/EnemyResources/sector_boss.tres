@@ -127,7 +127,7 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 [resource]
 script = ExtResource("script_2")
 enemy_name = "Sector Warden"
-description = "Gate authority. It gets less interested in protocol the worse things go for it."
+description = "Warlord of the Tail. It took its gate, and its title, from the Rearguard officer who held it before the line moved on. Gets meaner the worse things go for it."
 faction = ExtResource("faction_identity")
 max_health = 50
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1"), SubResource("Resource_pool2")])

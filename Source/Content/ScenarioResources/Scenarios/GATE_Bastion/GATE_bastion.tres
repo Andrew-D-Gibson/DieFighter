@@ -9,7 +9,8 @@
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
 [ext_resource type="Script" uid="uid://by46pdxrs2ri1" path="res://Source/Content/ScenarioResources/ship_hull_resource.gd" id="script_hull"]
-[ext_resource type="Resource" uid="uid://kfnsjk3tjcr0" path="res://Source/Content/ScenarioResources/Scenarios/GATE_SectorWarden/warden_combatant.tres" id="state_boss"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/bastion_silent.tres" id="state_boss"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/bastion_marshal.tres" id="state_marshal"]
 [ext_resource type="Texture2D" uid="uid://e4r8pfc36ryf" path="res://Assets/Textures/Map/EncounterIcons/jump_gate.png" id="tex_gate"]
 
 [sub_resource type="Resource" id="Resource_hull"]
@@ -43,7 +44,7 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 [sub_resource type="Resource" id="Resource_spawn1"]
 script = ExtResource("script_1")
 enemy_resource = ExtResource("enemy_core")
-starting_state = ExtResource("state_boss")
+starting_state = ExtResource("state_marshal")
 reward_resource = SubResource("Resource_reward1")
 mounted = true
 mount_offset = Vector2(0, -2)
@@ -73,5 +74,5 @@ sector_gate_scenario = true
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1"), SubResource("Resource_spawn2")])
 hull = SubResource("Resource_hull")
 boss_title = "THE BASTION"
-boss_subtitle = "The last gate. Break it apart."
+boss_subtitle = "The Marshal's fortress. Break it apart."
 metadata/_custom_type_script = "uid://bidpx7urxb1md"
