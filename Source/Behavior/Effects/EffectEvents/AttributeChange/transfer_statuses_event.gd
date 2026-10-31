@@ -1,7 +1,8 @@
 class_name TransferStatusesEvent
 extends EffectEvent
-## Moves every status on the actor onto the first target: the same stacks, now
-## working on the other ship, merged into any of the same status it has.
+## Moves every harmful status on the actor onto the first target: the same
+## stacks, now working on the other ship, merged into any of the same status it
+## has. Phased stays put: handing a cloak to the other side would only help it.
 ##
 ## Each status is rebuilt for its new host rather than re-pointed, because a
 ## status hooks things about its host when it's registered (a badge on that
@@ -14,9 +15,18 @@ func is_amplifiable() -> bool:
 
 
 ## Whether the actor has anything to move. An enemy's vent with nothing on it
-## does nothing, which EnemyActionResource treats like a blocked action.
+## does nothing, which EnemyActionResource treats like a blocked action, and
+## Countermeasures refuses the die (PLAYER_HAS_HARMFUL_STATUS).
 static func has_any(engine: ScenarioEngine, source: Node) -> bool:
-	return engine != null and is_instance_valid(source) and not engine.statuses_on(source).is_empty()
+	return engine != null and is_instance_valid(source) and not movable(engine, source).is_empty()
+
+
+static func movable(engine: ScenarioEngine, source: Node) -> Array[StatusModifier]:
+	var result: Array[StatusModifier] = []
+	for status: StatusModifier in engine.statuses_on(source):
+		if status.is_harmful():
+			result.append(status)
+	return result
 
 
 func resolve(engine: ScenarioEngine) -> void:
@@ -28,7 +38,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	if target.health.health <= 0:
 		return
 
-	var moving: Array[StatusModifier] = engine.statuses_on(actor)
+	var moving: Array[StatusModifier] = movable(engine, actor)
 	if moving.is_empty():
 		return
 	# Moving a debuff onto a ship is as hostile as applying one.

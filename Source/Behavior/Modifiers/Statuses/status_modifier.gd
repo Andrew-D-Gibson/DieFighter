@@ -43,6 +43,13 @@ var _host_engine: ScenarioEngine
 var _badge: StatusBadge
 
 
+## Whether the status hurts the ship it sits on. Every status does except
+## Phased, so moving statuses (TransferStatusesEvent) shifts only these, never
+## a ship's own cloak.
+func is_harmful() -> bool:
+	return true
+
+
 ## Folds a second application of the same status into this one. The default
 ## adds the stacks together; override for statuses that should refresh instead.
 func merge(incoming: StatusModifier) -> void:

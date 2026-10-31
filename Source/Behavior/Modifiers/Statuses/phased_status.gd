@@ -67,3 +67,7 @@ func announce_triggered() -> void:
 
 func get_trigger_text() -> String:
 	return "PHASED"
+
+
+func is_harmful() -> bool:
+	return false

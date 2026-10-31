@@ -346,6 +346,41 @@ func test_an_enemy_can_vent_its_statuses_onto_the_player() -> void:
 	assert_eq(player.get_status_bar().get_child_count(), 1)
 
 
+func test_transfer_leaves_phased_where_it_is() -> void:
+	var enemy := _enemy()
+	await _apply(player, &"phased", 1)
+	await _apply(player, &"burn", 2)
+	await _transfer(player, enemy)
+	assert_not_null(engine.find_status(player, &"phased"), "a cloak isn't handed over")
+	assert_null(engine.find_status(enemy, &"phased"))
+	assert_eq(engine.find_status(enemy, &"burn").stacks, 2)
+
+
+func test_countermeasures_check_wants_a_harmful_status_on_the_player() -> void:
+	var real_engine: ScenarioEngine = autofree(ScenarioEngine.new())
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.engine = real_engine
+	Globals.scenario_manager = manager
+	Globals.player = player
+	var check: ActivationResource = ActivationResource.new()
+	check.type = ActivationResource.ActivationType.PLAYER_HAS_HARMFUL_STATUS
+	assert_false(check.criteria_satisfied(null), "nothing on you")
+
+	var cloak: ApplyStatusEvent = ApplyStatusEvent.new()
+	cloak.status_id = &"phased"
+	cloak.amount = 1
+	cloak.targets = [player]
+	await cloak.resolve(real_engine)
+	assert_false(check.criteria_satisfied(null), "Phased doesn't count")
+
+	var burn: ApplyStatusEvent = ApplyStatusEvent.new()
+	burn.status_id = &"burn"
+	burn.amount = 1
+	burn.targets = [player]
+	await burn.resolve(real_engine)
+	assert_true(check.criteria_satisfied(null))
+
+
 func test_purge_vents_is_blocked_with_nothing_to_vent() -> void:
 	var real_engine: ScenarioEngine = autofree(ScenarioEngine.new())
 	var manager: ScenarioManager = autofree(ScenarioManager.new())

@@ -37,9 +37,10 @@ enum ActivationType {
 	## die that adds up to [member threshold] with it. With nothing held it
 	## takes any die.
 	SUMS_WITH_HELD_DIE,
-	## The ship this die was dropped against carries a status, any status. For
-	## a tile that works whatever statuses are there (Status Catalyst): with
-	## none it would eat the die.
+	## The ship this die was dropped against carries a status: any status, or
+	## the one named in [member data_key]. For a tile that works the statuses
+	## there (Status Catalyst any, Flashpoint "burn"): with none it would eat
+	## the die.
 	TARGETED_SHIP_HAS_STATUS,
 	## The player has [member threshold] hull or more. Gates tiles that spend
 	## hull (SPEND_HULL): set it one above the cost, so paying never kills.
@@ -52,6 +53,10 @@ enum ActivationType {
 	## The player's evasion (EvasionModifier) is below its cap. For a tile
 	## that adds evasion (Juke Thrusters): at the cap it would eat the die.
 	EVASION_BELOW_CAP,
+	## The player carries a harmful status (anything but Phased). For a tile
+	## that moves the player's statuses away (Countermeasures): with none it
+	## would eat the die.
+	PLAYER_HAS_HARMFUL_STATUS,
 }
 
 @export var type: ActivationType
@@ -63,7 +68,8 @@ enum ActivationType {
 # CHARGE_AT_LEAST / DICE_OWNED_AT_MOST / SHIELDS_AT_LEAST / TILE_DATA_AT_LEAST / HULL_AT_LEAST activation values
 @export var threshold: int = 0
 
-# TILE_DATA_AT_LEAST: the tile data entry to read.
+# TILE_DATA_AT_LEAST: the tile data entry to read. TARGETED_SHIP_HAS_STATUS:
+# a status id to require (empty = any status).
 @export var data_key: String = ""
 
 
@@ -176,7 +182,9 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 			var engine: ScenarioEngine = ScenarioEngine.current()
 			if not target or not engine:
 				return false
-			return not engine.statuses_on(target).is_empty(),
+			if data_key.is_empty():
+				return not engine.statuses_on(target).is_empty()
+			return engine.find_status(target, StringName(data_key)) != null,
 
 	ActivationType.HULL_AT_LEAST:
 		func(_die: Dice) -> bool:
@@ -201,6 +209,10 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 		func(_die: Dice) -> bool:
 			var evasion: EvasionModifier = EvasionModifier.find(ScenarioEngine.current())
 			return evasion != null and evasion.chance_percent() < EvasionModifier.MAX_PERCENT,
+
+	ActivationType.PLAYER_HAS_HARMFUL_STATUS:
+		func(_die: Dice) -> bool:
+			return TransferStatusesEvent.has_any(ScenarioEngine.current(), Globals.player),
 }
 
 
@@ -273,6 +285,9 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.EVASION_BELOW_CAP:
 		"ERROR_EVASION_MAXED",
+
+	ActivationType.PLAYER_HAS_HARMFUL_STATUS:
+		"ERROR_NO_STATUS_ON_YOU",
 }
 
 
@@ -305,4 +320,6 @@ func get_criteria_fail_text() -> String:
 	var text: String = TranslationServer.translate(failed_activation_messages[type])
 	if type == ActivationType.SUMS_WITH_HELD_DIE:
 		text = text.format({"total": threshold})
+	elif type == ActivationType.TARGETED_SHIP_HAS_STATUS and not data_key.is_empty():
+		text = TranslationServer.translate("ERROR_TARGET_LACKS_STATUS").format({"status": data_key.to_upper()})
 	return text
