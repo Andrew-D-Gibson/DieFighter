@@ -50,9 +50,45 @@ amount = -26
 color = Color(0.8157, 0.2118, 0.3373, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_self_target_a"]
+script = ExtResource("script_effect")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_self_amount_a"]
+script = ExtResource("script_effect")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_self_expose_a"]
+script = ExtResource("script_effect")
+category = 1
+subtype = 6
+string_param = "exposed"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_self_target_b"]
+script = ExtResource("script_effect")
+subtype = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_self_amount_b"]
+script = ExtResource("script_effect")
+category = 2
+amount = 2
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_self_expose_b"]
+script = ExtResource("script_effect")
+category = 1
+subtype = 6
+string_param = "exposed"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain_7"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_juice_1"), SubResource("Resource_step_6")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_juice_1"), SubResource("Resource_step_6"), SubResource("Resource_self_target_a"), SubResource("Resource_self_amount_a"), SubResource("Resource_self_expose_a")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_step_8"]
@@ -94,7 +130,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain_13"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_juice_2"), SubResource("Resource_step_12")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_juice_2"), SubResource("Resource_step_12"), SubResource("Resource_self_target_b"), SubResource("Resource_self_amount_b"), SubResource("Resource_self_expose_b")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_evt_14"]
@@ -122,7 +158,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=yellow]Spotter Drone+[/color]"
-description = "[color=yellow]Enemy turn ends[/color] -> Apply 5 (exposed) to [color=purple]target[/color]"
+description = "[color=yellow]Enemy turn ends[/color] -> Apply 5 (exposed). Apply 2 (exposed) to you"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

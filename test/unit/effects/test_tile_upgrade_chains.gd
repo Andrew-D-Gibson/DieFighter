@@ -35,8 +35,9 @@ func after_each() -> void:
 
 
 ## Plays [param tile_id]'s chain from (1, 1) of a 5x3 grid with a die showing
-## [param face], and returns what it produced.
-func _play(tile_id: String, face: int, charge: int = 0) -> Array[EffectEvent]:
+## [param face], and returns what it produced. [param neighbour] (a tile id),
+## when given, sits at (2, 1).
+func _play(tile_id: String, face: int, charge: int = 0, neighbour: String = "") -> Array[EffectEvent]:
 	engine.injected.clear()
 	var resource: TileResource = load(TILES % tile_id)
 	Globals.player = make_player(3, charge)
@@ -46,6 +47,12 @@ func _play(tile_id: String, face: int, charge: int = 0) -> Array[EffectEvent]:
 	tile.sprite_frames = null
 	tile.tile_resource = resource
 	grid.tile_locations[Vector2i(1, 1)] = tile
+	if neighbour != "":
+		var beside: Tile = autofree(TILE_SCENE.instantiate())
+		beside.sprite_frames = null
+		beside.tile_resource = load(TILES % neighbour)
+		grid.tile_locations[Vector2i(2, 1)] = beside
+		grid.set_cells([Vector2i(1, 1), Vector2i(2, 1)] as Array[Vector2i])
 	var die: Dice = autofree(DICE_SCENE.instantiate())
 	die.value = face
 	var context: EffectContext = EffectContext.new()
@@ -114,3 +121,8 @@ func test_surge_relay_plus_rerolls_then_adds_one() -> void:
 
 func test_grudge_cannon_plus_raises_its_plain_shot() -> void:
 	assert_eq(_amounts(await _play("grudge_cannon_plus", 5), DamageEvent), [6])
+
+
+func test_reloader_and_reloader_plus_give_surrounding_tiles_one_use() -> void:
+	assert_eq(_amounts(await _play("reloader", 3, 0, "chain_cannon"), AddUsesRemainingEvent), [1])
+	assert_eq(_amounts(await _play("reloader_plus", 3, 0, "chain_cannon"), AddUsesRemainingEvent), [1])

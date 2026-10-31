@@ -136,7 +136,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=yellow]Phantom Squadron[/color]"
-description = "[color=yellow]Any die[/color] -> If there are 4 or fewer dice in play, spawn (holograms) until 5 dice are in play"
+description = "[color=yellow]Any die[/color] -> Spawn (holograms) of die until you own 5 dice"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

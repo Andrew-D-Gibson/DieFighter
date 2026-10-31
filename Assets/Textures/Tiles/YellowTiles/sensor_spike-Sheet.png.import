@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dxrpxv1tp7o63"
-path="res://.godot/imported/sensor_spike.png-b55a15864adcfa042afa8dfa2ea6af00.ctex"
+uid="uid://crnlgq0ha2kxu"
+path="res://.godot/imported/sensor_spike-Sheet.png-94fcea590fb4a84e24911780a427a148.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/YellowTiles/sensor_spike.png"
-dest_files=["res://.godot/imported/sensor_spike.png-b55a15864adcfa042afa8dfa2ea6af00.ctex"]
+source_file="res://Assets/Textures/Tiles/YellowTiles/sensor_spike-Sheet.png"
+dest_files=["res://.godot/imported/sensor_spike-Sheet.png-94fcea590fb4a84e24911780a427a148.ctex"]
 
 [params]
 

@@ -136,7 +136,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=yellow]Phantom Squadron+[/color]"
-description = "[color=yellow]Any die[/color] -> If there are 5 or fewer dice in play, spawn (holograms) until 6 dice are in play"
+description = "[color=yellow]Any die[/color] -> Spawn (holograms) of die until you own 6 dice"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1
