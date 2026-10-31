@@ -88,19 +88,60 @@ func _draw() -> void:
 
 
 func _draw_halo() -> void:
+	# The map renders at window resolution, so a plain draw_circle comes out
+	# smooth. Draw in map-world space instead, where one unit is one game
+	# pixel, and fill whole pixels: the halo stays on the same chunky grid as
+	# the icons even while the gate is hovered and scaled up.
+	draw_set_transform_matrix(global_transform.affine_inverse())
+	var centre: Vector2 = global_position
+	var scale_factor: float = global_transform.get_scale().x
 	var open: bool = _gate_open()
 	var swell: float = 1.0 + 0.1 * sin(_time * TAU / _PULSE_SECONDS)
 	var strength: float = 1.6 if open else 1.0
 	for ring: Vector2 in _HALO_RINGS:
-		draw_circle(Vector2.ZERO, roundf(ring.x * swell), Color(_CYAN, ring.y * strength), true, -1.0, false)
+		_fill_pixel_disc(centre, roundf(ring.x * swell) * scale_factor, Color(_CYAN, ring.y * strength))
 	# The beat: a thin ring that swells out and fades, like the gate drawing
 	# breath. Twice as often once it's open.
 	var beat_period: float = _BEAT_SECONDS * (0.5 if open else 1.0)
 	var beat: float = fmod(_time, beat_period) / beat_period
 	if beat < 0.5:
 		var t: float = beat / 0.5
-		draw_arc(Vector2.ZERO, roundf(lerpf(10.0, 22.0, t)), 0.0, TAU, 32,
-				Color(_WHITE, 0.45 * (1.0 - t)), 1.0, false)
+		_fill_pixel_ring(centre, roundf(lerpf(10.0, 22.0, t)) * scale_factor,
+				Color(_WHITE, 0.45 * (1.0 - t)))
+
+
+## Every whole pixel whose centre lies within [param radius] of
+## [param centre], one row-long rect per row so no pixel is painted twice.
+func _fill_pixel_disc(centre: Vector2, radius: float, color: Color) -> void:
+	for row: int in range(floori(centre.y - radius), ceili(centre.y + radius) + 1):
+		var span: Vector2i = _row_span(centre, radius, row)
+		if span.y >= span.x:
+			draw_rect(Rect2(span.x, row, span.y - span.x + 1, 1), color)
+
+
+## A one-pixel ring: the pixels of the disc half a pixel wider than
+## [param radius], less those of the disc half a pixel narrower.
+func _fill_pixel_ring(centre: Vector2, radius: float, color: Color) -> void:
+	for row: int in range(floori(centre.y - radius - 0.5), ceili(centre.y + radius + 0.5) + 1):
+		var outer: Vector2i = _row_span(centre, radius + 0.5, row)
+		if outer.y < outer.x:
+			continue
+		var inner: Vector2i = _row_span(centre, radius - 0.5, row)
+		if inner.y < inner.x:
+			draw_rect(Rect2(outer.x, row, outer.y - outer.x + 1, 1), color)
+			continue
+		draw_rect(Rect2(outer.x, row, inner.x - outer.x, 1), color)
+		draw_rect(Rect2(inner.y + 1, row, outer.y - inner.y, 1), color)
+
+
+## First and last pixel column of [param row] whose centres fall inside the
+## disc; first > last when the row misses it.
+func _row_span(centre: Vector2, radius: float, row: int) -> Vector2i:
+	var dy: float = row + 0.5 - centre.y
+	if radius <= 0.0 or absf(dy) > radius:
+		return Vector2i(1, 0)
+	var half: float = sqrt(radius * radius - dy * dy)
+	return Vector2i(ceili(centre.x - half - 0.5), floori(centre.x + half - 0.5))
 
 
 func _draw_motes() -> void:
