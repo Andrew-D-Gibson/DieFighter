@@ -120,6 +120,17 @@ registration to testing. For how the systems work underneath, see
 - saved by its filename id (`ContentRegistry`). Filenames must be unique, and
   renaming one breaks existing saves that hold it.
 
+**Family (does a new player see it?):** a tile in no family is **Basic**,
+offered from a player's first run. A tile whose text uses an advanced
+keyword (Feed/Fed, Burn, Jammed, Scrambled, Exposed, Weakened, Hologram,
+Countdown, Echo) belongs in a `TileFamilyResource` under
+`Source/Content/Tiles/TileFamilies/`: add it to that family's `tiles`. One
+that leans on two mechanics goes in both families and is offered once both
+are unlocked. Evasion and Phased (you) count as Basic. `test_tile_families.gd`
+fails on an advanced tile left in no family. Families unlock in the order
+`tile_unlock_order.tres` lists them, one per new sector reached; reorder
+that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
+
 **Fields**
 - **Info**
   - `tile_name`: bbcode-coloured to match the tile's colour.

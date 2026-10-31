@@ -4,6 +4,37 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Tiles unlock family by family
+
+- **New players start on 61 Basic tiles**: every offered tile without an
+  advanced keyword (Evasion counts as Basic). The other 56 wait in eight
+  families, roughly simplest first:
+
+| # | Family | Tiles |
+|---|---|---|
+| 1 | Relays | Afterburner, Overshield, Signal, Toll, Surge, Leech Relay, Ballast Tanks, Booster Stage |
+| 2 | Debuffs | Target Painter, Spotter Drone, Flare Burst, Dampener, Concussion Round, Suppression Pulse, Hex Coil, Sensor Spike* |
+| 3 | Incendiaries | Incendiary Round, Napalm Vent, Fume Vent, Blowtorch, Heat Sink, Cinder Turbine, Flashpoint, Status Catalyst |
+| 4 | Countdowns | Pulse Repeater, Capacitor Bank, Countdown Cannon, Fuse Cutter, Time Bomb |
+| 5 | Die Shapers | Inverter, Nudge Down, Doubler, Polarizer, Welder |
+| 6 | Disruption | Chaff Pod, Crossed Wires, Sabotage Charge, Interdiction Net, Turncoat Cannon, Static Bloom, Fuse Payload* |
+| 7 | Duplication | Holo-Duplicator, Die Splitter, Bootstrap Injector, Phantom Squadron, Blood Valve, Opening Salvo, Echo Relay*, Pilot Light*, Fabricator* |
+| 8 | Routing | Crosslink, Parity Junction, Value Sorter, Scatter Router, Receiver Dish, Relay Terminal |
+
+  \* also in an earlier family; offered once both are unlocked.
+- **Each jump into sector 2 or 3**, in any run, unlocks the next family for
+  good. The gate jump holds in gold hyperspace on a card: the family's name
+  in its colour, a line on what it does, and its tiles popping in one by
+  one; pointing at one reads it out. Close lets the jump finish. The tiles
+  join salvage and shops at once, and one is in the new sector's first offer.
+  Two per run, so a player has everything after four runs.
+- The order is `tile_unlock_order.tres`: drag the families around in the
+  inspector to change it.
+- Dev console `families` lists/unlocks/resets them and `families show <id>`
+  previews a card.
+
+---
+
 ## 2026-10-30 — Engines evade, and four tiles that build on it
 
 - **A charged drive dodges.** Each enemy hit on the player has a 3% chance
