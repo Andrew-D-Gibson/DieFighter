@@ -11,6 +11,12 @@ extends RefCounted
 ## One slot per die face.
 const SLOT_COUNT: int = 6
 
+## The most slots one table may bind to another ship (an ally to help, a ship
+## to raid). Each one adds a die face to the arc the targeting computer draws
+## over the formation (BoundIntentArrow), and past three that badge crowds the
+## ships around it. Extra ones are swapped out, see _cap_bound_slots().
+const MAX_BOUND_SLOTS: int = 3
+
 ## What a slot gets when nothing in the pool is allowed. Handing the die back
 ## is the one thing that's always safe.
 const _FALLBACK_ACTION: EnemyActionResource = preload("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres")
@@ -47,6 +53,7 @@ static func roll(
 
 	if actions.size() >= SLOT_COUNT:
 		actions = actions.slice(0, SLOT_COUNT)
+		_cap_bound_slots(actions, mini(forced.size(), SLOT_COUNT), options, weights)
 		_number_slots(actions)
 		return actions
 
@@ -59,6 +66,7 @@ static func roll(
 	for i: int in range(open_slots - actions.size()):
 		actions.append(_weighted_pick(options, weights, weight_sum))
 	actions = actions.slice(0, open_slots)
+	_cap_bound_slots(actions, mini(forced.size(), open_slots), options, weights)
 
 	_place(actions, face_bias)
 	# Ascending faces, so each insert lands at its face with the earlier ones
@@ -67,6 +75,44 @@ static func roll(
 		actions.insert(face - 1, kept_option.get_action())
 	_number_slots(actions)
 	return actions
+
+
+## Swaps the bound slots of [param actions] past MAX_BOUND_SLOTS for draws
+## from the options that bind nothing, before the table is placed on faces.
+## The last ones drawn go first; the first [param keep] slots (the
+## tutorial's) are never touched. With nothing unbound in the pool, the slot
+## becomes a blank face.
+static func _cap_bound_slots(
+	actions: Array[EnemyActionResource],
+	keep: int,
+	options: Array[EnemyActionOptionResource],
+	weights: Array[float]
+) -> void:
+	var bound: Array[int] = []
+	for i: int in range(actions.size()):
+		if actions[i].get_binding() != EnemyActionResource.Binding.NONE:
+			bound.append(i)
+	if bound.size() <= MAX_BOUND_SLOTS:
+		return
+
+	var unbound: Array[EnemyActionOptionResource] = []
+	var unbound_weights: Array[float] = []
+	var weight_sum: float = 0.0
+	for n: int in range(options.size()):
+		if options[n].base_action.get_binding() == EnemyActionResource.Binding.NONE:
+			unbound.append(options[n])
+			unbound_weights.append(weights[n])
+			weight_sum += weights[n]
+
+	var excess: int = bound.size() - MAX_BOUND_SLOTS
+	for k: int in range(bound.size() - 1, -1, -1):
+		if excess == 0:
+			break
+		var slot: int = bound[k]
+		if slot < keep:
+			continue
+		actions[slot] = _weighted_pick(unbound, unbound_weights, weight_sum)
+		excess -= 1
 
 
 ## The pool's fills_kept_faces option this situation allows, or null. One is

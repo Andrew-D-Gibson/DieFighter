@@ -237,6 +237,132 @@ func test_a_slot_that_binds_nothing_stays_unbound() -> void:
 	assert_null(ship.turn_actions[0].bound_target)
 
 
+func test_the_ally_partner_is_the_most_damaged_ally() -> void:
+	var medic := _ship(Faction.PIRATE)
+	var scratched := _ship(Faction.PIRATE, 8, 10)
+	var wrecked := _ship(Faction.PIRATE, 12, 40)
+	var healthy := _ship(Faction.PIRATE, 5, 5)
+	var roster := _roster([medic, scratched, wrecked, healthy])
+	for run: int in range(10):
+		RNGManager.seed_scenario(run)
+		var tables: Array[EnemyActionResource] = [_ally_action(), _ally_action()]
+		medic.turn_actions = tables
+		EnemyTargetBinder.bind(_roster([medic]), roster)
+		assert_eq(medic.turn_actions[0].bound_target, wrecked, "30% of its hull beats 80%, whatever the raw hull")
+		assert_eq(medic.turn_actions[1].bound_target, wrecked)
+
+
+func test_an_even_share_goes_to_the_ship_with_less_hull() -> void:
+	var medic := _ship(Faction.PIRATE)
+	var big := _ship(Faction.PIRATE, 20, 40)
+	var small := _ship(Faction.PIRATE, 5, 10)
+	for run: int in range(10):
+		RNGManager.seed_scenario(run)
+		assert_eq(EnemyTargetBinder.most_damaged(_roster([big, small])), small)
+		assert_eq(EnemyTargetBinder.most_damaged(_roster([small, big])), small)
+
+
+func test_a_dead_level_tie_is_drawn_from_the_rng() -> void:
+	var twins: Array[Enemy] = _roster([_ship(Faction.PIRATE, 4, 10), _ship(Faction.PIRATE, 4, 10)])
+	var picked: Dictionary[Enemy, bool] = {}
+	for run: int in range(30):
+		RNGManager.seed_scenario(run)
+		picked[EnemyTargetBinder.most_damaged(twins)] = true
+	assert_eq(picked.size(), 2, "either twin can be picked")
+	RNGManager.seed_scenario(7)
+	var first: Enemy = EnemyTargetBinder.most_damaged(twins)
+	RNGManager.seed_scenario(7)
+	assert_eq(EnemyTargetBinder.most_damaged(twins), first, "the same seed picks the same twin")
+
+
+func test_raids_still_pick_their_prey_at_random() -> void:
+	var pirate := _ship(Faction.PIRATE)
+	var hurt := _ship(Faction.CIVILIAN, 1, 10)
+	var roster := _roster([pirate, hurt, _ship(Faction.CIVILIAN)])
+	var picked: Dictionary[Enemy, bool] = {}
+	for run: int in range(30):
+		RNGManager.seed_scenario(run)
+		var tables: Array[EnemyActionResource] = [_raid_action()]
+		pirate.turn_actions = tables
+		EnemyTargetBinder.bind(_roster([pirate]), roster)
+		picked[pirate.turn_actions[0].bound_target] = true
+	assert_eq(picked.size(), 2)
+
+
+# ── At most three bound faces ──────────────────────────────────────────────────
+
+func _bound_count(actions: Array[EnemyActionResource]) -> int:
+	var count: int = 0
+	for action: EnemyActionResource in actions:
+		if action.get_binding() != Binding.NONE:
+			count += 1
+	return count
+
+
+func test_a_table_never_binds_more_than_three_faces() -> void:
+	var ship := _ship(Faction.PIRATE)
+	var roster := _roster([ship, _ship(Faction.PIRATE), _ship(Faction.CIVILIAN)])
+	var pool := EnemyTurnActionList.new()
+	var options: Array[EnemyActionOptionResource] = [
+		_option(_ally_action(), 10.0), _option(_raid_action(), 10.0),
+		_option(_action(EffectEnums.TargetingSubtype.TARGET_PLAYER), 1.0),
+	]
+	pool.actions_possible = options
+	var hit_cap: bool = false
+	for run: int in range(100):
+		RNGManager.seed_scenario(run)
+		var table: Array[EnemyActionResource] = EnemyActionSelector.roll(pool, EnemyActionSituation.for_ship(ship, roster))
+		assert_eq(table.size(), 6)
+		var bound: int = _bound_count(table)
+		assert_lte(bound, EnemyActionSelector.MAX_BOUND_SLOTS, "raids and ally faces count together")
+		hit_cap = hit_cap or bound == EnemyActionSelector.MAX_BOUND_SLOTS
+	assert_true(hit_cap, "a pool this keen fills the cap")
+
+
+func test_a_pool_with_nothing_else_fills_the_rest_with_blanks() -> void:
+	var ship := _ship(Faction.PIRATE)
+	var roster := _roster([ship, _ship(Faction.PIRATE)])
+	var pool := EnemyTurnActionList.new()
+	var options: Array[EnemyActionOptionResource] = [_option(_ally_action())]
+	pool.actions_possible = options
+	var table: Array[EnemyActionResource] = EnemyActionSelector.roll(pool, EnemyActionSituation.for_ship(ship, roster))
+	assert_eq(_bound_count(table), 3)
+	assert_eq(table.size(), 6)
+
+
+func test_no_shipped_ship_rolls_more_than_three_bound_faces() -> void:
+	# Every ship in the content that can bind a face, rolled and bound in a
+	# crowded formation of its own kind and a civilian to raid.
+	var dir: String = "res://Source/Content/Enemies/EnemyResources"
+	var checked: int = 0
+	for file: String in DirAccess.get_files_at(dir):
+		if not file.ends_with(".tres"):
+			continue
+		var resource := load(dir + "/" + file) as EnemyResource
+		if resource == null:
+			continue
+		var pirates: Array[Enemy] = []
+		for i: int in range(4):
+			var ship := _ship(Faction.PIRATE)
+			ship.enemy_resource = resource
+			pirates.append(ship)
+		var roster: Array[Enemy] = pirates.duplicate()
+		roster.append(_ship(Faction.CIVILIAN))
+		for pool_index: int in range(resource.action_options.size()):
+			var pool: EnemyTurnActionList = resource.action_options[pool_index]
+			if pool == null:
+				continue
+			for run: int in range(25):
+				RNGManager.seed_scenario(run)
+				for ship: Enemy in pirates:
+					ship.turn_actions = EnemyActionSelector.roll(pool, EnemyActionSituation.for_ship(ship, roster))
+				EnemyTargetBinder.bind(pirates, roster)
+				for ship: Enemy in pirates:
+					assert_lte(_bound_count(ship.turn_actions), EnemyActionSelector.MAX_BOUND_SLOTS, file)
+				checked += 1
+	assert_gt(checked, 0)
+
+
 func test_every_ally_slot_of_a_ship_binds_the_same_ally() -> void:
 	# One partner a turn: the targeting computer draws one arc per bound ship,
 	# so a ship spread over three escorts would draw three.
