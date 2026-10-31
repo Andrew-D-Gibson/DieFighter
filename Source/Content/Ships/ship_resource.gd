@@ -12,6 +12,11 @@ extends Resource
 @export_multiline var description: String
 ## Left to right on the ship-select popup.
 @export var sort_order: int = 0
+## Still being built: its ship-select card shows greyed out with "Coming
+## soon" for a pitch, and can't be picked. Runs started outside the menu (the
+## AutoPilot's --ship, the Scenario Lab, tests) and a saved run on it still
+## fly it.
+@export var coming_soon: bool = false
 
 @export_category("Run Start")
 ## Hull, dice, credits and starting tiles for a new run. Every tile position

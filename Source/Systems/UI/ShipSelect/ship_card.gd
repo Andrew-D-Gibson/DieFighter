@@ -3,6 +3,8 @@ extends Control
 
 ## One ship on the ship-select popup: its hull, name, a map of its tile grid
 ## drawn from the ship's own layout, and its pitch. Click to pick it.
+## A coming-soon ship's card is drawn in the palette's greys and can't be
+## picked.
 
 signal picked(card: ShipCard)
 
@@ -16,6 +18,12 @@ const _BACKGROUND: Color = Color("#0f0c2e")
 const _BORDER: Color = Color("#463c91")
 const _BORDER_PICKED: Color = Color("#eed35d")
 const _CELL: Color = Color("#251c6b")
+## A coming-soon card: the palette's greys for its frame, text and map.
+const _LOCKED_SHADER: Shader = preload("res://Assets/Shaders/codex_locked.gdshader")
+const _LOCKED_BORDER: Color = Color("#63605c")
+const _LOCKED_TEXT: Color = Color("#8e8b85")
+const _LOCKED_TILE: Color = Color("#63605c")
+const _LOCKED_CELL: Color = Color("#343330")
 
 ## Size of one grid cell on the map, and the gap between cells.
 const _MAP_CELL: int = 4
@@ -27,11 +35,14 @@ var ship: ShipResource
 var is_picked: bool = false:
 	set(value):
 		is_picked = value
+		var text_color: Color = Globals.yellow if is_picked else Globals.white
 		_name_label.add_theme_color_override(
-			&"default_color", Globals.yellow if is_picked else Globals.white
+			&"default_color", _LOCKED_TEXT if locked else text_color
 		)
 		queue_redraw()
 
+## Coming soon: shown, but never picked.
+var locked: bool = false
 var _hovered: bool = false
 var _hull: TextureRect
 var _name_label: RichTextLabel
@@ -40,6 +51,7 @@ var _bob_time: float = 0.0
 
 func setup(for_ship: ShipResource) -> void:
 	ship = for_ship
+	locked = ship.coming_soon
 	custom_minimum_size = SIZE
 	size = SIZE
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -50,6 +62,10 @@ func setup(for_ship: ShipResource) -> void:
 	_hull.position = Vector2(0, 4)
 	_hull.size = Vector2(SIZE.x, 32)
 	_hull.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if locked:
+		var grey: ShaderMaterial = ShaderMaterial.new()
+		grey.shader = _LOCKED_SHADER
+		_hull.material = grey
 	add_child(_hull)
 
 	_name_label = _label(ship.display_name.to_upper(), Rect2(0, 34, SIZE.x, 14), 16)
@@ -60,12 +76,16 @@ func setup(for_ship: ShipResource) -> void:
 
 	# Formatted like tile text, so palette names ("orange", "purple") are the
 	# palette's, not Godot's named colours.
-	var description: RichTextLabel = _label(Utils.format_text(ship.description), Rect2(4, 81, SIZE.x - 8, 42), 16)
+	var pitch: String = tr("SHIP_CARD_COMING_SOON") if locked else Utils.format_text(ship.description)
+	var description: RichTextLabel = _label(pitch, Rect2(4, 81, SIZE.x - 8, 42), 16)
 	description.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	if locked:
+		stats.add_theme_color_override(&"default_color", _LOCKED_TEXT)
+		description.add_theme_color_override(&"default_color", _LOCKED_TEXT)
 
 	mouse_entered.connect(func() -> void:
 		_hovered = true
-		if not is_picked:
+		if not is_picked and not locked:
 			Events.play_sound.emit(_HOVER_SFX)
 		queue_redraw()
 	)
@@ -83,6 +103,8 @@ func _stats_text() -> String:
 	var start: GameSaveResource = ship.starting_save
 	var hull: String = tr("SHIP_CARD_HULL").format({"health": start.player_health, "max": start.player_max_health})
 	var dice: String = tr("SHIP_CARD_DICE").format({"dice": start.num_of_dice})
+	if locked:
+		return "%s  %s" % [hull, dice]
 	return "[color=#d03656]%s[/color]  [color=#eed35d]%s[/color]" % [hull, dice]
 
 
@@ -121,6 +143,9 @@ func _process(delta: float) -> void:
 func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.pressed \
 	and event.button_index == MOUSE_BUTTON_LEFT:
+		if locked:
+			accept_event()
+			return
 		if not is_picked:
 			Events.play_sound.emit(_PICK_SFX)
 		picked.emit(self)
@@ -134,6 +159,8 @@ func _draw() -> void:
 	var border: Color = ship.theme_color if _hovered else _BORDER.lerp(ship.theme_color, 0.45)
 	if is_picked:
 		border = _BORDER_PICKED
+	if locked:
+		border = _LOCKED_BORDER
 	draw_rect(Rect2(Vector2(0.5, 0.5), SIZE - Vector2.ONE), border, false, 1.0)
 	if is_picked:
 		# A soft inner glow, and bright corner brackets, so the pick reads
@@ -170,4 +197,7 @@ func _draw_grid_map() -> void:
 
 	for cell: Vector2i in cells:
 		var rect: Rect2 = Rect2(origin + Vector2(cell * pitch), Vector2.ONE * _MAP_CELL)
-		draw_rect(rect, ship.theme_color if starting.has(cell) else _CELL)
+		if locked:
+			draw_rect(rect, _LOCKED_TILE if starting.has(cell) else _LOCKED_CELL)
+		else:
+			draw_rect(rect, ship.theme_color if starting.has(cell) else _CELL)

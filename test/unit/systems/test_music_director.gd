@@ -152,6 +152,25 @@ func test_the_shipped_playlist_plays_the_trailer_once_then_holds_the_start_theme
 		assert_eq(wav.loop_mode, AudioStreamWAV.LOOP_DISABLED, "%s must end for the playlist to move on" % track.id)
 
 
+## The opening cutscene's beat: the menu's music fades away, then the run's
+## track cuts in at full volume.
+func test_a_cue_after_a_stop_with_no_fade_starts_at_full_volume() -> void:
+	_director.play_playlist(_playlist([&"menu", &"run"]))
+	var menu: MusicDeck = _director.active_deck()
+	_director.stop(1.5)
+	assert_eq(_director.current_track_id(), &"", "silent while the menu fades")
+	_director.play_track(&"run", 0.0)
+	assert_eq(_director.current_track_id(), &"run")
+	assert_eq(_director.active_deck().get_gain(), 1.0, "no fade-in")
+	assert_ne(_director.active_deck(), menu)
+
+
+func test_a_new_run_starts_its_music_without_a_fade_in() -> void:
+	var cutscene: GDScript = load("res://Source/Scenes/Cutscenes/opening_cutscene.gd")
+	assert_eq(cutscene.get_property_default_value(&"music_fade_in_seconds"), 0.0)
+	assert_gt(cutscene.get_property_default_value(&"music_fade_out_seconds"), 0.0, "the menu's music still fades out first")
+
+
 func _finish_active() -> void:
 	_director.active_deck().finished.emit()
 
