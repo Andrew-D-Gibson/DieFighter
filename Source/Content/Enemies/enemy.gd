@@ -36,8 +36,14 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 ## The resource containing the enemy's base stats and behavior
 @export var enemy_resource: EnemyResource
 
-## The current state of the enemy in the scenario
-@export var scenario_state: ScenarioShipState
+## The current state of the enemy in the scenario. Its attitude tints the
+## health bar's outline, so every way a ship gets a new state (spawn, a
+## scenario event, a save restore) recolours it.
+@export var scenario_state: ScenarioShipState:
+	set(value):
+		scenario_state = value
+		if is_node_ready():
+			_show_attitude()
 
 ## The resource containing the rewards for defeating this enemy
 @export var reward_resource: RewardResource
@@ -153,6 +159,7 @@ var explosion_particles: PackedScene = preload("uid://566ykra4buin")
 func _ready() -> void:
 	assert(enemy_resource)
 	_update_resource()
+	_show_attitude()
 	
 	_connect_health_signals()
 	_connect_scenario_signals()
@@ -214,6 +221,10 @@ func _enter_scenario_state(state: ScenarioShipState) -> void:
 	Events.ship_scenario_state_changed.emit(self)
 	trigger_state_effects()
 		
+
+func _show_attitude() -> void:
+	graphics_manager.set_health_bar_attitude(AttitudeDisplay.attitude_of(self))
+
 
 ## Connects all combat-related signals
 func _connect_combat_signals() -> void:

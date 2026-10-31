@@ -112,6 +112,13 @@ static func bezel_colour(attitude: Enemy.Attitude) -> Color:
 	return _BEZEL_COLOURS[attitude]
 
 
+## The colour [param attitude] reads as anywhere on the HUD: the bezel's light
+## step of each ramp. The ships' health bar outlines (EnemyHealthBar) use it
+## too, so a ship's outline and the computer agree on what red means.
+static func attitude_colour(attitude: Enemy.Attitude) -> Color:
+	return _BEZEL_COLOURS[attitude]
+
+
 static func frame_colour(attitude: Enemy.Attitude) -> Color:
 	return _FRAME_COLOURS[attitude]
 
