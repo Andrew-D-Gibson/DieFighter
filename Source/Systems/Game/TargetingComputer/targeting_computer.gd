@@ -466,7 +466,7 @@ func _show_bound_arrows() -> void:
 	if not Globals.state_manager or not Globals.state_manager.enemy_intents_visible():
 		return
 
-	# Slots bound to the same ship share one arc, their badges side by side.
+	# Slots bound to the same ship share one arc and its one badge.
 	var arrows_by_ship: Dictionary[Enemy, BoundIntentArrow] = {}
 	for i: int in range(len(targeted_enemy.turn_actions)):
 		var action: EnemyActionResource = targeted_enemy.turn_actions[i]

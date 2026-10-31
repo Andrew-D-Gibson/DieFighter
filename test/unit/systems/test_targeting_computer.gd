@@ -372,7 +372,7 @@ func test_no_arcs_while_intents_are_hidden() -> void:
 	assert_eq(_arrows().size(), 0)
 
 
-func test_same_action_slots_share_a_badge() -> void:
+func test_an_arc_shows_each_kind_once_and_no_amount_when_they_differ() -> void:
 	var tender: Enemy = _ship(Vector2(100, 40))
 	var escort: Enemy = _ship(Vector2(200, 40))
 	_bind(tender, 0, escort)
@@ -380,7 +380,24 @@ func test_same_action_slots_share_a_badge() -> void:
 	_bind(tender, 4, escort, AEGIS_ALLY)
 	_fight()
 	_target(tender)
-	assert_eq(_arrows()[0]._slot_groups(), [[0, 2], [4]] as Array[Array])
+	var arrow: BoundIntentArrow = _arrows()[0]
+	assert_eq(arrow._icons(), [REPAIR_ALLY.indicator_texture, AEGIS_ALLY.indicator_texture] as Array[Texture2D])
+	assert_eq(arrow._shared_amount(), "", "two kinds: the computer's row has the amounts")
+
+
+func test_an_arc_shows_the_amount_its_faces_share() -> void:
+	var tender: Enemy = _ship(Vector2(100, 40))
+	var escort: Enemy = _ship(Vector2(200, 40))
+	_bind(tender, 1, escort, AEGIS_ALLY)
+	_bind(tender, 3, escort, AEGIS_ALLY)
+	tender.turn_actions[1].intent_amount = 3
+	tender.turn_actions[3].intent_amount = 3
+	_fight()
+	_target(tender)
+	var arrow: BoundIntentArrow = _arrows()[0]
+	assert_eq(arrow._shared_amount(), "3")
+	tender.turn_actions[3].intent_amount += 1
+	assert_eq(arrow._shared_amount(), "", "the faces differ now")
 
 
 func test_a_slot_is_live_while_its_die_is_held() -> void:

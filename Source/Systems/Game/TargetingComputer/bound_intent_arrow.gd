@@ -1,10 +1,12 @@
 class_name BoundIntentArrow
 extends Node2D
 ## A dotted arc from the targeted ship to a ship some of its slots are bound
-## to ("on a 1, the Tender repairs *that* one"), with a badge at the top of
-## the arc for each thing it would do there: the die faces that do it, the
-## intent icon and the amount. Slots doing the same thing share a badge, so
-## a ship with half its table on one escort doesn't bury the arc in plates.
+## to ("on a 1, the Tender repairs *that* one"), with one badge riding the
+## arc: the die faces that act there and an icon for each kind of thing they
+## do. The amount only shows when every face shares it; otherwise the
+## targeting computer's row of intents, right below, has each face's own.
+## A badge per amount used to put three plates on one arc for a ship that
+## shields an escort for 2, 3 and 4.
 ##
 ## Escorts often share a name, so the intent text alone can't say which ship
 ## a slot means. A marker on the far ship said which, but not who it came
@@ -49,7 +51,7 @@ const _LIFT_RANGE: Vector2 = Vector2(18.0, 34.0)
 const _MIN_APEX_Y: float = 8.0
 ## Clearance between the arc's ends and the ships' art.
 const _END_GAP: float = 3.0
-## How far along the arc, from its left end, the badges sit. Short of the
+## How far along the arc, from its left end, the badge sits. Short of the
 ## middle: every ship carries its hull and shield badges on its upper left,
 ## so the right-hand end of an arc is the crowded one.
 const _BADGE_ALONG: float = 0.4
@@ -102,7 +104,7 @@ func _draw() -> void:
 		along += _DOT_SPACING
 	_draw_head(to, color)
 	var badge_t: float = _BADGE_ALONG if from.x <= to.x else 1.0 - _BADGE_ALONG
-	_draw_badges(_point_on(from, control, to, badge_t), live)
+	_draw_badge(_point_on(from, control, to, badge_t), live)
 
 
 ## The arc's control point: lifted over the midpoint of [param from] and
@@ -202,79 +204,59 @@ func _draw_head(tip: Vector2, color: Color) -> void:
 	draw_rect(Rect2(at, Vector2.ONE), color)
 
 
-## One plate per thing the arc carries, side by side, centred on
-## [param centre].
-func _draw_badges(centre: Vector2, any_live: bool) -> void:
-	var groups: Array[Array] = _slot_groups()
-	var widths: Array[int] = []
-	var total: int = 0
-	for group: Array in groups:
-		var width: int = _badge_width(group)
-		widths.append(width)
-		total += width
-	total += groups.size() - 1
+## The arc's plate, centred across [param on] and sat on top of it, so it
+## stays clear of the hull badges the arc passes over.
+func _draw_badge(on: Vector2, live: bool) -> void:
+	var icons: Array[Texture2D] = _icons()
+	var amount: String = _shared_amount()
+	var size: Vector2 = Vector2(_badge_width(icons.size(), amount), _ICON + 2)
+	var at: Vector2 = Vector2(roundf(on.x - size.x * 0.5), roundf(on.y) - (_ICON + 1))
+	draw_rect(Rect2(at, size), _PLATE)
+	draw_rect(Rect2(at, size), _line_color(live), false, 1.0)
 
-	var x: float = roundf(centre.x - total * 0.5)
-	var y: float = roundf(centre.y - (_ICON + 2) * 0.5)
-	for n: int in groups.size():
-		_draw_badge(groups[n], Vector2(x, y), widths[n], any_live)
-		x += widths[n] + 1
-
-
-## The bound slots, grouped by what they'd do: same intent icon and amount.
-## Each group is an Array of slot indices, in table order.
-func _slot_groups() -> Array[Array]:
-	var groups: Array[Array] = []
-	var keys: Array[String] = []
+	var x: float = at.x + 1
 	for slot: int in slots:
-		var action: EnemyActionResource = _action(slot)
-		var key: String = "%s|%s" % [
-			action.indicator_texture.resource_path if action and action.indicator_texture else "",
-			_amount_text(slot),
-		]
-		var at: int = keys.find(key)
-		if at == -1:
-			keys.append(key)
-			groups.append([slot])
-		else:
-			groups[at].append(slot)
-	return groups
+		var faces: Texture2D = _DIE_FACES_LIT if _slot_live(slot) else _DIE_FACES_DIM
+		draw_texture_rect_region(faces, Rect2(Vector2(x, at.y + 1), Vector2(_ICON, _ICON)),
+			Rect2(slot * _ICON, 0, _ICON, _ICON))
+		x += _ICON + 1
+	for icon: Texture2D in icons:
+		draw_texture(icon, Vector2(x, at.y + 1))
+		x += _ICON + 1
+	if not amount.is_empty():
+		draw_string(_FONT, Vector2(x, at.y + _ICON + 1), amount, HORIZONTAL_ALIGNMENT_LEFT, -1,
+			_FONT_SIZE, Globals.white)
 
 
-func _badge_width(group: Array) -> int:
-	# Border, a face per slot, icon, border, a pixel apart.
-	var width: int = 1 + group.size() * (_ICON + 1) + _ICON + 1
-	var amount: String = _amount_text(group[0])
+## Border, a face per slot, an icon per kind, the amount, border; a pixel
+## apart.
+func _badge_width(icon_count: int, amount: String) -> int:
+	var width: int = 1 + (slots.size() + icon_count) * (_ICON + 1)
 	if not amount.is_empty():
 		width += 1 + ceili(_FONT.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, _FONT_SIZE).x)
 	return width
 
 
-func _draw_badge(group: Array, at: Vector2, width: int, any_live: bool) -> void:
-	var live: bool = false
-	for slot: int in group:
-		live = live or _slot_live(slot)
-	var size: Vector2 = Vector2(width, _ICON + 2)
-	draw_rect(Rect2(at, size), _PLATE)
-	draw_rect(Rect2(at, size), _line_color(live), false, 1.0)
+## The bound slots' intent icons, each once, in table order.
+func _icons() -> Array[Texture2D]:
+	var icons: Array[Texture2D] = []
+	for slot: int in slots:
+		var action: EnemyActionResource = _action(slot)
+		if action and action.indicator_texture and action.indicator_texture not in icons:
+			icons.append(action.indicator_texture)
+	return icons
 
-	var x: float = at.x + 1
-	for slot: int in group:
-		var faces: Texture2D = _DIE_FACES_LIT if _slot_live(slot) else _DIE_FACES_DIM
-		draw_texture_rect_region(faces, Rect2(Vector2(x, at.y + 1), Vector2(_ICON, _ICON)),
-			Rect2(slot * _ICON, 0, _ICON, _ICON))
-		x += _ICON + 1
 
-	# A thing no die is buying sits back while another on the arc is live.
-	var faded: Color = Color.WHITE if live or not any_live else Color(1, 1, 1, 0.5)
-	var action: EnemyActionResource = _action(group[0])
-	if action and action.indicator_texture:
-		draw_texture(action.indicator_texture, Vector2(x, at.y + 1), faded)
-	x += _ICON + 1
-	var amount: String = _amount_text(group[0])
-	if not amount.is_empty():
-		draw_string(_FONT, Vector2(x, at.y + _ICON + 1), amount, HORIZONTAL_ALIGNMENT_LEFT, -1,
-			_FONT_SIZE, Color(Globals.white, faded.a))
+## The amount every bound slot shares, or "" when they differ or do
+## different things.
+func _shared_amount() -> String:
+	if slots.is_empty() or _icons().size() > 1:
+		return ""
+	var amount: String = _amount_text(slots[0])
+	for slot: int in slots:
+		if _amount_text(slot) != amount:
+			return ""
+	return amount
 
 
 func _action(slot: int) -> EnemyActionResource:
