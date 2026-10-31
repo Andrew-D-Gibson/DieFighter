@@ -25,6 +25,12 @@ script = ExtResource("script_act")
 type = 4
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
+[sub_resource type="Resource" id="Resource_act_burn"]
+script = ExtResource("script_act")
+type = 18
+data_key = "burn"
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [sub_resource type="Resource" id="Resource_step_4"]
 script = ExtResource("script_effect")
 category = 2
@@ -130,6 +136,6 @@ description = "(die_4) -> Gain [color=blue]2 shields[/color] per (burn) on [colo
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3")])
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3"), SubResource("Resource_act_burn")])
 effect_chain = SubResource("Resource_chain_14")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

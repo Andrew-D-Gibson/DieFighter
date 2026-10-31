@@ -130,7 +130,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=blue]Phase Cloak+[/color]"
-description = "(die_6) -> Apply 2 (phased_you) to you: the next 2 enemy hits before your next turn deal no [color=red]damage[/color]. [color=orange]Give[/color] die"
+description = "(die_6) -> Apply 2 (phased_you) to you"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

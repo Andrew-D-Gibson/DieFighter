@@ -141,7 +141,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Skeleton Crew+[/color]"
-description = "[color=yellow]Your turn starts[/color] -> Gain [color=blue]3 shields[/color] for each die smaller than 5"
+description = "[color=yellow]Your turn starts[/color] -> Gain [color=blue]15 shields[/color], -3 per die you own"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

@@ -191,8 +191,8 @@ animations = [{
 
 [resource]
 script = ExtResource("4_k7gdr")
-tile_name = "Emergency Shield"
-description = "[color=yellow]Fatal hit[/color] -> Survive at 1 [color=red]hull[/color]. Gain [color=blue]12 shields[/color]. Single use"
+tile_name = "[color=blue]Emergency Shield[/color]"
+description = "[color=yellow]Fatal hit[/color] -> Survive at 1 [color=red]hull[/color]. Gain [color=blue]12 shields[/color]. Destroy this tile"
 rarity = 1
 upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_6btq7")

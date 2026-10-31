@@ -119,7 +119,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Cryo Lance+[/color]"
-description = "(die_1) -> Turn the highest die [color=purple]target[/color] holds to (die_1). [color=orange]Give[/color] die"
+description = "(die_1) -> Turn the highest die [color=purple]target[/color] holds to (die_1)"
 rarity = 1
 uses_per_turn = 2
 textures = SubResource("SpriteFrames_tile")

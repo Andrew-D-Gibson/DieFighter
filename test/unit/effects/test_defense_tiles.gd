@@ -492,3 +492,58 @@ func test_the_forecast_counts_the_hull_paid_and_both_dice_back() -> void:
 	assert_eq(forecast.damage.get(player, 0.0), 3.0)
 	assert_eq(forecast.dice_back, 2.0, "the die and its hologram")
 	assert_eq(forecast.handoffs.size(), 0)
+
+
+# ── Counterweight Battery ─────────────────────────────────────────────────────
+
+## Plays [param tile_id]'s first event response into the recorder.
+func _respond(tile_id: String) -> Array[EffectEvent]:
+	recorder.injected.clear()
+	var tile: Tile = _tile(tile_id)
+	Globals.tile_grid.tile_locations[Vector2i(1, 1)] = tile
+	var context: EffectContext = EffectContext.new()
+	context.actor = player
+	context.effect_source = tile
+	var chain: EffectChain = tile.tile_resource.event_responses.values()[0]
+	await chain.play(context, recorder)
+	return recorder.injected.duplicate()
+
+
+func test_counterweight_battery_turns_two_charge_into_shields() -> void:
+	player.engine_charge = 3
+	var events: Array[EffectEvent] = await _respond("counterweight_battery")
+	var spends: Array[EffectEvent] = _of(events, SpendEngineChargeEvent)
+	var shields: Array[EffectEvent] = _of(events, ShieldEvent)
+	assert_eq(spends.size(), 1)
+	assert_eq(shields.size(), 1)
+	if spends.size() == 1 and shields.size() == 1:
+		assert_eq(spends[0].amount, 2)
+		assert_eq(shields[0].amount, 5)
+		assert_eq(shields[0].targets, [player] as Array[Node2D])
+
+
+func test_counterweight_battery_does_nothing_without_the_charge() -> void:
+	player.engine_charge = 1
+	var events: Array[EffectEvent] = await _respond("counterweight_battery")
+	assert_true(_of(events, ShieldEvent).is_empty(), "no free shields")
+	assert_true(_of(events, SpendEngineChargeEvent).is_empty())
+
+
+func test_counterweight_battery_plus_pays_the_same_for_more() -> void:
+	player.engine_charge = 2
+	var events: Array[EffectEvent] = await _respond("counterweight_battery_plus")
+	var spends: Array[EffectEvent] = _of(events, SpendEngineChargeEvent)
+	var shields: Array[EffectEvent] = _of(events, ShieldEvent)
+	assert_eq(spends.size(), 1)
+	assert_eq(shields.size(), 1)
+	if spends.size() == 1 and shields.size() == 1:
+		assert_eq(spends[0].amount, 2)
+		assert_eq(shields[0].amount, 7)
+
+
+# ── Heat Sink ─────────────────────────────────────────────────────────────────
+
+func test_heat_sink_refuses_a_target_with_no_burn() -> void:
+	assert_false(_takes("heat_sink", 4), "nothing to cash in")
+	await _apply(enemy, &"burn", 3)
+	assert_true(_takes("heat_sink", 4))

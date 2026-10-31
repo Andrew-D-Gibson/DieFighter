@@ -103,7 +103,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Counter-Battery+[/color]"
-description = "[color=yellow]Any die[/color] -> Every enemy's intent for that face does nothing on its next turn. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die[/color] -> [color=purple]Every enemy[/color]'s intent for that face does nothing on its next turn"
 rarity = 1
 uses_per_turn = 1
 textures = SubResource("SpriteFrames_tile")

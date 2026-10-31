@@ -152,7 +152,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Shield Siphon+[/color]"
-description = "(die_4) -> Steal all [color=blue]shields[/color] from [color=purple]target[/color]"
+description = "(die_4) -> Steal [color=purple]target[/color]'s [color=blue]shields[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 3
