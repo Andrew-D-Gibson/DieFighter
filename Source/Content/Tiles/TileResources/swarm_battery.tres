@@ -151,7 +151,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Swarm Battery[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color] for every die in play"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] per die in play"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

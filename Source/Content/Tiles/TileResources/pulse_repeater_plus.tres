@@ -161,7 +161,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Pulse Repeater+[/color]"
-description = "(countdown) 5. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]7 damage[/color] to [color=purple]target[/color]"
+description = "(countdown) 5. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]7 damage[/color]"
 offered_as_reward = false
 is_upgrade = true
 textures = SubResource("SpriteFrames_1")

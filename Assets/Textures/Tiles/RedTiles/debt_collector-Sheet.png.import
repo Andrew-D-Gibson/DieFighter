@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c7264ve0f2xiv"
-path="res://.godot/imported/debt_collector-Sheet.png-d0051e942c8e830012a3561185094bba.ctex"
+uid="uid://dkf8k114q0u3l"
+path="res://.godot/imported/debt_collector-Sheet.png-87bc800e0322a51fe9e569202ae37e70.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/GreenTiles/debt_collector-Sheet.png"
-dest_files=["res://.godot/imported/debt_collector-Sheet.png-d0051e942c8e830012a3561185094bba.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/debt_collector-Sheet.png"
+dest_files=["res://.godot/imported/debt_collector-Sheet.png-87bc800e0322a51fe9e569202ae37e70.ctex"]
 
 [params]
 

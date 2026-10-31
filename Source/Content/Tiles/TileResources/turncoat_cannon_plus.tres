@@ -154,7 +154,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Turncoat Cannon+[/color]"
-description = "(die_5) or (die_6) -> Deal [color=red]6 damage[/color] to [color=purple]target[/color], or [color=red]13[/color] if it is (scrambled)"
+description = "(die_5) or (die_6) -> Deal [color=red]6 damage[/color], or [color=red]13[/color] if target is (scrambled)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

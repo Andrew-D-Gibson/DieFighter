@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
-[ext_resource type="Texture2D" uid="uid://dftv6x8hlbuhl" path="res://Assets/Textures/Tiles/YellowTiles/bounty_scanner.png" id="tex"]
+[ext_resource type="Texture2D" uid="uid://y56p53v60gmn" path="res://Assets/Textures/Tiles/RedTiles/bounty_scanner.png" id="tex"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_cannon"]
 [ext_resource type="Resource" uid="uid://bv4ga4mnw76ag" path="res://Source/Content/Tiles/TileResources/bounty_scanner_plus.tres" id="upgrade_plus"]
 
@@ -125,8 +125,8 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
-tile_name = "[color=yellow]Bounty Scanner[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die -1. [color=yellow]Destroyed[/color]: Gain 8 credits"
+tile_name = "[color=red]Bounty Scanner[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die -1. [color=yellow]Kill[/color]: Gain 8 credits"
 rarity = 1
 uses_per_turn = -1
 textures = SubResource("SpriteFrames_tile")

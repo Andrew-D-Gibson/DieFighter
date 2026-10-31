@@ -6,8 +6,13 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="script_cond"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="script_event"]
-[ext_resource type="Texture2D" uid="uid://c7264ve0f2xiv" path="res://Assets/Textures/Tiles/GreenTiles/debt_collector-Sheet.png" id="tex"]
+[ext_resource type="Texture2D" uid="uid://dkf8k114q0u3l" path="res://Assets/Textures/Tiles/RedTiles/debt_collector-Sheet.png" id="tex"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_1"]
+
+[sub_resource type="Resource" id="Resource_act_holds"]
+script = ExtResource("script_act")
+type = 20
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_step_1"]
 script = ExtResource("script_effect")
@@ -147,11 +152,11 @@ animations = [{
 script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
-tile_name = "[color=green]Debt Collector+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color] to [color=purple]target[/color] per die it holds"
+tile_name = "[color=red]Debt Collector+[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color] per die target holds"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
-activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_16"), SubResource("Resource_act_17")])
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_16"), SubResource("Resource_act_17"), SubResource("Resource_act_holds")])
 effect_chain = SubResource("Resource_chain_15")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

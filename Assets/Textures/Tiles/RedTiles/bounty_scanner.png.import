@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dftv6x8hlbuhl"
-path="res://.godot/imported/bounty_scanner.png-d73c1046bfce776bac4f2adeec7d5d71.ctex"
+uid="uid://y56p53v60gmn"
+path="res://.godot/imported/bounty_scanner.png-47cdd78220cd54e0be3d2f956ee66636.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/YellowTiles/bounty_scanner.png"
-dest_files=["res://.godot/imported/bounty_scanner.png-d73c1046bfce776bac4f2adeec7d5d71.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/bounty_scanner.png"
+dest_files=["res://.godot/imported/bounty_scanner.png-47cdd78220cd54e0be3d2f956ee66636.ctex"]
 
 [params]
 

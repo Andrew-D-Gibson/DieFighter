@@ -163,7 +163,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Overclock Coil+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color] to [color=purple]target[/color], +2 per earlier use this turn ([data]overclock[/data])"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color], +2 per earlier use this turn (+[data]overclock[/data])"
 rarity = 2
 textures = SubResource("Resource_frames3")
 uses_per_turn = -1

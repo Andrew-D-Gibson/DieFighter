@@ -163,7 +163,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Overclock Coil[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], +2 per earlier use this turn ([data]overclock[/data])"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]2 damage[/color], +2 per earlier use this turn (+[data]overclock[/data])"
 rarity = 2
 textures = SubResource("Resource_frames3")
 uses_per_turn = -1

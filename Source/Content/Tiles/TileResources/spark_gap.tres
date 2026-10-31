@@ -39,7 +39,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_step_5"]
 script = ExtResource("script_effect")
 category = 2
-amount = 1
+amount = 2
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -55,9 +55,17 @@ script = ExtResource("script_effect")
 category = 1
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_combat_guard"]
+script = ExtResource("script_cond")
+if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_juice_1"), SubResource("Resource_step_6")])
+if_false_effects = Array[ExtResource("script_effect")]([])
+category = 7
+subtype = 10
+metadata/_custom_type_script = "uid://1c0msmj2pcjy"
+
 [sub_resource type="Resource" id="Resource_chain_7"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_juice_1"), SubResource("Resource_step_6")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_combat_guard")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
@@ -79,7 +87,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Spark Gap[/color]"
-description = "[color=yellow]Adjacent tile activates[/color] -> Deal [color=red]1 damage[/color] to [color=purple]random enemy[/color]"
+description = "[color=yellow]Adjacent tile activates[/color] -> Deal [color=red]2 damage[/color] to [color=purple]random enemy[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
