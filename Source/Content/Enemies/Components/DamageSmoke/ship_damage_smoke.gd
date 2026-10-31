@@ -9,9 +9,12 @@ extends Node2D
 ## the same as the Attacker the opening ambush spawns on that much hull.
 ##
 ## The spots come from the hull's own opaque pixels, picked by an RNG seeded
-## from its texture, so a new enemy smokes without any authoring. To place
-## them by hand, give the ship graphics scene a Node2D named DamageSmokePoints
-## holding one Marker2D per plume, in the order they should break out.
+## from its texture, so a new enemy smokes without any authoring. They keep
+## off the ship's face (see [constant _FACE_HALF_WIDTH]): the player reads an
+## enemy by its cockpit, eye or core, and a plume over it hides who's firing.
+## To place them by hand, give the ship graphics scene a Node2D named
+## DamageSmokePoints holding one Marker2D per plume, in the order they should
+## break out.
 ##
 ## The plumes emit in world space, so a moving or bobbing ship leaves its smoke
 ## behind it as a trail, the way the cutscene's ships do.
@@ -35,6 +38,17 @@ const _OPAQUE_ALPHA: float = 0.5
 ## The smoke's greys, from fresh to the haze it fades out as.
 const _SMOKE_LIGHT: Color = Color("#a5a29d")
 const _SMOKE_DARK: Color = Color("#63605c")
+
+## How solid a hull plume's smoke is. Thin enough that the art under it still
+## reads; the fire at its source stays solid, so the damage does too.
+const _PLUME_HAZE: float = 0.6
+
+## Where an enemy's face is: the middle of the hull, from a little behind its
+## centre to the nose. Sheets are nose-down, so this is the cockpit, eye or
+## core almost every ship is drawn around. As fractions of the hull's opaque
+## bounds: the column's half width, and how far behind the centre it starts.
+const _FACE_HALF_WIDTH: float = 0.22
+const _FACE_REAR_REACH: float = 0.15
 
 ## Spots per hull texture: every ship of a kind shares them, and reading
 ## the image back is the only costly part.
@@ -75,6 +89,19 @@ func set_hull_fraction(fraction: float) -> void:
 		_plumes[i].emitting = i < lit
 
 
+## Puts the smoke out for good, including what's already in the air: the
+## ship is dying, and its kill should read as one clean silhouette. Stops
+## listening to the hull too, so nothing relights it on the way out.
+func extinguish() -> void:
+	if _health and _health.health_set.is_connected(_on_health_set):
+		_health.health_set.disconnect(_on_health_set)
+	_health = null
+	visible = false
+	for plume: CPUParticles2D in _plumes:
+		plume.emitting = false
+	queue_free()
+
+
 ## Keeps the plumes in step with [param health] from here on.
 func track(health: Health) -> void:
 	if _health:
@@ -107,15 +134,17 @@ static func plume_particles() -> CPUParticles2D:
 	plume.initial_velocity_max = 18.0
 	plume.scale_amount_min = 1.0
 	plume.scale_amount_max = 3.0
-	plume.color_ramp = smoke_ramp()
+	plume.color_ramp = smoke_ramp(_PLUME_HAZE)
 	return plume
 
 
-## Fire at the source, cooling through grey to nothing.
-static func smoke_ramp() -> Gradient:
+## Fire at the source, cooling through grey to nothing. [param haze] is how
+## solid the grey is; the fire stays solid.
+static func smoke_ramp(haze: float = 1.0) -> Gradient:
 	var ramp: Gradient = Gradient.new()
 	ramp.offsets = PackedFloat32Array([0.0, 0.12, 0.5, 1.0])
-	ramp.colors = PackedColorArray([Globals.orange, _SMOKE_LIGHT, _SMOKE_DARK, Color(_SMOKE_DARK, 0.0)])
+	ramp.colors = PackedColorArray([Globals.orange, Color(_SMOKE_LIGHT, haze),
+		Color(_SMOKE_DARK, haze), Color(_SMOKE_DARK, 0.0)])
 	return ramp
 
 
@@ -159,6 +188,9 @@ static func _pick_spots(hull: Sprite2D) -> PackedVector2Array:
 				interior.append(Vector2i(x, y))
 	if interior.is_empty():
 		return PackedVector2Array([Vector2.ZERO])
+	var bounds: Rect2i = Rect2i(interior[0], Vector2i.ONE)
+	for pixel: Vector2i in interior:
+		bounds = bounds.merge(Rect2i(pixel, Vector2i.ONE))
 
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	rng.seed = hash(hull.texture.resource_path)
@@ -169,17 +201,15 @@ static func _pick_spots(hull: Sprite2D) -> PackedVector2Array:
 		interior[i] = interior[j]
 		interior[j] = swap
 
-	# As far apart as a third of the hull's short side allows, so plumes
-	# read as separate damage; closer if the hull is too small for that.
-	var spacing: float = maxf(3.0, mini(frame.size.x, frame.size.y) / 3.0)
-	var picked: Array[Vector2i] = []
-	while picked.size() < THRESHOLDS.size() and spacing >= 1.0:
-		for pixel: Vector2i in interior:
-			if picked.size() >= THRESHOLDS.size():
-				break
-			if picked.all(func(other: Vector2i) -> bool: return Vector2(pixel).distance_to(Vector2(other)) >= spacing):
-				picked.append(pixel)
-		spacing /= 2.0
+	# Off the face where the hull allows it; a hull that's nearly all face
+	# smokes from it rather than not at all.
+	var off_face: Array[Vector2i] = []
+	for pixel: Vector2i in interior:
+		if not _is_face(pixel, bounds):
+			off_face.append(pixel)
+	var picked: Array[Vector2i] = _spread_out(off_face, [], frame)
+	if picked.size() < THRESHOLDS.size():
+		picked = _spread_out(interior, picked, frame)
 
 	var origin: Vector2 = Vector2(frame.position) + (Vector2(frame.size) / 2.0 if hull.centered else Vector2.ZERO)
 	var spots: PackedVector2Array = PackedVector2Array()
@@ -187,6 +217,31 @@ static func _pick_spots(hull: Sprite2D) -> PackedVector2Array:
 		# The middle of the pixel, relative to where the sprite draws from.
 		spots.append(Vector2(pixel) + Vector2(0.5, 0.5) - origin + hull.offset)
 	return spots
+
+
+## Up to [constant THRESHOLDS]'s worth of [param pixels], on top of
+## [param picked], as far apart as a third of the hull's short side allows,
+## so plumes read as separate damage; closer if the hull is too small for that.
+static func _spread_out(pixels: Array[Vector2i], picked: Array[Vector2i], frame: Rect2i) -> Array[Vector2i]:
+	var spots: Array[Vector2i] = picked.duplicate()
+	var spacing: float = maxf(3.0, mini(frame.size.x, frame.size.y) / 3.0)
+	while spots.size() < THRESHOLDS.size() and spacing >= 1.0:
+		for pixel: Vector2i in pixels:
+			if spots.size() >= THRESHOLDS.size():
+				break
+			if spots.all(func(other: Vector2i) -> bool: return Vector2(pixel).distance_to(Vector2(other)) >= spacing):
+				spots.append(pixel)
+		spacing /= 2.0
+	return spots
+
+
+## Whether [param pixel] is on the face of a hull whose interior spans
+## [param bounds]. See [constant _FACE_HALF_WIDTH].
+static func _is_face(pixel: Vector2i, bounds: Rect2i) -> bool:
+	var centre: Vector2 = Vector2(bounds.position) + Vector2(bounds.size) / 2.0
+	var middle: Vector2 = Vector2(pixel) + Vector2(0.5, 0.5)
+	return absf(middle.x - centre.x) < bounds.size.x * _FACE_HALF_WIDTH \
+		and middle.y > centre.y - bounds.size.y * _FACE_REAR_REACH
 
 
 static func _is_hull(image: Image, x: int, y: int) -> bool:
