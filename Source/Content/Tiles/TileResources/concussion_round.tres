@@ -145,7 +145,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Concussion Round[/color]"
-description = "(die_3) or (die_4) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color]. Apply 1 (weakened). [color=orange]Give[/color] die"
+description = "(die_3) or (die_4) -> Deal [color=red]4 damage[/color]. Apply 1 (weakened)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

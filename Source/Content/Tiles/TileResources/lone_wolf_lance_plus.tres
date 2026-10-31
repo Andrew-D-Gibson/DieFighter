@@ -235,7 +235,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Lone Wolf Lance+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to the number of die.  [color=red]Damage[/color] is tripled if there are 3 or fewer dice in play"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die, or 3x die if you own 3 or fewer dice"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

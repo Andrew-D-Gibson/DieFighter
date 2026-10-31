@@ -24,6 +24,12 @@ script = ExtResource("script_act")
 type = 4
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
+[sub_resource type="Resource" id="Resource_act_4"]
+script = ExtResource("script_act")
+type = 18
+data_key = "burn"
+metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
+
 [sub_resource type="Resource" id="Resource_step_4"]
 script = ExtResource("script_effect")
 category = 2
@@ -164,10 +170,10 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Flashpoint+[/color]"
-description = "(die_6) -> Deal [color=red]4 damage[/color] to [color=purple]target[/color] per (burn) on it. Clear its (burn)"
+description = "(die_6) -> Deal [color=red]4 damage[/color] per (burn) on [color=purple]target[/color]. Clear its (burn)"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3")])
+activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3"), SubResource("Resource_act_4")])
 effect_chain = SubResource("Resource_chain_17")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

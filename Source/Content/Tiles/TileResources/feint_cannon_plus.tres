@@ -163,7 +163,7 @@ animations = [{
 [resource]
 script = ExtResource("4_yv5lb")
 tile_name = "[color=red]Feint Cannon+[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], +4 per enemy hit you evaded this fight (+[data]feint[/data])"
+description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color], +4 per enemy miss this fight (+[data]feint[/data])"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

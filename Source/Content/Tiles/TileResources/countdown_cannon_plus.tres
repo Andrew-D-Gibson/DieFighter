@@ -168,7 +168,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Countdown Cannon+[/color]"
-description = "(countdown) 15. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]25 damage[/color] to [color=purple]target[/color]"
+description = "(countdown) 15. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]25 damage[/color]"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

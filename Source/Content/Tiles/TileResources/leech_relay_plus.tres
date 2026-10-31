@@ -179,7 +179,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Leech Relay+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]8 damage[/color] to [color=purple]target[/color]. Tiles above and below lose 1 use. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]8 damage[/color]. Tiles above and below lose 1 use. (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

@@ -164,7 +164,7 @@ animations = [{
 [resource]
 script = ExtResource("4_i1cfl")
 tile_name = "[color=red]Feint Cannon[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color] to [color=purple]target[/color], +3 per enemy hit you evaded this fight (+[data]feint[/data])"
+description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color], +3 per enemy miss this fight (+[data]feint[/data])"
 rarity = 1
 upgraded_version = ExtResource("6_7vme4")
 textures = SubResource("SpriteFrames_gpmt5")

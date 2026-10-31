@@ -58,7 +58,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_o0tpk"]
 script = ExtResource("11_y24nt")
 category = 2
-amount = 3
+amount = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_1nxe3"]
@@ -127,7 +127,7 @@ script = ExtResource("3_mywar")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Flak Cannon+[/color]"
-description = "(die_5) -> Deal [color=red]3 damage[/color] to [color=purple]target[/color], +1 per surrounding tile"
+description = "(die_5) -> Deal [color=red]5 damage[/color], +1 per surrounding tile"
 textures = SubResource("SpriteFrames_m1j0p")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_71286")]([SubResource("Resource_44pq3"), SubResource("Resource_v7uoi"), SubResource("Resource_m1j0p")])

@@ -136,7 +136,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Incendiary Round+[/color]"
-description = "(die_1) or (die_2) -> Apply 5 (burn) to [color=purple]target[/color]"
+description = "(die_1) or (die_2) -> Apply 5 (burn)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

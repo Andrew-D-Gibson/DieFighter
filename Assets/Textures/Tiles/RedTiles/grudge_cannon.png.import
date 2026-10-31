@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b11823ngt2mje"
-path="res://.godot/imported/grudge_cannon.png-5d9a9e1a565921010ebd849154426e1b.ctex"
+uid="uid://xiojtdinr6m1"
+path="res://.godot/imported/grudge_cannon.png-474ad04c63661c10a81c63a45665933f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/GreenTiles/grudge_cannon.png"
-dest_files=["res://.godot/imported/grudge_cannon.png-5d9a9e1a565921010ebd849154426e1b.ctex"]
+source_file="res://Assets/Textures/Tiles/RedTiles/grudge_cannon.png"
+dest_files=["res://.godot/imported/grudge_cannon.png-474ad04c63661c10a81c63a45665933f.ctex"]
 
 [params]
 
