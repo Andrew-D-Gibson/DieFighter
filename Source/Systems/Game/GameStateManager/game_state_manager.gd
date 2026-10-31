@@ -264,6 +264,12 @@ func opening_strike_pending() -> bool:
 	return _opening_strike != null and _opening_strike.hull_owed() > 0
 
 
+## The die the opening shot fires, until it's back in the player's hand.
+## Null when there's no shot to come.
+func opening_strike_die() -> Dice:
+	return _opening_strike.die() if _opening_strike else null
+
+
 ## True while the opening ambusher is flying in holding one of the player's
 ## dice, which the hand being dealt must leave room for.
 func opening_strike_holds_die() -> bool:

@@ -224,3 +224,34 @@ func test_a_held_close_button_waits_for_its_release() -> void:
 	assert_true(close_button.disabled, "still held once the text is in")
 	popup.release_close_button()
 	assert_false(close_button.disabled)
+
+
+## Something lifted through a card's dim draws over the mask but under the
+## card, and goes back where it was once the card is gone.
+func test_a_card_lifts_things_through_its_dim_until_it_leaves() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	var highlight: Sprite2D = TutorialTextPopup.make_highlight(null)
+	autofree(highlight)
+	var die: Node2D = add_child_autofree(Node2D.new())
+	die.z_index = 10
+	popup.show_through_dim(die)
+	assert_false(die.z_as_relative)
+	assert_gt(die.z_index, highlight.z_index, "over the dim")
+	assert_eq(die.z_index, popup.z_index, "level with the card, which hangs later and covers it")
+	remove_child(popup)
+	assert_eq(die.z_index, 10)
+	assert_true(die.z_as_relative)
+
+
+## The opening shot's die leaves the raider through the ambush card's dim:
+## the player watches it fly back to the hand.
+func test_the_opening_shot_die_shows_through_the_ambush_card() -> void:
+	var die: Dice = autofree(Dice.new())
+	var strike: OpeningStrike = OpeningStrike.new()
+	strike._die = die
+	var state_manager: GameStateManager = autofree(GameStateManager.new())
+	state_manager._opening_strike = strike
+	Globals.state_manager = state_manager
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	manager._show_strike_through_dim(popup)
+	assert_eq(die.z_index, TutorialTextPopup.SHOWN_THROUGH_DIM_Z_INDEX)
