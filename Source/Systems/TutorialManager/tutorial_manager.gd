@@ -353,6 +353,8 @@ func play_step(step: TutorialStep) -> void:
 
 	if step.releases_opening_strike:
 		current_popup.all_text_displayed.connect(_release_opening_strike_after_beat)
+		if step.opening_strike_deadline > 0.0:
+			get_tree().create_timer(step.opening_strike_deadline).timeout.connect(_release_opening_strike)
 		_hold_close_until_strike_lands(current_popup)
 
 	# Handle calling tutorial functions

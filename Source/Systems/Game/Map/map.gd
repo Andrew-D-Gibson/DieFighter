@@ -115,9 +115,9 @@ const _HERE_ARROW: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons
 const _HERE_ARROW_BOB: float = 1.0
 ## Clear air between the arrow's tip and the top of what it points at.
 const _HERE_ARROW_GAP: int = 1
-## How long a jump arrow that was hidden takes to fade up out of its dark
+## How long a jump arrow that was hidden takes to build up out of its dark
 ## slot, rather than popping in.
-const _JUMP_ARROW_REVEAL_TIME: float = 0.6
+const _JUMP_ARROW_REVEAL_TIME: float = 0.9
 ## A hovered location grows and drifts up and down while under the cursor.
 const _HOVER_SCALE: float = 1.3
 const _HOVER_BOB_HEIGHT: float = 1.0
@@ -1068,7 +1068,8 @@ func enable_controls() -> void:
 ## Shows or hides the jump arrows outright. Disabling them still leaves two
 ## arrows on screen that look usable, which reads as a lock-out when the player
 ## isn't meant to be jumping at all yet (the tutorial's tour of the map). A
-## hidden arrow comes back by fading up; hiding is immediate.
+## hidden arrow comes back with a reveal wipe (JumpArrowReveal); hiding is
+## immediate.
 func set_jump_arrows_visible(left_shown: bool, right_shown: bool) -> void:
 	_set_jump_arrow_visible(left_arrow_tile, left_shown)
 	_set_jump_arrow_visible(right_arrow_tile, right_shown)
@@ -1078,6 +1079,5 @@ func _set_jump_arrow_visible(arrow: Tile, shown: bool) -> void:
 	if not shown or arrow.visible:
 		arrow.visible = shown
 		return
-	arrow.modulate.a = 0.0
 	arrow.visible = true
-	arrow.create_tween().tween_property(arrow, "modulate:a", 1.0, _JUMP_ARROW_REVEAL_TIME)
+	JumpArrowReveal.play(arrow, _JUMP_ARROW_REVEAL_TIME)
