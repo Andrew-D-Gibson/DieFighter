@@ -26,6 +26,9 @@ enum Flag {
 	## STREAM: the player's engine charge stands in for the effect source,
 	## for charge that's spent at a target (Overdraw Coil).
 	ENGINE_HUB = 16,
+	## CALLOUT: printed at double size, like a big hit's number, for a
+	## callout that is the whole of what happened (a ship's wasted "...").
+	BIG = 32,
 }
 
 const _DEFAULT_SHOCKWAVE_RADIUS: int = 20
@@ -61,7 +64,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 						40.0 * multiplier, _has(Flag.RISE))
 		EffectEnums.AudioVisualSubtype.CALLOUT:
 			for node: Node2D in anchors:
-				Juice.callout_at(node, _anchor_for(node), text, color)
+				Juice.callout_at(node, _anchor_for(node), text, color, _has(Flag.BIG))
 		EffectEnums.AudioVisualSubtype.BUMP:
 			for node: Node2D in anchors:
 				Juice.bump(Juice.body_of(node), _BUMP_STRENGTH * multiplier, 0.3)
