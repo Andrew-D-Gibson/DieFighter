@@ -69,7 +69,7 @@ animations = [{
 [resource]
 script = ExtResource("4_8krej")
 tile_name = "[color=purple]Slipstream Vane+[/color]"
-description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=purple]3 engine charge[/color]"
+description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=purple]3 charge[/color]"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

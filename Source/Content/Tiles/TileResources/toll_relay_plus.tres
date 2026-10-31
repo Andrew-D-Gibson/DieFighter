@@ -108,7 +108,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Toll Relay+[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]4 engine charge[/color]. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]4 charge[/color]. (feed_right)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])

@@ -124,7 +124,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Regenerative Brake+[/color]"
-description = "[color=yellow]Hull hit[/color] -> Gain [color=purple]5 engine charge[/color]"
+description = "[color=yellow]Hull hit[/color] -> Gain [color=purple]5 charge[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

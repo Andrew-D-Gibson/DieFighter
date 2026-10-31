@@ -133,7 +133,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Preflight Interlock+[/color]"
-description = "[color=yellow]Any die while[/color] [color=purple]engines[/color] [color=yellow]fully charged[/color] -> Deal [color=red]4X damage[/color] to [color=purple]target[/color]"
+description = "[color=yellow]Any die while fully charged[/color] -> Deal [color=red]damage[/color] equal to 4x die"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

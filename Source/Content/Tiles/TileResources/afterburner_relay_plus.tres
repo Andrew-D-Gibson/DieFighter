@@ -181,10 +181,11 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Afterburner Relay+[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]3 engine charge[/color] to deal [color=red]9 damage[/color] to [color=purple]target[/color]. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]3 charge[/color]: Deal [color=red]9 damage[/color]. (feed_right). Ignores (echo)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
+can_be_echoed = false
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3")])
 effect_chain = SubResource("Resource_chain_17")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

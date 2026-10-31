@@ -124,9 +124,10 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Arc Tap[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]6 engine charge[/color] to deal [color=red]10 damage[/color] to [color=purple]target[/color]"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]6 charge[/color]: Deal [color=red]10 damage[/color]. Ignores (echo)"
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1
+can_be_echoed = false
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain12")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

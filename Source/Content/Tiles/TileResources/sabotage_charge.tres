@@ -22,7 +22,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 [sub_resource type="Resource" id="Resource_act_3"]
 script = ExtResource("script_act")
 type = 10
-threshold = 8
+threshold = 6
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_step_4"]
@@ -102,7 +102,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 1
 subtype = 4
-amount = 8
+amount = 6
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_13"]
@@ -135,10 +135,11 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Sabotage Charge[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]8 engine charge[/color] to apply 2 (jammed) to [color=purple]target[/color]"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]6 charge[/color]: Apply 2 (jammed). Ignores (echo)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
+can_be_echoed = false
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2"), SubResource("Resource_act_3")])
 effect_chain = SubResource("Resource_chain_14")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"
