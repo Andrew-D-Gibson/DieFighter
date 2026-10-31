@@ -21,7 +21,7 @@ Newest entries at the top.
 | 7 | Duplication | Holo-Duplicator, Die Splitter, Bootstrap Injector, Phantom Squadron, Blood Valve, Opening Salvo, Echo Relay*, Pilot Light*, Fabricator* |
 | 8 | Routing | Crosslink, Parity Junction, Value Sorter, Scatter Router, Receiver Dish, Relay Terminal |
 
-  \* also in an earlier family; offered once both are unlocked.
+  \* also uses an earlier family's mechanic, so it waits for the later one.
 - **Each jump into sector 2 or 3**, in any run, unlocks the next family for
   good. The gate jump holds in gold hyperspace on a card: the family's name
   in its colour, a line on what it does, and its tiles popping in one by

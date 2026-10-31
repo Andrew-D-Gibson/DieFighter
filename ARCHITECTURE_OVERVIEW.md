@@ -610,8 +610,10 @@ what they have and gets the first family in the list they lack.
 | `CollectionManager` | Keeps unlocked family ids in `collection.json`, each with the claim that earned it. |
 | `JumpManager._unlock_tile_family()` | In `jump_through_gate()`, after the sector title: unlocks, queues one of the new tiles in `Reward.forced_rewards`, shows `TileUnlockPopup` and waits for Close before the next sector loads. |
 
-- **A tile in several families** waits for all of them, and shows on the card
-  of whichever unlocks last.
+- **A tile sits in one family**, since the card shows every tile its family
+  lists. One that leans on two mechanics (Echo Relay, Fuse Payload) is in the
+  later family; reordering the list can break that, so check those when you
+  move a family. `test_tile_families.gd` fails on a tile in two families.
 - **Once per sector.** The claim is `run seed:sector index`, so a Continue
   that replays a gate jump shows the same family again rather than a second
   one. The run seed rides in the save's `rng_states` (`RUN_SEED`) for this.

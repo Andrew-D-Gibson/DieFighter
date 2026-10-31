@@ -124,9 +124,9 @@ registration to testing. For how the systems work underneath, see
 offered from a player's first run. A tile whose text uses an advanced
 keyword (Feed/Fed, Burn, Jammed, Scrambled, Exposed, Weakened, Hologram,
 Countdown, Echo) belongs in a `TileFamilyResource` under
-`Source/Content/Tiles/TileFamilies/`: add it to that family's `tiles`. One
-that leans on two mechanics goes in both families and is offered once both
-are unlocked. Evasion and Phased (you) count as Basic. `test_tile_families.gd`
+`Source/Content/Tiles/TileFamilies/`: add it to that family's `tiles`. A tile
+sits in one family only (the card shows all its tiles): one that leans on two
+mechanics goes in whichever unlocks later. Evasion and Phased (you) count as Basic. `test_tile_families.gd`
 fails on an advanced tile left in no family. Families unlock in the order
 `tile_unlock_order.tres` lists them, one per new sector reached; reorder
 that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
