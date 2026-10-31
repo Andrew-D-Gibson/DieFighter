@@ -170,9 +170,11 @@ signal call_out_map_tab()
 signal show_systems()
 signal systems_shown()
 signal map_shown()
-signal open_shop()
+## [param keeper] is the ship running the shop or dock: what the player spends
+## there is owed back by its wreck (Enemy.credits_paid). Null if nothing runs it.
+signal open_shop(keeper: Enemy)
 signal close_shop()
-signal open_repair_station()
+signal open_repair_station(keeper: Enemy)
 signal close_repair_station()
 
 

@@ -66,6 +66,11 @@ const _FORMATION_PADDING: float = 6.0
 ## keeps it (capture_state()).
 var repairs_bought: int = 0
 
+## The dock ship running this station. Every credit spent on repairs is paid
+## to it (Enemy.credits_paid), so turning on it wins the lot back. Null if no
+## ship opened it (a test) or it's gone.
+var keeper: Enemy = null
+
 ## The grid tile being dragged right now, whose price the slot shows.
 var _lifted_tile: Tile
 
@@ -112,7 +117,11 @@ func repair() -> bool:
 		return false
 
 	var healed: int = repair_amount()
-	Globals.player.money -= repair_cost()
+	var cost: int = repair_cost()
+	Globals.player.money -= cost
+	# Sales are left out: the tally is what the player paid, not their net.
+	if is_instance_valid(keeper):
+		keeper.credits_paid += cost
 	repairs_bought += 1
 	Globals.player.health.change_health(healed)
 	_play_repair_feedback(healed)
@@ -163,7 +172,10 @@ func sell(tile: Tile) -> bool:
 
 ## What a mid-scenario save keeps of an open station.
 func capture_state() -> Dictionary:
-	return {"repairs": repairs_bought}
+	return {
+		"repairs": repairs_bought,
+		"keeper": keeper.spawn_index if is_instance_valid(keeper) else -1,
+	}
 
 
 # ── Opening and closing ────────────────────────────────────────────────────────
@@ -176,12 +188,16 @@ func _reopen_saved_station() -> void:
 		_open_station()
 
 
-func _open_station() -> void:
+func _open_station(opened_by: Enemy = null) -> void:
 	repairs_bought = 0
+	keeper = opened_by
 	if Globals.state_manager:
 		var saved: Variant = Globals.state_manager.get_restore().get("repair_station")
 		if saved is Dictionary:
 			repairs_bought = int(saved.get("repairs", 0))
+			# A restored dock doesn't replay the arrival effect that names it.
+			if keeper == null and Globals.enemy_manager:
+				keeper = Globals.enemy_manager.get_starting_ship(int(saved.get("keeper", -1)))
 
 	_listen_to_the_grid(true)
 	modulate.a = 1.0
