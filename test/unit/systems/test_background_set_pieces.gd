@@ -2,6 +2,15 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## Planet and star layouts (SetPieceComposition) and the star parallax rule.
 
 const BACKGROUND_ROOT: String = "res://Source/Resources/BackgroundResources/"
+const BODY_ROOT: String = "res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/"
+## Art/_Palettes/aseprite_palette_final.aseprite, the approved colours.
+const PALETTE: Array[String] = [
+	"000000", "cef0f1", "d03656", "90263c", "511521", "43a6fc", "3789cc", "2c71aa",
+	"7abd33", "659c2a", "4c7520", "eed35d", "ccb550", "98873b", "f29c5d", "ee7f2f",
+	"bd580f", "c552f1", "a846ce", "80359d", "563226", "c4c1bc", "a5a29d", "8e8b85",
+	"63605c", "343330", "8df1f4", "040217", "0f0c2e", "130f38", "191347", "251c6b",
+	"463c91",
+]
 const MANAGER_SCENE: PackedScene = preload("res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn")
 
 ## Where the ships fight: no set piece's disc may reach into this column, and
@@ -44,7 +53,10 @@ func test_no_layout_reaches_the_action_column() -> void:
 	for background: BackgroundResource in _backgrounds_with_compositions():
 		for composition: SetPieceComposition in background.set_piece_compositions:
 			for object: StaticBackgroundObjectResource in composition.objects:
-				var reach: float = _radius(object.scene) * (1.0 + object.size_jitter)
+				var widest: float = 0.0
+				for scene: PackedScene in object.get_scene_choices():
+					widest = maxf(widest, _radius(scene))
+				var reach: float = widest * (1.0 + object.size_jitter)
 				var slack: Vector2 = composition.offset_jitter + object.position_jitter
 				var centres: Array[float] = [object.position.x]
 				if composition.mirrorable:
@@ -104,6 +116,31 @@ func test_mirroring_flips_position_and_light() -> void:
 	assert_true(mirrored_once)
 
 
+func test_every_scene_variant_gets_drawn() -> void:
+	var object: StaticBackgroundObjectResource = StaticBackgroundObjectResource.new()
+	object.scene = load(BODY_ROOT + "blue_star.tscn")
+	object.scene_variants = [load(BODY_ROOT + "amber_star.tscn"), load(BODY_ROOT + "white_dwarf.tscn")]
+	var composition: SetPieceComposition = SetPieceComposition.new()
+	var objects: Array[StaticBackgroundObjectResource] = [object]
+	composition.objects = objects
+	var seen: Dictionary[String, bool] = {}
+	for i: int in range(32):
+		var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+		rng.seed = i
+		seen[composition.place(rng, 320.0)[0].scene.resource_path] = true
+	assert_eq(seen.size(), 3, "the scene and both variants all turn up")
+
+
+func test_a_piece_without_variants_shows_its_own_scene() -> void:
+	var object: StaticBackgroundObjectResource = StaticBackgroundObjectResource.new()
+	object.scene = load(BODY_ROOT + "blue_star.tscn")
+	var composition: SetPieceComposition = SetPieceComposition.new()
+	var objects: Array[StaticBackgroundObjectResource] = [object]
+	composition.objects = objects
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	assert_eq(composition.place(rng, 320.0)[0].scene, object.scene)
+
+
 func test_zero_weight_is_never_picked() -> void:
 	var never: SetPieceComposition = SetPieceComposition.new()
 	never.weight = 0.0
@@ -112,6 +149,83 @@ func test_zero_weight_is_never_picked() -> void:
 	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	for i: int in range(32):
 		assert_eq(SetPieceComposition.pick(both, rng), always)
+
+
+# --- The plain star field ---------------------------------------------------
+
+## What one visit to [param background] shows: the layout's name and its
+## bodies, before jitter.
+func _visit(background: BackgroundResource, visit_seed: int) -> String:
+	var rng: RandomNumberGenerator = RandomNumberGenerator.new()
+	rng.seed = visit_seed
+	var composition: SetPieceComposition = SetPieceComposition.pick(background.set_piece_compositions, rng)
+	var parts: PackedStringArray = [str(background.set_piece_compositions.find(composition))]
+	for placement: SetPieceComposition.Placement in composition.place(rng, Globals.SCREEN_SIZE.x):
+		parts.append(placement.scene.resource_path.get_file())
+	return " ".join(parts)
+
+
+func test_star_field_rarely_repeats_its_bodies() -> void:
+	var background: BackgroundResource = load(BACKGROUND_ROOT + "star_field.tres")
+	var visits: Dictionary[String, int] = {}
+	var bodies: Dictionary[String, bool] = {}
+	for i: int in range(200):
+		var visit: String = _visit(background, i)
+		visits[visit] = visits.get(visit, 0) + 1
+		for part: String in visit.split(" ").slice(1):
+			bodies[part] = true
+	assert_gte(visits.size(), 20, "200 visits show at least 20 different skies")
+	for body: String in ["amber_star.tscn", "red_dwarf.tscn", "white_dwarf.tscn", "blue_star.tscn",
+			"jade_world.tscn", "dune_world.tscn", "storm_giant.tscn"]:
+		assert_true(bodies.has(body), "%s turns up" % body)
+	for visit: String in visits:
+		# Open space is the one sky allowed to come round often.
+		if visit != str(background.set_piece_compositions.size() - 1):
+			assert_lt(visits[visit], 25, "%s shows on %d of 200 visits" % [visit, visits[visit]])
+
+
+## Every colour a palette texture on [param scene]'s body shader draws with.
+func _shader_colours(scene: PackedScene) -> Array[Color]:
+	var node: Node = scene.instantiate()
+	var material: ShaderMaterial = (node.get_node("Body") as CanvasItem).material as ShaderMaterial
+	var colours: Array[Color] = []
+	for uniform: String in ["surface_palette", "atmosphere_palette", "cloud_1_palette", "cloud_2_palette"]:
+		var texture: GradientTexture1D = material.get_shader_parameter(uniform) as GradientTexture1D
+		if texture:
+			colours.append_array(texture.gradient.colors)
+	node.free()
+	return colours
+
+
+func test_star_field_draws_only_palette_colours() -> void:
+	var background: BackgroundResource = load(BACKGROUND_ROOT + "star_field.tres")
+	for tint: Color in background.star_tints:
+		assert_has(PALETTE, tint.to_html(false), "star tint %s" % tint.to_html(false))
+	for composition: SetPieceComposition in background.set_piece_compositions:
+		for object: StaticBackgroundObjectResource in composition.objects:
+			for scene: PackedScene in object.get_scene_choices():
+				for colour: Color in _shader_colours(scene):
+					assert_has(PALETTE, colour.to_html(false),
+						"%s %s" % [scene.resource_path.get_file(), colour.to_html(false)])
+
+
+func test_tinted_stars_take_a_tint_and_keep_their_depth_fade() -> void:
+	var background: BackgroundResource = _open_sky()
+	var tints: Array[Color] = [Color("eed35d"), Color("43a6fc")]
+	background.star_tints = tints
+	background.tinted_star_share = 1.0
+	var manager: BackgroundManager = _manager(background)
+	for star: Node2D in manager.stars:
+		var colour: Color = star.modulate
+		assert_true(tints.has(Color(colour.r, colour.g, colour.b)), "tinted %s" % colour)
+		assert_between(colour.a, 0.25, 0.8)
+
+
+func test_stars_stay_white_without_tints() -> void:
+	var manager: BackgroundManager = _manager(_open_sky())
+	for star: Node2D in manager.stars:
+		var colour: Color = star.modulate
+		assert_eq(Color(colour.r, colour.g, colour.b), Color.WHITE)
 
 
 # --- Star parallax rule -----------------------------------------------------

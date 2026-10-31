@@ -5,6 +5,12 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/blue_star.tscn" id="body_far"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/storm_giant.tscn" id="body_near"]
 [ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/amber_star.tscn" id="star_amber"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/red_dwarf.tscn" id="star_red"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/white_dwarf.tscn" id="star_white"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/jade_world.tscn" id="world_jade"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/dune_world.tscn" id="world_dune"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="moon_barren"]
 
 [sub_resource type="Resource" id="Piece_storm_giant_and_star_0"]
 script = ExtResource("2_buxbt")
@@ -12,12 +18,14 @@ scene = ExtResource("body_near")
 position = Vector2(290, 46)
 scale = Vector2(-1, 1)
 size_jitter = 0.1
+scene_variants = Array[PackedScene]([ExtResource("world_jade"), ExtResource("world_dune")])
 
 [sub_resource type="Resource" id="Piece_storm_giant_and_star_1"]
 script = ExtResource("2_buxbt")
 scene = ExtResource("body_far")
 position = Vector2(46, 22)
 size_jitter = 0.15
+scene_variants = Array[PackedScene]([ExtResource("star_amber"), ExtResource("star_red"), ExtResource("star_white")])
 
 [sub_resource type="Resource" id="Composition_storm_giant_and_star"]
 script = ExtResource("comp_script")
@@ -28,31 +36,71 @@ script = ExtResource("2_buxbt")
 scene = ExtResource("body_far")
 position = Vector2(268, 26)
 size_jitter = 0.2
+scene_variants = Array[PackedScene]([ExtResource("star_amber"), ExtResource("star_red"), ExtResource("star_white")])
 
 [sub_resource type="Resource" id="Composition_lone_star"]
 script = ExtResource("comp_script")
-objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_lone_star_0")])
 offset_jitter = Vector2(10, 6)
+objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_lone_star_0")])
 
 [sub_resource type="Resource" id="Piece_giant_and_far_star_0"]
 script = ExtResource("2_buxbt")
 scene = ExtResource("body_near")
 position = Vector2(40, 40)
 size_jitter = 0.1
+scene_variants = Array[PackedScene]([ExtResource("world_jade"), ExtResource("world_dune")])
 
 [sub_resource type="Resource" id="Piece_giant_and_far_star_1"]
 script = ExtResource("2_buxbt")
 scene = ExtResource("body_far")
 position = Vector2(276, 18)
 size_jitter = 0.15
+scene_variants = Array[PackedScene]([ExtResource("star_amber"), ExtResource("star_red"), ExtResource("star_white")])
 
 [sub_resource type="Resource" id="Composition_giant_and_far_star"]
 script = ExtResource("comp_script")
 objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_giant_and_far_star_0"), SubResource("Piece_giant_and_far_star_1")])
 
+[sub_resource type="Resource" id="Piece_world_and_moon_0"]
+script = ExtResource("2_buxbt")
+scene = ExtResource("world_jade")
+position = Vector2(48, 36)
+size_jitter = 0.1
+scene_variants = Array[PackedScene]([ExtResource("world_dune")])
+
+[sub_resource type="Resource" id="Piece_world_and_moon_1"]
+script = ExtResource("2_buxbt")
+scene = ExtResource("moon_barren")
+position = Vector2(86, 16)
+modulate = Color(0.7, 0.7, 0.75, 1)
+size_jitter = 0.2
+
+[sub_resource type="Resource" id="Composition_world_and_moon"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_world_and_moon_0"), SubResource("Piece_world_and_moon_1")])
+
+[sub_resource type="Resource" id="Piece_binary_suns_0"]
+script = ExtResource("2_buxbt")
+scene = ExtResource("star_amber")
+position = Vector2(264, 24)
+size_jitter = 0.15
+scene_variants = Array[PackedScene]([ExtResource("body_far"), ExtResource("star_red")])
+
+[sub_resource type="Resource" id="Piece_binary_suns_1"]
+script = ExtResource("2_buxbt")
+scene = ExtResource("star_white")
+position = Vector2(290, 38)
+modulate = Color(0.85, 0.85, 0.85, 1)
+size_jitter = 0.2
+
+[sub_resource type="Resource" id="Composition_binary_suns"]
+script = ExtResource("comp_script")
+weight = 0.6
+objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_binary_suns_0"), SubResource("Piece_binary_suns_1")])
+
 [sub_resource type="Resource" id="Composition_open_field"]
 script = ExtResource("comp_script")
-weight = 0.75
+weight = 1.25
 offset_jitter = Vector2(0, 0)
 
 [resource]
@@ -61,5 +109,7 @@ background_color = Color(0.04496, 0.0192, 0.24, 1)
 stars = true
 num_of_stars = 100
 num_of_twinkling_stars = 25
-set_piece_compositions = Array[ExtResource("comp_script")]([SubResource("Composition_storm_giant_and_star"), SubResource("Composition_lone_star"), SubResource("Composition_giant_and_far_star"), SubResource("Composition_open_field")])
+star_tints = Array[Color]([Color(0.552941, 0.945098, 0.956863, 1), Color(0.262745, 0.65098, 0.988235, 1), Color(0.933333, 0.827451, 0.364706, 1), Color(0.94902, 0.611765, 0.364706, 1)])
+tinted_star_share = 0.22
+set_piece_compositions = Array[ExtResource("comp_script")]([SubResource("Composition_storm_giant_and_star"), SubResource("Composition_lone_star"), SubResource("Composition_giant_and_far_star"), SubResource("Composition_world_and_moon"), SubResource("Composition_binary_suns"), SubResource("Composition_open_field")])
 metadata/_custom_type_script = "uid://c0mcptxevxdde"

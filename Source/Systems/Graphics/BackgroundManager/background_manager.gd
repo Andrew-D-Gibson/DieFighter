@@ -227,7 +227,7 @@ func _set_background(background_resource: Resource, rule_free: bool = false) -> 
 	if bg_resource.nebula:
 		_set_nebula(bg_resource.nebula_color, bg_resource.nebula_material)
 	if bg_resource.stars:
-		_set_stars(bg_resource.num_of_stars, bg_resource.num_of_twinkling_stars)
+		_set_stars(bg_resource)
 	if bg_resource.scrolling_objects:
 		_set_scrolling_objects(bg_resource)
 	if current_composition:
@@ -249,12 +249,18 @@ func _set_nebula(nebula_color: Color, custom_material: ShaderMaterial = null) ->
 	add_child(nebula)
 
 
-func _set_stars(num_of_stars: int, num_of_twinkling_stars: int) -> void:
-	_create_stars(star_pixel_scene, num_of_stars)
-	_create_stars(star_twinkle_scene, num_of_twinkling_stars)
+func _set_stars(bg_resource: BackgroundResource) -> void:
+	var tints: Array[Color] = bg_resource.star_tints
+	var share: float = bg_resource.tinted_star_share
+	_create_stars(star_pixel_scene, bg_resource.num_of_stars, tints, share)
+	_create_stars(star_twinkle_scene, bg_resource.num_of_twinkling_stars, tints, share)
 
 
-func _create_stars(star_scene: PackedScene, count: int) -> void:
+## [param tints]: colours that [param tinted_share] of the stars take instead
+## of white (see BackgroundResource.star_tints).
+func _create_stars(
+	star_scene: PackedScene, count: int, tints: Array[Color] = [], tinted_share: float = 0.0
+) -> void:
 	for i: int in range(count):
 		var star: Node2D = star_scene.instantiate()
 		add_child(star)
@@ -264,7 +270,14 @@ func _create_stars(star_scene: PackedScene, count: int) -> void:
 		)
 		# Far stars are dimmer as well as slower.
 		var nearness: float = inverse_lerp(star_depth_range.x, star_depth_range.y, depth)
-		star.modulate = Color(1, 1, 1, lerpf(0.25, 0.8, nearness))
+		var colour: Color = Color.WHITE
+		# Rolled only where a background has tints, so plain white skies keep
+		# drawing the same star fields from the same seed.
+		if not tints.is_empty() and \
+				RNGManager.randf(RNGManager.Bucket.BACKGROUND) < tinted_share:
+			colour = tints[RNGManager.randi_range(RNGManager.Bucket.BACKGROUND, 0, tints.size() - 1)]
+		colour.a = lerpf(0.25, 0.8, nearness)
+		star.modulate = colour
 		star.set_meta("depth", depth)
 		stars.append(star)
 
@@ -301,9 +314,9 @@ func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResourc
 func _set_set_pieces(placements: Array[SetPieceComposition.Placement]) -> void:
 	for placement: SetPieceComposition.Placement in placements:
 		var object_data: StaticBackgroundObjectResource = placement.object
-		if not object_data or not object_data.scene:
+		if not object_data or not placement.scene:
 			continue
-		var piece: Node2D = object_data.scene.instantiate()
+		var piece: Node2D = placement.scene.instantiate()
 		var body: CelestialBody = piece as CelestialBody
 		if body:
 			body.face = placement.face
