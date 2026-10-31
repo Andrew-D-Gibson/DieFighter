@@ -1,0 +1,82 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_2"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="ext_sound"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Deserter/pilgrim_shot.tres" id="ext_shot"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_base"]
+
+[sub_resource type="Resource" id="Resource_target_player"]
+script = ExtResource("ext_1")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_charge_flash"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 15
+color = Color(0.584, 0.412, 0.851, 1)
+
+[sub_resource type="Resource" id="Resource_charge_amount"]
+script = ExtResource("ext_1")
+category = 2
+amount = 4
+
+[sub_resource type="Resource" id="Resource_charge"]
+script = ExtResource("ext_1")
+category = 1
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_target_player_again"]
+script = ExtResource("ext_1")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_heal_flash"]
+script = ExtResource("ext_1")
+category = 4
+color = Color(0.478, 0.741, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_heal_sound"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 5
+sound_resource = ExtResource("ext_sound")
+
+[sub_resource type="Resource" id="Resource_heal_amount"]
+script = ExtResource("ext_1")
+category = 2
+amount = 8
+
+[sub_resource type="Resource" id="Resource_heal"]
+script = ExtResource("ext_1")
+category = 1
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_wait_time"]
+script = ExtResource("ext_1")
+category = 2
+amount = 3000
+
+[sub_resource type="Resource" id="Resource_wait"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_flee"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("ext_2")
+effects = Array[ExtResource("ext_1")]([SubResource("Resource_target_player"), SubResource("Resource_charge_flash"), SubResource("Resource_charge_amount"), SubResource("Resource_charge"), SubResource("Resource_target_player_again"), SubResource("Resource_heal_flash"), SubResource("Resource_heal_sound"), SubResource("Resource_heal_amount"), SubResource("Resource_heal"), SubResource("Resource_wait_time"), SubResource("Resource_wait"), SubResource("Resource_flee")])
+
+[resource]
+script = ExtResource("ext_0")
+dialogue = "Run if you must. Take this."
+faction = 1
+attitude = 1
+effects_on_enter = SubResource("Resource_chain")
+transitions = Dictionary[int, ExtResource("ext_base")]({
+1: ExtResource("ext_shot")
+})
