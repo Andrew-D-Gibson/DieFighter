@@ -16,7 +16,7 @@ var _tween: Tween
 
 
 ## [param icon_material] dresses the icon (the gate's portal shader); null for
-## a plain one.
+## a plain one. A null [param texture] shows the text alone.
 func show_hint(texture: Texture2D, text: String, color: Color, icon_material: Material = null) -> void:
 	icon.texture = texture
 	icon.material = icon_material
@@ -33,11 +33,13 @@ func _layout() -> void:
 	var font_size: int = label.get_theme_font_size("font_size")
 	var text_width: int = ceili(font.get_string_size(label.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x)
 	var icon_size: Vector2i = Vector2i(icon.texture.get_size()) if icon.texture else Vector2i.ZERO
+	# A caption with no icon centres on its text alone.
+	var gap: int = spacing if icon.texture else 0
 
-	var left: int = floori((size.x - (icon_size.x + spacing + text_width)) / 2.0)
+	var left: int = floori((size.x - (icon_size.x + gap + text_width)) / 2.0)
 	# Whole-pixel positions keep the pixel art on the grid.
 	icon.position = Vector2(left + icon_size.x / 2.0, floori(size.y / 2.0) + (icon_size.y % 2) / 2.0)
-	label.position = Vector2(left + icon_size.x + spacing, 0)
+	label.position = Vector2(left + icon_size.x + gap, 0)
 	label.size = Vector2(text_width, size.y)
 
 

@@ -202,3 +202,4 @@ TILE_FAMILY_DUPLICATION_DESC,"Copy dice as (holograms), or (echo) a tile so it f
 TILE_FAMILY_ROUTING,ROUTING,,,,,,,,Tile unlock card: name of a family of tiles that send dice in different directions across the grid,,,
 TILE_FAMILY_ROUTING_DESC,"Send dice up, down, across or anywhere, and cash in on dice that were (fed).",,,,,,,,Tile unlock card: what the Routing family does. Keep the (tokens).,,,
 SHIP_CARD_COMING_SOON,Coming soon…,,,,,,,,"Ship-select card: replaces the description of a ship that can't be picked yet; the card is shown greyed out. About three short lines fit.",,,
+MAP_HINT_CHARGE_ENGINES,Charge Engines,,,,,,,,"Map caption strip, shown alone with no icon while nothing on the map is hovered and the engine is not yet charged enough to jump: tells the player to charge the engines before they can jump. Replaces ""You are here"" until then. The strip is very narrow (66 px of a tiny pixel font, about 16 characters): keep it as short as English",16,,
