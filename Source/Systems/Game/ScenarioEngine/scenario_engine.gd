@@ -30,7 +30,7 @@ const CHAIN_SETTLE_SECONDS: float = 0.2
 ## How much longer than a dying ship's dice hand-off (Dice.death_handoff_seconds())
 ## the next chain waits after a ship is destroyed, so the dice have landed
 ## with their new holders before anything else moves.
-const _DEATH_BEAT_PADDING_SECONDS: float = 0.15
+const DEATH_BEAT_PADDING_SECONDS: float = 0.15
 
 var _inject_index: int = 0
 
@@ -331,5 +331,5 @@ static func _settles_after(event: EffectEvent) -> bool:
 ## or the next action would play out while the player is still watching the
 ## dice to see who got them.
 func _on_enemy_destroyed(_ship: Enemy) -> void:
-	hold_next_chain(Dice.death_handoff_seconds() + _DEATH_BEAT_PADDING_SECONDS / Globals.animation_speed)
+	hold_next_chain(Dice.death_handoff_seconds() + DEATH_BEAT_PADDING_SECONDS / Globals.animation_speed)
 		

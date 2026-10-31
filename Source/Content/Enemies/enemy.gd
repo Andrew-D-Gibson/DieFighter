@@ -247,6 +247,12 @@ func _connect_dice_manager_signals() -> void:
 	dice_manager.die_removed.connect(Events.enemy_lost_die.emit)
 	
 
+## Whether this ship is fighting the player. A fight lasts as long as one
+## hostile ship is left (GameStateManager), so only these keep dice in play.
+func is_hostile() -> bool:
+	return scenario_state != null and scenario_state.attitude == Attitude.AGGRESSIVE
+
+
 ## Whether the shot that finished this ship came from another ship (a pirate
 ## raiding it), rather than the player.
 func was_killed_by_ship() -> bool:
@@ -264,11 +270,14 @@ func _on_death() -> void:
 	# Stepped rather than killed: EnemyActionEvent is awaiting its finish.
 	if spending_tween and spending_tween.is_running():
 		spending_tween.custom_step(1000.0)
+	Events.enemy_left.emit(self, scenario_state.faction)
+	# Only now that the scenario has reacted to the loss can it be said who
+	# is still fighting, and so who inherits the dice (heirs_for_dice()).
 	# spending_die is left stale on purpose (see its comment), so it may be a
 	# hologram that's been spent and freed since; a freed object can't even
 	# be passed as a Dice.
-	dice_manager.give_away_dice(spending_die if is_instance_valid(spending_die) else null, true)
-	Events.enemy_left.emit(self, scenario_state.faction)
+	dice_manager.give_away_dice(spending_die if is_instance_valid(spending_die) else null,
+		EnemyDiceManager.Departure.DESTROYED)
 	Events.enemy_destroyed.emit(self)
 	
 	Events.play_sound.emit(_PRE_DEATH_SFX)

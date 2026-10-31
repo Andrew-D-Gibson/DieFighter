@@ -112,6 +112,20 @@ static func wait_for_landings(tree: SceneTree) -> void:
 		await tree.process_frame
 
 
+## How long a beam takes from locking on to a die of face [param value] to
+## landing it, in game seconds at the current animation speed. For code that
+## has to wait out a pull it starts, like a destroyed ship's hand-off.
+static func seconds_to_land(value: int) -> float:
+	var weight: float = _weight_of(value)
+	return (_LOCK_SECONDS
+		+ lerpf(_RESIST_SECONDS.x, _RESIST_SECONDS.y, weight)
+		+ lerpf(_YANK_SECONDS.x, _YANK_SECONDS.y, weight)) * _time_scale()
+
+
+static func _weight_of(value: int) -> float:
+	return (clampf(value, 1, 6) - 1.0) / 5.0
+
+
 static func _any_in_flight() -> bool:
 	for value: Variant in _active.values():
 		if not is_instance_valid(value):
@@ -127,7 +141,7 @@ static func _any_in_flight() -> bool:
 func _setup(die: Dice, enemy: Enemy) -> void:
 	_die = die
 	_enemy = enemy
-	_weight = (clampf(die.value, 1, 6) - 1.0) / 5.0
+	_weight = _weight_of(die.value)
 	_threat = _threat_for(die, enemy)
 	_color = _color_for(_threat)
 	_start_position = die.global_position
@@ -154,13 +168,21 @@ func _setup(die: Dice, enemy: Enemy) -> void:
 
 func _ready() -> void:
 	_die.draggable.state = Draggable.DragState.MOVING_WITH_CODE
+	# The state alone doesn't hold it: a holder sliding across the screen
+	# (the survivors closing up after a death) rearranges its dice every
+	# frame, handing each back to Draggable's homing, and whichever of that
+	# and this beam runs last in the frame wins. Until it lands, it's ours.
+	_die.draggable.held_by_code = true
 	_start_phase(Phase.LOCK)
 	Events.play_sound.emit(_LOCK_SFX)
 
 
 func _exit_tree() -> void:
-	if _active.get(_die) == self:
+	# A die freed first (a scene torn down) can't even be looked up as a key;
+	# its stale entry holds a freed beam, which _any_in_flight() skips.
+	if is_instance_valid(_die) and _active.get(_die) == self:
 		_active.erase(_die)
+		_let_go()
 
 
 func _process(delta: float) -> void:
@@ -271,6 +293,7 @@ func _land() -> void:
 	_die.global_position = _die.draggable.home_position
 	_die.rotation = 0.0
 	_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
+	_die.draggable.held_by_code = false
 	_trail.clear_points()
 
 	# A flourish, so a ship dying straight after the catch can pass the die on
@@ -312,9 +335,17 @@ func _finish(landed: bool) -> void:
 	if landed and is_instance_valid(_die) and is_instance_valid(_enemy) \
 	and _die.host_queue == _enemy.dice_manager:
 		_die.draggable.state = Draggable.DragState.ENEMY_HOLDING
-	if _active.get(_die) == self:
+	if is_instance_valid(_die) and _active.get(_die) == self:
 		_active.erase(_die)
+		_let_go()
 	queue_free()
+
+
+## Hands the die back to its Draggable, unless a destroyed ship's hand-off
+## has already claimed it (Dice.hand_off_after_death()).
+func _let_go() -> void:
+	if _phase != Phase.RELEASE and not _die.is_handing_off():
+		_die.draggable.held_by_code = false
 
 
 func _draw_beam(end: Vector2, intensity: float) -> void:
