@@ -2,19 +2,33 @@
 
 [ext_resource type="Script" path="res://Source/Content/Enemies/Components/OverloadGauge/overload_gauge.gd" id="1_gauge"]
 [ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="2_font"]
+[ext_resource type="PackedScene" uid="uid://bpbvdoq4n7bvj" path="res://Source/Systems/Components/Clickable/clickable.tscn" id="3_click"]
 
-[node name="OverloadGauge" type="Node2D" node_paths=PackedStringArray("label")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gauge"]
+size = Vector2(40, 11)
+
+[node name="OverloadGauge" type="Node2D" node_paths=PackedStringArray("label", "clickable", "hit_box")]
 z_index = 2
 script = ExtResource("1_gauge")
 label = NodePath("Label")
+clickable = NodePath("Clickable")
+hit_box = NodePath("Clickable/CollisionShape2D")
 
 [node name="Label" type="Label" parent="."]
-offset_left = 15.0
+offset_left = -40.0
 offset_top = -6.0
-offset_right = 44.0
+offset_right = -18.0
 offset_bottom = 10.0
+mouse_filter = 2
 theme_override_colors/font_outline_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 theme_override_constants/outline_size = 2
 theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 16
 text = "0/0"
+horizontal_alignment = 2
+
+[node name="Clickable" parent="." instance=ExtResource("3_click")]
+hover_hint = &"OVERLOAD_GAUGE_HINT"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
+shape = SubResource("RectangleShape2D_gauge")

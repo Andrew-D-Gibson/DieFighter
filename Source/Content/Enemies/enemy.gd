@@ -30,6 +30,10 @@ const _KICK_CENTRE_DEADZONE: float = 6.0
 ## How much the wreck is knocked upward for each unit it goes sideways.
 const _KICK_RISE: float = 0.2
 
+## Fired as the ship trips its breaker (OverloadEvent), before its dice go
+## home and its threshold rises. Its OverloadGauge flashes.
+signal overloaded()
+
 ## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 
@@ -115,6 +119,8 @@ var rounds_in_combat: int = 0
 var overload_threshold: int = 0
 
 const _OVERLOAD_GAUGE: PackedScene = preload("res://Source/Content/Enemies/Components/OverloadGauge/overload_gauge.tscn")
+## The heat gauge of a ship with a breaker; null for every other ship.
+var overload_gauge: OverloadGauge = null
 
 ## Optional: force specific actions (used by tutorial)
 static var forced_actions: Array[EnemyActionResource] = []
@@ -398,6 +404,7 @@ func _update_overload() -> void:
 	gauge.enemy = self
 	gauge.position = enemy_resource.overload_gauge_position
 	graphics_manager.add_child(gauge)
+	overload_gauge = gauge
 
 
 ## The face total of every die this ship is holding.
@@ -417,6 +424,7 @@ func is_overloaded() -> bool:
 ## Sends every held die home and makes the next overload harder. Called by
 ## OverloadEvent.
 func vent_overload() -> void:
+	overloaded.emit()
 	overload_threshold += enemy_resource.overload_threshold_growth
 	dice_manager.return_dice_to_player()
 
@@ -455,17 +463,24 @@ func _update_health_bar() -> void:
 
 
 ## How far this ship's drawing reaches to the left (x) and right (y) of its
-## centre: its hull, and its health bar wherever that hangs. With
-## [param compact], as it would be with the bar tucked above the hull. The
-## formation spaces ships by this. See [method EnemyFormation.solve_footprints].
+## centre: its hull, its health bar wherever that hangs, and its overload
+## gauge if it has one. With [param compact], as it would be with the bar
+## tucked above the hull. The formation spaces ships by this. See
+## [method EnemyFormation.solve_footprints].
 func formation_footprint(compact: bool = health_bar_compact) -> Vector2:
 	var half_hull: float = enemy_resource.formation_width * 0.5
 	var bar: Vector2 = enemy_resource.compact_health_bar_position if compact \
 		else enemy_resource.health_bar_position
-	return Vector2(
+	var footprint: Vector2 = Vector2(
 		maxf(half_hull, EnemyHealthBar.REACH_LEFT - bar.x),
 		maxf(half_hull, bar.x + EnemyHealthBar.REACH_RIGHT)
 	)
+	# The gauge hangs below the hull and can be wider than a small ship.
+	if is_instance_valid(overload_gauge):
+		var gauge_reach: Vector2 = overload_gauge.reach()
+		footprint.x = maxf(footprint.x, gauge_reach.x - overload_gauge.position.x)
+		footprint.y = maxf(footprint.y, overload_gauge.position.x + gauge_reach.y)
+	return footprint
 
 
 ## Moves the health bar between its usual spot beside the hull and its compact

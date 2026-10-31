@@ -15,7 +15,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(enemy):
 		return
 
-	Juice.callout(enemy, "OVERLOAD!", Globals.yellow, true)
+	Juice.callout(enemy, tr(&"CALLOUT_OVERLOAD"), Globals.yellow, true)
 	Juice.sparkle(enemy.get_parent(), Juice.anchor_of(enemy), Globals.yellow, 18, 70.0)
 	Events.camera_shake_small.emit()
 	enemy.vent_overload()
