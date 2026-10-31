@@ -37,8 +37,8 @@ end is certain?*
 
 | Faction | Their answer | Role in play | Existing content that belongs to them |
 |---|---|---|---|
-| **The Rearguard** | "Hold the line, buy time." | Imperials / military | Tithe Collector, Sector Warden, Tollkeeper |
-| **The Undertow** | "The slow ones are already dead, so take their stuff." | Pirates | Raider, Bounty Runner, Dice Thief, Black Market |
+| **The Rearguard** | "Hold the line, buy time." | Imperials / military | Tithe Collector, Tollkeeper, the Bastion |
+| **The Undertow** | "The slow ones are already dead, so take their stuff." | Pirates | Raider, Bounty Runner, Dice Thief, Black Market, Sector Warden |
 | **The Caravan** | "Keep everyone together." | Civilians, shops, medics | Shop, Repair Dock, Civilian Transport, Mayday, Mercy Call |
 | **The Inbound** | "Stop running." | Fate cult | *(new)* |
 | **The Spilled** | Nobody knows. | Aliens from the hole | Fate Husk, Fate Leech, Fate Maw, Fate Attacker |
@@ -97,7 +97,7 @@ paid a different price for it.
 
 | Sector | Layer | Feel | Boss |
 |---|---|---|---|
-| 1 | **The Tail** | Wreckage, stragglers, Fate visible on the horizon behind you. Mostly Undertow. | **An Undertow warlord** who survives by eating the slow. *"Everyone back here is already dead. I'm just the one who noticed."* |
+| 1 | **The Tail** | Wreckage, stragglers, Fate visible on the horizon behind you. Mostly Undertow. | **An Undertow warlord** (the Sector Warden) who survives by eating the slow. *"Everyone back here is already dead. I'm just the one who noticed."* |
 | 2 | **The Belly** | The Caravan's heart: markets, medics, generation ships. Most shops and civilian events. | **The Caravan's Chancellor**, who keeps the Caravan moving by deciding who gets left behind. Sympathetic, maybe even right. |
 | 3 | **The Spine** | Rearguard territory: checkpoints, tolls, Tithe Collectors, warships. | **The Marshal of the Rearguard**, who has held the line their whole life and just wants one ship to make it. |
 | Final | **The Front** | Empty, quiet, beautiful, and wrong. | **The Vanguard.** |
@@ -381,8 +381,8 @@ friendly green frame), so a red badge in a green frame is itself news.
 
 | Faction | Built to the language | Older ships (assigned, predate it) |
 |---|---|---|
-| **Rearguard** | **Picket** (line ship: Aegis Link on an ally, light fire), **Conscriptor** (draft ship: Impound + Lockout) | Sector Warden, Tithe Collector, Bamba Defender, Disabler, Siege Mortar, Cannon Drone, Ion Lance, the Bastion |
-| **Undertow** | **Gaff** (crane-and-hook scavenger: Pilfer + Siphon), **Wrecker** (ram-jawed breaker: attack, Incendiary, Grid Quake) | Venom Fighter/Raider, Cutpurse, Bounty Runner, Carrier, Interceptor |
+| **Rearguard** | **Picket** (line ship: Aegis Link on an ally, light fire), **Conscriptor** (draft ship: Impound + Lockout) | Tithe Collector, Bamba Defender, Disabler, Siege Mortar, Cannon Drone, Ion Lance, the Bastion |
+| **Undertow** | **Gaff** (crane-and-hook scavenger: Pilfer + Siphon), **Wrecker** (ram-jawed breaker: attack, Incendiary, Grid Quake) | Venom Fighter/Raider, Cutpurse, Bounty Runner, Carrier, Interceptor, Sector Warden |
 | **Caravan** | **Hauler** (three-pod freighter: shields, then flees), **Claims Adjuster** (Compact enforcer: attack + Lockout as the lien) | Shop, Repair Dock, Civilian Transport, Field Tender, Arc Dynamo |
 | **Inbound** | **Pilgrim** (haloed skiff: Siphon + Relay + Scrambler), **Zealot** (ring-and-lance: big hits, Overloads into its own hull) | none yet |
 | **Spilled** | **Fate Wisp** (void with legs: Scrambler + Siphon), **Fate Shroud** (manta of voids: attack, Lockout, Target Lock) | Fate Attacker, Husk, Leech, Maw |
@@ -390,18 +390,35 @@ friendly green frame), so a red badge in a green frame is itself news.
 Encounters for the new pairs: `COMBAT_PicketLine`, `COMBAT_Wreckers`,
 `COMBAT_LienCollection`, `COMBAT_Pilgrimage`, and the Fate variant `FATE_Shroud`.
 
-### Retrofit candidates
+### Bringing the older ships in line
 
-Older ships were drawn before this language and some disagree with it. None of these are
-changed yet; each is a small palette swap or detail pass if wanted:
+Older ships were drawn before this language. A pass on 2026-10-30 brought them in:
 
-- **Rearguard in red:** the Sector Warden and Tithe Collector run red lights, and the
-  Siege Mortar orange. Blue would claim them for the Rearguard.
-- **Undertow off-colour:** the Cutpurse's accent is purple (reads as Spilled), and the
-  Carrier and Interceptor are orange. Their hulls are also the clean light grey of the
-  Rearguard rather than dark salvage.
-- **Caravan:** the Arc Dynamo's furnaces are orange; a green running-light pass would tie
-  it to the Belly.
-- **Symmetry:** most older Undertow hulls are mirror-symmetric. An asymmetric patch,
-  a mismatched engine or a single hook, would be enough.
+- **Rearguard** lights are blue throughout (the Tithe Collector, Siege Mortar, Ion Lance,
+  Disabler and Bastion were red, orange or yellow). The Defender and Cannon Drone are
+  mirrored and clean, and the Tithe Collector, Defender and Cannon Drone carry the blue
+  band.
+- **Undertow** accents are venom red (the Carrier was orange, the Cutpurse purple). The
+  Venom Fighter and Interceptor have dark salvage hulls, a bolted lighter plate,
+  mismatched engines and a hook.
+- **Caravan** ships have lit orange windows, a cargo stripe and green running lights. The
+  Civilian Transport's face-like mouth is now a lit hangar.
+- **Spilled echoes.** The Fate Husk, Leech, Maw and Fate Attacker are fleet ships that
+  fell in and came back: the Defender, Cutpurse, Siege Mortar and Venom Fighter. Each is
+  rebuilt from its source ship. Grey turns to navy flesh with purple highlights, one grey
+  scrap survives, voids ringed in purple are punched through, the lower half skews a
+  pixel, and unoutlined tendrils replace the engines. A new echo follows the same recipe.
+- **Bosses**, one per faction by sector:
+  - The Sector Warden (sector 1) is the Undertow warlord: a welded hull with a furnace
+    maw, a crane and grapple, and trophies taken from the Caravan and the Rearguard.
+  - The Arc Dynamo (sector 2) is a Caravan reactor barge.
+  - The Bastion (sector 3) is a Rearguard fortress whose turrets read by shape: guns, a
+    reactor and a shield.
+- Every ship cloaks in its faction's colours, and every mirror-symmetric ship has a
+  mirror-symmetric portrait.
 
+Still open:
+- The Bounty Runner (Undertow) flies the Civilian Transport's Caravan hull, a smuggler in
+  civilian clothes. It cloaks green.
+- The Sector Warden's description still calls it a "gate authority".
+- The Shop keeps its boxy silhouette.

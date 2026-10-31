@@ -439,12 +439,15 @@ value before its STREAM.
   - `<name>_targeting_image.png`: 16×16. It is also the enemy's portrait in
     the main menu's codex, drawn grey until the player meets the ship.
   - Draw both to the ship's faction's visual language (`LORE.md` §12): its
-    accent colour, shapes and symmetry rule.
+    accent colour, shapes and symmetry rule. A mirror-symmetric ship gets a
+    mirror-symmetric portrait.
 - Ship graphics scene: `Source/Content/Enemies/EnemyShipGraphicScenes/<name>_ship_graphics.tscn`.
   Copy `attacker_ship_graphics.tscn`.
   - The root **must** be a `Sprite2D` whose material is a
     `resource_local_to_scene` ShaderMaterial using `enemy_shader.gdshader`.
-    The flash, fade and cloak effects drive its parameters.
+    The flash, fade and cloak effects drive its parameters. Set
+    `cloak_main_color` / `cloak_bg_color` to the faction's light and middle
+    accent; the copied scene's are the Undertow's.
   - Add `engine_particles.tscn` children at the exhausts.
   - Damage smoke is automatic (`ShipDamageSmoke`): a plume breaks out at
     75%, 50% and 25% hull, from spots picked off the hull's opaque pixels
