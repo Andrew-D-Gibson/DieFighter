@@ -44,12 +44,22 @@ registration to testing. For how the systems work underneath, see
     activates`). A condition follows it with `while`
     (`Any die while fully charged`). Passive tiles use the same arrow.
   - Order: cost (`Spend`), main effect, side effects, then where the die goes.
-    The standard ending is `Give die`, which means to `target`. Name any other
-    destination (`Give die to random enemy`), or use `Return`, `Keep`.
+  - **Defaults go unsaid.** A die used on a tile goes to `target`, and so do
+    the tile's `Deal` and `Apply`. Neither is written: `Any die -> Deal
+    5 damage`, not `... to target. Give die`. Only the exceptions are spelled
+    out, so they stand out:
+    - another destination for the die, in orange: `Give die to random
+      enemy`, `Give die as (die_1)`, `Return die`, `Keep die`, `Hold die`, or
+      a Feed token (`(feed_right)`);
+    - another ship for the effect: `to you`, `to random enemy`,
+      `to every enemy`, `to all ships`.
+    Write `target` only where the sentence needs a noun for it
+    (`per die target holds`, `Steal target's shields`).
   - Branches read `Label: effect`, as in `Odd: Feed up. Even: Feed down`.
   - `per` is for scaling (`2 shields per burn`). `equal to` is for copying a
-    value (`damage to target equal to die`). `adjacent` is the four
-    orthogonal tiles, `surrounding` is all eight.
+    value (`damage equal to die`, `damage equal to 2x die`). `adjacent` is
+    the four orthogonal tiles, `surrounding` is all eight.
+  - Uses are never written: the tile's lights show them.
   - Colours: `red` damage, hull and enemy intents that hurt, `blue` shields and
     holograms, `green` heals, re-rolls and tile movement, `purple` engine
     charge and targets (`target`, `random enemy`, `all ships`), `orange` dice
@@ -311,7 +321,7 @@ between turns and starts full every fight (`TileCountdown`, kept in
   darkest shade; `CountdownReadout` draws what's left there in lit 3×5
   digits (two at most, so N ≤ 99).
 - Text: `(countdown) 6. [color=yellow]Any die[/color] -> Count down by
-  die. At 0: Deal [color=red]7 damage[/color] to [color=purple]target[/color]`.
+  die. At 0: Deal [color=red]7 damage[/color]`.
   The info panel adds how much is left. Upgrade by lowering N.
 
 **Later turns** (Time Bomb, Holding Bay): something set up now that happens
