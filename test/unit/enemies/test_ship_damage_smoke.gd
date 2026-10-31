@@ -53,6 +53,22 @@ func test_every_enemy_hull_gets_a_spot_per_threshold_on_its_hull() -> void:
 			assert_gt(image.get_pixelv(pixel).a, 0.5, "%s smokes from %s, off its hull" % [file, spot])
 
 
+func test_picked_spots_keep_off_the_face_where_the_hull_allows() -> void:
+	# The face: the middle column of the hull, from just behind its centre
+	# to the nose (sheets are nose-down, so +y is forward).
+	for file: String in DirAccess.get_files_at(GRAPHICS):
+		if not file.ends_with(".tscn"):
+			continue
+		var hull: Sprite2D = _hull(load(GRAPHICS + file))
+		var image: Image = hull.texture.get_image()
+		var bounds: Rect2 = Rect2(image.get_used_rect()).grow(-1.0)
+		var centre: Vector2 = bounds.get_center() - Vector2(image.get_size()) / 2.0
+		for spot: Vector2 in ShipDamageSmoke.spots_for(hull):
+			var on_face: bool = absf(spot.x - centre.x) < bounds.size.x * 0.1 \
+				and spot.y > centre.y
+			assert_false(on_face, "%s smokes from %s, over its face" % [file, spot])
+
+
 func test_hand_placed_markers_override_the_picked_spots() -> void:
 	var hull: Sprite2D = _hull()
 	var points: Node2D = Node2D.new()
