@@ -781,6 +781,12 @@ encounter.
   composition's star (shader planets are lit from the right, the dead world
   from the left; flip to swap). Vary only shape, place and light, never the
   palette. An empty composition is open space, where the stars drift.
+  A piece's `scene_variants` lists other designs that may stand in for its
+  `scene` on a visit (the star field's sun slot draws from blue, amber, red
+  and white suns). Every variant must fit the slot and take its light, so
+  keep them the same kind of body.
+- `star_tints` / `tinted_star_share`: palette colours that a share of the
+  star pixels take instead of white (the star field tints about a fifth).
 - **Stars.** Where anything is on screen besides stars and nebula (set
   pieces or scrolling objects), the stars hold still between jumps; only
   open space drifts. Nothing to set: `BackgroundResource.anchors_the_view()`
