@@ -87,7 +87,7 @@ script = ExtResource("tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Holding Bay+[/color]"
-description = "[color=yellow]Any die[/color] -> Hold die until your next turn starts, then [color=orange]Return[/color] it without re-rolling"
+description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next turn[/color]: [color=orange]Return[/color] it without re-rolling"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

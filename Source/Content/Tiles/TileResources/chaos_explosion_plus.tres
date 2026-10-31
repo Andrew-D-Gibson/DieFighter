@@ -144,7 +144,7 @@ script = ExtResource("4_rsbqf")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Chaos Explosion+[/color]"
-description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to [color=purple]all enemies[/color]. [color=green]Re-roll[/color] all dice"
+description = "(die_5) or (die_6) -> Deal [color=red]10 damage[/color] to [color=purple]every enemy[/color]. [color=orange]Return[/color] die. [color=green]Re-roll[/color] all dice"
 rarity = 2
 textures = SubResource("SpriteFrames_2itrs")
 uses_per_turn = 1

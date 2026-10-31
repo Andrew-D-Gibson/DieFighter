@@ -95,7 +95,7 @@ animations = [{
 [resource]
 script = ExtResource("4_m7a5a")
 tile_name = "[color=green]Bump+[/color]"
-description = "[color=yellow]Die below[/color] (die_6) -> Add 2 to die"
+description = "[color=yellow]Die below[/color] (die_6) -> Add 2 to die. [color=orange]Return[/color] die"
 offered_as_reward = false
 is_upgrade = true
 textures = SubResource("SpriteFrames_j21c8")

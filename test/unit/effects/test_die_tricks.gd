@@ -185,6 +185,29 @@ func test_upgrades_add_a_use() -> void:
 		assert_eq(base.upgraded_version, plus)
 
 
+# ── Value Exchange, Holo-Duplicator ───────────────────────────────────────────
+
+func test_value_exchange_flips_then_gives_the_die_to_the_target() -> void:
+	var enemy: Enemy = autofree(ENEMY_SCENE.instantiate())
+	var computer: TargetingComputer = autofree(TargetingComputer.new())
+	computer.targeted_enemy = enemy
+	Globals.targeting_computer = computer
+	for tile_id: String in ["value_exchange", "value_exchange_plus"]:
+		var events: Array[EffectEvent] = await _play(tile_id, 4)
+		var flips: Array[EffectEvent] = _of(events, FlipOnesAndSixesEvent)
+		var gives: Array[EffectEvent] = _of(events, GiveDieToTargetEvent)
+		assert_eq(flips.size(), 1, tile_id)
+		assert_eq(gives.size(), 1, tile_id + " pays with the die")
+		assert_eq(_of(events, GiveDieToPlayerEvent).size(), 0, tile_id + " no longer returns it")
+		if flips.size() == 1 and gives.size() == 1:
+			assert_true(events.find(flips[0]) < events.find(gives[0]), "flip, then hand over")
+
+
+func test_holo_duplicator_copies_only_a_low_die() -> void:
+	assert_eq(_faces("holographic_duplicator"), [1, 2, 3] as Array[int])
+	assert_eq(_faces("holographic_duplicator_plus"), [1, 2, 3] as Array[int])
+
+
 # ── AutoPilot ──────────────────────────────────────────────────────────────────
 
 func test_the_forecast_counts_the_hologram_and_the_kept_half() -> void:

@@ -147,7 +147,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Scatter Router+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color] to [color=purple]target[/color]. (feed_random)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color]. (feed_random)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

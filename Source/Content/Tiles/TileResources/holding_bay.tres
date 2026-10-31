@@ -79,7 +79,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 script = ExtResource("tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Holding Bay[/color]"
-description = "[color=yellow]Any die[/color] -> Hold die until your next turn starts, then [color=orange]Return[/color] it without re-rolling"
+description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next turn[/color]: [color=orange]Return[/color] it without re-rolling"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

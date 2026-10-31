@@ -277,6 +277,24 @@ func test_a_repeated_payout_hits_twice_and_gives_each_die_once() -> void:
 	assert_eq(_of(events, GiveDieToTargetEvent).size(), 2)
 
 
+func test_welder_holds_free_then_welds_the_held_die_into_the_next_and_sends_it_home() -> void:
+	var tile: Tile = _tile("welder")
+	assert_eq(tile.uses_remaining, 1)
+	var held: Dice = _die(2)
+	await _play(_place(tile, held))
+	assert_eq(tile.uses_remaining, 1, "holding is free")
+	var events: Array[EffectEvent] = await _play(_place(tile, _die(3)))
+	assert_eq(_of(events, MergeHeldDieEvent).size(), 1)
+	assert_has(player.dice_manager.queue, held, "the held die comes home")
+	assert_eq(_of(events, GiveDieToTargetEvent).size(), 0, "nothing goes to the target")
+	assert_eq(tile.uses_remaining, 0, "the weld spends the one use, so a held die can't weld the whole hand")
+
+
+func test_welder_plus_welds_twice_a_turn() -> void:
+	assert_eq((load(TILES % "welder_plus") as TileResource).uses_per_turn, 2)
+	assert_true((load(TILES % "welder_plus") as TileResource).holds_first_die)
+
+
 # ── Echo ─────────────────────────────────────────────────────────────────────
 
 func test_an_echo_waits_out_the_hold_for_the_payout() -> void:

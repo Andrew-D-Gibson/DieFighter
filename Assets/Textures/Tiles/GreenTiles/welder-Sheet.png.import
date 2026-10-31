@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c0mewegeompm1"
-path="res://.godot/imported/blood_valve-Sheet.png-eb710da50d95a96301b8f15b20859cb6.ctex"
+uid="uid://de7fb6on4gwtm"
+path="res://.godot/imported/welder-Sheet.png-6d30b45bb5b1b48cc6f4c61d4f1c5067.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/PurpleTiles/blood_valve-Sheet.png"
-dest_files=["res://.godot/imported/blood_valve-Sheet.png-eb710da50d95a96301b8f15b20859cb6.ctex"]
+source_file="res://Assets/Textures/Tiles/GreenTiles/welder-Sheet.png"
+dest_files=["res://.godot/imported/welder-Sheet.png-6d30b45bb5b1b48cc6f4c61d4f1c5067.ctex"]
 
 [params]
 
