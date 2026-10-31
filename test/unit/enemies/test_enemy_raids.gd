@@ -5,7 +5,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 const Ships := preload("res://test/helpers/ships.gd")
 const Faction := ScenarioManager.Faction
 const RAID := "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres"
-const RAIDER := "res://Source/Content/Enemies/EnemyResources/raider.tres"
+const VENOM_FIGHTER := "res://Source/Content/Enemies/EnemyResources/attacker.tres"
 const EVENT_DIR := "res://Source/Content/ScenarioResources/Scenarios/EVENT_PiratesAttackingCivilian/"
 
 
@@ -40,15 +40,15 @@ func test_damage_aimed_at_the_player_after_a_raid_step_is_dangerous_again() -> v
 	assert_eq(Ships.action("Both", effects).get_threat(), EnemyActionResource.Threat.DANGEROUS)
 
 
-func test_the_raider_only_raids_when_there_is_someone_to_raid() -> void:
-	var raider: EnemyResource = load(RAIDER)
+func test_the_venom_fighter_only_raids_when_there_is_someone_to_raid() -> void:
+	var fighter: EnemyResource = load(VENOM_FIGHTER)
 	var pirate := _ship(Faction.PIRATE)
 	var civilian := _ship(Faction.CIVILIAN)
 	var with_prey := EnemyActionSituation.for_ship(pirate, Ships.roster([pirate, civilian]))
 	var without := EnemyActionSituation.for_ship(pirate, Ships.roster([pirate, _ship(Faction.PIRATE)]))
 
 	var raids_with_prey: int = 0
-	for pool: EnemyTurnActionList in raider.action_options:
+	for pool: EnemyTurnActionList in fighter.action_options:
 		for i: int in range(40):
 			for action: EnemyActionResource in EnemyActionSelector.roll(pool, with_prey):
 				if action.name == "Raid":

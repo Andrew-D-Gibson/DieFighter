@@ -204,6 +204,9 @@ func test_jump_lands_in_a_plain_two_ship_fight() -> void:
 	for ship: EnemyStateRewardResource in fight.starting_enemies:
 		for table: EnemyTurnActionList in ship.enemy_resource.action_options:
 			for option: EnemyActionOptionResource in table.actions_possible:
+				# A Raid needs a civilian to prey on, and this fight has none.
+				if option.base_action.get_binding() == EnemyActionResource.Binding.HOSTILE_SHIP:
+					continue
 				assert_has(plain, option.base_action.resource_path.get_file(),
 					"%s can only shoot and shield" % ship.enemy_resource.enemy_name)
 	for background: BackgroundResource in fight.background_resource.get_backgrounds():

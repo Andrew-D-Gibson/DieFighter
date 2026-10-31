@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
-[ext_resource type="Resource" uid="uid://dhudp0ushmrvg" path="res://Source/Content/Enemies/EnemyResources/raider.tres" id="enemy_raider"]
+[ext_resource type="Resource" uid="uid://cpjv635fppvg" path="res://Source/Content/Enemies/EnemyResources/attacker.tres" id="enemy_raider"]
 [ext_resource type="Resource" uid="uid://w0ppni12jr8h" path="res://Source/Content/Enemies/EnemyResources/wrecker.tres" id="enemy_wrecker"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state_pirate"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Chopshop/breaker_boss.tres" id="state_boss"]
