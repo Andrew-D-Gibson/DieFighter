@@ -13,6 +13,13 @@ extends Node2D
 ## in, which counts as read. A hazard only counts down during a fight, so its
 ## countdown shows only while one is on.
 ##
+## A hazard's rules take a while to parse, so everything that shows one leads
+## with its headline: the countdown in words, then the effect in a few
+## ("In 2 turns: a random tile is Locked"). The card says just that; a readout
+## slides out of the screen with it whenever the countdown ticks, the card
+## lands, or the pointer rests on the monitor; and the full rule is one click
+## away in the info panel.
+##
 ## The node's origin is the flap's hinge, under the credit readout. %Arm flips
 ## (its scale) and %Face takes the squash-and-stretch, so the two never fight
 ## over one scale.
@@ -56,6 +63,17 @@ const _COUNTDOWN_FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 const _GLYPH_CENTRED: Vector2 = Vector2(0, 13)
 const _GLYPH_BESIDE_COUNTDOWN: Vector2 = Vector2(-4, 13)
 const _COUNTDOWN_POSITION: Vector2 = Vector2(5, 13)
+
+## The hazard readout slides out of the screen's open side, level with it.
+## One line, so it crosses as little of the ships' sky as it can, and only
+## for a few seconds at a time.
+const _READOUT_ANCHOR: Vector2 = Vector2(14, 13)
+## How long it stays out when the countdown ticks or the card lands.
+const _READOUT_SECONDS: float = 3.5
+## How long it lingers once the pointer leaves the monitor.
+const _READOUT_HOVER_LINGER_SECONDS: float = 0.5
+const _READOUT_FILL: Color = Color(0.0156863, 0.00784314, 0.0901961, 0.9)
+const _READOUT_EDGE: Color = Color(0.145098, 0.109804, 0.419608, 1)
 
 ## What the flap asks the console for while it has something to show.
 const _CONSOLE_REQUEST: StringName = &"environment"
@@ -112,6 +130,15 @@ var _unread: bool = false
 var _present_queued: bool = false
 
 var _countdown: Label
+## The hazard's headline on a strip of dark glass. Its holder is what slides:
+## the panel inside lays itself out to the text.
+var _readout_holder: Node2D
+var _readout: PanelContainer
+var _readout_text: RichTextLabel
+var _readout_tween: Tween
+## Seconds left before the readout slides back in; INF while the pointer
+## rests on the monitor.
+var _readout_left: float = 0.0
 
 var _deployed: bool = false
 
@@ -130,6 +157,7 @@ var console: OverheadConsole = null
 
 func _ready() -> void:
 	_build_countdown()
+	_build_readout()
 	_stow_instantly()
 	ArrivalIntro.shared()
 	_clickable.clicked.connect(_on_clicked)
@@ -205,6 +233,8 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 	_kick()
 	_flare(color)
 	_pop_countdown()
+	# The moment the player looks up is the moment to say what's coming.
+	_show_readout(_READOUT_SECONDS)
 	Events.play_sound.emit(_URGENT_TICK_SFX if _is_urgent() else _TICK_SFX)
 	if _is_urgent():
 		Juice.ring(self, _glyph.global_position, color, 22.0, 0.4, 8.0)
@@ -214,6 +244,9 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 func _on_hazard_triggered(hazard: BackgroundHazardResource) -> void:
 	if hazard != _hazard or not _deployed:
 		return
+	# The banner names the effect now; a readout already counting to the
+	# next one would talk over it.
+	_hide_readout()
 	_play_trigger_feedback(hazard.hazard_name.to_upper(), hazard.color)
 
 
@@ -241,6 +274,7 @@ func _present() -> void:
 		_unread = false
 		_refresh_blink()
 		_countdown.hide()
+		_hide_readout(true)
 		if _deployed:
 			_stow()
 		return
@@ -273,6 +307,9 @@ func _present() -> void:
 		# Already up: a fresh swing says "new rule" (or "it's counting now")
 		# without folding away and back.
 		_kick()
+	if countdown_appeared and not is_new:
+		# The fight is on: say when, now that there is a when.
+		_show_readout(_READOUT_SECONDS)
 
 	if is_new:
 		_unread = true
@@ -312,10 +349,9 @@ func _announce(shown: Resource) -> void:
 		var hazard: BackgroundHazardResource = shown
 		alert.title = tr(hazard.hazard_name).to_upper()
 		alert.color = hazard.color
-		alert.description = tr(hazard.description)
-		# Word for word what the monitor's info panel says, so the card and
-		# the monitor read as one instrument.
-		alert.footnote = hazard_timing_text(hazard, _armed, _turns_remaining)
+		# Just the headline, which reads as fast as a rule's one line. The
+		# full rule waits in the monitor's info panel, where the card lands.
+		alert.description = hazard_headline(hazard, _armed, _turns_remaining)
 	else:
 		var modifier: BackgroundModifierResource = shown
 		alert.title = tr(modifier.modifier_name).to_upper()
@@ -364,6 +400,8 @@ func _on_alert_landed(shown: Resource) -> void:
 	_refresh_blink()
 	_kick()
 	_flare(_current_color())
+	# The headline the card carried, now coming from where it went.
+	_show_readout(_READOUT_SECONDS)
 
 
 ## The old region's rule is meaningless mid-hyperspace, and a lamp blinking
@@ -442,8 +480,12 @@ func _on_clicked() -> void:
 		info.title_label_text = "[color=%s]%s[/color]" % [
 			_hazard.color.to_html(false), _hazard.hazard_name.to_upper()
 		]
-		info.bottom_label_text = "%s\n%s" % [
-			_hazard.description, hazard_timing_text(_hazard, _armed, _turns_remaining)
+		# Headline first, so the panel opens on what the card and readout
+		# said, then the rule in full and how often it comes round.
+		info.bottom_label_text = "%s\n\n%s\n%s" % [
+			hazard_headline(_hazard, _armed, _turns_remaining),
+			_hazard.description,
+			hazard_repeat_text(_hazard),
 		]
 		info.texture = _hazard.icon if _hazard.icon else _DEFAULT_INFO_ICON
 	else:
@@ -455,24 +497,59 @@ func _on_clicked() -> void:
 	Events.show_info.emit(info)
 
 
-## When [param hazard] next hits: [param turns_remaining] on a fight's
-## countdown while [param armed], else how far into a fight it first does.
-## The last turn is spelled out, because "in 1 turn" can't say whether that
-## means as this turn ends or as the next one starts. Every line is kept under
-## the ~27 characters the info panel fits on one line.
-static func hazard_timing_text(
+## When [param hazard] next hits, in a few words that lead its headline:
+## [param turns_remaining] on a fight's countdown while [param armed], else
+## how far into a fight it first does. The last turn is spelled out, because
+## "in 1 turn" can't say whether that means as this turn ends or as the next
+## one starts, and so is the one before it for a hazard that hits as turns
+## end: "in 2 turns" would read as the turn after next.
+static func hazard_when_text(
 	hazard: BackgroundHazardResource, armed: bool, turns_remaining: int
 ) -> String:
 	if not armed:
 		var first: int = maxi(1, hazard.turns_until_first)
 		if first == 1:
-			return TranslationServer.translate("HAZARD_FIRST_ONE_TURN_INTO_FIGHT")
-		return TranslationServer.translate("HAZARD_FIRST_TURNS_INTO_FIGHT").format({"turns": first})
+			return TranslationServer.translate("HAZARD_WHEN_ONE_TURN_INTO_FIGHT")
+		return TranslationServer.translate("HAZARD_WHEN_TURNS_INTO_FIGHT").format({"turns": first})
+	var at_turn_end: bool = hazard.timing == BackgroundHazardResource.Timing.YOUR_TURN_ENDS
 	if turns_remaining <= 1:
-		if hazard.timing == BackgroundHazardResource.Timing.YOUR_TURN_ENDS:
-			return TranslationServer.translate("HAZARD_HITS_AS_THIS_TURN_ENDS")
-		return TranslationServer.translate("HAZARD_HITS_AS_NEXT_TURN_STARTS")
-	return TranslationServer.translate("HAZARD_NEXT_IN_TURNS").format({"turns": turns_remaining})
+		return TranslationServer.translate(
+			"HAZARD_WHEN_THIS_TURN_ENDS" if at_turn_end else "HAZARD_WHEN_NEXT_TURN"
+		)
+	if turns_remaining == 2 and at_turn_end:
+		return TranslationServer.translate("HAZARD_WHEN_NEXT_TURN_ENDS")
+	return TranslationServer.translate("HAZARD_WHEN_IN_TURNS").format({"turns": turns_remaining})
+
+
+## What [param hazard] does, in a few words. Falls back to its name, so a
+## hazard authored without a headline still reads as something.
+static func hazard_effect_text(hazard: BackgroundHazardResource) -> String:
+	if hazard.headline.is_empty():
+		return TranslationServer.translate(hazard.hazard_name)
+	return TranslationServer.translate(hazard.headline)
+
+
+## The countdown-first line that sums [param hazard] up, as the arrival card,
+## the readout and the info panel all lead with it: "In 2 turns: every shield
+## drops". Unformatted BBCode; run it through Utils.format_text to show it.
+## [param when_color] is a BBCode colour for the countdown half: a palette
+## name or a #hex.
+static func hazard_headline(
+	hazard: BackgroundHazardResource, armed: bool, turns_remaining: int,
+	when_color: String = "yellow"
+) -> String:
+	return TranslationServer.translate("HAZARD_HEADLINE").format({
+		"when": "[color=%s]%s[/color]" % [when_color, hazard_when_text(hazard, armed, turns_remaining)],
+		"what": hazard_effect_text(hazard),
+	})
+
+
+## How often [param hazard] comes round once it has hit, for the info panel.
+static func hazard_repeat_text(hazard: BackgroundHazardResource) -> String:
+	var between: int = maxi(1, hazard.turns_between)
+	if between == 1:
+		return TranslationServer.translate("HAZARD_THEN_EVERY_TURN")
+	return TranslationServer.translate("HAZARD_THEN_EVERY_TURNS").format({"turns": between})
 
 
 ## Asks the console down, then flips open on the hinge once it's there, and
@@ -594,12 +671,132 @@ func _build_countdown() -> void:
 
 
 func _update_countdown() -> void:
-	if _hazard == null:
+	if _hazard:
+		# One digit is all the screen has room for, and no authored hazard
+		# waits longer than nine turns.
+		_countdown.text = str(clampi(_turns_remaining, 0, 9))
+		_countdown.add_theme_color_override("font_color", _current_color())
+	_update_readout()
+
+
+## A strip of dark glass that slides out of the screen with the hazard's
+## headline, its "when" in the countdown's colour (red once imminent). Rules
+## don't get one: their card's one line is the rule.
+func _build_readout() -> void:
+	_readout_holder = Node2D.new()
+	_readout_holder.position = _READOUT_ANCHOR
+	# Behind the flap's glass, so it seems to come out of the screen.
+	_readout_holder.show_behind_parent = true
+	_face.add_child(_readout_holder)
+
+	_readout = PanelContainer.new()
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = _READOUT_FILL
+	style.border_color = _READOUT_EDGE
+	style.set_border_width_all(1)
+	style.content_margin_left = 3.0
+	style.content_margin_right = 3.0
+	style.content_margin_top = 0.0
+	style.content_margin_bottom = 1.0
+	_readout.add_theme_stylebox_override("panel", style)
+	_readout.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_readout_holder.add_child(_readout)
+
+	_readout_text = RichTextLabel.new()
+	_readout_text.bbcode_enabled = true
+	_readout_text.fit_content = true
+	_readout_text.scroll_active = false
+	_readout_text.autowrap_mode = TextServer.AUTOWRAP_OFF
+	_readout_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_readout_text.add_theme_color_override("default_color", Globals.white)
+	_readout.add_child(_readout_text)
+	_readout_holder.scale.x = 0.0
+	_readout_holder.hide()
+
+	_clickable.is_hovered.connect(_on_hovered)
+
+
+func _process(delta: float) -> void:
+	if _readout_left == INF or _readout_left <= 0.0:
 		return
-	# One digit is all the screen has room for, and no authored hazard waits
-	# longer than nine turns.
-	_countdown.text = str(clampi(_turns_remaining, 0, 9))
-	_countdown.add_theme_color_override("font_color", _current_color())
+	_readout_left -= delta
+	if _readout_left <= 0.0:
+		_hide_readout()
+
+
+## Resting the pointer on the monitor brings the headline out and keeps it
+## there; it goes back in a moment after the pointer leaves.
+func _on_hovered(hovered: bool) -> void:
+	if hovered:
+		_show_readout(INF)
+	elif _readout_left == INF:
+		_readout_left = _READOUT_HOVER_LINGER_SECONDS
+
+
+## Slides the headline out for [param seconds] (INF: until the pointer
+## leaves), or keeps it out that long if it already is.
+func _show_readout(seconds: float) -> void:
+	if _hazard == null or _shown != _hazard or not _deployed:
+		return
+	_update_readout()
+	if _readout_left != INF:
+		_readout_left = maxf(_readout_left, seconds)
+	if _readout_holder.visible and not _is_readout_retracting():
+		return
+	_kill_readout_tween()
+	_readout_holder.show()
+	_readout_tween = create_tween()
+	_readout_tween.tween_property(_readout_holder, "scale:x", 1.0, 0.18) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+
+
+## Slides it back into the screen ([param instantly]: just gone).
+func _hide_readout(instantly: bool = false) -> void:
+	_readout_left = 0.0
+	_kill_readout_tween()
+	if instantly or not _readout_holder.visible:
+		_readout_holder.scale.x = 0.0
+		_readout_holder.hide()
+		return
+	_readout_tween = create_tween()
+	_readout_tween.tween_property(_readout_holder, "scale:x", 0.0, 0.14) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_readout_tween.tween_callback(_readout_holder.hide)
+	_readout_tween.set_meta(&"retracting", true)
+
+
+func _is_readout_retracting() -> bool:
+	return _readout_tween != null and _readout_tween.is_valid() and _readout_tween.has_meta(&"retracting")
+
+
+func _kill_readout_tween() -> void:
+	if _readout_tween and _readout_tween.is_valid():
+		_readout_tween.kill()
+	_readout_tween = null
+
+
+## Puts the current headline on the readout, sized to it, centred on the
+## screen's height.
+func _update_readout() -> void:
+	if _hazard == null or not _in_region:
+		_hide_readout(true)
+		return
+	var text: String = Utils.format_text(
+		hazard_headline(_hazard, _armed, _turns_remaining, "#" + _current_color().to_html(false))
+	)
+	if text == _readout_text.text:
+		return
+	_readout_text.text = text
+	var font: Font = _readout_text.get_theme_font("normal_font")
+	var font_size: int = _readout_text.get_theme_font_size("normal_font_size")
+	var width: float = font.get_string_size(
+		Utils.strip_bbcode_tags(text), HORIZONTAL_ALIGNMENT_LEFT, -1, font_size
+	).x
+	_readout_text.custom_minimum_size = Vector2(ceilf(width) + 1.0, 0)
+	_readout_text.size = Vector2.ZERO
+	_readout.size = Vector2.ZERO
+	_readout.reset_size()
+	_readout.position = Vector2(0, -roundf(_readout.size.y / 2.0))
 
 
 func _pop_countdown() -> void:

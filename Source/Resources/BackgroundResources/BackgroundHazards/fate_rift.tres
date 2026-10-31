@@ -57,6 +57,8 @@ hazard_name = "Fate Rift"
 description = "[color=yellow]Your turn ends[/color] ->
 Flip all enemy (die_1) and (die_6).
 Take [color=red]3 damage[/color]"
+headline = "HAZARD_FATE_RIFT_HEADLINE"
+banner = "HAZARD_FATE_RIFT_BANNER"
 icon = ExtResource("icon_tex")
 color = Color(0.773, 0.322, 0.945, 1)
 timing = 1

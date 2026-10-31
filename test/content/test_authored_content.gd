@@ -182,6 +182,18 @@ func test_every_hazard_has_a_chain() -> void:
 			assert_not_null(hazard.effect_chain, "%s does nothing when it fires" % path)
 
 
+## The headline and banner are what the player reads; the full rule is the
+## fallback. Both are translation keys, so a typo shows up as the raw key.
+func test_every_hazard_has_a_translated_headline_and_banner() -> void:
+	for path: String in _tres_files(BACKGROUND_ROOT):
+		var hazard: BackgroundHazardResource = load(path) as BackgroundHazardResource
+		if not hazard:
+			continue
+		for key: String in [hazard.headline, hazard.banner]:
+			assert_false(key.is_empty(), "%s is missing a headline or banner" % path)
+			assert_ne(TranslationServer.translate(key), key, "%s: no translation for %s" % [path, key])
+
+
 func test_every_scenario_is_registered_for_saving() -> void:
 	for path: String in _tres_files(SCENARIO_DIR):
 		if load(path) is ScenarioResource:

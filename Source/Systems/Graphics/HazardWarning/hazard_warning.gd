@@ -1,7 +1,13 @@
 class_name HazardWarning
 extends CanvasLayer
 ## The hazard's name slammed across the top of the screen while it builds to
-## its strike, with a warning beat that quickens toward the hit.
+## its strike, with a warning beat that quickens toward the hit, and under it
+## the effect in plain words (its banner: "SHIELDS DOWN!").
+##
+## The name alone said which hazard, not what it was about to do, so the
+## board changing a moment later still had to be puzzled out. The effect line
+## stays up a little after the strike, while the player looks for what
+## changed; the name bursts away at the hit.
 ##
 ## Spawned by HazardEvent and gone once the hazard has struck. It sits over
 ## the game but under Juice.screen_flash, so the strike's flash washes it out.
@@ -20,8 +26,16 @@ const _TITLE_Y: float = 60.0
 const _REST_SCALE: float = 2.0
 ## Warning beats across the build-up, closer together toward the strike.
 const _BEATS: Array[float] = [0.0, 0.45, 0.75, 0.92]
+## Where the effect line sits: just under the title.
+const _EFFECT_Y: float = 75.0
+## How long the effect line outstays the strike, so it can be read against
+## the board it just changed.
+const _EFFECT_LINGER_SECONDS: float = 1.4
+const _OUTLINE_COLOR: Color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 
 var _label: Label
+## The effect in words. Null for a hazard authored without a banner.
+var _effect_label: Label
 var _hazard: BackgroundHazardResource
 var _seconds: float = 1.0
 
@@ -43,18 +57,7 @@ func _ready() -> void:
 	Events.jump.connect(queue_free)
 	Events.hazard_struck.connect(func(_hazard: BackgroundHazardResource) -> void: _strike())
 
-	_label = Label.new()
-	_label.text = "!! %s !!" % tr(_hazard.hazard_name).to_upper()
-	_label.add_theme_font_override("font", _FONT)
-	_label.add_theme_font_size_override("font_size", _FONT_SIZE)
-	_label.add_theme_color_override("font_color", _hazard.color)
-	_label.add_theme_color_override("font_outline_color", Color.html("#040217"))
-	_label.add_theme_constant_override("outline_size", 4)
-	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	add_child(_label)
-	_label.reset_size()
-	_label.pivot_offset = _label.size / 2.0
-	_label.position = Vector2(Globals.SCREEN_SIZE.x / 2.0, _TITLE_Y) - _label.size / 2.0
+	_label = _make_label("!! %s !!" % tr(_hazard.hazard_name).to_upper(), _hazard.color, _TITLE_Y)
 	_label.scale = Vector2(2.4, 0.2) * _REST_SCALE
 	_label.modulate.a = 0.0
 
@@ -63,6 +66,15 @@ func _ready() -> void:
 	tween.tween_property(_label, "scale", Vector2.ONE * _REST_SCALE, 0.18) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_label, "modulate:a", 1.0, 0.1)
+
+	if not _hazard.banner.is_empty():
+		# A beat after the title, so the eye takes the name, then the effect.
+		_effect_label = _make_label(tr(_hazard.banner), Globals.white, _EFFECT_Y)
+		_effect_label.modulate.a = 0.0
+		_effect_label.scale = Vector2(1.0, 0.2)
+		tween.tween_property(_effect_label, "modulate:a", 1.0, 0.1).set_delay(0.15)
+		tween.tween_property(_effect_label, "scale", Vector2.ONE, 0.16).set_delay(0.15) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 
 	for at: float in _BEATS:
 		get_tree().create_timer(at * _seconds, false).timeout.connect(_beat)
@@ -82,7 +94,8 @@ func _beat() -> void:
 	tween.parallel().tween_property(_label, "modulate", Color.WHITE, 0.16)
 
 
-## The hit: the title bursts outward and fades.
+## The hit: the title bursts outward and fades, and the effect line kicks
+## and holds a moment longer before it goes too.
 func _strike() -> void:
 	if not is_instance_valid(_label):
 		queue_free()
@@ -91,4 +104,27 @@ func _strike() -> void:
 	tween.tween_property(_label, "scale", Vector2.ONE * _REST_SCALE * 1.6, 0.5) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_label, "modulate:a", 0.0, 0.5).set_delay(0.15)
+	if _effect_label:
+		_effect_label.scale = Vector2.ONE * 1.3
+		tween.tween_property(_effect_label, "scale", Vector2.ONE, 0.2) \
+			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+		tween.tween_property(_effect_label, "modulate:a", 0.0, 0.3) \
+			.set_delay(_EFFECT_LINGER_SECONDS)
 	tween.chain().tween_callback(queue_free)
+
+
+## A centred, outlined line of the warning, its middle at [param y].
+func _make_label(text: String, color: Color, y: float) -> Label:
+	var label: Label = Label.new()
+	label.text = text
+	label.add_theme_font_override("font", _FONT)
+	label.add_theme_font_size_override("font_size", _FONT_SIZE)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", _OUTLINE_COLOR)
+	label.add_theme_constant_override("outline_size", 4)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	add_child(label)
+	label.reset_size()
+	label.pivot_offset = label.size / 2.0
+	label.position = Vector2(Globals.SCREEN_SIZE.x / 2.0, y) - label.size / 2.0
+	return label
