@@ -7,7 +7,8 @@ extends EffectEvent
 ## at zero). Paying for a payoff with shields is a choice, not damage, so it
 ## sets the value directly. Like SpendEngineChargeEvent it refuses rather than
 ## underflowing; tiles gate affordability with SHIELDS_AT_LEAST before the die
-## is consumed.
+## is consumed. That check runs once, so an echoed second pass it can't afford
+## takes nothing and still pays out, quietly.
 
 
 ## amount is a price, not an output.
@@ -21,11 +22,6 @@ func resolve(_engine: ScenarioEngine) -> void:
 
 	var health: Health = Globals.player.health
 	if health.shields < amount:
-		push_warning(
-			"SpendShieldsEvent: cost %d exceeds shields %d. The tile's "
-			% [amount, health.shields]
-			+ "SHIELDS_AT_LEAST threshold disagrees with its authored cost."
-		)
 		return
 
 	health.shields -= amount

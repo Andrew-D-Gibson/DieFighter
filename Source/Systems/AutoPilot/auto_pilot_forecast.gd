@@ -278,6 +278,8 @@ func _target_step(data: EffectData, walk: _Walk) -> void:
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_ENEMY, \
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_OTHER_ENEMY:
 			_spread(walk, _roster)
+		EffectEnums.TargetingSubtype.TARGET_RANDOM_HOSTILE_ENEMY:
+			_spread(walk, TargetRandomHostileEnemyHandler.hostiles_in(_roster))
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_SHIP:
 			var ships: Array[Node] = [Globals.player]
 			ships.append_array(_roster)
@@ -613,8 +615,7 @@ func _add_payout(tile: Tile, weight: float) -> void:
 ## Whether an echo would repeat [param tile] (see EchoModifier.can_echo(); the
 ## die was already checked against it).
 func _takes_echo(tile: Tile) -> bool:
-	return tile.tile_resource.can_be_echoed \
-		and not EchoModifier.repetitions_held(tile, ScenarioEngine.current())
+	return not EchoModifier.repetitions_held(tile, ScenarioEngine.current())
 
 
 ## The tile a Feed goes to: the chain's own target, or, when it has none, the

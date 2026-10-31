@@ -15,6 +15,14 @@ signal changed()
 
 const COLLECTION_PATH: String = "user://collection.json"
 const COLLECTION_VERSION: int = 1
+## Tile families that were split or renamed: old id -> the ids that replace
+## it. A player who had the old one keeps every tile it gave them, so a
+## collection loads with all of the new ones. The first inherits the claim
+## that unlocked the old family, so a replayed jump still shows that card;
+## the rest count as given outright.
+const _FAMILY_SUCCESSORS: Dictionary[String, Array] = {
+	"relays": ["relays_basic", "relays_advanced"],
+}
 
 ## Where this instance reads and writes. Tests point it elsewhere so they never
 ## touch the player's real collection.
@@ -109,6 +117,18 @@ func family_for_claim(claim: String) -> String:
 		if _families[id] == claim:
 			return id
 	return ""
+
+
+## Records a family read from disk under the id it goes by now.
+func _load_family(id: String, claim: String) -> void:
+	if not _FAMILY_SUCCESSORS.has(id):
+		_families[id] = claim
+		return
+	var successors: Array = _FAMILY_SUCCESSORS[id]
+	for i: int in successors.size():
+		var successor: String = str(successors[i])
+		if not _families.has(successor) or _families[successor].is_empty():
+			_families[successor] = claim if i == 0 else ""
 
 
 ## Locks every family again, for the dev console.
@@ -230,7 +250,7 @@ func load_collection() -> void:
 	var families: Variant = data.get("families", {})
 	if families is Dictionary:
 		for id: Variant in families:
-			_families[str(id)] = str(families[id])
+			_load_family(str(id), str(families[id]))
 	var enemies: Variant = data.get("enemies", {})
 	if enemies is Dictionary:
 		for id: Variant in enemies:

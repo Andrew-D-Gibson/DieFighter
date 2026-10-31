@@ -165,11 +165,10 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Overdraw Coil[/color]"
-description = "(die_1) -> Deal [color=red]damage[/color] equal to [color=purple]charge[/color]. Spend all [color=purple]charge[/color]. Ignores (echo)"
+description = "(die_1) -> Deal [color=red]damage[/color] equal to [color=purple]charge[/color]. Spend all [color=purple]charge[/color]"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = 1
-can_be_echoed = false
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3"), SubResource("Resource_act_has_charge")])
 effect_chain = SubResource("Resource_chain16")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

@@ -202,7 +202,6 @@ script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Counterweight Battery[/color]"
 description = "[color=yellow]Enemy turn ends[/color] -> Spend [color=purple]2 charge[/color]: Gain [color=blue]5 shields[/color]"
-can_be_echoed = false
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

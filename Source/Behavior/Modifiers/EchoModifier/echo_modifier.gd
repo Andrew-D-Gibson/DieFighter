@@ -12,8 +12,13 @@ extends Modifier
 ## Echoes queue rather than stack. Each one is spent by a single activation
 ## and marks it, so a second echo in play waits for the tile after. Nothing is
 ## spent on an activation that wouldn't happen (a refused die, a lock) or
-## couldn't repeat (a tile that ignores echo, a rule holding repetitions to
-## one): the echo waits for one that can use it.
+## couldn't repeat (a rule holding repetitions to one): the echo waits for one
+## that can use it.
+##
+## Every tile takes an echo, even one whose effect compounds (Fortress
+## Protocol doubles its shields twice) or that pays a cost: its activation
+## checks run once, and a second pass that can't afford its price pays
+## nothing for it (SpendEngineChargeEvent, SpendHullEvent).
 ##
 ## Lasts until spent, or until the player's turn or the fight ends. Not an
 ## is_temporary modifier: that sweep runs on player_turn_start, the same beat
@@ -69,8 +74,6 @@ static func can_echo(activation: TileActivationEvent, engine: ScenarioEngine) ->
 	var tile: Tile = activation.tile
 	if not is_instance_valid(tile) or tile.on_offer or tile.tile_resource == null:
 		return false
-	if not tile.tile_resource.can_be_echoed:
-		return false
 	# Spending it on a die the tile turns away would waste it for nothing.
 	if not tile.activation_refusal(activation.activator_die).is_empty():
 		return false
@@ -125,22 +128,6 @@ func get_info_text() -> String:
 	if count == 1:
 		return "[color=yellow]Echo armed[/color]: the next tile you activate this turn activates twice."
 	return "[color=yellow]Echo armed x%d[/color]: the next %d tiles you activate this turn each activate twice." % [count, count]
-
-
-## A tile that ignores echo says so while one is waiting, so the player knows
-## why it didn't take it.
-func get_rule_info_text(tile: Tile) -> String:
-	if tile.tile_resource == null or tile.tile_resource.can_be_echoed:
-		return ""
-	var engine: ScenarioEngine = ScenarioEngine.current()
-	if engine == null:
-		return ""
-	for mod: Modifier in engine.modifiers:
-		if mod is EchoModifier:
-			if mod != self:
-				return ""
-			break
-	return "[color=yellow]Echo[/color] skips this tile and waits for the next."
 
 
 func _spawn_visual() -> void:

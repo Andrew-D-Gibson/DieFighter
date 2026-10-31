@@ -3,7 +3,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## hit the wrong ship: Debt Collector needs dice on its target, Relay
 ## Terminal takes a 4-6, and the passives that answer a neighbour (Spark
 ## Gap, Napalm Vent) do nothing outside a fight, where the "enemy" could be a
-## merchant.
+## merchant. Spark Gap goes further: it only ever hits a hostile ship, so it
+## never zaps an ally or a bystander mid-fight either.
 
 const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
 const PLAYER_SCENE: PackedScene = preload("res://Source/Systems/Game/Player/player.tscn")
@@ -136,6 +137,49 @@ func test_spark_gap_stays_quiet_outside_a_fight() -> void:
 	# A fresh manager starts out of combat.
 	Globals.state_manager = autofree(GameStateManager.new())
 	assert_eq(_damage(await _respond("spark_gap")), [] as Array[int])
+
+
+## A ship on the roster with [param attitude], at full hull. Kept out of the
+## tree: targeting only reads its attitude and hull.
+func _ship(attitude: Enemy.Attitude) -> Enemy:
+	var ship: Enemy = autofree(ENEMY_SCENE.instantiate())
+	ship.scenario_state = ScenarioShipState.new()
+	ship.scenario_state.attitude = attitude
+	ship.health.max_health = 40
+	ship.health.health = 40
+	Globals.enemy_manager.enemies.append(ship)
+	return ship
+
+
+func _hit_ships(events: Array[EffectEvent]) -> Array[Node]:
+	var hit: Array[Node] = []
+	for event: EffectEvent in events:
+		if event is DamageEvent:
+			hit.append_array(event.targets)
+	return hit
+
+
+func test_spark_gap_only_ever_hits_the_hostile_ship() -> void:
+	var ally: Enemy = _ship(Enemy.Attitude.FRIENDLY)
+	var bystander: Enemy = _ship(Enemy.Attitude.NEUTRAL)
+	for id: String in ["spark_gap", "spark_gap_plus"]:
+		for i: int in 12:
+			var hit: Array[Node] = _hit_ships(await _respond(id))
+			assert_eq(hit, [enemy] as Array[Node], "%s zaps only the aggressor" % id)
+			assert_false(ally in hit or bystander in hit)
+
+
+func test_spark_gap_never_starts_a_fight_with_a_neutral_ship() -> void:
+	# Mid-fight in name, but nobody left on the board is hostile.
+	enemy.scenario_state.attitude = Enemy.Attitude.NEUTRAL
+	_ship(Enemy.Attitude.FRIENDLY)
+	for id: String in ["spark_gap", "spark_gap_plus"]:
+		assert_eq(_damage(await _respond(id)), [] as Array[int], "%s holds fire" % id)
+
+
+func test_spark_gap_says_it_only_targets_hostile_enemies() -> void:
+	for id: String in ["spark_gap", "spark_gap_plus"]:
+		assert_string_contains((load(TILES % id) as TileResource).description, "hostile")
 
 
 func test_napalm_vent_burns_only_in_a_fight() -> void:
