@@ -435,7 +435,9 @@ value before its STREAM.
 
 **Files**
 - Art: `Assets/Textures/Enemies/<Name>/`.
-  - Hull sprite: ~32×32 (wider for capital ships).
+  - Hull sprite: ~32×32 (wider for capital ships). The outline is one
+    `#040217` pixel wide and closed all the way round, so keep the hull a
+    pixel clear of every canvas edge.
   - `<name>_targeting_image.png`: 16×16. It is also the enemy's portrait in
     the main menu's codex, drawn grey until the player meets the ship.
   - Draw both to the ship's faction's visual language (`LORE.md` §12): its
@@ -464,7 +466,7 @@ value before its STREAM.
 - `enemy_name`, `description`.
 - `faction`: the fleet faction that built the ship, one of the
   `FactionIdentity` resources in `Source/Content/Factions/`. It puts the
-  faction's badge on the targeting computer. A variant (`raider.tres`) copies it.
+  faction's badge on the targeting computer. A variant (`gaff_raider.tres`) copies it.
 - `in_codex`: untick for a ship that isn't a foe (the shop, the repair dock,
   the civilian transport), so the codex leaves it out of its enemy list.
 - `max_health`, `starting_shields`. Both are scaled +35% per sector. Size
@@ -537,7 +539,7 @@ who built it); it's on the scenario's ship state (§4). Who
 allies with whom, and who raids whom, is `FactionRelations`
 (`Source/Systems/Game/ScenarioManager/faction_relations.gd`). Behaviour that
 only makes sense in some encounters, like raiding, should go on a variant
-enemy resource (e.g. `raider.tres`), not on a shared one.
+enemy resource (e.g. `gaff_raider.tres`), not on a shared one.
 
 **Launched ships** (the Carrier's Interceptors): `SCENARIO_CONTROL /
 LAUNCH_SHIP` with `ship_resource` set brings that enemy in beside the actor,

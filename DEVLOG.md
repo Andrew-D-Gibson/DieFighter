@@ -4,6 +4,16 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-30 — Enemy art pass, one Venom ship
+
+- **Redrawn** to LORE §12 with perspective (lit top faces over darker front faces and plate lips) and texture (seams, rivets, rust): the Picket (shoulder emitter pods, the band edge to edge, a chevron groove down its plates), Conscriptor (armoured block, impound clamps round a tractor lens), Field Tender (bridge windows, racked spare-parts canisters, green repair lens), Claims Adjuster (pill hull, gun pods, a hazard-banded lien projector), Wrecker (welded hull, mismatched ram-jaws, furnace between them) and Venom Fighter (swept, asymmetric, hooked, kept off the canvas edge). New portraits; engine particles moved to the new nozzles. The Fate Attacker is rebuilt from the new Venom Fighter.
+- **Outlines:** 27 hulls had a 2px `#040217` outline, now one pixel. The Carrier and Cutpurse had gaps, now closed. The Bastion scar, Fate Shroud and Fate Wisp keep their deliberate edges.
+- **Venom Raider removed.** The Venom Fighter carries its Raid (it only rolls with a civilian present, which none of the Fighter's own fights have); its Incendiary Shot is gone. Pirates Attacking Civilian, Hunter-Killers and Chopshop field Venom Fighters.
+- *Watch:* putting the Venom Fighter beside a civilian it shouldn't raid now needs a variant resource (like `gaff_raider.tres`) without Raid.
+- Faces are the trap at this size: two lights over a row of windows reads as eyes and a mouth. The Tender and Adjuster went through layouts until they didn't.
+
+---
+
 ## 2026-10-30 — Tile pass: every reward tile, its words, numbers and art
 
 All 116 offered tiles (and their `+` versions) reviewed for utility, rewritten to one terse style, and redrawn. Six parallel passes, one per colour (red split in two); briefs, contact sheets and per-agent notes in the scratchpad.
