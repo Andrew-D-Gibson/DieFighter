@@ -14,14 +14,6 @@ const _SILENCED_INFO: Texture2D = preload("res://Assets/Textures/Enemies/IntentI
 ## How long the finishing blow holds the frame, in real time.
 const _KILL_HOLD_MSEC: int = 340
 
-## PLAYTEST (2026-10-30): every enemy spawns with about 2/3 of its authored
-## hull and a quarter of its authored shields, to try a faster game without
-## re-authoring every EnemyResource. Set both back to 1.0 to undo. The codex
-## still lists the authored numbers, and a ship spawned with unscaled_hull
-## (the tutorial's opening raider) keeps them.
-const PLAYTEST_HULL_SCALE: float = 2.0 / 3.0
-const PLAYTEST_SHIELD_SCALE: float = 0.25
-
 ## How long the kill's white flash takes to fade once time resumes.
 const _KILL_FLASH_FADE_SECONDS: float = 0.3
 ## How close to the middle of the screen a ship has to be to pick the side
@@ -439,17 +431,14 @@ func vent_overload() -> void:
 ## so it's the one place run difficulty needs to be applied.
 func _update_health_from_resource() -> void:
 	var hull_scale: float = 1.0
-	var shield_scale: float = 1.0
 	if not unscaled_hull:
-		var scale_factor: float = 1.0
 		if Globals.state_manager:
-			scale_factor = Globals.state_manager.get_difficulty_multiplier()
-		hull_scale = PLAYTEST_HULL_SCALE * scale_factor * scenario_hull_multiplier
-		shield_scale = PLAYTEST_SHIELD_SCALE * scale_factor * scenario_hull_multiplier
+			hull_scale = Globals.state_manager.get_difficulty_multiplier()
+		hull_scale *= scenario_hull_multiplier
 
 	health.max_health = ceili(enemy_resource.max_health * hull_scale)
 	health.health = starting_hull(health.max_health, starting_health_fraction)
-	health.starting_shields = ceili(enemy_resource.starting_shields * shield_scale)
+	health.starting_shields = ceili(enemy_resource.starting_shields * hull_scale)
 	health.shields = health.starting_shields
 	graphics_manager.track_hull_damage(health)
 

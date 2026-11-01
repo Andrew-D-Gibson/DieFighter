@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://bj2ob57kph037"]
 
 [ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/ion_storm_front_only.tres" id="bg_0"]
-[ext_resource type="Resource" uid="uid://b5tqiiiyrjy0b" path="res://Source/Content/Enemies/EnemyResources/disabler.tres" id="enemy_disabler"]
+[ext_resource type="Resource" uid="uid://c8kw8h1mjtmml" path="res://Source/Content/Enemies/EnemyResources/cannon_drone.tres" id="enemy_cannon_drone"]
 [ext_resource type="Resource" uid="uid://x46nmdaxwrnm" path="res://Source/Content/Enemies/EnemyResources/ion_lance.tres" id="enemy_ion_lance"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
@@ -43,7 +43,7 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn1"]
 script = ExtResource("script_1")
-enemy_resource = ExtResource("enemy_disabler")
+enemy_resource = ExtResource("enemy_cannon_drone")
 starting_state = ExtResource("state_pirate")
 reward_resource = SubResource("Resource_reward1")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"
@@ -71,6 +71,6 @@ rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_bounty")
 })
 sectors = 4
-enemy_hull_multiplier = 1.5
-enemy_damage_multiplier = 1.5
+enemy_hull_multiplier = 1.3
+enemy_damage_multiplier = 1.3
 metadata/_custom_type_script = "uid://bidpx7urxb1md"

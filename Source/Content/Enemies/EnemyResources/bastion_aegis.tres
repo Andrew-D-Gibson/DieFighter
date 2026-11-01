@@ -17,8 +17,8 @@
 script = ExtResource("script_0")
 base_action = ExtResource("act_aegis")
 weight = 3.0
-min_amount = 6
-max_amount = 10
+min_amount = 5
+max_amount = 8
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_opt1"]
@@ -52,8 +52,8 @@ script = ExtResource("script_2")
 enemy_name = "Bastion Aegis"
 description = "Shield generator. It throws shields over the rest of the Bastion and patches its hull. Break it first and the others stay broken."
 faction = ExtResource("faction_identity")
-max_health = 30
-starting_shields = 20
+max_health = 16
+starting_shields = 5
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
 ship_graphics_scene = ExtResource("gfx")
 dialogue_offset = Vector2(0, -20)
