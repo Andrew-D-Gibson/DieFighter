@@ -3,6 +3,11 @@ extends Resource
 
 @export var min_money: int = 0
 @export var max_money: int = 0
+## How much of min_money/max_money is credits owed back rather than loot: what
+## the player paid a trader they then destroyed (Enemy.wreck_reward()). The
+## payout calls it out on its own line so the player learns the rule. Set at
+## runtime on a copy, never authored.
+var refund: int = 0
 @export var num_of_rewards: int = 3
 @export_range(0.0, 1.0) var dice_probability: float = 0
 ## Chance the offer's last choice is a Grid Slot instead, while the grid has a

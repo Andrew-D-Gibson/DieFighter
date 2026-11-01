@@ -754,6 +754,7 @@ func wreck_reward() -> RewardResource:
 	# Both ends of the roll, so the refund is exact whatever the roll says.
 	reward.min_money += credits_paid
 	reward.max_money += credits_paid
+	reward.refund = credits_paid
 	return reward
 
 
