@@ -72,7 +72,13 @@ static func roll(
 	# Ascending faces, so each insert lands at its face with the earlier ones
 	# already in place.
 	for face: int in kept_faces:
-		actions.insert(face - 1, kept_option.get_action())
+		var payoff: EnemyActionResource = kept_option.get_action()
+		# A loader's amount was rolled (and scaled for run depth) when it was
+		# shown, so the payoff keeps that promise instead of rolling anew.
+		var loaded: int = situation.kept_amounts.get(face, 0)
+		if loaded > 0:
+			payoff.intent_amount = loaded
+		actions.insert(face - 1, payoff)
 	_number_slots(actions)
 	return actions
 

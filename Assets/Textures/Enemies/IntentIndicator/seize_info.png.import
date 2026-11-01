@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bprnebdcojp6o"
-path="res://.godot/imported/impound.png-bb812308328b9a629845927e93c28e51.ctex"
+uid="uid://b4yroyum4mpwu"
+path="res://.godot/imported/seize_info.png-5be8d7d6062221f95de6a9e8f337b93c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Enemies/IntentIndicator/impound.png"
-dest_files=["res://.godot/imported/impound.png-bb812308328b9a629845927e93c28e51.ctex"]
+source_file="res://Assets/Textures/Enemies/IntentIndicator/seize_info.png"
+dest_files=["res://.godot/imported/seize_info.png-5be8d7d6062221f95de6a9e8f337b93c.ctex"]
 
 [params]
 

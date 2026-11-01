@@ -24,8 +24,7 @@ extends Resource
 ## How strong this action counts as when the enemy's face_bias places it, on
 ## the Threat scale: 0 does nothing, 1 does something, 2 deals damage. Below 0
 ## it's read off the effect chain. For actions the chain undersells — a Lockout
-## or an Impound hurts more than "does something" — or a Feed into a ship that
-## hits hard.
+## hurts more than "does something" — or a Feed into a ship that hits hard.
 @export_range(-1.0, 3.0, 0.5) var strength_tier_override: float = -1.0
 
 

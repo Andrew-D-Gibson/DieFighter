@@ -117,6 +117,11 @@ static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false, 
 		and effect.subtype == EffectEnums.ScenarioControlSubtype.ESCAPE_WITH_DICE:
 			# Losing dice for good is worse than any hit.
 			return Threat.DANGEROUS
+		elif effect.category == EffectEnums.Category.DICE_CONTROL \
+		and effect.subtype == EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR:
+			# A die kept is out of the player's hand next turn and spent by
+			# the ship instead: Seize takes it, Charge Bore loads its shot.
+			return Threat.DANGEROUS
 		elif effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
 		and effect.subtype in [EffectEnums.AttributeChangeSubtype.DAMAGE, EffectEnums.AttributeChangeSubtype.ION_DAMAGE]:
 			# Ion only strips shields, but shields are what stand between a
@@ -298,7 +303,7 @@ func vents_own_statuses() -> bool:
 
 ## Whether shields are all this action gives (Shield Burst, Aegis Link): the
 ## die goes home and nothing else changes. Shields with a second purpose don't
-## count: Relay passes its die on, Charge Bore loads one. The selector stops
+## count: Relay passes its die on. The selector stops
 ## rolling these once the ship they'd shield is at its soft cap, see
 ## EnemyActionSituation.at_shield_cap().
 func only_grants_shields() -> bool:
@@ -313,7 +318,7 @@ static func _does_more_than_shield(effect: EffectData) -> bool:
 	if effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE:
 		return effect.subtype != EffectEnums.AttributeChangeSubtype.SHIELD
 	# Sending the die home is what every action does; keeping or passing it on
-	# is a purpose of its own, though _has_consequence() doesn't count it.
+	# is a purpose of its own.
 	if effect.category == EffectEnums.Category.DICE_CONTROL:
 		return effect.subtype != EffectEnums.DiceControlSubtype.GIVE_DIE_TO_PLAYER
 	return _has_consequence(effect)
@@ -374,7 +379,7 @@ static func _any_effect(effects: Array[EffectData], test: Callable) -> bool:
 
 ## Whether a single step changes anything in the game. Targeting, visuals and
 ## passing the die along don't — every action does those, including the ones
-## that do nothing.
+## that do nothing. Keeping it does: the player goes a turn without it.
 static func _has_consequence(effect: EffectData) -> bool:
 	match effect.category:
 		EffectEnums.Category.TARGETING, \
@@ -387,7 +392,6 @@ static func _has_consequence(effect: EffectData) -> bool:
 				EffectEnums.DiceControlSubtype.GIVE_DIE_TO_PLAYER,
 				EffectEnums.DiceControlSubtype.GIVE_DIE_TO_TARGET,
 				EffectEnums.DiceControlSubtype.GIVE_DIE_AWAY,
-				EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR,
 				EffectEnums.DiceControlSubtype.FEED_ALLY,
 			]
 		_:

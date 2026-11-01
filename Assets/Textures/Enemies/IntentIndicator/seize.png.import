@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dwuu6rqk8hij6"
-path="res://.godot/imported/pilfer.png-52e6af574c0033e90515bba865e88f04.ctex"
+uid="uid://cr43hbhwcm84w"
+path="res://.godot/imported/seize.png-919f281ae295cf9d0dd721aa9375bc28.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Enemies/IntentIndicator/pilfer.png"
-dest_files=["res://.godot/imported/pilfer.png-52e6af574c0033e90515bba865e88f04.ctex"]
+source_file="res://Assets/Textures/Enemies/IntentIndicator/seize.png"
+dest_files=["res://.godot/imported/seize.png-919f281ae295cf9d0dd721aa9375bc28.ctex"]
 
 [params]
 

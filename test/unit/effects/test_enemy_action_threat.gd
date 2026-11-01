@@ -54,10 +54,17 @@ func test_every_die_handoff_counts_as_no_consequence() -> void:
 		EffectEnums.DiceControlSubtype.GIVE_DIE_TO_PLAYER,
 		EffectEnums.DiceControlSubtype.GIVE_DIE_TO_TARGET,
 		EffectEnums.DiceControlSubtype.GIVE_DIE_AWAY,
-		EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR,
 	]:
 		assert_eq(_action([_give_die(subtype)]).get_threat(), Threat.DEAD,
 			EffectEnums.DiceControlSubtype.find_key(subtype))
+
+
+func test_keeping_the_die_is_dangerous_with_no_damage_at_all() -> void:
+	# Seize: the player goes a turn without the die and the ship spends it.
+	var keep := _action([_target_player(),
+		_give_die(EffectEnums.DiceControlSubtype.KEEP_DIE_WITH_ACTOR)])
+	assert_eq(keep.get_threat(), Threat.DANGEROUS)
+	assert_eq(keep.get_outcome(), EnemyActionResource.Outcome.ACTS, "a jam is worth spending on it")
 
 
 func test_amount_math_and_utilities_have_no_consequence() -> void:

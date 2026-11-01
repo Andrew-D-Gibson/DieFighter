@@ -118,7 +118,12 @@ func _process(delta: float) -> void:
 			if _leaving:
 				_fly_away()
 				return
-			
+			# No readout to fly to (the run is tearing down): fade in place,
+			# like a lost credit whose taker has gone.
+			if not is_instance_valid(Globals.money_indicator):
+				_fly_away()
+				return
+
 			var tween_time: float = 0.75
 			var tween: Tween = get_tree().create_tween()
 			# The readout's resting place: the console may still be dropping

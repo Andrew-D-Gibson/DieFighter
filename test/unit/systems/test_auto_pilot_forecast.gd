@@ -206,6 +206,21 @@ func test_a_relay_costs_what_the_ally_does_with_the_die() -> void:
 		"the relay's own shield, then the ally's attack")
 
 
+func test_a_seized_die_costs_the_kept_die_toll_and_no_hit() -> void:
+	var ship: Enemy = _ship()
+	var seize: EnemyActionResource = load("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres").duplicate(true)
+	_table(ship, [_idle(), _idle(), _idle(), seize, _idle(), _idle()])
+	assert_eq(AutoPilotThreat.of_face(ship, 4), AutoPilotThreat.KEPT_DIE, "not the face, as an attack would be")
+
+
+func test_a_loaded_charge_bore_costs_the_shot_it_promises() -> void:
+	var ship: Enemy = _ship()
+	var bore: EnemyActionResource = load("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/charge_weapon.tres").duplicate(true)
+	bore.intent_amount = 11
+	_table(ship, [_idle(), bore, _idle(), _idle(), _idle(), _idle()])
+	assert_eq(AutoPilotThreat.of_face(ship, 2), AutoPilotThreat.KEPT_DIE + 11.0)
+
+
 func test_jammed_only_waits_behind_held_dice_that_would_act() -> void:
 	var engine: ScenarioEngine = add_child_autofree(ScenarioEngine.new())
 	var manager: ScenarioManager = autofree(ScenarioManager.new())

@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_uxskb"]
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_6l5h4"]
-[ext_resource type="Resource" uid="uid://bxuwbocierbhv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/impound.tres" id="act_5"]
+[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_5"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_6"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_7"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_8"]
@@ -17,8 +17,6 @@
 script = ExtResource("script_0")
 base_action = ExtResource("act_5")
 weight = 0.0
-min_amount = 2
-max_amount = 3
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 

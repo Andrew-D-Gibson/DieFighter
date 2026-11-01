@@ -6,7 +6,7 @@
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_6"]
 [ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="act_7"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_8"]
-[ext_resource type="Resource" uid="uid://bxuwbocierbhv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/impound.tres" id="act_10"]
+[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_10"]
 [ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_11"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
 [ext_resource type="PackedScene" uid="uid://n023djl8w8fy" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/sector_boss_ship_graphics.tscn" id="gfx_3"]
@@ -85,8 +85,6 @@ metadata/_custom_type_script = "uid://c4ctehv6idciu"
 script = ExtResource("script_0")
 base_action = ExtResource("act_10")
 weight = 0.0
-min_amount = 5
-max_amount = 9
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 

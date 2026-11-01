@@ -82,6 +82,12 @@ registration to testing. For how the systems work underneath, see
   `Assets/Textures/Tiles/<Colour>Tiles/<name>.png`.
   - Colour by role: Red attack, Blue defence, Green die tricks/movement,
     Purple engine, Yellow support/buffs.
+  - Red and green each have a house motif. A red tile is grey hardware with
+    a bright red stripe under a light top edge, staggered between body and
+    barrel, with a grey muzzle. That is the Dice Cannon, and the enemy attack
+    intent copies it, so red art keeps to it. Green tiles draw the hardware
+    that does the job, often with a green-lit band, and draw a die only where
+    the die is the idea (Die Splitter, Value Exchange, holograms).
   - The folder is the tile's colour as far as the game is concerned: the
     codex sorts by it, and the Color Symbols option badges the tile's
     top-left corner with its family's shape (`ColorSymbolBadge`). So file
@@ -402,7 +408,7 @@ Every action must end the die's life one of these ways:
 |---|---|
 | `GIVE_DIE_TO_TARGET` (after `TARGET_PLAYER`) | goes to the player, as in attacks |
 | `GIVE_DIE_TO_PLAYER` | goes back home |
-| `KEEP_DIE_WITH_ACTOR` | is held for next turn (Impound) |
+| `KEEP_DIE_WITH_ACTOR` | is held and spent on the ship's next turn, on whatever that face shows (Seize, Charge Bore). Reads as Dangerous: the player goes a turn without it. The action's intent amount rides along to a `fills_kept_faces` payoff |
 | `FEED_ALLY` | is passed to the bound ally, who uses it at once (Relay) |
 | `SPAWN_HOLOGRAM_FOR_ALLY` | hologram goes to an ally (Holo Loader); still return the real die |
 | `ESCAPE_WITH_DICE` | leaves with the ship, with every other die it holds; the player loses them for good (Getaway) |
@@ -437,8 +443,8 @@ value before its STREAM.
 - The soft shield cap: an action whose only effect is shields (Shield Burst,
   Aegis Link) is never rolled for a ship that already holds as many shields
   as its max hull, and Aegis Link only binds an ally under that cap. Nothing
-  clamps shields, and shields that come with another job (Relay, Charge Bore)
-  are left alone. It keeps shield stackers from turning a fight into a
+  clamps shields, and shields that come with another job (Relay) are left
+  alone. It keeps shield stackers from turning a fight into a
   stalemate; no condition to set.
 
 ---
@@ -501,6 +507,8 @@ value before its STREAM.
     are ignored). One copy goes on the face of each die the ship kept itself
     last turn with `Keep Die with Actor`, and it appears nowhere else. For a
     payoff the player only faces after loading it (Charge Bore → Siege Shot).
+    If the loading action had an intent amount, the payoff fires for exactly
+    that instead of rolling its own, so give the loader the payoff's range.
   - `conditions`: `EnemyActionCondition`s, all of which must hold. Types:
     `ALLY_EXISTS`, `HOSTILE_SHIP_EXISTS`, `ALLY_HURT`, `SELF_HURT` (with
     `hull_fraction`), `ATTITUDE_IS`, `ALLIES_AT_MOST` (with `count`; gate a
@@ -513,7 +521,7 @@ value before its STREAM.
   - `strength_tier_override`: how strong the action counts as for
     `face_bias`, on the threat scale (0 nothing, 1 something, 2 damage).
     -1 reads it off the chain. Raise it for actions the chain undersells
-    (Lockout, Impound, a Relay into a heavy hitter).
+    (Lockout, a Relay into a heavy hitter).
 - **Variety cap:** a table mixes at most 2 kinds of action in sector 1 and
   3 in sector 2, any number after (`GameStateManager.action_kinds_per_sector`).
   A kind is the action's `name`; Do Nothing and kept-face payoffs don't
