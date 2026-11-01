@@ -4,6 +4,21 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-01 — Tweak run, round 2: one die thief, consistent icons, overload polish
+
+The user answered the Oct 31 run's open calls on a review page; six parallel chunks (D1–D6, plan: `~/.claude/plans/chunks/diefighter-tweaks-2026-10-31.md`, "Round 2").
+
+- **Seize replaces Impound and Pilfer.** One action: the ship takes your die and deals no damage, then spends it next turn on whatever that face shows. The Cutpurse still re-steals until it bolts; dice come home through the death hand-off. Keeping a die now counts as dangerous for jams and the hand-off beam. This cuts damage from the Sector Warden (was 5–9), Bastion Core and Arc Dynamo (4–6).
+- **Charge Bore** gains no shields. Its intent number is the Siege Shot it promises for next turn, and that shot fires for exactly that number. AutoPilot prices a kept die as its keep cost plus the promised shot.
+- **Icons:** shields are always the heater crest (defend, aegis); rings only mean Phased. Raid is a cannon (the reticle means Exposed only); flee and getaway share a purple up-arrow; blocked is a grey ⊘; attack info is bigger. Seize is a purple claw on a die, Charge Bore a die rammed into a breech, Relay carries a blue crest. Six 2×-blown-up info icons were redrawn at 24 px. Scrambled is green and white throughout.
+- **Tiles say what they apply:** Dampener and Suppression Pulse emit purple with a ↓ (Weakened), Flare Burst has a red reticle (Exposed), Chaff Pod and Interdiction Net are yellow (Jammed). Afterburner Relay's jet is cyan (orange means Burn), Emergency Shield is a plain crest, and Shield Burst's 1 px crest edit is published.
+- **Overload:** the gauge warns when one die could trip it (6 to go); Zealots also warn from half full (`EnemyResource.overload_warns_from_half`). `(overload)` is an inline bolt in text. Arc Dynamo's targeting portrait crackles while its gauge is armed (`PortraitCrackle`, `overload_portrait_crackle`).
+- **Fixes:** a destroyed shop or dock shows a green "+N refund" callout (`RewardResource.refund`). Continue at a beaten gate keeps it beside the restored salvage. Fighters launched under the no-shields background lose their shields. The hazard readout strip is gone (the card, info panel and banner keep the headline), along with five unused hazard keys. A payout coin with no credit readout fades in place.
+- Kept as built: Fate Rift without self-damage, no faction system, every echo combo, the refund rules, the star field, the disposition ring.
+- Open: whether the balance pass compensates the Warden, Core and Dynamo for Seize's lost damage; ARCHITECTURE_OVERVIEW still describes Pilfer.
+
+---
+
 ## 2026-10-31 — Comms fold into their badge; the Engine Charger shows its charge
 
 - **Comms:** when the targeted ship's line runs out, its speech box shrinks down into the targeting computer's comms badge, the way a region card folds into the Environment Monitor. Clicking the portrait unfolds it back out of the badge, plays the line, and folds it away again. The badge only shows while a line is tucked away, so it's hidden while one is on screen. A ship that isn't targeted still fades where it is. The comms pointer and "Click to replay comms" hint are gone; the badge lighting under the pointer is the only affordance. The fold keeps the box whole for most of the trip and fades only at the end (0.55 s), since a small box fading early vanished over the Map panel before it arrived.
