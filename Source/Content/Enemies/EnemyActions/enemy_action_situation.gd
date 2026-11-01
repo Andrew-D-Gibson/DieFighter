@@ -31,6 +31,13 @@ var statuses: Array[StringName] = []
 ## [member ship]'s attitude toward the player.
 var attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE
 
+## Whether [member ship]'s table must hold a face that hands its die on to a
+## ship it fights (a Raid): it's on the player's side, and a ship it's hostile
+## to is fighting the player. Otherwise it would be a safe place for every
+## die, and the enemy, never handed one, would sit the turn out while the
+## player charged their engines. See EnemyActionSelector._ensure_hand_off().
+var owes_hand_off: bool = false
+
 ## Faces of the dice [member ship] kept itself last turn and still holds,
 ## lowest first and without repeats: the slots those dice will fire. Dice it
 ## was merely handed don't count.
@@ -66,6 +73,8 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 			situation.statuses.append(status.status_id)
 	if rolling_ship.scenario_state:
 		situation.attitude = rolling_ship.scenario_state.attitude
+	situation.owes_hand_off = sides_with_player(rolling_ship) \
+		and situation.hostile_ships.any(func(other: Enemy) -> bool: return not sides_with_player(other))
 	if rolling_ship.dice_manager:
 		for die: Dice in rolling_ship.kept_dice:
 			if not is_instance_valid(die) or die not in rolling_ship.dice_manager.queue:
@@ -77,6 +86,13 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 				situation.kept_amounts[die.value] = maxi(situation.kept_amounts.get(die.value, 0), loaded)
 		situation.kept_faces.sort()
 	return situation
+
+
+## Whether [param of_ship] is on the player's side: anything not out to
+## fight the player is, from a grateful civilian to a pirate busy elsewhere.
+static func sides_with_player(of_ship: Enemy) -> bool:
+	return of_ship.scenario_state != null \
+		and of_ship.scenario_state.attitude != Enemy.Attitude.AGGRESSIVE
 
 
 ## Whether [param rolling_ship] is one of a boss fight's ships: every part of

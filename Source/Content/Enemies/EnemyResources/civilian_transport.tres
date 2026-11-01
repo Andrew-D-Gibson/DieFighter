@@ -11,6 +11,7 @@
 [ext_resource type="PackedScene" uid="uid://bdj8yu1245tuj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/civilian_transport_ship_graphics.tscn" id="7_wi75o"]
 [ext_resource type="Texture2D" uid="uid://d1xh70cpc1d0t" path="res://Assets/Textures/Enemies/CivilianTransport/civilian_transport_targeting_image.png" id="8_6eevq"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/caravan.tres" id="faction_identity"]
+[ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="act_raid_hand_off"]
 
 [sub_resource type="Resource" id="Resource_u5gnh"]
 script = ExtResource("2_fsqg3")
@@ -33,9 +34,22 @@ weight = 0.5
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
+[sub_resource type="Resource" id="Resource_hand_off_side"]
+script = ExtResource("4_ttvyx")
+type = 4
+invert = true
+
+[sub_resource type="Resource" id="Resource_hand_off"]
+script = ExtResource("2_fsqg3")
+base_action = ExtResource("act_raid_hand_off")
+min_amount = 1
+max_amount = 3
+conditions = Array[ExtResource("4_ttvyx")]([SubResource("Resource_hand_off_side")])
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
 [sub_resource type="Resource" id="Resource_pjw7f"]
 script = ExtResource("1_tshki")
-actions_possible = Array[ExtResource("2_fsqg3")]([SubResource("Resource_u5gnh"), SubResource("Resource_7mngp"), SubResource("Resource_po2a8")])
+actions_possible = Array[ExtResource("2_fsqg3")]([SubResource("Resource_u5gnh"), SubResource("Resource_7mngp"), SubResource("Resource_po2a8"), SubResource("Resource_hand_off")])
 metadata/_custom_type_script = "uid://c4ctehv6idciu"
 
 [resource]

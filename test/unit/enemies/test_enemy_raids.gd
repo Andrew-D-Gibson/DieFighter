@@ -1,5 +1,6 @@
 extends "res://test/helpers/die_fighter_test.gd"
-## Ships fighting each other: a pirate's Raid on a civilian, who gets credit
+## Ships fighting each other: a Raid, which hits another ship and hands it
+## the die; why a ship on the player's side always has one; who gets credit
 ## for a kill one ship makes on another, and how the scenario hears about it.
 
 const Ships := preload("res://test/helpers/ships.gd")
@@ -14,20 +15,52 @@ func before_each() -> void:
 	RNGManager.seed_scenario(77)
 
 
-func _ship(faction: Faction) -> Enemy:
-	var made: Enemy = Ships.ship(faction)
+func _ship(faction: Faction, attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE) -> Enemy:
+	var made: Enemy = Ships.ship(faction, 10, 10, attitude)
 	autofree(made.health)
 	return autofree(made)
 
 
+func _raid() -> EnemyActionResource:
+	return (load(RAID) as EnemyActionResource).duplicate(true)
+
+
+func _raids_in(actions: Array[EnemyActionResource]) -> int:
+	return actions.filter(func(action: EnemyActionResource) -> bool: return action.hands_off_to_hostile()).size()
+
+
 # ── The Raid action ────────────────────────────────────────────────────────────
 
-func test_a_raid_binds_prey_and_never_threatens_the_player() -> void:
+func test_a_raid_binds_prey_and_never_threatens_the_player_itself() -> void:
 	var raid: EnemyActionResource = load(RAID)
 	assert_eq(raid.get_binding(), EnemyActionResource.Binding.HOSTILE_SHIP)
 	assert_eq(raid.get_threat(), EnemyActionResource.Threat.NEUTRAL,
-		"its damage lands on a civilian, so the die is no danger to the player")
+		"its damage lands on another ship, so the step itself is no danger to the player")
 	assert_true(raid.is_safe_while_hidden())
+
+
+func test_a_raid_hands_its_die_to_its_prey() -> void:
+	var raid: EnemyActionResource = load(RAID)
+	assert_eq(raid.get_relay(), EnemyActionResource.Relay.FEED)
+	assert_true(raid.hands_off_to_hostile())
+	assert_eq(raid.relay_face(4), 4, "the prey spends it on the same face")
+	assert_false(Ships.relay().hands_off_to_hostile(), "a Relay feeds an ally")
+	assert_eq(Ships.relay().get_binding(), EnemyActionResource.Binding.ALLY)
+
+
+func test_a_raid_reads_as_the_threat_of_what_its_prey_does_with_the_die() -> void:
+	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	var pirate := _ship(Faction.PIRATE)
+	var raids: Array[EnemyActionResource] = []
+	var attacks: Array[EnemyActionResource] = []
+	for i: int in range(6):
+		raids.append(_raid())
+		attacks.append(Ships.attack())
+	Ships.set_table(civilian, raids)
+	Ships.set_table(pirate, attacks)
+	civilian.turn_actions[2].bound_target = pirate
+	assert_eq(civilian.threat_of_face(3), EnemyActionResource.Threat.DANGEROUS,
+		"the pirate fires the die at the player")
 
 
 func test_damage_aimed_at_the_player_after_a_raid_step_is_dangerous_again() -> void:
@@ -56,6 +89,100 @@ func test_the_venom_fighter_only_raids_when_there_is_someone_to_raid() -> void:
 			for action: EnemyActionResource in EnemyActionSelector.roll(pool, without):
 				assert_ne(action.name, "Raid")
 	assert_gt(raids_with_prey, 0)
+
+
+# ── Ships on the player's side always hand off ─────────────────────────────────
+
+func test_a_ship_on_the_players_side_owes_a_hand_off_only_while_its_foe_fights_the_player() -> void:
+	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	var fighting := _ship(Faction.PIRATE)
+	var idle := _ship(Faction.PIRATE, Enemy.Attitude.NEUTRAL)
+	assert_true(EnemyActionSituation.for_ship(civilian, Ships.roster([civilian, fighting])).owes_hand_off)
+	assert_false(EnemyActionSituation.for_ship(civilian, Ships.roster([civilian, idle])).owes_hand_off,
+		"nobody is fighting the player")
+	assert_false(EnemyActionSituation.for_ship(fighting, Ships.roster([civilian, fighting])).owes_hand_off,
+		"a ship fighting the player owes it nothing")
+	var turned := _ship(Faction.CIVILIAN)
+	assert_true(EnemyActionSituation.for_ship(idle, Ships.roster([idle, turned])).owes_hand_off,
+		"a pirate standing by while the player fights a civilian is on the player's side too")
+
+
+func test_a_ship_that_owes_a_hand_off_always_rolls_one() -> void:
+	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	var pirate := _ship(Faction.PIRATE)
+	var options: Array[EnemyActionOptionResource] = [
+		Ships.option(Ships.attack(), 1.0, 1, 1), Ships.option(load(RAID), 0.0, 1, 1),
+	]
+	var pool := Ships.pool(options)
+	var situation := EnemyActionSituation.for_ship(civilian, Ships.roster([civilian, pirate]))
+	for run: int in range(40):
+		RNGManager.seed_scenario(run)
+		assert_eq(_raids_in(EnemyActionSelector.roll(pool, situation)), 1,
+			"weighted out, it still turns up exactly once (seed %d)" % run)
+
+
+func test_the_hand_off_survives_the_variety_cap() -> void:
+	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	var pirate := _ship(Faction.PIRATE)
+	var options: Array[EnemyActionOptionResource] = [
+		Ships.option(Ships.attack(), 5.0, 1, 1), Ships.option(load(RAID), 0.01, 1, 1),
+	]
+	var situation := EnemyActionSituation.for_ship(civilian, Ships.roster([civilian, pirate]))
+	situation.max_action_kinds = 1
+	for run: int in range(20):
+		RNGManager.seed_scenario(run)
+		assert_gt(_raids_in(EnemyActionSelector.roll(Ships.pool(options), situation)), 0)
+
+
+func test_a_ship_that_owes_nothing_rolls_as_it_always_did() -> void:
+	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	var idle := _ship(Faction.PIRATE, Enemy.Attitude.NEUTRAL)
+	var options: Array[EnemyActionOptionResource] = [
+		Ships.option(Ships.attack(), 1.0, 1, 1), Ships.option(load(RAID), 0.0, 1, 1),
+	]
+	var situation := EnemyActionSituation.for_ship(civilian, Ships.roster([civilian, idle]))
+	for run: int in range(20):
+		RNGManager.seed_scenario(run)
+		assert_eq(_raids_in(EnemyActionSelector.roll(Ships.pool(options), situation)), 0)
+
+
+func test_raids_on_each_other_keep_the_player_sides_and_reroll_the_enemys() -> void:
+	# Each hands the die to the other on the same face: a loop. The civilian
+	# owes its Raid, so the pirate's is the one that gives way, even though
+	# the pirate comes first in the formation.
+	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	var pirate := _ship(Faction.PIRATE)
+	var attack_only: Array[EnemyActionOptionResource] = [Ships.option(Ships.attack())]
+	Ships.give_pool(pirate, attack_only)
+	Ships.give_pool(civilian, attack_only)
+	var pirate_raids: Array[EnemyActionResource] = []
+	var civilian_raids: Array[EnemyActionResource] = []
+	for i: int in range(6):
+		pirate_raids.append(_raid())
+		civilian_raids.append(_raid())
+	Ships.set_table(pirate, pirate_raids)
+	Ships.set_table(civilian, civilian_raids)
+	var roster := Ships.roster([pirate, civilian])
+	EnemyTargetBinder.bind(roster, roster)
+	for slot: int in range(6):
+		assert_true(civilian.turn_actions[slot].hands_off_to_hostile(), "civilian face %d kept" % (slot + 1))
+		assert_eq(civilian.turn_actions[slot].bound_target, pirate)
+		assert_false(pirate.turn_actions[slot].hands_off_to_hostile(), "pirate face %d gave way" % (slot + 1))
+
+
+func test_a_ship_on_the_players_side_raids_whoever_is_fighting_the_player() -> void:
+	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	var idle := _ship(Faction.PIRATE, Enemy.Attitude.NEUTRAL)
+	var fighting := _ship(Faction.PIRATE)
+	var roster := Ships.roster([civilian, idle, fighting])
+	for run: int in range(20):
+		RNGManager.seed_scenario(run)
+		var raids: Array[EnemyActionResource] = []
+		for i: int in range(6):
+			raids.append(_raid())
+		Ships.set_table(civilian, raids)
+		EnemyTargetBinder.bind(Ships.roster([civilian]), roster)
+		assert_eq(civilian.turn_actions[0].bound_target, fighting)
 
 
 # ── Whose kill it was ──────────────────────────────────────────────────────────

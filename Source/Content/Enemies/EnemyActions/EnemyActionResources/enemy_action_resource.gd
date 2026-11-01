@@ -17,9 +17,10 @@ enum Binding {
 	HOSTILE_SHIP, ## A ship its faction preys on, never the player (raid)
 }
 
-## Whether this action hands a die on to the ally it's bound to, who spends
-## it on its turn. Relays are what can chain, so they're what the binder keeps from
-## ever looping.
+## Whether this action hands a die on to the ship it's bound to, who spends
+## it on its turn: an ally (Relay), or the ship it just fired on (Raid).
+## Relays are what can chain, so they're what the binder keeps from ever
+## looping.
 enum Relay {
 	NONE,
 	FEED,     ## Passes the die it was given; the face stays the same
@@ -276,11 +277,23 @@ func get_binding() -> Binding:
 
 
 func _compute_binding() -> Binding:
-	if get_relay() != Relay.NONE or _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY):
+	if _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_ALLY):
 		return Binding.ALLY
+	# Read before the relay: a Raid hands its die to the ship it fired on.
 	if _targets_with(EffectEnums.TargetingSubtype.TARGET_BOUND_HOSTILE_SHIP):
 		return Binding.HOSTILE_SHIP
+	# A relay that aims at nobody first (Relay, Holo Loader) feeds an ally.
+	if get_relay() != Relay.NONE:
+		return Binding.ALLY
 	return Binding.NONE
+
+
+## Whether this action passes its die to a ship it fights (a Raid), who then
+## spends it on its own table. A ship on the player's side always has one in
+## its table while it has someone to fight; see
+## EnemyActionSituation.owes_hand_off.
+func hands_off_to_hostile() -> bool:
+	return get_relay() != Relay.NONE and get_binding() == Binding.HOSTILE_SHIP
 
 
 ## Whether this action helps another ship on its own side: repairs or

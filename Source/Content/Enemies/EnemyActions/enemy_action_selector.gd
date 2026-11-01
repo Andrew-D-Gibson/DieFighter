@@ -54,6 +54,7 @@ static func roll(
 	if actions.size() >= SLOT_COUNT:
 		actions = actions.slice(0, SLOT_COUNT)
 		_cap_bound_slots(actions, mini(forced.size(), SLOT_COUNT), options, weights)
+		_ensure_hand_off(actions, mini(forced.size(), SLOT_COUNT), pool, situation)
 		_number_slots(actions)
 		return actions
 
@@ -67,6 +68,7 @@ static func roll(
 		actions.append(_weighted_pick(options, weights, weight_sum))
 	actions = actions.slice(0, open_slots)
 	_cap_bound_slots(actions, mini(forced.size(), open_slots), options, weights)
+	_ensure_hand_off(actions, mini(forced.size(), open_slots), pool, situation)
 
 	_place(actions, face_bias)
 	# Ascending faces, so each insert lands at its face with the earlier ones
@@ -119,6 +121,47 @@ static func _cap_bound_slots(
 			continue
 		actions[slot] = _weighted_pick(unbound, unbound_weights, weight_sum)
 		excess -= 1
+
+
+## Makes sure a ship that owes a hand-off (EnemyActionSituation.owes_hand_off)
+## rolled one: if none of [param actions] passes its die on to a ship it
+## fights, one slot is swapped for a draw from the pool's options that do.
+## The first [param keep] slots (the tutorial's) are never touched. The draw
+## ignores the variety cap, which can have trimmed the hand-off out; the
+## table may then mix one kind more than the cap. It takes a bound slot when
+## the table already holds MAX_BOUND_SLOTS, so it never adds one past that.
+## A pool with no hand-off at all is left alone; the content tests keep any
+## ship that can end up on the player's side from shipping without one.
+static func _ensure_hand_off(
+	actions: Array[EnemyActionResource],
+	keep: int,
+	pool: EnemyTurnActionList,
+	situation: EnemyActionSituation
+) -> void:
+	if not situation.owes_hand_off or actions.size() <= keep:
+		return
+	if actions.any(func(action: EnemyActionResource) -> bool: return action.hands_off_to_hostile()):
+		return
+
+	var hand_offs: Array[EnemyActionOptionResource] = []
+	var weights: Array[float] = []
+	var weight_sum: float = 0.0
+	for option: EnemyActionOptionResource in available_options(pool, situation):
+		if option.base_action.hands_off_to_hostile():
+			hand_offs.append(option)
+			weights.append(option.weight_in(situation))
+			weight_sum += weights[-1]
+	if hand_offs.is_empty():
+		return
+
+	var bound: Array[int] = []
+	for i: int in range(keep, actions.size()):
+		if actions[i].get_binding() != EnemyActionResource.Binding.NONE:
+			bound.append(i)
+	var slot: int = actions.size() - 1
+	if bound.size() >= MAX_BOUND_SLOTS:
+		slot = bound[-1]
+	actions[slot] = _weighted_pick(hand_offs, weights, weight_sum)
 
 
 ## The pool's fills_kept_faces option this situation allows, or null. One is

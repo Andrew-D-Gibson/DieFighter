@@ -1,7 +1,7 @@
 class_name EnemyTargetBinder
 extends RefCounted
 ## Picks the ship each rolled slot acts on: the ally a Repair Beam mends, the
-## civilian a raid hits, the ally a Relay hands its die to.
+## ship a Raid hits (and hands its die to), the ally a Relay hands its die to.
 ##
 ## Done once, when the table is rolled, rather than when the die is spent, so
 ## the intent can name the ship before the player commits a die. A slot only
@@ -10,8 +10,9 @@ extends RefCounted
 ## slot's action simply can't happen (EnemyActionResource.Outcome.BLOCKED),
 ## rather than landing on a ship the player never saw it aimed at.
 ##
-## Relays are where this earns its keep. Think of every (ship, die face) as a
-## node: a relay slot is an edge to the (ally, face) the die arrives as. Each
+## Relays (and Raids, which hand their die to their prey) are where this
+## earns its keep. Think of every (ship, die face) as a node: a relay slot is
+## an edge to the (ally, face) the die arrives as. Each
 ## node has at most one edge out, so "would this binding loop?" is just a walk
 ## forward from the ally it would point at. A relay is only ever bound to an
 ## ally that can't lead back to it, which keeps the whole graph loop-free by
@@ -32,8 +33,21 @@ extends RefCounted
 
 
 ## Binds every slot of every ship in [param ships] against [param roster].
+##
+## Ships on the player's side go first. A Raid hands its die to its prey, so
+## a pirate and a civilian raiding each other on the same face would be a
+## loop, and whichever binds second is the one rerolled. The civilian's Raid
+## is the one that has to stay (EnemyActionSituation.owes_hand_off); the
+## pirate's can go.
 static func bind(ships: Array[Enemy], roster: Array[Enemy]) -> void:
+	var order: Array[Enemy] = []
 	for ship: Enemy in ships:
+		if is_instance_valid(ship) and EnemyActionSituation.sides_with_player(ship):
+			order.append(ship)
+	for ship: Enemy in ships:
+		if ship not in order:
+			order.append(ship)
+	for ship: Enemy in order:
 		if not is_instance_valid(ship):
 			continue
 		var partners: Dictionary[EnemyActionResource.Binding, Enemy] = {}
@@ -67,6 +81,14 @@ static func bind_slot(
 	# most, not whoever this slot happens to be able to reach.
 	if binding == EnemyActionResource.Binding.ALLY and not partners.has(binding) and not candidates.is_empty():
 		partners[binding] = most_damaged(_allies_to_help(ship, candidates))
+	# A ship on the player's side raids whoever is fighting the player, when
+	# it can: that's who its hand-off is owed to.
+	if binding == EnemyActionResource.Binding.HOSTILE_SHIP and EnemyActionSituation.sides_with_player(ship):
+		var fighting_player: Array[Enemy] = candidates.filter(func(other: Enemy) -> bool:
+			return not EnemyActionSituation.sides_with_player(other)
+		)
+		if not fighting_player.is_empty():
+			candidates = fighting_player
 	if partners.has(binding):
 		candidates = candidates.filter(func(other: Enemy) -> bool: return other == partners[binding])
 	if action.get_relay() != EnemyActionResource.Relay.NONE:

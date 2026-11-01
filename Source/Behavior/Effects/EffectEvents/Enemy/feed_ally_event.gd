@@ -1,7 +1,8 @@
 class_name FeedAllyEvent
 extends EffectEvent
-## An enemy hands its die to an ally. The die joins the ally's hold like any
-## other: the ally spends it on its own turn, on whatever its slot for the
+## An enemy hands its die to the ship its slot was bound to: an ally (Relay),
+## or the ship it just fired on (Raid). The die joins that ship's hold like
+## any other: it spends it on its own turn, on whatever its slot for the
 ## die's face says, and if its turn has already gone EnemyTurn comes back for
 ## it once every ship has had theirs.
 ##
@@ -27,7 +28,7 @@ class Trail extends RefCounted:
 		depth = feed_depth
 		visited = ships.duplicate()
 
-## The ally the feeding slot was bound to.
+## The ship the feeding slot was bound to: an ally, or a Raid's prey.
 var ally: Enemy
 
 ## Ships that already acted with this die in the chain, the actor included.
@@ -53,11 +54,20 @@ func resolve(_engine: ScenarioEngine) -> void:
 
 	if is_instance_valid(actor) and actor is Node2D:
 		var from: Node2D = actor as Node2D
-		Juice.callout(from, "RELAY", _RELAY_COLOR)
+		# A Raid already called itself out as it fired.
+		if not _is_raid_hand_off():
+			Juice.callout(from, "RELAY", _RELAY_COLOR)
 		Juice.stream(from.get_parent(), activator_die.global_position, ally.global_position, _RELAY_COLOR, 6)
 
 	hand_over(ally, activator_die, Trail.new(feed_depth + 1, relay_visited), _RELAY_COLOR)
 	await wait_for_handoff(ally)
+
+
+func _is_raid_hand_off() -> bool:
+	var from: Enemy = actor as Enemy
+	if from == null or from.scenario_state == null or ally.scenario_state == null:
+		return false
+	return FactionRelations.are_hostile(from.scenario_state.faction, ally.scenario_state.faction)
 
 
 ## Puts [param die] in [param target]'s hold along with where it has been,
