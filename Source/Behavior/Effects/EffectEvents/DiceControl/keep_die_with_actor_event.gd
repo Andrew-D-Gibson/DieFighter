@@ -24,4 +24,8 @@ func resolve(_engine: ScenarioEngine) -> void:
 
 	holder.add(activator_die)
 	if actor is Enemy:
-		(actor as Enemy).kept_dice.append(activator_die)
+		var keeper: Enemy = actor
+		var die: Dice = activator_die
+		keeper.kept_dice.append(die)
+		if amount > 0:
+			keeper.loaded_amounts[die] = amount

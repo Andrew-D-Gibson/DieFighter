@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_n4c5x"]
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_3xv6q"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
-[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/pilfer.tres" id="act_pilfer"]
+[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_seize"]
 [ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="act_raid"]
 [ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_siphon_engine"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
@@ -22,10 +22,8 @@ max_amount = 5
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
-base_action = ExtResource("act_pilfer")
+base_action = ExtResource("act_seize")
 weight = 2.0
-min_amount = 2
-max_amount = 3
 strength_tier_override = 2.0
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 

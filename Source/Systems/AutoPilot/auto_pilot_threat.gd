@@ -17,7 +17,8 @@ const UNSEEN: float = 2.0
 const NEUTRAL_SHARE: float = 0.4
 const NEUTRAL_FLOOR: float = 0.5
 
-## A die the ship keeps (Pilfer) is gone until the ship dies.
+## A die the ship keeps (Seize, Charge Bore) is out of the player's hand next
+## turn and spent by the ship instead; a Cutpurse keeps re-stealing it.
 const KEPT_DIE: float = 4.0
 ## A ship escaping with dice takes every one it holds, for good.
 const ESCAPE: float = 8.0
@@ -152,6 +153,9 @@ static func _cost_of_action(action: EnemyActionResource, ship: Enemy, face: int)
 		EnemyActionResource.Threat.DANGEROUS:
 			if _escapes(action):
 				return ESCAPE + ESCAPE_PER_DIE * (_held_count(ship) + 1)
+			# A loader's amount is the shot its kept die fires next turn.
+			if _keeps_die(action):
+				return KEPT_DIE + action.intent_amount
 			if _vents(action):
 				var vented: float = 0.0
 				var engine: ScenarioEngine = ScenarioEngine.current()
@@ -170,10 +174,7 @@ static func _cost_of_action(action: EnemyActionResource, ship: Enemy, face: int)
 			var hits: int = action.effect_chain.base_repetitions if action.effect_chain else 1
 			return float(amount * maxi(hits, 1))
 		EnemyActionResource.Threat.NEUTRAL:
-			var cost: float = NEUTRAL_FLOOR + NEUTRAL_SHARE * action.intent_amount
-			if _keeps_die(action):
-				cost += KEPT_DIE
-			return cost
+			return NEUTRAL_FLOOR + NEUTRAL_SHARE * action.intent_amount
 	return 0.0
 
 
@@ -213,7 +214,7 @@ static func _hits_of_face(ship: Enemy, face: int) -> Array[float]:
 	var action: EnemyActionResource = ship.turn_actions[face - 1]
 	if action.get_threat() != EnemyActionResource.Threat.DANGEROUS or not _acts(ship, face):
 		return hits
-	if _escapes(action) or _vents(action) or not _status_applied(action).is_empty():
+	if _escapes(action) or _vents(action) or _keeps_die(action) or not _status_applied(action).is_empty():
 		return hits
 	var amount: int = action.intent_amount if action.intent_amount > 0 else face
 	if _stacks(ship, &"weakened") > 0:

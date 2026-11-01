@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_mt8kn"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
-[ext_resource type="Resource" uid="uid://bxuwbocierbhv" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/impound.tres" id="act_impound"]
+[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_seize"]
 [ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="act_lockout_grid_pos"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 [ext_resource type="PackedScene" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/conscriptor_ship_graphics.tscn" id="gfx"]
@@ -15,10 +15,8 @@
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")
-base_action = ExtResource("act_impound")
+base_action = ExtResource("act_seize")
 weight = 2.0
-min_amount = 3
-max_amount = 5
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_opt1"]

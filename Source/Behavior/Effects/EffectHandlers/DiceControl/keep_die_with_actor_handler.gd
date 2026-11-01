@@ -15,4 +15,7 @@ func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) ->
 
 	var event := KeepDieWithActorEvent.new()
 	_stamp(event, context)
+	# What the die was loaded with (Charge Bore's shot), for the payoff that
+	# lands on its face next turn. See Enemy.loaded_amounts.
+	event.amount = context.enemy_intent_amount
 	engine.inject_event(event)
