@@ -409,7 +409,7 @@ Every action must end the die's life one of these ways:
 | `GIVE_DIE_TO_TARGET` (after `TARGET_PLAYER`) | goes to the player, as in attacks |
 | `GIVE_DIE_TO_PLAYER` | goes back home |
 | `KEEP_DIE_WITH_ACTOR` | is held and spent on the ship's next turn, on whatever that face shows (Seize, Charge Bore). Reads as Dangerous: the player goes a turn without it. The action's intent amount rides along to a `fills_kept_faces` payoff |
-| `FEED_ALLY` | is passed to the bound ally, who uses it at once (Relay) |
+| `FEED_ALLY` | is passed to the bound ship, who uses it at once: an ally (Relay), or the ship a Raid just hit |
 | `SPAWN_HOLOGRAM_FOR_ALLY` | hologram goes to an ally (Holo Loader); still return the real die |
 | `ESCAPE_WITH_DICE` | leaves with the ship, with every other die it holds; the player loses them for good (Getaway) |
 
@@ -563,6 +563,20 @@ allies with whom, and who raids whom, is `FactionRelations`
 (`Source/Systems/Game/ScenarioManager/faction_relations.gd`). Behaviour that
 only makes sense in some encounters, like raiding, should go on a variant
 enemy resource (e.g. `gaff_raider.tres`), not on a shared one.
+
+**A ship on the player's side always hands off.** Raid hits its prey and
+hands it the die, so a die fed to a friendly ship still reaches the enemy.
+Without that, an ally is a safe home for every die: the enemy, never handed
+one, sits the turn out while the player charges their engines. So any ship
+that isn't AGGRESSIVE, while a ship it's hostile to is, rolls at least one
+Raid (`EnemyActionSituation.owes_hand_off`; the selector swaps one in if the
+roll missed it, past the variety cap if need be). A ship that can be in
+that spot needs a Raid option in every pool. Gate it on `ATTITUDE_IS`
+AGGRESSIVE, inverted, so it only turns up while the ship is on the player's
+side and its ordinary fights don't change (see `hauler.tres`).
+`test/content/test_ally_hand_offs.gd` walks every scenario's reachable ship
+states and names any ship that's missing one. Pirates count too: one
+standing by while the player fights a civilian owes the civilian a Raid.
 
 **Launched ships** (the Carrier's Interceptors): `SCENARIO_CONTROL /
 LAUNCH_SHIP` with `ship_resource` set brings that enemy in beside the actor,

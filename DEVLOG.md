@@ -4,6 +4,19 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-01 — Allies hand the die on: no more charging up behind a friend
+
+The problem: with one enemy and one ally, every die could go to the ally (whose actions never hurt the player) after passing through the Engine Charger. The enemy, handed nothing, sat each turn out, and the player turned on it only once evasion was maxed. The fix lives in the intents, not a blanket rule.
+
+- **Raid hands off.** "Attack another ship" now gives its die to the ship it hit, who spends it on the same face that turn (the Relay route, `FEED_ALLY`). It works both ways: a pirate's raid feeds the civilian, a civilian's raid feeds the pirate. The die can come back at the player, and the civilian's intent reads as dangerous when it will.
+- **The rule:** a ship on the player's side (not AGGRESSIVE), while a ship it's hostile to is fighting the player, always rolls at least one Raid (`EnemyActionSituation.owes_hand_off`). If the roll misses it, the selector swaps one in, past the variety cap if it must.
+- **Loops:** two ships raiding each other on one face would ping-pong. Ships on the player's side bind first, so it's the enemy's raid that's rerolled. A player-side ship raids whoever is fighting the player when it has the choice.
+- **Content:** Civilian Transport, Hauler, Hauler Adrift and the wandering Pilgrim raid for 1–3; Claims Adjuster, Conscriptor and Fate Shroud for 2–4 (for when the player turns on a civilian and they stand by). Each option is gated to "not aggressive", so their ordinary fights are unchanged. `test_ally_hand_offs.gd` checks every scenario's reachable states for a ship that could owe a Raid and has none.
+- Verified live in EVENT_pirate_attacking_civilian: a 2 fed to the civilian raided the pirate for 2, and the pirate's Dice Cannon fired it back at the player.
+- Open: other ally intents (shield, flee) still keep the die; more hand-offs would mean more loops to reroll. AutoPilot hasn't been re-run against the change.
+
+---
+
 ## 2026-11-01 — Tweak run, round 2: one die thief, consistent icons, overload polish
 
 The user answered the Oct 31 run's open calls on a review page; six parallel chunks (D1–D6, plan: `~/.claude/plans/chunks/diefighter-tweaks-2026-10-31.md`, "Round 2").

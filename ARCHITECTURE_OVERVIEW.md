@@ -1950,12 +1950,20 @@ icon (`IntentIndicator/blocked_info.png`) instead of the action's own.
 
 **Relays.** Relay (`FEED_ALLY`) hands the die on, and Holo Loader
 (`SPAWN_HOLOGRAM_FOR_ALLY`) conjures a hologram whose face is its intent
-amount; either way the bound ally spends it at once. Loops are ruled out at
+amount; either way the bound ally spends it at once. Raid ends in
+`FEED_ALLY` too: it hands the die to the ship it hit (`Binding.HOSTILE_SHIP`,
+read off its targeting before the relay; `hands_off_to_hostile()`), which
+spends it on the same face. A ship on the player's side with a foe fighting
+the player always rolls one (`EnemyActionSituation.owes_hand_off`,
+`EnemyActionSelector._ensure_hand_off()`), so feeding an ally never starves
+the enemy. Loops are ruled out at
 selection: each (ship, face) is a node, a relay slot is its one edge to the
 (ally, face) the die lands as, and the binder only binds a relay where
 walking forward can't come back to it. When no ally qualifies, that one
 slot is rerolled with relays excluded, so the graph stays loop-free by
-construction with no retries. `relay_visited` on the events is the backstop
+construction with no retries. Ships on the player's side bind first, so when
+a civilian and a pirate raid each other on one face, the pirate's slot is
+the one rerolled and the civilian keeps the Raid it owes. `relay_visited` on the events is the backstop
 (Scrambled can flip a die in flight). Hologram faces aren't scaled by the run's
 damage multiplier.
 
