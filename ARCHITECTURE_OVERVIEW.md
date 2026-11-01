@@ -43,7 +43,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation`, spacing each by its footprint (hull plus side-hung health bar; on a board too crowded for that, every bar tucks above its hull) and splitting the wing across free space either side of a reservation such as salvage, which also turns each ship's speech box toward its clearer side; waits for in-flight tractor beams (`TractorBeam.wait_for_landings`) before an enemy turn starts |
 | `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
-| `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy. `target_for(die)` answers who a dropped die should hit. The reticle is placed every frame from its ship's live position (so it rides a slide), and a real target change resets every running intent pulse |
+| `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy. `target_for(die)` answers who a dropped die should hit. The reticle is placed every frame from its ship's live position (so it rides a slide), and a real target change resets every running intent pulse. The targeted ship's speech folds into the portrait's comms badge (`EnemyDialogueManager.stow_point`) and a click unfolds it again (`replay_last_line()`); the badge shows only while a line is tucked away |
 | `JumpManager` | `Systems/JumpManager` | `Systems/Game/JumpManager/jump_manager.gd` | Plays the hyperspace transition (intro → load scenario → outro → start). Public `jump_to_scenario()`, used both by map jumps and sector advances |
 | `JumpGate` | `Graphics/JumpGate` | `Systems/Game/JumpGate/jump_gate.gd` | The ring at a beaten sector gate: warps in clear of salvage, `is_open()` gates the way out, plays the passage, owns the white flash and the sector title |
 | `HazardManager` | `Systems/HazardManager` | `Systems/Game/HazardManager/hazard_manager.gd` | Runs the current background's `BackgroundHazardResource` for the length of each fight: arms on `start_combat`, counts down at each turn start (or, for `YOUR_TURN_ENDS` hazards, each `enemy_turn_starting`), queues its chain onto the engine, broadcasts the countdown |
@@ -364,9 +364,13 @@ standing rule rather than something a tile grants, and there is no badge.
 - **Feedback:** a big `EVADED!` callout (`CALLOUT_EVADED`) over the health
   bar and the Engine Charger tile (`EvasionModifier.engine_display()`: the
   Outrigger's sail gauge stands in), plus a purple vignette pulse.
-- **Display:** `get_rule_info_text()` adds `INFO_ENGINE_EVASION`, the live
-  chance, to the Engine Charger's info panel. The Outrigger has no charger
-  tile, so its pilots don't see the number. `(evasion)` is a keyword.
+- **Display:** `get_rule_info_text()` adds the sum (`INFO_ENGINE_EVASION`,
+  "Engine charge x 3% = Evasion, up to 50%") and the live chance
+  (`INFO_ENGINE_EVASION_NOW`, or `_NOW_BONUS` while tiles have added some)
+  to the Engine Charger's info panel, whose picture is the live gauge
+  (`EngineChargeInfoArt`, via `Tile.info_picture`). The Outrigger has no
+  charger tile, so its pilots don't see the number. `(evasion)` is a keyword
+  that only says what evasion does; the sum lives on the tile.
 - **Tiles:** `ATTRIBUTE_CHANGE/ADD_EVASION` (`AddEvasionEvent`) adds
   percentage points (`bonus`) until `enemy_turn_over` or `combat_finished`,
   still held to the cap; not amplifiable. The `EVASION_BELOW_CAP` activation

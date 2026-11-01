@@ -4,6 +4,14 @@ Newest entries at the top.
 
 ---
 
+## 2026-10-31 — Comms fold into their badge; the Engine Charger shows its charge
+
+- **Comms:** when the targeted ship's line runs out, its speech box shrinks down into the targeting computer's comms badge, the way a region card folds into the Environment Monitor. Clicking the portrait unfolds it back out of the badge, plays the line, and folds it away again. The badge only shows while a line is tucked away, so it's hidden while one is on screen. A ship that isn't targeted still fades where it is. The comms pointer and "Click to replay comms" hint are gone; the badge lighting under the pointer is the only affordance. The fold keeps the box whole for most of the trip and fades only at the end (0.55 s), since a small box fading early vanished over the Map panel before it arrived.
+- **Engine Charger info:** its picture is now live, like the hull's and shields': the tile beside its gauge, filled to the real charge, framed in the tile's dark purple, with the "4/10" count underneath (`EngineChargeInfoArt`). Its text spells out the sum ("Engine charge x 3% = Evasion, up to 50%. Now: 12%", plus any tile bonus this round). The Evasion keyword now only says what it does: the chance each enemy hit misses you.
+- Leftover: `comms_cursor_raw.png` (and its `.aseprite`) and `Clickable.hover_cursor`/`hover_hint` no longer have a user.
+
+---
+
 ## 2026-10-31 — Tweak run: echo for all, refunds, dice volleys, readable hazards
 
 Seventeen tweaks across nine parallel chunks (plan: `~/.claude/plans/chunks/diefighter-tweaks-2026-10-31.md`). The guiding call: fun over balance.
