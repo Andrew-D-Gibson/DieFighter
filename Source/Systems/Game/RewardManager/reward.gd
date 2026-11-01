@@ -18,6 +18,10 @@ var items: Array = []
 ## Optional: force specific rewards (used by tutorial)
 static var forced_rewards: Array[TileResource] = []
 
+## Where the "+N refund" line floats up from, relative to the wreck: above
+## the offer's "CHOOSE ONE:" heading, clear of the coins bursting out of it.
+const _REFUND_CALLOUT_OFFSET: Vector2 = Vector2(0, -34)
+
 ## Horizontal distance between the choices on offer.
 const _REWARD_SPACING: int = 26
 
@@ -96,6 +100,7 @@ func give_reward(reward_resource: RewardResource) -> void:
 		RNGManager.Bucket.REWARDS, reward_resource.min_money, reward_resource.max_money
 	)
 	_spawn_money_particles(money)
+	_call_out_refund(reward_resource.refund)
 
 	# Roll the offer now rather than after the pause, so it exists (and is
 	# saveable) from the moment the ship pays out.
@@ -398,6 +403,16 @@ func _pop(node: CanvasItem, delay: float) -> void:
 			Juice.sparkle(get_parent(), (node as Node2D).global_position, Color.WHITE, 6, 30.0)
 		)
 	tween.tween_callback(node.hide)
+
+
+## Names the share of the payout that's the player's own money coming back, so
+## turning on a trader reads as a rule rather than a lucky roll. On the parent,
+## which outlives an offer that is only credits.
+func _call_out_refund(refund: int) -> void:
+	if refund <= 0:
+		return
+	Juice.callout_at(get_parent(), global_position + _REFUND_CALLOUT_OFFSET,
+			tr(&"CALLOUT_REFUND").format({"amount": refund}), Globals.green, true)
 
 
 func _spawn_money_particles(amount: int) -> void:

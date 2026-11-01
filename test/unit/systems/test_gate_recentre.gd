@@ -100,3 +100,55 @@ func test_nothing_in_the_gate_catches_the_mouse() -> void:
 	for control: Control in controls:
 		assert_eq(control.mouse_filter, Control.MOUSE_FILTER_IGNORE, control.name)
 	assert_true(_gate.find_children("*", "CollisionObject2D", true, false).is_empty())
+
+
+# ── Continuing at a beaten gate ────────────────────────────────────────────────
+
+## A roster with no ships and no enemy path: nothing to fight, nowhere for the
+## offer's formation claim to matter.
+class EmptyRoster extends EnemyManager:
+	func reserve_formation_space(_key: StringName, _min_x: float, _max_x: float) -> void:
+		pass
+
+	func clear_formation_space(_key: StringName) -> void:
+		pass
+
+
+## Continuing a save taken at a beaten gate with the boss's salvage still up.
+## In main.tscn the gate hears start_scenario before the RewardManager puts
+## the salvage back, so the test wires them the same way round.
+func _continue_at_gate_with_offer_at(x: float) -> void:
+	var scenarios: ScenarioManager = autofree(ScenarioManager.new())
+	scenarios.current_scenario = ScenarioResource.new()
+	scenarios.current_scenario.sector_gate_scenario = true
+	Globals.scenario_manager = scenarios
+	Globals.enemy_manager = autofree(EmptyRoster.new())
+	var state: GameStateManager = autofree(GameStateManager.new())
+	state._restore = {"offers": [{"x": x, "y": 40.0, "items": [{"money": 5}, {"money": 6}]}]}
+	Globals.state_manager = state
+
+	_rewards.reward_scene = REWARD_SCENE
+	Events.start_scenario.disconnect(_rewards._restore_offers)
+	Events.start_scenario.connect(_rewards._restore_offers)
+	Events.start_scenario.emit()
+	await wait_physics_frames(2)
+
+
+func test_a_continue_at_the_gate_keeps_it_clear_of_the_restored_salvage() -> void:
+	await _continue_at_gate_with_offer_at(_gate.rest_position.x)
+	assert_true(_gate.is_open(), "the beaten gate is waiting")
+	var offer: Reward = _rewards.get_child(0)
+	assert_true(offer.can_take(), "the salvage is back")
+	assert_ne(_gate.position.x, _gate.rest_position.x, "stands aside, not centred under the salvage")
+	assert_gt(absf(_gate.position.x - offer.global_position.x),
+		JumpGate._RING_HALF_WIDTH, "clear of it")
+
+
+func test_the_restored_salvage_taken_lets_the_gate_recentre() -> void:
+	await _continue_at_gate_with_offer_at(_gate.rest_position.x)
+	var offer: Reward = _rewards.get_child(0)
+	var pickup: MoneyPickup = offer.rewards[0]
+	offer._end_reward(pickup.draggable, _FAR_AWAY)
+	await wait_seconds(_SETTLE_TIME)
+	assert_eq(_gate.position.x, _gate.rest_position.x)
+	assert_true(_gate.is_open())

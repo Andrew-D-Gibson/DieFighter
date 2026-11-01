@@ -9,7 +9,9 @@ extends Modifier
 ##
 ## The ships already in the region when the rule goes up have been sitting in
 ## the same gas, so they lose the shields they were authored with: a pulsar
-## fight starts with every ship bare, not just the player.
+## fight starts with every ship bare, not just the player. So does every ship
+## that turns up while the rule stands, a carrier's launched fighters included:
+## they flew out into the same gas.
 
 
 func _init() -> void:
@@ -21,6 +23,17 @@ func on_registered(engine: ScenarioEngine) -> void:
 	super(engine)
 	if is_instance_valid(Globals.enemy_manager):
 		drain(Globals.enemy_manager.enemies)
+	Events.ship_encountered.connect(_on_ship_encountered)
+
+
+func on_unregistered(engine: ScenarioEngine) -> void:
+	super(engine)
+	if Events.ship_encountered.is_connected(_on_ship_encountered):
+		Events.ship_encountered.disconnect(_on_ship_encountered)
+
+
+func _on_ship_encountered(ship: Enemy) -> void:
+	drain([ship] as Array[Enemy])
 
 
 ## Flattens every one of [param ships]' shields, quietly: set rather than

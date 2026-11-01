@@ -90,6 +90,42 @@ func test_destroying_the_keeper_drops_the_refund_with_its_loot() -> void:
 	assert_eq(reward.max_money, 48 + 40)
 
 
+func test_the_refund_is_named_apart_from_the_loot() -> void:
+	assert_eq(loot.refund, 0, "an authored reward owes nothing back")
+	keeper.credits_paid = 25
+	assert_eq(keeper.wreck_reward().refund, 25)
+	assert_eq(loot.refund, 0, "the shared resource is untouched")
+
+
+## The payout calls the refund out on its own line, so the player learns that
+## turning on a trader wins the spend back. Money alone still gets the line,
+## though the offer itself is gone at once.
+func test_the_payout_calls_out_the_refund() -> void:
+	var manager: RewardManager = add_child_autofree(REWARD_MANAGER_SCENE.instantiate())
+	keeper.reward_resource = null
+	keeper.credits_paid = 18
+	manager._spawn_reward(Vector2(80, 60), keeper.wreck_reward())
+	var lines: Array[String] = _callouts(manager)
+	assert_eq(lines.size(), 1)
+	assert_eq(lines[0], tr(&"CALLOUT_REFUND").format({"amount": 18}))
+	assert_string_contains(lines[0], "18")
+
+
+func test_loot_alone_calls_out_no_refund() -> void:
+	var manager: RewardManager = add_child_autofree(REWARD_MANAGER_SCENE.instantiate())
+	loot.num_of_rewards = 0
+	manager._spawn_reward(Vector2(80, 60), keeper.wreck_reward())
+	assert_eq(_callouts(manager).size(), 0)
+
+
+func _callouts(parent: Node) -> Array[String]:
+	var lines: Array[String] = []
+	for child: Node in parent.get_children():
+		if child is DamageNumber:
+			lines.append((child as DamageNumber)._label.text)
+	return lines
+
+
 ## The penalty for it is unchanged: attacking the trader turns it hostile and
 ## shuts the counter.
 func test_attacking_a_trader_still_turns_it_against_the_player() -> void:
