@@ -430,7 +430,7 @@ func _place_pinned_stops() -> void:
 ##
 ## Done last, from its own generator seeded off the RUN stream's state rather
 ## than by drawing from it. Drawing would shift every roll after it, so every
-## seeded map (the tutorial's seed 21, every AutoPilot transcript) would come
+## seeded map (the tutorial's seed 545, every AutoPilot transcript) would come
 ## out different. This way the RUN stream is untouched, and a sector only
 ## differs where a station replaced a stop.
 ##
