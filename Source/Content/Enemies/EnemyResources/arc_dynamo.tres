@@ -5,10 +5,11 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="12_vk8qy"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
-[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_seize"]
 [ext_resource type="Resource" uid="uid://d3x66cp4dsogo" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/grid_quake.tres" id="act_quake"]
+[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_seize"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield"]
 [ext_resource type="Resource" uid="uid://b708v5177epip" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/siphon_engine.tres" id="act_siphon"]
+[ext_resource type="Texture2D" uid="uid://vj0nrdg80tlg" path="res://Assets/Textures/Enemies/ArcDynamo/arc_dynamo_targeting_crackle-Sheet.png" id="crackle"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="effect_chain"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect_data"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/caravan.tres" id="faction_identity"]
@@ -17,7 +18,6 @@
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
 [ext_resource type="Texture2D" uid="uid://dhsdegv7iqfet" path="res://Assets/Textures/Enemies/ArcDynamo/arc_dynamo_targeting_image.png" id="tex"]
-[ext_resource type="Texture2D" uid="uid://vj0nrdg80tlg" path="res://Assets/Textures/Enemies/ArcDynamo/arc_dynamo_targeting_crackle-Sheet.png" id="crackle"]
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")

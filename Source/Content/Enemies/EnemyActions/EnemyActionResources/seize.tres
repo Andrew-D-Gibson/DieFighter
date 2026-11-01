@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://2m3norg8jtr"]
 
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_vhcjc"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
 [ext_resource type="Resource" uid="uid://r1fdvf4rxfcc" path="res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres" id="ext_2"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]
