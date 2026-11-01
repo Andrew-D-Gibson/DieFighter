@@ -25,6 +25,40 @@ func test_a_new_fight_starts_the_turns_over() -> void:
 	assert_eq(checks.on_enemy_turn_starting().size(), 0)
 
 
+func test_a_turn_with_dice_in_hand_is_never_short() -> void:
+	var checks: AutoPilotInvariants = AutoPilotInvariants.new()
+	assert_false(checks.hand_is_short(1, false))
+	assert_false(checks.hand_is_short(2, true))
+
+
+func test_an_empty_hand_the_ships_left_is_short() -> void:
+	var checks: AutoPilotInvariants = AutoPilotInvariants.new()
+	assert_true(checks.hand_is_short(0, false))
+	assert_true(checks.hand_is_short(0, true), "the player never spent their own last die")
+
+
+func test_a_fight_started_with_the_players_own_last_die_may_open_empty() -> void:
+	# A shot at a civilian, or a die handed to the shop that it fires back:
+	# the game gives no spare die for a fight the player started that way.
+	var checks: AutoPilotInvariants = AutoPilotInvariants.new()
+	checks.on_die_placed(0)
+	assert_false(checks.hand_is_short(0, true))
+	assert_true(checks.hand_is_short(0, false), "only the fight's first turn is excused")
+
+
+func test_a_die_coming_home_ends_the_excuse() -> void:
+	var checks: AutoPilotInvariants = AutoPilotInvariants.new()
+	checks.on_die_placed(0)
+	checks._on_die_reached_hand()
+	assert_true(checks.hand_is_short(0, true))
+
+
+func test_placing_a_die_that_leaves_others_in_hand_excuses_nothing() -> void:
+	var checks: AutoPilotInvariants = AutoPilotInvariants.new()
+	checks.on_die_placed(2)
+	assert_true(checks.hand_is_short(0, true))
+
+
 func test_memory_growth_warns_once_past_the_limit() -> void:
 	var checks: AutoPilotInvariants = AutoPilotInvariants.new()
 	assert_eq(checks.leaks({"nodes": 1000, "orphans": 0}).size(), 0, "the first arrival is the baseline")

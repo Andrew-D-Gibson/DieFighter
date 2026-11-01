@@ -67,8 +67,16 @@ const ALLY_SUPPORT_EARLIEST_SECTOR: int = 1
 @export var overload_threshold_growth: int = 0
 ## What overloading does to the ship, usually a jolt of damage to itself.
 @export var overload_chain: EffectChain
+## Warn from half full instead of from one die short. For a zealot whose
+## faith runs hot: its gauge goes orange early, so the player sees the danger
+## of feeding it before a single die could tip it over.
+@export var overload_warns_from_half: bool = false
 ## Where the heat gauge sits, relative to the ship.
 @export var overload_gauge_position: Vector2 = Vector2(0, 28)
+## Arcs crackling over targeting_computer_image while the gauge is armed (full,
+## its next turn an overload): a horizontal strip of frames the portrait's
+## size. Null for no crackle.
+@export var overload_portrait_crackle: Texture2D
 
 @export_category('Graphics')
 @export var ship_graphics_scene: PackedScene

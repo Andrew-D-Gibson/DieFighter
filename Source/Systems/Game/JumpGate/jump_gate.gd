@@ -78,8 +78,14 @@ func is_open() -> bool:
 
 
 ## Arriving at a gate whose boss is already gone (beaten earlier, or a
-## Continue after the win): the ring is waiting.
+## Continue after the win): the ring is waiting. Deferred, because a Continue
+## puts the boss's untaken salvage back on this same signal
+## (RewardManager._restore_offers), and the ring has to see it to stand aside.
 func _on_start_scenario() -> void:
+	_open_if_waiting.call_deferred()
+
+
+func _open_if_waiting() -> void:
 	if _passage_active:
 		return
 	if _at_gate() and not Globals.state_manager.enemy_intents_visible():

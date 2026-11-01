@@ -203,6 +203,25 @@ func test_shutdown_mid_drain_releases_waiters_and_stops_the_queue() -> void:
 		"the suspended drain bails on resuming rather than carrying on")
 
 
+func test_an_event_that_ends_the_run_still_reports_it_was_resolving() -> void:
+	# The hit that kills the player ends the run inside its own resolve: it
+	# never reports resolved, so anything keeping score listens for this.
+	var fatal := _event("fatal")
+	fatal.on_resolve = func(e: ScenarioEngine) -> void: e.shutdown()
+	watch_signals(engine)
+	engine.queue_event(fatal)
+	assert_signal_emitted_with_parameters(engine, "event_resolving", [fatal])
+	assert_signal_not_emitted(engine, "event_resolved")
+
+
+func test_a_canceled_event_never_reports_it_was_resolving() -> void:
+	var canceled := _event("canceled")
+	canceled.canceled = true
+	watch_signals(engine)
+	engine.queue_event(canceled)
+	assert_signal_not_emitted(engine, "event_resolving")
+
+
 func test_a_shut_down_engine_ignores_new_events() -> void:
 	engine.shutdown()
 	engine.queue_event(_event("late"))

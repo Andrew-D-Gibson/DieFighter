@@ -2,6 +2,11 @@ class_name ScenarioEngine
 extends Node
 
 signal event_resolved(event: EffectEvent)
+## An event got past every modifier and is about to happen: its amount and
+## targets are final. Unlike event_resolved, this comes even for an event
+## whose resolution ends the run (the hit that kills the player), which
+## never gets as far as reporting resolved.
+signal event_resolving(event: EffectEvent)
 ## A modifier canceled this event before it resolved.
 signal event_canceled(event: EffectEvent)
 signal began_processing_queue()
@@ -268,6 +273,7 @@ func process_event_queue() -> void:
 			continue
 			
 		# Handle the event itself
+		event_resolving.emit(event)
 		await event.resolve(self)
 		if _shut_down:
 			return

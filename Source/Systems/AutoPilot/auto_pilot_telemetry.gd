@@ -32,6 +32,7 @@ func follow(engine: ScenarioEngine) -> void:
 		return
 	_engine = engine
 	_acting.clear()
+	engine.event_resolving.connect(_on_event_resolving)
 	engine.event_resolved.connect(_on_event_resolved)
 
 
@@ -154,11 +155,11 @@ func _on_event_resolved(event: EffectEvent) -> void:
 			actions[action_name] = actions.get(action_name, 0) + 1
 		return
 
-	var source: Node = event.effect_source if is_instance_valid(event.effect_source) else null
-	var from_tile: Tile = source as Tile
+	# Damage was counted as it landed, see _on_event_resolving().
 	if event is DamageEvent:
-		_count_damage(event, from_tile)
-	elif from_tile and event.amount > 0:
+		return
+	var from_tile: Tile = _source_tile(event)
+	if from_tile and event.amount > 0:
 		if event is ShieldEvent:
 			_tile(from_tile)["shields"] += event.amount
 		elif event is HealEvent:
@@ -167,6 +168,20 @@ func _on_event_resolved(event: EffectEvent) -> void:
 			_tile(from_tile)["charge"] += event.amount
 		elif event is ApplyStatusEvent:
 			_tile(from_tile)["statuses"] += event.amount * _live_targets(event)
+
+
+## Damage is counted as it lands, not once it has resolved: the hit that
+## kills the player ends the run partway through resolving, so it never
+## reports resolved, and the run would name whoever hit before it as the
+## killer.
+func _on_event_resolving(event: EffectEvent) -> void:
+	if event is DamageEvent:
+		_count_damage(event, _source_tile(event))
+
+
+static func _source_tile(event: EffectEvent) -> Tile:
+	var source: Node = event.effect_source if is_instance_valid(event.effect_source) else null
+	return source as Tile
 
 
 func _count_damage(event: EffectEvent, from_tile: Tile) -> void:

@@ -226,6 +226,32 @@ func test_a_launched_ship_joins_beside_its_launcher_on_its_side() -> void:
 	assert_eq(manager.capture_enemies().size(), 1, "a launched ship isn't saved")
 
 
+## A fighter launched under the no-shields rule flew out into the same gas as
+## everyone else, so it arrives bare. Once the rule is gone, launches keep the
+## shields they were built with.
+func test_a_ship_launched_under_the_shield_blackout_arrives_bare() -> void:
+	var manager: EnemyManager = add_child_autofree(ENEMY_MANAGER_SCENE.instantiate())
+	Globals.enemy_manager = manager
+	var spawn: EnemyStateRewardResource = EnemyStateRewardResource.new()
+	spawn.enemy_resource = INTERCEPTOR
+	spawn.starting_state = _pirate_state()
+	var roster: Array[EnemyStateRewardResource] = [spawn]
+	manager.spawn_enemies(roster)
+	var launcher: Enemy = manager.enemies[0]
+	var shielded: EnemyResource = INTERCEPTOR.duplicate()
+	shielded.starting_shields = 4
+
+	var engine: ScenarioEngine = autofree(ScenarioEngine.new())
+	var blackout: ShieldBlackoutModifier = ShieldBlackoutModifier.new()
+	engine.add_modifier(blackout)
+	var bare: Enemy = await manager.launch_ship(shielded, launcher)
+	assert_eq(bare.health.shields, 0)
+
+	engine.remove_modifier(blackout)
+	var kept: Enemy = await manager.launch_ship(shielded, launcher)
+	assert_gt(kept.health.shields, 0, "the rule is gone")
+
+
 # ── The gate ──────────────────────────────────────────────────────────────────
 
 func test_the_gate_survives_its_own_passage_jump_but_not_any_other() -> void:
