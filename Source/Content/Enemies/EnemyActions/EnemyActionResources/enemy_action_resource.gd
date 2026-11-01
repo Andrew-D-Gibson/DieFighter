@@ -296,6 +296,29 @@ func vents_own_statuses() -> bool:
 	return bool(_derived[&"vents_statuses"])
 
 
+## Whether shields are all this action gives (Shield Burst, Aegis Link): the
+## die goes home and nothing else changes. Shields with a second purpose don't
+## count: Relay passes its die on, Charge Bore loads one. The selector stops
+## rolling these once the ship they'd shield is at its soft cap, see
+## EnemyActionSituation.at_shield_cap().
+func only_grants_shields() -> bool:
+	if not _derived.has(&"only_shields"):
+		_derived[&"only_shields"] = int(effect_chain != null
+			and _has_step(EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.SHIELD)
+			and not _any_effect(effect_chain.effects, _does_more_than_shield))
+	return bool(_derived[&"only_shields"])
+
+
+static func _does_more_than_shield(effect: EffectData) -> bool:
+	if effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE:
+		return effect.subtype != EffectEnums.AttributeChangeSubtype.SHIELD
+	# Sending the die home is what every action does; keeping or passing it on
+	# is a purpose of its own, though _has_consequence() doesn't count it.
+	if effect.category == EffectEnums.Category.DICE_CONTROL:
+		return effect.subtype != EffectEnums.DiceControlSubtype.GIVE_DIE_TO_PLAYER
+	return _has_consequence(effect)
+
+
 func get_relay() -> Relay:
 	if not _derived.has(&"relay"):
 		_derived[&"relay"] = _compute_relay()

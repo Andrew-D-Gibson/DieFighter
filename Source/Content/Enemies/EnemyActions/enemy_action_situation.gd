@@ -21,6 +21,10 @@ var hostile_ships: Array[Enemy] = []
 ## How much of its hull [member ship] has left, 0 to 1.
 var health_fraction: float = 1.0
 
+## Whether [member ship] already holds as many shields as its max hull, so
+## actions that only shield it are no longer rolled. See at_shield_cap().
+var shields_capped: bool = false
+
 ## The ids of the statuses on [member ship].
 var statuses: Array[StringName] = []
 
@@ -50,6 +54,7 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 	situation.allies = allies_of(rolling_ship, roster)
 	situation.hostile_ships = hostile_ships_of(rolling_ship, roster)
 	situation.health_fraction = hull_fraction(rolling_ship)
+	situation.shields_capped = at_shield_cap(rolling_ship)
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine:
 		for status: StatusModifier in engine.statuses_on(rolling_ship):
@@ -86,6 +91,21 @@ static func allies_of(of_ship: Enemy, roster: Array[Enemy]) -> Array[Enemy]:
 
 static func hostile_ships_of(of_ship: Enemy, roster: Array[Enemy]) -> Array[Enemy]:
 	return _others_where(of_ship, roster, FactionRelations.are_hostile)
+
+
+## Whether any ally could still take shields: one below its shield cap.
+func has_ally_under_shield_cap() -> bool:
+	return allies.any(func(ally: Enemy) -> bool: return not at_shield_cap(ally))
+
+
+## The soft cap on an enemy's shields: once a ship holds as many as its max
+## hull, it stops rolling actions that only shield it, and its allies stop
+## rolling them for it. Nothing clamps shields: a ship already over the cap,
+## or one shielded by an action that does more besides (Relay, Charge Bore),
+## keeps every point. It only stops an endless pile, which is what turned
+## Shield Burst and Aegis Link fights into stalemates.
+static func at_shield_cap(of_ship: Enemy) -> bool:
+	return of_ship.health.shields >= of_ship.health.max_health
 
 
 static func hull_fraction(of_ship: Enemy) -> float:

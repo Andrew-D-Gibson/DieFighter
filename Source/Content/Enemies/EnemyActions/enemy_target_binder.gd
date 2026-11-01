@@ -66,7 +66,7 @@ static func bind_slot(
 	# Settled before the relay filter below: the partner is whoever needs it
 	# most, not whoever this slot happens to be able to reach.
 	if binding == EnemyActionResource.Binding.ALLY and not partners.has(binding) and not candidates.is_empty():
-		partners[binding] = most_damaged(candidates)
+		partners[binding] = most_damaged(_allies_to_help(ship, candidates))
 	if partners.has(binding):
 		candidates = candidates.filter(func(other: Enemy) -> bool: return other == partners[binding])
 	if action.get_relay() != EnemyActionResource.Relay.NONE:
@@ -80,6 +80,25 @@ static func bind_slot(
 	action.bound_target = RNGManager.pick_random(RNGManager.Bucket.ENEMY_AI, candidates)
 	partners[binding] = action.bound_target
 	return true
+
+
+## The allies of [param candidates] [param ship]'s table can help. All of a
+## ship's ally slots go to one partner, so when the table holds an action that
+## only shields, the partner is picked from allies under the soft shield cap
+## (EnemyActionSituation.at_shield_cap()), or that slot would pile shields on
+## a ship the roll just ruled out. The roll only allows such an action while
+## one is under the cap, so the list is never left empty by this.
+static func _allies_to_help(ship: Enemy, candidates: Array[Enemy]) -> Array[Enemy]:
+	var shields_an_ally: bool = ship.turn_actions.any(func(action: EnemyActionResource) -> bool:
+		return action != null and action.only_grants_shields() \
+			and action.get_binding() == EnemyActionResource.Binding.ALLY
+	)
+	if not shields_an_ally:
+		return candidates
+	var under_cap: Array[Enemy] = candidates.filter(func(ally: Enemy) -> bool:
+		return not EnemyActionSituation.at_shield_cap(ally)
+	)
+	return under_cap if not under_cap.is_empty() else candidates
 
 
 ## The ship of [param ships] with the least of its hull left, as a share of
