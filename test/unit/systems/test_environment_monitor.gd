@@ -278,7 +278,7 @@ func test_a_rule_card_has_no_footnote() -> void:
 	assert_eq(_alerts()[0].footnote, "")
 
 
-# ── The readout ───────────────────────────────────────────────────────────────
+# ── Nothing over the ships' sky ───────────────────────────────────────────────
 
 func _arrive_and_fight() -> void:
 	Events.start_scenario.emit()
@@ -288,62 +288,18 @@ func _arrive_and_fight() -> void:
 	await _settle()
 
 
-func _readout_text() -> String:
-	return Utils.strip_bbcode_tags(monitor._readout_text.text)
-
-
-func test_the_readout_comes_out_when_the_fight_starts_counting() -> void:
+## The headline lives on the arrival card and in the info panel; the screen
+## itself keeps only its glyph and count. Ticks, hovering and the hazard going
+## off slide nothing out across the sky the ships fly in.
+func test_the_screen_carries_no_headline_strip() -> void:
+	var before: int = monitor._face.get_child_count()
 	await _arrive_and_fight()
-	assert_true(monitor._readout_holder.visible)
-	assert_eq(_readout_text(), "In 3 turns: Test Flare")
-
-
-func test_each_tick_brings_the_readout_out_with_the_new_count() -> void:
-	await _arrive_and_fight()
-	monitor._hide_readout(true)
 	Events.hazard_countdown_changed.emit(hazard, 1)
-	await _settle()
-	assert_true(monitor._readout_holder.visible)
-	assert_eq(_readout_text(), "Next turn: Test Flare")
-
-
-func test_the_readout_goes_back_in_on_its_own() -> void:
-	await _arrive_and_fight()
-	monitor._readout_left = 0.05
-	await wait_seconds(0.4)
-	assert_false(monitor._readout_holder.visible)
-
-
-func test_hovering_keeps_the_readout_out_until_the_pointer_leaves() -> void:
-	await _arrive_and_fight()
-	monitor._hide_readout(true)
-	monitor._on_hovered(true)
-	assert_true(monitor._readout_holder.visible)
-	await wait_seconds(0.2)
-	assert_true(monitor._readout_holder.visible, "no timer while hovered")
-	monitor._on_hovered(false)
-	await wait_seconds(EnvironmentMonitor._READOUT_HOVER_LINGER_SECONDS + 0.4)
-	assert_false(monitor._readout_holder.visible)
-
-
-func test_the_readout_steps_aside_for_the_banner() -> void:
-	await _arrive_and_fight()
+	monitor._clickable.is_hovered.emit(true)
 	Events.hazard_triggered.emit(hazard)
-	await wait_seconds(0.3)
-	assert_false(monitor._readout_holder.visible)
-
-
-func test_the_jump_takes_the_readout_with_it() -> void:
-	await _arrive_and_fight()
-	Events.jump.emit()
 	await _settle()
-	assert_false(monitor._readout_holder.visible)
-
-
-func test_a_rule_has_no_readout() -> void:
-	await _arrive_with_rule()
-	monitor._on_hovered(true)
-	assert_false(monitor._readout_holder.visible)
+	assert_eq(monitor._face.get_child_count(), before)
+	assert_true(monitor._face.find_children("*", "RichTextLabel", true, false).is_empty())
 
 
 # ── The first sighting waits to be closed ────────────────────────────────────
