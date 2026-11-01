@@ -15,6 +15,12 @@ extends RefCounted
 ## so a bug in that code can't hide itself.
 
 var _player_turn_open: bool = false
+## Whether the hand was last emptied by the player spending their own last
+## die on a tile. Watched here from the hand itself rather than read off the
+## Player, so a bug there can't excuse itself.
+var _player_emptied_hand: bool = false
+## The hand being watched for dice coming home (follow_hand()).
+var _hand_queue: DiceQueue = null
 var _enemy_turn_open: bool = false
 ## Memory at the first arrival, the baseline leak growth is measured from;
 ## empty until then.
@@ -34,7 +40,36 @@ func reset_turns() -> void:
 	_enemy_turn_open = false
 
 
-func on_player_turn_start(in_transit: bool) -> Array[Dictionary]:
+## Watches [param hand] for dice coming home. Safe to call every frame.
+func follow_hand(hand: DiceQueue) -> void:
+	if hand == null or hand == _hand_queue:
+		return
+	_hand_queue = hand
+	hand.die_added.connect(_on_die_reached_hand)
+
+
+## A die went onto a tile, leaving [param hand_left] dice in hand.
+func on_die_placed(hand_left: int) -> void:
+	_player_emptied_hand = hand_left == 0
+
+
+func _on_die_reached_hand() -> void:
+	_player_emptied_hand = false
+
+
+## Whether a fight's turn starting with [param hand_size] dice in hand breaks
+## the rule that every turn has something to play. The one exception is a
+## fight's first turn after the player spent their own last die, say on a
+## shot at a civilian or a die handed to the shop: the game gives no spare
+## die for a fight the player started that way
+## (Player._ensure_a_die_for_first_turn()).
+func hand_is_short(hand_size: int, first_of_fight: bool) -> bool:
+	if hand_size > 0:
+		return false
+	return not (first_of_fight and _player_emptied_hand)
+
+
+func on_player_turn_start(in_transit: bool, first_of_fight: bool) -> Array[Dictionary]:
 	var broken: Array[Dictionary] = []
 	if _player_turn_open:
 		broken.append(_violation("overlapping_player_turns", "a player turn started before the last one ended"))
@@ -45,7 +80,7 @@ func on_player_turn_start(in_transit: bool) -> Array[Dictionary]:
 	_player_turn_open = true
 
 	var in_combat: bool = Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
-	if in_combat and _hand().is_empty():
+	if in_combat and hand_is_short(_hand().size(), first_of_fight):
 		broken.append(_violation("empty_hand_at_turn_start", "a fight's turn started with nothing to play"))
 	broken.append_array(check_board())
 	return broken

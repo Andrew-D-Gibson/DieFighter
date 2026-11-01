@@ -206,6 +206,7 @@ func _process(_delta: float) -> void:
 	if not _game_is_up():
 		return
 	_telemetry.follow(ScenarioEngine.current())
+	_invariants.follow_hand(Globals.player.dice_manager)
 	_count_salvage_offers()
 	_write_shop_stock()
 
@@ -389,8 +390,11 @@ func _connect_game_signals() -> void:
 	Events.enemy_turn_over.connect(_invariants.on_enemy_turn_over)
 	# A fight's first turn has its own signal; every later one follows an
 	# enemy turn.
-	Events.first_turn_start.connect(_on_player_turn_start)
-	Events.player_turn_start.connect(_on_player_turn_start)
+	Events.first_turn_start.connect(_on_player_turn_start.bind(true))
+	Events.player_turn_start.connect(_on_player_turn_start.bind(false))
+	Events.die_placed_on_tile.connect(func(_die: Dice, _tile: Tile) -> void:
+		_invariants.on_die_placed(Globals.player.dice_manager.queue.size())
+	)
 	Events.player_turn_over.connect(func() -> void:
 		_player_turn_active = false
 		_invariants.on_player_turn_over()
@@ -433,8 +437,8 @@ func _connect_game_signals() -> void:
 	Events.victory.connect(func() -> void: _finish(Outcome.VICTORY))
 
 
-func _on_player_turn_start() -> void:
-	_report(_invariants.on_player_turn_start(_in_transit))
+func _on_player_turn_start(first_of_fight: bool) -> void:
+	_report(_invariants.on_player_turn_start(_in_transit, first_of_fight))
 	_player_turn_active = true
 	_player_turn += 1
 	_idle_frames = 0
