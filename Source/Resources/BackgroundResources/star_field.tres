@@ -5,12 +5,12 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/blue_star.tscn" id="body_far"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/storm_giant.tscn" id="body_near"]
 [ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="moon_barren"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/amber_star.tscn" id="star_amber"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/red_dwarf.tscn" id="star_red"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/white_dwarf.tscn" id="star_white"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/jade_world.tscn" id="world_jade"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/dune_world.tscn" id="world_dune"]
-[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="moon_barren"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/jade_world.tscn" id="world_jade"]
 
 [sub_resource type="Resource" id="Piece_storm_giant_and_star_0"]
 script = ExtResource("2_buxbt")
@@ -40,8 +40,8 @@ scene_variants = Array[PackedScene]([ExtResource("star_amber"), ExtResource("sta
 
 [sub_resource type="Resource" id="Composition_lone_star"]
 script = ExtResource("comp_script")
-offset_jitter = Vector2(10, 6)
 objects = Array[ExtResource("2_buxbt")]([SubResource("Piece_lone_star_0")])
+offset_jitter = Vector2(10, 6)
 
 [sub_resource type="Resource" id="Piece_giant_and_far_star_0"]
 script = ExtResource("2_buxbt")
