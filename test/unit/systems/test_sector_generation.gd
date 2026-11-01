@@ -10,7 +10,7 @@ const MAIN_SCENE: String = "res://Source/Scenes/main.tscn"
 const ACTIONS: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/"
 const ENEMIES: String = "res://Source/Content/Enemies/EnemyResources/"
 ## TutorialManager.run_seed: every new player's first run.
-const TUTORIAL_SEED: int = 545
+const TUTORIAL_SEED: int = 21
 
 var _run_rng_state: int = 0
 

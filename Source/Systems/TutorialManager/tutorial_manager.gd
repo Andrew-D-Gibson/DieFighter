@@ -35,15 +35,12 @@ signal _target_switched
 ## The run the tutorial plays in. The forced dice and intents fix the opening
 ## fight, but the map the player is shown and the credits they're paid come
 ## from the run's RNG. Seeding it means every new player sees the same thing
-## and the steps can promise what's on screen. 545 puts a shop beside the
-## opening fight, and the jump's two ships pay out new tiles only, never a
-## copy of one already on the grid: upgrading waits for a later fight. Any
-## change to the tile pool or the RUN stream can move that, so re-check the
-## pair's salvage after one. The hand the player finishes the raider with
+## and the steps can promise what's on screen. 21 puts a shop beside the
+## opening fight. The hand the player finishes the raider with
 ## (enemy_response's forced dice) is all 6s, and the dice come home from the
 ## wreck with the faces they had, so 6 is the only jump on offer: Bump can't
 ## turn a 6 into anything else.
-@export var run_seed: int = 545
+@export var run_seed: int = 21
 
 ## The fight the tutorial's jump lands in, pinned over whatever the seeded map
 ## has [member jump_distance] places right of the opening fight. Two ships that
