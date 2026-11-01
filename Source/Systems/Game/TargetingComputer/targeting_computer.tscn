@@ -17,7 +17,6 @@
 [ext_resource type="PackedScene" uid="uid://ctdaxn5103h74" path="res://Source/Systems/Game/TargetingComputer/attitude_display.tscn" id="15_attitude"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/TargetingComputer/target_shift_button.tscn" id="16_shift"]
 [ext_resource type="Texture2D" uid="uid://du3b6326w8vg6" path="res://Assets/Textures/TargetingComputer/comms_badge-Sheet.png" id="17_badge"]
-[ext_resource type="Texture2D" uid="uid://bv561awn3hv8i" path="res://Assets/Textures/UI/MouseCursors/comms_cursor_raw.png" id="18_commscur"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_du4uj"]
 shader = ExtResource("10_chiev")
@@ -265,8 +264,6 @@ unique_name_in_owner = true
 z_index = 1
 script = ExtResource("4_exnvl")
 hover_for_info = false
-hover_cursor = ExtResource("18_commscur")
-hover_hint = &"CURSOR_HINT_REPLAY_COMMS"
 metadata/_custom_type_script = "uid://hts4ayfgd5jk"
 
 [node name="CommsBadge" type="Sprite2D" parent="CommsButton" unique_id=1720448304]

@@ -52,11 +52,13 @@ var _acting_slot: int = -1
 var _comms_ship: Enemy
 
 ## The comms badge in the portrait's corner says the portrait can be clicked:
-## a waveform chip, dim at rest, lit under the pointer. Its sheet's frames.
+## a waveform chip, dim at rest, lit under the pointer. The targeted ship's
+## speech folds into it when its line runs out and unfolds out of it on a
+## replay, so it only shows while a line is tucked away. Its sheet's frames.
 const _BADGE_IDLE: int = 0
 const _BADGE_LIT: int = 1
-## The first time a ship's line runs out, the badge's waveform plays once, so
-## the player notices where the line can be had again just as it fades.
+## The first time a ship's line folds in, the badge's waveform plays once, so
+## the player notices where the line can be had again.
 const _BADGE_PULSE_FRAMES: Array[int] = [1, 2, 1, 3, 1, 2, 1, 3, 1]
 const _BADGE_PULSE_FRAME_SECONDS: float = 0.09
 var _badge_pulse_tween: Tween
@@ -193,20 +195,35 @@ func _listen_for_comms() -> void:
 	if ship != _comms_ship:
 		if is_instance_valid(_comms_ship):
 			var old_comms: EnemyDialogueManager = _comms_ship.dialogue_manager
+			old_comms.stow_point = Callable()
 			if old_comms.line_shown.is_connected(_on_target_spoke):
 				old_comms.line_shown.disconnect(_on_target_spoke)
-			if old_comms.line_finished.is_connected(_on_target_line_finished):
-				old_comms.line_finished.disconnect(_on_target_line_finished)
+			if old_comms.put_away.is_connected(_on_target_line_put_away):
+				old_comms.put_away.disconnect(_on_target_line_put_away)
 		_comms_ship = ship
 		_stop_badge_pulse()
 		if ship:
+			ship.dialogue_manager.stow_point = comms_point
 			ship.dialogue_manager.line_shown.connect(_on_target_spoke)
-			ship.dialogue_manager.line_finished.connect(_on_target_line_finished)
+			ship.dialogue_manager.put_away.connect(_on_target_line_put_away)
 	_refresh_comms()
 
 
+## Whether the targeted ship has a line tucked away to replay: said, and not
+## out beside the ship right now.
 func _has_comms() -> bool:
-	return is_instance_valid(_comms_ship) and _comms_ship.dialogue_manager.has_line_to_replay()
+	if not is_instance_valid(_comms_ship):
+		return false
+	var comms: EnemyDialogueManager = _comms_ship.dialogue_manager
+	return comms.has_line_to_replay() and not comms.is_out()
+
+
+## The middle of the comms badge, where the targeted ship's speech folds in
+## and out.
+func comms_point() -> Vector2:
+	var badge: Sprite2D = %CommsBadge
+	var frame_size: Vector2 = badge.texture.get_size() / Vector2(badge.hframes, badge.vframes)
+	return badge.to_global(frame_size / 2.0)
 
 
 ## Clickable, and badged, while there's a line to replay; no hover and no
@@ -215,7 +232,7 @@ func _refresh_comms() -> void:
 	var has_comms: bool = _has_comms()
 	_set_intent_clickable(%CommsButton, has_comms)
 	# The intents' clickables show info on hover; this one only replays, and
-	# says so with its own pointer and hint (Clickable.hover_cursor).
+	# the badge lighting up under the pointer says so.
 	%CommsButton.hover_for_info = false
 	%CommsBadge.visible = has_comms
 	if not has_comms:
@@ -227,8 +244,9 @@ func _on_target_spoke() -> void:
 	_refresh_comms()
 
 
-func _on_target_line_finished() -> void:
-	if is_instance_valid(_comms_ship) and _comms_ship.dialogue_manager.lines_finished == 1:
+func _on_target_line_put_away(stowed: bool) -> void:
+	_refresh_comms()
+	if stowed and is_instance_valid(_comms_ship) and _comms_ship.dialogue_manager.lines_finished == 1:
 		_pulse_badge()
 
 

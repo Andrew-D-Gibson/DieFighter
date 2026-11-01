@@ -3,7 +3,7 @@ extends Sprite2D
 ## pixels and follows a controller's virtual cursor too. It shows what a click
 ## would do: the arrow; an "i" once hovering has something to explain; a
 ## clickable's own pointer and hint line for a click that acts rather than
-## explains (Clickable.hover_cursor, e.g. replaying a ship's comms); and a
+## explains (Clickable.hover_cursor and hover_hint); and a
 ## closed hand while a die or tile is in hand.
 ##
 ## Click placement (Draggable.PlacementMode.CLICK) leaves the button up

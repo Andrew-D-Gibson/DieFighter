@@ -1,16 +1,16 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## The targeting computer's portrait replays the targeted ship's last line
-## when clicked, and says so: a waveform badge in its corner (dim at rest, lit
-## under the pointer, playing once when the ship's first line runs out), the
-## comms pointer and a "Click to replay comms" hint. None of it shows for a
-## ship with nothing to replay.
+## when clicked, and says so with a waveform badge in its corner: dim at rest,
+## lit under the pointer, playing once when the ship's first line folds into
+## it. The targeted ship's speech folds into the badge when its line runs out
+## and unfolds out of it on a replay; the badge only shows while a line is
+## tucked away. The pointer stays the plain arrow.
 
 const PLAYER_SCENE: PackedScene = preload("res://Source/Systems/Game/Player/player.tscn")
 const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
 const COMPUTER_SCENE: PackedScene = preload("res://Source/Systems/Game/TargetingComputer/targeting_computer.tscn")
 const INTERCEPTOR: EnemyResource = preload("res://Source/Content/Enemies/EnemyResources/interceptor.tres")
 const CURSOR_SCRIPT: GDScript = preload("res://Source/Systems/UI/MouseCursor/mouse_cursor.gd")
-const COMMS_CURSOR: Texture2D = preload("res://Assets/Textures/UI/MouseCursors/comms_cursor_raw.png")
 
 var computer: TargetingComputer
 var manager: EnemyManager
@@ -49,11 +49,13 @@ func _button() -> Clickable:
 	return computer.get_node("%CommsButton")
 
 
-## Has [param ship] say a line and lets it run out, as its fade-out timer would.
+## Has [param ship] say a line and lets it run out, as its fade-out timer
+## would, then waits for the box to fold away or fade.
 func _line_runs_out(ship: Enemy) -> void:
 	var comms: EnemyDialogueManager = ship.dialogue_manager
 	comms.show_dialogue("Hold fire!", ScenarioManager.Faction.PIRATE, false)
 	comms.fadeout_timer.timeout.emit()
+	await wait_for_signal(comms.put_away, 2.0)
 
 
 # ── Dialogue ──────────────────────────────────────────────────────────────────
@@ -61,7 +63,7 @@ func _line_runs_out(ship: Enemy) -> void:
 func test_a_line_running_out_is_announced_and_counted() -> void:
 	var ship: Enemy = _ship()
 	watch_signals(ship.dialogue_manager)
-	_line_runs_out(ship)
+	await _line_runs_out(ship)
 	assert_signal_emitted(ship.dialogue_manager, "line_finished")
 	assert_eq(ship.dialogue_manager.lines_finished, 1)
 
@@ -75,6 +77,53 @@ func test_a_line_cut_off_does_not_count_as_run_out() -> void:
 	assert_signal_not_emitted(ship.dialogue_manager, "line_finished")
 
 
+# ── Folding into the badge ────────────────────────────────────────────────────
+
+func _box_middle(comms: EnemyDialogueManager) -> Vector2:
+	return comms.to_global(comms.get_node("%Sprite2D").position)
+
+
+func test_the_targeted_ships_line_folds_into_the_badge() -> void:
+	var ship: Enemy = _ship()
+	computer.target_enemy(ship)
+	var comms: EnemyDialogueManager = ship.dialogue_manager
+	watch_signals(comms)
+	comms.show_dialogue("Hold fire!", ScenarioManager.Faction.PIRATE, false)
+	var start: float = _box_middle(comms).distance_to(computer.comms_point())
+	comms.fadeout_timer.timeout.emit()
+	await wait_seconds(EnemyDialogueManager._FOLD_SECONDS * 0.8)
+	assert_lt(comms.scale.x, 0.6, "shrinking on the way in")
+	assert_lt(_box_middle(comms).distance_to(computer.comms_point()), start * 0.6, "and closing on the badge")
+	await wait_for_signal(comms.put_away, 2.0)
+	assert_signal_emitted_with_parameters(comms, "put_away", [true])
+	assert_false(comms.visible)
+	assert_eq(comms.scale, Vector2.ONE, "back at full size for the next line")
+
+
+func test_a_ship_that_is_not_targeted_fades_where_it_is() -> void:
+	var ship: Enemy = _ship()
+	computer.target_enemy(_ship())
+	watch_signals(ship.dialogue_manager)
+	await _line_runs_out(ship)
+	assert_signal_emitted_with_parameters(ship.dialogue_manager, "put_away", [false])
+	assert_eq(ship.dialogue_manager.scale, Vector2.ONE)
+
+
+func test_a_replay_unfolds_out_of_the_badge() -> void:
+	var ship: Enemy = _ship()
+	computer.target_enemy(ship)
+	await _line_runs_out(ship)
+	var comms: EnemyDialogueManager = ship.dialogue_manager
+	_button().clicked.emit()
+	assert_true(comms.visible)
+	assert_almost_eq(comms.scale.x, EnemyDialogueManager._STOWED_SCALE, 0.01, "starts at the badge's size")
+	assert_almost_eq(_box_middle(comms).distance_to(computer.comms_point()), 0.0, 1.0, "and at the badge")
+	assert_false(_badge().visible, "the line is out of the badge")
+	await wait_seconds(EnemyDialogueManager._UNFOLD_SECONDS + 0.1)
+	assert_almost_eq(comms.scale.x, 1.0, 0.01)
+	assert_eq(comms.modulate.a, 1.0)
+
+
 # ── The badge ─────────────────────────────────────────────────────────────────
 
 func test_no_badge_and_no_click_for_a_ship_that_has_said_nothing() -> void:
@@ -83,35 +132,40 @@ func test_no_badge_and_no_click_for_a_ship_that_has_said_nothing() -> void:
 	assert_false(_button().input_pickable)
 
 
-func test_the_badge_shows_dim_once_the_ship_has_spoken() -> void:
+func test_the_badge_waits_for_the_line_to_fold_in() -> void:
 	var ship: Enemy = _ship()
 	computer.target_enemy(ship)
 	ship.dialogue_manager.show_dialogue("Hold fire!", ScenarioManager.Faction.PIRATE, false)
+	assert_false(_badge().visible, "nothing to replay while the line is out")
+	assert_false(_button().input_pickable)
+	ship.dialogue_manager.fadeout_timer.timeout.emit()
+	await wait_for_signal(ship.dialogue_manager.put_away, 2.0)
 	assert_true(_badge().visible)
-	assert_eq(_badge().frame, TargetingComputer._BADGE_IDLE)
 	assert_true(_button().input_pickable)
 
 
 func test_the_badge_lights_under_the_pointer() -> void:
 	var ship: Enemy = _ship()
 	computer.target_enemy(ship)
-	ship.dialogue_manager.show_dialogue("Hold fire!", ScenarioManager.Faction.PIRATE, false)
+	await _line_runs_out(ship)
+	await wait_seconds(1.5)	# past the first-time pulse
+	assert_eq(_badge().frame, TargetingComputer._BADGE_IDLE)
 	_button()._on_mouse_entered()
 	assert_eq(_badge().frame, TargetingComputer._BADGE_LIT)
 	_button().reset_hover_state()
 	assert_eq(_badge().frame, TargetingComputer._BADGE_IDLE)
 
 
-func test_the_first_line_running_out_pulses_the_badge_once() -> void:
+func test_the_first_line_folding_in_pulses_the_badge_once() -> void:
 	var ship: Enemy = _ship()
 	computer.target_enemy(ship)
-	_line_runs_out(ship)
+	await _line_runs_out(ship)
 	assert_true(computer.is_badge_pulsing())
 	await wait_seconds(1.5)
 	assert_false(computer.is_badge_pulsing())
 	assert_eq(_badge().frame, TargetingComputer._BADGE_IDLE, "back at rest")
 
-	_line_runs_out(ship)
+	await _line_runs_out(ship)
 	assert_false(computer.is_badge_pulsing(), "only the first time")
 
 
@@ -119,16 +173,24 @@ func test_switching_to_a_silent_ship_hides_the_badge() -> void:
 	var talker: Enemy = _ship()
 	var silent: Enemy = _ship()
 	computer.target_enemy(talker)
-	_line_runs_out(talker)
+	await _line_runs_out(talker)
 	computer.target_enemy(silent)
 	assert_false(_badge().visible)
 	assert_false(computer.is_badge_pulsing(), "the pulse was the other ship's")
 
 
+func test_targeting_a_ship_that_spoke_earlier_shows_its_badge() -> void:
+	var ship: Enemy = _ship()
+	computer.target_enemy(_ship())
+	await _line_runs_out(ship)
+	computer.target_enemy(ship)
+	assert_true(_badge().visible)
+
+
 func test_a_ship_left_behind_in_a_jump_loses_its_badge() -> void:
 	var ship: Enemy = _ship()
 	computer.target_enemy(ship)
-	ship.dialogue_manager.show_dialogue("Hold fire!", ScenarioManager.Faction.PIRATE, false)
+	await _line_runs_out(ship)
 	ship.dialogue_manager._on_jump()
 	computer._refresh_comms()
 	assert_false(_badge().visible)
@@ -153,37 +215,17 @@ func _hint_of(cursor: Sprite2D) -> Label:
 	return null
 
 
-func test_the_portrait_wears_the_comms_pointer_then_the_hint() -> void:
+## Only the badge lighting up says the portrait can be clicked: no pointer of
+## its own, no hint line, no info "i".
+func test_the_portrait_keeps_the_plain_arrow() -> void:
 	var cursor: Sprite2D = _cursor()
 	var ship: Enemy = _ship()
 	computer.target_enemy(ship)
-	ship.dialogue_manager.show_dialogue("Hold fire!", ScenarioManager.Faction.PIRATE, false)
+	await _line_runs_out(ship)
+	var arrow: Texture2D = cursor.default_cursor_texture
 	_button()._on_mouse_entered()
-	cursor._process(0.0)
-	assert_eq(cursor.texture, COMMS_CURSOR, "the pointer says so at once")
-	assert_false(_hint_of(cursor).visible, "the hint waits for the pointer to rest")
-
-	cursor._process(_button().hover_delay)
-	assert_true(_hint_of(cursor).visible)
-	assert_eq(_hint_of(cursor).text, tr(&"CURSOR_HINT_REPLAY_COMMS"))
-
-	_button().reset_hover_state()
-	cursor._process(0.0)
-	assert_ne(cursor.texture, COMMS_CURSOR)
-	assert_false(_hint_of(cursor).visible)
-
-
-func test_a_portrait_with_nothing_to_replay_keeps_the_arrow() -> void:
-	var cursor: Sprite2D = _cursor()
-	computer.target_enemy(_ship())
-	# The area takes no input with nothing to replay, but even a stray
-	# enter shouldn't promise a replay.
-	_button()._on_mouse_entered()
-	cursor._process(1.0)
-	assert_ne(cursor.texture, COMMS_CURSOR)
+	_button()._process(_button().hover_delay + 0.1)
+	cursor._process(_button().hover_delay + 0.1)
+	assert_eq(cursor.texture, arrow)
 	assert_false(_hint_of(cursor).visible)
 	_button().reset_hover_state()
-
-
-func test_the_hint_is_a_translation_key() -> void:
-	assert_ne(tr(_button().hover_hint), String(_button().hover_hint), "the key has English text")
