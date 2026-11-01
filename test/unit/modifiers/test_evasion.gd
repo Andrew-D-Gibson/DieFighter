@@ -234,3 +234,24 @@ func test_the_chance_shows_on_the_engine_tile_only() -> void:
 	assert_string_contains(evasion.get_rule_info_text(tile), "15%")
 	assert_eq(evasion.get_rule_info_text(bystander), "")
 	assert_false(Keywords.definition("Evasion").is_empty())
+
+
+## The engine tile spells out the sum (charge x 3%); the Evasion keyword just
+## says what evasion does.
+func test_the_engine_tile_explains_the_sum_and_the_keyword_does_not() -> void:
+	var charger: Node2D = add_child_autofree(Node2D.new())
+	charger.add_to_group(&"engine_charger")
+	var tile: Tile = TILE_SCENE.instantiate()
+	tile.name = "EngineChargerTile"
+	tile.tile_resource = load("res://Source/Content/Tiles/MapTileResources/engine_charger.tres")
+	charger.add_child(tile)
+	player.engine_charge = 5
+
+	var text: String = evasion.get_rule_info_text(tile)
+	assert_string_contains(text, "x 3%")
+	assert_string_contains(text, "50%")
+	assert_false(Keywords.definition("Evasion").contains("3%"), "the keyword leaves the sum to the tile")
+
+	evasion.add_bonus(8)
+	assert_string_contains(evasion.get_rule_info_text(tile), "+8%")
+	assert_string_contains(evasion.get_rule_info_text(tile), "23%")

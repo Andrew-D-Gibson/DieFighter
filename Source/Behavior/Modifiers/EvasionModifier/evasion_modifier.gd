@@ -5,7 +5,8 @@ extends Modifier
 ##
 ## Every scenario's engine gets one (ScenarioManager), so it's a rule of the
 ## drive rather than something a tile grants, and it stays out of sight until
-## it fires: no badge, just the chance on the engine tile's info panel.
+## it fires: no badge, just the sum and the chance on the engine tile's info
+## panel.
 ##
 ## A miss works like Phased: the player is taken out of the hit's targets
 ## before anything else reads it, so the shields keep every point, a death
@@ -142,4 +143,10 @@ static func engine_display(context: Node) -> Node2D:
 func get_rule_info_text(tile: Tile) -> String:
 	if tile == null or tile != engine_display(tile):
 		return ""
-	return tr("INFO_ENGINE_EVASION").format({"chance": chance_percent()})
+	# The rule spells out the sum; the Evasion keyword only says what it does.
+	var rule: String = tr("INFO_ENGINE_EVASION").format(
+		{"per": PERCENT_PER_CHARGE, "max": MAX_PERCENT})
+	var now: String = tr("INFO_ENGINE_EVASION_NOW").format({"chance": chance_percent()}) \
+		if bonus <= 0 else tr("INFO_ENGINE_EVASION_NOW_BONUS").format(
+			{"chance": chance_percent(), "bonus": bonus})
+	return rule + "\n" + now

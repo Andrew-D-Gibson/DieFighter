@@ -30,6 +30,10 @@ var _countdown: TileCountdown = TileCountdown.new(self)
 ## True while a new resource is being put on, when the lights are just set
 ## rather than played.
 var _setting_up: bool = false
+## Draws the info panel's picture in place of the tile's own art, for a tile
+## whose picture shows something live (the Engine Charger's charge). Returns
+## a Texture2D.
+var info_picture: Callable = Callable()
 @export var uses_remaining: int = -1:
 	set(new_value):
 		var most: int = max_uses_per_turn()
@@ -290,7 +294,8 @@ func _get_tile_info() -> InfoResource:
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = tile_resource.tile_name
 	info.top_label_text = tile_resource.activation_description
-	info.texture = tile_resource.textures.get_frame_texture('default', 0)
+	info.texture = info_picture.call() if info_picture.is_valid() \
+		else tile_resource.textures.get_frame_texture('default', 0)
 	info.bottom_label_text = fill_data_tokens(tile_resource.description, effect_data)
 	if is_countdown():
 		info.bottom_label_text += "\n\n" + tr("INFO_TILE_COUNTDOWN").format(

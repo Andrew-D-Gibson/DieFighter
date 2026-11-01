@@ -25,6 +25,10 @@ func _ready() -> void:
 	fill_head.position = Vector2(60, 2)
 	fill_head.visible = true
 	charged_indicator.visible = false
+	# The tile's info shows the drive as it stands, as the hull's shows the hull.
+	var tile: Tile = get_node_or_null(^"EngineChargerTile") as Tile
+	if tile:
+		tile.info_picture = _info_picture.bind(tile)
 
 	Events.engine_charge_changed.connect(_update_ui)
 	Events.start_scenario.connect(_update_ui)
@@ -45,6 +49,15 @@ func _ready() -> void:
 ## gauge. The node's own origin sits off to its left, out in the tile grid.
 func get_juice_anchor() -> Vector2:
 	return progress_bar.get_global_rect().get_center()
+
+
+func _info_picture(tile: Tile) -> Texture2D:
+	var art: Texture2D = tile.tile_resource.textures.get_frame_texture(&"default", 0)
+	if not Globals.player:
+		return art
+	return EngineChargeInfoArt.texture_for(
+		Globals.player.engine_charge, Globals.player.max_engine_charge, art
+	)
 
 
 ## Winning a fight refills the drive.
