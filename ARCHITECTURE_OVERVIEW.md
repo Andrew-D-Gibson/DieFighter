@@ -679,12 +679,11 @@ in memory but don't write it; `FINISH_TUTORIAL` emits
 leaves no save, so the next Play starts the tutorial over.
 
 **Hard-seeded.** The manager sits above GameStateManager in the tree, so its
-`_ready` sets `RNGManager.next_run_seed = run_seed` (545) before the run starts.
+`_ready` sets `RNGManager.next_run_seed = run_seed` (21) before the run starts.
 The map, encounters and backgrounds are the same for every new player (and
 the rest of that run too, since the RUN bucket keeps that seed). Content
 changes shift what the seed rolls: re-check the jump step's promises after
-editing encounter or background pools, and check the jump fight's salvage
-offers no copy of a starter tile (no upgrade yet) after editing the tile pool. Independently of the tutorial, every
+editing encounter or background pools. Independently of the tutorial, every
 sector-1 slot within one jump of `GameSaveResource.arrival_index` draws a
 background with no rule and no hazard (`GameStateManager.is_rule_free_slot`),
 and an encounter waits for `ScenarioResource.earliest_sector()` (a ship with an
@@ -1189,7 +1188,7 @@ even when no event is left, and each layer must hold at least
 combats or events beyond a die's reach of the arrival, never shops, elites,
 the arrival or the gate. Placement uses a side generator seeded from the RUN
 stream's *state* without drawing from it, so every existing seeded map
-(the tutorial's seed 545, AutoPilot transcripts) changes only in the replaced
+(the tutorial's seed 21, AutoPilot transcripts) changes only in the replaced
 slots. A new kind of stop added this way stays seed-compatible.
 
 The station itself (`RepairStation`) is a panel like `Shop`, opened and
