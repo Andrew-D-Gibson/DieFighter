@@ -59,14 +59,19 @@ static func dice_values(dice: Array[Dice]) -> String:
 
 static func labels(nodes: Array[Node]) -> String:
 	var parts: PackedStringArray = []
-	for node: Node in nodes:
+	for node: Variant in nodes:
 		parts.append(label(node))
 	return ", ".join(parts)
 
 
-## Hull and shields, plus anything else that ship is carrying.
-static func vitals(node: Node) -> String:
-	if not is_instance_valid(node) or not "health" in node or node.health == null:
+## Hull and shields, plus anything else that ship is carrying. Untyped, like
+## label(): an event's targets can be freed by the time it's logged, and a
+## freed object can't be passed to a Node parameter at all.
+static func vitals(subject: Variant) -> String:
+	if not is_instance_valid(subject) or subject is not Node:
+		return ""
+	var node: Node = subject as Node
+	if not "health" in node or node.health == null:
 		return ""
 	var health: Health = node.health
 	var text: String = "hull %d/%d, shields %d" % [health.health, health.max_health, health.shields]
@@ -217,7 +222,7 @@ static func _origin(e: EffectEvent) -> String:
 
 static func _targets_with_vitals(targets: Array[Node]) -> String:
 	var parts: PackedStringArray = []
-	for target: Node in targets:
+	for target: Variant in targets:
 		var vitals_text: String = vitals(target)
 		parts.append("%s [%s]" % [label(target), vitals_text] if vitals_text != "" else label(target))
 	return ", ".join(parts) if not parts.is_empty() else "(no targets)"

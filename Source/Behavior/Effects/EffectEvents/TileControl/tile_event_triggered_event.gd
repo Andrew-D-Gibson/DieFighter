@@ -37,8 +37,14 @@ func resolve(engine: ScenarioEngine) -> void:
 ## queue behind the chain that set it off, so by the time it plays the ship
 ## may have been destroyed or fled; then it starts with no target at all
 ## rather than hitting a wreck or a ship already on its way out.
-static func still_in_fight(ship: Node) -> bool:
-	if not is_instance_valid(ship) or ship.is_queued_for_deletion():
+##
+## Untyped, because the ship may already be freed: GDScript refuses to pass a
+## freed object to a Node parameter at all, so a typed check never gets to run.
+static func still_in_fight(subject: Variant) -> bool:
+	if not is_instance_valid(subject) or subject is not Node:
+		return false
+	var ship: Node = subject as Node
+	if ship.is_queued_for_deletion():
 		return false
 	var health: Health = ship.get("health") as Health
 	if health != null and (health.is_dead or health.health <= 0):
