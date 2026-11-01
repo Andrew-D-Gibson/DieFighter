@@ -53,7 +53,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. Keywords in it are hoverable and pop up their rule. While open it consumes Esc (`PauseMenu` action) to close itself, so the pause menu doesn't open |
+| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. An `InfoResource` with `upgrade_*` fields shows the thing and its upgrade side by side, an arrow between. Keywords in it are hoverable and pop up their rule. While open it consumes Esc (`PauseMenu` action) to close itself, so the pause menu doesn't open |
 | `OverheadConsole` | `Systems/Player/OverheadConsole` | A display hanging from the canopy ceiling in the top-left. It waits out of sight and drops down while any readout holds it there (`request_down(reason, wanted)`): the `MoneyIndicator` credit readout in its case (from the run's first credits, or the first payout coin taking off, for the rest of the run; a loaded save holds it down if `run_stats.credits_earned` or the balance is above 0) and the `EnvironmentMonitor` flap under it (a region rule or hazard). Coins aim at `MoneyIndicator.coin_target()`, its resting place, so they meet it even while it's still dropping |
 | `PlayerHealthBar` | `Systems/Player/PlayerHealthBar` | HP/shields UI with reveal animations |
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
@@ -679,11 +679,12 @@ in memory but don't write it; `FINISH_TUTORIAL` emits
 leaves no save, so the next Play starts the tutorial over.
 
 **Hard-seeded.** The manager sits above GameStateManager in the tree, so its
-`_ready` sets `RNGManager.next_run_seed = run_seed` (21) before the run starts.
+`_ready` sets `RNGManager.next_run_seed = run_seed` (545) before the run starts.
 The map, encounters and backgrounds are the same for every new player (and
 the rest of that run too, since the RUN bucket keeps that seed). Content
 changes shift what the seed rolls: re-check the jump step's promises after
-editing encounter or background pools. Independently of the tutorial, every
+editing encounter or background pools, and check the jump fight's salvage
+offers no copy of a starter tile (no upgrade yet) after editing the tile pool. Independently of the tutorial, every
 sector-1 slot within one jump of `GameSaveResource.arrival_index` draws a
 background with no rule and no hazard (`GameStateManager.is_rule_free_slot`),
 and an encounter waits for `ScenarioResource.earliest_sector()` (a ship with an
@@ -1136,7 +1137,11 @@ twin calls `Tile.upgrade()`, which swaps its resource (uses refill,
 `effect_data` stays) and emits `Events.tile_upgraded`. It works on a full grid.
 Carrying a copy lights its twin. A tile's info panel previews its upgrade
 only while a merge is on the table (`Tile._copy_to_merge_with()`: a copy on
-offer, or a second copy on the grid outside a fight).
+offer, or a second copy on the grid outside a fight). The preview fills
+`InfoResource`'s `upgrade_*` fields, and `InfoShower` then lays the two out
+side by side: the tile on the left, the "+" on the right (its art through
+`tile.gdshader` with `upgraded` on), and `INFO_TILE_UPGRADE` over an arrow
+between them.
 An upgraded tile sets `tile.gdshader`'s `upgraded` (bright bands chase round
 the shared 22x24 silhouette's border) and carries `UpgradeSparks` particles in
 its family colour (`ColorSymbolBadge.color_of_tile()`). That look, and the
@@ -1184,7 +1189,7 @@ even when no event is left, and each layer must hold at least
 combats or events beyond a die's reach of the arrival, never shops, elites,
 the arrival or the gate. Placement uses a side generator seeded from the RUN
 stream's *state* without drawing from it, so every existing seeded map
-(the tutorial's seed 21, AutoPilot transcripts) changes only in the replaced
+(the tutorial's seed 545, AutoPilot transcripts) changes only in the replaced
 slots. A new kind of stop added this way stays seed-compatible.
 
 The station itself (`RepairStation`) is a panel like `Shop`, opened and

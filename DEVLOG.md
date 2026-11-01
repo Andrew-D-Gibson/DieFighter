@@ -4,6 +4,13 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-01 — Tutorial seed 545; upgrades shown side by side
+
+- **No upgrade in the tutorial's first real fight.** On seed 21 the jump fight's salvage (the two ships `jump_destination` pins 6 to the right) offered a second Bump. Seed 545 keeps everything the steps promise (a shop beside the opening fight, ordinary fights 4, 5 and 6 to the right) and offers Reactive Armor, Chain Cannon, a die and 15 credits. Found with a scratchpad script that rolls the map and the bounty with the real code for seeds 1-6000 on a new player's tile pool and the tutorial grid (starter + Deflector Array), keeping seeds whose offer has no copy of a starter tile whether 0, 1 or 2 wreck payouts drew from REWARDS first (seed 21 reproduces the Bump at 0). Any change to the basic tile pool or the RUN stream can move it, so re-check after one.
+- **Upgrade preview.** A tile's info panel no longer tacks the upgrade's text under its own. When a merge is on the table it shows the tile (art, name, description) on the left, the "+" on the right with its upgrade shimmer, and "Drop a copy on it to upgrade" over a yellow arrow between them (`InfoResource.upgrade_*`, `InfoShower._show_comparison`). The art's zoom-in now lands wherever the layout put it. Descriptions there are 80 px; the longest (Lucky Seven) plus a countdown and a rule line still fits on screen.
+
+---
+
 ## 2026-11-01 — Allies hand the die on: no more charging up behind a friend
 
 The problem: with one enemy and one ally, every die could go to the ally (whose actions never hurt the player) after passing through the Engine Charger. The enemy, handed nothing, sat each turn out, and the player turned on it only once evasion was maxed. The fix lives in the intents, not a blanket rule.
