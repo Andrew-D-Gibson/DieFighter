@@ -18,8 +18,8 @@
 script = ExtResource("script_0")
 base_action = ExtResource("act_5")
 weight = 0.0
-min_amount = 3
-max_amount = 5
+min_amount = 8
+max_amount = 13
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 

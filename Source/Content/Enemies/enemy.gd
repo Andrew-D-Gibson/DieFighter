@@ -80,6 +80,12 @@ var turns_alive: int = 0
 ## EnemyActionOptionResource.fills_kept_faces). Cleared when it next acts.
 var kept_dice: Array[Dice] = []
 
+## The amount each kept die was loaded with, for the dice whose keeping action
+## had one (Charge Bore's shot). The payoff on that die's face next turn
+## (a fills_kept_faces option) fires for exactly this, so the number the
+## loader promised is the number that lands. Cleared with kept_dice.
+var loaded_amounts: Dictionary[Dice, int] = {}
+
 ## Where each die an ally relayed here has been. See receive_relayed_die().
 var _relay_trails: Dictionary[Dice, FeedAllyEvent.Trail] = {}
 
@@ -636,6 +642,7 @@ func run_turn() -> void:
 	# Last turn's loaded dice are being spent now; only what this turn keeps
 	# loads the next table.
 	kept_dice.clear()
+	loaded_amounts.clear()
 	turns_alive += 1
 	_spend_held_dice()
 

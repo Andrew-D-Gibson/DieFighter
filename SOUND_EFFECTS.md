@@ -247,24 +247,23 @@ at once, with no per-tile authoring.
 |---|---|---|---|
 | Aegis Ally | player_shield | Shield projected across (zap + hum) | before `SHIELD` |
 | Attack Player | dice_cannon | An enemy-specific shot, distinct from the player's cannon | before `DAMAGE` |
-| Charge Weapon | player_shield | Capacitor charging whine | before `SHIELD` |
+| Charge Weapon | player_shield | Capacitor charging whine | before `KEEP_DIE_WITH_ACTOR` |
 | Do Nothing | error | Sputter / failed-ignition cough | chain start |
 | Flee | — | Engine burn away | before `FLEE` |
 | Getaway | die_dread_thunk | Afterburner snatch-and-run, a cackle of engines | before `ESCAPE_WITH_DICE` |
 | Grid Quake | tile_dropped | Seismic rumble through the grid | before `PUSH_TARGETED_TILES` |
 | Holo Loader | — | Hologram shimmer as a die is conjured for an ally | before `SPAWN_HOLOGRAM_FOR_ALLY` |
 | Ion Shot | dice_cannon | An ion discharge: a rising crackle, then a fizzing shield hit | before `ION_BOLT` |
-| Impound | dice_cannon | Clamp + hold (the die is taken) | before `KEEP_DIE_WITH_ACTOR` |
 | Incendiary Shot | dice_cannon | A whooshing incendiary round that bursts into flame | before `MISSILE` |
 | Jamming Pulse | — | A buzzing jammer squeal | before `ZAP` |
 | Launch | bump | Hangar klaxon + catapult whoosh | before `LAUNCH_SHIP` |
 | Lockout Grid Pos | — | Lock-on + clamp | before `LOCKOUT_TILE` |
-| Pilfer | dice_cannon | Quick grab: a snap and a pocketed rattle | before `KEEP_DIE_WITH_ACTOR` |
 | Purge Vents | — | Vents blowing hot exhaust across at you | before `STREAM` |
 | Raid | dice_cannon | A meaner, ragged shot at another ship (not at you) | before `DAMAGE` |
 | Relay | — | Toss-and-catch: the die flicked to an ally | before `FEED_ALLY` |
 | Repair Ally | player_shield | Repair drones whirr | before `HEAL` |
 | Scrambler | — | A warbling static bolt | before `ZAP` |
+| Seize | tractor_lock | Claw clamp and a pocketed rattle (the die is taken, no shot) | before `STREAM` |
 | Shield Self | — | Shield up | before `SHIELD` |
 | Siege Shot | dice_cannon | Long wind-up → enormous slowed shot | chain start; before `DAMAGE` |
 | Siphon Engine | reroll blip | Draining suction from your engine | before `CHANGE_ENGINE_CHARGE` |

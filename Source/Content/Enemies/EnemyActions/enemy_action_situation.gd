@@ -36,6 +36,11 @@ var attitude: Enemy.Attitude = Enemy.Attitude.AGGRESSIVE
 ## was merely handed don't count.
 var kept_faces: Array[int] = []
 
+## Kept face -> the amount its die was loaded with (Enemy.loaded_amounts),
+## for the faces whose loader had one. Two loaded dice on one face: the
+## bigger.
+var kept_amounts: Dictionary[int, int] = {}
+
 ## The most kinds of action the table may mix; 0 for no limit. Set from how
 ## deep into the run the player is, a little higher for a boss. See
 ## EnemyActionVariety.
@@ -63,9 +68,13 @@ static func for_ship(rolling_ship: Enemy, roster: Array[Enemy] = []) -> EnemyAct
 		situation.attitude = rolling_ship.scenario_state.attitude
 	if rolling_ship.dice_manager:
 		for die: Dice in rolling_ship.kept_dice:
-			if is_instance_valid(die) and die in rolling_ship.dice_manager.queue \
-			and die.value not in situation.kept_faces:
+			if not is_instance_valid(die) or die not in rolling_ship.dice_manager.queue:
+				continue
+			if die.value not in situation.kept_faces:
 				situation.kept_faces.append(die.value)
+			var loaded: int = rolling_ship.loaded_amounts.get(die, 0)
+			if loaded > 0:
+				situation.kept_amounts[die.value] = maxi(situation.kept_amounts.get(die.value, 0), loaded)
 		situation.kept_faces.sort()
 	return situation
 
@@ -101,7 +110,7 @@ func has_ally_under_shield_cap() -> bool:
 ## The soft cap on an enemy's shields: once a ship holds as many as its max
 ## hull, it stops rolling actions that only shield it, and its allies stop
 ## rolling them for it. Nothing clamps shields: a ship already over the cap,
-## or one shielded by an action that does more besides (Relay, Charge Bore),
+## or one shielded by an action that does more besides (Relay),
 ## keeps every point. It only stops an endless pile, which is what turned
 ## Shield Burst and Aegis Link fights into stalemates.
 static func at_shield_cap(of_ship: Enemy) -> bool:

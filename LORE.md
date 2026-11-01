@@ -394,8 +394,8 @@ friendly green frame), so a red badge in a green frame is itself news.
 
 | Faction | Built to the language | Older ships (assigned, predate it) |
 |---|---|---|
-| **Rearguard** | **Picket** (line ship: Aegis Link on an ally, light fire), **Conscriptor** (draft ship: Impound + Lockout) | Tithe Collector, Bamba Defender, Disabler, Siege Mortar, Cannon Drone, Ion Lance, the Bastion |
-| **Undertow** | **Gaff** (crane-and-hook scavenger: Pilfer + Siphon), **Wrecker** (ram-jawed breaker: attack, Incendiary, Grid Quake) | Venom Fighter, Cutpurse, Bounty Runner, Carrier, Interceptor, Sector Warden |
+| **Rearguard** | **Picket** (line ship: Aegis Link on an ally, light fire), **Conscriptor** (draft ship: Seize + Lockout) | Tithe Collector, Bamba Defender, Disabler, Siege Mortar, Cannon Drone, Ion Lance, the Bastion |
+| **Undertow** | **Gaff** (crane-and-hook scavenger: Seize + Siphon), **Wrecker** (ram-jawed breaker: attack, Incendiary, Grid Quake) | Venom Fighter, Cutpurse, Bounty Runner, Carrier, Interceptor, Sector Warden |
 | **Caravan** | **Hauler** (three-pod freighter: shields, then flees), **Claims Adjuster** (Compact enforcer: attack + Lockout as the lien) | Shop, Repair Dock, Civilian Transport, Field Tender, Arc Dynamo |
 | **Inbound** | **Pilgrim** (haloed skiff: Siphon + Relay + Scrambler), **Zealot** (ring-and-lance: big hits, Overloads into its own hull) | none yet |
 | **Spilled** | **Fate Wisp** (void with legs: Scrambler + Siphon), **Fate Shroud** (manta of voids: attack, Lockout, Target Lock) | Fate Attacker, Husk, Leech, Maw |
