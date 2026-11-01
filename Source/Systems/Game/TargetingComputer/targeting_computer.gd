@@ -61,6 +61,12 @@ const _BADGE_PULSE_FRAMES: Array[int] = [1, 2, 1, 3, 1, 2, 1, 3, 1]
 const _BADGE_PULSE_FRAME_SECONDS: float = 0.09
 var _badge_pulse_tween: Tween
 
+## Arcs over the portrait while the targeted ship's overload gauge is armed,
+## for ships whose art has them (EnemyResource.overload_portrait_crackle).
+var _crackle: PortraitCrackle
+## The gauge the crackle is listening to.
+var _crackle_gauge: OverloadGauge
+
 @onready var die_sprites: Array[AnimatedSprite2D] = [
 	%DieSprite1, 
 	%DieSprite2, 
@@ -128,6 +134,10 @@ func _ready() -> void:
 
 	%RevealOverlay.material = %RevealOverlay.material.duplicate()
 	%RevealOverlay.material.set_shader_parameter("progress", 0.0)
+
+	# A child of the portrait, so it sits on it and goes under the scan fill.
+	_crackle = PortraitCrackle.new()
+	$TargetImage.add_child(_crackle)
 
 	ensure_target()
 	
@@ -420,6 +430,7 @@ func _update_ui() -> void:
 	refresh_shift_buttons()
 	_show_bound_arrows()
 	_show_attitude()
+	_watch_overload()
 	if !targeted_enemy or targeted_enemy_index == -1:
 		_hide_indicator()
 		
@@ -472,6 +483,30 @@ func _update_ui() -> void:
 		# A later redraw owns the fill now; with no target it has to stay up.
 		if generation == _redraw_generation:
 			$TargetImageFill.z_index = -2
+
+
+## Listens to the targeted ship's overload gauge if its portrait crackles,
+## and shows the crackle for the state the gauge is in now.
+func _watch_overload() -> void:
+	var gauge: OverloadGauge = null
+	if is_instance_valid(targeted_enemy) and targeted_enemy_index != -1 \
+			and targeted_enemy.enemy_resource.overload_portrait_crackle != null:
+		gauge = targeted_enemy.overload_gauge
+	if gauge != _crackle_gauge:
+		if is_instance_valid(_crackle_gauge) and _crackle_gauge.state_changed.is_connected(_on_overload_state_changed):
+			_crackle_gauge.state_changed.disconnect(_on_overload_state_changed)
+		_crackle_gauge = gauge
+		if gauge:
+			gauge.state_changed.connect(_on_overload_state_changed)
+	_on_overload_state_changed(gauge.state() if gauge else OverloadGauge.State.CALM)
+
+
+## Crackles while the gauge is armed; a trip (or the dice leaving) stops it.
+func _on_overload_state_changed(state: OverloadGauge.State) -> void:
+	if state != OverloadGauge.State.ARMED or not is_instance_valid(_crackle_gauge):
+		_crackle.stop()
+	elif not _crackle.is_playing():
+		_crackle.play(_crackle_gauge.enemy.enemy_resource.overload_portrait_crackle)
 
 
 func _show_attitude() -> void:
