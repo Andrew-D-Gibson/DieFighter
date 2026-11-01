@@ -80,7 +80,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_2")
 enemy_name = "Zealot"
-description = "Inbound lancer. Hits hard. Hand it more than its faith can hold in one turn and it (overload) [color=yellow]Overloads[/color]: no attack, every die vented home, and a burn through its own hull. Each overload raises the limit."
+description = "Inbound lancer. Hits hard. Hand it more than its faith can hold in one turn and it (overload) [color=yellow]Overloads[/color]: no attack, every die vented home, and a burn through its own hull. Each overload raises the limit."
 faction = ExtResource("faction_identity")
 max_health = 18
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
