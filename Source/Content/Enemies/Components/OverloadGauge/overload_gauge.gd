@@ -5,8 +5,10 @@ extends Node2D
 ## glyph at the right end, with the count beside it:
 ##
 ## - CALM: yellow cells, room to spare.
-## - WARNING: WARN_PIPS or fewer pips to go. The cells turn orange and the
-##   empty ones left pulse, so "this many more" reads without counting.
+## - WARNING: one die could trip it (WARN_PIPS or fewer pips to go), or, on a
+##   ship that warns from half full, half the bar is lit. The cells turn
+##   orange and the empty ones left pulse, so "this many more" reads without
+##   counting.
 ## - ARMED: full. Its next turn is an overload; the bar and glyph blink red.
 ## - TRIPPED: it just overloaded (Enemy.overloaded). A white flash, then the
 ##   bar empties as the dice go home and grows by the threshold's rise.
@@ -19,8 +21,13 @@ extends Node2D
 
 enum State { CALM, WARNING, ARMED, TRIPPED }
 
-## Pips to go at or below which the gauge warns.
-const WARN_PIPS: int = 3
+## The gauge moved to [param new_state], e.g. so the targeting computer can
+## crackle the ship's portrait while it's armed.
+signal state_changed(new_state: State)
+
+## Pips to go at or below which the gauge warns: one die's highest face, so
+## orange means "any die you hand it now might tip it over".
+const WARN_PIPS: int = 6
 
 const _PARTS: Texture2D = preload("res://Assets/Textures/Enemies/OverloadGauge/overload_gauge_parts.png")
 const _GLYPH: Texture2D = preload("res://Assets/Textures/Enemies/OverloadGauge/overload_glyph-Sheet.png")
@@ -103,13 +110,17 @@ func _process(delta: float) -> void:
 
 
 ## What the gauge shows for [param heat] held against [param threshold].
-static func state_for(heat: int, threshold: int) -> State:
+## [param warns_from_half] also warns once half the bar is lit
+## (EnemyResource.overload_warns_from_half).
+static func state_for(heat: int, threshold: int, warns_from_half: bool = false) -> State:
 	if threshold <= 0:
 		return State.CALM
 	var to_go: int = threshold - heat
 	if to_go <= 0:
 		return State.ARMED
 	if to_go <= WARN_PIPS:
+		return State.WARNING
+	if warns_from_half and heat * 2 >= threshold:
 		return State.WARNING
 	return State.CALM
 
@@ -139,24 +150,31 @@ func _refresh(force: bool) -> void:
 		_shown_threshold = threshold
 		_layout()
 	_shown_heat = heat
-	var new_state: State = state_for(heat, threshold)
+	var new_state: State = state_for(heat, threshold, enemy.enemy_resource.overload_warns_from_half)
 	if new_state != _state:
-		_state = new_state
 		_blink_on = false
 		_blink_clock = 0.0
+		_set_state(new_state)
 	label.text = "%d/%d" % [heat, threshold]
 	_update_label_colour()
 	queue_redraw()
 
 
 func _on_overloaded() -> void:
-	_state = State.TRIPPED
 	_trip_left = _TRIP_SECONDS
 	_blink_on = true
 	_blink_clock = 0.0
+	_set_state(State.TRIPPED)
 	Juice.bump(self, 0.5, 0.3)
 	_update_label_colour()
 	queue_redraw()
+
+
+func _set_state(new_state: State) -> void:
+	if new_state == _state:
+		return
+	_state = new_state
+	state_changed.emit(_state)
 
 
 func _tick_blink(delta: float, period: float) -> void:
