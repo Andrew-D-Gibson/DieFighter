@@ -43,8 +43,10 @@ const _HIGHLIGHT_Z_INDEX: int = 11
 const SHOWN_THROUGH_DIM_Z_INDEX: int = _HIGHLIGHT_Z_INDEX + 1
 
 ## What show_through_dim() lifted, and the z each had before, put back as the
-## card leaves.
-var _shown_through: Dictionary[CanvasItem, Vector2i] = {}
+## card leaves. Keyed by instance id rather than the item itself: the item
+## (a die) can be freed before the card, and walking a typed dictionary that
+## holds a freed key is an engine error.
+var _shown_through: Dictionary[int, Vector2i] = {}
 
 
 ## A full-screen highlight mask: dims the screen except for its cutouts. A card
@@ -64,9 +66,10 @@ func _ready() -> void:
 ## The card is gone, and its dim with it: everything lifted through the dim
 ## goes back to its own place in the draw order.
 func _exit_tree() -> void:
-	for item: CanvasItem in _shown_through:
-		if is_instance_valid(item):
-			var was: Vector2i = _shown_through[item]
+	for id: int in _shown_through:
+		var item: CanvasItem = instance_from_id(id) as CanvasItem
+		if item:
+			var was: Vector2i = _shown_through[id]
 			item.z_index = was.x
 			item.z_as_relative = was.y != 0
 	_shown_through.clear()
@@ -77,9 +80,9 @@ func _exit_tree() -> void:
 ## (the opening shot's die, flying from the raider to the hand). It stays
 ## under the card itself.
 func show_through_dim(item: CanvasItem) -> void:
-	if not is_instance_valid(item) or _shown_through.has(item):
+	if not is_instance_valid(item) or _shown_through.has(item.get_instance_id()):
 		return
-	_shown_through[item] = Vector2i(item.z_index, 1 if item.z_as_relative else 0)
+	_shown_through[item.get_instance_id()] = Vector2i(item.z_index, 1 if item.z_as_relative else 0)
 	item.z_as_relative = false
 	item.z_index = SHOWN_THROUGH_DIM_Z_INDEX
 

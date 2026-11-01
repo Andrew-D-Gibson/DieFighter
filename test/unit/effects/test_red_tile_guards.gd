@@ -9,6 +9,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
 const PLAYER_SCENE: PackedScene = preload("res://Source/Systems/Game/Player/player.tscn")
 const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
+const INTERCEPTOR: EnemyResource = preload("res://Source/Content/Enemies/EnemyResources/interceptor.tres")
 const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 const TILES: String = "res://Source/Content/Tiles/TileResources/%s.tres"
@@ -27,6 +28,7 @@ func before_each() -> void:
 	player = add_child_autofree(PLAYER_SCENE.instantiate())
 	Globals.player = player
 	enemy = ENEMY_SCENE.instantiate()
+	enemy.enemy_resource = INTERCEPTOR
 	enemy.scenario_state = ScenarioShipState.new()
 	enemy.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
 	add_child_autofree(enemy)

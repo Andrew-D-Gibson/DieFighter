@@ -243,6 +243,18 @@ func test_a_card_lifts_things_through_its_dim_until_it_leaves() -> void:
 	assert_true(die.z_as_relative)
 
 
+## The die a card lifted can be spent and freed while the card is still up;
+## the card then leaves without touching it (GUT fails on the engine error).
+func test_a_card_outlives_what_it_lifted() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	var die: Node2D = Node2D.new()
+	add_child(die)
+	popup.show_through_dim(die)
+	die.free()
+	remove_child(popup)
+	assert_engine_error_count(0)
+
+
 ## The opening shot's die leaves the raider through the ambush card's dim:
 ## the player watches it fly back to the hand.
 func test_the_opening_shot_die_shows_through_the_ambush_card() -> void:
