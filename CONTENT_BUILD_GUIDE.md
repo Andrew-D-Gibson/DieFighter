@@ -82,6 +82,12 @@ registration to testing. For how the systems work underneath, see
   `Assets/Textures/Tiles/<Colour>Tiles/<name>.png`.
   - Colour by role: Red attack, Blue defence, Green die tricks/movement,
     Purple engine, Yellow support/buffs.
+  - Red and green each have a house motif. A red tile is grey hardware with
+    a bright red stripe under a light top edge, staggered between body and
+    barrel, with a grey muzzle. That is the Dice Cannon, and the enemy attack
+    intent copies it, so red art keeps to it. Green tiles draw the hardware
+    that does the job, often with a green-lit band, and draw a die only where
+    the die is the idea (Die Splitter, Value Exchange, holograms).
   - The folder is the tile's colour as far as the game is concerned: the
     codex sorts by it, and the Color Symbols option badges the tile's
     top-left corner with its family's shape (`ColorSymbolBadge`). So file
