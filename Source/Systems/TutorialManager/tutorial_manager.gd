@@ -181,6 +181,7 @@ func _ready() -> void:
 	Globals.tutorial_controls_enemy_turns = false
 	Globals.tutorial_holds_target_arrows = false
 	Globals.tutorial_holds_opening_strike = false
+	Globals.tutorial_holds_saves = false
 	GameStateManager.next_run_pinned_stops.clear()
 
 	var playing: bool = should_play()
@@ -199,6 +200,9 @@ func _ready() -> void:
 	Globals.tutorial_holds_target_arrows = true
 	# Fired once the step that introduces the ambusher has been read.
 	Globals.tutorial_holds_opening_strike = true
+	# Nothing reaches disk until the last step: quitting partway leaves no
+	# save, so the tutorial starts over rather than resuming broken.
+	Globals.tutorial_holds_saves = true
 	Events.player_turn_over.connect(_on_player_turn_over)
 	Events.player_turn_start.connect(_on_player_turn_start)
 	Events.reward_picked.connect(_on_reward_picked)
@@ -790,6 +794,10 @@ func _finish_tutorial() -> void:
 	# Replay Tutorial.
 	Globals.tutorial_completed = true
 	Events.save_options_config.emit()
+
+	# The run is an ordinary one from here, so it saves like one.
+	Globals.tutorial_holds_saves = false
+	Events.tutorial_finished.emit()
 
 	# Normally given back at the jump already; this covers a skipped or
 	# timed-out step, so surviving ships always get the whole screen back.

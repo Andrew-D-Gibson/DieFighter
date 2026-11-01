@@ -114,6 +114,10 @@ var _opening_strike: OpeningStrike
 ## stable enough to checkpoint mid-jump.
 var _in_transit: bool = false
 
+## Set when a checkpoint was taken but held off disk for the tutorial
+## (Globals.tutorial_holds_saves), so the tutorial finishing writes it.
+var _save_held: bool = false
+
 
 ## See _restore.
 func get_restore() -> Dictionary:
@@ -181,6 +185,7 @@ func _ready() -> void:
 	Events.start_scenario.connect(_checkpoint_on_arrival)
 	Events.combat_finished.connect(_checkpoint_after_combat)
 	Events.reward_picked.connect(_checkpoint_mid_scenario)
+	Events.tutorial_finished.connect(_write_held_save)
 	Events.jump.connect(func() -> void:
 		_opening_strike = null
 		_restore = {}
@@ -691,6 +696,18 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 	# this checkpoint frees its offer at the end of the frame it happened in.
 	current_game_save.scenario_progress = _capture_scenario_progress() if mid_scenario else {}
 
+	if Globals.tutorial_holds_saves:
+		_save_held = true
+		return
+	SaveManager.write_save(current_game_save)
+
+
+## Writes the newest checkpoint the tutorial held back, so a player who quits
+## straight after it hands over has a run to Continue.
+func _write_held_save() -> void:
+	if not _save_held:
+		return
+	_save_held = false
 	SaveManager.write_save(current_game_save)
 
 

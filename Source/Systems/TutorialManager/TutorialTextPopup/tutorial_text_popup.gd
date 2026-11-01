@@ -126,33 +126,32 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 	_reveal_next_character()
 		
 		
+## Types the text in a character at a time. The player can finish it at any
+## moment (a click anywhere), including while this waits out a pause, so every
+## wait is followed by a check: carrying on would cut the finished text back
+## to the characters typed so far and leave it there.
 func _reveal_next_character() -> void:
-	if current_character >= target_character:
-		_finish_showing_text()
-		return
-	
-	if popup_completed:
-		return
-	
-	# Check if there's a delay at this position
-	if delay_positions.has(current_character):
-		var delay_time: float = delay_positions[current_character]
-		await get_tree().create_timer(delay_time).timeout
-	
-	# Reveal the next character
-	current_character += 1
-	%RichTextLabel.visible_characters = current_character
-	
-	# Play sound effect
-	var current_time: int = Time.get_ticks_msec()
-	if (current_time - last_blip_time) > time_between_blip_sounds * 1000:
-		Events.play_sound.emit(_TEXT_BLIP_SFX)
-		last_blip_time = current_time
-	
-	# Schedule next character reveal
-	var time_to_next: float = min(character_reveal_time, max_reveal_time / target_character)
-	await get_tree().create_timer(time_to_next).timeout
-	_reveal_next_character()
+	while current_character < target_character:
+		if delay_positions.has(current_character):
+			var delay_time: float = delay_positions[current_character]
+			await get_tree().create_timer(delay_time).timeout
+			if popup_completed:
+				return
+
+		current_character += 1
+		%RichTextLabel.visible_characters = current_character
+
+		var current_time: int = Time.get_ticks_msec()
+		if (current_time - last_blip_time) > time_between_blip_sounds * 1000:
+			Events.play_sound.emit(_TEXT_BLIP_SFX)
+			last_blip_time = current_time
+
+		var time_to_next: float = min(character_reveal_time, max_reveal_time / target_character)
+		await get_tree().create_timer(time_to_next).timeout
+		if popup_completed:
+			return
+
+	_finish_showing_text()
 	
 
 func _fade_in() -> void:
@@ -220,7 +219,11 @@ func _unhandled_input(event: InputEvent) -> void:
 			_finish_showing_text()
 			
 			
+## Safe to call more than once: all_text_displayed runs the step's function,
+## which must happen only once.
 func _finish_showing_text() -> void:
+	if popup_completed:
+		return
 	%CompleteTextButton.hide()
 	%RichTextLabel.visible_characters = -1
 	when_text_shown()

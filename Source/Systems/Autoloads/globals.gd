@@ -33,6 +33,13 @@ var tutorial_holds_target_arrows: bool = false
 ## before the shot lands.
 var tutorial_holds_opening_strike: bool = false
 
+## While true, checkpoints update the run's save in memory but don't write it
+## to disk; Events.tutorial_finished writes the latest one. A tutorial left
+## partway through can't be picked back up (its fights are scripted, and a
+## Continue would replay them unscripted), so it leaves no save behind and
+## the next Play starts it again from the top.
+var tutorial_holds_saves: bool = false
+
 # Set by MainMenu's Continue button before switching to the main game scene,
 # and consumed by GameStateManager._ready() in place of its scene-baked default.
 var pending_load_save: GameSaveResource = null

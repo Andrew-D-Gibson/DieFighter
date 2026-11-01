@@ -226,6 +226,37 @@ func test_a_held_close_button_waits_for_its_release() -> void:
 	assert_false(close_button.disabled)
 
 
+## A click while the text waits out a pause shows all of it, and the typing
+## doesn't pick up afterwards and cut it back to where the pause was.
+func test_finishing_the_text_during_a_pause_keeps_it_all_shown() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	popup.setup("Salvage!(delay=0.3) Drag it into a slot:", Vector2(100, 40), null, false)
+	var label: RichTextLabel = popup.get_node("%RichTextLabel")
+	var pause_at: int = popup.delay_positions.keys()[0]
+	var frames: int = 0
+	while popup.current_character < pause_at and frames < 300:
+		await wait_process_frames(1)
+		frames += 1
+	assert_eq(popup.current_character, pause_at, "reached the pause")
+	# Past the last character's own beat and into the pause itself.
+	await wait_seconds(0.1)
+
+	popup._finish_showing_text()
+	await wait_seconds(0.5)
+	assert_eq(label.visible_characters, -1, "still all shown after the pause ends")
+
+
+## The step's function hangs off all_text_displayed, so it must come once
+## however the text is finished.
+func test_all_text_displayed_comes_once() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	watch_signals(popup)
+	popup.setup("Hi.", Vector2(100, 40), null, true)
+	await wait_seconds(0.3)
+	popup._finish_showing_text()
+	assert_signal_emit_count(popup, "all_text_displayed", 1)
+
+
 ## Something lifted through a card's dim draws over the mask but under the
 ## card, and goes back where it was once the card is gone.
 func test_a_card_lifts_things_through_its_dim_until_it_leaves() -> void:

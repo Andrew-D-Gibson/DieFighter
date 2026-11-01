@@ -183,6 +183,8 @@ signal error_text_popup(text: String, global_pos: Vector2)
 ## The tutorial has let the opening ambusher fire (see
 ## Globals.tutorial_holds_opening_strike).
 signal opening_strike_released()
+## The tutorial has handed the run back to the player (FINISH_TUTORIAL).
+signal tutorial_finished()
 ## The opening ambusher's shot has landed and everything it set off has
 ## resolved (see GameStateManager.play_opening_strike()).
 signal opening_strike_landed()
