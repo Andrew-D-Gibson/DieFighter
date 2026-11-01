@@ -434,6 +434,12 @@ value before its STREAM.
 - Hidden-safety: anything that flees or jumps is never rolled while intents
   read "?".
 - Binding kind.
+- The soft shield cap: an action whose only effect is shields (Shield Burst,
+  Aegis Link) is never rolled for a ship that already holds as many shields
+  as its max hull, and Aegis Link only binds an ally under that cap. Nothing
+  clamps shields, and shields that come with another job (Relay, Charge Bore)
+  are left alone. It keeps shield stackers from turning a fight into a
+  stalemate; no condition to set.
 
 ---
 
@@ -475,10 +481,13 @@ value before its STREAM.
   faction's badge on the targeting computer. A variant (`gaff_raider.tres`) copies it.
 - `in_codex`: untick for a ship that isn't a foe (the shop, the repair dock,
   the civilian transport), so the codex leaves it out of its enemy list.
-- `max_health`, `starting_shields`. Both are scaled +35% per sector. Size
-  them against an 80-hull player whose turn does about 15 damage: a normal
-  fight should last two or three turns. Sector 1 ships run about 13-60
-  (Interceptor 13, Raider 45), gate bosses 100 and up. Per-hit numbers
+- `max_health`, `starting_shields`. Both are scaled +35% per sector, and by
+  the encounter's `enemy_hull_multiplier` (elites). What's written here is
+  what a sector 1 ship spawns with and what the codex shows. Size them against
+  an 80-hull player whose turn does about 15 damage: a normal fight should
+  last two or three turns. Sector 1 ships run about 5-20 (Interceptor 5,
+  Raider 16), gate bosses about 40-50 (Sector Warden 38, Arc Dynamo 49), and
+  starting shields stay small (3-5). Per-hit numbers
   (attacks, shields, heals per turn) stay on the smaller scale tiles use.
 - **`action_options`**: one or more `EnemyTurnActionList` pools. Each holds
   `EnemyActionOptionResource`s:
@@ -586,7 +595,15 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
 - **`starting_enemies`**: one `EnemyStateRewardResource` per ship:
   - `enemy_resource`, `starting_state`, `reward_resource`.
   - `starting_health_fraction`: start it pre-damaged.
+  - `unscaled_hull`: spawn on exactly the authored hull, ignoring sector and
+    elite scaling (the tutorial's opening raider, whose turns are counted).
   - `path_location_override`: leave at -1; the formation places ships.
+- **`enemy_hull_multiplier`** / **`enemy_damage_multiplier`**: scale the
+  hull and shields, and every rolled intent amount, of each ship the
+  encounter spawns or launches, on top of the sector's scaling. This is
+  how an elite fields ordinary ships and still hits harder: 1.3 in sector
+  1, 1.3-1.4 in sector 2, up to 1.5 in sector 3. Leave both at 1.0 for
+  combats and events.
   - `mounted` / `mount_offset`: this ship is a part of the scenario's `hull`
     (below), seated at that offset from the hull's centre.
 - **`rewards`**: Faction → `RewardResource`, paid when the player destroys a
