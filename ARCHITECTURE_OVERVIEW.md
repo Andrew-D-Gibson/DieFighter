@@ -671,6 +671,13 @@ AutoPilot run is never narrated). Until it's completed, Play skips ship select
 and starts the tutorial on the Die Fighter; after that ship select shows a
 TUTORIAL button under the ship with `supports_tutorial`.
 
+**No save until it's done.** A tutorial can't resume: its fights are scripted,
+and a Continue would replay them unscripted. While it runs
+(`Globals.tutorial_holds_saves`), GameStateManager's checkpoints update the save
+in memory but don't write it; `FINISH_TUTORIAL` emits
+`Events.tutorial_finished`, which writes the latest one. Quitting partway
+leaves no save, so the next Play starts the tutorial over.
+
 **Hard-seeded.** The manager sits above GameStateManager in the tree, so its
 `_ready` sets `RNGManager.next_run_seed = run_seed` (21) before the run starts.
 The map, encounters and backgrounds are the same for every new player (and
