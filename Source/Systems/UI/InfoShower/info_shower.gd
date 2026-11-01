@@ -1,6 +1,9 @@
 extends Control
 
-var texture_final_pos: Vector2 = Vector2(816, 324)
+## Side margins of the panel's content. A comparison has two descriptions to
+## fit side by side, so it takes more of the screen's width.
+const _SOLO_MARGIN: int = 288
+const _COMPARISON_MARGIN: int = 96
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -16,19 +19,25 @@ func _show_info(info: InfoResource) -> void:
 		
 	%TitleLabel.text = Utils.format_text(info.title_label_text)
 	%TopLabel.text = Utils.format_text(info.top_label_text, true)
-	%BottomLabel.text = Utils.format_text(info.bottom_label_text, true)
 	%KeywordPopup.hide()
 	self.visible = true
 
-	%TextureDisplay.texture = info.texture
-	%TextureDisplay.modulate.a = 0
+	var art: TextureRect = _show_comparison(info) if info.has_upgrade() else _show_solo(info)
+	art.texture = info.texture
+	art.modulate.a = 0
 	%TweenableTextureDisplay.texture = info.texture
-	ColorSymbolBadge.attach_to_rect(%TextureDisplay)
+	ColorSymbolBadge.attach_to_rect(art)
 	ColorSymbolBadge.attach_to_rect(%TweenableTextureDisplay)
-	%TweenableTextureDisplay.show()
-	
+	%TweenableTextureDisplay.hide()
+
 	var starting_pos: Vector2 = get_global_mouse_position()
-	
+	# Where the art lands depends on the layout just picked, which the
+	# containers only settle at the end of this frame.
+	await get_tree().process_frame
+	var texture_final_pos: Vector2 = art.global_position - global_position \
+		+ (art.size - %TweenableTextureDisplay.size) / 2.0
+	%TweenableTextureDisplay.show()
+
 	var texture_zoom_tween: Tween = get_tree().create_tween()
 	texture_zoom_tween.set_parallel()
 	var tween_time: float = 0.5	
@@ -52,7 +61,44 @@ func _show_info(info: InfoResource) -> void:
 	
 	await texture_zoom_tween.finished
 	%TweenableTextureDisplay.hide()
-	%TextureDisplay.modulate.a = 1
+	art.modulate.a = 1
+
+
+## The usual layout: the art, and its description under it. Returns the art's
+## rect.
+func _show_solo(info: InfoResource) -> TextureRect:
+	_set_side_margins(_SOLO_MARGIN)
+	%TopLabel.show()
+	%Comparison.hide()
+	%TextureDisplay.get_parent().show()
+	%BottomLabel.get_parent().show()
+	%BottomLabel.text = Utils.format_text(info.bottom_label_text, true)
+	return %TextureDisplay
+
+
+## The thing as it is on the left, what it becomes once upgraded on the right,
+## and how to get there on the arrow between. Returns the left art's rect.
+func _show_comparison(info: InfoResource) -> TextureRect:
+	_set_side_margins(_COMPARISON_MARGIN)
+	# Two descriptions with a name over each need the height an empty
+	# activation line would hold.
+	%TopLabel.visible = not info.top_label_text.is_empty()
+	%TextureDisplay.get_parent().hide()
+	%BottomLabel.get_parent().hide()
+	%Comparison.show()
+	%CurrentName.text = Utils.format_text(info.title_label_text)
+	%CurrentLabel.text = Utils.format_text(info.bottom_label_text, true)
+	%UpgradeCaption.text = Utils.format_text(info.upgrade_caption_text)
+	%UpgradeName.text = Utils.format_text(info.upgrade_title_text)
+	%UpgradeLabel.text = Utils.format_text(info.upgrade_bottom_label_text, true)
+	%UpgradeTexture.texture = info.upgrade_texture
+	ColorSymbolBadge.attach_to_rect(%UpgradeTexture)
+	return %CurrentTexture
+
+
+func _set_side_margins(margin: int) -> void:
+	$MarginContainer.add_theme_constant_override(&"margin_left", margin)
+	$MarginContainer.add_theme_constant_override(&"margin_right", margin)
 
 
 

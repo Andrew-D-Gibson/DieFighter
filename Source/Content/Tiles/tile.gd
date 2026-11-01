@@ -301,9 +301,13 @@ func _get_tile_info() -> InfoResource:
 		info.bottom_label_text += "\n\n" + tr("INFO_TILE_COUNTDOWN").format(
 			{"left": countdown_remaining()})
 	if _copy_to_merge_with():
-		info.bottom_label_text += "\n\n%s\n%s" % [
-			tr("INFO_TILE_UPGRADE"), tile_resource.upgraded_version.description
-		]
+		var upgraded: TileResource = tile_resource.upgraded_version
+		info.upgrade_title_text = upgraded.tile_name
+		info.upgrade_texture = upgraded.textures.get_frame_texture('default', 0)
+		# Upgrading keeps the tile's counters (upgrade() swaps the resource
+		# only), so the upgrade reads them as this tile does.
+		info.upgrade_bottom_label_text = fill_data_tokens(upgraded.description, effect_data)
+		info.upgrade_caption_text = tr("INFO_TILE_UPGRADE")
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine:
 		for mod: Modifier in engine.modifiers:

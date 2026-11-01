@@ -133,7 +133,11 @@ func test_tiles_already_owned_are_still_offered() -> void:
 
 
 func _previews_upgrade(tile: Tile) -> bool:
-	return tile._get_tile_info().bottom_label_text.contains(DAMAGE.upgraded_version.description)
+	var info: InfoResource = tile._get_tile_info()
+	assert_false(info.bottom_label_text.contains(DAMAGE.upgraded_version.description),
+		"the upgrade sits beside the tile's own description, not under it")
+	return info.has_upgrade() \
+		and info.upgrade_bottom_label_text.contains(DAMAGE.upgraded_version.description)
 
 
 func test_a_lone_tile_doesnt_preview_its_upgrade() -> void:
@@ -158,3 +162,12 @@ func test_two_copies_on_the_grid_preview_it_only_out_of_a_fight() -> void:
 	Globals.state_manager = manager
 	assert_false(_previews_upgrade(first), "the grid is locked mid-fight")
 	Globals.state_manager = null
+
+
+func test_the_preview_shows_the_upgrade_beside_the_tile() -> void:
+	var twin: Tile = _on_grid(DAMAGE, Vector2i(1, 1))
+	_on_offer(DAMAGE)
+	var info: InfoResource = twin._get_tile_info()
+	assert_eq(info.upgrade_title_text, DAMAGE.upgraded_version.tile_name)
+	assert_eq(info.upgrade_texture, DAMAGE.upgraded_version.textures.get_frame_texture(&"default", 0))
+	assert_eq(info.upgrade_caption_text, tr("INFO_TILE_UPGRADE"))

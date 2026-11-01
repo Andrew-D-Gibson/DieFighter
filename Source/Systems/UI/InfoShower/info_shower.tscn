@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://qbi5qg8wxs8a" path="res://Source/Systems/UI/InfoShower/info_shower.gd" id="1_6im3a"]
 [ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="2_74257"]
 [ext_resource type="Texture2D" uid="uid://d270koeu7yg8e" path="res://Assets/Textures/Tiles/RedTiles/damage.png" id="3_4644n"]
+[ext_resource type="Shader" uid="uid://bri5htw7mbdjy" path="res://Assets/Shaders/tile.gdshader" id="4_tileshader"]
+[ext_resource type="Texture2D" uid="uid://cy4e1dkr4ptro" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_yellow_arrow.png" id="5_arrow"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_popup"]
 bg_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
@@ -15,6 +17,10 @@ content_margin_left = 24.0
 content_margin_top = 16.0
 content_margin_right = 24.0
 content_margin_bottom = 16.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_upgraded"]
+shader = ExtResource("4_tileshader")
+shader_parameter/upgraded = true
 
 [node name="InfoShower" type="Control" unique_id=311106762]
 layout_mode = 3
@@ -111,6 +117,126 @@ fit_content = true
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="Comparison" type="GridContainer" parent="MarginContainer/VBoxContainer" unique_id=1584203917]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.0
+mouse_filter = 2
+theme_override_constants/h_separation = 48
+theme_override_constants/v_separation = 8
+columns = 3
+
+[node name="CurrentTexture" type="TextureRect" parent="MarginContainer/VBoxContainer/Comparison" unique_id=736290184]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(288, 288)
+layout_mode = 2
+size_flags_horizontal = 6
+mouse_filter = 2
+texture = ExtResource("3_4644n")
+stretch_mode = 5
+
+[node name="UpgradeArrow" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Comparison" unique_id=1949061773]
+custom_minimum_size = Vector2(320, 0)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+theme_override_constants/separation = 16
+
+[node name="UpgradeCaption" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Comparison/UpgradeArrow" unique_id=1203849571]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("2_74257")
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "Drop a copy on it to upgrade"
+fit_content = true
+horizontal_alignment = 1
+
+[node name="ArrowHolder" type="Control" parent="MarginContainer/VBoxContainer/Comparison/UpgradeArrow" unique_id=470193621]
+custom_minimum_size = Vector2(96, 96)
+layout_mode = 2
+size_flags_horizontal = 4
+mouse_filter = 2
+
+[node name="Arrow" type="TextureRect" parent="MarginContainer/VBoxContainer/Comparison/UpgradeArrow/ArrowHolder" unique_id=2017364830]
+layout_mode = 0
+offset_right = 96.0
+offset_bottom = 96.0
+rotation = -1.5707964
+pivot_offset = Vector2(48, 48)
+mouse_filter = 2
+texture = ExtResource("5_arrow")
+expand_mode = 1
+
+[node name="UpgradeTexture" type="TextureRect" parent="MarginContainer/VBoxContainer/Comparison" unique_id=1126587342]
+unique_name_in_owner = true
+material = SubResource("ShaderMaterial_upgraded")
+custom_minimum_size = Vector2(288, 288)
+layout_mode = 2
+size_flags_horizontal = 6
+mouse_filter = 2
+texture = ExtResource("3_4644n")
+stretch_mode = 5
+
+[node name="CurrentName" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Comparison" unique_id=318206457]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("2_74257")
+theme_override_font_sizes/normal_font_size = 96
+bbcode_enabled = true
+text = "Tile"
+fit_content = true
+horizontal_alignment = 1
+
+[node name="NameSpacer" type="Control" parent="MarginContainer/VBoxContainer/Comparison" unique_id=1734920586]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="UpgradeName" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Comparison" unique_id=905318264]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme_override_fonts/normal_font = ExtResource("2_74257")
+theme_override_font_sizes/normal_font_size = 96
+bbcode_enabled = true
+text = "Tile+"
+fit_content = true
+horizontal_alignment = 1
+
+[node name="CurrentLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Comparison" unique_id=1460728193]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+theme_override_fonts/normal_font = ExtResource("2_74257")
+theme_override_font_sizes/normal_font_size = 80
+bbcode_enabled = true
+text = "Does a thing!"
+fit_content = true
+horizontal_alignment = 1
+
+[node name="LabelSpacer" type="Control" parent="MarginContainer/VBoxContainer/Comparison" unique_id=640917325]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="UpgradeLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/Comparison" unique_id=1872046319]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 1
+theme_override_fonts/normal_font = ExtResource("2_74257")
+theme_override_font_sizes/normal_font_size = 80
+bbcode_enabled = true
+text = "Does a bigger thing!"
+fit_content = true
+horizontal_alignment = 1
+
 [node name="KeywordPopup" type="PanelContainer" parent="." unique_id=730118245]
 unique_name_in_owner = true
 visible = false
@@ -148,3 +274,7 @@ stretch_mode = 5
 [connection signal="meta_hover_started" from="MarginContainer/VBoxContainer/MarginContainer2/BottomLabel" to="." method="_on_keyword_hover_started"]
 [connection signal="meta_hover_ended" from="MarginContainer/VBoxContainer/MarginContainer2/BottomLabel" to="." method="_on_keyword_hover_ended"]
 [connection signal="gui_input" from="ScreenDim" to="." method="_on_screen_dim_gui_input"]
+[connection signal="meta_hover_started" from="MarginContainer/VBoxContainer/Comparison/CurrentLabel" to="." method="_on_keyword_hover_started"]
+[connection signal="meta_hover_ended" from="MarginContainer/VBoxContainer/Comparison/CurrentLabel" to="." method="_on_keyword_hover_ended"]
+[connection signal="meta_hover_started" from="MarginContainer/VBoxContainer/Comparison/UpgradeLabel" to="." method="_on_keyword_hover_started"]
+[connection signal="meta_hover_ended" from="MarginContainer/VBoxContainer/Comparison/UpgradeLabel" to="." method="_on_keyword_hover_ended"]
