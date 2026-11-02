@@ -203,6 +203,69 @@ func test_counter_battery_silences_the_face_it_hands_over() -> void:
 	assert_eq(_faces(enemy.dice_manager), [6] as Array[int], "the 6 went over")
 
 
+## Where the first event [param matches] sits among [param events], or -1.
+func _first(events: Array[EffectEvent], matches: Callable) -> int:
+	for i: int in events.size():
+		if matches.call(events[i]):
+			return i
+	return -1
+
+
+func _is_juice(kind: EffectEnums.AudioVisualSubtype) -> Callable:
+	return func(e: EffectEvent) -> bool: return e is JuiceEvent and (e as JuiceEvent).kind == kind
+
+
+## The battery fires, then the silence lands: the laser and the die thrown at
+## the ship come first, and the silence and its callout after them. It used to
+## call the silence before the shot had even left.
+func _assert_shoots_then_silences(events: Array[EffectEvent], label: String) -> void:
+	var laser: int = _first(events, _is_juice(EffectEnums.AudioVisualSubtype.LASER))
+	var throw: int = _first(events, func(e: EffectEvent) -> bool: return e is AttackTweenEvent)
+	var give: int = _first(events, func(e: EffectEvent) -> bool: return e is GiveDieToTargetEvent)
+	var silence: int = _first(events, func(e: EffectEvent) -> bool: return e is SilenceFaceEvent)
+	var callout: int = _first(events, _is_juice(EffectEnums.AudioVisualSubtype.CALLOUT))
+	for found: int in [laser, throw, give, silence, callout]:
+		assert_ne(found, -1, "%s: every beat plays" % label)
+	assert_lt(laser, throw, "%s: the laser, then the die" % label)
+	assert_lt(throw, give, "%s: the die lands with the ship" % label)
+	assert_lt(give, silence, "%s: the shot resolves before the silence" % label)
+	assert_lt(silence, callout, "%s: the callout marks the silence" % label)
+
+
+func test_counter_battery_shoots_before_it_silences() -> void:
+	_table(enemy)
+	_assert_shoots_then_silences(await _drop(_tile("counter_battery"), 6), "base")
+	assert_eq(enemy.threat_of_face(6), EnemyActionResource.Threat.DEAD, "and the silence still lands")
+
+
+func test_counter_battery_plus_shoots_before_it_silences_every_enemy() -> void:
+	var wingman: Enemy = ENEMY_SCENE.instantiate()
+	wingman.enemy_resource = INTERCEPTOR
+	wingman.scenario_state = ScenarioShipState.new()
+	wingman.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
+	# Brought in as before_each() brings in the first: before the fight's
+	# state, which would scale its hull by a run that doesn't exist.
+	var state: GameStateManager = Globals.state_manager
+	Globals.state_manager = null
+	add_child_autofree(wingman)
+	Globals.state_manager = state
+	Globals.enemy_manager.enemies.append(wingman)
+	_table(enemy)
+	_table(wingman)
+
+	var events: Array[EffectEvent] = await _drop(_tile("counter_battery_plus"), 6)
+	_assert_shoots_then_silences(events, "plus")
+	var give: EffectEvent = events[_first(events,
+		func(e: EffectEvent) -> bool: return e is GiveDieToTargetEvent)]
+	assert_eq(give.targets, [enemy] as Array[Node], "the die goes to the target alone")
+	var silence: EffectEvent = events[_first(events,
+		func(e: EffectEvent) -> bool: return e is SilenceFaceEvent)]
+	assert_eq(silence.targets.size(), 2, "the silence reaches every enemy")
+	assert_has(silence.targets, wingman)
+	for ship: Enemy in [enemy, wingman]:
+		assert_eq(ship.threat_of_face(6), EnemyActionResource.Threat.DEAD)
+
+
 func test_a_silenced_face_costs_the_player_nothing() -> void:
 	_table(enemy)
 	assert_gt(AutoPilotThreat.of_face(enemy, 6, false), 0.0)
