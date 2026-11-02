@@ -79,6 +79,7 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 1
 amount = 6
+text_token = &"bonus"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_pay_flash"]
@@ -159,7 +160,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Twin Barrel+[/color]"
-description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die[/color]: Deal [color=red]damage[/color] equal to both dice +6"
+description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die[/color]: Deal [color=red]damage[/color] equal to both dice +{bonus}"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])

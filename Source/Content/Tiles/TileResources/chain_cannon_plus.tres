@@ -53,6 +53,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("11_5tyjx")
 category = 2
 amount = 4
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_2g6t7"]
@@ -140,7 +141,7 @@ script = ExtResource("4_x5guy")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Chain Cannon+[/color]"
-description = "(die_4) -> Deal [color=red]4 damage[/color] twice"
+description = "(die_4) -> Deal [color=red]{damage} damage[/color] twice"
 textures = SubResource("SpriteFrames_ha28q")
 uses_per_turn = 3
 activation_checks = Array[ExtResource("1_g62jg")]([SubResource("Resource_istkj"), SubResource("Resource_en0w8"), SubResource("Resource_uqnk8")])

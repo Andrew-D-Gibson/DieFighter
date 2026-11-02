@@ -54,6 +54,8 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 2
 multiplier = 3.0
+text_token = &"damage"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_8"]
@@ -141,7 +143,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Crescendo Cannon+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] per activation this turn, this one included"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color] per activation this turn, this one included"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

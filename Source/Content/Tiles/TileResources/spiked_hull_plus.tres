@@ -53,6 +53,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 3
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_8"]
@@ -83,7 +84,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Spiked Hull+[/color]"
-description = "[color=yellow]Enemy hits you or your shields[/color] -> Deal [color=red]3 damage[/color] to it"
+description = "[color=yellow]Enemy hits you or your shields[/color] -> Deal [color=red]{damage} damage[/color] to it"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

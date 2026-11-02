@@ -44,6 +44,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"burn"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_8"]
@@ -62,6 +63,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 1
+text_token = &"self_burn"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_11"]
@@ -103,7 +105,7 @@ script = ExtResource("script_tile")
 is_upgrade = true
 offered_as_reward = false
 tile_name = "[color=red]Fume Vent+[/color]"
-description = "[color=yellow]Your turn starts[/color] -> Apply 2 (burn) to [color=purple]every enemy[/color]. Apply 1 (burn) to you"
+description = "[color=yellow]Your turn starts[/color] -> Apply {burn} (burn) to [color=purple]every enemy[/color]. Apply {self_burn} (burn) to you"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

@@ -34,6 +34,7 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 1
 amount = 5
+text_token = &"bonus"
 
 [sub_resource type="Resource" id="Resource_step_5"]
 script = ExtResource("script_effect")
@@ -135,7 +136,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Ram Plating+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to your [color=blue]shields[/color] +5"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to your [color=blue]shields[/color] +{bonus}"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

@@ -90,7 +90,11 @@ const RULE_NUMBERS: PackedStringArray = ["0"]
 ## adds a tile here only when the number really isn't in its data.
 ## Keyed by tile file name, then the literal as written, e.g.
 ##   "inverter": {"1": "die faces of the d6, not data", ...}
-const LITERAL_EXEMPT: Dictionary = {}
+const LITERAL_EXEMPT: Dictionary = {
+	"flak_cannon": {"+1": "one damage per surrounding tile: ADD_ADJACENT_TILES counts, it has no amount"},
+	"flak_cannon_plus": {"+1": "one damage per surrounding tile: ADD_ADJACENT_TILES counts, it has no amount"},
+	"inertial_feedback": {"1": "one damage per tile moved: the damage is the tiles_moved counter itself"},
+}
 
 var messages: PackedStringArray = []
 

@@ -75,6 +75,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 3
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_12"]
@@ -108,6 +109,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"step"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_17"]
@@ -170,7 +172,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Ratchet Cannon[/color]"
-description = "(die_4) -> Deal [color=red]3 damage[/color], +2 per earlier use this fight (+[data]ratchet[/data])"
+description = "(die_4) -> Deal [color=red]{damage} damage[/color], +{step} per earlier use this fight (+[data]ratchet[/data])"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

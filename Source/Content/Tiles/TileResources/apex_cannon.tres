@@ -70,6 +70,7 @@ script = ExtResource("2_k6rn8")
 category = 2
 subtype = 1
 amount = 3
+text_token = &"bonus"
 
 [sub_resource type="Resource" id="Resource_560ff"]
 script = ExtResource("2_k6rn8")
@@ -127,7 +128,7 @@ animations = [{
 [resource]
 script = ExtResource("4_k6rn8")
 tile_name = "[color=red]Apex Cannon[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. [color=yellow]Top row[/color]: +3"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. [color=yellow]Top row[/color]: +{bonus}"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_07g5j")
 uses_per_turn = -1

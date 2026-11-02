@@ -81,6 +81,8 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 2
 multiplier = 4.0
+text_token = &"damage"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_12"]
@@ -153,7 +155,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Relay Terminal+[/color]"
-description = "[color=yellow]Die above[/color] (die_3) -> Deal [color=red]4 damage[/color], +4 per time die was (fed)"
+description = "[color=yellow]Die above[/color] (die_3) -> Deal [color=red]{damage} damage[/color], +{damage} per time die was (fed)"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

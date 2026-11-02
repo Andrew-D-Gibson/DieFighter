@@ -60,6 +60,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("10_uauxn")
 category = 2
 amount = 2
+text_token = &"hull"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_jdjaw"]
@@ -118,7 +119,7 @@ animations = [{
 script = ExtResource("3_cy0vr")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Leeching Shot[/color]"
-description = "(die_1) or (die_2) -> Steal [color=red]2 hull[/color] from [color=purple]target[/color]"
+description = "(die_1) or (die_2) -> Steal [color=red]{hull} hull[/color] from [color=purple]target[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_cy0vr")
 uses_per_turn = -1

@@ -33,6 +33,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"burn"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_6"]
@@ -84,6 +85,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"burn"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_12"]
@@ -148,7 +150,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Napalm Vent+[/color]"
-description = "[color=yellow]Surrounding tile activates[/color] -> Apply 2 (burn)"
+description = "[color=yellow]Surrounding tile activates[/color] -> Apply {burn} (burn)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

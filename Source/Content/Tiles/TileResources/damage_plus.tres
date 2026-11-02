@@ -60,6 +60,7 @@ script = ExtResource("11_2fv8l")
 category = 2
 subtype = 1
 amount = 2
+text_token = &"bonus"
 
 [sub_resource type="Resource" id="Resource_impact_flash"]
 script = ExtResource("11_2fv8l")
@@ -123,7 +124,7 @@ animations = [{
 [resource]
 script = ExtResource("8_2fv8l")
 tile_name = "[color=red]Dice Cannon+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die +2"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die +{bonus}"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

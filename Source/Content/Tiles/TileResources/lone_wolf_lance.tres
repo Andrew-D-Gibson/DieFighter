@@ -91,6 +91,8 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 2
 multiplier = 2.0
+text_token = &"times"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_8"]
@@ -184,6 +186,8 @@ category = 7
 subtype = 9
 range_min = 0
 range_max = 3
+text_token = &"dice"
+text_token_value = "range_max"
 metadata/_custom_type_script = "uid://1c0msmj2pcjy"
 
 [sub_resource type="Resource" id="Resource_step_25"]
@@ -235,7 +239,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Lone Wolf Lance[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die, or 2x die if you own 3 or fewer dice"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die, or {times}x die if you own {dice} or fewer dice"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

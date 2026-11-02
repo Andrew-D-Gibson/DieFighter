@@ -65,6 +65,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 3
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_8"]
@@ -151,7 +152,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Swarm Battery+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] per die in play"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color] per die in play"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

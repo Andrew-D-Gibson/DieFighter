@@ -103,6 +103,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 25
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_18"]
@@ -168,7 +169,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Countdown Cannon+[/color]"
-description = "(countdown) 15. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]25 damage[/color]"
+description = "(countdown) {countdown}. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]{damage} damage[/color]"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

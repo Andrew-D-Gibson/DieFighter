@@ -52,6 +52,8 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 2
 multiplier = 3.0
+text_token = &"damage"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_8"]
@@ -168,7 +170,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Broadside[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color] per die in hand"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color] per die in hand"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1
