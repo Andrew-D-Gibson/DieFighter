@@ -140,6 +140,12 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'kill_enemies':
 			_kill_enemies()
 
+		'loc_audit':
+			_loc_audit(command.slice(1))
+
+		'loc_watch':
+			_loc_watch(command.slice(1))
+
 		'load_grid':
 			_load_grid(command.slice(1))
 			
@@ -590,6 +596,36 @@ func _lang(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Language set to ' + Localization.get_locale_name(locale) + '.[/center]')
 
 
+## The audit runs in a second process (LocAudit.launch), so the game carries
+## on; its window shows each screen as it's checked.
+func _loc_audit(command_args: Array[String] = []) -> void:
+	var requested: String = command_args[0] if not command_args.is_empty() else "all"
+	if command_args.size() > 1:
+		command_history.append_text('\n\t\tUsage: loc_audit [locale|pseudo|all]')
+		return
+	if LocAudit.launch(requested) < 0:
+		command_history.append_text('\n\t\tCould not start the audit.')
+		return
+	command_history.append_text('\n[center]Auditing %s in a new window. Report: %s[/center]'
+		% [requested, ProjectSettings.globalize_path(LocAudit.REPORT_PATH)])
+
+
+## The overflow watcher's red outlines and log lines, on or off for this
+## session.
+func _loc_watch(command_args: Array[String] = []) -> void:
+	var watcher: OverflowWatcher = Localization.overflow_watcher
+	if watcher == null:
+		command_history.append_text('\n\t\tThe overflow watcher only runs in debug builds.')
+		return
+	if command_args.size() != 1 or command_args[0] not in ['on', 'off']:
+		command_history.append_text('\n\t\tUsage: loc_watch <on|off>  (now %s)' % ('on' if watcher.live else 'off'))
+		return
+	watcher.live = command_args[0] == 'on'
+	if not watcher.live:
+		watcher.clear_outlines()
+	command_history.append_text('\n[center]Overflow watcher %s.[/center]' % command_args[0])
+
+
 func _timescale(command_args: Array[String] = []) -> void:
 	if command_args.is_empty():
 		TimeDirector.set_base_scale(1.0)
@@ -630,6 +666,8 @@ func _help() -> void:
 	command_history.append_text('\n[b]jump[/b] <+N|-N>                 jump N places right (+) or left (-)')
 	command_history.append_text('\n[b]kill_enemies[/b]                  kill all enemies')
 	command_history.append_text('\n[b]lang[/b] <locale|pseudo>          switch language (pseudo: stretched English, debug)')
+	command_history.append_text('\n[b]loc_audit[/b] [locale|pseudo|all] screenshot every text surface per language, flag overflow')
+	command_history.append_text('\n[b]loc_watch[/b] <on|off>            outline text that overflows (debug, on by default)')
 	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
 	command_history.append_text('\n[b]lock_tiles[/b]		            stop tiles from being moved')
 	command_history.append_text('\n[b]open_cells[/b] [x y]              open a sealed grid cell, or all of them')
