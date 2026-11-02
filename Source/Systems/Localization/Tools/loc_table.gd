@@ -147,6 +147,19 @@ func set_cell(key: String, column: String, value: String) -> void:
 	_raw_lines.erase(key)
 
 
+## Moves [param old_key]'s row, every cell of it, to [param new_key]. Does
+## nothing if [param new_key] already has a row.
+func rename_row(old_key: String, new_key: String) -> void:
+	if not _rows.has(old_key) or _rows.has(new_key):
+		return
+	var row: Dictionary = _rows[old_key]
+	row[KEY_COLUMN] = new_key
+	_rows.erase(old_key)
+	_rows[new_key] = row
+	_order[_order.find(old_key)] = new_key
+	_raw_lines.erase(old_key)
+
+
 ## Adds a column at [param at] (the end by default). Every row is written
 ## fresh afterwards, since its line no longer has the right cells.
 func add_column(column: String, at: int = -1) -> void:

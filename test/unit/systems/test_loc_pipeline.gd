@@ -103,6 +103,34 @@ func test_orphans_are_reported_not_deleted() -> void:
 		return line.begins_with("orphan") and line.contains("HAZARD.GONE.NAME")))
 
 
+func test_a_moved_step_takes_its_translations_to_its_new_key() -> void:
+	pipeline.sync(_catalog({"TILE.A.EFFECT_CHAIN.EFFECTS_2.CALLOUT": "HOLD", "TILE.A.NAME": "Ay"}))
+	var content: LocTable = _content()
+	content.set_cell("TILE.A.EFFECT_CHAIN.EFFECTS_2.CALLOUT", "de", "HALT")
+	content.set_status("TILE.A.EFFECT_CHAIN.EFFECTS_2.CALLOUT", "de", LocTable.REVIEWED)
+	content.save()
+
+	# A step inserted before it: same file, same English, new index.
+	pipeline.sync(_catalog({"TILE.A.EFFECT_CHAIN.EFFECTS_3.CALLOUT": "HOLD", "TILE.A.NAME": "Ay"}))
+	content = _content()
+	assert_false(content.has("TILE.A.EFFECT_CHAIN.EFFECTS_2.CALLOUT"), "no orphan left behind")
+	assert_eq(content.cell("TILE.A.EFFECT_CHAIN.EFFECTS_3.CALLOUT", "de"), "HALT")
+	assert_eq(content.status_of("TILE.A.EFFECT_CHAIN.EFFECTS_3.CALLOUT", "de"), LocTable.REVIEWED)
+	assert_true(Array(pipeline.messages).any(func(line: String) -> bool: return line.begins_with("moved")))
+
+
+func test_a_key_only_moves_on_a_one_to_one_match_in_the_same_file() -> void:
+	pipeline.sync(_catalog({
+		"TILE.A.EFFECTS_1.CALLOUT": "HOLD", "TILE.A.EFFECTS_2.CALLOUT": "HOLD", "TILE.B.EFFECTS_1.CALLOUT": "GO",
+	}))
+	# Two HOLDs became one new key: ambiguous. GO moved to another file: not
+	# the same text's home.
+	pipeline.sync(_catalog({"TILE.A.EFFECTS_5.CALLOUT": "HOLD", "TILE.C.EFFECTS_1.CALLOUT": "GO"}))
+	var content: LocTable = _content()
+	assert_true(content.has("TILE.A.EFFECTS_1.CALLOUT") and content.has("TILE.A.EFFECTS_2.CALLOUT"))
+	assert_true(content.has("TILE.B.EFFECTS_1.CALLOUT"), "another file's row stays an orphan")
+
+
 func test_a_key_clash_blocks_the_sync() -> void:
 	var catalog: LocCatalog = _catalog({"HAZARD.A.NAME": "Ay"})
 	catalog.problems.append("two files make HAZARD.A.NAME")

@@ -9,6 +9,9 @@ extends RefCounted
 
 ## Where content lives. Only .tres files are read.
 const DEFAULT_ROOTS: Array[String] = ["res://Source/"]
+## Folders no player ever sees, so nothing in them is sent for translation:
+## the test scenario (ScenarioLab excludes it too; a real run never deals it).
+const EXCLUDED_DIRS: Array[String] = ["res://Source/Content/ScenarioResources/Scenarios/TEST"]
 
 
 ## One translatable field of one resource.
@@ -104,6 +107,8 @@ func _add(res: Resource, field: ContentText.Field, file_path: String) -> void:
 
 
 static func _find_tres(dir_path: String, found: Array[String]) -> void:
+	if dir_path in EXCLUDED_DIRS:
+		return
 	var dir: DirAccess = DirAccess.open(dir_path)
 	if dir == null:
 		return

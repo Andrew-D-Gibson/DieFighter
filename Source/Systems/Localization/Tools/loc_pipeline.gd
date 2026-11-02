@@ -36,6 +36,9 @@ func sync(catalog: LocCatalog, include_ui: bool = false) -> bool:
 
 	var ui: LocTable = LocTable.read(ui_path)
 	var content: LocTable = LocTable.read(content_path, ui.columns)
+	for move: Array in _moved_keys(content, catalog):
+		content.rename_row(move[0], move[1])
+		messages.append("moved    %s -> %s (same file, same English)" % [move[0], move[1]])
 	var added: int = 0
 	for key: String in catalog.keys():
 		var entry: LocCatalog.Entry = catalog.entries[key]
@@ -183,6 +186,42 @@ static func _stale_note(table: LocTable, key: String) -> String:
 		if table.status_of(key, locale) == LocTable.STALE:
 			stale.append(locale)
 	return "" if stale.is_empty() else " (now stale: %s)" % ", ".join(stale)
+
+
+## Rows whose key changed under them: an orphan and a new key of the same
+## file (the same first two key parts, ENEMY_ACTION.SEIZE) with the same
+## English. That is a step moved within its chain or a field's key renamed,
+## not new text, so its translations follow it. Only one-to-one matches move;
+## anything ambiguous stays an orphan for a person to sort out. Pairs of
+## [old key, new key].
+static func _moved_keys(content: LocTable, catalog: LocCatalog) -> Array[Array]:
+	var orphans_by_text: Dictionary[String, Array] = {}
+	for key: String in _orphans(content, catalog):
+		var text_id: String = _file_part(key) + "\n" + content.english(key)
+		if not orphans_by_text.has(text_id):
+			orphans_by_text[text_id] = []
+		orphans_by_text[text_id].append(key)
+	var new_by_text: Dictionary[String, Array] = {}
+	for key: String in catalog.keys():
+		if content.has(key):
+			continue
+		var text_id: String = _file_part(key) + "\n" + catalog.entries[key].english
+		if not new_by_text.has(text_id):
+			new_by_text[text_id] = []
+		new_by_text[text_id].append(key)
+	var moves: Array[Array] = []
+	for text_id: String in new_by_text:
+		var olds: Array = orphans_by_text.get(text_id, [])
+		var news: Array = new_by_text[text_id]
+		if olds.size() == 1 and news.size() == 1:
+			moves.append([olds[0], news[0]])
+	return moves
+
+
+## HAZARD.SOLAR_FLARE.HEADLINE -> HAZARD.SOLAR_FLARE
+static func _file_part(key: String) -> String:
+	var parts: PackedStringArray = key.split(".")
+	return ".".join(parts.slice(0, mini(2, parts.size())))
 
 
 static func _orphans(content: LocTable, catalog: LocCatalog) -> Array[String]:
