@@ -801,7 +801,7 @@ func _real_dice_still_held() -> int:
 func _announce_lost_dice(count: int) -> void:
 	Events.play_sound.emit(_DIE_LOST_SFX)
 	Events.camera_shake_small.emit()
-	var text: String = "-%d DIE" % count if count == 1 else "-%d DICE" % count
+	var text: String = tr_n(&"CALLOUT_DICE_LOST", &"CALLOUT_DICE_LOST_PLURAL", count).format({"count": count})
 	Juice.callout_at(self, global_position + dice_manager.position + Vector2(0, -14),
 			text, Globals.red, true)
 

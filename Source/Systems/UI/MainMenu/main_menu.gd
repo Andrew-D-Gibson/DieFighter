@@ -74,10 +74,10 @@ func _ready() -> void:
 func _refresh_play_buttons() -> void:
 	if SaveManager.has_save():
 		%ContinueButton.visible = true
-		%PlayButton.set_button_text("NEW GAME")
+		%PlayButton.set_button_text("MENU_NEW_GAME")
 	else:
 		%ContinueButton.visible = false
-		%PlayButton.set_button_text("PLAY")
+		%PlayButton.set_button_text("MENU_PLAY")
 
 
 func _clear_stars() -> void:

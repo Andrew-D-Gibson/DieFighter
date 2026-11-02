@@ -282,8 +282,8 @@ func fade_flash(duration: float) -> void:
 
 ## "SECTOR 2" across hyperspace: where the jump is taking the player.
 func show_sector_title(sector_number: int, sector_count: int) -> void:
-	sector_title.text = "SECTOR %d" % sector_number
-	sector_subtitle.text = "OF %d" % sector_count
+	sector_title.text = tr("JUMP_GATE_SECTOR").format({"sector": sector_number})
+	sector_subtitle.text = tr("JUMP_GATE_OF").format({"total": sector_count})
 	for label: Label in [sector_title, sector_subtitle]:
 		label.modulate.a = 0.0
 		label.show()

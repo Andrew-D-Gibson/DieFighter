@@ -69,6 +69,7 @@ func _on_money_changed(value: int) -> void:
 ## One-line arcade-style summary for the end-of-run screen.
 func get_summary_text() -> String:
 	var total_sectors: int = Globals.state_manager.demo_sector_count
-	return "SECTOR %d/%d   %d ENCOUNTERS   %d SHIPS DOWN   %d CREDITS" % [
-		sectors_reached, total_sectors, encounters_cleared, ships_destroyed, credits_earned
-	]
+	return tr("RUN_SUMMARY").format({
+		"sector": sectors_reached, "total": total_sectors, "encounters": encounters_cleared,
+		"kills": ships_destroyed, "credits": credits_earned,
+	})

@@ -218,7 +218,7 @@ offset_top = -33.0
 offset_right = 17.0
 offset_bottom = -20.0
 mouse_filter = 2
-text = "TARGET"
+text = "TARGETING_TITLE"
 
 [node name="CRTShader" type="Sprite2D" parent="Background" unique_id=500653232]
 z_index = 1

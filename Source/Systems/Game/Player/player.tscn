@@ -66,7 +66,7 @@ sprite_frames = SubResource("SpriteFrames_jbhgu")
 
 [node name="RichTextLabel" parent="DiceQueue/EndTurnButton" index="1"]
 theme_override_colors/default_color = Color(0.27451, 0.235294, 0.568627, 1)
-text = "END TURN"
+text = "END_TURN_BUTTON"
 
 [node name="Health" parent="." unique_id=214905144 instance=ExtResource("4_da5gb")]
 unique_name_in_owner = true

@@ -6,6 +6,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 
 const UI_CSV: String = LocPipeline.UI_CSV
 const CONTENT_CSV: String = ContentText.CSV_PATH
+## translations.csv's English column as Godot imported it.
+const _EN_TRANSLATION: String = "res://Localization/translations.en.translation"
 
 ## Matches what Utils.format_text turns into icons or keywords, and BBCode,
 ## none of which is drawn as letters.
@@ -51,6 +53,50 @@ func test_text_fits_its_length_limit() -> void:
 				if not too_long.is_empty():
 					problems.append("%s %s [%s]: %s" % [table.path.get_file(), key, locale, too_long])
 	assert_eq(problems, [] as Array[String], "\n".join(problems))
+
+
+## What Godot imported is what the CSV says, row for row: a column added to
+## the header (`?plural`) or a row short of cells mustn't shift any English.
+func test_every_ui_row_reaches_the_game_unchanged() -> void:
+	var english: Translation = load(_EN_TRANSLATION)
+	var ui: LocTable = _tables[0]
+	var problems: Array[String] = []
+	for key: String in ui.keys():
+		if LocTable.is_plural_form(key):
+			continue
+		var imported: String = english.get_message(key)
+		if imported != ui.english(key):
+			problems.append("%s: CSV says %s, the game reads %s" % [key, ui.english(key).c_escape(), imported.c_escape()])
+	assert_eq(problems, [] as Array[String], "\n".join(problems))
+
+
+## A plural row reaches tr_n() with its forms in order: English takes the
+## row itself for one and the row under it for more.
+func test_plural_rows_resolve_through_tr_n() -> void:
+	var english: Translation = load(_EN_TRANSLATION)
+	var ui: LocTable = _tables[0]
+	var checked: int = 0
+	for key: String in ui.keys():
+		var plural_id: String = ui.cell(key, LocTable.PLURAL_COLUMN)
+		if plural_id.is_empty():
+			continue
+		checked += 1
+		assert_eq(english.get_plural_message(key, plural_id, 1), ui.english(key), key + " for one")
+		for n: int in [0, 2, 5, 21]:
+			assert_eq(english.get_plural_message(key, plural_id, n),
+				ui.english(LocTable.plural_form_key(key, 2)), "%s for %d" % [key, n])
+	assert_gt(checked, 0, "translations.csv has plural rows")
+
+
+## The plural callouts read as they did when they were written in code.
+func test_plural_text_reads_as_before() -> void:
+	var english: Translation = load(_EN_TRANSLATION)
+	var stacks: Callable = func(n: int) -> String:
+		return String(english.get_plural_message(&"STATUS_BADGE_STACKS", &"STATUS_BADGE_STACKS_PLURAL", n)).format({"n": n})
+	var dice: Callable = func(n: int) -> String:
+		return String(english.get_plural_message(&"CALLOUT_DICE_LOST", &"CALLOUT_DICE_LOST_PLURAL", n)).format({"count": n})
+	assert_eq([stacks.call(1), stacks.call(3)], ["1 stack", "3 stacks"])
+	assert_eq([dice.call(1), dice.call(2)], ["-1 DIE", "-2 DICE"])
 
 
 func test_no_key_is_in_both_csvs() -> void:
