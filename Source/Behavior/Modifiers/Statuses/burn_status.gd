@@ -3,12 +3,12 @@ extends StatusModifier
 ## Each round, before the ship acts, it takes damage equal to its Burn, then
 ## the Burn drops by one. Five Burn is 5 + 4 + 3 + 2 + 1 over five rounds.
 
+## Burn the ship loses each round, after it burns.
+const LOST_PER_TICK: int = 1
 
-func _init() -> void:
-	status_id = &"burn"
-	color = Globals.orange
-	icon = preload("res://Assets/Textures/Statuses/burn.png")
-	info_icon = preload("res://Assets/Textures/Statuses/burn_info.png")
+
+static func rule_values() -> Dictionary:
+	return {"lost": LOST_PER_TICK}
 
 
 func on_status_tick() -> void:
@@ -27,7 +27,7 @@ func on_status_tick() -> void:
 	_host_engine.queue_event(event)
 
 	announce_triggered()
-	consume(1)
+	consume(LOST_PER_TICK)
 
 
 ## The damage number already says how much it burned for; the orange flash

@@ -19,9 +19,12 @@ extends RefCounted
 ##      where the word belongs to another colour's rule (holograms are blue);
 ##      otherwise keywords are orange.
 ##   3. Run tools/loc.sh sync.
-##   A status that works differently on the player writes that rule in
-##   player_rule; its badge on the player's ship reads it through the id plus
-##   PLAYER_SUFFIX, and a token ticked player_side points there too.
+##   A status is a StatusResource here (see StatusModifier). One that works
+##   differently on the player writes that rule in player_rule; its badge on
+##   the player's ship reads it through the id plus PLAYER_SUFFIX, and a
+##   token ticked player_side points there too.
+##   A number the rule repeats from code is a {placeholder} the keyword's
+##   _rule_values() fills ("Spends {spent} Jammed.").
 
 ## Appended to a status's id for its rule on the player (see
 ## StatusModifier.rule_term()).
@@ -73,6 +76,13 @@ static func title(term: String) -> String:
 	if _is_player_term(term):
 		return "%s (%s)" % [keyword.display_title(), TranslationServer.translate(&"KEYWORD_PLAYER_TITLE")]
 	return keyword.display_title()
+
+
+## The keyword with id [param id] (a status's is a StatusResource), or null.
+## For text, use title() and definition(), which also read player terms.
+static func keyword(id: String) -> KeywordResource:
+	_ensure_loaded()
+	return _keywords.get(id)
 
 
 ## Every keyword id, sorted.

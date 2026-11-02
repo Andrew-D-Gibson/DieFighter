@@ -1,7 +1,10 @@
-[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dkaypod0l7m46"]
+[gd_resource type="Resource" script_class="StatusResource" format=3 uid="uid://dkaypod0l7m46"]
 
-[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_a753t"]
+[ext_resource type="Script" uid="uid://bkfid0at08n5w" path="res://Source/Content/Keywords/status_resource.gd" id="1_a753t"]
 [ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_13613"]
+[ext_resource type="Script" uid="uid://drntt7ag600tq" path="res://Source/Behavior/Modifiers/Statuses/exposed_status.gd" id="3_status"]
+[ext_resource type="Texture2D" uid="uid://b0jcwfkt6q8ll" path="res://Assets/Textures/Statuses/exposed.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://cypfnubeukogr" path="res://Assets/Textures/Statuses/exposed_info.png" id="5_info"]
 
 [sub_resource type="Resource" id="exposed"]
 script = ExtResource("2_13613")
@@ -16,5 +19,9 @@ label = "Expose"
 [resource]
 script = ExtResource("1_a753t")
 title = "Exposed"
-rule = "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends 1 Exposed."
+rule = "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends {spent} Exposed."
 tokens = Array[ExtResource("2_13613")]([SubResource("exposed"), SubResource("expose")])
+modifier_script = ExtResource("3_status")
+color = "red"
+icon = ExtResource("4_icon")
+info_icon = ExtResource("5_info")

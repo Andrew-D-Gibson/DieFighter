@@ -27,6 +27,10 @@ extends StatusModifier
 ## The share of each hit a weakened ship still deals, as a fraction.
 const _KEPT_NUMERATOR: int = 3
 const _KEPT_DENOMINATOR: int = 4
+## The least a weakened hit deals: it stays a hit.
+const MIN_HIT: int = 1
+## Weakened the ship loses as each of its own turns ends.
+const LOST_PER_TURN: int = 1
 
 ## The turn-end signal this status counts down on, kept so it can be let go
 ## of even after its host has been freed.
@@ -34,23 +38,29 @@ var _turn_end: Signal
 
 
 func _init() -> void:
-	status_id = &"weakened"
-	color = Globals.purple
-	icon = preload("res://Assets/Textures/Statuses/weakened.png")
-	info_icon = preload("res://Assets/Textures/Statuses/weakened_info.png")
 	priority = 60
+
+
+## The rule says how much comes off ("25% less"): the kept fraction's
+## complement, in whole percent.
+static func rule_values() -> Dictionary:
+	return {
+		"percent": 100 - 100 * _KEPT_NUMERATOR / _KEPT_DENOMINATOR,
+		"min_hit": MIN_HIT,
+		"lost": LOST_PER_TURN,
+	}
 
 
 ## What a hit of [param amount] deals from a weakened ship. Also read by the
 ## AutoPilot, which prices a weakened ship's intents the way its badge says.
 static func weakened(amount: int) -> int:
-	if amount <= 1:
+	if amount <= MIN_HIT:
 		return amount
-	return maxi(1, amount * _KEPT_NUMERATOR / _KEPT_DENOMINATOR)
+	return maxi(MIN_HIT, amount * _KEPT_NUMERATOR / _KEPT_DENOMINATOR)
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
-	if event is not DamageEvent or stacks <= 0 or event.amount <= 1:
+	if event is not DamageEvent or stacks <= 0 or event.amount <= MIN_HIT:
 		return
 	if not _is_own_hit(event):
 		return
@@ -82,4 +92,4 @@ func on_unregistered(engine: ScenarioEngine) -> void:
 
 
 func _on_own_turn_end() -> void:
-	consume(1)
+	consume(LOST_PER_TURN)

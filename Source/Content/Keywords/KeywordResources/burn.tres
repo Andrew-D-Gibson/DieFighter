@@ -1,7 +1,10 @@
-[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://cjcqtj6wg0d64"]
+[gd_resource type="Resource" script_class="StatusResource" format=3 uid="uid://cjcqtj6wg0d64"]
 
-[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_3frgl"]
+[ext_resource type="Script" uid="uid://bkfid0at08n5w" path="res://Source/Content/Keywords/status_resource.gd" id="1_3frgl"]
 [ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_t0ibx"]
+[ext_resource type="Script" uid="uid://k0uatfgwwuwg" path="res://Source/Behavior/Modifiers/Statuses/burn_status.gd" id="3_status"]
+[ext_resource type="Texture2D" uid="uid://2r5gf0rfr8ov" path="res://Assets/Textures/Statuses/burn.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://toboh2w4qsuy" path="res://Assets/Textures/Statuses/burn_info.png" id="5_info"]
 
 [sub_resource type="Resource" id="burn"]
 script = ExtResource("2_t0ibx")
@@ -11,5 +14,8 @@ label = "Burn"
 [resource]
 script = ExtResource("1_3frgl")
 title = "Burn"
-rule = "At the start of their turn, burned ships take [color=red]damage[/color] equal to Burn, then lose 1 Burn."
+rule = "At the start of their turn, burned ships take [color=red]damage[/color] equal to Burn, then lose {lost} Burn."
 tokens = Array[ExtResource("2_t0ibx")]([SubResource("burn")])
+modifier_script = ExtResource("3_status")
+icon = ExtResource("4_icon")
+info_icon = ExtResource("5_info")

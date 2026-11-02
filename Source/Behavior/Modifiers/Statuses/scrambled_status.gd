@@ -18,13 +18,16 @@ extends StatusModifier
 ## a lock (which reads the face it was given), before a jam (which asks
 ## whether the tile takes the flipped face) and anything that reads the face.
 
+## Scrambled each die it flips spends.
+const SPENT_PER_DIE: int = 1
+
 
 func _init() -> void:
-	status_id = &"scrambled"
-	color = Globals.green
-	icon = preload("res://Assets/Textures/Statuses/scrambled.png")
-	info_icon = preload("res://Assets/Textures/Statuses/scrambled_info.png")
 	priority = 6
+
+
+static func rule_values() -> Dictionary:
+	return {"spent": SPENT_PER_DIE}
 
 
 func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
@@ -41,7 +44,7 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	if die.has_method("play_pop"):
 		die.play_pop(0.5)
 	announce_triggered_at(activation.tile)
-	consume(1)
+	consume(SPENT_PER_DIE)
 
 
 func on_registered(engine: ScenarioEngine) -> void:
@@ -66,7 +69,7 @@ func on_die_arriving(die: Node) -> void:
 	if die.has_method("play_pop"):
 		die.play_pop(0.5)
 	announce_triggered()
-	consume(1)
+	consume(SPENT_PER_DIE)
 
 
 ## Flash Freeze stops the flip too, and says so. The stack isn't spent: the

@@ -20,13 +20,16 @@ extends StatusModifier
 ## Priority 1: a cancellation, ahead of the death save (5) and everything that
 ## grows or shrinks a hit, which would otherwise read a hit that never lands.
 
+## Phased each hit it lets through spends.
+const SPENT_PER_HIT: int = 1
+
 
 func _init() -> void:
-	status_id = &"phased"
-	color = Globals.blue
-	icon = preload("res://Assets/Textures/Statuses/phased.png")
-	info_icon = preload("res://Assets/Textures/Statuses/phased_info.png")
 	priority = 1
+
+
+static func rule_values() -> Dictionary:
+	return {"spent": SPENT_PER_HIT}
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
@@ -40,7 +43,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if event.targets.is_empty():
 		event.canceled = true
 	announce_triggered()
-	consume(1)
+	consume(SPENT_PER_HIT)
 
 
 ## A hit from the side this ship is fighting: an enemy ship's for the player,

@@ -1,7 +1,10 @@
-[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://bsgbf5tsptgb8"]
+[gd_resource type="Resource" script_class="StatusResource" format=3 uid="uid://bsgbf5tsptgb8"]
 
-[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_coq04"]
+[ext_resource type="Script" uid="uid://bkfid0at08n5w" path="res://Source/Content/Keywords/status_resource.gd" id="1_coq04"]
 [ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_ldbli"]
+[ext_resource type="Script" uid="uid://b2nh78hs6718b" path="res://Source/Behavior/Modifiers/Statuses/weakened_status.gd" id="3_status"]
+[ext_resource type="Texture2D" uid="uid://chdsgjucrb6sx" path="res://Assets/Textures/Statuses/weakened.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://dmm4kdk7jl3fj" path="res://Assets/Textures/Statuses/weakened_info.png" id="5_info"]
 
 [sub_resource type="Resource" id="weakened"]
 script = ExtResource("2_ldbli")
@@ -22,6 +25,10 @@ player_side = true
 [resource]
 script = ExtResource("1_coq04")
 title = "Weakened"
-rule = "This ship's hits deal 25% less [color=red]damage[/color], rounded down but never below 1. Loses 1 Weakened when its turn ends."
-player_rule = "Your tiles' hits deal 25% less [color=red]damage[/color], rounded down but never below 1. Loses 1 Weakened when you end your turn."
+rule = "This ship's hits deal {percent}% less [color=red]damage[/color], rounded down but never below {min_hit}. Loses {lost} Weakened when its turn ends."
+player_rule = "Your tiles' hits deal {percent}% less [color=red]damage[/color], rounded down but never below {min_hit}. Loses {lost} Weakened when you end your turn."
 tokens = Array[ExtResource("2_ldbli")]([SubResource("weakened"), SubResource("weaken"), SubResource("weakened_you")])
+modifier_script = ExtResource("3_status")
+color = "purple"
+icon = ExtResource("4_icon")
+info_icon = ExtResource("5_info")

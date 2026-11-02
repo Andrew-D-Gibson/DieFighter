@@ -17,26 +17,45 @@ extends Modifier
 ## means — damage per tick, dice to flip, bonus on the next hit — so merging,
 ## spending and the badge all stay generic.
 ##
+## Everything a status shows (name, rule, colour, icons) lives in its
+## StatusResource, which also names this script; the script holds only the
+## behaviour, and the numbers the rule quotes (rule_values()).
+##
 ## SUBCLASSING:
-##   1. Extend StatusModifier and set status_id, icon and priority in
-##      _init(). The status_id is also its keyword's id, which names it.
+##   1. Extend StatusModifier and set priority in _init().
 ##   2. Hook events in on_before_event/on_after_event, or override
 ##      on_status_tick() for something that happens once per round.
-##   3. Spend stacks with consume(); the status removes itself at zero.
-##   4. Add it to StatusCatalog and give it a KeywordResource of the same id
-##      (see Keywords), whose title is the status's name.
+##   3. Spend stacks with consume(); the status removes itself at zero. Keep
+##      every number the rule mentions in a constant and return it from a
+##      static rule_values(), so the rule reads it as a {placeholder}.
+##   4. Add a StatusResource for it to the keywords folder (see
+##      StatusResource); its file name is the status's id. StatusCatalog
+##      finds it there.
 
 const _BADGE_SCENE: PackedScene = preload("res://Source/Behavior/Modifiers/Statuses/StatusBadge/status_badge.tscn")
 
-## Stable key used in authored effects (EffectData.string_param) and lookups,
-## and the id of the keyword that names and explains it.
+## The file that describes this status. Set by StatusCatalog.create() (via
+## StatusResource.create_modifier()); a status built bare, as some tests do,
+## has none and shows nothing.
+var definition: StatusResource:
+	set(value):
+		definition = value
+		status_id = StringName(value.id()) if value else &""
+## Stable key used in authored effects (EffectData.string_param) and lookups:
+## its StatusResource's file name.
 var status_id: StringName
 ## The status's palette colour, for its badge, info panel and callouts.
-var color: Color = Globals.orange
+var color: Color:
+	get:
+		return definition.palette_color() if definition else Globals.orange
 ## 11x11, for the badge.
-var icon: Texture2D
+var icon: Texture2D:
+	get:
+		return definition.icon if definition else null
 ## 24x24, for the info panel.
-var info_icon: Texture2D
+var info_icon: Texture2D:
+	get:
+		return definition.info_icon if definition else null
 var stacks: int = 1
 
 var _host_engine: ScenarioEngine
@@ -45,7 +64,14 @@ var _badge: StatusBadge
 
 ## The status's name, in the current language: its keyword's title.
 func display_name() -> String:
-	return Keywords.title(String(status_id))
+	return definition.display_title() if definition else ""
+
+
+## The numbers the status's rules quote, by {placeholder} name, read from the
+## constants that apply them so the text can't drift from the code. A
+## subclass whose rule names a number redeclares this.
+static func rule_values() -> Dictionary:
+	return {}
 
 
 ## Whether the status hurts the ship it sits on. Every status does except

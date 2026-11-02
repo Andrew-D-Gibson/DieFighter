@@ -22,14 +22,16 @@ extends StatusModifier
 ## activation first, so a jam is never spent on a locked tile.
 
 const _DO_NOTHING: EnemyActionResource = preload("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres")
+## Jammed each die it stops spends.
+const SPENT_PER_DIE: int = 1
 
 
 func _init() -> void:
-	status_id = &"jammed"
-	color = Globals.yellow
-	icon = preload("res://Assets/Textures/Statuses/jammed.png")
-	info_icon = preload("res://Assets/Textures/Statuses/jammed_info.png")
 	priority = 35
+
+
+static func rule_values() -> Dictionary:
+	return {"spent": SPENT_PER_DIE}
 
 
 func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
@@ -49,7 +51,7 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	# A copy, like every rolled action: the preloaded one is shared.
 	action_event.action = _DO_NOTHING.copy()
 	announce_triggered()
-	consume(1)
+	consume(SPENT_PER_DIE)
 
 
 func _jam_tile(event: EffectEvent, engine: ScenarioEngine) -> void:
@@ -69,7 +71,7 @@ func _jam_tile(event: EffectEvent, engine: ScenarioEngine) -> void:
 	jam.die_value = activation.die_value
 	engine.inject_event(jam)
 	announce_triggered_at(activation.tile)
-	consume(1)
+	consume(SPENT_PER_DIE)
 
 
 ## Whether [param tile] is one of the ship's systems a status can interfere
