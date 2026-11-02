@@ -576,13 +576,16 @@ func _toggle_fps_display() -> void:
 	Events.toggle_fps_display.emit()
 
 
+## A language that isn't shipped yet can be previewed here too, for checking
+## a translation in place; it isn't offered in Options.
 func _lang(command_args: Array[String] = []) -> void:
 	var available: Array[String] = Localization.get_available_locales()
+	available.append_array(Localization.get_preview_locales())
 	if command_args.size() != 1 or (command_args[0] != 'pseudo' and command_args[0] not in available):
 		command_history.append_text('\n\t\tUsage: lang <%s|pseudo>' % '|'.join(available))
 		return
 	var locale: String = Localization.PSEUDO_LOCALE if command_args[0] == 'pseudo' else command_args[0]
-	Localization.set_locale(locale)
+	Localization.set_locale(locale, true)
 	Events.save_options_config.emit()
 	command_history.append_text('\n[center]Language set to ' + Localization.get_locale_name(locale) + '.[/center]')
 

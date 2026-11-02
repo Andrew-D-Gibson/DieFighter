@@ -16,6 +16,10 @@ extends Resource
 ##   1. Create a BackgroundModifierResource.
 ##   2. Pick an 'effect', then write the name/description the banner shows.
 ##   3. Assign it to a BackgroundResource's 'global_modifier' field.
+##   4. The name and description are English, written here; run
+##      tools/loc.sh sync to send them for translation (see ContentText).
+##      Display code reads them through display_name() and
+##      display_description(), never the fields.
 ##
 ## To add a new rule, write a Modifier subclass under
 ## Source/Behavior/Modifiers/BackgroundModifiers/, add an Effect entry, and
@@ -97,7 +101,33 @@ func create_modifier() -> Modifier:
 			return null
 
 	# The banner and the rule should never be able to disagree about what this
-	# background is called.
+	# background is called. (English here: the Modifier's name is for logs;
+	# anything it shows the player asks this resource.)
 	if not modifier_name.is_empty():
 		mod.modifier_name = modifier_name
+	if mod is OncePerTurnModifier:
+		(mod as OncePerTurnModifier).rule = self
 	return mod
+
+
+## The name, in the current language.
+func display_name() -> String:
+	return ContentText.text(self, &"modifier_name")
+
+
+## The rule, in the current language.
+func display_description() -> String:
+	return ContentText.text(self, &"description")
+
+
+func _content_text_prefix() -> String:
+	return "BG_MODIFIER"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"modifier_name", "NAME",
+			"Name of a region's permanent rule (a background modifier), e.g. a nebula that blocks shields. Shown in capitals as the title of its arrival card and info panel, and inside tile info lines."),
+		ContentText.Field.new(&"description", "DESC",
+			"A region's permanent rule in one line, on its arrival card and info panel. Keep [color] tags and (keyword) tokens as written."),
+	]

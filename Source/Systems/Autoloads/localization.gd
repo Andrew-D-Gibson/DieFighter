@@ -32,13 +32,22 @@ const LOCALE_NAMES: Dictionary[String, String] = {
 
 const _PseudoTranslation: GDScript = preload("res://Source/Systems/Localization/pseudo_translation.gd")
 
+## Where Godot imports translations.csv's columns, one file per locale.
+const _UI_TRANSLATION_PATH: String = "res://Localization/translations.%s.translation"
+
 var _pseudo_translation: Translation
+## Translations added at runtime to preview a language that isn't registered
+## in project.godot yet (see get_preview_locales()).
+var _preview_translations: Array[Translation] = []
 
 
 func _exit_tree() -> void:
 	# A script-backed Translation still registered when the engine shuts down
 	# crashes the TranslationServer's teardown.
 	_remove_pseudo_translation()
+	for translation: Translation in _preview_translations:
+		TranslationServer.remove_translation(translation)
+	_preview_translations.clear()
 
 
 ## The locales to offer in Options: every known locale whose column has any
@@ -53,6 +62,24 @@ func get_available_locales() -> Array[String]:
 	return available
 
 
+## Languages with a translation imported but not yet registered in
+## project.godot, so not offered to players. Debug builds can switch to one
+## (dev console `lang`) to check a translation in place before it ships;
+## content text (ContentText) reads its own files either way.
+func get_preview_locales() -> Array[String]:
+	var previews: Array[String] = []
+	if not OS.is_debug_build():
+		return previews
+	var available: Array[String] = get_available_locales()
+	for locale: String in LOCALE_NAMES:
+		if locale in available:
+			continue
+		if ResourceLoader.exists(_UI_TRANSLATION_PATH % locale) \
+				or ResourceLoader.exists(ContentText.CSV_PATH.get_basename() + ".%s.translation" % locale):
+			previews.append(locale)
+	return previews
+
+
 func get_locale_name(locale: String) -> String:
 	if locale == PSEUDO_LOCALE:
 		return "Pseudo (debug)"
@@ -65,9 +92,12 @@ func get_locale() -> String:
 
 ## Switches the game to `locale`. An empty or unsupported locale picks the
 ## closest match to the OS language instead, which is what a first launch
-## (nothing saved yet) gets.
-func set_locale(locale: String) -> void:
-	if locale not in get_available_locales():
+## (nothing saved yet) gets. With [param preview], a debug build also accepts
+## one of get_preview_locales() for this session.
+func set_locale(locale: String, preview: bool = false) -> void:
+	if preview and locale in get_preview_locales():
+		_add_preview_translation(locale)
+	elif locale not in get_available_locales():
 		locale = _detect_locale()
 
 	if locale == PSEUDO_LOCALE:
@@ -103,6 +133,16 @@ func _detect_locale() -> String:
 func _has_messages(locale: String) -> bool:
 	var translation: Translation = TranslationServer.get_translation_object(locale)
 	return translation != null and translation.locale == locale and translation.get_message_count() > 0
+
+
+func _add_preview_translation(locale: String) -> void:
+	var path: String = _UI_TRANSLATION_PATH % locale
+	if not ResourceLoader.exists(path):
+		return
+	var translation: Translation = load(path)
+	if translation and translation not in _preview_translations:
+		TranslationServer.add_translation(translation)
+		_preview_translations.append(translation)
 
 
 func _add_pseudo_translation() -> void:

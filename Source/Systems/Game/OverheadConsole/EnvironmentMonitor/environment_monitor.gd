@@ -220,7 +220,7 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 func _on_hazard_triggered(hazard: BackgroundHazardResource) -> void:
 	if hazard != _hazard or not _deployed:
 		return
-	_play_trigger_feedback(hazard.hazard_name.to_upper(), hazard.color)
+	_play_trigger_feedback(hazard.display_name().to_upper(), hazard.color)
 
 
 func _queue_present() -> void:
@@ -316,16 +316,16 @@ func _announce(shown: Resource) -> void:
 	var alert: RegionAlert = RegionAlert.new()
 	if shown is BackgroundHazardResource:
 		var hazard: BackgroundHazardResource = shown
-		alert.title = tr(hazard.hazard_name).to_upper()
+		alert.title = hazard.display_name().to_upper()
 		alert.color = hazard.color
 		# Just the headline, which reads as fast as a rule's one line. The
 		# full rule waits in the monitor's info panel, where the card lands.
 		alert.description = hazard_headline(hazard, _armed, _turns_remaining)
 	else:
 		var modifier: BackgroundModifierResource = shown
-		alert.title = tr(modifier.modifier_name).to_upper()
+		alert.title = modifier.display_name().to_upper()
 		alert.color = modifier.color
-		alert.description = tr(modifier.description)
+		alert.description = modifier.display_description()
 	alert.landing_point = func() -> Vector2: return _glyph.global_position
 	var id: String = region_id(shown)
 	alert.wait_for_close = _waits_for_close(shown)
@@ -445,20 +445,20 @@ func _on_clicked() -> void:
 	var info: InfoResource = InfoResource.new()
 	if _hazard:
 		info.title_label_text = "[color=%s]%s[/color]" % [
-			_hazard.color.to_html(false), _hazard.hazard_name.to_upper()
+			_hazard.color.to_html(false), _hazard.display_name().to_upper()
 		]
 		# Headline first, so the panel opens on what the card said, then the rule in full and how often it comes round.
 		info.bottom_label_text = "%s\n\n%s\n%s" % [
 			hazard_headline(_hazard, _armed, _turns_remaining),
-			_hazard.description,
+			_hazard.display_description(),
 			hazard_repeat_text(_hazard),
 		]
 		info.texture = _hazard.icon if _hazard.icon else _DEFAULT_INFO_ICON
 	else:
 		info.title_label_text = "[color=%s]%s[/color]" % [
-			_modifier.color.to_html(false), _modifier.modifier_name.to_upper()
+			_modifier.color.to_html(false), _modifier.display_name().to_upper()
 		]
-		info.bottom_label_text = _modifier.description
+		info.bottom_label_text = _modifier.display_description()
 		info.texture = _modifier.icon if _modifier.icon else _DEFAULT_INFO_ICON
 	Events.show_info.emit(info)
 
@@ -490,9 +490,8 @@ static func hazard_when_text(
 ## What [param hazard] does, in a few words. Falls back to its name, so a
 ## hazard authored without a headline still reads as something.
 static func hazard_effect_text(hazard: BackgroundHazardResource) -> String:
-	if hazard.headline.is_empty():
-		return TranslationServer.translate(hazard.hazard_name)
-	return TranslationServer.translate(hazard.headline)
+	var headline: String = hazard.display_headline()
+	return headline if not headline.is_empty() else hazard.display_name()
 
 
 ## The countdown-first line that sums [param hazard] up, as the arrival card

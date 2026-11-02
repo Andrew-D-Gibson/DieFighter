@@ -57,7 +57,7 @@ func _ready() -> void:
 	Events.jump.connect(queue_free)
 	Events.hazard_struck.connect(func(_hazard: BackgroundHazardResource) -> void: _strike())
 
-	_label = _make_label("!! %s !!" % tr(_hazard.hazard_name).to_upper(), _hazard.color, _TITLE_Y)
+	_label = _make_label("!! %s !!" % _hazard.display_name().to_upper(), _hazard.color, _TITLE_Y)
 	_label.scale = Vector2(2.4, 0.2) * _REST_SCALE
 	_label.modulate.a = 0.0
 
@@ -67,9 +67,10 @@ func _ready() -> void:
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	tween.tween_property(_label, "modulate:a", 1.0, 0.1)
 
-	if not _hazard.banner.is_empty():
+	var banner: String = _hazard.display_banner()
+	if not banner.is_empty():
 		# A beat after the title, so the eye takes the name, then the effect.
-		_effect_label = _make_label(tr(_hazard.banner), Globals.white, _EFFECT_Y)
+		_effect_label = _make_label(banner, Globals.white, _EFFECT_Y)
 		_effect_label.modulate.a = 0.0
 		_effect_label.scale = Vector2(1.0, 0.2)
 		tween.tween_property(_effect_label, "modulate:a", 1.0, 0.1).set_delay(0.15)

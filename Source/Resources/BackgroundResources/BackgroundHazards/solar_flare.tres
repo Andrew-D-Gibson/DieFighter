@@ -65,8 +65,8 @@ hazard_name = "Solar Flare"
 description = "[color=yellow]Your turn starts[/color] ->
 Remove [color=blue]all shields[/color].
 Deal [color=red]3 damage[/color] to [color=purple]all ships[/color]"
-headline = "HAZARD_SOLAR_FLARE_HEADLINE"
-banner = "HAZARD_SOLAR_FLARE_BANNER"
+headline = "[color=blue]shields[/color] drop, [color=red]3 dmg[/color] to all"
+banner = "SHIELDS DOWN! 3 DAMAGE TO ALL"
 icon = ExtResource("icon_tex")
 color = Color(0.933333, 0.827451, 0.364706, 1)
 effect_chain = SubResource("Resource_chain9")
