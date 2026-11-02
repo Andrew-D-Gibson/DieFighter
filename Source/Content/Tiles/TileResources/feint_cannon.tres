@@ -6,6 +6,7 @@
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_li2ym"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_q6cv8"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_i1cfl"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_li2ym"]
 [ext_resource type="Texture2D" uid="uid://drmi2s3nbscxs" path="res://Assets/Textures/Tiles/RedTiles/feint_cannon.png" id="5_li2ym"]
 [ext_resource type="Resource" uid="uid://db6t6878l5vxh" path="res://Source/Content/Tiles/TileResources/feint_cannon_plus.tres" id="6_7vme4"]
 
@@ -164,7 +165,7 @@ animations = [{
 [resource]
 script = ExtResource("4_i1cfl")
 tile_name = "[color=red]Feint Cannon[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color], +3 per enemy miss this fight (+[data]feint[/data])"
+description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color], +3 per enemy miss this fight ([color=red]+[data]feint[/data][/color])"
 rarity = 1
 upgraded_version = ExtResource("6_7vme4")
 textures = SubResource("SpriteFrames_gpmt5")

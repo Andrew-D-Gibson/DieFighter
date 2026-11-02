@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_yv5lb"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_6mg5l"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_hf0cp"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_6mg5l"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_yv5lb"]
 [ext_resource type="Texture2D" uid="uid://drmi2s3nbscxs" path="res://Assets/Textures/Tiles/RedTiles/feint_cannon.png" id="5_6mg5l"]
 
@@ -163,7 +164,7 @@ animations = [{
 [resource]
 script = ExtResource("4_yv5lb")
 tile_name = "[color=red]Feint Cannon+[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color], +4 per enemy miss this fight (+[data]feint[/data])"
+description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color], +4 per enemy miss this fight ([color=red]+[data]feint[/data][/color])"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true
