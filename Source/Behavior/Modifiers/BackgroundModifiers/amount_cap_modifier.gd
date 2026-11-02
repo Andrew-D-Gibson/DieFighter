@@ -20,6 +20,11 @@ var cap: int = 3:
 	set(value):
 		cap = maxi(1, value)
 
+## The region rule that put this in force (handed over by
+## BackgroundModifierResource.create_modifier()). Its colour tints the
+## uncapped number in a capped popup, so "12" reads as the Doldrums' doing.
+var rule: BackgroundModifierResource = null
+
 
 func _init(amount_cap: int = 3) -> void:
 	cap = amount_cap
@@ -35,5 +40,10 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 
 	var capped: int = clampi(event.amount, -cap, cap)
 	if capped != event.amount:
-		event.amount = capped
+		# Through the event, so its popup can still show what the cap took.
+		event.cap_amount(capped, self)
 		announce_triggered()
+
+
+func get_trigger_color() -> Color:
+	return rule.color if rule else super()

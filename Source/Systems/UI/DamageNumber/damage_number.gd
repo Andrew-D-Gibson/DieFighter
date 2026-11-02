@@ -56,15 +56,31 @@ const _SCREEN_MARGIN_PIXELS: float = 2.0
 ## How far past full size the label overshoots as it pops in.
 const _POP_SCALE: float = 1.4
 
+## A capped popup ("12→3") prints the uncapped number in m3x6, a size down
+## from the m5x7 the result uses, so the eye lands on what actually happened.
+const _UNCAPPED_FONT: Font = preload("res://Assets/Fonts/m3x6/m3x6_ui.tres")
+## How far the uncapped number fades toward the outline colour: still the
+## capping rule's colour, but clearly the lesser figure.
+const _UNCAPPED_DIM: float = 0.35
+## A capped number gets a moment longer: there are two figures to read.
+const _CAPPED_EXTRA_SECONDS: float = 0.4
+## Room between the uncapped number, the arrow and the result.
+const _CAP_GAP_PIXELS: float = 1.0
+
 var _drift: Vector2 = Vector2(0.0, -_RISE_PIXELS)
 var _rest_scale: Vector2 = Vector2.ONE
 var _label: Label
+## The whole label's size, both figures and the arrow when capped.
+var _content_size: Vector2 = Vector2.ZERO
 var _lifetime: float = _LIFETIME_SECONDS
 
 
 ## Spawns a number for `amount` beside `target`. Parented beside the target
 ## rather than under it, so a killing blow's number outlives the ship.
-static func spawn(target: Node2D, amount: int, color: Color) -> void:
+## A positive [param uncapped] is what a cap cut `amount` down from: it leads
+## the number, small and in [param cap_color] ("12→3").
+static func spawn(target: Node2D, amount: int, color: Color, uncapped: int = 0,
+		cap_color: Color = Color.WHITE) -> void:
 	if amount <= 0 or not is_instance_valid(target) or target.get_parent() == null:
 		return
 	# Hits on the player land down in the cockpit corner while their eyes are on
@@ -81,7 +97,10 @@ static func spawn(target: Node2D, amount: int, color: Color) -> void:
 	if target is Player:
 		origin = Juice.anchor_of(target) + _random_in(_PLAYER_SPAWN_AREA)
 		drift = _random_in(_PLAYER_DRIFT_RANGE)
-	_spawn_label(target.get_parent(), origin, str(amount), color, amount >= _BIG_HIT, drift, size, _LIFETIME_SECONDS)
+	var lead: String = str(uncapped) if uncapped > 0 else ""
+	var lifetime: float = _LIFETIME_SECONDS + (_CAPPED_EXTRA_SECONDS if not lead.is_empty() else 0.0)
+	_spawn_label(target.get_parent(), origin, str(amount), color, amount >= _BIG_HIT, drift, size,
+		lifetime, lead, cap_color)
 
 
 static func _random_in(area: Rect2) -> Vector2:
@@ -92,19 +111,25 @@ static func _random_in(area: Rect2) -> Vector2:
 
 
 ## The same pop-and-drift for any short label: a heal's "+3", a status name,
-## an upgrade tile's "x2".
-static func spawn_text(target: Node2D, text: String, color: Color, big: bool = false) -> void:
+## an upgrade tile's "x2". A non-empty [param uncapped_text] is the label a cap
+## cut this one down from ("+12" before "+3"), led small in [param cap_color].
+static func spawn_text(target: Node2D, text: String, color: Color, big: bool = false,
+		uncapped_text: String = "", cap_color: Color = Color.WHITE) -> void:
 	if not is_instance_valid(target) or target.get_parent() == null:
 		return
 	var origin: Vector2 = Juice.anchor_of(target)
-	spawn_text_at(target.get_parent(), origin + Vector2(0.0, _stack_offset(target)), text, color, big)
+	spawn_text_at(target.get_parent(), origin + Vector2(0.0, _stack_offset(target)), text, color, big,
+		uncapped_text, cap_color)
 
 
 ## A label at `global_pos`, parented to `parent`.
-static func spawn_text_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false) -> void:
-	var lifetime: float = minf(_TEXT_LIFETIME_SECONDS + text.length() * _TEXT_SECONDS_PER_LETTER,
+static func spawn_text_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false,
+		uncapped_text: String = "", cap_color: Color = Color.WHITE) -> void:
+	var letters: int = text.length() + uncapped_text.length()
+	var lifetime: float = minf(_TEXT_LIFETIME_SECONDS + letters * _TEXT_SECONDS_PER_LETTER,
 		_MAX_TEXT_LIFETIME_SECONDS)
-	_spawn_label(parent, global_pos, text, color, big, Vector2(0.0, -_RISE_PIXELS), 1.0, lifetime)
+	_spawn_label(parent, global_pos, text, color, big, Vector2(0.0, -_RISE_PIXELS), 1.0, lifetime,
+		uncapped_text, cap_color)
 
 
 static func _stack_offset(target: Node2D) -> float:
@@ -123,12 +148,13 @@ static func _stack_offset(target: Node2D) -> float:
 ## [param size] is a whole-number scale on top of the big-hit doubling, so the
 ## pixel font stays crisp.
 static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color: Color,
-		big: bool, drift: Vector2, size: float = 1.0, lifetime: float = _LIFETIME_SECONDS) -> void:
+		big: bool, drift: Vector2, size: float = 1.0, lifetime: float = _LIFETIME_SECONDS,
+		uncapped_text: String = "", cap_color: Color = Color.WHITE) -> void:
 	if text.is_empty() or not is_instance_valid(parent):
 		return
 
 	var number: DamageNumber = DamageNumber.new()
-	number._build(text, color)
+	number._build(text, color, uncapped_text, cap_color)
 	number._drift = drift
 	number._lifetime = lifetime
 	number._rest_scale = Vector2.ONE * ((2.0 if big else 1.0) + size - 1.0)
@@ -147,7 +173,7 @@ static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color:
 ## so the label never carries itself out of frame before it has faded.
 func _keep_on_screen() -> void:
 	var screen: Rect2 = ScreenFrame.canvas_rect(self)
-	var half_size: Vector2 = _label.size * 0.5 * _rest_scale * _POP_SCALE + Vector2.ONE * _SCREEN_MARGIN_PIXELS
+	var half_size: Vector2 = _content_size * 0.5 * _rest_scale * _POP_SCALE + Vector2.ONE * _SCREEN_MARGIN_PIXELS
 	var safe: Rect2 = screen.grow_individual(-half_size.x, -half_size.y, -half_size.x, -half_size.y)
 	if safe.size.x <= 0.0 or safe.size.y <= 0.0:
 		return
@@ -156,23 +182,52 @@ func _keep_on_screen() -> void:
 	_drift = end - global_position
 
 
-func _build(text: String, color: Color) -> void:
+func _build(text: String, color: Color, uncapped_text: String = "",
+		cap_color: Color = Color.WHITE) -> void:
 	# Above ships, particles and the cockpit frame.
 	z_index = 100
 
-	_label = Label.new()
-	_label.text = text
-	_label.add_theme_font_override("font", _FONT)
-	_label.add_theme_font_size_override("font_size", _FONT_SIZE)
-	_label.add_theme_color_override("font_color", color)
-	_label.add_theme_color_override("font_outline_color", Globals.dark_gray)
-	_label.add_theme_constant_override("outline_size", 4)
-	_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	add_child(_label)
-	# Centre the label on this node so scaling pops from the middle.
-	_label.reset_size()
-	_label.position = -_label.size / 2.0
+	_label = _make_label(text, _FONT, color)
+	if uncapped_text.is_empty():
+		# Centre the label on this node so scaling pops from the middle.
+		_label.position = -_label.size / 2.0
+		_content_size = _label.size
+		return
+	_build_capped(uncapped_text, cap_color, color)
+
+
+## Lays out "12→3": the uncapped figure, the arrow and the result in a row,
+## sitting on the result's baseline, the whole row centred on this node.
+func _build_capped(uncapped_text: String, cap_color: Color, color: Color) -> void:
+	var lead: Label = _make_label(uncapped_text, _UNCAPPED_FONT, cap_color.lerp(Globals.dark_gray, _UNCAPPED_DIM))
+	var arrow: _CapArrow = _CapArrow.new()
+	arrow.color = color
+	add_child(arrow)
+
+	var width: float = lead.size.x + _CAP_GAP_PIXELS + _CapArrow.WIDTH + _CAP_GAP_PIXELS + _label.size.x
+	_content_size = Vector2(width, _label.size.y)
+	var left: float = -width / 2.0
+	# Labels draw their text one ascent below their top edge, so lining the
+	# tops up by ascent puts both figures on one baseline.
+	var baseline: float = -_label.size.y / 2.0 + _FONT.get_ascent(_FONT_SIZE)
+	lead.position = Vector2(left, baseline - _UNCAPPED_FONT.get_ascent(_FONT_SIZE))
+	arrow.position = Vector2(left + lead.size.x + _CAP_GAP_PIXELS, baseline)
+	_label.position = Vector2(arrow.position.x + _CapArrow.WIDTH + _CAP_GAP_PIXELS, -_label.size.y / 2.0)
+
+
+func _make_label(text: String, font: Font, color: Color) -> Label:
+	var label: Label = Label.new()
+	label.text = text
+	label.add_theme_font_override("font", font)
+	label.add_theme_font_size_override("font_size", _FONT_SIZE)
+	label.add_theme_color_override("font_color", color)
+	label.add_theme_color_override("font_outline_color", Globals.dark_gray)
+	label.add_theme_constant_override("outline_size", 4)
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	add_child(label)
+	label.reset_size()
+	return label
 
 
 ## Pops in past full size, drifts up, and fades out on the way.
@@ -192,3 +247,39 @@ func _animate() -> void:
 	tween.parallel().tween_property(self, "modulate:a", 0.0, fade) \
 		.set_delay(_lifetime - fade)
 	tween.finished.connect(queue_free)
+
+
+## The "→" of a capped popup, drawn in pixels: the pixel fonts have no arrow
+## glyph, and a drawn one can't go missing when a locale swaps the font.
+## Its origin sits on the baseline at its left edge.
+class _CapArrow:
+	extends Node2D
+
+	const WIDTH: float = 5.0
+	## Rows bottom-up from the baseline, each a run of lit pixels [from, to].
+	## Centred on the digits' middle, like the stroke of a typed arrow.
+	const _ROWS: Array[Vector2i] = [
+		Vector2i(2, 2),
+		Vector2i(3, 3),
+		Vector2i(0, 4),
+		Vector2i(3, 3),
+		Vector2i(2, 2),
+	]
+	## Lowest row's height above the baseline: the shaft then sits on the
+	## middle row of a 7-pixel digit.
+	const _FIRST_ROW: int = 1
+	## Matches the labels' outline (outline_size 4 reaches one font pixel out).
+	const _OUTLINE_PIXELS: float = 1.0
+
+	var color: Color = Color.WHITE
+
+	func _draw() -> void:
+		for pass_index: int in 2:
+			var outline: bool = pass_index == 0
+			for i: int in _ROWS.size():
+				var run: Vector2i = _ROWS[i]
+				var rect: Rect2 = Rect2(run.x, -(_FIRST_ROW + i + 1), run.y - run.x + 1, 1)
+				if outline:
+					draw_rect(rect.grow(_OUTLINE_PIXELS), Globals.dark_gray)
+				else:
+					draw_rect(rect, color)
