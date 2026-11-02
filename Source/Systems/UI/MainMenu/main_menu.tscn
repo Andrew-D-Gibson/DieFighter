@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/Codex/codex_popup.tscn" id="21_codex"]
 [ext_resource type="Texture2D" uid="uid://ccwljuf14y1ag" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="22_blue"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/MainMenu/MenuCaravan/menu_caravan.tscn" id="23_caravan"]
+[ext_resource type="Shader" path="res://Source/Systems/UI/MainMenu/fate_behind.gdshader" id="24_fate"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -193,6 +194,9 @@ shader_parameter/shading_noise_cell_amount = 30
 shader_parameter/shading_noise_strength = 0.13
 shader_parameter/shading_noise_period = Vector3(9.5, 9.5, 9.5)
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_fate"]
+shader = ExtResource("24_fate")
+
 [node name="MainMenu" type="Node2D" unique_id=1901252289]
 self_modulate = Color(0.0156863, 0.00784314, 0.0901961, 1)
 script = ExtResource("1_otgxl")
@@ -208,6 +212,14 @@ environment = SubResource("Environment_6qnrd")
 z_index = -3
 position = Vector2(160, 0)
 texture = ExtResource("4_6qnrd")
+
+[node name="FateBehind" type="ColorRect" parent="."]
+z_index = -2
+material = SubResource("ShaderMaterial_fate")
+offset_top = 110.0
+offset_right = 320.0
+offset_bottom = 180.0
+mouse_filter = 2
 
 [node name="MouseCursor" type="Sprite2D" parent="." unique_id=607365636]
 visible = false
@@ -424,7 +436,7 @@ offset_right = 364.0
 offset_bottom = 179.0
 mouse_filter = 2
 
-[node name="MenuCaravan" parent="." node_paths=PackedStringArray("planet") instance=ExtResource("23_caravan")]
+[node name="MenuCaravan" parent="." unique_id=1611364258 node_paths=PackedStringArray("planet") instance=ExtResource("23_caravan")]
 planet = NodePath("../Planet")
 
 [connection signal="pressed_within_window" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]

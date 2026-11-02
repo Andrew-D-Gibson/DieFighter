@@ -4,6 +4,8 @@ extends Node2D
 ## trail away from the player, sweep in front of the planet and loop round
 ## behind it, on toward the front of the fleet and away from Fate, which is
 ## behind the player. Now and then an Inbound pilgrim flies the other way.
+## A ship can also be taken off the route and flown by hand (see
+## CaravanStraggler), and other scenes can draw over the ships.
 ##
 ## Drawn into a viewport at the game's base resolution, like JuicePixelated,
 ## so ships keep whole pixels as they shrink into the distance. Each width a
@@ -50,25 +52,41 @@ extends Node2D
 ## Narrower than this, a ship blinks its running light.
 @export var beacon_width: int = 10
 @export var beacon_period: float = 2.4
+## The Mayday blink of a ship in trouble.
+@export var distress_color: Color = Color("#F29C5D")
+@export var distress_period: float = 0.7
 
 const _BEHIND_PLANET_SHADER: Shader = preload("res://Source/Systems/UI/MainMenu/MenuCaravan/behind_planet.gdshader")
 const _PREWARM_STEP: float = 0.25
 const _BEACON_ON_SECONDS: float = 0.3
 
+## What a ship's running light is doing.
+enum Beacon { RUNNING, DISTRESS, DARK }
 
-## One ship on the route.
+
+## One ship, on the route or flown by hand.
 class Ship:
 	var kind: CaravanShipKind
+	## Centre on screen, in the caravan's space.
+	var position: Vector2
+	## How big it is, where 1 is its size in combat.
+	var depth: float = 1.0
+	## Faded out at the far end of the route.
+	var fade: float = 1.0
+	## False once taken off the route: then whoever took it moves it.
+	var on_route: bool = true
+	var engine_power: float = 1.0
+	var beacon: Beacon = Beacon.RUNNING
 	## How far along the route, in pixels.
 	var distance: float
 	## Toward the far end (1) or back toward the player (-1).
-	var direction: float
+	var direction: float = 1.0
 	## Across the column, from -1 to 1.
 	var lane: float
 	## Keeps ships from swaying and blinking in step.
 	var phase: float
 	## This ship's speed relative to [member MenuCaravan.speed].
-	var pace: float
+	var pace: float = 1.0
 
 
 var _ships: Array[Ship] = []
@@ -77,7 +95,7 @@ var _behind_from: float
 var _spawn_timer: float = 0.0
 var _time: float = 0.0
 ## Shrunk sprites by kind and width.
-var _sprites: Dictionary[Vector2i, ImageTexture] = {}
+var _sprites: Dictionary[String, ImageTexture] = {}
 
 var _viewport: SubViewport = SubViewport.new()
 var _behind_layer: Node2D = Node2D.new()
@@ -101,6 +119,50 @@ func _process(delta: float) -> void:
 	_advance(delta)
 	_behind_layer.queue_redraw()
 	_front_layer.queue_redraw()
+
+
+## The ships still flying the route, farthest first.
+func ships_on_route() -> Array[Ship]:
+	return _ships.filter(func(ship: Ship) -> bool: return ship.on_route)
+
+
+## Stops moving [param ship] along the route, leaving it where it is for the
+## caller to fly. It's drawn in front of the planet from then on.
+func take_off_route(ship: Ship) -> void:
+	ship.on_route = false
+	ship.fade = 1.0
+
+
+## A ship of [param kind] that isn't on the route, for the caller to fly.
+func add_ship(kind: CaravanShipKind, at: Vector2, depth: float) -> Ship:
+	var ship: Ship = Ship.new()
+	ship.kind = kind
+	ship.position = at
+	ship.depth = depth
+	ship.on_route = false
+	ship.phase = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, TAU)
+	_ships.append(ship)
+	return ship
+
+
+func remove_ship(ship: Ship) -> void:
+	_ships.erase(ship)
+
+
+## Draws [param node] over the ships, in the same pixels and space.
+func add_overlay(node: Node2D) -> void:
+	_viewport.add_child(node)
+
+
+## Where a pixel of [param ship]'s combat sprite, [param texture_point], is
+## on screen right now, in the caravan's space.
+func pixel_on(ship: Ship, texture_point: Vector2) -> Vector2:
+	var full_size: Vector2 = ship.kind.texture.get_size()
+	var scale_factor: float = _width_of(ship) / full_size.x
+	var placed: Vector2 = texture_point
+	if _drawn_flipped(ship.kind):
+		placed.y = full_size.y - 1.0 - placed.y
+	return _top_left_of(ship) + (placed * scale_factor).floor()
 
 
 func _build_layers() -> void:
@@ -146,10 +208,16 @@ func _advance(delta: float) -> void:
 
 	var length: float = route.curve.get_baked_length()
 	for ship: Ship in _ships:
+		if not ship.on_route:
+			continue
 		ship.distance += ship.direction * ship.pace * speed * pow(_depth_at(ship.distance), perspective_slowdown) * delta
-	_ships = _ships.filter(func(ship: Ship) -> bool: return ship.distance >= 0.0 and ship.distance <= length)
+		ship.depth = _depth_at(ship.distance)
+		ship.position = _route_position_of(ship)
+		ship.fade = smoothstep(0.0, fade_distance, length - ship.distance)
+	_ships = _ships.filter(func(ship: Ship) -> bool:
+		return not ship.on_route or (ship.distance >= 0.0 and ship.distance <= length))
 	# Farthest first, so nearer ships draw over them.
-	_ships.sort_custom(func(a: Ship, b: Ship) -> bool: return a.distance > b.distance)
+	_ships.sort_custom(func(a: Ship, b: Ship) -> bool: return a.depth < b.depth)
 
 
 func _spawn() -> void:
@@ -188,43 +256,37 @@ func _depth_at(distance: float) -> float:
 
 
 ## Where on screen [param ship] is centred, in this node's space.
-func _position_of(ship: Ship, depth: float) -> Vector2:
+func _route_position_of(ship: Ship) -> Vector2:
 	var curve: Curve2D = route.curve
 	var on_route: Vector2 = curve.sample_baked(ship.distance)
 	var tangent: Vector2 = curve.sample_baked(ship.distance + 2.0) - curve.sample_baked(ship.distance - 2.0)
 	var across: Vector2 = tangent.normalized().orthogonal()
 	var sway: Vector2 = Vector2(sin(_time * 0.35 + ship.phase), sin(_time * 0.27 + ship.phase * 1.7))
 	var offset: Vector2 = across * ship.lane * column_width * 0.5 + sway * sway_pixels
-	return route.transform * (on_route + offset * depth)
+	return route.transform * (on_route + offset * ship.depth)
 
 
 func _draw_layer(layer: Node2D, behind: bool) -> void:
-	var length: float = route.curve.get_baked_length()
 	for ship: Ship in _ships:
-		if (ship.distance >= _behind_from) != behind:
-			continue
-		var depth: float = _depth_at(ship.distance)
-		var fade: float = smoothstep(0.0, fade_distance, length - ship.distance)
-		_draw_ship(layer, ship, depth, fade)
+		if (ship.on_route and ship.distance >= _behind_from) == behind:
+			_draw_ship(layer, ship)
 
 
-func _draw_ship(layer: Node2D, ship: Ship, depth: float, fade: float) -> void:
-	var texture: Texture2D = ship.kind.texture
-	var full_size: Vector2 = texture.get_size()
-	var width: int = clampi(roundi(full_size.x * depth), 1, int(full_size.x))
-	var scale_factor: float = float(width) / full_size.x
-	var size: Vector2 = (full_size * scale_factor).round().max(Vector2.ONE)
-	var top_left: Vector2 = (_position_of(ship, depth) - size / 2.0).round()
-
+func _draw_ship(layer: Node2D, ship: Ship) -> void:
+	var width: int = _width_of(ship)
+	var top_left: Vector2 = _top_left_of(ship)
+	var size: Vector2 = _size_of(ship)
 	if width >= min_hull_width:
-		var haze: float = max_haze * clampf(1.0 - depth, 0.0, 1.0)
+		var haze: float = max_haze * clampf(1.0 - ship.depth, 0.0, 1.0)
 		var tint: Color = Color.WHITE.lerp(haze_color, haze)
-		tint.a = fade
+		tint.a = ship.fade
 		layer.draw_texture(_sprite_for(ship.kind, width), top_left, tint)
 
-	var light_strength: float = fade * lerpf(0.6, 1.0, clampf(depth * 3.0, 0.0, 1.0))
+	var light_strength: float = ship.fade * lerpf(0.6, 1.0, clampf(ship.depth * 3.0, 0.0, 1.0))
 	var center: Vector2 = (top_left + size / 2.0).floor()
-	var engines: PackedVector2Array = _engine_pixels(ship.kind, scale_factor, full_size)
+	var engines: PackedVector2Array = []
+	for engine: Vector2 in ship.kind.engine_points:
+		engines.append(pixel_on(ship, engine) if width >= min_hull_width else center)
 	if width < separate_engines_width and not engines.is_empty():
 		var sum: Vector2 = Vector2.ZERO
 		for engine: Vector2 in engines:
@@ -232,14 +294,20 @@ func _draw_ship(layer: Node2D, ship: Ship, depth: float, fade: float) -> void:
 		engines = PackedVector2Array([(sum / engines.size()).floor()])
 	var pulse: float = 0.85 + 0.15 * sin(_time * 3.0 + ship.phase)
 	for engine: Vector2 in engines:
-		var at: Vector2 = top_left + engine if width >= min_hull_width else center
-		_draw_light(layer, at, ship.kind.engine_color, light_strength * pulse)
+		_draw_light(layer, engine, ship.kind.engine_color, light_strength * pulse * ship.engine_power)
 
-	var blinking: bool = fmod(_time + ship.phase, beacon_period) < _BEACON_ON_SECONDS
-	if width < beacon_width and (blinking or ship.kind.flies_toward_fate):
-		# The nose: the top of a ship flying away, the bottom of one coming back.
-		var nose: Vector2 = center + Vector2(0, -floorf(size.y / 2.0) if ship.direction > 0.0 else floorf(size.y / 2.0))
-		_draw_light(layer, nose, ship.kind.beacon_color, light_strength)
+	# The nose: the top of a ship drawn flying away, the bottom of one coming back.
+	var nose_offset: float = floorf(size.y / 2.0)
+	var nose: Vector2 = center + Vector2(0, -nose_offset if _drawn_flipped(ship.kind) else nose_offset)
+	match ship.beacon:
+		Beacon.RUNNING:
+			var blinking: bool = fmod(_time + ship.phase, beacon_period) < _BEACON_ON_SECONDS
+			if width < beacon_width and (blinking or ship.kind.flies_toward_fate):
+				_draw_light(layer, nose, ship.kind.beacon_color, light_strength)
+		Beacon.DISTRESS:
+			# At every size: a Mayday is meant to be seen.
+			if fmod(_time + ship.phase, distress_period) < distress_period * 0.5:
+				_draw_light(layer, nose, distress_color, 1.0)
 
 
 func _draw_light(layer: Node2D, at: Vector2, color: Color, strength: float) -> void:
@@ -248,21 +316,29 @@ func _draw_light(layer: Node2D, at: Vector2, color: Color, strength: float) -> v
 	layer.draw_rect(Rect2(at, Vector2.ONE), lit)
 
 
-## [param kind]'s engines in a sprite shrunk by [param scale_factor]. Ships
-## flying away are drawn upside down, engines toward the player.
-func _engine_pixels(kind: CaravanShipKind, scale_factor: float, full_size: Vector2) -> PackedVector2Array:
-	var out: PackedVector2Array = []
-	for engine: Vector2 in kind.engine_points:
-		var placed: Vector2 = engine
-		if not kind.flies_toward_fate:
-			placed.y = full_size.y - 1.0 - engine.y
-		out.append((placed * scale_factor).floor())
-	return out
+func _width_of(ship: Ship) -> int:
+	var full_width: int = int(ship.kind.texture.get_width())
+	return clampi(roundi(full_width * ship.depth), 1, full_width)
+
+
+func _size_of(ship: Ship) -> Vector2:
+	var full_size: Vector2 = ship.kind.texture.get_size()
+	return (full_size * (float(_width_of(ship)) / full_size.x)).round().max(Vector2.ONE)
+
+
+func _top_left_of(ship: Ship) -> Vector2:
+	return (ship.position - _size_of(ship) / 2.0).round()
+
+
+## Ships flying away are drawn upside down: nose to the front of the fleet,
+## engines toward the player.
+func _drawn_flipped(kind: CaravanShipKind) -> bool:
+	return not kind.flies_toward_fate
 
 
 func _sprite_for(kind: CaravanShipKind, width: int) -> ImageTexture:
-	var key: Vector2i = Vector2i(kinds.find(kind), width)
+	var key: String = "%d:%d" % [kind.get_instance_id(), width]
 	if not _sprites.has(key):
-		var image: Image = PixelArtShrinker.shrink(kind.texture.get_image(), width, not kind.flies_toward_fate)
+		var image: Image = PixelArtShrinker.shrink(kind.texture.get_image(), width, _drawn_flipped(kind))
 		_sprites[key] = ImageTexture.create_from_image(image)
 	return _sprites[key]

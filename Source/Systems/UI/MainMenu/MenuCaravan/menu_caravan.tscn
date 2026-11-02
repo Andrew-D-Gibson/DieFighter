@@ -8,6 +8,9 @@
 [ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/picket.tres" id="5_picket"]
 [ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/pilgrim.tres" id="6_pilgrim"]
 
+[ext_resource type="Script" path="res://Source/Systems/UI/MainMenu/MenuCaravan/caravan_straggler.gd" id="8_straggler"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/gaff.tres" id="9_gaff"]
+
 [sub_resource type="Curve2D" id="Curve2D_route"]
 _data = {
 "points": PackedVector2Array(0, 0, 0, 0, 92, 205, -8, 14.5, 8, -14.5, 112, 158, -11, 9.667, 11, -9.667, 140, 118, -14.167, 3.667, 14.167, -3.667, 178, 100, -16.167, -0, 16.167, 0, 225, 96, -16.667, -0, 16.667, 0, 275, 100, -15.833, 2.667, 15.833, -2.667, 325, 96, -1.667, 4.333, 1.667, -4.333, 370, 84, 15.833, 3, -15.833, -3, 335, 70, 19.5, -0.333, -19.5, 0.333, 275, 66, 13.833, -0.333, -13.833, 0.333, 218, 72, 8.333, 3.333, -8.333, -3.333, 192, 68, 6.667, 6.333, -6.667, -6.333, 168, 52, 3.667, 7.333, -3.667, -7.333, 152, 30, 0, 0, 0, 0, 146, 8)
@@ -24,3 +27,9 @@ kinds = Array[ExtResource("7_kind")]([ExtResource("2_hauler"), ExtResource("3_ci
 
 [node name="Route" type="Path2D" parent="."]
 curve = SubResource("Curve2D_route")
+
+[node name="Straggler" type="Node" parent="." node_paths=PackedStringArray("caravan")]
+script = ExtResource("8_straggler")
+caravan = NodePath("..")
+raider = ExtResource("9_gaff")
+breakdown_kinds = Array[ExtResource("7_kind")]([ExtResource("2_hauler"), ExtResource("3_civilian_transport"), ExtResource("4_tender")])
