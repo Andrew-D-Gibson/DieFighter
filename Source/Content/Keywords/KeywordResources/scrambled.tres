@@ -1,7 +1,10 @@
-[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dfj2eluy2g1qd"]
+[gd_resource type="Resource" script_class="StatusResource" format=3 uid="uid://dfj2eluy2g1qd"]
 
-[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_yuudg"]
+[ext_resource type="Script" uid="uid://bkfid0at08n5w" path="res://Source/Content/Keywords/status_resource.gd" id="1_yuudg"]
 [ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_f214x"]
+[ext_resource type="Script" uid="uid://0mus8nntykua" path="res://Source/Behavior/Modifiers/Statuses/scrambled_status.gd" id="3_status"]
+[ext_resource type="Texture2D" uid="uid://bvjj20ry31x3v" path="res://Assets/Textures/Statuses/scrambled.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://bopajwjlus1x4" path="res://Assets/Textures/Statuses/scrambled_info.png" id="5_info"]
 
 [sub_resource type="Resource" id="scrambled"]
 script = ExtResource("2_f214x")
@@ -22,6 +25,10 @@ player_side = true
 [resource]
 script = ExtResource("1_yuudg")
 title = "Scrambled"
-rule = "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled."
-player_rule = "Each die you place on a tile flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]) first. Spends 1 Scrambled."
+rule = "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends {spent} Scrambled."
+player_rule = "Each die you place on a tile flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]) first. Spends {spent} Scrambled."
 tokens = Array[ExtResource("2_f214x")]([SubResource("scrambled"), SubResource("scramble"), SubResource("scrambled_you")])
+modifier_script = ExtResource("3_status")
+color = "green"
+icon = ExtResource("4_icon")
+info_icon = ExtResource("5_info")

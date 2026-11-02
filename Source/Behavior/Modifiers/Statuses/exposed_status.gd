@@ -12,13 +12,16 @@ extends StatusModifier
 ##
 ## Priority 25: a flat addition, alongside the Amplifier, before multipliers.
 
+## Exposed each hit that cashes it in spends.
+const SPENT_PER_HIT: int = 1
+
 
 func _init() -> void:
-	status_id = &"exposed"
-	color = Globals.red
-	icon = preload("res://Assets/Textures/Statuses/exposed.png")
-	info_icon = preload("res://Assets/Textures/Statuses/exposed_info.png")
 	priority = 25
+
+
+static func rule_values() -> Dictionary:
+	return {"spent": SPENT_PER_HIT}
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
@@ -33,7 +36,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 
 	event.amount += stacks
 	announce_triggered()
-	consume(1)
+	consume(SPENT_PER_HIT)
 
 
 ## A hit from the side this ship is fighting: a tile's for an enemy, an enemy

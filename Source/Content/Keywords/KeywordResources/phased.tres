@@ -1,7 +1,10 @@
-[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://coh8wqahanup5"]
+[gd_resource type="Resource" script_class="StatusResource" format=3 uid="uid://coh8wqahanup5"]
 
-[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_h772t"]
+[ext_resource type="Script" uid="uid://bkfid0at08n5w" path="res://Source/Content/Keywords/status_resource.gd" id="1_h772t"]
 [ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_y14ai"]
+[ext_resource type="Script" uid="uid://vhpf1oqerbgf" path="res://Source/Behavior/Modifiers/Statuses/phased_status.gd" id="3_status"]
+[ext_resource type="Texture2D" uid="uid://dllxflo16xmia" path="res://Assets/Textures/Statuses/phased.png" id="4_icon"]
+[ext_resource type="Texture2D" uid="uid://0yh1c14bphcr" path="res://Assets/Textures/Statuses/phased_info.png" id="5_info"]
 
 [sub_resource type="Resource" id="phased"]
 script = ExtResource("2_y14ai")
@@ -17,6 +20,10 @@ player_side = true
 [resource]
 script = ExtResource("1_h772t")
 title = "Phased"
-rule = "The next hit from the player's tiles passes through this ship and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when its turn starts."
-player_rule = "The next enemy hit passes through you and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when your next turn starts."
+rule = "The next hit from the player's tiles passes through this ship and deals no [color=red]damage[/color], to shields or hull. Spends {spent} Phased. Wears off when its turn starts."
+player_rule = "The next enemy hit passes through you and deals no [color=red]damage[/color], to shields or hull. Spends {spent} Phased. Wears off when your next turn starts."
 tokens = Array[ExtResource("2_y14ai")]([SubResource("phased"), SubResource("phased_you")])
+modifier_script = ExtResource("3_status")
+color = "blue"
+icon = ExtResource("4_icon")
+info_icon = ExtResource("5_info")
