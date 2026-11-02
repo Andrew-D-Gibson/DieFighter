@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/ShipSelect/ship_select_popup.tscn" id="20_shipselect"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/Codex/codex_popup.tscn" id="21_codex"]
 [ext_resource type="Texture2D" uid="uid://ccwljuf14y1ag" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="22_blue"]
+[ext_resource type="PackedScene" path="res://Source/Systems/UI/MainMenu/MenuCaravan/menu_caravan.tscn" id="23_caravan"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -422,6 +423,9 @@ offset_top = -1.0
 offset_right = 364.0
 offset_bottom = 179.0
 mouse_filter = 2
+
+[node name="MenuCaravan" parent="." node_paths=PackedStringArray("planet") instance=ExtResource("23_caravan")]
+planet = NodePath("../Planet")
 
 [connection signal="pressed_within_window" from="VBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
