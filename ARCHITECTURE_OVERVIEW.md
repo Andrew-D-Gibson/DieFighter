@@ -60,6 +60,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `PauseMenu` | `PauseLayer/PauseMenu` | Pause state toggle, save/quit, option screen |
 | `GameOver` | `UI/GameOver` | Game over **and** victory sequence, with the run summary line |
 | `MainMenu` | Root scene (`main_menu.tscn`) | Start game, options, wishlist link |
+| `MenuCaravan` | `UI/MainMenu/MenuCaravan` | The menu's backdrop: Caravan ships (`CaravanShipKind`s, borrowing combat sprites) flying an editable `Path2D` past and behind the planet, sized per route point (`point_depths`). Drawn into a 320x180 viewport; each whole-pixel width is its own sprite from `PixelArtShrinker` |
 | `TutorialManager` | `Systems/TutorialManager` | Seeded first-run tutorial: step popups over the opening fight |
 
 **Background & Visuals**
@@ -2223,6 +2224,7 @@ Source/
 │   │   ├── InfoShower/info_shower.gd           # Hover info display
 │   │   ├── PauseMenu/pause_menu.gd             # Pause/Quit UI
 │   │   ├── Mainmenu/main_menu.gd               # Title screen
+│   │   ├── MainMenu/MenuCaravan/               # Caravan flying past the title planet
 │   │   └── ... other UI files ...
 │   │
 │   │   ├── JumpManager/jump_manager.gd          # Hyperspace transition

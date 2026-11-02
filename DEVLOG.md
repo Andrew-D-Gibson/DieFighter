@@ -4,6 +4,15 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-02 — The Caravan on the main menu
+
+- **A stretch of the Long Retreat behind the title.** Caravan ships (Hauler, Civilian Transport, Tender) trail away from the player out of the bottom of the screen, sweep across the planet's face and loop round behind it, coming out past the left limb as a thin line of engine lights heading for the front. Rearguard Pickets fly the flanks. About one ship in 25 is an Inbound Pilgrim flying the route backwards, nose first, toward Fate and the player.
+- **`MenuCaravan`** (`UI/MainMenu/MenuCaravan`): the route is a `Path2D` you can drag in the editor, with one size per point (`point_depths`) and a point from which ships are behind the planet (hidden by `behind_planet.gdshader` inside the disc). Farther ships move slower (`perspective_slowdown`), haze toward the background navy, and below 12 px merge their engines into one light, then blink a running light. A 300 s prewarm opens the menu on a caravan already underway. Kinds are `CaravanShipKind` resources (sprite, weight, engine pixels, light colours, lane).
+- **`PixelArtShrinker`**: ships are drawn into a 320x180 viewport, and every whole-pixel width a sprite passes through is made once by box-averaging the art and snapping back to its own colours. Nearest-neighbour scaling dropped rows, so shrinking ships flickered. It adds about 110 ms to menu start, all under the fade-in.
+- Open: the near ships spend their biggest moments behind the title.
+
+---
+
 ## 2026-11-01 — Upgrades shown side by side
 
 - **Upgrade preview.** A tile's info panel no longer tacks the upgrade's text under its own. When a merge is on the table it shows the tile (art, name, description) on the left, the "+" on the right with its upgrade shimmer, and "Drop a copy on it to upgrade" over a yellow arrow between them (`InfoResource.upgrade_*`, `InfoShower._show_comparison`). The art's zoom-in now lands wherever the layout put it. Descriptions there are 80 px; the longest (Lucky Seven) plus a countdown and a rule line still fits on screen.
