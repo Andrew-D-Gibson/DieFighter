@@ -231,8 +231,8 @@ func test_the_chance_shows_on_the_engine_tile_only() -> void:
 	player.engine_charge = 5
 
 	assert_eq(EvasionModifier.engine_display(player), tile)
-	assert_string_contains(evasion.get_rule_info_text(tile), "15%")
-	assert_eq(evasion.get_rule_info_text(bystander), "")
+	assert_string_contains(evasion.get_rule_side_text(tile), "15%")
+	assert_eq(evasion.get_rule_side_text(bystander), "")
 	assert_false(Keywords.definition("Evasion").is_empty())
 
 
@@ -247,11 +247,28 @@ func test_the_engine_tile_explains_the_sum_and_the_keyword_does_not() -> void:
 	charger.add_child(tile)
 	player.engine_charge = 5
 
-	var text: String = evasion.get_rule_info_text(tile)
+	var text: String = evasion.get_rule_side_text(tile)
 	assert_string_contains(text, "x 3%")
 	assert_string_contains(text, "50%")
 	assert_false(Keywords.definition("Evasion").contains("3%"), "the keyword leaves the sum to the tile")
 
 	evasion.add_bonus(8)
-	assert_string_contains(evasion.get_rule_info_text(tile), "+8%")
-	assert_string_contains(evasion.get_rule_info_text(tile), "23%")
+	assert_string_contains(evasion.get_rule_side_text(tile), "+8%")
+	assert_string_contains(evasion.get_rule_side_text(tile), "23%")
+
+
+## The sum sits in the panel's side column, so the engine tile's own
+## description stays a centred block on its own.
+func test_the_sum_goes_beside_the_engine_tile_not_under_it() -> void:
+	var charger: Node2D = add_child_autofree(Node2D.new())
+	charger.add_to_group(&"engine_charger")
+	var tile: Tile = TILE_SCENE.instantiate()
+	tile.name = "EngineChargerTile"
+	tile.tile_resource = load("res://Source/Content/Tiles/MapTileResources/engine_charger.tres")
+	charger.add_child(tile)
+	player.engine_charge = 5
+
+	var info: InfoResource = tile._get_tile_info()
+	assert_string_contains(info.side_label_text, "15%")
+	assert_false(info.bottom_label_text.contains("15%"))
+	assert_false(info.bottom_label_text.contains("x 3%"))

@@ -29,8 +29,9 @@ extends Resource
 
 ## What the hazard does, in a few words, read straight after its countdown
 ## ("In 2 turns: " + this). Lower case, no full stop, keyword tokens welcome.
-## Keep it to one effect a player can picture: the arrival card and the
-## monitor's readout lead with it, and a long one wraps.
+## Keep it to one effect a player can picture: the arrival card is just this
+## after its countdown, and a long one wraps. The info panel leaves it out,
+## so say nothing here that the description doesn't.
 @export var headline: String
 
 ## The effect named in capitals under the hazard's title on the turn it goes

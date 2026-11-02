@@ -96,6 +96,20 @@ mouse_filter = 2
 texture = ExtResource("3_4644n")
 stretch_mode = 5
 
+[node name="SideLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer" unique_id=1587346021]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(480, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 4
+mouse_filter = 1
+theme_override_fonts/normal_font = ExtResource("2_74257")
+theme_override_font_sizes/normal_font_size = 64
+bbcode_enabled = true
+text = "An aside!"
+fit_content = true
+
 [node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer" unique_id=1773132922]
 layout_mode = 2
 size_flags_vertical = 3
@@ -273,6 +287,8 @@ stretch_mode = 5
 [connection signal="meta_hover_ended" from="MarginContainer/VBoxContainer/TopLabel" to="." method="_on_keyword_hover_ended"]
 [connection signal="meta_hover_started" from="MarginContainer/VBoxContainer/MarginContainer2/BottomLabel" to="." method="_on_keyword_hover_started"]
 [connection signal="meta_hover_ended" from="MarginContainer/VBoxContainer/MarginContainer2/BottomLabel" to="." method="_on_keyword_hover_ended"]
+[connection signal="meta_hover_started" from="MarginContainer/VBoxContainer/MarginContainer/SideLabel" to="." method="_on_keyword_hover_started"]
+[connection signal="meta_hover_ended" from="MarginContainer/VBoxContainer/MarginContainer/SideLabel" to="." method="_on_keyword_hover_ended"]
 [connection signal="gui_input" from="ScreenDim" to="." method="_on_screen_dim_gui_input"]
 [connection signal="meta_hover_started" from="MarginContainer/VBoxContainer/Comparison/CurrentLabel" to="." method="_on_keyword_hover_started"]
 [connection signal="meta_hover_ended" from="MarginContainer/VBoxContainer/Comparison/CurrentLabel" to="." method="_on_keyword_hover_ended"]
