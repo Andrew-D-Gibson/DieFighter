@@ -79,7 +79,7 @@ static func enemy_ids() -> Array[String]:
 		if enemy and enemy.in_codex:
 			ids.append(id)
 	ids.sort_custom(func(a: String, b: String) -> bool:
-		return enemy_resource(a).enemy_name < enemy_resource(b).enemy_name
+		return enemy_resource(a).display_name() < enemy_resource(b).display_name()
 	)
 	return ids
 
@@ -149,7 +149,8 @@ static func enemy_action_lines(enemy: EnemyResource) -> Array[String]:
 	var lines: Array[String] = []
 	for action_name: String in order:
 		var amount: String = amount_range_text(lows[action_name], highs[action_name])
-		lines.append("[color=yellow]%s[/color]: %s" % [action_name, actions[action_name].describe(amount)])
+		var action: EnemyActionResource = actions[action_name]
+		lines.append("[color=yellow]%s[/color]: %s" % [action.display_name(), action.describe(amount)])
 	return lines
 
 

@@ -22,7 +22,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "+2 TOLL"
+callout = "+2 TOLL"
 color = Color(0.7725, 0.3216, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

@@ -18,7 +18,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "HOLD"
+callout = "HOLD"
 color = Color(0.8078, 0.9412, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -55,7 +55,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "WELD"
+callout = "WELD"
 color = Color(0.949, 0.6118, 0.3647, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

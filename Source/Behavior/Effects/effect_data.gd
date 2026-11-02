@@ -51,7 +51,14 @@ extends Resource
 ## Used as the tile data key for INCREMENT_TILE_DATA and SET_TILE_DATA.
 ## Used as the message text for PRINT_DEBUG.
 ## Used as the key name for AMOUNT_MODIFIER subtypes that read tile data.
+## Always an internal name, never shown to the player: on-screen words go in
+## [member callout].
 @export var string_param: String = ""
+
+## The words a CALLOUT floats off its targets, in English ("STOLEN",
+## "+{amount}"). Translated through content.csv (ContentText); "{amount}"
+## and "{die}" are filled in when it plays.
+@export var callout: String = ""
 
 
 # ── Vector Parameters ──────────────────────────────────────────────────────────
@@ -96,3 +103,19 @@ func _validate_property(property: Dictionary) -> void:
 		return
 	if not EffectCatalog.uses_field(int(category), int(subtype), property.name):
 		property.usage = PROPERTY_USAGE_NO_EDITOR
+
+
+## The callout in the current language, its {amount}/{die} tokens unfilled.
+func display_callout() -> String:
+	return ContentText.text(self, &"callout")
+
+
+func _content_text_prefix() -> String:
+	return "EFFECT"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"callout", "CALLOUT",
+			"Word or two that pops up over a ship or system as an effect plays (a combat callout). Capitals, very short. {amount} becomes a number, {die} a die face; keep them."),
+	]

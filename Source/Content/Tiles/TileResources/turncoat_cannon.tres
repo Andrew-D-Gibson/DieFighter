@@ -72,7 +72,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "TURNCOAT!"
+callout = "TURNCOAT!"
 color = Color(0.4784, 0.7412, 0.2, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

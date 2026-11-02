@@ -663,12 +663,11 @@ func silence_face(face: int) -> bool:
 	if original == null or original.silenced_action != null:
 		return false
 	# A copy, like every rolled action: the preloaded one is shared.
-	var silenced: EnemyActionResource = (load(_DO_NOTHING_PATH) as EnemyActionResource).duplicate(true)
+	var silenced: EnemyActionResource = (load(_DO_NOTHING_PATH) as EnemyActionResource).copy()
 	silenced.silenced_action = original
 	silenced.name = original.name
 	silenced.indicator_texture = original.indicator_texture
 	silenced.info_texture = _SILENCED_INFO
-	silenced.description = "Silenced: does nothing this turn"
 	silenced.activating_die_number = face
 	turn_actions[face - 1] = silenced
 	Events.enemy_intents_changed.emit(self)
@@ -798,7 +797,7 @@ func _spend_held_dice() -> void:
 ## start_scenario: a toll taken (or a greeting spoken) by a ship still off
 ## the top of the screen has no visible cause.
 func trigger_state_effects() -> void:
-	dialogue_manager.show_dialogue(scenario_state.dialogue, scenario_state.faction)
+	dialogue_manager.show_dialogue(scenario_state.display_dialogue(), scenario_state.faction)
 
 	if _skip_next_enter_effects:
 		_skip_next_enter_effects = false

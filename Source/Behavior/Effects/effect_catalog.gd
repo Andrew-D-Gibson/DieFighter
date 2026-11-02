@@ -46,7 +46,7 @@ extends RefCounted
 ## Every optional EffectData parameter the inspector can show. A row's 'fields'
 ## entries must come from this list; validate() rejects anything else.
 const KNOWN_FIELDS: Array[String] = [
-	"amount", "multiplier", "string_param", "grid_offset",
+	"amount", "multiplier", "string_param", "callout", "grid_offset",
 	"sound_resource", "color", "range_min", "range_max",
 	"ship_resource", "juice_flags",
 ]
@@ -158,7 +158,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.GLITCH_BURST, label = "Glitch Burst", handler = GlitchBurstHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SHOCKWAVE, label = "Shockwave", handler = JuiceHandler, fields = ["amount", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPARK_BURST, label = "Spark Burst", handler = JuiceHandler, fields = ["amount", "multiplier", "juice_flags", "color"]},
-	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.CALLOUT, label = "Callout", handler = JuiceHandler, fields = ["string_param", "juice_flags", "color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.CALLOUT, label = "Callout", handler = JuiceHandler, fields = ["callout", "juice_flags", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.BUMP, label = "Bump", handler = JuiceHandler, fields = ["multiplier"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ZAP, label = "Zap", handler = JuiceHandler, fields = ["amount", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.GRID_RIPPLE, label = "Grid Ripple", handler = JuiceHandler, fields = ["amount", "color"]},

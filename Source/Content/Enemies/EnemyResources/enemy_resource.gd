@@ -110,3 +110,26 @@ func supports_allies() -> bool:
 ## what it can do. See ALLY_SUPPORT_EARLIEST_SECTOR.
 func earliest_sector() -> int:
 	return ALLY_SUPPORT_EARLIEST_SECTOR if supports_allies() else 0
+
+
+## The ship's name, in the current language.
+func display_name() -> String:
+	return ContentText.text(self, &"enemy_name")
+
+
+## The codex blurb, in the current language. Empty when none was written.
+func display_description() -> String:
+	return ContentText.text(self, &"description")
+
+
+func _content_text_prefix() -> String:
+	return "ENEMY"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"enemy_name", "NAME",
+			"Name of an enemy ship (its class, not a person): the codex entry's title, and read into enemy action text where an action names the ship it helps (\"Repairs Raider for 4\")."),
+		ContentText.Field.new(&"description", "DESC",
+			"Codex blurb for an enemy ship: what it is and how it fights. Keep [color] tags and (keyword) tokens."),
+	]

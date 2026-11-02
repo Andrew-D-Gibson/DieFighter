@@ -17,7 +17,7 @@ func test_do_nothing_pops_a_big_ellipsis() -> void:
 	# load(), not preload(): do_nothing.tres sits in a preload cycle.
 	var callout: EffectData = _callout_of(load(_DO_NOTHING_PATH) as EnemyActionResource)
 	assert_not_null(callout)
-	assert_eq(callout.string_param, "...")
+	assert_eq(callout.callout, "...")
 	assert_true(callout.juice_flags & JuiceEvent.Flag.BIG != 0)
 
 

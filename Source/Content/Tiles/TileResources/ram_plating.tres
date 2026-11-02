@@ -51,7 +51,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "RAM {amount}"
+callout = "RAM {amount}"
 color = Color(0.8157, 0.2118, 0.3373, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

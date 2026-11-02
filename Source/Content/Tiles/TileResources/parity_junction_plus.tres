@@ -109,7 +109,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "ODD"
+callout = "ODD"
 color = Color(0.9333, 0.8275, 0.3647, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -125,7 +125,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "EVEN"
+callout = "EVEN"
 color = Color(0.2627, 0.6510, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

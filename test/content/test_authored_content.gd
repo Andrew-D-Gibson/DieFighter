@@ -102,6 +102,23 @@ func test_every_authored_status_exists() -> void:
 		pass_test("no authored content uses statuses yet")
 
 
+## A callout's words are player-facing and translated (EffectData.callout);
+## string_param holds internal names only. A callout written in string_param
+## would show nothing, and would never reach the translators.
+func test_callouts_keep_their_words_in_the_callout_field() -> void:
+	var checked: int = 0
+	for entry: Dictionary in _effects:
+		var data: EffectData = entry["data"]
+		if data.category == EffectEnums.Category.AUDIO_VISUAL \
+				and data.subtype == EffectEnums.AudioVisualSubtype.CALLOUT:
+			checked += 1
+			assert_eq(data.string_param, "", "%s: a callout's text goes in callout" % _describe(entry))
+			assert_false(data.callout.strip_edges().is_empty(), "%s: a callout with no words" % _describe(entry))
+		else:
+			assert_eq(data.callout, "", "%s: only a CALLOUT shows callout text" % _describe(entry))
+	assert_gt(checked, 0, "no callouts found")
+
+
 func test_conditional_effects_are_conditional_data() -> void:
 	for entry: Dictionary in _effects:
 		var data: EffectData = entry["data"]

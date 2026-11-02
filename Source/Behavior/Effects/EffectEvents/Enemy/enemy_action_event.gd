@@ -174,7 +174,7 @@ func settle_action() -> Texture2D:
 	if EnemyActionResource.outcome_of(action, enemy) != EnemyActionResource.Outcome.BLOCKED:
 		return action.info_texture if action else null
 	# A copy, like every rolled action: the preloaded one is shared.
-	action = _DO_NOTHING.duplicate(true)
+	action = _DO_NOTHING.copy()
 	return BLOCKED_ICON
 
 

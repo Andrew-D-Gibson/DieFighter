@@ -50,8 +50,8 @@ func _play_beat(scenario: ScenarioResource) -> void:
 
 
 func play(scenario: ScenarioResource) -> void:
-	title_label.text = scenario.boss_title
-	subtitle_label.text = scenario.boss_subtitle
+	title_label.text = scenario.display_boss_title()
+	subtitle_label.text = scenario.display_boss_subtitle()
 	portrait.texture = _portrait_for(scenario)
 
 	if _tween:

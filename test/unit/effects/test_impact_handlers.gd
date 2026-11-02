@@ -165,7 +165,7 @@ func test_flourishes_copy_authored_parameters_not_the_running_amount() -> void:
 func test_callout_substitutes_the_running_amount() -> void:
 	context.running_amount = 7
 	var data := _data(Sub.CALLOUT)
-	data.string_param = "LINK x{amount}"
+	data.callout = "LINK x{amount}"
 	var event := await _apply_one(data) as JuiceEvent
 	assert_eq(event.text, "LINK x7")
 

@@ -37,7 +37,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_1")
 category = 4
 subtype = 16
-string_param = "LOADED: {die}"
+callout = "LOADED: {die}"
 color = Color(0.949, 0.6118, 0.3647, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

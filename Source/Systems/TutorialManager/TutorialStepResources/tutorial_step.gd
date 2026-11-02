@@ -116,3 +116,19 @@ enum TutorialFunctions {
 ## closes. Each end is named (a die in hand, a tile, a node), never a spot on
 ## screen. Leave empty for a step that asks for nothing to be done.
 @export var ghost_demos: Array[GhostDemo] = []
+
+
+## The step's text, in the current language.
+func display_text() -> String:
+	return ContentText.text(self, &"tutorial_text")
+
+
+func _content_text_prefix() -> String:
+	return "TUTORIAL"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"tutorial_text", "TEXT",
+			"One step of the tutorial, typed out in a card over the game. (name) tokens draw icons and (delay=0.3) pauses the typing; keep both, and keep [color] and [wave] tags as written. Short: the card is small."),
+	]
