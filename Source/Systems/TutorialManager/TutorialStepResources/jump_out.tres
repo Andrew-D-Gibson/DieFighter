@@ -2,6 +2,21 @@
 
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
 [ext_resource type="Texture2D" uid="uid://d1raxvhmcgf8v" path="res://Assets/Textures/TutorialManager/Highlights/map_large_tab_highlight.png" id="highlight"]
+[ext_resource type="Script" uid="uid://cv1lilnywutlb" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_demo.gd" id="ghost_demo_script"]
+[ext_resource type="Script" uid="uid://biqnrrw2jg04n" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_target.gd" id="ghost_target_script"]
+
+[sub_resource type="Resource" id="gt_die"]
+script = ExtResource("ghost_target_script")
+kind = 1
+
+[sub_resource type="Resource" id="gt_jump_arrow"]
+script = ExtResource("ghost_target_script")
+kind = 5
+
+[sub_resource type="Resource" id="demo_jump"]
+script = ExtResource("ghost_demo_script")
+at = SubResource("gt_die")
+to = SubResource("gt_jump_arrow")
 
 [resource]
 script = ExtResource("1_s")
@@ -9,4 +24,5 @@ tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][
 close_on_signal = 11
 tutorial_function = 10
 highlight_texture = ExtResource("highlight")
+ghost_demos = Array[ExtResource("ghost_demo_script")]([SubResource("demo_jump")])
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

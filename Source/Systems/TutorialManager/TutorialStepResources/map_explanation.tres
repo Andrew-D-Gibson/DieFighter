@@ -2,10 +2,28 @@
 
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
 [ext_resource type="Texture2D" uid="uid://d1raxvhmcgf8v" path="res://Assets/Textures/TutorialManager/Highlights/map_large_tab_highlight.png" id="highlight"]
+[ext_resource type="Script" uid="uid://cv1lilnywutlb" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_demo.gd" id="ghost_demo_script"]
+[ext_resource type="Script" uid="uid://biqnrrw2jg04n" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_target.gd" id="ghost_target_script"]
+
+[sub_resource type="Resource" id="gt_pan_from"]
+script = ExtResource("ghost_target_script")
+kind = 6
+offset = Vector2(24, 6)
+
+[sub_resource type="Resource" id="gt_pan_to"]
+script = ExtResource("ghost_target_script")
+kind = 6
+offset = Vector2(-24, 6)
+
+[sub_resource type="Resource" id="demo_pan"]
+script = ExtResource("ghost_demo_script")
+at = SubResource("gt_pan_from")
+to = SubResource("gt_pan_to")
 
 [resource]
 script = ExtResource("1_s")
 tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) and drag on the map to scout.(delay=0.3) Outrun [color=purple]Corruption[/color] (fate_scenario), which spreads every jump, to the [color=blue]Boss Gate[/color] (jump_gate_scenario)."
 close_on_signal = 1
 highlight_texture = ExtResource("highlight")
+ghost_demos = Array[ExtResource("ghost_demo_script")]([SubResource("demo_pan")])
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

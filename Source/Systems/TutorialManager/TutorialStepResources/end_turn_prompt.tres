@@ -3,10 +3,48 @@
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_ir50p"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_qj6py"]
+[ext_resource type="Script" uid="uid://cv1lilnywutlb" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_demo.gd" id="ghost_demo_script"]
+[ext_resource type="Script" uid="uid://biqnrrw2jg04n" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_target.gd" id="ghost_target_script"]
+[ext_resource type="Resource" uid="uid://dy6ykhsava6f4" path="res://Source/Content/Tiles/TileResources/bump.tres" id="ghost_tile_bump"]
+[ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="ghost_tile_damage"]
+
+[sub_resource type="Resource" id="gt_die"]
+script = ExtResource("ghost_target_script")
+kind = 1
+
+[sub_resource type="Resource" id="gt_bump"]
+script = ExtResource("ghost_target_script")
+kind = 2
+tile = ExtResource("ghost_tile_bump")
+
+[sub_resource type="Resource" id="gt_damage"]
+script = ExtResource("ghost_target_script")
+kind = 2
+tile = ExtResource("ghost_tile_damage")
+
+[sub_resource type="Resource" id="gt_end_turn"]
+script = ExtResource("ghost_target_script")
+node_path = NodePath("Systems/Player/DiceQueue/EndTurnButton")
+
+[sub_resource type="Resource" id="demo_bump"]
+script = ExtResource("ghost_demo_script")
+at = SubResource("gt_die")
+to = SubResource("gt_bump")
+
+[sub_resource type="Resource" id="demo_fire"]
+script = ExtResource("ghost_demo_script")
+at = SubResource("gt_die")
+to = SubResource("gt_damage")
+
+[sub_resource type="Resource" id="demo_end_turn"]
+script = ExtResource("ghost_demo_script")
+gesture = 1
+at = SubResource("gt_end_turn")
 
 [resource]
 script = ExtResource("1_s")
 tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Click[/color][/wave] (left_mouse) a system to read about it.(delay=0.3) Bump a die (bump) then use it (dice_cannon)!(delay=0.3) Use every die, then [color=yellow]End Turn[/color]:"
 text_position = Vector2(100, 40)
 close_on_signal = 6
+ghost_demos = Array[ExtResource("ghost_demo_script")]([SubResource("demo_bump"), SubResource("demo_fire"), SubResource("demo_end_turn")])
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

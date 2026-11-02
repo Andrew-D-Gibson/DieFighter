@@ -3,6 +3,23 @@
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_xb378"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_hghq5"]
+[ext_resource type="Script" uid="uid://cv1lilnywutlb" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_demo.gd" id="ghost_demo_script"]
+[ext_resource type="Script" uid="uid://biqnrrw2jg04n" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_target.gd" id="ghost_target_script"]
+[ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="ghost_tile_damage"]
+
+[sub_resource type="Resource" id="gt_die"]
+script = ExtResource("ghost_target_script")
+kind = 1
+
+[sub_resource type="Resource" id="gt_damage"]
+script = ExtResource("ghost_target_script")
+kind = 2
+tile = ExtResource("ghost_tile_damage")
+
+[sub_resource type="Resource" id="demo_fire"]
+script = ExtResource("ghost_demo_script")
+at = SubResource("gt_die")
+to = SubResource("gt_damage")
 
 [resource]
 script = ExtResource("1_s")
@@ -10,4 +27,5 @@ tutorial_text = "[wave amp=10.0 freq=3.0 connected=1][color=yellow]Drag[/color][
 text_position = Vector2(100, 40)
 close_on_signal = 14
 tutorial_function = 13
+ghost_demos = Array[ExtResource("ghost_demo_script")]([SubResource("demo_fire")])
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

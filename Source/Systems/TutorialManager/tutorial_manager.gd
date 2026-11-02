@@ -121,6 +121,10 @@ const _OPENING_STRIKE_BEAT_SECONDS: float = 0.4
 ## for the shot to land. Only reached if the shot never resolves, so the
 ## player isn't left with a card they can't close.
 const _OPENING_STRIKE_CLOSE_DEADLINE_SECONDS: float = 20.0
+## How long after a card's text is all in its ghost cursor first shows up:
+## long enough to read the last words, short enough that the hand arrives
+## while the player is still deciding what to do.
+const _GHOST_LEAD_SECONDS: float = 0.6
 
 var tutorial_text_popup_scene: PackedScene = preload("uid://dauuk425cis74")
 
@@ -148,6 +152,9 @@ var _open_wait_id: int = 0
 ## The ship targeted when an ON_TARGET_SWITCH step opened, by instance id: it
 ## may be shot down and freed before the player switches.
 var _target_id_at_step_open: int = 0
+
+## Acts out each step's ghost_demos. Made on first use.
+var _ghost: GhostCursor
 
 var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 	TutorialStep.TutorialFunctions.REVEAL_HEALTH_BAR: _reveal_health_bar,
@@ -302,6 +309,7 @@ func start_tutorial() -> void:
 
 		await play_step(step)
 		await _await_popup_closed(step)
+		stop_ghost_demos()
 		_stop_watching_target()
 		_clear_lead_highlight()
 
@@ -367,6 +375,26 @@ func play_step(step: TutorialStep) -> void:
 		current_popup.all_text_displayed.connect(
 			tutorial_functions[step.tutorial_function]
 		)
+
+	# After the step's function, which may be what frees the dice to drag.
+	if not step.ghost_demos.is_empty():
+		current_popup.all_text_displayed.connect(play_ghost_demos.bind(step))
+
+
+## Starts [param step]'s ghost cursor demos, which loop until
+## stop_ghost_demos(). A step that asks for nothing has none.
+func play_ghost_demos(step: TutorialStep) -> void:
+	if step.ghost_demos.is_empty():
+		return
+	if not is_instance_valid(_ghost):
+		_ghost = GhostCursor.new()
+		add_child(_ghost)
+	_ghost.play(step.ghost_demos, get_tree().current_scene, _GHOST_LEAD_SECONDS)
+
+
+func stop_ghost_demos() -> void:
+	if is_instance_valid(_ghost):
+		_ghost.stop()
 
 
 ## Points the player at the targeting computer, then lets its target arrows
@@ -777,6 +805,7 @@ func _unlock_dice() -> void:
 ## Hands the run back. Everything the tutorial held down goes back to normal and
 ## the player carries on from wherever they are — no fade, no menu, no reset.
 func _finish_tutorial() -> void:
+	stop_ghost_demos()
 	_unlock_dice()
 	Globals.tutorial_controls_enemy_turns = false
 	_release_target_arrows()

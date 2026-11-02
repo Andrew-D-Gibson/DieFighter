@@ -430,6 +430,12 @@ func _mouse_in_map() -> bool:
 	return _MAP_RECT.has_point(get_local_mouse_position())
 
 
+## Where a press starts a pan, in world coordinates: for the tutorial's ghost
+## cursor, which shows the drag.
+func pan_area() -> Rect2:
+	return get_global_transform() * _MAP_RECT
+
+
 func _pan_camera_by(delta_x: float) -> void:
 	var bounds: Dictionary = _get_camera_bounds()
 	map_camera.position.x = clampf(map_camera.position.x + delta_x, bounds.min, bounds.max)
