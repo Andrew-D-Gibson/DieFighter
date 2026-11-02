@@ -20,6 +20,14 @@ extends Sprite2D
 @export var star_streak_speed: float = 90.0
 @export var star_max_streak: int = 5
 
+@export_category("Set Piece Drift")
+## Art pixels per second the fixed pieces (planets, moons, suns: static objects
+## that don't scroll) slide down, per unit of speed above the resting cruise.
+## They hold still at rest and fall away as a jump speeds up, slower than the
+## nearest stars, being the backdrop; the new sector's pieces slide down into
+## place as the next jump slows (see _drift_static_objects()).
+@export var static_jump_drift_rate: float = 0.15
+
 @export_category("Managed Scenes")
 @export var nebula_scene: PackedScene
 @export var star_pixel_scene: PackedScene
@@ -47,6 +55,14 @@ var _rest_speed: float = 16.0
 ## True when nothing anchors the view (see BackgroundResource.anchors_the_view):
 ## the stars then drift even at rest. Otherwise they hold until a jump.
 var _stars_drift: bool = false
+## How far the fixed pieces sit below where they were placed: 0 at rest, growing
+## as a jump carries them off the bottom, negative while a new sector's pieces
+## are still sliding into place. Shared, so a moon keeps its place beside its
+## planet.
+var _static_drift: float = 0.0
+## The jump speed (above rest) the current arrival started from, or 0 when the
+## pieces aren't arriving. See _arrival_drift().
+var _arrival_excess: float = 0.0
 
 
 func _ready() -> void:
@@ -58,14 +74,17 @@ func _ready() -> void:
 		_set_background(starting_background)
 
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
-		_set_background(scenario.background_resource, _arrival_is_rule_free())
+		_set_background(scenario.background_resource, _arrival_is_rule_free(), scenario.set_piece_layout)
 	)
 	
 	
 func _process(delta: float) -> void:
 	_move_stars(delta)
 	_update_objects_motion(scrolling_objects, delta, 1.0, 2, 0, _wrap_scrolling_object_position, _get_scrolling_object_base_speed)
+	# Pieces with a parallax level scroll and wrap on their own; the rest hold
+	# their place until a jump moves them.
 	_update_objects_motion(static_objects, delta, 2.0, 0, 50, _wrap_static_object_position, null, true)
+	_drift_static_objects(delta)
 	_update_nebula_speed()
 
 
@@ -106,6 +125,49 @@ func _update_objects_motion(
 func _star_stream_speed() -> float:
 	var cruise: float = global_speed if _stars_drift else maxf(global_speed - _rest_speed, 0.0)
 	return cruise * star_parallax_rate
+
+
+## How far the speed is above the resting cruise: zero at rest, rising through
+## a jump.
+func _jump_excess() -> float:
+	return maxf(global_speed - _rest_speed, 0.0)
+
+
+## Slides the fixed pieces with the jump. Leaving, they fall at a speed that
+## grows with the jump's, and are simply left off the bottom: no wrap, since a
+## planet coming round again mid-jump would read as a second planet. They go
+## with the rest of the sky when the next background loads.
+func _drift_static_objects(delta: float) -> void:
+	var excess: float = _jump_excess()
+	if _arrival_excess > 0.0:
+		_static_drift = -_arrival_drift(minf(excess, _arrival_excess))
+		if excess <= 0.0:
+			_arrival_excess = 0.0
+	elif excess > 0.0:
+		_static_drift += static_jump_drift_rate * excess * delta
+	else:
+		return
+	_place_static_objects()
+
+
+## How far above its place an arriving piece still is, with the jump [param
+## excess] above rest. Starts as far up as falling at the leaving rate through
+## the outro's linear slow-down would carry it, so the pieces come in at the
+## speed the old ones left at and ease to a stop exactly where they belong as
+## the speed reaches rest, however the slow-down is actually timed.
+func _arrival_drift(excess: float) -> float:
+	if _arrival_excess <= 0.0:
+		return 0.0
+	return static_jump_drift_rate * JUMP_OUTRO_TIME * excess * excess / (2.0 * _arrival_excess)
+
+
+func _place_static_objects() -> void:
+	# Whole pixels, so the pieces stay on the art grid as they move.
+	var drift: float = roundf(_static_drift)
+	for obj: Node2D in static_objects:
+		if obj.get_meta("parallax_level", 0) != 0:
+			continue
+		obj.global_position.y = (obj.get_meta("home") as Vector2).y + drift
 
 
 func _move_stars(delta: float) -> void:
@@ -178,6 +240,8 @@ func _clear_children() -> void:
 	stars = []
 	scrolling_objects = []
 	static_objects = []
+	_static_drift = 0.0
+	_arrival_excess = 0.0
 	nebula = null
 	current_composition = null
 	
@@ -196,7 +260,11 @@ func _arrival_is_rule_free() -> bool:
 
 
 ## [param rule_free]: draw from a random pool's backgrounds without a rule.
-func _set_background(background_resource: Resource, rule_free: bool = false) -> void:
+## [param layout]: the planets and stars to show instead of one of the
+## background's own layouts (ScenarioResource.set_piece_layout).
+func _set_background(
+	background_resource: Resource, rule_free: bool = false, layout: SetPieceComposition = null
+) -> void:
 	_clear_children()
 
 	if background_resource.has_method("get_random_background"):
@@ -204,7 +272,7 @@ func _set_background(background_resource: Resource, rule_free: bool = false) -> 
 			RNGManager.get_rng(RNGManager.Bucket.BACKGROUND), rule_free
 		)
 		if selected_bg:
-			_set_background(selected_bg)
+			_set_background(selected_bg, false, layout)
 		return
 	
 	if not background_resource is BackgroundResource:
@@ -221,7 +289,8 @@ func _set_background(background_resource: Resource, rule_free: bool = false) -> 
 	# pieces get drawn for before or after it.
 	var layout_rng: RandomNumberGenerator = RandomNumberGenerator.new()
 	layout_rng.seed = RNGManager.randi(RNGManager.Bucket.BACKGROUND)
-	current_composition = SetPieceComposition.pick(bg_resource.set_piece_compositions, layout_rng)
+	current_composition = layout if layout else \
+		SetPieceComposition.pick(bg_resource.set_piece_compositions, layout_rng)
 	_stars_drift = not bg_resource.anchors_the_view(current_composition)
 
 	if bg_resource.nebula:
@@ -234,6 +303,7 @@ func _set_background(background_resource: Resource, rule_free: bool = false) -> 
 		_set_set_pieces(current_composition.place(layout_rng, Globals.SCREEN_SIZE.x))
 	if bg_resource.static_objects.size() > 0:
 		_set_static_objects(bg_resource.static_objects)
+	_begin_arrival()
 
 	Events.background_changed.emit(bg_resource)
 
@@ -349,11 +419,24 @@ func _add_static_object(
 	# shifts again, landing the object a screen away from where it was
 	# authored. Objects that never wrap (parallax 0) stay lost there.
 	static_object.global_position = at
+	static_object.set_meta("home", at)
 	static_objects.append(static_object)
+
+
+## A background that loads mid-jump (the scenario loads in hyperspace) brings
+## its pieces in from above, to settle as the outro slows. See _arrival_drift().
+func _begin_arrival() -> void:
+	_arrival_excess = _jump_excess()
+	if _arrival_excess <= 0.0:
+		return
+	_static_drift = -_arrival_drift(_arrival_excess)
+	_place_static_objects()
 			
 			
 ## How long play_jump_intro() builds before hyperspace punches in.
 const JUMP_RAMP_UP_TIME: float = 4.0
+## How long play_jump_outro() takes to slow back to the resting cruise.
+const JUMP_OUTRO_TIME: float = 1.0
 
 
 func play_jump_intro() -> void:
@@ -398,7 +481,7 @@ func reset_jump_tint() -> void:
 
 
 func play_jump_outro() -> void:
-	var speed_ramp_down_time: float = 1
+	var speed_ramp_down_time: float = JUMP_OUTRO_TIME
 	
 	# Drop the jump background
 	%JumpTransition.set_background_transparency(0)

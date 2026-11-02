@@ -3,6 +3,12 @@ extends Resource
 
 @export var map_icon: Texture2D
 @export var background_resource: RandomBackgroundResource
+## Pins the planets and stars this scenario shows, in place of the layouts its
+## background picks from (see SetPieceComposition). For a scripted fight whose
+## sky has to keep clear of particular ships' health bars, such as the
+## tutorial's two-ship fight. Leave it unmirrorable with no jitter to pin it
+## exactly. Null for the background's own layouts.
+@export var set_piece_layout: SetPieceComposition
 @export var sector_gate_scenario: bool = false
 @export var starting_enemies: Array[EnemyStateRewardResource]
 

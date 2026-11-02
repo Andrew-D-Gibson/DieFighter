@@ -9,11 +9,33 @@
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
 [ext_resource type="Resource" uid="uid://cplvgr0ytavt0" path="res://Source/Resources/BackgroundResources/star_field.tres" id="star_field"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Resources/BackgroundResources/set_piece_composition.gd" id="comp_script"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Resources/BackgroundResources/static_background_object_resource.gd" id="piece_script"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/dune_world.tscn" id="world_dune"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="moon_barren"]
 
 [sub_resource type="Resource" id="Resource_plain_sky"]
 script = ExtResource("pool_script")
 eligible_backgrounds = Array[ExtResource("bg_script")]([ExtResource("star_field")])
 metadata/_custom_type_script = "uid://3roroso3mo17"
+
+[sub_resource type="Resource" id="Piece_world"]
+script = ExtResource("piece_script")
+scene = ExtResource("world_dune")
+position = Vector2(48, 36)
+
+[sub_resource type="Resource" id="Piece_moon"]
+script = ExtResource("piece_script")
+scene = ExtResource("moon_barren")
+position = Vector2(110, 16)
+modulate = Color(0.7, 0.7, 0.75, 1)
+
+[sub_resource type="Resource" id="Composition_world_and_moon"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("piece_script")]([SubResource("Piece_world"), SubResource("Piece_moon")])
+offset_jitter = Vector2(0, 0)
+mirrorable = false
+light_tilt_jitter = 0.0
 
 [sub_resource type="Resource" id="Resource_bounty"]
 script = ExtResource("script_2")
@@ -55,6 +77,7 @@ metadata/_custom_type_script = "uid://up0oyqfrjcpu"
 script = ExtResource("script_0")
 map_icon = ExtResource("icon")
 background_resource = SubResource("Resource_plain_sky")
+set_piece_layout = SubResource("Composition_world_and_moon")
 starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])
 rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_bounty")
