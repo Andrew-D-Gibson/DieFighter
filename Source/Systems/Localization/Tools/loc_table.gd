@@ -16,6 +16,13 @@ extends RefCounted
 ## `reviewed` (checked by a person), `stale` (the English changed after it was
 ## translated). `_en_hash` is a short hash of the English it was last synced
 ## from, which is how a changed English gets noticed.
+##
+## Plurals use Godot's own CSV form (4.6+): a row with a plural id in the
+## `?plural` column is read with tr_n(), and the keyless rows right under it
+## are its further forms, in the order the locale's plural rule numbers them
+## (`TranslationServer.get_plural_rules()`). Here those rows go by the
+## parent's key plus `#<form>` (`STATUS_BADGE_STACKS#2`), so every tool
+## handles a form like any other row; the CSV still holds them keyless.
 
 const KEY_COLUMN: String = "keys"
 const SOURCE_COLUMN: String = "en"
@@ -23,6 +30,10 @@ const CONTEXT_COLUMN: String = "_context"
 const MAX_CHARS_COLUMN: String = "_max_chars"
 const STATUS_COLUMN: String = "_status"
 const HASH_COLUMN: String = "_en_hash"
+## Godot's importer reads this column as the plural id tr_n() is given.
+const PLURAL_COLUMN: String = "?plural"
+## Joins a plural row's key and a form number: STATUS_BADGE_STACKS#2.
+const PLURAL_FORM_MARK: String = "#"
 
 const STALE: String = "stale"
 const MACHINE: String = "machine"
@@ -73,6 +84,9 @@ static func read(csv_path: String, template_columns: PackedStringArray = PackedS
 	# itself to the first column's name.
 	header[0] = KEY_COLUMN
 	table.columns = header
+	# The last keyed row and how many forms it has so far, for plural rows.
+	var parent_key: String = ""
+	var form: int = 1
 	while not file.eof_reached():
 		start = file.get_position()
 		var line: PackedStringArray = file.get_csv_line()
@@ -83,7 +97,14 @@ static func read(csv_path: String, template_columns: PackedStringArray = PackedS
 			cells[header[i]] = line[i]
 		var key: String = cells.get(KEY_COLUMN, "")
 		if key.is_empty():
-			continue
+			# Godot only reads a keyless row as a form of a plural row.
+			if parent_key.is_empty() or table.cell(parent_key, PLURAL_COLUMN).is_empty():
+				continue
+			form += 1
+			key = plural_form_key(parent_key, form)
+		else:
+			parent_key = key
+			form = 1
 		if table._rows.has(key):
 			push_warning("LocTable: %s has key %s twice; keeping the first" % [csv_path, key])
 			continue
@@ -139,12 +160,64 @@ func cell(key: String, column: String) -> String:
 
 func set_cell(key: String, column: String, value: String) -> void:
 	if not _rows.has(key):
-		_rows[key] = {KEY_COLUMN: key}
-		_order.append(key)
+		_add_row(key)
 	if cell(key, column) == value and _rows[key].has(column):
 		return
 	_rows[key][column] = value
 	_raw_lines.erase(key)
+
+
+## A new, empty row for [param key]. In a CSV with a plural column, a plural
+## form goes keyless right under its row's earlier forms (with any missing
+## forms before it, since Godot numbers forms by position).
+func _add_row(key: String) -> void:
+	if not (is_plural_form(key) and PLURAL_COLUMN in columns):
+		_rows[key] = {KEY_COLUMN: key}
+		_order.append(key)
+		return
+	var parent: String = plural_parent(key)
+	var at: int = _order.find(parent)
+	if at < 0:
+		_rows[key] = {KEY_COLUMN: key}
+		_order.append(key)
+		return
+	for form: int in range(2, plural_form_number(key) + 1):
+		var form_key: String = plural_form_key(parent, form)
+		at += 1
+		if _rows.has(form_key):
+			continue
+		_rows[form_key] = {KEY_COLUMN: ""}
+		_order.insert(at, form_key)
+
+
+# ── Plural forms ─────────────────────────────────────────────────────────────
+
+## The key a plural row's [param form]th form goes by (form 1 is the row
+## itself).
+static func plural_form_key(key: String, form: int) -> String:
+	return key if form <= 1 else "%s%s%d" % [key, PLURAL_FORM_MARK, form]
+
+
+static func is_plural_form(key: String) -> bool:
+	return PLURAL_FORM_MARK in key
+
+
+## STATUS_BADGE_STACKS#2 -> STATUS_BADGE_STACKS
+static func plural_parent(key: String) -> String:
+	return key.get_slice(PLURAL_FORM_MARK, 0)
+
+
+## STATUS_BADGE_STACKS#2 -> 2; a plain key is form 1.
+static func plural_form_number(key: String) -> int:
+	return key.get_slice(PLURAL_FORM_MARK, 1).to_int() if is_plural_form(key) else 1
+
+
+## How many plural forms [param locale] has (Russian 3, Japanese 1), or 0 if
+## Godot has no rule for it.
+static func plural_form_count(locale: String) -> int:
+	var rules: String = TranslationServer.get_plural_rules(locale)
+	var found: RegExMatch = RegEx.create_from_string(r"nplurals\s*=\s*(\d+)").search(rules)
+	return found.get_string(1).to_int() if found else 0
 
 
 ## Moves [param old_key]'s row, every cell of it, to [param new_key]. Does
@@ -268,11 +341,15 @@ func refresh_hashes() -> Array[String]:
 
 
 ## Rows [param locale] still needs: untranslated, or translated from English
-## that has since changed. Rows without English are skipped.
+## that has since changed. Rows without English are skipped, and so are
+## plural forms the locale doesn't have (Japanese needs only the first).
 func pending_keys(locale: String) -> Array[String]:
 	var found: Array[String] = []
+	var form_count: int = plural_form_count(locale)
 	for key: String in _order:
 		if english(key).is_empty():
+			continue
+		if form_count > 0 and plural_form_number(key) > form_count:
 			continue
 		if cell(key, locale).is_empty() or status_of(key, locale) == STALE:
 			found.append(key)

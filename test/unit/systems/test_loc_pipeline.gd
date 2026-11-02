@@ -235,6 +235,70 @@ func test_untouched_rows_keep_their_exact_lines() -> void:
 	assert_eq(lines[1], "UI_HELLO,Hello,Hallo,a greeting,,machine,")
 
 
+# ── Plural rows ──────────────────────────────────────────────────────────────
+
+## Godot's CSV plural layout: the plural id in `?plural`, and the further
+## forms as keyless rows under the row.
+func _write_plural_ui() -> void:
+	_write(pipeline.ui_path,
+		"keys,en,de,ja,ru,_context,_max_chars,_status,_en_hash,?plural\n" +
+		"UI_HELLO,Hello,,,,a greeting,,,\n" +
+		"UI_STACKS,{n} stack,,,,form 1,,,,UI_STACKS_PLURAL\n" +
+		",{n} stacks,,,,form 2,,,\n" +
+		",{n} stacks,,,,form 3,,,\n" +
+		"UI_BYE,Bye,,,,,,,\n")
+
+
+func test_plural_forms_read_as_their_own_rows() -> void:
+	_write_plural_ui()
+	var ui: LocTable = LocTable.read(pipeline.ui_path)
+	assert_eq(ui.keys(), ["UI_HELLO", "UI_STACKS", "UI_STACKS#2", "UI_STACKS#3", "UI_BYE"] as Array[String])
+	assert_eq(ui.english("UI_STACKS#2"), "{n} stacks")
+	assert_eq(ui.cell("UI_BYE", LocTable.PLURAL_COLUMN), "", "a row without a plural id")
+	assert_eq(ui.to_csv(), FileAccess.get_file_as_string(pipeline.ui_path), "written back unchanged")
+
+
+func test_a_keyless_row_under_a_plain_row_is_still_dropped() -> void:
+	_write(pipeline.ui_path, "keys,en,_context,?plural\nUI_HELLO,Hello,,\n,stray,,\n")
+	assert_eq(LocTable.read(pipeline.ui_path).keys(), ["UI_HELLO"] as Array[String])
+
+
+func test_export_asks_only_for_the_forms_a_locale_has() -> void:
+	_write_plural_ui()
+	pipeline.export_locale("ja")
+	assert_eq(LocTable.read(pipeline.pending_file("ja")).keys(),
+		["UI_HELLO", "UI_STACKS", "UI_BYE"] as Array[String], "Japanese has one form")
+	pipeline.export_locale("de")
+	assert_eq(LocTable.read(pipeline.pending_file("de")).keys(),
+		["UI_HELLO", "UI_STACKS", "UI_STACKS#2", "UI_BYE"] as Array[String])
+	pipeline.export_locale("ru")
+	assert_true(LocTable.read(pipeline.pending_file("ru")).has("UI_STACKS#3"), "Russian has three")
+
+
+func test_imported_forms_land_keyless_under_their_row() -> void:
+	_write_plural_ui()
+	pipeline.export_locale("ru")
+	var exported: LocTable = LocTable.read(pipeline.pending_file("ru"))
+	exported.set_cell("UI_STACKS", "ru", "{n} стак")
+	exported.set_cell("UI_STACKS#3", "ru", "{n} стаков")
+	exported.save()
+	assert_eq(pipeline.import_file(pipeline.pending_file("ru")), 2)
+	var lines: PackedStringArray = FileAccess.get_file_as_string(pipeline.ui_path).split("\n")
+	assert_eq(lines[2], "UI_STACKS,{n} stack,,,{n} стак,form 1,,machine,,UI_STACKS_PLURAL")
+	assert_eq(lines[3], ",{n} stacks,,,,form 2,,,", "untouched form 2 keeps its line")
+	assert_eq(lines[4], ",{n} stacks,,,{n} стаков,form 3,,machine,,")
+	assert_eq(lines[5], "UI_BYE,Bye,,,,,,,")
+
+
+func test_a_new_form_fills_the_gap_before_it() -> void:
+	_write(pipeline.ui_path, "keys,en,ru,_context,?plural\nUI_STACKS,{n} stack,,,UI_STACKS_PLURAL\nUI_BYE,Bye,,,\n")
+	var ui: LocTable = LocTable.read(pipeline.ui_path)
+	ui.set_cell("UI_STACKS#3", "ru", "{n} стаков")
+	assert_eq(ui.keys(), ["UI_STACKS", "UI_STACKS#2", "UI_STACKS#3", "UI_BYE"] as Array[String],
+		"Godot numbers forms by position, so form 2 needs a row too")
+	assert_eq(ui.to_csv().split("\n")[3], ",,{n} стаков,,")
+
+
 # ── Lint helpers ─────────────────────────────────────────────────────────────
 
 func test_parity_accepts_reordered_tokens() -> void:
