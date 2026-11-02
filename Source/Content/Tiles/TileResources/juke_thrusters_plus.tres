@@ -54,6 +54,8 @@ script = ExtResource("2_hg4sh")
 category = 2
 subtype = 2
 multiplier = 6.0
+text_token = &"percent"
+text_token_value = "multiplier"
 
 [sub_resource type="Resource" id="Resource_vwewc"]
 script = ExtResource("2_hg4sh")
@@ -91,7 +93,7 @@ animations = [{
 [resource]
 script = ExtResource("7_6j6oe")
 tile_name = "[color=purple]Juke Thrusters+[/color]"
-description = "[color=yellow]Any die[/color] -> Gain 6% (evasion) per pip until your next turn"
+description = "[color=yellow]Any die[/color] -> Gain {percent}% (evasion) per pip until your next turn"
 offered_as_reward = false
 is_upgrade = true
 textures = SubResource("SpriteFrames_iyujf")

@@ -43,6 +43,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 5
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -89,6 +90,7 @@ if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"),
 category = 7
 subtype = 11
 amount = 2
+text_token = &"cost"
 metadata/_custom_type_script = "uid://1c0msmj2pcjy"
 
 [sub_resource type="Resource" id="Resource_chain9"]
@@ -129,6 +131,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 5
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_3"]
@@ -175,6 +178,7 @@ if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step11")
 category = 7
 subtype = 11
 amount = 2
+text_token = &"cost"
 metadata/_custom_type_script = "uid://1c0msmj2pcjy"
 
 [sub_resource type="Resource" id="Resource_chain17"]
@@ -201,7 +205,7 @@ animations = [{
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Counterweight Battery[/color]"
-description = "[color=yellow]Enemy turn ends[/color] -> Spend [color=purple]2 charge[/color]: Gain [color=blue]5 shields[/color]"
+description = "[color=yellow]Enemy turn ends[/color] -> Spend [color=purple]{cost} charge[/color]: Gain [color=blue]{shields} shields[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

@@ -9,7 +9,7 @@ const _TEXT_FIELDS: Array[StringName] = [&"activation_description", &"descriptio
 
 ## Families whose tiles have been through `tools/loc.sh tokens convert`. A
 ## literal number left in one of these fails. A family pass adds its family.
-const _CONVERTED_FAMILIES: Array[String] = ["yellow"]
+const _CONVERTED_FAMILIES: Array[String] = ["yellow", "blue", "purple"]
 
 ## The lint's switch: while false, literals in families not yet converted are
 ## only reported (the test is pending, listing them). Flip to true once every

@@ -58,6 +58,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 3
+text_token = &"weakened"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_8"]
@@ -129,7 +130,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Dampener+[/color]"
-description = "[color=yellow]Any die[/color] -> Apply 3 (weakened)"
+description = "[color=yellow]Any die[/color] -> Apply {weakened} (weakened)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])

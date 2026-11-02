@@ -92,6 +92,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 15
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_16"]
@@ -143,7 +144,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=blue]Capacitor Bank[/color]"
-description = "(countdown) 12. [color=yellow]Any die[/color] -> Count down by die. At 0: Gain [color=blue]15 shields[/color]"
+description = "(countdown) {countdown}. [color=yellow]Any die[/color] -> Count down by die. At 0: Gain [color=blue]{shields} shields[/color]"
 rarity = 1
 upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_1")

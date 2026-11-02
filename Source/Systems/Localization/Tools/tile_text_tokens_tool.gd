@@ -90,7 +90,11 @@ const RULE_NUMBERS: PackedStringArray = ["0"]
 ## adds a tile here only when the number really isn't in its data.
 ## Keyed by tile file name, then the literal as written, e.g.
 ##   "inverter": {"1": "die faces of the d6, not data", ...}
-const LITERAL_EXEMPT: Dictionary = {}
+const LITERAL_EXEMPT: Dictionary = {
+	"emergency_shield": {"1": "the FATAL_HIT event always leaves you at 1 hull; not tile data"},
+	"emergency_shield_plus": {"1": "the FATAL_HIT event always leaves you at 1 hull; not tile data"},
+	"unstable_shield_array": {"+1": "INCREMENT_TILE_DATA adds exactly one per push; it has no amount"},
+}
 
 var messages: PackedStringArray = []
 

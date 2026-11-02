@@ -39,6 +39,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("11_q67gt")
 category = 2
 amount = 10
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_dva43"]
@@ -101,7 +102,7 @@ animations = [{
 [resource]
 script = ExtResource("8_8vpcq")
 tile_name = "[color=blue]Shield Burst+[/color]"
-description = "(die_3) or (die_4) -> Gain [color=blue]10 shields[/color]"
+description = "(die_3) or (die_4) -> Gain [color=blue]{shields} shields[/color]"
 offered_as_reward = false
 is_upgrade = true
 textures = SubResource("SpriteFrames_p7d6s")

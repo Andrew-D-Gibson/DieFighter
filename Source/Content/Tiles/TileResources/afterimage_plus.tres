@@ -40,6 +40,7 @@ sound_resource = ExtResource("5_lctph")
 script = ExtResource("4_ea4xd")
 category = 2
 amount = 6
+text_token = &"shields"
 
 [sub_resource type="Resource" id="Resource_mro3j"]
 script = ExtResource("4_ea4xd")
@@ -82,7 +83,7 @@ animations = [{
 [resource]
 script = ExtResource("4_63b5k")
 tile_name = "[color=blue]Afterimage+[/color]"
-description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=blue]6 shields[/color]"
+description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=blue]{shields} shields[/color]"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

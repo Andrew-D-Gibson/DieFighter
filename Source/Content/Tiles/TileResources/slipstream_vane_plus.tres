@@ -33,6 +33,7 @@ color = Color(0.7725, 0.3216, 0.9451, 1)
 script = ExtResource("4_k2lbd")
 category = 2
 amount = 3
+text_token = &"charge"
 
 [sub_resource type="Resource" id="Resource_pjilb"]
 script = ExtResource("4_k2lbd")
@@ -69,7 +70,7 @@ animations = [{
 [resource]
 script = ExtResource("4_8krej")
 tile_name = "[color=purple]Slipstream Vane+[/color]"
-description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=purple]3 charge[/color]"
+description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=purple]{charge} charge[/color]"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

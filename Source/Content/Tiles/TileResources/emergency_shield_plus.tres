@@ -79,6 +79,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("12_esdata")
 category = 2
 amount = 20
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_3"]
@@ -191,7 +192,7 @@ animations = [{
 [resource]
 script = ExtResource("4_k7gdr")
 tile_name = "[color=blue]Emergency Shield+[/color]"
-description = "[color=yellow]Fatal hit[/color] -> Survive at 1 [color=red]hull[/color]. Gain [color=blue]20 shields[/color]. Destroy this tile"
+description = "[color=yellow]Fatal hit[/color] -> Survive at 1 [color=red]hull[/color]. Gain [color=blue]{shields} shields[/color]. Destroy this tile"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

@@ -59,6 +59,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"weakened"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_7"]
@@ -133,7 +134,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Suppression Pulse[/color]"
-description = "(die_6) -> Apply 2 (weakened) to [color=purple]every enemy[/color]. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
+description = "(die_6) -> Apply {weakened} (weakened) to [color=purple]every enemy[/color]. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

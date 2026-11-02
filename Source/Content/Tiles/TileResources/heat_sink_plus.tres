@@ -67,6 +67,8 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 2
 multiplier = 3.0
+text_token = &"shields"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -132,7 +134,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Heat Sink+[/color]"
-description = "(die_4) -> Gain [color=blue]3 shields[/color] per (burn) on [color=purple]target[/color]"
+description = "(die_4) -> Gain [color=blue]{shields} shields[/color] per (burn) on [color=purple]target[/color]"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
