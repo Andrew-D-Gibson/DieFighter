@@ -30,6 +30,16 @@ var amount: int = 0
 ## and after-hooks are also skipped.
 var canceled: bool = false
 
+## What [member amount] was before a cap (the Doldrums' AmountCapModifier)
+## cut it down, so the popup can show what the cap took ("12→3") instead of
+## a 3 the player can't account for. Meaningless while [member capped_by] is
+## null.
+var capped_from: int = 0
+
+## The modifier that cut [member amount] down, or null if none did. Its
+## trigger colour tints the uncapped number.
+var capped_by: Modifier = null
+
 
 # ── Interface ──────────────────────────────────────────────────────────────────
 
@@ -48,6 +58,36 @@ func is_amplifiable() -> bool:
 ## here to be frozen with the rest.
 func changes_die_values() -> bool:
 	return false
+
+
+## Records that [param cap] is cutting [member amount] down to [param capped].
+## Only the first cap is kept: the number worth showing is the one the effect
+## would have landed with, not a halfway step between two caps.
+func cap_amount(capped: int, cap: Modifier) -> void:
+	if capped_by == null:
+		capped_from = amount
+		capped_by = cap
+	amount = capped
+
+
+## The uncapped number for a popup of [param shown] to lead with ("12→3"), or
+## 0 for none: nothing capped it, or later modifiers left the shown number
+## no smaller than the uncapped one.
+func uncapped_for_popup(shown: int) -> int:
+	if capped_by == null or capped_from <= shown or shown <= 0:
+		return 0
+	return capped_from
+
+
+## A gain's popup lead ("+12" before "+3"), or "" when nothing capped it.
+func uncapped_gain_text() -> String:
+	var uncapped: int = uncapped_for_popup(amount)
+	return "+%d" % uncapped if uncapped > 0 else ""
+
+
+## Colour of the uncapped number in a popup: the capping rule's own.
+func cap_color() -> Color:
+	return capped_by.get_trigger_color() if capped_by else Color.WHITE
 
 
 ## Override this in each concrete event class.

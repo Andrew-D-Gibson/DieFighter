@@ -164,9 +164,12 @@ static func gather(parent: Node, global_pos: Vector2, color: Color,
 		tween.chain().tween_callback(mote.queue_free)
 
 
-## Floats a short label off `anchor` (a status name, "x2", "+3").
-static func callout(anchor: Node2D, text: String, color: Color, big: bool = false) -> void:
-	DamageNumber.spawn_text(anchor, text, color, big)
+## Floats a short label off `anchor` (a status name, "x2", "+3"). A non-empty
+## [param uncapped_text] is what a cap cut it down from, led small in
+## [param cap_color] ("+12→+3").
+static func callout(anchor: Node2D, text: String, color: Color, big: bool = false,
+		uncapped_text: String = "", cap_color: Color = Color.WHITE) -> void:
+	DamageNumber.spawn_text(anchor, text, color, big, uncapped_text, cap_color)
 
 
 ## The same label at an arbitrary point, for anchors that aren't where their

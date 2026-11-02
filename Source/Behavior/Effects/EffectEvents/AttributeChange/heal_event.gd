@@ -11,4 +11,4 @@ func resolve(_engine: ScenarioEngine) -> void:
 			continue
 		target.health.change_health(amount)
 		if target is Enemy and amount > 0:
-			Juice.callout(target, "+%d" % amount, Globals.green)
+			Juice.callout(target, "+%d" % amount, Globals.green, false, uncapped_gain_text(), cap_color())
