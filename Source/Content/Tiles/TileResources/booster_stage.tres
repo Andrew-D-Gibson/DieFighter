@@ -23,6 +23,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"boost"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -99,7 +100,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=yellow]Booster Stage[/color]"
-description = "[color=yellow]Any die[/color] -> Tile to the right gets +2 to effects this turn. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Tile to the right gets +{boost} to effects this turn. (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

@@ -56,6 +56,7 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 1
 amount = 2
+text_token = &"bonus"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_10"]
@@ -105,7 +106,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=yellow]Fuse Cutter+[/color]"
-description = "[color=yellow]Any die[/color] -> Count down all other (countdowns) by die +2"
+description = "[color=yellow]Any die[/color] -> Count down all other (countdowns) by die +{bonus}"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

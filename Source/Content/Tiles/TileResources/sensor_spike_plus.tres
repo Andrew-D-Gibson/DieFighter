@@ -60,6 +60,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 3
+text_token = &"exposed"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_10"]
@@ -136,7 +137,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=yellow]Sensor Spike+[/color]"
-description = "[color=yellow]Any die[/color] -> Apply 3 (exposed). (feed_right)"
+description = "[color=yellow]Any die[/color] -> Apply {exposed} (exposed). (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

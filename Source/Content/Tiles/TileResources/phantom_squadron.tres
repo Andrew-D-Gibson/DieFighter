@@ -22,6 +22,8 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_act")
 type = 12
 threshold = 4
+text_token = &"dice"
+text_token_value = "threshold + 1"
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_step_1"]
@@ -88,6 +90,8 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 1
 amount = 4
+text_token = &"dice"
+text_token_value = "amount + 1"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_11"]
@@ -136,7 +140,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=yellow]Phantom Squadron[/color]"
-description = "[color=yellow]Any die[/color] -> Spawn (holograms) of die until you own 5 dice"
+description = "[color=yellow]Any die[/color] -> Spawn (holograms) of die until you own {dice} dice"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

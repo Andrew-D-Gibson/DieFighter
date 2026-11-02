@@ -72,6 +72,12 @@ enum ActivationType {
 # a status id to require (empty = any status).
 @export var data_key: String = ""
 
+## Names this check's number in the tile's text ("until you own {dice}
+## dice"). See TextTokens; [member text_token_value] picks another number
+## ("threshold + 1"), empty shows [member threshold].
+@export var text_token: StringName = &""
+@export var text_token_value: String = ""
+
 
 var activation_functions: Dictionary[ActivationType, Callable] = {
 	
@@ -325,3 +331,8 @@ func get_criteria_fail_text() -> String:
 	elif type == ActivationType.TARGETED_SHIP_HAS_STATUS and not data_key.is_empty():
 		text = TranslationServer.translate("ERROR_TARGET_LACKS_STATUS").format({"status": data_key.to_upper()})
 	return text
+
+
+## The number text_token shows when text_token_value is empty (TextTokens).
+func _text_token_field() -> String:
+	return "threshold"

@@ -65,4 +65,5 @@ func test_a_tile_shows_its_own_english() -> void:
 	for id: String in ContentRegistry.get_tile_ids():
 		var tile: TileResource = load(ContentRegistry.get_tile_path(id))
 		assert_eq(tile.display_name(), tile.tile_name)
-		assert_eq(tile.display_description(), tile.description)
+		# English is the field itself, its {numbers} filled from the tile's data.
+		assert_eq(tile.display_description(), TextTokens.fill(tile.description, tile))

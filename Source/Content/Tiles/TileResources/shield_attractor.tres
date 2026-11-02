@@ -33,6 +33,8 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = -6
+text_token = &"shields"
+text_token_value = "-amount"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -126,7 +128,7 @@ animations = [{
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=yellow]Shield Attractor[/color]"
-description = "(die_4) -> Remove [color=blue]6 shields[/color] from [color=purple]target[/color]. [color=green]Pull[/color] every tile in this row toward this one"
+description = "(die_4) -> Remove [color=blue]{shields} shields[/color] from [color=purple]target[/color]. [color=green]Pull[/color] every tile in this row toward this one"
 rarity = 1
 offered_as_reward = false
 textures = SubResource("Resource_frames4")
