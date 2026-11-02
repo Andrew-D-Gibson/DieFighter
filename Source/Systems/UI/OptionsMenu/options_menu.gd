@@ -140,7 +140,7 @@ func _build_pages() -> void:
 	if OptionsSettings.has_option(OptionsSettings.PIXEL_PERFECT):
 		var pixel_perfect: CheckBox = graphics.check(OptionsSettings.PIXEL_PERFECT, "OPT_PIXEL_PERFECT", "OPT_PIXEL_PERFECT_HINT")
 		graphics.enable_when(pixel_perfect, OptionsSettings.is_fullscreen)
-		var scales: Array = _window_scales()
+		var scales: Array = OptionsSettings.window_scales()
 		var scale_labels: Array = scales.map(func(scale: int) -> String: return "%dx" % scale)
 		var window_scale: PixelDropdown = graphics.choice(OptionsSettings.WINDOW_SCALE, "OPT_WINDOW_SCALE",
 			scale_labels, scales, "OPT_WINDOW_SCALE_HINT")
@@ -219,12 +219,6 @@ func _add_progress_row(page: OptionsPage, label_key: String, text_key: String, h
 	page.custom(pressable, label_key, hint_key, &"", Callable(), false)
 	pressable.set_button_text(text_key)
 	set_button_texture(pressable, texture)
-
-
-## The window scales offered here: those that fit on this display.
-func _window_scales() -> Array:
-	var largest: int = OptionsSettings.largest_window_scale()
-	return OptionsSettings.WINDOW_SCALES.filter(func(scale: int) -> bool: return scale <= largest)
 
 
 ## --- Layout ---

@@ -109,9 +109,37 @@ func test_a_window_mostly_off_the_edge_is_off_screen() -> void:
 
 func test_a_brought_back_window_takes_the_largest_scale_that_fits() -> void:
 	assert_eq(OptionsSettings.scale_to_fit(_LAPTOP.size), 4)
-	assert_eq(OptionsSettings.scale_to_fit(_MONITOR_TO_THE_RIGHT.size), 6)
+	assert_eq(OptionsSettings.scale_to_fit(_MONITOR_TO_THE_RIGHT.size), 7, "odd scales count too")
 	assert_eq(OptionsSettings.scale_to_fit(Vector2i(500, 300)), 2, "the smallest when none fits")
 
 
 func test_a_screen_of_unknown_size_gets_four_times() -> void:
 	assert_eq(OptionsSettings.scale_to_fit(Vector2i.ZERO), 4)
+
+
+## --- Window scales ---
+
+## A 10240x2880 monitor: menu bar 60 px, Dock 180 px, title bar 64 px.
+const _WIDE_USABLE: Vector2i = Vector2i(10240, 2640)
+const _TITLE_BAR: Vector2i = Vector2i(0, 64)
+
+
+func test_every_whole_scale_is_offered() -> void:
+	assert_eq(OptionsSettings.scales_up_to(5), [2, 3, 4, 5] as Array[int])
+	assert_eq(OptionsSettings.scales_up_to(1), [2] as Array[int], "never fewer than the smallest")
+
+
+func test_window_scales_go_past_twelve_when_the_screen_allows() -> void:
+	assert_eq(OptionsSettings.scale_to_fit(_WIDE_USABLE - _TITLE_BAR), 14)
+	assert_eq(OptionsSettings.scales_up_to(14).back(), 14)
+
+
+func test_a_window_leaves_room_for_its_title_bar() -> void:
+	# 12x is 2160 px tall: it needs the title bar's 64 px on top of that.
+	assert_eq(OptionsSettings.scale_to_fit(Vector2i(3840, 2160 + 64) - _TITLE_BAR), 12, "exactly fits")
+	assert_eq(OptionsSettings.scale_to_fit(Vector2i(3840, 2160 + 63) - _TITLE_BAR), 11, "a pixel short")
+
+
+func test_fullscreen_pixel_perfect_can_outscale_the_window() -> void:
+	# The whole screen and no frame: 16x where a window tops out at 14x.
+	assert_eq(PixelPerfectScaler.art_scale_for(Vector2i(10240, 2880)), 16)
