@@ -35,6 +35,8 @@ script = ExtResource("2_a2tqo")
 category = 2
 subtype = 2
 multiplier = 2.0
+text_token = &"shift"
+text_token_value = "multiplier"
 
 [sub_resource type="Resource" id="Resource_y6vou"]
 script = ExtResource("2_a2tqo")
@@ -90,7 +92,7 @@ animations = [{
 [resource]
 script = ExtResource("4_a2tqo")
 tile_name = "[color=green]Flywheel[/color]"
-description = "[color=yellow]Die below[/color] (die_6) [color=yellow]after a ring step[/color] -> Add 2 to die per ring step since last used ([data]ring_steps[/data]). Reset count. [color=orange]Return[/color] die"
+description = "[color=yellow]Die below[/color] (die_6) [color=yellow]after a ring step[/color] -> Add {shift} to die per ring step since last used ([data]ring_steps[/data]). Reset count. [color=orange]Return[/color] die"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_rmax5")
 uses_per_turn = -1

@@ -125,7 +125,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Fabricator+[/color]"
-description = "(countdown) 10. [color=yellow]Any die[/color] -> Count down by die. At 0: Spawn 2 (holograms) (die_6)"
+description = "(countdown) {countdown}. [color=yellow]Any die[/color] -> Count down by die. At 0: Spawn 2 (holograms) (die_6)"
 rarity = 1
 offered_as_reward = false
 is_upgrade = true

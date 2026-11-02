@@ -38,6 +38,7 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 1
 amount = 1
+text_token = &"shift"
 
 [sub_resource type="Resource" id="Resource_step_5"]
 script = ExtResource("script_effect")
@@ -111,7 +112,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Inverter+[/color]"
-description = "[color=yellow]Any die[/color] -> Flip die over ([color=yellow]1-6, 2-5, 3-4[/color]). Add 1 to die. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Flip die over ([color=yellow]1-6, 2-5, 3-4[/color]). Add {shift} to die. (feed_right)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1")])

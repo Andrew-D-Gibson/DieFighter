@@ -84,6 +84,12 @@ func test_literal_numbers_skip_tags_tokens_counters_and_placeholders() -> void:
 	assert_eq(TextTokens.literal_numbers(text), PackedStringArray(["3", "+2", "-1", "4", "6"]))
 
 
+func test_a_dash_after_a_placeholder_is_a_range_not_a_sign() -> void:
+	# Polarizer: "1-{low_max} becomes (die_1). {high_min}-6 becomes (die_6)".
+	var text: String = "1-{low_max} up. {high_min}-6 down, {cost} -2"
+	assert_eq(TextTokens.literal_numbers(text), PackedStringArray(["1", "6", "-2"]))
+
+
 func test_the_converter_round_trips_tres_strings() -> void:
 	var content: String = "[resource]\ntile_name = \"X\"\ndescription = \"say \\\"2\\\" \\\\ ok\"\nrarity = 1\n"
 	assert_eq(_TOOL.read_property(content, &"description"), "say \"2\" \\ ok")

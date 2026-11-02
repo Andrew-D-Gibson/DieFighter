@@ -69,6 +69,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("8_2vvbj")
 effects = Array[ExtResource("7_oymyf")]([SubResource("Resource_1kud3"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_qtm42"), SubResource("Resource_3phsw"), SubResource("Resource_j6chx")])
 base_repetitions = 2
+text_token = &"copies"
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_nrdn6"]
@@ -105,7 +106,7 @@ script = ExtResource("3_uekf7")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Holo-Duplicator+[/color]"
-description = "[color=yellow]Die below[/color] (die_4) -> Spawn 2 (holograms) of die"
+description = "[color=yellow]Die below[/color] (die_4) -> Spawn {copies} (holograms) of die"
 textures = SubResource("SpriteFrames_2vvbj")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("1_ltqic")]([SubResource("Resource_nrdn6"), SubResource("Resource_low_faces")])

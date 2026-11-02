@@ -40,8 +40,9 @@ static var _placeholder: RegEx = RegEx.create_from_string(r"\{([a-z_][a-z0-9_]*)
 static var _not_prose: RegEx = RegEx.create_from_string(
 		r"\[data\].*?\[/data\]|\[[^\]]*\]|\([a-z_0-9=.]+\)|\{[^}]*\}")
 ## A number written into prose, with any sign stuck to it ("+2", "-1"). The
-## dash in a range ("4-6") isn't a sign.
-static var _literal: RegEx = RegEx.create_from_string(r"(?<![0-9A-Za-z])[+-]?\d+(?:\.\d+)?")
+## dash in a range ("4-6", "{high_min}-6") isn't a sign; mask_non_prose()
+## leaves a placeholder's closing brace for that.
+static var _literal: RegEx = RegEx.create_from_string(r"(?<![0-9A-Za-z}])[+-]?\d+(?:\.\d+)?")
 
 
 ## One number a resource contributes: the placeholder name, the value, and
@@ -171,13 +172,17 @@ static func literal_regex() -> RegEx:
 
 
 ## [param text] with every non-prose span blanked out character for
-## character, so positions still line up with the original.
+## character, so positions still line up with the original. A placeholder
+## keeps its closing brace, so the dash after it reads as a range, not a sign.
 static func mask_non_prose(text: String) -> String:
 	var masked: String = text
 	for found: RegExMatch in _not_prose.search_all(text):
 		var start: int = found.get_start(0)
 		var length: int = found.get_end(0) - start
-		masked = masked.substr(0, start) + " ".repeat(length) + masked.substr(start + length)
+		var blank: String = " ".repeat(length)
+		if found.get_string(0).begins_with("{"):
+			blank = " ".repeat(length - 1) + "}"
+		masked = masked.substr(0, start) + blank + masked.substr(start + length)
 	return masked
 
 

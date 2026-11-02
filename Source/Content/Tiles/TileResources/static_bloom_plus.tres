@@ -33,6 +33,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"scrambled"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -66,6 +67,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 1
+text_token = &"self_scrambled"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_self_spark"]
@@ -111,6 +113,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 2
+text_token = &"scrambled"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_3"]
@@ -160,7 +163,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Static Bloom+[/color]"
-description = "[color=yellow]Your turn starts[/color] -> Apply 2 (scrambled) to [color=purple]random enemy[/color]. Apply 1 (scrambled_you) to you"
+description = "[color=yellow]Your turn starts[/color] -> Apply {scrambled} (scrambled) to [color=purple]random enemy[/color]. Apply {self_scrambled} (scrambled_you) to you"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
