@@ -22,6 +22,13 @@ const _KICK_CENTRE_DEADZONE: float = 6.0
 ## How much the wreck is knocked upward for each unit it goes sideways.
 const _KICK_RISE: float = 0.2
 
+## How long a ship leaving under its own power spools its drive before it
+## jumps. The opening cutscene gives it two seconds; mid-fight that would hold
+## the turn up too long, so this keeps the five flickers but quickens them.
+const DEPARTURE_CHARGE_SECONDS: float = 0.8
+## Which way a departing ship jumps: up and away from the player.
+const _DEPARTURE_HEADING: Vector2 = Vector2.UP
+
 ## Fired as the ship trips its breaker (OverloadEvent), before its dice go
 ## home and its threshold rises. Its OverloadGauge flashes.
 signal overloaded()
@@ -330,6 +337,69 @@ func _on_death() -> void:
 
 	await graphics_manager.break_apart(kick, _DEATH_SFX)
 	queue_free()
+
+
+## Sends [param ship] out of the fight under its own power with the opening
+## cutscene's jump (JumpFx): the drive spools, the hull flares and stretches,
+## a streak runs off the top of the screen, and the ship (with any dice it
+## carries) is freed. Resolves once it has been.
+##
+## The show only. Whoever sends it (FleeEvent, EscapeWithDiceEvent) has
+## already taken it off the board: deaf to the scenario, enemy_left
+## announced, its dice settled.
+##
+## Static on purpose: a coroutine running on the ship itself would be dropped
+## the moment the ship is freed, and whoever awaits it (the scenario engine,
+## through the event) would wait forever.
+static func jump_away(ship: Enemy) -> void:
+	if not is_instance_valid(ship):
+		return
+	if not ship.is_inside_tree():
+		ship.queue_free()
+		return
+	var tree: SceneTree = ship.get_tree()
+	var color: Color = ship.departure_color()
+	var effects: JumpFx = JumpFx.new(ship.get_parent())
+	var hull: Node2D = ship._prepare_departure()
+	if hull:
+		effects.charge(hull, DEPARTURE_CHARGE_SECONDS, color)
+	# Timers rather than the tweens' own signals: a tween dies with its node,
+	# and anything else freeing the ship mid-jump would leave this waiting.
+	await tree.create_timer(DEPARTURE_CHARGE_SECONDS).timeout
+	if not is_instance_valid(ship):
+		return
+
+	Events.camera_shake_small.emit()
+	if is_instance_valid(hull):
+		effects.jump_out(hull, color, _DEPARTURE_HEADING)
+	await tree.create_timer(JumpFx.STRETCH_SECONDS).timeout
+	if not is_instance_valid(ship):
+		return
+	ship.visible = false
+	ship.queue_free()
+	# Freed before anything else resolves, so a later die it was due to spend
+	# this turn finds it gone rather than half there.
+	await tree.process_frame
+
+
+## Readies this ship to jump away and returns the hull to animate (null if
+## there's none to show).
+func _prepare_departure() -> Node2D:
+	# It has already announced leaving; a stray hit while the drive spools
+	# mustn't announce it again as a death, with a wreck and a reward.
+	if health.death.is_connected(_on_death):
+		health.death.disconnect(_on_death)
+	if clickable_region:
+		clickable_region.set_deferred(&"disabled", true)
+	moving_in_world = true
+	return graphics_manager.ready_jump()
+
+
+## The colour of this ship's jump: its faction's, or the pirates' red.
+func departure_color() -> Color:
+	if enemy_resource and enemy_resource.faction:
+		return enemy_resource.faction.color
+	return JumpFx.RED
 
 
 ## The finishing blow, framed like a fighting game's: time stops, the camera

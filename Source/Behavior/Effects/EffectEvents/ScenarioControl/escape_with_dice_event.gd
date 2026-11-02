@@ -4,10 +4,6 @@ extends EffectEvent
 ## takes them off the board with it, and the player loses them for good: the
 ## same loss as jumping away from a ship that holds them.
 
-## How far the ship climbs off the top of the screen, and how long it takes.
-const _EXIT_DISTANCE: float = 140.0
-const _EXIT_SECONDS: float = 0.45
-
 
 func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(actor) or actor is not Enemy:
@@ -32,15 +28,6 @@ func resolve(_engine: ScenarioEngine) -> void:
 	# Off the roster first, so the formation closes up behind it as it goes.
 	Events.enemy_left.emit(enemy, enemy.scenario_state.faction)
 
-	enemy.moving_in_world = true
-	enemy.graphics_manager.stop_bob_tween()
-	var tween: Tween = enemy.create_tween()
-	tween.tween_property(enemy, "position:y", enemy.position.y - _EXIT_DISTANCE, _EXIT_SECONDS) \
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-	await tween.finished
-	if not is_instance_valid(enemy):
-		return
-	enemy.queue_free()
-	# Freed before anything else resolves, so a later die it was due to spend
-	# this turn finds it gone rather than half there.
-	await enemy.get_tree().process_frame
+	# The dice ride along: lose_dice_to() parked them on the hull, and they
+	# go when it does.
+	await Enemy.jump_away(enemy)

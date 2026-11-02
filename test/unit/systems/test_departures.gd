@@ -45,6 +45,11 @@ func _die(face: int, holographic: bool = false) -> Dice:
 	return die
 
 
+## How long a departing ship takes to spool up, jump and be freed, plus slack.
+func _jump_seconds() -> float:
+	return Enemy.DEPARTURE_CHARGE_SECONDS + JumpFx.STRETCH_SECONDS + 0.2
+
+
 func _hears_scenario(ship: Enemy) -> bool:
 	return Events.scenario_event.is_connected(Callable(ship, "_handle_scenario_event"))
 
@@ -98,7 +103,43 @@ func test_a_fleeing_ship_stops_hearing_the_scenario_before_it_leaves() -> void:
 
 	assert_signal_emitted(Events, "enemy_left")
 	assert_false(_hears_scenario(ship))
-	assert_true(ship.is_queued_for_deletion())
+	assert_true(ship.visible, "still on screen, spooling its drive")
+
+	await wait_seconds(_jump_seconds())
+	assert_false(is_instance_valid(ship), "gone once it has jumped")
+
+
+func test_a_ship_leaves_the_board_before_it_jumps() -> void:
+	# The bookkeeping can't wait on the show: the scenario and the dice have
+	# to know at once that the ship is gone.
+	Globals.enemy_manager = autofree(EnemyManager.new())
+	var ship: Enemy = _ship()
+	var order: Array[String] = []
+	var on_left: Callable = func(_left: Enemy, _faction: ScenarioManager.Faction) -> void:
+		order.append("left" if is_instance_valid(ship) and not ship.is_queued_for_deletion() else "left late")
+	Events.enemy_left.connect(on_left)
+	var flee: FleeEvent = FleeEvent.new()
+	flee.actor = ship
+	await flee.resolve(null)
+	Events.enemy_left.disconnect(on_left)
+
+	assert_eq(order, ["left"] as Array[String], "announced once, while the ship was still there")
+	assert_false(is_instance_valid(ship), "and freed by the time the event resolves")
+
+
+func test_a_departing_ship_cannot_die_on_the_way_out() -> void:
+	Globals.enemy_manager = autofree(EnemyManager.new())
+	var ship: Enemy = _ship()
+	var flee: FleeEvent = FleeEvent.new()
+	flee.actor = ship
+	flee.resolve(null)
+	watch_signals(Events)
+
+	ship.health.take_damage(999)
+
+	assert_signal_not_emitted(Events, "enemy_left", "it already announced leaving")
+	assert_signal_not_emitted(Events, "enemy_destroyed")
+	await wait_seconds(_jump_seconds())
 
 
 func test_a_fleeing_ship_hands_every_die_to_the_others_never_itself() -> void:
@@ -203,8 +244,9 @@ func test_an_escaping_ship_takes_its_dice_and_the_one_it_was_spending() -> void:
 	assert_eq(player.num_of_dice, 2)
 	assert_eq(spending.get_parent(), ship)
 
-	await wait_seconds(0.7)
+	await wait_seconds(_jump_seconds())
 	assert_false(is_instance_valid(ship))
+	assert_false(is_instance_valid(spending), "the dice went with it")
 
 
 # ── Launching ─────────────────────────────────────────────────────────────────
