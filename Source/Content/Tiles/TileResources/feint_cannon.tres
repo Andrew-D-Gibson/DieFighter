@@ -66,6 +66,7 @@ subtype = 3
 script = ExtResource("2_i1cfl")
 category = 2
 amount = 2
+text_token = &"damage"
 
 [sub_resource type="Resource" id="Resource_grs8c"]
 script = ExtResource("2_i1cfl")
@@ -129,6 +130,7 @@ subtype = 10
 script = ExtResource("2_i1cfl")
 category = 2
 amount = 3
+text_token = &"step"
 
 [sub_resource type="Resource" id="Resource_fdwx3"]
 script = ExtResource("2_i1cfl")
@@ -165,7 +167,7 @@ animations = [{
 [resource]
 script = ExtResource("4_i1cfl")
 tile_name = "[color=red]Feint Cannon[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]2 damage[/color], +3 per enemy miss this fight ([color=red]+[data]feint[/data][/color])"
+description = "(die_1) or (die_2) -> Deal [color=red]{damage} damage[/color], +{step} per enemy miss this fight ([color=red]+[data]feint[/data][/color])"
 rarity = 1
 upgraded_version = ExtResource("6_7vme4")
 textures = SubResource("SpriteFrames_gpmt5")

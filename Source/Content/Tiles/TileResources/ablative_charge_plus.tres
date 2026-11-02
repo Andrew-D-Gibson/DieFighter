@@ -87,6 +87,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 16
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step11"]
@@ -103,6 +104,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 3
+text_token = &"self_damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step14"]
@@ -181,7 +183,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Ablative Charge+[/color]"
-description = "(die_6) -> Deal [color=red]16 damage[/color]. Take [color=red]3 damage[/color]"
+description = "(die_6) -> Deal [color=red]{damage} damage[/color]. Take [color=red]{self_damage} damage[/color]"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = 2

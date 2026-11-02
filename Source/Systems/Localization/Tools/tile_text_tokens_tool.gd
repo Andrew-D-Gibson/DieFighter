@@ -91,6 +91,10 @@ const RULE_NUMBERS: PackedStringArray = ["0"]
 ## Keyed by tile file name, then the literal as written, e.g.
 ##   "inverter": {"1": "die faces of the d6, not data", ...}
 const LITERAL_EXEMPT: Dictionary = {
+	# red
+	"flak_cannon": {"+1": "one damage per surrounding tile: ADD_ADJACENT_TILES counts, it has no amount"},
+	"flak_cannon_plus": {"+1": "one damage per surrounding tile: ADD_ADJACENT_TILES counts, it has no amount"},
+	"inertial_feedback": {"1": "one damage per tile moved: the damage is the tiles_moved counter itself"},
 	# blue
 	"emergency_shield": {"1": "the FATAL_HIT event always leaves you at 1 hull; not tile data"},
 	"emergency_shield_plus": {"1": "the FATAL_HIT event always leaves you at 1 hull; not tile data"},

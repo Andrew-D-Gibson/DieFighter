@@ -103,6 +103,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 7
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_18"]
@@ -161,7 +162,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=red]Pulse Repeater+[/color]"
-description = "(countdown) 5. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]7 damage[/color]"
+description = "(countdown) {countdown}. [color=yellow]Any die[/color] -> Count down by die. At 0: Deal [color=red]{damage} damage[/color]"
 offered_as_reward = false
 is_upgrade = true
 textures = SubResource("SpriteFrames_1")

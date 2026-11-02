@@ -54,12 +54,14 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 8
+text_token = &"damage_if_fed"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_9"]
 script = ExtResource("script_effect")
 category = 2
 amount = 3
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -141,7 +143,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Receiver Dish[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]3 damage[/color], or [color=red]8[/color] if die was (fed)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color], or [color=red]{damage_if_fed}[/color] if die was (fed)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

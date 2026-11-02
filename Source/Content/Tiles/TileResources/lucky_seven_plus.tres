@@ -21,6 +21,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_act")
 type = 17
 threshold = 7
+text_token = &"total"
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="Resource" id="Resource_hold_callout"]
@@ -66,6 +67,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 20
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_pay_missile"]
@@ -160,7 +162,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Lucky Seven+[/color]"
-description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die summing to 7 with it[/color]: Deal [color=red]20 damage[/color]. [color=orange]Return[/color] second die"
+description = "[color=yellow]Any die[/color] -> [color=orange]Hold[/color] die. [color=yellow]Next die summing to {total} with it[/color]: Deal [color=red]{damage} damage[/color]. [color=orange]Return[/color] second die"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

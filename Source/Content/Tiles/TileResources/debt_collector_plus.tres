@@ -45,6 +45,8 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 2
 multiplier = 5.0
+text_token = &"damage"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_6"]
@@ -153,7 +155,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Debt Collector+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]5 damage[/color] per die target holds"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color] per die target holds"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

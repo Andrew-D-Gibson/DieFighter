@@ -63,6 +63,8 @@ script = ExtResource("2_pklwb")
 category = 2
 subtype = 2
 multiplier = 3.0
+text_token = &"damage"
+text_token_value = "multiplier"
 
 [sub_resource type="Resource" id="Resource_6g4gq"]
 script = ExtResource("2_pklwb")
@@ -129,7 +131,7 @@ animations = [{
 [resource]
 script = ExtResource("7_u3v0s")
 tile_name = "[color=red]Slingshot[/color]"
-description = "[color=yellow]Any die after a ring step[/color] -> Deal [color=red]3 damage[/color] to [color=purple]target[/color] per ring step since last fired ([data]ring_steps[/data]). Reset count. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die after a ring step[/color] -> Deal [color=red]{damage} damage[/color] to [color=purple]target[/color] per ring step since last fired ([data]ring_steps[/data]). Reset count. [color=orange]Give[/color] die"
 rarity = 1
 offered_as_reward = false
 textures = SubResource("SpriteFrames_fyb5d")

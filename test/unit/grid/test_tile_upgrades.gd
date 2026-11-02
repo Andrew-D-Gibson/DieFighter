@@ -134,10 +134,10 @@ func test_tiles_already_owned_are_still_offered() -> void:
 
 func _previews_upgrade(tile: Tile) -> bool:
 	var info: InfoResource = tile._get_tile_info()
-	assert_false(info.bottom_label_text.contains(DAMAGE.upgraded_version.description),
+	assert_false(info.bottom_label_text.contains(DAMAGE.upgraded_version.display_description()),
 		"the upgrade sits beside the tile's own description, not under it")
 	return info.has_upgrade() \
-		and info.upgrade_bottom_label_text.contains(DAMAGE.upgraded_version.description)
+		and info.upgrade_bottom_label_text.contains(DAMAGE.upgraded_version.display_description())
 
 
 func test_a_lone_tile_doesnt_preview_its_upgrade() -> void:

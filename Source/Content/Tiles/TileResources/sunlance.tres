@@ -108,6 +108,7 @@ color = Color(0.93333334, 0.49803922, 0.18431373, 1)
 script = ExtResource("2_vwftb")
 category = 2
 amount = 3
+text_token = &"burn"
 
 [sub_resource type="Resource" id="Resource_gpel0"]
 script = ExtResource("2_vwftb")
@@ -121,6 +122,7 @@ if_true_effects = Array[ExtResource("2_vwftb")]([SubResource("Resource_usurf"), 
 category = 7
 subtype = 11
 amount = 3
+text_token = &"cost"
 
 [sub_resource type="Resource" id="Resource_2abxh"]
 script = ExtResource("2_vwftb")
@@ -153,7 +155,7 @@ animations = [{
 [resource]
 script = ExtResource("4_vwftb")
 tile_name = "[color=red]Sunlance[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. (boost) [color=purple]3 charge[/color]: Apply 3 (burn)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. (boost) [color=purple]{cost} charge[/color]: Apply {burn} (burn)"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_4bvwp")
 uses_per_turn = -1

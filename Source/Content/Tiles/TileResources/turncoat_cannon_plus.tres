@@ -59,12 +59,14 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 6
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_9"]
 script = ExtResource("script_effect")
 category = 2
 amount = 13
+text_token = &"damage_if_scrambled"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -154,7 +156,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Turncoat Cannon+[/color]"
-description = "(die_5) or (die_6) -> Deal [color=red]6 damage[/color], or [color=red]13[/color] if target is (scrambled)"
+description = "(die_5) or (die_6) -> Deal [color=red]{damage} damage[/color], or [color=red]{damage_if_scrambled}[/color] if target is (scrambled)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

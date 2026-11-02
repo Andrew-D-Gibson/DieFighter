@@ -74,12 +74,14 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 12
+text_token = &"damage_if_held"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step11"]
 script = ExtResource("script_3")
 category = 2
 amount = 6
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -140,7 +142,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Grudge Cannon+[/color]"
-description = "(die_5) -> Deal [color=red]6 damage[/color], or [color=red]12[/color] if [color=purple]target[/color] holds a (die_5)"
+description = "(die_5) -> Deal [color=red]{damage} damage[/color], or [color=red]{damage_if_held}[/color] if [color=purple]target[/color] holds a (die_5)"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = -1

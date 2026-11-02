@@ -1,20 +1,11 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## Tile text takes its numbers from the tile's data (TextTokens): every
 ## {placeholder} is bound to a step, every marked step shows in the text,
-## and no number is left written into the prose of a converted family.
+## and no number is left written into a tile's prose.
 
 const TILE_DIR: String = "res://Source/Content/Tiles/TileResources/"
 const _TOOL: GDScript = preload("res://Source/Systems/Localization/Tools/tile_text_tokens_tool.gd")
 const _TEXT_FIELDS: Array[StringName] = [&"activation_description", &"description"]
-
-## Families whose tiles have been through `tools/loc.sh tokens convert`. A
-## literal number left in one of these fails. A family pass adds its family.
-const _CONVERTED_FAMILIES: Array[String] = ["yellow", "blue", "purple", "green"]
-
-## The lint's switch: while false, literals in families not yet converted are
-## only reported (the test is pending, listing them). Flip to true once every
-## family is in _CONVERTED_FAMILIES.
-const _STRICT: bool = false
 
 
 func test_every_placeholder_is_bound_and_agrees() -> void:
@@ -38,17 +29,6 @@ func test_every_marked_step_shows_in_the_text() -> void:
 			assert_has(shown, binding.name, "%s marks {%s} but its text never shows it" % [path.get_file(), binding.name])
 
 
-func test_converted_families_have_no_literal_numbers() -> void:
-	for path: String in _tile_paths():
-		var tile: TileResource = load(path)
-		if not _TOOL.family_of(tile) in _CONVERTED_FAMILIES:
-			continue
-		for field: StringName in _TEXT_FIELDS:
-			var left: PackedStringArray = _TOOL.literals_left(path, tile.get(field))
-			assert_true(left.is_empty(), "%s %s still writes %s; run tools/loc.sh tokens convert, or bind it by hand" % [
-				path.get_file(), field, ", ".join(left)])
-
-
 func test_no_tile_writes_a_literal_number() -> void:
 	var lines: PackedStringArray = []
 	for path: String in _tile_paths():
@@ -59,10 +39,8 @@ func test_no_tile_writes_a_literal_number() -> void:
 				lines.append("%s %s: %s" % [path.get_file(), field, ", ".join(left)])
 	if lines.is_empty():
 		pass_test("no literal numbers")
-	elif _STRICT:
-		fail_test("literal numbers in tile text:\n" + "\n".join(lines))
 	else:
-		pending("%d tile text fields still write literal numbers (report only until _STRICT)" % lines.size())
+		fail_test("literal numbers in tile text; bind each to its step ({name} + text_token), or exempt it in LITERAL_EXEMPT if it isn't data:\n" + "\n".join(lines))
 
 
 ## The English the game shows is the filled text: a converted tile reads as

@@ -72,6 +72,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 4
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_9"]
@@ -98,6 +99,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 1
+text_token = &"weakened"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_13"]
@@ -145,7 +147,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=red]Concussion Round[/color]"
-description = "(die_3) or (die_4) -> Deal [color=red]4 damage[/color]. Apply 1 (weakened)"
+description = "(die_3) or (die_4) -> Deal [color=red]{damage} damage[/color]. Apply {weakened} (weakened)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1
