@@ -20,7 +20,7 @@ func after_each() -> void:
 func test_english_reads_the_field_itself() -> void:
 	var hazard: BackgroundHazardResource = load(SOLAR_FLARE)
 	assert_eq(ContentText.key_for(hazard, &"headline"), "HAZARD.SOLAR_FLARE.HEADLINE")
-	assert_eq(hazard.display_headline(), hazard.headline)
+	assert_eq(hazard.display_name(), hazard.hazard_name)
 
 
 func test_a_translated_locale_reads_its_column_and_falls_back_to_the_field() -> void:
@@ -35,7 +35,7 @@ func test_a_translated_locale_reads_its_column_and_falls_back_to_the_field() -> 
 	var banner_text: String = hazard.display_banner()
 	TranslationServer.set_locale(previous)
 	assert_eq(name_text, "Sonneneruption")
-	assert_eq(banner_text, hazard.banner, "untranslated: the English")
+	assert_eq(banner_text, hazard.banner.format({"amount": 3}), "untranslated: the English")
 
 
 func test_a_resource_built_in_code_has_no_key_and_shows_its_field() -> void:

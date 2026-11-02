@@ -18,9 +18,5 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	announce_triggered()
 
 
-func get_trigger_text() -> String:
-	return "x2"
-
-
 func get_trigger_color() -> Color:
 	return Globals.red

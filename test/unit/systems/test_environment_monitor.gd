@@ -430,3 +430,27 @@ func test_rules_and_hazards_are_remembered_apart() -> void:
 	)
 	assert_eq(EnvironmentMonitor.region_id(rule), "rule:dead_systems")
 	assert_eq(EnvironmentMonitor.region_id(hazard), "hazard:Test Flare", "an unsaved one goes by name")
+
+
+# ── Sound and words come from the rule's resource ────────────────────────────
+
+var _played: Array[SoundEffectResource] = []
+
+
+func _record_sound(sound: SoundEffectResource) -> void:
+	_played.append(sound)
+
+
+## A hazard with a sound of its own plays it as it goes off; one without
+## falls back to the monitor's chime.
+func test_a_hazard_plays_its_own_trigger_sound_or_the_chime() -> void:
+	_played.clear()
+	Events.play_sound.connect(_record_sound)
+	await _arrive_and_fight()
+	Events.hazard_triggered.emit(hazard)
+	monitor._last_trigger_msec = -EnvironmentMonitor._TRIGGER_COOLDOWN_MSEC
+	var own: SoundEffectResource = SoundEffectResource.new()
+	hazard.trigger_sfx = own
+	Events.hazard_triggered.emit(hazard)
+	Events.play_sound.disconnect(_record_sound)
+	assert_eq(_played, [EnvironmentMonitor._TRIGGER_SFX, own] as Array[SoundEffectResource])

@@ -21,10 +21,6 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 		announce_triggered()
 
 
-func get_trigger_text() -> String:
-	return tr("MOD_TRIGGER_FROZEN")
-
-
 ## The freeze in force on [param engine], or null. For a face change that
 ## doesn't go through an event, which has to stop itself and call
 ## announce_triggered() on what this returns.

@@ -336,11 +336,9 @@ func _on_background_modifier_applied(modifier: BackgroundModifierResource) -> vo
 	if modifier == null:
 		_log("Background modifier: none")
 		return
-	_log("Background modifier: %s (%s, cap %d)" % [
-		modifier.modifier_name,
-		BackgroundModifierResource.Effect.keys()[modifier.effect],
-		modifier.amount_cap,
-	])
+	var script_name: String = modifier.modifier_script.resource_path.get_file().get_basename() \
+		if modifier.modifier_script else "-"
+	_log("Background modifier: %s (%s %s)" % [modifier.modifier_name, script_name, modifier.parameters])
 
 
 func _on_hazard_armed(hazard: BackgroundHazardResource, turns_remaining: int) -> void:

@@ -10,12 +10,19 @@ extends Modifier
 ##
 ## The cap applies to magnitude, so costs (negative amounts) are limited too
 ## and a capped region never turns an expensive tile into a cheap one.
+##
+## The rule's callout ("MAX {cap}") lives on its BackgroundModifierResource,
+## whose 'cap' parameter sets [member cap].
 
-var cap: int = 3
+## The largest amount any one effect may move. Never below 1, or the region
+## would switch effects off rather than flatten them.
+var cap: int = 3:
+	set(value):
+		cap = maxi(1, value)
 
 
 func _init(amount_cap: int = 3) -> void:
-	cap = maxi(1, amount_cap)
+	cap = amount_cap
 	modifier_name = "Amount Cap"
 	priority = 75   # clamping; runs after additive and multiplicative changes
 
@@ -30,7 +37,3 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if capped != event.amount:
 		event.amount = capped
 		announce_triggered()
-
-
-func get_trigger_text() -> String:
-	return "MAX %d" % cap
