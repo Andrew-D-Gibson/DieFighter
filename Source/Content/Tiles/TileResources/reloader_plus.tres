@@ -17,6 +17,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("8_gicjh")
 category = 2
 amount = 1
+text_token = &"uses"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -96,7 +97,7 @@ animations = [{
 [resource]
 script = ExtResource("4_ymfbh")
 tile_name = "[color=yellow]Reloader+[/color]"
-description = "[color=yellow]Any die[/color] -> Surrounding tiles gain 1 use"
+description = "[color=yellow]Any die[/color] -> Surrounding tiles gain {uses} use"
 rarity = 2
 offered_as_reward = false
 is_upgrade = true

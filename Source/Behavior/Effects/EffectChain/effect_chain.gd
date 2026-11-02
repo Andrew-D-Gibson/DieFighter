@@ -43,6 +43,17 @@ extends Resource
 ## safe to use, since it can never re-trigger itself.
 @export var repetition_conditions: Array[ConditionalEffectData] = []
 
+## Names this chain's repeat count in its content's text ("the first
+## {times} tiles"). See TextTokens; [member text_token_value] picks another
+## number, empty shows [member base_repetitions].
+@export var text_token: StringName = &""
+@export var text_token_value: String = ""
+
+
+## The number text_token shows when text_token_value is empty (TextTokens).
+func _text_token_field() -> String:
+	return "base_repetitions"
+
 
 ## Execute the chain for the given context and engine.
 ##   - Records the die's starting position before the first loop.

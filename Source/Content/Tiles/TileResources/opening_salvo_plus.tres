@@ -49,6 +49,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_chain")
 effects = Array[ExtResource("script_effect")]([SubResource("Resource_3"), SubResource("Resource_4"), SubResource("Resource_5"), SubResource("Resource_6")])
 base_repetitions = 2
+text_token = &"times"
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
@@ -71,7 +72,7 @@ script = ExtResource("script_tile")
 is_upgrade = true
 offered_as_reward = false
 tile_name = "[color=yellow]Opening Salvo+[/color]"
-description = "[color=yellow]Your turn starts[/color] -> (echo) the first 2 tiles you activate"
+description = "[color=yellow]Your turn starts[/color] -> (echo) the first {times} tiles you activate"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

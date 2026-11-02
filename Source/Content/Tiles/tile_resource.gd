@@ -63,15 +63,26 @@ func display_name() -> String:
 	return ContentText.text(self, &"tile_name")
 
 
-## The activation line, in the current language. Empty when none was written.
+## The activation line, in the current language, its {placeholders} filled
+## from this tile's data. Empty when none was written.
 func display_activation_description() -> String:
-	return ContentText.text(self, &"activation_description")
+	return TextTokens.fill(ContentText.text(self, &"activation_description"), self)
 
 
-## The description, in the current language, its [data] counters still to be
-## filled (Tile.fill_data_tokens).
+## The description, in the current language, its {placeholders} filled from
+## this tile's data (TextTokens) and its [data] counters still to be filled
+## (Tile.fill_data_tokens).
 func display_description() -> String:
-	return ContentText.text(self, &"description")
+	return TextTokens.fill(ContentText.text(self, &"description"), self)
+
+
+## Numbers that live on the tile itself rather than on a step, for its text
+## (TextTokens): {countdown} is where a countdown tile starts.
+func _text_tokens() -> Dictionary:
+	var own: Dictionary = {}
+	if countdown > 0:
+		own["countdown"] = countdown
+	return own
 
 
 func _content_text_prefix() -> String:
@@ -83,7 +94,7 @@ func _content_text_fields() -> Array[ContentText.Field]:
 		ContentText.Field.new(&"tile_name", "NAME",
 			"Name of a tile (a ship system the player puts dice on), title case. Heads its info panel, codex entry and shop card. Keep the [color] tag around it as written; a name ending in + is the upgraded version."),
 		ContentText.Field.new(&"activation_description", "ACTIVATION",
-			"Line above a tile's description in its info panel saying which dice it takes. Keep (die_N) tokens and [color] tags as written."),
+			"Line above a tile's description in its info panel saying which dice it takes. Keep (die_N) tokens, {placeholders} and [color] tags as written."),
 		ContentText.Field.new(&"description", "DESC",
-			"What a tile does with the die put on it, in its info panel, codex entry and shop. Terse, and in the game's colour language: [color] tags, (die_N)/(keyword)/(icon) tokens and [data]...[/data] counters stay exactly as written, so the game can draw and fill them."),
+			"What a tile does with the die put on it, in its info panel, codex entry and shop. Terse, and in the game's colour language: [color] tags, (die_N)/(keyword)/(icon) tokens, {placeholders} (the tile's numbers) and [data]...[/data] counters stay exactly as written, so the game can draw and fill them."),
 	]

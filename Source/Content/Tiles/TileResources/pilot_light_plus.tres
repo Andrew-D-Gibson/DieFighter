@@ -17,6 +17,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_effect")
 category = 2
 amount = 3
+text_token = &"face"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_3"]
@@ -78,7 +79,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=yellow]Pilot Light+[/color]"
-description = "[color=yellow]Your turn starts[/color] -> Spawn a (hologram) (die_3). (feed_right)"
+description = "[color=yellow]Your turn starts[/color] -> Spawn a (hologram) (die_{face}). (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

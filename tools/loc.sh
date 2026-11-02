@@ -16,6 +16,12 @@
 #                                  into Godot, then lint
 #   tools/loc.sh lint              check + the translation lint test
 #                                  (placeholders, tokens, BBCode, length, glyphs)
+#   tools/loc.sh tokens <report|convert|verify> --family <red|blue|green|purple|yellow|all>
+#                                  [--dry-run] [--against <git ref>]
+#                                  tile numbers as {placeholders} bound to the
+#                                  steps that hold them (TextTokens): report the
+#                                  literals left, convert a family, or verify the
+#                                  filled text still reads as it did at a ref
 #   tools/loc.sh audit [locale|pseudo|all] [surface ...] [--headless]
 #                                  photograph every text surface in each language,
 #                                  flag text that overflows or lacks glyphs, and
@@ -99,6 +105,14 @@ case "$command" in
 	lint)
 		lint
 		;;
+	tokens)
+		set +e +o pipefail
+		"$GODOT" --headless --path . --script res://Source/Systems/Localization/Tools/tile_text_tokens_cli.gd \
+			-- "$@" 2>&1 | grep -E '^tokens: |SCRIPT ERROR|Parse Error' | sed 's/^tokens: //'
+		status=${PIPESTATUS[0]}
+		set -e -o pipefail
+		exit "$status"
+		;;
 	audit)
 		# A window opens: photos need a renderer, which --headless lacks. The
 		# run is offline: it never opens the game's MCP port.
@@ -117,7 +131,7 @@ case "$command" in
 		exit "$status"
 		;;
 	*)
-		sed -n '2,29p' "$0" | sed 's/^# \{0,1\}//'
+		sed -n '2,35p' "$0" | sed 's/^# \{0,1\}//'
 		exit 2
 		;;
 esac

@@ -60,6 +60,16 @@ extends Resource
 ## and "{die}" are filled in when it plays.
 @export var callout: String = ""
 
+# ── Text Token ─────────────────────────────────────────────────────────────────
+## Names the number this step owns in its content's text: a tile description
+## reading "Deal {damage} damage" shows the amount of the step whose
+## text_token is "damage". See TextTokens.
+@export var text_token: StringName = &""
+## Which number the token shows, as an expression over this step's fields:
+## "-amount" for a cost stored negative, "range_max", "multiplier". Empty
+## shows [member amount].
+@export var text_token_value: String = ""
+
 
 # ── Vector Parameters ──────────────────────────────────────────────────────────
 ## Grid offset (in tile units) for tile movement effects.

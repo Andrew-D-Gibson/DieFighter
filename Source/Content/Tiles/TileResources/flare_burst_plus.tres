@@ -58,6 +58,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 5
+text_token = &"exposed"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_10"]
@@ -132,7 +133,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=yellow]Flare Burst+[/color]"
-description = "(die_5) -> Apply 5 (exposed) to [color=purple]every enemy[/color]. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
+description = "(die_5) -> Apply {exposed} (exposed) to [color=purple]every enemy[/color]. [color=orange]Give[/color] die to [color=purple]random enemy[/color]"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1
