@@ -20,6 +20,10 @@ export_presets.cfg
 # Imported translations (automatically generated from CSV files)
 *.translation
 
+# Per-locale hand-off files written by tools/loc.sh export; what matters
+# comes back into the CSVs on import.
+Localization/pending/
+
 # Mac-specific ignores
 *.DS_Store
 
