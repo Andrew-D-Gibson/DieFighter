@@ -1,5 +1,7 @@
 class_name FleeEvent
 extends EffectEvent
+## The acting ship leaves the fight, handing its dice to whoever is left (or
+## home), and jumps away (Enemy.jump_away()).
 
 
 func resolve(_engine: ScenarioEngine) -> void:
@@ -16,4 +18,6 @@ func resolve(_engine: ScenarioEngine) -> void:
 	# still fighting once this one has gone (heirs_for_dice()). The die spent
 	# on the Flee goes too, if the chain hasn't handed it on.
 	enemy.dice_manager.give_away_dice(activator_die, EnemyDiceManager.Departure.FLEEING)
-	enemy.queue_free()
+	# Only now, with the board settled, does it jump: the chain waits out the
+	# jump so nothing resolves against a ship half gone.
+	await Enemy.jump_away(enemy)

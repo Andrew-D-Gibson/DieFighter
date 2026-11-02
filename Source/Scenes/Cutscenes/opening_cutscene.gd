@@ -96,8 +96,6 @@ const _STREAK_FRAME_INSET: float = 4.0
 ## camera shake never shows their edges. Matches their rects in the scene.
 const _OVERSCAN: float = 8.0
 
-## How the jump stretches a ship along its heading as it goes to light speed.
-const _JUMP_STRETCH: Vector2 = Vector2(0.5, 3.0)
 ## Debris closer than this to Fate's centre starts to spaghettify; at the
 ## event horizon it is gone.
 const _DEBRIS_STRETCH_RANGE: float = 70.0
@@ -108,8 +106,7 @@ const _FATE_RIM: float = 40.0
 ## Fastest a piece tumbles, in radians per second, before Fate spins it up.
 const _DEBRIS_MAX_SPIN: float = 1.5
 
-const _BLUE_JUMP: Color = Color("#8df1f4")
-const _RED_JUMP: Color = Color("#d03656")
+const _BLUE_JUMP: Color = JumpFx.BLUE
 const _FATE_PURPLE: Color = Color("#c552f1")
 ## Played once, on into the run; when it ends the playlist brings the start
 ## theme back and holds it.
@@ -137,6 +134,9 @@ var _smoke_trails: Dictionary[Node2D, CPUParticles2D] = {}
 var _reticle: LockOnReticle = null
 ## How much hull the Survivor is left with once it's holed. See _ship_damaged().
 var _survivor_hull_fraction: float = 1.0
+## The jumps, and the rings and streaks the rest of the scene shares with
+## them. Built on _effects, which already draws on the art grid.
+var _jump_fx: JumpFx
 
 @onready var _effects: Node2D = %Effects
 @onready var _pixel_layer: CanvasLayer = $PixelLayer
@@ -151,6 +151,7 @@ func _ready() -> void:
 	# Before the game starts loading in the background: the ambush is part of
 	# it, and loading it here meanwhile would wait on the whole game.
 	_survivor_hull_fraction = _ambush_hull_fraction()
+	_jump_fx = JumpFx.new(_effects, true)
 	SceneLoader.request(main_game_scene)
 	_spawn_stars()
 	_spawn_debris()
@@ -469,63 +470,27 @@ func _consumed(ship_name: StringName) -> void:
 ## flickers brighter and brighter. The motes take the colour of the jump they
 ## build up to.
 func _charge_jump(ship_name: StringName, seconds: float, color: Color = _BLUE_JUMP) -> void:
-	var ship: Node2D = _ship(ship_name)
-	var motes: CPUParticles2D = _charge_particles(seconds, color)
-	ship.add_child(motes)
-	motes.emitting = true
-
-	var material: ShaderMaterial = ship.material as ShaderMaterial
-	material.set_shader_parameter("flash_color", Globals.white)
-	var tween: Tween = create_tween()
-	var pulses: int = 5
-	for i: int in range(pulses):
-		var peak: float = Juice.soften_flash(lerpf(0.15, 0.7, float(i) / (pulses - 1)))
-		var beat: float = seconds / pulses
-		tween.tween_property(material, "shader_parameter/flash_amount", peak, beat * 0.3)
-		tween.tween_property(material, "shader_parameter/flash_amount", 0.0, beat * 0.7)
+	_jump_fx.charge(_ship(ship_name), seconds, color)
 
 
 ## The ship snaps to light speed: it stretches along its heading, flares
 ## white and leaves a streak to the edge of the screen. The timeline hides it
-## on the next key.
+## on the next key. Every ship here flies right.
 func _jump_out(ship_name: StringName, color: Color) -> void:
 	var ship: Node2D = _ship(ship_name)
 	Events.camera_shake_large.emit()
-	_flash_ship(ship, Globals.white, 0.15)
 	if ship == %PlayerShip:
 		# A breath of slow motion as the player's ship goes, so the stretch
 		# and the streak it leaves can register.
 		TimeDirector.slow_mo(0.3, 220)
-
-	var tween: Tween = create_tween()
-	tween.tween_property(ship, "scale", _JUMP_STRETCH, 0.1) \
-		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
-	tween.tween_property(ship, "scale", Vector2.ONE, 0.0).set_delay(0.15)
-
-	var spot: Vector2 = ship.global_position
-	_streak(spot.x, Globals.SCREEN_SIZE.x + 8.0, spot.y, color)
-	_ring(spot, color, 3.0, 22.0, 0.35)
-	Juice.sparkle(_effects, spot, color, 14, 70.0)
+	_jump_fx.jump_out(ship, color, Vector2.RIGHT)
 
 
 ## The reverse of a jump: a streak from behind, and the ship decelerates out
 ## of it, overshooting into a squash before it settles.
 func _jump_in(ship_name: StringName, color: Color) -> void:
-	var ship: Node2D = _ship(ship_name)
 	Events.camera_shake_large.emit()
-	ship.scale = _JUMP_STRETCH
-	_flash_ship(ship, Globals.white, 0.35)
-
-	var tween: Tween = create_tween()
-	tween.tween_property(ship, "scale", Vector2(1.2, 0.8), 0.12) \
-		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
-	tween.tween_property(ship, "scale", Vector2.ONE, 0.25) \
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-
-	var spot: Vector2 = ship.global_position
-	_streak(-8.0, spot.x, spot.y, color)
-	_ring(spot, color, 3.0, 18.0, 0.3)
-	Juice.sparkle(_effects, spot, color, 10, 50.0)
+	_jump_fx.jump_in(_ship(ship_name), color, Vector2.RIGHT)
 
 
 ## Hyperspace punches in over the starfield, as the game's jump does once it
@@ -609,13 +574,7 @@ func _random_point_on_screen() -> Vector2:
 
 
 func _flash_ship(ship: Node2D, color: Color, seconds: float) -> void:
-	var material: ShaderMaterial = ship.material as ShaderMaterial
-	if not material:
-		return
-	material.set_shader_parameter("flash_color", color)
-	var tween: Tween = create_tween()
-	tween.tween_property(material, "shader_parameter/flash_amount", 0.0, seconds).from(Juice.soften_flash(1.0)) \
-		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	JumpFx.flare(ship, color, seconds)
 
 
 func _flash_screen(color: Color, peak: float, seconds: float) -> void:
@@ -626,29 +585,7 @@ func _flash_screen(color: Color, peak: float, seconds: float) -> void:
 
 
 func _ring(spot: Vector2, color: Color, from_radius: float, to_radius: float, seconds: float) -> void:
-	var ring: JuiceRing = JuiceRing.new()
-	ring.color = color
-	ring.start_radius = from_radius
-	ring.end_radius = to_radius
-	ring.duration = seconds
-	_effects.add_child(ring)
-	ring.global_position = spot
-
-
-## A line of light along y from [param from_x] to [param to_x] that pinches
-## shut: the wake a jump leaves.
-func _streak(from_x: float, to_x: float, y: float, color: Color) -> void:
-	var streak: ColorRect = ColorRect.new()
-	streak.color = Globals.white
-	streak.position = Vector2(minf(from_x, to_x), y - 1.5)
-	streak.size = Vector2(absf(to_x - from_x), 3.0)
-	streak.pivot_offset = streak.size / 2.0
-	_effects.add_child(streak)
-	var tween: Tween = create_tween().set_parallel(true)
-	tween.tween_property(streak, "color", color, 0.12)
-	tween.tween_property(streak, "scale:y", 0.0, 0.35) \
-		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
-	tween.chain().tween_callback(streak.queue_free)
+	_jump_fx.ring(spot, color, from_radius, to_radius, seconds)
 
 
 ## Kicks the hull back against its heading for a frame or two. Offsets the
@@ -752,34 +689,9 @@ func _strain_particles(ship: Node2D) -> CPUParticles2D:
 	return sparks
 
 
-func _charge_particles(seconds: float, color: Color) -> CPUParticles2D:
-	var motes: CPUParticles2D = CPUParticles2D.new()
-	motes.texture = _PIXEL_TEXTURE
-	motes.amount = 24
-	motes.lifetime = 0.4
-	motes.local_coords = false
-	motes.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE_SURFACE
-	motes.emission_sphere_radius = 26.0
-	motes.gravity = Vector2.ZERO
-	motes.radial_accel_min = -320.0
-	motes.radial_accel_max = -260.0
-	motes.color = color
-	motes.color_ramp = _fade_in_ramp()
-	get_tree().create_timer(seconds).timeout.connect(func() -> void:
-		motes.emitting = false
-		motes.finished.connect(motes.queue_free))
-	return motes
-
-
 func _fade_ramp() -> Gradient:
 	var ramp: Gradient = Gradient.new()
 	ramp.colors = PackedColorArray([Color.WHITE, Color(1, 1, 1, 0)])
-	return ramp
-
-
-func _fade_in_ramp() -> Gradient:
-	var ramp: Gradient = Gradient.new()
-	ramp.colors = PackedColorArray([Color(1, 1, 1, 0), Color.WHITE])
 	return ramp
 
 

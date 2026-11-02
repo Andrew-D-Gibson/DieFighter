@@ -50,9 +50,10 @@ var _flash_tween: Tween
 ## The ship's scale before set_ship_raised() enlarged it.
 var _lowered_ship_scale: Vector2 = Vector2.ONE
 
-## Set once the kill sequence takes the ship. A hit landing just before the
-## killing blow would otherwise restart the bob when its shake ends, and the
-## bob tweens to a fixed global position, tugging the shuddering hull about.
+## Set once the kill sequence or a jump away (ready_jump()) takes the ship.
+## A hit landing just before would otherwise restart the bob when its shake
+## ends, and the bob tweens to a fixed global position, tugging the
+## shuddering (or stretching) hull about.
 var _dying: bool = false
 
 ## The kill shudder, and where it rattles around. break_apart() cuts it short.
@@ -137,16 +138,32 @@ func wreck_layer() -> Node2D:
 
 
 ## From here on the ship draws on the game's 320x180 pixel grid, like the
-## effects around it. The kill raises, rattles, spins and shrinks the hull;
-## drawn straight to the full-resolution screen, that resamples it into smooth
-## sub-pixel art. Inside a JuicePixelated it turns and shrinks a game pixel at
-## a time. One-way, since only a dying ship moves like that.
+## effects around it. The kill raises, rattles, spins and shrinks the hull,
+## and a jump away stretches it; drawn straight to the full-resolution screen,
+## that resamples it into smooth sub-pixel art. Inside a JuicePixelated it
+## turns and stretches a game pixel at a time. One-way, since only a ship on
+## its way out moves like that.
 func pixelate() -> void:
 	if _pixel_view or not is_instance_valid(ship_graphics):
 		return
 	_pixel_body = Node2D.new()
 	_pixel_view = JuicePixelated.spawn(self, _pixel_body, ship_graphics.z_index)
 	ship_graphics.reparent(_pixel_body, false)
+
+
+## Readies the hull for a jump away (Enemy.jump_away()) and returns it, or
+## null if there is none to show. It stops bobbing, any hit flash still fading
+## is cut so it doesn't fight the drive's flicker over the flash shader, and
+## it moves onto the art grid (pixelate()) for the stretch.
+func ready_jump() -> Node2D:
+	_dying = true
+	stop_bob_tween()
+	if _flash_tween and _flash_tween.is_valid():
+		_flash_tween.kill()
+	if not is_instance_valid(ship_graphics):
+		return null
+	pixelate()
+	return ship_graphics
 
 
 ## Rattles the ship along [param direction] for [param seconds] of real time,
