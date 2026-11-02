@@ -306,7 +306,7 @@ layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
 [node name="RichTextLabel" parent="VBoxContainer/ContinueButton" index="0" unique_id=1229508524]
-text = "CONTINUE"
+text = "MENU_CONTINUE"
 
 [node name="PlayButton" parent="VBoxContainer" unique_id=1161367933 instance=ExtResource("7_n0c18")]
 unique_name_in_owner = true
@@ -340,7 +340,7 @@ hover_text_color = Color(0.262745, 0.65098, 0.988235, 1)
 sprite_frames = SubResource("SpriteFrames_blue")
 
 [node name="RichTextLabel" parent="VBoxContainer/OptionsButton" index="1" unique_id=604948362]
-text = "OPTIONS"
+text = "MENU_OPTIONS"
 
 [node name="QuitButton" parent="VBoxContainer" unique_id=272948692 instance=ExtResource("7_vm02d")]
 layout_mode = 2
@@ -352,7 +352,7 @@ hover_text_color = Color(0.262745, 0.65098, 0.988235, 1)
 sprite_frames = SubResource("SpriteFrames_blue")
 
 [node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1" unique_id=604948362]
-text = "QUIT"
+text = "MENU_QUIT"
 
 [node name="ButtonRotator" type="Control" parent="." unique_id=507446324]
 layout_mode = 3
@@ -377,7 +377,7 @@ hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 sprite_frames = SubResource("SpriteFrames_3xxk1")
 
 [node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1" unique_id=604948362]
-text = "WISHLIST"
+text = "MENU_WISHLIST"
 
 [node name="Sprite2D" type="Sprite2D" parent="ButtonRotator/WishlistButton" unique_id=1706546795]
 position = Vector2(1, 0)

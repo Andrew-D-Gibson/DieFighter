@@ -30,7 +30,7 @@ func _ready() -> void:
 
 ## Asks [param message]. [param confirm_text] labels the confirm button (a
 ## translation key or plain text).
-func open(message: String, destructive: bool = false, confirm_text: String = "CONFIRM") -> void:
+func open(message: String, destructive: bool = false, confirm_text: String = "CONFIRM_DIALOG_CONFIRM") -> void:
 	%MessageLabel.text = message
 	_confirm_button.set_button_text(confirm_text)
 	OptionsMenu.set_button_texture(_confirm_button, _RED_TEXTURE if destructive else _GREEN_TEXTURE)

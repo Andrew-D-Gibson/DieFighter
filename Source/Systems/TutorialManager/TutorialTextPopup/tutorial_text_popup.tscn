@@ -173,7 +173,7 @@ soft_highlight_color = Color(0.807843, 0.941176, 0.945098, 1)
 sprite_frames = SubResource("SpriteFrames_yykkj")
 
 [node name="RichTextLabel" parent="Panel/MarginContainer/HBoxContainer/MarginContainer2/VBoxContainer/CloseButton" index="1"]
-text = "CLOSE"
+text = "TUTORIAL_CLOSE"
 
 [node name="CompleteTextButton" type="Button" parent="." unique_id=346612518]
 unique_name_in_owner = true

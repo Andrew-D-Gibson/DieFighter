@@ -31,11 +31,11 @@ func _ready() -> void:
 	Events.engine_charge_changed.connect(_check_for_engine_charge)
 	Events.start_combat.connect(func() -> void:
 		map_button_label.add_theme_color_override('default_color', Globals.white)
-		map_button_label.text = 'MAP'	
+		map_button_label.text = tr("VIEWER_TAB_MAP")	
 	)
 	Events.combat_finished.connect(func() -> void:
 		map_button_label.add_theme_color_override('default_color', Globals.medium_purple)
-		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
+		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]' + tr("VIEWER_TAB_MAP") + '[/wave]'
 	)
 	Events.show_map.connect(_show_map)
 	Events.call_out_map_tab.connect(_call_out_map_tab)
@@ -51,7 +51,7 @@ func _show_systems() -> void:
 	screen_showing = ScreenShowing.SYSTEMS
 	
 	systems_button_label.add_theme_color_override('default_color', Globals.white)
-	systems_button_label.text = 'SYSTEMS'
+	systems_button_label.text = tr("VIEWER_TAB_SYSTEMS")
 
 	tile_grid.visible = true
 	map.visible = false
@@ -62,11 +62,11 @@ func _show_systems() -> void:
 func _systems_hovered(is_hovered: bool) -> void:
 	if is_hovered and screen_showing != ScreenShowing.SYSTEMS:
 		systems_button_label.add_theme_color_override('default_color', Globals.green)
-		systems_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]SYSTEMS[/wave]'
+		systems_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]' + tr("VIEWER_TAB_SYSTEMS") + '[/wave]'
 
 	else:
 		systems_button_label.add_theme_color_override('default_color', Globals.white)
-		systems_button_label.text = 'SYSTEMS'
+		systems_button_label.text = tr("VIEWER_TAB_SYSTEMS")
 
 	
 	
@@ -76,7 +76,7 @@ func _show_map() -> void:
 	_map_tab_called_out = false
 	
 	map_button_label.add_theme_color_override('default_color', Globals.white)
-	map_button_label.text = 'MAP'
+	map_button_label.text = tr("VIEWER_TAB_MAP")
 
 	tile_grid.visible = false
 	map.visible = true
@@ -87,11 +87,11 @@ func _show_map() -> void:
 func _map_hovered(is_hovered: bool) -> void:
 	if is_hovered and screen_showing != ScreenShowing.MAP:
 		map_button_label.add_theme_color_override('default_color', Globals.purple)
-		map_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]MAP[/wave]'
+		map_button_label.text = '[wave amp=8.0 freq=5.0 connected=1]' + tr("VIEWER_TAB_MAP") + '[/wave]'
 
 	elif screen_showing == ScreenShowing.MAP:
 		map_button_label.add_theme_color_override('default_color', Globals.white)
-		map_button_label.text = 'MAP'
+		map_button_label.text = tr("VIEWER_TAB_MAP")
 	else:
 		# Back to whatever the tab was saying before the mouse came by.
 		_check_for_engine_charge()
@@ -108,10 +108,10 @@ func _check_for_engine_charge() -> void:
 		_show_map_tab_call_out()
 	elif Globals.player.is_engine_charged():
 		map_button_label.add_theme_color_override('default_color', Globals.medium_purple)
-		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
+		map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]' + tr("VIEWER_TAB_MAP") + '[/wave]'
 	else:
 		map_button_label.add_theme_color_override('default_color', Globals.white)
-		map_button_label.text = 'MAP'
+		map_button_label.text = tr("VIEWER_TAB_MAP")
 
 
 func _call_out_map_tab() -> void:
@@ -124,7 +124,7 @@ func _call_out_map_tab() -> void:
 ## In the tutorial text's purple, and bobbing like the charged tab does.
 func _show_map_tab_call_out() -> void:
 	map_button_label.add_theme_color_override('default_color', Globals.purple)
-	map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]MAP[/wave]'
+	map_button_label.text = '[wave amp=6.0 freq=5.0 connected=1]' + tr("VIEWER_TAB_MAP") + '[/wave]'
 		
 		
 func _systems_startup() -> void:

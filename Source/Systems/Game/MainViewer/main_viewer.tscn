@@ -161,7 +161,7 @@ offset_right = -30.0
 offset_bottom = -33.0
 mouse_filter = 2
 bbcode_enabled = true
-text = "SYSTEMS"
+text = "VIEWER_TAB_SYSTEMS"
 horizontal_alignment = 1
 
 [node name="Clickable" type="Area2D" parent="TabButtons/SystemsButton" unique_id=1398961604]
@@ -181,8 +181,7 @@ offset_right = 73.0
 offset_bottom = -33.0
 mouse_filter = 2
 bbcode_enabled = true
-text = "MAP
-"
+text = "VIEWER_TAB_MAP"
 horizontal_alignment = 1
 
 [node name="Clickable" type="Area2D" parent="TabButtons/MapButton" unique_id=243175261]

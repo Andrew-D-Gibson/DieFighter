@@ -22,7 +22,7 @@ func _on_quit_button_pressed() -> void:
 func _on_game_over() -> void:
 	%EndStateLabel.text = "[color=" + str(Globals.red.to_html(false)) + "]"\
 	+ "[wave amp=30.0 freq=5.0 connected=1]"\
-	+ "GAME OVER"\
+	+ tr("GAME_OVER_TITLE")\
 	+ "[/wave][/color]"
 
 	_show_run_summary(Globals.red)
@@ -32,7 +32,7 @@ func _on_game_over() -> void:
 func _on_game_win() -> void:
 	%EndStateLabel.text = "[color=" + str(Globals.blue.to_html(false)) + "]"\
 	+ "[wave amp=60.0 freq=10.0 connected=1]"\
-	+ "VICTORY!"\
+	+ tr("GAME_OVER_VICTORY")\
 	+ "[/wave][/color]"
 
 	_show_run_summary(Globals.blue)

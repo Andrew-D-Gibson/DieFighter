@@ -99,14 +99,14 @@ layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
 [node name="RichTextLabel" parent="VBoxContainer/MainMenuButton" index="1" unique_id=604948362]
-text = "MAIN MENU"
+text = "GAME_OVER_MAIN_MENU"
 
 [node name="QuitButton" parent="VBoxContainer" unique_id=1031918727 instance=ExtResource("3_ah4je")]
 layout_mode = 2
 hover_text_color = Color(0.815686, 0.211765, 0.337255, 1)
 
 [node name="RichTextLabel" parent="VBoxContainer/QuitButton" index="1" unique_id=604948362]
-text = "QUIT"
+text = "GAME_OVER_QUIT"
 
 [node name="ButtonRotator" type="Control" parent="." unique_id=2120935718]
 anchors_preset = 0
@@ -130,7 +130,7 @@ hover_text_color = Color(0.772549, 0.321569, 0.945098, 1)
 sprite_frames = SubResource("SpriteFrames_t5hyd")
 
 [node name="RichTextLabel" parent="ButtonRotator/WishlistButton" index="1" unique_id=604948362]
-text = "WISHLIST"
+text = "GAME_OVER_WISHLIST"
 
 [connection signal="pressed_within_window" from="VBoxContainer/MainMenuButton" to="." method="_on_main_menu_button_pressed"]
 [connection signal="pressed_within_window" from="VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -47,7 +47,7 @@ static func shield_frame(shields: int, max_health: int) -> int:
 
 
 func _get_health_string() -> String:
-	return "[wave amp=2.0 freq=1.0 connected=0]HULL\n" + \
+	return "[wave amp=2.0 freq=1.0 connected=0]" + tr("HEALTH_BAR_HULL") + "\n" + \
 	str(health_component.health) + '/' + \
 	str(health_component.max_health) + \
 	"[/wave]"
@@ -75,10 +75,10 @@ func _snap_online() -> void:
 	
 func _show_hull_info() -> void:
 	var info: InfoResource = InfoResource.new()
-	info.title_label_text = "[color=red]Hull[/color]"
+	info.title_label_text = tr("INFO_HULL_TITLE")
 	# The hull as it stands, not a stock picture of one.
 	info.texture = HullInfoArt.texture_for(health_component.health, health_component.max_health)
-	info.bottom_label_text = "If [color=red]Hull[/color] reaches 0, your ship is destroyed"
+	info.bottom_label_text = tr("INFO_HULL_RULE")
 	var statuses: String = _status_summary()
 	if not statuses.is_empty():
 		info.bottom_label_text += "\n\n" + tr("INFO_HULL_STATUSES").format({"statuses": statuses})
@@ -101,10 +101,10 @@ func _status_summary() -> String:
 	
 func _show_shield_info() -> void:
 	var info: InfoResource = InfoResource.new()
-	info.title_label_text = "[color=blue]Shields[/color]"
+	info.title_label_text = tr("INFO_SHIELDS_TITLE")
 	# The shields as they stand, as the hull's picture shows the hull.
 	info.texture = ShieldInfoArt.texture_for(health_component.shields)
-	info.bottom_label_text = "[color=blue]Shields[/color] absorb [color=red]damage[/color] before it reaches your [color=red]Hull[/color]. Resets after jumping"
+	info.bottom_label_text = tr("INFO_SHIELDS_RULE")
 	
 	Events.show_info.emit(info)
 
