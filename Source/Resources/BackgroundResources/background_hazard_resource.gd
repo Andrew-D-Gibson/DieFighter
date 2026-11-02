@@ -18,6 +18,9 @@ extends Resource
 ##   4. Its text is English, written here; run tools/loc.sh sync to send it
 ##      for translation (see ContentText). Display code reads it through the
 ##      display_*() accessors, never the fields.
+##   5. Write the chain's numbers as placeholders, never digits: {amount} is
+##      the damage the chain deals (Solar Flare's "Deal {amount} damage"), so
+##      changing the chain changes the text with it.
 
 @export_category('Info')
 ## The hazard's name: title of its arrival card, info panel and the warning
@@ -48,6 +51,10 @@ extends Resource
 ## fires.
 @export var color: Color = Color.WHITE
 
+## Played on the environment monitor as the hazard goes off. Left null, the
+## monitor's own chime (EnvironmentMonitor._TRIGGER_SFX).
+@export var trigger_sfx: SoundEffectResource
+
 ## When in the round the hazard goes off.
 enum Timing {
 	## As the player's turn starts, after their hand is rolled. Right for
@@ -77,22 +84,50 @@ enum Timing {
 
 ## The name, in the current language.
 func display_name() -> String:
-	return ContentText.text(self, &"hazard_name")
+	return _display(&"hazard_name")
 
 
-## The full rule, in the current language.
+## The full rule, in the current language, its {placeholders} filled.
 func display_description() -> String:
-	return ContentText.text(self, &"description")
+	return _display(&"description")
 
 
-## The headline, in the current language. Empty when none was written.
+## The headline, in the current language, its {placeholders} filled. Empty
+## when none was written.
 func display_headline() -> String:
-	return ContentText.text(self, &"headline")
+	return _display(&"headline")
 
 
-## The banner, in the current language. Empty when none was written.
+## The banner, in the current language, its {placeholders} filled. Empty
+## when none was written.
 func display_banner() -> String:
-	return ContentText.text(self, &"banner")
+	return _display(&"banner")
+
+
+func _display(property: StringName) -> String:
+	return _fill_numbers(ContentText.text(self, property))
+
+
+## [param text] with its {placeholders} filled from effect_chain. For now
+## only {amount}: the amount set just before the chain's first damage step.
+# TODO(nov3 merge): return TextTokens.fill(text, self), with
+# text_token = &"amount" on the chain step that carries the number.
+func _fill_numbers(text: String) -> String:
+	if not "{" in text or effect_chain == null:
+		return text
+	var amount: Variant = null
+	for step: EffectData in effect_chain.effects:
+		if step == null:
+			continue
+		if step.category == EffectEnums.Category.AMOUNT_MODIFIER \
+				and step.subtype == EffectEnums.AmountModifierSubtype.SET:
+			amount = step.amount
+		elif step.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
+				and step.subtype == EffectEnums.AttributeChangeSubtype.DAMAGE:
+			break
+	if amount == null:
+		return text
+	return text.format({"amount": amount})
 
 
 func _content_text_prefix() -> String:
@@ -104,9 +139,9 @@ func _content_text_fields() -> Array[ContentText.Field]:
 		ContentText.Field.new(&"hazard_name", "NAME",
 			"Name of a background hazard, a timed event of the region the player is in. Shown in capitals as the title of its arrival card, its info panel and the warning as it strikes."),
 		ContentText.Field.new(&"description", "DESC",
-			"A background hazard's full rule, in the info panel the environment monitor opens: when it goes off and what it does. Keep [color] tags, (keyword) tokens and line breaks as written."),
+			"A background hazard's full rule, in the info panel the environment monitor opens: when it goes off and what it does. Keep [color] tags, (keyword) tokens, {placeholders} and line breaks as written; {amount} becomes a number."),
 		ContentText.Field.new(&"headline", "HEADLINE",
-			"What a background hazard does, in a few words, read straight after its countdown (HAZARD_HEADLINE: \"In 2 turns: ...\"). Lower case, no full stop. Keep [color] tags and (keyword) tokens as written."),
+			"What a background hazard does, in a few words, read straight after its countdown (HAZARD_HEADLINE: \"In 2 turns: ...\"). Lower case, no full stop. Keep [color] tags, (keyword) tokens and {placeholders} as written; {amount} becomes a number."),
 		ContentText.Field.new(&"banner", "BANNER",
-			"Banner under a background hazard's title on the turn it goes off, naming what it just did. Capitals, plain text (no tags).", 30),
+			"Banner under a background hazard's title on the turn it goes off, naming what it just did. Capitals, plain text (no tags). Keep {placeholders}; {amount} becomes a number.", 30),
 	]

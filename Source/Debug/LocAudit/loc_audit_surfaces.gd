@@ -493,6 +493,13 @@ class CalloutsSurface extends LocAuditSurface:
 			seen[text] = true
 			var item_id: String = text.to_snake_case().validate_filename().left(40)
 			found.append(LocAuditSurfaces._item("fx_" + item_id, text, {"effect": effect}))
+		# A region rule's callout, floated off the environment monitor.
+		for rule: Resource in load_dir(LocAuditSurfaces._RULE_DIR):
+			var rule_text: String = (rule as BackgroundModifierResource).display_callout()
+			if rule_text.is_empty():
+				continue
+			var stem: String = rule.resource_path.get_file().get_basename()
+			found.append(LocAuditSurfaces._item("rule_" + stem, rule_text, {"rule": rule}))
 		return found
 
 	func setup(stage: LocAuditStage) -> void:
@@ -506,6 +513,8 @@ class CalloutsSurface extends LocAuditSurface:
 		var text: String
 		if item.has("key"):
 			text = TranslationServer.translate(item["key"])
+		elif item.has("rule"):
+			text = (item["rule"] as BackgroundModifierResource).display_callout()
 		else:
 			text = LocAuditSurfaces.callout_text(item["effect"])
 		text = text.replace("{amount}", "12").replace("{die}", "6")

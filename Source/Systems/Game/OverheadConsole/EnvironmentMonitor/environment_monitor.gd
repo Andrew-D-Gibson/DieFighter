@@ -42,6 +42,7 @@ const _LAMP_OFF: Color = Color(0.22, 0.16, 0.38)
 
 ## The same chime an upgrade tile makes when it fires: the rule paying off is
 ## the same kind of moment, just working against the player as often as for.
+## A rule or hazard with a 'trigger_sfx' of its own plays that instead.
 const _TRIGGER_SFX: SoundEffectResource = preload(
 	"res://Source/Resources/SoundEffectResources/SoundEffects/upgrade_trigger.tres"
 )
@@ -221,7 +222,7 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 func _on_hazard_triggered(hazard: BackgroundHazardResource) -> void:
 	if hazard != _hazard or not _deployed:
 		return
-	_play_trigger_feedback(hazard.display_name().to_upper(), hazard.color)
+	_play_trigger_feedback(hazard.display_name().to_upper(), hazard.color, hazard.trigger_sfx)
 
 
 func _queue_present() -> void:
@@ -388,20 +389,23 @@ func _on_jump() -> void:
 ## capped. The monitor goes off the way an upgrade tile does when it fires, so
 ## the surprise is tied to its cause. It does so even while still blinking
 ## unread: the rule biting is exactly when the player most needs to look.
+## The words and sound are the rule resource's, not the Modifier's: the
+## resource is the one place a rule is described.
 func _on_modifier_triggered(mod: Modifier) -> void:
 	var manager: BackgroundModifierManager = Globals.background_modifier_manager
 	if not is_instance_valid(manager) or mod != manager.get_active_modifier():
 		return
 	if not _deployed or _modifier == null:
 		return
-	_play_trigger_feedback(mod.get_trigger_text(), _modifier.color)
+	_play_trigger_feedback(_modifier.display_callout(), _modifier.color, _modifier.trigger_sfx)
 
 
 ## Squashes on the hinge, flares in the rule's colour and floats a callout
-## ("x2", "NO SHIELDS", "SOLAR FLARE") off the top. One chain can trip a rule
-## several times over, so the ring, callout and sound are rate-limited; the
-## squash and flare still answer every trip.
-func _play_trigger_feedback(callout_text: String, color: Color) -> void:
+## ("x2", "NO SHIELDS", "SOLAR FLARE") off the top, with [param sfx] (or the
+## default chime when null). One chain can trip a rule several times over, so
+## the ring, callout and sound are rate-limited; the squash and flare still
+## answer every trip.
+func _play_trigger_feedback(callout_text: String, color: Color, sfx: SoundEffectResource = null) -> void:
 	Juice.bump(_face, 0.3, 0.35)
 	# Mid-deploy the console's swing belongs to its drop.
 	if not (_motion_tween and _motion_tween.is_running()):
@@ -418,7 +422,7 @@ func _play_trigger_feedback(callout_text: String, color: Color) -> void:
 	Juice.sparkle(self, screen, color, 10, 45.0)
 	if not callout_text.is_empty():
 		Juice.callout_at(get_parent(), screen + _CALLOUT_OFFSET, callout_text, color)
-	Events.play_sound.emit(_TRIGGER_SFX)
+	Events.play_sound.emit(sfx if sfx else _TRIGGER_SFX)
 
 
 ## Floods the whole unit with a bright wash of the rule's colour and lets it

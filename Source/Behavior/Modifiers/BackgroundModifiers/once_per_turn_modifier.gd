@@ -59,10 +59,6 @@ func _refuse_refunds(event: EffectEvent) -> void:
 	announce_triggered()
 
 
-func get_trigger_text() -> String:
-	return "x1"
-
-
 ## The budget changes the moment the rule arrives or leaves, mid-turn too,
 ## so every grid tile re-reads it rather than waiting for the next refill.
 func on_registered(engine: ScenarioEngine) -> void:
