@@ -13,7 +13,8 @@ extends RefCounted
 ##   1. Add a KeywordResource to Source/Content/Keywords/KeywordResources/;
 ##      its file name is its id. Write its title and rule.
 ##   2. Give it one KeywordToken per spelling ("(feed_right)", "(feed_left)"),
-##      each with a readable sub-resource id. Variants share the keyword, so
+##      added at the end of its tokens list (a label's content.csv key is
+##      its position there). Variants share the keyword, so
 ##      its rule is written once. A token may take another palette colour
 ##      where the word belongs to another colour's rule (holograms are blue);
 ##      otherwise keywords are orange.

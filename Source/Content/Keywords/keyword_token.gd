@@ -2,8 +2,9 @@ class_name KeywordToken
 extends Resource
 ## One way of writing a keyword in a description: "(feed_right)" shows as an
 ## orange "Feed right" that pops up Feed's rule. Lives inside its
-## KeywordResource. The sub-resource id in the .tres names its content.csv
-## key (KEYWORD.FEED.FEED_RIGHT.LABEL), so give a new one a readable id.
+## KeywordResource. Its label's content.csv key is its place in the
+## keyword's tokens list (KEYWORD.FEED.TOKENS_0.LABEL), so add new ones at
+## the end.
 
 ## What a description writes, brackets included: "(feed_right)".
 @export var token: String
