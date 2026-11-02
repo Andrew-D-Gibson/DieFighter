@@ -48,8 +48,10 @@ const WINDOW_SCALE: StringName = &"Graphics/window_scale"
 const MONITOR: StringName = &"Graphics/monitor"
 const VSYNC: StringName = &"Graphics/vsync"
 const MAX_FPS: StringName = &"Graphics/max_fps"
-## Window scales offered, in screen multiples of Globals.SCREEN_SIZE.
-const WINDOW_SCALES: Array[int] = [2, 4, 6, 8, 9, 10, 12]
+## The smallest window scale offered, in multiples of Globals.SCREEN_SIZE.
+## Every whole scale from here up to the largest that fits is on offer (see
+## window_scales()); smaller is a postage stamp.
+const MIN_WINDOW_SCALE: int = 2
 
 # Audio
 const MASTER_VOLUME: StringName = &"Audio/master_volume"
@@ -85,6 +87,9 @@ const _MIN_ON_SCREEN_SHARE: float = 0.5
 ## The scale a brought-back window takes when its screen can't say how big
 ## it is.
 const _FALLBACK_WINDOW_SCALE: int = 4
+## What the OS frame (title bar, borders) adds to the window's size, until it
+## can be measured: a guess at a title bar, as a Retina Mac draws it.
+const _GUESSED_FRAME_EXTRA: Vector2i = Vector2i(0, 64)
 ## The buses the volume options set. project.godot names the layout by uid,
 ## and when the uid cache can't resolve it Godot quietly starts with only
 ## Master, so the Music and SFX sliders snap back. This file is the fallback.
@@ -106,6 +111,13 @@ var background_focus: BackgroundFocus
 ## In registration order, which is also the order they're applied on load:
 ## the monitor before the window goes fullscreen on it, and so on.
 var _options: Dictionary[StringName, _Option] = {}
+## How much bigger the OS frame is than the window, and where the window sits
+## inside it (the title bar's height, mostly). A window has to fit its frame
+## in the screen, so the sizes on offer leave room for it. Only measurable
+## while windowed, so the last measurement is kept for when the menu asks in
+## fullscreen.
+var _frame_extra: Vector2i = _GUESSED_FRAME_EXTRA
+var _frame_inset: Vector2i = _GUESSED_FRAME_EXTRA
 
 
 func _ready() -> void:
@@ -113,6 +125,9 @@ func _ready() -> void:
 	add_child(pixel_perfect_scaler)
 	background_focus = BackgroundFocus.new()
 	add_child(background_focus)
+	# The window boots windowed, before the saved options can take it
+	# fullscreen: the one sure chance to see its frame.
+	_measure_frame()
 	_register_options()
 	Events.save_options_config.connect(save_options_settings)
 	load_options_settings()
@@ -304,29 +319,38 @@ func is_fullscreen() -> bool:
 	return mode == DisplayServer.WINDOW_MODE_FULLSCREEN or mode == DisplayServer.WINDOW_MODE_EXCLUSIVE_FULLSCREEN
 
 
-## The largest window scale that still fits on the current display.
+## The window scales offered: every whole one that fits on this display.
+func window_scales() -> Array[int]:
+	return scales_up_to(largest_window_scale())
+
+
+## The largest window scale whose window, title bar and all, fits in the part
+## of its screen the menu bar, dock or taskbar leave free. Fullscreen can go
+## bigger: it has the whole screen and no frame (see PixelPerfectScaler).
 func largest_window_scale() -> int:
-	return maxi(_largest_scale_within(DisplayServer.screen_get_size()), WINDOW_SCALES[0])
+	_measure_frame()
+	var usable: Vector2i = DisplayServer.screen_get_usable_rect(_window_screen()).size
+	if usable.x <= 0 or usable.y <= 0:
+		return _FALLBACK_WINDOW_SCALE
+	return scale_to_fit(usable - _frame_extra)
 
 
-## The largest offered scale whose window fits in [param area], or
-## _FALLBACK_WINDOW_SCALE when the area is unknown (zero). The smallest scale
+## Every scale from MIN_WINDOW_SCALE up to [param largest].
+static func scales_up_to(largest: int) -> Array[int]:
+	var scales: Array[int] = []
+	for scale: int in range(MIN_WINDOW_SCALE, maxi(largest, MIN_WINDOW_SCALE) + 1):
+		scales.append(scale)
+	return scales
+
+
+## The largest whole scale whose window fits in [param area], or
+## _FALLBACK_WINDOW_SCALE when the area is unknown (zero). MIN_WINDOW_SCALE
 ## if none fits.
 static func scale_to_fit(area: Vector2i) -> int:
 	if area.x <= 0 or area.y <= 0:
 		return _FALLBACK_WINDOW_SCALE
-	return maxi(_largest_scale_within(area), WINDOW_SCALES[0])
-
-
-## 0 if not even the smallest scale fits.
-static func _largest_scale_within(area: Vector2i) -> int:
-	var best: int = 0
-	for scale: int in WINDOW_SCALES:
-		var size: Vector2 = Globals.SCREEN_SIZE * scale
-		if size.x > area.x or size.y > area.y:
-			break
-		best = scale
-	return best
+	var fit: Vector2 = Vector2(area) / Globals.SCREEN_SIZE
+	return maxi(floori(minf(fit.x, fit.y)), MIN_WINDOW_SCALE)
 
 
 ## Whether enough of [param window] lies on [param screens] to call it on
@@ -342,14 +366,14 @@ static func is_on_screens(window: Rect2i, screens: Array[Rect2i]) -> bool:
 	return on_screen >= area * _MIN_ON_SCREEN_SHARE
 
 
-## The window's scale when it's exactly one of the offered sizes, else 0 (a
-## size dragged out by hand, or fullscreen).
+## The window's scale when it's exactly a whole multiple, else 0 (a size
+## dragged out by hand, or fullscreen).
 func current_window_scale() -> int:
 	if is_fullscreen():
 		return 0
 	var size: Vector2i = DisplayServer.window_get_size()
 	var scale: int = size.x / int(Globals.SCREEN_SIZE.x)
-	if Vector2i(Globals.SCREEN_SIZE * scale) != size or not WINDOW_SCALES.has(scale):
+	if Vector2i(Globals.SCREEN_SIZE * scale) != size or scale < MIN_WINDOW_SCALE:
 		return 0
 	return scale
 
@@ -363,7 +387,7 @@ func _set_fullscreen(value: Variant) -> void:
 ## Leaves fullscreen if need be, and centres the resized window on its screen.
 func _set_window_scale(value: Variant) -> void:
 	var scale: int = int(value)
-	if not WINDOW_SCALES.has(scale):
+	if scale < MIN_WINDOW_SCALE:
 		return
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 	var window_size: Vector2i = Vector2i(Globals.SCREEN_SIZE * scale)
@@ -371,11 +395,31 @@ func _set_window_scale(value: Variant) -> void:
 	_centre_window(window_size)
 
 
-## Centres the window in the part of its screen the menu bar, dock or
-## taskbar leave free.
+## Centres the window, frame and all, in the part of its screen the menu bar,
+## dock or taskbar leave free.
 func _centre_window(window_size: Vector2i) -> void:
+	_measure_frame()
 	var usable: Rect2i = DisplayServer.screen_get_usable_rect(_window_screen())
-	DisplayServer.window_set_position(usable.position + (usable.size - window_size) / 2)
+	var frame_position: Vector2i = usable.position + (usable.size - window_size - _frame_extra) / 2
+	# Too big to fit, it hangs off the bottom right rather than putting its
+	# title bar out of reach.
+	frame_position = frame_position.max(usable.position)
+	DisplayServer.window_set_position(frame_position + _frame_inset)
+
+
+## Updates _frame_extra and _frame_inset from the window, when it has a frame
+## to measure (windowed, on a desktop).
+func _measure_frame() -> void:
+	if not controls_window() or is_fullscreen():
+		return
+	var extra: Vector2i = DisplayServer.window_get_size_with_decorations() - DisplayServer.window_get_size()
+	var inset: Vector2i = DisplayServer.window_get_position() - DisplayServer.window_get_position_with_decorations()
+	# No frame at all means no window (headless) or one still on its way out
+	# of fullscreen (macOS animates it): keep what was last seen.
+	if extra.x < 0 or extra.y <= 0:
+		return
+	_frame_extra = extra
+	_frame_inset = inset
 
 
 ## The screen the window is on, or the primary one if that can't be told.
@@ -407,7 +451,7 @@ func _move_to_monitor(value: Variant) -> void:
 ## Puts a windowed game back where it was and at the size it was. A saved
 ## spot that's no longer on any screen (its monitor unplugged, or the display
 ## shrunk) brings it back instead: centred on the screen it's on now, at the
-## largest offered scale that fits there.
+## largest scale that fits there.
 func _restore_window(config: ConfigFile) -> void:
 	var default_size: Vector2i = Vector2i(Globals.SCREEN_SIZE * largest_window_scale())
 	var window_size: Vector2i = config.get_value("Graphics", "window_size", default_size)
@@ -417,8 +461,7 @@ func _restore_window(config: ConfigFile) -> void:
 			DisplayServer.window_set_size(window_size)
 			DisplayServer.window_set_position(window_pos)
 			return
-		var usable: Vector2i = DisplayServer.screen_get_usable_rect(_window_screen()).size
-		window_size = Vector2i(Globals.SCREEN_SIZE * scale_to_fit(usable))
+		window_size = Vector2i(Globals.SCREEN_SIZE * largest_window_scale())
 	DisplayServer.window_set_size(window_size)
 	_centre_window(window_size)
 
