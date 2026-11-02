@@ -29,9 +29,11 @@ static func take(item: Node, drop_position: Vector2) -> void:
 	if item is Tile:
 		Globals.tile_grid.receive_tile(item, drop_position)
 	elif item is Dice:
-		item.reparent(Globals.player, true)
-		Globals.player.dice_manager.add(item)
+		var die: Dice = item
+		die.reparent(Globals.player, true)
+		Globals.player.dice_manager.add(die)
 		Globals.player.num_of_dice += 1
+		die.begin_arrival()
 	elif item is GridSlot:
 		(item as GridSlot).install(Globals.tile_grid.locked_cell_at(drop_position))
 	elif item is MoneyPickup:

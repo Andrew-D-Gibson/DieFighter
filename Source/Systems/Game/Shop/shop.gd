@@ -549,6 +549,7 @@ func _stock_extra_shelf() -> void:
 
 func _create_dice_buy_zone() -> void:
 	var dice: Dice = dice_scene.instantiate()
+	dice.put_on_offer()
 	add_child(dice)
 	dice.global_position = global_position + Vector2(46, -16)
 	dice.draggable.home_position = dice.global_position

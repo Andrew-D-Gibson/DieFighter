@@ -47,6 +47,13 @@ static var held: Draggable = null
 		dragging_allowed = new_value
 		floating_enabled = dragging_allowed
 
+## True while the parent is on its way somewhere and mustn't be picked up
+## until it gets there (a die bought from the shop, until it lands in the
+## hand). It still floats home as usual. Kept apart from dragging_allowed,
+## which the tutorial and a jump lock and unlock on their own schedules, so
+## lifting this on arrival can't undo one of their locks.
+var out_of_reach: bool = false
+
 var follow_strength: float = 20
 ## While true, code is carrying the parent between holders across frames
 ## (Dice.hand_off_after_death()): it's left where the code puts it whatever
@@ -96,6 +103,18 @@ func set_home(new_home: Vector2, announce_arrival: bool = false) -> void:
 	home_position = new_home
 
 
+## Fires reached_new_home the next time the parent settles home, wherever
+## home has moved to by then.
+func announce_next_arrival() -> void:
+	_announce_arrival = true
+
+
+## Whether the player could pick the parent up, as far as its own locks go:
+## dragging is allowed and it isn't out of reach on its way somewhere.
+func can_pick_up() -> bool:
+	return dragging_allowed and not out_of_reach
+
+
 func _process(delta: float) -> void:
 	# Don't handle moving the draggable object if it's being moved with code
 	if state == DragState.MOVING_WITH_CODE or held_by_code:
@@ -130,7 +149,7 @@ func _process(delta: float) -> void:
 	
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
-	if dragging_allowed and state == DragState.DEFAULT and not held_by_code \
+	if can_pick_up() and state == DragState.DEFAULT and not held_by_code \
 	and event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 		begin_drag(_global_position_of(event as InputEventMouseButton))
 
@@ -289,7 +308,7 @@ func is_over_info_spot() -> bool:
 
 func _on_mouse_entered() -> void:
 	# Only scale on hover if not currently dragging
-	if dragging_allowed and state == DragState.DEFAULT and not holding():
+	if can_pick_up() and state == DragState.DEFAULT and not holding():
 		Events.play_sound.emit(_HOVER_THUMP_SFX)
 		
 		var parent: Node = get_parent()

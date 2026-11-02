@@ -282,7 +282,7 @@ static func _can_pick_up(thing: Node2D) -> bool:
 	if not is_instance_valid(thing) or thing.is_queued_for_deletion() or not thing.is_visible_in_tree():
 		return false
 	var draggable: Draggable = thing.get("draggable")
-	return draggable != null and draggable.dragging_allowed \
+	return draggable != null and draggable.can_pick_up() \
 		and draggable.state == Draggable.DragState.DEFAULT
 
 
@@ -314,7 +314,7 @@ static func _drop_point_for(thing: Node2D, at: Vector2i = Vector2i(-1, -1)) -> V
 static func dice_in_hand() -> Array[Dice]:
 	var dice: Array[Dice] = []
 	for hand_die: Dice in Globals.player.dice_manager.queue:
-		if is_instance_valid(hand_die) and hand_die.draggable.dragging_allowed \
+		if is_instance_valid(hand_die) and hand_die.draggable.can_pick_up() \
 		and hand_die.draggable.state == Draggable.DragState.DEFAULT:
 			dice.append(hand_die)
 	return dice
