@@ -52,6 +52,23 @@ func test_seize_takes_the_die_and_deals_no_damage() -> void:
 	assert_not_null(seize.info_texture)
 
 
+## The die is the player's and stays with the thief, so nothing hurls it at
+## them; the "STOLEN" callout floats off the ship holding it, as Charge
+## Bore's "LOADED" does.
+func test_seize_holds_the_die_rather_than_firing_it() -> void:
+	var seize := _shipped("seize.tres")
+	assert_eq(_steps(seize, EffectEnums.Category.AUDIO_VISUAL, EffectEnums.AudioVisualSubtype.ATTACK_TWEEN), 0)
+	var aimed_at_self: bool = false
+	var callout_on_self: bool = false
+	for effect: EffectData in seize.effect_chain.effects:
+		if effect.category == EffectEnums.Category.TARGETING:
+			aimed_at_self = effect.subtype == EffectEnums.TargetingSubtype.TARGET_SELF
+		elif effect.category == EffectEnums.Category.AUDIO_VISUAL \
+				and effect.subtype == EffectEnums.AudioVisualSubtype.CALLOUT:
+			callout_on_self = aimed_at_self
+	assert_true(callout_on_self, "STOLEN pops over the thief")
+
+
 func test_every_dice_thief_seizes_and_rolls_no_amount() -> void:
 	var seize := _shipped("seize.tres")
 	for file: String in ["dice_thief", "gaff", "gaff_raider", "conscriptor", "bastion_core",
