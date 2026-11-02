@@ -72,6 +72,11 @@ registration to testing. For how the systems work underneath, see
     panel prefixes `Uses (die_N) ->`.
   - Keyword tokens like `(feed_right)` and `(burn)` render styled and
     underlined. Hovering one in the info panel pops up its rule (§9).
+- **Player-facing text is written in English in the `.tres`** (inspector),
+  and translated through `Localization/content.csv`. After changing any of
+  it, run `tools/loc.sh sync` and commit `content.csv` with the `.tres`.
+  Never put display text in `string_param`: a callout's words go in
+  `callout`. See §13.
 
 ---
 
@@ -149,7 +154,8 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
 
 **Fields**
 - **Info**
-  - `tile_name`: bbcode-coloured to match the tile's colour.
+  - `tile_name`: bbcode-coloured to match the tile's colour. All three are
+    content text (§13): run `tools/loc.sh sync` after editing them.
   - `activation_description`, `description`: say what the die does,
     e.g. `[color=yellow]Any die[/color] -> ...` (see the text conventions at
     the top).
@@ -177,7 +183,7 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
   - Holding tiles end with `KEEP_DIE_WITH_TILE`.
   - **Twin dice** (Twin Barrel, Pair Lock, Lucky Seven): the first die is
     held, the next pays out on both. Tick `holds_first_die` and wrap the
-    chain in `IF_SOURCE_HOLDS_DIE`: false branch `CALLOUT` "HOLD" then
+    chain in `IF_SOURCE_HOLDS_DIE`: false branch `CALLOUT` (`callout` "HOLD") then
     `KEEP_DIE_WITH_TILE`; true branch the payout, reading the held die with
     `ADD_HELD_DIE_VALUE` and handing it over with `GIVE_HELD_DIE_TO_TARGET`
     (or leaving it to go home). The hold spends no use, so a 1-use tile's use
@@ -658,7 +664,8 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
 **Ship states** (`ScenarioShipState`, one `.tres` each)
 - `dialogue`. The speech box holds four lines of about ten characters, and
   three read best, so keep a line to roughly 35 characters. A fifth line
-  spills out the bottom.
+  spills out the bottom. The lint fails a line over 50 characters, in any
+  language.
   - **One voice per side.** Allied ships don't talk over each other: give
     one ship the line and leave its allies' `dialogue` empty (e.g.
     `FateScenario/fate_attacker_silent.tres` for the Rift's extra ships).
@@ -879,6 +886,11 @@ A hazard belongs to a background, not a scenario: the place itself goes off.
 `Source/Resources/BackgroundResources/BackgroundHazards/<name>.tres` (a
 `BackgroundHazardResource`):
 - `hazard_name`, `description`, `color`.
+- `headline`: what it does in a few words, read after the countdown on the
+  arrival card ("In 2 turns: " + this). Lower case, no full stop, tokens
+  welcome. The monitor's info panel shows the full `description` instead.
+- `banner`: what it just did, in capitals, under its name the turn it goes
+  off. Plain text, 30 characters at most.
 - `icon`: 9x9 at most, from `Assets/Textures/TargetingComputer/HazardIcons/`.
   It sits beside the countdown digit on the environment monitor.
 - `timing`: `YOUR_TURN_STARTS` (after the hand is rolled) or
@@ -920,6 +932,11 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
   out of the source), Engine (the player's end of a stream or callout is the
   engine gauge), Hull Hub / Engine Hub (the stream's own end is the player's
   health bar / engine gauge instead of the tile, e.g. a drain that heals).
+- A CALLOUT's words go in **`callout`**: English, capitals, very short.
+  `{amount}` shows the running amount and `{die}` the die's face. They're
+  translated like any content text, so run `tools/loc.sh sync` after adding
+  one. `string_param` is for internal names only (status ids, tile data keys,
+  families) and is never shown. A content test enforces both.
 - **Only throw a die at a ship that keeps it.** ATTACK_TWEEN flies the die at
   the target, which reads as handing it over, so use it only when the chain
   then gives the die to that target. A tile that hits but keeps or passes its
@@ -989,9 +1006,10 @@ Statuses go on enemies and on the player. The same status works on both, so
 a new one needs a rule for each side.
 
 1. Subclass `StatusModifier` in `Source/Behavior/Modifiers/Statuses/`. Copy
-   `burn_status.gd` or `exposed_status.gd`. Set `status_id`, `display_name`,
-   `color` (a `Globals` palette colour), `icon`, `info_icon` and `priority`,
-   and implement its hook. Where it touches dice, branch on
+   `burn_status.gd` or `exposed_status.gd`. Set `status_id`, `color` (a
+   `Globals` palette colour), `icon`, `info_icon` and `priority`, and
+   implement its hook. Its name is its keyword's title (`status_id` = the
+   keyword's file name). Where it touches dice, branch on
    `is_on_player()`: an enemy spends dice on its table, the player places
    them on tiles (`JammedStatus` and `ScrambledStatus` show both).
    - A status that lasts a number of the ship's turns counts down as that
@@ -1001,10 +1019,10 @@ a new one needs a rule for each side.
      would spend a stack before the status ever did anything (`WeakenedStatus`).
 2. Add it to `StatusCatalog._statuses` (`status_catalog.gd`), keyed by id.
 3. Art: `Assets/Textures/Statuses/` (11×11 badge, 24×24 info).
-4. Add a keyword for it (§9). If it reads differently on the player, add a
-   second term, `<Name> (you)`, and a token for it (`(jammed_you)`): the
-   player's badge shows that rule, and enemy actions aimed at the player use
-   that token.
+4. Add a keyword for it (§9) whose file name is the `status_id`. If it reads
+   differently on the player, fill `player_rule` and add a token ticked
+   `player_side` (`(jammed_you)`): the player's badge shows that rule, and
+   enemy actions aimed at the player use that token.
 5. Apply it with `ATTRIBUTE_CHANGE / APPLY_STATUS`: `string_param` = id,
    running amount = stacks. Test with dev console `status <id> [stacks]` on a
    targeted enemy, or `status <id> [stacks] me` on yourself.
@@ -1039,14 +1057,15 @@ listens for `ON_STATUS_APPLIED_TO_ENEMY` (Hex Coil); `APPLY_STATUS`,
 
 ## 9. Keywords
 
-In `Source/Systems/keywords.gd`:
-1. Add the rule text to `_DEFINITIONS` under its term.
-2. Add each token spelling to `_TOKENS` (`"(my_kw)": {"label": ..., "term": ...}`).
+Add a `KeywordResource` to `Source/Content/Keywords/KeywordResources/`; the
+file name is its id. Write `title` and `rule` (a sentence or two, terse).
+Add one `KeywordToken` to `tokens` per spelling: `token` (`"(my_kw)"`),
+`label`, and `color` when the word follows another colour rule (holograms are
+blue; keywords are otherwise orange). Then run `tools/loc.sh sync`. Token keys
+go by position (`KEYWORD.MY_KW.TOKENS_0.LABEL`), so add new tokens at the end.
 
 Write `(my_kw)` in any description. It renders styled and underlined, and the
-info panel shows its definition in a pop-up while the player hovers it. A token
-row may set `"color"` where the word follows another colour rule (holograms are
-blue). Keep the rule to a sentence or two in the same terse style.
+info panel shows its rule in a pop-up while the player hovers it.
 
 ---
 
@@ -1153,7 +1172,114 @@ AudioStreamPlayer.
 
 ---
 
-## 13. Checklist before committing content
+## 13. Text & localization
+
+Player-facing text is English and is translated into zh_CN, ja, ru, de, fr, es
+and pt_BR through two CSVs in `Localization/`:
+- `translations.csv`: UI and code text. Write the key and the English in the
+  CSV by hand (new rows at the end) and read it with `tr("KEY")`.
+- `content.csv`: content text. **Generated; never edit its `en` column.**
+  The English is written in the content resource itself, in the inspector,
+  and `tools/loc.sh sync` copies it here under a generated key. You may
+  improve a row's `_context` note by hand; sync keeps it.
+
+**Writing content text.** Edit the field in the inspector and play: English
+is read straight from the resource. Before committing, run `tools/loc.sh
+sync` and commit `content.csv` with the `.tres` (the lint fails otherwise).
+Changing English that was already translated marks those translations
+`stale` (they still show until someone redoes them). Close the Godot editor
+before running the tools. Display text never goes in `string_param` or other
+internal ids; a callout's words go in `callout` (§7).
+
+| Type | Fields | Key |
+|---|---|---|
+| `TileResource` | tile_name, activation_description, description | `TILE.<file>.NAME/ACTIVATION/DESC` |
+| `KeywordResource` / `KeywordToken` | title, rule, player_rule / label | `KEYWORD.<file>.*`, `…TOKENS_N.LABEL` |
+| `EnemyResource` | enemy_name, description | `ENEMY.<file>.NAME/DESC` |
+| `EnemyActionResource` | name, description | `ENEMY_ACTION.<file>.NAME/DESC` |
+| `EffectData` | callout | `<file's key>.<path>.CALLOUT` |
+| `BackgroundHazardResource` | hazard_name, description, headline, banner | `HAZARD.<file>.*` |
+| `BackgroundModifierResource` | modifier_name, description | `BG_MODIFIER.<file>.*` |
+| `TutorialStep` | tutorial_text | `TUTORIAL.<file>.TEXT` |
+| `ScenarioShipState` | dialogue (50 chars) | `SHIP_STATE.<folder>.<file>.DIALOGUE` |
+| `ScenarioResource` | boss_title, boss_subtitle | `SCENARIO.<file>.BOSS_*` |
+
+A status's name is its keyword's title (§8).
+
+**Keys.** A resource saved as its own file is keyed by the file:
+`HAZARD.SOLAR_FLARE.HEADLINE`. One embedded in another file (a callout in a
+tile's chain, a token in a keyword) is keyed by its place in that file:
+`TILE.GEARBOX.EFFECT_CHAIN.EFFECTS_5.IF_TRUE_EFFECTS_2.CALLOUT`. Re-saving
+never changes a key. Renaming the file or moving a step does: sync then moves
+the row's translations to the new key when the English is unchanged, and
+reports anything it can't match as an orphan (move its translations by hand,
+then delete the old row).
+
+**Display code** never reads a text field directly. It calls the resource's
+`display_*()` accessor (`hazard.display_headline()`), which returns the
+current language.
+
+**Making a new content type translatable:**
+1. On the resource script, add `_content_text_prefix()` (the key's first
+   part, e.g. `"TILE"`) and `_content_text_fields()` returning a
+   `ContentText.Field` per text property: property name, key suffix, a
+   context note for translators, and a `_max_chars` limit if the text has a
+   hard width.
+2. Add a `display_<field>()` accessor per field that returns
+   `ContentText.text(self, &"<field>")`.
+3. Switch every display call site to the accessors.
+4. `tools/loc.sh sync`. Nothing else to register: the sync finds every such
+   resource under `res://Source` (except `Scenarios/TEST`), including ones
+   embedded in another file. If the type's file names repeat across folders,
+   add `func _content_text_folder_in_key() -> bool: return true`.
+5. Game code that copies content at run time calls `ContentText.copy(res)`
+   (for actions, `action.copy()`), never `duplicate()`. A plain duplicate
+   loses its keys and shows English in every language.
+
+**Translating** (one language at a time):
+1. `tools/loc.sh export de` writes `Localization/pending/de.csv`. It holds
+   every row German is missing or has stale, UI and content alike, with the
+   English, the context, the length limit and the old translation for stale
+   rows.
+2. Fill in the `de` column (a translator, or a machine draft). Keep every
+   `{placeholder}`, `%d`, `(token)` and `[tag]` exactly as in the English;
+   they may move within the sentence. Keep line breaks as `\n`. Save as
+   UTF-8 CSV.
+3. `tools/loc.sh import Localization/pending/de.csv` (add `--status
+   reviewed` for a checked translation; the default is `machine`). It merges
+   each row into whichever CSV owns its key, re-imports the CSVs and runs
+   the lint. A row whose English changed after the export comes in `stale`.
+4. Check it in the game: `lang de` in the dev console (debug builds)
+   previews any language that has a translation, shipped or not. Options only
+   offers languages registered in project.godot
+   (`internationalization/locale/translations`), which is how a language
+   ships.
+
+**Checking every language.**
+- `tools/loc.sh lint` (also part of GUT, `test/content/test_localization.gd`)
+  fails when content English hasn't been synced, when a translation lost or
+  broke a placeholder, token or BBCode tag, or when text overruns its
+  `_max_chars`. Missing glyphs are reported, not failed, until each language
+  has its font.
+- `tools/loc.sh audit [locale|pseudo|all]` (dev console `loc_audit`) shows
+  every text surface in each language and flags text that overflows or lacks
+  glyphs. It writes
+  `~/Library/Application Support/Godot/app_userdata/DieFighter/loc_audit/report.html`.
+  `pseudo` stretches every translated string, so it finds text that won't fit
+  a longer language, and any literal English, before a translation exists.
+  `--headless` checks without photos.
+- While playing a debug build, the overflow watcher outlines text that doesn't
+  fit in red and logs a `Loc` line with its key to the debug log
+  (`loc_watch off` stops it). Set the `loc_watch_ignore` meta on a label that
+  is meant to overflow.
+
+Status column (`_status`): `machine`, `reviewed` or `stale`, as one word for
+the whole row or per language (`de=reviewed fr=stale`). `_en_hash` is the
+tool's record of the English it last saw; leave it alone.
+
+---
+
+## 14. Checklist before committing content
 
 - [ ] New scripts validated, class cache rebuilt if a `class_name` was added.
 - [ ] GUT suite green (content tests load every new `.tres`).
@@ -1162,6 +1288,8 @@ AudioStreamPlayer.
 - [ ] Played it once: intents read correctly, nothing in the godot.log
       (`~/Library/Application Support/Godot/app_userdata/DieFighter/logs/godot.log`,
       grep `SCRIPT ERROR`).
+- [ ] Changed content text? `tools/loc.sh sync`, and `content.csv` committed
+      with the `.tres`.
 - [ ] New sound slots noted in `SOUND_EFFECTS.md`; DEVLOG entry for anything
       sizable.
 - [ ] Opened the codex (main menu): a new tile or enemy shows on its tab, in

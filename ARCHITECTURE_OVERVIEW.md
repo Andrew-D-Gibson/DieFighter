@@ -30,6 +30,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `CollectionManager` | `Autoloads/collection_manager.gd` | What the player has found across every run, for the codex: tiles they've owned, enemies met/destroyed and region rules/hazards read. Kept in `user://collection.json`, outside the run save (see Codex below) |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Registry of player options (see 7.4): each registered once with its default and how to read and apply its live value, keyed "Section/name" as saved in `user://options_settings.cfg`. Loads and applies them at boot, saves on `Events.save_options_config`, resets them for the menu's Defaults. Owns `PixelPerfectScaler` and `BackgroundFocus`. Also holds the `times_run` counter. Window options (size, monitor, vsync, pixel perfect) aren't registered on the web (`controls_window()`) |
+| `Localization` | `Autoloads/localization.gd`, tools in `Systems/Localization/` | The game's language: the locales offered (`get_available_locales()`, any with translations; debug builds' `get_preview_locales()` adds unregistered ones), the first-launch pick, `set_locale()` at runtime (`Events.locale_changed`), and the debug pseudo-locale `en_XA`. Owns the debug `OverflowWatcher`. See 7.5 |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS`. Editor-launched runs only: in any exported build (debug or release) it frees itself without opening the port |
 | `AutoPilot` | `Autoloads/auto_pilot.gd`, helpers in `Systems/AutoPilot/` | Plays runs by itself for QA and balance testing (see AutoPilot below). Editor binaries with `-- --autoplay` only; otherwise it frees itself |
 
@@ -53,7 +54,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 
 | System | Scene/Node | Responsibility |
 |--------|-----------|----------------|
-| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. An `InfoResource` with `upgrade_*` fields shows the thing and its upgrade side by side, an arrow between. Keywords in it are hoverable and pop up their rule. While open it consumes Esc (`PauseMenu` action) to close itself, so the pause menu doesn't open |
+| `InfoShower` | `UI/InfoShower` | Click-to-show info panel (title, activation, description) with tween animation. An `InfoResource` with `upgrade_*` fields shows the thing and its upgrade side by side, an arrow between. `side_label_text` is an aside column right of the art (in the side-by-side layout it goes under the current description). Keywords in it are hoverable and pop up their rule. While open it consumes Esc (`PauseMenu` action) to close itself, so the pause menu doesn't open |
 | `OverheadConsole` | `Systems/Player/OverheadConsole` | A display hanging from the canopy ceiling in the top-left. It waits out of sight and drops down while any readout holds it there (`request_down(reason, wanted)`): the `MoneyIndicator` credit readout in its case (from the run's first credits, or the first payout coin taking off, for the rest of the run; a loaded save holds it down if `run_stats.credits_earned` or the balance is above 0) and the `EnvironmentMonitor` flap under it (a region rule or hazard). Coins aim at `MoneyIndicator.coin_target()`, its resting place, so they meet it even while it's still dropping |
 | `PlayerHealthBar` | `Systems/Player/PlayerHealthBar` | HP/shields UI with reveal animations |
 | `EngineCharger` | `Systems/Game/EngineCharger` | Engine charge bar (recharges when not in combat) |
@@ -63,7 +64,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `MenuCaravan` | `UI/MainMenu/MenuCaravan` | The menu's backdrop: Caravan ships (`CaravanShipKind`s, borrowing combat sprites) flying an editable `Path2D` past and behind the planet, sized per route point (`point_depths`). Drawn into a 320x180 viewport; each whole-pixel width is its own sprite from `PixelArtShrinker`. Ships can be taken off the route and flown by hand (`take_off_route`, `add_ship`, `pixel_on`), and `add_overlay` draws over them |
 | `CaravanStraggler` | `UI/MainMenu/MenuCaravan` (child of `MenuCaravan`) | Every 50–100 s a mid-sized Caravan ship breaks down and drifts out of the column; an Undertow Gaff shoots its lights out, hooks it and tows it off the bottom of the screen. One coroutine (`play()`) with its own timers |
 | `FateBehind` | `main_menu.tscn` (ColorRect, `fate_behind.gdshader`) | The rim of Fate over the bottom of the menu: black horizon, swirling purple rim, dithered glow behind the title |
-| `TutorialManager` | `Systems/TutorialManager` | Seeded first-run tutorial: step popups over the opening fight |
+| `TutorialManager` | `Systems/TutorialManager` | Seeded first-run tutorial: step popups over the opening fight, and a ghost cursor acting out a step's drag or click |
 
 **Background & Visuals**
 
@@ -72,6 +73,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `BackgroundManager` | `Graphics/BackgroundManager` | Parallax layer manager: black holes, nebulae, stars, shader planets and suns (`CelestialBody`) laid out from a picked `SetPieceComposition`, scrolling objects (debris, asteroids, ice, scrap, fate shards, embers, ion motes); see Background Layouts and Star Parallax |
 | `Vignette` | `Graphics/Vignette` | Flash overlay for camera shake/impact emphasis |
 | `Juice` | `Systems/Graphics/Juice/juice.gd` (static helpers) | Bumps, wiggles, rings, sparkles and callouts; see 4.7 |
+| `JumpFx` | `Systems/Graphics/JumpFx/jump_fx.gd` (static helpers) | The jump drive: charge motes, flare, stretch, streak, ring and sparks, and the jump-in that reverses it. Shared by the opening cutscene and departing enemies (`Enemy.jump_away`, see 8.4) |
 | `GlitchController` | `UI/GlitchShader` | CSS glitch shader activation on large camera shake |
 
 ---
@@ -324,8 +326,8 @@ only number a status has; each status decides what one means.
 - **Badges:** each status shows a `StatusBadge` (icon + stack count) on its
   ship's `%StatusBar`: beside an enemy's health ring, above the player's
   (two to a row, clear of the Outrigger's wider panel). Clicking one shows its rule in the info panel:
-  `rule_term()` picks the keyword, the "(you)" one where the player's side
-  differs (`Keywords.PLAYER_SUFFIX`). The hull panel lists the player's
+  `rule_term()` returns the keyword id, `<id>_you` (`Keywords.PLAYER_SUFFIX`)
+  where the player's side differs. The hull panel lists the player's
   statuses too. Art is in `Assets/Textures/Statuses/` (11×11 badge, 24×24
   info).
 - **Threat:** an enemy action putting a status on the player (or venting
@@ -341,10 +343,11 @@ the cockpit vignette for the player, ring, `+N NAME` callout);
 status does its job (see 4.7). `announce_triggered_at()` draws it on a tile
 instead, for a player status that acts there.
 
-**Adding a status:** subclass `StatusModifier` (set `status_id`,
-`display_name`, `color`, `icon`, `info_icon`, `priority`), add it to
-`StatusCatalog`, give it a keyword in `Keywords`, and decide what it does on
-the player (a "(you)" keyword if that reads differently).
+**Adding a status:** subclass `StatusModifier` (set `status_id`, `color`,
+`icon`, `info_icon`, `priority`), add it to `StatusCatalog`, give it a
+keyword whose file name is the `status_id` (5.3; `display_name()` is that
+keyword's title), and decide what it does on the player (the keyword's
+`player_rule` if that reads differently).
 
 ### 4.5.1 Evasion
 
@@ -367,10 +370,11 @@ standing rule rather than something a tile grants, and there is no badge.
 - **Feedback:** a big `EVADED!` callout (`CALLOUT_EVADED`) over the health
   bar and the Engine Charger tile (`EvasionModifier.engine_display()`: the
   Outrigger's sail gauge stands in), plus a purple vignette pulse.
-- **Display:** `get_rule_info_text()` adds the sum (`INFO_ENGINE_EVASION`,
+- **Display:** `get_rule_side_text()` puts the sum (`INFO_ENGINE_EVASION`,
   "Engine charge x 3% = Evasion, up to 50%") and the live chance
   (`INFO_ENGINE_EVASION_NOW`, or `_NOW_BONUS` while tiles have added some)
-  to the Engine Charger's info panel, whose picture is the live gauge
+  in the side column of the Engine Charger's info panel, so its description
+  stays one centred block. The panel's picture is the live gauge
   (`EngineChargeInfoArt`, via `Tile.info_picture`). The Outrigger has no
   charger tile, so its pilots don't see the number. `(evasion)` is a keyword
   that only says what evasion does; the sum lives on the tile.
@@ -459,7 +463,9 @@ mid-flight. `Juice.anchor_of()` / `body_of()` decide where an
 effect on a node is drawn and what gets squashed (`Player` routes both to its
 health bar; `Juice.engine_anchor()` is the engine gauge's centre). A dying
 enemy's ship graphics move into a `JuicePixelated` (`pixelate()`) so the kill
-sequence and its explosion render on the 320x180 grid. `SCREEN_RIPPLE` honours the screenshake setting. Where every
+sequence and its explosion render on the 320x180 grid. `SCREEN_RIPPLE` honours the screenshake setting.
+A `CALLOUT`'s words are `EffectData.callout`, content text (7.5): `JuiceHandler`
+translates them, then fills the tokens. `string_param` is never shown. Where every
 sound should go is in `SOUND_EFFECTS.md`.
 
 ---
@@ -476,6 +482,7 @@ sound should go is in `SOUND_EFFECTS.md`.
 | `BackgroundHazardResource` | `Source/Resources/BackgroundResources/BackgroundHazards/*.tres` | A timed environmental event that belongs to a background (solar flare, ion storm, asteroid impact, fate rift): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | `TileResource.effect_chain`, `event_responses`, enemy actions, hazards | Ordered list of `EffectData` entries dispatched through `EffectRegistry` |
+| `KeywordResource` | `Source/Content/Keywords/KeywordResources/<id>.tres` | A game term: title, rule, optional player-side rule and its `KeywordToken` spellings (5.3) |
 | `ActivationResource` | In TileResource.activation_checks | Criteria checks: requires a die / takes no die, specific values, in combat, a ship targeted, engine charged / not charged, can afford N charge, overcharged, Fleet of N or fewer, evasion below its cap |
 
 ### 5.2 Tile Resource Fields
@@ -497,23 +504,33 @@ class_name TileResource extends Resource
 @export var max_dice_in_queue: int = -1
 ```
 
+The three text fields are content text (7.5): display code reads
+`display_name()`, `display_activation_description()` and
+`display_description()`, never the fields.
+
 Uses are a **per-turn budget**. Bigger payoffs are meant to carry a cost other
 than uses (engine charge, hull, a die, neighbours' uses), not a once-per-fight
 limit.
 
 ### 5.3 Keywords
 
-`Source/Systems/keywords.gd` (`Keywords`) holds game terms written into
-descriptions as tokens: `(feed_right)`, `(feed_left)`, `(feed_up)`,
-`(feed_down)`, `(feed_random)`, `(fed)`, and one per status — `(burn)`,
-`(scrambled)`/`(scramble)`, `(jammed)`/`(jam)`, `(exposed)`/`(expose)` — plus
-`(hologram)`. `Utils.format_text()`
-renders each token as a styled label. The info panel asks for hoverable labels
-(`format_text(text, true)`), which wrap each in a `[url]` tag. `InfoShower`
-listens for `meta_hover_started` on its labels and pops up
-`Keywords.definition()` beside the cursor, so no rules are on screen until the
-player asks. `definition()` also serves the status badges. Add a keyword by
-adding its definition and its token spellings to the two tables in that file.
+`Keywords` (`Source/Systems/keywords.gd`) serves the game's terms, read lazily
+from `KeywordResource`s in `Source/Content/Keywords/KeywordResources/`. The
+file name is the id (`feed`, `burn`, `hologram`), and every lookup goes by
+id, never by English. A keyword has a `title`, a `rule`, an optional
+`player_rule` (served as `<id>_you`, `Keywords.PLAYER_SUFFIX`, for a status
+that works differently on the player) and its `tokens`: embedded
+`KeywordToken`s, one per spelling written into descriptions (`(feed_right)`,
+`(burn)`, `(jammed_you)`), each with a `label`, an optional palette `color`
+and `player_side`. All of the text is content text (7.5), keyed by position
+(`KEYWORD.FEED.TOKENS_0.LABEL`). A status's id is its keyword's id.
+`Utils.format_text()` renders each token as a styled label. The info panel
+asks for hoverable labels (`format_text(text, true)`), which wrap each in a
+`[url]` tag whose meta is the id. `InfoShower` listens for
+`meta_hover_started` on its labels and pops up `Keywords.definition(id)`,
+titled `Keywords.title(id)`, beside the cursor, so no rules are on screen
+until the player asks. `definition()` also serves the status badges. Add a
+keyword by adding a file (CONTENT_BUILD_GUIDE §9).
 
 ### 5.4 Effect Chains
 
@@ -752,7 +769,27 @@ The card's label has its own `line_separation` (-2, not the theme's -4) so
 the 10px inline icons clear the lines around them, and it doesn't overhang
 the panel, so a card grows with its text: four lines is about the most a card
 at the top of the screen holds before reaching the systems panel. Put a space
-before an icon token so it doesn't touch the word before it.
+before an icon token so it doesn't touch the word before it. A card's
+`tutorial_text` is content text (7.5).
+
+**Ghost cursor.** A step that asks for a drag or a click shows it: a
+translucent copy of the game's pointer (the arrow and fist from
+`MouseCursors`, tinted the cards' action-word yellow at 70%, z 20 over the dim
+and cards) acts it out on the live board, on a loop, until the player does
+it. `TutorialStep.ghost_demos` lists `GhostDemo`s, a DRAG (at → to) or a
+CLICK (at), in `Systems/TutorialManager/GhostCursor/`. Each end is a
+`GhostTarget` that names a thing, never a pixel: a node path from the scene
+root, the first draggable die, a grid tile by its `TileResource` (or its
+upgrade), the first open grid cell, a salvage tile, the map's jump arrow, the
+map's view plus an offset (a pan, `Map.pan_area()`) or a ship other than the
+target. Targets resolve every frame, so bobbing dice and moving ships are
+followed, and a target that's absent, hidden, spent or locked out drops its
+demo from the loop until it's back. A drag carries a see-through copy of the
+die or tile. The manager starts the demos 0.6 s after the card's text is in
+(`all_text_displayed`) and stops them when the step closes or at
+`FINISH_TUTORIAL`. The cursor hides while the mouse is down or anything is
+held, and starts over 1.2 s after. `test_ghost_cursor.gd` checks that every
+drag or click step has a demo and every node path exists in main.tscn.
 
 ---
 
@@ -1273,7 +1310,11 @@ shared group offset (`offset_jitter`), each piece's own `position_jitter`, a
 diameter, `pixel_scale` to match), one sun height for the whole group
 (`light_tilt_jitter`, added to `sun_direction.z`) and each body's face. The
 private stream means a scenario seed always gives the same layout, however
-many stars or pieces are drawn around it. `test_background_set_pieces.gd`
+many stars or pieces are drawn around it. A scenario can pin its own
+(`ScenarioResource.set_piece_layout`, a `SetPieceComposition` used in place
+of the pick; the layout draw is still made, so the stars don't change): the
+tutorial's two-ship fight pins star_field's dune world and moon, the moon
+clear of the left ship's health bar. `test_background_set_pieces.gd`
 keeps every layout's worst case out of the column the ships fight in
 (x 112-208) and in the top band (centre y at most 64).
 
@@ -1289,6 +1330,15 @@ streams is `_star_stream_speed()`:
 `BackgroundResource.anchors_the_view(composition)` decides which row applies.
 Cruise is `global_speed` as authored (16); `play_jump_outro()` tweens back to
 it. The nebula's own churn and the scrolling objects are unchanged.
+
+**Set pieces in a jump.** Fixed pieces (planets, moons, suns) hold still at
+rest and slide down at `static_jump_drift_rate` x speed above rest
+(`BackgroundManager._drift_static_objects()`), so they start slowly, speed up
+with the ramp-up and are gone by the time hyperspace punches in; leaving
+pieces never wrap. A sky that loads mid-jump starts its pieces above home by
+the distance the outro's slow-down will carry them (`_arrival_drift()`, a
+function of the current speed, `JUMP_OUTRO_TIME`), so they slide in and stop
+on their home pixel as the speed reaches rest.
 
 ---
 
@@ -1336,16 +1386,20 @@ rule the enemy intent telegraph follows. Three things carry it:
   down flashes the unit and pops the digit; at one turn left
   the digit goes red and the lamp keeps blinking even once read; when it fires
   the monitor pops like a tile with the hazard's name as the callout. Clicking
-  it explains the hazard and its interval. Each fresh rule or hazard also
+  it opens the hazard's info panel (`EnvironmentMonitor.hazard_info()`,
+  static): the countdown in the top line where a tile's panel says when it
+  activates ("In 2 turns", yellow), then the full rule and "Then every N
+  turns". The headline isn't there, since the full rule only repeats it; it
+  belongs to the card. An open panel doesn't tick. Each fresh rule or hazard also
   spawns a `RegionAlert` card (unless `Globals.show_region_alerts`, Options >
   Game > Region Alerts, is off). On arrival it is the first beat of the
   `ArrivalIntro`: once the flap is down, the card unfolds out of its
   screen into the empty sky, the cockpit dims slightly, and it holds ~2 s (a
   click anywhere or its Close button skips it; the first time the player ever
   reads a given rule or hazard, recorded by `CollectionManager.record_region`
-  as `rule:<file>` / `hazard:<file>`, it has no timer and waits for Close; a hazard's card adds when it next hits, the same
-  `EnvironmentMonitor.hazard_timing_text()` line the monitor's info panel shows,
-  and holds 1.3 s longer) before folding back in, which kicks the monitor
+  as `rule:<file>` / `hazard:<file>`, it has no timer and waits for Close; a hazard's card adds the
+  countdown-first headline, `EnvironmentMonitor.hazard_headline()` ("In 2
+  turns: shields drop, 3 dmg to all"), and holds 1.3 s longer) before folding back in, which kicks the monitor
   and counts as read. A card from a region the player has since left fades or
   lands without effect.
 - **`ArrivalIntro`** (`ScenarioManager/arrival_intro.gd`) plays an arrival's
@@ -1441,7 +1495,8 @@ so they cannot be authored by mistake, while the ordinals below them stay put.
 > tile uses; `Tile.max_uses_per_turn()` takes the lowest cap in play (Dead
 > Systems' `OncePerTurnModifier`: every ship system once a turn, engines and map
 > arrows immune, refunds blocked). `Modifier.get_rule_info_text(tile)` adds an
-> info line from a rule that doesn't own the tile. `EffectEvent.changes_die_values()`
+> info line from a rule that doesn't own the tile, `get_rule_side_text(tile)`
+> a line in the panel's side column. `EffectEvent.changes_die_values()`
 > is the one gate for face changes; Flash Freeze's `DiceFreezeModifier` cancels
 > every such event (Scrambled asks `DiceFreezeModifier.active_on()`), calling
 > FROZEN off the environment monitor. `EnemyActionSelector` only offers an action
@@ -1590,6 +1645,12 @@ layer than that effect, not just at a higher z_index.
   drop rule applies. The drop point comes from the click event, not the OS
   mouse. `put_back()` cancels by dropping at `home_position`, which every
   drop handler reads as "no move"
+- Two locks: `dragging_allowed` (the tutorial's and the jump's, each on its
+  own schedule) and `out_of_reach` (a die still arriving, see 8.1).
+  `can_pick_up()` joins them; ask it, not `dragging_allowed`, whether the
+  player can grab something now (the press, the hover thump and the
+  AutoPilot do). `announce_next_arrival()` makes the next settle emit
+  `reached_new_home`, wherever home has moved to by then
 
 **Click-to-Show (Targeting)**
 
@@ -1690,6 +1751,18 @@ fullscreen a few frames after the resize). An earlier version enlarged the
 viewport instead, and everything that measured the viewport (the opening
 cutscene's framing, screen-space layers) drew wrong.
 
+**Window Scale.** `OptionsSettings.window_scales()` offers every whole scale
+from `MIN_WINDOW_SCALE` (2) up to the largest whose window plus its OS frame
+fits the screen's usable rect (menu bar, Dock and taskbar excluded). The
+frame is measured with `window_get_size_with_decorations` /
+`window_get_position_with_decorations` while windowed, once at boot before a
+saved fullscreen applies, with a 64 px title-bar guess until then.
+`_centre_window` centres the frame and keeps the title bar inside the usable
+area. The list is built when the menu opens, so a move to another monitor
+doesn't rebuild it. Fonts drawn at art scale (the menu's `TitleText`) pin
+`oversampling=1.0` in their import, or canvas_items stretching re-rasterizes
+them at screen resolution, off the art grid.
+
 **Comfort.** `Globals.screenshake_intensity` scales every shake, zoom punch and
 ripple (`Shakeable` shakes take a strength). Reduce Flashing goes through
 `Juice.soften_flash(strength)` for sprite flashes and
@@ -1737,6 +1810,103 @@ hover and physics picking all work unchanged. `InputBindings` lists the
 rebindable actions, serializes their events (one option per action,
 "Controls/bind_<action>", defaults from project.godot) and resolves clashes
 by swapping. `BindingSlots` is the Controls tab row.
+
+### 7.5 Text and Localization
+
+Player-facing text is English and is translated into zh_CN, ja, ru, de, fr, es
+and pt_BR through two CSVs in `Localization/`, which never share a key (lint):
+
+| | `translations.csv` | `content.csv` |
+|---|---|---|
+| Holds | UI and code text | content text (tiles, enemies, actions, callouts, keywords, hazards, rules, tutorial cards, ship-state dialogue, boss titles) |
+| English written | in the CSV, by hand | in the resource's own field, in the inspector |
+| Read with | `tr("KEY")`, auto-translated Labels | the resource's `display_*()` accessors |
+| Keys | hand-picked (`INFO_ENGINE_EVASION`) | generated from the file (`HAZARD.SOLAR_FLARE.HEADLINE`) |
+
+Both import with `compress=0` (compressed translations report 0 messages, so
+`get_available_locales()` never offered them). A locale ships when its
+`translations.<l>.translation` is registered in project.godot; content
+translations are loaded directly.
+
+**ContentText** (`Systems/Localization/content_text.gd`). A content type
+declares its text: `_content_text_prefix()` (the key's first part, `TILE`)
+and `_content_text_fields()` (a `ContentText.Field` per property: key suffix,
+a context note for translators, an optional `_max_chars`). Each field gets a
+`display_<field>()` accessor returning `ContentText.text(self, &"field")`. In
+English that is the field itself, so an inspector edit shows before any sync.
+Other locales read `content.<locale>.translation` and fall back to English for
+an empty cell. Pseudo stretches the live field. Display code only ever calls
+the accessors; the dev console, debug log and AutoPilot read the raw English
+on purpose.
+
+**Keys** are `<PREFIX>.<file stem>.<SUFFIX>`. A resource embedded in another
+file is keyed by its property path from the file's root
+(`ENEMY_ACTION.SEIZE.EFFECT_CHAIN.EFFECTS_5.CALLOUT`; arrays by index,
+dictionaries by key, or by position for resource keys such as a tile's
+`event_responses`), read off the file's contents, so a re-save that renumbers
+sub-resource ids can't change it. A root that isn't content names its part
+after its class. A type whose file names repeat across folders adds the folder
+(`_content_text_folder_in_key()`; ship states:
+`SHIP_STATE.<folder>.<file>.DIALOGUE`). `duplicate()` drops
+`resource_path`, so keys are also stamped on each resource as metadata
+(`_content_text_owner`, never saved into a `.tres`), which duplicates copy:
+runtime copies go through `ContentText.copy(res)` (`EnemyActionResource.copy()`
+for actions, every rolled action being a deep copy).
+
+**Tooling** (`tools/loc.sh`, close the editor first). The GDScript behind it
+lives in `Systems/Localization/Tools/` (`tools/` is `.gdignore`d):
+`LocCatalog` finds every content field under `res://Source` (skipping
+`Scenarios/TEST`), `LocTable` reads and writes a CSV keeping untouched rows
+byte-identical, `LocPipeline` runs the steps, `LocLint` the checks and
+`loc_sync.gd` is the CLI.
+- `sync` rewrites `content.csv` (sorted by key, `translations.csv`'s columns,
+  one row per line with `\n` escapes). `_en_hash` records the English each row
+  last saw; a change marks that row's translations stale (kept). A key that
+  vanished and a new one from the same file with identical English are
+  matched one to one and renamed (`moved OLD -> NEW`); anything else is
+  reported as an orphan, never deleted. `check` reports without writing.
+  `sync --ui` would add hash tracking to `translations.csv` rows (not yet run).
+- `export <locale>` writes every missing or stale row, UI and content alike,
+  to `Localization/pending/<locale>.csv` (git-ignored). `import <file>
+  [--status reviewed]` routes each key back to its CSV, adds a column for a new
+  locale, warns on token, BBCode or length problems, re-imports and lints.
+  `_status` is one word (`machine`) or per-locale pairs (`de=reviewed
+  fr=stale`).
+- `lint` (`test/content/test_localization.gd`, also in GUT): content English
+  synced; filled cells keep `{x}`, `%d`, `(tokens)` and BBCode; text fits
+  `_max_chars` (tags count 0, tokens 1, placeholders 2). Glyph coverage is
+  report-only until each language has its font.
+- Debug builds' dev console `lang <locale>` previews any language with
+  translations, registered or not (`Localization.get_preview_locales()`,
+  `set_locale(locale, true)`).
+
+**Checking every language.** `OverflowWatcher`
+(`Systems/Localization/overflow_watcher.gd`, a child of the Localization
+autoload in debug, non-headless builds) checks the visible Labels and
+RichTextLabels every 0.5 s. It looks for text taller than its box, wider with
+wrapping off, sideways out of its button or panel, on a button a sibling
+overlaps, cut by the screen edge, held back by `visible_characters` for 2 s
+(a stuck typewriter), or with glyphs the font lacks. A flagged label gets a red
+outline and one `Loc [locale] ...` line in the debug log
+(`DebugLogger.note()`) with its node path and key (its own, a `loc_key` meta,
+or a reverse lookup). The `loc_watch_ignore` meta opts a label out, and
+`loc_watch off` stops it for the session. `tools/loc.sh audit
+[locale|pseudo|all] [surface ...] [--headless]` (dev console `loc_audit`) runs
+`Source/Debug/LocAudit/` as its own process. That process drops the MCP
+autoload before it binds 9090, logs to `user://loc_audit/debug_log.txt` and
+saves nothing. `LocAuditStage` is an offscreen 1920x1080 viewport laid out like
+the game. `LocAuditSurfaces` drives each of 13 surfaces (menus, tiles,
+enemies, actions, factions, statuses, keywords, hazards, rules, tutorial,
+shop/reward, callouts, errors) the way the game does, through Clickables,
+`show_info()` and `Events`. Each item is photographed, cropped to its text and
+run past the watcher's checks. English runs first. An item that reads as in
+English counts as untranslated rather than being photographed, and `all`
+skips locales with nothing translated. The report is
+`user://loc_audit/report.html`, with `report.json` (`{results: {locale:
+[{surface, id, label, image, flags, untranslated}]}, no_translations}`).
+`--headless` writes flags without photos. Not yet surfaces: pause-menu
+options, map, game over, jump gate, boss cards, scenario dialogue and the
+arrival card.
 
 ## Core Classes Reference
 
@@ -1809,6 +1979,16 @@ held anywhere (a Cutpurse fled with the rest; the count never drops below
 one), otherwise a hologram (ships hold them all). A hologram doesn't count as
 owned and fizzles at the jump, so it can't be banked, and it's enough to shoot
 the holder down and get the dice back.
+
+**Dice on offer.** A die carries `Dice.delivery`: `DELIVERED` (the default),
+`ON_OFFER` (a shop shelf, or salvage) or `ARRIVING` (taken, still flying into
+the hand). Only a delivered die plays (`is_playable()`;
+`_check_for_acceptor` returns early otherwise), so letting a shelf die go
+over a tile just buys it. The die's own drop handler runs before the
+shop's. Anything that offers a die calls `put_on_offer()`, and taking one goes
+through `OfferIntake.take()`, which calls `begin_arrival()`: the die is
+`Draggable.out_of_reach` until `reached_new_home` fires as it settles in the
+hand (an arrival, not a timer, since the hand's slots can shift under it).
 
 ### 8.2 Tile (`Source/Content/Tiles/tile.gd`)
 
@@ -1995,8 +2175,22 @@ ship lives; killed, it gives its dice away as any ship does. From its fourth
 round (`COMBAT_ROUNDS`) the kept-face option is Getaway instead:
 `EscapeWithDiceEvent` strands every die it holds, the one being spent
 included, drops the player's `num_of_dice` by the real ones, emits
-`enemy_left` and flies the ship off the top of the screen. It reads as
-DANGEROUS and, like Flee, is never rolled while hidden.
+`enemy_left` and jumps away. It reads as DANGEROUS and, like Flee, is never
+rolled while hidden.
+
+**Leaving.** Flee and Getaway both finish with `await Enemy.jump_away(ship)`,
+after their bookkeeping (deaf to the scenario, `enemy_left`, dice handed on or
+stranded): a 0.8 s `JumpFx` charge, a small camera shake, the jump out
+upward in the ship's faction colour (`FactionIdentity.color`, red without
+one), then the ship and any dice it carries are hidden and freed. The hull
+moves onto the art grid first (`EnemyGraphicsManager.ready_jump()` →
+`pixelate()`) and the streak and ring draw through `JuicePixelated`, so the
+stretch steps a game pixel at a time. It's static and waits on SceneTree
+timers, not tweens: a coroutine on the ship would be dropped when the ship is
+freed, and the event awaiting it would hang. The departing ship's
+`health.death` is disconnected (no second `enemy_left`, wreck or reward from a
+stray hit) and its click region is disabled. Death, Flee and Getaway are the
+only ways a ship leaves a fight.
 
 **Launched ships.** `LAUNCH_SHIP` calls `EnemyManager.launch_ship()`: a new
 `Enemy` of `EffectData.ship_resource` goes into the roster right after its
@@ -2194,6 +2388,8 @@ Source/
 │   │   ├── EnemyActions/enemy_action_condition.gd # Authored gates / weight rules (+ _weight_rule.gd)
 │   │   └── ... action/resource files ...
 │   │
+│   ├── Keywords/KeywordResources/<id>.tres     # Game terms (title, rule, tokens)
+│   │
 │   └── ScenarioResources/
 │       └── scenario_resource.gd                   # Per-scenario data
 │
@@ -2219,7 +2415,8 @@ Source/
 │   │   ├── Dice/dice.gd                        # Die behavior & RNG
 │   │   └── RewardManager/reward_manager.gd     # Tile unlocks
 │   │
-│   ├── keywords.gd                            # Keyword tokens + hover definitions
+│   ├── keywords.gd                            # Keyword lookups by id (KeywordResources)
+│   ├── Localization/                          # ContentText, OverflowWatcher, Tools/ (loc.sh's LocCatalog etc.)
 │   ├── utils.gd                               # format_text (colours, die icons, keywords)
 │   │
 │   ├── UI/                                    # Interface nodes
@@ -2234,6 +2431,7 @@ Source/
 │   │   ├── RunStats/run_stats.gd                # End-of-run tally
 │   │
 │   ├── TutorialManager/tutorial_manager.gd     # Tutorial state machine
+│   ├── TutorialManager/GhostCursor/            # GhostCursor, GhostDemo, GhostTarget
 │   ├── GameStateManager/game_state_manager.gd  # State transitions, sectors
 │   └── Background/
 │       ├── background_manager.gd               # Parallax layers
