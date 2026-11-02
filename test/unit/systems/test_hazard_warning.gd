@@ -9,7 +9,7 @@ func before_each() -> void:
 	super()
 	hazard = BackgroundHazardResource.new()
 	hazard.hazard_name = "Solar Flare"
-	hazard.banner = "HAZARD_SOLAR_FLARE_BANNER"
+	hazard.banner = "SHIELDS DOWN! 3 DAMAGE TO ALL"
 
 
 ## The one just shown: added last, behind any another test left waiting for

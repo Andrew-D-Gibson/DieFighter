@@ -13,6 +13,11 @@ extends Modifier
 ## ways round a budget: repetitions and refunds.
 
 
+## The region rule that put this in force, which names it in tile info lines.
+## Null when something else did.
+var rule: BackgroundModifierResource = null
+
+
 func _init() -> void:
 	modifier_name = "Once Per Turn"
 	priority = 75   # clamping; must run after the x2 multipliers at 50
@@ -25,7 +30,8 @@ func get_tile_use_cap(tile: Tile) -> int:
 func get_rule_info_text(tile: Tile) -> String:
 	if get_tile_use_cap(tile) < 0:
 		return ""
-	return tr("TILE_INFO_ONCE_PER_TURN").format({"rule": tr(modifier_name)})
+	var rule_name: String = rule.display_name() if rule else tr(modifier_name)
+	return tr("TILE_INFO_ONCE_PER_TURN").format({"rule": rule_name})
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

@@ -47,8 +47,8 @@ script = ExtResource("script_0")
 hazard_name = "Asteroid Impact"
 description = "[color=yellow]Your turn starts[/color] ->
 (lock) a [color=purple]random tile[/color]"
-headline = "HAZARD_ASTEROID_IMPACT_HEADLINE"
-banner = "HAZARD_ASTEROID_IMPACT_BANNER"
+headline = "a random tile is (locked)"
+banner = "A TILE IS LOCKED!"
 icon = ExtResource("icon_tex")
 color = Color(0.949, 0.612, 0.365, 1)
 turns_until_first = 2

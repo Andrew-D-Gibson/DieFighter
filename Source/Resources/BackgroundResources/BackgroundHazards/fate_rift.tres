@@ -33,8 +33,8 @@ script = ExtResource("script_0")
 hazard_name = "Fate Rift"
 description = "[color=yellow]Your turn ends[/color] ->
 Flip all enemy (die_1) and (die_6)"
-headline = "HAZARD_FATE_RIFT_HEADLINE"
-banner = "HAZARD_FATE_RIFT_BANNER"
+headline = "enemy [color=yellow]1s[/color] and [color=yellow]6s[/color] swap"
+banner = "ENEMY 1s AND 6s SWAPPED!"
 icon = ExtResource("icon_tex")
 color = Color(0.773, 0.322, 0.945, 1)
 timing = 1

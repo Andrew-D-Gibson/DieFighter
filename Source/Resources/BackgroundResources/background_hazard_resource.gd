@@ -15,21 +15,27 @@ extends Resource
 ##   3. Assign it to a BackgroundResource's 'hazard' field. A background
 ##      carries a hazard or a global_modifier, never both: the environment
 ##      monitor has one screen.
+##   4. Its text is English, written here; run tools/loc.sh sync to send it
+##      for translation (see ContentText). Display code reads it through the
+##      display_*() accessors, never the fields.
 
 @export_category('Info')
+## The hazard's name: title of its arrival card, info panel and the warning
+## that goes up as it strikes. Shown in capitals.
 @export var hazard_name: String
 ## The full rule, for the info panel the environment monitor opens. Say when
 ## and how it works here; the headline is what gets read at a glance.
 @export_multiline var description: String
 
-## Translation key: what the hazard does, in a few words, read straight after
-## its countdown ("In 2 turns: " + this). Lower case, no full stop, keyword
-## tokens welcome. Keep it to one effect a player can picture: the arrival
-## card and the monitor's readout lead with it, and a long one wraps.
+## What the hazard does, in a few words, read straight after its countdown
+## ("In 2 turns: " + this). Lower case, no full stop, keyword tokens welcome.
+## Keep it to one effect a player can picture: the arrival card and the
+## monitor's readout lead with it, and a long one wraps.
 @export var headline: String
 
-## Translation key: the effect named in capitals under the hazard's title on
-## the turn it goes off ("SHIELDS DOWN!"). Plain text: the banner is a Label.
+## The effect named in capitals under the hazard's title on the turn it goes
+## off ("SHIELDS DOWN!"). Plain text: the banner is a Label. 30 characters
+## at most (the translation lint holds every language to that).
 @export var banner: String
 
 ## Art for the environment monitor's screen, beside the countdown, and for the
@@ -66,3 +72,40 @@ enum Timing {
 @export_category('Behavior')
 ## What actually happens. Runs on the scenario's engine like any other chain.
 @export var effect_chain: EffectChain
+
+
+## The name, in the current language.
+func display_name() -> String:
+	return ContentText.text(self, &"hazard_name")
+
+
+## The full rule, in the current language.
+func display_description() -> String:
+	return ContentText.text(self, &"description")
+
+
+## The headline, in the current language. Empty when none was written.
+func display_headline() -> String:
+	return ContentText.text(self, &"headline")
+
+
+## The banner, in the current language. Empty when none was written.
+func display_banner() -> String:
+	return ContentText.text(self, &"banner")
+
+
+func _content_text_prefix() -> String:
+	return "HAZARD"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"hazard_name", "NAME",
+			"Name of a background hazard, a timed event of the region the player is in. Shown in capitals as the title of its arrival card, its info panel and the warning as it strikes."),
+		ContentText.Field.new(&"description", "DESC",
+			"A background hazard's full rule, in the info panel the environment monitor opens: when it goes off and what it does. Keep [color] tags, (keyword) tokens and line breaks as written."),
+		ContentText.Field.new(&"headline", "HEADLINE",
+			"What a background hazard does, in a few words, read straight after its countdown (HAZARD_HEADLINE: \"In 2 turns: ...\"). Lower case, no full stop. Keep [color] tags and (keyword) tokens as written."),
+		ContentText.Field.new(&"banner", "BANNER",
+			"Banner under a background hazard's title on the turn it goes off, naming what it just did. Capitals, plain text (no tags).", 30),
+	]

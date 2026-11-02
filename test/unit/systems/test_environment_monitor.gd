@@ -236,7 +236,7 @@ func test_a_turn_end_hazard_two_away_says_next_turn() -> void:
 
 
 func test_the_headline_leads_with_the_countdown() -> void:
-	hazard.headline = "HAZARD_SOLAR_FLARE_HEADLINE"
+	hazard.headline = "[color=blue]shields[/color] drop, [color=red]3 dmg[/color] to all"
 	var headline: String = Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_headline(hazard, true, 2))
 	assert_true(headline.begins_with("In 2 turns: "), headline)
 	assert_string_contains(headline, "shields drop")
@@ -259,7 +259,7 @@ func test_the_info_panel_says_how_often_it_comes_back() -> void:
 func test_a_hazard_card_is_its_headline() -> void:
 	Globals.show_region_alerts = true
 	hazard.turns_until_first = 2
-	hazard.headline = "HAZARD_ION_STORM_HEADLINE"
+	hazard.headline = "enemy dice [color=green]re-roll[/color]"
 	hazard.description = "The long version"
 	Events.start_scenario.emit()
 	await _settle()

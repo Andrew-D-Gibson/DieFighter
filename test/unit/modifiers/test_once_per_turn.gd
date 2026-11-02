@@ -59,6 +59,12 @@ func test_dead_systems_builds_the_once_per_turn_rule() -> void:
 	assert_true(rule is OncePerTurnModifier)
 
 
+## The tile info line names the region's rule, through its display name so
+## it reads in the player's language.
+func test_the_info_line_names_the_region_rule() -> void:
+	assert_string_contains(rule.get_rule_info_text(limited), "Dead Systems")
+
+
 func test_without_the_rule_tiles_keep_their_own_budgets() -> void:
 	assert_eq(limited.uses_remaining, 2)
 	assert_eq(unlimited.uses_remaining, -1)
