@@ -291,3 +291,89 @@ func test_open_sky_stars_drift_with_depth() -> void:
 		var expected: float = manager._star_stream_speed() * depth * 0.1
 		assert_almost_eq(after[i] - before[i], expected, 0.001)
 	assert_gt(manager._star_stream_speed(), 0.0)
+
+
+# --- Set pieces in a jump ---------------------------------------------------
+
+## A sky holding one blue star at (40, 30), every time.
+func _one_piece_sky() -> BackgroundResource:
+	var object: StaticBackgroundObjectResource = StaticBackgroundObjectResource.new()
+	object.scene = load(BODY_ROOT + "blue_star.tscn")
+	object.position = Vector2(40, 30)
+	var composition: SetPieceComposition = SetPieceComposition.new()
+	var objects: Array[StaticBackgroundObjectResource] = [object]
+	composition.objects = objects
+	composition.offset_jitter = Vector2.ZERO
+	composition.mirrorable = false
+	var background: BackgroundResource = BackgroundResource.new()
+	var compositions: Array[SetPieceComposition] = [composition]
+	background.set_piece_compositions = compositions
+	return background
+
+
+func _piece_height(manager: BackgroundManager) -> float:
+	return manager.static_objects[0].global_position.y
+
+
+func test_set_pieces_hold_still_at_rest() -> void:
+	var manager: BackgroundManager = _manager(_one_piece_sky())
+	assert_eq(_piece_height(manager), 30.0)
+	for i: int in range(10):
+		manager._drift_static_objects(0.1)
+	assert_eq(_piece_height(manager), 30.0)
+
+
+func test_set_pieces_fall_away_faster_as_a_jump_speeds_up() -> void:
+	var manager: BackgroundManager = _manager(_one_piece_sky())
+	manager.global_speed = 160.0
+	manager._drift_static_objects(0.5)
+	var slow_fall: float = _piece_height(manager) - 30.0
+	assert_gt(slow_fall, 0.0, "moves once the speed is up")
+	manager.global_speed = 960.0
+	var before: float = _piece_height(manager)
+	manager._drift_static_objects(0.5)
+	assert_gt(_piece_height(manager) - before, slow_fall, "falls faster as the jump builds")
+	# Carried right off the bottom, and left there rather than wrapped round.
+	for i: int in range(20):
+		manager._drift_static_objects(0.5)
+	assert_gt(_piece_height(manager), Globals.SCREEN_SIZE.y + 100.0)
+
+
+func test_a_new_sky_loaded_mid_jump_settles_its_pieces_into_place() -> void:
+	var manager: BackgroundManager = autofree(MANAGER_SCENE.instantiate())
+	manager.global_speed = 960.0
+	manager._set_background(_one_piece_sky())
+	var height: float = _piece_height(manager)
+	assert_lt(height, 30.0, "arrives from above")
+	# The outro's slow-down, in steps.
+	for i: int in range(1, 11):
+		manager.global_speed = lerpf(960.0, manager._rest_speed, i / 10.0)
+		manager._drift_static_objects(0.1)
+		assert_gte(_piece_height(manager), height, "only ever moves down")
+		height = _piece_height(manager)
+	assert_eq(height, 30.0, "lands exactly where it was placed")
+	manager._drift_static_objects(0.1)
+	assert_eq(_piece_height(manager), 30.0, "and stays there")
+
+
+# --- A scenario's pinned layout ---------------------------------------------
+
+## The tutorial's two-ship fight pins its sky: the moon was authored to sit
+## just right of the left ship's health bar (and clear of the lone survivor's
+## once one ship falls), so no seed may move or mirror it.
+func test_a_scenario_layout_is_shown_on_every_seed() -> void:
+	var fight: ScenarioResource = load("res://Source/Content/ScenarioResources/Scenarios/COMBAT_TutorialPair/COMBAT_tutorial_pair.tres")
+	var layout: SetPieceComposition = fight.set_piece_layout
+	assert_not_null(layout)
+	var expected: Array[Vector2] = []
+	for object: StaticBackgroundObjectResource in layout.objects:
+		expected.append(object.position)
+	for layout_seed: int in range(6):
+		RNGManager.seed_scenario(layout_seed)
+		var manager: BackgroundManager = autofree(MANAGER_SCENE.instantiate())
+		manager._set_background(fight.background_resource, true, layout)
+		assert_eq(manager.current_composition, layout)
+		var placed: Array[Vector2] = []
+		for piece: Node2D in manager.static_objects:
+			placed.append(piece.global_position)
+		assert_eq(placed, expected, "seed %d" % layout_seed)
