@@ -90,7 +90,34 @@ const RULE_NUMBERS: PackedStringArray = ["0"]
 ## adds a tile here only when the number really isn't in its data.
 ## Keyed by tile file name, then the literal as written, e.g.
 ##   "inverter": {"1": "die faces of the d6, not data", ...}
-const LITERAL_EXEMPT: Dictionary = {}
+const LITERAL_EXEMPT: Dictionary = {
+	# green
+	"fabricator": _TWO_SPAWN_STEPS,
+	"fabricator_plus": _TWO_SPAWN_STEPS,
+	"inverter": _D6_FACE_PAIRS,
+	"inverter_plus": _D6_FACE_PAIRS,
+	"polarizer": _D6_ENDS,
+	"polarizer_plus": _D6_ENDS,
+	"value_sorter": _D6_THIRDS,
+	"value_sorter_plus": _D6_THIRDS,
+}
+# Shared reasons for LITERAL_EXEMPT.
+## Inverter's "1-6, 2-5, 3-4": which faces sit opposite on a d6.
+const _D6_FACE_PAIRS: Dictionary = {
+	"1": "d6 face pairs", "2": "d6 face pairs", "3": "d6 face pairs",
+	"4": "d6 face pairs", "5": "d6 face pairs", "6": "d6 face pairs",
+}
+## Polarizer's lowest and highest faces; its split point is bound.
+const _D6_ENDS: Dictionary = {"1": "lowest d6 face", "6": "highest d6 face"}
+## Value Sorter's "1-2 / 3-4 / 5-6": the d6 in thirds, the same on both
+## versions. Binding them would take four numbers from two range checks, and
+## a step binds only one, so the faces stay literal.
+const _D6_THIRDS: Dictionary = {
+	"1": "d6 in thirds", "2": "d6 in thirds", "3": "d6 in thirds",
+	"4": "d6 in thirds", "5": "d6 in thirds", "6": "d6 in thirds",
+}
+## Fabricator's "Spawn 2": two SPAWN_HOLOGRAM steps, not a number on one.
+const _TWO_SPAWN_STEPS: Dictionary = {"2": "two spawn steps in the countdown chain"}
 
 var messages: PackedStringArray = []
 

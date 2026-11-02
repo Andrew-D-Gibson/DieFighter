@@ -61,6 +61,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 4
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_11"]
@@ -154,7 +155,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Filter Gate[/color]"
-description = "[color=yellow]Any die[/color] -> [color=yellow](die_4) or higher[/color]: (feed_right). [color=yellow]Lower[/color]: Deal [color=red]4 damage[/color] to [color=purple]target[/color]"
+description = "[color=yellow]Any die[/color] -> [color=yellow](die_4) or higher[/color]: (feed_right). [color=yellow]Lower[/color]: Deal [color=red]{damage} damage[/color] to [color=purple]target[/color]"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

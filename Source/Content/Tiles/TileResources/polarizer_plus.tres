@@ -30,6 +30,8 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 6
+text_token = &"high_min"
+text_token_value = "low_max + 1"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_cond_5"]
@@ -40,6 +42,8 @@ range_min = 1
 range_max = 2
 if_true_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_3")])
 if_false_effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_4")])
+text_token = &"low_max"
+text_token_value = "range_max"
 metadata/_custom_type_script = "uid://1c0msmj2pcjy"
 
 [sub_resource type="Resource" id="Resource_step_6"]
@@ -99,7 +103,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Polarizer+[/color]"
-description = "[color=yellow]Any die[/color] -> [color=yellow]1-2[/color] becomes (die_1). [color=yellow]3-6[/color] becomes (die_6). (feed_right)"
+description = "[color=yellow]Any die[/color] -> [color=yellow]1-{low_max}[/color] becomes (die_1). [color=yellow]{high_min}-6[/color] becomes (die_6). (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

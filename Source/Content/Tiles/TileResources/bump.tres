@@ -24,6 +24,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("9_u271i")
 category = 2
 amount = 1
+text_token = &"shift"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -96,7 +97,7 @@ animations = [{
 [resource]
 script = ExtResource("4_m7a5a")
 tile_name = "[color=green]Bump[/color]"
-description = "[color=yellow]Die below[/color] (die_6) -> Add 1 to die. [color=orange]Return[/color] die"
+description = "[color=yellow]Die below[/color] (die_6) -> Add {shift} to die. [color=orange]Return[/color] die"
 upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_j21c8")
 uses_per_turn = 3

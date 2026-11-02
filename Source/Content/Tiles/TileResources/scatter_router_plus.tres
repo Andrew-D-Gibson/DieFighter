@@ -54,6 +54,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 2
 amount = 4
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_9"]
@@ -147,7 +148,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=green]Scatter Router+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]4 damage[/color]. (feed_random)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color]. (feed_random)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

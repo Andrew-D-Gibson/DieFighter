@@ -16,6 +16,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_effect")
 category = 2
 amount = 1
+text_token = &"shift"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_flare"]
@@ -95,7 +96,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=green]Crosslink[/color]"
-description = "[color=yellow]Any die[/color] -> Add 1 to die. (feed_across)"
+description = "[color=yellow]Any die[/color] -> Add {shift} to die. (feed_across)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

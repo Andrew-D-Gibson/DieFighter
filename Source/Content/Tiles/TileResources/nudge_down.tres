@@ -22,6 +22,8 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_effect")
 category = 2
 amount = -1
+text_token = &"shift"
+text_token_value = "-amount"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_flare"]
@@ -101,7 +103,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=green]Nudge Down[/color]"
-description = "[color=yellow]Die above[/color] (die_1) -> Subtract 1 from die. (feed_right)"
+description = "[color=yellow]Die above[/color] (die_1) -> Subtract {shift} from die. (feed_right)"
 upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
