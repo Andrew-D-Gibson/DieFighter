@@ -4,6 +4,15 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-02 — The main menu: Fate behind you, and a straggler
+
+- **Fate behind you.** The rim of the black hole shows over the bottom of the menu: a sliver of black horizon, a swirling purple rim and a dithered glow that backlights the title (`fate_behind.gdshader` on the `FateBehind` ColorRect). The caravan climbs up out of it, away from it.
+- **A straggler.** Every 50–100 s (the first after 12–20 s) a Hauler, Transport or Tender in the open middle of the screen breaks down. Its engine sputters out, it blinks an orange Mayday and drifts out of the column while the rest pass it by. An Undertow Gaff climbs out of the wake, shoots its lights out (three red bolts), hooks it with its crane and backs off down into Fate's glow with the wreck swinging on the tether (`CaravanStraggler`).
+- `MenuCaravan` ships now carry their own position, depth, engine power and beacon (running, distress, dark). A ship can be taken off the route and flown by hand, and an overlay node draws in the same pixels.
+- Considered and held back so the menu doesn't crowd: a Rearguard checkpoint up the route.
+
+---
+
 ## 2026-11-02 — The Caravan on the main menu
 
 - **A stretch of the Long Retreat behind the title.** Caravan ships (Hauler, Civilian Transport, Tender) trail away from the player out of the bottom of the screen, sweep across the planet's face and loop round behind it, coming out past the left limb as a thin line of engine lights heading for the front. Rearguard Pickets fly the flanks. About one ship in 25 is an Inbound Pilgrim flying the route backwards, nose first, toward Fate and the player.

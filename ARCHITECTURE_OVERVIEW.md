@@ -60,7 +60,9 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `PauseMenu` | `PauseLayer/PauseMenu` | Pause state toggle, save/quit, option screen |
 | `GameOver` | `UI/GameOver` | Game over **and** victory sequence, with the run summary line |
 | `MainMenu` | Root scene (`main_menu.tscn`) | Start game, options, wishlist link |
-| `MenuCaravan` | `UI/MainMenu/MenuCaravan` | The menu's backdrop: Caravan ships (`CaravanShipKind`s, borrowing combat sprites) flying an editable `Path2D` past and behind the planet, sized per route point (`point_depths`). Drawn into a 320x180 viewport; each whole-pixel width is its own sprite from `PixelArtShrinker` |
+| `MenuCaravan` | `UI/MainMenu/MenuCaravan` | The menu's backdrop: Caravan ships (`CaravanShipKind`s, borrowing combat sprites) flying an editable `Path2D` past and behind the planet, sized per route point (`point_depths`). Drawn into a 320x180 viewport; each whole-pixel width is its own sprite from `PixelArtShrinker`. Ships can be taken off the route and flown by hand (`take_off_route`, `add_ship`, `pixel_on`), and `add_overlay` draws over them |
+| `CaravanStraggler` | `UI/MainMenu/MenuCaravan` (child of `MenuCaravan`) | Every 50–100 s a mid-sized Caravan ship breaks down and drifts out of the column; an Undertow Gaff shoots its lights out, hooks it and tows it off the bottom of the screen. One coroutine (`play()`) with its own timers |
+| `FateBehind` | `main_menu.tscn` (ColorRect, `fate_behind.gdshader`) | The rim of Fate over the bottom of the menu: black horizon, swirling purple rim, dithered glow behind the title |
 | `TutorialManager` | `Systems/TutorialManager` | Seeded first-run tutorial: step popups over the opening fight |
 
 **Background & Visuals**
