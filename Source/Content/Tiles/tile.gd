@@ -315,6 +315,11 @@ func _get_tile_info() -> InfoResource:
 				else mod.get_rule_info_text(self)
 			if not line.is_empty():
 				info.bottom_label_text += "\n\n" + line
+			var aside: String = mod.get_rule_side_text(self)
+			if not aside.is_empty():
+				if not info.side_label_text.is_empty():
+					info.side_label_text += "\n\n"
+				info.side_label_text += aside
 	return info
 
 

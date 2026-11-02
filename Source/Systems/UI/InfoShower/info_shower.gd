@@ -73,6 +73,8 @@ func _show_solo(info: InfoResource) -> TextureRect:
 	%TextureDisplay.get_parent().show()
 	%BottomLabel.get_parent().show()
 	%BottomLabel.text = Utils.format_text(info.bottom_label_text, true)
+	%SideLabel.visible = not info.side_label_text.is_empty()
+	%SideLabel.text = Utils.format_text(info.side_label_text, true)
 	return %TextureDisplay
 
 
@@ -87,7 +89,11 @@ func _show_comparison(info: InfoResource) -> TextureRect:
 	%BottomLabel.get_parent().hide()
 	%Comparison.show()
 	%CurrentName.text = Utils.format_text(info.title_label_text)
-	%CurrentLabel.text = Utils.format_text(info.bottom_label_text, true)
+	# Both columns are taken, so an aside joins the current description.
+	var current_text: String = info.bottom_label_text
+	if not info.side_label_text.is_empty():
+		current_text += "\n\n" + info.side_label_text
+	%CurrentLabel.text = Utils.format_text(current_text, true)
 	%UpgradeCaption.text = Utils.format_text(info.upgrade_caption_text)
 	%UpgradeName.text = Utils.format_text(info.upgrade_title_text)
 	%UpgradeLabel.text = Utils.format_text(info.upgrade_bottom_label_text, true)

@@ -106,6 +106,13 @@ func get_rule_info_text(_tile: Tile) -> String:
 	return ""
 
 
+## Like get_rule_info_text(), but for the info panel's side column: an aside
+## (a sum, a live figure) that would otherwise push the tile's own description
+## off centre. Empty for none.
+func get_rule_side_text(_tile: Tile) -> String:
+	return ""
+
+
 ## Called by ScenarioEngine.add_modifier(). Override to add extra setup logic,
 ## but always call super.on_registered(engine) to ensure the visual spawns.
 func on_registered(_engine: ScenarioEngine) -> void:
