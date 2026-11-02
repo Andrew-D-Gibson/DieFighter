@@ -46,6 +46,12 @@ var host_queue: DiceQueue
 ## ship's hand, so a stale aim never follows it into its next drop.
 var aimed_at: Enemy = null
 
+## Where this die stands with the player. Only a DELIVERED die is theirs to
+## play: one ON_OFFER (a shop shelf, salvage) is the offer's to place, and one
+## ARRIVING has been taken from an offer and is still flying into the hand.
+enum Delivery { DELIVERED, ON_OFFER, ARRIVING }
+var delivery: Delivery = Delivery.DELIVERED
+
 ## True while the player has locked this die for the length of a jump, so
 ## arrival unlocks only what the jump locked and leaves a tutorial's own
 ## locks alone.
@@ -112,9 +118,44 @@ func _check_for_acceptor(_draggable: Draggable, end_position: Vector2) -> void:
 	# A player can't pick up a die still crossing from a wreck, but the
 	# AutoPilot drops dice by code; wherever it lands now owns its movement.
 	cancel_handoff()
+	# A die let go over a tile straight off a shop shelf used to fire that
+	# tile as well as being bought, and could start a fight with the keeper.
+	# Until it has landed in the hand, where it's let go is the offer's call.
+	if not is_playable():
+		return
 	var dice_acceptors: Array[Node] = get_tree().get_nodes_in_group('CanAcceptDice')
 	for acceptor: CanAcceptDice  in dice_acceptors:
 		acceptor.check_die_drop(self, end_position)
+
+
+## Marks this die as something an offer is showing, not yet the player's:
+## letting go of it over a tile buys or claims it rather than playing it.
+func put_on_offer() -> void:
+	delivery = Delivery.ON_OFFER
+
+
+## Called as the player takes this die from an offer, once it's in their hand
+## queue. Until it settles there on screen it can't be picked up or played:
+## players kept grabbing a bought die mid-flight and dropping it on a tile.
+## Arrival ends it rather than a timer, since the hand's slot can shift under
+## the die on the way.
+func begin_arrival() -> void:
+	delivery = Delivery.ARRIVING
+	draggable.out_of_reach = true
+	if not draggable.reached_new_home.is_connected(_on_arrived):
+		draggable.reached_new_home.connect(_on_arrived, CONNECT_ONE_SHOT)
+	draggable.announce_next_arrival()
+
+
+func _on_arrived() -> void:
+	delivery = Delivery.DELIVERED
+	draggable.out_of_reach = false
+
+
+## Whether this die is the player's to play: not on an offer, nor still on
+## its way into the hand from one.
+func is_playable() -> bool:
+	return delivery == Delivery.DELIVERED
 
 
 ## Flips the die over to [param new_value] (0 rolls a random face), taking

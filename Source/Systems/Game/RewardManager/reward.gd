@@ -172,6 +172,8 @@ func _present(offered: Array[Node2D]) -> void:
 	for i in range(offered.size()):
 		var reward: Node2D = offered[i]
 		
+		if reward is Dice:
+			(reward as Dice).put_on_offer()
 		add_child(reward)
 		
 		reward.draggable.drag_started.connect(Events.show_systems.emit)

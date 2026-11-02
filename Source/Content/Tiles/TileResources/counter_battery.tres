@@ -43,28 +43,28 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_4"]
 script = ExtResource("script_effect")
+category = 4
+subtype = 3
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_5"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 5
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step_6"]
+script = ExtResource("script_effect")
 category = 3
 subtype = 21
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step_5"]
+[sub_resource type="Resource" id="Resource_step_7"]
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
 string_param = "SILENCED"
 color = Color(0.8157, 0.2118, 0.3373, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_step_6"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 3
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_step_7"]
-script = ExtResource("script_effect")
-category = 3
-subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain"]
