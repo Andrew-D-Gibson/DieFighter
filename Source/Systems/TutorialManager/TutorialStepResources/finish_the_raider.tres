@@ -6,6 +6,23 @@
 [ext_resource type="Resource" uid="uid://bkxu3ydkhj2o6" path="res://Source/Content/Tiles/TileResources/deflector_array.tres" id="deflector"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="nothing"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="tile_script"]
+[ext_resource type="Script" uid="uid://cv1lilnywutlb" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_demo.gd" id="ghost_demo_script"]
+[ext_resource type="Script" uid="uid://biqnrrw2jg04n" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_target.gd" id="ghost_target_script"]
+[ext_resource type="Resource" uid="uid://hgsmejq8gdrl" path="res://Source/Content/Tiles/TileResources/damage.tres" id="ghost_tile_damage"]
+
+[sub_resource type="Resource" id="gt_die"]
+script = ExtResource("ghost_target_script")
+kind = 1
+
+[sub_resource type="Resource" id="gt_damage"]
+script = ExtResource("ghost_target_script")
+kind = 2
+tile = ExtResource("ghost_tile_damage")
+
+[sub_resource type="Resource" id="demo_fire"]
+script = ExtResource("ghost_demo_script")
+at = SubResource("gt_die")
+to = SubResource("gt_damage")
 
 [resource]
 script = ExtResource("1_s")
@@ -16,4 +33,5 @@ forced_enemy_actions = Array[ExtResource("act_script")]([ExtResource("attack"), 
 forced_rewards = Array[ExtResource("tile_script")]([ExtResource("deflector")])
 close_on_signal = 7
 tutorial_function = 8
+ghost_demos = Array[ExtResource("ghost_demo_script")]([SubResource("demo_fire")])
 metadata/_custom_type_script = "uid://eyoqrls6ero4"

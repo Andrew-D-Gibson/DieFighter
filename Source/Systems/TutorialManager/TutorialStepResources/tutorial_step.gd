@@ -109,3 +109,10 @@ enum TutorialFunctions {
 ## sit idle through the whole line. A player who clicks the text in sooner
 ## gets the shot sooner still. 0 waits for the text, however long it takes.
 @export var opening_strike_deadline: float = 0.0
+
+## What the tutorial's ghost cursor acts out while this step's card is up:
+## the drag or click the card asks for, shown on the live board. Played in
+## order, on a loop, from when the card's text is all in until the step
+## closes. Each end is named (a die in hand, a tile, a node), never a spot on
+## screen. Leave empty for a step that asks for nothing to be done.
+@export var ghost_demos: Array[GhostDemo] = []
