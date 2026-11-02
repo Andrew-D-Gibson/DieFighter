@@ -104,30 +104,10 @@ func display_banner() -> String:
 	return _display(&"banner")
 
 
+## The {amount} in the text is the chain step marked text_token = &"amount"
+## (TextTokens), so the words and the strike read one number.
 func _display(property: StringName) -> String:
-	return _fill_numbers(ContentText.text(self, property))
-
-
-## [param text] with its {placeholders} filled from effect_chain. For now
-## only {amount}: the amount set just before the chain's first damage step.
-# TODO(nov3 merge): return TextTokens.fill(text, self), with
-# text_token = &"amount" on the chain step that carries the number.
-func _fill_numbers(text: String) -> String:
-	if not "{" in text or effect_chain == null:
-		return text
-	var amount: Variant = null
-	for step: EffectData in effect_chain.effects:
-		if step == null:
-			continue
-		if step.category == EffectEnums.Category.AMOUNT_MODIFIER \
-				and step.subtype == EffectEnums.AmountModifierSubtype.SET:
-			amount = step.amount
-		elif step.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
-				and step.subtype == EffectEnums.AttributeChangeSubtype.DAMAGE:
-			break
-	if amount == null:
-		return text
-	return text.format({"amount": amount})
+	return TextTokens.fill(ContentText.text(self, property), self)
 
 
 func _content_text_prefix() -> String:

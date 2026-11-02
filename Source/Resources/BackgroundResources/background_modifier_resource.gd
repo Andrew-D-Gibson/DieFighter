@@ -122,13 +122,7 @@ func _text_tokens() -> Dictionary:
 
 
 func _display(property: StringName) -> String:
-	return _fill_numbers(ContentText.text(self, property))
-
-
-## [param text] with its {placeholders} filled from _text_tokens().
-# TODO(nov3 merge): return TextTokens.fill(text, self)
-func _fill_numbers(text: String) -> String:
-	return text.format(_text_tokens())
+	return TextTokens.fill(ContentText.text(self, property), self)
 
 
 func _content_text_prefix() -> String:

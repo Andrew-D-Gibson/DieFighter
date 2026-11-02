@@ -43,7 +43,7 @@ func create_modifier() -> StatusModifier:
 	return status
 
 
-func _rule_values() -> Dictionary:
+func _text_tokens() -> Dictionary:
 	if modifier_script == null:
 		return {}
 	return modifier_script.call(&"rule_values")

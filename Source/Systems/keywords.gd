@@ -24,7 +24,7 @@ extends RefCounted
 ##   the player's ship reads it through the id plus PLAYER_SUFFIX, and a
 ##   token ticked player_side points there too.
 ##   A number the rule repeats from code is a {placeholder} the keyword's
-##   _rule_values() fills ("Spends {spent} Jammed.").
+##   _text_tokens() fills ("Spends {spent} Jammed.").
 
 ## Appended to a status's id for its rule on the player (see
 ## StatusModifier.rule_term()).

@@ -13,7 +13,7 @@ extends Resource
 ## name it: "Feed across", "Burn".
 @export var title: String
 ## What the term does, shown in the pop-up after the title. Numbers the game
-## applies are {placeholders} filled from _rule_values(), never typed in.
+## applies are {placeholders} filled from _text_tokens(), never typed in.
 @export_multiline var rule: String
 ## The rule for a status that works differently on the player's ship, read
 ## through the "<id>_you" term (Keywords.PLAYER_SUFFIX). Empty when the
@@ -35,19 +35,20 @@ func display_title() -> String:
 
 ## The rule, in the current language, its numbers filled in.
 func display_rule() -> String:
-	return ContentText.text(self, &"rule").format(_rule_values())
+	return TextTokens.fill(ContentText.text(self, &"rule"), self)
 
 
 ## The player-side rule, in the current language, its numbers filled in.
 ## Empty when there's none.
 func display_player_rule() -> String:
-	return ContentText.text(self, &"player_rule").format(_rule_values())
+	return TextTokens.fill(ContentText.text(self, &"player_rule"), self)
 
 
 ## The numbers the rules' {placeholders} stand for, by name. A keyword whose
 ## rule repeats a number the game applies overrides this to read it from the
-## code that applies it (a StatusResource asks its script).
-func _rule_values() -> Dictionary:
+## code that applies it (a StatusResource asks its script). The same hook
+## TextTokens reads off any root resource.
+func _text_tokens() -> Dictionary:
 	return {}
 
 
