@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dfj2eluy2g1qd"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_yuudg"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_f214x"]
+
+[sub_resource type="Resource" id="scrambled"]
+script = ExtResource("2_f214x")
+token = "(scrambled)"
+label = "Scrambled"
+
+[sub_resource type="Resource" id="scramble"]
+script = ExtResource("2_f214x")
+token = "(scramble)"
+label = "Scramble"
+
+[sub_resource type="Resource" id="scrambled_you"]
+script = ExtResource("2_f214x")
+token = "(scrambled_you)"
+label = "Scrambled"
+player_side = true
+
+[resource]
+script = ExtResource("1_yuudg")
+title = "Scrambled"
+rule = "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled."
+player_rule = "Each die you place on a tile flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]) first. Spends 1 Scrambled."
+tokens = Array[ExtResource("2_f214x")]([SubResource("scrambled"), SubResource("scramble"), SubResource("scrambled_you")])

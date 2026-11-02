@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://d4mlx6l88pgrg"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_l2q8j"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_0scoq"]
+
+[sub_resource type="Resource" id="locked"]
+script = ExtResource("2_0scoq")
+token = "(locked)"
+label = "Locked"
+
+[sub_resource type="Resource" id="lock"]
+script = ExtResource("2_0scoq")
+token = "(lock)"
+label = "Lock"
+
+[resource]
+script = ExtResource("1_l2q8j")
+title = "Locked"
+rule = "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked."
+tokens = Array[ExtResource("2_0scoq")]([SubResource("locked"), SubResource("lock")])

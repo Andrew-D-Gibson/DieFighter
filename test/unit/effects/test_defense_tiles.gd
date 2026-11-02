@@ -236,8 +236,8 @@ func test_phased_on_an_enemy_dodges_a_tile_hit_but_not_another_ship() -> void:
 func test_phased_has_a_badge_and_a_rule_on_either_side() -> void:
 	await _apply(player, &"phased", 1)
 	assert_eq(player.get_status_bar().get_child_count(), 1, "the cloak shows on your status bar")
-	assert_eq(StatusCatalog.create(&"phased", player, 1).rule_term(), "Phased (you)")
-	assert_false(Keywords.definition("Phased").is_empty())
+	assert_eq(StatusCatalog.create(&"phased", player, 1).rule_term(), "phased_you")
+	assert_false(Keywords.definition("phased").is_empty())
 
 
 # ── AutoPilot ────────────────────────────────────────────────────────────────

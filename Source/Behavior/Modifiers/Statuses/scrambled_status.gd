@@ -21,7 +21,6 @@ extends StatusModifier
 
 func _init() -> void:
 	status_id = &"scrambled"
-	display_name = "Scrambled"
 	color = Globals.green
 	icon = preload("res://Assets/Textures/Statuses/scrambled.png")
 	info_icon = preload("res://Assets/Textures/Statuses/scrambled_info.png")

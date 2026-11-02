@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://b4r4y7ryumq1l"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_te1l7"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_rq65v"]
+
+[sub_resource type="Resource" id="steal"]
+script = ExtResource("2_rq65v")
+token = "(steal)"
+label = "Steal"
+
+[sub_resource type="Resource" id="stolen"]
+script = ExtResource("2_rq65v")
+token = "(stolen)"
+label = "stolen"
+
+[resource]
+script = ExtResource("1_te1l7")
+title = "Steal"
+rule = "This ship keeps the die and spends it next turn, on whatever that face shows. You go a turn without it. It drops what it holds if destroyed."
+tokens = Array[ExtResource("2_rq65v")]([SubResource("steal"), SubResource("stolen")])

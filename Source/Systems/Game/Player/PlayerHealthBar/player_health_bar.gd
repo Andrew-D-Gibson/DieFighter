@@ -95,7 +95,7 @@ func _status_summary() -> String:
 	var parts: PackedStringArray = []
 	for status: StatusModifier in engine.statuses_on(Globals.player):
 		# A non-breaking space keeps each name with its count when the line wraps.
-		parts.append("[color=#%s]%s\u00A0%d[/color]" % [status.color.to_html(false), status.display_name, status.stacks])
+		parts.append("[color=#%s]%s\u00A0%d[/color]" % [status.color.to_html(false), status.display_name(), status.stacks])
 	return ", ".join(parts)
 	
 	

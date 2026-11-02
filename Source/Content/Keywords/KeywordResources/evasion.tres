@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://bfgdpnrlkf2e"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_6msnm"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_j0o0n"]
+
+[sub_resource type="Resource" id="evasion"]
+script = ExtResource("2_j0o0n")
+token = "(evasion)"
+label = "Evasion"
+color = "purple"
+
+[resource]
+script = ExtResource("1_6msnm")
+title = "Evasion"
+rule = "The chance each enemy hit misses you, dealing no [color=red]damage[/color] to shields or hull."
+tokens = Array[ExtResource("2_j0o0n")]([SubResource("evasion")])

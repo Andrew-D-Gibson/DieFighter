@@ -6,7 +6,6 @@ extends StatusModifier
 
 func _init() -> void:
 	status_id = &"burn"
-	display_name = "Burn"
 	color = Globals.orange
 	icon = preload("res://Assets/Textures/Statuses/burn.png")
 	info_icon = preload("res://Assets/Textures/Statuses/burn_info.png")

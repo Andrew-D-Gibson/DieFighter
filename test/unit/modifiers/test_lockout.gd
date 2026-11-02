@@ -192,7 +192,7 @@ func test_the_info_line_is_localized() -> void:
 
 
 func test_locked_is_a_hoverable_keyword() -> void:
-	assert_string_contains(Keywords.definition("Locked"), "Engine Charger")
+	assert_string_contains(Keywords.definition("locked"), "Engine Charger")
 	var rendered: String = Keywords.render("(locked) and (lock)", true)
-	assert_string_contains(rendered, "[url=Locked]")
+	assert_string_contains(rendered, "[url=locked]")
 	assert_false(rendered.contains("(lock"), "both spellings render")

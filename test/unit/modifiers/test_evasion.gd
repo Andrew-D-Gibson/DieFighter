@@ -233,7 +233,7 @@ func test_the_chance_shows_on_the_engine_tile_only() -> void:
 	assert_eq(EvasionModifier.engine_display(player), tile)
 	assert_string_contains(evasion.get_rule_side_text(tile), "15%")
 	assert_eq(evasion.get_rule_side_text(bystander), "")
-	assert_false(Keywords.definition("Evasion").is_empty())
+	assert_false(Keywords.definition("evasion").is_empty())
 
 
 ## The engine tile spells out the sum (charge x 3%); the Evasion keyword just
@@ -250,7 +250,7 @@ func test_the_engine_tile_explains_the_sum_and_the_keyword_does_not() -> void:
 	var text: String = evasion.get_rule_side_text(tile)
 	assert_string_contains(text, "x 3%")
 	assert_string_contains(text, "50%")
-	assert_false(Keywords.definition("Evasion").contains("3%"), "the keyword leaves the sum to the tile")
+	assert_false(Keywords.definition("evasion").contains("3%"), "the keyword leaves the sum to the tile")
 
 	evasion.add_bonus(8)
 	assert_string_contains(evasion.get_rule_side_text(tile), "+8%")

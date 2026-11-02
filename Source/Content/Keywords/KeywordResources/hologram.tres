@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dacnuw3adxwc6"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_7eh7r"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_byh80"]
+
+[sub_resource type="Resource" id="hologram"]
+script = ExtResource("2_byh80")
+token = "(hologram)"
+label = "hologram"
+color = "blue"
+
+[sub_resource type="Resource" id="holograms"]
+script = ExtResource("2_byh80")
+token = "(holograms)"
+label = "holograms"
+color = "blue"
+
+[sub_resource type="Resource" id="hologram_capital"]
+script = ExtResource("2_byh80")
+token = "(Hologram)"
+label = "Hologram"
+color = "blue"
+
+[resource]
+script = ExtResource("1_7eh7r")
+title = "Hologram"
+rule = "A copy of a die. Destroyed if given to another ship."
+tokens = Array[ExtResource("2_byh80")]([SubResource("hologram"), SubResource("holograms"), SubResource("hologram_capital")])

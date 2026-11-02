@@ -26,7 +26,6 @@ const _DO_NOTHING: EnemyActionResource = preload("res://Source/Content/Enemies/E
 
 func _init() -> void:
 	status_id = &"jammed"
-	display_name = "Jammed"
 	color = Globals.yellow
 	icon = preload("res://Assets/Textures/Statuses/jammed.png")
 	info_icon = preload("res://Assets/Textures/Statuses/jammed_info.png")

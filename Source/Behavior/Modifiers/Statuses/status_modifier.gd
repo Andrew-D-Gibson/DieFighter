@@ -18,19 +18,19 @@ extends Modifier
 ## spending and the badge all stay generic.
 ##
 ## SUBCLASSING:
-##   1. Extend StatusModifier and set status_id, display_name, icon and
-##      priority in _init().
+##   1. Extend StatusModifier and set status_id, icon and priority in
+##      _init(). The status_id is also its keyword's id, which names it.
 ##   2. Hook events in on_before_event/on_after_event, or override
 ##      on_status_tick() for something that happens once per round.
 ##   3. Spend stacks with consume(); the status removes itself at zero.
-##   4. Add it to StatusCatalog and give it a keyword in Keywords.
+##   4. Add it to StatusCatalog and give it a KeywordResource of the same id
+##      (see Keywords), whose title is the status's name.
 
 const _BADGE_SCENE: PackedScene = preload("res://Source/Behavior/Modifiers/Statuses/StatusBadge/status_badge.tscn")
 
-## Stable key used in authored effects (EffectData.string_param) and lookups.
+## Stable key used in authored effects (EffectData.string_param) and lookups,
+## and the id of the keyword that names and explains it.
 var status_id: StringName
-## The keyword term in Keywords that explains this status.
-var display_name: String
 ## The status's palette colour, for its badge, info panel and callouts.
 var color: Color = Globals.orange
 ## 11x11, for the badge.
@@ -41,6 +41,11 @@ var stacks: int = 1
 
 var _host_engine: ScenarioEngine
 var _badge: StatusBadge
+
+
+## The status's name, in the current language: its keyword's title.
+func display_name() -> String:
+	return Keywords.title(String(status_id))
 
 
 ## Whether the status hurts the ship it sits on. Every status does except
@@ -84,7 +89,7 @@ func play_applied_feedback(stacks_added: int) -> void:
 	var at: Vector2 = Juice.anchor_of(ship)
 	Juice.ring(ship, at, tint, 22.0, 0.4, 6.0)
 	Juice.sparkle(ship, at, tint, 12, 40.0, true)
-	Juice.callout(ship, "+%d %s" % [stacks_added, display_name.to_upper()], tint)
+	Juice.callout(ship, "+%d %s" % [stacks_added, display_name().to_upper()], tint)
 
 
 ## Statuses have no source tile to light up, so the ship they sit on reacts
@@ -108,7 +113,7 @@ func announce_triggered_at(anchor: Node2D) -> void:
 
 
 func get_trigger_text() -> String:
-	return display_name.to_upper()
+	return display_name().to_upper()
 
 
 func get_trigger_color() -> Color:
@@ -132,13 +137,13 @@ func is_on_player() -> bool:
 	return affected_node is Player
 
 
-## The Keywords term whose rule explains this status where it sits. A status
-## that works differently on the player has its own "(you)" term.
+## The Keywords term id whose rule explains this status where it sits. A
+## status that works differently on the player has its own "_you" term.
 func rule_term() -> String:
-	var player_term: String = display_name + Keywords.PLAYER_SUFFIX
+	var player_term: String = String(status_id) + Keywords.PLAYER_SUFFIX
 	if is_on_player() and not Keywords.definition(player_term).is_empty():
 		return player_term
-	return display_name
+	return String(status_id)
 
 
 func on_registered(engine: ScenarioEngine) -> void:

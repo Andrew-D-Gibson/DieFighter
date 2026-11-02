@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dcr2wor3jyyhr"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_r1dce"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_v372y"]
+
+[sub_resource type="Resource" id="ion_damage"]
+script = ExtResource("2_v372y")
+token = "(ion_damage)"
+label = "ion damage"
+color = "blue"
+
+[resource]
+script = ExtResource("1_r1dce")
+title = "Ion"
+rule = "Deals double [color=blue]damage[/color] to shields and none to the hull. Damage the shields can't absorb is lost."
+tokens = Array[ExtResource("2_v372y")]([SubResource("ion_damage")])

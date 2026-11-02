@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://c8xyt7fdxrqep"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_in10n"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_yynob"]
+
+[sub_resource type="Resource" id="jammed"]
+script = ExtResource("2_yynob")
+token = "(jammed)"
+label = "Jammed"
+
+[sub_resource type="Resource" id="jam"]
+script = ExtResource("2_yynob")
+token = "(jam)"
+label = "Jam"
+
+[sub_resource type="Resource" id="jammed_you"]
+script = ExtResource("2_yynob")
+token = "(jammed_you)"
+label = "Jammed"
+player_side = true
+
+[resource]
+script = ExtResource("1_in10n")
+title = "Jammed"
+rule = "The next die this ship uses does nothing. Spends 1 Jammed."
+player_rule = "The next die you place on a tile does nothing and goes to [color=purple]target[/color]. Spends 1 Jammed."
+tokens = Array[ExtResource("2_yynob")]([SubResource("jammed"), SubResource("jam"), SubResource("jammed_you")])

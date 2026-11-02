@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://qg1hvvcqscdh"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_2hg05"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_uf4yj"]
+
+[sub_resource type="Resource" id="boost"]
+script = ExtResource("2_uf4yj")
+token = "(boost)"
+label = "Boost"
+
+[resource]
+script = ExtResource("1_2hg05")
+title = "Boost"
+rule = "If you have that much [color=purple]engine charge[/color], it's spent for the extra effect. If not, the tile works without it."
+tokens = Array[ExtResource("2_uf4yj")]([SubResource("boost")])

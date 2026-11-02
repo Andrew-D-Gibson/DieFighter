@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://6aedngjefoyp"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_kotc7"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_43pov"]
+
+[sub_resource type="Resource" id="fed"]
+script = ExtResource("2_43pov")
+token = "(fed)"
+label = "Fed"
+
+[resource]
+script = ExtResource("1_kotc7")
+title = "Fed"
+rule = "Passed here by another tile's Feed."
+tokens = Array[ExtResource("2_43pov")]([SubResource("fed")])

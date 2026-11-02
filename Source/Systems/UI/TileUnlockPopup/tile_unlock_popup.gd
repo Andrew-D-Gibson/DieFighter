@@ -155,7 +155,7 @@ func _read_out(tile: TileResource) -> void:
 	_info_label.remove_theme_color_override("default_color")
 	var no_counters: Dictionary[String, int] = {}
 	_info_label.text = Utils.format_text("%s\n%s" % [
-		tile.tile_name, Tile.fill_data_tokens(tile.description, no_counters)])
+		tile.display_name(), Tile.fill_data_tokens(tile.display_description(), no_counters)])
 
 
 ## Once the card has laid itself out: the dim fades up, the card lands with a

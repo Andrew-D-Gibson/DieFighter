@@ -35,7 +35,6 @@ var _turn_end: Signal
 
 func _init() -> void:
 	status_id = &"weakened"
-	display_name = "Weakened"
 	color = Globals.purple
 	icon = preload("res://Assets/Textures/Statuses/weakened.png")
 	info_icon = preload("res://Assets/Textures/Statuses/weakened_info.png")

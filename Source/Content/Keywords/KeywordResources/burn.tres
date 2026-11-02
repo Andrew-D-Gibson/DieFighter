@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://cjcqtj6wg0d64"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_3frgl"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_t0ibx"]
+
+[sub_resource type="Resource" id="burn"]
+script = ExtResource("2_t0ibx")
+token = "(burn)"
+label = "Burn"
+
+[resource]
+script = ExtResource("1_3frgl")
+title = "Burn"
+rule = "At the start of their turn, burned ships take [color=red]damage[/color] equal to Burn, then lose 1 Burn."
+tokens = Array[ExtResource("2_t0ibx")]([SubResource("burn")])
