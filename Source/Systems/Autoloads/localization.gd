@@ -36,9 +36,19 @@ const _PseudoTranslation: GDScript = preload("res://Source/Systems/Localization/
 const _UI_TRANSLATION_PATH: String = "res://Localization/translations.%s.translation"
 
 var _pseudo_translation: Translation
+## Debug builds' check on text that doesn't fit (see OverflowWatcher). Null in
+## release builds and headless runs (tests, tools), where nothing is shown.
+var overflow_watcher: OverflowWatcher
 ## Translations added at runtime to preview a language that isn't registered
 ## in project.godot yet (see get_preview_locales()).
 var _preview_translations: Array[Translation] = []
+
+
+func _ready() -> void:
+	if OS.is_debug_build() and DisplayServer.get_name() != "headless":
+		overflow_watcher = OverflowWatcher.new()
+		overflow_watcher.name = "OverflowWatcher"
+		add_child(overflow_watcher)
 
 
 func _exit_tree() -> void:

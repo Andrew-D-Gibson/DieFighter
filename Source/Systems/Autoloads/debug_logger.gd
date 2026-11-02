@@ -186,6 +186,14 @@ func _connect_board_signals() -> void:
 	Events.modifier_triggered.connect(_on_modifier_triggered)
 
 
+## One line from outside the logger (the localization overflow watcher, say),
+## stamped like the rest. Printed too, so a run with no log file (headless)
+## still shows it.
+func note(message: String) -> void:
+	print(message)
+	_log(message)
+
+
 func _log(message: String) -> void:
 	_write_raw("[%s] %s" % [ErrorSink.timestamp(), message])
 

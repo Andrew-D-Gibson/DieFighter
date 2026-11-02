@@ -16,6 +16,11 @@
 #                                  into Godot, then lint
 #   tools/loc.sh lint              check + the translation lint test
 #                                  (placeholders, tokens, BBCode, length, glyphs)
+#   tools/loc.sh audit [locale|pseudo|all] [surface ...] [--headless]
+#                                  photograph every text surface in each language,
+#                                  flag text that overflows or lacks glyphs, and
+#                                  write a report (path printed at the end);
+#                                  --headless checks text without photos
 #
 # Locales: zh_CN ja ru de fr es pt_BR (a new code gets a column on import).
 # Close the Godot editor first if it has this project open: it rewrites the
@@ -94,8 +99,25 @@ case "$command" in
 	lint)
 		lint
 		;;
+	audit)
+		# A window opens: photos need a renderer, which --headless lacks. The
+		# run is offline: it never opens the game's MCP port.
+		display=()
+		audit_args=()
+		for arg in "$@"; do
+			if [ "$arg" = "--headless" ]; then display=(--headless); else audit_args+=("$arg"); fi
+		done
+		[ ${#audit_args[@]} -gt 0 ] || audit_args=(all)
+		set +e +o pipefail
+		"$GODOT" ${display[@]+"${display[@]}"} --path . -s res://Source/Debug/LocAudit/loc_audit_cli.gd \
+			-- "${audit_args[@]}" 2>&1 | grep --line-buffered -E '^loc_audit: |SCRIPT ERROR|Parse Error' \
+			| sed -l 's/^loc_audit: //'
+		status=${PIPESTATUS[0]}
+		set -e -o pipefail
+		exit "$status"
+		;;
 	*)
-		sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'
+		sed -n '2,29p' "$0" | sed 's/^# \{0,1\}//'
 		exit 2
 		;;
 esac
