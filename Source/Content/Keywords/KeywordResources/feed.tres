@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://vsiwb8qy4abq"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_pty8c"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_ow51a"]
+
+[sub_resource type="Resource" id="feed_right"]
+script = ExtResource("2_ow51a")
+token = "(feed_right)"
+label = "Feed right"
+
+[sub_resource type="Resource" id="feed_left"]
+script = ExtResource("2_ow51a")
+token = "(feed_left)"
+label = "Feed left"
+
+[sub_resource type="Resource" id="feed_up"]
+script = ExtResource("2_ow51a")
+token = "(feed_up)"
+label = "Feed up"
+
+[sub_resource type="Resource" id="feed_down"]
+script = ExtResource("2_ow51a")
+token = "(feed_down)"
+label = "Feed down"
+
+[sub_resource type="Resource" id="feed_random"]
+script = ExtResource("2_ow51a")
+token = "(feed_random)"
+label = "Feed a random neighbour"
+
+[resource]
+script = ExtResource("1_pty8c")
+title = "Feed"
+rule = "The next tile that way uses the die. If it can't, [color=purple]target[/color] gets it."
+tokens = Array[ExtResource("2_ow51a")]([SubResource("feed_right"), SubResource("feed_left"), SubResource("feed_up"), SubResource("feed_down"), SubResource("feed_random")])

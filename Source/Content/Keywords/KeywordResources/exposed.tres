@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dkaypod0l7m46"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_a753t"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_13613"]
+
+[sub_resource type="Resource" id="exposed"]
+script = ExtResource("2_13613")
+token = "(exposed)"
+label = "Exposed"
+
+[sub_resource type="Resource" id="expose"]
+script = ExtResource("2_13613")
+token = "(expose)"
+label = "Expose"
+
+[resource]
+script = ExtResource("1_a753t")
+title = "Exposed"
+rule = "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends 1 Exposed."
+tokens = Array[ExtResource("2_13613")]([SubResource("exposed"), SubResource("expose")])

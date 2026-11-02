@@ -66,7 +66,7 @@ static func tile_ids() -> Array[String]:
 		var colour_b: int = _tile_colour_rank(tile_resource(b))
 		if colour_a != colour_b:
 			return colour_a < colour_b
-		return plain_name(tile_resource(a).tile_name) < plain_name(tile_resource(b).tile_name)
+		return plain_name(tile_resource(a).display_name()) < plain_name(tile_resource(b).display_name())
 	)
 	return ids
 

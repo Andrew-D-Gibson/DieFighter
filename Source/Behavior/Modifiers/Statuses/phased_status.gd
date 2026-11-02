@@ -23,7 +23,6 @@ extends StatusModifier
 
 func _init() -> void:
 	status_id = &"phased"
-	display_name = "Phased"
 	color = Globals.blue
 	icon = preload("res://Assets/Textures/Statuses/phased.png")
 	info_icon = preload("res://Assets/Textures/Statuses/phased_info.png")
@@ -63,10 +62,6 @@ func announce_triggered() -> void:
 	super()
 	if is_on_player():
 		Events.vignette_pulse.emit(get_trigger_color())
-
-
-func get_trigger_text() -> String:
-	return "PHASED"
 
 
 func is_harmful() -> bool:

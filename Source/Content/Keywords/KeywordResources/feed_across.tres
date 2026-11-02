@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://c6w3dvidlhqck"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_gk3lh"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_otjj8"]
+
+[sub_resource type="Resource" id="feed_across"]
+script = ExtResource("2_otjj8")
+token = "(feed_across)"
+label = "Feed across"
+
+[resource]
+script = ExtResource("1_gk3lh")
+title = "Feed across"
+rule = "The tile in the mirrored cell (same row, other side of the grid) uses the die. If it can't, [color=purple]target[/color] gets it."
+tokens = Array[ExtResource("2_otjj8")]([SubResource("feed_across")])

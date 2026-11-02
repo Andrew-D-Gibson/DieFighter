@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://c81wh73bgf7ga"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_ao0r6"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_g5bue"]
+
+[sub_resource type="Resource" id="countdown"]
+script = ExtResource("2_g5bue")
+token = "(countdown)"
+label = "Countdown"
+
+[sub_resource type="Resource" id="countdowns"]
+script = ExtResource("2_g5bue")
+token = "(countdowns)"
+label = "countdowns"
+
+[resource]
+script = ExtResource("1_ao0r6")
+title = "Countdown"
+rule = "Dice placed on a countdown tile count it down by their value. At 0 it goes off and starts again, extra counts carried over. Starts full each fight."
+tokens = Array[ExtResource("2_g5bue")]([SubResource("countdown"), SubResource("countdowns")])

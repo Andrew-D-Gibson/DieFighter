@@ -97,7 +97,7 @@ static func statuses(host: Node, engine: ScenarioEngine) -> String:
 		return ""
 	var parts: PackedStringArray = []
 	for status: StatusModifier in engine.statuses_on(host):
-		parts.append("%s x%d" % [status.display_name, status.stacks])
+		parts.append("%s x%d" % [_status_name(status), status.stacks])
 	return ", ".join(parts)
 
 
@@ -106,7 +106,7 @@ static func modifier(mod: Modifier) -> String:
 		return "-"
 	var mod_name: String = mod.modifier_name
 	if mod is StatusModifier:
-		mod_name = "%s x%d" % [(mod as StatusModifier).display_name, (mod as StatusModifier).stacks]
+		mod_name = "%s x%d" % [_status_name(mod as StatusModifier), (mod as StatusModifier).stacks]
 	elif mod_name == "Unnamed Modifier":
 		mod_name = _class_name(mod)
 	if is_instance_valid(mod.affected_node):
@@ -252,6 +252,12 @@ static func _generic_details(e: EffectEvent) -> String:
 	if not e.targets.is_empty():
 		parts.append("-> %s" % labels(e.targets))
 	return (" " + " ".join(parts)) if not parts.is_empty() else ""
+
+
+## A status's name for the log, in English whatever the game's language:
+## "Burn" from its id.
+static func _status_name(status: StatusModifier) -> String:
+	return String(status.status_id).capitalize()
 
 
 static func _class_name(object: Object) -> String:

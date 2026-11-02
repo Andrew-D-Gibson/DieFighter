@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dywmcoq1cfwnh"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_fo6du"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_y1npv"]
+
+[sub_resource type="Resource" id="echo"]
+script = ExtResource("2_y1npv")
+token = "(echo)"
+label = "Echo"
+
+[resource]
+script = ExtResource("1_fo6du")
+title = "Echo"
+rule = "That tile activates twice, but hands its die on once. Lapses when your turn ends."
+tokens = Array[ExtResource("2_y1npv")]([SubResource("echo")])

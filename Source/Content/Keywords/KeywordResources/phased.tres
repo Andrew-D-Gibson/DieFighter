@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://coh8wqahanup5"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_h772t"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_y14ai"]
+
+[sub_resource type="Resource" id="phased"]
+script = ExtResource("2_y14ai")
+token = "(phased)"
+label = "Phased"
+
+[sub_resource type="Resource" id="phased_you"]
+script = ExtResource("2_y14ai")
+token = "(phased_you)"
+label = "Phased"
+player_side = true
+
+[resource]
+script = ExtResource("1_h772t")
+title = "Phased"
+rule = "The next hit from the player's tiles passes through this ship and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when its turn starts."
+player_rule = "The next enemy hit passes through you and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when your next turn starts."
+tokens = Array[ExtResource("2_y14ai")]([SubResource("phased"), SubResource("phased_you")])

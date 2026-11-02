@@ -52,7 +52,7 @@ func test_catalog_creates_each_status_on_its_host() -> void:
 		assert_eq(status.status_id, status_id)
 		assert_eq(status.affected_node, enemy)
 		assert_eq(status.stacks, 2)
-		assert_false(Keywords.definition(status.display_name).is_empty(),
+		assert_false(Keywords.definition(String(status.status_id)).is_empty(),
 			"%s has no keyword definition" % status_id)
 
 

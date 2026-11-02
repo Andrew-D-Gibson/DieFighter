@@ -108,7 +108,7 @@ func _source_name() -> String:
 		return modifier_name
 	# The tile's name without its own colour tag, which would fight the line's.
 	var regex: RegEx = RegEx.create_from_string(r"\[/?color[^\]]*\]")
-	return regex.sub(tile.tile_resource.tile_name, "", true)
+	return regex.sub(tile.tile_resource.display_name(), "", true)
 
 
 func _family_word() -> String:

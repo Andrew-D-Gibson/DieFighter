@@ -56,3 +56,34 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 
 ## This limit is ignored when the max dice allowed in queue is -1
 @export var max_dice_in_queue: int = -1
+
+
+## The name, in the current language, with its colour tag.
+func display_name() -> String:
+	return ContentText.text(self, &"tile_name")
+
+
+## The activation line, in the current language. Empty when none was written.
+func display_activation_description() -> String:
+	return ContentText.text(self, &"activation_description")
+
+
+## The description, in the current language, its [data] counters still to be
+## filled (Tile.fill_data_tokens).
+func display_description() -> String:
+	return ContentText.text(self, &"description")
+
+
+func _content_text_prefix() -> String:
+	return "TILE"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"tile_name", "NAME",
+			"Name of a tile (a ship system the player puts dice on), title case. Heads its info panel, codex entry and shop card. Keep the [color] tag around it as written; a name ending in + is the upgraded version."),
+		ContentText.Field.new(&"activation_description", "ACTIVATION",
+			"Line above a tile's description in its info panel saying which dice it takes. Keep (die_N) tokens and [color] tags as written."),
+		ContentText.Field.new(&"description", "DESC",
+			"What a tile does with the die put on it, in its info panel, codex entry and shop. Terse, and in the game's colour language: [color] tags, (die_N)/(keyword)/(icon) tokens and [data]...[/data] counters stay exactly as written, so the game can draw and fill them."),
+	]

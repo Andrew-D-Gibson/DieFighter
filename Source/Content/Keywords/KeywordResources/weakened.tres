@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://bsgbf5tsptgb8"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_coq04"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_ldbli"]
+
+[sub_resource type="Resource" id="weakened"]
+script = ExtResource("2_ldbli")
+token = "(weakened)"
+label = "Weakened"
+
+[sub_resource type="Resource" id="weaken"]
+script = ExtResource("2_ldbli")
+token = "(weaken)"
+label = "Weaken"
+
+[sub_resource type="Resource" id="weakened_you"]
+script = ExtResource("2_ldbli")
+token = "(weakened_you)"
+label = "Weakened"
+player_side = true
+
+[resource]
+script = ExtResource("1_coq04")
+title = "Weakened"
+rule = "This ship's hits deal 25% less [color=red]damage[/color], rounded down but never below 1. Loses 1 Weakened when its turn ends."
+player_rule = "Your tiles' hits deal 25% less [color=red]damage[/color], rounded down but never below 1. Loses 1 Weakened when you end your turn."
+tokens = Array[ExtResource("2_ldbli")]([SubResource("weakened"), SubResource("weaken"), SubResource("weakened_you")])

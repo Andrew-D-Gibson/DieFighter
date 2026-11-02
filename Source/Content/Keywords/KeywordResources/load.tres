@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://dpetfhpknf708"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_b5ela"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_c380a"]
+
+[sub_resource type="Resource" id="load"]
+script = ExtResource("2_c380a")
+token = "(load)"
+label = "Load"
+
+[sub_resource type="Resource" id="loaded"]
+script = ExtResource("2_c380a")
+token = "(loaded)"
+label = "Loaded"
+
+[resource]
+script = ExtResource("1_b5ela")
+title = "Load"
+rule = "This ship keeps the die. Next turn it fires a Siege Shot from that die's face, for the [color=red]damage[/color] Charge Bore showed."
+tokens = Array[ExtResource("2_c380a")]([SubResource("load"), SubResource("loaded")])

@@ -45,7 +45,7 @@ func _pulse() -> void:
 
 func _show_info() -> void:
 	var info: InfoResource = InfoResource.new()
-	info.title_label_text = "[color=#%s]%s[/color]" % [_status.color.to_html(false), _status.display_name]
+	info.title_label_text = "[color=#%s]%s[/color]" % [_status.color.to_html(false), _status.display_name()]
 	info.top_label_text = "%d stack%s" % [_status.stacks, "" if _status.stacks == 1 else "s"]
 	info.texture = _status.info_icon if _status.info_icon else _status.icon
 	info.bottom_label_text = Keywords.definition(_status.rule_term())

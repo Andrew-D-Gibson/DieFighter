@@ -292,21 +292,21 @@ static func grid_locked() -> bool:
 
 func _get_tile_info() -> InfoResource:	
 	var info: InfoResource = InfoResource.new()
-	info.title_label_text = tile_resource.tile_name
-	info.top_label_text = tile_resource.activation_description
+	info.title_label_text = tile_resource.display_name()
+	info.top_label_text = tile_resource.display_activation_description()
 	info.texture = info_picture.call() if info_picture.is_valid() \
 		else tile_resource.textures.get_frame_texture('default', 0)
-	info.bottom_label_text = fill_data_tokens(tile_resource.description, effect_data)
+	info.bottom_label_text = fill_data_tokens(tile_resource.display_description(), effect_data)
 	if is_countdown():
 		info.bottom_label_text += "\n\n" + tr("INFO_TILE_COUNTDOWN").format(
 			{"left": countdown_remaining()})
 	if _copy_to_merge_with():
 		var upgraded: TileResource = tile_resource.upgraded_version
-		info.upgrade_title_text = upgraded.tile_name
+		info.upgrade_title_text = upgraded.display_name()
 		info.upgrade_texture = upgraded.textures.get_frame_texture('default', 0)
 		# Upgrading keeps the tile's counters (upgrade() swaps the resource
 		# only), so the upgrade reads them as this tile does.
-		info.upgrade_bottom_label_text = fill_data_tokens(upgraded.description, effect_data)
+		info.upgrade_bottom_label_text = fill_data_tokens(upgraded.display_description(), effect_data)
 		info.upgrade_caption_text = tr("INFO_TILE_UPGRADE")
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if engine:

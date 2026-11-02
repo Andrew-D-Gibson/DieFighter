@@ -80,10 +80,10 @@ func test_statuses_that_work_differently_on_the_player_explain_that_side() -> vo
 		var status: StatusModifier = StatusCatalog.create(status_id, player, 1)
 		assert_false(Keywords.definition(status.rule_term()).is_empty(),
 			"%s has no rule for the player" % status_id)
-	assert_eq(StatusCatalog.create(&"jammed", player, 1).rule_term(), "Jammed (you)")
-	assert_eq(StatusCatalog.create(&"scrambled", player, 1).rule_term(), "Scrambled (you)")
-	assert_eq(StatusCatalog.create(&"burn", player, 1).rule_term(), "Burn", "Burn reads the same either side")
-	assert_eq(StatusCatalog.create(&"jammed", _enemy(), 1).rule_term(), "Jammed")
+	assert_eq(StatusCatalog.create(&"jammed", player, 1).rule_term(), "jammed_you")
+	assert_eq(StatusCatalog.create(&"scrambled", player, 1).rule_term(), "scrambled_you")
+	assert_eq(StatusCatalog.create(&"burn", player, 1).rule_term(), "burn", "Burn reads the same either side")
+	assert_eq(StatusCatalog.create(&"jammed", _enemy(), 1).rule_term(), "jammed")
 
 
 func test_the_player_bar_wraps_clear_of_the_systems_panel() -> void:
@@ -178,7 +178,7 @@ func _tile_hit(targets: Array[Node], amount: int) -> DamageEvent:
 func test_weakened_on_the_player_shrinks_tile_hits_on_other_ships() -> void:
 	var weakened: StatusModifier = await _apply(player, &"weakened", 1)
 	var enemy := _enemy()
-	assert_eq(weakened.rule_term(), "Weakened (you)")
+	assert_eq(weakened.rule_term(), "weakened_you")
 
 	var shot := _tile_hit([enemy], 8)
 	var blast := _tile_hit([enemy, player], 4)
@@ -224,7 +224,7 @@ func test_countermeasures_hand_weakened_to_the_enemy_and_its_turn_clock() -> voi
 	assert_null(engine.find_status(player, &"weakened"))
 	var moved: StatusModifier = engine.find_status(enemy, &"weakened")
 	assert_eq(moved.stacks, 2)
-	assert_eq(moved.rule_term(), "Weakened")
+	assert_eq(moved.rule_term(), "weakened")
 
 	var shot: DamageEvent = DamageEvent.new()
 	shot.effect_source = enemy
@@ -333,7 +333,7 @@ func test_transfer_moves_every_status_and_merges_into_the_targets() -> void:
 	assert_eq(engine.find_status(enemy, &"burn").stacks, 5)
 	var jam: StatusModifier = engine.find_status(enemy, &"jammed")
 	assert_eq(jam.affected_node, enemy, "rebuilt for its new host")
-	assert_eq(jam.rule_term(), "Jammed", "now the enemy's rule")
+	assert_eq(jam.rule_term(), "jammed", "now the enemy's rule")
 	assert_eq(enemy.get_status_bar().get_child_count(), 2)
 
 

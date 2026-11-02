@@ -157,7 +157,7 @@ func _on_entry_hovered(entry: CodexEntry) -> void:
 
 func _entry_name(id: String) -> String:
 	if _tab == Tab.TILES:
-		return Utils.format_text(CodexCatalog.tile_resource(id).tile_name)
+		return Utils.format_text(CodexCatalog.tile_resource(id).display_name())
 	return Utils.format_text("[color=red]%s[/color]" % CodexCatalog.enemy_resource(id).enemy_name)
 
 
@@ -192,7 +192,7 @@ func _show_tile(tile: TileResource) -> void:
 		lines.append(tr("CODEX_TILE_USES").format({"uses": tile.uses_per_turn}))
 	%SubLabel.text = Utils.format_text("\n".join(lines), true)
 	var no_counters: Dictionary[String, int] = {}
-	%BodyLabel.text = Utils.format_text(Tile.fill_data_tokens(tile.description, no_counters), true)
+	%BodyLabel.text = Utils.format_text(Tile.fill_data_tokens(tile.display_description(), no_counters), true)
 	%BodyLabel.offset_bottom = _BODY_BOTTOM
 
 
@@ -235,7 +235,7 @@ func _on_keyword_hover_started(meta: Variant) -> void:
 	var rule: String = Keywords.definition(str(meta))
 	if rule.is_empty():
 		return
-	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [meta, rule])
+	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(str(meta)), rule])
 	# Shrink back to the new text's size first, or a long rule's height
 	# lingers on a short one.
 	%KeywordPopup.reset_size()
