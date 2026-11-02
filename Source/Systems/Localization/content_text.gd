@@ -17,6 +17,11 @@ extends RefCounted
 ##   func _content_text_prefix() -> String          # "HAZARD"
 ##   func _content_text_fields() -> Array[ContentText.Field]
 ## and by giving each display path an accessor that calls ContentText.text().
+## A type whose file names repeat in different folders also implements
+##   func _content_text_folder_in_key() -> bool     # true
+## so its keys name the folder too (SHIP_STATE.EVENT_CONVOY.HAULER_BETRAYED).
+## Code that copies content at run time uses copy(), not duplicate(), or the
+## copy shows English in every language.
 ## tools/loc.sh sync (LocCatalog) finds every such resource under res://Source
 ## by itself.
 
@@ -30,6 +35,11 @@ const SOURCE_LOCALE: String = "en"
 ## The debug pseudo-locale (Localization.PSEUDO_LOCALE). Stretches the field's
 ## live English, so pseudo shows an edit as promptly as English does.
 const _PSEUDO_LOCALE: String = "en_XA"
+
+## Metadata a content resource carries the first part of its keys in, once
+## worked out (owner_keys_in_file()). Unlike resource_path, duplicate() copies
+## it, so a copy keeps translating.
+const _OWNER_META: StringName = &"_content_text_owner"
 
 const _PseudoTranslation: GDScript = preload("res://Source/Systems/Localization/pseudo_translation.gd")
 
@@ -88,9 +98,13 @@ static func text(res: Resource, property: StringName) -> String:
 ##
 ## A resource saved as its own file is named by the file:
 ## HAZARD.SOLAR_FLARE.HEADLINE for solar_flare.tres. One embedded in another
-## file adds its sub-resource id: TILE.LASER.RESOURCE_X7K2P.CALLOUT. Renaming
-## the file (or re-creating the sub-resource) gives new keys, so its rows
-## show up as orphans in the next sync and need their translations moved.
+## file is named by that file and the property path that reaches it from the
+## file's root resource: ENEMY_ACTION.SEIZE.EFFECT_CHAIN.EFFECTS_6.CALLOUT is
+## the callout in step 6 of seize.tres's chain. The path is read off the
+## file's contents, so a re-save (which may renumber sub-resource ids) never
+## changes it; moving the step does, and so does renaming the file. Either
+## way the next sync carries the translations over to the new key while the
+## English still matches (LocPipeline.sync).
 static func key_for(res: Resource, property: StringName) -> String:
 	var field: Field = field_of(res, property)
 	if field == null:
@@ -102,21 +116,118 @@ static func key_for(res: Resource, property: StringName) -> String:
 
 
 ## Everything before the field suffix: HAZARD.SOLAR_FLARE. "" when [param res]
-## has no file path (built in code) or isn't content text.
+## has no file (built in code) or isn't content text. A copy made with
+## copy() answers for the resource it was copied from.
 static func owner_key(res: Resource) -> String:
 	if not is_content(res):
 		return ""
+	if res.has_meta(_OWNER_META):
+		return String(res.get_meta(_OWNER_META))
 	var path: String = res.resource_path
 	if path.is_empty():
 		return ""
-	var parts: PackedStringArray = path.split("::")
-	var owner_part: String = "%s.%s" % [
-		_key_segment(res.call(&"_content_text_prefix")),
-		_key_segment(parts[0].get_file().get_basename()),
-	]
-	if parts.size() > 1:
-		owner_part += "." + _key_segment(parts[1])
-	return owner_part
+	var file: String = path.get_slice("::", 0)
+	var root: Resource = res if not "::" in path else load(file)
+	if root == null:
+		return ""
+	return owner_keys_in_file(root, file).get(res.get_instance_id(), "")
+
+
+## A deep copy of [param res] whose content text (its own, and that of every
+## resource embedded in it) keeps translating. A plain duplicate() loses the
+## file path the keys are made from; game code that copies content (a rolled
+## enemy action) copies it through here instead.
+static func copy(res: Resource) -> Resource:
+	if res == null:
+		return null
+	var path: String = res.resource_path
+	if not path.is_empty():
+		var file: String = path.get_slice("::", 0)
+		var root: Resource = res if not "::" in path else load(file)
+		if root:
+			owner_keys_in_file(root, file)
+	# The keys ride along as metadata, which duplicate() copies (a copy of a
+	# copy included).
+	return res.duplicate(true)
+
+
+## The owner part of the key of every content resource in [param file],
+## [param root] (its root resource) and the ones embedded in it, by instance
+## id. Outside the editor each one is also stamped with it (see copy()); in
+## the editor that metadata would be saved into the .tres, so it isn't.
+static func owner_keys_in_file(root: Resource, file: String) -> Dictionary:
+	var found: Dictionary = {}
+	_collect_owner_keys(root, file, _root_part(root, file), found, {})
+	if not Engine.is_editor_hint():
+		for id: int in found:
+			var res: Resource = instance_from_id(id) as Resource
+			if res and not res.has_meta(_OWNER_META):
+				res.set_meta(_OWNER_META, found[id])
+	return found
+
+
+## The first part of every key a file makes: its root's prefix and the file
+## name (HAZARD.SOLAR_FLARE). A root that isn't content text itself (a tile
+## carrying a callout, before tiles are translatable) is named after its class
+## (TileResource -> TILE). A type whose file names repeat across folders adds
+## the folder (see _content_text_folder_in_key).
+static func _root_part(root: Resource, file: String) -> String:
+	var prefix: String = String(root.call(&"_content_text_prefix")) if is_content(root) else _class_prefix(root)
+	var part: String = _key_segment(prefix)
+	if root.has_method(&"_content_text_folder_in_key") and root.call(&"_content_text_folder_in_key"):
+		part += "." + _key_segment(file.get_base_dir().get_file())
+	return part + "." + _key_segment(file.get_file().get_basename())
+
+
+## Walks [param res] and every resource embedded in the same file, recording
+## the property path to each content resource. Deterministic: properties in
+## declaration order, arrays by index, so the same file always gives the same
+## keys. A resource reached twice keeps its first path.
+static func _collect_owner_keys(res: Resource, file: String, path: String, found: Dictionary, visited: Dictionary) -> void:
+	if visited.has(res.get_instance_id()):
+		return
+	visited[res.get_instance_id()] = true
+	if is_content(res):
+		found[res.get_instance_id()] = path
+	for property: Dictionary in res.get_property_list():
+		var name: String = property.name
+		if not (property.usage & PROPERTY_USAGE_STORAGE) or name == "script" or name.begins_with("metadata/"):
+			continue
+		_collect_value(res.get(name), file, path + "." + _key_segment(name), found, visited)
+
+
+static func _collect_value(value: Variant, file: String, path: String, found: Dictionary, visited: Dictionary) -> void:
+	if value is Resource:
+		var sub: Resource = value
+		# Only what lives in this file: a resource saved on its own is named by
+		# its own file.
+		if not sub is Script and (sub.resource_path.is_empty() or sub.resource_path.begins_with(file + "::")):
+			_collect_owner_keys(sub, file, path, found, visited)
+	elif value is Array:
+		var items: Array = value
+		for i: int in items.size():
+			_collect_value(items[i], file, "%s_%d" % [path, i], found, visited)
+	elif value is Dictionary:
+		# A plain key names its entry (TRANSITIONS_3). A resource key (a tile's
+		# TileEvent) has no name that lasts, so its place does: dictionaries
+		# keep the order the file lists them in.
+		var entries: Dictionary = value
+		var index: int = 0
+		for entry_key: Variant in entries:
+			var segment: String = str(index) if entry_key is Object else _key_segment(str(entry_key))
+			_collect_value(entries[entry_key], file, "%s_%s" % [path, segment], found, visited)
+			index += 1
+
+
+## TileResource -> TILE, EnemyTurnActionList -> ENEMY_TURN_ACTION_LIST.
+static func _class_prefix(res: Resource) -> String:
+	var script: Script = res.get_script()
+	var class_title: String = String(script.get_global_name()) if script else ""
+	if class_title.is_empty():
+		class_title = res.get_class()
+	if class_title.ends_with("Resource") and class_title != "Resource":
+		class_title = class_title.trim_suffix("Resource")
+	return class_title.to_snake_case()
 
 
 ## True when [param res] declares translatable fields.

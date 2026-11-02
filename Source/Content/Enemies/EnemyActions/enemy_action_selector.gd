@@ -36,7 +36,7 @@ static func roll(
 	# resources are shared, and must not carry one ship's binding to the next.
 	var actions: Array[EnemyActionResource] = []
 	for action: EnemyActionResource in forced.slice(0, SLOT_COUNT):
-		actions.append(action.duplicate(true))
+		actions.append(action.copy())
 	var options: Array[EnemyActionOptionResource] = EnemyActionVariety.limit(
 		available_options(pool, situation), situation, actions
 	)
@@ -282,7 +282,7 @@ static func _weighted_pick(
 
 
 static func _fallback() -> EnemyActionResource:
-	return _FALLBACK_ACTION.duplicate(true)
+	return _FALLBACK_ACTION.copy()
 
 
 ## Orders a rolled table onto faces 1-6. With no bias it's the plain shuffle it

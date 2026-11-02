@@ -349,11 +349,11 @@ func play_step(step: TutorialStep) -> void:
 
 	# Create the text popup
 	if close_on == TutorialStep.TutorialSignals.CLOSED_MANUALLY:
-		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, true)
+		create_tutorial_popup(step.display_text(), step.text_position, highlight, true)
 	elif close_on == TutorialStep.TutorialSignals.CLOSED_AFTER_TIME:
-		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, false, step.time_to_auto_close)
+		create_tutorial_popup(step.display_text(), step.text_position, highlight, false, step.time_to_auto_close)
 	else:
-		create_tutorial_popup(step.tutorial_text, step.text_position, highlight, false)
+		create_tutorial_popup(step.display_text(), step.text_position, highlight, false)
 
 		var closing_signal: Signal = _closing_signal_for(step)
 		if _already_satisfied(step):

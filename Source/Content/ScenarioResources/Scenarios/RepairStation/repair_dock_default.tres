@@ -20,7 +20,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
 script = ExtResource("1_state")
-dialogue = "DIALOGUE_REPAIR_GREETING"
+dialogue = "Patch you up? I buy spare parts too."
 faction = 1
 effects_on_enter = SubResource("Resource_chain")
 transitions = Dictionary[int, ExtResource("2_base")]({

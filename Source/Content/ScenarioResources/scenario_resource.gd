@@ -97,3 +97,26 @@ static func allowed_in_sector(scenarios: Array[ScenarioResource], sector_index: 
 		if scenario and scenario.earliest_sector() <= sector_index and scenario.deals_into(sector_index):
 			allowed.append(scenario)
 	return allowed
+
+
+## The boss card's title, in the current language. Empty for no boss card.
+func display_boss_title() -> String:
+	return ContentText.text(self, &"boss_title")
+
+
+## The line under the boss card's title, in the current language.
+func display_boss_subtitle() -> String:
+	return ContentText.text(self, &"boss_subtitle")
+
+
+func _content_text_prefix() -> String:
+	return "SCENARIO"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"boss_title", "BOSS_TITLE",
+			"A boss's name, stamped in large capitals across the intro card when its fight starts."),
+		ContentText.Field.new(&"boss_subtitle", "BOSS_SUBTITLE",
+			"One line under a boss's name on its intro card: what the boss is or what it guards."),
+	]

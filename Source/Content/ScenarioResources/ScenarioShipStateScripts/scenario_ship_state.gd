@@ -22,3 +22,26 @@ func handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> ScenarioShip
 		
 	# If we don't transition on this event, maintain the current state
 	return self
+
+
+## The line the ship says on entering this state, in the current language.
+## Empty for a silent state.
+func display_dialogue() -> String:
+	return ContentText.text(self, &"dialogue")
+
+
+func _content_text_prefix() -> String:
+	return "SHIP_STATE"
+
+
+## State files repeat their names across encounters (hauler_betrayed.tres in
+## three events), so their keys name the encounter's folder too.
+func _content_text_folder_in_key() -> bool:
+	return true
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"dialogue", "DIALOGUE",
+			"A line an NPC ship says in a speech bubble when an encounter changes its mood (it is hailed, betrayed, paid, robbed). Spoken, casual, short: the bubble holds about 50 characters.", 50),
+	]

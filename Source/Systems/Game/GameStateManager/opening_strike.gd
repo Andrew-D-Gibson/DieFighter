@@ -142,7 +142,7 @@ func _forgive(save: GameSaveResource) -> void:
 
 ## The cannon's chain for [member _damage].
 func _shot() -> EnemyActionResource:
-	var action: EnemyActionResource = (load(ACTION_PATH) as EnemyActionResource).duplicate(true)
+	var action: EnemyActionResource = (load(ACTION_PATH) as EnemyActionResource).copy()
 	action.intent_amount = _damage
 	return action
 

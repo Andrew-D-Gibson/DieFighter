@@ -47,7 +47,7 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 		return
 
 	# A copy, like every rolled action: the preloaded one is shared.
-	action_event.action = _DO_NOTHING.duplicate(true)
+	action_event.action = _DO_NOTHING.copy()
 	announce_triggered()
 	consume(1)
 

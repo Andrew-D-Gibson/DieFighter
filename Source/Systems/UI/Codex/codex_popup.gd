@@ -158,7 +158,7 @@ func _on_entry_hovered(entry: CodexEntry) -> void:
 func _entry_name(id: String) -> String:
 	if _tab == Tab.TILES:
 		return Utils.format_text(CodexCatalog.tile_resource(id).display_name())
-	return Utils.format_text("[color=red]%s[/color]" % CodexCatalog.enemy_resource(id).enemy_name)
+	return Utils.format_text("[color=red]%s[/color]" % CodexCatalog.enemy_resource(id).display_name())
 
 
 func _show_detail(id: String) -> void:
@@ -206,8 +206,9 @@ func _show_enemy(id: String, enemy: EnemyResource) -> void:
 	%SubLabel.text = Utils.format_text("\n".join(stats), true)
 
 	var sections: Array[String] = []
-	if not enemy.description.is_empty():
-		sections.append(enemy.description)
+	var blurb: String = enemy.display_description()
+	if not blurb.is_empty():
+		sections.append(blurb)
 	if enemy.overload_threshold > 0:
 		sections.append(tr("CODEX_OVERLOAD").format({"threshold": enemy.overload_threshold}))
 	var actions: Array[String] = CodexCatalog.enemy_action_lines(enemy)

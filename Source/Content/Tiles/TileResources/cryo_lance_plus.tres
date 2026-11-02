@@ -64,7 +64,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "FROZEN"
+callout = "FROZEN"
 color = Color(0.8078, 0.9412, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

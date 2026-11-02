@@ -73,7 +73,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "CATALYZED x2"
+callout = "CATALYZED x2"
 color = Color(0.7725, 0.3216, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

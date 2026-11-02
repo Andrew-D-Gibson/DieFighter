@@ -29,10 +29,10 @@ extends Resource
 
 
 func get_action() -> EnemyActionResource:
-	# base_action.duplicate(true) already deep-duplicates effect_chain
+	# base_action.copy() already deep-duplicates effect_chain
 	# (and its effects) for us, so v2 actions need nothing further here —
 	# their amount is applied at play-time via context.enemy_intent_amount.
-	var action: EnemyActionResource = base_action.duplicate(true)
+	var action: EnemyActionResource = base_action.copy()
 
 	# Randomly set the strength of the effect, then scale it by how deep into
 	# the run the player is. This is the only place a turn's amounts are rolled,

@@ -63,7 +63,7 @@ string_param = "ring_reverse"
 script = ExtResource("2_14w7d")
 category = 4
 subtype = 16
-string_param = "REVERSE"
+callout = "REVERSE"
 color = Color(0.93333334, 0.49803922, 0.18431373, 1)
 
 [sub_resource type="Resource" id="Resource_pwwfp"]
@@ -81,7 +81,7 @@ string_param = "ring_hold"
 script = ExtResource("2_14w7d")
 category = 4
 subtype = 16
-string_param = "HOLD"
+callout = "HOLD"
 color = Color(0.8156863, 0.21176471, 0.3372549, 1)
 
 [sub_resource type="Resource" id="Resource_0t0l3"]

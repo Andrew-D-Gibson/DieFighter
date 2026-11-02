@@ -74,7 +74,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "FLIP"
+callout = "FLIP"
 color = Color(0.7725, 0.3216, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

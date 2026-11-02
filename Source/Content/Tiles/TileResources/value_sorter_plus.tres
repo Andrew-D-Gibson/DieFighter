@@ -91,7 +91,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "HIGH"
+callout = "HIGH"
 color = Color(0.8157, 0.2118, 0.3373, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -119,7 +119,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "MID"
+callout = "MID"
 color = Color(0.4784, 0.7412, 0.2, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -157,7 +157,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "LOW"
+callout = "LOW"
 color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

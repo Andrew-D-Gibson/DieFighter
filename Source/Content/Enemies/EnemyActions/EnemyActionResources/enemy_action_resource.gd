@@ -417,12 +417,12 @@ func show_info() -> void:
 		return
 
 	var info: InfoResource = InfoResource.new()
-	info.title_label_text = name
+	info.title_label_text = display_name()
 
 	if activating_die_number:
-		info.bottom_label_text = "[color=yellow]Uses (die_%d) -> %s[/color]" % [
-			activating_die_number, get_description_text()
-		]
+		info.bottom_label_text = "[color=yellow]%s[/color]" % tr("ENEMY_ACTION_USES_DIE").format({
+			"face": activating_die_number, "effect": get_description_text(),
+		})
 	else:
 		info.bottom_label_text = get_description_text()
 
@@ -431,19 +431,58 @@ func show_info() -> void:
 	Events.show_info.emit(info)
 
 
+## A deep copy for one slot of a ship's table: rolled actions are numbered
+## and bound per slot, so each needs its own. Made through ContentText so the
+## copy's text (and its callouts) still translate.
+func copy() -> EnemyActionResource:
+	return ContentText.copy(self) as EnemyActionResource
+
+
+## The name, in the current language. A silenced slot keeps the name of the
+## action it cancelled.
+func display_name() -> String:
+	if silenced_action != null:
+		return silenced_action.display_name()
+	return ContentText.text(self, &"name")
+
+
+## The description in the current language, its (amount) and (target) not
+## yet filled in (see describe()).
+func display_description() -> String:
+	if silenced_action != null:
+		return tr("ENEMY_ACTION_SILENCED_DESC")
+	return ContentText.text(self, &"description")
+
+
 ## The description with this slot's rolled values filled in: (amount), and
 ## (target) for the ship it's bound to.
 func get_description_text() -> String:
-	var target_name: String = "another ship"
+	var target_name: String = ""
 	if is_instance_valid(bound_target):
-		target_name = bound_target.enemy_resource.enemy_name
+		target_name = bound_target.enemy_resource.display_name()
 	return describe(get_intent_amount_text(), target_name)
 
 
 ## The description with [param amount_text] and [param target_name] standing
-## in for (amount) and (target). The codex passes a range ("2-4") for an
-## action that isn't on any ship's table.
-func describe(amount_text: String, target_name: String = "another ship") -> String:
-	return description \
+## in for (amount) and (target); an empty [param target_name] reads "another
+## ship". The codex passes a range ("2-4") for an action that isn't on any
+## ship's table.
+func describe(amount_text: String, target_name: String = "") -> String:
+	if target_name.is_empty():
+		target_name = tr("ENEMY_ACTION_ANOTHER_SHIP")
+	return display_description() \
 		.replace('(amount)', amount_text) \
 		.replace('(target)', target_name)
+
+
+func _content_text_prefix() -> String:
+	return "ENEMY_ACTION"
+
+
+func _content_text_fields() -> Array[ContentText.Field]:
+	return [
+		ContentText.Field.new(&"name", "NAME",
+			"Name of an enemy ship's action (an intent), the title of its info panel when the player hovers the intent icon, and listed in the codex."),
+		ContentText.Field.new(&"description", "DESC",
+			"What an enemy action does, in its info panel and the codex. (amount) becomes the rolled number (or a range like 2-4), (target) the name of the ship it acts on; keep both, and keep (keyword) tokens and [color] tags."),
+	]

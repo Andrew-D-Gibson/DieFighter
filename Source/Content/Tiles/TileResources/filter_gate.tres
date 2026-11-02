@@ -22,7 +22,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "FILTERED"
+callout = "FILTERED"
 color = Color(0.8157, 0.2118, 0.3373, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -104,7 +104,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_effect")
 category = 4
 subtype = 16
-string_param = "PASS"
+callout = "PASS"
 color = Color(0.4784, 0.7412, 0.2, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 

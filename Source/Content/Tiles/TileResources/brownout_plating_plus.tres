@@ -70,7 +70,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 4
 subtype = 16
-string_param = "BRACE"
+callout = "BRACE"
 color = Color(0.2627, 0.6510, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -135,7 +135,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 4
 subtype = 16
-string_param = "BRACE"
+callout = "BRACE"
 color = Color(0.2627, 0.6510, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
