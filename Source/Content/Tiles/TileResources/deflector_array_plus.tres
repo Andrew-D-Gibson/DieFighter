@@ -57,6 +57,7 @@ script = ExtResource("script_effect")
 category = 2
 subtype = 1
 amount = 2
+text_token = &"bonus"
 
 [sub_resource type="Resource" id="Resource_step_8"]
 script = ExtResource("script_effect")
@@ -106,7 +107,7 @@ animations = [{
 [resource]
 script = ExtResource("script_tile")
 tile_name = "[color=blue]Deflector Array+[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=blue]shields[/color] equal to die +2"
+description = "[color=yellow]Any die[/color] -> Gain [color=blue]shields[/color] equal to die +{bonus}"
 offered_as_reward = false
 is_upgrade = true
 textures = SubResource("SpriteFrames_tile")

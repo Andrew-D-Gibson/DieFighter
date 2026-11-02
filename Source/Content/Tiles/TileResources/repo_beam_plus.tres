@@ -19,6 +19,7 @@ script = ExtResource("script_effect")
 category = 1
 subtype = 4
 amount = 3
+text_token = &"cost"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_3"]
@@ -96,6 +97,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_act")
 type = 10
 threshold = 3
+text_token = &"cost"
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
@@ -130,7 +132,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Repo Beam+[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]3 charge[/color]: Take back the last die [color=purple]target[/color] took. [color=orange]Return[/color] both dice"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} charge[/color]: Take back the last die [color=purple]target[/color] took. [color=orange]Return[/color] both dice"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

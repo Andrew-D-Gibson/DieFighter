@@ -84,6 +84,8 @@ script = ExtResource("script_3")
 category = 2
 subtype = 2
 multiplier = 3.0
+text_token = &"times"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step10"]
@@ -153,7 +155,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Overpressure Lance[/color]"
-description = "(die_6) [color=yellow]while overcharged[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to 3x [color=purple]surplus charge[/color]. Spend it"
+description = "(die_6) [color=yellow]while overcharged[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to {times}x [color=purple]surplus charge[/color]. Spend it"
 rarity = 2
 offered_as_reward = false
 textures = SubResource("Resource_frames2")

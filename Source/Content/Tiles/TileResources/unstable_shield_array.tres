@@ -38,6 +38,7 @@ script = ExtResource("script_3")
 category = 2
 subtype = 1
 amount = 2
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -112,6 +113,7 @@ script = ExtResource("script_3")
 category = 2
 subtype = 1
 amount = 2
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_3"]
@@ -197,7 +199,7 @@ animations = [{
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=blue]Unstable Shield Array[/color]"
-description = "[color=yellow]Pushed[/color] -> Gain [color=blue]2 shields[/color], +1 per push since last picked up
+description = "[color=yellow]Pushed[/color] -> Gain [color=blue]{shields} shields[/color], +1 per push since last picked up
 (Stack: [data]activation_count[/data])"
 rarity = 1
 offered_as_reward = false

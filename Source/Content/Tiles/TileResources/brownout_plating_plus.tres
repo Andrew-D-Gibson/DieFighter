@@ -50,6 +50,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 6
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_b5_shield"]
@@ -115,6 +116,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 6
+text_token = &"shields"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_r5_shield"]
@@ -158,7 +160,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Brownout Plating+[/color]"
-description = "[color=yellow]Enemy turn ends with no charge[/color] -> Gain [color=blue]6 shields[/color]"
+description = "[color=yellow]Enemy turn ends with no charge[/color] -> Gain [color=blue]{shields} shields[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

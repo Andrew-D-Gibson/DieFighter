@@ -42,6 +42,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 4
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -103,6 +104,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 4
+text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_3"]
@@ -149,7 +151,7 @@ animations = [{
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Feedback Cowl[/color]"
-description = "[color=yellow]Enemy siphons engine[/color] -> Deal [color=red]4 damage[/color] to [color=purple]random enemy[/color]"
+description = "[color=yellow]Enemy siphons engine[/color] -> Deal [color=red]{damage} damage[/color] to [color=purple]random enemy[/color]"
 rarity = 1
 offered_as_reward = false
 textures = SubResource("Resource_frames2")

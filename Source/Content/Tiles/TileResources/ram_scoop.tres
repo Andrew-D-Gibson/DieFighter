@@ -56,6 +56,8 @@ script = ExtResource("4_data")
 category = 2
 subtype = 2
 multiplier = 2.0
+text_token = &"charge"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_s7_charge"]
@@ -113,7 +115,7 @@ animations = [{
 script = ExtResource("2_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Ram Scoop[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]2 charge[/color] per surrounding empty cell"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]{charge} charge[/color] per surrounding empty cell"
 textures = SubResource("SpriteFrames_ram_scoop")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_act")]([SubResource("Resource_act_die"), SubResource("Resource_act_combat"), SubResource("Resource_act_target")])

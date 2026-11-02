@@ -35,6 +35,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 3
+text_token = &"charge"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_1"]
@@ -83,6 +84,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 2
 amount = 3
+text_token = &"charge"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_juice_2"]
@@ -124,7 +126,7 @@ animations = [{
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Regenerative Brake[/color]"
-description = "[color=yellow]Hull hit[/color] -> Gain [color=purple]3 charge[/color]"
+description = "[color=yellow]Hull hit[/color] -> Gain [color=purple]{charge} charge[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

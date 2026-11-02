@@ -41,6 +41,7 @@ sound_resource = ExtResource("5_swy7n")
 script = ExtResource("4_6d46w")
 category = 2
 amount = 4
+text_token = &"shields"
 
 [sub_resource type="Resource" id="Resource_el24i"]
 script = ExtResource("4_6d46w")
@@ -83,7 +84,7 @@ animations = [{
 [resource]
 script = ExtResource("4_3cps3")
 tile_name = "[color=blue]Afterimage[/color]"
-description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=blue]4 shields[/color]"
+description = "[color=yellow]Enemy hit misses you[/color] -> Gain [color=blue]{shields} shields[/color]"
 rarity = 1
 upgraded_version = ExtResource("6_swy7n")
 textures = SubResource("SpriteFrames_05hs5")

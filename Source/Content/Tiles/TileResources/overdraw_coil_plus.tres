@@ -81,6 +81,7 @@ script = ExtResource("script_3")
 category = 2
 subtype = 1
 amount = 5
+text_token = &"bonus"
 
 [sub_resource type="Resource" id="Resource_step10"]
 script = ExtResource("script_3")
@@ -171,7 +172,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Overdraw Coil+[/color]"
-description = "(die_1) -> Deal [color=red]damage[/color] equal to [color=purple]charge[/color] +5. Spend all [color=purple]charge[/color]"
+description = "(die_1) -> Deal [color=red]damage[/color] equal to [color=purple]charge[/color] +{bonus}. Spend all [color=purple]charge[/color]"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = 1
