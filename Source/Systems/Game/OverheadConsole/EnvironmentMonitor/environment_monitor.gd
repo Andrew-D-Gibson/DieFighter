@@ -13,11 +13,12 @@ extends Node2D
 ## in, which counts as read. A hazard only counts down during a fight, so its
 ## countdown shows only while one is on.
 ##
-## A hazard's rules take a while to parse, so everything that shows one leads
-## with its headline: the countdown in words, then the effect in a few
-## ("In 2 turns: a random tile is Locked"). The card says just that, the
-## screen keeps the count, the full rule is one click away in the info panel,
-## and the turn it goes off a banner names what it did.
+## A hazard's rules take a while to parse, so its arrival card is just its
+## headline: the countdown in words, then the effect in a few ("In 2 turns: a
+## random tile is Locked"). The screen keeps the count; the info panel, one
+## click away, gives the countdown, the full rule and how often it comes round
+## (the headline would only say the rule twice); and the turn it goes off a
+## banner names what it did.
 ##
 ## The node's origin is the flap's hinge, under the credit readout. %Arm flips
 ## (its scale) and %Face takes the squash-and-stretch, so the two never fight
@@ -442,25 +443,33 @@ func _on_clicked() -> void:
 	_unread = false
 	_refresh_blink()
 
-	var info: InfoResource = InfoResource.new()
+	var info: InfoResource
 	if _hazard:
-		info.title_label_text = "[color=%s]%s[/color]" % [
-			_hazard.color.to_html(false), _hazard.display_name().to_upper()
-		]
-		# Headline first, so the panel opens on what the card said, then the rule in full and how often it comes round.
-		info.bottom_label_text = "%s\n\n%s\n%s" % [
-			hazard_headline(_hazard, _armed, _turns_remaining),
-			_hazard.display_description(),
-			hazard_repeat_text(_hazard),
-		]
-		info.texture = _hazard.icon if _hazard.icon else _DEFAULT_INFO_ICON
+		info = hazard_info(_hazard, _armed, _turns_remaining)
 	else:
+		info = InfoResource.new()
 		info.title_label_text = "[color=%s]%s[/color]" % [
 			_modifier.color.to_html(false), _modifier.display_name().to_upper()
 		]
 		info.bottom_label_text = _modifier.display_description()
 		info.texture = _modifier.icon if _modifier.icon else _DEFAULT_INFO_ICON
 	Events.show_info.emit(info)
+
+
+## The info panel for [param hazard]: the countdown where a tile's panel says
+## when it activates, then the full rule and how often it comes round. Not the
+## headline, which the full rule only repeats; that is the arrival card's.
+static func hazard_info(
+	hazard: BackgroundHazardResource, armed: bool, turns_remaining: int
+) -> InfoResource:
+	var info: InfoResource = InfoResource.new()
+	info.title_label_text = "[color=%s]%s[/color]" % [
+		hazard.color.to_html(false), hazard.display_name().to_upper()
+	]
+	info.top_label_text = "[color=yellow]%s[/color]" % hazard_when_text(hazard, armed, turns_remaining)
+	info.bottom_label_text = "%s\n%s" % [hazard.display_description(), hazard_repeat_text(hazard)]
+	info.texture = hazard.icon if hazard.icon else _DEFAULT_INFO_ICON
+	return info
 
 
 ## When [param hazard] next hits, in a few words that lead its headline:
@@ -494,10 +503,9 @@ static func hazard_effect_text(hazard: BackgroundHazardResource) -> String:
 	return headline if not headline.is_empty() else hazard.display_name()
 
 
-## The countdown-first line that sums [param hazard] up, as the arrival card
-## and the info panel both lead with it: "In 2 turns: every shield
-## drops". Unformatted BBCode; run it through Utils.format_text to show it.
-## [param when_color] is a BBCode colour for the countdown half: a palette
+## The countdown-first line that sums [param hazard] up on its arrival card:
+## "In 2 turns: every shield drops". Unformatted BBCode; run it through
+## Utils.format_text to show it. [param when_color] is a BBCode colour for the countdown half: a palette
 ## name or a #hex.
 static func hazard_headline(
 	hazard: BackgroundHazardResource, armed: bool, turns_remaining: int,

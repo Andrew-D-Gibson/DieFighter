@@ -254,6 +254,37 @@ func test_the_info_panel_says_how_often_it_comes_back() -> void:
 	assert_string_contains(Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_repeat_text(hazard)), "every turn")
 
 
+## The panel gives the countdown, the full rule and how often it comes back,
+## but not the headline: beside the full rule it only says the same thing
+## twice. The headline is the arrival card's alone.
+func test_the_info_panel_counts_down_and_leaves_the_headline_to_the_card() -> void:
+	hazard.headline = "enemy dice [color=green]re-roll[/color]"
+	hazard.description = "The long version"
+	hazard.turns_between = 2
+	var info: InfoResource = EnvironmentMonitor.hazard_info(hazard, true, 3)
+	assert_eq(Utils.strip_bbcode_tags(info.top_label_text), "In 3 turns")
+	var body: String = Utils.strip_bbcode_tags(info.bottom_label_text)
+	assert_string_contains(body, "The long version")
+	assert_string_contains(body, "every 2 turns")
+	assert_false(body.contains("re-roll"), body)
+	assert_false(body.contains("In 3 turns"), "the countdown is said once, at the top")
+
+
+func test_the_info_panel_shows_the_count_as_it_stands() -> void:
+	Events.start_scenario.emit()
+	await _settle()
+	Events.hazard_armed.emit(hazard, 3)
+	await _settle()
+	Events.hazard_countdown_changed.emit(hazard, 2)
+	var shown: Array[InfoResource] = []
+	var keep: Callable = func(info: InfoResource) -> void: shown.append(info)
+	Events.show_info.connect(keep)
+	monitor._on_clicked()
+	Events.show_info.disconnect(keep)
+	assert_eq(shown.size(), 1)
+	assert_eq(Utils.strip_bbcode_tags(shown[0].top_label_text), "In 2 turns")
+
+
 ## The card carries the headline and nothing else: the full rule waits in the
 ## info panel, so the card reads as fast as a rule's one line.
 func test_a_hazard_card_is_its_headline() -> void:
