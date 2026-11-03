@@ -582,11 +582,10 @@ func _toggle_fps_display() -> void:
 	Events.toggle_fps_display.emit()
 
 
-## A language that isn't shipped yet can be previewed here too, for checking
-## a translation in place; it isn't offered in Options.
+## The pseudo-locale can be picked here too, for checking that text fits; it
+## isn't offered in Options.
 func _lang(command_args: Array[String] = []) -> void:
 	var available: Array[String] = Localization.get_available_locales()
-	available.append_array(Localization.get_preview_locales())
 	if command_args.size() != 1 or (command_args[0] != 'pseudo' and command_args[0] not in available):
 		command_history.append_text('\n\t\tUsage: lang <%s|pseudo>' % '|'.join(available))
 		return
@@ -611,18 +610,15 @@ func _loc_audit(command_args: Array[String] = []) -> void:
 
 
 ## The overflow watcher's red outlines and log lines, on or off for this
-## session.
+## session. Off at every launch: it's for checking a translation, not play.
 func _loc_watch(command_args: Array[String] = []) -> void:
-	var watcher: OverflowWatcher = Localization.overflow_watcher
-	if watcher == null:
+	if command_args.size() != 1 or command_args[0] not in ['on', 'off']:
+		command_history.append_text('\n\t\tUsage: loc_watch <on|off>  (now %s)'
+			% ('on' if Localization.is_watching_overflow() else 'off'))
+		return
+	if not Localization.watch_overflow(command_args[0] == 'on'):
 		command_history.append_text('\n\t\tThe overflow watcher only runs in debug builds.')
 		return
-	if command_args.size() != 1 or command_args[0] not in ['on', 'off']:
-		command_history.append_text('\n\t\tUsage: loc_watch <on|off>  (now %s)' % ('on' if watcher.live else 'off'))
-		return
-	watcher.live = command_args[0] == 'on'
-	if not watcher.live:
-		watcher.clear_outlines()
 	command_history.append_text('\n[center]Overflow watcher %s.[/center]' % command_args[0])
 
 
@@ -667,7 +663,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]kill_enemies[/b]                  kill all enemies')
 	command_history.append_text('\n[b]lang[/b] <locale|pseudo>          switch language (pseudo: stretched English, debug)')
 	command_history.append_text('\n[b]loc_audit[/b] [locale|pseudo|all|fonts] screenshot every text surface per language, flag overflow')
-	command_history.append_text('\n[b]loc_watch[/b] <on|off>            outline text that overflows (debug, on by default)')
+	command_history.append_text('\n[b]loc_watch[/b] <on|off>            outline text that overflows (off at launch)')
 	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
 	command_history.append_text('\n[b]lock_tiles[/b]		            stop tiles from being moved')
 	command_history.append_text('\n[b]open_cells[/b] [x y]              open a sealed grid cell, or all of them')

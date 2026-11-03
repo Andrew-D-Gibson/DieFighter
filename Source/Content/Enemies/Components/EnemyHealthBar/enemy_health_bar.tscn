@@ -62,6 +62,7 @@ unique_name_in_owner = true
 offset_left = -4.0
 offset_top = -11.0
 offset_right = 13.0
+offset_bottom = 2.0
 mouse_filter = 2
 theme_override_colors/default_color = Color(0.815686, 0.211765, 0.337255, 1)
 bbcode_enabled = true

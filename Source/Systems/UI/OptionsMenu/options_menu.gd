@@ -99,6 +99,10 @@ var _pending_progress: Array = []
 ## Bumped by every hint change, so a status message only clears itself.
 var _hint_serial: int = 0
 var _last_sfx_preview_msec: int = -_SFX_PREVIEW_INTERVAL_MSEC
+var _language_dropdown: PixelDropdown
+## Per locale, the font its name is drawn in when the menu's own can't (see
+## _dress_language_list()).
+var _language_fonts: Dictionary[String, FontVariation] = {}
 
 
 func _ready() -> void:
@@ -119,8 +123,9 @@ func _build_pages() -> void:
 	var locales: Array[String] = Localization.get_available_locales()
 	var locale_names: Array[String] = []
 	for locale: String in locales:
-		locale_names.append(Localization.get_locale_name(locale))
-	game.choice(OptionsSettings.LANGUAGE, "OPT_LANGUAGE", locale_names, locales)
+		locale_names.append(Localization.get_locale_short_name(locale))
+	_language_dropdown = game.choice(OptionsSettings.LANGUAGE, "OPT_LANGUAGE", locale_names, locales)
+	_dress_language_list()
 	game.next_column()
 	game.check(OptionsSettings.REGION_ALERTS, "OPT_REGION_ALERTS", "OPT_REGION_ALERTS_HINT")
 	# Comfort: background behaviour.
@@ -221,6 +226,50 @@ func _add_progress_row(page: OptionsPage, label_key: String, text_key: String, h
 	page.custom(pressable, label_key, hint_key, &"", Callable(), false)
 	pressable.set_button_text(text_key)
 	set_button_texture(pressable, texture)
+
+
+## The open language list gives each language's full name and marks each
+## one that isn't translated yet ("Deutsch (English text)"): it can be
+## played, in English text with its own fonts. The closed dropdown keeps the
+## bare, short name, so the column stays narrow. A name the menu's font has
+## no letters for (Chinese and Japanese, in English) is drawn in its own
+## language's font instead, so every player can find theirs. Redone when the
+## language or Readable Font changes, as both change the menu's font.
+func _dress_language_list() -> void:
+	var menu_face: FontFace = FontRoles.face(FontRoles.SMALL)
+	var locales: Array[String] = Localization.get_available_locales()
+	for i: int in range(locales.size()):
+		var locale: String = locales[i]
+		var text: String = Localization.get_locale_name(locale)
+		if not Localization.is_translated(locale):
+			text = tr("OPT_LANGUAGE_ENGLISH_TEXT").format({"language": text})
+		_language_dropdown.set_item_list_text(i, text)
+		if _face_draws(menu_face, text):
+			_language_dropdown.set_item_font(i, null, 0)
+		else:
+			var own: FontFace = FontRoles.profile_for(locale).face(FontRoles.SMALL)
+			_language_dropdown.set_item_font(i, _language_font(locale, own), own.size)
+
+
+static func _face_draws(face: FontFace, text: String) -> bool:
+	for i: int in range(text.length()):
+		if not face.has_char(text.unicode_at(i)):
+			return false
+	return true
+
+
+## [param face] as one font, its line spacing included, so a row in it is as
+## tall as the rest of the list.
+func _language_font(locale: String, face: FontFace) -> FontVariation:
+	if not _language_fonts.has(locale):
+		var font: FontVariation = FontVariation.new()
+		font.base_font = face.font
+		font.fallbacks = face.fallbacks
+		font.spacing_top = face.spacing_top
+		font.spacing_bottom = face.spacing_bottom
+		font.baseline_offset = face.baseline_offset
+		_language_fonts[locale] = font
+	return _language_fonts[locale]
 
 
 ## --- Layout ---
@@ -403,6 +452,8 @@ func _refresh_open_page() -> void:
 func _on_option_changed(key: StringName, _value: Variant) -> void:
 	if key == OptionsSettings.READABLE_FONT:
 		_layout_tabs(Rect2(-PANEL_SIZE / 2.0, PANEL_SIZE))
+	if key == OptionsSettings.READABLE_FONT or key == OptionsSettings.LANGUAGE:
+		_dress_language_list()
 	# One option can change what another may do (fullscreen and the window
 	# scale), so the whole page is re-read.
 	_refresh_open_page()
@@ -415,6 +466,7 @@ func _on_visibility_changed() -> void:
 	else:
 		# Options can change while the menu is shut (the dev console, the
 		# window going fullscreen from its title bar).
+		_dress_language_list()
 		_shown_page().refresh()
 
 

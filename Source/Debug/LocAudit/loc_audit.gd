@@ -39,8 +39,8 @@ var _english_text: Dictionary[String, String] = {}
 
 
 ## The locales [param requested] names: one locale, "pseudo", "all"
-## (every language the game knows, shipped or previewed, plus pseudo; run()
-## skips those with nothing translated yet), "fonts" (pseudo text in each
+## (every language the game knows, plus pseudo; run() skips those with
+## nothing translated yet), "fonts" (pseudo text in each
 ## distinct font profile, see font_profile_locales()), or "<text>@<fonts>",
 ## e.g. "pseudo@zh_CN". English always comes first, as everything else is
 ## compared with it.
@@ -51,7 +51,6 @@ static func locales_for(requested: String) -> Array[String]:
 			locales.append(PSEUDO if fonts == Localization.PSEUDO_LOCALE else PSEUDO + FONTS_SEPARATOR + fonts)
 	elif requested == "all":
 		var known: Array[String] = Localization.get_available_locales()
-		known.append_array(Localization.get_preview_locales())
 		for locale: String in known:
 			var name: String = PSEUDO if locale == Localization.PSEUDO_LOCALE else locale
 			if name not in locales:
@@ -70,7 +69,6 @@ static func font_profile_locales() -> Array[String]:
 	var found: Array[String] = [Localization.PSEUDO_LOCALE]
 	var seen: Array[String] = [_faces_of(FontRoles.profile_for(Localization.PSEUDO_LOCALE))]
 	var known: Array[String] = Localization.get_available_locales()
-	known.append_array(Localization.get_preview_locales())
 	for locale: String in Localization.LOCALE_NAMES:
 		if locale not in known:
 			known.append(locale)
@@ -231,7 +229,7 @@ func _switch_locale(locale: String) -> bool:
 	var text_locale: String = _text_locale(locale)
 	var code: String = Localization.PSEUDO_LOCALE if text_locale == PSEUDO else text_locale
 	var offered: Array[String] = Localization.get_available_locales()
-	offered.append_array(Localization.get_preview_locales())
+	offered.append(Localization.PSEUDO_LOCALE)
 	if code not in offered and code != "en":
 		return false
 	Localization.set_locale(code, true)

@@ -62,6 +62,12 @@ var item_count: int:
 	get:
 		return items.size()
 
+## What the open list says for an item where it says more than the closed
+## button does, by index (see set_item_list_text()).
+var _list_texts: Dictionary[int, String] = {}
+## A font for one item's row in the open list, by index: [font, size].
+var _item_fonts: Dictionary[int, Array] = {}
+
 @onready var _main_button: Button = $MainButton
 
 ## The open list and the full-screen catcher behind it. Both only exist while
@@ -126,7 +132,30 @@ func remove_item(index: int) -> void:
 
 func clear() -> void:
 	items.clear()
+	_list_texts.clear()
+	_item_fonts.clear()
 	selected = -1
+
+
+## Has the open list show [param text] for item [param index] in place of
+## its text, which the closed button keeps showing: a note that matters while
+## choosing, with no room for it once chosen. Empty goes back to the item's
+## text.
+func set_item_list_text(index: int, text: String) -> void:
+	if text.is_empty():
+		_list_texts.erase(index)
+	else:
+		_list_texts[index] = text
+
+
+## Draws item [param index]'s row in the open list in [param font] at
+## [param font_size] (null goes back to the theme's): an item written in a
+## script the list's font lacks, say.
+func set_item_font(index: int, font: Font, font_size: int) -> void:
+	if font == null:
+		_item_fonts.erase(index)
+	else:
+		_item_fonts[index] = [font, font_size]
 
 
 ## --- Internals ---
@@ -308,12 +337,16 @@ func _build_rows() -> Array[Button]:
 	var rows: Array[Button] = []
 	for i: int in range(items.size()):
 		var row: Button = Button.new()
-		row.text = items[i]
+		row.text = _list_texts.get(i, items[i])
 		row.icon = checked if i == selected else unchecked
 		row.focus_mode = Control.FOCUS_NONE
 		row.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		row.add_theme_font_size_override("font_size", get_theme_font_size("font_size", "PopupMenu"))
+		if _item_fonts.has(i):
+			row.add_theme_font_override("font", _item_fonts[i][0])
+			row.add_theme_font_size_override("font_size", _item_fonts[i][1])
+		else:
+			row.add_theme_font_size_override("font_size", get_theme_font_size("font_size", "PopupMenu"))
 		row.add_theme_stylebox_override("normal", normal)
 		row.add_theme_stylebox_override("hover", hover)
 		row.add_theme_stylebox_override("pressed", hover)
