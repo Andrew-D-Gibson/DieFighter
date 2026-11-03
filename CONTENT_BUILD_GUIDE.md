@@ -1367,6 +1367,20 @@ current language.
    (`internationalization/locale/translations`), which is how a language
    ships.
 
+**Fonts.** Never set a font or a font size on translated text. Pick its
+role and scale: leave small x1 text alone (the theme default), otherwise set
+`theme_type_variation` to a slot type such as `SmallX2` or `BodyX6`
+(`FontRoles.SLOT_TYPES`; add a new one there and in
+`Assets/Themes/default.tres` if no scale fits). In code, use
+`FontRoles.slot(role, scale)`, or `FontRoles.font(role)` with
+`FontRoles.size(role, scale)` for draw_string. To change how a language
+looks, edit its profile in `Assets/Fonts/Profiles/` (or the shared face in
+`Assets/Fonts/Faces/`): every slot of the role follows, which keeps sizes
+consistent. Keep a face's size on its font's native pixel grid; if only an
+off-grid size fits, say so in the face's `note`. `test_font_roles.gd` fails
+on a raw override, and `test_localization.gd` fails when a language's text
+has a character none of its role fonts can draw.
+
 **Checking every language.**
 - `tools/loc.sh lint` (also part of GUT, `test/content/test_localization.gd`)
   fails when content English hasn't been synced, when a translation lost or

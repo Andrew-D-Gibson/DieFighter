@@ -1819,14 +1819,38 @@ Mute All flag) and opens the pause menu on focus loss, only in a live run.
 **Accessibility visuals.** `ColorSymbolBadge` (Content/Tiles/) reads a tile's
 colour family from its art folder (`<Colour>Tiles`) and draws its glyph:
 `attach_to_tile_sprite()` from `Tile`, `attach_to_rect()` for TextureRects
-(codex, info panel). `FontSwap` (Display/) swaps the `base_font` of the
-wrappers `m3x6_ui.tres` / `m5x7_ui.tres` between the pixel fonts and the
-readable font; text must use the wrappers, never the .ttf files
-(`test_font_swap.gd` checks). CJK/Cyrillic fonts should go in as fallbacks on
-the wrappers, fitted with `tools/fit_readable_font.py`. Atkinson is imported
-as MSDF at `msdf_size` 192 (64 stair-stepped under nearest filtering at 6x),
-and while readable `FontSwap` sets each wrapper's `baseline_offset` so
-capitals centre where the pixel fonts' do.
+(codex, info panel). Readable Font (`FontSwap`, Display/) is one more font
+profile, `readable.tres`: its Atkinson faces go in front and the language's
+own fonts follow as fallbacks (see Fonts below). Atkinson is imported as MSDF
+at `msdf_size` 192 (64 stair-stepped under nearest filtering at 6x), and its
+faces carry a `baseline_offset` so capitals centre where the pixel fonts' do.
+
+**Fonts (FontRoles).** Text names a role (`small`, `body`, `popup`), never a
+font file or a raw size. Each role draws through one FontVariation wrapper
+(`Assets/Fonts/Roles/<role>.tres`; `small`/`body` are the old
+`m3x6_ui`/`m5x7_ui` with the same UIDs). A FontProfile per locale
+(`Assets/Fonts/Profiles/<locale>.tres`, en_XA for pseudo, `readable.tres` for
+Readable Font) maps each role to a FontFace (`Assets/Fonts/Faces/`: font,
+unit size, fallbacks, baseline offset, a note). `Localization.set_locale`
+calls `FontRoles.use_locale`, which sets each wrapper's base font and
+fallbacks and the project theme's slot-type sizes, live. Loaded profiles are
+kept for the session: freeing a profile's fonts while laid-out text still
+points at them makes the TextServer read freed data (`Parameter "fd" is
+null`). Slot types are theme type variations named `<Role>X<scale>`
+(`BodyX6` = body at 6x its unit), listed in `FontRoles.SLOT_TYPES`; a
+Label/RichTextLabel names one in `theme_type_variation`. Small text at x1 is
+the theme default and needs nothing. Code that builds a Label sets
+`theme_type_variation = FontRoles.slot(role, scale)`; code that draws text
+uses `FontRoles.font(role)` / `FontRoles.size(role, scale)`.
+`test_font_roles.gd` fails on a raw font/size override.
+Fonts per locale: en/en_XA m3x6@16 + m5x7@16; de/fr/es/pt_BR/ru Tiny5@8
+for small, m5x7 otherwise; zh_CN and ja Fusion Pixel 12 (zh_hans / ja
+build)@12 for every role. monogram extended is a same-size fallback behind
+m3x6/m5x7 in every Latin/Cyrillic locale (it supplies "…" and "—").
+4.7.1 facts: a fallback draws at the primary's size, so a script the role
+font lacks needs the primary swapped; an unregistered
+`theme_type_variation` name is ignored; GDScript folds a property read on a
+`const` preload at compile time, so read wrappers through a variable.
 
 **Held things and the cursor.** `Draggable.held` / `holding()` say what's in
 hand (drag or click placement), and are the only record of it: the cursor,
