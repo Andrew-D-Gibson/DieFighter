@@ -58,7 +58,6 @@ const _FLARE_BRIGHTNESS: float = 2.2
 ## credit readout.
 const _CALLOUT_OFFSET: Vector2 = Vector2(18, 0)
 
-const _COUNTDOWN_FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 ## Where the glyph sits on the screen, alone or sharing it with a countdown.
 const _GLYPH_CENTRED: Vector2 = Vector2(0, 13)
@@ -634,8 +633,7 @@ func _is_urgent() -> bool:
 ## measured size and stay on whole pixels.
 func _build_countdown() -> void:
 	_countdown = Label.new()
-	_countdown.add_theme_font_override("font", _COUNTDOWN_FONT)
-	_countdown.add_theme_font_size_override("font_size", 16)
+	_countdown.theme_type_variation = FontRoles.slot(FontRoles.BODY)
 	_countdown.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_countdown.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_countdown.mouse_filter = Control.MOUSE_FILTER_IGNORE

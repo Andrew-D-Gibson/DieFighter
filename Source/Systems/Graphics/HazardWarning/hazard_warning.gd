@@ -12,12 +12,11 @@ extends CanvasLayer
 ## Spawned by HazardEvent and gone once the hazard has struck. It sits over
 ## the game but under Juice.screen_flash, so the strike's flash washes it out.
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 const _BEAT_SFX: SoundEffectResource = preload(
 	"res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres"
 )
-## One world pixel per font pixel; the layer is scaled to the game's grid.
-const _FONT_SIZE: int = 16
+## The layer is scaled to the game's grid, so body text at x1 draws one world
+## pixel per font pixel.
 const _PIXEL_SCALE: float = 6.0
 ## Where the title sits on the 320x180 grid: in the open band between the
 ## ships and the top of the cockpit.
@@ -118,8 +117,7 @@ func _strike() -> void:
 func _make_label(text: String, color: Color, y: float) -> Label:
 	var label: Label = Label.new()
 	label.text = text
-	label.add_theme_font_override("font", _FONT)
-	label.add_theme_font_size_override("font_size", _FONT_SIZE)
+	label.theme_type_variation = FontRoles.slot(FontRoles.BODY)
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_outline_color", _OUTLINE_COLOR)
 	label.add_theme_constant_override("outline_size", 4)

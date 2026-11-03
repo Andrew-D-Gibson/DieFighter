@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://biy0fv134k5cd"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/FusionPixel12/fusion-pixel-12px-proportional-ja.ttf" id="1_hj03t"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="2_n32qx"]
+
+[resource]
+script = ExtResource("2_n32qx")
+font = ExtResource("1_hj03t")
+size = 12
+note = "Every role in ja. Native size 12: capitals 9 px, lines 16 px against m3x6/m5x7's 13, so boxes sized for English are tight (C11b)."

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FontProfile" format=3 uid="uid://cv4efhnaio8yy"]
+
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/m5x7.tres" id="1_l2txj"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_profile.gd" id="2_jfk5r"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/tiny5.tres" id="3_1dk6r"]
+
+[resource]
+script = ExtResource("2_jfk5r")
+small = ExtResource("3_1dk6r")
+body = ExtResource("1_l2txj")
+popup = ExtResource("1_l2txj")

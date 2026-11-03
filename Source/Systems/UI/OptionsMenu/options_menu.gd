@@ -46,7 +46,6 @@ const PANEL_SIZE: Vector2 = Vector2(256, 140)
 const TAB_HEIGHT: float = 12.0
 const _BODY_MARGIN: float = 6.0
 const _BUTTON_SIZE: Vector2 = Vector2(56, 14)
-const _TAB_FONT_SIZE: int = 16
 const _TAB_PADDING: float = 10.0
 ## Between a sub-tab row and its pages.
 const _SUB_TAB_GAP: float = 4.0
@@ -310,7 +309,8 @@ func _layout_tabs(panel_rect: Rect2) -> void:
 	var widths: Array[float] = []
 	var total: float = 0.0
 	for tab: Tab in _TABS:
-		var width: float = ceilf(font.get_string_size(tr(_TABS[tab][0]), HORIZONTAL_ALIGNMENT_LEFT, -1, _TAB_FONT_SIZE).x + _TAB_PADDING)
+		var width: float = ceilf(font.get_string_size(tr(_TABS[tab][0]), HORIZONTAL_ALIGNMENT_LEFT, -1,
+			_frame.get_theme_default_font_size()).x + _TAB_PADDING)
 		widths.append(width)
 		total += width
 	var gap: float = floorf((panel_rect.size.x - total) / maxf(1.0, _TABS.size() - 1))

@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_ring-Sheet.png" id="2_ring"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal-Sheet.png" id="3_portal"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal_charged-Sheet.png" id="5_charged"]
-[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="4_font"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ring0"]
 atlas = ExtResource("2_ring")
@@ -189,8 +188,7 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(0.933333, 0.827451, 0.364706, 1)
 theme_override_colors/font_outline_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 theme_override_constants/outline_size = 36
-theme_override_fonts/font = ExtResource("4_font")
-theme_override_font_sizes/font_size = 192
+theme_type_variation = &"BodyX12"
 text = "SECTOR 2"
 horizontal_alignment = 1
 vertical_alignment = 1
@@ -206,8 +204,7 @@ mouse_filter = 2
 theme_override_colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
 theme_override_colors/font_outline_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 theme_override_constants/outline_size = 24
-theme_override_fonts/font = ExtResource("4_font")
-theme_override_font_sizes/font_size = 96
+theme_type_variation = &"BodyX6"
 text = "OF 3"
 horizontal_alignment = 1
 vertical_alignment = 1

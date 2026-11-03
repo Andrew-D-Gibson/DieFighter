@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FontProfile" format=3 uid="uid://ctuvyru3y2b8o"]
+
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/fusion12_ja.tres" id="1_t3ixu"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_profile.gd" id="2_lla33"]
+
+[resource]
+script = ExtResource("2_lla33")
+small = ExtResource("1_t3ixu")
+body = ExtResource("1_t3ixu")
+popup = ExtResource("1_t3ixu")

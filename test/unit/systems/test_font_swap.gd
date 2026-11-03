@@ -3,18 +3,26 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## replacement and back, text re-lays out, and nothing bypasses the wrappers.
 ## Nothing here saves, so the player's options file is never touched.
 
-const M3X6_UI: FontVariation = preload("res://Assets/Fonts/m3x6/m3x6_ui.tres")
-const M5X7_UI: FontVariation = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
+## The role wrappers, read through variables: GDScript folds a property read
+## on a const preload (`CONST.base_font`) at compile time, so it would never
+## see a swap.
+var small_ui: FontVariation = load("res://Assets/Fonts/Roles/small.tres")
+var body_ui: FontVariation = load("res://Assets/Fonts/Roles/body.tres")
+var popup_ui: FontVariation = load("res://Assets/Fonts/Roles/popup.tres")
 
-## Files that may name a pixel font file: the wrappers, and the swap table.
+## Files that may name a pixel font file: the role wrappers, and the faces
+## the language profiles pick from.
 const _ALLOWED_REFERENCES: Array[String] = [
-	"res://Assets/Fonts/m3x6/m3x6_ui.tres",
-	"res://Assets/Fonts/m5x7/m5x7_ui.tres",
-	"res://Source/Systems/Display/font_swap.gd",
+	"res://Assets/Fonts/Roles/small.tres",
+	"res://Assets/Fonts/Roles/body.tres",
+	"res://Assets/Fonts/Roles/popup.tres",
+	"res://Assets/Fonts/Faces/m3x6.tres",
+	"res://Assets/Fonts/Faces/m5x7.tres",
 ]
-## A pixel font file named by path or by uid.
+## A pixel font file named by path or by uid. The slash keeps the readable
+## fonts fitted to them (AtkinsonHyperlegibleNext-Medium-m3x6.ttf) out.
 const _PIXEL_FONT_REFERENCES: Array[String] = [
-	"m3x6.ttf", "m5x7.ttf", "uid://d18mhx31l6gjo", "uid://bekus7kljl5ap",
+	"/m3x6.ttf", "/m5x7.ttf", "uid://d18mhx31l6gjo", "uid://bekus7kljl5ap",
 ]
 const _SENTENCE: String = "Any die -> Tiles above and below get +2 to effects this turn"
 ## Button scenes with the longest labels they carry.
@@ -39,14 +47,15 @@ func after_each() -> void:
 
 
 func test_wrappers_show_the_pixel_fonts_by_default() -> void:
-	assert_eq(FontSwap.wrappers(), [M3X6_UI, M5X7_UI] as Array[FontVariation])
+	assert_eq(FontSwap.wrappers(), [small_ui, body_ui, popup_ui] as Array[FontVariation])
 	assert_false(FontSwap.is_readable())
-	assert_eq(M3X6_UI.base_font, load("res://Assets/Fonts/m3x6/m3x6.ttf"))
-	assert_eq(M5X7_UI.base_font, load("res://Assets/Fonts/m5x7/m5x7.ttf"))
+	assert_eq(small_ui.base_font, load("res://Assets/Fonts/m3x6/m3x6.ttf"))
+	assert_eq(body_ui.base_font, load("res://Assets/Fonts/m5x7/m5x7.ttf"))
+	assert_eq(popup_ui.base_font, load("res://Assets/Fonts/m5x7/m5x7.ttf"))
 
 
 func test_toggling_swaps_every_wrapper_and_restores_the_same_fonts() -> void:
-	var originals: Array[Font] = [M3X6_UI.base_font, M5X7_UI.base_font]
+	var originals: Array[Font] = [small_ui.base_font, body_ui.base_font, popup_ui.base_font]
 
 	FontSwap.set_readable(true)
 	assert_true(FontSwap.is_readable())
@@ -56,8 +65,9 @@ func test_toggling_swaps_every_wrapper_and_restores_the_same_fonts() -> void:
 
 	FontSwap.set_readable(false)
 	assert_false(FontSwap.is_readable())
-	assert_same(M3X6_UI.base_font, originals[0])
-	assert_same(M5X7_UI.base_font, originals[1])
+	assert_same(small_ui.base_font, originals[0])
+	assert_same(body_ui.base_font, originals[1])
+	assert_same(popup_ui.base_font, originals[2])
 
 
 ## The readable fonts ride up or down so their capitals centre where the
@@ -95,9 +105,9 @@ func test_the_option_drives_the_swap_and_defaults_to_off() -> void:
 
 func test_the_theme_draws_through_the_wrapper() -> void:
 	var theme: Theme = ThemeDB.get_project_theme()
-	assert_eq(theme.default_font, M3X6_UI)
-	assert_eq(theme.get_font(&"font", &"Label"), M3X6_UI)
-	assert_eq(theme.get_font(&"font", &"PopupMenu"), M3X6_UI)
+	assert_eq(theme.default_font, small_ui)
+	assert_eq(theme.get_font(&"font", &"Label"), small_ui)
+	assert_eq(theme.get_font(&"font", &"PopupMenu"), small_ui)
 
 
 func test_text_relayouts_and_comes_back_exactly() -> void:
@@ -105,7 +115,7 @@ func test_text_relayouts_and_comes_back_exactly() -> void:
 	label.text = "Show Tutorial"
 	var overridden: Label = Label.new()
 	overridden.text = "Overload 12/20"
-	overridden.add_theme_font_override(&"font", M5X7_UI)
+	overridden.add_theme_font_override(&"font", body_ui)
 	add_child_autofree(label)
 	add_child_autofree(overridden)
 	var pixel_sizes: Array[Vector2] = [label.get_minimum_size(), overridden.get_minimum_size()]
@@ -151,7 +161,7 @@ func test_nothing_uses_a_pixel_font_file_directly() -> void:
 	var offenders: Array[String] = []
 	for root: String in ["res://Source", "res://Assets", "res://test"]:
 		_collect_offenders(root, offenders)
-	assert_eq(offenders, [] as Array[String], "use m3x6_ui.tres / m5x7_ui.tres instead")
+	assert_eq(offenders, [] as Array[String], "name a font role instead (FontRoles)")
 
 
 func _collect_offenders(dir_path: String, offenders: Array[String]) -> void:

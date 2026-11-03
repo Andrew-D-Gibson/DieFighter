@@ -13,7 +13,14 @@ const _EN_TRANSLATION: String = "res://Localization/translations.en.translation"
 ## none of which is drawn as letters.
 var _not_letters: RegEx = RegEx.create_from_string(r"\[[^\]]*\]|\([a-z_0-9=.]+\)|\{[^}]*\}|%[-+0-9.]*[a-zA-Z]")
 
+## Glyph misses already known, by "locale role U+XXXX", left for the
+## per-locale fit pass (C11b) to fix in a profile or the text.
+const _KNOWN_GLYPH_MISSES: Array[String] = []
+
+const _PseudoTranslation: GDScript = preload("res://Source/Systems/Localization/pseudo_translation.gd")
+
 var _tables: Array[LocTable] = []
+var _pseudo: Translation
 
 
 func before_all() -> void:
@@ -108,35 +115,69 @@ func test_no_key_is_in_both_csvs() -> void:
 	assert_eq(clashes, [] as Array[String])
 
 
-## A letter the locale's font lacks draws as a box (or in a fallback font).
-## Until the per-locale font profiles exist (localization plan Phase 4, LF2)
-## this only reports: English is checked against the default theme font,
-## which most but not all labels use, and other locales have no font yet.
-## Once LF2 lands, missing glyphs should fail here.
+## A letter a locale's fonts lack draws as a box, or in a system font the
+## game didn't pick. Every string is checked against each font role's face in
+## its locale's FontProfile, fallbacks included, since any text can land in
+## any role. Locales with no translations yet pass trivially; the
+## pseudo-locale checks the stretched English it shows.
 func test_every_character_has_a_glyph() -> void:
-	var missing: Array[String] = []
-	var unchecked: Array[String] = []
-	for locale: String in _filled_locales():
-		var font: Font = _font_for(locale)
-		if font == null:
-			unchecked.append(locale)
+	var problems: Array[String] = []
+	var known: Array[String] = []
+	for locale: String in _glyph_locales():
+		var profile: FontProfile = FontRoles.profile_for(locale)
+		if profile == null or not profile.resource_path.get_file().begins_with(locale + "."):
+			problems.append("no FontProfile of its own for %s" % locale)
 			continue
-		for table: LocTable in _tables:
-			for key: String in table.keys():
-				var text: String = LocTable.unescape(table.cell(key, locale))
-				for character: String in _not_letters.sub(text, "", true):
-					if character.strip_edges().is_empty():
+		for miss: String in _missing_glyphs(locale, profile):
+			if miss.get_slice(":", 0) in _KNOWN_GLYPH_MISSES:
+				known.append(miss)
+			else:
+				problems.append(miss)
+	if not known.is_empty():
+		gut.p("known glyph misses (left for C11b):\n" + "\n".join(known))
+	assert_eq(problems, [] as Array[String], "\n".join(problems))
+
+
+## Each (locale, role, character) a profile can't draw, as
+## "locale role U+XXXX: 'c' in KEY, KEY...".
+func _missing_glyphs(locale: String, profile: FontProfile) -> Array[String]:
+	var keys_by_miss: Dictionary[String, PackedStringArray] = {}
+	for table: LocTable in _tables:
+		for key: String in table.keys():
+			var text: String = _shown_text(table, key, locale)
+			for character: String in _not_letters.sub(text, "", true):
+				if character.strip_edges().is_empty():
+					continue
+				var code: int = character.unicode_at(0)
+				for role: StringName in FontRoles.ROLES:
+					if profile.face(role).has_char(code):
 						continue
-					if not font.has_char(character.unicode_at(0)):
-						missing.append("%s [%s]: no glyph for '%s' (U+%04X)" % [key, locale, character, character.unicode_at(0)])
-	var report: PackedStringArray = []
-	if not unchecked.is_empty():
-		report.append("no font chosen yet for %s; glyphs unchecked" % ", ".join(unchecked))
-	report.append_array(missing)
-	if report.is_empty():
-		pass_test("every character has a glyph")
-	else:
-		pending("\n".join(report))
+					var miss: String = "%s %s U+%04X: '%s'" % [locale, role, code, character]
+					if not keys_by_miss.has(miss):
+						keys_by_miss[miss] = PackedStringArray()
+					if keys_by_miss[miss].size() < 3:
+						keys_by_miss[miss].append(key)
+	var misses: Array[String] = []
+	for miss: String in keys_by_miss:
+		misses.append("%s in %s" % [miss, ", ".join(keys_by_miss[miss])])
+	return misses
+
+
+## English, every locale with a translated cell, and the pseudo-locale.
+func _glyph_locales() -> Array[String]:
+	var locales: Array[String] = _filled_locales()
+	locales.append(Localization.PSEUDO_LOCALE)
+	return locales
+
+
+## What [param locale] shows for [param key]: the pseudo-locale stretches the
+## English the way the game does.
+func _shown_text(table: LocTable, key: String, locale: String) -> String:
+	if locale == Localization.PSEUDO_LOCALE:
+		if _pseudo == null:
+			_pseudo = _PseudoTranslation.new()
+		return str(_pseudo.call(&"stretch", LocTable.unescape(table.english(key))))
+	return LocTable.unescape(table.cell(key, locale))
 
 
 ## English, plus every locale with at least one translated cell.
@@ -151,11 +192,3 @@ func _filled_locales() -> Array[String]:
 					found.append(locale)
 					break
 	return found
-
-
-## The font [param locale]'s text is drawn in. Only English has one so far;
-## the per-locale font profiles (LF2) take over here.
-func _font_for(locale: String) -> Font:
-	if locale == LocTable.SOURCE_COLUMN:
-		return load(ProjectSettings.get_setting("gui/theme/custom_font")) as Font
-	return null

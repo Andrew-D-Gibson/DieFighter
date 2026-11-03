@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://cqstwpqrh0erh"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/FusionPixel12/fusion-pixel-12px-proportional-zh_hans.ttf" id="1_2r74b"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="2_8f0ia"]
+
+[resource]
+script = ExtResource("2_8f0ia")
+font = ExtResource("1_2r74b")
+size = 12
+note = "Every role in zh_CN. Native size 12: capitals 9 px, lines 16 px against m3x6/m5x7's 13, so boxes sized for English are tight (C11b)."

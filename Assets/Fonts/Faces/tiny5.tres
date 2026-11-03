@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://yapo20hux2l5"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/Tiny5/Tiny5.ttf" id="1_4vf7s"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="2_3o7ua"]
+
+[resource]
+script = ExtResource("2_3o7ua")
+font = ExtResource("1_4vf7s")
+size = 8
+note = "Small text in de, fr, es, pt_BR and ru (m3x6 has no accents or Cyrillic). Native size 8. Capitals are 5 px against m3x6's 6 and lines 9 px against 13, so text reads a pixel shorter than English. Accented capitals rise above the line box: C11b checks line spacing."

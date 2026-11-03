@@ -3,7 +3,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## screen, is stuck half typed, or uses characters its font lacks; and the
 ## localization audit's report lists flagged items first.
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
+const _FONT: Font = preload("res://Assets/Fonts/Roles/body.tres")
 const _LONG: String = "A sentence long enough to need several lines in a narrow box."
 const _REPORT_PATH: String = "user://test_loc_audit/report.html"
 
@@ -81,8 +81,8 @@ func test_hidden_characters_are_reported() -> void:
 
 
 func test_missing_glyphs_lists_each_absent_character_once() -> void:
-	# m3x6/m5x7 have no ellipsis (the open SHIP_CARD_COMING_SOON issue).
-	assert_eq(OverflowWatcher.missing_glyphs("Soon… soon…", _FONT), "…")
+	# The English body face (m5x7, monogram behind it) has no Chinese.
+	assert_eq(OverflowWatcher.missing_glyphs("Soon你 soon你", _FONT), "你")
 	assert_eq(OverflowWatcher.missing_glyphs("Plain text\n", _FONT), "")
 
 

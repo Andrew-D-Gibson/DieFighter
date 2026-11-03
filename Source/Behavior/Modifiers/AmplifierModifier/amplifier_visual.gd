@@ -2,10 +2,6 @@
 class_name AmplifierVisual
 extends Node2D
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
-## m5x7 at 16 keeps one font pixel to one world pixel.
-const _FONT_SIZE: int = 16
-
 ## Numbers rise out of the same patch as the particles, at their pace, so the
 ## two read as one effect.
 const _NUMBER_SPAWN_AREA: Rect2 = Rect2(-10.0, 0.0, 20.0, 12.0)
@@ -63,8 +59,8 @@ func _spawn_number() -> void:
 
 	var label: Label = Label.new()
 	label.text = "%+d" % total
-	label.add_theme_font_override("font", _FONT)
-	label.add_theme_font_size_override("font_size", _FONT_SIZE)
+	# Body text at x1: one font pixel to one world pixel.
+	label.theme_type_variation = FontRoles.slot(FontRoles.BODY)
 	label.add_theme_color_override("font_color", Globals.green)
 	label.add_theme_color_override("font_outline_color", Globals.dark_gray)
 	label.add_theme_constant_override("outline_size", 4)

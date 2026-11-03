@@ -1,0 +1,8 @@
+[gd_resource type="FontVariation" format=3 uid="uid://dym3g8nnshbw8"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="1_7nhvp"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/monogram/monogram-extended.ttf" id="2_4phhu"]
+
+[resource]
+fallbacks = Array[Font]([ExtResource("2_4phhu")])
+base_font = ExtResource("1_7nhvp")
