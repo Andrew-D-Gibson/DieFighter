@@ -1,16 +1,16 @@
 [gd_resource type="Theme" format=3 uid="uid://fjvgoxquxqqr"]
 
 [ext_resource type="FontVariation" uid="uid://bhy5tw13pq2v" path="res://Assets/Fonts/Roles/small.tres" id="1_02yda"]
-[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/Roles/body.tres" id="2_body"]
-[ext_resource type="FontVariation" uid="uid://dym3g8nnshbw8" path="res://Assets/Fonts/Roles/popup.tres" id="3_popup"]
-[ext_resource type="FontVariation" uid="uid://dphyslhnh3jy6" path="res://Assets/Fonts/Roles/digits.tres" id="4_digits"]
-[ext_resource type="FontVariation" uid="uid://d1qcmurvd1iji" path="res://Assets/Fonts/Roles/digits_small.tres" id="5_digits_small"]
 [ext_resource type="Texture2D" uid="uid://bgovmklqjf6yv" path="res://Assets/Textures/UI/OptionsMenu/game_volume_knob_dark.png" id="1_7ev38"]
 [ext_resource type="Texture2D" uid="uid://7j8pfvk537px" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_checked.png" id="1_v1ss2"]
 [ext_resource type="Texture2D" uid="uid://clp8rg2rk1thv" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_unchecked.png" id="2_bfypc"]
+[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/Roles/body.tres" id="2_body"]
 [ext_resource type="Texture2D" uid="uid://cxetdiu43pqai" path="res://Assets/Textures/UI/OptionsMenu/game_volume_knob_light.png" id="2_slk4v"]
+[ext_resource type="FontVariation" uid="uid://dym3g8nnshbw8" path="res://Assets/Fonts/Roles/popup.tres" id="3_popup"]
+[ext_resource type="FontVariation" uid="uid://dphyslhnh3jy6" path="res://Assets/Fonts/Roles/digits.tres" id="4_digits"]
 [ext_resource type="Texture2D" uid="uid://m8bm3myhsf8y" path="res://Assets/Textures/TutorialManager/background.png" id="4_kwyn7"]
 [ext_resource type="Texture2D" uid="uid://o2eb2umnr1tr" path="res://Assets/Textures/ErrorTextPopup/background.png" id="4_slk4v"]
+[ext_resource type="FontVariation" uid="uid://d1qcmurvd1iji" path="res://Assets/Fonts/Roles/digits_small.tres" id="5_digits_small"]
 [ext_resource type="Texture2D" uid="uid://bcfmuahtcadle" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_green_arrow.png" id="6_cmqry"]
 [ext_resource type="Texture2D" uid="uid://bqmjf6x8eu8ko" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/option_button_green_background_.png" id="7_cmqry"]
 [ext_resource type="Texture2D" uid="uid://b1ddwysx2g5o2" path="res://Assets/Textures/UI/OptionsMenu/OptionButton/radio_green_checked.png" id="10_r3l6x"]
@@ -108,6 +108,13 @@ BodyX6/font_sizes/font_size = 96
 BodyX6/font_sizes/normal_font_size = 96
 BodyX6/fonts/font = ExtResource("2_body")
 BodyX6/fonts/normal_font = ExtResource("2_body")
+Button/colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
+Button/colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
+Button/colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+Button/colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
+Button/colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
+CheckBox/icons/checked = ExtResource("1_v1ss2")
+CheckBox/icons/unchecked = ExtResource("2_bfypc")
 DigitsSmallX1/base_type = &"Control"
 DigitsSmallX1/font_sizes/font_size = 16
 DigitsSmallX1/font_sizes/normal_font_size = 16
@@ -118,28 +125,6 @@ DigitsX1/font_sizes/font_size = 16
 DigitsX1/font_sizes/normal_font_size = 16
 DigitsX1/fonts/font = ExtResource("4_digits")
 DigitsX1/fonts/normal_font = ExtResource("4_digits")
-PopupX1/base_type = &"Control"
-PopupX1/font_sizes/font_size = 16
-PopupX1/font_sizes/normal_font_size = 16
-PopupX1/fonts/font = ExtResource("3_popup")
-PopupX1/fonts/normal_font = ExtResource("3_popup")
-SmallX2/base_type = &"Control"
-SmallX2/font_sizes/font_size = 32
-SmallX2/font_sizes/normal_font_size = 32
-SmallX2/fonts/font = ExtResource("1_02yda")
-SmallX2/fonts/normal_font = ExtResource("1_02yda")
-SmallX6/base_type = &"Control"
-SmallX6/font_sizes/font_size = 96
-SmallX6/font_sizes/normal_font_size = 96
-SmallX6/fonts/font = ExtResource("1_02yda")
-SmallX6/fonts/normal_font = ExtResource("1_02yda")
-Button/colors/font_color = Color(0.807843, 0.941176, 0.945098, 1)
-Button/colors/font_hover_color = Color(0.94902, 0.611765, 0.364706, 1)
-Button/colors/font_hover_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
-Button/colors/font_pressed_color = Color(0.701961, 0.447059, 0.266667, 1)
-Button/colors/icon_disabled_color = Color(0.388235, 0.376471, 0.360784, 1)
-CheckBox/icons/checked = ExtResource("1_v1ss2")
-CheckBox/icons/unchecked = ExtResource("2_bfypc")
 HSlider/icons/grabber = ExtResource("1_7ev38")
 HSlider/icons/grabber_highlight = ExtResource("2_slk4v")
 HSlider/styles/slider = SubResource("StyleBoxFlat_7ev38")
@@ -164,5 +149,20 @@ PopupMenu/fonts/font = ExtResource("1_02yda")
 PopupMenu/icons/radio_checked = ExtResource("10_r3l6x")
 PopupMenu/icons/radio_unchecked = ExtResource("11_lvkrn")
 PopupMenu/styles/panel = SubResource("StyleBoxTexture_lvkrn")
+PopupX1/base_type = &"Control"
+PopupX1/font_sizes/font_size = 16
+PopupX1/font_sizes/normal_font_size = 16
+PopupX1/fonts/font = ExtResource("3_popup")
+PopupX1/fonts/normal_font = ExtResource("3_popup")
 RichTextLabel/colors/default_color = Color(0.807843, 0.941176, 0.945098, 1)
 RichTextLabel/constants/line_separation = -4
+SmallX2/base_type = &"Control"
+SmallX2/font_sizes/font_size = 32
+SmallX2/font_sizes/normal_font_size = 32
+SmallX2/fonts/font = ExtResource("1_02yda")
+SmallX2/fonts/normal_font = ExtResource("1_02yda")
+SmallX6/base_type = &"Control"
+SmallX6/font_sizes/font_size = 96
+SmallX6/font_sizes/normal_font_size = 96
+SmallX6/fonts/font = ExtResource("1_02yda")
+SmallX6/fonts/normal_font = ExtResource("1_02yda")

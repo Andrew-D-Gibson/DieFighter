@@ -17,24 +17,24 @@ script = ExtResource("ghost_target_script")
 kind = 2
 tile = ExtResource("ghost_tile_bump")
 
-[sub_resource type="Resource" id="gt_damage"]
-script = ExtResource("ghost_target_script")
-kind = 2
-tile = ExtResource("ghost_tile_damage")
-
-[sub_resource type="Resource" id="gt_end_turn"]
-script = ExtResource("ghost_target_script")
-node_path = NodePath("Systems/Player/DiceQueue/EndTurnButton")
-
 [sub_resource type="Resource" id="demo_bump"]
 script = ExtResource("ghost_demo_script")
 at = SubResource("gt_die")
 to = SubResource("gt_bump")
 
+[sub_resource type="Resource" id="gt_damage"]
+script = ExtResource("ghost_target_script")
+kind = 2
+tile = ExtResource("ghost_tile_damage")
+
 [sub_resource type="Resource" id="demo_fire"]
 script = ExtResource("ghost_demo_script")
 at = SubResource("gt_die")
 to = SubResource("gt_damage")
+
+[sub_resource type="Resource" id="gt_end_turn"]
+script = ExtResource("ghost_target_script")
+node_path = NodePath("Systems/Player/DiceQueue/EndTurnButton")
 
 [sub_resource type="Resource" id="demo_end_turn"]
 script = ExtResource("ghost_demo_script")

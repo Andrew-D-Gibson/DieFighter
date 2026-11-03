@@ -3,9 +3,9 @@
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_q8nxd"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_wsy4v"]
-[ext_resource type="Texture2D" uid="uid://dxw31sp1lx64m" path="res://Assets/Textures/TutorialManager/Highlights/highlight_targeting_computer.png" id="highlight"]
 [ext_resource type="Script" uid="uid://cv1lilnywutlb" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_demo.gd" id="ghost_demo_script"]
 [ext_resource type="Script" uid="uid://biqnrrw2jg04n" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_target.gd" id="ghost_target_script"]
+[ext_resource type="Texture2D" uid="uid://dxw31sp1lx64m" path="res://Assets/Textures/TutorialManager/Highlights/highlight_targeting_computer.png" id="highlight"]
 
 [sub_resource type="Resource" id="gt_other_ship"]
 script = ExtResource("ghost_target_script")

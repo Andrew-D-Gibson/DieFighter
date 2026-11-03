@@ -1,9 +1,11 @@
-[gd_resource type="Resource" script_class="TutorialStep" format=3]
+[gd_resource type="Resource" script_class="TutorialStep" format=3 uid="uid://iqufujiy4ff8"]
 
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="1_81j3k"]
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="1_s"]
-[ext_resource type="Texture2D" uid="uid://d1raxvhmcgf8v" path="res://Assets/Textures/TutorialManager/Highlights/map_large_tab_highlight.png" id="highlight"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_vnui5"]
 [ext_resource type="Script" uid="uid://cv1lilnywutlb" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_demo.gd" id="ghost_demo_script"]
 [ext_resource type="Script" uid="uid://biqnrrw2jg04n" path="res://Source/Systems/TutorialManager/GhostCursor/ghost_target.gd" id="ghost_target_script"]
+[ext_resource type="Texture2D" uid="uid://d1raxvhmcgf8v" path="res://Assets/Textures/TutorialManager/Highlights/map_large_tab_highlight.png" id="highlight"]
 
 [sub_resource type="Resource" id="gt_die"]
 script = ExtResource("ghost_target_script")

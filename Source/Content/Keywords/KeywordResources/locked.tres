@@ -16,5 +16,5 @@ label = "Lock"
 [resource]
 script = ExtResource("1_l2q8j")
 title = "Locked"
-rule = "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]. Lasts until unlocked or you jump. The Engine Charger can't be locked."
+rule = "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]."
 tokens = Array[ExtResource("2_0scoq")]([SubResource("locked"), SubResource("lock")])
