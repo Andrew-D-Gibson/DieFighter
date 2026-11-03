@@ -104,3 +104,28 @@ func _rows_per_screen() -> int:
 	var row_height: float = panel.find_children("*", "Button", true, false)[0].get_combined_minimum_size().y
 	dropdown._close_popup()
 	return floori(dropdown._visible_canvas_rect().size.y / row_height)
+
+
+## A list text says more while choosing; the closed button keeps the item's
+## own text. A row can have its own font, and clear() forgets both.
+func test_list_text_and_row_font_apply_to_the_open_list_only() -> void:
+	_give_items(3, 1)
+	var font: FontVariation = FontVariation.new()
+	dropdown.set_item_list_text(1, "Item 1 (note)")
+	dropdown.set_item_font(2, font, 12)
+	var rows: Array[Button] = dropdown._build_rows()
+	assert_eq(rows[0].text, "Item 0")
+	assert_eq(rows[1].text, "Item 1 (note)")
+	assert_eq(dropdown._main_button.text, "Item 1", "the button shows the plain item")
+	assert_eq(rows[2].get_theme_font("font"), font)
+	assert_eq(rows[2].get_theme_font_size("font_size"), 12)
+	assert_false(rows[1].has_theme_font_override("font"))
+	for row: Button in rows:
+		row.free()
+	dropdown.clear()
+	_give_items(3, 1)
+	rows = dropdown._build_rows()
+	assert_eq(rows[1].text, "Item 1")
+	assert_false(rows[2].has_theme_font_override("font"))
+	for row: Button in rows:
+		row.free()
