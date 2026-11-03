@@ -336,6 +336,9 @@ func _add_row(label_key: String, hint_key: String, widget: Control, equal_width:
 	if label_key != "":
 		var label: RichTextLabel = _new_label(label_key)
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		# A label longer than the column's room breaks onto a second line
+		# (the row grows) rather than pushing its widget off the panel.
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		label.add_theme_color_override("default_color", accent)
 		label.set_meta(&"options_label", true)
 		row.add_child(label)

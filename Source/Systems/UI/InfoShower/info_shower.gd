@@ -25,6 +25,8 @@ func _show_info(info: InfoResource) -> void:
 	var art: TextureRect = _show_comparison(info) if info.has_upgrade() else _show_solo(info)
 	art.texture = info.texture
 	art.modulate.a = 0
+	if not info.has_upgrade():
+		await _widen_if_too_tall()
 	%TweenableTextureDisplay.texture = info.texture
 	ColorSymbolBadge.attach_to_rect(art)
 	ColorSymbolBadge.attach_to_rect(%TweenableTextureDisplay)
@@ -100,6 +102,20 @@ func _show_comparison(info: InfoResource) -> TextureRect:
 	%UpgradeTexture.texture = info.upgrade_texture
 	ColorSymbolBadge.attach_to_rect(%UpgradeTexture)
 	return %CurrentTexture
+
+
+## A long name and description (a long language's, usually) can stand
+## taller than the screen in the solo layout's narrow column, cutting off the
+## title above and the text below. Widening the column to the comparison's
+## margins re-wraps them into fewer lines at the same size.
+func _widen_if_too_tall() -> void:
+	# fit_content labels measure their new text during the frame.
+	await get_tree().process_frame
+	# The content itself, not its margins: long English text already eats
+	# into the top and bottom margins and still fits on screen.
+	var content: Control = $MarginContainer/VBoxContainer
+	if content.get_combined_minimum_size().y > size.y:
+		_set_side_margins(_COMPARISON_MARGIN)
 
 
 func _set_side_margins(margin: int) -> void:

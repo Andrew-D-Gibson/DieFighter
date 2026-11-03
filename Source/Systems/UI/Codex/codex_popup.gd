@@ -17,8 +17,12 @@ const _PAGE_SIZE: int = _COLUMNS * _ROWS
 const _CELL_PITCH: float = CodexEntry.SIZE.x + 1.0
 
 ## Where the body text ends with and without an enemy's tally under it.
+## Lines step 9 px (13 tall, -4 separation), and a RichTextLabel only starts
+## scrolling once its text is 4 px past the box: a box 4 more than a whole
+## number of steps (76, 67) either shows the last line whole or scrolls. At
+## 64 a seventh line was cut off with no scrollbar.
 const _BODY_BOTTOM: float = 132.0
-const _BODY_BOTTOM_ABOVE_STATS: float = 120.0
+const _BODY_BOTTOM_ABOVE_STATS: float = 123.0
 
 const _RARITY_KEYS: Dictionary[TileResource.Rarity, String] = {
 	TileResource.Rarity.COMMON: "CODEX_RARITY_COMMON",

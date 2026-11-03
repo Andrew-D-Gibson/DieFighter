@@ -46,6 +46,9 @@ const _SLACK: float = 0.5
 ## which clips only the empty space under the letters. More than this is
 ## letters being cut.
 const _HEIGHT_SLACK: float = 1.5
+## Below this much opacity (its own and its parents' together) a label can't
+## be read, so whatever it does isn't a problem yet: a menu fading in.
+const _MIN_VISIBLE_ALPHA: float = 0.05
 
 ## Whether the half-second scan runs. The audit turns it off and scans when it
 ## has posed each screen.
@@ -58,6 +61,10 @@ var _logged: Dictionary[String, bool] = {}
 var _outlined: Dictionary[int, Control] = {}
 ## instance id -> [visible_characters, msec first seen at that count].
 var _typing: Dictionary[int, Array] = {}
+## instance id -> where the label's box was on screen at the last live scan.
+## One that has moved since is sliding or popping in, and its place against
+## the screen edge or its neighbours means nothing until it stops.
+var _last_rects: Dictionary[int, Rect2] = {}
 ## Shown text -> key, for the current locale. Rebuilt when it changes.
 var _reverse_keys: Dictionary[String, String] = {}
 var _reverse_locale: String = ""
@@ -82,11 +89,16 @@ func scan(root: Node, log_new: bool = false) -> Array[Dictionary]:
 	var still_flagged: Dictionary[int, bool] = {}
 	var labels: Array[Control] = _visible_labels(root)
 	var overlaps: Dictionary[int, String] = _overlapping_buttons(labels)
+	# The audit poses still screens; only the live scan sees things move.
+	var moving: Dictionary[int, bool] = {}
+	if live:
+		moving = _moving(labels)
 	for control: Control in labels:
 		var problems: Array[Dictionary] = inspect(control)
-		if overlaps.has(control.get_instance_id()):
+		var settled: bool = not moving.has(control.get_instance_id())
+		if overlaps.has(control.get_instance_id()) and settled:
 			problems.append({"kind": OVERLAP, "detail": overlaps[control.get_instance_id()]})
-		if not control.has_meta(IGNORE_META):
+		if not control.has_meta(IGNORE_META) and settled:
 			problems.append_array(_inspect_parent_box(control))
 			problems.append_array(_inspect_screen_edge(control))
 		problems = problems.filter(func(problem: Dictionary) -> bool:
@@ -111,6 +123,20 @@ func scan(root: Node, log_new: bool = false) -> Array[Dictionary]:
 				_remove_outline(control)
 			_outlined.erase(id)
 	return found
+
+
+## The labels among [param labels] whose box has moved on screen since the
+## last call, by instance id, and remembers where each is now.
+func _moving(labels: Array[Control]) -> Dictionary[int, bool]:
+	var moving: Dictionary[int, bool] = {}
+	var now: Dictionary[int, Rect2] = {}
+	for control: Control in labels:
+		var id: int = control.get_instance_id()
+		now[id] = control.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, control.size)
+		if not _last_rects.has(id) or not _last_rects[id].is_equal_approx(now[id]):
+			moving[id] = true
+	_last_rects = now
+	return moving
 
 
 ## Removes every outline this watcher drew.
@@ -318,9 +344,23 @@ static func _visible_labels(root: Node) -> Array[Control]:
 	for node: Node in candidates:
 		if node is Label or node is RichTextLabel:
 			var control: Control = node as Control
-			if control.is_visible_in_tree() and control.size.x > 0.0:
+			if control.is_visible_in_tree() and control.size.x > 0.0 \
+					and _opacity(control) >= _MIN_VISIBLE_ALPHA:
 				labels.append(control)
 	return labels
+
+
+## How opaque [param control] draws: its own modulates times its parents',
+## up to the canvas layer it's on.
+static func _opacity(control: Control) -> float:
+	var alpha: float = control.self_modulate.a
+	var item: Node = control
+	while item is CanvasItem:
+		alpha *= (item as CanvasItem).modulate.a
+		if (item as CanvasItem).top_level:
+			break
+		item = item.get_parent()
+	return alpha
 
 
 ## True once [param control]'s visible_characters has sat at the same count

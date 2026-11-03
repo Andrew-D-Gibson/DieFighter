@@ -116,6 +116,33 @@ func test_scan_flags_a_label_cut_by_the_screen_edge() -> void:
 	assert_has(_kinds(found[0]["problems"]), OverflowWatcher.OFF_SCREEN)
 
 
+## Live, a label still sliding in is judged once it stops, and one faded
+## out entirely isn't judged at all: the lead's live pass saw main-menu
+## buttons and enemy labels logged off screen mid-entrance.
+func test_live_scan_waits_for_a_moving_label_to_settle() -> void:
+	watcher.live = true
+	watcher.set_process(false)
+	var label: Label = _label("Edge", Vector2(80, 20))
+	label.position = Vector2(-10, 100)
+	await wait_process_frames(2)
+	assert_eq(watcher.scan(label).size(), 0, "first sight: it may be on its way in")
+	label.position = Vector2(-5, 100)
+	assert_eq(watcher.scan(label).size(), 0, "still moving")
+	assert_eq(watcher.scan(label).size(), 1, "stopped, and still cut by the edge")
+
+
+func test_scan_skips_a_label_faded_out() -> void:
+	var holder: Control = Control.new()
+	holder.modulate.a = 0.0
+	add_child_autofree(holder)
+	var label: Label = _label(_LONG, Vector2(60, 40))
+	label.reparent(holder)
+	await wait_process_frames(2)
+	assert_eq(watcher.scan(holder).size(), 0, "invisible")
+	holder.modulate.a = 1.0
+	assert_eq(watcher.scan(holder).size(), 1, "faded in")
+
+
 func test_scan_names_the_key_an_auto_translated_label_holds() -> void:
 	var label: Label = _label("CALLOUT_EVADED", Vector2(4, 20))
 	await wait_process_frames(2)
@@ -130,6 +157,20 @@ func test_audit_always_starts_with_english() -> void:
 	var every: Array[String] = LocAudit.locales_for("all")
 	assert_eq(every[0], "en")
 	assert_has(every, "pseudo")
+
+
+## "fonts" dresses pseudo text in each distinct font profile once: German's
+## stands for the other Tiny5 languages, and Chinese and Japanese each get
+## their own.
+func test_a_fonts_audit_covers_each_distinct_profile_once() -> void:
+	var fonts: Array[String] = LocAudit.locales_for(LocAudit.FONTS)
+	assert_eq(fonts[0], "en")
+	assert_eq(fonts[1], "pseudo")
+	assert_has(fonts, "pseudo@zh_CN")
+	assert_has(fonts, "pseudo@ja")
+	var tiny5: Array[String] = fonts.filter(func(name: String) -> bool:
+		return name.get_slice("@", 1) in ["de", "fr", "es", "pt_BR", "ru"])
+	assert_eq(tiny5.size(), 1, "one Tiny5 profile: %s" % [fonts])
 
 
 func test_every_surface_has_an_id_and_items() -> void:
