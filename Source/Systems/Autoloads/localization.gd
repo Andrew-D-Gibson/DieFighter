@@ -9,6 +9,8 @@ extends Node
 ## TranslationServer's locale: Labels and Buttons with auto-translate refresh
 ## themselves, and anything that builds text in code listens for
 ## Events.locale_changed (or NOTIFICATION_TRANSLATION_CHANGED) and rebuilds.
+## Each language also has its own fonts (a FontProfile, see FontRoles), which
+## switch with it, live.
 
 const DEFAULT_LOCALE: String = "en"
 
@@ -115,6 +117,10 @@ func set_locale(locale: String, preview: bool = false) -> void:
 	else:
 		_remove_pseudo_translation()
 
+	# Fonts before text: a language whose script the current fonts lack must
+	# never be drawn in them, even for a frame. Also on a repeat of the current
+	# locale, so the first call at boot applies its profile.
+	FontRoles.use_locale(locale)
 	if locale == TranslationServer.get_locale():
 		return
 	TranslationServer.set_locale(locale)

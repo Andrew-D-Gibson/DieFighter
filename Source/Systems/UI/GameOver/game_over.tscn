@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://b4bhqmwyiaq22"]
 
 [ext_resource type="Script" uid="uid://bs4wmdp5e1fwu" path="res://Source/Systems/UI/GameOver/game_over.gd" id="1_i78pc"]
-[ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/m5x7/m5x7_ui.tres" id="1_p6ygr"]
 [ext_resource type="PackedScene" uid="uid://7ssdo2r7vrek" path="res://Source/Systems/UI/Buttons/medium_button.tscn" id="3_ah4je"]
 [ext_resource type="Script" uid="uid://dejwpip3qhauo" path="res://Source/Systems/UI/button_rotator.gd" id="4_t5hyd"]
 [ext_resource type="Texture2D" uid="uid://c7e28ixsheej5" path="res://Assets/Textures/UI/Buttons/button_medium_purple.png" id="5_64ib7"]
@@ -53,8 +52,7 @@ offset_right = 960.0
 offset_bottom = 483.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_fonts/normal_font = ExtResource("1_p6ygr")
-theme_override_font_sizes/normal_font_size = 256
+theme_type_variation = &"BodyX16"
 bbcode_enabled = true
 text = "[color=#d03656][wave amp=30.0 freq=5.0 connected=1]GAME OVER[/wave][/color]"
 horizontal_alignment = 1
@@ -73,8 +71,7 @@ offset_right = 960.0
 offset_bottom = 540.0
 grow_horizontal = 2
 mouse_filter = 2
-theme_override_fonts/normal_font = ExtResource("1_p6ygr")
-theme_override_font_sizes/normal_font_size = 52
+theme_type_variation = &"BodyX3_25"
 bbcode_enabled = true
 horizontal_alignment = 1
 vertical_alignment = 1

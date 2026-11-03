@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://bgiuthoes064y"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/monogram/monogram-extended.ttf" id="1_5cfx5"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/m5x7/m5x7.ttf" id="2_cntdv"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="3_tcik6"]
+
+[resource]
+script = ExtResource("3_tcik6")
+font = ExtResource("2_cntdv")
+fallbacks = Array[Font]([ExtResource("1_5cfx5")])
+note = "The English body face, and body/popup in every Latin or Cyrillic locale: monogram is m5x7's 5x7 grid at 16, so it adds Cyrillic, typographic quotes and dashes with no seam. Neither has ẞ: translators write SS."

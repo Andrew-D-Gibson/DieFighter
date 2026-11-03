@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://t4wbx18gfxq0"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/AtkinsonHyperlegibleNext/AtkinsonHyperlegibleNext-Medium-m3x6.ttf" id="1_durdt"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="2_nvqim"]
+
+[resource]
+script = ExtResource("2_nvqim")
+font = ExtResource("1_durdt")
+baseline_offset = -0.055
+note = "Readable Font's small face: Atkinson Hyperlegible Next, rescaled by tools/fit_readable_font.py to m3x6's footprint at 16. The offset centres its capitals where m3x6's sit."

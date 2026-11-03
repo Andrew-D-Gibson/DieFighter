@@ -11,7 +11,6 @@ extends HBoxContainer
 signal text_changed(new_text: String)
 signal text_submitted(submitted_text: String)
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 const _FONT_SIZE: int = 40
 const _HEIGHT: float = 64.0
 const _FIELD_COLOR: Color = Color(0.09, 0.22, 0.42, 0.85)
@@ -91,7 +90,7 @@ func _on_line_edit_text_changed(new_text: String) -> void:
 
 
 func _apply_font(control: Control) -> void:
-	control.add_theme_font_override("font", _FONT)
+	control.add_theme_font_override("font", FontRoles.font(FontRoles.BODY))
 	control.add_theme_font_size_override("font_size", _FONT_SIZE)
 
 

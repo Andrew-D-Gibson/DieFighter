@@ -27,8 +27,6 @@ const _DIE_FACES_LIT: Texture2D = preload(
 const _DIE_FACES_DIM: Texture2D = preload(
 	"res://Assets/Textures/TargetingComputer/intent_dice_indicator_default-Sheet.png"
 )
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
-const _FONT_SIZE: int = 16
 
 ## Approved palette: the bright colour and its dark shade, per binding.
 const _ALLY_LIT: Color = Color("#7abd33")
@@ -224,8 +222,8 @@ func _draw_badge(on: Vector2, live: bool) -> void:
 		draw_texture(icon, Vector2(x, at.y + 1))
 		x += _ICON + 1
 	if not amount.is_empty():
-		draw_string(_FONT, Vector2(x, at.y + _ICON + 1), amount, HORIZONTAL_ALIGNMENT_LEFT, -1,
-			_FONT_SIZE, Globals.white)
+		draw_string(FontRoles.font(FontRoles.BODY), Vector2(x, at.y + _ICON + 1), amount, HORIZONTAL_ALIGNMENT_LEFT, -1,
+			FontRoles.size(FontRoles.BODY), Globals.white)
 
 
 ## Border, a face per slot, an icon per kind, the amount, border; a pixel
@@ -233,7 +231,8 @@ func _draw_badge(on: Vector2, live: bool) -> void:
 func _badge_width(icon_count: int, amount: String) -> int:
 	var width: int = 1 + (slots.size() + icon_count) * (_ICON + 1)
 	if not amount.is_empty():
-		width += 1 + ceili(_FONT.get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1, _FONT_SIZE).x)
+		width += 1 + ceili(FontRoles.font(FontRoles.BODY).get_string_size(amount, HORIZONTAL_ALIGNMENT_LEFT, -1,
+			FontRoles.size(FontRoles.BODY)).x)
 	return width
 
 

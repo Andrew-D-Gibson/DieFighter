@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://xhytsky21mtx"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/monogram/monogram-extended.ttf" id="1_ay5kq"]
+[ext_resource type="FontFile" path="res://Assets/Fonts/m3x6/m3x6.ttf" id="2_acgsf"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="3_sa0wn"]
+
+[resource]
+script = ExtResource("3_sa0wn")
+font = ExtResource("2_acgsf")
+fallbacks = Array[Font]([ExtResource("1_ay5kq")])
+note = "The English small face. monogram fills what m3x6 lacks (…, —, « », accents) on the same grid at 16; its capitals stand a pixel taller than m3x6's."

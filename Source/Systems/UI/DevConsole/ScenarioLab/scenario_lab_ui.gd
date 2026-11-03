@@ -3,7 +3,6 @@ extends RefCounted
 ## Builders for the Scenario Lab's code-built controls, styled like the other
 ## dev tools (TilePalette) so they read as one set.
 
-const FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 const PANEL_COLOR: Color = Color(0.144, 0.3416, 0.6, 0.843137)
 const ENTRY_COLOR: Color = Color(0.09, 0.22, 0.42, 0.85)
@@ -23,7 +22,7 @@ static func label(text: String, font_size: int = BODY_SIZE, color: Color = Color
 	var result := Label.new()
 	result.text = text
 	result.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	result.add_theme_font_override("font", FONT)
+	result.add_theme_font_override("font", FontRoles.font(FontRoles.BODY))
 	result.add_theme_font_size_override("font_size", font_size)
 	result.add_theme_color_override("font_color", color)
 	return result
@@ -42,7 +41,7 @@ static func button(text: String, on_pressed: Callable, font_size: int = BODY_SIZ
 	var result := Button.new()
 	result.text = text
 	result.focus_mode = Control.FOCUS_NONE
-	result.add_theme_font_override("font", FONT)
+	result.add_theme_font_override("font", FontRoles.font(FontRoles.BODY))
 	result.add_theme_font_size_override("font_size", font_size)
 	result.pressed.connect(on_pressed)
 	return result

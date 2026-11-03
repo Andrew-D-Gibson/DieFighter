@@ -44,8 +44,8 @@ func _ready() -> void:
 ## Shows [param family] and the [param tiles] it just added to offers.
 ## [param number] counts this family among all [param total] of them.
 func open(family: TileFamilyResource, tiles: Array[TileResource], number: int, total: int) -> void:
-	_add_label(tr("TILE_UNLOCK_HEADER").format({"number": number, "total": total}), 16, Globals.white)
-	_add_label(tr(family.family_name), 32, family.accent_color)
+	_add_label(tr("TILE_UNLOCK_HEADER").format({"number": number, "total": total}), 1.0, Globals.white)
+	_add_label(tr(family.family_name), 2.0, family.accent_color)
 	_add_rich_text(Utils.format_text(tr(family.description)), 0)
 
 	var grid: GridContainer = GridContainer.new()
@@ -111,11 +111,12 @@ func _build() -> void:
 	_root.add_child(_column)
 
 
-func _add_label(text: String, font_size: int, color: Color) -> Label:
+## Small text at [param scale] (see FontRoles).
+func _add_label(text: String, scale: float, color: Color) -> Label:
 	var label: Label = Label.new()
 	label.text = text
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	label.add_theme_font_size_override("font_size", font_size)
+	label.theme_type_variation = FontRoles.slot(FontRoles.SMALL, scale)
 	label.add_theme_color_override("font_color", color)
 	_column.add_child(label)
 	return label
@@ -129,7 +130,6 @@ func _add_rich_text(text: String, minimum_height: int) -> RichTextLabel:
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.custom_minimum_size = Vector2(_WIDTH, minimum_height)
-	label.add_theme_font_size_override("normal_font_size", 16)
 	label.add_theme_color_override("default_color", Globals.white)
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.text = text

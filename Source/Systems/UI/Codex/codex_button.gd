@@ -41,7 +41,6 @@ func _ready() -> void:
 	_label.scroll_active = false
 	_label.autowrap_mode = TextServer.AUTOWRAP_OFF
 	_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_label.add_theme_font_size_override(&"normal_font_size", 16)
 	_label.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	# The font sits low in its line; this centres the caps in the frame.
 	_label.offset_top = -2

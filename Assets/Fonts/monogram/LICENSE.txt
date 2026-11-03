@@ -1,0 +1,10 @@
+monogram (extended), v1.1, by datagoblin (Vinícius Menézio)
+https://datagoblin.itch.io/monogram
+
+Released under CC0 1.0 Universal (public domain dedication):
+https://creativecommons.org/publicdomain/zero/1.0/
+
+No attribution is required; crediting datagoblin is appreciated.
+
+Note: this copy came from a GitHub mirror. Re-download
+monogram-extended.ttf from the itch.io page above before shipping.

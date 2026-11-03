@@ -6,7 +6,6 @@ extends Control
 ## handled by the same [Draggable] plumbing a shop purchase goes through. That
 ## keeps the palette from needing its own placement rules.
 
-const _FONT: Font = preload("res://Assets/Fonts/m5x7/m5x7_ui.tres")
 
 const _TILE_RESOURCE_DIR: String = "res://Source/Content/Tiles/TileResources/"
 
@@ -104,7 +103,7 @@ func _build_header() -> Control:
 
 	var hide_button := Button.new()
 	hide_button.text = "HIDE"
-	hide_button.add_theme_font_override("font", _FONT)
+	hide_button.add_theme_font_override("font", FontRoles.font(FontRoles.BODY))
 	hide_button.add_theme_font_size_override("font_size", 28)
 	hide_button.pressed.connect(_set_collapsed.bind(true))
 	header.add_child(hide_button)
@@ -173,7 +172,7 @@ func _build_show_button() -> void:
 	_show_button.offset_right = -_MARGIN
 	_show_button.offset_top = _MARGIN
 	_show_button.offset_bottom = _MARGIN + _SHOW_BUTTON_SIZE.y
-	_show_button.add_theme_font_override("font", _FONT)
+	_show_button.add_theme_font_override("font", FontRoles.font(FontRoles.BODY))
 	_show_button.add_theme_font_size_override("font_size", 48)
 	_show_button.pressed.connect(_set_collapsed.bind(false))
 	add_child(_show_button)
@@ -222,7 +221,7 @@ func _make_label(text: String, font_size: int) -> Label:
 	var label := Label.new()
 	label.text = text
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.add_theme_font_override("font", _FONT)
+	label.add_theme_font_override("font", FontRoles.font(FontRoles.BODY))
 	label.add_theme_font_size_override("font_size", font_size)
 	return label
 

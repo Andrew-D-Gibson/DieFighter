@@ -68,16 +68,16 @@ func setup(for_ship: ShipResource) -> void:
 		_hull.material = grey
 	add_child(_hull)
 
-	_name_label = _label(ship.display_name.to_upper(), Rect2(0, 34, SIZE.x, 14), 16)
+	_name_label = _label(ship.display_name.to_upper(), Rect2(0, 34, SIZE.x, 14))
 	_name_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
-	var stats: RichTextLabel = _label(_stats_text(), Rect2(0, 45, SIZE.x, 14), 16)
+	var stats: RichTextLabel = _label(_stats_text(), Rect2(0, 45, SIZE.x, 14))
 	stats.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 
 	# Formatted like tile text, so palette names ("orange", "purple") are the
 	# palette's, not Godot's named colours.
 	var pitch: String = tr("SHIP_CARD_COMING_SOON") if locked else Utils.format_text(ship.description)
-	var description: RichTextLabel = _label(pitch, Rect2(4, 81, SIZE.x - 8, 42), 16)
+	var description: RichTextLabel = _label(pitch, Rect2(4, 81, SIZE.x - 8, 42))
 	description.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	if locked:
 		stats.add_theme_color_override(&"default_color", _LOCKED_TEXT)
@@ -119,7 +119,8 @@ func play_entrance(delay: float) -> void:
 	tween.tween_property(self, "modulate:a", 1.0, 0.15).set_delay(delay)
 
 
-func _label(text: String, rect: Rect2, font_size: int) -> RichTextLabel:
+## Small text, the theme's default.
+func _label(text: String, rect: Rect2) -> RichTextLabel:
 	var label: RichTextLabel = RichTextLabel.new()
 	label.bbcode_enabled = true
 	label.scroll_active = false
@@ -127,7 +128,6 @@ func _label(text: String, rect: Rect2, font_size: int) -> RichTextLabel:
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	label.position = rect.position
 	label.size = rect.size
-	label.add_theme_font_size_override(&"normal_font_size", font_size)
 	label.add_theme_color_override(&"default_color", Globals.white)
 	label.text = text
 	add_child(label)
