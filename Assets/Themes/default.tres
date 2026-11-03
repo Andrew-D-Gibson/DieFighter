@@ -3,6 +3,8 @@
 [ext_resource type="FontVariation" uid="uid://bhy5tw13pq2v" path="res://Assets/Fonts/Roles/small.tres" id="1_02yda"]
 [ext_resource type="FontVariation" uid="uid://pcyr5gkpllb3" path="res://Assets/Fonts/Roles/body.tres" id="2_body"]
 [ext_resource type="FontVariation" uid="uid://dym3g8nnshbw8" path="res://Assets/Fonts/Roles/popup.tres" id="3_popup"]
+[ext_resource type="FontVariation" uid="uid://dphyslhnh3jy6" path="res://Assets/Fonts/Roles/digits.tres" id="4_digits"]
+[ext_resource type="FontVariation" uid="uid://d1qcmurvd1iji" path="res://Assets/Fonts/Roles/digits_small.tres" id="5_digits_small"]
 [ext_resource type="Texture2D" uid="uid://bgovmklqjf6yv" path="res://Assets/Textures/UI/OptionsMenu/game_volume_knob_dark.png" id="1_7ev38"]
 [ext_resource type="Texture2D" uid="uid://7j8pfvk537px" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_checked.png" id="1_v1ss2"]
 [ext_resource type="Texture2D" uid="uid://clp8rg2rk1thv" path="res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_unchecked.png" id="2_bfypc"]
@@ -86,11 +88,11 @@ BodyX16/font_sizes/font_size = 256
 BodyX16/font_sizes/normal_font_size = 256
 BodyX16/fonts/font = ExtResource("2_body")
 BodyX16/fonts/normal_font = ExtResource("2_body")
-BodyX3_25/base_type = &"Control"
-BodyX3_25/font_sizes/font_size = 52
-BodyX3_25/font_sizes/normal_font_size = 52
-BodyX3_25/fonts/font = ExtResource("2_body")
-BodyX3_25/fonts/normal_font = ExtResource("2_body")
+BodyX3/base_type = &"Control"
+BodyX3/font_sizes/font_size = 48
+BodyX3/font_sizes/normal_font_size = 48
+BodyX3/fonts/font = ExtResource("2_body")
+BodyX3/fonts/normal_font = ExtResource("2_body")
 BodyX4/base_type = &"Control"
 BodyX4/font_sizes/font_size = 64
 BodyX4/font_sizes/normal_font_size = 64
@@ -106,6 +108,16 @@ BodyX6/font_sizes/font_size = 96
 BodyX6/font_sizes/normal_font_size = 96
 BodyX6/fonts/font = ExtResource("2_body")
 BodyX6/fonts/normal_font = ExtResource("2_body")
+DigitsSmallX1/base_type = &"Control"
+DigitsSmallX1/font_sizes/font_size = 16
+DigitsSmallX1/font_sizes/normal_font_size = 16
+DigitsSmallX1/fonts/font = ExtResource("5_digits_small")
+DigitsSmallX1/fonts/normal_font = ExtResource("5_digits_small")
+DigitsX1/base_type = &"Control"
+DigitsX1/font_sizes/font_size = 16
+DigitsX1/font_sizes/normal_font_size = 16
+DigitsX1/fonts/font = ExtResource("4_digits")
+DigitsX1/fonts/normal_font = ExtResource("4_digits")
 PopupX1/base_type = &"Control"
 PopupX1/font_sizes/font_size = 16
 PopupX1/font_sizes/normal_font_size = 16

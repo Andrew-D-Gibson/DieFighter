@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://5qvcnp424c4w"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/AtkinsonHyperlegibleNext/AtkinsonHyperlegibleNext-Medium-m3x6-at8.ttf" id="1_v5fkn"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="2_qcvs7"]
+
+[resource]
+script = ExtResource("2_qcvs7")
+font = ExtResource("1_v5fkn")
+size = 8
+spacing_top = 4
+baseline_offset = -0.079
+note = "Readable Font's small face in de, fr, es, pt_BR and ru: Atkinson Hyperlegible Next rescaled by tools/rescale_font_unit.py to draw at 8 exactly as readable_small draws at 16, so Tiny5 behind it (Cyrillic, which Atkinson lacks) stays at its native 8. It has Tiny5's own line (9 px, 7 above the baseline, 2 below) and the same +4 top spacing as Tiny5's face, so Labels keep English's 13 (Godot sizes a Label's lines by the tallest font in the chain plus the leading font's spacing). The offset is readable_small's in pixels."

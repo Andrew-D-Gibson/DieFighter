@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="FontProfile" format=3 uid="uid://cgt7qul76vryf"]
+
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/readable_body.tres" id="1_phpvd"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/readable_small.tres" id="2_om3iu"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_profile.gd" id="3_sbv7c"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/readable_small_8.tres" id="4_vr0t5"]
+
+[resource]
+script = ExtResource("3_sbv7c")
+small = ExtResource("4_vr0t5")
+body = ExtResource("1_phpvd")
+popup = ExtResource("1_phpvd")
+digits = ExtResource("1_phpvd")
+digits_small = ExtResource("2_om3iu")

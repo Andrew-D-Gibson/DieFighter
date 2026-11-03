@@ -3,9 +3,14 @@
 [ext_resource type="Resource" path="res://Assets/Fonts/Faces/m5x7.tres" id="1_yw4xj"]
 [ext_resource type="Script" path="res://Source/Systems/Display/font_profile.gd" id="2_qm5yw"]
 [ext_resource type="Resource" path="res://Assets/Fonts/Faces/tiny5.tres" id="3_k8rnd"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/m3x6.tres" id="5_digits_small"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Profiles/readable_8.tres" id="6_readable"]
 
 [resource]
 script = ExtResource("2_qm5yw")
 small = ExtResource("3_k8rnd")
 body = ExtResource("1_yw4xj")
 popup = ExtResource("1_yw4xj")
+digits = ExtResource("1_yw4xj")
+digits_small = ExtResource("5_digits_small")
+readable = ExtResource("6_readable")

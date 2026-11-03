@@ -7,9 +7,11 @@
 class_name DamageNumber
 extends Node2D
 
-## Popups are the popup font role at x1, one font pixel to one world pixel in
-## every language; larger hits scale the whole node by whole numbers to stay
-## crisp.
+## Popups are drawn at x1, one font pixel to one world pixel in every
+## language; larger hits scale the whole node by whole numbers to stay crisp.
+## Figures ("5", "+3", "+25%") are in the digits role, m5x7 in every language,
+## so a hit reads the same in all of them; words ("RELAY", "+2 BURN") are in
+## the popup role, the language's own font.
 
 ## Hits at or above this read as big and get the doubled number.
 const _BIG_HIT: int = 6
@@ -54,9 +56,9 @@ const _SCREEN_MARGIN_PIXELS: float = 2.0
 ## How far past full size the label overshoots as it pops in.
 const _POP_SCALE: float = 1.4
 
-## A capped popup ("12→3") prints the uncapped number in the small role, a
-## size down from the popup role the result uses (m3x6 and m5x7 in English),
-## so the eye lands on what actually happened.
+## A capped popup ("12→3") prints the uncapped number in the digits_small
+## role, a size down from the digits role the result uses (m3x6 and m5x7 in
+## every language), so the eye lands on what actually happened.
 ## How far the uncapped number fades toward the outline colour: still the
 ## capping rule's colour, but clearly the lesser figure.
 const _UNCAPPED_DIM: float = 0.35
@@ -152,11 +154,14 @@ static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color:
 		return
 
 	var number: DamageNumber = DamageNumber.new()
+	# In the tree before the labels are made: a Label sized outside it measures
+	# in whatever font its theme cache last held, not its role's, and keeps
+	# that size (a Chinese "12→3" spread out by Fusion-wide digits).
+	parent.add_child(number)
 	number._build(text, color, uncapped_text, cap_color)
 	number._drift = drift
 	number._lifetime = lifetime
 	number._rest_scale = Vector2.ONE * ((2.0 if big else 1.0) + size - 1.0)
-	parent.add_child(number)
 	number.global_position = global_pos + Vector2(
 		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -_SCATTER_PIXELS, _SCATTER_PIXELS),
 		-10.0
@@ -185,7 +190,7 @@ func _build(text: String, color: Color, uncapped_text: String = "",
 	# Above ships, particles and the cockpit frame.
 	z_index = 100
 
-	_label = _make_label(text, FontRoles.POPUP, color)
+	_label = _make_label(text, _role_for(text), color)
 	if uncapped_text.is_empty():
 		# Centre the label on this node so scaling pops from the middle.
 		_label.position = -_label.size / 2.0
@@ -197,9 +202,11 @@ func _build(text: String, color: Color, uncapped_text: String = "",
 ## Lays out "12→3": the uncapped figure, the arrow and the result in a row,
 ## sitting on the result's baseline, the whole row centred on this node.
 func _build_capped(uncapped_text: String, cap_color: Color, color: Color) -> void:
-	var lead: Label = _make_label(uncapped_text, FontRoles.SMALL, cap_color.lerp(Globals.dark_gray, _UNCAPPED_DIM))
+	var role: StringName = _role_for(_label.text)
+	var lead_role: StringName = FontRoles.DIGITS_SMALL if is_figure(uncapped_text) else FontRoles.SMALL
+	var lead: Label = _make_label(uncapped_text, lead_role, cap_color.lerp(Globals.dark_gray, _UNCAPPED_DIM))
 	var arrow: _CapArrow = _CapArrow.new()
-	arrow.first_row = _CapArrow.first_row_for(FontRoles.digit_height(FontRoles.POPUP))
+	arrow.first_row = _CapArrow.first_row_for(FontRoles.digit_height(role))
 	arrow.color = color
 	add_child(arrow)
 
@@ -208,10 +215,27 @@ func _build_capped(uncapped_text: String, cap_color: Color, color: Color) -> voi
 	var left: float = -width / 2.0
 	# Labels draw their text one ascent below their top edge, so lining the
 	# tops up by ascent puts both figures on one baseline.
-	var baseline: float = -_label.size.y / 2.0 + _ascent(FontRoles.POPUP)
-	lead.position = Vector2(left, baseline - _ascent(FontRoles.SMALL))
+	var baseline: float = -_label.size.y / 2.0 + _ascent(role)
+	lead.position = Vector2(left, baseline - _ascent(lead_role))
 	arrow.position = Vector2(left + lead.size.x + _CAP_GAP_PIXELS, baseline)
 	_label.position = Vector2(arrow.position.x + _CapArrow.WIDTH + _CAP_GAP_PIXELS, -_label.size.y / 2.0)
+
+
+## Whether [param text] is a figure ("5", "+3", "x2", "4 + 2", "+25%"):
+## digits, signs and spaces only. Figures draw in the digits role.
+static func is_figure(text: String) -> bool:
+	var has_digit: bool = false
+	for character: String in text:
+		if character == " ":
+			continue
+		if not FontRoles.FIGURE_CHARACTERS.contains(character):
+			return false
+		has_digit = has_digit or character.is_valid_int()
+	return has_digit
+
+
+static func _role_for(text: String) -> StringName:
+	return FontRoles.DIGITS if is_figure(text) else FontRoles.POPUP
 
 
 static func _ascent(role: StringName) -> float:
@@ -254,7 +278,7 @@ func _animate() -> void:
 ## The "→" of a capped popup, drawn in pixels: the pixel fonts have no arrow
 ## glyph, and a drawn one can't go missing when a locale swaps the font.
 ## Its origin sits on the baseline at its left edge, and it centres on the
-## popup font's digits, whatever their height in the current language.
+## result's digits (the digits role's, the same in every language).
 class _CapArrow:
 	extends Node2D
 
@@ -269,7 +293,7 @@ class _CapArrow:
 		Vector2i(2, 2),
 	]
 	## Lowest row's height above the baseline, so the shaft sits on the digits'
-	## middle row (1 for m5x7's 7-pixel digits).
+	## middle row (1 for m5x7's 7-pixel digits, the digits role everywhere).
 	var first_row: int = 1
 	## Matches the labels' outline (outline_size 4 reaches one font pixel out).
 	const _OUTLINE_PIXELS: float = 1.0

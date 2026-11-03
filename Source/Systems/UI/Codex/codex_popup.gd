@@ -23,6 +23,14 @@ const _CELL_PITCH: float = CodexEntry.SIZE.x + 1.0
 ## 64 a seventh line was cut off with no scrollbar.
 const _BODY_BOTTOM: float = 132.0
 const _BODY_BOTTOM_ABOVE_STATS: float = 123.0
+const _LINE_STEP: float = 9.0
+## A name that wraps takes a line more, and the sub-heading and body below it
+## move down by as much, so nothing clips (a long German enemy name). The
+## body keeps its bottom, so it stays 4 px over whole steps and scrolls.
+const _NAME_BOTTOM: float = 24.0
+const _SUB_TOP: float = 25.0
+const _SUB_BOTTOM: float = 53.0
+const _BODY_TOP: float = 56.0
 
 const _RARITY_KEYS: Dictionary[TileResource.Rarity, String] = {
 	TileResource.Rarity.COMMON: "CODEX_RARITY_COMMON",
@@ -179,12 +187,21 @@ func _show_detail(id: String) -> void:
 		return
 
 	%NameLabel.text = _entry_name(id)
+	_make_room_for_name()
 	if _tab == Tab.TILES:
 		_show_tile(CodexCatalog.tile_resource(id))
 	else:
 		_show_enemy(id, CodexCatalog.enemy_resource(id))
 	ColorSymbolBadge.attach_to_rect(%Portrait)
 	%BodyLabel.scroll_to_line(0)
+
+
+func _make_room_for_name() -> void:
+	var extra: float = _LINE_STEP * maxi(0, %NameLabel.get_line_count() - 1)
+	%NameLabel.offset_bottom = _NAME_BOTTOM + extra
+	%SubLabel.offset_top = _SUB_TOP + extra
+	%SubLabel.offset_bottom = _SUB_BOTTOM + extra
+	%BodyLabel.offset_top = _BODY_TOP + extra
 
 
 func _show_tile(tile: TileResource) -> void:

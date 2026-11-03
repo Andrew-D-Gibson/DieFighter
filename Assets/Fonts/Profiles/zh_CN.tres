@@ -2,9 +2,15 @@
 
 [ext_resource type="Resource" path="res://Assets/Fonts/Faces/fusion12_zh_hans.tres" id="1_wcasg"]
 [ext_resource type="Script" path="res://Source/Systems/Display/font_profile.gd" id="2_nt5wv"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/m5x7.tres" id="4_digits"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/m3x6.tres" id="5_digits_small"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Profiles/readable_12.tres" id="6_readable"]
 
 [resource]
 script = ExtResource("2_nt5wv")
 small = ExtResource("1_wcasg")
 body = ExtResource("1_wcasg")
 popup = ExtResource("1_wcasg")
+digits = ExtResource("4_digits")
+digits_small = ExtResource("5_digits_small")
+readable = ExtResource("6_readable")

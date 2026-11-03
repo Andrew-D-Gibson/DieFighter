@@ -9,6 +9,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 var small_ui: FontVariation = load("res://Assets/Fonts/Roles/small.tres")
 var body_ui: FontVariation = load("res://Assets/Fonts/Roles/body.tres")
 var popup_ui: FontVariation = load("res://Assets/Fonts/Roles/popup.tres")
+var digits_ui: FontVariation = load("res://Assets/Fonts/Roles/digits.tres")
+var digits_small_ui: FontVariation = load("res://Assets/Fonts/Roles/digits_small.tres")
 
 ## Files that may name a pixel font file: the role wrappers, and the faces
 ## the language profiles pick from.
@@ -16,6 +18,8 @@ const _ALLOWED_REFERENCES: Array[String] = [
 	"res://Assets/Fonts/Roles/small.tres",
 	"res://Assets/Fonts/Roles/body.tres",
 	"res://Assets/Fonts/Roles/popup.tres",
+	"res://Assets/Fonts/Roles/digits.tres",
+	"res://Assets/Fonts/Roles/digits_small.tres",
 	"res://Assets/Fonts/Faces/m3x6.tres",
 	"res://Assets/Fonts/Faces/m5x7.tres",
 ]
@@ -47,15 +51,19 @@ func after_each() -> void:
 
 
 func test_wrappers_show_the_pixel_fonts_by_default() -> void:
-	assert_eq(FontSwap.wrappers(), [small_ui, body_ui, popup_ui] as Array[FontVariation])
+	assert_eq(FontSwap.wrappers(), [small_ui, body_ui, popup_ui, digits_ui, digits_small_ui] as Array[FontVariation])
 	assert_false(FontSwap.is_readable())
 	assert_eq(small_ui.base_font, load("res://Assets/Fonts/m3x6/m3x6.ttf"))
 	assert_eq(body_ui.base_font, load("res://Assets/Fonts/m5x7/m5x7.ttf"))
 	assert_eq(popup_ui.base_font, load("res://Assets/Fonts/m5x7/m5x7.ttf"))
+	assert_eq(digits_ui.base_font, load("res://Assets/Fonts/m5x7/m5x7.ttf"))
+	assert_eq(digits_small_ui.base_font, load("res://Assets/Fonts/m3x6/m3x6.ttf"))
 
 
 func test_toggling_swaps_every_wrapper_and_restores_the_same_fonts() -> void:
-	var originals: Array[Font] = [small_ui.base_font, body_ui.base_font, popup_ui.base_font]
+	var originals: Array[Font] = []
+	for wrapper: FontVariation in FontSwap.wrappers():
+		originals.append(wrapper.base_font)
 
 	FontSwap.set_readable(true)
 	assert_true(FontSwap.is_readable())
@@ -65,9 +73,8 @@ func test_toggling_swaps_every_wrapper_and_restores_the_same_fonts() -> void:
 
 	FontSwap.set_readable(false)
 	assert_false(FontSwap.is_readable())
-	assert_same(small_ui.base_font, originals[0])
-	assert_same(body_ui.base_font, originals[1])
-	assert_same(popup_ui.base_font, originals[2])
+	for i: int in originals.size():
+		assert_same(FontSwap.wrappers()[i].base_font, originals[i])
 
 
 ## The readable fonts ride up or down so their capitals centre where the
