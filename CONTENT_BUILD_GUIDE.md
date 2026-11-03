@@ -1379,7 +1379,12 @@ looks, edit its profile in `Assets/Fonts/Profiles/` (or the shared face in
 consistent. Keep a face's size on its font's native pixel grid; if only an
 off-grid size fits, say so in the face's `note`. `test_font_roles.gd` fails
 on a raw override, and `test_localization.gd` fails when a language's text
-has a character none of its role fonts can draw.
+has a character none of its role fonts can draw. A new language's face must
+keep English's line box: set `spacing_top` / `spacing_bottom` so ascent + top
+= 11 and descent + bottom = 2 at its unit size
+(`test_every_language_keeps_englishs_line_box` checks). Check a profile before
+its translations exist with `tools/loc.sh audit fonts` (pseudo text in each
+distinct profile) or `audit pseudo@<locale>`.
 
 **Checking every language.**
 - `tools/loc.sh lint` (also part of GUT, `test/content/test_localization.gd`)

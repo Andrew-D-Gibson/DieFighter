@@ -1843,6 +1843,16 @@ the theme default and needs nothing. Code that builds a Label sets
 `theme_type_variation = FontRoles.slot(role, scale)`; code that draws text
 uses `FontRoles.font(role)` / `FontRoles.size(role, scale)`.
 `test_font_roles.gd` fails on a raw font/size override.
+A face's `spacing_top` / `spacing_bottom` make its line box English's (13 px,
+11 above the baseline, 2 below): Tiny5 +4 on top, Fusion 12 −2/−1. The role
+wrapper carries the x1 spacing; a slot type at another scale draws through
+its own FontVariation over the wrapper with the spacing times its scale
+(`FontRoles._slot_font`), because Godot adds FontVariation spacing in whole
+pixels whatever the size. English faces have none, so English slots draw
+through the wrappers. 4.7.1: a FontVariation over a FontVariation takes the
+base's font data and fallbacks but only its own spacing and baseline offset;
+a RichTextLabel with a negative `line_separation` clips up to that many
+pixels without showing a scrollbar (the codex body box is 67 px for this).
 Fonts per locale: en/en_XA m3x6@16 + m5x7@16; de/fr/es/pt_BR/ru Tiny5@8
 for small, m5x7 otherwise; zh_CN and ja Fusion Pixel 12 (zh_hans / ja
 build)@12 for every role. monogram extended is a same-size fallback behind
