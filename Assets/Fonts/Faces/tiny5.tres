@@ -7,4 +7,5 @@
 script = ExtResource("2_3o7ua")
 font = ExtResource("1_4vf7s")
 size = 8
-note = "Small text in de, fr, es, pt_BR and ru (m3x6 has no accents or Cyrillic). Native size 8. Capitals are 5 px against m3x6's 6 and lines 9 px against 13, so text reads a pixel shorter than English. Accented capitals rise above the line box: C11b checks line spacing."
+spacing_top = 4
+note = "Small text in de, fr, es, pt_BR and ru (m3x6 has no accents or Cyrillic). Native size 8. Its own line is 9 px (7 above the baseline, 2 below), and accented capitals reach 9 above it; 4 px of top spacing make the line m3x6's 13 (11 above, 2 below), so text sits on English's baseline in every box and accents stay inside the line. Capitals are 5 px against m3x6's 6: text reads a pixel shorter than English."

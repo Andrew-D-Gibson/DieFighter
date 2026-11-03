@@ -40,6 +40,13 @@ extends RefCounted
 ## Godot draws a fallback at the primary font's size (checked in 4.7.1), so a
 ## language whose script the role's font lacks swaps the role's primary font
 ## and unit size rather than only adding fallbacks.
+##
+## A face's line spacing (FontFace.spacing_top/bottom) makes its line box
+## English's. Godot adds a FontVariation's spacing in whole pixels whatever the
+## size it draws at (checked in 4.7.1), so the wrapper carries the x1 spacing,
+## and a slot type at another scale draws through a FontVariation of its own
+## over the wrapper with the spacing times its scale. (A variation over a
+## variation takes the base's font and fallbacks but only its own spacing.)
 
 const SMALL: StringName = &"small"
 const BODY: StringName = &"body"
@@ -97,6 +104,10 @@ static var _readable: bool = false
 ## such text (before it re-shapes in the new font) would read freed data and
 ## log 'Parameter "fd" is null' from the TextServer.
 static var _loaded: Dictionary[String, FontProfile] = {}
+## Per slot type at a scale other than x1, the variation that scales the
+## face's line spacing with it. Made when a face first has spacing; while the
+## spacing is zero the slot draws through the wrapper itself.
+static var _slot_fonts: Dictionary[StringName, FontVariation] = {}
 
 
 ## The profile for [param locale]: its own file, else its language's (pt for
@@ -182,6 +193,8 @@ static func face(role: StringName) -> FontFace:
 	merged.font = readable.font
 	merged.size = readable.size
 	merged.baseline_offset = readable.baseline_offset
+	merged.spacing_top = readable.spacing_top
+	merged.spacing_bottom = readable.spacing_bottom
 	merged.fallbacks = readable.fallbacks.duplicate()
 	merged.fallbacks.append_array(language.chain())
 	return merged
@@ -214,6 +227,10 @@ static func _apply() -> void:
 			wrapper.fallbacks = role_face.fallbacks
 		if not is_equal_approx(wrapper.baseline_offset, role_face.baseline_offset):
 			wrapper.baseline_offset = role_face.baseline_offset
+		if wrapper.spacing_top != role_face.spacing_top:
+			wrapper.spacing_top = role_face.spacing_top
+		if wrapper.spacing_bottom != role_face.spacing_bottom:
+			wrapper.spacing_bottom = role_face.spacing_bottom
 
 	var theme: Theme = ThemeDB.get_project_theme()
 	if theme == null:
@@ -224,9 +241,40 @@ static func _apply() -> void:
 	for type: StringName in _SMALL_THEME_SIZES:
 		_set_size(theme, _SMALL_THEME_SIZES[type], type, small_size)
 	for type: StringName in SLOT_TYPES:
-		var slot_size: int = size(SLOT_TYPES[type][0], SLOT_TYPES[type][1])
+		var role: StringName = SLOT_TYPES[type][0]
+		var scale: float = SLOT_TYPES[type][1]
+		var slot_size: int = size(role, scale)
 		for item: StringName in _SIZE_ITEMS:
 			_set_size(theme, item, type, slot_size)
+		var slot_font: Font = _slot_font(type, face(role), scale)
+		for item: StringName in _FONT_ITEMS:
+			if theme.get_font(item, type) != slot_font:
+				theme.set_font(item, type, slot_font)
+
+
+## The font a slot type of [param scale] draws [param role_face] through: the
+## role's wrapper, or over it a variation with the face's line spacing scaled
+## to the slot. A face with no spacing (every English one) uses the wrapper,
+## exactly as the theme file says.
+static func _slot_font(type: StringName, role_face: FontFace, scale: float) -> Font:
+	var role: StringName = SLOT_TYPES[type][0]
+	var top: int = roundi(role_face.spacing_top * scale)
+	var bottom: int = roundi(role_face.spacing_bottom * scale)
+	if is_equal_approx(scale, 1.0) or (top == 0 and bottom == 0):
+		return _WRAPPERS[role]
+	if not _slot_fonts.has(type):
+		var variation: FontVariation = FontVariation.new()
+		variation.base_font = _WRAPPERS[role]
+		_slot_fonts[type] = variation
+	var slot_font: FontVariation = _slot_fonts[type]
+	if slot_font.spacing_top != top:
+		slot_font.spacing_top = top
+	if slot_font.spacing_bottom != bottom:
+		slot_font.spacing_bottom = bottom
+	# The variation's own, not the wrapper's: only the base font carries over.
+	if not is_equal_approx(slot_font.baseline_offset, role_face.baseline_offset):
+		slot_font.baseline_offset = role_face.baseline_offset
+	return slot_font
 
 
 static func _set_size(theme: Theme, item: StringName, type: StringName, value: int) -> void:
