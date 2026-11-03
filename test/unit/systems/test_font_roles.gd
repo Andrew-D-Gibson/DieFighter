@@ -144,15 +144,59 @@ func test_set_locale_applies_the_profile_even_when_unchanged() -> void:
 
 
 ## Readable Font leads with Atkinson and keeps the language's fonts behind it,
-## so a script Atkinson lacks still draws.
+## so a script Atkinson lacks still draws. It changes Latin text only: in
+## Chinese and Japanese Atkinson leads at Fusion Pixel's 12 (a copy that draws
+## at 12 as the usual one does at 16), so Fusion stays on its own grid.
 func test_readable_font_layers_over_the_language() -> void:
 	FontRoles.use_locale("zh_CN")
 	FontRoles.set_readable(true)
 	var zh_small: FontFace = FontRoles.profile_for("zh_CN").small
 	assert_eq(_small.base_font, FontSwap.font_for(_small, true))
-	assert_has(_small.fallbacks, zh_small.font)
-	assert_eq(FontRoles.size(FontRoles.SMALL), 16, "the readable fonts are fitted at 16")
+	assert_eq(FontRoles.size(FontRoles.SMALL), zh_small.size, "Fusion Pixel draws at its native 12")
+	assert_true(_small.fallbacks.any(func(font: Font) -> bool:
+		return font == zh_small.font or (font is FontVariation and font.base_font == zh_small.font)))
 	assert_true(_small.has_char("你".unicode_at(0)))
+
+
+## Behind Readable Font every language's own fonts are at their unit size,
+## and Latin text looks as it does in English with Readable Font.
+func test_readable_font_keeps_each_languages_units_and_englishs_latin() -> void:
+	FontRoles.use_locale("en")
+	FontRoles.set_readable(true)
+	var english: Dictionary[StringName, Vector2] = {}
+	for type: StringName in [&"", &"BodyX6", &"SmallX6"]:
+		english[type] = _measure("Hull 24/32", type)
+	for locale: String in ["zh_CN", "ja"]:
+		FontRoles.use_locale(locale)
+		for role: StringName in FontRoles.ROLES:
+			assert_eq(FontRoles.face(role).size, FontRoles.profile_for(locale).face(role).size,
+				"%s %s" % [locale, role])
+		for type: StringName in english:
+			# unitsPerEm is whole, so the 12 copy can be a hair narrower.
+			var size: Vector2 = _measure("Hull 24/32", type)
+			assert_almost_eq(size.x, english[type].x, 1.0, "%s Latin width in %s" % [locale, type])
+			assert_eq(size.y, english[type].y, "%s Latin height in %s" % [locale, type])
+
+
+## Chinese under Readable Font keeps English's line box at every scale: the
+## Fusion fallback carries its own trimmed spacing, scaled with the slot.
+func test_readable_chinese_keeps_englishs_line_box() -> void:
+	FontRoles.use_locale("en")
+	var english: Dictionary[StringName, float] = {}
+	for type: StringName in [&"", &"BodyX6", &"SmallX6"]:
+		english[type] = _measure("HULL", type).y
+	FontRoles.use_locale("zh_CN")
+	FontRoles.set_readable(true)
+	for type: StringName in english:
+		assert_almost_eq(_measure("船体 HULL", type).y, english[type], 2.0, "zh_CN readable %s" % type)
+
+
+func _measure(text: String, type: StringName) -> Vector2:
+	var label: Label = Label.new()
+	label.text = text
+	label.theme_type_variation = type
+	add_child_autofree(label)
+	return label.get_minimum_size()
 
 
 ## A fallback draws at the primary's size, so it must not make the role's
@@ -221,14 +265,58 @@ func test_line_spacing_scales_with_the_slot() -> void:
 	assert_eq(small_x6.get_minimum_size().y, heights[0])
 
 
-## The capped popup's drawn arrow centres on the popup font's digits.
-func test_the_cap_arrow_centres_on_each_languages_digits() -> void:
-	FontRoles.use_locale("en")
-	assert_eq(FontRoles.digit_height(FontRoles.POPUP), 7, "m5x7")
+## Popup figures are m5x7 and m3x6 in every language, so "12→3" looks the
+## same in all of them, and the drawn arrow sits on m5x7's 7-pixel digits.
+func test_popup_figures_are_the_same_in_every_language() -> void:
+	var english: FontProfile = FontRoles.profile_for("en")
+	var locales: Array[String] = []
+	locales.assign(Localization.LOCALE_NAMES.keys())
+	locales.append(Localization.PSEUDO_LOCALE)
+	for locale: String in locales:
+		var profile: FontProfile = FontRoles.profile_for(locale)
+		for role: StringName in FontRoles.FIGURE_ROLES:
+			assert_same(profile.face(role), english.face(role), "%s %s" % [locale, role])
+		FontRoles.use_locale(locale)
+		assert_eq(FontRoles.digit_height(FontRoles.DIGITS), 7, locale)
 	assert_eq(DamageNumber._CapArrow.first_row_for(7), 1)
-	FontRoles.use_locale("ja")
-	assert_eq(FontRoles.digit_height(FontRoles.POPUP), 9, "Fusion Pixel 12")
-	assert_eq(DamageNumber._CapArrow.first_row_for(9), 2)
+	assert_same(english.digits.font, english.body.font, "the result in English's popup font")
+	assert_same(english.digits_small.font, english.small.font, "the lead a size down")
+
+
+## A popup's figures land in the digits roles and its words in the popup
+## role, and "12→3" lays out the same in Chinese as in English.
+func test_popup_figures_lay_out_alike_in_every_language() -> void:
+	assert_true(DamageNumber.is_figure("+25%"))
+	assert_true(DamageNumber.is_figure("4 + 2"))
+	assert_false(DamageNumber.is_figure("+2 BURN"))
+	assert_false(DamageNumber.is_figure("+"))
+	var layouts: Array[String] = []
+	for locale: String in ["en", "zh_CN"]:
+		FontRoles.use_locale(locale)
+		var holder: Node2D = Node2D.new()
+		add_child_autofree(holder)
+		DamageNumber._spawn_label(holder, Vector2.ZERO, "3", Color.WHITE, false, Vector2.ZERO, 1.0, 0.8, "12")
+		var layout: PackedStringArray = []
+		for child: Node in holder.get_child(0).get_children():
+			if child is Label:
+				layout.append("%s %s %s %s" % [child.text, child.theme_type_variation, child.position, child.size])
+			else:
+				layout.append("arrow %s" % child.position)
+		layouts.append(" | ".join(layout))
+	assert_string_contains(layouts[0], "12 DigitsSmallX1")
+	assert_eq(layouts[1], layouts[0])
+
+
+## Every figure a popup shows draws in the figure roles' own fonts.
+func test_figure_roles_draw_every_figure_character() -> void:
+	for file: String in DirAccess.get_files_at(FontRoles.PROFILE_DIR):
+		if not file.ends_with(".tres"):
+			continue
+		var profile: FontProfile = load(FontRoles.PROFILE_DIR + file)
+		for role: StringName in FontRoles.FIGURE_ROLES:
+			for character: String in FontRoles.FIGURE_CHARACTERS:
+				assert_true(profile.face(role).has_char(character.unicode_at(0)),
+					"%s %s '%s'" % [file, role, character])
 
 
 ## The lint: text a scene translates names a role (theme_type_variation),

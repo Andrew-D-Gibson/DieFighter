@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="FontFace" format=3 uid="uid://dco0dddhb5jva"]
+
+[ext_resource type="FontFile" path="res://Assets/Fonts/AtkinsonHyperlegibleNext/AtkinsonHyperlegibleNext-Medium-m3x6-at12.ttf" id="1_8bqga"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_face.gd" id="2_ambev"]
+
+[resource]
+script = ExtResource("2_ambev")
+font = ExtResource("1_8bqga")
+size = 12
+spacing_top = -2
+spacing_bottom = -1
+baseline_offset = -0.045
+note = "Readable Font's small face in Chinese and Japanese: Atkinson Hyperlegible Next rescaled by tools/rescale_font_unit.py to draw at 12 exactly as readable_small draws at 16, so Fusion Pixel 12 behind it stays at its native size. It has Fusion Pixel's own line (16 px, 13 above the baseline, 3 below) and the same trim as Fusion's face, because Godot sizes a Label's lines by the tallest font in the chain plus the leading font's spacing: so Labels and RichTextLabels both get English's 13. The offset is readable_small's in pixels (a fraction of the taller line)."

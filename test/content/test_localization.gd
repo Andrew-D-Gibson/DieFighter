@@ -118,8 +118,8 @@ func test_no_key_is_in_both_csvs() -> void:
 ## A letter a locale's fonts lack draws as a box, or in a system font the
 ## game didn't pick. Every string is checked against each font role's face in
 ## its locale's FontProfile, fallbacks included, since any text can land in
-## any role. Locales with no translations yet pass trivially; the
-## pseudo-locale checks the stretched English it shows.
+## any role but the figure roles. Locales with no translations yet pass
+## trivially; the pseudo-locale checks the stretched English it shows.
 func test_every_character_has_a_glyph() -> void:
 	var problems: Array[String] = []
 	var known: Array[String] = []
@@ -150,7 +150,8 @@ func _missing_glyphs(locale: String, profile: FontProfile) -> Array[String]:
 					continue
 				var code: int = character.unicode_at(0)
 				for role: StringName in FontRoles.ROLES:
-					if profile.face(role).has_char(code):
+					# Only figures land in these (test_font_roles checks them).
+					if role in FontRoles.FIGURE_ROLES or profile.face(role).has_char(code):
 						continue
 					var miss: String = "%s %s U+%04X: '%s'" % [locale, role, code, character]
 					if not keys_by_miss.has(miss):

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="FontProfile" format=3 uid="uid://dte5xrgpdfg1b"]
+
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/readable_body_12.tres" id="1_5343q"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/readable_body.tres" id="2_f551a"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/readable_small.tres" id="3_fhqje"]
+[ext_resource type="Script" path="res://Source/Systems/Display/font_profile.gd" id="4_4xau0"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Faces/readable_small_12.tres" id="5_ypds5"]
+
+[resource]
+script = ExtResource("4_4xau0")
+small = ExtResource("5_ypds5")
+body = ExtResource("1_5343q")
+popup = ExtResource("1_5343q")
+digits = ExtResource("2_f551a")
+digits_small = ExtResource("3_fhqje")

@@ -3,11 +3,16 @@ extends RefCounted
 ## Font roles: every piece of text names a role, never a font file or a raw
 ## size, and each language decides how its roles look.
 ##
-## Three roles cover the game's text:
+## Five roles cover the game's text:
 ## - small: most UI text. The theme's default font, so a Label, Button or
 ##   RichTextLabel with no font of its own is in this role. m3x6 in English.
 ## - body: titles, the info panel and world-space readouts. m5x7 in English.
-## - popup: the numbers and words that float off ships (DamageNumber).
+## - popup: the words that float off ships (DamageNumber callouts).
+## - digits, digits_small: the figures that float off ships (a hit's "5", a
+##   heal's "+3", a capped "12→3" whose lead is digits_small). m5x7 and m3x6
+##   in every language: digits read the same in all of them, so a popup looks
+##   the same everywhere and the capped lead stays a size below the result.
+##   Only figures land here (DamageNumber.is_figure), never words.
 ##
 ## A FontProfile per locale (res://Assets/Fonts/Profiles/<locale>.tres) gives
 ## each role a FontFace: a font, a unit size and fallbacks. Localization
@@ -32,10 +37,16 @@ extends RefCounted
 ## sizes are untouched. test_font_roles.gd fails on a raw font or size
 ## override on text a scene translates.
 ##
-## Readable Font (the accessibility option, see FontSwap) layers the readable
+## Readable Font (the accessibility option, see FontSwap) layers a readable
 ## profile's face over the language's: the readable font leads and the
 ## language's fonts follow as its fallbacks, so scripts the readable font
-## lacks still draw.
+## lacks still draw, in the language's own line box. Readable Font changes
+## Latin text only. Since a fallback draws at the primary's size, the readable
+## face of a role must have the language face's unit size, or the language's
+## pixel font would draw off its grid: a profile names its own readable
+## overlay (FontProfile.readable) when its units differ from the default
+## readable profile's 16. Chinese and Japanese use readable_12, Atkinson
+## rescaled to draw at 12 as it does at 16, so Fusion Pixel stays at 12.
 ##
 ## Godot draws a fallback at the primary font's size (checked in 4.7.1), so a
 ## language whose script the role's font lacks swaps the role's primary font
@@ -51,12 +62,20 @@ extends RefCounted
 const SMALL: StringName = &"small"
 const BODY: StringName = &"body"
 const POPUP: StringName = &"popup"
-const ROLES: Array[StringName] = [SMALL, BODY, POPUP]
+const DIGITS: StringName = &"digits"
+const DIGITS_SMALL: StringName = &"digits_small"
+const ROLES: Array[StringName] = [SMALL, BODY, POPUP, DIGITS, DIGITS_SMALL]
+## The roles only figures are drawn in: their faces need digits, signs and
+## % (FIGURE_CHARACTERS), not a language's whole script.
+const FIGURE_ROLES: Array[StringName] = [DIGITS, DIGITS_SMALL]
+const FIGURE_CHARACTERS: String = "0123456789+-%x"
 
 const _WRAPPERS: Dictionary[StringName, FontVariation] = {
 	SMALL: preload("res://Assets/Fonts/Roles/small.tres"),
 	BODY: preload("res://Assets/Fonts/Roles/body.tres"),
 	POPUP: preload("res://Assets/Fonts/Roles/popup.tres"),
+	DIGITS: preload("res://Assets/Fonts/Roles/digits.tres"),
+	DIGITS_SMALL: preload("res://Assets/Fonts/Roles/digits_small.tres"),
 }
 
 ## The slot types a Control names in theme_type_variation: [role, scale].
@@ -69,6 +88,8 @@ const SLOT_TYPES: Dictionary[StringName, Array] = {
 	&"SmallX2": [SMALL, 2.0],
 	&"SmallX6": [SMALL, 6.0],
 	&"BodyX1": [BODY, 1.0],
+	## The game-over run summary.
+	&"BodyX3": [BODY, 3.0],
 	## Off the 6x world grid but on the font's own: the info panel's asides.
 	&"BodyX4": [BODY, 4.0],
 	&"BodyX5": [BODY, 5.0],
@@ -76,10 +97,9 @@ const SLOT_TYPES: Dictionary[StringName, Array] = {
 	&"BodyX11": [BODY, 11.0],
 	&"BodyX12": [BODY, 12.0],
 	&"BodyX16": [BODY, 16.0],
-	## Off-grid (m5x7 at 52): the game-over run summary, sized to fit its box
-	## before roles existed. Snapping it to x3 is a look change for the user.
-	&"BodyX3_25": [BODY, 3.25],
 	&"PopupX1": [POPUP, 1.0],
+	&"DigitsX1": [DIGITS, 1.0],
+	&"DigitsSmallX1": [DIGITS_SMALL, 1.0],
 }
 
 ## The theme items a slot type sets: Label and Button read font/font_size,
@@ -108,6 +128,9 @@ static var _loaded: Dictionary[String, FontProfile] = {}
 ## face's line spacing with it. Made when a face first has spacing; while the
 ## spacing is zero the slot draws through the wrapper itself.
 static var _slot_fonts: Dictionary[StringName, FontVariation] = {}
+## Fallback fonts wearing a face's spacing (see _spaced), by font and spacing.
+## Kept for the session for the same reason as _loaded.
+static var _spaced_fonts: Dictionary[String, FontVariation] = {}
 
 
 ## The profile for [param locale]: its own file, else its language's (pt for
@@ -120,9 +143,10 @@ static func profile_for(locale: String) -> FontProfile:
 	return null
 
 
-## The Readable Font option's faces (see face()).
+## The Readable Font option's faces for the current language (see face()).
 static func readable_profile() -> FontProfile:
-	return _load_profile(_READABLE_PROFILE)
+	var overlay: FontProfile = current_profile().readable
+	return overlay if overlay != null else _load_profile(_READABLE_PROFILE)
 
 
 static func _load_profile(path: String) -> FontProfile:
@@ -196,7 +220,11 @@ static func face(role: StringName) -> FontFace:
 	merged.spacing_top = readable.spacing_top
 	merged.spacing_bottom = readable.spacing_bottom
 	merged.fallbacks = readable.fallbacks.duplicate()
-	merged.fallbacks.append_array(language.chain())
+	# The language's font keeps its own spacing as a fallback, so a line of
+	# Chinese under Readable Font is still English's line box.
+	merged.fallbacks.append(_spaced(language.font, language.spacing_top, language.spacing_bottom,
+		language.baseline_offset))
+	merged.fallbacks.append_array(language.fallbacks)
 	return merged
 
 
@@ -260,7 +288,8 @@ static func _slot_font(type: StringName, role_face: FontFace, scale: float) -> F
 	var role: StringName = SLOT_TYPES[type][0]
 	var top: int = roundi(role_face.spacing_top * scale)
 	var bottom: int = roundi(role_face.spacing_bottom * scale)
-	if is_equal_approx(scale, 1.0) or (top == 0 and bottom == 0):
+	var spaced_fallbacks: bool = role_face.fallbacks.any(_has_spacing)
+	if is_equal_approx(scale, 1.0) or (top == 0 and bottom == 0 and not spaced_fallbacks):
 		return _WRAPPERS[role]
 	if not _slot_fonts.has(type):
 		var variation: FontVariation = FontVariation.new()
@@ -274,7 +303,47 @@ static func _slot_font(type: StringName, role_face: FontFace, scale: float) -> F
 	# The variation's own, not the wrapper's: only the base font carries over.
 	if not is_equal_approx(slot_font.baseline_offset, role_face.baseline_offset):
 		slot_font.baseline_offset = role_face.baseline_offset
+	# An empty list takes the wrapper's fallbacks; a spaced one needs its
+	# spacing scaled too, so the slot then lists its own.
+	var fallbacks: Array[Font] = []
+	if spaced_fallbacks:
+		for fallback: Font in role_face.fallbacks:
+			fallbacks.append(_scaled_fallback(fallback, scale))
+	if slot_font.fallbacks != fallbacks:
+		slot_font.fallbacks = fallbacks
 	return slot_font
+
+
+## [param font] with a face's line spacing and baseline offset, for use as a
+## fallback: a fallback's own font draws with none of the primary's, so a
+## language font behind the readable one carries its spacing itself. A font
+## with nothing to add is returned as it is.
+static func _spaced(font: Font, top: int, bottom: int, offset: float) -> Font:
+	if top == 0 and bottom == 0 and is_zero_approx(offset):
+		return font
+	var key: String = "%d:%d:%d:%s" % [font.get_instance_id(), top, bottom, offset]
+	if not _spaced_fonts.has(key):
+		var variation: FontVariation = FontVariation.new()
+		variation.base_font = font
+		variation.spacing_top = top
+		variation.spacing_bottom = bottom
+		variation.baseline_offset = offset
+		_spaced_fonts[key] = variation
+	return _spaced_fonts[key]
+
+
+static func _has_spacing(fallback: Font) -> bool:
+	var variation: FontVariation = fallback as FontVariation
+	return variation != null and (variation.spacing_top != 0 or variation.spacing_bottom != 0)
+
+
+## A spaced fallback (see _spaced) with its spacing times [param scale].
+static func _scaled_fallback(fallback: Font, scale: float) -> Font:
+	if not _has_spacing(fallback):
+		return fallback
+	var variation: FontVariation = fallback as FontVariation
+	return _spaced(variation.base_font, roundi(variation.spacing_top * scale),
+		roundi(variation.spacing_bottom * scale), variation.baseline_offset)
 
 
 static func _set_size(theme: Theme, item: StringName, type: StringName, value: int) -> void:
