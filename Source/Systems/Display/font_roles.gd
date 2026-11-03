@@ -45,8 +45,12 @@ extends RefCounted
 ## face of a role must have the language face's unit size, or the language's
 ## pixel font would draw off its grid: a profile names its own readable
 ## overlay (FontProfile.readable) when its units differ from the default
-## readable profile's 16. Chinese and Japanese use readable_12, Atkinson
-## rescaled to draw at 12 as it does at 16, so Fusion Pixel stays at 12.
+## readable profile's 16. Chinese and Japanese use readable_12 (Atkinson
+## rescaled to draw at 12 as it does at 16, so Fusion Pixel stays at 12);
+## de, fr, es, pt_BR and ru use readable_8 for small text, so Tiny5 (drawing
+## the Cyrillic Atkinson lacks) stays at 8. Each rescaled copy also has its
+## pixel font's own line and the same line spacing, because a Label's lines
+## are as tall as the tallest font in the chain plus the leading one's spacing.
 ##
 ## Godot draws a fallback at the primary font's size (checked in 4.7.1), so a
 ## language whose script the role's font lacks swaps the role's primary font

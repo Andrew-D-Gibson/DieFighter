@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://Source/Systems/Display/font_profile.gd" id="2_jfk5r"]
 [ext_resource type="Resource" path="res://Assets/Fonts/Faces/tiny5.tres" id="3_1dk6r"]
 [ext_resource type="Resource" path="res://Assets/Fonts/Faces/m3x6.tres" id="5_digits_small"]
+[ext_resource type="Resource" path="res://Assets/Fonts/Profiles/readable_8.tres" id="6_readable"]
 
 [resource]
 script = ExtResource("2_jfk5r")
@@ -12,3 +13,4 @@ body = ExtResource("1_l2txj")
 popup = ExtResource("1_l2txj")
 digits = ExtResource("1_l2txj")
 digits_small = ExtResource("5_digits_small")
+readable = ExtResource("6_readable")

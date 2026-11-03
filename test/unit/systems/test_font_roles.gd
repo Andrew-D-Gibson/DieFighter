@@ -166,7 +166,10 @@ func test_readable_font_keeps_each_languages_units_and_englishs_latin() -> void:
 	var english: Dictionary[StringName, Vector2] = {}
 	for type: StringName in [&"", &"BodyX6", &"SmallX6"]:
 		english[type] = _measure("Hull 24/32", type)
-	for locale: String in ["zh_CN", "ja"]:
+	var locales: Array[String] = []
+	locales.assign(Localization.LOCALE_NAMES.keys())
+	locales.append(Localization.PSEUDO_LOCALE)
+	for locale: String in locales:
 		FontRoles.use_locale(locale)
 		for role: StringName in FontRoles.ROLES:
 			assert_eq(FontRoles.face(role).size, FontRoles.profile_for(locale).face(role).size,
@@ -178,17 +181,25 @@ func test_readable_font_keeps_each_languages_units_and_englishs_latin() -> void:
 			assert_eq(size.y, english[type].y, "%s Latin height in %s" % [locale, type])
 
 
-## Chinese under Readable Font keeps English's line box at every scale: the
-## Fusion fallback carries its own trimmed spacing, scaled with the slot.
-func test_readable_chinese_keeps_englishs_line_box() -> void:
+## Under Readable Font every language keeps English's line box at every
+## scale, in its own script too: the language font behind the readable one
+## carries its own spacing, scaled with the slot.
+func test_readable_text_keeps_englishs_line_box() -> void:
 	FontRoles.use_locale("en")
 	var english: Dictionary[StringName, float] = {}
 	for type: StringName in [&"", &"BodyX6", &"SmallX6"]:
 		english[type] = _measure("HULL", type).y
-	FontRoles.use_locale("zh_CN")
 	FontRoles.set_readable(true)
-	for type: StringName in english:
-		assert_almost_eq(_measure("船体 HULL", type).y, english[type], 2.0, "zh_CN readable %s" % type)
+	for sample: Array in [["zh_CN", "船体 HULL"], ["ja", "船体 HULL"], ["ru", "Жук HULL"], ["de", "Hülle"]]:
+		FontRoles.use_locale(sample[0])
+		for type: StringName in english:
+			assert_almost_eq(_measure(sample[1], type).y, english[type], 2.0, "%s readable %s" % [sample[0], type])
+		var paragraph: RichTextLabel = RichTextLabel.new()
+		paragraph.fit_content = true
+		paragraph.size = Vector2(400, 10)
+		paragraph.text = sample[1] + "\n" + sample[1]
+		add_child_autofree(paragraph)
+		assert_eq(paragraph.get_content_height(), 22, "%s two readable lines step 9" % sample[0])
 
 
 func _measure(text: String, type: StringName) -> Vector2:

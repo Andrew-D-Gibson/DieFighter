@@ -24,7 +24,8 @@ The current copies:
         Assets/Fonts/AtkinsonHyperlegibleNext/AtkinsonHyperlegibleNext-Medium-m5x7.ttf \
         Assets/Fonts/AtkinsonHyperlegibleNext/AtkinsonHyperlegibleNext-Medium-m5x7-at12.ttf 16 12 \
         --ascent 13 --descent 3
-    (and the same with m3x6)
+    (and the same with m3x6; for Readable Font over Tiny5's small text in
+    de/fr/es/pt_BR/ru: the m3x6 one to -at8.ttf with 16 8 --ascent 7 --descent 2)
 
 unitsPerEm is a whole number, so the copy can be a hair (under 0.05%) smaller
 (test_font_roles.gd checks Latin text measures as at 16). Import the copy like
