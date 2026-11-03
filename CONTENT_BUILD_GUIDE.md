@@ -1361,11 +1361,12 @@ current language.
    reviewed` for a checked translation; the default is `machine`). It merges
    each row into whichever CSV owns its key, re-imports the CSVs and runs
    the lint. A row whose English changed after the export comes in `stale`.
-4. Check it in the game: `lang de` in the dev console (debug builds)
-   previews any language that has a translation, shipped or not. Options only
-   offers languages registered in project.godot
-   (`internationalization/locale/translations`), which is how a language
-   ships.
+4. Check it in the game: pick it in Options, or `lang de` in the dev
+   console. Every language is offered from the start (the Localization
+   autoload registers each `translations.<l>.translation` itself), so there
+   is nothing to register; until about 90% of English's text is translated,
+   Options marks it "(English text)" and a first launch won't pick it from
+   the OS language.
 
 **Fonts.** Never set a font or a font size on translated text. Pick its
 role and scale: leave small x1 text alone (the theme default), otherwise set
@@ -1379,7 +1380,12 @@ looks, edit its profile in `Assets/Fonts/Profiles/` (or the shared face in
 consistent. Keep a face's size on its font's native pixel grid; if only an
 off-grid size fits, say so in the face's `note`. `test_font_roles.gd` fails
 on a raw override, and `test_localization.gd` fails when a language's text
-has a character none of its role fonts can draw. A new language's face must
+has a character none of its role fonts can draw. Floating figures
+(DamageNumber) are always m5x7/m3x6 through the `digits` roles; a translated
+callout word is in the `popup` role. A language whose role units aren't 16
+needs its own Readable Font overlay (`FontProfile.readable`) at those units:
+rescale the readable fonts with `tools/rescale_font_unit.py` (see its header)
+and give the faces the language face's spacing. A new language's face must
 keep English's line box: set `spacing_top` / `spacing_bottom` so ascent + top
 = 11 and descent + bottom = 2 at its unit size
 (`test_every_language_keeps_englishs_line_box` checks). Check a profile before
@@ -1399,10 +1405,10 @@ distinct profile) or `audit pseudo@<locale>`.
   `pseudo` stretches every translated string, so it finds text that won't fit
   a longer language, and any literal English, before a translation exists.
   `--headless` checks without photos.
-- While playing a debug build, the overflow watcher outlines text that doesn't
-  fit in red and logs a `Loc` line with its key to the debug log
-  (`loc_watch off` stops it). Set the `loc_watch_ignore` meta on a label that
-  is meant to overflow.
+- In a debug build, `loc_watch on` (dev console) starts the overflow
+  watcher for that session: it outlines text that doesn't fit in red and
+  logs a `Loc` line with its key to the debug log. It's off at every launch.
+  Set the `loc_watch_ignore` meta on a label that is meant to overflow.
 
 Status column (`_status`): `machine`, `reviewed` or `stale`, as one word for
 the whole row or per language (`de=reviewed fr=stale`). `_en_hash` is the

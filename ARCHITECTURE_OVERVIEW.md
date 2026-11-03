@@ -30,7 +30,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `SaveManager` | `Autoloads/save_manager.gd` | Single autosave slot to `user://save_game.json` (JSON, `SAVE_VERSION = 2`); deletes save on `player_destroyed`, `game_over` and `victory`; `GameStateManager` keeps a `GameSaveResource` current and calls `write_save()` at checkpoints |
 | `CollectionManager` | `Autoloads/collection_manager.gd` | What the player has found across every run, for the codex: tiles they've owned, enemies met/destroyed and region rules/hazards read. Kept in `user://collection.json`, outside the run save (see Codex below) |
 | `OptionsSettings` | `Autoloads/options_settings.gd` | Registry of player options (see 7.4): each registered once with its default and how to read and apply its live value, keyed "Section/name" as saved in `user://options_settings.cfg`. Loads and applies them at boot, saves on `Events.save_options_config`, resets them for the menu's Defaults. Owns `PixelPerfectScaler` and `BackgroundFocus`. Also holds the `times_run` counter. Window options (size, monitor, vsync, pixel perfect) aren't registered on the web (`controls_window()`) |
-| `Localization` | `Autoloads/localization.gd`, tools in `Systems/Localization/` | The game's language: the locales offered (`get_available_locales()`, any with translations; debug builds' `get_preview_locales()` adds unregistered ones), the first-launch pick, `set_locale()` at runtime (`Events.locale_changed`), and the debug pseudo-locale `en_XA`. Owns the debug `OverflowWatcher`. See 7.5 |
+| `Localization` | `Autoloads/localization.gd`, tools in `Systems/Localization/` | The game's language: the locales offered (`get_available_locales()`: every `LOCALE_NAMES` entry, never the pseudo-locale), `is_translated()` (≥90% of English's messages; drives the Options "(English text)" mark and the first-launch pick), registering each language's UI translation at startup, `set_locale()` at runtime (`Events.locale_changed`; `allow_pseudo` for the debug pseudo-locale `en_XA`), and the debug `OverflowWatcher`, made on demand by `watch_overflow()`. See 7.5 |
 | `MCPInteractionServer` | `Autoloads/mcp_interaction_server.gd` (the Godot MCP tool also writes a gitignored copy to the repo root on each run) | TCP server on port 9090 for external MCP interaction; runs `PROCESS_MODE_ALWAYS`. Editor-launched runs only: in any exported build (debug or release) it frees itself without opening the port |
 | `AutoPilot` | `Autoloads/auto_pilot.gd`, helpers in `Systems/AutoPilot/` | Plays runs by itself for QA and balance testing (see AutoPilot below). Editor binaries with `-- --autoplay` only; otherwise it frees itself |
 
@@ -1825,7 +1825,9 @@ own fonts follow as fallbacks (see Fonts below). Atkinson is imported as MSDF
 at `msdf_size` 192 (64 stair-stepped under nearest filtering at 6x), and its
 faces carry a `baseline_offset` so capitals centre where the pixel fonts' do.
 
-**Fonts (FontRoles).** Text names a role (`small`, `body`, `popup`), never a
+**Fonts (FontRoles).** Text names a role (`small`, `body`, `popup` for callout
+words, and `digits`/`digits_small` for popup figures, the same m5x7/m3x6 face in
+every profile so numbers read alike in every language), never a
 font file or a raw size. Each role draws through one FontVariation wrapper
 (`Assets/Fonts/Roles/<role>.tres`; `small`/`body` are the old
 `m3x6_ui`/`m5x7_ui` with the same UIDs). A FontProfile per locale
@@ -1861,6 +1863,15 @@ m3x6/m5x7 in every Latin/Cyrillic locale (it supplies "…" and "—").
 font lacks needs the primary swapped; an unregistered
 `theme_type_variation` name is ignored; GDScript folds a property read on a
 `const` preload at compile time, so read wrappers through a variable.
+Readable Font layers the profile's `readable` overlay (default
+`Profiles/readable.tres`) over the language's faces; an overlay face must
+have the unit size of the face it leads, since the language's font draws
+behind it at that size (zh/ja use `readable_12`, the Tiny5 languages
+`readable_8`, made with `tools/rescale_font_unit.py`). `Font.get_height()` is
+the tallest font in the chain plus only the leading font's spacing (Labels
+size lines by it; RichTextLabels by the fonts their glyphs used), and a
+Control sized outside the tree keeps a stale theme-cache size, so
+DamageNumber joins the tree before measuring.
 
 **Held things and the cursor.** `Draggable.held` / `holding()` say what's in
 hand (drag or click placement), and are the only record of it: the cursor,
@@ -1903,9 +1914,10 @@ and pt_BR through two CSVs in `Localization/`, which never share a key (lint):
 | Keys | hand-picked (`INFO_ENGINE_EVASION`) | generated from the file (`HAZARD.SOLAR_FLARE.HEADLINE`) |
 
 Both import with `compress=0` (compressed translations report 0 messages, so
-`get_available_locales()` never offered them). A locale ships when its
-`translations.<l>.translation` is registered in project.godot; content
-translations are loaded directly.
+`get_available_locales()` never offered them). Localization registers every
+language's `translations.<l>.translation` at startup (project.godot names
+only English's), so a column ships as soon as it has text; content
+translations are loaded directly by ContentText.
 
 **ContentText** (`Systems/Localization/content_text.gd`). A content type
 declares its text: `_content_text_prefix()` (the key's first part, `TILE`)
@@ -1990,13 +2002,14 @@ byte-identical, `LocPipeline` runs the steps, `LocLint` the checks and
   synced; filled cells keep `{x}`, `%d`, `(tokens)` and BBCode; text fits
   `_max_chars` (tags count 0, tokens 1, placeholders 2). Glyph coverage is
   report-only until each language has its font.
-- Debug builds' dev console `lang <locale>` previews any language with
-  translations, registered or not (`Localization.get_preview_locales()`,
-  `set_locale(locale, true)`).
+- Debug builds' dev console `lang <locale|pseudo>` switches to any language
+  (`set_locale(locale, true)`); pseudo is reachable only this way and through
+  the audit.
 
 **Checking every language.** `OverflowWatcher`
 (`Systems/Localization/overflow_watcher.gd`, a child of the Localization
-autoload in debug, non-headless builds) checks the visible Labels and
+autoload once `loc_watch on` asks for it, debug builds only, for that
+session) checks the visible Labels and
 RichTextLabels every 0.5 s. It looks for text taller than its box, wider with
 wrapping off, sideways out of its button or panel, on a button a sibling
 overlaps, cut by the screen edge, held back by `visible_characters` for 2 s
@@ -2004,7 +2017,7 @@ overlaps, cut by the screen edge, held back by `visible_characters` for 2 s
 outline and one `Loc [locale] ...` line in the debug log
 (`DebugLogger.note()`) with its node path and key (its own, a `loc_key` meta,
 or a reverse lookup). The `loc_watch_ignore` meta opts a label out, and
-`loc_watch off` stops it for the session. `tools/loc.sh audit
+`loc_watch off` stops it. `tools/loc.sh audit
 [locale|pseudo|all] [surface ...] [--headless]` (dev console `loc_audit`) runs
 `Source/Debug/LocAudit/` as its own process. That process drops the MCP
 autoload before it binds 9090, logs to `user://loc_audit/debug_log.txt` and

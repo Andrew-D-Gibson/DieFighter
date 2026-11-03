@@ -4,6 +4,15 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-02 — Every language in Options, font-fit calls
+
+- **Options offers every language.** The dropdown lists all eight languages by their own names, never the pseudo-locale (still `lang pseudo` and the audit). A language without text yet reads "Deutsch (English text)" in the open list and plays in English text with its own fonts; Chinese and Japanese names draw in their own font, and the mark in the menu's (`PixelDropdown.set_item_font/set_item_note`). `Localization` registers every `translations.<l>.translation` at startup, so a column ships as soon as it has text; `is_translated()` (≥90% of English) drives the mark and the first-launch pick, so a new player is only auto-switched to a translated language.
+- **No more red boxes.** They were the debug overflow watcher's outlines, on at every debug launch; it now starts only on `loc_watch on`. In plain English play it flagged one real thing, each enemy hull number's 11 px box for a 13 px line (`offset_bottom = 2`, same pixels).
+- **The five font calls (all as recommended on the review page).** Run summary on the grid (48, `BodyX3_25` gone). Readable Font changes Latin only: per-profile overlays (`FontProfile.readable`) `readable_12` for zh/ja and `readable_8` for the Tiny5 languages keep Fusion at 12 and Tiny5 at 8, with 13 px lines (`tools/rescale_font_unit.py`). Popup figures use new `digits`/`digits_small` roles (m5x7/m3x6 in every profile), so "12→3" is identical in all eight languages; DamageNumber now measures inside the tree, which re-centres popups by 1–6 px. Codex names may wrap to two lines (Counterweight Battery's second line was clipped). `_max_chars` on the ship card's hull/dice and the five options tabs.
+- Open: picking 简体中文/日本語 before their text exists shows the English menu in Fusion, whose Latin is wider, so a few labels wrap mid-word.
+
+---
+
 ## 2026-11-02 — Content single-source pass, Doldrums popups
 
 Eight parallel chunks (C1–C8, plan: `~/.claude/plans/chunks/nov3-singlesource.md`). A piece of content now says each number, callout and look in one place, and the text reads it from there. English is unchanged throughout. Font roles, per-language profiles and the fit pass are in (C11a, C11b).
