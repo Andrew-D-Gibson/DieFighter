@@ -98,31 +98,45 @@ func test_the_options_menu_lists_all_eight_and_marks_the_untranslated() -> void:
 	assert_eq(dropdown.items, short_names, "each language by its own name, on the closed button")
 	assert_false(dropdown.items.has(Localization.get_locale_name(Localization.PSEUDO_LOCALE)))
 
-	var rows: Array[Button] = dropdown._build_rows()
-	for i: int in range(rows.size()):
+	for i: int in range(names.size()):
 		var locale: String = Localization.LOCALE_NAMES.keys()[i]
-		var marked: String = tr("OPT_LANGUAGE_ENGLISH_TEXT").format({"language": names[i]})
-		assert_eq(rows[i].text, names[i] if Localization.is_translated(locale) else marked, locale)
-		rows[i].free()
+		var marked: String = names[i] + " " + tr("OPT_LANGUAGE_ENGLISH_TEXT")
+		assert_eq(dropdown.list_row_text(i), names[i] if Localization.is_translated(locale) else marked, locale)
 
 
 ## English's fonts have no Chinese or Japanese, so those names draw in their
-## own language's font; the rest keep the menu's.
+## own language's face at its own size; the rest, and every "(English text)"
+## mark, keep the menu's font. Every row is the same height.
 func test_names_the_menu_font_lacks_draw_in_their_own() -> void:
 	Localization.set_locale("en")
 	var menu: OptionsMenu = _OPTIONS_SCENE.instantiate()
 	add_child_autofree(menu)
 	await wait_process_frames(1)
-	var rows: Array[Button] = menu._language_dropdown._build_rows()
+	var dropdown: PixelDropdown = menu._language_dropdown
+	dropdown._open_popup()
+	await wait_process_frames(2)
+	var rows: Array[Node] = dropdown._popup_panel.find_children("*", "Button", true, false)
 	var locales: Array = Localization.LOCALE_NAMES.keys()
+	var heights: Array[float] = []
 	for i: int in range(rows.size()):
-		var own_font: bool = rows[i].has_theme_font_override("font")
+		var parts: Array[Node] = rows[i].find_children("*", "Label", true, false)
+		# A row with a mark writes its name and mark as two Labels.
+		var name_part: Control = parts[0] if not parts.is_empty() else rows[i] as Control
+		var own_font: bool = name_part.get_theme_font("font") != dropdown.get_theme_font("font", "Button")
 		assert_eq(own_font, locales[i] in ["zh_CN", "ja"], locales[i])
 		if own_font:
-			var font: Font = rows[i].get_theme_font("font")
+			var face: FontFace = FontRoles.profile_for(locales[i]).small
+			assert_eq(name_part.get_theme_font_size("font_size"), face.size, "%s at its own size" % locales[i])
+			var font: Font = name_part.get_theme_font("font")
 			for character: int in Localization.get_locale_name(locales[i]).to_utf32_buffer().to_int32_array():
 				assert_true(font.has_char(character), "%s draws %s" % [locales[i], char(character)])
-		rows[i].free()
+		if parts.size() > 1:
+			assert_eq(parts[1].get_theme_font("font"), dropdown.get_theme_font("font", "Button"),
+				"%s mark in the menu's font" % locales[i])
+		heights.append((rows[i] as Control).size.y)
+	dropdown._close_popup()
+	assert_eq(heights.size(), locales.size())
+	assert_eq(heights.min(), heights.max(), "every row the same height: %s" % [heights])
 
 
 func test_the_overflow_watcher_waits_to_be_asked() -> void:

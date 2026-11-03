@@ -233,18 +233,18 @@ func _add_progress_row(page: OptionsPage, label_key: String, text_key: String, h
 ## played, in English text with its own fonts. The closed dropdown keeps the
 ## bare, short name, so the column stays narrow. A name the menu's font has
 ## no letters for (Chinese and Japanese, in English) is drawn in its own
-## language's font instead, so every player can find theirs. Redone when the
+## language's face at that language's size, while the mark stays in the
+## menu's font, so it reads like the rest of the list. Redone when the
 ## language or Readable Font changes, as both change the menu's font.
 func _dress_language_list() -> void:
 	var menu_face: FontFace = FontRoles.face(FontRoles.SMALL)
 	var locales: Array[String] = Localization.get_available_locales()
 	for i: int in range(locales.size()):
 		var locale: String = locales[i]
-		var text: String = Localization.get_locale_name(locale)
-		if not Localization.is_translated(locale):
-			text = tr("OPT_LANGUAGE_ENGLISH_TEXT").format({"language": text})
-		_language_dropdown.set_item_list_text(i, text)
-		if _face_draws(menu_face, text):
+		var locale_name: String = Localization.get_locale_name(locale)
+		_language_dropdown.set_item_list_text(i, locale_name)
+		_language_dropdown.set_item_note(i, "" if Localization.is_translated(locale) else tr("OPT_LANGUAGE_ENGLISH_TEXT"))
+		if _face_draws(menu_face, locale_name):
 			_language_dropdown.set_item_font(i, null, 0)
 		else:
 			var own: FontFace = FontRoles.profile_for(locale).face(FontRoles.SMALL)

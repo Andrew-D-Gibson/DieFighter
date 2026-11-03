@@ -58,6 +58,15 @@ const _LIST_GAP: float = 1.0
 ## The open list keeps at least this far inside the screen's edges.
 const _SCREEN_MARGIN: float = 2.0
 
+## The theme colour a row's text takes in each of a Button's draw modes.
+const _ROW_TEXT_COLORS: Dictionary[int, StringName] = {
+	BaseButton.DRAW_NORMAL: &"font_color",
+	BaseButton.DRAW_PRESSED: &"font_pressed_color",
+	BaseButton.DRAW_HOVER: &"font_hover_color",
+	BaseButton.DRAW_DISABLED: &"font_disabled_color",
+	BaseButton.DRAW_HOVER_PRESSED: &"font_hover_pressed_color",
+}
+
 var item_count: int:
 	get:
 		return items.size()
@@ -67,6 +76,8 @@ var item_count: int:
 var _list_texts: Dictionary[int, String] = {}
 ## A font for one item's row in the open list, by index: [font, size].
 var _item_fonts: Dictionary[int, Array] = {}
+## A note after an item in the open list, by index, in the list's own font.
+var _item_notes: Dictionary[int, String] = {}
 
 @onready var _main_button: Button = $MainButton
 
@@ -134,6 +145,7 @@ func clear() -> void:
 	items.clear()
 	_list_texts.clear()
 	_item_fonts.clear()
+	_item_notes.clear()
 	selected = -1
 
 
@@ -148,14 +160,30 @@ func set_item_list_text(index: int, text: String) -> void:
 		_list_texts[index] = text
 
 
-## Draws item [param index]'s row in the open list in [param font] at
+## Draws item [param index]'s text in the open list in [param font] at
 ## [param font_size] (null goes back to the theme's): an item written in a
-## script the list's font lacks, say.
+## script the list's font lacks, say. Its note (set_item_note()) stays in
+## the list's font.
 func set_item_font(index: int, font: Font, font_size: int) -> void:
 	if font == null:
 		_item_fonts.erase(index)
 	else:
 		_item_fonts[index] = [font, font_size]
+
+
+## Adds [param note] after item [param index]'s text in the open list, in
+## the list's own font whatever the item's (empty removes it).
+func set_item_note(index: int, note: String) -> void:
+	if note.is_empty():
+		_item_notes.erase(index)
+	else:
+		_item_notes[index] = note
+
+
+## What item [param index]'s row in the open list reads: its text and note.
+func list_row_text(index: int) -> String:
+	var text: String = _list_texts.get(index, get_item_text(index))
+	return text + " " + _item_notes[index] if _item_notes.has(index) else text
 
 
 ## --- Internals ---
@@ -337,23 +365,87 @@ func _build_rows() -> Array[Button]:
 	var rows: Array[Button] = []
 	for i: int in range(items.size()):
 		var row: Button = Button.new()
-		row.text = _list_texts.get(i, items[i])
 		row.icon = checked if i == selected else unchecked
 		row.focus_mode = Control.FOCUS_NONE
 		row.alignment = HORIZONTAL_ALIGNMENT_CENTER
 		row.icon_alignment = HORIZONTAL_ALIGNMENT_LEFT
-		if _item_fonts.has(i):
-			row.add_theme_font_override("font", _item_fonts[i][0])
-			row.add_theme_font_size_override("font_size", _item_fonts[i][1])
-		else:
-			row.add_theme_font_size_override("font_size", get_theme_font_size("font_size", "PopupMenu"))
+		row.add_theme_font_size_override("font_size", get_theme_font_size("font_size", "PopupMenu"))
 		row.add_theme_stylebox_override("normal", normal)
 		row.add_theme_stylebox_override("hover", hover)
 		row.add_theme_stylebox_override("pressed", hover)
 		row.add_theme_stylebox_override("hover_pressed", hover)
+		if _item_notes.has(i):
+			_write_row_in_parts(row, i)
+		else:
+			row.text = _list_texts.get(i, items[i])
+			if _item_fonts.has(i):
+				row.add_theme_font_override("font", _item_fonts[i][0])
+				row.add_theme_font_size_override("font_size", _item_fonts[i][1])
 		row.pressed.connect(_on_item_button_pressed.bind(i))
 		rows.append(row)
 	return rows
+
+
+## A Button draws its text in one font, so a row whose text and note are in
+## different fonts writes them as two Labels across the row instead, centred
+## like a Button's text, coloured like it on hover and press. Every face
+## shares English's line box, so the two sit on one baseline.
+func _write_row_in_parts(row: Button, index: int) -> void:
+	# Fonts set outright, read off this dropdown: the row isn't in the tree
+	# yet, and a Label out of it measures in the engine's own font.
+	var list_font: Font = get_theme_font("font", "Button")
+	var list_size: int = row.get_theme_font_size("font_size")
+	var text: Label = _row_part(_list_texts.get(index, items[index]))
+	if _item_fonts.has(index):
+		text.add_theme_font_override("font", _item_fonts[index][0])
+		text.add_theme_font_size_override("font_size", _item_fonts[index][1])
+	else:
+		text.add_theme_font_override("font", list_font)
+		text.add_theme_font_size_override("font_size", list_size)
+	var note: Label = _row_part(_item_notes[index])
+	note.add_theme_font_override("font", list_font)
+	note.add_theme_font_size_override("font_size", list_size)
+	var parts: HBoxContainer = HBoxContainer.new()
+	parts.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	parts.alignment = BoxContainer.ALIGNMENT_CENTER
+	parts.add_theme_constant_override("separation",
+		ceili(list_font.get_string_size(" ", HORIZONTAL_ALIGNMENT_LEFT, -1, list_size).x))
+	parts.add_child(text)
+	parts.add_child(note)
+	row.add_child(parts)
+
+	var style: StyleBox = row.get_theme_stylebox("normal")
+	var lead: float = style.get_margin(SIDE_LEFT) + row.icon.get_width() + row.get_theme_constant("h_separation")
+	parts.set_anchors_preset(Control.PRESET_FULL_RECT)
+	parts.offset_left = lead
+	parts.offset_right = -style.get_margin(SIDE_RIGHT)
+	# A Button doesn't size to its children, so the row is sized from the
+	# parts' fonts (a Label out of the tree can't be trusted to measure).
+	var parts_size: Vector2 = Vector2(parts.get_theme_constant("separation"), 0.0)
+	for part: Label in [text, note]:
+		var font: Font = part.get_theme_font("font")
+		var font_size: int = part.get_theme_font_size("font_size")
+		parts_size.x += font.get_string_size(part.text, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size).x
+		parts_size.y = maxf(parts_size.y, font.get_height(font_size))
+	row.custom_minimum_size = Vector2(ceilf(lead + parts_size.x + style.get_margin(SIDE_RIGHT)),
+		maxf(parts_size.y, row.icon.get_height()))
+	# The row isn't in the tree yet, so its theme is read off this dropdown's.
+	var paint: Callable = func() -> void:
+		var color: Color = get_theme_color(_ROW_TEXT_COLORS.get(row.get_draw_mode(), &"font_color"), &"Button")
+		for part: Label in [text, note]:
+			part.add_theme_color_override("font_color", color)
+	paint.call()
+	row.draw.connect(paint)
+
+
+func _row_part(text: String) -> Label:
+	var part: Label = Label.new()
+	part.text = text
+	# Already in the player's language: the caller translated it.
+	part.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	part.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	part.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	return part
 
 
 func _set_row_margins(style: StyleBox) -> void:

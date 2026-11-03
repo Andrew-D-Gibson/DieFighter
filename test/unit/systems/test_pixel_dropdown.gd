@@ -107,25 +107,36 @@ func _rows_per_screen() -> int:
 
 
 ## A list text says more while choosing; the closed button keeps the item's
-## own text. A row can have its own font, and clear() forgets both.
-func test_list_text_and_row_font_apply_to_the_open_list_only() -> void:
+## own text. A row can have its own font, a note stays in the list's font
+## beside it, and clear() forgets all three.
+func test_list_text_font_and_note_apply_to_the_open_list_only() -> void:
 	_give_items(3, 1)
 	var font: FontVariation = FontVariation.new()
-	dropdown.set_item_list_text(1, "Item 1 (note)")
+	dropdown.set_item_list_text(1, "Item 1 long")
 	dropdown.set_item_font(2, font, 12)
+	dropdown.set_item_font(0, font, 12)
+	dropdown.set_item_note(0, "(note)")
 	var rows: Array[Button] = dropdown._build_rows()
-	assert_eq(rows[0].text, "Item 0")
-	assert_eq(rows[1].text, "Item 1 (note)")
+	assert_eq(rows[1].text, "Item 1 long")
 	assert_eq(dropdown._main_button.text, "Item 1", "the button shows the plain item")
 	assert_eq(rows[2].get_theme_font("font"), font)
 	assert_eq(rows[2].get_theme_font_size("font_size"), 12)
 	assert_false(rows[1].has_theme_font_override("font"))
+	var parts: Array[Node] = rows[0].find_children("*", "Label", true, false)
+	assert_eq(parts.size(), 2, "text and note as two parts")
+	assert_eq((parts[0] as Label).text, "Item 0")
+	assert_eq((parts[0] as Label).get_theme_font("font"), font)
+	assert_eq((parts[1] as Label).text, "(note)")
+	assert_eq((parts[1] as Label).get_theme_font("font"), dropdown.get_theme_font("font", "Button"))
+	assert_eq(dropdown.list_row_text(0), "Item 0 (note)")
+	assert_gt(rows[0].get_combined_minimum_size().x, 0.0, "the row is as wide as its parts")
 	for row: Button in rows:
 		row.free()
 	dropdown.clear()
 	_give_items(3, 1)
 	rows = dropdown._build_rows()
 	assert_eq(rows[1].text, "Item 1")
+	assert_eq(rows[0].text, "Item 0")
 	assert_false(rows[2].has_theme_font_override("font"))
 	for row: Button in rows:
 		row.free()

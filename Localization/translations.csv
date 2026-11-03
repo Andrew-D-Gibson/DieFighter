@@ -266,4 +266,4 @@ JUMP_GATE_SECTOR,SECTOR {sector},,,,,,,,"Big title across hyperspace when jumpin
 JUMP_GATE_OF,OF {total},,,,,,,,"Smaller line under JUMP_GATE_SECTOR: how many sectors there are (""SECTOR 2"" / ""OF 3"")",,,
 SAVE_INDICATOR_SAVING,Saving...,,,,,,,,Small corner note while the game saves,,,
 LOADING_POPUP_TEXT,Loading...,,,,,,,,Pop-up while a scene loads,,,
-OPT_LANGUAGE_ENGLISH_TEXT,{language} (English text),,,,,,,,"Options > Game tab, the open language list: follows a language whose translation isn't done yet, so the player knows its text is still English. {language} is that language's name, written in its own language",,,
+OPT_LANGUAGE_ENGLISH_TEXT,(English text),,,,,,,,"Options > Game tab, the open language list: written after the name of a language whose translation isn't done yet (""Deutsch (English text)""), so the player knows its text is still English",,,
