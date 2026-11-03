@@ -22,11 +22,15 @@
 #                                  steps that hold them (TextTokens): report the
 #                                  literals left, convert a family, or verify the
 #                                  filled text still reads as it did at a ref
-#   tools/loc.sh audit [locale|pseudo|all] [surface ...] [--headless]
+#   tools/loc.sh audit [locale|pseudo|all|fonts|<text>@<fonts>] [surface ...] [--headless]
 #                                  photograph every text surface in each language,
 #                                  flag text that overflows or lacks glyphs, and
 #                                  write a report (path printed at the end);
-#                                  --headless checks text without photos
+#                                  --headless checks text without photos.
+#                                  fonts: pseudo text in each distinct font
+#                                  profile (pseudo@zh_CN = pseudo text in
+#                                  Chinese fonts), to fit a profile before its
+#                                  language has translations
 #
 # Locales: zh_CN ja ru de fr es pt_BR (a new code gets a column on import).
 # Close the Godot editor first if it has this project open: it rewrites the
@@ -131,7 +135,7 @@ case "$command" in
 		exit "$status"
 		;;
 	*)
-		sed -n '2,35p' "$0" | sed 's/^# \{0,1\}//'
+		sed -n '2,37p' "$0" | sed 's/^# \{0,1\}//'
 		exit 2
 		;;
 esac

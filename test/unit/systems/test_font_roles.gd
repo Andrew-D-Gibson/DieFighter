@@ -167,6 +167,60 @@ func test_fallbacks_keep_each_faces_line_height() -> void:
 			assert_lte(fallback.get_descent(face.size), face.font.get_descent(face.size), file)
 
 
+## Every language draws each role in English's line box (11 px above the
+## baseline, 2 below at x1), so text sits where English's does in every box
+## sized for it, whatever the font.
+func test_every_language_keeps_englishs_line_box() -> void:
+	var english: FontProfile = FontRoles.profile_for("en")
+	var locales: Array[String] = []
+	locales.assign(Localization.LOCALE_NAMES.keys())
+	locales.append(Localization.PSEUDO_LOCALE)
+	for locale: String in locales:
+		var profile: FontProfile = FontRoles.profile_for(locale)
+		for role: StringName in FontRoles.ROLES:
+			var face: FontFace = profile.face(role)
+			var base: FontFace = english.face(role)
+			var context: String = "%s %s (%s)" % [locale, role, face.resource_path.get_file()]
+			assert_eq(face.font.get_ascent(face.size) + face.spacing_top,
+				base.font.get_ascent(base.size) + base.spacing_top, context + " above the baseline")
+			assert_eq(face.font.get_descent(face.size) + face.spacing_bottom,
+				base.font.get_descent(base.size) + base.spacing_bottom, context + " below it")
+
+
+## A slot at xN gets N times its face's spacing, so a big German or Chinese
+## line is exactly English's height too, and English draws through the
+## wrappers as the theme file says.
+func test_line_spacing_scales_with_the_slot() -> void:
+	var small_x6: Label = Label.new()
+	small_x6.text = "SAVED"
+	small_x6.theme_type_variation = &"SmallX6"
+	var body_x6: Label = Label.new()
+	body_x6.text = "SECTOR"
+	body_x6.theme_type_variation = &"BodyX6"
+	var plain: Label = Label.new()
+	plain.text = "HULL"
+	for label: Label in [small_x6, body_x6, plain]:
+		add_child_autofree(label)
+	FontRoles.use_locale("en")
+	var theme: Theme = ThemeDB.get_project_theme()
+	assert_eq(theme.get_font(&"font", &"SmallX6"), FontRoles.font(FontRoles.SMALL), "English draws through the wrapper")
+	var heights: Array[float] = [small_x6.get_minimum_size().y, body_x6.get_minimum_size().y, plain.get_minimum_size().y]
+
+	FontRoles.use_locale("de")
+	assert_eq((theme.get_font(&"font", &"SmallX6") as FontVariation).spacing_top, 24, "Tiny5's 4 px at x6")
+	assert_eq(small_x6.get_minimum_size().y, heights[0], "German small text at x6")
+	assert_eq(plain.get_minimum_size().y, heights[2], "German small text at x1")
+	FontRoles.use_locale("zh_CN")
+	# m5x7's own ascent is 10.67 px at 16, so English body at x6 is 76, not
+	# 6 x 13: whole-pixel spacing gets within a pixel of the slot's scale.
+	assert_almost_eq(body_x6.get_minimum_size().y, heights[1], 2.0, "Chinese body text at x6")
+	assert_eq(small_x6.get_minimum_size().y, heights[0], "Chinese small text at x6")
+
+	FontRoles.use_locale("en")
+	assert_eq(theme.get_font(&"font", &"SmallX6"), FontRoles.font(FontRoles.SMALL))
+	assert_eq(small_x6.get_minimum_size().y, heights[0])
+
+
 ## The capped popup's drawn arrow centres on the popup font's digits.
 func test_the_cap_arrow_centres_on_each_languages_digits() -> void:
 	FontRoles.use_locale("en")

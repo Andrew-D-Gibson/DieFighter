@@ -7,4 +7,6 @@
 script = ExtResource("2_n32qx")
 font = ExtResource("1_hj03t")
 size = 12
-note = "Every role in ja. Native size 12: capitals 9 px, lines 16 px against m3x6/m5x7's 13, so boxes sized for English are tight (C11b)."
+spacing_top = -2
+spacing_bottom = -1
+note = "Every role in ja. Native size 12: capitals 9 px against m5x7's 7. Its own line is 16 px (13 above the baseline, 3 below); Han and kana stand 10 above and 1 below, so trimming 2 off the top and 1 off the bottom makes the line English's 13 (11 above, 2 below) with every CJK glyph inside it. Accented Latin capitals (13 above) poke 2 px over the line; zh/ja text rarely has them."

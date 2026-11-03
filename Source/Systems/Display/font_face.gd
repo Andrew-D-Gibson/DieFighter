@@ -21,6 +21,15 @@ extends Resource
 ## (monogram is, behind m3x6 and m5x7 at 16; Tiny5 at 16 would draw doubled).
 @export var fallbacks: Array[Font] = []
 
+## Extra pixels above and below each line at x1 (negative trims), so the
+## role's line box is English's whatever the font: m3x6 and m5x7 lines are
+## 13 px, 11 above the baseline and 2 below, and every box and gap in the game
+## was sized to that. A xN slot gets N times as much (FontRoles), so the box
+## scales with the text. Line boxes that match keep text on the same
+## baseline in its box, so a smaller font sits where English's did.
+@export var spacing_top: int = 0
+@export var spacing_bottom: int = 0
+
 ## Moves the text up (negative) or down, as a fraction of the line height,
 ## so a font whose capitals sit higher or lower centres them where the role's
 ## boxes expect.
@@ -29,6 +38,11 @@ extends Resource
 ## Why this face departs from its role's usual look (an off-grid size, a known
 ## misfit), for whoever tunes the profile next.
 @export_multiline var note: String = ""
+
+
+## The line height of a x1 slot: the font's own plus the spacing.
+func line_height() -> float:
+	return font.get_height(size) + spacing_top + spacing_bottom
 
 
 ## The fonts that can draw a character for this face, in the order Godot tries

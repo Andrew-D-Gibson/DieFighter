@@ -601,7 +601,7 @@ func _lang(command_args: Array[String] = []) -> void:
 func _loc_audit(command_args: Array[String] = []) -> void:
 	var requested: String = command_args[0] if not command_args.is_empty() else "all"
 	if command_args.size() > 1:
-		command_history.append_text('\n\t\tUsage: loc_audit [locale|pseudo|all]')
+		command_history.append_text('\n\t\tUsage: loc_audit [locale|pseudo|all|fonts]')
 		return
 	if LocAudit.launch(requested) < 0:
 		command_history.append_text('\n\t\tCould not start the audit.')
@@ -666,7 +666,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]jump[/b] <+N|-N>                 jump N places right (+) or left (-)')
 	command_history.append_text('\n[b]kill_enemies[/b]                  kill all enemies')
 	command_history.append_text('\n[b]lang[/b] <locale|pseudo>          switch language (pseudo: stretched English, debug)')
-	command_history.append_text('\n[b]loc_audit[/b] [locale|pseudo|all] screenshot every text surface per language, flag overflow')
+	command_history.append_text('\n[b]loc_audit[/b] [locale|pseudo|all|fonts] screenshot every text surface per language, flag overflow')
 	command_history.append_text('\n[b]loc_watch[/b] <on|off>            outline text that overflows (debug, on by default)')
 	command_history.append_text('\n[b]load_grid[/b] <a|b|c>             load saved grid layout from file')
 	command_history.append_text('\n[b]lock_tiles[/b]		            stop tiles from being moved')

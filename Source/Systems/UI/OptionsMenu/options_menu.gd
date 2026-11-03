@@ -47,6 +47,9 @@ const TAB_HEIGHT: float = 12.0
 const _BODY_MARGIN: float = 6.0
 const _BUTTON_SIZE: Vector2 = Vector2(56, 14)
 const _TAB_PADDING: float = 10.0
+## How far a tab's padding gives way when a language's titles are too long
+## for the row: they lose their margins before they overlap.
+const _MIN_TAB_PADDING: float = 4.0
 ## Between a sub-tab row and its pages.
 const _SUB_TAB_GAP: float = 4.0
 ## The Controls pages break to their second column after this many rows.
@@ -302,18 +305,26 @@ func _build_tabs(panel_rect: Rect2) -> void:
 
 
 ## Lays the tabs out across the panel's top, each as wide as its title, with
-## the leftover width shared out between them. Again whenever the font
+## the leftover width shared out between them (a long language's titles first
+## give up their padding, down to _MIN_TAB_PADDING). Again whenever the font
 ## changes, which changes the titles' widths.
 func _layout_tabs(panel_rect: Rect2) -> void:
 	var font: Font = _frame.get_theme_default_font()
+	var text_widths: Array[float] = []
+	var text_total: float = 0.0
+	for tab: Tab in _TABS:
+		var text_width: float = ceilf(font.get_string_size(tr(_TABS[tab][0]), HORIZONTAL_ALIGNMENT_LEFT, -1,
+			_frame.get_theme_default_font_size()).x)
+		text_widths.append(text_width)
+		text_total += text_width
+	var padding: float = clampf(floorf((panel_rect.size.x - text_total) / _TABS.size()),
+		_MIN_TAB_PADDING, _TAB_PADDING)
 	var widths: Array[float] = []
 	var total: float = 0.0
-	for tab: Tab in _TABS:
-		var width: float = ceilf(font.get_string_size(tr(_TABS[tab][0]), HORIZONTAL_ALIGNMENT_LEFT, -1,
-			_frame.get_theme_default_font_size()).x + _TAB_PADDING)
-		widths.append(width)
-		total += width
-	var gap: float = floorf((panel_rect.size.x - total) / maxf(1.0, _TABS.size() - 1))
+	for text_width: float in text_widths:
+		widths.append(text_width + padding)
+		total += text_width + padding
+	var gap: float = maxf(0.0, floorf((panel_rect.size.x - total) / maxf(1.0, _TABS.size() - 1)))
 
 	var rects: Array[Rect2] = []
 	var colors: Array[Color] = []

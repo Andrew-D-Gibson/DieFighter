@@ -19,6 +19,12 @@ const REPORT_PATH: String = OUTPUT_DIR + "/report.html"
 const CLI_SCRIPT: String = "res://Source/Debug/LocAudit/loc_audit_cli.gd"
 ## The pseudo-locale's name on the command line and in the report's folders.
 const PSEUDO: String = "pseudo"
+## Joins a text locale to the locale whose font profile draws it:
+## "pseudo@de" is pseudo text in German's fonts. No language has translations
+## yet, so this is how a font profile meets long text before one does.
+const FONTS_SEPARATOR: String = "@"
+## Requests en plus pseudo text in every distinct font profile.
+const FONTS: String = "fonts"
 ## Game speed while posing: the info panel's art takes half a second to zoom
 ## into place, and nothing posed here needs watching.
 const _FAST_SCALE: float = 40.0
@@ -32,13 +38,18 @@ var _watcher: OverflowWatcher
 var _english_text: Dictionary[String, String] = {}
 
 
-## The locales [param requested] names: one locale, "pseudo", or "all"
+## The locales [param requested] names: one locale, "pseudo", "all"
 ## (every language the game knows, shipped or previewed, plus pseudo; run()
-## skips those with nothing translated yet). English always comes first, as
-## everything else is compared with it.
+## skips those with nothing translated yet), "fonts" (pseudo text in each
+## distinct font profile, see font_profile_locales()), or "<text>@<fonts>",
+## e.g. "pseudo@zh_CN". English always comes first, as everything else is
+## compared with it.
 static func locales_for(requested: String) -> Array[String]:
 	var locales: Array[String] = ["en"]
-	if requested == "all":
+	if requested == FONTS:
+		for fonts: String in font_profile_locales():
+			locales.append(PSEUDO if fonts == Localization.PSEUDO_LOCALE else PSEUDO + FONTS_SEPARATOR + fonts)
+	elif requested == "all":
 		var known: Array[String] = Localization.get_available_locales()
 		known.append_array(Localization.get_preview_locales())
 		for locale: String in known:
@@ -50,6 +61,32 @@ static func locales_for(requested: String) -> Array[String]:
 	elif requested != "" and requested != "en":
 		locales.append(requested)
 	return locales
+
+
+## One locale per distinct font profile (locales whose profiles name the
+## same faces share one), pseudo's own first: the fonts a "fonts" audit
+## dresses pseudo text in.
+static func font_profile_locales() -> Array[String]:
+	var found: Array[String] = [Localization.PSEUDO_LOCALE]
+	var seen: Array[String] = [_faces_of(FontRoles.profile_for(Localization.PSEUDO_LOCALE))]
+	var known: Array[String] = Localization.get_available_locales()
+	known.append_array(Localization.get_preview_locales())
+	for locale: String in Localization.LOCALE_NAMES:
+		if locale not in known:
+			known.append(locale)
+	for locale: String in known:
+		var faces: String = _faces_of(FontRoles.profile_for(locale))
+		if faces not in seen:
+			seen.append(faces)
+			found.append(locale)
+	return found
+
+
+static func _faces_of(profile: FontProfile) -> String:
+	var paths: PackedStringArray = []
+	for role: StringName in FontRoles.ROLES:
+		paths.append(profile.face(role).resource_path)
+	return ",".join(paths)
 
 
 ## Whether [param locale] has any text translated yet. Every planned
@@ -98,7 +135,7 @@ func run(locales: Array[String], surfaces: Array[LocAuditSurface] = []) -> Strin
 	for locale: String in locales:
 		# A language with nothing translated would only show the English
 		# again, item by item.
-		if locale != "en" and locale != PSEUDO and not has_translations(locale):
+		if locale != "en" and _text_locale(locale) != PSEUDO and not has_translations(_text_locale(locale)):
 			skipped.append(locale)
 			_say("%s: no translations yet; skipped" % locale)
 			continue
@@ -188,16 +225,24 @@ static func _text_of(subject: Node) -> String:
 	return "\u001f".join(texts)
 
 
-## Switches the game to [param locale] (a code, or "pseudo"); false if this
-## build has no translation for it.
+## Switches the game to [param locale] (a code, "pseudo", or
+## "<text>@<fonts>"); false if this build has no translation for it.
 func _switch_locale(locale: String) -> bool:
-	var code: String = Localization.PSEUDO_LOCALE if locale == PSEUDO else locale
+	var text_locale: String = _text_locale(locale)
+	var code: String = Localization.PSEUDO_LOCALE if text_locale == PSEUDO else text_locale
 	var offered: Array[String] = Localization.get_available_locales()
 	offered.append_array(Localization.get_preview_locales())
 	if code not in offered and code != "en":
 		return false
 	Localization.set_locale(code, true)
+	if locale.contains(FONTS_SEPARATOR):
+		FontRoles.use_locale(locale.get_slice(FONTS_SEPARATOR, 1))
 	return TranslationServer.get_locale() == code
+
+
+## The locale whose text [param locale] shows: "pseudo" for "pseudo@de".
+static func _text_locale(locale: String) -> String:
+	return locale.get_slice(FONTS_SEPARATOR, 0)
 
 
 static func _remove_tree(dir: String) -> void:
