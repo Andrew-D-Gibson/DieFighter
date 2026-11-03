@@ -227,6 +227,16 @@ var is_temporary: bool      # Swept by clear_temporary_modifiers() on player tur
 - `remove_modifier(mod)` → Remove, call `mod.on_unregistered()`
 - `clear_temporary_modifiers()` → Called on player turn start, removes all `is_temporary = true`
 
+**Caps.** A clamping modifier that cuts an amount calls
+`event.cap_amount(capped, self)` rather than assigning `amount`. That records
+`EffectEvent.capped_from` (the amount before the first cap; later caps don't
+overwrite it) and `capped_by`, so popups can show the cut ("12→3"):
+`uncapped_for_popup(shown)` / `uncapped_gain_text()` give the leading figure
+and `cap_color()` is the capping modifier's `get_trigger_color()`.
+`AmountCapModifier` (Doldrums) answers that from its rule resource's `color`.
+`DamageNumber` draws the arrow in pixels (`_CapArrow`), so no font needs a →
+glyph. Ion damage and the player's own heals and shields show no cut.
+
 **Lockout.** Every lockout, from any source, goes through
 `AddLockoutModifierEvent`, which skips a tile whose
 `TileResource.can_be_locked_out` is off (the Engine Charger, so it can never
@@ -311,8 +321,19 @@ only number a status has; each status decides what one means.
 - **Reading:** `AMOUNT_MODIFIER/SET_TO_TARGET_STATUS`,
   `CONDITIONAL/IF_TARGET_HAS_STATUS`, and `ATTRIBUTE_CHANGE/CLEAR_STATUS`.
   `ScenarioEngine.find_status()` / `statuses_on()` look them up.
-- **Ids:** `StatusCatalog` maps the authored id to its class. A content test
-  checks every authored id against it.
+- **Ids:** a status is a `StatusResource` (a `KeywordResource` with
+  `modifier_script`, `color`, `icon` and `info_icon`) in the keywords folder;
+  its file name is the id. `StatusCatalog` finds them through
+  `Keywords.keyword()` and builds the modifier with
+  `StatusResource.create_modifier()`, which sets `StatusModifier.definition`
+  (whence `status_id`, `color`, `icon` and `info_icon`, read-only getters). A
+  status built bare (a test's) has no definition and shows nothing. A
+  content test checks every authored id against the catalog.
+- **Rule numbers** are constants the hook uses (`BurnStatus.LOST_PER_TICK`,
+  `JammedStatus.SPENT_PER_DIE`, `WeakenedStatus.MIN_HIT`, ...), returned by
+  the script's static `rule_values()`. `StatusResource._text_tokens()`
+  passes them to `TextTokens` (7.5), so the rule's `{spent}` is the number
+  the code spends.
 - **Ticking:** once per round, from `EnemyTurn.play()` (see 4.6):
   `tick_statuses()` for the enemies before any ship acts, and
   `tick_statuses(true)` for the player once every ship has, before
@@ -323,7 +344,8 @@ only number a status has; each status decides what one means.
   `die_arriving` before the die joins the queue, so the targeting computer's
   intent highlight sees the final face. A ship re-adding a die it already held
   (Charge Bore) isn't an arrival.
-- **Badges:** each status shows a `StatusBadge` (icon + stack count) on its
+- **Badges:** each status shows a `StatusBadge` (icon + stack count, its
+  "{n} stack/stacks" a `tr_n()` plural, 7.5) on its
   ship's `%StatusBar`: beside an enemy's health ring, above the player's
   (two to a row, clear of the Outrigger's wider panel). Clicking one shows its rule in the info panel:
   `rule_term()` returns the keyword id, `<id>_you` (`Keywords.PLAYER_SUFFIX`)
@@ -343,11 +365,12 @@ the cockpit vignette for the player, ring, `+N NAME` callout);
 status does its job (see 4.7). `announce_triggered_at()` draws it on a tile
 instead, for a player status that acts there.
 
-**Adding a status:** subclass `StatusModifier` (set `status_id`, `color`,
-`icon`, `info_icon`, `priority`), add it to `StatusCatalog`, give it a
-keyword whose file name is the `status_id` (5.3; `display_name()` is that
-keyword's title), and decide what it does on the player (the keyword's
-`player_rule` if that reads differently).
+**Adding a status:** subclass `StatusModifier` (`priority` and the hook;
+tuning numbers as constants returned by a static `rule_values()`), and add a
+`StatusResource` whose file name is the id, naming the script and holding
+the name (`title`, which `display_name()` reads), rule (numbers as
+`{placeholders}`), tokens, colour and icons. Decide what it does on the
+player (`player_rule` if that reads differently). Nothing to register.
 
 ### 4.5.1 Evasion
 
@@ -425,7 +448,7 @@ modifier's visual, if it has one.
 | Listener | Reacts when | Does |
 |---|---|---|
 | `Tile` | `mod.source == self` | `play_trigger_feedback()`: bump, flash, ring, sparks, sound, callout of `get_trigger_text()` in `get_trigger_color()` |
-| `EnvironmentMonitor` | `mod` is `BackgroundModifierManager.get_active_modifier()` | the same pop as a tile: squash on the hinge, flare, ring, sparks, sound, callout of `get_trigger_text()` ("x2", "NO SHIELDS") in the rule's colour. Fires even while the monitor is still blinking unread |
+| `EnvironmentMonitor` | `mod` is `BackgroundModifierManager.get_active_modifier()` | the same pop as a tile: squash on the hinge, flare, ring, sparks, the rule's `trigger_sfx` (else the monitor's chime), callout of the rule resource's `display_callout()` ("x2", "NO SHIELDS") in the rule's colour. Fires even while the monitor is still blinking unread |
 | `StatusModifier` (override) | always | flashes the host ship, callout of the status name |
 
 Set `source` when registering a modifier on a tile's behalf (see
@@ -482,7 +505,7 @@ sound should go is in `SOUND_EFFECTS.md`.
 | `BackgroundHazardResource` | `Source/Resources/BackgroundResources/BackgroundHazards/*.tres` | A timed environmental event that belongs to a background (solar flare, ion storm, asteroid impact, fate rift): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | `TileResource.effect_chain`, `event_responses`, enemy actions, hazards | Ordered list of `EffectData` entries dispatched through `EffectRegistry` |
-| `KeywordResource` | `Source/Content/Keywords/KeywordResources/<id>.tres` | A game term: title, rule, optional player-side rule and its `KeywordToken` spellings (5.3) |
+| `KeywordResource` | `Source/Content/Keywords/KeywordResources/<id>.tres` | A game term: title, rule, optional player-side rule and its `KeywordToken` spellings (5.3). A status is a `StatusResource`, a keyword that also names its script, colour and icons (4.5) |
 | `ActivationResource` | In TileResource.activation_checks | Criteria checks: requires a die / takes no die, specific values, in combat, a ship targeted, engine charged / not charged, can afford N charge, overcharged, Fleet of N or fewer, evasion below its cap |
 
 ### 5.2 Tile Resource Fields
@@ -506,7 +529,10 @@ class_name TileResource extends Resource
 
 The three text fields are content text (7.5): display code reads
 `display_name()`, `display_activation_description()` and
-`display_description()`, never the fields.
+`display_description()`, never the fields. The descriptions write their
+numbers as `{placeholders}` bound to the steps that hold them
+(`EffectData.text_token`), which the accessors fill through `TextTokens`
+(7.5); `_text_tokens()` adds the tile's own `{countdown}`.
 
 Uses are a **per-turn budget**. Bigger payoffs are meant to carry a cost other
 than uses (engine charge, hull, a die, neighbours' uses), not a once-per-fight
@@ -523,7 +549,12 @@ that works differently on the player) and its `tokens`: embedded
 `KeywordToken`s, one per spelling written into descriptions (`(feed_right)`,
 `(burn)`, `(jammed_you)`), each with a `label`, an optional palette `color`
 and `player_side`. All of the text is content text (7.5), keyed by position
-(`KEYWORD.FEED.TOKENS_0.LABEL`). A status's id is its keyword's id.
+(`KEYWORD.FEED.TOKENS_0.LABEL`). `display_rule()` / `display_player_rule()`
+fill the rule's `{placeholders}` through `TextTokens.fill(text, self)` from
+the keyword's `_text_tokens()`; a `StatusResource` (4.5), the keyword that
+is a status, returns its script's `rule_values()`, so a rule never types a
+number the code applies (a test fails on a digit outside yellow die faces).
+`Keywords.keyword(id)` returns the resource itself.
 `Utils.format_text()` renders each token as a styled label. The info panel
 asks for hoverable labels (`format_text(text, true)`), which wrap each in a
 `[url]` tag whose meta is the id. `InfoShower` listens for
@@ -1352,6 +1383,20 @@ the place's — the Solar Corona's star flares, the Ion Storm Front's clouds
 discharge — so it can't be stacked onto unrelated scenery, and the region's art
 does part of the telegraphing.
 
+Each is described by its resource alone. A rule's `create_modifier()` builds
+its `modifier_script` (a `Modifier` subclass that constructs with no
+arguments) and sets each of its `parameters` on the new modifier by property
+name (Doldrums: `{&"cap": 3}` sets `AmountCapModifier.cap`; an unknown name is
+a `push_error`); a modifier that declares `rule` is handed the resource. There
+is no enum or match to extend. Its text (`modifier_name`, `description`, and
+the `callout` the monitor floats when it bites) and a hazard's (`description`,
+`headline`, `banner`) fill their `{placeholders}` through
+`TextTokens.fill(text, self)` (7.5): a rule's `_text_tokens()` returns its
+`parameters`, and a hazard's numbers come from the chain step marked
+`text_token` (Solar Flare's damage step, `{amount}`). Both take an optional
+`trigger_sfx` for the monitor, which plays its chime without one.
+`test_background_rule_text.gd` pins every rule's and hazard's English.
+
 Each hazard has a `timing`. `YOUR_TURN_STARTS` hazards (Solar Flare, Asteroid
 Impact) go off as the player's turn starts, after the hand is rolled.
 `YOUR_TURN_ENDS` hazards (Ion Storm, Fate Rift) go off on
@@ -1839,6 +1884,30 @@ an empty cell. Pseudo stretches the live field. Display code only ever calls
 the accessors; the dev console, debug log and AutoPilot read the raw English
 on purpose.
 
+**TextTokens** (`Systems/Localization/text_tokens.gd`) is the one resolver for
+design numbers in content text. Text names a number as `{name}`; a resource
+embedded in the content's file (`EffectData`, `EffectChain`,
+`ActivationResource`) marks the number it owns with `text_token` and, when
+it isn't the class's default (`amount`, `base_repetitions`, `threshold`),
+`text_token_value`: a small `Expression` over that resource's numeric
+fields or other tokens (`-amount`, `range_max`, `low_max + 1`,
+`amount + damage`). The root adds numbers that live on itself through
+`_text_tokens() -> Dictionary`: a tile's countdown, a background rule's
+`parameters`, a `StatusResource`'s `rule_values()`. Binding is by name, so
+reordering a chain never rewires the text, and steps may share a name.
+`fill(text, root)` runs inside the `display_*()` accessors of tiles,
+hazards, rules and keywords, after `ContentText.text()` (so translations
+fill too) and before `Tile.fill_data_tokens()` (`[data]` run-time
+counters) and `Utils.format_text()` (`(die_N)` / keyword tokens).
+`problems()` reports an unbound name or shared names that disagree, and
+`literal_numbers()` finds digits left in prose. `test_tile_text_tokens.gd`
+is strict for every tile: a literal that isn't data (a rule, a d6 face) is
+listed in `LITERAL_EXEMPT` in `Systems/Localization/Tools/tile_text_tokens_tool.gd`
+with its reason, and `RULE_NUMBERS` (`0`) is never matched. The converter
+behind `tools/loc.sh tokens report|convert|verify` lives in the same file.
+An enemy action's `(amount)` is different: its rolled value, filled at run
+time.
+
 **Keys** are `<PREFIX>.<file stem>.<SUFFIX>`. A resource embedded in another
 file is keyed by its property path from the file's root
 (`ENEMY_ACTION.SEIZE.EFFECT_CHAIN.EFFECTS_5.CALLOUT`; arrays by index,
@@ -1852,6 +1921,17 @@ after its class. A type whose file names repeat across folders adds the folder
 (`_content_text_owner`, never saved into a `.tres`), which duplicates copy:
 runtime copies go through `ContentText.copy(res)` (`EnemyActionResource.copy()`
 for actions, every rolled action being a deep copy).
+
+**UI keys and plurals.** UI text lives in `translations.csv`. A scene's
+Label or RichTextLabel holds the key as its `text` (Godot auto-translates
+it; `Buttons/button.gd` re-translates on hover); text set from code goes
+through `tr()`. The CSV ends in a `?plural` column (confirmed on 4.7.1):
+a plural row names its plural id there, and the keyless rows under it are
+its further forms, numbered by position, so they must never be sorted.
+Code reads them with `tr_n(&"KEY", &"KEY_PLURAL", n)`
+(`STATUS_BADGE_STACKS`, `CALLOUT_DICE_LOST`). `LocTable` calls the form rows
+`KEY#2`, `KEY#3`, writes them back keyless, and an export asks a locale only
+for the forms `TranslationServer.get_plural_rules()` gives it.
 
 **Tooling** (`tools/loc.sh`, close the editor first). The GDScript behind it
 lives in `Systems/Localization/Tools/` (`tools/` is `.gdignore`d):
@@ -2416,7 +2496,7 @@ Source/
 │   │   └── RewardManager/reward_manager.gd     # Tile unlocks
 │   │
 │   ├── keywords.gd                            # Keyword lookups by id (KeywordResources)
-│   ├── Localization/                          # ContentText, OverflowWatcher, Tools/ (loc.sh's LocCatalog etc.)
+│   ├── Localization/                          # ContentText, TextTokens, OverflowWatcher, Tools/ (loc.sh's LocCatalog etc.)
 │   ├── utils.gd                               # format_text (colours, die icons, keywords)
 │   │
 │   ├── UI/                                    # Interface nodes

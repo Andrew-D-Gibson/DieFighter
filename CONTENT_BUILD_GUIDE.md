@@ -9,8 +9,8 @@ registration to testing. For how the systems work underneath, see
 ## 0. Rules that apply everywhere
 
 - **Enums stored in `.tres` are append-only.** These include
-  `EffectEnums.*Subtype`, `TileEvent.EventType`, `ScenarioManager.ScenarioEvent`,
-  `BackgroundModifierResource.Effect` and `ActivationResource.ActivationType`.
+  `EffectEnums.*Subtype`, `TileEvent.EventType`, `ScenarioManager.ScenarioEvent`
+  and `ActivationResource.ActivationType`.
   Inserting a value mid-enum silently rewires every authored file below it.
   Count ordinals carefully when hand-editing a `.tres`. Better still, author in
   the inspector, where you pick by name.
@@ -72,6 +72,14 @@ registration to testing. For how the systems work underneath, see
     panel prefixes `Uses (die_N) ->`.
   - Keyword tokens like `(feed_right)` and `(burn)` render styled and
     underlined. Hovering one in the info panel pops up its rule (§9).
+  - **Numbers come from data.** Tile, rule, hazard and keyword text never
+    types a design number: write `{name}` and bind it to the data that holds
+    the number, so the text can't drift from what the game does. Tiles bind
+    a step (§1), rules their `parameters` (§5), hazards a chain step (§6),
+    statuses a constant in their script (§8). Rule-of-the-game numbers
+    (`At 0`) and die faces stay literal. `{name}` is filled once, from the resource;
+    `[data]key[/data]` is a tile's run-time counter, and `(amount)` an enemy
+    intent's rolled value.
 - **Player-facing text is written in English in the `.tres`** (inspector),
   and translated through `Localization/content.csv`. After changing any of
   it, run `tools/loc.sh sync` and commit `content.csv` with the `.tres`.
@@ -158,7 +166,8 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     content text (§13): run `tools/loc.sh sync` after editing them.
   - `activation_description`, `description`: say what the die does,
     e.g. `[color=yellow]Any die[/color] -> ...` (see the text conventions at
-    the top).
+    the top), with every number a `{placeholder}` (see "Numbers in tile
+    text" below).
 - **`rarity`** sets both drop weight (COMMON 1.0 / UNCOMMON 0.45 / RARE 0.18)
   and shop price.
 - **`textures`**: a SpriteFrames whose `default` animation holds AtlasTexture
@@ -287,6 +296,45 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     it on `ON_TURN_START` and loses it on `ON_PLAYER_HEALTH_HIT`.
 - **`dragging_allowed`, `max_dice_in_queue`**: rarely touched.
 
+**Numbers in tile text.** Never type a tile's number into its text. Write
+`{name}` and set `text_token = name` on the step that holds it (inspector:
+EffectData > Text Token). `TextTokens` fills it when the text is shown, in
+every language and on every surface, so changing the step changes the text.
+(The `Text:` examples in this guide show the filled English.)
+- `text_token_value` picks another number than the default: `-amount` (a
+  cost stored negative), `range_max`, `multiplier`, `threshold + 1`, or a
+  sum with another token (`amount + damage`). Empty reads `amount`
+  (EffectData), `base_repetitions` (EffectChain) or `threshold`
+  (ActivationResource). `{countdown}` reads the tile's own countdown. A die
+  face can be one too: `(die_{face})`.
+- Name a token by what the number means in the sentence: `{bonus}` for a
+  "+N" add-on, `{times}` for "Nx", `{percent}` for "N%", `{cost}` for
+  charge spent. Keep a sign that belongs to the prose in the text:
+  `-{loss_per_die}` with `text_token_value = "-multiplier"` (Skeleton Crew).
+- Steps that show the same number share one token; the lint keeps them
+  equal (Phantom Squadron's "until you own 5 dice" binds both the activation
+  threshold and the repetition ADD).
+- A range whose ends are the d6's own faces (1, 6) keeps them literal. A
+  boundary that is data is bound (Polarizer's split, `{low_max}`), and the
+  number one past it can sit on the branch step that handles it:
+  `text_token_value = "low_max + 1"`.
+- Rule numbers stay literal (`At 0`). A tile that keeps another literal on
+  purpose, because no step stores it (a per-unit rule like Flak Cannon's
+  "+1 per surrounding tile", d6 face pairs, Fabricator's two spawn steps),
+  goes in `LITERAL_EXEMPT` in
+  `Source/Systems/Localization/Tools/tile_text_tokens_tool.gd` with the
+  reason.
+- `test/content/test_tile_text_tokens.gd` fails on an unbound `{name}`, on
+  steps sharing a name that disagree, on a marked step its text never shows,
+  and on any literal number not exempt.
+- Tools: `tools/loc.sh tokens report --family <f>` lists literals left,
+  `tokens convert --family <f> [--dry-run]` binds them by value, kind and
+  the unit after them, and `tokens verify --family <f> --against <ref>`
+  checks the filled text equals the English at that git ref. When two
+  literals in one text have the same value, check each `{name}` landed on
+  the right step: `verify` compares English only, so a swap of equal numbers
+  passes it.
+
 **Upgrades.** Every tile offered as a reward has an upgraded version, which
 the player gets by dropping a second copy of the tile on the first. A new
 offered tile needs one too. Tiles that are never offered (ship-only tiles,
@@ -295,7 +343,8 @@ benched tiles) get none, because no second copy can turn up.
   fresh header `uid` (duplicate it in the FileSystem dock, or remove the uid
   and save it once in the editor before committing), `is_upgrade = true`,
   `offered_as_reward = false`, the name with a `+` (`Dice Cannon+`) and the
-  description updated. Then set the base tile's `upgraded_version` to it.
+  description updated where the words change (its `{placeholders}` follow
+  the new numbers). Then set the base tile's `upgraded_version` to it.
   Every tile file carries a uid, and every reference to one names it as well
   as the path. A file without one gets a uid stamped into some unrelated
   diff the next time the editor opens it.
@@ -854,29 +903,43 @@ To make a background appear, add it to a pool's `eligible_backgrounds`
 for specific scenarios. A pool can also take in another (`includes_pool`)
 minus some backgrounds (`excluded_backgrounds`).
 
-**Rule from an existing effect:** create a `BackgroundModifierResource` in
-`BackgroundModifiers/`:
-- `modifier_name` (a place name, caps on the banner), `description`, `color`,
-  optional `icon`.
-- `effect`: SHIELD_BLACKOUT, DOUBLE_DAMAGE, REPAIR_BLACKOUT, ENGINE_BLACKOUT,
-  REROLL_BLACKOUT, NO_REPETITION, AMOUNT_CAP (with `amount_cap`) or
-  DICE_FREEZE (no face changes at all; Flash Freeze) or ONCE_PER_TURN
-  (every grid tile activates once a turn, the engine is immune; Dead
-  Systems). A rule that caps tile uses overrides
-  `Modifier.get_tile_use_cap(tile)`: `Tile.max_uses_per_turn()` reads it, so
-  the lights, gray-out and refusal follow with no art changes.
+**A rule is one `.tres`, plus a script if it's a new kind.** Create a
+`BackgroundModifierResource` in `BackgroundModifiers/`:
+- `modifier_name` (a place name, caps on the banner), `description`,
+  `callout` (the word or two floated off the environment monitor when the
+  rule bites: "NO SHIELDS", "MAX {cap}"), `color`, optional `icon` and
+  `trigger_sfx` (else the monitor's chime).
+- `modifier_script`: the Modifier that enforces it. Existing ones are in
+  `Source/Behavior/Modifiers/BackgroundModifiers/` (plus
+  `double_damage_modifier.gd`): shield, repair, engine and reroll
+  blackouts, no repetition, amount cap (Doldrums), dice freeze (no face
+  changes at all; Flash Freeze), and once per turn (every grid tile
+  activates once a turn, the engine is immune; Dead Systems).
+- `parameters`: the rule's numbers, keyed by the modifier property each
+  sets (`{&"cap": 3}` sets `AmountCapModifier.cap`). Write them in the text
+  as `{cap}`, never as digits: `TextTokens` fills them from the same
+  dictionary. A modifier that shows its rule's name or colour declares
+  `var rule: BackgroundModifierResource` and is handed the resource.
+
+A rule that caps tile uses overrides `Modifier.get_tile_use_cap(tile)`:
+`Tile.max_uses_per_turn()` reads it, so the lights, gray-out and refusal
+follow with no art changes.
 
 **A new way to change a die's face** (a new event) must override
 `EffectEvent.changes_die_values()` to return true, or Flash Freeze won't stop
 it. A face change outside an event (Scrambled's) asks
 `DiceFreezeModifier.active_on(engine)` and calls `announce_triggered()` on it.
 
-**New kind of rule:**
-1. Write a `Modifier` subclass in `Source/Behavior/Modifiers/BackgroundModifiers/`.
-   Copy `shield_blackout_modifier.gd`. Use `on_before_event()` to cancel or
-   adjust, and call `announce_triggered()` when it changes something.
-2. **Append** a value to `BackgroundModifierResource.Effect`.
-3. Return the new modifier from `create_modifier()`.
+**New kind of rule:** write a `Modifier` subclass in
+`Source/Behavior/Modifiers/BackgroundModifiers/` (copy
+`shield_blackout_modifier.gd`; it must construct with no arguments). Use
+`on_before_event()` to cancel or adjust, and call `announce_triggered()`
+when it changes something. A rule that cuts an amount calls
+`event.cap_amount(capped, self)` rather than assigning `amount`, so the
+popup can show the cut ("12→3", in the colour `get_trigger_color()`
+returns). Give each number it needs a `var`, set from the rule's
+`parameters`, and point a new rule `.tres` at the script. Nothing to
+register: no enum, no match.
 
 ---
 
@@ -893,6 +956,8 @@ A hazard belongs to a background, not a scenario: the place itself goes off.
   off. Plain text, 30 characters at most.
 - `icon`: 9x9 at most, from `Assets/Textures/TargetingComputer/HazardIcons/`.
   It sits beside the countdown digit on the environment monitor.
+- `trigger_sfx`: optional; played on the environment monitor as it goes
+  off, else the monitor's chime.
 - `timing`: `YOUR_TURN_STARTS` (after the hand is rolled) or
   `YOUR_TURN_ENDS` (once the dice the player spent have landed with the
   ships, before any ship uses them). Anything that changes dice belongs at
@@ -903,6 +968,11 @@ A hazard belongs to a background, not a scenario: the place itself goes off.
   points. Start the description with that trigger (`Your turn starts ->`).
 - `effect_chain`: what fires, e.g. `TARGET_ALL_SHIPS` → amount → `DAMAGE`. It
   runs with the player as actor and no die.
+- Write the chain's numbers as `{name}`, never digits, in the description,
+  headline and banner alike, and set `text_token` on the step that holds the
+  number (§1). Solar Flare's damage step carries `text_token = &"amount"`
+  and its text reads "Deal {amount} damage", so changing the chain changes
+  the text.
 
 Assign it to a background's `hazard`, and give that background art that shows
 it coming. The countdown on the environment monitor is automatic; background
@@ -937,6 +1007,10 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
   translated like any content text, so run `tools/loc.sh sync` after adding
   one. `string_param` is for internal names only (status ids, tile data keys,
   families) and is never shown. A content test enforces both.
+  A callout's `{amount}` and `{die}` are filled as it plays, from the
+  running chain; they aren't design numbers (§1), so no `text_token` binds
+  them. A background rule's callout is the rule's own `callout` field (§5),
+  not a CALLOUT step.
 - **Only throw a die at a ship that keeps it.** ATTACK_TWEEN flies the die at
   the target, which reads as handing it over, so use it only when the chain
   then gives the die to that target. A tile that hits but keeps or passes its
@@ -1006,24 +1080,31 @@ Statuses go on enemies and on the player. The same status works on both, so
 a new one needs a rule for each side.
 
 1. Subclass `StatusModifier` in `Source/Behavior/Modifiers/Statuses/`. Copy
-   `burn_status.gd` or `exposed_status.gd`. Set `status_id`, `color` (a
-   `Globals` palette colour), `icon`, `info_icon` and `priority`, and
-   implement its hook. Its name is its keyword's title (`status_id` = the
-   keyword's file name). Where it touches dice, branch on
-   `is_on_player()`: an enemy spends dice on its table, the player places
-   them on tiles (`JammedStatus` and `ScrambledStatus` show both).
+   `burn_status.gd` or `exposed_status.gd`. Set `priority` in `_init()` and
+   implement its hook; the name, colour and icons live on its resource
+   (step 3). Every number its rule will mention (stacks spent, a
+   percentage) is a constant the hook uses, returned by a static
+   `rule_values()` (`{"spent": SPENT_PER_HIT}`). Where it touches dice,
+   branch on `is_on_player()`: an enemy spends dice on its table, the player
+   places them on tiles (`JammedStatus` and `ScrambledStatus` show both).
    - A status that lasts a number of the ship's turns counts down as that
      ship's own turn ends (`Events.enemy_turn_over` for an enemy,
      `Events.player_turn_over` for the player), not in `on_status_tick()`:
      that tick runs before an enemy acts and after the player's turn, so it
      would spend a stack before the status ever did anything (`WeakenedStatus`).
-2. Add it to `StatusCatalog._statuses` (`status_catalog.gd`), keyed by id.
-3. Art: `Assets/Textures/Statuses/` (11×11 badge, 24×24 info).
-4. Add a keyword for it (§9) whose file name is the `status_id`. If it reads
-   differently on the player, fill `player_rule` and add a token ticked
-   `player_side` (`(jammed_you)`): the player's badge shows that rule, and
-   enemy actions aimed at the player use that token.
-5. Apply it with `ATTRIBUTE_CHANGE / APPLY_STATUS`: `string_param` = id,
+2. Art: `Assets/Textures/Statuses/` (11×11 badge, 24×24 info).
+3. Add a `StatusResource` to `Source/Content/Keywords/KeywordResources/`
+   (New Resource → StatusResource); its file name is the status's id. It is
+   a keyword (§9) with four more fields: `modifier_script` (your script),
+   `color` (a palette name), `icon` and `info_icon`. Its `title` is the
+   status's name. Write numbers in the rule as `{name}` from
+   `rule_values()` ("Spends {spent} Exposed."), never as digits; a test fails
+   on a typed number. If it reads differently on the player, fill
+   `player_rule` and add a token ticked `player_side` (`(jammed_you)`): the
+   player's badge shows that rule, and enemy actions aimed at the player use
+   that token. There is no catalog to edit: `StatusCatalog` finds it. Run
+   `tools/loc.sh sync`.
+4. Apply it with `ATTRIBUTE_CHANGE / APPLY_STATUS`: `string_param` = id,
    running amount = stacks. Test with dev console `status <id> [stacks]` on a
    targeted enemy, or `status <id> [stacks] me` on yourself.
 
@@ -1059,6 +1140,9 @@ listens for `ON_STATUS_APPLIED_TO_ENEMY` (Hex Coil); `APPLY_STATUS`,
 
 Add a `KeywordResource` to `Source/Content/Keywords/KeywordResources/`; the
 file name is its id. Write `title` and `rule` (a sentence or two, terse).
+A number the rule repeats from code is a `{placeholder}`, filled through
+`TextTokens` from the keyword's `_text_tokens()` (a status's come from its
+script's `rule_values()`, §8); die faces in yellow may be written out.
 Add one `KeywordToken` to `tokens` per spelling: `token` (`"(my_kw)"`),
 `label`, and `color` when the word follows another colour rule (holograms are
 blue; keywords are otherwise orange). Then run `tools/loc.sh sync`. Token keys
@@ -1177,7 +1261,8 @@ AudioStreamPlayer.
 Player-facing text is English and is translated into zh_CN, ja, ru, de, fr, es
 and pt_BR through two CSVs in `Localization/`:
 - `translations.csv`: UI and code text. Write the key and the English in the
-  CSV by hand (new rows at the end) and read it with `tr("KEY")`.
+  CSV by hand (new rows at the end) and read it with `tr("KEY")`, or put the
+  key in a scene's label (below).
 - `content.csv`: content text. **Generated; never edit its `en` column.**
   The English is written in the content resource itself, in the inspector,
   and `tools/loc.sh sync` copies it here under a generated key. You may
@@ -1191,20 +1276,27 @@ Changing English that was already translated marks those translations
 before running the tools. Display text never goes in `string_param` or other
 internal ids; a callout's words go in `callout` (§7).
 
+**Numbers in content text** are `{placeholders}` filled from the resource's
+own data by `TextTokens` (§0): a tile's steps (§1), a rule's `parameters`
+(§5), a hazard's chain (§6), a status's `rule_values()` (§8). A translator
+keeps each `{name}` as written and may move it; the lint fails a translation
+that drops one. Rows' `_context` notes tell the translator a `{name}`
+becomes a number.
+
 | Type | Fields | Key |
 |---|---|---|
 | `TileResource` | tile_name, activation_description, description | `TILE.<file>.NAME/ACTIVATION/DESC` |
-| `KeywordResource` / `KeywordToken` | title, rule, player_rule / label | `KEYWORD.<file>.*`, `…TOKENS_N.LABEL` |
+| `KeywordResource` (and `StatusResource`) / `KeywordToken` | title, rule, player_rule / label | `KEYWORD.<file>.*`, `…TOKENS_N.LABEL` |
 | `EnemyResource` | enemy_name, description | `ENEMY.<file>.NAME/DESC` |
 | `EnemyActionResource` | name, description | `ENEMY_ACTION.<file>.NAME/DESC` |
 | `EffectData` | callout | `<file's key>.<path>.CALLOUT` |
 | `BackgroundHazardResource` | hazard_name, description, headline, banner | `HAZARD.<file>.*` |
-| `BackgroundModifierResource` | modifier_name, description | `BG_MODIFIER.<file>.*` |
+| `BackgroundModifierResource` | modifier_name, description, callout | `BG_MODIFIER.<file>.NAME/DESC/CALLOUT` |
 | `TutorialStep` | tutorial_text | `TUTORIAL.<file>.TEXT` |
 | `ScenarioShipState` | dialogue (50 chars) | `SHIP_STATE.<folder>.<file>.DIALOGUE` |
 | `ScenarioResource` | boss_title, boss_subtitle | `SCENARIO.<file>.BOSS_*` |
 
-A status's name is its keyword's title (§8).
+A status is a keyword (`StatusResource`), and its name is the title (§8).
 
 **Keys.** A resource saved as its own file is keyed by the file:
 `HAZARD.SOLAR_FLARE.HEADLINE`. One embedded in another file (a callout in a
@@ -1214,6 +1306,26 @@ never changes a key. Renaming the file or moving a step does: sync then moves
 the row's translations to the new key when the English is unchanged, and
 reports anything it can't match as an orphan (move its translations by hand,
 then delete the old row).
+
+**Plurals.** Text with a count that changes the words ("1 stack", "3 stacks")
+is one plural row in `translations.csv`, read with
+`tr_n(&"KEY", &"KEY_PLURAL", n).format({"n": n})`. Put the plural id
+(`KEY_PLURAL`, any unique name) in the row's `?plural` cell, and add one
+keyless row under it per further form. English needs two, but give three,
+the third repeating the second: Russian has three (1, 2-4, 5+) and a
+translator can only fill a row that exists. Say in each row's `_context`
+which form it is. The loc tools call the rows under a plural row `KEY#2`,
+`KEY#3`; an export only asks a language for the forms it has (Japanese and
+Chinese one, Russian three, the rest two). Don't sort or reorder those rows:
+Godot numbers the forms by position. To check for duplicate keys, skip the
+keyless rows: `cut -d, -f1 Localization/translations.csv | grep -v '^$' |
+sort | uniq -d`.
+
+**UI text in scenes.** A Label's or RichTextLabel's `text` can be the key
+itself (`text = "PAUSE_TITLE"`); Godot translates it. Buttons built on
+`Buttons/button.gd` translate the key on hover too. Text a script sets uses
+`tr()`. Placeholder text a script always overwrites (InfoShower,
+BossIntroCard) can stay English.
 
 **Display code** never reads a text field directly. It calls the resource's
 `display_*()` accessor (`hazard.display_headline()`), which returns the
