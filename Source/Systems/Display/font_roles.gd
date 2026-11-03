@@ -91,6 +91,12 @@ const _READABLE_PROFILE: String = PROFILE_DIR + "readable.tres"
 
 static var _profile: FontProfile = null
 static var _readable: bool = false
+## Every profile loaded this session, by path. Holding them keeps their fonts
+## alive after a switch: text shaped before it still points at the old
+## font's TextServer data, and if that font were freed, the next re-layout of
+## such text (before it re-shapes in the new font) would read freed data and
+## log 'Parameter "fd" is null' from the TextServer.
+static var _loaded: Dictionary[String, FontProfile] = {}
 
 
 ## The profile for [param locale]: its own file, else its language's (pt for
@@ -99,8 +105,19 @@ static func profile_for(locale: String) -> FontProfile:
 	for candidate: String in [locale, locale.get_slice("_", 0), DEFAULT_LOCALE]:
 		var path: String = PROFILE_DIR + candidate + ".tres"
 		if ResourceLoader.exists(path):
-			return load(path) as FontProfile
+			return _load_profile(path)
 	return null
+
+
+## The Readable Font option's faces (see face()).
+static func readable_profile() -> FontProfile:
+	return _load_profile(_READABLE_PROFILE)
+
+
+static func _load_profile(path: String) -> FontProfile:
+	if not _loaded.has(path):
+		_loaded[path] = load(path) as FontProfile
+	return _loaded[path]
 
 
 ## Switches every role to [param locale]'s faces.
@@ -160,7 +177,7 @@ static func face(role: StringName) -> FontFace:
 	var language: FontFace = current_profile().face(role)
 	if not _readable:
 		return language
-	var readable: FontFace = (load(_READABLE_PROFILE) as FontProfile).face(role)
+	var readable: FontFace = readable_profile().face(role)
 	var merged: FontFace = FontFace.new()
 	merged.font = readable.font
 	merged.size = readable.size

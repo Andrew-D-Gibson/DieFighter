@@ -32,9 +32,6 @@ extends RefCounted
 ## came out bigger than a screen pixel (a size-16 em is 96 screen pixels
 ## through the 6x camera), which left stair-stepped, uneven strokes.
 
-const _READABLE_PROFILE: String = FontRoles.PROFILE_DIR + "readable.tres"
-
-
 static func is_readable() -> bool:
 	return FontRoles.is_readable()
 
@@ -65,5 +62,5 @@ static func font_for(wrapper: FontVariation, readable: bool) -> Font:
 
 static func _face_for(wrapper: FontVariation, readable: bool) -> FontFace:
 	var role: StringName = FontRoles.ROLES[wrappers().find(wrapper)]
-	var profile: FontProfile = load(_READABLE_PROFILE) if readable else FontRoles.current_profile()
+	var profile: FontProfile = FontRoles.readable_profile() if readable else FontRoles.current_profile()
 	return profile.face(role)

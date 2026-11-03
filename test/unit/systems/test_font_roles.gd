@@ -115,6 +115,26 @@ func test_switching_language_swaps_fonts_and_sizes_live_and_back_exactly() -> vo
 	assert_eq(title.get_minimum_size(), english[1])
 
 
+## Text shaped in the old language's font re-lays out after a switch without
+## the TextServer reading freed font data: the profiles stay loaded, so the
+## old font outlives the switch. (Freed, every such re-shape logged
+## 'Parameter "fd" is null' from _font_get_ascent/descent/spacing.)
+func test_text_shaped_before_a_switch_survives_it() -> void:
+	FontRoles.use_locale("de")
+	var paragraph: TextParagraph = TextParagraph.new()
+	paragraph.add_string("Hallo Welt", FontRoles.font(FontRoles.SMALL), FontRoles.size(FontRoles.SMALL))
+	paragraph.width = 200
+	assert_gt(paragraph.get_size().y, 0.0)
+	var german_font: WeakRef = weakref(_small.base_font)
+
+	FontRoles.use_locale("en")
+	assert_not_null(german_font.get_ref(), "the German font is still loaded")
+	paragraph.width = 30
+	assert_gt(paragraph.get_size().y, 0.0, "the old text re-shapes in its own font")
+	var font_errors: Array = get_errors().filter(func(error: Variant) -> bool: return error.contains_text("fd"))
+	assert_eq(font_errors.size(), 0, "no TextServer reads of freed font data")
+
+
 ## Setting the language applies its profile even when the locale is already
 ## current, which is how the first call at boot takes effect.
 func test_set_locale_applies_the_profile_even_when_unchanged() -> void:
