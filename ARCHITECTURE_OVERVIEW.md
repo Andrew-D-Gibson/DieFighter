@@ -2039,7 +2039,7 @@ byte-identical, `LocPipeline` runs the steps, `LocLint` the checks and
   locale, warns on token, BBCode or length problems, re-imports and lints.
   `_status` is one word (`machine`) or per-locale pairs (`de=reviewed
   fr=stale`).
-- `lint` (`test/content/test_localization.gd`, also in GUT): content English
+- `lint` (`test/core/content/test_localization.gd`, also in GUT): content English
   synced; filled cells keep `{x}`, `%d`, `(tokens)` and BBCode; text fits
   `_max_chars` (tags count 0, tokens 1, placeholders 2). Glyph coverage is
   report-only until each language has its font.

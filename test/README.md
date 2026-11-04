@@ -1,24 +1,71 @@
 # DieFighter tests (GUT 9.7)
 
+The suite is small on purpose. It guards the game's rules and the integrity of
+authored content; it does not guard how the game looks, how it's tuned, or
+how its animations are choreographed. Those change all the time and are
+checked by playing.
+
 ## Running
 
-- **Editor:** open the GUT panel (bottom dock) and hit *Run All*. It reads `.gutconfig.json`.
-- **Headless:**
-  ```sh
-  GODOT=/Users/drew/Documents/Godot/Godot_4.7_stable.app/Contents/MacOS/Godot
-  $GODOT --headless --path . -s addons/gut/gut_cmdln.gd                          # everything
-  $GODOT --headless --path . -s addons/gut/gut_cmdln.gd -gselect=test_rng_manager  # one script
-  ```
-  Exit code is non-zero on failure, so this drops straight into CI or a pre-commit hook.
+Always headless: a windowed run (the editor's GUT panel) also hears the real
+mouse, and moving it over the window fails tests that click.
+
+```sh
+GODOT=/Users/drew/Documents/Godot/Godot_4.7_stable.app/Contents/MacOS/Godot
+$GODOT --headless --path . -s addons/gut/gut_cmdln.gd                                   # core (~40 s)
+$GODOT --headless --path . -s addons/gut/gut_cmdln.gd -gselect=test_rng_manager         # one script
+$GODOT --headless --path . -s addons/gut/gut_cmdln.gd -gconfig=res://.gutconfig_full.json  # core + extended
+```
+
+The exit code is non-zero on failure.
+
+- **Core** (`test/core/`, the default `.gutconfig.json`): rules and content
+  integrity. Run it before committing a change to game code or content.
+- **Extended** (`test/extended/`, `.gutconfig_full.json`): input, UI widgets,
+  fonts and localization tooling, the AutoPilot harness, and slower
+  scene-level checks. Run it only when asked, or when a change is squarely
+  in one of those systems (then `-gselect` just the scripts involved).
 
 ## Layout
 
 | Folder | What goes here |
 |---|---|
-| `unit/` | One class or system in isolation. Mirrors `Source/` loosely: `engine/`, `effects/`, `modifiers/`, `components/`, `grid/`, `player/`, `systems/`. |
-| `integration/` | Several real pieces together, e.g. chain → registry → engine → modifiers → Health. |
-| `content/` | Data integrity over every authored `.tres` under `Source/Content`. These catch a stale effect ordinal or a half-added effect before it becomes a tile that silently does nothing. |
+| `core/content/` | Data integrity over every authored `.tres` under `Source/Content`: stale effect ordinals, unbound text placeholders, unregistered tiles. |
+| `core/integration/` | Several real pieces together, e.g. chain → registry → engine → modifiers → Health. |
+| `core/engine/`, `effects/`, `modifiers/`, `enemies/`, `grid/`, `player/`, `components/`, `systems/` | One rule or system in isolation: event resolution, statuses, enemy action rolling, grid moves, saves, RNG, shops. |
+| `extended/components/`, `extended/systems/` | Everything else that still earns its keep (see above). |
 | `helpers/` | Shared fakes and builders. Loaded with `preload`, not `class_name`, so none of them show up in the game's global class list. |
+
+## When to write a test
+
+Don't, by default. Add one only when **all** of these hold:
+
+1. It covers core behaviour: a game rule, save/load, RNG determinism, or
+   content integrity. Not visuals, layout, animation timing, cursor art,
+   sound, or AutoPilot heuristics.
+2. It protects against a bug that could plausibly happen again, ideally one
+   that already did.
+3. It would still pass after any reasonable tuning or art change.
+
+New tests go in `test/core/` unless they're slow (over ~0.5 s) or need a
+scene-level setup, in which case `test/extended/`. Keep them few: one test
+per rule, not one per tile that uses the rule.
+
+## A test that breaks on tuning is deleted, not fixed
+
+If changing a number, a tile, a ship, a sprite, a sound or a sentence fails a
+test, the test was wrong. Delete it (or the assertion that pinned the value)
+rather than updating it to the new value. Specifically, never:
+
+- assert a shipped tile's, ship's or region's numbers (`countdown_cannon`
+  deals 25), or which shipped content behaves which way;
+- assert a balance constant (3% evasion a charge, a 50% cap, prices);
+- assert positions, sizes, colours, frame counts or timings of anything drawn;
+- type out player-facing wording (compare with `tr("KEY")` or the resource's
+  own field instead).
+
+Build the fixture in the test (`effects.gd`, `ships.gd`) and assert what the
+code does with the numbers you gave it.
 
 ## Conventions
 
@@ -28,16 +75,5 @@
 - **Prefer fresh instances over autoloads.** Load `rng_manager.gd` or `save_manager.gd` and `.new()` them. `SaveManager.save_path` exists so tests never touch `user://save_game.json`.
 - **Nodes that reach for game systems in `_ready()`** (Tile, Dice) are instantiated from their scene and kept *out* of the tree.
 - **Expected errors must be asserted.** GUT fails a test on any unexpected `push_error` or engine error, so a test that exercises an error path should say so with `assert_push_error("…")`, `assert_push_warning("…")` or `assert_engine_error_count(n)`.
-- **Never pin player-facing wording.** Text, names and tuning numbers change all the time; a test that fails because a sentence was reworded is noise. Check what the code does with text instead:
-  - which message: compare with `tr("ERROR_GRID_FULL")`, not `"GRID FULL"`;
-  - shipped content: compare with the resource's own `display_*()` or field (`rule.display_name()`, `load(".../raid.tres").name`), not a typed-out copy;
-  - numbers from data: change the data in the test and check the new number shows up, rather than quoting today's number;
-  - fixtures you build in the test (`hazard.hazard_name = "Test Flare"`) can be asserted as written, since the test owns them.
+- **No mid-wait timing checks.** A single slow frame can spend a whole short delay; assert before and after a wait, never partway through it.
 - `test_effect_catalog.gd` pins every effect enum's ordinals. Appending a value passes. If it fails because a value was inserted or reordered, fix the enum, not the test. After appending, add the new name to the end of its pinned list too, so the next person's insert is caught.
-
-## Not covered yet (good next targets)
-
-- Targeting handlers, and tile/dice-control handlers that need a populated `TileGrid` / `EnemyManager`.
-- The Feed flow: `PassDieToTileEvent` (refusal sends the die to the target, `feed_depth` increments), `FeedHologramEvent`, `MergeHeldDieEvent`, `TARGET_RANDOM_ADJACENT_TILE`, `Tile.release_held_dice()`, and `ON_ADJACENT_TILE_ACTIVATED` firing (which tiles count as neighbours is covered in `test_tile_grid.gd`). All verified live in a running game (see `DEVLOG.md`, 2026-09-30); a unit test needs a `TileGrid` with real tiles, and tiles need the scene tree because the `uses_remaining` setter tweens the sprite.
-- `DamageEvent.resolve()`, which needs `Globals.state_manager` and spawns particles.
-- `Enemy._current_pool_index()` (`TURN_CYCLE` / `HEALTH_THRESHOLD` / `SQUAD_LOSSES` / `COMBAT_ROUNDS`), `Map` Fate state, `GameStateManager` sector generation and checkpoint capture. These want a small test double for GameStateManager, or some logic pulled out into RefCounted classes first. (Rolling a table, gating, binding and relays are covered in `unit/enemies/`; build ships with `helpers/ships.gd`.)

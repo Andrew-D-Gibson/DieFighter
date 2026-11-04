@@ -30,7 +30,7 @@ registration to testing. For how the systems work underneath, see
   white.
 - **Before committing**, run the GUT suite:
   `.../Godot --headless --path . -s addons/gut/gut_cmdln.gd`.
-  `test/content/test_authored_content.gd` loads every `.tres` under
+  `test/core/content/test_authored_content.gd` loads every `.tres` under
   `Source/Content`. It catches stale effect ordinals, unknown status ids and
   empty chain slots. `test_effect_catalog.gd` pins every enum's ordinals.
 - **Text conventions.** Keep descriptions terse. Say what happens, in order,
@@ -324,7 +324,7 @@ every language and on every surface, so changing the step changes the text.
   goes in `LITERAL_EXEMPT` in
   `Source/Systems/Localization/Tools/tile_text_tokens_tool.gd` with the
   reason.
-- `test/content/test_tile_text_tokens.gd` fails on an unbound `{name}`, on
+- `test/core/content/test_tile_text_tokens.gd` fails on an unbound `{name}`, on
   steps sharing a name that disagree, on a marked step its text never shows,
   and on any literal number not exempt.
 - Tools: `tools/loc.sh tokens report --family <f>` lists literals left,
@@ -629,7 +629,7 @@ roll missed it, past the variety cap if need be). A ship that can be in
 that spot needs a Raid option in every pool. Gate it on `ATTITUDE_IS`
 AGGRESSIVE, inverted, so it only turns up while the ship is on the player's
 side and its ordinary fights don't change (see `hauler.tres`).
-`test/content/test_ally_hand_offs.gd` walks every scenario's reachable ship
+`test/core/content/test_ally_hand_offs.gd` walks every scenario's reachable ship
 states and names any ship that's missing one. Pirates count too: one
 standing by while the player fights a civilian owes the civilian a Raid.
 
@@ -1047,7 +1047,7 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
    - `fields` lists which EffectData fields the inspector shows. Choose from
      `KNOWN_FIELDS`.
 5. **Pin it:** append the enum name to its list in
-   `test/unit/effects/test_effect_catalog.gd`.
+   `test/core/effects/test_effect_catalog.gd`.
 6. Rebuild the class cache, then run the tests. `EffectCatalog.validate()` also
    fails loudly at startup if the enum, catalog and handler disagree.
 
@@ -1406,7 +1406,7 @@ its translations exist with `tools/loc.sh audit fonts` (pseudo text in each
 distinct profile) or `audit pseudo@<locale>`.
 
 **Checking every language.**
-- `tools/loc.sh lint` (also part of GUT, `test/content/test_localization.gd`)
+- `tools/loc.sh lint` (also part of GUT, `test/core/content/test_localization.gd`)
   fails when content English hasn't been synced, when a translation lost or
   broke a placeholder, token or BBCode tag, or when text overruns its
   `_max_chars`. Missing glyphs are reported, not failed, until each language

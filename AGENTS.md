@@ -138,3 +138,25 @@ than writing code against an assumed signature.
     (`uses_per_turn + 1` frames, built with `tools/add_use_lights.lua`, never
     hand-drawn).
   - Relays are always limited to 1-2 uses.
+
+### Unit tests (GUT): read `test/README.md` before touching them
+- **Don't write tests by default.** Add one only when it covers core
+  behaviour (a game rule, save/load, RNG, content integrity) AND guards
+  against a bug that could plausibly come back AND would survive any
+  reasonable tuning or art change. No tests for visuals, layout, animation
+  timing, sound, cursor art, AutoPilot heuristics, or a specific shipped
+  tile's/ship's numbers. One test per rule, not one per tile using it. If
+  you're unsure, don't write it; say what you'd test instead.
+- **Run only the core set**, headless:
+  `Godot --headless --path . -s addons/gut/gut_cmdln.gd` (~40 s,
+  `test/core/`). Run `-gselect=<script>` for the scripts your change touches
+  while iterating. Run the full set
+  (`-gconfig=res://.gutconfig_full.json`, adds `test/extended/`) only when
+  the user asks for it.
+- **A test that fails because the user tuned something is deleted, not
+  updated.** If a number, tile, ship, sprite, sound or sentence changed and a
+  test broke, remove the assertion (or the test) that pinned the old value,
+  and tell the user which one you removed. Never "fix" it by typing in the
+  new value.
+- Never run tests in a window (the editor's GUT panel): the real mouse
+  interferes with tests that click.
