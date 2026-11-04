@@ -12,6 +12,7 @@ extends Node2D
 ## ship passes through is its own sprite, made by PixelArtShrinker.
 
 ## Where the caravan flies, starting nearest the player, in this node's space.
+## Its first point is off screen, so ships arrive already flying.
 @export var route: Path2D
 ## How big ships are at each point of [member route], where 1 is their size
 ## in combat. Sizes are blended along the route between points.
@@ -38,7 +39,9 @@ extends Node2D
 ## Simulated before the first frame, so the menu opens on a caravan that's
 ## already underway rather than on its first ship.
 @export var prewarm_seconds: float = 300.0
-## Ships fade out over this many pixels at the far end of the route.
+## Ships fade out over this many pixels at the far end of the route. The
+## near end starts off the left edge of the screen, so ships fly in from
+## there instead of fading in.
 @export var fade_distance: float = 30.0
 
 @export_group("Look")
@@ -213,7 +216,7 @@ func _advance(delta: float) -> void:
 		ship.distance += ship.direction * ship.pace * speed * pow(_depth_at(ship.distance), perspective_slowdown) * delta
 		ship.depth = _depth_at(ship.distance)
 		ship.position = _route_position_of(ship)
-		ship.fade = smoothstep(0.0, fade_distance, ship.distance) * smoothstep(0.0, fade_distance, length - ship.distance)
+		ship.fade = smoothstep(0.0, fade_distance, length - ship.distance)
 	_ships = _ships.filter(func(ship: Ship) -> bool:
 		return not ship.on_route or (ship.distance >= 0.0 and ship.distance <= length))
 	# Farthest first, so nearer ships draw over them.

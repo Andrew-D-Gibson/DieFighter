@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="CaravanShipKind" format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/UI/MainMenu/MenuCaravan/caravan_ship_kind.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://Assets/Textures/Enemies/Fate/fate_leech.png" id="2_texture"]
+
+[resource]
+script = ExtResource("1_script")
+texture = ExtResource("2_texture")
+weight = 0.0
+engine_points = PackedVector2Array()
+engine_color = Color(0.772549, 0.321569, 0.945098, 1)
+beacon_color = Color(0.772549, 0.321569, 0.945098, 1)
+flies_toward_fate = true

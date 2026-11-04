@@ -6,7 +6,7 @@
 [resource]
 script = ExtResource("1_script")
 texture = ExtResource("2_texture")
-weight = 0.7
+weight = 2.2
 engine_points = PackedVector2Array(11, 2, 20, 2)
 engine_color = Color(0.262745, 0.65098, 0.988235, 1)
 beacon_color = Color(0.262745, 0.65098, 0.988235, 1)

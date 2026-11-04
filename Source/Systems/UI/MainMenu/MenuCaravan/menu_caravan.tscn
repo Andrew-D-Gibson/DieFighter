@@ -10,19 +10,25 @@
 
 [ext_resource type="Script" path="res://Source/Systems/UI/MainMenu/MenuCaravan/caravan_straggler.gd" id="8_straggler"]
 [ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/gaff.tres" id="9_gaff"]
+[ext_resource type="Script" path="res://Source/Systems/UI/MainMenu/MenuCaravan/caravan_fate_echo.gd" id="10_fate_echo"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/fate_husk.tres" id="11_fate_husk"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/fate_leech.tres" id="12_fate_leech"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/fate_maw.tres" id="13_fate_maw"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/fate_attacker.tres" id="14_fate_attacker"]
 
 [sub_resource type="Curve2D" id="Curve2D_route"]
 _data = {
-"points": PackedVector2Array(0, 0, 0, 0, 88, 36, -8, -6.5, 8, 6.5, 112, 56, -11, -6, 11, 6, 142, 74, -14.167, -3.667, 14.167, 3.667, 178, 88, -16.167, -0, 16.167, 0, 225, 96, -16.667, -0, 16.667, 0, 275, 100, -15.833, 2.667, 15.833, -2.667, 325, 96, -1.667, 4.333, 1.667, -4.333, 370, 84, 15.833, 3, -15.833, -3, 335, 70, 19.5, -0.333, -19.5, 0.333, 275, 66, 13.833, -0.333, -13.833, 0.333, 218, 72, 8.333, 3.333, -8.333, -3.333, 192, 68, 6.667, 6.333, -6.667, -6.333, 168, 52, 3.667, 7.333, -3.667, -7.333, 152, 30, 0, 0, 0, 0, 146, 8)
+"points": PackedVector2Array(0, 0, 20, -4, -30, 58, -20, 5, 20, -5, 34, 45, -18, 0, 10, 5, 88, 36, -8, -6.5, 8, 6.5, 112, 56, -11, -6, 11, 6, 142, 74, -14.167, -3.667, 14.167, 3.667, 178, 88, -16.167, -0, 16.167, 0, 225, 96, -16.667, -0, 16.667, 0, 275, 100, -15.833, 2.667, 15.833, -2.667, 325, 96, -1.667, 4.333, 1.667, -4.333, 370, 84, 15.833, 3, -15.833, -3, 335, 70, 19.5, -0.333, -19.5, 0.333, 275, 66, 13.833, -0.333, -13.833, 0.333, 218, 72, 8.333, 3.333, -8.333, -3.333, 192, 68, 6.667, 6.333, -6.667, -6.333, 168, 52, 3.667, 7.333, -3.667, -7.333, 152, 30, 0, 0, 0, 0, 146, 8)
 }
-point_count = 15
+point_count = 17
 
 [node name="MenuCaravan" type="Node2D" node_paths=PackedStringArray("route")]
 z_index = -1
 script = ExtResource("1_script")
 route = NodePath("Route")
-point_depths = PackedFloat32Array(0.75, 0.57, 0.44, 0.34, 0.28, 0.23, 0.2, 0.17, 0.15, 0.135, 0.12, 0.105, 0.085, 0.065, 0.045)
-behind_planet_from_point = 7
+point_depths = PackedFloat32Array(0.75, 0.75, 0.75, 0.57, 0.44, 0.34, 0.28, 0.23, 0.2, 0.17, 0.15, 0.135, 0.12, 0.105, 0.085, 0.065, 0.045)
+behind_planet_from_point = 9
+spawn_interval = Vector2(4.5, 11)
 kinds = Array[ExtResource("7_kind")]([ExtResource("2_hauler"), ExtResource("3_civilian_transport"), ExtResource("4_tender"), ExtResource("5_picket"), ExtResource("6_pilgrim")])
 
 [node name="Route" type="Path2D" parent="."]
@@ -33,3 +39,8 @@ script = ExtResource("8_straggler")
 caravan = NodePath("..")
 raider = ExtResource("9_gaff")
 breakdown_kinds = Array[ExtResource("7_kind")]([ExtResource("2_hauler"), ExtResource("3_civilian_transport"), ExtResource("4_tender")])
+
+[node name="FateEcho" type="Node" parent="." node_paths=PackedStringArray("caravan")]
+script = ExtResource("10_fate_echo")
+caravan = NodePath("..")
+kinds = Array[ExtResource("7_kind")]([ExtResource("11_fate_husk"), ExtResource("12_fate_leech"), ExtResource("13_fate_maw"), ExtResource("14_fate_attacker")])

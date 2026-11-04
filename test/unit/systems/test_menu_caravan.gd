@@ -92,6 +92,38 @@ func test_a_straggler_is_hooked_and_dragged_off_with_its_captor() -> void:
 	assert_eq(_ships_off_route(caravan).size(), 0, "both ships are gone")
 
 
+func test_a_fate_echo_tears_across_and_leaves_within_seconds() -> void:
+	var caravan: MenuCaravan = _spawn_caravan()
+	var echo: CaravanFateEcho = caravan.get_node("FateEcho")
+	Engine.time_scale = 20.0
+	var outcome: Dictionary = {}
+	var run: Callable = func() -> void:
+		await echo.play()
+		outcome["done"] = true
+	run.call()
+	var loose: Array[MenuCaravan.Ship] = _ships_off_route(caravan)
+	assert_eq(loose.size(), 1, "one echo appears")
+	assert_has(echo.kinds, loose[0].kind)
+	var screen: Rect2 = Rect2(Vector2.ZERO, Vector2(JuicePixelated.BASE_RESOLUTION))
+	assert_false(screen.has_point(loose[0].position), "it bursts in from off screen")
+
+	var seen_on_screen: Dictionary = {}
+	await wait_until(func() -> bool:
+		if screen.has_point(loose[0].position):
+			seen_on_screen["yes"] = true
+		return outcome.has("done"), 10.0)
+	assert_true(outcome.has("done"), "it's gone within its few seconds")
+	assert_true(seen_on_screen.has("yes"), "it flies across the screen on the way")
+	assert_false(screen.has_point(loose[0].position), "it leaves off screen")
+	assert_eq(_ships_off_route(caravan).size(), 0, "the echo is removed")
+
+
+func test_ships_fly_in_from_off_the_left_edge() -> void:
+	var caravan: MenuCaravan = _spawn_caravan()
+	var start: Vector2 = caravan.route.transform * caravan.route.curve.get_point_position(0)
+	assert_lt(start.x, -20.0, "the route starts off screen, so ships don't pop in")
+
+
 func test_every_route_point_has_a_depth() -> void:
 	var caravan: MenuCaravan = _spawn_caravan()
 	assert_eq(caravan.point_depths.size(), caravan.route.curve.point_count)
@@ -123,6 +155,7 @@ func _spawn_caravan() -> MenuCaravan:
 	caravan.planet = planet
 	# Tests that want a straggler start one themselves.
 	caravan.get_node("Straggler").set("first_delay", Vector2(9999.0, 9999.0))
+	caravan.get_node("FateEcho").set("first_delay", Vector2(9999.0, 9999.0))
 	add_child_autofree(caravan)
 	return caravan
 
