@@ -772,7 +772,7 @@ func _activate() -> void:
 
 	var pickup: Draggable = node.get_node_or_null("Draggable") as Draggable if is_instance_valid(node) else null
 	if pickup and pickup.can_pick_up() and (type in [&"die", &"offer"] or (node is Tile and _get_repair_station())):
-		pickup.begin_drag(target_pos)
+		pickup.begin_drag(target_pos, true)
 		refresh()
 		_focus_best_grid_slot()
 		return

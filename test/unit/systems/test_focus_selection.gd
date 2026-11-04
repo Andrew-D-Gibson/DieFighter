@@ -162,13 +162,26 @@ func test_x_button_shows_tile_info() -> void:
 	assert_signal_emitted(Events, "show_info")
 
 
-func test_selection_forces_click_even_when_drag_is_requested() -> void:
+func test_selection_leaves_the_mouse_placement_choice_alone() -> void:
+	OptionsSettings.set_option(OptionsSettings.DICE_PLACEMENT, Draggable.PlacementMode.DRAG)
 	OptionsSettings.set_option(OptionsSettings.CONTROLLER_SCHEME, InputBindings.ControlScheme.FOCUS)
-	OptionsSettings.set_option(OptionsSettings.DICE_PLACEMENT, Draggable.PlacementMode.DRAG)
-	assert_eq(Draggable.placement_mode, Draggable.PlacementMode.CLICK)
-	OptionsSettings.set_option(OptionsSettings.CONTROLLER_SCHEME, InputBindings.ControlScheme.CURSOR)
-	OptionsSettings.set_option(OptionsSettings.DICE_PLACEMENT, Draggable.PlacementMode.DRAG)
 	assert_eq(Draggable.placement_mode, Draggable.PlacementMode.DRAG)
+	OptionsSettings.set_option(OptionsSettings.DICE_PLACEMENT, Draggable.PlacementMode.CLICK)
+	assert_eq(Draggable.placement_mode, Draggable.PlacementMode.CLICK)
+	OptionsSettings.set_option(OptionsSettings.DICE_PLACEMENT, Draggable.PlacementMode.DRAG)
+	OptionsSettings.set_option(OptionsSettings.CONTROLLER_SCHEME, InputBindings.ControlScheme.CURSOR)
+	assert_eq(Draggable.placement_mode, Draggable.PlacementMode.DRAG)
+
+
+func test_selection_carries_even_when_mouse_drags() -> void:
+	OptionsSettings.set_option(OptionsSettings.DICE_PLACEMENT, Draggable.PlacementMode.DRAG)
+	OptionsSettings.set_option(OptionsSettings.CONTROLLER_SCHEME, InputBindings.ControlScheme.FOCUS)
+	var die: Dice = add_child_autofree(DICE_SCENE.instantiate())
+	focus_sel._current_target = {"type": &"die", "pos": die.global_position, "node": die}
+	focus_sel._activate()
+	await get_tree().process_frame
+	assert_true(die.draggable.is_carried())
+	focus_sel._cancel()
 
 
 func test_a_uses_custom_button_action() -> void:
@@ -258,19 +271,24 @@ func test_mouse_and_keyboard_hide_reticle() -> void:
 	assert_false(focus_sel._reticle_draw.visible)
 
 
-func test_disabled_dice_placement_is_dimmed_on_both_pages() -> void:
+func test_dice_placement_locked_only_on_the_controller_page() -> void:
+	OptionsSettings.set_option(OptionsSettings.DICE_PLACEMENT, Draggable.PlacementMode.DRAG)
 	OptionsSettings.set_option(OptionsSettings.CONTROLLER_SCHEME, InputBindings.ControlScheme.FOCUS)
 	var menu: Node2D = add_child_autofree(OPTIONS_MENU.instantiate())
-	var count: int = 0
-	for page: OptionsPage in menu._pages[OptionsMenu.Tab.CONTROLS]:
+	var pages: Array = menu._pages[OptionsMenu.Tab.CONTROLS]
+	for i: int in range(pages.size()):
+		var page: OptionsPage = pages[i]
 		page.refresh()
+		var on_controller: bool = i == OptionsMenu.ControlsPage.CONTROLLER
+		var found: bool = false
 		for node: Node in page.find_children("*", "", true, false):
 			if node is PixelDropdown and node.items.has("OPT_DICE_PLACEMENT_CLICK"):
-				assert_eq(node.selected, 1)
-				assert_true(node.disabled)
-				assert_lt(page._row_of(node).modulate.a, 1.0)
-				count += 1
-	assert_eq(count, 2)
+				found = true
+				assert_eq(node.selected, 1 if on_controller else 0)
+				assert_eq(node.disabled, on_controller)
+				assert_eq(page._row_of(node).modulate.a < 1.0, on_controller)
+		assert_true(found)
+	OptionsSettings.set_option(OptionsSettings.CONTROLLER_SCHEME, InputBindings.ControlScheme.CURSOR)
 
 
 func test_a_carries_die_until_next_activation() -> void:

@@ -257,6 +257,12 @@ func enable_when(row_widget: Control, usable: Callable) -> void:
 	_conditional_rows.append([_row_of(row_widget), usable])
 
 
+## Runs [param refresh_row] after the rows have read their values, for a row
+## that shows something other than its saved value in some states.
+func on_refresh(refresh_row: Callable) -> void:
+	_bind(&"", refresh_row)
+
+
 ## --- Reading back ---
 
 ## The option keys this page shows, for "Reset to defaults".

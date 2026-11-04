@@ -167,8 +167,6 @@ func get_default(key: StringName) -> Variant:
 func set_option(key: StringName, value: Variant) -> void:
 	var option: _Option = _options[key]
 	option.write.call(value)
-	if key == CONTROLLER_SCHEME and InputManager.control_scheme == InputBindings.ControlScheme.FOCUS:
-		set_option(DICE_PLACEMENT, Draggable.PlacementMode.CLICK)
 	option_changed.emit(key, option.read.call())
 
 
@@ -279,13 +277,15 @@ func _register_controls_options() -> void:
 		func(value: Variant) -> void:
 			InputManager.control_scheme = int(value) as InputBindings.ControlScheme \
 				if int(value) in InputBindings.ControlScheme.values() else InputBindings.ControlScheme.CURSOR)
-	# A static on Draggable, so it's set before any die exists.
+	# A static on Draggable, so it's set before any die exists. The mouse's
+	# (and the stick-steered pointer's) choice only: the selection icon always
+	# carries what it picks up (see Draggable.begin_drag), so choosing that
+	# scheme leaves this setting alone.
 	register(DICE_PLACEMENT, Draggable.PlacementMode.DRAG,
 		func() -> int: return Draggable.placement_mode,
 		func(value: Variant) -> void:
-			var mode: int = Draggable.PlacementMode.CLICK if InputManager.control_scheme == InputBindings.ControlScheme.FOCUS else int(value)
-			Draggable.placement_mode = mode as Draggable.PlacementMode \
-				if Draggable.PlacementMode.values().has(mode) else Draggable.PlacementMode.DRAG)
+			Draggable.placement_mode = int(value) as Draggable.PlacementMode \
+				if Draggable.PlacementMode.values().has(int(value)) else Draggable.PlacementMode.DRAG)
 
 
 ## Comfort (screenshake, flashing, hit pause), colour symbols for players who

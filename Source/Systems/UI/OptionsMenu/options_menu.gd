@@ -181,10 +181,10 @@ func _build_pages() -> void:
 	# Controls: the rebindable actions on two pages, keys and controller
 	# buttons, each with the settings only that kind of input has.
 	var keyboard: OptionsPage = _page(Tab.CONTROLS, ControlsPage.KEYBOARD)
-	var keyboard_placement: PixelDropdown = keyboard.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
+	# Always usable: the controller's selection icon doesn't touch the mouse.
+	keyboard.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
 		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
 		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
-	keyboard.enable_when(keyboard_placement, func() -> bool: return InputManager.control_scheme != InputBindings.ControlScheme.FOCUS)
 	_add_binding_rows(keyboard, InputBindings.Kind.KEY, "OPT_BINDING_HINT_KEY")
 	var controller: OptionsPage = _page(Tab.CONTROLS, ControlsPage.CONTROLLER)
 	# Scheme-agnostic inputs: how the controller itself works and how dice and
@@ -197,7 +197,13 @@ func _build_pages() -> void:
 	var controller_placement: PixelDropdown = controller.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
 		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
 		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
-	controller.enable_when(controller_placement, func() -> bool: return InputManager.control_scheme != InputBindings.ControlScheme.FOCUS)
+	# The selection icon always carries (see Draggable.begin_drag), so there the
+	# row is locked and reads Click, while the saved choice stays the mouse's.
+	var selecting: Callable = func() -> bool: return InputManager.control_scheme == InputBindings.ControlScheme.FOCUS
+	controller.enable_when(controller_placement, func() -> bool: return not selecting.call())
+	controller.on_refresh(func() -> void:
+		if selecting.call():
+			controller_placement.select(1))
 	_add_binding_rows(controller, InputBindings.Kind.PAD, "OPT_BINDING_HINT_PAD")
 	controller.slider(OptionsSettings.CURSOR_SPEED, "OPT_CURSOR_SPEED",
 		"OPT_CURSOR_SPEED_HINT", OptionsSettings.CURSOR_SPEEDS.x, OptionsSettings.CURSOR_SPEEDS.y, 0.1)

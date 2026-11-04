@@ -157,8 +157,10 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 ## Puts the parent in the player's hand as if they'd just pressed on it at
 ## [param at]: lifted, wiggling, and dropped the way the placement option
 ## says. A press on it does this; so does code handing the player something
-## straight into their hand (the dev console's tile palette).
-func begin_drag(at: Vector2) -> void:
+## straight into their hand (the dev console's tile palette). [param carry]
+## picks it up click-style whatever the option says: the controller's
+## selection icon has no button to hold, so its pickups are always carried.
+func begin_drag(at: Vector2, carry: bool = false) -> void:
 	state = DragState.DRAGGING
 
 	var parent_node: Node2D = get_parent()
@@ -185,7 +187,7 @@ func begin_drag(at: Vector2) -> void:
 	tween.tween_interval(tween_time)
 	tween.set_loops()
 
-	if placement_mode == PlacementMode.CLICK:
+	if carry or placement_mode == PlacementMode.CLICK:
 		_carried = true
 		_picked_up_at = at
 		set_process_input(true)
