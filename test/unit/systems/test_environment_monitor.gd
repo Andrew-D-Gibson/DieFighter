@@ -137,6 +137,10 @@ func _arrive_with_rule() -> BackgroundModifierResource:
 	return modifier
 
 
+func _in_turns(turns: int) -> String:
+	return tr("HAZARD_WHEN_IN_TURNS").format({"turns": turns})
+
+
 ## The card unfolds out of the screen once the monitor is up; this skips the
 ## swing rather than waiting it out.
 func _finish_swing() -> void:
@@ -152,7 +156,7 @@ func test_arriving_with_alerts_on_spells_the_rule_out() -> void:
 	await _finish_swing()
 	var alerts: Array[RegionAlert] = _alerts()
 	assert_eq(alerts.size(), 1)
-	assert_eq(alerts[0].title, "PULSAR WASH")
+	assert_eq(alerts[0].title.to_lower(), "pulsar wash", "the card is titled with the rule's name")
 
 
 func test_the_card_waits_for_the_monitor_to_swing_up() -> void:
@@ -210,41 +214,41 @@ func test_a_card_for_the_last_region_landing_late_changes_nothing() -> void:
 
 func test_before_a_fight_it_says_how_far_into_one_it_hits() -> void:
 	hazard.turns_until_first = 2
-	var text: String = EnvironmentMonitor.hazard_when_text(hazard, false, 0)
-	assert_string_contains(text, "2 turns")
-	assert_string_contains(text, "fight")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, false, 0),
+		tr("HAZARD_WHEN_TURNS_INTO_FIGHT").format({"turns": 2}))
 
 
 func test_during_a_fight_it_counts_the_turns_left() -> void:
-	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 3), "In 3 turns")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 3), _in_turns(3))
 
 
 func test_the_last_turn_says_which_end_of_it() -> void:
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_ENDS
-	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 1), "At end of turn")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 1), tr("HAZARD_WHEN_THIS_TURN_ENDS"))
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_STARTS
-	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 1), "Next turn")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 1), tr("HAZARD_WHEN_NEXT_TURN"))
 
 
 ## Two turns away always says "In 2 turns", whether the hazard triggers at
 ## turn start or turn end (such as Ion Storm at scenario start).
 func test_a_turn_end_hazard_two_away_says_in_two_turns() -> void:
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_ENDS
-	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), "In 2 turns")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), _in_turns(2))
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_STARTS
-	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), "In 2 turns")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), _in_turns(2))
 
 
 func test_the_headline_leads_with_the_countdown() -> void:
 	hazard.headline = "[color=blue]shields[/color] drop, [color=red]3 dmg[/color] to all"
 	var headline: String = Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_headline(hazard, true, 2))
-	assert_true(headline.begins_with("In 2 turns: "), headline)
+	assert_true(headline.begins_with(_in_turns(2)), headline)
 	assert_string_contains(headline, "shields drop")
 
 
 func test_a_hazard_without_a_headline_falls_back_to_its_name() -> void:
 	var headline: String = Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_headline(hazard, true, 1))
-	assert_eq(headline, "Next turn: Test Flare")
+	assert_true(headline.begins_with(tr("HAZARD_WHEN_NEXT_TURN")), headline)
+	assert_string_contains(headline, hazard.display_name())
 
 
 ## The panel gives the countdown and the full rule, leaving out the headline
@@ -253,12 +257,12 @@ func test_the_info_panel_counts_down_and_leaves_the_headline_to_the_card() -> vo
 	hazard.headline = "enemy dice [color=green]re-roll[/color]"
 	hazard.description = "The long version"
 	var info: InfoResource = EnvironmentMonitor.hazard_info(hazard, true, 3)
-	assert_eq(Utils.strip_bbcode_tags(info.top_label_text), "In 3 turns")
+	assert_eq(Utils.strip_bbcode_tags(info.top_label_text), _in_turns(3))
 	var body: String = Utils.strip_bbcode_tags(info.bottom_label_text)
 	assert_eq(body, "The long version")
 	assert_false(body.contains("Then every"), body)
 	assert_false(body.contains("re-roll"), body)
-	assert_false(body.contains("In 3 turns"), "the countdown is said once, at the top")
+	assert_false(body.contains(_in_turns(3)), "the countdown is said once, at the top")
 
 
 func test_the_info_panel_shows_the_count_as_it_stands() -> void:
@@ -273,7 +277,7 @@ func test_the_info_panel_shows_the_count_as_it_stands() -> void:
 	monitor._on_clicked()
 	Events.show_info.disconnect(keep)
 	assert_eq(shown.size(), 1)
-	assert_eq(Utils.strip_bbcode_tags(shown[0].top_label_text), "In 2 turns")
+	assert_eq(Utils.strip_bbcode_tags(shown[0].top_label_text), _in_turns(2))
 
 
 ## The card carries the headline and nothing else: the full rule waits in the

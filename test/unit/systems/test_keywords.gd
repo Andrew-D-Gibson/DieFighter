@@ -5,25 +5,37 @@ extends "res://test/helpers/die_fighter_test.gd"
 const _PALETTE_NAMES: Array[String] = ["red", "blue", "green", "yellow", "purple", "orange"]
 
 
+## Expected text is built from each token's own data, so relabelling or
+## recolouring a keyword never fails these; only the rendering is checked.
 func test_a_token_renders_its_label_in_its_colour() -> void:
-	assert_eq(Keywords.render("(feed_right)"), "[color=orange]Feed right[/color]")
-	assert_eq(Keywords.render("(holograms)"), "[color=blue]holograms[/color]")
+	for id: String in Keywords.ids():
+		for token: KeywordToken in Keywords.keyword(id).tokens:
+			assert_eq(Keywords.render(token.token),
+				"[color=%s]%s[/color]" % [token.color, token.display_label()], token.token)
 
 
 func test_a_hoverable_label_carries_its_keyword_id() -> void:
-	assert_eq(Keywords.render("(feed_left)", true), "[url=feed][color=orange]Feed left[/color][/url]")
-	assert_eq(Keywords.render("(jammed_you)", true), "[url=jammed_you][color=orange]Jammed[/color][/url]",
-		"a player-side token points at the player's rule")
+	for id: String in Keywords.ids():
+		for token: KeywordToken in Keywords.keyword(id).tokens:
+			var term: String = id + (Keywords.PLAYER_SUFFIX if token.player_side else "")
+			assert_eq(Keywords.render(token.token, true),
+				"[url=%s][color=%s]%s[/color][/url]" % [term, token.color, token.display_label()],
+				"%s points at %s" % [token.token, term])
 
 
 func test_titles_and_rules_are_looked_up_by_id() -> void:
-	assert_eq(Keywords.title("feed_across"), "Feed across")
-	assert_string_contains(Keywords.definition("feed"), "next tile that way")
-	assert_eq(Keywords.title("jammed_you"), "Jammed (you)")
-	assert_string_contains(Keywords.definition("jammed_you"), "you place")
-	assert_eq(Keywords.definition("Feed"), "", "the English name is no longer a key")
-	assert_eq(Keywords.definition("burn_you"), "", "Burn has no player-side rule")
+	for id: String in Keywords.ids():
+		var keyword: KeywordResource = Keywords.keyword(id)
+		assert_eq(Keywords.title(id), keyword.display_title(), id)
+		assert_eq(Keywords.definition(id), keyword.display_rule(), id)
+		var player_term: String = id + Keywords.PLAYER_SUFFIX
+		assert_eq(Keywords.definition(player_term), keyword.display_player_rule(), player_term)
+		assert_true(Keywords.title(player_term).begins_with(keyword.display_title()), player_term)
+		assert_ne(Keywords.title(player_term), Keywords.title(id), "the player's side is titled apart")
+	var feed_title: String = Keywords.keyword("feed").display_title()
+	assert_eq(Keywords.definition(feed_title), "", "a display name is not a key")
 	assert_eq(Keywords.title("nope"), "")
+	assert_eq(Keywords.definition("nope"), "")
 
 
 func test_every_keyword_has_a_title_a_rule_and_a_token() -> void:
@@ -71,36 +83,10 @@ func test_a_tile_shows_its_own_english() -> void:
 
 # ── Statuses: one StatusResource each, rule numbers from code ─────────────────
 
-## What every status's rules read before their numbers became placeholders.
-## Changing a status's tuning constant should change these, on purpose.
-const _STATUS_RULES_IN_ENGLISH: Dictionary[String, String] = {
-	"burn": "At the start of their turn, burned ships take [color=red]damage[/color] equal to Burn, then lose 1 Burn.",
-	"exposed": "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends 1 Exposed.",
-	"jammed": "The next die this ship uses does nothing. Spends 1 Jammed.",
-	"jammed_you": "The next die you place on a tile does nothing and goes to [color=purple]target[/color]. Spends 1 Jammed.",
-	"phased": "The next hit from the player's tiles passes through this ship and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when its turn starts.",
-	"phased_you": "The next enemy hit passes through you and deals no [color=red]damage[/color], to shields or hull. Spends 1 Phased. Wears off when your next turn starts.",
-	"scrambled": "Each die given to this ship flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]). Spends 1 Scrambled.",
-	"scrambled_you": "Each die you place on a tile flips to its opposite face ([color=yellow]1-6, 2-5, 3-4[/color]) first. Spends 1 Scrambled.",
-	"weakened": "This ship's hits deal 25% less [color=red]damage[/color], rounded down but never below 1. Loses 1 Weakened when its turn ends.",
-	"weakened_you": "Your tiles' hits deal 25% less [color=red]damage[/color], rounded down but never below 1. Loses 1 Weakened when you end your turn.",
-}
-
-## What each status looked like when its colour and icons lived in its script.
-const _STATUS_LOOKS: Dictionary[String, String] = {
-	"burn": "orange", "exposed": "red", "jammed": "yellow",
-	"phased": "blue", "scrambled": "green", "weakened": "purple",
-}
-
 ## A number a rule may write as itself: one that isn't a tuning value.
 const _LITERAL_NUMBERS_ALLOWED: Dictionary[String, String] = {
 	"countdown": "0 is where a countdown goes off, not a setting",
 }
-
-
-func test_status_rules_read_as_they_always_have() -> void:
-	for term: String in _STATUS_RULES_IN_ENGLISH:
-		assert_eq(Keywords.definition(term), _STATUS_RULES_IN_ENGLISH[term], term)
 
 
 func test_rule_numbers_come_from_the_code_that_applies_them() -> void:
@@ -144,12 +130,12 @@ func test_the_locked_rule_lists_the_faces_that_unlock() -> void:
 
 
 func test_each_status_is_one_status_resource() -> void:
-	assert_eq(StatusCatalog.ids().size(), _STATUS_LOOKS.size())
+	assert_false(StatusCatalog.ids().is_empty())
 	for status_id: StringName in StatusCatalog.ids():
 		var definition: StatusResource = StatusCatalog.find(status_id)
 		assert_not_null(definition.icon, "%s has no badge icon" % status_id)
 		assert_not_null(definition.info_icon, "%s has no info icon" % status_id)
-		assert_eq(definition.color, _STATUS_LOOKS.get(String(status_id), ""), "%s's colour" % status_id)
+		assert_has(_PALETTE_NAMES, definition.color, "%s's colour is a palette name" % status_id)
 		var status: StatusModifier = StatusCatalog.create(status_id, null, 1)
 		assert_eq(status.definition, definition)
 		assert_eq(status.color, Globals.get(definition.color) as Color)

@@ -337,13 +337,12 @@ static func _step_paths() -> Array[String]:
 	return paths
 
 
-## A step that waits on a mouse action, or whose card tells the player to
-## drag or click, shows them how.
+## A step that waits on a mouse action shows the player how. Keyed on the
+## signal, not the card's wording, so rewriting a card never trips this.
 func test_every_step_asking_for_a_drag_or_click_demonstrates_it() -> void:
-	var asks: RegEx = RegEx.create_from_string("\\[color=yellow\\](Drag|Click)")
 	for path: String in _step_paths():
 		var step: TutorialStep = load(path)
-		if step.close_on_signal in PLAYER_ACTIONS or asks.search(step.tutorial_text):
+		if step.close_on_signal in PLAYER_ACTIONS:
 			assert_false(step.ghost_demos.is_empty(), "%s asks for a drag or click and shows none" % path)
 		for demo: GhostDemo in step.ghost_demos:
 			assert_true(demo.is_complete(), "%s has a demo missing an end" % path)

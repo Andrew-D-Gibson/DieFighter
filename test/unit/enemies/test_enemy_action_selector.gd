@@ -9,6 +9,11 @@ const CIVILIAN_TRANSPORT := "res://Source/Content/Enemies/EnemyResources/civilia
 const _DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 
 
+## An authored action's name, read from its file so a rename needs no test edit.
+static func _authored_name(file: String) -> String:
+	return (load("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/" + file + ".tres") as EnemyActionResource).name
+
+
 func before_each() -> void:
 	super()
 	RNGManager.seed_scenario(1234)
@@ -374,10 +379,10 @@ func test_the_siege_mortar_only_fires_siege_shot_from_a_loaded_die() -> void:
 	for pool: EnemyTurnActionList in mortar.action_options:
 		for i: int in range(50):
 			var actions := EnemyActionSelector.roll(pool, _keeping([]), [], mortar.face_bias)
-			assert_false("Siege Shot" in _names(actions))
+			assert_false(_authored_name("siege_shot") in _names(actions))
 	var loaded := EnemyActionSelector.roll(mortar.action_options[1], _keeping([3]), [], mortar.face_bias)
-	assert_eq(_names(loaded).count("Siege Shot"), 1)
-	assert_eq(loaded[2].name, "Siege Shot")
+	assert_eq(_names(loaded).count(_authored_name("siege_shot")), 1)
+	assert_eq(loaded[2].name, _authored_name("siege_shot"))
 
 
 # ── Venting statuses: only a ship with a status to give rolls it ────────────
@@ -402,12 +407,12 @@ func test_a_vent_is_never_rolled_for_a_ship_with_no_status() -> void:
 	# can't forget it.
 	var pool := _pool([_option(_action("Wait"), 1.0), _option(load(PURGE_VENTS), 5.0, true)])
 	for i: int in range(50):
-		assert_does_not_have(_names(EnemyActionSelector.roll(pool, _with_statuses([]))), "Purge Vents")
+		assert_does_not_have(_names(EnemyActionSelector.roll(pool, _with_statuses([]))), _authored_name("purge_vents"))
 
 
 func test_a_vent_is_rolled_once_the_ship_has_a_status() -> void:
 	var pool := _pool([_option(_action("Wait"), 1.0), _option(load(PURGE_VENTS), 5.0, true)])
-	assert_has(_names(EnemyActionSelector.roll(pool, _with_statuses([&"burn"]))), "Purge Vents")
+	assert_has(_names(EnemyActionSelector.roll(pool, _with_statuses([&"burn"]))), _authored_name("purge_vents"))
 
 
 func test_the_defender_only_vents_when_it_has_something_to_vent() -> void:
@@ -415,7 +420,7 @@ func test_the_defender_only_vents_when_it_has_something_to_vent() -> void:
 	var vented_with_status: bool = false
 	for pool: EnemyTurnActionList in defender.action_options:
 		for i: int in range(50):
-			assert_does_not_have(_names(EnemyActionSelector.roll(pool, _with_statuses([]))), "Purge Vents")
-			if "Purge Vents" in _names(EnemyActionSelector.roll(pool, _with_statuses([&"jammed"]))):
+			assert_does_not_have(_names(EnemyActionSelector.roll(pool, _with_statuses([]))), _authored_name("purge_vents"))
+			if _authored_name("purge_vents") in _names(EnemyActionSelector.roll(pool, _with_statuses([&"jammed"]))):
 				vented_with_status = true
 	assert_true(vented_with_status, "a defender with a status vents now and then")

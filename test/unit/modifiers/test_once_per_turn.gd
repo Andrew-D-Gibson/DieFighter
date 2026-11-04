@@ -37,6 +37,10 @@ func before_each() -> void:
 	Globals.tile_grid = grid
 
 
+func _rule_name() -> String:
+	return (load(DEAD_SYSTEMS) as BackgroundModifierResource).display_name()
+
+
 func _tile(resource: TileResource) -> Tile:
 	var tile: Tile = autofree(TILE_SCENE.instantiate())
 	tile.tile_resource = resource
@@ -62,7 +66,7 @@ func test_dead_systems_builds_the_once_per_turn_rule() -> void:
 ## The tile info line names the region's rule, through its display name so
 ## it reads in the player's language.
 func test_the_info_line_names_the_region_rule() -> void:
-	assert_string_contains(rule.get_rule_info_text(limited), "Dead Systems")
+	assert_string_contains(rule.get_rule_info_text(limited), _rule_name())
 
 
 func test_without_the_rule_tiles_keep_their_own_budgets() -> void:
@@ -86,10 +90,10 @@ func test_the_lights_show_the_one_use() -> void:
 func test_a_second_activation_is_refused_until_the_turn_refills() -> void:
 	engine.add_modifier(rule)
 	for tile: Tile in [limited, unlimited]:
-		assert_ne(tile.activation_refusal(_die()), "NO USES REMAINING")
+		assert_ne(tile.activation_refusal(_die()), tr("ERROR_NO_USES"))
 		_spend(tile)
 		assert_eq(tile.uses_remaining, 0)
-		assert_eq(tile.activation_refusal(_die()), "NO USES REMAINING")
+		assert_eq(tile.activation_refusal(_die()), tr("ERROR_NO_USES"))
 		tile.reset_uses_remaining()
 		assert_eq(tile.uses_remaining, 1, "the next turn's refill is capped too")
 
@@ -99,7 +103,7 @@ func test_the_engine_takes_every_die_it_is_given() -> void:
 	charger.reset_uses_remaining()
 	assert_eq(charger.uses_remaining, -1)
 	_spend(charger)
-	assert_ne(charger.activation_refusal(_die()), "NO USES REMAINING")
+	assert_ne(charger.activation_refusal(_die()), tr("ERROR_NO_USES"))
 
 
 func test_lifting_the_rule_gives_unlimited_tiles_their_freedom_back() -> void:
@@ -145,5 +149,5 @@ func test_a_drain_still_lands() -> void:
 
 func test_the_tile_info_says_why() -> void:
 	engine.add_modifier(rule)
-	assert_string_contains(unlimited._get_tile_info().bottom_label_text, "Dead Systems")
-	assert_false(charger._get_tile_info().bottom_label_text.contains("Dead Systems"))
+	assert_string_contains(unlimited._get_tile_info().bottom_label_text, _rule_name())
+	assert_false(charger._get_tile_info().bottom_label_text.contains(_rule_name()))

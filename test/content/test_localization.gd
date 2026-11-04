@@ -95,15 +95,20 @@ func test_plural_rows_resolve_through_tr_n() -> void:
 	assert_gt(checked, 0, "translations.csv has plural rows")
 
 
-## The plural callouts read as they did when they were written in code.
-func test_plural_text_reads_as_before() -> void:
+## The shipped plural callouts resolve and take their count. The words
+## themselves are free to change.
+func test_plural_callouts_fill_their_count() -> void:
 	var english: Translation = load(_EN_TRANSLATION)
 	var stacks: Callable = func(n: int) -> String:
 		return String(english.get_plural_message(&"STATUS_BADGE_STACKS", &"STATUS_BADGE_STACKS_PLURAL", n)).format({"n": n})
 	var dice: Callable = func(n: int) -> String:
 		return String(english.get_plural_message(&"CALLOUT_DICE_LOST", &"CALLOUT_DICE_LOST_PLURAL", n)).format({"count": n})
-	assert_eq([stacks.call(1), stacks.call(3)], ["1 stack", "3 stacks"])
-	assert_eq([dice.call(1), dice.call(2)], ["-1 DIE", "-2 DICE"])
+	for form: Callable in [stacks, dice]:
+		var one: String = form.call(1)
+		var many: String = form.call(3)
+		assert_string_contains(one, "1")
+		assert_string_contains(many, "3")
+		assert_false(one.contains("{") or many.contains("{"), "the count is filled in")
 
 
 func test_no_key_is_in_both_csvs() -> void:

@@ -80,10 +80,13 @@ func test_statuses_that_work_differently_on_the_player_explain_that_side() -> vo
 		var status: StatusModifier = StatusCatalog.create(status_id, player, 1)
 		assert_false(Keywords.definition(status.rule_term()).is_empty(),
 			"%s has no rule for the player" % status_id)
-	assert_eq(StatusCatalog.create(&"jammed", player, 1).rule_term(), "jammed_you")
-	assert_eq(StatusCatalog.create(&"scrambled", player, 1).rule_term(), "scrambled_you")
-	assert_eq(StatusCatalog.create(&"burn", player, 1).rule_term(), "burn", "Burn reads the same either side")
-	assert_eq(StatusCatalog.create(&"jammed", _enemy(), 1).rule_term(), "jammed")
+		# Whether a status has its own player-side wording is a writing choice,
+		# so this follows the keyword rather than naming which ones do.
+		var has_player_rule: bool = not Keywords.keyword(String(status_id)).player_rule.is_empty()
+		var expected: String = String(status_id) + (Keywords.PLAYER_SUFFIX if has_player_rule else "")
+		assert_eq(status.rule_term(), expected, "%s on the player" % status_id)
+		assert_eq(StatusCatalog.create(status_id, _enemy(), 1).rule_term(), String(status_id),
+			"%s on an enemy reads its own rule" % status_id)
 
 
 func test_the_player_bar_wraps_clear_of_the_systems_panel() -> void:

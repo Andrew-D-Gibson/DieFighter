@@ -445,7 +445,7 @@ func test_the_intent_names_the_bound_ship() -> void:
 	var action := _ally_action()
 	action.description = "Repairs (target) for (amount)"
 	action.intent_amount = 4
-	assert_eq(action.get_description_text(), "Repairs another ship for 4")
+	assert_eq(action.get_description_text(), "Repairs %s for 4" % tr("ENEMY_ACTION_ANOTHER_SHIP"))
 	action.bound_target = _ship(Faction.PIRATE)
 	action.bound_target.enemy_resource.enemy_name = "Raider"
 	assert_eq(action.get_description_text(), "Repairs Raider for 4")

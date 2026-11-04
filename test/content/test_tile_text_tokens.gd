@@ -52,22 +52,6 @@ func test_shown_text_has_no_placeholders_left() -> void:
 		assert_false("{" in tile.display_activation_description(), "%s shows a raw placeholder" % path.get_file())
 
 
-func test_yellow_tiles_show_the_numbers_they_did() -> void:
-	# Spot checks from the old literal English, one per binding shape.
-	_assert_shows("amplifier", "Tiles above and below get +2 to effects this turn")
-	_assert_shows("shield_attractor", "Remove [color=blue]6 shields[/color]")
-	_assert_shows("war_footing_plus", "deal +2 damage this fight, up to +6. [color=yellow]Hull hit[/color] -> -1")
-	_assert_shows("opening_salvo_plus", "(echo) the first 2 tiles you activate")
-	_assert_shows("phantom_squadron_plus", "until you own 6 dice")
-	_assert_shows("pilot_light_plus", "Spawn a (hologram) (die_3)")
-	_assert_shows("spotter_drone", "Apply 3 (exposed). Apply 2 (exposed) to you")
-
-
-func _assert_shows(file: String, expected: String) -> void:
-	var tile: TileResource = load(TILE_DIR + file + ".tres")
-	assert_string_contains(tile.display_description(), expected)
-
-
 func _tile_paths() -> Array[String]:
 	var paths: Array[String] = []
 	for path: String in Utils.list_resource_paths(TILE_DIR):

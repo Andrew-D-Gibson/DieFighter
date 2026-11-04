@@ -62,7 +62,7 @@ func _set_and_hand_off() -> Array[EffectData]:
 
 func test_flash_freeze_builds_the_freeze() -> void:
 	assert_true(freeze is DiceFreezeModifier)
-	assert_eq(freeze.modifier_name, "Flash Freeze")
+	assert_eq(freeze.modifier_name, (load(FLASH_FREEZE) as BackgroundModifierResource).modifier_name)
 
 
 func test_every_face_changing_event_says_so() -> void:

@@ -301,9 +301,9 @@ func test_war_footing_shows_on_red_tiles_panels() -> void:
 	var footing: Tile = _tile("war_footing")
 	await _turn_starts(footing)
 	var boost: FamilyBoostModifier = _boost(footing)
-	assert_string_contains(boost.get_rule_info_text(_tile("damage")), "+1 damage")
+	assert_string_contains(boost.get_rule_info_text(_tile("damage")), "+1", "a red tile is told its bonus")
 	assert_eq(boost.get_rule_info_text(_tile("shield")), "")
-	assert_string_contains(boost.get_info_text(), "War Footing +1")
+	assert_string_contains(boost.get_info_text(), "+1")
 
 
 # ── Status Catalyst ───────────────────────────────────────────────────────────

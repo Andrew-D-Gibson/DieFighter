@@ -40,7 +40,7 @@ func test_a_tile_needs_a_free_cell() -> void:
 	var tile: Tile = add_child_autofree(_tile())
 	assert_eq(OfferIntake.refusal(tile, _FAR_AWAY), "")
 	_fill_grid()
-	assert_eq(OfferIntake.refusal(tile, _FAR_AWAY), "GRID FULL")
+	assert_eq(OfferIntake.refusal(tile, _FAR_AWAY), tr("ERROR_GRID_FULL"))
 
 
 func test_a_full_grid_still_takes_a_copy_dropped_on_its_twin() -> void:
@@ -49,7 +49,7 @@ func test_a_full_grid_still_takes_a_copy_dropped_on_its_twin() -> void:
 	var twin_cell: Vector2i = grid.get_cells()[0]
 	var on_twin: Vector2 = grid.grid_to_global_pos(twin_cell)
 	assert_eq(OfferIntake.refusal(copy, on_twin), "")
-	assert_eq(OfferIntake.refusal(copy, _FAR_AWAY), "GRID FULL", "but not dropped anywhere else")
+	assert_eq(OfferIntake.refusal(copy, _FAR_AWAY), tr("ERROR_GRID_FULL"), "but not dropped anywhere else")
 
 	OfferIntake.take(copy, on_twin)
 	assert_eq(grid.tile_locations[twin_cell].tile_resource, upgradeable.upgraded_version, "the twin upgrades")

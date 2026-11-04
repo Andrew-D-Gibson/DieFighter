@@ -28,6 +28,11 @@
 - **Prefer fresh instances over autoloads.** Load `rng_manager.gd` or `save_manager.gd` and `.new()` them. `SaveManager.save_path` exists so tests never touch `user://save_game.json`.
 - **Nodes that reach for game systems in `_ready()`** (Tile, Dice) are instantiated from their scene and kept *out* of the tree.
 - **Expected errors must be asserted.** GUT fails a test on any unexpected `push_error` or engine error, so a test that exercises an error path should say so with `assert_push_error("…")`, `assert_push_warning("…")` or `assert_engine_error_count(n)`.
+- **Never pin player-facing wording.** Text, names and tuning numbers change all the time; a test that fails because a sentence was reworded is noise. Check what the code does with text instead:
+  - which message: compare with `tr("ERROR_GRID_FULL")`, not `"GRID FULL"`;
+  - shipped content: compare with the resource's own `display_*()` or field (`rule.display_name()`, `load(".../raid.tres").name`), not a typed-out copy;
+  - numbers from data: change the data in the test and check the new number shows up, rather than quoting today's number;
+  - fixtures you build in the test (`hazard.hazard_name = "Test Flare"`) can be asserted as written, since the test owns them.
 - `test_effect_catalog.gd` pins every effect enum's ordinals. Appending a value passes. If it fails because a value was inserted or reordered, fix the enum, not the test. After appending, add the new name to the end of its pinned list too, so the next person's insert is caught.
 
 ## Not covered yet (good next targets)

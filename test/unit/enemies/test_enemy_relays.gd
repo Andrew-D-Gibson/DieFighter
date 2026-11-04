@@ -92,7 +92,7 @@ func test_the_shipped_relay_actions_do_what_they_say() -> void:
 	assert_true(loader.is_safe_while_hidden())
 	assert_gt(relay.intent_amount, 0, "relay has a default shield amount")
 	assert_eq(relay.get_intent_amount_text(), str(relay.intent_amount))
-	assert_string_contains(relay.get_description_text(), "%d shields" % relay.intent_amount)
+	assert_string_contains(relay.get_description_text(), str(relay.intent_amount))
 
 
 func test_bastion_core_relay_has_shield_amount_range() -> void:
@@ -110,7 +110,7 @@ func test_bastion_core_relay_has_shield_amount_range() -> void:
 	assert_gte(rolled.intent_amount, relay_option.min_amount)
 	assert_lte(rolled.intent_amount, relay_option.max_amount)
 	assert_ne(rolled.get_intent_amount_text(), "")
-	assert_string_contains(rolled.get_description_text(), "%d shields" % rolled.intent_amount)
+	assert_string_contains(rolled.get_description_text(), str(rolled.intent_amount))
 
 
 # ── Loop detection ─────────────────────────────────────────────────────────────

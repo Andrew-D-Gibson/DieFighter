@@ -236,7 +236,7 @@ func test_working_the_others_needs_another_countdown_on_the_grid() -> void:
 	cutter.uses_per_turn = 1
 	cutter.activation_checks = [check] as Array[ActivationResource]
 	var source: Tile = _place(cutter, Vector2i(0, 0))
-	assert_eq(source.activation_refusal(null), "NO OTHER COUNTDOWNS")
+	assert_eq(source.activation_refusal(null), tr("ERROR_NO_COUNTDOWNS"))
 	_countdown_tile(6, Vector2i(1, 0))
 	assert_eq(source.activation_refusal(null), "")
 

@@ -15,7 +15,7 @@ func test_dice_owned_at_most_is_inclusive() -> void:
 	assert_true(check.criteria_satisfied(null))
 	Globals.player = make_player(5)
 	assert_false(check.criteria_satisfied(null))
-	assert_eq(check.get_criteria_fail_text(), "TOO MANY DICE")
+	assert_eq(check.get_criteria_fail_text(), tr("ERROR_TOO_MANY_DICE"))
 
 
 func test_dice_owned_at_most_refuses_without_a_player() -> void:
@@ -31,7 +31,7 @@ func test_shields_at_least_is_inclusive() -> void:
 	assert_false(check.criteria_satisfied(null), "no shields, nothing to cash in")
 	player.health.shields = 1
 	assert_true(check.criteria_satisfied(null))
-	assert_eq(check.get_criteria_fail_text(), "NOT ENOUGH SHIELDS")
+	assert_eq(check.get_criteria_fail_text(), tr("ERROR_LOW_SHIELDS"))
 
 
 func test_tile_data_at_least_reads_the_tile_asking() -> void:

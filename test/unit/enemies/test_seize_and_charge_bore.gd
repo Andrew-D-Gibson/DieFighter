@@ -9,6 +9,11 @@ const ENEMIES := "res://Source/Content/Enemies/EnemyResources/"
 const _DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 
 
+## An authored action's name, read from its file so a rename needs no test edit.
+static func _authored_name(file: String) -> String:
+	return (load("res://Source/Content/Enemies/EnemyActions/EnemyActionResources/" + file + ".tres") as EnemyActionResource).name
+
+
 func _shipped(file: String) -> EnemyActionResource:
 	return load(ACTIONS + file) as EnemyActionResource
 
@@ -90,8 +95,8 @@ func test_the_cutpurse_still_re_steals_and_bolts_with_the_haul() -> void:
 		for option: EnemyActionOptionResource in pool.actions_possible:
 			if option.fills_kept_faces:
 				kept_names.append(option.base_action.name)
-	assert_true("Seize" in kept_names, "a stolen die lands on Seize again")
-	assert_true("Getaway" in kept_names, "and the last pool flies off with it")
+	assert_true(_authored_name("seize") in kept_names, "a stolen die lands on Seize again")
+	assert_true(_authored_name("getaway") in kept_names, "and the last pool flies off with it")
 
 
 # ── Charge Bore ────────────────────────────────────────────────────────────────
@@ -114,7 +119,7 @@ func test_charge_bore_shows_the_range_its_siege_shot_fires_at() -> void:
 			for option: EnemyActionOptionResource in pool.actions_possible:
 				if option.base_action.name == "Charge Bore":
 					bore = option
-				elif option.base_action.name == "Siege Shot" and option.fills_kept_faces:
+				elif option.base_action.name == _authored_name("siege_shot") and option.fills_kept_faces:
 					shot = option
 		assert_not_null(bore, file)
 		assert_not_null(shot, file)
@@ -143,7 +148,7 @@ func test_the_siege_shot_fires_for_the_amount_charge_bore_showed() -> void:
 	situation.kept_faces = [4] as Array[int]
 	situation.kept_amounts = {4: 37} as Dictionary[int, int]
 	var loaded := EnemyActionSelector.roll(mortar.action_options[1], situation, [], mortar.face_bias)
-	assert_eq(loaded[3].name, "Siege Shot")
+	assert_eq(loaded[3].name, _authored_name("siege_shot"))
 	assert_eq(loaded[3].intent_amount, 37, "not a fresh roll")
 
 
@@ -152,7 +157,7 @@ func test_a_kept_face_with_no_loaded_amount_rolls_its_own() -> void:
 	var situation := EnemyActionSituation.new()
 	situation.kept_faces = [2] as Array[int]
 	var loaded := EnemyActionSelector.roll(mortar.action_options[1], situation, [], mortar.face_bias)
-	assert_eq(loaded[1].name, "Siege Shot")
+	assert_eq(loaded[1].name, _authored_name("siege_shot"))
 	assert_between(loaded[1].intent_amount, 8, 40)
 
 

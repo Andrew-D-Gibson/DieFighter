@@ -27,7 +27,7 @@ func _show() -> HazardWarning:
 func test_it_names_the_hazard_and_its_effect() -> void:
 	var warning: HazardWarning = _show()
 	assert_not_null(warning)
-	assert_string_contains(warning._label.text, "SOLAR FLARE")
+	assert_string_contains(warning._label.text.to_lower(), "solar flare")
 	assert_eq(warning._effect_label.text, "SHIELDS DOWN! 3 DAMAGE TO ALL")
 
 
