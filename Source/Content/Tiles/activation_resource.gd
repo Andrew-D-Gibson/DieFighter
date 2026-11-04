@@ -81,109 +81,89 @@ enum ActivationType {
 @export var text_token_value: String = ""
 
 
-var activation_functions: Dictionary[ActivationType, Callable] = {
-	
-	ActivationType.REQUIRES_ACTIVATOR_DIE: 
-		func(die: Dice) -> bool: 
-			return die != null,
-			
-	ActivationType.VALUE: 
-		func(die: Dice) -> bool: 
+## The checks that need only the die and the game's state; criteria_satisfied()
+## answers the ones that read the tile.
+##
+## A match rather than a Dictionary of lambdas: a lambda that reads this
+## resource's fields captures it, so each check held a reference to itself and
+## was never freed, nor was its script or anything that script reaches.
+func _die_check_passes(die: Dice) -> bool:
+	match type:
+		ActivationType.REQUIRES_ACTIVATOR_DIE:
+			return die != null
+
+		ActivationType.VALUE:
 			if not die:
 				# We're being activated without a die
 				return true
-			return die.value in acceptable_values,
-	
-	ActivationType.IN_COMBAT: 
-		func(_die: Dice) -> bool: 
+			return die.value in acceptable_values
+
+		ActivationType.IN_COMBAT:
 			if not Globals.state_manager:
 				return false
-				
-			return Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT,
+			return Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
 
-	ActivationType.OTHER_SHIPS_EXIST: 
-		func(_die: Dice) -> bool:
+		ActivationType.OTHER_SHIPS_EXIST:
 			if not Globals.enemy_manager:
 				return false
-				
-			return len(Globals.enemy_manager.enemies) > 0,
+			return len(Globals.enemy_manager.enemies) > 0
 
-	# The two targeting checks ask about the ship this die was dropped
-	# against, the same one TARGET_WITH_TARGETING_COMPUTER will hit.
-	ActivationType.SHIP_TARGETED: 
-		func(die: Dice) -> bool:
+		# The two targeting checks ask about the ship this die was dropped
+		# against, the same one TARGET_WITH_TARGETING_COMPUTER will hit.
+		ActivationType.SHIP_TARGETED:
 			if not Globals.targeting_computer:
 				return false
-				
-			return Globals.targeting_computer.target_for(die) != null,
-			
-	ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC: 
-		func(die: Dice) -> bool:
+			return Globals.targeting_computer.target_for(die) != null
+
+		ActivationType.ACTIVATOR_DIE_NOT_HOLOGRAPHIC:
 			if not die:
 				# We're being activated without a die,
-				# so it's technically not holographic 
+				# so it's technically not holographic
 				return true
-			return not die.holographic,
-			
-	ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
-		func(die: Dice) -> bool:
-			return not die,
-			
-	ActivationType.TARGETED_SHIP_HAS_SHIELDS:
-		func(die: Dice) -> bool:
+			return not die.holographic
+
+		ActivationType.CANT_BE_ACTIVATED_WITH_DIE:
+			return not die
+
+		ActivationType.TARGETED_SHIP_HAS_SHIELDS:
 			if not Globals.targeting_computer:
 				return false
-				
-			var target: Enemy = Globals.targeting_computer.target_for(die)
-			if not target:
+			var shielded: Enemy = Globals.targeting_computer.target_for(die)
+			if not shielded:
 				return false
-			
-			return target.health.shields > 0,
-			
-	ActivationType.ENGINE_NOT_CHARGED:
-		func(_die: Dice) -> bool:
+			return shielded.health.shields > 0
+
+		ActivationType.ENGINE_NOT_CHARGED:
 			if not Globals.player:
 				return false
+			return not Globals.player.is_engine_charged()
 
-			return not Globals.player.is_engine_charged(),
-			
-	ActivationType.ENGINE_CHARGED:
-		func(_die: Dice) -> bool:
+		ActivationType.ENGINE_CHARGED:
 			if not Globals.player:
 				return false
+			return Globals.player.is_engine_charged()
 
-			return Globals.player.is_engine_charged(),
-			
-	ActivationType.CHARGE_AT_LEAST:
-		func(_die: Dice) -> bool:
+		ActivationType.CHARGE_AT_LEAST:
 			if not Globals.player:
 				return false
+			return Globals.player.can_afford_charge(threshold)
 
-			return Globals.player.can_afford_charge(threshold),
-			
-	ActivationType.OVERCHARGED:
-		func(_die: Dice) -> bool:
+		ActivationType.OVERCHARGED:
 			if not Globals.player:
 				return false
+			return Globals.player.is_overcharged()
 
-			return Globals.player.is_overcharged(),
-
-	ActivationType.DICE_OWNED_AT_MOST:
-		func(_die: Dice) -> bool:
+		ActivationType.DICE_OWNED_AT_MOST:
 			if not Globals.player:
 				return false
+			return Globals.player.dice_owned() <= threshold
 
-			return Globals.player.dice_owned() <= threshold,
-
-	ActivationType.SHIELDS_AT_LEAST:
-		func(_die: Dice) -> bool:
+		ActivationType.SHIELDS_AT_LEAST:
 			if not Globals.player:
 				return false
+			return Globals.player.health.shields >= threshold
 
-			return Globals.player.health.shields >= threshold,
-
-	ActivationType.TARGETED_SHIP_HAS_STATUS:
-		func(die: Dice) -> bool:
+		ActivationType.TARGETED_SHIP_HAS_STATUS:
 			if not Globals.targeting_computer:
 				return false
 			var target: Enemy = Globals.targeting_computer.target_for(die)
@@ -192,40 +172,36 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 				return false
 			if data_key.is_empty():
 				return not engine.statuses_on(target).is_empty()
-			return engine.find_status(target, StringName(data_key)) != null,
+			return engine.find_status(target, StringName(data_key)) != null
 
-	ActivationType.HULL_AT_LEAST:
-		func(_die: Dice) -> bool:
+		ActivationType.HULL_AT_LEAST:
 			if not Globals.player:
 				return false
+			return Globals.player.health.health >= threshold
 
-			return Globals.player.health.health >= threshold,
-
-	ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE:
-		func(die: Dice) -> bool:
+		ActivationType.TARGETED_SHIP_HOLDS_DIE_ABOVE:
 			if not Globals.targeting_computer:
 				return false
-			var target: Enemy = Globals.targeting_computer.target_for(die)
-			if not target or not target.dice_manager:
+			var holder: Enemy = Globals.targeting_computer.target_for(die)
+			if not holder or not holder.dice_manager:
 				return false
-			for held: Dice in target.dice_manager.queue:
+			for held: Dice in holder.dice_manager.queue:
 				if is_instance_valid(held) and held != die and held.value > threshold:
 					return true
-			return false,
+			return false
 
-	ActivationType.EVASION_BELOW_CAP:
-		func(_die: Dice) -> bool:
+		ActivationType.EVASION_BELOW_CAP:
 			var evasion: EvasionModifier = EvasionModifier.find(ScenarioEngine.current())
-			return evasion != null and evasion.chance_percent() < EvasionModifier.MAX_PERCENT,
+			return evasion != null and evasion.chance_percent() < EvasionModifier.MAX_PERCENT
 
-	ActivationType.PLAYER_HAS_HARMFUL_STATUS:
-		func(_die: Dice) -> bool:
-			return TransferStatusesEvent.has_any(ScenarioEngine.current(), Globals.player),
-	ActivationType.CAN_JUMP:
-		func(_die: Dice) -> bool:
-			return not is_instance_valid(Globals.map) or Globals.map.can_jump(),
+		ActivationType.PLAYER_HAS_HARMFUL_STATUS:
+			return TransferStatusesEvent.has_any(ScenarioEngine.current(), Globals.player)
 
-}
+		ActivationType.CAN_JUMP:
+			return not is_instance_valid(Globals.map) or Globals.map.can_jump()
+
+	push_error("ActivationResource: no check for %s" % ActivationType.keys()[type])
+	return false
 
 
 ## Why each check turned a die away, as translation keys (the popup's text
@@ -314,7 +290,7 @@ func criteria_satisfied(die: Dice, tile: Tile = null) -> bool:
 	if type == ActivationType.MATCHES_HELD_DIE or type == ActivationType.SUMS_WITH_HELD_DIE:
 		var held: Dice = tile.get_held_die(die) if tile else null
 		return held == null or die == null or pairs_with(die.value, held.value)
-	return activation_functions[type].call(die)
+	return _die_check_passes(die)
 
 
 ## Whether a die showing [param face] pairs with a held die showing
