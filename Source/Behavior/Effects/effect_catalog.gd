@@ -168,6 +168,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.LASER, label = "Laser", handler = JuiceHandler, fields = ["amount", "juice_flags", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.MISSILE, label = "Missile", handler = JuiceHandler, fields = ["amount", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ION_BOLT, label = "Ion Bolt", handler = JuiceHandler, fields = ["amount", "color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.GRAPPLE, label = "Grapple", handler = GrappleHandler, fields = ["color", "sound_resource"]},
 
 	# ── TILE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ACTIVATE_SELF, label = "Activate Self", handler = ActivateSelfHandler},

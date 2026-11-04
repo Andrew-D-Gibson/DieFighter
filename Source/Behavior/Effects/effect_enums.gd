@@ -276,6 +276,11 @@ enum AudioVisualSubtype {
 	LASER,                    ## A blaster bolt from the effect source to each target; holds until it lands
 	MISSILE,                  ## A missile from the effect source to each target; holds until it lands
 	ION_BOLT,                 ## A crackling ion orb from the effect source to each target's shields; holds until it lands
+	## The activator die sets off home to the player's hand, and a claw on a
+	## tether from the actor catches it partway and reels it back (Seize).
+	## Holds until the die is back in front of the actor; sound_resource
+	## plays as the claw clamps shut.
+	GRAPPLE,
 }
 
 

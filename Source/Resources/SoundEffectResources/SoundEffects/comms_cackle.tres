@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SoundEffectResource" format=3 uid="uid://d2fo2dkdtpm5a"]
+
+[ext_resource type="Script" uid="uid://d2n1utrxjvsq6" path="res://Source/Resources/SoundEffectResources/sound_effect_resource.gd" id="1_sfx"]
+[ext_resource type="AudioStream" uid="uid://desv72wwvowr6" path="res://Assets/Sounds/Enemies/Comms/comms_cackle.wav" id="2_wav"]
+
+[resource]
+script = ExtResource("1_sfx")
+name = "comms_cackle"
+limit = 1
+sound_effect = ExtResource("2_wav")
+volume = -16.0
+pitch_randomness = 0.05
+metadata/_custom_type_script = "uid://d2n1utrxjvsq6"
