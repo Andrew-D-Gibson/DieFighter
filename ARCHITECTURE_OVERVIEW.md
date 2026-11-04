@@ -713,6 +713,13 @@ in the pane alongside. The rest are redrawn in the palette's greys by
 
 ## Tutorial
 
+`CockpitAdvisor` stays in the cockpit after the tutorial. It uses the five-frame
+computer portrait, reacts to damage and wins, and highlights story arrivals.
+Clicking it opens a scrollable briefing built from current ship dialogue and
+scenario reaction triggers. It has independent world coordinates, above ships'
+dialogue but below arrival cards and pause UI. The tutorial's final card hands
+the player over to it.
+
 `TutorialManager` (in main.tscn) narrates the opening ambush, then hands the
 run back mid-sector. It's progress, not an option: `Globals.tutorial_completed`
 (options file, `[Progress]`, untouched by Defaults; an old `show_tutorial=false`
@@ -1375,10 +1382,11 @@ on their home pixel as the speed reaches rest.
 
 ## Background Hazards
 
-A `BackgroundResource` carries at most one of two things: a permanent rule
+A `BackgroundResource` carries at most one of two things: a region rule
 (`global_modifier`, a `BackgroundModifierResource`) or a timed hazard
 (`hazard`, a `BackgroundHazardResource`): a recurring environmental event with a
-first-trigger delay, a repeat interval, and an `EffectChain`. The hazard is
+first-trigger delay, a repeat interval randomized from 2–4 turns on each trigger,
+and an `EffectChain`. The hazard is
 the place's — the Solar Corona's star flares, the Ion Storm Front's clouds
 discharge — so it can't be stacked onto unrelated scenery, and the region's art
 does part of the telegraphing.
@@ -1396,6 +1404,15 @@ the `callout` the monitor floats when it bites) and a hazard's (`description`,
 `text_token` (Solar Flare's damage step, `{amount}`). Both take an optional
 `trigger_sfx` for the monitor, which plays its chime without one.
 `test_background_rule_text.gd` pins every rule's and hazard's English.
+
+Rules can set `duration_turns` (0 means untimed). `BackgroundModifierManager`
+counts completed enemy turns and emits `background_modifier_countdown_changed`;
+at zero it removes the rule from the engine. Doldrums lasts three rounds, with
+its remaining turns on the monitor and arrival card. Fate's Corruption uses
+`NoEscapeModifier.prevents_fleeing`: `Map.can_jump()` and the arrows' appended
+`CAN_JUMP` activation check reject combat escapes while engine charge remains
+available. Stray Fate nodes use `fate_outskirt.tres` (stars, shards and a timed
+Fate Rift 1/6 swap, without a black hole).
 
 Each hazard has a `timing`. `YOUR_TURN_STARTS` hazards (Solar Flare, Asteroid
 Impact) go off as the player's turn starts, after the hand is rolled.
@@ -1430,17 +1447,16 @@ rule the enemy intent telegraph follows. Three things carry it:
   turns left beside it once `hazard_armed` starts the countdown. Every tick
   down flashes the unit and pops the digit; at one turn left
   the digit goes red and the lamp keeps blinking even once read; when it fires
-  the monitor pops like a tile with the hazard's name as the callout. Clicking
+  the monitor pops without a duplicate name callout. Clicking
   it opens the hazard's info panel (`EnvironmentMonitor.hazard_info()`,
   static): the countdown in the top line where a tile's panel says when it
-  activates ("In 2 turns", yellow), then the full rule and "Then every N
-  turns". The headline isn't there, since the full rule only repeats it; it
+  activates ("In 2 turns", yellow), then the full rule. The headline isn't there, since the full rule only repeats it; it
   belongs to the card. An open panel doesn't tick. Each fresh rule or hazard also
   spawns a `RegionAlert` card (unless `Globals.show_region_alerts`, Options >
   Game > Region Alerts, is off). On arrival it is the first beat of the
   `ArrivalIntro`: once the flap is down, the card unfolds out of its
   screen into the empty sky, the cockpit dims slightly, and it holds ~2 s (a
-  click anywhere or its Close button skips it; the first time the player ever
+  click anywhere skips it; only first discoveries have a Close button. The first time the player ever
   reads a given rule or hazard, recorded by `CollectionManager.record_region`
   as `rule:<file>` / `hazard:<file>`, it has no timer and waits for Close; a hazard's card adds the
   countdown-first headline, `EnvironmentMonitor.hazard_headline()` ("In 2
@@ -1892,6 +1908,15 @@ has a soft `CEF0F1` outline. `HullInfoArt` draws the hull info panel's picture
 from the live hull (ring share + 3x6 digits); `ShieldInfoArt` does the same
 for the shield panel, drawing the live shield count in those digits, tinted
 blue, on `shield_info_base.png`.
+
+**Dynamic prompts.** `InputManager.prompts_changed` reports deliberate device,
+controller-family or binding changes. Virtual mouse events and pointer-warp
+echoes keep controller prompts active. `InputPrompts` resolves inline control
+tokens against the actual PAD binding and Xbox/PlayStation/Steam artwork;
+unavailable glyphs fall back to the binding name. Tutorial cards refresh without
+restarting their reveal, and the ghost demonstration refreshes its button icon.
+Aseprite sources and the reproducible generator live under `Art/Textures/UI/InputPrompts/`
+and `tools/build_input_prompts.py`.
 
 **Controllers and rebinding** (Systems/Input/). `VirtualCursor` turns stick
 and d-pad into a pointer (in frame units, clamped to the frame, real time),
@@ -2574,3 +2599,13 @@ Source/
     ├── EffectChain/effect_chain.gd       # Chain runner
     └── effect_context.gd                      # Context for effect execution
 ```
+
+
+### Multiplicative shield amplification
+
+`EffectData.multiply_shields` marks a shield multiplier explicitly. The shield
+handler snapshots each target separately and stamps `ShieldEvent.amplification_unit`
+with original shields × base factor. `EffectEvent.amplify()` stays additive by
+default; shield multiplier events override it so Amplify +1 changes 2× into 4×,
+and +2 into 6×. Fortress Protocol+ adds its flat five-shield bonus separately.
+Flat shield effects retain ordinary additive amplification.
