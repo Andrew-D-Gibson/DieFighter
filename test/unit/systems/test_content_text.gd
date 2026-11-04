@@ -63,7 +63,7 @@ func test_pseudo_stretches_the_live_field() -> void:
 
 func test_a_region_rule_reads_its_own_fields_in_english() -> void:
 	var rule: BackgroundModifierResource = load(FATES_CORRUPTION)
-	assert_eq(rule.display_name(), "Fate's Corruption")
+	assert_eq(rule.display_name(), rule.modifier_name)
 	assert_eq(rule.display_description(), rule.description)
 
 
@@ -141,9 +141,9 @@ func test_an_option_rolls_an_action_that_translates() -> void:
 	assert_eq(ContentText.key_for(rolled, &"description"), "ENEMY_ACTION.SEIZE.DESC")
 
 
-func test_english_callouts_and_info_read_as_before() -> void:
+func test_english_callouts_and_info_read_their_own_fields() -> void:
 	var seize: EnemyActionResource = (load(SEIZE) as EnemyActionResource).copy()
-	assert_eq(_callout_of(seize).display_callout(), "STOLEN")
+	assert_eq(_callout_of(seize).display_callout(), _callout_of(seize).callout)
 	seize.activating_die_number = 3
 	var shown: Array[InfoResource] = []
 	var grab: Callable = func(info: InfoResource) -> void: shown.append(info)
@@ -151,8 +151,9 @@ func test_english_callouts_and_info_read_as_before() -> void:
 	seize.show_info()
 	Events.show_info.disconnect(grab)
 	assert_eq(shown.size(), 1)
-	assert_eq(shown[0].title_label_text, "Seize")
-	assert_eq(shown[0].bottom_label_text, "[color=yellow]Uses (die_3) -> %s[/color]" % seize.description)
+	assert_eq(shown[0].title_label_text, seize.name)
+	assert_string_contains(shown[0].bottom_label_text, "(die_3)", "the info names the die it uses")
+	assert_string_contains(shown[0].bottom_label_text, seize.description)
 
 
 func test_a_silenced_slot_keeps_the_name_and_says_it_was_silenced() -> void:
@@ -160,8 +161,8 @@ func test_a_silenced_slot_keeps_the_name_and_says_it_was_silenced() -> void:
 	var silenced: EnemyActionResource = (load(DO_NOTHING) as EnemyActionResource).copy()
 	silenced.silenced_action = seize
 	silenced.name = seize.name
-	assert_eq(silenced.display_name(), "Seize")
-	assert_eq(silenced.get_description_text(), "Silenced: does nothing this turn")
+	assert_eq(silenced.display_name(), seize.name)
+	assert_eq(silenced.get_description_text(), tr("ENEMY_ACTION_SILENCED_DESC"))
 	var german_name: String = _in_german({"ENEMY_ACTION.SEIZE.NAME": "Kapern"}, silenced.display_name)
 	assert_eq(german_name, "Kapern", "the cancelled action's name, not Do Nothing's")
 

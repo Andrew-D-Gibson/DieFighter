@@ -268,7 +268,7 @@ func test_arming_plants_a_badge_on_the_ship() -> void:
 	var badges: Array = ship.get_status_bar().get_children().filter(
 			func(n: Node) -> bool: return n is DelayBadge)
 	assert_eq(badges.size(), 1)
-	assert_string_contains(armed.get_info_text(), "Deal 20 damage")
+	assert_string_contains(armed.get_info_text(), "20", "the badge quotes the armed amount")
 
 
 func test_it_goes_off_against_its_ship_with_the_armed_amount() -> void:

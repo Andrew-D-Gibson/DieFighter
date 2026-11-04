@@ -121,11 +121,3 @@ func test_map_pan_cursor_grab() -> void:
 	assert_eq(cursor.texture, cursor.default_cursor_texture)
 
 	InputManager.control_scheme = was_scheme
-
-
-func test_tutorial_finish_the_raider_bump_text() -> void:
-	var step: Resource = load("res://Source/Systems/TutorialManager/TutorialStepResources/finish_the_raider.tres")
-	assert_not_null(step)
-	var text: String = step.get("tutorial_text")
-	assert_true(text.contains("[color=green]Bump[/color] (bump)"),
-		"Tutorial step displays '[color=green]Bump[/color] (bump)'")

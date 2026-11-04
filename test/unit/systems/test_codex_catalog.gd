@@ -51,13 +51,33 @@ func test_ships_that_arent_foes_stay_out_of_the_enemy_list() -> void:
 
 
 func test_an_action_rolled_by_several_options_is_listed_once_with_its_whole_range() -> void:
+	# Read from the drone's own options, so retuning or renaming its actions
+	# never fails this; only the merging is checked.
+	var order: Array[EnemyActionResource] = []
+	var lows: Dictionary[String, int] = {}
+	var highs: Dictionary[String, int] = {}
+	var options_seen: int = 0
+	for pool: EnemyTurnActionList in CANNON_DRONE.action_options:
+		for option: EnemyActionOptionResource in pool.actions_possible:
+			var action: EnemyActionResource = option.base_action
+			if not action or action.name.is_empty():
+				continue
+			options_seen += 1
+			if not lows.has(action.name):
+				order.append(action)
+				lows[action.name] = option.min_amount
+				highs[action.name] = option.max_amount
+			else:
+				lows[action.name] = mini(lows[action.name], option.min_amount)
+				highs[action.name] = maxi(highs[action.name], option.max_amount)
+	assert_gt(options_seen, order.size(), "the drone still rolls one action from several options")
+
 	var lines: Array[String] = CodexCatalog.enemy_action_lines(CANNON_DRONE)
-	var cannon_lines: Array[String] = []
-	for line: String in lines:
-		if line.contains("Dice Cannon"):
-			cannon_lines.append(line)
-	assert_eq(cannon_lines.size(), 1)
-	assert_string_contains(cannon_lines[0], "1-12 damage")
+	assert_eq(lines.size(), order.size(), "one line per action")
+	for i: int in mini(lines.size(), order.size()):
+		var action: EnemyActionResource = order[i]
+		assert_string_contains(lines[i], action.display_name())
+		assert_string_contains(lines[i], CodexCatalog.amount_range_text(lows[action.name], highs[action.name]))
 
 
 func test_amount_ranges() -> void:

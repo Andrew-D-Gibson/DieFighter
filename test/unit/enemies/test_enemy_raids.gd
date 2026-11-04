@@ -84,10 +84,10 @@ func test_the_venom_fighter_only_raids_when_there_is_someone_to_raid() -> void:
 	for pool: EnemyTurnActionList in fighter.action_options:
 		for i: int in range(40):
 			for action: EnemyActionResource in EnemyActionSelector.roll(pool, with_prey):
-				if action.name == "Raid":
+				if action.name == (load(RAID) as EnemyActionResource).name:
 					raids_with_prey += 1
 			for action: EnemyActionResource in EnemyActionSelector.roll(pool, without):
-				assert_ne(action.name, "Raid")
+				assert_ne(action.name, (load(RAID) as EnemyActionResource).name)
 	assert_gt(raids_with_prey, 0)
 
 

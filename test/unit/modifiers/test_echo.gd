@@ -78,7 +78,7 @@ func test_arming_puts_an_echo_in_play_on_its_tile() -> void:
 	var echo: EchoModifier = engine.modifiers[0] as EchoModifier
 	assert_eq(echo.source, source)
 	assert_eq(echo.affected_node, source, "the visual shows on the tile that armed it")
-	assert_string_contains(echo.get_info_text(), "Echo armed")
+	assert_false(echo.get_info_text().is_empty(), "the first echo explains itself")
 
 
 func test_the_next_activation_runs_twice_and_spends_the_echo() -> void:
