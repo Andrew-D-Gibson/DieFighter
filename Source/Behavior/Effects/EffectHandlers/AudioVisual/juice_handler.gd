@@ -19,6 +19,7 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 	event.multiplier = data.multiplier
 	event.color = data.color
 	event.flags = data.juice_flags
+	event.callout_texture = data.callout_texture
 	event.text = data.display_callout().replace("{amount}", str(context.running_amount))
 	if is_instance_valid(context.activator_die):
 		event.text = event.text.replace("{die}", str(context.activator_die.value))

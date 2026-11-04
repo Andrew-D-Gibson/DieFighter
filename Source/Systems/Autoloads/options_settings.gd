@@ -193,7 +193,7 @@ func _register_options() -> void:
 
 func _register_game_options() -> void:
 	register(ANIMATION_SPEED, 1.0,
-		func() -> float: return Globals.animation_speed,
+		func() -> float: return Globals.configured_animation_speed,
 		func(value: Variant) -> void: Globals.animation_speed = _read_number(value))
 	# Empty means nothing chosen yet: Localization picks from the OS language.
 	register(LANGUAGE, "",

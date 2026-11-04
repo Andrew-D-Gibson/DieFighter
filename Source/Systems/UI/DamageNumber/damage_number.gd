@@ -124,12 +124,12 @@ static func spawn_text(target: Node2D, text: String, color: Color, big: bool = f
 
 ## A label at `global_pos`, parented to `parent`.
 static func spawn_text_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false,
-		uncapped_text: String = "", cap_color: Color = Color.WHITE) -> void:
+		uncapped_text: String = "", cap_color: Color = Color.WHITE, texture: Texture2D = null) -> void:
 	var letters: int = text.length() + uncapped_text.length()
 	var lifetime: float = minf(_TEXT_LIFETIME_SECONDS + letters * _TEXT_SECONDS_PER_LETTER,
 		_MAX_TEXT_LIFETIME_SECONDS)
 	_spawn_label(parent, global_pos, text, color, big, Vector2(0.0, -_RISE_PIXELS), 1.0, lifetime,
-		uncapped_text, cap_color)
+		uncapped_text, cap_color, texture)
 
 
 static func _stack_offset(target: Node2D) -> float:
@@ -149,8 +149,8 @@ static func _stack_offset(target: Node2D) -> float:
 ## pixel font stays crisp.
 static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color: Color,
 		big: bool, drift: Vector2, size: float = 1.0, lifetime: float = _LIFETIME_SECONDS,
-		uncapped_text: String = "", cap_color: Color = Color.WHITE) -> void:
-	if text.is_empty() or not is_instance_valid(parent):
+		uncapped_text: String = "", cap_color: Color = Color.WHITE, texture: Texture2D = null) -> void:
+	if (text.is_empty() and texture == null) or not is_instance_valid(parent):
 		return
 
 	var number: DamageNumber = DamageNumber.new()
@@ -158,7 +158,7 @@ static func _spawn_label(parent: Node, global_pos: Vector2, text: String, color:
 	# in whatever font its theme cache last held, not its role's, and keeps
 	# that size (a Chinese "12→3" spread out by Fusion-wide digits).
 	parent.add_child(number)
-	number._build(text, color, uncapped_text, cap_color)
+	number._build(text, color, uncapped_text, cap_color, texture)
 	number._drift = drift
 	number._lifetime = lifetime
 	number._rest_scale = Vector2.ONE * ((2.0 if big else 1.0) + size - 1.0)
@@ -186,9 +186,16 @@ func _keep_on_screen() -> void:
 
 
 func _build(text: String, color: Color, uncapped_text: String = "",
-		cap_color: Color = Color.WHITE) -> void:
+		cap_color: Color = Color.WHITE, texture: Texture2D = null) -> void:
 	# Above ships, particles and the cockpit frame.
 	z_index = 100
+	if texture != null:
+		var sprite: Sprite2D = Sprite2D.new()
+		sprite.texture = texture
+		sprite.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
+		add_child(sprite)
+		_content_size = texture.get_size()
+		return
 
 	_label = _make_label(text, _role_for(text), color)
 	if uncapped_text.is_empty():

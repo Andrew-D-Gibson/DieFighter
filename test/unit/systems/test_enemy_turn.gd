@@ -5,14 +5,67 @@ extends "res://test/helpers/die_fighter_test.gd"
 const SpyStatus := preload("res://test/helpers/spy_status.gd")
 
 var engine: ScenarioEngine
+var _saved_speed: float
 
 
 func before_each() -> void:
 	super()
+	_saved_speed = Globals.configured_animation_speed
 	engine = add_child_autofree(ScenarioEngine.new())
 	var manager: ScenarioManager = autofree(ScenarioManager.new())
 	manager.engine = engine
 	Globals.scenario_manager = manager
+
+
+func after_each() -> void:
+	Globals.configured_animation_speed = _saved_speed
+	super()
+
+
+func test_short_turns_stay_readable_and_long_turns_ease_to_three_times_speed() -> void:
+	for action_number: int in range(1, 4):
+		assert_eq(EnemyTurn.animation_multiplier(action_number), 1.0)
+	assert_almost_eq(EnemyTurn.animation_multiplier(5), 1.3965, 0.001)
+	assert_almost_eq(EnemyTurn.animation_multiplier(7), 2.2128, 0.001)
+	assert_eq(EnemyTurn.animation_multiplier(10), 3.0)
+	assert_eq(EnemyTurn.animation_multiplier(25), 3.0)
+
+
+func test_options_keep_the_base_speed_during_accelerated_playback() -> void:
+	Globals.animation_speed = 2.0
+	engine.enemy_turn_action_count = 10
+	assert_eq(Globals.animation_speed, 6.0)
+	assert_eq(OptionsSettings.get_option(OptionsSettings.ANIMATION_SPEED), 2.0)
+	OptionsSettings.set_option(OptionsSettings.ANIMATION_SPEED, 1.5)
+	assert_eq(Globals.animation_speed, 4.5)
+	assert_eq(OptionsSettings.get_option(OptionsSettings.ANIMATION_SPEED), 1.5)
+
+
+func test_shutdown_drops_the_temporary_speed_immediately() -> void:
+	Globals.animation_speed = 2.0
+	engine.enemy_turn_action_count = 10
+	engine.shutdown()
+	assert_eq(Globals.animation_speed, 2.0)
+	assert_eq(engine.enemy_turn_action_count, -1)
+
+
+func test_the_next_turn_starts_fresh_and_resets_before_announcing_its_end() -> void:
+	engine.enemy_turn_action_count = 10
+	var counts: Array[int] = []
+	Events.enemy_turn_starting.connect(func() -> void:
+		counts.append(engine.enemy_turn_action_count), CONNECT_ONE_SHOT)
+	Events.enemy_turn_over.connect(func() -> void:
+		counts.append(engine.enemy_turn_action_count), CONNECT_ONE_SHOT)
+	await EnemyTurn.play(_no_ships, get_tree())
+	assert_eq(counts, [0, -1] as Array[int])
+	assert_eq(Globals.animation_speed, Globals.configured_animation_speed)
+
+
+func test_a_missing_die_does_not_advance_the_speed_curve() -> void:
+	engine.enemy_turn_action_count = 3
+	var event: EnemyActionEvent = EnemyActionEvent.new()
+	await event.resolve(engine)
+	assert_eq(engine.enemy_turn_action_count, 3)
 
 
 func _no_ships() -> Array[Enemy]:

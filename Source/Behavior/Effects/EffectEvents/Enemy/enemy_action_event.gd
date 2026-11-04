@@ -61,6 +61,11 @@ func resolve(engine: ScenarioEngine) -> void:
 	if not _can_still_act():
 		return
 
+	# Advance only when a valid action starts, keeping its whole effect chain
+	# at one speed. Relayed dice pass through this same point.
+	if engine.enemy_turn_action_count >= 0:
+		engine.enemy_turn_action_count += 1
+
 	Globals.targeting_computer.target_enemy(enemy)
 	# Pulses the matching intent on the targeting computer, so the player can
 	# see which row of the intent table this die is about to play. Before the

@@ -86,7 +86,17 @@ var screenshake_enabled: bool:
 ## Accessibility: full-screen flashes drop to a faint tint, rapid flicker
 ## stops, and sprite flashes are toned down (see Juice.soften_flash()).
 var reduce_flashing: bool = false
-var animation_speed: float = 4
+## The option stays independent of temporary combat pacing, including when
+## the options menu is opened or saved during an accelerated enemy turn.
+var configured_animation_speed: float = 4.0
+## Effective playback speed. Assignments still set the player's base speed.
+var animation_speed: float:
+	get:
+		var engine: ScenarioEngine = ScenarioEngine.current()
+		var multiplier: float = EnemyTurn.animation_multiplier(engine.enemy_turn_action_count) if engine else 1.0
+		return configured_animation_speed * multiplier
+	set(value):
+		configured_animation_speed = value
 var times_run: int = 0
 ## Whether the player has played the tutorial through once. Until they have,
 ## Play on the main menu starts the tutorial run instead of opening ship

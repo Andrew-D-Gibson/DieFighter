@@ -12,6 +12,7 @@ var kind: int
 var multiplier: float = 1.0
 var color: Color = Color.WHITE
 var text: String = ""
+var callout_texture: Texture2D = null
 ## EffectData.juice_flags: a bitmask of Flag.
 var flags: int = 0
 
@@ -66,7 +67,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 						40.0 * multiplier, _has(Flag.RISE))
 		EffectEnums.AudioVisualSubtype.CALLOUT:
 			for node: Node2D in anchors:
-				Juice.callout_at(node, _anchor_for(node), text, color, _has(Flag.BIG))
+				Juice.callout_at(node, _anchor_for(node), text, color, _has(Flag.BIG), callout_texture)
 		EffectEnums.AudioVisualSubtype.BUMP:
 			for node: Node2D in anchors:
 				Juice.bump(Juice.body_of(node), _BUMP_STRENGTH * multiplier, 0.3)

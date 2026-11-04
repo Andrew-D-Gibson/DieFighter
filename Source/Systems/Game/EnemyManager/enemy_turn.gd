@@ -23,6 +23,14 @@ static func roll_tables(ships: Array[Enemy], roster: Array[Enemy], take_forced: 
 const MAX_PASSES: int = 8
 
 
+## Three actions stay readable; long turns ease toward three times the
+## selected speed by action ten, including dice passed through relays.
+static func animation_multiplier(action_number: int) -> float:
+	var progress: float = clampf((action_number - 3.0) / 7.0, 0.0, 1.0)
+	var eased: float = progress * progress * (3.0 - 2.0 * progress)
+	return 1.0 + 2.0 * eased
+
+
 ## Plays one enemy turn and announces its end. [param roster] returns the
 ## ships still in the fight; it's asked again after statuses tick.
 static func play(roster: Callable, tree: SceneTree) -> void:
@@ -39,6 +47,7 @@ static func play(roster: Callable, tree: SceneTree) -> void:
 	# Turn-end hazards go off now, with the player's dice in the ships' hands
 	# and before any ship reads them. They queue onto the engine, so the wait
 	# below lets them resolve fully first.
+	engine.enemy_turn_action_count = 0
 	Events.enemy_turn_starting.emit()
 
 	# Statuses tick first, and resolve completely before any ship acts, so a
@@ -90,6 +99,7 @@ static func play(roster: Callable, tree: SceneTree) -> void:
 	if not _engine_alive(engine):
 		return
 
+	engine.enemy_turn_action_count = -1
 	Events.enemy_turn_over.emit()
 
 

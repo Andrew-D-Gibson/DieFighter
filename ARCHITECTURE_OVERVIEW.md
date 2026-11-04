@@ -736,13 +736,6 @@ in the pane alongside. The rest are redrawn in the palette's greys by
 
 ## Tutorial
 
-`CockpitAdvisor` stays in the cockpit after the tutorial. It uses the five-frame
-computer portrait, reacts to damage and wins, and highlights story arrivals.
-Clicking it opens a scrollable briefing built from current ship dialogue and
-scenario reaction triggers. It has independent world coordinates, above ships'
-dialogue but below arrival cards and pause UI. The tutorial's final card hands
-the player over to it.
-
 `TutorialManager` (in main.tscn) narrates the opening ambush, then hands the
 run back mid-sector. It's progress, not an option: `Globals.tutorial_completed`
 (options file, `[Progress]`, untouched by Defaults; an old `show_tutorial=false`

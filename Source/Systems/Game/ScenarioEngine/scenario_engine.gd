@@ -42,6 +42,10 @@ var _inject_index: int = 0
 var currently_processing_queue: bool = false
 var event_queue: Array[EffectEvent]
 
+## -1 outside an enemy turn. Owned by this scenario so a jump or shutdown
+## cannot carry accelerated playback into the next fight.
+var enemy_turn_action_count: int = -1
+
 var modifiers: Array[Modifier]
 
 ## Set by shutdown(). A drain suspended in an await checks this on resuming
@@ -195,6 +199,7 @@ func clear_modifiers() -> void:
 ## otherwise strand everything waiting on finished_processing_queue, and leave
 ## modifier status visuals parented to tiles that outlive the scenario.
 func shutdown() -> void:
+	enemy_turn_action_count = -1
 	event_queue.clear()
 	_chain_starts.clear()
 	_settle_owed = 0.0

@@ -26,13 +26,6 @@ var _close_held: bool = false
 var time_between_blip_sounds: float = 0.1
 var last_blip_time: int = 0
 
-## The hologram's head drifts up and down inside its bezel this many pixels,
-## smoothly rather than a pixel at a time, over one bob period.
-const _HEAD_BOB_PIXELS: float = 1.0
-const _HEAD_BOB_SECONDS: float = 1.6
-var _head_rest: Vector2
-var _bob_time: float = 0.0
-
 signal all_text_displayed()
 signal popup_closed()
 
@@ -61,7 +54,6 @@ static func make_highlight(texture: Texture2D) -> Sprite2D:
 
 
 func _ready() -> void:
-	_head_rest = %ComputerTalking.position
 	InputManager.prompts_changed.connect(_refresh_input_prompts)
 
 
@@ -87,13 +79,6 @@ func show_through_dim(item: CanvasItem) -> void:
 	_shown_through[item.get_instance_id()] = Vector2i(item.z_index, 1 if item.z_as_relative else 0)
 	item.z_as_relative = false
 	item.z_index = SHOWN_THROUGH_DIM_Z_INDEX
-
-
-func _process(delta: float) -> void:
-	_bob_time += delta
-	%ComputerTalking.position = _head_rest + Vector2(
-		0.0, sin(_bob_time * TAU / _HEAD_BOB_SECONDS) * _HEAD_BOB_PIXELS
-	)
 
 
 func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = null, close_button: bool = true, auto_close_time: float = 0) -> void:
@@ -183,7 +168,6 @@ func close() -> void:
 func when_text_shown() -> void:
 	popup_completed = true
 	
-	%ComputerTalking.stop()
 	all_text_displayed.emit()
 
 	if not _close_held:

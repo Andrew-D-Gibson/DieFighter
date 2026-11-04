@@ -174,10 +174,11 @@ static func callout(anchor: Node2D, text: String, color: Color, big: bool = fals
 
 ## The same label at an arbitrary point, for anchors that aren't where their
 ## node is (the player's is their health bar).
-static func callout_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false) -> void:
+static func callout_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false,
+		texture: Texture2D = null) -> void:
 	if not _usable(parent):
 		return
-	DamageNumber.spawn_text_at(parent, global_pos, text, color, big)
+	DamageNumber.spawn_text_at(parent, global_pos, text, color, big, "", Color.WHITE, texture)
 
 
 ## A jagged bolt from `from` to `to` that flickers for `msec` and is gone.

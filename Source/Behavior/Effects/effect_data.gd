@@ -63,6 +63,10 @@ extends Resource
 ## and "{die}" are filled in when it plays.
 @export var callout: String = ""
 
+## Optional art in place of CALLOUT's words. Keeps its authored colours;
+## callout still supplies the reading time when a texture is present.
+@export var callout_texture: Texture2D = null
+
 # ── Text Token ─────────────────────────────────────────────────────────────────
 ## Names the number this step owns in its content's text: a tile description
 ## reading "Deal {damage} damage" shows the amount of the step whose

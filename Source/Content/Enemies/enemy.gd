@@ -791,7 +791,8 @@ func _spend_held_dice() -> void:
 			# The action's own effects are injected ahead of this, so the
 			# beat comes once they've all landed.
 			var settle: WaitEvent = WaitEvent.new()
-			settle.amount = roundi(EnemyActionEvent.SETTLE_SECONDS * 1000.0 / Globals.animation_speed)
+			settle.amount = roundi(EnemyActionEvent.SETTLE_SECONDS * 1000.0)
+			settle.scale_with_animation_speed = true
 			engine.queue_event(settle)
 	
 
