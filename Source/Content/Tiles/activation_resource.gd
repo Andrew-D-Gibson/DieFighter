@@ -57,6 +57,8 @@ enum ActivationType {
 	## that moves the player's statuses away (Countermeasures): with none it
 	## would eat the die.
 	PLAYER_HAS_HARMFUL_STATUS,
+	## Appended: jump controls must refuse a die before No Escape can waste it.
+	CAN_JUMP,
 }
 
 @export var type: ActivationType
@@ -219,6 +221,10 @@ var activation_functions: Dictionary[ActivationType, Callable] = {
 	ActivationType.PLAYER_HAS_HARMFUL_STATUS:
 		func(_die: Dice) -> bool:
 			return TransferStatusesEvent.has_any(ScenarioEngine.current(), Globals.player),
+	ActivationType.CAN_JUMP:
+		func(_die: Dice) -> bool:
+			return not is_instance_valid(Globals.map) or Globals.map.can_jump(),
+
 }
 
 
@@ -294,6 +300,8 @@ var failed_activation_messages: Dictionary[ActivationType, String] = {
 
 	ActivationType.PLAYER_HAS_HARMFUL_STATUS:
 		"ERROR_NO_STATUS_ON_YOU",
+	ActivationType.CAN_JUMP: "ERROR_NO_ESCAPE",
+
 }
 
 

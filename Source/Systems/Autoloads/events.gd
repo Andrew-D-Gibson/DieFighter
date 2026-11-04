@@ -220,6 +220,8 @@ signal background_changed(background: BackgroundResource)
 ## none, when the resource is null). Emitted once per scenario, after the
 ## rule has been registered on that scenario's engine.
 signal background_modifier_applied(modifier: BackgroundModifierResource)
+## Remaining full combat rounds before a temporary region rule lifts.
+signal background_modifier_countdown_changed(modifier: BackgroundModifierResource, turns_remaining: int)
 
 
 # Visual/Effects Events

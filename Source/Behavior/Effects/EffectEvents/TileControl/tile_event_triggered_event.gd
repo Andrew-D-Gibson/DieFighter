@@ -13,6 +13,9 @@ var chain: EffectChain
 ## nothing in particular.
 var subject: Node = null
 
+## The EventType that triggered this event response, or -1 if unspecified.
+var event_type: int = -1
+
 
 func resolve(engine: ScenarioEngine) -> void:
 	if not is_instance_valid(responder):
@@ -27,10 +30,12 @@ func resolve(engine: ScenarioEngine) -> void:
 	# A reactive chain is often conditional ("if the engine is charged..."),
 	# so the tile only lights up if the chain actually queued something.
 	# Lighting up when nothing happened would teach the player to ignore it.
+	# Combat-start housekeeping resets (ON_COMBAT_START) stay silent.
 	var queued_before: int = engine.event_queue.size()
 	await chain.play(context, engine)
 	if is_instance_valid(responder) and engine.event_queue.size() > queued_before:
-		responder.play_trigger_feedback(Globals.yellow)
+		if event_type != TileEvent.EventType.ON_COMBAT_START:
+			responder.play_trigger_feedback(Globals.yellow)
 
 
 ## Whether [param ship] is still there to aim at. A response waits in the

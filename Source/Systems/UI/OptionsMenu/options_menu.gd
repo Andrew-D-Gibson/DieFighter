@@ -41,11 +41,14 @@ const _SFX_PREVIEW: SoundEffectResource = preload("res://Source/Resources/SoundE
 ## A drag changes the value every frame; the sample plays at most this often.
 const _SFX_PREVIEW_INTERVAL_MSEC: int = 150
 
-## The panel, centred on this node, in world pixels.
-const PANEL_SIZE: Vector2 = Vector2(256, 140)
+## The panel, centred on this node, in world pixels. Expanded height so hint
+## explanation text clears bottom buttons with comfortable padding.
+const PANEL_SIZE: Vector2 = Vector2(256, 160)
 const TAB_HEIGHT: float = 12.0
 const _BODY_MARGIN: float = 6.0
 const _BUTTON_SIZE: Vector2 = Vector2(56, 14)
+const _HINT_HEIGHT: float = 32.0
+const _HINT_GAP: float = 4.0
 const _TAB_PADDING: float = 10.0
 ## How far a tab's padding gives way when a language's titles are too long
 ## for the row: they lose their margins before they overlap.
@@ -87,6 +90,7 @@ var _frame: OptionsFrame
 var _tab_buttons: Array[Button] = []
 ## Each tab's pages; most have one.
 var _pages: Dictionary[Tab, Array] = {}
+var _page_scrolls: Dictionary[Tab, Array] = {}
 var _sub_tabs: Dictionary[Tab, OptionsSubTabs] = {}
 ## Which of its pages each tab shows.
 var _open_page: Dictionary[Tab, int] = {}
@@ -174,12 +178,21 @@ func _build_pages() -> void:
 	# Controls: the rebindable actions on two pages, keys and controller
 	# buttons, each with the settings only that kind of input has.
 	var keyboard: OptionsPage = _page(Tab.CONTROLS, ControlsPage.KEYBOARD)
-	_add_binding_rows(keyboard, InputBindings.Kind.KEY, "OPT_BINDING_HINT_KEY")
-	# Dice input: how dice and tiles are picked up and put down.
 	keyboard.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
 		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
 		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
+	_add_binding_rows(keyboard, InputBindings.Kind.KEY, "OPT_BINDING_HINT_KEY")
 	var controller: OptionsPage = _page(Tab.CONTROLS, ControlsPage.CONTROLLER)
+	# Scheme-agnostic inputs: how the controller itself works and how dice and
+	# tiles are picked up and put down. Neither is a keyboard-vs-controller
+	# distinction, so both live on the controller page where non-keyboard
+	# inputs are looked for.
+	controller.choice(OptionsSettings.CONTROLLER_SCHEME, "OPT_CONTROLLER_SCHEME",
+		["OPT_CONTROLLER_SCHEME_CURSOR", "OPT_CONTROLLER_SCHEME_FOCUS"],
+		[InputBindings.ControlScheme.CURSOR, InputBindings.ControlScheme.FOCUS], "OPT_CONTROLLER_SCHEME_HINT")
+	controller.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
+		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
+		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
 	_add_binding_rows(controller, InputBindings.Kind.PAD, "OPT_BINDING_HINT_PAD")
 	controller.slider(OptionsSettings.CURSOR_SPEED, "OPT_CURSOR_SPEED",
 		"OPT_CURSOR_SPEED_HINT", OptionsSettings.CURSOR_SPEEDS.x, OptionsSettings.CURSOR_SPEEDS.y, 0.1)
@@ -290,9 +303,13 @@ func _build_panel() -> void:
 
 	var body: Rect2 = _frame.body_rect.grow(-_BODY_MARGIN)
 	var bottom_bar_top: float = body.end.y - _BUTTON_SIZE.y
-	var pages_rect: Rect2 = Rect2(body.position, Vector2(body.size.x, bottom_bar_top - 12 - body.position.y))
+	var hint_bottom: float = bottom_bar_top - _HINT_GAP
+	var hint_top: float = hint_bottom - _HINT_HEIGHT
+	var pages_bottom: float = hint_top - _HINT_GAP
+	var pages_rect: Rect2 = Rect2(body.position, Vector2(body.size.x, pages_bottom - body.position.y))
 	for tab: Tab in _TABS:
 		_pages[tab] = []
+		_page_scrolls[tab] = []
 		_open_page[tab] = 0
 		var rect: Rect2 = pages_rect
 		var sub_tabs: Array = _SUB_TABS.get(tab, [])
@@ -307,23 +324,32 @@ func _build_panel() -> void:
 			_sub_tabs[tab] = bar
 			rect = rect.grow_side(SIDE_TOP, -(OptionsSubTabs.HEIGHT + _SUB_TAB_GAP))
 		for i: int in range(maxi(1, sub_tabs.size())):
+			var scroll: ScrollContainer = ScrollContainer.new()
+			scroll.position = rect.position
+			scroll.size = rect.size
+			_style_scroll_container(scroll, _TABS[tab][1])
+			add_child(scroll)
+			_page_scrolls[tab].append(scroll)
+
 			var page: OptionsPage = OptionsPage.new(1 if tab == Tab.AUDIO else 2)
 			page.accent = _TABS[tab][1]
 			page.widget_color = _TABS[tab][2]
-			page.position = rect.position
-			page.size = rect.size
+			page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			page.size_flags_vertical = Control.SIZE_EXPAND_FILL
 			page.hint_changed.connect(_on_hint_changed)
-			add_child(page)
+			scroll.add_child(page)
 			_pages[tab].append(page)
 
 	_hint_label = RichTextLabel.new()
-	_hint_label.fit_content = true
+	_hint_label.fit_content = false
 	_hint_label.scroll_active = false
 	_hint_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_hint_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_hint_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	_hint_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_hint_label.add_theme_color_override("default_color", _HINT_COLOR)
-	_hint_label.position = Vector2(body.position.x, bottom_bar_top - 12)
-	_hint_label.size = Vector2(body.size.x, 12)
+	_hint_label.position = Vector2(body.position.x, hint_top)
+	_hint_label.size = Vector2(body.size.x, _HINT_HEIGHT)
 	add_child(_hint_label)
 
 	_defaults_button = _add_bottom_button("OPT_DEFAULTS", Vector2(body.position.x, bottom_bar_top), _on_defaults_pressed)
@@ -439,7 +465,12 @@ func _show_page(index: int, tab: Tab) -> void:
 	_open_page[tab] = index
 	for each: Tab in _pages:
 		for i: int in range(_pages[each].size()):
-			_page(each, i).visible = each == tab and i == index
+			var is_open: bool = each == tab and i == index
+			_page(each, i).visible = is_open
+			if _page_scrolls.has(each) and i < _page_scrolls[each].size():
+				_page_scrolls[each][i].visible = is_open
+				if is_open:
+					_page_scrolls[each][i].scroll_vertical = 0
 	_on_hint_changed("")
 	_shown_page().refresh()
 
@@ -506,6 +537,12 @@ func _show_status(text: String, color: Color) -> void:
 		_on_hint_changed("")
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if visible and (event.is_action_pressed(&"cursor_back") or event.is_action_pressed(&"ui_cancel")):
+		get_viewport().set_input_as_handled()
+		_on_close_button_pressed()
+
+
 func _on_close_button_pressed() -> void:
 	OptionsSettings.save_options_settings()
 	hide()
@@ -519,3 +556,50 @@ func _preview_sfx_volume() -> void:
 		return
 	_last_sfx_preview_msec = now
 	Events.play_sound.emit(_SFX_PREVIEW)
+
+
+## Styles a page ScrollContainer and its VScrollBar with pixel-styled track and
+## grabber tinted in the tab's accent colour.
+static func _style_scroll_container(scroll: ScrollContainer, accent: Color) -> void:
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	scroll.follow_focus = true
+	scroll.add_theme_stylebox_override("panel", StyleBoxEmpty.new())
+
+	var v_bar: VScrollBar = scroll.get_v_scroll_bar()
+	v_bar.custom_minimum_size.x = 4.0
+
+	var track: StyleBoxFlat = StyleBoxFlat.new()
+	track.bg_color = OptionsFrame.FILL
+	track.border_color = accent.darkened(0.6)
+	track.border_width_left = 1
+	track.anti_aliasing = false
+
+	var grabber: StyleBoxFlat = StyleBoxFlat.new()
+	grabber.bg_color = accent.darkened(0.3)
+	grabber.border_color = accent
+	grabber.border_width_left = 1
+	grabber.border_width_right = 1
+	grabber.border_width_top = 1
+	grabber.border_width_bottom = 1
+	grabber.anti_aliasing = false
+
+	var grabber_hover: StyleBoxFlat = StyleBoxFlat.new()
+	grabber_hover.bg_color = Color("#CEF0F1")
+	grabber_hover.border_color = Color.WHITE
+	grabber_hover.border_width_left = 1
+	grabber_hover.border_width_right = 1
+	grabber_hover.border_width_top = 1
+	grabber_hover.border_width_bottom = 1
+	grabber_hover.anti_aliasing = false
+
+	v_bar.add_theme_stylebox_override("scroll", track)
+	v_bar.add_theme_stylebox_override("scroll_focus", track)
+	v_bar.add_theme_stylebox_override("grabber", grabber)
+	v_bar.add_theme_stylebox_override("grabber_highlight", grabber_hover)
+	v_bar.add_theme_stylebox_override("grabber_pressed", grabber_hover)
+
+	var empty_icon: ImageTexture = ImageTexture.new()
+	for icon_name: String in ["decrement", "decrement_highlight", "decrement_pressed",
+			"increment", "increment_highlight", "increment_pressed"]:
+		v_bar.add_theme_icon_override(icon_name, empty_icon)

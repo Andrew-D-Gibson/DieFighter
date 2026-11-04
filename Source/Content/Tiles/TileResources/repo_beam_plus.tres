@@ -132,7 +132,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Repo Beam+[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} charge[/color]: Take back the last die [color=purple]target[/color] took. [color=orange]Return[/color] both dice"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} engine charge[/color]: Take back the last die [color=purple]target[/color] took. [color=orange]Return[/color] both dice"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

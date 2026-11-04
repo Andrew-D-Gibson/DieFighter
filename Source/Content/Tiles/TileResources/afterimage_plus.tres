@@ -49,13 +49,6 @@ subtype = 14
 amount = 18
 color = Color(0.2627, 0.651, 0.9882, 1)
 
-[sub_resource type="Resource" id="Resource_pqvp8"]
-script = ExtResource("4_ea4xd")
-category = 4
-subtype = 16
-callout = "+{amount}"
-color = Color(0.2627, 0.651, 0.9882, 1)
-
 [sub_resource type="Resource" id="Resource_dsdkw"]
 script = ExtResource("4_ea4xd")
 category = 1
@@ -63,7 +56,7 @@ subtype = 2
 
 [sub_resource type="Resource" id="Resource_gecal"]
 script = ExtResource("3_p2f2v")
-effects = Array[ExtResource("4_ea4xd")]([SubResource("Resource_8pl5w"), SubResource("Resource_o7ca5"), SubResource("Resource_f0xm8"), SubResource("Resource_ompcp"), SubResource("Resource_1trwq"), SubResource("Resource_mro3j"), SubResource("Resource_pqvp8"), SubResource("Resource_dsdkw")])
+effects = Array[ExtResource("4_ea4xd")]([SubResource("Resource_8pl5w"), SubResource("Resource_o7ca5"), SubResource("Resource_f0xm8"), SubResource("Resource_ompcp"), SubResource("Resource_1trwq"), SubResource("Resource_mro3j"), SubResource("Resource_dsdkw")])
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4jiqj"]
 atlas = ExtResource("5_ea4xd")

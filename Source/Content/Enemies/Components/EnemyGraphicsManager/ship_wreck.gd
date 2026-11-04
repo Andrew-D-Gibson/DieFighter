@@ -15,10 +15,15 @@ extends Node2D
 
 signal finished
 
-## Small hulls split three ways, big ones four.
+## Small hulls split three ways, big ones four, huge ones six.
 const _PIECES_SMALL: int = 3
 const _PIECES_LARGE: int = 4
+const _PIECES_HUGE: int = 6
 const _LARGE_HULL_SIZE: float = 48.0
+const _HUGE_HULL_SIZE: float = 96.0
+
+## How long chunks smoothly fade out and dissolve during their blast.
+const _CHUNK_FADE_SECONDS: float = 0.65
 
 ## How far each piece drifts, how long it takes, and how much it turns.
 const _DRIFT_DISTANCE_MIN: float = 8.0
@@ -81,7 +86,8 @@ static func shatter(
 
 func _break(ship_graphics: Node2D, kick: Vector2) -> void:
 	var hull: Rect2 = _hull_rect(ship_graphics)
-	var count: int = _PIECES_LARGE if hull.size.x >= _LARGE_HULL_SIZE else _PIECES_SMALL
+	var count: int = _PIECES_HUGE if hull.size.x >= _HUGE_HULL_SIZE \
+		else (_PIECES_LARGE if hull.size.x >= _LARGE_HULL_SIZE else _PIECES_SMALL)
 	var reach: float = hull.size.length() * _WEDGE_REACH
 	var cracks: Array[PackedVector2Array] = []
 	var angles: Array[float] = []
@@ -113,7 +119,7 @@ func _break(ship_graphics: Node2D, kick: Vector2) -> void:
 		var piece: Node2D = _make_piece(ship_graphics, wedge, middle)
 		var delay: float = _FIRST_BLAST_SECONDS + blast_order.find(i) * _BLAST_SPACING_SECONDS \
 			+ _rand(-_BLAST_JITTER_SECONDS, _BLAST_JITTER_SECONDS)
-		_drift(piece, Vector2.from_angle(heading), kick, maxf(delay, 0.0))
+		_drift(piece, Vector2.from_angle(heading), kick, maxf(delay, 0.0), hull)
 
 
 ## The ship's art bounds in its own space. A ship scene's root is a Sprite2D;
@@ -255,10 +261,11 @@ static func _fade_ramp() -> Gradient:
 
 ## Sends [param piece] off along a mix of [param outward] and [param kick],
 ## then blows it up after [param delay] seconds, wherever it has got to.
-func _drift(piece: Node2D, outward: Vector2, kick: Vector2, delay: float) -> void:
+func _drift(piece: Node2D, outward: Vector2, kick: Vector2, delay: float, hull: Rect2) -> void:
 	var heading: Vector2 = (outward * (1.0 - _KICK_WEIGHT) + kick * _KICK_WEIGHT).normalized() \
 		if kick != Vector2.ZERO else outward
-	var distance: float = _rand(_DRIFT_DISTANCE_MIN, _DRIFT_DISTANCE_MAX)
+	var hull_scale: float = clampf(maxf(hull.size.x, hull.size.y) / _LARGE_HULL_SIZE, 1.0, 2.0)
+	var distance: float = _rand(_DRIFT_DISTANCE_MIN, _DRIFT_DISTANCE_MAX) * hull_scale
 	var spin: float = _rand(-_DRIFT_SPIN_MAX, _DRIFT_SPIN_MAX)
 
 	var tween: Tween = create_tween().set_parallel(true)
@@ -268,31 +275,48 @@ func _drift(piece: Node2D, outward: Vector2, kick: Vector2, delay: float) -> voi
 		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_OUT)
 	tween.tween_property(piece, "rotation", spin, _DRIFT_SECONDS) \
 		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-	get_tree().create_timer(delay).timeout.connect(_blow.bind(piece))
+	get_tree().create_timer(delay).timeout.connect(func() -> void:
+		tween.kill()
+		_blow(piece, heading, hull_scale)
+	)
 
 
-func _blow(piece: Node2D) -> void:
+func _blow(piece: Node2D, heading: Vector2 = Vector2.ZERO, hull_scale: float = 1.0) -> void:
 	if not is_instance_valid(piece):
 		return
-	# The piece goes at once; its sparks keep falling where they were shed.
+	# The piece does not pop out; its trail sparks keep falling where they were shed.
 	for child: Node in piece.get_children():
 		if child is CPUParticles2D:
 			(child as CPUParticles2D).emitting = false
-		elif child is CanvasItem:
-			(child as CanvasItem).visible = false
 
 	var explosion: AnimatedSprite2D = _explosion_scene.instantiate()
 	explosion.position = piece.position
 	explosion.rotation = _rand(0.0, TAU)
-	explosion.scale = Vector2.ONE * _rand(_BLAST_SCALE_MIN, _BLAST_SCALE_MAX)
+	explosion.scale = Vector2.ONE * _rand(_BLAST_SCALE_MIN, _BLAST_SCALE_MAX) * clampf(hull_scale, 1.0, 1.7)
 	explosion.speed_scale = _BLAST_SPEED
 	# The explosion scene frees itself once it has played; counting those out
 	# is how the wreck knows when it's done.
 	explosion.animation_finished.connect(_on_blast_done, CONNECT_ONE_SHOT)
 	add_child(explosion)
-	Juice.sparkle(self, piece.global_position, Globals.red, 6, 30.0)
+	Juice.sparkle(self, piece.global_position, Globals.red, 6, 30.0 * hull_scale)
+	Juice.sparkle(self, piece.global_position, Globals.orange, 8, 40.0 * hull_scale)
 	Events.play_sound.emit(_blast_sound)
 	Events.camera_shake_small.emit()
+
+	# Chunks drift, tumble/spin, decelerate and smoothly fade out their alpha instead of abruptly disappearing
+	var extra_drift: float = _rand(6.0, 14.0) * hull_scale
+	var extra_spin: float = _rand(-TAU * 0.15, TAU * 0.15)
+	var fade_tween: Tween = piece.create_tween().set_parallel(true)
+	fade_tween.tween_property(piece, "position", piece.position + heading * extra_drift, _CHUNK_FADE_SECONDS) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fade_tween.tween_property(piece, "rotation", piece.rotation + extra_spin, _CHUNK_FADE_SECONDS) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fade_tween.tween_property(piece, "modulate:a", 0.0, _CHUNK_FADE_SECONDS) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fade_tween.chain().tween_callback(func() -> void:
+		if is_instance_valid(piece):
+			piece.queue_free()
+	)
 
 
 func _on_blast_done() -> void:

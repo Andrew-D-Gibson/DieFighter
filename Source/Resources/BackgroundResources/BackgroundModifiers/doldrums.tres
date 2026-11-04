@@ -6,7 +6,8 @@
 [resource]
 script = ExtResource("script_0")
 modifier_name = "Doldrums"
-description = "No effect can exceed [color=orange]{cap}[/color]"
+description = "For [color=yellow]{turns} turns[/color], no effect can exceed [color=orange]{cap}[/color]"
+duration_turns = 3
 callout = "MAX {cap}"
 color = Color(0.262745, 0.65098, 0.988235, 1)
 modifier_script = ExtResource("modifier_script")

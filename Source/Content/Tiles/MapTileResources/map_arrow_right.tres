@@ -17,6 +17,10 @@ script = ExtResource("1_mv2dx")
 type = 9
 metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 
+[sub_resource type="Resource" id="Resource_mv2dx"]
+script = ExtResource("1_mv2dx")
+type = 23
+
 [sub_resource type="Resource" id="Resource_eh387"]
 script = ExtResource("5_0dj7c")
 category = 2
@@ -55,7 +59,7 @@ tile_name = "Right Controls"
 description = "[color=yellow]Any die[/color] -> Jump [color=purple]X[/color] locations right"
 textures = SubResource("SpriteFrames_u4eem")
 uses_per_turn = -1
-activation_checks = Array[ExtResource("1_mv2dx")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46")])
+activation_checks = Array[ExtResource("1_mv2dx")]([SubResource("Resource_kfeuv"), SubResource("Resource_6pw46"), SubResource("Resource_mv2dx")])
 effect_chain = SubResource("Resource_7c16k")
 dragging_allowed = false
 max_dice_in_queue = 1

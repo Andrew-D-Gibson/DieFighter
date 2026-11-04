@@ -74,6 +74,9 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 var turn_actions: Array[EnemyActionResource]
 var moving_in_world: bool = false
 
+## True when this enemy is mounted on a larger hull (like the Bastion) and bobs with it.
+var is_mounted: bool = false
+
 ## True once something has deliberately placed this ship — a scenario that
 ## authored a fixed spot, or an effect that flew it somewhere. The formation
 ## then leaves it where it is and reflows the other ships around it.

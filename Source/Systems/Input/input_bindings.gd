@@ -11,6 +11,14 @@ class_name InputBindings
 
 enum Kind {KEY, PAD}
 
+## How the controller drives the game. CURSOR is today's virtual cursor: the
+## stick and d-pad freely steer a pointer that every screen treats as a mouse
+## (click, hover, drag). FOCUS is a selection icon that snaps between the
+## on-screen objects of interest, with A taking the one it rests on. CURSOR
+## keeps pointer movement; FOCUS swaps it for stepping and leaves the same
+## click/drop behind. See InputManager.control_scheme.
+enum ControlScheme {CURSOR, FOCUS}
+
 ## The actions the player can rebind, in the order the Controls tab lists
 ## them. The dev console's key isn't one.
 const ACTIONS: Array[StringName] = [

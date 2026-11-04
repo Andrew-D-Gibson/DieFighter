@@ -23,11 +23,15 @@ var _active_modifier: Modifier = null
 ## The engine the active modifier is registered on.
 var _active_engine: ScenarioEngine = null
 
+## Full combat rounds left; -1 for an untimed rule.
+var turns_remaining: int = -1
+
 
 func _ready() -> void:
 	Globals.background_modifier_manager = self
 
 	Events.start_scenario.connect(_apply_current_background)
+	Events.enemy_turn_over.connect(_on_round_ended)
 	Events.background_changed.connect(_on_background_changed)
 
 
@@ -76,7 +80,9 @@ func _apply_current_background() -> void:
 
 	_active_engine = engine
 	engine.add_modifier(_active_modifier)
+	turns_remaining = current_modifier_resource.duration_turns if current_modifier_resource.duration_turns > 0 else -1
 	Events.background_modifier_applied.emit(current_modifier_resource)
+	Events.background_modifier_countdown_changed.emit(current_modifier_resource, turns_remaining)
 
 
 func _remove_active_modifier() -> void:
@@ -84,7 +90,19 @@ func _remove_active_modifier() -> void:
 		_active_engine.remove_modifier(_active_modifier)
 	_active_modifier = null
 	_active_engine = null
+	turns_remaining = -1
 
 
 func _get_engine() -> ScenarioEngine:
 	return ScenarioEngine.current()
+
+
+func _on_round_ended() -> void:
+	if turns_remaining <= 0 or not is_instance_valid(_active_engine) or _active_engine.is_shut_down():
+		return
+	turns_remaining -= 1
+	Events.background_modifier_countdown_changed.emit(current_modifier_resource, turns_remaining)
+	if turns_remaining == 0:
+		_remove_active_modifier()
+		current_modifier_resource = null
+		Events.background_modifier_applied.emit(null)

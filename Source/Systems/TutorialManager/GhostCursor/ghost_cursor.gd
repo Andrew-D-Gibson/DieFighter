@@ -83,6 +83,7 @@ var _index: int = 0
 var _time: float = 0.0
 ## Seconds left hidden before the current demo starts.
 var _wait: float = 0.0
+var _input_prompt: Sprite2D
 var _sprite: Sprite2D
 ## The copy of what a drag picked up, under the fist.
 var _carried: Sprite2D
@@ -100,6 +101,9 @@ func _init() -> void:
 	_carried.self_modulate.a = _CARRIED_ALPHA
 	_carried.visible = false
 	add_child(_carried)
+	_input_prompt = Sprite2D.new()
+	_input_prompt.position = Vector2(16, -6)
+	add_child(_input_prompt)
 	_sprite = Sprite2D.new()
 	_sprite.texture = _ARROW_TEXTURE
 	_sprite.centered = false
@@ -359,3 +363,15 @@ static func _fade_out_after_linger(pose: Pose, t: float) -> Pose:
 ## Slow off the mark and slow into place, like a hand.
 static func _ease(x: float) -> float:
 	return 0.5 - cos(PI * clampf(x, 0.0, 1.0)) / 2.0
+
+
+func _ready() -> void:
+	InputManager.prompts_changed.connect(_refresh_input_prompt)
+	_refresh_input_prompt()
+
+
+## The demo retains its pointing hand; the nearby button says how to grip it
+## with the current controller and binding.
+func _refresh_input_prompt() -> void:
+	_input_prompt.texture = InputPrompts.action_icon(&"cursor_click")
+	_input_prompt.visible = InputManager.controller_active and _input_prompt.texture != null

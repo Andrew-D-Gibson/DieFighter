@@ -28,6 +28,8 @@ enum Flag {
 	ENGINE_HUB = 16,
 	## CALLOUT: printed at double size, like a big hit's number, for a
 	## callout that is the whole of what happened (a ship's wasted "...").
+	## LASER: drains the player's shield bar into a condensing DBZ energy
+	## sphere and blasts a massive beam at each target (Discharge Plate).
 	BIG = 32,
 }
 
@@ -81,7 +83,10 @@ func resolve(_engine: ScenarioEngine) -> void:
 			if is_instance_valid(activator_die) and activator_die is Dice:
 				Juice.die_flare(activator_die as Dice, color)
 		EffectEnums.AudioVisualSubtype.LASER:
-			await _shoot(anchors, JuiceProjectile.Style.LASER)
+			if _has(Flag.BIG):
+				await _discharge_beam(anchors)
+			else:
+				await _shoot(anchors, JuiceProjectile.Style.LASER)
 		EffectEnums.AudioVisualSubtype.MISSILE:
 			await _shoot(anchors, JuiceProjectile.Style.MISSILE)
 		EffectEnums.AudioVisualSubtype.ION_BOLT:
@@ -115,6 +120,28 @@ func _shoot(anchors: Array[Node2D], style: JuiceProjectile.Style) -> void:
 					else Juice.anchor_of(node)
 			seconds = maxf(seconds, Juice.projectile(from, Juice.anchor_of(from),
 					aim, color, style, amount / 1000.0, node))
+	if seconds > 0.0:
+		await from.get_tree().create_timer(seconds).timeout
+
+
+## Sucks shield energy from the player's HUD gauge into a pulsing energy sphere
+## at the source tile and fires a massive beam into each target. Held until the
+## beam strikes, so the damage and hitstop land on impact.
+func _discharge_beam(anchors: Array[Node2D]) -> void:
+	var from: Node2D = effect_source as Node2D
+	if not is_instance_valid(from):
+		return
+	var from_pos: Vector2 = Juice.anchor_of(from)
+	var shield_pos: Vector2 = from_pos - Vector2(90, 0)
+	var hull_pos: Vector2 = shield_pos + Vector2(20, -20)
+	if is_instance_valid(Globals.player) and Globals.player.is_inside_tree():
+		shield_pos = Globals.player.get_shield_anchor()
+		hull_pos = Globals.player.get_hull_anchor()
+	var seconds: float = 0.0
+	for node: Node2D in anchors:
+		if node != from:
+			seconds = maxf(seconds, Juice.discharge_beam(from, shield_pos, hull_pos,
+					from_pos, Juice.anchor_of(node), color, amount / 1000.0, node))
 	if seconds > 0.0:
 		await from.get_tree().create_timer(seconds).timeout
 

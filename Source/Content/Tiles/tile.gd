@@ -363,6 +363,7 @@ func handle_tile_event(tile: Tile, event: TileEvent.EventType, immediate: bool =
 	trigger_event.responder = self
 	trigger_event.chain = tile_resource.event_responses[event_check]
 	trigger_event.subject = subject
+	trigger_event.event_type = event
 	if immediate:
 		engine.inject_event(trigger_event)
 	else:
@@ -604,12 +605,117 @@ func _forget_departed_dice() -> void:
 	_held_dice = still_here
 
 
+## Whether this tile is Twin Barrel (or Twin Barrel+).
+func is_twin_barrel() -> bool:
+	if tile_resource == null:
+		return false
+	var res_file: String = tile_resource.resource_path.get_file()
+	if res_file.begins_with("twin_barrel"):
+		return true
+	return "Twin Barrel" in tile_resource.tile_name
+
+
 func _update_dice_queue_locations() -> void:
 	var dice_queue_spacing: int = 12
+	var twin_barrel: bool = is_twin_barrel()
 	for i: int in range(len(dice_queue.queue)):
+		var offset: Vector2 = Vector2(0, i * dice_queue_spacing)
+		if twin_barrel:
+			if i == 0:
+				offset = Vector2(-5, 0)
+			elif i == 1:
+				offset = Vector2(3, 0)
+			else:
+				offset = Vector2(3, (i - 1) * dice_queue_spacing)
 		dice_queue.queue[i].draggable.home_position = \
-		dice_queue.global_position +\
-		Vector2(0, i * dice_queue_spacing)
+		dice_queue.global_position + offset
+
+
+## Launches both dice from Twin Barrel's left and right slots simultaneously in a
+## symmetric oval dual-arc trajectory that connects on the target enemy ship at the
+## exact same time.
+func fire_dual_arc(activator_die: Dice, held_die: Dice, target: Node2D, adjusted_time: float) -> void:
+	if not is_instance_valid(target):
+		return
+
+	if is_instance_valid(activator_die) and activator_die.draggable:
+		activator_die.draggable.held_by_code = true
+	if is_instance_valid(held_die) and held_die.draggable:
+		held_die.draggable.held_by_code = true
+
+	var start_left: Vector2 = held_die.global_position if is_instance_valid(held_die) else global_position
+	var start_right: Vector2 = activator_die.global_position if is_instance_valid(activator_die) else global_position
+
+	# If both dice are at the exact same location (e.g. fresh spawn before physics frame),
+	# space them according to Twin Barrel's left and right slot artwork positions.
+	if start_left.distance_to(start_right) < 1.0:
+		start_left = dice_queue.global_position + Vector2(-5, 0)
+		start_right = dice_queue.global_position + Vector2(3, 0)
+
+	var tween: Tween = create_tween().set_parallel(true)
+	if is_instance_valid(held_die):
+		tween.tween_property(
+			held_die, "rotation_degrees", -360.0 * 6.0, adjusted_time
+		).from(0.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	if is_instance_valid(activator_die):
+		tween.tween_property(
+			activator_die, "rotation_degrees", 360.0 * 6.0, adjusted_time
+		).from(0.0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+
+	var last_target_pos: Vector2 = _get_target_aim_point(target)
+
+	tween.tween_method(
+		func(progress: float) -> void:
+			if is_instance_valid(target):
+				last_target_pos = _get_target_aim_point(target)
+
+			var center_start: Vector2 = (start_left + start_right) * 0.5
+			var to_target: Vector2 = last_target_pos - center_start
+			var dist: float = to_target.length()
+			if dist < 0.001:
+				if is_instance_valid(held_die):
+					held_die.global_position = last_target_pos
+				if is_instance_valid(activator_die):
+					activator_die.global_position = last_target_pos
+				return
+
+			var dir: Vector2 = to_target / dist
+			# Normal perpendicular to flight direction:
+			# In screen coordinates (Y down):
+			# Vector2(dir.y, -dir.x) points to the left of the flight path.
+			# Vector2(-dir.y, dir.x) points to the right of the flight path.
+			var normal_left: Vector2 = Vector2(dir.y, -dir.x)
+			var normal_right: Vector2 = Vector2(-dir.y, dir.x)
+
+			var arc_progress: float = clampf(progress, 0.0, 1.0)
+			var arc_factor: float = sin(PI * arc_progress)
+			var amplitude: float = clampf(dist * 0.35, 18.0, 32.0)
+
+			if is_instance_valid(held_die):
+				held_die.global_position = start_left.lerp(last_target_pos, progress) + normal_left * (amplitude * arc_factor)
+			if is_instance_valid(activator_die):
+				activator_die.global_position = start_right.lerp(last_target_pos, progress) + normal_right * (amplitude * arc_factor),
+		0.0, 1.0, adjusted_time
+	).set_trans(Tween.TRANS_SPRING).set_ease(Tween.EASE_IN)
+
+	await tween.finished
+
+	if is_instance_valid(target):
+		last_target_pos = _get_target_aim_point(target)
+	if is_instance_valid(held_die):
+		held_die.global_position = last_target_pos
+		if held_die.draggable:
+			held_die.draggable.held_by_code = false
+	if is_instance_valid(activator_die):
+		activator_die.global_position = last_target_pos
+		if activator_die.draggable:
+			activator_die.draggable.held_by_code = false
+
+
+func _get_target_aim_point(target: Node2D) -> Vector2:
+	if target is Player:
+		return (target as Player).get_hull_anchor()
+	return target.global_position
 
 
 func _on_die_accepted(die: Dice) -> void:

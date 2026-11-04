@@ -226,11 +226,11 @@ func test_the_last_turn_says_which_end_of_it() -> void:
 	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 1), "Next turn")
 
 
-## Two turn ends away is the end of the next turn, not "in 2 turns", which
-## would read as the turn after that.
-func test_a_turn_end_hazard_two_away_says_next_turn() -> void:
+## Two turns away always says "In 2 turns", whether the hazard triggers at
+## turn start or turn end (such as Ion Storm at scenario start).
+func test_a_turn_end_hazard_two_away_says_in_two_turns() -> void:
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_ENDS
-	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), "End of next turn")
+	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), "In 2 turns")
 	hazard.timing = BackgroundHazardResource.Timing.YOUR_TURN_STARTS
 	assert_eq(EnvironmentMonitor.hazard_when_text(hazard, true, 2), "In 2 turns")
 
@@ -247,25 +247,16 @@ func test_a_hazard_without_a_headline_falls_back_to_its_name() -> void:
 	assert_eq(headline, "Next turn: Test Flare")
 
 
-func test_the_info_panel_says_how_often_it_comes_back() -> void:
-	hazard.turns_between = 2
-	assert_string_contains(Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_repeat_text(hazard)), "every 2 turns")
-	hazard.turns_between = 1
-	assert_string_contains(Utils.strip_bbcode_tags(EnvironmentMonitor.hazard_repeat_text(hazard)), "every turn")
-
-
-## The panel gives the countdown, the full rule and how often it comes back,
-## but not the headline: beside the full rule it only says the same thing
-## twice. The headline is the arrival card's alone.
+## The panel gives the countdown and the full rule, leaving out the headline
+## (the arrival card's alone) and any "Then every..." cadence text.
 func test_the_info_panel_counts_down_and_leaves_the_headline_to_the_card() -> void:
 	hazard.headline = "enemy dice [color=green]re-roll[/color]"
 	hazard.description = "The long version"
-	hazard.turns_between = 2
 	var info: InfoResource = EnvironmentMonitor.hazard_info(hazard, true, 3)
 	assert_eq(Utils.strip_bbcode_tags(info.top_label_text), "In 3 turns")
 	var body: String = Utils.strip_bbcode_tags(info.bottom_label_text)
-	assert_string_contains(body, "The long version")
-	assert_string_contains(body, "every 2 turns")
+	assert_eq(body, "The long version")
+	assert_false(body.contains("Then every"), body)
 	assert_false(body.contains("re-roll"), body)
 	assert_false(body.contains("In 3 turns"), "the countdown is said once, at the top")
 
@@ -404,6 +395,7 @@ func test_a_rule_read_before_folds_away_on_its_own() -> void:
 	CollectionManager.record_region(EnvironmentMonitor.region_id(modifier))
 	var card: RegionAlert = await _card_for(modifier)
 	assert_false(card.wait_for_close)
+	assert_null(card._close_button, "repeat visits omit the Close button")
 	assert_not_null(card._hold_timer)
 	CollectionManager.clear()
 
@@ -416,7 +408,7 @@ func test_bots_and_the_lab_never_wait() -> void:
 	assert_false(card.wait_for_close)
 
 
-func test_every_card_has_a_close_button_that_folds_it() -> void:
+func test_first_discovery_has_a_close_button_that_folds_it() -> void:
 	CollectionManager.clear()
 	var card: RegionAlert = await _card_for(_rule("Pulsar Wash"))
 	assert_not_null(card._close_button)
@@ -454,3 +446,28 @@ func test_a_hazard_plays_its_own_trigger_sound_or_the_chime() -> void:
 	Events.hazard_triggered.emit(hazard)
 	Events.play_sound.disconnect(_record_sound)
 	assert_eq(_played, [EnvironmentMonitor._TRIGGER_SFX, own] as Array[SoundEffectResource])
+
+
+func test_temporary_region_rule_counts_down_on_the_monitor_and_info() -> void:
+	background.hazard = null
+	var rule: BackgroundModifierResource = load("res://Source/Resources/BackgroundResources/BackgroundModifiers/doldrums.tres")
+	Events.start_scenario.emit()
+	Events.background_modifier_applied.emit(rule)
+	Events.background_modifier_countdown_changed.emit(rule, 3)
+	await _settle()
+	assert_true(monitor._countdown.visible)
+	assert_eq(monitor._countdown.text, "3")
+	Events.background_modifier_countdown_changed.emit(rule, 2)
+	await _settle()
+	assert_eq(monitor._countdown.text, "2")
+	var shown: Array[InfoResource] = []
+	var collect: Callable = func(info: InfoResource) -> void: shown.append(info)
+	Events.show_info.connect(collect)
+	monitor._on_clicked()
+	Events.show_info.disconnect(collect)
+	assert_eq(shown.size(), 1)
+	if not shown.is_empty():
+		assert_string_contains(shown[0].top_label_text, "2")
+	Events.background_modifier_applied.emit(null)
+	await _settle()
+	assert_false(monitor._countdown.visible)

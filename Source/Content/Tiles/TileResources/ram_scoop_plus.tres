@@ -85,18 +85,9 @@ juice_flags = 6
 color = Color(0.7725, 0.3216, 0.9451, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("4_data")
-category = 4
-subtype = 16
-callout = "+{amount} CHARGE"
-color = Color(0.7725, 0.3216, 0.9451, 1)
-juice_flags = 4
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_chain"]
 script = ExtResource("5_chain")
-effects = Array[ExtResource("4_data")]([SubResource("Resource_s1_particle_count"), SubResource("Resource_s2_particles"), SubResource("Resource_s3_target_player"), SubResource("Resource_s4_reset"), SubResource("Resource_s5_empty_cells"), SubResource("Resource_s6_double"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_s7_charge"), SubResource("Resource_s8_target_computer"), SubResource("Resource_s9_give_die")])
+effects = Array[ExtResource("4_data")]([SubResource("Resource_s1_particle_count"), SubResource("Resource_s2_particles"), SubResource("Resource_s3_target_player"), SubResource("Resource_s4_reset"), SubResource("Resource_s5_empty_cells"), SubResource("Resource_s6_double"), SubResource("Resource_juice_1"), SubResource("Resource_s7_charge"), SubResource("Resource_s8_target_computer"), SubResource("Resource_s9_give_die")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ram_scoop"]
@@ -115,7 +106,7 @@ script = ExtResource("2_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Ram Scoop+[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]{charge} charge[/color] per surrounding empty cell"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]{charge} engine charge[/color] per surrounding empty cell"
 textures = SubResource("SpriteFrames_ram_scoop")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_act")]([SubResource("Resource_act_die"), SubResource("Resource_act_combat"), SubResource("Resource_act_target")])

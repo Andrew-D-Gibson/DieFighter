@@ -38,14 +38,6 @@ amount = 18
 color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_callout"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 16
-callout = "+{amount}"
-color = Color(0.2627, 0.651, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_shield"]
 script = ExtResource("script_effect")
 category = 1
@@ -84,7 +76,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_target"), SubResource("Resource_set"), SubResource("Resource_sound"), SubResource("Resource_wave"), SubResource("Resource_callout"), SubResource("Resource_shield"), SubResource("Resource_set_one"), SubResource("Resource_drop_die"), SubResource("Resource_flare"), SubResource("Resource_below"), SubResource("Resource_feed")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_target"), SubResource("Resource_set"), SubResource("Resource_sound"), SubResource("Resource_wave"), SubResource("Resource_shield"), SubResource("Resource_set_one"), SubResource("Resource_drop_die"), SubResource("Resource_flare"), SubResource("Resource_below"), SubResource("Resource_feed")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]

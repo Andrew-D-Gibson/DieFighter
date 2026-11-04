@@ -213,7 +213,7 @@ func _advance(delta: float) -> void:
 		ship.distance += ship.direction * ship.pace * speed * pow(_depth_at(ship.distance), perspective_slowdown) * delta
 		ship.depth = _depth_at(ship.distance)
 		ship.position = _route_position_of(ship)
-		ship.fade = smoothstep(0.0, fade_distance, length - ship.distance)
+		ship.fade = smoothstep(0.0, fade_distance, ship.distance) * smoothstep(0.0, fade_distance, length - ship.distance)
 	_ships = _ships.filter(func(ship: Ship) -> bool:
 		return not ship.on_route or (ship.distance >= 0.0 and ship.distance <= length))
 	# Farthest first, so nearer ships draw over them.

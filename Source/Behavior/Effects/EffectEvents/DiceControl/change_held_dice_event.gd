@@ -76,7 +76,10 @@ func resolve(engine: ScenarioEngine) -> void:
 
 ## The "this one" beat as a die goes up: a ring and a blip.
 func _mark(die: Dice) -> void:
-	Juice.ring(die.get_parent(), die.global_position, color, 12.0, 0.3)
+	if change == Change.FLIP_ONES_AND_SIXES:
+		HazardThematicVFX.play_fate_rift_die_flip(die)
+	else:
+		Juice.ring(die.get_parent(), die.global_position, color, 12.0, 0.3)
 	Events.play_sound.emit(_ROLL_SFX)
 
 

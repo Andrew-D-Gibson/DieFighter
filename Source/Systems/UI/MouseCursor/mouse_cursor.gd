@@ -80,6 +80,13 @@ func _process(delta: float) -> void:
 ## Picks the cursor for this frame. Polled, not signalled: whether a lifted
 ## thing's info spot is under the pointer changes with every move.
 func _update_look() -> void:
+	if InputManager.control_scheme == InputBindings.ControlScheme.FOCUS and InputManager.cursor.active:
+		visible = false
+		if _hint:
+			_hint.hide()
+		return
+	visible = true
+
 	var hand: Draggable = Draggable.holding()
 	if hand != _hand:
 		_on_hand_changed(hand)
@@ -89,6 +96,11 @@ func _update_look() -> void:
 		_wear(_GRAB_INFO_TEXTURE if on_info_spot else _GRAB_TEXTURE, _GRAB_OFFSET, _GRAB_ALPHA)
 		if _hinting:
 			_show_hint(tr(&"CURSOR_HINT_CLICK_FOR_INFO") if on_info_spot else tr(&"CURSOR_HINT_CLICK_TO_PLACE"))
+		return
+
+	if is_instance_valid(Globals.map) and Globals.map.is_panning():
+		_wear(_GRAB_TEXTURE, _GRAB_OFFSET, _GRAB_ALPHA)
+		_hint.hide()
 		return
 
 	var acting: Clickable = _acting_clickable()

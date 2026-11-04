@@ -34,10 +34,13 @@ class ClickWitness extends Node:
 var player: Player
 var grid: TileGrid
 var drops: Array[Vector2] = []
+var _previous_scheme: InputBindings.ControlScheme
 
 
 func before_each() -> void:
 	super()
+	_previous_scheme = InputManager.control_scheme
+	InputManager.control_scheme = InputBindings.ControlScheme.CURSOR
 	Draggable.placement_mode = Draggable.PlacementMode.CLICK
 	grid = TileGrid.new()
 	grid.position = Vector2(88, 90)
@@ -54,6 +57,7 @@ func after_each() -> void:
 	# Never leave the button held down for the next test.
 	_send(_button(MOUSE_BUTTON_LEFT, false, _NOWHERE))
 	Draggable.placement_mode = Draggable.PlacementMode.DRAG
+	InputManager.control_scheme = _previous_scheme
 	super()
 
 

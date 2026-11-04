@@ -48,3 +48,47 @@ func test_handler_falls_back_to_the_running_amount() -> void:
 	await EffectRegistry.get_handler(data.category, data.subtype).apply(data, context, engine)
 	assert_eq(engine.injected.size(), 1)
 	assert_eq((engine.injected[0] as SpendShieldsEvent).amount, 4)
+
+
+func test_discharge_plate_authored_with_dbz_beam_flourish() -> void:
+	for path: String in [
+		"res://Source/Content/Tiles/TileResources/discharge_plate.tres",
+		"res://Source/Content/Tiles/TileResources/discharge_plate_plus.tres",
+	]:
+		var tile_res: TileResource = load(path)
+		assert_not_null(tile_res, path)
+		var step: EffectData = tile_res.effect_chain.effects[6]
+		assert_eq(step.category, EffectEnums.Category.AUDIO_VISUAL)
+		assert_eq(step.subtype, EffectEnums.AudioVisualSubtype.LASER)
+		assert_eq(step.juice_flags, JuiceEvent.Flag.BIG)
+		assert_true(step.color.is_equal_approx(Color(0.2627, 0.651, 0.9882, 1)))
+
+
+func test_discharge_beam_stages_and_impact_timing() -> void:
+	var host: Node2D = add_child_autofree(Node2D.new())
+	var target: Node2D = add_child_autofree(Node2D.new())
+	target.global_position = Vector2(200, 50)
+	var impact_sec: float = Juice.discharge_beam(
+		host,
+		Vector2(28, 92),
+		Vector2(48, 72),
+		Vector2(140, 110),
+		target.global_position,
+		Globals.blue,
+		0.0,
+		target
+	)
+	assert_gt(impact_sec, 0.5)
+	var beam: JuiceDischargeBeam = JuiceDischargeBeam.new()
+	beam.host_node = host
+	beam.shield_from = Vector2(28, 92)
+	beam.hull_from = Vector2(48, 72)
+	beam.from = Vector2(140, 110)
+	beam.to = Vector2(200, 50)
+	add_child_autofree(beam)
+	beam._process(0.2)
+	assert_false(beam._impact_triggered)
+	beam._process(0.4)
+	assert_false(beam._impact_triggered)
+	beam._process(0.2)
+	assert_true(beam._impact_triggered)

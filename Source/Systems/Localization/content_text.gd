@@ -251,7 +251,7 @@ static func field_of(res: Resource, property: StringName) -> Field:
 	return null
 
 
-## Upper snake case, safe inside a dotted key: "fates_tithe" -> FATES_TITHE.
+## Upper snake case, safe inside a dotted key: "fates_corruption" -> FATES_CORRUPTION.
 static func _key_segment(raw: String) -> String:
 	var segment: String = ""
 	for character: String in raw.to_upper():

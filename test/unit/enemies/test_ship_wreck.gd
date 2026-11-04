@@ -54,3 +54,21 @@ func test_a_wreck_whose_explosions_never_end_still_finishes() -> void:
 	assert_false(done[0], "the looping blasts really are stuck")
 	await wait_for_signal(wreck.finished, _WRECK_SECONDS_MAX)
 	assert_true(done[0], "the deadline gives up on them")
+
+
+func test_blast_fades_the_chunk_before_freeing_it() -> void:
+	var wreck: ShipWreck = add_child_autofree(ShipWreck.new())
+	wreck._explosion_scene = _EXPLOSION
+	wreck._blast_sound = _BLAST_SFX
+	wreck._blasts_left = 1
+	var piece: Node2D = Node2D.new()
+	wreck.add_child(piece)
+	wreck._blow(piece, Vector2.RIGHT)
+	assert_true(piece.visible, "the blast does not hide the hull immediately")
+	await wait_seconds(0.25)
+	assert_true(is_instance_valid(piece))
+	assert_gt(piece.modulate.a, 0.0)
+	assert_lt(piece.modulate.a, 1.0)
+	assert_gt(piece.position.x, 0.0, "the fading chunk keeps drifting")
+	await wait_seconds(0.5)
+	assert_false(is_instance_valid(piece))

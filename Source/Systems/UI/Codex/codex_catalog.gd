@@ -46,8 +46,9 @@ static func release() -> void:
 	_cache.clear()
 
 
-## Every tile a player could own: those offered as rewards, those a ship
-## starts with, and any held-out tile the player has owned anyway.
+## Every base tile a player could own: those offered as rewards, those a ship
+## starts with, and any held-out tile the player has owned anyway. Upgraded
+## (_plus) versions are shown by toggling on their base tile's entry.
 static func tile_ids() -> Array[String]:
 	var kit: Dictionary[String, bool] = {}
 	for ship: ShipResource in ShipCatalog.all():
@@ -59,7 +60,9 @@ static func tile_ids() -> Array[String]:
 	var ids: Array[String] = []
 	for id: String in ContentRegistry.get_tile_ids():
 		var tile: TileResource = tile_resource(id)
-		if tile and (tile.offered_as_reward or kit.has(id) or CollectionManager.has_tile(id)):
+		if not tile or tile.is_upgrade:
+			continue
+		if tile.offered_as_reward or kit.has(id) or is_tile_found(id):
 			ids.append(id)
 	ids.sort_custom(func(a: String, b: String) -> bool:
 		var colour_a: int = _tile_colour_rank(tile_resource(a))
@@ -69,6 +72,18 @@ static func tile_ids() -> Array[String]:
 		return plain_name(tile_resource(a).display_name()) < plain_name(tile_resource(b).display_name())
 	)
 	return ids
+
+
+## Whether the player has owned [param id] or its upgraded version.
+static func is_tile_found(id: String) -> bool:
+	if CollectionManager.has_tile(id):
+		return true
+	var tile: TileResource = tile_resource(id)
+	if tile and tile.upgraded_version:
+		var upgraded_id: String = ContentRegistry.get_tile_id(tile.upgraded_version.resource_path)
+		if CollectionManager.has_tile(upgraded_id):
+			return true
+	return false
 
 
 ## Every enemy marked for the codex, by name.

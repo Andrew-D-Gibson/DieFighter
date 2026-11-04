@@ -17,6 +17,7 @@ var current_character: int = 0
 var target_character: int = 0
 
 var popup_completed: bool = false
+var _source_text: String = ""
 
 ## Set while the Close button waits on something besides the text (see
 ## hold_close_button()).
@@ -61,6 +62,7 @@ static func make_highlight(texture: Texture2D) -> Sprite2D:
 
 func _ready() -> void:
 	_head_rest = %ComputerTalking.position
+	InputManager.prompts_changed.connect(_refresh_input_prompts)
 
 
 ## The card is gone, and its dim with it: everything lifted through the dim
@@ -114,6 +116,7 @@ func setup(text: String, global_pos: Vector2, highlight_texture: Texture2D = nul
 
 	_fade_in()
 	
+	_source_text = text
 	var formatted: Dictionary = Utils.format_with_delays(text)
 	delay_positions = formatted["delays"]
 	%RichTextLabel.text = formatted["text"]
@@ -139,7 +142,7 @@ func _reveal_next_character() -> void:
 				return
 
 		current_character += 1
-		%RichTextLabel.visible_characters = current_character
+		%RichTextLabel.visible_characters = -1 if popup_completed else current_character
 
 		var current_time: int = Time.get_ticks_msec()
 		if (current_time - last_blip_time) > time_between_blip_sounds * 1000:
@@ -228,3 +231,15 @@ func _finish_showing_text() -> void:
 	%RichTextLabel.visible_characters = -1
 	when_text_shown()
 			
+
+
+## Rebuild only the formatted controls, keeping the current reveal and timers.
+func _refresh_input_prompts() -> void:
+	if _source_text.is_empty():
+		return
+	var formatted: Dictionary = Utils.format_with_delays(_source_text)
+	delay_positions = formatted["delays"]
+	target_character = formatted["length"]
+	current_character = target_character if popup_completed else mini(current_character, target_character)
+	%RichTextLabel.text = formatted["text"]
+	%RichTextLabel.visible_characters = -1 if popup_completed else current_character

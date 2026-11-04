@@ -74,12 +74,23 @@ enum Timing {
 ## (YOUR_TURN_ENDS).
 @export var turns_until_first: int = 3
 
-## Player turns between triggers after the first.
+## Minimum and maximum player turns between triggers after the first.
+@export var turns_between_min: int = 2
+@export var turns_between_max: int = 4
+
+## Legacy single-value field kept so authored .tres files load cleanly.
 @export var turns_between: int = 3
 
 @export_category('Behavior')
 ## What actually happens. Runs on the scenario's engine like any other chain.
 @export var effect_chain: EffectChain
+
+
+## Rolls the number of turns until the next trigger after one fires (2..4 by default).
+func roll_turns_between() -> int:
+	var low: int = maxi(1, mini(turns_between_min, turns_between_max))
+	var high: int = maxi(low, maxi(turns_between_min, turns_between_max))
+	return RNGManager.randi_range(RNGManager.Bucket.TARGETING, low, high)
 
 
 ## The name, in the current language.

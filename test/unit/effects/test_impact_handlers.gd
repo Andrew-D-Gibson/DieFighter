@@ -197,7 +197,8 @@ func test_the_inspector_shows_a_shots_length_and_color() -> void:
 	for subtype: Sub in [Sub.LASER, Sub.MISSILE]:
 		assert_true(EffectCatalog.uses_field(category, subtype, "amount"))
 		assert_true(EffectCatalog.uses_field(category, subtype, "color"))
-		assert_false(EffectCatalog.uses_field(category, subtype, "juice_flags"))
+		assert_eq(EffectCatalog.uses_field(category, subtype, "juice_flags"), subtype == Sub.LASER,
+			"Only lasers read the BIG flag for Discharge Plate")
 
 
 func test_a_missile_lands_after_a_laser_and_its_length_is_its_flight() -> void:

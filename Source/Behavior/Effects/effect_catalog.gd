@@ -46,7 +46,7 @@ extends RefCounted
 ## Every optional EffectData parameter the inspector can show. A row's 'fields'
 ## entries must come from this list; validate() rejects anything else.
 const KNOWN_FIELDS: Array[String] = [
-	"amount", "multiplier", "string_param", "callout", "grid_offset",
+	"amount", "multiplier", "multiply_shields", "string_param", "callout", "grid_offset",
 	"sound_resource", "color", "range_min", "range_max",
 	"ship_resource", "juice_flags",
 ]
@@ -79,7 +79,7 @@ static var _entries: Array[Dictionary] = [
 	# ── ATTRIBUTE_CHANGE ──────────────────────────────────────────
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.DAMAGE, label = "Damage", handler = DealDamageHandler},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.HEAL, label = "Heal", handler = HealHandler},
-	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SHIELD, label = "Shield", handler = GainShieldsHandler},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SHIELD, label = "Shield", handler = GainShieldsHandler, fields = ["multiply_shields", "multiplier"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.CHANGE_ENGINE_CHARGE, label = "Change Engine Charge", handler = ChangeEngineChargeHandler},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SPEND_ENGINE_CHARGE, label = "Spend Engine Charge", handler = SpendEngineChargeHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ADD_OVERCHARGE, label = "Add Overcharge", handler = AddOverchargeHandler},
@@ -165,7 +165,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SCREEN_RIPPLE, label = "Screen Ripple", handler = JuiceHandler, fields = ["multiplier"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.STREAM, label = "Stream", handler = JuiceHandler, fields = ["amount", "juice_flags", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.DIE_FLARE, label = "Die Flare", handler = JuiceHandler, fields = ["color"]},
-	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.LASER, label = "Laser", handler = JuiceHandler, fields = ["amount", "color"]},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.LASER, label = "Laser", handler = JuiceHandler, fields = ["amount", "juice_flags", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.MISSILE, label = "Missile", handler = JuiceHandler, fields = ["amount", "color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ION_BOLT, label = "Ion Bolt", handler = JuiceHandler, fields = ["amount", "color"]},
 

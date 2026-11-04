@@ -158,6 +158,7 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource], scenario: 
 		if spawn.mounted:
 			enemy.formation_pinned = true
 			enemy.moving_in_world = true
+			enemy.is_mounted = true
 			_hull_mounts.mount(enemy, spawn.mount_offset)
 
 		# A scenario can still nail a ship to one spot when the encounter is

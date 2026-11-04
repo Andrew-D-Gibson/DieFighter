@@ -46,11 +46,9 @@ func _winding_up(seconds: float) -> void:
 	get_tree().create_timer(seconds * 0.5, false).timeout.connect(_streak_across_sky)
 
 
-## The impact itself: a big rock falling from high up at the player's panel.
+## The impact itself: distant rocks streak across the sky as the impact strikes.
 func _fired() -> void:
-	var from: Vector2 = Vector2(_rand(60.0, 260.0), -24.0)
-	var to: Vector2 = Vector2(_rand(110.0, 210.0), 150.0)
-	_streak(_IMPACT_TEXTURE, from, to, 0.45, 28.0)
+	_streak_across_sky()
 
 
 func _schedule_next_streak() -> void:

@@ -25,6 +25,16 @@ func test_held_out_tiles_are_listed_only_if_a_ship_starts_with_them_or_they_were
 	assert_has(CodexCatalog.tile_ids(), "beam_splitter", "held out, but the player owned it")
 
 
+func test_upgraded_tiles_never_appear_as_separate_entries() -> void:
+	CollectionManager.record_tile("damage_plus")
+	CollectionManager.record_tile("reroll_plus")
+	var ids: Array[String] = CodexCatalog.tile_ids()
+	for id: String in ids:
+		var tile: TileResource = CodexCatalog.tile_resource(id)
+		assert_false(tile.is_upgrade, "%s is an upgrade and belongs behind its base entry's toggle" % id)
+	assert_true(CodexCatalog.is_tile_found("damage"), "finding the upgrade marks the base entry found")
+
+
 func test_tiles_are_grouped_by_colour() -> void:
 	var last_rank: int = -1
 	for id: String in CodexCatalog.tile_ids():

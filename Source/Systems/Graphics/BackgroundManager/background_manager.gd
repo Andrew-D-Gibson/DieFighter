@@ -74,7 +74,10 @@ func _ready() -> void:
 		_set_background(starting_background)
 
 	Events.load_scenario.connect(func(scenario: ScenarioResource) -> void:
-		_set_background(scenario.background_resource, _arrival_is_rule_free(), scenario.set_piece_layout)
+		var bg: Resource = scenario.background_resource
+		if is_instance_valid(Globals.map):
+			bg = Globals.map.background_for_scenario(scenario)
+		_set_background(bg, _arrival_is_rule_free(), scenario.set_piece_layout)
 	)
 	
 	

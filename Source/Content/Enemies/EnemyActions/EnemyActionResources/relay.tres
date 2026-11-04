@@ -63,5 +63,5 @@ description = "Gain [color=blue](amount) shields[/color]. [color=orange]Give[/co
 indicator_texture = ExtResource("4_icon")
 info_texture = ExtResource("5_info")
 effect_chain = SubResource("Resource_chain")
-intent_amount = 1
+intent_amount = 2
 metadata/_custom_type_script = "uid://bb27rg8tmmvk0"

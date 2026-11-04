@@ -99,7 +99,7 @@ func _count_down(trigger: BackgroundHazardResource.Timing) -> void:
 		Events.hazard_countdown_changed.emit(current_hazard, turns_remaining)
 		return
 
-	turns_remaining = maxi(1, current_hazard.turns_between)
+	turns_remaining = current_hazard.roll_turns_between()
 	_fire()
 	Events.hazard_countdown_changed.emit(current_hazard, turns_remaining)
 

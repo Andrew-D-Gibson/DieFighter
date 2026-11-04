@@ -51,12 +51,21 @@ func test_each_turn_counts_down() -> void:
 	assert_signal_not_emitted(Events, "hazard_triggered")
 
 
-func test_fires_at_zero_and_resets_to_the_interval() -> void:
+func test_fires_at_zero_and_resets_to_randomized_interval() -> void:
 	manager._arm_for_background()
 	manager._on_player_turn_start()
 	manager._on_player_turn_start()
 	assert_signal_emitted_with_parameters(Events, "hazard_triggered", [hazard])
-	assert_eq(manager.turns_remaining, 3, "counts down from turns_between after the first hit")
+	assert_between(manager.turns_remaining, 2, 4, "rolls 2..4 turns after triggering")
+
+
+func test_subsequent_intervals_roll_across_two_to_four_turns() -> void:
+	var seen: Dictionary[int, bool] = {}
+	for i: int in range(40):
+		var rolled: int = hazard.roll_turns_between()
+		assert_between(rolled, 2, 4)
+		seen[rolled] = true
+	assert_eq(seen.size(), 3, "2, 3 and 4 all appear across rolls")
 
 
 func test_a_turn_end_hazard_counts_turn_ends_not_turn_starts() -> void:
@@ -68,7 +77,7 @@ func test_a_turn_end_hazard_counts_turn_ends_not_turn_starts() -> void:
 	assert_eq(manager.turns_remaining, 1)
 	manager._on_enemy_turn_starting()
 	assert_signal_emitted_with_parameters(Events, "hazard_triggered", [hazard])
-	assert_eq(manager.turns_remaining, 3)
+	assert_between(manager.turns_remaining, 2, 4)
 
 
 func test_a_turn_start_hazard_ignores_turn_ends() -> void:

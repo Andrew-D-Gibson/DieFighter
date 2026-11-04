@@ -165,7 +165,7 @@ metadata/_custom_type_script = "uid://dq1wduh6cvl1d"
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Overdraw Coil[/color]"
-description = "(die_1) -> Deal [color=red]damage[/color] equal to [color=purple]charge[/color]. Spend all [color=purple]charge[/color]"
+description = "(die_1) -> Deal [color=red]damage[/color] equal to [color=purple]engine charge[/color]. Spend all [color=purple]engine charge[/color]"
 rarity = 2
 textures = SubResource("Resource_frames4")
 uses_per_turn = 1

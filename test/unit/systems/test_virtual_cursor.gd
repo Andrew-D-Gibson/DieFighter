@@ -15,9 +15,18 @@ var frame: Rect2 = FRAME
 ## Viewport to window pixels: a 2x window shows the 1920-wide frame in 640.
 var window_transform: Transform2D = Transform2D.IDENTITY
 
+## The player's saved Controller Mode reaches the test run; FOCUS turns the
+## live virtual cursor on, which these tests assume is off.
+var _previous_scheme: InputBindings.ControlScheme
+var _previous_cursor_active: bool
+
 
 func before_each() -> void:
 	super()
+	_previous_scheme = InputManager.control_scheme
+	_previous_cursor_active = InputManager.cursor.active
+	InputManager.control_scheme = InputBindings.ControlScheme.CURSOR
+	InputManager.cursor.active = false
 	sent.clear()
 	warps.clear()
 	real_mouse = START
@@ -29,6 +38,12 @@ func before_each() -> void:
 	cursor.read_mouse = func() -> Vector2: return real_mouse
 	cursor.frame_rect = func() -> Rect2: return frame
 	cursor.to_window = func() -> Transform2D: return window_transform
+
+
+func after_each() -> void:
+	InputManager.control_scheme = _previous_scheme
+	InputManager.cursor.active = _previous_cursor_active
+	super()
 
 
 func _stick(x: float, y: float = 0.0) -> void:

@@ -127,7 +127,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Arc Tap+[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} charge[/color]: Deal [color=red]{damage} damage[/color]"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} engine charge[/color]: Deal [color=red]{damage} damage[/color]"
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])

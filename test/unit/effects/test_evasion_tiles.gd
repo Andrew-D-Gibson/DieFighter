@@ -239,6 +239,14 @@ func test_feint_cannon_starts_every_fight_empty() -> void:
 	assert_eq(resets[0].amount, 0)
 
 
+func test_feint_cannon_start_of_combat_reset_does_not_blip() -> void:
+	var tile: Tile = _listening("feint_cannon")
+	Events.first_turn_start.emit()
+	var triggered: Array[EffectEvent] = _of(recorder.injected, TileEventTriggeredEvent)
+	assert_gt(triggered.size(), 0)
+	assert_eq((triggered[0] as TileEventTriggeredEvent).event_type, TileEvent.EventType.ON_COMBAT_START)
+
+
 # ── Upgrades ─────────────────────────────────────────────────────────────────
 
 func test_every_evasion_tile_upgrades() -> void:

@@ -160,7 +160,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Brownout Plating[/color]"
-description = "[color=yellow]Enemy turn ends with no charge[/color] -> Gain [color=blue]{shields} shields[/color]"
+description = "[color=yellow]Enemy turn ends with no[/color] [color=purple]engine charge[/color] -> Gain [color=blue]{shields} shields[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

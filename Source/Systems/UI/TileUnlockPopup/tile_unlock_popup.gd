@@ -32,6 +32,8 @@ var _panel: _Panel
 var _column: VBoxContainer
 var _info_label: RichTextLabel
 var _close_button: Button
+var _keyword_popup: PanelContainer
+var _keyword_label: RichTextLabel
 var _tween: Tween
 
 
@@ -41,12 +43,17 @@ func _ready() -> void:
 	hide()
 
 
+func _process(_delta: float) -> void:
+	if visible and _keyword_popup and _keyword_popup.visible:
+		_place_keyword_popup()
+
+
 ## Shows [param family] and the [param tiles] it just added to offers.
 ## [param number] counts this family among all [param total] of them.
 func open(family: TileFamilyResource, tiles: Array[TileResource], number: int, total: int) -> void:
 	_add_label(tr("TILE_UNLOCK_HEADER").format({"number": number, "total": total}), 1.0, Globals.white)
 	_add_label(tr(family.family_name), 2.0, family.accent_color)
-	_add_rich_text(Utils.format_text(tr(family.description)), 0)
+	_add_rich_text(Utils.format_text(tr(family.description), true), 0)
 
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = mini(maxi(tiles.size(), 1), _MAX_COLUMNS)
@@ -110,6 +117,30 @@ func _build() -> void:
 	_column.resized.connect(_fit_panel)
 	_root.add_child(_column)
 
+	_keyword_popup = PanelContainer.new()
+	_keyword_popup.visible = false
+	_keyword_popup.z_index = 5
+	_keyword_popup.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = Color(0.0156863, 0.00784314, 0.0901961, 1.0)
+	style.set_border_width_all(1)
+	style.border_color = Color(0.94902, 0.611765, 0.364706, 1.0)
+	style.content_margin_left = 3.0
+	style.content_margin_top = 1.0
+	style.content_margin_right = 3.0
+	style.content_margin_bottom = 1.0
+	_keyword_popup.add_theme_stylebox_override("panel", style)
+	_root.add_child(_keyword_popup)
+
+	_keyword_label = RichTextLabel.new()
+	_keyword_label.custom_minimum_size = Vector2(114, 0)
+	_keyword_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_keyword_label.bbcode_enabled = true
+	_keyword_label.fit_content = true
+	_keyword_label.scroll_active = false
+	_keyword_label.add_theme_color_override("default_color", Globals.white)
+	_keyword_popup.add_child(_keyword_label)
+
 
 ## Small text at [param scale] (see FontRoles).
 func _add_label(text: String, scale: float, color: Color) -> Label:
@@ -131,7 +162,9 @@ func _add_rich_text(text: String, minimum_height: int) -> RichTextLabel:
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.custom_minimum_size = Vector2(_WIDTH, minimum_height)
 	label.add_theme_color_override("default_color", Globals.white)
-	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.mouse_filter = Control.MOUSE_FILTER_PASS
+	label.meta_hover_started.connect(_on_keyword_hover_started)
+	label.meta_hover_ended.connect(_on_keyword_hover_ended)
 	label.text = text
 	_column.add_child(label)
 	return label
@@ -152,10 +185,35 @@ func _tile_icon(tile: TileResource) -> TextureRect:
 
 
 func _read_out(tile: TileResource) -> void:
+	_keyword_popup.hide()
 	_info_label.remove_theme_color_override("default_color")
 	var no_counters: Dictionary[String, int] = {}
 	_info_label.text = Utils.format_text("%s\n%s" % [
-		tile.display_name(), Tile.fill_data_tokens(tile.display_description(), no_counters)])
+		tile.display_name(), Tile.fill_data_tokens(tile.display_description(), no_counters)], true)
+
+
+func _on_keyword_hover_started(meta: Variant) -> void:
+	var rule: String = Keywords.definition(str(meta))
+	if rule.is_empty():
+		return
+	_keyword_label.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(str(meta)), rule])
+	_keyword_popup.reset_size()
+	_keyword_popup.show()
+	_place_keyword_popup()
+
+
+func _on_keyword_hover_ended(_meta: Variant) -> void:
+	_keyword_popup.hide()
+
+
+func _place_keyword_popup() -> void:
+	var popup_size: Vector2 = _keyword_popup.size
+	var mouse: Vector2 = get_local_mouse_position()
+	var pos: Vector2 = mouse + Vector2(6, 6)
+	pos.x = clampf(pos.x, 2.0, Globals.SCREEN_SIZE.x - popup_size.x - 2.0)
+	if pos.y + popup_size.y > Globals.SCREEN_SIZE.y - 2.0:
+		pos.y = mouse.y - popup_size.y - 4.0
+	_keyword_popup.position = pos.floor()
 
 
 ## Once the card has laid itself out: the dim fades up, the card lands with a

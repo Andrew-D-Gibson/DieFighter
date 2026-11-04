@@ -96,6 +96,17 @@ func test_every_route_point_has_a_depth() -> void:
 	var caravan: MenuCaravan = _spawn_caravan()
 	assert_eq(caravan.point_depths.size(), caravan.route.curve.point_count)
 	assert_lt(caravan.behind_planet_from_point, caravan.route.curve.point_count)
+	var start: Vector2 = caravan.route.curve.get_point_position(0)
+	assert_lt(start.x, 120.0, "starts on the left of the open space")
+	assert_lt(start.y, 60.0, "starts near the top-left, well clear of the title text")
+	assert_almost_eq(caravan.point_depths[0], 0.75, 0.05, "starts at ~60% of the old 1.25 scale")
+
+
+func test_main_menu_has_no_bottom_black_hole() -> void:
+	var menu_scene: PackedScene = load("res://Source/Systems/UI/MainMenu/main_menu.tscn")
+	var state: SceneState = menu_scene.get_state()
+	for i: int in state.get_node_count():
+		assert_ne(state.get_node_name(i), &"FateBehind", "bottom black hole is removed from the main menu")
 
 
 ## The caravan next to a planet laid out like the main menu's.

@@ -192,6 +192,10 @@ func _ready() -> void:
 	GameStateManager.next_run_pinned_stops.clear()
 
 	var playing: bool = should_play()
+	var advisor: CockpitAdvisor = CockpitAdvisor.new()
+	advisor.name = "CockpitAdvisor"
+	advisor.visible = not playing
+	add_child(advisor)
 	# Spent here either way, so the next run from the menu is an ordinary one
 	# unless the menu asks again.
 	Globals.tutorial_requested = false

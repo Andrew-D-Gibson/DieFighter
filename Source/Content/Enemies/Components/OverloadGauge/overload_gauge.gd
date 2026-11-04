@@ -13,7 +13,7 @@ extends Node2D
 ## - TRIPPED: it just overloaded (Enemy.overloaded). A white flash, then the
 ##   bar empties as the dice go home and grows by the threshold's rise.
 ##
-## Hovering it gives a one-line hint; clicking it, the full rule.
+## Clicking it gives the full rule.
 ##
 ## Polls the heat rather than listening: board-wide effects (REROLL_ALL, a
 ## flip) change the faces of dice already in a ship's hand without the ship

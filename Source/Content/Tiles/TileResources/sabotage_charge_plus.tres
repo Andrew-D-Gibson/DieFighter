@@ -138,7 +138,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Sabotage Charge+[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} charge[/color]: Apply {jammed} (jammed)"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} engine charge[/color]: Apply {jammed} (jammed)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

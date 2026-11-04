@@ -37,6 +37,9 @@ var status_visual_scene: PackedScene = null
 ## at the start of each player turn.
 var is_temporary: bool = false
 
+## Stops a combat jump without preventing the drive from gaining charge.
+var prevents_fleeing: bool = false
+
 var _visual: Node2D = null  # tracks the live instance for cleanup
 
 

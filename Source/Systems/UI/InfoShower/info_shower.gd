@@ -161,7 +161,7 @@ func _place_keyword_popup() -> void:
 ## game scene in the tree, so they hear unhandled input after this does:
 ## marking it handled here keeps the pause menu shut.
 func _unhandled_input(event: InputEvent) -> void:
-	if visible and event.is_action_pressed("PauseMenu"):
+	if visible and (event.is_action_pressed("PauseMenu") or event.is_action_pressed(&"cursor_back") or event.is_action_pressed(&"ui_cancel")):
 		get_viewport().set_input_as_handled()
 		_close()
 

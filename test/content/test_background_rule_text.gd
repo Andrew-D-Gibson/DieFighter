@@ -11,8 +11,8 @@ const HAZARD_DIR: String = "res://Source/Resources/BackgroundResources/Backgroun
 const RULE_TEXT: Dictionary[String, Array] = {
 	"bloodhaze": ["No ship can [color=green]repair[/color] hull", "NO REPAIR"],
 	"dead_systems": ["Each tile activates [color=green]once per turn[/color]. Engines are immune", "x1"],
-	"doldrums": ["No effect can exceed [color=orange]3[/color]", "MAX 3"],
-	"fates_tithe": ["No escape: you can't flee this fight. Your engine gains no [color=purple]charge[/color]", "NO ESCAPE"],
+	"doldrums": ["For [color=yellow]3 turns[/color], no effect can exceed [color=orange]3[/color]", "MAX 3"],
+	"fates_corruption": ["No escape: you can't flee this fight", "NO ESCAPE"],
 	"flash_freeze": ["Dice values [color=blue]cannot change[/color]: no rerolls, bumps or flips", "FROZEN"],
 	"pulsar_wash": ["No ship can raise [color=blue]shields[/color]", "NO SHIELDS"],
 	"shrapnel_wake": ["All [color=red]damage[/color] is doubled", "x2"],

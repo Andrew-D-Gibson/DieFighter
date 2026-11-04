@@ -121,13 +121,13 @@ func test_a_die_only_dropped_on_the_tile_is_not_held() -> void:
 	# second is waiting its turn, not held, so the first doesn't pay out on it.
 	var tile: Tile = _tile("twin_barrel")
 	var first: Dice = _die(2)
-	var second: Dice = _die(5)
+	var second: Dice = _die(2)
 	var first_drop: TileActivationEvent = _place(tile, first)
 	var second_drop: TileActivationEvent = _place(tile, second)
 	assert_null(tile.get_held_die(first))
 	assert_eq(_damage(await _play(first_drop)), [] as Array[int], "the first is held")
 	assert_eq(tile.get_held_die(second), first)
-	assert_eq(_damage(await _play(second_drop)), [10], "the second pays out: 2 + 5 + 3")
+	assert_eq(_damage(await _play(second_drop)), [7], "the second pays out: 2 + 2 + 3")
 
 
 func test_a_held_die_picked_back_up_is_no_longer_held() -> void:
@@ -180,6 +180,56 @@ func test_pair_lock_refuses_a_die_that_does_not_match_and_hands_it_back() -> voi
 	assert_eq(tile.uses_remaining, 1)
 
 
+func test_twin_barrel_refuses_a_die_that_does_not_match_and_hands_it_back() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var held: Dice = _die(3)
+	await _play(_place(tile, held))
+	var wrong: Dice = _die(5)
+	var events: Array[EffectEvent] = await _play(_place(tile, wrong))
+	assert_eq(_damage(events), [] as Array[int])
+	assert_has(player.dice_manager.queue, wrong, "back in the hand, not eaten")
+	assert_does_not_have(tile.dice_queue.queue, wrong)
+	assert_eq(tile.get_held_die(), held, "the held die waits on")
+
+
+func test_twin_barrel_offsets_first_die_to_left_slot_and_second_to_right() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var first: Dice = _die(4)
+	await _play(_place(tile, first))
+	assert_eq(first.draggable.home_position, tile.dice_queue.global_position + Vector2(-5, 0),
+		"first die rests in left slot of artwork")
+	var second: Dice = _die(4)
+	tile.dice_queue.add(second, true, false)
+	assert_eq(first.draggable.home_position, tile.dice_queue.global_position + Vector2(-5, 0))
+	assert_eq(second.draggable.home_position, tile.dice_queue.global_position + Vector2(3, 0),
+		"second die rests in right slot of artwork")
+
+
+func test_twin_barrel_dual_arc_trajectory_simultaneous_arrival() -> void:
+	var tile: Tile = _tile("twin_barrel")
+	var first: Dice = _die(4)
+	await _play(_place(tile, first))
+	var second: Dice = _die(4)
+	tile.dice_queue.add(second, true, false)
+
+	assert_eq(first.draggable.home_position, tile.dice_queue.global_position + Vector2(-5, 0))
+	assert_eq(second.draggable.home_position, tile.dice_queue.global_position + Vector2(3, 0))
+
+	var attack_event := AttackTweenEvent.new()
+	attack_event.actor = tile
+	attack_event.effect_source = tile
+	attack_event.activator_die = second
+	attack_event.targets = [enemy]
+
+	var saved_speed: float = Globals.animation_speed
+	Globals.animation_speed = 50.0
+	await attack_event.resolve(null)
+	Globals.animation_speed = saved_speed
+
+	assert_almost_eq(first.global_position, enemy.global_position, Vector2.ONE * 1.0)
+	assert_almost_eq(second.global_position, enemy.global_position, Vector2.ONE * 1.0)
+
+
 func test_lucky_seven_takes_only_a_die_that_makes_seven() -> void:
 	var tile: Tile = _tile("lucky_seven")
 	var held: Dice = _die(2)
@@ -215,9 +265,9 @@ func test_twin_barrel_hits_for_both_dice_plus_three_and_gives_both() -> void:
 	var tile: Tile = _tile("twin_barrel")
 	var first: Dice = _die(4)
 	await _play(_place(tile, first))
-	var second: Dice = _die(6)
+	var second: Dice = _die(4)
 	var events: Array[EffectEvent] = await _play(_place(tile, second))
-	assert_eq(_damage(events), [13])
+	assert_eq(_damage(events), [11])
 	var gives: Array[EffectEvent] = _of(events, GiveDieToTargetEvent)
 	assert_eq(gives.size(), 2)
 	for give: EffectEvent in gives:
@@ -229,8 +279,8 @@ func test_twin_barrel_hits_for_both_dice_plus_three_and_gives_both() -> void:
 
 func test_twin_barrel_plus_adds_six() -> void:
 	var tile: Tile = _tile("twin_barrel_plus")
-	await _drop(tile, 1)
-	assert_eq(_damage(await _drop(tile, 2)), [9])
+	await _drop(tile, 2)
+	assert_eq(_damage(await _drop(tile, 2)), [10])
 
 
 func test_pair_lock_hits_for_four_times_the_die_and_gives_both() -> void:
@@ -270,10 +320,10 @@ func test_lucky_seven_plus_hits_for_twenty() -> void:
 func test_a_repeated_payout_hits_twice_and_gives_each_die_once() -> void:
 	var tile: Tile = _tile("twin_barrel")
 	await _drop(tile, 2)
-	var event: TileActivationEvent = _place(tile, _die(3))
+	var event: TileActivationEvent = _place(tile, _die(2))
 	event.activation_repetitions = 2
 	var events: Array[EffectEvent] = await _play(event)
-	assert_eq(_damage(events), [8, 8])
+	assert_eq(_damage(events), [7, 7])
 	assert_eq(_of(events, GiveDieToTargetEvent).size(), 2)
 
 
@@ -302,7 +352,7 @@ func test_an_echo_waits_out_the_hold_for_the_payout() -> void:
 	var hold: TileActivationEvent = _place(tile, _die(2))
 	assert_false(EchoModifier.can_echo(hold, engine), "a hold has nothing to repeat")
 	await _play(hold)
-	assert_true(EchoModifier.can_echo(_place(tile, _die(3)), engine))
+	assert_true(EchoModifier.can_echo(_place(tile, _die(2)), engine))
 
 
 # ── AutoPilot ────────────────────────────────────────────────────────────────
@@ -312,16 +362,16 @@ func test_the_forecast_credits_a_hold_with_half_the_payout_it_sets_up() -> void:
 	var first: Dice = _die(4)
 	var alone: AutoPilotForecast = AutoPilotForecast.of(tile, first, enemy)
 	assert_eq(alone.damage.get(enemy, 0.0), 0.0, "nothing in hand to pay it out")
-	_die(5)
+	_die(4)
 	var paired: AutoPilotForecast = AutoPilotForecast.of(tile, first, enemy)
-	assert_almost_eq(paired.damage.get(enemy, 0.0), 6.0, 0.01, "half of 4 + 5 + 3")
+	assert_almost_eq(paired.damage.get(enemy, 0.0), 5.5, 0.01, "half of 4 + 4 + 3")
 
 
 func test_the_forecast_reads_the_payout_off_the_held_die() -> void:
 	var tile: Tile = _tile("twin_barrel")
 	await _drop(tile, 4)
-	var forecast: AutoPilotForecast = AutoPilotForecast.of(tile, _die(5), enemy)
-	assert_almost_eq(forecast.damage.get(enemy, 0.0), 12.0, 0.01)
+	var forecast: AutoPilotForecast = AutoPilotForecast.of(tile, _die(4), enemy)
+	assert_almost_eq(forecast.damage.get(enemy, 0.0), 11.0, 0.01)
 	assert_eq(forecast.handoffs.size(), 2, "both dice go to the target")
 
 
@@ -338,9 +388,9 @@ func test_a_tile_on_offer_is_valued_for_the_pair_a_typical_hand_would_find() -> 
 	# A stand-in die, as the policy prices tiles: no hand to read.
 	var stand_in: Node = autofree(FakeDie.new(4))
 	var twin: AutoPilotForecast = AutoPilotForecast.of(_tile("twin_barrel"), stand_in, enemy, [enemy], true)
-	assert_almost_eq(twin.damage.get(enemy, 0.0), 5.25, 0.01, "half of 4 + 3.5 + 3, any die pairs")
+	var odds: float = 1.0 - pow(5.0 / 6.0, 4.0)
+	assert_almost_eq(twin.damage.get(enemy, 0.0), 0.5 * odds * 11.0, 0.01, "half of 4 + 4 + 3, only doubles pair")
 	var stand_in_three: Node = autofree(FakeDie.new(3))
 	var lock: AutoPilotForecast = AutoPilotForecast.of(_tile("pair_lock"), stand_in_three, enemy, [enemy], true)
-	var odds: float = 1.0 - pow(5.0 / 6.0, 4.0)
 	assert_almost_eq(lock.damage.get(enemy, 0.0), 0.5 * odds * 12.0, 0.01,
 		"half of 4 x 3, when one of four other dice shows a 3")

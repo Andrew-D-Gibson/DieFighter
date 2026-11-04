@@ -84,7 +84,7 @@
     },
     "bulwark": {
       "name": "Bulwark",
-      "notes": "Shields persist, so stack them, then turn them into damage: Ballast Tanks feeds a 1 straight down into Discharge Plate (2x shields spent). Full adds Ram Plating (damage = shields, no spend), Fortress Protocol and Shield Siphon.",
+      "notes": "Shields persist, so stack them, then turn them into damage: Ballast Tanks feeds a 1 straight down into Discharge Plate (2x shields spent). Full adds Fortress Protocol and Shield Siphon.",
       "tiles": {
         "1,0": "overshield_relay",
         "2,0": "deflector_array",

@@ -230,6 +230,31 @@ static func projectile(parent: Node, from: Vector2, to: Vector2, color: Color,
 	return shot.impact_seconds()
 
 
+## Discharge Plate's signature sequence: sucks shield energy particles out of
+## the player's shield/HP bar on the left HUD (`shield_from` / `hull_from`),
+## condenses them into a pulsing blue energy ball at `from`, and blasts a
+## massive beam into `to` (or `target`). Returns the seconds until beam impact.
+static func discharge_beam(parent: Node, shield_from: Vector2, hull_from: Vector2,
+		from: Vector2, to: Vector2, color: Color, seconds: float = 0.0,
+		target: Node2D = null) -> float:
+	if not _usable(parent):
+		return 0.0
+	if is_instance_valid(Globals.player) and Globals.player.is_inside_tree():
+		bump(body_of(Globals.player), 0.22, 0.3)
+	sparkle(parent, shield_from, color, 8, 35.0)
+	var beam: JuiceDischargeBeam = JuiceDischargeBeam.new()
+	beam.host_node = parent
+	beam.shield_from = shield_from
+	beam.hull_from = hull_from
+	beam.from = from
+	beam.to = to
+	beam.target = target
+	beam.color = color
+	beam.duration = seconds
+	JuicePixelated.spawn(parent, beam, _FX_Z_INDEX)
+	return beam.impact_seconds()
+
+
 ## A flash that spreads across the tile grid one ring of cells at a time,
 ## starting from `origin` (or the middle of the grid when it's null). Each
 ## tile bumps as the wave reaches it.
@@ -330,10 +355,14 @@ static func trail(node: Node2D, color: Color, seconds: float) -> void:
 	node.add_child(particles)
 	particles.emitting = true
 
+	# The host (an impacting asteroid, for example) can disappear first.
+	# Capturing a freed node warns before a lambda can check its validity.
+	var trail_ref: WeakRef = weakref(particles)
 	node.get_tree().create_timer(seconds).timeout.connect(func() -> void:
-		if is_instance_valid(particles):
-			particles.emitting = false
-			particles.finished.connect(particles.queue_free)
+		var live_trail: CPUParticles2D = trail_ref.get_ref() as CPUParticles2D
+		if live_trail != null:
+			live_trail.emitting = false
+			live_trail.finished.connect(live_trail.queue_free)
 	)
 
 

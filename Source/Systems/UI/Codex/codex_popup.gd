@@ -23,7 +23,9 @@ const _CELL_PITCH: float = CodexEntry.SIZE.x + 1.0
 ## 64 a seventh line was cut off with no scrollbar.
 const _BODY_BOTTOM: float = 132.0
 const _BODY_BOTTOM_ABOVE_STATS: float = 123.0
+const _BODY_BOTTOM_ABOVE_TOGGLE: float = 114.0
 const _LINE_STEP: float = 9.0
+const _TILE_SHADER: Shader = preload("res://Assets/Shaders/tile.gdshader")
 ## A name that wraps takes a line more, and the sub-heading and body below it
 ## move down by as much, so nothing clips (a long German enemy name). The
 ## body keeps its bottom, so it stays 4 px over whole steps and scrolls.
@@ -50,6 +52,9 @@ var _entries: Array[CodexEntry] = []
 ## The entry last picked on each tab, so switching back finds it again.
 var _picked_ids: Dictionary[Tab, String] = {}
 var _warmed_up: bool = false
+## Whether the tile detail pane is showing the upgraded (+) version of the picked tile.
+var _show_upgraded: bool = false
+var _portrait_material: ShaderMaterial = ShaderMaterial.new()
 ## Stands in for the portrait on the enemies tab, in the same spot.
 var _ship_portrait: CodexShipPortrait = CodexShipPortrait.new()
 
@@ -60,6 +65,8 @@ func _ready() -> void:
 	# first open for seconds; not preloaded, which would slow the menu down.
 	CodexCatalog.warm_up()
 	tree_exiting.connect(CodexCatalog.release)
+	_portrait_material.shader = _TILE_SHADER
+	%Portrait.material = _portrait_material
 	%Portrait.add_sibling(_ship_portrait)
 	_ship_portrait.position = %Portrait.position
 	_ship_portrait.size = %Portrait.size
@@ -67,6 +74,7 @@ func _ready() -> void:
 	%EnemiesTab.pressed.connect(_show_tab.bind(Tab.ENEMIES))
 	%PrevPage.pressed.connect(_turn_page.bind(-1))
 	%NextPage.pressed.connect(_turn_page.bind(1))
+	%UpgradeToggle.pressed.connect(_toggle_upgraded)
 	%Grid.gui_input.connect(_on_grid_input)
 	%BackButton.pressed_within_window.connect(close)
 	%BackButton.set_button_text(tr("CODEX_BACK"))
@@ -105,7 +113,7 @@ func _show_tab(tab: Tab) -> void:
 
 
 func _is_found(id: String) -> bool:
-	return CollectionManager.has_tile(id) if _tab == Tab.TILES else CollectionManager.has_enemy(id)
+	return CodexCatalog.is_tile_found(id) if _tab == Tab.TILES else CollectionManager.has_enemy(id)
 
 
 func _page_count() -> int:
@@ -183,17 +191,31 @@ func _show_detail(id: String) -> void:
 	%StatsLabel.visible = has_entry and _tab == Tab.ENEMIES
 	%EmptyLabel.visible = not has_entry
 	if not has_entry:
+		%UpgradeToggle.visible = false
 		%EmptyLabel.text = tr("CODEX_EMPTY_TILES" if _tab == Tab.TILES else "CODEX_EMPTY_ENEMIES")
 		return
 
-	%NameLabel.text = _entry_name(id)
-	_make_room_for_name()
 	if _tab == Tab.TILES:
-		_show_tile(CodexCatalog.tile_resource(id))
+		var base_tile: TileResource = CodexCatalog.tile_resource(id)
+		var has_upgrade: bool = base_tile != null and base_tile.upgraded_version != null
+		%UpgradeToggle.visible = has_upgrade
+		%UpgradeToggle.selected = _show_upgraded and has_upgrade
+		var shown_tile: TileResource = base_tile.upgraded_version if (_show_upgraded and has_upgrade) else base_tile
+		%NameLabel.text = Utils.format_text(shown_tile.display_name())
+		_make_room_for_name()
+		_show_tile(shown_tile, has_upgrade)
 	else:
+		%UpgradeToggle.visible = false
+		%NameLabel.text = _entry_name(id)
+		_make_room_for_name()
 		_show_enemy(id, CodexCatalog.enemy_resource(id))
 	ColorSymbolBadge.attach_to_rect(%Portrait)
 	%BodyLabel.scroll_to_line(0)
+
+
+func _toggle_upgraded() -> void:
+	_show_upgraded = not _show_upgraded
+	_show_detail(_picked_ids.get(_tab, ""))
 
 
 func _make_room_for_name() -> void:
@@ -204,8 +226,9 @@ func _make_room_for_name() -> void:
 	%BodyLabel.offset_top = _BODY_TOP + extra
 
 
-func _show_tile(tile: TileResource) -> void:
+func _show_tile(tile: TileResource, has_upgrade: bool = false) -> void:
 	%Portrait.texture = CodexCatalog.tile_icon(tile)
+	_portrait_material.set_shader_parameter(&"upgraded", tile.is_upgrade)
 	var lines: Array[String] = [
 		"[color=%s]%s[/color]" % [_RARITY_COLOURS[tile.rarity], tr(_RARITY_KEYS[tile.rarity])],
 	]
@@ -214,7 +237,7 @@ func _show_tile(tile: TileResource) -> void:
 	%SubLabel.text = Utils.format_text("\n".join(lines), true)
 	var no_counters: Dictionary[String, int] = {}
 	%BodyLabel.text = Utils.format_text(Tile.fill_data_tokens(tile.display_description(), no_counters), true)
-	%BodyLabel.offset_bottom = _BODY_BOTTOM
+	%BodyLabel.offset_bottom = _BODY_BOTTOM_ABOVE_TOGGLE if has_upgrade else _BODY_BOTTOM
 
 
 func _show_enemy(id: String, enemy: EnemyResource) -> void:

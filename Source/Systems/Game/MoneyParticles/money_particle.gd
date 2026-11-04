@@ -155,10 +155,18 @@ func _fly_away() -> void:
 		tween.tween_property(
 			self, "global_position", _destination.global_position, 0.75
 		).set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_IN)
-		tween.tween_callback(func() -> void: Events.play_sound.emit(_MONEY_TICK_SFX))
+		tween.tween_callback(_on_reached_destination)
 	else:
 		tween.tween_property(self, "modulate:a", 0.0, 0.3)
 	tween.tween_callback(queue_free)
+
+
+func _on_reached_destination() -> void:
+	if is_instance_valid(_destination) and is_inside_tree():
+		var particles: CPUParticles2D = _money_added_particle_scene.instantiate()
+		add_sibling(particles)
+		particles.global_position = global_position
+	Events.play_sound.emit(_MONEY_TICK_SFX)
 
 
 func _set_up_particle() -> void:
@@ -188,8 +196,8 @@ func _on_area_2d_area_entered(area: Area2D) -> void:
 		Globals.player.money += amount
 		
 		var particles: CPUParticles2D = _money_added_particle_scene.instantiate()
-		particles.global_position = global_position
 		add_sibling(particles)
+		particles.global_position = global_position
 		
 		Events.play_sound.emit(_MONEY_TICK_SFX)
 		

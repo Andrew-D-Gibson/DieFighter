@@ -23,6 +23,13 @@ func resolve(_engine: ScenarioEngine) -> void:
 	_start = activator_die.global_position
 	var adjusted_time: float = _tween_time / Globals.animation_speed
 
+	var tile: Tile = effect_source as Tile if effect_source is Tile else null
+	if tile and tile.is_twin_barrel():
+		var held_die: Dice = tile.get_held_die(activator_die)
+		if is_instance_valid(held_die):
+			await tile.fire_dual_arc(activator_die, held_die, _target, adjusted_time)
+			return
+
 	# The target is read every frame rather than once at launch: when another
 	# ship dies the survivors slide over, and a die aimed at where the target
 	# used to be would sail into empty space.

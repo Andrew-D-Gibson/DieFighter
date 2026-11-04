@@ -26,7 +26,6 @@ text = "0/0"
 horizontal_alignment = 2
 
 [node name="Clickable" parent="." instance=ExtResource("3_click")]
-hover_hint = &"OVERLOAD_GAUGE_HINT"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Clickable"]
 shape = SubResource("RectangleShape2D_gauge")

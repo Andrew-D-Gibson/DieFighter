@@ -155,7 +155,7 @@ animations = [{
 [resource]
 script = ExtResource("4_vwftb")
 tile_name = "[color=red]Sunlance[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. (boost) [color=purple]{cost} charge[/color]: Apply {burn} (burn)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. (boost) [color=purple]{cost} engine charge[/color]: Apply {burn} (burn)"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_4bvwp")
 uses_per_turn = -1

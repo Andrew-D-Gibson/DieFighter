@@ -30,10 +30,9 @@ func resolve(engine: ScenarioEngine) -> void:
 		if engine.is_shut_down():
 			return
 		Events.hazard_struck.emit(hazard)
-		Juice.screen_flash(engine, hazard.color, 0.45, 0.4)
-		# The environment hitting the whole board should land harder than any
-		# one ship's attack, so it gets the big shake.
-		Events.camera_shake_large.emit(true)
+		await HazardThematicVFX.play_hazard_strike(engine, hazard)
+		if engine.is_shut_down():
+			return
 
 	var context: EffectContext = EffectContext.new()
 	context.actor = actor

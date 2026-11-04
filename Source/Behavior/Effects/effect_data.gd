@@ -45,6 +45,9 @@ extends Resource
 ## SLOW_MO reads it as the time scale (0.3 = 30% speed); ZOOM_PUNCH as the
 ## peak zoom relative to rest (1.05 = 5% closer). 1.0 does nothing for either.
 @export var multiplier: float = 1.0
+## SHIELD: multiply existing shields by multiplier, then add running_amount.
+## Amplify grows the multiplier; the flat bonus is kept separate.
+@export var multiply_shields: bool = false
 
 # ── String / Key Parameters ────────────────────────────────────────────────────
 ## General-purpose string parameter.
@@ -85,7 +88,7 @@ extends Resource
 @export var color: Color = Color.WHITE
 
 ## How a flourish moves. SPARK_BURST reads RISE; STREAM reads OUTWARD,
-## ENGINE, HULL_HUB and ENGINE_HUB; CALLOUT reads ENGINE and BIG. See JuiceEvent.Flag.
+## ENGINE, HULL_HUB and ENGINE_HUB; CALLOUT reads ENGINE and BIG; LASER reads BIG. See JuiceEvent.Flag.
 @export_flags("Rise", "Outward", "Engine", "Hull Hub", "Engine Hub", "Big") var juice_flags: int = 0
 
 ## The ship to bring into the fight. Used by ScenarioControlSubtype.LAUNCH_SHIP.

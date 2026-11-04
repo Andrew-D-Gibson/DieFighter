@@ -7,6 +7,12 @@ func _ready() -> void:
 	$VBoxContainer/QuitButton.visible = QuitManager.can_quit()
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if visible and not %OptionsMenu.visible and (event.is_action_pressed(&"cursor_back") or event.is_action_pressed(&"ui_cancel")):
+		get_viewport().set_input_as_handled()
+		_toggle_pause_menu()
+
+
 func _toggle_pause_menu() -> void:
 	%OptionsMenu.hide()
 	

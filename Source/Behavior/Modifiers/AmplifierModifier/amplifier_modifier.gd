@@ -21,7 +21,7 @@ func on_registered(engine: ScenarioEngine) -> void:
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 	if event.effect_source == affected_node and event.is_amplifiable():
-		event.amount += amplify_amount
+		event.amplify(amplify_amount)
 		if amplify_amount != 0:
 			announce_triggered()
 
@@ -45,4 +45,12 @@ func get_info_text() -> String:
 				first = mod
 	if first != self or total == 0:
 		return ""
-	return "[color=green]Amplified %+d[/color]: this tile's effects get %+d this turn." % [total, total]
+	var multiplies: bool = false
+	if affected_node is Tile:
+		var tile: Tile = affected_node as Tile
+		if tile.tile_resource and tile.tile_resource.effect_chain:
+			for step: EffectData in tile.tile_resource.effect_chain.effects:
+				if step.multiply_shields:
+					multiplies = true
+	var key: String = "INFO_AMPLIFIED_MULTIPLIER" if multiplies else "INFO_AMPLIFIED_FLAT"
+	return tr(key).format({"amount": "%+d" % total, "factor": total + 1})

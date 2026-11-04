@@ -129,7 +129,7 @@ animations = [{
 [resource]
 script = ExtResource("4_r1cv4")
 tile_name = "[color=blue]Solar Shroud[/color]"
-description = "[color=yellow]Die below[/color] (die_4) -> Gain [color=blue]{shields} shields[/color]. (boost) [color=purple]{cost} charge[/color]: [color=blue]{boosted_shields}[/color] instead"
+description = "[color=yellow]Die below[/color] (die_4) -> Gain [color=blue]{shields} shields[/color]. (boost) [color=purple]{cost} engine charge[/color]: [color=blue]{boosted_shields}[/color] instead"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_u5naw")
 uses_per_turn = -1

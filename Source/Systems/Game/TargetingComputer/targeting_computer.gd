@@ -601,6 +601,60 @@ func _show_bound_arrows() -> void:
 			_bound_arrows.append(arrow)
 		arrows_by_ship[ship].slots.append(i)
 
+	_layout_bound_arrows()
+
+
+## Dynamically separates and offsets multiple bound arrows and their badges
+## so they never overlap in a visually chaotic way.
+func _layout_bound_arrows() -> void:
+	if _bound_arrows.size() <= 1:
+		return
+
+	# 1. Stagger arcs that share the same source ship
+	var by_source: Dictionary = {}
+	for arrow: BoundIntentArrow in _bound_arrows:
+		if not by_source.has(arrow.source):
+			by_source[arrow.source] = []
+		by_source[arrow.source].append(arrow)
+
+	for src: Enemy in by_source:
+		var group: Array = by_source[src]
+		if group.size() > 1:
+			group.sort_custom(func(a: BoundIntentArrow, b: BoundIntentArrow) -> bool:
+				var dist_a: float = a.source.global_position.distance_to(a.target.global_position)
+				var dist_b: float = b.source.global_position.distance_to(b.target.global_position)
+				return dist_a < dist_b
+			)
+			for idx: int in range(group.size()):
+				var arrow: BoundIntentArrow = group[idx]
+				# Longer arcs lift higher so they cleanly sail over shorter ones
+				arrow.arc_lift_offset = idx * 10.0
+				var dir_x: float = signf(arrow.target.global_position.x - arrow.source.global_position.x)
+				if dir_x == 0.0:
+					dir_x = 1.0
+				arrow.source_offset_x = (idx - (group.size() - 1) * 0.5) * 4.0 * dir_x
+				# Place badges at different shares along the arc
+				if idx == 0:
+					arrow.badge_along = 0.55
+				else:
+					arrow.badge_along = 0.32
+
+	# 2. Collision resolution between all badge bounding rects
+	for i: int in range(_bound_arrows.size()):
+		for j: int in range(i + 1, _bound_arrows.size()):
+			var a1: BoundIntentArrow = _bound_arrows[i]
+			var a2: BoundIntentArrow = _bound_arrows[j]
+			var r1: Rect2 = a1.get_badge_rect()
+			var r2: Rect2 = a2.get_badge_rect()
+			if r1.grow(3.0).intersects(r2):
+				if a2.badge_along >= 0.4:
+					a2.badge_along = 0.22
+				else:
+					a2.badge_along = 0.68
+				r2 = a2.get_badge_rect()
+				if r1.grow(2.0).intersects(r2):
+					a2.badge_offset_y = -9.0
+
 
 ## Greys slot [param i]'s icon and crosses it out while [param silenced]. The
 ## mark is made the first time a slot needs it.

@@ -15,9 +15,18 @@ const CURSOR_SCRIPT: GDScript = preload("res://Source/Systems/UI/MouseCursor/mou
 var computer: TargetingComputer
 var manager: EnemyManager
 
+## The player's saved Controller Mode reaches the test run; FOCUS turns the
+## live virtual cursor on, which these tests assume is off.
+var _previous_scheme: InputBindings.ControlScheme
+var _previous_cursor_active: bool
+
 
 func before_each() -> void:
 	super()
+	_previous_scheme = InputManager.control_scheme
+	_previous_cursor_active = InputManager.cursor.active
+	InputManager.control_scheme = InputBindings.ControlScheme.CURSOR
+	InputManager.cursor.active = false
 	add_child_autofree(PLAYER_SCENE.instantiate())
 	manager = autofree(EnemyManager.new())
 	Globals.enemy_manager = manager
@@ -25,6 +34,12 @@ func before_each() -> void:
 	computer = add_child_autofree(COMPUTER_SCENE.instantiate())
 	# Lines from an earlier test mustn't make this one wait its turn.
 	EnemyDialogueManager.time_last_dialogue_was_shown = 0
+
+
+func after_each() -> void:
+	InputManager.control_scheme = _previous_scheme
+	InputManager.cursor.active = _previous_cursor_active
+	super()
 
 
 func _ship() -> Enemy:

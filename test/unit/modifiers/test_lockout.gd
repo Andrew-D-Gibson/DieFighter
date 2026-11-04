@@ -167,32 +167,37 @@ func test_a_lock_pops_off_when_opened() -> void:
 
 # ── Info panel ────────────────────────────────────────────────────────────────
 
-func test_a_locked_tile_says_so_in_its_info() -> void:
+func test_locked_rule_is_not_duplicated_in_tile_info() -> void:
 	var tile: Tile = _tile(DAMAGE_TILE)
-	assert_false(tile._get_tile_info().bottom_label_text.contains("(locked)"))
-
+	var original: String = tile._get_tile_info().bottom_label_text
 	await _lock([tile] as Array[Node])
-	var text: String = tile._get_tile_info().bottom_label_text
-	assert_string_contains(text, "(locked)")
-	assert_string_contains(text, "(die_1)", "names the keys that open it")
-	assert_string_contains(text, "(die_2)", "names the keys that open it")
-	assert_string_contains(text, "(die_3)", "names the keys that open it")
+	assert_eq(tile._get_tile_info().bottom_label_text, original)
+	assert_eq((LockoutModifier.new(tile)).get_info_text(), "")
 
 
-func test_a_locked_tile_shows_one_line() -> void:
-	var tile: Tile = _tile(DAMAGE_TILE)
-	await _lock([tile] as Array[Node])
-	assert_eq(tile._get_tile_info().bottom_label_text.count("(locked)"), 1)
-
-
-func test_the_info_line_is_localized() -> void:
-	var line: String = (LockoutModifier.new(_tile(DAMAGE_TILE))).get_info_text()
-	assert_ne(line, "INFO_TILE_LOCKED", "the key resolves to text")
-	assert_string_contains(line, "(locked)")
+func test_board_label_opens_and_closes_keyword_tooltip() -> void:
+	var host: Node2D = add_child_autofree(Node2D.new())
+	var visual: Node2D = LOCK_VISUAL.instantiate()
+	visual.configure(host)
+	host.add_child(visual)
+	var label: RichTextLabel = visual.get_node("LockedKeyword")
+	assert_string_contains(label.text, Keywords.title("locked").to_upper())
+	label.mouse_entered.emit()
+	assert_true(visual._tooltip.visible)
+	label.mouse_exited.emit()
+	assert_false(visual._tooltip.visible)
+	await wait_seconds(0.6)
+	assert_true(visual._settled)
+	var before: float = visual._sprite.position.y
+	await wait_seconds(0.2)
+	assert_ne(visual._sprite.position.y, before, "the settled lock floats")
+	visual.release()
+	assert_false(label.visible)
+	assert_false(visual._tooltip.visible)
 
 
 func test_locked_is_a_hoverable_keyword() -> void:
-	assert_string_contains(Keywords.definition("locked"), "Engine Charger")
+	assert_string_contains(Keywords.definition("locked"), "unlocks")
 	var rendered: String = Keywords.render("(locked) and (lock)", true)
 	assert_string_contains(rendered, "[url=locked]")
 	assert_false(rendered.contains("(lock"), "both spellings render")

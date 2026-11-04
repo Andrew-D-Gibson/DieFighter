@@ -55,19 +55,6 @@ text_token = &"damage"
 text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_step_8"]
-script = ExtResource("script_effect")
-subtype = 10
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
-[sub_resource type="Resource" id="Resource_step_9"]
-script = ExtResource("script_effect")
-category = 4
-subtype = 16
-callout = "BROADSIDE"
-color = Color(0.949, 0.6118, 0.3647, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_step_10"]
 script = ExtResource("script_effect")
 subtype = 8
@@ -131,7 +118,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_chain_19"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_1"), SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_step_12"), SubResource("Resource_step_13"), SubResource("Resource_step_14"), SubResource("Resource_step_15"), SubResource("Resource_step_16"), SubResource("Resource_step_17"), SubResource("Resource_step_18")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_1"), SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_6"), SubResource("Resource_step_7"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_step_12"), SubResource("Resource_step_13"), SubResource("Resource_step_14"), SubResource("Resource_step_15"), SubResource("Resource_step_16"), SubResource("Resource_step_17"), SubResource("Resource_step_18")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_act_20"]

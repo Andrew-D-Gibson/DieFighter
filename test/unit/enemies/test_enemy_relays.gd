@@ -90,6 +90,27 @@ func test_the_shipped_relay_actions_do_what_they_say() -> void:
 	assert_eq(loader.get_relay(), Relay.HOLOGRAM)
 	assert_true(relay.is_safe_while_hidden())
 	assert_true(loader.is_safe_while_hidden())
+	assert_gt(relay.intent_amount, 0, "relay has a default shield amount")
+	assert_eq(relay.get_intent_amount_text(), str(relay.intent_amount))
+	assert_string_contains(relay.get_description_text(), "%d shields" % relay.intent_amount)
+
+
+func test_bastion_core_relay_has_shield_amount_range() -> void:
+	var bastion: EnemyResource = load("res://Source/Content/Enemies/EnemyResources/bastion_core.tres")
+	var relay_option: EnemyActionOptionResource = null
+	for pool: EnemyTurnActionList in bastion.action_options:
+		for option: EnemyActionOptionResource in pool.actions_possible:
+			if option.base_action and option.base_action.name == "Relay":
+				relay_option = option
+				break
+	assert_not_null(relay_option)
+	assert_gt(relay_option.min_amount, 0)
+	assert_gte(relay_option.max_amount, relay_option.min_amount)
+	var rolled: EnemyActionResource = relay_option.get_action()
+	assert_gte(rolled.intent_amount, relay_option.min_amount)
+	assert_lte(rolled.intent_amount, relay_option.max_amount)
+	assert_ne(rolled.get_intent_amount_text(), "")
+	assert_string_contains(rolled.get_description_text(), "%d shields" % rolled.intent_amount)
 
 
 # ── Loop detection ─────────────────────────────────────────────────────────────

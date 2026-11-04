@@ -355,6 +355,22 @@ func test_each_bound_ship_gets_its_own_arc() -> void:
 	assert_eq(_arrows().size(), 2)
 
 
+func test_multiple_bound_arcs_separate_their_heights_and_badges() -> void:
+	var tender: Enemy = _ship(Vector2(220, 40))
+	var escort1: Enemy = _ship(Vector2(160, 40))
+	var escort2: Enemy = _ship(Vector2(100, 40))
+	_bind(tender, 0, escort1)
+	_bind(tender, 1, escort2)
+	_fight()
+	_target(tender)
+	var arrows: Array[BoundIntentArrow] = _arrows()
+	assert_eq(arrows.size(), 2)
+	assert_ne(arrows[0].arc_lift_offset, arrows[1].arc_lift_offset, "longer arc lifts higher to avoid overlap")
+	var r1: Rect2 = arrows[0].get_badge_rect()
+	var r2: Rect2 = arrows[1].get_badge_rect()
+	assert_false(r1.intersects(r2), "badges must not overlap")
+
+
 func test_retargeting_clears_the_old_arcs() -> void:
 	var tender: Enemy = _ship(Vector2(100, 40))
 	var escort: Enemy = _ship(Vector2(200, 40))

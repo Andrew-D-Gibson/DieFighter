@@ -4,7 +4,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## language has no translation yet.
 
 const SOLAR_FLARE: String = "res://Source/Resources/BackgroundResources/BackgroundHazards/solar_flare.tres"
-const FATES_TITHE: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/fates_tithe.tres"
+const FATES_CORRUPTION: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/fates_corruption.tres"
 const SEIZE: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres"
 const DO_NOTHING: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres"
 const CONVOY_HAULER_BETRAYED: String = "res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/hauler_betrayed.tres"
@@ -46,8 +46,8 @@ func test_a_resource_built_in_code_has_no_key_and_shows_its_field() -> void:
 
 
 func test_keys_name_the_file_and_field() -> void:
-	var rule: BackgroundModifierResource = load(FATES_TITHE)
-	assert_eq(ContentText.key_for(rule, &"modifier_name"), "BG_MODIFIER.FATES_TITHE.NAME")
+	var rule: BackgroundModifierResource = load(FATES_CORRUPTION)
+	assert_eq(ContentText.key_for(rule, &"modifier_name"), "BG_MODIFIER.FATES_CORRUPTION.NAME")
 	assert_eq(ContentText.key_for(rule, &"color"), "", "not a text field")
 
 
@@ -62,8 +62,8 @@ func test_pseudo_stretches_the_live_field() -> void:
 
 
 func test_a_region_rule_reads_its_own_fields_in_english() -> void:
-	var rule: BackgroundModifierResource = load(FATES_TITHE)
-	assert_eq(rule.display_name(), "Fate's Tithe")
+	var rule: BackgroundModifierResource = load(FATES_CORRUPTION)
+	assert_eq(rule.display_name(), "Fate's Corruption")
 	assert_eq(rule.display_description(), rule.description)
 
 

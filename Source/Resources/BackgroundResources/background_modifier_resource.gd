@@ -52,6 +52,9 @@ extends Resource
 ## (EnvironmentMonitor._TRIGGER_SFX).
 @export var trigger_sfx: SoundEffectResource
 
+## Completed combat rounds before this rule lifts. Zero lasts the encounter.
+@export_range(0, 9) var duration_turns: int = 0
+
 @export_category('Behavior')
 ## The Modifier subclass that enforces the rule. Built fresh per scenario by
 ## create_modifier(); it must construct with no arguments.
@@ -115,7 +118,7 @@ func display_callout() -> String:
 ## The numbers this rule's {placeholders} stand for: its parameters
 ## ({"cap": 3}). The same hook TextTokens reads off any root resource.
 func _text_tokens() -> Dictionary:
-	var values: Dictionary = {}
+	var values: Dictionary = {"turns": duration_turns}
 	for parameter: StringName in parameters:
 		values[String(parameter)] = parameters[parameter]
 	return values

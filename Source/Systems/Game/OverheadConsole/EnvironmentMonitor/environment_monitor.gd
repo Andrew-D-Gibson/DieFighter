@@ -103,6 +103,7 @@ var _hazard: BackgroundHazardResource = null
 ## without a number: a warning of what a fight here will bring.
 var _armed: bool = false
 var _turns_remaining: int = 0
+var _modifier_turns_remaining: int = -1
 
 ## Between arriving in a region and jumping out of it. A background swapped in
 ## hyperspace waits for the arrival to be announced.
@@ -141,6 +142,7 @@ func _ready() -> void:
 	ArrivalIntro.shared()
 	_clickable.clicked.connect(_on_clicked)
 	Events.background_modifier_applied.connect(_on_modifier_applied)
+	Events.background_modifier_countdown_changed.connect(_on_modifier_countdown_changed)
 	Events.modifier_triggered.connect(_on_modifier_triggered)
 	Events.hazard_armed.connect(_on_hazard_armed)
 	Events.hazard_countdown_changed.connect(_on_hazard_countdown_changed)
@@ -152,6 +154,7 @@ func _ready() -> void:
 
 func _on_modifier_applied(modifier: BackgroundModifierResource) -> void:
 	_modifier = modifier
+	_modifier_turns_remaining = modifier.duration_turns if modifier else -1
 	_queue_present()
 
 
@@ -221,7 +224,9 @@ func _on_hazard_countdown_changed(hazard: BackgroundHazardResource, turns_remain
 func _on_hazard_triggered(hazard: BackgroundHazardResource) -> void:
 	if hazard != _hazard or not _deployed:
 		return
-	_play_trigger_feedback(hazard.display_name().to_upper(), hazard.color, hazard.trigger_sfx)
+	# Hazard triggers already show a full-screen HazardWarning banner; do not
+	# spawn a redundant small text callout next to the monitor.
+	_play_trigger_feedback("", hazard.color, hazard.trigger_sfx)
 
 
 func _queue_present() -> void:
@@ -262,7 +267,7 @@ func _present() -> void:
 		_glyph.texture = _DEFAULT_GLYPH
 		_glyph.modulate = _hazard.color if _hazard else _modifier.color
 
-	var counting: bool = _hazard != null and _armed
+	var counting: bool = (_hazard != null and _armed) or (_hazard == null and _modifier_turns_remaining > 0)
 	_glyph.position = _GLYPH_BESIDE_COUNTDOWN if counting else _GLYPH_CENTRED
 	_countdown.visible = counting
 	_update_countdown()
@@ -327,6 +332,8 @@ func _announce(shown: Resource) -> void:
 		alert.title = modifier.display_name().to_upper()
 		alert.color = modifier.color
 		alert.description = modifier.display_description()
+		if _modifier_turns_remaining > 0:
+			alert.footnote = tr("REGION_RULE_TURNS_LEFT").format({"turns": _modifier_turns_remaining})
 	alert.landing_point = func() -> Vector2: return _glyph.global_position
 	var id: String = region_id(shown)
 	alert.wait_for_close = _waits_for_close(shown)
@@ -455,13 +462,15 @@ func _on_clicked() -> void:
 			_modifier.color.to_html(false), _modifier.display_name().to_upper()
 		]
 		info.bottom_label_text = _modifier.display_description()
+		if _modifier_turns_remaining > 0:
+			info.top_label_text = tr("REGION_RULE_TURNS_LEFT").format({"turns": _modifier_turns_remaining})
 		info.texture = _modifier.icon if _modifier.icon else _DEFAULT_INFO_ICON
 	Events.show_info.emit(info)
 
 
 ## The info panel for [param hazard]: the countdown where a tile's panel says
-## when it activates, then the full rule and how often it comes round. Not the
-## headline, which the full rule only repeats; that is the arrival card's.
+## when it activates, then the full rule. Not the headline, which the full
+## rule only repeats; that is the arrival card's.
 static func hazard_info(
 	hazard: BackgroundHazardResource, armed: bool, turns_remaining: int
 ) -> InfoResource:
@@ -470,7 +479,7 @@ static func hazard_info(
 		hazard.color.to_html(false), hazard.display_name().to_upper()
 	]
 	info.top_label_text = "[color=yellow]%s[/color]" % hazard_when_text(hazard, armed, turns_remaining)
-	info.bottom_label_text = "%s\n%s" % [hazard.display_description(), hazard_repeat_text(hazard)]
+	info.bottom_label_text = hazard.display_description()
 	info.texture = hazard.icon if hazard.icon else _DEFAULT_INFO_ICON
 	return info
 
@@ -479,8 +488,7 @@ static func hazard_info(
 ## [param turns_remaining] on a fight's countdown while [param armed], else
 ## how far into a fight it first does. The last turn is spelled out, because
 ## "in 1 turn" can't say whether that means as this turn ends or as the next
-## one starts, and so is the one before it for a hazard that hits as turns
-## end: "in 2 turns" would read as the turn after next.
+## one starts; 2 or more turns away always says "In N turns".
 static func hazard_when_text(
 	hazard: BackgroundHazardResource, armed: bool, turns_remaining: int
 ) -> String:
@@ -494,8 +502,6 @@ static func hazard_when_text(
 		return TranslationServer.translate(
 			"HAZARD_WHEN_THIS_TURN_ENDS" if at_turn_end else "HAZARD_WHEN_NEXT_TURN"
 		)
-	if turns_remaining == 2 and at_turn_end:
-		return TranslationServer.translate("HAZARD_WHEN_NEXT_TURN_ENDS")
 	return TranslationServer.translate("HAZARD_WHEN_IN_TURNS").format({"turns": turns_remaining})
 
 
@@ -518,14 +524,6 @@ static func hazard_headline(
 		"when": "[color=%s]%s[/color]" % [when_color, hazard_when_text(hazard, armed, turns_remaining)],
 		"what": hazard_effect_text(hazard),
 	})
-
-
-## How often [param hazard] comes round once it has hit, for the info panel.
-static func hazard_repeat_text(hazard: BackgroundHazardResource) -> String:
-	var between: int = maxi(1, hazard.turns_between)
-	if between == 1:
-		return TranslationServer.translate("HAZARD_THEN_EVERY_TURN")
-	return TranslationServer.translate("HAZARD_THEN_EVERY_TURNS").format({"turns": between})
 
 
 ## Asks the console down, then flips open on the hinge once it's there, and
@@ -646,10 +644,10 @@ func _build_countdown() -> void:
 
 
 func _update_countdown() -> void:
-	if _hazard:
+	if _hazard or _modifier_turns_remaining > 0:
 		# One digit is all the screen has room for, and no authored hazard
 		# waits longer than nine turns.
-		_countdown.text = str(clampi(_turns_remaining, 0, 9))
+		_countdown.text = str(clampi(_turns_remaining if _hazard else _modifier_turns_remaining, 0, 9))
 		_countdown.add_theme_color_override("font_color", _current_color())
 
 
@@ -687,3 +685,13 @@ func _is_moving() -> bool:
 func _kill_motion() -> void:
 	if _motion_tween and _motion_tween.is_valid():
 		_motion_tween.kill()
+
+
+func _on_modifier_countdown_changed(modifier: BackgroundModifierResource, turns: int) -> void:
+	if modifier != _modifier:
+		return
+	_modifier_turns_remaining = turns
+	_update_countdown()
+	if turns > 0:
+		_pop_countdown()
+	_queue_present()

@@ -130,7 +130,7 @@ func slider(key: StringName, label_key: String, hint_key: String = "", min_value
 	bar.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	# Narrower beside a label in a two-column page, but always with room for
 	# the knob to travel well past its own width.
-	bar.custom_minimum_size.x = WIDGET_WIDTH * (2.0 if _column_count == 1 else 1.6)
+	bar.custom_minimum_size.x = WIDGET_WIDTH * (2.0 if _column_count == 1 else 1.3)
 	var knob: Texture2D = _widget_texture("slider_knob_%s_dark.png", true)
 	bar.add_theme_icon_override("grabber", knob)
 	bar.add_theme_icon_override("grabber_highlight", _widget_texture("slider_knob_%s_light.png", true))

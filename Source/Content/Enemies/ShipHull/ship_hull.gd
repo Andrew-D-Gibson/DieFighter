@@ -28,7 +28,7 @@ var _breaking_up: bool = false
 
 func _process(delta: float) -> void:
 	_clock += delta
-	bob = Vector2(0.0, roundf(sin(_clock * TAU / bob_period) * bob_height))
+	bob = Vector2(0.0, sin(_clock * TAU / bob_period) * bob_height)
 	body.position = bob
 
 
@@ -50,11 +50,12 @@ func scar(offset: Vector2, quiet: bool = false) -> void:
 	Juice.ring(get_parent(), global_position + bob + offset, Globals.red, 28.0, 0.4, 4.0)
 
 
-## The last part is gone. Blasts chain across the hull, then it's gone too.
+## The last part is gone. Blasts chain across the hull, then it drifts, tumbles, dissolves and fades out.
 func break_up() -> void:
 	if _breaking_up:
 		return
 	_breaking_up = true
+	set_process(false)
 	Events.camera_shake_large.emit(false)
 	for i: int in range(breakup_blasts):
 		var spot: Vector2 = Vector2(
@@ -62,14 +63,26 @@ func break_up() -> void:
 			RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -breakup_spread.y, breakup_spread.y)
 		)
 		_blast(global_position + bob + spot)
+		Juice.sparkle(get_parent(), global_position + bob + spot, Globals.orange, 6, 30.0)
 		await get_tree().create_timer(0.12).timeout
 		if not is_inside_tree():
 			return
 
-	Juice.ring(get_parent(), global_position, Globals.white, 120.0, 0.6, 12.0)
+	Juice.ring(get_parent(), global_position + bob, Globals.white, 120.0, 0.6, 12.0)
 	Events.camera_shake_large.emit(true)
-	var fade: Tween = create_tween()
-	fade.tween_property(self, "modulate:a", 0.0, 0.6)
+	for s: int in range(5):
+		var spark_spot: Vector2 = Vector2(
+			RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -breakup_spread.x, breakup_spread.x),
+			RNGManager.randf_range(RNGManager.Bucket.COSMETIC, -breakup_spread.y, breakup_spread.y)
+		)
+		Juice.sparkle(get_parent(), global_position + bob + spark_spot, Globals.orange, 8, 40.0)
+	var fade: Tween = create_tween().set_parallel(true)
+	fade.tween_property(self, "position", position + Vector2(0, 16), 0.9) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fade.tween_property(self, "rotation", 0.05, 0.9) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fade.tween_property(self, "modulate:a", 0.0, 0.8) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 	await fade.finished
 	queue_free()
 

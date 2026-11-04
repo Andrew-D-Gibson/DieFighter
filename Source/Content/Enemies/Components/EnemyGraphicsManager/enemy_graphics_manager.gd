@@ -251,8 +251,10 @@ func start_bob_tween() -> void:
 		
 	# Don't start bobbing if we're translating in space, 
 	# like tweening to enter the scene or tweening to another 
-	# position on the spawn curve
+	# position on the spawn curve, or if we're mounted on a hull that bobs for us
 	if get_parent().moving_in_world or _dying:
+		return
+	if get_parent() is Enemy and (get_parent() as Enemy).is_mounted:
 		return
 		
 	var tween_time: float = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 2, 4)

@@ -122,14 +122,14 @@ BUILDS = {
     "bulwark": {
         "name": "Bulwark",
         "notes": "Shields persist, so stack them, then turn them into damage: Ballast Tanks feeds a "
-                 "1 straight down into Discharge Plate (2x shields spent). Full adds Ram Plating "
-                 "(damage = shields, no spend), Fortress Protocol and Shield Siphon.",
+                 "1 straight down into Discharge Plate (2x shields spent). Full adds "
+                 "Fortress Protocol and Shield Siphon.",
         "core": {
             "1,0": "overshield_relay", "2,0": "deflector_array", "3,0": "shield",
             "1,1": "ballast_tanks", "2,1": "damage", "3,1": "counterweight_battery",
             "1,2": "discharge_plate", "2,2": "reactive_armor", "3,2": "bump",
         },
-        "full": {"0,1": "shield_siphon", "4,0": "fortress_protocol", "4,1": "ram_plating"},
+        "full": {"0,1": "shield_siphon", "4,0": "fortress_protocol"},
     },
     "redline": {
         "name": "Redline",
@@ -324,7 +324,7 @@ def main() -> int:
     outputs = {
         "builds_core.json": spec(header + "Synergy builds at mid-run (9 tiles in the starting 3x3, "
                                  "3 dice) against Sector 2.", CORE_SECTOR, CORE_SCENARIOS, core_loadouts),
-        "builds_full.json": spec(header + "Synergy builds finished (12 tiles, 4 dice) against "
+        "builds_full.json": spec(header + "Synergy builds finished (up to 12 tiles, 4 dice) against "
                                  "Sector 3.", FULL_SECTOR, FULL_SCENARIOS, full_loadouts),
     }
     for name, data in outputs.items():

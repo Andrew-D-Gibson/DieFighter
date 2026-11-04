@@ -71,6 +71,11 @@ var _danger_icons: Dictionary[Texture2D, Texture2D] = {}
 
 ## Stands in for the Fate zones, which have no map icon of their own.
 const _FATE_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/fate_encounter.png")
+## Black-hole-free Fate background for stray corrupted nodes ahead of the
+## black hole's advancing zone.
+const _FATE_OUTSKIRT_BACKGROUND: BackgroundResource = preload(
+	"res://Source/Resources/BackgroundResources/fate_outskirt.tres"
+)
 ## Beside the caption while the jump gate is open: the way out is to the right.
 const _NEXT_SECTOR_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/next_sector.png")
 ## How often the right arrow pulses while the gate is open, so the eye goes
@@ -200,6 +205,11 @@ var _panning: bool = false
 var _pan_last_x: float = 0.0
 
 
+## Whether the player is currently click-dragging the map to pan.
+func is_panning() -> bool:
+	return _panning
+
+
 func _ready() -> void:
 	Globals.map = self
 	
@@ -210,6 +220,7 @@ func _ready() -> void:
 		_update_ui()
 	)
 	Events.engine_charge_changed.connect(_update_ui)
+	Events.background_modifier_applied.connect(func(_rule: BackgroundModifierResource) -> void: _update_ui())
 	
 	# Initialize camera position and slider
 	_initialize_camera_position()
@@ -246,7 +257,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _process(delta: float) -> void:
+	if _panning and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_panning = false
 	if not visible or scenario_list.is_empty() or _jumping:
+		_panning = false
 		return
 	var hovered: int = _hovered_scenario_index()
 	_set_hovered(hovered)
@@ -308,6 +322,8 @@ func _compute_hint(hovered: int) -> Array:
 		if _corrupted_sprite and _corrupted_sprite.texture and _sprite_rect(_corrupted_sprite).has_point(world):
 			return [_FATE_ICON, "Corrupt", Globals.medium_purple]
 
+	if not can_jump():
+		return [null, tr("ERROR_NO_ESCAPE"), Globals.purple]
 	if Globals.jump_gate and Globals.jump_gate.is_open():
 		return [_NEXT_SECTOR_ICON, tr("MAP_HINT_JUMP_RIGHT"), Globals.yellow]
 	if not _engines_charged:
@@ -519,7 +535,7 @@ func _update_ui() -> void:
 		return
 	
 	_engines_charged = Globals.player.is_engine_charged()
-	if _engines_charged:
+	if _engines_charged and can_jump():
 		left_arrow_tile.set_highlight(true)
 		left_arrow_tile.set_gray_out(false)
 		right_arrow_tile.set_highlight(true)
@@ -886,6 +902,27 @@ func is_fate_scenario(scenario: ScenarioResource) -> bool:
 	return scenario != null and (scenario == fate_scenario or scenario in fate_variants)
 
 
+## Whether slot [param index] is a stray Fate node ahead of the black hole's
+## advancing zone (the 10% randomly corrupted nodes outside the danger zone).
+func is_stray_fate_slot(index: int = current_scenario_index) -> bool:
+	if index < 0 or index >= len(scenario_list):
+		return false
+	return index > fate_index and is_fate_scenario(scenario_list[index])
+
+
+## The background resource for [param scenario] at [param index]: stray
+## corrupted nodes ahead of the black hole's zone use the black-hole-free
+## Fate outskirt sky instead of the full black hole.
+func background_for_scenario(
+	scenario: ScenarioResource, index: int = current_scenario_index
+) -> Resource:
+	if scenario == null:
+		return null
+	if index > fate_index and is_fate_scenario(scenario):
+		return _FATE_OUTSKIRT_BACKGROUND
+	return scenario.background_resource
+
+
 ## Hands the tile at [param idx] to Fate, as one of its encounters. The pick is
 ## a hash of the RUN stream's state and the tile rather than a draw from it,
 ## so adding variants leaves every seeded map (the tutorial's, AutoPilot
@@ -901,6 +938,9 @@ func _corrupt(idx: int) -> void:
 
 
 func jump(desired_scenario_index: int) -> void:
+	if not can_jump():
+		Events.error_text_popup.emit(tr("ERROR_NO_ESCAPE"), get_global_mouse_position())
+		return
 	# Bound the target scenarios to within the map
 	# e.g. moving "off the map" just moves you to the farthest possible sector
 	# This should never actually happen due to the tile implementation, 
@@ -1113,3 +1153,16 @@ func _set_jump_arrow_visible(arrow: Tile, shown: bool) -> void:
 		return
 	arrow.visible = true
 	JumpArrowReveal.play(arrow, _JUMP_ARROW_REVEAL_TIME)
+
+
+## A region can prevent fleeing while charge remains usable by other systems.
+func can_jump() -> bool:
+	if not is_instance_valid(Globals.state_manager) or Globals.state_manager.state != GameStateManager.GameState.IN_COMBAT:
+		return true
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine == null or engine.is_shut_down():
+		return true
+	for modifier: Modifier in engine.modifiers:
+		if modifier.prevents_fleeing:
+			return false
+	return true

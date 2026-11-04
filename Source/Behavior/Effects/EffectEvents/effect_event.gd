@@ -118,3 +118,8 @@ func announce_status_applied(target: Node, status_id: StringName, stacks: int) -
 	if actor is not Player or target is not Enemy or stacks <= 0:
 		return
 	Events.status_applied_to_enemy.emit(target as Enemy, status_id, stacks)
+
+
+## Most outputs gain a flat amount; multiplicative outputs override the unit.
+func amplify(bonus: int) -> void:
+	amount += bonus

@@ -7,9 +7,28 @@ signal binding_captured(action: StringName, kind: InputBindings.Kind, event: Inp
 ## Listening ended without a binding: Escape, a click, or another device.
 signal binding_cancelled(action: StringName, kind: InputBindings.Kind)
 
+## The displayed controls changed: device, controller family, or bindings.
+signal prompts_changed()
+
+var controller_active: bool = false
+var controller_family: StringName = &"xbox"
+var active_joypad: int = -1
+
 const _NOT_LISTENING: int = -1
 
 var cursor: VirtualCursor = VirtualCursor.new()
+
+## The selection-icon scheme, paired with the stick-steered pointer the default
+## (CURSOR) runs. Both drive the same cursor; control_scheme picks which one
+## moves it (see _input). Set by OptionsSettings.CONTROLLER_SCHEME.
+var focus_selection: FocusSelection = FocusSelection.new()
+
+## Which way the controller drives the game. CURSOR runs the stick-steered
+## pointer; FOCUS swaps it for a selection icon that snaps between the on-
+## screen objects of interest. Set by the Controller Mode option (see
+## OptionsSettings.CONTROLLER_SCHEME); defaults so the behaviour is exactly
+## today's until FocusSelection is wired in (see _process, below).
+var control_scheme: InputBindings.ControlScheme = InputBindings.ControlScheme.CURSOR
 
 var _listen_action: StringName = &""
 var _listen_kind: int = _NOT_LISTENING
@@ -22,6 +41,12 @@ func _ready() -> void:
 	# Make this unpausable
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	cursor.attach(get_viewport())
+	# The selection icon reuses the same cursor, so the click and warp machinery
+	# is shared; it's inactive until a scheme turns it on.
+	add_child(focus_selection)
+	focus_selection.attach(cursor, get_viewport())
+	Input.joy_connection_changed.connect(_on_joy_connection_changed)
+	OptionsSettings.option_changed.connect(_on_prompt_option_changed)
 	_last_tick_usec = Time.get_ticks_usec()
 
 
@@ -40,10 +65,21 @@ func _process(_delta: float) -> void:
 ## Comes before the GUI and unhandled input, so a binding being listened for,
 ## or the stick steering the pointer, isn't also read as a game action.
 func _input(event: InputEvent) -> void:
+	track_prompt_input(event)
 	if is_listening():
 		if _listen_to(event):
 			get_viewport().set_input_as_handled()
 		return
+	if control_scheme == InputBindings.ControlScheme.FOCUS:
+		# The selection icon takes the controller: the d-pad steps it, A and B
+		# act. A real mouse still moves the pointer underneath, so a mouse user
+		# isn't frozen; the stick is inert here (it's the CURSOR scheme's job).
+		if focus_selection.handle_event(event):
+			get_viewport().set_input_as_handled()
+		elif event is InputEventMouseMotion:
+			cursor.handle_event(event)
+		return
+	# CURSOR scheme: the stick and d-pad steer the pointer as before.
 	if cursor.handle_event(event):
 		get_viewport().set_input_as_handled()
 
@@ -146,3 +182,60 @@ func _cancels(event: InputEvent, kind: InputBindings.Kind, action: StringName) -
 func _stop_listening() -> void:
 	_listen_action = &""
 	_listen_kind = _NOT_LISTENING
+
+
+## A virtual mouse event and an OS warp echo still belong to the controller.
+## Stick drift and button releases do not switch the displayed controls.
+func track_prompt_input(event: InputEvent) -> void:
+	if event.device == VirtualCursor.DEVICE_ID:
+		return
+	if event is InputEventJoypadButton and event.pressed:
+		set_prompt_device(true, event.device)
+	elif event is InputEventJoypadMotion and absf(event.axis_value) > VirtualCursor.DEADZONE:
+		set_prompt_device(true, event.device)
+	elif event is InputEventKey and event.pressed:
+		set_prompt_device(false)
+	elif event is InputEventMouseButton and event.pressed:
+		set_prompt_device(false)
+	elif event is InputEventMouseMotion and not event.relative.is_zero_approx() \
+		and not cursor._is_warp_echo(event):
+		set_prompt_device(false)
+
+
+func set_prompt_device(controller: bool, device: int = -1, device_name: String = "") -> void:
+	var family: StringName = controller_family
+	if controller:
+		if device_name.is_empty() and device in Input.get_connected_joypads():
+			device_name = Input.get_joy_name(device)
+		family = family_for_name(device_name)
+	else:
+		device = -1
+	if controller == controller_active and family == controller_family and device == active_joypad:
+		return
+	controller_active = controller
+	controller_family = family
+	active_joypad = device
+	prompts_changed.emit()
+
+
+func family_for_name(device_name: String) -> StringName:
+	var lower: String = device_name.to_lower()
+	if "steam" in lower or "deck" in lower:
+		return &"steam"
+	if "xbox" in lower or "xinput" in lower or "microsoft" in lower:
+		return &"xbox"
+	for marker: String in ["dualsense", "dualshock", "playstation", "sony", "ps3", "ps4", "ps5", "wireless controller"]:
+		if marker in lower:
+			return &"ps"
+	return &"xbox"
+
+
+func _on_joy_connection_changed(device: int, connected: bool) -> void:
+	if not connected and controller_active and device == active_joypad:
+		cursor.release_all()
+		set_prompt_device(false)
+
+
+func _on_prompt_option_changed(key: StringName, _value: Variant) -> void:
+	if String(key).begins_with("Controls/"):
+		prompts_changed.emit()

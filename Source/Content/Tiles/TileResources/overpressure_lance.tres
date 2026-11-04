@@ -155,7 +155,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=purple]Overpressure Lance[/color]"
-description = "(die_6) [color=yellow]while overcharged[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to {times}x [color=purple]surplus charge[/color]. Spend it"
+description = "(die_6) [color=yellow]while overcharged[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to {times}x [color=purple]surplus engine charge[/color]. Spend it"
 rarity = 2
 offered_as_reward = false
 textures = SubResource("Resource_frames2")

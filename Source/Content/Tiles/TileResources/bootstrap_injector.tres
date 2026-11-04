@@ -120,7 +120,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Bootstrap Injector[/color]"
-description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} charge[/color]: Spawn a (hologram) of die. [color=orange]Return[/color] die"
+description = "[color=yellow]Any die[/color] -> Spend [color=purple]{cost} engine charge[/color]: Spawn a (hologram) of die. [color=orange]Return[/color] die"
 rarity = 2
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://bgyq1cvjkptbu"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_kw"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_tok"]
+
+[sub_resource type="Resource" id="overloaded"]
+script = ExtResource("2_tok")
+token = "(overloaded)"
+label = "Overload"
+
+[resource]
+script = ExtResource("1_kw")
+title = "Overload"
+rule = "Full at turn start: skips attack, returns dice, damages hull, and raises limit."
+tokens = Array[ExtResource("2_tok")]([SubResource("overloaded")])

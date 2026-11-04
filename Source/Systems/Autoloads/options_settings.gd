@@ -65,6 +65,10 @@ const CURSOR_SPEED: StringName = &"Controls/cursor_speed"
 ## The Cursor Speed slider's range, as a multiplier on the controller
 ## pointer's speed.
 const CURSOR_SPEEDS: Vector2 = Vector2(0.5, 2.0)
+## Which way the controller drives the game: the stick-steered pointer or the
+## snapping selection icon (see InputBindings.ControlScheme). Scheme-agnostic: it
+## is the controller's mode, not a keyboard-vs-controller distinction.
+const CONTROLLER_SCHEME: StringName = &"Controls/controller_scheme"
 const DICE_PLACEMENT: StringName = &"Controls/dice_placement"
 
 # Accessibility
@@ -268,6 +272,11 @@ func _register_controls_options() -> void:
 		func() -> float: return InputManager.cursor.speed_scale,
 		func(value: Variant) -> void:
 			InputManager.cursor.speed_scale = clampf(float(value), CURSOR_SPEEDS.x, CURSOR_SPEEDS.y))
+	register(CONTROLLER_SCHEME, int(InputBindings.ControlScheme.CURSOR),
+		func() -> int: return int(InputManager.control_scheme),
+		func(value: Variant) -> void:
+			InputManager.control_scheme = int(value) as InputBindings.ControlScheme \
+				if int(value) in InputBindings.ControlScheme.values() else InputBindings.ControlScheme.CURSOR)
 	# A static on Draggable, so it's set before any die exists.
 	register(DICE_PLACEMENT, Draggable.PlacementMode.DRAG,
 		func() -> int: return Draggable.placement_mode,

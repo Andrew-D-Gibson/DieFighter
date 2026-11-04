@@ -18,7 +18,8 @@ const RULES: Dictionary[String, String] = {
 	"cryo_belt": "DiceFreezeModifier",
 	"debris_field": "DoubleDamageModifier",
 	"derelict_boneyard": "OncePerTurnModifier",
-	"fate_infection": "EngineBlackoutModifier",
+	"fate_infection": "NoEscapeModifier",
+	"fate_outskirt": "",
 	"pulsar_field": "ShieldBlackoutModifier",
 	"red_nebula": "RepairBlackoutModifier",
 	"empty_space": "",
@@ -31,6 +32,7 @@ const RULES: Dictionary[String, String] = {
 
 ## Backgrounds whose place is a timed hazard instead.
 const HAZARDS: Dictionary[String, String] = {
+	"fate_outskirt": "Fate Rift",
 	"asteroid_field": "Asteroid Impact",
 	"ion_storm_front": "Ion Storm",
 	"rift_space": "Fate Rift",
@@ -156,3 +158,61 @@ func test_in_the_debris_field_the_rule_is_on_the_engine() -> void:
 	_arrive_at("debris_field")
 	assert_true(manager.get_active_modifier() is DoubleDamageModifier)
 	assert_has(engine.modifiers, manager.get_active_modifier())
+
+
+func test_fate_outskirt_keeps_shards_and_storm_without_black_hole() -> void:
+	var infection: BackgroundResource = load(BACKGROUND_ROOT + "fate_infection.tres")
+	var outskirt: BackgroundResource = load(BACKGROUND_ROOT + "fate_outskirt.tres")
+	assert_not_null(outskirt)
+	assert_eq(outskirt.scrolling_objects, infection.scrolling_objects, "keeps fate_shards")
+	assert_gt(outskirt.num_of_stars, infection.num_of_stars, "more stars than black-hole sky")
+	assert_gt(outskirt.num_of_twinkling_stars, infection.num_of_twinkling_stars, "more twinkling stars")
+	var scenes: Array[String] = []
+	for obj: StaticBackgroundObjectResource in outskirt.static_objects:
+		if obj and obj.scene:
+			scenes.append(obj.scene.resource_path.get_file())
+	assert_has(scenes, "fate_storm.tscn", "keeps FateStorm lightning and shader flashes")
+	assert_does_not_have(scenes, "black_hole.tscn", "no black hole outside the danger zone")
+
+
+func test_doldrums_lift_after_three_complete_rounds() -> void:
+	_arrive_at("blue_nebula")
+	assert_eq(manager.turns_remaining, 3)
+	for remaining: int in [2, 1]:
+		manager._on_round_ended()
+		assert_eq(manager.turns_remaining, remaining)
+		assert_true(manager.get_active_modifier() is AmountCapModifier)
+	manager._on_round_ended()
+	assert_null(manager.get_active_modifier())
+	await Effects.chain([Effects.set_amount(5), Effects.shield()]).play(context, engine)
+	assert_eq(ship.health.shields, 5, "the expired cap no longer limits effects")
+
+
+func test_corruption_blocks_only_combat_jumps_not_charge() -> void:
+	Globals.player = ship
+	var scenario_manager: ScenarioManager = autofree(ScenarioManager.new())
+	scenario_manager.engine = engine
+	Globals.scenario_manager = scenario_manager
+	var state: GameStateManager = autofree(GameStateManager.new())
+	Globals.state_manager = state
+	var map: Map = autofree(Map.new())
+	Globals.map = map
+	state.state = GameStateManager.GameState.IN_COMBAT
+	_arrive_at("fate_infection")
+	assert_true(manager.get_active_modifier() is NoEscapeModifier)
+	assert_false(map.can_jump())
+	var charge: ChangeEngineChargeEvent = ChangeEngineChargeEvent.new()
+	charge.amount = 5
+	await charge.resolve(engine)
+	assert_eq(ship.engine_charge, 5, "charge remains usable")
+	ship.engine_charge = ship.max_engine_charge
+	var full: ActivationResource = ActivationResource.new()
+	full.type = ActivationResource.ActivationType.ENGINE_CHARGED
+	assert_true(full.criteria_satisfied(null), "fully charged combat tiles still work")
+	var jump: ActivationResource = ActivationResource.new()
+	jump.type = ActivationResource.ActivationType.CAN_JUMP
+	assert_false(jump.criteria_satisfied(null), "jump controls refuse before spending a die")
+	state.state = GameStateManager.GameState.OUT_OF_COMBAT
+	assert_true(map.can_jump(), "winning releases the ship")
+	assert_eq(ActivationResource.ActivationType.PLAYER_HAS_HARMFUL_STATUS, 22)
+	assert_eq(ActivationResource.ActivationType.CAN_JUMP, 23)

@@ -150,7 +150,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=purple]Deadweight Drive+[/color]"
-description = "(die_1) or (die_2) -> Deal [color=red]damage[/color] equal to half your missing [color=purple]charge[/color] +{bonus}"
+description = "(die_1) or (die_2) -> Deal [color=red]damage[/color] equal to half your missing [color=purple]engine charge[/color] +{bonus}"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

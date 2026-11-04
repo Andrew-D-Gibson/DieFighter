@@ -90,13 +90,17 @@ text_token = &"bonus"
 [sub_resource type="Resource" id="Resource_step_12"]
 script = ExtResource("script_effect")
 category = 2
-subtype = 18
+amount = 0
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_13"]
 script = ExtResource("script_effect")
 category = 1
 subtype = 2
+multiply_shields = true
+multiplier = 2.0
+text_token = &"factor"
+text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_step_14"]
@@ -142,7 +146,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=blue]Fortress Protocol+[/color]"
-description = "(die_6) -> Double your [color=blue]shields[/color], +{bonus}"
+description = "(die_6) -> Multiply your [color=blue]shields[/color] by {factor}, +{bonus}"
 rarity = 2
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

@@ -74,3 +74,16 @@ func test_capped_tiles_still_roll_so_seeded_maps_keep_their_stream() -> void:
 	for i: int in range(_IN_DANGER, _SECTOR_SIZE - 1):
 		rng.randf()
 	assert_eq(after_pick, rng.state)
+
+
+func test_stray_corrupted_nodes_ahead_of_fate_zone_use_outskirt_background() -> void:
+	_map.fate_index = 1
+	_map._corrupt(1)
+	_map._corrupt(5)
+	assert_false(_map.is_stray_fate_slot(1), "inside the black hole's zone")
+	assert_true(_map.is_stray_fate_slot(5), "stray corrupted node ahead of the zone")
+
+	var in_zone_bg: Resource = _map.background_for_scenario(_map.scenario_list[1], 1)
+	var outskirt_bg: Resource = _map.background_for_scenario(_map.scenario_list[5], 5)
+	assert_eq(in_zone_bg, _map.scenario_list[1].background_resource)
+	assert_eq(outskirt_bg.resource_path, "res://Source/Resources/BackgroundResources/fate_outskirt.tres")

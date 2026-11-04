@@ -28,6 +28,8 @@ metadata/_custom_type_script = "uid://cn6juw5whtujy"
 script = ExtResource("script_0")
 base_action = ExtResource("act_relay")
 weight = 2.0
+min_amount = 4
+max_amount = 6
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
 
 [sub_resource type="Resource" id="Resource_opt2"]
@@ -110,7 +112,7 @@ max_health = 28
 action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0"), SubResource("Resource_pool1"), SubResource("Resource_pool2")])
 pool_selection = 2
 ship_graphics_scene = ExtResource("gfx")
-dialogue_offset = Vector2(0, -20)
+dialogue_offset = Vector2(0, -6)
 targeting_computer_image = ExtResource("tex")
 health_bar_position = Vector2(0, -27)
 dice_queue_position = Vector2(14, 26)

@@ -1,6 +1,8 @@
 class_name EnemyDialogueManager
 extends Node2D
 
+const _TOP_SCREEN_MARGIN: float = 4.0
+
 const _TEXT_BLIP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/text_blip.tres")
 
 ## A line has started showing, fresh or replayed. The targeting computer's
@@ -110,6 +112,7 @@ var _out: bool = false
 
 
 func _ready() -> void:
+	add_to_group(&"enemy_dialogue_boxes")
 	fadeout_timer = Timer.new()
 	fadeout_timer.one_shot = true
 	fadeout_timer.timeout.connect(_on_line_ran_out)
@@ -312,7 +315,7 @@ func _set_fold(travel: float, shrink: float) -> void:
 ## [member stow_point]. It's the box's middle that travels, so it shrinks
 ## toward its middle rather than toward the ship it hangs off.
 func _place() -> void:
-	var rest: Vector2 = Vector2((anchor.x + _shift) * (-1.0 if points_left else 1.0), anchor.y)
+	var rest: Vector2 = _separated_rest(Vector2((anchor.x + _shift) * (-1.0 if points_left else 1.0), anchor.y))
 	if is_zero_approx(_travel) and is_zero_approx(_shrink):
 		scale = Vector2.ONE
 		position = rest
@@ -402,3 +405,51 @@ func _set_text(text: String) -> void:
 		"[wave amp=2.0 freq=2.0 connected=0]" + \
 		text + \
 		"[/wave]"
+
+
+func _process(_delta: float) -> void:
+	if _out:
+		_place()
+
+
+## Earlier ships keep their place; later ships choose the nearest free row.
+## Considering every occupied edge at once avoids bubbles pushing each other
+## back and forth as a formation slides or a new line unfolds.
+func _separated_rest(rest: Vector2) -> Vector2:
+	var parent: Node2D = get_parent() as Node2D
+	if parent == null:
+		return rest
+	var box: Sprite2D = %Sprite2D
+	var half: Vector2 = box.texture.get_size() * 0.5
+	var center: Vector2 = parent.to_global(rest + box.position)
+	var low: Vector2 = half + Vector2(4, 4)
+	var high: Vector2 = Globals.SCREEN_SIZE - low
+	center = center.clamp(low, high)
+	var occupied: Array[Rect2] = []
+	var rows: Array[float] = [center.y]
+	for node: Node in get_tree().get_nodes_in_group(&"enemy_dialogue_boxes"):
+		var other: EnemyDialogueManager = node as EnemyDialogueManager
+		if other == self or not other._out or not other.visible \
+			or other.get_instance_id() > get_instance_id() or other._travel > 0.1:
+			continue
+		var other_box: Sprite2D = other.get_node("Sprite2D")
+		var rect: Rect2 = Rect2(other_box.global_position - other_box.texture.get_size() * 0.5,
+			other_box.texture.get_size()).grow(2.0)
+		if center.x + half.x <= rect.position.x or center.x - half.x >= rect.end.x:
+			continue
+		occupied.append(rect)
+		rows.append(clampf(rect.position.y - half.y - 1.0, low.y, high.y))
+		rows.append(clampf(rect.end.y + half.y + 1.0, low.y, high.y))
+	var best_y: float = center.y
+	var best_score: float = INF
+	for row: float in rows:
+		var candidate: Rect2 = Rect2(Vector2(center.x, row) - half, half * 2.0)
+		var score: float = absf(row - center.y)
+		for rect: Rect2 in occupied:
+			if candidate.intersects(rect):
+				score += 1000.0
+		if score < best_score:
+			best_y = row
+			best_score = score
+	center.y = best_y
+	return parent.to_local(center) - box.position

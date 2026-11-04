@@ -29,6 +29,15 @@ import sys
 import tempfile
 from pathlib import Path
 
+# Auto-discover Pillow from project-local .venv if running sandboxed
+_root = Path(__file__).resolve().parent.parent
+for _cand in [
+    _root / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages",
+    _root / ".venv" / "lib" / "python3.9" / "site-packages",
+]:
+    if _cand.exists() and str(_cand) not in sys.path:
+        sys.path.insert(0, str(_cand))
+
 try:
     from PIL import Image
 except ImportError:

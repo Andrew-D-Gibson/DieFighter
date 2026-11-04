@@ -120,15 +120,16 @@ func _build() -> void:
 	gap.custom_minimum_size = Vector2(0, 2)
 	gap.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	lines.add_child(gap)
-	lines.add_child(_build_close_button())
+	if wait_for_close:
+		lines.add_child(_build_close_button())
 
 	# Centred on the card's origin, so scaling it shrinks toward its middle.
 	_panel.reset_size()
 	_panel.position = -(_panel.size / 2.0).round()
 
 
-## The project's small button, in the tutorial card's blue. Shown on every
-## card, so a returning player can skip the hold too.
+## First discoveries wait for this button; repeat visits fold on their timer
+## or a click anywhere on the card.
 func _build_close_button() -> Button:
 	var button: Button = _BUTTON_SCENE.instantiate()
 	var face: AtlasTexture = AtlasTexture.new()
@@ -199,7 +200,8 @@ func _fold() -> void:
 	# The cockpit is the player's again as soon as the card starts to leave.
 	_dim.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_close_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	if is_instance_valid(_close_button):
+		_close_button.mouse_filter = Control.MOUSE_FILTER_IGNORE
 
 	var tween: Tween = create_tween().set_parallel()
 	# Slow to start, fast to finish: it gets sucked in rather than drifting.

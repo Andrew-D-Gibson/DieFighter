@@ -54,14 +54,6 @@ amount = 18
 color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_juice_2"]
-script = ExtResource("script_3")
-category = 4
-subtype = 16
-callout = "+{amount}"
-color = Color(0.2627, 0.651, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_step8"]
 script = ExtResource("script_3")
 category = 1
@@ -86,7 +78,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_cond_a"]
 script = ExtResource("4_sxh30")
-if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_stream_a"), SubResource("Resource_spend_a"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_step8")])
+if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step3"), SubResource("Resource_stream_a"), SubResource("Resource_spend_a"), SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_juice_1"), SubResource("Resource_step8")])
 category = 7
 subtype = 11
 amount = 2
@@ -142,14 +134,6 @@ amount = 18
 color = Color(0.2627, 0.651, 0.9882, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_juice_4"]
-script = ExtResource("script_3")
-category = 4
-subtype = 16
-callout = "+{amount}"
-color = Color(0.2627, 0.651, 0.9882, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_step16"]
 script = ExtResource("script_3")
 category = 1
@@ -174,7 +158,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_cond_b"]
 script = ExtResource("4_sxh30")
-if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step11"), SubResource("Resource_stream_b"), SubResource("Resource_spend_b"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_juice_3"), SubResource("Resource_juice_4"), SubResource("Resource_step16")])
+if_true_effects = Array[ExtResource("script_3")]([SubResource("Resource_step11"), SubResource("Resource_stream_b"), SubResource("Resource_spend_b"), SubResource("Resource_step12"), SubResource("Resource_step13"), SubResource("Resource_step14"), SubResource("Resource_step15"), SubResource("Resource_juice_3"), SubResource("Resource_step16")])
 category = 7
 subtype = 11
 amount = 2
@@ -205,7 +189,7 @@ animations = [{
 script = ExtResource("script_0")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Counterweight Battery[/color]"
-description = "[color=yellow]Enemy turn ends[/color] -> Spend [color=purple]{cost} charge[/color]: Gain [color=blue]{shields} shields[/color]"
+description = "[color=yellow]Enemy turn ends[/color] -> Spend [color=purple]{cost} engine charge[/color]: Gain [color=blue]{shields} shields[/color]"
 rarity = 1
 textures = SubResource("Resource_frames2")
 uses_per_turn = -1

@@ -91,6 +91,7 @@ static var _inline_icons: Dictionary = {
 	'(die_6)': [dice_image_paths[6], _DIE_ICON_HEIGHT_EM],
 	'(fate)': [fate_image_path, _TILE_ICON_HEIGHT_EM],
 	'(left_mouse)': [mouse_indicator_path, _TILE_ICON_HEIGHT_EM],
+	'(right_mouse)': ["res://Assets/Textures/UI/InputPrompts/mouse_right.png", _TILE_ICON_HEIGHT_EM],
 	'(attack_indicator)': [attack_indicator_path, _SMALL_ICON_HEIGHT_EM],
 	'(fate_scenario)': [fate_scenario_image_path, _TILE_ICON_HEIGHT_EM],
 	'(targeting_arrows)': [targeting_arrows_image_path, _TILE_ICON_HEIGHT_EM],
@@ -129,6 +130,7 @@ static func format_text(text: String, hoverable_keywords: bool = false) -> Strin
 		var icon: Array = _inline_icons[token]
 		var region: String = (" region=" + icon[2]) if icon.size() > 2 else ""
 		var image: String = '[img height=%sem%s]%s[/img]' % [icon[1], region, icon[0]]
+		image = InputPrompts.render_token(token, image)
 		# A non-breaking space keeps the icon wrapping with the word before
 		# it. Alone on a line, an icon is shorter than the theme's tight
 		# line separation allows for, and overlaps the line above.

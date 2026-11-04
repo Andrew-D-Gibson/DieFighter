@@ -123,6 +123,52 @@ static func mouse_button_to_mask(button: MouseButton) -> int:
 	return 1 << (button - 1)
 
 
+## --- Focus scheme ---
+## The selection-icon scheme snaps the pointer onto on-screen targets rather than
+## gliding it. It reuses the same synthetic-mouse pipeline the rest of the game
+## consumes (a warped OS pointer plus a motion or button event the engine sees),
+## so hovering, clicks and drags all work unchanged on any screen. FocusSelection
+## drives these; they are the parts of the cursor the selection icon moves. No
+## acceleration or stick glide here: the icon jumps to a target.
+
+## Warps the pointer to [target] (kept in the frame) and hands the engine the
+## resulting motion event, with no relative nudge. Unlike update()'s eased
+## glide, the icon just lands.
+func focus_warp(target: Vector2) -> void:
+	var frame: Rect2 = frame_rect.call()
+	position = target.clamp(frame.position, frame.end - Vector2.ONE)
+	# Focus owns the pointer until a real mouse takes it, so a real-mouse motion
+	# between jumps mustn't re-seed the position from the OS pointer.
+	active = true
+	warp.call(position)
+	var motion: InputEventMouseMotion = InputEventMouseMotion.new()
+	motion.device = DEVICE_ID
+	motion.position = to_window.call() * position
+	motion.global_position = motion.position
+	motion.button_mask = _button_mask
+	# relative and velocity stay ZERO: a jump, not a slide the engine would feel
+	# as a drag off its start point.
+	send_event.call(motion)
+
+## A/B: press or release the synthetic left button where the pointer is. A press
+## then a release reads as one click on whatever sits under the warped icon.
+func press_left(pressed: bool) -> void:
+	_send_button(MOUSE_BUTTON_LEFT, pressed)
+
+## B: press or release the synthetic right button (also the "put a held die
+## back" the click-placement option uses).
+func press_right(pressed: bool) -> void:
+	_send_button(MOUSE_BUTTON_RIGHT, pressed)
+
+## Backs out of the topmost thing open, as the cursor scheme's cursor_back does:
+## a ui_cancel event, which the menus and InfoShower already answer.
+func cancel() -> void:
+	var event: InputEventAction = InputEventAction.new()
+	event.action = &"ui_cancel"
+	event.pressed = true
+	send_event.call(event)
+
+
 ## --- Internals ---
 
 ## Where the stick and d-pad point, as a speed fraction: a gentle tilt goes

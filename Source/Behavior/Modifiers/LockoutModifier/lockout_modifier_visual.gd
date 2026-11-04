@@ -23,6 +23,10 @@ const _SLAM_SCALE: float = 2.4
 var _host: Node2D
 var _face_age: float = 0.0
 var _released: bool = false
+var _settled: bool = false
+var _age: float = 0.0
+var _keyword: RichTextLabel
+var _tooltip: PanelContainer
 
 
 func configure(host: Node2D) -> void:
@@ -30,12 +34,21 @@ func configure(host: Node2D) -> void:
 
 
 func _ready() -> void:
+	_build_keyword()
 	_slam_in()
 
 
 func _process(delta: float) -> void:
 	if _released:
 		return
+	_age += delta
+	if _settled:
+		_sprite.position.y = sin(_age * 2.4) * 1.2
+	queue_redraw()
+	if is_instance_valid(_tooltip) and _tooltip.visible:
+		var viewport_size: Vector2 = get_viewport_rect().size
+		_tooltip.position = (get_viewport().get_mouse_position() + Vector2(24, 24)).clamp(
+			Vector2(12, 12), viewport_size - _tooltip.size - Vector2(12, 12))
 	_face_age += delta
 	if _face_age >= _FACE_SECONDS:
 		_face_age -= _FACE_SECONDS
@@ -57,6 +70,9 @@ func release() -> void:
 	if _released:
 		return
 	_released = true
+	_keyword.hide()
+	_tooltip.hide()
+	queue_redraw()
 	_sprite.rotation = 0.0
 	Juice.sparkle(get_parent(), global_position, Globals.yellow, 12, 55.0, true)
 	Juice.ring(get_parent(), global_position, Globals.yellow, 4.0, 0.3, 16.0)
@@ -101,6 +117,7 @@ func _land() -> void:
 	var tween: Tween = create_tween()
 	tween.tween_property(_sprite, ^"scale", Vector2.ONE, 0.25) \
 			.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_callback(func() -> void: _settled = true)
 
 
 ## Brightens the lock past white for a moment, then back.
@@ -108,3 +125,54 @@ func _flash(peak: Color) -> void:
 	var tween: Tween = create_tween()
 	_sprite.self_modulate = peak
 	tween.tween_property(_sprite, ^"self_modulate", Color.WHITE, 0.18)
+
+
+func _build_keyword() -> void:
+	_keyword = RichTextLabel.new()
+	_keyword.name = "LockedKeyword"
+	_keyword.position = Vector2(-12, 11)
+	_keyword.size = Vector2(24, 7)
+	_keyword.bbcode_enabled = true
+	_keyword.fit_content = true
+	_keyword.scroll_active = false
+	_keyword.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_keyword.text = Utils.format_text("[color=orange][u]%s[/u][/color]" % Keywords.title("locked").to_upper())
+	_keyword.mouse_filter = Control.MOUSE_FILTER_STOP
+	add_child(_keyword)
+	var layer: CanvasLayer = CanvasLayer.new()
+	layer.layer = 90
+	add_child(layer)
+	_tooltip = PanelContainer.new()
+	_tooltip.name = "LockedTooltip"
+	_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = Color("0f0c2e")
+	style.set_content_margin_all(18)
+	_tooltip.add_theme_stylebox_override("panel", style)
+	layer.add_child(_tooltip)
+	var rule: RichTextLabel = RichTextLabel.new()
+	rule.theme_type_variation = FontRoles.slot(FontRoles.SMALL, 6.0)
+	rule.custom_minimum_size.x = 480
+	rule.bbcode_enabled = true
+	rule.fit_content = true
+	rule.scroll_active = false
+	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	rule.text = Utils.format_text("[color=orange]%s[/color]: %s" % [
+		Keywords.title("locked"), Keywords.definition("locked")])
+	_tooltip.add_child(rule)
+	_tooltip.hide()
+	_keyword.mouse_entered.connect(_tooltip.show)
+	_keyword.mouse_exited.connect(_tooltip.hide)
+
+
+## Low, slow wisps make a persistent lock readable without hiding its die faces.
+func _draw() -> void:
+	if _released or not _settled:
+		return
+	for i: int in 6:
+		var phase: float = fposmod(_age * 0.35 + float(i) / 6.0, 1.0)
+		var side: float = -1.0 if i % 2 == 0 else 1.0
+		var point: Vector2 = Vector2(side * (10.0 + sin(phase * TAU) * 1.5), 8.0 - phase * 20.0)
+		var color: Color = _MID
+		color.a = sin(phase * PI) * 0.55
+		draw_circle(point, 0.6, color)

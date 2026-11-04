@@ -11,7 +11,7 @@ extends Node
 @export var breakdown_kinds: Array[CaravanShipKind]
 ## Only ships this big break down, which keeps it to the open middle of the
 ## screen.
-@export var breakdown_depths: Vector2 = Vector2(0.52, 0.66)
+@export var breakdown_depths: Vector2 = Vector2(0.36, 0.52)
 ## Seconds after the menu opens before the first breakdown, picked from this
 ## range.
 @export var first_delay: Vector2 = Vector2(12.0, 20.0)
@@ -19,14 +19,14 @@ extends Node
 @export var repeat_delay: Vector2 = Vector2(50.0, 100.0)
 ## How far a broken-down ship drifts out of the column, in pixels: into the
 ## open space beside it, where it can be seen.
-@export var drift: Vector2 = Vector2(-30.0, -16.0)
+@export var drift: Vector2 = Vector2(-22.0, 14.0)
 ## How much bigger it gets as it drifts: everyone else, the player included,
 ## is still flying, so it falls back toward them.
 @export var drift_growth: float = 1.1
 ## The fleet's wake, where the raider comes from and drags its prize: off the
 ## bottom of the screen, toward Fate. In the caravan's space.
 @export var wake: Vector2 = Vector2(80.0, 228.0)
-@export var wake_depth: float = 1.1
+@export var wake_depth: float = 0.7
 
 @export_group("Look")
 @export var bolt_color: Color = Color("#D03656")

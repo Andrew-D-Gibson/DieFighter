@@ -56,3 +56,21 @@ func test_coming_up_short_tells_the_scenario() -> void:
 func test_the_new_scenario_event_was_appended() -> void:
 	# Authored transition dictionaries store these as raw ints.
 	assert_eq(ScenarioManager.ScenarioEvent.PLAYER_COULDNT_PAY, 10)
+
+
+func test_loss_coin_spawns_particles_on_reaching_thief() -> void:
+	var thief := Node2D.new()
+	add_child_autofree(thief)
+	var particle_scene: PackedScene = preload("res://Source/Systems/Game/MoneyParticles/money_particle.tscn")
+	var coin: MoneyParticle = particle_scene.instantiate()
+	coin.amount = MoneyParticle.money_amount.SMALL
+	coin._leaving = true
+	coin._destination = thief
+	thief.add_child(coin)
+	coin._on_reached_destination()
+	var particle_burst: Node = null
+	for child: Node in thief.get_children():
+		if child is CPUParticles2D:
+			particle_burst = child
+			break
+	assert_not_null(particle_burst, "spawns CPUParticles2D on arrival at destination")
