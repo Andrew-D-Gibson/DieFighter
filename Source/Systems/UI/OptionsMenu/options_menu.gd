@@ -352,7 +352,10 @@ func _build_panel() -> void:
 			_pages[tab].append(page)
 			# Rewrapped labels (a language or font change) change the height.
 			page.minimum_size_changed.connect(_fit_scroll.bind(scroll, page))
-			_fit_scroll.call_deferred(scroll, page)
+	# Deferred through the menu, not the static _fit_scroll: a menu freed in the
+	# frame it was built (a test, a scene swap) takes the call with it, rather
+	# than leaving it to run on freed pages.
+	_fit_all_scrolls.call_deferred()
 
 	_hint_label = RichTextLabel.new()
 	_hint_label.fit_content = false
@@ -570,6 +573,12 @@ func _preview_sfx_volume() -> void:
 		return
 	_last_sfx_preview_msec = now
 	Events.play_sound.emit(_SFX_PREVIEW)
+
+
+func _fit_all_scrolls() -> void:
+	for tab: Tab in _pages:
+		for i: int in _pages[tab].size():
+			_fit_scroll(_page_scrolls[tab][i], _pages[tab][i])
 
 
 ## Scrolls [param page] only if it overflows by more than _SCROLL_SLACK.
