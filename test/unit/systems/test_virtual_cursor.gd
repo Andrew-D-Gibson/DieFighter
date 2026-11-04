@@ -261,7 +261,14 @@ func test_the_drawn_cursor_follows_the_steering_pointer() -> void:
 	var live: VirtualCursor = InputManager.cursor
 	var root: Viewport = get_tree().root
 	assert_false(live.active, "nobody is holding a controller in the test run")
-	assert_eq(InputManager.pointer_position(root), root.get_mouse_position())
+	# Without a controller it's the mouse: wherever the last mouse event put it.
+	var motion: InputEventMouseMotion = InputEventMouseMotion.new()
+	var at: Vector2 = Vector2(300, 200)
+	motion.position = root.get_final_transform() * at
+	motion.global_position = motion.position
+	Input.parse_input_event(motion)
+	Input.flush_buffered_events()
+	assert_almost_eq(InputManager.pointer_position(root), at, Vector2(0.01, 0.01))
 	live.active = true
 	live.position = Vector2(123, 45)
 	assert_eq(InputManager.pointer_position(root), Vector2(123, 45))

@@ -329,7 +329,7 @@ func _process(_delta: float) -> void:
 				dice_manager.add(die, true, false)
 			
 			var dice_queue_mouse_pos: Vector2 = \
-				get_global_mouse_position() \
+				InputManager.pointer_global_position(self) \
 				- dice_manager.global_position \
 				+ Vector2(6, 0)
 			

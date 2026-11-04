@@ -30,6 +30,13 @@ var focus_selection: FocusSelection = FocusSelection.new()
 ## today's until FocusSelection is wired in (see _process, below).
 var control_scheme: InputBindings.ControlScheme = InputBindings.ControlScheme.CURSOR
 
+## Where the last mouse event put the pointer, in the root viewport's
+## coordinates. Read instead of Viewport.get_mouse_position(), which in a real
+## window asks the OS and so never sees injected events (tests, the MCP
+## bridge). For a player they're the same: every OS move arrives as an event.
+var _mouse_position: Vector2 = Vector2.ZERO
+var _has_mouse_position: bool = false
+
 var _listen_action: StringName = &""
 var _listen_kind: int = _NOT_LISTENING
 ## Real time, not the game's: hitstop sets Engine.time_scale to 0 and the
@@ -45,6 +52,9 @@ func _ready() -> void:
 	# is shared; it's inactive until a scheme turns it on.
 	add_child(focus_selection)
 	focus_selection.attach(cursor, get_viewport())
+	# window_input comes before any node's _input, so even nodes that hear an
+	# event ahead of this autoload read the pointer it carries.
+	get_window().window_input.connect(_track_mouse)
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	OptionsSettings.option_changed.connect(_on_prompt_option_changed)
 	_last_tick_usec = Time.get_ticks_usec()
@@ -109,9 +119,26 @@ func _unhandled_input(event: InputEvent) -> void:
 ## has been warped there; the drawn cursor asks this so it keeps up even
 ## where a platform won't warp.
 func pointer_position(viewport: Viewport) -> Vector2:
-	if cursor.active and viewport == get_viewport():
-		return cursor.position
+	if viewport == get_viewport():
+		if cursor.active:
+			return cursor.position
+		if _has_mouse_position:
+			return _mouse_position
 	return viewport.get_mouse_position()
+
+
+## [method pointer_position] in [param item]'s canvas: what
+## get_global_mouse_position() would give, but for the same pointer.
+func pointer_global_position(item: CanvasItem) -> Vector2:
+	return item.get_canvas_transform().affine_inverse() * pointer_position(item.get_viewport())
+
+
+## window_input carries window pixels; nodes get them after the stretch.
+func _track_mouse(event: InputEvent) -> void:
+	var mouse: InputEventMouse = event as InputEventMouse
+	if mouse:
+		_mouse_position = get_window().get_final_transform().affine_inverse() * mouse.position
+		_has_mouse_position = true
 
 
 ## --- Rebinding ---

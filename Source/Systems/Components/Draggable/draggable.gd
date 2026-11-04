@@ -122,12 +122,12 @@ func _process(delta: float) -> void:
 						
 	# Handle moving the object with the mouse
 	if state == DragState.DRAGGING:
-		get_parent().global_position = lerp(global_position, get_global_mouse_position(), follow_strength * delta)
+		get_parent().global_position = lerp(global_position, InputManager.pointer_global_position(self), follow_strength * delta)
 		
 		# Handle dropping this object if the mouse is no longer down. A
 		# carried one waits for the next click instead.
 		if not _carried and not Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-			_end_drag(get_global_mouse_position())
+			_end_drag(InputManager.pointer_global_position(self))
 		return
 	
 	if _announce_arrival \
@@ -304,7 +304,7 @@ func is_over_info_spot() -> bool:
 	var clickable: Clickable = _parent_clickable()
 	if not clickable:
 		return false
-	var pointer: Vector2 = get_canvas_transform().affine_inverse() * InputManager.pointer_position(get_viewport())
+	var pointer: Vector2 = InputManager.pointer_global_position(self)
 	return pointer.distance_to(_picked_up_at) <= clickable.click_movement_radius
 
 

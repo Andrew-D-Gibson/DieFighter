@@ -39,10 +39,10 @@ func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> voi
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			click_time_remaining = click_time_window
-			click_down_location = get_global_mouse_position()
+			click_down_location = InputManager.pointer_global_position(self)
 			
 		elif click_time_remaining > 0 \
-		and click_down_location.distance_to(get_global_mouse_position()) <= click_movement_radius \
+		and click_down_location.distance_to(InputManager.pointer_global_position(self)) <= click_movement_radius \
 		and not _lifted_by_click():
 			clicked.emit()
 

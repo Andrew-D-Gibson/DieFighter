@@ -32,7 +32,7 @@ func _show_info(info: InfoResource) -> void:
 	ColorSymbolBadge.attach_to_rect(%TweenableTextureDisplay)
 	%TweenableTextureDisplay.hide()
 
-	var starting_pos: Vector2 = get_global_mouse_position()
+	var starting_pos: Vector2 = InputManager.pointer_global_position(self)
 	# Where the art lands depends on the layout just picked, which the
 	# containers only settle at the end of this frame.
 	await get_tree().process_frame

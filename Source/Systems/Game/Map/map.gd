@@ -949,7 +949,7 @@ func _corrupt(idx: int) -> void:
 
 func jump(desired_scenario_index: int) -> void:
 	if not can_jump():
-		Events.error_text_popup.emit(tr("ERROR_NO_ESCAPE"), get_global_mouse_position())
+		Events.error_text_popup.emit(tr("ERROR_NO_ESCAPE"), InputManager.pointer_global_position(self))
 		return
 	# Bound the target scenarios to within the map
 	# e.g. moving "off the map" just moves you to the farthest possible sector
