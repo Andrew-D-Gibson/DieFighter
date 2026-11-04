@@ -38,7 +38,7 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	if stacks <= 0:
 		return
 	if is_on_player():
-		_jam_tile(event, engine)
+		await _jam_tile(event, engine)
 		return
 	if event is not EnemyActionEvent:
 		return
@@ -63,6 +63,9 @@ func _jam_tile(event: EffectEvent, engine: ScenarioEngine) -> void:
 	if not activation.tile.activation_refusal(activation.activator_die as Dice).is_empty():
 		return
 
+	await play_player_alert(activation.tile)
+	if stacks <= 0 or not is_instance_valid(activation.tile) or not is_instance_valid(activation.activator_die):
+		return
 	activation.canceled = true
 	var jam: JammedTileEvent = JammedTileEvent.new()
 	jam.actor = affected_node
@@ -70,7 +73,6 @@ func _jam_tile(event: EffectEvent, engine: ScenarioEngine) -> void:
 	jam.activator_die = activation.activator_die
 	jam.die_value = activation.die_value
 	engine.inject_event(jam)
-	announce_triggered_at(activation.tile)
 	consume(SPENT_PER_DIE)
 
 

@@ -124,7 +124,6 @@ func test_each_side_ticks_on_its_own_call() -> void:
 	assert_eq(my_burn.stacks, 2, "not the player's")
 
 	engine.tick_statuses(true)
-	assert_eq(my_burn.stacks, 1, "the enemy turn ends: the player's ticks")
 	assert_eq(their_burn.stacks, 2)
 
 	var hits: Array[EffectEvent] = engine.injected_of(DamageEvent)
@@ -132,6 +131,12 @@ func test_each_side_ticks_on_its_own_call() -> void:
 	assert_eq(hits[1].targets, [player] as Array[Node])
 	assert_eq(hits[1].amount, 2)
 	assert_null(hits[1].effect_source, "the fire is no one's hit, so Exposed ignores it")
+
+	assert_eq(my_burn.stacks, 2, "the player's badge shows what's about to burn until the hit lands")
+	await my_burn.on_before_event(hits[1], engine)
+	assert_eq(my_burn.stacks, 1, "the enemy turn ends: the player's ticks")
+	await my_burn.on_before_event(hits[1], engine)
+	assert_eq(my_burn.stacks, 1, "one tick burns down once")
 
 
 func test_the_players_statuses_end_with_the_fight() -> void:

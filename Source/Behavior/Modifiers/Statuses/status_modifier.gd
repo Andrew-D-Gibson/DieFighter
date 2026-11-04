@@ -34,6 +34,10 @@ extends Modifier
 
 const _BADGE_SCENE: PackedScene = preload("res://Source/Behavior/Modifiers/Statuses/StatusBadge/status_badge.tscn")
 
+## In play_player_alert(), how long the status's name holds the screen after
+## its badge has flashed, before what the status does lands.
+const _ALERT_READ_SECONDS: float = 0.35
+
 ## The file that describes this status. Set by StatusCatalog.create() (via
 ## StatusResource.create_modifier()); a status built bare, as some tests do,
 ## has none and shows nothing.
@@ -129,6 +133,10 @@ func announce_triggered() -> void:
 ## on that tile, where the player is looking, not on the health bar.
 func announce_triggered_at(anchor: Node2D) -> void:
 	super.announce_triggered()
+	# The player's badges sit apart from the health bar and the tiles they
+	# act on; the flash ties what just happened back to the badge.
+	if is_on_player() and is_instance_valid(_badge):
+		_badge.play_alert()
 	if not is_instance_valid(anchor):
 		return
 	var tint: Color = get_trigger_color()
@@ -136,6 +144,32 @@ func announce_triggered_at(anchor: Node2D) -> void:
 		(anchor as Enemy).graphics_manager.flash(tint, 0.3)
 	Juice.sparkle(anchor, Juice.anchor_of(anchor), tint, 8, 35.0)
 	Juice.callout(anchor, get_trigger_text(), tint)
+
+
+## The beat before a status acts on the player: its badge flashes, its name
+## pops up (off [param anchor], a tile it acts on, or off the badge), and only
+## then does what it does land, so the player sees which of their statuses is
+## the cause. A hook awaits this, which holds the event it hooks. Without a
+## live engine to pace (a unit test's bare one) it just announces.
+func play_player_alert(anchor: Node2D = null) -> void:
+	if not _paces_alerts():
+		announce_triggered_at(anchor if anchor else host())
+		return
+	var tree: SceneTree = _host_engine.get_tree()
+	_badge.play_alert()
+	await tree.create_timer(StatusBadge.alert_seconds(), false).timeout
+
+	super.announce_triggered()
+	var tint: Color = get_trigger_color()
+	var text: String = display_name().to_upper()
+	if is_instance_valid(anchor):
+		Juice.sparkle(anchor, Juice.anchor_of(anchor), tint, 8, 35.0)
+		Juice.callout(anchor, text, tint)
+	elif is_instance_valid(_badge):
+		var bar: Node = _badge.get_parent()
+		Juice.sparkle(bar, _badge.global_position, tint, 8, 35.0)
+		Juice.callout_at(bar, _badge.global_position, text, tint)
+	await tree.create_timer(_ALERT_READ_SECONDS / Globals.animation_speed, false).timeout
 
 
 func get_trigger_text() -> String:
@@ -209,6 +243,13 @@ func _spawn_visual() -> void:
 func _refresh_badge(pulse: bool) -> void:
 	if is_instance_valid(_badge):
 		_badge.set_stacks(stacks, pulse)
+
+
+## Whether play_player_alert() can hold the game for its beat: a status on
+## the player, with its badge up, in a scenario that is being played.
+func _paces_alerts() -> bool:
+	return is_on_player() and is_instance_valid(_badge) and _badge.is_inside_tree() \
+		and is_instance_valid(_host_engine) and _host_engine.is_inside_tree()
 
 
 func _find_status_bar() -> StatusBar:

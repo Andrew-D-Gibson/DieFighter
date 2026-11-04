@@ -21,6 +21,10 @@ const PixelButton: GDScript = preload("res://Source/Systems/UI/Buttons/button.gd
 const _FORMATION_KEY: StringName = &"repair_station"
 const _FORMATION_PADDING: float = 6.0
 
+## Where a repair's "+15" starts, from the hull readout: above its ring,
+## where hits on the player print too.
+const _REPAIR_CALLOUT_OFFSET: Vector2 = Vector2(0.0, -16.0)
+
 @export_category("Repairs")
 ## Hull restored per repair. Under a fifth of the starting 80: enough that one
 ## repair is worth a stop, small enough that a full patch-up takes several.
@@ -338,9 +342,16 @@ func _refuse(text: String, at: Vector2) -> void:
 func _play_repair_feedback(healed: int) -> void:
 	Events.play_sound.emit(_MONEY_SFX)
 	if Globals.player.is_inside_tree():
-		var anchor: Vector2 = Globals.player.get_juice_anchor()
-		Juice.sparkle(self, anchor, Globals.green, 10, 40.0, true)
-		Juice.callout_at(self, anchor, "+" + str(healed), Globals.green)
+		# Red, the hull's own colour, and a size up like a hit on the player:
+		# the hull bar is what changed, and the player paid for it. Drawn
+		# with the player's HUD rather than this panel, which sits under it,
+		# and the number starts above the red ring so it doesn't sink into it.
+		var anchor: Vector2 = Globals.player.get_hull_anchor()
+		Juice.sparkle(Globals.player, anchor, Globals.red, 32, 140.0)
+		Juice.sparkle(Globals.player, anchor, Globals.red, 12, 50.0, true)
+		Juice.ring(Globals.player, anchor, Globals.red, 28.0)
+		Juice.callout_at(Globals.player.get_parent(), anchor + _REPAIR_CALLOUT_OFFSET,
+			"+" + str(healed), Globals.red, true)
 	if repair_button:
 		Juice.ring(self, repair_button.global_position + repair_button.size / 2.0, Globals.green, 18.0)
 

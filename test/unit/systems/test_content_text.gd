@@ -8,7 +8,7 @@ const FATES_CORRUPTION: String = "res://Source/Resources/BackgroundResources/Bac
 const SEIZE: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres"
 const DO_NOTHING: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres"
 const CONVOY_HAULER_BETRAYED: String = "res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/hauler_betrayed.tres"
-const SEIZE_CALLOUT_KEY: String = "ENEMY_ACTION.SEIZE.EFFECT_CHAIN.EFFECTS_5.CALLOUT"
+const SEIZE_CALLOUT_KEY: String = "ENEMY_ACTION.SEIZE.EFFECT_CHAIN.EFFECTS_4.CALLOUT"
 const RENAMED_DIR: String = "user://test_content_text"
 
 

@@ -39,11 +39,13 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 	var die: Node = activation.activator_die
 	if not is_instance_valid(die) or _frozen(engine):
 		return
+	await play_player_alert(activation.tile)
+	if stacks <= 0 or not is_instance_valid(die):
+		return
 	die.value = 7 - die.value
 	activation.die_value = die.value
 	if die.has_method("play_pop"):
 		die.play_pop(0.5)
-	announce_triggered_at(activation.tile)
 	consume(SPENT_PER_DIE)
 
 
