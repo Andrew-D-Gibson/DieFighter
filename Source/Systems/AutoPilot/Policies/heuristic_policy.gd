@@ -876,7 +876,7 @@ func _reroll_gain(cost: int) -> float:
 			continue
 		var weight: float = RewardManager._RARITY_WEIGHTS.get(resource.rarity, 1.0)
 		total_weight += weight
-		var price: int = Shop.base_price(resource.rarity)
+		var price: int = Shop.sector_price(Shop.base_price(resource.rarity))
 		var net: float = 0.0
 		if price <= budget:
 			net = _offer_worth(_pool_stand_in(resource)) - price / _PRICE_PER_POINT
@@ -899,7 +899,7 @@ func _repair_fund() -> int:
 	var repairs: int = ceili(maxf(missing, 0.0) / maxf(1.0, float(station.hull_per_repair)))
 	var fund: int = 0
 	for i: int in repairs:
-		fund += station.base_repair_cost + station.repair_cost_growth * i
+		fund += Shop.sector_price(station.base_repair_cost + station.repair_cost_growth * i)
 	return fund
 
 

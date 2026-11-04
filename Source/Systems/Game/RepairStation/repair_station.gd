@@ -29,7 +29,8 @@ const _REPAIR_CALLOUT_OFFSET: Vector2 = Vector2(0.0, -16.0)
 ## Hull restored per repair. Under a fifth of the starting 80: enough that one
 ## repair is worth a stop, small enough that a full patch-up takes several.
 @export var hull_per_repair: int = 15
-## What the first repair at a station costs. Below the cheapest shop tile (10),
+## What the first repair at a station costs in the first sector (later
+## sectors raise it; see Shop.sector_price()). Below the cheapest shop tile (10),
 ## so even a thin wallet can buy one.
 @export var base_repair_cost: int = 10
 ## Added to the price after each repair at the same station, so topping off a
@@ -95,7 +96,7 @@ func _ready() -> void:
 # ── Economy ────────────────────────────────────────────────────────────────────
 
 func repair_cost() -> int:
-	return base_repair_cost + repair_cost_growth * repairs_bought
+	return Shop.sector_price(base_repair_cost + repair_cost_growth * repairs_bought)
 
 
 ## Hull the next repair would actually restore: the full amount, or what's
@@ -136,9 +137,10 @@ func repair() -> bool:
 	return true
 
 
-## What the station pays for a tile of [param resource]'s rarity.
+## What the station pays for a tile of [param resource]'s rarity: a share of
+## its shelf price in this sector, so selling keeps pace with buying.
 func sell_price(resource: TileResource) -> int:
-	return floori(Shop.base_price(resource.rarity) * sell_fraction)
+	return floori(Shop.sector_price(Shop.base_price(resource.rarity)) * sell_fraction)
 
 
 ## Why [param tile] can't be sold right now, or "" if it can.

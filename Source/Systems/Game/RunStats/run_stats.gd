@@ -10,6 +10,10 @@ var sectors_reached: int = 1
 var encounters_cleared: int = 0
 var ships_destroyed: int = 0
 var credits_earned: int = 0
+## Grid Slots installed this run, from shops and salvage. Not in the summary:
+## it's kept here because it travels with the run's other tallies, and the
+## shop prices the next slot by it (Shop.grid_slot_price()).
+var grid_slots_opened: int = 0
 
 ## Last seen money total, so credit *gains* can be separated from spending.
 var _last_money: int = 0
@@ -41,6 +45,7 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	encounters_cleared = game_save.run_stats.get("encounters_cleared", 0)
 	ships_destroyed = game_save.run_stats.get("ships_destroyed", 0)
 	credits_earned = game_save.run_stats.get("credits_earned", 0)
+	grid_slots_opened = game_save.run_stats.get("grid_slots_opened", 0)
 
 
 func get_state() -> Dictionary:
@@ -49,6 +54,7 @@ func get_state() -> Dictionary:
 		"encounters_cleared": encounters_cleared,
 		"ships_destroyed": ships_destroyed,
 		"credits_earned": credits_earned,
+		"grid_slots_opened": grid_slots_opened,
 	}
 
 

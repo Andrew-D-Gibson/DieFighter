@@ -110,9 +110,23 @@ amount = 80
 color = Color(0.4784, 0.7412, 0.2000, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_tax_amount"]
+script = ExtResource("script_3")
+category = 2
+amount = -1
+text_token = &"tax"
+text_token_value = "-amount"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_tax_die"]
+script = ExtResource("script_3")
+category = 3
+subtype = 16
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain13"]
 script = ExtResource("script_5")
-effects = Array[ExtResource("script_3")]([SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_juice_1"), SubResource("Resource_step12")])
+effects = Array[ExtResource("script_3")]([SubResource("Resource_step4"), SubResource("Resource_step5"), SubResource("Resource_step6"), SubResource("Resource_step7"), SubResource("Resource_step8"), SubResource("Resource_step9"), SubResource("Resource_step10"), SubResource("Resource_step11"), SubResource("Resource_juice_1"), SubResource("Resource_tax_amount"), SubResource("Resource_tax_die"), SubResource("Resource_step12")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [resource]
@@ -120,7 +134,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Signal Relay+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color]. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color]. Subtract {tax} from die. (feed_right)"
 textures = SubResource("Resource_frames3")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2")])

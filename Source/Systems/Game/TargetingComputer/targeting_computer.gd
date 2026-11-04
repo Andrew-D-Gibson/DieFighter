@@ -15,6 +15,7 @@ var intent_scale_tweens: Array[Tween] = []
 ## placed every frame from the ship's live position, so it rides along when the
 ## ship slides across to close a gap in the formation.
 const _INDICATOR_GLIDE_SECONDS: float = 0.3
+const _WEAKENED: StringName = &"weakened"
 const _INDICATOR_BOB_SECONDS: float = 1.5
 const _INDICATOR_BOB: Vector2 = Vector2(4, 4)
 
@@ -109,6 +110,11 @@ func _ready() -> void:
 	Events.player_turn_start.connect(func() -> void:
 		await get_tree().create_timer(0.5).timeout
 		_update_ui()
+	)
+	# Weakened changes the numbers the computer prints for that ship.
+	Events.status_applied_to_enemy.connect(func(ship: Enemy, status_id: StringName, _stacks: int) -> void:
+		if ship == targeted_enemy and status_id == _WEAKENED:
+			_update_ui()
 	)
 	Events.enemy_turn_over.connect(check_target_is_valid)	 # Update the computer with the new enemy intents
 	# A civilian turning hostile (or a raider standing down) recolours the
@@ -478,7 +484,7 @@ func _update_ui() -> void:
 				_intent(i).texture = targeted_enemy.turn_actions[i].indicator_texture
 				
 				# Set up the action amount text
-				_intent_amount(i).text = targeted_enemy.turn_actions[i].get_intent_amount_text()
+				_show_intent_amount(i, targeted_enemy, targeted_enemy.turn_actions[i])
 				_show_silenced(i, targeted_enemy.turn_actions[i].silenced_action != null)
 
 				# Change over the info on clicking this particular action indicator 
@@ -675,6 +681,29 @@ func _show_silenced(i: int, silenced: bool) -> void:
 ## Slot [param i]'s intent icon on the screen, and the parts hung off it.
 func _intent(i: int) -> Sprite2D:
 	return $Intents.get_child(i) as Sprite2D
+
+
+## Slot [param i]'s amount for [param action]. A weakened ship's hits print
+## what will actually land, in Weakened's purple, so the player never does
+## the quarter-off in their head.
+func _show_intent_amount(i: int, ship: Enemy, action: EnemyActionResource) -> void:
+	var label: RichTextLabel = _intent_amount(i)
+	label.text = action.get_intent_amount_text()
+	label.remove_theme_color_override("default_color")
+	if label.text.is_empty() or not action.deals_damage() or not _is_weakened(ship):
+		return
+	var weakened: int = WeakenedStatus.weakened(action.intent_amount)
+	if weakened != action.intent_amount:
+		label.text = str(weakened)
+		label.add_theme_color_override("default_color", Globals.purple)
+
+
+func _is_weakened(ship: Enemy) -> bool:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine == null:
+		return false
+	var status: StatusModifier = engine.find_status(ship, _WEAKENED)
+	return status != null and status.stacks > 0
 
 
 func _intent_amount(i: int) -> RichTextLabel:

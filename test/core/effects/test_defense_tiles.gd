@@ -373,7 +373,7 @@ func test_spending_hull_goes_past_the_shields_and_is_a_hull_hit() -> void:
 	Events.player_health_hit.disconnect(count_hit)
 	assert_eq(player.health.health, 27)
 	assert_eq(player.health.shields, 10, "the shields don't pay it")
-	assert_eq(hits[0], 1, "Spite Coil, Reactive Armor and Regenerative Brake hear it")
+	assert_eq(hits[0], 1, "Spite Coil and Regenerative Brake hear it")
 
 
 func test_spending_hull_is_no_attack_and_nothing_dodges_it() -> void:
@@ -391,20 +391,6 @@ func test_spending_hull_refuses_rather_than_kill() -> void:
 	await _land(_spend_hull(3))
 	assert_eq(player.health.health, 3)
 	assert_false(player.health.is_dead)
-
-# ── Counterweight Battery ─────────────────────────────────────────────────────
-
-## Plays [param tile_id]'s first event response into the recorder.
-func _respond(tile_id: String) -> Array[EffectEvent]:
-	recorder.injected.clear()
-	var tile: Tile = _tile(tile_id)
-	Globals.tile_grid.tile_locations[Vector2i(1, 1)] = tile
-	var context: EffectContext = EffectContext.new()
-	context.actor = player
-	context.effect_source = tile
-	var chain: EffectChain = tile.tile_resource.event_responses.values()[0]
-	await chain.play(context, recorder)
-	return recorder.injected.duplicate()
 
 # ── Heat Sink ─────────────────────────────────────────────────────────────────
 

@@ -61,9 +61,23 @@ category = 5
 subtype = 11
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_tax_amount"]
+script = ExtResource("script_effect")
+category = 2
+amount = -1
+text_token = &"tax"
+text_token_value = "-amount"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_tax_die"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 16
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain_6"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_2"), SubResource("Resource_step_3"), SubResource("Resource_juice_1"), SubResource("Resource_juice_2"), SubResource("Resource_juice_3"), SubResource("Resource_step_4"), SubResource("Resource_tax_amount"), SubResource("Resource_tax_die"), SubResource("Resource_step_5")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
@@ -100,7 +114,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=yellow]Booster Stage+[/color]"
-description = "[color=yellow]Any die[/color] -> Tile to the right gets +{boost} to effects this turn. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Tile to the right gets +{boost} to effects this turn. Subtract {tax} from die. (feed_right)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2

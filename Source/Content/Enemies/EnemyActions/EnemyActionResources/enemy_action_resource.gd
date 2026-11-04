@@ -82,6 +82,17 @@ func get_intent_amount_text() -> String:
 	return str(intent_amount) if intent_amount != 0 else ''
 
 
+
+## Whether the action's amount is a hit it lands (a cannon), rather than
+## shields, a status or a face. Weakened shrinks only those, so the targeting
+## computer asks this before showing a weakened ship's smaller number.
+func deals_damage() -> bool:
+	if not _derived.has(&"deals_damage"):
+		_derived[&"deals_damage"] = int(
+			_has_step(EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.DAMAGE)
+			or _has_step(EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.ION_DAMAGE))
+	return bool(_derived[&"deals_damage"])
+
 ## Read off the effect chain rather than authored, so it can't drift out of
 ## date with what the action actually does.
 func get_threat() -> Threat:

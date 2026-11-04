@@ -79,7 +79,7 @@ BUILDS = {
         "core": {
             "1,0": "chain_cannon", "2,0": "twin_barrel", "3,0": "deflector_array",
             "1,1": "damage", "2,1": "bump", "3,1": "shield",
-            "1,2": "reactive_armor", "2,2": "counterweight_battery", "3,2": "reroll",
+            "1,2": "spite_coil", "2,2": "deflector_array", "3,2": "reroll",
         },
         "full": {"0,0": "overshield_relay", "0,1": "damage", "4,1": "pulse_repeater"},
     },
@@ -126,8 +126,8 @@ BUILDS = {
                  "Fortress Protocol and Shield Siphon.",
         "core": {
             "1,0": "overshield_relay", "2,0": "deflector_array", "3,0": "shield",
-            "1,1": "ballast_tanks", "2,1": "damage", "3,1": "counterweight_battery",
-            "1,2": "discharge_plate", "2,2": "reactive_armor", "3,2": "bump",
+            "1,1": "ballast_tanks", "2,1": "damage", "3,1": "skeleton_crew",
+            "1,2": "discharge_plate", "2,2": "juke_thrusters", "3,2": "bump",
         },
         "full": {"0,1": "shield_siphon", "4,0": "fortress_protocol"},
     },
@@ -200,7 +200,7 @@ BUILDS = {
         "core": {
             "1,0": "crossed_wires", "2,0": "dampener", "3,0": "chaff_pod",
             "1,1": "polarizer", "2,1": "turncoat_cannon", "3,1": "cryo_lance",
-            "1,2": "grounding_rod", "2,2": "shield", "3,2": "reactive_armor",
+            "1,2": "grounding_rod", "2,2": "shield", "3,2": "deflector_array",
         },
         "full": {"0,0": "static_bloom", "0,1": "interdiction_net", "4,1": "counter_battery"},
     },
@@ -226,7 +226,7 @@ BUILDS = {
             "1,1": "amplifier", "2,1": "reloader", "3,1": "amplifier",
             "1,2": "damage", "2,2": "shield", "3,2": "chain_cannon",
         },
-        "full": {"0,0": "booster_stage", "0,1": "war_footing", "4,1": "reactive_armor"},
+        "full": {"0,0": "booster_stage", "0,1": "war_footing", "4,1": "regenerative_brake"},
     },
     "blood_pact": {
         "name": "Blood Pact",
@@ -236,7 +236,7 @@ BUILDS = {
         "core": {
             "1,0": "leeching_shot", "2,0": "damage", "3,0": "blood_valve",
             "1,1": "blowtorch", "2,1": "countermeasures", "3,1": "heat_sink",
-            "1,2": "bump", "2,2": "shield", "3,2": "reactive_armor",
+            "1,2": "bump", "2,2": "shield", "3,2": "deflector_array",
         },
         "full": {"0,0": "cinder_turbine", "4,1": "flashpoint", "4,2": "regenerative_brake"},
     },

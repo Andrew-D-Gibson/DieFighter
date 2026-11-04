@@ -28,8 +28,8 @@
         "1,1": "damage",
         "2,1": "bump",
         "3,1": "shield",
-        "1,2": "reactive_armor",
-        "2,2": "counterweight_battery",
+        "1,2": "spite_coil",
+        "2,2": "deflector_array",
         "3,2": "reroll"
       },
       "dice": 3
@@ -91,9 +91,9 @@
         "3,0": "shield",
         "1,1": "ballast_tanks",
         "2,1": "damage",
-        "3,1": "counterweight_battery",
+        "3,1": "skeleton_crew",
         "1,2": "discharge_plate",
-        "2,2": "reactive_armor",
+        "2,2": "juke_thrusters",
         "3,2": "bump"
       },
       "dice": 3
@@ -190,7 +190,7 @@
         "3,1": "cryo_lance",
         "1,2": "grounding_rod",
         "2,2": "shield",
-        "3,2": "reactive_armor"
+        "3,2": "deflector_array"
       },
       "dice": 3
     },
@@ -238,7 +238,7 @@
         "3,1": "heat_sink",
         "1,2": "bump",
         "2,2": "shield",
-        "3,2": "reactive_armor"
+        "3,2": "deflector_array"
       },
       "dice": 3
     }

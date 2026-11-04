@@ -75,7 +75,7 @@ var effect_data: Dictionary[String, int]
 ## True while the tile is shop stock or salvage on offer: shown, but not the
 ## player's yet. It takes no dice and ignores the game's events until
 ## TileGrid.receive_tile() installs it; without this, an unbought tile could
-## be played for free, and its passives (Counterweight Battery's shields)
+## be played for free, and its passives (Brownout Plating's shields)
 ## worked from the shelf.
 var on_offer: bool = false:
 	set(value):

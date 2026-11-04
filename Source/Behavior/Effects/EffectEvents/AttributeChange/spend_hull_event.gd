@@ -5,7 +5,7 @@ extends EffectEvent
 ## It comes straight off the hull, past the shields: the shields are there to
 ## stop enemies, and a price they could soak would be no price for a ship
 ## that turtles. It is still a hull hit (Health.change_health), so the tiles
-## that answer one (Spite Coil, Reactive Armor, Regenerative Brake) hear it.
+## that answer one (Spite Coil, Regenerative Brake) hear it.
 ## It isn't damage, though, so nothing that shapes or dodges a hit (Exposed,
 ## Phased, Double Damage, a death save) touches it.
 ##

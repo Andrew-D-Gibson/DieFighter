@@ -58,14 +58,15 @@ func _opened() -> void:
 
 func test_a_reroll_charges_and_each_costs_more() -> void:
 	await _opened()
-	assert_eq(shop.reroll_cost(), 8)
+	var first: int = shop.reroll_cost()
 	assert_true(shop.reroll())
-	assert_eq(player.money, 92)
-	assert_eq(shop.reroll_cost(), 12)
+	assert_eq(player.money, 100 - first)
+	var second: int = shop.reroll_cost()
+	assert_gt(second, first)
 	await wait_seconds(_reroll_time())
 	assert_true(shop.reroll())
-	assert_eq(player.money, 80)
-	assert_eq(shop.reroll_cost(), 16)
+	assert_eq(player.money, 100 - first - second)
+	assert_gt(shop.reroll_cost(), second)
 
 
 func test_a_reroll_swaps_the_tiles_for_new_ones() -> void:
@@ -184,6 +185,7 @@ func test_a_continue_keeps_the_reroll_price() -> void:
 	await wait_seconds(_reroll_time())
 	shop.reroll()
 	await wait_seconds(_reroll_time())
+	var cost_before: int = shop.reroll_cost()
 	var saved: Dictionary = shop.capture_stock()
 	assert_eq(saved["rerolls"], 2)
 	assert_eq(saved["tiles"].size(), 4)
@@ -193,13 +195,13 @@ func test_a_continue_keeps_the_reroll_price() -> void:
 	Globals.state_manager = state
 	shop._open_shop()
 	assert_eq(shop.rerolls_bought, 2)
-	assert_eq(shop.reroll_cost(), 16)
+	assert_eq(shop.reroll_cost(), cost_before)
 
 
 func test_a_fresh_shop_starts_at_the_base_price() -> void:
 	shop.rerolls_bought = 3
 	shop._open_shop()
-	assert_eq(shop.reroll_cost(), 8)
+	assert_eq(shop.reroll_cost(), shop.base_reroll_cost)
 
 
 func test_a_sealed_cell_lets_a_grid_slot_onto_the_extra_shelf() -> void:

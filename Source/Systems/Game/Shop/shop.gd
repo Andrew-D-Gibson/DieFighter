@@ -22,12 +22,13 @@ const PixelButton: GDScript = preload("res://Source/Systems/UI/Buttons/button.gd
 @export var reroll_button: PixelButton
 ## A coin sprite with a RichTextLabel child, as on the shelves.
 @export var reroll_price_tag: Node2D
-## What the first reroll at a shop costs: under the cheapest tile, so digging
-## for a build is a real option with a thin wallet.
-@export var base_reroll_cost: int = 8
-## Added after each reroll at the same shop (8, 12, 16, ...), so fishing for
-## one tile gets dear. The next shop starts cheap again.
-@export var reroll_cost_growth: int = 4
+## What the first reroll at a shop costs: about the cheapest tile, so digging
+## for one key tile is a real option with a thin wallet.
+@export var base_reroll_cost: int = 10
+## Each reroll at the same shop multiplies the price (10, 20, 40, 80, ...), so
+## a few digs are affordable but emptying the pool with a big bank isn't. The
+## next shop starts cheap again. Not raised by sector: doubling is the cap.
+@export var reroll_cost_multiplier: int = 2
 
 ## Rerolls bought at this shop. Drives the price, so the save keeps it
 ## (capture_stock()).
@@ -38,10 +39,19 @@ var rerolls_bought: int = 0
 ## opened it (a test) or it's gone.
 var keeper: Enemy = null
 
+## What the extra die costs in the first sector; see sector_price().
 const DICE_PRICE: int = 25
-## A cell to grow the grid by. Dearer than a tile: it's room for every tile
-## the run finds from here on.
+## What the first Grid Slot costs. Dearer than a tile: it's room for every
+## tile the run finds from here on.
 const GRID_SLOT_PRICE: int = 30
+## Added for each Grid Slot already opened this run (30, 45, 60, ...), from a
+## shop or salvage alike, so a full grid is a late-run reward rather than
+## something one big bank buys outright. Not raised by sector.
+const GRID_SLOT_PRICE_GROWTH: int = 15
+## How much dearer tiles, the die and repairs get with each sector, as a
+## share of the first sector's price. Rewards grow by sector, so flat prices
+## let credits banked early buy more and more.
+const SECTOR_PRICE_GROWTH: float = 0.25
 
 ## Holds the extra die or a Grid Slot, never both, which keeps the panel
 ## narrow enough to clear the credit readout and the shopkeeper's bubble.
@@ -400,7 +410,22 @@ func _get_randomized_price(rarity: TileResource.Rarity) -> int:
 	if not PRICE_RANGES.has(rarity):
 		return 0
 	var price_range: Vector2i = PRICE_RANGES[rarity]
-	return RNGManager.randi_range(RNGManager.Bucket.REWARDS, price_range.x, price_range.y)
+	return sector_price(RNGManager.randi_range(RNGManager.Bucket.REWARDS, price_range.x, price_range.y))
+
+
+## [param price] as charged in the current sector: SECTOR_PRICE_GROWTH more for
+## each sector past the first, rounded up. Outside a run (a test), as given.
+static func sector_price(price: int) -> int:
+	var sector: int = 0
+	if is_instance_valid(Globals.state_manager) and Globals.state_manager.current_game_save:
+		sector = Globals.state_manager.current_game_save.sector_index
+	return ceili(price * (1.0 + SECTOR_PRICE_GROWTH * sector))
+
+
+## What the next Grid Slot costs, given how many the run has opened.
+static func grid_slot_price() -> int:
+	var opened: int = Globals.run_stats.grid_slots_opened if Globals.run_stats else 0
+	return GRID_SLOT_PRICE + GRID_SLOT_PRICE_GROWTH * opened
 
 
 ## The middle of a rarity's shelf price, with no roll: what a tile of that
@@ -557,7 +582,7 @@ func _create_dice_buy_zone() -> void:
 	dice.draggable.drag_ended.connect(_on_shop_item_dragged)
 	
 	_stock(dice, _EXTRA_SHELF)
-	_set_price(dice, DICE_PRICE)
+	_set_price(dice, sector_price(DICE_PRICE))
 
 
 ## Shelves a Grid Slot while the grid has a sealed cell to open.
@@ -572,7 +597,7 @@ func _create_grid_slot_stock() -> void:
 	slot.draggable.drag_ended.connect(_on_shop_item_dragged)
 
 	_stock(slot, _EXTRA_SHELF)
-	_set_price(slot, GRID_SLOT_PRICE)
+	_set_price(slot, grid_slot_price())
 
 
 ## Shelves [param item] in [param shop_index]. An item can leave without being
@@ -634,7 +659,7 @@ func _take_payment(amount: int) -> void:
 # ── Rerolling ─────────────────────────────────────────────────────────────────
 
 func reroll_cost() -> int:
-	return base_reroll_cost + reroll_cost_growth * rerolls_bought
+	return base_reroll_cost * reroll_cost_multiplier ** rerolls_bought
 
 
 ## Whether the shelves are mid-swap: the old stock popping off, or the new

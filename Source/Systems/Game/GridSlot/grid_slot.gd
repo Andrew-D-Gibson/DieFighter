@@ -39,6 +39,8 @@ func _exit_tree() -> void:
 func install(cell: Vector2i) -> void:
 	var grid: TileGrid = Globals.tile_grid
 	grid.unlock_cell(cell, _INSTALL_SECONDS)
+	if Globals.run_stats:
+		Globals.run_stats.grid_slots_opened += 1
 	draggable.dragging_allowed = false
 	draggable.state = Draggable.DragState.MOVING_WITH_CODE
 	reparent(grid, true)

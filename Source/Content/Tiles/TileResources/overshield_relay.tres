@@ -77,9 +77,23 @@ category = 5
 subtype = 11
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="Resource_tax_amount"]
+script = ExtResource("script_effect")
+category = 2
+amount = -1
+text_token = &"tax"
+text_token_value = "-amount"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_tax_die"]
+script = ExtResource("script_effect")
+category = 3
+subtype = 16
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
 [sub_resource type="Resource" id="Resource_chain_13"]
 script = ExtResource("script_chain")
-effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_step_12")])
+effects = Array[ExtResource("script_effect")]([SubResource("Resource_step_3"), SubResource("Resource_step_4"), SubResource("Resource_step_5"), SubResource("Resource_step_7"), SubResource("Resource_step_8"), SubResource("Resource_step_9"), SubResource("Resource_step_10"), SubResource("Resource_step_11"), SubResource("Resource_tax_amount"), SubResource("Resource_tax_die"), SubResource("Resource_step_12")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f0"]
@@ -115,7 +129,7 @@ animations = [{
 script = ExtResource("script_tile")
 upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=blue]Overshield Relay[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=blue]{shields} shields[/color]. (feed_right)"
+description = "[color=yellow]Any die[/color] -> Gain [color=blue]{shields} shields[/color]. Subtract {tax} from die. (feed_right)"
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 2
 activation_checks = Array[ExtResource("script_act")]([SubResource("Resource_act_1"), SubResource("Resource_act_2")])
