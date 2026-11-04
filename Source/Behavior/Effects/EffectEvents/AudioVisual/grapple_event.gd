@@ -9,12 +9,16 @@ extends EffectEvent
 ##
 ## Holds the chain until the die is back where it started, in front of the
 ## ship, so what follows (the callout, the ship keeping the die) lands on the
-## theft. JuiceGrapple runs the grab; the claw winds back in on its own after.
+## theft. JuiceGrapple runs the grab (and the die's struggle in its grip); the
+## claw winds back in on its own after.
 
 ## How far toward the hand the die gets before the claw has it.
 const _CATCH_SHARE: float = 0.45
-## The jolt as the claw bites.
+## The jolt as the claw bites, then a moment slowed down while the die
+## struggles, so the catch is the beat the eye lands on.
 const _CLAMP_HITSTOP_MS: int = 40
+const _CLAMP_SLOW_MO_SCALE: float = 0.45
+const _CLAMP_SLOW_MO_MS: int = 380
 ## Above the dice (z 10) under the same parent, so the prongs close over it.
 const _CLAW_Z_INDEX: int = 15
 
@@ -41,7 +45,6 @@ func resolve(_engine: ScenarioEngine) -> void:
 	claw.die = die
 	claw.start = start
 	claw.catch_point = start.lerp(_hand_point(start), _CATCH_SHARE)
-	claw.color = color
 	claw.caught.connect(_clamp.bind(die))
 	JuicePixelated.spawn(die.get_parent(), claw, _CLAW_Z_INDEX)
 
@@ -67,3 +70,4 @@ func _clamp(die: Dice) -> void:
 	die.play_pop(0.3)
 	Juice.sparkle(die, die.global_position, color, 6, 30.0)
 	TimeDirector.hitstop(roundi(_CLAMP_HITSTOP_MS / Globals.animation_speed))
+	TimeDirector.slow_mo(_CLAMP_SLOW_MO_SCALE, roundi(_CLAMP_SLOW_MO_MS / Globals.animation_speed))

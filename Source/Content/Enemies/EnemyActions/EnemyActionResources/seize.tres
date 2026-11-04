@@ -7,7 +7,6 @@
 [ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="ext_4"]
 [ext_resource type="Texture2D" uid="uid://cr43hbhwcm84w" path="res://Assets/Textures/Enemies/IntentIndicator/seize.png" id="ext_5"]
 [ext_resource type="Texture2D" uid="uid://b4yroyum4mpwu" path="res://Assets/Textures/Enemies/IntentIndicator/seize_info.png" id="ext_6"]
-[ext_resource type="Resource" uid="uid://d2fo2dkdtpm5a" path="res://Source/Resources/SoundEffectResources/SoundEffects/comms_cackle.tres" id="ext_7"]
 
 [sub_resource type="Resource" id="Resource_step0"]
 script = ExtResource("ext_1")
@@ -25,12 +24,6 @@ category = 4
 subtype = 26
 sound_resource = ExtResource("ext_2")
 color = Color(0.7725, 0.3216, 0.9451, 1)
-
-[sub_resource type="Resource" id="Resource_cackle"]
-script = ExtResource("ext_1")
-category = 4
-subtype = 5
-sound_resource = ExtResource("ext_7")
 
 [sub_resource type="Resource" id="Resource_hold"]
 script = ExtResource("ext_1")
@@ -50,7 +43,7 @@ subtype = 10
 
 [sub_resource type="Resource" id="Resource_chain"]
 script = ExtResource("ext_3")
-effects = Array[ExtResource("ext_1")]([SubResource("Resource_step0"), SubResource("Resource_step4"), SubResource("Resource_grapple"), SubResource("Resource_hold"), SubResource("Resource_step5"), SubResource("Resource_cackle"), SubResource("Resource_step6")])
+effects = Array[ExtResource("ext_1")]([SubResource("Resource_step0"), SubResource("Resource_step4"), SubResource("Resource_grapple"), SubResource("Resource_hold"), SubResource("Resource_step5"), SubResource("Resource_step6")])
 
 [resource]
 script = ExtResource("ext_4")
