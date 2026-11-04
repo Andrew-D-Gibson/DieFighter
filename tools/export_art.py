@@ -29,19 +29,21 @@ import sys
 import tempfile
 from pathlib import Path
 
-# Auto-discover Pillow from project-local .venv if running sandboxed
-_root = Path(__file__).resolve().parent.parent
-for _cand in [
-    _root / ".venv" / "lib" / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages",
-    _root / ".venv" / "lib" / "python3.9" / "site-packages",
-]:
-    if _cand.exists() and str(_cand) not in sys.path:
-        sys.path.insert(0, str(_cand))
-
 try:
     from PIL import Image
 except ImportError:
-    sys.exit("export_art: Pillow is missing; install it with `python3 -m pip install pillow`.")
+    # Fall back to a project-local .venv (sandboxed agents install Pillow
+    # there), but only one built for this interpreter: Pillow is a compiled
+    # extension, so another Python's copy shadows a working install and fails.
+    _venv_site = (Path(__file__).resolve().parent.parent / ".venv" / "lib"
+        / f"python{sys.version_info.major}.{sys.version_info.minor}" / "site-packages")
+    if _venv_site.exists():
+        sys.path.insert(0, str(_venv_site))
+    try:
+        from PIL import Image
+    except ImportError:
+        sys.exit(f"export_art: Pillow is missing for {sys.executable}; "
+            "install it with `python3 -m pip install pillow`.")
 
 ROOT: Path = Path(__file__).resolve().parent.parent
 ART: Path = ROOT / "Art"
@@ -155,8 +157,13 @@ def unsourced_pngs() -> list[Path]:
     for source in all_sources():
         base: Path = output_base(source)
         expected |= {base.with_suffix(".png"), base.parent / (base.name + "-Sheet.png")}
-    return sorted(p for p in ASSETS.rglob("*.png")
-        if p not in expected and str(p.relative_to(ROOT)) not in UNSOURCED_OK)
+    # Ask git rather than walking Assets/: gitignored folders (Assets/
+    # Inspiration Resources/, local reference art) aren't game art and
+    # shouldn't need a source. New PNGs not yet added are still listed.
+    listed: list[str] = git_lines("-c", "core.quotePath=off", "ls-files", "--cached", "--others", "--exclude-standard", "--", "Assets")
+    pngs: list[Path] = [ROOT / line for line in listed if line.endswith(".png")]
+    return sorted(p for p in pngs
+        if p.is_file() and p not in expected and str(p.relative_to(ROOT)) not in UNSOURCED_OK)
 
 
 def main() -> int:
