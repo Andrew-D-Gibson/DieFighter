@@ -24,8 +24,12 @@ var _viewport: Viewport
 ## The current target representation:
 ## Dictionary with keys:
 ##   "type": StringName (&"die", &"tile_slot", &"enemy", &"button", &"waypoint", &"custom")
-##   "pos": Vector2 (viewport / global coordinates)
-##   "rect": Rect2 (bounding box for reticle)
+##   "pos": Vector2 (the node's own canvas coordinates: world pixels for the
+##          320x180 game, which is what Draggable.begin_drag expects)
+##   "rect": Rect2 (bounding box for reticle, in those same units)
+##   "screen": Vector2, "screen_rect": Rect2 (added by _collect_targets: the
+##          same spot in viewport pixels, where the cursor warps and the
+##          reticle draws; see _to_screen)
 ##   "node": Node (optional underlying node)
 ##   "cell": Vector2i (for tile slots)
 var _current_target: Dictionary = {}
@@ -36,6 +40,12 @@ var _last_grid_cell: Vector2i = Vector2i(-1, -1)
 const STICK_DEADZONE: float = 0.5
 const STICK_INITIAL_DELAY: float = 0.25
 const STICK_REPEAT_RATE: float = 0.16
+
+## Viewport pixels per art pixel (the 1920x1080 viewport over the 320x180
+## game): the reticle is drawn in whole art pixels so it reads as pixel art.
+const _ART_SCALE: float = 6.0
+const _RETICLE_COLOR: Color = Color("#EED35D")
+const _RETICLE_OUTLINE: Color = Color("#040217")
 var _stick_held_dir: int = -1
 var _stick_timer: float = 0.0
 
@@ -61,6 +71,7 @@ func attach(cursor: VirtualCursor, viewport: Viewport) -> void:
 func _setup_reticle() -> void:
 	_reticle_canvas = CanvasLayer.new()
 	_reticle_canvas.layer = 120
+	_reticle_canvas.scale = Vector2(_ART_SCALE, _ART_SCALE)
 	_reticle_canvas.name = "FocusReticleLayer"
 	add_child(_reticle_canvas)
 
@@ -91,8 +102,8 @@ func _process(delta: float) -> void:
 
 	# Keep reticle smooth and following current target
 	if not _current_target.is_empty():
-		var target_pos: Vector2 = _current_target.get("pos", Vector2.ZERO)
-		var target_rect: Rect2 = _current_target.get("rect", Rect2(-12, -12, 24, 24))
+		var target_pos: Vector2 = _screen_of(_current_target)
+		var target_rect: Rect2 = _current_target.get("screen_rect", _current_target.get("rect", Rect2(-12, -12, 24, 24)))
 		_reticle_pos = _reticle_pos.lerp(target_pos, clampf(delta * 25.0, 0.0, 1.0))
 		_reticle_rect.size = _reticle_rect.size.lerp(target_rect.size, clampf(delta * 25.0, 0.0, 1.0))
 		_reticle_rect.position = -_reticle_rect.size / 2.0
@@ -104,45 +115,75 @@ func _process(delta: float) -> void:
 func _on_reticle_draw() -> void:
 	if _current_target.is_empty() or not active:
 		return
+	# Everything in art pixels, snapped, so the brackets sit on the game's grid.
+	var center: Vector2 = (_reticle_pos / _ART_SCALE).round()
+	var half: Vector2 = (_reticle_rect.size / _ART_SCALE / 2.0).round() + Vector2.ONE
+	# The pulse breathes a whole pixel out and back rather than sliding.
+	if sin(_pulse_time * 5.0) > 0.0:
+		half += Vector2.ONE
+	var arm: float = clampf(roundf(minf(half.x, half.y) * 0.6), 2.0, 5.0)
+	var corners: Array[Vector2] = [
+		center - half, Vector2(center.x + half.x - 1, center.y - half.y),
+		Vector2(center.x - half.x, center.y + half.y - 1), center + half - Vector2.ONE]
+	var signs: Array[Vector2] = [Vector2(1, 1), Vector2(-1, 1), Vector2(1, -1), Vector2(-1, -1)]
+	# Outline pass, then the bracket itself, each a 1px-wide L at every corner.
+	for pass_idx: int in 2:
+		var grow: float = 1.0 if pass_idx == 0 else 0.0
+		var color: Color = _RETICLE_OUTLINE if pass_idx == 0 else _RETICLE_COLOR
+		for i: int in 4:
+			_draw_arm(corners[i], Vector2(signs[i].x * arm, 0), grow, color)
+			_draw_arm(corners[i], Vector2(0, signs[i].y * arm), grow, color)
 
-	var center: Vector2 = _reticle_pos
-	var size: Vector2 = _reticle_rect.size + Vector2(6, 6) # Slight padding
-	var pulse: float = sin(_pulse_time * 7.0) * 1.5
-	size += Vector2(pulse, pulse)
 
-	var half: Vector2 = size / 2.0
-	var top_left: Vector2 = center - half
-	var bottom_right: Vector2 = center + half
-	var bracket_len: float = clampf(minf(size.x, size.y) * 0.3, 4.0, 8.0)
+## One 1px-wide arm of a bracket from [param corner] along [param along],
+## widened by [param grow] on every side for the outline pass.
+func _draw_arm(corner: Vector2, along: Vector2, grow: float, color: Color) -> void:
+	var rect: Rect2 = Rect2(corner, Vector2.ONE).merge(Rect2(corner + along - along.sign(), Vector2.ONE))
+	_reticle_draw.draw_rect(rect.grow(grow), color)
 
-	var line_color: Color = Color("#f4d03f") # Bright golden yellow accent
-	var shadow_color: Color = Color("#000000", 0.7)
-	var width: float = 2.0
 
-	# Draw shadow brackets then colored brackets
-	for pass_idx in 2:
-		var c: Color = shadow_color if pass_idx == 0 else line_color
-		var offset: Vector2 = Vector2(1, 1) if pass_idx == 0 else Vector2.ZERO
-		var tl: Vector2 = top_left + offset
-		var br: Vector2 = bottom_right + offset
-		var tr: Vector2 = Vector2(br.x, tl.y)
-		var bl: Vector2 = Vector2(tl.x, br.y)
+## Where [param target] sits in viewport pixels. Targets built by hand (and
+## tests) without a screen position fall back to "pos".
+static func _screen_of(target: Dictionary) -> Vector2:
+	return target.get("screen", target.get("pos", Vector2.ZERO))
 
-		# Top-Left corner
-		_reticle_draw.draw_line(tl, tl + Vector2(bracket_len, 0), c, width)
-		_reticle_draw.draw_line(tl, tl + Vector2(0, bracket_len), c, width)
 
-		# Top-Right corner
-		_reticle_draw.draw_line(tr, tr - Vector2(bracket_len, 0), c, width)
-		_reticle_draw.draw_line(tr, tr + Vector2(0, bracket_len), c, width)
+## Maps [param ref]'s canvas coordinates to the root viewport's pixels,
+## through any SubViewport it renders into (the map draws into one shown by
+## a TextureRect).
+static func _canvas_to_screen(ref: CanvasItem) -> Transform2D:
+	var xf: Transform2D = ref.get_canvas_transform()
+	var viewport: Viewport = ref.get_viewport()
+	while viewport is SubViewport:
+		var host: Node = viewport.get_parent()
+		var shown_at: Vector2
+		if host is TextureRect:
+			# The visible rect, not the pixel size: the map draws 120x75 art
+			# pixels into a 720x450 texture (size_2d_override).
+			shown_at = (host as TextureRect).size / viewport.get_visible_rect().size
+		elif host is SubViewportContainer:
+			shown_at = Vector2.ONE * float((host as SubViewportContainer).stretch_shrink)
+		else:
+			break
+		var host_item: CanvasItem = host as CanvasItem
+		xf = host_item.get_global_transform_with_canvas() * Transform2D.IDENTITY.scaled(shown_at) * xf
+		viewport = host_item.get_viewport()
+	return xf
 
-		# Bottom-Left corner
-		_reticle_draw.draw_line(bl, bl + Vector2(bracket_len, 0), c, width)
-		_reticle_draw.draw_line(bl, bl - Vector2(0, bracket_len), c, width)
 
-		# Bottom-Right corner
-		_reticle_draw.draw_line(br, br - Vector2(bracket_len, 0), c, width)
-		_reticle_draw.draw_line(br, br - Vector2(0, bracket_len), c, width)
+## Adds "screen" and "screen_rect": world nodes sit under the 6x camera,
+## menus under their own CanvasLayers and the map in a SubViewport, so each
+## position is converted through the canvas it was found on.
+static func _to_screen(target: Dictionary) -> void:
+	var ref: CanvasItem = target.get("node") as CanvasItem
+	if not is_instance_valid(ref):
+		ref = target.get("grid", target.get("map")) as CanvasItem
+	if not is_instance_valid(ref) or not ref.is_inside_tree():
+		return
+	var xf: Transform2D = _canvas_to_screen(ref)
+	var rect: Rect2 = target.get("rect", Rect2(-12, -12, 24, 24))
+	target["screen"] = xf * Vector2(target.get("pos", Vector2.ZERO))
+	target["screen_rect"] = Rect2(rect.position * xf.get_scale(), rect.size * xf.get_scale())
 
 
 ## Handles controller buttons and d-pad events
@@ -255,8 +296,13 @@ func refresh() -> void:
 
 
 func _collect_targets() -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
+	var result: Array[Dictionary] = _collect_targets_in_canvas()
+	for target: Dictionary in result:
+		_to_screen(target)
+	return result
 
+
+func _collect_targets_in_canvas() -> Array[Dictionary]:
 	# 1. Menus / Popups take precedence
 	var menu_targets: Array[Dictionary] = _collect_menu_targets()
 	if not menu_targets.is_empty():
@@ -342,7 +388,7 @@ func _collect_combat_targets() -> Array[Dictionary]:
 				result.append({
 					"type": &"die",
 					"pos": pos,
-					"rect": Rect2(-11, -11, 22, 22),
+					"rect": Rect2(-7, -7, 14, 14),
 					"node": die
 				})
 
@@ -421,7 +467,7 @@ func _collect_map_targets(map_node: Map) -> Array[Dictionary]:
 			result.append({
 				"type": &"waypoint",
 				"pos": sprite.global_position,
-				"rect": Rect2(-12, -12, 24, 24),
+				"rect": Rect2(-7, -7, 14, 14),
 				"node": sprite,
 				"index": i,
 				"map": map_node
@@ -501,13 +547,13 @@ func _step(direction: int) -> void:
 			return
 		elif direction == Direction.DOWN and not Draggable.holding():
 			# Stepping down past the bottom of the grid when not holding a die moves to dice
-			var die_target = _find_closest_target_of_type(&"die", _current_target.get("pos"))
+			var die_target = _find_closest_target_of_type(&"die", _screen_of(_current_target))
 			if not die_target.is_empty():
 				_set_target(die_target)
 				return
 
 	# Standard spatial stepping: find closest candidate in the direction
-	var origin: Vector2 = _current_target.get("pos", position)
+	var origin: Vector2 = _screen_of(_current_target) if not _current_target.is_empty() else position
 	var dir_vec: Vector2 = _direction_vector(direction)
 
 	var best_target: Dictionary = {}
@@ -516,7 +562,7 @@ func _step(direction: int) -> void:
 	for candidate in _targets:
 		if _is_same_target(candidate, _current_target):
 			continue
-		var to: Vector2 = candidate.get("pos") - origin
+		var to: Vector2 = _screen_of(candidate) - origin
 		var dist: float = to.length()
 		if dist < 2.0:
 			continue
@@ -550,7 +596,7 @@ func _focus_best_grid_slot() -> void:
 			return
 
 	# Otherwise find slot in the bottom row closest to the current X position
-	var current_x: float = _current_target.get("pos", position).x
+	var current_x: float = (_screen_of(_current_target) if not _current_target.is_empty() else position).x
 	var best_cell: Vector2i = Vector2i(-1, -1)
 	var best_dist_x: float = INF
 	var max_y: int = -1
@@ -561,8 +607,10 @@ func _focus_best_grid_slot() -> void:
 
 	for cell in Globals.tile_grid.get_cells():
 		if cell.y == max_y:
-			var cell_pos: Vector2 = Globals.tile_grid.grid_to_global_pos(cell)
-			var dist_x: float = absf(cell_pos.x - current_x)
+			var slot: Dictionary = _find_grid_slot_target(cell)
+			if slot.is_empty():
+				continue
+			var dist_x: float = absf(_screen_of(slot).x - current_x)
 			if dist_x < best_dist_x:
 				best_dist_x = dist_x
 				best_cell = cell
@@ -586,7 +634,7 @@ func _find_closest_target_of_type(type: StringName, from_pos: Vector2) -> Dictio
 	var min_dist: float = INF
 	for t in _targets:
 		if t.get("type") == type:
-			var dist: float = (t.get("pos") - from_pos).length()
+			var dist: float = (_screen_of(t) - from_pos).length()
 			if dist < min_dist:
 				min_dist = dist
 				best = t
@@ -595,7 +643,7 @@ func _find_closest_target_of_type(type: StringName, from_pos: Vector2) -> Dictio
 
 func _set_target(target: Dictionary) -> void:
 	_current_target = target
-	position = target.get("pos", position)
+	position = _screen_of(target) if not target.is_empty() else position
 	if _reticle_pos == Vector2.ZERO:
 		_reticle_pos = position
 
@@ -617,7 +665,7 @@ func _activate() -> void:
 
 	# Ensure pointer is warped to target
 	if _cursor:
-		_cursor.focus_warp(target_pos)
+		_cursor.focus_warp(_screen_of(_current_target))
 
 	# Case 1: Pick up die
 	if type == &"die" and node is Dice:

@@ -188,9 +188,15 @@ func test_board_label_opens_and_closes_keyword_tooltip() -> void:
 	assert_false(visual._tooltip.visible)
 	await wait_seconds(0.6)
 	assert_true(visual._settled)
-	var before: float = visual._sprite.position.y
-	await wait_seconds(0.2)
-	assert_ne(visual._sprite.position.y, before, "the settled lock floats")
+	# It floats in whole art pixels: over a full bob it visits more than one
+	# height, and never a fraction of a pixel.
+	var heights: Dictionary = {}
+	for i: int in 14:
+		var y: float = visual._sprite.position.y
+		assert_eq(y, roundf(y), "the lock sits on the pixel grid")
+		heights[y] = true
+		await wait_seconds(0.2)
+	assert_gt(heights.size(), 1, "the settled lock floats")
 	visual.release()
 	assert_false(label.visible)
 	assert_false(visual._tooltip.visible)

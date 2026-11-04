@@ -43,7 +43,8 @@ func _process(delta: float) -> void:
 		return
 	_age += delta
 	if _settled:
-		_sprite.position.y = sin(_age * 2.4) * 1.2
+		# Whole art pixels: a sub-pixel float would smear on the 6x viewport.
+		_sprite.position.y = roundf(sin(_age * 2.4) * 1.2)
 	queue_redraw()
 	if is_instance_valid(_tooltip) and _tooltip.visible:
 		var viewport_size: Vector2 = get_viewport_rect().size
@@ -136,7 +137,7 @@ func _build_keyword() -> void:
 	_keyword.fit_content = true
 	_keyword.scroll_active = false
 	_keyword.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_keyword.text = Utils.format_text("[color=orange][u]%s[/u][/color]" % Keywords.title("locked").to_upper())
+	_keyword.text = Utils.format_text("[color=orange]%s[/color]" % Keywords.title("locked").to_upper())
 	_keyword.mouse_filter = Control.MOUSE_FILTER_STOP
 	add_child(_keyword)
 	var layer: CanvasLayer = CanvasLayer.new()
@@ -175,4 +176,5 @@ func _draw() -> void:
 		var point: Vector2 = Vector2(side * (10.0 + sin(phase * TAU) * 1.5), 8.0 - phase * 20.0)
 		var color: Color = _MID
 		color.a = sin(phase * PI) * 0.55
-		draw_circle(point, 0.6, color)
+		# One art pixel on the game's grid, not an antialiased sub-pixel dot.
+		draw_rect(Rect2(point.floor(), Vector2.ONE), color)
