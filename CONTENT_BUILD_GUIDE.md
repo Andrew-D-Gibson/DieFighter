@@ -429,6 +429,12 @@ something (it goes to `target`, it drops in value, it Feeds on), or tie the
 payout to position, sequence or a resource. Passives can't cost a die, so give
 them a side to manage (Static Bloom scrambles you as well as an enemy).
 
+A relay with a flat payout (Signal, Overshield, Toll, Booster Stage, Sensor
+Spike) passes the die on 1 lower: "Subtract {tax} from die. (feed_right)",
+built from a SET -1 amount step tokened `tax` and an `ADD_TO_ACTIVATOR_VALUE`
+just before the feed. A 1 stays a 1. The payout then costs a pip of the die
+the next tile gets, so a 6 meant for a 6-tile skips the relay.
+
 **Test:** run the game and get the tile onto the grid, then open the dev console
 with `` ` ``. `set_dice 1 2 3`, `reset_uses` and `charge_engines` help set up a case.
 
