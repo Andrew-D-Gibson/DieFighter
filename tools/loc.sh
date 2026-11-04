@@ -42,7 +42,7 @@ start_dir="$PWD"
 cd "$(dirname "$0")/.."
 
 TOOL="res://Source/Systems/Localization/Tools/loc_sync.gd"
-LINT_TEST="res://test/content/test_localization.gd"
+LINT_TEST="res://test/core/content/test_localization.gd"
 
 # Runs the GDScript tool, showing only its own report lines (and any script
 # error), and passes its exit status on.

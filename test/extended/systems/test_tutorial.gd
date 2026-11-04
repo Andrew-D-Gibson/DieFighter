@@ -1,0 +1,245 @@
+extends "res://test/helpers/die_fighter_test.gd"
+## The tutorial: its authored steps, and the waits that move it along.
+##
+## The manager is added to the tree with no steps, so _ready() returns before
+## it seeds a run, connects to Events or locks anything.
+
+const STEP_DIR: String = "res://Source/Systems/TutorialManager/TutorialStepResources/"
+const MAIN_SCENE: String = "res://Source/Scenes/main.tscn"
+
+## Steps that end themselves rather than on a gameplay event.
+const SELF_CLOSING: Array[TutorialStep.TutorialSignals] = [
+	TutorialStep.TutorialSignals.NONE,
+	TutorialStep.TutorialSignals.CLOSED_MANUALLY,
+	TutorialStep.TutorialSignals.CLOSED_AFTER_TIME,
+]
+
+signal _opening_event
+
+var manager: TutorialManager
+
+
+func before_each() -> void:
+	super()
+	manager = add_child_autofree(TutorialManager.new())
+
+
+static func _step_paths() -> Array[String]:
+	var paths: Array[String] = []
+	for file: String in DirAccess.get_files_at(STEP_DIR):
+		if file.ends_with(".tres"):
+			paths.append(STEP_DIR.path_join(file))
+	return paths
+
+
+func test_step_text_has_no_unknown_tokens() -> void:
+	var leftover := RegEx.create_from_string("\\([a-z_0-9]+\\)")
+	for path: String in _step_paths():
+		var step: TutorialStep = load(path)
+		var shown: String = Utils.format_with_delays(step.tutorial_text)["text"]
+		var stray: RegExMatch = leftover.search(shown)
+		assert_null(stray, "%s: unknown token %s" % [path, stray.get_string() if stray else ""])
+
+
+func test_every_step_waits_on_a_real_signal() -> void:
+	for path: String in _step_paths():
+		var step: TutorialStep = load(path)
+		if step.close_on_signal in SELF_CLOSING:
+			continue
+		assert_false(manager._closing_signal_for(step).is_null(),
+			"%s closes on %s, which no signal is wired to" % [
+				path, TutorialStep.TutorialSignals.keys()[step.close_on_signal]
+			])
+
+
+## A step file the scene doesn't list is dead weight that looks live; a listed
+## one that fails to load would silently drop out of the tutorial.
+func test_main_scene_plays_every_step_file() -> void:
+	var state: SceneState = (load(MAIN_SCENE) as PackedScene).get_state()
+	var listed: Array[String] = []
+	for node: int in state.get_node_count():
+		if state.get_node_name(node) != &"TutorialManager":
+			continue
+		for prop: int in state.get_node_property_count(node):
+			var value: Variant = state.get_node_property_value(node, prop)
+			match state.get_node_property_name(node, prop):
+				&"tutorial_steps":
+					for step: TutorialStep in value:
+						listed.append(step.resource_path)
+				&"opening_setup":
+					listed.append((value as TutorialStep).resource_path)
+
+	var files: Array[String] = _step_paths()
+	files.sort()
+	listed.sort()
+	assert_eq(listed, files)
+
+
+func test_open_wait_gives_up_after_its_timeout() -> void:
+	var step := TutorialStep.new()
+	step.max_wait_time = 0.2
+	var opened: Array[bool] = [false]
+	var wait: Callable = func() -> void:
+		await manager._await_open_signal(_opening_event, step)
+		opened[0] = true
+	# A slow frame before this one (loading main.tscn) would otherwise land
+	# its whole delta on the new timer and fire it at once.
+	await wait_physics_frames(2)
+	wait.call()
+	await wait_physics_frames(1)
+	assert_false(opened[0], "gave up before its timeout")
+	await wait_seconds(0.4)
+	assert_true(opened[0], "still waiting after its timeout")
+
+
+func test_open_wait_ends_on_its_signal() -> void:
+	var step := TutorialStep.new()
+	step.max_wait_time = 5.0
+	var opened: Array[bool] = [false]
+	var wait: Callable = func() -> void:
+		await manager._await_open_signal(_opening_event, step)
+		opened[0] = true
+	wait.call()
+	_opening_event.emit()
+	await wait_physics_frames(1)
+	assert_true(opened[0])
+
+
+func test_an_earlier_waits_timeout_doesnt_end_a_later_wait() -> void:
+	var quick := TutorialStep.new()
+	quick.max_wait_time = 0.05
+	var first: Callable = func() -> void:
+		await manager._await_open_signal(_opening_event, quick)
+	first.call()
+	_opening_event.emit()
+
+	var slow := TutorialStep.new()
+	slow.max_wait_time = 5.0
+	var opened: Array[bool] = [false]
+	var second: Callable = func() -> void:
+		await manager._await_open_signal(_opening_event, slow)
+		opened[0] = true
+	second.call()
+
+	await wait_seconds(0.15)
+	assert_false(opened[0], "the first wait's timer fired into the second")
+	_opening_event.emit()
+	await wait_physics_frames(1)
+	assert_true(opened[0])
+
+
+func test_end_turn_prompt_counts_a_turn_already_ended() -> void:
+	var step := TutorialStep.new()
+	step.close_on_signal = TutorialStep.TutorialSignals.PLAYER_TURN_OVER
+	assert_false(manager._already_satisfied(step))
+	manager._on_player_turn_over()
+	assert_true(manager._already_satisfied(step))
+	manager._on_player_turn_start()
+	assert_false(manager._already_satisfied(step))
+
+
+func test_instruction_steps_are_never_skipped() -> void:
+	var step := TutorialStep.new()
+	step.close_on_signal = TutorialStep.TutorialSignals.ENEMY_RECEIVED_DIE
+	manager._on_player_turn_over()
+	manager._on_reward_picked()
+	assert_false(manager._already_satisfied(step))
+
+
+func test_steps_waiting_on_the_player_never_time_out() -> void:
+	var step := TutorialStep.new()
+	step.close_on_signal = TutorialStep.TutorialSignals.PLAYER_TURN_OVER
+	assert_eq(manager._closing_timeout(step), 0.0)
+
+
+func test_steps_waiting_on_the_game_keep_the_backstop() -> void:
+	var step := TutorialStep.new()
+	step.close_on_signal = TutorialStep.TutorialSignals.PLAYER_TURN_STARTED
+	assert_eq(manager._closing_timeout(step), manager.default_step_timeout)
+	step.max_wait_time = 7.0
+	assert_eq(manager._closing_timeout(step), 7.0)
+
+## The first card can't be closed until the shot it introduces has landed.
+func test_a_held_close_button_waits_for_its_release() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	popup.setup("A raider is attacking!", Vector2(100, 40), null, true)
+	popup.hold_close_button()
+	popup._finish_showing_text()
+	var close_button: Node = popup.get_node("%CloseButton")
+	assert_true(close_button.disabled, "still held once the text is in")
+	popup.release_close_button()
+	assert_false(close_button.disabled)
+
+
+## A click while the text waits out a pause shows all of it, and the typing
+## doesn't pick up afterwards and cut it back to where the pause was.
+func test_finishing_the_text_during_a_pause_keeps_it_all_shown() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	popup.setup("Salvage!(delay=0.3) Drag it into a slot:", Vector2(100, 40), null, false)
+	var label: RichTextLabel = popup.get_node("%RichTextLabel")
+	var pause_at: int = popup.delay_positions.keys()[0]
+	var frames: int = 0
+	while popup.current_character < pause_at and frames < 300:
+		await wait_process_frames(1)
+		frames += 1
+	assert_eq(popup.current_character, pause_at, "reached the pause")
+	# Past the last character's own beat and into the pause itself.
+	await wait_seconds(0.1)
+
+	popup._finish_showing_text()
+	await wait_seconds(0.5)
+	assert_eq(label.visible_characters, -1, "still all shown after the pause ends")
+
+
+## The step's function hangs off all_text_displayed, so it must come once
+## however the text is finished.
+func test_all_text_displayed_comes_once() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	watch_signals(popup)
+	popup.setup("Hi.", Vector2(100, 40), null, true)
+	await wait_seconds(0.3)
+	popup._finish_showing_text()
+	assert_signal_emit_count(popup, "all_text_displayed", 1)
+
+
+## Something lifted through a card's dim draws over the mask but under the
+## card, and goes back where it was once the card is gone.
+func test_a_card_lifts_things_through_its_dim_until_it_leaves() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	var highlight: Sprite2D = TutorialTextPopup.make_highlight(null)
+	autofree(highlight)
+	var die: Node2D = add_child_autofree(Node2D.new())
+	die.z_index = 10
+	popup.show_through_dim(die)
+	assert_false(die.z_as_relative)
+	assert_gt(die.z_index, highlight.z_index, "over the dim")
+	assert_eq(die.z_index, popup.z_index, "level with the card, which hangs later and covers it")
+	remove_child(popup)
+	assert_eq(die.z_index, 10)
+	assert_true(die.z_as_relative)
+
+
+## The die a card lifted can be spent and freed while the card is still up;
+## the card then leaves without touching it (GUT fails on the engine error).
+func test_a_card_outlives_what_it_lifted() -> void:
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	var die: Node2D = Node2D.new()
+	add_child(die)
+	popup.show_through_dim(die)
+	die.free()
+	remove_child(popup)
+	assert_engine_error_count(0)
+
+
+## The opening shot's die leaves the raider through the ambush card's dim:
+## the player watches it fly back to the hand.
+func test_the_opening_shot_die_shows_through_the_ambush_card() -> void:
+	var die: Dice = autofree(Dice.new())
+	var strike: OpeningStrike = OpeningStrike.new()
+	strike._die = die
+	var state_manager: GameStateManager = autofree(GameStateManager.new())
+	state_manager._opening_strike = strike
+	Globals.state_manager = state_manager
+	var popup: TutorialTextPopup = add_child_autofree(manager.tutorial_text_popup_scene.instantiate())
+	manager._show_strike_through_dim(popup)
+	assert_eq(die.z_index, TutorialTextPopup.SHOWN_THROUGH_DIM_Z_INDEX)
