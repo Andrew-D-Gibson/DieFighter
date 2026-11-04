@@ -37,6 +37,7 @@ higher; good for chains, ticks and combos).
 | `shop_stock_pop` | **Placeholder** (the reroll blip, escalating): each item popping onto the shop's shelves as it opens (`Shop._pop_in`); the panel unfolding plays `tile_dropped` |
 | `glass_tinkle` | **Placeholder** (synthesised): cockpit glass shards landing inside the cockpit, once per spill (`CockpitGlassShards`) |
 | `glass_crack` | **Placeholder** (synthesised): each canopy crack coming back during the death sequence, rising in pitch as they quicken (`CockpitDamageSite.flare_back`) |
+| `comms_cackle` | **Placeholder** (synthesised: a formant "heh-heh-heh" through a radio band, with squelch and static): the thief laughing over comms as Seize takes your die. Wants a real voice line, ideally one per faction |
 
 ## Highest-value additions
 
@@ -263,7 +264,7 @@ at once, with no per-tile authoring.
 | Relay | — | Toss-and-catch: the die flicked to an ally | before `FEED_ALLY` |
 | Repair Ally | player_shield | Repair drones whirr | before `HEAL` |
 | Scrambler | — | A warbling static bolt | before `ZAP` |
-| Seize | tractor_lock | Claw clamp and a pocketed rattle (the die is taken, no shot) | before `DIE_FLARE` |
+| Seize | tractor_lock (clamp), comms_cackle | Claw clamp as the grapple bites the die on its way home; a laugh over comms with STOLEN | `GRAPPLE`'s `sound_resource`; `PLAY_SOUND` after the callout |
 | Shield Self | — | Shield up | before `SHIELD` |
 | Siege Shot | dice_cannon | Long wind-up → enormous slowed shot | chain start; before `DAMAGE` |
 | Siphon Engine | reroll blip | Draining suction from your engine | before `CHANGE_ENGINE_CHARGE` |

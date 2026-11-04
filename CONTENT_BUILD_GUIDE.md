@@ -997,6 +997,10 @@ ion storm, meteor shower and rift tear for examples. Drive their visuals with
 - Visual flourishes (`AUDIO_VISUAL`: SHOCKWAVE, SPARK_BURST, CALLOUT, ZAP,
   STREAM, LASER, MISSILE, ION_BOLT, ...) play at the current targets. ZAP,
   STREAM, LASER, MISSILE and ION_BOLT hold the chain until they land.
+  GRAPPLE is for an enemy taking the die it was handed: the die sets off for
+  the player's hand and a claw from the ship reels it back (Seize). It holds
+  the chain until the die is back; its `sound_resource` plays as the claw
+  bites. Follow it with `KEEP_DIE_WITH_ACTOR`.
   ION_BOLT aims at the target's shields (the player's shield counter). Tick `juice_flags` for
   how they move: Rise (sparks drift up, for gains), Outward (a stream flows
   out of the source), Engine (the player's end of a stream or callout is the

@@ -479,6 +479,15 @@ targets or, with none, at the source. `SPARK_BURST`, `STREAM` and `CALLOUT` take
 `juice_flags` bitmask (Rise; Outward, Engine, Hull Hub, Engine Hub; see
 `JuiceEvent.Flag`) rather than a string. `ZAP`, `STREAM`, `LASER`,
 `MISSILE` and `ION_BOLT` hold the chain until they land; the rest don't.
+`GRAPPLE` (Seize) is its own `GrappleHandler`/`GrappleEvent`: the die sets
+off toward the player's hand and a `JuiceGrapple` claw on a tether catches it
+45% of the way and reels it back in front of the ship. The claw moves the die
+itself in its own `_process` rather than by Tween, because tweens step after
+every node's `_process` and the redraw it queued is already flushed, so a
+claw drawn from a tweened die trails it by a frame (on the fast reel it
+showed on the wrong side of the die). The event waits out
+`JuiceGrapple.duration()` on a pausable timer, not the claw's signal, so a
+claw freed with its ship can't strand the chain.
 `LASER`/`MISSILE`/`ION_BOLT` are one `JuiceProjectile` (style enum, colour,
 length; an ion bolt aims at `Juice.shield_anchor()`, the player's shield
 counter) drawn through
@@ -2329,8 +2338,9 @@ pirate fire on a civilian into `ScenarioEvent.PIRATE_ATTACKED_CIVILIAN`. A
 ship killed by another ship (`was_killed_by_ship()`) drops no reward, plays
 no kill-confirm, pays no faction bounty and doesn't count toward RunStats.
 
-**Stealing and escaping.** Seize (`seize.tres`, no damage) keeps the die
-(`KEEP_DIE_WITH_ACTOR`); the ship spends it next turn on whatever that face
+**Stealing and escaping.** Seize (`seize.tres`, no damage) snatches the die
+on its way home (`GRAPPLE`, then STOLEN and the `comms_cackle` placeholder)
+and keeps it (`KEEP_DIE_WITH_ACTOR`); the ship spends it next turn on whatever that face
 shows. On the Cutpurse Seize is also the `fills_kept_faces` option, so a
 stolen die lands on Seize again every turn and never comes home while the
 ship lives; killed, it gives its dice away as any ship does. From its fourth
