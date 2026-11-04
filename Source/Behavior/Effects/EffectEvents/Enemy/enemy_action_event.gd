@@ -62,8 +62,9 @@ func resolve(engine: ScenarioEngine) -> void:
 		return
 
 	# Advance only when a valid action starts, keeping its whole effect chain
-	# at one speed. Relayed dice pass through this same point.
-	if engine.enemy_turn_action_count >= 0:
+	# at one speed. Relayed dice pass through this same point. No engine when
+	# a test (or a hand-off outside the turn) resolves the action directly.
+	if engine and engine.enemy_turn_action_count >= 0:
 		engine.enemy_turn_action_count += 1
 
 	Globals.targeting_computer.target_enemy(enemy)

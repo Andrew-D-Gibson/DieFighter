@@ -236,7 +236,7 @@ func _build_skip_prompt() -> void:
 	_skip_prompt.text = tr("CUTSCENE_SKIP_PROMPT")
 	_skip_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_skip_prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_skip_prompt.add_theme_font_size_override("font_size", 28)
+	_skip_prompt.theme_type_variation = FontRoles.slot(FontRoles.SMALL, 2.0)
 	_skip_prompt.add_theme_color_override("font_shadow_color", Color.BLACK)
 	_skip_prompt.add_theme_constant_override("shadow_offset_x", 2)
 	_skip_prompt.add_theme_constant_override("shadow_offset_y", 2)
