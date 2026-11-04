@@ -263,7 +263,7 @@ at once, with no per-tile authoring.
 | Relay | — | Toss-and-catch: the die flicked to an ally | before `FEED_ALLY` |
 | Repair Ally | player_shield | Repair drones whirr | before `HEAL` |
 | Scrambler | — | A warbling static bolt | before `ZAP` |
-| Seize | tractor_lock | Claw clamp and a pocketed rattle (the die is taken, no shot) | before `STREAM` |
+| Seize | tractor_lock | Claw clamp and a pocketed rattle (the die is taken, no shot) | before `DIE_FLARE` |
 | Shield Self | — | Shield up | before `SHIELD` |
 | Siege Shot | dice_cannon | Long wind-up → enormous slowed shot | chain start; before `DAMAGE` |
 | Siphon Engine | reroll blip | Draining suction from your engine | before `CHANGE_ENGINE_CHARGE` |

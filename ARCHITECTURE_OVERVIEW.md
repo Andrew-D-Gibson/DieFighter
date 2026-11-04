@@ -363,7 +363,17 @@ only number a status has; each status decides what one means.
 the cockpit vignette for the player, ring, `+N NAME` callout);
 `announce_triggered()` flashes the ship and calls out the name whenever a
 status does its job (see 4.7). `announce_triggered_at()` draws it on a tile
-instead, for a player status that acts there.
+instead, for a player status that acts there. On the player either one also
+flashes the status's badge (`StatusBadge.play_alert()`: two bright swells).
+A player status that *causes* something (Burn's tick, Jammed, Scrambled)
+awaits `play_player_alert()` in its hook instead, which holds the event for a
+beat: badge flashes, the name pops (off the tile, or off the badge), then the
+effect lands. Burn on the player therefore burns down as its tick hit comes
+up (`on_before_event`, priority 0), not in the tick, so the badge shows the
+stacks about to burn until the damage lands. Statuses that only resize a hit
+already in flight (Exposed, Weakened, Phased) flash without holding it, since
+a pause between a shot's impact and its number would read as lag. The beat
+is skipped on an engine outside the tree (unit tests).
 
 **Adding a status:** subclass `StatusModifier` (`priority` and the hook;
 tuning numbers as constants returned by a static `rule_values()`), and add a
@@ -1981,7 +1991,7 @@ time.
 
 **Keys** are `<PREFIX>.<file stem>.<SUFFIX>`. A resource embedded in another
 file is keyed by its property path from the file's root
-(`ENEMY_ACTION.SEIZE.EFFECT_CHAIN.EFFECTS_5.CALLOUT`; arrays by index,
+(`ENEMY_ACTION.SEIZE.EFFECT_CHAIN.EFFECTS_4.CALLOUT`; arrays by index,
 dictionaries by key, or by position for resource keys such as a tile's
 `event_responses`), read off the file's contents, so a re-save that renumbers
 sub-resource ids can't change it. A root that isn't content names its part
