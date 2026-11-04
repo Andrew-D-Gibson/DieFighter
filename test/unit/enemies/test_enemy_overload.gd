@@ -166,9 +166,8 @@ func test_the_formation_makes_room_for_the_gauge() -> void:
 		assert_true(footprint.y >= gauge.position.x + reach.y, "%s right" % resource.enemy_name)
 
 
-func test_the_gauge_has_no_hover_hint_and_shows_info_on_click() -> void:
+func test_the_gauge_shows_info_on_click() -> void:
 	var gauge: OverloadGauge = _live_ship(ZEALOT).overload_gauge
-	assert_eq(gauge.clickable.hover_hint, &"", "overload gauge does not show a hover hint")
 	watch_signals(Events)
 	gauge.clickable.clicked.emit()
 	assert_signal_emitted(Events, "show_info")

@@ -105,7 +105,6 @@ func _build_entry(i: int, id: String, seen: Vector2i) -> Button:
 	)
 	entry.custom_minimum_size = Vector2((_PANEL_SIZE.x - 64.0) / _COLUMNS, 44)
 	entry.alignment = HORIZONTAL_ALIGNMENT_LEFT
-	entry.tooltip_text = id
 	var color: Color = ScenarioLabUI.SEEN_COLOR if seen.x == seen.y else ScenarioLabUI.UNSEEN_COLOR
 	if ScenarioLab.active and i == ScenarioLab.index:
 		color = ScenarioLabUI.CURRENT_COLOR

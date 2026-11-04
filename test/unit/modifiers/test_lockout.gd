@@ -175,7 +175,7 @@ func test_locked_rule_is_not_duplicated_in_tile_info() -> void:
 	assert_eq((LockoutModifier.new(tile)).get_info_text(), "")
 
 
-func test_board_label_opens_and_closes_keyword_tooltip() -> void:
+func test_board_label_has_no_hover_tooltip() -> void:
 	var host: Node2D = add_child_autofree(Node2D.new())
 	var visual: Node2D = LOCK_VISUAL.instantiate()
 	visual.configure(host)
@@ -183,9 +183,9 @@ func test_board_label_opens_and_closes_keyword_tooltip() -> void:
 	var label: RichTextLabel = visual.get_node("LockedKeyword")
 	assert_string_contains(label.text, Keywords.title("locked").to_upper())
 	label.mouse_entered.emit()
-	assert_true(visual._tooltip.visible)
+	assert_null(visual.find_child("LockedTooltip", true, false))
 	label.mouse_exited.emit()
-	assert_false(visual._tooltip.visible)
+	assert_null(visual.find_child("LockedTooltip", true, false))
 	await wait_seconds(0.6)
 	assert_true(visual._settled)
 	# It floats in whole art pixels: over a full bob it visits more than one
@@ -199,7 +199,7 @@ func test_board_label_opens_and_closes_keyword_tooltip() -> void:
 	assert_gt(heights.size(), 1, "the settled lock floats")
 	visual.release()
 	assert_false(label.visible)
-	assert_false(visual._tooltip.visible)
+	assert_null(visual.find_child("LockedTooltip", true, false))
 
 
 func test_locked_is_a_hoverable_keyword() -> void:

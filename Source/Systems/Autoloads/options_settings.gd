@@ -167,6 +167,8 @@ func get_default(key: StringName) -> Variant:
 func set_option(key: StringName, value: Variant) -> void:
 	var option: _Option = _options[key]
 	option.write.call(value)
+	if key == CONTROLLER_SCHEME and InputManager.control_scheme == InputBindings.ControlScheme.FOCUS:
+		set_option(DICE_PLACEMENT, Draggable.PlacementMode.CLICK)
 	option_changed.emit(key, option.read.call())
 
 
@@ -281,7 +283,7 @@ func _register_controls_options() -> void:
 	register(DICE_PLACEMENT, Draggable.PlacementMode.DRAG,
 		func() -> int: return Draggable.placement_mode,
 		func(value: Variant) -> void:
-			var mode: int = int(value)
+			var mode: int = Draggable.PlacementMode.CLICK if InputManager.control_scheme == InputBindings.ControlScheme.FOCUS else int(value)
 			Draggable.placement_mode = mode as Draggable.PlacementMode \
 				if Draggable.PlacementMode.values().has(mode) else Draggable.PlacementMode.DRAG)
 

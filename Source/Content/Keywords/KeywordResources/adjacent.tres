@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_b0ry7"]
+[ext_resource type="Script" path="res://Source/Content/Keywords/keyword_token.gd" id="2_y44h4"]
+
+[sub_resource type="Resource" id="Resource_nu1dp"]
+script = ExtResource("2_y44h4")
+token = "(adjacent)"
+label = "adjacent"
+
+[sub_resource type="Resource" id="Resource_l4tri"]
+script = ExtResource("2_y44h4")
+token = "(Adjacent)"
+label = "Adjacent"
+
+[resource]
+script = ExtResource("1_b0ry7")
+title = "Adjacent"
+rule = "The slots directly above, below, left and right of this tile. Diagonals are excluded."
+tokens = Array[ExtResource("2_y44h4")]([SubResource("Resource_nu1dp"), SubResource("Resource_l4tri")])

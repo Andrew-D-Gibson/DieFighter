@@ -43,29 +43,38 @@ func test_a_wrapped_name_pushes_the_page_down_a_line() -> void:
 	assert_eq(_codex.get_node("%BodyLabel").offset_top, CodexPopup._BODY_TOP, "and back for the next page")
 
 
-func test_upgrade_toggle_switches_between_base_and_upgraded_tile() -> void:
+func test_upgrade_checkbox_switches_between_base_and_upgraded_tile() -> void:
 	CollectionManager.record_tile("damage")
 	_codex.open()
 	_codex._pick("damage")
 	var base_tile: TileResource = CodexCatalog.tile_resource("damage")
 	var upgraded_tile: TileResource = base_tile.upgraded_version
-	var toggle: CodexButton = _codex.get_node("%UpgradeToggle")
+	var check: CheckBox = _codex.get_node("%UpgradeCheck")
 	var name_label: RichTextLabel = _codex.get_node("%NameLabel")
 	var body_label: RichTextLabel = _codex.get_node("%BodyLabel")
 
-	assert_true(toggle.visible, "upgradeable tile shows the toggle")
-	assert_false(toggle.selected, "starts on base version")
+	assert_true(_codex.get_node("%UpgradeToggle").visible, "upgradeable tile shows the checkbox")
+	assert_false(check.button_pressed, "starts on base version")
 	assert_eq(name_label.text, Utils.format_text(base_tile.display_name()))
 
-	toggle.pressed.emit()
-	assert_true(toggle.selected, "toggled to upgraded version")
+	check.button_pressed = true
 	assert_eq(name_label.text, Utils.format_text(upgraded_tile.display_name()))
 	var no_counters: Dictionary[String, int] = {}
-	assert_eq(body_label.text, Utils.format_text(Tile.fill_data_tokens(upgraded_tile.display_description(), no_counters), true))
+	assert_string_starts_with(body_label.text, Utils.format_text(Tile.fill_data_tokens(upgraded_tile.display_description(), no_counters), true))
 
-	toggle.pressed.emit()
-	assert_false(toggle.selected, "toggled back to base version")
+	check.button_pressed = false
 	assert_eq(name_label.text, Utils.format_text(base_tile.display_name()))
+
+
+func test_reopening_the_codex_starts_unchecked() -> void:
+	CollectionManager.record_tile("damage")
+	_codex.open()
+	_codex._pick("damage")
+	_codex.get_node("%UpgradeCheck").button_pressed = true
+	_codex.close()
+	_codex.open()
+	assert_false(_codex.get_node("%UpgradeCheck").button_pressed)
+	assert_false(_codex._show_upgraded)
 
 
 func test_non_upgradeable_tile_hides_upgrade_toggle() -> void:

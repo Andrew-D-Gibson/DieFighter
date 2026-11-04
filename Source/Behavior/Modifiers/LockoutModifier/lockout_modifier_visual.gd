@@ -26,7 +26,6 @@ var _released: bool = false
 var _settled: bool = false
 var _age: float = 0.0
 var _keyword: RichTextLabel
-var _tooltip: PanelContainer
 
 
 func configure(host: Node2D) -> void:
@@ -46,10 +45,6 @@ func _process(delta: float) -> void:
 		# Whole art pixels: a sub-pixel float would smear on the 6x viewport.
 		_sprite.position.y = roundf(sin(_age * 2.4) * 1.2)
 	queue_redraw()
-	if is_instance_valid(_tooltip) and _tooltip.visible:
-		var viewport_size: Vector2 = get_viewport_rect().size
-		_tooltip.position = (get_viewport().get_mouse_position() + Vector2(24, 24)).clamp(
-			Vector2(12, 12), viewport_size - _tooltip.size - Vector2(12, 12))
 	_face_age += delta
 	if _face_age >= _FACE_SECONDS:
 		_face_age -= _FACE_SECONDS
@@ -72,7 +67,6 @@ func release() -> void:
 		return
 	_released = true
 	_keyword.hide()
-	_tooltip.hide()
 	queue_redraw()
 	_sprite.rotation = 0.0
 	Juice.sparkle(get_parent(), global_position, Globals.yellow, 12, 55.0, true)
@@ -138,32 +132,8 @@ func _build_keyword() -> void:
 	_keyword.scroll_active = false
 	_keyword.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_keyword.text = Utils.format_text("[color=orange]%s[/color]" % Keywords.title("locked").to_upper())
-	_keyword.mouse_filter = Control.MOUSE_FILTER_STOP
+	_keyword.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(_keyword)
-	var layer: CanvasLayer = CanvasLayer.new()
-	layer.layer = 90
-	add_child(layer)
-	_tooltip = PanelContainer.new()
-	_tooltip.name = "LockedTooltip"
-	_tooltip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	var style: StyleBoxFlat = StyleBoxFlat.new()
-	style.bg_color = Color("0f0c2e")
-	style.set_content_margin_all(18)
-	_tooltip.add_theme_stylebox_override("panel", style)
-	layer.add_child(_tooltip)
-	var rule: RichTextLabel = RichTextLabel.new()
-	rule.theme_type_variation = FontRoles.slot(FontRoles.SMALL, 6.0)
-	rule.custom_minimum_size.x = 480
-	rule.bbcode_enabled = true
-	rule.fit_content = true
-	rule.scroll_active = false
-	rule.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	rule.text = Utils.format_text("[color=orange]%s[/color]: %s" % [
-		Keywords.title("locked"), Keywords.definition("locked")])
-	_tooltip.add_child(rule)
-	_tooltip.hide()
-	_keyword.mouse_entered.connect(_tooltip.show)
-	_keyword.mouse_exited.connect(_tooltip.hide)
 
 
 ## Low, slow wisps make a persistent lock readable without hiding its die faces.

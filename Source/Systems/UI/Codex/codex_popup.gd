@@ -16,15 +16,22 @@ const _PAGE_SIZE: int = _COLUMNS * _ROWS
 ## Cell size plus the 1px gap between cells.
 const _CELL_PITCH: float = CodexEntry.SIZE.x + 1.0
 
-## Where the body text ends with and without an enemy's tally under it.
-## Lines step 9 px (13 tall, -4 separation), and a RichTextLabel only starts
-## scrolling once its text is 4 px past the box: a box 4 more than a whole
-## number of steps (76, 67) either shows the last line whole or scrolls. At
-## 64 a seventh line was cut off with no scrollbar.
-const _BODY_BOTTOM: float = 132.0
-const _BODY_BOTTOM_ABOVE_STATS: float = 123.0
-const _BODY_BOTTOM_ABOVE_TOGGLE: float = 114.0
+## Where the body text ends with and without an enemy's tally or the
+## upgrade checkbox under it. Body lines step 11 px (13 tall, -2 separation,
+## looser than the theme so inline dice icons clear the line above), and a
+## RichTextLabel only starts scrolling once its text is 2 px past the box: a
+## box 2 more than a whole number of steps (68, 57) either shows the last
+## line whole or scrolls. Over the tally a few px of slack is left instead.
+const _BODY_BOTTOM: float = 124.0
+const _BODY_BOTTOM_ABOVE_STATS: float = 120.0
+const _BODY_BOTTOM_ABOVE_TOGGLE: float = 113.0
+## The name keeps the theme's tighter 9 px line step.
 const _LINE_STEP: float = 9.0
+const _CHECK_TEXTURES: Dictionary[String, Texture2D] = {
+	"checked": preload("res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_checked_purple.png"),
+	"unchecked": preload("res://Assets/Textures/UI/OptionsMenu/CheckBox/check_box_unchecked_purple.png"),
+}
+const _TOGGLE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/hover_thump.tres")
 const _TILE_SHADER: Shader = preload("res://Assets/Shaders/tile.gdshader")
 ## A name that wraps takes a line more, and the sub-heading and body below it
 ## move down by as much, so nothing clips (a long German enemy name). The
@@ -74,7 +81,10 @@ func _ready() -> void:
 	%EnemiesTab.pressed.connect(_show_tab.bind(Tab.ENEMIES))
 	%PrevPage.pressed.connect(_turn_page.bind(-1))
 	%NextPage.pressed.connect(_turn_page.bind(1))
-	%UpgradeToggle.pressed.connect(_toggle_upgraded)
+	_style_upgrade_check()
+	%UpgradeCheck.toggled.connect(_on_upgrade_toggled)
+	# The label is part of the control: clicking it ticks the box too.
+	%UpgradeToggle.gui_input.connect(_on_upgrade_row_input)
 	%Grid.gui_input.connect(_on_grid_input)
 	%BackButton.pressed_within_window.connect(close)
 	%BackButton.set_button_text(tr("CODEX_BACK"))
@@ -84,6 +94,8 @@ func _ready() -> void:
 
 
 func open() -> void:
+	# Each visit starts on the base tiles.
+	_show_upgraded = false
 	_show_tab(_tab)
 	show()
 
@@ -199,7 +211,7 @@ func _show_detail(id: String) -> void:
 		var base_tile: TileResource = CodexCatalog.tile_resource(id)
 		var has_upgrade: bool = base_tile != null and base_tile.upgraded_version != null
 		%UpgradeToggle.visible = has_upgrade
-		%UpgradeToggle.selected = _show_upgraded and has_upgrade
+		%UpgradeCheck.set_pressed_no_signal(_show_upgraded)
 		var shown_tile: TileResource = base_tile.upgraded_version if (_show_upgraded and has_upgrade) else base_tile
 		%NameLabel.text = Utils.format_text(shown_tile.display_name())
 		_make_room_for_name()
@@ -213,9 +225,35 @@ func _show_detail(id: String) -> void:
 	%BodyLabel.scroll_to_line(0)
 
 
-func _toggle_upgraded() -> void:
-	_show_upgraded = not _show_upgraded
+func _on_upgrade_toggled(on: bool) -> void:
+	Events.play_sound.emit(_TOGGLE_SFX)
+	_show_upgraded = on
 	_show_detail(_picked_ids.get(_tab, ""))
+
+
+func _on_upgrade_row_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		%UpgradeCheck.button_pressed = not %UpgradeCheck.button_pressed
+		get_viewport().set_input_as_handled()
+
+
+## The Options menu's checkbox art, exactly its size (see OptionsPage.check()).
+func _style_upgrade_check() -> void:
+	var box: CheckBox = %UpgradeCheck
+	for state: String in ["checked", "unchecked"]:
+		box.add_theme_icon_override(state, _CHECK_TEXTURES[state])
+		box.add_theme_icon_override(state + "_disabled", _CHECK_TEXTURES[state])
+	var empty: StyleBoxEmpty = StyleBoxEmpty.new()
+	for state: String in ["normal", "hover", "pressed", "hover_pressed", "disabled", "focus"]:
+		box.add_theme_stylebox_override(state, empty)
+
+
+## A body that scrolls gets a blank line after its last, so scrolled to the
+## bottom that line clears the box's edge and whatever sits under it.
+func _pad_scrolling_body() -> void:
+	var body: RichTextLabel = %BodyLabel
+	if body.get_content_height() > body.size.y:
+		body.text += "\n "
 
 
 func _make_room_for_name() -> void:
@@ -238,6 +276,7 @@ func _show_tile(tile: TileResource, has_upgrade: bool = false) -> void:
 	var no_counters: Dictionary[String, int] = {}
 	%BodyLabel.text = Utils.format_text(Tile.fill_data_tokens(tile.display_description(), no_counters), true)
 	%BodyLabel.offset_bottom = _BODY_BOTTOM_ABOVE_TOGGLE if has_upgrade else _BODY_BOTTOM
+	_pad_scrolling_body()
 
 
 func _show_enemy(id: String, enemy: EnemyResource) -> void:
@@ -260,11 +299,11 @@ func _show_enemy(id: String, enemy: EnemyResource) -> void:
 		sections.append("[color=orange]%s[/color]\n%s" % [tr("CODEX_ACTIONS"), "\n".join(actions)])
 	%BodyLabel.text = Utils.format_text("\n\n".join(sections), true)
 	%BodyLabel.offset_bottom = _BODY_BOTTOM_ABOVE_STATS
+	_pad_scrolling_body()
 
-	%StatsLabel.text = tr("CODEX_TALLY").format({
-		"met": CollectionManager.times_encountered(id),
-		"destroyed": CollectionManager.times_destroyed(id),
-	})
+	var met: String = tr("CODEX_MET").format({"met": CollectionManager.times_encountered(id)})
+	var destroyed: String = tr("CODEX_DESTROYED").format({"destroyed": CollectionManager.times_destroyed(id)})
+	%StatsLabel.text = Utils.format_text("[color=red]%s[/color]   [color=green]%s[/color]" % [met, destroyed])
 
 
 ## The mouse wheel turns pages over the grid.
@@ -281,6 +320,7 @@ func _on_keyword_hover_started(meta: Variant) -> void:
 	if rule.is_empty():
 		return
 	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(str(meta)), rule])
+	preload("res://Source/Systems/UI/InfoShower/keyword_diagram.gd").configure(%KeywordPopup, %KeywordLabel, str(meta), 1.0)
 	# Shrink back to the new text's size first, or a long rule's height
 	# lingers on a short one.
 	%KeywordPopup.reset_size()
@@ -303,9 +343,10 @@ func _process(_delta: float) -> void:
 func _place_keyword_popup() -> void:
 	var popup_size: Vector2 = %KeywordPopup.size
 	var pos: Vector2 = get_local_mouse_position() + Vector2(6, 6)
-	pos.x = minf(pos.x, 158.0 - popup_size.x)
+	pos.x = clampf(pos.x, -158.0, maxf(-158.0, 158.0 - popup_size.x))
 	if pos.y + popup_size.y > 88.0:
 		pos.y = get_local_mouse_position().y - popup_size.y - 4.0
+	pos.y = clampf(pos.y, -88.0, maxf(-88.0, 88.0 - popup_size.y))
 	%KeywordPopup.position = pos.floor()
 
 

@@ -84,7 +84,6 @@ func _build() -> void:
 	_portrait_button.size = Vector2(24, 24)
 	for style: StringName in [&"normal", &"hover", &"pressed", &"focus"]:
 		_portrait_button.add_theme_stylebox_override(style, StyleBoxEmpty.new())
-	_portrait_button.tooltip_text = tr("ADVISOR_TITLE")
 	_portrait_button.pressed.connect(_toggle_briefing)
 	add_child(_portrait_button)
 	_quip = RichTextLabel.new()
@@ -263,7 +262,6 @@ func _react(frame: int, seconds: float) -> void:
 func _on_locale_changed(_locale: String) -> void:
 	_title.text = tr("ADVISOR_TITLE")
 	_close_button.text = tr("REGION_ALERT_CLOSE")
-	_portrait_button.tooltip_text = tr("ADVISOR_TITLE")
 	_quip.text = Utils.format_text(tr(_quip_key))
 	if _panel.visible:
 		_refresh_briefing()

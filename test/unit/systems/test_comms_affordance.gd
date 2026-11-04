@@ -242,5 +242,5 @@ func test_the_portrait_keeps_the_plain_arrow() -> void:
 	_button()._process(_button().hover_delay + 0.1)
 	cursor._process(_button().hover_delay + 0.1)
 	assert_eq(cursor.texture, arrow)
-	assert_false(_hint_of(cursor).visible)
+	assert_null(_hint_of(cursor), "hovering shows no text popup")
 	_button().reset_hover_state()

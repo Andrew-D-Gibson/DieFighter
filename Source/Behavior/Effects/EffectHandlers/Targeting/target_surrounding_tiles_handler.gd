@@ -25,13 +25,13 @@ func apply(_data: EffectData, context: EffectContext, _engine: ScenarioEngine) -
 
 	context.targets = []
 	
-	# Check all 8 adjacent positions
+	# Check all eight surrounding positions, including diagonals
 	for x in range(-1, 2):
 		for y in range(-1, 2):
 			if x == 0 and y == 0:
 				continue
 			var check_pos: Vector2i = source_tile_pos + Vector2i(x, y)
-			# Check if the adjacent position is valid and occupied
+			# Only occupied slots on the ship are targets
 			if Globals.tile_grid.is_grid_pos_valid(check_pos)\
 				and Globals.tile_grid.tile_locations.has(check_pos):
 					context.targets.append(

@@ -284,6 +284,16 @@ func _pulse_right_arrow_at_open_gate(delta: float) -> void:
 ## Index of the scenario icon under the cursor, or -1. The player's own
 ## marker doesn't count: it has its own pulse and needs no caption.
 func _hovered_scenario_index() -> int:
+	if InputManager.controller_active and InputManager.control_scheme == InputBindings.ControlScheme.FOCUS:
+		var closest: int = -1
+		var distance: float = sprite_spacing * 0.5 + 0.01
+		for i: int in range(scenario_sprites.size()):
+			var icon: Sprite2D = scenario_sprites[i]
+			var dx: float = absf(icon.position.x - map_camera.position.x)
+			if icon.texture and dx < distance:
+				closest = i
+				distance = dx
+		return closest if closest != current_scenario_index else -1
 	if not _mouse_in_map():
 		return -1
 	var world: Vector2 = _mouse_world_position()

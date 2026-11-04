@@ -59,7 +59,8 @@ func _process(_delta: float) -> void:
 	if not get_window().has_focus():
 		cursor.release_all()
 		return
-	cursor.update(real_delta)
+	if control_scheme == InputBindings.ControlScheme.CURSOR:
+		cursor.update(real_delta)
 
 
 ## Comes before the GUI and unhandled input, so a binding being listened for,

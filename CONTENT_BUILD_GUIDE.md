@@ -1148,6 +1148,15 @@ Add one `KeywordToken` to `tokens` per spelling: `token` (`"(my_kw)"`),
 blue; keywords are otherwise orange). Then run `tools/loc.sh sync`. Token keys
 go by position (`KEYWORD.MY_KW.TOKENS_0.LABEL`), so add new tokens at the end.
 
+**Spatial terms:** `(adjacent)` means the four slots directly above, below,
+left and right; `(surrounding)` means all eight neighboring slots, including
+diagonals. Use `(Adjacent)` / `(Surrounding)` at the start of a sentence.
+Their hover pop-ups show a grid diagram. Missing/off-grid slots do not count;
+empty-slot effects count only valid, unoccupied slots. The inspector calls
+these eight-slot counting effects **Add Surrounding Tiles** and **Add Empty
+Surrounding Cells**; their serialized enum IDs still contain `ADJACENT` for
+compatibility. Never infer four-way behavior from those legacy IDs.
+
 Write `(my_kw)` in any description. It renders styled and underlined, and the
 info panel shows its rule in a pop-up while the player hovers it.
 

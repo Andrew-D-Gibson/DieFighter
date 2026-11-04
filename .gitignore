@@ -38,3 +38,22 @@ mono_crash.*.json
 # Python bytecode and virtual environment
 __pycache__/
 .venv/
+
+# AI agent working folders (worktrees, plans, tool config). Files under
+# .claude/ that were already tracked (settings.json) stay tracked.
+.claude/
+.codex/
+.pi/
+
+# Local reference art, not shipped
+Assets/Inspiration Resources/
+
+# FL Studio autosaves and backup renders. Each folder also holds a
+# .gdignore so Godot doesn't import them.
+Assets/Music/**/Backup/
+Assets/Music/**/*_Backup/
+
+# Personal tool and agent configs (absolute paths on one machine)
+.mcp.json
+opencode.jsonc
+.skills.json

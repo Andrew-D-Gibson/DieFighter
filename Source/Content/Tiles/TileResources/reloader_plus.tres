@@ -97,7 +97,7 @@ animations = [{
 [resource]
 script = ExtResource("4_ymfbh")
 tile_name = "[color=yellow]Reloader+[/color]"
-description = "[color=yellow]Any die[/color] -> Surrounding tiles gain {uses} use"
+description = "[color=yellow]Any die[/color] -> (Surrounding) tiles gain {uses} use"
 rarity = 2
 offered_as_reward = false
 is_upgrade = true

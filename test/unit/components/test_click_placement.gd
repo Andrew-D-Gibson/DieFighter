@@ -387,7 +387,6 @@ func _cursor() -> Sprite2D:
 	cursor.centered = false
 	cursor.set_script(_CURSOR_SCRIPT)
 	layer.add_child(cursor)
-	_CURSOR_SCRIPT.set("_carry_hints_given", 0)
 	return cursor
 
 
@@ -456,11 +455,11 @@ func test_the_cursor_is_a_fist_while_holding_with_an_i_on_the_info_spot() -> voi
 	await _click_tile(tile)
 	await _point_at(cell_centre)
 	assert_eq(cursor.texture, _GRAB_INFO)
-	assert_eq(_hint_of(cursor).text, tr("CURSOR_HINT_CLICK_FOR_INFO"))
+	assert_null(_hint_of(cursor), "holding a tile shows no text popup")
 
 	await _point_at(grid.grid_to_global_pos(Vector2i(3, 0)))
 	assert_eq(cursor.texture, _GRAB)
-	assert_eq(_hint_of(cursor).text, tr("CURSOR_HINT_CLICK_TO_PLACE"))
+	assert_null(_hint_of(cursor), "moving a held tile shows no text popup")
 
 	await _click(grid.grid_to_global_pos(Vector2i(3, 0)))
 	await wait_process_frames(1)
@@ -468,24 +467,15 @@ func test_the_cursor_is_a_fist_while_holding_with_an_i_on_the_info_spot() -> voi
 	assert_ne(cursor.texture, _GRAB_INFO)
 
 
-func test_the_hint_line_teaches_the_first_few_lifts_only() -> void:
+func test_holding_a_die_shows_no_text_popup() -> void:
 	var cursor: Sprite2D = _cursor()
 	var die: Dice = _hand_die()
-	for lift: int in _CURSOR_SCRIPT.CARRY_HINT_PICKUPS:
-		await _pick_up_by_click(die.draggable)
-		await wait_process_frames(1)
-		var hint: Label = _hint_of(cursor)
-		assert_true(hint.visible, "lift %d is told" % lift)
-		# A die has no info panel, so there's no spot to click for one.
-		assert_eq(hint.text, tr("CURSOR_HINT_CLICK_TO_PLACE"))
-		await _click(_NOWHERE)
-		await wait_process_frames(1)
-		assert_false(hint.visible, "gone with the drop")
-		die.global_position = die.draggable.home_position
-
 	await _pick_up_by_click(die.draggable)
 	await wait_process_frames(1)
-	assert_false(_hint_of(cursor).visible, "by now the player knows")
+	assert_null(_hint_of(cursor))
+	await _click(_NOWHERE)
+	await wait_process_frames(1)
+	assert_null(_hint_of(cursor))
 
 
 # ── The option ────────────────────────────────────────────────────────────────

@@ -1,17 +1,7 @@
 extends Sprite2D
 ## The game's pointer, drawn in place of the OS one so it scales with the
-## pixels and follows a controller's virtual cursor too. It shows what a click
-## would do: the arrow; an "i" once hovering has something to explain; a
-## clickable's own pointer and hint line for a click that acts rather than
-## explains (Clickable.hover_cursor and hover_hint); and a
-## closed hand while a die or tile is in hand.
-##
-## Click placement (Draggable.PlacementMode.CLICK) leaves the button up
-## between pick-up and drop, so nothing about the hand says it's still
-## holding: the fist does. Clicking a lifted thing again where it was picked
-## up puts it back and shows its info, which nothing would ever reveal, so
-## while the pointer is on that spot the fist wears an "i" badge, and the first
-## few pick-ups each launch spell both clicks out in a line beside it.
+## pixels and follows a controller's virtual cursor too. Cursor icons indicate
+## info, custom actions, and held items without automatic text popups.
 
 var default_cursor_texture: Texture2D = preload("uid://dm4or0suv2f7l")
 var info_cursor_texture: Texture2D = preload("uid://p42b6jtcwu2x")
@@ -27,31 +17,9 @@ const _GRAB_OFFSET: Vector2 = Vector2(-2, -2)
 ## The fist is see-through so what shows through it is still the held face.
 const _GRAB_ALPHA: float = 0.6
 
-## How many click-mode pick-ups each launch get the hint line. Enough to learn
-## both clicks, few enough not to nag.
-const CARRY_HINT_PICKUPS: int = 3
-## Where the hint line starts, right of the pointer and clear of the fist and
-## its badge, in cursor pixels. It flips to the left near the screen's edge.
-const _HINT_GAP: Vector2 = Vector2(16, -2)
-## How far left of the pointer a flipped hint line ends: clear of the held
-## thing, a lifted die or tile being about this wide either side.
-const _HINT_FLIPPED_GAP: float = 10.0
-const _HINT_OUTLINE: Color = Color("#040217")
-## Pick-ups that have shown the hint so far. Static, so it counts across
-## scenes for the whole launch.
-static var _carry_hints_given: int = 0
-
 var current_clickable: Clickable = null
 ## Whether a hovered clickable has waited out its delay: the "i" shows.
 var _hover_info: bool = false
-## What the hand last held, to notice each new pick-up.
-var _hand: Draggable = null
-## Whether this pick-up is one that shows the hint line.
-var _hinting: bool = false
-var _hint: Label
-## How long the pointer has rested on the current clickable, for its
-## hover_hint, which waits out the clickable's hover_delay.
-var _hover_seconds: float = 0.0
 
 
 func _ready() -> void:
@@ -60,8 +28,6 @@ func _ready() -> void:
 
 	Input.mouse_mode = Input.MOUSE_MODE_HIDDEN
 
-	_hint = _make_hint()
-	add_child(_hint)
 	_on_hover_delay_reset()
 	show()
 
@@ -69,11 +35,10 @@ func _ready() -> void:
 	Events.set_current_clickable.connect(set_current_clickable)
 
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	# Not get_global_mouse_position(): that's the OS pointer, which may lag a
 	# controller's virtual one (InputManager.cursor).
 	global_position = get_canvas_transform().affine_inverse() * InputManager.pointer_position(get_viewport())
-	_hover_seconds += delta
 	_update_look()
 
 
@@ -82,25 +47,18 @@ func _process(delta: float) -> void:
 func _update_look() -> void:
 	if InputManager.control_scheme == InputBindings.ControlScheme.FOCUS and InputManager.cursor.active:
 		visible = false
-		if _hint:
-			_hint.hide()
 		return
 	visible = true
 
 	var hand: Draggable = Draggable.holding()
-	if hand != _hand:
-		_on_hand_changed(hand)
 
 	if hand:
 		var on_info_spot: bool = hand.is_over_info_spot()
 		_wear(_GRAB_INFO_TEXTURE if on_info_spot else _GRAB_TEXTURE, _GRAB_OFFSET, _GRAB_ALPHA)
-		if _hinting:
-			_show_hint(tr(&"CURSOR_HINT_CLICK_FOR_INFO") if on_info_spot else tr(&"CURSOR_HINT_CLICK_TO_PLACE"))
 		return
 
 	if is_instance_valid(Globals.map) and Globals.map.is_panning():
 		_wear(_GRAB_TEXTURE, _GRAB_OFFSET, _GRAB_ALPHA)
-		_hint.hide()
 		return
 
 	var acting: Clickable = _acting_clickable()
@@ -111,62 +69,25 @@ func _update_look() -> void:
 		_wear(info_cursor_texture, _INFO_OFFSET)
 	else:
 		_wear(default_cursor_texture, Vector2.ZERO)
-	if acting and acting.hover_hint != &"" and _hover_seconds >= acting.hover_delay:
-		_show_hint(tr(acting.hover_hint))
-	else:
-		_hint.hide()
 
 
-## The hovered clickable, when it has its own pointer or hint and is live;
+## The hovered clickable, when it has its own pointer and is live;
 ## otherwise null. Re-read every frame: a clickable can go dead (a ship's
 ## comms cut off by a jump) while the pointer rests on it.
 func _acting_clickable() -> Clickable:
 	if not is_instance_valid(current_clickable):
 		return null
-	if current_clickable.hover_cursor == null and current_clickable.hover_hint == &"":
+	if current_clickable.hover_cursor == null:
 		return null
 	if not current_clickable.hovered or not current_clickable.input_pickable:
 		return null
 	return current_clickable
 
 
-func _on_hand_changed(hand: Draggable) -> void:
-	_hand = hand
-	_hinting = false
-	_hint.hide()
-	# Only click pick-ups: a drag is let go of in one motion and needs no telling.
-	if hand and hand.is_carried() and _carry_hints_given < CARRY_HINT_PICKUPS:
-		_carry_hints_given += 1
-		_hinting = true
-
-
 func _wear(cursor_texture: Texture2D, cursor_offset: Vector2, alpha: float = 1.0) -> void:
 	texture = cursor_texture
 	offset = cursor_offset
-	# self_modulate, so the hint line (a child) stays solid.
 	self_modulate.a = alpha
-
-
-func _show_hint(text: String) -> void:
-	_hint.text = text
-	_hint.show()
-	_hint.reset_size()
-	# Flipped to the pointer's left when the line would run off the screen.
-	var screen_right: float = get_viewport_rect().size.x / global_scale.x
-	var pointer_x: float = get_global_transform_with_canvas().origin.x / global_scale.x
-	var runs_off: bool = pointer_x + _HINT_GAP.x + _hint.size.x > screen_right
-	_hint.position = Vector2(-_HINT_FLIPPED_GAP - _hint.size.x if runs_off else _HINT_GAP.x, _HINT_GAP.y)
-
-
-func _make_hint() -> Label:
-	var hint: Label = Label.new()
-	hint.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	hint.add_theme_color_override(&"font_color", Globals.white)
-	# Dark-edged, so it reads over the cockpit, the map and the stars alike.
-	hint.add_theme_color_override(&"font_outline_color", _HINT_OUTLINE)
-	hint.add_theme_constant_override(&"outline_size", 4)
-	hint.hide()
-	return hint
 
 
 func set_current_clickable(clickable: Clickable) -> void:
@@ -175,7 +96,6 @@ func set_current_clickable(clickable: Clickable) -> void:
 		_disconnect_from_clickable(current_clickable)
 
 	current_clickable = clickable
-	_hover_seconds = 0.0
 
 	# Connect to new clickable
 	if clickable:

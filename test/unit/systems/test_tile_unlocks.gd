@@ -128,7 +128,7 @@ func test_the_run_seed_rides_along_with_the_run_state() -> void:
 	assert_eq(rng.current_run_seed, 1234)
 
 
-func test_tile_unlock_popup_formats_hoverable_keywords_and_shows_tooltip() -> void:
+func test_tile_unlock_description_has_no_hover_popup() -> void:
 	var popup_scene: PackedScene = load("res://Source/Systems/UI/TileUnlockPopup/tile_unlock_popup.tscn")
 	var popup: TileUnlockPopup = popup_scene.instantiate()
 	add_child_autofree(popup)
@@ -142,11 +142,6 @@ func test_tile_unlock_popup_formats_hoverable_keywords_and_shows_tooltip() -> vo
 	assert_string_contains(info_label.text, "[url=feed]", "tile description renders keywords with hoverable [url] meta tags")
 	assert_eq(info_label.mouse_filter, Control.MOUSE_FILTER_PASS, "info label accepts mouse hover for keyword meta tags")
 
-	popup._on_keyword_hover_started("feed")
-	var keyword_popup: PanelContainer = popup.get("_keyword_popup")
-	var keyword_label: RichTextLabel = popup.get("_keyword_label")
-	assert_true(keyword_popup.visible, "hovering a keyword opens the keyword rule popup")
-	assert_string_contains(keyword_label.text, Keywords.title("feed"))
-
-	popup._on_keyword_hover_ended("feed")
-	assert_false(keyword_popup.visible, "leaving the keyword hides the popup")
+	info_label.meta_hover_started.emit("feed")
+	assert_true(info_label.meta_hover_started.get_connections().is_empty())
+	assert_true(popup.find_children("*", "PanelContainer", true, false).is_empty())

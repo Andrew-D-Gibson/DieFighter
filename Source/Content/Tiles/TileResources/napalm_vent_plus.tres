@@ -150,7 +150,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Napalm Vent+[/color]"
-description = "[color=yellow]Surrounding tile activates[/color] -> Apply {burn} (burn)"
+description = "[color=yellow](Surrounding) tile activates[/color] -> Apply {burn} (burn)"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = -1

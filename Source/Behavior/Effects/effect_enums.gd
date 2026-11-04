@@ -49,7 +49,7 @@ enum TargetingSubtype {
 	TARGET_ALL_OTHER_SHIPS,        	## All ships except the actor
 	TARGET_RANDOM_SHIP,            	## One random ship (player or enemy)
 	TARGET_RANDOM_TILE,            	## One random tile on the grid
-	TARGET_SURROUNDING_TILES,      	## Tiles adjacent to the effect source tile
+	TARGET_SURROUNDING_TILES,      	## The eight surrounding tiles, including diagonals
 	TARGET_WITH_TARGETING_COMPUTER,	## Uses the player's targeting computer selection
 	TARGET_TILE_WITH_OFFSET,		## Targets a tile that is offset from the source tile
 	TARGET_EFFECT_SOURCE,          	## The tile or entity that owns this chain
@@ -151,12 +151,12 @@ enum AmountModifierSubtype {
 	SET,                  ## Set running_amount to a fixed value
 	ADD,                  ## Add a fixed value to running_amount
 	MULTIPLY,             ## Multiply running_amount by a float multiplier
-	ADD_ADJACENT_TILES,   ## Add count of adjacent tiles to running_amount
+	ADD_ADJACENT_TILES,   ## Legacy ID: counts the eight surrounding tiles, including diagonals
 	ADD_TILE_DATA,        ## Add a tile's stored data value to running_amount
 	SET_TO_ENGINE_CHARGE, ## Set running_amount to current engine charge value
 	SET_TO_DIE_VALUE,     ## Set running_amount to the activator die's face value
 	SET_TO_ENEMY_INTENT,  ## Set running_amount to the enemy action's rolled intent amount
-	ADD_EMPTY_ADJACENT_CELLS, ## Add count of empty cells around the source tile
+	ADD_EMPTY_ADJACENT_CELLS, ## Legacy ID: counts empty surrounding slots, including diagonals
 	## Set running_amount to how much charge is still MISSING (max - current).
 	## Reads 0 once the jump gate is open, so effects built on it are strongest
 	## on a cold drive and go quiet as the player secures their escape.

@@ -124,36 +124,37 @@ func _set_side_margins(margin: int) -> void:
 
 
 
-func _process(_delta: float) -> void:
-	if %KeywordPopup.visible:
-		_place_keyword_popup()
-
-
+## Spatial terms need a diagram; other keywords keep the existing info behavior.
 func _on_keyword_hover_started(meta: Variant) -> void:
-	var rule: String = Keywords.definition(str(meta))
-	if rule.is_empty():
+	var term: String = str(meta)
+	if not preload("res://Source/Systems/UI/InfoShower/keyword_diagram.gd").supports(term):
+		%KeywordPopup.hide()
 		return
-	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(str(meta)), rule])
-	# Shrink back to the new text's size before placing, or a long rule's
-	# height lingers on a short one.
+	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(term), Keywords.definition(term)])
+	preload("res://Source/Systems/UI/InfoShower/keyword_diagram.gd").configure(%KeywordPopup, %KeywordLabel, term, 4.0)
 	%KeywordPopup.reset_size()
 	%KeywordPopup.show()
 	_place_keyword_popup()
 
 
+func _process(_delta: float) -> void:
+	if visible and %KeywordPopup.visible:
+		_place_keyword_popup()
+
+
+func _place_keyword_popup() -> void:
+	var popup_size: Vector2 = %KeywordPopup.size
+	var cursor: Vector2 = get_local_mouse_position()
+	var pos: Vector2 = cursor + Vector2(32, 32)
+	if pos.y + popup_size.y > size.y - 16.0:
+		pos.y = cursor.y - popup_size.y - 32.0
+	pos.x = clampf(pos.x, 16.0, maxf(16.0, size.x - popup_size.x - 16.0))
+	pos.y = clampf(pos.y, 16.0, maxf(16.0, size.y - popup_size.y - 16.0))
+	%KeywordPopup.position = pos.floor()
+
+
 func _on_keyword_hover_ended(_meta: Variant) -> void:
 	%KeywordPopup.hide()
-
-
-## Sits below-right of the cursor, flipped back inside the screen at the edges.
-func _place_keyword_popup() -> void:
-	var offset: Vector2 = Vector2(32, 32)
-	var popup_size: Vector2 = %KeywordPopup.size
-	var pos: Vector2 = get_local_mouse_position() + offset
-	pos.x = minf(pos.x, size.x - popup_size.x - offset.x)
-	if pos.y + popup_size.y > size.y - offset.y:
-		pos.y = get_local_mouse_position().y - popup_size.y - offset.y
-	%KeywordPopup.position = pos
 
 
 ## Escape closes the info shower and nothing else. InputManager, an autoload,

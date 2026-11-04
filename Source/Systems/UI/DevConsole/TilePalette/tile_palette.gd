@@ -115,7 +115,6 @@ func _build_dice_row() -> Control:
 	var row := HBoxContainer.new()
 	for value: int in range(1, 7):
 		var entry: Control = _make_entry(_DICE_TEXTURES[value - 1], "", _DIE_THUMB_SIZE)
-		entry.tooltip_text = "Drag a %d out into the cockpit" % value
 		entry.gui_input.connect(_on_dice_entry_input.bind(value))
 		row.add_child(entry)
 	return row

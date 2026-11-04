@@ -45,7 +45,6 @@ func _init() -> void:
 	clear_button = Button.new()
 	clear_button.name = "ClearButton"
 	clear_button.text = "X"
-	clear_button.tooltip_text = "Clear"
 	clear_button.focus_mode = Control.FOCUS_NONE
 	clear_button.custom_minimum_size = Vector2(_HEIGHT, _HEIGHT)
 	_apply_font(clear_button)

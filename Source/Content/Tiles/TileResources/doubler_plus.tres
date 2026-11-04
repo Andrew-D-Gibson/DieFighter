@@ -1,11 +1,13 @@
 [gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://teon1fgqmg"]
 
-[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_yxm4s"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_mkpbp"]
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="script_act"]
-[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_chain"]
-[ext_resource type="Texture2D" uid="uid://d0g3t844lxfpn" path="res://Assets/Textures/Tiles/GreenTiles/doubler_plus-Sheet.png" id="tex"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_effect"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="script_tile"]
 [ext_resource type="Resource" uid="uid://dhdiec4h8tjs3" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="sfx"]
+[ext_resource type="Texture2D" uid="uid://d0g3t844lxfpn" path="res://Assets/Textures/Tiles/GreenTiles/doubler_plus-Sheet.png" id="tex"]
 
 [sub_resource type="Resource" id="Resource_any_die"]
 script = ExtResource("script_act")

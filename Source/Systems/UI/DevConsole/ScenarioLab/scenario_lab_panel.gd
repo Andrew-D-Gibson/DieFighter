@@ -183,7 +183,6 @@ func _refresh_navigator() -> void:
 		ScenarioLab.category(lab_id), ScenarioLab.index + 1, ScenarioLab.scenario_ids.size()
 	]
 	_title_label.text = ScenarioLab.display_name(lab_id)
-	_title_label.tooltip_text = lab_id
 	_seed_label.text = "seed %d" % ScenarioLab.run_seed if ScenarioLab.run_seed != 0 else ""
 
 	var lines: PackedStringArray = []
@@ -261,7 +260,6 @@ func _build_transition(ship: Enemy, event: ScenarioManager.ScenarioEvent, next: 
 	var box: VBoxContainer = ScenarioLabUI.column(2)
 	var line: HBoxContainer = ScenarioLabUI.row(6)
 	var fire: Button = ScenarioLabUI.button(ScenarioGraph.event_name(event), _fire.bind(event))
-	fire.tooltip_text = "Emit this scenario event: every ship reacts, as in play."
 	line.add_child(fire)
 	box.add_child(line)
 
@@ -278,7 +276,6 @@ func _build_transition(ship: Enemy, event: ScenarioManager.ScenarioEvent, next: 
 				"FORCE %d%% %s" % [roundi(100.0 * weights[outcome] / weight_sum), ScenarioGraph.label(outcome)],
 				_force.bind(ship, outcome)
 			)
-			force.tooltip_text = "Put only this ship in that state, skipping the roll."
 			force_row.add_child(force)
 			box.add_child(force_row)
 	else:
@@ -310,9 +307,6 @@ func _refresh_states() -> void:
 		entry.disabled = ship == null
 		entry.add_theme_color_override("font_color", ScenarioLabUI.SEEN_COLOR if was_seen else ScenarioLabUI.UNSEEN_COLOR)
 		entry.add_theme_color_override("font_disabled_color", ScenarioLabUI.MUTED_COLOR)
-		entry.tooltip_text = "%s\n\nClick to put %s in this state." % [
-			state.dialogue, ship.enemy_resource.enemy_name if ship else "its ship (gone)"
-		]
 		_states_box.add_child(entry)
 	if graph.has_fight:
 		var ended: bool = ScenarioLab.has_ended_fight(id)

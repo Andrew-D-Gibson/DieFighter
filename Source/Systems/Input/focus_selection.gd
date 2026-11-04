@@ -34,6 +34,9 @@ var _viewport: Viewport
 ##   "cell": Vector2i (for tile slots)
 var _current_target: Dictionary = {}
 var _targets: Array[Dictionary] = []
+var _modal: CanvasItem
+var _saved_targets: Dictionary[int, Dictionary] = {}
+var _returning_die: WeakRef
 var _last_grid_cell: Vector2i = Vector2i(-1, -1)
 
 ## Stick navigation timing
@@ -84,18 +87,19 @@ func _setup_reticle() -> void:
 
 func _process(delta: float) -> void:
 	if not active:
+		_reticle_draw.hide()
 		return
 
 	# Right stick can scroll the map in both schemes
 	_update_right_stick_map(delta)
 
-	if InputManager.control_scheme != InputBindings.ControlScheme.FOCUS:
+	if InputManager.control_scheme != InputBindings.ControlScheme.FOCUS or not InputManager.controller_active or InputManager.is_listening():
 		if _reticle_draw and _reticle_draw.visible:
 			_reticle_draw.hide()
 		return
 
-	if not _reticle_draw.visible:
-		_reticle_draw.show()
+	refresh()
+	_reticle_draw.visible = not _current_target.is_empty()
 
 	_pulse_time += delta
 	_update_stick_navigation(delta)
@@ -180,6 +184,10 @@ static func _to_screen(target: Dictionary) -> void:
 		ref = target.get("grid", target.get("map")) as CanvasItem
 	if not is_instance_valid(ref) or not ref.is_inside_tree():
 		return
+	if ref is Control:
+		target["pos"] = ref.get_global_rect().get_center()
+		var control_size: Vector2 = ref.get_global_rect().size
+		target["rect"] = Rect2(-control_size / 2.0, control_size)
 	var xf: Transform2D = _canvas_to_screen(ref)
 	var rect: Rect2 = target.get("rect", Rect2(-12, -12, 24, 24))
 	target["screen"] = xf * Vector2(target.get("pos", Vector2.ZERO))
@@ -191,10 +199,14 @@ func handle_event(event: InputEvent) -> bool:
 	if not active or InputManager.control_scheme != InputBindings.ControlScheme.FOCUS:
 		return false
 
+	if event is InputEventJoypadMotion:
+		return event.axis in [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y]
+
 	if event is InputEventJoypadButton:
 		if not event.pressed or event.is_echo():
 			return true
 
+		refresh()
 		match event.button_index:
 			JOY_BUTTON_DPAD_UP:
 				_step(Direction.UP)
@@ -225,8 +237,8 @@ func handle_event(event: InputEvent) -> bool:
 ## Left stick navigation with repeat
 func _update_stick_navigation(delta: float) -> void:
 	var stick: Vector2 = Vector2(
-		Input.get_joy_axis(0, JOY_AXIS_LEFT_X),
-		Input.get_joy_axis(0, JOY_AXIS_LEFT_Y)
+		Input.get_joy_axis(maxi(InputManager.active_joypad, 0), JOY_AXIS_LEFT_X),
+		Input.get_joy_axis(maxi(InputManager.active_joypad, 0), JOY_AXIS_LEFT_Y)
 	)
 
 	var dir: int = -1
@@ -254,10 +266,10 @@ func _update_stick_navigation(delta: float) -> void:
 ## Right stick horizontal map scrolling
 func _update_right_stick_map(delta: float) -> void:
 	var map_node: Map = _get_active_map()
-	if not map_node or not map_node.visible:
+	if not map_node or not map_node.is_visible_in_tree() or not InputManager.controller_active or is_instance_valid(_modal):
 		return
 
-	var rx: float = Input.get_joy_axis(0, JOY_AXIS_RIGHT_X)
+	var rx: float = Input.get_joy_axis(maxi(InputManager.active_joypad, 0), JOY_AXIS_RIGHT_X)
 	if absf(rx) > 0.2:
 		var pan_speed: float = 300.0
 		map_node._pan_camera_by(rx * pan_speed * delta)
@@ -265,13 +277,30 @@ func _update_right_stick_map(delta: float) -> void:
 
 ## Rebuilds the target list and keeps or resets the focus
 func refresh() -> void:
+	var previous_modal: CanvasItem = _modal
 	_targets = _collect_targets()
+	if previous_modal != _modal:
+		var previous_key: int = previous_modal.get_instance_id() if is_instance_valid(previous_modal) else 0
+		_saved_targets[previous_key] = _current_target
+		var next_key: int = _modal.get_instance_id() if is_instance_valid(_modal) else 0
+		_current_target = _saved_targets.get(next_key, {})
+		_reticle_pos = Vector2.ZERO
+	if not is_instance_valid(_modal) and _returning_die:
+		var die: Dice = _returning_die.get_ref() as Dice
+		if not is_instance_valid(die):
+			_returning_die = null
+		else:
+			for target: Dictionary in _targets:
+				if target.get("type") == &"die" and target.get("node") == die and not Draggable.holding():
+					_current_target = target
+					_returning_die = null
+					break
 	if _targets.is_empty():
 		_current_target = {}
 		return
 
 	# If currently holding a die and not already on the tile grid, snap to the tile grid
-	if Draggable.holding() and _current_target.get("type") != &"tile_slot":
+	if Draggable.holding() and not is_instance_valid(_modal) and _current_target.get("type") not in [&"tile_slot", &"sell_zone"]:
 		_focus_best_grid_slot()
 		return
 
@@ -303,14 +332,14 @@ func _collect_targets() -> Array[Dictionary]:
 
 
 func _collect_targets_in_canvas() -> Array[Dictionary]:
-	# 1. Menus / Popups take precedence
-	var menu_targets: Array[Dictionary] = _collect_menu_targets()
-	if not menu_targets.is_empty():
-		return menu_targets
+	# Even a modal without buttons blocks selection of the scene beneath it.
+	_modal = _find_modal()
+	if is_instance_valid(_modal):
+		return _collect_menu_targets()
 
 	# 2. Map Screen
 	var map_node: Map = _get_active_map()
-	if map_node and map_node.visible:
+	if map_node and map_node.is_visible_in_tree():
 		return _collect_map_targets(map_node)
 
 	# 3. Combat / Systems Screen
@@ -320,47 +349,52 @@ func _collect_targets_in_canvas() -> Array[Dictionary]:
 ## Collect targets for open menus / popups
 func _collect_menu_targets() -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
-	var tree: SceneTree = get_tree()
-	if not tree:
-		return result
-
-	var modal_nodes: Array[Node] = []
-	# Check common menus
-	for group_name in [&"modal_menu", &"options_menu", &"pause_menu"]:
-		for n in tree.get_nodes_in_group(group_name):
-			if n is CanvasItem and n.is_visible_in_tree():
-				modal_nodes.append(n)
-
-	# Direct lookup for options and pause menus if not grouped
-	var options_menu = tree.root.find_child("OptionsMenu", true, false)
-	if options_menu and options_menu is CanvasItem and options_menu.is_visible_in_tree():
-		modal_nodes.append(options_menu)
-
-	var pause_menu = tree.root.find_child("PauseMenu", true, false)
-	if pause_menu and pause_menu is CanvasItem and pause_menu.is_visible_in_tree():
-		modal_nodes.append(pause_menu)
-
-	var confirm_dlg = tree.root.find_child("ConfirmDialog", true, false)
-	if confirm_dlg and confirm_dlg is CanvasItem and confirm_dlg.is_visible_in_tree():
-		modal_nodes.append(confirm_dlg)
-
-	var codex_popup = tree.root.find_child("CodexPopup", true, false)
-	if codex_popup and codex_popup is CanvasItem and codex_popup.is_visible_in_tree():
-		modal_nodes.append(codex_popup)
-
-	if modal_nodes.is_empty():
-		return result
-
-	var topmost: Node = modal_nodes.back()
-	_collect_interactive_controls(topmost, result)
+	if is_instance_valid(_modal):
+		_collect_interactive_controls(_modal, result)
 	return result
 
 
+## Resolve overlays in draw order, including nested confirmations and dropdowns.
+func _find_modal() -> CanvasItem:
+	var candidates: Array[Node] = []
+	for group: StringName in [&"modal_menu", &"options_menu", &"pause_menu"]:
+		candidates.append_array(get_tree().get_nodes_in_group(group))
+	for modal_name: String in ["PauseMenu", "OptionsMenu", "ConfirmDialog", "CodexPopup", "ShipSelectPopup", "InfoShower", "MainMenu", "GameOver"]:
+		candidates.append_array(get_tree().root.find_children(modal_name, "", true, false))
+	var top: CanvasItem = null
+	var top_order: int = -2147483648
+	for candidate: Node in candidates:
+		var item: CanvasItem = candidate as CanvasItem
+		if not is_instance_valid(item) or item.is_queued_for_deletion() or not item.is_visible_in_tree():
+			continue
+		var order: int = _draw_order(item)
+		if top == null or order > top_order or (order == top_order and item.is_greater_than(top)):
+			top = item
+			top_order = order
+	if top:
+		for child: Node in top.find_children("*", "", true, false):
+			if child is PixelDropdown and is_instance_valid(child._popup_panel) and child._popup_panel.is_visible_in_tree():
+				return child._popup_panel
+	return top
+
+
+static func _draw_order(item: CanvasItem) -> int:
+	var layer: CanvasLayer = item.get_canvas_layer_node()
+	var order: int = (layer.layer if layer else 0) * 8192
+	var current: CanvasItem = item
+	while current:
+		order += current.z_index
+		if not current.z_as_relative:
+			break
+		current = current.get_parent() as CanvasItem
+	return order
+
+
 func _collect_interactive_controls(node: Node, out_targets: Array[Dictionary]) -> void:
-	if node is CanvasItem and not node.is_visible_in_tree():
+	if node.is_queued_for_deletion() or (node is CanvasItem and not node.is_visible_in_tree()):
 		return
 
-	if node is BaseButton or node is HSlider or node is Slider:
+	if (node is BaseButton and not node.disabled) or (node is Slider and node.editable):
 		if node is Control and node.is_visible_in_tree():
 			var rect: Rect2 = node.get_global_rect()
 			if rect.size.x > 0 and rect.size.y > 0:
@@ -372,15 +406,11 @@ func _collect_interactive_controls(node: Node, out_targets: Array[Dictionary]) -
 				})
 			return
 
-	for child in node.get_children():
+	for child: Node in node.get_children():
 		_collect_interactive_controls(child, out_targets)
 
 
-## Collect targets for Combat / Systems view
-func _collect_combat_targets() -> Array[Dictionary]:
-	var result: Array[Dictionary] = []
-
-	# A. Dice in Hand
+func _collect_hand_dice(result: Array[Dictionary]) -> void:
 	if Globals.player and Globals.player.dice_manager:
 		for die: Dice in Globals.player.dice_manager.queue:
 			if is_instance_valid(die) and die.is_visible_in_tree() and die.draggable.can_pick_up():
@@ -392,9 +422,55 @@ func _collect_combat_targets() -> Array[Dictionary]:
 					"node": die
 				})
 
+
+func _collect_offer_targets(result: Array[Dictionary]) -> void:
+	if is_instance_valid(Globals.reward_manager):
+		_collect_offer_items(Globals.reward_manager, result)
+	var shop: Node = get_tree().root.find_child("Shop", true, false)
+	if shop is Shop and shop.is_open():
+		_collect_offer_items(shop, result)
+		_collect_interactive_controls(shop, result)
+	var station: RepairStation = _get_repair_station()
+	if station:
+		_collect_interactive_controls(station, result)
+		if Draggable.holding() and Draggable.holding().get_parent() is Tile:
+			result.append({"type": &"sell_zone", "pos": station.sell_zone_centre(),
+				"rect": Rect2(-12, -12, 24, 24), "node": station})
+
+
+func _collect_offer_items(root: Node, result: Array[Dictionary]) -> void:
+	if root is CanvasItem and not root.is_visible_in_tree():
+		return
+	if root is Reward and not root.can_take():
+		return
+	if root is Draggable:
+		var item: Node2D = root.get_parent() as Node2D
+		if item and root.can_pick_up() and not root.held_by_code and root != Draggable.holding():
+			result.append({"type": &"offer", "pos": item.global_position,
+				"rect": Rect2(-10, -10, 20, 20), "node": item})
+		return
+	for child: Node in root.get_children():
+		_collect_offer_items(child, result)
+
+
+func _get_repair_station() -> RepairStation:
+	var station: RepairStation = get_tree().root.find_child("RepairStation", true, false) as RepairStation
+	return station if station and station.is_visible_in_tree() else null
+
+
+## Collect targets for Combat / Systems view
+func _collect_combat_targets() -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+
+	_collect_hand_dice(result)
+	_collect_offer_targets(result)
+
 	# B. Tile Grid Slots
 	if Globals.tile_grid and is_instance_valid(Globals.tile_grid) and Globals.tile_grid.is_visible_in_tree():
-		for cell: Vector2i in Globals.tile_grid.get_cells():
+		var cells: Array[Vector2i] = Globals.tile_grid.get_cells()
+		if Draggable.holding() and Draggable.holding().get_parent() is GridSlot:
+			cells.append_array(Globals.tile_grid.get_locked_cells())
+		for cell: Vector2i in cells:
 			var pos: Vector2 = Globals.tile_grid.grid_to_global_pos(cell)
 			var tile: Tile = Globals.tile_grid.tile_locations.get(cell)
 			result.append({
@@ -420,7 +496,7 @@ func _collect_combat_targets() -> Array[Dictionary]:
 	# D. Targeting Computer Shift Arrows
 	if Globals.targeting_computer and is_instance_valid(Globals.targeting_computer) and Globals.targeting_computer.is_visible_in_tree():
 		for btn: TargetShiftButton in Globals.targeting_computer._shift_buttons():
-			if is_instance_valid(btn) and btn.is_visible_in_tree():
+			if is_instance_valid(btn) and btn.is_visible_in_tree() and btn.is_live():
 				result.append({
 					"type": &"button",
 					"pos": btn.global_position,
@@ -430,8 +506,8 @@ func _collect_combat_targets() -> Array[Dictionary]:
 
 	# E. End Turn Button
 	if Globals.player and is_instance_valid(Globals.player):
-		var end_btn = Globals.player.find_child("EndTurnButton", true, false)
-		if end_btn and end_btn is CanvasItem and end_btn.is_visible_in_tree():
+		var end_btn: Node = Globals.player.find_child("EndTurnButton", true, false)
+		if end_btn is BaseButton and not end_btn.disabled and end_btn.is_visible_in_tree():
 			var pos: Vector2 = end_btn.global_position
 			result.append({
 				"type": &"button",
@@ -441,10 +517,10 @@ func _collect_combat_targets() -> Array[Dictionary]:
 			})
 
 	# F. Tab Buttons (Systems / Map)
-	var main_viewer = get_tree().root.find_child("MainViewer", true, false)
+	var main_viewer: Node = get_tree().root.find_child("MainViewer", true, false)
 	if main_viewer and is_instance_valid(main_viewer):
-		for tab_btn_name in ["SystemsButton", "MapButton"]:
-			var btn = main_viewer.find_child(tab_btn_name, true, false)
+		for tab_btn_name: String in ["SystemsButton", "MapButton"]:
+			var btn: Node = main_viewer.find_child(tab_btn_name, true, false)
 			if btn and btn is CanvasItem and btn.is_visible_in_tree():
 				result.append({
 					"type": &"button",
@@ -460,32 +536,11 @@ func _collect_combat_targets() -> Array[Dictionary]:
 func _collect_map_targets(map_node: Map) -> Array[Dictionary]:
 	var result: Array[Dictionary] = []
 
-	# Map Scenarios (Waypoints)
-	for i: int in range(map_node.scenario_sprites.size()):
-		var sprite: Sprite2D = map_node.scenario_sprites[i]
-		if is_instance_valid(sprite) and sprite.is_visible_in_tree():
-			result.append({
-				"type": &"waypoint",
-				"pos": sprite.global_position,
-				"rect": Rect2(-7, -7, 14, 14),
-				"node": sprite,
-				"index": i,
-				"map": map_node
-			})
-
-	# Map View Slider
-	var slider: Control = map_node.find_child("MapViewSlider", true, false) as Control
-	if slider and slider.is_visible_in_tree():
-		var rect: Rect2 = slider.get_global_rect()
-		result.append({
-			"type": &"button",
-			"pos": rect.get_center(),
-			"rect": rect,
-			"node": slider
-		})
+	_collect_hand_dice(result)
+	_collect_offer_targets(result)
 
 	# Arrow tiles on map
-	for arrow_tile in [map_node.left_arrow_tile, map_node.right_arrow_tile]:
+	for arrow_tile: Tile in [map_node.left_arrow_tile, map_node.right_arrow_tile]:
 		if arrow_tile and is_instance_valid(arrow_tile) and arrow_tile.is_visible_in_tree():
 			result.append({
 				"type": &"tile_slot",
@@ -495,10 +550,10 @@ func _collect_map_targets(map_node: Map) -> Array[Dictionary]:
 			})
 
 	# Tab Buttons
-	var main_viewer = get_tree().root.find_child("MainViewer", true, false)
+	var main_viewer: Node = get_tree().root.find_child("MainViewer", true, false)
 	if main_viewer and is_instance_valid(main_viewer):
-		for tab_btn_name in ["SystemsButton", "MapButton"]:
-			var btn = main_viewer.find_child(tab_btn_name, true, false)
+		for tab_btn_name: String in ["SystemsButton", "MapButton"]:
+			var btn: Node = main_viewer.find_child(tab_btn_name, true, false)
 			if btn and btn is CanvasItem and btn.is_visible_in_tree():
 				result.append({
 					"type": &"button",
@@ -519,6 +574,25 @@ func _get_active_map() -> Map:
 
 ## Steps focus in a direction
 func _step(direction: int) -> void:
+	_returning_die = null
+	var current_node: Node = _current_target.get("node")
+	var adjacent_tab: StringName = &""
+	if is_instance_valid(current_node):
+		if current_node.name == &"SystemsButton" and direction == Direction.RIGHT:
+			adjacent_tab = &"MapButton"
+		elif current_node.name == &"MapButton" and direction == Direction.LEFT:
+			adjacent_tab = &"SystemsButton"
+	for target: Dictionary in _targets:
+		var node: Node = target.get("node")
+		if adjacent_tab != &"" and is_instance_valid(node) and node.name == adjacent_tab:
+			_set_target(target)
+			return
+	var slider: Slider = _current_target.get("node") as Slider
+	if slider and slider.editable and direction in [Direction.LEFT, Direction.RIGHT]:
+		var increment: float = slider.step if slider.step > 0.0 else (slider.max_value - slider.min_value) / 20.0
+		slider.value += increment * (1.0 if direction == Direction.RIGHT else -1.0)
+		return
+
 	if _targets.is_empty():
 		refresh()
 	if _targets.is_empty():
@@ -547,7 +621,7 @@ func _step(direction: int) -> void:
 			return
 		elif direction == Direction.DOWN and not Draggable.holding():
 			# Stepping down past the bottom of the grid when not holding a die moves to dice
-			var die_target = _find_closest_target_of_type(&"die", _screen_of(_current_target))
+			var die_target: Dictionary = _find_closest_target_of_type(&"die", _screen_of(_current_target))
 			if not die_target.is_empty():
 				_set_target(die_target)
 				return
@@ -559,7 +633,7 @@ func _step(direction: int) -> void:
 	var best_target: Dictionary = {}
 	var best_cost: float = INF
 
-	for candidate in _targets:
+	for candidate: Dictionary in _targets:
 		if _is_same_target(candidate, _current_target):
 			continue
 		var to: Vector2 = _screen_of(candidate) - origin
@@ -585,6 +659,12 @@ func _step(direction: int) -> void:
 
 ## Focuses the best tile grid slot above current position or last used slot
 func _focus_best_grid_slot() -> void:
+	var map_node: Map = _get_active_map()
+	if map_node and map_node.is_visible_in_tree():
+		var arrow: Dictionary = _find_closest_target_of_type(&"tile_slot", position)
+		if not arrow.is_empty():
+			_set_target(arrow)
+		return
 	if not Globals.tile_grid:
 		return
 
@@ -601,11 +681,11 @@ func _focus_best_grid_slot() -> void:
 	var best_dist_x: float = INF
 	var max_y: int = -1
 
-	for cell in Globals.tile_grid.get_cells():
+	for cell: Vector2i in Globals.tile_grid.get_cells():
 		if cell.y > max_y:
 			max_y = cell.y
 
-	for cell in Globals.tile_grid.get_cells():
+	for cell: Vector2i in Globals.tile_grid.get_cells():
 		if cell.y == max_y:
 			var slot: Dictionary = _find_grid_slot_target(cell)
 			if slot.is_empty():
@@ -642,16 +722,27 @@ func _find_closest_target_of_type(type: StringName, from_pos: Vector2) -> Dictio
 
 
 func _set_target(target: Dictionary) -> void:
+	var changed: bool = not _is_same_target(target, _current_target)
+	var control: Control = target.get("node") as Control
+	if changed and is_instance_valid(control):
+		var ancestor: Node = control.get_parent()
+		while ancestor:
+			if ancestor is ScrollContainer:
+				ancestor.ensure_control_visible(control)
+			ancestor = ancestor.get_parent()
+		_to_screen(target)
+	var moved: bool = position.distance_to(_screen_of(target)) > 0.5
 	_current_target = target
 	position = _screen_of(target) if not target.is_empty() else position
 	if _reticle_pos == Vector2.ZERO:
 		_reticle_pos = position
 
 	# Warp synthetic cursor so mouse hovers and engine events update
-	if _cursor:
+	if _cursor and InputManager.controller_active and (changed or moved):
 		_cursor.focus_warp(position)
 
-	focus_changed.emit(_current_target)
+	if changed:
+		focus_changed.emit(_current_target)
 
 
 ## A button: pick up die, drop die, click button, target enemy, or select waypoint
@@ -667,28 +758,23 @@ func _activate() -> void:
 	if _cursor:
 		_cursor.focus_warp(_screen_of(_current_target))
 
-	# Case 1: Pick up die
-	if type == &"die" and node is Dice:
-		var die: Dice = node as Dice
-		if die.draggable and die.draggable.can_pick_up():
-			die.draggable.begin_drag(target_pos)
-			# Transition focus to tile grid slot
-			_focus_best_grid_slot()
-			return
-
-	# Case 2: Drop die onto tile slot
-	if Draggable.holding():
-		var held_item: Draggable = Draggable.holding()
-		# Drop the carried item at current position
+	# Finish a carry before treating the destination as another pickup.
+	if Draggable.holding() and not is_instance_valid(_modal):
+		var held_node: Node = Draggable.holding().get_parent()
+		if held_node is Dice:
+			_returning_die = weakref(held_node)
 		if _cursor:
 			_cursor.press_left(true)
 			_cursor.press_left(false)
-		# After dropping, re-focus to first die in hand
 		await get_tree().process_frame
 		refresh()
-		var first_die = _find_closest_target_of_type(&"die", Vector2.ZERO)
-		if not first_die.is_empty():
-			_set_target(first_die)
+		return
+
+	var pickup: Draggable = node.get_node_or_null("Draggable") as Draggable if is_instance_valid(node) else null
+	if pickup and pickup.can_pick_up() and (type in [&"die", &"offer"] or (node is Tile and _get_repair_station())):
+		pickup.begin_drag(target_pos)
+		refresh()
+		_focus_best_grid_slot()
 		return
 
 	# Case 3: Target enemy
@@ -700,7 +786,27 @@ func _activate() -> void:
 
 	# Case 4: Click button / slider / interactive node
 	if node is BaseButton:
-		node.emit_signal(&"pressed")
+		if node.disabled:
+			return
+		if node.has_signal(&"pressed_within_window"):
+			node.emit_signal(&"pressed_within_window")
+		elif node.toggle_mode:
+			node.button_pressed = not node.button_pressed
+			node.pressed.emit()
+		else:
+			node.pressed.emit()
+		return
+
+	if node is TargetShiftButton:
+		if node.is_live():
+			node.press()
+			node.pushed.emit()
+		return
+
+	if node and node.has_node("Clickable"):
+		var clickable: Clickable = node.get_node("Clickable") as Clickable
+		if clickable and clickable.input_pickable:
+			clickable.clicked.emit()
 		return
 
 	if node is Clickable:
@@ -715,8 +821,14 @@ func _activate() -> void:
 
 ## B button: put back held die or cancel / close menu
 func _cancel() -> void:
+	if is_instance_valid(_modal):
+		if _cursor:
+			_cursor.cancel()
+		return
 	if Draggable.holding():
 		var held_item: Draggable = Draggable.holding()
+		if held_item.get_parent() is Dice:
+			_returning_die = weakref(held_item.get_parent())
 		held_item.put_back()
 		# Re-focus the die that was put back
 		await get_tree().process_frame
@@ -730,7 +842,7 @@ func _cancel() -> void:
 
 ## X button: Hotkey to show InfoShower on focused tile / object
 func _show_info() -> void:
-	if _current_target.is_empty():
+	if _current_target.is_empty() or is_instance_valid(_modal):
 		return
 
 	var node: Node = _current_target.get("node")

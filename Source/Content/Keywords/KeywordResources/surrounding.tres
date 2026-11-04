@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_54mav"]
+[ext_resource type="Script" path="res://Source/Content/Keywords/keyword_token.gd" id="2_v42h8"]
+
+[sub_resource type="Resource" id="Resource_m3imn"]
+script = ExtResource("2_v42h8")
+token = "(surrounding)"
+label = "surrounding"
+
+[sub_resource type="Resource" id="Resource_nrkkc"]
+script = ExtResource("2_v42h8")
+token = "(Surrounding)"
+label = "Surrounding"
+
+[resource]
+script = ExtResource("1_54mav")
+title = "Surrounding"
+rule = "All slots immediately around this tile, including diagonals."
+tokens = Array[ExtResource("2_v42h8")]([SubResource("Resource_m3imn"), SubResource("Resource_nrkkc")])

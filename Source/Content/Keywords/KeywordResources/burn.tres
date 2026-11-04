@@ -13,9 +13,10 @@ label = "Burn"
 
 [resource]
 script = ExtResource("1_3frgl")
-title = "Burn"
-rule = "At the start of their turn, burned ships take [color=red]damage[/color] equal to Burn, then lose {lost} Burn."
-tokens = Array[ExtResource("2_t0ibx")]([SubResource("burn")])
 modifier_script = ExtResource("3_status")
 icon = ExtResource("4_icon")
 info_icon = ExtResource("5_info")
+title = "Burn"
+rule = "On their turn, ships take [color=red]damage[/color] equal to their Burn, then lose {lost} stack"
+player_rule = "On your turn, take [color=red]damage[/color] equal to your [color=orange]Burn[/color] then lose {lost} stack"
+tokens = Array[ExtResource("2_t0ibx")]([SubResource("burn")])

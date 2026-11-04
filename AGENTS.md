@@ -62,6 +62,29 @@ that gap:
    `godot_game_call_method` / `godot_game_eval` to drive the game into the state
    you need to see (e.g. switching tabs, hovering).
 
+## MCP Runtime Ownership, Port Release & Desktop Focus
+- Treat the game runtime and its MCP listener (currently `127.0.0.1:9090`) as a
+  shared, temporary resource. Launch only when the next verification step needs
+  a live game; keep related runtime checks together to minimize occupancy.
+- Immediately after the last runtime check, collect `godot_game_get_errors` and
+  `godot_game_get_logs`, then call `godot_stop_project`. Stop before returning to
+  file edits, lengthy analysis, waiting for user input, handing off, or ending
+  the turn. Do not keep a game running "in case" it is needed later. The only
+  exception is an explicit user request to leave that instance running.
+- Clean up an instance you started even when verification fails or is abandoned.
+  Confirm that your process exited and released its listener; a closed MCP client
+  connection alone does not release the game's listening port.
+- Never kill an unknown listener, stop another session's game, or attach to a
+  busy port assuming it belongs to you. If the port is occupied, identify its
+  owner and coordinate, or use an isolated instance when the tooling supports it.
+- Keep automated checks from interrupting the user's desktop. Prefer headless
+  execution for checks that do not need rendering; for visual checks, use a
+  background, non-focus-stealing window when supported. Do not activate windows,
+  warp the OS pointer, or capture/confine the mouse unless the requested test
+  specifically requires it. Prefer MCP-injected input over OS mouse/keyboard
+  automation. If the launcher cannot guarantee background operation, report that
+  limitation rather than claiming the run will preserve focus.
+
 ## Scene & Node Workflow
 - Never modify a scene blind. Run `godot_read_scene` (file-based) or
   `godot_game_get_scene_tree` (live) first — don't assume prior-turn state still

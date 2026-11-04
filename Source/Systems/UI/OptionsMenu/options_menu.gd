@@ -55,6 +55,9 @@ const _TAB_PADDING: float = 10.0
 const _MIN_TAB_PADDING: float = 4.0
 ## Between a sub-tab row and its pages.
 const _SUB_TAB_GAP: float = 4.0
+## A page this little taller than its box gets no scrollbar: the bar would
+## scroll a pixel or two of a row's padding, and cost the page its width.
+const _SCROLL_SLACK: float = 2.0
 ## The Controls pages break to their second column after this many rows.
 const _CONTROLS_COLUMN_ROWS: int = 4
 
@@ -178,9 +181,10 @@ func _build_pages() -> void:
 	# Controls: the rebindable actions on two pages, keys and controller
 	# buttons, each with the settings only that kind of input has.
 	var keyboard: OptionsPage = _page(Tab.CONTROLS, ControlsPage.KEYBOARD)
-	keyboard.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
+	var keyboard_placement: PixelDropdown = keyboard.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
 		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
 		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
+	keyboard.enable_when(keyboard_placement, func() -> bool: return InputManager.control_scheme != InputBindings.ControlScheme.FOCUS)
 	_add_binding_rows(keyboard, InputBindings.Kind.KEY, "OPT_BINDING_HINT_KEY")
 	var controller: OptionsPage = _page(Tab.CONTROLS, ControlsPage.CONTROLLER)
 	# Scheme-agnostic inputs: how the controller itself works and how dice and
@@ -190,9 +194,10 @@ func _build_pages() -> void:
 	controller.choice(OptionsSettings.CONTROLLER_SCHEME, "OPT_CONTROLLER_SCHEME",
 		["OPT_CONTROLLER_SCHEME_CURSOR", "OPT_CONTROLLER_SCHEME_FOCUS"],
 		[InputBindings.ControlScheme.CURSOR, InputBindings.ControlScheme.FOCUS], "OPT_CONTROLLER_SCHEME_HINT")
-	controller.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
+	var controller_placement: PixelDropdown = controller.choice(OptionsSettings.DICE_PLACEMENT, "OPT_DICE_PLACEMENT",
 		["OPT_DICE_PLACEMENT_DRAG", "OPT_DICE_PLACEMENT_CLICK"],
 		[Draggable.PlacementMode.DRAG, Draggable.PlacementMode.CLICK], "OPT_DICE_PLACEMENT_HINT")
+	controller.enable_when(controller_placement, func() -> bool: return InputManager.control_scheme != InputBindings.ControlScheme.FOCUS)
 	_add_binding_rows(controller, InputBindings.Kind.PAD, "OPT_BINDING_HINT_PAD")
 	controller.slider(OptionsSettings.CURSOR_SPEED, "OPT_CURSOR_SPEED",
 		"OPT_CURSOR_SPEED_HINT", OptionsSettings.CURSOR_SPEEDS.x, OptionsSettings.CURSOR_SPEEDS.y, 0.1)
@@ -339,6 +344,9 @@ func _build_panel() -> void:
 			page.hint_changed.connect(_on_hint_changed)
 			scroll.add_child(page)
 			_pages[tab].append(page)
+			# Rewrapped labels (a language or font change) change the height.
+			page.minimum_size_changed.connect(_fit_scroll.bind(scroll, page))
+			_fit_scroll.call_deferred(scroll, page)
 
 	_hint_label = RichTextLabel.new()
 	_hint_label.fit_content = false
@@ -556,6 +564,13 @@ func _preview_sfx_volume() -> void:
 		return
 	_last_sfx_preview_msec = now
 	Events.play_sound.emit(_SFX_PREVIEW)
+
+
+## Scrolls [param page] only if it overflows by more than _SCROLL_SLACK.
+static func _fit_scroll(scroll: ScrollContainer, page: Control) -> void:
+	var overflow: float = page.get_combined_minimum_size().y - scroll.size.y
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED if overflow <= _SCROLL_SLACK \
+		else ScrollContainer.SCROLL_MODE_AUTO
 
 
 ## Styles a page ScrollContainer and its VScrollBar with pixel-styled track and

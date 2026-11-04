@@ -60,7 +60,10 @@ func test_pages_wrapped_in_styled_scroll_containers() -> void:
 			var scroll: ScrollContainer = scrolls[i]
 			assert_eq(page.get_parent(), scroll, "OptionsPage is a child of ScrollContainer")
 			assert_eq(scroll.horizontal_scroll_mode, ScrollContainer.SCROLL_MODE_DISABLED)
-			assert_eq(scroll.vertical_scroll_mode, ScrollContainer.SCROLL_MODE_AUTO)
+			# Only a page that overflows its box scrolls (the Game page fits).
+			var overflows: bool = page.get_combined_minimum_size().y - scroll.size.y > OptionsMenu._SCROLL_SLACK
+			assert_eq(scroll.vertical_scroll_mode,
+				ScrollContainer.SCROLL_MODE_AUTO if overflows else ScrollContainer.SCROLL_MODE_DISABLED)
 			assert_true(scroll.follow_focus, "ScrollContainer follows focus for controller navigation")
 
 			# Styled pixel scrollbar

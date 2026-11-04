@@ -77,44 +77,44 @@
 [ext_resource type="Resource" uid="uid://dj6wn2sr12huo" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_GhostCarrier/EVENT_ghost_carrier.tres" id="event_ghost_carrier"]
 [ext_resource type="Resource" uid="uid://bokjx2i8fcamy" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Mayday/EVENT_mayday.tres" id="event_mayday"]
 [ext_resource type="Resource" uid="uid://dog38o3ouenl" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pickpocket/EVENT_pickpocket.tres" id="event_pickpocket"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_WakeRiders/ELITE_wake_riders.tres" id="faction_elite_wake_riders"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/EVENT_convoy.tres" id="faction_event_convoy"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_CutLoose/EVENT_cut_loose.tres" id="faction_event_cut_loose"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_DeniableAssets/EVENT_deniable_assets.tres" id="faction_event_deniable_assets"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_LastPicket/EVENT_last_picket.tres" id="faction_event_last_picket"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pact/EVENT_pact.tres" id="faction_event_pact"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pilgrim/EVENT_pilgrim.tres" id="faction_event_pilgrim"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/EVENT_signal.tres" id="faction_event_signal"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/EVENT_straggler.tres" id="faction_event_straggler"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WhatCameBack/EVENT_what_came_back.tres" id="faction_event_what_came_back"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LienCollection/COMBAT_lien_collection.tres" id="faction_lien_collection"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_PicketLine/COMBAT_picket_line.tres" id="faction_picket_line"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Pilgrimage/COMBAT_pilgrimage.tres" id="faction_pilgrimage"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wreckers/COMBAT_wreckers.tres" id="faction_wreckers"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Boneyard/COMBAT_boneyard.tres" id="layer_boneyard"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Chopshop/ELITE_chopshop.tres" id="layer_elite_chopshop"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Repossession/ELITE_repossession.tres" id="layer_elite_repossession"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Deserter/EVENT_deserter.tres" id="layer_event_deserter"]
+[ext_resource type="Resource" uid="uid://clx055npg5nxq" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_WakeRiders/ELITE_wake_riders.tres" id="faction_elite_wake_riders"]
+[ext_resource type="Resource" uid="uid://bog772mmpemrt" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/EVENT_convoy.tres" id="faction_event_convoy"]
+[ext_resource type="Resource" uid="uid://biyaq62ioqgu2" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_CutLoose/EVENT_cut_loose.tres" id="faction_event_cut_loose"]
+[ext_resource type="Resource" uid="uid://b2wr8ngougbry" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_DeniableAssets/EVENT_deniable_assets.tres" id="faction_event_deniable_assets"]
+[ext_resource type="Resource" uid="uid://cbpsb004ur76h" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_LastPicket/EVENT_last_picket.tres" id="faction_event_last_picket"]
+[ext_resource type="Resource" uid="uid://fyybfmvp3xrk" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pact/EVENT_pact.tres" id="faction_event_pact"]
+[ext_resource type="Resource" uid="uid://cntdvivnhf663" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pilgrim/EVENT_pilgrim.tres" id="faction_event_pilgrim"]
+[ext_resource type="Resource" uid="uid://bfryj18jdgox0" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/EVENT_signal.tres" id="faction_event_signal"]
+[ext_resource type="Resource" uid="uid://b7844pg0yn7a3" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/EVENT_straggler.tres" id="faction_event_straggler"]
+[ext_resource type="Resource" uid="uid://dm76vsp403byg" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WhatCameBack/EVENT_what_came_back.tres" id="faction_event_what_came_back"]
+[ext_resource type="Resource" uid="uid://b1uv43ran17tp" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_LienCollection/COMBAT_lien_collection.tres" id="faction_lien_collection"]
+[ext_resource type="Resource" uid="uid://u5uwr2pnbkht" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_PicketLine/COMBAT_picket_line.tres" id="faction_picket_line"]
+[ext_resource type="Resource" uid="uid://gav5n2qfr5k4" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Pilgrimage/COMBAT_pilgrimage.tres" id="faction_pilgrimage"]
+[ext_resource type="Resource" uid="uid://dkdyol0r8icas" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Wreckers/COMBAT_wreckers.tres" id="faction_wreckers"]
 [ext_resource type="Resource" uid="uid://dq0xed2ajxje" path="res://Source/Content/ScenarioResources/Scenarios/GATE_Bastion/GATE_bastion.tres" id="gate_bastion"]
 [ext_resource type="Resource" uid="uid://c8gl2266ni6co" path="res://Source/Content/ScenarioResources/Scenarios/GATE_ArcDynamo/GATE_arc_dynamo.tres" id="gate_dynamo"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/JumpGate/jump_gate.tscn" id="jump_gate_scene"]
+[ext_resource type="Resource" uid="uid://pt0u4l7y7lwk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_Boneyard/COMBAT_boneyard.tres" id="layer_boneyard"]
+[ext_resource type="Resource" uid="uid://bovuas328mmkf" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Chopshop/ELITE_chopshop.tres" id="layer_elite_chopshop"]
+[ext_resource type="Resource" uid="uid://di7h7e6y545ys" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Repossession/ELITE_repossession.tres" id="layer_elite_repossession"]
+[ext_resource type="Resource" uid="uid://b06ead0fja51s" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Deserter/EVENT_deserter.tres" id="layer_event_deserter"]
 [ext_resource type="Resource" uid="uid://cumnnvtuhuxcl" path="res://Source/Content/ScenarioResources/Scenarios/RepairStation/repair_station.tres" id="repair_station_scenario"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Game/RepairStation/repair_station.tscn" id="repair_station_scene"]
 [ext_resource type="Resource" uid="uid://khmq2jc1m34t" path="res://Source/Systems/TutorialManager/TutorialStepResources/activate_tile.tres" id="tut_activate_tile"]
 [ext_resource type="Resource" uid="uid://b6enhd80vypfm" path="res://Source/Systems/TutorialManager/TutorialStepResources/ambush_intro.tres" id="tut_ambush_intro"]
 [ext_resource type="Resource" uid="uid://beuvtclivqpi6" path="res://Source/Systems/TutorialManager/TutorialStepResources/claim_salvage.tres" id="tut_claim_salvage"]
+[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/dice_return.tres" id="tut_dice_return"]
 [ext_resource type="Resource" uid="uid://o5vwobuitdpg" path="res://Source/Systems/TutorialManager/TutorialStepResources/end_turn_prompt.tres" id="tut_end_turn_prompt"]
 [ext_resource type="Resource" uid="uid://bdm0i8jm1b8ab" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_keeps_die.tres" id="tut_enemy_keeps_die"]
 [ext_resource type="Resource" uid="uid://yl7376jtgxga" path="res://Source/Systems/TutorialManager/TutorialStepResources/enemy_response.tres" id="tut_enemy_response"]
 [ext_resource type="Resource" uid="uid://bnc113gea7fqw" path="res://Source/Systems/TutorialManager/TutorialStepResources/finish_the_raider.tres" id="tut_finish_the_raider"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_out.tres" id="tut_jump_out"]
+[ext_resource type="Resource" uid="uid://b3yf2amnw4je3" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_good_luck.tres" id="tut_good_luck"]
+[ext_resource type="Resource" uid="uid://iqufujiy4ff8" path="res://Source/Systems/TutorialManager/TutorialStepResources/jump_out.tres" id="tut_jump_out"]
 [ext_resource type="Resource" uid="uid://cjs5pb8b7yx5b" path="res://Source/Systems/TutorialManager/TutorialStepResources/map_explanation.tres" id="tut_map_explanation"]
 [ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/opening_hand.tres" id="tut_opening"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/open_the_map.tres" id="tut_open_the_map"]
+[ext_resource type="Resource" uid="uid://bppe3g5mqquu0" path="res://Source/Systems/TutorialManager/TutorialStepResources/open_the_map.tres" id="tut_open_the_map"]
 [ext_resource type="Resource" uid="uid://pf1dsr7b31jw" path="res://Source/Systems/TutorialManager/TutorialStepResources/read_intents.tres" id="tut_read_intents"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/dice_return.tres" id="tut_dice_return"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_handoff.tres" id="tut_tutorial_handoff"]
-[ext_resource type="Resource" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_good_luck.tres" id="tut_good_luck"]
+[ext_resource type="Resource" uid="uid://cktt10gvd1eve" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_handoff.tres" id="tut_tutorial_handoff"]
 
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
@@ -138,7 +138,7 @@ shader_parameter/pulse_speed = 1.0
 shader_parameter/pulse_strength = 1.5
 shader_parameter/base_strength = 1.0
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_oym6b"]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ydgkx"]
 resource_local_to_scene = true
 shader = ExtResource("10_3g417")
 shader_parameter/color = Color(1, 1, 1, 1)
@@ -367,7 +367,7 @@ vignette_alpha = 0.5
 
 [node name="Player" parent="Systems" unique_id=1652581079 instance=ExtResource("6_rir3g")]
 z_index = 1
-material = SubResource("ShaderMaterial_oym6b")
+material = SubResource("ShaderMaterial_ydgkx")
 position = Vector2(65, 114)
 
 [node name="TargetingComputer" parent="Systems/Player" unique_id=2051613719 instance=ExtResource("8_okrb4")]

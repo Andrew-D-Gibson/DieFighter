@@ -2,9 +2,11 @@
 
 [ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_act"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="2_tile"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_r41m8"]
 [ext_resource type="Texture2D" uid="uid://cwa1lwuck37em" path="res://Assets/Textures/Tiles/PurpleTiles/ram_scoop.png" id="3_tex"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_data"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_chain"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_jqvcv"]
 [ext_resource type="Resource" uid="uid://caw4226hicicv" path="res://Source/Content/Tiles/TileResources/ram_scoop_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_act_die"]
@@ -42,7 +44,6 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_s4_reset"]
 script = ExtResource("4_data")
 category = 2
-amount = 0
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_s5_empty_cells"]
@@ -58,6 +59,24 @@ subtype = 2
 multiplier = 2.0
 text_token = &"charge"
 text_token_value = "multiplier"
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_juice_1"]
+script = ExtResource("4_data")
+category = 4
+subtype = 21
+amount = 10
+color = Color(0.7725, 0.3216, 0.9451, 1)
+juice_flags = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_e2mdk"]
+script = ExtResource("4_data")
+category = 4
+subtype = 16
+callout = "+{amount}"
+color = Color(0.6862745, 0.29803923, 0.827451, 1)
+juice_flags = 36
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
 [sub_resource type="Resource" id="Resource_s7_charge"]
@@ -77,18 +96,9 @@ category = 3
 subtype = 5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="Resource_juice_1"]
-script = ExtResource("4_data")
-category = 4
-subtype = 21
-amount = 10
-juice_flags = 6
-color = Color(0.7725, 0.3216, 0.9451, 1)
-metadata/_custom_type_script = "uid://tr402hc111gu"
-
 [sub_resource type="Resource" id="Resource_chain"]
 script = ExtResource("5_chain")
-effects = Array[ExtResource("4_data")]([SubResource("Resource_s1_particle_count"), SubResource("Resource_s2_particles"), SubResource("Resource_s3_target_player"), SubResource("Resource_s4_reset"), SubResource("Resource_s5_empty_cells"), SubResource("Resource_s6_double"), SubResource("Resource_juice_1"), SubResource("Resource_s7_charge"), SubResource("Resource_s8_target_computer"), SubResource("Resource_s9_give_die")])
+effects = Array[ExtResource("4_data")]([SubResource("Resource_s1_particle_count"), SubResource("Resource_s2_particles"), SubResource("Resource_s3_target_player"), SubResource("Resource_s4_reset"), SubResource("Resource_s5_empty_cells"), SubResource("Resource_s6_double"), SubResource("Resource_juice_1"), SubResource("Resource_e2mdk"), SubResource("Resource_s7_charge"), SubResource("Resource_s8_target_computer"), SubResource("Resource_s9_give_die")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ram_scoop"]
@@ -104,9 +114,9 @@ animations = [{
 
 [resource]
 script = ExtResource("2_tile")
-upgraded_version = ExtResource("upgrade_plus")
 tile_name = "[color=purple]Ram Scoop[/color]"
-description = "[color=yellow]Any die[/color] -> Gain [color=purple]{charge} engine charge[/color] per surrounding empty cell"
+description = "[color=yellow]Any die[/color] -> Gain [color=purple]{charge} engine charge[/color] per (surrounding) empty cell"
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_ram_scoop")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_act")]([SubResource("Resource_act_die"), SubResource("Resource_act_combat"), SubResource("Resource_act_target")])
