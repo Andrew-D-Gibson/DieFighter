@@ -115,6 +115,10 @@ const _SKIP_FADE_IN: float = 0.15
 const _SKIP_HOLD: float = 2.0
 const _SKIP_FADE_OUT: float = 2.0
 const _SKIP_AXIS_THRESHOLD: float = 0.6
+## Screen pixels per art pixel on the 1080p overlay the prompt draws in.
+const _ART_SCALE: float = 6.0
+## Gap under the prompt, in art pixels.
+const _SKIP_MARGIN_ART_PX: float = 6.0
 
 var _skip_prompt: Label
 ## Negative while hidden; confirmation expires only when the fade is complete.
@@ -234,20 +238,22 @@ func _build_skip_prompt() -> void:
 	_skip_prompt = Label.new()
 	_skip_prompt.name = "SkipPrompt"
 	_skip_prompt.text = tr("CUTSCENE_SKIP_PROMPT")
-	_skip_prompt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	_skip_prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_skip_prompt.theme_type_variation = FontRoles.slot(FontRoles.SMALL, 2.0)
+	# The default (small) font at one font pixel per art pixel, so the caption
+	# sits on the same 320x180 grid as the art it's laid over.
+	_skip_prompt.theme_type_variation = FontRoles.slot(FontRoles.SMALL, _ART_SCALE)
 	_skip_prompt.add_theme_color_override("font_shadow_color", Color.BLACK)
-	_skip_prompt.add_theme_constant_override("shadow_offset_x", 2)
-	_skip_prompt.add_theme_constant_override("shadow_offset_y", 2)
+	_skip_prompt.add_theme_constant_override("shadow_offset_x", int(_ART_SCALE))
+	_skip_prompt.add_theme_constant_override("shadow_offset_y", int(_ART_SCALE))
 	overlay.add_child(_skip_prompt)
-	_skip_prompt.anchor_right = 1.0
-	_skip_prompt.anchor_top = 1.0
-	_skip_prompt.anchor_bottom = 1.0
-	_skip_prompt.offset_left = 32.0
-	_skip_prompt.offset_right = -32.0
-	_skip_prompt.offset_top = -76.0
-	_skip_prompt.offset_bottom = -32.0
+	# Placed by hand rather than centred by the Label: centring an odd number
+	# of art pixels in an even width would land the text half a pixel off.
+	var text_size: Vector2 = _skip_prompt.get_combined_minimum_size()
+	var screen: Vector2 = get_viewport_rect().size
+	_skip_prompt.size = text_size
+	_skip_prompt.position = Vector2(
+		snappedf((screen.x - text_size.x) / 2.0, _ART_SCALE),
+		screen.y - text_size.y - _SKIP_MARGIN_ART_PX * _ART_SCALE)
 	_skip_prompt.modulate.a = 0.0
 	_skip_prompt.hide()
 
