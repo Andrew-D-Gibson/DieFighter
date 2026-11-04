@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://4cyznjbe26rl1"]
+[gd_scene format=3 uid="uid://ca4wi4um4rnbo"]
 
-[ext_resource type="Script" uid="uid://ovc5j420bbx0n" path="res://Source/Systems/Game/RewardManager/MoneyPickup/money_pickup.gd" id="1_mpick"]
+[ext_resource type="Script" uid="uid://da4jryb8lpcqd" path="res://Source/Systems/Game/RewardManager/MoneyPickup/money_pickup.gd" id="1_mpick"]
 [ext_resource type="PackedScene" uid="uid://cs2q2kjpckwb0" path="res://Source/Systems/Components/Draggable/draggable.tscn" id="2_mdrag"]
 [ext_resource type="Texture2D" uid="uid://b41a3gdbfjgrk" path="res://Assets/Textures/Money/money_symbol.png" id="3_msym"]
 [ext_resource type="PackedScene" uid="uid://bl8vaahrwfvl8" path="res://Source/Systems/Game/MoneyParticles/money_particle.tscn" id="4_mpart"]
@@ -8,26 +8,26 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mpick"]
 size = Vector2(12, 12)
 
-[node name="MoneyPickup" type="Node2D" node_paths=PackedStringArray("draggable", "amount_label") groups=["MoneyPickup"]]
+[node name="MoneyPickup" type="Node2D" unique_id=1616849791 node_paths=PackedStringArray("draggable", "amount_label") groups=["MoneyPickup"]]
 z_index = 10
 script = ExtResource("1_mpick")
 draggable = NodePath("Draggable")
 amount_label = NodePath("AmountLabel")
 money_particle_scene = ExtResource("4_mpart")
 
-[node name="Draggable" parent="." instance=ExtResource("2_mdrag")]
+[node name="Draggable" parent="." unique_id=1050094321 instance=ExtResource("2_mdrag")]
 bob_amplitude = 0.75
 drift_amplitude = 0.5
 drift_speed = 0.25
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Draggable" unique_id=1858253865]
 shape = SubResource("RectangleShape2D_mpick")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=155292617]
 position = Vector2(0, -2)
 texture = ExtResource("3_msym")
 
-[node name="AmountLabel" type="RichTextLabel" parent="."]
+[node name="AmountLabel" type="RichTextLabel" parent="." unique_id=1361052601]
 offset_left = -13.0
 offset_top = 3.0
 offset_right = 13.0
