@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bileq33dkxyj4"
-path="res://.godot/imported/tear_sail_port.png-1cd7ba2b329db37822f2205b850e71ba.ctex"
+uid="uid://bfnm14o644mki"
+path="res://.godot/imported/split_roof_starboard.png-7c1ab1be001d5c0ff8e2e1f7addb70dc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Ships/Outrigger/Cockpit/Damage/tear_sail_port.png"
-dest_files=["res://.godot/imported/tear_sail_port.png-1cd7ba2b329db37822f2205b850e71ba.ctex"]
+source_file="res://Assets/Textures/Ships/Outrigger/Cockpit/Damage/split_roof_starboard.png"
+dest_files=["res://.godot/imported/split_roof_starboard.png-7c1ab1be001d5c0ff8e2e1f7addb70dc.ctex"]
 
 [params]
 

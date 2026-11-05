@@ -12,14 +12,14 @@ extends Node2D
 
 const _WHITE: Color = Color("#CEF0F1")
 const _BASE: Color = Color("#90263C")
-const _FORWARD: Color = Color("#EED35D")
+const _FORWARD: Color = Color("#CEF0F1")
 const _REVERSE: Color = Color("#C4C1BC")
 const _REVERSE_DARK: Color = Color("#63605C")
 const _HOLD: Color = Color("#D03656")
 const _HOLD_DARK: Color = Color("#90263C")
-const _IGNITION_COLD: Color = Color("#98873B")
-const _IGNITION: Color = Color("#CCB550")
-const _IGNITION_HOT: Color = Color("#EED35D")
+const _IGNITION_COLD: Color = Color("#90263C")
+const _IGNITION: Color = Color("#D03656")
+const _IGNITION_HOT: Color = Color("#CEF0F1")
 
 ## Cells round the ring, clockwise; set by the behavior.
 var ring: Array[Vector2i] = []

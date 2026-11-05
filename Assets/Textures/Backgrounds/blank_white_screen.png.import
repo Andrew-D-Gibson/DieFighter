@@ -17,7 +17,6 @@ dest_files=["res://.godot/imported/blank_white_screen.png-97a9c597b7e8e8fb5a4e8c
 
 compress/mode=0
 compress/high_quality=false
-compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

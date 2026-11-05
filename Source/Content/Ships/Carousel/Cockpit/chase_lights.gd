@@ -17,7 +17,7 @@ extends Node2D
 ## How much faster the chase runs while the ring is turning.
 @export var race_boost: float = 9.0
 @export var race_time: float = 0.9
-@export var lit_color: Color = Color("#eed35d")
+@export var lit_color: Color = Color("#d03656")
 @export var hot_color: Color = Color("#cef0f1")
 
 ## How long a hit browns the lights out.

@@ -17,7 +17,6 @@ dest_files=["res://.godot/imported/health_under.png-a40e1e060bba6538d5cafd2769e9
 
 compress/mode=0
 compress/high_quality=false
-compress/high_quality_mode=0
 compress/lossy_quality=0.7
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0

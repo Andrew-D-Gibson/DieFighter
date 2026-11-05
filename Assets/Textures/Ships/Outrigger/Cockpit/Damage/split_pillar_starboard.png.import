@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dlqooqp03rc7"
-path="res://.godot/imported/split_pod_port.png-8f80dc8d9fbec6c06d91f8ca22b51f54.ctex"
+uid="uid://drj0k6c1qv7h0"
+path="res://.godot/imported/split_pillar_starboard.png-9fb85aa69ad220343a98bc78e7b04658.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Ships/Outrigger/Cockpit/Damage/split_pod_port.png"
-dest_files=["res://.godot/imported/split_pod_port.png-8f80dc8d9fbec6c06d91f8ca22b51f54.ctex"]
+source_file="res://Assets/Textures/Ships/Outrigger/Cockpit/Damage/split_pillar_starboard.png"
+dest_files=["res://.godot/imported/split_pillar_starboard.png-9fb85aa69ad220343a98bc78e7b04658.ctex"]
 
 [params]
 
