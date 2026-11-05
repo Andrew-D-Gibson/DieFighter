@@ -37,12 +37,25 @@ A gap pass against `TRAILER_PLAN.md`. Already built and left alone: the juice ve
 Eight events and two elites built on `LORE.md` and the faction ships, weighted toward the thin spots: Spine events (5 → 10), Tail elites (2 → 3), Inbound's first elite, Spilled outside Fate nodes, and the first hints at §4's secret. Stories and branches are in `FACTION_SCENARIOS.md`.
 
 - **Spine:** Tithe Run (the convoy flying aft with a Wisp on its wing), The Ledger (a Picket arrested for counting where the tithe goes), Quarantine (the Rearguard firing on a Hauler that came back out of the hole; saving it rolls 3:2 between "still us" and something else), Stowaways (an Undertow smuggler running refugees past an inspection). Still on Patrol (a Husk flying a 400-year-old route) is Belly and Spine.
-- **Belly:** Wolf in the Fold (two identical Caravan hulls with the same accusation; only the badge tells them apart), Turn Around (a Zealot leading a family inward: its gift costs every credit you have), Procession (elite: two Zealots and the Pilgrim feeding their overload).
+- **Belly:** Wolf in the Fold (two identical Caravan hulls with the same accusation; only the badge tells them apart), Turn Around (a Zealot leading a family inward: its gift costs every credit you have), Twin Flames (elite: two Zealots and the Pilgrim feeding their overload; renamed from Procession when the Inbound branch shipped its own Procession).
 - **Tail:** White Flag (Pirates Attacking Civilian with the roles flipped: a Gaff hunted by the forgotten sentry drone), The Line Moved On (elite: two Cannon Drones still holding).
 - **Raid variants**, so ships that can sit on the player's side mid-fight can hand off: `cannon_drone_hunter`, `tithe_collector_inspector`, `zealot_herald`, `bounty_runner_smuggler` (whose Flee is gated on hostile, so it never leaves an ally's fight). Not in the codex.
 - **Test change:** `test_the_tail_meets_no_rearguard_but_what_it_left_behind` accepts Cannon Drone variants (`cannon_drone*`), so White Flag's drone counts as the sentry it is. The Line Moved On was rebuilt from drones rather than a Siege Mortar to stay inside that rule.
 - **Checked with an AutoPilot gauntlet** (each scenario in its own sector, random and smart bots, two loadouts, 200+ runs): no script errors, stalls or invariant breaks, and the event logs show each branch reached. It caught two things, both fixed: the Tithe Run's Wisp went home if the fee was pocketed mid-fight, and White Flag's Gaff at 35% hull died to the first Raid (now 75%).
 - `tools/loc.sh sync` also picked up the Napalm Vent description rows the Napalm Vent tweak left unsynced.
+
+---
+
+## 2026-11-05 — Six Inbound encounters
+
+The Inbound had four encounters and rarely turned up. Now there are ten, and every layer has some. Each is written up in `FACTION_SCENARIOS.md`.
+
+- **Tail:** Vigil (combat, two Zealots: overfeed one to burn it) and Martyr (event, vs the Undertow: a Gaff strips a Pilgrim that won't resist; shoot the Pilgrim and it thanks you).
+- **Belly:** Recruiter (event, vs the Caravan: a Pilgrim talks a tired Hauler family into flying inward). Communion (combat, Belly and Spine: a Pilgrim Relays its luck into a Fate Shroud) and Procession (elite, Belly and Spine: a Zealot fed by two Pilgrims' Relays).
+- **Spine:** Apostate (event, vs the Rearguard: a converted Tithe Collector dumps its tithe, the first in-game hint that the tithe goes into the hole).
+- One new ship resource, `tithe_collector_apostate.tres`: the Tithe Collector's hull and kit plus a hand-off Raid, flying the Inbound badge. Martyr and Recruiter use `pilgrim_wandering` for its Raid. No new art.
+- Checked with the core suite and AutoPilot gauntlets of all six (about 100 runs over random, smart and aggressive, each in its layers): no errors or violations. Every event branch was walked headlessly. Martyr's kind path (Gaff down, Pilgrim heals you and leaves) was seen live.
+- A separate commit syncs the Napalm Vent rows that the 11-04 tweak left out of `content.csv`.
 
 ---
 

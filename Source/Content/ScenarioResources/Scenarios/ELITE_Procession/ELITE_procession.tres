@@ -1,72 +1,69 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3]
 
-[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="scenario_script"]
-[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="spawn_script"]
-[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="reward_script"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
+[ext_resource type="Resource" uid="uid://ssswy2xsy7eo" path="res://Source/Content/Enemies/EnemyResources/zealot.tres" id="enemy_zealot"]
+[ext_resource type="Resource" uid="uid://cq2lqj8ov5wg0" path="res://Source/Content/Enemies/EnemyResources/pilgrim.tres" id="enemy_pilgrim"]
 [ext_resource type="Texture2D" uid="uid://c8n5rlrs468on" path="res://Assets/Textures/Map/EncounterIcons/elite_encounter.png" id="icon"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/zealot.tres" id="enemy_zealot"]
-[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state_pirate_combatant"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/pilgrim.tres" id="enemy_pilgrim"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Procession/pilgrim_leading.tres" id="state_pilgrim_leading"]
+[ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="script_2"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_Procession/zealot_leading.tres" id="state_zealot"]
+[ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="state_silent"]
 
-[sub_resource type="Resource" id="Resource_reward0"]
-script = ExtResource("reward_script")
-min_money = 12
-max_money = 20
-num_of_rewards = 0
-grid_slot_probability = 0.0
-
-[sub_resource type="Resource" id="Resource_spawn0"]
-script = ExtResource("spawn_script")
-enemy_resource = ExtResource("enemy_zealot")
-starting_state = ExtResource("state_pirate_combatant")
-reward_resource = SubResource("Resource_reward0")
-
-[sub_resource type="Resource" id="Resource_reward1"]
-script = ExtResource("reward_script")
-min_money = 6
-max_money = 10
-num_of_rewards = 0
-grid_slot_probability = 0.0
-
-[sub_resource type="Resource" id="Resource_spawn1"]
-script = ExtResource("spawn_script")
-enemy_resource = ExtResource("enemy_pilgrim")
-starting_state = ExtResource("state_pilgrim_leading")
-reward_resource = SubResource("Resource_reward1")
-
-[sub_resource type="Resource" id="Resource_reward2"]
-script = ExtResource("reward_script")
-min_money = 12
-max_money = 20
-num_of_rewards = 0
-grid_slot_probability = 0.0
-
-[sub_resource type="Resource" id="Resource_spawn2"]
-script = ExtResource("spawn_script")
-enemy_resource = ExtResource("enemy_zealot")
-starting_state = ExtResource("state_pirate_combatant")
-reward_resource = SubResource("Resource_reward2")
-
-[sub_resource type="Resource" id="Resource_bounty0"]
-script = ExtResource("reward_script")
-min_money = 30
-max_money = 45
+[sub_resource type="Resource" id="Resource_bounty"]
+script = ExtResource("script_2")
+min_money = 35
+max_money = 50
 dice_probability = 0.25
 minimum_rarity = 2
 min_money_pickup = 25
 max_money_pickup = 40
 money_pickup_probability = 0.5
 
+[sub_resource type="Resource" id="Resource_reward_pilgrim0"]
+script = ExtResource("script_2")
+min_money = 4
+max_money = 8
+num_of_rewards = 0
+
+[sub_resource type="Resource" id="Resource_spawn_pilgrim0"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_pilgrim")
+starting_state = ExtResource("state_silent")
+reward_resource = SubResource("Resource_reward_pilgrim0")
+
+[sub_resource type="Resource" id="Resource_reward_zealot"]
+script = ExtResource("script_2")
+min_money = 16
+max_money = 26
+num_of_rewards = 0
+
+[sub_resource type="Resource" id="Resource_spawn_zealot"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_zealot")
+starting_state = ExtResource("state_zealot")
+reward_resource = SubResource("Resource_reward_zealot")
+
+[sub_resource type="Resource" id="Resource_reward_pilgrim1"]
+script = ExtResource("script_2")
+min_money = 4
+max_money = 8
+num_of_rewards = 0
+
+[sub_resource type="Resource" id="Resource_spawn_pilgrim1"]
+script = ExtResource("script_1")
+enemy_resource = ExtResource("enemy_pilgrim")
+starting_state = ExtResource("state_silent")
+reward_resource = SubResource("Resource_reward_pilgrim1")
+
 [resource]
-script = ExtResource("scenario_script")
+script = ExtResource("script_0")
 map_icon = ExtResource("icon")
 background_resource = ExtResource("bg")
-starting_enemies = Array[ExtResource("spawn_script")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1"), SubResource("Resource_spawn2")])
-rewards = Dictionary[int, ExtResource("reward_script")]({
-0: SubResource("Resource_bounty0")
+starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn_pilgrim0"), SubResource("Resource_spawn_zealot"), SubResource("Resource_spawn_pilgrim1")])
+rewards = Dictionary[int, ExtResource("script_2")]({
+0: SubResource("Resource_bounty")
 })
-sectors = 2
-enemy_hull_multiplier = 1.35
-enemy_damage_multiplier = 1.35
+sectors = 6
+enemy_hull_multiplier = 1.4
+enemy_damage_multiplier = 1.4

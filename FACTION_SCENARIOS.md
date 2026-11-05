@@ -20,10 +20,12 @@ slow is dead.
 
 - **Combats:** Attacker, Wolfpack, Loose Wing, Cutpurse†, Wreckers†, Cannon Drone
   (a Rearguard sentry left behind when the line moved on), Boneyard (a Gaff and a
-  Venom Fighter stripping a wreck field, and you look like more of it).
+  Venom Fighter stripping a wreck field, and you look like more of it), Vigil (two
+  Zealots keeping watch where the horizon is nearest).
 - **Events:** Pilgrim (the Fate's Die handover), Straggler, Pirates Attacking
   Civilian†, Mayday†, Sleeping Drone, Signal, What Came Back†, White Flag (a
-  limping Gaff hunted by the forgotten sentry drone).
+  limping Gaff hunted by the forgotten sentry drone), Martyr (a Gaff strips a
+  Pilgrim that won't resist).
 - **Elites:** Wake Riders†, Chopshop (the Warden's breakers: *"The Warden wants your
   parts."*), The Line Moved On (a sentry grid still holding a line that left
   decades ago).
@@ -36,17 +38,20 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
 
 - **Combats:** Lien Collection, Pilgrimage (Inbound recruiters), Smash and Grab,
   Carrier†, Picket Line† (a draft sweep), Tender Escort (a Conscriptor and the Caravan
-  medic it drafted), Cutpurse†, Wreckers†.
+  medic it drafted), Cutpurse†, Wreckers†, Communion† (a Pilgrim feeding its luck to
+  a Fate Shroud).
 - **Events:** Convoy, Cut Loose (the Chancellor's philosophy in miniature), Mercy
   Call, Pickpocket, Wreck Salvage (under a Claims Adjuster's guard), Pact†, Last
   Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
   Pirates Attacking Civilian†, What Came Back†, Wolf in the Fold (an Undertow
   infiltrator in a Caravan hull), Turn Around (a Zealot leading a family
-  inward), Still on Patrol†.
+  inward), Still on Patrol†, Recruiter (a Pilgrim talks a tired Caravan family
+  into flying inward).
 - **Elites:** Hunter-Killers† (an Undertow fighter with a Rearguard drone: someone
   paid for you), Repossession (two Claims Adjusters kept running by a Field Tender:
-  *"Your lien is due."*), Wake Riders†, Procession (two Zealots and the Pilgrim
-  feeding them).
+  *"Your lien is due."*), Wake Riders†, Twin Flames (two Zealots and the Pilgrim
+  feeding them), Procession† (a Zealot and the two Pilgrims who relay it their
+  luck).
 - **Gate:** the Arc Dynamo, *the Chancellor's reactor barge*: *"The Belly can't wait
   for one ship."*
 
@@ -55,12 +60,13 @@ Checkpoints, tithes and warships, plus the Undertow they hire under the table.
 
 - **Combats:** Tithe Collector, Tithe Escort, Ion Lances, Defender + Disabler, Drone
   Battery, Siege Battery, Spotter, Bounty Run (a Rearguard lance escorting an Undertow
-  smuggler in civilian clothes), Carrier†, Picket Line†.
+  smuggler in civilian clothes), Carrier†, Picket Line†, Communion†.
 - **Events:** Tollkeeper (*"Tithe taken. It buys us all time."*), Deniable Assets,
   Black Market (the checkpoint's back door), Deserter, Pact†, Tithe Run, The
-  Ledger, Quarantine, Stowaways, Still on Patrol†.
+  Ledger, Quarantine, Stowaways, Still on Patrol†, Apostate (a Tithe Collector
+  that saw where the tithe goes, flying inward under the Inbound halo).
 - **Elites:** Tithe Fleet, Lance Squadron, Mortar Nest (a Picket shields the
-  mortars), Hunter-Killers†.
+  mortars), Hunter-Killers†, Procession†.
 - **Gate:** the Bastion, *the Marshal's fortress*: *"Four hundred years. Not you."*
 
 The Mayday comes from a Bounty Runner: a civilian hull with an Undertow badge, the
@@ -283,12 +289,69 @@ over there."*
 The take-everything uses `STEAL_MONEY` for 9999, which always comes up short, so
 the Zealot's state must never transition on `PLAYER_COULDNT_PAY`.
 
-### Procession — `ELITE_Procession` (sector 2)
+### Twin Flames — `ELITE_TwinFlames` (sector 2)
 Two **Zealots** and the **Pilgrim** relaying dice into them. *"Stop running. Come
 home."* The Relay pushes the Zealots toward their overload and the Siphon pins you
 in place: kill the Pilgrim first for a slower, safer fight, or ride the relays and
-burn both Zealots out. Inbound's first elite (1.35×, Belly only: the Relay is ally
+burn both Zealots out. An Inbound elite (1.35×, Belly only: the Relay is ally
 support).
+
+### The Vigil — `COMBAT_Vigil` (sector 1)
+Two **Zealots** keep watch at the edge of the Tail, where the horizon is nearest, so
+that nobody turns back. *"Stop running. We'll wait with you."* The Zealot's overload
+is the fight: two 6s into one Zealot and it burns through its own hull instead of
+attacking.
+
+### Martyr — `EVENT_Martyr` (sector 1, vs the Undertow)
+A **Gaff** (`gaff_raider`) strips a battered **Pilgrim** (`pilgrim_wandering`) that
+doesn't resist. Gaff: *"Doesn't even beg. Gives me the creeps."* Pilgrim: *"Let it
+take. I won't need any of it."* The Undertow and the Inbound agree the slow are
+already dead; they disagree about what that means.
+- **Shoot the Gaff:** *"Fine. You've got parts too."* The Pilgrim, unimpressed: *"Why
+  fight? It was only things."* While it stands by, dice you hand it go to a Raid on
+  the Gaff, and the Gaff's Raids go at it. Win with the Pilgrim alive and it patches
+  10 hull before it flies inward: *"Keep running, then. I'll go ahead."* — Mercy
+- **Shoot the Pilgrim:** it doesn't fight back. *"Thank you. Send me home."* The
+  Gaff leaves you the wreck (12-20 credits): *"It thanked you?! Keep it. I'm gone."*
+  — Ruin / Hunger
+
+### Recruiter — `EVENT_Recruiter` (sector 2, vs the Caravan)
+A **Pilgrim** (`pilgrim_wandering`, under PIRATE) talks a worn-out **Hauler** family
+into flying inward. Pilgrim: *"Stop running. Come home with us."* Hauler: *"They say
+it's better on the other side."* The Pilgrim's gift floats between them (two picks,
+UNCOMMON or better).
+- **Take the gift:** *"See? Even runners get tired."* Hauler: *"If even you'll take
+  it... we'll go."* Both fly inward. — Hunger
+- **Shoot the Pilgrim:** *"Then I'll wait for you there."* Hauler: *"Wait. What were
+  we thinking?"* Win, and the Hauler patches 10 hull: *"We'll keep running. Take our
+  spares."* Take the gift mid-fight and the family gives up and leaves anyway.
+  — Mercy
+- **Shoot the Hauler:** *"We were tired. Not dead!"* It fights and runs once hurt;
+  its wreck pays credits and a pick. The Pilgrim consoles it (*"Shh. Not long now.
+  You're going home."*), then, dead or fled: *"One way or another, it's going home."*
+  — Ruin
+
+### Communion — `COMBAT_Communion` (sectors 2-3, with the Spilled)
+A **Pilgrim** kneels beside a **Fate Shroud** and Relays its luck into it. *"Be
+still. It came back for us."* Everyone fears the Spilled; the Inbound feed them.
+
+### Procession — `ELITE_Procession` (sectors 2-3)
+A **Zealot** and two **Pilgrims**, flying inward against the fleet. *"Make way. The
+faithful are going home."* The Pilgrims siphon your drive so you can't leave, and
+Relay their dice into the Zealot, so their faith can overload it for you.
+
+### Apostate — `EVENT_Apostate` (sector 3, vs the Rearguard)
+A **Tithe Collector** (`tithe_collector_apostate`: the Rearguard hull, the Inbound
+badge) flies inward, dumping its hold of tithe (a die, or 20-30 credits). *"Take it.
+I saw where the tithe goes."* A **Conscriptor**: *"Touch that tithe and you're
+drafted."* It's the first hint of `LORE.md` §4 a player can find.
+- **Take the tithe, or shoot the Conscriptor:** *"Drafted. Report to the line."*
+  While it fights you, dice you hand the Apostate go to a Raid on it. Win for the
+  bounty pick, and the Apostate leaves you the secret: *"Every die you ever paid went
+  in."* — Hunger / Mercy
+- **Shoot the Apostate:** *"Then it goes in with me."* The Conscriptor: *"Good. Bring
+  the heretic down."* Win for its wreck (15-25 credits). The Conscriptor then guards
+  the tithe (*"Tithe recovered. Leave it be."*), and taking it drafts you. — Duty
 
 ## Spilled — "Nobody knows."
 
