@@ -17,7 +17,8 @@ Sixteen tweaks in eight parallel chunks.
 - **Combat feel.** Overkill needs 2x the remaining shields+hull and at least `OVERKILL_MIN_EXCESS` (6) past them. Idle enemy actions (Do Nothing, jam, blocked, silenced) play in about a third of the time, with 1x pop-ups. Toll Relay streams purple to the engine and pops "+N" there.
 - **Economy.** Grid slot offers default to 0.4 (was 0.25). `GameStateManager.money_scale_by_sector` [1.0, 0.78, 0.78] scales payouts and pickups after the roll; refunds are exempt. `Dice.reroll_with_tween` now follows the animation speed for every caller.
 - **Shop** redrawn as a Caravan market saucer.
-- Open: every enemy action pop-up lasts 2.25 s instead of 0.75 s (`popup_time` set after the pop-up is added); the Interlock's hit callout still shows the unamplified multiplier; three ships stacked in one column can still overlap bubbles.
+- Enemy action pop-ups now last their intended 0.75 s: `popup_time` was set after `add_child`, so they ran the 2.25 s default.
+- Open: the Interlock's hit callout still shows the unamplified multiplier; three ships stacked in one column can still overlap bubbles.
 
 ---
 
