@@ -2,18 +2,19 @@ class_name TileUnlockPopup
 extends Node2D
 ## The card a gate jump stops on when it unlocks a tile family: the family's
 ## name, what it does, and every tile it adds to offers, popping in one by one.
-## Pointing at a tile reads it out underneath. The jump waits for Close.
+## Pointing at a tile reads it out underneath; pointing at a keyword in any
+## of the text pops up its rule, as in the info panel. The jump waits for
+## Close.
 ##
 ## In world space, like ConfirmDialog, so the tiles are drawn on the same
 ## pixel grid as the ones on the player's grid.
 
 signal closed()
 
-const _MEDIUM_BUTTON: PackedScene = preload("res://Source/Systems/UI/Buttons/medium_button.tscn")
+## Green, hover text included: carry on, nothing to weigh up.
+const _CLOSE_BUTTON: PackedScene = preload("res://Source/Systems/UI/Buttons/medium_green_button.tscn")
 const _OPEN_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/upgrade_trigger.tres")
 const _TILE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/shop_stock_pop.tres")
-## Blue, like the region cards' Close: carry on, nothing to weigh up.
-const _BUTTON_TEXTURE: Texture2D = preload("res://Assets/Textures/UI/Buttons/button_medium_blue.png")
 
 const _DIM_COLOR: Color = Color(0.027451, 0.0117647, 0.054902, 0.83)
 ## Wide enough for the biggest family's tiles on one row.
@@ -22,6 +23,19 @@ const _MAX_COLUMNS: int = 9
 const _TILE_SIZE: int = 24
 const _TILE_GAP: int = 4
 const _PANEL_PADDING: Vector2 = Vector2(8, 6)
+## Room held under the tiles for one's name and description, so pointing at
+## one doesn't resize the card.
+const _INFO_HEIGHT: int = 44
+## Between a tile's name and its description. Their own labels, so the
+## theme's tight line separation can't pull a description's dice icons up
+## over the name.
+const _NAME_GAP: int = 3
+## The codex's keyword popup, which shares this card's world-space pixels.
+const _KEYWORD_WIDTH: int = 114
+const _KEYWORD_BG: Color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+## Clear of the pointer, and of the screen's edge.
+const _KEYWORD_OFFSET: Vector2 = Vector2(6, 6)
+const _SCREEN_MARGIN: float = 2.0
 ## Seconds between one tile popping in and the next.
 const _TILE_STAGGER: float = 0.07
 const _GLITCH_MS: int = 160
@@ -30,7 +44,10 @@ var _root: Control
 var _dim: ColorRect
 var _panel: _Panel
 var _column: VBoxContainer
+var _info_name: RichTextLabel
 var _info_label: RichTextLabel
+var _keyword_popup: PanelContainer
+var _keyword_label: RichTextLabel
 var _close_button: Button
 var _tween: Tween
 
@@ -38,7 +55,12 @@ var _tween: Tween
 func _ready() -> void:
 	z_index = 40
 	_build()
+	set_process(false)
 	hide()
+
+
+func _process(_delta: float) -> void:
+	_place_keyword_popup()
 
 
 ## Shows [param family] and the [param tiles] it just added to offers.
@@ -46,7 +68,7 @@ func _ready() -> void:
 func open(family: TileFamilyResource, tiles: Array[TileResource], number: int, total: int) -> void:
 	_add_label(tr("TILE_UNLOCK_HEADER").format({"number": number, "total": total}), 1.0, Globals.white)
 	_add_label(tr(family.family_name), 2.0, family.accent_color)
-	_add_rich_text(Utils.format_text(tr(family.description), true), 0)
+	_add_rich_text(Utils.format_text(tr(family.description), true), 0, _column)
 
 	var grid: GridContainer = GridContainer.new()
 	grid.columns = mini(maxi(tiles.size(), 1), _MAX_COLUMNS)
@@ -65,18 +87,20 @@ func open(family: TileFamilyResource, tiles: Array[TileResource], number: int, t
 		holder.add_child(icon)
 		icons.append(icon)
 
-	# Room held open for a tile's name and description, so pointing at one
-	# doesn't resize the card.
-	_info_label = _add_rich_text(tr("TILE_UNLOCK_HINT"), 40)
+	var info: VBoxContainer = VBoxContainer.new()
+	info.custom_minimum_size.y = _INFO_HEIGHT
+	info.add_theme_constant_override("separation", _NAME_GAP)
+	_column.add_child(info)
+	_info_name = _add_rich_text("", 0, info)
+	_info_name.hide()
+	_info_label = _add_rich_text(tr("TILE_UNLOCK_HINT"), 0, info)
 	_info_label.add_theme_color_override("default_color", Globals.purple)
 
 	var button_row: CenterContainer = CenterContainer.new()
 	_column.add_child(button_row)
-	_close_button = _MEDIUM_BUTTON.instantiate()
+	_close_button = _CLOSE_BUTTON.instantiate()
 	button_row.add_child(_close_button)
 	_close_button.set_button_text("TILE_UNLOCK_CLOSE")
-	OptionsMenu.set_button_texture(_close_button, _BUTTON_TEXTURE)
-	_close_button.hover_text_color = family.accent_color
 	_close_button.pressed_within_window.connect(_close)
 	_close_button.disabled = true
 
@@ -110,6 +134,33 @@ func _build() -> void:
 	_column.resized.connect(_fit_panel)
 	_root.add_child(_column)
 
+	_build_keyword_popup()
+
+
+## Over the card, under the pointer: a keyword's rule, like the codex's.
+func _build_keyword_popup() -> void:
+	_keyword_popup = PanelContainer.new()
+	var style: StyleBoxFlat = StyleBoxFlat.new()
+	style.bg_color = _KEYWORD_BG
+	style.set_border_width_all(1)
+	style.border_color = Globals.orange
+	style.content_margin_left = 3.0
+	style.content_margin_right = 3.0
+	style.content_margin_top = 1.0
+	style.content_margin_bottom = 1.0
+	_keyword_popup.add_theme_stylebox_override("panel", style)
+	_keyword_popup.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_keyword_popup.hide()
+	_root.add_child(_keyword_popup)
+
+	_keyword_label = RichTextLabel.new()
+	_keyword_label.bbcode_enabled = true
+	_keyword_label.fit_content = true
+	_keyword_label.scroll_active = false
+	_keyword_label.custom_minimum_size.x = _KEYWORD_WIDTH
+	_keyword_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_keyword_label.add_theme_color_override("default_color", Globals.white)
+	_keyword_popup.add_child(_keyword_label)
 
 
 ## Small text at [param scale] (see FontRoles).
@@ -123,7 +174,8 @@ func _add_label(text: String, scale: float, color: Color) -> Label:
 	return label
 
 
-func _add_rich_text(text: String, minimum_height: int) -> RichTextLabel:
+## Text whose keywords pop up their rules when pointed at.
+func _add_rich_text(text: String, minimum_height: int, parent: Control) -> RichTextLabel:
 	var label: RichTextLabel = RichTextLabel.new()
 	label.bbcode_enabled = true
 	label.fit_content = true
@@ -134,7 +186,9 @@ func _add_rich_text(text: String, minimum_height: int) -> RichTextLabel:
 	label.add_theme_color_override("default_color", Globals.white)
 	label.mouse_filter = Control.MOUSE_FILTER_PASS
 	label.text = text
-	_column.add_child(label)
+	label.meta_hover_started.connect(_on_keyword_hover_started)
+	label.meta_hover_ended.connect(_on_keyword_hover_ended)
+	parent.add_child(label)
 	return label
 
 
@@ -153,10 +207,46 @@ func _tile_icon(tile: TileResource) -> TextureRect:
 
 
 func _read_out(tile: TileResource) -> void:
+	_on_keyword_hover_ended(null)
+	_info_name.text = Utils.format_text(tile.display_name(), true)
+	_info_name.show()
 	_info_label.remove_theme_color_override("default_color")
 	var no_counters: Dictionary[String, int] = {}
-	_info_label.text = Utils.format_text("%s\n%s" % [
-		tile.display_name(), Tile.fill_data_tokens(tile.display_description(), no_counters)], true)
+	_info_label.text = Utils.format_text(
+		Tile.fill_data_tokens(tile.display_description(), no_counters), true)
+
+
+func _on_keyword_hover_started(meta: Variant) -> void:
+	var term: String = str(meta)
+	var rule: String = Keywords.definition(term)
+	if rule.is_empty():
+		_on_keyword_hover_ended(meta)
+		return
+	_keyword_label.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(term), rule])
+	KeywordDiagram.configure(_keyword_popup, _keyword_label, term, 1.0)
+	# Shrink back to the new text's size before placing, or a long rule's
+	# height lingers on a short one.
+	_keyword_popup.reset_size()
+	_keyword_popup.show()
+	_place_keyword_popup()
+	set_process(true)
+
+
+func _on_keyword_hover_ended(_meta: Variant) -> void:
+	_keyword_popup.hide()
+	set_process(false)
+
+
+## Beside the pointer, flipped above it near the bottom, kept on screen.
+func _place_keyword_popup() -> void:
+	var popup_size: Vector2 = _keyword_popup.size
+	var cursor: Vector2 = _root.get_local_mouse_position()
+	var at: Vector2 = cursor + _KEYWORD_OFFSET
+	if at.y + popup_size.y > Globals.SCREEN_SIZE.y - _SCREEN_MARGIN:
+		at.y = cursor.y - popup_size.y - _KEYWORD_OFFSET.y
+	var far_corner: Vector2 = Globals.SCREEN_SIZE - popup_size - Vector2.ONE * _SCREEN_MARGIN
+	at = at.clamp(Vector2.ONE * _SCREEN_MARGIN, far_corner.max(Vector2.ONE * _SCREEN_MARGIN))
+	_keyword_popup.position = at.floor()
 
 
 ## Once the card has laid itself out: the dim fades up, the card lands with a
@@ -188,6 +278,7 @@ func _play_in(icons: Array[TextureRect]) -> void:
 
 
 func _close() -> void:
+	_on_keyword_hover_ended(null)
 	if _tween:
 		_tween.kill()
 	_close_button.disabled = true

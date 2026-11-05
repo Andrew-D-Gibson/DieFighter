@@ -27,6 +27,8 @@ var _signature: String = ""
 ## The scale the group allows (1 with no group).
 var _max_scale: float = 1.0
 var _fitted_width: float = -1.0
+## Refits text fitted while something above was mid-animation, once at rest.
+var _settle: TextFitSettle = TextFitSettle.new()
 
 
 ## [param label] in a new TextFitBox that takes over its place in a layout:
@@ -73,6 +75,8 @@ func _ready() -> void:
 		return
 	_label.set_meta(TextFit.META, self)
 	_label.draw.connect(_on_label_draw)
+	set_process(false)
+	set_notify_transform(true)
 	queue_sort()
 
 
@@ -86,6 +90,17 @@ func _notification(what: int) -> void:
 				group.request()
 		NOTIFICATION_TRANSLATION_CHANGED, NOTIFICATION_THEME_CHANGED:
 			_changed()
+		NOTIFICATION_TRANSFORM_CHANGED:
+			if _settle.moved(self):
+				set_process(true)
+
+
+func _process(_delta: float) -> void:
+	if not _settle.settled():
+		return
+	set_process(false)
+	if _settle.off_scale():
+		_changed()
 
 
 func _get_minimum_size() -> Vector2:
@@ -112,6 +127,7 @@ func _fit() -> void:
 	TextFit.place(fit, Rect2(Vector2.ZERO, Vector2(fit.block_size.x * fit.scale if _hugs() else size.x,
 		size.y)), policy)
 	TextFit.apply(_label, fit)
+	_settle.fitted(self)
 	result = fit
 	var footprint: Vector2 = fit.block_size * fit.scale
 	var wanted: Vector2 = Vector2(ceilf(footprint.x) if _hugs() else 0.0, ceilf(footprint.y))
