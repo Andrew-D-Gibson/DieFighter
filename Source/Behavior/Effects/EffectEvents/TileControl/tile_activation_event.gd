@@ -32,6 +32,9 @@ func resolve(engine: ScenarioEngine) -> void:
 	if tile.uses_remaining != -1 and not tile.is_hold(activator_die):
 		tile.uses_remaining -= 1
 	Events.tile_activated.emit(tile)
+	var die: Dice = activator_die as Dice if is_instance_valid(activator_die) else null
+	if die:
+		Events.tile_activated_by_die.emit(tile, die.value)
 
 	# Remove die from the visual stacking queue — it's about to fly to tile center
 	tile.dice_queue.remove(activator_die)

@@ -48,6 +48,9 @@ extends Resource
 ## SHIELD: multiply existing shields by multiplier, then add running_amount.
 ## Amplify grows the multiplier; the flat bonus is kept separate.
 @export var multiply_shields: bool = false
+## SET_TO_SHIP_READING: add the reading to running_amount instead of replacing
+## it, so it can stack on a die's face ("equal to die, +1 per pip ...").
+@export var add_to_amount: bool = false
 
 # ── String / Key Parameters ────────────────────────────────────────────────────
 ## General-purpose string parameter.

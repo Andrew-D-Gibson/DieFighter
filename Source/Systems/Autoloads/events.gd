@@ -140,6 +140,14 @@ signal tile_activation_complete()
 ## A tile has committed to activating: its criteria passed and a use was spent,
 ## whether the die came from the player, a Feed, or no die at all.
 signal tile_activated(tile: Tile)
+## A die committed a tile to activating: placed from the hand or Fed, a
+## hologram as much as a real die. Straight after tile_activated, with the
+## die's face as it arrived ([param value]). Once per activation, however many
+## times an echo repeats its chain. The Outrigger's pods count thrust off it.
+signal tile_activated_by_die(tile: Tile, value: int)
+## The Outrigger's turn ended with both pods' thrust level, and above 0
+## (OutriggerSync). Every grid tile hears it as ON_PODS_LEVEL.
+signal pods_level()
 signal tile_clicked_for_info()
 ## A modifier just changed an event (or did its job some other way). Whatever
 ## put it in play — its source tile, the background badge — lights up, so a

@@ -46,9 +46,14 @@ extends Resource
 ## The first-run tutorial is written around the default ship's grid.
 @export var supports_tutorial: bool = false
 ## End Turn lights with dice still in hand, instead of only once the hand is
-## spent. For a ship whose rules give an unplayed die a use (the Outrigger's
-## sail charges the engine with them).
+## spent. For a ship whose rules give an unplayed die a use. No ship sets it
+## today (the Outrigger's old sail did).
 @export var hand_may_be_kept: bool = false
+## Tiles salvage and shops may offer only while this ship is flown, on top of
+## the shared pool (RewardManager). They keep offered_as_reward off, so no
+## other ship is ever offered them, and since a second copy can turn up, each
+## needs an upgraded_version. The codex lists them like offered tiles.
+@export var signature_tiles: Array[TileResource] = []
 
 @export_category("Art")
 ## The ship's signature colour: its ship-select card is drawn in it.

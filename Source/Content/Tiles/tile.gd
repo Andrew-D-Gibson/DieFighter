@@ -179,6 +179,9 @@ func _connect_tile_event_signals() -> void:
 	Events.player_evaded.connect(func(attacker: Enemy) -> void:
 		handle_tile_event(self, TileEvent.EventType.ON_PLAYER_EVADED, false, attacker)
 	)
+	Events.pods_level.connect(func() -> void:
+		handle_tile_event(self, TileEvent.EventType.ON_PODS_LEVEL)
+	)
 	# Answered straight after the neighbour's activation rather than at the back
 	# of the queue. A relay chain winding past this tile activates several
 	# neighbours in one pass; queued, every response would wait for the chain
@@ -626,6 +629,12 @@ func is_twin_barrel() -> bool:
 	if res_file.begins_with("twin_barrel"):
 		return true
 	return "Twin Barrel" in tile_resource.tile_name
+
+
+## Points the dice queued or held here at where the tile now sits, after
+## something carried it off under them (the Carousel's ring).
+func rehome_dice() -> void:
+	_update_dice_queue_locations()
 
 
 func _update_dice_queue_locations() -> void:

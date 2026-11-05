@@ -1,0 +1,20 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://7g3nkmsfi21n"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_pod"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_pod"]
+
+[sub_resource type="Resource" id="pod"]
+script = ExtResource("2_pod")
+token = "(pod)"
+label = "pod"
+
+[sub_resource type="Resource" id="pods"]
+script = ExtResource("2_pod")
+token = "(pods)"
+label = "pods"
+
+[resource]
+script = ExtResource("1_pod")
+title = "Pod"
+rule = "One of the Outrigger's two tile groups. Each die a tile uses adds its face to that pod's thrust. [color=yellow]Your turn ends[/color] -> the drive gains [color=purple]charge[/color] equal to the lower thrust."
+tokens = Array[ExtResource("2_pod")]([SubResource("pod"), SubResource("pods")])

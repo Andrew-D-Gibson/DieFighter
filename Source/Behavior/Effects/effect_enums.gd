@@ -198,6 +198,10 @@ enum AmountModifierSubtype {
 	## Player.dice_in_play()): every die the player owns, plus the holograms
 	## enemy ships are holding.
 	SET_TO_DICE_IN_PLAY,
+	## Set running_amount to a number the flown ship's own rules keep, named by
+	## string_param (the Outrigger's "pod_lead", "pod_level"); 0 on a ship that
+	## keeps none by that name. add_to_amount adds it instead. See ShipRules.
+	SET_TO_SHIP_READING,
 }
 
 
@@ -327,6 +331,11 @@ enum TileControlSubtype {
 	## between 0 and range_max (FamilyBoostModifier, one per source tile). A
 	## negative amount takes it back down.
 	ADD_FAMILY_BOOST,
+	## Step the flown ship's mechanism by running_amount (signed: the
+	## Carousel's ring turns clockwise for a positive step, back for a
+	## negative one) and hold the chain until the move has landed. Nothing on
+	## a ship without one. Moves tiles, never die faces. See ShipRules.
+	ADVANCE_SHIP_MECHANISM,
 }
 
 

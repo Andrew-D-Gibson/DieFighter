@@ -64,6 +64,31 @@ func test_every_upgrade_is_marked_and_held_out_of_offers() -> void:
 	assert_gt(found, 0, "some tiles have upgrades")
 
 
+## A ship's signature tiles turn up in offers while it's flown, so a second
+## copy can too: each needs an upgrade, and stays out of the shared pool.
+func test_every_signature_tile_is_held_back_and_upgrades() -> void:
+	for ship: ShipResource in ShipCatalog.all():
+		for tile: TileResource in ship.signature_tiles:
+			assert_not_null(tile, "%s lists an empty signature slot" % ship.id)
+			if tile == null:
+				continue
+			assert_false(tile.offered_as_reward, "%s: %s would be offered on every ship" % [ship.id, tile.resource_path])
+			assert_not_null(tile.upgraded_version, "%s: %s has no upgrade for a second copy" % [ship.id, tile.resource_path])
+
+
+func test_only_the_flown_ships_signature_tiles_join_the_pool() -> void:
+	var signature: TileResource = TileResource.new()
+	signature.offered_as_reward = false
+	var ship: ShipResource = ShipResource.new()
+	ship.signature_tiles.append(signature)
+	var rewards: RewardManager = add_child_autofree(RewardManager.new())
+	Globals.selected_ship = ShipCatalog.find(ShipCatalog.DEFAULT_ID)
+	assert_does_not_have(rewards.get_possible_tile_rewards(), signature)
+	Globals.selected_ship = ship
+	assert_has(rewards.get_possible_tile_rewards(), signature)
+	assert_has(rewards.get_possible_tile_rewards(), DAMAGE, "on top of the shared pool")
+
+
 func test_a_copy_dropped_on_its_twin_upgrades_it() -> void:
 	var twin: Tile = _on_grid(DAMAGE, Vector2i(1, 1))
 	var copy: Tile = _on_offer(DAMAGE)

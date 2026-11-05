@@ -47,11 +47,15 @@ static func release() -> void:
 
 
 ## Every base tile a player could own: those offered as rewards, those a ship
-## starts with, and any held-out tile the player has owned anyway. Upgraded
-## (_plus) versions are shown by toggling on their base tile's entry.
+## starts with or offers while it's flown (its signature tiles), and any
+## held-out tile the player has owned anyway. Upgraded (_plus) versions are
+## shown by toggling on their base tile's entry.
 static func tile_ids() -> Array[String]:
 	var kit: Dictionary[String, bool] = {}
 	for ship: ShipResource in ShipCatalog.all():
+		for tile: TileResource in ship.signature_tiles:
+			if tile:
+				kit[ContentRegistry.get_tile_id(tile.resource_path)] = true
 		if not ship.starting_save:
 			continue
 		for tile: TileResource in ship.starting_save.tile_locations.values():

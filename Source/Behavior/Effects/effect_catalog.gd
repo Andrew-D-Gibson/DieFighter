@@ -48,7 +48,7 @@ extends RefCounted
 const KNOWN_FIELDS: Array[String] = [
 	"amount", "multiplier", "multiply_shields", "string_param", "callout", "callout_texture", "grid_offset",
 	"sound_resource", "color", "range_min", "range_max",
-	"ship_resource", "juice_flags",
+	"ship_resource", "juice_flags", "add_to_amount",
 ]
 
 
@@ -118,6 +118,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_SHIELDS, label = "Set to Target Shields", handler = SetAmountToTargetShieldsHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_HELD_DIE_VALUE, label = "Add Held Die Value", handler = AddHeldDieValueHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_DICE_IN_PLAY, label = "Set to Dice in Play", handler = SetAmountToDiceInPlayHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_SHIP_READING, label = "Set to Ship Reading", handler = SetAmountToShipReadingHandler, fields = ["string_param", "add_to_amount"]},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
@@ -190,6 +191,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.COUNT_DOWN, label = "Count Down", handler = CountDownHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ARM_ECHO, label = "Arm Echo", handler = ArmEchoHandler},
 	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ADD_FAMILY_BOOST, label = "Add Family Boost", handler = AddFamilyBoostHandler, fields = ["string_param", "range_max"]},
+	{category = EffectEnums.Category.TILE_CONTROL, subtype = EffectEnums.TileControlSubtype.ADVANCE_SHIP_MECHANISM, label = "Advance Ship Mechanism", handler = AdvanceShipMechanismHandler},
 
 	# ── SCENARIO_CONTROL ──────────────────────────────────────────
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.OPEN_SHOP, label = "Open Shop", handler = OpenShopHandler},

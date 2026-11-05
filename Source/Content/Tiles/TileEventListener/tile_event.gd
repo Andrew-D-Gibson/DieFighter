@@ -46,6 +46,10 @@ enum EventType {
 	## (EvasionModifier): once per hit, with the attacker as the response's
 	## starting target. A hit Phased let through doesn't count.
 	ON_PLAYER_EVADED,
+	## The Outrigger's turn ended with its two pods' thrust level and above 0
+	## (Events.pods_level, OutriggerSync). Queued behind that turn's charge;
+	## the pods still read this turn's thrust (the pod_level ship reading).
+	ON_PODS_LEVEL,
 	## The player just took a killing blow. Answering it is a death save: the
 	## tile holds the hull at 1 on the spot, then its chain plays and should
 	## spend the tile (Tile._on_player_fatal_damage).

@@ -74,10 +74,18 @@ static func filter_by_minimum_rarity(
 
 
 ## Every tile an offer can hold: the ones the player has unlocked
-## (TileUnlocks). Tiles the player already has are in it: a copy dropped on
-## its twin upgrades it (Tile.upgrade()).
+## (TileUnlocks), plus the signature tiles of the ship being flown
+## (ShipResource.signature_tiles), which no other ship is offered. Tiles the
+## player already has are in it: a copy dropped on its twin upgrades it
+## (Tile.upgrade()).
 func get_possible_tile_rewards() -> Array[TileResource]:
-	return TileUnlocks.filter_pool(_all_tile_resources.duplicate())
+	var pool: Array[TileResource] = _all_tile_resources.duplicate()
+	var ship: ShipResource = Globals.current_ship()
+	if ship:
+		for tile: TileResource in ship.signature_tiles:
+			if tile and not pool.has(tile):
+				pool.append(tile)
+	return TileUnlocks.filter_pool(pool)
 		
 
 func _spawn_reward(pos: Vector2, reward_resource: RewardResource) -> void:
