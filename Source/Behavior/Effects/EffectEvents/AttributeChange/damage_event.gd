@@ -5,8 +5,11 @@ extends EffectEvent
 var _hit_particles_scene: PackedScene = preload("uid://doi43icsr46q0")
 var _explosion_particles_scene: PackedScene = preload("uid://566ykra4buin")
 
-## A killing hit this many times what the ship had left is overkill.
+## A killing hit must be at least this many times what the ship had left...
 const OVERKILL_FACTOR: int = 2
+## ...and spill at least this much past it, so finishing off a ship on its
+## last point or two with an ordinary die doesn't shout every time.
+const OVERKILL_MIN_EXCESS: int = 6
 ## Long enough to cover the kill freeze (Enemy._KILL_HOLD_MSEC) and then
 ## slow the wreck's first flight.
 const _OVERKILL_SLOW_MO_MS: int = 900
@@ -74,9 +77,16 @@ func resolve(_engine: ScenarioEngine) -> void:
 
 
 ## Whether a killing hit of [param amount] was overkill: at least twice what
-## the ship had left to give, shields and hull together.
+## the ship had left to give (shields and hull together), and at least
+## OVERKILL_MIN_EXCESS more than it.
 static func is_overkill(amount: int, shields_before: int, hull_before: int) -> bool:
-	return hull_before > 0 and amount >= OVERKILL_FACTOR * (shields_before + hull_before)
+	return hull_before > 0 and amount >= overkill_threshold(shields_before, hull_before)
+
+
+## The smallest hit that is overkill on a ship with this much left.
+static func overkill_threshold(shields_before: int, hull_before: int) -> int:
+	var left: int = shields_before + hull_before
+	return maxi(OVERKILL_FACTOR * left, left + OVERKILL_MIN_EXCESS)
 
 
 ## Overkill makes the kill bigger: a shout, a yellow blast ring under the

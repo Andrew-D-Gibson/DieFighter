@@ -11,7 +11,7 @@
 
 [resource]
 script = ExtResource("1_7k82d")
-notes = "VARIETY / PAYOFF. A 6 into a ship staged at 2 hull: OVERKILL, kill cam, slow-mo wreck. Retake with another seed for a different victim."
+notes = "VARIETY / PAYOFF. A 6 into the Apex Cannon (top row, +3 = 9) on a ship staged at 2 hull: OVERKILL, kill cam, slow-mo wreck. Retake with another seed for a different victim."
 scenario_id = "COMBAT_wolfpack"
 run_seed = 31
 tiles = Dictionary[Vector2i, ExtResource("2_1nydc")]({
@@ -24,4 +24,4 @@ Vector2i(3, 1): ExtResource("8_3us0f")
 })
 open_all_cells = true
 forced_rolls = Array[int]([6, 6, 3])
-beats = PackedStringArray("ready", "target 0", "foe_shields 0", "foe_hull 2", "wait 0.6", "mark overkill", "drag f6 1,1 0.8", "ready", "wait 1.5", "quit")
+beats = PackedStringArray("ready", "target 0", "foe_shields 0", "foe_hull 2", "wait 0.6", "mark overkill", "drag f6 1,0 0.8", "ready", "wait 1.5", "quit")
