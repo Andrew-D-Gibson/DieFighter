@@ -86,14 +86,20 @@ func play(scenario: ScenarioResource) -> void:
 	)
 
 
-## The boss is the toughest ship the scenario starts with.
+## The boss is the toughest ship the scenario starts with. A fight that
+## starts with none of its own (the Reckoning, whose ships come out of the
+## hole) shows Fate's Die, the one thing in it that is the player's.
 func _portrait_for(scenario: ScenarioResource) -> Texture2D:
 	var toughest: EnemyResource = null
 	for spawn: EnemyStateRewardResource in scenario.starting_enemies:
 		if spawn.enemy_resource and (toughest == null \
 		or spawn.enemy_resource.max_health > toughest.max_health):
 			toughest = spawn.enemy_resource
-	return toughest.targeting_computer_image if toughest else null
+	if toughest:
+		return toughest.targeting_computer_image
+	if Globals.fate_ledger and Globals.fate_ledger.has_die:
+		return FateDieArt.face_texture(Globals.fate_ledger.die.face_at(0))
+	return null
 
 
 func _clear() -> void:
