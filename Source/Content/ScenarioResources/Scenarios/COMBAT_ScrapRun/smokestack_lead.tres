@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://c3540rzzu5tg0"]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="1_state"]
+
+[resource]
+script = ExtResource("1_state")
+dialogue = "Slow and shiny. Strip it."
+attitude = 2
+metadata/_custom_type_script = "uid://cpgidtisgk77q"

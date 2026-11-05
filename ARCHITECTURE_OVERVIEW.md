@@ -1326,7 +1326,7 @@ quickens, the caption reads "Jump right!" and the right arrow tile pulses.
 Nothing in the sky prompts the player.
 
 **Fate's tiles.** A tile Fate takes becomes `Map.fate_scenario` or one of
-`Map.fate_variants` (Fate Rift, Hollows, Maw), picked by `Map._corrupt()`
+`Map.fate_variants` (Fate Rift, Hollows, Maw, Shroud, Brood), picked by `Map._corrupt()`
 from a hash of the RUN stream's state and the tile, so no draw is spent.
 `Map.is_fate_scenario()` is how anything asks whether a tile is Fate's.
 `GameStateManager.fate_scenarios` is not read by anything.

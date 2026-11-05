@@ -394,14 +394,18 @@ friendly green frame), so a red badge in a green frame is itself news.
 
 | Faction | Built to the language | Older ships (assigned, predate it) |
 |---|---|---|
-| **Rearguard** | **Picket** (line ship: Aegis Link on an ally, light fire), **Conscriptor** (draft ship: Seize + Lockout) | Tithe Collector, Bamba Defender, Disabler, Siege Mortar, Cannon Drone, Ion Lance, the Bastion |
-| **Undertow** | **Gaff** (crane-and-hook scavenger: Seize + Siphon), **Wrecker** (ram-jawed breaker: attack, Incendiary, Grid Quake) | Venom Fighter, Cutpurse, Bounty Runner, Carrier, Interceptor, Sector Warden |
-| **Caravan** | **Hauler** (three-pod freighter: shields, then flees), **Claims Adjuster** (Compact enforcer: attack + Lockout as the lien) | Shop, Repair Dock, Civilian Transport, Field Tender, Arc Dynamo |
-| **Inbound** | **Pilgrim** (haloed skiff: Siphon + Relay + Scrambler), **Zealot** (ring-and-lance: big hits, Overloads into its own hull) | none yet. The **Apostate** (`EVENT_Apostate`) is a Tithe Collector that converted: a Rearguard hull flying the Inbound badge, on purpose, so the mismatch is the story |
-| **Spilled** | **Fate Wisp** (void with legs: Scrambler + Siphon), **Fate Shroud** (manta of voids: attack, Lockout, Target Lock) | Fate Attacker, Husk, Leech, Maw |
+| **Rearguard** | **Picket** (line ship: Aegis Link on an ally, light fire), **Conscriptor** (draft ship: Seize + Lockout), **Bulwark** (stacked-plate shield wall with tall emitter pauldrons: shields + Ion Shot whole, guns once cracked), **Drillmaster** (narrow wedge with shoulder guns: Target Lock one turn, a volley the next), **Herald** (signal core on a beacon spar: Relay + Jamming Pulse) | Tithe Collector, Bamba Defender, Disabler, Siege Mortar, Cannon Drone, Ion Lance, the Bastion |
+| **Undertow** | **Gaff** (crane-and-hook scavenger: Seize + Siphon), **Wrecker** (ram-jawed breaker: attack, Incendiary, Grid Quake), **Jackal** (barbed blade-wing skirmisher: bites while the pack lives, Seizes and Getaways once it doesn't), **Harpooner** (slab with an oversized harpoon gun: Charge Bore into Siege Shot), **Smokestack** (furnace barge with mismatched stacks: Incendiary + Purge Vents) | Venom Fighter, Cutpurse, Bounty Runner, Carrier, Interceptor, Sector Warden |
+| **Caravan** | **Hauler** (three-pod freighter: shields, then flees), **Claims Adjuster** (Compact enforcer: attack + Lockout as the lien), **Tug** (round cab in a horseshoe tow cradle: Grid Quake + shields), **Arbiter** (Compact court: a windowed dome on a capsule: Jamming Pulse as the injunction, then attack), **Liner** (long passenger capsule with two rows of windows: Holo Loader for its escorts, flees when cracked) | Shop, Repair Dock, Civilian Transport, Field Tender, Arc Dynamo |
+| **Inbound** | **Pilgrim** (haloed skiff: Siphon + Relay + Scrambler), **Zealot** (ring-and-lance: big hits, Overloads into its own hull), **Acolyte** (short spine in a face-on halo: Siphon, Jamming Pulse, Aegis Link), **Censer** (ember-lit orb hung in a spoked ring: Incendiary + Purge Vents, Overloads into its own hull), **Plumb Line** (long spine under two halos with a plumb bob: escalates every combat round) | none yet. The **Apostate** (`EVENT_Apostate`) is a Tithe Collector that converted: a Rearguard hull flying the Inbound badge, on purpose, so the mismatch is the story |
+| **Spilled** | **Fate Wisp** (void with legs: Scrambler + Siphon), **Fate Shroud** (manta of voids: attack, Lockout, Target Lock), **Fate Brood** (sac of egg-voids: Hatches Fate Wisps), **Fate Grasp** (hunched body of finger-arms: Seize + Grid Quake), **Fate Hulk** (echo of the Hauler: attack, Ion Shot, Jamming Pulse) | Fate Attacker, Husk, Leech, Maw |
 
 Encounters for the new pairs: `COMBAT_PicketLine`, `COMBAT_Wreckers`,
 `COMBAT_LienCollection`, `COMBAT_Pilgrimage`, and the Fate variant `FATE_Shroud`.
+The third wave (2026-11-05) adds one trio per faction: `COMBAT_ShieldWall`
+(Bulwark, Drillmaster, Herald), `COMBAT_ScrapRun` (Smokestack, Harpooner,
+Jackal), `COMBAT_Blockade` (Arbiter, Tug, Liner), `COMBAT_Procession` (Censer,
+Plumb Line, Acolyte) and the Fate variant `FATE_Brood` (Fate Brood, Grasp, Hulk).
 
 ### Bringing the older ships in line
 

@@ -1,0 +1,100 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://dyyilzbv1s0fs"]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="effect_chain"]
+[ext_resource type="Resource" uid="uid://dk1u1klmotlij" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/incendiary_shot.tres" id="act_incendiary_shot"]
+[ext_resource type="Resource" uid="uid://bnbf1kix4d3i" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres" id="act_purge_vents"]
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_shield_self"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/inbound.tres" id="faction_identity"]
+[ext_resource type="PackedScene" uid="uid://tgzuz6j3pxhc" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/censer_ship_graphics.tscn" id="gfx"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://jo6deq7habnx" path="res://Assets/Textures/Enemies/Censer/censer_targeting_image.png" id="tex"]
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_incendiary_shot")
+weight = 2.0
+min_amount = 1
+max_amount = 2
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt1"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_purge_vents")
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt2"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_shield_self")
+min_amount = 2
+max_amount = 3
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt3"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_do_nothing")
+weight = 0.5
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2"), SubResource("Resource_opt3")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[sub_resource type="Resource" id="Resource_fx0"]
+script = ExtResource("effect_data")
+category = 2
+amount = 6
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_fx1"]
+script = ExtResource("effect_data")
+subtype = 11
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_fx2"]
+script = ExtResource("effect_data")
+category = 4
+subtype = 10
+color = Color(0.933, 0.827, 0.365, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_fx3"]
+script = ExtResource("effect_data")
+category = 4
+subtype = 15
+amount = 16
+color = Color(0.933, 0.827, 0.365, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_fx4"]
+script = ExtResource("effect_data")
+category = 1
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("effect_chain")
+effects = Array[ExtResource("effect_data")]([SubResource("Resource_fx0"), SubResource("Resource_fx1"), SubResource("Resource_fx2"), SubResource("Resource_fx3"), SubResource("Resource_fx4")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Censer"
+description = "Inbound thurible. Burns you with holy fire and passes its own burns on to you. Hand it more than it can hold in one turn and it (overload) [color=yellow]Overloads[/color]: no attack, every die vented home, and the fire turns inward. Each overload raises the limit."
+faction = ExtResource("faction_identity")
+max_health = 15
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+overload_threshold = 9
+overload_threshold_growth = 3
+overload_chain = SubResource("Resource_chain")
+overload_warns_from_half = true
+overload_gauge_position = Vector2(0, 21)
+ship_graphics_scene = ExtResource("gfx")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex")
+health_bar_position = Vector2(-22, -12)
+dice_queue_position = Vector2(26, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

@@ -1,0 +1,55 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://c4xl3kjy5o7yz"]
+
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_fkw42"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
+[ext_resource type="Resource" uid="uid://dhdiec4h8tjs3" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="ext_2"]
+[ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="ext_3"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_4"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="ext_5"]
+[ext_resource type="Texture2D" uid="uid://ds8dtqhoe484" path="res://Assets/Textures/Enemies/IntentIndicator/launch.png" id="ext_6"]
+[ext_resource type="Texture2D" uid="uid://bp426s8tgo3dy" path="res://Assets/Textures/Enemies/IntentIndicator/launch_info.png" id="ext_7"]
+
+[sub_resource type="Resource" id="Resource_step0"]
+script = ExtResource("ext_1")
+subtype = 11
+
+[sub_resource type="Resource" id="Resource_step1"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 5
+sound_resource = ExtResource("ext_2")
+
+[sub_resource type="Resource" id="Resource_step2"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 17
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 16
+callout = "HATCH"
+color = Color(0.772549, 0.321569, 0.945098, 1)
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 6
+ship_resource = ExtResource("ext_3")
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("ext_1")
+category = 3
+subtype = 4
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("ext_4")
+effects = Array[ExtResource("ext_1")]([SubResource("Resource_step0"), SubResource("Resource_step1"), SubResource("Resource_step2"), SubResource("Resource_step3"), SubResource("Resource_step4"), SubResource("Resource_step5")])
+
+[resource]
+script = ExtResource("ext_5")
+name = "Hatch"
+description = "Hatch a [color=red]Fate Wisp[/color]"
+indicator_texture = ExtResource("ext_6")
+info_texture = ExtResource("ext_7")
+effect_chain = SubResource("Resource_chain")

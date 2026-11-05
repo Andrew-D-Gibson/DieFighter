@@ -21,7 +21,9 @@ slow is dead.
 - **Combats:** Attacker, Wolfpack, Loose Wing, Cutpurse†, Wreckers†, Cannon Drone
   (a Rearguard sentry left behind when the line moved on), Boneyard (a Gaff and a
   Venom Fighter stripping a wreck field, and you look like more of it), Vigil (two
-  Zealots keeping watch where the horizon is nearest).
+  Zealots keeping watch where the horizon is nearest), Scrap Run (a Smokestack,
+  Harpooner and Jackal working the wake: *"Slow and shiny. Strip it."* Kill one
+  and the Jackal bolts with whatever dice it holds).
 - **Events:** Pilgrim (the Fate's Die handover), Straggler, Pirates Attacking
   Civilian†, Mayday†, Sleeping Drone, Signal, What Came Back†, White Flag (a
   limping Gaff hunted by the forgotten sentry drone), Martyr (a Gaff strips a
@@ -39,7 +41,11 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
 - **Combats:** Lien Collection, Pilgrimage (Inbound recruiters), Smash and Grab,
   Carrier†, Picket Line† (a draft sweep), Tender Escort (a Conscriptor and the Caravan
   medic it drafted), Cutpurse†, Wreckers†, Communion† (a Pilgrim feeding its luck to
-  a Fate Shroud).
+  a Fate Shroud), Blockade (a Compact Arbiter and Tug halting traffic around a
+  Liner that keeps them stocked with holograms: *"Compact blockade. Nobody
+  jumps."*), Procession (Inbound recruiters in force: a Censer, a Plumb Line that
+  sinks deeper every round, and an Acolyte shielding them: *"Turn around. Come
+  and see."*).
 - **Events:** Convoy, Cut Loose (the Chancellor's philosophy in miniature), Mercy
   Call, Pickpocket, Wreck Salvage (under a Claims Adjuster's guard), Pact†, Last
   Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
@@ -60,7 +66,9 @@ Checkpoints, tithes and warships, plus the Undertow they hire under the table.
 
 - **Combats:** Tithe Collector, Tithe Escort, Ion Lances, Defender + Disabler, Drone
   Battery, Siege Battery, Spotter, Bounty Run (a Rearguard lance escorting an Undertow
-  smuggler in civilian clothes), Carrier†, Picket Line†, Communion†.
+  smuggler in civilian clothes), Carrier†, Picket Line†, Communion†, Shield Wall (a
+  Bulwark holding the checkpoint, a Drillmaster marking and firing on the mark,
+  and a Herald passing them its dice: *"The line holds. You do not."*).
 - **Events:** Tollkeeper (*"Tithe taken. It buys us all time."*), Deniable Assets,
   Black Market (the checkpoint's back door), Deserter, Pact†, Tithe Run, The
   Ledger, Quarantine, Stowaways, Still on Patrol†, Apostate (a Tithe Collector

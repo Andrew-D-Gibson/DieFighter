@@ -1,0 +1,58 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://cyqblyr55nzqc"]
+
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="cond_script"]
+[ext_resource type="Resource" uid="uid://c4xl3kjy5o7yz" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/launch_fate_wisp.tres" id="act_launch_fate_wisp"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/spilled.tres" id="faction_identity"]
+[ext_resource type="PackedScene" uid="uid://mgxbhme6y3hv" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_brood_ship_graphics.tscn" id="gfx"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://b4k2tud8loyxj" path="res://Assets/Textures/Enemies/Fate/fate_brood_targeting_image.png" id="tex"]
+
+[sub_resource type="Resource" id="Resource_opt0_cond"]
+script = ExtResource("cond_script")
+type = 5
+count = 3
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_launch_fate_wisp")
+weight = 0.3
+force_include = true
+conditions = Array[ExtResource("cond_script")]([SubResource("Resource_opt0_cond")])
+strength_tier_override = 2.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt1"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_attack_player")
+weight = 2.0
+min_amount = 2
+max_amount = 3
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt2"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_do_nothing")
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_opt2")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Fate Brood"
+description = "A Spilled brood sac carrying things that aren't born yet. Leave it alone long enough and they hatch."
+faction = ExtResource("faction_identity")
+max_health = 16
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+ship_graphics_scene = ExtResource("gfx")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("tex")
+health_bar_position = Vector2(-22, -12)
+dice_queue_position = Vector2(26, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"
