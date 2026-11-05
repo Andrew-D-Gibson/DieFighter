@@ -55,8 +55,8 @@ been self-playtested and is fun. Next comes outside playtesting.
     fills the die. The AutoPilot never takes the route, so this is hand testing.
   - The Front and the Vanguard (LORE.md §3-4). Until they exist, the dying
     Marshal at the last gate tells the secret.
-  - Fallen ships as Spilled enemies on later runs (LORE.md §8): the ship and a
-    tile are already recorded (`CollectionManager.fallen_ships()`).
+  - The Fallen (LORE.md §8) borrows the Shroud's table and the Fate Attacker's
+    scene with the player's hull swapped in; it could use a table of its own.
   - The Rearguard fighting on the player's side for a run that never paid a
     tithe. For now those echoes stay dead and Duty shields the player.
   - Real art for the Saved Ship / Old Debt / Vanguard Drive tiles and the Ruin

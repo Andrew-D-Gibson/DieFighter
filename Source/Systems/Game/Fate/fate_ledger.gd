@@ -51,11 +51,23 @@ var reckoning_seed: int = 0
 var knew_secret: bool = false
 
 
+## The Fallen (LORE.md §8): a ship lost in an earlier run's Reckoning, back
+## as one of the Spilled on a Fate tile, carrying a tile it fell with.
+const _FALLEN_SHIP: EnemyResource = preload("res://Source/Content/Enemies/EnemyResources/fallen_ship.tres")
+const _FALLEN_STATE: ScenarioShipState = preload("res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_attacker_combat.tres")
+const _FALLEN_TINT: Color = Color("#c552f1")
+
+var _fallen_ship: Enemy = null
+var _fallen_entry: Dictionary = {}
+
+
 func _ready() -> void:
 	Globals.fate_ledger = self
 	Events.load_game_save.connect(_load_game_save)
 	Events.enemy_destroyed.connect(_on_enemy_destroyed)
 	Events.start_scenario.connect(_on_start_scenario)
+	# After EnemyManager's own listener, so the scenario's ships are in.
+	Events.load_scenario.connect(_raise_the_fallen)
 
 
 # ── The die ──────────────────────────────────────────────────────────────────
@@ -186,6 +198,8 @@ static func tally_waves(kill_log: Array[Dictionary], skip: Array[String] = [],
 # ── Run hooks ────────────────────────────────────────────────────────────────
 
 func _on_enemy_destroyed(ship: Enemy) -> void:
+	if ship == _fallen_ship and is_instance_valid(ship):
+		_salvage_the_fallen()
 	if in_reckoning or not is_instance_valid(ship) or ship.was_killed_by_ship() or ship.is_mounted:
 		return
 	var id: String = _enemy_id(ship)
@@ -216,6 +230,87 @@ func _on_start_scenario() -> void:
 		return
 	_hunger_sectors.append(sector)
 	request_carve(FateDie.Face.HUNGER)
+
+
+## Arriving at one of Fate's tiles, a ship that fell into the hole on an
+## earlier run may be waiting: the newest one, until it's beaten. Only in the
+## player's own runs, and never in a fight already won.
+func _raise_the_fallen(scenario: ScenarioResource) -> void:
+	_fallen_ship = null
+	_fallen_entry = {}
+	if in_reckoning or not CollectionManager.is_recording() or not Globals.map or not Globals.state_manager:
+		return
+	if not Globals.map.is_fate_scenario(scenario) or Globals.state_manager.is_scenario_cleared():
+		return
+	var fallen: Array = CollectionManager.fallen_ships()
+	if fallen.is_empty() or not fallen.back() is Dictionary:
+		return
+	_fallen_entry = fallen.back()
+
+	var spawn: EnemyStateRewardResource = EnemyStateRewardResource.new()
+	spawn.enemy_resource = _FALLEN_SHIP
+	spawn.starting_state = _FALLEN_STATE
+	var reward: RewardResource = RewardResource.new()
+	reward.min_money = 8
+	reward.max_money = 16
+	reward.num_of_rewards = 1 if not _fallen_tile().is_empty() else 0
+	reward.dice_probability = 0.0
+	reward.grid_slot_probability = 0.0
+	spawn.reward_resource = reward
+	var ships: Array[Enemy] = Globals.enemy_manager.spawn_enemies([spawn] as Array[EnemyStateRewardResource], scenario)
+	if ships.is_empty():
+		return
+	_fallen_ship = ships[0]
+	_fallen_ship.spawn_index = -1
+	_dress_as_fallen(_fallen_ship, StringName(str(_fallen_entry.get("ship", ""))))
+	_speak_once_arrived(_fallen_ship)
+
+
+## The Fallen wears the player's own lost hull, nose down like every enemy,
+## washed through with Fate's purple.
+static func _dress_as_fallen(ship: Enemy, ship_id: StringName) -> void:
+	var sprite: Sprite2D = ship.graphics_manager.ship_graphics as Sprite2D if ship.graphics_manager else null
+	if sprite == null:
+		return
+	var hull: ShipResource = ShipCatalog.find(ship_id)
+	if hull and hull.cutscene_frames and hull.cutscene_frames.has_animation(&"boost") \
+	and hull.cutscene_frames.get_frame_count(&"boost") > 0:
+		sprite.texture = hull.cutscene_frames.get_frame_texture(&"boost", 0)
+		sprite.flip_v = true
+	var material: ShaderMaterial = sprite.material as ShaderMaterial
+	if material:
+		# Shared by every ship of the scene: this one gets its own.
+		material = material.duplicate()
+		sprite.material = material
+		material.set_shader_parameter(&"cloak_main_color", _FALLEN_TINT)
+		material.set_shader_parameter(&"cloak_bg_color", Color(_FALLEN_TINT.darkened(0.45), 1.0))
+		material.set_shader_parameter(&"cloak_amount", 0.4)
+
+
+static func _speak_once_arrived(ship: Enemy) -> void:
+	await Events.enemies_arrived
+	if is_instance_valid(ship) and ship.health.health > 0:
+		ship.dialogue_manager.show_dialogue(TranslationServer.translate("FATE_FALLEN_LINE"), ship.scenario_state.faction)
+
+
+func _fallen_tile() -> String:
+	var id: String = str(_fallen_entry.get("tile", ""))
+	if id.is_empty() or id not in ContentRegistry.get_tile_ids():
+		return ""
+	return id
+
+
+## The Fallen is beaten: the tile it carried is in its wreck, and it rests.
+## Its wreck's offer is made once the death plays out, after this.
+func _salvage_the_fallen() -> void:
+	var tile_id: String = _fallen_tile()
+	if not tile_id.is_empty():
+		var tile: TileResource = load(ContentRegistry.get_tile_path(tile_id)) as TileResource
+		if tile:
+			Reward.forced_rewards.append(tile)
+	CollectionManager.lay_fallen_to_rest(_fallen_entry)
+	_fallen_ship = null
+	_fallen_entry = {}
 
 
 static func _enemy_id(ship: Enemy) -> String:

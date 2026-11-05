@@ -499,7 +499,10 @@ toward Fate.
 
 **Endings (§8).** Escape: *YOU DON'T COUNT*, with the faces left on the die and
 the ships that flew along. Death inside: *YOU FELL IN*; the ship and its rarest
-tile are remembered across runs for a Spilled echo to carry, which isn't built yet.
+tile are remembered across runs. On a later run, **the Fallen** waits on one of
+Fate's tiles: the player's own lost hull, nose down and purple-washed (*"...it's
+you... it was always you..."*), and its wreck offers the tile it fell with. Beaten,
+it rests; until then it haunts every Fate tile.
 
 **Answered from §11.** Blank faces never come up in the Reckoning: the route
 needs a full die. Carvings so far: around a dozen sources a sector at most, about

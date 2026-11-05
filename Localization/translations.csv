@@ -326,3 +326,4 @@ FATE_SPILLED_LINE_3,...you are owed...,,,,,,,,Another creature's speech bubble,,
 FATE_ENDING_ALLIES,{n} ship you saved flew with you.,,,,,,,,"Secret ending: how many ships the player saved during the run, who helped at the end. Plural: this row is for one ship, the rows under it more",,,,FATE_ENDING_ALLIES_PLURAL
 ,{n} ships you saved flew with you.,,,,,,,,Second plural form of FATE_ENDING_ALLIES (English: 2 or more),,,
 ,{n} ships you saved flew with you.,,,,,,,,"Third plural form of FATE_ENDING_ALLIES, for languages that have one (Russian: 5 or more). English doesn't use this row",,,
+FATE_FALLEN_LINE,...it's you... it was always you...,,,,,,,,"Speech bubble of the player's own ship from an earlier run, which fell into the black hole and came back as one of its creatures",,,,

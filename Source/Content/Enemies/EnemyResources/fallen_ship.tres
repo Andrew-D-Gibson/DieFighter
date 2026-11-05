@@ -1,0 +1,76 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://n45leos4ii2l"]
+
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_1vp68"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="2_cqyx4"]
+[ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="3_up22g"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_ix7d6"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_fky1m"]
+[ext_resource type="Resource" uid="uid://6v0r054iqknm" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres" id="6_tsgy3"]
+[ext_resource type="Resource" uid="uid://bdeme5mueceon" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/target_lock.tres" id="7_tj3li"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="8_l2cv6"]
+[ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="9_ytw6w"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/spilled.tres" id="10_7pnuy"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="11_0q0sk"]
+[ext_resource type="PackedScene" uid="uid://ds03fs4txnc1c" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_enemy_graphics.tscn" id="12_euvf4"]
+[ext_resource type="Texture2D" uid="uid://d2c04uyo3bqla" path="res://Assets/Textures/Enemies/Fate/fate_shroud_targeting_image.png" id="13_w83q3"]
+
+[sub_resource type="Resource" id="Resource_5os3g"]
+script = ExtResource("2_cqyx4")
+base_action = ExtResource("3_up22g")
+weight = 2.0
+min_amount = 3
+max_amount = 5
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_u7v3g"]
+script = ExtResource("2_cqyx4")
+base_action = ExtResource("6_tsgy3")
+weight = 1.5
+strength_tier_override = 1.0
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_nxuv7"]
+script = ExtResource("2_cqyx4")
+base_action = ExtResource("7_tj3li")
+min_amount = 1
+max_amount = 2
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_rbklh"]
+script = ExtResource("2_cqyx4")
+base_action = ExtResource("8_l2cv6")
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_oew0s"]
+script = ExtResource("4_ix7d6")
+type = 4
+invert = true
+
+[sub_resource type="Resource" id="Resource_bhq1w"]
+script = ExtResource("2_cqyx4")
+base_action = ExtResource("9_ytw6w")
+min_amount = 2
+max_amount = 4
+conditions = Array[ExtResource("4_ix7d6")]([SubResource("Resource_oew0s")])
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_lyc08"]
+script = ExtResource("1_1vp68")
+actions_possible = Array[ExtResource("2_cqyx4")]([SubResource("Resource_5os3g"), SubResource("Resource_u7v3g"), SubResource("Resource_nxuv7"), SubResource("Resource_rbklh"), SubResource("Resource_bhq1w")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("11_0q0sk")
+enemy_name = "The Fallen"
+description = "A ship that crossed the horizon on another run. It came back wrong, carrying something of yours."
+in_codex = false
+faction = ExtResource("10_7pnuy")
+max_health = 26
+starting_shields = 4
+action_options = Array[ExtResource("1_1vp68")]([SubResource("Resource_lyc08")])
+ship_graphics_scene = ExtResource("12_euvf4")
+dialogue_offset = Vector2(16, -8)
+targeting_computer_image = ExtResource("13_w83q3")
+health_bar_position = Vector2(-24, -12)
+dice_queue_position = Vector2(28, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

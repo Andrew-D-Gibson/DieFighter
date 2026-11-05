@@ -184,6 +184,19 @@ func fallen_ships() -> Array:
 	return (_fate.get("fallen", []) as Array).duplicate(true)
 
 
+## A fallen ship was beaten and its tile salvaged: it rests. Takes the first
+## record equal to [param entry].
+func lay_fallen_to_rest(entry: Dictionary) -> void:
+	var fallen: Array = _fate.get("fallen", [])
+	for i: int in fallen.size():
+		if fallen[i] is Dictionary and str(fallen[i].get("ship", "")) == str(entry.get("ship", "")) \
+		and str(fallen[i].get("tile", "")) == str(entry.get("tile", "")):
+			fallen.remove_at(i)
+			_fate["fallen"] = fallen
+			_queue_write()
+			return
+
+
 ## Locks every family again, for the dev console.
 func clear_families() -> void:
 	_families.clear()
