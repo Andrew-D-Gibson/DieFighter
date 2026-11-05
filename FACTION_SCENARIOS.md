@@ -47,7 +47,7 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   sinks deeper every round, and an Acolyte shielding them: *"Turn around. Come
   and see."*).
 - **Events:** Convoy, Cut Loose (the Chancellor's philosophy in miniature), Mercy
-  Call, Pickpocket, Wreck Salvage (under a Claims Adjuster's guard), Pact†, Last
+  Call, Pickpocket, Wreck Salvage (a Conscriptor shaking down a wrecked civilian), Pact†, Last
   Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
   Pirates Attacking Civilian†, What Came Back†, Wolf in the Fold (an Undertow
   infiltrator in a Caravan hull), Turn Around (a Zealot leading a family
@@ -227,6 +227,24 @@ Private lines are written in parentheses.
 
 The smuggler variant only flees while it's fighting you, never while it's on your
 side.
+
+### Wreck Salvage — `EVENT_WreckSalvage` (sector 2)
+A damaged **Civilian Transport** sits with its cargo and credits floating loose while
+a **Conscriptor** shakes it down. Civilian: *"They've gone mad! Help us!"* Rearguard:
+*"Take the credits and go, pilot."*
+- **Defend the civilian (shoot the Conscriptor):** *"Take what you need, pilot!"* /
+  *"Then you burn with them."* The salvage becomes a gift: taking it afterwards
+  costs nothing. Caravan +2, Rearguard −2; a saved ship. — Mercy
+- **Side with the Rearguard (shoot the civilian):** *"You're one of them?!"* /
+  *"Good. Finish them off."* Caravan −3, Rearguard +2. The civilian's wreck pays
+  credits only. — Duty
+- **Take the credits:** *"So that's how it is."* / *"Smart. Move along."* Both ships
+  leave. Caravan −3. — Plunder
+- **Take a tile:** the civilian flees as above, and the Conscriptor turns:
+  *"That was Rearguard property!"* Caravan −3, Rearguard −2. — Plunder
+
+The betrayed civilian flees rather than turning hostile, so it never ends up
+fighting alongside the player who robbed it.
 
 ### The Line Moved On — `ELITE_LineMovedOn` (sector 1)
 Two **Cannon Drones**, a sentry grid the line left behind decades ago, still holding.
@@ -513,7 +531,7 @@ standing.
 - Carved beyond the faces noted above: Mercy on the Mayday saved and the civilian
   rescued from pirates; Ruin on the Mayday wronged, the medic betrayed, the
   civilian betrayed, the Picket deserted and an angry shop or dock; Plunder on
-  taking the Wreck Salvage cargo under guard; Debt for the Black Market runner,
+  taking the Wreck Salvage credits or cargo; Debt for the Black Market runner,
   the Straggler's Wrecker and pirates left to their raid.
 - Faces with only a few sources: Hunger (the Pact, flying into Fate's tiles) and
   Strange (Signal, What Came Back). A careful run in a short sector may not fill
