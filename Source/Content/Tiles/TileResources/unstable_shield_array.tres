@@ -199,7 +199,7 @@ animations = [{
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=blue]Unstable Shield Array[/color]"
-description = "[color=yellow]Pushed[/color] -> Gain [color=blue]{shields} shields[/color], +1 per push since last picked up
+description = "[color=yellow]Pushed[/color] -> Gain [color=blue]{shields} shields[/color], +1 per earlier push since last picked up
 (Stack: [data]activation_count[/data])"
 rarity = 1
 offered_as_reward = false

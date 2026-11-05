@@ -47,7 +47,7 @@ effects = Array[ExtResource("2_data")]([SubResource("Resource_target_lock_0"), S
 [resource]
 script = ExtResource("1_action")
 name = "Target Lock"
-description = "Apply (amount) (exposed)"
+description = "Apply (amount) (exposed_you)"
 indicator_texture = ExtResource("5_icon")
 info_texture = ExtResource("6_info")
 effect_chain = SubResource("Resource_chain")
