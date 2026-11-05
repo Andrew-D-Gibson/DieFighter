@@ -9,7 +9,9 @@ extends Modifier
 ## gains the bonus three times, like an Amplifier would give it.
 ##
 ## One per source tile, so two War Footings build and cap separately. Lasts
-## until the fight ends (or the scenario's engine shuts down on a jump).
+## until the fight ends (or the scenario's engine shuts down on a jump). While
+## its source tile is locked (LockoutModifier) the boost keeps its count but
+## gives nothing: the tile is switched off, and so is what it built.
 
 var family: ColorSymbolBadge.Family
 var bonus: int = 0
@@ -45,8 +47,9 @@ static func total_for(engine: ScenarioEngine, tile: Tile) -> int:
 		return 0
 	var total: int = 0
 	for mod: Modifier in engine.modifiers:
-		if mod is FamilyBoostModifier and (mod as FamilyBoostModifier).boosts(tile):
-			total += (mod as FamilyBoostModifier).bonus
+		var boost: FamilyBoostModifier = mod as FamilyBoostModifier
+		if boost and boost.boosts(tile) and not boost.is_suspended(engine):
+			total += boost.bonus
 	return total
 
 
@@ -71,16 +74,24 @@ func _lapse() -> void:
 		_engine.remove_modifier(self)
 
 
+## Whether the tile that built this is locked, which stops it giving its
+## bonus until the lock is opened.
+func is_suspended(engine: ScenarioEngine) -> bool:
+	return LockoutModifier.locks(engine, source)
+
+
 ## Whether [param tile] is one of the family this boosts.
 func boosts(tile: Node) -> bool:
 	return tile is Tile and is_instance_valid(tile) and (tile as Tile).tile_resource != null \
 		and ColorSymbolBadge.family_of_tile((tile as Tile).tile_resource) == family
 
 
-func on_before_event(event: EffectEvent, _running_engine: ScenarioEngine) -> void:
+func on_before_event(event: EffectEvent, running_engine: ScenarioEngine) -> void:
 	if bonus <= 0 or event is not DamageEvent or event.actor is not Player:
 		return
 	if not event.is_amplifiable() or event.amount <= 0 or not boosts(event.effect_source):
+		return
+	if is_suspended(running_engine):
 		return
 	event.amount += bonus
 	announce_triggered()
@@ -90,26 +101,14 @@ func get_trigger_text() -> String:
 	return "%+d" % bonus
 
 
-func get_info_text() -> String:
-	return "[color=yellow]%s %+d[/color]: %s tiles deal %+d damage this fight." % [
-		_source_name(), bonus, _family_word(), bonus]
-
-
+## A boosted tile's info panel names the bonus and the War Footing it comes
+## from (a hoverable keyword). The War Footing's own panel gets no line
+## (get_info_text() stays empty): its description already says what it does.
+## A locked War Footing's line is struck through and marked LOCKED, because
+## the bonus isn't being given.
 func get_rule_info_text(tile: Tile) -> String:
 	if bonus <= 0 or not boosts(tile):
 		return ""
-	return "[color=yellow]%s %+d[/color]: this tile deals %+d damage this fight." % [
-		_source_name(), bonus, bonus]
-
-
-func _source_name() -> String:
-	var tile: Tile = source as Tile
-	if tile == null or not is_instance_valid(tile) or tile.tile_resource == null:
-		return modifier_name
-	# The tile's name without its own colour tag, which would fight the line's.
-	var regex: RegEx = RegEx.create_from_string(r"\[/?color[^\]]*\]")
-	return regex.sub(tile.tile_resource.display_name(), "", true)
-
-
-func _family_word() -> String:
-	return String(ColorSymbolBadge.Family.find_key(family)).capitalize()
+	var key: StringName = &"INFO_WAR_FOOTING_BONUS_LOCKED" if is_suspended(_engine) \
+		else &"INFO_WAR_FOOTING_BONUS"
+	return tr(key).format({"bonus": "%+d" % bonus})

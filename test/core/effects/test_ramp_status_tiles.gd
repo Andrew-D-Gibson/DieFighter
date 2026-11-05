@@ -230,6 +230,16 @@ func test_war_footing_ends_with_the_fight() -> void:
 	Events.combat_finished.emit()
 	assert_null(_boost(footing))
 
+func test_a_locked_war_footing_gives_no_bonus() -> void:
+	var footing: Tile = _tile("war_footing")
+	await _turn_starts(footing)
+	var lock := LockoutModifier.new(footing)
+	lock.status_visual_scene = null	# the padlock needs the tree; the rule doesn't
+	engine.add_modifier(lock)
+	assert_eq(_hit_from(_tile("damage")).amount, 3, "a locked War Footing is switched off")
+	engine.remove_modifier(lock)
+	assert_gt(_hit_from(_tile("damage")).amount, 3, "unlocked, its boost comes back")
+
 # ── Status Catalyst ───────────────────────────────────────────────────────────
 
 func test_status_catalyst_refuses_a_target_with_no_status() -> void:
