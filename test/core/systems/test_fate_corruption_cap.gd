@@ -26,47 +26,47 @@ func before_each() -> void:
 		sector.append(_map.empty_scenario)
 	sector.append(_map.open_gate_scenario)
 	_map.load_sector(sector, 0)
-	_map.fate_index = -1
-	_map.scenarios_in_danger = _IN_DANGER
+	_map.fate_state.fate_index = -1
+	_map.fate_state.scenarios_in_danger = _IN_DANGER
 	# Every roll marks its tile, so only the cap holds Fate back.
 	_map.stray_danger_chance = 1.0
 
 
 func test_the_cap_is_half_the_tiles_ahead_without_the_gate() -> void:
-	assert_eq(_map._stray_corruption_cap(_IN_DANGER), _CAP)
+	assert_eq(_map.fate_state.stray_corruption_cap(_IN_DANGER), _CAP)
 
 
 func test_strays_stop_at_half_the_tiles_ahead() -> void:
-	_map._pick_stray_danger(_ARRIVING)
-	assert_eq(_map.stray_danger_indices.size(), _CAP)
-	assert_eq(_map.stray_danger_indices, [2, 3, 4, 5] as Array[int], "the nearest tiles go first")
+	_map.fate_state.pick_stray_danger(_ARRIVING)
+	assert_eq(_map.fate_state.stray_danger_indices.size(), _CAP)
+	assert_eq(_map.fate_state.stray_danger_indices, [2, 3, 4, 5] as Array[int], "the nearest tiles go first")
 
 
 func test_tiles_fate_already_holds_count_toward_the_cap() -> void:
 	for idx: int in [8, 9, 10]:
 		_map.scenario_list[idx] = _map.fate_scenario
-	_map._pick_stray_danger(_ARRIVING)
-	assert_eq(_map.stray_danger_indices, [2] as Array[int], "3 held + 1 new = the cap")
+	_map.fate_state.pick_stray_danger(_ARRIVING)
+	assert_eq(_map.fate_state.stray_danger_indices, [2] as Array[int], "3 held + 1 new = the cap")
 
 
 func test_no_new_strays_once_fate_is_at_the_cap() -> void:
 	for idx: int in [7, 8, 9, 10]:
 		_map.scenario_list[idx] = _map.fate_scenario
-	_map._pick_stray_danger(_ARRIVING)
-	assert_true(_map.stray_danger_indices.is_empty())
+	_map.fate_state.pick_stray_danger(_ARRIVING)
+	assert_true(_map.fate_state.stray_danger_indices.is_empty())
 
 
 func test_no_new_strays_when_fate_is_already_over_the_cap() -> void:
 	for idx: int in [4, 5, 6, 7, 8, 9, 10]:
 		_map.scenario_list[idx] = _map.fate_scenario
-	_map._pick_stray_danger(_ARRIVING)
-	assert_true(_map.stray_danger_indices.is_empty())
+	_map.fate_state.pick_stray_danger(_ARRIVING)
+	assert_true(_map.fate_state.stray_danger_indices.is_empty())
 
 
 func test_capped_tiles_still_roll_so_seeded_maps_keep_their_stream() -> void:
 	var rng: RandomNumberGenerator = RNGManager.get_rng(RNGManager.Bucket.RUN)
 	var start: int = rng.state
-	_map._pick_stray_danger(_ARRIVING)
+	_map.fate_state.pick_stray_danger(_ARRIVING)
 	var after_pick: int = rng.state
 
 	# One roll per eligible tile: 2-10, whether or not the cap let it through.
@@ -77,9 +77,9 @@ func test_capped_tiles_still_roll_so_seeded_maps_keep_their_stream() -> void:
 
 
 func test_stray_corrupted_nodes_ahead_of_fate_zone_use_outskirt_background() -> void:
-	_map.fate_index = 1
-	_map._corrupt(1)
-	_map._corrupt(5)
+	_map.fate_state.fate_index = 1
+	_map.fate_state.corrupt(1)
+	_map.fate_state.corrupt(5)
 	assert_false(_map.is_stray_fate_slot(1), "inside the black hole's zone")
 	assert_true(_map.is_stray_fate_slot(5), "stray corrupted node ahead of the zone")
 

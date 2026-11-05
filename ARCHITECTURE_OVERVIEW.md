@@ -42,7 +42,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `Player` | `Systems/Player` | `Systems/Game/Player/player.gd` | Player ship with health/shields/dice queue; manages turn flow: spawn dice, reroll, end turn |
 | `TileGrid` | `Systems/Player/MainViewer/TileGrid` | `Systems/Game/TileGrid/tile_grid.gd` | The ship's grid (3x5 by default; see Player Ships), tile placement/snap logic, push mechanics, per-turn tile activation count |
 | `EnemyManager` | `Systems/EnemyManager` | `Systems/Game/EnemyManager/enemy_manager.gd` | Spawns/enemy management; runs enemy turns sequentially via dice queue; places ships along the spawning path via `EnemyFormation`, spacing each by its footprint (hull plus side-hung health bar; on a board too crowded for that, every bar tucks above its hull) and splitting the wing across free space either side of a reservation such as salvage, which also turns each ship's speech box toward its clearer side; waits for in-flight tractor beams (`TractorBeam.wait_for_landings`) before an enemy turn starts |
-| `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones, sector gate jumps |
+| `Map` | `Systems/Player/MainViewer/Map` | `Systems/Game/Map/map.gd` | Hyperspace map with waypoint selection, fate corruption zones (rules in `FateState`, `Map/fate_state.gd`), sector gate jumps |
 | `ScenarioManager` | `Systems/ScenarioManager` | `Systems/Game/ScenarioManager/scenario_manager.gd` | Per-scenario event dispatch; faction tracking (PIRATE/CIVILIAN/BOSS); combat resolution logic |
 | `TargetingComputer` | `Systems/Player/TargetingComputer` | `Systems/Game/TargetingComputer/targeting_computer.gd` | Enemy intent display: shows die → action mapping for currently targeted enemy. `target_for(die)` answers who a dropped die should hit. The reticle is placed every frame from its ship's live position (so it rides a slide), and a real target change resets every running intent pulse. The targeted ship's speech folds into the portrait's comms badge (`EnemyDialogueManager.stow_point`) and a click unfolds it again (`replay_last_line()`); the badge shows only while a line is tucked away |
 | `JumpManager` | `Systems/JumpManager` | `Systems/Game/JumpManager/jump_manager.gd` | Plays the hyperspace transition (intro → load scenario → outro → start). Public `jump_to_scenario()`, used both by map jumps and sector advances |
@@ -1249,7 +1249,11 @@ burst on upgrading, live in `TileUpgradeLook`; Tile keeps the rules.
 Likewise the use lights: `TileUseLights` shows `uses_remaining` on the sprite,
 popping white sparks off a light that goes out and switching refilled lights
 on one at a time as `Juice.gather()` motes fall into each. The count itself
-changes at once; only the lights trail it.
+changes at once; only the lights trail it. And the held dice: every die on a
+tile sits in its `dice_queue`, and `TileHeldDice` (`tile_held_dice.gd`) says
+which of them the tile is holding, for a pair (`hold_die()`) or past the turn
+(`hold_over()`). The doc comment at the top of that file explains the three
+ways a die can be on a tile.
 
 `TileGrid.relocate_tiles(moves)` moves many tiles at once (all leave before any
 arrive, so a closed loop can shift) and emits no push or manual-move events.
@@ -1342,9 +1346,18 @@ quickens, the caption reads "Jump right!" and the right arrow tile pulses.
 Nothing in the sky prompts the player.
 
 **Fate's tiles.** A tile Fate takes becomes `Map.fate_scenario` or one of
-`Map.fate_variants` (Fate Rift, Hollows, Maw, Shroud, Brood), picked by `Map._corrupt()`
+`Map.fate_variants` (Fate Rift, Hollows, Maw, Shroud, Brood), picked by `FateState.corrupt()`
 from a hash of the RUN stream's state and the tile, so no draw is spent.
 `Map.is_fate_scenario()` is how anything asks whether a tile is Fate's.
+
+**Fate's rules are `FateState`** (`Map/fate_state.gd`, `Map.fate_state`): a
+plain object over the sector's scenario list (the same array as
+`Map.scenario_list`). It holds `fate_index`, `scenarios_in_danger` and
+`stray_danger_indices`; answers `is_in_danger()` and `danger_runs()`; and
+makes the changes: `advance()` on a jump, `clear_slot()`, `open_gate()`,
+`reset()` for a new sector, and `to_dict()`/`restore()` for the save. Map
+keeps the exports (forwarded on set) and draws it all. Its only RUN draws
+are in `pick_danger_range()` and `pick_stray_danger()`.
 
 **Difficulty** is two numbers, deliberately separate:
 
@@ -2757,6 +2770,7 @@ Source/
 │   │   │
 │   │   ├── TileGrid/tile_grid.gd               # Grid management
 │   │   ├── Map/map.gd                          # Hyperspace map
+│   │   ├── Map/fate_state.gd                   # Fate's rules and progress
 │   │   ├── EnemyManager/enemy_manager.gd       # Enemy spawner/turn runner
 │   │   ├── EnemyManager/enemy_formation.gd     # Derives ship placement from roster + free screen space
 │   │   ├── TargetingComputer/targeting_computer.gd  # Intent display

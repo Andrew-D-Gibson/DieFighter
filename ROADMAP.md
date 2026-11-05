@@ -74,43 +74,28 @@ been self-playtested and is fun. Next comes outside playtesting.
 Each of these was checked against the code on 2026-11-05, and none is urgent.
 Fix them opportunistically when you're already in the file.
 
-- [ ] **Big files.** The largest gameplay scripts are `map.gd` (1183),
-      `enemy.gd` (911), `focus_selection.gd` (885), `player.gd` (879),
-      `opening_cutscene.gd` (852), `tutorial_manager.gd` (840), `tile.gd` (836)
-      and `targeting_computer.gd` (801). Split boundaries proposed fresh on
-      2026-11-05, lowest risk first in each:
+- [ ] (Optional.) **Big files.** `tile.gd` and `map.gd` were split on
+      2026-11-05 (`TileHeldDice`, `FateState`). The rest are long but
+      coherent, and are fine to leave. If one is ever split, these are the
+      boundaries proposed then, lowest risk first:
       - `targeting_computer.gd`: the portrait comms/crackle, the reticle and
         the bound-slot arrows each become a child node; target selection and
         the intent panel stay.
-      - `tutorial_manager.gd`: the highlight masks (`_show_highlight`, the
-        cut-outs), then the gameplay-action table, then step waiting (the
-        timeouts and `_await_*`), then the combat holds (arrows, opening strike).
-      - `opening_cutscene.gd`: the skip overlay (one `skip_confirmed` signal),
-        the particle builders (static), then the ambient fields (stars, debris,
-        speed lines), whose keyed properties need forwarding setters or new
-        track paths.
-      - `tile.gd`: a `TileHeldDice` helper beside `TileUseLights` and
-        `TileCountdown`, then the info/text code, then the visual feedback.
-        The event responders last: connection order and the synchronous fatal-
-        damage save matter.
-      - `map.gd`: the camera (bounds, slider, pan), then the caption and hover,
-        then a `FateState` data class. The fate zone view goes last, and the
-        RUN-stream draw order must stay exactly as it is.
-      - `enemy.gd`: scenario state and save capture, then the intent table
-        (keep a `turn_actions` pass-through), then dice spending and overload.
-      - `player.gd`: hand layout, engine charge, then jump transit. Turn flow
-        goes last; its await ordering is subtle.
-      - `focus_selection.gd`: the navigator (pure list logic) and the reticle,
-        then the target collector, which is also where to cut the per-frame
-        `find_children` scans.
+      - `tutorial_manager.gd`: the highlight masks, the gameplay-action
+        table, step waiting, then the combat holds.
+      - `opening_cutscene.gd`: the skip overlay, the particle builders, then
+        the ambient fields (their keyed properties need forwarding setters).
+      - `enemy.gd`: scenario state and save capture, then the intent table.
+      - `player.gd`: hand layout and engine charge; leave turn flow alone.
+      - `focus_selection.gd`: the navigator and the reticle, then the target
+        collector (also where to cut the per-frame `find_children` scans).
 - [ ] **Unreproduced, found by reading (2026-11-05).** Each needs a repro
       before a fix:
-      - `Tile.release_held_dice()` returns every die in the queue on
-        `combat_finished`, including one dropped after the last ship's death
+      - `TileHeldDice.release_all()` (on `combat_finished`) returns every
+        die on the tile, including one dropped after the last ship's death
         queued the `EndCombatEvent` but whose activation hasn't resolved. The
         die goes home, and `TileActivationEvent` doesn't check that its die is
-        still on the tile. `release_dice_held_for_the_turn()` has the same
-        shape.
+        still on the tile. `release_for_turn_end()` has the same shape.
       - The tutorial's and targeting computer's `await`s on scene-tree timers
         can resume after a quit to the menu has freed them. That only logs
         errors.

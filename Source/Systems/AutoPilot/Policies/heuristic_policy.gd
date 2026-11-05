@@ -694,11 +694,7 @@ static func _stops_between(from: int, to: int) -> int:
 
 ## Fate takes the tiles in danger as the player jumps, before they land.
 static func _corrupted_by_next_jump(index: int) -> bool:
-	var map: Map = Globals.map
-	if map.scenario_list[index].sector_gate_scenario:
-		return false
-	return index in map.stray_danger_indices \
-		or (index > map.fate_index and index <= map.fate_index + map.scenarios_in_danger)
+	return Globals.map.fate_state.is_in_danger(index)
 
 
 ## What the board looks like for deciding whether to jump; a new hand or more

@@ -156,8 +156,10 @@ func _open_shop() -> Shop:
 
 func test_purchases_and_rerolls_are_banked_on_the_shopkeeper() -> void:
 	var shop: Shop = await _open_shop()
+	# Read off the shop, not typed in: the price is tuning.
+	var reroll_price: int = shop.reroll_cost()
 	assert_true(shop.reroll())
-	assert_eq(keeper.credits_paid, 8)
+	assert_eq(keeper.credits_paid, reroll_price)
 	await wait_seconds(Shop._STOCK_OUT_STAGGER * 5 + Shop._STOCK_OUT_TIME
 		+ Shop._STOCK_STAGGER * 5 + Shop._STOCK_POP_TIME + 0.3)
 
@@ -169,7 +171,7 @@ func test_purchases_and_rerolls_are_banked_on_the_shopkeeper() -> void:
 	var before: int = player.money
 	die.draggable.drag_ended.emit(die.draggable, Vector2(5000, 5000))
 	assert_eq(player.money, before - Shop.DICE_PRICE, "bought")
-	assert_eq(keeper.credits_paid, 8 + Shop.DICE_PRICE)
+	assert_eq(keeper.credits_paid, reroll_price + Shop.DICE_PRICE)
 
 
 func test_a_continue_keeps_the_shopkeeper_on_the_books() -> void:

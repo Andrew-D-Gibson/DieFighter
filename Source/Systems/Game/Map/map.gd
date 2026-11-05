@@ -1,18 +1,16 @@
 class_name Map
 extends Node2D
 
-@export_category('Game Data')
-var scenario_list: Array[ScenarioResource]
-var current_scenario_index: int
+## Fate's hold on this sector: its rules and progress. The map only draws it.
+var fate_state: FateState = FateState.new()
 
-## The last tile Fate has corrupted, counting from the sector's left edge.
-## -1 before it has taken any.
-var fate_index: int
-## How many tiles past fate_index Fate takes on the next jump.
-var scenarios_in_danger: int
-## Tiles past the danger zone that Fate has reached out and marked at random.
-## Like the danger zone, they're corrupted on the next jump.
-var stray_danger_indices: Array[int] = []
+@export_category('Game Data')
+## The sector's tiles, left to right. Fate works on the same array.
+var scenario_list: Array[ScenarioResource]:
+	set(value):
+		scenario_list = value
+		fate_state.road = value
+var current_scenario_index: int
 
 @export_category('Map Textures')
 @export var current_scenario_icon: Texture2D
@@ -36,20 +34,35 @@ var stray_danger_indices: Array[int] = []
 @export var hint: MapHint
 
 @export_category('Behavior')
-@export var empty_scenario: ScenarioResource
+@export var empty_scenario: ScenarioResource:
+	set(value):
+		empty_scenario = value
+		fate_state.empty_scenario = value
 ## What Fate leaves behind. Also the icon a corrupted tile shows, whichever
 ## variant it holds.
-@export var fate_scenario: ScenarioResource
+@export var fate_scenario: ScenarioResource:
+	set(value):
+		fate_scenario = value
+		fate_state.fate_scenario = value
 ## Other encounters a corrupted tile can hold besides fate_scenario, so walking
-## into Fate isn't always the same pushover. See _corrupt().
-@export var fate_variants: Array[ScenarioResource] = []
+## into Fate isn't always the same pushover. See FateState.corrupt().
+@export var fate_variants: Array[ScenarioResource] = []:
+	set(value):
+		fate_variants = value
+		fate_state.fate_variants = value
 ## What a jump gate becomes once its boss is beaten: the same gate, with no one
 ## left guarding it.
-@export var open_gate_scenario: ScenarioResource
+@export var open_gate_scenario: ScenarioResource:
+	set(value):
+		open_gate_scenario = value
+		fate_state.open_gate_scenario = value
 @export var sprite_spacing: int = 14
 ## Chance, rolled per tile on every jump, that a tile past the danger zone
 ## starts corrupting anyway. Punishes a player who only watches the red zone.
-@export_range(0.0, 1.0) var stray_danger_chance: float = 0.1
+@export_range(0.0, 1.0) var stray_danger_chance: float = FateState.DEFAULT_STRAY_DANGER_CHANCE:
+	set(value):
+		stray_danger_chance = value
+		fate_state.stray_danger_chance = value
 
 var scenario_sprites: Array[Sprite2D]
 var _corrupted_sprite: Sprite2D
@@ -315,7 +328,7 @@ func _mouse_world_position() -> Vector2:
 func _compute_hint(hovered: int) -> Array:
 	if hovered >= 0:
 		var texture: Texture2D = _caption_icon(hovered)
-		if _is_in_danger(hovered):
+		if fate_state.is_in_danger(hovered):
 			return [texture, "Corrupting!", Globals.red]
 		var entry: Dictionary = _icon_hints.get(texture.resource_path.get_file(), {})
 		if entry.is_empty():
@@ -340,16 +353,6 @@ func _compute_hint(hovered: int) -> Array:
 		# the resting caption, not a hovered destination.
 		return [null, tr("MAP_HINT_CHARGE_ENGINES"), Globals.purple]
 	return [_HERE_ARROW, tr("MAP_HINT_YOU_ARE_HERE"), Globals.purple]
-
-
-## Whether Fate takes this scenario on the next jump. Mirrors jump(), which
-## spares sector-gate scenarios.
-func _is_in_danger(index: int) -> bool:
-	if scenario_list[index].sector_gate_scenario:
-		return false
-	return index in stray_danger_indices or (
-		index > fate_index and index <= fate_index + scenarios_in_danger
-	)
 
 
 ## The scenario's own icon with Fate's cut in diagonally from the left: what's
@@ -398,7 +401,7 @@ func _caption_icon(index: int) -> Texture2D:
 	# which _set_hint() dresses in the portal shader.
 	if texture and texture == gate_map_icon:
 		texture = scenario_list[index].map_icon
-	if _is_in_danger(index) and texture:
+	if fate_state.is_in_danger(index) and texture:
 		return _danger_icon(texture)
 	return texture
 
@@ -499,22 +502,13 @@ func _load_game_save(game_save: GameSaveResource) -> void:
 	# ground Fate had already taken and shifting every roll after it.
 	scenario_list = game_save.sector_scenarios
 	current_scenario_index = game_save.current_scenario_index
-	# The left_ keys are from saves written while Fate could close in from both
-	# ends.
-	var state: Dictionary = game_save.map_state
-	fate_index = state.get("fate_index", state.get("left_fate_index", 0))
-	scenarios_in_danger = state.get("scenarios_in_danger", state.get("left_scenarios_in_danger", 0))
-	stray_danger_indices.assign(game_save.map_state.get("stray_danger_indices", []))
+	fate_state.restore(game_save.map_state)
 	_update_map_sprites()
 
 
 ## Fate's progress through the sector, for the save. See _load_game_save().
 func get_fate_state() -> Dictionary:
-	return {
-		"fate_index": fate_index,
-		"scenarios_in_danger": scenarios_in_danger,
-		"stray_danger_indices": stray_danger_indices.duplicate(),
-	}
+	return fate_state.to_dict()
 
 
 ## Points the map at a whole new list of scenarios, resetting Fate's
@@ -523,13 +517,7 @@ func get_fate_state() -> Dictionary:
 func load_sector(new_scenario_list: Array[ScenarioResource], start_index: int) -> void:
 	scenario_list = new_scenario_list
 	current_scenario_index = start_index
-	
-	# Fate starts just off the sector's left edge: nothing is corrupted yet,
-	# only the first one or two tiles are under threat.
-	fate_index = -1
-	stray_danger_indices.clear()
-	
-	_pick_new_danger_ranges()
+	fate_state.reset()
 	
 	# Mid-jump the map keeps showing the trip out of the old sector; arrival
 	# redraws it (see start_scenario in _ready).
@@ -583,7 +571,7 @@ func _update_map_sprites() -> void:
 	_corrupted_sprite = fate_background
 	fate_background.texture = corrupted_area
 	fate_background.position = Vector2(
-		-232 + (sprite_spacing * (fate_index + 1)) - _SEAM_HALF_WIDTH, 4
+		-232 + (sprite_spacing * (fate_state.fate_index + 1)) - _SEAM_HALF_WIDTH, 4
 	)
 
 	fate_background.z_index = -2
@@ -594,7 +582,7 @@ func _update_map_sprites() -> void:
 	# red always means "corrupted on the next jump", wherever on the map it
 	# shows up; each run of neighbouring red tiles is one block, so no border
 	# splits them.
-	var danger_runs: Array[Vector2i] = _danger_runs()
+	var danger_runs: Array[Vector2i] = fate_state.danger_runs()
 	var danger: Sprite2D = Sprite2D.new()
 	_danger_sprite = danger
 	danger.texture = danger_area
@@ -648,7 +636,7 @@ func _update_map_sprites() -> void:
 			_dress_gate(scenario_sprite)
 		else:
 			scenario_sprite.texture = scenario_list[i].map_icon
-			if _is_in_danger(i) and scenario_sprite.texture:
+			if fate_state.is_in_danger(i) and scenario_sprite.texture:
 				scenario_sprite.material = _corrupting_material(i)
 			
 			# Offset the icon up or down
@@ -713,7 +701,7 @@ func _make_fate_seam(border_x: float) -> Sprite2D:
 	seam_material.shader = _SEAM_SHADER
 	seam_material.set_shader_parameter("left_color", corrupted_area.get_image().get_pixel(0, 0))
 	var right: Color = Color.TRANSPARENT
-	if scenarios_in_danger > 0:
+	if fate_state.scenarios_in_danger > 0:
 		right = danger_area.get_image().get_pixel(0, 0)
 	seam_material.set_shader_parameter("right_color", right)
 
@@ -728,7 +716,7 @@ func _make_fate_seam(border_x: float) -> Sprite2D:
 
 ## Where Fate's corrupted zone ends and its danger zone begins.
 func _fate_border_x() -> float:
-	return sprite_spacing * (fate_index + 0.5)
+	return sprite_spacing * (fate_state.fate_index + 0.5)
 
 
 ## Right edge of the danger zone: the run touching Fate, strays that join it
@@ -736,7 +724,7 @@ func _fate_border_x() -> float:
 ## Nothing is in danger once Fate has stopped in front of the gate, which
 ## leaves the zone with no width.
 func _danger_zone_end_x(danger_runs: Array[Vector2i]) -> float:
-	if scenarios_in_danger <= 0:
+	if fate_state.scenarios_in_danger <= 0:
 		return _fate_border_x()
 	var zone: Vector2i = danger_runs.pop_front()
 	return sprite_spacing * (zone.y + 0.5)
@@ -762,20 +750,6 @@ func _add_stray_danger_sprite(run: Vector2i) -> Sprite2D:
 	map_viewport.add_child(stray_danger)
 	_stray_danger_sprites.append(stray_danger)
 	return stray_danger
-
-
-## Every tile in danger, grouped into runs of neighbours as [first, last]
-## scenario indices, left to right.
-func _danger_runs() -> Array[Vector2i]:
-	var runs: Array[Vector2i] = []
-	for idx: int in range(fate_index + 1, len(scenario_list)):
-		if not _is_in_danger(idx):
-			continue
-		if not runs.is_empty() and runs.back().y == idx - 1:
-			runs[-1] = Vector2i(runs.back().x, idx)
-		else:
-			runs.append(Vector2i(idx, idx))
-	return runs
 
 
 ## danger_area's border only ever needed to sit on the zone's right edge. A
@@ -892,33 +866,25 @@ func show_gate_jump() -> void:
 ## does to the tile you're leaving. No-ops for sector-gate scenarios
 ## (boss fights, jump gates), which must never be overwritten.
 func clear_current_scenario_slot() -> void:
-	if scenario_list[current_scenario_index].sector_gate_scenario:
-		return
-	if current_scenario_index <= fate_index:
-		_corrupt(current_scenario_index)
-	else:
-		scenario_list[current_scenario_index] = empty_scenario
+	fate_state.clear_slot(current_scenario_index)
 
 
 ## The player won the fight at the jump gate they're standing on. The gate stays
 ## a gate (never cleared, never corrupted) but nobody guards it now, so coming
 ## back to it later finds the ring waiting rather than the boss.
 func open_current_gate() -> void:
-	if scenario_list[current_scenario_index].sector_gate_scenario and open_gate_scenario:
-		scenario_list[current_scenario_index] = open_gate_scenario
+	fate_state.open_gate(current_scenario_index)
 
 
 ## Whether [param scenario] is one of Fate's: a tile it has already taken.
 func is_fate_scenario(scenario: ScenarioResource) -> bool:
-	return scenario != null and (scenario == fate_scenario or scenario in fate_variants)
+	return fate_state.is_fate_scenario(scenario)
 
 
 ## Whether slot [param index] is a stray Fate node ahead of the black hole's
 ## advancing zone (the 10% randomly corrupted nodes outside the danger zone).
 func is_stray_fate_slot(index: int = current_scenario_index) -> bool:
-	if index < 0 or index >= len(scenario_list):
-		return false
-	return index > fate_index and is_fate_scenario(scenario_list[index])
+	return fate_state.is_stray_fate_slot(index)
 
 
 ## The background resource for [param scenario] at [param index]: stray
@@ -929,23 +895,9 @@ func background_for_scenario(
 ) -> Resource:
 	if scenario == null:
 		return null
-	if index > fate_index and is_fate_scenario(scenario):
+	if index > fate_state.fate_index and fate_state.is_fate_scenario(scenario):
 		return _FATE_OUTSKIRT_BACKGROUND
 	return scenario.background_resource
-
-
-## Hands the tile at [param idx] to Fate, as one of its encounters. The pick is
-## a hash of the RUN stream's state and the tile rather than a draw from it,
-## so adding variants leaves every seeded map (the tutorial's, AutoPilot
-## transcripts) otherwise unchanged, the same way repair stations are placed.
-func _corrupt(idx: int) -> void:
-	if fate_variants.is_empty():
-		scenario_list[idx] = fate_scenario
-		return
-	var pool: Array[ScenarioResource] = [fate_scenario]
-	pool.append_array(fate_variants)
-	var roll: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, idx, "fate"])
-	scenario_list[idx] = pool[posmod(roll, pool.size())]
 
 
 func jump(desired_scenario_index: int) -> void:
@@ -975,29 +927,8 @@ func jump(desired_scenario_index: int) -> void:
 	# What the map shows now, for the animation to start from.
 	var leaving_index: int = current_scenario_index
 	var old_border_x: float = _fate_border_x()
-	var taken: Array[int] = []
-	for idx: int in range(fate_index + 1, len(scenario_list)):
-		if _is_in_danger(idx):
-			taken.append(idx)
+	var taken: Array[int] = fate_state.advance(leaving_index, desired_scenario_index)
 
-	# Set the current index scenario to empty
-	clear_current_scenario_slot()
-
-	# Have "Fate" infect the scenarios in danger
-	for idx: int in range(fate_index + 1, fate_index + 1 + scenarios_in_danger):
-		if not scenario_list[idx].sector_gate_scenario:
-			_corrupt(idx)
-	for idx: int in stray_danger_indices:
-		if not scenario_list[idx].sector_gate_scenario:
-			_corrupt(idx)
-			
-	fate_index += scenarios_in_danger
-	
-	# Set up which scenarios are in danger next
-	_pick_new_danger_ranges()
-	_pick_stray_danger(desired_scenario_index)
-	
-	# Request a jump with the new index
 	current_scenario_index = desired_scenario_index
 	_animate_fate_advance(old_border_x, taken, [leaving_index, desired_scenario_index])
 	request_jump_to_scenario.emit(scenario_list[current_scenario_index])
@@ -1049,7 +980,7 @@ func _animate_fate_advance(old_border_x: float, taken: Array[int], pip_indices: 
 		stray.queue_free()
 	_stray_danger_sprites.clear()
 
-	var danger_runs: Array[Vector2i] = _danger_runs()
+	var danger_runs: Array[Vector2i] = fate_state.danger_runs()
 	var old_end_x: float = maxf(_danger_end_x, new_border_x)
 	_danger_end_x = _danger_zone_end_x(danger_runs)
 
@@ -1065,9 +996,9 @@ func _animate_fate_advance(old_border_x: float, taken: Array[int], pip_indices: 
 		stray.modulate.a = 0.0
 		spread.tween_property(stray, "modulate:a", 1.0, _DANGER_SPREAD_TIME)
 
-	for idx: int in range(fate_index + 1, len(scenario_list)):
+	for idx: int in range(fate_state.fate_index + 1, len(scenario_list)):
 		var icon: Sprite2D = scenario_sprites[idx]
-		if idx in pip_indices or not _is_in_danger(idx) or not icon.texture:
+		if idx in pip_indices or not fate_state.is_in_danger(idx) or not icon.texture:
 			continue
 		if not icon.material:
 			icon.material = _corrupting_material(idx)
@@ -1075,7 +1006,7 @@ func _animate_fate_advance(old_border_x: float, taken: Array[int], pip_indices: 
 		spread.tween_property(icon, "material:shader_parameter/progress", 0.5, _DANGER_SPREAD_TIME)
 
 	await spread.finished
-	if is_instance_valid(_seam_sprite) and scenarios_in_danger <= 0:
+	if is_instance_valid(_seam_sprite) and fate_state.scenarios_in_danger <= 0:
 		_seam_sprite.material.set_shader_parameter("right_color", Color.TRANSPARENT)
 
 
@@ -1088,60 +1019,8 @@ func _look_at_scenario_index(idx: int) -> void:
 	var desired_camera_position: int = _get_camera_position_for_scenario(idx)
 	map_camera.position = Vector2(desired_camera_position, 0)
 	_sync_slider_to_camera()
-	
-	
-func _pick_new_danger_ranges() -> void:
-	# Usually 2. Fate stops one short of the last tile, the jump gate: the
-	# player must always be able to leave the sector, so the gate is never
-	# corrupted, never covered by the corrupted zone, and never in danger.
-	var max_in_danger: int = mini(2, len(scenario_list) - fate_index - 2)
-
-	if max_in_danger <= 0:
-		scenarios_in_danger = 0
-	else:
-		scenarios_in_danger = RNGManager.randi_range(RNGManager.Bucket.RUN, 1, max_in_danger)
 
 
-## Rolls stray_danger_chance for every tile past the danger zone. The tile the
-## player is arriving at is spared — corrupting it underneath them would read
-## as a bug, not a threat — as are the gate and tiles Fate already holds.
-## Fate never holds more than half of the road ahead (see
-## _stray_corruption_cap()), so a sector can't rot into a wall of its
-## encounters before the danger zone even gets there.
-func _pick_stray_danger(arriving_index: int) -> void:
-	stray_danger_indices.clear()
-	var first_ahead: int = fate_index + scenarios_in_danger + 1
-	var cap: int = _stray_corruption_cap(first_ahead)
-	var corrupted: int = 0
-	for idx: int in range(first_ahead, len(scenario_list)):
-		if is_fate_scenario(scenario_list[idx]):
-			corrupted += 1
-	for idx: int in range(first_ahead, len(scenario_list)):
-		if idx == arriving_index \
-		or scenario_list[idx].sector_gate_scenario \
-		or is_fate_scenario(scenario_list[idx]):
-			continue
-		# Roll every tile even once the cap is reached: the RUN stream then
-		# advances exactly as it did before the cap existed, so seeded maps
-		# (the tutorial's, AutoPilot transcripts) only differ where it bites.
-		var marked: bool = RNGManager.randf(RNGManager.Bucket.RUN) < stray_danger_chance
-		if marked and corrupted < cap:
-			stray_danger_indices.append(idx)
-			corrupted += 1
-
-
-## How many tiles past the danger zone Fate may hold, counting its strays:
-## half of them, rounded down. The gate doesn't count, since Fate can never
-## take it. [param first_ahead] is the first tile past the danger zone.
-func _stray_corruption_cap(first_ahead: int) -> int:
-	var ahead: int = 0
-	for idx: int in range(first_ahead, len(scenario_list)):
-		if not scenario_list[idx].sector_gate_scenario:
-			ahead += 1
-	@warning_ignore("integer_division")
-	return ahead / 2
-	
-	
 func disable_controls() -> void:
 	left_arrow_tile.can_accept_dice.enabled = false
 	right_arrow_tile.can_accept_dice.enabled = false
