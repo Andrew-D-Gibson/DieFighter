@@ -305,7 +305,7 @@ FATE_REVEAL_6,The Vanguard gave its Marshals a drive that can outrun a horizon. 
 FATE_REVEAL_7,"If you're the kind who goes looking for Fate, it will see you coming.",,,,,,,,Revelation line 7 of 7: a hint that the secret route opens for players who carve every face of Fate's Die,,,,
 FATE_REVEAL_AGAIN_1,"You've heard this before, haven't you? Then you know what's behind you.",,,,,,,,"Short revelation, line 1 of 2, for a player who already learned the secret in an earlier run",,,,
 FATE_REVEAL_AGAIN_2,"Take the drive. Forward, or back. Your choice. It always was.",,,,,,,,"Short revelation, line 2 of 2",,,,
-FATE_REVEAL_CONTINUE,Click to continue,,,,,,,,Hint under a revelation line once it has been typed out,,,,
+FATE_REVEAL_CLOSE,CLOSE,,,,,,,,"Button in the dying boss's speech box on the revelation screen: closes the line just read and moves on to the next (all caps, fits a 56px button)",,,,
 RECKONING_ESCAPE,ESCAPE {value}/{goal},,,,,,,,Label over the secret fight's escape-velocity meter: charge so far and the charge needed to escape the black hole,,,,
 RECKONING_FATE_ROLLS,FATE ROLLS {face},,,,,,,,Banner at the start of a round of the secret fight: Fate threw the player's carved die and {face} (in capitals) came up,,,,
 FATE_ENDING_ESCAPED_TITLE,YOU DON'T COUNT,,,,,,,,"Heading of the secret ending: the ship escaped the black hole and landed off the board, like a die that rolls off the table and doesn't count",,,,

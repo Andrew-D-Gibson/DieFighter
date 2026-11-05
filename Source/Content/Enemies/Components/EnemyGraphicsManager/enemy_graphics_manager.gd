@@ -317,6 +317,18 @@ func set_ship_raised(raised: bool) -> void:
 		ship_graphics.scale = _lowered_ship_scale
 
 
+## Draws the ship alone at the absolute [param z] (over a screen-wide dim, so
+## it stays lit while everything else darkens), with its health bar hidden.
+## A negative z puts it back among the world's layers.
+func set_spotlit(z: int) -> void:
+	if not is_instance_valid(ship_graphics):
+		return
+	var lit: bool = z >= 0
+	ship_graphics.z_as_relative = not lit
+	ship_graphics.z_index = z if lit else 0
+	health_bar.visible = not lit
+
+
 func _set_transparency(alpha: float) -> void:
 	ship_graphics.modulate.a = alpha
 	ship_graphics.material.set_shader_parameter("alpha", alpha)

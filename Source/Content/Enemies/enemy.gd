@@ -33,6 +33,9 @@ const _DEPARTURE_HEADING: Vector2 = Vector2.UP
 ## home and its threshold rises. Its OverloadGauge flashes.
 signal overloaded()
 
+## A death held by hold_death() may play out now. See release_death().
+signal death_released()
+
 ## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 
@@ -111,6 +114,10 @@ var spending_tween: Tween = null
 ## How many ships of this enemy's own faction have died since it arrived.
 ## Drives PoolSelection.SQUAD_LOSSES.
 var squad_losses: int = 0
+
+## Set while something keeps this ship on screen past its death. See
+## hold_death().
+var _death_held: bool = false
 
 ## How many full combat rounds have elapsed since this enemy arrived, counted
 ## whether or not it was given any dice. Drives PoolSelection.COMBAT_ROUNDS.
@@ -355,6 +362,21 @@ func was_killed_by_ship() -> bool:
 	return last_damaged_by is Enemy and last_damaged_by != self
 
 
+## Keeps this ship whole on screen after it dies: it has already left the
+## fight (enemy_left, its dice handed on), but the kill and the wreck wait for
+## release_death(). Only takes effect when called from enemy_destroyed.
+func hold_death() -> void:
+	_death_held = true
+
+
+## Lets a death held by hold_death() play out.
+func release_death() -> void:
+	if not _death_held:
+		return
+	_death_held = false
+	death_released.emit()
+
+
 ## Called when the enemy dies
 func _on_death() -> void:
 	# Stop reacting to the scenario before announcing the death: enemy_left
@@ -375,7 +397,11 @@ func _on_death() -> void:
 	dice_manager.give_away_dice(spending_die if is_instance_valid(spending_die) else null,
 		EnemyDiceManager.Departure.DESTROYED)
 	Events.enemy_destroyed.emit(self)
-	
+	# Out of the fight and its dice gone, but still on screen: someone
+	# (FateRevelation) has a last word for it to say first.
+	if _death_held:
+		await death_released
+
 	Events.play_sound.emit(_PRE_DEATH_SFX)
 	# Another ship's kill isn't the player's to celebrate, or to loot.
 	var killed_by_ship: bool = was_killed_by_ship()
