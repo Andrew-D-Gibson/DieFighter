@@ -87,7 +87,13 @@ func _ready() -> void:
 	assert(tile_resource)
 	_set_up_resource()
 	_update_dice_acceptance()
-	
+	# The editor only previews the tile. Its components (Clickable, DiceQueue)
+	# aren't tool scripts, so their signals don't exist there, and there's no
+	# game to wire up to.
+	if Engine.is_editor_hint():
+		uses_remaining = max_uses_per_turn()
+		return
+
 	if clickable:
 		clickable.clicked.connect(func() -> void: 
 			Events.show_info.emit(_get_tile_info())
@@ -750,7 +756,9 @@ func _on_die_accepted(die: Dice) -> void:
 		engine.queue_event(event)
 		
 
-func _on_visibility_changed() -> void:	
+func _on_visibility_changed() -> void:
+	if Engine.is_editor_hint():
+		return
 	for die: Dice in dice_queue.queue:
 		die.visible = self.is_visible_in_tree()
 		
