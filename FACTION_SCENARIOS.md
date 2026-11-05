@@ -20,7 +20,7 @@ slow is dead.
 
 - **Combats:** Attacker, Wolfpack, Loose Wing, Cutpurse†, Wreckers†, Cannon Drone
   (a Rearguard sentry left behind when the line moved on), Boneyard (a Gaff and a
-  Venom Fighter stripping a wreck field, and you look like more of it), Vigil (two
+  Harpooner stripping a wreck field, and you look like more of it), Vigil (two
   Zealots keeping watch where the horizon is nearest), Scrap Run (a Smokestack,
   Harpooner and Jackal working the wake: *"Slow and shiny. Strip it."* Kill one
   and the Jackal bolts with whatever dice it holds).
@@ -53,11 +53,11 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   infiltrator in a Caravan hull), Turn Around (a Zealot leading a family
   inward), Still on Patrol†, Recruiter (a Pilgrim talks a tired Caravan family
   into flying inward).
-- **Elites:** Hunter-Killers† (an Undertow fighter with a Rearguard drone: someone
-  paid for you), Repossession (two Claims Adjusters kept running by a Field Tender:
-  *"Your lien is due."*), Wake Riders†, Twin Flames (two Zealots and the Pilgrim
-  feeding them), Procession† (a Zealot and the two Pilgrims who relay it their
-  luck).
+- **Elites:** Hunter-Killers† (an Undertow fighter and Jackal with a Rearguard drone:
+  someone paid for you), Repossession (an Arbiter and Tug kept running by a Field Tender:
+  *"Your lien is due."*), Wake Riders†, Twin Flames (a Zealot, Censer and the Pilgrim
+  feeding them), Procession† (a Zealot, a Pilgrim relaying it luck, and an
+  Acolyte shielding the procession).
 - **Gate:** the Arc Dynamo, *the Chancellor's reactor barge*: *"The Belly can't wait
   for one ship."*
 
@@ -83,6 +83,23 @@ tell for anyone reading the targeting computer. Sometimes it's bait (it runs on 
 
 Blockade Runner was cut. It overlapped Bounty Run, and an Undertow smuggler escorted
 by a Caravan medic fit neither faction.
+
+### Ship variety within the faction slots
+
+The third-wave ships also appear outside their showcase trios. These swaps
+keep the original ship counts, sectors, states, dialogue, rewards and story
+branches; each replacement has the same lore faction as the ship it replaces.
+
+| Faction | Additional placements |
+|---|---|
+| Rearguard | Bulwark guards Siege Battery and Tithe Fleet; Drillmaster marks targets in Spotter and Lance Squadron; Herald feeds Drone Battery and Tithe Fleet. All stay in the Spine. |
+| Undertow | Jackal joins Wolfpack and Hunter-Killers; Harpooner works Boneyard and Chopshop; Smokestack joins Chopshop and Smash and Grab. The hired Rearguard drone in Hunter-Killers remains. |
+| Caravan | Liner supports the Claims Adjuster in Lien Collection. Repossession fields an Arbiter and Tug with its original Field Tender, preserving the Compact's collection demand and repair support. |
+| Inbound | Plumb Line joins the relaying Pilgrim in Pilgrimage; Acolyte shields Elite Procession alongside its remaining Pilgrim; Censer replaces one of Twin Flames' two overload ships, with the relaying Pilgrim retained. |
+| Spilled | Brood leads Hollows; Hulk escorts Maw; Grasp escorts Shroud and joins the hostile side of Last Picket. The Pickets and their rescue/betrayal states remain intact. |
+
+Story-bound hulls keep their roles: the masquerading smuggler, adrift ships,
+medics, the Apostate, and event allies with Raid hand-offs are unchanged.
 
 ### Foreshadowing the secret
 Four encounters hint at `LORE.md` §4 without saying it, and only a player who puts
@@ -128,7 +145,7 @@ looks away. *"Not our jurisdiction. Move along."* Hush money floats beside them.
 
 ### The Last Picket — `EVENT_LastPicket` (sector 2+, Aegis Link is ally support)
 Two battered, friendly **Pickets** (`picket_holdout`) hold against a Spilled
-**Shroud + Wisp**. *"We've held 400 years. Hold with us."*
+**Shroud + Grasp**. *"We've held 400 years. Hold with us."*
 - Dice you hand a Picket go to its **Raid** on the Spilled (die returned) or to an
   Aegis Link on the other Picket.
 - **Win:** each Picket still alive gives +4 engine charge and 6 hull. *"Go. We'll
@@ -304,10 +321,10 @@ The take-everything uses `STEAL_MONEY` for 9999, which always comes up short, so
 the Zealot's state must never transition on `PLAYER_COULDNT_PAY`.
 
 ### Twin Flames — `ELITE_TwinFlames` (sector 2)
-Two **Zealots** and the **Pilgrim** relaying dice into them. *"Stop running. Come
-home."* The Relay pushes the Zealots toward their overload and the Siphon pins you
+A **Zealot**, a **Censer** and the **Pilgrim** relaying dice into them. *"Stop running. Come
+home."* The Relay pushes the Zealot and Censer toward their overload and the Siphon pins you
 in place: kill the Pilgrim first for a slower, safer fight, or ride the relays and
-burn both Zealots out. An Inbound elite (1.35×, Belly only: the Relay is ally
+burn both out. An Inbound elite (1.35×, Belly only: the Relay is ally
 support).
 
 ### The Vigil — `COMBAT_Vigil` (sector 1)
@@ -350,9 +367,9 @@ A **Pilgrim** kneels beside a **Fate Shroud** and Relays its luck into it. *"Be
 still. It came back for us."* Everyone fears the Spilled; the Inbound feed them.
 
 ### Procession — `ELITE_Procession` (sectors 2-3)
-A **Zealot** and two **Pilgrims**, flying inward against the fleet. *"Make way. The
-faithful are going home."* The Pilgrims siphon your drive so you can't leave, and
-Relay their dice into the Zealot, so their faith can overload it for you.
+A **Zealot**, a **Pilgrim** and an **Acolyte**, flying inward against the fleet. *"Make way. The
+faithful are going home."* The Pilgrim and Acolyte siphon your drive so you can't leave. The Acolyte shields its allies, while the Pilgrim Relays dice into
+the Zealot, so their faith can overload it for you.
 
 ### Apostate — `EVENT_Apostate` (sector 3, vs the Rearguard)
 A **Tithe Collector** (`tithe_collector_apostate`: the Rearguard hull, the Inbound
