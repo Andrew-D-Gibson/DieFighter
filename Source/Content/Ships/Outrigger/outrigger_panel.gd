@@ -13,10 +13,10 @@ extends Node2D
 const _PANEL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_panel.png")
 const _PANEL_REVEAL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_panel_reveal.png")
 ## The map tab's frame, recoloured and widened to match the systems panel,
-## with a sail emblem where the charger's tile sat.
+## with the twin-nacelle mark where the charger's tile sat.
 const _MAP_FRAME: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_map_frame.png")
-const _CHARGER_FILL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_fill_sail.png")
-const _CHARGER_CHARGED: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_charged_sail.png")
+const _CHARGER_FILL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_fill.png")
+const _CHARGER_CHARGED: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/charger_charged.png")
 const _MAP_REVEAL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/outrigger_map_reveal.png")
 
 ## The panel is drawn centred on the main viewer's origin.
@@ -60,7 +60,7 @@ func _ready() -> void:
 	Events.systems_shown.connect(_dress_systems)
 	Events.map_shown.connect(_dress_map)
 	# MainViewer lights the MAP label purple when the drive can jump. On this
-	# hull the tab is orange, so the label goes sail-orange instead. Deferred:
+	# hull the tab is orange, so the label goes orange instead. Deferred:
 	# MainViewer connects after us and recolours it in the same signal.
 	for ready_signal: Signal in [Events.engine_charge_changed, Events.start_scenario,
 			Events.combat_finished, Events.start_combat]:
@@ -76,7 +76,7 @@ func _process(delta: float) -> void:
 
 ## The charger's tile goes: nothing should take a die there, and its socket
 ## is covered by the starboard pod. Its gauge waits for the map tab, filling
-## sail-orange there.
+## orange there.
 func _retire_engine_charger() -> void:
 	var charger: Node2D = _viewer.get_node_or_null("EngineCharger") as Node2D
 	if not charger:

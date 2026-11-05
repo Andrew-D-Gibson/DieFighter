@@ -45,14 +45,14 @@ const _MATCHED: Color = Color("#c552f1")
 const _MATCHED_EDGE: Color = Color("#cef0f1")
 const _PORT_EXCESS: Color = Color("#80359d")
 const _STARBOARD_EXCESS: Color = Color("#80359d")
-const _LEVEL: Color = Color("#eed35d")
+const _LEVEL: Color = Color("#f29c5d")
 const _FLASH: Color = Color("#cef0f1")
 const _TAG_FILL: Color = Color("#a846ce")
 const _TAG_TEXT: Color = Color("#cef0f1")
 const _TAG_EMPTY_FILL: Color = Color("#63605c")
 const _TAG_EMPTY_TEXT: Color = Color("#a5a29d")
 const _REDLINE_TEXT: String = "#d03656"
-const _FULL_TEXT: String = "#eed35d"
+const _FULL_TEXT: String = "#f29c5d"
 ## 3x5 pixel glyphs for the tag, rows top to bottom, bit 2 = left column.
 const _GLYPHS: Dictionary[String, Array] = {
 	"0": [7, 5, 5, 5, 7], "1": [2, 6, 2, 2, 7], "2": [7, 1, 7, 4, 7],

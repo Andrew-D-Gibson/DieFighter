@@ -18,7 +18,7 @@
 script = ExtResource("1_ship")
 id = &"carousel"
 display_name = "Carousel"
-description = "Its tile ring [color=#eed35d]turns every turn[/color]. The [color=#d03656]Reactor[/color] fires what passes."
+description = "Its tile ring [color=#eed35d]turns every turn[/color]. The [color=purple]Reactor[/color] fires what passes."
 sort_order = 2
 coming_soon = true
 starting_save = ExtResource("2_start")

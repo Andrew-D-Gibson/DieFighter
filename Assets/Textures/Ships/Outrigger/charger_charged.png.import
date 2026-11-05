@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdl0g5baatb50"
-path="res://.godot/imported/charger_fill_sail.png-46e25d3284bb93bf0c7638e2bb09195f.ctex"
+uid="uid://dseih1bybfy3c"
+path="res://.godot/imported/charger_charged.png-e0f08d9d008d46f0f509b169f9e055e7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Ships/Outrigger/charger_fill_sail.png"
-dest_files=["res://.godot/imported/charger_fill_sail.png-46e25d3284bb93bf0c7638e2bb09195f.ctex"]
+source_file="res://Assets/Textures/Ships/Outrigger/charger_charged.png"
+dest_files=["res://.godot/imported/charger_charged.png-e0f08d9d008d46f0f509b169f9e055e7.ctex"]
 
 [params]
 

@@ -44,7 +44,7 @@ const STEPS_KEY: String = "ring_steps"
 const _REACTOR: TileResource = preload("res://Source/Content/Ships/Carousel/reactor.tres")
 const _CLUNK_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres")
 const _LAND_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/tile_dropped.tres")
-## The cockpit in the Carousel's carnival reds and gold: the systems panel
+## The cockpit in the Carousel's maroon and crimson: the systems panel
 ## frame (same layout as MainViewer-Sheet.png), the engine gauge and the
 ## Reactor's exhaust rings.
 const _VIEWER_SHEET: Texture2D = preload("res://Assets/Textures/Player/Carousel/carousel_viewer-Sheet.png")
@@ -166,10 +166,10 @@ func play_ignition(target: Tile) -> void:
 	if not is_instance_valid(_reactor):
 		return
 	var to: Vector2 = _grid.grid_to_global_pos(IGNITION_CELL)
-	Juice.zap(self, _reactor.global_position, to, Globals.yellow, 160)
-	Juice.sparkle(self, to, Globals.yellow, 8 if target else 4, 30.0)
+	Juice.zap(self, _reactor.global_position, to, Globals.red, 160)
+	Juice.sparkle(self, to, Globals.red, 8 if target else 4, 30.0)
 	if target:
-		target.flash(Globals.yellow, 0.4, 0.25)
+		target.flash(Globals.red, 0.4, 0.25)
 
 
 func _on_turn_refresh() -> void:
@@ -285,8 +285,8 @@ func _land(tile: Tile) -> void:
 	tile.rehome_dice()
 	Juice.bump(tile.sprite_frames, 0.12, 0.2)
 	if _grid.find_tile_pos(tile) == IGNITION_CELL:
-		tile.flash(Globals.yellow, 0.35, 0.3)
-		Juice.sparkle(self, tile.global_position + Vector2(0, -10), Globals.yellow, 6, 25.0)
+		tile.flash(Globals.red, 0.35, 0.3)
+		Juice.sparkle(self, tile.global_position + Vector2(0, -10), Globals.red, 6, 25.0)
 		Events.play_sound.emit(_LAND_SFX)
 
 
