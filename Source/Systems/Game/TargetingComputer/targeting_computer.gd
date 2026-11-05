@@ -490,7 +490,7 @@ func _update_ui() -> void:
 				# Change over the info on clicking this particular action indicator 
 				var clickable: Clickable = _intent_clickable(i)
 				Utils.disconnect_all_callables(clickable.clicked)
-				clickable.clicked.connect(targeted_enemy.turn_actions[i].show_info)
+				clickable.clicked.connect(targeted_enemy.turn_actions[i].show_info.bind(targeted_enemy))
 				_set_intent_clickable(clickable, targeted_enemy.turn_actions[i].name != "")
 			else:
 				_intent(i).texture = unknown_intent_indicator
@@ -688,22 +688,10 @@ func _intent(i: int) -> Sprite2D:
 ## the quarter-off in their head.
 func _show_intent_amount(i: int, ship: Enemy, action: EnemyActionResource) -> void:
 	var label: RichTextLabel = _intent_amount(i)
-	label.text = action.get_intent_amount_text()
+	label.text = action.get_landing_amount_text(ship)
 	label.remove_theme_color_override("default_color")
-	if label.text.is_empty() or not action.deals_damage() or not _is_weakened(ship):
-		return
-	var weakened: int = WeakenedStatus.weakened(action.intent_amount)
-	if weakened != action.intent_amount:
-		label.text = str(weakened)
+	if label.text != action.get_intent_amount_text():
 		label.add_theme_color_override("default_color", Globals.purple)
-
-
-func _is_weakened(ship: Enemy) -> bool:
-	var engine: ScenarioEngine = ScenarioEngine.current()
-	if engine == null:
-		return false
-	var status: StatusModifier = engine.find_status(ship, _WEAKENED)
-	return status != null and status.stacks > 0
 
 
 func _intent_amount(i: int) -> RichTextLabel:

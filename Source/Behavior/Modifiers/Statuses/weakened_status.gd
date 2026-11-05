@@ -51,6 +51,15 @@ static func rule_values() -> Dictionary:
 	}
 
 
+## Whether [param ship] holds Weakened right now, so its hits shrink.
+static func is_on(ship: Node) -> bool:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine == null or not is_instance_valid(ship):
+		return false
+	var status: StatusModifier = engine.find_status(ship, &"weakened")
+	return status != null and status.stacks > 0
+
+
 ## What a hit of [param amount] deals from a weakened ship. Also read by the
 ## AutoPilot, which prices a weakened ship's intents the way its badge says.
 static func weakened(amount: int) -> int:

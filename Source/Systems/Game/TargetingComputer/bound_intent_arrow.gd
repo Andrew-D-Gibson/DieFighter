@@ -211,7 +211,7 @@ func _draw_badge(on: Vector2, live: bool) -> void:
 	if action.indicator_texture:
 		draw_texture(action.indicator_texture, Vector2(x, at.y + 1))
 		x += _ICON + 1
-	var amount: String = action.get_intent_amount_text()
+	var amount: String = action.get_landing_amount_text(source)
 	if not amount.is_empty():
 		draw_string(FontRoles.font(FontRoles.BODY), Vector2(x, at.y + _ICON + 1), amount,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, FontRoles.size(FontRoles.BODY), Globals.white)
@@ -244,7 +244,7 @@ func _badge_width() -> int:
 		return width
 	if action.indicator_texture:
 		width += _ICON + 1
-	var amount: String = action.get_intent_amount_text()
+	var amount: String = action.get_landing_amount_text(source)
 	if not amount.is_empty():
 		width += ceili(FontRoles.font(FontRoles.BODY).get_string_size(amount,
 			HORIZONTAL_ALIGNMENT_LEFT, -1, FontRoles.size(FontRoles.BODY)).x) + 1

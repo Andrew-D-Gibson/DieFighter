@@ -644,12 +644,14 @@ func reroll_slot_without_relays(slot: int, situation: EnemyActionSituation) -> v
 
 ## Applies the encounter's damage multiplier to freshly rolled slots, on top of
 ## the sector scaling EnemyActionOptionResource.get_action() already did. A
-## hologram's amount is the face it copies, so it stays as rolled.
+## hologram's amount is the face it copies, so it stays as rolled, and a
+## loaded payoff keeps the amount its loader showed, which was scaled then.
 func _scale_rolled_amounts(actions: Array[EnemyActionResource]) -> void:
 	if is_equal_approx(scenario_damage_multiplier, 1.0):
 		return
 	for action: EnemyActionResource in actions:
-		if action.intent_amount == 0 or action.get_relay() == EnemyActionResource.Relay.HOLOGRAM:
+		if action.intent_amount == 0 or action.amount_is_loaded \
+		or action.get_relay() == EnemyActionResource.Relay.HOLOGRAM:
 			continue
 		action.intent_amount = maxi(1, ceili(action.intent_amount * scenario_damage_multiplier))
 

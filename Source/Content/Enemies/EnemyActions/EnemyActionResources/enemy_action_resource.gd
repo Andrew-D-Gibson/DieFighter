@@ -70,6 +70,11 @@ var _acting_ship: Enemy = null
 ## EnemyActionOptionResource.strength_tier_override.
 var strength_tier_override: float = -1.0
 
+## Set on a payoff whose intent_amount was carried over from the die that
+## loaded it (Charge Bore's shot). That amount was already scaled for the
+## encounter when the loader was rolled, so it must not be scaled again.
+var amount_is_loaded: bool = false
+
 ## What get_threat(), get_relay(), get_binding() and is_safe_while_hidden()
 ## read off the chain, kept once worked out: the binder and placement ask
 ## them for every slot of every ship. Cleared when the chain is replaced.
@@ -80,6 +85,18 @@ var _derived: Dictionary[StringName, int] = {}
 ## Blank when the action has no meaningful amount (e.g. a pure status effect).
 func get_intent_amount_text() -> String:
 	return str(intent_amount) if intent_amount != 0 else ''
+
+
+## The amount as it will land when [param ship] uses this slot: a weakened
+## ship's hits read smaller, so the label, the info panel and the bound-ship
+## arrow all show the number the player will actually take. Blank when
+## get_intent_amount_text() is.
+func get_landing_amount_text(ship: Enemy) -> String:
+	if intent_amount == 0:
+		return ''
+	if ship and deals_damage() and WeakenedStatus.is_on(ship):
+		return str(WeakenedStatus.weakened(intent_amount))
+	return str(intent_amount)
 
 
 
@@ -422,7 +439,9 @@ static func _has_consequence(effect: EffectData) -> bool:
 			return true
 
 
-func show_info() -> void:
+## [param ship] is the ship whose slot this is, when known, so a weakened
+## ship's hit reads as what it will land.
+func show_info(ship: Enemy = null) -> void:
 	# Don't show info if this is a blank action
 	if name == '':
 		return
@@ -432,10 +451,10 @@ func show_info() -> void:
 
 	if activating_die_number:
 		info.bottom_label_text = "[color=yellow]%s[/color]" % tr("ENEMY_ACTION_USES_DIE").format({
-			"face": activating_die_number, "effect": get_description_text(),
+			"face": activating_die_number, "effect": get_description_text(ship),
 		})
 	else:
-		info.bottom_label_text = get_description_text()
+		info.bottom_label_text = get_description_text(ship)
 
 	info.texture = info_texture
 
@@ -466,12 +485,13 @@ func display_description() -> String:
 
 
 ## The description with this slot's rolled values filled in: (amount), and
-## (target) for the ship it's bound to.
-func get_description_text() -> String:
+## (target) for the ship it's bound to. Given the [param ship] using the slot,
+## (amount) is what it will land (see get_landing_amount_text()).
+func get_description_text(ship: Enemy = null) -> String:
 	var target_name: String = ""
 	if is_instance_valid(bound_target):
 		target_name = bound_target.enemy_resource.display_name()
-	return describe(get_intent_amount_text(), target_name)
+	return describe(get_landing_amount_text(ship), target_name)
 
 
 ## The description with [param amount_text] and [param target_name] standing

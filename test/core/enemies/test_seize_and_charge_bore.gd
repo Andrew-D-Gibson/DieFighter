@@ -118,6 +118,21 @@ func test_the_siege_shot_fires_for_the_amount_charge_bore_showed() -> void:
 	assert_eq(loaded[3].intent_amount, 37, "not a fresh roll")
 
 
+## The loaded amount was scaled for the encounter when Charge Bore rolled it,
+## so an elite fight's multiplier mustn't land on the shot a second time.
+func test_a_scaled_encounter_keeps_the_promised_shot() -> void:
+	var mortar: EnemyResource = load(ENEMIES + "siege_mortar.tres")
+	var ship := _holder()
+	ship.enemy_resource.action_options = [mortar.action_options[1]] as Array[EnemyTurnActionList]
+	ship.scenario_damage_multiplier = 1.5
+	var situation := EnemyActionSituation.new()
+	situation.kept_faces = [4] as Array[int]
+	situation.kept_amounts = {4: 37} as Dictionary[int, int]
+	ship.generate_turn_actions(situation, false)
+	assert_eq(ship.turn_actions[3].name, _authored_name("siege_shot"))
+	assert_eq(ship.turn_actions[3].intent_amount, 37)
+
+
 func test_a_kept_face_with_no_loaded_amount_rolls_its_own() -> void:
 	var mortar: EnemyResource = load(ENEMIES + "siege_mortar.tres")
 	var situation := EnemyActionSituation.new()
