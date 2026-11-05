@@ -106,7 +106,7 @@ More sectors later fit in as more layers (the Wings, the Vanguard's Escort, and 
 
 Each encounter is dealt only into its layer's sector (`ScenarioResource.sectors`).
 The rosters, and the story each encounter tells, are in
-`Planning Documents/FACTION_SCENARIOS.md`.
+`FACTION_SCENARIOS.md`.
 
 **The Rearguard isn't at the rear.** They say they hold the line between the Caravan
 and the horizon, but the Spine sits *ahead* of the Belly, and that's deliberate. They

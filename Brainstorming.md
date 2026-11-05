@@ -4,12 +4,12 @@
 
 This is a pure ideation document, not an implementation plan — nothing here gets built until you pick favorites. It's grounded in what actually exists in the codebase today (verified via exploration, not guesswork), so every idea below notes which real system it would hook into. The goal: give you a big menu of "yes, and" ideas across mechanics, AI, story, content, and *feel*, organized so you can grab a handful and ignore the rest.
 
-> **Status (2026-09-30).** This doc was written against an earlier build, and a
-> lot of it has since shipped. Current counts: 72 player tiles, 93 effect
-> subtypes across the 10 categories. Tile uses are now a **per-turn** budget
-> (refilled every player turn), not per-combat. Ideas that now exist are
-> tagged *(Built: …)* in §3, and §11 has its own status note. The rest of the
-> doc is unchanged ideation.
+> **Status (2026-11-05).** This is the long-term idea backlog. It was written
+> against a much earlier build, and a lot of it has since shipped: hazards,
+> enemy verbs including Dice Thief, factions, damage numbers, staged deaths,
+> roll cascades and accessibility toggles. Some ideas are tagged *(Built: …)*,
+> but the tagging stopped at 2026-09-30, so check the code or `DEVLOG.md`
+> before building anything here. What's actually planned is in `ROADMAP.md`.
 
 **The engine is in great shape for this.** The EffectChain / EffectData / EffectHandler / EffectRegistry pipeline (`Source/Behavior/Effects/`) is a genuinely clean, data-driven verb library — 10 categories, ~50 subtypes when this was written (93 now). Most ideas below are "new subtype + new handler," not "rewrite a system." I've flagged the few ideas that *are* bigger swings so you can weigh them differently.
 

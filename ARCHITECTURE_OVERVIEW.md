@@ -1266,7 +1266,7 @@ the Spine. A scenario's `sectors` flags name the layers it belongs to, and
 lists to the sector's layer (and to ships it is ready for, `earliest_sector()`)
 before anything is drawn. A later sector's arrival is one of its own events.
 The rosters, and the story each encounter tells, are in
-`Planning Documents/FACTION_SCENARIOS.md`.
+`FACTION_SCENARIOS.md`.
 
 Every pick in a sector goes through `GameStateManager._pick_one()`, which
 always spends exactly one RUN draw. `RNGManager.pick_random()` spends none on

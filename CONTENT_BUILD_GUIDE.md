@@ -704,7 +704,7 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
   needs at least one; none ticked would deal it everywhere, and a test fails.
   Pick by whose story it is, not by the ships' strength: the sector's own
   scaling handles that. See the rosters in
-  `Planning Documents/FACTION_SCENARIOS.md`.
+  `FACTION_SCENARIOS.md`.
 - **`sector_gate_scenario`**: only for a boss gate (and `GATE_open`). Fate
   never takes these, and winning one opens the gate instead of emptying it.
 - **`boss_title` / `boss_subtitle`**: set on a boss fight to play the intro
