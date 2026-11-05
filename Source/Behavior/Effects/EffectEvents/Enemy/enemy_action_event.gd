@@ -167,9 +167,10 @@ func resolve(engine: ScenarioEngine) -> void:
 	# A wasted die's "?" stays at art scale: it isn't news worth swelling.
 	if idle_now:
 		action_indicator.end_scale = Vector2.ONE
+	# Before add_child: the popup reads its time in _ready.
+	action_indicator.popup_time = popup_time
 	enemy.add_child(action_indicator)
 	action_indicator.sprite.texture = popup_icon
-	action_indicator.popup_time = popup_time
 	action_indicator.global_position = activator_die.global_position + Vector2(0,12)
 		
 
