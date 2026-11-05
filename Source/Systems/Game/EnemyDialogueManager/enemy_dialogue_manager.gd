@@ -1,7 +1,39 @@
 class_name EnemyDialogueManager
 extends Node2D
+## A ship's speech bubble: a box sized to its line, with a tail pointing back
+## at the ship, kept on screen and clear of the other ships' bubbles.
+##
+## The box art is one picture per faction: a box, symmetric left to right,
+## with its tail on the middle of its left edge. It's drawn in pieces (see
+## _draw()) so the box can stretch to fit any line while the tail and the
+## rounded corners keep their pixels.
 
-const _TOP_SCREEN_MARGIN: float = 4.0
+## How close the box may come to the edge of the screen.
+const _SCREEN_MARGIN: float = 4.0
+
+## Where the pieces are in the box art. The box starts this far right of the
+## tail's tip...
+const _ART_BOX_LEFT: int = 8
+## ...its rounded corners and three-pixel border take this many pixels in
+## from each edge...
+const _ART_CORNER: int = 4
+## ...this column and row hold nothing but plain box, to stretch...
+const _ART_FILL: Vector2i = Vector2i(40, 10)
+## ...and the tail, laid over the box's left edge, is this.
+const _ART_TAIL: Rect2i = Rect2i(0, 16, 11, 16)
+## Where the tail's tip sits, relative to this node: the point the box speaks
+## from, which [member anchor] puts beside the ship.
+const _TAIL_TIP: Vector2 = Vector2(-2, 0)
+
+## Room between the text and the box's edge, the border included.
+const _TEXT_PADDING: Vector2 = Vector2(5, 6)
+## The smallest box: tall enough for the tail to meet a straight edge.
+const _MIN_BOX_SIZE: Vector2 = Vector2(32, 24)
+## How far in from the box's top or bottom the tail must stay, so it joins a
+## straight stretch of edge rather than a rounded corner.
+const _TAIL_INSET: float = 8.0 + _ART_CORNER
+## A line wraps onto at most this many lines before it shrinks.
+const _MAX_LINES: int = 6
 
 const _TEXT_BLIP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/text_blip.tres")
 
@@ -22,6 +54,10 @@ var current_dialogue: String
 var character_reveal_tween: Tween
 var fade_tween: Tween
 var fade_time: float = 1
+
+## A line wider than this, in art pixels, wraps, and the box grows taller
+## instead: a wide box would crowd the ships beside this one.
+@export var max_text_width: float = 72.0
 
 var red_dialogue_box: Texture2D = preload("uid://dt1r6m0xqqoe7")
 var green_dialogue_box: Texture2D = preload("uid://csw1kfx56jn5i")
@@ -58,12 +94,25 @@ var anchor: Vector2 = Vector2.ZERO:
 @export var max_tuck: float = 8.0
 
 ## Whether the box is on the ship's left, mirrored so its tail still points
-## back at the ship. See [method point].
+## back at the ship: the side [EnemyManager] asked for (see [method point]),
+## unless only the other side has room for this line.
 var points_left: bool = false
 
-## The box and text's authored x, which pointing left mirrors.
-var _box_x: float
-var _text_x: float
+## The side [EnemyManager] asked for, and how far a box can reach to the
+## ship's left (x) and right (y) before running into something. Infinite
+## until it asks: the screen's edges stand in.
+var _prefers_left: bool = false
+var _room: Vector2 = Vector2(INF, INF)
+
+## The box art for the current line's faction.
+var _box_texture: Texture2D
+## The box, sized to the current line (see [method _fit_text]).
+var _box_size: Vector2 = _MIN_BOX_SIZE
+## Where the label sits from the box's top-left, as the fit placed it.
+var _text_offset: Vector2 = Vector2.ZERO
+## How far the box has slid up or down past its tail, to stay on screen or
+## clear of a neighbour's bubble while the tail still points at the ship.
+var _box_dy: float = 0.0
 
 ## How far past [member anchor] the box currently sits; negative when it is
 ## tucked in. See [member left_clearance] and [member max_tuck].
@@ -118,8 +167,7 @@ func _ready() -> void:
 	fadeout_timer.timeout.connect(_on_line_ran_out)
 	add_child(fadeout_timer)
 
-	_box_x = %Sprite2D.position.x
-	_text_x = %RichTextLabel.position.x
+	_box_texture = faction_textures[_last_faction]
 	_apply_side()
 
 	Events.jump.connect(_on_jump)
@@ -177,6 +225,9 @@ func _say(
 		hide_dialogue()
 		return
 
+	_box_texture = faction_textures[faction]
+	_fit_text()
+
 	# Record the time this dialogue was shown
 	time_last_dialogue_was_shown = Time.get_ticks_msec()
 
@@ -184,7 +235,6 @@ func _say(
 		_unfold()
 	else:
 		_start_fade_in()
-	%Sprite2D.texture = faction_textures[faction]
 	line_shown.emit()
 		
 	character_reveal_tween = get_tree().create_tween()
@@ -315,6 +365,7 @@ func _set_fold(travel: float, shrink: float) -> void:
 ## [member stow_point]. It's the box's middle that travels, so it shrinks
 ## toward its middle rather than toward the ship it hangs off.
 func _place() -> void:
+	queue_redraw()
 	var rest: Vector2 = _separated_rest(Vector2((anchor.x + _shift) * (-1.0 if points_left else 1.0), anchor.y))
 	if is_zero_approx(_travel) and is_zero_approx(_shrink):
 		scale = Vector2.ONE
@@ -325,7 +376,7 @@ func _place() -> void:
 	var size: float = lerpf(1.0, _STOWED_SCALE, _shrink)
 	var parent: Node2D = get_parent() as Node2D
 	var target: Vector2 = parent.to_local(_stowed_at) if parent else _stowed_at
-	var box: Vector2 = %Sprite2D.position
+	var box: Vector2 = _box_rect().get_center()
 	scale = Vector2.ONE * size
 	position = (rest + box).lerp(target, _travel) - box * size
 
@@ -363,34 +414,132 @@ func _start_fade_in() -> void:
 ## Puts the box on the ship's left or right. [EnemyManager] picks the side from
 ## where the ship stands, so neighbouring ships talk away from each other
 ## rather than over each other. [param room] is how far from the ship the box
-## can reach on that side before it runs into something.
-func point(left: bool, room: float) -> void:
-	points_left = left
-	_shift = 0.0
-	if is_node_ready():
-		var clearance: float = left_clearance if left else right_clearance
-		_shift = clampf(room - _reach(), -max_tuck, clearance)
+## can reach to its left (x) and right (y) before it runs into something.
+func point(left: bool, room: Vector2 = Vector2(INF, INF)) -> void:
+	_prefers_left = left
+	_room = room
 	_apply_side()
+
+
+## Settles which side the box goes on and how far out it sits, for the line
+## it holds now: a long line's box can outgrow the side it was given, and
+## then goes on the other side if that has more room.
+func _choose_side() -> void:
+	var rooms: Vector2 = _rooms()
+	var reach: float = _reach()
+	var left: bool = _prefers_left
+	var preferred: float = rooms.x if left else rooms.y
+	var other: float = rooms.y if left else rooms.x
+	if preferred < reach - max_tuck and other > preferred:
+		left = not left
+	points_left = left
+	var room: float = rooms.x if left else rooms.y
+	var clearance: float = left_clearance if left else right_clearance
+	_shift = clampf(room - reach, -max_tuck, clearance)
+
+
+## How far the box can reach to the ship's left (x) and right (y): what
+## [EnemyManager] measured, or the screen's edges if it hasn't.
+func _rooms() -> Vector2:
+	var rooms: Vector2 = _room
+	var parent: Node2D = get_parent() as Node2D
+	if parent and parent.is_inside_tree():
+		var x: float = parent.global_position.x
+		if is_inf(rooms.x):
+			rooms.x = x - _SCREEN_MARGIN
+		if is_inf(rooms.y):
+			rooms.y = Globals.SCREEN_SIZE.x - _SCREEN_MARGIN - x
+	return rooms
 
 
 ## How far from the ship the far edge of the box sits, unshifted.
 func _reach() -> float:
-	return anchor.x + _box_x + %Sprite2D.texture.get_width() * 0.5
+	return anchor.x + _TAIL_TIP.x + _ART_BOX_LEFT + _box_size.x
 
 
 func _apply_side() -> void:
 	if not is_node_ready():
 		return
-
-	var label: RichTextLabel = %RichTextLabel
-	if points_left:
-		%Sprite2D.position.x = -_box_x
-		label.position.x = -_text_x - label.size.x
-	else:
-		%Sprite2D.position.x = _box_x
-		label.position.x = _text_x
-	%Sprite2D.flip_h = points_left
+	_choose_side()
 	_place()
+
+
+## The box (tail left out) in this node's coordinates, on whichever side of
+## the tail it is.
+func _box_rect() -> Rect2:
+	var left: float = _TAIL_TIP.x + _ART_BOX_LEFT
+	var top: float = roundf(_TAIL_TIP.y - _box_size.y * 0.5 + _box_dy)
+	var rect: Rect2 = Rect2(left, top, _box_size.x, _box_size.y)
+	if points_left:
+		rect.position.x = -rect.end.x
+	return rect
+
+
+## Sizes the box to the label's text: the text wraps at
+## [member max_text_width] into lines made as even as they can be, and the box
+## hugs them. TextFit does the measuring and placing, as it does for every
+## other fitted label, so the text sits by its ink and shrinks only if even
+## [constant _MAX_LINES] lines can't hold it.
+func _fit_text() -> void:
+	var label: RichTextLabel = %RichTextLabel
+	var policy: TextFitPolicy = TextFitPolicy.wrapping(_MAX_LINES)
+	var natural: TextFit.Result = TextFit.solve(label, Rect2(0.0, 0.0, max_text_width, INF), policy)
+	# Wrapped text is as wide as the width it was broken at, which can be a
+	# little over its widest line: given only that line's width, the refit
+	# below could break it onto one line more.
+	var text_width: float = natural.block_size.x
+	if natural.line_count > 1 and natural.wrap_width > 0.0:
+		text_width = maxf(text_width, natural.wrap_width)
+	var text_size: Vector2 = Vector2(text_width, natural.ink.size.y) * natural.scale
+	var size: Vector2 = (text_size + _TEXT_PADDING * 2.0).ceil().max(_MIN_BOX_SIZE)
+	# Even, so the box mirrors about its middle on whole pixels.
+	_box_size = Vector2(ceilf(size.x * 0.5) * 2.0, ceilf(size.y * 0.5) * 2.0)
+	var fit: TextFit.Result = TextFit.solve(label, Rect2(_TEXT_PADDING, _box_size - _TEXT_PADDING * 2.0), policy)
+	TextFit.apply(label, fit)
+	_text_offset = label.position
+	_apply_side()
+
+
+## The box art in pieces: the box from its right half, stretched, and that
+## again mirrored for the left half; then the tail over the box's edge, all
+## mirrored when the box is on the ship's left.
+func _draw() -> void:
+	if _box_texture == null:
+		return
+	var box: Rect2 = _box_rect()
+	var middle: float = box.get_center().x
+	_draw_half_box(Rect2(middle, box.position.y, box.size.x * 0.5, box.size.y), false)
+	_draw_half_box(Rect2(box.position.x, box.position.y, box.size.x * 0.5, box.size.y), true)
+	var mirror: float = -1.0 if points_left else 1.0
+	draw_set_transform(Vector2.ZERO, 0.0, Vector2(mirror, 1.0))
+	var tail_top: float = _TAIL_TIP.y - _ART_TAIL.size.y * 0.5
+	draw_texture_rect_region(_box_texture,
+		Rect2(Vector2(_TAIL_TIP.x, tail_top), _ART_TAIL.size), Rect2(_ART_TAIL))
+	draw_set_transform(Vector2.ZERO)
+
+
+## Draws the right half of the box art stretched over [param area], mirrored
+## left to right with [param mirrored].
+func _draw_half_box(area: Rect2, mirrored: bool) -> void:
+	var art: Vector2 = _box_texture.get_size()
+	var corner: float = _ART_CORNER
+	if mirrored:
+		draw_set_transform(Vector2(area.end.x + area.position.x, 0.0), 0.0, Vector2(-1.0, 1.0))
+	# The art's columns: plain box, then the right edge. Its rows: the top
+	# edge, plain box, the bottom edge.
+	var columns: Array[Vector2] = [Vector2(_ART_FILL.x, 1.0), Vector2(art.x - corner, corner)]
+	var rows: Array[Vector2] = [Vector2(0.0, corner), Vector2(_ART_FILL.y, 1.0), Vector2(art.y - corner, corner)]
+	var xs: Array[Vector2] = [Vector2(area.position.x, area.size.x - corner), Vector2(area.end.x - corner, corner)]
+	var ys: Array[Vector2] = [Vector2(area.position.y, corner),
+		Vector2(area.position.y + corner, area.size.y - corner * 2.0), Vector2(area.end.y - corner, corner)]
+	for column: int in range(2):
+		for row: int in range(3):
+			if xs[column].y <= 0.0 or ys[row].y <= 0.0:
+				continue
+			draw_texture_rect_region(_box_texture,
+				Rect2(xs[column].x, ys[row].x, xs[column].y, ys[row].y),
+				Rect2(columns[column].x, rows[row].x, columns[column].y, rows[row].y))
+	draw_set_transform(Vector2.ZERO)
 
 
 func _show_characters(num: int) -> void:
@@ -415,16 +564,23 @@ func _process(_delta: float) -> void:
 ## Earlier ships keep their place; later ships choose the nearest free row.
 ## Considering every occupied edge at once avoids bubbles pushing each other
 ## back and forth as a formation slides or a new line unfolds.
+##
+## The box keeps on screen too. Moving up or down, it slides past its tail as
+## far as the tail can still meet a straight edge, so the tail keeps pointing
+## at the ship; only past that does the whole bubble move. Sets
+## [member _box_dy] and returns where this node goes.
 func _separated_rest(rest: Vector2) -> Vector2:
+	_box_dy = 0.0
 	var parent: Node2D = get_parent() as Node2D
-	if parent == null:
+	if parent == null or not is_inside_tree():
+		_place_label()
 		return rest
-	var box: Sprite2D = %Sprite2D
-	var half: Vector2 = box.texture.get_size() * 0.5
-	var center: Vector2 = parent.to_global(rest + box.position)
-	var low: Vector2 = half + Vector2(4, 4)
+	var box_rect: Rect2 = _box_rect()
+	var half: Vector2 = box_rect.size * 0.5
+	var start: Vector2 = parent.to_global(rest + box_rect.get_center())
+	var low: Vector2 = half + Vector2.ONE * _SCREEN_MARGIN
 	var high: Vector2 = Globals.SCREEN_SIZE - low
-	center = center.clamp(low, high)
+	var center: Vector2 = start.clamp(low, high)
 	var occupied: Array[Rect2] = []
 	var rows: Array[float] = [center.y]
 	for node: Node in get_tree().get_nodes_in_group(&"enemy_dialogue_boxes"):
@@ -432,9 +588,7 @@ func _separated_rest(rest: Vector2) -> Vector2:
 		if other == self or not other._out or not other.visible \
 			or other.get_instance_id() > get_instance_id() or other._travel > 0.1:
 			continue
-		var other_box: Sprite2D = other.get_node("Sprite2D")
-		var rect: Rect2 = Rect2(other_box.global_position - other_box.texture.get_size() * 0.5,
-			other_box.texture.get_size()).grow(2.0)
+		var rect: Rect2 = other._global_box_rect().grow(2.0)
 		if center.x + half.x <= rect.position.x or center.x - half.x >= rect.end.x:
 			continue
 		occupied.append(rect)
@@ -452,4 +606,19 @@ func _separated_rest(rest: Vector2) -> Vector2:
 			best_y = row
 			best_score = score
 	center.y = best_y
-	return parent.to_local(center) - box.position
+
+	var slide: float = maxf(half.y - _TAIL_INSET, 0.0)
+	_box_dy = roundf(clampf(center.y - start.y, -slide, slide))
+	_place_label()
+	return parent.to_local(center) - _box_rect().get_center()
+
+
+## The box on screen, for the bubbles that come after it to keep clear of.
+func _global_box_rect() -> Rect2:
+	var rect: Rect2 = _box_rect()
+	return Rect2(to_global(rect.position), rect.size * global_scale.abs())
+
+
+## Keeps the text in the box wherever the box has gone.
+func _place_label() -> void:
+	%RichTextLabel.position = _box_rect().position + _text_offset

@@ -496,8 +496,7 @@ func _point_speech(members: Array[Enemy], slots: PackedFloat32Array) -> void:
 		var others: PackedFloat32Array = xs.duplicate()
 		others.remove_at(i)
 		var points_left: bool = formation.speech_points_left(xs[i], others)
-		var room: Vector2 = formation.speech_room(xs[i], others)
-		ships[i].dialogue_manager.point(points_left, room.x if points_left else room.y)
+		ships[i].dialogue_manager.point(points_left, formation.speech_room(xs[i], others))
 
 
 ## Claims screen-space x for something that is not a ship — the shop panel, the
