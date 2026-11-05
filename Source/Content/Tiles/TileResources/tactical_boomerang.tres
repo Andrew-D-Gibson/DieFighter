@@ -172,7 +172,7 @@ animations = [{
 [resource]
 script = ExtResource("script_0")
 tile_name = "[color=red]Tactical Boomerang[/color]"
-description = "(die_3) or (die_4) -> Deal [color=red]{damage} damage[/color] to [color=purple]target[/color]. Recoil: (die_3) [color=green]left[/color], (die_4) [color=green]right[/color]"
+description = "(die_3) or (die_4) -> Deal [color=red]{damage} damage[/color] to [color=purple]target[/color]. Recoil: (die_3) [color=green]left[/color], (die_4) [color=green]right[/color]. [color=orange]Return[/color] die"
 rarity = 1
 offered_as_reward = false
 textures = SubResource("Resource_frames4")

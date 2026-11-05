@@ -16,11 +16,18 @@ script = ExtResource("2_13613")
 token = "(expose)"
 label = "Expose"
 
+[sub_resource type="Resource" id="exposed_you"]
+script = ExtResource("2_13613")
+token = "(exposed_you)"
+label = "Exposed"
+player_side = true
+
 [resource]
 script = ExtResource("1_a753t")
 title = "Exposed"
 rule = "Each hit on this ship deals extra [color=red]damage[/color] equal to Exposed. Spends {spent} Exposed."
-tokens = Array[ExtResource("2_13613")]([SubResource("exposed"), SubResource("expose")])
+player_rule = "Each enemy hit on you deals extra [color=red]damage[/color] equal to your Exposed. Spends {spent} Exposed."
+tokens = Array[ExtResource("2_13613")]([SubResource("exposed"), SubResource("expose"), SubResource("exposed_you")])
 modifier_script = ExtResource("3_status")
 color = "red"
 icon = ExtResource("4_icon")

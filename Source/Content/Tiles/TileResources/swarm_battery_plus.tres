@@ -152,7 +152,7 @@ script = ExtResource("script_tile")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Swarm Battery+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color] per die in play"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color] per die you own"
 rarity = 1
 textures = SubResource("SpriteFrames_tile")
 uses_per_turn = 1

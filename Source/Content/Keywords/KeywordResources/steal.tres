@@ -16,5 +16,5 @@ label = "stolen"
 [resource]
 script = ExtResource("1_te1l7")
 title = "Steal"
-rule = "This ship keeps the die and spends it next turn, on whatever that face shows. You go a turn without it. It drops what it holds if destroyed."
+rule = "This ship keeps the die and spends it next turn, on whatever that face shows. You go at least a turn without it. It drops what it holds if destroyed."
 tokens = Array[ExtResource("2_rq65v")]([SubResource("steal"), SubResource("stolen")])
