@@ -1,0 +1,83 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="ext_2"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="ext_4"]
+
+[sub_resource type="Resource" id="Resource_0"]
+script = ExtResource("ext_1")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 15
+color = Color(0.584, 0.412, 0.851, 1)
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("ext_1")
+category = 2
+amount = 3
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("ext_1")
+category = 1
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_4"]
+script = ExtResource("ext_1")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_5"]
+script = ExtResource("ext_1")
+category = 4
+color = Color(0.478, 0.741, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_6"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 5
+sound_resource = ExtResource("ext_2")
+
+[sub_resource type="Resource" id="Resource_7"]
+script = ExtResource("ext_1")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_8"]
+script = ExtResource("ext_1")
+category = 1
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_9"]
+script = ExtResource("ext_1")
+category = 2
+amount = 3000
+
+[sub_resource type="Resource" id="Resource_10"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_11"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_12"]
+script = ExtResource("ext_3")
+effects = Array[ExtResource("ext_1")]([SubResource("Resource_0"), SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3"), SubResource("Resource_4"), SubResource("Resource_5"), SubResource("Resource_6"), SubResource("Resource_7"), SubResource("Resource_8"), SubResource("Resource_9"), SubResource("Resource_10"), SubResource("Resource_11")])
+
+[sub_resource type="Resource" id="Resource_13"]
+script = ExtResource("ext_4")
+standing = 2
+deed = &"rearguard_spared"
+
+[resource]
+script = ExtResource("ext_0")
+dialogue = "You held fire. The line remembers."
+attitude = 1
+effects_on_enter = SubResource("Resource_12")
+deeds = Array[ExtResource("ext_4")]([SubResource("Resource_13")])

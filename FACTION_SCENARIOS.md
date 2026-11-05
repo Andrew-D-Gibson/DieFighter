@@ -422,12 +422,63 @@ path pays more, and taking the issue is the safe one.
 - **Neutral ships only act on the dice they're handed.** A "they're firing on it"
   opening (Quarantine, White Flag) plays out only as fast as the player feeds it.
 
+## Faction memory: what carries between encounters
+
+The run remembers (ARCHITECTURE "Faction Memory"; authoring in
+CONTENT_BUILD_GUIDE §4). Each outcome below records a deed: a standing change
+for the faction that felt it, and a name later encounters can ask about. A
+faction's standing reads as a regard: HATED ≤ −6 < DISLIKED ≤ −2 < NEUTRAL <
+2 ≤ LIKED < 6 ≤ TRUSTED.
+
+| Faction | Kind (deed, standing) | Cruel (deed, standing) |
+|---|---|---|
+| **Caravan** | `caravan_convoy_saved` +2 (Convoy), `caravan_tow_saved` +3 (Cut Loose), `caravan_hauler_saved` +2 (Deniable Assets), `caravan_straggler_saved` +2, `caravan_civilian_saved` +2 (Pirates Attacking Civilian), `caravan_lien_paid` +3 | `caravan_shop_attacked` −4, `caravan_dock_attacked` −4, `caravan_medic_betrayed` −4, `caravan_betrayed` −3 (any grateful Caravan ship turned on), `caravan_tow_cut` −2, `caravan_hauler_sold` −2, `caravan_straggler_plundered` −3, `caravan_salvage_robbed` −2, `caravan_lien_refused` −5 / `_defaulted` −3 |
+| **Rearguard** | `rearguard_picket_relieved` +2, `rearguard_spared` +2, `rearguard_tithe_paid` +1, `rearguard_bribe_taken` +1, `rearguard_deserter_shot` +1 | `rearguard_prisoner_shot` −3, `rearguard_deserted` −3 (Last Picket), `rearguard_tithe_refused` −2, `rearguard_exposed` −2, `rearguard_defied` −2 (Deserter) |
+| **Undertow** | `undertow_mayday_saved` +2, `undertow_partnered` +1 (Straggler, Pirates Attacking Civilian), `undertow_black_market` +1 | `undertow_mayday_betrayed` −3, `undertow_runner_burned` −2 |
+| **Inbound** | `inbound_pilgrim_freed` +2 (Deserter), `inbound_pact_sealed` +2, `inbound_die_taken` +1 | `inbound_pilgrim_shot` −2 (Pilgrim, and Deserter's Conscriptor), `inbound_pact_refused` −2 |
+| **Spilled** | `spilled_listened` +1 (Signal), `spilled_let_go` +1 (What Came Back) | `spilled_silenced` −2, `spilled_attacked` −2 |
+
+Player kills are counted per faction too, though ordinary fights move no
+standing.
+
+**What reads it now:**
+- **Every Compact shop and repair dock** prices by the Caravan's regard: ×1.5
+  HATED, ×1.25 DISLIKED, ×0.9 LIKED, ×0.8 TRUSTED (a dock pays that much less
+  for sold parts). The keeper says so on arrival (`shop_ship_greeting`,
+  `repair_dock_greeting`): *"You hit a Compact shop. Prices went up."* /
+  *"Compact has your file. Prices went up."* / *"Friend of the Compact! Fair
+  prices for you."*
+- **The Compact collects** (`GRUDGE_CompactLien`, a consequence): once the
+  Caravan DISLIKES the player, the next sector holds a Claims Adjuster beyond a
+  jump of the arrival. It takes a 20-30 credit lien on arrival and names the
+  crime (*"Lien for the shop you hit. Collected."*). Paying mends standing
+  (+3); shooting it or coming up short is a fight and a deeper grudge.
+- **Rearguard crews surrender** in Picket Line, Tithe Collector, Tithe Escort,
+  Ion Lances and Defender + Disabler: at 30% hull a ship yields (*"Hold fire!
+  We yield!"*), holds its fire and goes neutral. Shoot it, and it fights to the
+  death (*"No quarter? Then none given!"*, −3). Let the fight end with it
+  alive, and it gives 3 charge and 6 hull and flies off (*"You held fire. The
+  line remembers."*, +2). Sparing a last ship forfeits the bounty; the standing
+  pays it back later.
+- **The Tollkeeper** waives the tithe for a Rearguard that LIKES the player
+  (*"You're on the Marshal's list. Pass, pilot."*) and doubles it (20-36) for
+  one that DISLIKES them.
+
 ## Open
 
-- Nothing carries between encounters yet (gossip, liens, Debt allies). Several
-  betrayal paths (kill the Pilgrim, then take its die; fight the Zealot for a free
-  tile) pay as well as the kind path. Run memory and Fate's Die are where they'd cost.
-- Fate's Die faces aren't carved yet. The faces noted above are the hooks.
+- More readers. The hooks are general (standing branches, encounter
+  requirements, consequences); most factions have no consequence encounter
+  yet. Natural next ones: an Undertow bounty hunter for a player who hunts them
+  and Debt allies for one who spares them (LORE §9), Inbound recruiters
+  greeting a Hunger-heavy run, the Last Picket offering more to a Rearguard
+  friend, Mayday calls going quiet for a player the Caravan hates.
+- LORE §9's dice consequences (+1 on dice a hating faction is handed, a die
+  back from a liking one) would touch combat balance everywhere, so they're
+  not in yet.
+- Several betrayal paths (kill the Pilgrim, then take its die; fight the Zealot
+  for a free tile) still pay as well as the kind path within the encounter; the
+  standing they cost is now where they cost, once the readers above are wider.
+- Fate's Die faces aren't carved yet. The faces noted above are the hooks, and
+  each deed is a natural place to carve one.
 - White Flag's spared Gaff and The Ledger's Vanguard line are written for run memory
-  (a Debt ally, and the Vanguard answering the ledger) and land much harder once it
-  exists.
+  (a Debt ally, and the Vanguard answering the ledger): two more readers to add.

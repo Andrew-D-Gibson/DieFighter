@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_2"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_10"]
 
 [sub_resource type="Resource" id="Resource_1"]
 script = ExtResource("ext_1")
@@ -25,8 +26,14 @@ subtype = 3
 script = ExtResource("ext_2")
 effects = Array[ExtResource("ext_1")]([SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")])
 
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_10")
+standing = 1
+deed = &"spilled_listened"
+
 [resource]
 script = ExtResource("ext_0")
 dialogue = "...your dice... were our bones..."
 attitude = 1
 effects_on_enter = SubResource("Resource_4")
+deeds = Array[ExtResource("deed_ext_10")]([SubResource("FactionDeed_0")])

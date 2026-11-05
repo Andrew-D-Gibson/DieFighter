@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_4"]
 [ext_resource type="Resource" uid="uid://ditjw8a2kt8yf" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/toll_refused.tres" id="state_5"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/toll_shortchanged.tres" id="state_6"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_11"]
 
 [sub_resource type="Resource" id="Resource_toll_amount"]
 script = ExtResource("script_2")
@@ -27,6 +28,11 @@ script = ExtResource("script_4")
 effects = Array[ExtResource("script_2")]([SubResource("Resource_toll_amount"), SubResource("Resource_take_toll")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_11")
+standing = 1
+deed = &"rearguard_tithe_paid"
+
 [resource]
 script = ExtResource("script_0")
 dialogue = "Tithe taken. It buys us all time."
@@ -36,4 +42,5 @@ transitions = Dictionary[int, ExtResource("script_1")]({
 0: ExtResource("state_5"),
 10: ExtResource("state_6")
 })
+deeds = Array[ExtResource("deed_ext_11")]([SubResource("FactionDeed_0")])
 metadata/_custom_type_script = "uid://cpgidtisgk77q"

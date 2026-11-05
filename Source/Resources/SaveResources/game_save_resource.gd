@@ -48,6 +48,11 @@ extends Resource
 ## than just the part since the last Continue.
 @export var run_stats: Dictionary = {}
 
+## FactionLedger.get_state(): how each faction regards the player, and what
+## they did to earn it. Empty in a save that predates it, which loads as a
+## fleet that remembers nothing.
+@export var faction_standing: Dictionary = {}
+
 ## RandomNumberGenerator.state per RNGManager bucket name, stored as strings
 ## because JSON numbers lose int64 precision. RUN always; the per-scenario
 ## buckets only for a mid-scenario checkpoint.

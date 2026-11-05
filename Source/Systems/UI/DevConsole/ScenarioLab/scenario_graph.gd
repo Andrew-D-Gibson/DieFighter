@@ -1,7 +1,8 @@
 class_name ScenarioGraph
 extends RefCounted
 ## Every ship state a scenario can reach, walked from its starting ships
-## through each transition and each outcome of a weighted one. The Scenario
+## through each transition, each outcome of a weighted roll and each option
+## of a standing branch. The Scenario
 ## Lab checks coverage against this: a scenario is fully inspected once every
 ## state here has been seen, and its fight seen to an end if it has one.
 
@@ -30,10 +31,8 @@ static func build(scenario: ScenarioResource) -> ScenarioGraph:
 			if state == null or seen.has(state):
 				continue
 			seen[state] = true
-			var next_states: Array = []
-			if state is ScenarioShipStateProbabilityTransition:
-				next_states = (state as ScenarioShipStateProbabilityTransition).weighted_probabilities.keys()
-			elif state is ScenarioShipState:
+			var next_states: Array[ScenarioShipStateBase] = state.next_states()
+			if state is ScenarioShipState:
 				var ship_state := state as ScenarioShipState
 				if not graph.owners.has(ship_state):
 					graph.states.append(ship_state)
@@ -41,7 +40,6 @@ static func build(scenario: ScenarioResource) -> ScenarioGraph:
 				graph.owners[ship_state].append(spawn_index)
 				if ship_state.attitude == Enemy.Attitude.AGGRESSIVE:
 					graph.has_fight = true
-				next_states = ship_state.transitions.values()
 			# Reversed so the first authored transition is walked first.
 			next_states.reverse()
 			for next: ScenarioShipStateBase in next_states:

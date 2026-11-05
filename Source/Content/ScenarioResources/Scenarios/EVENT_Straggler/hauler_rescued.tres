@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Straggler/hauler_plundered.tres" id="ext_4"]
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_5"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_14"]
 
 [sub_resource type="Resource" id="Resource_1"]
 script = ExtResource("ext_1")
@@ -37,6 +38,11 @@ subtype = 1
 script = ExtResource("ext_3")
 effects = Array[ExtResource("ext_1")]([SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3"), SubResource("Resource_4"), SubResource("Resource_5")])
 
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_14")
+standing = 2
+deed = &"caravan_straggler_saved"
+
 [resource]
 script = ExtResource("ext_0")
 dialogue = "Take our spares. Don't wait for us."
@@ -45,3 +51,4 @@ effects_on_enter = SubResource("Resource_6")
 transitions = Dictionary[int, ExtResource("ext_5")]({
 1: ExtResource("ext_4")
 })
+deeds = Array[ExtResource("deed_ext_14")]([SubResource("FactionDeed_0")])

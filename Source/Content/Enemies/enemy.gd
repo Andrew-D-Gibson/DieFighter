@@ -167,6 +167,10 @@ var credits_paid: int = 0
 ## is restored from the save directly instead.
 var _skip_next_enter_effects: bool = false
 
+## True from a state change made mid-volley until the engine drains: the rest
+## of that volley doesn't count as PLAYER_ATTACKED_SELF. See _settle_into_state().
+var _settling_into_state: bool = false
+
 ## Whether the health bar is tucked above the hull because the formation is
 ## too crowded for it to hang off the side. See set_health_bar_compact().
 var health_bar_compact: bool = false
@@ -211,6 +215,9 @@ func _connect_health_signals() -> void:
 ## Connects all scenario-related signals
 func _connect_scenario_signals() -> void:
 	Events.scenario_event.connect(_handle_scenario_event)
+	# The two events only this ship hears (ScenarioManager.ScenarioEvent).
+	Events.player_attacked_ship.connect(_on_player_attacked_ship)
+	health.health_damaged.connect(_check_hull_critical)
 
 
 ## Safe to call more than once: a ship that died is disconnected on death, and
@@ -218,13 +225,37 @@ func _connect_scenario_signals() -> void:
 func disconnect_scenario_signals() -> void:
 	if Events.scenario_event.is_connected(_handle_scenario_event):
 		Events.scenario_event.disconnect(_handle_scenario_event)
-	
+	if Events.player_attacked_ship.is_connected(_on_player_attacked_ship):
+		Events.player_attacked_ship.disconnect(_on_player_attacked_ship)
+	if health.health_damaged.is_connected(_check_hull_critical):
+		health.health_damaged.disconnect(_check_hull_critical)
+
 
 func _handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
-		var new_state: ScenarioShipState = scenario_state.handle_scenario_event(event)
-		
+		if not scenario_state:
+			return
+		var faction: FactionIdentity = enemy_resource.faction if enemy_resource else null
+		var new_state: ScenarioShipState = scenario_state.handle_scenario_event(event, faction)
+
 		if new_state != scenario_state:
 			_enter_scenario_state(new_state)
+
+
+func _on_player_attacked_ship(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
+	if ship != self or _settling_into_state:
+		return
+	_handle_scenario_event(ScenarioManager.ScenarioEvent.PLAYER_ATTACKED_SELF)
+
+
+## Health has already taken the hit when this runs, and a hit that killed the
+## ship is a death, not a reason to surrender.
+func _check_hull_critical() -> void:
+	if health.is_dead or not scenario_state \
+	or not scenario_state.transitions.has(ScenarioManager.ScenarioEvent.HULL_CRITICAL):
+		return
+	if health.health > health.max_health * scenario_state.critical_hull_fraction:
+		return
+	_handle_scenario_event(ScenarioManager.ScenarioEvent.HULL_CRITICAL)
 
 
 ## Puts this ship straight into [param state], as if a scenario event had led
@@ -237,8 +268,36 @@ func force_scenario_state(state: ScenarioShipState) -> void:
 
 func _enter_scenario_state(state: ScenarioShipState) -> void:
 	scenario_state = state
+	_settle_into_state()
+	if state.holds_fire:
+		_stand_down()
 	Events.ship_scenario_state_changed.emit(self)
 	trigger_state_effects()
+
+
+## A ship that changes its mind mid-volley (surrenders under fire, turns on a
+## betrayal) ignores the rest of that volley as PLAYER_ATTACKED_SELF: those
+## shots were already on their way, so a multi-hit tile can't turn a
+## surrender into an execution the player never chose. It listens again once
+## the engine has drained the volley.
+func _settle_into_state() -> void:
+	var engine: ScenarioEngine = ScenarioEngine.current()
+	if engine == null or not engine.currently_processing_queue:
+		return
+	_settling_into_state = true
+	if not engine.finished_processing_queue.is_connected(_end_settling):
+		engine.finished_processing_queue.connect(_end_settling, CONNECT_ONE_SHOT)
+
+
+func _end_settling() -> void:
+	_settling_into_state = false
+
+
+## Every intent on this turn's table does nothing (holds_fire). Silenced
+## rather than cleared, so the table still shows what the ship stood down.
+func _stand_down() -> void:
+	for face: int in range(1, turn_actions.size() + 1):
+		silence_face(face)
 		
 
 func _show_attitude() -> void:
@@ -627,6 +686,8 @@ func generate_turn_actions(situation: EnemyActionSituation, take_forced: bool = 
 		_current_face_bias()
 	)
 	_scale_rolled_amounts(turn_actions)
+	if scenario_state and scenario_state.holds_fire:
+		_stand_down()
 
 
 ## Swaps one slot for a fresh roll that relays nothing. See
@@ -809,6 +870,11 @@ func trigger_state_effects() -> void:
 		_skip_next_enter_effects = false
 		return
 
+	# Recorded where the effects play, so a restored ship (which skips them)
+	# doesn't count again what the save already remembers.
+	if not scenario_state.deeds.is_empty():
+		Events.ship_deeds_done.emit(self, scenario_state.deeds)
+
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if not scenario_state.effects_on_enter or not engine:
 		return
@@ -865,12 +931,17 @@ func capture_state() -> Dictionary:
 
 
 ## Inverse of capture_state(), applied right after the ship spawns in its
-## starting state. starting_state is where the saved state is looked up from.
-func restore_state(entry: Dictionary, starting_state: ScenarioShipState) -> void:
+## starting state. starting_state is where the saved state is looked up from:
+## the authored root, branches and all, since the run's standing may pick a
+## different opening now than it did when the ship arrived.
+func restore_state(entry: Dictionary, starting_state: ScenarioShipStateBase) -> void:
 	var saved_state: ScenarioShipState = _find_state(starting_state, str(entry.get("state", "")))
 	_skip_next_enter_effects = true
 	if saved_state and saved_state != scenario_state:
 		scenario_state = saved_state
+	# The table was rolled at spawn, before the saved state was put back.
+	if scenario_state and scenario_state.holds_fire:
+		_stand_down()
 
 	health.health = int(entry.get("health", health.health))
 	health.shields = int(entry.get("shields", health.shields))
@@ -889,8 +960,8 @@ static func state_key(state: ScenarioShipStateBase) -> String:
 	return "#" + state.resource_scene_unique_id
 
 
-## Walks the state graph reachable from start (through probability
-## transitions too) for the state with the given key.
+## Walks the state graph reachable from start (through weighted rolls and
+## standing branches too) for the state with the given key.
 static func _find_state(start: ScenarioShipStateBase, key: String) -> ScenarioShipState:
 	if key.is_empty():
 		return null
@@ -901,13 +972,8 @@ static func _find_state(start: ScenarioShipStateBase, key: String) -> ScenarioSh
 		if state == null or seen.has(state):
 			continue
 		seen[state] = true
-		if state is ScenarioShipStateProbabilityTransition:
-			for next: ScenarioShipStateBase in state.weighted_probabilities.keys():
-				stack.append(next)
-			continue
-		if state_key(state) == key:
+		if state is ScenarioShipState and state_key(state) == key:
 			return state
-		for next: ScenarioShipStateBase in state.transitions.values():
-			stack.append(next)
+		stack.append_array(state.next_states())
 	push_warning("Enemy: saved ship state '%s' not found; keeping the starting state." % key)
 	return null

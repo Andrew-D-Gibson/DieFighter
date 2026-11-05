@@ -2,7 +2,11 @@ class_name EnemyStateRewardResource
 extends Resource
 
 @export var enemy_resource: EnemyResource
-@export var starting_state: ScenarioShipState
+## A ship state, or a standing branch (ScenarioShipStateStandingBranch) for a
+## ship whose opening depends on what the player has done. Never a weighted
+## roll: the opening is asked for before the ships spawn (EngineCharger), and
+## a roll there would be rolled twice.
+@export var starting_state: ScenarioShipStateBase
 @export var reward_resource: RewardResource
 
 ## Fraction of max hull this ship arrives with. 1.0 is a fresh ship; lower
@@ -27,6 +31,17 @@ extends Resource
 ## Only set this when an encounter is *about* where a ship is standing, and
 ## accept that it will not move out of the way of the shop or the tutorial.
 @export_range(-1.0, 1.0, 0.01) var path_location_override: float = -1.0
+
+
+## The state this ship opens the encounter in, as the run's standing has it
+## now. Draws from no RNG stream, so it can be asked as often as needed.
+func opening_state() -> ScenarioShipState:
+	if starting_state == null:
+		return null
+	if starting_state is ScenarioShipStateProbabilityTransition:
+		push_error("EnemyStateRewardResource: a ship can't open an encounter on a weighted roll.")
+		return null
+	return starting_state.resolve(enemy_resource.faction if enemy_resource else null)
 
 
 func has_fixed_position() -> bool:

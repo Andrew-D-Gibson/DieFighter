@@ -59,6 +59,20 @@ The Inbound had four encounters and rarely turned up. Now there are ten, and eve
 
 ---
 
+## 2026-11-05 — Faction memory: the fleet remembers
+
+Until now a faction only decided sides inside one encounter; robbing a shop was forgotten at the next jump. The run now remembers (LORE §1 "the sector is watching", §9), and encounters can change with it. Design and authoring: ARCHITECTURE "Faction Memory", CONTENT_BUILD_GUIDE §4 "Faction memory", FACTION_SCENARIOS "Faction memory".
+
+- **The ledger.** `FactionLedger` holds standing per faction (±10), deed counts and kills, read in regard bands (HATED / DISLIKED / NEUTRAL / LIKED / TRUSTED). `FactionStanding` (`Globals.faction_standing`, a node beside RunStats) keeps it and hands it to every checkpoint (`GameSaveResource.faction_standing`; an older save loads as a fleet that remembers nothing). `FactionIdentity` gained a stable `id`.
+- **Writing it.** `ScenarioShipState.deeds` (`FactionDeed`: standing change, name, optional faction) are recorded when a ship enters the state and its effects play, never again on a Continue. 40 existing outcomes now carry deeds, one kind and one cruel per encounter where the encounter has both (table in FACTION_SCENARIOS). Kills are counted per faction automatically but move no standing.
+- **Reading it.** `ScenarioShipStateStandingBranch` picks a state by `FactionCondition`s, as a transition target or a starting state (`starting_state` is now `ScenarioShipStateBase`, read through `opening_state()`). Every state-graph walker goes through the new `next_states()`. `ScenarioResource.standing_requirements` gate any encounter list, and `GameStateManager.consequence_scenarios` are met when earned, placed like repair stations (side generator, no RUN draws: seeded maps unchanged).
+- **The ship's own events.** `PLAYER_ATTACKED_SELF` (11) and `HULL_CRITICAL` (12) are heard only by their ship, so two ships on one side can finally be told apart. The volley that changed a ship's state doesn't count as attacking it again. `holds_fire` silences a ship's whole table.
+- **Content.** Compact shops and docks price by the Caravan's regard (×1.5 to ×0.8) and say so on arrival ("You hit a Compact shop. Prices went up."). A Caravan that dislikes you sends `GRUDGE_CompactLien` next sector: a Claims Adjuster takes a lien, and paying it mends standing. Rearguard crews in five Spine/Belly fights surrender at 30% hull: execute them, or spare them for charge, hull and standing (the spared ship takes the bounty with it). The Tollkeeper waives the tithe for a friend of the Rearguard and doubles it for an enemy.
+- **Tests.** `test_faction_standing.gd` (core: save round trip, branch order, deed attribution, requirements, consequence placement) and `test_surrender.gd` (extended: per-ship events, the volley grace, no double-counted deeds). `test_scenario_graph` now accepts a branch as an opening, and fails on a weighted roll as one. `tools/loc.sh sync` also caught up the Napalm Vent descriptions the last commit left unsynced.
+- Open: consequences for the other four factions, LORE §9's dice consequences, Fate's Die carving from deeds. See FACTION_SCENARIOS "Open".
+
+---
+
 ## 2026-11-02 — Every language in Options, font-fit calls
 
 - **Options offers every language.** The dropdown lists all eight languages by their own names, never the pseudo-locale (still `lang pseudo` and the audit). A language without text yet reads "Deutsch (English text)" in the open list and plays in English text with its own fonts; Chinese and Japanese names draw in their own font, and the mark in the menu's (`PixelDropdown.set_item_font/set_item_note`). `Localization` registers every `translations.<l>.translation` at startup, so a column ships as soon as it has text; `is_translated()` (≥90% of English) drives the mark and the first-launch pick, so a new player is only auto-switched to a translated language.

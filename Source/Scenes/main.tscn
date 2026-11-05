@@ -56,6 +56,8 @@
 [ext_resource type="Resource" uid="uid://df1xwbuu5qt5a" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/EVENT_wreck_salvage.tres" id="88_wreck"]
 [ext_resource type="Script" uid="uid://c8epcmglrpd7i" path="res://Source/Systems/Game/HazardManager/hazard_manager.gd" id="91_hazmgr"]
 [ext_resource type="Script" uid="uid://cl0bfcstgkgxo" path="res://Source/Systems/Game/RunStats/run_stats.gd" id="93_runstats"]
+[ext_resource type="Script" path="res://Source/Systems/Game/FactionStanding/faction_standing.gd" id="93_factionstanding"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GRUDGE_CompactLien/GRUDGE_compact_lien.tres" id="93_grudge_lien"]
 [ext_resource type="Script" uid="uid://7whk8psw2ylx" path="res://Source/Systems/Game/BackgroundModifierManager/background_modifier_manager.gd" id="96_bgmodmgr"]
 [ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
 [ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
@@ -425,6 +427,9 @@ script = ExtResource("96_bgmodmgr")
 [node name="RunStats" type="Node" parent="Systems" unique_id=904210005]
 script = ExtResource("93_runstats")
 
+[node name="FactionStanding" type="Node" parent="Systems" unique_id=904210011]
+script = ExtResource("93_factionstanding")
+
 [node name="JumpManager" parent="Systems" unique_id=1357262320 instance=ExtResource("27_nwhv6")]
 
 [node name="TutorialManager" parent="Systems" unique_id=1846484380 instance=ExtResource("27_mpji1")]
@@ -441,6 +446,7 @@ repair_scenario = ExtResource("repair_station_scenario")
 combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtResource("24_7iud4"), ExtResource("35_s48jj"), ExtResource("80_tithe"), ExtResource("81_ion"), ExtResource("82_escort"), ExtResource("83_wolf"), ExtResource("84_battery"), ExtResource("85_tender"), ExtResource("97_bounty"), ExtResource("98_siege"), ExtResource("combat_cutpurse"), ExtResource("combat_carrier"), ExtResource("combat_loose_wing"), ExtResource("combat_smash_and_grab"), ExtResource("combat_spotter"), ExtResource("faction_picket_line"), ExtResource("faction_wreckers"), ExtResource("faction_lien_collection"), ExtResource("faction_pilgrimage"), ExtResource("layer_boneyard"), ExtResource("inbound_vigil"), ExtResource("inbound_communion"), ExtResource("faction2_shield_wall"), ExtResource("faction2_scrap_run"), ExtResource("faction2_blockade"), ExtResource("faction2_procession")])
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck"), ExtResource("event_ghost_carrier"), ExtResource("event_black_market"), ExtResource("event_pickpocket"), ExtResource("event_mayday"), ExtResource("faction_event_deniable_assets"), ExtResource("faction_event_last_picket"), ExtResource("faction_event_straggler"), ExtResource("faction_event_convoy"), ExtResource("faction_event_cut_loose"), ExtResource("faction_event_pilgrim"), ExtResource("faction_event_pact"), ExtResource("faction_event_signal"), ExtResource("faction_event_what_came_back"), ExtResource("layer_event_deserter"), ExtResource("new_event_tithe_run"), ExtResource("new_event_ledger"), ExtResource("new_event_quarantine"), ExtResource("new_event_stowaways"), ExtResource("new_event_still_on_patrol"), ExtResource("new_event_wolf_in_the_fold"), ExtResource("new_event_turn_around"), ExtResource("new_event_white_flag"), ExtResource("inbound_event_martyr"), ExtResource("inbound_event_recruiter"), ExtResource("inbound_event_apostate")])
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter"), ExtResource("faction_elite_wake_riders"), ExtResource("layer_elite_chopshop"), ExtResource("layer_elite_repossession"), ExtResource("new_elite_twin_flames"), ExtResource("new_elite_line_moved_on"), ExtResource("inbound_elite_procession")])
+consequence_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("93_grudge_lien")])
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
 starting_scenario = ExtResource("75_imw1m")

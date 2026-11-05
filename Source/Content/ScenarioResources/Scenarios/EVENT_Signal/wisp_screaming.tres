@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
 [ext_resource type="Resource" uid="uid://b01a4mnrj68hc" path="res://Source/Content/Enemies/EnemyResources/fate_shroud.tres" id="ext_2"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_12"]
 
 [sub_resource type="Resource" id="Resource_1"]
 script = ExtResource("ext_1")
@@ -33,8 +34,14 @@ ship_resource = ExtResource("ext_2")
 script = ExtResource("ext_3")
 effects = Array[ExtResource("ext_1")]([SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3"), SubResource("Resource_4")])
 
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_12")
+standing = -2
+deed = &"spilled_silenced"
+
 [resource]
 script = ExtResource("ext_0")
 dialogue = "...hush... hush... HUSH..."
 attitude = 2
 effects_on_enter = SubResource("Resource_5")
+deeds = Array[ExtResource("deed_ext_12")]([SubResource("FactionDeed_0")])

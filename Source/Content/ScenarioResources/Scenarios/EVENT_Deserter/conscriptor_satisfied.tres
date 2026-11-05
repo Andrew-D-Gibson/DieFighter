@@ -5,6 +5,8 @@
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_2"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_10"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/inbound.tres" id="deed_ext_11"]
 
 [sub_resource type="Resource" id="Resource_wait_time"]
 script = ExtResource("ext_1")
@@ -25,8 +27,20 @@ subtype = 3
 script = ExtResource("ext_2")
 effects = Array[ExtResource("ext_1")]([SubResource("Resource_wait_time"), SubResource("Resource_wait"), SubResource("Resource_flee")])
 
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_10")
+standing = 1
+deed = &"rearguard_deserter_shot"
+
+[sub_resource type="Resource" id="FactionDeed_1"]
+script = ExtResource("deed_ext_10")
+faction = ExtResource("deed_ext_11")
+standing = -2
+deed = &"inbound_pilgrim_shot"
+
 [resource]
 script = ExtResource("ext_0")
 dialogue = "The line holds. Carry on."
 attitude = 1
 effects_on_enter = SubResource("Resource_chain")
+deeds = Array[ExtResource("deed_ext_10")]([SubResource("FactionDeed_0"), SubResource("FactionDeed_1")])

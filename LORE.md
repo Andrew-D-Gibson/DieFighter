@@ -326,9 +326,12 @@ Per faction:
   which is the natural hook for reputation and for carving Ruin/Plunder faces.
 - Angry scenario states already exist (`shop_ship_angry`, `repair_dock_angry`,
   `mayday_wronged`, `medic_betrayed`, `civilian_betrayed`, `runner_burned`), so the
-  per-encounter half of consequences is in place. What's missing is run-wide memory.
-- Fate's Die and faction reputation would be run state on the save, alongside the
-  existing sector and run stats.
+  per-encounter half of consequences is in place.
+- Run-wide memory is in: faction reputation is run state on the save
+  (`FactionLedger`, ARCHITECTURE "Faction Memory"), written by deeds on those
+  states and read by standing branches, encounter requirements and
+  consequences. FACTION_SCENARIOS.md lists what reads it so far. Fate's Die
+  would sit beside it.
 
 ---
 

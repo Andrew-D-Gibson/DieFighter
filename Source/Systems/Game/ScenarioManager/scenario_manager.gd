@@ -21,6 +21,18 @@ enum ScenarioEvent {
 	PIRATE_ATTACKED_CIVILIAN,
 	## A ship tried to take credits (STEAL_MONEY) and the player came up short.
 	PLAYER_COULDNT_PAY,
+
+	# The two below are heard only by the ship they happened to (Enemy), never
+	# broadcast on Events.scenario_event: the rest of the board can't tell.
+	## The player attacked *this* ship (a hit, or a jam or burn that provokes).
+	## Unlike PLAYER_ATTACKED_PIRATE, it tells two ships on one side apart. A
+	## ship that has just changed state ignores the rest of the volley that
+	## changed it; see Enemy._settling_into_state.
+	PLAYER_ATTACKED_SELF,
+	## A hit left this ship alive at or below its state's
+	## critical_hull_fraction: on death's door, for a crew that would rather
+	## surrender.
+	HULL_CRITICAL,
 }
 
 enum Faction {

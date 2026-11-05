@@ -9,6 +9,9 @@ extends Resource
 ## in an encounter is the scenario's ship state (ScenarioManager.Faction), so a
 ## Rearguard-built ship can still turn up as hired pirate muscle.
 
+## What the run remembers this faction by (FactionLedger), and what the save
+## stores. Never shown, and never changed once a save might hold it.
+@export var id: StringName = &""
 @export var display_name: String
 ## A 7x7 badge in the faction's own colours, shown beside the target's
 ## portrait on the targeting computer.

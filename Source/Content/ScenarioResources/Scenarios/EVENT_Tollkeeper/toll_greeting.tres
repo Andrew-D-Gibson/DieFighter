@@ -1,0 +1,32 @@
+[gd_resource type="Resource" script_class="ScenarioShipStateStandingBranch" format=3]
+
+[ext_resource type="Script" uid="uid://d0fr6eroynrh4" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_standing_branch.gd" id="ext_0"]
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="ext_1"]
+[ext_resource type="Script" uid="uid://bv477fknily5w" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_standing_option.gd" id="ext_2"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/toll_waived.tres" id="ext_3"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/toll_doubled.tres" id="ext_4"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Tollkeeper/toll_collecting.tres" id="ext_5"]
+
+[sub_resource type="Resource" id="Resource_0"]
+script = ExtResource("ext_1")
+regard = 3
+
+[sub_resource type="Resource" id="Resource_1"]
+script = ExtResource("ext_2")
+conditions = Array[ExtResource("ext_1")]([SubResource("Resource_0")])
+state = ExtResource("ext_3")
+
+[sub_resource type="Resource" id="Resource_2"]
+script = ExtResource("ext_1")
+test = 1
+regard = 1
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("ext_2")
+conditions = Array[ExtResource("ext_1")]([SubResource("Resource_2")])
+state = ExtResource("ext_4")
+
+[resource]
+script = ExtResource("ext_0")
+options = Array[ExtResource("ext_2")]([SubResource("Resource_1"), SubResource("Resource_3")])
+otherwise = ExtResource("ext_5")

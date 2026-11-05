@@ -749,11 +749,78 @@ does to the ship, usually TARGET_SELF + DAMAGE), `overload_gauge_position`.
 | 8 | `PLAYER_TOOK_REWARD_MONEY` |
 | 9 | `PIRATE_ATTACKED_CIVILIAN` |
 | 10 | `PLAYER_COULDNT_PAY` (a STEAL_MONEY came up short) |
+| 11 | `PLAYER_ATTACKED_SELF`: heard only by the ship the player hit (see below) |
+| 12 | `HULL_CRITICAL`: heard only by the ship a hit left at or below its state's `critical_hull_fraction` |
 
 - For a random branch, point a transition at a
   `ScenarioShipStateProbabilityTransition` (`weighted_probabilities`).
+- For a branch on the player's past, point a transition (or a ship's
+  `starting_state`) at a `ScenarioShipStateStandingBranch`; see Faction
+  memory below. A `starting_state` is a state or a standing branch, never a
+  weighted roll (`test_scenario_graph` fails on one).
+- **Events 11 and 12 are the ship's own.** Events 0-10 are broadcast, so
+  every ship on a side hears a hit on any of them (`PLAYER_ATTACKED_PIRATE`
+  can't tell two pirates apart). `PLAYER_ATTACKED_SELF` can. A ship that has
+  just changed state ignores the rest of the volley that changed it, so a
+  multi-hit tile can't turn a surrender straight into an execution.
 - **Never let two state files reference each other**, A→B and B→A. Godot
   can't load circular `.tres` references. Route around it with a third state.
+
+**Faction memory** (`FACTION_SCENARIOS.md` has the deeds already authored)
+
+The run remembers what the player does to each faction (`FactionLedger`,
+ARCHITECTURE "Faction Memory"). Encounters write to it with deeds and read it
+with conditions.
+
+- **Deeds** (`ScenarioShipState.deeds`, an array of `FactionDeed`): what
+  reaching this state means. Each has a `standing` change (keep it to ±1-5:
+  standing is read in bands two points wide), an optional `deed` name to
+  count, and an optional `faction` (empty: the ship's own
+  `EnemyResource.faction`). Recorded when the ship enters the state and its
+  effects play, opening states included; never again on a Continue.
+  - Put deeds on outcomes, not on hails: on `shop_ship_angry`, not on the
+    shop's greeting. Put them on the voiced ship only (`hauler_thanks`, not
+    `hauler_thanks_silent`) so two haulers don't count one rescue twice.
+  - Name a deed `<faction>_<what happened>` (`caravan_shop_attacked`,
+    `rearguard_spared`). Reuse a name when it's the same deed
+    (`caravan_betrayed` for every grateful Caravan ship the player turned
+    on), so a later encounter can ask for it once.
+  - Betrayals swing harder than kindness pays (−3/−4 against +2/+3): one
+    robbed shop makes the Compact DISLIKE the player; it takes two good
+    deeds to win them back.
+- **Conditions** (`FactionCondition`): `REGARD_AT_LEAST` / `REGARD_AT_MOST` a
+  regard (HATED, DISLIKED, NEUTRAL, LIKED, TRUSTED), `DEED_DONE` /
+  `DEED_NOT_DONE` (`count` times), `KILLS_AT_LEAST`. An empty `faction` asks
+  about the ship's own. Ask by regard, never by raw standing: the bands are
+  tuned in one place (`FactionLedger.LIKED_AT`, `TRUSTED_AT`).
+- **Standing branches** (`ScenarioShipStateStandingBranch`): `options`, each
+  a list of conditions (all must hold) and a state, and `otherwise`. The
+  first option that holds wins, so put the most specific first (gossip about
+  one deed, then a general grudge). Branch options are states, not rolls.
+  This is how gossip works: `Shop/shop_ship_greeting.tres` opens the shop on
+  "You hit a Compact shop. Prices went up." for a player who did.
+- **`holds_fire`** on a state: every intent the ship rolls is silenced, so
+  dice handed to it do nothing. For a crew that has surrendered.
+- **Surrender** (`0GenericShipStates/rearguard_combatant.tres`): an
+  aggressive state with `HULL_CRITICAL` → a `holds_fire` yielding state,
+  which goes to an execution on `PLAYER_ATTACKED_SELF` and to sparing on
+  `COMBAT_ENDED`. A yielding last ship ends the fight at once, and a spared
+  ship flees, so sparing forfeits the bounty: make the spared state pay
+  something now, and its deed pay later. Use it for crewed ships only (no
+  drones), and not on the generic `pirate_combatant`: every Undertow fight
+  ending in a surrender would wear thin.
+- **`standing_requirements`** on a `ScenarioResource`: the encounter is
+  dealt only while all of them hold (name the `faction`: an encounter has no
+  ship of its own). Any list respects it.
+- **Consequences** (`GameStateManager.consequence_scenarios`): an encounter
+  that *will* be met when its requirements hold, placed as each sector is
+  generated, beyond a jump of the arrival (so the player sees it coming and
+  can route around it), at most `consequences_per_sector`. Give it a way to
+  make amends as well as a fight: `GRUDGE_CompactLien` takes a lien, and
+  paying it mends standing. Leave its `sectors` empty unless its story
+  belongs to one layer.
+- **Prices**: shops and repair docks charge by their keeper's faction's
+  regard (`FactionLedger.PRICE_MULTIPLIERS`), with nothing to author.
 
 **RewardResource:** `min_money`/`max_money`, `num_of_rewards` (tile offers),
 `dice_probability` (chance an offer is a die instead),
@@ -779,6 +846,8 @@ Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
   (`test_each_layer_holds_enough_to_fill_its_sector`).
 - `elite_scenarios`: the elite pool (`elites_per_sector` per sector).
 - `gate_boss_scenarios`: the boss guarding each sector's gate, in order.
+- `consequence_scenarios`: reckonings the run has earned (Faction memory,
+  above). Folder kind `GRUDGE_`.
 - Fate's encounters go on the **Map** instead (`main_viewer.tscn`):
   `fate_scenario` and `fate_variants`. (GameStateManager's `fate_scenarios`
   is unused.)

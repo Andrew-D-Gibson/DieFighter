@@ -410,7 +410,18 @@ func _get_randomized_price(rarity: TileResource.Rarity) -> int:
 	if not PRICE_RANGES.has(rarity):
 		return 0
 	var price_range: Vector2i = PRICE_RANGES[rarity]
-	return sector_price(RNGManager.randi_range(RNGManager.Bucket.REWARDS, price_range.x, price_range.y))
+	return standing_price(sector_price(RNGManager.randi_range(RNGManager.Bucket.REWARDS, price_range.x, price_range.y)))
+
+
+## [param price] as this shop's keeper charges the player: dearer for a player
+## their faction dislikes, cheaper for a friend (FactionLedger.PRICE_MULTIPLIERS).
+## Applied after the roll, so the roll itself, and the REWARDS stream, is the
+## same whatever the fleet thinks.
+func standing_price(price: int) -> int:
+	# The keeper outlives its shop only until the next jump frees it, and the
+	# reroll tag refreshes on every money change, open shop or not.
+	var seller: Enemy = keeper if is_instance_valid(keeper) else null
+	return ceili(price * FactionStanding.price_multiplier_for(seller))
 
 
 ## [param price] as charged in the current sector: SECTOR_PRICE_GROWTH more for
@@ -582,7 +593,7 @@ func _create_dice_buy_zone() -> void:
 	dice.draggable.drag_ended.connect(_on_shop_item_dragged)
 	
 	_stock(dice, _EXTRA_SHELF)
-	_set_price(dice, sector_price(DICE_PRICE))
+	_set_price(dice, standing_price(sector_price(DICE_PRICE)))
 
 
 ## Shelves a Grid Slot while the grid has a sealed cell to open.
@@ -597,7 +608,7 @@ func _create_grid_slot_stock() -> void:
 	slot.draggable.drag_ended.connect(_on_shop_item_dragged)
 
 	_stock(slot, _EXTRA_SHELF)
-	_set_price(slot, grid_slot_price())
+	_set_price(slot, standing_price(grid_slot_price()))
 
 
 ## Shelves [param item] in [param shop_index]. An item can leave without being
@@ -659,7 +670,7 @@ func _take_payment(amount: int) -> void:
 # ── Rerolling ─────────────────────────────────────────────────────────────────
 
 func reroll_cost() -> int:
-	return base_reroll_cost * reroll_cost_multiplier ** rerolls_bought
+	return standing_price(base_reroll_cost * reroll_cost_multiplier ** rerolls_bought)
 
 
 ## Whether the shelves are mid-swap: the old stock popping off, or the new

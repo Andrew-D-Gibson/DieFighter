@@ -72,6 +72,7 @@ func write_save(game_save: GameSaveResource) -> void:
 		),
 		"map_state": game_save.map_state,
 		"run_stats": game_save.run_stats,
+		"faction_standing": game_save.faction_standing,
 		"rng_states": game_save.rng_states,
 		"scenario_progress": game_save.scenario_progress,
 	}
@@ -149,6 +150,10 @@ func read_save() -> GameSaveResource:
 
 	game_save.map_state = _ints(data.get("map_state", {}))
 	game_save.run_stats = _ints(data.get("run_stats", {}))
+	# Nested maps of counts, which _ints() can't take; FactionLedger turns the
+	# JSON floats back into ints itself.
+	var faction_standing: Variant = data.get("faction_standing", {})
+	game_save.faction_standing = faction_standing if faction_standing is Dictionary else {}
 	game_save.rng_states = data.get("rng_states", {})
 	game_save.scenario_progress = data.get("scenario_progress", {})
 

@@ -50,6 +50,15 @@ extends Resource
 ## How many layers `sectors` names.
 const LAYER_COUNT: int = 3
 
+## Dealt only while every one of these holds of the run's standing
+## (FactionLedger), checked as each sector is generated: an encounter that
+## exists because of what the player did, like the Compact sending someone to
+## collect for a shop they robbed. Ask about a named faction: an encounter has
+## no ship of its own for an unset one to mean. None: dealt whatever the
+## fleet thinks. See also GameStateManager.consequence_scenarios, for one that
+## must be met rather than may be.
+@export var standing_requirements: Array[FactionCondition] = []
+
 @export_category('Difficulty')
 ## Multiplies the hull and shields of every ship this encounter spawns, on top
 ## of the sector's scaling. Lets an elite field the same ships as an ordinary
@@ -88,13 +97,22 @@ func deals_into(sector_index: int) -> bool:
 	return sectors & (1 << layer) != 0
 
 
+## Whether [param ledger] meets this encounter's standing_requirements.
+func standing_allows(ledger: FactionLedger) -> bool:
+	return FactionCondition.all_hold(standing_requirements, ledger)
+
+
 ## Only the encounters in [param scenarios] that may be dealt into sector
 ## [param sector_index]: those of its layer (deals_into()) whose ships it is
-## ready for (earliest_sector()).
-static func allowed_in_sector(scenarios: Array[ScenarioResource], sector_index: int) -> Array[ScenarioResource]:
+## ready for (earliest_sector()), and whose standing requirements the run
+## meets ([param ledger], the live run's when null).
+static func allowed_in_sector(scenarios: Array[ScenarioResource], sector_index: int, ledger: FactionLedger = null) -> Array[ScenarioResource]:
+	if ledger == null:
+		ledger = FactionStanding.ledger_now()
 	var allowed: Array[ScenarioResource] = []
 	for scenario: ScenarioResource in scenarios:
-		if scenario and scenario.earliest_sector() <= sector_index and scenario.deals_into(sector_index):
+		if scenario and scenario.earliest_sector() <= sector_index and scenario.deals_into(sector_index) \
+		and scenario.standing_allows(ledger):
 			allowed.append(scenario)
 	return allowed
 

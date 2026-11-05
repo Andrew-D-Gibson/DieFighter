@@ -154,6 +154,7 @@ func _connect_run_signals() -> void:
 	Events.scenario_event.connect(_on_scenario_event)
 	Events.enemies_arrived.connect(func() -> void: _log("Enemies arrived"))
 	Events.enemy_left.connect(_on_enemy_left)
+	Events.faction_standing_changed.connect(_on_faction_standing_changed)
 	Events.sector_advanced.connect(func(index: int) -> void: _log("Sector advanced to %d" % index))
 	Events.jump.connect(func() -> void: _log("Jump"))
 	Events.reward_tile_taken.connect(func() -> void: _log("Took reward tile"))
@@ -275,6 +276,11 @@ func _on_scenario_event(event: ScenarioManager.ScenarioEvent) -> void:
 
 func _on_enemy_left(ship: Enemy, faction: ScenarioManager.Faction) -> void:
 	_log("%s left (%s)" % [DebugLogFormat.label(ship), ScenarioManager.Faction.keys()[faction]])
+
+
+func _on_faction_standing_changed(faction: FactionIdentity, standing: int, deed: StringName) -> void:
+	_log("Standing: %s now %d (%s, %s)" % [faction.id, standing,
+		FactionLedger.Regard.keys()[FactionLedger.regard_for(standing)], deed if not deed.is_empty() else "unnamed"])
 
 
 # ── Turns ───────────────────────────────────────────────────────────────────

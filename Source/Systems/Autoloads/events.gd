@@ -93,6 +93,14 @@ signal enemy_destroyed(ship: Enemy)
 ## A ship moved to another scenario state: an event led there, or the
 ## Scenario Lab forced it. Not emitted for the state a ship spawns in.
 signal ship_scenario_state_changed(ship: Enemy)
+## A ship entered a state that stands for something the player did
+## (ScenarioShipState.deeds), and its effects played: FactionStanding records
+## them. Not emitted for a ship a Continue puts back in its state, whose deeds
+## the save already holds.
+signal ship_deeds_done(ship: Enemy, deeds: Array[FactionDeed])
+## A deed moved [param faction]'s standing with the player to [param standing]
+## (FactionLedger). [param deed] is its name, empty for an unnamed one.
+signal faction_standing_changed(faction: FactionIdentity, standing: int, deed: StringName)
 signal enemy_flew_in()
 ## Every ship in the opening fly-in has landed and the targeting computer has a
 ## target. Combat starts here: a fight's first turn (first_turn_start) waits for

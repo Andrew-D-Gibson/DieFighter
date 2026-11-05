@@ -278,6 +278,18 @@ func _build_transition(ship: Enemy, event: ScenarioManager.ScenarioEvent, next: 
 			)
 			force_row.add_child(force)
 			box.add_child(force_row)
+	elif next is ScenarioShipStateStandingBranch:
+		# Firing the event takes the branch the live standing picks; each
+		# option can still be forced, whatever the run remembers.
+		line.add_child(ScenarioLabUI.label("-> by standing:", ScenarioLabUI.BODY_SIZE, ScenarioLabUI.MUTED_COLOR))
+		for outcome: ScenarioShipStateBase in next.next_states():
+			var force_row: HBoxContainer = ScenarioLabUI.row(6)
+			force_row.add_child(ScenarioLabUI.label("    "))
+			force_row.add_child(ScenarioLabUI.button(
+				"FORCE %s" % ScenarioGraph.label(outcome),
+				_force.bind(ship, outcome)
+			))
+			box.add_child(force_row)
 	else:
 		line.add_child(ScenarioLabUI.wrapped_label("-> " + ScenarioGraph.label(next), ScenarioLabUI.BODY_SIZE, ScenarioLabUI.MUTED_COLOR))
 	return box

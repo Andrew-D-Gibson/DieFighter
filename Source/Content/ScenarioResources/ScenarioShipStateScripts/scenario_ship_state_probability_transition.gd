@@ -4,6 +4,18 @@ extends ScenarioShipStateBase
 @export var weighted_probabilities: Dictionary[ScenarioShipState, float]
 
 
+## Rolls ENEMY_AI, so only ever reached through a transition: a ship can't
+## open an encounter on a roll (see EnemyStateRewardResource.opening_state()).
+func resolve(_ship_faction: FactionIdentity) -> ScenarioShipState:
+	return get_next_state_from_probabilities()
+
+
+func next_states() -> Array[ScenarioShipStateBase]:
+	var next: Array[ScenarioShipStateBase] = []
+	next.assign(weighted_probabilities.keys())
+	return next
+
+
 func get_next_state_from_probabilities() -> ScenarioShipState:
 	var probabilities: Array[float] = weighted_probabilities.values()
 	

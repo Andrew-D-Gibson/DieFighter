@@ -67,24 +67,20 @@ static func _hands_off_in_every_pool(resource: EnemyResource) -> bool:
 	return true
 
 
-## Every state [param start] can lead to, itself included, through both plain
-## and weighted transitions.
-static func _reachable(start: ScenarioShipState) -> Array[ScenarioShipState]:
+## Every state [param start] can lead to, itself included, through plain and
+## weighted transitions and standing branches.
+static func _reachable(start: ScenarioShipStateBase) -> Array[ScenarioShipState]:
 	var found: Array[ScenarioShipState] = []
+	var seen: Dictionary = {}
 	var frontier: Array[ScenarioShipStateBase] = [start]
 	while not frontier.is_empty():
 		var next: ScenarioShipStateBase = frontier.pop_back()
-		if next is ScenarioShipStateProbabilityTransition:
-			var weighted: ScenarioShipStateProbabilityTransition = next
-			for state: ScenarioShipState in weighted.weighted_probabilities:
-				frontier.append(state)
+		if next == null or seen.has(next):
 			continue
-		var state: ScenarioShipState = next as ScenarioShipState
-		if state == null or state in found:
-			continue
-		found.append(state)
-		for target: ScenarioShipStateBase in state.transitions.values():
-			frontier.append(target)
+		seen[next] = true
+		if next is ScenarioShipState:
+			found.append(next as ScenarioShipState)
+		frontier.append_array(next.next_states())
 	return found
 
 

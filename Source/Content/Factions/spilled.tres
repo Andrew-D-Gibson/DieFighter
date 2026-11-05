@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_script")
+id = &"spilled"
 display_name = "The Spilled"
 icon = ExtResource("2_icon")
 color = Color(0.772549, 0.321569, 0.945098, 1)

@@ -1,9 +1,16 @@
 [gd_resource type="Resource" script_class="ScenarioShipState" format=3]
 
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_1"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_1"]
+
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_1")
+standing = -2
+deed = &"undertow_runner_burned"
 
 [resource]
 script = ExtResource("ext_1")
 dialogue = "Bad idea. Light 'em up!"
 faction = 1
 attitude = 2
+deeds = Array[ExtResource("deed_ext_1")]([SubResource("FactionDeed_0")])

@@ -5,6 +5,7 @@
 
 [resource]
 script = ExtResource("1_script")
+id = &"rearguard"
 display_name = "The Rearguard"
 icon = ExtResource("2_icon")
 color = Color(0.262745, 0.65098, 0.988235, 1)

@@ -76,7 +76,17 @@ func test_every_authored_scenario_lists_each_ships_opening_state() -> void:
 			continue
 		var graph: ScenarioGraph = ScenarioGraph.build(scenario)
 		for spawn: EnemyStateRewardResource in scenario.starting_enemies:
-			assert_has(graph.states, spawn.starting_state, path)
+			# A ship opens on a state, or on a standing branch that picks one:
+			# every state it could open on is listed. Never on a roll, which
+			# EngineCharger would roll a second time before the ships spawn.
+			assert_false(spawn.starting_state is ScenarioShipStateProbabilityTransition,
+				"%s: a ship opens on a weighted roll" % path)
+			var openings: Array[ScenarioShipStateBase] = [spawn.starting_state]
+			if spawn.starting_state is ScenarioShipStateStandingBranch:
+				openings = spawn.starting_state.next_states()
+			for opening: ScenarioShipStateBase in openings:
+				assert_true(opening is ScenarioShipState and graph.states.has(opening),
+					"%s: %s isn't listed" % [path, ScenarioGraph.label(opening)])
 		var unique_keys: Dictionary = {}
 		for key: String in graph.keys():
 			unique_keys[key] = true

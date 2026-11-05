@@ -145,7 +145,9 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource], scenario: 
 		enemy.spawn_index = i
 		enemy.enemy_resource = spawn.enemy_resource
 		enemy.reward_resource = spawn.reward_resource
-		enemy.scenario_state = spawn.starting_state
+		# As the run's standing has it now: a branch can open the encounter
+		# differently for a player the fleet remembers.
+		enemy.scenario_state = spawn.opening_state()
 		# Set before add_child: Enemy._ready() bakes health off this.
 		enemy.starting_health_fraction = spawn.starting_health_fraction
 		enemy.unscaled_hull = spawn.unscaled_hull

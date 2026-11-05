@@ -254,7 +254,5 @@ static func _reachable_factions(start: ScenarioShipStateBase) -> Array[int]:
 			var ship_state: ScenarioShipState = state as ScenarioShipState
 			if ship_state.faction not in factions:
 				factions.append(ship_state.faction)
-			pending.append_array(ship_state.transitions.values())
-		elif state is ScenarioShipStateProbabilityTransition:
-			pending.append_array((state as ScenarioShipStateProbabilityTransition).weighted_probabilities.keys())
+		pending.append_array(state.next_states())
 	return factions

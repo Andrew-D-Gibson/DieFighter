@@ -96,7 +96,8 @@ func _ready() -> void:
 # ── Economy ────────────────────────────────────────────────────────────────────
 
 func repair_cost() -> int:
-	return Shop.sector_price(base_repair_cost + repair_cost_growth * repairs_bought)
+	var cost: int = Shop.sector_price(base_repair_cost + repair_cost_growth * repairs_bought)
+	return ceili(cost * FactionStanding.price_multiplier_for(_seller()))
 
 
 ## Hull the next repair would actually restore: the full amount, or what's
@@ -140,7 +141,16 @@ func repair() -> bool:
 ## What the station pays for a tile of [param resource]'s rarity: a share of
 ## its shelf price in this sector, so selling keeps pace with buying.
 func sell_price(resource: TileResource) -> int:
-	return floori(Shop.sector_price(Shop.base_price(resource.rarity)) * sell_fraction)
+	# The keeper's regard cuts both ways: a dock that marks repairs up for a
+	# player it dislikes pays them less for their parts.
+	return floori(Shop.sector_price(Shop.base_price(resource.rarity)) * sell_fraction
+		/ FactionStanding.price_multiplier_for(_seller()))
+
+
+## The keeper, while it's still alive to set prices: a freed one can't be
+## passed on, and the panel refreshes on every money change, open or not.
+func _seller() -> Enemy:
+	return keeper if is_instance_valid(keeper) else null
 
 
 ## Why [param tile] can't be sold right now, or "" if it can.

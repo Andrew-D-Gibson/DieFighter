@@ -22,6 +22,15 @@ extends Node2D
 @export var elite_scenarios: Array[ScenarioResource]
 ## How many elites a sector holds, inclusive on both ends.
 @export var elites_per_sector: Vector2i = Vector2i(1, 2)
+## Encounters the fleet sends after the player for what they did: the Compact
+## collecting on a robbed shop. Unlike an encounter that merely may be dealt
+## (ScenarioResource.standing_requirements in the lists above), these are
+## met: as each sector is generated, those whose requirements the run's
+## standing meets replace ordinary stops. See place_consequences().
+@export var consequence_scenarios: Array[ScenarioResource]
+## At most this many consequences in one sector, however many grudges the
+## player has earned, so a cruel run isn't nothing but reckonings.
+@export var consequences_per_sector: int = 1
 ## The boss guarding each sector's jump gate, in order. The gate is the
 ## sector's last tile and the only way out of it, so every boss here has to be
 ## beaten to progress. The last entry is reused if a run outlasts the list.
@@ -306,6 +315,7 @@ func _randomize_sector_scenarios() -> void:
 	# Read before anything is drawn: the stations are placed from it, after
 	# the sector is otherwise finished. See place_repair_stations().
 	var repair_placement_seed: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, "repair"])
+	var consequence_placement_seed: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, "consequence"])
 	current_game_save.sector_scenarios = []
 	
 	# Add the shop(s)
@@ -392,10 +402,10 @@ func _randomize_sector_scenarios() -> void:
 	for scenario: ScenarioResource in current_game_save.sector_scenarios:
 		scenario.scenario_seed = RNGManager.randi(RNGManager.Bucket.RUN)
 
+	var replaceable: Array[ScenarioResource] = []
+	replaceable.append_array(combat_scenarios)
+	replaceable.append_array(question_scenarios)
 	if repair_scenario:
-		var replaceable: Array[ScenarioResource] = []
-		replaceable.append_array(combat_scenarios)
-		replaceable.append_array(question_scenarios)
 		place_repair_stations(
 			current_game_save.sector_scenarios,
 			current_game_save.current_scenario_index,
@@ -404,6 +414,18 @@ func _randomize_sector_scenarios() -> void:
 			repair_stations_per_sector,
 			repair_placement_seed
 		)
+
+	# After the stations, which they never displace (a station isn't in
+	# replaceable). Read against the standing as it is now: the sector being
+	# generated answers for everything the player did before its gate.
+	place_consequences(
+		current_game_save.sector_scenarios,
+		current_game_save.current_scenario_index,
+		replaceable,
+		ScenarioResource.allowed_in_sector(consequence_scenarios, current_game_save.sector_index),
+		consequences_per_sector,
+		consequence_placement_seed
+	)
 	
 	
 	
@@ -461,6 +483,42 @@ static func place_repair_stations(
 		candidates.remove_at(pick)
 	if count > 0:
 		station.scenario_seed = rng.randi()
+
+
+## Swaps up to [param max_count] of [param consequences] (already filtered to
+## those the run has earned) for ordinary stops in a finished sector, on the
+## same terms as place_repair_stations(): from its own generator, never
+## drawing from RUN, so a run that has earned none deals the map its seed
+## always did; and only beyond a jump's reach of the arrival, so the player
+## sees the reckoning on the map and can choose to meet it or fly around it.
+static func place_consequences(
+	scenarios: Array[ScenarioResource],
+	arrival_index: int,
+	replaceable: Array[ScenarioResource],
+	consequences: Array[ScenarioResource],
+	max_count: int,
+	placement_seed: int
+) -> void:
+	if consequences.is_empty() or max_count <= 0:
+		return
+	var rng := RandomNumberGenerator.new()
+	rng.seed = placement_seed
+
+	var candidates: Array[int] = []
+	# The last slot is the gate.
+	for index: int in range(arrival_index + _LONGEST_JUMP + 1, scenarios.size() - 1):
+		if scenarios[index] in replaceable:
+			candidates.append(index)
+
+	var owed: Array[ScenarioResource] = consequences.duplicate()
+	for i: int in range(mini(max_count, owed.size())):
+		if candidates.is_empty():
+			return
+		var consequence: ScenarioResource = owed.pop_at(rng.randi_range(0, owed.size() - 1))
+		var pick: int = rng.randi_range(0, candidates.size() - 1)
+		scenarios[candidates[pick]] = consequence
+		candidates.remove_at(pick)
+		consequence.scenario_seed = rng.randi()
 
 
 ## Rolls this sector's elites into the encounter list, before it's shuffled.
@@ -679,6 +737,8 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 	var run_stats: Dictionary = Globals.run_stats.get_state()
 	run_stats["credits_earned"] += loose_money_total
 	current_game_save.run_stats = run_stats
+	if Globals.faction_standing:
+		current_game_save.faction_standing = Globals.faction_standing.get_state()
 	current_game_save.rng_states = RNGManager.capture_run_state()
 
 	var tile_locations: Dictionary[Vector2i, TileResource] = {}

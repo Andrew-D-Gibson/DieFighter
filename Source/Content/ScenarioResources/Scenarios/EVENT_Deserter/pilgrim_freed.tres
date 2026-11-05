@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_base"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Deserter/pilgrim_shot.tres" id="ext_shot"]
 [ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="ext_sound"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_21"]
 
 [sub_resource type="Resource" id="Resource_target_player"]
 script = ExtResource("ext_1")
@@ -72,6 +73,11 @@ subtype = 3
 script = ExtResource("ext_2")
 effects = Array[ExtResource("ext_1")]([SubResource("Resource_target_player"), SubResource("Resource_charge_flash"), SubResource("Resource_charge_amount"), SubResource("Resource_charge"), SubResource("Resource_target_player_again"), SubResource("Resource_heal_flash"), SubResource("Resource_heal_sound"), SubResource("Resource_heal_amount"), SubResource("Resource_heal"), SubResource("Resource_wait_time"), SubResource("Resource_wait"), SubResource("Resource_flee")])
 
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_21")
+standing = 2
+deed = &"inbound_pilgrim_freed"
+
 [resource]
 script = ExtResource("ext_0")
 dialogue = "Run if you must. Take this."
@@ -81,3 +87,4 @@ effects_on_enter = SubResource("Resource_chain")
 transitions = Dictionary[int, ExtResource("ext_base")]({
 1: ExtResource("ext_shot")
 })
+deeds = Array[ExtResource("deed_ext_21")]([SubResource("FactionDeed_0")])

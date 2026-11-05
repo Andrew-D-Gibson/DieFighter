@@ -49,6 +49,7 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `JumpGate` | `Graphics/JumpGate` | `Systems/Game/JumpGate/jump_gate.gd` | The ring at a beaten sector gate: warps in clear of salvage, `is_open()` gates the way out, plays the passage, owns the white flash and the sector title |
 | `HazardManager` | `Systems/HazardManager` | `Systems/Game/HazardManager/hazard_manager.gd` | Runs the current background's `BackgroundHazardResource` for the length of each fight: arms on `start_combat`, counts down at each turn start (or, for `YOUR_TURN_ENDS` hazards, each `enemy_turn_starting`), queues its chain onto the engine, broadcasts the countdown |
 | `RunStats` | `Systems/RunStats` | `Systems/Game/RunStats/run_stats.gd` | Tallies sectors reached / encounters cleared / ships destroyed / credits earned for the end-of-run summary |
+| `FactionStanding` | `Systems/FactionStanding` | `Systems/Game/FactionStanding/faction_standing.gd` | Keeps the run's `FactionLedger` (how each faction regards the player, deeds done, kills) current from `ship_deeds_done` and `enemy_left`, and hands it to each checkpoint. See Faction Memory |
 
 **UI Systems**
 
@@ -652,6 +653,9 @@ in flight when the save was taken is never lost to it.
 - player stats and the tile layout, including each tile's `effect_data`;
 - the map list, index and Fate state (`Map.get_fate_state()`);
 - `RunStats`, counting money still in flight as earned;
+- the `FactionLedger` (`faction_standing`): standing, deeds and kills per
+  faction. A deed done after a checkpoint is lost with the rest of the
+  replayed fight and recorded again when it replays;
 - the RUN RNG state. RNG states are stored as strings, because JSON rounds
   int64.
 
@@ -1346,6 +1350,60 @@ The **boss is indexed by sector** rather than picked at random
 guaranteed to meet each sector is also the clearest place to show escalation.
 Sector 1 arrives at the authored `starting_scenario`; later sectors arrive at a
 random question scenario not already placed in that sector.
+
+---
+
+## Faction Memory
+
+The fleet remembers what the player does to each faction for the rest of the
+run (LORE.md §1, §9). Ordinary fights move nothing: what counts is authored on
+the outcomes of encounters. Run state, saved at every checkpoint.
+
+| Piece | Where | Role |
+|---|---|---|
+| `FactionIdentity.id` | `Content/Factions/*.tres` | The stable key a faction is remembered and saved by (`caravan`, `rearguard`, ...) |
+| `FactionLedger` | `Systems/Game/FactionStanding/faction_ledger.gd` | Plain data: standing per faction (held within ±`STANDING_LIMIT`), deed counts, kills. `regard()` reads standing in bands (HATED ≤ −6 < DISLIKED ≤ −2 < NEUTRAL < 2 ≤ LIKED < 6 ≤ TRUSTED); `price_multiplier()` is what that faction's traders charge |
+| `FactionStanding` | `Systems/Game/FactionStanding/faction_standing.gd`, `Globals.faction_standing` | Owns the run's ledger. `ledger_now()` is the read path for resources and statics, and gives an empty ledger outside a run |
+| `FactionDeed` | `Content/Factions/faction_deed.gd` | On `ScenarioShipState.deeds`: a standing change, a deed name, and whose standing (default: the ship's own faction) |
+| `FactionCondition` | `Content/Factions/faction_condition.gd` | A question about the ledger (regard at least/at most, deed done/not done, kills). Read by branches and encounter requirements |
+
+**Writing.** `Enemy.trigger_state_effects()` emits `Events.ship_deeds_done`
+where the state's `effects_on_enter` would play, so a deed is recorded once:
+on a transition, or when an opening state's ship lands, and never for a ship
+a Continue restores (`_skip_next_enter_effects`). `FactionStanding` applies
+each deed and emits `faction_standing_changed`. Player kills are counted per
+faction by RunStats' rule (dead, not finished off by another ship).
+
+**Reading.**
+- *State graph.* `ScenarioShipStateBase` now has `resolve(ship_faction)` and
+  `next_states()`. A `ScenarioShipStateStandingBranch` resolves to the first
+  option whose conditions hold, else `otherwise`, drawing no RNG. It can stand
+  wherever a state can: a transition's target, or a ship's `starting_state`
+  (now typed `ScenarioShipStateBase`; read it through
+  `EnemyStateRewardResource.opening_state()`). Every walker of the graph (save
+  restore's `_find_state`, `ScenarioGraph`, the content tests) goes through
+  `next_states()`, so a branch's options are found like any other state. A
+  restore looks the saved state up from the authored root, so a ship comes
+  back in the state it was in even if the standing would now open it
+  differently.
+- *Encounters.* `ScenarioResource.standing_requirements` filters every list
+  in `allowed_in_sector()`. `GameStateManager.consequence_scenarios` are
+  placed by `place_consequences()` after the repair stations, from a side
+  generator seeded off the RUN state like `place_repair_stations()`: a run
+  that has earned nothing deals the map its seed always did.
+- *Prices.* `Shop.standing_price()` and `RepairStation.repair_cost()` /
+  `sell_price()` scale by the keeper's faction's `price_multiplier()`, after
+  the REWARDS roll, so the roll itself doesn't move.
+
+**The ship's own events.** `PLAYER_ATTACKED_SELF` and `HULL_CRITICAL`
+(`ScenarioEvent` 11 and 12) are delivered by the Enemy to itself, never on
+`Events.scenario_event`. HULL_CRITICAL fires on `health_damaged` when the ship
+survives at or below its state's `critical_hull_fraction`. After any state
+change made while the engine is draining, `_settling_into_state` ignores
+PLAYER_ATTACKED_SELF until `finished_processing_queue`, so the rest of the
+volley that made a crew surrender doesn't count as executing it. A state with
+`holds_fire` silences every slot of the ship's table (`silence_face`) on entry,
+on every roll, and on restore.
 
 ---
 
@@ -2669,6 +2727,7 @@ Source/
 │   │   ├── JumpManager/jump_manager.gd          # Hyperspace transition
 │   │   ├── HazardManager/hazard_manager.gd      # Background hazard countdown
 │   │   ├── RunStats/run_stats.gd                # End-of-run tally
+│   │   ├── FactionStanding/                     # The run's faction memory (ledger + node)
 │   │
 │   ├── TutorialManager/tutorial_manager.gd     # Tutorial state machine
 │   ├── TutorialManager/GhostCursor/            # GhostCursor, GhostDemo, GhostTarget

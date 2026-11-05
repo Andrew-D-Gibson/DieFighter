@@ -86,7 +86,8 @@ func _check_for_combat_scenario(scenario: ScenarioResource) -> void:
 
 	var in_combat: bool = false
 	for ship: EnemyStateRewardResource in scenario.starting_enemies:
-		if ship.starting_state.attitude == Enemy.Attitude.AGGRESSIVE:
+		var opening: ScenarioShipState = ship.opening_state()
+		if opening and opening.attitude == Enemy.Attitude.AGGRESSIVE:
 			in_combat = true
 			break
 

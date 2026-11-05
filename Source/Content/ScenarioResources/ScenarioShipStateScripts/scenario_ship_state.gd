@@ -8,20 +8,47 @@ extends ScenarioShipStateBase
 
 @export var transitions: Dictionary[ScenarioManager.ScenarioEvent, ScenarioShipStateBase]
 
+@export_category("Faction Memory")
+## What reaching this state means to the fleet: the shop the player shot up,
+## the Picket they relieved. Recorded in the run's FactionLedger as the ship
+## enters the state and its effects play (opening states included, when the
+## ship lands), and never again for a ship a Continue puts back here.
+@export var deeds: Array[FactionDeed] = []
 
-func handle_scenario_event(event: ScenarioManager.ScenarioEvent) -> ScenarioShipState:
-	if transitions.has(event):
-		var next_state: ScenarioShipStateBase = transitions[event]
-		
-		# If the next state is a transition state, use it to get the 
-		# next state
-		if next_state is ScenarioShipStateProbabilityTransition:
-			next_state = next_state.get_next_state_from_probabilities()
-			
-		return next_state
-		
-	# If we don't transition on this event, maintain the current state
+## The ship takes no part in the fight while in this state: every intent on
+## its table does nothing (Enemy.silence_face), so a die it's handed is spent
+## on nothing and comes home. For a ship that has surrendered.
+@export var holds_fire: bool = false
+
+## The share of its max hull at or below which a hit makes this ship hear
+## HULL_CRITICAL. Only read when this state has a HULL_CRITICAL transition.
+@export_range(0.05, 0.95, 0.05) var critical_hull_fraction: float = 0.3
+
+
+## The state this ship moves to on [param event]: itself when the event leads
+## nowhere. [param ship_faction] is the ship's own faction, for a standing
+## branch on the way that asks about it.
+func handle_scenario_event(event: ScenarioManager.ScenarioEvent, ship_faction: FactionIdentity = null) -> ScenarioShipState:
+	if not transitions.has(event) or transitions[event] == null:
+		return self
+	var next_state: ScenarioShipState = transitions[event].resolve(ship_faction)
+	if next_state == null:
+		push_warning("ScenarioShipState: %s leads to a node that picks no state; staying put." % [
+			ScenarioManager.ScenarioEvent.keys()[event]])
+		return self
+	return next_state
+
+
+func resolve(_ship_faction: FactionIdentity) -> ScenarioShipState:
 	return self
+
+
+func next_states() -> Array[ScenarioShipStateBase]:
+	var next: Array[ScenarioShipStateBase] = []
+	for state: ScenarioShipStateBase in transitions.values():
+		if state:
+			next.append(state)
+	return next
 
 
 ## The line the ship says on entering this state, in the current language.
