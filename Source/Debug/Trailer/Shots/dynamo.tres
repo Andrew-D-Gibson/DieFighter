@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="TrailerShotResource" format=3]
 
-[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_gqlfi"]
+[ext_resource type="Resource" path="res://Source/Content/BackgroundResources/star_field.tres" id="1_gqlfi"]
 [ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="2_q2fxf"]
 [ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="3_qjtqy"]
 [ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="4_5bftx"]

@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="ext_0"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="ext_1"]
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="ext_2"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="ext_2"]
 [ext_resource type="Resource" uid="uid://cbur0h3t84tff" path="res://Source/Content/Enemies/EnemyResources/claims_adjuster.tres" id="ext_3"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GRUDGE_CompactLien/lien_greeting.tres" id="ext_4"]
-[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Systems/Game/RewardManager/reward_resource.gd" id="ext_5"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="ext_5"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="ext_6"]
 [ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="ext_7"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/caravan.tres" id="ext_8"]
