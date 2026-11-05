@@ -11,7 +11,7 @@
 
 [resource]
 script = ExtResource("1_jla1e")
-notes = "STORY. A Fate Wisp broadcasting from the dark: '...your dice... were our bones...'. Shoot it ('...hush... HUSH...') and the Shroud uncloaks. Beats wait out the line, then fire."
+notes = "STORY. A Fate Wisp broadcasting from the dark (seed 131: '...you... are falling too...'; other seeds pick other lines, e.g. '...your dice... were our bones...'). Shoot it ('...hush... HUSH...') and the Shroud uncloaks. Beats wait out the line, then fire."
 scenario_id = "EVENT_signal"
 run_seed = 131
 sector = 1
