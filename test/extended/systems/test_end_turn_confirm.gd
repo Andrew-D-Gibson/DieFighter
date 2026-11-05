@@ -24,8 +24,8 @@ func before_each() -> void:
 	player = add_child_autofree(PLAYER_SCENE.instantiate())
 	Globals.player = player
 	confirm = player.get_node("%EndTurnConfirm")
-	# The button lights when the turn may end: for an Outrigger, with dice
-	# still in hand.
+	# The button lights when the turn may end: for a ship that may keep its
+	# hand (or whose hand has nowhere to go), with dice still in it.
 	var button: Button = player.get_node("%EndTurnButton")
 	button.disabled = false
 	turns_ended = 0

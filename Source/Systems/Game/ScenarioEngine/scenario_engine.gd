@@ -325,7 +325,7 @@ func _pause_before(next: EffectEvent) -> float:
 ## The chains that read as one thing happening on screen, and so get a beat to
 ## themselves before the next starts: a tile going off, a ship acting or
 ## overloading, a hazard, a ship's arrival effects, a burn or redline tick.
-## Plumbing (waits, sail catches, combat ending) runs straight on, as do
+## Plumbing (waits, the Outrigger's sync charge, combat ending) runs straight on, as do
 ## events nothing here knows about, so a new event's pacing is opt-in.
 static func _settles_after(event: EffectEvent) -> bool:
 	return event is TileActivationEvent \

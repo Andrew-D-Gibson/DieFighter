@@ -31,6 +31,9 @@ const _MAX_PAYOUT_DEPTH: int = 2
 ## share of that payout: it only pays if the fight lasts that long.
 const _COUNTDOWN_PROGRESS_WORTH: float = 0.5
 
+## A step of the ship's mechanism (ADVANCE_SHIP_MECHANISM), as a trick.
+const _MECHANISM_STEP_WORTH: float = 0.5
+
 ## What a payload put off for one turn is worth now, per turn it waits
 ## (DELAY_EFFECTS). Fights run two or three turns, so a late payoff may land
 ## on a ship already gone, or not at all.
@@ -80,6 +83,11 @@ var tile_tricks: float = 0.0
 ## How many Feeds the die went through.
 var deepest_feed: int = 0
 var destroys_itself: bool = false
+## Every tile the die (or a hologram it spawned and Fed) would activate, in
+## order, and the face it would arrive with: what a ship's rules count off
+## Events.tile_activated_by_die (the Outrigger's pods).
+var activated: Array[Tile] = []
+var activated_faces: Array[int] = []
 
 ## The ship standing in for the targeting computer's choice.
 var _target: Enemy
@@ -179,6 +187,8 @@ func _follow(tile: Tile, die: Node, face: int, hologram: bool, depth: int, visit
 	var chain: EffectChain = tile.tile_resource.effect_chain if tile.tile_resource else null
 	if chain == null:
 		return
+	activated.append(tile)
+	activated_faces.append(face)
 
 	var walk := _Walk.new()
 	walk.context = EffectContext.new()
@@ -560,6 +570,11 @@ func _tile_step(data: EffectData, walk: _Walk) -> void:
 			tile_tricks += 0.25
 		EffectEnums.TileControlSubtype.COUNT_DOWN:
 			_count_down(walk)
+		EffectEnums.TileControlSubtype.ADVANCE_SHIP_MECHANISM:
+			# Where the ship's mechanism (the Carousel's ring) carries each
+			# tile pays off on later dice, not this one: a trick per pass.
+			if walk.context.running_amount != 0 and ShipRules.mechanism() != null:
+				tile_tricks += _MECHANISM_STEP_WORTH * walk.scale
 
 
 ## A COUNT_DOWN, valued as progress toward each target's payout: every payout

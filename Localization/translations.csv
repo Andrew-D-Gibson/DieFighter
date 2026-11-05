@@ -18,7 +18,6 @@ CALLOUT_LOCKED,LOCKED,,,,,,,,Callout floated off a tile when an enemy locks it o
 CALLOUT_UNLOCKED,UNLOCKED,,,,,,,,Callout floated off a locked tile when a low die opens it,,,
 INFO_HULL_STATUSES,On your ship: {statuses},,,,,,,,"Hull info panel (click the player's health ring), a line listing the statuses on the player's ship. {statuses} is a comma-separated list of coloured status names with their stack counts, e.g. Burn 3, Jammed 1. Click a status badge for its rule.",,,
 CALLOUT_RING_HOLD,HOLD,,,,,,,,"Carousel ship: callout over the ignition slot when a Gearbox holds the tile ring still for a turn instead of letting it turn",,,
-CALLOUT_SAIL_FULL,SAIL FULL,,,,,,,,"Outrigger ship: big callout over the sail mast when dice kept in hand have charged the engine all the way to the jump gate",,,
 SHIP_CARD_HULL,{health}/{max} HULL,,,,,,,,"Ship-select card: the ship's starting hull, e.g. 24/32 HULL. {health} and {max} are numbers.",12,,
 SHIP_CARD_DICE,{dice} DICE,,,,,,,,"Ship-select card, after the hull: how many dice the ship starts with, e.g. 3 DICE. {dice} is a number.",9,,
 MENU_CODEX,CODEX,,,,,,,,Main menu button that opens the codex (the collection of tiles and enemies found so far),9,,
@@ -327,3 +326,5 @@ FATE_ENDING_ALLIES,{n} ship you saved flew with you.,,,,,,,,"Secret ending: how 
 ,{n} ships you saved flew with you.,,,,,,,,Second plural form of FATE_ENDING_ALLIES (English: 2 or more),,,
 ,{n} ships you saved flew with you.,,,,,,,,"Third plural form of FATE_ENDING_ALLIES, for languages that have one (Russian: 5 or more). English doesn't use this row",,,
 FATE_FALLEN_LINE,...it's you... it was always you...,,,,,,,,"Speech bubble of the player's own ship from an earlier run, which fell into the black hole and came back as one of its creatures",,,,
+CALLOUT_PODS_LEVEL,LEVEL!,,,,,,,,"Outrigger ship: big callout beside the engine charge readout when the turn ended with both engine pods' thrust exactly equal (tiles that answer it pay out)",,,,
+CALLOUT_DRIVE_FULL,DRIVE FULL,,,,,,,,"Outrigger ship: big callout over the engine charge readout when the turn-end charge from the two engine pods has filled the jump drive all the way to the jump gate",,,,

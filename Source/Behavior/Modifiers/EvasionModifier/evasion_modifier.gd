@@ -129,7 +129,7 @@ func get_trigger_color() -> Color:
 
 
 ## The engine charger's tile, or whatever stands in for the drive on this
-## ship (the Outrigger's sail has no tile). Null outside the game scene.
+## ship (the Outrigger's thrust gauge has no tile). Null outside the game scene.
 static func engine_display(context: Node) -> Node2D:
 	if not is_instance_valid(context) or not context.is_inside_tree():
 		return null

@@ -1,11 +1,11 @@
 class_name OutriggerPanel
 extends Node2D
 ## Dresses the systems panel for the Outrigger at runtime: the twin-pod panel
-## art in place of the default 5x3 one, the sail mast in the hull gap, and the
-## pods' running lights. The shared scenes stay untouched.
+## art in place of the default 5x3 one, the thrust gauge in the hull gap, and
+## the pods' running lights. The shared scenes stay untouched.
 ##
-## The Engine Charger has no place here: its tile is removed (the sail does
-## its job, see OutriggerSail), and its gauge only shows on the map tab, where
+## The Engine Charger has no place here: its tile is removed (the pods charge
+## the drive, see OutriggerSync), and its gauge only shows on the map tab, where
 ## the default frame still frames it. The EngineCharger node itself keeps
 ## running, since it owns the drive's resets (cold at the start of a fight,
 ## full after a win or on a peaceful arrival).
@@ -21,8 +21,9 @@ const _MAP_REVEAL: Texture2D = preload("res://Assets/Textures/Ships/Outrigger/ou
 
 ## The panel is drawn centred on the main viewer's origin.
 const _PANEL_CENTRE: Vector2 = Vector2.ZERO
-## The mast's slot, top-left, relative to the main viewer.
-const _MAST_TOP_LEFT: Vector2 = Vector2(-3, -31)
+## The thrust gauge's slot (the hull gap between the pods, SyncGauge.GAP_SIZE),
+## top-left, relative to the main viewer.
+const _GAUGE_TOP_LEFT: Vector2 = Vector2(-8, -31)
 ## The readout badge, relative to the main viewer.
 const _BADGE_RECT: Rect2 = Rect2(-12, -45, 24, 13)
 ## Running lights, relative to the main viewer: port red, starboard green.
@@ -31,7 +32,7 @@ const _STARBOARD_LIGHT: Vector2 = Vector2(83, -33)
 const _PORT_COLOR: Color = Color("#d03656")
 const _STARBOARD_COLOR: Color = Color("#7abd33")
 
-@onready var gauge: SailGauge = %SailGauge
+@onready var gauge: SyncGauge = %SyncGauge
 
 var _viewer: MainViewer
 var _systems_frames: SpriteFrames
@@ -54,7 +55,7 @@ func _ready() -> void:
 
 	_retire_engine_charger()
 	_restyle_reveal_overlay()
-	_place_mast()
+	_place_gauge()
 
 	Events.systems_shown.connect(_dress_systems)
 	Events.map_shown.connect(_dress_map)
@@ -103,8 +104,8 @@ func _restyle_reveal_overlay() -> void:
 			overlay.offset = _panel_offset()
 
 
-func _place_mast() -> void:
-	gauge.global_position = _viewer.global_position + _MAST_TOP_LEFT
+func _place_gauge() -> void:
+	gauge.global_position = _viewer.global_position + _GAUGE_TOP_LEFT
 	_readout = RichTextLabel.new()
 	_readout.bbcode_enabled = true
 	_readout.scroll_active = false

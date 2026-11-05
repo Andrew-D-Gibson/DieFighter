@@ -105,6 +105,9 @@ const _HUNTING_HULL: float = 0.6
 const _COMBAT_CHARGE: float = 0.15
 ## Charging a full drive mid-fight, with nothing else to show for the die.
 const _WASTED_CHARGE: float = -15.0
+## The share of the shields a level-pods answer would pay (_sync_value())
+## that a move levelling the pods is credited with.
+const _LEVEL_SHARE: float = 0.5
 ## A tile that destroys itself costs the tile.
 const _SELF_DESTRUCT: float = -3.0
 ## A placement that bounced back, or one on a tile showing a lockout.
@@ -286,8 +289,9 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 		if rearrangement:
 			return rearrangement
 	# On most ships End Turn only lights once the hand is spent. A ship that
-	# may keep its hand (the Outrigger's sail) lights it early: ending then
-	# banks the rest, so it's weighed against the best play below instead.
+	# may keep its hand (ShipResource.hand_may_be_kept), or one whose hand has
+	# nowhere left to go, lights it early: ending then keeps the rest, which
+	# is worth nothing, so it's taken only when no play is worth anything.
 	var end_turn: AutoPilotMove = null
 	if by_kind.has(AutoPilotMove.Kind.END_TURN):
 		end_turn = by_kind[AutoPilotMove.Kind.END_TURN][0]
@@ -312,7 +316,7 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 		# the least bad one is taken.
 		placements = placements.filter(_is_jump)
 	var best: Dictionary = _best_placement(placements)
-	if end_turn and not on_map and (best.is_empty() or best["score"] <= _bank_value(best["move"].die)):
+	if end_turn and not on_map and (best.is_empty() or best["score"] <= 0.0):
 		return end_turn
 	# No jump at all: there's something to do on the systems tab first.
 	if on_map and (best.is_empty() or best["score"] <= _NOWHERE / 2.0) \
@@ -430,6 +434,8 @@ func score_placement(die: Dice, tile: Tile, aim: Enemy) -> float:
 		score += _shield_value(forecast.shields)
 	score += minf(forecast.heal, float(player.health.max_health - player.health.health)) * _persona.heal
 	score += _charge_value(forecast.charge, in_combat)
+	if in_combat:
+		score += _sync_value(forecast)
 	if _only_wastes_charge(forecast, in_combat):
 		score += _WASTED_CHARGE
 	if in_combat:
@@ -537,24 +543,39 @@ func _only_wastes_charge(forecast: AutoPilotForecast, in_combat: bool) -> bool:
 		and forecast.dice_back <= 0.0 and forecast.jump == 0
 
 
-## What keeping [param die] in hand through End Turn is worth on a ship with
-## a sail (OutriggerSail): the charge it adds while the sail has room, less
-## what the enemy will do with it, since it goes to the target afterwards.
-func _bank_value(die: Dice) -> float:
-	if not OutriggerSail.is_sail_up():
+## What a move does for the Outrigger's pods (OutriggerSync): the charge
+## ending the turn would gain from the thrust it adds, priced like any charge
+## in a fight, and, while tiles answer the pods being level (Gyro
+## Stabilizer), a share of the shields that would pay if the turn ended now.
+## Later dice can still tip the pods either way, so it's only a share.
+func _sync_value(forecast: AutoPilotForecast) -> float:
+	var sync: OutriggerSync = OutriggerSync.active(Globals.player.get_tree()) \
+		if is_instance_valid(Globals.player) else null
+	if sync == null or forecast.activated.is_empty():
 		return 0.0
-	var hand: Array[Dice] = OutriggerSail.banked_dice()
-	var faces: Array[int] = []
-	for held: Dice in hand:
-		faces.append(held.value)
-	var plan: Array[int] = OutriggerSail.charge_plan(faces,
-			Globals.player.engine_charge, Globals.player.max_engine_charge)
-	var index: int = hand.find(die)
-	var charge: float = _charge_value(plan[index], true) if index >= 0 else 0.0
-	var target: Enemy = _targeted()
-	var handoff: float = AutoPilotThreat.of_face(target, die.value) * _persona.hull \
-			if is_instance_valid(target) and not die.holographic else 0.0
-	return charge - handoff
+	var value: float = _charge_value(float(sync.gain_from(forecast.activated, forecast.activated_faces)), true)
+	var answering: int = _tiles_answering(TileEvent.EventType.ON_PODS_LEVEL)
+	if answering > 0:
+		var after: Array[int] = sync.thrust_after(forecast.activated, forecast.activated_faces)
+		var now_port: int = sync.thrust(OutriggerSync.Pod.PORT)
+		var now_starboard: int = sync.thrust(OutriggerSync.Pod.STARBOARD)
+		var level_now: int = now_port if OutriggerSync.is_level(now_port, now_starboard) else 0
+		var level_after: int = after[0] if OutriggerSync.is_level(after[0], after[1]) else 0
+		value += (level_after - level_now) * answering * _LEVEL_SHARE * _persona.shields
+	return value
+
+
+## How many tiles on the grid answer [param event].
+static func _tiles_answering(event: TileEvent.EventType) -> int:
+	var count: int = 0
+	for tile: Tile in Globals.tile_grid.tile_locations.values():
+		if not is_instance_valid(tile) or tile.tile_resource == null:
+			continue
+		for trigger: TileEvent in tile.tile_resource.event_responses:
+			if trigger.event == event:
+				count += 1
+				break
+	return count
 
 
 # ── The map ────────────────────────────────────────────────────────────────────

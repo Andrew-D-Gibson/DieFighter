@@ -41,8 +41,9 @@ func choose(moves: Array[AutoPilotMove], rng: RandomNumberGenerator) -> AutoPilo
 			by_kind[move.kind] = []
 		by_kind[move.kind].append(move)
 
-	# A ship that may keep its hand (the Outrigger) lights End Turn with dice
-	# still in it. A random player sometimes banks them, mostly plays on.
+	# A ship that may keep its hand (ShipResource.hand_may_be_kept), or whose
+	# hand has nowhere to go, lights End Turn with dice still in it. A random
+	# player sometimes keeps them, mostly plays on.
 	if by_kind.has(AutoPilotMove.Kind.END_TURN) and not AutoPilotMove.dice_in_hand().is_empty():
 		if rng.randf() >= _BANK_CHANCE:
 			by_kind.erase(AutoPilotMove.Kind.END_TURN)

@@ -1,6 +1,6 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## The Outrigger: a hull gap drawn narrower than a tile, Feeds that cross it,
-## and the sail that turns a kept hand into engine charge.
+## and its two pods, whose thrust in step charges the drive (OutriggerSync).
 
 const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const OUTRIGGER: ShipResource = preload("res://Source/Content/Ships/outrigger.tres")
@@ -124,76 +124,101 @@ func test_a_centre_column_never_feeds_itself() -> void:
 	assert_true(context.targets.is_empty())
 
 
-# ── The sail ──────────────────────────────────────────────────────────────────
+# ── Sync: the pods' thrust charges the drive ─────────────────────────────────
 
-func test_each_kept_die_adds_its_face() -> void:
-	assert_eq(OutriggerSail.charge_plan([3, 4, 1] as Array[int], 0, 10), [3, 4, 1] as Array[int])
-
-
-func test_the_sail_stops_at_the_jump_gate() -> void:
-	assert_eq(OutriggerSail.charge_plan([6, 5, 2] as Array[int], 2, 10), [6, 2, 0] as Array[int])
+var sync: OutriggerSync
 
 
-func test_a_full_or_redlined_drive_takes_nothing() -> void:
-	assert_eq(OutriggerSail.charge_plan([6] as Array[int], 10, 10), [0] as Array[int])
-	assert_eq(OutriggerSail.charge_plan([6] as Array[int], 13, 10), [0] as Array[int])
+## A fight on the two-pod grid with the Outrigger's rules running, an engine
+## to queue on, and a player at [param charge].
+func _fight(charge: int = 0) -> void:
+	grid = _pod_grid()
+	Globals.tile_grid = grid
+	var manager: GameStateManager = autofree(GameStateManager.new())
+	manager.state = GameStateManager.GameState.IN_COMBAT
+	Globals.state_manager = manager
+	var scenarios: ScenarioManager = autofree(ScenarioManager.new())
+	scenarios.engine = autofree(ScenarioEngine.new())
+	Globals.scenario_manager = scenarios
+	Globals.player = make_player(3, charge)
+	sync = OutriggerSync.new()
+	add_child_autofree(sync)
 
 
-func test_the_outrigger_may_end_a_turn_holding_dice() -> void:
-	assert_true(OUTRIGGER.hand_may_be_kept)
-	assert_false(ShipCatalog.find(ShipCatalog.DEFAULT_ID).hand_may_be_kept)
+## [param face] activating [param tile], as TileActivationEvent announces it.
+func _burn(tile: Tile, face: int) -> void:
+	Events.tile_activated_by_die.emit(tile, face)
+	Events.tile_activation_complete.emit()
 
 
-func test_a_sail_catch_never_redlines() -> void:
-	Globals.player = make_player(3, 8)
-	var event: ChangeEngineChargeEvent = ChangeEngineChargeEvent.new()
-	event.amount = mini(6, Globals.player.missing_charge())
-	event.resolve(null)
-	assert_eq(Globals.player.engine_charge, Globals.player.max_engine_charge)
-	assert_false(Globals.player.is_overcharged())
+func test_a_die_adds_its_face_to_its_tiles_pod() -> void:
+	_fight()
+	var port: Tile = _place(grid, Vector2i(1, 1))
+	var starboard: Tile = _place(grid, Vector2i(6, 0))
+	_burn(port, 4)
+	_burn(port, 2)
+	_burn(starboard, 5)
+	assert_eq(sync.thrust(OutriggerSync.Pod.PORT), 6)
+	assert_eq(sync.thrust(OutriggerSync.Pod.STARBOARD), 5)
+	assert_eq(OutriggerSync.pod_of(Vector2i(3, 1), 7), OutriggerSync.Pod.NONE, "the hull gap is in no pod")
+	Globals.state_manager.state = GameStateManager.GameState.OUT_OF_COMBAT
+	_burn(port, 6)
+	assert_eq(sync.thrust(OutriggerSync.Pod.PORT), 0, "out of a fight there's no thrust")
 
 
-# ── Kept dice still go to the target ─────────────────────────────────────────
-
-const SpyModifier := preload("res://test/helpers/spy_modifier.gd")
-const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
-
-
-func _die(face: int) -> Dice:
-	var die: Dice = autofree(DICE_SCENE.instantiate())
-	die.value = face
-	return die
-
-
-## Runs [param event] on a bare engine and returns every die hand-off it
-## produced. The hand-offs are cancelled: there's no ship to receive them.
-func _hand_offs_from(event: EffectEvent) -> Array[GiveDieToTargetEvent]:
-	var engine: ScenarioEngine = autofree(ScenarioEngine.new())
-	var given: Array[GiveDieToTargetEvent] = []
-	var spy: Modifier = SpyModifier.new("spy", 0, [])
-	spy.before = func(seen: EffectEvent, _engine: ScenarioEngine) -> void:
-		if seen is GiveDieToTargetEvent:
-			given.append(seen)
-			seen.canceled = true
-	engine.add_modifier(spy)
-	engine.queue_event(event)
-	return given
+func test_the_turn_ends_charging_the_lower_pod_up_to_the_gate() -> void:
+	_fight()
+	var gate: int = Globals.player.max_engine_charge
+	Globals.player.engine_charge = gate - 2
+	_burn(_place(grid, Vector2i(0, 0)), 6)
+	_burn(_place(grid, Vector2i(4, 0)), 4)
+	Events.player_turn_over.emit()
+	assert_eq(Globals.player.engine_charge, gate, "4 synced, 2 of it fits")
+	assert_false(Globals.player.is_overcharged(), "syncing never redlines")
+	assert_eq(OutriggerSync.charge_gain(6, 4, 0, gate), 4, "the lower pod's thrust")
 
 
-func test_a_die_the_full_sail_cannot_take_goes_to_the_target() -> void:
-	Globals.player = make_player(3, 10)
-	var die: Dice = _die(5)
-	var catch: SailCatchEvent = SailCatchEvent.new()
-	catch.activator_die = die
-	catch.amount = 5
-	var given: Array[GiveDieToTargetEvent] = _hand_offs_from(catch)
-	assert_eq(given.size(), 1)
-	assert_eq(given[0].activator_die, die)
-	assert_eq(Globals.player.engine_charge, 10, "a full sail adds nothing")
+func test_level_pods_are_announced_as_the_turn_ends() -> void:
+	_fight()
+	var port: Tile = _place(grid, Vector2i(2, 2))
+	var starboard: Tile = _place(grid, Vector2i(4, 2))
+	_burn(port, 5)
+	_burn(starboard, 4)
+	watch_signals(Events)
+	Events.player_turn_over.emit()
+	assert_signal_not_emitted(Events, "pods_level", "5 and 4 aren't level")
+	Events.player_turn_refresh.emit()
+	_burn(port, 3)
+	_burn(starboard, 3)
+	Events.player_turn_over.emit()
+	assert_signal_emitted(Events, "pods_level")
 
 
-func test_a_hand_off_carries_the_die_and_its_face() -> void:
-	var die: Dice = _die(4)
-	var give: GiveDieToTargetEvent = OutriggerSail.hand_off(die)
-	assert_eq(give.activator_die, die)
-	assert_eq(give.die_value, 4)
+func test_thrust_lasts_until_the_next_turn_starts() -> void:
+	_fight()
+	_burn(_place(grid, Vector2i(1, 0)), 4)
+	_burn(_place(grid, Vector2i(5, 0)), 3)
+	Events.player_turn_over.emit()
+	var context: EffectContext = EffectContext.new()
+	assert_eq(ShipRules.reading(OutriggerSync.READING_LEVEL, context), 3,
+		"turn-end answers still read this turn's thrust")
+	Events.player_turn_refresh.emit()
+	assert_eq(sync.thrust(OutriggerSync.Pod.PORT), 0)
+	assert_eq(sync.thrust(OutriggerSync.Pod.STARBOARD), 0)
+
+
+func test_a_pods_lead_leaves_out_the_die_reading_it() -> void:
+	_fight()
+	var yaw: Tile = _place(grid, Vector2i(5, 1))
+	_burn(_place(grid, Vector2i(4, 1)), 6)
+	_burn(_place(grid, Vector2i(0, 1)), 2)
+	var context: EffectContext = EffectContext.new()
+	context.effect_source = yaw
+	# The die lands on the tile: it adds thrust before the tile's chain reads
+	# the lead, and the lead is what the gauge showed before it landed.
+	Events.tile_activated_by_die.emit(yaw, 5)
+	assert_eq(ShipRules.reading(OutriggerSync.READING_LEAD, context), 4)
+	Events.tile_activation_complete.emit()
+	assert_eq(ShipRules.reading(OutriggerSync.READING_LEAD, context), 9, "once it's done, it counts")
+	context.effect_source = _place(grid, Vector2i(1, 1))
+	assert_eq(ShipRules.reading(OutriggerSync.READING_LEAD, context), 0, "a pod behind leads by nothing")

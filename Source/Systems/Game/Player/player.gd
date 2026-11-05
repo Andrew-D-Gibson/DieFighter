@@ -393,8 +393,8 @@ func _check_for_end_of_turn() -> void:
 	# The die that fired a jump finishes its activation while the map is still
 	# panning, with the hand empty; the turn still mustn't end.
 	var hand_spent: bool = len(dice_manager.queue) == 0
-	if (hand_spent or _hand_may_be_kept()) and not activations_pending and not _jump_committed \
-	and not _between_turns:
+	if (hand_spent or _hand_may_be_kept() or _hand_is_stuck()) and not activations_pending \
+	and not _jump_committed and not _between_turns:
 		%EndTurnButton.disabled = false
 		%EndTurnButton.update_ui()
 		# The nudge says "you're done". With dice still in hand that's the
@@ -414,6 +414,35 @@ func _hand_may_be_kept() -> bool:
 	var ship: ShipResource = Globals.current_ship()
 	return ship != null and ship.hand_may_be_kept and Globals.state_manager != null \
 		and Globals.state_manager.state == GameStateManager.GameState.IN_COMBAT
+
+
+## Whether nothing left in hand has anywhere to go in a fight: no grid tile
+## would take any of it (a locked tile only takes a die that opens it), and
+## there's no Engine Charger tile, which takes any die. Only a ship without
+## one gets here (the Outrigger, once the tiles that take its hand are spent
+## or locked). Ending the turn is then the only move left; the dice stay in
+## hand.
+func _hand_is_stuck() -> bool:
+	if dice_manager.queue.is_empty() or Globals.state_manager == null \
+	or Globals.state_manager.state != GameStateManager.GameState.IN_COMBAT:
+		return false
+	var homes: Array[Tile] = []
+	if is_instance_valid(Globals.tile_grid):
+		for tile: Tile in Globals.tile_grid.tile_locations.values():
+			if is_instance_valid(tile) and not tile.is_queued_for_deletion():
+				homes.append(tile)
+	var charger: Node = get_tree().get_first_node_in_group(&"engine_charger")
+	var charger_tile: Tile = charger.get_node_or_null(^"EngineChargerTile") as Tile if charger else null
+	if charger_tile and not charger_tile.is_queued_for_deletion():
+		homes.append(charger_tile)
+	for die: Dice in dice_manager.queue:
+		if not is_instance_valid(die):
+			continue
+		for tile: Tile in homes:
+			if tile.activation_refusal(die).is_empty() \
+			and (not tile.is_locked_out() or LockoutModifier.unlocks(die.value)):
+				return false
+	return true
 
 
 func reroll_dice() -> void:
