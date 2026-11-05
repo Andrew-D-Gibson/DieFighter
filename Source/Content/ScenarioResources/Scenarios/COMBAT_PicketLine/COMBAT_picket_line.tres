@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://u5uwr2pnbkht"]
 
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
 [ext_resource type="Resource" uid="uid://clru4choww65y" path="res://Source/Content/Enemies/EnemyResources/conscriptor.tres" id="enemy_conscriptor"]
 [ext_resource type="Resource" uid="uid://dllkl3hm4hhx7" path="res://Source/Content/Enemies/EnemyResources/picket.tres" id="enemy_picket"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="icon"]

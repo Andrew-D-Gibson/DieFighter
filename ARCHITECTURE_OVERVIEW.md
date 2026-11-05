@@ -528,7 +528,7 @@ sound should go is in `SOUND_EFFECTS.md`.
 | Resource | Location Pattern | Purpose |
 |----------|------------------|---------|
 | `TileResource` | `Source/Content/Tiles/TileResources/*.tres` | Defines tile behavior, textures, uses per turn, activation criteria, effect chains |
-| `BackgroundHazardResource` | `Source/Resources/BackgroundResources/BackgroundHazards/*.tres` | A timed environmental event that belongs to a background (solar flare, ion storm, asteroid impact, fate rift): timing plus an `EffectChain` |
+| `BackgroundHazardResource` | `Source/Content/BackgroundResources/BackgroundHazards/*.tres` | A timed environmental event that belongs to a background (solar flare, ion storm, asteroid impact, fate rift): timing plus an `EffectChain` |
 | `EnemyResource` | Embedded in enemy instances | Base stats, graphics scene, dice queue position, action options weight list |
 | `EffectChain` | `TileResource.effect_chain`, `event_responses`, enemy actions, hazards | Ordered list of `EffectData` entries dispatched through `EffectRegistry` |
 | `KeywordResource` | `Source/Content/Keywords/KeywordResources/<id>.tres` | A game term: title, rule, optional player-side rule and its `KeywordToken` spellings (5.3). A status is a `StatusResource`, a keyword that also names its script, colour and icons (4.5) |
@@ -1459,7 +1459,7 @@ Dev console: `fate` (see `help`).
 
 **Layouts.** A background's planets and stars live in
 `set_piece_compositions` (`SetPieceComposition`,
-`Resources/BackgroundResources/set_piece_composition.gd`), not
+`Content/BackgroundResources/set_piece_composition.gd`), not
 `static_objects`, which stays for pieces that must sit exactly where authored
 (the pulsar, the black hole, Fate's weather). On arrival `BackgroundManager`
 seeds a private `RandomNumberGenerator` from one `BACKGROUND` draw, picks a
@@ -1613,7 +1613,7 @@ rule the enemy intent telegraph follows. Three things carry it:
 Encounters built around a hazard point at a one-background pool
 (`RandomBackgroundResources/<background>_only.tres`); the general hazard
 backgrounds are also in `all_basic_backgrounds.tres`. Authored hazards live in
-`Source/Resources/BackgroundResources/BackgroundHazards/`.
+`Source/Content/BackgroundResources/BackgroundHazards/`.
 
 ---
 
@@ -1774,8 +1774,8 @@ Main (Node2D)
 ├── UI (CanvasLayer)
 │   ├── InfoShower
 │   ├── GameOver
-│   ├── GlitchShader (ColorRect with shader)
-│   ├── FPSCounter
+│   ├── GlitchShader (glitch_shader.tscn)
+│   ├── FPSCounter (fps_counter.tscn)
 │   ├── FadeIn (overlay for fade-in/fade-out)
 ├── Graphics (Node2D, z_index=-2)
 │   ├── Camera2D (zoom=6x, 320×180→1920×1080)
@@ -2742,8 +2742,11 @@ Source/
 │   │
 │   ├── Keywords/KeywordResources/<id>.tres     # Game terms (title, rule, tokens)
 │   │
+│   ├── BackgroundResources/                    # Backgrounds, hazards, place rules
+│   │
 │   └── ScenarioResources/
-│       └── scenario_resource.gd                   # Per-scenario data
+│       ├── scenario_resource.gd                   # Per-scenario data
+│       └── reward_resource.gd                     # What a ship, faction or scenario pays out
 │
 ├── Systems/
 │   ├── Game/

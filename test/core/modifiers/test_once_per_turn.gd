@@ -8,7 +8,7 @@ const REROLL_TILE: TileResource = preload("res://Source/Content/Tiles/TileResour
 const DAMAGE_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/damage.tres")
 const ENGINE_CHARGER: TileResource = preload("res://Source/Content/Tiles/MapTileResources/engine_charger.tres")
 const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
-const DEAD_SYSTEMS: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/dead_systems.tres"
+const DEAD_SYSTEMS: String = "res://Source/Content/BackgroundResources/BackgroundModifiers/dead_systems.tres"
 
 var engine: ScenarioEngine
 var rule: Modifier

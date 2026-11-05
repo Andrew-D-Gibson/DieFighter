@@ -3,8 +3,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## numbers in their text come from the same data the rule runs on, so tuning a
 ## number updates what the player reads. The wording itself is free to change.
 
-const RULE_DIR: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/"
-const HAZARD_DIR: String = "res://Source/Resources/BackgroundResources/BackgroundHazards/"
+const RULE_DIR: String = "res://Source/Content/BackgroundResources/BackgroundModifiers/"
+const HAZARD_DIR: String = "res://Source/Content/BackgroundResources/BackgroundHazards/"
 
 ## Matches a {placeholder} left unfilled.
 var _placeholder: RegEx = RegEx.create_from_string(r"\{[^}]*\}")

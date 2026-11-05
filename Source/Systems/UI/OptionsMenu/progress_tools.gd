@@ -8,8 +8,8 @@ extends RefCounted
 ## Where the region rules and hazards live, for marking every arrival card
 ## read.
 const _REGION_DIRS: Array[String] = [
-	"res://Source/Resources/BackgroundResources/BackgroundHazards/",
-	"res://Source/Resources/BackgroundResources/BackgroundModifiers/",
+	"res://Source/Content/BackgroundResources/BackgroundHazards/",
+	"res://Source/Content/BackgroundResources/BackgroundModifiers/",
 ]
 
 

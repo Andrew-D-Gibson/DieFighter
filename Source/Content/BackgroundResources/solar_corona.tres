@@ -1,0 +1,69 @@
+[gd_resource type="Resource" script_class="BackgroundResource" format=3 uid="uid://bijrv85j17rvq"]
+
+[ext_resource type="Script" uid="uid://c0mcptxevxdde" path="res://Source/Content/BackgroundResources/background_resource.gd" id="1_bg"]
+[ext_resource type="Script" uid="uid://cgosy7gnhi58w" path="res://Source/Content/BackgroundResources/static_background_object_resource.gd" id="2_so"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FlareStar/flare_star.tscn" id="3_star"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/barren_moon.tscn" id="body_barren_moon"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/CelestialBodies/lava_world.tscn" id="body_far"]
+[ext_resource type="Script" uid="uid://72beeluyo8in" path="res://Source/Content/BackgroundResources/set_piece_composition.gd" id="comp_script"]
+[ext_resource type="Resource" uid="uid://dbjkv27qxwp4x" path="res://Source/Content/BackgroundResources/BackgroundHazards/solar_flare.tres" id="haz_0"]
+[ext_resource type="Resource" uid="uid://bw5yf0g7cyqme" path="res://Source/Content/BackgroundResources/ScrollingObjects/solar_embers.tres" id="scroll_0"]
+
+[sub_resource type="Resource" id="Piece_star_and_scorched_world_0"]
+script = ExtResource("2_so")
+scene = ExtResource("3_star")
+position = Vector2(42, 36)
+
+[sub_resource type="Resource" id="Piece_star_and_scorched_world_1"]
+script = ExtResource("2_so")
+scene = ExtResource("body_far")
+position = Vector2(282, 24)
+scale = Vector2(-1, 1)
+modulate = Color(0.8, 0.75, 0.8, 1)
+size_jitter = 0.1
+
+[sub_resource type="Resource" id="Composition_star_and_scorched_world"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_so")]([SubResource("Piece_star_and_scorched_world_0"), SubResource("Piece_star_and_scorched_world_1")])
+
+[sub_resource type="Resource" id="Piece_star_and_scorched_moon_0"]
+script = ExtResource("2_so")
+scene = ExtResource("3_star")
+position = Vector2(40, 28)
+
+[sub_resource type="Resource" id="Piece_star_and_scorched_moon_1"]
+script = ExtResource("2_so")
+scene = ExtResource("body_barren_moon")
+position = Vector2(262, 40)
+scale = Vector2(-1, 1)
+modulate = Color(0.8, 0.7, 0.7, 1)
+size_jitter = 0.15
+
+[sub_resource type="Resource" id="Composition_star_and_scorched_moon"]
+script = ExtResource("comp_script")
+objects = Array[ExtResource("2_so")]([SubResource("Piece_star_and_scorched_moon_0"), SubResource("Piece_star_and_scorched_moon_1")])
+
+[sub_resource type="Resource" id="Piece_lone_star_0"]
+script = ExtResource("2_so")
+scene = ExtResource("3_star")
+position = Vector2(52, 44)
+
+[sub_resource type="Resource" id="Composition_lone_star"]
+script = ExtResource("comp_script")
+weight = 0.7
+objects = Array[ExtResource("2_so")]([SubResource("Piece_lone_star_0")])
+
+[resource]
+script = ExtResource("1_bg")
+background_color = Color(0.105882, 0.035294, 0.054902, 1)
+hazard = ExtResource("haz_0")
+nebula = true
+nebula_color = Color(0.815686, 0.211765, 0.337255, 0.12)
+stars = true
+num_of_stars = 50
+num_of_twinkling_stars = 10
+scrolling_objects = ExtResource("scroll_0")
+num_of_med_pieces = 16
+num_of_large_pieces = 3
+set_piece_compositions = Array[ExtResource("comp_script")]([SubResource("Composition_star_and_scorched_world"), SubResource("Composition_star_and_scorched_moon"), SubResource("Composition_lone_star")])
+metadata/_custom_type_script = "uid://c0mcptxevxdde"

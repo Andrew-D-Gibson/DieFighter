@@ -3,8 +3,8 @@ extends "res://test/helpers/die_fighter_test.gd"
 ## content.csv translation in other languages, and the English again where a
 ## language has no translation yet.
 
-const SOLAR_FLARE: String = "res://Source/Resources/BackgroundResources/BackgroundHazards/solar_flare.tres"
-const FATES_CORRUPTION: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/fates_corruption.tres"
+const SOLAR_FLARE: String = "res://Source/Content/BackgroundResources/BackgroundHazards/solar_flare.tres"
+const FATES_CORRUPTION: String = "res://Source/Content/BackgroundResources/BackgroundModifiers/fates_corruption.tres"
 const SEIZE: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres"
 const DO_NOTHING: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres"
 const CONVOY_HAULER_BETRAYED: String = "res://Source/Content/ScenarioResources/Scenarios/EVENT_Convoy/hauler_betrayed.tres"

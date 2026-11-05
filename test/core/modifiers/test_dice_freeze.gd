@@ -8,7 +8,7 @@ const RecordingEngine := preload("res://test/helpers/recording_engine.gd")
 const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
 const ENEMY_SCENE: PackedScene = preload("res://Source/Content/Enemies/enemy.tscn")
-const FLASH_FREEZE: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/flash_freeze.tres"
+const FLASH_FREEZE: String = "res://Source/Content/BackgroundResources/BackgroundModifiers/flash_freeze.tres"
 
 const DC := EffectEnums.DiceControlSubtype
 

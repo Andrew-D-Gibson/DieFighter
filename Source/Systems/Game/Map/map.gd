@@ -74,7 +74,7 @@ const _FATE_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/
 ## Black-hole-free Fate background for stray corrupted nodes ahead of the
 ## black hole's advancing zone.
 const _FATE_OUTSKIRT_BACKGROUND: BackgroundResource = preload(
-	"res://Source/Resources/BackgroundResources/fate_outskirt.tres"
+	"res://Source/Content/BackgroundResources/fate_outskirt.tres"
 )
 ## Beside the caption while the jump gate is open: the way out is to the right.
 const _NEXT_SECTOR_ICON: Texture2D = preload("res://Assets/Textures/Map/EncounterIcons/next_sector.png")
