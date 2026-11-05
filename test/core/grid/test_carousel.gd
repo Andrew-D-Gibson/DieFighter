@@ -94,6 +94,23 @@ func test_the_ring_winds_home_the_short_way_after_a_fight() -> void:
 	assert_eq(grid.find_tile_pos(tile), Vector2i(1, 0))
 
 
+func test_a_step_mid_fight_is_ridden_and_still_winds_home() -> void:
+	var manager: GameStateManager = autofree(GameStateManager.new())
+	Globals.state_manager = manager
+	var tile: Tile = _place(Vector2i(2, 2))
+	var hub: Tile = _place(Vector2i(3, 1))
+	await behavior.advance_mechanism(1)
+	assert_eq(grid.find_tile_pos(tile), Vector2i(2, 2), "out of a fight the ring stays put")
+	manager.state = GameStateManager.GameState.IN_COMBAT
+	assert_eq(ShipRules.mechanism(), behavior, "the ring is the ship's mechanism")
+	await behavior.advance_mechanism(-1)
+	assert_eq(grid.find_tile_pos(tile), Vector2i(3, 2))
+	assert_eq(grid.find_tile_pos(hub), Vector2i(3, 1), "the hub doesn't ride")
+	assert_eq(tile.effect_data.get(CarouselBehavior.STEPS_KEY, 0), 1)
+	behavior._wind_home()
+	assert_eq(grid.find_tile_pos(tile), Vector2i(2, 2))
+
+
 func test_gearbox_data_steers_the_next_turn() -> void:
 	var gear: Tile = _place(Vector2i(3, 1), GEARBOX)
 	var other: Tile = _place(Vector2i(1, 1), GEARBOX)

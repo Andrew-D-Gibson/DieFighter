@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_rsklg"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_u3v0s"]
 [ext_resource type="Texture2D" uid="uid://cjkc0ie7uch64" path="res://Assets/Textures/Tiles/RedTiles/slingshot.png" id="8_2q38o"]
+[ext_resource type="Resource" uid="uid://ca1yoo16jiejq" path="res://Source/Content/Tiles/TileResources/slingshot_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_6srxo"]
 script = ExtResource("1_1qae8")
@@ -131,9 +132,10 @@ animations = [{
 [resource]
 script = ExtResource("7_u3v0s")
 tile_name = "[color=red]Slingshot[/color]"
-description = "[color=yellow]Any die after a ring step[/color] -> Deal [color=red]{damage} damage[/color] to [color=purple]target[/color] per ring step since last fired ([data]ring_steps[/data]). Reset count. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die after a ring step[/color] -> Deal [color=red]{damage} damage[/color] per ring step since last fired ([data]ring_steps[/data]). Reset count"
 rarity = 1
 offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_fyb5d")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_1qae8")]([SubResource("Resource_6srxo"), SubResource("Resource_ew80w"), SubResource("Resource_wound_up")])

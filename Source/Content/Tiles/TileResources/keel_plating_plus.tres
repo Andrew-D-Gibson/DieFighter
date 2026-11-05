@@ -1,0 +1,113 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://bqxvw5i37r46u"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_quwc8"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_yvb2d"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="3_ovukv"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_5gkog"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_c8m4h"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_toqs3"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_4qrve"]
+[ext_resource type="Texture2D" uid="uid://e3w0wlr5moh2" path="res://Assets/Textures/Tiles/BlueTiles/keel_plating.png" id="8_85enw"]
+
+[sub_resource type="Resource" id="Resource_irkke"]
+script = ExtResource("1_quwc8")
+type = 1
+acceptable_values = Array[int]([3, 4])
+
+[sub_resource type="Resource" id="Resource_i3ivq"]
+script = ExtResource("2_yvb2d")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_np2cw"]
+script = ExtResource("2_yvb2d")
+category = 4
+subtype = 1
+color = Color(0.21568628, 0.5372549, 0.8, 1)
+
+[sub_resource type="Resource" id="Resource_qr0ll"]
+script = ExtResource("2_yvb2d")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_ovukv")
+
+[sub_resource type="Resource" id="Resource_7wka4"]
+script = ExtResource("2_yvb2d")
+category = 2
+amount = 7
+text_token = &"shields"
+
+[sub_resource type="Resource" id="Resource_6tb3k"]
+script = ExtResource("2_yvb2d")
+category = 2
+amount = 14
+text_token = &"bottom_row_shields"
+
+[sub_resource type="Resource" id="Resource_qyxsj"]
+script = ExtResource("4_5gkog")
+if_true_effects = Array[ExtResource("2_yvb2d")]([SubResource("Resource_6tb3k")])
+category = 7
+subtype = 12
+range_min = 2
+range_max = 2
+
+[sub_resource type="Resource" id="Resource_0o6nk"]
+script = ExtResource("2_yvb2d")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_1ar6o"]
+script = ExtResource("2_yvb2d")
+category = 4
+subtype = 14
+amount = 24
+color = Color(0.2627451, 0.6509804, 0.9882353, 1)
+
+[sub_resource type="Resource" id="Resource_uxax4"]
+script = ExtResource("2_yvb2d")
+category = 4
+subtype = 12
+color = Color(0.2627451, 0.6509804, 0.9882353, 1)
+
+[sub_resource type="Resource" id="Resource_uxbbf"]
+script = ExtResource("2_yvb2d")
+category = 1
+subtype = 2
+
+[sub_resource type="Resource" id="Resource_axbue"]
+script = ExtResource("2_yvb2d")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_comrs"]
+script = ExtResource("2_yvb2d")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_i2nhu"]
+script = ExtResource("5_c8m4h")
+effects = Array[ExtResource("2_yvb2d")]([SubResource("Resource_i3ivq"), SubResource("Resource_np2cw"), SubResource("Resource_qr0ll"), SubResource("Resource_7wka4"), SubResource("Resource_qyxsj"), SubResource("Resource_0o6nk"), SubResource("Resource_1ar6o"), SubResource("Resource_uxax4"), SubResource("Resource_uxbbf"), SubResource("Resource_axbue"), SubResource("Resource_comrs")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h3w8u"]
+atlas = ExtResource("8_85enw")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uaacm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h3w8u")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_4qrve")
+tile_name = "[color=blue]Keel Plating+[/color]"
+description = "(die_3) or (die_4) -> Gain [color=blue]{shields} shields[/color]. [color=yellow]Bottom row[/color]: [color=blue]{bottom_row_shields}[/color]"
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_uaacm")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_quwc8")]([SubResource("Resource_irkke")])
+effect_chain = SubResource("Resource_i2nhu")

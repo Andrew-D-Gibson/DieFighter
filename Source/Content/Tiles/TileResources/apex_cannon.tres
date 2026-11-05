@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_k6rn8"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_xhp2m"]
 [ext_resource type="Texture2D" uid="uid://dbnecglwnjc17" path="res://Assets/Textures/Tiles/RedTiles/apex_cannon.png" id="5_bgqxb"]
+[ext_resource type="Resource" uid="uid://btav1x8d7d71y" path="res://Source/Content/Tiles/TileResources/apex_cannon_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_k6rn8"]
 script = ExtResource("1_cjofy")
@@ -128,8 +129,9 @@ animations = [{
 [resource]
 script = ExtResource("4_k6rn8")
 tile_name = "[color=red]Apex Cannon[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. [color=yellow]Top row[/color]: +{bonus}"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die. [color=yellow]Top row[/color]: +{bonus}"
 offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_07g5j")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_cjofy")]([SubResource("Resource_k6rn8"), SubResource("Resource_bgqxb")])

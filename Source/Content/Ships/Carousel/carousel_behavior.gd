@@ -11,7 +11,9 @@ extends Node2D
 ## Each player turn of a fight after the first, the ring steps one cell
 ## clockwise, carrying its tiles, before any turn-start response reads the
 ## board. A Gearbox can hold it still or run it backwards for a turn (tile
-## data the Gearbox sets on itself, read and cleared here). The ring winds
+## data the Gearbox sets on itself, read and cleared here). A Ratchet turns
+## it on the spot, mid-turn: the ring is the ship's mechanism
+## (ShipRules.MECHANISMS_GROUP, ADVANCE_SHIP_MECHANISM). The ring winds
 ## back to where the player left it when the fight ends, so the order they
 ## arrange out of combat is the order each fight opens with, and checkpoints
 ## (which are never taken mid-fight) always hold that arrangement.
@@ -71,6 +73,7 @@ var _clunk_sfx: SoundEffectResource
 
 func _ready() -> void:
 	_grid = get_parent() as TileGrid
+	add_to_group(ShipRules.MECHANISMS_GROUP)
 	_clunk_sfx = _CLUNK_SFX.duplicate()
 	_clunk_sfx.pitch_scale = 0.7
 
@@ -185,10 +188,25 @@ func _on_fight_starts() -> void:
 	_clear_tile_data([HOLD_KEY, REVERSE_KEY, STEPS_KEY])
 
 
+## Turns the ring [param steps] cells on the spot (clockwise positive), for a
+## tile that drives it (ADVANCE_SHIP_MECHANISM: the Ratchet). Only in a fight.
+## It's ridden like a turn's step, so it counts toward ring steps, and the
+## ring winds home after the fight all the same. Returns once the tiles have
+## landed, so whatever resolves next reads the new layout. Next turn's step
+## (and any Gearbox steering it) goes ahead as usual from wherever this
+## leaves the ring.
+func advance_mechanism(steps: int) -> void:
+	if steps == 0 or not _in_combat():
+		return
+	var seconds: float = _turn_ring(steps, true)
+	if seconds > 0.0 and is_inside_tree():
+		await get_tree().create_timer(seconds).timeout
+
+
 ## Shifts every ring tile [param steps] cells round (clockwise positive).
 ## [param ridden] counts the move toward each tile's ring steps; the spin home
-## after a fight doesn't.
-func _turn_ring(steps: int, ridden: bool) -> void:
+## after a fight doesn't. Returns how long the tiles take to land.
+func _turn_ring(steps: int, ridden: bool) -> float:
 	var moves: Dictionary[Vector2i, Vector2i] = {}
 	for cell: Vector2i in RING:
 		if _grid.tile_locations.has(cell) and is_instance_valid(_grid.tile_locations[cell]):
@@ -196,7 +214,7 @@ func _turn_ring(steps: int, ridden: bool) -> void:
 	_ring_offset = posmod(_ring_offset + steps, RING.size())
 	ring_turned.emit(steps)
 	if moves.is_empty():
-		return
+		return 0.0
 
 	var paths: Dictionary[Tile, Array] = {}
 	for cell: Vector2i in moves:
@@ -210,7 +228,9 @@ func _turn_ring(steps: int, ridden: bool) -> void:
 			tile.effect_data[STEPS_KEY] = tile.effect_data.get(STEPS_KEY, 0) + absi(steps)
 
 	_grid.relocate_tiles(moves)
-	_animate(paths, _STEP_SEC if absi(steps) == 1 else _HOME_STEP_SEC)
+	var step_sec: float = _STEP_SEC if absi(steps) == 1 else _HOME_STEP_SEC
+	_animate(paths, step_sec)
+	return _WINDUP_SEC + step_sec * absi(steps)
 
 
 ## When the fight is over (won, or fled through a jump), the ring winds back
@@ -260,6 +280,9 @@ func _land(tile: Tile) -> void:
 		return
 	tile.draggable.state = Draggable.DragState.DEFAULT
 	tile.global_position = tile.draggable.home_position
+	# Dice held or waiting here (a die held over to a later turn, or one
+	# dropped behind a mid-turn step) follow the tile to its new cell.
+	tile.rehome_dice()
 	Juice.bump(tile.sprite_frames, 0.12, 0.2)
 	if _grid.find_tile_pos(tile) == IGNITION_CELL:
 		tile.flash(Globals.yellow, 0.35, 0.3)

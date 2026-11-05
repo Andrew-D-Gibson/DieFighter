@@ -1,0 +1,145 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://cihvfipbvhqcp"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_ctt1n"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_md8pa"]
+[ext_resource type="Resource" uid="uid://r1fdvf4rxfcc" path="res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres" id="3_1be0r"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_ark83"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_72u7d"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_ixfd1"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_8488s"]
+[ext_resource type="Texture2D" uid="uid://d3lclb6df3rao" path="res://Assets/Textures/Tiles/GreenTiles/gearbox_plus-Sheet.png" id="8_63wkq"]
+
+[sub_resource type="Resource" id="Resource_klpnr"]
+script = ExtResource("1_ctt1n")
+
+[sub_resource type="Resource" id="Resource_62p72"]
+script = ExtResource("1_ctt1n")
+type = 2
+
+[sub_resource type="Resource" id="Resource_jeyhh"]
+script = ExtResource("1_ctt1n")
+type = 4
+
+[sub_resource type="Resource" id="Resource_2rse6"]
+script = ExtResource("2_md8pa")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_qebs7"]
+script = ExtResource("2_md8pa")
+category = 4
+subtype = 1
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_baruk"]
+script = ExtResource("2_md8pa")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_1be0r")
+
+[sub_resource type="Resource" id="Resource_0jh12"]
+script = ExtResource("2_md8pa")
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_wcyao"]
+script = ExtResource("2_md8pa")
+category = 4
+subtype = 14
+amount = 16
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_t4nqn"]
+script = ExtResource("2_md8pa")
+category = 2
+amount = 1
+
+[sub_resource type="Resource" id="Resource_xj1wg"]
+script = ExtResource("2_md8pa")
+category = 5
+subtype = 9
+string_param = "ring_reverse"
+
+[sub_resource type="Resource" id="Resource_3y55w"]
+script = ExtResource("2_md8pa")
+category = 4
+subtype = 16
+callout = "REVERSE"
+color = Color(0.93333334, 0.49803922, 0.18431373, 1)
+
+[sub_resource type="Resource" id="Resource_rpafe"]
+script = ExtResource("2_md8pa")
+category = 2
+amount = 1
+
+[sub_resource type="Resource" id="Resource_wmfpw"]
+script = ExtResource("2_md8pa")
+category = 5
+subtype = 9
+string_param = "ring_hold"
+
+[sub_resource type="Resource" id="Resource_du622"]
+script = ExtResource("2_md8pa")
+category = 4
+subtype = 16
+callout = "HOLD"
+color = Color(0.8156863, 0.21176471, 0.3372549, 1)
+
+[sub_resource type="Resource" id="Resource_yhxst"]
+script = ExtResource("4_ark83")
+if_true_effects = Array[ExtResource("2_md8pa")]([SubResource("Resource_rpafe"), SubResource("Resource_wmfpw"), SubResource("Resource_du622")])
+if_false_effects = Array[ExtResource("2_md8pa")]([SubResource("Resource_t4nqn"), SubResource("Resource_xj1wg"), SubResource("Resource_3y55w")])
+category = 7
+
+[sub_resource type="Resource" id="Resource_y5h3c"]
+script = ExtResource("2_md8pa")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_gwlav"]
+script = ExtResource("2_md8pa")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_cerjw"]
+script = ExtResource("5_72u7d")
+effects = Array[ExtResource("2_md8pa")]([SubResource("Resource_2rse6"), SubResource("Resource_qebs7"), SubResource("Resource_baruk"), SubResource("Resource_0jh12"), SubResource("Resource_wcyao"), SubResource("Resource_yhxst"), SubResource("Resource_y5h3c"), SubResource("Resource_gwlav")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_axpqh"]
+atlas = ExtResource("8_63wkq")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_va50p"]
+atlas = ExtResource("8_63wkq")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7etws"]
+atlas = ExtResource("8_63wkq")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_il6m1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_axpqh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_va50p")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7etws")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_8488s")
+tile_name = "[color=green]Gearbox+[/color]"
+description = "[color=yellow]Any die[/color] -> [color=yellow]Odd[/color]: [color=green]hold the ring[/color] next turn. [color=yellow]Even[/color]: [color=green]turn the ring back[/color] next turn"
+rarity = 1
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_il6m1")
+uses_per_turn = 2
+activation_checks = Array[ExtResource("1_ctt1n")]([SubResource("Resource_klpnr"), SubResource("Resource_62p72"), SubResource("Resource_jeyhh")])
+effect_chain = SubResource("Resource_cerjw")

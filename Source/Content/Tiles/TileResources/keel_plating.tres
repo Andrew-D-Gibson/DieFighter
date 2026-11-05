@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_ddadk"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_oe480"]
 [ext_resource type="Texture2D" uid="uid://e3w0wlr5moh2" path="res://Assets/Textures/Tiles/BlueTiles/keel_plating.png" id="5_xcvtl"]
+[ext_resource type="Resource" uid="uid://bqxvw5i37r46u" path="res://Source/Content/Tiles/TileResources/keel_plating_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_ddadk"]
 script = ExtResource("1_npb3o")
@@ -106,6 +107,7 @@ script = ExtResource("4_ddadk")
 tile_name = "[color=blue]Keel Plating[/color]"
 description = "(die_3) or (die_4) -> Gain [color=blue]{shields} shields[/color]. [color=yellow]Bottom row[/color]: [color=blue]{bottom_row_shields}[/color]"
 offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_jay77")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_npb3o")]([SubResource("Resource_ddadk")])

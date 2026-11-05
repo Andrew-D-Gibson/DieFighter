@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_nuump"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_npvoy"]
 [ext_resource type="Texture2D" uid="uid://cahpg5mxkjych" path="res://Assets/Textures/Tiles/GreenTiles/gearbox-Sheet.png" id="8_27siq"]
+[ext_resource type="Resource" uid="uid://cihvfipbvhqcp" path="res://Source/Content/Tiles/TileResources/gearbox_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_v5e6q"]
 script = ExtResource("1_a225x")
@@ -128,9 +129,10 @@ animations = [{
 [resource]
 script = ExtResource("7_npvoy")
 tile_name = "[color=green]Gearbox[/color]"
-description = "[color=yellow]Any die[/color] -> [color=yellow]Odd[/color]: [color=green]hold the ring[/color] next turn. [color=yellow]Even[/color]: [color=green]turn the ring back[/color] next turn. [color=orange]Give[/color] die"
+description = "[color=yellow]Any die[/color] -> [color=yellow]Odd[/color]: [color=green]hold the ring[/color] next turn. [color=yellow]Even[/color]: [color=green]turn the ring back[/color] next turn"
 rarity = 1
 offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_pqhcq")
 uses_per_turn = 1
 activation_checks = Array[ExtResource("1_a225x")]([SubResource("Resource_v5e6q"), SubResource("Resource_2770q"), SubResource("Resource_ocde2")])

@@ -1,0 +1,126 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://dbmlgsfkmgddi"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_v1h65"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_08kjt"]
+[ext_resource type="Resource" uid="uid://r1fdvf4rxfcc" path="res://Source/Resources/SoundEffectResources/SoundEffects/tractor_lock.tres" id="3_ar3nr"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_hbv82"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_xmgtx"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_vpvhb"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_euepi"]
+[ext_resource type="Texture2D" uid="uid://b6u308ovws3fv" path="res://Assets/Textures/Tiles/GreenTiles/ratchet_plus-Sheet.png" id="8_gq7wc"]
+
+[sub_resource type="Resource" id="Resource_nqjb0"]
+script = ExtResource("1_v1h65")
+
+[sub_resource type="Resource" id="Resource_hiko3"]
+script = ExtResource("1_v1h65")
+type = 2
+
+[sub_resource type="Resource" id="Resource_7hs21"]
+script = ExtResource("1_v1h65")
+type = 4
+
+[sub_resource type="Resource" id="Resource_68iq6"]
+script = ExtResource("2_08kjt")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_vcial"]
+script = ExtResource("2_08kjt")
+category = 4
+subtype = 1
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_6kgk5"]
+script = ExtResource("2_08kjt")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_ar3nr")
+
+[sub_resource type="Resource" id="Resource_4vrb4"]
+script = ExtResource("2_08kjt")
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_kdkpx"]
+script = ExtResource("2_08kjt")
+category = 4
+subtype = 14
+amount = 16
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_jsoje"]
+script = ExtResource("2_08kjt")
+category = 2
+amount = -1
+text_token = &"steps"
+text_token_value = "-amount"
+
+[sub_resource type="Resource" id="Resource_cvpwf"]
+script = ExtResource("2_08kjt")
+category = 2
+amount = 1
+text_token = &"steps"
+
+[sub_resource type="Resource" id="Resource_exjgy"]
+script = ExtResource("4_hbv82")
+if_true_effects = Array[ExtResource("2_08kjt")]([SubResource("Resource_cvpwf")])
+if_false_effects = Array[ExtResource("2_08kjt")]([SubResource("Resource_jsoje")])
+category = 7
+
+[sub_resource type="Resource" id="Resource_o6wtr"]
+script = ExtResource("2_08kjt")
+category = 5
+subtype = 17
+
+[sub_resource type="Resource" id="Resource_g3vg2"]
+script = ExtResource("2_08kjt")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_1g4pb"]
+script = ExtResource("2_08kjt")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_x1nnx"]
+script = ExtResource("5_xmgtx")
+effects = Array[ExtResource("2_08kjt")]([SubResource("Resource_68iq6"), SubResource("Resource_vcial"), SubResource("Resource_6kgk5"), SubResource("Resource_4vrb4"), SubResource("Resource_kdkpx"), SubResource("Resource_exjgy"), SubResource("Resource_o6wtr"), SubResource("Resource_g3vg2"), SubResource("Resource_1g4pb")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tqnfc"]
+atlas = ExtResource("8_gq7wc")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fm80u"]
+atlas = ExtResource("8_gq7wc")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_r625y"]
+atlas = ExtResource("8_gq7wc")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_16ndq"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tqnfc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fm80u")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_r625y")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_euepi")
+tile_name = "[color=green]Ratchet+[/color]"
+description = "[color=yellow]Any die[/color] -> [color=green]Turn the ring {steps} step[/color] now. [color=yellow]Odd[/color]: clockwise. [color=yellow]Even[/color]: back"
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_16ndq")
+uses_per_turn = 2
+activation_checks = Array[ExtResource("1_v1h65")]([SubResource("Resource_nqjb0"), SubResource("Resource_hiko3"), SubResource("Resource_7hs21")])
+effect_chain = SubResource("Resource_x1nnx")

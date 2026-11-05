@@ -1,0 +1,101 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://gb7elvi0qrj7"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_2q807"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_x0757"]
+[ext_resource type="Resource" uid="uid://dhdiec4h8tjs3" path="res://Source/Resources/SoundEffectResources/SoundEffects/bump.tres" id="3_t3oqu"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_oq0l0"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_6q1l0"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_aw1ds"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_t58j2"]
+[ext_resource type="Texture2D" uid="uid://m8jpxg0h56gt" path="res://Assets/Textures/Tiles/GreenTiles/flywheel.png" id="8_ntgsk"]
+
+[sub_resource type="Resource" id="Resource_4rpc0"]
+script = ExtResource("1_2q807")
+type = 1
+acceptable_values = Array[int]([1, 2, 3, 4, 5])
+
+[sub_resource type="Resource" id="Resource_ghj2r"]
+script = ExtResource("1_2q807")
+type = 14
+threshold = 1
+data_key = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_bw6fn"]
+script = ExtResource("2_x0757")
+category = 2
+
+[sub_resource type="Resource" id="Resource_8kadq"]
+script = ExtResource("2_x0757")
+category = 2
+subtype = 4
+string_param = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_ke8bf"]
+script = ExtResource("2_x0757")
+category = 2
+subtype = 2
+multiplier = 3.0
+text_token = &"shift"
+text_token_value = "multiplier"
+
+[sub_resource type="Resource" id="Resource_feplp"]
+script = ExtResource("2_x0757")
+category = 4
+subtype = 22
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_d3suk"]
+script = ExtResource("2_x0757")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_t3oqu")
+
+[sub_resource type="Resource" id="Resource_hjsai"]
+script = ExtResource("2_x0757")
+category = 3
+subtype = 16
+
+[sub_resource type="Resource" id="Resource_maduq"]
+script = ExtResource("2_x0757")
+category = 2
+
+[sub_resource type="Resource" id="Resource_6qsyi"]
+script = ExtResource("2_x0757")
+category = 5
+subtype = 9
+string_param = "ring_steps"
+
+[sub_resource type="Resource" id="Resource_txyda"]
+script = ExtResource("2_x0757")
+category = 3
+subtype = 4
+
+[sub_resource type="Resource" id="Resource_6yx54"]
+script = ExtResource("5_6q1l0")
+effects = Array[ExtResource("2_x0757")]([SubResource("Resource_bw6fn"), SubResource("Resource_8kadq"), SubResource("Resource_ke8bf"), SubResource("Resource_feplp"), SubResource("Resource_d3suk"), SubResource("Resource_hjsai"), SubResource("Resource_maduq"), SubResource("Resource_6qsyi"), SubResource("Resource_txyda")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k0emx"]
+atlas = ExtResource("8_ntgsk")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ugnpk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k0emx")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_t58j2")
+tile_name = "[color=green]Flywheel+[/color]"
+description = "[color=yellow]Die below[/color] (die_6) [color=yellow]after a ring step[/color] -> Add {shift} to die per ring step since last used ([data]ring_steps[/data]). Reset count. [color=orange]Return[/color] die"
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_ugnpk")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_2q807")]([SubResource("Resource_4rpc0"), SubResource("Resource_ghj2r")])
+effect_chain = SubResource("Resource_6yx54")

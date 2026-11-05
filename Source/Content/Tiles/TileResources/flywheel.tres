@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_a2tqo"]
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_dbbip"]
 [ext_resource type="Texture2D" uid="uid://m8jpxg0h56gt" path="res://Assets/Textures/Tiles/GreenTiles/flywheel.png" id="5_qo3wy"]
+[ext_resource type="Resource" uid="uid://gb7elvi0qrj7" path="res://Source/Content/Tiles/TileResources/flywheel_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_a2tqo"]
 script = ExtResource("1_a5j04")
@@ -94,6 +95,7 @@ script = ExtResource("4_a2tqo")
 tile_name = "[color=green]Flywheel[/color]"
 description = "[color=yellow]Die below[/color] (die_6) [color=yellow]after a ring step[/color] -> Add {shift} to die per ring step since last used ([data]ring_steps[/data]). Reset count. [color=orange]Return[/color] die"
 offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_rmax5")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_a5j04")]([SubResource("Resource_a2tqo"), SubResource("Resource_qo3wy")])

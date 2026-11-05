@@ -6,6 +6,13 @@
 [ext_resource type="SpriteFrames" path="res://Assets/Textures/Player/Carousel/carousel_ship_frames.tres" id="4_frames"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/Player/Carousel/carousel_preview.png" id="5_preview"]
 [ext_resource type="PackedScene" path="res://Source/Content/Ships/Carousel/Cockpit/carousel_cockpit.tscn" id="6_cockpit"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="sig_tile"]
+[ext_resource type="Resource" uid="uid://ceoh1rwvv0k6v" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="sig_0"]
+[ext_resource type="Resource" uid="uid://brdqenevbqke3" path="res://Source/Content/Tiles/TileResources/keel_plating.tres" id="sig_1"]
+[ext_resource type="Resource" uid="uid://c4yr8r0x45q2w" path="res://Source/Content/Tiles/TileResources/ratchet.tres" id="sig_2"]
+[ext_resource type="Resource" uid="uid://cirvp71bnhv2t" path="res://Source/Content/Tiles/TileResources/gearbox.tres" id="sig_3"]
+[ext_resource type="Resource" uid="uid://re1i3bl118gd" path="res://Source/Content/Tiles/TileResources/flywheel.tres" id="sig_4"]
+[ext_resource type="Resource" uid="uid://c2mtj70jt2emj" path="res://Source/Content/Tiles/TileResources/slingshot.tres" id="sig_5"]
 
 [resource]
 script = ExtResource("1_ship")
@@ -17,6 +24,7 @@ coming_soon = true
 starting_save = ExtResource("2_start")
 grid_cells = Array[Vector2i]([Vector2i(0, 0), Vector2i(1, 0), Vector2i(2, 0), Vector2i(3, 0), Vector2i(4, 0), Vector2i(0, 1), Vector2i(1, 1), Vector2i(3, 1), Vector2i(4, 1), Vector2i(0, 2), Vector2i(1, 2), Vector2i(2, 2), Vector2i(3, 2), Vector2i(4, 2)])
 behavior_scene = ExtResource("3_behavior")
+signature_tiles = Array[ExtResource("sig_tile")]([ExtResource("sig_0"), ExtResource("sig_1"), ExtResource("sig_2"), ExtResource("sig_3"), ExtResource("sig_4"), ExtResource("sig_5")])
 cutscene_frames = ExtResource("4_frames")
 cutscene_exhaust_points = PackedVector2Array(-3.5, 13, 3.5, 13)
 preview_texture = ExtResource("5_preview")
