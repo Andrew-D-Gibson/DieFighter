@@ -54,7 +54,16 @@ static var held: Draggable = null
 ## lifting this on arrival can't undo one of their locks.
 var out_of_reach: bool = false
 
-var follow_strength: float = 20
+## How quickly the parent closes in on where it's headed (the pointer, or
+## home), per second. Applied as exponential decay rather than a fixed share
+## per frame, so the feel doesn't depend on frame rate and a long hitch lands
+## it on the target instead of flinging it past (a per-frame lerp weight of
+## rate * delta overshoots past 1 and diverges past 2). 24 matches the old
+## per-frame lerp of 20 * delta at 60 FPS.
+var follow_strength: float = 24.0
+## The same, for drifting after the bob while floating at home: much gentler,
+## so the bob reads as a lazy sway rather than a tracked path.
+var float_follow_strength: float = 4.0
 ## While true, code is carrying the parent between holders across frames
 ## (Dice.hand_off_after_death()): it's left where the code puts it whatever
 ## the state says, since a holder resets the state as it arranges its dice,
@@ -122,7 +131,7 @@ func _process(delta: float) -> void:
 						
 	# Handle moving the object with the mouse
 	if state == DragState.DRAGGING:
-		get_parent().global_position = lerp(global_position, InputManager.pointer_global_position(self), follow_strength * delta)
+		get_parent().global_position = global_position.lerp(InputManager.pointer_global_position(self), _follow_weight(follow_strength, delta))
 		
 		# Handle dropping this object if the mouse is no longer down. A
 		# carried one waits for the next click instead.
@@ -143,9 +152,15 @@ func _process(delta: float) -> void:
 	
 		var bob_offset: float = sin(_floating_time * bob_speed) * bob_amplitude
 		var drift_offset: float = sin(_floating_time * drift_speed + 1.5) * drift_amplitude
-		get_parent().global_position = lerp(global_position, home_position + Vector2(drift_offset, bob_offset), follow_strength * delta * 0.2)
+		get_parent().global_position = global_position.lerp(home_position + Vector2(drift_offset, bob_offset), _follow_weight(float_follow_strength, delta))
 	else:
-		get_parent().global_position = lerp(global_position, home_position, follow_strength * delta)
+		get_parent().global_position = global_position.lerp(home_position, _follow_weight(follow_strength, delta))
+
+
+## The share of the remaining distance to cover this frame when closing in at
+## [param rate] per second. Always within [0, 1), however long the frame.
+static func _follow_weight(rate: float, delta: float) -> float:
+	return 1.0 - exp(-rate * delta)
 	
 
 func _on_input_event(_viewport: Node, event: InputEvent, _shape_idx: int) -> void:
