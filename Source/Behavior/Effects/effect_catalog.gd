@@ -149,7 +149,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_EXPLOSION_PARTICLES, label = "Spawn Explosion Particles", handler = SpawnExplosionParticlesHandler, fields = ["color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ANIMATE_DIE_TO_TILE, label = "Animate Die to Tile", handler = AnimateDieToTileHandler, fields = ["grid_offset"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ATTACK_TWEEN, label = "Attack Tween", handler = AttackTweenHandler},
-	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SHAKE_DICE, label = "Shake Dice", handler = ShakeDiceHandler},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SHAKE_DICE, label = "Shake Dice", handler = ShakeDiceHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.PLAY_SOUND, label = "Play Sound", handler = PlaySoundHandler, fields = ["sound_resource"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.WAIT, label = "Wait", handler = WaitHandler},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.HITSTOP, label = "Hitstop", handler = HitstopHandler, fields = ["amount"]},

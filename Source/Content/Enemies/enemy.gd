@@ -856,6 +856,7 @@ func _spend_held_dice() -> void:
 			var settle: WaitEvent = WaitEvent.new()
 			settle.amount = roundi(EnemyActionEvent.SETTLE_SECONDS * 1000.0)
 			settle.scale_with_animation_speed = true
+			event.settle = settle
 			engine.queue_event(settle)
 	
 
