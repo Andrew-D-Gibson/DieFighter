@@ -78,6 +78,22 @@ func dice_owned() -> int:
 	return num_of_dice + holograms
 
 
+## Every die in the fight that isn't on offer: the dice the player owns,
+## wherever they are, plus the holograms enemy ships are holding (handed over
+## by the player, or conjured by one ship for another), which dice_owned()
+## leaves out because the player can't get them back.
+func dice_in_play() -> int:
+	if not is_inside_tree():
+		return dice_owned()
+	var held_by_enemies: int = 0
+	for node: Node in get_tree().get_nodes_in_group('Dice'):
+		var die: Dice = node as Dice
+		if die and die.holographic and not die.is_queued_for_deletion() \
+		and die.host_queue is EnemyDiceManager:
+			held_by_enemies += 1
+	return dice_owned() + held_by_enemies
+
+
 @onready var dice_manager: DiceQueue = %DiceQueue
 @onready var health: Health = %Health
 

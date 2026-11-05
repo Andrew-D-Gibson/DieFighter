@@ -30,7 +30,7 @@ func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:
 
 	# Only a blow that would actually kill trips the switch. Shields count:
 	# spending the drive to survive a hit the shields were going to eat anyway
-	# would be a trap rather than a save. A piercing hit skips them.
+	# would be a trap rather than a save. A hit that steals hull skips them.
 	var health: Health = Globals.player.health
 	var soak: int = health.shields if (event as DamageEvent).soaked_by_shields() else 0
 	if event.amount < soak + health.health:

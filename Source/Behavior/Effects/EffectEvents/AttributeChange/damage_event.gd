@@ -14,7 +14,7 @@ func reaches_hull() -> bool:
 
 
 ## Whether the target's shields take this hit before the hull does. A
-## piercing hit (PiercingDamageEvent) goes straight to the hull.
+## hull-stealing hit (StealHullEvent) goes straight to the hull.
 func soaked_by_shields() -> bool:
 	return true
 

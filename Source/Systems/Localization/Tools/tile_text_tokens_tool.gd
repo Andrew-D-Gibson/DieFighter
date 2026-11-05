@@ -47,7 +47,7 @@ const _ATTRIBUTE_NAMES: Dictionary = {
 	"SPEND_HULL": ["hull_cost", "hull"],
 	"BOUNTY_DAMAGE": ["damage", "damage"],
 	"ADD_EVASION": ["evasion", "evasion|%"],
-	"PIERCING_DAMAGE": ["damage", "damage|hull"],
+	"STEAL_HULL": ["hull", "hull|damage"],
 }
 const _OTHER_NAMES: Dictionary = {
 	"ADD_AMPLIFIER_MODIFIER": ["boost", "to effects|effect"],

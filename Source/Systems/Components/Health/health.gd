@@ -61,8 +61,8 @@ func take_damage(amount: int) -> void:
 		change_health(-amount)
 
 
-## Piercing damage: [param amount] comes off the hull and the shields are
-## never touched.
+## A hit past the shields (StealHullEvent): [param amount] comes off the hull
+## and the shields are never touched.
 func take_hull_damage(amount: int) -> void:
 	if invulnerable or is_dead or amount <= 0:
 		return
