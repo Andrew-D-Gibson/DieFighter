@@ -152,13 +152,13 @@ func test_consequences_replace_only_distant_ordinary_stops() -> void:
 	var replaceable: Array[ScenarioResource] = [ordinary]
 	var untouched: Array[ScenarioResource] = sector.duplicate()
 
-	GameStateManager.place_consequences(sector, 2, replaceable, [], 1, 7)
+	SectorGenerator.place_consequences(sector, 2, replaceable, [], 1, 7)
 	assert_eq(sector, untouched, "nothing earned, nothing changed")
 
 	var owed: Array[ScenarioResource] = [reckoning]
 	for placement_seed: int in range(20):
 		var map: Array[ScenarioResource] = untouched.duplicate()
-		GameStateManager.place_consequences(map, 2, replaceable, owed, 1, placement_seed)
+		SectorGenerator.place_consequences(map, 2, replaceable, owed, 1, placement_seed)
 		var at: int = map.find(reckoning)
 		assert_eq(map.count(reckoning), 1)
 		assert_gt(at, 2, "ahead of the arrival")

@@ -117,7 +117,7 @@ func test_the_pilgrim_is_dealt_past_the_first_jump_without_drawing() -> void:
 			scenarios.append(combat)
 		scenarios.append(shop)
 		var arrival: int = 2
-		GameStateManager.place_fate_pilgrim(scenarios, arrival, [combat] as Array[ScenarioResource],
+		SectorGenerator.place_fate_pilgrim(scenarios, arrival, [combat] as Array[ScenarioResource],
 			pilgrim, placement_seed)
 		assert_eq(scenarios.count(pilgrim), 1)
 		assert_gt(scenarios.find(pilgrim), arrival + 6, "out of the first jump's reach")

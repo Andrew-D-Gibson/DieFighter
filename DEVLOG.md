@@ -106,6 +106,21 @@ The secret boss of `LORE.md` §5-8, built end to end. Every number is a first gu
 
 ---
 
+## 2026-11-05 — Code-health pass
+
+The bold items on ROADMAP's code-health list, plus bugs found while reading the big files.
+
+- **`SectorGenerator`** (`Game/SectorGenerator/sector_generator.gd`) deals each sector. It's a child of GameStateManager in `main.tscn` and holds the encounter lists that used to be GameStateManager's exports, so new scenarios are registered there. `generate(save)` replaces `_randomize_sector_scenarios()`, and `next_run_pinned_stops`, `place_repair_stations()`, `_pick_one()` and `LONGEST_JUMP` moved with it. GameStateManager keeps the state machine, checkpoints and run difficulty (828 → 578 lines). The draws are unchanged: 59 seeds × 3 sectors were dealt before and after the move, and the layouts, per-slot seeds and RUN stream states came out byte-identical. The unused `fate_scenarios` export is gone.
+- **Scene tidying.** `GameAnimationPlayer` is a direct child of `Main` (its `root_node` was already `Main`, so no track changed). The `z_index = 1000` on `main.tscn`'s MouseCursor is gone, since it's alone on `CursorLayer` (128). The main menu's cursor keeps its own, which it needs there. The main menu's unused `background_color` export is gone.
+- **One home each.** The store URL is `Utils.STORE_PAGE_URL` / `Utils.open_wishlist()`. The tile folder is `ContentRegistry.TILE_DIR`, and `ContentRegistry.get_tile_resources()` hands out the tiles it already loads, in path order (RewardManager's pool and the dev palette use it). The main menu and capsule mockup share `StarScatter.scatter()`. The cutscene keeps its own starfield on purpose, because its stars have depth and stream past. `InfoResource.gd` is `info_resource.gd`.
+- **Fixed:** the end-of-run screen's Wishlist button did nothing (it was never connected). Napalm Vent's changed text wasn't synced to `content.csv` (`test_content_csv_is_in_sync` was red).
+- **Fixed, targeting:** the target was remembered by its place in the roster, so when a ship ahead of it fled or died, or a carrier launched a ship beside itself, the computer silently moved to another ship at the next re-check. The tutorial counted that as the player switching targets. The target is now found again by identity. The target keys were also ignored the arrows being folded away (one ship, or the tutorial holding them), unlike a click.
+- **Fixed, jumps:** a die reaching an arrow tile while the map was still panning to the last jump started a second one. Fate advanced twice, and the first launcher was dropped. It now rides along in the hand (`JumpEvent`, with a `_jumping` backstop in `Map.jump()`). A jump that fleeing rules would refuse is now refused before the hand is committed, not after. Jumping onto the gate showed the oversized gate sprite in the "Jumping..." caption.
+- **Fixed, smaller:** the tutorial's step timers ran on behind the pause menu, so a card could time out and the next step act on a paused game. A first-turn announcement left over from a scenario the player jumped out of could deal the next one a spare die. Scrolling the mouse wheel skipped the opening cutscene. With a controller in the CURSOR scheme, the right stick panned the map behind open menus, or stayed dead after Options had been opened in FOCUS.
+- Open, unreproduced: see ROADMAP's code-health list.
+
+---
+
 ## 2026-11-02 — Every language in Options, font-fit calls
 
 - **Options offers every language.** The dropdown lists all eight languages by their own names, never the pseudo-locale (still `lang pseudo` and the audit). A language without text yet reads "Deutsch (English text)" in the open list and plays in English text with its own fonts; Chinese and Japanese names draw in their own font, and the mark in the menu's (`PixelDropdown.set_item_font/set_item_note`). `Localization` registers every `translations.<l>.translation` at startup, so a column ships as soon as it has text; `is_translated()` (≥90% of English) drives the mark and the first-launch pick, so a new player is only auto-switched to a translated language.

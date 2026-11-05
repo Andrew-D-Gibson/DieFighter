@@ -16,7 +16,6 @@ const _SHOP_PATH: String = "res://Source/Systems/Game/Shop/shop.tscn"
 const _REWARD_PATH: String = "res://Source/Systems/Game/RewardManager/reward.tscn"
 const _ERROR_POPUPS_PATH: String = "res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn"
 
-const _TILE_DIR: String = "res://Source/Content/Tiles/TileResources/"
 const _ENEMY_DIR: String = "res://Source/Content/Enemies/EnemyResources/"
 const _ENEMY_ACTION_DIR: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/"
 const _HAZARD_DIR: String = "res://Source/Resources/BackgroundResources/BackgroundHazards/"
@@ -104,7 +103,7 @@ class TilesSurface extends InfoPanelSurface:
 
 	func items() -> Array[Dictionary]:
 		var found: Array[Dictionary] = []
-		for resource: Resource in load_dir(LocAuditSurfaces._TILE_DIR):
+		for resource: Resource in load_dir(ContentRegistry.TILE_DIR):
 			var stem: String = resource.resource_path.get_file().get_basename()
 			found.append(LocAuditSurfaces._item(stem, stem, {"resource": resource}))
 		return found

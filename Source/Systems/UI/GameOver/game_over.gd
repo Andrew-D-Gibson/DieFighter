@@ -28,6 +28,10 @@ func _on_quit_button_pressed() -> void:
 	QuitManager.request_quit()
 
 
+func _on_wishlist_button_pressed() -> void:
+	Utils.open_wishlist()
+
+
 func _on_game_over() -> void:
 	if _fate_ending == &"fell_in":
 		%EndStateLabel.text = "[color=%s][shake rate=12 level=6 connected=1]%s[/shake][/color]" % [

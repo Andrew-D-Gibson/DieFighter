@@ -224,9 +224,20 @@ func _is_skip_press(event: InputEvent) -> bool:
 			_skip_axes_held[axis_key] = true
 			return true
 		return false
+	if event is InputEventMouseButton and _is_wheel(event.button_index):
+		# One flick of a wheel or trackpad is a burst of presses, which would
+		# raise the prompt and confirm it before the player meant either.
+		return false
 	if event is InputEventKey or event is InputEventMouseButton or event is InputEventJoypadButton:
 		return event.is_pressed() and not event.is_echo()
 	return false
+
+
+static func _is_wheel(button: MouseButton) -> bool:
+	return button in [
+		MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN,
+		MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT,
+	]
 
 
 func _build_skip_prompt() -> void:

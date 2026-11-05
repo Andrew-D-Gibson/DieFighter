@@ -15,18 +15,11 @@ func _ready() -> void:
 	
 func _load_tile_resources() -> void:
 	_all_tile_resources = []
+	for tile_resource: TileResource in ContentRegistry.get_tile_resources():
+		if tile_resource.offered_as_reward:
+			_all_tile_resources.append(tile_resource)
 
-	var dir_locations: Array[String] = [
-		"res://Source/Content/Tiles/TileResources/",
-	]
 
-	for dir_location: String in dir_locations:
-		for path: String in Utils.list_resource_paths(dir_location):
-			var res: Resource = ResourceLoader.load(path)
-			if res is TileResource and res.offered_as_reward:
-				_all_tile_resources.append(res)
-	
-	
 ## Relative likelihood a tile of each rarity is offered. Rarity previously only
 ## affected shop *pricing*, so a Grudge Cannon dropped exactly as often as a
 ## plain Shield — which flattens the whole rarity axis and makes finding a

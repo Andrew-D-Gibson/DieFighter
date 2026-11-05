@@ -3,7 +3,7 @@
 The faction encounters from `LORE.md`, built on the faction ships (commit
 8b6ac6d6), and where every encounter in the game is dealt (below). Folders are
 under `Source/Content/ScenarioResources/Scenarios/`. The faction events are in
-GameStateManager's `question_scenarios`, and Wake Riders is in `elite_scenarios`.
+SectorGenerator's `question_scenarios`, and Wake Riders is in `elite_scenarios`.
 
 ## By sector
 
@@ -276,7 +276,7 @@ make the tug think it was attacked, and `BOSS_DEFEATED` reads as "the tow was cu
 A lone **Pilgrim** (`pilgrim_wandering`, no Relay, so sector 1) offers a die.
 *"Everyone gets one. Few ever look."* (To a player who knows the secret: *"You've
 seen the front. You know."*) Dealt into every first sector, past the first
-jump's reach (`GameStateManager.place_fate_pilgrim()`).
+jump's reach (`SectorGenerator.place_fate_pilgrim()`).
 - **Take it:** *"It was always yours."* Fate's Die is yours, blank. It flies on inward.
 - **Shoot it:** *"Why run? It's behind you too."* The die is yours anyway, with
   Ruin carved. It siphons your drive.

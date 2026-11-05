@@ -839,7 +839,7 @@ with conditions.
 - **`standing_requirements`** on a `ScenarioResource`: the encounter is
   dealt only while all of them hold (name the `faction`: an encounter has no
   ship of its own). Any list respects it.
-- **Consequences** (`GameStateManager.consequence_scenarios`): an encounter
+- **Consequences** (`SectorGenerator.consequence_scenarios`): an encounter
   that *will* be met when its requirements hold, placed as each sector is
   generated, on an ordinary stop ahead of the arrival (so the player sees it
   coming and can choose to jump past it), at most `consequences_per_sector`. Give it a way to
@@ -890,7 +890,7 @@ leads to:
   `text_token`, like a tile.
 
 **Registration** (required): open `Source/Scenes/main.tscn`, select
-**GameStateManager**, and add the scenario to the right list:
+**GameStateManager/SectorGenerator**, and add the scenario to the right list:
 - `combat_scenarios` or `question_scenarios` (events): the random sector mix.
   Each layer needs at least 7 combats, 4 events and 2 elites to fill a
   sector without repeats; removing one can drop a layer under that
@@ -900,11 +900,10 @@ leads to:
 - `consequence_scenarios`: reckonings the run has earned (Faction memory,
   above). Folder kind `GRUDGE_`.
 - Fate's encounters go on the **Map** instead (`main_viewer.tscn`):
-  `fate_scenario` and `fate_variants`. (GameStateManager's `fate_scenarios`
-  is unused.)
+  `fate_scenario` and `fate_variants`.
 - The Reckoning's scenario is on the **ReckoningDirector** (`main.tscn`), with
   the echo state, the Spilled pool and its tiles; the pilgrim who hands over
-  Fate's Die is GameStateManager's `fate_pilgrim_scenario`.
+  Fate's Die is SectorGenerator's `fate_pilgrim_scenario`.
 - Or set the single slots: `starting_scenario`, `shop_scenario`,
   `repair_scenario` (1-2 a sector, swapped in past a jump from the arrival),
   `empty_scenario`. The open gate is `Map.open_gate_scenario`
@@ -1608,7 +1607,7 @@ tool's record of the English it last saw; leave it alone.
 
 - [ ] New scripts validated, class cache rebuilt if a `class_name` was added.
 - [ ] GUT suite green (content tests load every new `.tres`).
-- [ ] Scenarios added to GameStateManager in `main.tscn`; `starting_scenario`
+- [ ] Scenarios added to SectorGenerator in `main.tscn`; `starting_scenario`
       restored.
 - [ ] Played it once: intents read correctly, nothing in the godot.log
       (`~/Library/Application Support/Godot/app_userdata/DieFighter/logs/godot.log`,

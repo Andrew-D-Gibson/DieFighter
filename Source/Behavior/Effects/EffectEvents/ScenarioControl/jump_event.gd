@@ -7,6 +7,14 @@ var jump_delta: int = 0
 
 
 func resolve(_engine: ScenarioEngine) -> void:
+	# One jump at a time. A die that reaches an arrow tile while the map is
+	# still panning to the last one (it was on a tile, or came back to the
+	# hand mid-pan) rides along with the rest rather than launching a second
+	# jump, which would advance Fate twice and strand the first launcher.
+	if Globals.player.is_jump_committed():
+		Globals.player.stow_die_for_jump(activator_die)
+		return
+
 	var current_index: int = Globals.map.current_scenario_index
 	var desired_index: int = clampi(
 		current_index + jump_delta,
@@ -25,6 +33,13 @@ func resolve(_engine: ScenarioEngine) -> void:
 
 	if not Globals.map.is_valid_destination(desired_index):
 		_refuse("ERROR_INVALID_DESTINATION")
+		return
+
+	# Checked before committing: Map.jump() refuses too, but a commit it then
+	# refused would leave the hand locked and End Turn off until an arrival
+	# that never comes.
+	if not Globals.map.can_jump():
+		_refuse("ERROR_NO_ESCAPE")
 		return
 
 	Globals.player.commit_to_jump(activator_die)
