@@ -60,11 +60,6 @@ func test_a_parameter_still_goes_through_the_modifiers_own_rules() -> void:
 	assert_eq((rule.create_modifier() as AmountCapModifier).cap, 1, "a cap is never below 1")
 
 
-func test_a_rule_that_names_itself_is_handed_its_resource() -> void:
-	var rule: BackgroundModifierResource = load(RULE_DIR + "dead_systems.tres")
-	assert_eq((rule.create_modifier() as OncePerTurnModifier).rule, rule)
-
-
 func test_the_solar_flare_reads_its_damage_from_its_chain() -> void:
 	var hazard: BackgroundHazardResource = load(HAZARD_DIR + "solar_flare.tres")
 	var hotter: BackgroundHazardResource = hazard.duplicate(true)

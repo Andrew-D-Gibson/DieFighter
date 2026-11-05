@@ -313,6 +313,37 @@ func test_a_table_never_binds_more_than_three_faces() -> void:
 	assert_true(hit_cap, "a pool this keen fills the cap")
 
 
+## A ship does one thing to other ships a turn, so its arc carries one icon
+## and one number (BoundIntentArrow).
+func test_every_bound_face_is_the_same_action_for_the_same_amount() -> void:
+	var ship := _ship(Faction.PIRATE)
+	var roster := _roster([ship, _ship(Faction.PIRATE), _ship(Faction.CIVILIAN)])
+	var ally := _option(_ally_action(), 10.0)
+	ally.base_action.name = "Help"
+	var raid := _option(_raid_action(), 10.0)
+	raid.base_action.name = "Raid"
+	for option: EnemyActionOptionResource in [ally, raid]:
+		option.min_amount = 1
+		option.max_amount = 9
+	var pool := EnemyTurnActionList.new()
+	var options: Array[EnemyActionOptionResource] = [
+		ally, raid, _option(_action(EffectEnums.TargetingSubtype.TARGET_PLAYER), 1.0),
+	]
+	pool.actions_possible = options
+	var bound_tables: int = 0
+	for run: int in range(100):
+		RNGManager.seed_scenario(run)
+		var table: Array[EnemyActionResource] = EnemyActionSelector.roll(pool, EnemyActionSituation.for_ship(ship, roster))
+		var bound: Array[EnemyActionResource] = table.filter(func(a: EnemyActionResource) -> bool:
+			return a.get_binding() != Binding.NONE)
+		if bound.size() > 1:
+			bound_tables += 1
+		for action: EnemyActionResource in bound:
+			assert_eq(action.name, bound[0].name, "run %d: one kind" % run)
+			assert_eq(action.intent_amount, bound[0].intent_amount, "run %d: one amount" % run)
+	assert_gt(bound_tables, 0, "a pool this keen binds several faces")
+
+
 func test_a_pool_with_nothing_else_fills_the_rest_with_blanks() -> void:
 	var ship := _ship(Faction.PIRATE)
 	var roster := _roster([ship, _ship(Faction.PIRATE)])

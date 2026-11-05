@@ -42,8 +42,9 @@ func _process(delta: float) -> void:
 		return
 	_age += delta
 	if _settled:
-		# Whole art pixels: a sub-pixel float would smear on the 6x viewport.
-		_sprite.position.y = roundf(sin(_age * 2.4) * 1.2)
+		# Left unrounded: under the 6x camera a fraction of an art pixel is
+		# still whole screen pixels, so the lock glides instead of ticking.
+		_sprite.position.y = sin(_age * 2.4) * 1.2
 	queue_redraw()
 	_face_age += delta
 	if _face_age >= _FACE_SECONDS:

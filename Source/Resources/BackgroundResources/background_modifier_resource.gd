@@ -92,8 +92,9 @@ func create_modifier() -> Modifier:
 	# anything it shows the player asks this resource.)
 	if not modifier_name.is_empty():
 		mod.modifier_name = modifier_name
-	# A modifier that names its rule to the player (OncePerTurnModifier's tile
-	# info line) declares a 'rule' property to be handed this resource.
+	# A modifier that shows its rule to the player (AmountCapModifier tints
+	# capped numbers in its colour) declares a 'rule' property to be handed
+	# this resource.
 	if &"rule" in mod:
 		mod.set(&"rule", self)
 	return mod

@@ -320,7 +320,7 @@ func _on_keyword_hover_started(meta: Variant) -> void:
 	if rule.is_empty():
 		return
 	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(str(meta)), rule])
-	preload("res://Source/Systems/UI/InfoShower/keyword_diagram.gd").configure(%KeywordPopup, %KeywordLabel, str(meta), 1.0)
+	KeywordDiagram.configure(%KeywordPopup, %KeywordLabel, str(meta), 1.0)
 	# Shrink back to the new text's size first, or a long rule's height
 	# lingers on a short one.
 	%KeywordPopup.reset_size()

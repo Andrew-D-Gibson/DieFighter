@@ -11,11 +11,9 @@ extends Modifier
 ## gray-out and the "no uses" refusal all read it the way they read a tile's
 ## own limit. This modifier only says which tiles it caps, and stops the two
 ## ways round a budget: repetitions and refunds.
-
-
-## The region rule that put this in force, which names it in tile info lines.
-## Null when something else did.
-var rule: BackgroundModifierResource = null
+##
+## Tile info panels don't repeat the rule: the region's own card already says
+## it, and the use lights show it on every tile.
 
 
 func _init() -> void:
@@ -25,13 +23,6 @@ func _init() -> void:
 
 func get_tile_use_cap(tile: Tile) -> int:
 	return 1 if JammedStatus.is_ship_system(tile) else -1
-
-
-func get_rule_info_text(tile: Tile) -> String:
-	if get_tile_use_cap(tile) < 0:
-		return ""
-	var rule_name: String = rule.display_name() if rule else tr(modifier_name)
-	return tr("TILE_INFO_ONCE_PER_TURN").format({"rule": rule_name})
 
 
 func on_before_event(event: EffectEvent, _engine: ScenarioEngine) -> void:

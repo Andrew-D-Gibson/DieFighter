@@ -337,6 +337,10 @@ func _get_tile_info() -> InfoResource:
 func _on_player_fatal_damage() -> void:
 	if _death_save_spent or on_offer or not ScenarioEngine.current():
 		return
+	# A locked tile can't answer, and its response would be cancelled anyway
+	# (LockoutModifier), so it mustn't hold the hull up either.
+	if is_locked_out():
+		return
 	if _find_matching_event_response(self, TileEvent.EventType.ON_PLAYER_FATAL_DAMAGE) == null:
 		return
 	var health: Health = Globals.player.health

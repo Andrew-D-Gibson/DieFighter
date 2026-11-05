@@ -18,6 +18,13 @@ func _init(tile: Tile) -> void:
 
 
 func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
+	# A tile that never takes a die (Napalm Vent) acts through its event
+	# responses instead. A lock stops those too; with no die there's nothing
+	# that could open it, so the response just doesn't happen.
+	if event is TileEventTriggeredEvent and (event as TileEventTriggeredEvent).responder == affected_node:
+		event.canceled = true
+		announce_triggered()
+		return
 	if event is TileActivationEvent and (event as TileActivationEvent).tile == affected_node:
 		event.canceled = true
 		announce_triggered()

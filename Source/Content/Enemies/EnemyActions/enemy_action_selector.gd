@@ -55,6 +55,7 @@ static func roll(
 		actions = actions.slice(0, SLOT_COUNT)
 		_cap_bound_slots(actions, mini(forced.size(), SLOT_COUNT), options, weights)
 		_ensure_hand_off(actions, mini(forced.size(), SLOT_COUNT), pool, situation)
+		_unify_bound_slots(actions, mini(forced.size(), SLOT_COUNT), options, weights, situation)
 		_number_slots(actions)
 		return actions
 
@@ -69,6 +70,7 @@ static func roll(
 	actions = actions.slice(0, open_slots)
 	_cap_bound_slots(actions, mini(forced.size(), open_slots), options, weights)
 	_ensure_hand_off(actions, mini(forced.size(), open_slots), pool, situation)
+	_unify_bound_slots(actions, mini(forced.size(), open_slots), options, weights, situation)
 
 	_place(actions, face_bias)
 	# Ascending faces, so each insert lands at its face with the earlier ones
@@ -103,6 +105,78 @@ static func _cap_bound_slots(
 	if bound.size() <= MAX_BOUND_SLOTS:
 		return
 
+	var excess: int = bound.size() - MAX_BOUND_SLOTS
+	for k: int in range(bound.size() - 1, -1, -1):
+		if excess == 0:
+			break
+		var slot: int = bound[k]
+		if slot < keep:
+			continue
+		actions[slot] = _pick_unbound(options, weights)
+		excess -= 1
+
+
+## Makes every slot of [param actions] that acts on another ship (a Repair, a
+## shield for an ally, a Raid, a Relay) the same action for the same amount:
+## a ship does one thing to another ship a turn. The arc the targeting
+## computer draws to that ship then carries one icon and one number beside
+## the faces that play it (BoundIntentArrow), and only one arc leaves the
+## ship, since the binder gives each kind of binding a single partner.
+##
+## The first bound slot sets the action, except that a hand-off a ship owes
+## (_ensure_hand_off) always wins. Bound slots of another kind are swapped for
+## draws that bind nothing, the way _cap_bound_slots trims extras; ones of the
+## same kind take its amount. The first [param keep] slots (the tutorial's)
+## are never touched, and one of them sets the action when it binds.
+static func _unify_bound_slots(
+	actions: Array[EnemyActionResource],
+	keep: int,
+	options: Array[EnemyActionOptionResource],
+	weights: Array[float],
+	situation: EnemyActionSituation
+) -> void:
+	var template: EnemyActionResource = _bound_template(actions, keep, situation)
+	if template == null:
+		return
+	for i: int in range(keep, actions.size()):
+		var action: EnemyActionResource = actions[i]
+		if action == template or action.get_binding() == EnemyActionResource.Binding.NONE:
+			continue
+		# The same kind (EnemyActionVariety) aimed at the same kind of ship.
+		if EnemyActionVariety.kind_of(action) == EnemyActionVariety.kind_of(template) \
+				and action.get_binding() == template.get_binding():
+			action.intent_amount = template.intent_amount
+		else:
+			actions[i] = _pick_unbound(options, weights)
+
+
+## The bound slot whose action and amount the rest of the table's bound slots
+## follow (see _unify_bound_slots()), or null when nothing binds.
+static func _bound_template(
+	actions: Array[EnemyActionResource],
+	keep: int,
+	situation: EnemyActionSituation
+) -> EnemyActionResource:
+	var first_bound: EnemyActionResource = null
+	for i: int in range(actions.size()):
+		var action: EnemyActionResource = actions[i]
+		if action.get_binding() == EnemyActionResource.Binding.NONE:
+			continue
+		if i < keep:
+			return action
+		if first_bound == null:
+			first_bound = action
+		if situation.owes_hand_off and action.hands_off_to_hostile():
+			return action
+	return first_bound
+
+
+## One weighted draw from the [param options] that bind no other ship. A blank
+## face when there are none.
+static func _pick_unbound(
+	options: Array[EnemyActionOptionResource],
+	weights: Array[float]
+) -> EnemyActionResource:
 	var unbound: Array[EnemyActionOptionResource] = []
 	var unbound_weights: Array[float] = []
 	var weight_sum: float = 0.0
@@ -111,16 +185,7 @@ static func _cap_bound_slots(
 			unbound.append(options[n])
 			unbound_weights.append(weights[n])
 			weight_sum += weights[n]
-
-	var excess: int = bound.size() - MAX_BOUND_SLOTS
-	for k: int in range(bound.size() - 1, -1, -1):
-		if excess == 0:
-			break
-		var slot: int = bound[k]
-		if slot < keep:
-			continue
-		actions[slot] = _weighted_pick(unbound, unbound_weights, weight_sum)
-		excess -= 1
+	return _weighted_pick(unbound, unbound_weights, weight_sum)
 
 
 ## Makes sure a ship that owes a hand-off (EnemyActionSituation.owes_hand_off)
@@ -178,10 +243,12 @@ static func _kept_face_option(
 	return null
 
 
-## Rerolls one slot of [param actions] from the pool's relay-free options.
-## The binder's last resort for a relay it can't bind without closing a loop:
-## it changes that one slot and nothing else the player can see. The face is
-## already fixed, so face_bias has no say in what lands there.
+## Rerolls one slot of [param actions] from the pool's options that bind no
+## other ship. The binder's last resort for a relay it can't bind without
+## closing a loop: it changes that one slot and nothing else the player can
+## see. Nothing bound may land there, or the table could end up doing two
+## things to other ships (see _unify_bound_slots()). The face is already
+## fixed, so face_bias has no say in what lands there.
 static func reroll_slot_without_relays(
 	pool: EnemyTurnActionList,
 	situation: EnemyActionSituation,
@@ -199,7 +266,7 @@ static func reroll_slot_without_relays(
 		available_options(pool, situation), situation, others
 	)
 	for option: EnemyActionOptionResource in allowed:
-		if option.base_action.get_relay() != EnemyActionResource.Relay.NONE:
+		if option.base_action.get_binding() != EnemyActionResource.Binding.NONE:
 			continue
 		options.append(option)
 		weights.append(option.weight_in(situation))

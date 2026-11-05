@@ -37,10 +37,6 @@ func before_each() -> void:
 	Globals.tile_grid = grid
 
 
-func _rule_name() -> String:
-	return (load(DEAD_SYSTEMS) as BackgroundModifierResource).display_name()
-
-
 func _tile(resource: TileResource) -> Tile:
 	var tile: Tile = autofree(TILE_SCENE.instantiate())
 	tile.tile_resource = resource
@@ -61,12 +57,6 @@ func _spend(tile: Tile) -> void:
 
 func test_dead_systems_builds_the_once_per_turn_rule() -> void:
 	assert_true(rule is OncePerTurnModifier)
-
-
-## The tile info line names the region's rule, through its display name so
-## it reads in the player's language.
-func test_the_info_line_names_the_region_rule() -> void:
-	assert_string_contains(rule.get_rule_info_text(limited), _rule_name())
 
 
 func test_without_the_rule_tiles_keep_their_own_budgets() -> void:
@@ -138,9 +128,3 @@ func test_a_drain_still_lands() -> void:
 	drain.targets = [limited] as Array[Node]
 	rule.on_before_event(drain, engine)
 	assert_false(drain.canceled)
-
-
-func test_the_tile_info_says_why() -> void:
-	engine.add_modifier(rule)
-	assert_string_contains(unlimited._get_tile_info().bottom_label_text, _rule_name())
-	assert_false(charger._get_tile_info().bottom_label_text.contains(_rule_name()))

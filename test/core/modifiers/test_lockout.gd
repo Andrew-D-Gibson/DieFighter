@@ -149,6 +149,27 @@ func test_a_one_two_or_three_opens_a_lock() -> void:
 	for face: int in range(4, 7):
 		assert_false(LockoutModifier.unlocks(face), "a %d is turned away" % face)
 
+
+# ── Tiles that never take a die ───────────────────────────────────────────────
+
+func test_a_lock_stops_the_tiles_own_event_responses() -> void:
+	# Napalm Vent and its kind act through event responses, not a die, so a
+	# lock has to stop those too or it doesn't lock them at all.
+	var locked: Tile = _tile(DAMAGE_TILE)
+	var free: Tile = _tile(DAMAGE_TILE)
+	var lock: LockoutModifier = LockoutModifier.new(locked)
+	var on_locked: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
+	on_locked.responder = locked
+	var on_free: TileEventTriggeredEvent = TileEventTriggeredEvent.new()
+	on_free.responder = free
+
+	lock.on_before_event(on_locked, engine)
+	lock.on_before_event(on_free, engine)
+
+	assert_true(on_locked.canceled, "the locked tile doesn't respond")
+	assert_false(on_free.canceled, "other tiles still do")
+
+
 # ── Info panel ────────────────────────────────────────────────────────────────
 
 func test_locked_rule_is_not_duplicated_in_tile_info() -> void:

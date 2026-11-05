@@ -124,14 +124,18 @@ func _set_side_margins(margin: int) -> void:
 
 
 
-## Spatial terms need a diagram; other keywords keep the existing info behavior.
+## Every keyword pops up its rule; spatial ones (Adjacent, Surrounding) also
+## get a diagram over it (see KeywordDiagram).
 func _on_keyword_hover_started(meta: Variant) -> void:
 	var term: String = str(meta)
-	if not preload("res://Source/Systems/UI/InfoShower/keyword_diagram.gd").supports(term):
+	var rule: String = Keywords.definition(term)
+	if rule.is_empty():
 		%KeywordPopup.hide()
 		return
-	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(term), Keywords.definition(term)])
-	preload("res://Source/Systems/UI/InfoShower/keyword_diagram.gd").configure(%KeywordPopup, %KeywordLabel, term, 4.0)
+	%KeywordLabel.text = Utils.format_text("[color=orange]%s[/color]: %s" % [Keywords.title(term), rule])
+	KeywordDiagram.configure(%KeywordPopup, %KeywordLabel, term, 4.0)
+	# Shrink back to the new text's size before placing, or a long rule's
+	# height lingers on a short one.
 	%KeywordPopup.reset_size()
 	%KeywordPopup.show()
 	_place_keyword_popup()
