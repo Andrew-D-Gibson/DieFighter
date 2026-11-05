@@ -11,7 +11,7 @@
 
 [resource]
 script = ExtResource("1_uxyhx")
-notes = "VARIETY. Ion lances in the ion storm front: lightning lights the ships, and the storm rerolls every enemy die as your turn ends."
+notes = "VARIETY. Ion lances in the ion storm front: lightning lights the ships; the whole hand arms them, then the storm strikes on cue (fx hazard) and rerolls every die they hold."
 scenario_id = "ELITE_lance_squadron"
 run_seed = 101
 sector = 1
@@ -25,4 +25,4 @@ Vector2i(3, 1): ExtResource("8_40dbo")
 })
 open_all_cells = true
 forced_rolls = Array[int]([5, 3, 6])
-beats = PackedStringArray("ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "mark storm", "end_turn", "ready 40", "wait 1", "quit")
+beats = PackedStringArray("ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "mark storm", "fx hazard", "ready 30", "wait 1", "end_turn", "ready 40", "wait 1", "quit")
