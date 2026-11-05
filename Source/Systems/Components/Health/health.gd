@@ -61,6 +61,14 @@ func take_damage(amount: int) -> void:
 		change_health(-amount)
 
 
+## Piercing damage: [param amount] comes off the hull and the shields are
+## never touched.
+func take_hull_damage(amount: int) -> void:
+	if invulnerable or is_dead or amount <= 0:
+		return
+	change_health(-amount)
+
+
 ## Ion damage: [param amount] x ION_SHIELD_MULTIPLIER comes off the shields and
 ## the hull is never touched. What the shields can't absorb is lost, so a ship
 ## with no shields shrugs it off. Returns the shields actually stripped.

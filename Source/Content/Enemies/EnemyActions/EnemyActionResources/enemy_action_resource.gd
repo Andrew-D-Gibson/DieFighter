@@ -107,6 +107,7 @@ func deals_damage() -> bool:
 	if not _derived.has(&"deals_damage"):
 		_derived[&"deals_damage"] = int(
 			_has_step(EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.DAMAGE)
+			or _has_step(EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.PIERCING_DAMAGE)
 			or _has_step(EffectEnums.Category.ATTRIBUTE_CHANGE, EffectEnums.AttributeChangeSubtype.ION_DAMAGE))
 	return bool(_derived[&"deals_damage"])
 
@@ -152,7 +153,8 @@ static func _threat_of(effects: Array[EffectData], aimed_at_ship: bool = false, 
 			# the ship instead: Seize takes it, Charge Bore loads its shot.
 			return Threat.DANGEROUS
 		elif effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
-		and effect.subtype in [EffectEnums.AttributeChangeSubtype.DAMAGE, EffectEnums.AttributeChangeSubtype.ION_DAMAGE]:
+		and effect.subtype in [EffectEnums.AttributeChangeSubtype.DAMAGE, EffectEnums.AttributeChangeSubtype.ION_DAMAGE,
+				EffectEnums.AttributeChangeSubtype.PIERCING_DAMAGE]:
 			# Ion only strips shields, but shields are what stand between a
 			# hit and the hull, so losing them is a hurt all the same.
 			if not aimed_at_ship:
