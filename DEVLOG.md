@@ -4,6 +4,19 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-05 — Six Inbound encounters
+
+The Inbound had four encounters and rarely turned up. Now there are ten, and every layer has some. Each is written up in `FACTION_SCENARIOS.md`.
+
+- **Tail:** Vigil (combat, two Zealots: overfeed one to burn it) and Martyr (event, vs the Undertow: a Gaff strips a Pilgrim that won't resist; shoot the Pilgrim and it thanks you).
+- **Belly:** Recruiter (event, vs the Caravan: a Pilgrim talks a tired Hauler family into flying inward). Communion (combat, Belly and Spine: a Pilgrim Relays its luck into a Fate Shroud) and Procession (elite, Belly and Spine: a Zealot fed by two Pilgrims' Relays).
+- **Spine:** Apostate (event, vs the Rearguard: a converted Tithe Collector dumps its tithe, the first in-game hint that the tithe goes into the hole).
+- One new ship resource, `tithe_collector_apostate.tres`: the Tithe Collector's hull and kit plus a hand-off Raid, flying the Inbound badge. Martyr and Recruiter use `pilgrim_wandering` for its Raid. No new art.
+- Checked with the core suite and AutoPilot gauntlets of all six (about 100 runs over random, smart and aggressive, each in its layers): no errors or violations. Every event branch was walked headlessly. Martyr's kind path (Gaff down, Pilgrim heals you and leaves) was seen live.
+- A separate commit syncs the Napalm Vent rows that the 11-04 tweak left out of `content.csv`.
+
+---
+
 ## 2026-11-02 — Every language in Options, font-fit calls
 
 - **Options offers every language.** The dropdown lists all eight languages by their own names, never the pseudo-locale (still `lang pseudo` and the audit). A language without text yet reads "Deutsch (English text)" in the open list and plays in English text with its own fonts; Chinese and Japanese names draw in their own font, and the mark in the menu's (`PixelDropdown.set_item_font/set_item_note`). `Localization` registers every `translations.<l>.translation` at startup, so a column ships as soon as it has text; `is_translated()` (≥90% of English) drives the mark and the first-launch pick, so a new player is only auto-switched to a translated language.
