@@ -20,6 +20,10 @@ been self-playtested and is fun. Next comes outside playtesting.
       each was continued and played on. Nothing is written mid-jump, and
       every continue was sane. One bug was found and fixed: continuing in a
       shop freed the die on its shelf.
+- [ ] Check whether dice a Pilgrim **Relays** to a Zealot count toward the
+      Zealot's **Overload**. Two Inbound elites are built on that (Procession
+      and Twin Flames), so if relayed dice don't count, both lose their "let
+      its faith burn it out" option. Flagged in the PR #3 review.
 - [ ] Run the outside playtests with `PLAYTEST_KIT.md`, which covers the
       build checklist, tester handout, feedback form and log locations.
       Testers' crash reports are their `user://debug_log.txt` (see
