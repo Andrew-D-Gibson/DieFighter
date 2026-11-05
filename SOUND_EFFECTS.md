@@ -1,5 +1,15 @@
 # Sound Effects — Where They Go
 
+> **Production checklist (audited 2026-11-04):** use
+> [SOUND_EFFECTS_TODO.md](SOUND_EFFECTS_TODO.md) for priorities, proposed WAV
+> filenames, current coverage, and integration destinations. It indexes all
+> 133 base tiles and 23 enemy actions, including content added after this file.
+> The sketches below are preserved as creative inspiration; their “Now” columns
+> and hook suggestions are an older snapshot. In particular, kills already have
+> `enemy_pre_death`, hazard warnings/strikes have borrowed sounds, and
+> `Dice.reroll_with_tween`/`play_pop` do not themselves play audio. Shared cues
+> in the checklist should come before bespoke recordings for every tile.
+
 Every place in the game that wants a sound and doesn't have a fitting one yet,
 plus what the game already has, so sounds can be found or made in one pass and
 wired in afterwards.
@@ -149,7 +159,6 @@ at once, with no per-tile authoring.
 | Countdown Cannon | dice_cannon (payout) | Rising tick per count, a heavy cannon at 0 | before `COUNT_DOWN`; payout `DAMAGE` |
 | Counter-Battery | tractor_lock | Jamming "thunk" as the face locks | before `SILENCE_TARGETS_FACE` |
 | Countermeasures | — | Countermeasure flares popping, a whoosh across | before `TRANSFER_STATUSES` |
-| Counterweight Battery | player_shield | Pendulum clunk + shield | before `SHIELD` |
 | Crescendo Cannon | dice_cannon | Shot whose pitch climbs with the crescendo (escalation) | before `DAMAGE` |
 | Crossed Wires | reroll blip | Electrical short buzz | before `APPLY_STATUS` |
 | Cryo Lance | glass_tinkle | Icy crackle as the die freezes down | before `SET_TARGETS_HIGHEST_DIE` |
