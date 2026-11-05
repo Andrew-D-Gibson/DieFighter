@@ -4,6 +4,9 @@ extends EffectEvent
 ## The lockout this event is enforcing, so a key (a 1, 2 or 3) can lift it.
 var lockout_modifier: LockoutModifier
 
+## How many Feeds brought the die here; see EffectContext.feed_depth.
+var feed_depth: int = 0
+
 
 func resolve(engine: ScenarioEngine) -> void:
 	if effect_source is not Tile:
@@ -32,7 +35,20 @@ func resolve(engine: ScenarioEngine) -> void:
 		tile.dice_queue.remove(activator_die)
 		Events.error_text_popup.emit(TranslationServer.translate(&"ERROR_TILE_LOCKED"), tile.global_position)
 		tile.play_refusal_feedback()
-		Globals.player.dice_manager.add(activator_die, true, false)
+		if feed_depth > 0:
+			var give: GiveDieToTargetEvent = GiveDieToTargetEvent.new()
+			give.actor = actor
+			give.effect_source = effect_source
+			give.activator_die = activator_die
+			give.die_value = activator_die.value
+			var targeted: Enemy = null
+			if Globals.targeting_computer:
+				targeted = Globals.targeting_computer.target_for(activator_die)
+			if is_instance_valid(targeted):
+				give.targets = [targeted]
+			engine.inject_event(give)
+		else:
+			Globals.player.dice_manager.add(activator_die, true, false)
 
 	# This stands in for the activation the lockout canceled, so the turn
 	# still gets its end-of-activation check: a locked tile can be the last

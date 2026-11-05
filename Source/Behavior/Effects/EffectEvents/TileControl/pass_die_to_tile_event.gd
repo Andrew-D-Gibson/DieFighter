@@ -33,7 +33,7 @@ func resolve(engine: ScenarioEngine) -> void:
 	# refused die back to the player's hand — that would let an unlimited relay
 	# pointed at a spent or picky tile fire for free, forever.
 	var next_tile: Tile = targets[0] as Tile
-	if not next_tile.clears_activation_criteria(activator_die):
+	if not next_tile.clears_activation_criteria(activator_die, engine):
 		_hand_die_off(engine)
 		return
 

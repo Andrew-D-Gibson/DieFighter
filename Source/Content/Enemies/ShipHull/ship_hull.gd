@@ -44,6 +44,14 @@ func scar(offset: Vector2, quiet: bool = false) -> void:
 	crater.texture = scar_texture
 	crater.position = offset
 	body.add_child(crater)
+	# Wrecked sockets keep venting, including those restored by Continue.
+	var smoke: ShipDamageSmoke = ShipDamageSmoke.attach(crater)
+	for plume: CPUParticles2D in smoke.get_children():
+		plume.amount = 36
+		plume.lifetime = 1.8
+		plume.scale_amount_min = 2.0
+		plume.scale_amount_max = 4.0
+	smoke.set_hull_fraction(0.0)
 	if quiet:
 		return
 	Juice.sparkle(get_parent(), global_position + bob + offset, Globals.orange, 14, 50.0)

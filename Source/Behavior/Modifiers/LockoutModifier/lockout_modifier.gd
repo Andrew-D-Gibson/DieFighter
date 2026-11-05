@@ -29,10 +29,13 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 		event.canceled = true
 		announce_triggered()
 
+		var activation: TileActivationEvent = event as TileActivationEvent
 		var lockout_event: LockoutEffectEvent = LockoutEffectEvent.new()
+		lockout_event.actor = activation.actor
 		lockout_event.effect_source = affected_node
-		lockout_event.activator_die = event.activator_die
+		lockout_event.activator_die = activation.activator_die
 		lockout_event.lockout_modifier = self
+		lockout_event.feed_depth = activation.feed_depth
 		engine.inject_event(lockout_event)
 
 

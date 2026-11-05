@@ -42,7 +42,7 @@ registration to testing. For how the systems work underneath, see
   - The trigger is yellow: `Any die`, a die icon, or an event
     (`Hull hit`, `Enemy turn ends`, `Your turn starts`, `Adjacent tile
     activates`). A condition follows it with `while`
-    (`Any die while fully charged`). Passive tiles use the same arrow.
+    (`Any die while [color=purple]engines[/color] fully charged`). Passive tiles use the same arrow.
   - Order: cost (`Spend`), main effect, side effects, then where the die goes.
   - **Defaults go unsaid.** A die used on a tile goes to `target`, and so do
     the tile's `Deal` and `Apply`. Neither is written: `Any die -> Deal

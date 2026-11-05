@@ -6,6 +6,8 @@ const TILE_SCENE: PackedScene = preload("res://Source/Content/Tiles/tile.tscn")
 const ENGINE_CHARGER: TileResource = preload("res://Source/Content/Tiles/MapTileResources/engine_charger.tres")
 const DAMAGE_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/damage.tres")
 const LOCK_VISUAL: PackedScene = preload("res://Source/Behavior/Modifiers/LockoutModifier/lockout_modifier_visual.tscn")
+const DICE_SCENE: PackedScene = preload("res://Source/Systems/Game/Dice/dice.tscn")
+const RecordingEngine = preload("res://test/helpers/recording_engine.gd")
 const GRID_TILES_DIR: String = "res://Source/Content/Tiles/TileResources/"
 
 var engine: ScenarioEngine
@@ -148,6 +150,60 @@ func test_a_one_two_or_three_opens_a_lock() -> void:
 		assert_true(LockoutModifier.unlocks(face), "a %d opens it" % face)
 	for face: int in range(4, 7):
 		assert_false(LockoutModifier.unlocks(face), "a %d is turned away" % face)
+
+
+func test_a_locked_tile_refuses_four_or_higher_and_accepts_one_two_or_three() -> void:
+	var tile: Tile = _tile(DAMAGE_TILE)
+	await _lock([tile] as Array[Node])
+	var low_die: Dice = autofree(DICE_SCENE.instantiate())
+	low_die.value = 2
+	var high_die: Dice = autofree(DICE_SCENE.instantiate())
+	high_die.value = 5
+
+	assert_eq(tile.activation_refusal(low_die, engine), "", "a low die opens the lock")
+	assert_true(tile.clears_activation_criteria(low_die, engine))
+
+	assert_eq(tile.activation_refusal(high_die, engine), tr("ERROR_TILE_LOCKED"))
+	assert_false(tile.clears_activation_criteria(high_die, engine))
+
+
+func test_a_feed_into_a_locked_tile_hands_off_a_four_or_higher_to_target() -> void:
+	var recorder: RecordingEngine = autofree(RecordingEngine.new())
+	var locked: Tile = _tile(DAMAGE_TILE)
+	recorder.modifiers.append(LockoutModifier.new(locked))
+
+	var die: Dice = autofree(DICE_SCENE.instantiate())
+	die.value = 5
+
+	var feed: PassDieToTileEvent = PassDieToTileEvent.new()
+	feed.activator_die = die
+	feed.targets = [locked] as Array[Node]
+
+	feed.resolve(recorder)
+
+	var given: Array = recorder.injected_of(GiveDieToTargetEvent)
+	assert_eq(given.size(), 1, "a 4+ fed into a locked tile goes on to the target")
+	var activations: Array = recorder.injected_of(TileActivationEvent)
+	assert_eq(activations.size(), 0, "no activation was injected for the locked tile")
+
+
+func test_a_feed_into_a_locked_tile_passes_a_one_two_or_three() -> void:
+	var recorder: RecordingEngine = autofree(RecordingEngine.new())
+	var locked: Tile = _tile(DAMAGE_TILE)
+	recorder.modifiers.append(LockoutModifier.new(locked))
+
+	var die: Dice = autofree(DICE_SCENE.instantiate())
+	die.value = 2
+
+	var feed: PassDieToTileEvent = PassDieToTileEvent.new()
+	feed.activator_die = die
+	feed.targets = [locked] as Array[Node]
+
+	feed.resolve(recorder)
+
+	var activations: Array = recorder.injected_of(TileActivationEvent)
+	assert_eq(activations.size(), 1, "a 1-3 fed into a locked tile passes through to unlock it")
+	assert_eq((activations[0] as TileActivationEvent).tile, locked)
 
 
 # ── Tiles that never take a die ───────────────────────────────────────────────

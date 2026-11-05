@@ -389,8 +389,8 @@ func _find_matching_event_response(tile: Tile, event: TileEvent.EventType) -> Ti
 	return null
 		
 		
-func clears_activation_criteria(activator_die: Dice = null) -> bool:
-	var refusal: String = activation_refusal(activator_die)
+func clears_activation_criteria(activator_die: Dice = null, engine: ScenarioEngine = null) -> bool:
+	var refusal: String = activation_refusal(activator_die, engine)
 	if refusal.is_empty():
 		return true
 	Events.error_text_popup.emit(refusal, self.global_position)
@@ -401,7 +401,12 @@ func clears_activation_criteria(activator_die: Dice = null) -> bool:
 ## Why this tile would turn [param activator_die] away right now, or "" if it
 ## would take it. A pure query, so callers can ask without the refusal
 ## popping up (the AutoPilot uses it to list the legal moves).
-func activation_refusal(activator_die: Dice = null) -> String:
+func activation_refusal(activator_die: Dice = null, engine: ScenarioEngine = null) -> String:
+	if is_locked_out(engine):
+		if activator_die != null and LockoutModifier.unlocks(activator_die.value):
+			return ""
+		return tr("ERROR_TILE_LOCKED")
+
 	# Check for uses, remembering -1 uses means unlimited
 	if not (uses_remaining == -1 or uses_remaining > 0):
 		return tr("ERROR_NO_USES")
@@ -422,8 +427,9 @@ func can_be_locked_out() -> bool:
 
 ## Whether a lockout already holds this tile. A second lock would fire twice on
 ## the die that opens it, so lockouts check this before landing.
-func is_locked_out() -> bool:
-	var engine: ScenarioEngine = ScenarioEngine.current()
+func is_locked_out(engine: ScenarioEngine = null) -> bool:
+	if engine == null:
+		engine = ScenarioEngine.current()
 	if engine == null:
 		return false
 	for mod: Modifier in engine.modifiers:
@@ -787,6 +793,8 @@ func play_activation_feedback(feed_depth: int = 0) -> void:
 
 ## The tile turned a die away: a red flash and a shake of the head.
 func play_refusal_feedback() -> void:
+	if not is_instance_valid(sprite_frames):
+		return
 	Juice.wiggle(sprite_frames, 12.0, 0.3)
 	flash(Globals.red, 0.7, 0.3)
 

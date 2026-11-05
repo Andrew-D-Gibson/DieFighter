@@ -16,5 +16,5 @@ label = "pods"
 [resource]
 script = ExtResource("1_pod")
 title = "Pod"
-rule = "One of the Outrigger's two tile groups. Each die a tile uses adds its face to that pod's thrust. [color=yellow]Your turn ends[/color] -> the drive gains [color=purple]charge[/color] equal to the lower thrust."
+rule = "One of the Outrigger's two tile groups. Each die a tile uses adds its face to that pod's thrust. [color=yellow]Your turn ends[/color] -> the drive gains [color=purple]engine charge[/color] equal to the lower thrust."
 tokens = Array[ExtResource("2_pod")]([SubResource("pod"), SubResource("pods")])
