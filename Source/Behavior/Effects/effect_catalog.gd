@@ -48,7 +48,7 @@ extends RefCounted
 const KNOWN_FIELDS: Array[String] = [
 	"amount", "multiplier", "multiply_shields", "string_param", "callout", "callout_texture", "grid_offset",
 	"sound_resource", "color", "range_min", "range_max",
-	"ship_resource", "juice_flags", "add_to_amount",
+	"ship_resource", "juice_flags", "add_to_amount", "amplify_multiplier",
 ]
 
 
@@ -99,7 +99,7 @@ static var _entries: Array[Dictionary] = [
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD, label = "Add", handler = AddAmountHandler, fields = ["amount"]},
-	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.MULTIPLY, label = "Multiply", handler = MultiplyAmountHandler, fields = ["multiplier"]},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.MULTIPLY, label = "Multiply", handler = MultiplyAmountHandler, fields = ["multiplier", "amplify_multiplier"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_ADJACENT_TILES, label = "Add Surrounding Tiles", handler = AddAdjacentTilesAmountHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_TILE_DATA, label = "Add Tile Data", handler = AddTileDataAmountHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_ENGINE_CHARGE, label = "Set to Engine Charge", handler = SetAmountToEngineChargeHandler},

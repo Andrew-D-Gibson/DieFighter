@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0k1gfun1oxlg"
-path="res://.godot/imported/preflight_interlock.png-1e42f6df34ea8ad4a226a3f83d440237.ctex"
+uid="uid://c2t6blkp3c8xi"
+path="res://.godot/imported/preflight_interlock-Sheet.png-8f28e2390398514a7c0fa879e3158cfd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Tiles/PurpleTiles/preflight_interlock.png"
-dest_files=["res://.godot/imported/preflight_interlock.png-1e42f6df34ea8ad4a226a3f83d440237.ctex"]
+source_file="res://Assets/Textures/Tiles/PurpleTiles/preflight_interlock-Sheet.png"
+dest_files=["res://.godot/imported/preflight_interlock-Sheet.png-8f28e2390398514a7c0fa879e3158cfd.ctex"]
 
 [params]
 

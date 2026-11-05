@@ -74,3 +74,20 @@ func test_multiplier_grants_snapshot_each_targets_shields() -> void:
 		await event.resolve(engine)
 	assert_eq(health.shields, 40)
 	assert_eq(other.health.shields, 20)
+
+
+func test_amplify_grows_a_marked_multiply_step_instead_of_the_product() -> void:
+	var amounts: Array[int] = []
+	for marked: bool in [false, true]:
+		var context: EffectContext = EffectContext.new()
+		context.targets = [player]
+		context.running_amount = 4
+		var step: EffectData = EffectData.new()
+		step.multiplier = 3.0
+		step.amplify_multiplier = marked
+		MultiplyAmountHandler.new().apply(step, context, engine)
+		DealDamageHandler.new().apply(EffectData.new(), context, engine)
+		var event: EffectEvent = engine.get("injected").pop_back()
+		event.amplify(2)
+		amounts.append(event.amount)
+	assert_eq(amounts, [14, 20], "4x3 then +2 flat; marked, 4x(3+2)")

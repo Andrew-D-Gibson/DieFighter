@@ -212,6 +212,11 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     that does more in part of the grid. On the Carousel's turning ring that's
     part of each lap (Apex Cannon, Keel Plating). Text: `[color=yellow]Top
     row[/color]: +3`.
+  - **Multipliers**: an Amplifier adds to what a `MULTIPLY` step left
+    behind (3x die, then +2). Tick `amplify_multiplier` when the multiplier
+    is the tile's amount, so Amplify grows it instead (Preflight Interlock:
+    3x die Amplified +2 is 5x die), and the info panel names the new
+    multiplier. Text: `damage equal to {times}x die`.
   - **Ship readings**: `AMOUNT_MODIFIER / SET_TO_SHIP_READING`
     (`string_param` = the reading) sets the running amount to a number the
     flown ship's own rules keep, or adds it with `add_to_amount` (§12). 0 on

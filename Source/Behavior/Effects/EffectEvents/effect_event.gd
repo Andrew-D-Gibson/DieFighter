@@ -132,6 +132,11 @@ func announce_status_applied(target: Node, status_id: StringName, stacks: int) -
 	Events.status_applied_to_enemy.emit(target as Enemy, status_id, stacks)
 
 
-## Most outputs gain a flat amount; multiplicative outputs override the unit.
+## What one point of Amplify adds to [member amount]: 1 for a flat output.
+## A multiplied output sets it to what was multiplied, so Amplify grows the
+## multiplier (EffectContext.amplification_unit, a ShieldEvent's shields).
+var amplification_unit: int = 1
+
+
 func amplify(bonus: int) -> void:
-	amount += bonus
+	amount += bonus * amplification_unit

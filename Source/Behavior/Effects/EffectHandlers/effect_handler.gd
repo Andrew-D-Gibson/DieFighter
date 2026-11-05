@@ -47,4 +47,5 @@ func _stamp(event: EffectEvent, context: EffectContext) -> EffectEvent:
 	event.effect_source = context.effect_source
 	event.activator_die = context.activator_die
 	event.die_value = context.activator_die.value if is_instance_valid(context.activator_die) else 0
+	event.amplification_unit = context.amplification_unit
 	return event

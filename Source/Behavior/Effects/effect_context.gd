@@ -38,6 +38,12 @@ var repetitions: int = 1
 ## Reset to 0 at the start of each chain repetition.
 var running_amount: int = 0
 
+## What one point of Amplify is worth to the events that follow: 1 for a flat
+## output, or the amount a MULTIPLY with amplify_multiplier scaled, so an
+## Amplifier grows that multiplier instead of the product. Reset with
+## running_amount at the start of each repetition.
+var amplification_unit: int = 1
+
 ## Enemy intention, set by the enemy with an intent amount
 var enemy_intent_amount: int = 0
 
