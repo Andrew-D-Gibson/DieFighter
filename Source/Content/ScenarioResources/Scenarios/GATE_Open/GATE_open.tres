@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Texture2D" uid="uid://e4r8pfc36ryf" path="res://Assets/Textures/Map/EncounterIcons/jump_gate.png" id="tex_gate"]
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg_0"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg_0"]
 
 [resource]
 script = ExtResource("script_0")

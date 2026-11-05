@@ -86,4 +86,4 @@ func test_stray_corrupted_nodes_ahead_of_fate_zone_use_outskirt_background() -> 
 	var in_zone_bg: Resource = _map.background_for_scenario(_map.scenario_list[1], 1)
 	var outskirt_bg: Resource = _map.background_for_scenario(_map.scenario_list[5], 5)
 	assert_eq(in_zone_bg, _map.scenario_list[1].background_resource)
-	assert_eq(outskirt_bg.resource_path, "res://Source/Resources/BackgroundResources/fate_outskirt.tres")
+	assert_eq(outskirt_bg.resource_path, "res://Source/Content/BackgroundResources/fate_outskirt.tres")

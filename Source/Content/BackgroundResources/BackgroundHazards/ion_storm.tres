@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="BackgroundHazardResource" format=3 uid="uid://bksbsmdcc4wo"]
+
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_vusp4"]
+[ext_resource type="Texture2D" uid="uid://b4tb4b8ap7xdw" path="res://Assets/Textures/TargetingComputer/HazardIcons/ion_storm.png" id="icon_tex"]
+[ext_resource type="Script" uid="uid://bpcwym2qynvqs" path="res://Source/Content/BackgroundResources/background_hazard_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_3"]
+
+[sub_resource type="Resource" id="Resource_step1"]
+script = ExtResource("script_1")
+category = 2
+amount = 8
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step2"]
+script = ExtResource("script_1")
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("script_1")
+category = 4
+color = Color(0.553, 0.945, 0.957, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_step5"]
+script = ExtResource("script_1")
+category = 3
+subtype = 14
+color = Color(0.553, 0.945, 0.957, 1)
+metadata/_custom_type_script = "uid://tr402hc111gu"
+
+[sub_resource type="Resource" id="Resource_chain6"]
+script = ExtResource("script_3")
+effects = Array[ExtResource("script_1")]([SubResource("Resource_step1"), SubResource("Resource_step2"), SubResource("Resource_step3"), SubResource("Resource_step5")])
+metadata/_custom_type_script = "uid://7dwxduwis4yk"
+
+[resource]
+script = ExtResource("script_0")
+hazard_name = "Ion Storm"
+description = "[color=yellow]Your turn ends[/color] ->
+[color=green]Re-roll[/color] all enemy dice"
+headline = "enemy dice [color=green]re-roll[/color]"
+banner = "ENEMY DICE RE-ROLLED!"
+icon = ExtResource("icon_tex")
+color = Color(0.553, 0.945, 0.957, 1)
+timing = 1
+turns_until_first = 2
+turns_between = 2
+effect_chain = SubResource("Resource_chain6")
+metadata/_custom_type_script = "uid://bpcwym2qynvqs"

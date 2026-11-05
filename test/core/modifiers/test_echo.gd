@@ -11,7 +11,7 @@ const PLAYER_SCENE: PackedScene = preload("res://Source/Systems/Game/Player/play
 const DAMAGE_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/damage.tres")
 const REROLL_TILE: TileResource = preload("res://Source/Content/Tiles/TileResources/reroll.tres")
 const FORTRESS: TileResource = preload("res://Source/Content/Tiles/TileResources/fortress_protocol.tres")
-const DEAD_SYSTEMS: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/dead_systems.tres"
+const DEAD_SYSTEMS: String = "res://Source/Content/BackgroundResources/BackgroundModifiers/dead_systems.tres"
 
 var engine: ScenarioEngine
 var cannon: Tile

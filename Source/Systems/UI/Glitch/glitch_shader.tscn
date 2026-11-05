@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://bf4iavggnciug"]
+
+[ext_resource type="Shader" uid="uid://b325sq1hvbhpv" path="res://Assets/Shaders/glitch.gdshader" id="1_gqy5b"]
+[ext_resource type="Script" uid="uid://chphrqxy6veu0" path="res://Source/Systems/UI/Glitch/glitch_controller.gd" id="2_ebvx0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8jvnv"]
+shader = ExtResource("1_gqy5b")
+shader_parameter/shake_power = 0.01
+shader_parameter/shake_rate = 1.0
+shader_parameter/shake_speed = 5.0
+shader_parameter/shake_block_size = 30.5
+shader_parameter/shake_color_rate = 0.01
+
+[node name="GlitchShader" type="ColorRect" unique_id=1160164877]
+visible = false
+material = SubResource("ShaderMaterial_8jvnv")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_ebvx0")

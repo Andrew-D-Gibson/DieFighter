@@ -18,13 +18,13 @@ const _ERROR_POPUPS_PATH: String = "res://Source/Systems/UI/ErrorPopupManager/er
 
 const _ENEMY_DIR: String = "res://Source/Content/Enemies/EnemyResources/"
 const _ENEMY_ACTION_DIR: String = "res://Source/Content/Enemies/EnemyActions/EnemyActionResources/"
-const _HAZARD_DIR: String = "res://Source/Resources/BackgroundResources/BackgroundHazards/"
-const _RULE_DIR: String = "res://Source/Resources/BackgroundResources/BackgroundModifiers/"
+const _HAZARD_DIR: String = "res://Source/Content/BackgroundResources/BackgroundHazards/"
+const _RULE_DIR: String = "res://Source/Content/BackgroundResources/BackgroundModifiers/"
 const _KEYWORD_DIR: String = "res://Source/Content/Keywords/KeywordResources/"
 const _TUTORIAL_DIR: String = "res://Source/Systems/TutorialManager/TutorialStepResources/"
 const _UI_CSV: String = "res://Localization/translations.csv"
 ## Content folders searched for callout effects.
-const _CALLOUT_ROOTS: Array[String] = ["res://Source/Content/", "res://Source/Resources/"]
+const _CALLOUT_ROOTS: Array[String] = ["res://Source/Content/"]
 
 
 ## Every surface, in the order the report lists them.

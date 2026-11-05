@@ -797,7 +797,7 @@ encounter.
 
 ## 5. Backgrounds and background rules
 
-**Background** (`Source/Resources/BackgroundResources/<name>.tres`, a
+**Background** (`Source/Content/BackgroundResources/<name>.tres`, a
 `BackgroundResource`)
 - `background_color`.
 - Nebula and star toggles and counts. `nebula_material` swaps the
@@ -951,7 +951,7 @@ register: no enum, no match.
 ## 6. Hazards (timed backgrounds)
 
 A hazard belongs to a background, not a scenario: the place itself goes off.
-`Source/Resources/BackgroundResources/BackgroundHazards/<name>.tres` (a
+`Source/Content/BackgroundResources/BackgroundHazards/<name>.tres` (a
 `BackgroundHazardResource`):
 - `hazard_name`, `description`, `color`.
 - `headline`: what it does in a few words, read after the countdown on the

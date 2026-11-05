@@ -136,7 +136,7 @@ func test_every_lockout_source_draws_a_lockable_tile() -> void:
 	# open one is free, and the lock would fizzle on the backstop instead.
 	for path: String in [
 			"res://Source/Content/Enemies/EnemyActions/EnemyActionResources/lockout_grid_pos.tres",
-			"res://Source/Resources/BackgroundResources/BackgroundHazards/asteroid_impact.tres"]:
+			"res://Source/Content/BackgroundResources/BackgroundHazards/asteroid_impact.tres"]:
 		var text: String = FileAccess.get_file_as_string(path)
 		assert_string_contains(text, "subtype = %d\n" % EffectEnums.TargetingSubtype.TARGET_RANDOM_LOCKABLE_TILE, path)
 

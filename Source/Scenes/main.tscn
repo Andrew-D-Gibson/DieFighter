@@ -6,13 +6,12 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/DevConsole/TilePalette/tile_palette.tscn" id="2_tpal"]
 [ext_resource type="PackedScene" uid="uid://b4bhqmwyiaq22" path="res://Source/Systems/UI/GameOver/game_over.tscn" id="3_flage"]
 [ext_resource type="PackedScene" uid="uid://ch8tnilu0m0y2" path="res://Source/Systems/UI/PauseMenu/pause_menu.tscn" id="4_6ebjm"]
-[ext_resource type="Script" uid="uid://by2nuppu48mrd" path="res://Source/Systems/UI/DebugItems/fps_counter.gd" id="4_7iud4"]
 [ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="4_flage"]
-[ext_resource type="Shader" uid="uid://b325sq1hvbhpv" path="res://Assets/Shaders/glitch.gdshader" id="4_o33d5"]
 [ext_resource type="PackedScene" uid="uid://ckr62x5ur3m8g" path="res://Source/Systems/UI/ErrorPopupManager/error_popup_manager.tscn" id="4_oai2y"]
+[ext_resource type="PackedScene" uid="uid://bf4iavggnciug" path="res://Source/Systems/UI/Glitch/glitch_shader.tscn" id="glitch_shader_scene"]
+[ext_resource type="PackedScene" uid="uid://5uhr4g3nni35" path="res://Source/Systems/UI/DebugItems/fps_counter.tscn" id="fps_counter_scene"]
 [ext_resource type="PackedScene" uid="uid://c6xh4tyxli6ko" path="res://Source/Systems/UI/SaveIndicator/save_indicator.tscn" id="4_svind"]
 [ext_resource type="Texture2D" uid="uid://bgvyunxv5cnya" path="res://Assets/Textures/UI/Cockpit/walls.png" id="5_a6pqk"]
-[ext_resource type="Script" uid="uid://chphrqxy6veu0" path="res://Source/Systems/UI/Glitch/glitch_controller.gd" id="5_aaucc"]
 [ext_resource type="PackedScene" uid="uid://cwh85ruy5f5pl" path="res://Source/Systems/Graphics/BackgroundManager/background_manager.tscn" id="5_flage"]
 [ext_resource type="Script" uid="uid://tw7lpv214pfl" path="res://Source/Systems/UI/Camera/camera.gd" id="6_7iud4"]
 [ext_resource type="PackedScene" uid="uid://c1rkk6hppmnta" path="res://Source/Systems/Graphics/Vignette/vignette.tscn" id="6_hd7px"]
@@ -122,14 +121,6 @@ glow_intensity = 0.6
 glow_bloom = 0.3
 glow_hdr_threshold = 0.5
 adjustment_enabled = true
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_aaucc"]
-shader = ExtResource("4_o33d5")
-shader_parameter/shake_power = 0.01
-shader_parameter/shake_rate = 1.0
-shader_parameter/shake_speed = 5.0
-shader_parameter/shake_block_size = 30.5
-shader_parameter/shake_color_rate = 0.01
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efjlt"]
 shader = ExtResource("13_jblvd")
@@ -269,30 +260,9 @@ visible = false
 
 [node name="SaveIndicator" parent="UI" unique_id=1121636869 instance=ExtResource("4_svind")]
 
-[node name="GlitchShader" type="ColorRect" parent="UI" unique_id=2111896328]
-visible = false
-material = SubResource("ShaderMaterial_aaucc")
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("5_aaucc")
+[node name="GlitchShader" parent="UI" unique_id=2111896328 instance=ExtResource("glitch_shader_scene")]
 
-[node name="FPSCounter" type="RichTextLabel" parent="UI" unique_id=1878225024]
-visible = false
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -229.0
-offset_bottom = 90.0
-grow_horizontal = 0
-theme_type_variation = &"SmallX6"
-bbcode_enabled = true
-text = "FPS: 60"
-fit_content = true
-horizontal_alignment = 1
-script = ExtResource("4_7iud4")
+[node name="FPSCounter" parent="UI" unique_id=1878225024 instance=ExtResource("fps_counter_scene")]
 
 [node name="TilePalette" parent="UI" unique_id=1930415882 instance=ExtResource("2_tpal")]
 

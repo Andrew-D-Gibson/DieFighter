@@ -246,7 +246,7 @@ func test_a_pinned_stop_replaces_only_its_slot() -> void:
 
 # ── A run's first stops are free of place rules ──────────────────────────────
 
-const BASIC_BACKGROUNDS: String = "res://Source/Resources/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres"
+const BASIC_BACKGROUNDS: String = "res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres"
 
 
 func test_a_rule_free_draw_never_lands_under_a_rule_or_a_hazard() -> void:
@@ -282,7 +282,7 @@ func test_a_rule_free_draw_is_still_one_draw() -> void:
 
 func test_a_pool_with_only_ruled_backgrounds_draws_as_usual() -> void:
 	var pool := RandomBackgroundResource.new()
-	pool.eligible_backgrounds = [load("res://Source/Resources/BackgroundResources/pulsar_field.tres")]
+	pool.eligible_backgrounds = [load("res://Source/Content/BackgroundResources/pulsar_field.tres")]
 	assert_not_null(pool.get_random_background(RandomNumberGenerator.new(), true))
 
 

@@ -51,11 +51,6 @@ been self-playtested and is fun. Next comes outside playtesting.
 Each of these was checked against the code on 2026-11-05, and none is urgent.
 Fix them opportunistically when you're already in the file.
 
-- [ ] (Judgment call.) Data-only resources such as `Source/Resources/BackgroundResources/`
-      and `SoundEffectResources/`, plus `reward_resource.gd`, could move to
-      `Source/Content/`.
-- [ ] (Low value.) `GlitchShader`, `FPSCounter` and `FadeIn` are inline nodes
-      in `main.tscn`, not their own scenes like the rest of the UI.
 - [ ] **Big files.** The largest gameplay scripts are `map.gd` (1183),
       `enemy.gd` (911), `focus_selection.gd` (885), `player.gd` (879),
       `opening_cutscene.gd` (852), `tutorial_manager.gd` (840), `tile.gd` (836)

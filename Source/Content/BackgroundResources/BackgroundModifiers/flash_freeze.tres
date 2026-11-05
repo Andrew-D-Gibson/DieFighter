@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="BackgroundModifierResource" format=3 uid="uid://bc78s3pr7rylp"]
+
+[ext_resource type="Script" uid="uid://btc7do1jlfemq" path="res://Source/Content/BackgroundResources/background_modifier_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://dxuj2dmwoo8v1" path="res://Source/Behavior/Modifiers/BackgroundModifiers/dice_freeze_modifier.gd" id="modifier_script"]
+
+[resource]
+script = ExtResource("script_0")
+modifier_name = "Flash Freeze"
+description = "Dice values [color=blue]cannot change[/color]: no rerolls, bumps or flips"
+callout = "FROZEN"
+color = Color(0.807843, 0.941176, 0.945098, 1)
+modifier_script = ExtResource("modifier_script")

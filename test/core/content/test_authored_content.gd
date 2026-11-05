@@ -12,7 +12,7 @@ const SCENARIO_DIR: String = "res://Source/Content/ScenarioResources/Scenarios/"
 
 ## Backgrounds carry hazard chains, so they are scanned alongside content even
 ## when no scenario happens to reference them yet.
-const BACKGROUND_ROOT: String = "res://Source/Resources/BackgroundResources/"
+const BACKGROUND_ROOT: String = "res://Source/Content/BackgroundResources/"
 
 ## Every EffectData / EffectChain reachable from content, paired with the file
 ## it came from. Built once in before_all(): loading all content is the slow part.

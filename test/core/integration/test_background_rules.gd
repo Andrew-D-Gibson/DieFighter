@@ -10,7 +10,7 @@ extends "res://test/helpers/die_fighter_test.gd"
 
 const Ships := preload("res://test/helpers/ships.gd")
 
-const BACKGROUND_ROOT: String = "res://Source/Resources/BackgroundResources/"
+const BACKGROUND_ROOT: String = "res://Source/Content/BackgroundResources/"
 
 ## Background -> the Modifier class its rule builds (or "" for none).
 const RULES: Dictionary[String, String] = {

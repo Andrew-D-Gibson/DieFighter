@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="ScrollingObjectsResource" format=3 uid="uid://bkrxtp3qx8wli"]
+
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/large_1.tscn" id="1_o8got"]
+[ext_resource type="Script" uid="uid://dmtivy7vglv0q" path="res://Source/Content/BackgroundResources/scrolling_objects_resource.gd" id="1_script"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/large_2.tscn" id="2_jaxxg"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/large_3.tscn" id="3_qqrao"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/large_4.tscn" id="4_fc4fy"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/large_5.tscn" id="5_jjlc5"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/large_6.tscn" id="6_a70n7"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_1.tscn" id="13_c732c"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_2.tscn" id="14_tpcbv"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_3.tscn" id="15_4lm08"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_4.tscn" id="16_f3pj3"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_5.tscn" id="17_7yxx0"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_6.tscn" id="18_rmg78"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_7.tscn" id="19_jinty"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_8.tscn" id="20_nwwed"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_9.tscn" id="21_d4d80"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_10.tscn" id="22_wqcin"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/ScrollingPieces/TriangleDebris/medium_11.tscn" id="23_5cs5x"]
+
+[resource]
+script = ExtResource("1_script")
+medium_pieces = Array[PackedScene]([ExtResource("13_c732c"), ExtResource("14_tpcbv"), ExtResource("15_4lm08"), ExtResource("16_f3pj3"), ExtResource("17_7yxx0"), ExtResource("18_rmg78"), ExtResource("19_jinty"), ExtResource("20_nwwed"), ExtResource("21_d4d80"), ExtResource("22_wqcin"), ExtResource("23_5cs5x")])
+large_pieces = Array[PackedScene]([ExtResource("1_o8got"), ExtResource("2_jaxxg"), ExtResource("3_qqrao"), ExtResource("4_fc4fy"), ExtResource("5_jjlc5"), ExtResource("6_a70n7")])
