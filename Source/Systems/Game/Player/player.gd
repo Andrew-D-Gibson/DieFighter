@@ -450,7 +450,7 @@ func reroll_dice() -> void:
 		if die:
 			die.reroll_with_tween()
 			Events.play_sound.emit(_DICE_REROLL_SFX)		
-			await get_tree().create_timer(0.2).timeout
+			await get_tree().create_timer(0.2 / Globals.animation_speed).timeout
 	
 	Events.highlight_dice_area.emit()
 	

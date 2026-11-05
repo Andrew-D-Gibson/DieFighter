@@ -28,6 +28,14 @@ extends Node2D
 ## the player's own damage grows faster than their max health does.
 @export var damage_scale_per_sector: float = 0.2
 
+## What a wreck's credits are multiplied by, by sector: the first entry for the
+## first sector, and so on, with the last entry carrying on past the end.
+## Later encounters field more ships, each authored with its own payout, so
+## without a trim the credits outran the shop's price growth and every later
+## shop could be cleared. Applies to payouts and money pickups, never to a
+## refund (what the player is owed back stays exact). See Reward.
+@export var money_scale_by_sector: Array[float] = [1.0, 0.78, 0.78]
+
 ## The most different kinds of action one enemy's table may mix, by sector:
 ## the first entry for the first sector, and so on, with the last entry
 ## carrying on past the end. 0 means no limit. Early ships doing one or two
@@ -299,6 +307,14 @@ func is_rule_free_slot(slot: int) -> bool:
 ## (see Enemy._update_health_from_resource).
 func get_difficulty_multiplier() -> float:
 	return 1.0 + current_game_save.sector_index * difficulty_scale_per_sector
+
+
+## Reward credits are multiplied by this; see [member money_scale_by_sector].
+func get_money_multiplier() -> float:
+	if money_scale_by_sector.is_empty() or current_game_save == null:
+		return 1.0
+	var index: int = clampi(current_game_save.sector_index, 0, money_scale_by_sector.size() - 1)
+	return money_scale_by_sector[index]
 
 
 ## Enemy action amounts are multiplied by this when a turn's actions are rolled

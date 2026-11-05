@@ -163,9 +163,11 @@ func is_playable() -> bool:
 
 
 ## Flips the die over to [param new_value] (0 rolls a random face), taking
-## [param tween_time] seconds for each half of the turn.
+## [param tween_time] seconds at 1x for each half of the turn, shortened by the
+## animation-speed option.
 func reroll_with_tween(new_value: int = 0, tween_time: float = 0.2) -> void:
 	var final_scale: Vector2 = rest_scale()
+	tween_time /= Globals.animation_speed
 
 	var tween: Tween = get_tree().create_tween().set_parallel()
 	tween.tween_property(self, 'rotation_degrees', 180, tween_time).from(0).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
