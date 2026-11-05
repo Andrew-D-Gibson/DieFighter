@@ -8,4 +8,4 @@ script = ExtResource("1_njnaq")
 notes = "TRANSITION. Finish the fight, then the hyperspace jump: stars streak, a white frame, the next sky blooms in. Cut on the white frame."
 scenario_id = "COMBAT_cannon_drone"
 run_seed = 111
-beats = PackedStringArray("ready", "fx kill", "ready 20", "wait 2.5", "mark jump", "fx jump", "wait 7", "quit")
+beats = PackedStringArray("ready", "fx kill", "ready 20", "wait 2.5", "mark jump", "fx jump", "wait 11", "mark arrived", "wait 2", "quit")
