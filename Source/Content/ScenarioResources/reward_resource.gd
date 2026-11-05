@@ -12,8 +12,9 @@ var refund: int = 0
 @export_range(0.0, 1.0) var dice_probability: float = 0
 ## Chance the offer's last choice is a Grid Slot instead, while the grid has a
 ## sealed cell to open. Always offered when the grid is full, since a tile
-## would have nowhere to go.
-@export_range(0.0, 1.0) var grid_slot_probability: float = 0.25
+## would have nowhere to go. Raised from 0.25: a combat usually makes one
+## offer, so at a quarter players went most of a sector without seeing a slot.
+@export_range(0.0, 1.0) var grid_slot_probability: float = 0.4
 
 ## The lowest rarity this offer's tiles can be. Elites and bosses raise it so
 ## beating them pays out in tiles a normal fight rarely shows. Rarity weighting
