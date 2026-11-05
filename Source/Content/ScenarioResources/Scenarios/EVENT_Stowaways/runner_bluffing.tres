@@ -5,14 +5,16 @@
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Stowaways/runner_grateful.tres" id="s_runner_grateful"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Stowaways/runner_bolting.tres" id="s_runner_bolting"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Stowaways/runner_fare.tres" id="s_runner_fare"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Stowaways/runner_vouched.tres" id="s_runner_vouched"]
 
 [resource]
 script = ExtResource("state_script")
-dialogue = "Just cargo, officer. Right, pilot?"
+dialogue = "(Psst. Take this. Say we're clean.)"
 faction = 1
 attitude = 1
 transitions = Dictionary[int, ExtResource("base_script")]({
 0: ExtResource("s_runner_grateful"),
 1: ExtResource("s_runner_bolting"),
-4: ExtResource("s_runner_fare")
+4: ExtResource("s_runner_fare"),
+8: ExtResource("s_runner_vouched")
 })

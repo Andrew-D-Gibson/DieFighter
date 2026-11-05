@@ -46,11 +46,19 @@ enemy_resource = ExtResource("enemy_bounty_runner_smuggler")
 starting_state = ExtResource("state_runner_bluffing")
 reward_resource = SubResource("Resource_reward1")
 
+[sub_resource type="Resource" id="Resource_bribe"]
+script = ExtResource("reward_script")
+num_of_rewards = 0
+min_money_pickup = 25
+max_money_pickup = 35
+
 [resource]
 script = ExtResource("scenario_script")
 map_icon = ExtResource("icon")
 background_resource = ExtResource("bg")
 starting_enemies = Array[ExtResource("spawn_script")]([SubResource("Resource_spawn0"), SubResource("Resource_spawn1")])
+starting_reward = SubResource("Resource_bribe")
+starting_reward_position = Vector2(270, 60)
 rewards = Dictionary[int, ExtResource("reward_script")]({
 0: SubResource("Resource_bounty0")
 })

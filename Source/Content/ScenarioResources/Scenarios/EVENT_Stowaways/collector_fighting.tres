@@ -4,5 +4,5 @@
 
 [resource]
 script = ExtResource("state_script")
-dialogue = "Smuggler's friend? Pay in hull."
+dialogue = "Hiding stowaways? Pay in hull."
 attitude = 2
