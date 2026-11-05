@@ -468,9 +468,10 @@ standing.
 - **Every Compact shop and repair dock** prices by the Caravan's regard: ×1.5
   HATED, ×1.25 DISLIKED, ×0.9 LIKED, ×0.8 TRUSTED (a dock pays that much less
   for sold parts). The keeper says so on arrival (`shop_ship_greeting`,
-  `repair_dock_greeting`): *"You hit a Compact shop. Prices went up."* /
-  *"Compact has your file. Prices went up."* / *"Friend of the Compact! Fair
-  prices for you."*
+  `repair_dock_greeting`): *"You hit a Compact shop. Prices went up."* (a
+  shop, after `caravan_shop_attacked`) / *"You crossed the Caravan. Prices
+  went up."* (any other way to a DISLIKED Caravan; the dock's is *"...Repairs
+  cost more."*) / *"Friend of the Compact! Fair prices for you."*
 - **The Compact collects** (`GRUDGE_CompactLien`, a consequence): once the
   Caravan DISLIKES the player, the next sector holds a Claims Adjuster ahead of
   the arrival. It takes a 20-30 credit lien on arrival and names the
