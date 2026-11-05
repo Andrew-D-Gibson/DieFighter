@@ -156,8 +156,8 @@ vertical cut favours the thesis and machine shots.
 ### 3.6 What isn't a shot
 
 - **The opening cutscene** isn't a shot (it plays before any save exists),
-  but `tools/trailer_capture.sh cold_open` records it, straight into the
-  ambush fight, until `--max-seconds` or you close the window.
+  but `tools/trailer_capture.sh cold_open --max-seconds 60` records it,
+  straight into the ambush fight (close the window to stop sooner).
 - **The main menu diorama** (the Caravan streaming past, a Pilgrim heading
   for Fate, now and then a Mayday hooked into the glow): `tools/trailer_capture.sh
   menu --max-seconds 120` for B-roll behind the end card. The Mayday comes
@@ -240,26 +240,28 @@ but only once they're finished.
 
 ## 5. Shot list
 
-All in `Source/Debug/Trailer/Shots/`. "Recorded" means a Movie Maker take was
-made and checked frame by frame on 2026-11-05.
+All in `Source/Debug/Trailer/Shots/`. Every ✅ was recorded with
+`tools/trailer_capture.sh` (Movie Maker, 1920×1080, 60 fps) and checked frame by
+frame on 2026-11-05.
 
-| Shot | Beat | Scenario | Status |
+| Shot | Beat | Scenario | What the take shows |
 |---|---|---|---|
-| `thesis` | Hook | COMBAT_attacker | ✅ recorded: drag, hit (16→10), the 6 beamed onto the 6-slot |
-| `machine` | Depth | COMBAT_carrier, sector 2 | see below |
-| `tithe` | Hook reversed | COMBAT_tithe_collector | see below |
-| `overkill` | Fun | COMBAT_wolfpack | see below |
-| `ion_storm` | Fun | ELITE_lance_squadron | see below |
-| `boss_warden` | Escalation | GATE_sector_warden | see below |
-| `dynamo` | Escalation | GATE_arc_dynamo | see below |
-| `bastion` | Escalation / climax | GATE_bastion, sector 3 | see below |
-| `civilian` | Story | EVENT_pirate_attacking_civilian | by hand |
-| `signal` | Story | EVENT_signal | see below |
-| `pact` | Story | EVENT_pact | by hand |
-| `stakes` | Stakes | COMBAT_wolfpack | see below |
-| `fate` | Climax | FATE_maw | see below |
-| `jump` | Transition | COMBAT_cannon_drone | see below |
-| `sandbox` | B-roll | COMBAT_wolfpack, Phantom Fleet build | by hand |
+| `thesis` | Hook | COMBAT_attacker | ✅ The cursor carries the 6 onto the Dice Cannon; the Venom Fighter takes it (16→10) and the tractor beam lands the 6 on its 6-slot. |
+| `machine` | Depth | COMBAT_carrier, sector 2 | ✅ A 6 through Signal Relay → Polarizer → Toll Relay → Relay Terminal: shields hit, the −1 tax, charge 2/10, then 12 damage and "LINK 4" on the Carrier; Crescendo follows. Solar-flare sky. |
+| `tithe` | Hook reversed | COMBAT_tithe_collector | ⚠ The Collector spends the dice you handed it (+4 shields, a shot at you), a fine "your dice, used against you" shot. Seed 71 doesn't roll a Seize: retake with other seeds for the claw. |
+| `overkill` | Fun | COMBAT_wolfpack | ✅ A 6 into a ship staged at 2 hull: kill cam, speed lines, "OVERKILL!" over the slow-mo wreck. |
+| `ion_storm` | Fun | ELITE_lance_squadron | ✅ Three Ion Lances, ion orbs, lightning in the storm front; the storm strikes on cue: "!! ION STORM !! ENEMY DICE RE-ROLLED!" with a glitch burst. |
+| `boss_warden` | Escalation | GATE_sector_warden | ✅ Region card, the SECTOR WARDEN card ("Warlord of the Tail"), "Everyone back here is already dead.", then the solar flare: "SHIELDS DOWN! 3 DAMAGE TO ALL". |
+| `dynamo` | Escalation | GATE_arc_dynamo (star field) | ✅ Four dice fill the breaker 0→23/18, "The Belly can't wait for one ship.", OVERLOAD!, every die vented back. The boss card plays on arrival. |
+| `bastion` | Escalation / climax | GATE_bastion, sector 3 | ✅ Each part's kill cam in turn, "Four hundred years. Not you.", OVERKILL on the last, the hull breaks up in a glitch burst and the gate opens. |
+| `civilian` | Story | EVENT_pirate_attacking_civilian | ✅ Set up for hand play: the Venom Fighter and the transport, nothing targeted yet. |
+| `signal` | Story | EVENT_signal | ✅ The Wisp: "...you... are falling too..."; shot, it hisses "...hush... hush... HUSH..." and the Shroud uncloaks. |
+| `pact` | Story | EVENT_pact | ✅ Set up for hand play: the Zealot's "Power, for a little of you. 12 hull.", its 0/12 breaker and the rare-tile offer. |
+| `stakes` | Stakes | COMBAT_wolfpack | ✅ The hand arms them; their volley takes the hull 26→17, the edges flush red, the canopy cracks, and you hold. |
+| `fate` | Climax | FATE_maw | ✅ The Fate Rift card, the Spilled with "YOU CAN'T ESCAPE", the Feed chain landing "LINK 4". No black hole in frame on this seed: retake, or pin `background` to `rift_space.tres`. |
+| `jump` | Transition | COMBAT_cannon_drone | ✅ The kill, salvage, hyperspace streaks, a new sky blooming in and the next fight's ships arriving. |
+| `sandbox` | B-roll | COMBAT_wolfpack, Phantom Fleet build | ✅ Set up for hand play. |
+| `cold_open` / `menu` | Story / button B-roll | the cutscene, the main menu | ✅ Recorded through the capture script (scenes, not shots). The menu's buttons are part of the frame: crop or cover them for B-roll. |
 
 ### Capture session, in order
 
