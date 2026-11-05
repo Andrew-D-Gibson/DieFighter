@@ -286,8 +286,8 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
   - **Per-fight counters**: a tile that builds something up over a fight
     keeps it in its own tile data (`INCREMENT_TILE_DATA`, shown with
     `[data]key[/data]`) and zeroes it in an `ON_COMBAT_START` response, which
-    is queued ahead of the fight's first `ON_TURN_START` (Ratchet Cannon).
-    Overclock Coil does the same per turn with `ON_TURN_START`.
+    is queued ahead of the fight's first `ON_TURN_START` (Ratchet Cannon,
+    Overclock Coil). A per-turn counter zeroes in `ON_TURN_START` instead.
   - **Responses about a ship** (`ON_STATUS_APPLIED_TO_ENEMY`) start with that
     ship as the chain's target, so `that ship` needs no targeting step: go
     straight to the effect (Hex Coil: ZAP, `SET 2`, `DAMAGE`). It fires once
