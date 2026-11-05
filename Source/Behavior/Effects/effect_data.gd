@@ -52,6 +52,9 @@ extends Resource
 ## SET_TO_SHIP_READING: add the reading to running_amount instead of replacing
 ## it, so it can stack on a die's face ("equal to die, +1 per pip ...").
 @export var add_to_amount: bool = false
+## MULTIPLY: make the multiplier the amount an Amplifier grows, rather than
+## the product it leaves behind. x3 Amplified +2 becomes x5, not x3 then +2.
+@export var amplify_multiplier: bool = false
 
 # ── String / Key Parameters ────────────────────────────────────────────────────
 ## General-purpose string parameter.

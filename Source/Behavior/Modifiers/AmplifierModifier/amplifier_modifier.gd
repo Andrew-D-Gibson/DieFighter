@@ -50,6 +50,10 @@ func get_info_text() -> String:
 		var tile: Tile = affected_node as Tile
 		if tile.tile_resource and tile.tile_resource.effect_chain:
 			for step: EffectData in tile.tile_resource.effect_chain.effects:
+				if step.amplify_multiplier:
+					# The multiplier itself grows, so show the one it now is.
+					return tr("INFO_AMPLIFIED_MULTIPLIER_STEP").format({"amount": "%+d" % total,
+							"factor": TextTokens.format_value(step.multiplier + total)})
 				if step.multiply_shields:
 					multiplies = true
 	var key: String = "INFO_AMPLIFIED_MULTIPLIER" if multiplies else "INFO_AMPLIFIED_FLAT"

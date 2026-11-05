@@ -66,7 +66,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_step9"]
 script = ExtResource("script_3")
 category = 2
-amount = 4
+amount = 3
 text_token = &"damage"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -85,7 +85,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 [sub_resource type="Resource" id="Resource_step12"]
 script = ExtResource("script_3")
 category = 2
-amount = 2
+amount = 1
 text_token = &"step"
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -140,6 +140,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="Resource_evt16"]
 script = ExtResource("script_6")
+event = 10
 metadata/_custom_type_script = "uid://cfken75wevu1a"
 
 [sub_resource type="Resource" id="Resource_step17"]
@@ -165,7 +166,7 @@ script = ExtResource("script_0")
 offered_as_reward = false
 is_upgrade = true
 tile_name = "[color=red]Overclock Coil+[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color], +{step} per earlier use this turn (+[data]overclock[/data])"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]{damage} damage[/color], +{step} per earlier use this fight (+[data]overclock[/data])"
 rarity = 2
 textures = SubResource("Resource_frames3")
 uses_per_turn = -1
