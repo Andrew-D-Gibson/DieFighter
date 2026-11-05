@@ -1,0 +1,30 @@
+[gd_resource type="Resource" script_class="FateFaceResource" format=3 uid="uid://buktjeb3h8kw4"]
+
+[ext_resource type="Texture2D" uid="uid://ctbbvlnfnsh4x" path="res://Assets/Textures/UI/FateDie/ruin_glyph.png" id="1_p26mw"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_xkim1"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="2_p26mw"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_ct8ja"]
+[ext_resource type="Script" uid="uid://bswc2s0i6pxtx" path="res://Source/Content/FateDie/fate_face_resource.gd" id="4_ajjo5"]
+
+[sub_resource type="Resource" id="Resource_ct8ja"]
+script = ExtResource("1_xkim1")
+subtype = 16
+
+[sub_resource type="Resource" id="Resource_ajjo5"]
+script = ExtResource("1_xkim1")
+category = 5
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_brab0"]
+script = ExtResource("3_ct8ja")
+effects = Array[ExtResource("1_xkim1")]([SubResource("Resource_ct8ja"), SubResource("Resource_ajjo5")])
+
+[resource]
+script = ExtResource("4_ajjo5")
+face = 4
+face_name = "Ruin"
+carved_by = "Turning on someone who trusted you."
+reckoning_text = "(lock) a random tile."
+color = Color(0.93333334, 0.49803922, 0.18431373, 1)
+glyph = ExtResource("1_p26mw")
+reckoning_chain = SubResource("Resource_brab0")

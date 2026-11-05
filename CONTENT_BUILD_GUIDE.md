@@ -838,6 +838,30 @@ Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
   `test_no_ship_and_faction_reward_both_offer_picks` enforces it, because
   both offers would open on the same wreck.
 
+**Fate's Die** (LORE.md §5, ARCHITECTURE "Fate's Die and the Reckoning"). An
+encounter's choices carve the run's die through the ship state the choice
+leads to:
+- Put `SCENARIO_CONTROL / CARVE_FATE_FACE` (`string_param` = `mercy`,
+  `plunder`, `duty`, `ruin`, `hunger` or `strange`) **first** in that state's
+  `effects_on_enter`, ahead of any WAIT, so it lands before a checkpoint can be
+  taken. Mercy is saving, Plunder taking from the slow, Duty the Rearguard's
+  way, Ruin turning on someone who trusted you, Hunger the Inbound's pacts,
+  Strange listening to the Spilled. The faces each encounter carves are listed
+  in `FACTION_SCENARIOS.md`.
+- **One carving per choice.** A state two ships enter at once (a `_silent`
+  twin) carves on the speaking one only.
+- A ship the player saved: add `REMEMBER_SHIP` (`string_param` `ally`) to its
+  grateful state, and it flies into the Reckoning as a Saved Ship tile. A
+  pirate they spared or dealt with: `debt`, for an Old Debt. Give a `_silent`
+  twin its own `REMEMBER_SHIP`, since each saved ship counts.
+- `RECORD_DEED` counts a deed the Reckoning reads: `tithe_paid`, `tithe_refused`.
+- A state can say something else to a player who already knows the secret:
+  `fate_knowing_dialogue` (the pilgrim's "You've seen the front.").
+- A new face is a `FateFaceResource` in `Source/Content/FateDie/Faces/` named
+  by its `FateDie.Face` id, with a 7x7 glyph and the `reckoning_chain` it plays
+  when Fate throws it (player as actor, no die). Bind its numbers with
+  `text_token`, like a tile.
+
 **Registration** (required): open `Source/Scenes/main.tscn`, select
 **GameStateManager**, and add the scenario to the right list:
 - `combat_scenarios` or `question_scenarios` (events): the random sector mix.
@@ -851,6 +875,9 @@ Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
 - Fate's encounters go on the **Map** instead (`main_viewer.tscn`):
   `fate_scenario` and `fate_variants`. (GameStateManager's `fate_scenarios`
   is unused.)
+- The Reckoning's scenario is on the **ReckoningDirector** (`main.tscn`), with
+  the echo state, the Spilled pool and its tiles; the pilgrim who hands over
+  Fate's Die is GameStateManager's `fate_pilgrim_scenario`.
 - Or set the single slots: `starting_scenario`, `shop_scenario`,
   `repair_scenario` (1-2 a sector, swapped in past a jump from the arrival),
   `empty_scenario`. The open gate is `Map.open_gate_scenario`

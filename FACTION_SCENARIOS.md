@@ -108,7 +108,10 @@ Mechanical sides stay `PIRATE` (predator) / `CIVILIAN` (protected). Each ship ca
 its lore identity in its `FactionIdentity`. **Mercy pays more than cruelty costs**:
 the kind path has the bigger payoff, and the cruel path is quicker or safer.
 
-The Fate's Die face each choice *would* carve is noted for later.
+The Fate's Die face each choice carves is noted beside it (LORE.md §5). They
+are carved by a `CARVE_FATE_FACE` step on the ship state the choice leads to
+(see CONTENT_BUILD_GUIDE §4); a saved ship also remembers the player
+(`REMEMBER_SHIP`) and flies into the Reckoning to help.
 
 ---
 
@@ -269,11 +272,14 @@ make the tug think it was attacked, and `BOSS_DEFEATED` reads as "the tow was cu
 
 ## Inbound — "Stop running."
 
-### The Pilgrim — `EVENT_Pilgrim` (stand-in for the Fate's Die handover)
+### The Pilgrim — `EVENT_Pilgrim` (the Fate's Die handover)
 A lone **Pilgrim** (`pilgrim_wandering`, no Relay, so sector 1) offers a die.
-*"Everyone gets one. Few ever look."*
-- **Take it:** *"It was always yours."* It flies on inward.
-- **Shoot it:** *"Why run? It's behind you too."* It siphons your drive.
+*"Everyone gets one. Few ever look."* (To a player who knows the secret: *"You've
+seen the front. You know."*) Dealt into every first sector, past the first
+jump's reach (`GameStateManager.place_fate_pilgrim()`).
+- **Take it:** *"It was always yours."* Fate's Die is yours, blank. It flies on inward.
+- **Shoot it:** *"Why run? It's behind you too."* The die is yours anyway, with
+  Ruin carved. It siphons your drive.
 
 ### The Pact — `EVENT_Pact`
 A **Zealot** offers two RARE tiles. *"Power, for a little of you. 12 hull."*
@@ -475,10 +481,20 @@ standing.
 - LORE §9's dice consequences (+1 on dice a hating faction is handed, a die
   back from a liking one) would touch combat balance everywhere, so they're
   not in yet.
+- Fate's Die is carved, and saved ships and Debts carry into the Reckoning
+  (`FateLedger`). Many outcome states carry both a faction deed and a Fate
+  carving; the two ledgers don't read each other yet.
 - Several betrayal paths (kill the Pilgrim, then take its die; fight the Zealot
-  for a free tile) still pay as well as the kind path within the encounter; the
-  standing they cost is now where they cost, once the readers above are wider.
-- Fate's Die faces aren't carved yet. The faces noted above are the hooks, and
-  each deed is a natural place to carve one.
+  for a free tile) still pay as well as the kind path within the encounter;
+  their cost is the standing they lose, the face they carve, and who isn't
+  there at the end.
+- Carved beyond the faces noted above: Mercy on the Mayday saved and the civilian
+  rescued from pirates; Ruin on the Mayday wronged, the medic betrayed, the
+  civilian betrayed, the Picket deserted and an angry shop or dock; Plunder on
+  taking the Wreck Salvage cargo under guard; Debt for the Black Market runner,
+  the Straggler's Wrecker and pirates left to their raid.
+- Faces with only a few sources: Hunger (the Pact, flying into Fate's tiles) and
+  Strange (Signal, What Came Back). A careful run in a short sector may not fill
+  the die; watch how often it does.
 - White Flag's spared Gaff and The Ledger's Vanguard line are written for run memory
   (a Debt ally, and the Vanguard answering the ledger): two more readers to add.

@@ -22,9 +22,15 @@ script = ExtResource("ext_1")
 category = 6
 subtype = 3
 
+[sub_resource type="Resource" id="fate_step_0"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 9
+string_param = "strange"
+
 [sub_resource type="Resource" id="Resource_4"]
 script = ExtResource("ext_2")
-effects = Array[ExtResource("ext_1")]([SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")])
+effects = Array[ExtResource("ext_1")]([SubResource("fate_step_0"), SubResource("Resource_1"), SubResource("Resource_2"), SubResource("Resource_3")])
 
 [sub_resource type="Resource" id="FactionDeed_0"]
 script = ExtResource("deed_ext_10")

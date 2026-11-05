@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="FateFaceResource" format=3 uid="uid://yhe6580u24x2"]
+
+[ext_resource type="Script" uid="uid://bswc2s0i6pxtx" path="res://Source/Content/FateDie/fate_face_resource.gd" id="1_kjlef"]
+
+[resource]
+script = ExtResource("1_kjlef")
+face_name = "Blank"
+carved_by = "Nothing yet. Choices carve faces."
+reckoning_text = "Nothing happens."
+color = Color(0.27450982, 0.23529412, 0.5686275, 1)

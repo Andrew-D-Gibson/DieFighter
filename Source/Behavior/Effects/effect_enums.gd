@@ -346,6 +346,25 @@ enum ScenarioControlSubtype {
 	LAUNCH_SHIP,
 	OPEN_REPAIR_STATION,  ## Open the repair station UI (repair hull, sell tiles)
 	CLOSE_REPAIR_STATION, ## Close the repair station UI
+	## Carve the face string_param names ("mercy", "plunder", "duty", "ruin",
+	## "hunger", "strange") into Fate's Die (FateLedger.request_carve).
+	CARVE_FATE_FACE,
+	## Hand the player Fate's Die, once a run (the Inbound pilgrim).
+	GIVE_FATE_DIE,
+	## Count one of the deed string_param names in the run's ledger
+	## ("tithe_paid", "tithe_refused"), for Fate's hidden conditions.
+	RECORD_DEED,
+	## Remember the actor ship as one the player saved ("ally") or spared
+	## ("debt"), per string_param. It comes back in the Reckoning.
+	REMEMBER_SHIP,
+	## Add running_amount to the Reckoning's escape-velocity meter.
+	ADD_ESCAPE_VELOCITY,
+	## Bring the Reckoning's event horizon running_amount steps closer.
+	ADVANCE_HORIZON,
+	## A ship the player saved flies into the Reckoning as an ally tile.
+	SUMMON_ALLY_TILE,
+	## A random hostile ship snatches the highest die in the player's hand.
+	FATE_SEIZES_DIE,
 }
 
 

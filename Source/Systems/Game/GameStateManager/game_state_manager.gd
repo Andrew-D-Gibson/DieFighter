@@ -41,6 +41,11 @@ extends Node2D
 ## random, so a new run always opens on the same deliberate first impression.
 @export var starting_scenario: ScenarioResource
 
+## The Inbound pilgrim who hands the player Fate's Die (LORE.md §5). Dealt into
+## every first sector, a little way past the arrival, if the draw didn't deal
+## it already. See _place_fate_pilgrim().
+@export var fate_pilgrim_scenario: ScenarioResource
+
 @export_category('Run Difficulty')
 ## How many sectors a full run lasts. Clearing the last sector's jump gate wins.
 @export var demo_sector_count: int = 3
@@ -245,6 +250,12 @@ func _ready() -> void:
 ## with an empty or Fate tile, but the player is still standing in the
 ## original — its background and rules — just with the enemies gone.
 func _scenario_to_load() -> ScenarioResource:
+	# A run saved inside the Reckoning goes back into it, from the top.
+	var reckoning: ScenarioResource = _reckoning_scenario()
+	if reckoning and bool(current_game_save.fate_state.get("in_reckoning", false)):
+		reckoning.scenario_seed = int(current_game_save.fate_state.get("reckoning_seed", 0))
+		return reckoning
+
 	var slot: ScenarioResource = current_game_save.sector_scenarios[
 		current_game_save.current_scenario_index
 	]
@@ -397,6 +408,7 @@ func _randomize_sector_scenarios() -> void:
 	)
 
 	_place_pinned_stops()
+	_place_fate_pilgrim(repair_placement_seed)
 
 	# Seed all the scenarios
 	for scenario: ScenarioResource in current_game_save.sector_scenarios:
@@ -444,6 +456,53 @@ func _place_pinned_stops() -> void:
 				offset, pinned[offset].resource_path.get_file()])
 			continue
 		scenarios[slot] = pinned[offset]
+
+
+## Deals the Inbound pilgrim into the first sector, so every run is offered
+## Fate's Die early on. Like the repair stations it replaces an ordinary stop
+## rather than drawing from the RUN stream, past the arrival's neighbourhood
+## (which the tutorial's script relies on), and only when the draw didn't
+## already deal it.
+func _place_fate_pilgrim(placement_seed: int) -> void:
+	if current_game_save.sector_index != 0 or fate_pilgrim_scenario == null:
+		return
+	var scenarios: Array[ScenarioResource] = current_game_save.sector_scenarios
+	if fate_pilgrim_scenario in scenarios:
+		return
+	var replaceable: Array[ScenarioResource] = []
+	replaceable.append_array(combat_scenarios)
+	replaceable.append_array(question_scenarios)
+	place_fate_pilgrim(scenarios, current_game_save.current_scenario_index, replaceable,
+		fate_pilgrim_scenario, hash([placement_seed, "pilgrim"]))
+
+
+## Puts [param pilgrim] on one of the first few ordinary stops (anything in
+## [param replaceable]) beyond a jump's reach of the arrival, from a generator
+## of its own. Falls back to any ordinary stop right of the arrival in a sector
+## too short for that. Static and pure, like place_repair_stations().
+static func place_fate_pilgrim(
+	scenarios: Array[ScenarioResource],
+	arrival_index: int,
+	replaceable: Array[ScenarioResource],
+	pilgrim: ScenarioResource,
+	placement_seed: int
+) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = placement_seed
+	var early: Array[int] = []
+	var later: Array[int] = []
+	for index: int in range(arrival_index + 1, scenarios.size() - 1):
+		if scenarios[index] not in replaceable:
+			continue
+		if index > arrival_index + _LONGEST_JUMP and early.size() < 3:
+			early.append(index)
+		else:
+			later.append(index)
+	var pool: Array[int] = early if not early.is_empty() else later
+	if pool.is_empty():
+		return
+	scenarios[pool[rng.randi_range(0, pool.size() - 1)]] = pilgrim
+	pilgrim.scenario_seed = rng.randi()
 
 
 ## Swaps [param count_range] ordinary stops in a finished sector for repair
@@ -636,17 +695,28 @@ func go_through_gate() -> void:
 	if _in_transit:
 		return
 	_in_transit = true
-	current_game_save.sector_index += 1
 	# Before load_sector(): the map holds on the old sector's gate for the
 	# trip, rather than redrawing the next sector the moment it's generated.
 	Globals.map.show_gate_jump()
 
-	if current_game_save.sector_index >= demo_sector_count:
+	if current_game_save.sector_index + 1 >= demo_sector_count:
+		# The last gate. For a player who knows the secret and carved every
+		# face, Fate's Die starts rattling: forward to the front, or back
+		# toward Fate (LORE.md §6, Gate 3).
+		if Globals.fate_ledger and Globals.fate_ledger.fate_route_open() and _reckoning_scenario():
+			var choice: FateVectorChoice = FateVectorChoice.open_in(Globals.jump_manager)
+			var vector: FateVectorChoice.Vector = await choice.chosen
+			if vector == FateVectorChoice.Vector.BACK:
+				await enter_reckoning()
+				return
 		# Through the last gate and out: the run is won.
+		current_game_save.sector_index += 1
 		await Globals.jump_manager.leave_through_final_gate()
 		Events.victory.emit()
 		Globals.jump_gate.fade_flash(1.0)
 		return
+
+	current_game_save.sector_index += 1
 
 	_repair_after_sector()
 
@@ -662,6 +732,23 @@ func go_through_gate() -> void:
 		current_game_save.sector_index + 1,
 		demo_sector_count
 	)
+
+
+## The Reckoning's scenario, or null when the scene has no ReckoningDirector.
+func _reckoning_scenario() -> ScenarioResource:
+	var director: ReckoningDirector = get_tree().get_first_node_in_group(&"reckoning_director") as ReckoningDirector
+	return director.scenario if director else null
+
+
+## Turns back at the last gate and dives toward Fate. The sector stays the
+## last one, so the fight scales like it.
+func enter_reckoning() -> void:
+	var scenario: ScenarioResource = _reckoning_scenario()
+	# Kept to 31 bits: the save is JSON, which rounds big integers.
+	scenario.scenario_seed = hash([RNGManager.current_run_seed, "reckoning"]) & 0x7FFFFFFF
+	Globals.fate_ledger.in_reckoning = true
+	Globals.fate_ledger.reckoning_seed = scenario.scenario_seed
+	await Globals.jump_manager.jump_into_fate(scenario)
 
 
 ## Checkpoint on arriving in a scenario. The scenario itself is saved only as
@@ -745,6 +832,8 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 	current_game_save.run_stats = run_stats
 	if Globals.faction_standing:
 		current_game_save.faction_standing = Globals.faction_standing.get_state()
+	if Globals.fate_ledger:
+		current_game_save.fate_state = Globals.fate_ledger.get_state()
 	current_game_save.rng_states = RNGManager.capture_run_state()
 
 	var tile_locations: Dictionary[Vector2i, TileResource] = {}

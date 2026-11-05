@@ -45,6 +45,9 @@ var _layout_cells: Array[Vector2i] = []
 ## tile, no adjacency, no pushes) until a Grid Slot opens it, which is why
 ## it's kept out of _cells rather than flagged.
 var _locked_cells: Dictionary[Vector2i, bool] = {}
+## Cells the Reckoning's event horizon has eaten, each with the void drawn
+## over it. Only a tile placed with place_temporary_tile() may sit in one.
+var _swallowed_cells: Dictionary[Vector2i, Node2D] = {}
 ## Draws the sealed cells, and lights them as targets for a carried Grid
 ## Slot. Made in _ready, so null before the grid enters the tree.
 var plates: SealedCellPlates = null
@@ -490,6 +493,12 @@ func _drop_tile_on_grid_pos(tile_draggable: Draggable, global_drop_pos: Vector2)
 			tile_dropped_off_grid.emit(tile_to_move, global_drop_pos)
 		return
 
+	# The horizon has the cell: the tile goes back where it was.
+	if _swallowed_cells.has(grid_drop_pos) and not tile_to_move.has_meta(&"temporary"):
+		if is_grid_pos_valid(old_grid_pos):
+			_assign_tile_to_grid_pos(tile_to_move, old_grid_pos)
+		return
+
 	# If the target grid position is occupied
 	if not is_grid_pos_open(grid_drop_pos):
 		var existing_tile: Tile = tile_locations[grid_drop_pos]
@@ -546,9 +555,66 @@ func has_free_cell() -> bool:
 
 func find_available_grid_pos() -> Vector2i:
 	for cell: Vector2i in _cells:
-		if is_grid_pos_open(cell):
+		if is_grid_pos_open(cell) and not _swallowed_cells.has(cell):
 			return cell
 	return Vector2i(-1, -1)
+
+
+# ── The event horizon (ReckoningDirector) ────────────────────────────────────
+
+## The horizon eats [param cell]: the void is drawn over it, and no tile of the
+## player's may go there again. Whatever sits in it is the caller's to remove.
+func swallow_cell(cell: Vector2i) -> void:
+	if _swallowed_cells.has(cell) or not is_grid_pos_valid(cell):
+		return
+	var void_cell: HorizonVoidCell = HorizonVoidCell.new()
+	void_cell.size = Vector2(_column_width(cell.x), grid_spacing)
+	add_child(void_cell)
+	# Under the tiles, so an ally flown into the hole sits on top of it.
+	move_child(void_cell, 0)
+	void_cell.position = grid_to_local_pos(cell) - void_cell.size / 2.0
+	_swallowed_cells[cell] = void_cell
+
+
+func is_cell_swallowed(cell: Vector2i) -> bool:
+	return _swallowed_cells.has(cell)
+
+
+func get_swallowed_cells() -> Array[Vector2i]:
+	var cells: Array[Vector2i] = _swallowed_cells.keys()
+	cells.sort_custom(_reading_order)
+	return cells
+
+
+## The Reckoning is over (or never was): the grid is whole again.
+func clear_swallowed_cells() -> void:
+	for void_cell: Node2D in _swallowed_cells.values():
+		if is_instance_valid(void_cell):
+			void_cell.queue_free()
+	_swallowed_cells.clear()
+
+
+## Puts a tile of [param tile_resource] in [param cell] for the length of the
+## fight: an ally flying into the Reckoning. It drops in from above, isn't the
+## player's to drag, and is never saved (nothing checkpoints mid-fight).
+func place_temporary_tile(tile_resource: TileResource, cell: Vector2i) -> Tile:
+	if not is_grid_pos_valid(cell) or not is_grid_pos_open(cell):
+		return null
+	var tile: Tile = create_tile(tile_resource)
+	add_child(tile)
+	# Settled like a tile taken off an offer (receive_tile()): no floating, no
+	# drags, sitting on its cell.
+	tile.on_offer = false
+	tile.draggable.floating_enabled = false
+	tile.update_dragging_allowed()
+	tile.global_position = grid_to_global_pos(cell)
+	tile.set_meta(&"temporary", true)
+	_assign_tile_to_grid_pos(tile, cell)
+	# It arrives, rather than appears.
+	tile.scale = Vector2.ZERO
+	var tween: Tween = tile.create_tween()
+	tween.tween_property(tile, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	return tile
 
 
 ## Whether a tile can sit here: one of the ship's cells, not a hole in its

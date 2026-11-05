@@ -138,6 +138,24 @@
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_TwinFlames/ELITE_twin_flames.tres" id="new_elite_twin_flames"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/ELITE_LineMovedOn/ELITE_line_moved_on.tres" id="new_elite_line_moved_on"]
 
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_enemy_resource"]
+[ext_resource type="Script" uid="uid://b2x7pd5sa3elp" path="res://Source/Systems/Game/Fate/fate_ledger.gd" id="fate_ledger"]
+[ext_resource type="Script" uid="uid://b7iood87igghx" path="res://Source/Systems/Game/Fate/fate_die_display.gd" id="fate_die_display"]
+[ext_resource type="Script" uid="uid://nwcim0g8vwj8" path="res://Source/Systems/Game/Reckoning/reckoning_director.gd" id="reckoning_director"]
+[ext_resource type="Script" uid="uid://cvb00ht3k1b5w" path="res://Source/Systems/Game/Reckoning/reckoning_hud.gd" id="reckoning_hud"]
+[ext_resource type="Script" uid="uid://dsc0who8acukt" path="res://Source/Systems/UI/FateCarveChoice/fate_carve_choice.gd" id="fate_carve_choice"]
+[ext_resource type="Script" uid="uid://cxq4v62nhql3p" path="res://Source/Systems/UI/FateRevelation/fate_revelation.gd" id="fate_revelation"]
+[ext_resource type="Resource" uid="uid://vj46db0istaa" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/FATE_reckoning.tres" id="reckoning_scenario"]
+[ext_resource type="Resource" uid="uid://bd8fdamhw5boi" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/echo_hostile.tres" id="reckoning_echo"]
+[ext_resource type="Resource" uid="uid://0ydl1avdkww1" path="res://Source/Content/Enemies/EnemyResources/fate_husk.tres" id="spilled_husk"]
+[ext_resource type="Resource" uid="uid://b70spibguu3rw" path="res://Source/Content/Enemies/EnemyResources/fate_leech.tres" id="spilled_leech"]
+[ext_resource type="Resource" uid="uid://w636ogfwrenr" path="res://Source/Content/Enemies/EnemyResources/fate_maw.tres" id="spilled_maw"]
+[ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="spilled_wisp"]
+[ext_resource type="Resource" uid="uid://b01a4mnrj68hc" path="res://Source/Content/Enemies/EnemyResources/fate_shroud.tres" id="spilled_shroud"]
+[ext_resource type="Resource" uid="uid://cjnui7le0auy3" path="res://Source/Content/Enemies/EnemyResources/fate_attacker.tres" id="spilled_attacker"]
+[ext_resource type="Resource" uid="uid://83ow6q8eqvvd" path="res://Source/Content/Tiles/TileResources/saved_ship.tres" id="tile_saved_ship"]
+[ext_resource type="Resource" uid="uid://smjj1g8rciks" path="res://Source/Content/Tiles/TileResources/old_debt.tres" id="tile_old_debt"]
+[ext_resource type="Resource" uid="uid://8vj66n8rybm0" path="res://Source/Content/Tiles/MapTileResources/vanguard_drive.tres" id="tile_vanguard_drive"]
 [sub_resource type="Environment" id="Environment_hd7px"]
 background_mode = 3
 glow_enabled = true
@@ -372,6 +390,9 @@ script = ExtResource("14_jblvd")
 [node name="Cockpit" type="Node2D" parent="Graphics" unique_id=339508340]
 script = ExtResource("cockpit_mount")
 
+[node name="FateDieDisplay" type="Node2D" parent="Graphics" unique_id=1717300001]
+script = ExtResource("fate_die_display")
+
 [node name="BackgroundManager" parent="Graphics" unique_id=753734428 instance=ExtResource("5_flage")]
 z_index = -24
 position = Vector2(160, 90)
@@ -430,7 +451,28 @@ script = ExtResource("93_runstats")
 [node name="FactionStanding" type="Node" parent="Systems" unique_id=904210011]
 script = ExtResource("93_factionstanding")
 
+[node name="FateLedger" type="Node" parent="Systems" unique_id=1717300002]
+script = ExtResource("fate_ledger")
+
+[node name="ReckoningDirector" type="Node" parent="Systems" unique_id=1717300003]
+script = ExtResource("reckoning_director")
+scenario = ExtResource("reckoning_scenario")
+echo_state = ExtResource("reckoning_echo")
+spilled_pool = Array[ExtResource("script_enemy_resource")]([ExtResource("spilled_husk"), ExtResource("spilled_leech"), ExtResource("spilled_wisp"), ExtResource("spilled_maw"), ExtResource("spilled_shroud"), ExtResource("spilled_attacker")])
+ally_tile = ExtResource("tile_saved_ship")
+debt_tile = ExtResource("tile_old_debt")
+vanguard_drive = ExtResource("tile_vanguard_drive")
+
 [node name="JumpManager" parent="Systems" unique_id=1357262320 instance=ExtResource("27_nwhv6")]
+
+[node name="FateCarveChoice" type="Node2D" parent="Systems" unique_id=1717300004]
+script = ExtResource("fate_carve_choice")
+
+[node name="FateRevelation" type="Node2D" parent="Systems" unique_id=1717300005]
+script = ExtResource("fate_revelation")
+
+[node name="ReckoningHud" type="Node2D" parent="Systems" unique_id=1717300006]
+script = ExtResource("reckoning_hud")
 
 [node name="TutorialManager" parent="Systems" unique_id=1846484380 instance=ExtResource("27_mpji1")]
 position = Vector2(156, 37)
@@ -450,6 +492,7 @@ consequence_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("93_grudge_l
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])
 fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
 starting_scenario = ExtResource("75_imw1m")
+fate_pilgrim_scenario = ExtResource("faction_event_pilgrim")
 
 [node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]
 unique_name_in_owner = true

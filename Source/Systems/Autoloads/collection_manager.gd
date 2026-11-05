@@ -42,7 +42,16 @@ var _regions: Dictionary[String, bool] = {}
 ## run and sector (TileUnlocks.claim_for()). Kept so a jump replayed from a
 ## Continue shows the same family again instead of unlocking a second one.
 var _families: Dictionary[String, String] = {}
+## What the player knows of Fate across runs (LORE.md §6, §8):
+##   knowledge — true once they have beaten the last boss and heard the secret
+##   escapes / falls — how often the Reckoning has ended each way
+##   fallen — ships lost to the hole: {"ship": ship id, "tile": a tile id they
+##            carried}, newest last, so a later run can meet them as Spilled
+var _fate: Dictionary = {}
 var _write_queued: bool = false
+
+## How many fallen ships the collection remembers.
+const _MAX_FALLEN: int = 8
 
 
 func _ready() -> void:
@@ -131,6 +140,50 @@ func _load_family(id: String, claim: String) -> void:
 			_families[successor] = claim if i == 0 else ""
 
 
+## Gate 1 of the secret fight: the player has seen the front, in any run.
+func has_fate_knowledge() -> bool:
+	return bool(_fate.get("knowledge", false))
+
+
+## The forbidden knowledge passes to the player (the last boss falls). Kept in
+## a recording run only; the dev console passes [param force].
+func learn_fate_knowledge(force: bool = false) -> void:
+	if has_fate_knowledge() or not (force or is_recording()):
+		return
+	_fate["knowledge"] = true
+	_queue_write()
+
+
+## Forgets the knowledge, for the dev console.
+func forget_fate_knowledge() -> void:
+	_fate.erase("knowledge")
+	_queue_write()
+
+
+## How often the Reckoning has ended as [param kind] ("escapes", "falls").
+func fate_endings(kind: String) -> int:
+	return int(_fate.get(kind, 0))
+
+
+## The Reckoning ended: [param kind] "escaped" or "fell_in". A fall keeps the
+## ship and [param tile_id], one tile it carried, for a later run's Spilled.
+func record_fate_ending(kind: StringName, ship_id: String = "", tile_id: String = "") -> void:
+	if not is_recording():
+		return
+	var key: String = "escapes" if kind == &"escaped" else "falls"
+	_fate[key] = fate_endings(key) + 1
+	if kind == &"fell_in" and not ship_id.is_empty():
+		var fallen: Array = _fate.get("fallen", [])
+		fallen.append({"ship": ship_id, "tile": tile_id})
+		_fate["fallen"] = fallen.slice(maxi(0, fallen.size() - _MAX_FALLEN))
+	_queue_write()
+
+
+## Ships lost to the hole in earlier runs, oldest first.
+func fallen_ships() -> Array:
+	return (_fate.get("fallen", []) as Array).duplicate(true)
+
+
 ## Locks every family again, for the dev console.
 func clear_families() -> void:
 	_families.clear()
@@ -143,6 +196,7 @@ func clear() -> void:
 	_enemies.clear()
 	_regions.clear()
 	_families.clear()
+	_fate.clear()
 	changed.emit()
 	_write()
 
@@ -215,6 +269,7 @@ func _write() -> void:
 		"enemies": _enemies,
 		"regions": _regions.keys(),
 		"families": _families,
+		"fate": _fate,
 	}
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.WRITE)
 	if not file:
@@ -230,6 +285,7 @@ func load_collection() -> void:
 	_enemies.clear()
 	_regions.clear()
 	_families.clear()
+	_fate.clear()
 	if not FileAccess.file_exists(collection_path):
 		return
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.READ)
@@ -251,6 +307,9 @@ func load_collection() -> void:
 	if families is Dictionary:
 		for id: Variant in families:
 			_load_family(str(id), str(families[id]))
+	var fate: Variant = data.get("fate", {})
+	if fate is Dictionary:
+		_fate = (fate as Dictionary).duplicate(true)
 	var enemies: Variant = data.get("enemies", {})
 	if enemies is Dictionary:
 		for id: Variant in enemies:

@@ -327,11 +327,12 @@ Per faction:
 - Angry scenario states already exist (`shop_ship_angry`, `repair_dock_angry`,
   `mayday_wronged`, `medic_betrayed`, `civilian_betrayed`, `runner_burned`), so the
   per-encounter half of consequences is in place.
-- Run-wide memory is in: faction reputation is run state on the save
-  (`FactionLedger`, ARCHITECTURE "Faction Memory"), written by deeds on those
-  states and read by standing branches, encounter requirements and
-  consequences. FACTION_SCENARIOS.md lists what reads it so far. Fate's Die
-  would sit beside it.
+- Run-wide memory is in, as run state on the save beside the sector and run
+  stats: faction reputation (`FactionLedger`, ARCHITECTURE "Faction Memory"),
+  written by deeds on those states and read by standing branches, encounter
+  requirements and consequences (FACTION_SCENARIOS.md lists what reads it so
+  far), and Fate's Die (`FateLedger`, `GameSaveResource.fate_state`).
+- What's built of §5-8, and where it departs from the proposals above, is §13.
 
 ---
 
@@ -442,3 +443,65 @@ Still open:
   civilian clothes. It cloaks green.
 - The Sector Warden's description still calls it a "gate authority".
 - The Shop keeps its boxy silhouette.
+
+---
+
+## 13. What's Built (first pass, 2026-11-05)
+
+Fate's Die and the Reckoning exist, end to end. The systems are in
+`ARCHITECTURE_OVERVIEW.md` ("Fate's Die and the Reckoning"); this is the
+design as it now plays, and where it parts from §5-8.
+
+**The die (§5).** The Inbound pilgrim is dealt into every first sector a little
+past the arrival. Take its offer and the die is yours, blank; shoot it and the die
+is yours anyway, with Ruin carved. It hangs from the canopy beside the gold pair:
+bone-white (the knucklebones idea), each face cut with its faction's badge, Ruin
+with a dagger of its own. Carvings flare and call out; once the die is full, a
+card asks which face a new carving goes over, or lets it pass. Faces come from
+the encounters' choices as `FACTION_SCENARIOS.md` lists them, plus Hunger for
+flying into one of Fate's tiles (once a sector).
+
+**The knowledge (§4, §6 Gate 1).** Until the Front and the Vanguard exist, the
+last gate's boss stands in: as the Bastion dies, the dying Marshal tells what
+the Vanguard told its Marshals (a black hole ahead, a herded fleet, the tithe a
+sacrifice) and hands over the drive. Hearing it unlocks the route for *later*
+runs; the run that hears it can't turn back. When the Front is built, the
+revelation moves to the Vanguard's death and nothing else changes.
+
+**The choice (§6 Gates 2-3).** With the knowledge and every face carved,
+jumping on through the last gate rattles the die: Forward ends the run as before
+(now closing on *"The Tithe Collector is waiting for your orders."*), Back dives
+toward Fate.
+
+**The Reckoning (§7).**
+- *Escape velocity:* three full drives' worth. The Vanguard Drive takes the
+  engine charger's place: any die, twice its face in escape, and the die goes
+  to the target as always, so every die spent running feeds the echoes. Engine
+  charge left at the end of a turn goes into the escape too.
+- *Fate rolls your die* at the start of every round, before a die is placed:
+  Mercy heals 5 and calls a saved ship; Plunder has a hostile ship snatch the
+  best die in hand; Duty shields every enemy 4; Ruin locks a random tile; Hunger
+  brings the horizon a step closer; Strange scrambles every echo for 2.
+- *The Tally:* every ship the player destroyed, newest first, in waves of three,
+  the very first kill alone at the end. Long runs keep the latest 15 plus the first. After the
+  Tally the hole sends its own Spilled until the player escapes or falls. Echoes
+  are their old ships washed purple; each wave's first ship speaks.
+- *The horizon* eats a column from Fate's side (the left) every three rounds,
+  leaving two. The Die Fighter's open 3x3 loses one column; wider grids lose more.
+- *Allies:* each saved ship flies into a swallowed cell as a **Saved Ship** tile
+  (any die: 3 shields and escape equal to the die). Each spared pirate is an
+  **Old Debt** (any die: 3x die damage to every enemy, then it's gone). Mercy
+  calls the next one into any free cell.
+- *Hidden modifier:* a run that refused a tithe and never paid one leaves the
+  Rearguard's echoes out of the Tally, and Duty shields the player instead. The
+  proposal had them fight on the player's side; that needs friendly-ship
+  hand-offs (Raid) on every Rearguard ship, and is left for later.
+
+**Endings (§8).** Escape: *YOU DON'T COUNT*, with the faces left on the die and
+the ships that flew along. Death inside: *YOU FELL IN*; the ship and its rarest
+tile are remembered across runs for a Spilled echo to carry, which isn't built yet.
+
+**Answered from §11.** Blank faces never come up in the Reckoning: the route
+needs a full die. Carvings so far: around a dozen sources a sector at most, about
+one an encounter; too few or too many is a playtest question.
+

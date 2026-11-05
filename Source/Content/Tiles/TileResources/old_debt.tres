@@ -1,0 +1,89 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://smjj1g8rciks"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_flf67"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_fm2xa"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_cjciy"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_4d5ba"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_kvu7d"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_81eck"]
+[ext_resource type="Texture2D" uid="uid://dh3wdxe5nqmpk" path="res://Assets/Textures/Tiles/RedTiles/old_debt.png" id="7_fm2xa"]
+
+[sub_resource type="Resource" id="Resource_cjciy"]
+script = ExtResource("1_flf67")
+
+[sub_resource type="Resource" id="Resource_4d5ba"]
+script = ExtResource("1_flf67")
+type = 2
+
+[sub_resource type="Resource" id="Resource_kvu7d"]
+script = ExtResource("1_flf67")
+type = 4
+
+[sub_resource type="Resource" id="Resource_81eck"]
+script = ExtResource("2_fm2xa")
+
+[sub_resource type="Resource" id="Resource_4rp05"]
+script = ExtResource("2_fm2xa")
+category = 4
+subtype = 18
+color = Color(0.8157, 0.2118, 0.3373, 1)
+
+[sub_resource type="Resource" id="Resource_nruw1"]
+script = ExtResource("2_fm2xa")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_hwgxs"]
+script = ExtResource("2_fm2xa")
+category = 2
+subtype = 2
+multiplier = 3.0
+text_token = &"times"
+text_token_value = "multiplier"
+
+[sub_resource type="Resource" id="Resource_12x7e"]
+script = ExtResource("2_fm2xa")
+category = 1
+
+[sub_resource type="Resource" id="Resource_t4p5n"]
+script = ExtResource("2_fm2xa")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_tf78s"]
+script = ExtResource("2_fm2xa")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_2a6gc"]
+script = ExtResource("2_fm2xa")
+category = 9
+
+[sub_resource type="Resource" id="Resource_ymu1e"]
+script = ExtResource("4_4d5ba")
+effects = Array[ExtResource("2_fm2xa")]([SubResource("Resource_81eck"), SubResource("Resource_4rp05"), SubResource("Resource_nruw1"), SubResource("Resource_hwgxs"), SubResource("Resource_12x7e"), SubResource("Resource_t4p5n"), SubResource("Resource_tf78s"), SubResource("Resource_2a6gc")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jsfxm"]
+atlas = ExtResource("7_fm2xa")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sdeei"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jsfxm")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("6_81eck")
+tile_name = "[color=red]Old Debt[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to {times}x die to [color=purple]every enemy[/color]. Destroy this tile"
+offered_as_reward = false
+textures = SubResource("SpriteFrames_sdeei")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_flf67")]([SubResource("Resource_cjciy"), SubResource("Resource_4d5ba"), SubResource("Resource_kvu7d")])
+effect_chain = SubResource("Resource_ymu1e")
+dragging_allowed = false

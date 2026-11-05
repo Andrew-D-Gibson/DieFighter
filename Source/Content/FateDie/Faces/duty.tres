@@ -1,0 +1,56 @@
+[gd_resource type="Resource" script_class="FateFaceResource" format=3 uid="uid://bhis2ng5khfd7"]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="1_0xd7r"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="2_ov53d"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_dqo74"]
+[ext_resource type="Texture2D" uid="uid://ej45qk2rbx21" path="res://Assets/Textures/Factions/rearguard_icon.png" id="4_8unbe"]
+[ext_resource type="Script" uid="uid://bswc2s0i6pxtx" path="res://Source/Content/FateDie/fate_face_resource.gd" id="5_27665"]
+
+[sub_resource type="Resource" id="Resource_0xd7r"]
+script = ExtResource("1_0xd7r")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_ov53d"]
+script = ExtResource("1_0xd7r")
+category = 2
+amount = 6
+text_token = &"defiant_shields"
+
+[sub_resource type="Resource" id="Resource_dqo74"]
+script = ExtResource("1_0xd7r")
+category = 1
+subtype = 2
+
+[sub_resource type="Resource" id="Resource_8unbe"]
+script = ExtResource("3_dqo74")
+effects = Array[ExtResource("1_0xd7r")]([SubResource("Resource_0xd7r"), SubResource("Resource_ov53d"), SubResource("Resource_dqo74")])
+
+[sub_resource type="Resource" id="Resource_27665"]
+script = ExtResource("1_0xd7r")
+
+[sub_resource type="Resource" id="Resource_i6e8m"]
+script = ExtResource("1_0xd7r")
+category = 2
+amount = 4
+text_token = &"shields"
+
+[sub_resource type="Resource" id="Resource_rrykp"]
+script = ExtResource("1_0xd7r")
+category = 1
+subtype = 2
+
+[sub_resource type="Resource" id="Resource_rjmxa"]
+script = ExtResource("3_dqo74")
+effects = Array[ExtResource("1_0xd7r")]([SubResource("Resource_27665"), SubResource("Resource_i6e8m"), SubResource("Resource_rrykp")])
+
+[resource]
+script = ExtResource("5_27665")
+face = 3
+face_name = "Duty"
+carved_by = "Paying the tithe, holding the line, following orders."
+reckoning_text = "Every enemy gains [color=blue]{shields} shields[/color]."
+color = Color(0.2627451, 0.6509804, 0.9882353, 1)
+glyph = ExtResource("4_8unbe")
+reckoning_chain = SubResource("Resource_rjmxa")
+defiant_chain = SubResource("Resource_8unbe")
+defiant_text = "The Rearguard you never paid stand with you: Gain [color=blue]{defiant_shields} shields[/color]."

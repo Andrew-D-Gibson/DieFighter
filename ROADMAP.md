@@ -47,7 +47,22 @@ been self-playtested and is fun. Next comes outside playtesting.
 ## Later
 
 - Trailer, store page and marketing shots: see `TRAILER_PLAN.md`.
-- The secret Fate boss and the endings: proposals in `LORE.md` §6–8.
+- **Fate's Die and the Reckoning: follow-ups to the first pass** (see `LORE.md`
+  §13 and DEVLOG 2026-11-05):
+  - Play the secret route end to end on a real run and tune it: the escape goal
+    (`ReckoningDirector.escape_goal_multiplier`), the Vanguard Drive's 2x, how
+    fast the horizon eats, the face chains' numbers, and how often a careful run
+    fills the die. The AutoPilot never takes the route, so this is hand testing.
+  - The Front and the Vanguard (LORE.md §3-4). Until they exist, the dying
+    Marshal at the last gate tells the secret.
+  - Fallen ships as Spilled enemies on later runs (LORE.md §8): the ship and a
+    tile are already recorded (`CollectionManager.fallen_ships()`).
+  - The Rearguard fighting on the player's side for a run that never paid a
+    tithe. For now those echoes stay dead and Duty shields the player.
+  - Real art for the Saved Ship / Old Debt / Vanguard Drive tiles and the Ruin
+    glyph (machine-drawn first passes), and the SFX slots in
+    `SOUND_EFFECTS_TODO.md` (P2, Fate's Die).
+  - Faction reputation and gossip (LORE.md §9) can read the same ledger.
 - Juice that was parked: vertical music layering, Fate/glitch as a visual
   language, ambient idle life (`Brainstorming.md` §8.5, §8.7–8.9). Check
   what already exists before starting any of them. The low-HP cockpit

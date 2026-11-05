@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="FateFaceResource" format=3 uid="uid://uln5swrq74tn"]
+
+[ext_resource type="Texture2D" uid="uid://be6rrrg2goh5e" path="res://Assets/Textures/Factions/spilled_icon.png" id="1_ensgj"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_p2g28"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_fj1pl"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_mmem4"]
+[ext_resource type="Script" uid="uid://bswc2s0i6pxtx" path="res://Source/Content/FateDie/fate_face_resource.gd" id="5_ocpo2"]
+
+[sub_resource type="Resource" id="Resource_ensgj"]
+script = ExtResource("2_p2g28")
+
+[sub_resource type="Resource" id="Resource_p2g28"]
+script = ExtResource("2_p2g28")
+category = 2
+amount = 2
+text_token = &"scrambled"
+
+[sub_resource type="Resource" id="Resource_fj1pl"]
+script = ExtResource("2_p2g28")
+category = 1
+subtype = 6
+string_param = "scrambled"
+
+[sub_resource type="Resource" id="Resource_mmem4"]
+script = ExtResource("4_mmem4")
+effects = Array[ExtResource("2_p2g28")]([SubResource("Resource_ensgj"), SubResource("Resource_p2g28"), SubResource("Resource_fj1pl")])
+
+[resource]
+script = ExtResource("5_ocpo2")
+face = 6
+face_name = "Strange"
+carved_by = "Helping, or listening to, what came out of the hole."
+reckoning_text = "Apply {scrambled} (scrambled) to every enemy."
+color = Color(0.77254903, 0.32156864, 0.94509804, 1)
+glyph = ExtResource("1_ensgj")
+reckoning_chain = SubResource("Resource_mmem4")

@@ -172,6 +172,17 @@ enemy ship. Every action resource is indexed at the end of this document.
 | [ ] | `sector_arrive` | Missing dedicated sting. 350–750 ms expansive new-sector chord. | `JumpManager.jump_through_gate`, with sector-title reveal. Gate passage and arrival are separate beats; `sector_advanced` alone may fire before the visual reveal. |
 | [ ] | `victory_sting`, `defeat_sting` | Missing dedicated SFX stings; music/death sequence already contribute. 0.6–1.5 s. | `GameOver._on_game_win` / `_on_game_over`, after outcome is settled. Coordinate with music and cockpit destruction; defeat can be just a quiet settling tail. |
 
+## P2 — Fate's Die and the Reckoning
+
+| Made | Proposed files | State / sound brief | Integration destination and timing |
+|---|---|---|---|
+| [ ] | `fate_carve` | Borrows `upgrade_trigger`. A stone chisel strike with a low purple shimmer: a face carved into bone. | `FateDieDisplay._on_carved` (`_CARVE_SFX`) as the hanging die lands on its new face; also the ally arrival in `ReckoningDirector._place_ally`. |
+| [ ] | `fate_die_received` | Borrows `die_dread_thunk`. A bone die dropping onto a chain: one clack, a rattle. | `FateDieDisplay._on_received` as the die drops into the cockpit. |
+| [ ] | `fate_roll` | Borrows `dice_reroll_blip`. A single heavy die thrown by something huge; a long tumble, a hard stop. | `FateDieDisplay._on_rolled` at the start of each Reckoning round; the banner (`ReckoningHud._show_roll`) lands with it. |
+| [ ] | `horizon_swallow` | Borrows `die_dread_thunk`. A deep inward suck, tiles crunching, then silence. | `ReckoningDirector._swallow_column`, once per column. |
+| [ ] | `fate_reveal_line` | Borrows `text_blip`. A distorted comms burst under each line of the dying Marshal. | `FateRevelation._next`, once per line, not per character. |
+| [ ] | `escape_velocity` | Missing. A rising drive whine that tops out and tears free. | `ReckoningDirector._escape_the_hole` before the white-out; optionally a short tick on `add_escape_velocity`. |
+
 ## P3 — ship, cockpit, UI and cinematic polish
 
 | Made | Proposed files | State / sound brief | Integration destination and timing |

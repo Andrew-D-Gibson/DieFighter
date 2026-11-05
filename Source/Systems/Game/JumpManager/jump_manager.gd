@@ -71,6 +71,28 @@ func _unlock_tile_family(sector_index: int) -> void:
 	popup.queue_free()
 
 
+## Fate's purple, for the dive back toward the hole.
+const _FATE_TINT: Color = Color("#c552f1")
+const _FATE_PARTICLE_TINT: Color = Color("#80359d")
+
+
+## Turns back from the last gate and dives toward Fate (LORE.md §6): the drive
+## spools up purple instead of gold, the ring falls away behind, and the ship
+## drops out of hyperspace inside the event horizon.
+func jump_into_fate(scenario: ScenarioResource) -> void:
+	Events.jump.emit()
+	Events.glitch_burst.emit(300)
+	Globals.player.rattle_dice_for_jump(BackgroundManager.JUMP_RAMP_UP_TIME)
+	Globals.background_manager.set_jump_tint(_FATE_TINT, _FATE_PARTICLE_TINT)
+	await Globals.background_manager.play_jump_intro()
+	Globals.player.settle_dice_after_jump()
+	await get_tree().create_timer(2).timeout
+	Events.load_scenario.emit(scenario)
+	await Globals.background_manager.play_jump_outro()
+	Globals.background_manager.reset_jump_tint()
+	Events.start_scenario.emit()
+
+
 ## The last gate: through the ring and out of the run. Leaves the ship in gold
 ## hyperspace behind the white-out, for the victory screen to settle over.
 func leave_through_final_gate() -> void:

@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3 uid="uid://bmkiuhn4jiqm0"]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_wd1dp"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_k73hb"]
+
+[sub_resource type="Resource" id="Resource_wd1dp"]
+script = ExtResource("2_k73hb")
+token = "(escape)"
+label = "escape velocity"
+color = "purple"
+
+[resource]
+script = ExtResource("1_wd1dp")
+title = "Escape Velocity"
+rule = "Only inside the event horizon. Fill it to escape the hole. [color=purple]Engine charge[/color] left when your turn ends goes into it."
+tokens = Array[ExtResource("2_k73hb")]([SubResource("Resource_wd1dp")])

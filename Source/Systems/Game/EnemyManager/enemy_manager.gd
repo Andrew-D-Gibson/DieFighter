@@ -339,6 +339,36 @@ func start_enemy_fly_in() -> void:
 	Events.enemies_arrived.emit()
 
 
+## Flies [param ships] in together, mid-fight, from above their slots: ships
+## spawned after the arrival (the Reckoning's waves). Unlike the arrival they
+## come at once, since the fight is already on.
+func fly_in_reinforcements(ships: Array[Enemy]) -> void:
+	var tweens: Array[Tween] = []
+	for ship: Enemy in ships:
+		if not is_instance_valid(ship) or _hull_mounts.is_mounted(ship):
+			continue
+		var tween: Tween = create_tween()
+		tween.tween_method(
+			func(progress: float) -> void: _place_arriving(ship, progress),
+			0.0, 1.0, fly_in_time
+		).set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
+		tween.finished.connect(func() -> void:
+			_awaiting_fly_in.erase(ship)
+			_arrival_rest.erase(ship)
+			if not is_instance_valid(ship):
+				return
+			Events.enemy_flew_in.emit()
+			ship.graphics_manager.start_bob_tween()
+			ship.trigger_state_effects()
+		)
+		tweens.append(tween)
+	for tween: Tween in tweens:
+		if tween.is_valid() and tween.is_running():
+			await tween.finished
+	if Globals.targeting_computer:
+		Globals.targeting_computer.ensure_target()
+
+
 ## One frame of a ship's fly-in. [param progress] is 0 above the slot and 1 on
 ## it; the slot is read every frame because the formation may still move it.
 func _place_arriving(ship: Enemy, progress: float) -> void:

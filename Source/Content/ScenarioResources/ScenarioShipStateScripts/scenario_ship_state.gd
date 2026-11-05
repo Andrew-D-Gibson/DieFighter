@@ -2,6 +2,10 @@ class_name ScenarioShipState
 extends ScenarioShipStateBase
 
 @export_multiline var dialogue: String
+## Said instead of dialogue to a player who already knows Fate's secret, from
+## an earlier run (FateLedger.knew_secret): the Inbound pilgrim's "You've seen
+## the front." Empty for a state that says the same to everyone.
+@export_multiline var fate_knowing_dialogue: String
 @export var faction: ScenarioManager.Faction
 @export var attitude: Enemy.Attitude
 @export var effects_on_enter: EffectChain
@@ -54,6 +58,8 @@ func next_states() -> Array[ScenarioShipStateBase]:
 ## The line the ship says on entering this state, in the current language.
 ## Empty for a silent state.
 func display_dialogue() -> String:
+	if not fate_knowing_dialogue.is_empty() and Globals.fate_ledger and Globals.fate_ledger.knew_secret:
+		return ContentText.text(self, &"fate_knowing_dialogue")
 	return ContentText.text(self, &"dialogue")
 
 
@@ -71,4 +77,6 @@ func _content_text_fields() -> Array[ContentText.Field]:
 	return [
 		ContentText.Field.new(&"dialogue", "DIALOGUE",
 			"A line an NPC ship says in a speech bubble when an encounter changes its mood (it is hailed, betrayed, paid, robbed). Spoken, casual, short: the bubble holds about 50 characters.", 50),
+		ContentText.Field.new(&"fate_knowing_dialogue", "FATE_KNOWING_DIALOGUE",
+			"The same line, said instead to a player who has already learned the game's secret (that the fleet is being herded into a second black hole) in an earlier run. Same bubble: about 50 characters.", 50),
 	]

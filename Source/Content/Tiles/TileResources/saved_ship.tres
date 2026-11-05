@@ -1,0 +1,84 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://83ow6q8eqvvd"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_u7va6"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_j67c8"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_wben0"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_1ejin"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_ncc06"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_qicv4"]
+[ext_resource type="Texture2D" uid="uid://bqp1dgxn5v0eq" path="res://Assets/Textures/Tiles/YellowTiles/saved_ship.png" id="7_j67c8"]
+
+[sub_resource type="Resource" id="Resource_wben0"]
+script = ExtResource("1_u7va6")
+
+[sub_resource type="Resource" id="Resource_1ejin"]
+script = ExtResource("1_u7va6")
+type = 2
+
+[sub_resource type="Resource" id="Resource_ncc06"]
+script = ExtResource("1_u7va6")
+type = 4
+
+[sub_resource type="Resource" id="Resource_qicv4"]
+script = ExtResource("2_j67c8")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_2fgu1"]
+script = ExtResource("2_j67c8")
+category = 2
+amount = 3
+text_token = &"shields"
+
+[sub_resource type="Resource" id="Resource_qeb2u"]
+script = ExtResource("2_j67c8")
+category = 1
+subtype = 2
+
+[sub_resource type="Resource" id="Resource_bmpvh"]
+script = ExtResource("2_j67c8")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_rbo2c"]
+script = ExtResource("2_j67c8")
+category = 6
+subtype = 13
+
+[sub_resource type="Resource" id="Resource_0rbgu"]
+script = ExtResource("2_j67c8")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_om45q"]
+script = ExtResource("2_j67c8")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_tyfxq"]
+script = ExtResource("4_1ejin")
+effects = Array[ExtResource("2_j67c8")]([SubResource("Resource_qicv4"), SubResource("Resource_2fgu1"), SubResource("Resource_qeb2u"), SubResource("Resource_bmpvh"), SubResource("Resource_rbo2c"), SubResource("Resource_0rbgu"), SubResource("Resource_om45q")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5h5cc"]
+atlas = ExtResource("7_j67c8")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_q1ape"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5h5cc")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("6_qicv4")
+tile_name = "[color=yellow]Saved Ship[/color]"
+description = "[color=yellow]Any die[/color] -> Gain [color=blue]{shields} shields[/color]. Add (escape) equal to die"
+offered_as_reward = false
+textures = SubResource("SpriteFrames_q1ape")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_u7va6")]([SubResource("Resource_wben0"), SubResource("Resource_1ejin"), SubResource("Resource_ncc06")])
+effect_chain = SubResource("Resource_tyfxq")
+dragging_allowed = false

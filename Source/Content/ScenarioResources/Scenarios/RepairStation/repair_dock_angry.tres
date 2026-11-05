@@ -20,9 +20,15 @@ subtype = 4
 multiplier = 0.5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
+[sub_resource type="Resource" id="fate_step_0"]
+script = ExtResource("2_data")
+category = 6
+subtype = 9
+string_param = "ruin"
+
 [sub_resource type="Resource" id="Resource_chain"]
 script = ExtResource("3_chain")
-effects = Array[ExtResource("2_data")]([SubResource("Resource_close"), SubResource("Resource_moveship")])
+effects = Array[ExtResource("2_data")]([SubResource("fate_step_0"), SubResource("Resource_close"), SubResource("Resource_moveship")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
 
 [sub_resource type="Resource" id="FactionDeed_0"]

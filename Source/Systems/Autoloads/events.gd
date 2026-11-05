@@ -270,3 +270,25 @@ signal locale_changed(locale: String)
 
 # Save/Load Events
 signal game_saved()
+
+
+# Fate's Die and the Reckoning (LORE.md §5-§8)
+## The Inbound pilgrim handed the player Fate's Die.
+signal fate_die_received()
+## A face was carved into Fate's Die at [param slot]. [param old_face] is what
+## it went over (BLANK for a fresh face). Faces are FateDie.Face values.
+signal fate_face_carved(slot: int, face: int, old_face: int)
+## A carving came while the die was full: it waits for the player to choose
+## which face it goes over (FateCarveChoice).
+signal fate_carve_pending(face: int)
+## Fate threw the die at the start of a Reckoning round: [param slot] came up,
+## showing [param face].
+signal fate_die_rolled(slot: int, face: int)
+## The Reckoning's escape-velocity meter moved. [param goal] is the charge it
+## needs to escape.
+signal escape_velocity_changed(value: int, goal: int)
+## The event horizon swallowed column [param column] of the grid.
+signal horizon_swallowed_column(column: int)
+## The run is ending one of Fate's ways: "escaped" (the secret ending) or
+## "fell_in" (the secret loss). Fired just before victory / game_over.
+signal fate_ending(kind: StringName)

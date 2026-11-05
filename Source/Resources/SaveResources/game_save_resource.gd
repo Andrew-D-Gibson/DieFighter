@@ -53,6 +53,11 @@ extends Resource
 ## fleet that remembers nothing.
 @export var faction_standing: Dictionary = {}
 
+## FateLedger.get_state(): Fate's Die and its carvings, the ships the player
+## destroyed and saved, and their deeds. Empty in a new run, or a save from
+## before Fate's Die, which starts the run without the die.
+@export var fate_state: Dictionary = {}
+
 ## RandomNumberGenerator.state per RNGManager bucket name, stored as strings
 ## because JSON numbers lose int64 precision. RUN always; the per-scenario
 ## buckets only for a mid-scenario checkpoint.

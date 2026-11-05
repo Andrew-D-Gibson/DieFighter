@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="FateFaceResource" format=3 uid="uid://o5hakah1p2lr"]
+
+[ext_resource type="Texture2D" uid="uid://dtt878ut4ohjb" path="res://Assets/Textures/Factions/caravan_icon.png" id="1_2o75p"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_m80pi"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_e7qjy"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_ciu0f"]
+[ext_resource type="Script" uid="uid://bswc2s0i6pxtx" path="res://Source/Content/FateDie/fate_face_resource.gd" id="5_xn1ym"]
+
+[sub_resource type="Resource" id="Resource_2o75p"]
+script = ExtResource("2_m80pi")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_m80pi"]
+script = ExtResource("2_m80pi")
+category = 2
+amount = 5
+text_token = &"heal"
+
+[sub_resource type="Resource" id="Resource_e7qjy"]
+script = ExtResource("2_m80pi")
+category = 1
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_ciu0f"]
+script = ExtResource("2_m80pi")
+category = 6
+subtype = 15
+
+[sub_resource type="Resource" id="Resource_xn1ym"]
+script = ExtResource("4_ciu0f")
+effects = Array[ExtResource("2_m80pi")]([SubResource("Resource_2o75p"), SubResource("Resource_m80pi"), SubResource("Resource_e7qjy"), SubResource("Resource_ciu0f")])
+
+[resource]
+script = ExtResource("5_xn1ym")
+face = 1
+face_name = "Mercy"
+carved_by = "Saving a ship in trouble, paying the medic, sparing one that runs."
+reckoning_text = "Heal [color=green]{heal} hull[/color]. A ship you saved flies in to help."
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+glyph = ExtResource("1_2o75p")
+reckoning_chain = SubResource("Resource_xn1ym")

@@ -119,6 +119,9 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'families':
 			_families(command.slice(1))
 
+		'fate':
+			_fate(command.slice(1))
+
 		'fps':
 			_toggle_fps_display()
 
@@ -555,6 +558,77 @@ func _families(command_args: Array[String] = []) -> void:
 
 # ── Misc ─────────────────────────────────────────────────────────────────────
 
+## Fate's Die and the Reckoning (LORE.md §5-§8), for testing and tuning.
+func _fate(command_args: Array[String] = []) -> void:
+	var ledger: FateLedger = Globals.fate_ledger
+	if not ledger:
+		command_history.append_text('\n\t\tNo run here.')
+		return
+	var sub: String = command_args[0] if command_args.size() > 0 else 'status'
+	match sub:
+		'give':
+			ledger.give_die()
+		'carve':
+			var face: int = FateDie.face_from_id(command_args[1] if command_args.size() > 1 else '')
+			if face <= 0:
+				command_history.append_text('\n\t\tUsage: fate carve <mercy|plunder|duty|ruin|hunger|strange>')
+				return
+			ledger.give_die()
+			ledger.request_carve(face as FateDie.Face)
+		'fill':
+			ledger.give_die()
+			var faces: Array[FateDie.Face] = FateDie.carvable_faces()
+			var i: int = 0
+			while not ledger.die.is_full():
+				ledger.request_carve(faces[i % faces.size()])
+				i += 1
+		'clear':
+			ledger.die = FateDie.new()
+			ledger.pending.clear()
+			ledger.load_state.call_deferred(ledger.get_state())
+		'know':
+			var off: bool = command_args.size() > 1 and command_args[1] == 'off'
+			if off:
+				CollectionManager.forget_fate_knowledge()
+			else:
+				CollectionManager.learn_fate_knowledge(true)
+			ledger.knew_secret = not off
+		'deed':
+			ledger.record_deed(command_args[1] if command_args.size() > 1 else '')
+		'ally':
+			var target: Enemy = Globals.targeting_computer.targeted_enemy if Globals.targeting_computer else null
+			var kind: String = command_args[1] if command_args.size() > 1 else FateLedger.KIND_ALLY
+			if not is_instance_valid(target):
+				command_history.append_text('\n\t\tTarget a ship to remember first.')
+				return
+			ledger.remember_ship(target, kind)
+		'reckoning':
+			ledger.give_die()
+			var faces: Array[FateDie.Face] = FateDie.carvable_faces()
+			var i: int = 0
+			while not ledger.die.is_full():
+				ledger.request_carve(faces[i % faces.size()])
+				i += 1
+			ledger.knew_secret = true
+			Globals.state_manager.enter_reckoning()
+		'escape':
+			var director: ReckoningDirector = ReckoningDirector.active()
+			if director:
+				director.add_escape_velocity(int(command_args[1]) if command_args.size() > 1 else 10)
+		'horizon':
+			var director: ReckoningDirector = ReckoningDirector.active()
+			if director:
+				director.advance_horizon(int(command_args[1]) if command_args.size() > 1 else 3)
+		'status':
+			pass
+		_:
+			command_history.append_text('\n\t\tUsage: fate [status|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|reckoning|escape [n]|horizon [n]]')
+			return
+	command_history.append_text('\n[center]Fate: die %s %s, pending %d, knows %s, route %s, kills %d, allies %d, deeds %s[/center]' % [
+		'held' if ledger.has_die else 'not held', str(ledger.die.to_data()), ledger.pending.size(),
+		str(ledger.knew_secret), str(ledger.fate_route_open()), ledger.kills.size(), ledger.allies.size(), str(ledger.deeds)])
+
+
 func _clear() -> void:
 	command_history.text = ''
 
@@ -734,6 +808,7 @@ func _help() -> void:
 	command_history.append_text('\n[b]damage[/b] <amount>               damage player')
 	command_history.append_text('\n[b]damage_enemies[/b] <amount>       damage all enemies')
 	command_history.append_text('\n[b]families[/b] [unlock|reset|show]   list tile families, unlock/lock them, preview a card')
+	command_history.append_text('\n[b]fate[/b] [give|carve|fill|know|reckoning|escape|...] Fate\'s Die and the Reckoning')
 	command_history.append_text('\n[b]fps[/b]                           toggle FPS display')
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')

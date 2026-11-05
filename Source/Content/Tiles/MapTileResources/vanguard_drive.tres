@@ -1,0 +1,94 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://8vj66n8rybm0"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_kcl1w"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_ajbau"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_qj63t"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_4h0k3"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="5_v1gqk"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="6_0u234"]
+[ext_resource type="Texture2D" uid="uid://bh7qr07a3o63u" path="res://Assets/Textures/Tiles/PurpleTiles/vanguard_drive.png" id="7_ajbau"]
+
+[sub_resource type="Resource" id="Resource_qj63t"]
+script = ExtResource("1_kcl1w")
+
+[sub_resource type="Resource" id="Resource_4h0k3"]
+script = ExtResource("1_kcl1w")
+type = 2
+
+[sub_resource type="Resource" id="Resource_v1gqk"]
+script = ExtResource("1_kcl1w")
+type = 4
+
+[sub_resource type="Resource" id="Resource_0u234"]
+script = ExtResource("2_ajbau")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_tbl76"]
+script = ExtResource("2_ajbau")
+category = 2
+subtype = 2
+multiplier = 2.0
+text_token = &"times"
+text_token_value = "multiplier"
+
+[sub_resource type="Resource" id="Resource_i2vjd"]
+script = ExtResource("2_ajbau")
+category = 4
+subtype = 4
+color = Color(0.7725, 0.3216, 0.9451, 1)
+
+[sub_resource type="Resource" id="Resource_r4gle"]
+script = ExtResource("2_ajbau")
+category = 4
+subtype = 15
+color = Color(0.7725, 0.3216, 0.9451, 1)
+
+[sub_resource type="Resource" id="Resource_yipde"]
+script = ExtResource("2_ajbau")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_qn7yc"]
+script = ExtResource("2_ajbau")
+category = 6
+subtype = 13
+
+[sub_resource type="Resource" id="Resource_bhq83"]
+script = ExtResource("2_ajbau")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_j6mvi"]
+script = ExtResource("2_ajbau")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_k4tgo"]
+script = ExtResource("4_4h0k3")
+effects = Array[ExtResource("2_ajbau")]([SubResource("Resource_0u234"), SubResource("Resource_tbl76"), SubResource("Resource_i2vjd"), SubResource("Resource_r4gle"), SubResource("Resource_yipde"), SubResource("Resource_qn7yc"), SubResource("Resource_bhq83"), SubResource("Resource_j6mvi")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_8oux1"]
+atlas = ExtResource("7_ajbau")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_f6mjj"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_8oux1")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("6_0u234")
+tile_name = "[color=purple]Vanguard Drive[/color]"
+description = "[color=yellow]Any die[/color] -> Add (escape) equal to {times}x die"
+offered_as_reward = false
+textures = SubResource("SpriteFrames_f6mjj")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_kcl1w")]([SubResource("Resource_qj63t"), SubResource("Resource_4h0k3"), SubResource("Resource_v1gqk")])
+effect_chain = SubResource("Resource_k4tgo")
+dragging_allowed = false
+can_be_locked_out = false

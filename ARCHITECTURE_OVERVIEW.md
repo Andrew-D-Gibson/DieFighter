@@ -50,6 +50,8 @@ The codebase uses a **component-based composition pattern** with minimal inherit
 | `HazardManager` | `Systems/HazardManager` | `Systems/Game/HazardManager/hazard_manager.gd` | Runs the current background's `BackgroundHazardResource` for the length of each fight: arms on `start_combat`, counts down at each turn start (or, for `YOUR_TURN_ENDS` hazards, each `enemy_turn_starting`), queues its chain onto the engine, broadcasts the countdown |
 | `RunStats` | `Systems/RunStats` | `Systems/Game/RunStats/run_stats.gd` | Tallies sectors reached / encounters cleared / ships destroyed / credits earned for the end-of-run summary |
 | `FactionStanding` | `Systems/FactionStanding` | `Systems/Game/FactionStanding/faction_standing.gd` | Keeps the run's `FactionLedger` (how each faction regards the player, deeds done, kills) current from `ship_deeds_done` and `enemy_left`, and hands it to each checkpoint. See Faction Memory |
+| `FateLedger` | `Systems/FateLedger` | `Systems/Game/Fate/fate_ledger.gd` | The run's memory for Fate: Fate's Die and carvings waiting for a choice, every ship the player destroyed, the ships they saved or spared, and deeds. Saved as `GameSaveResource.fate_state`. See Fate's Die and the Reckoning |
+| `ReckoningDirector` | `Systems/ReckoningDirector` | `Systems/Game/Reckoning/reckoning_director.gd` | Runs the secret fight while its scenario is loaded: Fate's throws, the Tally's waves, the horizon, allies, escape velocity and the two Fate endings |
 
 **UI Systems**
 
@@ -1406,6 +1408,40 @@ PLAYER_ATTACKED_SELF until `finished_processing_queue`, so the rest of the
 volley that made a crew surrender doesn't count as executing it. A state with
 `holds_fire` silences every slot of the ship's table (`silence_face`) on entry,
 on every roll, and on restore.
+
+## Fate's Die and the Reckoning
+
+The secret boss of `LORE.md` §5-8. Three gates: the player knows the secret
+from an earlier run, has carved every face of Fate's Die, and turns back at the
+last gate.
+
+| Piece | Job |
+|---|---|
+| `FateDie` (`Systems/Game/Fate/`) | Pure state: six faces (`Face` enum, saved by id), `carve()` into the first blank (-1 once full), `carve_over(slot)`, `roll(rng)`. |
+| `FateFaceResource` + `FateFaceCatalog` (`Content/FateDie/`) | One `.tres` per face in `Faces/`, named by its id: name, colour, 7x7 glyph (the faction badges, Ruin's own), what carves it, and the `reckoning_chain` it plays when Fate throws it. `defiant_chain`/`defiant_text` replace them for a run that refused every tithe. Translatable (`FATE_FACE.<id>.*`); numbers in the text bind to the chain (`TextTokens`). |
+| `FateLedger` | The run's die (`has_die` once the pilgrim hands it over; nothing carves before), `pending` carvings, `kills` (`Events.enemy_destroyed`, not ship-on-ship, not mounted parts, not inside the Reckoning), `allies` (`REMEMBER_SHIP`), `deeds` (`RECORD_DEED`), `in_reckoning`/`reckoning_seed`, and `knew_secret` (read from the collection when a run starts and saved with it, so learning the secret at the end of a run doesn't open that run's own way back). `tally_waves()` is pure: the kill log backwards in waves of 3, at most 6 waves, the very first kill alone last. Hunger: arriving at one of Fate's tiles carves it, once a sector, before the arrival checkpoint (connected ahead of GameStateManager). |
+| Effects (SCENARIO_CONTROL, appended) | `CARVE_FATE_FACE` (`string_param` = face id), `GIVE_FATE_DIE`, `RECORD_DEED`, `REMEMBER_SHIP` (the actor), and the Reckoning's `ADD_ESCAPE_VELOCITY`, `ADVANCE_HORIZON`, `SUMMON_ALLY_TILE`, `FATE_SEIZES_DIE`. Each resolves through its event into the ledger or the director; outside the Reckoning the last four do nothing. |
+| `FateDieDisplay` (`Graphics/FateDieDisplay`) | The die on a chain from the canopy, drawn from `FateDieArt` (bone die + glyph, composed at run time and cached). Pendulum like `HangingDice`; tumbles and flares on a carving (`fate_face_carved`) or a throw (`fate_die_rolled`), rattles while a carving waits. Click: `info_for(ledger)`. |
+| `FateCarveChoice` (`Systems/FateCarveChoice`) | The full-die card, opened when a carving is pending and the player is out of combat and not jumping. Picking a face calls `resolve_pending(slot)`; Let It Pass is `resolve_pending(-1)`. Not recording (AutoPilot, Lab): `auto_choice()` carves over the most common face. |
+| `FateRevelation` (`Systems/FateRevelation`) | On `combat_finished` at the last gate: learns the knowledge (`CollectionManager.learn_fate_knowledge()`, recording runs only) and types the dying Marshal's lines, or the short form for a player who has heard them. |
+| `FateVectorChoice` (`Systems/UI/FateVectorChoice/`) | Built in code by `GameStateManager.go_through_gate()` at the last gate when `FateLedger.fate_route_open()`. `chosen` FORWARD carries on to victory; BACK calls `enter_reckoning()`. A run nobody plays always goes forward. |
+| `ReckoningDirector` | Wakes on `load_scenario` of its `scenario` (`FATE_reckoning.tres`; `is_reckoning()`, `active()`). Adds `HorizonModifier` (no fleeing), swaps the engine charger's tile for the Vanguard Drive, spawns the first wave (from `echo_state`, `spawn_index` -1, washed purple through the enemy shader's cloak uniforms since it ignores `modulate`). Next wave in `enemy_left` once no hostile is left, before the combat check, so the fight never ends; after the Tally, `spilled_pool` round robin. Each turn start (`first_turn_start`/`player_turn_start`): throws the die from its own RNG (seeded from the scenario), emits `fate_die_rolled`, queues a `FateRollEvent` with the face's chain. `player_turn_over` banks engine charge into escape; `enemy_turn_over` steps the horizon. Every `horizon_steps_per_column` steps a column goes (left first, `columns_kept` stay): tiles spin into the dark and are removed for the fight (`TileGrid.swallow_cell()`, `HorizonVoidCell`), then waiting allies are placed with `TileGrid.place_temporary_tile()`. Escape at the goal: `Events.fate_ending(&"escaped")`, a white jump-out, `Events.victory`. Death: `fate_ending(&"fell_in")` and the fallen ship recorded. |
+| `ReckoningHud` (`Systems/ReckoningHud`) | The escape meter in the gap of the systems panel's top edge, the rounds until the horizon eats and the allies still to come beside it, and the banner naming each throw. |
+| `GameOver` | Reads `Events.fate_ending` for the two secret ending cards; the normal win closes on the Tithe Collector line. |
+
+**Saves.** The ledger rides every checkpoint (`fate_state`). Entering the
+Reckoning sets `in_reckoning` before the jump, so its arrival checkpoint holds
+it, and `GameStateManager._scenario_to_load()` sends a Continue back into the
+fight, from the top like any fight. The Reckoning never checkpoints mid-fight,
+so swallowed tiles and ally tiles are never saved. The meta state (knowledge,
+endings, fallen ships) is `collection.json`'s `fate` block.
+
+**Seeds.** The pilgrim is placed by `place_fate_pilgrim()` from a hash of the
+repair stations' seed, replacing one stop past a jump's reach of the arrival,
+so the RUN stream and every seeded map keep their draws (the tutorial's
+included). Fate's throws use the director's own generator.
+
+Dev console: `fate` (see `help`).
 
 ---
 

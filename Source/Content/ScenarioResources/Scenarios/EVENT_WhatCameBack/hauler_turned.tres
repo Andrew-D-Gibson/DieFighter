@@ -1,9 +1,22 @@
 [gd_resource type="Resource" script_class="ScenarioShipState" format=3]
 
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="fate_effect_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="fate_effect_chain"]
+
+[sub_resource type="Resource" id="fate_step_0"]
+script = ExtResource("fate_effect_data")
+category = 6
+subtype = 9
+string_param = "ruin"
+
+[sub_resource type="Resource" id="fate_chain"]
+script = ExtResource("fate_effect_chain")
+effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0")])
 
 [resource]
 script = ExtResource("ext_0")
 dialogue = "No! It brought us back!"
 faction = 1
 attitude = 2
+effects_on_enter = SubResource("fate_chain")

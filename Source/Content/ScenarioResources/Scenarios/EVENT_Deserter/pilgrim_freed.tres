@@ -69,9 +69,21 @@ script = ExtResource("ext_1")
 category = 6
 subtype = 3
 
+[sub_resource type="Resource" id="fate_step_0"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 9
+string_param = "mercy"
+
+[sub_resource type="Resource" id="fate_step_1"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 12
+string_param = "ally"
+
 [sub_resource type="Resource" id="Resource_chain"]
 script = ExtResource("ext_2")
-effects = Array[ExtResource("ext_1")]([SubResource("Resource_target_player"), SubResource("Resource_charge_flash"), SubResource("Resource_charge_amount"), SubResource("Resource_charge"), SubResource("Resource_target_player_again"), SubResource("Resource_heal_flash"), SubResource("Resource_heal_sound"), SubResource("Resource_heal_amount"), SubResource("Resource_heal"), SubResource("Resource_wait_time"), SubResource("Resource_wait"), SubResource("Resource_flee")])
+effects = Array[ExtResource("ext_1")]([SubResource("fate_step_0"), SubResource("fate_step_1"), SubResource("Resource_target_player"), SubResource("Resource_charge_flash"), SubResource("Resource_charge_amount"), SubResource("Resource_charge"), SubResource("Resource_target_player_again"), SubResource("Resource_heal_flash"), SubResource("Resource_heal_sound"), SubResource("Resource_heal_amount"), SubResource("Resource_heal"), SubResource("Resource_wait_time"), SubResource("Resource_wait"), SubResource("Resource_flee")])
 
 [sub_resource type="Resource" id="FactionDeed_0"]
 script = ExtResource("deed_ext_21")

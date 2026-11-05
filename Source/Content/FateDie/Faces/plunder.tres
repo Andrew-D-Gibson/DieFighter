@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="FateFaceResource" format=3 uid="uid://b5e7fcpbycwyp"]
+
+[ext_resource type="Texture2D" uid="uid://2tyexr6peg3g" path="res://Assets/Textures/Factions/undertow_icon.png" id="1_86kyu"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_mrex8"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_g2yis"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_jn578"]
+[ext_resource type="Script" uid="uid://bswc2s0i6pxtx" path="res://Source/Content/FateDie/fate_face_resource.gd" id="5_m0w80"]
+
+[sub_resource type="Resource" id="Resource_86kyu"]
+script = ExtResource("2_mrex8")
+category = 6
+subtype = 16
+
+[sub_resource type="Resource" id="Resource_mrex8"]
+script = ExtResource("4_jn578")
+effects = Array[ExtResource("2_mrex8")]([SubResource("Resource_86kyu")])
+
+[resource]
+script = ExtResource("5_m0w80")
+face = 2
+face_name = "Plunder"
+carved_by = "Robbing the helpless, stripping the slow for parts."
+reckoning_text = "A hostile ship snatches your highest die."
+color = Color(0.8156863, 0.21176471, 0.3372549, 1)
+glyph = ExtResource("1_86kyu")
+reckoning_chain = SubResource("Resource_mrex8")

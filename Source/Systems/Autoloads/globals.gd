@@ -17,6 +17,7 @@ var jump_gate: JumpGate
 var background_modifier_manager: BackgroundModifierManager
 var run_stats: RunStats
 var faction_standing: FactionStanding
+var fate_ledger: FateLedger
 var shop: Shop
 var repair_station: RepairStation
 
