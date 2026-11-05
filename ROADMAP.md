@@ -15,8 +15,8 @@ been self-playtested and is fun. Next comes outside playtesting.
 - [ ] Quit (Save and Quit, and closing the window) during a sector jump, then
       Continue. Make sure the run resumes in a sane state. A normal quit is
       known to save fine, but this window is async.
-- [ ] Run the outside playtests. Testers' crash reports are their
-      `user://debug_log.txt` (see `DebugLogger` in `ARCHITECTURE_OVERVIEW.md`).
+- [ ] Run the outside playtests with `PLAYTEST_KIT.md`, which covers the
+      build checklist, tester handout, feedback form and log locations.
 
 ## After playtests
 

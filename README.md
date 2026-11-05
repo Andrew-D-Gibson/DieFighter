@@ -25,6 +25,8 @@ sector ends at a jump gate guarded by a boss.
 - `ROADMAP.md`: what's left to do, including code-health items.
 - `DEVLOG.md`: what changed and why, newest first.
 - `SOUND_EFFECTS_TODO.md`: the SFX production and integration checklist.
+- `PLAYTEST_KIT.md`: pre-build checklist, tester handout, feedback form and
+  observation sheet for outside playtests.
 
 **Design and ideas**
 - `LORE.md`: the world, the factions and the Fate storyline.
