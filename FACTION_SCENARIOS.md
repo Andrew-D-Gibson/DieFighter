@@ -212,12 +212,16 @@ the hole."* Hauler: *"We're still us! Please!"*
 ### Stowaways — `EVENT_Stowaways` (sector 3)
 A **Tithe Collector** (`tithe_collector_inspector`) inspects a **Bounty Runner**
 (`bounty_runner_smuggler`), the Undertow smuggler in a Caravan hull, its holds full
-of refugees dodging the tithe. *"Holds open. Tithe by head."* Runner: *"Just cargo,
-officer. Right, pilot?"*
+of refugees dodging the tithe. *"Scanning for stowaways. Tithe by head."* The Runner
+whispers to the player, its bribe floating behind its back, out of the Collector's
+sight (the offer sits right of the Runner): *"(Psst. Take this. Say we're clean.)"*
+Private lines are written in parentheses.
+- **Vouch for them (take the bribe):** *"(Owe you one, pilot.)"* / *"Holds clean.
+  Move along."* Both ships leave; the credits are the whole reward. — Mercy
 - **Cover for them (shoot the Collector):** *"Ha! Knew I liked you."* The Runner
   Raids. Win for the bounty pick, and *"Fare's paid. Patch up on us."* 10 hull.
   — Mercy
-- **Expose them (shoot the Runner):** *"Good eye. Burn the smuggler."* / *"Fine.
+- **Expose them (shoot the Runner):** *"Stowaways! Good eye, pilot."* / *"Fine.
   Catch us if you can."* The Runner carries its own pick and bolts on round 3, as in
   Bounty Run. — Duty
 
