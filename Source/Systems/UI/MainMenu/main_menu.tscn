@@ -24,6 +24,7 @@
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/Codex/codex_popup.tscn" id="21_codex"]
 [ext_resource type="Texture2D" uid="uid://ccwljuf14y1ag" path="res://Assets/Textures/UI/Buttons/button_medium_blue.png" id="22_blue"]
 [ext_resource type="PackedScene" path="res://Source/Systems/UI/MainMenu/MenuCaravan/menu_caravan.tscn" id="23_caravan"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/SpaceDust/space_dust.tscn" id="24_dust"]
 
 [sub_resource type="Environment" id="Environment_6qnrd"]
 background_mode = 3
@@ -119,10 +120,6 @@ animations = [{
 "name": &"default",
 "speed": 5.0
 }]
-
-[sub_resource type="Gradient" id="Gradient_dn166"]
-offsets = PackedFloat32Array(0, 0.17796, 0.82905, 1)
-colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0)
 
 [sub_resource type="Gradient" id="Gradient_23fm2"]
 offsets = PackedFloat32Array(1)
@@ -395,24 +392,9 @@ unique_name_in_owner = true
 visible = false
 position = Vector2(160, 90)
 
-[node name="CPUParticles2D" type="CPUParticles2D" parent="." unique_id=952747932]
+[node name="SpaceDust" parent="." unique_id=952747932 instance=ExtResource("24_dust")]
 z_index = -2
 position = Vector2(160, 90)
-amount = 64
-lifetime = 30.0
-preprocess = 180.0
-explosiveness = 0.2
-randomness = 0.5
-use_fixed_seed = true
-seed = 2354732237
-lifetime_randomness = 0.5
-emission_shape = 3
-emission_rect_extents = Vector2(160, 90)
-spread = 180.0
-gravity = Vector2(0, 0)
-initial_velocity_max = 4.0
-color = Color(0.203922, 0.2, 0.188235, 0.737255)
-color_ramp = SubResource("Gradient_dn166")
 
 [node name="Planet" type="ColorRect" parent="." unique_id=845202068]
 z_index = -1
