@@ -170,6 +170,10 @@ vertical cut favours the thesis and machine shots.
 - Music is muted in most shots so a take's audio is the game's sound
   effects alone, ready to lay under the trailer track. `music on` (or the
   shot's `mute_music`) brings it back.
+- Enemies only act with dice you've handed them. A shot that wants the
+  enemy turn (a volley, a Seize, the ion storm rerolling their dice) has to
+  spend the hand first, and through a tile that hands the die to the
+  target (the Dice Cannon does).
 - If a seed doesn't give you the moment (a Seize, a particular intent),
   change `run_seed` and retake: `ready`/`drag` beats adapt to any hand that
   has the faces they ask for, and `forced_rolls` pins the faces.

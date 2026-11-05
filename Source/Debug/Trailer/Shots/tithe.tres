@@ -9,4 +9,4 @@ notes = "HOOK, REVERSED. The Tithe Collector's Seize: a clawed tether snatches a
 scenario_id = "COMBAT_tithe_collector"
 run_seed = 71
 forced_rolls = Array[int]([3, 1, 4])
-beats = PackedStringArray("ready", "drag f4 1,1 0.7", "ready", "mark enemy_turn", "end_turn", "ready 40", "wait 1", "quit")
+beats = PackedStringArray("ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "mark enemy_turn", "end_turn", "ready 40", "wait 1", "quit")

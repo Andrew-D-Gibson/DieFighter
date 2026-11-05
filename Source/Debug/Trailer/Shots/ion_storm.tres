@@ -25,4 +25,4 @@ Vector2i(3, 1): ExtResource("8_40dbo")
 })
 open_all_cells = true
 forced_rolls = Array[int]([5, 3, 6])
-beats = PackedStringArray("ready", "drag f5 1,1 0.7", "ready", "mark storm", "end_turn", "ready 40", "wait 1", "quit")
+beats = PackedStringArray("ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "drag 0 1,1 0.6", "ready", "mark storm", "end_turn", "ready 40", "wait 1", "quit")
