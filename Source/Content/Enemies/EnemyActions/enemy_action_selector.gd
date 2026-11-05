@@ -80,6 +80,7 @@ static func roll(
 		var loaded: int = situation.kept_amounts.get(face, 0)
 		if loaded > 0:
 			payoff.intent_amount = loaded
+			payoff.amount_is_loaded = true
 		actions.insert(face - 1, payoff)
 	_number_slots(actions)
 	return actions

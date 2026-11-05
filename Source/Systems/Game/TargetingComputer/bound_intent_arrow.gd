@@ -260,7 +260,7 @@ func _group_slots() -> Array[Dictionary]:
 				"action": action,
 				"slots": [slot],
 				"icon": action.indicator_texture if action else null,
-				"amount": action.get_intent_amount_text() if action else ""
+				"amount": action.get_landing_amount_text(source) if action else ""
 			}
 			groups.append(new_g)
 		else:
@@ -402,4 +402,4 @@ func _action(slot: int) -> EnemyActionResource:
 
 func _amount_text(slot: int) -> String:
 	var action: EnemyActionResource = _action(slot)
-	return action.get_intent_amount_text() if action else ""
+	return action.get_landing_amount_text(source) if action else ""
