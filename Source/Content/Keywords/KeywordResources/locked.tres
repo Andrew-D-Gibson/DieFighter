@@ -13,8 +13,13 @@ script = ExtResource("2_0scoq")
 token = "(lock)"
 label = "Lock"
 
+[sub_resource type="Resource" id="locked_caps"]
+script = ExtResource("2_0scoq")
+token = "(LOCKED)"
+label = "LOCKED"
+
 [resource]
 script = ExtResource("1_l2q8j")
 title = "Locked"
 rule = "Dice given to this tile return to your hand. A [color=yellow]1[/color], [color=yellow]2[/color] or [color=yellow]3[/color] unlocks it instead and goes to a [color=purple]random enemy[/color]."
-tokens = Array[ExtResource("2_0scoq")]([SubResource("locked"), SubResource("lock")])
+tokens = Array[ExtResource("2_0scoq")]([SubResource("locked"), SubResource("lock"), SubResource("locked_caps")])

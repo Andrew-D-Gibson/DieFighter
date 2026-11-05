@@ -423,13 +423,7 @@ func can_be_locked_out() -> bool:
 ## Whether a lockout already holds this tile. A second lock would fire twice on
 ## the die that opens it, so lockouts check this before landing.
 func is_locked_out() -> bool:
-	var engine: ScenarioEngine = ScenarioEngine.current()
-	if engine == null:
-		return false
-	for mod: Modifier in engine.modifiers:
-		if mod is LockoutModifier and mod.affected_node == self:
-			return true
-	return false
+	return LockoutModifier.locks(ScenarioEngine.current(), self)
 
 
 ## Whether a new lockout could take hold here: the tile allows locks and isn't

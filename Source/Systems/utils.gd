@@ -69,6 +69,9 @@ static var left_controls_image_path: String = "res://Assets/Textures/Map/left_ar
 static var engine_charger_image_path: String = "res://Assets/Textures/Tiles/PurpleTiles/engine_charger.png"
 ## The breaker bolt at the end of an enemy's overload gauge (OverloadGauge).
 static var overload_glyph_image_path: String = "res://Assets/Textures/Enemies/OverloadGauge/overload_glyph-Sheet.png"
+## The Color Symbols option's family shapes (ColorSymbolBadge), so text that
+## names a colour family also reads without colour.
+static var color_symbols_image_path: String = "res://Assets/Textures/Tiles/ColorSymbols/color_symbols-Sheet.png"
 
 
 ## Icon heights as a fraction of the surrounding font size, so an icon reads
@@ -109,6 +112,8 @@ static var _inline_icons: Dictionary = {
 	'(engine_charger)': [engine_charger_image_path, _TILE_ICON_HEIGHT_EM],
 	# The gauge's resting glyph, so text names the bolt the player sees.
 	'(overload)': [overload_glyph_image_path, _TILE_ICON_HEIGHT_EM, "0,0,11,11"],
+	# The red family's triangle, as its badge draws it on red tiles' art.
+	'(red_symbol)': [color_symbols_image_path, _SMALL_ICON_HEIGHT_EM, "0,0,7,7"],
 }
 
 
