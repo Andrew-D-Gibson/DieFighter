@@ -51,8 +51,12 @@ const _HINT_HEIGHT: float = 32.0
 const _HINT_GAP: float = 4.0
 const _TAB_PADDING: float = 10.0
 ## How far a tab's padding gives way when a language's titles are too long
-## for the row: they lose their margins before they overlap.
+## for the row: they lose their margins before they overlap, and past that
+## every title shrinks together (the tabs' TextFitGroup).
 const _MIN_TAB_PADDING: float = 4.0
+## A tab's text-safe area, in from its left, top, right and bottom edges:
+## inside the outline OptionsFrame draws, a pixel clear of it at the sides.
+const _TAB_TEXT_FACE: Array[float] = [2.0, 1.0, 2.0, 1.0]
 ## Between a sub-tab row and its pages.
 const _SUB_TAB_GAP: float = 4.0
 ## A page this little taller than its box gets no scrollbar: the bar would
@@ -110,6 +114,12 @@ var _language_dropdown: PixelDropdown
 ## Per locale, the font its name is drawn in when the menu's own can't (see
 ## _dress_language_list()).
 var _language_fonts: Dictionary[String, FontVariation] = {}
+## Text that reads as a set is drawn at one size, so one long translation
+## doesn't leave its row mismatched: the tabs, the bottom bar, the Progress
+## buttons.
+var _tab_fit_group: TextFitGroup = TextFitGroup.new()
+var _bar_fit_group: TextFitGroup = TextFitGroup.new()
+var _progress_fit_group: TextFitGroup = TextFitGroup.new()
 
 
 func _ready() -> void:
@@ -249,6 +259,7 @@ func _add_progress_row(page: OptionsPage, label_key: String, text_key: String, h
 		_confirm_dialog.open(tr(confirm_key), destructive, text_key))
 	page.custom(pressable, label_key, hint_key, &"", Callable(), false)
 	pressable.set_button_text(text_key)
+	pressable.text_fitter().group = _progress_fit_group
 	set_button_texture(pressable, texture)
 
 
@@ -368,6 +379,9 @@ func _build_panel() -> void:
 	_hint_label.position = Vector2(body.position.x, hint_top)
 	_hint_label.size = Vector2(body.size.x, _HINT_HEIGHT)
 	add_child(_hint_label)
+	# The strip it was laid out in: as many lines as fit, then smaller.
+	var hint_fitter: TextFitter = TextFitter.attach(_hint_label, TextFitPolicy.paragraph())
+	hint_fitter.box = Rect2(_hint_label.position, _hint_label.size)
 
 	_defaults_button = _add_bottom_button("OPT_DEFAULTS", Vector2(body.position.x, bottom_bar_top), _on_defaults_pressed)
 	_defaults_button.mouse_entered.connect(func() -> void: _on_hint_changed(tr("OPT_DEFAULTS_HINT")))
@@ -391,6 +405,9 @@ func _build_tabs(panel_rect: Rect2) -> void:
 		button.hover_text_color = _TABS[tab][1]
 		add_child(button)
 		button.set_button_text(_TABS[tab][0])
+		var fitter: TextFitter = button.text_fitter()
+		fitter.set_padding(_TAB_TEXT_FACE[0], _TAB_TEXT_FACE[1], _TAB_TEXT_FACE[2], _TAB_TEXT_FACE[3])
+		fitter.group = _tab_fit_group
 		button.pressed_within_window.connect(_show_tab.bind(tab))
 		_tab_buttons.append(button)
 	_layout_tabs(panel_rect)
@@ -398,8 +415,9 @@ func _build_tabs(panel_rect: Rect2) -> void:
 
 ## Lays the tabs out across the panel's top, each as wide as its title, with
 ## the leftover width shared out between them (a long language's titles first
-## give up their padding, down to _MIN_TAB_PADDING). Again whenever the font
-## changes, which changes the titles' widths.
+## give up their padding, down to _MIN_TAB_PADDING, then every tab narrows in
+## proportion, and the titles' fitters shrink them to match). Again whenever
+## the language or font changes, which changes the titles' widths.
 func _layout_tabs(panel_rect: Rect2) -> void:
 	var font: Font = _frame.get_theme_default_font()
 	var text_widths: Array[float] = []
@@ -409,6 +427,13 @@ func _layout_tabs(panel_rect: Rect2) -> void:
 			_frame.get_theme_default_font_size()).x)
 		text_widths.append(text_width)
 		text_total += text_width
+	var text_room: float = panel_rect.size.x - _MIN_TAB_PADDING * _TABS.size()
+	if text_total > text_room:
+		var squeeze: float = text_room / text_total
+		text_total = 0.0
+		for i: int in range(text_widths.size()):
+			text_widths[i] = floorf(text_widths[i] * squeeze)
+			text_total += text_widths[i]
 	var padding: float = clampf(floorf((panel_rect.size.x - text_total) / _TABS.size()),
 		_MIN_TAB_PADDING, _TAB_PADDING)
 	var widths: Array[float] = []
@@ -444,6 +469,7 @@ func _add_bottom_button(text_key: String, at: Vector2, on_pressed: Callable) -> 
 	button.position = at
 	add_child(button)
 	button.set_button_text(text_key)
+	button.text_fitter().group = _bar_fit_group
 	button.pressed_within_window.connect(on_pressed)
 	return button
 
@@ -498,10 +524,13 @@ func _refresh_open_page() -> void:
 
 
 func _on_option_changed(key: StringName, _value: Variant) -> void:
-	if key == OptionsSettings.READABLE_FONT:
+	if key == OptionsSettings.READABLE_FONT or key == OptionsSettings.LANGUAGE:
 		_layout_tabs(Rect2(-PANEL_SIZE / 2.0, PANEL_SIZE))
 	if key == OptionsSettings.READABLE_FONT or key == OptionsSettings.LANGUAGE:
 		_dress_language_list()
+		# Widgets measure their text through theme caches that catch up with
+		# a font change a frame later: line their widths up again then.
+		_refresh_open_page.call_deferred()
 	# One option can change what another may do (fullscreen and the window
 	# scale), so the whole page is re-read.
 	_refresh_open_page()

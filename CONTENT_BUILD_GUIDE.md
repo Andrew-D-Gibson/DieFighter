@@ -1411,6 +1411,39 @@ keep English's line box: set `spacing_top` / `spacing_bottom` so ascent + top
 its translations exist with `tools/loc.sh audit fonts` (pseudo text in each
 distinct profile) or `audit pseudo@<locale>`.
 
+**Fitting text (TextFit).** Translations overflow in predictable ways: German
+runs long and builds compounds no line can break, Chinese runs short but its
+characters fill the whole 13 px line where English capitals use 6. So text
+that sits in a frame declares *where it may appear* and *how it may give way*,
+and the fitter shrinks it, wraps it and moves it to stay there in every
+language. Never hand-tune a label's offset for one language's glyphs.
+- **Buttons** (`Buttons/button.gd`) already fit their label to the button's
+  face: inside the border and rivets, above the 3D lip. A button drawn some
+  other way sets its own face: `button.text_fitter().set_padding(l, t, r, b)`.
+- **A label in a fixed frame** (a panel, a strip, a callout):
+  `TextFitter.attach(label, TextFitPolicy.paragraph())`. Its box is the parent
+  Control less the padding, or (`box_source = AUTHORED`) the rect the label
+  was laid out with, or any `fitter.box` you set. Connect `fitted` to resize a
+  frame that hugs its text.
+- **A label in a container row**: `row.add_child(TextFitBox.wrap(label,
+  TextFitPolicy.row_label()))`. The row grows when it wraps.
+- **Text drawn with `draw_string`**: `TextFit.fit_line()` then
+  `TextFit.draw_fitted_line()`.
+- **A set of texts that should match** (tabs, a button bar): give each fitter
+  the same `TextFitGroup`, so one long title shrinks them all a step rather
+  than standing out.
+- Policies (`TextFitPolicy`): `single_line()` for buttons and titles,
+  `wrapping(n)` / `row_label(n)` for labels that may take n lines,
+  `paragraph()` for running text. Words never split unless nothing else
+  fits (so a German compound shrinks), wrapped lines come out even ("动画 /
+  速度", not "动画速 / 度"), and shrinking goes in whole canvas pixels per
+  font pixel down to `min_scale` (2/3 by default), so the text stays crisp.
+- Don't put soft hyphens in translations: Godot draws the hyphen in a system
+  font when the pixel font lacks U+2010 (Tiny5, monogram and Fusion Pixel do).
+- A fit that fails even at `min_scale` is reported by the overflow watcher
+  and the audit as `fit_failed`, with roughly the scale it needed: give the
+  text a bigger box or ask for a shorter translation.
+
 **Checking every language.**
 - `tools/loc.sh lint` (also part of GUT, `test/core/content/test_localization.gd`)
   fails when content English hasn't been synced, when a translation lost or
@@ -1428,6 +1461,9 @@ distinct profile) or `audit pseudo@<locale>`.
   watcher for that session: it outlines text that doesn't fit in red and
   logs a `Loc` line with its key to the debug log. It's off at every launch.
   Set the `loc_watch_ignore` meta on a label that is meant to overflow.
+  Besides text past its box, it flags glyphs whose ink leaves their button,
+  words split by smart wrapping, wrapped lines that draw into each other, and
+  fitted text that failed to fit.
 
 Status column (`_status`): `machine`, `reviewed` or `stale`, as one word for
 the whole row or per language (`de=reviewed fr=stale`). `_en_hash` is the

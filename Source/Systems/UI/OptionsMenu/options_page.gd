@@ -39,6 +39,9 @@ const _KNOB_TEXT_RAISE: float = 2.0
 const _HOVER_ALPHA: float = 0.14
 ## Rows are lined up by width in these; marked by _add_row().
 const _EQUAL_WIDTH_META: StringName = &"options_equal_width"
+## How a row's label gives way to a long translation: two lines on the
+## baseline of the widget text beside it, then smaller.
+static var _row_label_fit: TextFitPolicy = TextFitPolicy.row_label(2)
 
 ## The page's accent: its tab's colour, and the colour of its controls.
 var accent: Color = Color.WHITE
@@ -342,12 +345,13 @@ func _add_row(label_key: String, hint_key: String, widget: Control, equal_width:
 	if label_key != "":
 		var label: RichTextLabel = _new_label(label_key)
 		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		# A label longer than the column's room breaks onto a second line
-		# (the row grows) rather than pushing its widget off the panel.
-		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		label.add_theme_color_override("default_color", accent)
 		label.set_meta(&"options_label", true)
-		row.add_child(label)
+		# A label longer than the column's room breaks onto a second line
+		# (the row grows) between words, evenly, rather than pushing its
+		# widget off the panel; a word too long for any line (German
+		# compounds) shrinks the label instead of splitting.
+		row.add_child(TextFitBox.wrap(label, _row_label_fit))
 	if equal_width and not widget is Slider:
 		widget.set_meta(_EQUAL_WIDTH_META, true)
 		widget.custom_minimum_size.x = maxf(widget.custom_minimum_size.x, WIDGET_WIDTH)
@@ -395,11 +399,17 @@ func _line_up_widths() -> void:
 			widget.custom_minimum_size.x = widest
 
 
-## How wide [param widget] wants to be with nothing cut off.
+## How wide [param widget] wants to be with nothing cut off. Not counting the
+## width the last line-up gave it, or a column could widen for one language
+## (Chinese's language names) and never narrow again.
 static func _natural_width(widget: Control) -> float:
 	if widget is PixelDropdown:
 		return (widget as PixelDropdown).content_width()
-	return widget.get_minimum_size().x
+	var given: float = widget.custom_minimum_size.x
+	widget.custom_minimum_size.x = 0.0
+	var natural: float = widget.get_minimum_size().x
+	widget.custom_minimum_size.x = given
+	return natural
 
 
 ## Where an HSlider draws its grabber, as Slider does: the knob's left edge

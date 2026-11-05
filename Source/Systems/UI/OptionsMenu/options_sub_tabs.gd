@@ -11,9 +11,11 @@ const HEIGHT: float = 12.0
 const _GAP: int = 4
 const _TEXT_LIGHT: Color = Color("#CEF0F1")
 const _ICON_GAP: float = 3.0
-## Pixel-font capitals sit below the middle of their ascent; this lifts them
-## to the box's centre.
-const _TEXT_RAISE: float = 1.0
+## The title's room inside a toggle's outline: a pixel clear of it all round.
+const _TEXT_INSET: float = 2.0
+## Titles centre on the toggle by their ink and shrink to stay inside it (a
+## Chinese title is taller than the box's English line).
+static var _title_fit: TextFitPolicy = TextFitPolicy.single_line()
 
 var accent: Color = Color.WHITE
 var _buttons: Array[Button] = []
@@ -84,11 +86,14 @@ func _draw() -> void:
 
 		var icon: Texture2D = toggle.get_meta(&"icon")
 		var title: String = tr(toggle.get_meta(&"title_key"))
-		var title_size: Vector2 = font.get_string_size(title, HORIZONTAL_ALIGNMENT_LEFT, -1, font_size)
-		var width: float = icon.get_width() + _ICON_GAP + title_size.x
+		var room: Rect2 = rect.grow(-_TEXT_INSET)
+		var beside_icon: float = icon.get_width() + _ICON_GAP
+		var fit: TextFit.Result = TextFit.fit_line(self, title, font, font_size,
+			Rect2(room.position + Vector2(beside_icon, 0.0), room.size - Vector2(beside_icon, 0.0)),
+			_title_fit, HORIZONTAL_ALIGNMENT_LEFT)
+		# Icon and title centre on the toggle together.
+		var width: float = beside_icon + fit.block_size.x * fit.scale
 		var left: float = roundf(rect.get_center().x - width / 2.0)
+		fit.position.x = left + beside_icon
 		draw_texture(icon, Vector2(left, roundf(rect.get_center().y - icon.get_height() / 2.0)), ink)
-		# Baseline so the capitals centre on the box, as the game's labels do.
-		var baseline: float = roundf(rect.get_center().y + (font.get_ascent(font_size) - font.get_descent(font_size)) / 2.0) - _TEXT_RAISE
-		draw_string(font, Vector2(left + icon.get_width() + _ICON_GAP, baseline), title,
-			HORIZONTAL_ALIGNMENT_LEFT, -1, font_size, ink)
+		TextFit.draw_fitted_line(self, fit, title, font, font_size, ink)

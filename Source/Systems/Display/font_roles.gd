@@ -62,6 +62,19 @@ extends RefCounted
 ## and a slot type at another scale draws through a FontVariation of its own
 ## over the wrapper with the spacing times its scale. (A variation over a
 ## variation takes the base's font and fallbacks but only its own spacing.)
+##
+## World text (the wrappers and the x1/x2 slots, drawn through the 6x
+## cameras) rasterizes its bitmap fonts at ScreenFrame.ART_PIXEL_SCALE: Godot
+## places a bitmap glyph on its own texel grid, so a font rasterized at x1
+## snaps to whole art pixels (a [wave] or a slide steps 6 canvas pixels at a
+## time) where one rasterized at x6 moves by canvas pixels, and still draws
+## each font pixel as a crisp 6x6 block. Godot's automatic oversampling
+## doesn't count a camera's zoom (checked in 4.7.1), and MSDF, which would,
+## seams pixel fonts' glyphs, so it's set here on every non-MSDF font a
+## profile names (_prepare_world()). The imports keep the value screen-space
+## text needs: screen slots (x3 and up, already one canvas pixel per texel)
+## draw through copies made before the change (_screen_font()), as x6 there
+## would rasterize Chinese body text at 432 px a glyph.
 
 const SMALL: StringName = &"small"
 const BODY: StringName = &"body"
@@ -116,6 +129,11 @@ const _SMALL_THEME_SIZES: Dictionary[StringName, StringName] = {
 	&"PopupMenu": &"font_size",
 }
 
+## Slot types from this scale up are screen-space text (see SLOT_TYPES):
+## they draw through screen copies of their fonts, never the wrappers' world
+## oversampling.
+const SCREEN_SLOT_MIN_SCALE: float = 3.0
+
 const PROFILE_DIR: String = "res://Assets/Fonts/Profiles/"
 const DEFAULT_LOCALE: String = "en"
 const _READABLE_PROFILE: String = PROFILE_DIR + "readable.tres"
@@ -135,6 +153,12 @@ static var _slot_fonts: Dictionary[StringName, FontVariation] = {}
 ## Fallback fonts wearing a face's spacing (see _spaced), by font and spacing.
 ## Kept for the session for the same reason as _loaded.
 static var _spaced_fonts: Dictionary[String, FontVariation] = {}
+## Per world-oversampled font file (by instance id), its copy at the imported
+## oversampling, for screen slots. Kept for the session like _loaded.
+static var _screen_fonts: Dictionary[int, FontFile] = {}
+## Per variation over world-oversampled fonts (by instance id), its rebuild
+## over their screen copies.
+static var _screen_variations: Dictionary[int, FontVariation] = {}
 
 
 ## The profile for [param locale]: its own file, else its language's (pt for
@@ -210,6 +234,19 @@ static func slot(role: StringName, scale: float = 1.0) -> StringName:
 	return &""
 
 
+## The unit size (see FontFace.size) of the role [param font] draws, for a
+## role's wrapper or a slot type's font; 0 for any other font. Text fitting
+## (TextFit) reads it to keep shrunk text on its font's pixel grid.
+static func unit_of(font: Font) -> int:
+	for role: StringName in ROLES:
+		if _WRAPPERS[role] == font:
+			return face(role).size
+	for type: StringName in _slot_fonts:
+		if _slot_fonts[type] == font:
+			return face(SLOT_TYPES[type][0]).size
+	return 0
+
+
 ## The face [param role] is drawn in now: the language's, under the readable
 ## one when Readable Font is on.
 static func face(role: StringName) -> FontFace:
@@ -252,6 +289,9 @@ static func digit_height(role: StringName) -> int:
 static func _apply() -> void:
 	for role: StringName in ROLES:
 		var role_face: FontFace = face(role)
+		_prepare_world(role_face.font)
+		for fallback: Font in role_face.fallbacks:
+			_prepare_world(fallback)
 		var wrapper: FontVariation = _WRAPPERS[role]
 		if wrapper.base_font != role_face.font:
 			wrapper.base_font = role_face.font
@@ -284,22 +324,26 @@ static func _apply() -> void:
 				theme.set_font(item, type, slot_font)
 
 
-## The font a slot type of [param scale] draws [param role_face] through: the
-## role's wrapper, or over it a variation with the face's line spacing scaled
-## to the slot. A face with no spacing (every English one) uses the wrapper,
-## exactly as the theme file says.
+## The font a slot type of [param scale] draws [param role_face] through. A
+## world slot uses the role's wrapper, or over it a variation with the face's
+## line spacing scaled to the slot; a face with no spacing (every English one)
+## uses the wrapper, exactly as the theme file says. A screen slot always has
+## its own variation, over screen copies of the face's fonts (see
+## _screen_font()).
 static func _slot_font(type: StringName, role_face: FontFace, scale: float) -> Font:
 	var role: StringName = SLOT_TYPES[type][0]
 	var top: int = roundi(role_face.spacing_top * scale)
 	var bottom: int = roundi(role_face.spacing_bottom * scale)
 	var spaced_fallbacks: bool = role_face.fallbacks.any(_has_spacing)
-	if is_equal_approx(scale, 1.0) or (top == 0 and bottom == 0 and not spaced_fallbacks):
+	var screen: bool = scale >= SCREEN_SLOT_MIN_SCALE
+	if not screen and (is_equal_approx(scale, 1.0) or (top == 0 and bottom == 0 and not spaced_fallbacks)):
 		return _WRAPPERS[role]
 	if not _slot_fonts.has(type):
-		var variation: FontVariation = FontVariation.new()
-		variation.base_font = _WRAPPERS[role]
-		_slot_fonts[type] = variation
+		_slot_fonts[type] = FontVariation.new()
 	var slot_font: FontVariation = _slot_fonts[type]
+	var base: Font = _screen_font(role_face.font) if screen else _WRAPPERS[role]
+	if slot_font.base_font != base:
+		slot_font.base_font = base
 	if slot_font.spacing_top != top:
 		slot_font.spacing_top = top
 	if slot_font.spacing_bottom != bottom:
@@ -307,12 +351,14 @@ static func _slot_font(type: StringName, role_face: FontFace, scale: float) -> F
 	# The variation's own, not the wrapper's: only the base font carries over.
 	if not is_equal_approx(slot_font.baseline_offset, role_face.baseline_offset):
 		slot_font.baseline_offset = role_face.baseline_offset
-	# An empty list takes the wrapper's fallbacks; a spaced one needs its
-	# spacing scaled too, so the slot then lists its own.
+	# Over the wrapper, an empty list takes the wrapper's fallbacks; a spaced
+	# one needs its spacing scaled too, so the slot then lists its own. Over a
+	# screen copy there is no wrapper to take them from.
 	var fallbacks: Array[Font] = []
-	if spaced_fallbacks:
+	if screen or spaced_fallbacks:
 		for fallback: Font in role_face.fallbacks:
-			fallbacks.append(_scaled_fallback(fallback, scale))
+			var scaled: Font = _scaled_fallback(fallback, scale)
+			fallbacks.append(_screen_font(scaled) if screen else scaled)
 	if slot_font.fallbacks != fallbacks:
 		slot_font.fallbacks = fallbacks
 	return slot_font
@@ -339,6 +385,52 @@ static func _spaced(font: Font, top: int, bottom: int, offset: float) -> Font:
 static func _has_spacing(fallback: Font) -> bool:
 	var variation: FontVariation = fallback as FontVariation
 	return variation != null and (variation.spacing_top != 0 or variation.spacing_bottom != 0)
+
+
+## Rasterizes [param font] (and what it's built on) at the world's art pixel
+## scale, once, keeping a copy at its imported oversampling for screen slots
+## first. MSDF fonts draw at any position and size already and are left be.
+static func _prepare_world(font: Font) -> void:
+	var variation: FontVariation = font as FontVariation
+	if variation != null:
+		if variation.base_font != null:
+			_prepare_world(variation.base_font)
+		for fallback: Font in variation.fallbacks:
+			_prepare_world(fallback)
+		return
+	var file: FontFile = font as FontFile
+	if file == null or file.multichannel_signed_distance_field or _screen_fonts.has(file.get_instance_id()):
+		return
+	_screen_fonts[file.get_instance_id()] = file.duplicate() as FontFile
+	file.oversampling = ScreenFrame.ART_PIXEL_SCALE
+	for fallback: Font in file.fallbacks:
+		_prepare_world(fallback)
+
+
+## [param font] as screen-space text draws it: its copy at the imported
+## oversampling if it was prepared for the world, a variation rebuilt over
+## such copies, else the font itself.
+static func _screen_font(font: Font) -> Font:
+	if font == null:
+		return null
+	if _screen_fonts.has(font.get_instance_id()):
+		return _screen_fonts[font.get_instance_id()]
+	var variation: FontVariation = font as FontVariation
+	if variation == null:
+		return font
+	if _screen_variations.has(variation.get_instance_id()):
+		return _screen_variations[variation.get_instance_id()]
+	var base: Font = _screen_font(variation.base_font)
+	var fallbacks: Array[Font] = []
+	for fallback: Font in variation.fallbacks:
+		fallbacks.append(_screen_font(fallback))
+	if base == variation.base_font and fallbacks == variation.fallbacks:
+		return font
+	var copy: FontVariation = variation.duplicate() as FontVariation
+	copy.base_font = base
+	copy.fallbacks = fallbacks
+	_screen_variations[variation.get_instance_id()] = copy
+	return copy
 
 
 ## A spaced fallback (see _spaced) with its spacing times [param scale].

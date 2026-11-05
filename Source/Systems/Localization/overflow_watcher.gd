@@ -25,6 +25,16 @@ const MISSING_GLYPHS: String = "missing_glyphs"
 const OFF_SCREEN: String = "off_screen"
 const OUTSIDE_PARENT: String = "outside_parent"
 const OVERLAP: String = "overlap"
+## Fitted text (TextFitter, TextFitBox) that overflows its box even at its
+## policy's smallest scale: it needs a bigger box or a shorter translation.
+const FIT_FAILED: String = "fit_failed"
+## A fitted label wrapping onto more or fewer lines than its fit measured:
+## TextFit and Godot's own line breaking disagree, and the fit is wrong.
+const FIT_MISMATCH: String = "fit_mismatch"
+## Smart wrapping split a word too long for its line.
+const WORD_BROKEN: String = "word_broken"
+## Wrapped lines whose glyphs draw into each other.
+const LINES_COLLIDE: String = "lines_collide"
 
 ## Set on a label to leave it out (a deliberately clipped ticker, say).
 const IGNORE_META: StringName = &"loc_watch_ignore"
@@ -157,10 +167,25 @@ static func inspect(control: Control) -> Array[Dictionary]:
 	var text: String = shown_text(control)
 	if text.strip_edges().is_empty():
 		return problems
-	if control is RichTextLabel:
-		_inspect_rich(control as RichTextLabel, problems)
-	elif control is Label:
-		_inspect_label(control as Label, text, problems)
+	var fit: TextFit.Result = TextFit.result_of(control)
+	if fit != null:
+		# A fitted label is sized and placed by its fitter: the one question
+		# is whether the fit worked.
+		if not fit.fits:
+			problems.append({"kind": FIT_FAILED, "detail": fit.describe()})
+		var lines: int = int(control.call(&"get_line_count"))
+		if fit.line_count > 0 and lines != fit.line_count:
+			problems.append({"kind": FIT_MISMATCH, "detail": "%d lines drawn, %d measured" % [lines, fit.line_count]})
+	else:
+		if control is RichTextLabel:
+			_inspect_rich(control as RichTextLabel, problems)
+		elif control is Label:
+			_inspect_label(control as Label, text, problems)
+		if TextFit.breaks_words(control):
+			problems.append({"kind": WORD_BROKEN, "detail": "a word wider than its %d px line" % floori(control.size.x)})
+		if TextFit.lines_collide(control):
+			problems.append({"kind": LINES_COLLIDE, "detail": "line spacing %d" % control.get_theme_constant(
+				&"line_separation" if control is RichTextLabel else &"line_spacing")})
 	var missing: String = missing_glyphs(text, _font_of(control))
 	if not missing.is_empty():
 		problems.append({"kind": MISSING_GLYPHS, "detail": missing})
@@ -247,21 +272,28 @@ static func _inspect_rich(label: RichTextLabel, problems: Array[Dictionary]) -> 
 
 
 ## A label whose text reaches out of the button or panel it's written on, as
-## a tab title longer than its tab does. Only those frames: a label under a
-## bare Control or a container is placed, not framed.
+## a tab title longer than its tab does, or a Chinese one taller than it.
+## Only those frames: a label under a bare Control or a container is placed,
+## not framed. A fitted label's fitter answers for it (FIT_FAILED).
 static func _inspect_parent_box(control: Control) -> Array[Dictionary]:
 	var problems: Array[Dictionary] = []
 	var frame: Control = control.get_parent() as Control
-	if frame == null or frame.size.x <= 0.0 or frame.size.y <= 0.0:
+	if frame == null or frame.size.x <= 0.0 or frame.size.y <= 0.0 or TextFit.fitter_of(control) != null:
 		return problems
 	if not (frame is BaseButton or frame is Panel or frame is PanelContainer or frame is NinePatchRect):
 		return problems
-	# Sideways only: button labels are routinely a pixel or two taller than
-	# the button's art, which clips nothing.
 	var rect: Rect2 = control.get_transform() * _text_rect(control)
 	if rect.position.x < -_SLACK or rect.end.x > frame.size.x + _SLACK:
 		problems.append({"kind": OUTSIDE_PARENT, "detail": "%s in %s %s" % [
 			Rect2i(rect), frame.get_class(), Vector2i(frame.size)]})
+		return problems
+	# Up and down by the glyphs' ink, not the line box: a line box is
+	# routinely a pixel or two taller than the button's art, which clips
+	# nothing, but ink over the edge draws on the frame.
+	var ink: Rect2 = control.get_transform() * TextFit.laid_out_ink(control)
+	if ink.position.y < -_HEIGHT_SLACK or ink.end.y > frame.size.y + _HEIGHT_SLACK:
+		problems.append({"kind": OUTSIDE_PARENT, "detail": "ink %s in %s %s" % [
+			Rect2i(ink), frame.get_class(), Vector2i(frame.size)]})
 	return problems
 
 
@@ -299,9 +331,25 @@ static func _inspect_screen_edge(control: Control) -> Array[Dictionary]:
 		return problems
 	var screen: Rect2 = viewport.get_visible_rect()
 	var rect: Rect2 = control.get_global_transform_with_canvas() * _text_rect(control)
+	# Scrolled out of its ScrollContainer, it's hidden, not cut off.
+	var scroll: Control = _scroll_container_of(control)
+	if scroll != null:
+		var shown: Rect2 = scroll.get_global_transform_with_canvas() * Rect2(Vector2.ZERO, scroll.size)
+		if not rect.intersects(shown):
+			return problems
+		rect = rect.intersection(shown)
 	if rect.intersects(screen) and not screen.grow(_SLACK).encloses(rect):
 		problems.append({"kind": OFF_SCREEN, "detail": "%s on a %s screen" % [Rect2i(rect), Vector2i(screen.size)]})
 	return problems
+
+
+static func _scroll_container_of(control: Control) -> Control:
+	var node: Node = control.get_parent()
+	while node is Control:
+		if node is ScrollContainer:
+			return node as Control
+		node = node.get_parent()
+	return null
 
 
 ## Where in its box [param control]'s text actually draws: a box wider or

@@ -1887,6 +1887,19 @@ through the wrappers. 4.7.1: a FontVariation over a FontVariation takes the
 base's font data and fallbacks but only its own spacing and baseline offset;
 a RichTextLabel with a negative `line_separation` clips up to that many
 pixels without showing a scrollbar (the codex body box is 67 px for this).
+World text (the wrappers and the x1/x2 slots) rasterizes its bitmap fonts
+at `ScreenFrame.ART_PIXEL_SCALE`: FontRoles sets `oversampling` 6 on every
+non-MSDF font a profile names (`_prepare_world()`). A bitmap glyph is placed
+on its own texel grid, so at oversampling 1 world text snapped to whole art
+pixels (a hovered button's `[wave]` stepped 6 canvas pixels at a time in
+German and Chinese, while English's MSDF m3x6 glided); at 6 it moves by
+canvas pixels and still draws crisp 6x6 blocks. 4.7.1: automatic
+oversampling doesn't count a Camera2D's zoom, and MSDF seams pixel fonts'
+glyphs, so neither does this. Screen slots (`SCREEN_SLOT_MIN_SCALE`, x3 up)
+always draw through their own variation over copies at the imported
+oversampling (`_screen_font()`), or Chinese BodyX6 would rasterize at 432 px a
+glyph. `FontRoles.unit_of(font)` gives a wrapper's or slot font's unit, for
+TextFit's pixel grid.
 Fonts per locale: en/en_XA m3x6@16 + m5x7@16; de/fr/es/pt_BR/ru Tiny5@8
 for small, m5x7 otherwise; zh_CN and ja Fusion Pixel 12 (zh_hans / ja
 build)@12 for every role. monogram extended is a same-size fallback behind
@@ -2047,14 +2060,72 @@ byte-identical, `LocPipeline` runs the steps, `LocLint` the checks and
   (`set_locale(locale, true)`); pseudo is reachable only this way and through
   the audit.
 
+**Fitting text** (`Systems/Localization/TextFit/`). Text in a frame names its
+box (where it may appear, in its parent's coordinates) and a `TextFitPolicy`
+(max lines, `prefer` WRAP or SHRINK, `balance_lines`, `min_scale`,
+`vertical_alignment`, `align_by_ink`, `break_words_last_resort`; presets
+`single_line()`, `wrapping()`, `row_label()`, `paragraph()`). `TextFit.solve()`
+measures the label's shown text (Label: translated text; RichTextLabel:
+parsed text) in its own font, size and line spacing with one `TextParagraph`,
+shaped once and re-broken per candidate width, and reads each glyph's ink
+from its outline (`font_get_glyph_contours`, cached). Scales step in whole
+canvas pixels per font pixel (`grid` = canvas pixels per unit, the world
+camera counted at its resting 6x, times font size / `FontRoles.unit_of`), so
+shrunk text stays crisp; it's `Control.scale`, never a font size override.
+Per scale it breaks at word bounds only; a word wider than the line fails
+that scale (no "Bildschirmwack / eln"); `BREAK_ADAPTIVE` only as the last
+resort, reported `fits = false` with a `needed_scale`. Wrapped lines are
+balanced (binary search for the narrowest width with the same line count).
+Placement centres the optical band (each glyph's font's H, or 国 for
+CJK/kana/Hangul/full-width, so accents and descenders don't shift a line)
+and then clamps the true ink inside the box; `align_by_ink = false` centres
+line boxes instead, for row labels beside Godot-drawn widget text. Full-size
+text snaps to whole font pixels of its parent (the art grid), shrunk text to
+canvas pixels. Where wrapped lines' ink would run into each other (Chinese
+under the theme's RichTextLabel `line_separation` -4), the layout opens the
+spacing, and `apply()` overrides that label's spacing constant (meta
+`text_fit_line_spacing` keeps the theme's): Latin ink may touch across lines,
+as English's tight spacing already lets a descender meet the capital below,
+while an ideograph on either side gets a font pixel's gap. Glyph ink comes
+from outlines; for MSDF faces (m3x6, Atkinson) it's moved by where 4.7.1
+actually draws the field's quad (`_msdf_shift`: m3x6 capitals draw 0.4 of a
+font pixel above their outline). Measured against rendering, pixel fonts'
+predicted ink is within half a canvas pixel. `apply()` places the label
+by its top-left with `vertical_alignment` TOP, `clip_contents` off and
+autowrap matching the measurement. Components: `TextFitter` (internal child
+of a hand-placed label; box = parent less padding, the authored rect, or
+`box`; refits on its label's draw when text, font RIDs, size or box change,
+on translation and theme changes; `offset` moves without refitting, which
+`button.gd` uses for the disabled sink), `TextFitBox` (Container around one
+label; fits to the width it's given and asks for the footprint height;
+non-expanding, it hugs its text), `TextFitGroup` (members share the smallest
+best scale, resolved once a frame), `TextFit.fit_line()` /
+`draw_fitted_line()` for `draw_string`. A label's `text_fit` meta names its
+fitter; `TextFit.result_of(label)`. Adopted: every `button.gd` button
+(`_TEXT_FACES` per size), the options tabs (own face, one group, and
+`_layout_tabs` squeezes widths proportionally past the minimum padding),
+bottom bar and Progress buttons (groups), row labels (`row_label(2)`), the
+hint strip (`paragraph()`), sub-tab titles (`fit_line`), and ConfirmDialog's
+question (its panel follows `fitted`) and buttons. Not measured: inline
+images and BBCode that changes fonts or sizes. Soft hyphens aren't usable:
+4.7.1 draws the inserted hyphen in a system font when the pixel font lacks
+U+2010.
+
 **Checking every language.** `OverflowWatcher`
 (`Systems/Localization/overflow_watcher.gd`, a child of the Localization
 autoload once `loc_watch on` asks for it, debug builds only, for that
 session) checks the visible Labels and
 RichTextLabels every 0.5 s. It looks for text taller than its box, wider with
-wrapping off, sideways out of its button or panel, on a button a sibling
-overlaps, cut by the screen edge, held back by `visible_characters` for 2 s
-(a stuck typewriter), or with glyphs the font lacks. A flagged label gets a red
+wrapping off, sideways out of its button or panel or with its ink above or
+below it (`TextFit.laid_out_ink`), on a button a sibling overlaps, cut by the
+screen edge (not counting what its ScrollContainer scrolls out of view), held
+back by `visible_characters` for 2 s (a stuck typewriter), with a word split
+by smart wrapping (`word_broken`), with wrapped lines whose ink touches
+(`lines_collide`), or with glyphs the font lacks. A fitted label is only asked
+whether its fit worked (`fit_failed`) and whether it wraps onto the lines the
+fit measured (`fit_mismatch`: TextFit and Godot's line breaking disagree; a
+label's wrap width is the width its lines were broken at, never its widest
+line, as breaking also counts a line's trailing space). A flagged label gets a red
 outline and one `Loc [locale] ...` line in the debug log
 (`DebugLogger.note()`) with its node path and key (its own, a `loc_key` meta,
 or a reverse lookup). The `loc_watch_ignore` meta opts a label out, and

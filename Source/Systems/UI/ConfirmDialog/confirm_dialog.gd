@@ -19,6 +19,8 @@ const _PANEL_PADDING: Vector2 = Vector2(8, 6)
 @onready var _confirm_button: Button = $HBoxContainer/ConfirmButton
 @onready var _cancel_button: Button = $HBoxContainer/CancelButton
 var _panel: _Panel
+## The two answers read as a pair: one size between them.
+var _button_fit_group: TextFitGroup = TextFitGroup.new()
 
 
 func _ready() -> void:
@@ -26,6 +28,13 @@ func _ready() -> void:
 	add_child(_panel)
 	# Over the dim, under the text and buttons.
 	move_child(_panel, $ScreenDim.get_index() + 1)
+	# The question keeps to the room the scene gives it, wrapping and then
+	# shrinking; the panel follows wherever it settles.
+	var message_fitter: TextFitter = TextFitter.attach(%MessageLabel, TextFitPolicy.paragraph())
+	message_fitter.box_source = TextFitter.BoxSource.AUTHORED
+	message_fitter.fitted.connect(_fit_panel.unbind(1))
+	_confirm_button.text_fitter().group = _button_fit_group
+	_cancel_button.text_fitter().group = _button_fit_group
 
 
 ## Asks [param message]. [param confirm_text] labels the confirm button (a
@@ -43,9 +52,10 @@ func open(message: String, destructive: bool = false, confirm_text: String = "CO
 
 
 ## Wraps the panel round the question and the buttons, once the question
-## has laid itself out.
+## has laid itself out (and again whenever its fit changes).
 func _fit_panel() -> void:
-	var around: Rect2 = %MessageLabel.get_rect().merge($HBoxContainer.get_rect())
+	var message: Control = %MessageLabel
+	var around: Rect2 = Rect2(message.position, message.size * message.scale).merge($HBoxContainer.get_rect())
 	_panel.box = around.grow_individual(_PANEL_PADDING.x, _PANEL_PADDING.y, _PANEL_PADDING.x, _PANEL_PADDING.y)
 
 

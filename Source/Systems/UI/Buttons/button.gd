@@ -14,10 +14,22 @@ enum ButtonSize {
 }
 @export var button_size: ButtonSize = ButtonSize.SMALL
 
+## Each size's text-safe area, in pixels in from its left, top, right and
+## bottom edges: inside the 1 px border and clear of the corner rivets, above
+## the 3D lip. The text is fitted into it (TextFitter), so a long German word
+## or a tall Chinese one shrinks to stay on the face. A button drawn some
+## other way (the options tabs) sets its own with text_fitter().set_padding().
+const _TEXT_FACES: Dictionary[ButtonSize, Array] = {
+	ButtonSize.SMALL: [3.0, 1.0, 3.0, 3.0],
+	ButtonSize.MEDIUM: [3.0, 1.0, 3.0, 3.0],
+	ButtonSize.LARGE: [4.0, 1.0, 4.0, 4.0],
+}
+## How far the face sinks when the button is disabled (its pressed frame).
+const _DISABLED_SINK: Vector2 = Vector2(0, 2)
+
 @export var hover_text_color: Color = Globals.white
 @export var disabled_text_color: Color = Globals.purple
 @export var soft_highlight_color: Color = Globals.purple
-@onready var text_position: Vector2 = $RichTextLabel.position
 
 ## The length of time between the button going down and back up
 ## that will still emit the 'pressed_within_window' signal.
@@ -35,9 +47,24 @@ enum ButtonSize {
 ## it has to be translated by hand there.
 @onready var _text_on_ready: String = $RichTextLabel.text
 var _button_down_time: int
+@onready var _text_fitter: TextFitter = _attach_text_fitter()
 
 ## Connect to this signal to execute the button's function
 signal pressed_within_window()
+
+
+## Fits the label to the face in every language. Made in an @onready so it
+## exists before any caller's _ready sets the text.
+func _attach_text_fitter() -> TextFitter:
+	var fitter: TextFitter = TextFitter.attach($RichTextLabel, TextFitPolicy.single_line())
+	var face: Array = _TEXT_FACES[button_size]
+	fitter.set_padding(face[0], face[1], face[2], face[3])
+	return fitter
+
+
+## The fitter keeping this button's text on its face.
+func text_fitter() -> TextFitter:
+	return _text_fitter
 
 
 func update_ui() -> void:
@@ -45,11 +72,11 @@ func update_ui() -> void:
 		mouse_filter = Control.MOUSE_FILTER_IGNORE if disabled else Control.MOUSE_FILTER_STOP
 	if disabled:
 		$AnimatedSprite2D.frame = 1
-		$RichTextLabel.position = text_position + Vector2(0, 2)
+		_text_fitter.offset = _DISABLED_SINK
 		$RichTextLabel.add_theme_color_override('default_color', disabled_text_color)
-	else: 
+	else:
 		$AnimatedSprite2D.frame = 0
-		$RichTextLabel.position = text_position
+		_text_fitter.offset = Vector2.ZERO
 		$RichTextLabel.remove_theme_color_override('default_color')
 		
 

@@ -67,7 +67,9 @@ func test_a_locale_without_a_profile_borrows_its_language_or_english() -> void:
 ## type is a variation of Control, draws through its role's wrapper, and is
 ## the English unit times its scale.
 func test_the_theme_defines_every_slot_type_in_english_sizes() -> void:
-	var theme: Theme = load(ProjectSettings.get_setting("gui/theme/custom"))
+	# The file, not the project theme FontRoles points at the current faces.
+	var theme: Theme = ResourceLoader.load(ProjectSettings.get_setting("gui/theme/custom"), "",
+		ResourceLoader.CACHE_MODE_IGNORE)
 	var english: FontProfile = FontRoles.profile_for("en")
 	assert_eq(theme.default_font, _small)
 	assert_eq(theme.default_font_size, english.small.size)
@@ -243,8 +245,7 @@ func test_every_language_keeps_englishs_line_box() -> void:
 
 
 ## A slot at xN gets N times its face's spacing, so a big German or Chinese
-## line is exactly English's height too, and English draws through the
-## wrappers as the theme file says.
+## line is exactly English's height too.
 func test_line_spacing_scales_with_the_slot() -> void:
 	var small_x6: Label = Label.new()
 	small_x6.text = "SAVED"
@@ -258,7 +259,6 @@ func test_line_spacing_scales_with_the_slot() -> void:
 		add_child_autofree(label)
 	FontRoles.use_locale("en")
 	var theme: Theme = ThemeDB.get_project_theme()
-	assert_eq(theme.get_font(&"font", &"SmallX6"), FontRoles.font(FontRoles.SMALL), "English draws through the wrapper")
 	var heights: Array[float] = [small_x6.get_minimum_size().y, body_x6.get_minimum_size().y, plain.get_minimum_size().y]
 
 	FontRoles.use_locale("de")
@@ -272,7 +272,6 @@ func test_line_spacing_scales_with_the_slot() -> void:
 	assert_eq(small_x6.get_minimum_size().y, heights[0], "Chinese small text at x6")
 
 	FontRoles.use_locale("en")
-	assert_eq(theme.get_font(&"font", &"SmallX6"), FontRoles.font(FontRoles.SMALL))
 	assert_eq(small_x6.get_minimum_size().y, heights[0])
 
 
