@@ -9,6 +9,15 @@
 [ext_resource type="PackedScene" uid="uid://d1eqq3hswo3d6" path="res://Source/Systems/Graphics/JumpTransition/jump_transition.tscn" id="7_mwyp7"]
 [ext_resource type="Script" path="res://Source/Systems/Graphics/BackgroundManager/LivingSky/living_sky.gd" id="8_living"]
 [ext_resource type="PackedScene" path="res://Source/Systems/Graphics/SpaceDust/space_dust.tscn" id="9_dust"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/hauler.tres" id="k_hauler"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/civilian_transport.tres" id="k_civilian_transport"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/tender.tres" id="k_tender"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/picket.tres" id="k_picket"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/pilgrim.tres" id="k_pilgrim"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/gaff.tres" id="k_gaff"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/jackal.tres" id="k_jackal"]
+[ext_resource type="Resource" path="res://Source/Systems/UI/MainMenu/MenuCaravan/Kinds/conscriptor.tres" id="k_conscriptor"]
+[ext_resource type="Script" path="res://Source/Systems/UI/MainMenu/MenuCaravan/caravan_ship_kind.gd" id="k_script"]
 
 [node name="BackgroundManager" type="Sprite2D" unique_id=175737585]
 self_modulate = Color(0.027451, 0.0117647, 0.14902, 1)
@@ -35,6 +44,9 @@ z_index = 1
 position = Vector2(-160, -90)
 script = ExtResource("8_living")
 dust = NodePath("SpaceDust")
+tail_kinds = Array[ExtResource("k_script")]([ExtResource("k_hauler"), ExtResource("k_civilian_transport"), ExtResource("k_tender"), ExtResource("k_gaff"), ExtResource("k_jackal"), ExtResource("k_jackal"), ExtResource("k_picket")])
+belly_kinds = Array[ExtResource("k_script")]([ExtResource("k_hauler"), ExtResource("k_hauler"), ExtResource("k_civilian_transport"), ExtResource("k_tender"), ExtResource("k_pilgrim"), ExtResource("k_gaff")])
+spine_kinds = Array[ExtResource("k_script")]([ExtResource("k_picket"), ExtResource("k_picket"), ExtResource("k_conscriptor"), ExtResource("k_conscriptor"), ExtResource("k_tender"), ExtResource("k_hauler")])
 
 [node name="SpaceDust" parent="LivingSky" unique_id=1059039293 instance=ExtResource("9_dust")]
 position = Vector2(160, 90)
