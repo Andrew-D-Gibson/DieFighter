@@ -96,9 +96,14 @@ func is_on_its_way() -> bool:
 
 func give_reward(reward_resource: RewardResource) -> void:
 	#Globals.player.money += money
-	var money: int = RNGManager.randi_range(
-		RNGManager.Bucket.REWARDS, reward_resource.min_money, reward_resource.max_money
-	)
+	# The refund is taken out before the sector scale and put back after, so
+	# what the player is owed back stays exact.
+	var refund: int = reward_resource.refund
+	var money: int = refund + sector_scaled_money(RNGManager.randi_range(
+		RNGManager.Bucket.REWARDS,
+		reward_resource.min_money - refund,
+		reward_resource.max_money - refund
+	))
 	_spawn_money_particles(money)
 	_call_out_refund(reward_resource.refund)
 
@@ -231,11 +236,11 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 	if reward_resource.max_money_pickup > 0 and money_pickup_scene \
 	and rolls_money_pickup(reward_resource):
 		var pickup: MoneyPickup = money_pickup_scene.instantiate()
-		pickup.amount = RNGManager.randi_range(
+		pickup.amount = sector_scaled_money(RNGManager.randi_range(
 			RNGManager.Bucket.REWARDS,
 			reward_resource.min_money_pickup,
 			reward_resource.max_money_pickup
-		)
+		))
 		offered.append(pickup)
 		items.append({"money": pickup.amount})
 
@@ -254,6 +259,15 @@ static func rolls_grid_slot(reward_resource: RewardResource) -> bool:
 	if reward_resource.grid_slot_probability <= 0.0:
 		return false
 	return RNGManager.randf(RNGManager.Bucket.REWARDS) < reward_resource.grid_slot_probability
+
+
+## [param amount] credits trimmed by the current sector's money scale
+## (GameStateManager.money_scale_by_sector). Applied after the roll so the
+## REWARDS stream draws exactly as it did before the scale existed.
+static func sector_scaled_money(amount: int) -> int:
+	if amount <= 0 or not is_instance_valid(Globals.state_manager):
+		return amount
+	return roundi(amount * Globals.state_manager.get_money_multiplier())
 
 
 ## A certain pickup draws nothing, so offers authored before the chance existed
