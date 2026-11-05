@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="KeywordResource" format=3]
+
+[ext_resource type="Script" uid="uid://6kwb0b753f4e" path="res://Source/Content/Keywords/keyword_resource.gd" id="1_wf"]
+[ext_resource type="Script" uid="uid://dffgf8ufh7ce4" path="res://Source/Content/Keywords/keyword_token.gd" id="2_wf"]
+
+[sub_resource type="Resource" id="war_footing"]
+script = ExtResource("2_wf")
+token = "(war_footing)"
+label = "War Footing"
+color = "yellow"
+
+[resource]
+script = ExtResource("1_wf")
+title = "War Footing"
+rule = "Built by a [color=yellow]War Footing[/color] tile: (red_symbol) [color=red]red tiles[/color] deal this much more damage per hit for the rest of the fight. A (locked) [color=yellow]War Footing[/color] gives none."
+tokens = Array[ExtResource("2_wf")]([SubResource("war_footing")])

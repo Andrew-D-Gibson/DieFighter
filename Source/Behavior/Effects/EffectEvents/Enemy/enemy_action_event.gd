@@ -28,6 +28,14 @@ const _HEAVY_HOLD_SECONDS: float = 0.6
 ## die was already flying, and the player lost track of which did what.
 const SETTLE_SECONDS: float = 0.5
 
+## An idle action (Do Nothing, a jam, a blocked or silenced slot) is the most
+## common thing an enemy does and has nothing to show, so it plays at these
+## fractions of the normal handover, hold and settle rather than making the
+## player sit through a full beat for a wasted die.
+const _IDLE_HANDOVER_PACE: float = 0.4
+const _IDLE_HOLD_PACE: float = 0.3
+const _IDLE_SETTLE_SECONDS: float = 0.1
+
 ## How far the die spins on its way out in front of the ship: one full turn,
 ## so it lands upright.
 const _USE_SPIN: float = TAU
@@ -46,6 +54,11 @@ var activation_repetitions: int = 1
 ## How many Feeds carried the die to this ship. 0 when it came from the
 ## player's hand. See FeedAllyEvent.
 var feed_depth: int = 0
+
+## The beat Enemy queued after this action. Cut short here for an idle
+## action, which is only known for sure once the die is spent: a jam or a
+## blocked slot turns an action idle after the beat was queued.
+var settle: WaitEvent = null
 
 ## Ships that already acted with this die in a relay chain.
 var relay_visited: Array[Node] = []
@@ -89,7 +102,10 @@ func resolve(engine: ScenarioEngine) -> void:
 	# starts, and a die aimed at where the ship used to be would land in
 	# empty space and hang there while the ship acted from somewhere else.
 	var weight: float = (clampf(die_value, 1, 6) - 1.0) / 5.0
+	var idle: bool = _is_idle()
 	var tween_time: float = lerpf(_LIGHT_HANDOVER_SECONDS, _HEAVY_HANDOVER_SECONDS, weight)
+	if idle:
+		tween_time *= _IDLE_HANDOVER_PACE
 	var adjusted_tween_time: float = tween_time / Globals.animation_speed
 	_front_of_ship = _read_front_of_ship()
 	var tween: Tween = enemy.get_tree().create_tween()
@@ -123,7 +139,8 @@ func resolve(engine: ScenarioEngine) -> void:
 		_keep_station,
 		0.0,
 		1.0,
-		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight) / Globals.animation_speed
+		lerpf(_LIGHT_HOLD_SECONDS, _HEAVY_HOLD_SECONDS, weight) * (_IDLE_HOLD_PACE if idle else 1.0) \
+			/ Globals.animation_speed
 	)
 	enemy.spending_die = activator_die as Dice
 	enemy.spending_tween = tween
@@ -142,11 +159,18 @@ func resolve(engine: ScenarioEngine) -> void:
 
 	# Make an action indicator popup
 	var popup_icon: Texture2D = settle_action()
+	var idle_now: bool = _is_idle()
+	if idle_now and settle != null:
+		settle.amount = roundi(_IDLE_SETTLE_SECONDS * 1000.0)
 	var popup_time: float = 0.75
 	var action_indicator: Node2D = action_popup.instantiate()
+	# A wasted die's "?" stays at art scale: it isn't news worth swelling.
+	if idle_now:
+		action_indicator.end_scale = Vector2.ONE
+	# Before add_child: the popup reads its time in _ready.
+	action_indicator.popup_time = popup_time
 	enemy.add_child(action_indicator)
 	action_indicator.sprite.texture = popup_icon
-	action_indicator.popup_time = popup_time
 	action_indicator.global_position = activator_die.global_position + Vector2(0,12)
 		
 
@@ -182,6 +206,11 @@ func settle_action() -> Texture2D:
 	# A copy, like every rolled action: the preloaded one is shared.
 	action = _DO_NOTHING.copy()
 	return BLOCKED_ICON
+
+
+## Whether this die is going to do nothing at all, as the action stands now.
+func _is_idle() -> bool:
+	return EnemyActionResource.outcome_of(action, enemy) == EnemyActionResource.Outcome.IDLE
 
 
 ## One frame of the die's trip out in front of the ship: [param progress] of

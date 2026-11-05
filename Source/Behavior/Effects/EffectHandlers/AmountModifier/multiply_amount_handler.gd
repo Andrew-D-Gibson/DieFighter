@@ -7,6 +7,9 @@ const _WHOLE_EPSILON: float = 0.0001
 
 
 func apply(data: EffectData, context: EffectContext, _engine: ScenarioEngine) -> void:
+	if data.amplify_multiplier:
+		# Each point of Amplify adds one more of what was multiplied.
+		context.amplification_unit = context.running_amount
 	context.running_amount = rounded_product(context.running_amount, data.multiplier)
 
 

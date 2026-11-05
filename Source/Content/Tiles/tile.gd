@@ -430,12 +430,7 @@ func can_be_locked_out() -> bool:
 func is_locked_out(engine: ScenarioEngine = null) -> bool:
 	if engine == null:
 		engine = ScenarioEngine.current()
-	if engine == null:
-		return false
-	for mod: Modifier in engine.modifiers:
-		if mod is LockoutModifier and mod.affected_node == self:
-			return true
-	return false
+	return LockoutModifier.locks(engine, self)
 
 
 ## Whether a new lockout could take hold here: the tile allows locks and isn't

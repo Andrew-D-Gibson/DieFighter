@@ -228,13 +228,6 @@ func test_a_lock_stops_the_tiles_own_event_responses() -> void:
 
 # ── Info panel ────────────────────────────────────────────────────────────────
 
-func test_locked_rule_is_not_duplicated_in_tile_info() -> void:
-	var tile: Tile = _tile(DAMAGE_TILE)
-	var original: String = tile._get_tile_info().bottom_label_text
-	await _lock([tile] as Array[Node])
-	assert_eq(tile._get_tile_info().bottom_label_text, original)
-	assert_eq((LockoutModifier.new(tile)).get_info_text(), "")
-
 func test_locked_is_a_hoverable_keyword() -> void:
 	assert_string_contains(Keywords.definition("locked"), "unlocks")
 	var rendered: String = Keywords.render("(locked) and (lock)", true)

@@ -97,7 +97,7 @@ static func _kill_target(overkill: bool) -> String:
 	damage.actor = Globals.player
 	damage.effect_source = _firing_tile()
 	damage.targets = [ship]
-	damage.amount = DamageEvent.OVERKILL_FACTOR * left + 1 if overkill else left
+	damage.amount = DamageEvent.overkill_threshold(ship.health.shields, ship.health.health) if overkill else left
 	engine.queue_event(damage)
 	return ""
 

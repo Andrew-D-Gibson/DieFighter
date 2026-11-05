@@ -21,9 +21,8 @@ signal landed()
 
 const _PANEL_TEXTURE: Texture2D = preload("res://Assets/Textures/TutorialManager/background.png")
 const _BUTTON_SCENE: PackedScene = preload("res://Source/Systems/UI/Buttons/small_button.tscn")
-## The tutorial card's blue button: this card wears the same panel.
-const _BUTTON_TEXTURE: Texture2D = preload("res://Assets/Textures/UI/Buttons/button_small_blue.png")
-const _BUTTON_HOVER_COLOR: Color = Color(0.262745, 0.65098, 0.988235, 1)
+## Green with green hover text, like the pause menu's Close: read it, carry on.
+const _BUTTON_TEXTURE: Texture2D = preload("res://Assets/Textures/UI/Buttons/button_small_green.png")
 
 ## Where the card shows: the sky above the main viewer, which is empty while
 ## the ships hold off, rather than over the busy tile grid.
@@ -132,13 +131,8 @@ func _build() -> void:
 ## or a click anywhere on the card.
 func _build_close_button() -> Button:
 	var button: Button = _BUTTON_SCENE.instantiate()
-	var face: AtlasTexture = AtlasTexture.new()
-	face.atlas = _BUTTON_TEXTURE
-	face.region = Rect2(0, 0, 35, 12)
-	var frames: SpriteFrames = SpriteFrames.new()
-	frames.add_frame(&"default", face)
-	button.get_node("AnimatedSprite2D").sprite_frames = frames
-	button.hover_text_color = _BUTTON_HOVER_COLOR
+	OptionsMenu.set_button_texture(button, _BUTTON_TEXTURE)
+	button.hover_text_color = Globals.green
 	button.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	button.set_button_text("REGION_ALERT_CLOSE")
 	button.pressed_within_window.connect(_fold)

@@ -48,7 +48,7 @@ extends RefCounted
 const KNOWN_FIELDS: Array[String] = [
 	"amount", "multiplier", "multiply_shields", "string_param", "callout", "callout_texture", "grid_offset",
 	"sound_resource", "color", "range_min", "range_max",
-	"ship_resource", "juice_flags", "add_to_amount",
+	"ship_resource", "juice_flags", "add_to_amount", "amplify_multiplier",
 ]
 
 
@@ -99,7 +99,7 @@ static var _entries: Array[Dictionary] = [
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD, label = "Add", handler = AddAmountHandler, fields = ["amount"]},
-	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.MULTIPLY, label = "Multiply", handler = MultiplyAmountHandler, fields = ["multiplier"]},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.MULTIPLY, label = "Multiply", handler = MultiplyAmountHandler, fields = ["multiplier", "amplify_multiplier"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_ADJACENT_TILES, label = "Add Surrounding Tiles", handler = AddAdjacentTilesAmountHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_TILE_DATA, label = "Add Tile Data", handler = AddTileDataAmountHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_ENGINE_CHARGE, label = "Set to Engine Charge", handler = SetAmountToEngineChargeHandler},
@@ -149,7 +149,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SPAWN_EXPLOSION_PARTICLES, label = "Spawn Explosion Particles", handler = SpawnExplosionParticlesHandler, fields = ["color"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ANIMATE_DIE_TO_TILE, label = "Animate Die to Tile", handler = AnimateDieToTileHandler, fields = ["grid_offset"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.ATTACK_TWEEN, label = "Attack Tween", handler = AttackTweenHandler},
-	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SHAKE_DICE, label = "Shake Dice", handler = ShakeDiceHandler},
+	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.SHAKE_DICE, label = "Shake Dice", handler = ShakeDiceHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.PLAY_SOUND, label = "Play Sound", handler = PlaySoundHandler, fields = ["sound_resource"]},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.WAIT, label = "Wait", handler = WaitHandler},
 	{category = EffectEnums.Category.AUDIO_VISUAL, subtype = EffectEnums.AudioVisualSubtype.HITSTOP, label = "Hitstop", handler = HitstopHandler, fields = ["amount"]},

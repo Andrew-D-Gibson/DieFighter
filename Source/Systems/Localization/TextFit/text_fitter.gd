@@ -1,5 +1,5 @@
 class_name TextFitter
-extends Node
+extends Node2D
 ## Keeps its parent, a Label or RichTextLabel placed by hand rather than by a
 ## container, fitted inside the box its text may appear in (see TextFit), as
 ## the text, language, font or frame change.
@@ -17,6 +17,10 @@ extends Node
 ## scene: a TextFitter child under the label, with a policy resource.
 ## A label inside a Container wants a TextFitBox instead: the container would
 ## undo every placement.
+##
+## A Node2D that draws nothing, only so it hears when anything above it is
+## rescaled: text fitted mid-animation is refitted once that comes to rest
+## (TextFitSettle).
 
 ## After every fit, with where the text went: frames that hug their text
 ## resize to result.ink_rect.
@@ -51,6 +55,7 @@ var _authored: Rect2 = Rect2()
 ## What the last fit was of: refits only when it changes.
 var _signature: String = ""
 var _queued: bool = false
+var _settle: TextFitSettle = TextFitSettle.new()
 
 
 ## The fitter on [param label], made and added if it has none.
@@ -119,6 +124,7 @@ func refit() -> void:
 
 
 func _ready() -> void:
+	set_process(false)
 	_label = get_parent() as Control
 	if not (_label is Label or _label is RichTextLabel):
 		push_error("TextFitter: %s's parent must be a Label or RichTextLabel" % get_path())
@@ -139,11 +145,24 @@ func _ready() -> void:
 		push_warning("TextFitter: %s is laid out by a Container, which undoes its fit; wrap it in a TextFitBox" % _label.get_path())
 	if parent != null:
 		parent.resized.connect(refit)
+	set_notify_transform(true)
 	refit()
 
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_TRANSLATION_CHANGED:
+	match what:
+		NOTIFICATION_TRANSLATION_CHANGED:
+			refit()
+		NOTIFICATION_TRANSFORM_CHANGED:
+			if _settle.moved(self):
+				set_process(true)
+
+
+func _process(_delta: float) -> void:
+	if not _settle.settled():
+		return
+	set_process(false)
+	if _settle.off_scale():
 		refit()
 
 
@@ -170,6 +189,8 @@ func _fit_at(max_scale: float) -> void:
 	result = TextFit.solve(_label, frame_box(), policy, max_scale)
 	TextFit.apply(_label, result)
 	_label.position += offset
+	var parent: CanvasItem = _label.get_parent() as CanvasItem
+	_settle.fitted(parent if parent else _label)
 	fitted.emit(result)
 
 

@@ -107,6 +107,7 @@ func play(context: EffectContext, engine: ScenarioEngine) -> void:
 
 		# Reset running amount for this repetition.
 		context.running_amount = 0
+		context.amplification_unit = 1
 
 		# Execute each effect in order.
 		for data: EffectData in effects:

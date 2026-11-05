@@ -38,7 +38,8 @@ extends Resource
 ## For HITSTOP, SLOW_MO and GLITCH_BURST it is a duration in milliseconds;
 ## for SCREEN_SHAKE it is the strength (1 small, 2 large, 3 large + glitch);
 ## for LASER, MISSILE and ION_BOLT how long the shot flies, in milliseconds
-## (0 takes the default: a LASER bolt's comes from its distance).
+## (0 takes the default: a LASER bolt's comes from its distance); for
+## SHAKE_DICE how long the shake lasts, in milliseconds (0 takes 1.2 s).
 @export var amount: int = 0
 
 ## Floating-point multiplier. Used by AMOUNT_MODIFIER/MULTIPLY.
@@ -51,6 +52,9 @@ extends Resource
 ## SET_TO_SHIP_READING: add the reading to running_amount instead of replacing
 ## it, so it can stack on a die's face ("equal to die, +1 per pip ...").
 @export var add_to_amount: bool = false
+## MULTIPLY: make the multiplier the amount an Amplifier grows, rather than
+## the product it leaves behind. x3 Amplified +2 becomes x5, not x3 then +2.
+@export var amplify_multiplier: bool = false
 
 # ── String / Key Parameters ────────────────────────────────────────────────────
 ## General-purpose string parameter.

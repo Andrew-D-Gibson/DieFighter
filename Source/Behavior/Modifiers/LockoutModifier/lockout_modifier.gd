@@ -3,6 +3,8 @@ extends Modifier
 
 ## A die showing less than this opens the lock instead of being turned away.
 const UNLOCK_BELOW: int = 4
+## The Locked keyword, in the capitals a status line reads in.
+const KEYWORD_TOKEN: String = "(LOCKED)"
 
 
 ## Whether a die showing [param face] opens a locked tile.
@@ -39,10 +41,20 @@ func on_before_event(event: EffectEvent, engine: ScenarioEngine) -> void:
 		engine.inject_event(lockout_event)
 
 
-## The board's hoverable label explains this status without duplicating it
-## in the tile's own description.
+## Whether [param node] is locked in [param engine] right now.
+static func locks(engine: ScenarioEngine, node: Node) -> bool:
+	if engine == null or not is_instance_valid(node):
+		return false
+	for mod: Modifier in engine.modifiers:
+		if mod is LockoutModifier and mod.affected_node == node:
+			return true
+	return false
+
+
+## The board marks a lock with its padlock alone; the word lives here, under
+## the tile's description, where hovering it explains the rule.
 func get_info_text() -> String:
-	return ""
+	return KEYWORD_TOKEN
 
 
 ## An opened lock pops off its tile rather than vanishing (see the visual's

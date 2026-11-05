@@ -17,6 +17,9 @@ const _FACE_SECONDS: float = 0.6
 const _SLAM_SECONDS: float = 0.2
 const _DROP_PIXELS: float = 10.0
 const _SLAM_SCALE: float = 2.4
+## The orange wisps that rise off a settled lock.
+const _WISP_COUNT: int = 12
+const _WISP_START_ALPHA: float = 0.95
 
 @onready var _sprite: Sprite2D = $Sprite2D
 
@@ -25,7 +28,6 @@ var _face_age: float = 0.0
 var _released: bool = false
 var _settled: bool = false
 var _age: float = 0.0
-var _keyword: RichTextLabel
 
 
 func configure(host: Node2D) -> void:
@@ -33,7 +35,6 @@ func configure(host: Node2D) -> void:
 
 
 func _ready() -> void:
-	_build_keyword()
 	_slam_in()
 
 
@@ -67,7 +68,6 @@ func release() -> void:
 	if _released:
 		return
 	_released = true
-	_keyword.hide()
 	queue_redraw()
 	_sprite.rotation = 0.0
 	Juice.sparkle(get_parent(), global_position, Globals.yellow, 12, 55.0, true)
@@ -123,29 +123,19 @@ func _flash(peak: Color) -> void:
 	tween.tween_property(_sprite, ^"self_modulate", Color.WHITE, 0.18)
 
 
-func _build_keyword() -> void:
-	_keyword = RichTextLabel.new()
-	_keyword.name = "LockedKeyword"
-	_keyword.position = Vector2(-12, 11)
-	_keyword.size = Vector2(24, 7)
-	_keyword.bbcode_enabled = true
-	_keyword.fit_content = true
-	_keyword.scroll_active = false
-	_keyword.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_keyword.text = Utils.format_text("[color=orange]%s[/color]" % Keywords.title("locked").to_upper())
-	_keyword.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	add_child(_keyword)
-
-
-## Low, slow wisps make a persistent lock readable without hiding its die faces.
+## Low, slow wisps make a persistent lock readable without hiding its die
+## faces. They're the lock's only mark on the board (the word LOCKED lives in
+## the info panel), so they start bright and fade as they rise.
 func _draw() -> void:
 	if _released or not _settled:
 		return
-	for i: int in 6:
-		var phase: float = fposmod(_age * 0.35 + float(i) / 6.0, 1.0)
+	for i: int in _WISP_COUNT:
+		var phase: float = fposmod(_age * 0.35 + float(i) / float(_WISP_COUNT), 1.0)
 		var side: float = -1.0 if i % 2 == 0 else 1.0
-		var point: Vector2 = Vector2(side * (10.0 + sin(phase * TAU) * 1.5), 8.0 - phase * 20.0)
-		var color: Color = _MID
-		color.a = sin(phase * PI) * 0.55
+		# Two lanes a side, so the wisps read as a haze rather than a file.
+		var lane: float = 9.0 + float((i >> 1) & 1) * 2.0
+		var point: Vector2 = Vector2(side * (lane + sin(phase * TAU) * 1.5), 8.0 - phase * 20.0)
+		var color: Color = _LIGHT if i % 3 == 0 else _MID
+		color.a = _WISP_START_ALPHA * (1.0 - phase)
 		# One art pixel on the game's grid, not an antialiased sub-pixel dot.
 		draw_rect(Rect2(point.floor(), Vector2.ONE), color)

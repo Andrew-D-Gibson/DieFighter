@@ -7,7 +7,7 @@
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="script_3"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="script_5"]
 [ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="sfx_4"]
-[ext_resource type="Texture2D" uid="uid://b0k1gfun1oxlg" path="res://Assets/Textures/Tiles/PurpleTiles/preflight_interlock.png" id="tex_2"]
+[ext_resource type="Texture2D" uid="uid://c2t6blkp3c8xi" path="res://Assets/Textures/Tiles/PurpleTiles/preflight_interlock-Sheet.png" id="tex_2"]
 
 [sub_resource type="Resource" id="Resource_act1"]
 script = ExtResource("script_1")
@@ -65,6 +65,7 @@ script = ExtResource("script_3")
 category = 2
 subtype = 2
 multiplier = 4.0
+amplify_multiplier = true
 text_token = &"times"
 text_token_value = "multiplier"
 metadata/_custom_type_script = "uid://tr402hc111gu"
@@ -73,7 +74,7 @@ metadata/_custom_type_script = "uid://tr402hc111gu"
 script = ExtResource("script_3")
 category = 4
 subtype = 16
-callout = "x3"
+callout = "x4"
 color = Color(0.4784, 0.7412, 0.2, 1)
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
@@ -119,11 +120,32 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 atlas = ExtResource("tex_2")
 region = Rect2(0, 0, 24, 24)
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_1"]
+atlas = ExtResource("tex_2")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_2"]
+atlas = ExtResource("tex_2")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1_3"]
+atlas = ExtResource("tex_2")
+region = Rect2(72, 0, 24, 24)
+
 [sub_resource type="SpriteFrames" id="Resource_frames2"]
 animations = [{
 "frames": [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_f1_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1_3")
 }],
 "loop": 1,
 "name": &"default",
@@ -138,7 +160,7 @@ tile_name = "[color=purple]Preflight Interlock+[/color]"
 description = "[color=yellow]Any die while [color=purple]engines[/color] fully charged[/color] -> Deal [color=red]damage[/color] equal to {times}x die"
 rarity = 2
 textures = SubResource("Resource_frames2")
-uses_per_turn = -1
+uses_per_turn = 3
 activation_checks = Array[ExtResource("script_1")]([SubResource("Resource_act1"), SubResource("Resource_act2"), SubResource("Resource_act3")])
 effect_chain = SubResource("Resource_chain12")
 metadata/_custom_type_script = "uid://dtwktwiuvyqjh"

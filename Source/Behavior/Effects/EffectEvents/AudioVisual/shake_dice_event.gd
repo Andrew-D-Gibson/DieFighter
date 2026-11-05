@@ -1,7 +1,9 @@
 class_name ShakeDiceEvent
 extends EffectEvent
 
-var _tween_time: float = 1.2
+## How long the shake lasts at normal animation speed. EffectData.amount
+## sets it in milliseconds; zero keeps this default.
+var duration_seconds: float = 1.2
 
 
 func resolve(_engine: ScenarioEngine) -> void:
@@ -10,7 +12,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(actor):
 		return
 
-	var adjusted_time: float = _tween_time / Globals.animation_speed
+	var adjusted_time: float = duration_seconds / Globals.animation_speed
 	var origin: Vector2 = activator_die.global_position
 
 	var tween: Tween = actor.create_tween()

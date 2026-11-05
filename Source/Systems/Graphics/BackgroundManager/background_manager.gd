@@ -28,6 +28,12 @@ extends Sprite2D
 ## place as the next jump slows (see _drift_static_objects()).
 @export var static_jump_drift_rate: float = 0.15
 
+@export_category("Living Sky")
+## Whether the dust and ambient life (LivingSky) also come out in open
+## space, where the stars drift at cruise. Off by default: that sky is never
+## still, and dust that ignores the drifting stars looks pinned to the glass.
+@export var living_sky_in_open_space: bool = false
+
 @export_category("Managed Scenes")
 @export var nebula_scene: PackedScene
 @export var star_pixel_scene: PackedScene
@@ -64,6 +70,8 @@ var _static_drift: float = 0.0
 ## pieces aren't arriving. See _arrival_drift().
 var _arrival_excess: float = 0.0
 
+@onready var _living_sky: LivingSky = %LivingSky
+
 
 func _ready() -> void:
 	Globals.background_manager = self
@@ -89,6 +97,14 @@ func _process(delta: float) -> void:
 	_update_objects_motion(static_objects, delta, 2.0, 0, 50, _wrap_static_object_position, null, true)
 	_drift_static_objects(delta)
 	_update_nebula_speed()
+	_living_sky.set_settled(is_settled())
+
+
+## True once the sky holds still: no jump under way, the new sector's pieces
+## in place, and something anchoring the view (or living_sky_in_open_space).
+func is_settled() -> bool:
+	return current_background != null and _jump_excess() <= 0.0 \
+		and _arrival_excess <= 0.0 and (living_sky_in_open_space or not _stars_drift)
 
 
 ## Generic motion update for objects with parallax
@@ -250,7 +266,8 @@ func _clear_children() -> void:
 	
 	var children: Array[Node] = get_children()
 	for i: int in range(len(children)-1, -1, -1):
-		if children[i] is not Control:
+		# The living sky outlasts the backgrounds it plays over.
+		if children[i] is not Control and children[i] != _living_sky:
 			children[i].queue_free()
 	
 	
