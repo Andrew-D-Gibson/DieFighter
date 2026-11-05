@@ -4,6 +4,23 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-05 — Tweak batch: locks, War Footing, bubbles, living skies
+
+Sixteen tweaks in eight parallel chunks.
+
+- **Locked** tiles no longer print "LOCKED" on the board; the padlock's orange wisps doubled (12) and start at 0.95 alpha. The word lives in the info panel as the hoverable Locked keyword (`LockoutModifier.get_info_text()`). `LockoutModifier.locks(engine, node)` is the shared lock check.
+- **War Footing** no longer lists its own bonus. Red tiles read "War Footing: +N" (a hoverable keyword). Its text colours "Red tiles" red behind the red family's triangle, a new `(red_symbol)` inline icon. A locked War Footing gives nothing (`FamilyBoostModifier.is_suspended`), keeps its count, and the red tiles' line is struck through with LOCKED.
+- **Speech bubbles** size to their line: the faction box art is drawn in pieces in `EnemyDialogueManager._draw()`, text wraps at 72 art px through TextFit, and the box flips side or slides past its tail to stay on screen. The wary shop and dock lines now read "You crossed the Caravan. ..." (the wary state is any Caravan regard of DISLIKED or worse).
+- **TextFit refits after animation.** Text fitted while an ancestor scaled (RegionAlert's unfold) kept that passing scale's pixel snap; `TextFitSettle` refits once when the scale settles. The tile unlock card gives the name its own label, hovers keywords like the codex, and uses a green Close; RegionAlert's Close is green too.
+- **Living skies.** Space dust (now `SpaceDust`, shared with the menu) fades in on settled, view-anchored skies, and `LivingSky` plays a distant sector ship jumping out or a comet in the side zones every 25–50 s (cosmetic RNG, tunables on the node).
+- **Tiles.** Overclock Coil: 2 damage, +1 per earlier use this fight (Coil+ 3, +1). New `amplify_multiplier` flag on MULTIPLY steps lets Amplify grow the multiplier (Preflight Interlock 3x +2 = 5x); Interlock has 3 uses a turn.
+- **Combat feel.** Overkill needs 2x the remaining shields+hull and at least `OVERKILL_MIN_EXCESS` (6) past them. Idle enemy actions (Do Nothing, jam, blocked, silenced) play in about a third of the time, with 1x pop-ups. Toll Relay streams purple to the engine and pops "+N" there.
+- **Economy.** Grid slot offers default to 0.4 (was 0.25). `GameStateManager.money_scale_by_sector` [1.0, 0.78, 0.78] scales payouts and pickups after the roll; refunds are exempt. `Dice.reroll_with_tween` now follows the animation speed for every caller.
+- **Shop** redrawn as a Caravan market saucer.
+- Open: every enemy action pop-up lasts 2.25 s instead of 0.75 s (`popup_time` set after the pop-up is added); the Interlock's hit callout still shows the unamplified multiplier; three ships stacked in one column can still overlap bubbles.
+
+---
+
 ## 2026-11-05 — Trailer capture mode
 
 Everything `TRAILER_PLAN.md` §3 needs to shoot footage, and the plan itself rewritten against the game as it is: a beat sheet cut to `Trailer_1_updated.wav` (hook, depth, fun, story), and what's still worth building.
