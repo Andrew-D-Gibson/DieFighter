@@ -22,6 +22,11 @@ extends Node
 ##   ON_PODS_LEVEL responses queued then still read it (pod_level). It's
 ##   cleared when a fight ends too: out of a fight there's no thrust and no
 ##   charge to earn (the drive is full on arrival and after a win).
+## - Out of a fight the drive stays full: a tile that spends charge there
+##   (Solar Shroud's boost, say) is topped back up once its activation
+##   completes. Other ships refill by dropping dice on the Engine Charger,
+##   which the Outrigger doesn't have, so without this one spend after a win
+##   would leave it unable to jump, with nothing that could ever recharge it.
 ##
 ## Tiles read it through two ship readings (SET_TO_SHIP_READING, ShipRules):
 ## - pod_lead: how many pips the source tile's pod is ahead of the other, not
@@ -53,6 +58,7 @@ func _ready() -> void:
 	add_to_group(ShipRules.READINGS_GROUP)
 	Events.tile_activated_by_die.connect(_on_tile_activated_by_die)
 	Events.tile_activation_complete.connect(_forget_credit)
+	Events.tile_activation_complete.connect(_keep_drive_full_out_of_combat)
 	Events.player_turn_refresh.connect(reset)
 	Events.start_combat.connect(reset)
 	Events.combat_finished.connect(reset)
@@ -199,6 +205,17 @@ func _forget_credit() -> void:
 	_crediting_tile = null
 	_credited = 0
 	_credited_pod = Pod.NONE
+
+
+## Only below the gate: a redline surplus carried out of the last fight is kept.
+## Only OUT_OF_COMBAT, not merely "not in play": a tile whose activation started
+## a fight has already had the drive go cold for it.
+func _keep_drive_full_out_of_combat() -> void:
+	if Globals.state_manager == null or not is_instance_valid(Globals.player) \
+	or Globals.state_manager.state != GameStateManager.GameState.OUT_OF_COMBAT:
+		return
+	if Globals.player.engine_charge < Globals.player.max_engine_charge:
+		Globals.player.engine_charge = Globals.player.max_engine_charge
 
 
 func _on_player_turn_over() -> void:
