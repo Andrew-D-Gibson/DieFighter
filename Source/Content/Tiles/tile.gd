@@ -22,8 +22,8 @@ var _flash_tween: Tween
 var _last_trigger_callout_msec: int = -_TRIGGER_CALLOUT_COOLDOWN_MSEC
 ## Set once this tile has caught a killing blow (see _on_player_fatal_damage).
 var _death_save_spent: bool = false
-## Dice in this tile's queue kept past the end of the turn (hold_over()).
-var _held_over: Array[Dice] = []
+## Which dice on the tile it's holding, for a pair or past the turn.
+var _held: TileHeldDice = TileHeldDice.new(self)
 var _use_lights: TileUseLights = TileUseLights.new(self)
 ## The count of a countdown tile (TileResource.countdown), and its readout.
 var _countdown: TileCountdown = TileCountdown.new(self)
@@ -52,12 +52,6 @@ var info_picture: Callable = Callable()
 			_use_lights.show_lit(0, false)
 		else:
 			_use_lights.show_lit(uses_remaining, not _setting_up)
-
-## The dice this tile is holding (KEEP_DIE_WITH_TILE). A die dropped on the
-## tile also waits in dice_queue until its activation resolves, so the queue
-## alone can't tell a held die from one that's only been dropped: two dice
-## dropped in quick succession would read as a held pair.
-var _held_dice: Array[Dice] = []
 
 ## tile_data holds any necessary data that a tile's effects might need
 ## e.g. "turns_since_last_activation", "last_activator_value", etc.
@@ -124,8 +118,7 @@ func _ready() -> void:
 	
 	dice_queue.die_added.connect(_update_dice_queue_locations)
 	dice_queue.die_removed.connect(_update_dice_queue_locations)
-	dice_queue.die_removed.connect(_forget_dice_no_longer_held)
-	dice_queue.die_removed.connect(_forget_departed_dice)
+	dice_queue.die_removed.connect(_held.forget_departed)
 	
 
 func _connect_tile_event_signals() -> void:
@@ -528,63 +521,40 @@ func try_to_activate() -> void:
 	engine.queue_event(event)
 
 
-## Returns every die this tile is holding to the player's hand.
+# ── Held dice (see TileHeldDice) ────────────────────────────────────────────
+
+## Returns every die on this tile to the player's hand.
 func release_held_dice() -> void:
-	_held_over.clear()
-	for die: Dice in dice_queue.queue.duplicate():
-		if is_instance_valid(die) and is_instance_valid(Globals.player):
-			Globals.player.dice_manager.add(die, true, false)
-		else:
-			dice_queue.remove(die)
+	_held.release_all()
 
 
 ## The turn is over: every die held for it goes home, and any held over to a
 ## later turn stays.
 func release_dice_held_for_the_turn() -> void:
-	for die: Dice in dice_queue.queue.duplicate():
-		if die in _held_over:
-			continue
-		if is_instance_valid(die) and is_instance_valid(Globals.player):
-			Globals.player.dice_manager.add(die, true, false)
-		else:
-			dice_queue.remove(die)
+	_held.release_for_turn_end()
 
 
 ## Keeps [param die], already in this tile's queue, past the end of the turn
-## (HOLD_DIE_FOR_TURNS). Whatever hands it back (HeldDieDelay, the fight
-## ending, a jump) takes it out of the queue, which lets it go.
+## (HOLD_DIE_FOR_TURNS).
 func hold_over(die: Dice) -> void:
-	if die in dice_queue.queue and die not in _held_over:
-		_held_over.append(die)
+	_held.hold_over(die)
 
 
 ## Whether [param die] is being kept here past the end of the turn.
 func is_holding_over(die: Dice) -> bool:
-	return die in _held_over
-
-
-func _forget_dice_no_longer_held() -> void:
-	# Variant, not Dice: a freed die can't be typed.
-	for entry: Variant in _held_over.duplicate():
-		if not is_instance_valid(entry) or entry not in dice_queue.queue:
-			_held_over.erase(entry)
+	return _held.is_holding_over(die)
 
 
 ## Keeps [param die] on this tile, held for a later activation (Welder, the
 ## twin-dice tiles) until the tile uses it or the turn ends.
 func hold_die(die: Dice) -> void:
-	dice_queue.add(die, true, false)
-	if die not in _held_dice:
-		_held_dice.append(die)
+	_held.hold(die)
 
 
 ## The first die this tile is holding other than [param except], or null.
 ## [param except] is a Node so the AutoPilot can ask about a stand-in die.
 func get_held_die(except: Node = null) -> Dice:
-	for die: Dice in _held_dice:
-		if is_instance_valid(die) and die != except and die in dice_queue.queue:
-			return die
-	return null
+	return _held.held_die(except)
 
 
 ## Whether [param die] would only be held here: the tile pays out on a pair
@@ -593,16 +563,6 @@ func get_held_die(except: Node = null) -> Dice:
 func is_hold(die: Node) -> bool:
 	return tile_resource != null and tile_resource.holds_first_die \
 		and get_held_die(die) == null
-
-
-## A held die that left the queue (paid out, given away, picked back up) is
-## no longer held, even if it's dropped here again later.
-func _forget_departed_dice() -> void:
-	var still_here: Array[Dice] = []
-	for die: Dice in _held_dice:
-		if is_instance_valid(die) and die in dice_queue.queue:
-			still_here.append(die)
-	_held_dice = still_here
 
 
 ## Whether this tile is Twin Barrel (or Twin Barrel+).
