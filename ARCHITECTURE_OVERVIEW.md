@@ -405,7 +405,7 @@ standing rule rather than something a tile grants, and there is no badge.
   shifts the enemies' own rolls.
 - **Feedback:** a big `EVADED!` callout (`CALLOUT_EVADED`) over the health
   bar and the Engine Charger tile (`EvasionModifier.engine_display()`: the
-  Outrigger's sail gauge stands in), plus a purple vignette pulse.
+  Outrigger's thrust gauge stands in), plus a purple vignette pulse.
 - **Display:** `get_rule_side_text()` puts the sum (`INFO_ENGINE_EVASION`,
   "Engine charge x 3% = Evasion, up to 50%") and the live chance
   (`INFO_ENGINE_EVASION_NOW`, or `_NOW_BONUS` while tiles have added some)
@@ -1181,7 +1181,8 @@ back to `die_fighter`.
 | `grid_cells` / `grid_size`, `grid_spacing`, `grid_offset`, `hole_column_width` | `TileGrid`: which cells exist (holes allowed), where they're drawn. A column with no cells is drawn `hole_column_width` px wide (-1: full width) |
 | `starting_save` | `GameStateManager`: a new run's hull, dice and tiles (stamped with `ship_id`) |
 | `behavior_scene` | Instanced as `TileGrid/ShipBehavior` (`TileGrid.ship_behavior`): the ship's own rules and cockpit restyle, hooked to `Events` |
-| `hand_may_be_kept` | `Player`: End Turn lights with dice in hand during a fight |
+| `hand_may_be_kept` | `Player`: End Turn lights with dice in hand during a fight (no ship sets it now; End Turn also lights when no die in hand has a tile to go to, which only a ship without an Engine Charger tile can hit) |
+| `signature_tiles` | `RewardManager.get_possible_tile_rewards()` (salvage and the shop): offered only while this ship is flown, on top of the shared pool; they stay `offered_as_reward = false` and each has an upgrade. `CodexCatalog` lists them like offered tiles |
 | `supports_tutorial` | `TutorialManager`: the tutorial is written for the default grid |
 | `cockpit_scene` | `CockpitMount` (main.tscn, `Graphics/Cockpit`): mounts the ship's `Cockpit` scene, or the default `cockpit_ambience.tscn` |
 | `cockpit_palette` | `Cockpit`: recolours the default shell (when the cockpit has no `walls_texture`) and the instruments' frames (`cockpit_surface` sprites) once at load |
@@ -1190,8 +1191,8 @@ back to `die_fighter`.
 | Ship | Grid | Engine | Behaviour |
 |---|---|---|---|
 | Die Fighter | 5x3, starting on the middle 3x3 (the outer columns sealed, see Grid Slots) | Engine Charger tile | none |
-| Outrigger | two 3x3 pods, x 0-2 and 4-6 (column 3 a 16 px hole) | `OutriggerSail`: dice in hand at End Turn charge the drive by face (to the gate), then go to the target. `SailCatchEvent` per die, `SailSettleEvent` holds the queue until they land | `Outrigger/`: sail, `SailGauge` (mast in the gap; takes the `engine_charger` juice group), `OutriggerPanel` (runtime restyle of the systems panel, frees the charger tile) |
-| Carousel | 5x3 minus (2,1): 12-cell ring + hub slots (1,1), (3,1) | The Reactor: the charger tile moved to (2,1), re-dressed with `reactor.tres`; charges, then Feeds up to the ignition slot (2,0). `ReactorIgnitionModifier` points that Feed at the ignition tile | `CarouselBehavior`: turns the ring at `player_turn_refresh` (fight turns after the first) via `TileGrid.relocate_tiles()`, winds it home on `combat_finished`/`jump`; `CarouselTrackLights` |
+| Outrigger | two 3x3 pods, x 0-2 (port) and 4-6 (starboard), column 3 a 16 px hole | `OutriggerSync`: in a fight every die that activates a tile (`Events.tile_activated_by_die`, placed or Fed, holograms too) adds its face to that tile's pod's thrust; at `player_turn_over` the drive charges by the lower pod's thrust, to the gate (`SyncChargeEvent`, then a `ChangeEngineChargeEvent`), and level pods (equal, above 0) emit `Events.pods_level` (tiles: `ON_PODS_LEVEL`). Thrust resets at `player_turn_refresh`, `start_combat` and `combat_finished`. Ship readings `pod_lead`, `pod_level` | `Outrigger/`: `OutriggerSync`, `SyncGauge` (two thrust columns in the gap, a "+N" tag, the x/10 badge; takes the `engine_charger` juice group), `OutriggerPanel` (runtime restyle of the systems panel, frees the charger tile). Kit: Sunlance (1,1), Crosslink (2,1), Solar Shroud (4,1); signature tiles Sunlance, Solar Shroud, Yaw Cannon, Gyro Stabilizer |
+| Carousel | 5x3 minus (2,1): 12-cell ring + hub slots (1,1), (3,1) | The Reactor: the charger tile moved to (2,1), re-dressed with `reactor.tres`; charges, then Feeds up to the ignition slot (2,0). `ReactorIgnitionModifier` points that Feed at the ignition tile | `CarouselBehavior`: turns the ring at `player_turn_refresh` (fight turns after the first) via `TileGrid.relocate_tiles()`, and mid-turn as the ship's mechanism (`advance_mechanism()`, the Ratchet's `ADVANCE_SHIP_MECHANISM`; ridden, so it counts ring steps), winds it home on `combat_finished`/`jump`; `CarouselTrackLights`. Kit: Apex Cannon (1,0), Ratchet (1,1), Keel Plating (3,2); signature tiles Apex Cannon, Keel Plating, Ratchet, Gearbox, Flywheel, Slingshot |
 
 **Cockpits.** A `Cockpit` (`Source/Systems/Graphics/Cockpit/cockpit.gd`) is
 the root of each ship's cockpit scene: the shell (`walls_texture`, drawn by
@@ -1254,6 +1255,15 @@ changes at once; only the lights trail it.
 arrive, so a closed loop can shift) and emits no push or manual-move events.
 `TileGrid.mirror_of(pos)` is the same row, `x -> grid_width - 1 - x`
 (`TARGET_MIRRORED_TILE`, the Crosslink).
+
+**Ship rules tiles can reach.** Tiles never name a ship. A ship's behavior
+scene can expose numbers its rules keep, in `ShipRules.READINGS_GROUP`
+(`has_ship_reading(key)`, `ship_reading(key, context)`), read by
+`AMOUNT_MODIFIER / SET_TO_SHIP_READING`, and a moving part, in
+`ShipRules.MECHANISMS_GROUP` (an awaitable `advance_mechanism(steps)`),
+driven by `TILE_CONTROL / ADVANCE_SHIP_MECHANISM`, whose event holds the
+queue until the move lands. On another ship a reading is 0 and a step does
+nothing, so tiles built on them are that ship's signature tiles.
 
 ---
 
@@ -1709,7 +1719,9 @@ the 3×5 grid into a machine that one die runs through.
   folds its value into the next die, capped at 6. Anything still held returns
   to the hand on `player_turn_over` and `combat_finished`.
 - **Activity.** `Events.tile_activated` fires whenever a tile commits to an
-  activation. `TileGrid.activations_this_turn` counts them
+  activation, and `Events.tile_activated_by_die(tile, value)` straight after
+  when a die (or hologram) did it, with its face (once per activation, echo
+  or not). `TileGrid.activations_this_turn` counts them
   (`SET_TO_ACTIVATIONS_THIS_TURN`), a tile's orthogonal neighbours receive
   `ON_ADJACENT_TILE_ACTIVATED`, and all eight around it receive
   `ON_SURROUNDING_TILE_ACTIVATED`.
@@ -2618,12 +2630,15 @@ the *table they were drawn from* changes.
 | `tile_activation_complete` | Tile effect chain finished | Check end of turn (dice queue empty) |
 | `player_turn_over` | End turn pressed | Tiles release held dice |
 | `tile_activated` | A tile committed to an activation (use spent) | TileGrid activation count, neighbours' `ON_ADJACENT_TILE_ACTIVATED` / `ON_SURROUNDING_TILE_ACTIVATED` (injected, so each hop of a relay chain gets its own response) |
+| `tile_activated_by_die(tile, value)` | Straight after `tile_activated`, when a die or hologram activated it | `OutriggerSync` (pod thrust) |
+| `pods_level` | The Outrigger's turn ended with both pods' thrust level and above 0 | Tiles (`ON_PODS_LEVEL`) |
 
 Tiles also respond to `TileEvent.EventType` hooks via `event_responses`:
 `ON_TURN_START`, `ON_TILE_PUSHED`, `ON_TILE_MANUALLY_MOVED`,
 `ON_ENEMY_TURN_OVER`, `ON_PLAYER_HEALTH_HIT`, `ON_ENGINE_CHARGE_DRAINED`,
 `ON_ADJACENT_TILE_ACTIVATED`, `ON_SURROUNDING_TILE_ACTIVATED`, `ON_PLAYER_ATTACKED`,
 `ON_PLAYER_EVADED` (an enemy hit missed because the engines dodged it),
+`ON_PODS_LEVEL` (the Outrigger's pods ended a turn level),
 `ON_PLAYER_FATAL_DAMAGE`. Most of these enable
 tiles that take **no dice at all** and pay out reactively — they cost a grid
 cell instead of a die. `TileEvent.EventType` is stored as a raw int, so append

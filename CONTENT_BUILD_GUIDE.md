@@ -146,6 +146,8 @@ registration to testing. For how the systems work underneath, see
 **Registration:** none. Any `TileResource` in that folder is automatically:
 - in the reward and shop pools (`RewardManager`), weighted by `rarity`,
   unless `offered_as_reward` is off (upgrades, ship-only and benched tiles);
+  a ship's signature tiles (`ShipResource.signature_tiles`) keep it off and
+  join the pools only while that ship is flown (§12);
 - saved by its filename id (`ContentRegistry`). Filenames must be unique, and
   renaming one breaks existing saves that hold it.
 
@@ -210,6 +212,23 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     that does more in part of the grid. On the Carousel's turning ring that's
     part of each lap (Apex Cannon, Keel Plating). Text: `[color=yellow]Top
     row[/color]: +3`.
+  - **Ship readings**: `AMOUNT_MODIFIER / SET_TO_SHIP_READING`
+    (`string_param` = the reading) sets the running amount to a number the
+    flown ship's own rules keep, or adds it with `add_to_amount` (§12). 0 on
+    a ship that keeps none, so such a tile is a signature tile. The
+    Outrigger's pods keep `pod_lead` (how far the source tile's (pod) is
+    ahead of the other, not counting the die activating it: what the gauge
+    showed as it was placed) and `pod_level` (the lower pod's thrust this
+    turn). Yaw Cannon: `SET_TO_DIE_VALUE`, then `pod_lead` added. Text:
+    `+1 per pip this (pod) leads` (the `+1` is in `LITERAL_EXEMPT`: the
+    reading has no amount).
+  - **Ship mechanism**: `TILE_CONTROL / ADVANCE_SHIP_MECHANISM` steps the
+    flown ship's moving part by the running amount, signed, and holds the
+    chain until it lands, so the next step reads the new layout. On the
+    Carousel it turns the ring on the spot, ridden like a turn's step
+    (Ratchet: `IF_ACTIVATOR_ODD` -> `SET 1` / `SET -1`, then the step). It
+    moves tiles, not dice, and does nothing on a ship without one; gate it
+    on `IN_COMBAT`, since the ring only turns in a fight.
   - **Echo**: `TILE_CONTROL / ARM_ECHO` arms an `EchoModifier`. The next tile
     the player activates this turn plays its whole chain twice (its
     `activation_repetitions` doubles, so the die is handed on once). Echoes
@@ -294,6 +313,11 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     damage per hit for the rest of the fight (`FamilyBoostModifier`, one per
     source tile, shown on each boosted tile's info panel). War Footing builds
     it on `ON_TURN_START` and loses it on `ON_PLAYER_HEALTH_HIT`.
+  - **The Outrigger's pods**: `ON_PODS_LEVEL` fires on every tile as the
+    player's turn ends with both (pods)' thrust exactly level and above 0,
+    queued behind that turn's charge. The pods still hold the turn's thrust
+    then, so `SET_TO_SHIP_READING pod_level` reads it (Gyro Stabilizer).
+    Text: `[color=yellow]Your turn ends with (pods) level[/color] -> ...`.
 - **`dragging_allowed`, `max_dice_in_queue`**: rarely touched.
 
 **Numbers in tile text.** Never type a tile's number into its text. Write
@@ -337,8 +361,10 @@ every language and on every surface, so changing the step changes the text.
 
 **Upgrades.** Every tile offered as a reward has an upgraded version, which
 the player gets by dropping a second copy of the tile on the first. A new
-offered tile needs one too. Tiles that are never offered (ship-only tiles,
-benched tiles) get none, because no second copy can turn up.
+offered tile needs one too, and so does every ship's signature tile, which
+is offered while its ship is flown. Tiles that are never offered (a ship's
+kit tile that isn't one of its signature tiles, benched tiles) get none,
+because no second copy can turn up.
 - Make `<name>_plus.tres` beside the tile: a copy of its `.tres` with a
   fresh header `uid` (duplicate it in the FileSystem dock, or remove the uid
   and save it once in the editor before committing), `is_upgrade = true`,
@@ -362,7 +388,8 @@ benched tiles) get none, because no second copy can turn up.
 - No art for the upgraded look: `TileUpgradeLook` gives every upgraded tile
   the shimmer (`tile.gdshader`) and sparks in its family's colour.
 - `test_tile_upgrades.gd` checks each upgrade is marked, held out of offers,
-  named apart, goes no further, and has one frame per light.
+  named apart, goes no further, and has one frame per light, and that every
+  ship's signature tile has an upgrade and isn't offered to every ship.
   `test_tile_upgrade_chains.gd` plays one upgrade of each kind whole. Add a
   case there when an upgrade changes what the chain does, not just a number.
 
@@ -1271,9 +1298,10 @@ info panel shows its rule in a pop-up while the player hovers it.
 ## 10. New tile events and activation checks
 
 - **TileEvent:**
-  1. Add a value after `ON_SURROUNDING_TILE_ACTIVATED` in `TileEvent.EventType`
-     (`Source/Content/Tiles/TileEventListener/tile_event.gd`). Values up to 99
-     are free; `ON_PLAYER_FATAL_DAMAGE` is pinned at 100.
+  1. Append a value after the last one below `ON_PLAYER_FATAL_DAMAGE` in
+     `TileEvent.EventType` (`Source/Content/Tiles/TileEventListener/tile_event.gd`;
+     `ON_PODS_LEVEL` today). Values up to 99 are free;
+     `ON_PLAYER_FATAL_DAMAGE` is pinned at 100.
   2. Fire it from `tile.gd` by connecting the triggering signal to
      `handle_tile_event(self, TileEvent.EventType.MY_EVENT)` alongside the
      others (~line 115). Pass the ship the event is about as `subject` and
@@ -1362,10 +1390,19 @@ AudioStreamPlayer.
    `test_ship_cockpits.gd` holds every cockpit to this.
 7. Write a two-line card `description` in tile-text style.
 8. Tiles only the ship should see live in `TileResources/` like any other (so
-   saves can name them) with `offered_as_reward = false` and no upgrade. The
-   codex still lists them, because a ship's starting kit is read from
-   `ShipCatalog`.
-9. Check balance against the Die Fighter on the same seeds:
+   saves can name them) with `offered_as_reward = false`. A tile it should
+   find as salvage or in shops goes in its `signature_tiles`: offered (by
+   rarity) only while that ship is flown, so it needs an upgrade (§1
+   Upgrades). One that's only ever in its kit needs none. The codex lists
+   both, read from `ShipCatalog`. Signature tiles are Basic (no family).
+9. Rules tiles can read or drive go through `ShipRules`, so tiles never name
+   a ship: a node of the behavior scene in `ShipRules.READINGS_GROUP`
+   answers `has_ship_reading(key)` / `ship_reading(key, context)` for
+   `SET_TO_SHIP_READING`, and one in `ShipRules.MECHANISMS_GROUP` has an
+   awaitable `advance_mechanism(steps)` for `ADVANCE_SHIP_MECHANISM` (§1).
+   The Outrigger's `OutriggerSync` and the Carousel's `CarouselBehavior`
+   are the references.
+10. Check balance against the Die Fighter on the same seeds:
    `tools/autoplay.sh --seed 1 --runs 24 --policy smart -- --ship=<id>`.
    Teach the bot the ship's rule if it plays it badly.
 
