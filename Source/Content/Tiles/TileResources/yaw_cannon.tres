@@ -1,0 +1,131 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://c44jw1tu7ayjk"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_mmhdt"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_0q2wi"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_khsj1"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_o3fy0"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_nko4g"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_rck17"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_7wbpa"]
+[ext_resource type="Texture2D" uid="uid://dig7d4om508ym" path="res://Assets/Textures/Tiles/RedTiles/yaw_cannon-Sheet.png" id="8_mbd8y"]
+[ext_resource type="Resource" uid="uid://dt5omir4lgar1" path="res://Source/Content/Tiles/TileResources/yaw_cannon_plus.tres" id="9_dpb8i"]
+
+[sub_resource type="Resource" id="Resource_q5228"]
+script = ExtResource("1_mmhdt")
+
+[sub_resource type="Resource" id="Resource_60l6s"]
+script = ExtResource("1_mmhdt")
+type = 4
+
+[sub_resource type="Resource" id="Resource_o3i3q"]
+script = ExtResource("2_0q2wi")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_7uuab"]
+script = ExtResource("2_0q2wi")
+category = 4
+subtype = 1
+color = Color(0.31764707, 0.08235294, 0.12941177, 1)
+
+[sub_resource type="Resource" id="Resource_kvv0m"]
+script = ExtResource("2_0q2wi")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_khsj1")
+
+[sub_resource type="Resource" id="Resource_6q2hw"]
+script = ExtResource("2_0q2wi")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_fp3vr"]
+script = ExtResource("2_0q2wi")
+category = 4
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_qmis6"]
+script = ExtResource("2_0q2wi")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_0yolb"]
+script = ExtResource("2_0q2wi")
+category = 2
+subtype = 20
+add_to_amount = true
+string_param = "pod_lead"
+
+[sub_resource type="Resource" id="Resource_cpv0y"]
+script = ExtResource("2_0q2wi")
+category = 4
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_6iq0m"]
+script = ExtResource("2_0q2wi")
+category = 4
+subtype = 7
+amount = 60
+
+[sub_resource type="Resource" id="Resource_mpfoh"]
+script = ExtResource("2_0q2wi")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.80784315, 0.9411765, 0.94509804, 1)
+
+[sub_resource type="Resource" id="Resource_rwhkm"]
+script = ExtResource("2_0q2wi")
+category = 1
+
+[sub_resource type="Resource" id="Resource_bj3ka"]
+script = ExtResource("2_0q2wi")
+category = 4
+subtype = 9
+multiplier = 1.03
+
+[sub_resource type="Resource" id="Resource_wtbuj"]
+script = ExtResource("2_0q2wi")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_3qwd1"]
+script = ExtResource("2_0q2wi")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_5314x"]
+script = ExtResource("5_nko4g")
+effects = Array[ExtResource("2_0q2wi")]([SubResource("Resource_o3i3q"), SubResource("Resource_7uuab"), SubResource("Resource_kvv0m"), SubResource("Resource_6q2hw"), SubResource("Resource_fp3vr"), SubResource("Resource_qmis6"), SubResource("Resource_0yolb"), SubResource("Resource_cpv0y"), SubResource("Resource_6iq0m"), SubResource("Resource_mpfoh"), SubResource("Resource_rwhkm"), SubResource("Resource_bj3ka"), SubResource("Resource_wtbuj"), SubResource("Resource_3qwd1")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rud58"]
+atlas = ExtResource("8_mbd8y")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2j85j"]
+atlas = ExtResource("8_mbd8y")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_2ngfw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rud58")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2j85j")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_7wbpa")
+tile_name = "[color=red]Yaw Cannon[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die, +1 per pip this (pod) leads"
+rarity = 1
+offered_as_reward = false
+upgraded_version = ExtResource("9_dpb8i")
+textures = SubResource("SpriteFrames_2ngfw")
+uses_per_turn = 1
+activation_checks = Array[ExtResource("1_mmhdt")]([SubResource("Resource_q5228"), SubResource("Resource_60l6s")])
+effect_chain = SubResource("Resource_5314x")

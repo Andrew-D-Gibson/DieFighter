@@ -96,6 +96,8 @@ const LITERAL_EXEMPT: Dictionary = {
 	"flak_cannon": {"+1": "one damage per surrounding tile: ADD_ADJACENT_TILES counts, it has no amount"},
 	"flak_cannon_plus": {"+1": "one damage per surrounding tile: ADD_ADJACENT_TILES counts, it has no amount"},
 	"inertial_feedback": {"1": "one damage per tile moved: the damage is the tiles_moved counter itself"},
+	"yaw_cannon": {"+1": "one damage per pip of lead: the pod_lead ship reading is added as it is, it has no amount"},
+	"yaw_cannon_plus": {"+1": "one damage per pip of lead: the pod_lead ship reading is added as it is, it has no amount"},
 	# blue
 	"emergency_shield": {"1": "the FATAL_HIT event always leaves you at 1 hull; not tile data"},
 	"emergency_shield_plus": {"1": "the FATAL_HIT event always leaves you at 1 hull; not tile data"},

@@ -1,0 +1,164 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://2j77tytab2px"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_qg1nx"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="2_w76lq"]
+[ext_resource type="Resource" uid="uid://bptuv0vm6v2hx" path="res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres" id="3_p5lj7"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_j0qvu"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="5_qyddk"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="6_f86o3"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_shri8"]
+[ext_resource type="Texture2D" uid="uid://xtx10wbqyxpj" path="res://Assets/Textures/Tiles/RedTiles/sunlance.png" id="8_6m1dp"]
+
+[sub_resource type="Resource" id="Resource_i1gxm"]
+script = ExtResource("1_qg1nx")
+
+[sub_resource type="Resource" id="Resource_x0afn"]
+script = ExtResource("1_qg1nx")
+type = 4
+
+[sub_resource type="Resource" id="Resource_vqu4v"]
+script = ExtResource("2_w76lq")
+category = 2
+amount = 6
+
+[sub_resource type="Resource" id="Resource_ck4uj"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 1
+color = Color(0.31764707, 0.08235294, 0.12941177, 1)
+
+[sub_resource type="Resource" id="Resource_qat2q"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 5
+sound_resource = ExtResource("3_p5lj7")
+
+[sub_resource type="Resource" id="Resource_lauok"]
+script = ExtResource("2_w76lq")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_3bdrf"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_lxf87"]
+script = ExtResource("2_w76lq")
+category = 2
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_4bhdo"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 10
+
+[sub_resource type="Resource" id="Resource_iwvc8"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 7
+amount = 60
+
+[sub_resource type="Resource" id="Resource_prgqc"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.80784315, 0.9411765, 0.94509804, 1)
+
+[sub_resource type="Resource" id="Resource_o0bd7"]
+script = ExtResource("2_w76lq")
+category = 1
+
+[sub_resource type="Resource" id="Resource_4x0ru"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 9
+multiplier = 1.03
+
+[sub_resource type="Resource" id="Resource_4dvnd"]
+script = ExtResource("2_w76lq")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_6hr2d"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 21
+amount = 8
+color = Color(0.77254903, 0.32156864, 0.94509804, 1)
+juice_flags = 4
+
+[sub_resource type="Resource" id="Resource_odm5o"]
+script = ExtResource("2_w76lq")
+category = 1
+subtype = 4
+amount = 3
+
+[sub_resource type="Resource" id="Resource_vbs83"]
+script = ExtResource("2_w76lq")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_wh76b"]
+script = ExtResource("2_w76lq")
+category = 4
+subtype = 15
+amount = 14
+color = Color(0.93333334, 0.49803922, 0.18431373, 1)
+
+[sub_resource type="Resource" id="Resource_lcjq8"]
+script = ExtResource("2_w76lq")
+category = 2
+amount = 5
+text_token = &"burn"
+
+[sub_resource type="Resource" id="Resource_yp503"]
+script = ExtResource("2_w76lq")
+category = 1
+subtype = 6
+string_param = "burn"
+
+[sub_resource type="Resource" id="Resource_ujbd6"]
+script = ExtResource("4_j0qvu")
+if_true_effects = Array[ExtResource("2_w76lq")]([SubResource("Resource_4dvnd"), SubResource("Resource_6hr2d"), SubResource("Resource_odm5o"), SubResource("Resource_vbs83"), SubResource("Resource_wh76b"), SubResource("Resource_lcjq8"), SubResource("Resource_yp503")])
+category = 7
+subtype = 11
+amount = 3
+text_token = &"cost"
+
+[sub_resource type="Resource" id="Resource_81mjq"]
+script = ExtResource("2_w76lq")
+subtype = 8
+
+[sub_resource type="Resource" id="Resource_db215"]
+script = ExtResource("2_w76lq")
+category = 3
+subtype = 5
+
+[sub_resource type="Resource" id="Resource_re3y7"]
+script = ExtResource("5_qyddk")
+effects = Array[ExtResource("2_w76lq")]([SubResource("Resource_vqu4v"), SubResource("Resource_ck4uj"), SubResource("Resource_qat2q"), SubResource("Resource_lauok"), SubResource("Resource_3bdrf"), SubResource("Resource_lxf87"), SubResource("Resource_4bhdo"), SubResource("Resource_iwvc8"), SubResource("Resource_prgqc"), SubResource("Resource_o0bd7"), SubResource("Resource_4x0ru"), SubResource("Resource_ujbd6"), SubResource("Resource_81mjq"), SubResource("Resource_db215")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_k8o7x"]
+atlas = ExtResource("8_6m1dp")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1xo5d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_k8o7x")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_shri8")
+tile_name = "[color=red]Sunlance+[/color]"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die. (boost) [color=purple]{cost} engine charge[/color]: Apply {burn} (burn)"
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_1xo5d")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_qg1nx")]([SubResource("Resource_i1gxm"), SubResource("Resource_x0afn")])
+effect_chain = SubResource("Resource_re3y7")

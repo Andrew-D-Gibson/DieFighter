@@ -1,0 +1,96 @@
+[gd_resource type="Resource" script_class="TileResource" format=3 uid="uid://d3kor6amjcu7j"]
+
+[ext_resource type="Script" uid="uid://dq1wduh6cvl1d" path="res://Source/Content/Tiles/activation_resource.gd" id="1_a564h"]
+[ext_resource type="Script" uid="uid://cfken75wevu1a" path="res://Source/Content/Tiles/TileEventListener/tile_event.gd" id="2_rqh82"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="3_bvbt7"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="4_1nrcs"]
+[ext_resource type="Resource" uid="uid://ck2gmrlcloj45" path="res://Source/Resources/SoundEffectResources/SoundEffects/player_shield.tres" id="5_vut7y"]
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="6_w4bwx"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="7_l8qfg"]
+[ext_resource type="Texture2D" uid="uid://cjih7onip68k5" path="res://Assets/Textures/Tiles/BlueTiles/gyro_stabilizer.png" id="8_jomo6"]
+
+[sub_resource type="Resource" id="Resource_ymspd"]
+script = ExtResource("1_a564h")
+type = 6
+
+[sub_resource type="Resource" id="Resource_ou8y3"]
+script = ExtResource("2_rqh82")
+event = 14
+
+[sub_resource type="Resource" id="Resource_nav76"]
+script = ExtResource("4_1nrcs")
+subtype = 1
+
+[sub_resource type="Resource" id="Resource_bd5ob"]
+script = ExtResource("4_1nrcs")
+category = 2
+amount = 8
+
+[sub_resource type="Resource" id="Resource_lhcfe"]
+script = ExtResource("4_1nrcs")
+category = 4
+color = Color(0.2627, 0.651, 0.9882, 1)
+
+[sub_resource type="Resource" id="Resource_f603b"]
+script = ExtResource("4_1nrcs")
+category = 4
+subtype = 5
+sound_resource = ExtResource("5_vut7y")
+
+[sub_resource type="Resource" id="Resource_nf3qd"]
+script = ExtResource("4_1nrcs")
+category = 2
+subtype = 20
+string_param = "pod_level"
+
+[sub_resource type="Resource" id="Resource_uwmh1"]
+script = ExtResource("4_1nrcs")
+category = 2
+subtype = 1
+amount = 4
+text_token = &"bonus"
+
+[sub_resource type="Resource" id="Resource_prppy"]
+script = ExtResource("4_1nrcs")
+category = 4
+subtype = 14
+amount = 18
+color = Color(0.2627, 0.651, 0.9882, 1)
+
+[sub_resource type="Resource" id="Resource_abnvt"]
+script = ExtResource("4_1nrcs")
+category = 1
+subtype = 2
+
+[sub_resource type="Resource" id="Resource_qk1ry"]
+script = ExtResource("3_bvbt7")
+effects = Array[ExtResource("4_1nrcs")]([SubResource("Resource_nav76"), SubResource("Resource_bd5ob"), SubResource("Resource_lhcfe"), SubResource("Resource_f603b"), SubResource("Resource_nf3qd"), SubResource("Resource_uwmh1"), SubResource("Resource_prppy"), SubResource("Resource_abnvt")])
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_c7acn"]
+atlas = ExtResource("8_jomo6")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_uajre"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_c7acn")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 5.0
+}]
+
+[resource]
+script = ExtResource("7_l8qfg")
+tile_name = "[color=blue]Gyro Stabilizer+[/color]"
+description = "[color=yellow]Your turn ends with (pods) level[/color] -> Gain [color=blue]shields[/color] equal to their thrust +{bonus}"
+rarity = 1
+offered_as_reward = false
+is_upgrade = true
+textures = SubResource("SpriteFrames_uajre")
+uses_per_turn = -1
+activation_checks = Array[ExtResource("1_a564h")]([SubResource("Resource_ymspd")])
+event_responses = Dictionary[ExtResource("2_rqh82"), ExtResource("3_bvbt7")]({
+SubResource("Resource_ou8y3"): SubResource("Resource_qk1ry")
+})

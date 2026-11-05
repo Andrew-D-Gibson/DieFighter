@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_ie8xs"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_vwftb"]
 [ext_resource type="Texture2D" uid="uid://xtx10wbqyxpj" path="res://Assets/Textures/Tiles/RedTiles/sunlance.png" id="5_xywoc"]
+[ext_resource type="Resource" uid="uid://2j77tytab2px" path="res://Source/Content/Tiles/TileResources/sunlance_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_vwftb"]
 script = ExtResource("1_44nms")
@@ -155,8 +156,9 @@ animations = [{
 [resource]
 script = ExtResource("4_vwftb")
 tile_name = "[color=red]Sunlance[/color]"
-description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] to [color=purple]target[/color] equal to die. (boost) [color=purple]{cost} engine charge[/color]: Apply {burn} (burn)"
+description = "[color=yellow]Any die[/color] -> Deal [color=red]damage[/color] equal to die. (boost) [color=purple]{cost} engine charge[/color]: Apply {burn} (burn)"
 offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_4bvwp")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_44nms")]([SubResource("Resource_vwftb"), SubResource("Resource_xywoc")])

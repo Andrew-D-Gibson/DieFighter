@@ -8,11 +8,10 @@
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_c7n46"]
 [ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="4_r1cv4"]
 [ext_resource type="Texture2D" uid="uid://efq2tyd6t6e6" path="res://Assets/Textures/Tiles/BlueTiles/solar_shroud.png" id="5_vaeox"]
+[ext_resource type="Resource" uid="uid://bnp5ablrqf1ho" path="res://Source/Content/Tiles/TileResources/solar_shroud_plus.tres" id="upgrade_plus"]
 
 [sub_resource type="Resource" id="Resource_r1cv4"]
 script = ExtResource("1_xf5te")
-type = 1
-acceptable_values = Array[int]([1, 2, 3])
 
 [sub_resource type="Resource" id="Resource_vaeox"]
 script = ExtResource("2_r1cv4")
@@ -34,8 +33,7 @@ sound_resource = ExtResource("3_vaeox")
 [sub_resource type="Resource" id="Resource_15us1"]
 script = ExtResource("2_r1cv4")
 category = 2
-amount = 6
-text_token = &"shields"
+subtype = 6
 
 [sub_resource type="Resource" id="Resource_yuif4"]
 script = ExtResource("2_r1cv4")
@@ -65,8 +63,9 @@ color = Color(0.93333334, 0.827451, 0.3647059, 1)
 [sub_resource type="Resource" id="Resource_a5vgu"]
 script = ExtResource("2_r1cv4")
 category = 2
-amount = 12
-text_token = &"boosted_shields"
+subtype = 1
+amount = 4
+text_token = &"bonus"
 
 [sub_resource type="Resource" id="Resource_yuyat"]
 script = ExtResource("4_c7n46")
@@ -129,8 +128,9 @@ animations = [{
 [resource]
 script = ExtResource("4_r1cv4")
 tile_name = "[color=blue]Solar Shroud[/color]"
-description = "[color=yellow]Die below[/color] (die_4) -> Gain [color=blue]{shields} shields[/color]. (boost) [color=purple]{cost} engine charge[/color]: [color=blue]{boosted_shields}[/color] instead"
+description = "[color=yellow]Any die[/color] -> Gain [color=blue]shields[/color] equal to die. (boost) [color=purple]{cost} engine charge[/color]: [color=blue]+{bonus} shields[/color]"
 offered_as_reward = false
+upgraded_version = ExtResource("upgrade_plus")
 textures = SubResource("SpriteFrames_u5naw")
 uses_per_turn = -1
 activation_checks = Array[ExtResource("1_xf5te")]([SubResource("Resource_r1cv4")])

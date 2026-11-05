@@ -6,12 +6,17 @@
 [ext_resource type="SpriteFrames" path="res://Assets/Textures/Ships/Outrigger/outrigger_ship_frames.tres" id="4_frames"]
 [ext_resource type="Texture2D" uid="uid://48giughbube6" path="res://Assets/Textures/Ships/Outrigger/outrigger_preview.png" id="5_preview"]
 [ext_resource type="PackedScene" path="res://Source/Content/Ships/Outrigger/Cockpit/outrigger_cockpit.tscn" id="6_cockpit"]
+[ext_resource type="Script" uid="uid://dtwktwiuvyqjh" path="res://Source/Content/Tiles/tile_resource.gd" id="sig_tile"]
+[ext_resource type="Resource" uid="uid://cnjcpaq5mlgo8" path="res://Source/Content/Tiles/TileResources/sunlance.tres" id="sig_0"]
+[ext_resource type="Resource" uid="uid://lsb4hv80bgs0" path="res://Source/Content/Tiles/TileResources/solar_shroud.tres" id="sig_1"]
+[ext_resource type="Resource" uid="uid://c44jw1tu7ayjk" path="res://Source/Content/Tiles/TileResources/yaw_cannon.tres" id="sig_2"]
+[ext_resource type="Resource" uid="uid://bn70r5b4gekr1" path="res://Source/Content/Tiles/TileResources/gyro_stabilizer.tres" id="sig_3"]
 
 [resource]
 script = ExtResource("1_ship")
 id = &"outrigger"
 display_name = "Outrigger"
-description = "Dice you [color=orange]keep[/color] fill the sail with [color=purple]charge[/color], then go to [color=purple]target[/color]."
+description = "Dice spent in each (pod) add thrust. [color=yellow]Turn ends[/color] -> the drive [color=purple]charges[/color] by the lower pod."
 sort_order = 1
 coming_soon = true
 starting_save = ExtResource("2_start")
@@ -20,7 +25,7 @@ grid_size = Vector2i(7, 3)
 grid_offset = Vector2(-7, 0)
 hole_column_width = 16
 behavior_scene = ExtResource("3_behavior")
-hand_may_be_kept = true
+signature_tiles = Array[ExtResource("sig_tile")]([ExtResource("sig_0"), ExtResource("sig_1"), ExtResource("sig_2"), ExtResource("sig_3")])
 cutscene_frames = ExtResource("4_frames")
 cutscene_exhaust_points = PackedVector2Array(-10, 10, 10, 10)
 preview_texture = ExtResource("5_preview")
