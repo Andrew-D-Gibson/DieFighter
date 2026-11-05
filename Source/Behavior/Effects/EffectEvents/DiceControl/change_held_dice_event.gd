@@ -70,7 +70,7 @@ func resolve(engine: ScenarioEngine) -> void:
 		if not is_instance_valid(die) or not die.is_inside_tree():
 			continue
 		_mark(die)
-		await die.reroll_with_tween(_new_face(die), _ROLL_HALF_SECONDS / speed)
+		await die.reroll_with_tween(_new_face(die), _ROLL_HALF_SECONDS)
 	Events.enemy_held_dice_changed.emit()
 
 
