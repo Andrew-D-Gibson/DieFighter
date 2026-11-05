@@ -426,13 +426,19 @@ func _start_player_turn() -> void:
 	# fight is gone, and the turn with it.
 	if _jump_committed or _turn_generation_at_end != _turn_generation:
 		return
+	# Checked against the generation this turn was handed back in, not just
+	# the current pair: a fight that breaks out while this waits bumps the
+	# generation, and the End Turn of that fight's first turn would make the
+	# pair match again, letting this stale hand-back start a turn on top of
+	# the new enemy turn.
+	var generation: int = _turn_generation
 	# Wait for any dice to get back to the dice queue before rerolling them
 	await get_tree().create_timer(0.5).timeout
-	if _turn_generation_at_end != _turn_generation:
+	if not _turn_still_handed_back(generation):
 		return
 	await reroll_dice()
 	await _ensure_a_die_to_play()
-	if _turn_generation_at_end != _turn_generation:
+	if not _turn_still_handed_back(generation):
 		return
 
 	_between_turns = false
@@ -442,6 +448,12 @@ func _start_player_turn() -> void:
 	
 	for die: Dice in dice_manager.queue:
 		die.draggable.state = Draggable.DragState.DEFAULT
+
+
+## Whether the turn handed back in [param generation] is still the one to
+## start: no fight has started and no jump begun since.
+func _turn_still_handed_back(generation: int) -> bool:
+	return _turn_generation == generation and _turn_generation_at_end == generation
 
 
 func _delete_existing_dice() -> void:
