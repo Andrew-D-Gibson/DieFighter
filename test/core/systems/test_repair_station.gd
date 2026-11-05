@@ -265,7 +265,7 @@ func test_stations_replace_ordinary_stops_beyond_a_jump() -> void:
 	var replaceable: Array[ScenarioResource] = [combat]
 	for placement_seed: int in 40:
 		var scenarios: Array[ScenarioResource] = _sector(2, combat, shop, start, gate)
-		GameStateManager.place_repair_stations(
+		SectorGenerator.place_repair_stations(
 			scenarios, 2, replaceable, station_scenario, Vector2i(1, 2), placement_seed)
 		var placed: Array[int] = []
 		for index: int in scenarios.size():
@@ -286,8 +286,8 @@ func test_placement_is_repeatable_from_its_seed() -> void:
 	var replaceable: Array[ScenarioResource] = [combat]
 	var first: Array[ScenarioResource] = _sector(3, combat, ScenarioResource.new(), ScenarioResource.new(), ScenarioResource.new())
 	var second: Array[ScenarioResource] = first.duplicate()
-	GameStateManager.place_repair_stations(first, 3, replaceable, station_scenario, Vector2i(1, 2), 1234)
-	GameStateManager.place_repair_stations(second, 3, replaceable, station_scenario, Vector2i(1, 2), 1234)
+	SectorGenerator.place_repair_stations(first, 3, replaceable, station_scenario, Vector2i(1, 2), 1234)
+	SectorGenerator.place_repair_stations(second, 3, replaceable, station_scenario, Vector2i(1, 2), 1234)
 	assert_eq(first, second)
 
 
@@ -295,7 +295,7 @@ func test_no_room_beyond_a_jump_places_none() -> void:
 	var combat := ScenarioResource.new()
 	var station_scenario := ScenarioResource.new()
 	var scenarios: Array[ScenarioResource] = [combat, combat, ScenarioResource.new(), combat, combat, ScenarioResource.new()]
-	GameStateManager.place_repair_stations(scenarios, 2, [combat] as Array[ScenarioResource],
+	SectorGenerator.place_repair_stations(scenarios, 2, [combat] as Array[ScenarioResource],
 		station_scenario, Vector2i(2, 2), 7)
 	assert_false(station_scenario in scenarios)
 
@@ -304,6 +304,6 @@ func test_placing_stations_never_draws_from_the_run_stream() -> void:
 	var before: int = RNGManager.get_rng(RNGManager.Bucket.RUN).state
 	var combat := ScenarioResource.new()
 	var scenarios: Array[ScenarioResource] = _sector(2, combat, ScenarioResource.new(), ScenarioResource.new(), ScenarioResource.new())
-	GameStateManager.place_repair_stations(scenarios, 2, [combat] as Array[ScenarioResource],
+	SectorGenerator.place_repair_stations(scenarios, 2, [combat] as Array[ScenarioResource],
 		ScenarioResource.new(), Vector2i(1, 2), 99)
 	assert_eq(RNGManager.get_rng(RNGManager.Bucket.RUN).state, before)

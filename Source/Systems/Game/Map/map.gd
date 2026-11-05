@@ -314,12 +314,9 @@ func _mouse_world_position() -> Vector2:
 ## while the drive is short, and otherwise where the player is.
 func _compute_hint(hovered: int) -> Array:
 	if hovered >= 0:
-		var texture: Texture2D = scenario_sprites[hovered].texture
-		# The gate's map sprite is too big for the caption; it has its own icon.
-		if texture == gate_map_icon:
-			texture = scenario_list[hovered].map_icon
+		var texture: Texture2D = _caption_icon(hovered)
 		if _is_in_danger(hovered):
-			return [_caption_icon(hovered), "Corrupting!", Globals.red]
+			return [texture, "Corrupting!", Globals.red]
 		var entry: Dictionary = _icon_hints.get(texture.resource_path.get_file(), {})
 		if entry.is_empty():
 			return [texture, "Unknown", Globals.yellow]
@@ -397,6 +394,10 @@ func _corrupting_material(index: int) -> ShaderMaterial:
 ## standing in for the animated shader the map sprite wears.
 func _caption_icon(index: int) -> Texture2D:
 	var texture: Texture2D = scenario_sprites[index].texture
+	# The gate's map sprite is too big for the caption; it has its own icon,
+	# which _set_hint() dresses in the portal shader.
+	if texture and texture == gate_map_icon:
+		texture = scenario_list[index].map_icon
 	if _is_in_danger(index) and texture:
 		return _danger_icon(texture)
 	return texture
@@ -948,6 +949,10 @@ func _corrupt(idx: int) -> void:
 
 
 func jump(desired_scenario_index: int) -> void:
+	# Already on the way somewhere: JumpEvent catches a second jump first,
+	# this is the backstop.
+	if _jumping:
+		return
 	if not can_jump():
 		Events.error_text_popup.emit(tr("ERROR_NO_ESCAPE"), InputManager.pointer_global_position(self))
 		return

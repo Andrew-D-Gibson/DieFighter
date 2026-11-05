@@ -19,6 +19,10 @@ func _on_quit_button_pressed() -> void:
 	QuitManager.request_quit()
 
 
+func _on_wishlist_button_pressed() -> void:
+	Utils.open_wishlist()
+
+
 func _on_game_over() -> void:
 	%EndStateLabel.text = "[color=" + str(Globals.red.to_html(false)) + "]"\
 	+ "[wave amp=30.0 freq=5.0 connected=1]"\

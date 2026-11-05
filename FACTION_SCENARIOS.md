@@ -3,7 +3,7 @@
 The faction encounters from `LORE.md`, built on the faction ships (commit
 8b6ac6d6), and where every encounter in the game is dealt (below). Folders are
 under `Source/Content/ScenarioResources/Scenarios/`. The faction events are in
-GameStateManager's `question_scenarios`, and Wake Riders is in `elite_scenarios`.
+SectorGenerator's `question_scenarios`, and Wake Riders is in `elite_scenarios`.
 
 ## By sector
 

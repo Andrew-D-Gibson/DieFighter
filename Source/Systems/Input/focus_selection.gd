@@ -266,13 +266,19 @@ func _update_stick_navigation(delta: float) -> void:
 ## Right stick horizontal map scrolling
 func _update_right_stick_map(delta: float) -> void:
 	var map_node: Map = _get_active_map()
-	if not map_node or not map_node.is_visible_in_tree() or not InputManager.controller_active or is_instance_valid(_modal):
+	if not map_node or not map_node.is_visible_in_tree() or not InputManager.controller_active:
 		return
 
 	var rx: float = Input.get_joy_axis(maxi(InputManager.active_joypad, 0), JOY_AXIS_RIGHT_X)
-	if absf(rx) > 0.2:
-		var pan_speed: float = 300.0
-		map_node._pan_camera_by(rx * pan_speed * delta)
+	if absf(rx) <= 0.2:
+		return
+	# Looked up here rather than read from _modal, which only refresh() keeps
+	# current, and refresh() runs in the FOCUS scheme alone. Only once the
+	# stick is pushed: the lookup walks the tree.
+	if is_instance_valid(_find_modal()):
+		return
+	var pan_speed: float = 300.0
+	map_node._pan_camera_by(rx * pan_speed * delta)
 
 
 ## Rebuilds the target list and keeps or resets the focus

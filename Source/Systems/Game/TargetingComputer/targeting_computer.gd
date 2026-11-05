@@ -313,20 +313,22 @@ func _reset_icon_tweens() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	# The keys push the matching button too, so the player sees which way the
-	# target went.
-	if event.is_action_pressed('target_left'):
+	# target went. A folded-away arrow ignores its key the way it ignores a
+	# click: there's no other ship, or the tutorial is holding them back.
+	if event.is_action_pressed('target_left') and %LeftShiftButton.is_live():
 		%LeftShiftButton.press()
 		_shift_target(-1)
 
-	if event.is_action_pressed('target_right'):
+	if event.is_action_pressed('target_right') and %RightShiftButton.is_live():
 		%RightShiftButton.press()
 		_shift_target(1)
 
 
 ## Steps the target [param step] ships along the roster, wrapping at the ends.
 func _shift_target(step: int) -> void:
+	_sync_index_to_target()
 	targeted_enemy_index += step
-	check_target_is_valid()
+	_target_by_index()
 
 
 func _shift_buttons() -> Array[TargetShiftButton]:
@@ -356,7 +358,28 @@ func _on_shift_button_extended() -> void:
 		shift_buttons_live.emit()
 
 
+## Re-reads the target after the roster changed: a ship left, the enemy turn
+## ended. The same ship stays targeted wherever it now sits; only a target
+## that's gone moves on, to whichever ship took its place.
 func check_target_is_valid() -> void:
+	_sync_index_to_target()
+	_target_by_index()
+
+
+## The roster shifts under the target (a ship ahead of it leaves, a launched
+## ship is slotted in beside its carrier), so the target's index is looked up
+## again rather than trusted. A target that's no longer on the roster keeps
+## its old index, which now points at the ship after it.
+func _sync_index_to_target() -> void:
+	if not is_instance_valid(targeted_enemy) or not Globals.enemy_manager:
+		return
+	var index: int = Globals.enemy_manager.get_alive_enemies().find(targeted_enemy)
+	if index != -1:
+		targeted_enemy_index = index
+
+
+## Targets the ship at targeted_enemy_index, wrapping it onto the roster.
+func _target_by_index() -> void:
 	if not Globals.enemy_manager:
 		_update_ui()
 		return
@@ -442,10 +465,12 @@ func target_enemy(enemy: Enemy) -> void:
 	var enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
 	
 	var enemy_index: int = enemies.find(enemy)
-	if enemy_index != -1: # We found the enemy
-		targeted_enemy_index = enemy_index
-	
-	check_target_is_valid()
+	if enemy_index == -1:
+		# Not on the roster (it left, or never arrived): keep what's targeted.
+		check_target_is_valid()
+		return
+	targeted_enemy_index = enemy_index
+	_target_by_index()
 
 	
 func _update_ui() -> void:

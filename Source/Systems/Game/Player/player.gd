@@ -494,8 +494,13 @@ func _announce_first_turn() -> void:
 	var enemy_manager: EnemyManager = Globals.enemy_manager
 	if enemy_manager and enemy_manager.arrival_in_progress:
 		await Events.enemies_arrived
+	# The player jumped away while the ships flew in. Those enemies_arrived
+	# were the next scenario's, which announces its own first turn: carrying
+	# on would deal its hand a spare die.
+	if fight != _fight_generation:
+		return
 	# A new run's ambusher opens fire before the player's first move.
-	if Globals.state_manager and fight == _fight_generation:
+	if Globals.state_manager:
 		await Globals.state_manager.play_opening_strike()
 	await _ensure_a_die_for_first_turn()
 
@@ -588,7 +593,7 @@ func _carry_dice_through_jump() -> void:
 		elif die == _jump_activator:
 			_lock_die_for_jump(die)
 		else:
-			_stow_die_for_jump(die)
+			stow_die_for_jump(die)
 
 	_lose_dice(stranded)
 
@@ -611,8 +616,11 @@ func lose_dice_to(holder: Enemy, dice: Array[Dice]) -> void:
 
 ## Brings a die home to the hand and holds it there until arrival. Nothing
 ## may be played mid-jump: the scenario engine a tile would fire through has
-## already been shut down.
-func _stow_die_for_jump(die: Dice) -> void:
+## already been shut down. JumpEvent stows a die that reaches an arrow tile
+## with a jump already under way.
+func stow_die_for_jump(die: Dice) -> void:
+	if not is_instance_valid(die):
+		return
 	if die.host_queue != dice_manager:
 		dice_manager.add(die, true, false)
 	die.draggable.state = Draggable.DragState.DEFAULT
@@ -650,7 +658,7 @@ func commit_to_jump(die: Dice) -> void:
 
 func _bring_jump_activator_home() -> void:
 	if is_instance_valid(_jump_activator) and not _jump_activator.is_queued_for_deletion():
-		_stow_die_for_jump(_jump_activator)
+		stow_die_for_jump(_jump_activator)
 	_jump_activator = null
 
 

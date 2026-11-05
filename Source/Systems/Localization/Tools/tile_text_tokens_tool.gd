@@ -24,7 +24,6 @@ extends RefCounted
 ## hand edit. Every converted file is reloaded and its filled text compared
 ## with the old text before the change is kept.
 
-const _TILE_DIR: String = "res://Source/Content/Tiles/TileResources/"
 const _TEXT_FIELDS: Array[StringName] = [&"activation_description", &"description"]
 const _FAMILIES: Array[String] = ["red", "blue", "green", "purple", "yellow"]
 ## Fields a step's number can live in, in the order they're tried.
@@ -152,10 +151,10 @@ func run(args: Array) -> int:
 ## Every tile file in [param family] ("all" for every family), sorted.
 static func tile_files(family: String) -> Array[String]:
 	var files: Array[String] = []
-	for file: String in DirAccess.get_files_at(_TILE_DIR):
+	for file: String in DirAccess.get_files_at(ContentRegistry.TILE_DIR):
 		if not file.ends_with(".tres"):
 			continue
-		var path: String = _TILE_DIR + file
+		var path: String = ContentRegistry.TILE_DIR + file
 		if family == "all" or family_of(load(path)) == family:
 			files.append(path)
 	files.sort()

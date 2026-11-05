@@ -176,6 +176,13 @@ var tutorial_functions: Dictionary[TutorialStep.TutorialFunctions, Callable] = {
 }
 
 
+## A timer that stands still while the game is paused. A step's deadline or
+## beat must not run out behind the pause menu, and the step it would open
+## (ALLOW_NORMAL_COMBAT, say) must not act on a paused game.
+func _timer(seconds: float) -> SceneTreeTimer:
+	return get_tree().create_timer(seconds, false)
+
+
 func _ready() -> void:
 	_assert_every_function_is_wired()
 
@@ -189,7 +196,7 @@ func _ready() -> void:
 	Globals.tutorial_holds_target_arrows = false
 	Globals.tutorial_holds_opening_strike = false
 	Globals.tutorial_holds_saves = false
-	GameStateManager.next_run_pinned_stops.clear()
+	SectorGenerator.next_run_pinned_stops.clear()
 
 	var playing: bool = should_play()
 	# Spent here either way, so the next run from the menu is an ordinary one
@@ -201,7 +208,7 @@ func _ready() -> void:
 	# GameStateManager rolls the run after this, in its own _ready().
 	RNGManager.next_run_seed = run_seed
 	if jump_destination:
-		GameStateManager.next_run_pinned_stops[jump_distance] = jump_destination
+		SectorGenerator.next_run_pinned_stops[jump_distance] = jump_destination
 	Globals.tutorial_controls_enemy_turns = true
 	# Out of sight until the step that shows them swinging out.
 	Globals.tutorial_holds_target_arrows = true
@@ -305,7 +312,7 @@ func start_tutorial() -> void:
 		current_step_index = i
 		var step: TutorialStep = tutorial_steps[i]
 
-		await get_tree().create_timer(step.time_delay).timeout
+		await _timer(step.time_delay).timeout
 
 		await play_step(step)
 		await _await_popup_closed(step)
@@ -366,7 +373,7 @@ func play_step(step: TutorialStep) -> void:
 	if step.releases_opening_strike:
 		current_popup.all_text_displayed.connect(_release_opening_strike_after_beat)
 		if step.opening_strike_deadline > 0.0:
-			get_tree().create_timer(step.opening_strike_deadline).timeout.connect(_release_opening_strike)
+			_timer(step.opening_strike_deadline).timeout.connect(_release_opening_strike)
 		_hold_close_until_strike_lands(current_popup)
 		_show_strike_through_dim(current_popup)
 
@@ -403,7 +410,7 @@ func stop_ghost_demos() -> void:
 func _reveal_target_arrows(step: TutorialStep) -> void:
 	if step.highlight_texture:
 		_lead_highlight = _show_highlight(step.highlight_texture)
-	await get_tree().create_timer(_ARROWS_LEAD_SECONDS).timeout
+	await _timer(_ARROWS_LEAD_SECONDS).timeout
 
 	var computer: TargetingComputer = Globals.targeting_computer
 	if not computer:
@@ -417,7 +424,7 @@ func _reveal_target_arrows(step: TutorialStep) -> void:
 		settled[0] = true
 		_target_arrows_settled.emit()
 	computer.shift_buttons_live.connect(settle, CONNECT_ONE_SHOT)
-	get_tree().create_timer(_ARROWS_DEADLINE_SECONDS).timeout.connect(settle)
+	_timer(_ARROWS_DEADLINE_SECONDS).timeout.connect(settle)
 	_release_target_arrows()
 	await _target_arrows_settled
 	if computer.shift_buttons_live.is_connected(settle):
@@ -427,7 +434,7 @@ func _reveal_target_arrows(step: TutorialStep) -> void:
 
 	if step.cut_out_targets and step.highlight_texture:
 		_open_highlight_around_targets(step.highlight_texture)
-	await get_tree().create_timer(_ARROWS_SETTLE_SECONDS).timeout
+	await _timer(_ARROWS_SETTLE_SECONDS).timeout
 
 
 ## Swaps the lead highlight for one that also leaves every ship in the fight,
@@ -526,7 +533,7 @@ func _stop_watching_target() -> void:
 
 
 func _release_opening_strike_after_beat() -> void:
-	await get_tree().create_timer(_OPENING_STRIKE_BEAT_SECONDS).timeout
+	await _timer(_OPENING_STRIKE_BEAT_SECONDS).timeout
 	_release_opening_strike()
 
 
@@ -539,7 +546,7 @@ func _hold_close_until_strike_lands(card: TutorialTextPopup) -> void:
 	card.hold_close_button()
 	if not Events.opening_strike_landed.is_connected(_release_card_awaiting_strike):
 		Events.opening_strike_landed.connect(_release_card_awaiting_strike, CONNECT_ONE_SHOT)
-	get_tree().create_timer(_OPENING_STRIKE_CLOSE_DEADLINE_SECONDS).timeout.connect(
+	_timer(_OPENING_STRIKE_CLOSE_DEADLINE_SECONDS).timeout.connect(
 		_release_card_awaiting_strike
 	)
 
@@ -675,7 +682,7 @@ func _await_open_signal(opening_signal: Signal, step: TutorialStep) -> void:
 		_open_wait_over.emit()
 
 	opening_signal.connect(finish.bind(false), CONNECT_ONE_SHOT)
-	get_tree().create_timer(timeout).timeout.connect(finish.bind(true))
+	_timer(timeout).timeout.connect(finish.bind(true))
 	await _open_wait_over
 
 
@@ -700,7 +707,7 @@ func _await_popup_closed(step: TutorialStep) -> void:
 		)
 		popup.close()
 	if timeout > 0:
-		deadline = get_tree().create_timer(timeout)
+		deadline = _timer(timeout)
 		deadline.timeout.connect(give_up)
 
 	await popup.popup_closed

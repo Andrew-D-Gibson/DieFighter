@@ -231,3 +231,12 @@ static func fade_out_panel(panel: CanvasItem) -> Tween:
 	tween.tween_property(panel, "modulate:a", 0.0, PANEL_FADE_TIME)
 	tween.tween_callback(panel.hide)
 	return tween
+
+
+## The game's Steam store page, where every Wishlist button leads.
+const STORE_PAGE_URL: String = "https://store.steampowered.com/app/3689280/Die_Fighter/"
+
+
+## Opens the store page in the player's browser.
+static func open_wishlist() -> void:
+	OS.shell_open(STORE_PAGE_URL)

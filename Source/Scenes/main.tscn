@@ -21,6 +21,7 @@
 [ext_resource type="Shader" uid="uid://lfwmi1satit6" path="res://Assets/Shaders/flash.gdshader" id="10_3g417"]
 [ext_resource type="PackedScene" uid="uid://2orsjyat3nl" path="res://Source/Systems/Game/EnemyManager/enemy_manager.tscn" id="10_oai2y"]
 [ext_resource type="PackedScene" uid="uid://bttaxba6dityn" path="res://Source/Systems/Game/GameStateManager/game_state_manager.tscn" id="12_6ebjm"]
+[ext_resource type="Script" uid="uid://d3xk3d0tnte7d" path="res://Source/Systems/Game/SectorGenerator/sector_generator.gd" id="sector_generator_script"]
 [ext_resource type="PackedScene" uid="uid://c8n32fs0k8j52" path="res://Source/Systems/Game/RewardManager/reward_manager.tscn" id="13_7iud4"]
 [ext_resource type="Texture2D" uid="uid://dm4or0suv2f7l" path="res://Assets/Textures/UI/MouseCursors/default_cursor_raw.png" id="13_dacno"]
 [ext_resource type="Shader" uid="uid://fbcxr03he6iu" path="res://Assets/Shaders/dice_area_highlight_shader.gdshader" id="13_jblvd"]
@@ -43,7 +44,6 @@
 [ext_resource type="Script" uid="uid://eyoqrls6ero4" path="res://Source/Systems/TutorialManager/TutorialStepResources/tutorial_step.gd" id="28_lejlh"]
 [ext_resource type="Resource" uid="uid://cbrbbyg645at3" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_CannonDrone/COMBAT_cannon_drone.tres" id="35_s48jj"]
 [ext_resource type="Resource" uid="uid://bhn1i4c5k1ttu" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_SleepingDrone/EVENT_sleeping_drone.tres" id="37_ooshj"]
-[ext_resource type="Resource" uid="uid://di36ampkuhkyk" path="res://Source/Content/ScenarioResources/Scenarios/FateScenario/fate_scenario.tres" id="67_1kud3"]
 [ext_resource type="Resource" uid="uid://opnsaw6rik7t" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_OpeningAmbush/COMBAT_opening_ambush.tres" id="75_imw1m"]
 [ext_resource type="Resource" uid="uid://v82d83vwmjmq" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_TitheCollector/COMBAT_tithe_collector.tres" id="80_tithe"]
 [ext_resource type="Resource" uid="uid://1afnq5aul5tn" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_IonLances/COMBAT_ion_lances.tres" id="81_ion"]
@@ -57,7 +57,6 @@
 [ext_resource type="Script" uid="uid://c8epcmglrpd7i" path="res://Source/Systems/Game/HazardManager/hazard_manager.gd" id="91_hazmgr"]
 [ext_resource type="Script" uid="uid://cl0bfcstgkgxo" path="res://Source/Systems/Game/RunStats/run_stats.gd" id="93_runstats"]
 [ext_resource type="Script" uid="uid://7whk8psw2ylx" path="res://Source/Systems/Game/BackgroundModifierManager/background_modifier_manager.gd" id="96_bgmodmgr"]
-[ext_resource type="Resource" uid="uid://c2vce0wgp2aet" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Rift/FATE_rift.tres" id="96_rift"]
 [ext_resource type="Resource" uid="uid://d2373j5jwvirs" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_BountyRun/COMBAT_bounty_run.tres" id="97_bounty"]
 [ext_resource type="Resource" uid="uid://bckcilng3qnnk" path="res://Source/Content/ScenarioResources/Scenarios/COMBAT_SiegeBattery/COMBAT_siege_battery.tres" id="98_siege"]
 [ext_resource type="Resource" uid="uid://demop53hkjwqx" path="res://Source/Resources/SaveResources/run_start.tres" id="99_runstart"]
@@ -314,7 +313,6 @@ layer = 128
 
 [node name="MouseCursor" type="Sprite2D" parent="CursorLayer" unique_id=347379124]
 visible = false
-z_index = 1000
 scale = Vector2(6, 6)
 texture = ExtResource("13_dacno")
 centered = false
@@ -412,8 +410,12 @@ position = Vector2(156, 37)
 tutorial_steps = Array[ExtResource("28_lejlh")]([ExtResource("tut_ambush_intro"), ExtResource("tut_activate_tile"), ExtResource("tut_enemy_keeps_die"), ExtResource("tut_read_intents"), ExtResource("tut_dice_return"), ExtResource("tut_end_turn_prompt"), ExtResource("tut_enemy_response"), ExtResource("tut_finish_the_raider"), ExtResource("tut_claim_salvage"), ExtResource("tut_open_the_map"), ExtResource("tut_map_explanation"), ExtResource("tut_jump_out"), ExtResource("tut_tutorial_handoff"), ExtResource("tut_good_luck")])
 opening_setup = ExtResource("tut_opening")
 
-[node name="GameStateManager" parent="Systems" unique_id=1522777559 instance=ExtResource("12_6ebjm")]
+[node name="GameStateManager" parent="Systems" unique_id=1522777559 node_paths=PackedStringArray("sector_generator") instance=ExtResource("12_6ebjm")]
 current_game_save = ExtResource("99_runstart")
+sector_generator = NodePath("SectorGenerator")
+
+[node name="SectorGenerator" type="Node" parent="Systems/GameStateManager" unique_id=1406620917]
+script = ExtResource("sector_generator_script")
 sector_size = 12
 empty_scenario = ExtResource("20_grfux")
 shop_scenario = ExtResource("21_oai2y")
@@ -422,13 +424,12 @@ combat_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("23_6ebjm"), ExtR
 question_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("25_o33d5"), ExtResource("37_ooshj"), ExtResource("86_mercy"), ExtResource("87_toll"), ExtResource("88_wreck"), ExtResource("event_ghost_carrier"), ExtResource("event_black_market"), ExtResource("event_pickpocket"), ExtResource("event_mayday"), ExtResource("faction_event_deniable_assets"), ExtResource("faction_event_last_picket"), ExtResource("faction_event_straggler"), ExtResource("faction_event_convoy"), ExtResource("faction_event_cut_loose"), ExtResource("faction_event_pilgrim"), ExtResource("faction_event_pact"), ExtResource("faction_event_signal"), ExtResource("faction_event_what_came_back"), ExtResource("layer_event_deserter")])
 elite_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("elite_mortar"), ExtResource("elite_lance"), ExtResource("elite_tithe"), ExtResource("elite_hunter"), ExtResource("faction_elite_wake_riders"), ExtResource("layer_elite_chopshop"), ExtResource("layer_elite_repossession")])
 gate_boss_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("26_aaucc"), ExtResource("gate_dynamo"), ExtResource("gate_bastion")])
-fate_scenarios = Array[ExtResource("22_tfyry")]([ExtResource("67_1kud3"), ExtResource("96_rift")])
 starting_scenario = ExtResource("75_imw1m")
 
-[node name="GameAnimationPlayer" type="AnimationPlayer" parent="Systems/GameStateManager" unique_id=187598607]
+[node name="GameAnimationPlayer" type="AnimationPlayer" parent="." unique_id=187598607]
 unique_name_in_owner = true
 process_mode = 3
-root_node = NodePath("../../..")
+root_node = NodePath("..")
 libraries/ = SubResource("AnimationLibrary_xwceq")
 autoplay = &"game_start"
 

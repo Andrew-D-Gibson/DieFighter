@@ -4,12 +4,15 @@ extends Node
 ## needs to be referenced from the save file (or the codex's collection), so saves don't break if a
 ## .tres gets renamed/moved and don't need to store raw res:// paths.
 
-const _TILE_DIRS: Array[String] = [
-	"res://Source/Content/Tiles/TileResources/",
-]
+## Where every tile resource lives. Anything that walks the tiles asks for
+## this (or for get_tile_resources()) rather than naming the folder itself.
+const TILE_DIR: String = "res://Source/Content/Tiles/TileResources/"
 const _SCENARIO_DIR: String = "res://Source/Content/ScenarioResources/Scenarios/"
 const _ENEMY_DIR: String = "res://Source/Content/Enemies/EnemyResources/"
 
+## Every registered tile, in path order, so anything rolled from the list
+## stays reproducible.
+var _tiles: Array[TileResource] = []
 var _tile_id_to_path: Dictionary[String, String] = {}
 var _tile_path_to_id: Dictionary[String, String] = {}
 var _scenario_id_to_path: Dictionary[String, String] = {}
@@ -19,9 +22,8 @@ var _enemy_path_to_id: Dictionary[String, String] = {}
 
 
 func _ready() -> void:
-	for dir_location: String in _TILE_DIRS:
-		for path: String in Utils.list_resource_paths(dir_location):
-			_register_tile(path)
+	for path: String in Utils.list_resource_paths(TILE_DIR):
+		_register_tile(path)
 	for path: String in Utils.list_resource_paths(_SCENARIO_DIR, true):
 		_register_scenario(path)
 	for path: String in Utils.list_resource_paths(_ENEMY_DIR):
@@ -40,6 +42,11 @@ func get_tile_id(path: String) -> String:
 		push_error("ContentRegistry: no tile registered at path '%s'" % path)
 		return ""
 	return _tile_path_to_id[path]
+
+
+## Every registered tile, in path order. A copy: callers may filter it.
+func get_tile_resources() -> Array[TileResource]:
+	return _tiles.duplicate()
 
 
 ## Every registered tile id, sorted.
@@ -96,7 +103,8 @@ func _register_tile(path: String) -> void:
 	var res: Resource = ResourceLoader.load(path)
 	if not res is TileResource:
 		return
-	_register(path, _tile_id_to_path, _tile_path_to_id, "tile")
+	if _register(path, _tile_id_to_path, _tile_path_to_id, "tile"):
+		_tiles.append(res)
 
 
 func _register_scenario(path: String) -> void:
@@ -117,12 +125,13 @@ func _register(
 	id_to_path: Dictionary[String, String],
 	path_to_id: Dictionary[String, String],
 	kind: String
-) -> void:
+) -> bool:
 	var id: String = path.get_file().get_basename()
 	if id_to_path.has(id):
 		push_error("ContentRegistry: duplicate %s id '%s' (paths '%s' and '%s')" % [
 			kind, id, id_to_path[id], path
 		])
-		return
+		return false
 	id_to_path[id] = path
 	path_to_id[path] = id
+	return true

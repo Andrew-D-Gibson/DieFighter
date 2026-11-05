@@ -1,6 +1,6 @@
 extends "res://test/helpers/die_fighter_test.gd"
 ## Which encounters a sector may be dealt, rolled from the real lists on
-## main.tscn's GameStateManager.
+## main.tscn's SectorGenerator.
 ##
 ## Sector 1 is for learning to read one ship's table at a time, so a ship that
 ## shields, repairs or feeds an ally waits for sector 2. The gate is read off
@@ -22,30 +22,40 @@ func before_each() -> void:
 
 func after_each() -> void:
 	RNGManager.get_rng(RNGManager.Bucket.RUN).state = _run_rng_state
-	GameStateManager.next_run_pinned_stops.clear()
+	SectorGenerator.next_run_pinned_stops.clear()
 	super()
 
 
-## A GameStateManager with main.tscn's encounter lists, out of the tree.
+## A GameStateManager with main.tscn's run start and SectorGenerator (its
+## encounter lists), out of the tree.
 func _main_state_manager() -> GameStateManager:
 	var state: SceneState = (load(MAIN_SCENE) as PackedScene).get_state()
 	var manager: GameStateManager = autofree(GameStateManager.new())
-	for node: int in state.get_node_count():
-		if state.get_node_name(node) != &"GameStateManager":
-			continue
-		for prop: int in state.get_node_property_count(node):
-			var prop_name: StringName = state.get_node_property_name(node, prop)
-			if prop_name != &"script":
-				manager.set(prop_name, state.get_node_property_value(node, prop))
+	manager.sector_generator = autofree(SectorGenerator.new())
+	_copy_node_properties(state, &"GameStateManager", manager)
+	_copy_node_properties(state, &"SectorGenerator", manager.sector_generator)
 	manager.current_game_save = manager.current_game_save.duplicate()
 	manager.current_game_save.sector_scenarios = []
 	return manager
 
 
+## Sets [param target]'s properties to what main.tscn gives the node named
+## [param node_name]. Node paths are skipped: out of the tree they lead nowhere.
+func _copy_node_properties(state: SceneState, node_name: StringName, target: Object) -> void:
+	for node: int in state.get_node_count():
+		if state.get_node_name(node) != node_name:
+			continue
+		for prop: int in state.get_node_property_count(node):
+			var prop_name: StringName = state.get_node_property_name(node, prop)
+			var value: Variant = state.get_node_property_value(node, prop)
+			if prop_name != &"script" and typeof(value) != TYPE_NODE_PATH:
+				target.set(prop_name, value)
+
+
 func _roll_sector(manager: GameStateManager, run_seed: int, sector_index: int) -> Array[ScenarioResource]:
 	RNGManager.start_new_run(run_seed)
 	manager.current_game_save.sector_index = sector_index
-	manager._randomize_sector_scenarios()
+	manager.sector_generator.generate(manager.current_game_save)
 	return manager.current_game_save.sector_scenarios
 
 
@@ -110,11 +120,11 @@ func test_the_gate_keeps_a_seeded_maps_layout() -> void:
 	var manager: GameStateManager = _main_state_manager()
 	var sector: Array[ScenarioResource] = _roll_sector(manager, TUTORIAL_SEED, 0)
 	var arrival: int = manager.current_game_save.current_scenario_index
-	assert_eq(sector[arrival], manager.starting_scenario)
-	assert_true(sector[arrival + 1] == manager.shop_scenario,
+	assert_eq(sector[arrival], manager.sector_generator.starting_scenario)
+	assert_true(sector[arrival + 1] == manager.sector_generator.shop_scenario,
 		"the tutorial promises a shop beside the opening fight")
 	for distance: int in [4, 5, 6]:
-		assert_true(sector[arrival + distance] in manager.combat_scenarios,
+		assert_true(sector[arrival + distance] in manager.sector_generator.combat_scenarios,
 			"and an ordinary fight %d to the right" % distance)
 
 
@@ -128,9 +138,9 @@ const REARGUARD: String = "res://Source/Content/Factions/rearguard.tres"
 
 func _pooled(manager: GameStateManager) -> Array[ScenarioResource]:
 	var pooled: Array[ScenarioResource] = []
-	pooled.append_array(manager.combat_scenarios)
-	pooled.append_array(manager.question_scenarios)
-	pooled.append_array(manager.elite_scenarios)
+	pooled.append_array(manager.sector_generator.combat_scenarios)
+	pooled.append_array(manager.sector_generator.question_scenarios)
+	pooled.append_array(manager.sector_generator.elite_scenarios)
 	return pooled
 
 
@@ -172,11 +182,11 @@ func test_each_layer_holds_enough_to_fill_its_sector() -> void:
 	var manager: GameStateManager = _main_state_manager()
 	for sector_index: int in range(3):
 		var label: String = "sector %d" % (sector_index + 1)
-		assert_gte(ScenarioResource.allowed_in_sector(manager.elite_scenarios, sector_index).size(),
-			manager.elites_per_sector.y, label + " elites")
-		assert_gte(ScenarioResource.allowed_in_sector(manager.combat_scenarios, sector_index).size(),
+		assert_gte(ScenarioResource.allowed_in_sector(manager.sector_generator.elite_scenarios, sector_index).size(),
+			manager.sector_generator.elites_per_sector.y, label + " elites")
+		assert_gte(ScenarioResource.allowed_in_sector(manager.sector_generator.combat_scenarios, sector_index).size(),
 			7, label + " combats")
-		assert_gte(ScenarioResource.allowed_in_sector(manager.question_scenarios, sector_index).size(),
+		assert_gte(ScenarioResource.allowed_in_sector(manager.sector_generator.question_scenarios, sector_index).size(),
 			4, label + " events")
 
 
@@ -184,22 +194,22 @@ func test_a_sector_pick_always_spends_one_draw() -> void:
 	# A layer's short lists run down to a single option inside a sector, and
 	# pick_random() spends no draw on one. The sector's own pick must.
 	var manager: GameStateManager = _main_state_manager()
-	var one: Array[ScenarioResource] = [manager.empty_scenario]
+	var one: Array[ScenarioResource] = [manager.sector_generator.empty_scenario]
 	var rng: RandomNumberGenerator = RNGManager.get_rng(RNGManager.Bucket.RUN)
 	RNGManager.start_new_run(TUTORIAL_SEED)
 	var before: int = rng.state
-	GameStateManager._pick_one(one)
+	SectorGenerator._pick_one(one)
 	assert_ne(rng.state, before)
 
 
 func test_a_sector_pick_matches_pick_random_otherwise() -> void:
 	# So every seeded map whose lists never ran that short comes out as it did.
-	var pool: Array[ScenarioResource] = _main_state_manager().combat_scenarios
+	var pool: Array[ScenarioResource] = _main_state_manager().sector_generator.combat_scenarios
 	for run_seed: int in range(1, 40):
 		RNGManager.start_new_run(run_seed)
 		var expected: ScenarioResource = RNGManager.pick_random(RNGManager.Bucket.RUN, pool)
 		RNGManager.start_new_run(run_seed)
-		assert_eq(GameStateManager._pick_one(pool), expected, "seed %d" % run_seed)
+		assert_eq(SectorGenerator._pick_one(pool), expected, "seed %d" % run_seed)
 
 
 func test_the_tail_meets_no_rearguard_but_what_it_left_behind() -> void:
@@ -221,11 +231,11 @@ func test_a_pinned_stop_replaces_only_its_slot() -> void:
 	var manager: GameStateManager = _main_state_manager()
 	var dealt: Array[ScenarioResource] = _roll_sector(manager, TUTORIAL_SEED, 0).duplicate()
 	var arrival: int = manager.current_game_save.current_scenario_index
-	var pinned: ScenarioResource = manager.empty_scenario
+	var pinned: ScenarioResource = manager.sector_generator.empty_scenario
 
-	GameStateManager.next_run_pinned_stops[6] = pinned
+	SectorGenerator.next_run_pinned_stops[6] = pinned
 	var with_pin: Array[ScenarioResource] = _roll_sector(manager, TUTORIAL_SEED, 0)
-	assert_true(GameStateManager.next_run_pinned_stops.is_empty(), "the pin is spent on the run it was set for")
+	assert_true(SectorGenerator.next_run_pinned_stops.is_empty(), "the pin is spent on the run it was set for")
 	assert_eq(with_pin.size(), dealt.size())
 	for slot: int in dealt.size():
 		if slot == arrival + 6:

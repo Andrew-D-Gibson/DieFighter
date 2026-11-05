@@ -3,13 +3,12 @@ extends Node2D
 @export_category('Background Components')
 @export var num_of_stars: int = 100
 @export var num_of_twinkling_stars: int = 25
-@export var background_color: Color = Globals.purple
 @export var star_pixel_scene: PackedScene
 @export var star_twinkle_scene: PackedScene
 
-
-var _screen_size: Vector2 = Vector2(320, 180)
-var _stars: Array[Node2D]
+## Where the stars go: one screen wide and two tall, so the camera's pan on
+## application start has sky the whole way.
+const _STAR_AREA: Rect2 = Rect2(0, -180, 320, 360)
 
 var opening_cutscene: String = "uid://b1j8blia5iw65"
 var main_game_scene: String = "uid://deisauteocrjl"
@@ -31,8 +30,6 @@ func _ready() -> void:
 	# save file somewhere else.
 	ScenarioLab.end_session()
 
-	# Set up the initial state of needed components
-	#%FadeIn.self_modulate = background_color
 	%FadeIn.show()
 	%OptionsMenu.hide()
 	%ConfirmDialog.hide()
@@ -43,19 +40,9 @@ func _ready() -> void:
 	%OptionsMenu.progress_changed.connect(_refresh_play_buttons)
 	_refresh_play_buttons()
 
-	# Set up the background
-	#self.self_modulate = background_color
-	
-	# Get rid of any pre-existing stars
-	_clear_stars()
+	StarScatter.scatter(self, star_pixel_scene, num_of_stars, _STAR_AREA)
+	StarScatter.scatter(self, star_twinkle_scene, num_of_twinkling_stars, _STAR_AREA)
 
-	# Create new stars
-	for i in range(num_of_stars):
-		_add_star(star_pixel_scene)
-
-	for i in range(num_of_twinkling_stars):
-		_add_star(star_twinkle_scene)
-		
 	%AnimationPlayer.play("on_application_start")
 	# A new scene is drawn once before its AnimationPlayer first processes,
 	# which flashed the finished menu ahead of the fade. Pose the first frame
@@ -78,27 +65,6 @@ func _refresh_play_buttons() -> void:
 	else:
 		%ContinueButton.visible = false
 		%PlayButton.set_button_text("MENU_PLAY")
-
-
-func _clear_stars() -> void:
-	for star: Node2D in _stars:
-		star.queue_free()
-	_stars = []
-
-
-func _add_star(star_scene: PackedScene) -> void:
-	var star: Node2D = star_scene.instantiate()
-	star.z_index = -2
-	add_child(star)
-	star.global_position = Vector2(
-		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, _screen_size.x),
-		RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0, (_screen_size.y * 2)) - 180
-	)
-
-	# Randomize the opacity of the star to simulate brightness/distance
-	star.modulate = Color(1, 1, 1, RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.25, 0.75))
-	
-	_stars.append(star)
 
 
 func _input(event: InputEvent) -> void:
@@ -183,5 +149,4 @@ func _on_quit_button_pressed() -> void:
 
 
 func _on_wishlist_button_pressed() -> void:
-	var url: String = "https://store.steampowered.com/app/3689280/Die_Fighter/"
-	OS.shell_open(url)
+	Utils.open_wishlist()

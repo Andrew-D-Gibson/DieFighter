@@ -7,8 +7,6 @@ extends Control
 ## keeps the palette from needing its own placement rules.
 
 
-const _TILE_RESOURCE_DIR: String = "res://Source/Content/Tiles/TileResources/"
-
 const _DICE_TEXTURES: Array[Texture2D] = [
 	preload("res://Assets/Textures/Dice/Regular/dice1.png"),
 	preload("res://Assets/Textures/Dice/Regular/dice2.png"),
@@ -235,13 +233,7 @@ func _make_style(color: Color) -> StyleBoxFlat:
 # ── Content lookup ───────────────────────────────────────────────────────────
 
 func _load_tile_resources() -> Array[TileResource]:
-	var resources: Array[TileResource] = []
-
-	for path: String in Utils.list_resource_paths(_TILE_RESOURCE_DIR):
-		var res: Resource = ResourceLoader.load(path)
-		if res is TileResource:
-			resources.append(res)
-
+	var resources: Array[TileResource] = ContentRegistry.get_tile_resources()
 	resources.sort_custom(
 		func(a: TileResource, b: TileResource) -> bool:
 			return _plain_tile_name(a) < _plain_tile_name(b)

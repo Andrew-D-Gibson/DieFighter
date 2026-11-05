@@ -51,36 +51,54 @@ been self-playtested and is fun. Next comes outside playtesting.
 Each of these was checked against the code on 2026-11-05, and none is urgent.
 Fix them opportunistically when you're already in the file.
 
-- [ ] **Extract a `SectorGenerator` from `GameStateManager`.** The file is 828
-      lines with 23 exports, most of them sector-generation config, not
-      state-machine concerns.
-- [ ] **Move `GameAnimationPlayer`** in `main.tscn`. It's nested under
-      `Systems/GameStateManager`, but its `root_node` is `Main`.
-- [ ] **Store URL dedup.** The Steam URL is hard-coded in `main_menu.gd` and
-      `pause_menu.gd`. Make it one constant or a `Utils.open_wishlist()`.
-- [ ] **Tile directory path in one place.** `res://Source/Content/Tiles/TileResources/`
-      is hard-coded in `content_registry.gd`, `reward_manager.gd`,
-      `tile_palette.gd` and `tile_text_tokens_tool.gd`. `ContentRegistry` is the
-      natural owner.
-- [ ] **Starfield dedup.** Near-identical star spawning appears in `main_menu.gd`,
-      `capsule_mockup.gd` and `opening_cutscene.gd`. Check whether the
-      cutscene's differences are intentional first.
-- [ ] **`MouseCursor`'s `z_index = 1000`** in `main.tscn`. It's already on its
-      own `CursorLayer`, so this is probably dead weight. Remove it or explain
-      it.
-- [ ] **Naming.** `Source/Systems/UI/InfoShower/InfoResource.gd` should be
-      `info_resource.gd`. Update every reference.
 - [ ] (Judgment call.) Data-only resources such as `Source/Resources/BackgroundResources/`
       and `SoundEffectResources/`, plus `reward_resource.gd`, could move to
       `Source/Content/`.
 - [ ] (Low value.) `GlitchShader`, `FPSCounter` and `FadeIn` are inline nodes
       in `main.tscn`, not their own scenes like the rest of the UI.
-- [ ] **Big files.** The largest gameplay scripts are `map.gd` (1178),
-      `enemy.gd` (911), `focus_selection.gd` (879), `player.gd` (871),
-      `opening_cutscene.gd` (841), `tile.gd` (836), `tutorial_manager.gd` (833),
-      `game_state_manager.gd` (828) and `targeting_computer.gd` (776). The
-      August audit proposed splits when these were a third of their size, so
-      plan the split boundaries fresh rather than reusing those.
+- [ ] **Big files.** The largest gameplay scripts are `map.gd` (1183),
+      `enemy.gd` (911), `focus_selection.gd` (885), `player.gd` (879),
+      `opening_cutscene.gd` (852), `tutorial_manager.gd` (840), `tile.gd` (836)
+      and `targeting_computer.gd` (801). Split boundaries proposed fresh on
+      2026-11-05, lowest risk first in each:
+      - `targeting_computer.gd`: the portrait comms/crackle, the reticle and
+        the bound-slot arrows each become a child node; target selection and
+        the intent panel stay.
+      - `tutorial_manager.gd`: the highlight masks (`_show_highlight`, the
+        cut-outs), then the gameplay-action table, then step waiting (the
+        timeouts and `_await_*`), then the combat holds (arrows, opening strike).
+      - `opening_cutscene.gd`: the skip overlay (one `skip_confirmed` signal),
+        the particle builders (static), then the ambient fields (stars, debris,
+        speed lines), whose keyed properties need forwarding setters or new
+        track paths.
+      - `tile.gd`: a `TileHeldDice` helper beside `TileUseLights` and
+        `TileCountdown`, then the info/text code, then the visual feedback.
+        The event responders last: connection order and the synchronous fatal-
+        damage save matter.
+      - `map.gd`: the camera (bounds, slider, pan), then the caption and hover,
+        then a `FateState` data class. The fate zone view goes last, and the
+        RUN-stream draw order must stay exactly as it is.
+      - `enemy.gd`: scenario state and save capture, then the intent table
+        (keep a `turn_actions` pass-through), then dice spending and overload.
+      - `player.gd`: hand layout, engine charge, then jump transit. Turn flow
+        goes last; its await ordering is subtle.
+      - `focus_selection.gd`: the navigator (pure list logic) and the reticle,
+        then the target collector, which is also where to cut the per-frame
+        `find_children` scans.
+- [ ] **Unreproduced, found by reading (2026-11-05).** Each needs a repro
+      before a fix:
+      - `Tile.release_held_dice()` returns every die in the queue on
+        `combat_finished`, including one dropped after the last ship's death
+        queued the `EndCombatEvent` but whose activation hasn't resolved. The
+        die goes home, and `TileActivationEvent` doesn't check that its die is
+        still on the tile. `release_dice_held_for_the_turn()` has the same
+        shape.
+      - The tutorial's and targeting computer's `await`s on scene-tree timers
+        can resume after a quit to the menu has freed them. That only logs
+        errors.
+      - `TutorialManager._spawn_dice()` locks dice only after every die has
+        been dealt, though `_lock_dice()`'s comment says they're caught as
+        they land. No shipped step depends on it yet.
 
 The rest of the August audit has been fixed or is moot. This includes the
 error popups, the PauseMenu layer, the tutorial decoupling, the enemy-turn

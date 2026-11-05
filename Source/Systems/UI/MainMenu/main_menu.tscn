@@ -197,7 +197,6 @@ shader_parameter/shading_noise_period = Vector3(9.5, 9.5, 9.5)
 self_modulate = Color(0.0156863, 0.00784314, 0.0901961, 1)
 script = ExtResource("1_otgxl")
 num_of_twinkling_stars = 50
-background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
 star_pixel_scene = ExtResource("3_y6sr5")
 star_twinkle_scene = ExtResource("4_5v1c7")
 
