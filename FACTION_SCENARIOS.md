@@ -449,8 +449,8 @@ standing.
   *"Compact has your file. Prices went up."* / *"Friend of the Compact! Fair
   prices for you."*
 - **The Compact collects** (`GRUDGE_CompactLien`, a consequence): once the
-  Caravan DISLIKES the player, the next sector holds a Claims Adjuster beyond a
-  jump of the arrival. It takes a 20-30 credit lien on arrival and names the
+  Caravan DISLIKES the player, the next sector holds a Claims Adjuster ahead of
+  the arrival. It takes a 20-30 credit lien on arrival and names the
   crime (*"Lien for the shop you hit. Collected."*). Paying mends standing
   (+3); shooting it or coming up short is a fight and a deeper grudge.
 - **Rearguard crews surrender** in Picket Line, Tithe Collector, Tithe Escort,

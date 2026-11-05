@@ -486,11 +486,17 @@ static func place_repair_stations(
 
 
 ## Swaps up to [param max_count] of [param consequences] (already filtered to
-## those the run has earned) for ordinary stops in a finished sector, on the
-## same terms as place_repair_stations(): from its own generator, never
-## drawing from RUN, so a run that has earned none deals the map its seed
-## always did; and only beyond a jump's reach of the arrival, so the player
-## sees the reckoning on the map and can choose to meet it or fly around it.
+## those the run has earned) for ordinary stops ahead of the arrival in a
+## finished sector. Like place_repair_stations() it uses its own generator and
+## never draws from RUN, so a run that has earned none deals the map its seed
+## always did.
+##
+## Anywhere ahead of the arrival, not only beyond a jump of it as stations
+## are: a sector is short enough that that band, after the stations, often
+## holds no ordinary stop at all, and an earned reckoning would silently not
+## come. The arrival's neighbourhood only matters to the tutorial's sector 1,
+## which is generated before the player has done anything. Ahead, it's on
+## the map before the player gets there, to be met or flown around.
 static func place_consequences(
 	scenarios: Array[ScenarioResource],
 	arrival_index: int,
@@ -506,7 +512,7 @@ static func place_consequences(
 
 	var candidates: Array[int] = []
 	# The last slot is the gate.
-	for index: int in range(arrival_index + _LONGEST_JUMP + 1, scenarios.size() - 1):
+	for index: int in range(arrival_index + 1, scenarios.size() - 1):
 		if scenarios[index] in replaceable:
 			candidates.append(index)
 

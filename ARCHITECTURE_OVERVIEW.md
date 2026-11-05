@@ -1390,7 +1390,9 @@ faction by RunStats' rule (dead, not finished off by another ship).
   in `allowed_in_sector()`. `GameStateManager.consequence_scenarios` are
   placed by `place_consequences()` after the repair stations, from a side
   generator seeded off the RUN state like `place_repair_stations()`: a run
-  that has earned nothing deals the map its seed always did.
+  that has earned nothing deals the map its seed always did. Unlike stations
+  they may sit anywhere ahead of the arrival: beyond a jump of it, a sector
+  left no ordinary stop for them in most layouts.
 - *Prices.* `Shop.standing_price()` and `RepairStation.repair_cost()` /
   `sell_price()` scale by the keeper's faction's `price_multiplier()`, after
   the REWARDS roll, so the roll itself doesn't move.

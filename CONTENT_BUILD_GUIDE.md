@@ -814,8 +814,8 @@ with conditions.
   ship of its own). Any list respects it.
 - **Consequences** (`GameStateManager.consequence_scenarios`): an encounter
   that *will* be met when its requirements hold, placed as each sector is
-  generated, beyond a jump of the arrival (so the player sees it coming and
-  can route around it), at most `consequences_per_sector`. Give it a way to
+  generated, on an ordinary stop ahead of the arrival (so the player sees it
+  coming and can choose to jump past it), at most `consequences_per_sector`. Give it a way to
   make amends as well as a fight: `GRUDGE_CompactLien` takes a lien, and
   paying it mends standing. Leave its `sectors` empty unless its story
   belongs to one layer.

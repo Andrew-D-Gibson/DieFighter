@@ -136,15 +136,18 @@ func test_an_encounter_is_dealt_only_while_its_standing_requirements_hold() -> v
 
 
 ## Seed compatibility: a run that has earned no consequence deals the map its
-## seed always did. One that has is answered beyond a jump of the arrival,
-## where the player can see it coming, and never on the gate.
+## seed always did. One that has is answered on an ordinary stop ahead of the
+## arrival, where the player can see it coming, and never on the gate.
 func test_consequences_replace_only_distant_ordinary_stops() -> void:
 	var ordinary: ScenarioResource = _scenario()
 	var gate: ScenarioResource = _scenario()
 	var reckoning: ScenarioResource = _scenario()
+	var shop: ScenarioResource = _scenario()
 	var sector: Array[ScenarioResource] = []
 	for i: int in range(16):
 		sector.append(ordinary)
+	# Only ordinary stops are replaced: this one never is.
+	sector[9] = shop
 	sector.append(gate)
 	var replaceable: Array[ScenarioResource] = [ordinary]
 	var untouched: Array[ScenarioResource] = sector.duplicate()
@@ -158,5 +161,6 @@ func test_consequences_replace_only_distant_ordinary_stops() -> void:
 		GameStateManager.place_consequences(map, 2, replaceable, owed, 1, placement_seed)
 		var at: int = map.find(reckoning)
 		assert_eq(map.count(reckoning), 1)
-		assert_gt(at, 2 + GameStateManager._LONGEST_JUMP, "out of the arrival's reach")
+		assert_gt(at, 2, "ahead of the arrival")
+		assert_eq(map[9], shop, "only an ordinary stop")
 		assert_eq(map.back(), gate, "never the gate")
