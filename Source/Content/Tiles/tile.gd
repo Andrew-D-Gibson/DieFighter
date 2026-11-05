@@ -10,6 +10,9 @@ const _TRIGGER_SFX: SoundEffectResource = preload("res://Source/Resources/SoundE
 ## the tile still bumps and flashes, but only the first fire gets the callout,
 ## sound and burst, so a proc reads as one beat rather than a pile.
 const _TRIGGER_CALLOUT_COOLDOWN_MSEC: int = 150
+## Feed hops past this land no harder than it, so a looping machine can't
+## grow its rings across the whole screen.
+const _FEED_ESCALATION_CAP: int = 5
 
 @export var tile_resource: TileResource:
 	set(new_resource):
@@ -801,10 +804,16 @@ func set_gray_out(gray_out: bool) -> void:
 
 ## The die has landed and the tile is committed to firing: it takes the hit,
 ## squashing down and flashing like it was struck.
-func play_activation_feedback() -> void:
-	Juice.bump(sprite_frames, 0.2, 0.25)
+## [param feed_depth] is how many Feeds carried the die here: each hop of a
+## machine lands a little harder than the last, so a long chain builds.
+func play_activation_feedback(feed_depth: int = 0) -> void:
+	var depth: int = mini(feed_depth, _FEED_ESCALATION_CAP)
+	Juice.bump(sprite_frames, 0.2 + 0.03 * depth, 0.25)
 	flash(Color.WHITE, 0.6, 0.15)
 	Juice.ring(self, global_position, Globals.white, 14.0, 0.25, 6.0)
+	if depth > 0:
+		Juice.ring(self, global_position, Globals.yellow, 16.0 + 4.0 * depth, 0.35, 8.0)
+		Juice.sparkle(self, global_position, Globals.yellow, 4 + 2 * depth, 30.0 + 6.0 * depth)
 
 
 ## The tile turned a die away: a red flash and a shake of the head.

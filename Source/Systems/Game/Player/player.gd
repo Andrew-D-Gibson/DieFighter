@@ -21,6 +21,9 @@ const _REDLINE_HULL_DIVISOR: int = 2
 
 var max_engine_charge: int = 24
 
+## Says when the hull is critical, for the cockpit, screen and music to answer.
+var hull_alarm: HullAlarm = HullAlarm.new()
+
 ## Headroom above max_engine_charge that charge is allowed to occupy — the
 ## "redline" band. Derived from max_engine_charge whenever the dice count
 ## changes. Reaching it is deliberate: only an ADD_OVERCHARGE effect may push
@@ -231,7 +234,10 @@ func _ready() -> void:
 	health.shields_broken.connect(func() -> void:
 		Events.camera_shake_large.emit(false)
 	)
-	
+	hull_alarm.name = &"HullAlarm"
+	add_child(hull_alarm)
+	hull_alarm.bind(health)
+
 	
 	# Every die coming back to the hand passes through here, from whatever
 	# was last moving it: a ship's queue, a dying ship's hold, a tile, a reroll.

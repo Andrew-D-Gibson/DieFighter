@@ -37,12 +37,23 @@ func resolve(engine: ScenarioEngine) -> void:
 		_hand_die_off(engine)
 		return
 
+	_arc_to(next_tile)
+
 	var event: TileActivationEvent = TileActivationEvent.new()
 	event.tile = next_tile
 	event.activator_die = activator_die
 	event.die_value = activator_die.value
 	event.feed_depth = feed_depth + 1
 	engine.inject_event(event)
+
+
+## Energy jumps from the feeding tile to the next as the die sets off, so a
+## machine reads as one circuit lighting up rather than a die hopping about.
+func _arc_to(next_tile: Tile) -> void:
+	var from_tile: Tile = effect_source as Tile
+	if not is_instance_valid(from_tile) or not is_instance_valid(Globals.tile_grid):
+		return
+	Juice.zap(Globals.tile_grid, from_tile.global_position, next_tile.global_position, Globals.yellow, 160)
 
 
 ## Nowhere left to relay to. The die still has to go somewhere or it ends up

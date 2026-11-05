@@ -107,6 +107,19 @@ static func ring(parent: Node, global_pos: Vector2, color: Color,
 	JuicePixelated.spawn(parent, shockwave, draw_z_index).global_position = global_pos
 
 
+## A four-point star that flares at `global_pos` and shrinks away: a glint,
+## for something that just landed on its best value.
+static func glint(parent: Node, global_pos: Vector2, color: Color,
+		reach: float = 5.0, duration: float = 0.35) -> void:
+	if not _usable(parent):
+		return
+	var star: JuiceGlint = JuiceGlint.new()
+	star.color = color
+	star.reach = reach
+	star.duration = duration
+	JuicePixelated.spawn(parent, star, _FX_Z_INDEX).global_position = global_pos
+
+
 ## A burst of single-pixel sparks flying out from `global_pos` and fading.
 ## `rise` drifts them upward, for gains (shields, heals, a status taking hold)
 ## rather than impacts.

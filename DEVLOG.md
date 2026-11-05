@@ -4,6 +4,19 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-05 — Trailer juice: critical hull, overkill, Feed arcs, glinting 6s
+
+A gap pass against `TRAILER_PLAN.md`. Already built and left alone: the juice verbs, staged kills (kill cam, focus, wreck), damage numbers, the roll cascade, cockpit cracks and smoke, boss intro card, `timescale`. Added:
+
+- **Critical hull** (§3E, the stakes beat). `HullAlarm` (a child the Player makes) owns the call: hull at or below 30% of max, above zero, in a fight. It says so once through `Events.player_hull_critical_changed`. While it holds, the screen edges beat red, lub-dub, on a layer of their own under the hit flashes (`Vignette.heartbeat_alpha`/`heartbeat_period`; Reduce Flashing breathes instead). The dash CRT's trace turns red and races, and the red LEDs blink together like an alarm. The music muffles behind a low-pass on the Music bus (1400 Hz, added and removed at runtime, and never left behind on a scene change). A hit that drops you into it sounds the klaxon and a short red alert; a fight that merely starts there doesn't. Ending the fight lifts all of it, which doubles as the relief beat.
+- **Overkill** (§3C). A player's killing hit of at least twice the shields plus hull the ship had left shouts "OVERKILL!" (`CALLOUT_OVERKILL`), throws a wide yellow ring under the kill cam's, and files 0.9 s of 0.35× slow-mo. TimeDirector lets the kill freeze win while both run, so the wreck then tumbles away slowed.
+- **Feed arcs** (§3B). Each Feed hop throws a yellow bolt from the feeding tile to the next as the die sets off. The activation it lands lands harder the deeper the machine: a bigger bump, a yellow ring and sparks that grow with feed depth, capped at 5 hops.
+- **6s glint** (§3D). A die that finishes a roll on a 6 (turn start, rerolls, flips) catches a four-point star on its corner (`Juice.glint`, `JuiceGlint`).
+- Still open from the plan: a heartbeat sound and a combo-ladder activation sound (both need audio), ambient tile idle, Fate glitch language, trailer capture mode.
+- Found: hand dice follow their slot with `lerp(..., follow_strength * delta)`, which overshoots and diverges on frames slower than ~100 ms (seen at 9 FPS under Xvfb, on `main` too). Not fixed here.
+
+---
+
 ## 2026-11-02 — Every language in Options, font-fit calls
 
 - **Options offers every language.** The dropdown lists all eight languages by their own names, never the pseudo-locale (still `lang pseudo` and the audit). A language without text yet reads "Deutsch (English text)" in the open list and plays in English text with its own fonts; Chinese and Japanese names draw in their own font, and the mark in the menu's (`PixelDropdown.set_item_font/set_item_note`). `Localization` registers every `translations.<l>.translation` at startup, so a column ships as soon as it has text; `is_translated()` (≥90% of English) drives the mark and the first-launch pick, so a new player is only auto-switched to a translated language.

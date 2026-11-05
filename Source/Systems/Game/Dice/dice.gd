@@ -17,6 +17,10 @@ extends Node2D
 # Optional: force specific rolls (used by tutorial)
 static var forced_rolls: Array[int] = []
 
+## Where a 6's glint catches, from the die's centre at full size: its upper
+## right corner.
+const _GLINT_OFFSET: Vector2 = Vector2(4.0, -4.0)
+
 
 @export var value: int = 0:
 	set(new_value):
@@ -185,8 +189,20 @@ func reroll_with_tween(new_value: int = 0, tween_time: float = 0.2) -> void:
 	# Square up for whoever holds it once it lands, which needn't be who held
 	# it when the roll began: a ship can die mid-roll and pass the die on.
 	tween.chain().tween_callback(reset_visual_state)
+	tween.tween_callback(func() -> void:
+		if value == 6:
+			play_six_glint()
+	)
 
 	await tween.finished
+
+
+## Light catches the corner of a die that just landed on a 6: the best face
+## is worth a second look before it's spent.
+func play_six_glint() -> void:
+	var corner: Vector2 = global_position + _GLINT_OFFSET * scale
+	Juice.glint(self, corner, Globals.yellow, 5.0, 0.4)
+	Juice.sparkle(self, corner, Globals.yellow, 4, 20.0)
 
 
 ## The scale this die rests at with its current holder: shrunk while a ship or

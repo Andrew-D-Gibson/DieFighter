@@ -17,13 +17,32 @@ extends ColorRect
 ## edges swell rather than flash.
 const _REDUCED_RISE_FACTOR: float = 4.0
 
+## Critical hull: the edges beat red, lub-dub, for as long as it lasts. Peaks
+## of each beat, and the seconds the whole beat takes (a racing pulse).
+@export var heartbeat_alpha: float = 0.5
+@export var heartbeat_period: float = 0.85
+
 ## Kept so a new red alert can cut off one already running rather than fighting
 ## it for the same shader parameter.
 var _alert_tween: Tween
 
+## The heartbeat runs on a layer of its own under every flash: it's a
+## condition that lasts for turns, and the hits still have to read over it.
+var _heartbeat: ColorRect
+var _heartbeat_tween: Tween
+
 
 func _ready() -> void:
 	visible = true
+	_heartbeat = ColorRect.new()
+	_heartbeat.material = material.duplicate()
+	_heartbeat.set_anchors_preset(Control.PRESET_FULL_RECT)
+	_heartbeat.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_heartbeat.show_behind_parent = true
+	_heartbeat.material.set_shader_parameter('color', Globals.red)
+	_heartbeat.material.set_shader_parameter('alpha', 0.0)
+	add_child(_heartbeat)
+	Events.player_hull_critical_changed.connect(_set_heartbeat)
 	Events.player_health_hit.connect(_pulse_vignette.bind(Globals.red))
 	Events.player_shields_hit.connect(_pulse_vignette.bind(Globals.blue))
 	Events.player_shields_broken.connect(_shield_break_vignette)
@@ -113,6 +132,39 @@ func _red_alert_vignette(duration: float) -> void:
 		_alert_tween.tween_property(
 			self, "material:shader_parameter/alpha", trough, alert_pulse_time * 0.65
 		).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+
+
+## Starts or stops the critical-hull heartbeat. Under Reduce Flashing it
+## breathes slowly instead of beating.
+func _set_heartbeat(critical: bool) -> void:
+	if _heartbeat_tween and _heartbeat_tween.is_valid():
+		_heartbeat_tween.kill()
+	_heartbeat_tween = _heartbeat.create_tween()
+	if not critical:
+		_heartbeat_tween.tween_property(_heartbeat, "material:shader_parameter/alpha", 0.0, 0.6) \
+			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		return
+
+	_heartbeat_tween.set_loops()
+	var beat: float = heartbeat_period
+	if Globals.reduce_flashing:
+		var breath: float = beat * _REDUCED_RISE_FACTOR * 0.5
+		_heartbeat_tween.tween_property(_heartbeat, "material:shader_parameter/alpha", _soft(heartbeat_alpha), breath) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		_heartbeat_tween.tween_property(_heartbeat, "material:shader_parameter/alpha", _soft(heartbeat_alpha) * 0.3, breath) \
+			.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+		return
+	# Lub: the strong beat. Dub: a softer echo close behind. Then a rest,
+	# never quite dark, so the danger reads as continuous.
+	var floor_alpha: float = heartbeat_alpha * 0.15
+	_heartbeat_tween.tween_property(_heartbeat, "material:shader_parameter/alpha", heartbeat_alpha, beat * 0.08) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_heartbeat_tween.tween_property(_heartbeat, "material:shader_parameter/alpha", heartbeat_alpha * 0.3, beat * 0.14) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_heartbeat_tween.tween_property(_heartbeat, "material:shader_parameter/alpha", heartbeat_alpha * 0.7, beat * 0.08) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_heartbeat_tween.tween_property(_heartbeat, "material:shader_parameter/alpha", floor_alpha, beat * 0.7) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
 
 
 ## Rises from nothing to [param peak] in [param rise] seconds and fades back

@@ -58,6 +58,9 @@ signal player_shields_broken()
 ## The player's shields just went up. Spending them isn't the reverse of this;
 ## it isn't a hit either (see SpendShieldsEvent).
 signal player_shields_gained()
+## The player's hull just crossed into or out of critical during a fight
+## (HullAlarm). The cockpit, the screen edges and the music all answer it.
+signal player_hull_critical_changed(critical: bool)
 signal engine_charge_changed()
 ## An enemy just siphoned engine charge away. Distinct from
 ## engine_charge_changed because losing charge to theft is a different

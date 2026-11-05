@@ -36,6 +36,13 @@ const _CRT_RECT: Rect2i = Rect2i(287, 161, 8, 4)
 const _CRT_TRACE_ROWS: Array[int] = [2, 2, 2, 2, 2, 1, 0, 3, 2, 2, 2, 2, 1, 2, 2, 2]
 const _CRT_SCROLL_SPEED: float = 6.0
 
+## Critical hull (HullAlarm): the trace goes red and races, and the red LEDs
+## stop idling and blink as one, fast, like an alarm.
+const _CRT_TRACE_CRITICAL: Color = Color("#90263c")
+const _CRT_TRACE_HEAD_CRITICAL: Color = Color("#d03656")
+const _CRT_CRITICAL_SPEED_SCALE: float = 2.5
+const _ALARM_BLINK_SECONDS: float = 0.25
+
 
 class Indicator:
 	var pixels: Array[Vector2i]
@@ -107,8 +114,15 @@ var _meter_level: int = 3
 var _meter_timer: float = 0.0
 var _crt_scroll: float = 0.0
 
+var _critical: bool = false
+var _alarm_clock: float = 0.0
+
 
 func _ready() -> void:
+	Events.player_hull_critical_changed.connect(func(critical: bool) -> void:
+		_critical = critical
+		_alarm_clock = 0.0
+	)
 	_rng.randomize()
 	_indicators = [
 		# Left console LED cluster.
@@ -137,13 +151,17 @@ func _process(delta: float) -> void:
 		# Drift a step at a time so the meter reads as a reading, not noise.
 		_meter_level = clampi(_meter_level + _rng.randi_range(-1, 1), 1, _METER_PIXELS.size())
 
-	_crt_scroll += delta * _CRT_SCROLL_SPEED
+	_crt_scroll += delta * _CRT_SCROLL_SPEED * (_CRT_CRITICAL_SPEED_SCALE if _critical else 1.0)
+	_alarm_clock += delta
 	queue_redraw()
 
 
 func _draw() -> void:
+	var alarm_off: bool = _critical and fmod(_alarm_clock, _ALARM_BLINK_SECONDS * 2.0) >= _ALARM_BLINK_SECONDS
 	for indicator: Indicator in _indicators:
-		if indicator.is_on:
+		var is_alarm: bool = _critical and indicator.off_color == _RED_OFF
+		var lit: bool = not alarm_off if is_alarm else indicator.is_on
+		if lit:
 			continue
 		for pixel: Vector2i in indicator.pixels:
 			_draw_pixel(pixel, indicator.off_color)
@@ -171,7 +189,10 @@ func _draw_crt() -> void:
 	for column: int in range(_CRT_RECT.size.x):
 		var sample: int = posmod(offset + column, _CRT_TRACE_ROWS.size())
 		var row: int = mini(_CRT_TRACE_ROWS[sample], _CRT_RECT.size.y - 1)
-		var color: Color = _CRT_TRACE_HEAD if column >= _CRT_RECT.size.x - 2 else _CRT_TRACE
+		var head: bool = column >= _CRT_RECT.size.x - 2
+		var color: Color = _CRT_TRACE_HEAD if head else _CRT_TRACE
+		if _critical:
+			color = _CRT_TRACE_HEAD_CRITICAL if head else _CRT_TRACE_CRITICAL
 		_draw_pixel(_CRT_RECT.position + Vector2i(column, row), color)
 
 

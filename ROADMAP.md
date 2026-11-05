@@ -49,8 +49,9 @@ been self-playtested and is fun. Next comes outside playtesting.
 - Trailer, store page and marketing shots: see `TRAILER_PLAN.md`.
 - The secret Fate boss and the endings: proposals in `LORE.md` §6–8.
 - Juice that was parked: vertical music layering, Fate/glitch as a visual
-  language, ambient idle life, low-HP cockpit treatment (`Brainstorming.md`
-  §8.5, §8.7–8.9). Check what already exists before starting any of them.
+  language, ambient idle life (`Brainstorming.md` §8.5, §8.7–8.9). Check
+  what already exists before starting any of them. The low-HP cockpit
+  treatment is in (`HullAlarm`), except for a heartbeat sound.
 - The rest of `Brainstorming.md` is the long-term idea backlog.
 
 ## Code health

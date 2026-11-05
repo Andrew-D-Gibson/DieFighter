@@ -5,6 +5,13 @@ extends EffectEvent
 var _hit_particles_scene: PackedScene = preload("uid://doi43icsr46q0")
 var _explosion_particles_scene: PackedScene = preload("uid://566ykra4buin")
 
+## A killing hit this many times what the ship had left is overkill.
+const OVERKILL_FACTOR: int = 2
+## Long enough to cover the kill freeze (Enemy._KILL_HOLD_MSEC) and then
+## slow the wreck's first flight.
+const _OVERKILL_SLOW_MO_MS: int = 900
+const _OVERKILL_SLOW_MO_SCALE: float = 0.35
+
 
 ## Whether this hit can reach the hull once the shields are gone. A modifier
 ## that only matters for hull damage (a death save) asks this rather than
@@ -49,16 +56,38 @@ func resolve(_engine: ScenarioEngine) -> void:
 		# Read before the hit lands: afterwards the shields it spent are gone.
 		var number_color: Color = _hit_color(target)
 		var hull_before: int = target.health.health
+		# A hull-stealing hit skips the shields, so they don't count toward overkill.
+		var shields_before: int = target.health.shields if soaked_by_shields() else 0
 		if soaked_by_shields():
 			target.health.take_damage(amount)
 		else:
 			target.health.take_hull_damage(amount)
 		if not target.health.invulnerable:
 			DamageNumber.spawn(target, amount, number_color, uncapped_for_popup(amount), cap_color())
+		if actor is Player and target is Enemy and target.health.health <= 0 \
+		and is_overkill(amount, shields_before, hull_before):
+			_play_overkill(target as Enemy)
 		# Player tiles author their own impact hitstop; enemy fire doesn't, so
 		# a hit to the hull gets a short one here to give it weight.
 		if target is Player and target.health.health < hull_before:
 			TimeDirector.hitstop(45)
+
+
+## Whether a killing hit of [param amount] was overkill: at least twice what
+## the ship had left to give, shields and hull together.
+static func is_overkill(amount: int, shields_before: int, hull_before: int) -> bool:
+	return hull_before > 0 and amount >= OVERKILL_FACTOR * (shields_before + hull_before)
+
+
+## Overkill makes the kill bigger: a shout, a yellow blast ring under the
+## kill cam's, and slow-mo that outlasts the kill freeze, so the wreck
+## tumbles away slowed. The slow-mo is filed now and TimeDirector lets the
+## freeze win while both run.
+func _play_overkill(target: Enemy) -> void:
+	Juice.callout(target, TranslationServer.translate(&"CALLOUT_OVERKILL"), Globals.yellow, true)
+	TimeDirector.slow_mo(_OVERKILL_SLOW_MO_SCALE, roundi(_OVERKILL_SLOW_MO_MS / Globals.animation_speed))
+	var layer: Node2D = target.graphics_manager.wreck_layer()
+	Juice.ring(layer, target.global_position, Globals.yellow, 80.0, 0.7, 12.0, 0)
 
 
 ## Tells the world an enemy's hit was aimed at the player. Sent before the hit
