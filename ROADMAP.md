@@ -12,11 +12,18 @@ been self-playtested and is fun. Next comes outside playtesting.
 
 ## Before outside playtests
 
-- [ ] Quit (Save and Quit, and closing the window) during a sector jump, then
+- [x] Quit (Save and Quit, and closing the window) during a sector jump, then
       Continue. Make sure the run resumes in a sane state. A normal quit is
-      known to save fine, but this window is async.
+      known to save fine, but this window is async. Checked headless with the
+      AutoPilot: the save on disk was copied at every jump, gate jump, enemy
+      turn, shop and event-ship change across 7 seeds (270 snapshots), and
+      each was continued and played on. Nothing is written mid-jump, and
+      every continue was sane. One bug was found and fixed: continuing in a
+      shop freed the die on its shelf.
 - [ ] Run the outside playtests with `PLAYTEST_KIT.md`, which covers the
       build checklist, tester handout, feedback form and log locations.
+      Testers' crash reports are their `user://debug_log.txt` (see
+      `DebugLogger` in `ARCHITECTURE_OVERVIEW.md`).
 
 ## After playtests
 

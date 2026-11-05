@@ -430,6 +430,11 @@ func _start_player_turn() -> void:
 
 func _delete_existing_dice() -> void:
 	for die: Dice in get_tree().get_nodes_in_group('Dice'):
+		# Stock and salvage on offer aren't the player's. A Continue into a
+		# shop or an unclaimed offer has already shelved its die by now, and
+		# freeing it would empty the shelf the save just restored.
+		if die.delivery == Dice.Delivery.ON_OFFER:
+			continue
 		die.queue_free()
 	dice_manager.queue = []
 	
