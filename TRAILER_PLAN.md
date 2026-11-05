@@ -2,11 +2,11 @@
 
 ## Context
 
-You want a trailer that sells Die Fighter, and you're asking what to build so there's footage worth cutting. This builds on Brainstorming.md §8 (juice) and §9 (trailer moments) and PLAN_FOR_FUN Phase 3. It's based on what's in the repo today, not on what those docs predicted.
+You want a trailer that sells Die Fighter, and you're asking what to build so there's footage worth cutting. This builds on Brainstorming.md §8 (juice) and §9 (trailer moments) and the juice phase of the old PLAN_FOR_FUN (since replaced by `ROADMAP.md`). It's based on what's in the repo today, not on what those docs predicted.
 
 **Already in the game (trailer-usable today):** the cold-open ambush with klaxon and red alert, handover timing weighted by die value, shield-break cyan flash, glitch shader, vignette, camera `Shakeable`, the JumpTransition, the opening and entering-cockpit cutscenes, 4 hazards (Solar Flare, Ion Storm, Asteroid Field, Fate Rift), 9 backgrounds (black holes, pulsar field, derelict boneyard, cryo belt, Fate infection…), a boss that changes phase, the handover tractor beam, 20 Feed/machine tiles that pass one die through several tiles, and a finished track at `Assets/Music/Trailer/Trailer_1_updated.wav`.
 
-**Status (2026-09-30):** the juice verbs have landed. `AudioVisualSubtype` now has `HITSTOP`, `SLOW_MO`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SCREEN_SHAKE`, `VIGNETTE_PULSE` and `GLITCH_BURST`, and every Dice Cannon-style hit uses flash + hitstop + zoom. Still missing: damage numbers (`SPAWN_DAMAGE_NUMBER`), chain arcs between tiles, and staged deaths.
+**Status (2026-09-30):** the juice verbs have landed. `AudioVisualSubtype` now has `HITSTOP`, `SLOW_MO`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SCREEN_SHAKE`, `VIGNETTE_PULSE` and `GLITCH_BURST`, and every Dice Cannon-style hit uses flash + hitstop + zoom. Damage numbers and staged deaths have since been built too (2026-11-05). Chain arcs between tiles haven't been checked. Treat the rest of this doc as a snapshot from 2026-09-30, and check the game before building any item here.
 
 **The one thing to optimize for:** a stranger must understand "**you arm your enemy with the dice you spend**" within ~8 seconds and without text. Everything below is ranked by how much it helps that shot and the 3–4 shots after it.
 
