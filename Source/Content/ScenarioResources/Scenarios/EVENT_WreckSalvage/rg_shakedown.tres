@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state_script"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="base_script"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="effect_chain"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect_data"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_script"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/rg_fighting.tres" id="s_rg_fighting"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/rg_approving.tres" id="s_rg_approving"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/rg_robbed.tres" id="s_rg_robbed"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WreckSalvage/rg_dismissing.tres" id="s_rg_dismissing"]
+
+[resource]
+script = ExtResource("state_script")
+dialogue = "Take the credits and go, pilot."
+attitude = 1
+transitions = Dictionary[int, ExtResource("base_script")]({
+0: ExtResource("s_rg_fighting"),
+1: ExtResource("s_rg_approving"),
+7: ExtResource("s_rg_robbed"),
+8: ExtResource("s_rg_dismissing")
+})
