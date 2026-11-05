@@ -19,6 +19,9 @@ extends Node
 ## region's art starts acting up.
 const URGENT_AT: int = 1
 
+## For dev tools to find the one in play (the trailer's `fx hazard`).
+const GROUP: StringName = &"hazard_manager"
+
 ## The hazard counting down right now, or null outside a fight in a hazardous
 ## region.
 var current_hazard: BackgroundHazardResource = null
@@ -29,7 +32,7 @@ var turns_remaining: int = 0
 
 
 func _ready() -> void:
-
+	add_to_group(GROUP)
 	Events.start_combat.connect(_arm_for_background)
 	Events.combat_finished.connect(_disarm)
 	Events.load_scenario.connect(func(_scenario: ScenarioResource) -> void: _disarm())
@@ -41,6 +44,16 @@ func _ready() -> void:
 
 func has_hazard() -> bool:
 	return current_hazard != null
+
+
+## Strikes now, out of turn, with the usual build-up: for dev tools filming
+## a hazard on cue. The countdown carries on as it was. False when there's
+## no hazard armed.
+func fire_now() -> bool:
+	if current_hazard == null:
+		return false
+	_fire()
+	return true
 
 
 ## Swapping the background mid-fight (dev console, scripted sequences) swaps

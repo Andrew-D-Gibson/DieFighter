@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_qty6m"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_j7gqs"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/pilot_light.tres" id="3_mp0an"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chaff_pod.tres" id="4_blnsf"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/swarm_battery.tres" id="5_bwvil"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/phantom_squadron.tres" id="6_jkomq"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/fabricator.tres" id="7_owus1"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/holographic_duplicator.tres" id="8_rtm7l"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/broadside.tres" id="9_50x83"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="10_g8it7"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/overclock_coil.tres" id="11_vycct"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/die_splitter.tres" id="12_bxpd1"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump.tres" id="13_grkm3"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="14_sx3c1"]
+
+[resource]
+script = ExtResource("1_qty6m")
+notes = "B-ROLL. No beats: a wolfpack against the Phantom Fleet build, for playing by hand with the trailer hotkeys (1-0) and F3 slow-mo."
+scenario_id = "COMBAT_wolfpack"
+run_seed = 121
+sector = 1
+tiles = Dictionary[Vector2i, ExtResource("2_j7gqs")]({
+Vector2i(0, 1): ExtResource("7_owus1"),
+Vector2i(1, 0): ExtResource("3_mp0an"),
+Vector2i(1, 1): ExtResource("8_rtm7l"),
+Vector2i(1, 2): ExtResource("12_bxpd1"),
+Vector2i(2, 0): ExtResource("4_blnsf"),
+Vector2i(2, 1): ExtResource("9_50x83"),
+Vector2i(2, 2): ExtResource("13_grkm3"),
+Vector2i(3, 0): ExtResource("5_bwvil"),
+Vector2i(3, 1): ExtResource("10_g8it7"),
+Vector2i(3, 2): ExtResource("14_sx3c1"),
+Vector2i(4, 0): ExtResource("6_jkomq"),
+Vector2i(4, 1): ExtResource("11_vycct")
+})
+open_all_cells = true
+dice = 4
+mute_music = false
+beats = PackedStringArray()

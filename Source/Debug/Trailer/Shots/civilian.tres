@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_54vph"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_brg6i"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="3_8iiqu"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="4_oe501"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/discharge_plate.tres" id="5_yk4s6"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="6_ehsi2"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_ok8mc"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="8_l2esw"]
+
+[resource]
+script = ExtResource("1_54vph")
+notes = "STORY. Pirates attacking a civilian transport: 'Please help us!' / 'Our kill. Back off!'. You pick a side by who you shoot. Play it by hand (no beats): shoot the pirate, or the civilian for 'How could you?!'."
+scenario_id = "EVENT_pirate_attacking_civilian"
+run_seed = 81
+tiles = Dictionary[Vector2i, ExtResource("2_brg6i")]({
+Vector2i(1, 0): ExtResource("3_8iiqu"),
+Vector2i(1, 1): ExtResource("6_ehsi2"),
+Vector2i(2, 0): ExtResource("4_oe501"),
+Vector2i(2, 1): ExtResource("7_ok8mc"),
+Vector2i(3, 0): ExtResource("5_yk4s6"),
+Vector2i(3, 1): ExtResource("8_l2esw")
+})
+open_all_cells = true
+beats = PackedStringArray()

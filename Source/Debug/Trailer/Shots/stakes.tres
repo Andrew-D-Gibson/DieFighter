@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_tvvmv"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_db5tj"]
+
+[resource]
+script = ExtResource("1_tvvmv")
+notes = "STAKES (0:40-0:50). Low hull against a wolfpack: their volley drops you into critical (klaxon, red heartbeat, muffled music, racing dash CRT), and you hold. God mode keeps the take alive."
+scenario_id = "COMBAT_wolfpack"
+run_seed = 41
+hull = 30
+forced_rolls = Array[int]([2, 4, 5])
+mute_music = false
+beats = PackedStringArray("ready", "drag f2 3,1 0.7", "ready", "mark enemy_turn", "end_turn", "ready 40", "mark survived", "wait 2", "quit")

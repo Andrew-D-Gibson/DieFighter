@@ -14,6 +14,9 @@ func _ready() -> void:
 
 
 func _on_game_saved() -> void:
+	# Bookkeeping a trailer take shouldn't show.
+	if TrailerView.clean_hud:
+		return
 	visible = true
 
 	if _tween:

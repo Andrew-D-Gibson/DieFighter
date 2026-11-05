@@ -254,6 +254,12 @@ func _clear_children() -> void:
 			children[i].queue_free()
 	
 	
+## Puts [param background] on screen now, with its rule or hazard, in place of
+## whatever the scenario drew: for dev tools filming a chosen sky.
+func show_background(background: BackgroundResource) -> void:
+	_set_background(background)
+
+
 ## A run's first stops never land under a rule; see
 ## GameStateManager.is_rule_free_slot(). Globals.map already points at the
 ## destination when load_scenario fires.

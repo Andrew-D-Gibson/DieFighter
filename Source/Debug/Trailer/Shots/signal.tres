@@ -1,0 +1,29 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_jla1e"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_jbysk"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="3_c126i"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="4_3qrl0"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/discharge_plate.tres" id="5_oodgm"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="6_8wsj4"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_f4lg0"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="8_srlfu"]
+
+[resource]
+script = ExtResource("1_jla1e")
+notes = "STORY. A Fate Wisp broadcasting from the dark: '...your dice... were our bones...'. Shoot it ('...hush... HUSH...') and the Shroud uncloaks. Beats wait out the line, then fire."
+scenario_id = "EVENT_signal"
+run_seed = 131
+sector = 1
+tiles = Dictionary[Vector2i, ExtResource("2_jbysk")]({
+Vector2i(1, 0): ExtResource("3_c126i"),
+Vector2i(1, 1): ExtResource("6_8wsj4"),
+Vector2i(2, 0): ExtResource("4_3qrl0"),
+Vector2i(2, 1): ExtResource("7_f4lg0"),
+Vector2i(3, 0): ExtResource("5_oodgm"),
+Vector2i(3, 1): ExtResource("8_srlfu")
+})
+open_all_cells = true
+forced_rolls = Array[int]([6, 4, 2])
+mute_music = false
+beats = PackedStringArray("wait 6", "ready 40", "mark shoot", "drag f6 1,1 0.8", "ready 40", "wait 3", "quit")

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Resource" path="res://Source/Resources/BackgroundResources/star_field.tres" id="1_gqlfi"]
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="2_q2fxf"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="3_qjtqy"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="4_5bftx"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="5_f6deg"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/discharge_plate.tres" id="6_w3iqt"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="7_xfhsq"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump.tres" id="8_ndqut"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="9_kc2y6"]
+
+[resource]
+script = ExtResource("2_q2fxf")
+notes = "ESCALATION. The Belly's gate: the ARC DYNAMO boss card, then four big dice fed into it through the Dice Cannon trip its breaker (18): it skips its attack and vents every die back. Pinned to the star field: its ion storm would reroll the dice it holds."
+scenario_id = "GATE_arc_dynamo"
+run_seed = 141
+sector = 1
+background = ExtResource("1_gqlfi")
+tiles = Dictionary[Vector2i, ExtResource("3_qjtqy")]({
+Vector2i(1, 0): ExtResource("4_5bftx"),
+Vector2i(1, 1): ExtResource("7_xfhsq"),
+Vector2i(2, 0): ExtResource("5_f6deg"),
+Vector2i(2, 1): ExtResource("8_ndqut"),
+Vector2i(3, 0): ExtResource("6_w3iqt"),
+Vector2i(3, 1): ExtResource("9_kc2y6")
+})
+open_all_cells = true
+dice = 4
+forced_rolls = Array[int]([6, 6, 6, 5])
+beats = PackedStringArray("ready 40", "mark feed_breaker", "drag f6 1,1 0.6", "ready", "drag f6 1,1 0.6", "ready", "drag f6 1,1 0.6", "ready", "drag f5 1,1 0.6", "ready", "mark overload", "end_turn", "ready 40", "wait 1", "quit")

@@ -6,6 +6,8 @@ func _ready() -> void:
 	
 	
 func _process(_delta: float) -> void:
+	# Hidden by alpha rather than visible, which is the player's toggle.
+	modulate.a = 0.0 if TrailerView.clean_hud else 1.0
 	if self.visible:
 		text = "FPS: " + str(int(Engine.get_frames_per_second()))
 	

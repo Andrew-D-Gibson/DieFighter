@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_a8shx"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_ny3mq"]
+
+[resource]
+script = ExtResource("1_a8shx")
+notes = "HOOK, REVERSED. The Tithe Collector's Seize: a clawed tether snatches a die and reels it in. Whether it rolls Seize this turn depends on the seed: retake with a few seeds and keep the best."
+scenario_id = "COMBAT_tithe_collector"
+run_seed = 71
+forced_rolls = Array[int]([3, 1, 4])
+beats = PackedStringArray("ready", "drag f4 1,1 0.7", "ready", "mark enemy_turn", "end_turn", "ready 40", "wait 1", "quit")

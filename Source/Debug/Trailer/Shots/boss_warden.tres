@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_ncqhm"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_5xhru"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="3_mxhh1"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="4_q7f6d"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/discharge_plate.tres" id="5_kexcg"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="6_efkxp"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_ktje7"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="8_4uwqw"]
+
+[resource]
+script = ExtResource("1_ncqhm")
+notes = "ESCALATION. Arrive at the Tail's gate: region card, the SECTOR WARDEN boss card, then a solar flare strips every shield on cue."
+scenario_id = "GATE_sector_warden"
+run_seed = 51
+tiles = Dictionary[Vector2i, ExtResource("2_5xhru")]({
+Vector2i(1, 0): ExtResource("3_mxhh1"),
+Vector2i(1, 1): ExtResource("6_efkxp"),
+Vector2i(2, 0): ExtResource("4_q7f6d"),
+Vector2i(2, 1): ExtResource("7_ktje7"),
+Vector2i(3, 0): ExtResource("5_kexcg"),
+Vector2i(3, 1): ExtResource("8_4uwqw")
+})
+open_all_cells = true
+beats = PackedStringArray("ready 40", "wait 0.5", "mark flare", "fx hazard", "ready 30", "wait 1.5", "quit")

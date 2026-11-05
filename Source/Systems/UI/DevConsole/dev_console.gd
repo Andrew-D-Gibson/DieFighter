@@ -200,6 +200,18 @@ func _on_line_edit_text_submitted(console_command: String) -> void:
 		'timescale':
 			_timescale(command.slice(1))
 
+		'trailer':
+			_trailer(command.slice(1))
+
+		'shot':
+			_shot(command.slice(1))
+
+		'fx':
+			_fx(command.slice(1))
+
+		'beat':
+			_beat(command.slice(1))
+
 		_:
 			command_history.append_text('\t\tInvalid command. Type [b]help[/b] for a list.')
 
@@ -633,6 +645,72 @@ func _timescale(command_args: Array[String] = []) -> void:
 	command_history.append_text('\n[center]Time scale set to ' + str(TimeDirector.base_scale) + '.[/center]')
 
 
+# ── Trailer (TrailerDirector) ────────────────────────────────────────────────
+
+func _trailer(command_args: Array[String] = []) -> void:
+	var on: bool = not TrailerDirector.trailer_mode
+	if command_args.size() == 1 and command_args[0] in ['on', 'off']:
+		on = command_args[0] == 'on'
+	elif not command_args.is_empty():
+		command_history.append_text('\n\t\tUsage: trailer [on|off]')
+		return
+	command_history.append_text('\n[center]Trailer mode %s. F1 toggles it; see TRAILER_PLAN.md for the hotkeys.[/center]'
+		% ('on' if on else 'off'))
+	# Turning it on closes this console.
+	TrailerDirector.set_trailer_mode(on)
+
+
+## Lists the shots, plays one, retakes the current one, leaves it, or checks
+## that every shot can still run.
+func _shot(command_args: Array[String] = []) -> void:
+	var action: String = command_args[0] if not command_args.is_empty() else 'list'
+	match action:
+		'list':
+			for id: String in TrailerDirector.shot_ids():
+				var notes: String = TrailerDirector.load_shot(id).notes.get_slice("\n", 0)
+				command_history.append_text('\n\t\t[b]%s[/b]  [color=gray]%s[/color]' % [id, notes])
+		'restart':
+			_report_problem(TrailerDirector.retake(), 'Retaking.')
+		'stop':
+			TrailerDirector.stop_shot()
+			command_history.append_text('\n[center]Left the shot.[/center]')
+		'check':
+			var bad: int = 0
+			for id: String in TrailerDirector.shot_ids():
+				var problem: String = TrailerDirector.load_shot(id).problem()
+				if not problem.is_empty():
+					bad += 1
+					command_history.append_text('\n\t\t[color=red]%s[/color]: %s' % [id, problem])
+			command_history.append_text('\n[center]%d shots, %d with problems.[/center]' % [TrailerDirector.shot_ids().size(), bad])
+		_:
+			_report_problem(TrailerDirector.launch(action), 'Shooting %s.' % action)
+
+
+func _fx(command_args: Array[String] = []) -> void:
+	if command_args.is_empty():
+		for effect: String in TrailerEffects.CATALOG:
+			command_history.append_text('\n\t\t[b]%s[/b]  %s' % [effect, TrailerEffects.CATALOG[effect]])
+		return
+	_report_problem(TrailerEffects.play(command_args[0], command_args[1] if command_args.size() > 1 else ''),
+		'Played %s.' % command_args[0])
+
+
+## One line of a shot's beats, now (see TrailerScript for the commands).
+func _beat(command_args: Array[String] = []) -> void:
+	if command_args.is_empty():
+		command_history.append_text('\n\t\tUsage: beat <command> (e.g. beat drag f6 1,1)')
+		return
+	TrailerDirector.run_beat(' '.join(PackedStringArray(command_args)))
+	command_history.append_text('\n[center]Beat sent (problems print to the log).[/center]')
+
+
+func _report_problem(problem: String, success: String) -> void:
+	if problem.is_empty():
+		command_history.append_text('\n[center]%s[/center]' % success)
+	else:
+		command_history.append_text('\n\t\t[color=red]%s[/color]' % problem)
+
+
 const _TEST_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_cannon.tres")
 const _TEST_COMPARISON_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/enemy_health_hit.tres")
 
@@ -679,5 +757,9 @@ func _help() -> void:
 	command_history.append_text('\n[b]spawn_enemy[/b] <type>            (not yet implemented)')
 	command_history.append_text('\n[b]status[/b] <id> [stacks] [me]     apply a status to the targeted enemy, or to you')
 	command_history.append_text('\n[b]timescale[/b] [scale]             set game speed (e.g. 0.25; no arg: reset to 1)')
+	command_history.append_text('\n[b]trailer[/b] [on|off]              trailer capture mode: clean HUD + hotkeys (F1)')
+	command_history.append_text('\n[b]shot[/b] [list|<id>|restart|stop|check]  play a scripted trailer shot')
+	command_history.append_text('\n[b]fx[/b] [name] [arg]               trailer set piece on demand (no name: list)')
+	command_history.append_text('\n[b]beat[/b] <command>                run one shot beat now (e.g. beat drag f6 1,1)')
 	command_history.append_text('\n[b]unlock_tiles[/b] <a|b|c>          allow tiles to be moved')
 	command_history.append_text('\n[color=gray]Up/Down arrows cycle command history.[/color]')

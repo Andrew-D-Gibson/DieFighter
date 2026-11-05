@@ -45,6 +45,7 @@ TimeDirector="*res://Source/Systems/Autoloads/time_director.gd"
 MusicDirector="*res://Source/Systems/Autoloads/music_director.gd"
 AutoPilot="*res://Source/Systems/Autoloads/auto_pilot.gd"
 ScenarioLab="*res://Source/Systems/Autoloads/scenario_lab.gd"
+TrailerDirector="*res://Source/Systems/Autoloads/trailer_director.gd"
 CollectionManager="*res://Source/Systems/Autoloads/collection_manager.gd"
 
 [debug]
@@ -60,6 +61,10 @@ window/size/viewport_height=1080
 window/size/window_width_override=1920
 window/size/window_height_override=1080
 window/stretch/mode="viewport"
+
+[editor]
+
+movie_writer/mjpeg_quality=0.95
 
 [editor_plugins]
 

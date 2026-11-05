@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_7k82d"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_1nydc"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="3_61hco"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="4_a8t7x"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/discharge_plate.tres" id="5_xdtvs"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="6_43yee"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_upmwj"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="8_3us0f"]
+
+[resource]
+script = ExtResource("1_7k82d")
+notes = "VARIETY / PAYOFF. A 6 into a ship staged at 2 hull: OVERKILL, kill cam, slow-mo wreck. Retake with another seed for a different victim."
+scenario_id = "COMBAT_wolfpack"
+run_seed = 31
+tiles = Dictionary[Vector2i, ExtResource("2_1nydc")]({
+Vector2i(1, 0): ExtResource("3_61hco"),
+Vector2i(1, 1): ExtResource("6_43yee"),
+Vector2i(2, 0): ExtResource("4_a8t7x"),
+Vector2i(2, 1): ExtResource("7_upmwj"),
+Vector2i(3, 0): ExtResource("5_xdtvs"),
+Vector2i(3, 1): ExtResource("8_3us0f")
+})
+open_all_cells = true
+forced_rolls = Array[int]([6, 6, 3])
+beats = PackedStringArray("ready", "target 0", "foe_shields 0", "foe_hull 2", "wait 0.6", "mark overkill", "drag f6 1,1 0.8", "ready", "wait 1.5", "quit")

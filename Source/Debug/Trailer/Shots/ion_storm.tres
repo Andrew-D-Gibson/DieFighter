@@ -1,0 +1,28 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_uxyhx"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_fwuol"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/apex_cannon.tres" id="3_ip53y"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/chain_cannon.tres" id="4_b0n01"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/discharge_plate.tres" id="5_uxmgn"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="6_8v2ym"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/bump.tres" id="7_6qa1c"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="8_40dbo"]
+
+[resource]
+script = ExtResource("1_uxyhx")
+notes = "VARIETY. Ion lances in the ion storm front: lightning lights the ships, and the storm rerolls every enemy die as your turn ends."
+scenario_id = "ELITE_lance_squadron"
+run_seed = 101
+sector = 1
+tiles = Dictionary[Vector2i, ExtResource("2_fwuol")]({
+Vector2i(1, 0): ExtResource("3_ip53y"),
+Vector2i(1, 1): ExtResource("6_8v2ym"),
+Vector2i(2, 0): ExtResource("4_b0n01"),
+Vector2i(2, 1): ExtResource("7_6qa1c"),
+Vector2i(3, 0): ExtResource("5_uxmgn"),
+Vector2i(3, 1): ExtResource("8_40dbo")
+})
+open_all_cells = true
+forced_rolls = Array[int]([5, 3, 6])
+beats = PackedStringArray("ready", "drag f5 1,1 0.7", "ready", "mark storm", "end_turn", "ready 40", "wait 1", "quit")

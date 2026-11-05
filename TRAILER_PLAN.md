@@ -1,145 +1,269 @@
-# Die Fighter — Trailer Build-Out Brainstorm
+# Die Fighter — Trailer Plan
 
-## Context
+Rewritten 2026-11-05 against the game as it is today (code, not older docs).
+The capture toolkit described in §3 is built; §2 is the edit to shoot for,
+§4 is what's still worth building, and §5 is the shot list with its status.
 
-You want a trailer that sells Die Fighter, and you're asking what to build so there's footage worth cutting. This builds on Brainstorming.md §8 (juice) and §9 (trailer moments) and the juice phase of the old PLAN_FOR_FUN (since replaced by `ROADMAP.md`). It's based on what's in the repo today, not on what those docs predicted.
-
-**Already in the game (trailer-usable today):** the cold-open ambush with klaxon and red alert, handover timing weighted by die value, shield-break cyan flash, glitch shader, vignette, camera `Shakeable`, the JumpTransition, the opening and entering-cockpit cutscenes, 4 hazards (Solar Flare, Ion Storm, Asteroid Field, Fate Rift), 9 backgrounds (black holes, pulsar field, derelict boneyard, cryo belt, Fate infection…), a boss that changes phase, the handover tractor beam, 20 Feed/machine tiles that pass one die through several tiles, and a finished track at `Assets/Music/Trailer/Trailer_1_updated.wav`.
-
-**Status (2026-09-30):** the juice verbs have landed. `AudioVisualSubtype` now has `HITSTOP`, `SLOW_MO`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SCREEN_SHAKE`, `VIGNETTE_PULSE` and `GLITCH_BURST`, and every Dice Cannon-style hit uses flash + hitstop + zoom. Damage numbers and staged deaths have since been built too (2026-11-05). Also on 2026-11-05: the critical-hull alarm (§3E: red heartbeat edges, red racing dash CRT, muffled music, klaxon), overkill slow-mo and shout (§3C), Feed chain arcs with escalation by feed depth (§3B), and a glint on rolled 6s (§3D); see DEVLOG. Still missing there: a heartbeat sound and a combo pitch-ladder sound. Treat the rest of this doc as a snapshot from 2026-09-30, and check the game before building any item here.
-
-**The one thing to optimize for:** a stranger must understand "**you arm your enemy with the dice you spend**" within ~8 seconds and without text. Everything below is ranked by how much it helps that shot and the 3–4 shots after it.
+**The one thing to optimise for:** a stranger understands "**you arm your
+enemy with the dice you spend**" within ~8 seconds, without text. Every
+other beat earns its place by showing what that rule leads to.
 
 ---
 
-## 1. Trailer shape (≈60–75s, cut to Trailer_1)
+## 1. What the trailer has to sell
 
-| Beat | Time | Shot | What it needs |
-|---|---|---|---|
-| Hook | 0–5s | Cold open: klaxon, red alert, cockpit already under fire | ✅ exists. Add a zoom punch and a hard cut on the first hit |
-| Thesis | 5–15s | A die rolls a 6 → dragged onto a cannon → huge hit → **the same 6 is pulled across to the enemy and lands on its big-gun slot, and the guns light up** | Tractor-beam handover and slot reaction (§3A) |
-| Depth | 15–25s | One die sets off a relay chain: arcs jump from tile to tile, pitch climbs, 4–6 effects fire | Chain arcs and pitch ladder (§3B) |
-| Variety | 25–40s | Rapid montage, 1–2s per shot: every enemy archetype, each hazard hitting, a new background each cut | Signature enemy moments (§4) and hazard set pieces (§6) |
-| Stakes | 40–50s | Low HP: sparks, red cockpit, heartbeat; a narrow survival | Cockpit-as-body (§3E) |
-| Escalation | 50–62s | Fate corruption bleeds into the UI → boss phase change → hyperspace jump | Fate glitch language (§3F), boss set piece (§4) |
-| Button | 62–70s | Glitching-die logo → "Wishlist on Steam" | Logo sting and end card (§7) |
+| Pillar | The claim | What proves it on screen |
+|---|---|---|
+| **Hook** | Every die you spend is handed to your enemy and loads its guns. | `thesis`: a 6 fires a big hit, then the tractor beam drags that same 6 onto the enemy's 6-slot, which lights up. `tithe` shows it reversed: a Seize claw snatches a die. |
+| **Depth** | One die can run a whole machine. | `machine`: a 6 Fed through Signal Relay > Polarizer > Toll Relay > Relay Terminal, yellow arcs between tiles and rings that grow each hop, Spark Gap zapping, then the Crescendo Cannon cashing in the busy turn. |
+| **Fun** | It's loud, fast and juicy. | Overkill slow-mo, kill cams, hazards (solar flare, ion storm, asteroids), Carrier launching interceptors, Holo-Duplicator dice, the Arc Dynamo overloading. |
+| **Story** | A lone ship outrunning Fate through a fleet in flight, picking sides as it goes. | The opening cutscene (Fate eating the galaxy), pirates on a civilian ("Please help us!"), a Fate Wisp ("...your dice... were our bones..."), three faction warlords guarding the gates. |
 
----
-
-## 2. Tier 1: build these first (they carry the trailer)
-
-1. ✅ **Juice verbs as effect subtypes** (Brainstorming §8.0) — built, except `SPAWN_DAMAGE_NUMBER`: `HITSTOP`, `SLOW_MO`, `ZOOM_PUNCH`, `FLASH_TARGET`, `SCREEN_SHAKE`, `VIGNETTE_PULSE`, `SPAWN_DAMAGE_NUMBER`, `GLITCH_BURST`. Every shot below uses them, and once added they can be set per tile or enemy in the inspector.
-   - Files: `Source/Behavior/Effects/effect_enums.gd`, `effect_catalog.gd`, and a new handler under `Source/Behavior/Effects/EffectHandlers/`
-   - Reuse: the camera `Shakeable`, `Vignette`, `GlitchController` and the enemy shader's `flash_amount`, which the opening cutscene already tweens
-2. ✅ **Tractor-beam handover and intent-slot reaction** (`TractorBeam`, with lock and dread-thunk sounds). This is the thesis shot. The beam locks on, the die resists for a moment, then leaves fast with a trail. The slot it lands on slams, and the enemy's weapon glows if the slot is an attack.
-3. **Staged deaths.** 3–5 small explosions, then a hull flash, 250ms of slow-mo and a big boom, then debris and money arcing to the counter. The kill that ends a fight also gets a zoom punch toward the dying ship.
-4. **Trailer capture mode** (§8). Without it you'll spend hours reshooting.
+The world in one line: *Fate, a black hole, is eating the galaxy; everyone
+is fleeing in one vast fleet, the Long Retreat, and you have to fight your
+way up it: the Tail, the Belly, the Spine.*
 
 ---
 
-## 3. Visual & feel improvements
+## 2. Beat sheet
 
-**A. Handover (thesis):** described in Tier 1. Also add a low "dread" thunk when a die lands on a dangerous slot and a flat click when it lands on a dead one. The trailer's sound mix will carry this.
+Cut to `Assets/Music/Trailer/Trailer_1/Trailer_1_updated.wav` (96 s). Its
+shape, measured from the file: a quiet intro (0–9 s), the first drop at
+**0:09**, an accent at **0:27**, the loudest stretch 0:43–1:03, a
+**breakdown 1:04–1:16**, a rebuild to a spike at **1:24**, and the outro
+from 1:32. Beats sit on those marks.
 
-**B. Chain choreography:** energy arcs from tile to tile with an 80ms gap per hop, plus the combo pitch ladder (`SFXPlayer.get_pitch_escalation()` already exists). Pair this with the Feed tiles, which pass one die through several tiles in a turn. A strong single shot: Polarizer → Toll Relay → Toll Relay → Relay Terminal with a Spark Gap underneath, where one die makes four activations, a spark, and a 12-damage finish. `TileGrid.activations_this_turn` and `Events.tile_activated` are the hooks for the pitch ladder and the per-hop arcs.
+| Time | Music | Beat | Shots (§5) | What the viewer learns |
+|---|---|---|---|---|
+| 0:00–0:09 | intro | **Cold open (story)**: Fate swallowing wreckage, your ship clawing away, a pursuer lost to the hole, the jump, the ambush. | Opening cutscene (New Game, see §3.6) | Something enormous is eating everything; you're running. |
+| 0:09–0:16 | **drop** | **Thesis (hook)**: the 6 is dragged onto the Dice Cannon on the drop, hits, then is dragged across to the enemy's big gun. Hold on the lit slot. | `thesis` | Spend a die → it arms the enemy. |
+| 0:16–0:20 | | **Reversed hook**: the Seize claw rips a die out of reach. | `tithe` (retake seeds until it Seizes) | Dice are the whole economy, and they fight over them. |
+| 0:20–0:27 | build | **Depth**: one die through the machine. Cut the Crescendo hit onto the **0:27** accent. | `machine` | One die, many effects; there's a build to make. |
+| 0:27–0:43 | main | **Fun montage**, 1–2 s per cut, a new sky every cut: overkill slow-mo; ion storm lightning; the solar flare stripping every shield; the Carrier launching; Holo-Duplicator ghosts; the Dynamo's breaker blowing. | `overkill`, `ion_storm`, `boss_warden` (flare), `machine` (carrier), `sandbox`, `dynamo` | It's spectacular, and every fight looks different. |
+| 0:43–1:03 | peak | **Escalation: the warlords.** Three boss cards slammed in a row (SECTOR WARDEN / ARC DYNAMO / THE BASTION), each answered by its fight's best second. | `boss_warden`, `dynamo`, `bastion` | There's a run with bosses, and it gets bigger. |
+| 1:04–1:16 | **breakdown** | **Story and stakes.** Pirates on a civilian ("Please help us!" / "Our kill. Back off!"), the Fate Wisp's line, then the hull drops into critical: klaxon, red heartbeat, the music muffles (duck the trailer music the same way). | `civilian`, `signal`, `stakes` | Choices, a strange world, and real danger. |
+| 1:16–1:31 | rebuild | **Climax.** The Bastion coming apart in chained blasts; the Fate Maw under the black hole; the last overkill; the **jump's white frame on the 1:24 spike**, cut to black. | `bastion`, `fate`, `overkill`, `jump` | You can win, and Fate is waiting. |
+| 1:32–1:36 | outro | **Button**: logo, "Wishlist on Steam". | Logo sting (not built, §4.1) | Where to get it. |
 
-**C. Impact trio:** target flash + hitstop + shake, scaled by damage. Add floating damage numbers in 5–7px pixel digits. Overkill (2× remaining HP or more) automatically escalates to a bigger boom and slow-mo. That's your "number go up" close-up.
+**Text.** Optional, three supers at most, white on black between cuts:
+"SPEND DICE." (before the thesis) / "ARM YOUR ENEMY." (after it) /
+"OUTRUN FATE." (before the climax). The thesis shot must still read
+without them.
 
-**D. The roll:** staggered cascade (40–60ms per die), squash on landing, a clatter per die, and a glint on 6s. It gives the turn opening real texture.
-
-**E. Cockpit as body:** hull hits make sparks fall from the cockpit frame. Below 30% HP: red emergency light at the screen edges, an alarm pulse, and a low-pass filter plus heartbeat on the music bus. This is the whole stakes beat.
-
-**F. Fate glitch language:** reserve glitch for Fate content only. Fate enemies get chromatic shimmer, Fate map nodes bleed static into the UI frame, and corrupted tiles jitter frame by frame. This is your thumbnail identity: pixel-art cosmic horror in a dice game.
-
-**G. Hyperspace jump set piece:** dice rattle during wind-up, star streaks, one hard white frame, and the new background blooming in. It's a natural transition for the trailer edit, so shoot several.
-
-**H. Ambient life:** tiles bob gently at offset phases, idle dice fidget, nebulae drift. B-roll behind the title cards should never look paused.
-
-**I. Hull vs shield vocabulary:** shields get a hex ripple and a blue *tsss*; hull gets debris, fire and an orange flash. Viewers read what happened without any UI.
+**Shorter cuts.** A 30 s cut is 0:09–0:27 (hook + depth), three montage
+cuts and the button. A 15 s vertical (Shorts/TikTok) is the thesis alone,
+then the machine, from `--vertical` takes (§3.5).
 
 ---
 
-## 4. Enemies & signature moments
+## 3. Capture toolkit (built)
 
-Give each existing enemy **one 1.5-second hero moment** for the variety montage. That's cheaper than new enemies and cuts better.
+Everything lives in `Source/Debug/Trailer/` and the `TrailerDirector`
+autoload (`Source/Systems/Autoloads/trailer_director.gd`). Dev builds only.
 
-| Enemy | Hero moment to build |
+### 3.1 Trailer mode
+
+**F1** (or `trailer on` in the dev console) hides the debug and bookkeeping
+overlays (FPS counter, "Saving...", the dev console and Scenario Lab) and
+turns the hotkeys on. The game UI stays: the cockpit *is* the HUD.
+
+| Key | Does |
 |---|---|
-| Siege Mortar | Visible charge-up across turns (barrel glow grows) → screen-filling arcing shell → cockpit hit |
-| Ion Lance | Long beam that sweeps the tile grid and knocks tiles offline with sparks |
-| Tithe Collector | Pulls a die *out of your hand* (tractor beam in reverse) |
-| Field Tender | Heal beam to an ally; you kill the ally and the Tender visibly panics |
-| Bounty Runner | Countdown ticks, then it jumps away with a streak if you're too slow |
-| Disabler / Defender | Shield bubble snaps over its partner; your shot shatters it |
-| Sector Boss | **Phase-change set piece:** armor plates blow off, the sprite swaps, glitch burst, music layer kicks in |
+| F1 | trailer mode on/off (always works) |
+| F2 | hide/show the cursor |
+| F3 | speed 1× → 0.5× → 0.25× (slow-mo captured in-engine, full frame rate) |
+| F4 | freeze frame (again to resume) |
+| F5 | retake the current shot from the top |
+| F6 | drop a marker in the take log |
+| 1 | `overkill` the targeted ship |
+| 2 | `kill` the targeted ship |
+| 3 | `shield_break` (gain shields, then a hit breaks them) |
+| 4 | `critical` (hit down to critical hull) |
+| 5 | `hazard` strikes now (needs a hazard sky, in a fight) |
+| 6 | `jump` one place forward |
+| 7 | `death` (the cockpit comes apart, game over) |
+| 8 | `red_alert` |
+| 9 | `glitch` burst |
+| 0 | `reroll` the hand, die by die |
 
-**New enemies worth building for the trailer (pick 1–2):**
-- **Mirror / Echo boss** (BRAINSTORMING §7): it uses *your* tile layout against you. That's the "wait, WHAT" beat.
-- **Carrier:** launches small drones that each take a die. It fills the screen and shows scale.
-- **Fate Leviathan:** a huge, partly off-screen horror whose intents flicker between values. It's a strong closing shot.
+`boss_card` (replay the boss intro) and `hit <n>` are in the console:
+`fx` lists them all. Every set piece runs through the game's own events, so
+it looks and sounds exactly like the real thing.
+
+### 3.2 Shots
+
+A shot (`Source/Debug/Trailer/Shots/<id>.tres`, a `TrailerShotResource`) sets
+a run up exactly: ship, scenario, run seed, sector, sky (and so its hazard
+or rule), tiles by cell, dice, hull, money, charge, the faces of the first
+rolls, god mode, clean HUD, cursor, music on/off, game speed. The same shot
+comes out the same on every take.
+
+- `shot` lists them, `shot <id>` plays one, `shot restart` (or F5) retakes it,
+  `shot stop` leaves it, and `shot check` says if any no longer load (a
+  renamed tile or scenario).
+- New shot: duplicate one in the FileSystem dock and edit it in the
+  inspector. `notes` says what it's for.
+- A shot runs on its own save file; it never touches the player's run.
+
+### 3.3 Beats
+
+A shot's `beats` play once it's up, one command a line (full list in
+`Source/Debug/Trailer/trailer_script.gd`). Dice are carried by a puppet of
+the game's own cursor (it glides to the die, grabs it, arcs it over the
+grid, lets go), and dropped through the same code a real drag ends in.
+
+```
+ready                 # until the player could act (hand dealt, nothing resolving)
+wait 0.8
+mark drag             # note this frame in the take log
+drag f6 1,1 0.9       # the first die showing a 6, to the tile at cell 1,1, in 0.9 s
+ready
+foe_hull 2            # stage the targeted ship for a finisher
+fx overkill
+time 0.25             # slow-mo from here
+quit                  # end the take (and the recording)
+```
+
+Try a line live with `beat <command>` in the console (`beat drag 0 2,1`).
+
+### 3.4 Recording: Movie Maker
+
+```bash
+GODOT=/path/to/Godot_4.7.1 tools/trailer_capture.sh thesis machine
+```
+
+Godot's Movie Maker renders every frame at exactly 1/60 s of game time,
+however slowly the machine draws it, so takes are frame-perfect, 1920×1080,
+with the game's audio, and identical every time. Each shot opens in a
+window, plays its beats and quits. `--all` records every shot; `--png` writes
+a lossless PNG sequence plus WAV for the final cut (the default AVI is
+MJPEG at 0.95 quality, fine for the offline edit); `--fps 30` halves the
+size. Shots with no beats (`civilian`, `pact`, `sandbox`) stay up for you to
+play, until you close the window or `--max-seconds` (default 120).
+
+Each take has a marker log beside it (`<shot>_<time>.txt`): the frame and
+second of every `mark` beat and F6 press, so the edit can find the moments.
+
+Takes go to `captures/<timestamp>/` (git-ignored, Godot-ignored).
+
+### 3.5 Vertical (Shorts / TikTok)
+
+`--vertical` also cuts a 1080×1920 MP4 from each take: a 608×1080 crop centred
+on the tile grid (`--crop-x` moves it), scaled up nearest-neighbour. The grid
+reads well at that size; the enemies above it are cropped tight, so a
+vertical cut favours the thesis and machine shots.
+
+### 3.6 What isn't a shot
+
+- **The opening cutscene** isn't a shot (it plays before any save exists),
+  but `tools/trailer_capture.sh cold_open` records it, straight into the
+  ambush fight, until `--max-seconds` or you close the window.
+- **The main menu diorama** (the Caravan streaming past, a Pilgrim heading
+  for Fate, now and then a Mayday hooked into the glow): `tools/trailer_capture.sh
+  menu --max-seconds 120` for B-roll behind the end card. The Mayday comes
+  every 50–100 s, so give it two minutes.
+
+### 3.7 Tips
+
+- Keep the real mouse outside the window during a scripted take: its
+  hover still shows tooltips where it rests.
+- Music is muted in most shots so a take's audio is the game's sound
+  effects alone, ready to lay under the trailer track. `music on` (or the
+  shot's `mute_music`) brings it back.
+- If a seed doesn't give you the moment (a Seize, a particular intent),
+  change `run_seed` and retake: `ready`/`drag` beats adapt to any hand that
+  has the faces they ask for, and `forced_rolls` pins the faces.
 
 ---
 
-## 5. Tiles that film well
+## 4. What's still worth building
 
-Tiles that already exist and film well include Chain Cannon, Runaway Reactor, Holographic Duplicator, Tactical Boomerang, Chaos Explosion, Signal Relay, Arc Tap, and the machine tiles (Beam Splitter splitting a die in two, Scatter Router, Relay Terminal's finish, Crescendo Cannon at the end of a busy turn). Each needs its own custom animation chain once the Tier 1 verbs exist:
-- **Tactical Boomerang:** the projectile arcs out and back and hits twice.
-- **Runaway Reactor:** glows hotter each use, then a meltdown flash.
-- **Holographic Duplicator:** a ghost copy of the die splits off with hologram particles (`holographic_dice_particles.tscn` exists).
-- **Chain Cannon:** fires in a burst with rising pitch.
+Checked against the code on 2026-11-05. Ranked by how much the trailer
+needs it.
 
-New tiles, only if they film well:
-- **Orbital Strike:** a 1-turn delay, then a beam from off-screen top.
-- **Black Hole Generator:** pulls enemies' dice toward the center and ties into the existing black hole shader.
-- **Overload Core:** consumes all adjacent dice for one huge hit. It's the ideal overkill slow-mo shot.
+1. **A logo and end card.** There's no logo: the title is "DIE FIGHTER" set
+   in Jersey 25 (`Source/Systems/UI/MainMenu/main_menu.tscn`), and
+   `Assets/SteamCapsules` holds only an icon. The button beat needs a 2 s
+   sting: a die rolling to a stop on a glitching face, resolving into the
+   wordmark. Art first; then it can be a scene the end card and the main
+   menu share.
+2. **Sector names on the jump.** Gate jumps show "SECTOR 2 / OF 3" only
+   (`JumpGate.show_sector_title`). Adding "THE BELLY" under it (Tail, Belly,
+   Spine are already the sectors' layers, `ScenarioResource.sectors`) gives
+   the story beat its geography for one label.
+3. **A visible boss phase change.** No boss changes phase on screen. The
+   Sector Warden (3 pools) and Arc Dynamo (2 pools) already switch action
+   pools at hull thresholds (`EnemyResource.pool_selection`), silently. Give
+   that switch a beat: glitch burst, a callout ("ENRAGED"), a sprite tint or
+   swap, and a music layer (`MusicDirector.set_layer_enabled`). That's the
+   escalation shot the old plan wanted, built on logic that exists.
+4. **Boss music, or a boss layer.** ROADMAP: there's none. The gate fights
+   are the trailer's peak section; in-game they currently play the run's
+   ordinary track.
+5. **Two sounds.** A heartbeat for critical hull (the visual half is built:
+   `HullAlarm`), and a tile-activation sound for the combo pitch ladder
+   (`SoundEffectResource.enable_pitch_escalation` is ready). Both are the
+   stakes and depth beats' audio.
+6. **An animated run tally.** The victory/game-over screen is one static
+   line (`RunStats.get_summary_text`). Stats ticking up with the pitch ladder
+   would give the climax a payoff shot.
+7. **Fate glitch language.** Still open (ROADMAP). The finale's Fate shots
+   would read as horror rather than as another sky with it: corrupted tiles
+   jittering, static bleeding into the frame on Fate nodes.
+8. **Hand dice at low frame rates.** `Draggable` follows with
+   `lerp(..., follow_strength * delta)`, which diverges on frames over
+   ~100 ms. Movie Maker never hits it (fixed 1/60 s), but a slow laptop doing
+   a live demo would.
+
+Hero moments from the old plan, as they stand:
+
+| Enemy | Moment | Status |
+|---|---|---|
+| Tithe Collector, Cutpurse, Gaff | Seize claw snatches a die | ✅ built (`juice_grapple.gd`) |
+| Carrier | Launches interceptors | ✅ built |
+| Arc Dynamo, Zealot | Breaker overloads, vents dice back | ✅ built |
+| The Bastion | Parts break off, hull blows in 6 chained blasts | ✅ built |
+| Siege Mortar | Visible charge-up, screen-filling shell | ❌ loads silently for a turn |
+| Ion Lance | Beam sweeping the grid, tiles knocked offline | ❌ |
+| Bounty Runner | Countdown, then jumps away | ⚠ ships jump away in faction colour; no countdown |
+| Field Tender | Heal beam; panics when its ally dies | ⚠ co-op arcs exist; no panic |
+
+The Outrigger and Carousel are "coming soon". A shot can fly them
+(`ship_id`), and the Carousel's turning ring would make a striking tease,
+but only once they're finished.
 
 ---
 
-## 6. Scenarios built as trailer set pieces
+## 5. Shot list
 
-Build these as real content, since they double as good fights:
-- **Asteroid Field fight in the Derelict Boneyard:** debris crossing the foreground parallax, plus a rock that smashes a tile.
-- **Solar Flare in the Pulsar Field:** a white-out sweep wipes every shield, followed by a shield-shatter chorus.
-- **Ion Storm in the Blue Nebula:** lightning flashes light up the ships from behind (background flash verb).
-- **Fate Rift finale:** the UI corrupts, the map bleeds, and the Fate Leviathan emerges.
-- **Pirates attacking a civilian:** a readable story shot in which you pick a side.
-- **Wolfpack:** 4–5 ships on screen at once, the biggest visual chaos shot.
+All in `Source/Debug/Trailer/Shots/`. "Recorded" means a Movie Maker take was
+made and checked frame by frame on 2026-11-05.
 
----
+| Shot | Beat | Scenario | Status |
+|---|---|---|---|
+| `thesis` | Hook | COMBAT_attacker | ✅ recorded: drag, hit (16→10), the 6 beamed onto the 6-slot |
+| `machine` | Depth | COMBAT_carrier, sector 2 | see below |
+| `tithe` | Hook reversed | COMBAT_tithe_collector | see below |
+| `overkill` | Fun | COMBAT_wolfpack | see below |
+| `ion_storm` | Fun | ELITE_lance_squadron | see below |
+| `boss_warden` | Escalation | GATE_sector_warden | see below |
+| `dynamo` | Escalation | GATE_arc_dynamo | see below |
+| `bastion` | Escalation / climax | GATE_bastion, sector 3 | see below |
+| `civilian` | Story | EVENT_pirate_attacking_civilian | by hand |
+| `signal` | Story | EVENT_signal | see below |
+| `pact` | Story | EVENT_pact | by hand |
+| `stakes` | Stakes | COMBAT_wolfpack | see below |
+| `fate` | Climax | FATE_maw | see below |
+| `jump` | Transition | COMBAT_cannon_drone | see below |
+| `sandbox` | B-roll | COMBAT_wolfpack, Phantom Fleet build | by hand |
 
-## 7. Cutscenes & menus
+### Capture session, in order
 
-- **Opening cutscene:** add a cockpit POV reveal. The camera pushes through the canopy and the dice spill into the tray. It works as a trailer opener and in-game.
-- **Boss intro card:** freeze frame, portrait slide-in, name stamp ("THE TOLLKEEPER"), a glitch tear, then the fight. It's a classic trailer beat and cheap.
-- **Sector title cards:** "SECTOR 2: THE CRYO BELT" wipe in during the jump arrival.
-- **Victory and game-over:** a slow-mo final kill, then run stats ticking up with the pitch ladder.
-- **Main menu:** a living diorama behind the title (ships dogfighting in the background, an idle die spinning). Make the logo a die with a glitching face, and use it as the trailer's closing shot.
-- **Logo sting:** a 2s animated die roll ending on the logo, reused as the trailer's end card.
-
----
-
-## 8. Trailer tooling (what makes the shots achievable)
-
-- **Trailer mode flag** (in the options, or a DevConsole command): hides debug UI, the cursor, the tutorial and the save indicator. Toggles for a clean HUD versus the full HUD.
-- **Scripted shots:** use `RNGManager` seeding and the DevConsole to load a named scenario with a fixed seed, forced dice (the `forced_*` statics already exist), and a chosen background and hazard. The same shot comes out the same every take.
-- **Time-scale control:** a hotkey for 0.5× and 0.25× to capture slow-mo in-engine at full frame rate.
-- **Hotkeys that fire effects on demand:** shield break, boss phase, jump, death sequence. Use them for B-roll takes.
-- **Resolution:** the viewport is 1920×1080. Capture at native resolution with integer scaling, and also shoot a vertical 1080×1920 crop of the tile grid for Shorts/TikTok.
-
----
-
-## 9. Recommended order
-
-1. Juice effect subtypes (§2.1) → impact trio + damage numbers → staged deaths
-2. Tractor-beam handover + slot reaction (thesis shot)
-3. Trailer capture mode + scripted shot loader
-4. Chain arcs + pitch ladder; roll cascade
-5. Boss phase set piece + boss intro card; hyperspace jump polish
-6. Fate glitch language + one Fate finale scenario
-7. Hero moments for each enemy; 2–3 set-piece scenarios
-8. Main menu diorama, logo sting, sector title cards
-9. Stretch: Mirror boss or Fate Leviathan
-
-## 10. Next step once approved
-
-Save this brainstorm to the repo as `TRAILER_PLAN.md`, alongside BRAINSTORMING.md. Then pick the first item (probably the juice subtypes) and plan its implementation separately. That includes the AGENTS.md checks: validate every script, and verify live with `game_eval` and `game_screenshot`.
+1. `tools/trailer_capture.sh --all` once, and watch the takes: it's the
+   fastest way to see which seeds give good moments.
+2. Retake the hook (`thesis`, `tithe`) and depth (`machine`) until they're
+   perfect; they carry the trailer.
+3. Play `sandbox`, `civilian` and `pact` by hand under Movie Maker for the
+   montage, with the hotkeys and F3 slow-mo; F6 marks the keepers.
+4. Record the cold open and the menu (§3.6).
+5. Final takes with `--png` for the cuts that made the edit.

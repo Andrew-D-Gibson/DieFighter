@@ -36,6 +36,18 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
+	# A trailer take can hide the cursor, or steer it to act out a drag.
+	if TrailerView.cursor_hidden:
+		visible = false
+		return
+	if TrailerView.puppet_active:
+		global_position = get_canvas_transform().affine_inverse() * TrailerView.puppet_position
+		visible = true
+		if TrailerView.puppet_grabbing:
+			_wear(_GRAB_TEXTURE, _GRAB_OFFSET, _GRAB_ALPHA)
+		else:
+			_wear(default_cursor_texture, Vector2.ZERO)
+		return
 	# Not get_global_mouse_position(): that's the OS pointer, which may lag a
 	# controller's virtual one (InputManager.cursor).
 	global_position = InputManager.pointer_global_position(self)

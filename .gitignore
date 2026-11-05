@@ -1,6 +1,9 @@
 # General ignores
 Exports/
 
+# Trailer takes from tools/trailer_capture.sh.
+/captures/
+
 # Old DebugLogger output from when it wrote to res://; it now writes to
 # user://debug_log.txt, outside the project.
 debug_log.txt

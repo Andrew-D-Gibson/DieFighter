@@ -1,0 +1,41 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_sid0w"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_nkkhj"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/overshield_relay.tres" id="3_w0pho"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/surge_relay.tres" id="4_4bohg"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/booster_stage.tres" id="5_ywg5s"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/receiver_dish.tres" id="6_dvdit"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/crescendo_cannon.tres" id="7_swrvk"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/signal_relay.tres" id="8_fln4a"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/polarizer.tres" id="9_q7f56"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/toll_relay.tres" id="10_7eop4"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/relay_terminal.tres" id="11_odjhc"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="12_mrati"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/spark_gap.tres" id="13_60y76"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="14_y8x0m"]
+
+[resource]
+script = ExtResource("1_sid0w")
+notes = "STORY / FINALE. A Fate encounter under the black hole: the Maw, the Husk and the Leech, the storm and the shards."
+scenario_id = "FATE_maw"
+run_seed = 91
+sector = 2
+tiles = Dictionary[Vector2i, ExtResource("2_nkkhj")]({
+Vector2i(0, 0): ExtResource("3_w0pho"),
+Vector2i(0, 1): ExtResource("8_fln4a"),
+Vector2i(1, 0): ExtResource("4_4bohg"),
+Vector2i(1, 1): ExtResource("9_q7f56"),
+Vector2i(1, 2): ExtResource("12_mrati"),
+Vector2i(2, 0): ExtResource("5_ywg5s"),
+Vector2i(2, 1): ExtResource("10_7eop4"),
+Vector2i(2, 2): ExtResource("13_60y76"),
+Vector2i(3, 0): ExtResource("6_dvdit"),
+Vector2i(3, 1): ExtResource("11_odjhc"),
+Vector2i(3, 2): ExtResource("14_y8x0m"),
+Vector2i(4, 0): ExtResource("7_swrvk")
+})
+open_all_cells = true
+dice = 4
+forced_rolls = Array[int]([6, 5, 3, 4])
+beats = PackedStringArray("ready 40", "wait 1", "mark fate", "drag f6 0,1 0.8", "ready 30", "wait 2", "quit")

@@ -4,6 +4,21 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-05 — Trailer capture mode
+
+Everything `TRAILER_PLAN.md` §3 needs to shoot footage, and the plan itself rewritten against the game as it is: a beat sheet cut to `Trailer_1_updated.wav` (hook, depth, fun, story), and what's still worth building.
+
+- **Trailer mode** (`TrailerDirector` autoload, dev builds only). F1 or `trailer on` hides the FPS counter, "Saving..." and the dev console, and turns on hotkeys: F2 cursor, F3 speed 1×/0.5×/0.25×, F4 freeze, F5 retake, F6 marker, and set pieces on the number row (1 overkill, 2 kill, 3 shield break, 4 critical, 5 hazard, 6 jump, 7 death, 8 red alert, 9 glitch, 0 reroll). The overlays read `TrailerView`, a static the cursor, save indicator and FPS counter check, so nothing outside dev builds reaches for the autoload.
+- **Set pieces** (`TrailerEffects`, `fx <name>`) go through the game's own events: a DamageEvent through the engine, the hazard's own chain (`HazardManager.fire_now()`), a JumpEvent. Hits on the player pierce a shot's god mode for their own length (`_StagedHit`), since a staged hit is the point.
+- **Shots** (`TrailerShotResource`, `Source/Debug/Trailer/Shots/`, `shot <id>`): ship, scenario, run seed, sector, sky (`BackgroundManager.show_background()`), tiles by cell, dice, hull, money, charge, the first rolls' faces, god mode, clean HUD, cursor, music, speed. A shot runs on its own save. Fifteen ship with the plan, one per beat.
+- **Beats** (`TrailerScript`): a shot can play itself, one command a line: `ready`, `wait`, `drag f6 1,1 0.9`, `roll`, `target`, `end_turn`, `foe_hull 2`, `fx overkill`, `time 0.25`, `mark`, `quit`. A drag is acted out by a puppet of the game's own cursor (it glides to the die, grabs, arcs it over the grid) and lets go through the same `drag_ended` a real drag ends in. `beat <command>` tries one line live.
+- **Recording** (`tools/trailer_capture.sh`): Godot's Movie Maker, `--write-movie` at `--fixed-fps 60`: every frame is 1/60 s of game time however slowly it renders, at 1920×1080 with audio, and the same every take. `--png` for lossless, `--vertical` for a 1080×1920 crop on the grid, `cold_open` and `menu` record those scenes. Each take writes a marker log (frame, second, label) beside the video. Under Movie Maker the TrailerDirector switches TimeDirector to the frame clock and frees the MCP port; `ready`'s timeout is in effect time, since the wall clock runs ~10× slow while recording. MJPEG quality is 0.95 (`editor/movie_writer/mjpeg_quality`).
+- Found while recording: a shot's forced faces have to go in on arrival, since the save's dice roll once when spawned and again as the player arrives (`Player._arrive_with_hand`).
+- Verified by recording takes under Xvfb and checking them frame by frame (`thesis`: the cursor carries the 6 onto the Dice Cannon, 16→10, the 6 beamed onto the 6-slot; `machine`: Signal Relay → Polarizer → Toll Relay → Relay Terminal for 12, "LINK 4"), and the hotkeys and `stop_shot()` driven live.
+- Plan corrections: there is no multi-phase boss (the Warden and Dynamo switch action pools silently), no logo (the title is text), and gate jumps say "SECTOR 2" without the layer's name. Those are §4's top items.
+
+---
+
 ## 2026-11-05 — Trailer juice: critical hull, overkill, Feed arcs, glinting 6s
 
 A gap pass against `TRAILER_PLAN.md`. Already built and left alone: the juice verbs, staged kills (kill cam, focus, wreck), damage numbers, the roll cascade, cockpit cracks and smoke, boss intro card, `timescale`. Added:

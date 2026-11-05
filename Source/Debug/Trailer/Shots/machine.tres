@@ -1,0 +1,40 @@
+[gd_resource type="Resource" script_class="TrailerShotResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Debug/Trailer/trailer_shot_resource.gd" id="1_2273h"]
+[ext_resource type="Script" path="res://Source/Content/Tiles/tile_resource.gd" id="2_1tu1n"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/overshield_relay.tres" id="3_ta3te"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/surge_relay.tres" id="4_bkdyn"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/booster_stage.tres" id="5_0uewo"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/receiver_dish.tres" id="6_es1gp"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/crescendo_cannon.tres" id="7_hg378"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/signal_relay.tres" id="8_pebbs"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/polarizer.tres" id="9_fyp47"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/toll_relay.tres" id="10_1woh7"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/relay_terminal.tres" id="11_kvo68"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/damage.tres" id="12_j5v05"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/spark_gap.tres" id="13_jl4k6"]
+[ext_resource type="Resource" path="res://Source/Content/Tiles/TileResources/shield.tres" id="14_fxnc5"]
+
+[resource]
+script = ExtResource("1_2273h")
+notes = "DEPTH (0:15-0:25). The Feed Line build: a 6 into the Signal Relay runs Polarizer > Toll Relay > Relay Terminal (arcs, rising rings, Spark Gap zaps), then the Crescendo Cannon cashes the busy turn in."
+scenario_id = "COMBAT_carrier"
+run_seed = 21
+sector = 1
+tiles = Dictionary[Vector2i, ExtResource("2_1tu1n")]({
+Vector2i(0, 0): ExtResource("3_ta3te"),
+Vector2i(0, 1): ExtResource("8_pebbs"),
+Vector2i(1, 0): ExtResource("4_bkdyn"),
+Vector2i(1, 1): ExtResource("9_fyp47"),
+Vector2i(1, 2): ExtResource("12_j5v05"),
+Vector2i(2, 0): ExtResource("5_0uewo"),
+Vector2i(2, 1): ExtResource("10_1woh7"),
+Vector2i(2, 2): ExtResource("13_jl4k6"),
+Vector2i(3, 0): ExtResource("6_es1gp"),
+Vector2i(3, 1): ExtResource("11_kvo68"),
+Vector2i(3, 2): ExtResource("14_fxnc5"),
+Vector2i(4, 0): ExtResource("7_hg378")
+})
+open_all_cells = true
+forced_rolls = Array[int]([6, 5, 2])
+beats = PackedStringArray("ready", "wait 0.5", "mark chain", "drag f6 0,1 0.8", "ready", "mark crescendo", "drag f5 4,0 0.7", "ready", "wait 1.5", "quit")
