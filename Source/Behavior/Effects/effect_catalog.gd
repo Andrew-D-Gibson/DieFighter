@@ -94,6 +94,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SPEND_HULL, label = "Spend Hull", handler = SpendHullHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.BOUNTY_DAMAGE, label = "Bounty Damage", handler = BountyDamageHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ADD_EVASION, label = "Add Evasion", handler = AddEvasionHandler},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.PIERCING_DAMAGE, label = "Piercing Damage", handler = PiercingDamageHandler},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},

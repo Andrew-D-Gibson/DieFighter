@@ -13,6 +13,20 @@ func reaches_hull() -> bool:
 	return true
 
 
+## Whether the target's shields take this hit before the hull does. A
+## piercing hit (PiercingDamageEvent) goes straight to the hull.
+func soaked_by_shields() -> bool:
+	return true
+
+
+## The colour of this hit's number and sparks: blue when the shields will
+## take all of it, red when it reaches the hull.
+func _hit_color(target: Node) -> Color:
+	if soaked_by_shields() and target.health.shields >= amount:
+		return Globals.blue
+	return Globals.red
+
+
 func resolve(_engine: ScenarioEngine) -> void:
 	if targets.is_empty():
 		return
@@ -33,9 +47,12 @@ func resolve(_engine: ScenarioEngine) -> void:
 		_announce_attack_on(target)
 
 		# Read before the hit lands: afterwards the shields it spent are gone.
-		var number_color: Color = Globals.blue if target.health.shields >= amount else Globals.red
+		var number_color: Color = _hit_color(target)
 		var hull_before: int = target.health.health
-		target.health.take_damage(amount)
+		if soaked_by_shields():
+			target.health.take_damage(amount)
+		else:
+			target.health.take_hull_damage(amount)
 		if not target.health.invulnerable:
 			DamageNumber.spawn(target, amount, number_color, uncapped_for_popup(amount), cap_color())
 		# Player tiles author their own impact hitstop; enemy fire doesn't, so
@@ -59,8 +76,7 @@ func _spawn_hit_particles(target: Node) -> void:
 	# refuses an amount of zero.
 	if amount <= 0:
 		return
-	# Blue if shields will absorb all the damage, red otherwise.
-	var color: Color = Globals.blue if target.health.shields >= amount else Globals.red
+	var color: Color = _hit_color(target)
 
 	# Directional hit burst: points from source to target.
 	var hit: Node = _hit_particles_scene.instantiate()

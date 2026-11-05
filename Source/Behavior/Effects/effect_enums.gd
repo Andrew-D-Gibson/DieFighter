@@ -140,6 +140,10 @@ enum AttributeChangeSubtype {
 	## engines' chance to dodge an enemy hit) until the enemy turn ends. The
 	## total stays capped. See EvasionModifier.
 	ADD_EVASION,
+	## DAMAGE that goes straight past the shields to the hull (Leeching Shot).
+	## Still a hit, so whatever grows, shrinks or dodges one touches it too.
+	## See PiercingDamageEvent.
+	PIERCING_DAMAGE,
 }
 
 
