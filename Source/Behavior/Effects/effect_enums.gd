@@ -140,10 +140,10 @@ enum AttributeChangeSubtype {
 	## engines' chance to dodge an enemy hit) until the enemy turn ends. The
 	## total stays capped. See EvasionModifier.
 	ADD_EVASION,
-	## DAMAGE that goes straight past the shields to the hull (Leeching Shot).
-	## Still a hit, so whatever grows, shrinks or dodges one touches it too.
-	## See PiercingDamageEvent.
-	PIERCING_DAMAGE,
+	## DAMAGE that goes straight past the shields to the hull, then heals the
+	## actor by the hull it took (Leeching Shot). Still a hit, so whatever
+	## grows, shrinks or dodges one touches it too. See StealHullEvent.
+	STEAL_HULL,
 }
 
 
@@ -194,6 +194,10 @@ enum AmountModifierSubtype {
 	## to running_amount; adds nothing when it holds none. The twin-dice tiles
 	## pay out on both dice with it.
 	ADD_HELD_DIE_VALUE,
+	## Set running_amount to how many dice are in play (see
+	## Player.dice_in_play()): every die the player owns, plus the holograms
+	## enemy ships are holding.
+	SET_TO_DICE_IN_PLAY,
 }
 
 

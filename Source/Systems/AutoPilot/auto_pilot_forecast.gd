@@ -325,10 +325,14 @@ func _attribute_step(data: EffectData, walk: _Walk) -> void:
 	match data.subtype:
 		EffectEnums.AttributeChangeSubtype.DAMAGE, \
 		EffectEnums.AttributeChangeSubtype.BOUNTY_DAMAGE, \
-		EffectEnums.AttributeChangeSubtype.PIERCING_DAMAGE:
+		EffectEnums.AttributeChangeSubtype.STEAL_HULL:
 			for target: Node in walk.context.targets:
 				if is_instance_valid(target):
 					damage[target] = damage.get(target, 0.0) + amount * walk.share
+			# Stolen hull comes back to the ship that took it; a forecast only
+			# ever reads the player's own tiles.
+			if data.subtype == EffectEnums.AttributeChangeSubtype.STEAL_HULL:
+				heal += amount * walk.share
 		EffectEnums.AttributeChangeSubtype.HEAL:
 			if _hits_player(walk):
 				heal += amount * walk.share

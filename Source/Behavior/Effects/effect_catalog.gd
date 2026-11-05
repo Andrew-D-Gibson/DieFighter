@@ -94,7 +94,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.SPEND_HULL, label = "Spend Hull", handler = SpendHullHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.BOUNTY_DAMAGE, label = "Bounty Damage", handler = BountyDamageHandler, fields = ["amount"]},
 	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.ADD_EVASION, label = "Add Evasion", handler = AddEvasionHandler},
-	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.PIERCING_DAMAGE, label = "Piercing Damage", handler = PiercingDamageHandler},
+	{category = EffectEnums.Category.ATTRIBUTE_CHANGE, subtype = EffectEnums.AttributeChangeSubtype.STEAL_HULL, label = "Steal Hull", handler = StealHullHandler},
 
 	# ── AMOUNT_MODIFIER ───────────────────────────────────────────
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET, label = "Set", handler = SetAmountHandler, fields = ["amount"]},
@@ -117,6 +117,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_RANDOM, label = "Set Random", handler = SetAmountToRandomHandler, fields = ["range_min", "range_max"]},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_TARGET_SHIELDS, label = "Set to Target Shields", handler = SetAmountToTargetShieldsHandler},
 	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.ADD_HELD_DIE_VALUE, label = "Add Held Die Value", handler = AddHeldDieValueHandler},
+	{category = EffectEnums.Category.AMOUNT_MODIFIER, subtype = EffectEnums.AmountModifierSubtype.SET_TO_DICE_IN_PLAY, label = "Set to Dice in Play", handler = SetAmountToDiceInPlayHandler},
 
 	# ── DICE_CONTROL ──────────────────────────────────────────────
 	{category = EffectEnums.Category.DICE_CONTROL, subtype = EffectEnums.DiceControlSubtype.CHANGE_ACTIVATOR_VALUE, label = "Change Activator Value", handler = ChangeActivatorValueHandler},
