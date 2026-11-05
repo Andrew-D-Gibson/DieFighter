@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_0qdiy"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="2_qmptm"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="3_osxv8"]
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_0qdiy"]
 [ext_resource type="Resource" uid="uid://c8kw8h1mjtmml" path="res://Source/Content/Enemies/EnemyResources/cannon_drone.tres" id="6_ru81j"]
 [ext_resource type="Resource" uid="uid://bogn2nf7yhone" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/pirate_combatant.tres" id="7_vbqq8"]
 

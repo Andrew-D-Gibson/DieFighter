@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://dq0xed2ajxje"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="7_g4fc0"]
 [ext_resource type="Resource" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/rift_space_only.tres" id="bg_rift"]
 [ext_resource type="Resource" uid="uid://41yhwmalllrh" path="res://Source/Content/Enemies/EnemyResources/bastion_aegis.tres" id="enemy_aegis"]
 [ext_resource type="Resource" uid="uid://cccbjf87dwwt6" path="res://Source/Content/Enemies/EnemyResources/bastion_batteries.tres" id="enemy_batteries"]

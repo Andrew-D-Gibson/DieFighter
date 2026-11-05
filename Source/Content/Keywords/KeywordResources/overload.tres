@@ -11,5 +11,5 @@ label = "Overload"
 [resource]
 script = ExtResource("1_kw")
 title = "Overload"
-rule = "Full at turn start: skips attack, returns dice, damages hull, and raises limit."
+rule = "[color=yellow]Full at turn start[/color]: skips attack, returns dice, damages hull, and raises limit."
 tokens = Array[ExtResource("2_tok")]([SubResource("overloaded")])

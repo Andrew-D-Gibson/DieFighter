@@ -1,16 +1,36 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://dglcb5t6ist1m"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_lklrp"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
+[ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="enemy_fate_wisp"]
+[ext_resource type="Resource" uid="uid://dllkl3hm4hhx7" path="res://Source/Content/Enemies/EnemyResources/picket.tres" id="enemy_picket"]
+[ext_resource type="Resource" uid="uid://dhq31qah2whv4" path="res://Source/Content/Enemies/EnemyResources/tithe_collector.tres" id="enemy_tithe_collector"]
+[ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="icon"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="reward_script"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="scenario_script"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="spawn_script"]
-[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="reward_script"]
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
-[ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="icon"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/tithe_collector.tres" id="enemy_tithe_collector"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_TitheRun/collector_hailing.tres" id="state_collector_hailing"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/picket.tres" id="enemy_picket"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_TitheRun/picket_escorting_silent.tres" id="state_picket_escorting_silent"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="enemy_fate_wisp"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_TitheRun/wisp_riding_silent.tres" id="state_wisp_riding_silent"]
+
+[sub_resource type="Resource" id="Resource_bounty0"]
+script = ExtResource("reward_script")
+min_money = 30
+max_money = 45
+dice_probability = 0.6
+grid_slot_probability = 0.1
+min_money_pickup = 20
+max_money_pickup = 30
+money_pickup_probability = 0.5
+
+[sub_resource type="Resource" id="Resource_bounty2"]
+script = ExtResource("reward_script")
+min_money = 10
+max_money = 16
+num_of_rewards = 2
+dice_probability = 0.5
+grid_slot_probability = 0.0
+minimum_rarity = 1
 
 [sub_resource type="Resource" id="Resource_reward0"]
 script = ExtResource("reward_script")
@@ -50,25 +70,6 @@ script = ExtResource("spawn_script")
 enemy_resource = ExtResource("enemy_fate_wisp")
 starting_state = ExtResource("state_wisp_riding_silent")
 reward_resource = SubResource("Resource_reward2")
-
-[sub_resource type="Resource" id="Resource_bounty0"]
-script = ExtResource("reward_script")
-min_money = 30
-max_money = 45
-dice_probability = 0.6
-grid_slot_probability = 0.1
-min_money_pickup = 20
-max_money_pickup = 30
-money_pickup_probability = 0.5
-
-[sub_resource type="Resource" id="Resource_bounty2"]
-script = ExtResource("reward_script")
-min_money = 10
-max_money = 16
-num_of_rewards = 2
-dice_probability = 0.5
-grid_slot_probability = 0.0
-minimum_rarity = 1
 
 [sub_resource type="Resource" id="Resource_offer"]
 script = ExtResource("reward_script")

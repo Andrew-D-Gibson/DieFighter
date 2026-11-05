@@ -1,30 +1,17 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://dr25s6t1ji5lq"]
 
 [ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="1_p6u8t"]
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="2_kfsut"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="2_pxhb4"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="3_8e1or"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="4_asiqi"]
-[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="cond_hand_off"]
 [ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="5_c211h"]
 [ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_fpnel"]
 [ext_resource type="PackedScene" uid="uid://4ec761o38waj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/cannon_drone_ship_graphics.tscn" id="7_fpnel"]
 [ext_resource type="Texture2D" uid="uid://cetem4ymcj6um" path="res://Assets/Textures/Enemies/CannonDrone/CannonDrone_targeting_image.png" id="8_nuult"]
-[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 [ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="act_raid_hand_off"]
-
-[sub_resource type="Resource" id="Resource_hand_off_side"]
-script = ExtResource("cond_hand_off")
-type = 4
-invert = true
-
-[sub_resource type="Resource" id="Resource_hand_off"]
-script = ExtResource("2_pxhb4")
-base_action = ExtResource("act_raid_hand_off")
-weight = 3.0
-min_amount = 3
-max_amount = 5
-conditions = Array[ExtResource("cond_hand_off")]([SubResource("Resource_hand_off_side")])
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="cond_hand_off"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/rearguard.tres" id="faction_identity"]
 
 [sub_resource type="Resource" id="Resource_637ed"]
 script = ExtResource("2_pxhb4")
@@ -56,6 +43,19 @@ script = ExtResource("2_pxhb4")
 base_action = ExtResource("4_asiqi")
 force_include = true
 metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_hand_off_side"]
+script = ExtResource("cond_hand_off")
+type = 4
+invert = true
+
+[sub_resource type="Resource" id="Resource_hand_off"]
+script = ExtResource("2_pxhb4")
+base_action = ExtResource("act_raid_hand_off")
+weight = 3.0
+min_amount = 3
+max_amount = 5
+conditions = Array[ExtResource("cond_hand_off")]([SubResource("Resource_hand_off_side")])
 
 [sub_resource type="Resource" id="Resource_lpi6w"]
 script = ExtResource("1_p6u8t")

@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://3tt28wuywhja"]
 
-[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="3_i1yv0"]
 [ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_1"]
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
 
 [sub_resource type="Resource" id="FactionDeed_0"]
 script = ExtResource("deed_ext_1")

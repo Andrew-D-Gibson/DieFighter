@@ -1,8 +1,9 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://gav5n2qfr5k4"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_edbjr"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
 [ext_resource type="Resource" uid="uid://cq2lqj8ov5wg0" path="res://Source/Content/Enemies/EnemyResources/pilgrim.tres" id="enemy_pilgrim"]
-[ext_resource type="Resource" uid="uid://ssswy2xsy7eo" path="res://Source/Content/Enemies/EnemyResources/zealot.tres" id="enemy_zealot"]
+[ext_resource type="Resource" uid="uid://c6gq23sospg2v" path="res://Source/Content/Enemies/EnemyResources/plumb_line.tres" id="enemy_roster_plumb_line"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="icon"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
@@ -26,7 +27,7 @@ metadata/_custom_type_script = "uid://bn5hkxed2w1kc"
 
 [sub_resource type="Resource" id="Resource_spawn0"]
 script = ExtResource("script_1")
-enemy_resource = ExtResource("enemy_zealot")
+enemy_resource = ExtResource("enemy_roster_plumb_line")
 starting_state = ExtResource("state")
 reward_resource = SubResource("Resource_reward0")
 metadata/_custom_type_script = "uid://up0oyqfrjcpu"

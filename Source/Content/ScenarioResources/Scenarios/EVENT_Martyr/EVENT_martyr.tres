@@ -1,5 +1,6 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://clab4585kij5m"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_dc8rs"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
 [ext_resource type="Resource" uid="uid://77xhhjrbpay0" path="res://Source/Content/Enemies/EnemyResources/gaff_raider.tres" id="enemy_gaff"]
 [ext_resource type="Resource" uid="uid://cdx602sup0ako" path="res://Source/Content/Enemies/EnemyResources/pilgrim_wandering.tres" id="enemy_pilgrim"]

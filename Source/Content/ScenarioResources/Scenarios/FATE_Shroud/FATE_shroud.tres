@@ -1,8 +1,10 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://ekp537sqlsvu"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="7_kwdgf"]
 [ext_resource type="Resource" uid="uid://c440n0q257p8h" path="res://Source/Content/BackgroundResources/fate_infection.tres" id="bg_fate"]
 [ext_resource type="Resource" uid="uid://b01a4mnrj68hc" path="res://Source/Content/Enemies/EnemyResources/fate_shroud.tres" id="enemy_fate_shroud"]
 [ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="enemy_fate_wisp"]
+[ext_resource type="Resource" uid="uid://bfw05k1i6ukpu" path="res://Source/Content/Enemies/EnemyResources/fate_grasp.tres" id="enemy_roster_fate_grasp"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="script_2"]
@@ -48,7 +50,7 @@ num_of_rewards = 0
 
 [sub_resource type="Resource" id="Resource_spawn2"]
 script = ExtResource("script_1")
-enemy_resource = ExtResource("enemy_fate_wisp")
+enemy_resource = ExtResource("enemy_roster_fate_grasp")
 starting_state = ExtResource("state_silent")
 reward_resource = SubResource("Resource_reward2")
 

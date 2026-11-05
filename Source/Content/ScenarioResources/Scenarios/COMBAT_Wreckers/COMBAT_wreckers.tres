@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://dkdyol0r8icas"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_ykkmt"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
 [ext_resource type="Resource" uid="uid://f8qaeahga6og" path="res://Source/Content/Enemies/EnemyResources/gaff.tres" id="enemy_gaff"]
 [ext_resource type="Resource" uid="uid://w0ppni12jr8h" path="res://Source/Content/Enemies/EnemyResources/wrecker.tres" id="enemy_wrecker"]

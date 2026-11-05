@@ -1,9 +1,10 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://bk7rrcipmagy0"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_whsny"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
-[ext_resource type="Resource" uid="uid://dyyilzbv1s0fs" path="res://Source/Content/Enemies/EnemyResources/censer.tres" id="enemy_censer"]
-[ext_resource type="Resource" uid="uid://c6gq23sospg2v" path="res://Source/Content/Enemies/EnemyResources/plumb_line.tres" id="enemy_plumb_line"]
 [ext_resource type="Resource" uid="uid://clu5s43behokt" path="res://Source/Content/Enemies/EnemyResources/acolyte.tres" id="enemy_acolyte"]
+[ext_resource type="Resource" uid="uid://dyyil0bv1s0fs" path="res://Source/Content/Enemies/EnemyResources/censer.tres" id="enemy_censer"]
+[ext_resource type="Resource" uid="uid://c6gq23sospg2v" path="res://Source/Content/Enemies/EnemyResources/plumb_line.tres" id="enemy_plumb_line"]
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="icon"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]

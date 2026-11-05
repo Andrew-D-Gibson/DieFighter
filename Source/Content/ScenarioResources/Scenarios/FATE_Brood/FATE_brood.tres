@@ -1,8 +1,9 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://ceqpq6kziptta"]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://ceqpq6k0iptta"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="7_12q2r"]
 [ext_resource type="Resource" uid="uid://c440n0q257p8h" path="res://Source/Content/BackgroundResources/fate_infection.tres" id="bg_fate"]
-[ext_resource type="Resource" uid="uid://cyqblyr55nzqc" path="res://Source/Content/Enemies/EnemyResources/fate_brood.tres" id="enemy_fate_brood"]
-[ext_resource type="Resource" uid="uid://bfwz5k1i6ukpu" path="res://Source/Content/Enemies/EnemyResources/fate_grasp.tres" id="enemy_fate_grasp"]
+[ext_resource type="Resource" uid="uid://cyqblyr55n0qc" path="res://Source/Content/Enemies/EnemyResources/fate_brood.tres" id="enemy_fate_brood"]
+[ext_resource type="Resource" uid="uid://bfw05k1i6ukpu" path="res://Source/Content/Enemies/EnemyResources/fate_grasp.tres" id="enemy_fate_grasp"]
 [ext_resource type="Resource" uid="uid://xh3rfyhcmm5o" path="res://Source/Content/Enemies/EnemyResources/fate_hulk.tres" id="enemy_fate_hulk"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="script_1"]

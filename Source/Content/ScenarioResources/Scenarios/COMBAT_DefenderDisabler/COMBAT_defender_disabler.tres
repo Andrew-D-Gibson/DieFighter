@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dp0ectyntr8iq" path="res://Assets/Textures/Map/EncounterIcons/enemy_encounter.png" id="2_a001n"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="3_jn6yr"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="4_k38ow"]
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_5owx4"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="5_76ikn"]
 [ext_resource type="Resource" uid="uid://d05ihd7m63anw" path="res://Source/Content/Enemies/EnemyResources/defender.tres" id="6_7g2ar"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/0GenericShipStates/rearguard_combatant.tres" id="7_gro3q"]

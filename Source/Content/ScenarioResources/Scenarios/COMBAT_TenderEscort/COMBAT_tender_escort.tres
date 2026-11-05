@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://3q350k3vjama"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_tq6fn"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg_3"]
 [ext_resource type="Resource" uid="uid://clru4choww65y" path="res://Source/Content/Enemies/EnemyResources/conscriptor.tres" id="enemy_6"]
 [ext_resource type="Resource" uid="uid://bfqg4bqueelwx" path="res://Source/Content/Enemies/EnemyResources/tender.tres" id="enemy_7"]

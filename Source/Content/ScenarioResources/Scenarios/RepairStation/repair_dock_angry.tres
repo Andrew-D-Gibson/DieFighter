@@ -7,6 +7,17 @@
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="5_xo0hy"]
 [ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed_ext_9"]
 
+[sub_resource type="Resource" id="FactionDeed_0"]
+script = ExtResource("deed_ext_9")
+standing = -4
+deed = &"caravan_dock_attacked"
+
+[sub_resource type="Resource" id="fate_step_0"]
+script = ExtResource("2_data")
+category = 6
+subtype = 9
+string_param = "ruin"
+
 [sub_resource type="Resource" id="Resource_close"]
 script = ExtResource("2_data")
 category = 6
@@ -20,21 +31,10 @@ subtype = 4
 multiplier = 0.5
 metadata/_custom_type_script = "uid://tr402hc111gu"
 
-[sub_resource type="Resource" id="fate_step_0"]
-script = ExtResource("2_data")
-category = 6
-subtype = 9
-string_param = "ruin"
-
 [sub_resource type="Resource" id="Resource_chain"]
 script = ExtResource("3_chain")
 effects = Array[ExtResource("2_data")]([SubResource("fate_step_0"), SubResource("Resource_close"), SubResource("Resource_moveship")])
 metadata/_custom_type_script = "uid://7dwxduwis4yk"
-
-[sub_resource type="Resource" id="FactionDeed_0"]
-script = ExtResource("deed_ext_9")
-standing = -4
-deed = &"caravan_dock_attacked"
 
 [resource]
 script = ExtResource("1_state")

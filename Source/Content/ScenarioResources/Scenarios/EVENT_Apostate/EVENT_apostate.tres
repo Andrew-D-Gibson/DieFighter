@@ -1,7 +1,8 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://du81g7il3cbi3"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_e4yad"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/tithe_collector_apostate.tres" id="enemy_apostate"]
+[ext_resource type="Resource" uid="uid://bv0yqh71fswfg" path="res://Source/Content/Enemies/EnemyResources/tithe_collector_apostate.tres" id="enemy_apostate"]
 [ext_resource type="Resource" uid="uid://clru4choww65y" path="res://Source/Content/Enemies/EnemyResources/conscriptor.tres" id="enemy_conscriptor"]
 [ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="icon"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="script_0"]
@@ -48,7 +49,6 @@ dice_probability = 1.0
 grid_slot_probability = 0.0
 min_money_pickup = 20
 max_money_pickup = 30
-money_pickup_probability = 1.0
 
 [resource]
 script = ExtResource("script_0")

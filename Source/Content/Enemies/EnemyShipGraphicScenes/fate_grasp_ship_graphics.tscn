@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://4lrkwrsngztc"]
+[gd_scene format=3 uid="uid://4lrkwrsng0tc"]
 
 [ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_shader"]
 [ext_resource type="Texture2D" uid="uid://7nby4i3joopi" path="res://Assets/Textures/Enemies/Fate/fate_grasp.png" id="2_hull"]

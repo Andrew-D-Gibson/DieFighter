@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://nzeuyrrbgo1a"]
+[gd_scene format=3 uid="uid://n0euyrrbgo1a"]
 
 [ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_shader"]
 [ext_resource type="Texture2D" uid="uid://hib4e7wg0lwk" path="res://Assets/Textures/Enemies/Tug/tug.png" id="2_hull"]

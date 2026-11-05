@@ -1,16 +1,26 @@
-[gd_resource type="Resource" script_class="ScenarioResource" format=3]
+[gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://cm875bfec7ggc"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_xhhoc"]
+[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
+[ext_resource type="Resource" uid="uid://clru4choww65y" path="res://Source/Content/Enemies/EnemyResources/conscriptor.tres" id="enemy_conscriptor"]
+[ext_resource type="Resource" uid="uid://vorhx5fs2edm" path="res://Source/Content/Enemies/EnemyResources/hauler.tres" id="enemy_hauler"]
+[ext_resource type="Resource" uid="uid://toe5xpla4al5" path="res://Source/Content/Enemies/EnemyResources/picket_holdout.tres" id="enemy_picket_holdout"]
+[ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="icon"]
+[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="reward_script"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="scenario_script"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="spawn_script"]
-[ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="reward_script"]
-[ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="bg"]
-[ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="icon"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/conscriptor.tres" id="enemy_conscriptor"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/conscriptor_purging.tres" id="state_conscriptor_purging"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/hauler.tres" id="enemy_hauler"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/hauler_pleading.tres" id="state_hauler_pleading"]
-[ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/picket_holdout.tres" id="enemy_picket_holdout"]
+[ext_resource type="Resource" uid="uid://cyi3binqngje0" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/hauler_pleading.tres" id="state_hauler_pleading"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/picket_purging_silent.tres" id="state_picket_purging_silent"]
+
+[sub_resource type="Resource" id="Resource_bounty0"]
+script = ExtResource("reward_script")
+min_money = 16
+max_money = 24
+dice_probability = 0.25
+min_money_pickup = 12
+max_money_pickup = 20
+money_pickup_probability = 0.5
 
 [sub_resource type="Resource" id="Resource_reward0"]
 script = ExtResource("reward_script")
@@ -51,15 +61,6 @@ script = ExtResource("spawn_script")
 enemy_resource = ExtResource("enemy_picket_holdout")
 starting_state = ExtResource("state_picket_purging_silent")
 reward_resource = SubResource("Resource_reward2")
-
-[sub_resource type="Resource" id="Resource_bounty0"]
-script = ExtResource("reward_script")
-min_money = 16
-max_money = 24
-dice_probability = 0.25
-min_money_pickup = 12
-max_money_pickup = 20
-money_pickup_probability = 0.5
 
 [resource]
 script = ExtResource("scenario_script")

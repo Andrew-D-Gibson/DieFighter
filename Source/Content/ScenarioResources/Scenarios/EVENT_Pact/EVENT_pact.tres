@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://fyybfmvp3xrk"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_dt5tq"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="ext_0"]
 [ext_resource type="Resource" uid="uid://ssswy2xsy7eo" path="res://Source/Content/Enemies/EnemyResources/zealot.tres" id="ext_1"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Pact/zealot_offering.tres" id="ext_2"]

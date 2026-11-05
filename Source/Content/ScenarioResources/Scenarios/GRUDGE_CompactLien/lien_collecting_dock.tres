@@ -1,12 +1,18 @@
-[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://bko6fpqqfbkln"]
 
+[ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="3_3hq6w"]
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_2"]
 [ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="ext_3"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GRUDGE_CompactLien/lien_enforcing.tres" id="ext_4"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/GRUDGE_CompactLien/lien_defaulted.tres" id="ext_5"]
+[ext_resource type="Resource" uid="uid://r55u11ilxiqk" path="res://Source/Content/ScenarioResources/Scenarios/GRUDGE_CompactLien/lien_enforcing.tres" id="ext_4"]
+[ext_resource type="Resource" uid="uid://wyuqeyxbb4dv" path="res://Source/Content/ScenarioResources/Scenarios/GRUDGE_CompactLien/lien_defaulted.tres" id="ext_5"]
 [ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="ext_6"]
+
+[sub_resource type="Resource" id="Resource_3"]
+script = ExtResource("ext_6")
+standing = 3
+deed = &"caravan_lien_paid"
 
 [sub_resource type="Resource" id="Resource_0"]
 script = ExtResource("ext_1")
@@ -23,11 +29,6 @@ subtype = 8
 [sub_resource type="Resource" id="Resource_2"]
 script = ExtResource("ext_2")
 effects = Array[ExtResource("ext_1")]([SubResource("Resource_0"), SubResource("Resource_1")])
-
-[sub_resource type="Resource" id="Resource_3"]
-script = ExtResource("ext_6")
-standing = 3
-deed = &"caravan_lien_paid"
 
 [resource]
 script = ExtResource("ext_0")

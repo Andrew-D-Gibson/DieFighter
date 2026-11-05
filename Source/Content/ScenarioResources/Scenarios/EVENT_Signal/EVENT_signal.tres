@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioResource" format=3 uid="uid://bfryj18jdgox0"]
 
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="5_esbq4"]
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="ext_0"]
 [ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="ext_1"]
 [ext_resource type="Resource" uid="uid://d2h4x6d5clhsg" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_broadcasting.tres" id="ext_2"]

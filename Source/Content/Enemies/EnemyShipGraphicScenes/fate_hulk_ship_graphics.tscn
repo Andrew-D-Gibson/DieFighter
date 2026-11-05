@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c2gwwbyy0zkh2"]
+[gd_scene format=3 uid="uid://c2gwwbyy00kh2"]
 
 [ext_resource type="Shader" uid="uid://6c0vl65uk6bq" path="res://Assets/Shaders/enemy_shader.gdshader" id="1_shader"]
 [ext_resource type="Texture2D" uid="uid://wd0mqnvxspum" path="res://Assets/Textures/Enemies/Fate/fate_hulk.png" id="2_hull"]

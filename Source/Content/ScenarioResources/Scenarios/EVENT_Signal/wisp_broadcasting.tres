@@ -1,5 +1,6 @@
 [gd_resource type="Resource" script_class="ScenarioShipState" format=3 uid="uid://d2h4x6d5clhsg"]
 
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="1_kxmpl"]
 [ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="ext_0"]
 [ext_resource type="Resource" uid="uid://b5cfyjhwj4cke" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_fading_ahead.tres" id="ext_1"]
 [ext_resource type="Resource" uid="uid://dkvxrejrt0sft" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Signal/wisp_fading_bones.tres" id="ext_2"]

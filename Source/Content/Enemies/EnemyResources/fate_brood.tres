@@ -1,9 +1,10 @@
-[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://cyqblyr55nzqc"]
+[gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://cyqblyr55n0qc"]
 
-[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="cond_script"]
-[ext_resource type="Resource" uid="uid://c4xl3kjy5o7yz" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/launch_fate_wisp.tres" id="act_launch_fate_wisp"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_t8h24"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" uid="uid://c4xl3kjy5o7y0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/launch_fate_wisp.tres" id="act_launch_fate_wisp"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="cond_script"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/spilled.tres" id="faction_identity"]
 [ext_resource type="PackedScene" uid="uid://mgxbhme6y3hv" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/fate_brood_ship_graphics.tscn" id="gfx"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
@@ -14,7 +15,6 @@
 [sub_resource type="Resource" id="Resource_opt0_cond"]
 script = ExtResource("cond_script")
 type = 5
-count = 3
 
 [sub_resource type="Resource" id="Resource_opt0"]
 script = ExtResource("script_0")

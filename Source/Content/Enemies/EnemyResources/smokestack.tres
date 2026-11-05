@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://nv140xlx3on4"]
 
-[ext_resource type="Resource" uid="uid://dk1u1klmotlij" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/incendiary_shot.tres" id="act_incendiary_shot"]
-[ext_resource type="Resource" uid="uid://bnbf1kix4d3i" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres" id="act_purge_vents"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_mef6u"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_hy68y"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
+[ext_resource type="Resource" uid="uid://dk1u1klmotlij" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/incendiary_shot.tres" id="act_incendiary_shot"]
+[ext_resource type="Resource" uid="uid://bnbf1kix4d3i" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/purge_vents.tres" id="act_purge_vents"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
 [ext_resource type="PackedScene" uid="uid://dst17br15fjyr" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/smokestack_ship_graphics.tscn" id="gfx"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]

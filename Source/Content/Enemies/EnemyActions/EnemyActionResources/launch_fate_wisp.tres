@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://c4xl3kjy5o7yz"]
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3 uid="uid://c4xl3kjy5o7y0"]
 
 [ext_resource type="Script" uid="uid://1c0msmj2pcjy" path="res://Source/Behavior/Effects/conditional_effect_data.gd" id="4_fkw42"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]

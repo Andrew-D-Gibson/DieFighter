@@ -1,9 +1,11 @@
 [gd_resource type="Resource" script_class="EnemyResource" format=3 uid="uid://4qy7nsmuupnb"]
 
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="4_nm4uk"]
+[ext_resource type="Script" uid="uid://civcvrdmsks4w" path="res://Source/Content/Enemies/EnemyActions/enemy_action_weight_rule.gd" id="5_6etg5"]
 [ext_resource type="Resource" uid="uid://ddh4rqo4x116u" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/attack_player.tres" id="act_attack_player"]
-[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_seize"]
 [ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_do_nothing"]
 [ext_resource type="Resource" uid="uid://dsv3cnr70oq1t" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/getaway.tres" id="act_getaway"]
+[ext_resource type="Resource" uid="uid://2m3norg8jtr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/seize.tres" id="act_seize"]
 [ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
 [ext_resource type="PackedScene" uid="uid://b0cpn7s0hldds" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/jackal_ship_graphics.tscn" id="gfx"]
 [ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
