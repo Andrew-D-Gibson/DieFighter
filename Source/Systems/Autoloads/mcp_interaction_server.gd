@@ -18,7 +18,7 @@ var _held_keys: Dictionary = {}
 func _ready() -> void:
 	# Editor-launched runs only. It runs arbitrary GDScript sent over TCP, so
 	# an exported build (debug or release) must never open the port.
-	if not OS.has_feature("editor"):
+	if not OS.has_feature("editor") or _kept_closed_for_autopilot():
 		queue_free()
 		return
 	# Ensure MCP server keeps processing even when game is paused
@@ -30,6 +30,17 @@ func _ready() -> void:
 		push_error("McpInteractionServer: Failed to listen on port %d, error: %d" % [PORT, err])
 		return
 	print("McpInteractionServer: Listening on 127.0.0.1:%d" % PORT)
+
+
+## Parallel headless AutoPilot runs would fight over the port, and could take
+## it from a game the developer has open; --no-mcp asks the same of a windowed
+## run (a replay). Decided here because this autoload listens before the
+## AutoPilot's own _ready() could stop it. A watched run keeps the port.
+func _kept_closed_for_autopilot() -> bool:
+	var args: PackedStringArray = OS.get_cmdline_user_args()
+	if args.has("--no-mcp"):
+		return true
+	return args.has("--autoplay") and DisplayServer.get_name() == "headless"
 
 
 func _process(_delta: float) -> void:

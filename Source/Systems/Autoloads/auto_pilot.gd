@@ -170,11 +170,8 @@ func _ready() -> void:
 		Events.load_game_save.connect(_gauntlet.place_scenario)
 
 	_isolate_from_player_data()
-	# Parallel headless runs would fight over the MCP port, and could take it
-	# from a game the developer has open. A watched run keeps it.
-	if (DisplayServer.get_name() == "headless" or args.has("no-mcp")) \
-	and is_instance_valid(McpInteractionServer):
-		McpInteractionServer.queue_free()
+	# Headless runs and --no-mcp keep the MCP port closed; the server decides
+	# that itself (McpInteractionServer._kept_closed_for_autopilot()).
 	TimeDirector.use_frame_clock()
 	RNGManager.next_run_seed = _run_seed
 	# The policy's own stream: drawing from a gameplay bucket would shift every
