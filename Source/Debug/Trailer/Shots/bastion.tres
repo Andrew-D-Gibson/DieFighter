@@ -37,4 +37,4 @@ Vector2i(4, 0): ExtResource("7_0yl4t")
 })
 open_all_cells = true
 dice = 4
-beats = PackedStringArray("ready 40", "target 0", "mark part_1", "fx kill", "ready 30", "target 0", "mark part_2", "fx kill", "ready 30", "target 0", "mark breakup", "fx overkill", "ready 30", "wait 3", "quit")
+beats = PackedStringArray("ready 40", "target 0", "mark part_1", "fx kill", "ready 30", "wait 2.5", "target 0", "mark part_2", "fx kill", "ready 30", "wait 2.5", "target 0", "mark breakup", "fx overkill", "ready 30", "wait 3", "quit")

@@ -8,7 +8,10 @@ extends RefCounted
 ##   # comment                    blank lines and comments are skipped
 ##   wait <seconds>               game seconds (slow-mo stretches them)
 ##   ready [timeout]              until the player could act: hand dealt,
-##                                nothing resolving, their turn (default 30 s)
+##                                nothing resolving, their turn (default 30 s).
+##                                A ship's death plays out on its own clock:
+##                                `wait` after a kill to let it read
+##                                before the next.
 ##   drag <die> <x,y> [seconds]   carry a hand die to the tile at grid cell
 ##                                x,y and let go (default 0.6 s)
 ##   drop <die> <x,y>             the same, instantly
