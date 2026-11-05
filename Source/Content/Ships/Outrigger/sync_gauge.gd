@@ -90,8 +90,8 @@ func _process(delta: float) -> void:
 	_time += delta
 	_flash = maxf(0.0, _flash - delta * 2.5)
 	var rules: OutriggerSync = _rules()
-	for pod: int in 2:
-		var target: float = float(rules.thrust(pod as OutriggerSync.Pod)) if rules else 0.0
+	for pod: OutriggerSync.Pod in [OutriggerSync.Pod.PORT, OutriggerSync.Pod.STARBOARD]:
+		var target: float = float(rules.thrust(pod)) if rules else 0.0
 		_shown[pod] = move_toward(_shown[pod], target, maxf(1.0, absf(target - _shown[pod])) * delta * _EASE_RATE)
 	queue_redraw()
 
