@@ -18,8 +18,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 		if not is_instance_valid(target) or target.get("health") == null:
 			continue
 
-		if is_instance_valid(Globals.state_manager):
-			Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
+		enter_combat_if_ship_hit(target)
 		if actor is Player and target is Enemy:
 			Events.player_attacked_ship.emit(target, target.scenario_state.faction)
 		elif actor is Enemy and target is Enemy and actor != target:

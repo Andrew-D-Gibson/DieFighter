@@ -110,6 +110,18 @@ func provoke(target: Node) -> void:
 	Events.player_attacked_ship.emit(target, (target as Enemy).scenario_state.faction)
 
 
+## A hit on [param target] starts the fight only when a ship is on one end of
+## it. The player hurting their own ship (Chaos Explosion, Ablative Charge,
+## the redline bleed) or a hazard hitting them is a cost, not an attack: with
+## nothing hostile on the board, that "fight" had no enemy turn to end it, and
+## every tile whose die finds no target handed it straight back, forever.
+func enter_combat_if_ship_hit(target: Node) -> void:
+	if actor is not Enemy and target is not Enemy:
+		return
+	if is_instance_valid(Globals.state_manager):
+		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
+
+
 ## Tells the game the player just put [param stacks] of a status on
 ## [param target], for the tiles that answer it (Hex Coil). Only the player
 ## putting one on an enemy counts: a status a tile puts on its own ship

@@ -37,7 +37,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 
 		_spawn_hit_particles(target)
 
-		Globals.state_manager.state = GameStateManager.GameState.IN_COMBAT
+		enter_combat_if_ship_hit(target)
 		if actor is Player and target is Enemy:
 			Events.player_attacked_ship.emit(target, target.scenario_state.faction)
 		elif actor is Enemy and target is Enemy and actor != target:
