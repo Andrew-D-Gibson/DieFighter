@@ -51,7 +51,7 @@ subtype = 6
 [sub_resource type="Resource" id="Resource_0yolb"]
 script = ExtResource("2_0q2wi")
 category = 2
-subtype = 20
+subtype = 21
 add_to_amount = true
 string_param = "pod_lead"
 

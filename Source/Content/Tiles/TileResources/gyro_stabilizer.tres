@@ -41,7 +41,7 @@ sound_resource = ExtResource("5_on6md")
 [sub_resource type="Resource" id="Resource_hbioo"]
 script = ExtResource("4_6p6pg")
 category = 2
-subtype = 20
+subtype = 21
 string_param = "pod_level"
 
 [sub_resource type="Resource" id="Resource_etea0"]
