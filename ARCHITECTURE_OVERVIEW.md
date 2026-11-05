@@ -1206,8 +1206,8 @@ is ready, because Graphics comes first in the scene.
 | Ship | Cockpit | Instruments |
 |---|---|---|
 | Die Fighter | `cockpit_ambience.tscn`: the navy canopy, dash LEDs and CRT, hanging dice | hull left, target right |
-| Outrigger | `Outrigger/Cockpit/`: gold solar-sail hem across the top, `SailTelltales` (ribbons on the bolt rope, a sun glint), blue pods, teak deck | swapped: target to port, hull to starboard |
-| Carousel | `Carousel/Cockpit/`: a gyroscopic viewport, a segmented ring with `ChaseLights` (race on `CarouselBehavior.ring_turned`), gimbal ring and bearing hubs, a `HangingDice` gyroscope | pulled in between the struts |
+| Outrigger | `Outrigger/Cockpit/`: an X-Wing-style canopy in gunmetal and orange: pillars leaning out to the roof, a dash hood behind the panel, twin throttles, both engine nacelles outside the side glass | swapped: target to port, hull to starboard |
+| Carousel | `Carousel/Cockpit/`: a TIE-style octagonal viewport set in a ball, charcoal and maroon: corner struts fading into glass mullions, plating in rings round the window, `ChaseLights` on the frame trim (race on `CarouselBehavior.ring_turned`), a `HangingDice` gyroscope | pulled in between the struts |
 
 **Grid Slots.** A ship's layout can start partly sealed: its starting kit's
 `GameSaveResource.unlocked_cells` lists the open cells (empty opens them all,
