@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state_script"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="base_script"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WhiteFlag/drone_engaging.tres" id="s_drone_engaging"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_WhiteFlag/drone_resuming.tres" id="s_drone_resuming"]
+
+[resource]
+script = ExtResource("state_script")
+dialogue = "BOUNTY CONFIRMED. THANK YOU."
+attitude = 1
+transitions = Dictionary[int, ExtResource("base_script")]({
+0: ExtResource("s_drone_engaging"),
+5: ExtResource("s_drone_resuming")
+})

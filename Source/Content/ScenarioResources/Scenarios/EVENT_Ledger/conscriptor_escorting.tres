@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state_script"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="base_script"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Ledger/conscriptor_resisting.tres" id="s_conscriptor_resisting"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Ledger/conscriptor_classified.tres" id="s_conscriptor_classified"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Ledger/conscriptor_executing.tres" id="s_conscriptor_executing"]
+
+[resource]
+script = ExtResource("state_script")
+dialogue = "Prisoner transfer. Move along."
+attitude = 1
+transitions = Dictionary[int, ExtResource("base_script")]({
+0: ExtResource("s_conscriptor_resisting"),
+7: ExtResource("s_conscriptor_classified"),
+1: ExtResource("s_conscriptor_executing")
+})

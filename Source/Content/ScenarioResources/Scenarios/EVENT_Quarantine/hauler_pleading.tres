@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state_script"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="base_script"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/hauler_condemned.tres" id="s_hauler_condemned"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/hauler_sheltered.tres" id="s_hauler_sheltered"]
+[ext_resource type="Script" uid="uid://meeikumym0ie" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_probability_transition.gd" id="prob_script"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/hauler_still_us.tres" id="s_hauler_still_us"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Quarantine/hauler_came_back_wrong.tres" id="s_hauler_came_back_wrong"]
+
+[sub_resource type="Resource" id="Resource_prob0"]
+script = ExtResource("prob_script")
+weighted_probabilities = Dictionary[ExtResource("state_script"), float]({
+ExtResource("s_hauler_still_us"): 3.0,
+ExtResource("s_hauler_came_back_wrong"): 2.0
+})
+
+[resource]
+script = ExtResource("state_script")
+dialogue = "We're still us! Please!"
+faction = 1
+attitude = 1
+transitions = Dictionary[int, ExtResource("base_script")]({
+1: ExtResource("s_hauler_condemned"),
+0: ExtResource("s_hauler_sheltered"),
+4: SubResource("Resource_prob0")
+})

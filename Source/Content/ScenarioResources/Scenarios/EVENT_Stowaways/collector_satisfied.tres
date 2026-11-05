@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state_script"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="base_script"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect_data"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="effect_chain"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Stowaways/collector_fighting.tres" id="s_collector_fighting"]
+
+[sub_resource type="Resource" id="Resource_fx0"]
+script = ExtResource("effect_data")
+category = 2
+amount = 3000
+
+[sub_resource type="Resource" id="Resource_fx1"]
+script = ExtResource("effect_data")
+category = 4
+subtype = 6
+
+[sub_resource type="Resource" id="Resource_fx2"]
+script = ExtResource("effect_data")
+category = 6
+subtype = 3
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("effect_chain")
+effects = Array[ExtResource("effect_data")]([SubResource("Resource_fx0"), SubResource("Resource_fx1"), SubResource("Resource_fx2")])
+
+[resource]
+script = ExtResource("state_script")
+dialogue = "Tithe recorded. Move along."
+attitude = 1
+effects_on_enter = SubResource("Resource_chain")
+transitions = Dictionary[int, ExtResource("base_script")]({
+0: ExtResource("s_collector_fighting")
+})

@@ -22,9 +22,11 @@ slow is dead.
   (a Rearguard sentry left behind when the line moved on), Boneyard (a Gaff and a
   Venom Fighter stripping a wreck field, and you look like more of it).
 - **Events:** Pilgrim (the Fate's Die handover), Straggler, Pirates Attacking
-  Civilian†, Mayday†, Sleeping Drone, Signal, What Came Back†.
+  Civilian†, Mayday†, Sleeping Drone, Signal, What Came Back†, White Flag (a
+  limping Gaff hunted by the forgotten sentry drone).
 - **Elites:** Wake Riders†, Chopshop (the Warden's breakers: *"The Warden wants your
-  parts."*).
+  parts."*), The Line Moved On (a sentry grid still holding a line that left
+  decades ago).
 - **Gate:** the Sector Warden, *Warlord of the Tail*: *"Everyone back here is
   already dead."*
 
@@ -38,10 +40,13 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
 - **Events:** Convoy, Cut Loose (the Chancellor's philosophy in miniature), Mercy
   Call, Pickpocket, Wreck Salvage (under a Claims Adjuster's guard), Pact†, Last
   Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
-  Pirates Attacking Civilian†, What Came Back†.
+  Pirates Attacking Civilian†, What Came Back†, Wolf in the Fold (an Undertow
+  infiltrator in a Caravan hull), Turn Around (a Zealot leading a family
+  inward), Still on Patrol†.
 - **Elites:** Hunter-Killers† (an Undertow fighter with a Rearguard drone: someone
   paid for you), Repossession (two Claims Adjusters kept running by a Field Tender:
-  *"Your lien is due."*), Wake Riders†.
+  *"Your lien is due."*), Wake Riders†, Procession (two Zealots and the Pilgrim
+  feeding them).
 - **Gate:** the Arc Dynamo, *the Chancellor's reactor barge*: *"The Belly can't wait
   for one ship."*
 
@@ -52,7 +57,8 @@ Checkpoints, tithes and warships, plus the Undertow they hire under the table.
   Battery, Siege Battery, Spotter, Bounty Run (a Rearguard lance escorting an Undertow
   smuggler in civilian clothes), Carrier†, Picket Line†.
 - **Events:** Tollkeeper (*"Tithe taken. It buys us all time."*), Deniable Assets,
-  Black Market (the checkpoint's back door), Deserter, Pact†.
+  Black Market (the checkpoint's back door), Deserter, Pact†, Tithe Run, The
+  Ledger, Quarantine, Stowaways, Still on Patrol†.
 - **Elites:** Tithe Fleet, Lance Squadron, Mortar Nest (a Picket shields the
   mortars), Hunter-Killers†.
 - **Gate:** the Bastion, *the Marshal's fortress*: *"Four hundred years. Not you."*
@@ -63,6 +69,13 @@ tell for anyone reading the targeting computer. Sometimes it's bait (it runs on 
 
 Blockade Runner was cut. It overlapped Bounty Run, and an Undertow smuggler escorted
 by a Caravan medic fit neither faction.
+
+### Foreshadowing the secret
+Four encounters hint at `LORE.md` §4 without saying it, and only a player who puts
+them together gets it: the tithe convoy flying *aft* with a Wisp on its wing (Tithe
+Run), the Picket arrested for counting where the tithe goes (The Ledger), and the
+Rearguard echo still carrying it in (Still on Patrol). Quarantine leaves open
+whether what comes back out of the hole is still people.
 
 ## How choices work
 
@@ -117,6 +130,72 @@ Rearguard's hatred of the Inbound, who desert the line by flying the wrong way.
   and the Pilgrim gives +4 charge and 8 hull before it flies on. *"Run if you must.
   Take this."* — Mercy / Hunger
 
+### The Tithe Run — `EVENT_TitheRun` (sector 3)
+A **Tithe Collector** and a silent **Picket** fly *aft*, toward Fate, against the
+whole fleet. A **Fate Wisp** rides on their wing, under `BOSS`. *"Tithe convoy.
+Clear the lane."* A courier's fee floats beside them.
+- **Take the fee:** *"Good. Eyes forward."* All three fly off toward Fate together.
+  — Duty
+- **Rob the convoy:** the Rearguard bounty is the tithe itself (dice-heavy pick, big
+  credits). When the convoy falls the Wisp wakes up, *"...that was ours... the front
+  owes us..."*, and launches a Shroud. Kill both for a Strange pick (UNCOMMON or
+  better, half dice). — Plunder
+- **Shoot the Wisp:** `BOSS` shots raise no event, so the convoy turns when it dies:
+  *"Orders: never touch the escort."* — Strange
+
+`PIRATE` and `BOSS` are allied, so the Wisp really is on the convoy's side. Once the
+convoy is attacked the Wisp stops watching the fee (`wisp_watching_silent`), so
+pocketing it mid-fight doesn't send the Wisp home.
+
+### The Ledger — `EVENT_Ledger` (sector 3, Aegis Link is ally support)
+A battered **Picket** (`picket_holdout`, 60% hull) is under arrest, escorted by a
+**Conscriptor**. Its ledger floats as the encounter's one pick (UNCOMMON or
+better). Picket: *"I counted the tithe. It goes forward."* Conscriptor: *"Prisoner
+transfer. Move along."*
+- **Take the ledger, or shoot the Conscriptor:** *"That's classified. Hand it
+  over."* / *"Aiding a traitor? Then hang."* The Picket breaks free and Raids. Win,
+  and it patches 10 hull: *"Ask the Vanguard where it goes."* — Mercy
+- **Shoot the Picket:** *"Saves us a tribunal."* The Picket's wreck pays credits,
+  and the Conscriptor says *"Loyalty noted."* The ledger still floats, and taking it
+  now turns the Conscriptor on you, alone. — Ruin
+
+There is no faction bounty: the ledger is the pick, so betrayal can't stack a second
+one on top.
+
+### Quarantine — `EVENT_Quarantine` (sector 3)
+A **Conscriptor** and a silent **Picket** (`picket_holdout`) are firing on a
+**Hauler** (55% hull) that came back out of the hole. *"Quarantine. It came out of
+the hole."* Hauler: *"We're still us! Please!"*
+- **Join in:** Hauler: *"We only wanted to come home!"* Its wreck pays credits, and
+  the Rearguard leave: *"Line holds clean. Move along."* — Duty
+- **Protect it:** fight the Rearguard while the Hauler Raids. Win for the bounty
+  pick, then a 3:2 roll:
+  - *"We're us. We're still us."* 12 hull. — Mercy
+  - *"...thank you... for carrying us..."* A purple, glitching patch: 16 hull.
+    — Strange
+- **Do nothing:** they finish it with the dice you hand them.
+
+### Stowaways — `EVENT_Stowaways` (sector 3)
+A **Tithe Collector** (`tithe_collector_inspector`) inspects a **Bounty Runner**
+(`bounty_runner_smuggler`), the Undertow smuggler in a Caravan hull, its holds full
+of refugees dodging the tithe. *"Holds open. Tithe by head."* Runner: *"Just cargo,
+officer. Right, pilot?"*
+- **Cover for them (shoot the Collector):** *"Ha! Knew I liked you."* The Runner
+  Raids. Win for the bounty pick, and *"Fare's paid. Patch up on us."* 10 hull.
+  — Mercy
+- **Expose them (shoot the Runner):** *"Good eye. Burn the smuggler."* / *"Fine.
+  Catch us if you can."* The Runner carries its own pick and bolts on round 3, as in
+  Bounty Run. — Duty
+
+The smuggler variant only flees while it's fighting you, never while it's on your
+side.
+
+### The Line Moved On — `ELITE_LineMovedOn` (sector 1)
+Two **Cannon Drones**, a sentry grid the line left behind decades ago, still holding.
+*"LINE HOLDS. ALL BEHIND IT: HOSTILE."* Behind the line is now the whole Tail. An
+elite at 1.3×, and it stays inside the Tail's rule that the only Rearguard here is
+the forgotten drone (`test_the_tail_meets_no_rearguard_but_what_it_left_behind`).
+
 ## Undertow — "The slow ones are already dead, so take their stuff."
 
 ### The Straggler — `EVENT_Straggler`
@@ -130,6 +209,29 @@ A **Hauler** with a dead drive (`hauler_adrift`, 35% hull) drifts toward Fate. A
 ### Wake Riders — `ELITE_WakeRiders`
 Two **Gaffs** and a **Wrecker**. *"Slow ship. You're ours now."* The Gaffs pilfer
 dice and siphon the drive, so you become the straggler. The Wrecker burns and quakes.
+
+### White Flag — `EVENT_WhiteFlag` (sector 1)
+A **Gaff** (`gaff_raider`, 75% hull) is hunted by the Rearguard sentry drone the line
+forgot (`cannon_drone_hunter`). The predator is the straggler now. Pirates
+Attacking Civilian with the roles flipped: the Gaff is the protected side.
+*"UNDERTOW VESSEL. BOUNTY AUTHORISED."* Gaff: *"I know what I am. Help anyway."*
+- **Shoot the drone:** *"INTERFERENCE. ENGAGING."* The Gaff Raids it. Win for the
+  bounty pick, and *"Spare plates. We're square."* 10 hull. — Mercy (the Debt hook)
+- **Shoot the Gaff:** *"Slow is dead. Right. Right."* The drone says *"BOUNTY
+  CONFIRMED."* The Gaff's wreck pays credits. Quick and safe. — Duty
+- **Do nothing:** the drone finishes it with the dice you hand it, then *"RESUMING
+  PATROL."*
+
+### Wolf in the Fold — `EVENT_WolfInTheFold` (sector 2)
+A **Hauler** and a **Bounty Runner** (`bounty_runner_smuggler`) fly side by side in
+the same Caravan hull. They're on opposite sides, so both speak, and both say the
+same thing: *"That one's Undertow! Check its badge!"* The targeting computer's
+badge is the only tell.
+- **Shoot the Runner:** *"Clever. Too clever."* Hauler: *"You read it right!"* The
+  Runner carries the pick and bolts on round 3 while the Hauler Raids it. Win, and
+  *"Stay sharp. They're everywhere."* 10 hull. — Mercy
+- **Shoot the Hauler:** *"We're Caravan! We're Caravan!"* The Runner says *"Thanks,
+  mark,"* and leaves with its pick. All you get is the Hauler's salvage. — Ruin
 
 ## Caravan — "Keep everyone together."
 
@@ -165,6 +267,29 @@ A **Zealot** offers two RARE tiles. *"Power, for a little of you. 12 hull."*
 - **Attack it:** *"Then give it all at once!"* It hits hard and overloads itself.
   Win, and the offer is free.
 
+### Turn Around — `EVENT_TurnAround` (sector 2)
+A **Zealot** (`zealot_herald`) leads a **Hauler** family inward. Two RARE tiles
+float as its gift. *"Stop running. Turn around."* Hauler: *"They say it's better
+over there."*
+- **Take a gift:** *"Leave the credits. They don't cross."* It takes **every
+  credit you have**, and both fly inward: *"Then we all go together."* — Hunger.
+  Pact costs hull. This costs everything you'd spend on the way forward.
+- **Shoot the Zealot:** *"Faithless!"* Hauler: *"I don't know who's right..."* The
+  overload is the puzzle. Win, and the gift is free, plus *"It's still behind us.
+  Isn't it."* 10 hull. — Mercy
+- **Shoot the Hauler:** *"Yes! Send them across!"* The Zealot Raids it alongside
+  you, then *"They're home. Take your gift."* The gift is free. — Ruin / Hunger
+
+The take-everything uses `STEAL_MONEY` for 9999, which always comes up short, so
+the Zealot's state must never transition on `PLAYER_COULDNT_PAY`.
+
+### Procession — `ELITE_Procession` (sector 2)
+Two **Zealots** and the **Pilgrim** relaying dice into them. *"Stop running. Come
+home."* The Relay pushes the Zealots toward their overload and the Siphon pins you
+in place: kill the Pilgrim first for a slower, safer fight, or ride the relays and
+burn both Zealots out. Inbound's first elite (1.35×, Belly only: the Relay is ally
+support).
+
 ## Spilled — "Nobody knows."
 
 ### Signal — `EVENT_Signal`
@@ -184,6 +309,17 @@ it?"* Shroud: *"...returned... incomplete..."*
 - **Shoot the Shroud:** the Hauler turns on you (*"No! It brought us back!"*), and the
   Shroud calls a Wisp. — Ruin
 
+### Still on Patrol — `EVENT_StillOnPatrol` (sectors 2 and 3)
+A lone **Fate Husk**, the Defender's echo, flies a patrol route 400 years old.
+*"...Picket Nine... holding... holding..."* It offers "resupply": a common pick.
+- **Take it:** *"...dismissed... resume patrol..."* It flies on, forever. — Duty
+- **Relieve it (shoot it):** it barely fights. One of three fragments, at random:
+  *"...relief...? at last..."*, *"...we carried the tithe... in..."*, *"...the
+  front... said hold..."* The wreck holds a RARE pick. — Mercy / Strange
+
+Shooting first and then taking the resupply gets both. That's deliberate: the kind
+path pays more, and taking the issue is the safe one.
+
 ---
 
 ## Authoring notes
@@ -201,6 +337,19 @@ it?"* Shroud: *"...returned... incomplete..."*
   Shield all fit.
 - `ATTITUDE_IS` conditions flip a ship's kit when it turns (the Picket's Raid only
   while friendly, its attack only once it turns).
+- **A faction "falls" when its last ship leaves, fled or killed.**
+  `PIRATES_DEFEATED`, `CIVILIANS_DEFEATED` and `BOSS_DEFEATED` fire on a farewell
+  `FLEE` too. A state that's waiting for the other side to fall must already have
+  moved on when that side is only leaving (the Tithe Run's Wisp takes the fee path
+  into `wisp_following_silent` first).
+- **Any ship that can sit on your side while its enemy fights you needs a Raid in
+  every pool.** For a ship whose shared resource has none, use a variant gated on
+  not-aggressive, like `hauler.tres`: `cannon_drone_hunter`,
+  `tithe_collector_inspector`, `zealot_herald`, `bounty_runner_smuggler` (which also
+  only flees while it's hostile). `test_ally_hand_offs.gd` names any ship that's
+  missing one.
+- **Neutral ships only act on the dice they're handed.** A "they're firing on it"
+  opening (Quarantine, White Flag) plays out only as fast as the player feeds it.
 
 ## Open
 
@@ -208,3 +357,6 @@ it?"* Shroud: *"...returned... incomplete..."*
   betrayal paths (kill the Pilgrim, then take its die; fight the Zealot for a free
   tile) pay as well as the kind path. Run memory and Fate's Die are where they'd cost.
 - Fate's Die faces aren't carved yet. The faces noted above are the hooks.
+- White Flag's spared Gaff and The Ledger's Vanguard line are written for run memory
+  (a Debt ally, and the Vanguard answering the ledger) and land much harder once it
+  exists.

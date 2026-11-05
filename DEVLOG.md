@@ -32,6 +32,20 @@ A gap pass against `TRAILER_PLAN.md`. Already built and left alone: the juice ve
 
 ---
 
+## 2026-11-05 — Ten faction scenarios
+
+Eight events and two elites built on `LORE.md` and the faction ships, weighted toward the thin spots: Spine events (5 → 10), Tail elites (2 → 3), Inbound's first elite, Spilled outside Fate nodes, and the first hints at §4's secret. Stories and branches are in `FACTION_SCENARIOS.md`.
+
+- **Spine:** Tithe Run (the convoy flying aft with a Wisp on its wing), The Ledger (a Picket arrested for counting where the tithe goes), Quarantine (the Rearguard firing on a Hauler that came back out of the hole; saving it rolls 3:2 between "still us" and something else), Stowaways (an Undertow smuggler running refugees past an inspection). Still on Patrol (a Husk flying a 400-year-old route) is Belly and Spine.
+- **Belly:** Wolf in the Fold (two identical Caravan hulls with the same accusation; only the badge tells them apart), Turn Around (a Zealot leading a family inward: its gift costs every credit you have), Procession (elite: two Zealots and the Pilgrim feeding their overload).
+- **Tail:** White Flag (Pirates Attacking Civilian with the roles flipped: a Gaff hunted by the forgotten sentry drone), The Line Moved On (elite: two Cannon Drones still holding).
+- **Raid variants**, so ships that can sit on the player's side mid-fight can hand off: `cannon_drone_hunter`, `tithe_collector_inspector`, `zealot_herald`, `bounty_runner_smuggler` (whose Flee is gated on hostile, so it never leaves an ally's fight). Not in the codex.
+- **Test change:** `test_the_tail_meets_no_rearguard_but_what_it_left_behind` accepts Cannon Drone variants (`cannon_drone*`), so White Flag's drone counts as the sentry it is. The Line Moved On was rebuilt from drones rather than a Siege Mortar to stay inside that rule.
+- **Checked with an AutoPilot gauntlet** (each scenario in its own sector, random and smart bots, two loadouts, 200+ runs): no script errors, stalls or invariant breaks, and the event logs show each branch reached. It caught two things, both fixed: the Tithe Run's Wisp went home if the fee was pocketed mid-fight, and White Flag's Gaff at 35% hull died to the first Raid (now 75%).
+- `tools/loc.sh sync` also picked up the Napalm Vent description rows the Napalm Vent tweak left unsynced.
+
+---
+
 ## 2026-11-02 — Every language in Options, font-fit calls
 
 - **Options offers every language.** The dropdown lists all eight languages by their own names, never the pseudo-locale (still `lang pseudo` and the audit). A language without text yet reads "Deutsch (English text)" in the open list and plays in English text with its own fonts; Chinese and Japanese names draw in their own font, and the mark in the menu's (`PixelDropdown.set_item_font/set_item_note`). `Localization` registers every `translations.<l>.translation` at startup, so a column ships as soon as it has text; `is_translated()` (≥90% of English) drives the mark and the first-launch pick, so a new player is only auto-switched to a translated language.

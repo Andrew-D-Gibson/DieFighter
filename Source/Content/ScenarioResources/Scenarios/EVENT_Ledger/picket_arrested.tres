@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state_script"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="base_script"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Ledger/picket_breaking_free.tres" id="s_picket_breaking_free"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Ledger/picket_betrayed.tres" id="s_picket_betrayed"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Ledger/picket_vindicated.tres" id="s_picket_vindicated"]
+
+[resource]
+script = ExtResource("state_script")
+dialogue = "I counted the tithe. It goes forward."
+faction = 1
+attitude = 1
+transitions = Dictionary[int, ExtResource("base_script")]({
+0: ExtResource("s_picket_breaking_free"),
+7: ExtResource("s_picket_breaking_free"),
+1: ExtResource("s_picket_betrayed"),
+4: ExtResource("s_picket_vindicated")
+})

@@ -204,14 +204,15 @@ func test_a_sector_pick_matches_pick_random_otherwise() -> void:
 
 func test_the_tail_meets_no_rearguard_but_what_it_left_behind() -> void:
 	# The Rearguard sits safe in the Spine. In the Tail there is only the
-	# sentry drone the line forgot when it moved on.
+	# sentry drone the line forgot when it moved on (or an encounter's variant
+	# of it, e.g. cannon_drone_hunter.tres).
 	var manager: GameStateManager = _main_state_manager()
 	for run_seed: int in [TUTORIAL_SEED, 1, 2, 3, 4, 5, 6, 7, 8, 9]:
 		for scenario: ScenarioResource in _roll_sector(manager, run_seed, 0):
 			for ship: EnemyStateRewardResource in scenario.starting_enemies:
 				var enemy: EnemyResource = ship.enemy_resource
 				if enemy and enemy.faction and enemy.faction.resource_path == REARGUARD:
-					assert_eq(enemy.resource_path.get_file(), "cannon_drone.tres",
+					assert_true(enemy.resource_path.get_file().begins_with("cannon_drone"),
 						"seed %d dealt %s into the Tail" % [run_seed, scenario.resource_path.get_file()])
 
 
