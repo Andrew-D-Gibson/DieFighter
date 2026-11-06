@@ -110,7 +110,8 @@ func heirs_for_dice(leaving: bool) -> Array[Enemy]:
 		var is_self: bool = enemy.dice_manager == self
 		if enemy.is_hostile() and not (is_self and leaving):
 			fight_goes_on = true
-		if not is_self:
+		# "You" inherits nothing: a die only reaches it aimed (FateSelf).
+		if not is_self and not FateSelf.is_self(enemy):
 			heirs.append(enemy)
 	if not fight_goes_on:
 		heirs.clear()

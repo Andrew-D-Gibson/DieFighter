@@ -22,7 +22,7 @@ func resolve(engine: ScenarioEngine) -> void:
 			engine.remove_modifier(lockout_modifier)
 			
 			# Give the activator die to a random enemy
-			var alive_enemies: Array[Enemy] = Globals.enemy_manager.get_alive_enemies()
+			var alive_enemies: Array[Enemy] = FateSelf.by_chance(Globals.enemy_manager.get_alive_enemies())
 			
 			if alive_enemies.is_empty():
 				Globals.player.dice_manager.add(activator_die, true, false)

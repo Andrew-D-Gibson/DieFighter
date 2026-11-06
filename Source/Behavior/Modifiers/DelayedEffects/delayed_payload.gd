@@ -126,7 +126,7 @@ func _next_host(leaving: Enemy) -> Enemy:
 	if not is_instance_valid(Globals.enemy_manager):
 		return null
 	var candidates: Array[Enemy] = []
-	for enemy: Enemy in Globals.enemy_manager.get_alive_enemies():
+	for enemy: Enemy in FateSelf.by_chance(Globals.enemy_manager.get_alive_enemies()):
 		if enemy != leaving and is_instance_valid(enemy) and not enemy.is_queued_for_deletion() \
 		and _is_hostile(enemy):
 			candidates.append(enemy)

@@ -1,7 +1,7 @@
 class_name AddEscapeVelocityEvent
 extends EffectEvent
-## Charge for the Reckoning's escape: the Vanguard Drive turns dice into it
-## (LORE.md §7). Does nothing outside the Reckoning.
+## Charge for the Reckoning's escape, which is the engine charger itself
+## (RECKONING_ENDINGS.md §1). Does nothing outside the Reckoning.
 
 
 func resolve(_engine: ScenarioEngine) -> void:

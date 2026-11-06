@@ -67,6 +67,10 @@ var _awaiting_fly_in: Array[Enemy] = []
 ## Where each awaiting ship will come to rest, kept current by the formation.
 var _arrival_rest: Dictionary[Enemy, Vector2] = {}
 
+## Where a ship flying in mid-fight starts, relative to its slot, for the
+## ships that don't come down from above (fly_in_reinforcements()).
+var _arrival_from: Dictionary[Enemy, Vector2] = {}
+
 ## True from the moment the opening fly-in starts until the last ship has landed
 ## and been targeted. Combat-start effects wait on this so nothing fires at a
 ## ship that is still arriving; see Events.enemies_arrived.
@@ -386,12 +390,16 @@ func start_enemy_fly_in() -> void:
 
 ## Flies [param ships] in together, mid-fight, from above their slots: ships
 ## spawned after the arrival (the Reckoning's waves). Unlike the arrival they
-## come at once, since the fight is already on.
-func fly_in_reinforcements(ships: Array[Enemy]) -> void:
+## come at once, since the fight is already on. [param from] is where they
+## start relative to their slots, when not from above (the Reckoning's echoes
+## rise out of the hole on the left).
+func fly_in_reinforcements(ships: Array[Enemy], from: Vector2 = Vector2.ZERO) -> void:
 	var tweens: Array[Tween] = []
 	for ship: Enemy in ships:
 		if not is_instance_valid(ship) or _hull_mounts.is_mounted(ship):
 			continue
+		if from != Vector2.ZERO:
+			_arrival_from[ship] = from
 		var tween: Tween = create_tween()
 		tween.tween_method(
 			func(progress: float) -> void: _place_arriving(ship, progress),
@@ -400,6 +408,7 @@ func fly_in_reinforcements(ships: Array[Enemy]) -> void:
 		tween.finished.connect(func() -> void:
 			_awaiting_fly_in.erase(ship)
 			_arrival_rest.erase(ship)
+			_arrival_from.erase(ship)
 			if not is_instance_valid(ship):
 				return
 			Events.enemy_flew_in.emit()
@@ -422,7 +431,8 @@ func _place_arriving(ship: Enemy, progress: float) -> void:
 	if not _arrival_rest.has(ship):
 		_arrival_rest[ship] = ship.position
 	var rest: Vector2 = _arrival_rest[ship]
-	ship.position = rest + Vector2(0.0, -fly_in_range * (1.0 - progress))
+	var from: Vector2 = _arrival_from.get(ship, Vector2(0.0, -fly_in_range))
+	ship.position = rest + from * (1.0 - progress)
 	# A ship can arrive already holding dice (the opening ambusher's shot).
 	if ship.holds_dice():
 		ship.dice_manager.update_dice_locations()
@@ -599,6 +609,7 @@ func _reserve_pinned_ship(ship: Enemy, proportion: float) -> void:
 func _forget(ship: Enemy) -> void:
 	_awaiting_fly_in.erase(ship)
 	_arrival_rest.erase(ship)
+	_arrival_from.erase(ship)
 	_active_moves.erase(ship)
 	formation.clear_reservation(EnemyFormation.ship_key(ship))
 
@@ -750,6 +761,7 @@ func delete_all_enemies() -> void:
 	enemies = []
 	_awaiting_fly_in.clear()
 	_arrival_rest.clear()
+	_arrival_from.clear()
 	_active_moves.clear()
 	_hull_mounts.free_hull()
 	enemies_jumping = false

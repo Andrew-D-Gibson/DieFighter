@@ -15,6 +15,17 @@ func resolve(_engine: ScenarioEngine) -> void:
 		Globals.player.stow_die_for_jump(activator_die)
 		return
 
+	# Inside the Reckoning either arrow is the way out: there's nowhere on
+	# the map to go, only out of the hole (RECKONING_ENDINGS.md §6.1).
+	var director: ReckoningDirector = ReckoningDirector.active()
+	if director:
+		if not Globals.map.can_jump():
+			_refuse(Globals.map.jump_refusal())
+			return
+		Globals.player.commit_to_jump(activator_die)
+		director.jump_out()
+		return
+
 	var current_index: int = Globals.map.current_scenario_index
 	var desired_index: int = clampi(
 		current_index + jump_delta,

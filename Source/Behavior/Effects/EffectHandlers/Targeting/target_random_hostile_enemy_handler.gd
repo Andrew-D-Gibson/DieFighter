@@ -19,11 +19,12 @@ func apply(_data: EffectData, context: EffectContext, _engine: ScenarioEngine) -
 	context.targets = [RNGManager.pick_random(RNGManager.Bucket.TARGETING, hostiles) as Node]
 
 
-## The ships in [param ships] whose attitude is AGGRESSIVE.
+## The ships in [param ships] whose attitude is AGGRESSIVE. Never "You",
+## which nothing picks by chance (FateSelf).
 static func hostiles_in(ships: Array) -> Array[Node]:
 	var hostiles: Array[Node] = []
 	for ship: Variant in ships:
-		if not is_instance_valid(ship) or not ship is Enemy:
+		if not is_instance_valid(ship) or not ship is Enemy or FateSelf.is_self(ship):
 			continue
 		var enemy: Enemy = ship
 		if enemy.scenario_state != null \

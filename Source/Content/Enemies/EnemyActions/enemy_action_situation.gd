@@ -150,6 +150,10 @@ static func _others_where(of_ship: Enemy, roster: Array[Enemy], relation: Callab
 			continue
 		if other.health.health <= 0:
 			continue
+		# No ship binds to "You": a Raid on it, or a shield for it, would
+		# reach it without the player aiming (FateSelf).
+		if FateSelf.is_self(other):
+			continue
 		if relation.call(of_ship.scenario_state.faction, other.scenario_state.faction):
 			out.append(other)
 	return out

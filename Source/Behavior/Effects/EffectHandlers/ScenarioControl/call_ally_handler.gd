@@ -1,10 +1,11 @@
-class_name AdvanceHorizonHandler
+class_name CallAllyHandler
 extends EffectHandler
-## Reads the steps from context.running_amount.
+## Reads how much an ally already aboard is healed and shielded from
+## context.running_amount.
 
 
 func apply(_data: EffectData, context: EffectContext, engine: ScenarioEngine) -> void:
-	var event: AdvanceHorizonEvent = AdvanceHorizonEvent.new()
+	var event: CallAllyEvent = CallAllyEvent.new()
 	_stamp(event, context)
 	event.amount = context.running_amount
 	engine.inject_event(event)

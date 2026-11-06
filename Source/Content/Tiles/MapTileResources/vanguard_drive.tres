@@ -50,8 +50,8 @@ subtype = 1
 
 [sub_resource type="Resource" id="Resource_qn7yc"]
 script = ExtResource("2_ajbau")
-category = 6
-subtype = 13
+category = 1
+subtype = 3
 
 [sub_resource type="Resource" id="Resource_bhq83"]
 script = ExtResource("2_ajbau")
@@ -84,7 +84,7 @@ animations = [{
 [resource]
 script = ExtResource("6_0u234")
 tile_name = "[color=purple]Vanguard Drive[/color]"
-description = "[color=yellow]Any die[/color] -> Add (escape) equal to {times}x die"
+description = "[color=yellow]Any die[/color] -> Adds [color=purple]engine charge[/color] equal to {times}x die, then [color=orange]gives[/color] die to [color=purple]target[/color]"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_f6mjj")
 uses_per_turn = -1

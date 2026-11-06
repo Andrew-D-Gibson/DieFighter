@@ -208,9 +208,11 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.RECORD_DEED, label = "Record Deed", handler = RecordDeedHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.REMEMBER_SHIP, label = "Remember Ship", handler = RememberShipHandler, fields = ["string_param"]},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.ADD_ESCAPE_VELOCITY, label = "Add Escape Velocity", handler = AddEscapeVelocityHandler},
-	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.ADVANCE_HORIZON, label = "Advance Horizon", handler = AdvanceHorizonHandler},
-	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.SUMMON_ALLY_TILE, label = "Summon Ally Tile", handler = SummonAllyTileHandler},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.ADVANCE_HORIZON, label = "Advance Horizon (retired)", handler = RetiredEffectHandler},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.SUMMON_ALLY_TILE, label = "Summon Ally Tile (retired)", handler = RetiredEffectHandler},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.FATE_SEIZES_DIE, label = "Fate Seizes Die", handler = FateSeizesDieHandler},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.CALL_ALLY, label = "Call Ally", handler = CallAllyHandler},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.HURRY_NEXT_WAVE, label = "Hurry Next Wave", handler = HurryNextWaveHandler},
 
 	# ── CONDITIONAL ───────────────────────────────────────────────
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_ACTIVATOR_ODD, label = "If Activator Odd", handler = ConditionalHandler},

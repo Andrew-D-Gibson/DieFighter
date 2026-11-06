@@ -366,14 +366,22 @@ enum ScenarioControlSubtype {
 	## Remember the actor ship as one the player saved ("ally") or spared
 	## ("debt"), per string_param. It comes back in the Reckoning.
 	REMEMBER_SHIP,
-	## Add running_amount to the Reckoning's escape-velocity meter.
+	## Add running_amount to the engine charge, in the Reckoning only, where
+	## the charger is the escape (ReckoningDirector.add_escape_velocity()).
 	ADD_ESCAPE_VELOCITY,
-	## Bring the Reckoning's event horizon running_amount steps closer.
+	## Retired with the Reckoning's event horizon; does nothing. Kept so the
+	## values after it keep their ordinals.
 	ADVANCE_HORIZON,
-	## A ship the player saved flies into the Reckoning as an ally tile.
+	## Retired with the Saved Ship tile; does nothing. Kept so the values after
+	## it keep their ordinals. CALL_ALLY is Mercy now.
 	SUMMON_ALLY_TILE,
 	## A random hostile ship snatches the highest die in the player's hand.
 	FATE_SEIZES_DIE,
+	## Mercy in the Reckoning: the next ship the player saved jumps in now,
+	## or the one already aboard is healed and shielded for running_amount.
+	CALL_ALLY,
+	## Hunger in the Reckoning: the hole sends its next wave now.
+	HURRY_NEXT_WAVE,
 }
 
 

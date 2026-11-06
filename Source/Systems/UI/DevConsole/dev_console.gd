@@ -558,6 +558,11 @@ func _families(command_args: Array[String] = []) -> void:
 
 # ── Misc ─────────────────────────────────────────────────────────────────────
 
+## Saved ships `fate allies` makes up, in turn: ones that fly on the
+## player's side somewhere in a run.
+const _DEV_ALLIES: Array[String] = ["mayday_runner", "hauler", "picket_holdout", "civilian_transport", "tug"]
+
+
 ## Fate's Die and the Reckoning (LORE.md §5-§8), for testing and tuning.
 func _fate(command_args: Array[String] = []) -> void:
 	var ledger: FateLedger = Globals.fate_ledger
@@ -635,17 +640,34 @@ func _fate(command_args: Array[String] = []) -> void:
 			ReckoningEndingPlayer.play(ReckoningEnding.preview(kinds[which], which == 'perfect'))
 			return
 		'escape':
+			# Engine charge, which is the escape in the Reckoning.
 			var director: ReckoningDirector = ReckoningDirector.active()
 			if director:
 				director.add_escape_velocity(int(command_args[1]) if command_args.size() > 1 else 10)
-		'horizon':
+		'you':
+			# Skips the rest of the Tally: "You" comes now.
+			var director: ReckoningDirector = ReckoningDirector.active()
+			if not director:
+				command_history.append_text('\n\t\tOnly in the Reckoning.')
+				return
+			director.skip_to_self()
+		'allies':
+			# Made-up saved ships, filed under this encounter; in the
+			# Reckoning they join its queue at once.
+			var count: int = maxi(1, int(command_args[1]) if command_args.size() > 1 else 3)
+			var made_up: Array[Dictionary] = []
+			for i: int in count:
+				var entry: Dictionary = {"enemy": _DEV_ALLIES[i % _DEV_ALLIES.size()],
+					"kind": FateLedger.KIND_ALLY, "encounter": ledger.encounter_index}
+				ledger.allies.append(entry)
+				made_up.append(entry.duplicate())
 			var director: ReckoningDirector = ReckoningDirector.active()
 			if director:
-				director.advance_horizon(int(command_args[1]) if command_args.size() > 1 else 3)
+				director.add_allies(made_up)
 		'status':
 			pass
 		_:
-			command_history.append_text('\n\t\tUsage: fate [status|ready|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|drive|ending|end <kind>|reckoning|escape [n]|horizon [n]]')
+			command_history.append_text('\n\t\tUsage: fate [status|ready|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|allies [n]|drive|ending|end <kind>|reckoning|escape [n]|you]')
 			return
 	command_history.append_text('\n[center]Fate: die %s %s, pending %d, knows %s, route %s, kills %d, allies %d, deeds %s[/center]' % [
 		'held' if ledger.has_die else 'not held', str(ledger.die.to_data()), ledger.pending.size(),
@@ -859,7 +881,8 @@ func _help() -> void:
 	command_history.append_text('\n    [b]fate carve[/b] <face>             mercy|plunder|duty|ruin|hunger|strange (full die: choose a face)')
 	command_history.append_text('\n    [b]fate know[/b] [off]               the secret, as if learned on an earlier run')
 	command_history.append_text('\n    [b]fate drive[/b] / [b]ending[/b]           install the Vanguard Drive / play the first ending')
-	command_history.append_text('\n    [b]fate escape[/b] [n] / [b]horizon[/b] [n]  in the Reckoning: add escape / move the horizon')
+	command_history.append_text('\n    [b]fate escape[/b] [n] / [b]you[/b]          in the Reckoning: add engine charge / skip the Tally to "You"')
+	command_history.append_text('\n    [b]fate allies[/b] [n]               remember n made-up saved ships (in the Reckoning: they join its queue)')
 	command_history.append_text('\n[b]fps[/b]                           toggle FPS display')
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')

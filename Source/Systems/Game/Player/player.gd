@@ -104,18 +104,7 @@ var num_of_dice: int:
 	set(new_num):
 		var was_overcharged: bool = is_overcharged()
 		num_of_dice = new_num
-		
-		# Floored at 1: the curve goes negative at a single die, which a jump
-		# can now leave the player with, and the engine bar divides by this.
-		max_engine_charge = maxi(1, (6*(num_of_dice-1)) - floor(1.7078 * sqrt(num_of_dice)))
-		overcharge_cap = roundi(max_engine_charge * _OVERCHARGE_CAP_FRACTION)
-
-		# The ceiling just moved. Re-run the charge setter so a shrinking
-		# ceiling re-clamps rather than leaving charge stranded above it. A
-		# drive that wasn't in the redline stops at the new gate: losing a die
-		# with a full engine must not redline the player into bleeding hull.
-		engine_charge = engine_charge if was_overcharged else mini(engine_charge, max_engine_charge)
-
+		_size_engine(was_overcharged)
 		Events.die_added.emit()
 		
 		
@@ -166,6 +155,21 @@ var _spent_own_hand: bool = false
 
 ## How far the dice jolt, in pixels, at the peak of a jump's run-up.
 const _JUMP_RATTLE_STRENGTH: float = 1.2
+
+## Dice left the Fleet for good with a ship that's leaving the fight
+## (lose_dice_to()): [param holder] took [param count] of them. The Reckoning
+## reads who took the last one (RECKONING_ENDINGS.md §5).
+signal dice_lost(count: int, holder: Enemy)
+
+## The fewest dice a loss may leave the Fleet with. 1 in an ordinary run, so
+## no ship can take every die there is; the Reckoning lowers it to 0, where
+## handing over the last die is an ending of its own.
+var fleet_floor: int = 1
+
+## While above 0, max_engine_charge holds this value whatever the dice count:
+## the Reckoning's escape goal, fixed the moment the player turns Back so that
+## giving dice away never lowers it. See freeze_engine_max().
+var _frozen_engine_max: int = 0
 
 var money: int:
 	set(value):
@@ -315,6 +319,42 @@ static func redline_hull_cost(over: int) -> int:
 	if over <= 0:
 		return 0
 	return maxi(1, ceili(over / float(_REDLINE_HULL_DIVISOR)))
+
+
+## The drive's limit for [param dice] dice, as an ordinary run sizes it.
+static func engine_max_for(dice: int) -> int:
+	# Floored at 1: the curve goes negative at a single die, which a jump
+	# can now leave the player with, and the engine bar divides by this.
+	return maxi(1, (6 * (dice - 1)) - floori(1.7078 * sqrt(dice)))
+
+
+## Holds max_engine_charge at [param value] until release_engine_max(),
+## however many dice come and go: the Reckoning's escape goal is the drive.
+func freeze_engine_max(value: int) -> void:
+	var was_overcharged: bool = is_overcharged()
+	_frozen_engine_max = maxi(1, value)
+	_size_engine(was_overcharged)
+	Events.engine_charge_changed.emit()
+
+
+## The drive follows the dice count again.
+func release_engine_max() -> void:
+	if _frozen_engine_max <= 0:
+		return
+	var was_overcharged: bool = is_overcharged()
+	_frozen_engine_max = 0
+	_size_engine(was_overcharged)
+	Events.engine_charge_changed.emit()
+
+
+func _size_engine(was_overcharged: bool) -> void:
+	max_engine_charge = _frozen_engine_max if _frozen_engine_max > 0 else engine_max_for(num_of_dice)
+	overcharge_cap = roundi(max_engine_charge * _OVERCHARGE_CAP_FRACTION)
+	# The ceiling just moved. Re-run the charge setter so a shrinking
+	# ceiling re-clamps rather than leaving charge stranded above it. A
+	# drive that wasn't in the redline stops at the new gate: losing a die
+	# with a full engine must not redline the player into bleeding hull.
+	engine_charge = engine_charge if was_overcharged else mini(engine_charge, max_engine_charge)
 
 
 func _load_game_save(game_save: GameSaveResource) -> void:
@@ -680,6 +720,8 @@ func lose_dice_to(holder: Enemy, dice: Array[Dice]) -> void:
 			lost += 1
 
 	_lose_dice(lost)
+	if lost > 0:
+		dice_lost.emit(lost, holder)
 
 
 ## Brings a die home to the hand and holds it there until arrival. Nothing
@@ -774,8 +816,12 @@ func _strand_die(die: Dice, holder: Enemy) -> void:
 
 	if die.holographic:
 		return
-	Juice.die_flare(die, Globals.red)
-	Juice.callout(die, "LOST", Globals.red)
+	# A die carried off by a ship on the player's side (an ally running for
+	# it in the Reckoning) was given, not taken.
+	var given: bool = is_instance_valid(holder) and not holder.is_hostile()
+	var tint: Color = Globals.green if given else Globals.red
+	Juice.die_flare(die, tint)
+	Juice.callout(die, "LOST", tint)
 
 
 ## A hologram is borrowed light, not a die the player owns: it can't make the
@@ -788,12 +834,12 @@ func _dissolve_hologram(die: Dice) -> void:
 
 
 ## Takes [param count] dice off the Fleet for good, never leaving fewer than
-## one.
+## fleet_floor.
 func _lose_dice(count: int) -> void:
 	if count <= 0:
 		return
 	_announce_lost_dice(count)
-	num_of_dice = maxi(1, num_of_dice - count)
+	num_of_dice = maxi(fleet_floor, num_of_dice - count)
 
 
 ## The player always has a die to play. Ships can take every die there is

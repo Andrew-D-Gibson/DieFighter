@@ -10,7 +10,12 @@ extends Node2D
 ## hovering, shots already in the air land, the background keeps scrolling.
 ## The breaks rupture one after another, the shell blows out into pieces and
 ## the panels tumble away, leaving the pilot's view of open space and the
-## ships that did it. game_over follows once the wreckage has cleared.
+## ships that did it. game_over follows once the wreckage has cleared,
+## unless the Reckoning ends the run its own way (ReckoningDirector.
+## owns_death(): Fell In plays its film first, and the film ends the run).
+
+## The wreckage has cleared: where game_over follows.
+signal wreckage_cleared
 
 const _EXPLOSION_SCENE: PackedScene = preload("res://Assets/Particles/enemy_death_explosion.tscn")
 const _PIXEL: Texture2D = preload("res://Assets/Particles/hit_particle_pixel.png")
@@ -70,10 +75,16 @@ var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 
 func _ready() -> void:
+	add_to_group(&"cockpit_destruction")
 	_rng.randomize()
 	z_as_relative = false
 	z_index = _DEBRIS_Z
 	Events.player_destroyed.connect(play)
+
+
+## Whether the cockpit is coming apart now.
+func is_playing() -> bool:
+	return _playing
 
 
 func play() -> void:
@@ -94,6 +105,9 @@ func play() -> void:
 	await _rupture()
 	_break_apart()
 	await get_tree().create_timer(aftermath_time).timeout
+	wreckage_cleared.emit()
+	if ReckoningDirector.owns_death():
+		return
 	Events.game_over.emit()
 
 
