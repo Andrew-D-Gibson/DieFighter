@@ -32,9 +32,9 @@ const SETTLE_SECONDS: float = 0.5
 ## common thing an enemy does and has nothing to show, so it plays at these
 ## fractions of the normal handover, hold and settle rather than making the
 ## player sit through a full beat for a wasted die.
-const _IDLE_HANDOVER_PACE: float = 0.4
-const _IDLE_HOLD_PACE: float = 0.3
-const _IDLE_SETTLE_SECONDS: float = 0.1
+const _IDLE_HANDOVER_PACE: float = 0.6
+const _IDLE_HOLD_PACE: float = 0.45
+const _IDLE_SETTLE_SECONDS: float = 0.15
 
 ## How far the die spins on its way out in front of the ship: one full turn,
 ## so it lands upright.

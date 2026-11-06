@@ -36,6 +36,10 @@ signal overloaded()
 ## A death held by hold_death() may play out now. See release_death().
 signal death_released()
 
+## A death held for last words has blown the hull apart around its cockpit
+## chunk, which now hangs on screen until release_death(). See is_staging_death().
+signal death_staged()
+
 ## The possible attitudes an enemy can have
 enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 
@@ -123,6 +127,9 @@ var squad_losses: int = 0
 ## Set while something keeps this ship on screen past its death. See
 ## hold_death().
 var _death_held: bool = false
+
+## Whether the hull is still breaking up around the chunk a held death keeps.
+var _staging_death: bool = false
 
 ## How many full combat rounds have elapsed since this enemy arrived, counted
 ## whether or not it was given any dice. Drives PoolSelection.COMBAT_ROUNDS.
@@ -382,6 +389,12 @@ func release_death() -> void:
 	death_released.emit()
 
 
+## Whether a held death is still blowing the rest of the hull away from its
+## kept cockpit chunk. Wait on death_staged before putting anything over it.
+func is_staging_death() -> bool:
+	return _staging_death
+
+
 ## Called when the enemy dies
 func _on_death() -> void:
 	# Stop reacting to the scenario before announcing the death: enemy_left
@@ -404,7 +417,10 @@ func _on_death() -> void:
 	Events.enemy_destroyed.emit(self)
 	# Out of the fight and its dice gone, but still on screen: someone
 	# (LastWords) has a last word for it to say first.
-	if _death_held:
+	# A ship with a cockpit chunk doesn't wait whole: the kill plays now and
+	# only that chunk is left to hang on screen for the words.
+	var keeps_cockpit: bool = _death_held and not enemy_resource.cockpit_chunk.is_empty()
+	if _death_held and not keeps_cockpit:
 		await death_released
 
 	Events.play_sound.emit(_PRE_DEATH_SFX)
@@ -423,13 +439,30 @@ func _on_death() -> void:
 	explosion.amount = health.max_health * 5
 	JuicePixelated.spawn(graphics_manager.wreck_layer(), explosion, 0).global_position = global_position
 
-	# Spawn rewards. A launched fighter carries none of its own.
+	if not keeps_cockpit:
+		_spawn_wreck_reward(killed_by_ship)
+		await graphics_manager.break_apart(kick, _DEATH_SFX)
+		queue_free()
+		return
+
+	_staging_death = true
+	await graphics_manager.break_apart(kick, _DEATH_SFX, enemy_resource.cockpit_chunk)
+	_staging_death = false
+	death_staged.emit()
+	if _death_held:
+		await death_released
+	# The loot waits for the words, as it does for a ship held whole.
+	_spawn_wreck_reward(killed_by_ship)
+	await graphics_manager.blow_held_chunk()
+	queue_free()
+
+
+## Spawn rewards. A launched fighter carries none of its own, and another
+## ship's kill isn't the player's to loot.
+func _spawn_wreck_reward(killed_by_ship: bool) -> void:
 	var reward: RewardResource = wreck_reward()
 	if not killed_by_ship and reward:
 		Events.spawn_reward.emit(global_position, reward)
-
-	await graphics_manager.break_apart(kick, _DEATH_SFX)
-	queue_free()
 
 
 ## Sends [param ship] out of the fight under its own power with the opening

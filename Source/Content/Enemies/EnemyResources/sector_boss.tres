@@ -126,6 +126,7 @@ pool_selection = 1
 ship_graphics_scene = ExtResource("gfx_3")
 graphics_scene_offset = Vector2(0, -6)
 dialogue_offset = Vector2(16, -8)
+cockpit_chunk = PackedVector2Array(51, -3, 80, -3, 80, 17, 74, 15, 69, 18, 63, 15, 57, 18, 51, 16)
 targeting_computer_image = ExtResource("tex_4")
 health_bar_position = Vector2(-78, -5)
 dice_queue_position = Vector2(72, 16)

@@ -37,6 +37,9 @@ const WRECK_Z_INDEX: int = -3
 ## to its explosion; the pieces share the hull's material, so they fade too.
 const _BREAK_FLASH_SECONDS: float = 0.35
 
+## How far down the idle bob carries the hull from its rest spot, in pixels.
+const _BOB_DROP: float = 8.0
+
 ## Whether the hull draws behind the cockpit, at [constant WRECK_Z_INDEX]
 ## instead of among the ships. See tuck_under_cockpit().
 var _under_cockpit: bool = false
@@ -73,6 +76,9 @@ var _pixel_body: Node2D
 
 ## Where the wreck goes. See wreck_layer().
 var _wreck_layer: Node2D
+
+## The wreck while it still holds a chunk of the hull whole. See break_apart().
+var _held_wreck: ShipWreck
 
 ## The hull's damage smoke. Rebuilt with each new hull, since its spots are
 ## that hull's.
@@ -113,7 +119,15 @@ func clear_damage_smoke() -> void:
 ## carried along [param kick] (the killing blow's direction, or zero), each
 ## blast sounding [param blast_sound]. Resolves once the last explosion has
 ## played out.
-func break_apart(kick: Vector2, blast_sound: SoundEffectResource) -> void:
+##
+## With [param keep] (EnemyResource.cockpit_chunk), that chunk of the hull is
+## left hanging whole and this resolves once the rest has gone; the chunk
+## stays until blow_held_chunk().
+func break_apart(
+	kick: Vector2,
+	blast_sound: SoundEffectResource,
+	keep: PackedVector2Array = PackedVector2Array()
+) -> void:
 	_dying = true
 	stop_bob_tween()
 	if _shudder_tween and _shudder_tween.is_valid():
@@ -123,9 +137,23 @@ func break_apart(kick: Vector2, blast_sound: SoundEffectResource) -> void:
 	if not is_instance_valid(ship_graphics):
 		return
 	flash(Color.WHITE, _BREAK_FLASH_SECONDS)
-	var wreck: ShipWreck = ShipWreck.shatter(wreck_layer(), ship_graphics, kick, death_explosion, blast_sound)
+	var wreck: ShipWreck = ShipWreck.shatter(wreck_layer(), ship_graphics, kick, death_explosion, blast_sound, keep)
 	ship_graphics.visible = false
-	await wreck.finished
+	if keep.is_empty():
+		await wreck.finished
+		return
+	_held_wreck = wreck
+	await wreck.broken_up
+
+
+## Blows up the chunk break_apart() kept, and resolves once it's gone. Nothing
+## to do (and resolves at once) when none was kept.
+func blow_held_chunk() -> void:
+	if not is_instance_valid(_held_wreck):
+		return
+	var wreck: ShipWreck = _held_wreck
+	_held_wreck = null
+	await wreck.blow_chunk()
 
 
 ## The layer a dying ship's debris and explosions belong on. See
@@ -250,6 +278,15 @@ func stop_bob_tween() -> void:
 		_bob_tween.kill()
 
 
+## How far the hull is from the middle of its bob right now, zero when it isn't
+## bobbing. For marks that should hold still next to a ship that bobs (the
+## bound intent arrows' badges): subtract it from where the hull is drawn.
+func bob_displacement() -> Vector2:
+	if _bob_tween == null or not _bob_tween.is_valid() or not is_instance_valid(ship_graphics):
+		return Vector2.ZERO
+	return ship_graphics.global_position - (global_position + Vector2(0, _BOB_DROP * 0.5))
+
+
 ## Starts a new bobbing animation
 func start_bob_tween() -> void:
 	if _bob_tween:
@@ -267,7 +304,7 @@ func start_bob_tween() -> void:
 	# Node-owned so it dies with the ship. A looping tree-owned tween outlives
 	# its target, and Godot kills it with "Infinite loop detected".
 	_bob_tween = create_tween()
-	_bob_tween.tween_property(ship_graphics, 'global_position', self.global_position + Vector2(0, 8), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_bob_tween.tween_property(ship_graphics, 'global_position', self.global_position + Vector2(0, _BOB_DROP), tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_bob_tween.tween_property(ship_graphics, 'global_position', self.global_position, tween_time/2.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	_bob_tween.set_loops()
 
@@ -349,9 +386,14 @@ func _apply_resting_z() -> void:
 ## it stays lit while everything else darkens), with its health bar hidden.
 ## A negative z puts it back among the world's layers.
 func set_spotlit(z: int) -> void:
+	var lit: bool = z >= 0
+	# A ship that has broken up around a kept chunk is lit through the chunk,
+	# and its health bar stays gone: break_apart() hid it for good.
+	if is_instance_valid(_held_wreck):
+		_held_wreck.set_spotlit(z)
+		return
 	if not is_instance_valid(ship_graphics):
 		return
-	var lit: bool = z >= 0
 	if lit:
 		ship_graphics.z_as_relative = false
 		ship_graphics.z_index = z

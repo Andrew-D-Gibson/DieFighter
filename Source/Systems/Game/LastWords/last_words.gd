@@ -3,8 +3,10 @@ extends Node2D
 ## A gate boss's last words (STORY_BOXES_PLAN.md). When the last hostile ship
 ## of a fight that has something to say goes down, it's held whole on screen
 ## (Enemy.hold_death()) while the rest of the wreck goes: on the Bastion, its
-## hull breaks up around whichever part fell last. Once the fight is over it
-## speaks in a StoryBox, and the last Close lets it die.
+## hull breaks up around whichever part fell last; a ship with a
+## EnemyResource.cockpit_chunk blows apart at once, all but that chunk. Once the
+## fight is over it speaks in a StoryBox, and the last Close lets it die (the
+## chunk blows).
 ##
 ## What it says: at the run's last gate, the Bastion's confession
 ## (FateRevelation); at any other fight, its scenario's last_words beat, once
@@ -67,6 +69,10 @@ func _speak() -> void:
 	if _in_combat():
 		await Events.combat_finished
 	await get_tree().create_timer(_DELAY).timeout
+	# A ship that keeps a cockpit chunk is still blowing the rest of itself
+	# away; the box waits for that to clear the screen.
+	if is_instance_valid(_held) and _held.is_staging_death():
+		await _held.death_staged
 	if not is_instance_valid(_held):
 		_let_go()
 		return

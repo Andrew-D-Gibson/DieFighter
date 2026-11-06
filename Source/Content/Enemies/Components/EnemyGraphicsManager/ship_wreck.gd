@@ -12,8 +12,15 @@ extends Node2D
 ## Frees itself once the last explosion has played out, or at a deadline
 ## should one never finish: the dying ship waits on [signal finished] before
 ## it frees itself, and a wreck that never finished would keep it in play.
+##
+## A wreck can keep one chunk of the hull whole (a boss's cockpit, held on
+## screen while it speaks its last words): the rest breaks up as usual, and
+## [signal broken_up] says so. The chunk hangs there until blow_chunk().
 
 signal finished
+## The pieces are gone and only the kept chunk is left. Not emitted by a wreck
+## with no chunk, which just finishes.
+signal broken_up
 
 ## Small hulls split three ways, big ones four, huge ones six.
 const _PIECES_SMALL: int = 3
@@ -62,24 +69,43 @@ var _explosion_scene: PackedScene
 var _blast_sound: SoundEffectResource
 var _blasts_left: int = 0
 var _done: bool = false
+## Set once the pieces have all blown (or given up), so a late timer doesn't
+## announce it twice.
+var _debris_settled: bool = false
+
+## The kept chunk, in ship space, and the node standing for it. See
+## blow_chunk().
+var _chunk_shape: PackedVector2Array = PackedVector2Array()
+var _chunk: Node2D = null
+var _chunk_blown: bool = false
+var _hull_scale: float = 1.0
+## What this draws through, so a held chunk can be lifted over a dim.
+var _view: JuicePixelated
 
 
 ## Breaks [param ship_graphics] up into pieces drawn under [param parent],
 ## where the ship was. [param kick] is the direction the killing blow came
 ## from, or zero to let the pieces scatter evenly. On the game's pixel grid,
 ## like the effects around it.
+##
+## [param keep] outlines a chunk of the hull to leave whole, in the ship
+## sprite's pixels from its top left (EnemyResource.cockpit_chunk); empty
+## breaks the whole hull up.
 static func shatter(
 	parent: Node,
 	ship_graphics: Node2D,
 	kick: Vector2,
 	explosion_scene: PackedScene,
-	blast_sound: SoundEffectResource
+	blast_sound: SoundEffectResource,
+	keep: PackedVector2Array = PackedVector2Array()
 ) -> ShipWreck:
 	var wreck: ShipWreck = ShipWreck.new()
 	wreck._explosion_scene = explosion_scene
 	wreck._blast_sound = blast_sound
 	var view: JuicePixelated = JuicePixelated.spawn(parent, wreck, 0)
+	wreck._view = view
 	view.global_transform = ship_graphics.global_transform
+	wreck._chunk_shape = _in_ship_space(ship_graphics, keep)
 	wreck._break(ship_graphics, kick)
 	return wreck
 
@@ -103,10 +129,14 @@ func _break(ship_graphics: Node2D, kick: Vector2) -> void:
 		blast_order.append(i)
 	RNGManager.shuffle_array(RNGManager.Bucket.COSMETIC, blast_order)
 
+	_hull_scale = clampf(maxf(hull.size.x, hull.size.y) / _LARGE_HULL_SIZE, 1.0, 2.0)
+	if not _chunk_shape.is_empty():
+		_chunk = _make_chunk(ship_graphics)
+
 	_blasts_left = count
 	var last_blast: float = _FIRST_BLAST_SECONDS + (count - 1) * _BLAST_SPACING_SECONDS \
 		+ _BLAST_JITTER_SECONDS
-	get_tree().create_timer(last_blast + _BLAST_SECONDS_MAX).timeout.connect(_finish)
+	get_tree().create_timer(last_blast + _BLAST_SECONDS_MAX).timeout.connect(_settle_debris)
 	for i: int in range(count):
 		var next: int = (i + 1) % count
 		var arc_to: float = angles[next] if next > i else angles[next] + TAU
@@ -173,9 +203,40 @@ func _make_piece(ship_graphics: Node2D, wedge: PackedVector2Array, middle: Vecto
 	body.position = -middle
 	piece.add_child(body)
 	for sprite: Sprite2D in _sprites_of(ship_graphics):
-		_cut_sprite(sprite, ship_graphics, wedge, body)
+		_cut_sprite(sprite, ship_graphics, wedge, body, _chunk_shape)
 	piece.add_child(_spark_trail())
 	return piece
+
+
+## The kept chunk: every sprite of the ship cut down to the chunk's outline,
+## where it was, with sparks still shedding off it.
+func _make_chunk(ship_graphics: Node2D) -> Node2D:
+	var middle: Vector2 = Vector2.ZERO
+	for point: Vector2 in _chunk_shape:
+		middle += point
+	middle /= _chunk_shape.size()
+	var chunk: Node2D = Node2D.new()
+	chunk.position = middle
+	add_child(chunk)
+	var body: Node2D = Node2D.new()
+	body.position = -middle
+	chunk.add_child(body)
+	for sprite: Sprite2D in _sprites_of(ship_graphics):
+		_cut_sprite(sprite, ship_graphics, _chunk_shape, body)
+	chunk.add_child(_spark_trail())
+	return chunk
+
+
+## [param outline], given in the root sprite's pixels from its top left, in the
+## ship's space. Empty stays empty.
+static func _in_ship_space(ship_graphics: Node2D, outline: PackedVector2Array) -> PackedVector2Array:
+	if outline.is_empty() or ship_graphics is not Sprite2D:
+		return PackedVector2Array()
+	var origin: Vector2 = (ship_graphics as Sprite2D).get_rect().position
+	var moved: PackedVector2Array = PackedVector2Array()
+	for point: Vector2 in outline:
+		moved.append(point + origin)
+	return moved
 
 
 ## The visible sprites the ship is drawn with, its root among them.
@@ -193,8 +254,17 @@ static func _sprites_of(root: Node) -> Array[Sprite2D]:
 ## Adds the part of [param sprite] inside [param wedge] (in the ship's space)
 ## to [param body], as textured polygons drawn the way the sprite was. Cut
 ## rather than clipped: clipping inside the pixel view's transparent viewport
-## fills the masked area in solid black.
-static func _cut_sprite(sprite: Sprite2D, ship_graphics: Node2D, wedge: PackedVector2Array, body: Node2D) -> void:
+## fills the masked area in solid black. [param excluded] (ship space) is
+## left out of the cut: the part of the hull that stays whole. It mustn't be
+## ringed by the part it's cut from (see EnemyResource.cockpit_chunk), as the
+## hole would be drawn solid.
+static func _cut_sprite(
+	sprite: Sprite2D,
+	ship_graphics: Node2D,
+	wedge: PackedVector2Array,
+	body: Node2D,
+	excluded: PackedVector2Array = PackedVector2Array()
+) -> void:
 	var to_ship: Transform2D = Transform2D.IDENTITY
 	var node: Node = sprite
 	while node != ship_graphics and node is Node2D:
@@ -205,7 +275,17 @@ static func _cut_sprite(sprite: Sprite2D, ship_graphics: Node2D, wedge: PackedVe
 		rect.position, Vector2(rect.end.x, rect.position.y), rect.end, Vector2(rect.position.x, rect.end.y),
 	])
 	var source: Rect2 = _source_rect(sprite)
-	for part: PackedVector2Array in Geometry2D.intersect_polygons(to_ship.affine_inverse() * wedge, corners):
+	var to_sprite: Transform2D = to_ship.affine_inverse()
+	var cut: Array[PackedVector2Array] = []
+	for part: PackedVector2Array in Geometry2D.intersect_polygons(to_sprite * wedge, corners):
+		if excluded.is_empty():
+			cut.append(part)
+			continue
+		for outside: PackedVector2Array in Geometry2D.clip_polygons(part, to_sprite * excluded):
+			# A ring inside the cut is the excluded part's own hole, not a shard.
+			if not Geometry2D.is_polygon_clockwise(outside):
+				cut.append(outside)
+	for part: PackedVector2Array in cut:
 		var shard: Polygon2D = Polygon2D.new()
 		shard.transform = to_ship
 		shard.texture = sprite.texture
@@ -264,7 +344,7 @@ static func _fade_ramp() -> Gradient:
 func _drift(piece: Node2D, outward: Vector2, kick: Vector2, delay: float, hull: Rect2) -> void:
 	var heading: Vector2 = (outward * (1.0 - _KICK_WEIGHT) + kick * _KICK_WEIGHT).normalized() \
 		if kick != Vector2.ZERO else outward
-	var hull_scale: float = clampf(maxf(hull.size.x, hull.size.y) / _LARGE_HULL_SIZE, 1.0, 2.0)
+	var hull_scale: float = _hull_scale
 	var distance: float = _rand(_DRIFT_DISTANCE_MIN, _DRIFT_DISTANCE_MAX) * hull_scale
 	var spin: float = _rand(-_DRIFT_SPIN_MAX, _DRIFT_SPIN_MAX)
 
@@ -321,8 +401,48 @@ func _blow(piece: Node2D, heading: Vector2 = Vector2.ZERO, hull_scale: float = 1
 
 func _on_blast_done() -> void:
 	_blasts_left -= 1
-	if _blasts_left <= 0:
+	if _blasts_left > 0:
+		return
+	if _chunk_blown:
 		_finish()
+	else:
+		_settle_debris()
+
+
+## The pieces are done with. A wreck holding a chunk stays up for it.
+func _settle_debris() -> void:
+	if _debris_settled:
+		return
+	_debris_settled = true
+	if is_instance_valid(_chunk):
+		broken_up.emit()
+	else:
+		_finish()
+
+
+## Lifts the kept chunk over (or back under) a screen-wide dim, drawn at the
+## absolute [param z]; a negative z puts it back among the world's layers. See
+## EnemyGraphicsManager.set_spotlit().
+func set_spotlit(z: int) -> void:
+	if not is_instance_valid(_view):
+		return
+	var lit: bool = z >= 0
+	_view.z_as_relative = not lit
+	_view.z_index = z if lit else 0
+
+
+## Blows the kept chunk up, and resolves once the blast has played out and the
+## wreck is gone. Nothing happens for a wreck with no chunk, or one already blown.
+func blow_chunk() -> void:
+	if _done or _chunk_blown or not is_instance_valid(_chunk):
+		return
+	_chunk_blown = true
+	# Back among the world's layers: the blast belongs behind the cockpit again.
+	set_spotlit(-1)
+	_blasts_left = 1
+	get_tree().create_timer(_BLAST_SECONDS_MAX).timeout.connect(_finish)
+	_blow(_chunk, Vector2.ZERO, _hull_scale)
+	await finished
 
 
 func _finish() -> void:
