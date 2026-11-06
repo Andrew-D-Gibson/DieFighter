@@ -37,6 +37,10 @@ const WRECK_Z_INDEX: int = -3
 ## to its explosion; the pieces share the hull's material, so they fade too.
 const _BREAK_FLASH_SECONDS: float = 0.35
 
+## Whether the hull draws behind the cockpit, at [constant WRECK_Z_INDEX]
+## instead of among the ships. See tuck_under_cockpit().
+var _under_cockpit: bool = false
+
 ## The tween that handles the ship's bobbing animation
 var _bob_tween: Tween
 
@@ -80,6 +84,7 @@ func update_ship_graphics(ship_graphics_scene: PackedScene) -> void:
 		ship_graphics.queue_free()
 	ship_graphics = ship_graphics_scene.instantiate()
 	add_child(ship_graphics)
+	_apply_resting_z()
 	
 	_set_transparency(1)
 	
@@ -148,6 +153,7 @@ func pixelate() -> void:
 		return
 	_pixel_body = Node2D.new()
 	_pixel_view = JuicePixelated.spawn(self, _pixel_body, ship_graphics.z_index)
+	_pixel_view.z_as_relative = ship_graphics.z_as_relative
 	ship_graphics.reparent(_pixel_body, false)
 
 
@@ -305,16 +311,38 @@ func set_ship_raised(raised: bool) -> void:
 		return
 	# A hit's bump may still be springing the scale; it would undo ours.
 	Juice.cancel_bump(ship_graphics)
-	ship_graphics.z_index = _RAISED_SHIP_Z_INDEX if raised else 0
+	if raised:
+		ship_graphics.z_index = _RAISED_SHIP_Z_INDEX
+	else:
+		_apply_resting_z()
 	# Inside the pixel view the ship's own z only sorts it against its
 	# trail; the view is what sits among the world's layers.
 	if _pixel_view:
+		_pixel_view.z_as_relative = ship_graphics.z_as_relative
 		_pixel_view.z_index = ship_graphics.z_index
 	if raised:
 		_lowered_ship_scale = ship_graphics.scale
 		ship_graphics.scale = _lowered_ship_scale * _RAISED_SHIP_SCALE
 	else:
 		ship_graphics.scale = _lowered_ship_scale
+
+
+## Draws the hull behind the cockpit from here on, for a ship that sits next
+## to the cockpit's own gauges (the player's escort): its bob would otherwise
+## carry it over the hull bar. Only the hull moves back; its health bar and
+## speech box stay with the ships in front.
+func tuck_under_cockpit() -> void:
+	_under_cockpit = true
+	if is_instance_valid(ship_graphics):
+		_apply_resting_z()
+
+
+## Where the hull draws when it isn't raised or spotlit: with its ship (z 0
+## relative), or behind the cockpit for a tucked ship. Ship scenes don't set a
+## z of their own.
+func _apply_resting_z() -> void:
+	ship_graphics.z_as_relative = not _under_cockpit
+	ship_graphics.z_index = WRECK_Z_INDEX if _under_cockpit else 0
 
 
 ## Draws the ship alone at the absolute [param z] (over a screen-wide dim, so
@@ -324,8 +352,11 @@ func set_spotlit(z: int) -> void:
 	if not is_instance_valid(ship_graphics):
 		return
 	var lit: bool = z >= 0
-	ship_graphics.z_as_relative = not lit
-	ship_graphics.z_index = z if lit else 0
+	if lit:
+		ship_graphics.z_as_relative = false
+		ship_graphics.z_index = z
+	else:
+		_apply_resting_z()
 	health_bar.visible = not lit
 
 

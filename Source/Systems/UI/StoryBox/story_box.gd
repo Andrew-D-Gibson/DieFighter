@@ -112,6 +112,10 @@ func _build(speaker_name: String) -> void:
 	_text.bbcode_enabled = true
 	_text.scroll_active = false
 	_text.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# The default (chars before shaping) wraps only the characters shown so far,
+	# so a word types out to the edge and then jumps to the next line. After
+	# shaping lays out the whole line first and only hides what isn't typed yet.
+	_text.visible_characters_behavior = TextServer.VC_CHARS_AFTER_SHAPING
 	_text.custom_minimum_size = Vector2(_BOX_WIDTH - _SpeechBox.INSET_TOTAL, _TEXT_HEIGHT)
 	_text.add_theme_color_override("default_color", Globals.white)
 	_text.mouse_filter = Control.MOUSE_FILTER_IGNORE

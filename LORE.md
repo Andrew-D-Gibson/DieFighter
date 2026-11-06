@@ -202,7 +202,7 @@ last of its three parts still lit (§13):
 
 A player who has heard it before gets two lines instead: *"You've heard this before,
 haven't you? Then you know what's behind you."* / *"Take my drive. Forward, or back.
-Your choice. It always was."*
+Your choice."*
 
 ---
 

@@ -16,6 +16,12 @@ extends Node2D
 ## kill to land and a hull's breakup (ShipHull.break_up()) to play out.
 const _DELAY: float = 1.6
 
+## Whether a ship is being held for its last words, from the moment it's
+## chosen (mid-fight) until its box closes. Anything that would put a prompt on
+## screen waits while this is true: the story beat goes first. Static so such
+## prompts can ask without a reference; there is only ever one LastWords.
+static var _pending: bool = false
+
 var _held: Enemy = null
 var _speaker_name: String = ""
 var _lines: Array[String] = []
@@ -62,7 +68,7 @@ func _speak() -> void:
 		await Events.combat_finished
 	await get_tree().create_timer(_DELAY).timeout
 	if not is_instance_valid(_held):
-		_held = null
+		_let_go()
 		return
 	# Marked as it opens, so a Continue from here doesn't play it again.
 	if not _beat_id.is_empty():
@@ -97,6 +103,15 @@ func _let_go() -> void:
 	if is_instance_valid(_held):
 		_held.release_death()
 	_held = null
+	if _pending:
+		_pending = false
+		Events.story_beat_finished.emit()
+
+
+## Whether a boss still has last words to say, or is saying them. Prompts such
+## as the Fate carving choice hold off until it's over (Events.story_beat_finished).
+static func is_pending() -> bool:
+	return _pending
 
 
 static func _scenario() -> ScenarioResource:

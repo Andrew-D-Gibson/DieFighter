@@ -2,7 +2,6 @@
 
 [ext_resource type="Script" path="res://Source/Systems/Game/JumpGate/jump_gate.gd" id="1_gate"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_ring-Sheet.png" id="2_ring"]
-[ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal-Sheet.png" id="3_portal"]
 [ext_resource type="Texture2D" path="res://Assets/Textures/JumpGate/jump_gate_portal_charged-Sheet.png" id="5_charged"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ring0"]
@@ -20,30 +19,6 @@ region = Rect2(160, 0, 80, 80)
 [sub_resource type="AtlasTexture" id="AtlasTexture_ring3"]
 atlas = ExtResource("2_ring")
 region = Rect2(240, 0, 80, 80)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_portal0"]
-atlas = ExtResource("3_portal")
-region = Rect2(0, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_portal1"]
-atlas = ExtResource("3_portal")
-region = Rect2(50, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_portal2"]
-atlas = ExtResource("3_portal")
-region = Rect2(100, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_portal3"]
-atlas = ExtResource("3_portal")
-region = Rect2(150, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_portal4"]
-atlas = ExtResource("3_portal")
-region = Rect2(200, 0, 50, 50)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_portal5"]
-atlas = ExtResource("3_portal")
-region = Rect2(250, 0, 50, 50)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ring"]
 animations = [{
@@ -63,32 +38,6 @@ animations = [{
 "loop": true,
 "name": &"default",
 "speed": 8.0
-}]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_portal"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_portal0")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_portal1")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_portal2")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_portal3")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_portal4")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_portal5")
-}],
-"loop": true,
-"name": &"default",
-"speed": 10.0
 }]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_charged0"]
@@ -141,20 +90,15 @@ animations = [{
 "speed": 14.0
 }]
 
-[node name="JumpGate" type="Node2D" node_paths=PackedStringArray("ring", "portal", "portal_charged", "flash", "sector_title", "sector_subtitle")]
+[node name="JumpGate" type="Node2D" node_paths=PackedStringArray("ring", "portal_charged", "flash", "sector_title", "sector_subtitle")]
 z_index = -10
 position = Vector2(160, 40)
 script = ExtResource("1_gate")
 ring = NodePath("Ring")
-portal = NodePath("Portal")
 portal_charged = NodePath("PortalCharged")
 flash = NodePath("Overlay/Flash")
 sector_title = NodePath("Overlay/SectorTitle")
 sector_subtitle = NodePath("Overlay/SectorSubtitle")
-
-[node name="Portal" type="AnimatedSprite2D" parent="."]
-visible = false
-sprite_frames = SubResource("SpriteFrames_portal")
 
 [node name="PortalCharged" type="AnimatedSprite2D" parent="."]
 visible = false

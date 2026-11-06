@@ -56,6 +56,8 @@ const _CARVE_CALLOUT_SECONDS: float = 4.0
 ## The longest a carving waits for ships to stop talking before it plays
 ## anyway, so a chatty fight can't swallow it.
 const _MAX_COMMS_WAIT_SECONDS: float = 12.0
+## The same, for a boss's last words: a long confession, so a longer cap.
+const _MAX_STORY_WAIT_SECONDS: float = 90.0
 const _COMMS_POLL_SECONDS: float = 0.25
 ## A beat between the last line going and the carving, so the two don't run
 ## together.
@@ -337,6 +339,11 @@ func _wait_for_quiet_comms() -> void:
 	# A carving and the line that comes with it are set off together, and the
 	# line may show a frame or two later: look only after a beat.
 	await get_tree().create_timer(_AFTER_COMMS_SECONDS).timeout
+	# A boss's last words come before any carving moment, however long they run.
+	var story_waited: float = 0.0
+	while LastWords.is_pending() and story_waited < _MAX_STORY_WAIT_SECONDS:
+		await get_tree().create_timer(_COMMS_POLL_SECONDS).timeout
+		story_waited += _COMMS_POLL_SECONDS
 	var waited: float = 0.0
 	while waited < _MAX_COMMS_WAIT_SECONDS and _someone_is_talking():
 		await get_tree().create_timer(_COMMS_POLL_SECONDS).timeout

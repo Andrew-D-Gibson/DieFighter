@@ -6,6 +6,9 @@ extends Node2D
 ## it is over. The player may also let the carving pass and keep the die as it
 ## is.
 ##
+## It waits its turn behind a boss's last words (LastWords): the story beat
+## finishes first, then this asks.
+##
 ## A run nobody is playing (the AutoPilot, the Scenario Lab) answers itself:
 ## the new face goes over the face the die bears most.
 
@@ -31,6 +34,7 @@ func _ready() -> void:
 	Events.fate_carve_pending.connect(func(_face: int) -> void: _try_open.call_deferred())
 	Events.combat_finished.connect(func() -> void: _try_open.call_deferred())
 	Events.start_scenario.connect(func() -> void: _try_open.call_deferred())
+	Events.story_beat_finished.connect(func() -> void: _try_open.call_deferred())
 
 
 func _try_open() -> void:
@@ -40,6 +44,8 @@ func _try_open() -> void:
 	if not Globals.state_manager or Globals.state_manager.state != GameStateManager.GameState.OUT_OF_COMBAT:
 		return
 	if is_instance_valid(Globals.player) and Globals.player.is_jump_committed():
+		return
+	if LastWords.is_pending():
 		return
 	if not CollectionManager.is_recording():
 		ledger.resolve_pending(auto_choice(ledger.die))

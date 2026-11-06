@@ -98,6 +98,13 @@ func escort_ship() -> Enemy:
 	return null
 
 
+## Whether [param ship] is the escort, and still flying, as the player jumps
+## away: it goes with them (EnemyManager.start_enemy_jump_animation()).
+func leaves_with_player(ship: Enemy) -> bool:
+	return phase in [Phase.JOINED, Phase.RIDING] and ship == _ship \
+		and is_instance_valid(ship) and ship.health.health > 0
+
+
 # ── Joining and leaving ──────────────────────────────────────────────────────
 
 func _sign_on(ship: Enemy, terms: EscortResource) -> void:
@@ -150,6 +157,10 @@ func _on_load_scenario(_scenario: ScenarioResource) -> void:
 	if Globals.fate_ledger and Globals.fate_ledger.in_reckoning:
 		return
 	_ship = Globals.enemy_manager.spawn_escort(escort.ship_resource, escort.escort_state, hull)
+	# A farewell flies in from the left edge to the middle; every other
+	# arrival jumps into its slot (_ride_in), unseen until then.
+	if phase == Phase.RIDING:
+		Globals.enemy_manager.hold_escort_in_slot(_ship)
 
 
 func _on_start_scenario() -> void:
@@ -162,12 +173,12 @@ func _on_start_scenario() -> void:
 	_ride_in(_ship)
 
 
-## Into its slot. On its first leg it says so, which is the player's first
-## sight of it riding along.
+## Jumps into its slot, as the jump it left with in reverse. On its first leg
+## it says so, which is the player's first sight of it riding along.
 func _ride_in(ship: Enemy) -> void:
 	var first_leg: bool = fights_left >= escort.fights \
 		and Globals.state_manager and Globals.state_manager.get_restore().is_empty()
-	await Globals.enemy_manager.move_escort(ship, EnemyManager.ESCORT_SLOT)
+	await Globals.enemy_manager.jump_escort_in(ship)
 	if first_leg and is_instance_valid(ship) and ship.health.health > 0 and ship.scenario_state:
 		ship.dialogue_manager.show_dialogue(ship.scenario_state.display_dialogue(), ship.scenario_state.faction)
 
