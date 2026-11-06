@@ -52,7 +52,8 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   Pirates Attacking Civilian†, What Came Back†, Wolf in the Fold (an Undertow
   infiltrator in a Caravan hull), Turn Around (a Zealot leading a family
   inward), Still on Patrol†, Recruiter (a Pilgrim talks a tired Caravan family
-  into flying inward).
+  into flying inward), Shipwright (an Outrigger courier wants past the Arc
+  Dynamo; dealt every sector 2 while the Outrigger is locked, never at random).
 - **Elites:** Hunter-Killers† (an Undertow fighter and Jackal with a Rearguard drone:
   someone paid for you), Repossession (an Arbiter and Tug kept running by a Field Tender:
   *"Your lien is due."*), Wake Riders†, Twin Flames (a Zealot, Censer and the Pilgrim
@@ -312,6 +313,25 @@ people behind."*
 
 The towed ship fights under `BOSS`, which raises no attack event. Shooting it doesn't
 make the tug think it was attacked, and `BOSS_DEFEATED` reads as "the tow was cut".
+
+### Shipwright — `EVENT_Shipwright` (sector 2, earns the Outrigger)
+An **Outrigger** courier from a shipyard the Chancellor cut loose. *"Chancellor cut
+us loose. Escort me?"* Its down payment floats beside it (one pick, or 12-20
+credits). Not in the random mix: `outrigger.tres` deals it into every sector 2
+while the ship is still locked (`ShipResource.unlock_scenario`).
+- **Take the payment:** *"Stay close. The Dynamo won't wait."* It rides along as
+  an escort to the gate (`rides_to_gate`): Raids whoever fights you, shields
+  itself. — Mercy
+- **Get it through the Arc Dynamo:** the gate waits while it talks from its slot.
+  *"It waited for one ship after all."* (the Dynamo's own line was *"The Belly
+  can't wait for one ship."*), *"Sending you her drive plans."*, *"Build one.
+  Leave nobody behind."* It jumps away, Caravan standing +2
+  (`caravan_courier_delivered`), and the ship-unlock card gives the player the
+  Outrigger for good.
+- **Shoot it:** *"You're no better than the Chancellor!"* It flees, and the
+  Outrigger isn't earned this run. `caravan_betrayed` (-3). — Ruin
+- **Lose it on the way:** no unlock this run, no standing lost. Next run's
+  sector 2 offers the job again.
 
 ## Inbound — "Stop running."
 

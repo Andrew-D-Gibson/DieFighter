@@ -841,6 +841,14 @@ with conditions.
   WAIT and FLEE), `fights` and a money-only `payout`. Pair it with
   `REMEMBER_SHIP ally` on the same state: the Reckoning counts the ship once,
   from that, whether or not it made it. ARCHITECTURE "Escorts".
+  - **To the gate** (`rides_to_gate`, the Outrigger courier): `fights` is
+    ignored; it rides until the sector's gate fight is won and says goodbye
+    there from its slot, with the jump held until it's done. Its extra lines
+    go in `farewell_lead_in`, one state each (dialogue only), said in order
+    before the farewell state. `unlocks_ship` (a ship `id`) earns that ship
+    when it's delivered and shows the ship-unlock card once it has gone; a
+    `payout` is optional. A gate escort takes the slot from one already
+    riding, which says goodbye early.
 - **`holds_fire`** on a state: every intent the ship rolls is silenced, so
   dice handed to it do nothing. For a crew that has surrendered.
 - **Surrender** (`0GenericShipStates/rearguard_combatant.tres`): an
@@ -1416,7 +1424,16 @@ AudioStreamPlayer.
    awaitable `advance_mechanism(steps)` for `ADVANCE_SHIP_MECHANISM` (§1).
    The Outrigger's `OutriggerSync` and the Carousel's `CarouselBehavior`
    are the references.
-10. Check balance against the Die Fighter on the same seeds:
+10. **Locked until earned** (optional): `starts_locked`, an `unlock_hint`
+   (a `translations.csv` key: a rumour of how to earn it, shown greyed out
+   on its card) and how it's earned. For an encounter, set `unlock_scenario`
+   and `unlock_sector` (0-based): it's dealt onto an ordinary stop of that
+   sector in each of the player's own runs while the ship is locked, never
+   into the random mix. The encounter earns it with an escort's
+   `unlocks_ship` (§4), or `ShipUnlocks.unlock(id)` from code. The two
+   reference each other by `id` only, since `.tres` files can't load in a
+   circle. The Outrigger's `EVENT_Shipwright` is the reference.
+11. Check balance against the Die Fighter on the same seeds:
    `tools/autoplay.sh --seed 1 --runs 24 --policy smart -- --ship=<id>`.
    Teach the bot the ship's rule if it plays it badly.
 
