@@ -285,9 +285,9 @@ func _target_step(data: EffectData, walk: _Walk) -> void:
 			if is_instance_valid(_target):
 				targeted.append(_target)
 			walk.context.targets = targeted
-		EffectEnums.TargetingSubtype.TARGET_RANDOM_ENEMY, \
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_OTHER_ENEMY:
 			_spread(walk, _roster)
+		EffectEnums.TargetingSubtype.TARGET_RANDOM_ENEMY, \
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_HOSTILE_ENEMY:
 			_spread(walk, TargetRandomHostileEnemyHandler.hostiles_in(_roster))
 		EffectEnums.TargetingSubtype.TARGET_RANDOM_SHIP:

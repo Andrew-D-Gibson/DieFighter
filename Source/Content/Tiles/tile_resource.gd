@@ -58,6 +58,50 @@ enum Rarity {COMMON, UNCOMMON, RARE}
 @export var max_dice_in_queue: int = -1
 
 
+## Whether this tile's chain hurts or debuffs the ship the targeting computer
+## is on (damage, a status, stolen hull), as opposed to helping or only moving
+## the die. Read off the chain, not authored, so it can't drift from what the
+## tile does. Only steps after TARGET_WITH_TARGETING_COMPUTER count: a hit on
+## "you" or on every enemy doesn't depend on which ship is targeted.
+func hits_targeted_ship() -> bool:
+	if _hits_targeted_ship < 0:
+		var hits: bool = effect_chain != null and _chain_hits_targeted(effect_chain.effects, false)
+		_hits_targeted_ship = 1 if hits else 0
+	return _hits_targeted_ship == 1
+
+
+## -1 until hits_targeted_ship() first works it out.
+var _hits_targeted_ship: int = -1
+
+const _AGGRESSIVE_SUBTYPES: Array[EffectEnums.AttributeChangeSubtype] = [
+	EffectEnums.AttributeChangeSubtype.DAMAGE,
+	EffectEnums.AttributeChangeSubtype.ION_DAMAGE,
+	EffectEnums.AttributeChangeSubtype.BOUNTY_DAMAGE,
+	EffectEnums.AttributeChangeSubtype.STEAL_HULL,
+	EffectEnums.AttributeChangeSubtype.APPLY_STATUS,
+	EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES,
+	EffectEnums.AttributeChangeSubtype.MULTIPLY_STATUSES,
+]
+
+
+## [param aimed] is whether the targeting so far is the computer's ship.
+static func _chain_hits_targeted(effects: Array[EffectData], aimed: bool) -> bool:
+	for effect: EffectData in effects:
+		if effect == null:
+			continue
+		if effect is ConditionalEffectData:
+			var conditional: ConditionalEffectData = effect
+			if _chain_hits_targeted(conditional.if_true_effects, aimed) \
+					or _chain_hits_targeted(conditional.if_false_effects, aimed):
+				return true
+		elif effect.category == EffectEnums.Category.TARGETING:
+			aimed = effect.subtype == EffectEnums.TargetingSubtype.TARGET_WITH_TARGETING_COMPUTER
+		elif aimed and effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
+				and effect.subtype in _AGGRESSIVE_SUBTYPES:
+			return true
+	return false
+
+
 ## The name, in the current language, with its colour tag.
 func display_name() -> String:
 	return ContentText.text(self, &"tile_name")

@@ -216,7 +216,11 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
     behind (3x die, then +2). Tick `amplify_multiplier` when the multiplier
     is the tile's amount, so Amplify grows it instead (Preflight Interlock:
     3x die Amplified +2 is 5x die), and the info panel names the new
-    multiplier. Text: `damage equal to {times}x die`.
+    multiplier. A `multiply_shields` step does the same by itself (Fortress
+    Protocol: x2 Amplified +4 is x6). Text: `damage equal to {times}x die`.
+    Other `{times}x` tiles (Blowtorch, Discharge Plate, Lone Wolf Lance,
+    Time Bomb, Pair Lock, Bleed Valve, Overpressure Lance) don't tick it, so an
+    Amplifier adds flat to them.
   - **Ship readings**: `AMOUNT_MODIFIER / SET_TO_SHIP_READING`
     (`string_param` = the reading) sets the running amount to a number the
     flown ship's own rules keep, or adds it with `add_to_amount` (§12). 0 on
@@ -272,12 +276,14 @@ that list to change it. See ARCHITECTURE_OVERVIEW "Tile Unlocks".
   ship landed and targeted), so it is safe to target enemies from it.
   - Event responses skip `activation_checks`. A response that can fire
     outside combat (`ON_PLAYER_SHIELDS_GAINED`, since shield tiles work
-    anywhere) and hits a random enemy must wrap its chain in `IF_IN_COMBAT`,
-    or it can attack a merchant (Repulsor Field). Mid-fight a random enemy
-    can still be an ally or a bystander; a passive that must only hit the
-    ships fighting the player aims with `TARGET_RANDOM_HOSTILE_ENEMY`
-    (AGGRESSIVE ships only, nothing when there are none) and says
-    `random hostile enemy` (Spark Gap).
+    anywhere) and hits a random enemy should still wrap its chain in
+    `IF_IN_COMBAT`, so it doesn't fire outside a fight (Repulsor Field).
+    "Enemy" always means a hostile (AGGRESSIVE) ship: `TARGET_ENEMIES` and
+    `TARGET_RANDOM_ENEMY` never pick an ally, a civilian or a neutral, and
+    pick nothing when there are none. Text says `every enemy` and `random
+    enemy`, never "hostile enemy". `TARGET_RANDOM_HOSTILE_ENEMY` is the same
+    pick, kept for the tiles that stored its ordinal (Spark Gap). Effects
+    that mean every ship say `all ships` (`TARGET_ALL_SHIPS`).
   - A tile that spends or cashes in shields gates on `SHIELDS_AT_LEAST`, and
     pays with `SPEND_SHIELDS`, not a negative `SHIELD`: that would read as a
     hit and set off anything listening for one.
@@ -487,6 +493,13 @@ with `` ` ``. `set_dice 1 2 3`, `reset_uses` and `charge_engines` help set up a 
 - `indicator_texture`, `info_texture`, `effect_chain`.
 - `intent_amount` here is only a placeholder. The option that rolls the action
   sets the real value.
+- **Ships on the player's side never attack the player.** An action that hurts
+  the player (`EnemyActionResource.hurts_player()`: damage, a status, stolen
+  hull, money or charge on a target that includes the player, or a lockout or
+  push on the grid) is never rolled by a friendly or neutral ship, and a
+  table rolled while hostile plays as a blocked slot once the ship turns. It
+  is read off the chain, so nothing needs tagging, and a pool can list the
+  attacks it uses as a hostile ship. Fleeing and keeping dice aren't attacks.
 
 **Chain shape:**
 1. Visuals and sound.

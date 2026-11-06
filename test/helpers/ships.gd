@@ -39,6 +39,15 @@ static func attack() -> EnemyActionResource:
 
 
 ## Shields itself, then feeds the die to its bound ally.
+## An action that does nothing to the player: the filler a ship on the player's
+## side can still roll, where Attack is gated out for it.
+static func idle() -> EnemyActionResource:
+	var effects: Array[EffectData] = [
+		Effects.data(Cat.TARGETING, EffectEnums.TargetingSubtype.TARGET_SELF),
+	]
+	return action("Idle", effects)
+
+
 static func relay() -> EnemyActionResource:
 	var effects: Array[EffectData] = [
 		Effects.data(Cat.TARGETING, EffectEnums.TargetingSubtype.TARGET_SELF),

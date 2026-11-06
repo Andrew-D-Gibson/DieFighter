@@ -34,6 +34,8 @@ func before_each() -> void:
 	# The Dice Cannon takes a die only while a ship is targeted.
 	enemy = autofree(ENEMY_SCENE.instantiate())
 	enemy.scenario_state = ScenarioShipState.new()
+	# A foe: attack tiles refuse a die that would fall onto a ship on the player's side.
+	enemy.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
 	var computer: TargetingComputer = autofree(TargetingComputer.new())
 	computer.targeted_enemy = enemy
 	Globals.targeting_computer = computer

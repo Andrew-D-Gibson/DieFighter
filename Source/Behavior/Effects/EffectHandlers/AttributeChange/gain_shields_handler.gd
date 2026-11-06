@@ -16,7 +16,10 @@ func apply(data: EffectData, context: EffectContext, engine: ScenarioEngine) -> 
 				continue
 			var event: ShieldEvent = _make_event(context, [target])
 			event.amount += roundi(health.shields * (data.multiplier - 1.0))
-			event.amplification_unit = roundi(health.shields * data.multiplier)
+			# Each point of Amplify adds one more copy of the shields, so x2
+			# Amplified +4 is x6. The unit is the base, not the product: using
+			# the product made +4 on a x2 worth 4 more x2s (x10).
+			event.amplification_unit = health.shields
 			engine.inject_event(event)
 	else:
 		engine.inject_event(_make_event(context, context.targets.duplicate()))
