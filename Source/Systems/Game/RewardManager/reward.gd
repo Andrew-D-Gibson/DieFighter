@@ -158,6 +158,12 @@ func _node_for_item(entry: Dictionary) -> Node2D:
 
 
 func _present(offered: Array[Node2D]) -> void:
+	# Called off during the payout pause: nothing was ever on show.
+	if _dismissing:
+		for node: Node2D in offered:
+			if is_instance_valid(node):
+				node.queue_free()
+		return
 	# Fade in
 	show()
 	var tween_time: float = 0.5
@@ -367,6 +373,20 @@ func _clear_away(chosen: Node) -> void:
 		delay += _DISMISS_STAGGER
 
 	get_tree().create_timer(delay + _DISMISS_POP_TIME).timeout.connect(queue_free)
+
+
+## The encounter calls the offer off (RewardManager.withdraw_offers): every
+## choice pops away untaken, the way the rest of an offer does once one is
+## picked. Before the offer is on show there is nothing to animate.
+func withdraw() -> void:
+	if _dismissing:
+		return
+	if not visible or rewards.is_empty():
+		_dismissing = true
+		items.clear()
+		queue_free()
+		return
+	_clear_away(null)
 
 
 ## Jumping away abandons the offer. It's left behind with the wreck it came

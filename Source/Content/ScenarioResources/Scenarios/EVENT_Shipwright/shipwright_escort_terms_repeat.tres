@@ -3,10 +3,8 @@
 [ext_resource type="Script" uid="uid://bt2nwvjorgbii" path="res://Source/Content/ScenarioResources/escort_resource.gd" id="terms"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="reward"]
 [ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/outrigger_courier.tres" id="courier"]
-[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_riding.tres" id="riding"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_riding_repeat.tres" id="riding"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_farewell_repeat.tres" id="farewell"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_gate_won.tres" id="lead_in"]
 
 [sub_resource type="Resource" id="payout"]
 script = ExtResource("reward")
@@ -20,5 +18,4 @@ ship_resource = ExtResource("courier")
 escort_state = ExtResource("riding")
 farewell_state = ExtResource("farewell")
 payout = SubResource("payout")
-rides_to_gate = true
-farewell_lead_in = Array[ExtResource("state")]([ExtResource("lead_in")])
+fights = 2

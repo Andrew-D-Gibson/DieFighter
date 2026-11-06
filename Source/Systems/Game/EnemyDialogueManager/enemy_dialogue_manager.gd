@@ -113,6 +113,13 @@ var _text_offset: Vector2 = Vector2.ZERO
 ## How far the box has slid up or down past its tail, to stay on screen or
 ## clear of a neighbour's bubble while the tail still points at the ship.
 var _box_dy: float = 0.0
+## How far, on screen, the row this box settled on sits from the one beside
+## its ship, and whether it has settled (it has, from the moment its line
+## shows until the line is gone). A box that dropped to clear a neighbour's
+## stays dropped when that neighbour's box closes, rather than popping back up
+## in the middle of its own line. See [method _separated_rest].
+var _row_dy: float = 0.0
+var _row_settled: bool = false
 
 ## How far past [member anchor] the box currently sits; negative when it is
 ## tucked in. See [member left_clearance] and [member max_tuck].
@@ -334,6 +341,7 @@ func _stow() -> void:
 ## Out of [member stow_point] and up beside the ship: the fold played
 ## backwards, so the player sees where the line was kept.
 func _unfold() -> void:
+	_row_settled = false
 	_stop_motion()
 	_out = true
 	_stowed_at = stow_point.call()
@@ -406,6 +414,7 @@ func _on_jump() -> void:
 
 
 func _start_fade_in() -> void:
+	_row_settled = false
 	_stop_motion()
 	_out = true
 	show()
@@ -592,7 +601,12 @@ func _separated_rest(rest: Vector2) -> Vector2:
 	var high: Vector2 = Globals.SCREEN_SIZE - low
 	var center: Vector2 = start.clamp(low, high)
 	var occupied: Array[Rect2] = []
-	var rows: Array[float] = [center.y]
+	# The row it settled on counts as a candidate, and the one it prefers: with
+	# no neighbour on top of it, it stays where it is.
+	var held_y: float = clampf(center.y + _row_dy, low.y, high.y) if _row_settled else center.y
+	var rows: Array[float] = [held_y]
+	if not is_equal_approx(held_y, center.y):
+		rows.append(center.y)
 	for node: Node in get_tree().get_nodes_in_group(&"enemy_dialogue_boxes"):
 		var other: EnemyDialogueManager = node as EnemyDialogueManager
 		if other == self or not other._out or not other.visible \
@@ -608,13 +622,15 @@ func _separated_rest(rest: Vector2) -> Vector2:
 	var best_score: float = INF
 	for row: float in rows:
 		var candidate: Rect2 = Rect2(Vector2(center.x, row) - half, half * 2.0)
-		var score: float = absf(row - center.y)
+		var score: float = absf(row - held_y)
 		for rect: Rect2 in occupied:
 			if candidate.intersects(rect):
 				score += 1000.0
 		if score < best_score:
 			best_y = row
 			best_score = score
+	_row_dy = best_y - center.y
+	_row_settled = _out
 	center.y = best_y
 
 	var slide: float = maxf(half.y - _TAIL_INSET, 0.0)

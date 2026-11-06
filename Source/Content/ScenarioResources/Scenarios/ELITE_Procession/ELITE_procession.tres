@@ -66,6 +66,6 @@ starting_enemies = Array[ExtResource("script_1")]([SubResource("Resource_spawn_p
 rewards = Dictionary[int, ExtResource("script_2")]({
 0: SubResource("Resource_bounty")
 })
-sectors = 6
+sectors = 2
 enemy_hull_multiplier = 1.4
 enemy_damage_multiplier = 1.4
