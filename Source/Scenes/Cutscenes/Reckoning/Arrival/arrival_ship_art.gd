@@ -13,6 +13,9 @@ extends RefCounted
 ## Every ship is drawn at this share of its combat size. One scale for all,
 ## so ships keep their sizes relative to each other.
 const SCALE: float = 0.5
+## The carried die's width and height: one pixel more than half the combat
+## die, so its six pips each get a pixel of their own (see carried_die()).
+const DIE_SIZE: int = 7
 
 ## Where the flames leave a ship with no exhaust points of its own: the
 ## ShipResource default.
@@ -119,12 +122,29 @@ static func _hull_texture(graphics: Node2D) -> Texture2D:
 	return null
 
 
-## A small thing (the die the last ship carries) at [param width] pixels.
-static func shrink_texture(texture: Texture2D, width: int) -> ImageTexture:
-	var image: Image = _image_of(texture)
-	var key: String = "%s@%d" % [texture.resource_path, width]
-	if not _cache.has(key):
-		_cache[key] = ImageTexture.create_from_image(PixelArtShrinker.shrink(image, width))
+## The six the last ship carries, [constant DIE_SIZE] pixels across, drawn
+## here rather than shrunk. The combat die is 12x12 with 2x2 pips; at this
+## scale (a 6x6) two pips a row and three a column would have to share
+## pixels and blur into a smudge. At 7x7 each pip is one pixel with a pixel
+## of body between them and round them, so all six read. The colours are the
+## combat die's own.
+static func carried_die(source: Texture2D) -> ImageTexture:
+	var key: String = "%s#carried" % source.resource_path
+	if _cache.has(key):
+		return _cache[key]
+	var image: Image = _image_of(source)
+	var body: Color = image.get_pixel(1, 5)
+	var pip: Color = image.get_pixel(2, 2)
+	var drawn: Image = Image.create_empty(DIE_SIZE, DIE_SIZE, false, Image.FORMAT_RGBA8)
+	drawn.fill(body)
+	# Corners cut, as the combat die's are.
+	for corner: Vector2i in [Vector2i(0, 0), Vector2i(DIE_SIZE - 1, 0), Vector2i(0, DIE_SIZE - 1),
+			Vector2i(DIE_SIZE - 1, DIE_SIZE - 1)]:
+		drawn.set_pixelv(corner, Color(0, 0, 0, 0))
+	for x: int in [1, DIE_SIZE - 2]:
+		for y: int in [1, DIE_SIZE / 2, DIE_SIZE - 2]:
+			drawn.set_pixel(x, y, pip)
+	_cache[key] = ImageTexture.create_from_image(drawn)
 	return _cache[key]
 
 

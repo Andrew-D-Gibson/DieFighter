@@ -41,6 +41,8 @@ const _CHIME_STEPS: PackedFloat32Array = [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 
 const _CHIME_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/glass_tinkle.tres")
 const _FLARE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/shop_stock_pop.tres")
 const _DIALOGUE_SCENE: PackedScene = preload("res://Source/Systems/Game/EnemyDialogueManager/enemy_dialogue_manager.tscn")
+const _GLITCH_SCENE: PackedScene = preload("res://Source/Systems/UI/Glitch/glitch_shader.tscn")
+const _COMMS_BREAK_SHADER: Shader = preload("res://Assets/Shaders/comms_break.gdshader")
 
 const _OPEN_SECONDS: float = 1.4
 const _CLOSE_SECONDS: float = 1.4
@@ -48,12 +50,29 @@ const _CLOSE_SECONDS: float = 1.4
 const _CREDITS_SPEED: float = 20.0
 const _TYPE_SPEED: float = 14.0
 
-## The convoy's chatter (§9), by who says it; anyone can say the first.
-const _CHATTER_ANYONE: String = "ENDING_ARRIVAL_CHATTER_OUT"
+## The convoy's chatter (§9), by who says it: each faction has its own relief
+## (the Caravan's families, the Rearguard's line that finally holds, the
+## Undertow's slow ones, the Inbound who can stop running). Anyone can say the
+## rest, and a faction with no line of its own takes one of them.
+const _CHATTER_ANYONE: Array[String] = ["ENDING_ARRIVAL_CHATTER_OUT", "ENDING_ARRIVAL_CHATTER_FREE"]
 const _CHATTER_BY_FACTION: Dictionary[StringName, String] = {
-	&"rearguard": "ENDING_ARRIVAL_CHATTER_NO_HOLE",
-	&"caravan": "ENDING_ARRIVAL_CHATTER_DRINKS",
+	&"caravan": "ENDING_ARRIVAL_CHATTER_CARAVAN",
+	&"rearguard": "ENDING_ARRIVAL_CHATTER_REARGUARD",
+	&"undertow": "ENDING_ARRIVAL_CHATTER_UNDERTOW",
+	&"inbound": "ENDING_ARRIVAL_CHATTER_INBOUND",
 }
+## At most this many ships talk at once over the joy.
+const _MAX_CHATTER: int = 4
+
+## "Pilot? ...Pilot?" is held this long, once it has typed out, for the player
+## to read it before the signal breaks, and the break takes this long.
+const _COMMS_HOLD_SECONDS: float = 2.6
+const _COMMS_BREAK_SECONDS: float = 1.1
+## How far the sky's planets drift for each unit of the stars' speed: they're
+## far away, so they barely move against even the convoy setting off.
+const _PLANET_PARALLAX: float = 0.1
+## The sky's cold white, for the confetti beside the fleet's colours.
+const _CONFETTI_WHITE: Color = Color("#cef0f1")
 
 var _timeline: Tween
 var _jump_fx: JumpFx
@@ -67,6 +86,10 @@ var _hum: ArrivalHum
 var _credits: ArrivalCredits
 var _closing: bool = false
 var _hidden_cursor_layer: CanvasLayer
+## Where the planets sit when the stars are still, and how far the stars'
+## speed has carried them since.
+var _planet_homes: Dictionary[Node2D, Vector2] = {}
+var _planet_drift: float = 0.0
 
 @onready var _star_layer: CanvasLayer = $StarLayer
 @onready var _pixel_layer: CanvasLayer = $PixelLayer
@@ -75,6 +98,9 @@ var _hidden_cursor_layer: CanvasLayer
 @onready var _convoy: Node2D = %Convoy
 @onready var _effects: Node2D = %Effects
 @onready var _words: Node2D = %Words
+@onready var _wash: ColorRect = %Wash
+@onready var _gas_giant: Node2D = %GasGiant
+@onready var _moon: Node2D = %Moon
 
 
 func _ready() -> void:
@@ -87,6 +113,10 @@ func _ready() -> void:
 	_hide_cursor(true)
 	_jump_fx = JumpFx.new(_effects, true)
 	_build_sky()
+	var glitch: CanvasLayer = CanvasLayer.new()
+	glitch.layer = 94
+	glitch.add_child(_GLITCH_SCENE.instantiate())
+	add_child(glitch)
 	# Whatever the fight was playing is gone: Alone has no music at all, and
 	# the others bring theirs in on cue.
 	MusicDirector.stop(1.0)
@@ -103,8 +133,9 @@ func _ready() -> void:
 			_shoot_alone()
 
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	_frame_shot()
+	_drift_planets(delta)
 
 
 # --- Alone ------------------------------------------------------------------
@@ -131,7 +162,7 @@ func _shoot_alone() -> void:
 	_ease(enter + 6.5, _hum, "hum_level", 0.4, 0.6)
 	_cue(enter + 11.0, _twinkle)
 	if not ending.left_behind.is_empty():
-		_comms_crackle(enter + crossing * 0.48)
+		_comms_crackle(enter + crossing * 0.42)
 
 	# The ship leaves; the sky holds; the hum fades under the silent credits.
 	var gone: float = enter + crossing
@@ -147,29 +178,57 @@ func _shoot_alone() -> void:
 
 
 ## "Pilot? ...Pilot?" from someone left behind, out past the left of the
-## frame, and the static cuts out mid-word. The ship doesn't slow.
+## frame. It types out and hangs there long enough to read, the static
+## cutting out mid-word, and then the signal breaks apart (comms_break.gdshader
+## and a burst of the screen glitch) into silence. The ship doesn't slow.
 func _comms_crackle(at: float) -> void:
 	var from: Node2D = Node2D.new()
-	from.position = Vector2(-2, 46)
+	# Low on the left, below the moon.
+	from.position = Vector2(-2, 76)
 	_effects.add_child(from)
 	var bubble: EnemyDialogueManager = _DIALOGUE_SCENE.instantiate() as EnemyDialogueManager
 	bubble.z_index = 30
 	# Silent until it speaks: the box would otherwise show its placeholder.
 	bubble.hide()
+	# Up quickly, and never fading on its own: only the break ends it.
+	bubble.fade_time = 0.2
+	bubble.dialogue_time_shown = 600.0
 	from.add_child(bubble)
+	# The box and its words break together: the label takes the box's material.
+	var breaking: ShaderMaterial = ShaderMaterial.new()
+	breaking.shader = _COMMS_BREAK_SHADER
+	# Set, so the parameter exists to be tweened.
+	breaking.set_shader_parameter("progress", 0.0)
+	bubble.material = breaking
+	(bubble.get_node("%RichTextLabel") as RichTextLabel).use_parent_material = true
+
 	var line: String = tr(&"ENDING_ARRIVAL_ALONE_COMMS")
 	# Cut a fifth short: the end of the second word never comes.
 	var heard: String = line.left(maxi(1, line.length() - ceili(line.length() * 0.2)))
 	var reveal: float = bubble.character_reveal_time * heard.length()
+	var shown: float = at + 0.35
+	# The static rises to meet it, then sinks under the words.
 	_ease(at, _hum, "static_level", 0.7, 0.15)
-	_cue(at + 0.35, bubble.show_dialogue.bind(heard, ScenarioManager.Faction.CIVILIAN, false))
-	_cue(at + 0.35 + reveal + 0.05, func() -> void:
+	_ease(shown + 0.4, _hum, "static_level", 0.22, 0.5)
+	_cue(shown, bubble.show_dialogue.bind(heard, ScenarioManager.Faction.CIVILIAN, false))
+
+	# Held to be read, then it goes: a burst of static and the screen's glitch,
+	# the box coming apart pixel by pixel, the hum sagging, and then nothing.
+	var broke: float = shown + reveal + _COMMS_HOLD_SECONDS
+	_cue(broke, func() -> void:
+		_hum.static_level = 0.9
+		Events.glitch_burst.emit(int(_COMMS_BREAK_SECONDS * 450.0))
+		_player.engine_power = 0.25)
+	_ease(broke, breaking, "shader_parameter/progress", 1.0, _COMMS_BREAK_SECONDS,
+		Tween.TRANS_QUAD, Tween.EASE_IN)
+	_ease(broke, _hum, "pitch", 0.8, 2.4)
+	_cue(broke + _COMMS_BREAK_SECONDS, func() -> void:
 		_hum.static_level = 0.0
 		bubble.hide())
 
 
 func _twinkle() -> void:
-	var at: Vector2 = _starfield.bright_star_point(_player.position)
+	var at: Vector2 = _starfield.bright_star_point(_player.position if _player else Vector2(160, 90))
 	var glint: JuiceGlint = JuiceGlint.new()
 	glint.color = Color("#cef0f1")
 	glint.reach = 2.0
@@ -203,6 +262,7 @@ func _shoot_convoy() -> void:
 		var color: Color = _GOLD if ship == _player else ship.art.color
 		_cue(joy + i * 0.38 + _randf(0.0, 0.2), _fire_flare.bind(ship, color, 1.0))
 	_schedule_chatter(joy + 0.5)
+	_schedule_celebration(joy, ships.size())
 
 	var set_off: float = joy + 5.5
 	if ending.perfect:
@@ -234,13 +294,21 @@ func _schedule_perfect(at: float) -> float:
 		Events.play_sound.emit(_FLARE_SFX)
 		for ship: ArrivalShip in _arrivals:
 			for i: int in 2:
-				_fire_flare(ship, ship.art.color, 1.0, false)
+				_fire_flare(ship, ship.art.color, 1.0, false, 0.0, 12)
 		for i: int in 5:
-			_fire_flare(_player, _GOLD, 1.0, false)
-		_jump_fx.ring(_player.global_position, _GOLD, 4.0, 30.0, 0.6))
+			_fire_flare(_player, _GOLD, 1.0, false, 0.0, 14)
+		# Gold rings out from the point, one after another, and the whole sky
+		# warms for a breath: the biggest moment the game has.
+		for i: int in 3:
+			_player.create_tween().tween_callback(_jump_fx.ring.bind(
+				_player.global_position, _GOLD, 4.0, 30.0 + i * 16.0, 0.6 + i * 0.15)).set_delay(i * 0.18)
+		Juice.sparkle(_effects, _player.global_position, _GOLD, 24, 80.0))
+	_flash_gold(burst, 0.3, 1.1)
+	_cue(burst + 0.2, _spawn_confetti.bind(110, 2.6, _fleet_colors(2)))
 
 	# 4c. "No one is behind you." types over the formation.
-	var words: Label = _line(tr(&"ENDING_ARRIVAL_PERFECT"), _GOLD, 34.0)
+	# Under the formation, clear of the planet and the top ship.
+	var words: Label = _line(tr(&"ENDING_ARRIVAL_PERFECT"), _GOLD, 138.0)
 	words.visible_characters = 0
 	var typed: float = at + 4.4
 	var letters: int = words.text.length()
@@ -252,21 +320,65 @@ func _schedule_perfect(at: float) -> float:
 	return set_off
 
 
-## Up to three overlapping lines in speech bubbles, each ship saying its own
-## faction's line, front ships first.
+## Overlapping lines in speech bubbles, front ships first, each ship saying
+## its own faction's line when it has one that hasn't been said yet, else one
+## anyone could say. No line is said twice.
 func _schedule_chatter(at: float) -> void:
-	var lines: Array[String] = [_CHATTER_ANYONE]
-	lines.append_array(_CHATTER_BY_FACTION.values())
+	var shared: Array[String] = _CHATTER_ANYONE.duplicate()
+	var said: Array[String] = []
 	var speaker: int = 0
 	for ship: ArrivalShip in _arrivals:
-		if lines.is_empty():
+		if speaker >= _MAX_CHATTER:
 			break
-		var line: String = _CHATTER_BY_FACTION.get(ship.art.faction_id, _CHATTER_ANYONE)
-		if not lines.has(line):
-			line = lines[0]
-		lines.erase(line)
+		var line: String = _CHATTER_BY_FACTION.get(ship.art.faction_id, "")
+		if line.is_empty() or said.has(line):
+			if shared.is_empty():
+				continue
+			line = shared.pop_front()
+		said.append(line)
 		_cue(at + speaker * 0.8, ship.say.bind(line))
 		speaker += 1
+
+
+## What the joy looks like beyond the flares: stars twinkling about the sky,
+## a first shower of confetti in the fleet's colours, and a faint warm wash as
+## the flares go up. [param ships] is how many are in the convoy, the player
+## among them.
+func _schedule_celebration(joy: float, ships: int) -> void:
+	for i: int in 6:
+		_cue(joy + 0.4 + i * 0.85, _twinkle)
+	_flash_gold(joy + 0.2, 0.1, 0.8)
+	# The perfect version saves its confetti for the closing burst.
+	if not ending.perfect:
+		_cue(joy + 0.9, _spawn_confetti.bind(clampi(20 + ships * 5, 24, 60), 2.0, _fleet_colors(1)))
+
+
+## The fleet's colours for confetti, [param gold] shares of the player's gold
+## to each of every ship's own, and the sky's white among them.
+func _fleet_colors(gold: int) -> Array[Color]:
+	var colors: Array[Color] = []
+	for ship: ArrivalShip in _arrivals:
+		colors.append(ship.art.color)
+	for i: int in gold:
+		colors.append(_GOLD)
+	colors.append(_CONFETTI_WHITE)
+	return colors
+
+
+func _spawn_confetti(amount: int, spill_seconds: float, colors: Array[Color]) -> void:
+	var shower: ArrivalConfetti = ArrivalConfetti.new()
+	shower.amount = amount
+	shower.spill_seconds = spill_seconds
+	shower.colors = colors
+	_effects.add_child(shower)
+
+
+## The whole frame warms with the drive's gold for a breath, in the fleet's
+## own light rather than a flash of white. Faint under Reduce Flashing.
+func _flash_gold(at: float, alpha: float, seconds: float) -> void:
+	var peak: float = alpha * (0.3 if Globals.reduce_flashing else 1.0)
+	_ease(at, _wash, "color:a", peak, 0.15, Tween.TRANS_QUAD, Tween.EASE_OUT)
+	_ease(at + 0.15, _wash, "color:a", 0.0, seconds, Tween.TRANS_QUAD, Tween.EASE_OUT)
 
 
 # --- The Last Die, shot 2 ---------------------------------------------------
@@ -375,10 +487,12 @@ func _roll_credits(at: float, center_x: float, width: float, last_card: Array[Di
 	return at + seconds
 
 
-func _fire_flare(ship: ArrivalShip, color: Color, pace: float, sounded: bool = true, height: float = 0.0) -> void:
+func _fire_flare(ship: ArrivalShip, color: Color, pace: float, sounded: bool = true,
+		height: float = 0.0, sparks: int = 8) -> void:
 	var flare: ArrivalFlare = ArrivalFlare.new()
 	flare.color = color
 	flare.pace = pace
+	flare.spark_count = sparks
 	flare.height = height if height > 0.0 else _randf(26.0, 38.0)
 	flare.lean = _randf(-0.35, 0.35)
 	_effects.add_child(flare)
@@ -424,6 +538,19 @@ func _build_sky() -> void:
 		# The scene's own materials, kept apart so each holds its colour.
 		nebula.material = nebula.material.duplicate() as Material
 		nebula.set(&"speed", -0.002)
+	_planet_homes[_gas_giant] = _gas_giant.position
+	_planet_homes[_moon] = _moon.position
+
+
+## The planets slide left with the stars as the convoy sets off, far more
+## slowly than they do: they're a long way off. Whole pixels, so their discs
+## step on the art's grid like everything else.
+func _drift_planets(delta: float) -> void:
+	if _starfield == null:
+		return
+	_planet_drift += _starfield.speed * _PLANET_PARALLAX * delta
+	for planet: Node2D in _planet_homes:
+		planet.position = (_planet_homes[planet] - Vector2(_planet_drift, 0.0)).round()
 
 
 ## The formation the ending calls for, centred in the frame, and a hidden
@@ -486,20 +613,22 @@ func _all_ships() -> Array[ArrivalShip]:
 	return ships
 
 
-## A line of the film's own words across the frame, centred at
-## [param top]: in the art's pixels, outlined like the first ending's.
+## A line of the film's own words across the frame, [param top] art pixels
+## from its top, outlined like the first ending's. Drawn on the 1080p layer at
+## six screen pixels to a font pixel, as ArrivalCredits' text is, so it's
+## crisp: world fonts sampled down into the 320x180 viewport come out ragged.
 func _line(text: String, color: Color, top: float) -> Label:
 	var label: Label = Label.new()
 	label.text = text
-	label.theme_type_variation = FontRoles.slot(FontRoles.BODY)
+	label.theme_type_variation = FontRoles.slot(FontRoles.BODY, _ART_SCALE)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	label.add_theme_color_override("font_color", color)
 	label.add_theme_color_override("font_shadow_color", FateDieArt.OUTLINE)
 	label.add_theme_constant_override("shadow_offset_x", 0)
-	label.add_theme_constant_override("shadow_offset_y", 1)
+	label.add_theme_constant_override("shadow_offset_y", int(_ART_SCALE))
 	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	label.position = Vector2(0, top)
-	label.size = Vector2(Globals.SCREEN_SIZE.x, 0)
+	label.position = Vector2(0, roundf(top) * _ART_SCALE)
+	label.size = Vector2(Globals.SCREEN_SIZE.x * _ART_SCALE, 0)
 	_words.add_child(label)
 	return label
 

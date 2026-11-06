@@ -5,6 +5,8 @@
 [ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="3_twinkle"]
 [ext_resource type="PackedScene" uid="uid://bqnr0itscotaw" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/nebula.tscn" id="4_nebula"]
 [ext_resource type="Shader" uid="uid://bo7q4qcfw0qo2" path="res://Assets/Shaders/sprite_nebula.gdshader" id="5_nebula_shader"]
+[ext_resource type="PackedScene" path="res://Source/Scenes/Cutscenes/Reckoning/Arrival/arrival_gas_giant.tscn" id="6_giant"]
+[ext_resource type="PackedScene" path="res://Source/Scenes/Cutscenes/Reckoning/Arrival/arrival_moon.tscn" id="7_moon"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_green"]
 shader = ExtResource("5_nebula_shader")
@@ -19,6 +21,9 @@ shader_parameter/nebula_color = Vector4(0.741, 0.345, 0.059, 0.011)
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_premult"]
 blend_mode = 4
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+
 [node name="ArrivalCutscene" type="Node"]
 script = ExtResource("1_script")
 star_pixel_scene = ExtResource("2_star")
@@ -31,7 +36,7 @@ layer = 89
 offset_right = 1920.0
 offset_bottom = 1080.0
 mouse_filter = 2
-color = Color(0, 0, 0, 1)
+color = Color(0.04496, 0.0192, 0.24, 1)
 
 [node name="StarLayer" type="CanvasLayer" parent="."]
 layer = 90
@@ -64,6 +69,14 @@ render_target_update_mode = 4
 unique_name_in_owner = true
 z_index = -6
 
+[node name="GasGiant" parent="PixelLayer/PixelScreen/PixelWorld/Sky" instance=ExtResource("6_giant")]
+unique_name_in_owner = true
+position = Vector2(214, -100)
+
+[node name="Moon" parent="PixelLayer/PixelScreen/PixelWorld/Sky" instance=ExtResource("7_moon")]
+unique_name_in_owner = true
+position = Vector2(46, 34)
+
 [node name="NebulaGreen" parent="PixelLayer/PixelScreen/PixelWorld/Sky" instance=ExtResource("4_nebula")]
 unique_name_in_owner = true
 position = Vector2(150, 64)
@@ -84,9 +97,22 @@ z_index = 10
 unique_name_in_owner = true
 z_index = 20
 
-[node name="Words" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+[node name="WordsLayer" type="CanvasLayer" parent="."]
+layer = 92
+
+[node name="Words" type="Node2D" parent="WordsLayer"]
 unique_name_in_owner = true
-z_index = 34
+
+[node name="WashLayer" type="CanvasLayer" parent="."]
+layer = 93
+
+[node name="Wash" type="ColorRect" parent="WashLayer"]
+unique_name_in_owner = true
+material = SubResource("CanvasItemMaterial_add")
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0.933333, 0.827451, 0.364706, 0)
 
 [node name="CurtainLayer" type="CanvasLayer" parent="."]
 layer = 95

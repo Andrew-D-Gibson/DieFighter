@@ -93,8 +93,8 @@ func carry_die() -> void:
 	if _die:
 		return
 	_die = Sprite2D.new()
-	# At the ships' own scale, so it reads as the die from the fight.
-	_die.texture = ArrivalShipArt.shrink_texture(_DIE_TEXTURE, roundi(_DIE_TEXTURE.get_width() * ArrivalShipArt.SCALE))
+	# About the ships' own scale, a pixel up so all six pips read.
+	_die.texture = ArrivalShipArt.carried_die(_DIE_TEXTURE)
 	_die.centered = false
 	_die.z_index = 1
 	add_child(_die)
