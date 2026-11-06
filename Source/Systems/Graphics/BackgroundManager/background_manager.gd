@@ -308,6 +308,7 @@ func _set_background(
 	var bg_resource: BackgroundResource = background_resource as BackgroundResource
 	current_background = bg_resource
 	current_background_name = _determine_background_name(bg_resource)
+	_living_sky.set_events_allowed(not bg_resource.fate_themed)
 	self.self_modulate = bg_resource.background_color
 
 	# The layout gets its own stream, seeded by one BACKGROUND draw, so a

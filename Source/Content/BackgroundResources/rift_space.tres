@@ -28,7 +28,8 @@ metadata/_custom_type_script = "uid://cgosy7gnhi58w"
 
 [resource]
 script = ExtResource("1_bg")
-background_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+fate_themed = true
+background_color =Color(0.0156863, 0.00784314, 0.0901961, 1)
 hazard = ExtResource("haz_0")
 nebula = true
 nebula_color = Color(0.772549, 0.321569, 0.945098, 0.12)
