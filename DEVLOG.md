@@ -4,6 +4,16 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-06 — The Bastion confesses; one name per character
+
+- **The ending, staged.** The last ship to fall at the last gate is held whole (`Enemy.hold_death()`) while the rest of the wreck goes: on the Bastion, the hull breaks up around whichever of its three parts died last. The screen dims, that part stays lit (`EnemyGraphicsManager.set_spotlit()`), and the revelation plays a line at a time in the boss's own speech-box art, sliced and stretched to 132px (`FateRevelation._SpeechBox`), each line with a green Close. Clicking the dim finishes a line, Close moves on, and the last Close lets the kill play. Checked in play under Xvfb with the Aegis, the Core and the Batteries each dying last.
+- **The story, simplified** (LORE.md §1 "Keep it simple", §4 rewritten). The Marshal and the Vanguard are gone. **The Bastion** is the Rearguard's leader and the one who made the deal: the tithe feeds the hole, and the hole lets the Bastion live. Its death breaks the deal and Fate comes to collect. The confession is now eight lines in its own voice (`FATE_REVEAL_1`-`8`, speaker *THE BASTION, DYING*). LORE.md §4 lists the hints already in play (Tollkeeper, The Ledger, Tithe Run, Apostate).
+- **Renames:** the Vanguard Drive is the **Horizon Drive** (`ReckoningDirector.horizon_drive`; its resource and art files keep the `vanguard_drive` name so tile ids and saves don't change). The Bastion's card reads *"Leader of the Rearguard. Break it apart."*; the Tollkeeper says *"You're on the Bastion's list."*; the Ledger's Picket says *"Ask the Bastion where it goes."*
+- `content.csv` re-synced (which also caught a stale Overload keyword row that was failing `test_content_csv_is_in_sync`).
+- Open: the Arc Dynamo is still *"the Chancellor's reactor barge"* (LORE.md §11). Story boxes for other beats are planned in `STORY_BOXES_PLAN.md`.
+
+---
+
 ## 2026-11-05 — Trailer capture mode
 
 Everything `TRAILER_PLAN.md` §3 needs to shoot footage, and the plan itself rewritten against the game as it is: a beat sheet cut to `Trailer_1_updated.wav` (hook, depth, fun, story), and what's still worth building.

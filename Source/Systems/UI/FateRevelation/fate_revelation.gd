@@ -1,8 +1,9 @@
 class_name FateRevelation
 extends Node2D
-## The forbidden knowledge (LORE.md §4), passed on as the run's last boss
-## dies: there's a black hole ahead too, the fleet is being herded, and the
-## tithe was a sacrifice.
+## The forbidden knowledge (LORE.md §4), confessed by the Bastion, the
+## Rearguard's leader, as it dies at the run's last gate: there's a black hole
+## ahead too, the fleet is being herded, and the tithe was the Bastion's price
+## for its own life. Its death breaks that deal, so Fate comes to collect.
 ##
 ## The last ship to fall at the last gate (on the Bastion, whichever of its
 ## three parts went last) is held whole on screen while the rest of the wreck
@@ -13,13 +14,10 @@ extends Node2D
 ## Hearing it is Gate 1 of the secret fight: it outlives the run
 ## (CollectionManager.learn_fate_knowledge()), so the way back toward Fate can
 ## open on a later run. A player who has heard it before gets the short form.
-##
-## Until the Front and the Vanguard exist (LORE.md §3), the dying Marshal, who
-## commands the last gate, is the one who knows.
 
 const _LINES: Array[String] = [
 	"FATE_REVEAL_1", "FATE_REVEAL_2", "FATE_REVEAL_3", "FATE_REVEAL_4",
-	"FATE_REVEAL_5", "FATE_REVEAL_6", "FATE_REVEAL_7",
+	"FATE_REVEAL_5", "FATE_REVEAL_6", "FATE_REVEAL_7", "FATE_REVEAL_8",
 ]
 const _LINES_AGAIN: Array[String] = ["FATE_REVEAL_AGAIN_1", "FATE_REVEAL_AGAIN_2"]
 const _TYPE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/text_blip.tres")

@@ -128,7 +128,7 @@ func deed_count(id: String) -> int:
 
 
 ## The hidden condition of LORE.md §6: a player who never paid a tithe, and
-## turned at least one down, never paid into the Vanguard's deal.
+## turned at least one down, never paid into the Bastion's deal.
 func refused_every_tithe() -> bool:
 	return deed_count(DEED_TITHE_PAID) == 0 and deed_count(DEED_TITHE_REFUSED) > 0
 

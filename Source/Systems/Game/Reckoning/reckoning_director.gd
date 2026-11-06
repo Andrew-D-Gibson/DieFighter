@@ -3,7 +3,7 @@ extends Node
 ## The Reckoning (LORE.md §7): the secret fight against Fate itself, behind the
 ## last boss for a player who knows the secret and has carved every face of
 ## Fate's Die. Fate can't be killed. The player wins by filling an escape-
-## velocity meter (the Vanguard Drive turns dice into it) while:
+## velocity meter (the Horizon Drive turns dice into it) while:
 ##   - Fate throws the die they carved at the start of every round, and the
 ##     face that comes up bends the round (FateFaceResource.reckoning_chain);
 ##   - the hole spits back every ship they destroyed, in the reverse order of
@@ -28,7 +28,7 @@ signal horizon_changed()
 @export var ally_tile: TileResource
 @export var debt_tile: TileResource
 ## Stands in for the engine charger for the length of the fight.
-@export var vanguard_drive: TileResource
+@export var horizon_drive: TileResource
 
 @export_category('Tuning')
 ## The escape takes this many full drives (LORE.md §7: "around 3x").
@@ -205,7 +205,7 @@ func _begin(loaded: ScenarioResource) -> void:
 	if engine:
 		engine.add_modifier(HorizonModifier.new())
 
-	_swap_in_vanguard_drive()
+	_swap_in_horizon_drive()
 	_spawn_wave(_next_wave(), false)
 	horizon_changed.emit()
 
@@ -218,17 +218,17 @@ func _stop() -> void:
 		Globals.tile_grid.clear_swallowed_cells()
 
 
-## The dying Vanguard's drive (LORE.md §4) takes the engine charger's place.
-func _swap_in_vanguard_drive() -> void:
-	if not vanguard_drive:
+## The dying Bastion's drive (LORE.md §4) takes the engine charger's place.
+func _swap_in_horizon_drive() -> void:
+	if not horizon_drive:
 		return
 	_engine_tile = get_tree().get_first_node_in_group(&"engine_charger").get_node_or_null(^"EngineChargerTile") as Tile \
 		if get_tree().get_first_node_in_group(&"engine_charger") else null
 	if not _engine_tile:
 		return
-	if _engine_tile.tile_resource != vanguard_drive:
+	if _engine_tile.tile_resource != horizon_drive:
 		_engine_tile_resource = _engine_tile.tile_resource
-		_engine_tile.tile_resource = vanguard_drive
+		_engine_tile.tile_resource = horizon_drive
 
 
 func _restore_engine_tile() -> void:

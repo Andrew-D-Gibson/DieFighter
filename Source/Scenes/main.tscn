@@ -429,7 +429,7 @@ echo_state = ExtResource("reckoning_echo")
 spilled_pool = Array[ExtResource("script_enemy_resource")]([ExtResource("spilled_husk"), ExtResource("spilled_leech"), ExtResource("spilled_wisp"), ExtResource("spilled_maw"), ExtResource("spilled_shroud"), ExtResource("spilled_attacker")])
 ally_tile = ExtResource("tile_saved_ship")
 debt_tile = ExtResource("tile_old_debt")
-vanguard_drive = ExtResource("tile_vanguard_drive")
+horizon_drive = ExtResource("tile_vanguard_drive")
 
 [node name="JumpManager" parent="Systems" unique_id=1357262320 instance=ExtResource("27_nwhv6")]
 

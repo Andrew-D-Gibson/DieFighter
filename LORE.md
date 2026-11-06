@@ -28,6 +28,19 @@ You're one ship in that fleet, trying to get ahead.
 - **The sector is watching.** Your deeds travel ahead of you through the fleet. Factions
   remember, and so does Fate.
 
+### Keep it simple
+The story is told in one-line barks, boss cards and a few speech boxes, so it has to
+read at a glance. Rules of thumb:
+
+- **One name per character.** A boss is called by the name of the ship you fight. No
+  titles behind the name and no leader behind the leader.
+- **Each faction has at most one leader, and the leader is a boss.** If a character
+  never appears on screen, they don't exist.
+- **One secret, told once.** Everything else is a hint toward it (§4), never a second
+  twist.
+- **Say what a thing does.** Names like the Tithe Collector or the Horizon Drive explain
+  themselves; a reader shouldn't need this file to follow the game.
+
 ---
 
 ## 2. The Factions
@@ -49,6 +62,10 @@ thing standing between the Caravan and the horizon, or so they say. They claim t
 right to draft any ship and collect a **tithe** of dice from everyone who passes their
 checkpoints. Most of them truly believe the tithe buys the fleet time. (See §4 for
 where it actually goes.)
+
+They're led by **the Bastion**, a fortress ship that has given the Rearguard its orders
+for four hundred years. The name is ironic twice over: the Rearguard doesn't sit at the
+rear (§3), and the Bastion was never protecting anyone but itself (§4).
 
 ### The Undertow
 Pirates who live in the fleet's wake, where the stragglers fall behind. They pick off
@@ -99,10 +116,11 @@ paid a different price for it.
 |---|---|---|---|
 | 1 | **The Tail** | Wreckage, stragglers, Fate visible on the horizon behind you. Mostly Undertow. | **An Undertow warlord** (the Sector Warden) who survives by eating the slow. *"Everyone back here is already dead. I'm just the one who noticed."* |
 | 2 | **The Belly** | The Caravan's heart: markets, medics, generation ships. Most shops and civilian events. | **The Caravan's Chancellor**, who keeps the Caravan moving by deciding who gets left behind. Sympathetic, maybe even right. |
-| 3 | **The Spine** | Rearguard territory: checkpoints, tolls, Tithe Collectors, warships. | **The Marshal of the Rearguard**, who has held the line their whole life and just wants one ship to make it. |
-| Final | **The Front** | Empty, quiet, beautiful, and wrong. | **The Vanguard.** |
+| 3 | **The Spine** | Rearguard territory: checkpoints, tolls, Tithe Collectors, warships. | **The Bastion**, the fortress that leads the Rearguard. It has held the line for four hundred years and means to hold it four hundred more. *"Four hundred years. Not you."* |
+| Beyond | **The Front** | Empty, quiet, beautiful, and wrong. | None. It's where the normal ending lands (§8). |
 
-More sectors later fit in as more layers (the Wings, the Vanguard's Escort, and so on).
+More sectors later fit in as more layers (the Wings, and so on), each with one boss
+under the same rules.
 
 Each encounter is dealt only into its layer's sector (`ScenarioResource.sectors`).
 The rosters, and the story each encounter tells, are in
@@ -114,30 +132,68 @@ tithe everyone who passes from safety. In the Tail and the Belly you meet only w
 they left behind: a sentry drone the line forgot, press-gangs drafting Caravan ships
 (the Conscriptor and its pressed medic), and the few honest Pickets actually holding
 the back (Last Picket). That foreshadows §4: the tithe was never buying the back of
-the fleet anything.
+the fleet anything. It was buying the Bastion.
 
 ---
 
-## 4. The Vanguard and the Secret
+## 4. The Bastion and the Secret
 
-**The Vanguard** has led the fleet for over three hundred years.
+### Who it is
+**The Bastion** is the Rearguard's leader and its biggest ship: a fortress of guns, a
+reactor and a shield generator, bolted onto one hull (the boss fight, sector 3). Nobody
+in the Rearguard has been aboard. Its orders come over comms in one voice, and they have
+for four hundred years. The Rearguard takes that as proof the line works.
 
-> *"I've been at the front longer than your grandmother's grandmother was alive. Do you
-> know why no one ever catches me?"*
+It's called *it*. Whether there's a crew, one very old commander, or something else in
+there is never answered, and doesn't need to be.
 
-When the Vanguard dies, they pass on the forbidden knowledge, in two parts:
+### The secret
+The Bastion knows something nobody else does, and it confesses as it dies:
 
-1. **There's a black hole ahead.** The fleet was never escaping. It's being herded.
-2. **The Vanguard made a deal with it.** Fate lets the front survive, and keeps the
-   Vanguard alive, in exchange for the back of the fleet. **The Rearguard's tithe is a
-   sacrifice.** Every die the Tithe Collector took went into the hole. The Rearguard
-   thinks it's buying the fleet time. It's buying the Vanguard's life.
+1. **There's a black hole ahead too.** The fleet was never escaping. It's being herded.
+2. **The Bastion made a deal with Fate.** The tithe feeds the hole, and the hole lets
+   the Bastion live. Four hundred years of other people's luck, spent on one ship.
+3. **The deal dies with it.** With the Bastion gone, Fate comes to collect what it's
+   owed. The only question is whether it comes for *you* (§6).
 
-When the Vanguard dies, the deal breaks, and Fate comes to collect what it's owed. The
-only question is whether it comes for *you* (see §6).
+That's the whole twist. The Rearguard isn't evil; most of it believes in the line. The
+Bastion isn't a cartoon either: it believes the line falls apart without it, and it may
+be right.
 
-The dying Vanguard also gives you the **Vanguard Drive**: coordinates and a drive design
-that can outrun a horizon. It's what makes the secret fight winnable.
+### Where the tithe goes
+The trail runs through encounters the player has already met, so the confession lands
+as *"oh, that's what that was"*:
+
+| Hint | Encounter |
+|---|---|
+| The Rearguard sits *ahead* of the Caravan it claims to guard | §3, the sector order itself |
+| *"Tithe taken. It buys us all time."* | Tollkeeper |
+| *"You're on the Bastion's list. Pass, pilot."* | Tollkeeper, for a Rearguard friend |
+| *"I counted the tithe. It goes forward."* / *"Ask the Bastion where it goes."* | The Ledger (the tithe is gathered forward, to the Bastion) |
+| A tithe convoy flying *aft*, toward Fate, with a Spilled Wisp on its wing | Tithe Run (and the Bastion sends it back, into the hole) |
+| *"Take it. I saw where the tithe goes."* | Apostate (a Tithe Collector that turned) |
+
+### The drive
+The Bastion kept one way out for itself, in case the deal ever broke: the **Horizon
+Drive**, a drive that can outrun a horizon. It gives it to you as it dies. That's what
+makes the secret fight winnable (§7).
+
+### What the player hears
+In the Bastion's own speech box, a line at a time, over a dimmed screen with only the
+last of its three parts still lit (§13):
+
+> *"Four hundred years I held the line. You want to know what I was holding back?"*
+> *"Nothing. There's a black hole ahead of us too. There always was."*
+> *"The fleet was never escaping. It's being herded."*
+> *"So I made a deal with it. The tithe feeds the hole, and the hole lets me live."*
+> *"Every die the Tithe Collector took went into the hole. My own Rearguard never knew."*
+> *"With me gone, the deal is broken. Fate will come to collect what it's owed."*
+> *"Take my drive. It can outrun a horizon. I kept it, in case."*
+> *"If you're the kind who goes looking for Fate, it will see you coming."*
+
+A player who has heard it before gets two lines instead: *"You've heard this before,
+haven't you? Then you know what's behind you."* / *"Take my drive. Forward, or back.
+Your choice. It always was."*
 
 ---
 
@@ -186,17 +242,17 @@ The Fate fight is a hidden super-boss in the spirit of Spelunky's King Yama or S
 the Spire's Heart. Three gates:
 
 **Gate 1 — The knowledge carries over (meta).**
-The Fate route only exists after you've beaten the Vanguard once. The forbidden
+The Fate route only exists after you've beaten the Bastion once. The forbidden
 knowledge stays with *you*, the player, across runs. On later runs the Inbound pilgrim
 has a new line: *"You've seen the front. You know."*
 
 **Gate 2 — The die must be full.**
 Fate only notices people who make choices. If any face is still blank when the
-Vanguard dies, Fate passes you by and you get the normal ending. A careful, neutral run
+Bastion dies, Fate passes you by and you get the normal ending. A careful, neutral run
 never meets Fate; you have to go looking for crossroads. That's the theme in one rule.
 
 **Gate 3 — The choice at the end.**
-After the Vanguard falls, you get two jump vectors:
+After the Bastion falls, you get two jump vectors:
 - **Forward**, to the front. The normal ending (§8).
 - **Back**, toward Fate. Only appears if Gates 1 and 2 are met. The die in the cockpit
   starts rattling on its own.
@@ -211,7 +267,7 @@ echoes fight on *your* side, because you never paid into the deal.
 
 ### Win condition: escape velocity
 Fate can't be killed. You win by filling an **escape-velocity meter** to something
-absurd, around 3× your normal max engine charge. The **Vanguard Drive** is the only
+absurd, around 3× your normal max engine charge. The **Horizon Drive** is the only
 reason this is possible: a special tile or rule that turns surplus dice into escape
 charge. The forbidden knowledge becomes a mechanic.
 
@@ -262,8 +318,9 @@ avoid a new "friendly ship" targeting layer.)
 
 ## 8. Endings
 
-**Forward (normal ending).** You reach the front and become the new Vanguard. A quiet
-closing line: *"The Tithe Collector is waiting for your orders."* Do you keep the deal?
+**Forward (normal ending).** You reach the front and take the Bastion's place. A quiet
+closing line: *"You reached the front. The Tithe Collector is waiting for your
+orders."* Do you keep the deal?
 (Possible hook: that choice could become a starting option on the next run.)
 
 **Escape (secret ending).** You jump and land somewhere *off the board*. In dice games,
@@ -338,7 +395,11 @@ Per faction:
 
 ## 11. Open Questions
 
-- What does the Vanguard look like, and what is their name?
+- Is the black hole ahead Fate too (one hole, two mouths), or a second one? The game
+  never needs to say; this file might.
+- The Arc Dynamo is still *"the Chancellor's reactor barge"*: a name behind the name.
+  By §1's rules it should be one character, called by the ship's
+  name (the Arc Dynamo leads the Caravan), or the Chancellor needs to be on screen.
 - Is "Fate" what everyone calls the hole, or only some factions? Does the Rearguard
   have its own name for it, and do the Inbound?
 - How many faces can be carved per sector? Too few and Gate 2 is hard to reach; too
@@ -433,8 +494,8 @@ Older ships were drawn before this language. A pass on 2026-10-30 brought them i
   - The Sector Warden (sector 1) is the Undertow warlord: a welded hull with a furnace
     maw, a crane and grapple, and trophies taken from the Caravan and the Rearguard.
   - The Arc Dynamo (sector 2) is a Caravan reactor barge.
-  - The Bastion (sector 3) is a Rearguard fortress whose turrets read by shape: guns, a
-    reactor and a shield.
+  - The Bastion (sector 3) is the Rearguard's leader, a fortress whose turrets read by
+    shape: guns, a reactor and a shield.
 - Every ship cloaks in its faction's colours, and every mirror-symmetric ship has a
   mirror-symmetric portrait.
 
@@ -461,12 +522,11 @@ card asks which face a new carving goes over, or lets it pass. Faces come from
 the encounters' choices as `FACTION_SCENARIOS.md` lists them, plus Hunger for
 flying into one of Fate's tiles (once a sector).
 
-**The knowledge (§4, §6 Gate 1).** Until the Front and the Vanguard exist, the
-last gate's boss stands in: as the Bastion dies, the dying Marshal tells what
-the Vanguard told its Marshals (a black hole ahead, a herded fleet, the tithe a
-sacrifice) and hands over the drive. Hearing it unlocks the route for *later*
-runs; the run that hears it can't turn back. When the Front is built, the
-revelation moves to the Vanguard's death and nothing else changes.
+**The knowledge (§4, §6 Gate 1).** The last of the Bastion's three parts to fall
+is held on screen while the hull blows apart around it. Then the screen dims,
+that part stays lit, and the Bastion confesses in its own speech box, a line at a
+time, each with a green Close (§4 has the lines). The last Close lets it die. Hearing
+it unlocks the route for *later* runs; the run that hears it can't turn back.
 
 **The choice (§6 Gates 2-3).** With the knowledge and every face carved,
 jumping on through the last gate rattles the die: Forward ends the run as before
@@ -474,7 +534,7 @@ jumping on through the last gate rattles the die: Forward ends the run as before
 toward Fate.
 
 **The Reckoning (§7).**
-- *Escape velocity:* three full drives' worth. The Vanguard Drive takes the
+- *Escape velocity:* three full drives' worth. The Horizon Drive takes the
   engine charger's place: any die, twice its face in escape, and the die goes
   to the target as always, so every die spent running feeds the echoes. Engine
   charge left at the end of a turn goes into the escape too.

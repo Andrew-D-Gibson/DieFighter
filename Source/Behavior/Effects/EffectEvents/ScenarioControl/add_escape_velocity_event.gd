@@ -1,6 +1,6 @@
 class_name AddEscapeVelocityEvent
 extends EffectEvent
-## Charge for the Reckoning's escape: the Vanguard Drive turns dice into it
+## Charge for the Reckoning's escape: the Horizon Drive turns dice into it
 ## (LORE.md §7). Does nothing outside the Reckoning.
 
 

@@ -54,16 +54,16 @@ been self-playtested and is fun. Next comes outside playtesting.
 - **Fate's Die and the Reckoning: follow-ups to the first pass** (see `LORE.md`
   §13 and DEVLOG 2026-11-05):
   - Play the secret route end to end on a real run and tune it: the escape goal
-    (`ReckoningDirector.escape_goal_multiplier`), the Vanguard Drive's 2x, how
+    (`ReckoningDirector.escape_goal_multiplier`), the Horizon Drive's 2x, how
     fast the horizon eats, the face chains' numbers, and how often a careful run
     fills the die. The AutoPilot never takes the route, so this is hand testing.
-  - The Front and the Vanguard (LORE.md §3-4). Until they exist, the dying
-    Marshal at the last gate tells the secret.
+  - Story boxes beyond the Bastion's death: see `STORY_BOXES_PLAN.md`.
+  - The Arc Dynamo / Chancellor naming (LORE.md §11): one character or two.
   - The Fallen (LORE.md §8) borrows the Shroud's table and the Fate Attacker's
     scene with the player's hull swapped in; it could use a table of its own.
   - The Rearguard fighting on the player's side for a run that never paid a
     tithe. For now those echoes stay dead and Duty shields the player.
-  - Real art for the Saved Ship / Old Debt / Vanguard Drive tiles and the Ruin
+  - Real art for the Saved Ship / Old Debt / Horizon Drive tiles and the Ruin
     glyph (machine-drawn first passes), and the SFX slots in
     `SOUND_EFFECTS_TODO.md` (P2, Fate's Die).
   - Faction reputation and gossip (LORE.md §9) can read the same ledger.

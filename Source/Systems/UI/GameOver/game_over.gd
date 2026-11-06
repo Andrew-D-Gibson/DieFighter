@@ -62,8 +62,8 @@ func _on_game_win() -> void:
 	+ tr("GAME_OVER_VICTORY")\
 	+ "[/wave][/color]"
 
-	# The normal ending (LORE.md §8): the player reaches the front, and the
-	# deal is theirs to keep.
+	# The normal ending (LORE.md §8): the player takes the dead Bastion's
+	# place, and the deal is theirs to keep.
 	_show_run_summary(Globals.blue, tr("FATE_ENDING_FORWARD_LINE"))
 	show()
 
