@@ -4,6 +4,18 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-06 — The Shipwright keeps flying
+
+The Outrigger courier no longer disappears once the Outrigger is earned.
+
+- **Dealt at random after the unlock.** `EVENT_Shipwright` is now in sector 2's `question_scenarios`, with `standing_requirements` `SHIP_EARNED outrigger`, so it's random only once earned. While locked it's still the guaranteed stop.
+- **Three runs of the job** (`shipwright_greeting`, a standing branch): the first (unchanged, earns the ship); once earned, *"Yard owes you. Take this."* and 30-40 credits at the gate; flying the Outrigger, a sister ship: *"A yard Outrigger! Fly with your sister?"*, *"Pods level, pilot. Two of us now."*, *"The Belly can't ignore two."*, *"Spare parts, from the yard."*, and a pick from the Outrigger's own tiles.
+- New: `FactionCondition` tests `FLYING_SHIP` and `SHIP_EARNED` (`ShipUnlocks.counts_as_earned()`: earned, never locked, or a run that isn't the player's own), `RewardResource.ship_signature_only`, `EscortResource.payout_position`.
+- An escort's payout now lands with its farewell line rather than before its lead-in lines.
+- Checked live in the Scenario Lab: the repeat branch (credits, no card, gate freed about 10 s after the kill) and the sister branch (Yaw Cannon offered, clear of the bounty). Core suite 982/982.
+
+---
+
 ## 2026-11-05 — The first ending: Fate's Die unlocked
 
 The run that first learns the secret now ends on a cutscene instead of the gate passage (`EndingCutscene`, played from `GameStateManager.go_through_gate()`).

@@ -822,7 +822,9 @@ with conditions.
     deeds to win them back.
 - **Conditions** (`FactionCondition`): `REGARD_AT_LEAST` / `REGARD_AT_MOST` a
   regard (HATED, DISLIKED, NEUTRAL, LIKED, TRUSTED), `DEED_DONE` /
-  `DEED_NOT_DONE` (`count` times), `KILLS_AT_LEAST`. An empty `faction` asks
+  `DEED_NOT_DONE` (`count` times), `KILLS_AT_LEAST`; and about the player's
+  ship: `FLYING_SHIP` and `SHIP_EARNED` (`ship`, a ship id; earned for good,
+  never locked, or any run that isn't the player's own). An empty `faction` asks
   about the ship's own. Ask by regard, never by raw standing: the bands are
   tuned in one place (`FactionLedger.LIKED_AT`, `TRUSTED_AT`).
 - **Standing branches** (`ScenarioShipStateStandingBranch`): `options`, each
@@ -847,7 +849,11 @@ with conditions.
     go in `farewell_lead_in`, one state each (dialogue only), said in order
     before the farewell state. `unlocks_ship` (a ship `id`) earns that ship
     when it's delivered and shows the ship-unlock card once it has gone; a
-    `payout` is optional. A gate escort takes the slot from one already
+    `payout` is optional, paid with the farewell line, and one with picks
+    needs a `payout_position` clear of the escort's slot. An encounter that
+    earns a ship can keep playing once it has: branch its opening on
+    `SHIP_EARNED` / `FLYING_SHIP` into states whose escort terms have no
+    `unlocks_ship` (`EVENT_Shipwright`'s `shipwright_greeting`). A gate escort takes the slot from one already
     riding, which says goodbye early.
 - **`holds_fire`** on a state: every intent the ship rolls is silenced, so
   dice handed to it do nothing. For a crew that has surrendered.
@@ -875,7 +881,8 @@ with conditions.
 **RewardResource:** `min_money`/`max_money`, `num_of_rewards` (tile offers),
 `dice_probability` (chance an offer is a die instead),
 `min/max_money_pickup` with `money_pickup_probability` (chance that money
-option shows up), and `minimum_rarity`.
+option shows up), `minimum_rarity`, and `ship_signature_only` (picks only from
+the flown ship's `signature_tiles`, falling back to the usual pool).
 
 Tiles come from one pick per fight, not one per kill, so the grid fills slowly:
 - Combats and elites put the pick on the PIRATE faction bounty, and every ship

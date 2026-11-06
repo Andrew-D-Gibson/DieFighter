@@ -728,6 +728,12 @@ kept for good. Until then its ship-select card is greyed out with its
 | `ShipUnlockPopup` (`Systems/UI/ShipUnlockPopup/`) | World-space card like `TileUnlockPopup`: the hull lands in a flash with a glitch, a ring and a spark burst; light rays (`_Rays`, drawn on the 320x180 grid through `JuicePixelated`) turn behind it while sparks stream off; name, pitch and hint come up; Close pops in about a second later. `closed` when it's dismissed. `open(ship, die)` for a ship the die earned opens on the die instead: its faces pop in, the earning faces flare and fly into the hull trailing motes, and the face sits over the hull under `unlock_card_header` |
 | `Map.hold_jumps(holder)` / `release_jumps(holder)` | No jump while anything holds the ship (`can_jump()` false, refused as "NOT YET", `jump_refusal()`). The gate path in `JumpEvent` checks `can_jump()` too |
 
+Encounters ask about ships through `FactionCondition` (`FLYING_SHIP`,
+`SHIP_EARNED` via `ShipUnlocks.counts_as_earned()`), in standing branches and
+`standing_requirements`: `EVENT_Shipwright` is in the random sector 2 mix but
+only dealt once the Outrigger is earned, and its greeting branches three
+ways (first run, repeat, flying the Outrigger).
+
 Locking a ship never strands a run: `ShipCatalog` still lists it, so a save
 flying it, the AutoPilot's `--ship` and the Scenario Lab still fly it.
 
@@ -1538,7 +1544,8 @@ runner, "Bless you, pilot. Stay close.").
   line has typed out plus 1.5 s, then the farewell state. Once it has gone
   the ship-unlock card shows (Ship Unlocks), and Close releases the jump. A
   gate escort signing on while another rides sends that one off early,
-  paid, where it is.
+  paid, where it is. Any escort's `payout` is paid as its farewell state
+  starts, after the lead-in lines, at `payout_position` if set.
 - **Saves.** `get_state()` rides every checkpoint (`escort_state`: terms,
   phase, fights left, hull read off the live ship). A Continue mid-fight
   replays it from the arrival with the hull it arrived with; one into the
