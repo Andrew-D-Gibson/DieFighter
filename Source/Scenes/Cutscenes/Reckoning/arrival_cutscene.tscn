@@ -1,0 +1,98 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Scenes/Cutscenes/Reckoning/arrival_cutscene.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="2_star"]
+[ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="3_twinkle"]
+[ext_resource type="PackedScene" uid="uid://bqnr0itscotaw" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/nebula.tscn" id="4_nebula"]
+[ext_resource type="Shader" uid="uid://bo7q4qcfw0qo2" path="res://Assets/Shaders/sprite_nebula.gdshader" id="5_nebula_shader"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_green"]
+shader = ExtResource("5_nebula_shader")
+shader_parameter/uv_offset = 0.0
+shader_parameter/nebula_color = Vector4(0.298, 0.459, 0.125, 0.014)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_amber"]
+shader = ExtResource("5_nebula_shader")
+shader_parameter/uv_offset = 0.4
+shader_parameter/nebula_color = Vector4(0.741, 0.345, 0.059, 0.011)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_premult"]
+blend_mode = 4
+
+[node name="ArrivalCutscene" type="Node"]
+script = ExtResource("1_script")
+star_pixel_scene = ExtResource("2_star")
+star_twinkle_scene = ExtResource("3_twinkle")
+
+[node name="BackdropLayer" type="CanvasLayer" parent="."]
+layer = 89
+
+[node name="Backdrop" type="ColorRect" parent="BackdropLayer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="StarLayer" type="CanvasLayer" parent="."]
+layer = 90
+
+[node name="Stars" type="Node2D" parent="StarLayer"]
+unique_name_in_owner = true
+
+[node name="PixelLayer" type="CanvasLayer" parent="."]
+layer = 91
+
+[node name="PixelScreen" type="SubViewportContainer" parent="PixelLayer"]
+material = SubResource("CanvasItemMaterial_premult")
+texture_filter = 1
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+stretch = true
+stretch_shrink = 6
+
+[node name="PixelWorld" type="SubViewport" parent="PixelLayer/PixelScreen"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(320, 180)
+render_target_update_mode = 4
+
+[node name="Sky" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = -6
+
+[node name="NebulaGreen" parent="PixelLayer/PixelScreen/PixelWorld/Sky" instance=ExtResource("4_nebula")]
+unique_name_in_owner = true
+position = Vector2(150, 64)
+rotation = -1.570796
+material = SubResource("ShaderMaterial_green")
+
+[node name="NebulaAmber" parent="PixelLayer/PixelScreen/PixelWorld/Sky" instance=ExtResource("4_nebula")]
+unique_name_in_owner = true
+position = Vector2(210, 128)
+rotation = 1.570796
+material = SubResource("ShaderMaterial_amber")
+
+[node name="Convoy" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = 10
+
+[node name="Effects" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = 20
+
+[node name="Words" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = 34
+
+[node name="CurtainLayer" type="CanvasLayer" parent="."]
+layer = 95
+
+[node name="Curtain" type="ColorRect" parent="CurtainLayer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
