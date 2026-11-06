@@ -38,6 +38,7 @@ deed = &"caravan_betrayed"
 [resource]
 script = ExtResource("state")
 dialogue = "You're no better than the Chancellor!"
+fate_carve_note = "Shot the Shipwright's courier."
 faction = 1
 attitude = 1
 effects_on_enter = SubResource("on_enter")

@@ -25,6 +25,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0")])
 [resource]
 script = ExtResource("ext_0")
 dialogue = "Shoot us too, then!"
+fate_carve_note = "Turned on the Hauler towing a wreck."
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("fate_chain")

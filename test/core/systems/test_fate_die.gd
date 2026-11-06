@@ -183,3 +183,25 @@ func test_the_ledger_comes_back_from_a_json_save() -> void:
 	assert_eq(loaded.reckoning_seed, 12345)
 	assert_true(loaded.fate_route_open())
 	assert_true(loaded.has_drive)
+
+
+func test_a_face_remembers_which_choice_carved_it_and_old_saves_fall_back() -> void:
+	var ledger: FateLedger = autofree(FateLedger.new())
+	ledger.give_die()
+	ledger.request_carve(F.HUNGER, FateLedger.SOURCE_FLEW_INTO_FATE)
+	ledger.request_carve(F.MERCY)
+	assert_ne(ledger.carved_by_text(0), FateFaceCatalog.get_face(F.HUNGER).display_carved_by(),
+		"a carving that knows its choice names it")
+	assert_eq(ledger.carved_by_text(1), FateFaceCatalog.get_face(F.MERCY).display_carved_by(),
+		"one that doesn't says what kind of choice carves the face")
+
+	var state: Variant = JSON.parse_string(JSON.stringify(ledger.get_state()))
+	var loaded: FateLedger = autofree(FateLedger.new())
+	loaded.load_state(state)
+	assert_eq(loaded.carve_sources, ledger.carve_sources)
+
+	# A save from before choices were kept has no sources at all.
+	(state as Dictionary).erase("carve_sources")
+	(state as Dictionary).erase("pending_sources")
+	loaded.load_state(state)
+	assert_eq(loaded.carved_by_text(0), FateFaceCatalog.get_face(F.HUNGER).display_carved_by())

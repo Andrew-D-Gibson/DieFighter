@@ -47,6 +47,7 @@ effects = Array[ExtResource("ext_1")]([SubResource("fate_step_0"), SubResource("
 [resource]
 script = ExtResource("ext_0")
 dialogue = "The line holds. Carry on."
+fate_carve_note = "Shot the Pilgrim at the Conscriptor's order."
 attitude = 1
 effects_on_enter = SubResource("Resource_chain")
 deeds = Array[ExtResource("deed_ext_10")]([SubResource("FactionDeed_0"), SubResource("FactionDeed_1")])

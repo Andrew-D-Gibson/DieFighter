@@ -27,6 +27,7 @@ effects = Array[ExtResource("effect_data")]([SubResource("fx0")])
 [resource]
 script = ExtResource("state_script")
 dialogue = "Good. Finish them off."
+fate_carve_note = "Sided with the Rearguard against a civilian."
 effects_on_enter = SubResource("chain")
 transitions = Dictionary[int, ExtResource("base_script")]({
 0: ExtResource("s_rg_fighting"),

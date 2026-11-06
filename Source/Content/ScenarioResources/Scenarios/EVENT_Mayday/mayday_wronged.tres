@@ -25,6 +25,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0")])
 [resource]
 script = ExtResource("ext_1")
 dialogue = "We begged you for help!"
+fate_carve_note = "Turned on a ship that begged for help."
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("fate_chain")

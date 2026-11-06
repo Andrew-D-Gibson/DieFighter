@@ -18,6 +18,12 @@ extends Node2D
 ## rest). The broken chain hangs empty for the rest of that fight; the die is
 ## back on it once the fight is over or reloaded.
 ##
+## It twists a little on its chain the way the cockpit's hanging dice do
+## (HangingDice): the same spring, slowly wandering about a rest angle and
+## shoved by hits. The dice turn through twelve pre-drawn frames of a cube, but
+## this die only ever shows one flat face, so the face and its rune are turned
+## together in the picture's plane, in steps, which needs no angled rune art.
+##
 ## Click it for every face it bears.
 
 ## The hook the chain hangs from, in screen pixels.
@@ -37,6 +43,16 @@ const _GRAVITY: float = 260.0
 const _DAMPING: float = 1.2
 const _IDLE_SWAY: float = 10.0
 const _HIT_KICK: float = 22.0
+## The twist spring is HangingDice's own (same stiffness and damping), so the
+## two read as the same chain. The swing about the rest angle is smaller:
+## turning a flat face reads louder than a cube's twist.
+const _TWIST_STIFFNESS: float = 6.0
+const _TWIST_DAMPING: float = 1.4
+const _IDLE_TWIST: float = 0.35
+## The angle the die is drawn at moves in steps, like the dice's frames, so a
+## pixel-art face doesn't shimmer through every in-between angle.
+const _TWIST_STEP: float = TAU / 24.0
+const _HIT_TWIST_KICK: float = 3.0
 ## Leaving: how long it fights the chain, how hard, and how much of the chain
 ## stays on the hook once it snaps.
 const _BREAK_RATTLE_SECONDS: float = 1.0
@@ -64,6 +80,13 @@ const _COMMS_POLL_SECONDS: float = 0.25
 const _AFTER_COMMS_SECONDS: float = 0.4
 ## Between two carvings that came at once, so each gets its own moment.
 const _BETWEEN_CARVINGS_SECONDS: float = 2.0
+## Where a carving's two lines start from the die's centre. A callout starts
+## about 10px above its point and rises 10px more, so these keep it under the
+## die for its whole flight rather than climbing over it.
+const _CARVE_CALLOUT_OFFSET: Vector2 = Vector2(0, 34)
+const _CARVE_COUNT_OFFSET: Vector2 = Vector2(0, 43)
+## How fast the carving's flash over the die fades, per second.
+const _POP_FADE: float = 5.0
 
 var _angle: float = 0.15
 var _angular_velocity: float = 0.0
@@ -78,6 +101,13 @@ var _tumble_step: float = 0.0
 ## A flare in a face's colour, fading.
 var _glow: float = 0.0
 var _glow_color: Color = Color.WHITE
+## A brief wash of light over the die itself as a face is carved, 1 to 0.
+var _pop: float = 0.0
+## The die's twist on its chain, in radians, and its own random phase so it
+## doesn't turn in step with anything else.
+var _twist: float = 0.0
+var _twist_velocity: float = 0.0
+var _twist_phase: float = 0.0
 ## How far down from its hook the die has come (0 hidden up in the canopy).
 var _drop: float = 0.0
 var _clickable: Clickable
@@ -96,6 +126,8 @@ var _announcing: bool = false
 
 func _ready() -> void:
 	z_index = 2
+	_twist_phase = RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, TAU)
+	_twist = _rest_twist()
 	_clickable = _CLICKABLE.instantiate()
 	var shape: CollisionShape2D = CollisionShape2D.new()
 	var rect: RectangleShape2D = RectangleShape2D.new()
@@ -210,6 +242,9 @@ func _process(delta: float) -> void:
 	_angular_velocity += accel * delta
 	_angular_velocity -= _angular_velocity * _DAMPING * delta
 	_angle = clampf(_angle + _angular_velocity * delta, -1.2, 1.2)
+	var twist_accel: float = -_TWIST_STIFFNESS * (_twist - _rest_twist()) - _TWIST_DAMPING * _twist_velocity
+	_twist_velocity += twist_accel * delta
+	_twist += _twist_velocity * delta
 
 	if _tumble > 0.0:
 		_tumble -= delta
@@ -225,8 +260,20 @@ func _process(delta: float) -> void:
 	if _rattle > 0.0:
 		_glow = maxf(_glow, 0.5 + 0.5 * sin(_age * 30.0))
 	_glow = maxf(0.0, _glow - delta * 1.2)
+	_pop = maxf(0.0, _pop - delta * _POP_FADE)
 	_clickable.position = _die_centre() - global_position
 	queue_redraw()
+
+
+## The angle the twist settles toward: two slow, off-beat waves, so it never
+## hangs dead still.
+func _rest_twist() -> float:
+	return _IDLE_TWIST * (0.7 * sin(_age * 0.21 + _twist_phase) + 0.3 * sin(_age * 0.53 + _twist_phase * 2.3))
+
+
+## The twist snapped to the die's steps.
+func _drawn_twist() -> float:
+	return roundf(_twist / _TWIST_STEP) * _TWIST_STEP
 
 
 ## Turns the die to its next slot, skipping blank faces while any are carved.
@@ -279,7 +326,25 @@ func _draw() -> void:
 		draw_circle(centre, radius, Color(_glow_color, _glow * 0.35))
 	var face: FateDie.Face = _tumble_face if _tumble > 0.0 else _face_shown_at(ledger, _shown_slot)
 	var texture: Texture2D = FateDieArt.face_texture(face)
-	draw_texture(texture, (centre - Vector2(FateDieArt.SIZE, FateDieArt.SIZE) / 2.0).round())
+	# Turned about its middle, from a whole-pixel corner so a die at rest stays
+	# on the pixel grid.
+	var half: Vector2 = Vector2.ONE * FateDieArt.SIZE / 2.0
+	draw_set_transform((centre - half).round() + half, _drawn_twist())
+	draw_texture(texture, -half)
+	if _pop > 0.0:
+		_draw_pop(half)
+	draw_set_transform(Vector2.ZERO)
+
+
+## Washes the die's own silhouette (corners cut, like its art) with light, so
+## the rune flashes out and back as it is carved. [param half] is half the
+## die's size: the draw transform's origin is the die's middle.
+func _draw_pop(half: Vector2) -> void:
+	var wash: Color = Color(_glow_color.lightened(0.7), _pop * 0.85)
+	var size: float = FateDieArt.SIZE
+	draw_rect(Rect2(-half + Vector2(1, 0), Vector2(size - 2, 1)), wash)
+	draw_rect(Rect2(-half + Vector2(0, 1), Vector2(size, size - 2)), wash)
+	draw_rect(Rect2(-half + Vector2(1, size - 1), Vector2(size - 2, 1)), wash)
 
 
 ## The chain, a pixel at a time so it stays crisp at any angle.
@@ -301,6 +366,9 @@ func _face_shown_at(ledger: FateLedger, slot: int) -> FateDie.Face:
 
 func _kick(strength: float) -> void:
 	_angular_velocity += strength / chain_length * (1.0 if _angular_velocity >= 0.0 else -1.0)
+	# A shove spins it on its chain too, the way a hit does the cockpit dice.
+	var spin: float = 1.0 if RNGManager.randf(RNGManager.Bucket.COSMETIC) < 0.5 else -1.0
+	_twist_velocity += spin * _HIT_TWIST_KICK * strength / _HIT_KICK
 
 
 func _on_received() -> void:
@@ -371,6 +439,10 @@ func _play_carving(slot: int, face: int, old_face: int, carved: int) -> void:
 	var color: Color = res.color if res else Globals.white
 	get_tree().create_timer(0.6).timeout.connect(func() -> void:
 		_flare(color)
+		_pop = 1.0
+		# A pop of light on the die, wider than its glow and gone fast.
+		Juice.ring(self, _die_centre(), color.lightened(0.4), 20.0, 0.4)
+		Juice.glint(self, _die_centre(), color.lightened(0.6), 8.0, 0.4)
 		var face_name: String = res.display_face_name().to_upper() if res else ""
 		var text: String = tr("FATE_CALLOUT_CARVED").format({"face": face_name})
 		if old_face != FateDie.Face.BLANK:
@@ -379,8 +451,8 @@ func _play_carving(slot: int, face: int, old_face: int, carved: int) -> void:
 				"face": face_name,
 				"old": old.display_face_name().to_upper() if old else "",
 			})
-		Juice.callout_at(self, _die_centre() + Vector2(-26, 20), text, color, false, null, _CARVE_CALLOUT_SECONDS)
-		Juice.callout_at(self, _die_centre() + Vector2(-26, 29),
+		Juice.callout_at(self, _die_centre() + _CARVE_CALLOUT_OFFSET, text, color, false, null, _CARVE_CALLOUT_SECONDS)
+		Juice.callout_at(self, _die_centre() + _CARVE_COUNT_OFFSET,
 			tr("FATE_CALLOUT_CARVED_COUNT").format({"carved": carved, "total": FateDie.FACE_COUNT}),
 			Globals.purple, false, null, _CARVE_CALLOUT_SECONDS)
 		Juice.sparkle(self, _die_centre(), color, 10, 30.0, true)
@@ -430,7 +502,7 @@ static func info_for(ledger: FateLedger) -> InfoResource:
 		var text: String = blank_text
 		if die.face_at(slot) != FateDie.Face.BLANK and res:
 			text = TranslationServer.translate("FATE_FACE_HOVER_CARVED").format({
-				"face": res.coloured_name(), "carved_by": res.display_carved_by()})
+				"face": res.coloured_name(), "carved_by": ledger.carved_by_text(slot)})
 		info.add_hotspot(Rect2(FateDieArt.net_face_rect(slot)), text)
 	var names: PackedStringArray = []
 	for face: FateDie.Face in FateDie.carvable_faces():

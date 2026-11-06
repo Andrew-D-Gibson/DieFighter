@@ -63,6 +63,7 @@ effects = Array[ExtResource("ext_1")]([SubResource("fate_step_0"), SubResource("
 [resource]
 script = ExtResource("ext_0")
 dialogue = "Sealed. See you at the horizon."
+fate_carve_note = "Took the Zealot's pact."
 attitude = 1
 effects_on_enter = SubResource("Resource_8")
 deeds = Array[ExtResource("deed_ext_15")]([SubResource("FactionDeed_0")])

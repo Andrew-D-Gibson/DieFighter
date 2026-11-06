@@ -26,6 +26,7 @@ effects = Array[ExtResource("effect")]([SubResource("carve_mercy"), SubResource(
 [resource]
 script = ExtResource("state")
 dialogue = "Two Outriggers. Let's show them."
+fate_carve_note = "Took the Shipwright's payment and escorted it."
 faction = 1
 attitude = 1
 effects_on_enter = SubResource("on_enter")

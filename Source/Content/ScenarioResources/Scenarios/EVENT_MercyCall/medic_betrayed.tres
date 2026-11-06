@@ -25,6 +25,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0")])
 [resource]
 script = ExtResource("script_0")
 dialogue = "We just patched you!"
+fate_carve_note = "Turned on the medic who patched you."
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("fate_chain")

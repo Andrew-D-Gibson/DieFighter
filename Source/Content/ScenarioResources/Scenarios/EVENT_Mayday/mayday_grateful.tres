@@ -33,6 +33,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0"), Su
 [resource]
 script = ExtResource("ext_1")
 dialogue = "Bless you, pilot. Stay close."
+fate_carve_note = "Answered a Mayday and saved the ship."
 faction = 1
 attitude = 1
 effects_on_enter = SubResource("fate_chain")

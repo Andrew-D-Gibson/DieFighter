@@ -32,6 +32,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0"), Su
 [resource]
 script = ExtResource("2_1cg12")
 dialogue = "We owe you our lives."
+fate_carve_note = "Saved a civilian from pirates."
 faction = 1
 effects_on_enter = SubResource("fate_chain")
 transitions = Dictionary[int, ExtResource("3_4o1nx")]({

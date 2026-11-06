@@ -25,6 +25,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0")])
 [resource]
 script = ExtResource("ext_0")
 dialogue = "You're no better than them!"
+fate_carve_note = "Took hush money and left a Hauler to its raiders."
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("fate_chain")

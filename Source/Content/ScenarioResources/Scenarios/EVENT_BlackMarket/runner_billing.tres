@@ -45,6 +45,7 @@ effects = Array[ExtResource("ext_2")]([SubResource("fate_step_0"), SubResource("
 [resource]
 script = ExtResource("ext_1")
 dialogue = "Pleasure doing business."
+fate_carve_note = "Dealt with the Black Market runner."
 faction = 1
 attitude = 1
 effects_on_enter = SubResource("Resource_chain")

@@ -38,6 +38,11 @@ const BETRAYAL_DEEDS: Array[StringName] = [
 const DEED_TITHE_PAID: String = "tithe_paid"
 const DEED_TITHE_REFUSED: String = "tithe_refused"
 
+## Marks a carve source that is a translation key rather than a state's path.
+const SOURCE_KEY_PREFIX: String = "key:"
+## The source of the Hunger that flying into Fate's tile carves.
+const SOURCE_FLEW_INTO_FATE: String = SOURCE_KEY_PREFIX + "FATE_CARVED_BY_FLIGHT"
+
 ## What REMEMBER_SHIP files a ship under: a ship the player saved, who flies
 ## beside them in the Reckoning, or one they spared, who owes a Debt and pays
 ## it with one strafing pass.
@@ -57,6 +62,16 @@ var die: FateDie = FateDie.new()
 ## Faces carved while the die was full, waiting for the player to pick which
 ## old face each goes over (FateCarveChoice). Oldest first.
 var pending: Array[FateDie.Face] = []
+## Where each pending carving came from, parallel to pending (see
+## carve_sources for the format).
+var _pending_sources: Array[String] = []
+## What carved each slot, so the die can say which choice that was rather
+## than only the kind of choice. A ScenarioShipState's file path (its
+## fate_carve_note), or SOURCE_KEY_PREFIX and a translation key for a carving
+## that has no state ("Flew into Fate"). Empty for a slot carved by nothing
+## that says (the dev console) or saved before this was kept, which falls back
+## to the face's own line (carved_by_text()).
+var carve_sources: Array[String] = []
 ## Every ship the player destroyed, in order: {"enemy": id, "faction": the
 ## FactionIdentity's file id, "sector": int, "encounter": int}, plus
 ## "civilian": true for one that died on the civilian side. Mounted boss
@@ -107,6 +122,11 @@ var _fallen_entry: Dictionary = {}
 var _betrayed_ships: Dictionary[int, bool] = {}
 
 
+func _init() -> void:
+	carve_sources.resize(FateDie.FACE_COUNT)
+	carve_sources.fill("")
+
+
 func _ready() -> void:
 	Globals.fate_ledger = self
 	Events.load_game_save.connect(_load_game_save)
@@ -139,15 +159,18 @@ func give_die() -> void:
 
 ## A choice carves [param face]. Into a blank face while there is one;
 ## otherwise it waits (pending) for the player to choose which face to carve
-## over. Ignored until the player holds the die.
-func request_carve(face: FateDie.Face) -> void:
+## over. Ignored until the player holds the die. [param source] says which
+## choice carved it (see carve_sources).
+func request_carve(face: FateDie.Face, source: String = "") -> void:
 	if not has_die or face == FateDie.Face.BLANK:
 		return
 	var slot: int = die.carve(face)
 	if slot >= 0:
+		carve_sources[slot] = source
 		Events.fate_face_carved.emit(slot, face, FateDie.Face.BLANK)
 		return
 	pending.append(face)
+	_pending_sources.append(source)
 	Events.fate_carve_pending.emit(face)
 
 
@@ -166,10 +189,36 @@ func resolve_pending(slot: int) -> void:
 	if not has_pending():
 		return
 	var face: FateDie.Face = pending.pop_front()
+	var source: String = _pending_sources.pop_front() if not _pending_sources.is_empty() else ""
 	if slot < 0:
 		return
 	var old: FateDie.Face = die.carve_over(slot, face)
+	carve_sources[slot] = source
 	Events.fate_face_carved.emit(slot, face, old)
+
+
+## What carved the face at [param slot], as the player reads it: the choice
+## they made ("Saved a civilian from pirates.") when the ledger knows it, else
+## the kind of choice that carves that face.
+func carved_by_text(slot: int) -> String:
+	var specific: String = _carve_source_text(carve_sources[slot]) if slot >= 0 and slot < carve_sources.size() else ""
+	if not specific.is_empty():
+		return specific
+	var res: FateFaceResource = FateFaceCatalog.get_face(die.face_at(slot))
+	return res.display_carved_by() if res else ""
+
+
+## The line a carve source stands for, or empty when it names nothing that
+## still exists (a state file renamed since the save).
+static func _carve_source_text(source: String) -> String:
+	if source.is_empty():
+		return ""
+	if source.begins_with(SOURCE_KEY_PREFIX):
+		return TranslationServer.translate(source.trim_prefix(SOURCE_KEY_PREFIX))
+	if not ResourceLoader.exists(source):
+		return ""
+	var state: ScenarioShipState = load(source) as ScenarioShipState
+	return state.display_fate_carve_note() if state else ""
 
 
 # ── Deeds and the ships that remember ────────────────────────────────────────
@@ -329,7 +378,7 @@ func _on_start_scenario() -> void:
 	if sector in _hunger_sectors:
 		return
 	_hunger_sectors.append(sector)
-	request_carve(FateDie.Face.HUNGER)
+	request_carve(FateDie.Face.HUNGER, SOURCE_FLEW_INTO_FATE)
 
 
 ## Arriving at one of Fate's tiles, a ship that fell into the hole on an
@@ -429,6 +478,8 @@ func get_state() -> Dictionary:
 		"has_die": has_die,
 		"faces": die.to_data(),
 		"pending": pending_ids,
+		"pending_sources": _pending_sources.duplicate(),
+		"carve_sources": carve_sources.duplicate(),
 		"kills": kills.duplicate(true),
 		"allies": allies.duplicate(true),
 		"missed": missed.duplicate(true),
@@ -449,10 +500,21 @@ func load_state(state: Dictionary) -> void:
 	has_die = bool(state.get("has_die", false))
 	die = FateDie.from_data(state.get("faces", []))
 	pending.clear()
+	_pending_sources.clear()
+	# A save from before carvings remembered their choice has no sources, and
+	# every slot then falls back to its face's generic line.
+	var saved_pending_sources: Array = state.get("pending_sources", [])
+	var pending_index: int = 0
 	for id: Variant in state.get("pending", []):
 		var face: int = FateDie.face_from_id(str(id))
 		if face > 0:
 			pending.append(face as FateDie.Face)
+			_pending_sources.append(str(saved_pending_sources[pending_index]) if pending_index < saved_pending_sources.size() else "")
+		pending_index += 1
+	carve_sources.fill("")
+	var saved_sources: Array = state.get("carve_sources", [])
+	for slot: int in mini(saved_sources.size(), FateDie.FACE_COUNT):
+		carve_sources[slot] = str(saved_sources[slot])
 	# An entry from before encounters were kept loads without one, and the
 	# Reckoning replays such a run the old way (ReckoningQueue).
 	kills.clear()

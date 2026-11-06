@@ -41,6 +41,7 @@ effects = Array[ExtResource("effect_data")]([SubResource("fx0"), SubResource("fx
 [resource]
 script = ExtResource("state_script")
 dialogue = "So that's how it is."
+fate_carve_note = "Took a civilian's salvage for yourself."
 faction = 1
 attitude = 1
 effects_on_enter = SubResource("chain")
