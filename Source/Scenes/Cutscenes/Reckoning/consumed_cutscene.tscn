@@ -1,0 +1,729 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Scenes/Cutscenes/Reckoning/consumed_cutscene.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://dxv134k8wnksc" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/star.tscn" id="2_star"]
+[ext_resource type="PackedScene" uid="uid://db30o2mgvg8ay" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/twinkling_star.tscn" id="3_twinkle"]
+[ext_resource type="Script" uid="uid://tw7lpv214pfl" path="res://Source/Systems/UI/Camera/camera.gd" id="4_camera"]
+[ext_resource type="PackedScene" uid="uid://syi03k05n86n" path="res://Source/Systems/Components/Shakeable/shakeable.tscn" id="5_shakeable"]
+[ext_resource type="PackedScene" uid="uid://d1fvplfx4vjm5" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/BlackHole/black_hole.tscn" id="6_black_hole"]
+[ext_resource type="PackedScene" uid="uid://bqnr0itscotaw" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/nebula.tscn" id="7_nebula"]
+[ext_resource type="Shader" uid="uid://bo7q4qcfw0qo2" path="res://Assets/Shaders/sprite_nebula.gdshader" id="8_nebula_shader"]
+[ext_resource type="PackedScene" path="res://Source/Systems/Graphics/BackgroundManager/BackgroundObjects/FateStorm/fate_storm.tscn" id="9_storm"]
+[ext_resource type="Script" path="res://Source/Scenes/Cutscenes/Reckoning/Consumed/consumed_hull.gd" id="10_hull"]
+[ext_resource type="Script" path="res://Source/Scenes/Cutscenes/Reckoning/Consumed/point_of_light.gd" id="11_point"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nebula"]
+shader = ExtResource("8_nebula_shader")
+shader_parameter/uv_offset = 0.0
+shader_parameter/nebula_color = Vector4(0.3, 0.12, 0.38, 0.14)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_premult"]
+blend_mode = 4
+
+[sub_resource type="Animation" id="Animation_reset"]
+resource_name = &"RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Color(1.0, 1.0, 1.0, 1.0)]
+}
+
+[sub_resource type="Animation" id="Animation_last_die"]
+resource_name = &"last_die"
+length = 15.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0, 0.4, 2.6, 14.4, 14.42),
+"transitions": PackedFloat32Array(1.0, 0.5, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Color(1.0, 1.0, 1.0, 1.0), Color(1.0, 1.0, 1.0, 1.0), Color(1.0, 1.0, 1.0, 0.0), Color(1.0, 1.0, 1.0, 0.0), Color(1.0, 1.0, 1.0, 1.0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Flood:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 13.4, 14.0),
+"transitions": PackedFloat32Array(1.0, 0.5, 1.0),
+"update": 0,
+"values": [Color(1.0, 1.0, 1.0, 0.0), Color(1.0, 1.0, 1.0, 0.0), Color(1.0, 1.0, 1.0, 0.3)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:view_zoom")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 4.6, 11.8),
+"transitions": PackedFloat32Array(1.0, -2.0, 1.0),
+"update": 0,
+"values": [2.0, 2.0, 1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:view_center")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0, 4.6, 11.8),
+"transitions": PackedFloat32Array(1.0, -2.0, 1.0),
+"update": 0,
+"values": [Vector2(178.0, 92.0), Vector2(174.0, 92.0), Vector2(160.0, 90.0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:star_drift")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.0, 14.4),
+"transitions": PackedFloat32Array(1.0, 1.0),
+"update": 0,
+"values": [Vector2(1.5, 0.0), Vector2(3.0, 0.0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:star_stretch")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [1.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath(".:fate_weather")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".:recede")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.0, 7.6, 12.4, 12.8),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.0, 0.0, 0.93, 1.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath(".:light")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.0, 12.78, 12.8, 13.1, 13.3, 13.7),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 2.0),
+"update": 0,
+"values": [0.0, 0.0, 1.0, 0.75, 0.9, 0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Fate:position")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(56.0, 100.0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Fate:rotation")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.0]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0.0, 5.2, 12.8),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0),
+"update": 0,
+"values": [Vector2(150.0, 92.0), Vector2(147.0, 93.0), Vector2(76.0, 99.0)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:rotation")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0.0, 5.2, 12.8),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0),
+"update": 0,
+"values": [1.570796, 1.570796, 1.690796]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:flip_h")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [false]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:gold")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [1.0]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:wash")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0.0, 1.2, 11.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:wash_strength")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0.0, 11.0),
+"transitions": PackedFloat32Array(1.0, 1.0),
+"update": 0,
+"values": [0.2, 0.55]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:stretch")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0.0, 9.8, 11.4, 12.6),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0, 1.0),
+"update": 0,
+"values": [1.0, 1.0, 1.4, 1.3]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:crack")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.0]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:crack_seal")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.0]
+}
+tracks/20/type = "method"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath(".")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0.0, 0.6, 1.8, 13.6, 14.6),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0),
+"values": [{
+"args": [3.0],
+"method": &"_music_falls_away"
+}, {
+"args": [4.0],
+"method": &"_note_swells"
+}, {
+"args": [3.4],
+"method": &"_engines_go_out"
+}, {
+"args": [],
+"method": &"_light_gone"
+}, {
+"args": [],
+"method": &"_end"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_fell_in"]
+resource_name = &"fell_in"
+length = 6.3
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Fade:modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0, 0.05, 0.3, 5.3, 5.9),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Color(1.0, 1.0, 1.0, 1.0), Color(1.0, 1.0, 1.0, 1.0), Color(1.0, 1.0, 1.0, 0.0), Color(1.0, 1.0, 1.0, 0.0), Color(1.0, 1.0, 1.0, 1.0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PixelLayer/PixelScreen/PixelWorld/Flood:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Color(1.0, 1.0, 1.0, 0.0)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:view_zoom")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 2.0, 3.6, 4.4),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0, 0.5, 1.0),
+"update": 0,
+"values": [1.5, 1.5, 2.0, 3.0, 4.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:view_center")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 2.0, 3.6, 4.4, 5.9),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0, 0.5, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(160.0, 80.0), Vector2(160.0, 80.0), Vector2(160.0, 92.0), Vector2(160.0, 122.0), Vector2(160.0, 134.0), Vector2(160.0, 137.0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:star_drift")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 2.0, 3.6, 4.4, 5.9),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0, 0.5, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(0.0, 4.0), Vector2(0.0, 0.0), Vector2(0.0, -40.0), Vector2(0.0, -140.0), Vector2(0.0, -50.0), Vector2(0.0, -25.0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath(".:star_stretch")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.0, 2.0, 3.6, 4.4, 5.9),
+"transitions": PackedFloat32Array(1.0, 1.0, 0.5, 1.0, 1.0),
+"update": 0,
+"values": [1.0, 1.0, 5.0, 2.0, 1.5]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath(".:fate_weather")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.0, 4.2),
+"transitions": PackedFloat32Array(1.0, 1.0),
+"update": 1,
+"values": [true, false]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".:recede")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath(".:light")
+tracks/8/interp = 1
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.0]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Fate:position")
+tracks/9/interp = 1
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(160.0, 172.0)]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Fate:rotation")
+tracks/10/interp = 1
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [-0.6]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:position")
+tracks/11/interp = 1
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 2.0, 3.6, 4.4, 5.9),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0, 0.5, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(160.0, 70.0), Vector2(160.0, 67.0), Vector2(160.0, 86.0), Vector2(160.0, 124.0), Vector2(160.0, 134.0), Vector2(160.0, 137.0)]
+}
+tracks/12/type = "value"
+tracks/12/imported = false
+tracks/12/enabled = true
+tracks/12/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:rotation")
+tracks/12/interp = 1
+tracks/12/loop_wrap = true
+tracks/12/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 1.3, 1.55, 1.8, 2.05, 2.3),
+"transitions": PackedFloat32Array(1.0, 2.0, 1.0, 0.5, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.0, 0.0, 1.9, 3.6, 2.9, 3.3, 3.141593]
+}
+tracks/13/type = "value"
+tracks/13/imported = false
+tracks/13/enabled = true
+tracks/13/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:flip_h")
+tracks/13/interp = 1
+tracks/13/loop_wrap = true
+tracks/13/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 1,
+"values": [true]
+}
+tracks/14/type = "value"
+tracks/14/imported = false
+tracks/14/enabled = true
+tracks/14/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:gold")
+tracks/14/interp = 1
+tracks/14/loop_wrap = true
+tracks/14/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 2.2),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 0,
+"values": [1.0, 1.0, 0.0]
+}
+tracks/15/type = "value"
+tracks/15/imported = false
+tracks/15/enabled = true
+tracks/15/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:wash")
+tracks/15/interp = 1
+tracks/15/loop_wrap = true
+tracks/15/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 3.6),
+"transitions": PackedFloat32Array(1.0, 1.0, 0.5),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/16/type = "value"
+tracks/16/imported = false
+tracks/16/enabled = true
+tracks/16/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:wash_strength")
+tracks/16/interp = 1
+tracks/16/loop_wrap = true
+tracks/16/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.4]
+}
+tracks/17/type = "value"
+tracks/17/imported = false
+tracks/17/enabled = true
+tracks/17/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:stretch")
+tracks/17/interp = 1
+tracks/17/loop_wrap = true
+tracks/17/keys = {
+"times": PackedFloat32Array(0.0, 1.0, 1.4, 1.9, 2.5, 3.4, 4.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 0.5, 1.0, 1.0, 0.5, 1.0),
+"update": 0,
+"values": [1.0, 1.0, 1.5, 1.15, 1.45, 1.6, 1.0]
+}
+tracks/18/type = "value"
+tracks/18/imported = false
+tracks/18/enabled = true
+tracks/18/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:crack")
+tracks/18/interp = 1
+tracks/18/loop_wrap = true
+tracks/18/keys = {
+"times": PackedFloat32Array(0.0, 0.45, 0.6, 0.95, 1.15, 2.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 0.5, 1.0, 0.5, 1.0),
+"update": 0,
+"values": [0.0, 0.0, 0.5, 0.5, 0.85, 1.0]
+}
+tracks/19/type = "value"
+tracks/19/imported = false
+tracks/19/enabled = true
+tracks/19/path = NodePath("PixelLayer/PixelScreen/PixelWorld/World/Ships/Hull:crack_seal")
+tracks/19/interp = 1
+tracks/19/loop_wrap = true
+tracks/19/keys = {
+"times": PackedFloat32Array(0.0, 2.8, 4.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.0, 0.0, 1.0]
+}
+tracks/20/type = "method"
+tracks/20/imported = false
+tracks/20/enabled = true
+tracks/20/path = NodePath(".")
+tracks/20/interp = 1
+tracks/20/loop_wrap = true
+tracks/20/keys = {
+"times": PackedFloat32Array(0.0, 0.02, 0.45, 0.95, 0.97, 1.5, 2.6, 4.1, 6.1),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"values": [{
+"args": [],
+"method": &"_music_cut"
+}, {
+"args": [true],
+"method": &"_strain"
+}, {
+"args": [1.0],
+"method": &"_crack_hit"
+}, {
+"args": [1.4],
+"method": &"_crack_hit"
+}, {
+"args": [],
+"method": &"_drive_blows"
+}, {
+"args": [],
+"method": &"_fate_pull"
+}, {
+"args": [],
+"method": &"_fate_pull"
+}, {
+"args": [],
+"method": &"_fallen_born"
+}, {
+"args": [],
+"method": &"_end"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_consumed"]
+_data = {
+&"RESET": SubResource("Animation_reset"),
+&"fell_in": SubResource("Animation_fell_in"),
+&"last_die": SubResource("Animation_last_die")
+}
+
+[node name="ConsumedCutscene" type="Node"]
+script = ExtResource("1_script")
+star_pixel_scene = ExtResource("2_star")
+star_twinkle_scene = ExtResource("3_twinkle")
+
+[node name="BackdropLayer" type="CanvasLayer" parent="."]
+layer = 89
+
+[node name="Backdrop" type="ColorRect" parent="BackdropLayer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0.025, 0.01, 0.075, 1.0)
+
+[node name="StarLayer" type="CanvasLayer" parent="."]
+layer = 90
+
+[node name="Stars" type="Node2D" parent="StarLayer"]
+unique_name_in_owner = true
+
+[node name="PixelLayer" type="CanvasLayer" parent="."]
+layer = 91
+
+[node name="PixelScreen" type="SubViewportContainer" parent="PixelLayer"]
+material = SubResource("CanvasItemMaterial_premult")
+texture_filter = 1
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+stretch = true
+stretch_shrink = 6
+
+[node name="PixelWorld" type="SubViewport" parent="PixelLayer/PixelScreen"]
+transparent_bg = true
+handle_input_locally = false
+snap_2d_transforms_to_pixel = true
+snap_2d_vertices_to_pixel = true
+canvas_item_default_texture_filter = 0
+size = Vector2i(320, 180)
+render_target_update_mode = 4
+
+[node name="PixelCamera" type="Camera2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+position = Vector2(160, 90)
+script = ExtResource("4_camera")
+
+[node name="Shakeable" parent="PixelLayer/PixelScreen/PixelWorld/PixelCamera" node_paths=PackedStringArray("node_to_shake") instance=ExtResource("5_shakeable")]
+node_to_shake = NodePath("..")
+small_shake_intensity = 1.0
+small_shake_duration = 0.15
+large_shake_intensity = 2.5
+large_shake_duration = 0.25
+
+[node name="World" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+
+[node name="RiftNebula" parent="PixelLayer/PixelScreen/PixelWorld/World" instance=ExtResource("7_nebula")]
+z_index = -6
+position = Vector2(160, 90)
+rotation = -1.570796
+material = SubResource("ShaderMaterial_nebula")
+
+[node name="FateStorm" parent="PixelLayer/PixelScreen/PixelWorld/World" instance=ExtResource("9_storm")]
+unique_name_in_owner = true
+z_index = 3
+autonomous = false
+bolt_weight = 0.0
+screen_wash = 0.0
+
+[node name="Sky" parent="PixelLayer/PixelScreen/PixelWorld/World/FateStorm" index="0"]
+z_index = -8
+
+[node name="Tear" parent="PixelLayer/PixelScreen/PixelWorld/World/FateStorm" index="1"]
+z_index = -8
+
+[node name="Fate" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld/World"]
+unique_name_in_owner = true
+z_index = 2
+position = Vector2(56, 100)
+
+[node name="BlackHole" parent="PixelLayer/PixelScreen/PixelWorld/World/Fate" instance=ExtResource("6_black_hole")]
+scale = Vector2(1.4, 1.4)
+
+[node name="Ships" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld/World"]
+z_index = 10
+
+[node name="Hull" type="Sprite2D" parent="PixelLayer/PixelScreen/PixelWorld/World/Ships"]
+unique_name_in_owner = true
+position = Vector2(150, 92)
+rotation = 1.570796
+script = ExtResource("10_hull")
+
+[node name="PointOfLight" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld/World/Ships"]
+unique_name_in_owner = true
+z_index = 1
+script = ExtResource("11_point")
+
+[node name="Effects" type="Node2D" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = 20
+
+[node name="Flood" type="ColorRect" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = 33
+modulate = Color(1, 1, 1, 0)
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 328.0
+offset_bottom = 188.0
+mouse_filter = 2
+color = Color(0.501961, 0.207843, 0.615686, 1)
+
+[node name="Fade" type="ColorRect" parent="PixelLayer/PixelScreen/PixelWorld"]
+unique_name_in_owner = true
+z_index = 40
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 328.0
+offset_bottom = 188.0
+mouse_filter = 2
+color = Color(0, 0, 0, 1)
+
+[node name="CurtainLayer" type="CanvasLayer" parent="."]
+layer = 95
+
+[node name="Curtain" type="ColorRect" parent="CurtainLayer"]
+offset_right = 1920.0
+offset_bottom = 1080.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries/ = SubResource("AnimationLibrary_consumed")
