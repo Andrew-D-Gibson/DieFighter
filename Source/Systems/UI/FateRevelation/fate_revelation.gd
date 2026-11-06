@@ -18,6 +18,13 @@ const _LINES: Array[String] = [
 	"FATE_REVEAL_5", "FATE_REVEAL_6", "FATE_REVEAL_7", "FATE_REVEAL_8",
 ]
 const _LINES_AGAIN: Array[String] = ["FATE_REVEAL_AGAIN_1", "FATE_REVEAL_AGAIN_2"]
+## Said only when the way back toward Fate is open, right after the drive is
+## offered: what the map's two arrows now do. There's no menu for it any more,
+## so the Bastion is the only place the player is told.
+const _LINES_ROUTE: Array[String] = ["FATE_REVEAL_ROUTE_1", "FATE_REVEAL_ROUTE_2"]
+## The full confession's line the drive is offered on (FATE_REVEAL_7): the
+## route lines follow it.
+const _DRIVE_LINE_INDEX: int = 6
 
 ## Whether the player knew the secret as this fight began. Hearing it is
 ## recorded as the fight ends, which can land before or after the last ship's
@@ -63,9 +70,17 @@ static func speaker() -> String:
 
 
 ## The confession, translated: in full, or the short form for a player who
-## had heard it before this fight.
+## had heard it before this fight. A player whose way back toward Fate is open
+## also hears what the drive does with each arrow.
 static func lines() -> Array[String]:
+	var keys: Array[String] = []
+	keys.assign(_LINES_AGAIN if _knew_at_start else _LINES)
+	if Globals.fate_ledger and Globals.fate_ledger.fate_route_open():
+		# After the drive is offered in the full form; at the end of the short one.
+		var at: int = keys.size() if _knew_at_start else _DRIVE_LINE_INDEX + 1
+		for i: int in _LINES_ROUTE.size():
+			keys.insert(at + i, _LINES_ROUTE[i])
 	var translated: Array[String] = []
-	for key: String in (_LINES_AGAIN if _knew_at_start else _LINES):
+	for key: String in keys:
 		translated.append(TranslationServer.translate(key))
 	return translated

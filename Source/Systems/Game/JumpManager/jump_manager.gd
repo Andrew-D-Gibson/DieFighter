@@ -13,6 +13,7 @@ const _TILE_UNLOCK_POPUP: PackedScene = preload("res://Source/Systems/UI/TileUnl
 func _ready() -> void:
 	Globals.jump_manager = self
 	Globals.map.request_jump_to_scenario.connect(jump_to_scenario)
+	Globals.map.request_jump_to_hole.connect(func() -> void: Globals.state_manager.enter_reckoning())
 
 
 ## Plays the full hyperspace transition into a scenario: intro animation,
