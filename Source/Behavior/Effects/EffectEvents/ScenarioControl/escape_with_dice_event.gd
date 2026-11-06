@@ -4,6 +4,14 @@ extends EffectEvent
 ## takes them off the board with it, and the player loses them for good: the
 ## same loss as jumping away from a ship that holds them.
 
+## EffectData.string_param for a ship that leaves with only the die it is
+## spending: a saved ship running for it in the Reckoning carries the die the
+## player gave it, not every die it happened to be holding.
+const SPENT_ONLY: String = "spent_only"
+
+## Carry only the die being spent; the others go home to the player first.
+var spent_only: bool = false
+
 
 func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(actor) or actor is not Enemy:
@@ -13,6 +21,8 @@ func resolve(_engine: ScenarioEngine) -> void:
 	# EnemyActionEvent took the die being spent out of the queue before the
 	# chain ran, so it rides along separately.
 	var loot: Array[Dice] = []
+	if spent_only:
+		enemy.dice_manager.return_dice_to_player()
 	for die: Dice in enemy.dice_manager.queue:
 		if is_instance_valid(die):
 			loot.append(die)

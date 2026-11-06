@@ -49,6 +49,9 @@ extends Node
 ## A spared ship's strafing pass deals this many times a d6 to every hostile
 ## (the retired Old Debt tile's 3x die).
 @export var debt_strafe_multiplier: int = 3
+## Hunger brings no early wave while this many hostiles are already on the
+## board, so a Hunger-heavy die can't stack waves without end.
+@export var hunger_board_cap: int = 6
 ## Seconds the fight holds once its ending is decided before the film takes
 ## over, so the last thing that happened can be seen (an ally jumping out
 ## with the last die, "You" coming apart).
@@ -187,9 +190,9 @@ func call_ally(amount: int) -> void:
 
 
 ## Hunger: the hole's next wave comes now, even if the one on the board isn't
-## cleared.
+## cleared, unless the board is already full (hunger_board_cap).
 func hurry_next_wave() -> void:
-	if _running and not _ending:
+	if _running and not _ending and _hostiles_left().size() < hunger_board_cap:
 		_advance_waves(true)
 
 
@@ -672,6 +675,8 @@ func build_ending(trigger: ReckoningRules.Trigger, last_holder: String = "") -> 
 				break
 	ending.last_die_holder = last_holder
 	ending.dice_left = Globals.player.num_of_dice if is_instance_valid(Globals.player) else 0
+	if ledger:
+		ending.die_faces.assign(ledger.die.faces)
 	return ending
 
 
