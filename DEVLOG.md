@@ -4,6 +4,37 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-06 — The Reckoning redone, and five endings
+
+The secret last fight and how a run ends there, redone from the design in `RECKONING_ENDINGS.md` (agreed with Drew today), built as a first draft by five parallel agents and merged. The run deals three hands: kills set Become Fate, saved ships set Save Others, dice set Save Yourself.
+
+- **The fight.**
+  - **Rules.** No horizon eating columns and no no-flee rule. The Reckoning's own background says "Attacks can't be evaded" (`NoEvasionModifier`).
+  - **The escape is the engine charger,** dressed gold, its goal frozen at 3x the drive the player turned Back with (`ReckoningRules`, `Player.freeze_engine_max()`). Charge never banks away; a full bank lights the map's arrows and the player jumps.
+  - **`ReckoningQueue`** gives the run back one encounter at a time, last in first out. Echoes have half hull and rise from the left. Civilians say *"We were running too."*, and the first kill's echo *"Before me, there was only you."*
+- **Allies** (`ReckoningAllyWing`).
+  - **Saved ships** fly one at a time in the escort slot, from the right, with Shield, Raid and **Run for it**: a die spent on it takes the ship out carrying that die, gone from the Fleet.
+  - **Their lines** name who's still coming, and the last die gets *"...What about you?"*
+  - **Spared pirates** make one strafing pass and leave.
+  - **Fate's faces:** Mercy calls the next ally; Hunger brings the next wave (capped at 6 hostiles).
+- **"You"** (`FateSelf`, `FateSelfWard`, `FateSelfPresentation`).
+  - When the Tally is spent the canopy die's chain snaps, it shatters, and the shards reform as a small 3D die above the player's own hull, corrupted, named "You".
+  - **Its die** turns toward next round's throw (`upcoming_face()`, rolled a round ahead).
+  - **It fights** with every die fed to it at 2x, and nothing unaimed touches it.
+  - **Destroying it** with an aimed die is Become Fate.
+- **Endings** (`ReckoningRules.resolve()` builds a `ReckoningEnding`; `ReckoningEndingPlayer` plays its films, then the end screen):
+  - **Alone:** the sky with no Fate in it, a wide crossing on a hum, "Pilot? ...Pi" if anyone was left behind, silent credits, *"You made it."*
+  - **The Convoy:** saved ships jump in to a formation with a slot for every ship the run could have saved. Missed slots stay empty; left-behind ones get a jump that never arrives. Flares and chatter follow. **Perfect** (nobody left behind in the fight or the run): the formation closes, the player takes the point, *"No one is behind you."*
+  - **The Last Die:** the engines go out flame by flame and the ship drifts calmly into the purple. Then the saved ships in formation, the front left open, *"Leave the front open."*, and a slow gold salute.
+  - **Become Fate:** the purple takes the hull, the dive, and the opening seen from the hole's mouth, the player's own die thrown in the dark. Falling credits, then straight to the menu.
+  - **Fell In:** the cockpit death, then a violent push into the hole ending on the Fallen's look.
+- **Throw #N.** The main menu counts runs started (`CollectionManager.runs_started()`) and shows "Throw #N" once the player has Become Fate. The pilgrim then says *"It's been waiting for you. ...Oh. It's you."*
+- **Retired:** the horizon (`HorizonModifier`, `HorizonVoidCell`, `ADVANCE_HORIZON`), the escape meter, and the Saved Ship / Old Debt tiles (their resources remain, unused). `FateLedger` now keeps an encounter index on kills and allies, and the run's missed opportunities.
+- **Checked:** every changed script validates. Core suite 985/985, with `test_reckoning_rules.gd` new (ending resolution, the goal fixed at the start). AutoPilot runs replaying a full run ended in Become Fate, Fell In, the Last Die, Alone and the Convoy with no errors or hangs. Each film was recorded with Movie Maker and checked frame by frame.
+- **Open** (RECKONING_ENDINGS §10-11): film lengths (Become Fate about 70 s), small convoys reading as a fragment, "You"'s 2x, civilians killed by pirates not being recorded, credits content, and all the new audio (`SOUND_EFFECTS_TODO.md`). No new art files: everything new is shaders and pixels drawn on the 320x180 grid.
+
+---
+
 ## 2026-11-05 — The first ending: Fate's Die unlocked
 
 The run that first learns the secret now ends on a cutscene instead of the gate passage (`EndingCutscene`, played from `GameStateManager.go_through_gate()`).

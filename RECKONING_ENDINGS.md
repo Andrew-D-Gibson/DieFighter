@@ -1,8 +1,9 @@
 # RECKONING_ENDINGS.md — The Last Fight and How the Run Ends
 
 The redo of the Reckoning (LORE.md §7) and the endings behind it (§8). Agreed
-with Drew on 2026-11-06. This supersedes §7-8 where they disagree; LORE.md §13
-describes the first pass as built before this redo.
+with Drew on 2026-11-06, and built as a first draft the same day (§11). This
+supersedes §7-8 where they disagree; LORE.md §13 describes the first pass as
+built before this redo.
 
 > **The run deals you three hands, and the last fight is where you choose
 > which to play.** Your kills set the Become Fate goal, the ships you saved set
@@ -395,8 +396,45 @@ the first ending.
 - **The formation cap of 12.** A very bloody run is mostly gaps, which is intended. Check it reads at 320×180.
 - **"Run for it" on 2 faces.** Too few and sending an ally is a lottery; too many and allies are free exits.
 - **Siphons on a 30-point bank.** They're now the escape's main threat. Tune their amounts.
-- **Civilians killed by pirates** while the player could have stepped in: are they recorded anywhere, and should they count as missed?
+- **Civilians killed by pirates** while the player could have stepped in aren't recorded anywhere, so they can't count as missed yet. Should they?
 - **Very long runs.** The old Tally kept the latest 15 kills plus the first. With one wave per encounter, cap by encounters (the latest 12 plus the first?).
 - **Hunger's early wave** can stack waves fast on a Hunger-heavy die. Watch for pile-ups.
 - **Credits content:** who and what gets listed.
 - **Music:** the escape sting, the Convoy's warm theme, the Last Die's sustained note, and the slowed opening theme for Become Fate. Until they exist, these borrow existing cues; list them in `SOUND_EFFECTS_TODO.md`.
+- **The Become Fate film runs about 70 s**, the arrival films about 45-51 s. Trim after a first watch?
+- **A small convoy is a fragment of a chevron.** With two or three saved ships the gap at the front reads weakly. A tighter formation for small counts?
+- **The victory screen's music** after Alone is silence and after the Convoy the theme keeps playing. Intended?
+
+---
+
+## 11. As built (first draft, 2026-11-06)
+
+Everything above is in the game. Where the build made a call the spec left
+open:
+
+- **Run for it carries only the die spent on it.** Anything else the ally
+  holds (a dead echo's dice handed on, say) goes home first, so an ally never
+  leaves with the whole Fleet.
+- **Hunger is capped:** no early wave once 6 hostiles are on the board, after
+  a test run piled waves up without end.
+- **The Old Debt flyby** has no die, so its strafing pass is 3x a d6 from the
+  director's seeded generator.
+- **"You" dies without a wreck, kill-cam or salvage.** Its presentation tears
+  it apart instead.
+- **"Your Own Fire"**'s 2x is the multiplier step in `your_own_fire.tres`; its
+  description says "double", so change both together.
+- **Either map arrow** is the escape once the bank is full.
+- **The formation:** outside the perfect version the player flies at the rear
+  of the chevron. The point is the player's place in every mode, so the
+  perfect slide goes through the formation to the front. Lost ships leave
+  their slot plainly empty, like missed ones.
+- **Become Fate goes straight to the main menu** after its credits, so Throw #N
+  is the first thing the player sees.
+- **No new art files.** Ships are their combat and cutscene sprites; flares,
+  motes, shards, the hole's mouth and the corruption are shaders and pixels
+  drawn on the 320x180 grid.
+- **Audio is borrowed.** The cues each moment wants are in
+  `SOUND_EFFECTS_TODO.md`.
+- **Throw #N counts runs started from this build on**, so an older player's
+  count starts low.
+

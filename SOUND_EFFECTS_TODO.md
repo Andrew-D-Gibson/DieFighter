@@ -206,6 +206,14 @@ enemy ship. Every action resource is indexed at the end of this document.
 | [ ] | `fate_pulse`, `fate_consume` | Cutscene borrows die thunk/explosion. Pulsing corruption / engulfing digital distortion. | `OpeningCutscene._fate_pulse` / `_consumed`; can reuse `hazard_fate` first. |
 | [ ] | `engine_fail`, `rcs_burst` | Cutscene engine failure borrows pre-death; small thruster bursts lack dedicated cue. Broken power chirp / tiny jet puffs. | `OpeningCutscene._engines_out`, `_rcs_burst`; jump sequence shares the P1 travel files. |
 | [ ] | `status_clear` | Optional. Tiny reverse shimmer for active cleansing. | Successful `CLEAR_STATUS` / `TRANSFER_STATUSES` in Heat Sink and Countermeasures. Natural end-of-turn decay stays quiet; transfer can reuse `energy_transfer`. |
+| [ ] | `vanguard_escape` | Borrows `game_start_theme`. The biggest sting of the Reckoning: the bank full, the jump out. | `ReckoningDirector` escape (RECKONING_ENDINGS §6.1), as the white jump-out starts. |
+| [ ] | `fate_chain_snap`, `fate_die_shatter`, `fate_shards_stream`, `fate_die_form` | Borrow `dice_reroll_blip`, `die_dead_click`, `glass_crack`, `glass_tinkle`, `upgrade_trigger`, `die_dread_thunk`. Chain strain and snap; bone die shattering; shards whooshing out of the viewport; the small die forming over "You". | `FateSelfPresentation` on `fate_self_arrived`. |
+| [ ] | `fate_self_tear`, `fate_die_settle` | Borrowed. A digital tear as "You" is pulled apart; a soft settle as the die returns to the canopy. | `FateSelfPresentation` on `fate_self_destroyed`. |
+| [ ] | `arrival_chime`, `flare_pop`, `failed_jump` | Borrow `glass_tinkle` (pitched up a step per ship), `shop_stock_pop`, `die_dead_click`. Each saved ship arriving; a signal flare bursting; a jump that never arrives (flat, no chime). | `ArrivalCutscene` (Convoy, Last Die shot 2). |
+| [ ] | `drive_hum`, `comms_crackle` | Synthesised in `ArrivalHum` for now. A low engine hum (Alone's only sound); one burst of comms static, cut mid-word. | `ArrivalHum`, Alone. |
+| [ ] | `engine_off_click`, `sustained_note` | Borrow `die_dead_click`; the note is synthesised (`SustainedNote`). A soft click as each gold flame goes out; one held note that ends with the point of light. | `ConsumedCutscene`, the Last Die shot 1. |
+| [ ] | `hull_groan`, `drive_blowout`, `ghost_born` | Borrow `glass_crack`/`player_health_hit`, `enemy_pre_death`, `die_dread_thunk`. Cracking hull; the drive blowing out; a swell as the Fallen's look settles. | `ConsumedCutscene`, Fell In. |
+| [ ] | `hull_wash`, `drive_purple`, `fate_die_land` | Borrowed. A row-by-row corruption wash; the drive reigniting purple; the thrown die's landing clack. | `become_fate_cutscene`. |
 
 Individual weapon signatures from the original file are all **P3**: valve hiss,
 torch jet, chaff pop, concussion ring, pendulum clunk, magnetic snap, feedback
@@ -221,6 +229,11 @@ seamless loops separately (`ambience_cockpit`, `ambience_ion`, `ambience_fate`).
 They need loop lifetime/fade handling beyond the current fire-and-forget SFX
 player; do not wire an infinite loop through `Events.play_sound`.
 Saving can remain silent; the existing save indicator is sufficient.
+
+Music, not SFX, for the Reckoning's endings (RECKONING_ENDINGS.md §6): a warm
+Convoy theme (borrows `game_start_theme`, which the Last Die's salute also
+brings in quietly), and a slowed, lowered arrangement of the opening theme for
+Become Fate (now `trailer_1` at 0.72 pitch). Alone stays silent on purpose.
 
 Music, not SFX: the ending cutscene (`EndingCutscene._music_in`) borrows
 `game_start_theme` for the flight away from the Bastion and brings it back

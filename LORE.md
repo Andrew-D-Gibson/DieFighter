@@ -209,6 +209,9 @@ echoes fight on *your* side, because you never paid into the deal.
 
 ## 7. The Reckoning (the Fate fight)
 
+> Redone on 2026-11-06: the fight and its endings as they now stand are in
+> `RECKONING_ENDINGS.md`, which supersedes §7-8 and the first pass in §13.
+
 ### Win condition: escape velocity
 Fate can't be killed. You win by filling an **escape-velocity meter** to something
 absurd, around 3× your normal max engine charge. The **Vanguard Drive** is the only
@@ -447,6 +450,10 @@ Still open:
 ---
 
 ## 13. What's Built (first pass, 2026-11-05)
+
+> The Reckoning and its endings below are the first pass. They were redone on
+> 2026-11-06 (no horizon, the engine charger as the escape, allies as ships,
+> "You", five endings with their films): see `RECKONING_ENDINGS.md`.
 
 Fate's Die and the Reckoning exist, end to end. The systems are in
 `ARCHITECTURE_OVERVIEW.md` ("Fate's Die and the Reckoning"); this is the
