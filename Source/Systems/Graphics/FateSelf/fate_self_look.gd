@@ -3,8 +3,8 @@ extends Node2D
 ## "You"'s corruption (RECKONING_ENDINGS.md §4): the takeover isn't finished,
 ## and you can see Fate working on it. Dresses the ship's hull in
 ## fate_self.gdshader (the wash crawling across in waves, the tearing slices)
-## and peels pixels off it toward the hole, on the left. On its death the
-## slices pull the hull apart: no explosion, no wreck.
+## and peels pixels off it toward the hole, wherever the sky draws it. On its
+## death the slices pull the hull apart: no explosion, no wreck.
 ##
 ## The hull is baked to a plain texture padded with clear texels at the sides,
 ## so a slice can slide out past the art (an atlas frame would slide into its
@@ -17,7 +17,7 @@ const _TEAR_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffe
 ## Clear texels added round the hull: room for the slices to slide.
 const _PAD: Vector2i = Vector2i(18, 2)
 ## Peeling: pixels a second, how fast they drift for the hole, how long they
-## last. The hole is off the left of the screen.
+## last.
 const _PEEL_RATE: float = 9.0
 const _PEEL_SPEED_MIN: float = 7.0
 const _PEEL_SPEED_MAX: float = 20.0
@@ -126,7 +126,7 @@ func _process(delta: float) -> void:
 			continue
 		var velocity: Vector2 = mote["velocity"]
 		# Drawn harder toward the hole the longer it's loose.
-		velocity.x -= 14.0 * delta
+		velocity += _toward_hole(mote["position"]) * 14.0 * delta
 		mote["velocity"] = velocity
 		mote["position"] = (mote["position"] as Vector2) + velocity * delta
 	queue_redraw()
@@ -144,25 +144,46 @@ func _draw() -> void:
 		draw_rect(Rect2(to_local(mote["position"]).round(), Vector2.ONE), mote["color"])
 
 
-## Lifts one pixel off [param sprite] and sends it drifting left, [param
+## Which way the hole is from [param point], as a unit vector. Off to the left
+## when the sky has none.
+func _toward_hole(point: Vector2) -> Vector2:
+	var hole: Vector2 = _hole()
+	if not hole.is_finite() or hole.is_equal_approx(point):
+		return Vector2.LEFT
+	return point.direction_to(hole)
+
+
+## The hole's place on screen, or Vector2.INF.
+func _hole() -> Vector2:
+	return Globals.background_manager.black_hole_position() if Globals.background_manager else Vector2.INF
+
+
+## Lifts one pixel off [param sprite] and sends it drifting for the hole, [param
 ## speed] times as fast as a peel, after [param delay] seconds.
 func _peel(sprite: Sprite2D, speed: float, delay: float) -> void:
 	if _opaque.is_empty():
 		return
-	# Two picks, the one further left: the side facing the hole goes first.
-	var texel: Vector2 = _opaque[_rng.randi() % _opaque.size()]
-	var other: Vector2 = _opaque[_rng.randi() % _opaque.size()]
-	if other.x < texel.x:
-		texel = other
-	var local: Vector2 = sprite.get_rect().position + texel + Vector2(0.5, 0.5)
+	# Two picks, the one nearer the hole: the side facing it goes first.
+	var from: Vector2 = _texel_point(sprite, _opaque[_rng.randi() % _opaque.size()])
+	var other: Vector2 = _texel_point(sprite, _opaque[_rng.randi() % _opaque.size()])
+	var hole: Vector2 = _hole()
+	if hole.is_finite() and other.distance_squared_to(hole) < from.distance_squared_to(hole):
+		from = other
+	var drift: Vector2 = _toward_hole(from)
 	var colors: Array[Color] = [Globals.purple, Globals.medium_purple, Color("#80359d"), Color("#251c6b")]
 	_motes.append({
-		"position": sprite.global_transform * local,
-		"velocity": Vector2(-_rng.randf_range(_PEEL_SPEED_MIN, _PEEL_SPEED_MAX), _rng.randf_range(-3.0, 3.0)) * speed,
+		"position": from,
+		"velocity": (drift * _rng.randf_range(_PEEL_SPEED_MIN, _PEEL_SPEED_MAX)
+			+ drift.orthogonal() * _rng.randf_range(-3.0, 3.0)) * speed,
 		"age": -delay,
 		"life": _rng.randf_range(_PEEL_LIFE_MIN, _PEEL_LIFE_MAX),
 		"color": colors[_rng.randi() % colors.size()],
 	})
+
+
+## Where [param texel] of the padded hull is on screen.
+func _texel_point(sprite: Sprite2D, texel: Vector2) -> Vector2:
+	return sprite.global_transform * (sprite.get_rect().position + texel + Vector2(0.5, 0.5))
 
 
 ## The hull's art as one plain texture, flipped as it's shown, with clear

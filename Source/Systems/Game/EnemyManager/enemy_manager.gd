@@ -71,6 +71,16 @@ var _arrival_rest: Dictionary[Enemy, Vector2] = {}
 ## ships that don't come down from above (fly_in_reinforcements()).
 var _arrival_from: Dictionary[Enemy, Vector2] = {}
 
+## Where a ship flying in starts when that is a point on screen rather than
+## an offset from its slot: a Callable returning it, asked every frame, since
+## the thing it names (the black hole) can still be drifting into place.
+## Wins over _arrival_from while it returns a point.
+var _arrival_origin: Dictionary[Enemy, Callable] = {}
+
+## Told each frame of a ship's fly-in how far along it is, for looks that
+## belong to the trip (an echo settling out of the hole's stretch).
+var _arrival_watch: Dictionary[Enemy, Callable] = {}
+
 ## True from the moment the opening fly-in starts until the last ship has landed
 ## and been targeted. Combat-start effects wait on this so nothing fires at a
 ## ship that is still arriving; see Events.enemies_arrived.
@@ -371,6 +381,8 @@ func start_enemy_fly_in() -> void:
 		await fly_in_tween.finished
 		_awaiting_fly_in.erase(enemy)
 		_arrival_rest.erase(enemy)
+		_arrival_origin.erase(enemy)
+		_arrival_watch.erase(enemy)
 		if not is_instance_valid(enemy):
 			continue
 		Events.enemy_flew_in.emit()
@@ -392,8 +404,11 @@ func start_enemy_fly_in() -> void:
 ## spawned after the arrival (the Reckoning's waves). Unlike the arrival they
 ## come at once, since the fight is already on. [param from] is where they
 ## start relative to their slots, when not from above (the Reckoning's echoes
-## rise out of the hole on the left).
-func fly_in_reinforcements(ships: Array[Enemy], from: Vector2 = Vector2.ZERO) -> void:
+## rise out of the hole). See [method set_arrival_origin] for [param origin]
+## and [param on_progress].
+func fly_in_reinforcements(ships: Array[Enemy], from: Vector2 = Vector2.ZERO,
+		origin: Callable = Callable(), on_progress: Callable = Callable()) -> void:
+	set_arrival_origin(ships, origin, on_progress)
 	var tweens: Array[Tween] = []
 	for ship: Enemy in ships:
 		if not is_instance_valid(ship) or _hull_mounts.is_mounted(ship):
@@ -409,6 +424,8 @@ func fly_in_reinforcements(ships: Array[Enemy], from: Vector2 = Vector2.ZERO) ->
 			_awaiting_fly_in.erase(ship)
 			_arrival_rest.erase(ship)
 			_arrival_from.erase(ship)
+			_arrival_origin.erase(ship)
+			_arrival_watch.erase(ship)
 			if not is_instance_valid(ship):
 				return
 			Events.enemy_flew_in.emit()
@@ -423,6 +440,22 @@ func fly_in_reinforcements(ships: Array[Enemy], from: Vector2 = Vector2.ZERO) ->
 		Globals.targeting_computer.ensure_target()
 
 
+## Has [param ships] fly in from a point on screen, for either kind of fly-in
+## (the opening arrival or a mid-fight one), instead of from above their slots.
+## [param origin] returns that point (global; Vector2.INF for none, which
+## leaves the ship coming from where it would have). [param on_progress] is
+## called every frame of the trip, and once more on landing, with (ship,
+## progress from 0 to 1, the direction it is travelling in).
+func set_arrival_origin(ships: Array[Enemy], origin: Callable, on_progress: Callable = Callable()) -> void:
+	for ship: Enemy in ships:
+		if not is_instance_valid(ship):
+			continue
+		if origin.is_valid():
+			_arrival_origin[ship] = origin
+		if on_progress.is_valid():
+			_arrival_watch[ship] = on_progress
+
+
 ## One frame of a ship's fly-in. [param progress] is 0 above the slot and 1 on
 ## it; the slot is read every frame because the formation may still move it.
 func _place_arriving(ship: Enemy, progress: float) -> void:
@@ -432,7 +465,13 @@ func _place_arriving(ship: Enemy, progress: float) -> void:
 		_arrival_rest[ship] = ship.position
 	var rest: Vector2 = _arrival_rest[ship]
 	var from: Vector2 = _arrival_from.get(ship, Vector2(0.0, -fly_in_range))
+	if _arrival_origin.has(ship):
+		var start: Vector2 = (_arrival_origin[ship] as Callable).call()
+		if start.is_finite():
+			from = to_local(start) - rest
 	ship.position = rest + from * (1.0 - progress)
+	if _arrival_watch.has(ship):
+		(_arrival_watch[ship] as Callable).call(ship, progress, -from)
 	# A ship can arrive already holding dice (the opening ambusher's shot).
 	if ship.holds_dice():
 		ship.dice_manager.update_dice_locations()
@@ -610,6 +649,8 @@ func _forget(ship: Enemy) -> void:
 	_awaiting_fly_in.erase(ship)
 	_arrival_rest.erase(ship)
 	_arrival_from.erase(ship)
+	_arrival_origin.erase(ship)
+	_arrival_watch.erase(ship)
 	_active_moves.erase(ship)
 	formation.clear_reservation(EnemyFormation.ship_key(ship))
 
@@ -762,6 +803,8 @@ func delete_all_enemies() -> void:
 	_awaiting_fly_in.clear()
 	_arrival_rest.clear()
 	_arrival_from.clear()
+	_arrival_origin.clear()
+	_arrival_watch.clear()
 	_active_moves.clear()
 	_hull_mounts.free_hull()
 	enemies_jumping = false

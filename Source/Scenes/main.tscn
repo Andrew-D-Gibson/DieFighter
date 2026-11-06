@@ -146,14 +146,9 @@
 [ext_resource type="Script" uid="uid://dsc0who8acukt" path="res://Source/Systems/UI/FateCarveChoice/fate_carve_choice.gd" id="fate_carve_choice"]
 [ext_resource type="Script" uid="uid://cxq4v62nhql3p" path="res://Source/Systems/UI/FateRevelation/fate_revelation.gd" id="fate_revelation"]
 [ext_resource type="Script" path="res://Source/Systems/Game/LastWords/last_words.gd" id="last_words"]
+[ext_resource type="Resource" path="res://Source/Content/StoryBeats/first_kill_last_words.tres" id="first_kill_words"]
 [ext_resource type="Resource" uid="uid://vj46db0istaa" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/FATE_reckoning.tres" id="reckoning_scenario"]
 [ext_resource type="Resource" uid="uid://bd8fdamhw5boi" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/echo_hostile.tres" id="reckoning_echo"]
-[ext_resource type="Resource" uid="uid://0ydl1avdkww1" path="res://Source/Content/Enemies/EnemyResources/fate_husk.tres" id="spilled_husk"]
-[ext_resource type="Resource" uid="uid://b70spibguu3rw" path="res://Source/Content/Enemies/EnemyResources/fate_leech.tres" id="spilled_leech"]
-[ext_resource type="Resource" uid="uid://w636ogfwrenr" path="res://Source/Content/Enemies/EnemyResources/fate_maw.tres" id="spilled_maw"]
-[ext_resource type="Resource" uid="uid://dnpl4gl2skqbn" path="res://Source/Content/Enemies/EnemyResources/fate_wisp.tres" id="spilled_wisp"]
-[ext_resource type="Resource" uid="uid://b01a4mnrj68hc" path="res://Source/Content/Enemies/EnemyResources/fate_shroud.tres" id="spilled_shroud"]
-[ext_resource type="Resource" uid="uid://cjnui7le0auy3" path="res://Source/Content/Enemies/EnemyResources/fate_attacker.tres" id="spilled_attacker"]
 [ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/fate_self.tres" id="reckoning_self"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/ally_table.tres" id="reckoning_ally_table"]
 [ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/ally_aboard.tres" id="reckoning_ally_state"]
@@ -436,7 +431,7 @@ script = ExtResource("ship_unlock_director")
 script = ExtResource("reckoning_director")
 scenario = ExtResource("reckoning_scenario")
 echo_state = ExtResource("reckoning_echo")
-spilled_pool = Array[ExtResource("script_enemy_resource")]([ExtResource("spilled_husk"), ExtResource("spilled_leech"), ExtResource("spilled_wisp"), ExtResource("spilled_maw"), ExtResource("spilled_shroud"), ExtResource("spilled_attacker")])
+first_kill_words = ExtResource("first_kill_words")
 self_resource = ExtResource("reckoning_self")
 ally_table = ExtResource("reckoning_ally_table")
 ally_state = ExtResource("reckoning_ally_state")

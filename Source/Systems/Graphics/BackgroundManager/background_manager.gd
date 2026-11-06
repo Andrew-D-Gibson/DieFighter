@@ -402,6 +402,18 @@ func _set_scrolling_objects(bg_resource: BackgroundResource) -> void:
 		scrolling_objects.append(piece)
 
 
+## Where the background's black hole is on screen right now, in the canvas
+## the ships share, or [constant Vector2.INF] when this sky has none. Read
+## from the placed piece, not assumed: the hole is authored in each
+## background's resource, and the sky drifts with a jump. What comes back out
+## of it (the Reckoning's echoes) starts here.
+func black_hole_position() -> Vector2:
+	for obj: Node2D in static_objects:
+		if is_instance_valid(obj) and obj.scene_file_path.ends_with("/black_hole.tscn"):
+			return obj.global_position
+	return Vector2.INF
+
+
 func _set_static_objects(static_object_data: Array[StaticBackgroundObjectResource]) -> void:
 	for object_data: StaticBackgroundObjectResource in static_object_data:
 		if object_data.scene:

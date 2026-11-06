@@ -11,10 +11,11 @@ extends Node
 ##     (ReckoningAllyWing) and leave carrying a die. The last die going that
 ##     way, before the bank is full, is the Last Die.
 ##   - Become Fate: once the Tally is spent the hole sends "You" (FateSelf),
-##     and destroying it with an aimed die is Become Fate.
+##     alone, and destroying it with an aimed die is Become Fate.
 ## Meanwhile Fate throws the carved die every round (FateFaceResource.
 ## reckoning_chain), the hole plays the run back an encounter at a time
-## (ReckoningQueue), then sends its own Spilled. Hull gone, or an echo
+## (ReckoningQueue), the first kill speaks its last words, and "You" is the
+## last ship the hole sends: nothing comes after it. Hull gone, or an echo
 ## leaving with the last die, is Fell In.
 ##
 ## The ending is decided by ReckoningRules and played by ReckoningEndingPlayer,
@@ -23,15 +24,18 @@ extends Node
 ## Lives beside the other run systems in main.tscn and wakes only while the
 ## loaded scenario is [member scenario].
 
+## The first kill's last words are done (or there were none to say).
+signal first_words_finished()
+
 @export var scenario: ScenarioResource
-## The state every echo of the Tally, every Spilled ship and "You" fight in.
+## The state every echo of the Tally and "You" fight in.
 @export var echo_state: ScenarioShipState
-## What the hole sends once the Tally is spent, a wave at a time, round robin.
-@export var spilled_pool: Array[EnemyResource] = []
-## Ships per Spilled wave.
-@export var spilled_wave_size: int = 3
 ## Stands in for the engine charger for the length of the fight.
 @export var horizon_drive: TileResource
+## What the very first kill says as it dies for the second time, in a story
+## box (the way a gate boss's last words are said): the beat before the hole
+## sends "You".
+@export var first_kill_words: StoryBeatResource
 ## "You": the player's own hull, sent once the Tally is spent. Its fire (the
 ## die's face times the Your Own Fire action's multiplier) is tuned there.
 @export var self_resource: EnemyResource
@@ -52,14 +56,17 @@ extends Node
 ## Hunger brings no early wave while this many hostiles are already on the
 ## board, so a Hunger-heavy die can't stack waves without end.
 @export var hunger_board_cap: int = 6
+## With no wave left to bring (the Tally is spent, and "You" is the last ship
+## the hole sends), Hunger eats this share of the escape's goal off the
+## engine charger instead, at least one charge.
+@export_range(0.0, 0.5, 0.01) var hunger_drain_fraction: float = 0.1
 ## Seconds the fight holds once its ending is decided before the film takes
 ## over, so the last thing that happened can be seen (an ally jumping out
 ## with the last die, "You" coming apart).
 @export var ending_beat_seconds: float = 2.4
-## How echoes of the Tally look: stretched through the hole, gone purple.
-@export var echo_tint: Color = Color("#c552f1")
-## How far toward echo_tint an echo is washed, 0 to 1.
-@export_range(0.0, 1.0) var echo_cloak: float = 0.35
+## How much of an echo's hull Fate has already taken, 0 to 1: half its own
+## hull and half Fate's by default (EchoLook).
+@export_range(0.0, 1.0, 0.05) var echo_corruption: float = 0.5
 
 ## What a saved ship that rode along as the escort says as it comes back, by
 ## FateLedger.ESCORT_*.
@@ -68,9 +75,13 @@ const ESCORT_LINES: Dictionary[String, String] = {
 	FateLedger.ESCORT_LOST: "RECKONING_ESCORT_LOST",
 }
 
-## Where echoes rise from, relative to their slots: out of the hole on the
-## left. Allies jump in from the fleet on the right (ReckoningAllyWing).
-const _ECHO_RISE: Vector2 = Vector2(-150.0, 30.0)
+## The wash an echo gets when it can't wear EchoLook.
+const _CLOAK_TINT: Color = Color("#c552f1")
+## How much of "You" Fate holds while it flies out of the hole, matching the
+## wash FateSelfLook then crawls over it (fate_self.gdshader's corruption).
+const _SELF_CORRUPTION: float = 0.42
+## Seconds the first kill hangs there dead before its last words open.
+const _FIRST_WORDS_DELAY: float = 0.8
 ## The beat after the first kill's last words before the hole sends "You".
 const _SELF_ENTRY_DELAY: float = 1.8
 ## The escape's sting, borrowed until it has its own cue (SOUND_EFFECTS_TODO).
@@ -88,11 +99,14 @@ var _death_claimed: bool = false
 var _fight_started: bool = false
 var _waves: Array[Dictionary] = []
 var _wave_index: int = 0
-var _spilled_index: int = 0
 var _self_ship: Enemy = null
 ## Whether "You" has been sent: once, whatever became of it.
 var _self_sent: bool = false
 var _first_kill_ship: Enemy = null
+## The first kill's last words are being said, and "You" waits for them.
+var _words_pending: bool = false
+## Echoes sent so far: each one's glitches keep their own time.
+var _echoes_made: int = 0
 var _goal: int = 1
 var _bank_full: bool = false
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
@@ -190,9 +204,15 @@ func call_ally(amount: int) -> void:
 
 
 ## Hunger: the hole's next wave comes now, even if the one on the board isn't
-## cleared, unless the board is already full (hunger_board_cap).
+## cleared, unless the board is already full (hunger_board_cap). With no wave
+## left to send (everything the hole had is out, "You" last of all) it eats
+## some of the escape's charge instead.
 func hurry_next_wave() -> void:
-	if _running and not _ending and _hostiles_left().size() < hunger_board_cap:
+	if not _running or _ending:
+		return
+	if _wave_index >= _waves.size():
+		_eat_charge()
+	elif _hostiles_left().size() < hunger_board_cap:
 		_advance_waves(true)
 
 
@@ -205,7 +225,6 @@ func skip_to_self() -> void:
 		_wing.add(_waves[_wave_index]["allies"])
 		_wave_index += 1
 	_spawn_self()
-	_spawn_spilled(true)
 
 
 ## The dev console's `fate allies`: [param entries] join the queue now.
@@ -246,7 +265,7 @@ func _begin(loaded: ScenarioResource) -> void:
 	_fight_started = false
 	_bank_full = false
 	_wave_index = 0
-	_spilled_index = 0
+	_words_pending = false
 	_round = 0
 	_self_ship = null
 	_self_sent = false
@@ -399,21 +418,32 @@ func _on_charge_changed() -> void:
 ## between waves.
 func _advance_waves(fly_in: bool) -> void:
 	for guard: int in 64:
-		if not _running or _ending:
+		if not _running or _ending or (_wave_index >= _waves.size() and _self_sent):
 			return
 		_spawn_next(fly_in)
 		if not _hostiles_left().is_empty():
 			return
 
 
+## The next wave of the Tally, or, once it is spent, "You": the last ship the
+## hole sends. Nothing comes after it.
 func _spawn_next(fly_in: bool) -> void:
 	if _wave_index < _waves.size():
 		_wave_index += 1
 		_spawn_tally_wave(_waves[_wave_index - 1], fly_in)
-		return
-	if not _self_sent:
+	elif not _self_sent:
 		_spawn_self()
-	_spawn_spilled(fly_in)
+
+
+## Hunger with nothing left to bring: the hole takes a share of the escape's
+## charge, off the engine charger.
+func _eat_charge() -> void:
+	if not is_instance_valid(Globals.player) or Globals.player.engine_charge <= 0:
+		return
+	var amount: int = maxi(1, roundi(_goal * hunger_drain_fraction))
+	add_escape_velocity(-amount)
+	Events.glitch_burst.emit(160)
+	Events.camera_shake_small.emit()
 
 
 ## Hostile ships still fighting, "You" aside (it never holds a wave back), and
@@ -454,18 +484,6 @@ func _spawn_tally_wave(wave: Dictionary, fly_in: bool) -> void:
 		_pay_debt(debt, ships, fly_in)
 
 
-func _spawn_spilled(fly_in: bool) -> void:
-	if spilled_pool.is_empty():
-		return
-	var ids: Array = []
-	for i: int in spilled_wave_size:
-		var res: EnemyResource = spilled_pool[_spilled_index % spilled_pool.size()]
-		_spilled_index += 1
-		ids.append(ContentRegistry.get_enemy_id(res.resource_path))
-	var line: String = "FATE_SPILLED_LINE_%d" % ((_spilled_index / maxi(1, spilled_wave_size) - 1) % 3 + 1)
-	_announce_wave(_spawn_echoes(ids, 1.0), fly_in, line)
-
-
 func _spawn_echoes(ids: Array, hull_fraction: float) -> Array[Enemy]:
 	var spawns: Array[EnemyStateRewardResource] = []
 	for id: Variant in ids:
@@ -483,32 +501,50 @@ func _spawn_echoes(ids: Array, hull_fraction: float) -> Array[Enemy]:
 	for ship: Enemy in ships:
 		# Not one of the scenario's own ships: nothing for a save to restore.
 		ship.spawn_index = -1
-		_tint_echo(ship)
+		_corrupt_echo(ship)
 	return ships
 
 
-## Gives a ship the look of something that came back through the hole: part
-## way to Fate's purple, through its shader's own cloak (which ignores
-## modulate). Each ship's material is its own (resource_local_to_scene).
-func _tint_echo(ship: Enemy) -> void:
+## Gives a ship the look of something the hole handed back with Fate already
+## eating into it (EchoLook). A hull the look can't dress (not a plain sprite)
+## goes part way to Fate's purple through its own shader's cloak instead.
+func _corrupt_echo(ship: Enemy) -> void:
+	# Numbered, not drawn from _rng: that generator is the die's, and what's
+	# thrown mustn't depend on when an echo came.
+	_echoes_made += 1
+	if EchoLook.dress(ship, float(_echoes_made) * 0.618, echo_corruption):
+		return
 	if not ship.graphics_manager or not is_instance_valid(ship.graphics_manager.ship_graphics):
 		return
 	var material: ShaderMaterial = ship.graphics_manager.ship_graphics.material as ShaderMaterial
 	if material == null:
 		return
-	material.set_shader_parameter(&"cloak_main_color", echo_tint)
-	material.set_shader_parameter(&"cloak_bg_color", Color(echo_tint.darkened(0.45), 1.0))
-	material.set_shader_parameter(&"cloak_amount", echo_cloak)
+	material.set_shader_parameter(&"cloak_main_color", _CLOAK_TINT)
+	material.set_shader_parameter(&"cloak_bg_color", Color(_CLOAK_TINT.darkened(0.45), 1.0))
+	material.set_shader_parameter(&"cloak_amount", 0.35)
+
+
+## Where the hole is, for what comes back out of it to start from.
+func _hole_origin() -> Vector2:
+	return Globals.background_manager.black_hole_position() if Globals.background_manager else Vector2.INF
+
+
+## A returning ship is drawn out long toward the hole as it leaves it, and
+## settles into its own shape as it reaches its slot.
+func _on_emerging(ship: Enemy, progress: float, travel: Vector2) -> void:
+	EchoLook.emerge(ship, EchoLook.emerge_for(progress), travel)
 
 
 ## The wave's first ship speaks once it's on screen: after the arrival for the
-## first wave, after its own rise out of the hole for the rest.
+## first wave, after its own rise out of the hole for the rest. Both come out
+## of the hole.
 func _announce_wave(ships: Array[Enemy], fly_in: bool, line_key: String) -> void:
 	if ships.is_empty():
 		return
 	if fly_in:
-		await Globals.enemy_manager.fly_in_reinforcements(ships, _ECHO_RISE)
+		await Globals.enemy_manager.fly_in_reinforcements(ships, Vector2.ZERO, _hole_origin, _on_emerging)
 	else:
+		Globals.enemy_manager.set_arrival_origin(ships, _hole_origin, _on_emerging)
 		await Events.enemies_arrived
 	if not _running or _ending:
 		return
@@ -562,15 +598,21 @@ func _spawn_self() -> void:
 	var ship_id: StringName = StringName(Globals.state_manager.current_game_save.ship_id) \
 		if Globals.state_manager and Globals.state_manager.current_game_save else &""
 	FateLedger._dress_as_fallen(ship, ship_id)
+	# It leaves the hole drawn out like the echoes did (FateSelfLook takes its
+	# look over once it has arrived).
+	EchoLook.dress(ship, 0.0, _SELF_CORRUPTION)
 	_self_ship = ship
 	_bring_self_in(ship)
 
 
+## "You" comes alone, after the first kill has said its piece and died.
 func _bring_self_in(ship: Enemy) -> void:
+	if _words_pending:
+		await first_words_finished
 	await get_tree().create_timer(_SELF_ENTRY_DELAY).timeout
 	if not _running or _ending or not is_instance_valid(ship):
 		return
-	await Globals.enemy_manager.fly_in_reinforcements([ship] as Array[Enemy], _ECHO_RISE)
+	await Globals.enemy_manager.fly_in_reinforcements([ship] as Array[Enemy], Vector2.ZERO, _hole_origin, _on_emerging)
 	if _running and is_instance_valid(ship) and ship.health.health > 0:
 		Events.fate_self_arrived.emit(ship)
 
@@ -589,12 +631,36 @@ func _on_enemy_left(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
 		_wing.on_ship_left(ship)
 		return
 	if ship == _first_kill_ship and ship.health.health <= 0:
-		ship.dialogue_manager.show_dialogue(tr("RECKONING_FIRST_KILL_FALLS"), echo_state.faction, false)
+		_first_kill_ship = null
+		_say_first_words(ship)
 	if not ship.is_hostile() or not _hostiles_left(ship).is_empty():
 		return
 	# Spawned before the combat check that follows this signal reads the
 	# roster, so the fight never ends between waves.
 	_advance_waves(true)
+
+
+## The first kill's last words (RECKONING_ENDINGS.md §4), said the way a gate
+## boss's are: held whole on screen as it dies, it speaks in a story box, and
+## its death plays once the box closes. "You" waits for all of it. A run
+## nobody records (the AutoPilot, tests) never stops on a box.
+func _say_first_words(ship: Enemy) -> void:
+	var read_before: bool = first_kill_words != null and CollectionManager.has_read_story_beat(first_kill_words.id())
+	var lines: Array[String] = first_kill_words.display_lines(read_before) if first_kill_words else [] as Array[String]
+	if lines.is_empty() or not CollectionManager.is_recording():
+		return
+	# Called as its enemy_left goes out, in time to hold the death that follows.
+	ship.hold_death()
+	_words_pending = true
+	await get_tree().create_timer(_FIRST_WORDS_DELAY).timeout
+	if is_instance_valid(ship) and _running and not _ending:
+		CollectionManager.record_story_beat(first_kill_words.id())
+		var box: StoryBox = StoryBox.open_in(self, first_kill_words.display_speaker(), lines, ship)
+		await box.finished
+	if is_instance_valid(ship):
+		ship.release_death()
+	_words_pending = false
+	first_words_finished.emit()
 
 
 ## Dice left the Fleet with a ship. The last one leaving decides the fight:
