@@ -439,13 +439,32 @@ open:
   count starts low.
 
 ### Known issues from the first live playtest
-Found playing the fight under Movie Maker. Not fixed yet:
-- **The throw banner** sits across the ships' row for about 2.4 s every round, covering the echoes, their intents and their lines.
-- **The hole is drawn at the upper right**, but echoes rise from the left. Move one or the other.
-- **Echoes at 35% purple read as grey.** Wash them further?
+Found playing the fight under Movie Maker. Still open:
 - **Duty shields the ally** too, since the escort counts as an enemy.
 - **The escape is a normal blue jump.** Gold-tinting the streak art turned it green. A true white or gold escape needs streak art or a shader change.
-- **The ally's parting line** can overlap the next ally arriving.
 - **The end card's stats line** touches the MAIN MENU button, and reads "1 ENCOUNTERS".
-- **The map during the fight** still shows the old sector's track.
+
+Fixed in the second pass (§12): the throw banner, the hole/echo mismatch, grey echoes, the ally's overlapping parting line, and the map's old track.
+
+---
+
+## 12. Second pass (Drew's playtest, 2026-11-06)
+
+Where this pass changes what's written above, this section wins.
+
+- **The way in uses the map, not a menu.** The vector choice card is gone. Once the dying Bastion hands over the drive (and the route is open), **right through the gate** ends the run (Forward); **the left arrow throws you all the way back to the hole** and the Reckoning starts. The left arrow wears a Fate badge, the hole pulses, the caption reads "Left: the hole", and the Bastion says so: *"It jumps further than anything. Forward, it takes you to the front."* / *"Turn it back, and it throws you all the way to the hole."* (`GameStateManager.left_jump_goes_to_hole()`, `Map.jump_to_hole()`.) Runs nobody records keep ordinary arrows.
+- **The Reckoning's map** is only the hole at centre, the trail fading out both ways (`Map._reckoning_view`). Either arrow escapes once charged.
+- **Fate's throw** (replaces the banner): the screen dims, the 3D die flies to centre, rolls on a physics tray and lands on the face already chosen (record and replay; RNG untouched), then a card names the face and its effect with a green Close. The round waits for it. Skipped under AutoPilot and headless. (`FateThrowStage`, `FateThrowDie`; `ReckoningHud` is removed.)
+- **Allies speak one line at a time**, at most two on arrival (the escort line or the queue line, then "Give us a die and we're gone"). Taking a die: the parting line first, then a ~1.8 s charge-up in faction colour, then the jump, then the die leaves and the slot frees; the next ally waits 1.2 s after. (`Enemy.departure_prelude`, awaited by `EscapeWithDiceEvent`.)
+- **Echoes come out of the hole**, wherever it is drawn (`BackgroundManager.black_hole_position()`), stretched into a strand and settling into shape at their slot. They wear the map's half-and-half corruption: one half their hull, the other half the same hull in Fate's purples (`echo_ship.gdshader`, `EchoLook`). "You" emerges the same way.
+- **The first kill gets last words** in a story box (`first_kill_last_words.tres`): *"I was the first. You never learned my name."* / *"The hole kept every one of us. It saved the best of you for last."* / *"Before me, there was only you. Now there's you again."* Then **"You" comes alone, and nothing spawns after it**: the Spilled are gone. With nothing left to bring, **Hunger eats 10% of the escape goal** off the charger.
+- **Small fixes:** no ambient fly-bys or comets in any Fate sky (`BackgroundResource.fate_themed`); the Horizon Drive no longer shakes its dice; the charger readout shrinks to fit three-digit goals (TextFitter).
+- **The arrival endings' sky** is the regular space purple, with the capsule's gas giant and earth-like moon (`pixel_planet.gdshader`). The Convoy gets confetti, a gold wash and streaking stars; the perfect version a bigger burst.
+- **New Convoy chatter:** "We're out. We're actually out." / "Finally. We're free." / Caravan: "Look, little ones. Only sky." / Rearguard: "Nothing behind us. Stand down." / Undertow: "Guess we weren't the slow ones." / Inbound: "We can stop running now."
+- **Perfect:** the closing line is *"No one was left behind."*; the end card adds *"You brought them all out with you."*
+- **Alone:** "Pilot? ...Pilot?" holds about 2.6 s, then breaks apart under `comms_break.gdshader` with a glitch burst.
+- **The Last Die's carried die** is 7x7 with one-pixel pips.
+- **Credits text** in the arrival endings is drawn on the 1080p layer, as Become Fate's is, which removes the blur.
+- **Become Fate** uses the real 3D die at the canopy and in the final throw, carrying the run's faces.
+- **Music** needed is listed in `MUSIC_TODO.md`; new triumph cues in `SOUND_EFFECTS_TODO.md`.
 
