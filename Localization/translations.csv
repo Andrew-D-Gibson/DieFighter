@@ -364,5 +364,3 @@ FATE_ENDING_CONVOY_LINE,You brought them out with you.,,,,,,,,Line under the 'TH
 FATE_ENDING_CONVOY_PERFECT_LINE,No one is behind you.,,,,,,,,"Line under the 'THE CONVOY' heading for the perfect version: the player saved everyone they could, the whole run long, and left nobody behind",,,,
 FATE_ENDING_LAST_DIE_TITLE,THE LAST DIE,,,,,,,,"Heading of an ending: the player gave their very last die to a saved ship so it could escape, and was pulled into the black hole themselves. A sacrifice",,,,
 FATE_ENDING_LAST_DIE_LINE,You gave it away. They carried it out.,,,,,,,,"Line under the 'THE LAST DIE' heading: the player gave away their last die so others could escape. Quiet, proud",,,,
-FATE_ENDING_BECOME_FATE_TITLE,YOU ARE FATE,,,,,,,,"Heading of an ending: the player destroyed the black hole's copy of themselves and became Fate, the black hole, in its place",,,,
-FATE_ENDING_BECOME_FATE_LINE,"The hole knows its own. Somewhere, someone is running.",,,,,,,,"Line under the 'YOU ARE FATE' heading: the player has become the black hole, and the game begins again from its side. Eerie",,,,

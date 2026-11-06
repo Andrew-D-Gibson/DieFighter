@@ -8,12 +8,12 @@ extends Control
 var _fate_ending: StringName = &""
 
 ## Each Reckoning ending's card (RECKONING_ENDINGS.md §5-7): its title and
-## closing line, and the colour they're set in.
+## closing line, and the colour they're set in. Become Fate has none: it
+## loops straight back to the menu (_loop_to_menu()).
 const _RECKONING_CARDS: Dictionary[StringName, Dictionary] = {
 	&"alone": {"title": "FATE_ENDING_ALONE_TITLE", "line": "FATE_ENDING_ALONE_LINE", "color": "white"},
 	&"convoy": {"title": "FATE_ENDING_CONVOY_TITLE", "line": "FATE_ENDING_CONVOY_LINE", "color": "yellow"},
 	&"last_die": {"title": "FATE_ENDING_LAST_DIE_TITLE", "line": "FATE_ENDING_LAST_DIE_LINE", "color": "yellow"},
-	&"become_fate": {"title": "FATE_ENDING_BECOME_FATE_TITLE", "line": "FATE_ENDING_BECOME_FATE_LINE", "color": "purple"},
 	&"fell_in": {"title": "FATE_ENDING_FELL_IN_TITLE", "line": "FATE_ENDING_FELL_IN_LINE", "color": "purple"},
 }
 
@@ -59,6 +59,9 @@ func _on_game_over() -> void:
 	
 	
 func _on_game_win() -> void:
+	if _fate_ending == &"become_fate":
+		_loop_to_menu()
+		return
 	if _RECKONING_CARDS.has(_fate_ending):
 		_show_reckoning_card()
 		return
@@ -94,6 +97,19 @@ func _show_reckoning_card() -> void:
 	$ScreenDim.color.a = 1.0
 	_show_run_summary(tint, _reckoning_line(str(card["line"])))
 	show()
+
+
+## Become Fate has no end screen: the game loops (RECKONING_ENDINGS.md §6.5).
+## Its film hands straight to the main menu, which is still black under the
+## ending's curtain when this switches (the menu theme is already playing).
+## The save goes on victory as for any win (SaveManager). A run the AutoPilot
+## plays stays where it is, so its transcript can close.
+func _loop_to_menu() -> void:
+	if is_instance_valid(AutoPilot) and AutoPilot.is_playing():
+		return
+	SceneLoader.request(SceneLoader.MAIN_MENU)
+	await get_tree().process_frame
+	SceneLoader.switch_to(get_tree(), SceneLoader.MAIN_MENU)
 
 
 ## The card's closing line. The perfect Convoy, which left nobody behind

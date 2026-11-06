@@ -13,8 +13,31 @@ extends RefCounted
 const _META: StringName = &"fate_self"
 
 
+## Marks [param ship] as "You". It doesn't die like a ship: no kill-cam, no
+## wreck, no salvage, no death sounds. Its presentation (FateSelfPresentation)
+## tears it apart on Events.fate_self_destroyed instead.
 static func mark(ship: Enemy) -> void:
 	ship.set_meta(_META, true)
+	if ship.health.death.is_connected(ship._on_death):
+		ship.health.death.disconnect(ship._on_death)
+	ship.health.death.connect(_fall.bind(ship))
+
+
+## Enemy._on_death()'s bookkeeping without its show: the ship leaves the
+## fight (ReckoningDirector hears it and ends the run), and any die it holds
+## goes on as a dead ship's would. Not announced as destroyed: it isn't a
+## kill for the collection, and it carries no statuses to clear.
+static func _fall(ship: Enemy) -> void:
+	if not is_instance_valid(ship):
+		return
+	ship.disconnect_scenario_signals()
+	if ship.spending_tween and ship.spending_tween.is_running():
+		ship.spending_tween.custom_step(1000.0)
+	if ship.clickable_region:
+		ship.clickable_region.set_deferred(&"disabled", true)
+	Events.enemy_left.emit(ship, ship.scenario_state.faction)
+	ship.dice_manager.give_away_dice(ship.spending_die if is_instance_valid(ship.spending_die) else null,
+		EnemyDiceManager.Departure.DESTROYED)
 
 
 ## Whether [param node] is "You".

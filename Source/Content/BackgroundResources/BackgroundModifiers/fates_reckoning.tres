@@ -7,5 +7,6 @@
 script = ExtResource("script_0")
 modifier_name = "Fate's Corruption"
 description = "Attacks can't be evaded"
+callout = "NO EVASION"
 color = Color(0.772549, 0.321569, 0.945098, 1)
 modifier_script = ExtResource("modifier_script")
