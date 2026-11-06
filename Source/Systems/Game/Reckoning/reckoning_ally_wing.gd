@@ -16,9 +16,34 @@ extends Node
 
 ## Where an arriving ally's jump comes from: the fleet, off to the right.
 const _JUMP_HEADING: Vector2 = Vector2.LEFT
-## Seconds between an ally's lines on arrival, so each can be read.
-const _LINE_GAP_SECONDS: float = 2.6
-## Seconds before the next ally comes into a slot just freed.
+## Seconds after its jump-in before an arriving ally speaks.
+const _ARRIVAL_DELAY_SECONDS: float = 0.9
+## How long a line stays up once it has typed out: a base plus a share per
+## character, so a long line gets longer, within bounds.
+const _LINE_HOLD_BASE_SECONDS: float = 1.0
+const _LINE_HOLD_PER_CHAR_SECONDS: float = 0.045
+const _LINE_HOLD_MIN_SECONDS: float = 1.8
+const _LINE_HOLD_MAX_SECONDS: float = 3.4
+## Silence after a line before the next one, so two never run together.
+const _LINE_PAUSE_SECONDS: float = 0.7
+## Longest a line waits for the other ships to finish talking.
+const _QUIET_TIMEOUT_SECONDS: float = 4.0
+## A ship taking a die: a breath before it speaks, then (after its line) the
+## drive building up before the regular jump-out takes over. The last die's
+## line is quiet and worried, so it is held a little longer.
+const _PARTING_LEAD_SECONDS: float = 0.5
+const _PARTING_CHARGE_SECONDS: float = 1.8
+const _LAST_DIE_EXTRA_HOLD_SECONDS: float = 0.8
+## The hull strains toward the jump: stretched a little along its flight line
+## while it shakes harder and harder (pixels, so it stays on the art grid).
+const _PARTING_STRETCH: Vector2 = Vector2(0.9, 1.2)
+const _PARTING_SHAKE_PIXELS: int = 2
+const _PARTING_SHAKE_STEP_SECONDS: float = 0.05
+## The glow rings drawn in on the hull during the charge.
+const _PARTING_PULSES: int = 3
+## Longest the slot waits for a departing (or destroyed) ship to be gone.
+const _GONE_TIMEOUT_SECONDS: float = 4.0
+## Seconds after a ship is gone before the next ally comes into its slot.
 const _SLOT_REFILL_SECONDS: float = 1.2
 ## A spared ship's pass: where it flies, and how long it takes.
 const _STRAFE_HEIGHT: float = 34.0
@@ -61,6 +86,14 @@ var _aboard: Enemy = null
 var _aboard_entry: Dictionary = {}
 ## Ships that already told the player their drive is lit.
 var _warned: Dictionary[int, bool] = {}
+## The wing speaks one line at a time: true while a line (and the pause after
+## it) is running. Bumping the generation drops the lines still waiting.
+var _speaking: bool = false
+var _speech_gen: int = 0
+## The ship playing its parting beat; nothing else speaks for it.
+var _beat_ship: Enemy = null
+## The slot is not free to refill while a ship is still on its way out.
+var _slot_busy: bool = false
 var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 ## The green Run for it icons, made once from Getaway's.
 static var _greened: Dictionary[Texture2D, Texture2D] = {}
@@ -75,6 +108,10 @@ func begin(seed_value: int) -> void:
 	saved_out.clear()
 	lost.clear()
 	_warned.clear()
+	_speaking = false
+	_speech_gen += 1
+	_beat_ship = null
+	_slot_busy = false
 	_rng.seed = seed_value
 	_dress_run_for_it()
 
@@ -158,8 +195,10 @@ func aboard_id() -> String:
 
 
 ## A ship left the fight. If it's the one aboard: still whole, it jumped out
-## with a die (Run for it is the only way it leaves alive), else it's lost.
-## Either way the slot is free for the next.
+## with a die (Run for it is the only way it leaves alive; its parting line
+## and jump build-up already played, see _departure_beat()), else it's lost.
+## Either way the slot is free for the next once the ship is really gone, so
+## the next ally never arrives into a jump.
 func on_ship_left(ship: Enemy) -> void:
 	if not is_aboard(ship):
 		return
@@ -168,33 +207,130 @@ func on_ship_left(ship: Enemy) -> void:
 	_aboard_entry = {}
 	if ship.health.health > 0:
 		saved_out.append(entry)
-		var last: bool = is_instance_valid(Globals.player) and Globals.player.num_of_dice <= 0
-		_say_parting(ship, tr("RECKONING_ALLY_LAST_DIE" if last else "RECKONING_ALLY_CARRIES"))
 	else:
 		lost.append(entry)
 	if not _running:
 		return
+	_slot_busy = true
+	var waited: float = 0.0
+	while is_instance_valid(ship) and waited < _GONE_TIMEOUT_SECONDS:
+		await get_tree().process_frame
+		waited += get_process_delta_time()
 	await get_tree().create_timer(_SLOT_REFILL_SECONDS).timeout
+	_slot_busy = false
 	_fill_slot()
 
 
-## A ship jumping out is gone in under a second, its speech bubble with it,
-## so its parting line is left hanging where it was until it has been read.
-func _say_parting(ship: Enemy, line: String) -> void:
-	var bubble: EnemyDialogueManager = ship.dialogue_manager
-	if bubble == null or not is_instance_valid(Globals.enemy_manager):
+# ── Speech ──────────────────────────────────────────────────────────────────
+
+## Says [param line] from [param ship]'s bubble when the wing's voice is free
+## and no other ship is mid-line, and returns once it has been read and the
+## pause after it has passed. Dropped if the lines waiting were cancelled
+## (_speech_gen) or the ship has gone. The bubble stays where it is: no fold
+## into the comms badge between lines, so it doesn't fly about.
+func _speak(ship: Enemy, line: String, extra_hold: float = 0.0) -> void:
+	var gen: int = _speech_gen
+	while _speaking:
+		await get_tree().process_frame
+	if gen != _speech_gen or not _can_talk(ship):
 		return
-	var stand_in: Node2D = Node2D.new()
-	stand_in.name = &"PartingLine"
-	Globals.enemy_manager.add_child(stand_in)
-	stand_in.global_position = ship.global_position
-	bubble.reparent(stand_in)
-	# Fades where it hangs: the comms badge belongs to the next target now.
-	bubble.stow_point = Callable()
-	bubble.show_dialogue(line, ally_state.faction, false)
-	await bubble.put_away
-	if is_instance_valid(stand_in):
-		stand_in.queue_free()
+	_speaking = true
+	await _wait_for_quiet(ship)
+	if gen == _speech_gen and _can_talk(ship):
+		var bubble: EnemyDialogueManager = ship.dialogue_manager
+		var hold: float = clampf(_LINE_HOLD_BASE_SECONDS + _LINE_HOLD_PER_CHAR_SECONDS * line.length(),
+			_LINE_HOLD_MIN_SECONDS, _LINE_HOLD_MAX_SECONDS) + extra_hold
+		bubble.stow_point = Callable()
+		# The box fades as the hold ends, rather than lingering over the next line.
+		bubble.dialogue_time_shown = hold
+		bubble.show_dialogue(line, ally_state.faction, false)
+		await get_tree().create_timer(bubble.character_reveal_time * line.length() + hold).timeout
+	await get_tree().create_timer(_LINE_PAUSE_SECONDS).timeout
+	_speaking = false
+
+
+func _can_talk(ship: Enemy) -> bool:
+	return is_instance_valid(ship) and ship.health.health > 0 and ship.dialogue_manager != null
+
+
+## Waits (bounded) while any other ship's bubble is out, so the wing's lines
+## never land on top of an echo's.
+func _wait_for_quiet(ship: Enemy) -> void:
+	var waited: float = 0.0
+	while waited < _QUIET_TIMEOUT_SECONDS and _others_speaking(ship):
+		await get_tree().process_frame
+		waited += get_process_delta_time()
+
+
+func _others_speaking(ship: Enemy) -> bool:
+	if not is_instance_valid(ship):
+		return false
+	for node: Node in get_tree().get_nodes_in_group(&"enemy_dialogue_boxes"):
+		var other: EnemyDialogueManager = node as EnemyDialogueManager
+		if other != null and other != ship.dialogue_manager and other.is_speaking():
+			return true
+	return false
+
+
+# ── Leaving with a die ──────────────────────────────────────────────────────
+
+## The ship's beat between being given the die and leaving with it, awaited
+## by EscapeWithDiceEvent before anything leaves the board (so the fleet, the
+## slot and the endings all wait, and nothing the player does can cut in: the
+## enemy turn is still running). Its parting line first, held to be read, then
+## the drive building up in its faction's colour. The ordinary jump-out
+## (Enemy.jump_away) follows.
+func _departure_beat(ship: Enemy) -> void:
+	if not _running or not is_aboard(ship):
+		return
+	_beat_ship = ship
+	# Whatever it had queued to say gives way to this.
+	_speech_gen += 1
+	var last: bool = is_instance_valid(Globals.player) and Globals.player.num_of_dice <= 1
+	await get_tree().create_timer(_PARTING_LEAD_SECONDS).timeout
+	if not _running:
+		return
+	await _speak(ship, tr("RECKONING_ALLY_LAST_DIE" if last else "RECKONING_ALLY_CARRIES"),
+		_LAST_DIE_EXTRA_HOLD_SECONDS if last else 0.0)
+	if _running and _can_talk(ship):
+		await _build_jump(ship)
+
+
+## The charge-up: motes drawn in and the hull flickering white (JumpFx), the
+## hull stretching and shaking harder, and rings closing on it, for
+## _PARTING_CHARGE_SECONDS.
+func _build_jump(ship: Enemy) -> void:
+	var manager: EnemyGraphicsManager = ship.graphics_manager
+	var hull: Node2D = manager.ship_graphics if manager else null
+	if hull == null:
+		return
+	var color: Color = ship.departure_color()
+	var effects: JumpFx = JumpFx.new(Globals.enemy_manager)
+	effects.charge(hull, _PARTING_CHARGE_SECONDS, color)
+	var stretch: Tween = hull.create_tween()
+	stretch.tween_property(hull, "scale", hull.scale * _PARTING_STRETCH, _PARTING_CHARGE_SECONDS) \
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	_shake(manager)
+	for _pulse: int in _PARTING_PULSES:
+		await get_tree().create_timer(_PARTING_CHARGE_SECONDS / _PARTING_PULSES).timeout
+		if not is_instance_valid(ship) or not is_instance_valid(hull):
+			return
+		effects.ring(hull.global_position, color, 30.0, 4.0, 0.45)
+
+
+## Jitters the ship's graphics holder (not the hull, which the bob owns) with
+## a growing strength, and puts it back.
+func _shake(manager: EnemyGraphicsManager) -> void:
+	var rest: Vector2 = manager.position
+	var tween: Tween = manager.create_tween()
+	var steps: int = int(_PARTING_CHARGE_SECONDS / _PARTING_SHAKE_STEP_SECONDS)
+	for step: int in steps:
+		var strength: int = maxi(1, roundi(_PARTING_SHAKE_PIXELS * float(step) / steps))
+		var jitter: Vector2 = Vector2(
+			RNGManager.randi_range(RNGManager.Bucket.COSMETIC, -strength, strength),
+			RNGManager.randi_range(RNGManager.Bucket.COSMETIC, -strength, strength))
+		tween.tween_property(manager, "position", rest + jitter, _PARTING_SHAKE_STEP_SECONDS)
+	tween.tween_property(manager, "position", rest, _PARTING_SHAKE_STEP_SECONDS)
 
 
 ## The bank moved: an ally aboard with the bank nearly full tells the player
@@ -202,16 +338,16 @@ func _say_parting(ship: Enemy, line: String) -> void:
 func on_bank(fraction: float) -> void:
 	if not _running or not is_instance_valid(_aboard) or _aboard.health.health <= 0:
 		return
-	if fraction < nearly_full_fraction or _warned.has(_aboard.get_instance_id()):
+	if fraction < nearly_full_fraction or _warned.has(_aboard.get_instance_id()) or _aboard == _beat_ship:
 		return
 	_warned[_aboard.get_instance_id()] = true
-	_aboard.dialogue_manager.show_dialogue(tr("RECKONING_ALLY_DRIVE_LIT"), ally_state.faction, false)
+	_speak(_aboard, tr("RECKONING_ALLY_DRIVE_LIT"))
 
 
 # ── Saved ships ─────────────────────────────────────────────────────────────
 
 func _fill_slot() -> void:
-	if not _running or _held or is_instance_valid(_aboard) or _waiting.is_empty():
+	if not _running or _held or _slot_busy or is_instance_valid(_aboard) or _waiting.is_empty():
 		return
 	var entry: Dictionary = _waiting.pop_front()
 	var resource: EnemyResource = _ally_resource(str(entry.get("enemy", "")))
@@ -222,6 +358,7 @@ func _fill_slot() -> void:
 	ship.position = EnemyManager.ESCORT_SLOT
 	_aboard = ship
 	_aboard_entry = entry
+	ship.departure_prelude = _departure_beat
 	_jump_in(ship)
 	_announce(ship, entry)
 
@@ -249,20 +386,21 @@ func _jump_in(ship: Enemy) -> void:
 	JumpFx.new(Globals.enemy_manager).jump_in(hull, ship.departure_color(), _JUMP_HEADING)
 
 
-## Its lines as it arrives, one after another: how its escort went (if it
-## rode along), what it's here for, and who is still coming.
+## Its lines as it arrives, one at a time, each read before the next. Two at
+## most: how its escort went if it rode along, else who is still coming (the
+## queue's telegraph shows the names too), then what it's here for, which is
+## the one left standing.
 func _announce(ship: Enemy, entry: Dictionary) -> void:
+	var gen: int = _speech_gen
 	var lines: Array[String] = []
 	var escort_line: String = ReckoningDirector.ESCORT_LINES.get(str(entry.get("escort", "")), "")
-	if not escort_line.is_empty():
-		lines.append(tr(escort_line))
+	lines.append(tr(escort_line) if not escort_line.is_empty() else _queue_line())
 	lines.append(tr("RECKONING_ALLY_ARRIVES"))
-	lines.append(_queue_line())
-	for i: int in lines.size():
-		await get_tree().create_timer(_LINE_GAP_SECONDS if i > 0 else 0.6).timeout
-		if not _running or not is_aboard(ship) or ship.health.health <= 0:
+	await get_tree().create_timer(_ARRIVAL_DELAY_SECONDS).timeout
+	for line: String in lines:
+		if not _running or gen != _speech_gen or not is_aboard(ship) or ship.health.health <= 0:
 			return
-		ship.dialogue_manager.show_dialogue(lines[i], ally_state.faction, false)
+		await _speak(ship, line)
 
 
 ## Names, never numbers: the next saved ship still to come, or that there's
