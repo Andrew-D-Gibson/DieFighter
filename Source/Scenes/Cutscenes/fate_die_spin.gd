@@ -40,6 +40,13 @@ const _SIDES: Array[Array] = [
 @export var spin_speed: float = 1.25
 @export var tilt: float = 0.5
 @export var wobble: float = 0.32
+## Texels to a glyph pixel on each face: 5 for the cutscene's big die, 1 for
+## one the size of the canopy's bone die (FateDieArt.SIZE). The viewport is
+## sized to match. Set before the viewport enters the tree.
+var glyph_scale: int = _GLYPH_SCALE
+## Off, the die stops turning itself, so whoever shows it can steer it
+## through set_orientation() (the die above "You" turns toward a face).
+var turning: bool = true
 
 var _pivot: Node3D
 var _materials: Array[StandardMaterial3D] = []
@@ -59,6 +66,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	size = Vector2i.ONE * roundi(face_size(glyph_scale) * _VIEW_HEIGHT)
 	var environment: Environment = Environment.new()
 	environment.background_mode = Environment.BG_CLEAR_COLOR
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
@@ -104,7 +112,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_turn(delta)
+	if turning:
+		_turn(delta)
 	for side: int in _glow.size():
 		if _glow[side] <= 0.0:
 			continue
@@ -134,6 +143,46 @@ func carve_facing(face: FateDie.Face) -> int:
 	return best
 
 
+## Puts [param faces] on the cube, one per side, side i taking faces[i]
+## (a FateDie's slots, in order).
+func show_faces(faces: Array[FateDie.Face]) -> void:
+	for side: int in mini(faces.size(), _SIDES.size()):
+		_set_face(side, faces[side])
+
+
+## Lights side [param side] up in [param color], fading, as a carving does.
+func flare(side: int, color: Color) -> void:
+	if side < 0 or side >= _glow.size():
+		return
+	_glow[side] = 1.0
+	_glow_colors[side] = color
+
+
+## The cube's turn, for a die steered from outside (turning off).
+func get_orientation() -> Quaternion:
+	return _pivot.basis.get_rotation_quaternion() if _pivot else Quaternion.IDENTITY
+
+
+func set_orientation(orientation: Quaternion) -> void:
+	if _pivot:
+		_pivot.basis = Basis(orientation.normalized())
+
+
+## The turn that shows side [param side] square to the camera, its glyph
+## the right way up.
+static func facing(side: int) -> Quaternion:
+	var normal: Vector3 = _SIDES[side][0]
+	var up: Vector3 = _SIDES[side][1]
+	return Basis(up.cross(normal), up, normal).transposed().get_rotation_quaternion()
+
+
+## A face texture's width and height at [param scale] texels to a glyph
+## pixel: the 7x7 glyph, a glyph pixel's worth of bone round it, and a texel
+## of outline.
+static func face_size(scale: int) -> int:
+	return 9 * scale + 2
+
+
 ## How many sides are still blank.
 func blank_count() -> int:
 	return _faces.count(FateDie.Face.BLANK)
@@ -150,30 +199,31 @@ func _turn(delta: float) -> void:
 
 func _set_face(side: int, face: FateDie.Face) -> void:
 	_faces[side] = face
-	_materials[side].albedo_texture = face_texture(face)
+	_materials[side].albedo_texture = face_texture(face, glyph_scale)
 
 
 ## One side of the cube showing [param face]: bone, outlined, with its glyph
-## cut in at five times size (or a chisel mark, blank).
-static func face_texture(face: FateDie.Face) -> ImageTexture:
-	var image: Image = Image.create_empty(TEXELS, TEXELS, false, Image.FORMAT_RGBA8)
+## cut in at [param scale] times size (or a chisel mark, blank).
+static func face_texture(face: FateDie.Face, scale: int = _GLYPH_SCALE) -> ImageTexture:
+	var texels: int = face_size(scale)
+	var image: Image = Image.create_empty(texels, texels, false, Image.FORMAT_RGBA8)
 	image.fill(FateDieArt.BONE)
-	for i: int in TEXELS:
+	for i: int in texels:
 		image.set_pixel(i, 0, FateDieArt.OUTLINE)
-		image.set_pixel(i, TEXELS - 1, FateDieArt.OUTLINE)
+		image.set_pixel(i, texels - 1, FateDieArt.OUTLINE)
 		image.set_pixel(0, i, FateDieArt.OUTLINE)
-		image.set_pixel(TEXELS - 1, i, FateDieArt.OUTLINE)
+		image.set_pixel(texels - 1, i, FateDieArt.OUTLINE)
 	var res: FateFaceResource = FateFaceCatalog.get_face(face)
 	if face != FateDie.Face.BLANK and res and res.glyph:
 		var glyph: Image = res.glyph.get_image()
 		glyph.decompress()
 		glyph.convert(Image.FORMAT_RGBA8)
-		glyph.resize(glyph.get_width() * _GLYPH_SCALE, glyph.get_height() * _GLYPH_SCALE, Image.INTERPOLATE_NEAREST)
-		var at: Vector2i = (Vector2i(TEXELS, TEXELS) - glyph.get_size()) / 2
+		glyph.resize(glyph.get_width() * scale, glyph.get_height() * scale, Image.INTERPOLATE_NEAREST)
+		var at: Vector2i = (Vector2i(texels, texels) - glyph.get_size()) / 2
 		image.blend_rect(glyph, Rect2i(Vector2i.ZERO, glyph.get_size()), at)
 	else:
-		var middle: int = TEXELS / 2
-		image.fill_rect(Rect2i(middle - 2, middle - 2, 5, 5), FateDieArt.BONE_DEEP)
+		var middle: int = texels / 2
+		image.fill_rect(Rect2i(middle - scale / 2, middle - scale / 2, scale, scale), FateDieArt.BONE_DEEP)
 	return ImageTexture.create_from_image(image)
 
 
