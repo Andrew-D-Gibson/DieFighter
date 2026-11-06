@@ -18,6 +18,14 @@ func resolve(_engine: ScenarioEngine) -> void:
 		return
 	var enemy: Enemy = actor as Enemy
 
+	# Before anything leaves the board: a ship with something to say and a jump
+	# to build (a saved ship in the Reckoning) does it with its dice still in
+	# hand, so the fleet, the slot and any ending wait for the beat.
+	if enemy.departure_prelude.is_valid():
+		await enemy.departure_prelude.call(enemy)
+		if not is_instance_valid(enemy) or enemy.health.health <= 0:
+			return
+
 	# EnemyActionEvent took the die being spent out of the queue before the
 	# chain ran, so it rides along separately.
 	var loot: Array[Dice] = []

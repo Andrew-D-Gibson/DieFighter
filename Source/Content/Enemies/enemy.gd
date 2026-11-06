@@ -73,6 +73,11 @@ enum Attitude {FRIENDLY, NEUTRAL, AGGRESSIVE}
 ## The clickable region to target this enemy
 @export var clickable_region: CollisionShape2D
 
+## A beat the ship plays before it leaves with dice (EscapeWithDiceEvent
+## awaits it): (ship: Enemy) -> void, coroutine allowed. Unset, it just goes.
+## The Reckoning's allies use it to say their parting line and build the jump.
+var departure_prelude: Callable = Callable()
+
 ## The actions the enemy will take this turn
 var turn_actions: Array[EnemyActionResource]
 var moving_in_world: bool = false
