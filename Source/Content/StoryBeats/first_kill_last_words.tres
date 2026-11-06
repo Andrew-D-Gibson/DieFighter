@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StoryBeatResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/StoryBeats/story_beat_resource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+speaker = "YOUR FIRST, DYING"
+line_1 = "I was the first. You never learned my name."
+line_2 = "The hole kept every one of us. It saved the best of you for last."
+line_3 = "Before me, there was only you. Now there's you again."
+repeat_line = "Before me, there was only you."
