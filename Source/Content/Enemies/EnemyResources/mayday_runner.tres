@@ -1,0 +1,61 @@
+[gd_resource type="Resource" script_class="EnemyResource" format=3]
+
+[ext_resource type="Resource" uid="uid://dfpviimqj18jr" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/shield_self.tres" id="act_5"]
+[ext_resource type="Resource" uid="uid://dh6y87rwpxmh2" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/do_nothing.tres" id="act_6"]
+[ext_resource type="Resource" uid="uid://cmlhn71vmoo54" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/raid.tres" id="act_raid_hand_off"]
+[ext_resource type="Script" uid="uid://dhysx3gohufge" path="res://Source/Content/Enemies/EnemyActions/enemy_action_condition.gd" id="cond_hand_off"]
+[ext_resource type="Resource" path="res://Source/Content/Factions/undertow.tres" id="faction_identity"]
+[ext_resource type="PackedScene" uid="uid://bdj8yu1245tuj" path="res://Source/Content/Enemies/EnemyShipGraphicScenes/civilian_transport_ship_graphics.tscn" id="gfx_3"]
+[ext_resource type="Script" uid="uid://cn6juw5whtujy" path="res://Source/Content/Enemies/EnemyActions/enemy_action_option_resource.gd" id="script_0"]
+[ext_resource type="Script" uid="uid://c4ctehv6idciu" path="res://Source/Content/Enemies/EnemyActions/EnemyTurnActionList/enemy_turn_action_list.gd" id="script_1"]
+[ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_2"]
+[ext_resource type="Texture2D" uid="uid://d1xh70cpc1d0t" path="res://Assets/Textures/Enemies/CivilianTransport/civilian_transport_targeting_image.png" id="tex_4"]
+
+[sub_resource type="Resource" id="Resource_opt0"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_5")
+weight = 0.0
+min_amount = 4
+max_amount = 7
+force_include = true
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_opt1"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_6")
+weight = 1.5
+metadata/_custom_type_script = "uid://cn6juw5whtujy"
+
+[sub_resource type="Resource" id="Resource_hand_off_side"]
+script = ExtResource("cond_hand_off")
+type = 4
+invert = true
+
+[sub_resource type="Resource" id="Resource_hand_off"]
+script = ExtResource("script_0")
+base_action = ExtResource("act_raid_hand_off")
+weight = 3.0
+min_amount = 3
+max_amount = 5
+conditions = Array[ExtResource("cond_hand_off")]([SubResource("Resource_hand_off_side")])
+
+[sub_resource type="Resource" id="Resource_pool0"]
+script = ExtResource("script_1")
+actions_possible = Array[ExtResource("script_0")]([SubResource("Resource_opt0"), SubResource("Resource_opt1"), SubResource("Resource_hand_off")])
+metadata/_custom_type_script = "uid://c4ctehv6idciu"
+
+[resource]
+script = ExtResource("script_2")
+enemy_name = "Bounty Runner"
+description = "The Mayday you answered, riding on your wing until it's clear. It raids whoever is shooting at you."
+in_codex = false
+faction = ExtResource("faction_identity")
+max_health = 20
+starting_shields = 4
+action_options = Array[ExtResource("script_1")]([SubResource("Resource_pool0")])
+ship_graphics_scene = ExtResource("gfx_3")
+dialogue_offset = Vector2(17, -8)
+targeting_computer_image = ExtResource("tex_4")
+health_bar_position = Vector2(-24, -14)
+dice_queue_position = Vector2(24, 8)
+metadata/_custom_type_script = "uid://cajjx3mskpg2e"

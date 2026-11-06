@@ -442,6 +442,16 @@ func _free_cell_for_ally() -> Vector2i:
 	return Vector2i(-1, -1)
 
 
+## What a saved ship that rode along as the escort says as it comes back,
+## by FateLedger.ESCORT_*.
+const _ESCORT_LINE_DELAY_SECONDS: float = 0.5
+const _ESCORT_LINE_OFFSET: Vector2 = Vector2(0, -12)
+const _ESCORT_LINES: Dictionary[String, String] = {
+	FateLedger.ESCORT_DELIVERED: "RECKONING_ESCORT_DELIVERED",
+	FateLedger.ESCORT_LOST: "RECKONING_ESCORT_LOST",
+}
+
+
 func _place_ally(cell: Vector2i, entry: Dictionary) -> void:
 	var kind: String = str(entry.get("kind", FateLedger.KIND_ALLY))
 	var resource: TileResource = debt_tile if kind == FateLedger.KIND_DEBT else ally_tile
@@ -460,6 +470,15 @@ func _place_ally(cell: Vector2i, entry: Dictionary) -> void:
 	Juice.ring(tile, tile.global_position, Globals.green if kind != FateLedger.KIND_DEBT else Globals.red, 20.0)
 	if not ship_name.is_empty():
 		Juice.callout(tile, ship_name, Globals.green if kind != FateLedger.KIND_DEBT else Globals.red)
+	# A ship that rode along as the escort says how that went (EscortKeeper):
+	# home safe, or lost on the way and back to try again.
+	var line: String = _ESCORT_LINES.get(str(entry.get("escort", "")), "")
+	if not line.is_empty():
+		# A beat after the name, a line above it, so the two read in order
+		# instead of running into each other.
+		await get_tree().create_timer(_ESCORT_LINE_DELAY_SECONDS).timeout
+		if is_instance_valid(tile):
+			Juice.callout_at(tile, tile.global_position + _ESCORT_LINE_OFFSET, tr(line), Globals.green)
 	await get_tree().create_timer(0.35).timeout
 
 

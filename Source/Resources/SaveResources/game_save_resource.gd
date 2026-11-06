@@ -58,6 +58,10 @@ extends Resource
 ## before Fate's Die, which starts the run without the die.
 @export var fate_state: Dictionary = {}
 
+## EscortKeeper.get_state(): the ship riding along with the player, if any.
+## Empty with none, and in a save from before escorts.
+@export var escort_state: Dictionary = {}
+
 ## RandomNumberGenerator.state per RNGManager bucket name, stored as strings
 ## because JSON numbers lose int64 precision. RUN always; the per-scenario
 ## buckets only for a mid-scenario checkpoint.

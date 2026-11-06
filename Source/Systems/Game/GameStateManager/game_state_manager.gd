@@ -483,6 +483,8 @@ func _checkpoint_game_save(mid_scenario: bool) -> void:
 		current_game_save.faction_standing = Globals.faction_standing.get_state()
 	if Globals.fate_ledger:
 		current_game_save.fate_state = Globals.fate_ledger.get_state()
+	if Globals.escort_keeper:
+		current_game_save.escort_state = Globals.escort_keeper.get_state()
 	current_game_save.rng_states = RNGManager.capture_run_state()
 
 	var tile_locations: Dictionary[Vector2i, TileResource] = {}

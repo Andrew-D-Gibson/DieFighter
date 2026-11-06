@@ -24,6 +24,12 @@ const DEED_TITHE_REFUSED: String = "tithe_refused"
 const KIND_ALLY: String = "ally"
 const KIND_DEBT: String = "debt"
 
+## How a saved ship that rode along as the player's escort (EscortKeeper)
+## fared, kept on its allies entry under "escort": it comes back to the
+## Reckoning saying so.
+const ESCORT_DELIVERED: String = "delivered"
+const ESCORT_LOST: String = "lost"
+
 ## Whether the player has been handed the die yet (the Inbound pilgrim).
 ## Nothing carves before then: Fate only notices people holding its die.
 var has_die: bool = false
@@ -34,7 +40,8 @@ var pending: Array[FateDie.Face] = []
 ## Every ship the player destroyed, in order: {"enemy": id, "faction": the
 ## FactionIdentity's file id, "sector": int}. Mounted boss parts are left out.
 var kills: Array[Dictionary] = []
-## Ships saved or spared, in order: {"enemy": id, "kind": KIND_*}.
+## Ships saved or spared, in order: {"enemy": id, "kind": KIND_*}, and for
+## one that rode along as the escort, "escort": ESCORT_*.
 var allies: Array[Dictionary] = []
 ## Deed id -> how many times.
 var deeds: Dictionary[String, int] = {}
@@ -138,6 +145,20 @@ func remember_ship(ship: Enemy, kind: String) -> void:
 	if id.is_empty():
 		return
 	allies.append({"enemy": id, "kind": kind})
+
+
+## The escort remembered as [param enemy_id] made it home, or didn't
+## ([param outcome], ESCORT_*). Noted on the newest ally of that ship not
+## already noted: it was remembered as it signed on, and is still counted
+## either way.
+func record_escort_outcome(enemy_id: String, outcome: String) -> void:
+	if enemy_id.is_empty():
+		return
+	for i: int in range(allies.size() - 1, -1, -1):
+		var entry: Dictionary = allies[i]
+		if entry.get("enemy", "") == enemy_id and entry.get("kind", "") == KIND_ALLY and not entry.has("escort"):
+			entry["escort"] = outcome
+			return
 
 
 func allies_of_kind(kind: String) -> Array[String]:
@@ -361,7 +382,10 @@ func load_state(state: Dictionary) -> void:
 	allies.clear()
 	for entry: Variant in state.get("allies", []):
 		if entry is Dictionary:
-			allies.append({"enemy": str(entry.get("enemy", "")), "kind": str(entry.get("kind", KIND_ALLY))})
+			var ally: Dictionary = {"enemy": str(entry.get("enemy", "")), "kind": str(entry.get("kind", KIND_ALLY))}
+			if entry.has("escort"):
+				ally["escort"] = str(entry["escort"])
+			allies.append(ally)
 	deeds.clear()
 	var saved_deeds: Variant = state.get("deeds", {})
 	if saved_deeds is Dictionary:

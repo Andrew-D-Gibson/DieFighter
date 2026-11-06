@@ -30,6 +30,9 @@ signal _cut()
 enum Beat {
 	## The region's rule or hazard, spelled out (RegionAlert).
 	REGION_RULE,
+	## The escort riding with the player says goodbye and leaves
+	## (EscortKeeper), before the encounter's ships take the stage.
+	ESCORT_FAREWELL,
 	## A boss's name slammed across the screen (BossIntroCard). Last, right
 	## before the ships, since it's the one that says "here they come".
 	BOSS,

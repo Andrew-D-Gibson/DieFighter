@@ -98,6 +98,14 @@ signal ship_scenario_state_changed(ship: Enemy)
 ## them. Not emitted for a ship a Continue puts back in its state, whose deeds
 ## the save already holds.
 signal ship_deeds_done(ship: Enemy, deeds: Array[FactionDeed])
+## A ship entered a state that signs it on as the player's escort
+## (ScenarioShipState.escort). Like ship_deeds_done, not emitted for a ship a
+## Continue puts back in that state.
+signal escort_signed_on(ship: Enemy, escort: EscortResource)
+## The escort riding with the player died on the way (EscortKeeper).
+signal escort_lost(ship: Enemy)
+## The escort said goodbye and paid up (EscortKeeper).
+signal escort_delivered(ship: Enemy)
 ## A deed moved [param faction]'s standing with the player to [param standing]
 ## (FactionLedger). [param deed] is its name, empty for an unnamed one.
 signal faction_standing_changed(faction: FactionIdentity, standing: int, deed: StringName)

@@ -74,6 +74,7 @@ func write_save(game_save: GameSaveResource) -> void:
 		"run_stats": game_save.run_stats,
 		"faction_standing": game_save.faction_standing,
 		"fate_state": game_save.fate_state,
+		"escort_state": game_save.escort_state,
 		"rng_states": game_save.rng_states,
 		"scenario_progress": game_save.scenario_progress,
 	}
@@ -157,6 +158,9 @@ func read_save() -> GameSaveResource:
 	game_save.faction_standing = faction_standing if faction_standing is Dictionary else {}
 	# Numbers come back as floats; FateLedger.load_state() reads them back.
 	game_save.fate_state = data.get("fate_state", {})
+	# Numbers come back as floats; EscortKeeper.load_state() reads them back.
+	var escort_state: Variant = data.get("escort_state", {})
+	game_save.escort_state = escort_state if escort_state is Dictionary else {}
 	game_save.rng_states = data.get("rng_states", {})
 	game_save.scenario_progress = data.get("scenario_progress", {})
 

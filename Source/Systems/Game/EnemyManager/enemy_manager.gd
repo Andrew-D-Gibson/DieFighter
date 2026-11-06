@@ -75,6 +75,15 @@ var arrival_in_progress: bool = false
 ## The hull of a ship made of parts, and the parts riding it.
 var _hull_mounts: HullMounts = HullMounts.new(formation)
 
+## Where the player's escort rides (EscortKeeper): the pocket of sky above
+## the hull gauge, left of the systems panel and below the formation. The
+## same spot in every encounter, however many ships are about, so the player
+## always knows where to look for it.
+const ESCORT_SLOT: Vector2 = Vector2(55, 91)
+## Off the left edge, level with the slot: where the escort waits to fly in.
+const ESCORT_OFFSTAGE: Vector2 = Vector2(-40, 91)
+const ESCORT_ENTRY_TIME: float = 1.0
+
 ## The z authored on this node, which the ships go back to once a jump is over.
 @onready var _combat_z_index: int = z_index
 
@@ -185,6 +194,42 @@ func spawn_enemies(enemies_to_spawn: Array[EnemyStateRewardResource], scenario: 
 	_roll_turn_actions(spawned)
 	refresh_formation(false)
 	return spawned
+
+
+## Brings the player's escort (EscortKeeper) onto the board, waiting off the
+## left edge for [method move_escort] to bring it in. It's one of the roster,
+## so it rolls a table, is targeted and fights, but the formation leaves it be
+## (Enemy.is_escort). [param hull] is the hull it carried out of its last
+## fight; 0 for a whole one.
+func spawn_escort(resource: EnemyResource, state: ScenarioShipState, hull: int) -> Enemy:
+	var ship: Enemy = enemy_base_scene.instantiate()
+	ship.enemy_resource = resource
+	ship.scenario_state = state
+	ship.is_escort = true
+	ship.formation_pinned = true
+	ship.position = ESCORT_OFFSTAGE
+	enemies.append(ship)
+	add_child(ship)
+	if hull > 0:
+		ship.health.health = mini(hull, ship.health.max_health)
+	# Its speech box opens over the open sky to its right.
+	ship.dialogue_manager.point(false)
+	_roll_turn_actions([ship])
+	return ship
+
+
+## Slides the escort to [param target] (its slot, or centre stage to say
+## goodbye) and returns once it's there.
+func move_escort(ship: Enemy, target: Vector2, duration: float = ESCORT_ENTRY_TIME) -> void:
+	if not is_instance_valid(ship):
+		return
+	await _slide_ship_to(ship, target, duration)
+
+
+## Where the escort says goodbye: the middle of the formation's path, where
+## every ship of the encounter will soon be looking from.
+func escort_farewell_spot(ship: Enemy) -> Vector2:
+	return _resting_position(ship, 0.5)
 
 
 ## Whether another ship would still fit on the board.
@@ -301,7 +346,7 @@ func start_enemy_fly_in() -> void:
 
 	# A copy, because ships can leave while an earlier one is still arriving.
 	for enemy: Enemy in enemies.duplicate():
-		if not is_instance_valid(enemy) or _hull_mounts.is_mounted(enemy):
+		if not is_instance_valid(enemy) or _hull_mounts.is_mounted(enemy) or enemy.is_escort:
 			continue
 
 		# Ships ride the tween from above their slot down onto it, and keep
@@ -487,7 +532,7 @@ func _point_speech(members: Array[Enemy], slots: PackedFloat32Array) -> void:
 	var ships: Array[Enemy] = members.duplicate()
 	var xs: PackedFloat32Array = slots.duplicate()
 	for enemy: Enemy in enemies:
-		if is_instance_valid(enemy) and enemy.formation_pinned:
+		if is_instance_valid(enemy) and enemy.formation_pinned and not enemy.is_escort:
 			var held: Vector2 = formation.get_reservation(EnemyFormation.ship_key(enemy))
 			ships.append(enemy)
 			xs.append((held.x + held.y) * 0.5)
@@ -630,7 +675,8 @@ func get_faction_ships(faction: ScenarioManager.Faction) -> Array[Enemy]:
 	var faction_ships: Array[Enemy] = []
 	_remove_dead_enemies()
 	for enemy: Enemy in enemies:
-		if enemy.scenario_state.faction == faction:
+		# The escort isn't one of the encounter's ships (Enemy.is_escort).
+		if enemy.scenario_state.faction == faction and not enemy.is_escort:
 			faction_ships.append(enemy)
 	return faction_ships
 	

@@ -42,6 +42,25 @@ func test_ships_that_can_side_with_the_player_mid_fight_can_hand_off() -> void:
 			% "\n  ".join(missing))
 
 
+## An escort (EscortResource) rides on the player's side through every fight
+## it joins, against whoever the encounter fields, so its ship must hand off
+## in every pool.
+func test_escorts_can_hand_off() -> void:
+	var escort_count: int = 0
+	var missing: Array[String] = []
+	for path: String in _tres_files(SCENARIO_DIR):
+		var escort: EscortResource = load(path) as EscortResource
+		if escort == null:
+			continue
+		escort_count += 1
+		if escort.ship_resource == null or not _hands_off_in_every_pool(escort.ship_resource):
+			missing.append(path.get_file())
+	assert_gt(escort_count, 0, "no escorts found under %s; did they move?" % SCENARIO_DIR)
+	assert_true(missing.is_empty(),
+		"these escorts ride on the player's side, and some pool of their ship has no Raid:\n  %s"
+			% "\n  ".join(missing))
+
+
 ## A state of a ship that can reach [param states] that is on the player's
 ## side, and one of a ship that can reach [param other_states] that fights
 ## both of them, as "mine vs theirs"; empty when there's no such pair.

@@ -138,6 +138,7 @@
 
 [ext_resource type="Script" uid="uid://cajjx3mskpg2e" path="res://Source/Content/Enemies/EnemyResources/enemy_resource.gd" id="script_enemy_resource"]
 [ext_resource type="Script" uid="uid://b2x7pd5sa3elp" path="res://Source/Systems/Game/Fate/fate_ledger.gd" id="fate_ledger"]
+[ext_resource type="Script" path="res://Source/Systems/Game/Escort/escort_keeper.gd" id="escort_keeper"]
 [ext_resource type="Script" uid="uid://b7iood87igghx" path="res://Source/Systems/Game/Fate/fate_die_display.gd" id="fate_die_display"]
 [ext_resource type="Script" uid="uid://nwcim0g8vwj8" path="res://Source/Systems/Game/Reckoning/reckoning_director.gd" id="reckoning_director"]
 [ext_resource type="Script" uid="uid://cvb00ht3k1b5w" path="res://Source/Systems/Game/Reckoning/reckoning_hud.gd" id="reckoning_hud"]
@@ -421,6 +422,9 @@ script = ExtResource("93_factionstanding")
 
 [node name="FateLedger" type="Node" parent="Systems" unique_id=1717300002]
 script = ExtResource("fate_ledger")
+
+[node name="EscortKeeper" type="Node" parent="Systems" unique_id=1717300010]
+script = ExtResource("escort_keeper")
 
 [node name="ReckoningDirector" type="Node" parent="Systems" unique_id=1717300003]
 script = ExtResource("reckoning_director")

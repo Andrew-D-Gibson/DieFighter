@@ -28,6 +28,12 @@ extends ScenarioShipStateBase
 ## HULL_CRITICAL. Only read when this state has a HULL_CRITICAL transition.
 @export_range(0.05, 0.95, 0.05) var critical_hull_fraction: float = 0.3
 
+## Entering this state signs the ship on as the player's escort: it leaves
+## with them and rides along through the next fights (EscortKeeper). Like
+## deeds, it happens as the effects play, never for a ship a Continue puts
+## back here.
+@export var escort: EscortResource
+
 
 ## The state this ship moves to on [param event]: itself when the event leads
 ## nowhere. [param ship_faction] is the ship's own faction, for a standing

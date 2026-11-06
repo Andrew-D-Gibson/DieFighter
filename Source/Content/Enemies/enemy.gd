@@ -82,6 +82,11 @@ var is_mounted: bool = false
 ## then leaves it where it is and reflows the other ships around it.
 var formation_pinned: bool = false
 
+## The player's escort (EscortKeeper): it rides in its own slot beside the
+## hull gauge, not in the formation, and isn't one of the encounter's ships,
+## so its faction's events and bounty never hear about it.
+var is_escort: bool = false
+
 ## The number of turns this enemy has lived
 var turns_alive: int = 0
 
@@ -327,7 +332,7 @@ func _connect_combat_signals() -> void:
 ## same signal fires when a ship flees or when combat ends peacefully, and
 ## neither of those is something to get angry about.
 func _on_other_enemy_left(ship: Enemy, faction: ScenarioManager.Faction) -> void:
-	if ship == self or not is_instance_valid(ship):
+	if ship == self or not is_instance_valid(ship) or ship.is_escort:
 		return
 	if not scenario_state or faction != scenario_state.faction:
 		return
@@ -875,6 +880,8 @@ func trigger_state_effects() -> void:
 	# doesn't count again what the save already remembers.
 	if not scenario_state.deeds.is_empty():
 		Events.ship_deeds_done.emit(self, scenario_state.deeds)
+	if scenario_state.escort:
+		Events.escort_signed_on.emit(self, scenario_state.escort)
 
 	var engine: ScenarioEngine = ScenarioEngine.current()
 	if not scenario_state.effects_on_enter or not engine:

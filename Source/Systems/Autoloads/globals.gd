@@ -18,6 +18,7 @@ var background_modifier_manager: BackgroundModifierManager
 var run_stats: RunStats
 var faction_standing: FactionStanding
 var fate_ledger: FateLedger
+var escort_keeper: EscortKeeper
 var shop: Shop
 var repair_station: RepairStation
 

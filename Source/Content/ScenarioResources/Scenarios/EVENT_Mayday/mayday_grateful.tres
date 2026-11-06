@@ -7,6 +7,7 @@
 [ext_resource type="Resource" uid="uid://cq0vh3twd67bc" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Mayday/mayday_wronged.tres" id="ext_3"]
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="fate_effect_chain"]
 [ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="fate_effect_data"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Mayday/mayday_escort_terms.tres" id="escort_terms"]
 
 [sub_resource type="Resource" id="FactionDeed_0"]
 script = ExtResource("deed_ext_3")
@@ -39,3 +40,4 @@ transitions = Dictionary[int, ExtResource("ext_2")]({
 1: ExtResource("ext_3")
 })
 deeds = Array[ExtResource("deed_ext_3")]([SubResource("FactionDeed_0")])
+escort = ExtResource("escort_terms")

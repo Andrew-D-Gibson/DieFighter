@@ -125,6 +125,10 @@ func _handle_attack(_ship: Enemy, ship_faction: ScenarioManager.Faction) -> void
 func _handle_ship_attack(attacker: Enemy, target: Enemy) -> void:
 	if not attacker.scenario_state or not target.scenario_state:
 		return
+	# The escort isn't one of this encounter's civilians: a pirate firing on
+	# it says nothing about the ones the scenario is about.
+	if target.is_escort:
+		return
 	if attacker.scenario_state.faction in [Faction.PIRATE, Faction.BOSS] \
 	and target.scenario_state.faction == Faction.CIVILIAN:
 		Events.scenario_event.emit(ScenarioEvent.PIRATE_ATTACKED_CIVILIAN)
@@ -141,6 +145,10 @@ static func earns_faction_bounty(last_ship: Enemy) -> bool:
 ## Checks if a faction has been completely wiped out,
 ## then emits the corresponding signal if necessary
 func _handle_enemy_leaving(ship: Enemy, faction: Faction) -> void:
+	# The escort is passing through: its leaving closes nothing and ends no
+	# faction's part in the encounter.
+	if ship.is_escort:
+		return
 	# Just as an edge case, if the player destroys the shop (or the repair
 	# dock) in a single turn it won't close the normal way, so we close it here
 	Events.close_shop.emit()
