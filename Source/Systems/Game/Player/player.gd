@@ -719,7 +719,9 @@ func lose_dice_to(holder: Enemy, dice: Array[Dice]) -> void:
 		if not die.holographic:
 			lost += 1
 
-	_lose_dice(lost)
+	# Given to a ship on the player's side, not taken: called out in green.
+	var given: bool = is_instance_valid(holder) and not holder.is_hostile()
+	_lose_dice(lost, Globals.green if given else Globals.red)
 	if lost > 0:
 		dice_lost.emit(lost, holder)
 
@@ -835,10 +837,10 @@ func _dissolve_hologram(die: Dice) -> void:
 
 ## Takes [param count] dice off the Fleet for good, never leaving fewer than
 ## fleet_floor.
-func _lose_dice(count: int) -> void:
+func _lose_dice(count: int, tint: Color = Globals.red) -> void:
 	if count <= 0:
 		return
-	_announce_lost_dice(count)
+	_announce_lost_dice(count, tint)
 	num_of_dice = maxi(fleet_floor, num_of_dice - count)
 
 
@@ -920,12 +922,12 @@ func _real_dice_still_held() -> int:
 ## The count drop is the part that lasts — fewer dice is a smaller hand and a
 ## lower jump gate for the rest of the run — so it's said out loud over the
 ## hand, not just shown on the dice being left behind.
-func _announce_lost_dice(count: int) -> void:
+func _announce_lost_dice(count: int, tint: Color = Globals.red) -> void:
 	Events.play_sound.emit(_DIE_LOST_SFX)
 	Events.camera_shake_small.emit()
 	var text: String = tr_n(&"CALLOUT_DICE_LOST", &"CALLOUT_DICE_LOST_PLURAL", count).format({"count": count})
 	Juice.callout_at(self, global_position + dice_manager.position + Vector2(0, -14),
-			text, Globals.red, true)
+			text, tint, true)
 
 
 func _unlock_dice_after_jump() -> void:

@@ -438,3 +438,14 @@ open:
 - **Throw #N counts runs started from this build on**, so an older player's
   count starts low.
 
+### Known issues from the first live playtest
+Found playing the fight under Movie Maker. Not fixed yet:
+- **The throw banner** sits across the ships' row for about 2.4 s every round, covering the echoes, their intents and their lines.
+- **The hole is drawn at the upper right**, but echoes rise from the left. Move one or the other.
+- **Echoes at 35% purple read as grey.** Wash them further?
+- **Duty shields the ally** too, since the escort counts as an enemy.
+- **The escape is a normal blue jump.** Gold-tinting the streak art turned it green. A true white or gold escape needs streak art or a shader change.
+- **The ally's parting line** can overlap the next ally arriving.
+- **The end card's stats line** touches the MAIN MENU button, and reads "1 ENCOUNTERS".
+- **The map during the fight** still shows the old sector's track.
+

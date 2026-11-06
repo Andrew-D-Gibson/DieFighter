@@ -222,8 +222,11 @@ func jump_out() -> void:
 	_ending = true
 	_wing.stop()
 	_shut_down_engine()
+	# Read before the escape plays: the jump clears the board as it goes, and
+	# an ally still aboard would drop out of those left behind.
+	var ending: ReckoningEnding = build_ending(ReckoningRules.Trigger.JUMPED)
 	await _play_escape()
-	await _play_ending(ReckoningRules.Trigger.JUMPED)
+	await _play_ending(ReckoningRules.Trigger.JUMPED, "", ending)
 
 
 # ── The fight's life ────────────────────────────────────────────────────────
@@ -593,7 +596,12 @@ func _on_dice_lost(_count: int, holder: Enemy) -> void:
 		else ReckoningRules.Trigger.LAST_DIE_TO_ECHO
 	if not ReckoningRules.ends_fight(trigger, _bank_full):
 		return
-	_end(trigger, _wing.aboard_id() if to_ally else "")
+	var holder_id: String = _wing.aboard_id() if to_ally else ""
+	if to_ally:
+		# Its enemy_left comes once the fight is already decided, and is
+		# ignored then: it gets out (and says so) now.
+		_wing.on_ship_left(holder)
+	_end(trigger, holder_id)
 
 
 ## The hull went: the cockpit's destruction plays, then the fall.
@@ -641,15 +649,20 @@ func _play_escape() -> void:
 		player.rattle_dice_for_jump(BackgroundManager.JUMP_RAMP_UP_TIME)
 	Juice.screen_flash(self, EngineCharger.DRIVE_COLOR, 0.35, 0.6)
 	if Globals.background_manager:
-		Globals.background_manager.set_jump_tint(Globals.white, EngineCharger.DRIVE_COLOR)
+		# The streak art is blue and keeps its colour: tinted gold, it came
+		# out green.
+		Globals.background_manager.set_jump_tint(Globals.white, Globals.white)
 		await Globals.background_manager.play_jump_intro()
 	if player:
 		player.settle_dice_after_jump()
 	Juice.screen_flash(self, Globals.white, 1.0, 0.8)
 
 
-func _play_ending(trigger: ReckoningRules.Trigger, last_holder: String = "") -> void:
-	var ending: ReckoningEnding = build_ending(trigger, last_holder)
+## [param built] is the ending as it was read earlier, when the fight's state
+## had to be caught before the show that comes first.
+func _play_ending(trigger: ReckoningRules.Trigger, last_holder: String = "",
+		built: ReckoningEnding = null) -> void:
+	var ending: ReckoningEnding = built if built else build_ending(trigger, last_holder)
 	last_ending = ending
 	var ship_id: String = String(ending.ship_id)
 	if ending.kind == ReckoningEnding.Kind.FELL_IN:

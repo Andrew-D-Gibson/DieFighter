@@ -169,14 +169,32 @@ func on_ship_left(ship: Enemy) -> void:
 	if ship.health.health > 0:
 		saved_out.append(entry)
 		var last: bool = is_instance_valid(Globals.player) and Globals.player.num_of_dice <= 0
-		ship.dialogue_manager.show_dialogue(
-			tr("RECKONING_ALLY_LAST_DIE" if last else "RECKONING_ALLY_CARRIES"), ally_state.faction, false)
+		_say_parting(ship, tr("RECKONING_ALLY_LAST_DIE" if last else "RECKONING_ALLY_CARRIES"))
 	else:
 		lost.append(entry)
 	if not _running:
 		return
 	await get_tree().create_timer(_SLOT_REFILL_SECONDS).timeout
 	_fill_slot()
+
+
+## A ship jumping out is gone in under a second, its speech bubble with it,
+## so its parting line is left hanging where it was until it has been read.
+func _say_parting(ship: Enemy, line: String) -> void:
+	var bubble: EnemyDialogueManager = ship.dialogue_manager
+	if bubble == null or not is_instance_valid(Globals.enemy_manager):
+		return
+	var stand_in: Node2D = Node2D.new()
+	stand_in.name = &"PartingLine"
+	Globals.enemy_manager.add_child(stand_in)
+	stand_in.global_position = ship.global_position
+	bubble.reparent(stand_in)
+	# Fades where it hangs: the comms badge belongs to the next target now.
+	bubble.stow_point = Callable()
+	bubble.show_dialogue(line, ally_state.faction, false)
+	await bubble.put_away
+	if is_instance_valid(stand_in):
+		stand_in.queue_free()
 
 
 ## The bank moved: an ally aboard with the bank nearly full tells the player
