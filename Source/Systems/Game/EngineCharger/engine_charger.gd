@@ -1,3 +1,4 @@
+class_name EngineCharger
 extends Node2D
 
 @export var progress_bar: TextureProgressBar
@@ -7,6 +8,11 @@ extends Node2D
 
 ## Applied to the charged indicator while the drive is past the gate.
 const _REDLINE_TINT: Color = Color(1.0, 0.45, 0.45)
+## The Vanguard Drive's colour (LORE.md §4): the gold of the halo on its
+## tile. The charger wears it from the moment the dying Marshal hands the
+## drive over, and the ending cutscene's engines burn with it.
+const DRIVE_COLOR: Color = Color("#eed35d")
+const _DRIVE_RINGS: Texture2D = preload("res://Assets/Textures/Enemies/ParticleTextures/engine_ring_large_drive.png")
 
 ## The fill level the bar is currently animating towards. Tracked separately
 ## from progress_bar.value because several charge changes can land in the same
@@ -38,11 +44,35 @@ func _ready() -> void:
 		_update_ui()
 	)
 	Events.combat_finished.connect(_refill_after_combat)
+	Events.vanguard_drive_taken.connect(_install_drive.bind(true))
+	Events.load_game_save.connect(func(_save: GameSaveResource) -> void: _refresh_drive.call_deferred())
 	Events.die_added.connect(func() -> void:
 		if Globals.state_manager.state == GameStateManager.GameState.OUT_OF_COMBAT:
 			Globals.player.engine_charge = Globals.player.max_engine_charge
 		_update_ui()
 	)
+
+
+## A Continue puts back the drive the run was handed.
+func _refresh_drive() -> void:
+	if Globals.fate_ledger and Globals.fate_ledger.has_drive:
+		_install_drive(false)
+
+
+## The Vanguard Drive goes into the charger: the tile shimmers as upgraded,
+## in the drive's colour, and its rings burn gold. [param announce] is the
+## hand-over itself, with the upgrade's burst and a callout.
+func _install_drive(announce: bool) -> void:
+	var tile: Tile = get_node_or_null(^"EngineChargerTile") as Tile
+	if not tile:
+		return
+	TileUpgradeLook.set_override(tile, DRIVE_COLOR)
+	var rings: GPUParticles2D = tile.get_node_or_null(^"ParticleMask/LargeEngineParticles") as GPUParticles2D
+	if rings:
+		rings.texture = _DRIVE_RINGS
+	if announce:
+		TileUpgradeLook.burst_in(tile, DRIVE_COLOR)
+		Juice.callout(tile, tr(&"CALLOUT_VANGUARD_DRIVE"), DRIVE_COLOR, true)
 
 
 ## Where effects that move engine charge draw to and from: the middle of the

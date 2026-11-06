@@ -297,6 +297,9 @@ signal fate_face_carved(slot: int, face: int, old_face: int)
 ## A carving came while the die was full: it waits for the player to choose
 ## which face it goes over (FateCarveChoice).
 signal fate_carve_pending(face: int)
+## The dying Marshal handed over the Vanguard Drive (FateLedger.take_drive()):
+## it goes into the engine charger.
+signal vanguard_drive_taken()
 ## Fate threw the die at the start of a Reckoning round: [param slot] came up,
 ## showing [param face].
 signal fate_die_rolled(slot: int, face: int)

@@ -24,6 +24,8 @@ const _CHARS_PER_SECOND: float = 38.0
 ## Seconds after the boss falls before the voice comes through, so the
 ## kill lands first.
 const _DELAY: float = 1.6
+## Seconds after the voice goes before the drive lands in the engine charger.
+const _DRIVE_DELAY: float = 0.35
 
 var _root: Control
 var _speaker: Label
@@ -42,24 +44,24 @@ func _ready() -> void:
 
 
 func _on_combat_finished() -> void:
-	if not _is_last_gate():
+	if not Globals.state_manager or not Globals.state_manager.is_at_last_gate():
 		return
 	var heard_before: bool = CollectionManager.has_fate_knowledge()
 	CollectionManager.learn_fate_knowledge()
-	if not CollectionManager.is_recording():
-		return
 	await get_tree().create_timer(_DELAY).timeout
+	if not CollectionManager.is_recording():
+		# Nothing to tell a run that isn't the player's own, but the drive
+		# is still theirs.
+		_hand_over_drive()
+		return
 	play(_LINES_AGAIN if heard_before else _LINES)
 
 
-## Whether the fight just won was the run's last gate.
-static func _is_last_gate() -> bool:
-	var manager: ScenarioManager = Globals.scenario_manager
-	var state: GameStateManager = Globals.state_manager
-	if not manager or not state or not manager.current_scenario:
-		return false
-	return manager.current_scenario.sector_gate_scenario \
-		and state.current_game_save.sector_index + 1 >= state.demo_sector_count
+## The Marshal's last act (FATE_REVEAL_6): the drive goes into the engine
+## charger once the dim lifts, so the player sees it land.
+func _hand_over_drive() -> void:
+	if Globals.fate_ledger:
+		Globals.fate_ledger.take_drive()
 
 
 func play(lines: Array[String]) -> void:
@@ -161,3 +163,5 @@ func _finish() -> void:
 		for child: Node in get_children():
 			child.queue_free()
 	)
+	fade.tween_interval(_DRIVE_DELAY)
+	fade.tween_callback(_hand_over_drive)

@@ -82,6 +82,9 @@ func get_possible_tile_rewards() -> Array[TileResource]:
 		
 
 func _spawn_reward(pos: Vector2, reward_resource: RewardResource) -> void:
+	var state: GameStateManager = Globals.state_manager
+	if state and state.is_at_last_gate() and not state.last_gate_pays():
+		return
 	var reward := reward_scene.instantiate()
 	add_child(reward)
 	reward.global_position = pos

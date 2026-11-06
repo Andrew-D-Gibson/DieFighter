@@ -611,6 +611,13 @@ func _fate(command_args: Array[String] = []) -> void:
 				i += 1
 			ledger.knew_secret = true
 			Globals.state_manager.enter_reckoning()
+		'drive':
+			ledger.take_drive()
+		'ending':
+			# The first-knowledge ending, over whatever is on screen; it ends
+			# the run on the victory screen as the real one does.
+			EndingCutscene.play()
+			return
 		'escape':
 			var director: ReckoningDirector = ReckoningDirector.active()
 			if director:
@@ -622,7 +629,7 @@ func _fate(command_args: Array[String] = []) -> void:
 		'status':
 			pass
 		_:
-			command_history.append_text('\n\t\tUsage: fate [status|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|reckoning|escape [n]|horizon [n]]')
+			command_history.append_text('\n\t\tUsage: fate [status|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|drive|ending|reckoning|escape [n]|horizon [n]]')
 			return
 	command_history.append_text('\n[center]Fate: die %s %s, pending %d, knows %s, route %s, kills %d, allies %d, deeds %s[/center]' % [
 		'held' if ledger.has_die else 'not held', str(ledger.die.to_data()), ledger.pending.size(),

@@ -111,20 +111,6 @@ const _FATE_PURPLE: Color = Color("#c552f1")
 ## Played once, on into the run; when it ends the playlist brings the start
 ## theme back and holds it.
 const _RUN_TRACK: StringName = &"trailer_1"
-const _SKIP_FADE_IN: float = 0.15
-const _SKIP_HOLD: float = 2.0
-const _SKIP_FADE_OUT: float = 2.0
-const _SKIP_AXIS_THRESHOLD: float = 0.6
-## Screen pixels per art pixel on the 1080p overlay the prompt draws in.
-const _ART_SCALE: float = 6.0
-## Gap under the prompt, in art pixels.
-const _SKIP_MARGIN_ART_PX: float = 6.0
-
-var _skip_prompt: Label
-## Negative while hidden; confirmation expires only when the fade is complete.
-var _skip_elapsed: float = -1.0
-var _skip_axes_held: Dictionary[Vector2i, bool] = {}
-
 var main_game_scene: String = "uid://deisauteocrjl"
 ## The fight this cuts into (main.tscn's starting_scenario). Its Attacker is
 ## the Survivor, so the Survivor is holed down to that Attacker's hull.
@@ -161,7 +147,9 @@ var _jump_fx: JumpFx
 
 
 func _ready() -> void:
-	_build_skip_prompt()
+	var skip: CutsceneSkipPrompt = CutsceneSkipPrompt.new()
+	skip.confirmed.connect(_switch_to_next_scene)
+	add_child(skip)
 	# Before the game starts loading in the background: the ambush is part of
 	# it, and loading it here meanwhile would wait on the whole game.
 	_survivor_hull_fraction = _ambush_hull_fraction()
@@ -180,7 +168,6 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
-	_update_skip_prompt(delta)
 	_frame_shot()
 	_move_stars(delta)
 	_move_debris(delta)
@@ -196,93 +183,6 @@ func _process(delta: float) -> void:
 		smoke.emitting = ship.is_visible_in_tree()
 	if _reticle:
 		_reticle.global_position = _reticle.target.global_position
-
-
-func _input(event: InputEvent) -> void:
-	if not _is_skip_press(event):
-		return
-	# Consume the original press before InputManager can turn controller A
-	# into a second, synthetic mouse press or move the desktop pointer.
-	get_viewport().set_input_as_handled()
-	if _skip_elapsed >= 0.0:
-		_switch_to_next_scene()
-	else:
-		_skip_elapsed = 0.0
-		_skip_prompt.show()
-
-
-func _is_skip_press(event: InputEvent) -> bool:
-	if event is InputEventJoypadMotion:
-		var axis_key: Vector2i = Vector2i(event.device, event.axis)
-		var was_held: bool = _skip_axes_held.get(axis_key, false)
-		var amount: float = absf(event.axis_value)
-		# Hysteresis requires a return to neutral, so a held stick/trigger
-		# cannot both reveal the prompt and confirm it as values fluctuate.
-		if amount < 0.2:
-			_skip_axes_held.erase(axis_key)
-		elif amount >= _SKIP_AXIS_THRESHOLD and not was_held:
-			_skip_axes_held[axis_key] = true
-			return true
-		return false
-	if event is InputEventMouseButton and _is_wheel(event.button_index):
-		# One flick of a wheel or trackpad is a burst of presses, which would
-		# raise the prompt and confirm it before the player meant either.
-		return false
-	if event is InputEventKey or event is InputEventMouseButton or event is InputEventJoypadButton:
-		return event.is_pressed() and not event.is_echo()
-	return false
-
-
-static func _is_wheel(button: MouseButton) -> bool:
-	return button in [
-		MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN,
-		MOUSE_BUTTON_WHEEL_LEFT, MOUSE_BUTTON_WHEEL_RIGHT,
-	]
-
-
-func _build_skip_prompt() -> void:
-	# Outside PixelLayer so the caption stays fixed through zooms and shakes.
-	var overlay: CanvasLayer = CanvasLayer.new()
-	overlay.name = "SkipOverlay"
-	overlay.layer = 10
-	add_child(overlay)
-	_skip_prompt = Label.new()
-	_skip_prompt.name = "SkipPrompt"
-	_skip_prompt.text = tr("CUTSCENE_SKIP_PROMPT")
-	_skip_prompt.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	# The default (small) font at one font pixel per art pixel, so the caption
-	# sits on the same 320x180 grid as the art it's laid over.
-	_skip_prompt.theme_type_variation = FontRoles.slot(FontRoles.SMALL, _ART_SCALE)
-	_skip_prompt.add_theme_color_override("font_shadow_color", Color.BLACK)
-	_skip_prompt.add_theme_constant_override("shadow_offset_x", int(_ART_SCALE))
-	_skip_prompt.add_theme_constant_override("shadow_offset_y", int(_ART_SCALE))
-	overlay.add_child(_skip_prompt)
-	# Placed by hand rather than centred by the Label: centring an odd number
-	# of art pixels in an even width would land the text half a pixel off.
-	var text_size: Vector2 = _skip_prompt.get_combined_minimum_size()
-	var screen: Vector2 = get_viewport_rect().size
-	_skip_prompt.size = text_size
-	_skip_prompt.position = Vector2(
-		snappedf((screen.x - text_size.x) / 2.0, _ART_SCALE),
-		screen.y - text_size.y - _SKIP_MARGIN_ART_PX * _ART_SCALE)
-	_skip_prompt.modulate.a = 0.0
-	_skip_prompt.hide()
-
-
-func _update_skip_prompt(delta: float) -> void:
-	if _skip_elapsed < 0.0:
-		return
-	_skip_elapsed += delta
-	if _skip_elapsed < _SKIP_FADE_IN:
-		_skip_prompt.modulate.a = _skip_elapsed / _SKIP_FADE_IN
-	elif _skip_elapsed < _SKIP_FADE_IN + _SKIP_HOLD:
-		_skip_prompt.modulate.a = 1.0
-	else:
-		var fading: float = _skip_elapsed - _SKIP_FADE_IN - _SKIP_HOLD
-		_skip_prompt.modulate.a = maxf(1.0 - fading / _SKIP_FADE_OUT, 0.0)
-		if fading >= _SKIP_FADE_OUT:
-			_skip_elapsed = -1.0
-			_skip_prompt.hide()
 
 
 ## Holds the first frame (black) while the old music fades out, then starts

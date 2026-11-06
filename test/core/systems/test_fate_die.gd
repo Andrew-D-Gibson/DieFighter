@@ -125,6 +125,34 @@ func test_the_pilgrim_is_dealt_past_the_first_jump_without_drawing() -> void:
 	assert_eq(RNGManager.get_rng(RNGManager.Bucket.RUN).state, before)
 
 
+# ── The last gate ────────────────────────────────────────────────────────────
+
+## Beating the last gate ends the run unless the way back toward Fate is open,
+## so only then do its wrecks leave anything (RewardManager asks this).
+func test_the_last_gate_pays_only_when_the_way_back_is_open() -> void:
+	var state: GameStateManager = autofree(GameStateManager.new())
+	state.current_game_save = GameSaveResource.new()
+	state.demo_sector_count = 3
+	var manager: ScenarioManager = autofree(ScenarioManager.new())
+	manager.current_scenario = ScenarioResource.new()
+	manager.current_scenario.sector_gate_scenario = true
+	var ledger: FateLedger = autofree(FateLedger.new())
+	Globals.scenario_manager = manager
+	Globals.fate_ledger = ledger
+
+	state.current_game_save.sector_index = 1
+	assert_false(state.is_at_last_gate(), "an earlier gate is not the last")
+	state.current_game_save.sector_index = 2
+	assert_true(state.is_at_last_gate())
+	assert_false(state.last_gate_pays(), "a first-knowledge run can't turn back: nothing to spend it on")
+
+	ledger.knew_secret = true
+	ledger.give_die()
+	for face: FateDie.Face in FateDie.carvable_faces():
+		ledger.request_carve(face)
+	assert_true(state.last_gate_pays(), "the way back is open: the loot goes into the Reckoning")
+
+
 # ── Saves ────────────────────────────────────────────────────────────────────
 
 func test_the_ledger_comes_back_from_a_json_save() -> void:
@@ -139,6 +167,7 @@ func test_the_ledger_comes_back_from_a_json_save() -> void:
 	ledger.in_reckoning = true
 	ledger.reckoning_seed = 12345
 	ledger.knew_secret = true
+	ledger.take_drive()
 
 	# Through JSON, as the save goes: every number comes back a float.
 	var state: Variant = JSON.parse_string(JSON.stringify(ledger.get_state()))
@@ -153,3 +182,4 @@ func test_the_ledger_comes_back_from_a_json_save() -> void:
 	assert_true(loaded.in_reckoning)
 	assert_eq(loaded.reckoning_seed, 12345)
 	assert_true(loaded.fate_route_open())
+	assert_true(loaded.has_drive)

@@ -52,6 +52,10 @@ var _hunger_sectors: Array[int] = []
 var in_reckoning: bool = false
 ## The Reckoning's scenario seed, so a Continue replays the same fight.
 var reckoning_seed: int = 0
+## Whether the dying Marshal has handed over the Vanguard Drive (LORE.md §4).
+## It sits in the engine charger from then on (EngineCharger) and runs the
+## Reckoning's escape.
+var has_drive: bool = false
 ## Whether the player already knew the secret when this run began (Gate 1 is
 ## knowledge from an earlier run). Fixed for the run, and saved with it, so
 ## learning the secret at this run's end doesn't open its own way back.
@@ -75,6 +79,16 @@ func _ready() -> void:
 	Events.start_scenario.connect(_on_start_scenario)
 	# After EnemyManager's own listener, so the scenario's ships are in.
 	Events.load_scenario.connect(_raise_the_fallen)
+
+
+# ── The drive ────────────────────────────────────────────────────────────────
+
+## The dying Marshal hands over the Vanguard Drive. Once a run.
+func take_drive() -> void:
+	if has_drive:
+		return
+	has_drive = true
+	Events.vanguard_drive_taken.emit()
 
 
 # ── The die ──────────────────────────────────────────────────────────────────
@@ -357,6 +371,7 @@ func get_state() -> Dictionary:
 		"in_reckoning": in_reckoning,
 		"reckoning_seed": reckoning_seed,
 		"knew_secret": knew_secret,
+		"has_drive": has_drive,
 	}
 
 
@@ -396,6 +411,8 @@ func load_state(state: Dictionary) -> void:
 		_hunger_sectors.append(int(sector))
 	in_reckoning = bool(state.get("in_reckoning", false))
 	reckoning_seed = int(state.get("reckoning_seed", 0))
+	# A run saved in the Reckoning from before the drive was kept holds it.
+	has_drive = bool(state.get("has_drive", in_reckoning))
 	# A new run (or a save from before Fate's Die) reads the knowledge now.
 	knew_secret = bool(state.get("knew_secret", CollectionManager.has_fate_knowledge()))
 

@@ -9,33 +9,66 @@ const _SPARK_TEXTURE: Texture2D = preload("res://Assets/Particles/hit_particle_p
 const _UPGRADE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/upgrade_trigger.tres")
 ## The sparks' node under the tile's sprite.
 const SPARKS_NAME: StringName = &"UpgradeSparks"
+## The shimmer's colour on an ordinary upgrade (tile.gdshader's default).
+const SHIMMER_COLOR: Color = Color("#cef0f1")
+## Meta on the sprite holding a colour the tile is dressed in whatever its
+## resource says (see set_override()).
+const _OVERRIDE_META: StringName = &"upgrade_look_override"
 
 
 ## Dresses [param sprite], which draws [param resource], as upgraded or not.
 ## Safe to call again whenever the resource changes.
 static func apply(sprite: AnimatedSprite2D, resource: TileResource) -> void:
-	var upgraded: bool = resource.is_upgrade
+	var override: Color = sprite.get_meta(_OVERRIDE_META, Color.TRANSPARENT)
+	var overridden: bool = override.a > 0.0
+	var upgraded: bool = resource.is_upgrade or overridden
 	var mat: ShaderMaterial = sprite.material as ShaderMaterial
 	if mat:
 		mat.set_shader_parameter("upgraded", upgraded)
+		mat.set_shader_parameter("upgrade_color", override if overridden else SHIMMER_COLOR)
 	var sparks: CPUParticles2D = sprite.get_node_or_null(NodePath(SPARKS_NAME))
-	if upgraded and sparks == null:
-		# Lightened, or the family's deeper colours vanish against the art.
-		sprite.add_child(_make_sparks(ColorSymbolBadge.color_of_tile(resource).lerp(Globals.white, 0.5)))
-	elif not upgraded and sparks:
+	if not upgraded and sparks == null:
+		return
+	# Lightened, or the family's deeper colours vanish against the art.
+	var spark_color: Color = override if overridden \
+		else ColorSymbolBadge.color_of_tile(resource).lerp(Globals.white, 0.5)
+	if sparks and (not upgraded or sparks.color != spark_color):
+		# Freed now, not at frame end, so the new sparks can take the name.
+		sprite.remove_child(sparks)
 		sparks.queue_free()
+		sparks = null
+	if upgraded and sparks == null:
+		sprite.add_child(_make_sparks(spark_color))
+
+
+## Dresses [param tile] as upgraded, in [param color], whatever its resource
+## says, until a transparent colour takes it off again. For a tile that has
+## been made more than it is: the engine charger once the Vanguard Drive is in
+## it. It holds through resource changes.
+static func set_override(tile: Tile, color: Color) -> void:
+	if color.a > 0.0:
+		tile.sprite_frames.set_meta(_OVERRIDE_META, color)
+	else:
+		tile.sprite_frames.remove_meta(_OVERRIDE_META)
+	apply(tile.sprite_frames, tile.tile_resource)
+
+
+## The moment [param tile] is made more than it is, in [param color]: the
+## upgrade's burst without its callout, for whoever names it.
+static func burst_in(tile: Tile, color: Color) -> void:
+	Juice.bump(tile.sprite_frames, 0.35, 0.35)
+	tile.flash(Globals.white, 1.0, 0.4)
+	Juice.sparkle(tile, tile.global_position, color, 16, 50.0, true)
+	Juice.ring(tile, tile.global_position, Globals.white, 20.0, 0.35, 6.0)
+	Events.play_sound.emit(_UPGRADE_SFX)
 
 
 ## The moment [param tile] becomes its upgrade: a bump, a white flash, a ring
 ## and sparks in its family's colour, and a callout.
 static func burst(tile: Tile) -> void:
 	var color: Color = ColorSymbolBadge.color_of_tile(tile.tile_resource)
-	Juice.bump(tile.sprite_frames, 0.35, 0.35)
-	tile.flash(Globals.white, 1.0, 0.4)
-	Juice.sparkle(tile, tile.global_position, color, 16, 50.0, true)
-	Juice.ring(tile, tile.global_position, Globals.white, 20.0, 0.35, 6.0)
+	burst_in(tile, color)
 	Juice.callout(tile, TranslationServer.translate(&"CALLOUT_UPGRADED"), color, true)
-	Events.play_sound.emit(_UPGRADE_SFX)
 
 
 static func _make_sparks(color: Color) -> CPUParticles2D:

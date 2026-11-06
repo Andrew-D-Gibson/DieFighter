@@ -158,6 +158,8 @@ func _ready() -> void:
 	Events.start_scenario.connect(_checkpoint_on_arrival)
 	Events.combat_finished.connect(_checkpoint_after_combat)
 	Events.reward_picked.connect(_checkpoint_mid_scenario)
+	# The drive lands after the won fight's checkpoint: keep it on a Continue.
+	Events.vanguard_drive_taken.connect(_checkpoint_mid_scenario)
 	Events.tutorial_finished.connect(_write_held_save)
 	Events.jump.connect(func() -> void:
 		_opening_strike = null
@@ -360,6 +362,12 @@ func go_through_gate() -> void:
 				return
 		# Through the last gate and out: the run is won.
 		current_game_save.sector_index += 1
+		if _plays_first_ending():
+			# The run that first learned the secret doesn't fly through the
+			# ring: it cuts to black and to the ending, which hands over to
+			# the victory screen itself.
+			await EndingCutscene.play()
+			return
 		await Globals.jump_manager.leave_through_final_gate()
 		Events.victory.emit()
 		Globals.jump_gate.fade_flash(1.0)
@@ -381,6 +389,33 @@ func go_through_gate() -> void:
 		current_game_save.sector_index + 1,
 		demo_sector_count
 	)
+
+
+## Whether the scenario being played is the run's last gate (the Bastion, in
+## a three-sector run).
+func is_at_last_gate() -> bool:
+	var manager: ScenarioManager = Globals.scenario_manager
+	if not manager or not manager.current_scenario or not current_game_save:
+		return false
+	return manager.current_scenario.sector_gate_scenario \
+		and current_game_save.sector_index + 1 >= demo_sector_count
+
+
+## Whether the last gate's ships leave anything in their wrecks. Only when the
+## way back toward Fate is open: otherwise beating the gate ends the run, and
+## its loot could never be spent.
+func last_gate_pays() -> bool:
+	return Globals.fate_ledger != null and Globals.fate_ledger.fate_route_open()
+
+
+## Whether leaving through the last gate plays the ending (EndingCutscene):
+## only on the run that heard the secret for the first time. A run that
+## already knew it ends as it always has, or turns back toward Fate.
+func _plays_first_ending() -> bool:
+	var ledger: FateLedger = Globals.fate_ledger
+	return ledger != null and not ledger.knew_secret \
+		and CollectionManager.has_fate_knowledge() and CollectionManager.is_recording() \
+		and not (is_instance_valid(AutoPilot) and AutoPilot.is_playing())
 
 
 ## The Reckoning's scenario, or null when the scene has no ReckoningDirector.

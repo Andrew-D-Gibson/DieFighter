@@ -2,7 +2,8 @@ extends Control
 
 
 ## How the run ended, if it ended one of Fate's ways (Events.fate_ending):
-## &"escaped" or &"fell_in". Empty for an ordinary win or loss.
+## &"escaped", &"fell_in", or &"unlocked" (the first run to learn the secret,
+## after its ending cutscene). Empty for an ordinary win or loss.
 var _fate_ending: StringName = &""
 
 ## How tall one line of the run summary is, in this screen's pixels.
@@ -61,6 +62,15 @@ func _on_game_win() -> void:
 	+ "[wave amp=60.0 freq=10.0 connected=1]"\
 	+ tr("GAME_OVER_VICTORY")\
 	+ "[/wave][/color]"
+
+	if _fate_ending == &"unlocked":
+		# The run that first learned the secret, after its ending cutscene
+		# (EndingCutscene): it comes up out of black, so nothing of the game
+		# shows behind it, and its last line points back toward Fate.
+		$ScreenDim.color.a = 1.0
+		_show_run_summary(Globals.purple, tr("FATE_ENDING_UNLOCKED_LINE"))
+		show()
+		return
 
 	# The normal ending (LORE.md §8): the player reaches the front, and the
 	# deal is theirs to keep.
