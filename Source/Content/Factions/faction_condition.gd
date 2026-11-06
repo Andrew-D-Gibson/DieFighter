@@ -1,7 +1,9 @@
 class_name FactionCondition
 extends Resource
 ## One question about what the fleet remembers of the player (FactionLedger):
-## does the Caravan like them, have they ever attacked a shop. Encounters ask
+## does the Caravan like them, have they ever attacked a shop. Or about the
+## ship they fly: which one, and whether they've earned it (ShipUnlocks), so
+## a ship can greet the Outrigger courier's sister ship as one. Encounters ask
 ## these to change with the run: a standing branch picks a ship's state by
 ## them (ScenarioShipStateStandingBranch), and an encounter can be dealt only
 ## while they hold (ScenarioResource.standing_requirements).
@@ -18,6 +20,12 @@ enum Test {
 	DEED_NOT_DONE,
 	## The player has destroyed at least [member count] of the faction's ships.
 	KILLS_AT_LEAST,
+	## The run is flown in the ship [member ship] (ShipResource.id).
+	FLYING_SHIP,
+	## [member ship] is earned (ShipUnlocks.counts_as_earned()): an encounter
+	## that earns a ship can play differently once it has, and a requirement
+	## on it keeps the encounter out of the random mix until then.
+	SHIP_EARNED,
 }
 
 @export var test: Test = Test.REGARD_AT_LEAST
@@ -28,6 +36,8 @@ enum Test {
 @export var regard: FactionLedger.Regard = FactionLedger.Regard.NEUTRAL
 @export var deed: StringName = &""
 @export_range(1, 99) var count: int = 1
+## The ship (ShipResource.id) the ship tests ask about.
+@export var ship: StringName = &""
 
 
 ## Whether this holds in [param ledger]. [param own_faction] stands in for an
@@ -38,6 +48,11 @@ func holds(ledger: FactionLedger, own_faction: FactionIdentity = null) -> bool:
 			return ledger.deed_count(deed) >= count
 		Test.DEED_NOT_DONE:
 			return ledger.deed_count(deed) < count
+		Test.FLYING_SHIP:
+			var flown: ShipResource = Globals.current_ship()
+			return flown != null and flown.id == ship
+		Test.SHIP_EARNED:
+			return ShipUnlocks.counts_as_earned(ship)
 
 	var asked: FactionIdentity = faction if faction else own_faction
 	if asked == null:

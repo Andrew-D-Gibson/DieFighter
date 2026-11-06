@@ -3,7 +3,8 @@
 [ext_resource type="Script" uid="uid://up0oyqfrjcpu" path="res://Source/Content/ScenarioResources/enemy_state_reward_resource.gd" id="spawn"]
 [ext_resource type="Script" uid="uid://bn5hkxed2w1kc" path="res://Source/Content/ScenarioResources/reward_resource.gd" id="reward"]
 [ext_resource type="Resource" path="res://Source/Content/Enemies/EnemyResources/outrigger_courier.tres" id="courier"]
-[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_hailing.tres" id="hailing"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_greeting.tres" id="greeting"]
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="condition"]
 [ext_resource type="Script" uid="uid://bidpx7urxb1md" path="res://Source/Content/ScenarioResources/scenario_resource.gd" id="scenario"]
 [ext_resource type="Texture2D" uid="uid://dhitrpxcdtnwd" path="res://Assets/Textures/Map/EncounterIcons/unknown_encounter.png" id="icon"]
 [ext_resource type="Resource" uid="uid://cqfp1oeq0ptls" path="res://Source/Content/BackgroundResources/RandomBackgroundResources/all_basic_backgrounds.tres" id="backgrounds"]
@@ -23,7 +24,7 @@ num_of_rewards = 0
 [sub_resource type="Resource" id="courier_spawn"]
 script = ExtResource("spawn")
 enemy_resource = ExtResource("courier")
-starting_state = ExtResource("hailing")
+starting_state = ExtResource("greeting")
 reward_resource = SubResource("courier_reward")
 
 [sub_resource type="Resource" id="down_payment"]
@@ -32,6 +33,11 @@ num_of_rewards = 1
 dice_probability = 0.25
 min_money_pickup = 12
 max_money_pickup = 20
+
+[sub_resource type="Resource" id="outrigger_earned"]
+script = ExtResource("condition")
+test = 6
+ship = &"outrigger"
 
 [resource]
 script = ExtResource("scenario")
@@ -44,3 +50,4 @@ rewards = Dictionary[int, ExtResource("reward")]({
 starting_reward = SubResource("down_payment")
 starting_reward_position = Vector2(230, 60)
 sectors = 2
+standing_requirements = Array[ExtResource("condition")]([SubResource("outrigger_earned")])

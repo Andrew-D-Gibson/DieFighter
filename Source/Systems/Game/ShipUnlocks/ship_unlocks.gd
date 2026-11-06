@@ -23,6 +23,16 @@ static func is_locked(ship: ShipResource) -> bool:
 	return ship != null and ship.starts_locked and not CollectionManager.has_ship(String(ship.id))
 
 
+## Whether the ship [param id] counts as earned for what a run deals and
+## says: earned for good, never locked at all, or any run that isn't the
+## player's own (the Scenario Lab, the AutoPilot), which fly every ship.
+static func counts_as_earned(id: StringName) -> bool:
+	var ship: ShipResource = ShipCatalog.find(id)
+	if ship == null or ship.id != id or not ship.starts_locked:
+		return true
+	return not CollectionManager.is_recording() or CollectionManager.has_ship(String(id))
+
+
 ## Earns [param id] for good (in the player's own runs; [param force] for the
 ## dev tools). True if it was locked until now.
 static func unlock(id: StringName, force: bool = false) -> bool:

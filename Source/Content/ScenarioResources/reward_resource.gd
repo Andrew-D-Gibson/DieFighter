@@ -21,6 +21,10 @@ var refund: int = 0
 ## still applies above the floor, and if the player already owns every tile at
 ## or above it, the floor is dropped rather than offering nothing.
 @export var minimum_rarity: TileResource.Rarity = TileResource.Rarity.COMMON
+## Offers only the flown ship's own tiles (ShipResource.signature_tiles): the
+## Outrigger courier's spare parts for a pilot flying its sister ship. A ship
+## with none falls back to the usual pool.
+@export var ship_signature_only: bool = false
 
 ## When max_money_pickup is above zero the offer also floats a MoneyPickup
 ## worth a roll in this range, sitting alongside the tile/dice choices.
