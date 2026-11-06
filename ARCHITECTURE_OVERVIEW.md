@@ -712,6 +712,26 @@ what they have and gets the first family in the list they lack.
 
 ---
 
+## Ship Unlocks
+
+A ship with `starts_locked` (the Outrigger) is earned once, in any run, and
+kept for good. Until then its ship-select card is greyed out with its
+`unlock_hint`, a rumour of how to earn it, and can't be launched.
+
+| Piece | Job |
+|---|---|
+| `ShipUnlocks` (static, `Systems/Game/ShipUnlocks/`) | `is_pickable(ship)` (not `coming_soon`, not locked; `ShipCard` reads it), `is_locked(ship)`, `unlock(id)`, `scenarios_for_sector(i)` |
+| `CollectionManager` | Keeps earned ship ids in `collection.json` (`ships`). `record_ship()` records only in the player's own runs (`is_recording()`); Unlock All and the dev tools pass `force` |
+| `SectorGenerator.generate()` | Deals each locked ship's `unlock_scenario` onto an ordinary stop ahead of the arrival in its `unlock_sector`, after the reckonings, from a generator of its own (`place_consequences()`), so a run with nothing to earn deals its usual map. Player's own runs only: the Scenario Lab and AutoPilot fly every ship and never meet these |
+| `EscortKeeper` | Earns an escort's `unlocks_ship` when it's delivered and shows `ShipUnlockPopup` once it has gone (not while the AutoPilot plays) |
+| `ShipUnlockPopup` (`Systems/UI/ShipUnlockPopup/`) | World-space card like `TileUnlockPopup`: the hull lands in a flash with a glitch, a ring and a spark burst; light rays (`_Rays`, drawn on the 320x180 grid through `JuicePixelated`) turn behind it while sparks stream off; name, pitch and hint come up; Close pops in about a second later. `closed` when it's dismissed |
+| `Map.hold_jumps(holder)` / `release_jumps(holder)` | No jump while anything holds the ship (`can_jump()` false, refused as "NOT YET", `jump_refusal()`). The gate path in `JumpEvent` checks `can_jump()` too |
+
+Locking a ship never strands a run: `ShipCatalog` still lists it, so a save
+flying it, the AutoPilot's `--ship` and the Scenario Lab still fly it.
+
+---
+
 ## Codex
 
 The main menu's CODEX button opens `CodexPopup`
@@ -1185,6 +1205,8 @@ back to `die_fighter`.
 | `hand_may_be_kept` | `Player`: End Turn lights with dice in hand during a fight (no ship sets it now; End Turn also lights when no die in hand has a tile to go to, which only a ship without an Engine Charger tile can hit) |
 | `signature_tiles` | `RewardManager.get_possible_tile_rewards()` (salvage and the shop): offered only while this ship is flown, on top of the shared pool; they stay `offered_as_reward = false` and each has an upgrade. `CodexCatalog` lists them like offered tiles |
 | `supports_tutorial` | `TutorialManager`: the tutorial is written for the default grid |
+| `coming_soon` | Ship select: greyed out, "Coming soon…", never pickable (no ship sets it now) |
+| `starts_locked`, `unlock_hint`, `unlock_scenario`, `unlock_sector` | Ship Unlocks (below): not pickable until earned; the card shows the hint; the encounter that earns it is dealt into that sector |
 | `cockpit_scene` | `CockpitMount` (main.tscn, `Graphics/Cockpit`): mounts the ship's `Cockpit` scene, or the default `cockpit_ambience.tscn` |
 | `cockpit_palette` | `Cockpit`: recolours the default shell (when the cockpit has no `walls_texture`) and the instruments' frames (`cockpit_surface` sprites) once at load |
 | `cutscene_frames`, `cutscene_exhaust_points`, `preview_texture`, `theme_color` | Opening cutscene, ship-select card |
@@ -1506,10 +1528,22 @@ runner, "Bless you, pilot. Stay close.").
   state's deeds speak for it. The Reckoning never spawns it (it is already
   a Saved Ship tile from its `REMEMBER_SHIP`); `_place_ally` floats the
   delivered or lost line over that tile.
+- **To the gate** (`EscortResource.rides_to_gate`, the Outrigger courier,
+  `EVENT_Shipwright`). Its count never sends it home. The `combat_finished`
+  of a gate fight (`sector_gate_scenario`) with it alive makes it `FAREWELL`
+  there and then, earns its `unlocks_ship` and holds the jump
+  (`Map.hold_jumps`); 1.6 s later it says goodbye from `ESCORT_SLOT` (clear
+  of the bounty): each `farewell_lead_in` state in turn, each held until its
+  line has typed out plus 1.5 s, then the farewell state. Once it has gone
+  the ship-unlock card shows (Ship Unlocks), and Close releases the jump. A
+  gate escort signing on while another rides sends that one off early,
+  paid, where it is.
 - **Saves.** `get_state()` rides every checkpoint (`escort_state`: terms,
   phase, fights left, hull read off the live ship). A Continue mid-fight
   replays it from the arrival with the hull it arrived with; one into the
-  farewell's arrival replays the goodbye and pays once.
+  farewell's arrival replays the goodbye and pays once. A gate escort is
+  `FAREWELL` in the after-combat checkpoint, so a Continue at the open gate
+  replays its goodbye and the card.
 
 ---
 

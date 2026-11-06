@@ -18,6 +18,21 @@ extends Resource
 ## fly it.
 @export var coming_soon: bool = false
 
+@export_category("Unlock")
+## Not flyable until the player earns it (ShipUnlocks): its card shows greyed
+## out with [member unlock_hint] for a pitch. Unlocked for good once earned,
+## in any run (CollectionManager).
+@export var starts_locked: bool = false
+## What the locked card says instead of its pitch: a rumour pointing at the
+## way to earn it. A translation key (translations.csv).
+@export var unlock_hint: String = ""
+## Met once per run, in sector [member unlock_sector] (0 is the first), while
+## the ship is still locked: the encounter that can earn it. Placed on an
+## ordinary stop ahead of the arrival (SectorGenerator). Null for a ship
+## earned some other way.
+@export var unlock_scenario: ScenarioResource
+@export_range(0, 2) var unlock_sector: int = 1
+
 @export_category("Run Start")
 ## Hull, dice, credits and starting tiles for a new run. Every tile position
 ## must be one of the grid's cells.

@@ -17,6 +17,21 @@ The run that first learns the secret now ends on a cutscene instead of the gate 
 
 ---
 
+## 2026-11-05 — The Outrigger is earned: the Shipwright's escort
+
+The Outrigger now starts locked. Earn it by getting an Outrigger courier through the Arc Dynamo; it's kept for good after that (`ShipUnlocks`, `CollectionManager` `ships`).
+
+- **The card.** Locked, it's greyed out with a rumour for a pitch: *"Rumour: a Caravan courier wants out of the Belly, past the Arc Dynamo."* (`ShipResource.starts_locked`, `unlock_hint`).
+- **The encounter.** `EVENT_Shipwright`, dealt onto an ordinary stop of every sector 2 while the Outrigger is locked, in the player's own runs only (`unlock_scenario`, `unlock_sector`, placed by `SectorGenerator` from its own seed). *"Chancellor cut us loose. Escort me?"* Take the down payment and the courier rides along (`outrigger_courier.tres`: 26 hull, Shield 5-8, Raid 4-6). Shoot it and it flees: Ruin, `caravan_betrayed`.
+- **The gate.** When the Arc Dynamo falls with the courier alive, the jump is held (`Map.hold_jumps`) and, from its slot: *"It waited for one ship after all."*, *"Sending you her drive plans."*, *"Build one. Leave nobody behind."* It jumps away (+2 Caravan) and the ship-unlock card shows about 14 s after the killing blow.
+- **The card.** `ShipUnlockPopup`: a white flash, glitch, shake and ring as the hull lands, a spark burst, gold light rays turning behind it on the 320x180 grid, sparks rising off it, then name, pitch and *"Pick it at ship select on your next run."* The green Close pops in a second later; closing it frees the gate.
+- **Escorts** gained `rides_to_gate`, `farewell_lead_in` and `unlocks_ship`. A gate escort takes the slot from a Mayday runner still riding, which says goodbye early and is paid.
+- **Fix:** the jump through an open gate (`JumpEvent`) skipped `Map.can_jump()`.
+- Unlock All in the options also unlocks ships. The Carousel stays open to everyone for now.
+- Checked live in the Scenario Lab: the locked card, the hail and sign-on, the Mayday hand-over, the gate goodbye with jumps refused throughout, the card landing frame by frame, and Close freeing the gate. Core suite 980/980, plus a reload test for earned ships.
+
+---
+
 ## 2026-11-05 — The Mayday rides along
 
 Help the Mayday and its runner no longer vanishes at the jump: it rides along as the player's escort (`EscortKeeper`, `EscortResource` on `mayday_grateful.tres`).

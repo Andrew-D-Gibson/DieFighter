@@ -132,6 +132,20 @@ func generate(save: GameSaveResource) -> void:
 		consequence_placement_seed
 	)
 
+	# The encounters that can earn a locked ship (ShipUnlocks), one each,
+	# from a generator of their own: a run with nothing left to earn deals
+	# the map its seed always did. A reckoning placed above isn't in
+	# replaceable, so it stays.
+	var unlocks: Array[ScenarioResource] = ShipUnlocks.scenarios_for_sector(save.sector_index)
+	place_consequences(
+		scenarios,
+		arrival_index,
+		replaceable,
+		unlocks,
+		unlocks.size(),
+		hash([repair_placement_seed, "ship_unlock"])
+	)
+
 	save.sector_scenarios = scenarios
 	save.current_scenario_index = arrival_index
 	save.arrival_index = arrival_index
