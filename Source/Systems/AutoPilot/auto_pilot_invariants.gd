@@ -121,7 +121,9 @@ func check_board() -> Array[Dictionary]:
 	var held: int = real_dice_held()
 	if held > owned:
 		broken.append(_violation("dice_duplicated", "owns %d dice, holds %d" % [owned, held]))
-	if owned < 1:
+	# The Reckoning lets the last die go (Player.fleet_floor 0): on a full
+	# bank the player flies on with none.
+	if owned < player.fleet_floor:
 		broken.append(_violation("no_dice_owned", "the Fleet owns %d dice" % owned))
 
 	if player.health.health > player.health.max_health:

@@ -6,36 +6,27 @@
 [ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="4_ciu0f"]
 [ext_resource type="Script" uid="uid://bswc2s0i6pxtx" path="res://Source/Content/FateDie/fate_face_resource.gd" id="5_xn1ym"]
 
-[sub_resource type="Resource" id="Resource_2o75p"]
-script = ExtResource("2_m80pi")
-subtype = 1
-
 [sub_resource type="Resource" id="Resource_m80pi"]
 script = ExtResource("2_m80pi")
 category = 2
 amount = 5
-text_token = &"heal"
-
-[sub_resource type="Resource" id="Resource_e7qjy"]
-script = ExtResource("2_m80pi")
-category = 1
-subtype = 1
+text_token = &"mend"
 
 [sub_resource type="Resource" id="Resource_ciu0f"]
 script = ExtResource("2_m80pi")
 category = 6
-subtype = 15
+subtype = 17
 
 [sub_resource type="Resource" id="Resource_xn1ym"]
 script = ExtResource("4_ciu0f")
-effects = Array[ExtResource("2_m80pi")]([SubResource("Resource_2o75p"), SubResource("Resource_m80pi"), SubResource("Resource_e7qjy"), SubResource("Resource_ciu0f")])
+effects = Array[ExtResource("2_m80pi")]([SubResource("Resource_m80pi"), SubResource("Resource_ciu0f")])
 
 [resource]
 script = ExtResource("5_xn1ym")
 face = 1
 face_name = "Mercy"
 carved_by = "Saving a ship in trouble, paying the medic, sparing one that runs."
-reckoning_text = "Heal [color=green]{heal} hull[/color]. A ship you saved flies in to help."
+reckoning_text = "The next ship you saved jumps in. One already with you is healed [color=green]{mend} hull[/color] and gains [color=blue]{mend} shields[/color]."
 color = Color(0.47843137, 0.7411765, 0.2, 1)
 glyph = ExtResource("1_2o75p")
 reckoning_chain = SubResource("Resource_xn1ym")

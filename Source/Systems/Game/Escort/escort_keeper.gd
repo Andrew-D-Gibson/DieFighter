@@ -20,8 +20,9 @@ extends Node
 ## falls with it alive, and shows the ship-unlock card once it has gone.
 ##
 ## Saved with the run at every checkpoint (GameSaveResource.escort_state).
-## Never spawned in the Reckoning, where it is already one of the Saved Ship
-## tiles: the same ship mustn't count twice.
+## Never spawned in the Reckoning, where it already flies as one of the saved
+## ships its REMEMBER_SHIP queued (ReckoningAllyWing): the same ship mustn't
+## count twice.
 
 enum Phase {
 	## No escort.
@@ -145,7 +146,7 @@ func _on_load_scenario(_scenario: ScenarioResource) -> void:
 		return
 	if phase not in [Phase.RIDING, Phase.FAREWELL]:
 		return
-	# The Reckoning already has it, as a Saved Ship tile.
+	# The Reckoning already has it, among the saved ships it replays.
 	if Globals.fate_ledger and Globals.fate_ledger.in_reckoning:
 		return
 	_ship = Globals.enemy_manager.spawn_escort(escort.ship_resource, escort.escort_state, hull)

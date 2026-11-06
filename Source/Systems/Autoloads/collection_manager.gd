@@ -47,7 +47,9 @@ var _families: Dictionary[String, String] = {}
 var _ships: Dictionary[String, bool] = {}
 ## What the player knows of Fate across runs (LORE.md §6, §8):
 ##   knowledge — true once they have beaten the last boss and heard the secret
-##   escapes / falls — how often the Reckoning has ended each way
+##   alone, convoy, last_die, become_fate, fell_in — how often the Reckoning
+##            has ended each way (ReckoningEnding.ending_id()). "escapes" and
+##            "falls" are the first Reckoning's, kept from old files
 ##   fallen — ships lost to the hole: {"ship": ship id, "tile": a tile id they
 ##            carried}, newest last, so a later run can meet them as Spilled
 var _fate: Dictionary = {}
@@ -187,17 +189,19 @@ func forget_fate_knowledge() -> void:
 	_queue_write()
 
 
-## How often the Reckoning has ended as [param kind] ("escapes", "falls").
+## How often the Reckoning has ended as [param kind], an ending id such as
+## "become_fate".
 func fate_endings(kind: String) -> int:
 	return int(_fate.get(kind, 0))
 
 
-## The Reckoning ended: [param kind] "escaped" or "fell_in". A fall keeps the
-## ship and [param tile_id], one tile it carried, for a later run's Spilled.
+## The Reckoning ended as [param kind], a ReckoningEnding.ending_id(). A fall
+## ("fell_in") keeps the ship and [param tile_id], one tile it carried, for a
+## later run's Spilled.
 func record_fate_ending(kind: StringName, ship_id: String = "", tile_id: String = "") -> void:
 	if not is_recording():
 		return
-	var key: String = "escapes" if kind == &"escaped" else "falls"
+	var key: String = String(kind)
 	_fate[key] = fate_endings(key) + 1
 	if kind == &"fell_in" and not ship_id.is_empty():
 		var fallen: Array = _fate.get("fallen", [])

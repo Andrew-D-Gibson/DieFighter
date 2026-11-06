@@ -13,6 +13,17 @@ const _REDLINE_TINT: Color = Color(1.0, 0.45, 0.45)
 ## drive over, and the ending cutscene's engines burn with it.
 const DRIVE_COLOR: Color = Color("#eed35d")
 const _DRIVE_RINGS: Texture2D = preload("res://Assets/Textures/Enemies/ParticleTextures/engine_ring_large_drive.png")
+## The flat purple the bar's fill and charged light are drawn in.
+const _FILL_PURPLE: Color = Color("#c552f1")
+## Multiplies that purple into the drive's gold, channel by channel: the
+## Reckoning's bar is the escape, worn in the Vanguard Drive's colour
+## (RECKONING_ENDINGS.md §1) without a second set of art.
+const _GOLD_TINT: Color = Color(
+	DRIVE_COLOR.r / _FILL_PURPLE.r, DRIVE_COLOR.g / _FILL_PURPLE.g, DRIVE_COLOR.b / _FILL_PURPLE.b)
+
+## What the fill and the charged light are multiplied by: white normally,
+## _GOLD_TINT for the Reckoning.
+var _dress: Color = Color.WHITE
 
 ## The fill level the bar is currently animating towards. Tracked separately
 ## from progress_bar.value because several charge changes can land in the same
@@ -71,6 +82,26 @@ func _install_drive(announce: bool) -> void:
 	if rings:
 		rings.texture = _DRIVE_RINGS
 	if announce:
+		TileUpgradeLook.burst_in(tile, DRIVE_COLOR)
+		Juice.callout(tile, tr(&"CALLOUT_VANGUARD_DRIVE"), DRIVE_COLOR, true)
+
+
+## The Reckoning's dress (RECKONING_ENDINGS.md §1): the bar fills gold, as
+## the escape. [param on] false puts the purple back.
+func set_escape_dress(on: bool) -> void:
+	_dress = _GOLD_TINT if on else Color.WHITE
+	progress_bar.tint_progress = _dress
+	_update_ui()
+
+
+## The bank just filled: the gauge flares gold and the drive calls out on the
+## last point (RECKONING_ENDINGS.md §6.1).
+func flare_full() -> void:
+	var tile: Tile = get_node_or_null(^"EngineChargerTile") as Tile
+	var at: Vector2 = get_juice_anchor()
+	Juice.sparkle(self, at, DRIVE_COLOR, 16, 40.0, true)
+	Juice.ring(self, at, DRIVE_COLOR, 28.0, 0.45, 3.0)
+	if tile:
 		TileUpgradeLook.burst_in(tile, DRIVE_COLOR)
 		Juice.callout(tile, tr(&"CALLOUT_VANGUARD_DRIVE"), DRIVE_COLOR, true)
 
@@ -174,11 +205,11 @@ func _update_ui() -> void:
 		# as reassurance and goes hot.
 		charged_indicator.modulate = (
 			_REDLINE_TINT if Globals.player.is_overcharged() else Color.WHITE
-		)
+		) * _dress
 	else:
 		fill_head.visible = true
 		charged_indicator.visible = false
-		charged_indicator.modulate = Color.WHITE
+		charged_indicator.modulate = _dress
 		
 	# The readout is only about five characters wide, so the redline can't just
 	# be appended to "10/10" — it clips. Past the gate the denominator carries

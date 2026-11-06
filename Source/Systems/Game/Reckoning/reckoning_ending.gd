@@ -43,6 +43,9 @@ var first_saved: String = ""
 var last_die_holder: String = ""
 ## Dice the player still held when it ended.
 var dice_left: int = 0
+## The faces of the player's Fate's Die (FateDie.Face values), slot by slot,
+## for a film that shows their own die.
+var die_faces: Array[int] = []
 
 
 ## The id Events.fate_ending, GameOver and CollectionManager know this by.
@@ -76,6 +79,10 @@ static func preview(preview_kind: Kind, preview_perfect: bool = false) -> Reckon
 	if is_instance_valid(Globals.state_manager) and Globals.state_manager.current_game_save:
 		ending.ship_id = StringName(Globals.state_manager.current_game_save.ship_id)
 	ending.first_saved = "mayday_runner"
+	for face: FateDie.Face in FateDie.carvable_faces():
+		ending.die_faces.append(face)
+	if is_instance_valid(Globals.fate_ledger) and Globals.fate_ledger.has_die:
+		ending.die_faces.assign(Globals.fate_ledger.die.faces)
 	match preview_kind:
 		Kind.ALONE:
 			ending.left_behind = ["hauler"]

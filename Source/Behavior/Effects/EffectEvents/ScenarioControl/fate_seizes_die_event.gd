@@ -13,7 +13,8 @@ func resolve(_engine: ScenarioEngine) -> void:
 	if not is_instance_valid(Globals.player) or not Globals.enemy_manager:
 		return
 	var thieves: Array[Enemy] = []
-	for ship: Enemy in Globals.enemy_manager.get_alive_enemies():
+	# No Fate throw touches "You" (FateSelf).
+	for ship: Enemy in FateSelf.by_chance(Globals.enemy_manager.get_alive_enemies()):
 		if is_instance_valid(ship) and ship.is_hostile():
 			thieves.append(ship)
 	if thieves.is_empty():

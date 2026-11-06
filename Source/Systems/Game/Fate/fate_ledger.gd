@@ -2,17 +2,36 @@ class_name FateLedger
 extends Node
 ## The run's memory of what the player did, for Fate (LORE.md §5-§8): Fate's
 ## Die and its carvings, every ship the player destroyed (the Tally replays
-## them), the ships they saved (who comes back to help), and a count of deeds
-## that set hidden conditions (tithes paid or refused).
+## them), the ships they saved (who come back to help), a count of deeds that
+## set hidden conditions (tithes paid or refused), and the chances the run
+## missed to leave nobody behind (RECKONING_ENDINGS.md §5.1).
+##
+## Kills and allies carry the encounter they happened in, so the Reckoning can
+## replay the run one encounter at a time (ReckoningQueue).
 ##
 ## Saved with the run (GameSaveResource.fate_state) at every checkpoint. The
 ## knowledge that unlocks the secret fight outlives the run, and lives in
 ## CollectionManager instead.
 
-## How many of the most recent kills the Tally replays at most, besides the
-## very first kill, which always closes it (LORE.md §7).
+## How a save from before kills carried their encounter is replayed: the most
+## recent kills at most, in waves of this many, besides the very first kill,
+## which always closes it (LORE.md §7). ReckoningQueue falls back to it.
 const TALLY_MAX_WAVES: int = 6
 const TALLY_SHIPS_PER_WAVE: int = 3
+
+## The deeds that mean the player turned on someone who trusted them: a
+## missed chance to leave nobody behind (RECKONING_ENDINGS.md §5.1). Faction
+## deeds (FactionDeed.deed), recorded as a ship enters the state that stands
+## for them: the Mayday wronged, the medic, a civilian or hauler betrayed,
+## the black-market runner burned, a shop or repair dock attacked.
+const BETRAYAL_DEEDS: Array[StringName] = [
+	&"undertow_mayday_betrayed",
+	&"caravan_medic_betrayed",
+	&"caravan_betrayed",
+	&"undertow_runner_burned",
+	&"caravan_shop_attacked",
+	&"caravan_dock_attacked",
+]
 
 ## Deed ids recorded by RECORD_DEED steps. Free-form, but the ones code reads
 ## are named here.
@@ -20,7 +39,8 @@ const DEED_TITHE_PAID: String = "tithe_paid"
 const DEED_TITHE_REFUSED: String = "tithe_refused"
 
 ## What REMEMBER_SHIP files a ship under: a ship the player saved, who flies
-## into the Reckoning as an ally tile, or one they spared, who owes a Debt.
+## beside them in the Reckoning, or one they spared, who owes a Debt and pays
+## it with one strafing pass.
 const KIND_ALLY: String = "ally"
 const KIND_DEBT: String = "debt"
 
@@ -38,11 +58,23 @@ var die: FateDie = FateDie.new()
 ## old face each goes over (FateCarveChoice). Oldest first.
 var pending: Array[FateDie.Face] = []
 ## Every ship the player destroyed, in order: {"enemy": id, "faction": the
-## FactionIdentity's file id, "sector": int}. Mounted boss parts are left out.
+## FactionIdentity's file id, "sector": int, "encounter": int}, plus
+## "civilian": true for one that died on the civilian side. Mounted boss
+## parts are left out. A save from before encounters were kept has entries
+## without "encounter".
 var kills: Array[Dictionary] = []
-## Ships saved or spared, in order: {"enemy": id, "kind": KIND_*}, and for
-## one that rode along as the escort, "escort": ESCORT_*.
+## Ships saved or spared, in order: {"enemy": id, "kind": KIND_*,
+## "encounter": int}, and for one that rode along as the escort, "escort":
+## ESCORT_*.
 var allies: Array[Dictionary] = []
+## The run's missed chances to leave nobody behind, oldest first:
+## {"enemy": id or "", "reason": ReckoningEnding.MISSED_*, "encounter": int}.
+var missed: Array[Dictionary] = []
+## Encounters entered this run, counting the one the player is in. Kills and
+## allies are filed under it. A Continue from an arrival checkpoint enters the
+## same encounter again and counts it twice; only the order matters, so the
+## gap is harmless.
+var encounter_index: int = 0
 ## Deed id -> how many times.
 var deeds: Dictionary[String, int] = {}
 ## Sectors in which flying into Fate has already carved Hunger, so camping a
@@ -70,6 +102,9 @@ const _FALLEN_TINT: Color = Color("#c552f1")
 
 var _fallen_ship: Enemy = null
 var _fallen_entry: Dictionary = {}
+## Ships whose betrayal is already a missed chance, so killing them afterwards
+## doesn't count it twice. Instance ids; this encounter's ships only.
+var _betrayed_ships: Dictionary[int, bool] = {}
 
 
 func _ready() -> void:
@@ -79,6 +114,7 @@ func _ready() -> void:
 	Events.start_scenario.connect(_on_start_scenario)
 	# After EnemyManager's own listener, so the scenario's ships are in.
 	Events.load_scenario.connect(_raise_the_fallen)
+	Events.ship_deeds_done.connect(_on_ship_deeds_done)
 
 
 # ── The drive ────────────────────────────────────────────────────────────────
@@ -158,7 +194,7 @@ func remember_ship(ship: Enemy, kind: String) -> void:
 	var id: String = _enemy_id(ship)
 	if id.is_empty():
 		return
-	allies.append({"enemy": id, "kind": kind})
+	allies.append({"enemy": id, "kind": kind, "encounter": encounter_index})
 
 
 ## The escort remembered as [param enemy_id] made it home, or didn't
@@ -172,6 +208,8 @@ func record_escort_outcome(enemy_id: String, outcome: String) -> void:
 		var entry: Dictionary = allies[i]
 		if entry.get("enemy", "") == enemy_id and entry.get("kind", "") == KIND_ALLY and not entry.has("escort"):
 			entry["escort"] = outcome
+			if outcome == ESCORT_LOST:
+				_miss(enemy_id, ReckoningEnding.MISSED_ESCORT_LOST)
 			return
 
 
@@ -202,9 +240,10 @@ func fate_route_open() -> bool:
 
 # ── The Tally ────────────────────────────────────────────────────────────────
 
-## The Reckoning's waves: the player's kills played backwards, most recent
-## first, with the very first kill always on its own as the last wave. Long
-## runs keep only the most recent kills (see TALLY_MAX_WAVES). [param skip]
+## The Tally of a save from before kills carried their encounter
+## (ReckoningQueue's fallback): the player's kills played backwards, most
+## recent first, with the very first kill always on its own as the last wave.
+## Long runs keep only the most recent kills (see TALLY_MAX_WAVES). [param skip]
 ## drops kills of those faction ids (the Rearguard, for a player who never
 ## paid their tithe). Each wave is a list of enemy ids.
 static func tally_waves(kill_log: Array[Dictionary], skip: Array[String] = [],
@@ -235,6 +274,8 @@ static func tally_waves(kill_log: Array[Dictionary], skip: Array[String] = [],
 func _on_enemy_destroyed(ship: Enemy) -> void:
 	if ship == _fallen_ship and is_instance_valid(ship):
 		_salvage_the_fallen()
+	# A civilian a pirate shot down is never recorded: the kill wasn't the
+	# player's (was_killed_by_ship), and nothing else notes it.
 	if in_reckoning or not is_instance_valid(ship) or ship.was_killed_by_ship() or ship.is_mounted:
 		return
 	var id: String = _enemy_id(ship)
@@ -246,7 +287,29 @@ func _on_enemy_destroyed(ship: Enemy) -> void:
 	var sector: int = 0
 	if Globals.state_manager and Globals.state_manager.current_game_save:
 		sector = Globals.state_manager.current_game_save.sector_index
-	kills.append({"enemy": id, "faction": faction_id, "sector": sector})
+	var kill: Dictionary = {"enemy": id, "faction": faction_id, "sector": sector, "encounter": encounter_index}
+	# The side it died on, not who built it: a Caravan shop turned on is
+	# still a civilian, a pirate escorting one isn't.
+	if ship.scenario_state and ship.scenario_state.faction == ScenarioManager.Faction.CIVILIAN:
+		kill["civilian"] = true
+		if not _betrayed_ships.has(ship.get_instance_id()):
+			_miss(id, ReckoningEnding.MISSED_KILLED)
+	kills.append(kill)
+
+
+## A ship entered a state whose deeds turn on someone who trusted the player.
+func _on_ship_deeds_done(ship: Enemy, deeds_done: Array[FactionDeed]) -> void:
+	if in_reckoning or not is_instance_valid(ship):
+		return
+	for deed: FactionDeed in deeds_done:
+		if deed and deed.deed in BETRAYAL_DEEDS:
+			_betrayed_ships[ship.get_instance_id()] = true
+			_miss(_enemy_id(ship), ReckoningEnding.MISSED_BETRAYED)
+			return
+
+
+func _miss(enemy_id: String, reason: String) -> void:
+	missed.append({"enemy": enemy_id, "reason": reason, "encounter": encounter_index})
 
 
 ## Flying into one of Fate's tiles rather than away carves Hunger, once a
@@ -257,6 +320,8 @@ func _on_start_scenario() -> void:
 		return
 	if not Globals.state_manager.get_restore().is_empty():
 		return
+	encounter_index += 1
+	_betrayed_ships.clear()
 	var scenario: ScenarioResource = Globals.map.scenario_list[Globals.map.current_scenario_index]
 	if not Globals.map.is_fate_scenario(scenario):
 		return
@@ -366,6 +431,8 @@ func get_state() -> Dictionary:
 		"pending": pending_ids,
 		"kills": kills.duplicate(true),
 		"allies": allies.duplicate(true),
+		"missed": missed.duplicate(true),
+		"encounter_index": encounter_index,
 		"deeds": deeds.duplicate(),
 		"hunger_sectors": _hunger_sectors.duplicate(),
 		"in_reckoning": in_reckoning,
@@ -386,21 +453,40 @@ func load_state(state: Dictionary) -> void:
 		var face: int = FateDie.face_from_id(str(id))
 		if face > 0:
 			pending.append(face as FateDie.Face)
+	# An entry from before encounters were kept loads without one, and the
+	# Reckoning replays such a run the old way (ReckoningQueue).
 	kills.clear()
 	for entry: Variant in state.get("kills", []):
 		if entry is Dictionary:
-			kills.append({
+			var kill: Dictionary = {
 				"enemy": str(entry.get("enemy", "")),
 				"faction": str(entry.get("faction", "")),
 				"sector": int(entry.get("sector", 0)),
-			})
+			}
+			if entry.has("encounter"):
+				kill["encounter"] = int(entry["encounter"])
+			if bool(entry.get("civilian", false)):
+				kill["civilian"] = true
+			kills.append(kill)
 	allies.clear()
 	for entry: Variant in state.get("allies", []):
 		if entry is Dictionary:
 			var ally: Dictionary = {"enemy": str(entry.get("enemy", "")), "kind": str(entry.get("kind", KIND_ALLY))}
+			if entry.has("encounter"):
+				ally["encounter"] = int(entry["encounter"])
 			if entry.has("escort"):
 				ally["escort"] = str(entry["escort"])
 			allies.append(ally)
+	missed.clear()
+	for entry: Variant in state.get("missed", []):
+		if entry is Dictionary:
+			missed.append({
+				"enemy": str(entry.get("enemy", "")),
+				"reason": str(entry.get("reason", ReckoningEnding.MISSED_KILLED)),
+				"encounter": int(entry.get("encounter", 0)),
+			})
+	encounter_index = int(state.get("encounter_index", 0))
+	_betrayed_ships.clear()
 	deeds.clear()
 	var saved_deeds: Variant = state.get("deeds", {})
 	if saved_deeds is Dictionary:

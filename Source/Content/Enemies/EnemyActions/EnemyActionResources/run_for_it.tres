@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="EnemyActionResource" format=3]
+
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="ext_1"]
+[ext_resource type="Resource" uid="uid://dxxivytqlv64p" path="res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres" id="ext_2"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="ext_3"]
+[ext_resource type="Script" uid="uid://bb27rg8tmmvk0" path="res://Source/Content/Enemies/EnemyActions/EnemyActionResources/enemy_action_resource.gd" id="ext_4"]
+[ext_resource type="Texture2D" uid="uid://cr12q5kdw41nw" path="res://Assets/Textures/Enemies/IntentIndicator/getaway.png" id="ext_5"]
+[ext_resource type="Texture2D" uid="uid://c3gskol8ifxgl" path="res://Assets/Textures/Enemies/IntentIndicator/getaway_info.png" id="ext_6"]
+
+[sub_resource type="Resource" id="Resource_step0"]
+script = ExtResource("ext_1")
+subtype = 11
+
+[sub_resource type="Resource" id="Resource_step1"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 5
+sound_resource = ExtResource("ext_2")
+
+[sub_resource type="Resource" id="Resource_step2"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 16
+callout = "RUN FOR IT!"
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_step3"]
+script = ExtResource("ext_1")
+category = 4
+subtype = 14
+amount = 14
+color = Color(0.47843137, 0.7411765, 0.2, 1)
+
+[sub_resource type="Resource" id="Resource_step4"]
+script = ExtResource("ext_1")
+category = 6
+subtype = 5
+string_param = "spent_only"
+
+[sub_resource type="Resource" id="Resource_chain"]
+script = ExtResource("ext_3")
+effects = Array[ExtResource("ext_1")]([SubResource("Resource_step0"), SubResource("Resource_step1"), SubResource("Resource_step2"), SubResource("Resource_step3"), SubResource("Resource_step4")])
+
+[resource]
+script = ExtResource("ext_4")
+name = "Run for It"
+description = "Jump out carrying the die. [color=green]It leaves your Fleet[/color] for good"
+indicator_texture = ExtResource("ext_5")
+info_texture = ExtResource("ext_6")
+effect_chain = SubResource("Resource_chain")

@@ -40,6 +40,10 @@ var is_temporary: bool = false
 ## Stops a combat jump without preventing the drive from gaining charge.
 var prevents_fleeing: bool = false
 
+## Takes the drive's evasion away while in play: every enemy hit lands
+## (EvasionModifier.chance_percent() reads 0).
+var prevents_evasion: bool = false
+
 var _visual: Node2D = null  # tracks the live instance for cleanup
 
 

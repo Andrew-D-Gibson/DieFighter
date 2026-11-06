@@ -18,7 +18,7 @@ extends RefCounted
 ##     "loadouts": {
 ##       "starter": {"tiles": {"0,1": "damage", "1,1": "bump", "2,1": "shield"}},
 ##       "tanky": {"tiles": {...}, "dice": 4, "hull": 40, "max_hull": 40,
-##                 "money": 0, "charge": 0}
+##                 "money": 0, "charge": 0, "fate": {FateLedger.get_state()}}
 ##     }
 ##   }
 ## Scenario and tile ids are ContentRegistry's: the .tres file's base name.
@@ -94,6 +94,10 @@ func build_save() -> GameSaveResource:
 		tiles = start.tile_locations.duplicate()
 	game_save.tile_locations = tiles
 	game_save.unlocked_cells = start.unlocked_cells.duplicate()
+	# A run's memory for Fate (FateLedger.get_state()), so the Reckoning can
+	# be played with a Tally and saved ships to replay.
+	if _loadout.get("fate") is Dictionary:
+		game_save.fate_state = (_loadout["fate"] as Dictionary).duplicate(true)
 	return game_save
 
 

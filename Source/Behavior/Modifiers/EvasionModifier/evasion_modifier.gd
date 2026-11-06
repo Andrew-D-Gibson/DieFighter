@@ -49,9 +49,21 @@ static func find(engine: ScenarioEngine) -> EvasionModifier:
 	return null
 
 
-## The chance, in percent, that the next enemy hit on the player misses.
+## The chance, in percent, that the next enemy hit on the player misses. 0
+## while a rule takes evasion away (Modifier.prevents_evasion).
 func chance_percent() -> int:
+	if _evasion_prevented():
+		return 0
 	return clampi(_charge_percent() + bonus, 0, MAX_PERCENT)
+
+
+func _evasion_prevented() -> bool:
+	if _engine == null:
+		return false
+	for mod: Modifier in _engine.modifiers:
+		if mod.prevents_evasion:
+			return true
+	return false
 
 
 ## Adds [param percent] points of evasion until the enemy turn ends.

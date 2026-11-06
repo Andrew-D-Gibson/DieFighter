@@ -10,7 +10,8 @@ extends EffectHandler
 
 func apply(_data: EffectData, context: EffectContext, _engine: ScenarioEngine) -> void:
 	var others: Array[Enemy] = []
-	for enemy: Enemy in Globals.enemy_manager.get_alive_enemies():
+	# "You" is never picked by chance (FateSelf).
+	for enemy: Enemy in FateSelf.by_chance(Globals.enemy_manager.get_alive_enemies()):
 		if enemy != context.actor:
 			others.append(enemy)
 
