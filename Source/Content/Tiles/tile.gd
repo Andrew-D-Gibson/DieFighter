@@ -415,6 +415,15 @@ func activation_refusal(activator_die: Dice = null, engine: ScenarioEngine = nul
 		if not check.criteria_satisfied(activator_die, self):
 			return check.get_criteria_fail_text()
 
+	# A die queued while its target was a hostile ship shouldn't hit the ally
+	# the computer moved onto when that ship died (an escort, a civilian). The
+	# refusal hands the die back to the hand. A die tied to a living ship, and
+	# an activation with no die, are untouched.
+	if activator_die != null and tile_resource.hits_targeted_ship() \
+			and is_instance_valid(Globals.targeting_computer) \
+			and Globals.targeting_computer.fell_back_onto_non_hostile(activator_die):
+		return tr("ERROR_TARGET_NOT_HOSTILE")
+
 	return ""
 	
 

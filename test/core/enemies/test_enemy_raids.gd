@@ -92,7 +92,7 @@ func test_a_ship_that_owes_a_hand_off_always_rolls_one() -> void:
 	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
 	var pirate := _ship(Faction.PIRATE)
 	var options: Array[EnemyActionOptionResource] = [
-		Ships.option(Ships.attack(), 1.0, 1, 1), Ships.option(load(RAID), 0.0, 1, 1),
+		Ships.option(Ships.idle(), 1.0, 1, 1), Ships.option(load(RAID), 0.0, 1, 1),
 	]
 	var pool := Ships.pool(options)
 	var situation := EnemyActionSituation.for_ship(civilian, Ships.roster([civilian, pirate]))
@@ -119,7 +119,7 @@ func test_a_ship_that_owes_nothing_rolls_as_it_always_did() -> void:
 	var civilian := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
 	var idle := _ship(Faction.PIRATE, Enemy.Attitude.NEUTRAL)
 	var options: Array[EnemyActionOptionResource] = [
-		Ships.option(Ships.attack(), 1.0, 1, 1), Ships.option(load(RAID), 0.0, 1, 1),
+		Ships.option(Ships.idle(), 1.0, 1, 1), Ships.option(load(RAID), 0.0, 1, 1),
 	]
 	var situation := EnemyActionSituation.for_ship(civilian, Ships.roster([civilian, idle]))
 	for run: int in range(20):
@@ -215,3 +215,20 @@ func test_the_event_reacts_to_a_raid() -> void:
 	assert_eq(raiding.resource_path, EVENT_DIR + "pirate_raiding.tres")
 	assert_eq(raiding.handle_scenario_event(ScenarioManager.ScenarioEvent.CIVILIANS_DEFEATED).resource_path,
 		EVENT_DIR + "pirate_satisfied.tres", "a pirate that made the kill doesn't thank the player for it")
+
+
+# ── Ships on the player's side never attack the player ─────────────────────────
+
+func test_a_ship_on_the_players_side_never_rolls_or_plays_an_attack_on_the_player() -> void:
+	var options: Array[EnemyActionOptionResource] = [Ships.option(Ships.attack()), Ships.option(Ships.idle())]
+	for attitude: Enemy.Attitude in [Enemy.Attitude.FRIENDLY, Enemy.Attitude.NEUTRAL]:
+		var ship := _ship(Faction.CIVILIAN, attitude)
+		var situation := EnemyActionSituation.for_ship(ship, Ships.roster([ship]))
+		for run: int in range(20):
+			RNGManager.seed_scenario(run)
+			for rolled: EnemyActionResource in EnemyActionSelector.roll(Ships.pool(options), situation):
+				assert_false(rolled.hurts_player(), "attitude %d rolled an attack" % attitude)
+	# A table rolled while it was hostile still can't fire once it has turned.
+	var turned := _ship(Faction.CIVILIAN, Enemy.Attitude.FRIENDLY)
+	assert_eq(Ships.attack().get_outcome(turned), EnemyActionResource.Outcome.BLOCKED)
+	assert_eq(Ships.attack().get_outcome(_ship(Faction.PIRATE)), EnemyActionResource.Outcome.ACTS)

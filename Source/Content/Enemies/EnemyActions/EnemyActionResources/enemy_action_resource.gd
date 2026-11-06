@@ -194,6 +194,11 @@ static func outcome_of(action: EnemyActionResource, ship: Enemy = null) -> Outco
 func get_outcome(ship: Enemy = null) -> Outcome:
 	if effect_chain == null:
 		return Outcome.IDLE
+	# A table rolled while the ship was hostile can outlive its attitude (a
+	# scenario turns it friendly mid-turn): the die then plays as a blocked
+	# slot instead of an attack on the player.
+	if is_instance_valid(ship) and EnemyActionSituation.sides_with_player(ship) and hurts_player():
+		return Outcome.BLOCKED
 	var tally: Dictionary[StringName, int] = {&"steps": 0, &"possible": 0}
 	_acting_ship = ship
 	_tally_outcome(effect_chain.effects, false, tally)
@@ -324,6 +329,71 @@ func _compute_binding() -> Binding:
 ## EnemyActionSituation.owes_hand_off.
 func hands_off_to_hostile() -> bool:
 	return get_relay() != Relay.NONE and get_binding() == Binding.HOSTILE_SHIP
+
+
+## Whether this action goes after the player: damage, a status, stolen hull,
+## money or charge on a target that includes the player, or any step on the
+## player's grid (a lockout, a jam). A ship that isn't fighting the player must
+## never roll or play one; see EnemyActionSelector._passes_gates() and
+## get_outcome(). Read off the chain, like get_threat(), so a new attack is
+## covered without anyone tagging it. Fleeing and keeping dice aren't attacks:
+## a civilian still runs.
+func hurts_player() -> bool:
+	if not _derived.has(&"hurts_player"):
+		_derived[&"hurts_player"] = 0 if effect_chain == null \
+			else int(_hurts_player(effect_chain.effects, false))
+	return bool(_derived[&"hurts_player"])
+
+
+## Targeting steps whose targets include the player.
+const _PLAYER_REACHING: Array[EffectEnums.TargetingSubtype] = [
+	EffectEnums.TargetingSubtype.TARGET_PLAYER,
+	EffectEnums.TargetingSubtype.TARGET_ALL_SHIPS,
+	EffectEnums.TargetingSubtype.TARGET_ALL_OTHER_SHIPS,
+	EffectEnums.TargetingSubtype.TARGET_RANDOM_SHIP,
+]
+
+## Attribute changes that hurt whoever they land on.
+const _HARMFUL_CHANGES: Array[EffectEnums.AttributeChangeSubtype] = [
+	EffectEnums.AttributeChangeSubtype.DAMAGE,
+	EffectEnums.AttributeChangeSubtype.ION_DAMAGE,
+	EffectEnums.AttributeChangeSubtype.STEAL_HULL,
+	EffectEnums.AttributeChangeSubtype.APPLY_STATUS,
+	EffectEnums.AttributeChangeSubtype.TRANSFER_STATUSES,
+	EffectEnums.AttributeChangeSubtype.STEAL_MONEY,
+	EffectEnums.AttributeChangeSubtype.SIPHON_ENGINE_CHARGE,
+]
+
+
+## Steps that disturb the player's grid, whatever they target.
+const _GRID_ATTACKS: Array[EffectEnums.TileControlSubtype] = [
+	EffectEnums.TileControlSubtype.LOCKOUT_TILE,
+	EffectEnums.TileControlSubtype.MOVE_TILE_WITH_OFFSET,
+	EffectEnums.TileControlSubtype.PUSH_TILE_IN_DIRECTION,
+	EffectEnums.TileControlSubtype.PULL_ROW_TILES_TO_COLUMN,
+	EffectEnums.TileControlSubtype.PUSH_TARGETED_TILES,
+]
+
+
+## [param aimed_at_player] is whether the targeting so far reaches the player.
+static func _hurts_player(effects: Array[EffectData], aimed_at_player: bool) -> bool:
+	for effect: EffectData in effects:
+		if effect == null:
+			continue
+		if effect is ConditionalEffectData:
+			var conditional: ConditionalEffectData = effect
+			if _hurts_player(conditional.if_true_effects, aimed_at_player) \
+					or _hurts_player(conditional.if_false_effects, aimed_at_player):
+				return true
+		elif effect.category == EffectEnums.Category.TARGETING:
+			aimed_at_player = effect.subtype in _PLAYER_REACHING
+		elif effect.category == EffectEnums.Category.TILE_CONTROL \
+				and effect.subtype in _GRID_ATTACKS:
+			return true
+		elif aimed_at_player and effect.category == EffectEnums.Category.ATTRIBUTE_CHANGE \
+				and effect.subtype in _HARMFUL_CHANGES:
+			return true
+	return false
 
 
 ## Whether this action helps another ship on its own side: repairs or

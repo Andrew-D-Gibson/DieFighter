@@ -26,6 +26,8 @@ func _enemy() -> Enemy:
 	enemy.health.max_health = 20
 	enemy.health.health = 20
 	enemy.scenario_state = ScenarioShipState.new()
+	# A foe: attack tiles refuse a die that would fall onto a ship on the player's side.
+	enemy.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
 	return enemy
 
 

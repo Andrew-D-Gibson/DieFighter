@@ -2949,7 +2949,9 @@ Source/
 
 `EffectData.multiply_shields` marks a shield multiplier explicitly. The shield
 handler snapshots each target separately and stamps `ShieldEvent.amplification_unit`
-with original shields × base factor. `EffectEvent.amplify()` stays additive by
-default; shield multiplier events override it so Amplify +1 changes 2× into 4×,
-and +2 into 6×. Fortress Protocol+ adds its flat five-shield bonus separately.
+with the target's original shields. `EffectEvent.amplify()` stays additive by
+default; shield multiplier events override it so each point of Amplify adds one
+to the factor: Amplify +1 changes 2× into 3×, and +2 into 4×. Fortress Protocol+
+adds its flat five-shield bonus separately. The info panel shows the resulting
+factor (`INFO_AMPLIFIED_MULTIPLIER_STEP`).
 Flat shield effects retain ordinary additive amplification.

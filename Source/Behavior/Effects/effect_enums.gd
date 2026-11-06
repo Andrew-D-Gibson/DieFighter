@@ -42,9 +42,9 @@ enum Category {
 
 # ── Targeting Subtypes ─────────────────────────────────────────────────────────
 enum TargetingSubtype {
-	TARGET_ENEMIES,                	## All living enemies
+	TARGET_ENEMIES,                	## All living hostile enemies (never allies or civilians)
 	TARGET_PLAYER,                 	## The player ship
-	TARGET_RANDOM_ENEMY,           	## One random living enemy
+	TARGET_RANDOM_ENEMY,           	## One random living hostile enemy
 	TARGET_ALL_SHIPS,              	## Player + all living enemies
 	TARGET_ALL_OTHER_SHIPS,        	## All ships except the actor
 	TARGET_RANDOM_SHIP,            	## One random ship (player or enemy)

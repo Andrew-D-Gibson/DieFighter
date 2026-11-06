@@ -177,6 +177,19 @@ func target_for(die: Node) -> Enemy:
 	return targeted_enemy if is_instance_valid(targeted_enemy) else null
 
 
+## Whether [param die] has lost the ship it was aimed at and would now land on
+## one that isn't fighting the player: the computer moved on to an ally or a
+## civilian when the hostile died. A die still aimed at a living ship never
+## swerves (target_for), so a ship the player picked on purpose is unaffected.
+## Aggressive tiles refuse such a die (Tile.activation_refusal) rather than
+## hit a friend the player never aimed at.
+func fell_back_onto_non_hostile(die: Node) -> bool:
+	if is_instance_valid(die) and die is Dice and is_instance_valid((die as Dice).aimed_at) \
+			and _still_in_fight((die as Dice).aimed_at):
+		return false
+	return is_instance_valid(targeted_enemy) and EnemyActionSituation.sides_with_player(targeted_enemy)
+
+
 func _still_in_fight(ship: Enemy) -> bool:
 	if ship.is_queued_for_deletion() or ship.health.health <= 0:
 		return false

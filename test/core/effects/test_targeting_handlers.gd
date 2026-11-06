@@ -37,3 +37,30 @@ func test_random_other_enemy_falls_back_to_a_lone_actor() -> void:
 	context.actor = medic
 	TargetRandomOtherEnemyHandler.new().apply(null, context, null)
 	assert_eq(context.targets, [medic] as Array[Node], "with nobody else alive it tends to itself")
+
+
+func test_every_enemy_and_random_enemy_leave_out_ships_that_are_not_hostile() -> void:
+	var manager: EnemyManager = autofree(EnemyManager.new())
+	var foe: Enemy = _enemy()
+	foe.scenario_state = ScenarioShipState.new()
+	foe.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
+	var ally: Enemy = _enemy()
+	ally.scenario_state = ScenarioShipState.new()
+	ally.scenario_state.attitude = Enemy.Attitude.FRIENDLY
+	var bystander: Enemy = _enemy()
+	bystander.scenario_state = ScenarioShipState.new()
+	bystander.scenario_state.attitude = Enemy.Attitude.NEUTRAL
+	manager.enemies = [ally, foe, bystander]
+	Globals.enemy_manager = manager
+
+	var context := EffectContext.new()
+	TargetEnemiesHandler.new().apply(null, context, null)
+	assert_eq(context.targets, [foe] as Array[Node])
+	for run: int in range(10):
+		RNGManager.seed_scenario(run)
+		TargetRandomEnemyHandler.new().apply(null, context, null)
+		assert_eq(context.targets, [foe] as Array[Node])
+
+	manager.enemies = [ally]
+	TargetRandomEnemyHandler.new().apply(null, context, null)
+	assert_eq(context.targets, [] as Array[Node], "an ally alone is no one to hit")

@@ -36,18 +36,18 @@ func _fortify(upgraded: bool, bonuses: Array[int]) -> void:
 	await event.resolve(engine)
 
 
-func test_fortress_doubles_normally_and_quadruples_when_amplified() -> void:
+func test_fortress_doubles_normally_and_triples_when_amplified_by_one() -> void:
 	await _fortify(false, [])
 	assert_eq(health.shields, 20)
 	health.shields = 10
 	engine.get("injected").clear()
 	await _fortify(false, [1])
-	assert_eq(health.shields, 40)
+	assert_eq(health.shields, 30, "Amplify +1 adds one to the x2: x3")
 
 
 func test_amplifiers_stack_on_the_multiplier_and_keep_the_upgrade_bonus_separate() -> void:
 	await _fortify(true, [1, 1])
-	assert_eq(health.shields, 65, "2x becomes 6x with total Amplify +2, then the upgrade adds 5")
+	assert_eq(health.shields, 45, "2x becomes 4x with total Amplify +2, then the upgrade adds 5")
 
 
 func test_flat_shield_gains_keep_flat_amplification() -> void:
@@ -72,8 +72,8 @@ func test_multiplier_grants_snapshot_each_targets_shields() -> void:
 	for event: EffectEvent in engine.get("injected"):
 		event.amplify(1)
 		await event.resolve(engine)
-	assert_eq(health.shields, 40)
-	assert_eq(other.health.shields, 20)
+	assert_eq(health.shields, 30)
+	assert_eq(other.health.shields, 15)
 
 
 func test_amplify_grows_a_marked_multiply_step_instead_of_the_product() -> void:

@@ -29,6 +29,8 @@ func before_each() -> void:
 	enemy = ENEMY_SCENE.instantiate()
 	enemy.enemy_resource = INTERCEPTOR
 	enemy.scenario_state = ScenarioShipState.new()
+	# A foe: attack tiles refuse a die that would fall onto a ship on the player's side.
+	enemy.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
 	add_child_autofree(enemy)
 	var computer: TargetingComputer = autofree(TargetingComputer.new())
 	computer.targeted_enemy = enemy

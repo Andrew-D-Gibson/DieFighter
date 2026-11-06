@@ -260,6 +260,8 @@ func test_counter_battery_plus_silences_the_face_on_every_enemy() -> void:
 	var second: Enemy = ENEMY_SCENE.instantiate()
 	second.enemy_resource = INTERCEPTOR
 	second.scenario_state = ScenarioShipState.new()
+	# "Every enemy" means hostile ships only.
+	second.scenario_state.attitude = Enemy.Attitude.AGGRESSIVE
 	# Brought in the way before_each() brings in the first: before there is a
 	# game state to scale its hull by.
 	var state: GameStateManager = Globals.state_manager

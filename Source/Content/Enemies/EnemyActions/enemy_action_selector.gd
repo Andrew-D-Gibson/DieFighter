@@ -306,6 +306,11 @@ static func _passes_gates(option: EnemyActionOptionResource, situation: EnemyAct
 	var action: EnemyActionResource = option.base_action
 	if not situation.intents_visible and not action.is_safe_while_hidden():
 		return false
+	# A ship that isn't fighting the player (a friendly escort, a grateful
+	# civilian, a neutral) never rolls an attack on them, whatever its pool
+	# lists: pools were authored for the ship's hostile life.
+	if situation.attitude != Enemy.Attitude.AGGRESSIVE and action.hurts_player():
+		return false
 	# An action that acts on another ship needs one there to bind to.
 	match action.get_binding():
 		EnemyActionResource.Binding.ALLY:
