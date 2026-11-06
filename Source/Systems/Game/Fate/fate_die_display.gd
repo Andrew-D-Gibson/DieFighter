@@ -11,6 +11,11 @@ extends Node2D
 ## at the start of every round: it shakes on its own and lands on the face
 ## that rules the round.
 ##
+## When the hole sends "You" (RECKONING_ENDINGS.md §4), the die tears itself
+## off the chain and goes to it (FateSelfPresentation, made here, runs the
+## rest). The broken chain hangs empty for the rest of that fight; the die is
+## back on it once the fight is over or reloaded.
+##
 ## Click it for every face it bears.
 
 ## The hook the chain hangs from, in screen pixels.
@@ -30,6 +35,18 @@ const _GRAVITY: float = 260.0
 const _DAMPING: float = 1.2
 const _IDLE_SWAY: float = 10.0
 const _HIT_KICK: float = 22.0
+## Leaving: how long it fights the chain, how hard, and how much of the chain
+## stays on the hook once it snaps.
+const _BREAK_RATTLE_SECONDS: float = 1.0
+const _BREAK_RATTLE: float = 95.0
+const _STUB_SHARE: float = 0.45
+## How long the die falls after the snap before it shatters.
+const _FALL_SECONDS: float = 0.14
+const _SNAP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/die_dead_click.tres")
+
+## Where the die is: on its chain, fighting it, falling free, or gone to
+## "You" (only the chain's stub left).
+enum Hold { HANGING, BREAKING, FALLING, GONE }
 
 var _angle: float = 0.15
 var _angular_velocity: float = 0.0
@@ -47,6 +64,13 @@ var _glow_color: Color = Color.WHITE
 ## How far down from its hook the die has come (0 hidden up in the canopy).
 var _drop: float = 0.0
 var _clickable: Clickable
+var _hold_state: Hold = Hold.HANGING
+## While breaking loose: 0 to 1, how violently it rattles.
+var _rattle: float = 0.0
+var _rattle_tween: Tween
+## How far the die has fallen since the chain snapped.
+var _fall: Vector2 = Vector2.ZERO
+var _fall_velocity: Vector2 = Vector2.ZERO
 
 
 func _ready() -> void:
@@ -68,6 +92,9 @@ func _ready() -> void:
 	Events.player_health_hit.connect(func() -> void: _kick(_HIT_KICK))
 	Events.player_shields_hit.connect(func() -> void: _kick(_HIT_KICK * 0.5))
 	Events.jump.connect(func() -> void: _kick(_HIT_KICK * 1.5))
+	var presentation: FateSelfPresentation = FateSelfPresentation.new()
+	presentation.display = self
+	add_child(presentation)
 	_refresh()
 
 
@@ -82,6 +109,64 @@ func _refresh() -> void:
 	queue_redraw()
 
 
+## Whether the die is on its chain (not gone to "You").
+func is_hanging() -> bool:
+	return _hold_state == Hold.HANGING and visible
+
+
+## The die fights its chain, the chain snaps and the die falls clear. Resolves
+## at the moment it should shatter; from then on only the chain's stub is
+## drawn, until restore().
+func break_loose() -> void:
+	if not is_hanging():
+		_hold_state = Hold.GONE
+		return
+	_hold_state = Hold.BREAKING
+	_tumble = _BREAK_RATTLE_SECONDS
+	_flare(Globals.purple)
+	Events.camera_shake_small.emit()
+	_rattle_tween = create_tween()
+	_rattle_tween.tween_property(self, "_rattle", 1.0, _BREAK_RATTLE_SECONDS * 0.8).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+	# The die's own throw rattle, faster and faster as it strains.
+	for i: int in 5:
+		get_tree().create_timer(_BREAK_RATTLE_SECONDS * (1.0 - pow(0.62, i + 1))).timeout.connect(
+			func() -> void: Events.play_sound.emit(_ROLL_SFX))
+	await get_tree().create_timer(_BREAK_RATTLE_SECONDS).timeout
+	if _hold_state != Hold.BREAKING:
+		return
+	_hold_state = Hold.FALLING
+	_rattle = 0.0
+	_fall = Vector2.ZERO
+	# Flung the way it was swinging, and down.
+	_fall_velocity = Vector2(cos(_angle), -sin(_angle)) * _angular_velocity * chain_length * 0.4 + Vector2(0, 30)
+	_angular_velocity *= 0.3
+	Events.play_sound.emit(_SNAP_SFX)
+	await get_tree().create_timer(_FALL_SECONDS).timeout
+	if _hold_state == Hold.FALLING:
+		_hold_state = Hold.GONE
+	queue_redraw()
+
+
+## Back on its chain, as it was: the fight "You" took it in is over.
+func restore() -> void:
+	if _hold_state == Hold.HANGING:
+		return
+	_hold_state = Hold.HANGING
+	if _rattle_tween and _rattle_tween.is_valid():
+		_rattle_tween.kill()
+	_rattle = 0.0
+	_fall = Vector2.ZERO
+	_tumble = 0.0
+	_refresh()
+
+
+## The die as it shows now, for its pieces when it shatters.
+func shown_texture() -> Texture2D:
+	var ledger: FateLedger = _ledger()
+	var face: FateDie.Face = _tumble_face if _tumble > 0.0 else (ledger.die.face_at(_shown_slot) if ledger else FateDie.Face.BLANK)
+	return FateDieArt.face_texture(face)
+
+
 func _process(delta: float) -> void:
 	if not visible:
 		return
@@ -93,6 +178,11 @@ func _process(delta: float) -> void:
 	if ledger and ledger.has_pending():
 		# Rattling for a choice.
 		accel += sin(_age * 40.0) * 30.0
+	if _rattle > 0.0:
+		accel += sin(_age * 57.0) * _BREAK_RATTLE * _rattle + sin(_age * 23.0) * _BREAK_RATTLE * 0.4 * _rattle
+	if _hold_state == Hold.FALLING:
+		_fall_velocity.y += _GRAVITY * delta
+		_fall += _fall_velocity * delta
 	_angular_velocity += accel * delta
 	_angular_velocity -= _angular_velocity * _DAMPING * delta
 	_angle = clampf(_angle + _angular_velocity * delta, -1.2, 1.2)
@@ -108,6 +198,8 @@ func _process(delta: float) -> void:
 		if _hold >= _FACE_HOLD:
 			_hold = 0.0
 			_turn_to_next_carved()
+	if _rattle > 0.0:
+		_glow = maxf(_glow, 0.5 + 0.5 * sin(_age * 30.0))
 	_glow = maxf(0.0, _glow - delta * 1.2)
 	_clickable.position = _die_centre() - global_position
 	queue_redraw()
@@ -128,9 +220,18 @@ func die_position() -> Vector2:
 	return _die_centre()
 
 
+## Where the die hangs at rest, straight down from the hook.
+func rest_position() -> Vector2:
+	return (anchor + Vector2(0, chain_length + FateDieArt.SIZE / 2.0)).round()
+
+
 func _die_centre() -> Vector2:
 	var length: float = chain_length * _drop
-	return (anchor + Vector2(sin(_angle), cos(_angle)) * length + Vector2(0, FateDieArt.SIZE / 2.0)).round()
+	var centre: Vector2 = anchor + Vector2(sin(_angle), cos(_angle)) * length + Vector2(0, FateDieArt.SIZE / 2.0) + _fall
+	if _rattle > 0.5:
+		# Straining at the hook: it can't hold still for a frame.
+		centre += Vector2(signf(sin(_age * 71.0)), signf(sin(_age * 53.0))) * (_rattle - 0.5) * 2.0
+	return centre.round()
 
 
 func _draw() -> void:
@@ -140,11 +241,14 @@ func _draw() -> void:
 	var local_anchor: Vector2 = anchor - global_position
 	var centre: Vector2 = _die_centre() - global_position
 	var top: Vector2 = centre - Vector2(0, FateDieArt.SIZE / 2.0)
-	# The chain, a pixel at a time so it stays crisp at any angle.
-	var steps: int = maxi(1, int(local_anchor.distance_to(top)))
-	for i: int in steps:
-		var p: Vector2 = local_anchor.lerp(top, i / float(steps)).round()
-		draw_rect(Rect2(p, Vector2.ONE), _CHAIN if i % 2 == 0 else _CHAIN_DARK)
+	if _hold_state == Hold.FALLING or _hold_state == Hold.GONE:
+		# Snapped: what's left swings from the hook, the die's end gone.
+		var stub_end: Vector2 = local_anchor + Vector2(sin(_angle), cos(_angle)) * chain_length * _drop * _STUB_SHARE
+		_draw_chain(local_anchor, stub_end)
+		if _hold_state == Hold.GONE:
+			return
+	else:
+		_draw_chain(local_anchor, top)
 
 	if _glow > 0.0:
 		var radius: float = FateDieArt.SIZE * 0.5 + 2.0 + (1.0 - _glow) * 4.0
@@ -152,6 +256,14 @@ func _draw() -> void:
 	var face: FateDie.Face = _tumble_face if _tumble > 0.0 else ledger.die.face_at(_shown_slot)
 	var texture: Texture2D = FateDieArt.face_texture(face)
 	draw_texture(texture, (centre - Vector2(FateDieArt.SIZE, FateDieArt.SIZE) / 2.0).round())
+
+
+## The chain, a pixel at a time so it stays crisp at any angle.
+func _draw_chain(from: Vector2, to: Vector2) -> void:
+	var steps: int = maxi(1, int(from.distance_to(to)))
+	for i: int in steps:
+		var p: Vector2 = from.lerp(to, i / float(steps)).round()
+		draw_rect(Rect2(p, Vector2.ONE), _CHAIN if i % 2 == 0 else _CHAIN_DARK)
 
 
 func _kick(strength: float) -> void:
@@ -191,6 +303,9 @@ func _on_carved(slot: int, face: int, old_face: int) -> void:
 
 
 func _on_rolled(slot: int, face: int) -> void:
+	if _hold_state != Hold.HANGING:
+		# Gone to "You": the throws are its die's now.
+		return
 	_shown_slot = slot
 	_hold = -2.0
 	_tumble = 0.9
@@ -210,7 +325,7 @@ func _flare(color: Color) -> void:
 
 func _show_info() -> void:
 	var ledger: FateLedger = _ledger()
-	if not ledger or not ledger.has_die:
+	if not ledger or not ledger.has_die or _hold_state != Hold.HANGING:
 		return
 	Events.show_info.emit(info_for(ledger))
 

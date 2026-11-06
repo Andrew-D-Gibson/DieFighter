@@ -9,6 +9,7 @@
 script = ExtResource("ext_0")
 dialogue = "Everyone gets one. Few ever look."
 fate_knowing_dialogue = "You've seen the front. You know."
+become_fate_dialogue = "It's been waiting for you. ...Oh. It's you."
 attitude = 1
 transitions = Dictionary[int, ExtResource("ext_3")]({
 7: ExtResource("ext_1"),
