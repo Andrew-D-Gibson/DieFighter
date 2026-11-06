@@ -30,8 +30,13 @@ extends Resource
 ## How many won fights it rides through before it says goodbye.
 @export_range(1, 5) var fights: int = 2
 
-## Paid as it says goodbye, in credits only.
+## Paid as it says goodbye: credits, or a pick for an escort that rides to
+## the gate (the Outrigger courier's spare parts).
 @export var payout: RewardResource
+## Where a payout with picks floats, in world pixels, clear of the escort's
+## slot and the hull gauge under it. Zero floats it at the escort, which is
+## fine for credits alone (they pay out and go).
+@export var payout_position: Vector2 = Vector2.ZERO
 
 @export_category("To the Gate")
 ## Rides until the sector's gate falls instead of for [member fights] won

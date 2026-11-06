@@ -200,7 +200,7 @@ func _present(offered: Array[Node2D]) -> void:
 func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 	var offered: Array[Node2D] = []
 	var possible_tile_rewards: Array[TileResource] = RewardManager.filter_by_minimum_rarity(
-		Globals.reward_manager.get_possible_tile_rewards(),
+		_tile_pool(reward_resource),
 		reward_resource.minimum_rarity
 	)
 
@@ -245,6 +245,20 @@ func _build_offered_rewards(reward_resource: RewardResource) -> Array[Node2D]:
 		items.append({"money": pickup.amount})
 
 	return offered
+
+
+## The tiles [param reward_resource] may offer: the usual pool, or only the
+## flown ship's own tiles if it asks for them and the ship has any.
+static func _tile_pool(reward_resource: RewardResource) -> Array[TileResource]:
+	var pool: Array[TileResource] = Globals.reward_manager.get_possible_tile_rewards()
+	var ship: ShipResource = Globals.current_ship()
+	if not reward_resource.ship_signature_only or ship == null:
+		return pool
+	var own: Array[TileResource] = []
+	for tile: TileResource in pool:
+		if tile in ship.signature_tiles:
+			own.append(tile)
+	return own if not own.is_empty() else pool
 
 
 ## Whether this offer's last choice is a Grid Slot. A full grid always gets

@@ -317,8 +317,11 @@ make the tug think it was attacked, and `BOSS_DEFEATED` reads as "the tow was cu
 ### Shipwright — `EVENT_Shipwright` (sector 2, earns the Outrigger)
 An **Outrigger** courier from a shipyard the Chancellor cut loose. *"Chancellor cut
 us loose. Escort me?"* Its down payment floats beside it (one pick, or 12-20
-credits). Not in the random mix: `outrigger.tres` deals it into every sector 2
-while the ship is still locked (`ShipResource.unlock_scenario`).
+credits). While the Outrigger is locked, `outrigger.tres` deals it into every
+sector 2 (`ShipResource.unlock_scenario`); once it's earned, it joins the
+sector 2 events at random (`standing_requirements`: `SHIP_EARNED outrigger`).
+The courier's greeting (`shipwright_greeting`) picks one of three runs of the
+job, below.
 - **Take the payment:** *"Stay close. The Dynamo won't wait."* It rides along as
   an escort to the gate (`rides_to_gate`): Raids whoever fights you, shields
   itself. — Mercy
@@ -332,6 +335,15 @@ while the ship is still locked (`ShipResource.unlock_scenario`).
   Outrigger isn't earned this run. `caravan_betrayed` (-3). — Ruin
 - **Lose it on the way:** no unlock this run, no standing lost. Next run's
   sector 2 offers the job again.
+- **Once the Outrigger is earned** (`SHIP_EARNED`): the same hail and sign-on
+  (`_repeat` states). At the gate: *"It waited for one ship after all."*, then
+  *"Yard owes you. Take this."* and 30-40 credits. No card.
+- **Flying the Outrigger** (`FLYING_SHIP`, checked first): *"A yard Outrigger!
+  Fly with your sister?"* Sign-on *"Two Outriggers. Let's show them."*, riding
+  *"Pods level, pilot. Two of us now."* At the gate: *"The Belly can't ignore
+  two."*, then *"Spare parts, from the yard."*: 10-15 credits and one pick from
+  the Outrigger's own tiles (`ship_signature_only`), floated clear of the
+  bounty (`payout_position`).
 
 ## Inbound — "Stop running."
 

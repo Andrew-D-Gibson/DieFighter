@@ -257,8 +257,6 @@ func _send_off(ship: Enemy, terms: EscortResource, remembered_as: String, spot: 
 
 	if Globals.fate_ledger:
 		Globals.fate_ledger.record_escort_outcome(remembered_as, FateLedger.ESCORT_DELIVERED)
-	if terms.payout:
-		Events.spawn_reward.emit(ship.global_position, terms.payout)
 	Events.escort_delivered.emit(ship)
 	for line: ScenarioShipState in terms.farewell_lead_in:
 		if not is_instance_valid(ship) or ship.health.is_dead:
@@ -266,6 +264,11 @@ func _send_off(ship: Enemy, terms: EscortResource, remembered_as: String, spot: 
 		await _say_line(ship, line)
 	if not is_instance_valid(ship):
 		return
+	# With the farewell line ("Take this."), after any lead-in.
+	if terms.payout:
+		var at: Vector2 = terms.payout_position if terms.payout_position != Vector2.ZERO \
+			else ship.global_position
+		Events.spawn_reward.emit(at, terms.payout)
 	ship.force_scenario_state(terms.farewell_state)
 
 	# Bounded: a goodbye that goes wrong mustn't hold the arrival forever.

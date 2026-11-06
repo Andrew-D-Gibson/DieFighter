@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="ScenarioShipStateStandingBranch" format=3]
+
+[ext_resource type="Script" uid="uid://d0fr6eroynrh4" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_standing_branch.gd" id="branch"]
+[ext_resource type="Script" uid="uid://cj7lp3sq4dmes" path="res://Source/Content/Factions/faction_condition.gd" id="condition"]
+[ext_resource type="Script" uid="uid://bv477fknily5w" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_standing_option.gd" id="option"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_hailing_sister.tres" id="sister"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_hailing_repeat.tres" id="repeat"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_hailing.tres" id="first"]
+
+[sub_resource type="Resource" id="flying_outrigger"]
+script = ExtResource("condition")
+test = 5
+ship = &"outrigger"
+
+[sub_resource type="Resource" id="sister_option"]
+script = ExtResource("option")
+conditions = Array[ExtResource("condition")]([SubResource("flying_outrigger")])
+state = ExtResource("sister")
+
+[sub_resource type="Resource" id="outrigger_earned"]
+script = ExtResource("condition")
+test = 6
+ship = &"outrigger"
+
+[sub_resource type="Resource" id="repeat_option"]
+script = ExtResource("option")
+conditions = Array[ExtResource("condition")]([SubResource("outrigger_earned")])
+state = ExtResource("repeat")
+
+[resource]
+script = ExtResource("branch")
+options = Array[ExtResource("option")]([SubResource("sister_option"), SubResource("repeat_option")])
+otherwise = ExtResource("first")

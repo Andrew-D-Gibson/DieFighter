@@ -1,0 +1,38 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="chain"]
+[ext_resource type="Script" uid="uid://1340hma3j56b" path="res://Source/Content/Factions/faction_deed.gd" id="deed"]
+
+[sub_resource type="Resource" id="wait_amount"]
+script = ExtResource("effect")
+category = 2
+amount = 3000
+
+[sub_resource type="Resource" id="wait"]
+script = ExtResource("effect")
+category = 4
+subtype = 6
+
+[sub_resource type="Resource" id="flee"]
+script = ExtResource("effect")
+category = 6
+subtype = 3
+
+[sub_resource type="Resource" id="on_enter"]
+script = ExtResource("chain")
+effects = Array[ExtResource("effect")]([SubResource("wait_amount"), SubResource("wait"), SubResource("flee")])
+
+[sub_resource type="Resource" id="delivered"]
+script = ExtResource("deed")
+standing = 2
+deed = &"caravan_courier_delivered"
+
+[resource]
+script = ExtResource("state")
+dialogue = "Spare parts, from the yard."
+faction = 1
+attitude = 1
+effects_on_enter = SubResource("on_enter")
+deeds = Array[ExtResource("deed")]([SubResource("delivered")])
