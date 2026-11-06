@@ -1,8 +1,9 @@
 class_name ReckoningCutsceneSegment
 extends Node
 ## One piece of a Reckoning ending's film (RECKONING_ENDINGS.md §6-7): the
-## arrival in the sky with no Fate in it, being consumed, Become Fate, the
-## credits. ReckoningEndingPlayer plays them in turn over the game scene.
+## arrival in the sky with no Fate in it, being consumed, Become Fate.
+## ReckoningEndingPlayer plays them in turn over the game scene. The last
+## segment of a real ending rolls the credits itself (ReckoningCredits).
 ##
 ## The contract every segment keeps:
 ##   - ReckoningEndingPlayer sets [member ending] and [member mode] before

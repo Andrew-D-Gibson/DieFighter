@@ -3,14 +3,17 @@ extends CanvasLayer
 ## Plays a Reckoning ending (RECKONING_ENDINGS.md §6-7) over the game scene,
 ## segment by segment, then hands the run to the end screen.
 ##
-## | Ending      | Segments                                   | Then      |
-## |-------------|--------------------------------------------|-----------|
-## | ALONE       | arrival (ALONE), credits (ALONE)           | victory   |
-## | CONVOY      | arrival (CONVOY), credits (CONVOY)         | victory   |
-## | LAST_DIE    | consumed (LAST_DIE), arrival (LAST_DIE),   | victory   |
-## |             | credits (LAST_DIE)                         |           |
-## | BECOME_FATE | become fate, credits (BECOME_FATE)         | victory   |
-## | FELL_IN     | consumed (FELL_IN)                         | game_over |
+## | Ending      | Segments                             | Then      |
+## |-------------|--------------------------------------|-----------|
+## | ALONE       | arrival (ALONE)                      | victory   |
+## | CONVOY      | arrival (CONVOY)                     | victory   |
+## | LAST_DIE    | consumed (LAST_DIE), arrival (LAST_DIE) | victory |
+## | BECOME_FATE | become fate                          | victory   |
+## | FELL_IN     | consumed (FELL_IN)                   | game_over |
+##
+## The credits (§7) roll inside the last segment of each real ending, not as a
+## segment of their own, so the convoy can fly on into them without a cut.
+## ReckoningCredits holds their lines.
 ##
 ## A segment whose scene doesn't exist yet is passed over, so each can be
 ## built and previewed on its own (`fate end <kind>` in the dev console).
@@ -24,7 +27,6 @@ signal done
 const ARRIVAL: String = "res://Source/Scenes/Cutscenes/Reckoning/arrival_cutscene.tscn"
 const CONSUMED: String = "res://Source/Scenes/Cutscenes/Reckoning/consumed_cutscene.tscn"
 const BECOME_FATE: String = "res://Source/Scenes/Cutscenes/Reckoning/become_fate_cutscene.tscn"
-const CREDITS: String = "res://Source/Scenes/Cutscenes/Reckoning/credits_roll.tscn"
 
 ## Under every segment (89-96), above the game.
 const CURTAIN_LAYER: int = 88
@@ -64,14 +66,11 @@ static func segments_for(ending: ReckoningEnding) -> Array[Dictionary]:
 	match ending.kind:
 		ReckoningEnding.Kind.ALONE, ReckoningEnding.Kind.CONVOY:
 			list.append({"path": ARRIVAL, "mode": mode})
-			list.append({"path": CREDITS, "mode": mode})
 		ReckoningEnding.Kind.LAST_DIE:
 			list.append({"path": CONSUMED, "mode": mode})
 			list.append({"path": ARRIVAL, "mode": mode})
-			list.append({"path": CREDITS, "mode": mode})
 		ReckoningEnding.Kind.BECOME_FATE:
 			list.append({"path": BECOME_FATE, "mode": mode})
-			list.append({"path": CREDITS, "mode": mode})
 		ReckoningEnding.Kind.FELL_IN:
 			list.append({"path": CONSUMED, "mode": mode})
 	return list

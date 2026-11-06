@@ -344,3 +344,7 @@ ERROR_JUMP_HELD,NOT YET,,,,,,,,"Error popup when the player tries to jump while 
 SHIP_UNLOCK_HINT_CAROUSEL,"Rumour: end a run with two Mercy on Fate's Die.",,,,,,,,"Ship-select card of a ship the player hasn't earned yet, greyed out, led by the Mercy face's glyph: a rumour hinting how to earn it (finish a run, won or lost, with the Mercy face carved twice on Fate's Die). Mercy is the name of a face of the die; keep it as the face is called in this language. About three short lines fit; keep it as short as the English.",,,
 SHIP_UNLOCK_HEADER_CAROUSEL,THE CARAVAN REMEMBERS,,,,,,,,"Ship unlock card heading when the Carousel is earned at the end of a run for carving Mercy on Fate's Die: the Caravan (the civilian fleet) sends the ship in thanks. Capitals.",,,
 SHIP_UNLOCK_NOTICED_CAROUSEL,THE CARAVAN NOTICED,,,,,,,,"Callout floated under Fate's Die when the player carves Mercy while the Carousel isn't earned yet: a hint that Mercy counts toward earning it. Capitals, short.",,,
+CREDITS_HEADING_MADE_BY,A game by,,,,,,,,Credits heading above the developer's name,,,,
+CREDITS_HEADING_FONTS,Fonts,,,,,,,,Credits heading above the font credits,,,,
+CREDITS_HEADING_BUILT_WITH,Built with,,,,,,,,Credits heading above the engine and tools,,,,
+CREDITS_THANKS,Thanks for playing,,,,,,,,Last line of the credits,,,,
