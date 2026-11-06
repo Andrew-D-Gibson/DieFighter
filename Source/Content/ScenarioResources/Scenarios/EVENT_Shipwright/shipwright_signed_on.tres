@@ -1,0 +1,35 @@
+[gd_resource type="Resource" script_class="ScenarioShipState" format=3]
+
+[ext_resource type="Script" uid="uid://cpgidtisgk77q" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state.gd" id="state"]
+[ext_resource type="Script" uid="uid://5fiqr1jauvx7" path="res://Source/Content/ScenarioResources/ScenarioShipStateScripts/scenario_ship_state_base.gd" id="base"]
+[ext_resource type="Script" uid="uid://tr402hc111gu" path="res://Source/Behavior/Effects/effect_data.gd" id="effect"]
+[ext_resource type="Script" uid="uid://7dwxduwis4yk" path="res://Source/Behavior/Effects/EffectChain/effect_chain.gd" id="chain"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_wronged.tres" id="wronged"]
+[ext_resource type="Resource" path="res://Source/Content/ScenarioResources/Scenarios/EVENT_Shipwright/shipwright_escort_terms.tres" id="escort_terms"]
+
+[sub_resource type="Resource" id="carve_mercy"]
+script = ExtResource("effect")
+category = 6
+subtype = 9
+string_param = "mercy"
+
+[sub_resource type="Resource" id="remember"]
+script = ExtResource("effect")
+category = 6
+subtype = 12
+string_param = "ally"
+
+[sub_resource type="Resource" id="on_enter"]
+script = ExtResource("chain")
+effects = Array[ExtResource("effect")]([SubResource("carve_mercy"), SubResource("remember")])
+
+[resource]
+script = ExtResource("state")
+dialogue = "Stay close. The Dynamo won't wait."
+faction = 1
+attitude = 1
+effects_on_enter = SubResource("on_enter")
+transitions = Dictionary[int, ExtResource("base")]({
+1: ExtResource("wronged")
+})
+escort = ExtResource("escort_terms")

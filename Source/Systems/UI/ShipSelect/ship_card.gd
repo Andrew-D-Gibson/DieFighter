@@ -3,8 +3,9 @@ extends Control
 
 ## One ship on the ship-select popup: its hull, name, a map of its tile grid
 ## drawn from the ship's own layout, and its pitch. Click to pick it.
-## A coming-soon ship's card is drawn in the palette's greys and can't be
-## picked.
+## A ship the player can't fly yet (still being built, or not yet earned:
+## ShipUnlocks) is drawn in the palette's greys and can't be picked. An
+## unearned one says how to earn it, as a rumour, in place of its pitch.
 
 signal picked(card: ShipCard)
 
@@ -41,7 +42,7 @@ var is_picked: bool = false:
 		)
 		queue_redraw()
 
-## Coming soon: shown, but never picked.
+## Coming soon or not yet earned: shown, but never picked.
 var locked: bool = false
 var _hovered: bool = false
 var _hull: TextureRect
@@ -51,7 +52,7 @@ var _bob_time: float = 0.0
 
 func setup(for_ship: ShipResource) -> void:
 	ship = for_ship
-	locked = ship.coming_soon
+	locked = not ShipUnlocks.is_pickable(ship)
 	custom_minimum_size = SIZE
 	size = SIZE
 	mouse_filter = Control.MOUSE_FILTER_STOP
@@ -76,7 +77,10 @@ func setup(for_ship: ShipResource) -> void:
 
 	# Formatted like tile text, so palette names ("orange", "purple") are the
 	# palette's, not Godot's named colours.
-	var pitch: String = tr("SHIP_CARD_COMING_SOON") if locked else Utils.format_text(ship.description)
+	var pitch: String = Utils.format_text(ship.description)
+	if locked:
+		pitch = tr(ship.unlock_hint) if ShipUnlocks.is_locked(ship) and not ship.coming_soon \
+			and not ship.unlock_hint.is_empty() else tr("SHIP_CARD_COMING_SOON")
 	var description: RichTextLabel = _label(pitch, Rect2(4, 81, SIZE.x - 8, 42))
 	description.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	if locked:

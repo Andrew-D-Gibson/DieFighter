@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Source/Systems/UI/ShipUnlockPopup/ship_unlock_popup.gd" id="1_script"]
+
+[node name="ShipUnlockPopup" type="Node2D"]
+script = ExtResource("1_script")

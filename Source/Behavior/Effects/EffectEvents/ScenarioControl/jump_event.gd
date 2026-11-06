@@ -25,6 +25,10 @@ func resolve(_engine: ScenarioEngine) -> void:
 	# Forward from the sector's last tile, the jump gate, is through the gate.
 	if jump_delta > 0 and current_index == len(Globals.map.scenario_list) - 1:
 		if Globals.jump_gate and Globals.jump_gate.is_open():
+			# Held at the gate for a moment (an escort's goodbye).
+			if not Globals.map.can_jump():
+				_refuse(Globals.map.jump_refusal())
+				return
 			Globals.player.commit_to_jump(activator_die)
 			Globals.state_manager.go_through_gate()
 		else:
@@ -39,7 +43,7 @@ func resolve(_engine: ScenarioEngine) -> void:
 	# refused would leave the hand locked and End Turn off until an arrival
 	# that never comes.
 	if not Globals.map.can_jump():
-		_refuse("ERROR_NO_ESCAPE")
+		_refuse(Globals.map.jump_refusal())
 		return
 
 	Globals.player.commit_to_jump(activator_die)

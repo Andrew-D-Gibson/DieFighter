@@ -13,6 +13,12 @@ extends Node
 ## (it was remembered as it signed on), though it says something different.
 ## A player who turns on it loses it too, and its state's deeds say the rest.
 ##
+## An escort that rides to the gate (EscortResource.rides_to_gate, the
+## Outrigger courier) skips the count: it stays until the sector's gate fight
+## is won and says goodbye right there, while the jump waits for it. One that
+## earns a ship (EscortResource.unlocks_ship) earns it the moment the gate
+## falls with it alive, and shows the ship-unlock card once it has gone.
+##
 ## Saved with the run at every checkpoint (GameSaveResource.escort_state).
 ## Never spawned in the Reckoning, where it is already one of the Saved Ship
 ## tiles: the same ship mustn't count twice.
@@ -38,6 +44,15 @@ const _PHASE_IDS: Dictionary[Phase, String] = {
 
 ## How long the goodbye may take before the arrival gives up waiting on it.
 const _FAREWELL_TIMEOUT_SECONDS: float = 6.0
+## A farewell's lead-in line is held this long once it has typed out, then
+## the next one starts: long enough to read, without the box's full linger.
+const _LINE_HOLD_SECONDS: float = 1.5
+## Longest a lead-in line may hold the goodbye, if its box never shows it.
+const _LINE_TIMEOUT_SECONDS: float = 7.0
+## After the gate falls, a beat for the boss's wreck and the bounty to settle
+## before the escort speaks.
+const _GATE_GOODBYE_DELAY_SECONDS: float = 1.6
+const _SHIP_UNLOCK_POPUP: PackedScene = preload("res://Source/Systems/UI/ShipUnlockPopup/ship_unlock_popup.tscn")
 
 var escort: EscortResource = null
 var phase: Phase = Phase.NONE
@@ -85,9 +100,15 @@ func escort_ship() -> Enemy:
 # ── Joining and leaving ──────────────────────────────────────────────────────
 
 func _sign_on(ship: Enemy, terms: EscortResource) -> void:
-	# One at a time: a second ship asking to come along finds the slot taken.
-	if has_escort() or terms == null or terms.ship_resource == null:
+	if terms == null or terms.ship_resource == null:
 		return
+	# One at a time: a second ship asking to come along finds the slot taken.
+	# Except one riding to the gate, which the player can't meet again this
+	# run: the escort it displaces says its goodbye now, paid in full.
+	if has_escort():
+		if not (terms.rides_to_gate and phase == Phase.RIDING and is_instance_valid(_ship)):
+			return
+		_send_off_early()
 	escort = terms
 	phase = Phase.JOINED
 	fights_left = maxi(1, terms.fights)
@@ -107,7 +128,8 @@ func _on_jump() -> void:
 		Phase.RIDING:
 			if is_instance_valid(_ship) and _ship.health.health > 0:
 				hull = _ship.health.health
-			if fights_left <= 0:
+			# One riding to the gate says goodbye there, not by its count.
+			if fights_left <= 0 and not escort.rides_to_gate:
 				phase = Phase.FAREWELL
 	_ship = null
 
@@ -150,10 +172,34 @@ func _ride_in(ship: Enemy) -> void:
 
 
 ## Counted while the fight's last ship is still settling, before the
-## after-combat checkpoint, which saves the count.
+## after-combat checkpoint, which saves the count. The gate falling with an
+## escort that rides to it aboard is its goodbye, saved the same way, so a
+## Continue at the open gate replays it.
 func _on_combat_finished() -> void:
-	if phase == Phase.RIDING and is_instance_valid(_ship) and _ship.is_escort and _ship.health.health > 0:
-		fights_left -= 1
+	if phase != Phase.RIDING or not is_instance_valid(_ship) or not _ship.is_escort \
+	or _ship.health.health <= 0:
+		return
+	fights_left -= 1
+	if escort.rides_to_gate and _at_gate():
+		phase = Phase.FAREWELL
+		_earn_ship(escort)
+		Globals.map.hold_jumps(self)
+		_goodbye_at_gate()
+
+
+func _at_gate() -> bool:
+	var scenario: ScenarioResource = Globals.scenario_manager.current_scenario \
+		if Globals.scenario_manager else null
+	return scenario != null and scenario.sector_gate_scenario
+
+
+## Where it is, once the boss's wreck has settled. The jump is held from the
+## moment the gate falls until the goodbye (and any ship-unlock card) is done.
+func _goodbye_at_gate() -> void:
+	await get_tree().create_timer(_GATE_GOODBYE_DELAY_SECONDS).timeout
+	if phase == Phase.FAREWELL and is_instance_valid(_ship):
+		await _say_goodbye()
+	Globals.map.release_jumps(self)
 
 
 func _on_enemy_left(ship: Enemy, _faction: ScenarioManager.Faction) -> void:
@@ -175,24 +221,50 @@ func _on_state_changed(ship: Enemy) -> void:
 
 ## Flies to the middle, says its goodbye, pays, and jumps away (the farewell
 ## state's chain ends in a FLEE). A beat of the arrival, so the encounter's
-## ships wait for it.
+## ships wait for it. One riding to the gate says it from its slot instead,
+## clear of the boss's bounty, and holds the jump throughout; if it earned a
+## ship, the ship-unlock card follows once it has gone.
 func _say_goodbye() -> void:
 	var ship: Enemy = _ship
 	if not is_instance_valid(ship):
 		return
 	var terms: EscortResource = escort
 	var remembered_as: String = ally_id
-	await Globals.enemy_manager.move_escort(ship, Globals.enemy_manager.escort_farewell_spot(ship))
+	var spot: Vector2 = EnemyManager.ESCORT_SLOT if terms.rides_to_gate \
+		else Globals.enemy_manager.escort_farewell_spot(ship)
+	if terms.rides_to_gate:
+		Globals.map.hold_jumps(self)
+	_drop()
+	await _send_off(ship, terms, remembered_as, spot)
+	# Shot down mid-goodbye: it never got the plans out.
+	var got_away: bool = not is_instance_valid(ship) or not ship.health.is_dead
+	if got_away and not terms.unlocks_ship.is_empty():
+		_earn_ship(terms)
+		await _show_ship_unlock(terms.unlocks_ship)
+	if terms.rides_to_gate:
+		Globals.map.release_jumps(self)
+
+
+## The escort's goodbye, once the keeper has let go of it (so its own
+## departure reads as nothing more): to [param spot], each lead-in line in
+## turn, the farewell state, and gone.
+func _send_off(ship: Enemy, terms: EscortResource, remembered_as: String, spot: Vector2) -> void:
+	if is_instance_valid(ship) and ship.position.distance_to(spot) > 0.5:
+		await Globals.enemy_manager.move_escort(ship, spot)
 	if not is_instance_valid(ship) or ship.health.is_dead:
 		return
 
-	# Done with before it leaves, so its own departure reads as nothing more.
-	_drop()
 	if Globals.fate_ledger:
 		Globals.fate_ledger.record_escort_outcome(remembered_as, FateLedger.ESCORT_DELIVERED)
 	if terms.payout:
 		Events.spawn_reward.emit(ship.global_position, terms.payout)
 	Events.escort_delivered.emit(ship)
+	for line: ScenarioShipState in terms.farewell_lead_in:
+		if not is_instance_valid(ship) or ship.health.is_dead:
+			return
+		await _say_line(ship, line)
+	if not is_instance_valid(ship):
+		return
 	ship.force_scenario_state(terms.farewell_state)
 
 	# Bounded: a goodbye that goes wrong mustn't hold the arrival forever.
@@ -200,6 +272,61 @@ func _say_goodbye() -> void:
 	while is_instance_valid(ship) and waited < _FAREWELL_TIMEOUT_SECONDS:
 		await get_tree().process_frame
 		waited += get_process_delta_time()
+
+
+## Puts [param ship] into [param line]'s state and returns once its line has
+## typed out and been held a moment (bounded).
+func _say_line(ship: Enemy, line: ScenarioShipState) -> void:
+	var dialogue: EnemyDialogueManager = ship.dialogue_manager
+	# Connected first: the line can show the moment the state is entered.
+	var shown: Array[bool] = [false]
+	var on_shown: Callable = func() -> void: shown[0] = true
+	dialogue.line_shown.connect(on_shown)
+	ship.force_scenario_state(line)
+	var read_time: float = dialogue.character_reveal_time * line.display_dialogue().length() \
+		+ _LINE_HOLD_SECONDS
+	var waited: float = 0.0
+	var since_shown: float = 0.0
+	while is_instance_valid(ship) and waited < _LINE_TIMEOUT_SECONDS and since_shown < read_time:
+		await get_tree().process_frame
+		waited += get_process_delta_time()
+		if shown[0]:
+			since_shown += get_process_delta_time()
+	if is_instance_valid(ship) and dialogue.line_shown.is_connected(on_shown):
+		dialogue.line_shown.disconnect(on_shown)
+
+
+## A gate escort is signing on while this one still rides: it says its
+## goodbye where it is, paid in full, and the slot is the newcomer's.
+func _send_off_early() -> void:
+	var ship: Enemy = _ship
+	var terms: EscortResource = escort
+	var remembered_as: String = ally_id
+	_drop()
+	_send_off(ship, terms, remembered_as, ship.position)
+
+
+## The ship [param terms] earns, for good. Only once it's earned in the
+## player's own runs (ShipUnlocks); a replay changes nothing.
+func _earn_ship(terms: EscortResource) -> void:
+	if terms and not terms.unlocks_ship.is_empty():
+		ShipUnlocks.unlock(terms.unlocks_ship)
+
+
+## The ship-unlock card, until the player closes it. Never while the
+## AutoPilot flies: nobody would close it.
+func _show_ship_unlock(id: StringName) -> void:
+	var ship: ShipResource = ShipCatalog.find(id)
+	if ship == null or ship.id != id:
+		return
+	if is_instance_valid(AutoPilot) and AutoPilot.is_playing():
+		return
+	var popup: ShipUnlockPopup = _SHIP_UNLOCK_POPUP.instantiate()
+	get_tree().current_scene.add_child(popup)
+	popup.global_position = Vector2.ZERO
+	popup.open(ship)
+	await popup.closed
+	popup.queue_free()
 
 
 func _drop() -> void:

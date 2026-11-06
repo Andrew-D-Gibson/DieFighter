@@ -4,7 +4,7 @@ extends Node
 ## each tile they've had on their grid, and each enemy they've met with how
 ## often they've met and destroyed it. Also which region rules and hazards
 ## they've read the arrival card for, so the first one waits for them, and
-## which tile families they've unlocked (TileUnlocks). Kept in its own file, since the run's
+## which tile families and ships they've unlocked (TileUnlocks, ShipUnlocks). Kept in its own file, since the run's
 ## save is deleted when the run ends and this has to outlive it.
 ##
 ## Only the player's own runs count. The Scenario Lab and the AutoPilot point
@@ -42,6 +42,9 @@ var _regions: Dictionary[String, bool] = {}
 ## run and sector (TileUnlocks.claim_for()). Kept so a jump replayed from a
 ## Continue shows the same family again instead of unlocking a second one.
 var _families: Dictionary[String, String] = {}
+## Ship id (ShipResource.id) -> true, for every ship that started locked and
+## the player has earned (ShipUnlocks).
+var _ships: Dictionary[String, bool] = {}
 ## What the player knows of Fate across runs (LORE.md §6, §8):
 ##   knowledge — true once they have beaten the last boss and heard the secret
 ##   escapes / falls — how often the Reckoning has ended each way
@@ -140,6 +143,26 @@ func _load_family(id: String, claim: String) -> void:
 			_families[successor] = claim if i == 0 else ""
 
 
+func has_ship(id: String) -> bool:
+	return _ships.has(id)
+
+
+## Earns the ship [param id] for good. Kept in a recording run only; the dev
+## console and Unlock All pass [param force]. True if it wasn't unlocked yet.
+func record_ship(id: String, force: bool = false) -> bool:
+	if id.is_empty() or _ships.has(id) or not (force or is_recording()):
+		return false
+	_ships[id] = true
+	_queue_write()
+	return true
+
+
+## Locks every earned ship again, for the dev console.
+func clear_ships() -> void:
+	_ships.clear()
+	_queue_write()
+
+
 ## Gate 1 of the secret fight: the player has seen the front, in any run.
 func has_fate_knowledge() -> bool:
 	return bool(_fate.get("knowledge", false))
@@ -209,6 +232,7 @@ func clear() -> void:
 	_enemies.clear()
 	_regions.clear()
 	_families.clear()
+	_ships.clear()
 	_fate.clear()
 	changed.emit()
 	_write()
@@ -282,6 +306,7 @@ func _write() -> void:
 		"enemies": _enemies,
 		"regions": _regions.keys(),
 		"families": _families,
+		"ships": _ships.keys(),
 		"fate": _fate,
 	}
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.WRITE)
@@ -298,6 +323,7 @@ func load_collection() -> void:
 	_enemies.clear()
 	_regions.clear()
 	_families.clear()
+	_ships.clear()
 	_fate.clear()
 	if not FileAccess.file_exists(collection_path):
 		return
@@ -316,6 +342,8 @@ func load_collection() -> void:
 		_tiles[str(id)] = true
 	for id: Variant in data.get("regions", []):
 		_regions[str(id)] = true
+	for id: Variant in data.get("ships", []):
+		_ships[str(id)] = true
 	var families: Variant = data.get("families", {})
 	if families is Dictionary:
 		for id: Variant in families:

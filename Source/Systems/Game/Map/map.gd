@@ -153,6 +153,9 @@ const _JUMPING_TEXT: String = "Jumping..."
 ## True from the moment a jump is committed until the next scenario starts.
 ## The map is a progress display for the trip then, not something to browse.
 var _jumping: bool = false
+## Whatever is holding the ship here for now (an escort's goodbye and the
+## ship-unlock card after it): no jump while any is. See hold_jumps().
+var _jump_holds: Dictionary[Object, bool] = {}
 ## Counts down to the right arrow's next pulse at an open gate.
 var _gate_pulse_elapsed: float = 0.0
 ## The player's marker, and the breathing that keeps it easy to spot.
@@ -343,7 +346,7 @@ func _compute_hint(hovered: int) -> Array:
 			return [_FATE_ICON, "Corrupt", Globals.medium_purple]
 
 	if not can_jump():
-		return [null, tr("ERROR_NO_ESCAPE"), Globals.purple]
+		return [null, tr(jump_refusal()), Globals.purple]
 	if Globals.jump_gate and Globals.jump_gate.is_open():
 		return [_NEXT_SECTOR_ICON, tr("MAP_HINT_JUMP_RIGHT"), Globals.yellow]
 	if not _engines_charged:
@@ -906,7 +909,7 @@ func jump(desired_scenario_index: int) -> void:
 	if _jumping:
 		return
 	if not can_jump():
-		Events.error_text_popup.emit(tr("ERROR_NO_ESCAPE"), InputManager.pointer_global_position(self))
+		Events.error_text_popup.emit(tr(jump_refusal()), InputManager.pointer_global_position(self))
 		return
 	# Bound the target scenarios to within the map
 	# e.g. moving "off the map" just moves you to the farthest possible sector
@@ -1049,8 +1052,31 @@ func _set_jump_arrow_visible(arrow: Tile, shown: bool) -> void:
 	JumpArrowReveal.play(arrow, _JUMP_ARROW_REVEAL_TIME)
 
 
+## Keeps the ship here until release_jumps() with the same [param holder]:
+## for a scene that has to finish before the player leaves (an escort's
+## goodbye at the gate, the ship-unlock card after it). Out of combat too,
+## where nothing else stops a jump.
+func hold_jumps(holder: Object) -> void:
+	_jump_holds[holder] = true
+	_update_ui()
+
+
+func release_jumps(holder: Object) -> void:
+	if _jump_holds.erase(holder):
+		_update_ui()
+
+
+## Why can_jump() says no, as a translation key: held for a moment, or a
+## region that won't let the ship flee.
+func jump_refusal() -> String:
+	return "ERROR_JUMP_HELD" if not _jump_holds.is_empty() else "ERROR_NO_ESCAPE"
+
+
 ## A region can prevent fleeing while charge remains usable by other systems.
+## A hold (hold_jumps()) prevents it outright.
 func can_jump() -> bool:
+	if not _jump_holds.is_empty():
+		return false
 	if not is_instance_valid(Globals.state_manager) or Globals.state_manager.state != GameStateManager.GameState.IN_COMBAT:
 		return true
 	var engine: ScenarioEngine = ScenarioEngine.current()

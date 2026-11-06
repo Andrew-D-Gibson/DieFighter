@@ -9,6 +9,10 @@ extends Resource
 ## [member fights] won fights. At the arrival after the last of them it says
 ## goodbye, pays [member payout] and jumps away. If it dies on the way the
 ## payout is lost, nothing more: the player tried.
+##
+## One that [member rides_to_gate] stays to the end of the sector instead, and
+## takes the slot from another escort still riding (which says its goodbye
+## early, paid in full): it's the one the player can't get back.
 
 ## The hull that flies along. Its table must hold a Raid in every pool: it is
 ## on the player's side in every fight it joins (EnemyActionSituation.owes_hand_off).
@@ -28,3 +32,20 @@ extends Resource
 
 ## Paid as it says goodbye, in credits only.
 @export var payout: RewardResource
+
+@export_category("To the Gate")
+## Rides until the sector's gate falls instead of for [member fights] won
+## fights, and says goodbye right there, before the player can jump through
+## (the Outrigger courier). [member fights] is ignored. A goodbye at the gate
+## holds the jump until it's over.
+@export var rides_to_gate: bool = false
+## Lines said before the farewell state's, one state each, in order: each is
+## shown and held until it has run its course. Their own states, so each
+## line is translated and linted like any other.
+@export var farewell_lead_in: Array[ScenarioShipState] = []
+## The ship (ShipResource.id) the player earns when this escort is delivered:
+## recorded the moment the job is done, then shown on the ship-unlock card
+## once the escort has gone. Empty for an escort that only pays. An id
+## rather than the ShipResource, which offers this escort's encounter
+## (ShipResource.unlock_scenario): the two can't reference each other.
+@export var unlocks_ship: StringName = &""

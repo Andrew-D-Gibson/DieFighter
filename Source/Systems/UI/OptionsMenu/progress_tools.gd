@@ -24,8 +24,8 @@ static func erase() -> void:
 
 
 ## As if the player had seen everything: the tutorial played, every tile and
-## enemy in the codex, every tile family unlocked and every region's arrival
-## card read. A run in progress is left alone.
+## enemy in the codex, every tile family and ship unlocked and every region's
+## arrival card read. A run in progress is left alone.
 static func unlock_all() -> void:
 	var regions: Array[String] = []
 	for dir: String in _REGION_DIRS:
@@ -34,5 +34,8 @@ static func unlock_all() -> void:
 	CollectionManager.unlock(CodexCatalog.tile_ids(), CodexCatalog.enemy_ids(), regions)
 	for family: TileFamilyResource in TileUnlocks.families():
 		CollectionManager.record_family(family.id())
+	for ship: ShipResource in ShipCatalog.all():
+		if ship.starts_locked:
+			ShipUnlocks.unlock(ship.id, true)
 	Globals.tutorial_completed = true
 	OptionsSettings.save_options_settings()

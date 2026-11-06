@@ -56,6 +56,20 @@ func test_what_was_found_survives_a_reload() -> void:
 	assert_eq(reloaded.times_encountered("raider"), 0)
 
 
+## An earned ship stays earned: losing it would lock the player out of a
+## ship they won.
+func test_an_earned_ship_survives_a_reload() -> void:
+	var collection: Node = _fresh_collection()
+	collection.clear()
+	assert_true(collection.record_ship("outrigger", true))
+	assert_false(collection.record_ship("outrigger", true), "earned once")
+	collection._write()
+
+	var reloaded: Node = _fresh_collection()
+	assert_true(reloaded.has_ship("outrigger"))
+	assert_false(reloaded.has_ship("carousel"))
+
+
 func test_a_read_region_card_survives_a_reload() -> void:
 	var collection: Node = _fresh_collection()
 	collection.clear()
