@@ -35,11 +35,17 @@ const DEFAULT_STRAY_DANGER_CHANCE: float = 0.1
 
 # ── A new sector, and saves ─────────────────────────────────────────────────
 
-## Fate starts just off the sector's left edge: nothing is corrupted yet, only
-## the first one or two tiles are under threat.
+## Fate starts holding the sector's first tile, right against the black
+## hole: one of its encounters is there from the start, inside its zone (a
+## place to fly into Fate on purpose), and the next one or two tiles are
+## under threat. SectorGenerator deals an extra slot there for it, so no
+## dealt stop is lost. Never the gate: a road that short is all gate.
 func reset() -> void:
 	fate_index = -1
 	stray_danger_indices.clear()
+	if not road.is_empty() and not road[0].sector_gate_scenario:
+		corrupt(0)
+		fate_index = 0
 	pick_danger_range()
 
 

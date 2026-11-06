@@ -1297,9 +1297,28 @@ seeded maps stay as they were. For the same reason the 30% event roll is drawn
 even when no event is left, and each layer must hold at least
 `elites_per_sector.y` elites (`test_each_layer_holds_enough_to_fill_its_sector`).
 
+**Added stops** (`added_stops`, 6, of which `added_events`, 3, are always
+events; the rest are events at the mix's 30%) are inserted by
+`SectorGenerator.add_stops()` once the RUN stream has dealt the rest of the
+sector, from a side generator like the stations below, anywhere past a die's
+reach of the arrival and before the gate. They lengthen a sector without
+touching `sector_size`, which would move every seeded map (the tutorial's
+seed 21 included). An added stop prefers encounters the sector wasn't dealt
+(judged before any pinned stop, so a pin changes only its own slot); an
+event with none left becomes a fight.
+
+**Fate's tile** is the sector's first slot: `generate()` prepends an empty
+slot last, without a draw, so every stop keeps its place relative to the
+arrival, and `FateState.reset()` (a fresh sector only; a save restores) has
+Fate take tile 0 and start its zone there. One Fate encounter waits against
+the black hole from the start, inside the purple: a place to fly into Fate on
+purpose (Hunger). A sector is `sector_size` + `added_stops` + arrival + gate +
+this tile: 12 + 6 + 3 = 21.
+
 **Repair stations** (`repair_stations_per_sector`, 1-2) are swapped in by
 `SectorGenerator.place_repair_stations()` after the sector is otherwise built. They replace
-combats or events beyond a die's reach of the arrival, never shops, elites,
+fights beyond a die's reach of the arrival, never events (where Fate's Die is
+carved, and the pilgrim who hands it over is one), shops, elites,
 the arrival or the gate. Placement uses a side generator seeded from the RUN
 stream's *state* without drawing from it, so every existing seeded map
 (the tutorial's seed 21, AutoPilot transcripts) changes only in the replaced
@@ -1460,7 +1479,9 @@ so swallowed tiles and ally tiles are never saved. The meta state (knowledge,
 endings, fallen ships) is `collection.json`'s `fate` block.
 
 **Seeds.** The pilgrim is placed by `place_fate_pilgrim()` from a hash of the
-repair stations' seed, replacing one stop past a jump's reach of the arrival,
+repair stations' seed, replacing one stop past a jump's reach of the arrival
+(nothing placed after it may replace it: stations and consequences take
+fights only),
 so the RUN stream and every seeded map keep their draws (the tutorial's
 included). Fate's throws use the director's own generator.
 

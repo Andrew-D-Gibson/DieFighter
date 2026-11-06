@@ -226,6 +226,16 @@ func test_the_tail_meets_no_rearguard_but_what_it_left_behind() -> void:
 						"seed %d dealt %s into the Tail" % [run_seed, scenario.resource_path.get_file()])
 
 
+## The pilgrim hands over Fate's Die; a run without it can carve nothing. A
+## repair station placed in the same band used to overwrite it in more than
+## half of all runs.
+func test_sector_one_always_deals_the_pilgrim() -> void:
+	var manager: GameStateManager = _main_state_manager()
+	var pilgrim: ScenarioResource = manager.sector_generator.fate_pilgrim_scenario
+	for run_seed: int in range(1, 41):
+		assert_has(_roll_sector(manager, run_seed, 0), pilgrim, "seed %d" % run_seed)
+
+
 ## The tutorial pins the fight its jump lands in over the seeded map. The pin
 ## replaces that one stop and leaves every other where the seed put it.
 func test_a_pinned_stop_replaces_only_its_slot() -> void:
