@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StoryBeatResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/StoryBeats/story_beat_resource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+speaker = "SECTOR WARDEN, DYING"
+line_1 = "Everyone back here is already dead. I just noticed first."
+line_2 = "Rearguard convoys fly back past me, toward the hole, holds full of dice."
+line_3 = "They pay me not to ask why. Run on ahead and ask them yourself."
+repeat_line = "Still running? Watch which way the tithe convoys fly."

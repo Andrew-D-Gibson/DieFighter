@@ -58,7 +58,6 @@ been self-playtested and is fun. Next comes outside playtesting.
     fast the horizon eats, the face chains' numbers, and how often a careful run
     fills the die. The AutoPilot never takes the route, so this is hand testing.
   - Story boxes beyond the Bastion's death: see `STORY_BOXES_PLAN.md`.
-  - The Arc Dynamo / Chancellor naming (LORE.md §11): one character or two.
   - The Fallen (LORE.md §8) borrows the Shroud's table and the Fate Attacker's
     scene with the player's hull swapped in; it could use a table of its own.
   - The Rearguard fighting on the player's side for a run that never paid a

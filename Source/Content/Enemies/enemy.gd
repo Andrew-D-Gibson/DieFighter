@@ -398,7 +398,7 @@ func _on_death() -> void:
 		EnemyDiceManager.Departure.DESTROYED)
 	Events.enemy_destroyed.emit(self)
 	# Out of the fight and its dice gone, but still on screen: someone
-	# (FateRevelation) has a last word for it to say first.
+	# (LastWords) has a last word for it to say first.
 	if _death_held:
 		await death_released
 

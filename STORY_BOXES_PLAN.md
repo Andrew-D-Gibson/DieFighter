@@ -6,7 +6,11 @@ speech-box art, stretched to fit, each with a green Close. This plan turns that 
 tool the rest of the game can use: boss beats, and a fix for encounters whose setup
 doesn't read from 50-character barks.
 
-Status: proposal. Nothing below is built except the Bastion's box.
+Status (2026-11-06): §3's StoryBox, StoryBeatResource and seen-memory are built, with
+boss last words (`LastWords`, `ScenarioResource.last_words`) for the Sector Warden and
+the Arc Dynamo, and the Bastion's confession running through the same box. Still to
+build: `ShowStoryBeatEvent` for encounter beats, intro beats, faction box colours beyond
+red/green/yellow, the comms log.
 
 ---
 
@@ -93,8 +97,8 @@ I don't know which encounters you've found confusing; these are guesses from
 ### Bosses
 | Beat | Speaker | Why |
 |---|---|---|
-| Sector Warden, death | Warden | First "the bosses know something" moment. A hint, not the secret: *"The Rearguard pays us to keep the Tail thin. Ask what they pay with."* |
-| Arc Dynamo, death | Arc Dynamo | Second hint, from the Caravan's side: the tithe it pays every jump. **Blocked on naming** (LORE.md §11: Chancellor or Arc Dynamo, one character). |
+| Sector Warden, death | Warden | **Built.** First "the bosses know something" moment: Rearguard convoys flying back toward the hole, and the Warden paid not to ask. |
+| Arc Dynamo, death | Arc Dynamo | **Built.** Second hint, from the Caravan's side: the tithe it paid every jump, and *"Ask the Bastion where our dice went."* |
 | Bastion, intro | Bastion | Optional. Its bark already does the job. |
 | Bastion, death | Bastion | Done. |
 | The Fallen, arrival | The Fallen | Its bark is good; a box could make the first meeting land. Low priority. |

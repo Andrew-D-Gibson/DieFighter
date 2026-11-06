@@ -4,6 +4,17 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-06 — Story boxes: every gate boss gets last words
+
+- **Boss cleanup.** One name per character (LORE.md §1): the Arc Dynamo leads the Caravan (the Chancellor is gone) and the Sector Warden leads the Undertow (the borrowed-title backstory is gone). Cards read *Leader of the Undertow* / *Leader of the Caravan* / *Leader of the Rearguard*; codex blurbs match.
+- **Story boxes, built** (`STORY_BOXES_PLAN.md` §3). `StoryBox` is the Bastion's box made reusable: dim, the speaking ship spotlit, speech-box art stretched to fit (green for the Caravan, yellow for the Inbound, red otherwise), a green Close per line. `StoryBeatResource` is the content: speaker, up to three lines, and a repeat line once read (`CollectionManager.has_read_story_beat()`, saved in the collection). Its text syncs to `content.csv` like any content field.
+- **`LastWords`** replaces FateRevelation's hold-and-speak. Any gate with `ScenarioResource.last_words` holds its last ship (one it started with, not a launched fighter) and lets it speak once the fight is over; the last gate plays the Bastion's confession through the same path. `FateRevelation` keeps only the confession's lines and the knowledge.
+- **Beats:** the Sector Warden saw Rearguard convoys flying back toward the hole full of dice and was paid not to ask; the Arc Dynamo paid the tithe every jump and sends you to *"Ask the Bastion where our dice went."* With the Bastion's confession, the three bosses go hint, hint, secret.
+- Found while testing: the end of a fight (`combat_finished`) can be announced before the last ship's death when the kill doesn't come through an effect chain, so `LastWords` waits for it only if the fight is still on, and `FateRevelation` decides the full or short confession from what the player knew when the fight began.
+- Checked in play under Xvfb: the Warden (first time and repeat line), the Arc Dynamo through to its kill, and the Bastion's short form. Core tests pass.
+
+---
+
 ## 2026-11-06 — The Bastion confesses; one name per character
 
 - **The ending, staged.** The last ship to fall at the last gate is held whole (`Enemy.hold_death()`) while the rest of the wreck goes: on the Bastion, the hull breaks up around whichever of its three parts died last. The screen dims, that part stays lit (`EnemyGraphicsManager.set_spotlit()`), and the revelation plays a line at a time in the boss's own speech-box art, sliced and stretched to 132px (`FateRevelation._SpeechBox`), each line with a green Close. Clicking the dim finishes a line, Close moves on, and the last Close lets the kill play. Checked in play under Xvfb with the Aegis, the Core and the Batteries each dying last.

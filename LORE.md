@@ -73,11 +73,17 @@ ships too slow or too broken to keep up. Brutal, but honest about it: they're th
 faction that doesn't pretend the Retreat is fair. The Rearguard officially hunts them
 and quietly hires them as deniable muscle.
 
+They're led by **the Sector Warden**, a welded-together warlord of a ship that rules the
+Tail by eating whatever falls behind.
+
 ### The Caravan
 Generation ships, traders, medics, families. The Caravan is what everyone else is
 supposedly protecting. It's also the slowest part of the fleet, which means the hole
 reaches it first. Shops and repair docks belong to the **Caravan Compact**, a loose
 trade network that shares news and grudges fast.
+
+They're led by **the Arc Dynamo**, the reactor barge that powers the Belly and keeps
+it moving, by deciding every jump who gets left behind.
 
 ### The Inbound
 A cult flying *toward* the hole. They believe whatever crosses the horizon gets
@@ -109,13 +115,14 @@ computer) is in §12.
 ## 3. The Fleet's Geography
 
 Each sector is a layer of the Retreat, getting closer to the front. Every boss is a
-**pack leader racing for the front**: they want exactly what you want, and each has
-paid a different price for it.
+**faction's leader racing for the front**: they want exactly what you want, and each has
+paid a different price for it. Each dies with a few words in a story box (§4), and
+together they lead to the Bastion's secret: hint, hint, confession.
 
 | Sector | Layer | Feel | Boss |
 |---|---|---|---|
-| 1 | **The Tail** | Wreckage, stragglers, Fate visible on the horizon behind you. Mostly Undertow. | **An Undertow warlord** (the Sector Warden) who survives by eating the slow. *"Everyone back here is already dead. I'm just the one who noticed."* |
-| 2 | **The Belly** | The Caravan's heart: markets, medics, generation ships. Most shops and civilian events. | **The Caravan's Chancellor**, who keeps the Caravan moving by deciding who gets left behind. Sympathetic, maybe even right. |
+| 1 | **The Tail** | Wreckage, stragglers, Fate visible on the horizon behind you. Mostly Undertow. | **The Sector Warden**, leader of the Undertow, who survives by eating the slow. *"Everyone back here is already dead. I'm just the one who noticed."* |
+| 2 | **The Belly** | The Caravan's heart: markets, medics, generation ships. Most shops and civilian events. | **The Arc Dynamo**, leader of the Caravan, a reactor barge that keeps the Belly moving by deciding who gets left behind. Sympathetic, maybe even right. *"The Belly can't wait for one ship."* |
 | 3 | **The Spine** | Rearguard territory: checkpoints, tolls, Tithe Collectors, warships. | **The Bastion**, the fortress that leads the Rearguard. It has held the line for four hundred years and means to hold it four hundred more. *"Four hundred years. Not you."* |
 | Beyond | **The Front** | Empty, quiet, beautiful, and wrong. | None. It's where the normal ending lands (§8). |
 
@@ -172,6 +179,8 @@ as *"oh, that's what that was"*:
 | *"I counted the tithe. It goes forward."* / *"Ask the Bastion where it goes."* | The Ledger (the tithe is gathered forward, to the Bastion) |
 | A tithe convoy flying *aft*, toward Fate, with a Spilled Wisp on its wing | Tithe Run (and the Bastion sends it back, into the hole) |
 | *"Take it. I saw where the tithe goes."* | Apostate (a Tithe Collector that turned) |
+| *"Rearguard convoys fly back past me, toward the hole, holds full of dice. They pay me not to ask why."* | The Sector Warden's last words (sector 1 gate) |
+| *"And every jump, the Rearguard took its tithe... Ask the Bastion where our dice went."* | The Arc Dynamo's last words (sector 2 gate) |
 
 ### The drive
 The Bastion kept one way out for itself, in case the deal ever broke: the **Horizon
@@ -397,9 +406,9 @@ Per faction:
 
 - Is the black hole ahead Fate too (one hole, two mouths), or a second one? The game
   never needs to say; this file might.
-- The Arc Dynamo is still *"the Chancellor's reactor barge"*: a name behind the name.
-  By §1's rules it should be one character, called by the ship's
-  name (the Arc Dynamo leads the Caravan), or the Chancellor needs to be on screen.
+- The Sector Warden's name is a title ("Warden") on a pirate. It reads fine as a
+  self-styled one; a rename would touch the trailer plan.
+- Who leads the Inbound and the Spilled, if anyone? By §1, only a boss can.
 - Is "Fate" what everyone calls the hole, or only some factions? Does the Rearguard
   have its own name for it, and do the Inbound?
 - How many faces can be carved per sector? Too few and Gate 2 is hard to reach; too
@@ -491,9 +500,9 @@ Older ships were drawn before this language. A pass on 2026-10-30 brought them i
   scrap survives, voids ringed in purple are punched through, the lower half skews a
   pixel, and unoutlined tendrils replace the engines. A new echo follows the same recipe.
 - **Bosses**, one per faction by sector:
-  - The Sector Warden (sector 1) is the Undertow warlord: a welded hull with a furnace
+  - The Sector Warden (sector 1) is the Undertow's leader: a welded hull with a furnace
     maw, a crane and grapple, and trophies taken from the Caravan and the Rearguard.
-  - The Arc Dynamo (sector 2) is a Caravan reactor barge.
+  - The Arc Dynamo (sector 2) is the Caravan's leader, a reactor barge.
   - The Bastion (sector 3) is the Rearguard's leader, a fortress whose turrets read by
     shape: guns, a reactor and a shield.
 - Every ship cloaks in its faction's colours, and every mirror-symmetric ship has a
@@ -502,7 +511,6 @@ Older ships were drawn before this language. A pass on 2026-10-30 brought them i
 Still open:
 - The Bounty Runner (Undertow) flies the Civilian Transport's Caravan hull, a smuggler in
   civilian clothes. It cloaks green.
-- The Sector Warden's description still calls it a "gate authority".
 - The Shop keeps its boxy silhouette.
 
 ---
@@ -522,7 +530,9 @@ card asks which face a new carving goes over, or lets it pass. Faces come from
 the encounters' choices as `FACTION_SCENARIOS.md` lists them, plus Hunger for
 flying into one of Fate's tiles (once a sector).
 
-**The knowledge (§4, §6 Gate 1).** The last of the Bastion's three parts to fall
+**The knowledge (§4, §6 Gate 1).** Every gate boss gets last words
+(`LastWords`, `StoryBeatResource`): the Warden's and the Dynamo's are three lines
+the first time and one after. At the last gate, the last of the Bastion's three parts to fall
 is held on screen while the hull blows apart around it. Then the screen dims,
 that part stays lit, and the Bastion confesses in its own speech box, a line at a
 time, each with a green Close (§4 has the lines). The last Close lets it die. Hearing

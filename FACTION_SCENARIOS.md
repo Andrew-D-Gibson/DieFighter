@@ -31,8 +31,8 @@ slow is dead.
 - **Elites:** Wake Riders†, Chopshop (the Warden's breakers: *"The Warden wants your
   parts."*), The Line Moved On (a sentry grid still holding a line that left
   decades ago).
-- **Gate:** the Sector Warden, *Warlord of the Tail*: *"Everyone back here is
-  already dead."*
+- **Gate:** the Sector Warden, *leader of the Undertow*: *"Everyone back here is
+  already dead."* Its last words: Rearguard convoys flying back toward the hole.
 
 ### Sector 2: The Belly ("Keep everyone together.")
 The Caravan's heart, and the most mixed layer: Compact enforcers, Undertow
@@ -46,7 +46,7 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   jumps."*), Procession (Inbound recruiters in force: a Censer, a Plumb Line that
   sinks deeper every round, and an Acolyte shielding them: *"Turn around. Come
   and see."*).
-- **Events:** Convoy, Cut Loose (the Chancellor's philosophy in miniature), Mercy
+- **Events:** Convoy, Cut Loose (the Arc Dynamo's philosophy in miniature), Mercy
   Call, Pickpocket, Wreck Salvage (under a Claims Adjuster's guard), Pact†, Last
   Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
   Pirates Attacking Civilian†, What Came Back†, Wolf in the Fold (an Undertow
@@ -58,8 +58,8 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   *"Your lien is due."*), Wake Riders†, Twin Flames (a Zealot, Censer and the Pilgrim
   feeding them), Procession† (a Zealot, a Pilgrim relaying it luck, and an
   Acolyte shielding the procession).
-- **Gate:** the Arc Dynamo, *the Chancellor's reactor barge*: *"The Belly can't wait
-  for one ship."*
+- **Gate:** the Arc Dynamo, *leader of the Caravan*: *"The Belly can't wait
+  for one ship."* Its last words: the tithe the Caravan paid, and where to ask about it.
 
 ### Sector 3: The Spine ("Hold the line, buy time.")
 Checkpoints, tithes and warships, plus the Undertow they hire under the table.

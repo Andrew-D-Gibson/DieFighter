@@ -251,7 +251,7 @@ frame on 2026-11-05.
 | `tithe` | Hook reversed | COMBAT_tithe_collector | ⚠ The Collector spends the dice you handed it (+4 shields, a shot at you), a fine "your dice, used against you" shot. Seed 71 doesn't roll a Seize: retake with other seeds for the claw. |
 | `overkill` | Fun | COMBAT_wolfpack | ✅ A 6 into a ship staged at 2 hull: kill cam, speed lines, "OVERKILL!" over the slow-mo wreck. |
 | `ion_storm` | Fun | ELITE_lance_squadron | ✅ Three Ion Lances, ion orbs, lightning in the storm front; the storm strikes on cue: "!! ION STORM !! ENEMY DICE RE-ROLLED!" with a glitch burst. |
-| `boss_warden` | Escalation | GATE_sector_warden | ✅ Region card, the SECTOR WARDEN card ("Warlord of the Tail"), "Everyone back here is already dead.", then the solar flare: "SHIELDS DOWN! 3 DAMAGE TO ALL". |
+| `boss_warden` | Escalation | GATE_sector_warden | ✅ Region card, the SECTOR WARDEN card ("Leader of the Undertow"), "Everyone back here is already dead.", then the solar flare: "SHIELDS DOWN! 3 DAMAGE TO ALL". |
 | `dynamo` | Escalation | GATE_arc_dynamo (star field) | ✅ Four dice fill the breaker 0→23/18, "The Belly can't wait for one ship.", OVERLOAD!, every die vented back. The boss card plays on arrival. |
 | `bastion` | Escalation / climax | GATE_bastion, sector 3 | ✅ Each part's kill cam in turn, "Four hundred years. Not you.", OVERKILL on the last, the hull breaks up in a glitch burst and the gate opens. |
 | `civilian` | Story | EVENT_pirate_attacking_civilian | ✅ Set up for hand play: the Venom Fighter and the transport, nothing targeted yet. |
