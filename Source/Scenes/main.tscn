@@ -146,6 +146,7 @@
 [ext_resource type="Script" uid="uid://cvb00ht3k1b5w" path="res://Source/Systems/Game/Reckoning/reckoning_hud.gd" id="reckoning_hud"]
 [ext_resource type="Script" uid="uid://dsc0who8acukt" path="res://Source/Systems/UI/FateCarveChoice/fate_carve_choice.gd" id="fate_carve_choice"]
 [ext_resource type="Script" uid="uid://cxq4v62nhql3p" path="res://Source/Systems/UI/FateRevelation/fate_revelation.gd" id="fate_revelation"]
+[ext_resource type="Script" path="res://Source/Systems/Game/LastWords/last_words.gd" id="last_words"]
 [ext_resource type="Resource" uid="uid://vj46db0istaa" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/FATE_reckoning.tres" id="reckoning_scenario"]
 [ext_resource type="Resource" uid="uid://bd8fdamhw5boi" path="res://Source/Content/ScenarioResources/Scenarios/FATE_Reckoning/echo_hostile.tres" id="reckoning_echo"]
 [ext_resource type="Resource" uid="uid://0ydl1avdkww1" path="res://Source/Content/Enemies/EnemyResources/fate_husk.tres" id="spilled_husk"]
@@ -440,15 +441,18 @@ spilled_pool = Array[ExtResource("script_enemy_resource")]([ExtResource("spilled
 self_resource = ExtResource("reckoning_self")
 ally_table = ExtResource("reckoning_ally_table")
 ally_state = ExtResource("reckoning_ally_state")
-vanguard_drive = ExtResource("tile_vanguard_drive")
+horizon_drive = ExtResource("tile_vanguard_drive")
 
 [node name="JumpManager" parent="Systems" unique_id=1357262320 instance=ExtResource("27_nwhv6")]
 
 [node name="FateCarveChoice" type="Node2D" parent="Systems" unique_id=1717300004]
 script = ExtResource("fate_carve_choice")
 
-[node name="FateRevelation" type="Node2D" parent="Systems" unique_id=1717300005]
+[node name="FateRevelation" type="Node" parent="Systems" unique_id=1717300005]
 script = ExtResource("fate_revelation")
+
+[node name="LastWords" type="Node2D" parent="Systems" unique_id=1717300007]
+script = ExtResource("last_words")
 
 [node name="ReckoningHud" type="Node2D" parent="Systems" unique_id=1717300006]
 script = ExtResource("reckoning_hud")

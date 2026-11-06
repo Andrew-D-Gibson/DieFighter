@@ -45,6 +45,9 @@ var _families: Dictionary[String, String] = {}
 ## Ship id (ShipResource.id) -> true, for every ship that started locked and
 ## the player has earned (ShipUnlocks).
 var _ships: Dictionary[String, bool] = {}
+## Story beat id (StoryBeatResource.id()) -> true, for every story box the
+## player has read, so it plays its short form after that.
+var _story: Dictionary[String, bool] = {}
 ## What the player knows of Fate across runs (LORE.md §6, §8):
 ##   knowledge — true once they have beaten the last boss and heard the secret
 ##   alone, convoy, last_die, become_fate, fell_in — how often the Reckoning
@@ -103,6 +106,23 @@ func record_region(id: String) -> void:
 	if id.is_empty() or _regions.has(id):
 		return
 	_regions[id] = true
+	_queue_write()
+
+
+func has_read_story_beat(id: String) -> bool:
+	return _story.has(id)
+
+
+func record_story_beat(id: String) -> void:
+	if id.is_empty() or _story.has(id) or not is_recording():
+		return
+	_story[id] = true
+	_queue_write()
+
+
+## Forgets every story beat read, for the dev console.
+func forget_story_beats() -> void:
+	_story.clear()
 	_queue_write()
 
 
@@ -256,6 +276,7 @@ func clear() -> void:
 	_ships.clear()
 	_fate.clear()
 	_runs_started = 0
+	_story.clear()
 	changed.emit()
 	_write()
 
@@ -331,6 +352,7 @@ func _write() -> void:
 		"ships": _ships.keys(),
 		"fate": _fate,
 		"runs_started": _runs_started,
+		"story": _story.keys(),
 	}
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.WRITE)
 	if not file:
@@ -349,6 +371,7 @@ func load_collection() -> void:
 	_ships.clear()
 	_fate.clear()
 	_runs_started = 0
+	_story.clear()
 	if not FileAccess.file_exists(collection_path):
 		return
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.READ)
@@ -368,6 +391,8 @@ func load_collection() -> void:
 		_regions[str(id)] = true
 	for id: Variant in data.get("ships", []):
 		_ships[str(id)] = true
+	for id: Variant in data.get("story", []):
+		_story[str(id)] = true
 	var families: Variant = data.get("families", {})
 	if families is Dictionary:
 		for id: Variant in families:

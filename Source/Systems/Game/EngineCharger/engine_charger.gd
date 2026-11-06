@@ -8,15 +8,15 @@ extends Node2D
 
 ## Applied to the charged indicator while the drive is past the gate.
 const _REDLINE_TINT: Color = Color(1.0, 0.45, 0.45)
-## The Vanguard Drive's colour (LORE.md §4): the gold of the halo on its
-## tile. The charger wears it from the moment the dying Marshal hands the
+## The Horizon Drive's colour (LORE.md §4): the gold of the halo on its
+## tile. The charger wears it from the moment the dying Bastion hands the
 ## drive over, and the ending cutscene's engines burn with it.
 const DRIVE_COLOR: Color = Color("#eed35d")
 const _DRIVE_RINGS: Texture2D = preload("res://Assets/Textures/Enemies/ParticleTextures/engine_ring_large_drive.png")
 ## The flat purple the bar's fill and charged light are drawn in.
 const _FILL_PURPLE: Color = Color("#c552f1")
 ## Multiplies that purple into the drive's gold, channel by channel: the
-## Reckoning's bar is the escape, worn in the Vanguard Drive's colour
+## Reckoning's bar is the escape, worn in the Horizon Drive's colour
 ## (RECKONING_ENDINGS.md §1) without a second set of art.
 const _GOLD_TINT: Color = Color(
 	DRIVE_COLOR.r / _FILL_PURPLE.r, DRIVE_COLOR.g / _FILL_PURPLE.g, DRIVE_COLOR.b / _FILL_PURPLE.b)
@@ -70,7 +70,7 @@ func _refresh_drive() -> void:
 		_install_drive(false)
 
 
-## The Vanguard Drive goes into the charger: the tile shimmers as upgraded,
+## The Horizon Drive goes into the charger: the tile shimmers as upgraded,
 ## in the drive's colour, and its rings burn gold. [param announce] is the
 ## hand-over itself, with the upgrade's burst and a callout.
 func _install_drive(announce: bool) -> void:

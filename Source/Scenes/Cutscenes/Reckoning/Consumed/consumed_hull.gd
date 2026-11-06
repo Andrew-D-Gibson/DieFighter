@@ -3,7 +3,7 @@ extends Sprite2D
 ## The player's own hull in the consumed cutscene (ConsumedCutscene): their
 ## ship's cutscene_frames, with everything Fate does to it on top, keyed from
 ## the cutscene's timeline:
-##   - [member gold], the Vanguard Drive's gold in its lights and flames;
+##   - [member gold], the Horizon Drive's gold in its lights and flames;
 ##   - its flames, each going out on its own ([method snuff]);
 ##   - [member wash], Fate's cloak reaching across it from the hole's side;
 ##   - [member crack], cracks opening along the hull, lit purple from inside;

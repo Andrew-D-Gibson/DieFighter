@@ -16,7 +16,7 @@ const _DIALOGUE_SCENE: PackedScene = preload("res://Source/Systems/Game/EnemyDia
 const _DIE_TEXTURE: Texture2D = preload("res://Assets/Textures/Dice/Regular/dice6.png")
 
 ## The fleet's own drive colour, which every saved ship burns: only the
-## player's runs on the Vanguard Drive.
+## player's runs on the Horizon Drive.
 const _FLEET_EXHAUST: Color = JumpFx.BLUE
 ## Above the ships and their flares, so a line is never hidden by a hull.
 const _BUBBLE_Z: int = 30

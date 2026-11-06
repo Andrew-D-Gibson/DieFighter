@@ -30,7 +30,7 @@ player sends their dice.
 
 | Before | Now |
 |---|---|
-| A separate escape meter (ReckoningHud) | **The engine charger is the bar**, recoloured in the Vanguard Drive's gold (#EED35D). No new loading bar. |
+| A separate escape meter (ReckoningHud) | **The engine charger is the bar**, recoloured in the Horizon Drive's gold (#EED35D). No new loading bar. |
 | Goal: 3× the drive limit, recalculated live | **Goal: 3× the drive limit for the dice you hold when you turn Back, fixed for the fight.** The limit normally shrinks as dice leave (`player.gd`: 10 at 3 dice, 4 at 2, 1 at 1), which would make giving dice away *lower* your own goal. |
 | Charge banked into escape at the end of every turn | Charge simply stays on the charger and climbs toward the goal. A full bank lights the map's jump arrow, and **you jump the way you always have**. |
 | No fleeing (the background's NoEscape and the Reckoning's HorizonModifier) | **Both removed.** The background instead says **"Attacks can't be evaded"**. Charge climbs toward 30 and never banks away, so evasion (3% a charge, up to 50%) would sit at the cap for most of the fight. |
@@ -38,7 +38,7 @@ player sends their dice.
 | Saved ships as Saved Ship tiles; spared pirates as Old Debt tiles | **Saved ships fly in as ally ships** on your side (§3). **Spared pirates make one strafing flyby** (§3). Both tiles are retired. |
 | Echoes at full hull, in waves of 3 | **Echoes at half hull**, since they're memories. **One wave per encounter** (§2). |
 
-**The Vanguard Drive tile** still replaces the engine charger tile: any die
+**The Horizon Drive tile** still replaces the engine charger tile: any die
 puts **2× its face** into the engine. It reads as the gold engine charger.
 
 **Siphons and drains** (enemy actions that take engine charge) now attack your
@@ -227,7 +227,7 @@ Cutscenes draw from it; they never read the ledger themselves.
   - flares, motes and streaks are drawn on the 320×180 grid (`JuicePixelated`, `JumpFx`);
   - new sprites, if ever wanted, go through `Art/` and `tools/export_art.py`.
 - **Colours:**
-  - gold #EED35D is the Vanguard Drive, so it's *you*;
+  - gold #EED35D is the Horizon Drive, so it's *you*;
   - cyan #8DF1F4 is the opening's exhaust;
   - purple is Fate;
   - allies jump in their `FactionIdentity.color`.
@@ -259,7 +259,7 @@ missing ship reads as a gap.
 This is the triumph. Whatever comes after, getting out of the Reckoning is a
 win, and the game says so.
 
-1. **The bank fills.** The gold charger flares, and "VANGUARD DRIVE!" (the existing callout) lands on the last point. The map's jump arrow lights.
+1. **The bank fills.** The gold charger flares, and "HORIZON DRIVE!" (the existing callout) lands on the last point. The map's jump arrow lights.
 2. **The player jumps.** The music swells to its biggest sting of the fight. The dice rattle and the ship stretches gold, then the white jump-out (the existing `play_jump_intro` with a white tint).
 3. **Cut to black.** The cutscene for the ending takes over.
 
@@ -295,7 +295,7 @@ Between steps 4 and 5:
 
 - **4a. The formation closes.** There are no gaps. Your ship slides forward through the formation **to the front**, gold engines brightening. **Camera:** the one push in, toward the front of the formation.
 - **4b. Every ship fires its flares at once.** It's the biggest burst in the game: faction colours plus your gold.
-- **4c. The closing line types over the formation: *"No one is behind you."*** Nobody was left behind, and nothing is chasing you. It answers the Forward ending, where you become the Vanguard and keep the deal: here you lead a fleet that isn't running any more.
+- **4c. The closing line types over the formation: *"No one is behind you."*** Nobody was left behind, and nothing is chasing you. It answers the Forward ending, where you take the dead Bastion's place and keep the deal: here you lead a fleet that isn't running any more.
 
 ### 6.4 The Last Die
 *Sacrifice, and a higher calling.* Two shots: being consumed, then what became

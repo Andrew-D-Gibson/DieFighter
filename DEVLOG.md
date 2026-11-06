@@ -47,13 +47,34 @@ The secret last fight and how a run ends there, redone from the design in `RECKO
 
 ---
 
+## 2026-11-06 — Story boxes: every gate boss gets last words
+
+- **Boss cleanup.** One name per character (LORE.md §1): the Arc Dynamo leads the Caravan (the Chancellor is gone) and the Sector Warden leads the Undertow (the borrowed-title backstory is gone). Cards read *Leader of the Undertow* / *Leader of the Caravan* / *Leader of the Rearguard*; codex blurbs match.
+- **Story boxes, built** (`STORY_BOXES_PLAN.md` §3). `StoryBox` is the Bastion's box made reusable: dim, the speaking ship spotlit, speech-box art stretched to fit (green for the Caravan, yellow for the Inbound, red otherwise), a green Close per line. `StoryBeatResource` is the content: speaker, up to three lines, and a repeat line once read (`CollectionManager.has_read_story_beat()`, saved in the collection). Its text syncs to `content.csv` like any content field.
+- **`LastWords`** replaces FateRevelation's hold-and-speak. Any gate with `ScenarioResource.last_words` holds its last ship (one it started with, not a launched fighter) and lets it speak once the fight is over; the last gate plays the Bastion's confession through the same path. `FateRevelation` keeps only the confession's lines and the knowledge.
+- **Beats:** the Sector Warden saw Rearguard convoys flying back toward the hole full of dice and was paid not to ask; the Arc Dynamo paid the tithe every jump and sends you to *"Ask the Bastion where our dice went."* With the Bastion's confession, the three bosses go hint, hint, secret.
+- Found while testing: the end of a fight (`combat_finished`) can be announced before the last ship's death when the kill doesn't come through an effect chain, so `LastWords` waits for it only if the fight is still on, and `FateRevelation` decides the full or short confession from what the player knew when the fight began.
+- Checked in play under Xvfb: the Warden (first time and repeat line), the Arc Dynamo through to its kill, and the Bastion's short form. Core tests pass.
+
+---
+
+## 2026-11-06 — The Bastion confesses; one name per character
+
+- **The ending, staged.** The last ship to fall at the last gate is held whole (`Enemy.hold_death()`) while the rest of the wreck goes: on the Bastion, the hull breaks up around whichever of its three parts died last. The screen dims, that part stays lit (`EnemyGraphicsManager.set_spotlit()`), and the revelation plays a line at a time in the boss's own speech-box art, sliced and stretched to 132px (`FateRevelation._SpeechBox`), each line with a green Close. Clicking the dim finishes a line, Close moves on, and the last Close lets the kill play. Checked in play under Xvfb with the Aegis, the Core and the Batteries each dying last.
+- **The story, simplified** (LORE.md §1 "Keep it simple", §4 rewritten). The Marshal and the Vanguard are gone. **The Bastion** is the Rearguard's leader and the one who made the deal: the tithe feeds the hole, and the hole lets the Bastion live. Its death breaks the deal and Fate comes to collect. The confession is now eight lines in its own voice (`FATE_REVEAL_1`-`8`, speaker *THE BASTION, DYING*). LORE.md §4 lists the hints already in play (Tollkeeper, The Ledger, Tithe Run, Apostate).
+- **Renames:** the Vanguard Drive is the **Horizon Drive** (`ReckoningDirector.horizon_drive`; its resource and art files keep the `vanguard_drive` name so tile ids and saves don't change). The Bastion's card reads *"Leader of the Rearguard. Break it apart."*; the Tollkeeper says *"You're on the Bastion's list."*; the Ledger's Picket says *"Ask the Bastion where it goes."*
+- `content.csv` re-synced (which also caught a stale Overload keyword row that was failing `test_content_csv_is_in_sync`).
+- Open: the Arc Dynamo is still *"the Chancellor's reactor barge"* (LORE.md §11). Story boxes for other beats are planned in `STORY_BOXES_PLAN.md`.
+
+---
+
 ## 2026-11-05 — The first ending: Fate's Die unlocked
 
 The run that first learns the secret now ends on a cutscene instead of the gate passage (`EndingCutscene`, played from `GameStateManager.go_through_gate()`).
 
 - **The flight.** Fade to black on the jump, then the ship pulls away from the Bastion's burning husk (bays scarred and on fire, its blue lights dying through `husk_lights.gdshader`). The tithe vault breaks and real dice stream past the ship, forward, into the opening's black hole mirrored on the right, stretching as they fall in. Glitches, a push-in on ship and hole, and a hard cut into Fate's purple with the music cut on the same frame. The camera runs the opening's moves in reverse. Timeline: `ending_anim`.
 - **The vision.** Fate's Die as a real 3D cube (`FateDieSpin`: its own SubViewport and world, faces built from the glyphs at 5x, lit, then snapped back to the approved palette and outlined by `palette_snap.gdshader`). It fades in blank and carves its six faces one at a time on whichever side faces the camera, each with a flare and sparks. "Fate only notices those who choose..." types above it, each point of the ellipsis on its own beat with a click; UNLOCKED lands in orange with a heavy clack. Then black, and the victory screen fades up with its usual buttons.
-- **The Vanguard Drive is visible.** When the Marshal's lines close, `FateLedger.take_drive()` (saved as `has_drive`) installs it: the engine charger gets the upgraded shimmer and sparks in the drive's gold (`TileUpgradeLook.set_override`, held through the Reckoning's tile swap), its rings turn gold (`engine_ring_large_drive.aseprite`), with a "VANGUARD DRIVE!" callout. The cutscene's ship burns gold too (`drive_recolor.gdshader`). Gold, not cyan: the opening's exhaust is already that cyan.
+- **The Vanguard Drive is visible.** When the Marshal's lines close, `FateLedger.take_drive()` (saved as `has_drive`) installs it: the engine charger gets the upgraded shimmer and sparks in the drive's gold (`TileUpgradeLook.set_override`, held through the Reckoning's tile swap), its rings turn gold (`engine_ring_large_drive.aseprite`), with a "HORIZON DRIVE!" callout. The cutscene's ship burns gold too (`drive_recolor.gdshader`). Gold, not cyan: the opening's exhaust is already that cyan.
 - **No loot from a run-ending gate.** The last gate's ships drop nothing unless `fate_route_open()` (the secret known when the run began and every face carved): `RewardManager._spawn_reward` asks `GameStateManager.is_at_last_gate()` / `last_gate_pays()`. One core test for the rule; the ledger save test covers `has_drive`.
 - The opening's skip handling moved into `CutsceneSkipPrompt`, shared by both cutscenes. Dev console: `fate ending`, `fate drive`.
 - New sounds wanted (vault break, ellipsis clicks, UNLOCKED, drive install, the glitch cut) are in `SOUND_EFFECTS_TODO.md`; for now they borrow existing cues. The flight borrows `game_start_theme`.

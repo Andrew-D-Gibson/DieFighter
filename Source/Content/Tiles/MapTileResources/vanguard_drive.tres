@@ -83,7 +83,7 @@ animations = [{
 
 [resource]
 script = ExtResource("6_0u234")
-tile_name = "[color=purple]Vanguard Drive[/color]"
+tile_name = "[color=purple]Horizon Drive[/color]"
 description = "[color=yellow]Any die[/color] -> Adds [color=purple]engine charge[/color] equal to {times}x die, then [color=orange]gives[/color] die to [color=purple]target[/color]"
 offered_as_reward = false
 textures = SubResource("SpriteFrames_f6mjj")

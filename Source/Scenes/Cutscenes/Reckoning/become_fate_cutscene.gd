@@ -6,7 +6,7 @@ extends ReckoningCutsceneSegment
 ## 1. What's left of "You" comes apart in glitch slices, and the small Fate's
 ##    Die floats free of it, across to the ship, and settles into the canopy.
 ## 2. The purple spreads from the nose back, a pixel row at a time, and the
-##    Vanguard Drive's gold goes purple.
+##    Horizon Drive's gold goes purple.
 ## 3. The shot pulls back onto the hole. The ship turns to face it, flies in,
 ##    and the camera follows it down through the centre without a cut: the
 ##    hole grows round the frame, the stars stream in and bend at the rim,

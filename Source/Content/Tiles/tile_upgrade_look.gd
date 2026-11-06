@@ -43,7 +43,7 @@ static func apply(sprite: AnimatedSprite2D, resource: TileResource) -> void:
 
 ## Dresses [param tile] as upgraded, in [param color], whatever its resource
 ## says, until a transparent colour takes it off again. For a tile that has
-## been made more than it is: the engine charger once the Vanguard Drive is in
+## been made more than it is: the engine charger once the Horizon Drive is in
 ## it. It holds through resource changes.
 static func set_override(tile: Tile, color: Color) -> void:
 	if color.a > 0.0:

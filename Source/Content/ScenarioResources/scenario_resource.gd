@@ -30,6 +30,12 @@ extends Resource
 ## move the offer aside for those.
 @export var starting_reward_position: Vector2 = Vector2(160, 60)
 
+## What the fight's last ship says as it dies, in a story box (LastWords),
+## for a boss with something to tell. Null for a fight that ends without a
+## word. The run's last gate ignores it: the Bastion's confession plays there
+## (FateRevelation).
+@export var last_words: StoryBeatResource
+
 ## A hull the scenario's mounted ships are parts of. Null for an ordinary
 ## encounter. See ShipHullResource.
 @export var hull: ShipHullResource

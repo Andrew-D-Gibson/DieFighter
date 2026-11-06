@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="StoryBeatResource" format=3]
+
+[ext_resource type="Script" path="res://Source/Content/StoryBeats/story_beat_resource.gd" id="1_script"]
+
+[resource]
+script = ExtResource("1_script")
+speaker = "ARC DYNAMO, DYING"
+line_1 = "I kept the Belly moving. Every jump, someone got left behind. That was my job."
+line_2 = "And every jump, the Rearguard took its tithe. We paid it so they'd hold the line."
+line_3 = "If they're holding anything, it isn't for us. Ask the Bastion where our dice went."
+repeat_line = "Ask the Bastion where our dice went."

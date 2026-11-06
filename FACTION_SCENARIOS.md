@@ -31,8 +31,8 @@ slow is dead.
 - **Elites:** Wake Riders†, Chopshop (the Warden's breakers: *"The Warden wants your
   parts."*), The Line Moved On (a sentry grid still holding a line that left
   decades ago).
-- **Gate:** the Sector Warden, *Warlord of the Tail*: *"Everyone back here is
-  already dead."*
+- **Gate:** the Sector Warden, *leader of the Undertow*: *"Everyone back here is
+  already dead."* Its last words: Rearguard convoys flying back toward the hole.
 
 ### Sector 2: The Belly ("Keep everyone together.")
 The Caravan's heart, and the most mixed layer: Compact enforcers, Undertow
@@ -46,7 +46,7 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   jumps."*), Procession (Inbound recruiters in force: a Censer, a Plumb Line that
   sinks deeper every round, and an Acolyte shielding them: *"Turn around. Come
   and see."*).
-- **Events:** Convoy, Cut Loose (the Chancellor's philosophy in miniature), Mercy
+- **Events:** Convoy, Cut Loose (the Arc Dynamo's philosophy in miniature), Mercy
   Call, Pickpocket, Wreck Salvage (a Conscriptor shaking down a wrecked civilian), Pact†, Last
   Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
   Pirates Attacking Civilian†, What Came Back†, Wolf in the Fold (an Undertow
@@ -59,8 +59,8 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   *"Your lien is due."*), Wake Riders†, Twin Flames (a Zealot, Censer and the Pilgrim
   feeding them), Procession† (a Zealot, a Pilgrim relaying it luck, and an
   Acolyte shielding the procession).
-- **Gate:** the Arc Dynamo, *the Chancellor's reactor barge*: *"The Belly can't wait
-  for one ship."*
+- **Gate:** the Arc Dynamo, *leader of the Caravan*: *"The Belly can't wait
+  for one ship."* Its last words: the tithe the Caravan paid, and where to ask about it.
 
 ### Sector 3: The Spine ("Hold the line, buy time.")
 Checkpoints, tithes and warships, plus the Undertow they hire under the table.
@@ -76,7 +76,7 @@ Checkpoints, tithes and warships, plus the Undertow they hire under the table.
   that saw where the tithe goes, flying inward under the Inbound halo).
 - **Elites:** Tithe Fleet, Lance Squadron, Mortar Nest (a Picket shields the
   mortars), Hunter-Killers†, Procession†.
-- **Gate:** the Bastion, *the Marshal's fortress*: *"Four hundred years. Not you."*
+- **Gate:** the Bastion, *leader of the Rearguard*: *"Four hundred years. Not you."*
 
 The Mayday comes from a Bounty Runner: a civilian hull with an Undertow badge, the
 tell for anyone reading the targeting computer. Sometimes it's bait (it runs on round
@@ -193,7 +193,7 @@ better). Picket: *"I counted the tithe. It goes forward."* Conscriptor: *"Prison
 transfer. Move along."*
 - **Take the ledger, or shoot the Conscriptor:** *"That's classified. Hand it
   over."* / *"Aiding a traitor? Then hang."* The Picket breaks free and Raids. Win,
-  and it patches 10 hull: *"Ask the Vanguard where it goes."* — Mercy
+  and it patches 10 hull: *"Ask the Bastion where it goes."* — Mercy
 - **Shoot the Picket:** *"Saves us a tribunal."* The Picket's wreck pays credits,
   and the Conscriptor says *"Loyalty noted."* The ledger still floats, and taking it
   now turns the Conscriptor on you, alone. — Ruin
@@ -543,7 +543,7 @@ standing.
   line remembers."*, +2). Sparing a last ship forfeits the bounty; the standing
   pays it back later.
 - **The Tollkeeper** waives the tithe for a Rearguard that LIKES the player
-  (*"You're on the Marshal's list. Pass, pilot."*) and doubles it (20-36) for
+  (*"You're on the Bastion's list. Pass, pilot."*) and doubles it (20-36) for
   one that DISLIKES them.
 
 ## Open
@@ -572,5 +572,5 @@ standing.
 - Faces with only a few sources: Hunger (the Pact, flying into Fate's tiles) and
   Strange (Signal, What Came Back). A careful run in a short sector may not fill
   the die; watch how often it does.
-- White Flag's spared Gaff and The Ledger's Vanguard line are written for run memory
-  (a Debt ally, and the Vanguard answering the ledger): two more readers to add.
+- White Flag's spared Gaff and The Ledger's Bastion line are written for run memory
+  (a Debt ally, and the Bastion answering the ledger): two more readers to add.

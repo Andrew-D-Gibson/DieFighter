@@ -880,7 +880,7 @@ func _help() -> void:
 	command_history.append_text('\n    [b]fate give[/b] / [b]fill[/b] / [b]clear[/b]    hand over the die / carve every blank face / wipe it')
 	command_history.append_text('\n    [b]fate carve[/b] <face>             mercy|plunder|duty|ruin|hunger|strange (full die: choose a face)')
 	command_history.append_text('\n    [b]fate know[/b] [off]               the secret, as if learned on an earlier run')
-	command_history.append_text('\n    [b]fate drive[/b] / [b]ending[/b]           install the Vanguard Drive / play the first ending')
+	command_history.append_text('\n    [b]fate drive[/b] / [b]ending[/b]           install the Horizon Drive / play the first ending')
 	command_history.append_text('\n    [b]fate escape[/b] [n] / [b]you[/b]          in the Reckoning: add engine charge / skip the Tally to "You"')
 	command_history.append_text('\n    [b]fate allies[/b] [n]               remember n made-up saved ships (in the Reckoning: they join its queue)')
 	command_history.append_text('\n[b]fps[/b]                           toggle FPS display')

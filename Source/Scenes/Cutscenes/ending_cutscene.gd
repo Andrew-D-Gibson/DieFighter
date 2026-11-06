@@ -608,7 +608,7 @@ func _dress_player_ship(ship: ShipResource) -> void:
 	_ship.play(&"boost")
 
 
-## The drive's wash, in the Vanguard Drive's gold: the drive the Marshal
+## The drive's wash, in the Horizon Drive's gold: the drive the Marshal
 ## handed over is what's running now.
 func _add_exhaust(ship: Node2D) -> void:
 	var points: PackedVector2Array = PackedVector2Array([Vector2(-8.5, 9.0), Vector2(8.5, 9.0)])

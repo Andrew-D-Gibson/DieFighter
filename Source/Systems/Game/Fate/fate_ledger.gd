@@ -84,7 +84,7 @@ var _hunger_sectors: Array[int] = []
 var in_reckoning: bool = false
 ## The Reckoning's scenario seed, so a Continue replays the same fight.
 var reckoning_seed: int = 0
-## Whether the dying Marshal has handed over the Vanguard Drive (LORE.md §4).
+## Whether the dying Bastion has handed over the Horizon Drive (LORE.md §4).
 ## It sits in the engine charger from then on (EngineCharger) and runs the
 ## Reckoning's escape.
 var has_drive: bool = false
@@ -119,7 +119,7 @@ func _ready() -> void:
 
 # ── The drive ────────────────────────────────────────────────────────────────
 
-## The dying Marshal hands over the Vanguard Drive. Once a run.
+## The dying Bastion hands over the Horizon Drive. Once a run.
 func take_drive() -> void:
 	if has_drive:
 		return
@@ -185,7 +185,7 @@ func deed_count(id: String) -> int:
 
 
 ## The hidden condition of LORE.md §6: a player who never paid a tithe, and
-## turned at least one down, never paid into the Vanguard's deal.
+## turned at least one down, never paid into the Bastion's deal.
 func refused_every_tithe() -> bool:
 	return deed_count(DEED_TITHE_PAID) == 0 and deed_count(DEED_TITHE_REFUSED) > 0
 

@@ -6,7 +6,7 @@
 
 [resource]
 script = ExtResource("ext_0")
-dialogue = "You're on the Marshal's list. Pass, pilot."
+dialogue = "You're on the Bastion's list. Pass, pilot."
 attitude = 1
 transitions = Dictionary[int, ExtResource("ext_1")]({
 0: ExtResource("ext_2")

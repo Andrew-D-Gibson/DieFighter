@@ -31,7 +31,7 @@ extends Node
 ## Ships per Spilled wave.
 @export var spilled_wave_size: int = 3
 ## Stands in for the engine charger for the length of the fight.
-@export var vanguard_drive: TileResource
+@export var horizon_drive: TileResource
 ## "You": the player's own hull, sent once the Tally is spent. Its fire (the
 ## die's face times the Your Own Fire action's multiplier) is tuned there.
 @export var self_resource: EnemyResource
@@ -290,7 +290,7 @@ func _begin(loaded: ScenarioResource) -> void:
 	_wing.hold_until(Events.enemies_arrived)
 
 	_dress_charger(true)
-	_swap_in_vanguard_drive()
+	_swap_in_horizon_drive()
 	_next_slot = Globals.fate_ledger.die.roll(_rng)
 	_advance_waves(false)
 
@@ -308,24 +308,24 @@ func _stop() -> void:
 			Globals.player.dice_lost.disconnect(_on_dice_lost)
 
 
-## The engine charger wears the Vanguard Drive's gold as the escape.
+## The engine charger wears the Horizon Drive's gold as the escape.
 func _dress_charger(on: bool) -> void:
 	var charger: EngineCharger = get_tree().get_first_node_in_group(&"engine_charger") as EngineCharger
 	if charger:
 		charger.set_escape_dress(on)
 
 
-## The dying Vanguard's drive (LORE.md §4) takes the engine charger's place.
-func _swap_in_vanguard_drive() -> void:
-	if not vanguard_drive:
+## The dying Bastion's drive (LORE.md §4) takes the engine charger's place.
+func _swap_in_horizon_drive() -> void:
+	if not horizon_drive:
 		return
 	var charger: Node = get_tree().get_first_node_in_group(&"engine_charger")
 	_engine_tile = charger.get_node_or_null(^"EngineChargerTile") as Tile if charger else null
 	if not _engine_tile:
 		return
-	if _engine_tile.tile_resource != vanguard_drive:
+	if _engine_tile.tile_resource != horizon_drive:
 		_engine_tile_resource = _engine_tile.tile_resource
-		_engine_tile.tile_resource = vanguard_drive
+		_engine_tile.tile_resource = horizon_drive
 
 
 func _restore_engine_tile() -> void:
