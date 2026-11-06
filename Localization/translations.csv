@@ -375,3 +375,8 @@ FATE_ENDING_CONVOY_LINE,You brought them out with you.,,,,,,,,Line under the 'TH
 FATE_ENDING_CONVOY_PERFECT_LINE,No one is behind you.,,,,,,,,"Line under the 'THE CONVOY' heading for the perfect version: the player saved everyone they could, the whole run long, and left nobody behind",,,,
 FATE_ENDING_LAST_DIE_TITLE,THE LAST DIE,,,,,,,,"Heading of an ending: the player gave their very last die to a saved ship so it could escape, and was pulled into the black hole themselves. A sacrifice",,,,
 FATE_ENDING_LAST_DIE_LINE,You gave it away. They carried it out.,,,,,,,,"Line under the 'THE LAST DIE' heading: the player gave away their last die so others could escape. Quiet, proud",,,,
+FATE_DIE_HOVER_HINT,Point at a face to read it.,,,,,,,,"Line in Fate's Die's info panel: hovering a face of the pictured die shows what it is and what carves it",,,,
+FATE_FACE_HOVER_CARVED,"{face}\n[color=purple]Carved by:[/color] {carved_by}",,,,,,,,"Popup over one carved face of Fate's Die in its info panel; {face} is the face's name (Mercy, Ruin...), {carved_by} a short line of what kind of choice carves it. What the face does is deliberately not said",,,,
+FATE_FACE_HOVER_BLANK,"[color=purple]Blank.[/color] Choices carve it:\n{faces}",,,,,,,,"Popup over a blank face of Fate's Die in its info panel; {faces} becomes one line per face that can be carved, each its name and what carves it",,,,
+FATE_FACE_HOVER_BLANK_LINE,{face}: {carved_by},,,,,,,,"One line of the blank-face popup on Fate's Die: {face} is a face's name (Mercy, Ruin...), {carved_by} what kind of choice carves it",,,,
+FATE_CALLOUT_CARVED_COUNT,{carved} OF {total},,,,,,,,"Small callout under ""MERCY CARVED"" when a face is carved into Fate's Die: how many of its six faces are now carved, in capitals",,,,

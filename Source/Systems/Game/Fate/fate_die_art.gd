@@ -83,7 +83,7 @@ static func net_texture(die: FateDie) -> ImageTexture:
 			image.set_pixel(x, y, OUTLINE if edge else (BONE_SHADE if y == slab.end.y - 2 else BONE))
 	for slot: int in FateDie.FACE_COUNT:
 		var res: FateFaceResource = FateFaceCatalog.get_face(die.face_at(slot))
-		var at: Vector2i = Vector2i([1, 8, 16][slot % 3], 5 + (slot / 3) * 7)
+		var at: Vector2i = net_face_rect(slot).position
 		if res and res.glyph:
 			var glyph: Image = res.glyph.get_image()
 			glyph.decompress()
@@ -92,3 +92,8 @@ static func net_texture(die: FateDie) -> ImageTexture:
 		else:
 			image.set_pixel(at.x + 3, at.y + 3, BONE_DEEP)
 	return ImageTexture.create_from_image(image)
+
+
+## Where slot [param slot]'s 7x7 glyph sits on net_texture(), in its pixels.
+static func net_face_rect(slot: int) -> Rect2i:
+	return Rect2i(Vector2i([1, 8, 16][slot % 3], 5 + (slot / 3) * 7), Vector2i(7, 7))

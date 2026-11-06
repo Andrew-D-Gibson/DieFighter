@@ -6,10 +6,12 @@ extends Node2D
 ## far, and swings when the ship is hit.
 ##
 ## A carving is a moment: the die spins, lands on the new face, flares in its
-## colour and calls it out. A carving waiting for a choice (the die is full)
-## keeps it rattling until the player picks. In the Reckoning, Fate throws it
-## at the start of every round: it shakes on its own and lands on the face
-## that rules the round.
+## colour and calls it out. Carvings come from what ships say and do, so the
+## moment waits for every ship to finish talking (the die rattles meanwhile)
+## rather than land on top of their lines. A carving waiting for a choice (the
+## die is full) keeps it rattling until the player picks. In the Reckoning,
+## Fate throws it at the start of every round: it shakes on its own and lands
+## on the face that rules the round.
 ##
 ## When the hole sends "You" (RECKONING_ENDINGS.md §4), the die tears itself
 ## off the chain and goes to it (FateSelfPresentation, made here, runs the
@@ -48,6 +50,19 @@ const _SNAP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffe
 ## "You" (only the chain's stub left).
 enum Hold { HANGING, BREAKING, FALLING, GONE }
 
+## How long a carving's callout holds. Carvings are rare and they matter, so
+## they read longer than a hit's callout.
+const _CARVE_CALLOUT_SECONDS: float = 4.0
+## The longest a carving waits for ships to stop talking before it plays
+## anyway, so a chatty fight can't swallow it.
+const _MAX_COMMS_WAIT_SECONDS: float = 12.0
+const _COMMS_POLL_SECONDS: float = 0.25
+## A beat between the last line going and the carving, so the two don't run
+## together.
+const _AFTER_COMMS_SECONDS: float = 0.4
+## Between two carvings that came at once, so each gets its own moment.
+const _BETWEEN_CARVINGS_SECONDS: float = 2.0
+
 var _angle: float = 0.15
 var _angular_velocity: float = 0.0
 var _age: float = 0.0
@@ -71,6 +86,10 @@ var _rattle_tween: Tween
 ## How far the die has fallen since the chain snapped.
 var _fall: Vector2 = Vector2.ZERO
 var _fall_velocity: Vector2 = Vector2.ZERO
+## Carvings waiting for the ships to stop talking, oldest first, each
+## [slot, face, old face, faces carved once it's in].
+var _carvings_due: Array[Array] = []
+var _announcing: bool = false
 
 
 func _ready() -> void:
@@ -84,7 +103,10 @@ func _ready() -> void:
 	add_child(_clickable)
 	_clickable.clicked.connect(_show_info)
 
-	Events.load_game_save.connect(func(_save: GameSaveResource) -> void: _refresh.call_deferred())
+	Events.load_game_save.connect(func(_save: GameSaveResource) -> void:
+		# A carving still waiting belongs to the run as it was.
+		_carvings_due.clear()
+		_refresh.call_deferred())
 	Events.fate_die_received.connect(_on_received)
 	Events.fate_face_carved.connect(_on_carved)
 	Events.fate_carve_pending.connect(func(_face: int) -> void: _kick(_HIT_KICK))
@@ -175,8 +197,8 @@ func _process(delta: float) -> void:
 	var push: float = sin(_age * 0.9) * 0.4 + sin(_age * 2.3) * 0.25
 	var accel: float = -_GRAVITY / chain_length * sin(_angle) + push * _IDLE_SWAY / chain_length
 	var ledger: FateLedger = _ledger()
-	if ledger and ledger.has_pending():
-		# Rattling for a choice.
+	if ledger and (ledger.has_pending() or not _carvings_due.is_empty()):
+		# Rattling for a choice, or with a carving about to show.
 		accel += sin(_age * 40.0) * 30.0
 	if _rattle > 0.0:
 		accel += sin(_age * 57.0) * _BREAK_RATTLE * _rattle + sin(_age * 23.0) * _BREAK_RATTLE * 0.4 * _rattle
@@ -193,7 +215,7 @@ func _process(delta: float) -> void:
 		if _tumble_step <= 0.0:
 			_tumble_step = 0.06
 			_tumble_face = FateDie.carvable_faces()[int(_age * 97.0) % 6]
-	elif ledger and ledger.has_die:
+	elif ledger and ledger.has_die and _carvings_due.is_empty():
 		_hold += delta
 		if _hold >= _FACE_HOLD:
 			_hold = 0.0
@@ -253,7 +275,7 @@ func _draw() -> void:
 	if _glow > 0.0:
 		var radius: float = FateDieArt.SIZE * 0.5 + 2.0 + (1.0 - _glow) * 4.0
 		draw_circle(centre, radius, Color(_glow_color, _glow * 0.35))
-	var face: FateDie.Face = _tumble_face if _tumble > 0.0 else ledger.die.face_at(_shown_slot)
+	var face: FateDie.Face = _tumble_face if _tumble > 0.0 else _face_shown_at(ledger, _shown_slot)
 	var texture: Texture2D = FateDieArt.face_texture(face)
 	draw_texture(texture, (centre - Vector2(FateDieArt.SIZE, FateDieArt.SIZE) / 2.0).round())
 
@@ -264,6 +286,15 @@ func _draw_chain(from: Vector2, to: Vector2) -> void:
 	for i: int in steps:
 		var p: Vector2 = from.lerp(to, i / float(steps)).round()
 		draw_rect(Rect2(p, Vector2.ONE), _CHAIN if i % 2 == 0 else _CHAIN_DARK)
+
+
+## What [param slot] shows: the face carved there, unless that carving is
+## still waiting for its moment, which keeps the old face until then.
+func _face_shown_at(ledger: FateLedger, slot: int) -> FateDie.Face:
+	for carving: Array in _carvings_due:
+		if carving[0] == slot:
+			return carving[2] as FateDie.Face
+	return ledger.die.face_at(slot)
 
 
 func _kick(strength: float) -> void:
@@ -281,6 +312,49 @@ func _on_received() -> void:
 
 
 func _on_carved(slot: int, face: int, old_face: int) -> void:
+	var ledger: FateLedger = _ledger()
+	var carved: int = FateDie.FACE_COUNT - ledger.die.blank_count() if ledger else 0
+	_carvings_due.append([slot, face, old_face, carved])
+	if not _announcing:
+		_announce_carvings()
+
+
+## Plays every carving due, one at a time, each once the ships are quiet.
+func _announce_carvings() -> void:
+	_announcing = true
+	while not _carvings_due.is_empty():
+		await _wait_for_quiet_comms()
+		if _carvings_due.is_empty():
+			break
+		var carving: Array = _carvings_due.pop_front()
+		_play_carving(carving[0], carving[1], carving[2], carving[3])
+		if not _carvings_due.is_empty():
+			await get_tree().create_timer(_BETWEEN_CARVINGS_SECONDS).timeout
+	_announcing = false
+
+
+func _wait_for_quiet_comms() -> void:
+	# A carving and the line that comes with it are set off together, and the
+	# line may show a frame or two later: look only after a beat.
+	await get_tree().create_timer(_AFTER_COMMS_SECONDS).timeout
+	var waited: float = 0.0
+	while waited < _MAX_COMMS_WAIT_SECONDS and _someone_is_talking():
+		await get_tree().create_timer(_COMMS_POLL_SECONDS).timeout
+		waited += _COMMS_POLL_SECONDS
+	if waited > 0.0:
+		await get_tree().create_timer(_AFTER_COMMS_SECONDS).timeout
+
+
+func _someone_is_talking() -> bool:
+	for node: Node in get_tree().get_nodes_in_group(&"enemy_dialogue_boxes"):
+		var box: EnemyDialogueManager = node as EnemyDialogueManager
+		if box and box.is_speaking():
+			return true
+	return false
+
+
+## [param carved] is how many faces were carved once this one was in.
+func _play_carving(slot: int, face: int, old_face: int, carved: int) -> void:
 	_shown_slot = slot
 	_hold = 0.0
 	_tumble = 0.6
@@ -290,14 +364,18 @@ func _on_carved(slot: int, face: int, old_face: int) -> void:
 	var color: Color = res.color if res else Globals.white
 	get_tree().create_timer(0.6).timeout.connect(func() -> void:
 		_flare(color)
-		var text: String = tr("FATE_CALLOUT_CARVED").format({"face": res.display_face_name().to_upper() if res else ""})
+		var face_name: String = res.display_face_name().to_upper() if res else ""
+		var text: String = tr("FATE_CALLOUT_CARVED").format({"face": face_name})
 		if old_face != FateDie.Face.BLANK:
 			var old: FateFaceResource = FateFaceCatalog.get_face(old_face as FateDie.Face)
 			text = tr("FATE_CALLOUT_CARVED_OVER").format({
-				"face": res.display_face_name().to_upper() if res else "",
+				"face": face_name,
 				"old": old.display_face_name().to_upper() if old else "",
 			})
-		Juice.callout_at(self, _die_centre() + Vector2(-26, 20), text, color)
+		Juice.callout_at(self, _die_centre() + Vector2(-26, 20), text, color, false, null, _CARVE_CALLOUT_SECONDS)
+		Juice.callout_at(self, _die_centre() + Vector2(-26, 29),
+			tr("FATE_CALLOUT_CARVED_COUNT").format({"carved": carved, "total": FateDie.FACE_COUNT}),
+			Globals.purple, false, null, _CARVE_CALLOUT_SECONDS)
 		Juice.sparkle(self, _die_centre(), color, 10, 30.0, true)
 	)
 
@@ -330,7 +408,8 @@ func _show_info() -> void:
 	Events.show_info.emit(info_for(ledger))
 
 
-## The die's info panel: every face it bears and what carves the rest.
+## The die's info panel: every face it bears, and, pointed at, what carves
+## each. What a face does is left for the Reckoning to show.
 static func info_for(ledger: FateLedger) -> InfoResource:
 	var info: InfoResource = InfoResource.new()
 	info.title_label_text = "[color=#%s]%s[/color]" % [FateDieArt.BONE.to_html(false), TranslationServer.translate("FATE_DIE_TITLE")]
@@ -338,6 +417,14 @@ static func info_for(ledger: FateLedger) -> InfoResource:
 	info.top_label_text = TranslationServer.translate("FATE_DIE_CARVED_COUNT").format({
 		"carved": FateDie.FACE_COUNT - die.blank_count(), "total": FateDie.FACE_COUNT})
 	info.texture = FateDieArt.net_texture(die)
+	var blank_text: String = _blank_face_text()
+	for slot: int in FateDie.FACE_COUNT:
+		var res: FateFaceResource = FateFaceCatalog.get_face(die.face_at(slot))
+		var text: String = blank_text
+		if die.face_at(slot) != FateDie.Face.BLANK and res:
+			text = TranslationServer.translate("FATE_FACE_HOVER_CARVED").format({
+				"face": res.coloured_name(), "carved_by": res.display_carved_by()})
+		info.add_hotspot(Rect2(FateDieArt.net_face_rect(slot)), text)
 	var names: PackedStringArray = []
 	for face: FateDie.Face in FateDie.carvable_faces():
 		var n: int = die.count(face)
@@ -347,9 +434,21 @@ static func info_for(ledger: FateLedger) -> InfoResource:
 	var lines: PackedStringArray = []
 	if not names.is_empty():
 		lines.append("  ".join(names))
+	lines.append(TranslationServer.translate("FATE_DIE_HOVER_HINT"))
 	if die.is_full():
 		lines.append(TranslationServer.translate("FATE_DIE_FULL_HINT"))
 	else:
 		lines.append(TranslationServer.translate("FATE_DIE_BLANK_HINT"))
 	info.bottom_label_text = "\n".join(lines)
 	return info
+
+
+## A blank face's popup: every face a choice could carve there, and how.
+static func _blank_face_text() -> String:
+	var lines: PackedStringArray = []
+	for face: FateDie.Face in FateDie.carvable_faces():
+		var res: FateFaceResource = FateFaceCatalog.get_face(face)
+		if res:
+			lines.append(TranslationServer.translate("FATE_FACE_HOVER_BLANK_LINE").format({
+				"face": res.coloured_name(), "carved_by": res.display_carved_by()}))
+	return TranslationServer.translate("FATE_FACE_HOVER_BLANK").format({"faces": "\n".join(lines)})

@@ -10,8 +10,19 @@ extends Node
 ## every seeded map. See ARCHITECTURE_OVERVIEW "Run Progression".
 
 ## How many encounters are dealt between the shops, elites and the mix,
-## before the arrival and the gate are added (so a sector is this plus two).
+## before the arrival and the gate are added. A sector is this plus two, plus
+## [member added_stops], plus Fate's tile at its left edge (see generate()).
 @export var sector_size: int = 18
+
+## Stops dealt on top of [member sector_size], after the rest of the sector,
+## from a generator of their own (see add_stops()). Separate from
+## sector_size so a longer sector leaves every seeded map's opening as it
+## was: the tutorial's seed 21 and every AutoPilot transcript.
+@export var added_stops: int = 6
+## How many of [member added_stops] are always events; the rest are events
+## at the mix's usual chance. Events are where most choices that carve Fate's
+## Die are made.
+@export var added_events: int = 3
 
 @export_category('Scenario Resources')
 @export var empty_scenario: ScenarioResource
@@ -74,6 +85,7 @@ func generate(save: GameSaveResource) -> void:
 	# the sector is otherwise finished. See place_repair_stations().
 	var repair_placement_seed: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, "repair"])
 	var consequence_placement_seed: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, "consequence"])
+	var added_stops_seed: int = hash([RNGManager.get_rng(RNGManager.Bucket.RUN).state, "added"])
 	var scenarios: Array[ScenarioResource] = []
 
 	for i: int in range(RNGManager.randi_range(RNGManager.Bucket.RUN, 2, 3)):
@@ -97,6 +109,10 @@ func generate(save: GameSaveResource) -> void:
 	)
 	scenarios.insert(arrival_index, _pick_arrival_scenario(scenarios, save.sector_index))
 
+	# What the seed dealt, before anything scripted is pinned over it, for
+	# add_stops() to tell fresh encounters from ones the sector holds: a pin
+	# must change only its own slot.
+	var as_dealt: Array[ScenarioResource] = scenarios.duplicate()
 	_place_pinned_stops(scenarios, arrival_index)
 
 	var replaceable: Array[ScenarioResource] = []
@@ -106,27 +122,50 @@ func generate(save: GameSaveResource) -> void:
 	if save.sector_index == 0 and fate_pilgrim_scenario and fate_pilgrim_scenario not in scenarios:
 		place_fate_pilgrim(scenarios, arrival_index, replaceable,
 			fate_pilgrim_scenario, hash([repair_placement_seed, "pilgrim"]))
+	# From here on only fights make way for what's placed. Events are where
+	# most of Fate's Die is carved, so a sector keeps every one it was dealt,
+	# and the pilgrim, an event, keeps its slot: it hands over the die, and a
+	# repair station placed in the same band used to overwrite it.
+	var fights: Array[ScenarioResource] = combat_scenarios.duplicate()
 
 	for scenario: ScenarioResource in scenarios:
 		scenario.scenario_seed = RNGManager.randi(RNGManager.Bucket.RUN)
+
+	# After the RUN draws (the loop above spends one per stop), and before the
+	# stations and consequences, which then have the whole longer sector to
+	# be placed in.
+	var events: Array[ScenarioResource] = ScenarioResource.allowed_in_sector(
+		question_scenarios, save.sector_index)
+	events.erase(fate_pilgrim_scenario)
+	add_stops(
+		scenarios,
+		as_dealt,
+		arrival_index,
+		events,
+		ScenarioResource.allowed_in_sector(combat_scenarios, save.sector_index),
+		added_stops,
+		added_events,
+		_EVENT_CHANCE,
+		added_stops_seed
+	)
 
 	if repair_scenario:
 		place_repair_stations(
 			scenarios,
 			arrival_index,
-			replaceable,
+			fights,
 			repair_scenario,
 			repair_stations_per_sector,
 			repair_placement_seed
 		)
 
-	# After the stations, which they never displace (a station isn't in
-	# replaceable). Read against the standing as it is now: the sector being
+	# After the stations, which they never displace (a station isn't a
+	# fight). Read against the standing as it is now: the sector being
 	# generated answers for everything the player did before its gate.
 	place_consequences(
 		scenarios,
 		arrival_index,
-		replaceable,
+		fights,
 		ScenarioResource.allowed_in_sector(consequence_scenarios, save.sector_index),
 		consequences_per_sector,
 		consequence_placement_seed
@@ -145,6 +184,13 @@ func generate(save: GameSaveResource) -> void:
 		unlocks.size(),
 		hash([repair_placement_seed, "ship_unlock"])
 	)
+
+	# Fate's tile at the sector's left edge, against the black hole: Fate
+	# already holds it when the player arrives (FateState.reset() takes the
+	# first tile). Dealt as an empty slot, last and without a draw, so every
+	# other stop keeps its place relative to the arrival.
+	scenarios.insert(0, empty_scenario)
+	arrival_index += 1
 
 	save.sector_scenarios = scenarios
 	save.current_scenario_index = arrival_index
@@ -243,7 +289,7 @@ static func _place_pinned_stops(scenarios: Array[ScenarioResource], arrival_inde
 
 
 ## Swaps [param count_range] ordinary stops in a finished sector for repair
-## stations: combats or events (anything in [param replaceable]) that sit
+## stations: anything in [param replaceable] (generate() passes the fights)
 ## further from the arrival than one jump can reach, before the gate.
 ##
 ## Done last, from its own generator seeded off the RUN stream's state rather
@@ -350,6 +396,57 @@ static func place_consequences(
 		scenarios[candidates[pick]] = consequence
 		candidates.remove_at(pick)
 		consequence.scenario_seed = rng.randi()
+
+
+## Inserts [param count] more stops into a finished sector, the first
+## [param event_count] of them events and the rest events at
+## [param event_chance], otherwise fights. Each goes somewhere past a jump's
+## reach of the arrival and before the gate, so the arrival's neighbourhood
+## (which the tutorial scripts) stays as dealt. Prefers encounters neither
+## [param dealt] (the sector as the seed dealt it) nor an earlier added stop
+## holds: an event with none left becomes a fresh fight, and only once both
+## run dry does a stop repeat.
+##
+## Static and pure, from its own generator like place_repair_stations(): it
+## never draws from RUN, so the rest of a seeded map is dealt as before.
+static func add_stops(
+	scenarios: Array[ScenarioResource],
+	dealt: Array[ScenarioResource],
+	arrival_index: int,
+	events: Array[ScenarioResource],
+	combats: Array[ScenarioResource],
+	count: int,
+	event_count: int,
+	event_chance: float,
+	placement_seed: int
+) -> void:
+	var rng := RandomNumberGenerator.new()
+	rng.seed = placement_seed
+	var held: Array[ScenarioResource] = dealt.duplicate()
+	for i: int in range(count):
+		# Rolled every time, so a forced event doesn't shift later rolls.
+		var event_roll: float = rng.randf()
+		var want_event: bool = i < event_count or event_roll < event_chance
+		var fresh_events: Array[ScenarioResource] = Utils.array_while_excluding(events, held)
+		var fresh_combats: Array[ScenarioResource] = Utils.array_while_excluding(combats, held)
+		var pool: Array[ScenarioResource] = fresh_events if want_event else fresh_combats
+		if pool.is_empty():
+			pool = fresh_combats if want_event else fresh_events
+		var fresh: bool = not pool.is_empty()
+		if not fresh:
+			pool = events.duplicate()
+			pool.append_array(combats)
+		if pool.is_empty():
+			return
+		var stop: ScenarioResource = pool[rng.randi_range(0, pool.size() - 1)]
+		# The gate is the last slot: insert anywhere up to just before it.
+		var gate: int = scenarios.size() - 1
+		var at: int = rng.randi_range(mini(arrival_index + LONGEST_JUMP + 1, gate), gate)
+		scenarios.insert(at, stop)
+		held.append(stop)
+		# A repeat keeps the seed it was dealt with: the resource is shared.
+		if fresh:
+			stop.scenario_seed = rng.randi()
 
 
 ## One encounter from [param options], always spending exactly one draw of the

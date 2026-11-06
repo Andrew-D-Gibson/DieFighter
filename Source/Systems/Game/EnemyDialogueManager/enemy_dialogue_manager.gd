@@ -158,6 +158,8 @@ var _fold_tween: Tween
 var _stowed_at: Vector2 = Vector2.ZERO
 ## Whether the box is out beside the ship (or on its way in or out).
 var _out: bool = false
+## Whether a line is waiting for another ship to finish before it shows.
+var _waiting_turn: bool = false
 
 
 func _ready() -> void:
@@ -208,7 +210,9 @@ func _say(
 	if wait_turn and time_last_dialogue_was_shown and \
 	current_time < time_last_dialogue_was_shown + (time_between_dialogues * 1000):
 		var time_remaining: int = (time_last_dialogue_was_shown + (time_between_dialogues * 1000)) - current_time
+		_waiting_turn = true
 		await get_tree().create_timer(float(time_remaining) / 1000).timeout
+		_waiting_turn = false
 		# The player may have jumped away while this line waited its turn.
 		if _silenced:
 			return
@@ -260,6 +264,12 @@ func has_line_to_replay() -> bool:
 ## Whether the box is out beside the ship, or on its way in or out.
 func is_out() -> bool:
 	return _out
+
+
+## Whether this ship is talking, or has a line waiting its turn: what a
+## cockpit moment (a carving of Fate's Die) waits out rather than talk over.
+func is_speaking() -> bool:
+	return not _silenced and (_waiting_turn or (_out and visible))
 
 
 ## Says the last line again, at once, out of the comms badge: the player

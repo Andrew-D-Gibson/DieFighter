@@ -1327,9 +1327,28 @@ seeded maps stay as they were. For the same reason the 30% event roll is drawn
 even when no event is left, and each layer must hold at least
 `elites_per_sector.y` elites (`test_each_layer_holds_enough_to_fill_its_sector`).
 
+**Added stops** (`added_stops`, 6, of which `added_events`, 3, are always
+events; the rest are events at the mix's 30%) are inserted by
+`SectorGenerator.add_stops()` once the RUN stream has dealt the rest of the
+sector, from a side generator like the stations below, anywhere past a die's
+reach of the arrival and before the gate. They lengthen a sector without
+touching `sector_size`, which would move every seeded map (the tutorial's
+seed 21 included). An added stop prefers encounters the sector wasn't dealt
+(judged before any pinned stop, so a pin changes only its own slot); an
+event with none left becomes a fight.
+
+**Fate's tile** is the sector's first slot: `generate()` prepends an empty
+slot last, without a draw, so every stop keeps its place relative to the
+arrival, and `FateState.reset()` (a fresh sector only; a save restores) has
+Fate take tile 0 and start its zone there. One Fate encounter waits against
+the black hole from the start, inside the purple: a place to fly into Fate on
+purpose (Hunger). A sector is `sector_size` + `added_stops` + arrival + gate +
+this tile: 12 + 6 + 3 = 21.
+
 **Repair stations** (`repair_stations_per_sector`, 1-2) are swapped in by
 `SectorGenerator.place_repair_stations()` after the sector is otherwise built. They replace
-combats or events beyond a die's reach of the arrival, never shops, elites,
+fights beyond a die's reach of the arrival, never events (where Fate's Die is
+carved, and the pilgrim who hands it over is one), shops, elites,
 the arrival or the gate. Placement uses a side generator seeded from the RUN
 stream's *state* without drawing from it, so every existing seeded map
 (the tutorial's seed 21, AutoPilot transcripts) changes only in the replaced
@@ -1475,7 +1494,7 @@ kills set Become Fate, saved ships set Save Others, dice set Save Yourself.
 | `FateFaceResource` + `FateFaceCatalog` (`Content/FateDie/`) | One `.tres` per face in `Faces/`, named by its id: name, colour, 7x7 glyph (the faction badges, Ruin's own), what carves it, and the `reckoning_chain` it plays when Fate throws it. `defiant_chain`/`defiant_text` replace them for a run that refused every tithe. Translatable (`FATE_FACE.<id>.*`); numbers in the text bind to the chain (`TextTokens`). |
 | `FateLedger` | The run's die (`has_die` once the pilgrim hands it over; nothing carves before), `pending` carvings, `kills` (`Events.enemy_destroyed`, not ship-on-ship, not mounted parts, not inside the Reckoning; each with its `encounter` index and whether it died on the civilian side), `allies` (`REMEMBER_SHIP`, with `encounter`), the run's missed opportunities (civilians killed, the betrayal deeds of RECKONING_ENDINGS §5.1, an escort lost), `deeds` (`RECORD_DEED`), `in_reckoning`/`reckoning_seed`, and `knew_secret` (read from the collection when a run starts and saved with it, so learning the secret at the end of a run doesn't open that run's own way back). A save from before encounters were kept falls back to the old order. Hunger: arriving at one of Fate's tiles carves it, once a sector, before the arrival checkpoint (connected ahead of GameStateManager). |
 | Effects (SCENARIO_CONTROL, appended) | `CARVE_FATE_FACE` (`string_param` = face id), `GIVE_FATE_DIE`, `RECORD_DEED`, `REMEMBER_SHIP` (the actor), and the Reckoning's `ADD_ESCAPE_VELOCITY` (now engine charge), `SUMMON_ALLY_TILE`, `FATE_SEIZES_DIE`, plus the redo's `CALL_ALLY` (Mercy: `CallAllyEvent`) and `HURRY_NEXT_WAVE` (Hunger: `HurryNextWaveEvent`). `ADVANCE_HORIZON` is retired (`RetiredEffectHandler`: kept so the enum's values never shift). Each resolves through its event into the ledger or the director; outside the Reckoning the Reckoning's do nothing. |
-| `FateDieDisplay` (`Graphics/FateDieDisplay`) | The die on a chain from the canopy, drawn from `FateDieArt` (bone die + glyph, composed at run time and cached). Pendulum like `HangingDice`; tumbles and flares on a carving (`fate_face_carved`) or a throw (`fate_die_rolled`), rattles while a carving waits. Click: `info_for(ledger)`. `break_loose()` / `restore()` for "You" taking it (below); `is_hanging()`, `rest_position()`. Creates its `FateSelfPresentation` in `_ready`. |
+| `FateDieDisplay` (`Graphics/FateDieDisplay`) | The die on a chain from the canopy, drawn from `FateDieArt` (bone die + glyph, composed at run time and cached). Pendulum like `HangingDice`; tumbles and flares on a carving (`fate_face_carved`) or a throw (`fate_die_rolled`), rattles while a carving waits. A carving's moment (spin, flare, a 4 s callout with the carved count) is queued until no ship is talking (`EnemyDialogueManager.is_speaking()`, at most 12 s), so it never lands on the line that carved it. Click: `info_for(ledger)`, whose six faces are `InfoResource` hotspots (`add_hotspot()`, drawn by `InfoShower` in the keyword popup): a carved face's name and what carves it, a blank face every face and what carves it. What a face does in the Reckoning is deliberately never shown. `break_loose()` / `restore()` for "You" taking it (below); `is_hanging()`, `rest_position()`. Creates its `FateSelfPresentation` in `_ready`. |
 | `FateCarveChoice` (`Systems/FateCarveChoice`) | The full-die card, opened when a carving is pending and the player is out of combat and not jumping. Picking a face calls `resolve_pending(slot)`; Let It Pass is `resolve_pending(-1)`. Not recording (AutoPilot, Lab): `auto_choice()` carves over the most common face. |
 | `LastWords` (`Systems/Game/LastWords`) | A gate boss's last words. On `enemy_destroyed`, once a started fight (`start_combat`) has no hostile left and the dying ship is one the scenario started with (not a launched fighter), recording runs only: holds its death (`Enemy.hold_death()`), so on the Bastion the hull breaks up around whichever part fell last. Words: `FateRevelation.lines()` at the last gate, else `ScenarioResource.last_words` (a `StoryBeatResource`; its `repeat_line` once `CollectionManager.has_read_story_beat()`). Nothing to say, nothing held. After the fight ends (it may already have) and 1.6 s, opens a `StoryBox` on the ship, marks the beat read, and on `finished` releases the death (`release_death()`). |
 | `StoryBox` (`Systems/UI/StoryBox`) | `open_in(parent, speaker_name, lines, ship)`: dims the screen, spotlights the ship over it (`EnemyGraphicsManager.set_spotlit()`), and types the lines one at a time in the speaker's speech-box art (sliced and stretched, `_SpeechBox`; green for the Caravan, yellow for the Inbound, red otherwise), each with a green Close (`STORY_BOX_CLOSE`). Clicking the dim finishes a line; any key finishes or closes. Emits `finished` and frees itself. |
@@ -1505,7 +1524,9 @@ so its waves, allies and "You" are never saved. The meta state (knowledge,
 endings, fallen ships) is `collection.json`'s `fate` block.
 
 **Seeds.** The pilgrim is placed by `place_fate_pilgrim()` from a hash of the
-repair stations' seed, replacing one stop past a jump's reach of the arrival,
+repair stations' seed, replacing one stop past a jump's reach of the arrival
+(nothing placed after it may replace it: stations and consequences take
+fights only),
 so the RUN stream and every seeded map keep their draws (the tutorial's
 included). Fate's throws use the director's own generator.
 
