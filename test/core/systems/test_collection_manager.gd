@@ -81,6 +81,19 @@ func test_a_read_region_card_survives_a_reload() -> void:
 	assert_false(reloaded.has_read_region("hazard:solar_flare"))
 
 
+## The run count behind the menu's "Throw #N" outlives every run: it's
+## shown as the real number of runs ever started.
+func test_the_runs_started_survive_a_reload() -> void:
+	var collection: Node = _fresh_collection()
+	collection.clear()
+	collection.record_run_started()
+	collection.record_run_started()
+	collection._write()
+
+	var reloaded: Node = _fresh_collection()
+	assert_eq(reloaded.runs_started(), 2)
+
+
 func test_a_corrupt_file_reads_as_empty() -> void:
 	var file: FileAccess = FileAccess.open(RELOAD_PATH, FileAccess.WRITE)
 	file.store_string("{not json")

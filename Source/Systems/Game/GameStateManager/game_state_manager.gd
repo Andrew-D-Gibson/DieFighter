@@ -149,6 +149,8 @@ func _ready() -> void:
 		if ship:
 			current_game_save.ship_id = ship.id
 		_opening_strike = OpeningStrike.owe(current_game_save)
+		# Every new run is a throw (the menu's "Throw #N"); a Continue isn't.
+		CollectionManager.record_run_started()
 
 	if len(current_game_save.sector_scenarios) == 0:
 		RNGManager.start_new_run()
