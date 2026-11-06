@@ -255,6 +255,21 @@ fit_content = true
 horizontal_alignment = 2
 vertical_alignment = 1
 
+[node name="ThrowCount" type="Label" parent="."]
+unique_name_in_owner = true
+visible = false
+auto_translate_mode = 2
+offset_left = 88.0
+offset_top = 162.0
+offset_right = 200.0
+offset_bottom = 176.0
+theme_type_variation = &"BodyX1"
+theme_override_colors/font_color = Color(0.772549, 0.321569, 0.945098, 1)
+theme_override_colors/font_outline_color = Color(0.0156863, 0.00784314, 0.0901961, 1)
+theme_override_constants/outline_size = 2
+text = "Throw #1"
+vertical_alignment = 1
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1559232188]
 unique_name_in_owner = true
 offset = Vector2(160, 90)

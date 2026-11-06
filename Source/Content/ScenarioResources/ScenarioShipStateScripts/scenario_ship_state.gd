@@ -6,6 +6,10 @@ extends ScenarioShipStateBase
 ## an earlier run (FateLedger.knew_secret): the Inbound pilgrim's "You've seen
 ## the front." Empty for a state that says the same to everyone.
 @export_multiline var fate_knowing_dialogue: String
+## Said instead of either to a player who has had a Become Fate ending in an
+## earlier run (RECKONING_ENDINGS.md §8): the pilgrim's "...Oh. It's you."
+## Empty for a state that says nothing new to them.
+@export_multiline var become_fate_dialogue: String
 @export var faction: ScenarioManager.Faction
 @export var attitude: Enemy.Attitude
 @export var effects_on_enter: EffectChain
@@ -64,6 +68,8 @@ func next_states() -> Array[ScenarioShipStateBase]:
 ## The line the ship says on entering this state, in the current language.
 ## Empty for a silent state.
 func display_dialogue() -> String:
+	if not become_fate_dialogue.is_empty() and CollectionManager.fate_endings("become_fate") > 0:
+		return ContentText.text(self, &"become_fate_dialogue")
 	if not fate_knowing_dialogue.is_empty() and Globals.fate_ledger and Globals.fate_ledger.knew_secret:
 		return ContentText.text(self, &"fate_knowing_dialogue")
 	return ContentText.text(self, &"dialogue")
@@ -85,4 +91,6 @@ func _content_text_fields() -> Array[ContentText.Field]:
 			"A line an NPC ship says in a speech bubble when an encounter changes its mood (it is hailed, betrayed, paid, robbed). Spoken, casual, short: the bubble holds about 50 characters.", 50),
 		ContentText.Field.new(&"fate_knowing_dialogue", "FATE_KNOWING_DIALOGUE",
 			"The same line, said instead to a player who has already learned the game's secret (that the fleet is being herded into a second black hole) in an earlier run. Same bubble: about 50 characters.", 50),
+		ContentText.Field.new(&"become_fate_dialogue", "BECOME_FATE_DIALOGUE",
+			"The same line, said instead to a player who has had the Become Fate ending in an earlier run: they destroyed their own reflection inside the black hole, were taken by it, and the game looped back to the start. The speaker recognises the player as part of the hole now. Same bubble: about 50 characters.", 50),
 	]

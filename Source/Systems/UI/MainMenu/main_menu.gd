@@ -38,7 +38,9 @@ func _ready() -> void:
 	%ShipSelectPopup.tutorial_launched.connect(_on_tutorial_launched)
 	# Erase Progress can take the save away while the menu is up.
 	%OptionsMenu.progress_changed.connect(_refresh_play_buttons)
+	%OptionsMenu.progress_changed.connect(_refresh_throw_count)
 	_refresh_play_buttons()
+	_refresh_throw_count()
 
 	StarScatter.scatter(self, star_pixel_scene, num_of_stars, _STAR_AREA)
 	StarScatter.scatter(self, star_twinkle_scene, num_of_twinkling_stars, _STAR_AREA)
@@ -65,6 +67,21 @@ func _refresh_play_buttons() -> void:
 	else:
 		%ContinueButton.visible = false
 		%PlayButton.set_button_text("MENU_PLAY")
+
+
+## "Throw #N" (RECKONING_ENDINGS.md §8): the collection has counted every run
+## started all along, but the menu only shows it once the player has had a
+## Become Fate ending, when they learn every run was a throw.
+func _refresh_throw_count() -> void:
+	var label: Label = %ThrowCount
+	label.visible = CollectionManager.fate_endings("become_fate") > 0
+	if label.visible:
+		label.text = tr("MENU_THROW_COUNT").format({"n": maxi(CollectionManager.runs_started(), 1)})
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
+		_refresh_throw_count()
 
 
 func _input(event: InputEvent) -> void:

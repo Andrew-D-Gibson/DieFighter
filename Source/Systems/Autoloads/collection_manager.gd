@@ -51,6 +51,10 @@ var _ships: Dictionary[String, bool] = {}
 ##   fallen — ships lost to the hole: {"ship": ship id, "tile": a tile id they
 ##            carried}, newest last, so a later run can meet them as Spilled
 var _fate: Dictionary = {}
+## How many runs the player has started (new runs, not Continues): the
+## main menu's "Throw #N" once a Become Fate has shown it
+## (RECKONING_ENDINGS.md §8). Counted from the version that added it.
+var _runs_started: int = 0
 var _write_queued: bool = false
 
 ## How many fallen ships the collection remembers.
@@ -220,6 +224,19 @@ func lay_fallen_to_rest(entry: Dictionary) -> void:
 			return
 
 
+## How many runs the player has started, Continues not counted.
+func runs_started() -> int:
+	return _runs_started
+
+
+## A new run has started. Kept in a recording run only.
+func record_run_started() -> void:
+	if not is_recording():
+		return
+	_runs_started += 1
+	_queue_write()
+
+
 ## Locks every family again, for the dev console.
 func clear_families() -> void:
 	_families.clear()
@@ -234,6 +251,7 @@ func clear() -> void:
 	_families.clear()
 	_ships.clear()
 	_fate.clear()
+	_runs_started = 0
 	changed.emit()
 	_write()
 
@@ -308,6 +326,7 @@ func _write() -> void:
 		"families": _families,
 		"ships": _ships.keys(),
 		"fate": _fate,
+		"runs_started": _runs_started,
 	}
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.WRITE)
 	if not file:
@@ -325,6 +344,7 @@ func load_collection() -> void:
 	_families.clear()
 	_ships.clear()
 	_fate.clear()
+	_runs_started = 0
 	if not FileAccess.file_exists(collection_path):
 		return
 	var file: FileAccess = FileAccess.open(collection_path, FileAccess.READ)
@@ -348,6 +368,8 @@ func load_collection() -> void:
 	if families is Dictionary:
 		for id: Variant in families:
 			_load_family(str(id), str(families[id]))
+	# JSON hands every number back as a float.
+	_runs_started = int(data.get("runs_started", 0))
 	var fate: Variant = data.get("fate", {})
 	if fate is Dictionary:
 		_fate = (fate as Dictionary).duplicate(true)

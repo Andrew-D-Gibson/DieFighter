@@ -906,7 +906,9 @@ leads to:
   twin its own `REMEMBER_SHIP`, since each saved ship counts.
 - `RECORD_DEED` counts a deed the Reckoning reads: `tithe_paid`, `tithe_refused`.
 - A state can say something else to a player who already knows the secret:
-  `fate_knowing_dialogue` (the pilgrim's "You've seen the front.").
+  `fate_knowing_dialogue` (the pilgrim's "You've seen the front."), or to
+  one who has had a Become Fate ending: `become_fate_dialogue` (the
+  pilgrim's "...Oh. It's you."), which wins over both.
 - A new face is a `FateFaceResource` in `Source/Content/FateDie/Faces/` named
   by its `FateDie.Face` id, with a 7x7 glyph and the `reckoning_chain` it plays
   when Fate throws it (player as actor, no die). Bind its numbers with
