@@ -115,6 +115,13 @@ func rounds_until_swallow() -> int:
 	return maxi(1, next_at - _horizon_steps)
 
 
+## The face Fate will throw at the start of next round, rolled a round
+## ahead so "You"'s die can drift toward it (RECKONING_ENDINGS.md §4).
+## BLANK until the first throw.
+func upcoming_face() -> FateDie.Face:
+	return FateDie.Face.BLANK
+
+
 func waves_left() -> int:
 	return maxi(0, _waves.size() - _wave_index)
 

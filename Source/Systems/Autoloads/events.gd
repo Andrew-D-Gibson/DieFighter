@@ -308,6 +308,13 @@ signal fate_die_rolled(slot: int, face: int)
 signal escape_velocity_changed(value: int, goal: int)
 ## The event horizon swallowed column [param column] of the grid.
 signal horizon_swallowed_column(column: int)
-## The run is ending one of Fate's ways: "escaped" (the secret ending) or
-## "fell_in" (the secret loss). Fired just before victory / game_over.
+## The run is ending one of Fate's ways: "unlocked" (the first ending), or a
+## Reckoning ending's ReckoningEnding.ending_id() ("alone", "convoy",
+## "last_die", "become_fate", "fell_in"). Fired just before victory /
+## game_over.
 signal fate_ending(kind: StringName)
+## The Tally is spent and the hole sent what it made of the player: "You"
+## (RECKONING_ENDINGS.md §4). Fate's Die leaves the canopy for [param ship].
+signal fate_self_arrived(ship: Enemy)
+## "You" was destroyed: the Become Fate ending follows.
+signal fate_self_destroyed(ship: Enemy)

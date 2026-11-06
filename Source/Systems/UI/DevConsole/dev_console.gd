@@ -620,6 +620,20 @@ func _fate(command_args: Array[String] = []) -> void:
 			# the run on the victory screen as the real one does.
 			EndingCutscene.play()
 			return
+		'end':
+			# A Reckoning ending's film with made-up allies, over whatever is
+			# on screen; it ends the run on the end screen as the real one does.
+			var kinds: Dictionary[String, ReckoningEnding.Kind] = {
+				'alone': ReckoningEnding.Kind.ALONE, 'convoy': ReckoningEnding.Kind.CONVOY,
+				'perfect': ReckoningEnding.Kind.CONVOY, 'last_die': ReckoningEnding.Kind.LAST_DIE,
+				'become_fate': ReckoningEnding.Kind.BECOME_FATE, 'fell_in': ReckoningEnding.Kind.FELL_IN,
+			}
+			var which: String = command_args[1] if command_args.size() > 1 else ''
+			if not kinds.has(which):
+				command_history.append_text('\n\t\tUsage: fate end <alone|convoy|perfect|last_die|become_fate|fell_in>')
+				return
+			ReckoningEndingPlayer.play(ReckoningEnding.preview(kinds[which], which == 'perfect'))
+			return
 		'escape':
 			var director: ReckoningDirector = ReckoningDirector.active()
 			if director:
@@ -631,7 +645,7 @@ func _fate(command_args: Array[String] = []) -> void:
 		'status':
 			pass
 		_:
-			command_history.append_text('\n\t\tUsage: fate [status|ready|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|drive|ending|reckoning|escape [n]|horizon [n]]')
+			command_history.append_text('\n\t\tUsage: fate [status|ready|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|drive|ending|end <kind>|reckoning|escape [n]|horizon [n]]')
 			return
 	command_history.append_text('\n[center]Fate: die %s %s, pending %d, knows %s, route %s, kills %d, allies %d, deeds %s[/center]' % [
 		'held' if ledger.has_die else 'not held', str(ledger.die.to_data()), ledger.pending.size(),
