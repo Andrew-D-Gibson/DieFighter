@@ -111,7 +111,14 @@ func _jump() -> void:
 		engine = null
 	
 
-func _handle_attack(_ship: Enemy, ship_faction: ScenarioManager.Faction) -> void:
+func _handle_attack(ship: Enemy, ship_faction: ScenarioManager.Faction) -> void:
+	# A shot that lands on the escort (a sweep that takes in every ship) is
+	# between the player and their own wing: the escort hears it as an attack on
+	# itself (Enemy._on_player_attacked_ship), but the encounter's civilians,
+	# who would turn on a player they saw firing on one of theirs, saw nothing
+	# of theirs hit.
+	if is_instance_valid(ship) and ship.is_escort:
+		return
 	match ship_faction:
 		Faction.PIRATE:
 			Events.scenario_event.emit(ScenarioEvent.PLAYER_ATTACKED_PIRATE)

@@ -31,7 +31,6 @@ effects = Array[ExtResource("effect_data")]([SubResource("fx0"), SubResource("fx
 
 [resource]
 script = ExtResource("state_script")
-dialogue = "Take what you need, pilot!"
 faction = 1
 effects_on_enter = SubResource("chain")
 transitions = Dictionary[int, ExtResource("base_script")]({

@@ -382,6 +382,9 @@ enum ScenarioControlSubtype {
 	CALL_ALLY,
 	## Hunger in the Reckoning: the hole sends its next wave now.
 	HURRY_NEXT_WAVE,
+	## Call off every salvage offer still floating, untaken (Wreck Salvage:
+	## fire on the Rearguard guarding the wreck and the wreck is forfeit).
+	WITHDRAW_OFFERS,
 }
 
 

@@ -91,6 +91,14 @@ func _spawn_reward(pos: Vector2, reward_resource: RewardResource) -> void:
 	reward.give_reward(reward_resource)
 
 
+## Calls off every offer still waiting to be picked from, choices and all: the
+## encounter made them the price of something (WITHDRAW_OFFERS).
+func withdraw_offers() -> void:
+	for child: Node in get_children():
+		if child is Reward:
+			(child as Reward).withdraw()
+
+
 ## Offers still waiting to be picked from, for the save.
 func capture_offers() -> Array:
 	var offers: Array = []

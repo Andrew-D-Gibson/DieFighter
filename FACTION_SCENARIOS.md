@@ -20,8 +20,7 @@ slow is dead.
 
 - **Combats:** Attacker, Wolfpack, Loose Wing, Cutpurse†, Wreckers†, Cannon Drone
   (a Rearguard sentry left behind when the line moved on), Boneyard (a Gaff and a
-  Harpooner stripping a wreck field, and you look like more of it), Vigil (two
-  Zealots keeping watch where the horizon is nearest), Scrap Run (a Smokestack,
+  Harpooner stripping a wreck field, and you look like more of it), Scrap Run (a Smokestack,
   Harpooner and Jackal working the wake: *"Slow and shiny. Strip it."* Kill one
   and the Jackal bolts with whatever dice it holds).
 - **Events:** Pilgrim (the Fate's Die handover), Straggler, Pirates Attacking
@@ -45,9 +44,10 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
   Liner that keeps them stocked with holograms: *"Compact blockade. Nobody
   jumps."*), Procession (Inbound recruiters in force: a Censer, a Plumb Line that
   sinks deeper every round, and an Acolyte shielding them: *"Turn around. Come
-  and see."*).
+  and see."*), Vigil (two Zealots keeping watch, moved here from the Tail so the
+  first Overload fight comes in the Belly).
 - **Events:** Convoy, Cut Loose (the Arc Dynamo's philosophy in miniature), Mercy
-  Call, Pickpocket, Wreck Salvage (a Conscriptor shaking down a wrecked civilian), Pact†, Last
+  Call, Pickpocket, Wreck Salvage (a Conscriptor shaking down a wrecked civilian), Pact, Last
   Picket (the honest Rearguard holding the Belly's back), Ghost Carrier, Mayday†,
   Pirates Attacking Civilian†, What Came Back†, Wolf in the Fold (an Undertow
   infiltrator in a Caravan hull), Turn Around (a Zealot leading a family
@@ -57,7 +57,7 @@ infiltrators, Inbound recruiters and Rearguard press-gangs all come for somethin
 - **Elites:** Hunter-Killers† (an Undertow fighter and Jackal with a Rearguard drone:
   someone paid for you), Repossession (an Arbiter and Tug kept running by a Field Tender:
   *"Your lien is due."*), Wake Riders†, Twin Flames (a Zealot, Censer and the Pilgrim
-  feeding them), Procession† (a Zealot, a Pilgrim relaying it luck, and an
+  feeding them), Procession (a Zealot, a Pilgrim relaying it luck, and an
   Acolyte shielding the procession).
 - **Gate:** the Arc Dynamo, *leader of the Caravan*: *"The Belly can't wait
   for one ship."* Its last words: the tithe the Caravan paid, and where to ask about it.
@@ -71,11 +71,11 @@ Checkpoints, tithes and warships, plus the Undertow they hire under the table.
   Bulwark holding the checkpoint, a Drillmaster marking and firing on the mark,
   and a Herald passing them its dice: *"The line holds. You do not."*).
 - **Events:** Tollkeeper (*"Tithe taken. It buys us all time."*), Deniable Assets,
-  Black Market (the checkpoint's back door), Deserter, Pact†, Tithe Run, The
+  Black Market (the checkpoint's back door), Deserter, Tithe Run, The
   Ledger, Quarantine, Stowaways, Still on Patrol†, Apostate (a Tithe Collector
   that saw where the tithe goes, flying inward under the Inbound halo).
 - **Elites:** Tithe Fleet, Lance Squadron, Mortar Nest (a Picket shields the
-  mortars), Hunter-Killers†, Procession†.
+  mortars), Hunter-Killers†.
 - **Gate:** the Bastion, *leader of the Rearguard*: *"Four hundred years. Not you."*
 
 The Mayday comes from a Bounty Runner: a civilian hull with an Undertow badge, the
@@ -238,8 +238,9 @@ A damaged **Civilian Transport** sits with its cargo and credits floating loose 
 a **Conscriptor** shakes it down. Civilian: *"They've gone mad! Help us!"* Rearguard:
 *"Take the credits and go, pilot."*
 - **Defend the civilian (shoot the Conscriptor):** *"Take what you need, pilot!"* /
-  *"Then you burn with them."* The salvage becomes a gift: taking it afterwards
-  costs nothing. Caravan +2, Rearguard −2; a saved ship. — Mercy
+  *"Then you burn with them."* The civilian says nothing, and the guarded salvage is
+  forfeit the moment you fire on the Conscriptor (`WITHDRAW_OFFERS`): the price of
+  the kind path. Caravan +2, Rearguard −2; a saved ship. — Mercy
 - **Side with the Rearguard (shoot the civilian):** *"You're one of them?!"* /
   *"Good. Finish them off."* Caravan −3, Rearguard +2. The civilian's wreck pays
   credits only. — Duty
@@ -337,15 +338,22 @@ job, below.
   sector 2 offers the job again.
 - **Once the Outrigger is earned** (`SHIP_EARNED`): the same hail and sign-on
   (`_repeat` states). At the gate: *"It waited for one ship after all."*, then
-  *"Yard owes you. Take this."* and 30-40 credits. No card.
+  *"Yard owes you. Take this."* and 30-40 credits. No card. It doesn't ride to
+  the gate: it stays through two won fights (`fights = 2`) and says goodbye at
+  the arrival after, so an unlocked Outrigger isn't a free sector-long ally.
 - **Flying the Outrigger** (`FLYING_SHIP`, checked first): *"A yard Outrigger!
   Fly with your sister?"* Sign-on *"Two Outriggers. Let's show them."*, riding
-  *"Pods level, pilot. Two of us now."* At the gate: *"The Belly can't ignore
-  two."*, then *"Spare parts, from the yard."*: 10-15 credits and one pick from
+  *"Pods level, pilot. Two of us now."* After two won fights it says *"Spare parts, from the yard."*: 10-15 credits and one pick from
   the Outrigger's own tiles (`ship_signature_only`), floated clear of the
   bounty (`payout_position`).
 
 ## Inbound — "Stop running."
+
+Overload is taught in sector 2, before the Arc Dynamo, and nowhere else: the
+Overload ships (Zealot, Herald, Censer) only appear in encounters dealt to the
+Belly (Vigil, Procession, Twin Flames, Turn Around, Pact, the Procession elite).
+The Pilgrim, Acolyte and Plumb Line have no Overload, and the Pilgrim and Martyr
+events still run in sector 1.
 
 ### The Pilgrim — `EVENT_Pilgrim` (the Fate's Die handover)
 A lone **Pilgrim** (`pilgrim_wandering`, no Relay, so sector 1) offers a die.
@@ -385,7 +393,7 @@ in place: kill the Pilgrim first for a slower, safer fight, or ride the relays a
 burn both out. An Inbound elite (1.35×, Belly only: the Relay is ally
 support).
 
-### The Vigil — `COMBAT_Vigil` (sector 1)
+### The Vigil — `COMBAT_Vigil` (sector 2)
 Two **Zealots** keep watch at the edge of the Tail, where the horizon is nearest, so
 that nobody turns back. *"Stop running. We'll wait with you."* The Zealot's overload
 is the fight: two 6s into one Zealot and it burns through its own hull instead of
@@ -424,7 +432,7 @@ UNCOMMON or better).
 A **Pilgrim** kneels beside a **Fate Shroud** and Relays its luck into it. *"Be
 still. It came back for us."* Everyone fears the Spilled; the Inbound feed them.
 
-### Procession — `ELITE_Procession` (sectors 2-3)
+### Procession — `ELITE_Procession` (sector 2)
 A **Zealot**, a **Pilgrim** and an **Acolyte**, flying inward against the fleet. *"Make way. The
 faithful are going home."* The Pilgrim and Acolyte siphon your drive so you can't leave. The Acolyte shields its allies, while the Pilgrim Relays dice into
 the Zealot, so their faith can overload it for you.

@@ -213,6 +213,7 @@ static var _entries: Array[Dictionary] = [
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.FATE_SEIZES_DIE, label = "Fate Seizes Die", handler = FateSeizesDieHandler},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.CALL_ALLY, label = "Call Ally", handler = CallAllyHandler},
 	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.HURRY_NEXT_WAVE, label = "Hurry Next Wave", handler = HurryNextWaveHandler},
+	{category = EffectEnums.Category.SCENARIO_CONTROL, subtype = EffectEnums.ScenarioControlSubtype.WITHDRAW_OFFERS, label = "Withdraw Offers", handler = WithdrawOffersHandler},
 
 	# ── CONDITIONAL ───────────────────────────────────────────────
 	{category = EffectEnums.Category.CONDITIONAL, subtype = EffectEnums.ConditionalSubtype.IF_ACTIVATOR_ODD, label = "If Activator Odd", handler = ConditionalHandler},
