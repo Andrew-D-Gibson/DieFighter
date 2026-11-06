@@ -10,6 +10,10 @@ extends ScenarioShipStateBase
 ## earlier run (RECKONING_ENDINGS.md §8): the pilgrim's "...Oh. It's you."
 ## Empty for a state that says nothing new to them.
 @export_multiline var become_fate_dialogue: String
+## What the player did to reach this state, for the "Carved by" line of the
+## Fate's Die face its effects_on_enter carves: a short past-tense sentence
+## ("Saved a civilian from pirates."). Empty for a state that carves nothing.
+@export_multiline var fate_carve_note: String
 @export var faction: ScenarioManager.Faction
 @export var attitude: Enemy.Attitude
 @export var effects_on_enter: EffectChain
@@ -75,6 +79,12 @@ func display_dialogue() -> String:
 	return ContentText.text(self, &"dialogue")
 
 
+## What the player did to carve a face by entering this state, in the current
+## language. Empty when the state doesn't say.
+func display_fate_carve_note() -> String:
+	return ContentText.text(self, &"fate_carve_note")
+
+
 func _content_text_prefix() -> String:
 	return "SHIP_STATE"
 
@@ -91,6 +101,8 @@ func _content_text_fields() -> Array[ContentText.Field]:
 			"A line an NPC ship says in a speech bubble when an encounter changes its mood (it is hailed, betrayed, paid, robbed). Spoken, casual, short: the bubble holds about 50 characters.", 50),
 		ContentText.Field.new(&"fate_knowing_dialogue", "FATE_KNOWING_DIALOGUE",
 			"The same line, said instead to a player who has already learned the game's secret (that the fleet is being herded into a second black hole) in an earlier run. Same bubble: about 50 characters.", 50),
+		ContentText.Field.new(&"fate_carve_note", "FATE_CARVE_NOTE",
+			"What the player did in this encounter to carve a face into Fate's Die, shown after \"Carved by:\" on that face in the die's info panel. A short past-tense sentence with a full stop, about 40 characters.", 60),
 		ContentText.Field.new(&"become_fate_dialogue", "BECOME_FATE_DIALOGUE",
 			"The same line, said instead to a player who has had the Become Fate ending in an earlier run: they destroyed their own reflection inside the black hole, were taken by it, and the game looped back to the start. The speaker recognises the player as part of the hole now. Same bubble: about 50 characters.", 50),
 	]

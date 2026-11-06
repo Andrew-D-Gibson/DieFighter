@@ -40,6 +40,7 @@ effects = Array[ExtResource("ext_1")]([SubResource("fate_step_0"), SubResource("
 [resource]
 script = ExtResource("ext_0")
 dialogue = "...come... home..."
+fate_carve_note = "Took the cargo of a ship that came back."
 attitude = 1
 effects_on_enter = SubResource("Resource_4")
 deeds = Array[ExtResource("deed_ext_10")]([SubResource("FactionDeed_0")])

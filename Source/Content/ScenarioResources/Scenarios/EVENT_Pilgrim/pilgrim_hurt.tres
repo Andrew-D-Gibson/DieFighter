@@ -30,6 +30,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0"), Su
 [resource]
 script = ExtResource("ext_0")
 dialogue = "Why run? It's behind you too."
+fate_carve_note = "Shot the Pilgrim who offered the die."
 attitude = 2
 effects_on_enter = SubResource("fate_chain")
 deeds = Array[ExtResource("deed_ext_1")]([SubResource("FactionDeed_0")])

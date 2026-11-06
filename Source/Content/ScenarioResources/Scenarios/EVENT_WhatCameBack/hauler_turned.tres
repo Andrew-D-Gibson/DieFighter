@@ -20,6 +20,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0")])
 [resource]
 script = ExtResource("ext_0")
 dialogue = "No! It brought us back!"
+fate_carve_note = "Shot the Shroud that brought a Hauler back."
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("fate_chain")

@@ -26,6 +26,7 @@ effects = Array[ExtResource("fate_effect_data")]([SubResource("fate_step_0")])
 [resource]
 script = ExtResource("ext_0")
 dialogue = "...we'll remember them."
+fate_carve_note = "Cut a tow loose on the Compact's order."
 faction = 1
 attitude = 1
 effects_on_enter = SubResource("fate_chain")

@@ -93,6 +93,7 @@ effects = Array[ExtResource("ext_1")]([SubResource("fate_step_0"), SubResource("
 [resource]
 script = ExtResource("ext_0")
 dialogue = "Run if you must. Take this."
+fate_carve_note = "Turned on the Conscriptor to free a Pilgrim."
 faction = 1
 attitude = 1
 effects_on_enter = SubResource("Resource_chain")

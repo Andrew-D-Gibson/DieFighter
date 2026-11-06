@@ -88,7 +88,7 @@ func _build(ledger: FateLedger) -> void:
 	row.add_theme_constant_override("separation", 4)
 	_column.add_child(row)
 	for slot: int in FateDie.FACE_COUNT:
-		row.add_child(_slot_button(ledger.die, slot))
+		row.add_child(_slot_button(ledger, slot))
 
 	_info_label = _rich(tr("FATE_CARVE_HINT"))
 	_info_label.custom_minimum_size.y = 22
@@ -107,8 +107,8 @@ func _build(ledger: FateLedger) -> void:
 	_play_in.call_deferred()
 
 
-func _slot_button(die: FateDie, slot: int) -> Control:
-	var face: FateDie.Face = die.face_at(slot)
+func _slot_button(ledger: FateLedger, slot: int) -> Control:
+	var face: FateDie.Face = ledger.die.face_at(slot)
 	var holder: TextureRect = TextureRect.new()
 	holder.texture = FateDieArt.face_texture(face, _DIE_SCALE)
 	holder.custom_minimum_size = Vector2.ONE * FateDieArt.SIZE * _DIE_SCALE
@@ -118,7 +118,7 @@ func _slot_button(die: FateDie, slot: int) -> Control:
 		holder.scale = Vector2.ONE * 1.15
 		var res: FateFaceResource = FateFaceCatalog.get_face(face)
 		if res:
-			_info_label.text = Utils.format_text("%s: %s" % [res.coloured_name(), res.display_carved_by()], true)
+			_info_label.text = Utils.format_text("%s: %s" % [res.coloured_name(), ledger.carved_by_text(slot)], true)
 	)
 	holder.mouse_exited.connect(func() -> void: holder.scale = Vector2.ONE)
 	holder.gui_input.connect(func(event: InputEvent) -> void:

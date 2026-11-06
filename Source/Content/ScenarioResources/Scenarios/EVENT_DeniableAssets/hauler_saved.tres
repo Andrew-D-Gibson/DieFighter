@@ -58,6 +58,7 @@ effects = Array[ExtResource("ext_1")]([SubResource("fate_step_0"), SubResource("
 [resource]
 script = ExtResource("ext_0")
 dialogue = "The Compact won't forget this."
+fate_carve_note = "Shot the raiders stripping a Hauler."
 faction = 1
 effects_on_enter = SubResource("Resource_6")
 transitions = Dictionary[int, ExtResource("ext_5")]({

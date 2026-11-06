@@ -39,6 +39,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("1_state")
 dialogue = "You'll pay for that hull breach!"
+fate_carve_note = "Fired on a repair dock."
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("Resource_chain")

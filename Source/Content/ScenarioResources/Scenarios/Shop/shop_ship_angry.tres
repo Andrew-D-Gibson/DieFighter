@@ -39,6 +39,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("2_86o65")
 dialogue = "How dare you?!"
+fate_carve_note = "Fired on a shop."
 faction = 1
 attitude = 2
 effects_on_enter = SubResource("Resource_14acg")

@@ -48,6 +48,7 @@ metadata/_custom_type_script = "uid://7dwxduwis4yk"
 [resource]
 script = ExtResource("script_0")
 dialogue = "Tithe taken. It buys us all time."
+fate_carve_note = "Paid the Tollkeeper's tithe."
 attitude = 1
 effects_on_enter = SubResource("Resource_chain7")
 transitions = Dictionary[int, ExtResource("script_1")]({
