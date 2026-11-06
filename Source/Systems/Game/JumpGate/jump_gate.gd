@@ -5,6 +5,10 @@ extends Node2D
 ## player is at the gate. Jumping forward from there flies the ship through it
 ## (see GameStateManager.go_through_gate and JumpManager.jump_through_gate).
 ##
+## It opens empty and lifeless, then revs up: the portal fills in and its
+## spin builds, to a flash and a rain of motes, and settles into the sector
+## yellow it's flown through in (see _begin_rev_up()).
+##
 ## Lives behind the cockpit walls, so the ring sits outside the canopy, and its
 ## passage swallows the window rather than the whole screen. The flash and the
 ## sector title that follow sit on their own layer above everything.
@@ -25,8 +29,8 @@ extends Node2D
 
 @export_category('Components')
 @export var ring: AnimatedSprite2D
-@export var portal: AnimatedSprite2D
-## The portal gone gold as the ship commits to it, faded in over the blue.
+## The portal in the sector's yellow: dark while the gate is empty, built up by
+## the rev-up.
 @export var portal_charged: AnimatedSprite2D
 @export var flash: ColorRect
 @export var sector_title: Label
@@ -37,7 +41,7 @@ const _RING_HALF_WIDTH: float = 40.0
 const _OFFER_HALF_SPACING: float = 13.0
 const _BOB_HEIGHT: float = 2.0
 const _BOB_TIME: float = 1.6
-## The portal turning gold before the rush, and the white-out after it.
+## The portal's last pull of light before the rush, and the white-out after it.
 const _CHARGE_TIME: float = 0.35
 const _WHITE_OUT_TIME: float = 0.08
 ## Under Reduce Flashing the passage fades to the dark of space instead, and
@@ -49,6 +53,31 @@ const _REDUCED_FADE_COLOR: Color = Color("#040217")
 const _RECENTRE_DELAY: float = 0.25
 const _RECENTRE_TIME: float = 0.7
 
+## The rev-up. Everything accelerates into the peak: the ring's and the
+## portal's spin, the portal's fill and its brightness.
+const _REV_UP_TIME: float = 2.4
+## A beat after the ring has warped in before the rev-up begins.
+const _REV_UP_LEAD: float = 0.15
+## How the ring looks lifeless: dim and nearly still.
+const _LIFELESS_RING_TINT: Color = Color(0.45, 0.45, 0.5)
+const _LIFELESS_RING_SPIN: float = 0.2
+const _PEAK_RING_SPIN: float = 3.0
+const _LIFELESS_PORTAL_SCALE: float = 0.2
+const _LIFELESS_PORTAL_SPIN: float = 0.3
+const _PEAK_PORTAL_SPIN: float = 3.0
+## Fractions of the rev-up at which a pulse of motes is drawn into the portal.
+const _REV_PULSES: Array[float] = [0.3, 0.55, 0.75, 0.9]
+const _PEAK_SETTLE_TIME: float = 0.6
+## How bright the peak flare is, and how far the screen-wide flash goes.
+const _PEAK_BRIGHTNESS: float = 3.0
+const _PEAK_SCREEN_FLASH: float = 0.35
+const _PEAK_SCREEN_FLASH_TIME: float = 0.5
+## Where the rain of motes comes off: the ring's edge.
+const _RAIN_SOURCE_RADIUS: float = 34.0
+const _RAIN_BURST_COUNT: int = 60
+const _RAIN_TRICKLE_COUNT: int = 14
+const _PIXEL_TEXTURE: Texture2D = preload("res://Assets/Particles/hit_particle_pixel.png")
+
 var _open: bool = false
 ## True from the moment a passage begins until the next sector starts. The
 ## passage emits Events.jump like any jump, which would otherwise close the ring.
@@ -57,10 +86,16 @@ var _tweens: Array[Tween] = []
 ## The slide back toward the centre, so a second pick restarts it rather than
 ## racing it.
 var _recentre: Tween
+## The peak's burst of falling motes, and the thin trickle that follows it for
+## as long as the gate waits.
+var _rain_burst: CPUParticles2D
+var _rain_trickle: CPUParticles2D
 
 
 func _ready() -> void:
 	Globals.jump_gate = self
+	_rain_burst = _make_rain(_RAIN_BURST_COUNT, 1.8, true)
+	_rain_trickle = _make_rain(_RAIN_TRICKLE_COUNT, 2.0, false)
 	_hide_all()
 
 	Events.start_scenario.connect(_on_start_scenario)
@@ -118,24 +153,18 @@ func open(quiet: bool) -> void:
 	# A warp-in cut short by close() leaves the ring over-bright.
 	ring.modulate = Color.WHITE
 	ring.show()
-	portal.show()
-	ring.speed_scale = 1.0
-	portal.modulate = Color(1, 1, 1, 0)
 	ring.play()
-	portal.play()
 
 	if quiet:
 		ring.scale = Vector2.ONE
-		portal.scale = Vector2.ONE
-		portal.modulate.a = 1.0
 	else:
 		_warp_in()
 	_start_bob()
+	_begin_rev_up(0.0 if quiet else warp_in_time + _REV_UP_LEAD)
 
 
 func _warp_in() -> void:
 	ring.scale = Vector2.ONE * 0.15
-	portal.scale = Vector2.ONE * 0.15
 	ring.modulate = Color(3, 3, 3)
 	Juice.ring(self, global_position, Globals.white, 64.0, 0.5, 10.0)
 	Juice.ring(self, global_position, Globals.blue, 48.0, 0.6, 6.0)
@@ -145,12 +174,117 @@ func _warp_in() -> void:
 	var grow: Tween = create_tween().set_parallel()
 	grow.tween_property(ring, "scale", Vector2.ONE, warp_in_time)\
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	grow.tween_property(portal, "scale", Vector2.ONE, warp_in_time)\
-		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	grow.tween_property(ring, "modulate", Color.WHITE, warp_in_time)
-	# The portal lights once the ring has settled, as if powering up.
-	grow.tween_property(portal, "modulate:a", 1.0, 0.6).set_delay(warp_in_time)
 	_tweens.append(grow)
+
+
+## The gate comes alive. It starts empty: the ring dim and nearly still, the
+## portal not there. Over [constant _REV_UP_TIME] (after [param delay]) the
+## spin builds and the portal fills with the sector's yellow, pulses of motes
+## drawn into it on the way up, then the peak (_rev_peak()).
+func _begin_rev_up(delay: float) -> void:
+	ring.self_modulate = _LIFELESS_RING_TINT
+	ring.speed_scale = _LIFELESS_RING_SPIN
+	portal_charged.show()
+	portal_charged.play()
+	portal_charged.modulate = Color(1, 1, 1, 0)
+	portal_charged.scale = Vector2.ONE * _LIFELESS_PORTAL_SCALE
+	portal_charged.speed_scale = _LIFELESS_PORTAL_SPIN
+	_set_rain(false)
+
+	# Eased in, so it builds slowly and then runs away from itself.
+	var rev: Tween = create_tween().set_parallel()\
+		.set_trans(Tween.TRANS_EXPO).set_ease(Tween.EASE_IN)
+	rev.tween_property(ring, "speed_scale", _PEAK_RING_SPIN, _REV_UP_TIME).set_delay(delay)
+	rev.tween_property(ring, "self_modulate", Color.WHITE, _REV_UP_TIME).set_delay(delay)
+	rev.tween_property(portal_charged, "speed_scale", _PEAK_PORTAL_SPIN, _REV_UP_TIME).set_delay(delay)
+	rev.tween_property(portal_charged, "modulate:a", 1.0, _REV_UP_TIME).set_delay(delay)
+	rev.tween_property(portal_charged, "scale", Vector2.ONE * 0.9, _REV_UP_TIME).set_delay(delay)
+	for fraction: float in _REV_PULSES:
+		rev.tween_callback(_rev_pulse).set_delay(delay + _REV_UP_TIME * fraction)
+	rev.chain().tween_callback(_rev_peak)
+	_tweens.append(rev)
+
+
+## A ring of motes is drawn into the portal.
+func _rev_pulse() -> void:
+	Juice.gather(self, global_position, Globals.yellow, 6, 34.0, 0.3)
+
+
+## The top of the rev-up: a flare of light, a shock ring, a flash across the
+## screen, and a rain of motes falling away from the ring. The portal settles
+## into the steady sector yellow the player jumps through.
+func _rev_peak() -> void:
+	var glow: float = Juice.soften_flash(_PEAK_BRIGHTNESS - 1.0) + 1.0
+	ring.speed_scale = 1.0
+	ring.modulate = Color(glow, glow, glow)
+	portal_charged.modulate = Color(glow, glow, glow * 0.8)
+	portal_charged.scale = Vector2.ONE * 1.2
+	var settle: Tween = create_tween().set_parallel()
+	settle.tween_property(ring, "modulate", Color.WHITE, _PEAK_SETTLE_TIME)
+	settle.tween_property(portal_charged, "modulate", Color.WHITE, _PEAK_SETTLE_TIME)
+	settle.tween_property(portal_charged, "scale", Vector2.ONE, _PEAK_SETTLE_TIME)\
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	settle.tween_property(portal_charged, "speed_scale", 1.0, _PEAK_SETTLE_TIME)
+	_tweens.append(settle)
+
+	Juice.ring(self, global_position, Globals.white, 70.0, 0.5, 8.0, 1)
+	Juice.ring(self, global_position, Globals.yellow, 54.0, 0.7, 4.0, 1)
+	Juice.glint(self, global_position, Globals.white, 22.0, 0.5)
+	Events.camera_shake_small.emit()
+	_flash_screen()
+	_rain_burst.restart()
+	_rain_burst.emitting = true
+	_rain_trickle.emitting = true
+
+
+## A pale flash across the whole screen, which fades quickly. Under Reduce
+## Flashing it's no more than a faint tint.
+func _flash_screen() -> void:
+	flash.color = Color(Globals.white, Juice.screen_wash_alpha(_PEAK_SCREEN_FLASH))
+	flash.show()
+	var fade: Tween = create_tween()
+	fade.tween_property(flash, "color:a", 0.0, _PEAK_SCREEN_FLASH_TIME)\
+		.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	fade.tween_callback(flash.hide)
+	_tweens.append(fade)
+
+
+## Yellow motes thrown off the ring's edge: they fall, and drift away from the
+## gate as they go. [param burst] is one go off at the peak; otherwise a thin
+## stream that keeps on for as long as the gate waits.
+func _make_rain(count: int, lifetime: float, burst: bool) -> CPUParticles2D:
+	var rain: CPUParticles2D = CPUParticles2D.new()
+	rain.texture = _PIXEL_TEXTURE
+	rain.amount = count
+	rain.lifetime = lifetime
+	rain.one_shot = burst
+	rain.explosiveness = 0.6 if burst else 0.0
+	# In world space, so the motes are left behind when the ring bobs.
+	rain.local_coords = false
+	rain.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE_SURFACE
+	rain.emission_sphere_radius = _RAIN_SOURCE_RADIUS
+	rain.direction = Vector2.DOWN
+	rain.spread = 40.0
+	rain.initial_velocity_min = 8.0
+	rain.initial_velocity_max = 30.0
+	rain.gravity = Vector2(0.0, 70.0)
+	rain.radial_accel_min = 10.0
+	rain.radial_accel_max = 30.0
+	rain.scale_amount_min = 1.0
+	rain.scale_amount_max = 2.0
+	rain.color = Globals.yellow
+	var fade_out: Gradient = Gradient.new()
+	fade_out.colors = PackedColorArray([Color.WHITE, Color(1, 1, 1, 0)])
+	rain.color_ramp = fade_out
+	rain.emitting = false
+	add_child(rain)
+	return rain
+
+
+func _set_rain(on: bool) -> void:
+	_rain_burst.emitting = on
+	_rain_trickle.emitting = on
 
 
 func _start_bob() -> void:
@@ -242,12 +376,16 @@ func play_passage() -> void:
 	_kill_tweens()
 	ring.speed_scale = 4.0
 
-	portal_charged.modulate.a = 0.0
+	_set_rain(false)
+	# Already the sector yellow; a gate jumped through mid-rev-up gets its last
+	# pull of light here.
 	portal_charged.show()
 	portal_charged.play()
 
 	var charge: Tween = create_tween().set_parallel()
-	charge.tween_property(portal_charged, "modulate:a", 1.0, _CHARGE_TIME)
+	charge.tween_property(portal_charged, "modulate", Color.WHITE, _CHARGE_TIME)
+	charge.tween_property(portal_charged, "scale", Vector2.ONE, _CHARGE_TIME)
+	charge.tween_property(ring, "self_modulate", Color.WHITE, _CHARGE_TIME)
 	charge.tween_property(self, "position:y", rest_position.y, _CHARGE_TIME)
 	_tweens.append(charge)
 	Events.camera_shake_small.emit()
@@ -317,11 +455,13 @@ func _hide_all_but_flash() -> void:
 	scale = Vector2.ONE
 	position = rest_position
 	ring.hide()
-	portal.hide()
 	portal_charged.hide()
 	ring.stop()
-	portal.stop()
 	portal_charged.stop()
+	ring.self_modulate = Color.WHITE
+	portal_charged.scale = Vector2.ONE
+	portal_charged.speed_scale = 1.0
+	_set_rain(false)
 
 
 ## How long the screen takes to be covered at the end of the passage.

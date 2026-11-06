@@ -87,6 +87,11 @@ const ESCORT_SLOT: Vector2 = Vector2(55, 91)
 ## Off the left edge, level with the slot: where the escort waits to fly in.
 const ESCORT_OFFSTAGE: Vector2 = Vector2(-40, 91)
 const ESCORT_ENTRY_TIME: float = 1.0
+## The way the escort's arrival jump is flying: down the screen, the reverse of
+## the up-and-away jump it leaves with (Enemy.jump_away()).
+const _ESCORT_ARRIVAL_HEADING: Vector2 = Vector2.DOWN
+## How long JumpFx.jump_in() takes to settle the hull, before it bobs again.
+const _ESCORT_ARRIVAL_SETTLE_SECONDS: float = 0.4
 
 ## The z authored on this node, which the ships go back to once a jump is over.
 @onready var _combat_z_index: int = z_index
@@ -218,6 +223,8 @@ func spawn_escort(resource: EnemyResource, state: ScenarioShipState, hull: int) 
 		ship.health.health = mini(hull, ship.health.max_health)
 	# Its speech box opens over the open sky to its right.
 	ship.dialogue_manager.point(false)
+	# Its hull bobs down over the player's hull bar otherwise.
+	ship.graphics_manager.tuck_under_cockpit()
 	_roll_turn_actions([ship])
 	return ship
 
@@ -228,6 +235,27 @@ func move_escort(ship: Enemy, target: Vector2, duration: float = ESCORT_ENTRY_TI
 	if not is_instance_valid(ship):
 		return
 	await _slide_ship_to(ship, target, duration)
+
+
+## Holds the escort in its slot, unseen, until [method jump_escort_in] brings
+## it on screen: the jump it leaves with in reverse, not a flight from the edge.
+func hold_escort_in_slot(ship: Enemy) -> void:
+	ship.position = ESCORT_SLOT
+	ship.visible = false
+
+
+## The escort arrives in its slot with the arrival half of the jump (JumpFx),
+## and returns once it has settled. See [method hold_escort_in_slot].
+func jump_escort_in(ship: Enemy) -> void:
+	if not is_instance_valid(ship):
+		return
+	ship.graphics_manager.stop_bob_tween()
+	ship.position = ESCORT_SLOT
+	ship.visible = true
+	JumpFx.new(self).jump_in(ship.graphics_manager.ship_graphics, ship.departure_color(), _ESCORT_ARRIVAL_HEADING)
+	await get_tree().create_timer(_ESCORT_ARRIVAL_SETTLE_SECONDS).timeout
+	if is_instance_valid(ship):
+		ship.graphics_manager.start_bob_tween()
 
 
 ## Where the escort says goodbye: the middle of the formation's path, where
@@ -704,14 +732,32 @@ func run_enemy_turn() -> void:
 
 func start_enemy_jump_animation() -> void:
 	enemies_jumping = true
-	for enemy: Enemy in enemies:
+	# A copy, since the escort leaves the roster here.
+	for enemy: Enemy in enemies.duplicate():
 		if not enemy or not is_instance_valid(enemy):
+			continue
+		# Read before EscortKeeper's own jump listener runs (it comes later in
+		# the scene) lets go of the ship.
+		if Globals.escort_keeper and Globals.escort_keeper.leaves_with_player(enemy):
+			_send_escort_along(enemy)
 			continue
 		enemy.moving_in_world = true
 		enemy.graphics_manager.stop_bob_tween()
 		# Disable clickable region
 		if enemy.clickable_region:
 			enemy.clickable_region.disabled = true
+
+
+## The player's escort jumps with them: it leaves the roster and plays the
+## departure every ship leaving under its own power does, from the moment the
+## player's own jump begins, instead of drifting off the bottom with the
+## ships left behind. It isn't announced as leaving (enemy_left), which would
+## read to EscortKeeper as the escort being lost.
+func _send_escort_along(ship: Enemy) -> void:
+	enemies.erase(ship)
+	_forget(ship)
+	ship.disconnect_scenario_signals()
+	Enemy.jump_away(ship)
 
 
 func _update_jumping_enemies(delta: float) -> void:

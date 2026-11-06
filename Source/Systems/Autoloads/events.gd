@@ -297,6 +297,10 @@ signal fate_face_carved(slot: int, face: int, old_face: int)
 ## A carving came while the die was full: it waits for the player to choose
 ## which face it goes over (FateCarveChoice).
 signal fate_carve_pending(face: int)
+## A boss's last words are over (LastWords): its story box has closed, or was
+## abandoned. Prompts that must not talk over a story beat (FateCarveChoice)
+## wait for it.
+signal story_beat_finished()
 ## The dying Bastion handed over the Horizon Drive (FateLedger.take_drive()):
 ## it goes into the engine charger.
 signal vanguard_drive_taken()
