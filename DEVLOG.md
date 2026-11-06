@@ -4,7 +4,7 @@ Newest entries at the top.
 
 ---
 
-## 2026-11-05 — The Outrigger and Carousel are earned
+## 2026-11-05 — The Outrigger is earned: the Shipwright's escort
 
 The Outrigger now starts locked. Earn it by getting an Outrigger courier through the Arc Dynamo; it's kept for good after that (`ShipUnlocks`, `CollectionManager` `ships`).
 
