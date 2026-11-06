@@ -116,6 +116,7 @@ class Comet:
 
 
 var _settled: bool = false
+var _events_allowed: bool = true
 var _dust_tween: Tween
 var _countdown: float = 0.0
 var _time: float = 0.0
@@ -157,9 +158,23 @@ func is_settled() -> bool:
 	return _settled
 
 
+## Whether fly-bys and comets may play over the current sky. BackgroundManager
+## turns them off for Fate's skies (BackgroundResource.fate_themed), where they
+## would break the story. Turning them off also removes any already in
+## progress, wake and all, so nothing carries over from the previous sky.
+func set_events_allowed(allowed: bool) -> void:
+	_events_allowed = allowed
+	if allowed:
+		return
+	_ships.clear()
+	_wakes.clear()
+	_comets.clear()
+	_events_layer.queue_redraw()
+
+
 func _process(delta: float) -> void:
 	_time += delta
-	if _settled and _is_idle():
+	if _settled and _events_allowed and _is_idle():
 		_countdown -= delta
 		if _countdown <= 0.0:
 			_start_event()

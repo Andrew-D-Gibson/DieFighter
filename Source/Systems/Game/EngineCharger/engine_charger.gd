@@ -21,6 +21,9 @@ const _FILL_PURPLE: Color = Color("#c552f1")
 const _GOLD_TINT: Color = Color(
 	DRIVE_COLOR.r / _FILL_PURPLE.r, DRIVE_COLOR.g / _FILL_PURPLE.g, DRIVE_COLOR.b / _FILL_PURPLE.b)
 
+## How far the readout may shrink for a three-digit goal (the 3/6 pixel step).
+const _READOUT_MIN_SCALE: float = 0.5
+
 ## What the fill and the charged light are multiplied by: white normally,
 ## _GOLD_TINT for the Reckoning.
 var _dress: Color = Color.WHITE
@@ -42,6 +45,13 @@ func _ready() -> void:
 	fill_head.position = Vector2(60, 2)
 	fill_head.visible = true
 	charged_indicator.visible = false
+	# The Reckoning's goal runs to three digits ("110/165"), well past the
+	# label's authored room: it shrinks in whole pixels to stay inside it
+	# rather than spilling off the gauge. align_by_ink off keeps "10/10" sitting
+	# where the label's line box always put it.
+	var fitter: TextFitter = TextFitter.attach(display_text, TextFitPolicy.single_line(_READOUT_MIN_SCALE))
+	fitter.box_source = TextFitter.BoxSource.AUTHORED
+	fitter.policy.align_by_ink = false
 	# The tile's info shows the drive as it stands, as the hull's shows the hull.
 	var tile: Tile = get_node_or_null(^"EngineChargerTile") as Tile
 	if tile:

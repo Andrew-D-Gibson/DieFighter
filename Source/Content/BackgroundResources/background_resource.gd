@@ -3,6 +3,12 @@ extends Resource
 
 @export var background_color: Color
 
+@export_category('Theme')
+## Set on every sky that belongs to Fate. Nothing ordinary may cross it: the
+## ambient fly-bys and comets (LivingSky) stay out, since a passing ship or
+## comet in Fate's sky breaks the story. New Fate backgrounds must set this.
+@export var fate_themed: bool = false
+
 @export_category('Global Modifier')
 ## A rule that holds for as long as the player occupies this background, e.g.
 ## "no ship can raise shields". Leave null for plain, unmodified space.
