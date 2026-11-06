@@ -342,6 +342,7 @@ func _on_round_start() -> void:
 		return
 	_fight_started = true
 	_round += 1
+	var round_number: int = _round
 	var die: FateDie = Globals.fate_ledger.die
 	# The throw was rolled last round; the next one is rolled now, from the
 	# same generator in the same order, so the throws are the ones they
@@ -350,6 +351,16 @@ func _on_round_start() -> void:
 	_next_slot = die.roll(_rng)
 	var face: FateDie.Face = die.face_at(slot)
 	last_face = face
+	# The throw plays out first, over a dim, and the round waits for the
+	# player to close it. The face is already chosen: the stage only shows it
+	# (and returns at once under the AutoPilot, headless, or with no die on
+	# screen).
+	var stage: FateThrowStage = FateThrowStage.active()
+	if stage:
+		await stage.throw_die(slot, face, hash([_rng.seed, round_number]))
+		if not _running or _ending or round_number != _round \
+				or Globals.state_manager.state != GameStateManager.GameState.IN_COMBAT:
+			return
 	Events.fate_die_rolled.emit(slot, face)
 
 	var res: FateFaceResource = FateFaceCatalog.get_face(face)
@@ -627,6 +638,10 @@ func _end(trigger: ReckoningRules.Trigger, last_holder: String = "") -> void:
 	_ending = true
 	_wing.stop()
 	_shut_down_engine()
+	# A throw's card never holds the ending off.
+	var stage: FateThrowStage = FateThrowStage.active()
+	if stage:
+		stage.abort()
 	await get_tree().create_timer(ending_beat_seconds).timeout
 	await _play_ending(trigger, last_holder)
 
