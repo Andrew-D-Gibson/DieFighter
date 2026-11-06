@@ -32,6 +32,18 @@ extends Resource
 ## earned some other way.
 @export var unlock_scenario: ScenarioResource
 @export_range(0, 2) var unlock_sector: int = 1
+## Earned at the end of a run, won or lost, whose Fate's Die bears this face
+## at least [member unlock_face_count] times (the Carousel: two Mercy). BLANK
+## for a ship earned some other way. See ShipUnlockDirector.
+@export var unlock_face: FateDie.Face = FateDie.Face.BLANK
+@export_range(1, 6) var unlock_face_count: int = 2
+## The ship-unlock card's heading for this ship, a translation key. Empty for
+## the plain "NEW SHIP UNLOCKED".
+@export var unlock_card_header: String = ""
+## Called out under Fate's Die each time [member unlock_face] is carved while
+## the ship is still locked, so the player learns it counts: a translation
+## key. Empty for no call-out.
+@export var unlock_carve_hint: String = ""
 
 @export_category("Run Start")
 ## Hull, dice, credits and starting tiles for a new run. Every tile position

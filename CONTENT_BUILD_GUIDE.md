@@ -1433,6 +1433,12 @@ AudioStreamPlayer.
    `unlocks_ship` (§4), or `ShipUnlocks.unlock(id)` from code. The two
    reference each other by `id` only, since `.tres` files can't load in a
    circle. The Outrigger's `EVENT_Shipwright` is the reference.
+   Or earn it by Fate's Die: `unlock_face` and `unlock_face_count` (the run
+   must end, won or lost, with that face on the die at least that often),
+   `unlock_card_header` (a key for the card's heading, "THE CARAVAN
+   REMEMBERS") and `unlock_carve_hint` (a key called out under the die at
+   each carving while the ship is locked, "THE CARAVAN NOTICED"). The card
+   leads the rumour with the face's glyph. The Carousel is the reference.
 11. Check balance against the Die Fighter on the same seeds:
    `tools/autoplay.sh --seed 1 --runs 24 --policy smart -- --ship=<id>`.
    Teach the bot the ship's rule if it plays it badly.

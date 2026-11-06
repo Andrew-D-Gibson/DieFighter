@@ -123,6 +123,11 @@ func _turn_to_next_carved() -> void:
 			return
 
 
+## Where the die hangs now, in this node's space: for a call-out of its own.
+func die_position() -> Vector2:
+	return _die_centre()
+
+
 func _die_centre() -> Vector2:
 	var length: float = chain_length * _drop
 	return (anchor + Vector2(sin(_angle), cos(_angle)) * length + Vector2(0, FateDieArt.SIZE / 2.0)).round()
