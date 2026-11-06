@@ -113,11 +113,12 @@ func _loop_to_menu() -> void:
 
 
 ## The card's closing line. The perfect Convoy, which left nobody behind
-## anywhere, has its own.
+## anywhere, has its own: the Convoy's line with "all" in it, then the
+## closing one.
 func _reckoning_line(key: String) -> String:
 	var ending: ReckoningEnding = ReckoningDirector.last_ending
 	if ending != null and ending.ending_id() == _fate_ending and ending.perfect:
-		return tr("FATE_ENDING_CONVOY_PERFECT_LINE")
+		return "%s\n%s" % [tr("FATE_ENDING_CONVOY_ALL_LINE"), tr("FATE_ENDING_CONVOY_PERFECT_LINE")]
 	return tr(key)
 
 

@@ -47,6 +47,8 @@ func _process(delta: float) -> void:
 	for i: int in range(_stars.size()):
 		var star: Node2D = _stars[i]
 		star.position.x -= speed * _depths[i] * delta
+		# As the convoy sets off the stars smear into streaks, nearest longest.
+		star.scale.x = 1.0 + maxf(speed - 4.0, 0.0) * 0.14 * _depths[i]
 		if star.position.x < -1.0:
 			star.position.x = Globals.SCREEN_SIZE.x + 1.0
 			star.position.y = _randf(0, Globals.SCREEN_SIZE.y)
