@@ -720,11 +720,12 @@ kept for good. Until then its ship-select card is greyed out with its
 
 | Piece | Job |
 |---|---|
-| `ShipUnlocks` (static, `Systems/Game/ShipUnlocks/`) | `is_pickable(ship)` (not `coming_soon`, not locked; `ShipCard` reads it), `is_locked(ship)`, `unlock(id)`, `scenarios_for_sector(i)` |
+| `ShipUnlocks` (static, `Systems/Game/ShipUnlocks/`) | `is_pickable(ship)` (not `coming_soon`, not locked; `ShipCard` reads it), `is_locked(ship)`, `unlock(id)`, `scenarios_for_sector(i)`, `die_earns(ship, die)`, `earned_by_die(die)`, `counted_by_face(face)` |
+| `ShipUnlockDirector` (`Systems/Game/ShipUnlocks/`, `Systems` in `main.tscn`) | Earns the ships the run's die earns (`unlock_face` at least `unlock_face_count` times) on `Events.game_over` / `Events.victory`, once, and 1.4 s later shows each card on a `CanvasLayer` of its own (layer 90, `follow_viewport_enabled`, above `UI` where `GameOver` is), processing while paused. Calls out `unlock_carve_hint` under the die (`FateDieDisplay.die_position()`) after each carving of a counted face. Shows a card in an unrecorded run without earning, for the Scenario Lab |
 | `CollectionManager` | Keeps earned ship ids in `collection.json` (`ships`). `record_ship()` records only in the player's own runs (`is_recording()`); Unlock All and the dev tools pass `force` |
 | `SectorGenerator.generate()` | Deals each locked ship's `unlock_scenario` onto an ordinary stop ahead of the arrival in its `unlock_sector`, after the reckonings, from a generator of its own (`place_consequences()`), so a run with nothing to earn deals its usual map. Player's own runs only: the Scenario Lab and AutoPilot fly every ship and never meet these |
 | `EscortKeeper` | Earns an escort's `unlocks_ship` when it's delivered and shows `ShipUnlockPopup` once it has gone (not while the AutoPilot plays) |
-| `ShipUnlockPopup` (`Systems/UI/ShipUnlockPopup/`) | World-space card like `TileUnlockPopup`: the hull lands in a flash with a glitch, a ring and a spark burst; light rays (`_Rays`, drawn on the 320x180 grid through `JuicePixelated`) turn behind it while sparks stream off; name, pitch and hint come up; Close pops in about a second later. `closed` when it's dismissed |
+| `ShipUnlockPopup` (`Systems/UI/ShipUnlockPopup/`) | World-space card like `TileUnlockPopup`: the hull lands in a flash with a glitch, a ring and a spark burst; light rays (`_Rays`, drawn on the 320x180 grid through `JuicePixelated`) turn behind it while sparks stream off; name, pitch and hint come up; Close pops in about a second later. `closed` when it's dismissed. `open(ship, die)` for a ship the die earned opens on the die instead: its faces pop in, the earning faces flare and fly into the hull trailing motes, and the face sits over the hull under `unlock_card_header` |
 | `Map.hold_jumps(holder)` / `release_jumps(holder)` | No jump while anything holds the ship (`can_jump()` false, refused as "NOT YET", `jump_refusal()`). The gate path in `JumpEvent` checks `can_jump()` too |
 
 Locking a ship never strands a run: `ShipCatalog` still lists it, so a save
@@ -1206,7 +1207,7 @@ back to `die_fighter`.
 | `signature_tiles` | `RewardManager.get_possible_tile_rewards()` (salvage and the shop): offered only while this ship is flown, on top of the shared pool; they stay `offered_as_reward = false` and each has an upgrade. `CodexCatalog` lists them like offered tiles |
 | `supports_tutorial` | `TutorialManager`: the tutorial is written for the default grid |
 | `coming_soon` | Ship select: greyed out, "Coming soon…", never pickable (no ship sets it now) |
-| `starts_locked`, `unlock_hint`, `unlock_scenario`, `unlock_sector` | Ship Unlocks (below): not pickable until earned; the card shows the hint; the encounter that earns it is dealt into that sector |
+| `starts_locked`, `unlock_hint`, `unlock_scenario`, `unlock_sector`, `unlock_face`, `unlock_face_count`, `unlock_card_header`, `unlock_carve_hint` | Ship Unlocks (below): not pickable until earned; the card shows the hint; earned by an encounter dealt into that sector, or by the faces left on Fate's Die at the run's end |
 | `cockpit_scene` | `CockpitMount` (main.tscn, `Graphics/Cockpit`): mounts the ship's `Cockpit` scene, or the default `cockpit_ambience.tscn` |
 | `cockpit_palette` | `Cockpit`: recolours the default shell (when the cockpit has no `walls_texture`) and the instruments' frames (`cockpit_surface` sprites) once at load |
 | `cutscene_frames`, `cutscene_exhaust_points`, `preview_texture`, `theme_color` | Opening cutscene, ship-select card |

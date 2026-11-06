@@ -4,7 +4,7 @@ Newest entries at the top.
 
 ---
 
-## 2026-11-05 — The Outrigger is earned: the Shipwright's escort
+## 2026-11-05 — The Outrigger and Carousel are earned
 
 The Outrigger now starts locked. Earn it by getting an Outrigger courier through the Arc Dynamo; it's kept for good after that (`ShipUnlocks`, `CollectionManager` `ships`).
 
@@ -14,8 +14,11 @@ The Outrigger now starts locked. Earn it by getting an Outrigger courier through
 - **The card.** `ShipUnlockPopup`: a white flash, glitch, shake and ring as the hull lands, a spark burst, gold light rays turning behind it on the 320x180 grid, sparks rising off it, then name, pitch and *"Pick it at ship select on your next run."* The green Close pops in a second later; closing it frees the gate.
 - **Escorts** gained `rides_to_gate`, `farewell_lead_in` and `unlocks_ship`. A gate escort takes the slot from a Mayday runner still riding, which says goodbye early and is paid.
 - **Fix:** the jump through an open gate (`JumpEvent`) skipped `Map.can_jump()`.
-- Unlock All in the options also unlocks ships. The Carousel stays open to everyone for now.
-- Checked live in the Scenario Lab: the locked card, the hail and sign-on, the Mayday hand-over, the gate goodbye with jumps refused throughout, the card landing frame by frame, and Close freeing the gate. Core suite 980/980, plus a reload test for earned ships.
+- Unlock All in the options also unlocks ships.
+- **The Carousel** is locked too, and earned by Fate's Die: end a run, won or lost, with two Mercy faces on it (`ShipResource.unlock_face`, `unlock_face_count`). Its card leads the rumour with the Mercy glyph: *"Rumour: end a run with two Mercy on Fate's Die."* While it's locked, each Mercy carving floats *"THE CARAVAN NOTICED"* under the die's own call-out (`unlock_carve_hint`).
+  - At the end screen (`ShipUnlockDirector`, a new node in `main.tscn`), 1.4 s in, the card opens on the die: its six faces pop in, the Mercy faces flare and lift while the rest dim, then fly into the hull's spot trailing green motes, and the hull lands under *"THE CARAVAN REMEMBERS"* with a Mercy die face over it. On a layer of its own above the end screen, following the camera; it plays while the tree is paused, and Close hands back to the end screen.
+  - `GameOver` itself is untouched (the ending-cutscene branch changes it); the director hears `Events.game_over` and `Events.victory` too.
+- Checked live in the Scenario Lab: the locked card, the hail and sign-on, the Mayday hand-over, the gate goodbye with jumps refused throughout, the card landing frame by frame, and Close freeing the gate. Core suite 981/981: a reload test for earned ships, and one that a ship earned by a face takes exactly its own count of that face.
 
 ---
 
