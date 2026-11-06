@@ -685,8 +685,17 @@ func _die_glints() -> void:
 ## The faces on the die the cutscene shows. ReckoningEnding doesn't carry
 ## the run's die, so this is the die every face carved once, as the first
 ## ending's vision carved it.
+## The player's own carved die where the ending carries it, so the throw that
+## loops the game is theirs; the six carvable faces otherwise.
 func _die_faces() -> Array[FateDie.Face]:
-	return FateDie.carvable_faces()
+	var faces: Array[FateDie.Face] = []
+	if ending:
+		for face: int in ending.die_faces:
+			if face != FateDie.Face.BLANK:
+				faces.append(face as FateDie.Face)
+	if faces.size() < 6:
+		return FateDie.carvable_faces()
+	return faces
 
 
 # --- Credits and hand-over ---------------------------------------------------
