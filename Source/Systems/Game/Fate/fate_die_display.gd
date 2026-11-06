@@ -10,8 +10,9 @@ extends Node2D
 ## moment waits for every ship to finish talking (the die rattles meanwhile)
 ## rather than land on top of their lines. A carving waiting for a choice (the
 ## die is full) keeps it rattling until the player picks. In the Reckoning,
-## Fate throws it at the start of every round: it shakes on its own and lands
-## on the face that rules the round.
+## Fate throws it at the start of every round (FateThrowStage, made here): the
+## die is lifted off its chain to the middle of the screen, thrown, and hung
+## back up showing the face that rules the round.
 ##
 ## When the hole sends "You" (RECKONING_ENDINGS.md §4), the die tears itself
 ## off the chain and goes to it (FateSelfPresentation, made here, runs the
@@ -90,6 +91,8 @@ var _fall_velocity: Vector2 = Vector2.ZERO
 ## [slot, face, old face, faces carved once it's in].
 var _carvings_due: Array[Array] = []
 var _announcing: bool = false
+## Off its chain for Fate's throw: the chain hangs empty meanwhile.
+var _lifted: bool = false
 
 
 func _ready() -> void:
@@ -117,6 +120,10 @@ func _ready() -> void:
 	var presentation: FateSelfPresentation = FateSelfPresentation.new()
 	presentation.display = self
 	add_child(presentation)
+	var stage: FateThrowStage = FateThrowStage.new()
+	stage.display = self
+	stage.presentation = presentation
+	add_child(stage)
 	_refresh()
 
 
@@ -180,6 +187,18 @@ func restore() -> void:
 	_fall = Vector2.ZERO
 	_tumble = 0.0
 	_refresh()
+
+
+## Whether the die is on its chain to be lifted off for a throw.
+func can_lift() -> bool:
+	return is_hanging() and not _lifted
+
+
+## Lifts the die off its chain for Fate's throw (it isn't drawn), or hangs it
+## back up.
+func set_lifted(lifted: bool) -> void:
+	_lifted = lifted
+	queue_redraw()
 
 
 ## The die as it shows now, for its pieces when it shatters.
@@ -272,6 +291,8 @@ func _draw() -> void:
 	else:
 		_draw_chain(local_anchor, top)
 
+	if _lifted:
+		return
 	if _glow > 0.0:
 		var radius: float = FateDieArt.SIZE * 0.5 + 2.0 + (1.0 - _glow) * 4.0
 		draw_circle(centre, radius, Color(_glow_color, _glow * 0.35))
@@ -380,20 +401,18 @@ func _play_carving(slot: int, face: int, old_face: int, carved: int) -> void:
 	)
 
 
+## The throw is over (FateThrowStage hung the die back up): it settles on the
+## thrown face and flares in its colour.
 func _on_rolled(slot: int, face: int) -> void:
 	if _hold_state != Hold.HANGING:
 		# Gone to "You": the throws are its die's now.
 		return
 	_shown_slot = slot
 	_hold = -2.0
-	_tumble = 0.9
 	_kick(_HIT_KICK * 1.5)
-	Events.play_sound.emit(_ROLL_SFX)
 	var color: Color = FateFaceCatalog.color_of(face as FateDie.Face)
-	get_tree().create_timer(0.9).timeout.connect(func() -> void:
-		_flare(color)
-		Juice.ring(self, _die_centre(), color, 18.0)
-	)
+	_flare(color)
+	Juice.ring(self, _die_centre(), color, 18.0)
 
 
 func _flare(color: Color) -> void:

@@ -12,8 +12,9 @@ extends Node2D
 ##            shards stream out to "You" and become a small turning cube
 ##            (FateDieShards, then FateSelfDie);
 ##   fight    the cube hangs over the hull, slowing toward the face Fate will
-##            throw next and tumbling onto each throw; the hull is dressed in
-##            Fate's corruption (FateSelfLook);
+##            throw next, and is lifted out for each throw (FateThrowStage)
+##            and set back down on it; the hull is dressed in Fate's
+##            corruption (FateSelfLook);
 ##   death    no explosion: the slices pull the hull apart, the cube stops and
 ##            floats back to where the bone die hung.
 ##
@@ -120,9 +121,18 @@ func _form_die() -> void:
 	Juice.glint(self, point, Globals.white, 7.0, 0.4)
 
 
+## The cube over "You", when it's there to be thrown: made, shown and not
+## being torn away with its ship. FateThrowStage lifts it out.
+func thrown_die() -> FateSelfDie:
+	if is_instance_valid(_die) and not _dying and _die.is_shown():
+		return _die
+	return null
+
+
+## The throw is over (FateThrowStage put the cube back): it lands on the face.
 func _on_rolled(slot: int, face: int) -> void:
 	if is_instance_valid(_die) and not _dying:
-		_die.throw(slot, face as FateDie.Face)
+		_die.land_on(slot, face as FateDie.Face)
 
 
 func _on_destroyed(ship: Enemy) -> void:

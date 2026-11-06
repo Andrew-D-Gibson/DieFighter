@@ -3,14 +3,15 @@ extends Node2D
 ## Fate's Die hanging over "You" (RECKONING_ENDINGS.md §4), a small FateDieSpin
 ## the size of the canopy's bone die. Between throws it turns lazily and slows
 ## toward the face Fate will throw next round, so an attentive player can read
-## what's coming; on a throw it tumbles and lands on the thrown face. With
-## nothing known of the next throw, it just keeps turning.
+## what's coming. Fate's throw each round is FateThrowStage's: it lifts the
+## cube out to the middle of the screen, throws it, and sets it back down on
+## the thrown face (lift_out(), land_on()). With nothing known of the next
+## throw, it just keeps turning.
 ##
 ## Steered here rather than by the cube's own spin, which only wobbles about a
 ## fixed axis and can't be aimed.
 
 const _SNAP_SHADER: Shader = preload("res://Assets/Shaders/palette_snap.gdshader")
-const _LAND_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres")
 const _SETTLE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/die_dread_thunk.tres")
 
 ## Pixels of air between the top of the hull and the cube.
@@ -25,11 +26,6 @@ const _CREEP_SPEED: float = 0.08
 const _SETTLE_SECONDS: float = 7.0
 ## How hard it's drawn to the coming face once settled, per second.
 const _PULL: float = 1.6
-## A throw: how long it tumbles, how fast it starts, and how long the landing
-## takes. The tumble matches the canopy die's.
-const _TUMBLE_SECONDS: float = 0.75
-const _TUMBLE_SPEED: float = 14.0
-const _LAND_SECONDS: float = 0.22
 ## How long a thrown face is held before the die drifts on.
 const _SHOW_SECONDS: float = 1.6
 ## Its death: the pause after it stops turning, the float home, the settle.
@@ -40,7 +36,7 @@ const _FLOAT_SECONDS: float = 1.1
 ## still reads as a cube.
 static var _tilt: Quaternion = Basis.from_euler(Vector3(0.4, 0.55, 0.0)).get_rotation_quaternion()
 
-enum Mode { DRIFTING, TUMBLING, LANDING, SHOWING, STOPPED, FLOATING }
+enum Mode { DRIFTING, SHOWING, STOPPED, FLOATING }
 
 var _spin: FateDieSpin
 var _sprite: Sprite2D
@@ -53,19 +49,16 @@ var _age: float = 0.0
 var _turn: Quaternion = Quaternion.IDENTITY
 var _axis: Vector3 = Vector3(0.3, 1.0, 0.2).normalized()
 var _speed: float = _LAZY_SPEED
-var _landing_from: Quaternion = Quaternion.IDENTITY
 var _landing_side: int = 0
 var _landing_face: FateDie.Face = FateDie.Face.BLANK
 ## Where it hangs when no ship is left to follow.
 var _last_point: Vector2 = Vector2.ZERO
 var _floating: bool = false
-var _rng: RandomNumberGenerator = RandomNumberGenerator.new()
 
 
 func _ready() -> void:
 	top_level = true
 	z_as_relative = false
-	_rng.seed = 0x5e1f
 	_spin = FateDieSpin.new()
 	_spin.glyph_scale = 1
 	_spin.turning = false
@@ -111,16 +104,35 @@ func appear() -> void:
 	_set_mode(Mode.DRIFTING)
 
 
-## Fate's throw: a tumble, landing on [param face] (side [param slot]).
-func throw(slot: int, face: FateDie.Face) -> void:
-	if _mode == Mode.STOPPED or _mode == Mode.FLOATING:
+## The cube is out being thrown (FateThrowStage): this one is hidden, still
+## turned to side [param slot] so a copy of it drawn elsewhere reads right.
+func lift_out(slot: int) -> void:
+	modulate.a = 0.0
+	_landing_side = clampi(slot, 0, FateDie.FACE_COUNT - 1)
+	_turn = _turn_showing(_landing_side)
+	_set_mode(Mode.SHOWING)
+
+
+## The throw is over and the cube is back: it shows, landed on [param face]
+## (side [param slot]).
+func land_on(slot: int, face: FateDie.Face) -> void:
+	modulate.a = 1.0
+	if not visible or _mode == Mode.STOPPED or _mode == Mode.FLOATING:
 		return
 	_landing_side = clampi(slot, 0, FateDie.FACE_COUNT - 1)
 	_landing_face = face
-	_axis = Vector3(_rng.randf_range(-1, 1), _rng.randf_range(-1, 1), _rng.randf_range(-0.4, 0.4)).normalized()
-	_speed = _TUMBLE_SPEED
-	_set_mode(Mode.TUMBLING)
-	Events.play_sound.emit(_LAND_SFX)
+	_turn = _turn_showing(_landing_side)
+	_land()
+
+
+## What the cube's own little 3D world shows, for a copy drawn elsewhere.
+func spin_texture() -> Texture2D:
+	return _spin.get_texture()
+
+
+## Whether the cube is on show, there to be lifted out.
+func is_shown() -> bool:
+	return visible and modulate.a > 0.0 and _mode != Mode.STOPPED and _mode != Mode.FLOATING
 
 
 ## "You" is gone: the cube stops dead, then floats free to [param rest] (in
@@ -163,19 +175,10 @@ func _process(delta: float) -> void:
 	match _mode:
 		Mode.DRIFTING:
 			_drift(delta)
-		Mode.TUMBLING:
-			_speed = lerpf(_TUMBLE_SPEED, _TUMBLE_SPEED * 0.3, _mode_time / _TUMBLE_SECONDS)
-			_rotate(delta)
-			if _mode_time >= _TUMBLE_SECONDS:
-				_landing_from = _turn
-				_set_mode(Mode.LANDING)
-		Mode.LANDING:
-			var t: float = clampf(_mode_time / _LAND_SECONDS, 0.0, 1.0)
-			_turn = _landing_from.slerp(_turn_showing(_landing_side), 1.0 - pow(1.0 - t, 3.0))
-			if t >= 1.0:
-				_land()
 		Mode.SHOWING:
-			if _mode_time >= _SHOW_SECONDS:
+			# Held while lifted out (modulate hides it): FateThrowStage
+			# lands it, which restarts the clock.
+			if modulate.a > 0.0 and _mode_time >= _SHOW_SECONDS:
 				_set_mode(Mode.DRIFTING)
 		Mode.STOPPED, Mode.FLOATING:
 			pass
