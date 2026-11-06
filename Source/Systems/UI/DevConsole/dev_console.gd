@@ -602,15 +602,17 @@ func _fate(command_args: Array[String] = []) -> void:
 				command_history.append_text('\n\t\tTarget a ship to remember first.')
 				return
 			ledger.remember_ship(target, kind)
+		'ready':
+			# Everything the way back needs, so the last gate offers it: the
+			# die, all six faces, the secret known from "an earlier run".
+			_ready_fate_route(ledger)
 		'reckoning':
-			ledger.give_die()
-			var faces: Array[FateDie.Face] = FateDie.carvable_faces()
-			var i: int = 0
-			while not ledger.die.is_full():
-				ledger.request_carve(faces[i % faces.size()])
-				i += 1
-			ledger.knew_secret = true
-			Globals.state_manager.enter_reckoning()
+			_ready_fate_route(ledger)
+			ledger.take_drive()
+			# The fight scales by sector: from anywhere, it's the last one's.
+			var state: GameStateManager = Globals.state_manager
+			state.current_game_save.sector_index = state.demo_sector_count - 1
+			state.enter_reckoning()
 		'drive':
 			ledger.take_drive()
 		'ending':
@@ -629,11 +631,32 @@ func _fate(command_args: Array[String] = []) -> void:
 		'status':
 			pass
 		_:
-			command_history.append_text('\n\t\tUsage: fate [status|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|drive|ending|reckoning|escape [n]|horizon [n]]')
+			command_history.append_text('\n\t\tUsage: fate [status|ready|give|carve <face>|fill|clear|know [off]|deed <id>|ally [debt]|drive|ending|reckoning|escape [n]|horizon [n]]')
 			return
 	command_history.append_text('\n[center]Fate: die %s %s, pending %d, knows %s, route %s, kills %d, allies %d, deeds %s[/center]' % [
 		'held' if ledger.has_die else 'not held', str(ledger.die.to_data()), ledger.pending.size(),
 		str(ledger.knew_secret), str(ledger.fate_route_open()), ledger.kills.size(), ledger.allies.size(), str(ledger.deeds)])
+
+
+## Hands the run Fate's Die, carves each of the six faces once into what's
+## still blank, and lets this run count as knowing the secret, so the route
+## back toward Fate is open (FateLedger.fate_route_open()).
+func _ready_fate_route(ledger: FateLedger) -> void:
+	ledger.give_die()
+	for face: FateDie.Face in FateDie.carvable_faces():
+		if ledger.die.is_full():
+			break
+		if ledger.die.count(face) == 0:
+			ledger.request_carve(face)
+	# Faces already carved twice leave room: fill it with what's missing first.
+	var faces: Array[FateDie.Face] = FateDie.carvable_faces()
+	var i: int = 0
+	while not ledger.die.is_full():
+		ledger.request_carve(faces[i % faces.size()])
+		i += 1
+	# This run only: the collection's knowledge is left as it is, so a real
+	# first win still gets the first ending. (fate know sets that.)
+	ledger.knew_secret = true
 
 
 func _clear() -> void:
@@ -815,7 +838,14 @@ func _help() -> void:
 	command_history.append_text('\n[b]damage[/b] <amount>               damage player')
 	command_history.append_text('\n[b]damage_enemies[/b] <amount>       damage all enemies')
 	command_history.append_text('\n[b]families[/b] [unlock|reset|show]   list tile families, unlock/lock them, preview a card')
-	command_history.append_text('\n[b]fate[/b] [give|carve|fill|know|reckoning|escape|...] Fate\'s Die and the Reckoning')
+	command_history.append_text('\n[b]fate[/b]                          Fate\'s Die and the Reckoning (status):')
+	command_history.append_text('\n    [b]fate ready[/b]                    die + all six faces + secret known this run: the last gate offers Back')
+	command_history.append_text('\n    [b]fate reckoning[/b]                ready, then straight into the Reckoning (last sector\'s difficulty)')
+	command_history.append_text('\n    [b]fate give[/b] / [b]fill[/b] / [b]clear[/b]    hand over the die / carve every blank face / wipe it')
+	command_history.append_text('\n    [b]fate carve[/b] <face>             mercy|plunder|duty|ruin|hunger|strange (full die: choose a face)')
+	command_history.append_text('\n    [b]fate know[/b] [off]               the secret, as if learned on an earlier run')
+	command_history.append_text('\n    [b]fate drive[/b] / [b]ending[/b]           install the Vanguard Drive / play the first ending')
+	command_history.append_text('\n    [b]fate escape[/b] [n] / [b]horizon[/b] [n]  in the Reckoning: add escape / move the horizon')
 	command_history.append_text('\n[b]fps[/b]                           toggle FPS display')
 	command_history.append_text('\n[b]god[/b]                           toggle player invulnerability')
 	command_history.append_text('\n[b]heal[/b] [amount]                 heal player (default: full)')

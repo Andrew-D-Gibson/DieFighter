@@ -66,9 +66,9 @@ func _on_game_win() -> void:
 	if _fate_ending == &"unlocked":
 		# The run that first learned the secret, after its ending cutscene
 		# (EndingCutscene): it comes up out of black, so nothing of the game
-		# shows behind it, and its last line points back toward Fate.
+		# shows behind it. The cutscene has said everything; no closing line.
 		$ScreenDim.color.a = 1.0
-		_show_run_summary(Globals.purple, tr("FATE_ENDING_UNLOCKED_LINE"))
+		_show_run_summary(Globals.blue)
 		show()
 		return
 

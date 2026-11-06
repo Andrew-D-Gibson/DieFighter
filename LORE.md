@@ -481,8 +481,7 @@ They stream past the ship, *forward*, and fall into a second black hole ahead,
 the opening's Fate exactly mirrored. The picture glitches out into its purple,
 and Fate's Die turns in the light, blank, as its faces carve themselves one by
 one. *"Fate only notices those who choose..."* Then UNLOCKED, and the victory
-screen: *"Fate saw you. Carve every face, and the way back is open."* The
-camera rhymes with the opening in reverse: close on the ship, pulling out, then
+screen. The camera rhymes with the opening in reverse: close on the ship, pulling out, then
 the push in that the opening ended on.
 
 **The choice (§6 Gates 2-3).** With the knowledge and every face carved,

@@ -317,7 +317,6 @@ FATE_ENDING_FACES,Your die: {faces},,,,,,,,Secret ending: the faces left on the 
 FATE_ENDING_FELL_IN_TITLE,YOU FELL IN,,,,,,,,Heading of the secret loss: the player's ship was destroyed inside the black hole,,,,
 FATE_ENDING_FELL_IN_LINE,You crossed the horizon. Something came back out.,,,,,,,,Line under the secret loss's heading: the ship may return as one of the hole's creatures,,,,
 FATE_ENDING_FORWARD_LINE,You reached the front. The Tithe Collector is waiting for your orders.,,,,,,,,"Line under the normal victory heading: the player becomes the new leader of the fleet, and with it the dark deal",,,,
-FATE_ENDING_UNLOCKED_LINE,"Fate saw you. Carve every face, and the way back is open.",,,,,,,,"Line under the victory heading on the run that first learned the game's secret: on a later run, a player whose Fate's Die has all six faces carved can turn back toward the black hole for a secret fight",,,
 FATE_ECHO_LINE_1,...you did this... remember...,,,,,,,,"Speech bubble of a ship the player destroyed earlier, spat back out of the black hole in the secret fight. Broken, eerie",,,,
 FATE_ECHO_LINE_2,...back... it all comes back...,,,,,,,,Another echo's speech bubble,,,,
 FATE_ECHO_LINE_3,...was it worth it?...,,,,,,,,Another echo's speech bubble,,,,
