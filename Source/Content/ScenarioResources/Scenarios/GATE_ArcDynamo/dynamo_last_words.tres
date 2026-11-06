@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_script")
-speaker = "ARC DYNAMO, DYING"
+speaker = "ARC DYNAMO"
 line_1 = "I kept the Belly moving. Every jump, someone got left behind. That was my job."
 line_2 = "And every jump, the Rearguard took its tithe. We paid it so they'd hold the line."
 line_3 = "If they're holding anything, it isn't for us. Ask the Bastion where our dice went."

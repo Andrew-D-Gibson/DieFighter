@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_script")
-speaker = "SECTOR WARDEN, DYING"
+speaker = "SECTOR WARDEN"
 line_1 = "Everyone back here is already dead. I just noticed first."
 line_2 = "Rearguard convoys fly back past me, toward the hole, holds full of dice."
 line_3 = "They pay me not to ask why. Run on ahead and ask them yourself."

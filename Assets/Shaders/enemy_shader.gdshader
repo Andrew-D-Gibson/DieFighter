@@ -11,6 +11,14 @@ uniform vec4 cloak_main_color : source_color = vec4(0.0, 0.1, 0.6, 1.0); // dark
 uniform vec4 cloak_bg_color   : source_color = vec4(0.4, 0.8, 1.0, 0.2); // light blue transparent
 uniform float cloak_tolerance : hint_range(0.0, 0.5) = 0.1;
 
+// The node's modulate alpha. COLOR is overwritten below, which would otherwise
+// throw modulate away, so fades (a wreck's pieces dissolving) did nothing.
+varying float modulate_alpha;
+
+void vertex() {
+	modulate_alpha = COLOR.a;
+}
+
 void fragment() {
 	// Sample sprite texture
 	vec4 tex_color = texture(TEXTURE, UV);
@@ -28,7 +36,7 @@ void fragment() {
 	vec4 final_color = mix(flash_color_mix, cloaked_color, cloak_amount);
 
 	// Apply global alpha override
-    final_color.a *= alpha;
+    final_color.a *= alpha * modulate_alpha;
 
 	COLOR = final_color;
 }

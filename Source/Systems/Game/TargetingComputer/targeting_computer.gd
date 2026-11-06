@@ -625,8 +625,7 @@ func _show_bound_arrows() -> void:
 			arrow.target = ship
 			arrow.hostile = action.get_binding() != EnemyActionResource.Binding.ALLY
 			arrow.is_live = is_slot_live
-			# Over the ships, with the reticle.
-			arrow.z_index = targeting_indicator.z_index
+			# The arrow sets its own z (BoundIntentArrow.Z_INDEX), over the dice.
 			add_child(arrow)
 			arrows_by_ship[ship] = arrow
 			_bound_arrows.append(arrow)

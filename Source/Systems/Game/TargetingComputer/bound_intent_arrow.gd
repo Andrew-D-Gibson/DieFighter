@@ -12,7 +12,9 @@ extends Node2D
 ##
 ## Drawn in world pixels on whole-pixel positions, out of axis-aligned 1px
 ## rects only, so it stays on the art's pixel grid under the 6x camera.
-## Redrawn every frame: ships and their idle bobs move smoothly.
+## Redrawn every frame: ships and their idle bobs move smoothly. The arc and its
+## arrowhead follow the bobbing hulls, but the badge holds still on the arc as
+## it would sit with the ships at rest, so its faces stay readable.
 
 const _DIE_FACES_LIT: Texture2D = preload(
 	"res://Assets/Textures/TargetingComputer/intent_dice_indicator_held-Sheet.png"
@@ -28,6 +30,11 @@ const _HOSTILE_LIT: Color = Color("#d03656")
 const _HOSTILE_DIM: Color = Color("#90263c")
 const _PLATE: Color = Color("#0f0c2e")
 const _PLATE_SHADOW: Color = Color(0.02, 0.01, 0.06, 0.6)
+
+## Where the arrow draws, absolutely: over the dice every ship holds in its queue
+## (10) so a crowded fight never buries a badge or arc under them, and under the
+## hit effects (Juice's 20) and a die being dragged.
+const Z_INDEX: int = 15
 
 ## Die faces and intent icons are both this square.
 const _ICON: int = 7
@@ -69,6 +76,8 @@ var _march: float = 0.0
 func _ready() -> void:
 	top_level = true
 	global_position = Vector2.ZERO
+	z_as_relative = false
+	z_index = Z_INDEX
 
 
 func _process(delta: float) -> void:
@@ -95,9 +104,7 @@ func _draw() -> void:
 
 	_draw_arrow_body(path, length, color, live)
 	_draw_head(to, color)
-
-	var effective_t: float = badge_along if from.x <= to.x else 1.0 - badge_along
-	_draw_badge(_point_on(from, control, to, effective_t), live)
+	_draw_badge(_badge_point(), live)
 
 
 ## Draws the solid continuous arc with a subtle dark backing plate, plus
@@ -135,13 +142,15 @@ func _draw_arrow_body(path: PackedVector2Array, length: float, color: Color, liv
 	for pt: Vector2i in line_pixels.keys():
 		draw_rect(Rect2(Vector2(pt), Vector2.ONE), color)
 
-	# 3. Directional chevrons along the line pointing toward target
-	var chevron_start: float = _march if live else 8.0
-	var cur: float = chevron_start
-	var chevron_col: Color = Globals.white if live else color
+	# 3. Directional chevrons marching toward the target, only while something
+	# flows: a still arc with its own coloured chevrons read as a second signal
+	# on top of the line's colour.
+	if not live:
+		return
+	var cur: float = _march
 	while cur < end_dist - 3.0:
 		if cur >= 3.0:
-			_draw_chevron(_point_at(path, cur), _point_at(path, cur + 2.0), chevron_col)
+			_draw_chevron(_point_at(path, cur), _point_at(path, cur + 2.0), Globals.white)
 		cur += _CHEVRON_SPACING
 
 
@@ -221,11 +230,17 @@ func _draw_badge(on: Vector2, live: bool) -> void:
 func get_badge_rect() -> Rect2:
 	if not _ships_present():
 		return Rect2()
-	var from: Vector2 = _anchor(source) + Vector2(source_offset_x, 0.0)
-	var to: Vector2 = _anchor(target)
+	return _badge_rect_at(_badge_point())
+
+
+## Where the badge rides: the point on the arc between the ships as they sit
+## at the middle of their bob, so it doesn't bob with them.
+func _badge_point() -> Vector2:
+	var from: Vector2 = _anchor(source, true) + Vector2(source_offset_x, 0.0)
+	var to: Vector2 = _anchor(target, true)
 	var control: Vector2 = control_point(from, to, arc_lift_offset)
 	var effective_t: float = badge_along if from.x <= to.x else 1.0 - badge_along
-	return _badge_rect_at(_point_on(from, control, to, effective_t))
+	return _point_on(from, control, to, effective_t)
 
 
 ## The badge's rect when it rides the arc at [param on].
@@ -299,8 +314,9 @@ func _line_color(live: bool) -> Color:
 	return _ALLY_LIT if live else _ALLY_DIM
 
 
-## Just over the top-middle of [param ship]'s art.
-static func _anchor(ship: Enemy) -> Vector2:
+## Just over the top-middle of [param ship]'s art, or where that is with the
+## ship at the middle of its bob when [param steady].
+static func _anchor(ship: Enemy, steady: bool = false) -> Vector2:
 	var art: Node2D = ship.graphics_manager.ship_graphics if ship.graphics_manager else null
 	var top: float = -16.0
 	var at: Vector2 = ship.global_position
@@ -309,6 +325,8 @@ static func _anchor(ship: Enemy) -> Vector2:
 		var rect: Rect2 = sprite.get_rect()
 		at = sprite.global_transform * Vector2(rect.get_center().x, rect.position.y)
 		top = 0.0
+	if steady:
+		at -= ship.graphics_manager.bob_displacement()
 	return (at + Vector2(0, top - _END_GAP)).round()
 
 

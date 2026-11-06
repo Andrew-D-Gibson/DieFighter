@@ -82,6 +82,13 @@ const ALLY_SUPPORT_EARLIEST_SECTOR: int = 1
 @export var ship_graphics_scene: PackedScene
 @export var graphics_scene_offset: Vector2 = Vector2(0,0)
 @export var dialogue_offset: Vector2 = Vector2(0,0)
+## The cockpit-ish part of the hull that outlasts the rest of a death held for
+## last words (LastWords): the rest of the ship blows apart at the kill, this
+## chunk hangs on screen while the story plays, then blows too. An outline in
+## the ship sprite's own pixels, from its top left. It must either reach past
+## an edge of the sprite or enclose the sprite's centre, so the hull around it
+## cuts cleanly. Empty: the ship waits whole instead.
+@export var cockpit_chunk: PackedVector2Array = PackedVector2Array()
 @export var targeting_computer_image: Texture2D
 @export var health_bar_position: Vector2
 ## Where the health bar moves when the formation is too crowded for it to hang

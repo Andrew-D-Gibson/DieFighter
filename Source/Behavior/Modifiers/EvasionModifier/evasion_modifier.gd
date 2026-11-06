@@ -115,8 +115,8 @@ func on_before_event(event: EffectEvent, _running_engine: ScenarioEngine) -> voi
 	Events.player_evaded.emit(event.actor as Enemy)
 
 
-## The miss is called out on the health bar, where the hit was headed, and on
-## the engine tile, which is what dodged it.
+## The miss is called out on the health bar, where the hit was headed; the
+## engine tile, which is what dodged it, only sparks.
 func announce_triggered() -> void:
 	super()
 	var player: Player = Globals.player
@@ -127,8 +127,9 @@ func announce_triggered() -> void:
 	Juice.callout_at(player, Juice.anchor_of(player), text, tint, true)
 	var engine_node: Node2D = engine_display(player)
 	if engine_node:
+		# Sparks only: the callout over the health bar is the telegraph, and a
+		# second one over the engine just crowded it.
 		Juice.sparkle(engine_node, Juice.anchor_of(engine_node), tint, 10, 35.0)
-		Juice.callout(engine_node, text, tint, true)
 	Events.vignette_pulse.emit(tint)
 
 
