@@ -77,6 +77,7 @@ const _ATTACKER_TEXTURE: Texture2D = preload("res://Assets/Textures/Enemies/Atta
 const _GLITCH_SCENE: PackedScene = preload("res://Source/Systems/UI/Glitch/glitch_shader.tscn")
 const GlitchRemains = preload("res://Source/Scenes/Cutscenes/Reckoning/BecomeFate/glitch_remains.gd")
 const ThrownFateDie = preload("res://Source/Scenes/Cutscenes/Reckoning/BecomeFate/thrown_fate_die.gd")
+const CanopyFateDie = preload("res://Source/Scenes/Cutscenes/Reckoning/BecomeFate/canopy_fate_die.gd")
 const FallingCredits = preload("res://Source/Scenes/Cutscenes/Reckoning/BecomeFate/falling_credits.gd")
 
 # Borrowed sounds. The ones this wants made are in the report that shipped
@@ -95,6 +96,9 @@ const _OPENING_TRACK: StringName = &"trailer_1"
 const _OPENING_PITCH: float = 0.72
 ## What the menu plays: the credits hand straight off to it.
 const _MENU_TRACK: StringName = &"game_start_theme"
+
+## Texels to a glyph pixel on the thrown die: its faces come out 29 px wide.
+const _THROWN_DIE_GLYPH_SCALE: int = 3
 
 ## Approved palette.
 const _FATE_PURPLE: Color = Color("#c552f1")
@@ -149,7 +153,7 @@ var _star_depths: PackedFloat32Array = PackedFloat32Array()
 var _exhaust: Array[CPUParticles2D] = []
 ## The ship as it falls away into the hole: a still frame, shrunk.
 var _falling_ship: Sprite2D
-var _small_die: Sprite2D
+var _small_die: CanopyFateDie
 var _disk_material: ShaderMaterial
 var _core_material: ShaderMaterial
 var _runner: Sprite2D
@@ -245,6 +249,7 @@ func _die_comes_home(t: Tween) -> void:
 		at.y += sin(p * PI) * 9.0
 		_small_die.position = at.round(),
 		0.0, 1.0, 3.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	t.parallel().tween_method(_small_die.fly_turn, 0.0, 1.0, 3.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	t.parallel().tween_property(self, "view_center", Vector2(184, 92), 3.6).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
 	t.tween_callback(_die_settles)
 	t.tween_interval(0.5)
@@ -337,14 +342,14 @@ func _you_comes_apart() -> void:
 	Events.camera_shake_small.emit()
 
 
-## The small die, as it hangs from the canopy all run: bone white, carved,
-## at its own pixel size.
+## The small die, as it hangs from the canopy all run: the 3D cube, bone
+## white, carrying the run's carved faces, at the canopy die's pixel size.
 func _build_small_die() -> void:
-	_small_die = Sprite2D.new()
-	_small_die.texture = FateDieArt.face_texture(_die_faces()[0])
+	_small_die = CanopyFateDie.new()
 	_small_die.z_index = 12
 	_world.add_child(_small_die)
 	_small_die.position = _REMAINS_AT + Vector2(0, -4)
+	_small_die.show_faces(_die_slots())
 
 
 ## The die reaches the canopy: a glint, and it's aboard.
@@ -645,6 +650,8 @@ func _far_streak(spot: Vector2, color: Color) -> void:
 
 func _build_thrown_die() -> void:
 	_die = ThrownFateDie.new()
+	# Big enough to own the dark foreground, small enough for a 320x180 frame.
+	_die.glyph_scale = _THROWN_DIE_GLYPH_SCALE
 	%Foreground.add_child(_die)
 	_die_sprite = Sprite2D.new()
 	_die_sprite.texture = _die.get_texture()
@@ -660,9 +667,14 @@ func _build_thrown_die() -> void:
 ## Thrown: it comes in from above, tumbling, to land on a face. Which face is
 ## the throw's: cosmetic, as a throw should be.
 func _throw_die() -> void:
-	var faces: Array[FateDie.Face] = _die_faces()
+	var faces: Array[FateDie.Face] = _die_slots()
 	_die.show_faces(faces)
-	var side: int = int(RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, faces.size() - 0.001))
+	# A blank side isn't a throw: land on a carved one.
+	var carved: Array[int] = []
+	for slot: int in faces.size():
+		if faces[slot] != FateDie.Face.BLANK:
+			carved.append(slot)
+	var side: int = carved[int(RNGManager.randf_range(RNGManager.Bucket.COSMETIC, 0.0, carved.size() - 0.001))] if not carved.is_empty() else 0
 	_die.throw_onto(side)
 	_die.set_meta(&"face", faces[side])
 	_die_sprite.visible = true
@@ -678,24 +690,20 @@ func _die_glints() -> void:
 	var res: FateFaceResource = FateFaceCatalog.get_face(_die.get_meta(&"face"))
 	var color: Color = res.color if res else Globals.white
 	Events.play_sound.emit(_DIE_STILL_SFX)
-	Juice.glint(_effects, _die_sprite.position + Vector2(-14, -16), Globals.white, 7.0, 0.6)
-	_jump_fx.ring(_die_sprite.position, color, 20.0, 34.0, 0.6)
+	Juice.glint(_effects, _die_sprite.position + Vector2(-9, -10), Globals.white, 5.0, 0.6)
+	_jump_fx.ring(_die_sprite.position, color, 12.0, 22.0, 0.6)
 
 
-## The faces on the die the cutscene shows. ReckoningEnding doesn't carry
-## the run's die, so this is the die every face carved once, as the first
-## ending's vision carved it.
-## The player's own carved die where the ending carries it, so the throw that
-## loops the game is theirs; the six carvable faces otherwise.
-func _die_faces() -> Array[FateDie.Face]:
+## The faces on the die the cutscene shows, one per side in the die's slot
+## order: the player's own carved die where the ending carries it, so the
+## throw that loops the game is theirs; the carvable faces otherwise.
+func _die_slots() -> Array[FateDie.Face]:
 	var faces: Array[FateDie.Face] = []
-	if ending:
+	if ending and ending.die_faces.size() >= FateDie.FACE_COUNT:
 		for face: int in ending.die_faces:
-			if face != FateDie.Face.BLANK:
-				faces.append(face as FateDie.Face)
-	if faces.size() < 6:
-		return FateDie.carvable_faces()
-	return faces
+			faces.append(face as FateDie.Face)
+		return faces
+	return FateDie.carvable_faces()
 
 
 # --- Credits and hand-over ---------------------------------------------------
