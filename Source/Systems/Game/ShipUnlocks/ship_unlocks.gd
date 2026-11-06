@@ -5,6 +5,9 @@ extends RefCounted
 ## its ship-select card shows a rumour of how to earn it. A ship still being
 ## built (coming_soon) is never pickable, earned or not.
 ##
+## A ship is earned by an encounter (the Outrigger) or by the faces left on
+## Fate's Die when a run ends (the Carousel, ShipUnlockDirector).
+##
 ## The earning encounter (ShipResource.unlock_scenario) is dealt into the
 ## player's own runs only, like TileUnlocks: the Scenario Lab and the
 ## AutoPilot fly every ship and never meet it unless they ask for it.
@@ -24,6 +27,33 @@ static func is_locked(ship: ShipResource) -> bool:
 ## dev tools). True if it was locked until now.
 static func unlock(id: StringName, force: bool = false) -> bool:
 	return CollectionManager.record_ship(String(id), force)
+
+
+## Whether [param die] earns [param ship]: it's earned by a face, and the die
+## bears that face often enough. Says nothing of whether it's still locked.
+static func die_earns(ship: ShipResource, die: FateDie) -> bool:
+	return ship != null and die != null and ship.unlock_face != FateDie.Face.BLANK \
+		and die.count(ship.unlock_face) >= ship.unlock_face_count
+
+
+## The locked ships a run ending with [param die] earns.
+static func earned_by_die(die: FateDie) -> Array[ShipResource]:
+	var found: Array[ShipResource] = []
+	for ship: ShipResource in ShipCatalog.all():
+		if not ship.coming_soon and is_locked(ship) and die_earns(ship, die):
+			found.append(ship)
+	return found
+
+
+## The locked ships that carving [param face] counts toward.
+static func counted_by_face(face: FateDie.Face) -> Array[ShipResource]:
+	var found: Array[ShipResource] = []
+	if face == FateDie.Face.BLANK:
+		return found
+	for ship: ShipResource in ShipCatalog.all():
+		if ship.unlock_face == face and not ship.coming_soon and is_locked(ship):
+			found.append(ship)
+	return found
 
 
 ## The encounters that can earn a ship, for sector [param sector_index] of

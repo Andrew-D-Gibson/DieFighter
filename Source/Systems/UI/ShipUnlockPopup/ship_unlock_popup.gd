@@ -5,6 +5,12 @@ extends Node2D
 ## name and pitch come up underneath, and a beat later the green Close button
 ## pops in. Shown by EscortKeeper once the escort that earned it has gone.
 ##
+## A ship earned by Fate's Die (ShipResource.unlock_face, shown by
+## ShipUnlockDirector at the end of the run) opens on the die instead: its
+## six faces pop in, the earning faces flare and fly into the hull as it
+## lands, and the earning face sits over the hull under the ship's own
+## heading ("THE CARAVAN REMEMBERS").
+##
 ## In world space, like TileUnlockPopup, so the hull is drawn on the same
 ## pixel grid as everything else, and the rays are drawn into the game's
 ## 320x180 grid (JuicePixelated) rather than in smooth screen pixels.
@@ -15,6 +21,7 @@ signal closed()
 const _CLOSE_BUTTON: PackedScene = preload("res://Source/Systems/UI/Buttons/medium_green_button.tscn")
 const _OPEN_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/upgrade_trigger.tres")
 const _POP_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/shop_stock_pop.tres")
+const _FACE_SFX: SoundEffectResource = preload("res://Source/Resources/SoundEffectResources/SoundEffects/dice_reroll_blip.tres")
 
 const _DIM_COLOR: Color = Color(0.027451, 0.0117647, 0.054902, 0.92)
 ## The flash the hull lands in: the palette's highlight white.
@@ -32,6 +39,11 @@ const _GLITCH_MS: int = 220
 const _CLOSE_DELAY: float = 1.1
 ## The hull idles on its engines, a pixel up and down.
 const _BOB_SPEED: float = 2.6
+## The die's faces in a row across the hull's spot, before it lands.
+const _FACE_GAP: int = 3
+const _FACE_STAGGER: float = 0.08
+## The earning face over the hull, between it and the heading.
+const _EMBLEM_Y: float = 25.0
 ## Spark colours, the palette's warm highlights.
 const _SPARK_COLORS: Array[Color] = [Color("#cef0f1"), Color("#eed35d"), Color("#f29c5d"), Color("#ee7f2f")]
 
@@ -52,6 +64,10 @@ var _close_holder: Control
 var _close_button: Button
 var _tween: Tween
 var _bob_time: float = 0.0
+## The die's faces for the opening, earning ones first in their own list.
+var _faces: Array[TextureRect] = []
+var _earning_faces: Array[TextureRect] = []
+var _emblem: TextureRect
 
 
 func _ready() -> void:
@@ -65,9 +81,12 @@ func _process(delta: float) -> void:
 	_hull.position.y = roundf(sin(_bob_time * _BOB_SPEED))
 
 
-## Shows [param ship], just earned.
-func open(ship: ShipResource) -> void:
+## Shows [param ship], just earned. Pass [param die] for a ship Fate's Die
+## earned, to open on it.
+func open(ship: ShipResource, die: FateDie = null) -> void:
 	_build(ship)
+	if die and ship.unlock_face != FateDie.Face.BLANK:
+		_build_die(die, ship.unlock_face)
 	_dim.modulate.a = 0.0
 	_header.modulate.a = 0.0
 	_panel.modulate.a = 0.0
@@ -101,7 +120,9 @@ func _build(ship: ShipResource) -> void:
 	_stream = _sparks(false)
 	_burst = _sparks(true)
 
-	_header = _label(tr("SHIP_UNLOCK_HEADER"), 1.0, Globals.yellow)
+	var heading: String = ship.unlock_card_header if not ship.unlock_card_header.is_empty() \
+		else "SHIP_UNLOCK_HEADER"
+	_header = _label(tr(heading), 1.0, Globals.yellow)
 	_header.position = Vector2(0, _HEADER_Y)
 	_header.size.x = Globals.SCREEN_SIZE.x
 	add_child(_header)
@@ -154,6 +175,59 @@ func _build(ship: ShipResource) -> void:
 	_flash.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	_flash.modulate.a = 0.0
 	add_child(_flash)
+
+
+## The die's six faces in a row where the hull will land, each popping in
+## from nothing, and the earning face over the hull.
+func _build_die(die: FateDie, face: FateDie.Face) -> void:
+	var size: Vector2 = Vector2(FateDieArt.SIZE, FateDieArt.SIZE)
+	var row_width: float = FateDie.FACE_COUNT * size.x + (FateDie.FACE_COUNT - 1) * _FACE_GAP
+	var left: float = roundf(_SHIP_CENTER.x - row_width / 2.0)
+	var color: Color = FateFaceCatalog.color_of(face)
+	for slot: int in FateDie.FACE_COUNT:
+		var icon: TextureRect = TextureRect.new()
+		icon.texture = FateDieArt.face_texture(die.face_at(slot))
+		icon.size = size
+		icon.pivot_offset = size / 2.0
+		icon.position = Vector2(left + slot * (size.x + _FACE_GAP), roundf(_SHIP_CENTER.y - size.y / 2.0))
+		icon.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		icon.scale = Vector2.ZERO
+		add_child(icon)
+		_faces.append(icon)
+		if die.face_at(slot) == face:
+			_earning_faces.append(icon)
+			icon.add_child(_trail(color, size / 2.0))
+
+	_emblem = TextureRect.new()
+	_emblem.texture = FateDieArt.face_texture(face)
+	_emblem.size = size
+	_emblem.position = Vector2(roundf(_SHIP_CENTER.x - size.x / 2.0), _EMBLEM_Y)
+	_emblem.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_emblem.modulate.a = 0.0
+	add_child(_emblem)
+
+
+## Art-pixel motes left behind an earning face as it flies into the hull.
+func _trail(color: Color, at: Vector2) -> CPUParticles2D:
+	var trail: CPUParticles2D = CPUParticles2D.new()
+	trail.position = at
+	trail.texture = _pixel_texture()
+	trail.emitting = false
+	trail.local_coords = false
+	trail.amount = 20
+	trail.lifetime = 0.5
+	trail.emission_shape = CPUParticles2D.EMISSION_SHAPE_SPHERE
+	trail.emission_sphere_radius = 3.0
+	trail.spread = 180.0
+	trail.initial_velocity_min = 2.0
+	trail.initial_velocity_max = 8.0
+	# Hang where they're left, not fall (CPUParticles2D's default gravity).
+	trail.gravity = Vector2.ZERO
+	var fade: Gradient = Gradient.new()
+	fade.set_color(0, Color(color.lerp(Color.WHITE, 0.3), 1.0))
+	fade.set_color(1, Color(color, 0.0))
+	trail.color_ramp = fade
+	return trail
 
 
 ## Small text at [param font_scale] (see FontRoles), centred.
@@ -246,6 +320,8 @@ func _play_in() -> void:
 		_tween.kill()
 	_tween = create_tween()
 	_tween.tween_property(_dim, "modulate:a", 1.0, 0.25)
+	if not _faces.is_empty():
+		_queue_die_opening()
 	_tween.tween_callback(_land)
 	_tween.tween_property(_flash, "modulate:a", 0.75, 0.05)
 	_tween.tween_property(_flash, "modulate:a", 0.0, 0.3)
@@ -254,6 +330,8 @@ func _play_in() -> void:
 	_tween.parallel().tween_property(_rays, "spread", 1.0, 0.6) \
 		.set_trans(Tween.TRANS_QUART).set_ease(Tween.EASE_OUT)
 	_tween.parallel().tween_property(_header, "modulate:a", 1.0, 0.2).set_delay(0.1)
+	if _emblem:
+		_tween.parallel().tween_property(_emblem, "modulate:a", 1.0, 0.2).set_delay(0.15)
 	_tween.tween_property(_panel, "modulate:a", 1.0, 0.15)
 	_tween.parallel().tween_property(_column, "modulate:a", 1.0, 0.2)
 	_tween.tween_interval(_CLOSE_DELAY - 0.5)
@@ -261,6 +339,53 @@ func _play_in() -> void:
 	_tween.tween_property(_close_holder, "scale", Vector2.ONE, 0.22) \
 		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	_tween.tween_callback(func() -> void: _close_button.disabled = false)
+
+
+## The die before the hull: its faces pop in one by one, the earning ones
+## flare and lift while the rest dim, then they fly into the hull's spot,
+## trailing light, and the rest fade away.
+func _queue_die_opening() -> void:
+	for i: int in _faces.size():
+		var delay: float = i * _FACE_STAGGER
+		var pop: PropertyTweener = (_tween if i == 0 else _tween.parallel()) \
+			.tween_property(_faces[i], "scale", Vector2.ONE, 0.18)
+		pop.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT).set_delay(delay)
+		_tween.parallel().tween_callback(Events.play_sound.emit.bind(_FACE_SFX)).set_delay(delay)
+	_tween.tween_interval(0.45)
+
+	var first: bool = true
+	for icon: TextureRect in _faces:
+		var step: Tween = _tween if first else _tween.parallel()
+		first = false
+		if icon in _earning_faces:
+			# Brighter than white: the face lights up from inside.
+			step.tween_property(icon, "modulate", Color(1.7, 1.7, 1.7), 0.25)
+			_tween.parallel().tween_property(icon, "position:y", icon.position.y - 5.0, 0.3) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+		else:
+			step.tween_property(icon, "modulate:a", 0.3, 0.25)
+	_tween.tween_callback(Events.play_sound.emit.bind(_FACE_SFX))
+	_tween.tween_interval(0.35)
+
+	first = true
+	for icon: TextureRect in _faces:
+		var step: Tween = _tween if first else _tween.parallel()
+		first = false
+		if icon in _earning_faces:
+			var trail: CPUParticles2D = icon.get_child(0) as CPUParticles2D
+			step.tween_callback(func() -> void: trail.emitting = true)
+			_tween.parallel().tween_property(icon, "position", (_SHIP_CENTER - icon.size / 2.0).round(), 0.45) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+			_tween.parallel().tween_property(icon, "scale", Vector2.ONE * 0.4, 0.45) \
+				.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_IN)
+		else:
+			step.tween_property(icon, "modulate:a", 0.0, 0.3)
+	_tween.tween_callback(func() -> void:
+		# Gone into the hull; its trail fades out on its own.
+		for icon: TextureRect in _earning_faces:
+			icon.self_modulate.a = 0.0
+			(icon.get_child(0) as CPUParticles2D).emitting = false
+	)
 
 
 ## The moment the hull arrives.

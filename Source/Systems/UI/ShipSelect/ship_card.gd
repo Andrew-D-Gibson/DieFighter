@@ -86,6 +86,7 @@ func setup(for_ship: ShipResource) -> void:
 	if locked:
 		stats.add_theme_color_override(&"default_color", _LOCKED_TEXT)
 		description.add_theme_color_override(&"default_color", _LOCKED_TEXT)
+		_lead_with_face_glyph(description, pitch)
 
 	mouse_entered.connect(func() -> void:
 		_hovered = true
@@ -98,6 +99,19 @@ func setup(for_ship: ShipResource) -> void:
 		queue_redraw()
 	)
 	is_picked = false
+
+
+## A ship earned by a face of Fate's Die leads its rumour with that face's
+## glyph, in colour on the grey card, so the face and the ship read as one.
+func _lead_with_face_glyph(label: RichTextLabel, pitch: String) -> void:
+	if not ShipUnlocks.is_locked(ship) or ship.coming_soon or ship.unlock_face == FateDie.Face.BLANK:
+		return
+	var face: FateFaceResource = FateFaceCatalog.get_face(ship.unlock_face)
+	if face == null or face.glyph == null:
+		return
+	label.clear()
+	label.add_image(face.glyph, 0, 0, Color.WHITE, INLINE_ALIGNMENT_CENTER)
+	label.append_text(" " + pitch)
 
 
 ## What the ship starts a run with: hull and dice.
