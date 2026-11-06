@@ -176,12 +176,16 @@ enemy ship. Every action resource is indexed at the end of this document.
 
 | Made | Proposed files | State / sound brief | Integration destination and timing |
 |---|---|---|---|
-| [ ] | `fate_carve` | Borrows `upgrade_trigger`. A stone chisel strike with a low purple shimmer: a face carved into bone. | `FateDieDisplay._on_carved` (`_CARVE_SFX`) as the hanging die lands on its new face; also the ally arrival in `ReckoningDirector._place_ally`. |
+| [ ] | `fate_carve` | Borrows `upgrade_trigger`. A stone chisel strike with a low purple shimmer: a face carved into bone. | `FateDieDisplay._on_carved` (`_CARVE_SFX`) as the hanging die lands on its new face; also the ally arrival in `ReckoningDirector._place_ally`. Also each of the six carvings in the ending cutscene (`EndingCutscene._on_carved`), so it should still sound good three-quarters of a second apart. |
 | [ ] | `fate_die_received` | Borrows `die_dread_thunk`. A bone die dropping onto a chain: one clack, a rattle. | `FateDieDisplay._on_received` as the die drops into the cockpit. |
 | [ ] | `fate_roll` | Borrows `dice_reroll_blip`. A single heavy die thrown by something huge; a long tumble, a hard stop. | `FateDieDisplay._on_rolled` at the start of each Reckoning round; the banner (`ReckoningHud._show_roll`) lands with it. |
 | [ ] | `horizon_swallow` | Borrows `die_dread_thunk`. A deep inward suck, tiles crunching, then silence. | `ReckoningDirector._swallow_column`, once per column. |
 | [ ] | `fate_reveal_line` | Borrows `text_blip`. A distorted comms burst under each line of the dying Marshal. | `FateRevelation._next`, once per line, not per character. |
 | [ ] | `escape_velocity` | Missing. A rising drive whine that tops out and tears free. | `ReckoningDirector._escape_the_hole` before the white-out; optionally a short tick on `add_escape_velocity`. |
+| [ ] | `vanguard_drive_install` | Borrows `upgrade_trigger`. The dying Marshal's drive locking into the engine charger: a heavy mechanical clunk, then a rising golden hum. 0.5–1.0 s. | `EngineCharger._install_drive` (via `TileUpgradeLook.burst_in`), once a run, as the revelation's dim lifts. |
+| [ ] | `ending_point_click`, `ending_unlocked` | Borrow `die_dead_click` / `die_dread_thunk`. Points: one small die set down on a hard table, dry, 80–150 ms; make two or three takes (`_01`–`_03`) so the three in a row don't sound like a loop. Unlocked: one heavy die slammed down and rocking still, with a low purple swell under it, 0.6–1.2 s. | `EndingCutscene._type_words` once per point of the closing ellipsis (three beats about a second apart, in silence), then `EndingCutscene._unlocked_lands` as UNLOCKED appears. The letters themselves type silently, so these are the only sounds in the line. |
+| [ ] | `tithe_vault_break` | Borrows `glass_crack` + `enemy_death_explosion`. Metal tearing open, then a rattling cascade of dice pouring out. 1–2 s. | `EndingCutscene._vault_breaks`, the Bastion husk's middle bay giving way. |
+| [ ] | `ending_glitch_cut` | Missing: today the cut is silent (only the music stops). A digital tear that ends in sudden silence: the music is cut on the same frame. 0.3–0.6 s. | `EndingCutscene._cut_to_purple`; the shorter flickers before it (`_glitch`) can share `hazard_fate`. |
 
 ## P3 — ship, cockpit, UI and cinematic polish
 
@@ -217,6 +221,11 @@ seamless loops separately (`ambience_cockpit`, `ambience_ion`, `ambience_fate`).
 They need loop lifetime/fade handling beyond the current fire-and-forget SFX
 player; do not wire an infinite loop through `Events.play_sound`.
 Saving can remain silent; the existing save indicator is sufficient.
+
+Music, not SFX: the ending cutscene (`EndingCutscene._music_in`) borrows
+`game_start_theme` for the flight away from the Bastion and brings it back
+under the victory screen. A short ending track would suit it better; until
+then the cut to silence at the purple is the strongest moment, so keep it.
 
 ## Integration rules for the future wiring pass
 
@@ -468,6 +477,7 @@ slot in the linked tile/action resource.
 - [tile_upgrade_look](Source/Content/Tiles/tile_upgrade_look.gd)
 - [tile_use_lights](Source/Content/Tiles/tile_use_lights.gd)
 - [opening_cutscene](Source/Scenes/Cutscenes/opening_cutscene.gd)
+- [ending_cutscene](Source/Scenes/Cutscenes/ending_cutscene.gd)
 - [health_bar_controller](Source/Systems/Components/HealthBarController/health_bar_controller.gd)
 - [dice](Source/Systems/Game/Dice/dice.gd)
 - [enemy_dialogue_manager](Source/Systems/Game/EnemyDialogueManager/enemy_dialogue_manager.gd)

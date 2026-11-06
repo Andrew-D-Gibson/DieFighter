@@ -468,6 +468,23 @@ sacrifice) and hands over the drive. Hearing it unlocks the route for *later*
 runs; the run that hears it can't turn back. When the Front is built, the
 revelation moves to the Vanguard's death and nothing else changes.
 
+The drive is a visible thing from that moment: the engine charger shimmers as
+upgraded, in the Vanguard Drive's **gold** (the halo on its tile), and its rings
+burn gold. The last gate pays nothing unless the way back is open: for
+everyone else, beating it ends the run.
+
+**The first ending.** The run that hears the secret for the first time doesn't
+fly through the ring. It cuts to black, and to a cutscene that mirrors the
+opening: the ship pulls away from the Bastion's burning husk on gold engines,
+and the broken tithe vault spills its dice. They don't drift back toward Fate.
+They stream past the ship, *forward*, and fall into a second black hole ahead,
+the opening's Fate exactly mirrored. The picture glitches out into its purple,
+and Fate's Die turns in the light, blank, as its faces carve themselves one by
+one. *"Fate only notices those who choose..."* Then UNLOCKED, and the victory
+screen: *"Fate saw you. Carve every face, and the way back is open."* The
+camera rhymes with the opening in reverse: close on the ship, pulling out, then
+the push in that the opening ended on.
+
 **The choice (§6 Gates 2-3).** With the knowledge and every face carved,
 jumping on through the last gate rattles the die: Forward ends the run as before
 (now closing on *"The Tithe Collector is waiting for your orders."*), Back dives
