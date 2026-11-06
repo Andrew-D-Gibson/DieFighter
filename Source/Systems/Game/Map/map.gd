@@ -177,6 +177,37 @@ var _icon_hints: Dictionary[String, Dictionary] = {
 }
 
 signal request_jump_to_scenario(scenario: ScenarioResource)
+## The drive's left throw has shown the black hole on the map: turn back into
+## the Reckoning (see jump_to_hole()).
+signal request_jump_to_hole
+
+## The Reckoning has no road: the map is the black hole where the player is,
+## with the trail fading off to nothing on both sides, and both arrows are the
+## way out (RECKONING_ENDINGS.md §6.1). Set from the save, then from whether the
+## director is running as each scenario starts, so a Continue draws it too.
+var _reckoning_view: bool = false
+## The black hole's marker at the sector's left edge, or in the Reckoning the
+## one the player sits in.
+var _fate_marker: Node2D
+## Marks the left arrow while it throws the ship into the hole, and the glow
+## that pulls the eye to the hole itself. See _update_hole_pull().
+var _hole_badge: Sprite2D
+var _hole_pull_tween: Tween
+var _hole_pull_on: bool = false
+var _hole_pull_marker: Node2D
+
+## Where the Reckoning's marker sits, on the same row as the road.
+const _RECKONING_ROW_Y: float = 4.0
+## Timeline bars either side of the hole in the Reckoning, each fainter than
+## the last. The first starts clear of the hole's core.
+const _RECKONING_TRAIL_BARS: int = 4
+## How far the black hole's dark core reaches from its centre: the "you are
+## here" arrow hangs clear of it.
+const _FATE_CORE_RADIUS: float = 16.0
+## Where the hole badge sits on the left arrow, a corner clear of the glyph.
+const _HOLE_BADGE_OFFSET: Vector2 = Vector2(8.0, -8.0)
+const _HOLE_PULL_COLOR: Color = Color(1.5, 1.25, 1.6)
+const _HOLE_PULL_TIME: float = 0.8
 
 # Camera bounds constants
 const MIN_CAMERA_INDEX: int = 2
@@ -232,10 +263,13 @@ func _ready() -> void:
 	Events.load_game_save.connect(_load_game_save)
 	Events.start_scenario.connect(func() -> void:
 		_jumping = false
+		_reckoning_view = ReckoningDirector.active() != null
 		_update_map_sprites()
 		_update_ui()
 	)
 	Events.engine_charge_changed.connect(_update_ui)
+	# The drive lands as the Bastion's box closes: the left arrow changes then.
+	Events.vanguard_drive_taken.connect(_update_ui)
 	Events.background_modifier_applied.connect(func(_rule: BackgroundModifierResource) -> void: _update_ui())
 	
 	# Initialize camera position and slider
@@ -246,7 +280,7 @@ func _ready() -> void:
 ## Click-drag inside the map, or use the wheel, to pan the camera. Handled
 ## here (unhandled) so the slider, tiles and dice get first claim on the mouse.
 func _unhandled_input(event: InputEvent) -> void:
-	if not visible or scenario_list.is_empty() or _jumping:
+	if not visible or scenario_list.is_empty() or _jumping or _reckoning_view:
 		return
 
 	if event is InputEventMouseButton:
@@ -287,7 +321,7 @@ func _process(delta: float) -> void:
 
 
 func _pulse_right_arrow_at_open_gate(delta: float) -> void:
-	if not Globals.jump_gate or not Globals.jump_gate.is_open() or not right_arrow_tile:
+	if _reckoning_view or not Globals.jump_gate or not Globals.jump_gate.is_open() or not right_arrow_tile:
 		_gate_pulse_elapsed = 0.0
 		return
 	_gate_pulse_elapsed -= delta
@@ -347,7 +381,10 @@ func _compute_hint(hovered: int) -> Array:
 
 	if not can_jump():
 		return [null, tr(jump_refusal()), Globals.purple]
-	if Globals.jump_gate and Globals.jump_gate.is_open():
+	# In the Reckoning the gate behind is no way out: both arrows are.
+	if _reckoning_view and _engines_charged:
+		return [_FATE_ICON, tr("MAP_HINT_RECKONING_EXIT"), Globals.medium_purple]
+	if not _reckoning_view and Globals.jump_gate and Globals.jump_gate.is_open():
 		return [_NEXT_SECTOR_ICON, tr("MAP_HINT_JUMP_RIGHT"), Globals.yellow]
 	if not _engines_charged:
 		# No icon: the here arrow points at the player's dot, which isn't what
@@ -355,6 +392,8 @@ func _compute_hint(hovered: int) -> Array:
 		# the text. Purple like "You are here", which it stands in for: it's
 		# the resting caption, not a hovered destination.
 		return [null, tr("MAP_HINT_CHARGE_ENGINES"), Globals.purple]
+	if _left_throws_to_hole():
+		return [_FATE_ICON, tr("MAP_HINT_LEFT_TO_HOLE"), Globals.medium_purple]
 	return [_HERE_ARROW, tr("MAP_HINT_YOU_ARE_HERE"), Globals.purple]
 
 
@@ -495,6 +534,10 @@ func _sync_slider_to_camera() -> void:
 	
 	
 func _load_game_save(game_save: GameSaveResource) -> void:
+	# A run saved inside the Reckoning goes back into it (GameStateManager.
+	# _scenario_to_load()), so the map is drawn as it was there. The sector's
+	# own road is still in the save: the Reckoning only changes how it's shown.
+	_reckoning_view = bool(game_save.fate_state.get("in_reckoning", false))
 	if game_save.map_state.is_empty():
 		# A new run, or a save from before Fate's progress was recorded.
 		load_sector(game_save.sector_scenarios, game_save.current_scenario_index)
@@ -533,9 +576,10 @@ func _on_visibility_changed() -> void:
 	
 	
 func _update_ui() -> void:
+	_update_hole_pull()
 	if not Globals.player:
 		return
-	
+
 	_engines_charged = Globals.player.is_engine_charged()
 	if _engines_charged and can_jump():
 		left_arrow_tile.set_highlight(true)
@@ -558,16 +602,23 @@ func _update_map_sprites() -> void:
 	# The old sprites (and their hover tweens) go with the old map.
 	_hovered_index = -1
 	_hover_tweens.clear()
-	
+	%MapViewSlider.visible = not _reckoning_view
+	_fate_marker = null
+
+	if _reckoning_view:
+		_build_reckoning_sprites()
+		return
+
 	# Shouldn't ever return here, but still
 	if len(scenario_list) == 0:
 		return
-		
+
 	# Add the fate sprite
 	var fate_marker: Node2D = fate.instantiate()
 	fate_marker.position = Vector2(-2 * sprite_spacing, 0)
 	fate_marker.z_index = -1
 	map_viewport.add_child(fate_marker)
+	_fate_marker = fate_marker
 	
 	# Add the fate background sprite
 	var fate_background: Sprite2D = Sprite2D.new()
@@ -662,6 +713,81 @@ func _update_map_sprites() -> void:
 		
 	# Sync the slider to match the camera position
 	_sync_slider_to_camera()
+	_update_hole_pull()
+
+
+## The Reckoning's map: only the black hole, in the middle where the player is,
+## with the trail fading off to nothing both ways. There are no stops to
+## choose between (and no sector's danger zones), so nothing here is hovered.
+func _build_reckoning_sprites() -> void:
+	# The sector's zones went with the sprites above: forget them, or the
+	# caption would ask the freed ones where the cursor is.
+	_corrupted_sprite = null
+	_danger_sprite = null
+	_seam_sprite = null
+	_stray_danger_sprites.clear()
+	_pip = null
+
+	var hole: Node2D = fate.instantiate()
+	hole.position = Vector2(0, _RECKONING_ROW_Y)
+	hole.z_index = -1
+	map_viewport.add_child(hole)
+	_fate_marker = hole
+
+	for side: int in [-1, 1]:
+		for bar: int in range(1, _RECKONING_TRAIL_BARS + 1):
+			var trail: Sprite2D = Sprite2D.new()
+			trail.texture = timeline_icon
+			trail.position = Vector2(side * (bar * sprite_spacing + sprite_spacing / 2.0), _RECKONING_ROW_Y)
+			trail.modulate.a = 1.0 - float(bar) / (_RECKONING_TRAIL_BARS + 1)
+			map_viewport.add_child(trail)
+
+	_hang_here_arrow(Vector2(
+		-_HERE_ARROW.get_width() / 2.0,
+		_RECKONING_ROW_Y - _FATE_CORE_RADIUS - _HERE_ARROW_GAP - _HERE_ARROW.get_height()))
+	map_camera.position = Vector2.ZERO
+	_sync_slider_to_camera()
+	_update_hole_pull()
+
+
+## Whether the left arrow now throws the ship to the black hole (the drive's
+## upgrade, GameStateManager.left_jump_goes_to_hole()), so the map should say
+## so. Never inside the Reckoning, where the hole is the map.
+func _left_throws_to_hole() -> bool:
+	return not _reckoning_view and is_instance_valid(Globals.state_manager) \
+		and Globals.state_manager.left_jump_goes_to_hole()
+
+
+## Telegraphs the drive's left throw: a black hole badge on the left arrow, and
+## the hole at the road's end glowing like something that is pulling. Redone
+## only when the state or the marker changes, so the glow doesn't restart on
+## every charge.
+func _update_hole_pull() -> void:
+	var pulls: bool = _left_throws_to_hole()
+	if pulls == _hole_pull_on and _fate_marker == _hole_pull_marker:
+		return
+	_hole_pull_on = pulls
+	_hole_pull_marker = _fate_marker
+
+	if _hole_pull_tween:
+		_hole_pull_tween.kill()
+		_hole_pull_tween = null
+	if not _hole_badge and is_instance_valid(left_arrow_tile):
+		_hole_badge = Sprite2D.new()
+		_hole_badge.texture = _FATE_ICON
+		_hole_badge.position = _HOLE_BADGE_OFFSET
+		_hole_badge.z_index = 5
+		left_arrow_tile.add_child(_hole_badge)
+	if _hole_badge:
+		_hole_badge.visible = pulls
+	if is_instance_valid(_fate_marker):
+		_fate_marker.modulate = Color.WHITE
+		if pulls:
+			_hole_pull_tween = _fate_marker.create_tween().set_loops()\
+				.set_trans(Tween.TRANS_SINE)\
+				.set_ease(Tween.EASE_IN_OUT)
+			_hole_pull_tween.tween_property(_fate_marker, "modulate", _HOLE_PULL_COLOR, _HOLE_PULL_TIME)
+			_hole_pull_tween.tween_property(_fate_marker, "modulate", Color.WHITE, _HOLE_PULL_TIME)
 
 
 ## Makes [param sprite] the gate: the big icon, its portal swirling, its
@@ -783,18 +909,24 @@ func _pulse_pip(pip: Sprite2D) -> void:
 ## player stands on it. The arrow bobs with the pip's breathing; its tween is
 ## its own, so it goes when the map is rebuilt.
 func _add_here_arrow(pip: Sprite2D, on_gate: bool) -> void:
-	var arrow: Sprite2D = Sprite2D.new()
-	arrow.texture = _HERE_ARROW
-	# Top-left anchored: the arrow and the pip are both an even number of
-	# pixels wide, so their centre columns line up on whole pixels.
-	arrow.centered = false
-	arrow.z_index = 1
 	var under: Texture2D = gate_map_icon if on_gate else pip.texture
 	# Measured from the pip at full breath, so the two never touch.
 	var under_half_height: float = under.get_height() / 2.0 * (1.0 if on_gate else _PIP_PULSE_SCALE)
 	var rest: Vector2 = Vector2(
 		pip.position.x - _HERE_ARROW.get_width() / 2.0,
 		floorf(pip.position.y - under_half_height) - _HERE_ARROW_GAP - _HERE_ARROW.get_height())
+	_hang_here_arrow(rest)
+
+
+## Puts the "you are here" arrow, top-left at [param rest], on the map and sets
+## it bobbing.
+func _hang_here_arrow(rest: Vector2) -> void:
+	var arrow: Sprite2D = Sprite2D.new()
+	arrow.texture = _HERE_ARROW
+	# Top-left anchored: the arrow and what it points at are both an even
+	# number of pixels wide, so their centre columns line up on whole pixels.
+	arrow.centered = false
+	arrow.z_index = 1
 	arrow.position = rest
 	map_viewport.add_child(arrow)
 
@@ -837,7 +969,7 @@ func _set_camera_x(x: float) -> void:
 
 ## Sets the destination throbbing for the rest of the jump. The tween is the
 ## sprite's, so it ends when the map is rebuilt on arrival.
-func _pulse_target(target: Sprite2D) -> void:
+func _pulse_target(target: Node2D) -> void:
 	var pulse: Tween = target.create_tween().set_loops()\
 		.set_trans(Tween.TRANS_SINE)\
 		.set_ease(Tween.EASE_IN_OUT)
@@ -862,6 +994,27 @@ func show_gate_jump() -> void:
 		if _pip_tween:
 			_pip_tween.kill()
 		_pulse_target(_pip)
+
+
+## The drive's left throw: the map pans all the way left to the black hole,
+## which throbs like any jump's destination, and then the run turns back into
+## the Reckoning (request_jump_to_hole). Not one tile back, so no tile is
+## visited and Fate advances no further.
+func jump_to_hole() -> void:
+	if _jumping:
+		return
+	_begin_jump_display(_FATE_ICON)
+	if is_instance_valid(_hole_pull_tween):
+		_hole_pull_tween.kill()
+	if is_instance_valid(_fate_marker):
+		_fate_marker.modulate = Color.WHITE
+		_pulse_target(_fate_marker)
+		var pan: Tween = get_tree().create_tween()
+		pan.tween_method(_set_camera_x, map_camera.position.x, _fate_marker.position.x, 0.5)\
+			.set_trans(Tween.TRANS_SINE)\
+			.set_ease(Tween.EASE_IN_OUT)
+	await get_tree().create_timer(_JUMP_TARGET_HOLD_TIME).timeout
+	request_jump_to_hole.emit()
 
 
 ## Marks the scenario at current_scenario_index as cleared — empty, or

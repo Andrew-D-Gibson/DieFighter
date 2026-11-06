@@ -353,16 +353,9 @@ func go_through_gate() -> void:
 	Globals.map.show_gate_jump()
 
 	if current_game_save.sector_index + 1 >= demo_sector_count:
-		# The last gate. For a player who knows the secret and carved every
-		# face, Fate's Die starts rattling: forward to the front, or back
-		# toward Fate (LORE.md §6, Gate 3).
-		if Globals.fate_ledger and Globals.fate_ledger.fate_route_open() and _reckoning_scenario():
-			var choice: FateVectorChoice = FateVectorChoice.open_in(Globals.jump_manager)
-			var vector: FateVectorChoice.Vector = await choice.chosen
-			if vector == FateVectorChoice.Vector.BACK:
-				await enter_reckoning()
-				return
-		# Through the last gate and out: the run is won.
+		# Through the last gate and out: the run is won. Even with the way back
+		# toward Fate open, this is the Forward ending: turning back is the
+		# map's left arrow (left_jump_goes_to_hole()), never a choice here.
 		current_game_save.sector_index += 1
 		if _plays_first_ending():
 			# The run that first learned the secret doesn't fly through the
@@ -424,6 +417,19 @@ func _plays_first_ending() -> bool:
 func _reckoning_scenario() -> ScenarioResource:
 	var director: ReckoningDirector = get_tree().get_first_node_in_group(&"reckoning_director") as ReckoningDirector
 	return director.scenario if director else null
+
+
+## Whether the map's left arrow throws the ship all the way to the black hole
+## and into the Reckoning rather than one tile back: the dying Bastion's drive
+## is in the engine, the way back toward Fate is open (LORE.md §6) and the
+## scene has a Reckoning to enter. Right stays the road forward, and out of the
+## last gate the Forward ending. A run nobody is playing (the AutoPilot, tests)
+## keeps the ordinary arrows, as it always went forward.
+func left_jump_goes_to_hole() -> bool:
+	var ledger: FateLedger = Globals.fate_ledger
+	return ledger != null and ledger.has_drive and not ledger.in_reckoning \
+		and ledger.fate_route_open() and CollectionManager.is_recording() \
+		and _reckoning_scenario() != null
 
 
 ## Turns back at the last gate and dives toward Fate. The sector stays the

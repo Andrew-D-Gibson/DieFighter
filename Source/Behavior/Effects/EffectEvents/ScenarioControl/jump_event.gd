@@ -26,6 +26,18 @@ func resolve(_engine: ScenarioEngine) -> void:
 		director.jump_out()
 		return
 
+	# With the Bastion's drive aboard and the way back open, left no longer
+	# means one tile back: the drive throws the ship the whole way left, into
+	# the black hole. Right is untouched (the road on, or out of the last gate).
+	if jump_delta < 0 and is_instance_valid(Globals.state_manager) \
+			and Globals.state_manager.left_jump_goes_to_hole():
+		if not Globals.map.can_jump():
+			_refuse(Globals.map.jump_refusal())
+			return
+		Globals.player.commit_to_jump(activator_die)
+		Globals.map.jump_to_hole()
+		return
+
 	var current_index: int = Globals.map.current_scenario_index
 	var desired_index: int = clampi(
 		current_index + jump_delta,
