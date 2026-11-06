@@ -658,6 +658,7 @@ in flight when the save was taken is never lost to it.
 - the `FactionLedger` (`faction_standing`): standing, deeds and kills per
   faction. A deed done after a checkpoint is lost with the rest of the
   replayed fight and recorded again when it replays;
+- the escort riding with the player, if any (`escort_state`, see Escorts);
 - the RUN RNG state. RNG states are stored as strings, because JSON rounds
   int64.
 
@@ -1465,6 +1466,47 @@ so the RUN stream and every seeded map keep their draws (the tutorial's
 included). Fate's throws use the director's own generator.
 
 Dev console: `fate` (see `help`).
+
+---
+
+## Escorts
+
+A ship the player helped can leave with them and ride along (the Mayday's
+runner, "Bless you, pilot. Stay close.").
+
+- **Authoring.** `ScenarioShipState.escort` (an `EscortResource`,
+  `Content/ScenarioResources/escort_resource.gd`): the hull that rides
+  along, its riding state, its farewell state, `fights`, and the `payout`.
+  `Enemy.trigger_state_effects()` emits `Events.escort_signed_on` beside the
+  deeds, so a ship a Continue puts back in that state doesn't sign on twice.
+- **`EscortKeeper`** (`Systems/Game/Escort/`, after FateLedger in
+  `main.tscn`) runs it: `JOINED` while still in the encounter it signed on
+  in, `RIDING` from the next arrival, `FAREWELL` once its fights are done.
+  On `load_scenario` it spawns the escort (`EnemyManager.spawn_escort()`),
+  after EnemyManager has stood the encounter up; on `start_scenario` it
+  slides into `EnemyManager.ESCORT_SLOT`, the pocket above the hull gauge,
+  in every encounter (shops and docks too). Each `combat_finished` with it
+  alive counts a fight, ahead of the after-combat checkpoint. At the arrival
+  after its last fight it adds an `ArrivalIntro.Beat.ESCORT_FAREWELL`: it
+  flies to the middle, the payout spawns, and the farewell state's chain
+  WAITs then FLEEs, all before the encounter's ships fly in.
+- **On the board.** `Enemy.is_escort`: pinned out of the formation and its
+  speech-box layout, skipped by the opening fly-in, left out of
+  `get_faction_ships()` (no `CIVILIANS_DEFEATED`, no bounty) and of
+  `ScenarioManager._handle_enemy_leaving()` (it closes no shop), and a pirate
+  firing on it isn't `PIRATE_ATTACKED_CIVILIAN`. It is in the roster, so it
+  rolls a table, binds its Raid (`owes_hand_off`) and can be raided and
+  killed.
+- **Endings.** Dying: no payout and no standing change, and its FateLedger
+  ally entry gets `"escort": "lost"`. Saying goodbye: `"delivered"`. Turned
+  hostile (shot by the player, or betrayed before it left): dropped, its new
+  state's deeds speak for it. The Reckoning never spawns it (it is already
+  a Saved Ship tile from its `REMEMBER_SHIP`); `_place_ally` floats the
+  delivered or lost line over that tile.
+- **Saves.** `get_state()` rides every checkpoint (`escort_state`: terms,
+  phase, fights left, hull read off the live ship). A Continue mid-fight
+  replays it from the arrival with the hull it arrived with; one into the
+  farewell's arrival replays the goodbye and pays once.
 
 ---
 

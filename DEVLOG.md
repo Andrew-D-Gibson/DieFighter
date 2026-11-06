@@ -4,6 +4,19 @@ Newest entries at the top.
 
 ---
 
+## 2026-11-05 — The Mayday rides along
+
+Help the Mayday and its runner no longer vanishes at the jump: it rides along as the player's escort (`EscortKeeper`, `EscortResource` on `mayday_grateful.tres`).
+
+- **Where it sits.** A fixed slot above the hull gauge (`EnemyManager.ESCORT_SLOT`, art 55,91), the same in every encounter however many ships are about; checked against Loose Wing, Convoy, Last Picket and every Fate fight, and it clears the shop panel too.
+- **Fighting.** Its own hull, `mayday_runner.tres` (Shield, Raid, idle; no Flee or attack), on the player's side: it binds its Raid to a ship fighting the player. Pirates can raid it; it can die.
+- **Two fights, then goodbye.** Each won fight with it alive counts. At the arrival after the second it flies to the middle before the encounter's ships come in ("Made it. Your cut, pilot. Thanks."), pays 25-35 credits and jumps away. Dying loses the pay, with no standing hit.
+- **Saves.** `escort_state` on every checkpoint; Continue restores it with its damage, and a farewell's arrival replays the goodbye once.
+- **The Reckoning** counts it once, from `REMEMBER_SHIP`, and never spawns the escort itself. Its Saved Ship tile now says "You saw us home. Our turn." or, for one lost on the way, "We fell once. Not this time."
+- Seen once and not reproduced: the escort drawn as a red silhouette during one farewell; two later farewells looked right.
+
+---
+
 ## 2026-11-05 — Tweak batch: locks, War Footing, bubbles, living skies
 
 Sixteen tweaks in eight parallel chunks.

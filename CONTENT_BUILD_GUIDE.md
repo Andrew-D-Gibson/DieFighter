@@ -831,6 +831,16 @@ with conditions.
   one deed, then a general grudge). Branch options are states, not rolls.
   This is how gossip works: `Shop/shop_ship_greeting.tres` opens the shop on
   "You hit a Compact shop. Prices went up." for a player who did.
+- **`escort`** on a state (an `EscortResource`): entering it signs the ship
+  on to ride along with the player (the Mayday's grateful runner,
+  `EVENT_Mayday/mayday_escort_terms.tres`). Give it its own hull
+  (`ship_resource`, with a Raid in every pool: it is on the player's side in
+  every fight it joins; `test_ally_hand_offs` checks), a riding state
+  (NEUTRAL, listening only to `PLAYER_ATTACKED_SELF`, since it hears every
+  later encounter's broadcasts), a farewell state (the thank-you line, then
+  WAIT and FLEE), `fights` and a money-only `payout`. Pair it with
+  `REMEMBER_SHIP ally` on the same state: the Reckoning counts the ship once,
+  from that, whether or not it made it. ARCHITECTURE "Escorts".
 - **`holds_fire`** on a state: every intent the ship rolls is silenced, so
   dice handed to it do nothing. For a crew that has surrendered.
 - **Surrender** (`0GenericShipStates/rearguard_combatant.tres`): an

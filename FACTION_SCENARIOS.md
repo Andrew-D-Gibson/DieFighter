@@ -79,7 +79,11 @@ Checkpoints, tithes and warships, plus the Undertow they hire under the table.
 
 The Mayday comes from a Bounty Runner: a civilian hull with an Undertow badge, the
 tell for anyone reading the targeting computer. Sometimes it's bait (it runs on round
-3), and sometimes an Undertow straggler really is dying.
+3), and sometimes an Undertow straggler really is dying. A real one the player helps
+rides along as their escort through the next two won fights, in its slot above the hull
+gauge, then thanks them and pays 25-35 credits. If it's shot down on the way the pay is
+lost, nothing more; the Reckoning still counts it (*"We fell once. Not this time."*,
+or *"You saw us home. Our turn."* for one that made it).
 
 Blockade Runner was cut. It overlapped Bounty Run, and an Undertow smuggler escorted
 by a Caravan medic fit neither faction.
