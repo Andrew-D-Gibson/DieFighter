@@ -328,3 +328,8 @@ FATE_ENDING_ALLIES,{n} ship you saved flew with you.,,,,,,,,"Secret ending: how 
 FATE_FALLEN_LINE,...it's you... it was always you...,,,,,,,,"Speech bubble of the player's own ship from an earlier run, which fell into the black hole and came back as one of its creatures",,,,
 CALLOUT_PODS_LEVEL,LEVEL!,,,,,,,,"Outrigger ship: big callout beside the engine charge readout when the turn ended with both engine pods' thrust exactly equal (tiles that answer it pay out)",,,,
 CALLOUT_DRIVE_FULL,DRIVE FULL,,,,,,,,"Outrigger ship: big callout over the engine charge readout when the turn-end charge from the two engine pods has filled the jump drive all the way to the jump gate",,,,
+FATE_DIE_HOVER_HINT,Point at a face to read it.,,,,,,,,"Line in Fate's Die's info panel: hovering a face of the pictured die shows what it is and what carves it",,,,
+FATE_FACE_HOVER_CARVED,"{face}\n[color=purple]Carved by:[/color] {carved_by}",,,,,,,,"Popup over one carved face of Fate's Die in its info panel; {face} is the face's name (Mercy, Ruin...), {carved_by} a short line of what kind of choice carves it. What the face does is deliberately not said",,,,
+FATE_FACE_HOVER_BLANK,"[color=purple]Blank.[/color] Choices carve it:\n{faces}",,,,,,,,"Popup over a blank face of Fate's Die in its info panel; {faces} becomes one line per face that can be carved, each its name and what carves it",,,,
+FATE_FACE_HOVER_BLANK_LINE,{face}: {carved_by},,,,,,,,"One line of the blank-face popup on Fate's Die: {face} is a face's name (Mercy, Ruin...), {carved_by} what kind of choice carves it",,,,
+FATE_CALLOUT_CARVED_COUNT,{carved} OF {total},,,,,,,,"Small callout under ""MERCY CARVED"" when a face is carved into Fate's Die: how many of its six faces are now carved, in capitals",,,,

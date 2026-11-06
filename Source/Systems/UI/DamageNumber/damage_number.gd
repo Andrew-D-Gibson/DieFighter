@@ -123,11 +123,15 @@ static func spawn_text(target: Node2D, text: String, color: Color, big: bool = f
 
 
 ## A label at `global_pos`, parented to `parent`.
+## [param lifetime] above 0 holds the label that long instead of the usual
+## reading time, for a moment that matters more than a hit.
 static func spawn_text_at(parent: Node, global_pos: Vector2, text: String, color: Color, big: bool = false,
-		uncapped_text: String = "", cap_color: Color = Color.WHITE, texture: Texture2D = null) -> void:
-	var letters: int = text.length() + uncapped_text.length()
-	var lifetime: float = minf(_TEXT_LIFETIME_SECONDS + letters * _TEXT_SECONDS_PER_LETTER,
-		_MAX_TEXT_LIFETIME_SECONDS)
+		uncapped_text: String = "", cap_color: Color = Color.WHITE, texture: Texture2D = null,
+		lifetime: float = -1.0) -> void:
+	if lifetime <= 0.0:
+		var letters: int = text.length() + uncapped_text.length()
+		lifetime = minf(_TEXT_LIFETIME_SECONDS + letters * _TEXT_SECONDS_PER_LETTER,
+			_MAX_TEXT_LIFETIME_SECONDS)
 	_spawn_label(parent, global_pos, text, color, big, Vector2(0.0, -_RISE_PIXELS), 1.0, lifetime,
 		uncapped_text, cap_color, texture)
 

@@ -5,6 +5,13 @@ extends Control
 const _SOLO_MARGIN: int = 288
 const _COMPARISON_MARGIN: int = 96
 
+## The info on show, and the art it's drawn in, for its hotspots.
+var _info: InfoResource
+var _art: TextureRect
+## Whether the keyword popup is showing a hotspot's text rather than a
+## keyword's, so leaving the hotspot doesn't close a keyword's popup.
+var _showing_hotspot: bool = false
+
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	self.visible = false
@@ -20,10 +27,13 @@ func _show_info(info: InfoResource) -> void:
 	%TitleLabel.text = Utils.format_text(info.title_label_text)
 	%TopLabel.text = Utils.format_text(info.top_label_text, true)
 	%KeywordPopup.hide()
+	_showing_hotspot = false
 	self.visible = true
 
 	var art: TextureRect = _show_comparison(info) if info.has_upgrade() else _show_solo(info)
 	art.texture = info.texture
+	_info = info
+	_art = art
 	art.modulate.a = 0
 	if not info.has_upgrade():
 		await _widen_if_too_tall()
@@ -138,12 +148,50 @@ func _on_keyword_hover_started(meta: Variant) -> void:
 	# height lingers on a short one.
 	%KeywordPopup.reset_size()
 	%KeywordPopup.show()
+	_showing_hotspot = false
 	_place_keyword_popup()
 
 
 func _process(_delta: float) -> void:
-	if visible and %KeywordPopup.visible:
+	if not visible:
+		return
+	_update_hotspot()
+	if %KeywordPopup.visible:
 		_place_keyword_popup()
+
+
+## Shows the text of the art's hotspot under the pointer in the keyword
+## popup. Polled rather than driven by the art's mouse signals: the art lets
+## clicks through to the screen dim, which closes the panel.
+func _update_hotspot() -> void:
+	var text: String = _hotspot_text_under_pointer()
+	if text.is_empty():
+		if _showing_hotspot:
+			%KeywordPopup.hide()
+			_showing_hotspot = false
+		return
+	if _showing_hotspot and %KeywordLabel.text == Utils.format_text(text):
+		return
+	%KeywordLabel.text = Utils.format_text(text)
+	KeywordDiagram.configure(%KeywordPopup, %KeywordLabel, "", 4.0)
+	%KeywordPopup.reset_size()
+	%KeywordPopup.show()
+	_showing_hotspot = true
+	_place_keyword_popup()
+
+
+func _hotspot_text_under_pointer() -> String:
+	if _info == null or _info.hotspot_rects.is_empty() or not is_instance_valid(_art) \
+			or _art.texture == null or not _art.is_visible_in_tree() or _art.modulate.a < 1.0:
+		return ""
+	var local: Vector2 = _art.get_global_transform().affine_inverse() * InputManager.pointer_global_position(_art)
+	# The art keeps its aspect, centred (stretch mode Keep Aspect Centered).
+	var texture_size: Vector2 = _art.texture.get_size()
+	var fit: float = minf(_art.size.x / texture_size.x, _art.size.y / texture_size.y)
+	if fit <= 0.0:
+		return ""
+	var offset: Vector2 = (_art.size - texture_size * fit) / 2.0
+	return _info.hotspot_text_at((local - offset) / fit)
 
 
 func _place_keyword_popup() -> void:
